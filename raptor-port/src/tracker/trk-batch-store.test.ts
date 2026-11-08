@@ -9,7 +9,7 @@
    Each was run RED against the code before the batch (the evidence sheet's break list names the lines). */
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import * as core from './app/core.js'
-import { setStorageImpl, setSaveHealth } from './storage.js'
+import { setStorageImpl, setSaveHealth, setStorageKept } from './storage.js'
 import { setPeople, setGonePeople } from './people.js'
 import { deletedForTracker } from './peoplewire'
 import { Whiteboard } from '../storage/whiteboard'
@@ -168,6 +168,26 @@ describe('[TRK-SAVE-FAIL-SAYS-SAVED] — no "saved" while the saver has failed',
     expect(C.saveWords().text, 'nothing says saved while Raptor says Not saved').toBe('')
     status = 'saved'; subs.forEach(f => f()); await settle()
     expect(C.saveWords().text, 'back once Retry has landed').toMatch(/saved/)
+  })
+})
+
+/* D1901 (8 Nov 26, [TRK-NOSTORE-SAVED]): in a browser that keeps nothing the corner says nothing of saving — Raptor's
+   "Not kept" band speaks — while an error still shows */
+describe('D1901 — no "saved" in a browser that keeps nothing', () => {
+  it('saved and saving step aside while the browser keeps nothing; an error stays; a browser that keeps has them back', async () => {
+    setSaveHealth(null)
+    await C.saveOrderList(C.orderedSylNames())
+    expect(C.saveWords().text, 'saved, in a browser that keeps').toMatch(/saved/)
+    setStorageKept(false)
+    try {
+      expect(C.saveWords().text, 'nothing says saved').toBe('')
+      C.saveStat.cls = 'saving'; C.saveStat.text = '● saving…'
+      expect(C.saveWords().text, 'nothing says saving').toBe('')
+      C.saveStat.cls = 'err'; C.saveStat.text = 'could not read the file'
+      expect(C.saveWords().text, 'an error still shows').toBe('could not read the file')
+    } finally { setStorageKept(true) }
+    await C.saveOrderList(C.orderedSylNames())
+    expect(C.saveWords().text, 'back in a browser that keeps').toMatch(/saved/)
   })
 })
 

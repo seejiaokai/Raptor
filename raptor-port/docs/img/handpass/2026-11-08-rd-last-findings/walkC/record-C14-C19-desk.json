@@ -1,0 +1,1128 @@
+{
+ "main": {
+  "c-S14-D-roster-cat": {
+   "id": "c-S14-D-roster-cat",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-D-roster-cat.png"
+  },
+  "c-S14-D-roster-quals": {
+   "id": "c-S14-D-roster-quals",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "reopened": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    }
+   },
+   "pic": "main-c-S14-D-roster-quals.png"
+  },
+  "c-S14-D-roster-search": {
+   "id": "c-S14-D-roster-search",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-D-roster-search.png"
+  },
+  "c-S14-D-roster-fold": {
+   "id": "c-S14-D-roster-fold",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": true
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-D-roster-fold.png"
+  },
+  "c-S14-D-arch-cat": {
+   "id": "c-S14-D-arch-cat",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-D-arch-cat.png"
+  },
+  "c-S14-D-arch-quals": {
+   "id": "c-S14-D-arch-quals",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": false,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    },
+    "reopened": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCH",
+     "del": "Delete",
+     "restore": "Restore"
+    }
+   },
+   "pic": "main-c-S14-D-arch-quals.png"
+  },
+  "c-S14-D-arch-search": {
+   "id": "c-S14-D-arch-search",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": false,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    },
+    "reopened": {
+     "listOpen": true,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    }
+   },
+   "pic": "main-c-S14-D-arch-search.png"
+  },
+  "c-S14-D-arch-fold": {
+   "id": "c-S14-D-arch-fold",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCH",
+     "del": "Delete",
+     "restore": "Restore"
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-D-arch-fold.png"
+  },
+  "C14-D-errors": {
+   "id": "C14-D-errors",
+   "v": []
+  },
+  "c-S19-D-0-fixture": {
+   "id": "c-S19-D-0-fixture",
+   "scen": "S19",
+   "desc": "notes on 3, 5, 6, 7 and 9 Nov and a day title on 5 Nov, through the Inputs calendar; the loaded week",
+   "v": {
+    "loadedWeek": "13/07/2026",
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [
+       "RD note 5 Nov"
+      ],
+      "title": "RD title 5 Nov"
+     },
+     "2026-11-06": {
+      "notes": [
+       "RD note 6 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [
+       "RD note 7 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "main-c-S19-D-0-fixture.png"
+  },
+  "c-S19-D-1-older-first-press": {
+   "id": "c-S19-D-1-older-first-press",
+   "scen": "S19",
+   "desc": "Clear old clutter: Older than 7 Nov, first press (count named)",
+   "v": {
+    "btn": "Tap again to clear 4 items",
+    "toast": ""
+   },
+   "pic": "main-c-S19-D-1-older-first-press.png"
+  },
+  "c-S19-D-2-mode-change-disarms": {
+   "id": "c-S19-D-2-mode-change-disarms",
+   "scen": "S19",
+   "desc": "change Period mode while armed: disarms?",
+   "v": {
+    "afterMode": {
+     "btn": "Clear old clutter…",
+     "dis": false
+    },
+    "backToBefore": {
+     "btn": "Clear old clutter…",
+     "dis": false,
+     "date": "2026-11-07"
+    }
+   },
+   "pic": "main-c-S19-D-2-mode-change-disarms.png"
+  },
+  "c-S19-D-3-older-confirm": {
+   "id": "c-S19-D-3-older-confirm",
+   "scen": "S19",
+   "desc": "arm again (Older than 7 Nov) and confirm",
+   "v": {
+    "armed": "Tap again to clear 4 items",
+    "btn": "Clear old clutter…",
+    "toast": "Cleared 4 items",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S19-D-3-older-confirm.png"
+  },
+  "c-S19-D-4-calendar-after-older": {
+   "id": "c-S19-D-4-calendar-after-older",
+   "scen": "S19",
+   "desc": "Inputs calendar after the clear: each day",
+   "v": {
+    "cal": {
+     "2026-11-03": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-06": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [
+       "RD note 7 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    },
+    "schedLen": 17284,
+    "same": true
+   },
+   "pic": "main-c-S19-D-4-calendar-after-older.png"
+  },
+  "c-S19-D-5-reseed": {
+   "id": "c-S19-D-5-reseed",
+   "scen": "S19",
+   "desc": "notes put back on every day (fixture for the range pass)",
+   "v": {
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [
+       "RD note 5 Nov"
+      ],
+      "title": "RD title 5 Nov"
+     },
+     "2026-11-06": {
+      "notes": [
+       "RD note 6 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [
+       "RD note 7 Nov",
+       "RD note 7 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov",
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "main-c-S19-D-5-reseed.png"
+  },
+  "c-S19-D-6-range-first-press": {
+   "id": "c-S19-D-6-range-first-press",
+   "scen": "S19",
+   "desc": "Clear old clutter: A date range 5-7 Nov, first press",
+   "v": {
+    "foot": "Thu 5 Nov 26 to Sat 7 Nov 26",
+    "btn": "Tap again to clear 5 items",
+    "toast": ""
+   },
+   "pic": "main-c-S19-D-6-range-first-press.png"
+  },
+  "c-S19-D-7-range-confirm": {
+   "id": "c-S19-D-7-range-confirm",
+   "scen": "S19",
+   "desc": "confirm the range clear",
+   "v": {
+    "btn": "Clear old clutter…",
+    "toast": "Cleared 5 items",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S19-D-7-range-confirm.png"
+  },
+  "c-S19-D-8-calendar-after-range": {
+   "id": "c-S19-D-8-calendar-after-range",
+   "scen": "S19",
+   "desc": "Inputs calendar after the range clear: each day",
+   "v": {
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-06": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov",
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "main-c-S19-D-8-calendar-after-range.png"
+  },
+  "c-S19-D-9-edit-history": {
+   "id": "c-S19-D-9-edit-history",
+   "scen": "S19",
+   "desc": "Clear edit history: specific date 8 Nov (entries made today): count, confirm",
+   "v": {
+    "armed": "Tap again to clear 19 entries",
+    "btn": "Clear edit history…",
+    "toast": "Cleared 19 entries",
+    "undoBefore": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "undoAfter": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S19-D-9-edit-history.png"
+  },
+  "c-S19-D-10-history-schedule-same": {
+   "id": "c-S19-D-10-history-schedule-same",
+   "scen": "S19",
+   "desc": "schedule unchanged by the history clear; does Undo offer it?",
+   "v": {
+    "schedSame": true,
+    "schedLen": 17284,
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S19-D-10-history-schedule-same.png"
+  },
+  "c-S19-D-11-undo-press": {
+   "id": "c-S19-D-11-undo-press",
+   "scen": "S19",
+   "desc": "press Undo (if enabled): what it takes back",
+   "v": {
+    "wasDisabled": false,
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [
+       "RD note 5 Nov"
+      ],
+      "title": "RD title 5 Nov"
+     },
+     "2026-11-06": {
+      "notes": [
+       "RD note 6 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [
+       "RD note 7 Nov",
+       "RD note 7 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov",
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "main-c-S19-D-11-undo-press.png"
+  },
+  "C19-D-errors": {
+   "id": "C19-D-errors",
+   "v": []
+  }
+ },
+ "branch": {
+  "c-S14-D-roster-cat": {
+   "id": "c-S14-D-roster-cat",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-D-roster-cat.png"
+  },
+  "c-S14-D-roster-quals": {
+   "id": "c-S14-D-roster-quals",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "reopened": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    }
+   },
+   "pic": "branch-c-S14-D-roster-quals.png"
+  },
+  "c-S14-D-roster-search": {
+   "id": "c-S14-D-roster-search",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-D-roster-search.png"
+  },
+  "c-S14-D-roster-fold": {
+   "id": "c-S14-D-roster-fold",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": true
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-D-roster-fold.png"
+  },
+  "c-S14-D-arch-cat": {
+   "id": "c-S14-D-arch-cat",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-D-arch-cat.png"
+  },
+  "c-S14-D-arch-quals": {
+   "id": "c-S14-D-arch-quals",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": false,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    },
+    "reopened": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCH",
+     "del": "Delete",
+     "restore": "Restore"
+    }
+   },
+   "pic": "branch-c-S14-D-arch-quals.png"
+  },
+  "c-S14-D-arch-search": {
+   "id": "c-S14-D-arch-search",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": false,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    },
+    "reopened": {
+     "listOpen": true,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    }
+   },
+   "pic": "branch-c-S14-D-arch-search.png"
+  },
+  "c-S14-D-arch-fold": {
+   "id": "c-S14-D-arch-fold",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCH",
+     "del": "Delete",
+     "restore": "Restore"
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-D-arch-fold.png"
+  },
+  "C14-D-errors": {
+   "id": "C14-D-errors",
+   "v": []
+  },
+  "c-S19-D-0-fixture": {
+   "id": "c-S19-D-0-fixture",
+   "scen": "S19",
+   "desc": "notes on 3, 5, 6, 7 and 9 Nov and a day title on 5 Nov, through the Inputs calendar; the loaded week",
+   "v": {
+    "loadedWeek": "13/07/2026",
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [
+       "RD note 5 Nov"
+      ],
+      "title": "RD title 5 Nov"
+     },
+     "2026-11-06": {
+      "notes": [
+       "RD note 6 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [
+       "RD note 7 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "branch-c-S19-D-0-fixture.png"
+  },
+  "c-S19-D-1-older-first-press": {
+   "id": "c-S19-D-1-older-first-press",
+   "scen": "S19",
+   "desc": "Clear old clutter: Older than 7 Nov, first press (count named)",
+   "v": {
+    "btn": "Tap again to clear 4 items",
+    "toast": ""
+   },
+   "pic": "branch-c-S19-D-1-older-first-press.png"
+  },
+  "c-S19-D-2-mode-change-disarms": {
+   "id": "c-S19-D-2-mode-change-disarms",
+   "scen": "S19",
+   "desc": "change Period mode while armed: disarms?",
+   "v": {
+    "afterMode": {
+     "btn": "Clear old clutter…",
+     "dis": false
+    },
+    "backToBefore": {
+     "btn": "Clear old clutter…",
+     "dis": false,
+     "date": "2026-11-07"
+    }
+   },
+   "pic": "branch-c-S19-D-2-mode-change-disarms.png"
+  },
+  "c-S19-D-3-older-confirm": {
+   "id": "c-S19-D-3-older-confirm",
+   "scen": "S19",
+   "desc": "arm again (Older than 7 Nov) and confirm",
+   "v": {
+    "armed": "Tap again to clear 4 items",
+    "btn": "Clear old clutter…",
+    "toast": "Cleared 4 items",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S19-D-3-older-confirm.png"
+  },
+  "c-S19-D-4-calendar-after-older": {
+   "id": "c-S19-D-4-calendar-after-older",
+   "scen": "S19",
+   "desc": "Inputs calendar after the clear: each day",
+   "v": {
+    "cal": {
+     "2026-11-03": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-06": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [
+       "RD note 7 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    },
+    "schedLen": 17284,
+    "same": true
+   },
+   "pic": "branch-c-S19-D-4-calendar-after-older.png"
+  },
+  "c-S19-D-5-reseed": {
+   "id": "c-S19-D-5-reseed",
+   "scen": "S19",
+   "desc": "notes put back on every day (fixture for the range pass)",
+   "v": {
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [
+       "RD note 5 Nov"
+      ],
+      "title": "RD title 5 Nov"
+     },
+     "2026-11-06": {
+      "notes": [
+       "RD note 6 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [
+       "RD note 7 Nov",
+       "RD note 7 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov",
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "branch-c-S19-D-5-reseed.png"
+  },
+  "c-S19-D-6-range-first-press": {
+   "id": "c-S19-D-6-range-first-press",
+   "scen": "S19",
+   "desc": "Clear old clutter: A date range 5-7 Nov, first press",
+   "v": {
+    "foot": "Thu 5 Nov 26 to Sat 7 Nov 26",
+    "btn": "Tap again to clear 5 items",
+    "toast": ""
+   },
+   "pic": "branch-c-S19-D-6-range-first-press.png"
+  },
+  "c-S19-D-7-range-confirm": {
+   "id": "c-S19-D-7-range-confirm",
+   "scen": "S19",
+   "desc": "confirm the range clear",
+   "v": {
+    "btn": "Clear old clutter…",
+    "toast": "Cleared 5 items",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S19-D-7-range-confirm.png"
+  },
+  "c-S19-D-8-calendar-after-range": {
+   "id": "c-S19-D-8-calendar-after-range",
+   "scen": "S19",
+   "desc": "Inputs calendar after the range clear: each day",
+   "v": {
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-06": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov",
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "branch-c-S19-D-8-calendar-after-range.png"
+  },
+  "c-S19-D-9-edit-history": {
+   "id": "c-S19-D-9-edit-history",
+   "scen": "S19",
+   "desc": "Clear edit history: specific date 8 Nov (entries made today): count, confirm",
+   "v": {
+    "armed": "Tap again to clear 19 entries",
+    "btn": "Clear edit history…",
+    "toast": "Cleared 19 entries",
+    "undoBefore": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "undoAfter": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S19-D-9-edit-history.png"
+  },
+  "c-S19-D-10-history-schedule-same": {
+   "id": "c-S19-D-10-history-schedule-same",
+   "scen": "S19",
+   "desc": "schedule unchanged by the history clear; does Undo offer it?",
+   "v": {
+    "schedSame": true,
+    "schedLen": 17284,
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S19-D-10-history-schedule-same.png"
+  },
+  "c-S19-D-11-undo-press": {
+   "id": "c-S19-D-11-undo-press",
+   "scen": "S19",
+   "desc": "press Undo (if enabled): what it takes back",
+   "v": {
+    "wasDisabled": false,
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [
+       "RD note 5 Nov"
+      ],
+      "title": "RD title 5 Nov"
+     },
+     "2026-11-06": {
+      "notes": [
+       "RD note 6 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [
+       "RD note 7 Nov",
+       "RD note 7 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov",
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "branch-c-S19-D-11-undo-press.png"
+  },
+  "C19-D-errors": {
+   "id": "C19-D-errors",
+   "v": []
+  }
+ }
+}

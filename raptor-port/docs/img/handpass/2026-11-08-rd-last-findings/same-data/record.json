@@ -1,0 +1,1110 @@
+{
+ "desk-data-default": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-wipe-on": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-wipe-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-wipe-before": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-log-on": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-log-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 32
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 32
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 32
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-data-both-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-errs": {
+  "before": {
+   "page": [],
+   "http": []
+  },
+  "before-access": {
+   "page": [],
+   "http": []
+  },
+  "before-again": {
+   "page": [],
+   "http": []
+  },
+  "before-again-access": {
+   "page": [],
+   "http": []
+  },
+  "after": {
+   "page": [],
+   "http": []
+  },
+  "after-access": {
+   "page": [],
+   "http": []
+  }
+ },
+ "desk-signin": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-access-form": {
+  "before": {
+   "active": "accCs"
+  },
+  "before-again": {
+   "active": "accCs"
+  },
+  "after": {
+   "active": "accCs"
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-access-filled": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-access-long": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-access-sent": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-data-default": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-wipe-on": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-wipe-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-wipe-before": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-log-on": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-log-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 48
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 48
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 48
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-data-both-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-errs": {
+  "before": {
+   "page": [],
+   "http": []
+  },
+  "before-access": {
+   "page": [],
+   "http": []
+  },
+  "before-again": {
+   "page": [],
+   "http": []
+  },
+  "before-again-access": {
+   "page": [],
+   "http": []
+  },
+  "after": {
+   "page": [],
+   "http": []
+  },
+  "after-access": {
+   "page": [],
+   "http": []
+  }
+ },
+ "phone-signin": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-access-form": {
+  "before": {
+   "active": "accCs"
+  },
+  "before-again": {
+   "active": "accCs"
+  },
+  "after": {
+   "active": "accCs"
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-access-filled": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-access-long": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-access-sent": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ }
+}

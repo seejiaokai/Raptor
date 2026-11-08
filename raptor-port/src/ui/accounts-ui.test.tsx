@@ -5,7 +5,7 @@
    picker; these tests pin their ABSENCE, the badge that names the signed-in person, the
    access screens and the walled-off guest view (D204), the Admin tab's waiting badge and the
    Users panel (D166 (1)). Register lines AC10–AC13. */
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
@@ -21,7 +21,7 @@ import { viewerId, roleOf } from '../state/perms'
 import { setPage, BACKPROMPT } from '../state/view'
 import { setDayApproved, setSign, dayApproved } from '../engine/publish'
 import { vi } from 'vitest'
-import { setSaveStatusSource } from './savestatus-source'
+import { setSaveStatusSource, setStorageKept } from './savestatus-source'
 import { Postman } from '../storage/postman'
 import { Whiteboard } from '../storage/whiteboard'
 import { MemoryBackend } from '../storage/memory'
@@ -413,5 +413,48 @@ describe('D1657 — the failed-save band on the sign-in, the access screens and 
       be.failNext(0)
       await signInAs('ad', 'a'); setGuestView(false)
     }
+  })
+})
+
+/* D1901 (8 Nov 26): a browser that keeps nothing gets the "Not kept" band in the same places, the page moved down under
+   it the same way — the room is made for either band. The fresh Opus read of chat 28 found nothing guarding that room:
+   any of these screens could go back to making room for a failed save only and every test still passed. And the access
+   pass reads "Not sent yet" only for a failed save (D1664), never because the browser keeps nothing. */
+describe('D1901 — the "Not kept" band on the sign-in, the access screens, the guest page and the app', () => {
+  const be = new MemoryBackend(), wb = new Whiteboard(), pm = new Postman(be)
+  beforeAll(() => { pm.attach(wb); setSaveStatusSource(pm) })
+  beforeEach(async () => { setStorageKept(false); await act(async () => { notify() }) })
+  afterEach(async () => { setStorageKept(true); await act(async () => { notify() }) })
+  it('the sign-in: the band across the top, the page moved down under it, no Retry', async () => {
+    await act(async () => { resetSession(null); notify() })
+    const band = $('.saveband.is-screen')
+    expect(band, 'the band').toBeTruthy()
+    expect(band.textContent).toContain('Not kept — this browser loses your work on a reload')
+    expect(band.querySelector('button'), 'nothing to retry').toBeNull()
+    expect($('#login').classList.contains('band-up'), 'the page moved down under it').toBe(true)
+  })
+  it('asking for access and the screen after it: the band, the page moved down; the pass in its ordinary words', async () => {
+    await signInAs('nokeep1901@mail')
+    expect($('#accessRequest').classList.contains('band-up')).toBe(true)
+    await type($('#accCs') as HTMLInputElement, 'Keep')
+    await type($('#accSeat') as HTMLSelectElement, 'FCP')
+    await type($('#accCat') as HTMLSelectElement, 'C')
+    await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
+    expect($('#accessWaiting')).toBeTruthy()
+    expect($('#accessWaiting').classList.contains('band-up')).toBe(true)
+    expect($('.saveband.is-screen').textContent).toContain('Not kept')
+    expect($('#accessWaiting .pass-state').textContent, 'not "Not sent yet": nothing failed').toBe('Waiting for an admin')
+    expect($('#accessWaiting .pass-state').classList.contains('unsent')).toBe(false)
+  })
+  it('the guest page and the app: the band the bar last line, the bar making room', async () => {
+    await signInAs('ad', 'a'); setGuestView(true)
+    await signInAs('nokeep1901@mail')
+    const gbar = $('#guestApp .topbar.guestbar')
+    expect(gbar.classList.contains('save-failed'), 'the guest bar makes room').toBe(true)
+    expect(gbar.querySelector('.savestat.nokeep'), 'the band in the guest bar').toBeTruthy()
+    await signInAs('ad', 'a'); setGuestView(false)
+    const bar = document.querySelector('.topbar:not(.guestbar)') as HTMLElement
+    expect(bar.classList.contains('save-failed'), "the app's bar makes room").toBe(true)
+    expect(bar.querySelector('.savestat.nokeep'), "the band in the app's bar").toBeTruthy()
   })
 })

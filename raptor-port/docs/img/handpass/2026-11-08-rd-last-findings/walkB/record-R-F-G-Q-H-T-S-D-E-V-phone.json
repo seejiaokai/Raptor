@@ -1,0 +1,2486 @@
+{
+ "main": {
+  "R01-P-access-screen": {
+   "id": "R01-P-access-screen",
+   "scen": "S20",
+   "desc": "unknown sign-in: access screen, where the caret is, then fill",
+   "v": {
+    "focus": "accCs",
+    "text": "Request access Signed in as rdrequest@example.test You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL CAT Request access Sign out",
+    "cat": "C"
+   },
+   "pic": "main-R01-P-access-screen.png"
+  },
+  "R02-P-long-name": {
+   "id": "R02-P-long-name",
+   "scen": "S20",
+   "desc": "15-character name is refused, 14 accepted",
+   "v": {
+    "e15": "A callsign or name is at most 14 letters — use a short form",
+    "long15": "A callsign or name is at most 14 letters — use a short form",
+    "longAfter": 0
+   },
+   "pic": "main-R02-P-long-name.png"
+  },
+  "R04-P-seat-change": {
+   "id": "R04-P-seat-change",
+   "scen": "S20",
+   "desc": "change Pilot/WSO/Personnel: CAT handling",
+   "v": {
+    "cats": [
+     "Pick…",
+     "OCU",
+     "D",
+     "C",
+     "B",
+     "A",
+     "IW",
+     "FI"
+    ],
+    "gnd": 0,
+    "cat": ""
+   },
+   "pic": "main-R04-P-seat-change.png"
+  },
+  "R05-P-send": {
+   "id": "R05-P-send",
+   "scen": "S20",
+   "desc": "valid request sent",
+   "v": {
+    "text": "TALON Waiting for an admin ABCDEFGHIJKLMN INITIALS RX SEAT Pilot CAT C Request sent An admin approves You're on the schedule Sign out Signed in as rdrequest@example.test RDMATCH added to the roster — set flight and quals on the Quals page"
+   },
+   "pic": "main-R05-P-send.png"
+  },
+  "R-P-abort": {
+   "id": "R-P-abort",
+   "v": null,
+   "err": "pressing #burger: locator.tap: Timeout 6000ms exceeded."
+  },
+  "R-P-errors": {
+   "id": "R-P-errors",
+   "v": []
+  },
+  "F01-P-start": {
+   "id": "F01-P-start",
+   "scen": "S01",
+   "desc": "Leave War November: Required cells",
+   "v": {
+    "cells": {
+     "2026-11-09": "–/–",
+     "2026-11-10": "–/–",
+     "2026-11-11": "–/–",
+     "2026-11-12": "–/–",
+     "2026-11-13": "–/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-F01-P-start.png"
+  },
+  "F02-P-pilot7": {
+   "id": "F02-P-pilot7",
+   "scen": "S01",
+   "desc": "one-date pilot figure 7 on 9 Nov",
+   "v": {
+    "cells": {
+     "2026-11-09": "7/–",
+     "2026-11-10": "–/–",
+     "2026-11-11": "–/–",
+     "2026-11-12": "–/–",
+     "2026-11-13": "–/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the required pilots and WSOs for 9 Nov"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "toast": ""
+   },
+   "pic": "main-F02-P-pilot7.png"
+  },
+  "F03-P-wso3": {
+   "id": "F03-P-wso3",
+   "scen": "S01",
+   "desc": "WSO figure 3 on 9 Nov",
+   "v": {
+    "cells": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "–/–",
+     "2026-11-11": "–/–",
+     "2026-11-12": "–/–",
+     "2026-11-13": "–/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the required pilots and WSOs for 9 Nov"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-F03-P-wso3.png"
+  },
+  "F04-P-run11": {
+   "id": "F04-P-run11",
+   "scen": "S01",
+   "desc": "pilot run of 11 from 10 Nov",
+   "v": {
+    "cells": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a required figure running from 10 Nov"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-F04-P-run11.png"
+  },
+  "F05-P-undo": {
+   "id": "F05-P-undo",
+   "scen": "S01",
+   "desc": "Undo",
+   "v": {
+    "cells": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "–/–",
+     "2026-11-11": "–/–",
+     "2026-11-12": "–/–",
+     "2026-11-13": "–/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the required pilots and WSOs for 9 Nov"
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — a required figure running from 10 Nov"
+     }
+    },
+    "toast": "Undid: a required figure running from 10 Nov"
+   },
+   "pic": "main-F05-P-undo.png"
+  },
+  "F06-P-redo": {
+   "id": "F06-P-redo",
+   "scen": "S01",
+   "desc": "Redo",
+   "v": {
+    "cells": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a required figure running from 10 Nov"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-F06-P-redo.png"
+  },
+  "F07-P-replace-run": {
+   "id": "F07-P-replace-run",
+   "scen": "S01",
+   "desc": "replace the pilot figure on 9 Nov with a run from that date",
+   "v": {
+    "cells": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a required figure running from 9 Nov"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-F07-P-replace-run.png"
+  },
+  "F08-P-undo-undo": {
+   "id": "F08-P-undo-undo",
+   "scen": "S01",
+   "desc": "Undo twice",
+   "v": {
+    "a": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "b": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "–/–",
+     "2026-11-11": "–/–",
+     "2026-11-12": "–/–",
+     "2026-11-13": "–/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the required pilots and WSOs for 9 Nov"
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — a required figure running from 10 Nov"
+     }
+    }
+   },
+   "pic": "main-F08-P-undo-undo.png"
+  },
+  "F09-P-redo-redo": {
+   "id": "F09-P-redo-redo",
+   "scen": "S01",
+   "desc": "Redo twice then reload (R)",
+   "v": {
+    "a": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "afterReload": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    }
+   },
+   "pic": "main-F09-P-redo-redo.png"
+  },
+  "F10-P-days-window": {
+   "id": "F10-P-days-window",
+   "scen": "S01",
+   "desc": "Days window: set Thursday 12 Nov to no-fly, then Undo, Redo",
+   "v": {
+    "month": "November 2026",
+    "a": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "NF/NF",
+     "2026-11-13": "11/–"
+    },
+    "b": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "c": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "NF/NF",
+     "2026-11-13": "11/–"
+    },
+    "cls": "nf"
+   },
+   "pic": "main-F10-P-days-window.png"
+  },
+  "F11-P-store": {
+   "id": "F11-P-store",
+   "scen": "S01",
+   "desc": "store key shapes",
+   "v": {
+    "ID/ID": 15,
+    "ID/bal:ID:LVE": 1,
+    "ID/bal:ammo:LVE": 1,
+    "ID/bal:bane:CCL": 1,
+    "ID/bal:bane:CL": 1,
+    "ID/bal:bane:EL": 1,
+    "ID/bal:bane:FCL": 1,
+    "ID/bal:bane:LVE": 1,
+    "ID/bal:bane:PL": 1,
+    "ID/bal:bapster:LVE": 1,
+    "ID/bal:beams:CCL": 1,
+    "ID/bal:beams:LVE": 1,
+    "ID/bal:boosh:LVE": 1,
+    "ID/bal:bruise:LVE": 1,
+    "ID/bal:dice:LVE": 1,
+    "ID/bal:dirty:CCL": 1,
+    "ID/bal:dirty:LVE": 1,
+    "ID/bal:divot:CCL": 1,
+    "ID/bal:divot:LVE": 1,
+    "ID/bal:dj:CCL": 1,
+    "ID/bal:dj:LVE": 1,
+    "ID/bal:fantom:CCL": 1,
+    "ID/bal:fantom:LVE": 1,
+    "ID/bal:freak:LVE": 1,
+    "ID/bal:gizmo:LVE": 1,
+    "ID/bal:glass:CCL": 1,
+    "ID/bal:glass:LVE": 1,
+    "ID/bal:harpoon:LVE": 1,
+    "ID/bal:ignite:CCL": 1,
+    "ID/bal:ignite:LVE": 1,
+    "ID/bal:mamba:LVE": 1,
+    "ID/bal:nact:LVE": 1,
+    "ID/bal:nasty:LVE": 1,
+    "ID/bal:pain:CCL": 1,
+    "ID/bal:pain:LVE": 1,
+    "ID/bal:pike:LVE": 1,
+    "ID/bal:plasma:CCL": 1,
+    "ID/bal:plasma:LVE": 1,
+    "ID/bal:prism:LVE": 1,
+    "ID/bal:prowler:LVE": 1,
+    "ID/bal:psy:LVE": 1,
+    "ID/bal:razer:CCL": 1,
+    "ID/bal:razer:LVE": 1,
+    "ID/bal:rocky:LVE": 1,
+    "ID/bal:salsa:LVE": 1,
+    "ID/bal:shaft:CCL": 1,
+    "ID/bal:shaft:LVE": 1,
+    "ID/bal:shrek:CCL": 1,
+    "ID/bal:shrek:LVE": 1,
+    "ID/bal:slash:LVE": 1,
+    "ID/bal:slipway:LVE": 1,
+    "ID/bal:snap:CCL": 1,
+    "ID/bal:snap:LVE": 1,
+    "ID/bal:split:LVE": 1,
+    "ID/bal:stiff:LVE": 1,
+    "ID/bal:stuff:LVE": 1,
+    "ID/bal:sufa:LVE": 1,
+    "ID/bal:taipan:LVE": 1,
+    "ID/bal:torque:LVE": 1,
+    "ID/bal:vegas:LVE": 1,
+    "ID/bal:wolf:CCL": 1,
+    "ID/bal:wolf:LVE": 1,
+    "ID/bal:xray:LVE": 1,
+    "ID/ballock": 1,
+    "ID/current": 1,
+    "ID/flyday:2026-11-09": 1,
+    "ID/flyday:2026-11-12": 1,
+    "ID/flyrun:2026-11-09": 1,
+    "ID/flyrun:2026-11-10": 1,
+    "ID/grade:ID": 1,
+    "ID/grade:ammo": 1,
+    "ID/grade:bane": 1,
+    "ID/grade:bapster": 1,
+    "ID/grade:beams": 1,
+    "ID/grade:boosh": 1,
+    "ID/grade:bruise": 1,
+    "ID/grade:casper": 1,
+    "ID/grade:chaps": 1,
+    "ID/grade:dice": 1,
+    "ID/grade:dirty": 1,
+    "ID/grade:divot": 1,
+    "ID/grade:dj": 1,
+    "ID/grade:drill": 1,
+    "ID/grade:fantom": 1,
+    "ID/grade:freak": 1,
+    "ID/grade:gizmo": 1,
+    "ID/grade:glass": 1,
+    "ID/grade:haowen": 1,
+    "ID/grade:harpoon": 1,
+    "ID/grade:ignite": 1,
+    "ID/grade:mamba": 1,
+    "ID/grade:nact": 1,
+    "ID/grade:nasty": 1,
+    "ID/grade:pain": 1,
+    "ID/grade:pike": 1,
+    "ID/grade:plasma": 1,
+    "ID/grade:prism": 1,
+    "ID/grade:prowler": 1,
+    "ID/grade:psy": 1,
+    "ID/grade:pump": 1,
+    "ID/grade:razer": 1,
+    "ID/grade:riddler": 1,
+    "ID/grade:rocky": 1,
+    "ID/grade:salsa": 1,
+    "ID/grade:shaft": 1,
+    "ID/grade:shrek": 1,
+    "ID/grade:slash": 1,
+    "ID/grade:slipway": 1,
+    "ID/grade:snap": 1,
+    "ID/grade:spanner": 1,
+    "ID/grade:split": 1,
+    "ID/grade:stiff": 1,
+    "ID/grade:stuff": 1,
+    "ID/grade:sufa": 1,
+    "ID/grade:taipan": 1,
+    "ID/grade:torque": 1,
+    "ID/grade:vegas": 1,
+    "ID/grade:wolf": 1,
+    "ID/grade:xray": 1,
+    "ID/ledger:dol-1": 1,
+    "ID/ledger:dol-10": 1,
+    "ID/ledger:dol-11": 1,
+    "ID/ledger:dol-12": 1,
+    "ID/ledger:dol-13": 1,
+    "ID/ledger:dol-2": 1,
+    "ID/ledger:dol-3": 1,
+    "ID/ledger:dol-4": 1,
+    "ID/ledger:dol-5": 1,
+    "ID/ledger:dol-6": 1,
+    "ID/ledger:dol-7": 1,
+    "ID/ledger:dol-8": 1,
+    "ID/ledger:dol-9": 1,
+    "ID/ledger:l1": 1,
+    "ID/ledger:l10": 1,
+    "ID/ledger:l2": 1,
+    "ID/ledger:l3": 1,
+    "ID/ledger:l4": 1,
+    "ID/ledger:l5": 1,
+    "ID/ledger:l6": 1,
+    "ID/ledger:l7": 1,
+    "ID/ledger:l8": 1,
+    "ID/ledger:l9": 1,
+    "ID/ledger:walk-2": 1,
+    "ID/ledger:walk-3": 1,
+    "ID/opening:ID:annual": 1,
+    "ID/opening:ID:oil": 1,
+    "ID/opening:ammo:annual": 1,
+    "ID/opening:ammo:ccl": 1,
+    "ID/opening:ammo:oil": 1,
+    "ID/opening:bruise:annual": 1,
+    "ID/opening:bruise:oil": 1,
+    "ID/opening:casper:annual": 1,
+    "ID/opening:casper:oil": 1,
+    "ID/opening:dirty:annual": 1,
+    "ID/opening:dirty:ccl": 1,
+    "ID/opening:dirty:fcl": 1,
+    "ID/opening:divot:annual": 1,
+    "ID/opening:divot:oil": 1,
+    "ID/opening:dj:annual": 1,
+    "ID/opening:dj:oil": 1,
+    "ID/opening:harpoon:annual": 1,
+    "ID/opening:harpoon:oil": 1,
+    "ID/opening:ignite:annual": 1,
+    "ID/opening:ignite:el": 1,
+    "ID/opening:pain:annual": 1,
+    "ID/opening:pain:oil": 1,
+    "ID/opening:pike:annual": 1,
+    "ID/opening:pike:oil": 1,
+    "ID/opening:prowler:annual": 1,
+    "ID/opening:prowler:oil": 1,
+    "ID/opening:rocky:annual": 1,
+    "ID/opening:rocky:oil": 1,
+    "ID/opening:slash:annual": 1,
+    "ID/opening:slash:oil": 1,
+    "ID/opening:slipway:annual": 1,
+    "ID/opening:slipway:ccl": 1,
+    "ID/opening:slipway:oil": 1,
+    "ID/opening:wolf:annual": 1,
+    "ID/opening:wolf:oil": 1,
+    "ID/opening:wolf:pl": 1,
+    "ID/profile:ignite": 1,
+    "ID/rec:y2026:seed1": 1,
+    "ID/rec:y2026:seed2": 1,
+    "ID/rec:y2026:seed3": 1,
+    "ID/rec:y2026:seed4": 1,
+    "ID/rec:y2026:seed5": 1,
+    "ID/rec:y2026:seed6": 1,
+    "ID/rec:y2026:seed7": 1,
+    "ID/rec:y2026:seed8": 1,
+    "ID/rec:y2026:seed9": 1,
+    "ID/rec:y2026:walk-1": 1,
+    "ID/rec:y2026:walk-m5a-1": 1,
+    "ID/rec:y2026:walk-m5a-2": 1,
+    "ID/rec:y2026:walk-m5a-3": 1,
+    "ID/rec:y2026:walk-m5a-4": 1,
+    "ID/rec:y2026:walk-m5a-5": 1,
+    "ID/rec:y2026:walk-m5a-6": 1,
+    "ID/rec:y2026:walk-m5a-7": 1,
+    "ID/rec:y2027:seed10": 1,
+    "ID/rec:y2027:seed11": 1,
+    "ID/rec:y2027:seed12": 1,
+    "ID/rec:y2027:seed13": 1,
+    "ID/rec:y2027:seed14": 1,
+    "ID/schema": 1,
+    "ID/war:y2026": 1,
+    "ID/war:y2027": 1,
+    "__legacy__/done": 1,
+    "__legacy__/started": 1,
+    "changes/ID-0": 2,
+    "changes/ID-1": 2,
+    "changes/ID-10": 1,
+    "changes/ID-2": 2,
+    "changes/ID-3": 2,
+    "changes/ID-4": 1,
+    "changes/ID-5": 1,
+    "changes/ID-6": 1,
+    "changes/ID-7": 1,
+    "changes/ID-8": 1,
+    "changes/ID-9": 1,
+    "inputs/ID": 52,
+    "people/ID": 2,
+    "people/ammo": 1,
+    "people/badger": 1,
+    "people/bane": 1,
+    "people/bapster": 1,
+    "people/beams": 1,
+    "people/boosh": 1,
+    "people/bruise": 1,
+    "people/bullet": 1,
+    "people/cards": 1,
+    "people/casper": 1,
+    "people/chaps": 1,
+    "people/dice": 1,
+    "people/dirty": 1,
+    "people/divot": 1,
+    "people/dj": 1,
+    "people/drill": 1,
+    "people/fantom": 1,
+    "people/freak": 1,
+    "people/gizmo": 1,
+    "people/glass": 1,
+    "people/haowen": 1,
+    "people/harpoon": 1,
+    "people/ignite": 1,
+    "people/ipman": 1,
+    "people/krait": 1,
+    "people/mamba": 1,
+    "people/nact": 1,
+    "people/nasty": 1,
+    "people/nick": 1,
+    "people/pain": 1,
+    "people/pike": 1,
+    "people/plasma": 1,
+    "people/prism": 1,
+    "people/prowler": 1,
+    "people/psy": 1,
+    "people/pump": 1,
+    "people/razer": 1,
+    "people/riddler": 1,
+    "people/rocky": 1,
+    "people/romeo": 1,
+    "people/salsa": 1,
+    "people/shaft": 1,
+    "people/shrek": 1,
+    "people/slash": 1,
+    "people/slipway": 1,
+    "people/snap": 1,
+    "people/spanner": 1,
+    "people/split": 1,
+    "people/stiff": 1,
+    "people/stuff": 1,
+    "people/sufa": 1,
+    "people/taipan": 1,
+    "people/torque": 1,
+    "people/vegas": 1,
+    "people/vinci": 1,
+    "people/waldo": 1,
+    "people/wolf": 1,
+    "people/xray": 1,
+    "people/yeti": 1
+   },
+   "pic": "main-F11-P-store.png"
+  },
+  "F-P-errors": {
+   "id": "F-P-errors",
+   "v": []
+  },
+  "G01-P-guest-on": {
+   "id": "G01-P-guest-on",
+   "scen": "S10",
+   "desc": "Guest view switch on",
+   "v": {
+    "on": true,
+    "toast": "People waiting can now view the schedule",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-G01-P-guest-on.png"
+  },
+  "G02-P-guest-undo": {
+   "id": "G02-P-guest-undo",
+   "scen": "S10",
+   "desc": "Undo, Redo",
+   "v": {
+    "a": false,
+    "b": true,
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-G02-P-guest-undo.png"
+  },
+  "G03-P-guest-reload": {
+   "id": "G03-P-guest-reload",
+   "scen": "S10",
+   "desc": "reload keeps it",
+   "v": {
+    "on": true
+   },
+   "pic": "main-G03-P-guest-reload.png"
+  },
+  "G-P-abort": {
+   "id": "G-P-abort",
+   "v": null,
+   "err": "pressing .adm-cat:has-text(\"Squadron config\"): locator.tap: Timeout 6000ms exceeded."
+  },
+  "G-P-errors": {
+   "id": "G-P-errors",
+   "v": []
+  },
+  "Q01-P-start": {
+   "id": "Q01-P-start",
+   "scen": "S03",
+   "desc": "Quals open",
+   "v": {
+    "ace": " ¦ Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-Q01-P-start.png"
+  },
+  "Q02-P-edit-flight": {
+   "id": "Q02-P-edit-flight",
+   "scen": "S03",
+   "desc": "Edit on, Ace flight set to \"ZZ\", Save",
+   "v": {
+    "ace": " ¦ Ace ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "toast": "Quals saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — Ace’s flight"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-Q02-P-edit-flight.png"
+  },
+  "Q03-P-undo-redo": {
+   "id": "Q03-P-undo-redo",
+   "scen": "S03",
+   "desc": "Undo, Redo",
+   "v": {
+    "a": " ¦ Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "b": " ¦ Ace ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — Ace’s flight"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-Q03-P-undo-redo.png"
+  },
+  "Q04-P-rename": {
+   "id": "Q04-P-rename",
+   "scen": "S03",
+   "desc": "rename Ace to AceX on Quals (callsign box), Save; reload",
+   "v": {
+    "a": " ¦ AceX ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "afterReload": " ¦ AceX ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "old": null
+   },
+   "pic": "main-Q04-P-rename.png"
+  },
+  "Q-P-errors": {
+   "id": "Q-P-errors",
+   "v": []
+  },
+  "H01-P-first-admin-bell": {
+   "id": "H01-P-first-admin-bell",
+   "scen": "S09",
+   "desc": "admin who archived: bell",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ],
+    "toast": "RDPOST archived — his sign-in is suspended"
+   },
+   "pic": "main-H01-P-first-admin-bell.png"
+  },
+  "H02-P-second-admin-bell": {
+   "id": "H02-P-second-admin-bell",
+   "scen": "S09",
+   "desc": "second admin: bell lines (posting notice)",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-H02-P-second-admin-bell.png"
+  },
+  "H03-P-read-one": {
+   "id": "H03-P-read-one",
+   "scen": "S09",
+   "desc": "tap one line",
+   "v": {
+    "none": true
+   },
+   "pic": "main-H03-P-read-one.png"
+  },
+  "H04-P-mark-all": {
+   "id": "H04-P-mark-all",
+   "scen": "S09",
+   "desc": "Mark all read, then reload: stays read",
+   "v": {
+    "a": [
+     "Nothing new"
+    ],
+    "afterReload": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-H04-P-mark-all.png"
+  },
+  "H05-P-changes-window": {
+   "id": "H05-P-changes-window",
+   "scen": "S08",
+   "desc": "changes window, Mark all as seen",
+   "v": {
+    "before": "1",
+    "had": "enabled",
+    "after": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-H05-P-changes-window.png"
+  },
+  "H-P-errors": {
+   "id": "H-P-errors",
+   "v": []
+  },
+  "T01-P-write-in-tab1": {
+   "id": "T01-P-write-in-tab1",
+   "scen": "S11",
+   "desc": "tab 1: change RDTWOA sign-in",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOA’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa1@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-T01-P-write-in-tab1.png"
+  },
+  "T02-P-stale-write-tab2": {
+   "id": "T02-P-stale-write-tab2",
+   "scen": "S11",
+   "desc": "tab 2 (stale): change RDTWOB sign-in",
+   "v": {
+    "before": "RDTWOA rdtwoa@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOB’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDTWOB": "RDTWOB rdtwob2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-T02-P-stale-write-tab2.png"
+  },
+  "T03-P-stale-same-record": {
+   "id": "T03-P-stale-same-record",
+   "scen": "S11",
+   "desc": "tab 2 (stale): change RDTWOA too (same record)",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOA’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDTWOB": "RDTWOB rdtwob2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-T03-P-stale-same-record.png"
+  },
+  "T04-P-reload-both": {
+   "id": "T04-P-reload-both",
+   "scen": "S11",
+   "desc": "reload both tabs",
+   "v": {
+    "tab1": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 63",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDTWOA": "RDTWOA rdtwoa2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+     "row RDTWOB": "RDTWOB rdtwob2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "tab2": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 63",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDTWOA": "RDTWOA rdtwoa2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+     "row RDTWOB": "RDTWOB rdtwob2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    }
+   },
+   "pic": "main-T04-P-reload-both.png"
+  },
+  "T-P-errors": {
+   "id": "T-P-errors",
+   "v": []
+  },
+  "S01-P-band-after-add": {
+   "id": "S01-P-band-after-add",
+   "scen": "S07",
+   "desc": "add a person with sign-in under ?savefail",
+   "v": {
+    "toast": "RDFAIL added — rdfail@example.test can sign in now",
+    "bar": "Not saved — keep this page openRetry | RDFAIL added — rdfail@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 62",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDFAIL": "RDFAIL rdfail@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "band": "Not saved — keep this page open Retry"
+   },
+   "pic": "main-S01-P-band-after-add.png"
+  },
+  "S02-P-edit-fail": {
+   "id": "S02-P-edit-fail",
+   "scen": "S07",
+   "desc": "edit sign-in, then Undo / Redo with the band up",
+   "v": {
+    "a": {
+     "toast": "Saved",
+     "bar": "Not saved — keep this page openRetry | Saved",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — RDFAIL’s sign-in name"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 62",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDFAIL": "RDFAIL rdfail2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "b": "RDFAIL rdfail@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "c": "RDFAIL rdfail2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-S02-P-edit-fail.png"
+  },
+  "S03-P-retry": {
+   "id": "S03-P-retry",
+   "scen": "S07",
+   "desc": "Retry keeps failing",
+   "v": {
+    "had": 1,
+    "band": "Not saved — keep this page open Retry"
+   },
+   "pic": "main-S03-P-retry.png"
+  },
+  "S04-P-guest-switch": {
+   "id": "S04-P-guest-switch",
+   "scen": "S07",
+   "desc": "settings edit (Guest view) under savefail",
+   "v": {
+    "on": true,
+    "band": "Not saved — keep this page open Retry",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-S04-P-guest-switch.png"
+  },
+  "S05-P-reload-lost": {
+   "id": "S05-P-reload-lost",
+   "scen": "S07",
+   "desc": "reload without the switch: nothing kept",
+   "v": {
+    "rdfail": null,
+    "guest": false
+   },
+   "pic": "main-S05-P-reload-lost.png"
+  },
+  "S06-P-request-notsent": {
+   "id": "S06-P-request-notsent",
+   "scen": "S07",
+   "desc": "request under savefail: Not sent yet",
+   "v": {
+    "text": "Not saved — keep this page open Retry TALON Not sent yet RDFREQ INITIALS RF SEAT Pilot CAT C ! Not sent yet An admin approves You're on the schedule Sign out Signed in as rdfailreq@example.test"
+   },
+   "pic": "main-S06-P-request-notsent.png"
+  },
+  "S-P-errors": {
+   "id": "S-P-errors",
+   "v": []
+  },
+  "D-P-abort": {
+   "id": "D-P-abort",
+   "v": null,
+   "err": "pressing .adm-cat:has-text(\"Data\"): locator.tap: Timeout 6000ms exceeded."
+  },
+  "D-P-errors": {
+   "id": "D-P-errors",
+   "v": []
+  },
+  "E01-P-admin-undo-before": {
+   "id": "E01-P-admin-undo-before",
+   "scen": "S21",
+   "desc": "admin: Undo state",
+   "v": {
+    "undo": {
+     "dis": true,
+     "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+    },
+    "redo": {
+     "dis": true,
+     "t": "Redo"
+    }
+   },
+   "pic": "main-E01-P-admin-undo-before.png"
+  },
+  "E02-P-member-nav": {
+   "id": "E02-P-member-nav",
+   "scen": "S21",
+   "desc": "member: pages and Undo",
+   "v": {
+    "nav": [
+     "editsched",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help",
+     "admin",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help"
+    ],
+    "undo": {
+     "undo": null,
+     "redo": null
+    },
+    "page": "viewsched"
+   },
+   "pic": "main-E02-P-member-nav.png"
+  },
+  "E03-P-member-quals": {
+   "id": "E03-P-member-quals",
+   "scen": "S21",
+   "desc": "member: Quals edit controls",
+   "v": {
+    "edit": 1,
+    "save": 0,
+    "add": 0
+   },
+   "pic": "main-E03-P-member-quals.png"
+  },
+  "E04-P-member-admin-route": {
+   "id": "E04-P-member-admin-route",
+   "scen": "S21",
+   "desc": "member: Admin page reachable?",
+   "v": {
+    "r": "admin",
+    "deny": 1,
+    "users": 0,
+    "nav": 1
+   },
+   "pic": "main-E04-P-member-admin-route.png"
+  },
+  "E05-P-new-member": {
+   "id": "E05-P-new-member",
+   "scen": "S21",
+   "desc": "new member signs in: welcome / pages / Undo",
+   "v": {
+    "nav": [
+     "editsched",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help",
+     "admin",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help"
+    ],
+    "welcome": 0,
+    "undo": {
+     "undo": null,
+     "redo": null
+    }
+   },
+   "pic": "main-E05-P-new-member.png"
+  },
+  "E-P-errors": {
+   "id": "E-P-errors",
+   "v": []
+  },
+  "V01-P-war-open": {
+   "id": "V01-P-war-open",
+   "scen": "S02",
+   "desc": "Leave War open: approvals count",
+   "v": {
+    "count": "13",
+    "seen": []
+   },
+   "pic": "main-V01-P-war-open.png"
+  },
+  "V02-P-approvals-first": {
+   "id": "V02-P-approvals-first",
+   "scen": "S02",
+   "desc": "first visit to Approvals",
+   "v": {
+    "count": "13",
+    "seen": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-V02-P-approvals-first.png"
+  },
+  "V03-P-approvals-leave-return": {
+   "id": "V03-P-approvals-leave-return",
+   "scen": "S02",
+   "desc": "back to the grid and again; reload",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "afterReload": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "count": "13"
+   },
+   "pic": "main-V03-P-approvals-leave-return.png"
+  },
+  "V04-P-my-leave": {
+   "id": "V04-P-my-leave",
+   "scen": "S02",
+   "desc": "own window: My leave",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff",
+     "raptor:settings/lwseen:stiff"
+    ],
+    "win": "142 TALON ↶ ↷ Grid Approvals 13 Balances OIL VIEW MY LEAVE LVE 17.5 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legen"
+   },
+   "pic": "main-V04-P-my-leave.png"
+  },
+  "V-P-errors": {
+   "id": "V-P-errors",
+   "v": []
+  }
+ },
+ "branch": {
+  "R01-P-access-screen": {
+   "id": "R01-P-access-screen",
+   "scen": "S20",
+   "desc": "unknown sign-in: access screen, where the caret is, then fill",
+   "v": {
+    "focus": "accCs",
+    "text": "Request access Signed in as rdrequest@example.test You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL CAT Request access Sign out",
+    "cat": "C"
+   },
+   "pic": "branch-R01-P-access-screen.png"
+  },
+  "R02-P-long-name": {
+   "id": "R02-P-long-name",
+   "scen": "S20",
+   "desc": "15-character name is refused, 14 accepted",
+   "v": {
+    "e15": "A callsign or name is at most 14 letters — use a short form",
+    "long15": "A callsign or name is at most 14 letters — use a short form",
+    "longAfter": 0
+   },
+   "pic": "branch-R02-P-long-name.png"
+  },
+  "R04-P-seat-change": {
+   "id": "R04-P-seat-change",
+   "scen": "S20",
+   "desc": "change Pilot/WSO/Personnel: CAT handling",
+   "v": {
+    "cats": [
+     "Pick…",
+     "OCU",
+     "D",
+     "C",
+     "B",
+     "A",
+     "IW",
+     "FI"
+    ],
+    "gnd": 0,
+    "cat": ""
+   },
+   "pic": "branch-R04-P-seat-change.png"
+  },
+  "R05-P-send": {
+   "id": "R05-P-send",
+   "scen": "S20",
+   "desc": "valid request sent",
+   "v": {
+    "text": "TALON Waiting for an admin ABCDEFGHIJKLMN INITIALS RX SEAT Pilot CAT C Request sent An admin approves You're on the schedule Sign out Signed in as rdrequest@example.test RDMATCH added to the roster — set flight and quals on the Quals page"
+   },
+   "pic": "branch-R05-P-send.png"
+  },
+  "R-P-abort": {
+   "id": "R-P-abort",
+   "v": null,
+   "err": "pressing #burger: locator.tap: Timeout 6000ms exceeded."
+  },
+  "R-P-errors": {
+   "id": "R-P-errors",
+   "v": []
+  },
+  "F01-P-start": {
+   "id": "F01-P-start",
+   "scen": "S01",
+   "desc": "Leave War November: Required cells",
+   "v": {
+    "cells": {
+     "2026-11-09": "–/–",
+     "2026-11-10": "–/–",
+     "2026-11-11": "–/–",
+     "2026-11-12": "–/–",
+     "2026-11-13": "–/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-F01-P-start.png"
+  },
+  "F02-P-pilot7": {
+   "id": "F02-P-pilot7",
+   "scen": "S01",
+   "desc": "one-date pilot figure 7 on 9 Nov",
+   "v": {
+    "cells": {
+     "2026-11-09": "7/–",
+     "2026-11-10": "–/–",
+     "2026-11-11": "–/–",
+     "2026-11-12": "–/–",
+     "2026-11-13": "–/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the required pilots and WSOs for 9 Nov"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "toast": ""
+   },
+   "pic": "branch-F02-P-pilot7.png"
+  },
+  "F03-P-wso3": {
+   "id": "F03-P-wso3",
+   "scen": "S01",
+   "desc": "WSO figure 3 on 9 Nov",
+   "v": {
+    "cells": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "–/–",
+     "2026-11-11": "–/–",
+     "2026-11-12": "–/–",
+     "2026-11-13": "–/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the required pilots and WSOs for 9 Nov"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-F03-P-wso3.png"
+  },
+  "F04-P-run11": {
+   "id": "F04-P-run11",
+   "scen": "S01",
+   "desc": "pilot run of 11 from 10 Nov",
+   "v": {
+    "cells": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a required figure running from 10 Nov"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-F04-P-run11.png"
+  },
+  "F05-P-undo": {
+   "id": "F05-P-undo",
+   "scen": "S01",
+   "desc": "Undo",
+   "v": {
+    "cells": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "–/–",
+     "2026-11-11": "–/–",
+     "2026-11-12": "–/–",
+     "2026-11-13": "–/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the required pilots and WSOs for 9 Nov"
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — a required figure running from 10 Nov"
+     }
+    },
+    "toast": "Undid: a required figure running from 10 Nov"
+   },
+   "pic": "branch-F05-P-undo.png"
+  },
+  "F06-P-redo": {
+   "id": "F06-P-redo",
+   "scen": "S01",
+   "desc": "Redo",
+   "v": {
+    "cells": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a required figure running from 10 Nov"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-F06-P-redo.png"
+  },
+  "F07-P-replace-run": {
+   "id": "F07-P-replace-run",
+   "scen": "S01",
+   "desc": "replace the pilot figure on 9 Nov with a run from that date",
+   "v": {
+    "cells": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a required figure running from 9 Nov"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-F07-P-replace-run.png"
+  },
+  "F08-P-undo-undo": {
+   "id": "F08-P-undo-undo",
+   "scen": "S01",
+   "desc": "Undo twice",
+   "v": {
+    "a": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "b": {
+     "2026-11-09": "7/3",
+     "2026-11-10": "–/–",
+     "2026-11-11": "–/–",
+     "2026-11-12": "–/–",
+     "2026-11-13": "–/–"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the required pilots and WSOs for 9 Nov"
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — a required figure running from 10 Nov"
+     }
+    }
+   },
+   "pic": "branch-F08-P-undo-undo.png"
+  },
+  "F09-P-redo-redo": {
+   "id": "F09-P-redo-redo",
+   "scen": "S01",
+   "desc": "Redo twice then reload (R)",
+   "v": {
+    "a": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "afterReload": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    }
+   },
+   "pic": "branch-F09-P-redo-redo.png"
+  },
+  "F10-P-days-window": {
+   "id": "F10-P-days-window",
+   "scen": "S01",
+   "desc": "Days window: set Thursday 12 Nov to no-fly, then Undo, Redo",
+   "v": {
+    "month": "November 2026",
+    "a": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "NF/NF",
+     "2026-11-13": "11/–"
+    },
+    "b": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "11/–",
+     "2026-11-13": "11/–"
+    },
+    "c": {
+     "2026-11-09": "9/3",
+     "2026-11-10": "11/–",
+     "2026-11-11": "11/–",
+     "2026-11-12": "NF/NF",
+     "2026-11-13": "11/–"
+    },
+    "cls": "nf"
+   },
+   "pic": "branch-F10-P-days-window.png"
+  },
+  "F11-P-store": {
+   "id": "F11-P-store",
+   "scen": "S01",
+   "desc": "store key shapes",
+   "v": {
+    "ID/ID": 15,
+    "ID/bal:ID:LVE": 1,
+    "ID/bal:ammo:LVE": 1,
+    "ID/bal:bane:CCL": 1,
+    "ID/bal:bane:CL": 1,
+    "ID/bal:bane:EL": 1,
+    "ID/bal:bane:FCL": 1,
+    "ID/bal:bane:LVE": 1,
+    "ID/bal:bane:PL": 1,
+    "ID/bal:bapster:LVE": 1,
+    "ID/bal:beams:CCL": 1,
+    "ID/bal:beams:LVE": 1,
+    "ID/bal:boosh:LVE": 1,
+    "ID/bal:bruise:LVE": 1,
+    "ID/bal:dice:LVE": 1,
+    "ID/bal:dirty:CCL": 1,
+    "ID/bal:dirty:LVE": 1,
+    "ID/bal:divot:CCL": 1,
+    "ID/bal:divot:LVE": 1,
+    "ID/bal:dj:CCL": 1,
+    "ID/bal:dj:LVE": 1,
+    "ID/bal:fantom:CCL": 1,
+    "ID/bal:fantom:LVE": 1,
+    "ID/bal:freak:LVE": 1,
+    "ID/bal:gizmo:LVE": 1,
+    "ID/bal:glass:CCL": 1,
+    "ID/bal:glass:LVE": 1,
+    "ID/bal:harpoon:LVE": 1,
+    "ID/bal:ignite:CCL": 1,
+    "ID/bal:ignite:LVE": 1,
+    "ID/bal:mamba:LVE": 1,
+    "ID/bal:nact:LVE": 1,
+    "ID/bal:nasty:LVE": 1,
+    "ID/bal:pain:CCL": 1,
+    "ID/bal:pain:LVE": 1,
+    "ID/bal:pike:LVE": 1,
+    "ID/bal:plasma:CCL": 1,
+    "ID/bal:plasma:LVE": 1,
+    "ID/bal:prism:LVE": 1,
+    "ID/bal:prowler:LVE": 1,
+    "ID/bal:psy:LVE": 1,
+    "ID/bal:razer:CCL": 1,
+    "ID/bal:razer:LVE": 1,
+    "ID/bal:rocky:LVE": 1,
+    "ID/bal:salsa:LVE": 1,
+    "ID/bal:shaft:CCL": 1,
+    "ID/bal:shaft:LVE": 1,
+    "ID/bal:shrek:CCL": 1,
+    "ID/bal:shrek:LVE": 1,
+    "ID/bal:slash:LVE": 1,
+    "ID/bal:slipway:LVE": 1,
+    "ID/bal:snap:CCL": 1,
+    "ID/bal:snap:LVE": 1,
+    "ID/bal:split:LVE": 1,
+    "ID/bal:stiff:LVE": 1,
+    "ID/bal:stuff:LVE": 1,
+    "ID/bal:sufa:LVE": 1,
+    "ID/bal:taipan:LVE": 1,
+    "ID/bal:torque:LVE": 1,
+    "ID/bal:vegas:LVE": 1,
+    "ID/bal:wolf:CCL": 1,
+    "ID/bal:wolf:LVE": 1,
+    "ID/bal:xray:LVE": 1,
+    "ID/ballock": 1,
+    "ID/current": 1,
+    "ID/flyday:2026-11-09": 1,
+    "ID/flyday:2026-11-12": 1,
+    "ID/flyrun:2026-11-09": 1,
+    "ID/flyrun:2026-11-10": 1,
+    "ID/grade:ID": 1,
+    "ID/grade:ammo": 1,
+    "ID/grade:bane": 1,
+    "ID/grade:bapster": 1,
+    "ID/grade:beams": 1,
+    "ID/grade:boosh": 1,
+    "ID/grade:bruise": 1,
+    "ID/grade:casper": 1,
+    "ID/grade:chaps": 1,
+    "ID/grade:dice": 1,
+    "ID/grade:dirty": 1,
+    "ID/grade:divot": 1,
+    "ID/grade:dj": 1,
+    "ID/grade:drill": 1,
+    "ID/grade:fantom": 1,
+    "ID/grade:freak": 1,
+    "ID/grade:gizmo": 1,
+    "ID/grade:glass": 1,
+    "ID/grade:haowen": 1,
+    "ID/grade:harpoon": 1,
+    "ID/grade:ignite": 1,
+    "ID/grade:mamba": 1,
+    "ID/grade:nact": 1,
+    "ID/grade:nasty": 1,
+    "ID/grade:pain": 1,
+    "ID/grade:pike": 1,
+    "ID/grade:plasma": 1,
+    "ID/grade:prism": 1,
+    "ID/grade:prowler": 1,
+    "ID/grade:psy": 1,
+    "ID/grade:pump": 1,
+    "ID/grade:razer": 1,
+    "ID/grade:riddler": 1,
+    "ID/grade:rocky": 1,
+    "ID/grade:salsa": 1,
+    "ID/grade:shaft": 1,
+    "ID/grade:shrek": 1,
+    "ID/grade:slash": 1,
+    "ID/grade:slipway": 1,
+    "ID/grade:snap": 1,
+    "ID/grade:spanner": 1,
+    "ID/grade:split": 1,
+    "ID/grade:stiff": 1,
+    "ID/grade:stuff": 1,
+    "ID/grade:sufa": 1,
+    "ID/grade:taipan": 1,
+    "ID/grade:torque": 1,
+    "ID/grade:vegas": 1,
+    "ID/grade:wolf": 1,
+    "ID/grade:xray": 1,
+    "ID/ledger:dol-1": 1,
+    "ID/ledger:dol-10": 1,
+    "ID/ledger:dol-11": 1,
+    "ID/ledger:dol-12": 1,
+    "ID/ledger:dol-13": 1,
+    "ID/ledger:dol-2": 1,
+    "ID/ledger:dol-3": 1,
+    "ID/ledger:dol-4": 1,
+    "ID/ledger:dol-5": 1,
+    "ID/ledger:dol-6": 1,
+    "ID/ledger:dol-7": 1,
+    "ID/ledger:dol-8": 1,
+    "ID/ledger:dol-9": 1,
+    "ID/ledger:l1": 1,
+    "ID/ledger:l10": 1,
+    "ID/ledger:l2": 1,
+    "ID/ledger:l3": 1,
+    "ID/ledger:l4": 1,
+    "ID/ledger:l5": 1,
+    "ID/ledger:l6": 1,
+    "ID/ledger:l7": 1,
+    "ID/ledger:l8": 1,
+    "ID/ledger:l9": 1,
+    "ID/ledger:walk-2": 1,
+    "ID/ledger:walk-3": 1,
+    "ID/opening:ID:annual": 1,
+    "ID/opening:ID:oil": 1,
+    "ID/opening:ammo:annual": 1,
+    "ID/opening:ammo:ccl": 1,
+    "ID/opening:ammo:oil": 1,
+    "ID/opening:bruise:annual": 1,
+    "ID/opening:bruise:oil": 1,
+    "ID/opening:casper:annual": 1,
+    "ID/opening:casper:oil": 1,
+    "ID/opening:dirty:annual": 1,
+    "ID/opening:dirty:ccl": 1,
+    "ID/opening:dirty:fcl": 1,
+    "ID/opening:divot:annual": 1,
+    "ID/opening:divot:oil": 1,
+    "ID/opening:dj:annual": 1,
+    "ID/opening:dj:oil": 1,
+    "ID/opening:harpoon:annual": 1,
+    "ID/opening:harpoon:oil": 1,
+    "ID/opening:ignite:annual": 1,
+    "ID/opening:ignite:el": 1,
+    "ID/opening:pain:annual": 1,
+    "ID/opening:pain:oil": 1,
+    "ID/opening:pike:annual": 1,
+    "ID/opening:pike:oil": 1,
+    "ID/opening:prowler:annual": 1,
+    "ID/opening:prowler:oil": 1,
+    "ID/opening:rocky:annual": 1,
+    "ID/opening:rocky:oil": 1,
+    "ID/opening:slash:annual": 1,
+    "ID/opening:slash:oil": 1,
+    "ID/opening:slipway:annual": 1,
+    "ID/opening:slipway:ccl": 1,
+    "ID/opening:slipway:oil": 1,
+    "ID/opening:wolf:annual": 1,
+    "ID/opening:wolf:oil": 1,
+    "ID/opening:wolf:pl": 1,
+    "ID/profile:ignite": 1,
+    "ID/rec:y2026:seed1": 1,
+    "ID/rec:y2026:seed2": 1,
+    "ID/rec:y2026:seed3": 1,
+    "ID/rec:y2026:seed4": 1,
+    "ID/rec:y2026:seed5": 1,
+    "ID/rec:y2026:seed6": 1,
+    "ID/rec:y2026:seed7": 1,
+    "ID/rec:y2026:seed8": 1,
+    "ID/rec:y2026:seed9": 1,
+    "ID/rec:y2026:walk-1": 1,
+    "ID/rec:y2026:walk-m5a-1": 1,
+    "ID/rec:y2026:walk-m5a-2": 1,
+    "ID/rec:y2026:walk-m5a-3": 1,
+    "ID/rec:y2026:walk-m5a-4": 1,
+    "ID/rec:y2026:walk-m5a-5": 1,
+    "ID/rec:y2026:walk-m5a-6": 1,
+    "ID/rec:y2026:walk-m5a-7": 1,
+    "ID/rec:y2027:seed10": 1,
+    "ID/rec:y2027:seed11": 1,
+    "ID/rec:y2027:seed12": 1,
+    "ID/rec:y2027:seed13": 1,
+    "ID/rec:y2027:seed14": 1,
+    "ID/schema": 1,
+    "ID/war:y2026": 1,
+    "ID/war:y2027": 1,
+    "__legacy__/done": 1,
+    "__legacy__/started": 1,
+    "changes/ID-0": 2,
+    "changes/ID-1": 2,
+    "changes/ID-10": 1,
+    "changes/ID-2": 2,
+    "changes/ID-3": 2,
+    "changes/ID-4": 1,
+    "changes/ID-5": 1,
+    "changes/ID-6": 1,
+    "changes/ID-7": 1,
+    "changes/ID-8": 1,
+    "changes/ID-9": 1,
+    "inputs/ID": 52,
+    "people/ID": 2,
+    "people/ammo": 1,
+    "people/badger": 1,
+    "people/bane": 1,
+    "people/bapster": 1,
+    "people/beams": 1,
+    "people/boosh": 1,
+    "people/bruise": 1,
+    "people/bullet": 1,
+    "people/cards": 1,
+    "people/casper": 1,
+    "people/chaps": 1,
+    "people/dice": 1,
+    "people/dirty": 1,
+    "people/divot": 1,
+    "people/dj": 1,
+    "people/drill": 1,
+    "people/fantom": 1,
+    "people/freak": 1,
+    "people/gizmo": 1,
+    "people/glass": 1,
+    "people/haowen": 1,
+    "people/harpoon": 1,
+    "people/ignite": 1,
+    "people/ipman": 1,
+    "people/krait": 1,
+    "people/mamba": 1,
+    "people/nact": 1,
+    "people/nasty": 1,
+    "people/nick": 1,
+    "people/pain": 1,
+    "people/pike": 1,
+    "people/plasma": 1,
+    "people/prism": 1,
+    "people/prowler": 1,
+    "people/psy": 1,
+    "people/pump": 1,
+    "people/razer": 1,
+    "people/riddler": 1,
+    "people/rocky": 1,
+    "people/romeo": 1,
+    "people/salsa": 1,
+    "people/shaft": 1,
+    "people/shrek": 1,
+    "people/slash": 1,
+    "people/slipway": 1,
+    "people/snap": 1,
+    "people/spanner": 1,
+    "people/split": 1,
+    "people/stiff": 1,
+    "people/stuff": 1,
+    "people/sufa": 1,
+    "people/taipan": 1,
+    "people/torque": 1,
+    "people/vegas": 1,
+    "people/vinci": 1,
+    "people/waldo": 1,
+    "people/wolf": 1,
+    "people/xray": 1,
+    "people/yeti": 1
+   },
+   "pic": "branch-F11-P-store.png"
+  },
+  "F-P-errors": {
+   "id": "F-P-errors",
+   "v": []
+  },
+  "G01-P-guest-on": {
+   "id": "G01-P-guest-on",
+   "scen": "S10",
+   "desc": "Guest view switch on",
+   "v": {
+    "on": true,
+    "toast": "People waiting can now view the schedule",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-G01-P-guest-on.png"
+  },
+  "G02-P-guest-undo": {
+   "id": "G02-P-guest-undo",
+   "scen": "S10",
+   "desc": "Undo, Redo",
+   "v": {
+    "a": false,
+    "b": true,
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-G02-P-guest-undo.png"
+  },
+  "G03-P-guest-reload": {
+   "id": "G03-P-guest-reload",
+   "scen": "S10",
+   "desc": "reload keeps it",
+   "v": {
+    "on": true
+   },
+   "pic": "branch-G03-P-guest-reload.png"
+  },
+  "G-P-abort": {
+   "id": "G-P-abort",
+   "v": null,
+   "err": "pressing .adm-cat:has-text(\"Squadron config\"): locator.tap: Timeout 6000ms exceeded."
+  },
+  "G-P-errors": {
+   "id": "G-P-errors",
+   "v": []
+  },
+  "Q01-P-start": {
+   "id": "Q01-P-start",
+   "scen": "S03",
+   "desc": "Quals open",
+   "v": {
+    "ace": " ¦ Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-Q01-P-start.png"
+  },
+  "Q02-P-edit-flight": {
+   "id": "Q02-P-edit-flight",
+   "scen": "S03",
+   "desc": "Edit on, Ace flight set to \"ZZ\", Save",
+   "v": {
+    "ace": " ¦ Ace ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "toast": "Quals saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — Ace’s flight"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-Q02-P-edit-flight.png"
+  },
+  "Q03-P-undo-redo": {
+   "id": "Q03-P-undo-redo",
+   "scen": "S03",
+   "desc": "Undo, Redo",
+   "v": {
+    "a": " ¦ Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "b": " ¦ Ace ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — Ace’s flight"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-Q03-P-undo-redo.png"
+  },
+  "Q04-P-rename": {
+   "id": "Q04-P-rename",
+   "scen": "S03",
+   "desc": "rename Ace to AceX on Quals (callsign box), Save; reload",
+   "v": {
+    "a": " ¦ AceX ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "afterReload": " ¦ AceX ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "old": null
+   },
+   "pic": "branch-Q04-P-rename.png"
+  },
+  "Q-P-errors": {
+   "id": "Q-P-errors",
+   "v": []
+  },
+  "H01-P-first-admin-bell": {
+   "id": "H01-P-first-admin-bell",
+   "scen": "S09",
+   "desc": "admin who archived: bell",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ],
+    "toast": "RDPOST archived — his sign-in is suspended"
+   },
+   "pic": "branch-H01-P-first-admin-bell.png"
+  },
+  "H02-P-second-admin-bell": {
+   "id": "H02-P-second-admin-bell",
+   "scen": "S09",
+   "desc": "second admin: bell lines (posting notice)",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-H02-P-second-admin-bell.png"
+  },
+  "H03-P-read-one": {
+   "id": "H03-P-read-one",
+   "scen": "S09",
+   "desc": "tap one line",
+   "v": {
+    "none": true
+   },
+   "pic": "branch-H03-P-read-one.png"
+  },
+  "H04-P-mark-all": {
+   "id": "H04-P-mark-all",
+   "scen": "S09",
+   "desc": "Mark all read, then reload: stays read",
+   "v": {
+    "a": [
+     "Nothing new"
+    ],
+    "afterReload": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-H04-P-mark-all.png"
+  },
+  "H05-P-changes-window": {
+   "id": "H05-P-changes-window",
+   "scen": "S08",
+   "desc": "changes window, Mark all as seen",
+   "v": {
+    "before": "1",
+    "had": "enabled",
+    "after": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-H05-P-changes-window.png"
+  },
+  "H-P-errors": {
+   "id": "H-P-errors",
+   "v": []
+  },
+  "T01-P-write-in-tab1": {
+   "id": "T01-P-write-in-tab1",
+   "scen": "S11",
+   "desc": "tab 1: change RDTWOA sign-in",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOA’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa1@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-T01-P-write-in-tab1.png"
+  },
+  "T02-P-stale-write-tab2": {
+   "id": "T02-P-stale-write-tab2",
+   "scen": "S11",
+   "desc": "tab 2 (stale): change RDTWOB sign-in",
+   "v": {
+    "before": "RDTWOA rdtwoa@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOB’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDTWOB": "RDTWOB rdtwob2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-T02-P-stale-write-tab2.png"
+  },
+  "T03-P-stale-same-record": {
+   "id": "T03-P-stale-same-record",
+   "scen": "S11",
+   "desc": "tab 2 (stale): change RDTWOA too (same record)",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOA’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDTWOB": "RDTWOB rdtwob2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-T03-P-stale-same-record.png"
+  },
+  "T04-P-reload-both": {
+   "id": "T04-P-reload-both",
+   "scen": "S11",
+   "desc": "reload both tabs",
+   "v": {
+    "tab1": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 63",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDTWOA": "RDTWOA rdtwoa2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+     "row RDTWOB": "RDTWOB rdtwob2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "tab2": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 63",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDTWOA": "RDTWOA rdtwoa2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+     "row RDTWOB": "RDTWOB rdtwob2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    }
+   },
+   "pic": "branch-T04-P-reload-both.png"
+  },
+  "T-P-errors": {
+   "id": "T-P-errors",
+   "v": []
+  },
+  "S01-P-band-after-add": {
+   "id": "S01-P-band-after-add",
+   "scen": "S07",
+   "desc": "add a person with sign-in under ?savefail",
+   "v": {
+    "toast": "RDFAIL added — rdfail@example.test can sign in now",
+    "bar": "Not saved — keep this page openRetry | RDFAIL added — rdfail@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 62",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDFAIL": "RDFAIL rdfail@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "band": "Not saved — keep this page open Retry"
+   },
+   "pic": "branch-S01-P-band-after-add.png"
+  },
+  "S02-P-edit-fail": {
+   "id": "S02-P-edit-fail",
+   "scen": "S07",
+   "desc": "edit sign-in, then Undo / Redo with the band up",
+   "v": {
+    "a": {
+     "toast": "Saved",
+     "bar": "Not saved — keep this page openRetry | Saved",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — RDFAIL’s sign-in name"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 62",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDFAIL": "RDFAIL rdfail2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "b": "RDFAIL rdfail@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "c": "RDFAIL rdfail2@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-S02-P-edit-fail.png"
+  },
+  "S03-P-retry": {
+   "id": "S03-P-retry",
+   "scen": "S07",
+   "desc": "Retry keeps failing",
+   "v": {
+    "had": 1,
+    "band": "Not saved — keep this page open Retry"
+   },
+   "pic": "branch-S03-P-retry.png"
+  },
+  "S04-P-guest-switch": {
+   "id": "S04-P-guest-switch",
+   "scen": "S07",
+   "desc": "settings edit (Guest view) under savefail",
+   "v": {
+    "on": true,
+    "band": "Not saved — keep this page open Retry",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-S04-P-guest-switch.png"
+  },
+  "S05-P-reload-lost": {
+   "id": "S05-P-reload-lost",
+   "scen": "S07",
+   "desc": "reload without the switch: nothing kept",
+   "v": {
+    "rdfail": null,
+    "guest": false
+   },
+   "pic": "branch-S05-P-reload-lost.png"
+  },
+  "S06-P-request-notsent": {
+   "id": "S06-P-request-notsent",
+   "scen": "S07",
+   "desc": "request under savefail: Not sent yet",
+   "v": {
+    "text": "Not saved — keep this page open Retry TALON Not sent yet RDFREQ INITIALS RF SEAT Pilot CAT C ! Not sent yet An admin approves You're on the schedule Sign out Signed in as rdfailreq@example.test"
+   },
+   "pic": "branch-S06-P-request-notsent.png"
+  },
+  "S-P-errors": {
+   "id": "S-P-errors",
+   "v": []
+  },
+  "D-P-abort": {
+   "id": "D-P-abort",
+   "v": null,
+   "err": "pressing .adm-cat:has-text(\"Data\"): locator.tap: Timeout 6000ms exceeded."
+  },
+  "D-P-errors": {
+   "id": "D-P-errors",
+   "v": []
+  },
+  "E01-P-admin-undo-before": {
+   "id": "E01-P-admin-undo-before",
+   "scen": "S21",
+   "desc": "admin: Undo state",
+   "v": {
+    "undo": {
+     "dis": true,
+     "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+    },
+    "redo": {
+     "dis": true,
+     "t": "Redo"
+    }
+   },
+   "pic": "branch-E01-P-admin-undo-before.png"
+  },
+  "E02-P-member-nav": {
+   "id": "E02-P-member-nav",
+   "scen": "S21",
+   "desc": "member: pages and Undo",
+   "v": {
+    "nav": [
+     "editsched",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help",
+     "admin",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help"
+    ],
+    "undo": {
+     "undo": null,
+     "redo": null
+    },
+    "page": "viewsched"
+   },
+   "pic": "branch-E02-P-member-nav.png"
+  },
+  "E03-P-member-quals": {
+   "id": "E03-P-member-quals",
+   "scen": "S21",
+   "desc": "member: Quals edit controls",
+   "v": {
+    "edit": 1,
+    "save": 0,
+    "add": 0
+   },
+   "pic": "branch-E03-P-member-quals.png"
+  },
+  "E04-P-member-admin-route": {
+   "id": "E04-P-member-admin-route",
+   "scen": "S21",
+   "desc": "member: Admin page reachable?",
+   "v": {
+    "r": "admin",
+    "deny": 1,
+    "users": 0,
+    "nav": 1
+   },
+   "pic": "branch-E04-P-member-admin-route.png"
+  },
+  "E05-P-new-member": {
+   "id": "E05-P-new-member",
+   "scen": "S21",
+   "desc": "new member signs in: welcome / pages / Undo",
+   "v": {
+    "nav": [
+     "editsched",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help",
+     "admin",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help"
+    ],
+    "welcome": 0,
+    "undo": {
+     "undo": null,
+     "redo": null
+    }
+   },
+   "pic": "branch-E05-P-new-member.png"
+  },
+  "E-P-errors": {
+   "id": "E-P-errors",
+   "v": []
+  },
+  "V01-P-war-open": {
+   "id": "V01-P-war-open",
+   "scen": "S02",
+   "desc": "Leave War open: approvals count",
+   "v": {
+    "count": "13",
+    "seen": []
+   },
+   "pic": "branch-V01-P-war-open.png"
+  },
+  "V02-P-approvals-first": {
+   "id": "V02-P-approvals-first",
+   "scen": "S02",
+   "desc": "first visit to Approvals",
+   "v": {
+    "count": "13",
+    "seen": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-V02-P-approvals-first.png"
+  },
+  "V03-P-approvals-leave-return": {
+   "id": "V03-P-approvals-leave-return",
+   "scen": "S02",
+   "desc": "back to the grid and again; reload",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "afterReload": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "count": "13"
+   },
+   "pic": "branch-V03-P-approvals-leave-return.png"
+  },
+  "V04-P-my-leave": {
+   "id": "V04-P-my-leave",
+   "scen": "S02",
+   "desc": "own window: My leave",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff",
+     "raptor:settings/lwseen:stiff"
+    ],
+    "win": "142 TALON ↶ ↷ Grid Approvals 13 Balances OIL VIEW MY LEAVE LVE 17.5 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legen"
+   },
+   "pic": "branch-V04-P-my-leave.png"
+  },
+  "V-P-errors": {
+   "id": "V-P-errors",
+   "v": []
+  }
+ }
+}

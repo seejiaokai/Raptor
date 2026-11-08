@@ -1,0 +1,812 @@
+{
+ "main": {
+  "R01-D-access-screen": {
+   "id": "R01-D-access-screen",
+   "scen": "S20",
+   "desc": "unknown sign-in: access screen, where the caret is, then fill",
+   "v": {
+    "focus": "accCs",
+    "text": "Request access Signed in as rdrequest@example.test You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… OCU D C B A IP IR FI Request access Sign out",
+    "cat": "C"
+   },
+   "pic": "main-R01-D-access-screen.png"
+  },
+  "R02-D-long-name": {
+   "id": "R02-D-long-name",
+   "scen": "S20",
+   "desc": "15-character name is refused, 14 accepted",
+   "v": {
+    "e15": "A callsign or name is at most 14 letters — use a short form",
+    "long15": "A callsign or name is at most 14 letters — use a short form",
+    "longAfter": 0
+   },
+   "pic": "main-R02-D-long-name.png"
+  },
+  "R04-D-seat-change": {
+   "id": "R04-D-seat-change",
+   "scen": "S20",
+   "desc": "change Pilot/WSO/Personnel: CAT handling",
+   "v": {
+    "cats": [
+     "Pick…",
+     "OCU",
+     "D",
+     "C",
+     "B",
+     "A",
+     "IW",
+     "FI"
+    ],
+    "gnd": 0,
+    "cat": ""
+   },
+   "pic": "main-R04-D-seat-change.png"
+  },
+  "R05-D-send": {
+   "id": "R05-D-send",
+   "scen": "S20",
+   "desc": "valid request sent",
+   "v": {
+    "text": "TALON Waiting for an admin ABCDEFGHIJKLMN INITIALS RX SEAT Pilot CAT C Request sent An admin approves You're on the schedule Sign out Signed in as rdrequest@example.test RDMATCH added to the roster — set flight and quals on the Quals page"
+   },
+   "pic": "main-R05-D-send.png"
+  },
+  "R03-D-blank-ini": {
+   "id": "R03-D-blank-ini",
+   "scen": "S20",
+   "desc": "blank initials: sent or refused",
+   "v": {
+    "err": null,
+    "text": "TALON\nWaiting for an admin\nRDBLANK\nSEAT\nPer onnel\nReque t  ent\nAn admin approve \nYou're on the  chedule\nSign out\n\nSigned in a  rdreque t4@example.te t\n\nRDMATCH added to the ro ter —  et flight and qua"
+   },
+   "pic": "main-R03-D-blank-ini.png"
+  },
+  "R06-D-second-admin-bell": {
+   "id": "R06-D-second-admin-bell",
+   "scen": "S17",
+   "desc": "second admin signed in: the bell and the admin count before viewing Users",
+   "v": {
+    "bell": null,
+    "nav": [
+     "4",
+     "4",
+     "4"
+    ]
+   },
+   "pic": "main-R06-D-second-admin-bell.png"
+  },
+  "R07-D-categories-only": {
+   "id": "R07-D-categories-only",
+   "scen": "S17",
+   "desc": "Admin categories only (not Users): alert still up on a phone",
+   "v": {
+    "alert": [
+     "4",
+     "4",
+     "4"
+    ],
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-R07-D-categories-only.png"
+  },
+  "R08-D-waiting-list": {
+   "id": "R08-D-waiting-list",
+   "scen": "S17",
+   "desc": "Users list: waiting requests",
+   "v": {
+    "waiting": 4,
+    "rows": [
+     "rdrequest@example.test asked as ABCDEFGHIJKLMN · RX · Pilot · CAT C · 8/11 09:00 Give access Refuse",
+     "rdrequest2@example.test asked as RDMATCH · RM · Pilot · CAT C · 8/11 09:00 Give access Refuse",
+     "rdrequest3@example.test asked as RDNEWBIE · RN · WSO · CAT B · 8/11 09:00 Give access Refuse",
+     "rdrequest4@example.test asked as RDBLANK · Personnel · 8/11 09:00 Give access Refuse"
+    ],
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-R08-D-waiting-list.png"
+  },
+  "R09-D-giveaccess-roster": {
+   "id": "R09-D-giveaccess-roster",
+   "scen": "S17",
+   "desc": "Give access on RDMATCH: default mode, note, switch modes, cancel, reopen",
+   "v": {
+    "a": {
+     "mode": "On the roster",
+     "pressed": "true",
+     "note": "He typed RDMATCH — RDMATCH is on the roster. Pick them if this is them."
+    },
+    "n": {
+     "cs": "RDMATCH",
+     "note": "Filled from what he gave when he signed up — change anything before you give access."
+    },
+    "reopen": "true"
+   },
+   "pic": "main-R09-D-giveaccess-roster.png"
+  },
+  "R10-D-approve-roster": {
+   "id": "R10-D-approve-roster",
+   "scen": "S04",
+   "desc": "pick RDMATCH on the roster, give access",
+   "v": {
+    "toast": "rdrequest2@example.test can sign in now",
+    "bar": "rdrequest2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving access"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 3
+    },
+    "row RDMATCH": "RDMATCH rdrequest2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "waiting": 3
+   },
+   "pic": "main-R10-D-approve-roster.png"
+  },
+  "R11-D-approve-new": {
+   "id": "R11-D-approve-new",
+   "scen": "S04",
+   "desc": "RDNEWBIE: New person with a future post-in date, give access",
+   "v": {
+    "m": "true",
+    "pi": "2026-11-16",
+    "toast": "RDNEWBIE added — rdrequest3@example.test can sign in now",
+    "bar": "RDNEWBIE added — rdrequest3@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving access"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 64",
+     "arch": null,
+     "waiting": 2
+    },
+    "row RDNEWBIE": "RDNEWBIE rdrequest3@example.test · WSO · CAT B POSTING IN 16 NOV ¦ Can sign in/On the roster ¦ Member",
+    "waiting": 2
+   },
+   "pic": "main-R11-D-approve-new.png"
+  },
+  "R12-D-refuse": {
+   "id": "R12-D-refuse",
+   "scen": "S17",
+   "desc": "Refuse the last request",
+   "v": {
+    "toast": "Refused rdrequest@example.test",
+    "waiting": 1,
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-R12-D-refuse.png"
+  },
+  "R13-D-reload": {
+   "id": "R13-D-reload",
+   "scen": "S17",
+   "desc": "reload: waiting list and rows",
+   "v": {
+    "waiting": 1,
+    "rows": "RDNEWBIE rdrequest3@example.test · WSO · CAT B POSTING IN 16 NOV ¦ Can sign in/On the roster ¦ Member",
+    "match": "RDMATCH rdrequest2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-R13-D-reload.png"
+  },
+  "R-D-errors": {
+   "id": "R-D-errors",
+   "v": []
+  },
+  "H01-D-first-admin-bell": {
+   "id": "H01-D-first-admin-bell",
+   "scen": "S09",
+   "desc": "admin who archived: bell",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ],
+    "toast": "RDPOST archived — his sign-in is suspended"
+   },
+   "pic": "main-H01-D-first-admin-bell.png"
+  },
+  "H02-D-second-admin-bell": {
+   "id": "H02-D-second-admin-bell",
+   "scen": "S09",
+   "desc": "second admin: bell lines (posting notice)",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-H02-D-second-admin-bell.png"
+  },
+  "H03-D-read-one": {
+   "id": "H03-D-read-one",
+   "scen": "S09",
+   "desc": "tap one line",
+   "v": {
+    "none": true
+   },
+   "pic": "main-H03-D-read-one.png"
+  },
+  "H04-D-mark-all": {
+   "id": "H04-D-mark-all",
+   "scen": "S09",
+   "desc": "Mark all read, then reload: stays read",
+   "v": {
+    "a": [
+     "Nothing new"
+    ],
+    "afterReload": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-H04-D-mark-all.png"
+  },
+  "H05-D-changes-window": {
+   "id": "H05-D-changes-window",
+   "scen": "S08",
+   "desc": "changes window, Mark all as seen",
+   "err": "locator.click: Timeout 30000ms exceeded.",
+   "pic": "main-H05-D-changes-window.png"
+  },
+  "H-D-errors": {
+   "id": "H-D-errors",
+   "v": []
+  },
+  "T01-D-write-in-tab1": {
+   "id": "T01-D-write-in-tab1",
+   "scen": "S11",
+   "desc": "tab 1: change RDTWOA sign-in",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOA’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa1@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-T01-D-write-in-tab1.png"
+  },
+  "T02-D-stale-write-tab2": {
+   "id": "T02-D-stale-write-tab2",
+   "scen": "S11",
+   "desc": "tab 2 (stale): change RDTWOB sign-in",
+   "v": {
+    "before": "RDTWOA rdtwoa@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOB’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDTWOB": "RDTWOB rdtwob2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-T02-D-stale-write-tab2.png"
+  },
+  "T03-D-stale-same-record": {
+   "id": "T03-D-stale-same-record",
+   "scen": "S11",
+   "desc": "tab 2 (stale): change RDTWOA too (same record)",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOA’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDTWOB": "RDTWOB rdtwob2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-T03-D-stale-same-record.png"
+  },
+  "T04-D-reload-both": {
+   "id": "T04-D-reload-both",
+   "scen": "S11",
+   "desc": "reload both tabs",
+   "v": {
+    "tab1": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 63",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDTWOA": "RDTWOA rdtwoa2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+     "row RDTWOB": "RDTWOB rdtwob2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "tab2": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 63",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDTWOA": "RDTWOA rdtwoa2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+     "row RDTWOB": "RDTWOB rdtwob2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    }
+   },
+   "pic": "main-T04-D-reload-both.png"
+  },
+  "T-D-errors": {
+   "id": "T-D-errors",
+   "v": []
+  }
+ },
+ "branch": {
+  "R01-D-access-screen": {
+   "id": "R01-D-access-screen",
+   "scen": "S20",
+   "desc": "unknown sign-in: access screen, where the caret is, then fill",
+   "v": {
+    "focus": "accCs",
+    "text": "Request access Signed in as rdrequest@example.test You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… OCU D C B A IP IR FI Request access Sign out",
+    "cat": "C"
+   },
+   "pic": "branch-R01-D-access-screen.png"
+  },
+  "R02-D-long-name": {
+   "id": "R02-D-long-name",
+   "scen": "S20",
+   "desc": "15-character name is refused, 14 accepted",
+   "v": {
+    "e15": "A callsign or name is at most 14 letters — use a short form",
+    "long15": "A callsign or name is at most 14 letters — use a short form",
+    "longAfter": 0
+   },
+   "pic": "branch-R02-D-long-name.png"
+  },
+  "R04-D-seat-change": {
+   "id": "R04-D-seat-change",
+   "scen": "S20",
+   "desc": "change Pilot/WSO/Personnel: CAT handling",
+   "v": {
+    "cats": [
+     "Pick…",
+     "OCU",
+     "D",
+     "C",
+     "B",
+     "A",
+     "IW",
+     "FI"
+    ],
+    "gnd": 0,
+    "cat": ""
+   },
+   "pic": "branch-R04-D-seat-change.png"
+  },
+  "R05-D-send": {
+   "id": "R05-D-send",
+   "scen": "S20",
+   "desc": "valid request sent",
+   "v": {
+    "text": "TALON Waiting for an admin ABCDEFGHIJKLMN INITIALS RX SEAT Pilot CAT C Request sent An admin approves You're on the schedule Sign out Signed in as rdrequest@example.test RDMATCH added to the roster — set flight and quals on the Quals page"
+   },
+   "pic": "branch-R05-D-send.png"
+  },
+  "R03-D-blank-ini": {
+   "id": "R03-D-blank-ini",
+   "scen": "S20",
+   "desc": "blank initials: sent or refused",
+   "v": {
+    "err": null,
+    "text": "TALON\nWaiting for an admin\nRDBLANK\nSEAT\nPer onnel\nReque t  ent\nAn admin approve \nYou're on the  chedule\nSign out\n\nSigned in a  rdreque t4@example.te t\n\nRDMATCH added to the ro ter —  et flight and qua"
+   },
+   "pic": "branch-R03-D-blank-ini.png"
+  },
+  "R06-D-second-admin-bell": {
+   "id": "R06-D-second-admin-bell",
+   "scen": "S17",
+   "desc": "second admin signed in: the bell and the admin count before viewing Users",
+   "v": {
+    "bell": null,
+    "nav": [
+     "4",
+     "4",
+     "4"
+    ]
+   },
+   "pic": "branch-R06-D-second-admin-bell.png"
+  },
+  "R07-D-categories-only": {
+   "id": "R07-D-categories-only",
+   "scen": "S17",
+   "desc": "Admin categories only (not Users): alert still up on a phone",
+   "v": {
+    "alert": [
+     "4",
+     "4",
+     "4"
+    ],
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-R07-D-categories-only.png"
+  },
+  "R08-D-waiting-list": {
+   "id": "R08-D-waiting-list",
+   "scen": "S17",
+   "desc": "Users list: waiting requests",
+   "v": {
+    "waiting": 4,
+    "rows": [
+     "rdrequest@example.test asked as ABCDEFGHIJKLMN · RX · Pilot · CAT C · 8/11 09:00 Give access Refuse",
+     "rdrequest2@example.test asked as RDMATCH · RM · Pilot · CAT C · 8/11 09:00 Give access Refuse",
+     "rdrequest3@example.test asked as RDNEWBIE · RN · WSO · CAT B · 8/11 09:00 Give access Refuse",
+     "rdrequest4@example.test asked as RDBLANK · Personnel · 8/11 09:00 Give access Refuse"
+    ],
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-R08-D-waiting-list.png"
+  },
+  "R09-D-giveaccess-roster": {
+   "id": "R09-D-giveaccess-roster",
+   "scen": "S17",
+   "desc": "Give access on RDMATCH: default mode, note, switch modes, cancel, reopen",
+   "v": {
+    "a": {
+     "mode": "On the roster",
+     "pressed": "true",
+     "note": "He typed RDMATCH — RDMATCH is on the roster. Pick them if this is them."
+    },
+    "n": {
+     "cs": "RDMATCH",
+     "note": "Filled from what he gave when he signed up — change anything before you give access."
+    },
+    "reopen": "true"
+   },
+   "pic": "branch-R09-D-giveaccess-roster.png"
+  },
+  "R10-D-approve-roster": {
+   "id": "R10-D-approve-roster",
+   "scen": "S04",
+   "desc": "pick RDMATCH on the roster, give access",
+   "v": {
+    "toast": "rdrequest2@example.test can sign in now",
+    "bar": "rdrequest2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving access"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 3
+    },
+    "row RDMATCH": "RDMATCH rdrequest2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "waiting": 3
+   },
+   "pic": "branch-R10-D-approve-roster.png"
+  },
+  "R11-D-approve-new": {
+   "id": "R11-D-approve-new",
+   "scen": "S04",
+   "desc": "RDNEWBIE: New person with a future post-in date, give access",
+   "v": {
+    "m": "true",
+    "pi": "2026-11-16",
+    "toast": "RDNEWBIE added — rdrequest3@example.test can sign in now",
+    "bar": "RDNEWBIE added — rdrequest3@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving access"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 64",
+     "arch": null,
+     "waiting": 2
+    },
+    "row RDNEWBIE": "RDNEWBIE rdrequest3@example.test · WSO · CAT B POSTING IN 16 NOV ¦ Can sign in/On the roster ¦ Member",
+    "waiting": 2
+   },
+   "pic": "branch-R11-D-approve-new.png"
+  },
+  "R12-D-refuse": {
+   "id": "R12-D-refuse",
+   "scen": "S17",
+   "desc": "Refuse the last request",
+   "v": {
+    "toast": "Refused rdrequest@example.test",
+    "waiting": 1,
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-R12-D-refuse.png"
+  },
+  "R13-D-reload": {
+   "id": "R13-D-reload",
+   "scen": "S17",
+   "desc": "reload: waiting list and rows",
+   "v": {
+    "waiting": 1,
+    "rows": "RDNEWBIE rdrequest3@example.test · WSO · CAT B POSTING IN 16 NOV ¦ Can sign in/On the roster ¦ Member",
+    "match": "RDMATCH rdrequest2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-R13-D-reload.png"
+  },
+  "R-D-errors": {
+   "id": "R-D-errors",
+   "v": []
+  },
+  "H01-D-first-admin-bell": {
+   "id": "H01-D-first-admin-bell",
+   "scen": "S09",
+   "desc": "admin who archived: bell",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ],
+    "toast": "RDPOST archived — his sign-in is suspended"
+   },
+   "pic": "branch-H01-D-first-admin-bell.png"
+  },
+  "H02-D-second-admin-bell": {
+   "id": "H02-D-second-admin-bell",
+   "scen": "S09",
+   "desc": "second admin: bell lines (posting notice)",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-H02-D-second-admin-bell.png"
+  },
+  "H03-D-read-one": {
+   "id": "H03-D-read-one",
+   "scen": "S09",
+   "desc": "tap one line",
+   "v": {
+    "none": true
+   },
+   "pic": "branch-H03-D-read-one.png"
+  },
+  "H04-D-mark-all": {
+   "id": "H04-D-mark-all",
+   "scen": "S09",
+   "desc": "Mark all read, then reload: stays read",
+   "v": {
+    "a": [
+     "Nothing new"
+    ],
+    "afterReload": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-H04-D-mark-all.png"
+  },
+  "H05-D-changes-window": {
+   "id": "H05-D-changes-window",
+   "scen": "S08",
+   "desc": "changes window, Mark all as seen",
+   "err": "locator.click: Timeout 30000ms exceeded.",
+   "pic": "branch-H05-D-changes-window.png"
+  },
+  "H-D-errors": {
+   "id": "H-D-errors",
+   "v": []
+  },
+  "T01-D-write-in-tab1": {
+   "id": "T01-D-write-in-tab1",
+   "scen": "S11",
+   "desc": "tab 1: change RDTWOA sign-in",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOA’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa1@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-T01-D-write-in-tab1.png"
+  },
+  "T02-D-stale-write-tab2": {
+   "id": "T02-D-stale-write-tab2",
+   "scen": "S11",
+   "desc": "tab 2 (stale): change RDTWOB sign-in",
+   "v": {
+    "before": "RDTWOA rdtwoa@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOB’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDTWOB": "RDTWOB rdtwob2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-T02-D-stale-write-tab2.png"
+  },
+  "T03-D-stale-same-record": {
+   "id": "T03-D-stale-same-record",
+   "scen": "S11",
+   "desc": "tab 2 (stale): change RDTWOA too (same record)",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDTWOA’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDTWOA": "RDTWOA rdtwoa2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDTWOB": "RDTWOB rdtwob2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-T03-D-stale-same-record.png"
+  },
+  "T04-D-reload-both": {
+   "id": "T04-D-reload-both",
+   "scen": "S11",
+   "desc": "reload both tabs",
+   "v": {
+    "tab1": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 63",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDTWOA": "RDTWOA rdtwoa2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+     "row RDTWOB": "RDTWOB rdtwob2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "tab2": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 63",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDTWOA": "RDTWOA rdtwoa2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+     "row RDTWOB": "RDTWOB rdtwob2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    }
+   },
+   "pic": "branch-T04-D-reload-both.png"
+  },
+  "T-D-errors": {
+   "id": "T-D-errors",
+   "v": []
+  }
+ }
+}

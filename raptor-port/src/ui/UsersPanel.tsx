@@ -81,7 +81,9 @@ type Mode = 'roster' | 'new'
 function PersonChoice(p: { idp: string; mode: Mode; onChange: (m: Mode) => void }) {
   return (
     <>
-      <div className="mfield"><label>Person</label></div>
+      {/* the label's look on a plain line (React Doctor label-has-associated-control, 8 Nov 26): "Person" heads two
+          buttons, not a box, and the group carries its own name for a screen reader; nothing drawn changes */}
+      <div className="mfield"><span className="mfield-lbl">Person</span></div>
       <div className="acc-acts acc-mode" role="group" aria-label="Someone on the roster, or a new person">
         <button type="button" id={`${p.idp}ModeRoster`} className={'abtn' + (p.mode === 'roster' ? ' primary' : '')}
           aria-pressed={p.mode === 'roster'} onClick={() => p.onChange('roster')}>On the roster</button>
@@ -252,21 +254,56 @@ function Dots(p: { pid: string; a: Account | undefined; archived: boolean }) {
 /* D287 / D298 / D300: the delete's second tap names what goes — once, in few words (the approved picture 2b) */
 const DELETE_GOES = 'Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.'
 
+const roleWordOf = (a: Account | undefined) => (a ? (isAdminAccount(a) ? 'Admin' : 'Member') : '')
+/* the line under his callsign on his roster row — his sign-in, role, seat and CAT, a posting waiting, "you". A piece of
+   its own with the editor below (React Doctor no-high-complexity-react-function, 8 Nov 26); drawn exactly as before */
+function PersonSub(p: { pid: string; a: Account | undefined; person: any; roleWord: string; own: boolean }) {
+  const tag = postingPendingTag(p.pid)
+  return (
+    <span className="acc-sub">
+      {p.a ? <b>{p.a.name}</b> : 'no sign-in'}
+      {p.roleWord && <span className="od-rw"> · {p.roleWord}</span>}
+      {' · '}{seatText(p.person)}
+      {tag && <span className="od-po" data-testid={`po-tag-${p.pid}`}>{tag}</span>}
+      {p.own && <span className="acc-tag you">you</span>}
+    </span>
+  )
+}
+
 /* ONE ROW PER PERSON ON THE ROSTER (D309, D310). Tap it for his sign-in, his role and his state's buttons — never your
    own row (another admin changes it). A row with an account keeps `data-acct` (the account's id) beside `data-person`. */
 function PersonRow(p: { pid: string; open: boolean; ringed?: boolean; onToggle: () => void; onClose: () => void }) {
   const person = P(p.pid)
   const a = accountOfPid(p.pid)
   const own = (a && isOwnAccount(a)) || (me() != null && p.pid === me())
+  const callsign = cs(p.pid)
+  /* his posting out has come and is waiting — why (the last admin; a stored week), on his row, his own included */
+  const held = postingHeldNote(p.pid)
+  const roleWord = roleWordOf(a)
+  return (
+    <div className={'acc-row od-row' + (p.open ? ' od-row-on' : '') + (p.ringed ? ' acc-ring' : '')} data-person={p.pid} {...(a ? { 'data-acct': a.id } : {})}>
+      <button className="acc-main acc-tap" disabled={!!own} onClick={p.onToggle}
+        title={own ? 'Your own account — another admin can change it' : `Change ${callsign}`}>
+        <span className="acc-name">{callsign}</span>
+        <PersonSub pid={p.pid} a={a} person={person} roleWord={roleWord} own={!!own} />
+      </button>
+      <Dots pid={p.pid} a={a} archived={false} />
+      <span className="od-rc">{a && <span className={'ub ' + a.role}>{roleWord}</span>}</span>
+      {held && <span className="acc-held" data-testid={`acc-held-${a ? a.id : p.pid}`}>{held}</span>}
+      {p.open && !own && <PersonEditor pid={p.pid} a={a} callsign={callsign} onClose={p.onClose} />}
+    </div>
+  )
+}
+
+/* HIS OPEN ROW'S EDITOR — his sign-in, his role and his state's buttons. A piece of its own (React Doctor
+   no-high-complexity-react-function, 8 Nov 26) holding what is typed: the row is drawn afresh each time it opens or
+   closes (its key changes with the editor), so what is typed starts from his saved values every time, as before. */
+function PersonEditor(p: { pid: string; a: Account | undefined; callsign: string; onClose: () => void }) {
+  const { a, callsign } = p
   const [name, setName] = useState(a ? a.name : '')
   const [role, setRole] = useState<AccountRole>(a ? a.role : 'main')
   /* the delete's first tap arms it; Cancel, closing the editor or another row disarms it (the editor unmounts) */
   const [armDel, setArmDel] = useState(false)
-  const callsign = cs(p.pid)
-  const tag = postingPendingTag(p.pid)
-  /* his posting out has come and is waiting — why (the last admin; a stored week), on his row, his own included */
-  const held = postingHeldNote(p.pid)
-  const roleWord = a ? (isAdminAccount(a) ? 'Admin' : 'Member') : ''
   const save = () => {
     if (!a) return
     const patch: any = {}
@@ -284,55 +321,39 @@ function PersonRow(p: { pid: string; open: boolean; ringed?: boolean; onToggle: 
     if (done(deletePerson(p.pid), `${callsign} deleted`)) p.onClose()
   }
   return (
-    <div className={'acc-row od-row' + (p.open ? ' od-row-on' : '') + (p.ringed ? ' acc-ring' : '')} data-person={p.pid} {...(a ? { 'data-acct': a.id } : {})}>
-      <button className="acc-main acc-tap" disabled={!!own} onClick={p.onToggle}
-        title={own ? 'Your own account — another admin can change it' : `Change ${callsign}`}>
-        <span className="acc-name">{callsign}</span>
-        <span className="acc-sub">
-          {a ? <b>{a.name}</b> : 'no sign-in'}
-          {roleWord && <span className="od-rw"> · {roleWord}</span>}
-          {' · '}{seatText(person)}
-          {tag && <span className="od-po" data-testid={`po-tag-${p.pid}`}>{tag}</span>}
-          {own && <span className="acc-tag you">you</span>}
-        </span>
-      </button>
-      <Dots pid={p.pid} a={a} archived={false} />
-      <span className="od-rc">{a && <span className={'ub ' + a.role}>{roleWord}</span>}</span>
-      {held && <span className="acc-held" data-testid={`acc-held-${a ? a.id : p.pid}`}>{held}</span>}
-      {p.open && !own && <div className="acc-edit" data-editing={a ? a.id : p.pid}>
-        <div className="adm-2col">
-          <div className="mfield"><label htmlFor={a ? 'accEdName' : 'accGiveName'}>Sign-in (defence mail)</label>
-            <input id={a ? 'accEdName' : 'accGiveName'} value={name} maxLength={MAX_SIGNIN} placeholder="name@mail"
-              onChange={e => setName(e.target.value)} /></div>
-          <div className="mfield"><label htmlFor={a ? 'accEdRole' : 'accGiveRole'}>Role</label>
-            <RoleSelect id={a ? 'accEdRole' : 'accGiveRole'} value={role} onChange={setRole} /></div>
-        </div>
-        <div className="acc-acts">
-          {a
-            ? <>
-                <button className="abtn primary" id="accEdSave" onClick={save}>Save</button>
-                {/* D285: "Suspend" / "Enable" — a man away is suspended, and enabled when he is back */}
-                <button className="abtn" id="accEdOnOff" onClick={() => {
-                  const enabling = !a.on
-                  if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${callsign} suspended` : `${callsign} can sign in again`)) {
-                    /* D284, D307: enabling his account is one of the "he's back" acts — the Quals prompt to check his quals */
-                    if (enabling) { markBack(a.pid); notify() }
-                    p.onClose()
-                  }
-                }}>{a.on ? 'Suspend' : 'Enable'}</button>
-              </>
-            : <button className="abtn primary" id="accGive" onClick={() => {
-                if (done(addAccount(name, p.pid, role), `${callsign} can sign in now`)) p.onClose()
-              }}>Give sign-in</button>}
-          {/* D310, D322, D323: Archive — one tap; it also suspends his sign-in; on the war "posted out from today" */}
-          <button className="abtn" id="accEdArchive" onClick={archive}>Archive</button>
-          {/* D287, D298 "Delete": his account and his person (a hidden mark underneath, D290); asks twice, says what goes */}
-          <button className={'abtn danger' + (armDel ? ' del-armed' : '')} id="accEdDel" onClick={del}>
-            {armDel ? `Tap again to delete ${callsign}` : 'Delete'}</button>
-          <button className="abtn" id="accEdCancel" onClick={p.onClose}>Cancel</button>
-        </div>
-        {armDel && <p className="adm-note acc-note acc-del-note" id="accEdDelNote">{DELETE_GOES}</p>}
-      </div>}
+    <div className="acc-edit" data-editing={a ? a.id : p.pid}>
+      <div className="adm-2col">
+        <div className="mfield"><label htmlFor={a ? 'accEdName' : 'accGiveName'}>Sign-in (defence mail)</label>
+          <input id={a ? 'accEdName' : 'accGiveName'} value={name} maxLength={MAX_SIGNIN} placeholder="name@mail"
+            onChange={e => setName(e.target.value)} /></div>
+        <div className="mfield"><label htmlFor={a ? 'accEdRole' : 'accGiveRole'}>Role</label>
+          <RoleSelect id={a ? 'accEdRole' : 'accGiveRole'} value={role} onChange={setRole} /></div>
+      </div>
+      <div className="acc-acts">
+        {a
+          ? <>
+              <button className="abtn primary" id="accEdSave" onClick={save}>Save</button>
+              {/* D285: "Suspend" / "Enable" — a man away is suspended, and enabled when he is back */}
+              <button className="abtn" id="accEdOnOff" onClick={() => {
+                const enabling = !a.on
+                if (done(updateAccount(a.id, { on: !a.on }), a.on ? `${callsign} suspended` : `${callsign} can sign in again`)) {
+                  /* D284, D307: enabling his account is one of the "he's back" acts — the Quals prompt to check his quals */
+                  if (enabling) { markBack(a.pid); notify() }
+                  p.onClose()
+                }
+              }}>{a.on ? 'Suspend' : 'Enable'}</button>
+            </>
+          : <button className="abtn primary" id="accGive" onClick={() => {
+              if (done(addAccount(name, p.pid, role), `${callsign} can sign in now`)) p.onClose()
+            }}>Give sign-in</button>}
+        {/* D310, D322, D323: Archive — one tap; it also suspends his sign-in; on the war "posted out from today" */}
+        <button className="abtn" id="accEdArchive" onClick={archive}>Archive</button>
+        {/* D287, D298 "Delete": his account and his person (a hidden mark underneath, D290); asks twice, says what goes */}
+        <button className={'abtn danger' + (armDel ? ' del-armed' : '')} id="accEdDel" onClick={del}>
+          {armDel ? `Tap again to delete ${callsign}` : 'Delete'}</button>
+        <button className="abtn" id="accEdCancel" onClick={p.onClose}>Cancel</button>
+      </div>
+      {armDel && <p className="adm-note acc-note acc-del-note" id="accEdDelNote">{DELETE_GOES}</p>}
     </div>
   )
 }
@@ -344,6 +365,28 @@ function PersonRow(p: { pid: string; open: boolean; ringed?: boolean; onToggle: 
 function ArchivedRow(p: { pid: string; open: boolean; ringed?: boolean; onToggle: () => void; onClose: () => void }) {
   const person = P(p.pid)
   const a = accountOfPid(p.pid)
+  const callsign = cs(p.pid)
+  return (
+    <div className={'acc-row od-row' + (p.open ? ' od-row-on' : '') + (p.ringed ? ' acc-ring' : '')} data-person={p.pid} data-archived="1" {...(a ? { 'data-acct': a.id } : {})}>
+      <button className="acc-main acc-tap" onClick={p.onToggle} title={`Restore or delete ${callsign}`}>
+        <span className="acc-name">{callsign}</span>
+        <span className="acc-sub">{a ? <b>{a.name}</b> : 'no sign-in'}{' · '}{seatText(person)}</span>
+        {/* D329: how and when he came to be archived — one line */}
+        {archivedLine(p.pid) && <span className="acc-sub od-archline" data-testid={`arch-line-${p.pid}`}>{archivedLine(p.pid)}</span>}
+      </button>
+      <Dots pid={p.pid} a={a} archived />
+      <span className="od-rc">{a && <span className={'ub ' + a.role}>{isAdminAccount(a) ? 'Admin' : 'Member'}</span>}</span>
+      {p.open && <ArchivedEditor pid={p.pid} a={a} onClose={p.onClose} />}
+    </div>
+  )
+}
+
+/* HIS OPEN ARCHIVED ROW'S EDITOR — the callsign box, the post-in date and the buttons. A piece of its own (React Doctor
+   no-high-complexity-react-function, 8 Nov 26) holding what is typed: the row is drawn afresh each time it opens or
+   closes (its key changes with the editor), so the boxes open on his callsign (or the next free one) and today, as
+   before. His callsign, and whether a man on the roster holds it, are read afresh on every draw, as they were. */
+function ArchivedEditor(p: { pid: string; a: Account | undefined; onClose: () => void }) {
+  const { a } = p
   const callsign = cs(p.pid)
   const taken = !!callsignProblem(callsign, p.pid)
   const [box, setBox] = useState(() => (taken ? nextFreeCallsign(callsign, p.pid) : callsign))
@@ -367,35 +410,25 @@ function ArchivedRow(p: { pid: string; open: boolean; ringed?: boolean; onToggle
     HOOKS.toast(`Renamed ${want}`); notify()
   }
   return (
-    <div className={'acc-row od-row' + (p.open ? ' od-row-on' : '') + (p.ringed ? ' acc-ring' : '')} data-person={p.pid} data-archived="1" {...(a ? { 'data-acct': a.id } : {})}>
-      <button className="acc-main acc-tap" onClick={p.onToggle} title={`Restore or delete ${callsign}`}>
-        <span className="acc-name">{callsign}</span>
-        <span className="acc-sub">{a ? <b>{a.name}</b> : 'no sign-in'}{' · '}{seatText(person)}</span>
-        {/* D329: how and when he came to be archived — one line */}
-        {archivedLine(p.pid) && <span className="acc-sub od-archline" data-testid={`arch-line-${p.pid}`}>{archivedLine(p.pid)}</span>}
-      </button>
-      <Dots pid={p.pid} a={a} archived />
-      <span className="od-rc">{a && <span className={'ub ' + a.role}>{isAdminAccount(a) ? 'Admin' : 'Member'}</span>}</span>
-      {p.open && <div className="acc-edit" data-restoring={p.pid}>
-        <div className="adm-2col">
-          <div className="mfield"><label htmlFor="accArCs">{CALLSIGN_LABEL}</label>
-            <input id="accArCs" value={box} autoComplete="off" onChange={e => { setBox(e.target.value); setErr('') }} /></div>
-          <PostInField id="accArPostIn" value={postIn} onChange={v => { setPostIn(v); setErr('') }} />
-        </div>
-        {taken && <p className="od-err" id="accArTaken">{callsign} is taken on the roster — give him another callsign.</p>}
-        {err && <p className="od-err" id="accArErr">{err}</p>}
-        <p className="od-said">{a ? 'He can sign in at once; the Leave War counts him from the post-in date.' : 'The Leave War counts him from the post-in date.'}</p>
-        <div className="acc-acts">
-          <button className="abtn primary" id="accArRestore" onClick={restore}>{renamed ? `Restore as ${want || '…'}` : 'Restore'}</button>
-          {renamed && <button className="abtn" id="accArSave" onClick={saveName}>Save name</button>}
-          <button className={'abtn danger' + (armDel ? ' del-armed' : '')} id="accArDel" onClick={() => {
-            if (!armDel) { setArmDel(true); return }
-            if (done(deletePerson(p.pid), `${callsign} deleted`)) p.onClose()
-          }}>{armDel ? `Tap again to delete ${callsign}` : 'Delete'}</button>
-          <button className="abtn" id="accArCancel" onClick={p.onClose}>Cancel</button>
-        </div>
-        {armDel && <p className="adm-note acc-note acc-del-note" id="accArDelNote">{DELETE_GOES}</p>}
-      </div>}
+    <div className="acc-edit" data-restoring={p.pid}>
+      <div className="adm-2col">
+        <div className="mfield"><label htmlFor="accArCs">{CALLSIGN_LABEL}</label>
+          <input id="accArCs" value={box} autoComplete="off" onChange={e => { setBox(e.target.value); setErr('') }} /></div>
+        <PostInField id="accArPostIn" value={postIn} onChange={v => { setPostIn(v); setErr('') }} />
+      </div>
+      {taken && <p className="od-err" id="accArTaken">{callsign} is taken on the roster — give him another callsign.</p>}
+      {err && <p className="od-err" id="accArErr">{err}</p>}
+      <p className="od-said">{a ? 'He can sign in at once; the Leave War counts him from the post-in date.' : 'The Leave War counts him from the post-in date.'}</p>
+      <div className="acc-acts">
+        <button className="abtn primary" id="accArRestore" onClick={restore}>{renamed ? `Restore as ${want || '…'}` : 'Restore'}</button>
+        {renamed && <button className="abtn" id="accArSave" onClick={saveName}>Save name</button>}
+        <button className={'abtn danger' + (armDel ? ' del-armed' : '')} id="accArDel" onClick={() => {
+          if (!armDel) { setArmDel(true); return }
+          if (done(deletePerson(p.pid), `${callsign} deleted`)) p.onClose()
+        }}>{armDel ? `Tap again to delete ${callsign}` : 'Delete'}</button>
+        <button className="abtn" id="accArCancel" onClick={p.onClose}>Cancel</button>
+      </div>
+      {armDel && <p className="adm-note acc-note acc-del-note" id="accArDelNote">{DELETE_GOES}</p>}
     </div>
   )
 }

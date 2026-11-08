@@ -13,8 +13,8 @@
 > chart engine, and the Tracker reads nothing of Raptor's store — the three seams); the answers each bridge gives with
 > nothing wired (only a unit test reaches them). **Taken back to Raptor's own ([TRK-KEPT-COPIES], 8 Nov 26):** the
 > Tracker's pencil, Reorder, gear, Reset and list are the app's own icons, and its page colours link to Raptor's tokens
-> (`trk-palette.test.ts`); still its own: the magnifier (`SrchGlyph.jsx`, drifted from the app's — he ruled it matched, D1900, to build — put to him with a
-> picture) and the chart's SVG colours in `core.js` (an SVG attribute cannot read a variable everywhere; pinned). The notes below that "a standalone export must carry" a file are history only.
+> (`trk-palette.test.ts`); the magnifier too since 8 Nov 26 (D1900 — the
+> app's `SrchIcon`, the Tracker's shorter `SrchGlyph.jsx` deleted); still its own: the chart's SVG colours in `core.js` (an SVG attribute cannot read a variable everywhere; pinned). The notes below that "a standalone export must carry" a file are history only.
 
 > **The route to the database (owner, 23 Sep 26 — D120).** Before the database step he EXPORTS
 > his hand-drawn charts (the balls, their positions and lines, and every event detail), WIPES the
@@ -97,7 +97,8 @@
 >   roster (via the no-import bridge `people.js`, fed by `TrackerPage.tsx`);
 >   picking one adds an entry `{ id, name, pid }` under their callsign (the
 >   9 Sep 26 `v3:links` record is folded into `pid` by the once-per-course
->   migration and gone). A typed name still adds an unlinked student — and with NO
+>   migration and gone). A typed name still adds an unlinked student *[8 Nov 26, D1931: no student can be
+>   added by a typed name — filed as [TRK-NO-TYPED-STUDENT], to build]* — and with NO
 >   roster handed over the dialog IS the old `Student callsign:` prompt, byte
 >   for byte (kept since D1538 because Raptor can hand over nobody — aircrew only).
 >   **That was the standalone rule** (owner, 9 Sep 26 — retired by D1538): the Tracker
@@ -348,8 +349,9 @@ he reports it again, ask which button he pressed and what the status line said.
   writes and revision checks is the `[DB-STEP]` (RC5) that closes it for every
   migration at once; a bespoke journal/lock now would be thrown away by it.
 - **No student name, mark or date may enter the repository.** (The reason given
-  here was "the repository is public"; it has been PRIVATE since 23 Sep 26 — D59
-  — and the rule stands: collaborators will read it.) The smoke suite checks the
+  here was "the repository is public"; it was PRIVATE from 23 Sep 26 — D59 — and
+  is public again since 25 Sep 26, until he says otherwise — D106, D1530; the rule
+  stands either way: collaborators will read it.) The smoke suite checks the
   seed and the sample file for placeholder names only; `bake-user-charts.mjs`
   re-checks after every bake.
 - **A record deleted seconds after migration, on an already-full store, can be

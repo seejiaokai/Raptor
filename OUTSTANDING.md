@@ -72,7 +72,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
-  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; People & accounts as a page merged 8 Nov 26 on his "merge live" (chat 17, pull request 700), accounted and read blind by both — it loads with files most jobs open, so the re-measure counts it and narrowing its `paths:` is a question for him then; the scheduler's D212 stale clause (a member may tick SCHEDULER, since D1651) goes with the scheduler's page in 5b; the screen-design rulings as a page merged 8 Nov 26 on his "merge live" (chat 24, pull request 708), accounted and read blind by both — it loads with every file of the app's code, so the re-measure counts it; for 5b, the Inputs pages' D1300 "cyan ring" (the mark is the one blue) and the scheduler's D1038 row's "Not built" (it is drawn); next the Tracker, on his word, and a re-measure before 5b.
+  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; People & accounts as a page merged 8 Nov 26 on his "merge live" (chat 17, pull request 700), accounted and read blind by both — it loads with files most jobs open, so the re-measure counts it and narrowing its `paths:` is a question for him then; the scheduler's D212 stale clause (a member may tick SCHEDULER, since D1651) goes with the scheduler's page in 5b; the screen-design rulings as a page merged 8 Nov 26 on his "merge live" (chat 24, pull request 708), accounted and read blind by both — it loads with every file of the app's code, so the re-measure counts it; for 5b, the Inputs pages' D1300 "cyan ring" (the mark is the one blue) and the scheduler's D1038 row's "Not built" (it is drawn); the Tracker as a page built (chat 34, pull request 714 — merged 8 Nov 26 on his "merge live"), accounted and read blind by both, D191 against D1005 filed for him as [TRK-TYPED-STUDENT-Q] and answered the same day, his D1931 (no student added by a typed name; the build filed as [TRK-NO-TYPED-STUDENT]); next the re-measure before 5b.
     Found by its step 3, low, the agent's: [BUGCHECK-LESSON-ORDER] — the bug-check order's list of missed faults has a second 23 outside it and 8 before 7.
     Found by its step 5a (People), medium, the agent's: [DOCSIZE-PATHS-OPEN] — a rules file whose `paths:` list is never closed passes the document check, its page checks skipped.
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
@@ -135,8 +135,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INP-HEAD-SORT-READER] — the Inputs List's column headings sort from the keys since 6 Nov 26, but a screen reader is not told a heading can be pressed; the fix, a button in each heading, changes its look — a picture first (low, with the keyboard sweep D807).
 - [QUALS-HEAD-SORT-KEYS] — the Quals table's headings sort by a click only; the keys cannot reach them (low, with the keyboard sweep D807).
 - [WALK-SCRIPT-UTF8] — a walk script saved partly in another letter coding made the code check fail (6 Nov 26); a line in the walkers' brief guide that scripts are saved as UTF-8 — a guide change, on his word.
-- [MED-ROOM-DRAGGED] — the Medical tab's room for its window (D1300) stays when the window is dragged away, so the cards are squeezed and covered; the Inputs list's fix of 8 Nov 26 applies as it is (low, found by both readers of chat 7).
-- [INP-ROOM-TIDY] — two tidy-ups the code read of 8 Nov 26 filed: the room's size written in two stylesheets, the calendar expand button's unused font size and line height (low, the agent's).
+- [INP-ROOM-TIDY-2] — four tidy-ups chat 29's code reads filed: the window-at-rest test written five times, a sentence in two files, a test's fixed sizes, a stale comment (low, the agent's).
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295) — built as the bell's grey foot (D1788) on `claude/pr-leave-war-4988a8`, pull request 680; walk, reads and his look to come.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
@@ -158,11 +157,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Tracker**
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
-- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's). BUILT 8 Nov 26 (chat 20, PR #696) but the magnifier: he ruled it matched to the app's (D1900) — to build.
 - [TRK-MARKS-LEFT] — typed marks still in four Tracker messages and hints, and the Tracker's Export / Import drawings unlike Admin's; for the consistency look (found by chat 20).
 - [TRK-MENU-KEYS] — the Tracker's course, syllabus and File menus wear the browser's white keyboard ring, not the app's cyan, and the arrow keys do not move through them, unlike the board's menus (found by chat 20's walk).
 - [TRK-COPIES-TIDY] — the code reads' tidiness notes on [TRK-KEPT-COPIES] (D489), filed not fixed.
-- [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work, on every page; he chose a "Not kept" band under the top bar on every page (D1901) — to build.
+- [TRK-NO-TYPED-STUDENT] — no Tracker student can be added by a typed name (his D1931, 8 Nov 26): + Add loses its "Or type a callsign" box and adds nothing when the search matches nobody or nobody is on the roster; drawn for him first (D1625). Today it still adds a typed name, linked to nobody.
+- [TRK-DOWN-DAYS-CANCELLED] — a cancelled medical input still counts toward a student's down days; left open for his look when the down days were built (18 Oct 26), carried by no item since.
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -172,6 +171,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [QUALS-HEAD-FINGER-CAPTURE] — in Edit quals a finger pressed on a heading's words may never reach another column (the press stays held by the words) — a check on his phone, then a one-line fix. **BUILT the night of 6 Nov 26** (`claude/people-quals-1106`, his look and "merge live"; evidence `raptor-port/docs/handpass/2026-11-06-people-quals.md`) — close once live.
 - [QUALS-PINNED-HEAD-NO-DRAG] — in Edit quals, scrolled down, a heading in the pinned row under the top bar cannot start a column drag; the table's own heading row can (older; low, with the next Quals job).
 - [QUALS-OUTLINE-RESCROLL] — Quals' outline after "Check his quals" or an Undo is never cleared, so a later change with that row off screen may scroll the page back to it (found by a code read 6 Nov 26, not walked; low, with the next Quals job).
+- [USERS-ARCH-FOLD-DRAFT] — Admin → Users: folding the Archived group and opening it again keeps an archived man's editor open but puts its callsign box back to his name and disarms Delete — a typed rename lost with nothing said (older — `main` the same; found 8 Nov 26 by walker C; low, with the next People job).
 - [LINE-ICONS-ELSEWHERE-ASK] — a suggestion kept for him (D852): other lists whose lines open only by a tap may want D1512's edit and cross icons too.
 - [QUALS-COL-WAR-GROUP-ASK] — a question kept for him (D994): a member may tick his own Quals columns, so he can put himself in a Leave War group made from one (Management excepted, D1510).
 - [UNDO-POSTING-RECORD] — Undo for adding, archiving and restoring a person and for postings (D350) — his word.
@@ -186,6 +186,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock. **Checked 6 Nov 26: pull requests 558 and 556 are both live, so by its own line this item is ready to archive whole.**
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
+- [CHGWIN-ESCAPE] — Escape does not close the changes window (its ✕ and a tap outside do); older, found by chat 28's walk.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
 - [BOARD-OTHER-RINGS] — most other Scheduler Board buttons and its time boxes still wear the browser's own ring under the keys, not the app's cyan one: a question for him with pictures, not built (D1625).
@@ -205,7 +206,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check.
-- [RD-LEFT-1108] — React Doctor's 31 findings left after the shell-and-state job: 13 import cycles through the people-settings save (a cycle cannot be kept with a reason) and 18 in other areas' files — each with its area's next batch.
+- [RD-LEFT-1108] — React Doctor's last 4 findings, in other areas' files (SansCal 1, SansDay 1, interactions 2) — each with its area's next batch; the 13 import cycles and People & accounts' 6 went live 8 Nov 26 (pull request 702), the Inputs and Medical 8 settled by chat 29 (pull request 707).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822); his go for the plan's three parts (D1930) — red team, then the build, in chat 33.
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [REPO-TIDY] — clear the old worktrees (47 today) and the 6 Nov night's three build folders after safety checks; moving the walk pictures out is his call.
@@ -280,6 +281,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+### [USERS-ARCH-FOLD-DRAFT] Folding Archived resets an open archived editor (found 8 Nov 26, walker C of pull request 702)
+**What:** on Admin → Users, with an archived man's editor open, a new callsign typed and Delete armed, folding the Archived group and unfolding it shows the editor still open, but its box reads his old callsign again and Delete is no longer armed; the roster's editors keep both through the same fold. The same on `main` and on pull request 702's branch (`raptor-port/docs/handpass/parts/2026-11-08-rd-last-findings-walkC.md`, S14 "Fold Archived, unfold — archived"). Nothing saved is wrong — only typing not yet saved is dropped, silently. **To do:** keep the archived editor's typing and armed Delete across the fold as the roster's are, or close it on the fold so it does not look kept; a test red first. **Place:** low, the agent's — with the next People and accounts job.
+
 ### [SCHED-MARKS-WALK-ODDS] Four small older things the schedule-marks walk saw (found 8 Nov 26, chat 13's walk)
 **What:** seen by the walk of chat 13's job (D1784, D1785, D1792 a, d — branch `claude/pr-sched-marks-3205d7`, evidence
 `raptor-port/docs/handpass/2026-11-08-sched-marks.md` §15), each older than that job, none losing anything: (1) the changes window's
@@ -315,10 +319,13 @@ weeks, or the database step's read of saved data.
 test passes, so none reads a value before it is set today; the risk is a later import that does. **To do:** find which of
 its functions each importer takes, and move those to a file with no app imports, as the save indicator's source was moved
 to `ui/savestatus-source.ts` — a change to saved data's path, so its own check (tier WALK at least). **(2) 18 in files outside
-that job:** `ui/UsersPanel.tsx` 3, `ui/AdminPage.tsx` 2, `ui/CutFields.tsx` 2, `ui/DateCal.tsx` 2, `ui/MedicalView.tsx` 2,
-`ui/TypeLegend.tsx` 2, `ui/AccessScreen.tsx` 1, `ui/SansCal.tsx` 1, `ui/SansDay.tsx` 1, and `ui/interactions.ts` 2 (a list
+that job:** `ui/UsersPanel.tsx` 3, `ui/AdminPage.tsx` 2, `ui/AccessScreen.tsx` 1, `ui/SansCal.tsx` 1, `ui/SansDay.tsx` 1, and `ui/interactions.ts` 2 (a list
 lookup in a loop — a file of job 1's pull request 664, left alone that night). Each rides with its area's next batch (D490,
-D1534). **Place:** the agent's, low — (1) with the next People and accounts change, (2) as listed.
+D1534). **8 Nov 26, chat 29 (`claude/chat29-inputs-medical`, pull request 707):** `CutFields.tsx` 2, `DateCal.tsx` 2,
+`MedicalView.tsx` 2 and `TypeLegend.tsx` 2 settled — 5 fixed, 3 kept with written reasons (evidence
+`raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`). **Place:** the agent's, low — (1) with the next People and
+accounts change, (2) as listed.
+**LIVE 8 Nov 26 (pull request 702, his "merge live" typed in chat 35):** (1) the 13 cycles broken and (2)'s People & accounts six (`UsersPanel.tsx` 3, `AdminPage.tsx` 2, `AccessScreen.tsx` 1) cleared — evidence `raptor-port/docs/handpass/2026-11-08-rd-last-findings.md`. **Left: `SansCal.tsx` 1, `SansDay.tsx` 1, `interactions.ts` 2**, each with its area's batch.
 
 ### [BUGCHECK-LESSON-ORDER] The bug-check order's list of missed faults is out of order (found 7 Nov 26, the rules diet's step 3)
 **What:** in `raptor-port/docs/bug-check-order.md` §7.11 the lessons run 1–6, 8, 7, 9–23, and a second lesson numbered 23
@@ -379,22 +386,6 @@ The 202 rules after the wrapper's close in the bid sheet's stylesheet (the count
 ### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
 **What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.
 
-### [TRK-KEPT-COPIES] The Tracker's own copies of the app's glyphs, pencil and colours (filed 5 Nov 26 — the Tracker tidy's read, L2)
-**What:** three things the standalone Tracker carried for itself were kept on purpose by [TRK-STANDALONE-LEFTOVERS], since
-merging them could move a pixel if a copy has drifted: the Tracker's own drawings of the app's glyphs and pencil
-(`src/tracker/components/Glyphs.jsx`, `SrchGlyph.jsx`, held equal by `tracker.test.tsx`), and its own colour list for a page
-with no `:root` (`trk-palette.test.ts`). Today they live only in `docs/tracker/known-gaps.md`. **To do:** draw each from the
-app's one copy instead, with pictures of the Tracker before and after at a desktop and a phone size; nothing a person sees
-should change. **Place:** low, the agent's — with the Tracker's next batch (D490). Evidence:
-`raptor-port/docs/handpass/parts/trk1105/read-opus.md`.
-**Built 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, PR #696):** the pencil, Reorder, gear, Reset and list
-are the app's own icons; the page colours link to Raptor's tokens; pictures before (twice) and after, pixel-compared —
-nothing a person can see changed (`raptor-port/docs/handpass/2026-11-08-chat20-tracker.md`). **Left:** the magnifier
-(`SrchGlyph.jsx`) has drifted from the app's — its handle a fifth shorter — so matching it is a change he would see: put
-to him with a picture (D1625). **His answer, 8 Nov 26 (D1900): match the app's** — draw the app's magnifier (`ui/icons.tsx`)
-in place of `SrchGlyph.jsx`'s, checked by pictures before and after; archive this item once that is built and live.
-**Place:** with [TRK-NOSTORE-SAVED]'s build, one job.
-
 ### [TRK-MARKS-LEFT] Typed marks left in Tracker words, and its Export / Import drawings (filed 8 Nov 26 — chat 20)
 **What:** building D1860, more typed marks were found in words a message box or a hint carries, where the app cannot draw
 its marks: the built-in syllabus delete's "you can bring it back later from ⇅ Reorder" (`core.js`, about line 6276),
@@ -425,22 +416,46 @@ written twice (`onepencil.test.ts`, `tracker.test.tsx`, older); (4) comments now
 ("the marks only the Tracker wears" — Export, Import and the magnifier are the app's marks too, drawn differently),
 `tracker.css`'s palette block's last line ("the copy here kept…" → "the copy that stood here…"), `ui/pen.ts`'s
 "Sized by `.pen-ic`" (true of the app's pencil only), and, older, `tracker.css`'s header "The ONE rule outside the
-wrapper is #detailBubble". **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
+wrapper is #detailBubble". **(4) DONE 8 Nov 26 (chat 28, `claude/chat28-not-kept`)** — the four comments corrected,
+`Glyphs.jsx`'s header naming the magnifier among the app's own marks (D1900); (1)–(3) stay open: each reworks a
+test's recording or an icon's drawing, more than a band's branch should carry after its walk. **Added 8 Nov 26 (chat 28's code reads, D489):** (5) two "keeps
+nothing" flags set from one answer (`ui/savestatus-source.ts setStorageKept`, `tracker/storage.js`); (6) the
+`.failed` / `.nokeep` pair written out in four rules of `17-save-status.css`; (7) the test switches' address pattern
+written twice in `storage/boot.ts`; (8) `Shell.tsx`'s `saveFailed` now means "a band is up"; three head comments of
+`SaveStatus.tsx` and its CSS describe only the failed band; the Tracker's new setter guards a call with no value.
+**Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
 the tidiness audit ([CODE-TIDY-AUDIT]).
 
-### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
-**What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
-top bar says nothing, yet nothing survives a reload: mark an event, reload, and the mark is gone. Older — the same before
-the tidy. **The case to put to him:** a line telling the person "This browser won't keep your work after a reload" (or the
-app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.**
-**Drawn 8 Nov 26 (chat 20's questions page, https://claude.ai/artifact/RL8hZp77xYhRYcBS1a8cay; `raptor-port/docs/mock/2026-11-08-chat20-tracker-questions.html`) —
-his answer the same day (D1901): option A.** **To build:** a band under the top bar on every page while the browser refuses
-storage — the drawn warning sign, **Not kept**, "this browser loses your work on a reload", no Retry, the "Not saved"
-strip's look (D1655), the page moved down under it as that band does (D587, D1657 for the screens without the top bar to
-weigh); the Tracker's corner empty while it is up. It touches the storage boot (how the app knows storage is refused),
-every page's top, and the Tracker's corner — a bug check of its own (saved data: the tier's question 3). **Place:** the
-next Tracker / app job, with D1900's magnifier, one branch. Evidence:
-`raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
+### [TRK-NO-TYPED-STUDENT] No Tracker student can be added by a typed name (his D1931, 8 Nov 26 — first filed the same day as a question, [TRK-TYPED-STUDENT-Q], by the rules diet's step 5a, both blind reads)
+**His answer (8 Nov 26, typed in chat 34): "Typed student can't be added" (D1931 — replaces D191, answers D1005).** **To
+build:** + Add loses its "Or type a callsign" box; a search that matches nobody adds nothing (the "Nobody on the roster
+matches" line and OK / Enter adding the typed name go); with nobody on the roster to offer, the plain "Student callsign:"
+box goes too and + Add adds nobody. The window and its words are drawn for him first (D1625, the agent's reading). A
+student already stored with no roster link is demo data (D56), left as it is. Also to correct when built:
+`raptor-port/docs/ui-contracts.md` §The Tracker tab (the + Add entry) and `raptor-port/docs/tracker/known-gaps.md` (typed
+names still add an unlinked student). **Place:** with the Tracker's next batch. The question as it was filed:
+**What:** his words of 18 Oct 26 (D1005), "a student can't be a typed student as I'm removing this feature", and D1005's
+rule, "Every Tracker student is a man on the roster", say a student is always a man on the roster; but the agent's reading
+(2) in the same row narrowed it to the typed "No. of Down Days" box ("no student keeps a typed box"), and the app was built
+that way. **Today:** on + Add, a name typed in the search that matches nobody, or typed in "Or type a callsign", still adds
+a student linked to nobody (D191, built — `src/tracker/app/core.js addStudent`); his down days read "—", since there are no
+inputs to count; with nobody on the roster to offer, + Add is the plain "Student callsign:" box (kept by
+[TRK-STANDALONE-LEFTOVERS]). No later ruling says which he meant, so it goes to him as a question (How we work: where the
+newer ruling does not clearly cover the case — D90, D201). Nothing is built or removed until he answers. **The question:**
+does "I'm removing this feature" take typed students out of + Add, or was it only the typed down-days box? **To do:** ask him
+with a picture of the + Add box, its "Or type a callsign" line marked (D853); then record his answer and, if typed students
+go, file the build. **Place:** kept until he asks for the backlog's questions (D994). The page line:
+`.claude/rules/decisions/tracker.md` §Students and courses.
+
+### [TRK-DOWN-DAYS-CANCELLED] A cancelled medical input still counts toward the down days (filed 8 Nov 26 — the rules diet's step 5a, the fresh Opus read)
+**What:** the finished item [TRK-DOWN-DAYS-AUTO] (`OUTSTANDING-ARCHIVE.md`, built 18 Oct 26, pull request 534) left this
+open: "Open for his look: a CANCELLED medical input still counts (the Medical tab's own reading)". No live item carried it
+after the archive. The night's evidence (`raptor-port/docs/handpass/2026-10-18-night-jobs.md`) called it not a finding then,
+since a cancel mark was set only on ground-programme rows, never a medical one. The Tracker's count reads every medical
+input of the man (`src/tracker/peoplewire.ts medForTracker`), with no test of a cancel. **To do:** check whether a medical
+input can be cancelled today; if it can, put it to him with a picture of the down-days window — should a cancelled one
+count? Not a ruling until he answers. **Place:** low, with the Tracker's next batch. The page line:
+`.claude/rules/decisions/tracker.md` §The Info panel.
 
 ### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
 **8 Nov 26 — the IT side's answers 3, 8, 9 (`[IT-QUESTIONS]`):** database-level rights are the PP CoE's — one user security group gives basic access, and who may do what is the app's own roles, controlled inside the app. So (1)–(3) below are not ours to set; put to him 8 Nov 26 (the day lock is settled: D1751).
@@ -2320,6 +2335,17 @@ whole grid down and back, within its limits" ran out of time at 31.8s and again 
 was that. **To do:** if it fails again, make it wait on what it needs, not on time (D87), and measure its length on GitHub's machines.
 **Place:** low — watch.
 
+### [CHGWIN-ESCAPE] Escape does not close the changes window (found 8 Nov 26 by chat 28's walk; older; low)
+**What:** with the changes window open on Edit Schedule (the clock icon), Escape leaves it open, on his PC and his
+iPhone's size, with or without a click inside it first; its ✕ and a tap outside close it. Reproduced by the host in a plain
+browser, so nothing of the "Not kept" band (`raptor-port/scripts/handpass/nk28-esc.mjs`; W2's pictures
+`raptor-port/docs/img/handpass/2026-11-08-chat28-not-kept/w2/S14-changes-*.png`). The design guide's keyboard rule says
+Escape closes what opened last; the window floats beside the schedule without blocking it (D167), and no ruling says
+whether Escape should reach it while the keyboard is on the schedule behind. **The case to put to him:** Escape closes the
+changes window when it is the last thing opened — recommended. Also seen, not filed: a moved changes window comes back at
+its first place when closed and reopened (no ruling either way). **Place:** low — with the next job on the changes window
+or the keyboard leftovers.
+
 ### [VEILED-WINDOWS-BAR] The other veiled windows keep the bar covered; three things do not close on Escape (found 30 Oct 26 by [TRAFFIC-WIN-COVERS-UNDO]'s roll-call; older; low)
 **His answers, 5 Nov 26 ("Go" — the mock-up page's questions 1 and 3): D1645** — the bar stays pressable over "Jump to a date", the day-details window and the document viewer (the input window and the question boxes keep it covered); **D1647** — on View-only Sched the Traffic window is the read-only list for everyone. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
 **The Escape part BUILT the night of 3 Nov 26 (commit `e76f32440`):** the board's small menus (and the duty role list, built by the same menu), the Traffic window and the day-details window close on Escape, newest first, the board staying open, the keys back on their button; a Traffic line being typed is saved as ✕ saves it. Which windows cover the top bar is unchanged — that part stays open. The report: `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b.
@@ -2352,17 +2378,13 @@ one (a measured layout — a picture first). **Place:** his look; then close, or
 
 **Delivered D566 combined branch preview,5Oct26:** https://raptor-q27mo3zqg-kai-e2f5.vercel.app (source7f0b78bf; completed VercelSUCCESS/Preview9ZKYvXmsMPbWpc3RkwppHcWKzqqN). All3interface fixes checked/fresh independent R1PASS; owner look/Claude reads/authorized merge remain outstanding. Shipping method/limits in current accepted-batch evidence; no live authority.
 
-### [MED-ROOM-DRAGGED] The Medical tab's room stays for a window dragged away (found 8 Nov 26)
-**Found by both code readers of chat 7** (Astra, `raptor-port/docs/superpowers/briefs/2026-11-08-chat7-inputs-read-astra.md` (1),
-and the fresh Opus reader): the Medical tab makes room for the input window (D1300, `.med-room`, `16-medical.css`), but a window
-he has dragged away keeps its place for the session, so the cards stay squeezed AND covered. **Fix:** as the Inputs list's of
-8 Nov 26 (`06-inputs.css`): the room only while the window stands where it opens — `body:has(.floatwin.inpedwin:not([data-placed]))`
-before the room's rules; a browser test that drags the window away first, red. **Place:** with the next Medical or Inputs batch.
-
-### [INP-ROOM-TIDY] Tidy-ups the code read of 8 Nov 26 filed
-**Filed by the fresh Opus reader of chat 7, not fixed (D489):** (1) the room's size (the window's 430px, its 16px) is written in
-both `06-inputs.css` and `16-medical.css` — one variable would keep them together; (2) `.ib-sub .ib-expand`'s font size and
-line height (`25-inputs-calendar.css`) styled the typed mark and now style nothing. **Place:** with [MED-ROOM-DRAGGED].
+### [INP-ROOM-TIDY-2] Tidy-ups chat 29's code reads filed (8 Nov 26)
+**Filed, not fixed (D489), by the fresh Opus readers of `claude/chat29-inputs-medical`:** (1) the test "the input window stands
+where it opens", `body:has(.floatwin.inpedwin:not([data-placed]))`, is written five times across `06-inputs.css` and
+`16-medical.css` — one class set on the page would keep them together; (2) the sentence on how a cut-off's draft is read is in
+both `ui/CutFields.tsx` and `ui/cutdraft.ts`; (3) the Medical browser test repeats the window's 430 and its 16 instead of
+reading `--inpwin-room`; (4) the comment above `dragging()` in `ui/floatwin.ts` names a caller that no longer exists (older
+than that job). **Place:** low, the agent's — with the next Inputs or Medical batch.
 ### [LW-READS-OWED-1024] Fresh reads owed from 24 Oct 26
 **25 Oct 26 (the night): the reader of D1305–D1355 and lessons 45–54 RAN** — `raptor-port/docs/handpass/parts/lw-1025/reads-1305-1355.md`; its short-line and full-row findings and lesson 54 fixed the same night. **Left:** lessons 49, 50 and 52 (each claims a little more than he said — the fix worded in that file), and D1297's sweep of earlier evidence sheets with its reader.
 One fresh, blind Opus reader of the short lines of D1305–D1334 against their full rows (D138) and of design lessons 45–53

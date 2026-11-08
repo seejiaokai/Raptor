@@ -12,7 +12,7 @@
    Shell rewrites on every notify (the owner's iPhone showed chart + panel
    stacked the first time it did, 7 Sep 26). Do not unwrap, and never fix a cross-page bleed
    by editing scheduler.css — add the explicit property here instead.
-   The ONE rule outside the wrapper is #detailBubble: core.js appends that
+   One rule outside the wrapper is #detailBubble: core.js appends that
    element to document.body, so no page-scoped selector can reach it. */
 /* Also outside the wrapper, for the same reason (no page-scoped selector can
    reach <body>): while the Tracker tab is up the document does not scroll and
@@ -86,7 +86,7 @@ html body #page-tracker :where(button.trbtn){appearance:none;-webkit-appearance:
  --dco:#000;--dpco:#1f6dff;--marg:var(--ok);--na:#cdbb8e;--fail:var(--hard); /* DCO, DPCO and N.A. are the Tracker's own */
  --orange:var(--adv);--red:var(--hard);--grey:#5a6172; /* grey is the Tracker's own */
  --red-ink:#FBB4B9;--red-wash:rgba(240,85,95,.12);--red-edge:rgba(240,85,95,.55); /* Raptor's text and tints on --hard, which it writes out, not tokens */
- /* color-scheme:dark comes from Raptor's <html> (it is inherited); the copy here kept a standalone Tracker's date boxes dark */
+ /* color-scheme:dark comes from Raptor's <html> (it is inherited); the copy that stood here kept a standalone Tracker's date boxes dark */
 }
 *{box-sizing:border-box}
 /* Column flex so the board absorbs whatever the header and the edit strip

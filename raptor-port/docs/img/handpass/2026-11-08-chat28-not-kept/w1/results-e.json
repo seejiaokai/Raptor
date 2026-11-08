@@ -1,0 +1,11 @@
+{
+ "R": [
+  {
+   "step": "7 question box",
+   "res": "RECORD",
+   "said": "{\"text\":\"This input has unsaved changes. Close it and lose them?\",\"box\":[1229,161,1503,195],\"atBar\":\"A.\"}",
+   "pics": "w1/07-question-box.png"
+  }
+ ],
+ "errors": []
+}

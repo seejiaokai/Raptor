@@ -1,0 +1,212 @@
+{
+ "rows": [
+  {
+   "size": "desk",
+   "step": "fixtures",
+   "v": "SAME",
+   "main": "[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]",
+   "branch": "[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]"
+  },
+  {
+   "size": "desk",
+   "step": "x2 bell lines",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "x2 bell line",
+   "v": "SAME",
+   "main": "\"no line\"",
+   "branch": "\"no line\""
+  },
+  {
+   "size": "desk",
+   "step": "x2 waiting list",
+   "v": "SAME",
+   "main": "[\"rdreque t@example.te ta ked a  RDREQUEST · RQ · Pilot · CAT D · 8/11 09:00Give acce Refu e\",\"rdmatch@example.te ta ked a  RDNOSIGN · RN · Pilot · CAT D · 8/11 09:00Give acce Refu e\"]",
+   "branch": "[\"rdreque t@example.te ta ked a  RDREQUEST · RQ · Pilot · CAT D · 8/11 09:00Give acce Refu e\",\"rdmatch@example.te ta ked a  RDNOSIGN · RN · Pilot · CAT D · 8/11 09:00Give acce Refu e\"]"
+  },
+  {
+   "size": "desk",
+   "step": "x2 give access to a roster match: opened",
+   "v": "SAME",
+   "main": "[{\"who\":\"ID\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[\"He typed RDNOSIGN — RDNOSIGN is on the roster. Pick them if this is them.\"]}]",
+   "branch": "[{\"who\":\"ID\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[\"He typed RDNOSIGN — RDNOSIGN is on the roster. Pick them if this is them.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "x2 roster match: New person",
+   "v": "SAME",
+   "main": "[{\"who\":\"ID\",\"fields\":[\"apvCs=RDNOSIGN\",\"apvIni=RN\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"ID\",\"fields\":[\"apvCs=RDNOSIGN\",\"apvIni=RN\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "x2 roster match: back to On the roster",
+   "v": "SAME",
+   "main": "[{\"who\":\"ID\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[\"He typed RDNOSIGN — RDNOSIGN is on the roster. Pick them if this is them.\"]}]",
+   "branch": "[{\"who\":\"ID\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[\"He typed RDNOSIGN — RDNOSIGN is on the roster. Pick them if this is them.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "x2 gave access on the roster",
+   "v": "SAME",
+   "main": "{\"note\":\"rdmatch@example.test can sign in now\",\"undo\":[\"off:Undo / off:Redo\",\"on:Undo — giving access / off:Redo\"],\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdmatch@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"],\"waiting\":1}",
+   "branch": "{\"note\":\"rdmatch@example.test can sign in now\",\"undo\":[\"off:Undo / off:Redo\",\"on:Undo — giving access / off:Redo\"],\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdmatch@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"],\"waiting\":1}"
+  },
+  {
+   "size": "desk",
+   "step": "x2 New person approval opened",
+   "v": "SAME",
+   "main": "[{\"who\":\"ID\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"ID\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "x2 approved New person",
+   "v": "SAME",
+   "main": "{\"note\":\"RDREQUEST added — rdrequest@example.test can sign in now\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdmatch@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDREQUEST | rdrequest@example.test · Member · Pilot · CAT D | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"],\"waiting\":0}",
+   "branch": "{\"note\":\"RDREQUEST added — rdrequest@example.test can sign in now\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdmatch@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDREQUEST | rdrequest@example.test · Member · Pilot · CAT D | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"],\"waiting\":0}"
+  },
+  {
+   "size": "desk",
+   "step": "x2 Quals shows them",
+   "v": "SAME",
+   "main": "[\"RDNOSIGN:true\",\"RDREQUEST:true\"]",
+   "branch": "[\"RDNOSIGN:true\",\"RDREQUEST:true\"]"
+  },
+  {
+   "size": "desk",
+   "step": "x2 Leave War shows them",
+   "v": "SAME",
+   "main": "[\"RDNOSIGN:true\",\"RDREQUEST:true\"]",
+   "branch": "[\"RDNOSIGN:true\",\"RDREQUEST:true\"]"
+  },
+  {
+   "size": "phone",
+   "step": "fixtures",
+   "v": "SAME",
+   "main": "[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]",
+   "branch": "[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]"
+  },
+  {
+   "size": "phone",
+   "step": "x2 bell lines",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "x2 bell line",
+   "v": "SAME",
+   "main": "\"no line\"",
+   "branch": "\"no line\""
+  },
+  {
+   "size": "phone",
+   "step": "x2 waiting list",
+   "v": "SAME",
+   "main": "[\"rdreque t@example.te ta ked a  RDREQUEST · RQ · Pilot · CAT D · 8/11 09:00Give acce Refu e\",\"rdmatch@example.te ta ked a  RDNOSIGN · RN · Pilot · CAT D · 8/11 09:00Give acce Refu e\"]",
+   "branch": "[\"rdreque t@example.te ta ked a  RDREQUEST · RQ · Pilot · CAT D · 8/11 09:00Give acce Refu e\",\"rdmatch@example.te ta ked a  RDNOSIGN · RN · Pilot · CAT D · 8/11 09:00Give acce Refu e\"]"
+  },
+  {
+   "size": "phone",
+   "step": "x2 give access to a roster match: opened",
+   "v": "SAME",
+   "main": "[{\"who\":\"ID\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[\"He typed RDNOSIGN — RDNOSIGN is on the roster. Pick them if this is them.\"]}]",
+   "branch": "[{\"who\":\"ID\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[\"He typed RDNOSIGN — RDNOSIGN is on the roster. Pick them if this is them.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "x2 roster match: New person",
+   "v": "SAME",
+   "main": "[{\"who\":\"ID\",\"fields\":[\"apvCs=RDNOSIGN\",\"apvIni=RN\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"ID\",\"fields\":[\"apvCs=RDNOSIGN\",\"apvIni=RN\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "x2 roster match: back to On the roster",
+   "v": "SAME",
+   "main": "[{\"who\":\"ID\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[\"He typed RDNOSIGN — RDNOSIGN is on the roster. Pick them if this is them.\"]}]",
+   "branch": "[{\"who\":\"ID\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[\"He typed RDNOSIGN — RDNOSIGN is on the roster. Pick them if this is them.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "x2 gave access on the roster",
+   "v": "SAME",
+   "main": "{\"note\":\"rdmatch@example.test can sign in now\",\"undo\":[\"off:Undo / off:Redo\",\"on:Undo — giving access / off:Redo\"],\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdmatch@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"],\"waiting\":1}",
+   "branch": "{\"note\":\"rdmatch@example.test can sign in now\",\"undo\":[\"off:Undo / off:Redo\",\"on:Undo — giving access / off:Redo\"],\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdmatch@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"],\"waiting\":1}"
+  },
+  {
+   "size": "phone",
+   "step": "x2 New person approval opened",
+   "v": "SAME",
+   "main": "[{\"who\":\"ID\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"ID\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "x2 approved New person",
+   "v": "SAME",
+   "main": "{\"note\":\"RDREQUEST added — rdrequest@example.test can sign in now\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdmatch@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDREQUEST | rdrequest@example.test · Member · Pilot · CAT D | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"],\"waiting\":0}",
+   "branch": "{\"note\":\"RDREQUEST added — rdrequest@example.test can sign in now\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdmatch@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDREQUEST | rdrequest@example.test · Member · Pilot · CAT D | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"],\"waiting\":0}"
+  },
+  {
+   "size": "phone",
+   "step": "x2 Quals shows them",
+   "v": "SAME",
+   "main": "[\"RDNOSIGN:true\",\"RDREQUEST:true\"]",
+   "branch": "[\"RDNOSIGN:true\",\"RDREQUEST:true\"]"
+  },
+  {
+   "size": "phone",
+   "step": "x2 Leave War shows them",
+   "v": "SAME",
+   "main": "[\"RDNOSIGN:true\",\"RDREQUEST:true\"]",
+   "branch": "[\"RDNOSIGN:true\",\"RDREQUEST:true\"]"
+  }
+ ],
+ "errs": {
+  "desk-main": {
+   "page": [],
+   "http": []
+  },
+  "desk-branch": {
+   "page": [],
+   "http": []
+  },
+  "phone-main": {
+   "page": [],
+   "http": []
+  },
+  "phone-branch": {
+   "page": [],
+   "http": []
+  }
+ },
+ "pics": [
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-x2-bell.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-x2-roster-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-x2-roster-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-x2-roster-picked.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-x2-roster-done.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-x2-bell.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-x2-roster-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-x2-roster-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-x2-roster-picked.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-x2-roster-done.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-x2-bell.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-x2-roster-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-x2-roster-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-x2-roster-picked.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-x2-roster-done.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-x2-bell.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-x2-roster-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-x2-roster-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-x2-roster-picked.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-x2-roster-done.png"
+ ]
+}

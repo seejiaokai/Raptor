@@ -26,7 +26,7 @@ import { logOut } from './logout'
 import { initPan, updateWeekNav } from './pan'
 import { ViewWeek } from './ViewWeek'
 import { useVersion } from './useStore'
-import { SaveStatus, useSaveFailed } from './SaveStatus'
+import { SaveStatus, useBandUp } from './SaveStatus'
 import { TalonMark } from './icons'
 
 export function GuestApp() {
@@ -37,13 +37,13 @@ export function GuestApp() {
   useEffect(() => initPan(), [])
   useEffect(() => { const t = setTimeout(updateWeekNav, 0); return () => clearTimeout(t) })
   const name = String((SESSION && SESSION.name) || '')
-  /* a failed save's band is the bar's last line here as on every page (D587) — his request may be what did not save (D1657) */
-  const failed = useSaveFailed()
+  /* a failed save's band is the bar's last line here as on every page (D587) — his request may be what did not save (D1657); a browser's "Not kept" band the same (D1901) */
+  const bandUp = useBandUp()
   // the band's first frame moves the page down too: written before paint, not by the bar's watch a frame later (D1873)
-  useLayoutEffect(() => syncTopbarVar(topbarRef.current), [failed])
+  useLayoutEffect(() => syncTopbarVar(topbarRef.current), [bandUp])
   return (
     <div id="guestApp">
-      <div ref={topbarRef} className={'topbar guestbar' + (failed ? ' save-failed' : '')}>
+      <div ref={topbarRef} className={'topbar guestbar' + (bandUp ? ' save-failed' : '')}>
         <TalonMark />
         <span className="guest-note" id="guestNote" title={name ? `Signed in as ${name}` : undefined}>Waiting for access — view only</span>
         <div className="right">

@@ -1,5 +1,4 @@
-import { SrchGlyph } from './SrchGlyph.jsx';
-import { PenGlyph, InfoGlyph, ListGlyph, UploadGlyph, UpGlyph, ReorderGlyph, CopyGlyph, TrashGlyph, DownloadGlyph } from './Glyphs.jsx';
+import { PenGlyph, SrchGlyph, InfoGlyph, ListGlyph, UploadGlyph, UpGlyph, ReorderGlyph, CopyGlyph, TrashGlyph, DownloadGlyph } from './Glyphs.jsx';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
