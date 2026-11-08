@@ -4061,3 +4061,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The new ruling changed one reviewer's role. Rewriting each line about "the reviewers", the writer re-stated the safeguards for the named reviewer only — "a job he could not read goes on the owed list" — and silently dropped the same safeguard for the other, unchanged one; it also left lines elsewhere that still described the old arrangement as current. Both blind readers caught it, in five files.
 **Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
 **Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
+
+### Observation 866: A "nothing happened" check that reads a value which is never set passes whatever the app does
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 5, `claude/pr-oil-earn-ffbf07` — OIL Earn on the Scheduler Board (D1783: a tap on a puck that cannot earn picks nothing). Numbered past 865, the highest on the other branches.
+**Skill:** New skill candidate: none — the walk-script and drawing-check method (`raptor-port/docs/walk-scripts.md`, `raptor-port/scripts/drawcheck/`), and the bug-check order's §8 (tests find rather than confirm)
+**Type:** open-source
+**Phase/Area:** writing an assertion that something did NOT happen (nobody picked, no window opened)
+
+**Issue:** Two checks in one job proved "nothing happened" by reading something that never changes. (1) The drawing check's "the tap picked nobody" step read `window.SELID`, a name that does not exist in the built app; it was always undefined, so the step passed even on the build where the tap visibly picked the man blue. The same name had been written into the walkers' brief. (2) Two unit tests proved "the ALL AVAIL window opened" by finding its frame on the page; the frame is always there, hidden, so "opened" was always true. Both were found only because a reproduction on screen disagreed with a green check. They were fixed by reading the mark the app draws (`.puck.sel` on the board) and the frame's shown state (`.availwin:not([hidden])`).
+**Suggested improvement:** In `walk-scripts.md`'s rules for a step's assertion, and in the bug-check order §8: every assertion of absence ("nothing picked", "no note", "not opened") is first run once against a state where the thing DID happen (a positive control: tap an ordinary puck and see the same read report it picked), and the step names that control. A read of a global, a frame or an attribute that never changes value across the two states fails the step.
+**Principle:** A check that something did not happen is only evidence if the same check, run where it did happen, says so; run the positive case once before trusting the negative.

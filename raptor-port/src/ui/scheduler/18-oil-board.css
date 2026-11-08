@@ -91,6 +91,10 @@
    aside for it by the same ruling. */
 .lgmix.daysw{margin-right:8px;font-family:'Inter Tight',system-ui,sans-serif;font-size:12px;font-weight:400;
   text-transform:none;letter-spacing:-.065px;white-space:nowrap}
+/* Reached by the keys it wears the board's cyan keyboard ring, as every board control does (owner D1646, D1771 — "in
+   place of the browser's own"): `.lgmix` sets none, so the walk of 8 Nov 26 saw the browser's white ring here (W1.4).
+   The keys only — a finger or a mouse leaves no ring. */
+.lgmix.daysw input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .daybar-note{padding:6px 11px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-2)}
 /* WHERE EACH PLACEMENT SHOWS. Phone: the bar is the whole control. Desktop: the
    way IN rides the board's action row, so the bar appears only inside the mode,
