@@ -344,7 +344,9 @@ test.describe('the medical view renders and fits', () => {
       await expect.poll(pad, 'dragged away: the full width back').toBe(closed)
       await page.keyboard.press('Escape')
       await expect(win).toHaveCount(0)
+      /* a card opens the document viewer; its "Edit input" opens the input's window (Astra's read of this test) */
       await page.locator('.medcard').first().click()
+      await page.locator('#docViewEdit').click()
       await expect(win).toBeVisible()
       expect(await pad(), 'reopened where he left it: no room').toBe(closed)
       /* the window still stands where he left it, so this is the case the room must not be made for */

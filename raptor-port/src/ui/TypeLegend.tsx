@@ -41,8 +41,8 @@ export function TypeLegend({ shut, front }: { shut?: boolean; front?: () => bool
      window while the card took the first Escape.
      Closed in the render that sees the question come, not in an effect after it (React Doctor, [RD-LEFT-1108]): React
      draws again at once with the card shut, before anything reaches the screen. As the effect did, it acts only when
-     `shut` changes — a press while the question stands still opens the card, and once the question goes the card stays
-     shut until pressed. */
+     `shut` changes — a press while the question stands still opens the card, and the question going changes nothing: a
+     card it closed stays shut until pressed, one opened over it stays open. */
   const [wasShut, setWasShut] = useState(shut)
   if (shut !== wasShut) { setWasShut(shut); if (shut) setOpen(false) }
   /* mousedown rather than click, for the same reason the date window uses it:
