@@ -5,11 +5,11 @@ import { readSchedulerCss } from '../testing/scheduler-css'
    real chart). The colours live in two places that cannot share one variable:
    tracker.css's tokens (the page) and core.js's PAL / TYPE_COLOR / GRADE_FILL
    (the chart, drawn as SVG attribute strings, which cannot read a CSS variable
-   in every browser). Both are COPIES of Raptor's own tokens in scheduler.css
-   :root — copied so the Tracker keeps its colours if it is ever lifted back out
-   as a standalone app (the standalone rule, 9 Sep 26). A copy is a drift seam,
-   so this file is the one source: it reads Raptor's stylesheet and fails the
-   moment either copy stops matching. It also keeps the retired Tracker colours
+   in every browser). The page's are LINKS to Raptor's own tokens in scheduler.css
+   :root (or Raptor's own name, declared nothing) since [TRK-KEPT-COPIES] (8 Nov 26:
+   they were copies, kept for a standalone Tracker, gone since D1538); the chart's
+   stay copies. A copy is a drift seam, so this file reads Raptor's stylesheet and
+   fails the moment a copy stops matching or a link points at the wrong token. It also keeps the retired Tracker colours
    out, and keeps every event code readable on its ball when Raptor's palette
    moves. */
 import { readFileSync, readdirSync, statSync } from 'node:fs'
@@ -33,8 +33,15 @@ const trkCss = readFileSync(join(__dirname, 'tracker.css'), 'utf8')
 const at = trkCss.indexOf("THE PALETTE IS RAPTOR'S")
 const TRK_BLOCK = trkCss.slice(trkCss.indexOf('&{', at), trkCss.indexOf('\n}', at))
 const TRK = vars(TRK_BLOCK)
+/* the colour a Tracker name draws: its link followed to Raptor's token, or Raptor's own where it declares nothing */
+const trk = (name: string): string => {
+  const v = TRK[name]
+  if (v === undefined) return RAPTOR[name] ?? '(missing)'
+  const m = v.match(/^var\(--([\w-]+)\)$/)
+  return m ? (RAPTOR[m[1]!] ?? '(missing)') : v
+}
 
-/* The Tracker's name for each colour → the Raptor token it copies. */
+/* The Tracker's name for each colour → the Raptor token it draws. */
 const MAP: Record<string, string> = {
   bg: 'bg', panel: 'panel', panel2: 'panel-2', line: 'edge', ink: 'ink', muted: 'ink-3',
   accent: 'accent', 'accent-ink': 'accent-ink',
@@ -50,7 +57,10 @@ describe("the Tracker's page colours are Raptor's (tracker.css)", () => {
   for (const [mine, theirs] of Object.entries(MAP)) {
     it(`--${mine} is Raptor's --${theirs}`, () => {
       expect(RAPTOR[theirs], `Raptor has no --${theirs}`).toBeTruthy()
-      expect(hex(TRK[mine] ?? '(missing)')).toBe(hex(RAPTOR[theirs]!))
+      /* the same name: declared nothing, so Raptor's own reaches it (a copy here would cut the link); another name: a link */
+      if (mine === theirs) expect(TRK[mine], `--${mine} is Raptor's own, not declared again`).toBeUndefined()
+      else expect(TRK[mine]).toBe(`var(--${theirs})`)
+      expect(hex(trk(mine))).toBe(hex(RAPTOR[theirs]!))
     })
   }
   it('a failure chip keeps its red outline over the plain grey chip it also is', () => {
@@ -62,25 +72,25 @@ describe("the Tracker's page colours are Raptor's (tracker.css)", () => {
     expect(rule![1]).toContain('border:1px solid var(--red-edge)')
     expect(rule![1]).toContain('background:transparent')
   })
-  it("what the Tracker draws outside its page (the details bubble) names Raptor's colours, with Raptor's values to fall back on", () => {
+  it("what the Tracker draws outside its page (the details bubble) names Raptor's colours", () => {
     /* The Tracker's names (--line, --muted, --panel2 …) are set on #page-tracker;
        the details bubble hangs off <body>, so a Tracker name there matches
        nothing and the browser falls back — the bubble's divider drew in the text
        colour that way (the D157 walk). Everything above the wrapper names a colour
-       Raptor's :root defines AND carries Raptor's value as its fallback, so a
-       Tracker lifted out of Raptor (no :root — the standalone rule) draws the same
-       (Fable F-C, Astra #1). No bubble rule may sit INSIDE the wrapper, where
+       Raptor's :root defines. (Each also carried Raptor's value as a fallback, for a
+       Tracker lifted out of Raptor — Fable F-C, Astra #1; those went with
+       [TRK-KEPT-COPIES], D1538, and none may come back as a stale copy.) No bubble rule may sit INSIDE the wrapper, where
        nesting makes it "#page-tracker #detailBubble …", which never matches — and
        every class the bubble's content uses has its rule out here (Fable F-B). */
     const wrap = trkCss.indexOf('#page-tracker {')
     const outside = strip(trkCss.slice(0, wrap))
     const uses = [...outside.matchAll(/var\(--([\w-]+)(?:\s*,\s*([^)]+))?\)/g)].map(m => ({ name: m[1]!, fb: m[2] }))
     expect(uses.length).toBeGreaterThan(5)
-    const bad = uses.filter(u => !(u.name in RAPTOR) || !u.fb || hex(u.fb) !== hex(RAPTOR[u.name]!))
+    const bad = uses.filter(u => !(u.name in RAPTOR) || u.fb)
     expect(bad).toEqual([])
     expect(strip(trkCss.slice(wrap))).not.toContain('#detailBubble')
     for (const c of ['dbId', 'mkrec', 'mini']) expect(outside, c).toContain(`#detailBubble .${c}{`)
-    expect(outside).toMatch(/#detailBubble \.mkrec\{[^}]*border-top:1px dashed var\(--edge,/)
+    expect(outside).toMatch(/#detailBubble \.mkrec\{[^}]*border-top:1px dashed var\(--edge\)/)
     // and the classes the bubble's content emits are exactly those three
     const coreSrc = readFileSync(join(__dirname, 'app', 'core.js'), 'utf8')
     for (const fn of ['infoHtml', 'markHtml', 'showDetailBubble']) expect(coreSrc, fn).toMatch(new RegExp(`function ${fn}\\(`))
@@ -108,16 +118,19 @@ describe("the Tracker's page colours are Raptor's (tracker.css)", () => {
   it('a ticked box, and the browser\'s own controls, follow Raptor', () => {
     /* Raptor's checkboxes wear its accent (.lgtog, .ifield.chk) and its <html> is
        color-scheme:dark; the Tracker's Export window and Copy lull periods drew the
-       browser's own blue, and standalone its date boxes would turn light (Astra #1, #2). */
+       browser's own blue (Astra #1, #2). The Tracker's own color-scheme:dark kept a
+       standalone Tracker's date boxes dark; it takes <html>'s now ([TRK-KEPT-COPIES]),
+       so nothing in it may set a light one. */
     expect(strip(trkCss)).toMatch(/input\[type=checkbox\]\{accent-color:var\(--accent\)\}/)
-    expect(strip(TRK_BLOCK)).toMatch(/color-scheme:dark/)
+    expect(schedCss).toMatch(/(^|\n)html\{[^}]*color-scheme:dark/)
+    expect(strip(trkCss)).not.toMatch(/color-scheme:(?!\s*dark)/)
   })
 })
 
 describe("the chart's colours are the same tokens (core.js)", () => {
   it('each event type is drawn in its Raptor colour, the same one its token carries', () => {
     for (const t of ['flight', 'acad', 'test', 'sim', 'device'] as const) {
-      expect(hex(core.TYPE_COLOR[t]), t).toBe(hex(TRK[t]!))
+      expect(hex(core.TYPE_COLOR[t]), t).toBe(hex(trk(t)))
       expect(hex(core.TYPE_COLOR[t]), t).toBe(hex(RAPTOR[MAP[t]!]!))
     }
     expect(Object.keys(core.TYPE_COLOR).sort()).toEqual(['acad', 'device', 'flight', 'sim', 'test'])
@@ -142,7 +155,7 @@ describe("the chart's colours are the same tokens (core.js)", () => {
   })
   it('the grade fills match the legend: Marginal is Raptor\'s green, DCO / DPCO / N.A. the Tracker\'s own', () => {
     expect(hex(core.GRADE_FILL.marg)).toBe(hex(RAPTOR.ok!))
-    for (const g of ['dco', 'dpco', 'na', 'marg'] as const) expect(hex(core.GRADE_FILL[g]), g).toBe(hex(TRK[g]!))
+    for (const g of ['dco', 'dpco', 'na', 'marg'] as const) expect(hex(core.GRADE_FILL[g]), g).toBe(hex(trk(g)))
   })
   it('selected, the failure ticks and the key ball\'s names are Raptor\'s accent, red and ink', () => {
     expect(hex(core.PAL.accent)).toBe(hex(RAPTOR.accent!))
@@ -182,7 +195,7 @@ describe('every event code stays readable on its ball', () => {
   })
   for (const t of ['flight', 'acad', 'test', 'sim', 'device'] as const) {
     it(`${t}: the code on the ball reads at 4.5:1 or better`, () => {
-      expect(ratio(TRK.bg!, core.TYPE_COLOR[t])).toBeGreaterThanOrEqual(4.5)
+      expect(ratio(trk('bg'), core.TYPE_COLOR[t])).toBeGreaterThanOrEqual(4.5)
     })
   }
 })
