@@ -14,7 +14,8 @@
 /* the window's edge from the screen's edges; its gap from the event (under the event's edge, never over its foot — the
    old 12px under the tap's centre sat 2–3px over a ball 30 tall, notes-marks.md §1 (g)); the room kept between the chart
    box's top and an event slid up under it; the least height worth opening the window in above the event */
-export const POP_EDGE = 8, POP_GAP = 4, POP_TOP_ROOM = 8, POP_MIN = 120;
+/* the room is the approved drawing's: ACG-09 slid to 187–216 under tabs ending at 165, its slide the notes' 232px (A) */
+export const POP_EDGE = 8, POP_GAP = 4, POP_TOP_ROOM = 22, POP_MIN = 120;
 
 /** @param {{ ball: {top:number,bottom:number}|null, tap: {x:number,y:number}, w: number, h: number,
  *            vw: number, vh: number, top: number, room: number }} g
@@ -32,11 +33,12 @@ export function placePop(g) {
   const below = Math.max(ceil, bBot + POP_GAP);
   /* 1. it fits under the event as the chart stands */
   if (below + h <= foot) return { slide: 0, x, y: below, maxH: foot - below, how: 'below' };
-  /* 2. A: the chart slides the event up by what is missing, no further */
+  /* 2. A: the chart slides the event up under the tabs (as drawn: its top 22px under the chart box's top), and no
+     further — the chart's end may stop it short of that, which is still A while the window then fits whole */
   const need = Math.ceil(below + h - foot);
   const upTo = Math.max(0, Math.floor(bTop - (top + POP_TOP_ROOM)));
   const can = Math.min(upTo, room);
-  if (need <= can) return { slide: need, x, y: below - need, maxH: foot - (below - need), how: 'slide' };
+  if (need <= can) return { slide: can, x, y: below - can, maxH: foot - (below - can), how: 'slide' };
   /* 3. B: held above the event, nothing moving — whole where it fits there; scrolling inside where the chart's end
      stopped the slide that the room under the tabs would have allowed */
   const aboveRoom = Math.floor(bTop - POP_GAP - ceil);

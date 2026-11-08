@@ -16,10 +16,10 @@ describe('D1790 — where the marking window opens', () => {
     expect(p).toMatchObject({ slide: 0, how: 'below', y: 229 + POP_GAP })
     expect(p.y + PH.h).toBeLessThanOrEqual(PH.vh - POP_EDGE)
   })
-  it('ACG-09 landed by Find (419–448): the chart slides it up only as far as needed and the window opens whole under it, clear of the tabs and the event', () => {
+  it('ACG-09 landed by Find (419–448): the chart slides it up under the tabs — 232px, to 187–216, as drawn — and the window opens whole under it, clear of the tabs and the event', () => {
     const p = placePop(at(419))
     expect(p.how).toBe('slide')
-    expect(p.slide).toBe(Math.ceil(448 + POP_GAP + PH.h - (PH.vh - POP_EDGE)))
+    expect(p.slide, "the drawing's slide").toBe(232)
     expect(p.y, 'under the event once slid').toBe(448 - p.slide + POP_GAP)
     expect(p.y + PH.h, 'whole on screen').toBeLessThanOrEqual(PH.vh - POP_EDGE)
     expect(419 - p.slide, 'the event stays under the tabs').toBeGreaterThanOrEqual(PH.top)
@@ -30,6 +30,10 @@ describe('D1790 — where the marking window opens', () => {
       expect(p.how).toBe('slide')
       expect(p.y).toBeGreaterThanOrEqual(PH.top)
     }
+  })
+  it('near the chart\'s end, a slide short of the tabs that still fits the window is A, stopped where the chart ends', () => {
+    const p = placePop(at(419, 100))
+    expect(p).toMatchObject({ slide: 100, how: 'slide', y: 448 - 100 + POP_GAP })
   })
   it('an event too near the chart\'s end to slide: nothing moves, the window is held between the tabs and the event (the page\'s B)', () => {
     const p = placePop(at(489, 40))
