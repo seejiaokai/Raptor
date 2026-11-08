@@ -224,51 +224,12 @@ Identity counts that differ:
 + **Issue:** the starting session wrote "this chat is number 5" from its own reading of the handoff, but a parallel session had already given 5 to a build chat (and held 10 and 11) in a commit made minutes before; the started chat found the clash only by reading the newest handoff on the main branch. (Numbers 862 and 863 were taken by other branches; this note was renumbered 863 → 864 at the merge.)   «chat wrote (in neither parent)»
 ```
 
-### d87d40766 — OUTSTANDING-ARCHIVE.md
-
-```diff
-@@ -8003,13 +8002,0 @@
-- *Moved here 2026-11-08 by backlog-archive.mjs ([LW-TWO-BOX-LETTERS]). Forward facts: `raptor-port/docs/handpass/2026-11-06-lw-cell-combos.md`, `raptor-port/docs/ui-contracts.md`.*   «step kept»
--    «step kept»
-- ### [LW-TWO-BOX-LETTERS] Two boxes side by side clip three letters (found 25 Oct 26, the M3 build's FULL check, W2 30)   «step kept»
--    «step kept»
-- A day holding two whole-day entries draws them side by side, each the full height (his D1167), each half about 10 px wide on   «step kept»
-- a 26 px day; a three-letter code there ("FO*", "TRG", "CSE", "DTY") is clipped by its box ("O*", "RG" — picture   «step kept»
-- `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/w2/f-30-cell-zoom.png`). Older than the M3 build (a course beside a   «step kept»
-- leave did it), but common now: a weekend duty under Unavailable that earns OIL always shows its FO* beside it (D1357). How   «step kept»
-- to draw it is his: options to draw for him — letters a step smaller and closer set; the letters stacked; the day's second   «step kept»
-- entry as the "+1" corner when either code has three letters (narrowing D1167). Not built.   «step kept»
-- **Overtaken 6 Nov 26 by D1727 (pull request 650):** two whole days stand side by side with their codes reading bottom to top, whole — checked by the pictures round on 8 Nov 26 (`raptor-port/docs/img/handpass/2026-11-07-pictures-round/q-twobox-ph-today-x4.png`); nothing to ask him. To archive.   «step kept»
--    «step kept»
--    «step kept»
-@@ -8029,0 +8017,12 @@
-+ *Moved here 2026-11-08 by backlog-archive.mjs ([LW-TWO-BOX-LETTERS]). Forward facts: `raptor-port/docs/handpass/2026-11-06-lw-cell-combos.md`, `raptor-port/docs/ui-contracts.md`.*   «chat kept»
-+    «chat kept»
-+ ### [LW-TWO-BOX-LETTERS] Two boxes side by side clip three letters (found 25 Oct 26, the M3 build's FULL check, W2 30)   «chat kept»
-+    «chat kept»
-+ A day holding two whole-day entries draws them side by side, each the full height (his D1167), each half about 10 px wide on   «chat kept»
-+ a 26 px day; a three-letter code there ("FO*", "TRG", "CSE", "DTY") is clipped by its box ("O*", "RG" — picture   «chat kept»
-+ `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/w2/f-30-cell-zoom.png`). Older than the M3 build (a course beside a   «chat kept»
-+ leave did it), but common now: a weekend duty under Unavailable that earns OIL always shows its FO* beside it (D1357). How   «chat kept»
-+ to draw it is his: options to draw for him — letters a step smaller and closer set; the letters stacked; the day's second   «chat kept»
-+ entry as the "+1" corner when either code has three letters (narrowing D1167). Not built.   «chat kept»
-+ **Overtaken 6 Nov 26 by D1727 (pull request 650):** two whole days stand side by side with their codes reading bottom to top, whole — checked by the pictures round on 8 Nov 26 (`raptor-port/docs/img/handpass/2026-11-07-pictures-round/q-twobox-ph-today-x4.png`); nothing to ask him. To archive.   «chat kept»
-+    «chat kept»
-```
-
 ### 7009fe1f2 — raptor-port/docs/file-map.md
 
 ```diff
 @@ -3 +3 @@
 - 8 Nov 26 on `claude/pr-oil-earn-ffbf07` (chat 5 — the pictures round's group 2: OIL Earn's day switch "No OIL earned", D1782; a tap on a puck that cannot earn says why and picks nothing, D1783; the phone day bar's marks, D1793; evidence `docs/handpass/2026-11-08-oil-earn-board.md`). **New:** `src/ui/oilswitch-ring-css.test.ts` (the switch under the keys wears the board's cyan ring, D1646 — read off the stylesheet), `scripts/drawcheck/specs/oil-earn-board.mjs` (the drawing check's parts for the switch, the inert tap's note and the phone bar's marks), `scripts/handpass/oeb-w1-*.mjs` and `oeb-w2-*.mjs` (the two walkers' scripts). **Changed:** `src/ui/oilmode.ts` (the switch's markup, the phone ticket, `inertSays`, `oilInertWrap`, `inputEarnsNoOilWhy`, `PLACEHOLDER_WHY`), `src/ui/board.ts` (the switch's press, the inert and placeholder taps in `boardArmClick`), `src/ui/board-html.ts` (a request that never asks the OIL question drawn inert in the mode), `src/ui/scheduler/18-oil-board.css` (the switch's letters and keyboard ring), `src/ui/oilmode.test.tsx`, `src/ui/noteswords.test.ts`, `src/ui/oilclaimcrowd.test.tsx`.   «step kept»
 + 8 Nov 26 on `claude/pr-oil-earn-ffbf07` (chat 5 — the pictures round's group 2: OIL Earn's day switch "No OIL earned", D1782; a tap on a puck that cannot earn says why and picks nothing, D1783; the phone day bar's marks, D1793; evidence `docs/handpass/2026-11-08-oil-earn-board.md`). **New:** `src/ui/oilswitch-ring-css.test.ts` (the switch under the keys wears the board's cyan ring, D1646 — read off the stylesheet), `scripts/drawcheck/specs/oil-earn-board.mjs` (the drawing check's parts for the switch, the inert tap's note and the phone bar's marks), `scripts/handpass/oeb-w1-*.mjs` and `oeb-w2-*.mjs` (the two walkers' scripts). **Changed:** `src/ui/oilmode.ts` (the switch's markup, the phone ticket, `inertSays`, `oilInertWrap`, `inputEarnsNoOilWhy`, `PLACEHOLDER_WHY`, `placeholderWhy`), `src/ui/board.ts` (the switch's press, the inert and placeholder taps in `boardArmClick`), `src/ui/board-html.ts` (a request that never asks the OIL question, and a SANS offer, drawn inert in the mode), `src/ui/html.ts` (`sansCardsHTML` takes an optional wrap for its man's puck), `src/ui/interactions.ts` (the app's switch, `.lgmix`, among the blank-click clear's controls), `src/ui/scheduler/18-oil-board.css` (the switch's letters and keyboard ring), `src/ui/oilmode.test.tsx`, `src/ui/noteswords.test.ts`, `src/ui/oilclaimcrowd.test.tsx`.   «chat wrote (in neither parent)»
-```
-
-### 2474800d6 — OUTSTANDING-ARCHIVE.md
-
-```diff
-@@ -8016 +8015,0 @@
--    «step kept»
 ```
 
 ### 68be77639 — .claude/skill-observations/log.md
@@ -717,6 +678,13 @@ Identity counts that differ:
 -    «step kept»
 ```
 
+### 32e9b096d — raptor-port/docs/file-map.md
+
+```diff
+@@ -4 +3,0 @@
+-    «step kept»
+```
+
 ### 7141b1bd8 — HANDOFF.md
 
 ```diff
@@ -726,13 +694,6 @@ Identity counts that differ:
 @@ -122 +122 @@
 - - **Chats (D1744):** before numbering a new chat, read the open chats' titles — numbers went twice on 8 Nov 26. At 08:50 that day the highest in use was 12 (chat 2's rules diet step 5a, renumbered from 5); chat 3's builds are 5 to 9 and it holds 10 and 11 for its second wave; so the next new chat takes 13. Rules diet step 3, chat 1 and chat 2 archived on his word, 8 Nov 26. **Later that day:** 10 went to the Tracker's merge chat, 11 to the board's layout (group 1), 13 to the schedule's marks and words (group 3), 14 to the Leave War's pinned row — the next new chat takes 15. **Later the same day (chat 19): the highest in use is 20, so the next new chat takes 21.**   «step kept»
 + - **Chats (D1744):** before numbering a new chat, read the open chats' titles — numbers went twice on 8 Nov 26. At 08:50 that day the highest in use was 12 (chat 2's rules diet step 5a, renumbered from 5); chat 3's builds are 5 to 9 and it holds 10 and 11 for its second wave; so the next new chat takes 13. Rules diet step 3, chat 1 and chat 2 archived on his word, 8 Nov 26. **Later that day:** 10 went to the Tracker's merge chat, 11 to the board's layout (group 1), 13 to the schedule's marks and words (group 3), 14 to the Leave War's pinned row — the next new chat takes 15. **Later the same day (chat 19): the highest in use is 21 (the coordinator, in chat 3's place), so the next new chat takes 22.**   «chat wrote (in neither parent)»
-```
-
-### 50cc26a5c — OUTSTANDING-ARCHIVE.md
-
-```diff
-@@ -8160,0 +8161 @@
-+    «chat kept»
 ```
 
 ### 7faf81f3b — .claude/skill-observations/log.md
@@ -976,6 +937,13 @@ Record "now:claude/chat19-checks":
 -    «step kept»
 ```
 
+### 31ac0ebd8 — raptor-port/docs/file-map.md
+
+```diff
+@@ -4 +3,0 @@
+-    «step kept»
+```
+
 ### 8b54a2cd5 — .claude/skill-observations/log.md
 
 ```diff
@@ -1052,6 +1020,13 @@ Identity counts that differ:
 - - **Filed:** `[DAMAGED-WEEK-LEFTOVERS]` (point 5 added — the Leave War's pending bid on a damaged date); `[SCHED-MARKS-WALK-ODDS]` (new — the changes window's foot over a still line, the phone board's banner on two lines, "2 warning", the "N changes" chip). Tidiness notes: the readers' reports. Still unchecked (older): the ✕'s keyboard ring and Enter on ✕.   «step kept»
 - - **Rulings:** none this session (D1820–D1829 unused). **Reads owed:** none (Astra read; Sol 6.1 in the second seat inside D1743's window; the fresh Opus read beside them). **Context:** about 77% at this save; compacted four times (about 13:20, 13:30, 14:00 and 14:40 on 8 Nov 26), each time the state re-read from this block. Chat 11's and chat 18's work is in through `main`; no overlap with either.   «step kept»
 - <!-- /now -->   «step kept»
+```
+
+### 8b54a2cd5 — raptor-port/docs/file-map.md
+
+```diff
+@@ -4 +3,0 @@
+-    «step kept»
 ```
 
 ### a3bb57b3e — .claude/skill-observations/log.md
@@ -1138,47 +1113,6 @@ Identity counts that differ:
 + - **State at ~19:30:** the walk done — one Sonnet walker, 160 pictures, nothing found in the change; its one FAIL (J1, the changes window reopening at its usual place) is the app's own design since 28 Sep 26 (closing it forgets its place, `state/view.ts setChgWin`), not this job's. The evidence sheet filled (`Walk:` line, MISSING none), the walk-ledger row added; [MED-ROOM-DRAGGED] and [INP-ROOM-TIDY] archived, [RD-LEFT-1108] trimmed, the readers' tidiness notes filed as [INP-ROOM-TIDY-2]. `main` brought in (698, 708 live; HANDOFF, OUTSTANDING and its archive clashed, both sides kept). The local run of the three browser files was stopped while still queued — GitHub's run is the full check while the repo is public (D1086). The secrets scan fails at times on GitHub's own download of its tool (504) — re-run only that scan (`gh run rerun <id> --failed`), change nothing.   «chat wrote (in neither parent)»
 + - **Next:** GitHub's run of 707 on the last push green → the preview link and pictures to him → his "merge live" typed in this chat only → tell chat 30 first, then the four merge-lock steps (`shipping.md`), `main`'s run and Vercel's Production READY, one notification.   «chat wrote (in neither parent)»
 + - **Rulings:** none (range D1920–D1929 held, unused).   «chat wrote (in neither parent)»
-```
-
-### 423e6c76b — OUTSTANDING-ARCHIVE.md
-
-```diff
-@@ -8191,18 +8190,0 @@
-- *Moved here 2026-11-08 by backlog-archive.mjs ([MED-ROOM-DRAGGED]). Forward facts: `raptor-port/src/ui/scheduler/16-medical.css`, `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`.*   «step kept»
--    «step kept»
-- ### [MED-ROOM-DRAGGED] The Medical tab's room stays for a window dragged away (found 8 Nov 26)   «step kept»
-- **Found by both code readers of chat 7** (Astra, `raptor-port/docs/superpowers/briefs/2026-11-08-chat7-inputs-read-astra.md` (1),   «step kept»
-- and the fresh Opus reader): the Medical tab makes room for the input window (D1300, `.med-room`, `16-medical.css`), but a window   «step kept»
-- he has dragged away keeps its place for the session, so the cards stay squeezed AND covered. **Fix:** as the Inputs list's of   «step kept»
-- 8 Nov 26 (`06-inputs.css`): the room only while the window stands where it opens — `body:has(.floatwin.inpedwin:not([data-placed]))`   «step kept»
-- before the room's rules; a browser test that drags the window away first, red. **Place:** with the next Medical or Inputs batch.   «step kept»
--    «step kept»
--    «step kept»
-- *Moved here 2026-11-08 by backlog-archive.mjs ([INP-ROOM-TIDY]). Forward facts: `raptor-port/src/ui/scheduler/25-inputs-calendar.css`, `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`.*   «step kept»
--    «step kept»
-- ### [INP-ROOM-TIDY] Tidy-ups the code read of 8 Nov 26 filed   «step kept»
-- **Filed by the fresh Opus reader of chat 7, not fixed (D489):** (1) the room's size (the window's 430px, its 16px) is written in   «step kept»
-- both `06-inputs.css` and `16-medical.css` — one variable would keep them together; (2) `.ib-sub .ib-expand`'s font size and   «step kept»
-- line height (`25-inputs-calendar.css`) styled the typed mark and now style nothing. **Place:** with [MED-ROOM-DRAGGED].   «step kept»
--    «step kept»
--    «step kept»
-@@ -8317,0 +8300,16 @@
-+ *Moved here 2026-11-08 by backlog-archive.mjs ([MED-ROOM-DRAGGED]). Forward facts: `raptor-port/src/ui/scheduler/16-medical.css`, `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`.*   «chat kept»
-+    «chat kept»
-+ ### [MED-ROOM-DRAGGED] The Medical tab's room stays for a window dragged away (found 8 Nov 26)   «chat kept»
-+ **Found by both code readers of chat 7** (Astra, `raptor-port/docs/superpowers/briefs/2026-11-08-chat7-inputs-read-astra.md` (1),   «chat kept»
-+ and the fresh Opus reader): the Medical tab makes room for the input window (D1300, `.med-room`, `16-medical.css`), but a window   «chat kept»
-+ he has dragged away keeps its place for the session, so the cards stay squeezed AND covered. **Fix:** as the Inputs list's of   «chat kept»
-+ 8 Nov 26 (`06-inputs.css`): the room only while the window stands where it opens — `body:has(.floatwin.inpedwin:not([data-placed]))`   «chat kept»
-+ before the room's rules; a browser test that drags the window away first, red. **Place:** with the next Medical or Inputs batch.   «chat kept»
-+    «chat kept»
-+    «chat kept»
-+ *Moved here 2026-11-08 by backlog-archive.mjs ([INP-ROOM-TIDY]). Forward facts: `raptor-port/src/ui/scheduler/25-inputs-calendar.css`, `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`.*   «chat kept»
-+    «chat kept»
-+ ### [INP-ROOM-TIDY] Tidy-ups the code read of 8 Nov 26 filed   «chat kept»
-+ **Filed by the fresh Opus reader of chat 7, not fixed (D489):** (1) the room's size (the window's 430px, its 16px) is written in   «chat kept»
-+ both `06-inputs.css` and `16-medical.css` — one variable would keep them together; (2) `.ib-sub .ib-expand`'s font size and   «chat kept»
-+ line height (`25-inputs-calendar.css`) styled the typed mark and now style nothing. **Place:** with [MED-ROOM-DRAGGED].   «chat kept»
 ```
 
 ### d55797d99 — .claude/skill-observations/log.md
@@ -1387,7 +1321,7 @@ Identity counts that differ:
 +    «chat kept»
 ```
 
-## The held-out merges — committed after the list was cut (5)
+## The held-out merges — committed after the list was cut (6)
 
 Each line: `-` the step wrote it and the chat's file lacks it, `+` the chat's file has it and the step's lacks it; «chat wrote» marks a line neither parent holds (written in the merge itself). None is judged here. Nothing is shortened.
 
@@ -1415,5 +1349,39 @@ Each line: `-` the step wrote it and the chat's file lacks it, `+` the chat's fi
 - | 2026-11-08 | React Doctor's last findings in People & accounts: 13 import cycles broken (the save layer handed its four loaders and every command type by start-up) and 6 findings on Admin → Data, Admin → Users and the access screen ([RD-LEFT-1108]; `claude/chat22-rd-last-findings`, pull request 702, chats 22, 25, 26, 31, 32, 35) | G, H, E, C | FULL; SIZED by Opus: three Sonnet walkers on two frozen builds (`main` `d8d5b1f57`, the branch `8b54a2cd5`), 1536 Chromium and 402 WebKit by touch — A the screens (76 pictures the same pixel for pixel, `main` twice first; 458 value steps), B the save layer (214 steps: reload, second tab, `?savefail`, a member), C what B left (S14, S15, S19 with real clutter, 56 steps); Astra's scenarios; break tests by hand first (every wire RED when cut, one pin added); the host checked the bell after an access request | not counted | 0 — 728 steps, the only difference the intended press on "Period" (28 steps) | 0 | 2 — the bell's "Nothing new" after a request (as ruled, D227: the admin had opened Users first — the host reproduced the lit bell); a folded Archived group resetting an open archived editor (older, `main` the same, filed [USERS-ARCH-FOLD-DRAFT]) | the four blind reads 0 defects (one comment reworded by all four's shared point); Astra's and Sol's host check 2 routes no test held — two tests added red first; the break tests 1 (an archived editor drawn while closed — no test had it, pinned) | `docs/handpass/2026-11-08-rd-last-findings.md` |   «step kept»
 @@ -385,0 +385 @@
 + | 2026-11-08 | React Doctor's last findings in People & accounts: 13 import cycles broken (the save layer handed its four loaders and every command type by start-up) and 6 findings on Admin → Data, Admin → Users and the access screen ([RD-LEFT-1108]; `claude/chat22-rd-last-findings`, pull request 702, chats 22, 25, 26, 31, 32, 35) | G, H, E, C | FULL; SIZED by Opus: three Sonnet walkers on two frozen builds (`main` `d8d5b1f57`, the branch `8b54a2cd5`), 1536 Chromium and 402 WebKit by touch — A the screens (76 pictures the same pixel for pixel, `main` twice first; 458 value steps), B the save layer (214 steps: reload, second tab, `?savefail`, a member), C what B left (S14, S15, S19 with real clutter, 56 steps); Astra's scenarios; break tests by hand first (every wire RED when cut, one pin added); the host checked the bell after an access request | not counted | 0 — 728 steps, the only difference the intended press on "Period" (28 steps) | 0 | 2 — the bell's "Nothing new" after a request (as ruled, D227: the admin had opened Users first — the host reproduced the lit bell); a folded Archived group resetting an open archived editor (older, `main` the same, filed [USERS-ARCH-FOLD-DRAFT]) | the four blind reads 0 defects (one comment reworded by all four's shared point); Astra's and Sol's host check 2 routes no test held — two tests added red first; the break tests 1 (an archived editor drawn while closed — no test had it, pinned) | `docs/handpass/2026-11-08-rd-last-findings.md` |   «chat kept»
+```
+
+### 64655d92a — .claude/skill-observations/log.md
+
+```diff
+@@ -4379,12 +4378,0 @@
+- ### Observation 903: A fault seen only in the walker's own phone set-up is re-checked with its exact steps, not only with the test suite's phone   «step wrote»
+-    «step kept»
+- **Status:** OPEN   «step kept»
+- **Date:** 2026-11-08   «step kept»
+- **Session context:** Chat 16, [LW-PIN-LAST-FRAME] (D1870): walker L found the pinned dates row shown early after a resize or a phone turn (L22). Numbered past 890, the highest on any branch at the write.   «step kept»
+- **Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md) / bug-check order §7 (re-walk after a fix)   «step kept»
+- **Type:** open-source   «step kept»
+- **Phase/Area:** turning a walker's finding into a red-first test, and the re-walk after the fix   «step kept»
+-    «step kept»
+- **Issue:** The walker saw the fault on a desktop narrowed to 420 and on a phone turned sideways and back (its phone: device scale 2, mobile, touch, 402x874). The red-first test reproduced the desktop case but passed on the suite's own phone project and on Quals at both sizes, so a green suite after the fix proved nothing for the phone. Only re-running the walker's exact steps (same context options, same sequence, measured at the same scroll offsets) on the walked build (wrong) and the fixed build (right) closed it.   «step kept»
+- **Suggested improvement:** In the re-walk step, and in walk-scripts.md's "turning a finding into a test": when a red-first test does not go red for one of the cases a walker reported, keep the walker's exact steps as a small script and run it on the old build (must reproduce) and the fixed build (must not) before calling that case fixed; name in the evidence sheet which case is proved by a test and which by the script.   «step kept»
+- **Principle:** A test that never went red for a case is not evidence that the fix cures that case; reproduce with the finder's own set-up before and after.   «step kept»
+@@ -4588,0 +4577,15 @@
++    «chat kept»
++ ### Observation 903: A fault seen only in the walker's own phone set-up is re-checked with its exact steps, not only with the test suite's phone   «chat wrote (in neither parent)»
++    «chat kept»
++ *Numbered 891 on `claude/lw-pin-last-frame`; renumbered 903 when `main` was brought in on 8 Nov 26 — `main` holds its own 891.*   «chat wrote (in neither parent)»
++    «chat kept»
++ **Status:** OPEN   «chat kept»
++ **Date:** 2026-11-08   «chat kept»
++ **Session context:** Chat 16, [LW-PIN-LAST-FRAME] (D1870): walker L found the pinned dates row shown early after a resize or a phone turn (L22). Numbered past 890, the highest on any branch at the write.   «chat kept»
++ **Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md) / bug-check order §7 (re-walk after a fix)   «chat kept»
++ **Type:** open-source   «chat kept»
++ **Phase/Area:** turning a walker's finding into a red-first test, and the re-walk after the fix   «chat kept»
++    «chat kept»
++ **Issue:** The walker saw the fault on a desktop narrowed to 420 and on a phone turned sideways and back (its phone: device scale 2, mobile, touch, 402x874). The red-first test reproduced the desktop case but passed on the suite's own phone project and on Quals at both sizes, so a green suite after the fix proved nothing for the phone. Only re-running the walker's exact steps (same context options, same sequence, measured at the same scroll offsets) on the walked build (wrong) and the fixed build (right) closed it.   «chat kept»
++ **Suggested improvement:** In the re-walk step, and in walk-scripts.md's "turning a finding into a test": when a red-first test does not go red for one of the cases a walker reported, keep the walker's exact steps as a small script and run it on the old build (must reproduce) and the fixed build (must not) before calling that case fixed; name in the evidence sheet which case is proved by a test and which by the script.   «chat kept»
++ **Principle:** A test that never went red for a case is not evidence that the fix cures that case; reproduce with the finder's own set-up before and after.   «chat kept»
 ```
 
