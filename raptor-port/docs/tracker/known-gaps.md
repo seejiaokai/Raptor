@@ -348,8 +348,9 @@ he reports it again, ask which button he pressed and what the status line said.
   writes and revision checks is the `[DB-STEP]` (RC5) that closes it for every
   migration at once; a bespoke journal/lock now would be thrown away by it.
 - **No student name, mark or date may enter the repository.** (The reason given
-  here was "the repository is public"; it has been PRIVATE since 23 Sep 26 — D59
-  — and the rule stands: collaborators will read it.) The smoke suite checks the
+  here was "the repository is public"; it was PRIVATE from 23 Sep 26 — D59 — and
+  is public again since 25 Sep 26, until he says otherwise — D106, D1530; the rule
+  stands either way: collaborators will read it.) The smoke suite checks the
   seed and the sample file for placeholder names only; `bake-user-charts.mjs`
   re-checks after every bake.
 - **A record deleted seconds after migration, on an already-full store, can be
