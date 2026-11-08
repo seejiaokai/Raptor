@@ -67,7 +67,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     live"). (8) documents — [RULINGS-SPENT-PASS], [CAL-JOB-LEFT], [LW-READS-OWED-1024], [WORD-LIST]. (9) the folder —
     [REPO-TIDY] (1), [MAIN-CHECKOUT-STALE] (2).
   - **Then one pictures round for him** (about 12 questions, each drawn first — D1625): [BOARD-SIDEWAYS-KEYS],
-    [BOARD-NARROW-DESKTOP-REMARKS], [LW-TWO-BOX-LETTERS], [SCHED-UNAV-PENDING-MARK], [READONLY-WEEK-WORDS], [TRK-ROUND-SEEN]
+    [BOARD-NARROW-DESKTOP-REMARKS], [SCHED-UNAV-PENDING-MARK], [READONLY-WEEK-WORDS], [TRK-ROUND-SEEN]
     (2), (3), [LOGIC-WORDS-WORKHOURS], [OIL-EARN-DAY-SWITCH-WORDS], [OIL-INERT-TAP-SILENT], [INP-ADD-RIGHT], [LW-MORE-BELOW-CUE],
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
@@ -113,7 +113,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
 - [LOGIN-NOT-AT-TOP] — after signing in on a phone the page now opens at its top (live, pull request 569); his iPhone look owed, then archive.
-- [LW-TWO-BOX-LETTERS] — two whole-day boxes side by side (D1167) clip three-letter codes ("FO*" beside "TRG"); common now that a weekend duty under Unavailable shows its FO* beside it — how to draw it, a question for him with pictures.
 - [SCHED-UNAV-PENDING-MARK] — on a published day an input under the Unavailable list carries no "waiting to go out" mark on its row, where a Ground Programme row does (the count and the changes window do say it) — older than the M3 build; found by its FULL check.
 - [LW-NIGHT1025-OLDER] — only (b) is left, with the database step: (d), (f) LIVE 6 Nov 26 (pull request 646); (c) LIVE as his D1720, D1722; (a), (g) done earlier.
 - [LW-PICK-HELD-MARK] — the tapped day's cyan mark (D1289) BUILT 28 Oct 26 with [LW-WHOLE-LEAVE-WINDOW], and the phone's scroll (D1290) built in M3; left: whether the one-day window can be shorter — pictures to him first.
@@ -489,16 +488,6 @@ windows (the phone carries the sheet; its body scrolls a covered box), drawn for
 ### [LOAD-MOVES-ROW-DAY] A load of one day can move a course's row onto another published day (found 26 Oct 26 — [LW-LOAD-RELAND-RID]'s code read, F3)
 
 **Found** by the fresh Opus code read of [LW-LOAD-RELAND-RID] (reproduced in a unit probe), older than that change. **To reproduce:** a course Wed 15 – Fri 17 Jul under Unavailable; Wednesday and Thursday published; on **Thursday** Reject, then → Ground (its row on Thursday); load Thursday's Original. **What happens:** the version holds no row for it, so the load's reconcile takes it off the programme; it covers other days, so the load cannot put its filing back; the working-out then lands it again on its START day — Wednesday, a published day the load was never meant to change (AM1, D175) — and the load's note said it was "off Wednesday and Friday too" (that sentence is now true to the state after the working-out, [LW-LOAD-RELAND-RID]'s F2 fix, so it no longer says "off"). **What it costs:** Wednesday gains a pending change no one made there. **A question for him (D994 — not put until he says):** when a day's load cannot put a several-day course back as published, should the course (a) stay on that day's programme as it is (the load leaves it), (b) go back under Unavailable on every day it covers (the load says so, as an overseas duty's does), or (c) be parked as rejected (Personal Inputs) — with pictures of each. Recommended: (b), as the overseas duty already behaves.
-
-### [LW-TWO-BOX-LETTERS] Two boxes side by side clip three letters (found 25 Oct 26, the M3 build's FULL check, W2 30)
-
-A day holding two whole-day entries draws them side by side, each the full height (his D1167), each half about 10 px wide on
-a 26 px day; a three-letter code there ("FO*", "TRG", "CSE", "DTY") is clipped by its box ("O*", "RG" — picture
-`raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/w2/f-30-cell-zoom.png`). Older than the M3 build (a course beside a
-leave did it), but common now: a weekend duty under Unavailable that earns OIL always shows its FO* beside it (D1357). How
-to draw it is his: options to draw for him — letters a step smaller and closer set; the letters stacked; the day's second
-entry as the "+1" corner when either code has three letters (narrowing D1167). Not built.
-**Overtaken 6 Nov 26 by D1727 (pull request 650):** two whole days stand side by side with their codes reading bottom to top, whole — checked by the pictures round on 8 Nov 26 (`raptor-port/docs/img/handpass/2026-11-07-pictures-round/q-twobox-ph-today-x4.png`); nothing to ask him. To archive.
 
 ### [SCHED-UNAV-PENDING-MARK] No pending mark on an Unavailable row of a published day (found 25 Oct 26, W2 15)
 
