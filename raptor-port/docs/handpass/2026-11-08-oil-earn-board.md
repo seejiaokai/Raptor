@@ -73,6 +73,30 @@ row with a start and no end (D360, "No OIL worked out — this row has no end ti
 
 ## 3. The five sizing lines (§7.0)
 
+1. **Type:** C (a new control — the switch — and a new answer to a tap), D (the inert puck's reason, drawn by one drawer
+   for five callers), E (the switch's look and the phone bar's marks), with G by reach (the switch on a published day
+   waits for the next amendment; Undo and Redo of it).
+2. **What only a walk could find:** the switch pressed by a finger on the words and on the slider, and by the keys —
+   once per press, the keys left on it after the bar redraws; the note under the bar; the switch on a published day and
+   its "N pending"; the day changed and the mode left and entered with the switch on; the inert tap on each board drawer
+   (cockpit seat, desk, Common Programme row, Personal Inputs row) picking nobody and saying why, for each kind; the
+   masked taps' ruled words; a placeholder's count still opening the ALL AVAIL window, and that window's own inert man
+   unchanged; the phone bar's marks with an iPhone's letters (WebKit) and the buttons still opening Templates and OIL
+   Earn. The drawing check already proves the drawn look (§6); the unit tests prove each kind's sentence.
+3. **The ledger:** OIL and board walks — the keyboard and windows batch (5 Nov 26, C D H E, one Sonnet walker, 152
+   checks, 0 new faults, the fresh read 5), the member and guest build (5 Nov 26, FULL, two walkers, 4 faults), the first
+   OIL Earn walk (22 Sep 26, several faults in shared drawers — the reason a shared drawer is walked caller by caller).
+4. **The walk chosen:** two Sonnet walkers, each in its own world, on a build folder frozen and named for the commit, at
+   his iPhone's 402 × 874 in WebKit (touch, a picture right after each tap) and his PC's 1536 × 864 at 1.25 (mouse and
+   keys): **W1** the switch (A), the phone bar (C) and the plain-user round of OIL Earn (enter, switch on and off by
+   words / slider / keys, Undo, Redo, a published day's pending count, another day and back, ✓ OIL done, Templates
+   opened and closed, the ALL AVAIL window opened and closed by each of its ways); **W2** the inert tap (B) on each of
+   the four board drawers for each kind that drawer can hold, the masked kinds, the placeholder, and the ALL AVAIL
+   window's inert man. Astra's scenarios shared between them. No size beyond the required two: nothing new is pinned or
+   floats. Carried by a test, not walked again: each kind's exact sentence (`oilmode.test.tsx`, the last block — the
+   board's own markup pressed through the real click handler in jsdom), one per kind beyond the one walked per drawer.
+5. **After the walk:** the ledger's row — added at the close.
+
 ## 4. The orders walked — what the screen said, what OIL said
 
 ## 5. The cases carried by a test
