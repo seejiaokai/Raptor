@@ -34,12 +34,13 @@
  *   The skill log — the head, each `## <day>` heading, each `### Observation N:` entry (to the next heading of either
  *     kind). Two different entries with one number, added on both sides since the base: this branch's is renumbered past
  *     the highest number on this branch, main, the log's archive and every branch, local and remote (the skill notes' short form,
- *     step 1); in this branch's own new lines of the log, `Observation N` for a renumbered N is rewritten only where it
- *     surely means this branch's note — inside that note, or naming its title and not main's (Astra 3); any other is
- *     left as written and listed for the chat; each renumber is
- *     printed, old → new, with the note's title, and every other file whose new lines on this branch cite it is listed for
- *     the chat (a pushed commit message cannot be changed). Main's new notes are placed before this branch's at the same
+ *     step 1); only the heading changes — a citation is NEVER rewritten (round 3: which note it means cannot be known);
+ *     each renumber is printed, old → new, with the note's title, and every line this branch added that cites the old
+ *     number, in the log or any other file, is listed "look by hand: <file>:<line> cites Observation N (renumbered here
+ *     to M)" (a pushed commit message cannot be changed). Main's new notes are placed before this branch's at the same
  *     spot, so the numbers run upward (the agent's reading of the plan's "where their side put them" — Opus 9).
+ *     A day heading (`## `) added on either side since the base leaves the whole log (round 3 — which note goes under
+ *     which day is never guessed).
  *   walk-ledger.md, file-map.md, OUTSTANDING-ARCHIVE.md, DECISIONS-ARCHIVE.md, OUTSTANDING.md — git's own clash regions,
  *     read three ways: a region where BOTH sides only inserted text at the same place (its base is empty) is settled as
  *     this branch's text, then main's (one blank line between where either is paragraph-shaped, not table rows) ONLY
@@ -273,26 +274,26 @@ function renumber(B, O, T, ctx) {
   for (const r of clash) if (!map.has(r.key.slice(4))) map.set(r.key.slice(4), String(next++))
   const baseLines = new Set(linesOf(B.map(r => r.text).join('')))
   const titleOf = text => (OBS_HEAD.exec(text.split('\n')[0].replace(/\r$/, '')) || [, , ''])[2].trim()
-  const ourTitle = new Map(clash.map(r => [r.key.slice(4), titleOf(r.text)])), mainTitle = new Map(clash.map(r => [r.key.slice(4), titleOf(mt.get(r.key))]))
-  const names = (l, title) => !!title && l.toLowerCase().includes(title.toLowerCase())
+  const ourTitle = new Map(clash.map(r => [r.key.slice(4), titleOf(r.text)]))
   const cite = new RegExp(`\\bObservation (${[...map.keys()].join('|')})(?!\\d)`, 'g')
-  /* a citation in this branch's new lines is rewritten only where its target is certain (Astra 3 of the code read): the
-     line is inside this branch's own renumbered note, or names that note's title — and does not name main's note of the
-     same number. Any other is left as written and listed for the chat: "see Observation 11 on main" means main's. */
+  /* ROUND 3 (the host's guardrail after the narrow re-read — Astra re-read 1, Opus re-read 4): a citation is NEVER
+     rewritten. Whether "Observation 11" in this branch's line means its own note or main's cannot be known from where
+     the line sits or what it names ("See Observation 11 on main" inside the note itself was rewritten to the note's new
+     number), so only the heading is renumbered, and every line of this branch's that cites a renumbered number is
+     listed, with its place in the merged file, for the chat to look at (settle() finds the place). */
+  const cited = []
   const O2 = O.map(r => {
     const own = r.key.startsWith('obs:') && map.has(r.key.slice(4)) ? r.key.slice(4) : null
     const ls = linesOf(r.text), fenced = fencedFlags(ls)
     const text = ls.map((l, i) => {
       if (own && i === 0) return l.replace(/^### Observation \d+:/, `### Observation ${map.get(own)}:`)
       if (baseLines.has(l) || fenced[i]) return l
-      return l.replace(cite, (s, n) => {
-        if ((own === n || names(l, ourTitle.get(n))) && !names(l, mainTitle.get(n))) { ctx.cites.push(`Observation ${n} → ${map.get(n)} in a line of yours: ${l.trim().slice(0, 100)}`); return `Observation ${map.get(n)}` }
-        ctx.unsure.push(`${SKILL_LOG} — Observation ${n} in a line of this branch's may mean main's "${mainTitle.get(n)}" or this branch's, now ${map.get(n)} "${ourTitle.get(n)}"; left as written: ${l.trim().slice(0, 100)}`)
-        return s
-      })
+      for (const n of new Set([...l.matchAll(cite)].map(m => m[1]))) cited.push({ line: l.replace(/\r?\n$/, ''), n, to: map.get(n) })
+      return l
     }).join('')
     return { key: own ? `obs:${map.get(own)}` : r.key, text }
   })
+  ctx.cited = cited
   for (const r of clash) ctx.renumbers.push({ from: r.key.slice(4), to: map.get(r.key.slice(4)), title: ourTitle.get(r.key.slice(4)) })
   return { O: O2, map }
 }
@@ -359,9 +360,21 @@ function settle(f, st, labels, ctx) {
     return mergeRecords(B, O, T, { labels, first: 'ours', alwaysLeave: k => k === 'sec:## Gate baseline' })
   }
   if (f === SKILL_LOG) {
+    /* ROUND 3 (the host's guardrail after the narrow re-read — Astra re-read 2 and its mirror): a note could still move
+       under the wrong day, so a day heading (`## `) added on either side since the base leaves the whole log */
+    const days = x => { const ls = x.split('\n').map(l => l.replace(/\r$/, '')), fz = fencedFlags(ls), n = new Map(); ls.forEach((l, i) => { if (!fz[i] && /^## /.test(l)) n.set(l, (n.get(l) || 0) + 1) }); return n }
+    const db = days(b)
+    for (const [side, x] of [['this branch', o], ["main's side", t]]) for (const [l, n] of days(x)) if (n > (db.get(l) || 0)) throw new Leave(`${side} added a day heading ("${l.trim().slice(0, 60)}") — which note goes under which day is yours to judge`)
     const [B, O0, T] = [b, o, t].map(x => cut(x, notesKey, true))
     const { O } = renumber(B, O0, T, ctx)
-    return mergeRecords(B, O, T, { labels, first: 'theirs' })
+    const res = mergeRecords(B, O, T, { labels, first: 'theirs' })
+    /* each citation renumber() found, at its line in the merged file (a line written twice is given its places in turn) */
+    const lines = res.text.split('\n').map(l => l.replace(/\r$/, '')), taken = new Set()
+    for (const c of ctx.cited || []) {
+      const i = lines.findIndex((l, j) => l === c.line && !taken.has(`${j}:${c.n}`)); if (i >= 0) taken.add(`${i}:${c.n}`)
+      ctx.unsure.push(`${SKILL_LOG}:${i + 1} cites Observation ${c.n} (renumbered here to ${c.to})`)
+    }
+    return res
   }
   return settleInsertions(o, b, t, labels)
 }
@@ -386,7 +399,7 @@ if (stale.length) die(`a temporary copy from an interrupted run is still here ($
 /* every branch: the remote ones, and the local ones too — the other chats on this PC work in worktrees of this same
    repository, so their notes not yet pushed sit on local branches (Opus 6 of the code read) */
 const remotes = (tryGit('for-each-ref', '--format=%(refname)', 'refs/heads', 'refs/remotes') || '').split('\n').filter(r => r && !r.endsWith('/HEAD'))
-const ctx = { refs: [head, mergeHead, ...remotes], renumbers: [], cites: [], unsure: [] }
+const ctx = { refs: [head, mergeHead, ...remotes], renumbers: [], unsure: [] }
 const written = [], already = [], leftBy = new Map(), settledBy = new Map(), rulingsLeft = [], others = []
 const plan = []
 for (const [f, ids] of stages) {
@@ -401,13 +414,13 @@ for (const [f, ids] of stages) {
     let fctx, res, match = null
     for (const s of STYLES) {
       useStyle(s)
-      fctx = { refs: ctx.refs, renumbers: [], cites: [], unsure: [], disk }
+      fctx = { refs: ctx.refs, renumbers: [], unsure: [], disk }
       res = settle(f, st, labels, fctx)
       if (disk === res.text) { match = 'already'; break }
       if (disk !== null && sameConflict(disk, mergeFile(st[2], st[1] ?? '', st[3], labels, STYLE_ARGS).text)) { match = 'gits'; break }
     }
     useStyle(CONFIG_STYLE)
-    const report = () => { ctx.renumbers.push(...fctx.renumbers); ctx.cites.push(...fctx.cites); ctx.unsure.push(...fctx.unsure); if (res.settled.length) settledBy.set(f, res.settled) }
+    const report = () => { ctx.renumbers.push(...fctx.renumbers); ctx.unsure.push(...fctx.unsure); if (res.settled.length) settledBy.set(f, res.settled) }
     if (match && res.left.length) leftBy.set(f, res.left)
     if (match === 'already') { if (res.settled.length) { already.push(f); report() } continue }
     if (!match) { leftBy.set(f, [`its working copy is not what git wrote when the merge stopped, in any of git's three conflict styles (merge.conflictStyle here: ${CONFIG_STYLE}) — edited since; left to you, untouched`]); continue }
@@ -437,16 +450,22 @@ for (const p of plan) say(`  ${DRY ? 'would settle' : 'settled'}: ${p.f}${leftBy
 for (const f of already) say(`  already settled by an earlier run, unchanged: ${f}`)
 for (const [f, s] of settledBy) for (const x of s) say(`    ${f} — ${x}`)
 for (const r of ctx.renumbers) say(`  renumbered in ${SKILL_LOG}: Observation ${r.from} → ${r.to} "${r.title}" (main has its own ${r.from})`)
-for (const c of ctx.cites) say(`    rewritten: ${c}`)
 for (const u of ctx.unsure) say(`    look by hand: ${u}`)
 if (ctx.renumbers.length && mergeBase) {
-  /* the citations outside the log are this branch's to look at: its new lines that still name the old number */
-  const nums = ctx.renumbers.map(r => r.from)
+  /* the citations outside the log are this branch's to look at: its new lines that still name the old number, each at
+     its line in the working copy (or, where the merge moved it out of sight, in this branch's own copy) */
   const diff = tryGit('diff', '-U0', '--no-color', mergeBase, head, '--', '.', `:(exclude)${SKILL_LOG}`) || ''
-  let file = null
+  let file = null, at = 0, lines = [], taken = new Set()
   for (const l of diff.split('\n')) {
-    if (l.startsWith('+++ b/')) file = l.slice(6)
-    else if (l.startsWith('+') && !l.startsWith('+++') && nums.some(n => new RegExp(`\\bObservation ${n}(?!\\d)`).test(l))) say(`    look by hand: ${file} cites the old number in a line of this branch's: ${l.slice(1).trim().slice(0, 100)}`)
+    if (l.startsWith('+++ b/')) { file = l.slice(6); taken = new Set(); try { lines = readFileSync(join(REPO, file), 'utf8').split('\n').map(x => x.replace(/\r$/, '')) } catch { lines = [] } continue }
+    const h = /^@@ -\d+(?:,\d+)? \+(\d+)/.exec(l); if (h) { at = +h[1]; continue }
+    if (!l.startsWith('+') || l.startsWith('+++')) continue
+    const text = l.slice(1).replace(/\r$/, '')
+    for (const r of ctx.renumbers) if (new RegExp(`\\bObservation ${r.from}(?!\\d)`).test(text)) {
+      const i = lines.findIndex((x, j) => x === text && !taken.has(`${j}:${r.from}`)); if (i >= 0) taken.add(`${i}:${r.from}`)
+      say(`    look by hand: ${file}:${i >= 0 ? i + 1 : `${at} (this branch's copy)`} cites Observation ${r.from} (renumbered here to ${r.to})`)
+    }
+    at++
   }
 }
 const leftCount = [...leftBy.values()].reduce((a, b) => a + b.length, 0)

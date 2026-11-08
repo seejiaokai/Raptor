@@ -211,12 +211,18 @@ test('skill log: a doubled number is renumbered past every branch\'s highest; on
     x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main eleven', 'main cites Observation 11')))
   const r = c.run()
   assert.equal(r.code, 0, r.out)
-  /* Astra 3: inside the renumbered note, and in a line naming its title, the citation is rewritten; a bare "follows
-     Observation 11" in another note may mean main's eleven — left as written, and listed */
-  assert.equal(c.read('.claude/skill-observations/log.md'), LOG0 + obs(11, 'main eleven', 'main cites Observation 11') + obs(16, 'ours eleven', 'see Observation 16 and Observation 10') + obs(12, 'ours twelve', 'follows Observation 11', 'as Observation 16, ours eleven, said'))
-  assert.match(r.out, /look by hand: \.claude\/skill-observations\/log\.md — Observation 11 in a line of this branch's may mean main's "main eleven" or this branch's, now 16 "ours eleven"; left as written: follows Observation 11/)
+  /* round 3 (the host's guardrail after the narrow re-read — Astra re-read 1, Opus re-read 4): a citation is NEVER
+     rewritten — not inside the renumbered note, not in a line naming its title; every line of this branch's that cites
+     the renumbered number is listed with its place in the merged file */
+  const log = c.read('.claude/skill-observations/log.md')
+  assert.equal(log, LOG0 + obs(11, 'main eleven', 'main cites Observation 11') + obs(16, 'ours eleven', 'see Observation 11 and Observation 10') + obs(12, 'ours twelve', 'follows Observation 11', 'as Observation 11, ours eleven, said'))
+  const at = s => log.split('\n').indexOf(s) + 1
+  for (const s of ['see Observation 11 and Observation 10', 'follows Observation 11', 'as Observation 11, ours eleven, said'])
+    assert.ok(r.out.includes(`look by hand: .claude/skill-observations/log.md:${at(s)} cites Observation 11 (renumbered here to 16)`), `${s} listed at its line ${at(s)}:\n${r.out}`)
+  assert.ok(!r.out.includes(`log.md:${at('main cites Observation 11')} cites`), 'main\'s own line is not this branch\'s to look at')
+  assert.doesNotMatch(r.out, /rewritten:/)
   assert.match(r.out, /Observation 11 → 16 "ours eleven"/)
-  assert.match(r.out, /look by hand: HANDOFF\.md cites the old number/)
+  assert.ok(r.out.includes(`look by hand: HANDOFF.md:${c.read('HANDOFF.md').split('\n').indexOf('- a line (Observation 11)') + 1} cites Observation 11 (renumbered here to 16)`), r.out)
   assert.match(c.read('.claude/skill-observations/log.md'), /carriage return\r\n/, 'a carriage return in a line is kept')
   /* and a second run changes nothing */
   const again = c.run(); assert.equal(again.code, 0, again.out); assert.match(again.out, /already settled by an earlier run/)
@@ -234,7 +240,19 @@ test('skill log: a citation of main\'s note in this branch\'s lines is not redir
   const log = c.read('.claude/skill-observations/log.md')
   assert.match(log, /See Observation 11 on main, titled main finding\./)
   assert.match(log, /### Observation 12: branch finding/)
-  assert.match(r.out, /look by hand: .*Observation 11 in a line of this branch's may mean main's "main finding"/)
+  assert.ok(r.out.includes(`look by hand: .claude/skill-observations/log.md:${log.split('\n').indexOf('See Observation 11 on main, titled main finding.') + 1} cites Observation 11 (renumbered here to 12)`), r.out)
+}))
+/* the narrow re-read (Astra re-read 1, Opus re-read 4): inside this branch's own renumbered note, "See Observation 11
+   on main" and "unlike main's Observation 11" mean MAIN's note — the step rewrote both to the note's new number */
+test('skill log: a citation inside the renumbered note itself is never rewritten, only listed (Astra re-read 1, Opus re-read 4)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+  c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'Branch finding', 'See Observation 11 on main.', 'unlike main\'s Observation 11, this one is about X')),
+    x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'Main finding', 'm')))
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  const log = c.read('.claude/skill-observations/log.md')
+  assert.equal(log, LOG0 + obs(11, 'Main finding', 'm') + obs(12, 'Branch finding', 'See Observation 11 on main.', 'unlike main\'s Observation 11, this one is about X'))
+  for (const s of ['See Observation 11 on main.', 'unlike main\'s Observation 11, this one is about X'])
+    assert.ok(r.out.includes(`look by hand: .claude/skill-observations/log.md:${log.split('\n').indexOf(s) + 1} cites Observation 11 (renumbered here to 12)`), `${s}:\n${r.out}`)
 }))
 
 /* Astra 5 (the code read, 8 Nov 26): a heading inside a code block is an example — never cut as a note, never counted
@@ -450,20 +468,34 @@ test('file map: a row both sides added the same is left (round 3; was kept once 
   const before = c.read('raptor-port/docs/file-map.md')
   leftAsGitMarked(c, 'raptor-port/docs/file-map.md', c.run(), before)
 }))
-test('skill log: this branch\'s note under a day both sides opened stays under that day, before main\'s next day (Astra 2)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+/* ROUND 3 (the host's guardrail after the narrow re-read, 8 Nov 26 — Astra re-read 2 and its mirror): a note could still
+   move under the wrong day heading, so a day heading added on EITHER side since the base leaves the whole log for the
+   chat — which note goes under which day is never guessed */
+const leftWholeForDays = r => {
+  assert.equal(r.code, 2, r.out)
+  assert.match(r.out, /LEFT for you in \.claude\/skill-observations\/log\.md:\n\s+- left whole — .*added a day heading/)
+}
+test('skill log: a day heading both sides opened is left whole (round 3; was settled — Astra 2)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
   c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(13, 'ours')),
     x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(11, 'main') + '## 2026-11-09\n\n' + obs(12, 'main later')))
-  const r = c.run()
-  assert.equal(r.code, 0, r.out)
-  assert.equal(c.read('.claude/skill-observations/log.md'), LOG0 + '## 2026-11-08\n\n' + obs(11, 'main') + obs(13, 'ours') + '## 2026-11-09\n\n' + obs(12, 'main later'))
+  const before = c.read('.claude/skill-observations/log.md')
+  leftWholeForDays(c.run())
+  assert.equal(c.read('.claude/skill-observations/log.md'), before, 'git\'s own marks untouched')
 }))
-test('skill log: both sides opening different new days at one place is left (Astra 2)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+test('skill log: both sides opening different new days at one place is left whole (Astra 2)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
   c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-09\n\n' + obs(12, 'ours')), x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(11, 'main')))
-  const r = c.run()
-  assert.equal(r.code, 2, r.out)
-  assert.match(r.out, /LEFT for you in \.claude\/skill-observations\/log\.md:\n\s+- left whole — both sides added new headings/)
+  leftWholeForDays(c.run())
 }))
-
+test('skill log: a day heading only this branch added is left whole (Astra re-read 2)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+  c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(12, 'ours on the new day')), x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main under the old day')))
+  const before = c.read('.claude/skill-observations/log.md')
+  leftWholeForDays(c.run())
+  assert.equal(c.read('.claude/skill-observations/log.md'), before, 'git\'s own marks untouched')
+}))
+test('skill log: a day heading only main added is left whole (Astra re-read 2, its mirror)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+  c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + obs(12, 'ours under the old day')), x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(11, 'main on the new day')))
+  leftWholeForDays(c.run())
+}))
 const OUT0 = '# Outstanding\n\n## Priority list\n\n- [ALPHA] alpha\n- [BRAVO] bravo\n\n## Items\n\n### [ALPHA] a\n\n### [BRAVO] b\n'
 test('backlog: an item line removed on one side and a line added beside it on the other is left, never revived (Astra 8, Opus 8)', withRepo({ 'OUTSTANDING.md': OUT0 }, c => {
   c.sides(x => x.edit('OUTSTANDING.md', t => t.replace('- [ALPHA] alpha\n', '')), x => x.edit('OUTSTANDING.md', t => t.replace('- [ALPHA] alpha\n', '- [ALPHA] alpha\n- [NEW] new\n')))
