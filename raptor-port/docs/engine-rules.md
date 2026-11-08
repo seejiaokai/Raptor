@@ -4600,7 +4600,7 @@ ones.** What changes in the bullets below, each left as written:
 
 ## Where a day with nothing entered starts (D1786, 8 Nov 26)
 
-His ruling, built 8 Nov 26 (chat 6, the pictures round's group 4): a flyer's line with no in-time or rally entered starts
+His ruling, built 8 Nov 26 (chat 6, the pictures round's group 4; the backlog item [LOGIC-WORDS-WORKHOURS], now archived): a flyer's line with no in-time or rally entered starts
 his day at take-off less the default rally (VCONF.reportLead) for his long day and his Insights hours, as it already does
 for his OIL — one start, not the step (D1786; it carries D1032 and D592 (1), one clock for OIL, the work-hours bar and the
 long-day note).

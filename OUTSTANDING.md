@@ -168,7 +168,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Insights and Logic**
 - [LOGIC-IOS-REFOCUS] — on his iPhone, does the keyboard stay up when a Logic setting is saved by tapping the next box? (a check on his phone; found 21 Oct 26).
-- [LOGIC-WORDS-WORKHOURS] — the Logic page says the long day and Insights hours of a line with nothing entered count from the default rally; they count from take-off less the step — his question, which is right (older; found 19 Oct 26).
 - [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
 - [STACK-LEFTOVERS] — three small loose ends left (the Insights edges and the shared wording helper done 8 Nov 26): an old audit script's three checks (with its own job), a "back to last published" button (only if he raises it), one tidiness note — a line's callsign tidied in three places for the Blue/Red answer (with the next change to its role question).
 
@@ -1972,18 +1971,6 @@ Chromium's phone emulation cannot show it (`e2e/logicedit.spec.ts` passes there)
 if the keyboard drops, keep the tapped box itself through the save (draw the list again row by row, leaving rows whose
 markup did not change — `ui/dayswap.ts` is the week's own pattern) instead of rebuilding it. **Place:** low, with the
 Logic page's next change; it needs his phone.
-
-### [LOGIC-WORDS-WORKHOURS] The Logic page says a line with nothing entered starts its long day and Insights hours at the default rally; the app starts them at take-off less the step (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; a question for him)
-The Logic page's "Default rally before take-off" (renamed by D1031; the sentence itself dates from [LOGIC-PAGE-LAYOUT], D928) says "With no in-time or
-rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it". Walked: an empty R box, the setting 3h → 2h30 — the
-Insights hours did not move (1510 min both times); a typed R at the default time added 120 min, so with nothing entered the work span starts at the
-take-off less the step (1h). OIL does start at the default rally (D592 (2)); the long day and Insights read the one work span (`engine/validate.ts
-workSpan`, RT8 — "report/work hours … keep separate definitions"). Walker A's table `raptor-port/docs/handpass/parts/rally-box/walker-A.md` (scenario 9).
-**The question for him** (when he says so, D994): with nothing entered, should a flyer's long day and Insights hours start at the default rally
-(3 hours before take-off, as OIL does) or at the step (1 hour)? **Recommended:** the default rally — one start for a day with nothing entered,
-as the Logic page already says and OIL already does; it makes more long-day notes appear. Until he answers, the words are left as they are.
-**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1786) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "Where a day starts when nothing is entered" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
-**Built 8 Nov 26 by chat 6 on `claude/pr-day-start-7b064c`** — the engine (`engine/events.ts`) and the Logic page's drawn words; `engine-rules.md` §Where a day with nothing entered starts. Waits for its bug check, readers and his "merge live"; leaves for the archive once live.
 
 ### [BOARD-NARROW-DESKTOP-REMARKS] The desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; low)
 Walker A: at 821, 900 and 1000 wide (the desktop layout, pucks on the line) the remarks box is 16px and a line 189px tall; measured the same with the
