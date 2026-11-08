@@ -67,6 +67,21 @@ SHOW = drawn as it should be · USABLE = the gesture works · PAINTED = what els
 
 ## 7. The drawing check
 
+The approved drawings (`docs/img/handpass/2026-11-07-pictures-round/`, drawn by `scripts/handpass/pr-board.mjs`, figures in
+`pr-board-measured.json`) have no part list under `scripts/drawcheck/specs/`; the check here measures the built app with
+the drawing script's own measure, copied whole (`scripts/handpass/bl-drawcheck.mjs`), against those figures, 2px.
+Pictures: `docs/img/handpass/2026-11-08-board-layout/drawcheck/` (built-821 … built-1099 cut as the drawing's
+`q-narrow-c-*.png`; built-sideways-rest / -scrolled / -keys).
+
+**Run 1 (8 Nov 26, the build of commit f2ed9d815): 78 figures, 77 within 2px.** D1781 at 821, 874, 900, 1000, 1099 — each
+of six lines' height (111), the line's width, the remarks' width (323 / 355 / 368 / 418 / 468), the buttons and the back
+seat inside, nothing cut, the crew column's edge — all as drawn. D1780 — the top at rest 146; scrolled, the bar's foot at
+51 and its two parts' place and width — as drawn. **One difference, named to him at his look:** with the keys up after a
+tap on the drawn box (the first jet's LD, which already stands above the keys), the list shows 56, not 151 — the box does
+not move because it is not covered (D1412), so the head stays until he scrolls; scrolled, the list has the drawn 151
+(`e2e/board-layout.spec.ts`, the keys test, with a box low on the screen). This is D1780's own reading ("scroll away with
+the list, as any page does"); the drawing's 151 is the scrolled state.
+
 ## 8. Cases carried by a test
 
 ## 9. The keyboard walk
