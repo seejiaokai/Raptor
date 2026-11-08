@@ -47,7 +47,7 @@ page's own scroll). So:
   — the app then takes the old way. The partial case: make only `animation-range` answer false. Say in the report that
   this is a stand-in, not a real browser.
 
-**The build:** served at `http://localhost:4393` (built from commit 110b3a2c2). Never rebuild it, never start another
+**The build:** served at `http://localhost:4393` (rebuilt from commit c23920f0d, with the height-watch fix). Never rebuild it, never start another
 server on that port. Before your first step, check the served index names the same bundle as the folder
 `C:/Users/User/AppData/Local/Temp/claude/ba46d636af5eaefe/bfddd1cb-8b24-453c-b9e5-f54c2d5dd233/scratchpad/dist-final/index.html`
 (walk-scripts §1). Each walker uses its own fresh browser context(s) — that keeps the two worlds apart. Do not take or

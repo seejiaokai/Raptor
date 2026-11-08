@@ -61,7 +61,7 @@ layer: what it can sit over is the third column above.
    the walker's PASS; the 30 Oct 26 pinned-part sweep (E, C, A) found four faults and three wording finds, mid-pinch
    corners among them. Walks of pinned rows find their faults in painted frames and pinches: the host opens those.
 4. **The walk chosen:** two Sonnet walkers at once, each in its own fresh browser context on the one frozen build
-   (`dist` built from 110b3a2c2, served on port 4393, not rebuilt while they walk): **L, the Leave War** — Astra's
+   (`dist-final` rebuilt from c23920f0d — the height-watch fix — served on port 4393, not rebuilt while they walk): **L, the Leave War** — Astra's
    scenarios 1, 3, 4, 5, 6, 8, 10–13, 15–20, 22–24 (their Leave War halves); **Q, Quals** — 1, 3, 4, 5, 6, 7, 9–12, 14,
    17, 18, 21–24 (their Quals halves). Each with the plain-user round (§7.0a). Sizes: desktop 1536 Chromium, phone 402
    Chromium (fingers over CDP), phone 402 WebKit (looks; WebKit's scripted touches drive no scroll — `walk-scripts.md`
@@ -126,6 +126,28 @@ The median frame is 16.7 ms in every case, before and after. **The phone's "over
 refreshes (33.3 ms), and its 95th percentile reads 33.3 before and 33.4 after — so whether these are slower frames or
 two-refresh frames landing a tenth of a millisecond later is not told by this count (Astra's warning). The raw frame
 times are measured next (below) before this is judged.
+
+**The raw frame times** (8 Nov 26 06:07–06:10Z under the checks lock, timing only, `TIMING_ONLY=1`): **before** =
+`main3` (chat 14's `dist-before`, port 4381), **after** = `final3` (`dist-final` rebuilt from c23920f0d, port 4393);
+results `main3-results.json`, `final3-results.json` (each run's every interval in `raw`). The page's own frames (the
+time between two of its animation frames) at 4× slow CPU, five runs each, all intervals pooled:
+
+| Case | Frames | Under 20 ms | One refresh skipped (33–34.5 ms) | 34.5–50 ms | Over 50 ms | Worst frame | The page's work, ms a run |
+|---|---|---|---|---|---|---|---|
+| Leave War, phone 402, before | 860 | 804 | 47 | 3 | 6 | 283 ms | 880–1280 |
+| Leave War, phone 402, after | 927 | 669 | **252** | 2 | 4 | 67 ms | 716–771 |
+| Quals, phone 402, before | 858 | 823 | 34 | 1 | 0 | 50 ms | — |
+| Quals, phone 402, after | 953 | 850 | **103** | 0 | 0 | 33 ms | — |
+
+**What it says:** on the phone the long pauses are fewer and shorter (the worst frame 283 → 67 ms on the Leave War) and
+the page does about a third less work, but the page's frames skip one screen refresh far more often — the Leave War
+27% of frames against 5% before, Quals 11% against 4% — and each scroll's run lasted about 0.8 s longer. These are
+the page's own frames, not the frames the phone's scroller paints (a touch scroll is drawn off the page's thread), so
+this count does not prove the scroll looks less smooth; it does not prove it looks as smooth either. The desktop
+counts move both ways within the run-to-run spread (Leave War: one-refresh 17 → 15, over 40 ms 24 → 36, worst
+533 → 217 ms). **Judged:** a cost on a slow phone that this measure cannot settle — set to the code readers as a
+question (why the page's frames halve while its work drops, and whether the always-present copy can cost less), and
+on his look card as the one thing his iPhone decides: the Leave War scrolled fast and slowly, beside the live app.
 
 ## The orders walked
 

@@ -7,6 +7,7 @@
    Run from raptor-port/ against a preview of the bundle to measure:
      HP_URL=http://localhost:4381 LABEL=before node scripts/handpass/lwpin-frames.mjs
      ONLY=lw-pc,qu-ph RUNS=3 ...      (some cases; default all four, 5 runs each way)
+     TIMING_ONLY=1 ...                (the frame times alone: raw intervals, counts over 33.4 / 40 / 50 ms)
    Results: docs/img/handpass/2026-11-08-lw-pin-last-frame/<LABEL>-results.json, sheets <LABEL>-<case>-<dir>.png. */
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -121,7 +122,7 @@ async function measureCase(key, which, vp, touch) {
     if (!refAt[k]) { const f = await restFrame(w, +k); refAt[k] = Math.abs(f.y - +k) <= 0.6 ? 'y' + k : null; if (refAt[k]) await cmp.evaluate(([kk, d, dw]) => window.__setRef(kk, d, dw), [refAt[k], f.data, f.dw]) }
     return refAt[k]
   }
-  for (const dir of ['down', 'up']) {
+  for (const dir of process.env.TIMING_ONLY ? [] : ['down', 'up']) {   // TIMING_ONLY=1: the frame times alone
     for (let run = 0; run < RUNS; run++) {
       const start = dir === 'down' ? 0 : Math.min(g0.maxY, g0.S + (touch ? 420 : 260))
       await P.evaluate(y => scrollTo(0, y), start); await sleep(700); await P.mouse.move(Math.min(700, vp.width / 2), Math.min(600, vp.height - 100))
@@ -160,11 +161,11 @@ async function measureCase(key, which, vp, touch) {
     const m1 = Object.fromEntries((await w.cdp.send('Performance.getMetrics')).metrics.map(m => [m.name, m.value]))
     const sv = [...iv].sort((a, b) => a - b), q = p => +(sv[Math.min(sv.length - 1, Math.floor(p * sv.length))] || 0).toFixed(1)
     const d = n => +((m1[n] - m0[n]) * 1000).toFixed(0)
-    tRuns.push({ frames: iv.length, medianMs: q(0.5), p95Ms: q(0.95), over33: iv.filter(v => v > 33.4).length, taskMs: d('TaskDuration'), styleMs: d('RecalcStyleDuration'), layoutMs: d('LayoutDuration'), scriptMs: d('ScriptDuration'), endY: await P.evaluate(() => Math.round(scrollY)) })
+    tRuns.push({ frames: iv.length, medianMs: q(0.5), p95Ms: q(0.95), over33: iv.filter(v => v > 33.4).length, over40: iv.filter(v => v > 40).length, over50: iv.filter(v => v > 50).length, totalMs: +iv.reduce((a, b) => a + b, 0).toFixed(0), taskMs: d('TaskDuration'), styleMs: d('RecalcStyleDuration'), layoutMs: d('LayoutDuration'), scriptMs: d('ScriptDuration'), endY: await P.evaluate(() => Math.round(scrollY)), raw: iv.map(v => +v.toFixed(1)) })
   }
   await w.cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
   const med = k => { const v = tRuns.map(r => r[k]).sort((a, b) => a - b); return v[Math.floor(v.length / 2)] }
-  res.timing = { runs: tRuns, median: { medianMs: med('medianMs'), p95Ms: med('p95Ms'), over33: med('over33'), taskMs: med('taskMs'), styleMs: med('styleMs'), layoutMs: med('layoutMs'), scriptMs: med('scriptMs') } }
+  res.timing = { runs: tRuns, median: { medianMs: med('medianMs'), p95Ms: med('p95Ms'), over33: med('over33'), over40: med('over40'), over50: med('over50'), totalMs: med('totalMs'), taskMs: med('taskMs'), styleMs: med('styleMs'), layoutMs: med('layoutMs'), scriptMs: med('scriptMs') } }
   // the row's state at rest, both sides of the meeting point: is the pinned copy shown, and is it where the real row is
   const restState = async y => { await P.evaluate(y => scrollTo(0, y), y); await sleep(500); return P.evaluate(([sel]) => { const e = document.querySelector(sel); if (!e) return { mounted: false }; const cs = getComputedStyle(e), r = e.getBoundingClientRect(); return { mounted: true, opacity: +cs.opacity, pointer: cs.pointerEvents, top: Math.round(r.top), up: e.classList.contains('up') } }, [PIN[which]]) }
   res.atRest = { top: await restState(0), justBefore: await restState(Math.max(0, g0.S - 2)), justPast: await restState(g0.S + 2), wellPast: await restState(yUp) }
