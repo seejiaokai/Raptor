@@ -1,0 +1,1213 @@
+[
+ {
+  "scenario": "S1",
+  "width": "desktop",
+  "step": "set-up: a second course made through + Add course",
+  "pressed": "course pencil → + Add course → typed WALKB → OK",
+  "expected": "two or more courses in the Course list",
+  "seen": "[\"WALKB\",\"26ABSG\"]",
+  "pass": "PASS",
+  "pics": [],
+  "errors": []
+ },
+ {
+  "scenario": "S1",
+  "width": "desktop",
+  "step": "the question reads exactly",
+  "pressed": "course pencil → Delete course",
+  "expected": "\"Delete course WALKB?\\n\\nIts students and marks are kept: Restore in Reorder courses brings it back in this browser.\"",
+  "seen": "\"Delete course WALKB?\\n\\nIts students and marks are kept: Restore in Reorder courses brings it back in this browser.\" | ↺/⇅ count 0",
+  "pass": "PASS",
+  "pics": [
+   "s1-desktop-menu-open.png",
+   "s1-desktop-question.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S1",
+  "width": "desktop",
+  "step": "Cancel keeps the course",
+  "pressed": "Cancel in the question",
+  "expected": "course WALKB still selected and in the list",
+  "seen": "selected WALKB; list [\"WALKB\",\"26ABSG\"]; question gone: true",
+  "pass": "PASS",
+  "pics": [
+   "s1-desktop-after-cancel.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S1",
+  "width": "desktop",
+  "step": "answering yes deletes it",
+  "pressed": "Delete course → OK",
+  "expected": "WALKB no longer in the Course list",
+  "seen": "selected 26ABSG; list [\"26ABSG\"]",
+  "pass": "PASS",
+  "pics": [
+   "s1-desktop-deleted.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S2",
+  "width": "desktop",
+  "step": "Restore wears a drawn arrow (svg), no typed ↺",
+  "pressed": "course pencil → Reorder courses",
+  "expected": "deleted course listed with a Restore button holding an svg and no ↺",
+  "seen": "button text \" Restore\", svg 1, size 76x21",
+  "pass": "PASS",
+  "pics": [
+   "s2-desktop-window.png",
+   "s2-desktop-restore-button-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S2",
+  "width": "desktop",
+  "step": "Restore brings the course back",
+  "pressed": "Restore",
+  "expected": "WALKB back in the Course list",
+  "seen": "list [\"26ABSG\",\"WALKB\"]",
+  "pass": "PASS",
+  "pics": [
+   "s2-desktop-restored.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S2",
+  "width": "desktop",
+  "step": "the Reorder window closes",
+  "pressed": "Cancel",
+  "expected": "window gone",
+  "seen": "window visible: false",
+  "pass": "PASS",
+  "pics": [],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "desktop",
+  "step": "Reorder wears a drawn two-arrow icon (svg)",
+  "pressed": "looked at",
+  "expected": "svg in the Reorder button",
+  "seen": "svg 1, text \"Reorder\"",
+  "pass": "PASS",
+  "pics": [
+   "s3-desktop-students-card.png",
+   "s3-desktop-reorder-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "desktop",
+  "step": "each name has a drawn pencil (svg, filled)",
+  "pressed": "looked at",
+  "expected": "2 chips each with a pencil holding an svg",
+  "seen": "pencils svg counts [1,1]; first pencil fills [\"rgb(138, 150, 163)\",\"rgb(138, 150, 163)\",\"rgb(138, 150, 163)\"] strokes [\"none\",\"none\",\"none\"]. The tip direction is for the picture (crop).",
+  "pass": "PASS",
+  "pics": [
+   "s3-desktop-pencil-crop.png",
+   "s3-desktop-card-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "desktop",
+  "step": "each name has a drawn ✕",
+  "pressed": "looked at",
+  "expected": "each ✕ is a drawn svg, no typed ✕",
+  "seen": "x svg counts [1,1]; texts [\"\",\"\"]",
+  "pass": "PASS",
+  "pics": [
+   "s3-desktop-x-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "desktop",
+  "step": "a name's pencil opens a rename box",
+  "pressed": "pencil on the first student",
+  "expected": "rename box with the name in it",
+  "seen": "box open true, value \"STUDENT A\", question \"Rename “STUDENT A” to:\"",
+  "pass": "PASS",
+  "pics": [
+   "s3-desktop-rename-box.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "desktop",
+  "step": "cancelling the rename changes nothing",
+  "pressed": "Cancel",
+  "expected": "same names",
+  "seen": "before [\"1 STUDENT A\",\"2 STUDENT B\"] after [\"1 STUDENT A\",\"2 STUDENT B\"]; box gone true",
+  "pass": "PASS",
+  "pics": [
+   "s3-desktop-rename-cancelled.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "desktop",
+  "step": "Reorder opens the crew reorder window",
+  "pressed": "Reorder",
+  "expected": "window open",
+  "seen": "open true, title \"Crew order\"",
+  "pass": "PASS",
+  "pics": [
+   "s3-desktop-crew-window.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "desktop",
+  "step": "the crew window closes",
+  "pressed": "Cancel",
+  "expected": "window gone",
+  "seen": "visible: false",
+  "pass": "PASS",
+  "pics": [
+   "s3-desktop-crew-closed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "the gear opens flex settings",
+  "pressed": "gear",
+  "expected": "window open",
+  "seen": "open true",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-gear-open.png",
+   "s4-desktop-gear-icon-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "the gear window closes",
+  "pressed": "✕ in the window",
+  "expected": "window gone",
+  "seen": "visible false",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-gear-closed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "Show All opens",
+  "pressed": "#showAllBtn",
+  "expected": "panel open",
+  "seen": "open true",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-showall-open.png",
+   "s4-desktop-showall-icon-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "Show All closes",
+  "pressed": "Close",
+  "expected": "panel gone",
+  "seen": "visible false",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-showall-closed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "course menu opens",
+  "pressed": "#courseMenuBtn",
+  "expected": "menu panel shown",
+  "seen": "shown true; rows(svg count) [\"+ Add course:0\",\"Rename course:1\",\"Reorder courses:1\",\"Delete course:1\"]",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-course-menu.png",
+   "s4-desktop-course-btn-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "course menu closes on a click outside",
+  "pressed": "click on the chart's corner",
+  "expected": "menu gone",
+  "seen": "shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-course-after-outside.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "course menu closes on Escape",
+  "pressed": "open again, then Escape",
+  "expected": "menu gone",
+  "seen": "opened true; after Escape shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-course-after-escape.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "syl menu opens",
+  "pressed": "#sylMenuBtn",
+  "expected": "menu panel shown",
+  "seen": "shown true; rows(svg count) [\"Edit chart layout:1\",\"Duplicate syllabus:1\",\"+ Add syllabus:0\",\"Rename syllabus:1\",\"Reorder syllabi:1\",\"Delete syllabus:1\"]",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-syl-menu.png",
+   "s4-desktop-syl-btn-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "syl menu closes on a click outside",
+  "pressed": "click on the chart's corner",
+  "expected": "menu gone",
+  "seen": "shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-syl-after-outside.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "syl menu closes on Escape",
+  "pressed": "open again, then Escape",
+  "expected": "menu gone",
+  "seen": "opened true; after Escape shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-syl-after-escape.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "file menu opens",
+  "pressed": "#fileMenuBtn",
+  "expected": "menu panel shown",
+  "seen": "shown true; rows(svg count) [\"Import…:1\",\"Export…:1\"]",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-file-menu.png",
+   "s4-desktop-file-btn-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "file menu closes on a click outside",
+  "pressed": "click on the chart's corner",
+  "expected": "menu gone",
+  "seen": "shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-file-after-outside.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "file menu closes on Escape",
+  "pressed": "open again, then Escape",
+  "expected": "menu gone",
+  "seen": "opened true; after Escape shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-file-after-escape.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "course menu: a row under the mouse shades",
+  "pressed": "hover #ordCourse",
+  "expected": "hovered row background differs from a resting row",
+  "seen": "resting rgba(0, 0, 0, 0); hovered rgb(32, 38, 46); other row while hovering rgba(0, 0, 0, 0)",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-course-hover.png",
+   "s4-desktop-course-hover-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "course menu: a row under the keyboard shows its focus ring",
+  "pressed": "focus the course button, Enter, Tab, ArrowDown ×2",
+  "expected": "focused row inside the menu with a visible ring",
+  "seen": "[{\"id\":\"addCourse\",\"inMenu\":true,\"fv\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\",\"shadow\":\"none\",\"bg\":\"rgb(32, 38, 46)\"},{\"id\":\"addCourse\",\"inMenu\":true,\"fv\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\",\"shadow\":\"none\",\"bg\":\"rgb(32, 38, 46)\"},{\"id\":\"addCourse\",\"inMenu\":true,\"fv\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\",\"shadow\":\"none\",\"bg\":\"rgb(32, 38, 46)\"}]",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-course-keyboard.png",
+   "s4-desktop-course-keyboard-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "syl menu: a row under the mouse shades",
+  "pressed": "hover #renSyl",
+  "expected": "hovered row background differs from a resting row",
+  "seen": "resting rgba(0, 0, 0, 0); hovered rgb(32, 38, 46); other row while hovering rgba(0, 0, 0, 0)",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-syl-hover.png",
+   "s4-desktop-syl-hover-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "syl menu: a row under the keyboard shows its focus ring",
+  "pressed": "focus the syl button, Enter, Tab, ArrowDown ×2",
+  "expected": "focused row inside the menu with a visible ring",
+  "seen": "[{\"id\":\"arrangeBtn\",\"inMenu\":true,\"fv\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\",\"shadow\":\"none\",\"bg\":\"rgb(32, 38, 46)\"},{\"id\":\"arrangeBtn\",\"inMenu\":true,\"fv\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\",\"shadow\":\"none\",\"bg\":\"rgb(32, 38, 46)\"},{\"id\":\"arrangeBtn\",\"inMenu\":true,\"fv\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\",\"shadow\":\"none\",\"bg\":\"rgb(32, 38, 46)\"}]",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-syl-keyboard.png",
+   "s4-desktop-syl-keyboard-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "file menu: a row under the mouse shades",
+  "pressed": "hover #exportBtn",
+  "expected": "hovered row background differs from a resting row",
+  "seen": "resting rgba(0, 0, 0, 0); hovered rgb(32, 38, 46); other row while hovering rgba(0, 0, 0, 0)",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-file-hover.png",
+   "s4-desktop-file-hover-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "file menu: a row under the keyboard shows its focus ring",
+  "pressed": "focus the file button, Enter, Tab, ArrowDown ×2",
+  "expected": "focused row inside the menu with a visible ring",
+  "seen": "[{\"id\":\"importFileBtn\",\"inMenu\":true,\"fv\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\",\"shadow\":\"none\",\"bg\":\"rgb(32, 38, 46)\"},{\"id\":\"importFileBtn\",\"inMenu\":true,\"fv\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\",\"shadow\":\"none\",\"bg\":\"rgb(32, 38, 46)\"},{\"id\":\"importFileBtn\",\"inMenu\":true,\"fv\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\",\"shadow\":\"none\",\"bg\":\"rgb(32, 38, 46)\"}]",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-file-keyboard.png",
+   "s4-desktop-file-keyboard-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "Edit chart layout opens with Reset layout wearing the turning-back arrow",
+  "pressed": "syllabus pencil → Edit chart layout",
+  "expected": "tool strip on; Reset layout holds an svg",
+  "seen": "{\"on\":true,\"resetVis\":true,\"svg\":1,\"text\":\"Reset layout\"}",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-edit-layout-open.png",
+   "s4-desktop-reset-layout-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "desktop",
+  "step": "leaving Edit chart layout without saving",
+  "pressed": "syllabus pencil → Done editing chart",
+  "expected": "tool strip gone, no save asked (nothing was changed)",
+  "seen": "strip gone true; question none",
+  "pass": "PASS",
+  "pics": [
+   "s4-desktop-edit-layout-left.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "set-up: a second course made through + Add course",
+  "pressed": "course pencil → + Add course → typed WALKB → OK",
+  "expected": "two or more courses in the Course list",
+  "seen": "[\"WALKB\",\"26ABSG\"]",
+  "pass": "PASS",
+  "pics": [],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "pick another student",
+  "pressed": "Crew dropdown → STUDENT B",
+  "expected": "the dropdown and the chart follow",
+  "seen": "was STUDENT A, now STUDENT B",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-student-picked.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "Find an event by typing and pick it from the list",
+  "pressed": "Find → typed ACG-09 → first row",
+  "expected": "a list row for the event; the chart lands the event in view",
+  "seen": "rows 1, first row \"ACG-09 Emergency Procedures and Abnormal Operations\"; ball on screen true, at 516,470",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-find-typed.png",
+   "s5-desktop-find-landed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "tapping the event opens the marking window",
+  "pressed": "tap the ball",
+  "expected": "marking window shown",
+  "seen": "shown true",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-marking-window.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "DCO pressed in the marking window",
+  "pressed": "DCO",
+  "expected": "the grade is taken",
+  "seen": "window still open after DCO: false",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-after-dco.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "the marking window closes",
+  "pressed": "Close (or closed itself)",
+  "expected": "window gone",
+  "seen": "shown false",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-window-closed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "the ball changes colour on the chart",
+  "pressed": "looked at",
+  "expected": "ball fills differ from before",
+  "seen": "before none/none;none/rgb(0, 229, 200);rgb(255, 255, 255)/rgb(17, 17, 17);rgb(255, 255, 255)/rgb(17, 17, 17);none/rgb(59, 198, 232);rgb(0, 0, 0)/none;rgb(87, 201, 122) | after none/none;none/rgb(0, 229, 200);rgb(255, 255, 255)/rgb(17, 17, 17);rgb(0, 0, 0)/rgb(17, 17, 17);none/rgb(59, 198, 232);rgb(0, 0, 0)/none;rgb(87, 201, 122)/rgba(",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-ball-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "the Info panel reflects it",
+  "pressed": "Info (tab on a phone; side panel on a desktop)",
+  "expected": "the panel text differs from before",
+  "seen": "before: STUDENTS Reorder + Add 1 STUDENT A 2 STUDENT B 26ABSG STUDENT A STUDENT B || OVERALL — STUDENT B 0.0% COMPLETE 0 DONE 210 REMAINING Flights 0/41 · 0% Acad / Spec 0/106 · 0% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0% || NEXT EVENT (FLOW-BASED) Next CF || after: STUDENTS Reorder + Add 1 STUDENT A 2 STUDENT B 26ABSG STUDENT A STUDENT B || OVERALL — STUDENT B 0.5% COMPLETE 1 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 1/106 · 1% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0% || NEXT EVENT (FLOW-BASED) Next CF",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-info-after.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "Show All shows it",
+  "pressed": "Show All filtered to the event",
+  "expected": "the event's line differs from before / mentions the grade",
+  "seen": "before: ACG ACG-09 Emergency Procedures and Abnormal Operationsnot done Type: Lecture · 2.0 Hrs Crew: — Prerequisites: ACG-08 Edit || after: ACG ACG-09 Emergency Procedures and Abnormal OperationsDCO Type: Lecture · 2.0 Hrs Crew: — Prerequisites: ACG-08 Edit",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-showall-before.png",
+   "s5-desktop-showall-after.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "Legend opens",
+  "pressed": "Legend",
+  "expected": "legend shown",
+  "seen": "open true",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-legend-open.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "Legend closes on a press outside",
+  "pressed": "press on the dimmed page",
+  "expected": "legend gone",
+  "seen": "visible false",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-legend-closed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "switch to another course",
+  "pressed": "Course dropdown",
+  "expected": "the other course shows",
+  "seen": "now WALKB, balls on chart 210",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-other-course.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "desktop",
+  "step": "coming back, the mark is still there",
+  "pressed": "Course dropdown back",
+  "expected": "same course, same student, ball still coloured as marked",
+  "seen": "course 26ABSG, student STUDENT B, ball same as marked: true",
+  "pass": "PASS",
+  "pics": [
+   "s5-desktop-back-on-first.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S1",
+  "width": "phone",
+  "step": "set-up: a second course made through + Add course",
+  "pressed": "course pencil → + Add course → typed WALKB → OK",
+  "expected": "two or more courses in the Course list",
+  "seen": "[\"WALKB\",\"26ABSG\"]",
+  "pass": "PASS",
+  "pics": [],
+  "errors": []
+ },
+ {
+  "scenario": "S1",
+  "width": "phone",
+  "step": "the question reads exactly",
+  "pressed": "course pencil → Delete course",
+  "expected": "\"Delete course WALKB?\\n\\nIts students and marks are kept: Restore in Reorder courses brings it back in this browser.\"",
+  "seen": "\"Delete course WALKB?\\n\\nIts students and marks are kept: Restore in Reorder courses brings it back in this browser.\" | ↺/⇅ count 0",
+  "pass": "PASS",
+  "pics": [
+   "s1-phone-menu-tap.png",
+   "s1-phone-menu-open.png",
+   "s1-phone-delete-tap.png",
+   "s1-phone-question.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S1",
+  "width": "phone",
+  "step": "Cancel keeps the course",
+  "pressed": "Cancel in the question",
+  "expected": "course WALKB still selected and in the list",
+  "seen": "selected WALKB; list [\"WALKB\",\"26ABSG\"]; question gone: true",
+  "pass": "PASS",
+  "pics": [
+   "s1-phone-cancel-tap.png",
+   "s1-phone-after-cancel.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S1",
+  "width": "phone",
+  "step": "answering yes deletes it",
+  "pressed": "Delete course → OK",
+  "expected": "WALKB no longer in the Course list",
+  "seen": "selected 26ABSG; list [\"26ABSG\"]",
+  "pass": "PASS",
+  "pics": [
+   "s1-phone-delete2-tap.png",
+   "s1-phone-yes-tap.png",
+   "s1-phone-deleted.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S2",
+  "width": "phone",
+  "step": "Restore wears a drawn arrow (svg), no typed ↺",
+  "pressed": "course pencil → Reorder courses",
+  "expected": "deleted course listed with a Restore button holding an svg and no ↺",
+  "seen": "button text \" Restore\", svg 1, size 76x21",
+  "pass": "PASS",
+  "pics": [
+   "s2-phone-reorder-tap.png",
+   "s2-phone-window.png",
+   "s2-phone-restore-button-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S2",
+  "width": "phone",
+  "step": "Restore brings the course back",
+  "pressed": "Restore",
+  "expected": "WALKB back in the Course list",
+  "seen": "list [\"26ABSG\",\"WALKB\"]",
+  "pass": "PASS",
+  "pics": [
+   "s2-phone-restore-tap.png",
+   "s2-phone-restored.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S2",
+  "width": "phone",
+  "step": "the Reorder window closes",
+  "pressed": "Cancel",
+  "expected": "window gone",
+  "seen": "window visible: false",
+  "pass": "PASS",
+  "pics": [],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "phone",
+  "step": "Reorder wears a drawn two-arrow icon (svg)",
+  "pressed": "looked at",
+  "expected": "svg in the Reorder button",
+  "seen": "svg 1, text \"Reorder\"",
+  "pass": "PASS",
+  "pics": [
+   "s3-phone-students-card.png",
+   "s3-phone-reorder-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "phone",
+  "step": "each name has a drawn pencil (svg, filled)",
+  "pressed": "looked at",
+  "expected": "2 chips each with a pencil holding an svg",
+  "seen": "pencils svg counts [1,1]; first pencil fills [\"rgb(138, 150, 163)\",\"rgb(138, 150, 163)\",\"rgb(138, 150, 163)\"] strokes [\"none\",\"none\",\"none\"]. The tip direction is for the picture (crop).",
+  "pass": "PASS",
+  "pics": [
+   "s3-phone-pencil-crop.png",
+   "s3-phone-card-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "phone",
+  "step": "each name has a drawn ✕",
+  "pressed": "looked at",
+  "expected": "each ✕ is a drawn svg, no typed ✕",
+  "seen": "x svg counts [1,1]; texts [\"\",\"\"]",
+  "pass": "PASS",
+  "pics": [
+   "s3-phone-x-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "phone",
+  "step": "a name's pencil opens a rename box",
+  "pressed": "pencil on the first student",
+  "expected": "rename box with the name in it",
+  "seen": "box open true, value \"STUDENT A\", question \"Rename “STUDENT A” to:\"",
+  "pass": "PASS",
+  "pics": [
+   "s3-phone-pencil-tap.png",
+   "s3-phone-rename-box.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "phone",
+  "step": "cancelling the rename changes nothing",
+  "pressed": "Cancel",
+  "expected": "same names",
+  "seen": "before [\"1 STUDENT A\",\"2 STUDENT B\"] after [\"1 STUDENT A\",\"2 STUDENT B\"]; box gone true",
+  "pass": "PASS",
+  "pics": [
+   "s3-phone-rename-cancelled.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "phone",
+  "step": "Reorder opens the crew reorder window",
+  "pressed": "Reorder",
+  "expected": "window open",
+  "seen": "open true, title \"Crew order\"",
+  "pass": "PASS",
+  "pics": [
+   "s3-phone-reorder-tap.png",
+   "s3-phone-crew-window.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S3",
+  "width": "phone",
+  "step": "the crew window closes",
+  "pressed": "Cancel",
+  "expected": "window gone",
+  "seen": "visible: false",
+  "pass": "PASS",
+  "pics": [
+   "s3-phone-crew-closed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "the gear opens flex settings",
+  "pressed": "gear",
+  "expected": "window open",
+  "seen": "open true",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-gear-tap.png",
+   "s4-phone-gear-open.png",
+   "s4-phone-gear-icon-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "the gear window closes",
+  "pressed": "✕ in the window",
+  "expected": "window gone",
+  "seen": "visible false",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-gear-closed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "Show All opens",
+  "pressed": "#showAllTab",
+  "expected": "panel open",
+  "seen": "open true",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-showall-tap.png",
+   "s4-phone-showall-open.png",
+   "s4-phone-showall-icon-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "Show All closes",
+  "pressed": "Close",
+  "expected": "panel gone",
+  "seen": "visible false",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-showall-closed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "course menu opens",
+  "pressed": "#courseMenuBtn",
+  "expected": "menu panel shown",
+  "seen": "shown true; rows(svg count) [\"+ Add course:0\",\"Rename course:1\",\"Reorder courses:1\",\"Delete course:1\"]",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-course-open-tap.png",
+   "s4-phone-course-menu.png",
+   "s4-phone-course-btn-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "course menu closes on a click outside",
+  "pressed": "click on the chart's corner",
+  "expected": "menu gone",
+  "seen": "shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-course-outside-tap.png",
+   "s4-phone-course-after-outside.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "course menu closes on Escape",
+  "pressed": "open again, then Escape",
+  "expected": "menu gone",
+  "seen": "opened true; after Escape shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-course-after-escape.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "syl menu opens",
+  "pressed": "#sylMenuBtn",
+  "expected": "menu panel shown",
+  "seen": "shown true; rows(svg count) [\"Edit chart layout:1\",\"Duplicate syllabus:1\",\"+ Add syllabus:0\",\"Rename syllabus:1\",\"Reorder syllabi:1\",\"Delete syllabus:1\"]",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-syl-open-tap.png",
+   "s4-phone-syl-menu.png",
+   "s4-phone-syl-btn-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "syl menu closes on a click outside",
+  "pressed": "click on the chart's corner",
+  "expected": "menu gone",
+  "seen": "shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-syl-outside-tap.png",
+   "s4-phone-syl-after-outside.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "syl menu closes on Escape",
+  "pressed": "open again, then Escape",
+  "expected": "menu gone",
+  "seen": "opened true; after Escape shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-syl-after-escape.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "file menu opens",
+  "pressed": "#fileMenuBtn",
+  "expected": "menu panel shown",
+  "seen": "shown true; rows(svg count) [\"Import…:1\",\"Export…:1\"]",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-file-open-tap.png",
+   "s4-phone-file-menu.png",
+   "s4-phone-file-btn-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "file menu closes on a click outside",
+  "pressed": "click on the chart's corner",
+  "expected": "menu gone",
+  "seen": "shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-file-outside-tap.png",
+   "s4-phone-file-after-outside.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "file menu closes on Escape",
+  "pressed": "open again, then Escape",
+  "expected": "menu gone",
+  "seen": "opened true; after Escape shown false",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-file-after-escape.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "Edit chart layout opens with Reset layout wearing the turning-back arrow",
+  "pressed": "syllabus pencil → Edit chart layout",
+  "expected": "tool strip on; Reset layout holds an svg",
+  "seen": "{\"on\":true,\"resetVis\":true,\"svg\":1,\"text\":\"Reset layout\"}",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-edit-layout-tap.png",
+   "s4-phone-edit-layout-open.png",
+   "s4-phone-reset-layout-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S4",
+  "width": "phone",
+  "step": "leaving Edit chart layout without saving",
+  "pressed": "syllabus pencil → Done editing chart",
+  "expected": "tool strip gone, no save asked (nothing was changed)",
+  "seen": "strip gone true; question none",
+  "pass": "PASS",
+  "pics": [
+   "s4-phone-edit-layout-leave-tap.png",
+   "s4-phone-edit-layout-left.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "set-up: a second course made through + Add course",
+  "pressed": "course pencil → + Add course → typed WALKB → OK",
+  "expected": "two or more courses in the Course list",
+  "seen": "[\"WALKB\",\"26ABSG\"]",
+  "pass": "PASS",
+  "pics": [],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "pick another student",
+  "pressed": "Crew dropdown → STUDENT B",
+  "expected": "the dropdown and the chart follow",
+  "seen": "was STUDENT A, now STUDENT B",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-student-picked.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "Find an event by typing and pick it from the list",
+  "pressed": "Find → typed ACG-09 → first row",
+  "expected": "a list row for the event; the chart lands the event in view",
+  "seen": "rows 1, first row \"ACG-09 Emergency Procedures and Abnormal Operations\"; ball on screen true, at 226,434",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-find-typed.png",
+   "s5-phone-find-pick-tap.png",
+   "s5-phone-find-landed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "tapping the event opens the marking window",
+  "pressed": "tap the ball",
+  "expected": "marking window shown",
+  "seen": "shown true",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-tap-event-tap.png",
+   "s5-phone-marking-window.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "DCO pressed in the marking window",
+  "pressed": "DCO",
+  "expected": "the grade is taken",
+  "seen": "window still open after DCO: false",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-dco-tap.png",
+   "s5-phone-after-dco.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "the marking window closes",
+  "pressed": "Close (or closed itself)",
+  "expected": "window gone",
+  "seen": "shown false",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-window-closed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "the ball changes colour on the chart",
+  "pressed": "looked at",
+  "expected": "ball fills differ from before",
+  "seen": "before none/none;none/rgb(0, 229, 200);rgb(255, 255, 255)/rgb(17, 17, 17);rgb(255, 255, 255)/rgb(17, 17, 17);none/rgb(59, 198, 232);rgb(0, 0, 0)/none;rgb(87, 201, 122) | after none/none;none/rgb(0, 229, 200);rgb(255, 255, 255)/rgb(17, 17, 17);rgb(0, 0, 0)/rgb(17, 17, 17);none/rgb(59, 198, 232);rgb(0, 0, 0)/none;rgb(87, 201, 122)/rgba(",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-ball-crop.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "the Info panel reflects it",
+  "pressed": "Info (tab on a phone; side panel on a desktop)",
+  "expected": "the panel text differs from before",
+  "seen": "before: STUDENTS Reorder + Add 1 STUDENT A 2 STUDENT B 26ABSG STUDENT A STUDENT B || OVERALL 0.0% COMPLETE 0 DONE 210 REMAINING Flights 0/41 · 0% Acad / Spec 0/106 · 0% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0% || NEXT EVENT (FLOW-BASED) Next CFT CFT-01 Nex || after: STUDENTS Reorder + Add 1 STUDENT A 2 STUDENT B 26ABSG STUDENT A STUDENT B || OVERALL 0.5% COMPLETE 1 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 1/106 · 1% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0% || NEXT EVENT (FLOW-BASED) Next CFT CFT-01 Nex",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-info-after.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "Show All shows it",
+  "pressed": "Show All filtered to the event",
+  "expected": "the event's line differs from before / mentions the grade",
+  "seen": "before: ACG ACG-09 Emergency Procedures and Abnormal Operationsnot done Type: Lecture · 2.0 Hrs Crew: — Prerequisites: ACG-08 Edit || after: ACG ACG-09 Emergency Procedures and Abnormal OperationsDCO Type: Lecture · 2.0 Hrs Crew: — Prerequisites: ACG-08 Edit",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-showall-before.png",
+   "s5-phone-showall-after.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "Legend opens",
+  "pressed": "Legend",
+  "expected": "legend shown",
+  "seen": "open true",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-legend-tap.png",
+   "s5-phone-legend-open.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "Legend closes on a press outside",
+  "pressed": "press on the dimmed page",
+  "expected": "legend gone",
+  "seen": "visible false",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-legend-closed.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "switch to another course",
+  "pressed": "Course dropdown",
+  "expected": "the other course shows",
+  "seen": "now WALKB, balls on chart 210",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-other-course.png"
+  ],
+  "errors": []
+ },
+ {
+  "scenario": "S5",
+  "width": "phone",
+  "step": "coming back, the mark is still there",
+  "pressed": "Course dropdown back",
+  "expected": "same course, same student, ball still coloured as marked",
+  "seen": "course 26ABSG, student STUDENT B, ball same as marked: true",
+  "pass": "PASS",
+  "pics": [
+   "s5-phone-back-on-first.png"
+  ],
+  "errors": []
+ }
+]
