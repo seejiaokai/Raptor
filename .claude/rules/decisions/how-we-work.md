@@ -125,9 +125,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Correctness beats context economy: never skip or shrink a read to save context — the bug-check order, the design guide
   and the ripple map are read by section from the checklists that name when, every section that applies a required read
   [D68, D1735].
-- A review of a day's merged work starts with a small handful of checks on the riskiest code — the app's own checks and a
-  few reads — and Fable reads nothing wider until that handful shows a fault and he says to go on; Astra's read and the
-  app's own checks are not Fable spend and run on [D1934, D790, D903, D1743, D1770].
+- A review of a day's merged work starts with a handful of checks; Fable reads wider only on his word [D1934].
 
 ## Checking the running app (detail: `raptor-port/docs/bug-check-order.md`)
 - Walks run in the cloud instead of on his PC, adopted by every chat if a chat could start one on its own and it built
@@ -140,6 +138,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - The bug-check order is the merged result of two independent proposals and replaced the three earlier methods — one
   method [D8, D10]; it adapts to any kind of work [D12]; it owns the running app, the readers the plan and the code, the
   walk before the final read [D11]. The old bug-testing list is retired: nothing adds to it, no handoff checks it [D72].
+  Its checklist is to send a walk to the order's §2a whole, not its table only [D1937].
 - Every walk of a screen has a plain-user round: the area's everyday tasks end to end, every control that opens or closes
   pressed, every other place that should show the result looked at, with pictures — on top of the change's own
   scenarios, never instead of them [D1557]. On a phone, a picture right

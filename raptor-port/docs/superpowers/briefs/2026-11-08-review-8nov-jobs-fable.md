@@ -198,3 +198,5 @@ comparison" marks are reads the host has not repeated, not failures to reproduce
 
 Rulings: 1 recorded this chat → `.claude/rules/decisions/how-we-work.md` (D1934). Walk: none — a read and the app's
 own checks, no walk of the running app (none was asked for; nothing here is ready for "merge live").
+
+**His answers to the six points (8 Nov 26):** 1 fix it — chat 36's trimmed OIL page drops the sentence; 2 and 3 keep as built, the rows marked (D1935); 5 keep (D1936); 6 fix the test, filed as [E2E-BOARD-KEYS-SKIP] (D1936); 4 fix the checklist, filed as [CHK-ROUTE-2A] (D1937).
