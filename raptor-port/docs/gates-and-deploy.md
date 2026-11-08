@@ -608,5 +608,6 @@ and ride along with the next real change or the merge; the merge itself earns on
   not lower the count; a branch with automatic deployments turned off (`git.deploymentEnabled`) makes no build at all.
 - **Pro (from 8 Nov 26) allows 6,000 a day but bills build minutes** past its US$20 monthly usage credit: US$0.0035 per
   CPU minute, the duration rounded up to whole minutes, 2 CPUs on the Basic machine and at least 4 on Elastic, the default
-  after upgrading. He spends no more than US$20 a month on it (D1794), so builds are kept inside that credit; the budget's
+  after upgrading. He spends no more than US$20 a month on it (D1794), so builds are kept inside that credit: the Basic machine, a US$1
+  budget that only warns, and back to the free plan if it warns; the budget's
   "Pause Production Deployments" stays off, since it takes the live app down.
