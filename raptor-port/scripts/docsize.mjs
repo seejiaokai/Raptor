@@ -423,7 +423,7 @@ const RULING_BYTES = [
   /* tracker 27500 -> 29500 (22 Oct 26, the Leave War design's merge on his "merge live"): 28,018 bytes on `main` with
      D1170, D1171 (main's round 3 - the Tracker bar's height), already over on `main` and failing the documents check of
      every pull request; none is trimmed (D136). The split or the spent-rulings pass stays filed in [RULINGS-SPENT-PASS]. */
-  ['.claude/rules/decisions/tracker.md', 2, 32500],   // raised 5 Nov 26 from 29500: D1705 (round 4's Tracker marks) took it 91 over; never trimmed (D136), a tenth above
+  ['.claude/rules/decisions/tracker.md', 2, 41500],   // raised 8 Nov 26 from 32500: the rules diet's step 5a made it a page (D1735) stating each ruling's full requirements, which the short lines had cut — the account by requirement put back 31 gaps where the first draft bent or dropped a part (8 of them a rule: readings stated as his rule, a one-off reminder widened, the drag rules' safeguards), the two blind reads 15 more (D191 against D1005 put to him as a question, Retry's no-reload case, the drag rules' bottom edge, D1004 answered), and about 30 pointer lines cite about 70 rulings of other areas (37,758 bytes); a ruling is never cut to fit (D141), a tenth above again. Before that, raised 5 Nov 26 from 29500: D1705 (round 4's Tracker marks) took it 91 over; never trimmed (D136), a tenth above
   /* 7 Nov 26 (D1735, the rules diet's step 1): the two seam files, registered before they are written (step 2 moves
      the Leave War's and the Tracker's "## Architecture" sections into them whole — 13,077 and 10,988 bytes measured
      that day), each a tenth above its section and its paths: header. Registered with their probe files in

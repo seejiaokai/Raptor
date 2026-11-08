@@ -72,7 +72,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
-  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; People & accounts as a page merged 8 Nov 26 on his "merge live" (chat 17, pull request 700), accounted and read blind by both — it loads with files most jobs open, so the re-measure counts it and narrowing its `paths:` is a question for him then; the scheduler's D212 stale clause (a member may tick SCHEDULER, since D1651) goes with the scheduler's page in 5b; the screen-design rulings as a page merged 8 Nov 26 on his "merge live" (chat 24, pull request 708), accounted and read blind by both — it loads with every file of the app's code, so the re-measure counts it; for 5b, the Inputs pages' D1300 "cyan ring" (the mark is the one blue) and the scheduler's D1038 row's "Not built" (it is drawn); next the Tracker, on his word, and a re-measure before 5b.
+  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; People & accounts as a page merged 8 Nov 26 on his "merge live" (chat 17, pull request 700), accounted and read blind by both — it loads with files most jobs open, so the re-measure counts it and narrowing its `paths:` is a question for him then; the scheduler's D212 stale clause (a member may tick SCHEDULER, since D1651) goes with the scheduler's page in 5b; the screen-design rulings as a page merged 8 Nov 26 on his "merge live" (chat 24, pull request 708), accounted and read blind by both — it loads with every file of the app's code, so the re-measure counts it; for 5b, the Inputs pages' D1300 "cyan ring" (the mark is the one blue) and the scheduler's D1038 row's "Not built" (it is drawn); the Tracker as a page built (chat 34, pull request 714 — merged 8 Nov 26 on his "merge live"), accounted and read blind by both, D191 against D1005 filed for him as [TRK-TYPED-STUDENT-Q] and answered the same day, his D1931 (no student added by a typed name; the build filed as [TRK-NO-TYPED-STUDENT]); next the re-measure before 5b.
     Found by its step 3, low, the agent's: [BUGCHECK-LESSON-ORDER] — the bug-check order's list of missed faults has a second 23 outside it and 8 before 7.
     Found by its step 5a (People), medium, the agent's: [DOCSIZE-PATHS-OPEN] — a rules file whose `paths:` list is never closed passes the document check, its page checks skipped.
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
@@ -156,11 +156,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Tracker**
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
-- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's). BUILT 8 Nov 26 (chat 20, PR #696) but the magnifier: he ruled it matched to the app's (D1900) — to build.
 - [TRK-MARKS-LEFT] — typed marks still in four Tracker messages and hints, and the Tracker's Export / Import drawings unlike Admin's; for the consistency look (found by chat 20).
 - [TRK-MENU-KEYS] — the Tracker's course, syllabus and File menus wear the browser's white keyboard ring, not the app's cyan, and the arrow keys do not move through them, unlike the board's menus (found by chat 20's walk).
 - [TRK-COPIES-TIDY] — the code reads' tidiness notes on [TRK-KEPT-COPIES] (D489), filed not fixed.
-- [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work, on every page; he chose a "Not kept" band under the top bar on every page (D1901) — to build.
+- [TRK-NO-TYPED-STUDENT] — no Tracker student can be added by a typed name (his D1931, 8 Nov 26): + Add loses its "Or type a callsign" box and adds nothing when the search matches nobody or nobody is on the roster; drawn for him first (D1625). Today it still adds a typed name, linked to nobody.
+- [TRK-DOWN-DAYS-CANCELLED] — a cancelled medical input still counts toward a student's down days; left open for his look when the down days were built (18 Oct 26), carried by no item since.
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -385,22 +385,6 @@ The 202 rules after the wrapper's close in the bid sheet's stylesheet (the count
 ### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
 **What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.
 
-### [TRK-KEPT-COPIES] The Tracker's own copies of the app's glyphs, pencil and colours (filed 5 Nov 26 — the Tracker tidy's read, L2)
-**What:** three things the standalone Tracker carried for itself were kept on purpose by [TRK-STANDALONE-LEFTOVERS], since
-merging them could move a pixel if a copy has drifted: the Tracker's own drawings of the app's glyphs and pencil
-(`src/tracker/components/Glyphs.jsx`, `SrchGlyph.jsx`, held equal by `tracker.test.tsx`), and its own colour list for a page
-with no `:root` (`trk-palette.test.ts`). Today they live only in `docs/tracker/known-gaps.md`. **To do:** draw each from the
-app's one copy instead, with pictures of the Tracker before and after at a desktop and a phone size; nothing a person sees
-should change. **Place:** low, the agent's — with the Tracker's next batch (D490). Evidence:
-`raptor-port/docs/handpass/parts/trk1105/read-opus.md`.
-**Built 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, PR #696):** the pencil, Reorder, gear, Reset and list
-are the app's own icons; the page colours link to Raptor's tokens; pictures before (twice) and after, pixel-compared —
-nothing a person can see changed (`raptor-port/docs/handpass/2026-11-08-chat20-tracker.md`). **Left:** the magnifier
-(`SrchGlyph.jsx`) has drifted from the app's — its handle a fifth shorter — so matching it is a change he would see: put
-to him with a picture (D1625). **His answer, 8 Nov 26 (D1900): match the app's** — draw the app's magnifier (`ui/icons.tsx`)
-in place of `SrchGlyph.jsx`'s, checked by pictures before and after; archive this item once that is built and live.
-**Place:** with [TRK-NOSTORE-SAVED]'s build, one job.
-
 ### [TRK-MARKS-LEFT] Typed marks left in Tracker words, and its Export / Import drawings (filed 8 Nov 26 — chat 20)
 **What:** building D1860, more typed marks were found in words a message box or a hint carries, where the app cannot draw
 its marks: the built-in syllabus delete's "you can bring it back later from ⇅ Reorder" (`core.js`, about line 6276),
@@ -441,19 +425,36 @@ written twice in `storage/boot.ts`; (8) `Shell.tsx`'s `saveFailed` now means "a 
 **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
 the tidiness audit ([CODE-TIDY-AUDIT]).
 
-### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
-**What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
-top bar says nothing, yet nothing survives a reload: mark an event, reload, and the mark is gone. Older — the same before
-the tidy. **The case to put to him:** a line telling the person "This browser won't keep your work after a reload" (or the
-app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.**
-**Drawn 8 Nov 26 (chat 20's questions page, https://claude.ai/artifact/RL8hZp77xYhRYcBS1a8cay; `raptor-port/docs/mock/2026-11-08-chat20-tracker-questions.html`) —
-his answer the same day (D1901): option A.** **To build:** a band under the top bar on every page while the browser refuses
-storage — the drawn warning sign, **Not kept**, "this browser loses your work on a reload", no Retry, the "Not saved"
-strip's look (D1655), the page moved down under it as that band does (D587, D1657 for the screens without the top bar to
-weigh); the Tracker's corner empty while it is up. It touches the storage boot (how the app knows storage is refused),
-every page's top, and the Tracker's corner — a bug check of its own (saved data: the tier's question 3). **Place:** the
-next Tracker / app job, with D1900's magnifier, one branch. Evidence:
-`raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
+### [TRK-NO-TYPED-STUDENT] No Tracker student can be added by a typed name (his D1931, 8 Nov 26 — first filed the same day as a question, [TRK-TYPED-STUDENT-Q], by the rules diet's step 5a, both blind reads)
+**His answer (8 Nov 26, typed in chat 34): "Typed student can't be added" (D1931 — replaces D191, answers D1005).** **To
+build:** + Add loses its "Or type a callsign" box; a search that matches nobody adds nothing (the "Nobody on the roster
+matches" line and OK / Enter adding the typed name go); with nobody on the roster to offer, the plain "Student callsign:"
+box goes too and + Add adds nobody. The window and its words are drawn for him first (D1625, the agent's reading). A
+student already stored with no roster link is demo data (D56), left as it is. Also to correct when built:
+`raptor-port/docs/ui-contracts.md` §The Tracker tab (the + Add entry) and `raptor-port/docs/tracker/known-gaps.md` (typed
+names still add an unlinked student). **Place:** with the Tracker's next batch. The question as it was filed:
+**What:** his words of 18 Oct 26 (D1005), "a student can't be a typed student as I'm removing this feature", and D1005's
+rule, "Every Tracker student is a man on the roster", say a student is always a man on the roster; but the agent's reading
+(2) in the same row narrowed it to the typed "No. of Down Days" box ("no student keeps a typed box"), and the app was built
+that way. **Today:** on + Add, a name typed in the search that matches nobody, or typed in "Or type a callsign", still adds
+a student linked to nobody (D191, built — `src/tracker/app/core.js addStudent`); his down days read "—", since there are no
+inputs to count; with nobody on the roster to offer, + Add is the plain "Student callsign:" box (kept by
+[TRK-STANDALONE-LEFTOVERS]). No later ruling says which he meant, so it goes to him as a question (How we work: where the
+newer ruling does not clearly cover the case — D90, D201). Nothing is built or removed until he answers. **The question:**
+does "I'm removing this feature" take typed students out of + Add, or was it only the typed down-days box? **To do:** ask him
+with a picture of the + Add box, its "Or type a callsign" line marked (D853); then record his answer and, if typed students
+go, file the build. **Place:** kept until he asks for the backlog's questions (D994). The page line:
+`.claude/rules/decisions/tracker.md` §Students and courses.
+
+### [TRK-DOWN-DAYS-CANCELLED] A cancelled medical input still counts toward the down days (filed 8 Nov 26 — the rules diet's step 5a, the fresh Opus read)
+**What:** the finished item [TRK-DOWN-DAYS-AUTO] (`OUTSTANDING-ARCHIVE.md`, built 18 Oct 26, pull request 534) left this
+open: "Open for his look: a CANCELLED medical input still counts (the Medical tab's own reading)". No live item carried it
+after the archive. The night's evidence (`raptor-port/docs/handpass/2026-10-18-night-jobs.md`) called it not a finding then,
+since a cancel mark was set only on ground-programme rows, never a medical one. The Tracker's count reads every medical
+input of the man (`src/tracker/peoplewire.ts medForTracker`), with no test of a cancel. **To do:** check whether a medical
+input can be cancelled today; if it can, put it to him with a picture of the down-days window — should a cancelled one
+count? Not a ruling until he answers. **Place:** low, with the Tracker's next batch. The page line:
+`.claude/rules/decisions/tracker.md` §The Info panel.
 
 ### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
 **8 Nov 26 — the IT side's answers 3, 8, 9 (`[IT-QUESTIONS]`):** database-level rights are the PP CoE's — one user security group gives basic access, and who may do what is the app's own roles, controlled inside the app. So (1)–(3) below are not ours to set; put to him 8 Nov 26 (the day lock is settled: D1751).

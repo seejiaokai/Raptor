@@ -263,7 +263,7 @@ branch.**
 |---|---|---|---|
 | `courseId` | ref Course | yes | |
 | `syllabusId` | ref Syllabus | yes | |
-| `personId` | ref Person | yes at target | the link. Nullable during migration only — an unlinked student exists today and imports with null. A visitor from another unit is a `Person` with `isExternal`, not a null link (decided; see Person) |
+| `personId` | ref Person | yes at target | the link. Nullable during migration only — an unlinked student exists today and imports with null (since D1931, 8 Nov 26, no new one can be added by a typed name — filed as [TRK-NO-TYPED-STUDENT]). A visitor from another unit is a `Person` with `isExternal`, not a null link (decided; see Person) |
 | `studentName` | string | yes | the typed callsign; today the key, from here a display attribute |
 | `sortIndex` | int | yes | roster order |
 | `lastSyllDate`, `lastCurrDate` | date | no | `dates[student].lastSyll` / `lastCurr` |
