@@ -236,10 +236,11 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 - **Bringing `main` in: the settle step for the record files** ([MERGE-ONCE-RECORDS], 8 Nov 26, his D1930). After
   `git merge --no-commit --no-ff origin/main`, clashed or not, `node raptor-port/scripts/records-merge.mjs` settles
   `HANDOFF.md` block by block, the skill log note by note (a number both sides used renumbered on this branch's side —
-  its heading only, never a citation, each citing line listed by file and line; a day heading added on either side
-  leaves the whole log), and in the walk ledger, the file map, the backlog and the two archives the places where both
-  sides only added text that cannot be confused — no line the two share, no heading, no table head, whole rows or
-  whole paragraphs (round 3 of its reads: fewer settled, never silently wrong). It
+  its heading only, never a citation, each citing line listed by file and line; a day heading added, removed, reworded
+  or moved on either side, or a code block that never closes, leaves the whole log), and in the walk ledger, the file
+  map, the backlog and the two archives the places where both sides only added text that cannot be confused — at an
+  entry's boundary, no line the two share, no heading, no table head, no indented first line, whole rows, list items or
+  paragraphs (rounds 3 and 4 of its reads: fewer settled, never silently wrong). It
   reads git's own three copies, never the files on disk; it refuses a file already edited by hand, stages nothing and
   never aborts the merge. It leaves for the chat, in git's marks, whatever both sides changed — the gate baseline always —
   and the rulings files, whose own merge (`backlog-archive.mjs --rulings --merge`) it names; with nothing left it runs

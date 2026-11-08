@@ -1321,7 +1321,7 @@ Identity counts that differ:
 +    «chat kept»
 ```
 
-## The held-out merges — committed after the list was cut (7)
+## The held-out merges — committed after the list was cut (10)
 
 Each line: `-` the step wrote it and the chat's file lacks it, `+` the chat's file has it and the step's lacks it; «chat wrote» marks a line neither parent holds (written in the merge itself). None is judged here. Nothing is shortened.
 
@@ -1383,5 +1383,25 @@ Each line: `-` the step wrote it and the chat's file lacks it, `+` the chat's fi
 + **Issue:** The walker saw the fault on a desktop narrowed to 420 and on a phone turned sideways and back (its phone: device scale 2, mobile, touch, 402x874). The red-first test reproduced the desktop case but passed on the suite's own phone project and on Quals at both sizes, so a green suite after the fix proved nothing for the phone. Only re-running the walker's exact steps (same context options, same sequence, measured at the same scroll offsets) on the walked build (wrong) and the fixed build (right) closed it.   «chat kept»
 + **Suggested improvement:** In the re-walk step, and in walk-scripts.md's "turning a finding into a test": when a red-first test does not go red for one of the cases a walker reported, keep the walker's exact steps as a small script and run it on the old build (must reproduce) and the fixed build (must not) before calling that case fixed; name in the evidence sheet which case is proved by a test and which by the script.   «chat kept»
 + **Principle:** A test that never went red for a case is not evidence that the fix cures that case; reproduce with the finder's own set-up before and after.   «chat kept»
+```
+
+### 40151e9ea — HANDOFF.md
+
+Identity counts that differ:
+
+- now markers — <!-- now:claude/rules-diet-step-5a-tracker-de959c -->: step 0, chat 1
+
+```diff
+@@ -38,0 +39,10 @@
++ <!-- now:claude/rules-diet-step-5a-tracker-de959c -->   «chat kept»
++ ### CHAT 34 — the rules diet's step 5a, the Tracker's rulings as a page — `claude/rules-diet-step-5a-tracker-de959c`, pull request 714 — MERGED 8 Nov 26 on his "merge live" typed in chat 34; records follow-up `claude/rules-diet-5a-records-de959c`; written 8 Nov 26 — verify before use   «chat kept»
++ - **Started** from the parent session's card (chat 24's line of work); reports to it; coordinator chat 30 (`local_d1e628b6-c170-4fc3-80b3-29fcb671c669`). Told before touching shared files (D302): chat 28 agreed chat 34 alone edits `tracker.md` and its full rows until this merges; chat 33 ([MERGE-ONCE-RECORDS]) may add a check function to `docsize.mjs`, never the tripwire list — no clash.   «chat kept»
++ - **Done:** the page drafted by a fresh Opus helper from every full row (`5ed8dbd48`); the account by requirement by a second (`raptor-port/docs/superpowers/briefs/2026-11-08-rules-diet-step5a-tracker-account.md` — 72 rulings, 466 parts, 31 gaps fixed, 8 of them a rule bent or dropped); `main` brought in (706, 707: D1900 and D1901 now built and live); the map lines (`DECISIONS.md`'s head, `AGENTS.md` item 5, the project guide's two rows, the full-text file's head); the tripwire 32,500 → 38,800; two stale lines fixed (the Tracker's gaps document called the repo private; the seam file's map row had D1014 "to build"). The two blind reads of `05d2aeec3` (brief `…-tracker-read-brief.md`): Astra 7 (2 high, 4 medium, 1 low), a fresh Opus reader 10 (1 medium, 9 low) — both found D191 against D1005 (are typed students gone?); reports `…-tracker-read-{astra,opus}.md`.   «chat kept»
++ - **The findings applied** by a third helper, each checked against its row first: Astra's 7 all held; the Opus reader's 8 of 10 (D1366 archived, three phone rules scoped elsewhere). D191 against D1005 goes to him as a question, filed as [TRK-TYPED-STUDENT-Q] (kept until he asks for the backlog's questions, D994); a cancelled medical input still counting toward down days filed as [TRK-DOWN-DAYS-CANCELLED]; D1004's full row marked ANSWERED by D1005. The page 37,758 bytes; the tripwire 32,500 → 41,500, its reason beside it. The reads compared and the lessons for 5b: the plan's §Step 5a — the Tracker.   «chat kept»
++ - **Merged:** his "merge live" typed in chat 34; chat 30 told first; the four merge-lock steps, the branch level and its run green; `main`'s own run and the live app checked after the merge, reported in chat 34. This block and the [RULES-DIET] line marked by a notes-only follow-up.   «chat kept»
++ - **Next:** the re-measure before 5b (the plan's §7) — a chat of its own, from this block; `[TRK-NO-TYPED-STUDENT]` waits for the Tracker's next batch, drawn for him first.   «chat kept»
++ - **His answer, the same evening** (typed in chat 34, after a compaction about 20:40): "Typed student can't be added" — D1931: no Tracker student is added by a typed name; it replaces D191 (archived) and answers D1005. The page's §Students and courses states it; pointers left in the surface contracts' + Add entry, the Tracker's gaps document and the data model's student link; the build filed as [TRK-NO-TYPED-STUDENT] (the old question item renamed), drawn for him first (D1625). Document check, rule check and the 16 unit files that read documents green.   «chat kept»
++ - **Rulings:** 1 — D1931 → `.claude/rules/decisions/tracker.md` (§Students and courses). **Reads owed:** none (Astra and the fresh Opus reader both read; D1931 is his own answer, recorded, not a rewording).   «chat kept»
++ <!-- /now -->   «chat kept»
 ```
 

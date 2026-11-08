@@ -105,6 +105,7 @@ at a line end — this branch's text, one blank line only for paragraph-shaped t
 first; the replay also fails on a step that crashed, on a doubled ledger row and on any non-blank line doubled — above the chat's
 count and above the most of each parent's and the two parents' less the base's (the host's option 2: a line both sides added stands
 that often in a correct merge).
+**Round 4 (9 Nov 26, `…-round3-{astra,opus}.md`), refusals only:** the log is left whole when either side changes its day headings at all or any version holds a code block that never closes; an insertion is settled only at an entry's boundary with no indented first line; list items join like table rows; the replay fails on every abnormal end of the step.
 Run after `git merge origin/main` stops on clashes (the chat's own hand edits AFTER it, never before).
 - **Inputs:** only paths git still lists as unmerged, read from git's three staged copies (base, ours, theirs) — never the files on disk.
   A file whose working copy is no longer git's own conflicted output is refused by name (the chat has edited it — leave it to the chat).

@@ -7,7 +7,11 @@ so there is no walk (the plan's §Cost); the reads are Astra's and a fresh, blin
 `…-read-opus.md`), then their narrow re-read of the fixes (`…-reread-astra.md`, `…-reread-opus.md`). **This is the run after round 3**
 — the host's guardrails after the re-read: the insertion-only files settle only text that cannot be confused, the skill log is left
 whole when a day heading was added and its citations are never rewritten, a code block that never closes is text, two new handoff
-sections at one place are both kept, and the replay's fail rule counts every line.
+sections at one place are both kept, and the replay's fail rule counts every line. **Rerun after round 4** (9 Nov 26,
+`…-round3-astra.md`, `…-round3-opus.md`), refusals only: the log is left whole when either side changes its day headings
+at all, or any version holds a code block that never closes; an insertion is settled only at an entry's boundary with no
+indented first line; list items join like table rows; the replay fails on every abnormal end of the step. The list's
+figures are unchanged by it; the replay passes (exit 0).
 
 **How.** The list — each merge and its two parents — is committed as data, `raptor-port/scripts/records-merge-replay.json`: every
 two-parent merge on any branch whose committer date falls between 8 Nov 26 00:00 and the moment the list was cut (Singapore time,
@@ -59,7 +63,10 @@ only where the line came from.
   part in 3 (the backlog, `OUTSTANDING.md`, left; app code), nothing in 2 (the backlog; a01a3d6cc). Of
   the **11** files it settled, **7** are the chat's bytes and **4** differ (a walk-ledger row in the other order, twice; one line of
   7dd5dd730's handoff block; 64655d92a's log, where the step renumbered 891 → 903 and the chat chose otherwise against other open
-  branches) — whole in the companion. Nothing doubled, no error.
+  branches) — whole in the companion. Nothing doubled, no error. **After round 4: 10** — three more since: 9cf023865
+  (`DECISIONS-ARCHIVE.md`, the chat's bytes), 40151e9ea (its handoff block differs) and 0fd9bc799 (this branch's own
+  bringing in of `main`: log, handoff and file map, all the chat's bytes); everything settled in 2, part in 6, nothing in
+  2; of the **16** files settled, **11** the chat's bytes, **5** differ. Nothing doubled, no error.
 - **The differences, sorted by shape** (counted on the first run; of the 59 here, 5 are no longer settled and 3 are new, as above):
   - **the same lines, placed differently** — where both sides added text at one place the step puts this branch's first (the skill
     log: main's first); the chats did not keep one order (the skill log main's-first 16 times and this-branch's-first 14, the
@@ -242,13 +249,13 @@ Each with its identity counts that differ and its count of differing lines; ever
 - **2cfdfe2d2 — .claude/skill-observations/log.md** — 88 differing line(s) ([whole](2026-11-08-merge-once-records-diffs.md#2cfdfe2d2--claudeskill-observationslogmd)); identity counts: all equal
 - **2cfdfe2d2 — raptor-port/docs/file-map.md** — 1 differing line(s) ([whole](2026-11-08-merge-once-records-diffs.md#2cfdfe2d2--raptor-portdocsfile-mapmd)); identity counts: all equal
 
-## The held-out merges — committed after the list was cut (7)
+## The held-out merges — committed after the list was cut (10)
 
-- merges replayed: **7**
+- merges replayed: **10**
 - the step settled EVERYTHING git left (nothing for the chat): **2**
-- the step settled part, the rest left for the chat (rulings files, app code or a record it leaves): **3**
+- the step settled part, the rest left for the chat (rulings files, app code or a record it leaves): **6**
 - the step settled nothing (every clash outside what it settles, or left): **2**
-- files it settled whole: **11** — the same bytes as the chat's: **7**, different: **4**
+- files it settled whole: **16** — the same bytes as the chat's: **11**, different: **5**
 - files it settled in part: **0** — their records it settled, compared with the chat's: **0** (the same: **0**, different: **0**); records left in git's marks: **0**
 - **identities the step's file holds more often than the chat's and both parents' (a doubled record — the replay fails on any): 0**
 - the step stopped with an error: **0**
@@ -262,12 +269,16 @@ Each with its identity counts that differ and its count of differing lines; ever
 | 01590506f | e8dc83e96 ← 027b2923f | OUTSTANDING.md | — | OUTSTANDING.md |
 | 64655d92a | f4736152b ← 9e493393b | .claude/skill-observations/log.md, raptor-port/docs/file-map.md, raptor-port/src/ui/GuestApp.tsx | .claude/skill-observations/log.md (≠), raptor-port/docs/file-map.md (=) | raptor-port/src/ui/GuestApp.tsx |
 | a01a3d6cc | ba81f7b51 ← 405a42801 | DECISIONS.md | — | DECISIONS.md |
+| 9cf023865 | 5fd41c8f8 ← 2e29291ee | DECISIONS-ARCHIVE.md, DECISIONS.md | DECISIONS-ARCHIVE.md (=) | DECISIONS.md |
+| 40151e9ea | a8713ef5a ← 2c1818c58 | .claude/decisions-full/how-we-work.md, .claude/rules/decisions/design.md, .claude/rules/decisions/how-we-work.md, .claude/rules/decisions/tracker.md, DECISIONS.md, HANDOFF.md, raptor-port/scripts/docsize.mjs | HANDOFF.md (≠) | raptor-port/scripts/docsize.mjs, .claude/decisions-full/how-we-work.md, .claude/rules/decisions/design.md, .claude/rules/decisions/how-we-work.md, .claude/rules/decisions/tracker.md, DECISIONS.md |
+| 0fd9bc799 | 9d3d6d901 ← 2c1818c58 | .claude/decisions-full/how-we-work.md, .claude/skill-observations/log.md, HANDOFF.md, raptor-port/docs/file-map.md | .claude/skill-observations/log.md (=), HANDOFF.md (=), raptor-port/docs/file-map.md (=) | .claude/decisions-full/how-we-work.md |
 
 ### Renumbers the step made
 
 - 64655d92a: renumbered in .claude/skill-observations/log.md: Observation 891 → 903 "A fault seen only in the walker's own phone set-up is re-checked with its exact steps, not only with the test suite's phone" (main has its own 891)
+- 0fd9bc799: renumbered in .claude/skill-observations/log.md: Observation 904 → 905 ""Add-only" was a guess about a file — its edit history said otherwise" (main has its own 904)
 
-### Every file whose settled result differs from the chat's (4)
+### Every file whose settled result differs from the chat's (5)
 
 Each with its identity counts that differ and its count of differing lines; every line of every difference, whole, is in the companion file, [2026-11-08-merge-once-records-diffs.md](2026-11-08-merge-once-records-diffs.md), under the same heading.
 
@@ -275,4 +286,5 @@ Each with its identity counts that differ and its count of differing lines; ever
 - **7dd5dd730 — HANDOFF.md** — 2 differing line(s) ([whole](2026-11-08-merge-once-records-diffs.md#7dd5dd730--handoffmd)); identity counts: all equal
 - **7dd5dd730 — raptor-port/docs/walk-ledger.md** — 2 differing line(s) ([whole](2026-11-08-merge-once-records-diffs.md#7dd5dd730--raptor-portdocswalk-ledgermd)); identity counts: all equal
 - **64655d92a — .claude/skill-observations/log.md** — 27 differing line(s) ([whole](2026-11-08-merge-once-records-diffs.md#64655d92a--claudeskill-observationslogmd)); identity counts: all equal
+- **40151e9ea — HANDOFF.md** — 10 differing line(s) ([whole](2026-11-08-merge-once-records-diffs.md#40151e9ea--handoffmd)); identity counts: now markers — <!-- now:claude/rules-diet-step-5a-tracker-de959c -->: step 0, chat 1
 
