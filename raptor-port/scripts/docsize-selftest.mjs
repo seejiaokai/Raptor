@@ -60,7 +60,10 @@ function makeRepo(live = LIVE0) {
   /* the gate with a byte tripwire for the test's own area files (every area file needs one — D390) */
   const gate = readFileSync(GATE, 'utf8').replace('const RULING_BYTES = [\n', "const RULING_BYTES = [\n  ['.claude/rules/decisions/general.md', 2, 6000],\n  ['.claude/rules/decisions/other.md', 2, 6000],\n  ['.claude/rules/decisions/fourth.md', 2, 6000],\n")
   if (!gate.includes("general.md', 2, 6000")) throw new Error('RULING_BYTES was not found in docsize.mjs — update this self-test')
-  w('raptor-port/scripts/docsize.mjs', gate)
+  /* …and a hard limit for each, should it become a converted page (D1932) */
+  const gate2 = gate.replace('const PAGE_LIMITS = [\n', "const PAGE_LIMITS = [\n  ['.claude/rules/decisions/general.md', 6000, 6000, 'D1932'],\n  ['.claude/rules/decisions/other.md', 6000, 6000, 'D1932'],\n  ['.claude/rules/decisions/fourth.md', 6000, 6000, 'D1932'],\n")
+  if (!gate2.includes("other.md', 6000, 6000")) throw new Error('PAGE_LIMITS was not found in docsize.mjs — update this self-test')
+  w('raptor-port/scripts/docsize.mjs', gate2)
   w('raptor-port/scripts/docsize-rulings.mjs', readFileSync(join(HERE, 'docsize-rulings.mjs'), 'utf8'))
   w('raptor-port/scripts/backlog-archive.mjs', readFileSync(MOVER, 'utf8'))
   w('raptor-port/scripts/rulecheck.mjs', RULES0)
@@ -228,6 +231,12 @@ const narrowD5 = full => full.replace('| D5 | 21 Sep 26 | e | **Rule e.** e |', 
 const RULE_FILE = '.claude/rules/shipping.md'
 const GENERAL_PAGE = '<!-- shape: page -->\n\n# General — how it works now\n\n- Rule a holds in every chat, whatever the area [D1].\n- Rule b holds in every chat, whatever the area [D2].\n'
 scenario('an area converted to a page beside one still in short lines (both shapes)', false, c => withPage(c))
+/* D1932: a converted page's size is a hard limit — every page has a row, is under it, and its limit is raised only with his ruling cited */
+const pageLimit = (c, set, limit, by = 'D1932') => c.edit('raptor-port/scripts/docsize.mjs', t => t.replace("['.claude/rules/decisions/other.md', 6000, 6000, 'D1932'],\n", set === null ? '' : `['.claude/rules/decisions/other.md', ${set}, ${limit}, '${by}'],\n`).replace("['.claude/rules/decisions/other.md', 2, 6000]", `['.claude/rules/decisions/other.md', 2, ${limit ?? 6000}]`))
+scenario('a converted page with no row in PAGE_LIMITS (D1932)', true, c => { withPage(c); pageLimit(c, null) }, { mustSay: '.claude/rules/decisions/other.md is a converted page with no row in' })
+scenario('a converted page over its hard limit (D1932)', true, c => { withPage(c); pageLimit(c, 200, 200) }, { mustSay: 'over its HARD LIMIT of 200' })
+scenario('a page\'s limit raised with only D1932 beside it (D1932)', true, c => { withPage(c); pageLimit(c, 200, 6000) }, { mustSay: 'hard limit was raised from 200 to 6000 without a ruling' })
+scenario('…raised with a live ruling of his cited, it passes', false, c => { withPage(c); pageLimit(c, 200, 6000, 'D5') })
 scenario('a page\'s live ruling stated nowhere', true, c => withPage(c, {}, { full: withD7, ids: 'D7, D6, D5' }), { mustSay: 'D7 is a live ruling of .claude/rules/decisions/other.md, a page, and no statement states it' })
 scenario('…cited only in a list of numbers', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- See [D5, D7].'] }, { full: withD7, ids: 'D7, D6, D5' }), { mustSay: 'cited only at .claude/rules/decisions/other.md line' })
 scenario('…cited only in a code span (an example, not a citation)', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- A citation written in code, as `[D7]`, is an example only.'] }, { full: withD7, ids: 'D7, D6, D5' }), { mustSay: 'D7 is a live ruling' })
