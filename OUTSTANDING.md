@@ -144,9 +144,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26) — a design job of its own with pictures, before the database step.
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
-- [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — built (D1789; Quals too) on `claude/pr-leave-war-4988a8`, pull request 680; walked: halved, two painted frames to one, scrolling not slower; the last frame is [LW-PIN-LAST-FRAME]; reads and his look to come.
 - [TOPBAR-BAND-ANCHOR] — on a scrolled desktop page the "Not saved" band covers the page's first 36px (the old build too; not on his iPhone).
-- [TOPBAR-BOUNCE-AWAY] — on his iPhone, a flick to the foot of a page bounces it and the bounce carries the top bar off screen for a moment (every page, the live app too); the PC cannot show it — a trial on his iPhone, and his say on the page no longer bouncing.
 - [REDUCE-MOTION-SIDEWAYS] — with "reduce motion" switched on in the phone or computer, the pinned dates row (and Quals' heading) may stop following a sideways scroll — read in the code, not yet seen on screen.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
 - [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
@@ -1067,34 +1065,6 @@ the band covers the first 36px of what he was looking at; at the page's top, and
 anchoring), nothing is covered. Not a fault of the D1873 change. With it, the read's minor notes: the stylesheet guard
 (`src/ui/topbar-css.test.ts`) misses `will-change: transform` and `filter` on the bar's ancestors; comments still call the
 bar "sticky". A job of its own, small; walk a scrolled desktop page with `?savefail`.
-
-### [TOPBAR-BOUNCE-AWAY] A flick to a page's foot on his iPhone carries the top bar off screen (8 Nov 26)
-
-**His D1873 (8 Nov 26, a second recording, on the pinned row's preview):** fix it now — Astra builds the fix on
-`claude/lw-pin-last-frame` (pull request 694), Opus reads it, he tries it on his iPhone before "merge live". The second
-recording (`C:/Users/User/.claude/uploads/bfddd1cb-8b24-453c-b9e5-f54c2d5dd233/f9890820-ScreenRecording_11-08-2026_19-43-37_1.mp4`)
-shows the same fault and only it: the bar leaves for about 14 frames at 60 a second, only while the page springs past its
-foot (twice, once with Safari's toolbar folded, once with it open); mid-scroll, as the toolbar folds, the bar stays. The
-fixed pinned dates row stays put through the spring — the evidence that a bar fixed to the screen would hold.
-
-**His words (8 Nov 26, to chat 16, with D1871 — the same message kept the pinned row as built):** "I found an existing bug, when in scroll all the way to the bottom, the top bar goes
-out of view" — his recording `C:/Users/User/.claude/uploads/bfddd1cb-8b24-453c-b9e5-f54c2d5dd233/94560df1-ScreenRecording_11-08-2026_14-31-42_1.mp4`
-(the Leave War, Safari on his iPhone; frames tiled in `raptor-port/docs/img/handpass/2026-11-08-lw-pin-last-frame/his-recording-bottom.png`).
-**What the frames show (chat 16's reading, not proven):** a hard flick reaches the page's foot, Safari folds its toolbar
-away and the page bounces past its end — about 260px of empty page shows under the last row — and for about 0.3 s the
-top bar is gone, grid rows standing under the phone's status bar; it comes back as the bounce settles. The bar is
-`position:sticky; top:0` (`raptor-port/src/ui/scheduler/02-shell.css` line 13) on every page, so it is not the Leave
-War's alone, and `main` has the same bar: the live app does it too, as he said. The PC's Chromium neither bounces nor
-folds a toolbar, so it cannot be seen or tested there (measured: at the Leave War's foot the bar stands at 0, phone and
-desktop sizes). The pinned dates row missing after it was this job's, and is fixed ([LW-PIN-LAST-FRAME]).
-**What might cure it, each to be tried on his iPhone:** (a) stop the page bouncing at its ends
-(`overscroll-behavior-y: none` on the page) — the bar has nothing to carry it; the page then no longer springs at its
-top and foot, and Safari's pull-down-to-reload goes, which is his call (the app's own note says an iPhone ignores
-`overscroll-behavior` in places — `raptor-port/src/leavewar/ui/sheet-holdscroll.test.tsx`); (b) the bar fixed to the
-screen instead of sticky, with room kept under it — every page's layout, a bigger change. Sources read: WebKit bug 206227
-(fixed elements during the bounce), Apple's forum thread 801028 (sticky and Safari 26's folding toolbar) — neither names
-this case. **To do:** build (a) on a branch, he tries it on his iPhone (does the bar stay, and is a page that no longer
-bounces all right); (b) only if (a) fails. **Place:** the whole app's look and phone group, on his word.
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — half done 23 Sep 26 (D59)
 **18 Oct 26 (the backlog tidy):** the repo is PUBLIC today (GitHub says so) — made public for a short period under D106, for GitHub's faster machines. Making it private again, and restarting his PC's check runner (D89), is still open and his step.

@@ -8377,3 +8377,34 @@ column, zoom, Rearrange, the month strip and the windows over it), with its own 
 (lesson 7 — his iPhone first):** does he still see the blink on his iPhone, and if so, is it worth that change? Nothing
 built. **Place:** after his look at pull request 680. **Measured, chat 14, 8 Nov 26 (branch `claude/lw-pin-last-frame`, a prototype, not for keeps):** the pinned copy kept mounted and shown by the browser on the page's own scroll (a scroll-driven fade at the point the row meets the top bar) — painted frames, 5 runs each way, desktop 1536×864 wheel and phone 402×874 flick, the Leave War and Quals: today 1 blink frame in every one of 40 runs; the prototype 0 in 40. Frame times at 4× CPU: median 16.7 ms both; p95 no worse; main-thread work lower on the Leave War (desktop 2390 → 1665 ms a scroll); phone frames over 33 ms 6 → 20 on the Leave War, at the 33 ms mark — to re-measure in the build. Results and sheets: `raptor-port/docs/img/handpass/2026-11-08-lw-pin-last-frame/`; script `raptor-port/scripts/handpass/lwpin-frames.mjs`. **His answer (D1870, 8 Nov 26):** he sees the blink on his iPhone on the live app and the trial cures it — built for keeps, with the full check (the steps: chat 14's handoff block).
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([TOPBAR-BOUNCE-AWAY]). Forward facts: `raptor-port/docs/handpass/2026-11-08-lw-pin-last-frame.md`.*
+
+### [TOPBAR-BOUNCE-AWAY] A flick to a page's foot on his iPhone carries the top bar off screen (8 Nov 26)
+
+**His D1873 (8 Nov 26, a second recording, on the pinned row's preview):** fix it now — Astra builds the fix on
+`claude/lw-pin-last-frame` (pull request 694), Opus reads it, he tries it on his iPhone before "merge live". The second
+recording (`C:/Users/User/.claude/uploads/bfddd1cb-8b24-453c-b9e5-f54c2d5dd233/f9890820-ScreenRecording_11-08-2026_19-43-37_1.mp4`)
+shows the same fault and only it: the bar leaves for about 14 frames at 60 a second, only while the page springs past its
+foot (twice, once with Safari's toolbar folded, once with it open); mid-scroll, as the toolbar folds, the bar stays. The
+fixed pinned dates row stays put through the spring — the evidence that a bar fixed to the screen would hold.
+
+**His words (8 Nov 26, to chat 16, with D1871 — the same message kept the pinned row as built):** "I found an existing bug, when in scroll all the way to the bottom, the top bar goes
+out of view" — his recording `C:/Users/User/.claude/uploads/bfddd1cb-8b24-453c-b9e5-f54c2d5dd233/94560df1-ScreenRecording_11-08-2026_14-31-42_1.mp4`
+(the Leave War, Safari on his iPhone; frames tiled in `raptor-port/docs/img/handpass/2026-11-08-lw-pin-last-frame/his-recording-bottom.png`).
+**What the frames show (chat 16's reading, not proven):** a hard flick reaches the page's foot, Safari folds its toolbar
+away and the page bounces past its end — about 260px of empty page shows under the last row — and for about 0.3 s the
+top bar is gone, grid rows standing under the phone's status bar; it comes back as the bounce settles. The bar is
+`position:sticky; top:0` (`raptor-port/src/ui/scheduler/02-shell.css` line 13) on every page, so it is not the Leave
+War's alone, and `main` has the same bar: the live app does it too, as he said. The PC's Chromium neither bounces nor
+folds a toolbar, so it cannot be seen or tested there (measured: at the Leave War's foot the bar stands at 0, phone and
+desktop sizes). The pinned dates row missing after it was this job's, and is fixed ([LW-PIN-LAST-FRAME]).
+**What might cure it, each to be tried on his iPhone:** (a) stop the page bouncing at its ends
+(`overscroll-behavior-y: none` on the page) — the bar has nothing to carry it; the page then no longer springs at its
+top and foot, and Safari's pull-down-to-reload goes, which is his call (the app's own note says an iPhone ignores
+`overscroll-behavior` in places — `raptor-port/src/leavewar/ui/sheet-holdscroll.test.tsx`); (b) the bar fixed to the
+screen instead of sticky, with room kept under it — every page's layout, a bigger change. Sources read: WebKit bug 206227
+(fixed elements during the bounce), Apple's forum thread 801028 (sticky and Safari 26's folding toolbar) — neither names
+this case. **To do:** build (a) on a branch, he tries it on his iPhone (does the bar stay, and is a page that no longer
+bounces all right); (b) only if (a) fails. **Place:** the whole app's look and phone group, on his word.
+

@@ -36,7 +36,6 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1872 | 8 Nov 26 | For the pinned row's job (D1870), if a fault resists the agent's fix, Astra may be called in to fix it, not only to read it, without asking him first. |
 | D1871 | 8 Nov 26 | The pinned row the browser shows by itself (D1870) is kept as built: on his iPhone the build's preview does not feel slow, so the cost the PC's slowed Chromium phone test shows does not stop it; the job goes on to its walk, reads and merge (D1796). |
 | D1870 | 8 Nov 26 | On his iPhone the Leave War's pinned dates row and Quals' heading blink for one frame on a quick flick on the live app and not on the trial, so the pinned row the browser shows by itself on the page's own scroll is built for keeps, with the full check, the trial's loose ends fixed. |
 | D1850 | 8 Nov 26 | The Leave War's pinned dates row and Quals' header go live with one painted frame still showing the row cut under the top bar on a quick scroll, the browser's own frame that the page's code cannot reach; that last frame is a job of its own, its new way measured before anything is built. — changed by D1870 |

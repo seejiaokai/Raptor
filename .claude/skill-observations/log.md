@@ -4589,3 +4589,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** The walker saw the fault on a desktop narrowed to 420 and on a phone turned sideways and back (its phone: device scale 2, mobile, touch, 402x874). The red-first test reproduced the desktop case but passed on the suite's own phone project and on Quals at both sizes, so a green suite after the fix proved nothing for the phone. Only re-running the walker's exact steps (same context options, same sequence, measured at the same scroll offsets) on the walked build (wrong) and the fixed build (right) closed it.
 **Suggested improvement:** In the re-walk step, and in walk-scripts.md's "turning a finding into a test": when a red-first test does not go red for one of the cases a walker reported, keep the walker's exact steps as a small script and run it on the old build (must reproduce) and the fixed build (must not) before calling that case fixed; name in the evidence sheet which case is proved by a test and which by the script.
 **Principle:** A test that never went red for a case is not evidence that the fix cures that case; reproduce with the finder's own set-up before and after.
+
+### Observation 904: A browser test red only on the CI machine may be the CI machine's letters, not its speed
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 39, pull request 694 - a Leave War browser test failed on GitHub (a row 47px low) and passed on the PC, even with the browser's processor slowed three-fold.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** reproducing a failure that only the CI machine shows
+
+**Issue:** The first guess was timing (a slower machine exposing a frame-late write), so the test was re-run slowed - still green. The real difference was the fonts: Linux's wider letters wrapped one page's top bar to two rows at the test's 1440 width, Windows' did not. Measuring the bar's height on both pages at a few widths found 1360 as the width where the PC wraps too, and the test went red at once.
+**Suggested improvement:** In the skill's "reproduce first" phase, for a layout-dependent browser test that fails only in CI: before slowing anything, measure the elements the failure depends on across a few viewport widths on the local machine, and run the test at the width where the local layout matches CI's; then make the test itself cover that width so it fails on any machine.
+**Principle:** A CI-only layout failure is often the fonts, not the clock: text metrics differ by operating system, so measure the layout across widths before reaching for throttling.
