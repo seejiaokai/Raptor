@@ -92,15 +92,13 @@ on:
       - 'raptor-port/scripts/docsize*.mjs'
       - 'raptor-port/scripts/backlog-archive.mjs'
       - '.github/workflows/docs-guard.yml'
+  # A pull request ALWAYS starts this workflow ([TESTS-REQUIRED-ON-MAIN], chat 19, 8 Nov 26): its "checks passed" job is
+  # one GitHub can require, and a workflow skipped by paths-ignore reports nothing, which would leave every notes-only
+  # pull request waiting on that required job for ever. The same notes-only skip is made inside the run instead: the
+  # first job, "what changed", reads the pull request's files against the list above (raptor-port/scripts/ci/
+  # checks-passed.mjs — a test keeps its list the same as the push list), and every gate job runs only when code changed.
   pull_request:
     branches: [main]
-    paths-ignore:
-      - '**.md'
-      - '.claude/**'
-      - '.impeccable/**'
-      - 'raptor-port/scripts/docsize*.mjs'
-      - 'raptor-port/scripts/backlog-archive.mjs'
-      - '.github/workflows/docs-guard.yml'
   workflow_dispatch:
 
 # Least privilege (Astra, 23 Sep 26): every job reads the code and nothing else.
@@ -160,11 +158,11 @@ jobs:
   #     ADDS ANY COLLABORATOR (D59's stated plan): remove the runner from this
   #     repo first (Settings → Actions → Runners) and set CI_ON_GITHUB=true, or
   #     move the runner to a separate owner-only CI repo — `[REPO-PRIVATE]`.
-  #   - REQUIRED CHECKS (Fable CI-REQ-001): none exist — a free private repo
-  #     cannot have them (the API answers "Upgrade to GitHub Pro"), so merging
-  #     rests on his "merge live" and the agent reading this run's result. If
-  #     they ever exist, require `all gates (your PC)` AND the split names: a
-  #     job skipped by its `if` reports Success to a required check.
+  #   - REQUIRED CHECKS (Fable CI-REQ-001): a free private repo cannot enforce
+  #     them (the API answers "Upgrade to GitHub Pro"). While the repo is public
+  #     the one to require is `checks passed` (the job at the end), never the
+  #     gate names themselves: a job skipped by its `if` reports Success to a
+  #     required check, and a notes-only pull request skips them all.
   #   - THE RUNNER'S ACCOUNT (Astra SEC-002): never an Administrator. As a Windows
   #     service it runs under a restricted account (NETWORK SERVICE at least; a
   #     dedicated standard user with no access to his profile is better).
@@ -176,10 +174,40 @@ jobs:
   #     code is his credential (D89).
   #   - PORT_URL / APP_URL are pinned too (Astra CI-001): either one left in the
   #     machine's environment would point a gate at another checkout's preview.
+  # The first job: did this change touch anything but notes? (see the pull_request trigger above). On a push to main the
+  # trigger's own paths-ignore already decided, so it says yes without reading.
+  changes:
+    name: what changed
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.c.outputs.code }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /raptor-port/scripts/ci/
+      - id: c
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # the pull request's merge commit: its first parent is main, so this is every file the pull request changes.
+            # --no-renames: a rename is listed by its old AND new name (a code file renamed to .md still counts as code),
+            # and the comparison reads only the folder listings, never a file's contents, which this copy does not hold
+            git diff --no-renames --name-only HEAD~1 HEAD | node raptor-port/scripts/ci/checks-passed.mjs changes
+          else
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          fi
+
   pc:
     name: all gates (your PC)
+    needs: changes
     if: >-
-      vars.CI_ON_GITHUB != 'true'
+      needs.changes.outputs.code == 'true'
+      && vars.CI_ON_GITHUB != 'true'
       && github.event.repository.private
       && github.actor == github.repository_owner
       && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
@@ -247,11 +275,13 @@ jobs:
   # test jobs run beside it. On a push to main it still uploads the Pages bundle
   # the switched-off `deploy` job would publish — nothing reads it today.
   build:
+    needs: changes
     if: >-
+      needs.changes.outputs.code == 'true' && (
       vars.CI_ON_GITHUB == 'true'
       || !github.event.repository.private
       || github.actor != github.repository_owner
-      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository))
     runs-on: ubuntu-latest
     # A TIME LIMIT ON EVERY TEST JOB ([CI-SMOKE-TIMEOUT], 8 Nov 26): with none, a job that hangs waits GitHub's default of
     # six hours. Each limit is set from the job's length over the 20 green runs before 8 Nov 26, with room to spare - most
@@ -300,11 +330,13 @@ jobs:
   # off so a red leg reports on its own instead of cancelling the others half way.
   unit:
     name: unit (${{ matrix.project }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
+    needs: changes
     if: >-
+      needs.changes.outputs.code == 'true' && (
       vars.CI_ON_GITHUB == 'true'
       || !github.event.repository.private
       || github.actor != github.repository_owner
-      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository))
     runs-on: ubuntu-latest
     # a time limit (see build's note): each part 3 to 6 minutes, 7.5 at most
     timeout-minutes: 20
@@ -374,11 +406,13 @@ jobs:
   # 3-worker / one-retry CI settings from 15 Aug 26.
   geometry:
     name: geometry (${{ matrix.project }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
+    needs: changes
     if: >-
+      needs.changes.outputs.code == 'true' && (
       vars.CI_ON_GITHUB == 'true'
       || !github.event.repository.private
       || github.actor != github.repository_owner
-      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository))
     runs-on: ubuntu-latest
     # a time limit (see build's note): each part 3.5 to 6 minutes, 16.4 at most - the slow ones in "Install Chromium"
     timeout-minutes: 30
@@ -440,11 +474,13 @@ jobs:
   # serves the bundle itself like they do.
   tracker:
     name: tracker (smoke ${{ matrix.part }}/2)
+    needs: changes
     if: >-
+      needs.changes.outputs.code == 'true' && (
       vars.CI_ON_GITHUB == 'true'
       || !github.event.repository.private
       || github.actor != github.repository_owner
-      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
+      || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository))
     runs-on: ubuntu-latest
     # a time limit (see build's note): each half 2 to 4.5 minutes, 17.7 at most. The half that ran 16 minutes on 5 Nov 26
     # (pull request 643, cancelled) had not hung in the smoke: its "Install Chromium" took 12 of them, the smoke 3.8.
@@ -509,7 +545,8 @@ jobs:
   #     reads React Doctor makes, so it then finds every file it needs already here, public repo or private.
   code-check:
     name: code check
-    if: github.event_name == 'pull_request'
+    needs: changes
+    if: github.event_name == 'pull_request' && needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -545,6 +582,31 @@ jobs:
       - name: Code check — no new finding
         working-directory: raptor-port
         run: npm run lint:changed
+
+  # THE ONE CHECK GITHUB CAN REQUIRE ([TESTS-REQUIRED-ON-MAIN], chat 19, 8 Nov 26). It runs on every pull request, after
+  # every gate, whatever they did (`always()`, so a cancelled run fails here instead of being skipped — a skipped job
+  # reports success to a required check). It passes a notes-only pull request, and otherwise only when the PC's whole run
+  # or every split job passed, and the code check too. Required in the ruleset "main: secrets scan" by his own click,
+  # beside the secrets scan; never the gate jobs themselves, which a notes-only pull request skips. A private repo on
+  # GitHub's free plan cannot enforce a required check (Fable CI-REQ-001): it then shows, and binds nothing.
+  checks-passed:
+    name: checks passed
+    needs: [changes, pc, build, unit, geometry, tracker, code-check]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /raptor-port/scripts/ci/
+      - name: Every gate passed, or the change is notes only
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+          EVENT: ${{ github.event_name }}
+        run: node raptor-port/scripts/ci/checks-passed.mjs verdict
 
   # Publishes only when every gate above is green: a failed or cancelled
   # `needs` job skips this one, so nothing deploys red.

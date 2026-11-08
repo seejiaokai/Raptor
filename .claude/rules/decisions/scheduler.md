@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1890 | 8 Nov 26 | The design checker skips the gold history dot in the History mode's style file: one gold dot in a box's corner is not a dotted grid pattern, so it is not flagged. |
 | D1800 | 8 Nov 26 | On his iPhone on its side, with the keys up, the Scheduler Board’s bar of buttons stays at the top, as D1780 rules, so D1780’s look on his iPhone is done and nothing more is built for it. |
 | D1780 | 8 Nov 26 | On a phone on its side the Scheduler Board's Calendar, title, day strip and search scroll away with the list, as any page does, while its bar of buttons stays at the top, so with the keys up the list gets about 151px and nothing jumps when the keys open. — changed by D1800 |
 | D1781 | 8 Nov 26 | On the desktop Scheduler Board from 821 to 1099 wide each jet's line puts its remarks on a row of their own and stacks R over B and TO over LD as a phone does, so every part of the line is in reach and the remarks get over 300px; wider, the times stay in one line. |

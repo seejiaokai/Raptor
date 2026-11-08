@@ -10,6 +10,9 @@
   },
   "ignore": {
     "files": [
+      "docs/mock/**",
+      "docs/img/**",
+      "reference/**",
       "scripts/handpass/cal-F-p602.mjs",
       "scripts/handpass/cal-F-p602b.mjs",
       "scripts/handpass/cal-F-p606.mjs",
