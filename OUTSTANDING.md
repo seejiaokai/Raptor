@@ -84,6 +84,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Schedule and amendments**
 - [DAMAGED-WEEK-LEFTOVERS] — a week whose saved copy cannot be read still prints and exports the demo days, shows them in the next-week preview, and refuses a person's delete in the amber note, not the grey "Blocked:" one (older; found 8 Nov 26, chat 13's walk).
+- [SCHED-MARKS-WALK-ODDS] — four small older things chat 13's walk saw: the changes window's foot says "Tap a change to go to it." over a line that cannot be tapped; the look banner on two lines on the phone board; "2 warning" beside the board's "2 warnings"; a day's "N changes" chip beside "N pending".
 - [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
 - [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
@@ -282,6 +283,19 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+### [SCHED-MARKS-WALK-ODDS] Four small older things the schedule-marks walk saw (found 8 Nov 26, chat 13's walk)
+**What:** seen by the walk of chat 13's job (D1784, D1785, D1792 a, d — branch `claude/pr-sched-marks-3205d7`, evidence
+`raptor-port/docs/handpass/2026-11-08-sched-marks.md` §15), each older than that job, none losing anything: (1) the changes window's
+foot on "To go out" always reads "Tap a change to go to it." — fixed words since the window was built — even when every line on it
+stands still (a SANS availability; a man taken out of a shared input), pictures `…/2026-11-08-sched-marks/host/f3-fix3-list.png`,
+`…/w4/s4-pc-week-1-list.png`; the old pending list's foot said it only where a line could be tapped (`raptor-port/src/ui/ChangesWindow.tsx`);
+(2) a look at a published version on the phone board: the banner's words take two lines and it sits under the Aircrew tab
+(`…/w3/s28-phone-b-look0.png` — the same on `main`, the drawing check matching `main`'s drawing pixel for pixel); (3) Edit Schedule's
+issues bar reads "2 issues · 2 warning" where the board reads "2 warnings" (`…/w3/s26-pc-e-hide1.png`); (4) a published day's
+chip reads "N changes" (what the issued versions changed) beside "N pending", which a person may read as changes not yet sent
+(W1a, W3). **To do:** (1) the foot only where a line can be tapped; (3) the plural; (2) and (4) drawn for him before anything
+changes (D1625). **Place:** Schedule and amendments, small — with the next job on the changes window or the words pass.
+
 ### [DAMAGED-WEEK-LEFTOVERS] What a week whose saved copy cannot be read still gets wrong (found 8 Nov 26, chat 13's walk)
 **What:** found by the walk of chat 13's job (D1785, the unreadable week's words — branch `claude/pr-sched-marks-3205d7`, evidence
 `raptor-port/docs/handpass/2026-11-08-sched-marks.md`, walker W2's report `…/parts/2026-11-08-sched-marks-w2.md`), each older than that
@@ -290,9 +304,9 @@ the demo days, with no notice (`raptor-port/src/ui/peek.ts`); (2) print and the 
 days, headed "WORKING DRAFT — NOT YET SIGNED" (`Shell.tsx`, `export.ts`, `printpdf.ts`); (3) deleting a person while the week is
 damaged refuses in the AMBER note, "The week of 13/07/2026 can't be changed — the delete was not made" — not the grey "Blocked:" note
 every other refusal of one change takes (D1667, D1668), nor D1785's words; (4) a week read-only because its records belong to another
-week says it was "published by an older version". Nothing is lost in any of them — each draws or refuses, none saves. **To do:** (1),
+week says it was "published by an older version"; (5) the Leave War lets a pending bid be placed, refused or deleted on a date in such a week with no words at all, while Approve and "send back" say "is on a locked week" (W2's S2 — the war's own record; its code untouched by that job). Nothing is lost in any of them — each draws or refuses, none saves. **To do:** (1),
 (2) draw D1785's notice where the days would be, as Edit Schedule does; (3) the grey "Blocked:" note in D1785's words — put to him
-first only if it needs words of its own; (4) its own reason. **Place:** Schedule and amendments, small — with the next job on saved
+first only if it needs words of its own; (4) its own reason; (5) the war says why, as its Approve does — put to him first, with its words. **Place:** Schedule and amendments, small — with the next job on saved
 weeks, or the database step's read of saved data.
 
 
