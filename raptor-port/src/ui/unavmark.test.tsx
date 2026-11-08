@@ -29,6 +29,8 @@ import { dayHTML, dayIssuedHTML, dayPreviewHTML, withDaySnap } from './html'
 import { boardHTML } from './board'
 import { commitNewInput, commitInputEdit, commitInput, draftOf, removeInput, setInpField } from './inputedit'
 import { toggleOilMode, oilModeOn } from './oilmode'
+import { pendListHTML, pendKeysFor } from './pendlist'
+import { findInputCell } from './histbubble'
 
 const MON = 0, WED = 2, THU = 3
 let pristine: any[], inputs0: string
@@ -273,3 +275,69 @@ describe('D1784 — where the mark never shows', () => {
     expect(inMode.querySelector('.sb-panel.unav')!.textContent).toContain('OD')
   })
 })
+
+/* THE TAP ON ITS LINE GOES TO THE ROW THE MARK IS ON (the walk of 8 Nov 26, W1b S30 — Astra's scenario design: a tap on
+   the line in the changes window's "To go out" list lands on the marked row). The line of an input filed, changed or
+   re-dated after publishing was drawn as having "no place of its own on the schedule to go to", though its row stands
+   under Unavailable (or Personal Inputs) and now wears the waiting mark — older than D1784: the same on main's build. A
+   Ground request's line already went to its programme row; this one goes to its input row, the History window's
+   twin (ui/changesjump.ts jumpOf: one man's row first, then the input). */
+describe('the waiting list: a tap on an Unavailable input’s line takes the view to its row', () => {
+  const lineFor = (di: number, text: RegExp) => {
+    const root = el(pendListHTML(di))
+    return [...root.querySelectorAll('.pl-item')].find(e => text.test(e.textContent || '')) as HTMLElement | undefined
+  }
+  it('a leave filed after publishing: its line is a button, and its keys land on its row on the week and on the board', () => {
+    publishDay(MON)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'TAP ME'))).toBe(true)
+    validate()
+    const id = String(inpId(byRemark('TAP ME')))
+    const line = lineFor(MON, /filed/)
+    expect(line, 'the filing has a line').toBeTruthy()
+    expect(line!.tagName, 'a line to tap, not a still one').toBe('BUTTON')
+    const keys = pendKeysFor(line!)
+    expect(keys, 'it goes to the input’s row').toEqual([`iu:${id}`])
+    expect(findInputCell(weekUnav(MON), keys![0]!)?.getAttribute('data-inprow'), 'the week draws that row to land on').toBeTruthy()
+    expect(findInputCell(boardUnav(MON), keys![0]!), 'and so does the board').toBeTruthy()
+    expect(el(pendListHTML(MON)).querySelector('.pl-foot')!.textContent).toBe('Tap a change to go to it.')
+  })
+  it('its details changed: the same', () => {
+    publishDay(WED)
+    const inp = taipanOL(), id = String(inpId(inp))
+    expect(commitInputEdit(inp, { ...draftOf(inp), remarks: 'CHANGED AFTER' })).toBeTruthy()
+    validate()
+    const line = [...el(pendListHTML(WED)).querySelectorAll('button.pl-item')].find(b => pendKeysFor(b as HTMLElement)?.includes(`iu:${id}`))
+    expect(line, 'its line goes to its row').toBeTruthy()
+  })
+  it('one man put into a shared input: his own row first, then the input', () => {
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 15', yr: 2026, allday: true, remarks: 'Exercise J' }), ['bane', 'split'])).toBe(true)
+    publishDay(WED)
+    const od = INPUTS.find((r: any) => r.remarks === 'Exercise J')!, id = String(inpId(od))
+    expect(commitInput(od, draftOf(od), ['bane', 'split', 'rocky'])).toBe(true)
+    validate()
+    const keys = [...el(pendListHTML(WED)).querySelectorAll('button.pl-item')].map(b => pendKeysFor(b as HTMLElement)).find(k => k && k.some(x => x.startsWith(`iu:${id}`)))
+    expect(keys, 'Rocky’s own row, then the input').toEqual([`iu:${id}~rocky`, `iu:${id}`])
+    expect(findInputCell(weekUnav(WED), keys![0]!), 'his row is drawn').toBeTruthy()
+  })
+  it('a man split out of a shared input (a remark typed on his own row): the tap goes to his own new row first', () => {
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 15', yr: 2026, allday: true, remarks: 'Exercise S' }), ['bane', 'split', 'rocky'])).toBe(true)
+    publishDay(WED)
+    const od = INPUTS.find((r: any) => r.remarks === 'Exercise S')!, id = String(inpId(od))
+    expect(setInpField(od, 'rmks', 'Exercise S — back Thursday', 'rocky'), 'typed on Rocky’s own row').toBe(true)
+    validate()
+    const own = INPUTS.find((r: any) => r.type === 'OD' && idsOf(r).map(String).join() === 'rocky' && /^Exercise S/.test(String(r.remarks || '')))!
+    const keys = [...el(pendListHTML(WED)).querySelectorAll('button.pl-item')].map(b => pendKeysFor(b as HTMLElement)).filter(Boolean)
+    expect(keys, 'one line, his own row first, then the input he left').toEqual([[`iu:${inpId(own)}`, `iu:${id}`]])
+    expect(findInputCell(weekUnav(WED), keys[0]![0]!), 'his own row is drawn').toBeTruthy()
+  })
+  it('an input deleted since publishing has no row to go to: its line stays still', () => {
+    publishDay(WED)
+    const inp = taipanOL()
+    removeInput(inp)
+    validate()
+    const line = lineFor(WED, /deleted/)
+    expect(line, 'the deletion has a line').toBeTruthy()
+    expect(line!.tagName, 'nothing to go to').toBe('DIV')
+  })
+})
+

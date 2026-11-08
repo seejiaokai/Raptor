@@ -22,7 +22,7 @@
 import { DAYS } from '../engine/data'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
-import { isOD, INPUTS, inpId, inpLabel, goneRequestName, isFly, titleOf, toOf, inputCoversDate, idsOf, placeholderOf, remarksShown } from '../engine/inputs'
+import { isOD, INPUTS, inpId, inpLabel, goneRequestName, isFly, titleOf, toOf, inputCoversDate, idsOf, holds, placeholderOf, remarksShown } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, inputIdOf, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
@@ -197,6 +197,12 @@ const whoWhen = (r: any): { who: string; when: string } => r ? { who: elogWho(r)
 const hm = (m: any) => { const n = +m; if (!isFinite(n)) return ''; const x = ((n % 1440) + 1440) % 1440; return `${String(Math.floor(x / 60)).padStart(2, '0')}:${String(x % 60).padStart(2, '0')}` }
 const winWords = (r: any) => r.half === 'am' ? 'AM' : r.half === 'pm' ? 'PM' : r.allday ? 'all day' : (r.s != null && r.e != null ? `${hm(r.s)}–${hm(r.e)}` : 'no times')
 const clip = (t: any) => { const s = String(t || ''); return s.length > 40 ? s.slice(0, 39) + '…' : s }
+/* the input row a line of the waiting list goes to: one man's row of an input that holds several first, when the line is
+   about him and he is still in it (engine/keys.ts iuParts), then the input's own */
+function inputRowKeys(inp: any, it: PendItem): string[] {
+  const id = String(inpId(inp)), p = it.pp && it.pp.p != null ? String(it.pp.p) : ''
+  return (p && idsOf(inp).length > 1 && holds(inp, p) ? [`iu:${id}~${p}`] : []).concat(`iu:${id}`)
+}
 function inputWords(di: number, it: PendItem): Words {
   const e: any = it.val || {}, id = String(e.addr || '').split('.').slice(1).join('.')
   /* the two records the comparison paired — the live one may be another record of the same man's (a medical takeover's
@@ -204,8 +210,13 @@ function inputWords(di: number, it: PendItem): Words {
   const snap: any = daySnapOf(di, dayCurVer(di)), was = it.was || (snap && snap.inp && snap.inp[id]) || null
   const now = it.now || INPUTS.find((x: any) => inpId(x) === id) || null
   const here = !!now && !!DAYS[di] && inputCoversDate(now, (DAYS[di] as any).dt)
-  /* a line whose input re-landed a row on this day takes the view to it (Fable F4); a leave with no row stays still */
-  const none = { ...whoWhen(editRowOf(di, it)), jump: !!(it.jump && it.jump.length) }
+  /* a line whose input re-landed a row on this day takes the view to it (Fable F4); a leave with no programme row goes to
+     its row under Unavailable or Personal Inputs — which since D1784 wears the waiting mark the line is about (the walk of
+     8 Nov 26, W1b S30: it stood still, "no place of its own", the same on main's build). The History window's twin
+     (ui/changesjump.ts jumpOf): one man's row first, then the input; a deleted or moved-off input has no row here and
+     stays still. */
+  const rowKeys = !(it.jump && it.jump.length) && here ? inputRowKeys(now, it) : null
+  const none = { ...whoWhen(editRowOf(di, it)), jump: !!(it.jump && it.jump.length) || !!rowKeys, ...(rowKeys ? { keys: rowKeys } : {}) }
   const name = requestName(here ? now : (was || now))
   if (!was) {
     const f: any = it.inp || (it.entry && String((it.entry as any).addr || '').startsWith('inp:') ? it.entry : null)
@@ -228,7 +239,8 @@ function inputWords(di: number, it: PendItem): Words {
   const piece = it.pp && it.pp.role === 'off' && now ? INPUTS.find((x: any) => x && x !== now && inpId(x) !== inpId(now)
     && idsOf(x).length === 1 && String(idsOf(x)[0]) === String(it.pp!.p) && x.type === now.type
     && x.at != null && x.at === now.at && (x.by === now.by || (!!was && x.by === was.by)) && !!DAYS[di] && inputCoversDate(x, (DAYS[di] as any).dt)) : null
-  if (it.pp && piece) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: `his own now — ${winWords(piece)}`, ...none, edited: true } as Words
+  /* (his own record is where he now is, so the tap goes there first) */
+  if (it.pp && piece) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: `his own now — ${winWords(piece)}`, ...none, ...(rowKeys ? { keys: [`iu:${inpId(piece)}`, ...rowKeys] } : {}), edited: true } as Words
   if (it.pp) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: it.pp.role === 'on' ? 'added' : 'taken out', ...none, edited: true } as Words
   const from: string[] = [], to: string[] = []
   const pair = (a: string, b: string) => { if (a !== b) { from.push(a); to.push(b) } }
