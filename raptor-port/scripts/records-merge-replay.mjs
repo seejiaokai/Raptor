@@ -112,14 +112,15 @@ const IDS = {
 }
 const tally = a => a.reduce((m, x) => m.set(x, (m.get(x) || 0) + 1), new Map())
 /* counts that differ from the chat's (listed), and counts above the chat's AND both parents' (a failure) */
-function identities(mine, chat, p1Text, p2Text) {
+function identities(mine, chat, p1Text, p2Text, renumbered = new Set()) {
   const differ = [], doubled = []
   for (const [name, f] of Object.entries(IDS)) {
     const a = tally(f(mine)), b = tally(f(chat)), x = tally(f(p1Text)), y = tally(f(p2Text)), diffs = []
     for (const k of new Set([...a.keys(), ...b.keys()])) {
       const s = a.get(k) || 0, c = b.get(k) || 0
       if (s !== c) diffs.push(`${k}: step ${s}, chat ${c}`)
-      if (s > Math.max(c, x.get(k) || 0, y.get(k) || 0)) doubled.push(`${name} — "${k}" stands ${s} times in the step's file; the chat's ${c}, the first parent's ${x.get(k) || 0}, the second's ${y.get(k) || 0}`)
+      /* a number the step gave a renumbered note stands once and in no parent — that is the renumber, not a doubling */
+      if (s > Math.max(c, x.get(k) || 0, y.get(k) || 0) && !(s === 1 && renumbered.has(k))) doubled.push(`${name} — "${k}" stands ${s} times in the step's file; the chat's ${c}, the first parent's ${x.get(k) || 0}, the second's ${y.get(k) || 0}`)
     }
     if (diffs.length) differ.push(`${name} — ${diffs.join('; ')}`)
   }
@@ -140,13 +141,13 @@ function lineDiff(mine, chat, p1Text, p2Text) {
     return `${l[0]} ${body}   «${mark}»`
   })
 }
-function compare(clone, m, f, part) {
+function compare(clone, m, f, part, renumbered) {
   const mine = readFileSync(join(clone, f), 'utf8')
   const chat = tryGit(clone, 'cat-file', 'blob', `${m.merge}:${f}`)
   if (chat === null) return { f, part, gone: true, doubled: [] }
   const p1Text = tryGit(clone, 'cat-file', 'blob', `${m.p1}:${f}`) || '', p2Text = tryGit(clone, 'cat-file', 'blob', `${m.p2}:${f}`) || ''
   const settled = part ? withoutRegions(mine) : mine
-  const { differ, doubled } = identities(settled, chat, p1Text, p2Text)
+  const { differ, doubled } = identities(settled, chat, p1Text, p2Text, renumbered)
   if (!part) return mine === chat ? { f, same: true, doubled } : { f, same: false, lines: lineDiff(mine, chat, p1Text, p2Text), ids: differ, doubled }
   /* in part: each record the step settled (free of marks) against the chat's record of the same name */
   const ours = records(mine), theirs = records(chat), recs = []
@@ -174,8 +175,9 @@ function replay(clone, m) {
   const left = new Set([...out.matchAll(/^ {2}LEFT for you in (\S+):$/gm)].map(x => x[1]))
   const notRecord = [...out.matchAll(/^ {2}not a record file — yours to settle: (\S+)$/gm)].map(x => x[1])
   const rulings = (/^ {2}rulings files, not touched here: (.*)$/m.exec(out) || [, ''])[1].split(', ').filter(Boolean)
-  const files = settled.map(({ f, part }) => compare(clone, m, f, part))
   const renumbers = [...out.matchAll(/^ {2}renumbered in .*$/gm)].map(x => x[0].trim())
+  const renumbered = new Set(renumbers.flatMap(x => { const n = /→ (\d+) /.exec(x); return n ? [`Observation ${n[1]}`] : [] }))
+  const files = settled.map(({ f, part }) => compare(clone, m, f, part, renumbered))
   return { ...m, gitStatus: st.status, stepCode: r.status, unmerged, files, left: [...left], notRecord, rulings, renumbers, crashed: r.status === 1 ? out.trim().split('\n').slice(-3).join(' / ') : null }
 }
 
@@ -187,6 +189,10 @@ const clone = join(work, 'repo')
 execFileSync('git', ['clone', '-q', '--shared', '--no-checkout', REPO, clone], { stdio: 'ignore' })
 git(clone, 'config', 'core.autocrlf', 'false'); git(clone, 'config', 'user.email', 'replay@example.invalid'); git(clone, 'config', 'user.name', 'replay')
 spawnSync('git', ['remote', 'remove', 'origin'], { cwd: clone })
+/* the clone's own local branch (today's main) goes too: the step counts local branches for the next note number (Opus 6),
+   and today's notes did not exist when the chat merged */
+git(clone, 'checkout', '-q', '--detach', 'HEAD')
+for (const b of (tryGit(clone, 'for-each-ref', '--format=%(refname:short)', 'refs/heads') || '').split('\n').filter(Boolean)) git(clone, 'branch', '-q', '-D', b)
 const runAll = ms => ms.map((m, i) => { process.stderr.write(`\r  ${i + 1}/${ms.length} ${m.merge.slice(0, 9)}   `); return replay(clone, m) })
 const main = runAll(listed.merges), held = runAll(heldOut)
 process.stderr.write('\n')
