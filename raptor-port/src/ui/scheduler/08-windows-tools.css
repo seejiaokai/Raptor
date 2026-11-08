@@ -19,7 +19,7 @@
 .modal-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px;line-height:1}
 .modal-body{padding:14px 16px}
 .mfield{display:flex;flex-direction:column;gap:3px;margin-bottom:11px}
-.mfield label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.mfield label,.mfield .mfield-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
 .mfield input,.mfield select{background:var(--bg);border:1px solid var(--edge);color:var(--ink);font-family:'Inter Tight',sans-serif;font-size:13px;padding:8px 10px;border-radius:9px}
 .userlist{margin-top:6px;border-top:1px solid var(--edge);padding-top:10px}
 .urow{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12.5px}

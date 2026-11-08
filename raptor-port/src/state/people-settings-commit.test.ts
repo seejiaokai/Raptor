@@ -11,8 +11,9 @@ import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { STORE_CFG, addStore, storesSave, storesReset, storesAreStandard } from '../engine/stores'
 import { CXR_CFG, cxReasonsSave, cxReasonsReset } from '../engine/cxreasons'
 import {
-  persistPeople, registerPeopleSettingsCommandLayer, SETTINGS_KEYS, resyncPeopleBaseline,
+  persistPeople, SETTINGS_KEYS, resyncPeopleBaseline,
 } from './people-settings-commit'
+import { registerPeopleSettingsCommandLayer } from './people-settings-wire'
 import { onCommit, setConflictChecker } from '../command'
 import type { CommitEnvelope } from '../command'
 

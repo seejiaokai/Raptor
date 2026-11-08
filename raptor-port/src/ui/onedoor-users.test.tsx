@@ -280,3 +280,85 @@ describe('D309 / D308 — Give access · Refuse; the post-in date on every door 
     expect($('#accAddNote').textContent).toBe('Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date.')
   })
 })
+
+/* [RD-LEFT-1108] part 2 (8 Nov 26): each row's open editor became a piece of its own, for React Doctor's
+   no-high-complexity-react-function. What must not change: the row is drawn afresh each time it opens, so what was typed
+   and not saved, and a Delete armed by its first tap, are gone when the row is closed and opened again. */
+describe('a row closed and opened again starts from his saved values', () => {
+  it('on the roster: an unsaved sign-in and an armed Delete do not come back', async () => {
+    await users()
+    const saved = accountOfPid('rocky')!.name
+    await click($('#accList [data-person="rocky"] .acc-tap'))
+    await type($('#accEdName') as HTMLInputElement, 'typed@not.saved')
+    await click($('#accEdDel'))
+    expect($('#accEdDel').textContent).toBe(`Tap again to delete ${P('rocky').cs}`)
+    expect($('#accEdDelNote')).toBeTruthy()
+    await click($('#accEdCancel'))
+    await click($('#accList [data-person="rocky"] .acc-tap'))
+    expect(($('#accEdName') as HTMLInputElement).value).toBe(saved)
+    expect($('#accEdDel').textContent).toBe('Delete')
+    expect($('#accEdDelNote')).toBeNull()
+    expect(P('rocky')).toBeTruthy()
+  })
+
+  it('archived: an unsaved callsign, an error and an armed Delete do not come back', async () => {
+    P('casper').archived = true; indexCallsigns()
+    await users()
+    await click($('#accArchToggle'))
+    await click($('#accArchList [data-person="casper"] .acc-tap'))
+    await type($('#accArCs') as HTMLInputElement, P('bane').cs)
+    await click($('#accArSave'))
+    expect($('#accArErr')).toBeTruthy()
+    await click($('#accArDel'))
+    expect($('#accArDelNote')).toBeTruthy()
+    await click($('#accArCancel'))
+    await click($('#accArchList [data-person="casper"] .acc-tap'))
+    expect(($('#accArCs') as HTMLInputElement).value).toBe(P('casper').cs)
+    expect($('#accArErr')).toBeNull()
+    expect($('#accArDel').textContent).toBe('Delete')
+    expect($('#accArDelNote')).toBeNull()
+  })
+
+  /* the other half (chat 32's reads, 8 Nov 26 — Astra's and Sol 6.1's host check): while the row stays open, a redraw
+     caused by something else keeps what is typed and the armed Delete — the editor is only re-made when the row closes */
+  it('on the roster: a redraw from elsewhere keeps the typed sign-in, the role and the armed Delete', async () => {
+    await users()
+    await click($('#accList [data-person="rocky"] .acc-tap'))
+    await type($('#accEdName') as HTMLInputElement, 'typed@not.saved')
+    await type($('#accEdRole') as HTMLSelectElement, 'admin')
+    await click($('#accEdDel'))
+    await act(async () => { notify() })
+    expect(($('#accEdName') as HTMLInputElement).value).toBe('typed@not.saved')
+    expect(($('#accEdRole') as HTMLSelectElement).value).toBe('admin')
+    expect($('#accEdDel').textContent).toBe(`Tap again to delete ${P('rocky').cs}`)
+  })
+
+  it('archived: after a refused Save name and a redraw from elsewhere, the typed callsign and the error stay', async () => {
+    P('casper').archived = true; indexCallsigns()
+    await users()
+    await click($('#accArchToggle'))
+    await click($('#accArchList [data-person="casper"] .acc-tap'))
+    await type($('#accArCs') as HTMLInputElement, P('bane').cs)
+    await click($('#accArSave'))
+    expect($('#accArErr')).toBeTruthy()
+    await act(async () => { notify() })
+    expect(($('#accArCs') as HTMLInputElement).value).toBe(P('bane').cs)
+    expect($('#accArErr')).toBeTruthy()
+    expect(P('casper').archived).toBe(true)
+  })
+
+  /* the break test of chat 26's check (8 Nov 26): an archived row's editor exists only while the row is open — drawn on
+     a closed row, every archived man would show his callsign box and buttons in the folded list */
+  it('archived: a closed row shows no editor, before it is opened and after Cancel', async () => {
+    P('casper').archived = true; indexCallsigns()
+    await users()
+    await click($('#accArchToggle'))
+    expect($('#accArchList [data-person="casper"] [data-restoring]')).toBeNull()
+    expect($('#accArCs')).toBeNull()
+    await click($('#accArchList [data-person="casper"] .acc-tap'))
+    expect($('#accArchList [data-person="casper"] [data-restoring="casper"]')).toBeTruthy()
+    await click($('#accArCancel'))
+    expect($('#accArchList [data-person="casper"] [data-restoring]')).toBeNull()
+    expect($('#accArCs')).toBeNull()
+  })
+})
