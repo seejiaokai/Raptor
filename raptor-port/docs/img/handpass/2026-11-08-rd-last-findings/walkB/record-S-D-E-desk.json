@@ -1,0 +1,649 @@
+{
+ "main": {
+  "S01-D-band-after-add": {
+   "id": "S01-D-band-after-add",
+   "scen": "S07",
+   "desc": "add a person with sign-in under ?savefail",
+   "v": {
+    "toast": "RDFAIL added — rdfail@example.test can sign in now",
+    "bar": "Not saved — keep this page openRetry | RDFAIL added — rdfail@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 62",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDFAIL": "RDFAIL rdfail@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "band": "Not saved — keep this page open Retry"
+   },
+   "pic": "main-S01-D-band-after-add.png"
+  },
+  "S02-D-edit-fail": {
+   "id": "S02-D-edit-fail",
+   "scen": "S07",
+   "desc": "edit sign-in, then Undo / Redo with the band up",
+   "v": {
+    "a": {
+     "toast": "Saved",
+     "bar": "Not saved — keep this page openRetry | Saved",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — RDFAIL’s sign-in name"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 62",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDFAIL": "RDFAIL rdfail2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "b": "RDFAIL rdfail@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "c": "RDFAIL rdfail2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-S02-D-edit-fail.png"
+  },
+  "S03-D-retry": {
+   "id": "S03-D-retry",
+   "scen": "S07",
+   "desc": "Retry keeps failing",
+   "v": {
+    "had": 1,
+    "band": "Not saved — keep this page open Retry"
+   },
+   "pic": "main-S03-D-retry.png"
+  },
+  "S04-D-guest-switch": {
+   "id": "S04-D-guest-switch",
+   "scen": "S07",
+   "desc": "settings edit (Guest view) under savefail",
+   "v": {
+    "on": true,
+    "band": "Not saved — keep this page open Retry",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-S04-D-guest-switch.png"
+  },
+  "S05-D-reload-lost": {
+   "id": "S05-D-reload-lost",
+   "scen": "S07",
+   "desc": "reload without the switch: nothing kept",
+   "v": {
+    "rdfail": null,
+    "guest": false
+   },
+   "pic": "main-S05-D-reload-lost.png"
+  },
+  "S06-D-request-notsent": {
+   "id": "S06-D-request-notsent",
+   "scen": "S07",
+   "desc": "request under savefail: Not sent yet",
+   "v": {
+    "text": "Not saved — keep this page open Retry TALON Not sent yet RDFREQ INITIALS RF SEAT Pilot CAT C ! Not sent yet An admin approves You're on the schedule Sign out Signed in as rdfailreq@example.test"
+   },
+   "pic": "main-S06-D-request-notsent.png"
+  },
+  "S-D-errors": {
+   "id": "S-D-errors",
+   "v": []
+  },
+  "D01-D-forms": {
+   "id": "D01-D-forms",
+   "scen": "S19",
+   "desc": "both forms: labels, modes",
+   "v": {
+    "forms": [
+     {
+      "mode": "before",
+      "btn": "Clear old clutter…",
+      "dis": true
+     },
+     {
+      "mode": "before",
+      "btn": "Clear edit history…",
+      "dis": true
+     }
+    ]
+   },
+   "pic": "main-D01-D-forms.png"
+  },
+  "D02-D-log-specific": {
+   "id": "D02-D-log-specific",
+   "scen": "S19",
+   "desc": "edit history: specific date 8 Nov, arm",
+   "v": {
+    "btn": "Tap again to clear 1 entry",
+    "toast": ""
+   },
+   "pic": "main-D02-D-log-specific.png"
+  },
+  "D03-D-log-disarm": {
+   "id": "D03-D-log-disarm",
+   "scen": "S19",
+   "desc": "change mode: disarms",
+   "v": {
+    "btn": "Clear edit history…",
+    "dis": false
+   },
+   "pic": "main-D03-D-log-disarm.png"
+  },
+  "D04-D-log-older-zero": {
+   "id": "D04-D-log-older-zero",
+   "scen": "S19",
+   "desc": "older than 7 Nov: zero",
+   "v": {
+    "btn": "Clear edit history…",
+    "toast": "No edits on record in that period"
+   },
+   "pic": "main-D04-D-log-older-zero.png"
+  },
+  "D05-D-log-range": {
+   "id": "D05-D-log-range",
+   "scen": "S19",
+   "desc": "range 5–7 Nov: zero; range mode shows the calendar",
+   "v": {
+    "run": 1,
+    "group": null,
+    "labelled": null,
+    "btn": "Clear edit history…"
+   },
+   "pic": "main-D05-D-log-range.png"
+  },
+  "D06-D-log-clear-today": {
+   "id": "D06-D-log-clear-today",
+   "scen": "S19",
+   "desc": "specific date 8 Nov: arm then clear",
+   "v": {
+    "armed": "Tap again to clear 1 entry",
+    "toast": "Cleared 1 entry",
+    "btn": "Clear edit history…",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDCLR’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-D06-D-log-clear-today.png"
+  },
+  "D07-D-wipe-zero": {
+   "id": "D07-D-wipe-zero",
+   "scen": "S19",
+   "desc": "old clutter: older than 7 Nov, nothing to clear",
+   "v": {
+    "btn": "Clear old clutter…",
+    "toast": "No old clutter in that period"
+   },
+   "pic": "main-D07-D-wipe-zero.png"
+  },
+  "D08-D-period-label": {
+   "id": "D08-D-period-label",
+   "scen": "S18",
+   "desc": "press the Period label of each form",
+   "err": "locator.click: Timeout 30000ms exceeded.",
+   "pic": "main-D08-D-period-label.png"
+  },
+  "D-D-errors": {
+   "id": "D-D-errors",
+   "v": []
+  },
+  "E01-D-admin-undo-before": {
+   "id": "E01-D-admin-undo-before",
+   "scen": "S21",
+   "desc": "admin: Undo state",
+   "v": {
+    "undo": {
+     "dis": true,
+     "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+    },
+    "redo": {
+     "dis": true,
+     "t": "Redo"
+    }
+   },
+   "pic": "main-E01-D-admin-undo-before.png"
+  },
+  "E02-D-member-nav": {
+   "id": "E02-D-member-nav",
+   "scen": "S21",
+   "desc": "member: pages and Undo",
+   "v": {
+    "nav": [
+     "editsched",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help",
+     "admin",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help"
+    ],
+    "undo": {
+     "undo": null,
+     "redo": null
+    },
+    "page": "viewsched"
+   },
+   "pic": "main-E02-D-member-nav.png"
+  },
+  "E03-D-member-quals": {
+   "id": "E03-D-member-quals",
+   "scen": "S21",
+   "desc": "member: Quals edit controls",
+   "v": {
+    "edit": 1,
+    "save": 0,
+    "add": 0
+   },
+   "pic": "main-E03-D-member-quals.png"
+  },
+  "E04-D-member-admin-route": {
+   "id": "E04-D-member-admin-route",
+   "scen": "S21",
+   "desc": "member: Admin page reachable?",
+   "v": {
+    "r": "admin",
+    "deny": 1,
+    "users": 0,
+    "nav": 1
+   },
+   "pic": "main-E04-D-member-admin-route.png"
+  },
+  "E05-D-new-member": {
+   "id": "E05-D-new-member",
+   "scen": "S21",
+   "desc": "new member signs in: welcome / pages / Undo",
+   "v": {
+    "nav": [
+     "editsched",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help",
+     "admin",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help"
+    ],
+    "welcome": 0,
+    "undo": {
+     "undo": null,
+     "redo": null
+    }
+   },
+   "pic": "main-E05-D-new-member.png"
+  },
+  "E-D-errors": {
+   "id": "E-D-errors",
+   "v": []
+  }
+ },
+ "branch": {
+  "S01-D-band-after-add": {
+   "id": "S01-D-band-after-add",
+   "scen": "S07",
+   "desc": "add a person with sign-in under ?savefail",
+   "v": {
+    "toast": "RDFAIL added — rdfail@example.test can sign in now",
+    "bar": "Not saved — keep this page openRetry | RDFAIL added — rdfail@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 62",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDFAIL": "RDFAIL rdfail@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "band": "Not saved — keep this page open Retry"
+   },
+   "pic": "branch-S01-D-band-after-add.png"
+  },
+  "S02-D-edit-fail": {
+   "id": "S02-D-edit-fail",
+   "scen": "S07",
+   "desc": "edit sign-in, then Undo / Redo with the band up",
+   "v": {
+    "a": {
+     "toast": "Saved",
+     "bar": "Not saved — keep this page openRetry | Saved",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — RDFAIL’s sign-in name"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 62",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDFAIL": "RDFAIL rdfail2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "b": "RDFAIL rdfail@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "c": "RDFAIL rdfail2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-S02-D-edit-fail.png"
+  },
+  "S03-D-retry": {
+   "id": "S03-D-retry",
+   "scen": "S07",
+   "desc": "Retry keeps failing",
+   "v": {
+    "had": 1,
+    "band": "Not saved — keep this page open Retry"
+   },
+   "pic": "branch-S03-D-retry.png"
+  },
+  "S04-D-guest-switch": {
+   "id": "S04-D-guest-switch",
+   "scen": "S07",
+   "desc": "settings edit (Guest view) under savefail",
+   "v": {
+    "on": true,
+    "band": "Not saved — keep this page open Retry",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-S04-D-guest-switch.png"
+  },
+  "S05-D-reload-lost": {
+   "id": "S05-D-reload-lost",
+   "scen": "S07",
+   "desc": "reload without the switch: nothing kept",
+   "v": {
+    "rdfail": null,
+    "guest": false
+   },
+   "pic": "branch-S05-D-reload-lost.png"
+  },
+  "S06-D-request-notsent": {
+   "id": "S06-D-request-notsent",
+   "scen": "S07",
+   "desc": "request under savefail: Not sent yet",
+   "v": {
+    "text": "Not saved — keep this page open Retry TALON Not sent yet RDFREQ INITIALS RF SEAT Pilot CAT C ! Not sent yet An admin approves You're on the schedule Sign out Signed in as rdfailreq@example.test"
+   },
+   "pic": "branch-S06-D-request-notsent.png"
+  },
+  "S-D-errors": {
+   "id": "S-D-errors",
+   "v": []
+  },
+  "D01-D-forms": {
+   "id": "D01-D-forms",
+   "scen": "S19",
+   "desc": "both forms: labels, modes",
+   "v": {
+    "forms": [
+     {
+      "mode": "before",
+      "lbl": "Period",
+      "btn": "Clear old clutter…",
+      "dis": true
+     },
+     {
+      "mode": "before",
+      "lbl": "Period",
+      "btn": "Clear edit history…",
+      "dis": true
+     }
+    ]
+   },
+   "pic": "branch-D01-D-forms.png"
+  },
+  "D02-D-log-specific": {
+   "id": "D02-D-log-specific",
+   "scen": "S19",
+   "desc": "edit history: specific date 8 Nov, arm",
+   "v": {
+    "btn": "Tap again to clear 1 entry",
+    "toast": ""
+   },
+   "pic": "branch-D02-D-log-specific.png"
+  },
+  "D03-D-log-disarm": {
+   "id": "D03-D-log-disarm",
+   "scen": "S19",
+   "desc": "change mode: disarms",
+   "v": {
+    "btn": "Clear edit history…",
+    "dis": false
+   },
+   "pic": "branch-D03-D-log-disarm.png"
+  },
+  "D04-D-log-older-zero": {
+   "id": "D04-D-log-older-zero",
+   "scen": "S19",
+   "desc": "older than 7 Nov: zero",
+   "v": {
+    "btn": "Clear edit history…",
+    "toast": "No edits on record in that period"
+   },
+   "pic": "branch-D04-D-log-older-zero.png"
+  },
+  "D05-D-log-range": {
+   "id": "D05-D-log-range",
+   "scen": "S19",
+   "desc": "range 5–7 Nov: zero; range mode shows the calendar",
+   "v": {
+    "run": 1,
+    "group": "group",
+    "labelled": "admLogRunLbl",
+    "btn": "Clear edit history…"
+   },
+   "pic": "branch-D05-D-log-range.png"
+  },
+  "D06-D-log-clear-today": {
+   "id": "D06-D-log-clear-today",
+   "scen": "S19",
+   "desc": "specific date 8 Nov: arm then clear",
+   "v": {
+    "armed": "Tap again to clear 1 entry",
+    "toast": "Cleared 1 entry",
+    "btn": "Clear edit history…",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDCLR’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-D06-D-log-clear-today.png"
+  },
+  "D07-D-wipe-zero": {
+   "id": "D07-D-wipe-zero",
+   "scen": "S19",
+   "desc": "old clutter: older than 7 Nov, nothing to clear",
+   "v": {
+    "btn": "Clear old clutter…",
+    "toast": "No old clutter in that period"
+   },
+   "pic": "branch-D07-D-wipe-zero.png"
+  },
+  "D08-D-period-label": {
+   "id": "D08-D-period-label",
+   "scen": "S18",
+   "desc": "press the Period label of each form",
+   "v": {
+    "admWipe": "admWipeMode",
+    "admLog": "admLogMode"
+   },
+   "pic": "branch-D08-D-period-label.png"
+  },
+  "D-D-errors": {
+   "id": "D-D-errors",
+   "v": []
+  },
+  "E01-D-admin-undo-before": {
+   "id": "E01-D-admin-undo-before",
+   "scen": "S21",
+   "desc": "admin: Undo state",
+   "v": {
+    "undo": {
+     "dis": true,
+     "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+    },
+    "redo": {
+     "dis": true,
+     "t": "Redo"
+    }
+   },
+   "pic": "branch-E01-D-admin-undo-before.png"
+  },
+  "E02-D-member-nav": {
+   "id": "E02-D-member-nav",
+   "scen": "S21",
+   "desc": "member: pages and Undo",
+   "v": {
+    "nav": [
+     "editsched",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help",
+     "admin",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help"
+    ],
+    "undo": {
+     "undo": null,
+     "redo": null
+    },
+    "page": "viewsched"
+   },
+   "pic": "branch-E02-D-member-nav.png"
+  },
+  "E03-D-member-quals": {
+   "id": "E03-D-member-quals",
+   "scen": "S21",
+   "desc": "member: Quals edit controls",
+   "v": {
+    "edit": 1,
+    "save": 0,
+    "add": 0
+   },
+   "pic": "branch-E03-D-member-quals.png"
+  },
+  "E04-D-member-admin-route": {
+   "id": "E04-D-member-admin-route",
+   "scen": "S21",
+   "desc": "member: Admin page reachable?",
+   "v": {
+    "r": "admin",
+    "deny": 1,
+    "users": 0,
+    "nav": 1
+   },
+   "pic": "branch-E04-D-member-admin-route.png"
+  },
+  "E05-D-new-member": {
+   "id": "E05-D-new-member",
+   "scen": "S21",
+   "desc": "new member signs in: welcome / pages / Undo",
+   "v": {
+    "nav": [
+     "editsched",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help",
+     "admin",
+     "viewsched",
+     "inputs",
+     "quals",
+     "logic",
+     "leavewar",
+     "tracker",
+     "help"
+    ],
+    "welcome": 0,
+    "undo": {
+     "undo": null,
+     "redo": null
+    }
+   },
+   "pic": "branch-E05-D-new-member.png"
+  },
+  "E-D-errors": {
+   "id": "E-D-errors",
+   "v": []
+  }
+ }
+}

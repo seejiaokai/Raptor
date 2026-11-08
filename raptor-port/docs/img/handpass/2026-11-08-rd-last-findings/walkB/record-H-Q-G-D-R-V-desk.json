@@ -1,0 +1,1422 @@
+{
+ "main": {
+  "R01-D-access-screen": {
+   "id": "R01-D-access-screen",
+   "scen": "S20",
+   "desc": "unknown sign-in: access screen, where the caret is, then fill",
+   "v": {
+    "focus": "accCs",
+    "text": "Request access Signed in as rdrequest@example.test You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… OCU D C B A IP IR FI Request access Sign out",
+    "cat": "C"
+   },
+   "pic": "main-R01-D-access-screen.png"
+  },
+  "R02-D-long-name": {
+   "id": "R02-D-long-name",
+   "scen": "S20",
+   "desc": "15-character name is refused, 14 accepted",
+   "v": {
+    "e15": "A callsign or name is at most 14 letters — use a short form",
+    "long15": "A callsign or name is at most 14 letters — use a short form",
+    "longAfter": 0
+   },
+   "pic": "main-R02-D-long-name.png"
+  },
+  "R04-D-seat-change": {
+   "id": "R04-D-seat-change",
+   "scen": "S20",
+   "desc": "change Pilot/WSO/Personnel: CAT handling",
+   "v": {
+    "cats": [
+     "Pick…",
+     "OCU",
+     "D",
+     "C",
+     "B",
+     "A",
+     "IW",
+     "FI"
+    ],
+    "gnd": 0,
+    "cat": ""
+   },
+   "pic": "main-R04-D-seat-change.png"
+  },
+  "R05-D-send": {
+   "id": "R05-D-send",
+   "scen": "S20",
+   "desc": "valid request sent",
+   "v": {
+    "text": "TALON Waiting for an admin ABCDEFGHIJKLMN INITIALS RX SEAT Pilot CAT C Request sent An admin approves You're on the schedule Sign out Signed in as rdrequest@example.test RDMATCH added to the roster — set flight and quals on the Quals page"
+   },
+   "pic": "main-R05-D-send.png"
+  },
+  "R03-D-blank-ini": {
+   "id": "R03-D-blank-ini",
+   "scen": "S20",
+   "desc": "blank initials: sent or refused",
+   "v": {
+    "err": null,
+    "text": "TALON\nWaiting for an admin\nRDBLANK\nSEAT\nPer onnel\nReque t  ent\nAn admin approve \nYou're on the  chedule\nSign out\n\nSigned in a  rdreque t4@example.te t\n\nRDMATCH added to the ro ter —  et flight and qua"
+   },
+   "pic": "main-R03-D-blank-ini.png"
+  },
+  "R06-D-second-admin-bell": {
+   "id": "R06-D-second-admin-bell",
+   "scen": "S17",
+   "desc": "second admin signed in: the bell and the admin count before viewing Users",
+   "v": {
+    "bell": null,
+    "nav": [
+     "4",
+     "4",
+     "4"
+    ]
+   },
+   "pic": "main-R06-D-second-admin-bell.png"
+  },
+  "R07-D-categories-only": {
+   "id": "R07-D-categories-only",
+   "scen": "S17",
+   "desc": "Admin categories only (not Users): alert still up on a phone",
+   "v": {
+    "alert": [
+     "4",
+     "4",
+     "4"
+    ],
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-R07-D-categories-only.png"
+  },
+  "R08-D-waiting-list": {
+   "id": "R08-D-waiting-list",
+   "scen": "S17",
+   "desc": "Users list: waiting requests",
+   "v": {
+    "waiting": 4,
+    "rows": [
+     "rdrequest@example.test asked as ABCDEFGHIJKLMN · RX · Pilot · CAT C · 8/11 09:00 Give access Refuse",
+     "rdrequest2@example.test asked as RDMATCH · RM · Pilot · CAT C · 8/11 09:00 Give access Refuse",
+     "rdrequest3@example.test asked as RDNEWBIE · RN · WSO · CAT B · 8/11 09:00 Give access Refuse",
+     "rdrequest4@example.test asked as RDBLANK · Personnel · 8/11 09:00 Give access Refuse"
+    ],
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-R08-D-waiting-list.png"
+  },
+  "R09-D-giveaccess-roster": {
+   "id": "R09-D-giveaccess-roster",
+   "scen": "S17",
+   "desc": "Give access on RDMATCH: default mode, note, switch modes, cancel, reopen",
+   "v": {
+    "a": {
+     "mode": "On the roster",
+     "pressed": "true",
+     "note": "He typed RDMATCH — RDMATCH is on the roster. Pick them if this is them."
+    },
+    "n": {
+     "cs": "RDMATCH",
+     "note": "Filled from what he gave when he signed up — change anything before you give access."
+    },
+    "reopen": "true"
+   },
+   "pic": "main-R09-D-giveaccess-roster.png"
+  },
+  "R10-D-approve-roster": {
+   "id": "R10-D-approve-roster",
+   "scen": "S04",
+   "desc": "pick RDMATCH on the roster, give access",
+   "v": {
+    "toast": "rdrequest2@example.test can sign in now",
+    "bar": "rdrequest2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving access"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 3
+    },
+    "row RDMATCH": "RDMATCH rdrequest2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "waiting": 3
+   },
+   "pic": "main-R10-D-approve-roster.png"
+  },
+  "R11-D-approve-new": {
+   "id": "R11-D-approve-new",
+   "scen": "S04",
+   "desc": "RDNEWBIE: New person with a future post-in date, give access",
+   "v": {
+    "m": "true",
+    "pi": "2026-11-16",
+    "toast": "RDNEWBIE added — rdrequest3@example.test can sign in now",
+    "bar": "RDNEWBIE added — rdrequest3@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving access"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 64",
+     "arch": null,
+     "waiting": 2
+    },
+    "row RDNEWBIE": "RDNEWBIE rdrequest3@example.test · WSO · CAT B POSTING IN 16 NOV ¦ Can sign in/On the roster ¦ Member",
+    "waiting": 2
+   },
+   "pic": "main-R11-D-approve-new.png"
+  },
+  "R12-D-refuse": {
+   "id": "R12-D-refuse",
+   "scen": "S17",
+   "desc": "Refuse the last request",
+   "v": {
+    "toast": "Refused rdrequest@example.test",
+    "waiting": 1,
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-R12-D-refuse.png"
+  },
+  "R13-D-reload": {
+   "id": "R13-D-reload",
+   "scen": "S17",
+   "desc": "reload: waiting list and rows",
+   "v": {
+    "waiting": 1,
+    "rows": "RDNEWBIE rdrequest3@example.test · WSO · CAT B POSTING IN 16 NOV ¦ Can sign in/On the roster ¦ Member",
+    "match": "RDMATCH rdrequest2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-R13-D-reload.png"
+  },
+  "R-D-errors": {
+   "id": "R-D-errors",
+   "v": []
+  },
+  "G01-D-guest-on": {
+   "id": "G01-D-guest-on",
+   "scen": "S10",
+   "desc": "Guest view switch on",
+   "v": {
+    "on": true,
+    "toast": "People waiting can now view the schedule",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-G01-D-guest-on.png"
+  },
+  "G02-D-guest-undo": {
+   "id": "G02-D-guest-undo",
+   "scen": "S10",
+   "desc": "Undo, Redo",
+   "v": {
+    "a": false,
+    "b": true,
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-G02-D-guest-undo.png"
+  },
+  "G03-D-guest-reload": {
+   "id": "G03-D-guest-reload",
+   "scen": "S10",
+   "desc": "reload keeps it",
+   "v": {
+    "on": true
+   },
+   "pic": "main-G03-D-guest-reload.png"
+  },
+  "G04-D-secorder-open": {
+   "id": "G04-D-secorder-open",
+   "scen": "S10",
+   "desc": "Squadron config: default arrangement",
+   "v": {
+    "order": [
+     "▲▼Overall notes1",
+     "▲▼Common Programme2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ]
+   },
+   "pic": "main-G04-D-secorder-open.png"
+  },
+  "G05-D-secorder-down": {
+   "id": "G05-D-secorder-down",
+   "scen": "S10",
+   "desc": "move the first section down; Undo; Redo; reload",
+   "v": {
+    "a": [
+     "▲▼Common Programme1",
+     "▲▼Overall notes2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ],
+    "u": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the default arrangement"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "b": [
+     "▲▼Overall notes1",
+     "▲▼Common Programme2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ],
+    "c": [
+     "▲▼Common Programme1",
+     "▲▼Overall notes2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ],
+    "afterReload": [
+     "▲▼Common Programme1",
+     "▲▼Overall notes2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ]
+   },
+   "pic": "main-G05-D-secorder-down.png"
+  },
+  "G06-D-secorder-reset": {
+   "id": "G06-D-secorder-reset",
+   "scen": "S10",
+   "desc": "Reset to standard order",
+   "v": {
+    "order": [
+     "▲▼Overall notes1",
+     "▲▼Common Programme2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ],
+    "toast": ""
+   },
+   "pic": "main-G06-D-secorder-reset.png"
+  },
+  "G07-D-inputs-gear": {
+   "id": "G07-D-inputs-gear",
+   "scen": "S10",
+   "desc": "Inputs gear: member filing on, Save",
+   "v": {
+    "was": true,
+    "now": false,
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — members filing for other people — off"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-G07-D-inputs-gear.png"
+  },
+  "G08-D-inputs-undo-reload": {
+   "id": "G08-D-inputs-undo-reload",
+   "scen": "S10",
+   "desc": "Undo, Redo, reload",
+   "v": {
+    "a": true,
+    "b": false,
+    "afterReload": false
+   },
+   "pic": "main-G08-D-inputs-undo-reload.png"
+  },
+  "G-D-errors": {
+   "id": "G-D-errors",
+   "v": []
+  },
+  "Q01-D-start": {
+   "id": "Q01-D-start",
+   "scen": "S03",
+   "desc": "Quals open",
+   "v": {
+    "ace": " ¦ Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-Q01-D-start.png"
+  },
+  "Q02-D-edit-flight": {
+   "id": "Q02-D-edit-flight",
+   "scen": "S03",
+   "desc": "Edit on, Ace flight set to \"ZZ\", Save",
+   "v": {
+    "ace": " ¦ Ace ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "toast": "Quals saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — Ace’s flight"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-Q02-D-edit-flight.png"
+  },
+  "Q03-D-undo-redo": {
+   "id": "Q03-D-undo-redo",
+   "scen": "S03",
+   "desc": "Undo, Redo",
+   "v": {
+    "a": " ¦ Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "b": " ¦ Ace ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — Ace’s flight"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-Q03-D-undo-redo.png"
+  },
+  "Q04-D-rename": {
+   "id": "Q04-D-rename",
+   "scen": "S03",
+   "desc": "rename Ace to AceX on Quals (callsign box), Save; reload",
+   "v": {
+    "a": " ¦ AceX ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "afterReload": " ¦ AceX ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "old": null
+   },
+   "pic": "main-Q04-D-rename.png"
+  },
+  "Q-D-errors": {
+   "id": "Q-D-errors",
+   "v": []
+  },
+  "H01-D-first-admin-bell": {
+   "id": "H01-D-first-admin-bell",
+   "scen": "S09",
+   "desc": "admin who archived: bell",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ],
+    "toast": "RDPOST archived — his sign-in is suspended"
+   },
+   "pic": "main-H01-D-first-admin-bell.png"
+  },
+  "H02-D-second-admin-bell": {
+   "id": "H02-D-second-admin-bell",
+   "scen": "S09",
+   "desc": "second admin: bell lines (posting notice)",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-H02-D-second-admin-bell.png"
+  },
+  "H03-D-read-one": {
+   "id": "H03-D-read-one",
+   "scen": "S09",
+   "desc": "tap one line",
+   "v": {
+    "none": true
+   },
+   "pic": "main-H03-D-read-one.png"
+  },
+  "H04-D-mark-all": {
+   "id": "H04-D-mark-all",
+   "scen": "S09",
+   "desc": "Mark all read, then reload: stays read",
+   "v": {
+    "a": [
+     "Nothing new"
+    ],
+    "afterReload": [
+     "Nothing new"
+    ]
+   },
+   "pic": "main-H04-D-mark-all.png"
+  },
+  "H05-D-changes-window": {
+   "id": "H05-D-changes-window",
+   "scen": "S08",
+   "desc": "changes window, Mark all as seen",
+   "v": {
+    "before": "1",
+    "had": "enabled",
+    "after": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-H05-D-changes-window.png"
+  },
+  "H-D-errors": {
+   "id": "H-D-errors",
+   "v": []
+  },
+  "D01-D-forms": {
+   "id": "D01-D-forms",
+   "scen": "S19",
+   "desc": "both forms: labels, modes",
+   "v": {
+    "forms": [
+     {
+      "mode": "before",
+      "btn": "Clear old clutter…",
+      "dis": true
+     },
+     {
+      "mode": "before",
+      "btn": "Clear edit history…",
+      "dis": true
+     }
+    ]
+   },
+   "pic": "main-D01-D-forms.png"
+  },
+  "D02-D-log-specific": {
+   "id": "D02-D-log-specific",
+   "scen": "S19",
+   "desc": "edit history: specific date 8 Nov, arm",
+   "v": {
+    "btn": "Tap again to clear 1 entry",
+    "toast": ""
+   },
+   "pic": "main-D02-D-log-specific.png"
+  },
+  "D03-D-log-disarm": {
+   "id": "D03-D-log-disarm",
+   "scen": "S19",
+   "desc": "change mode: disarms",
+   "v": {
+    "btn": "Clear edit history…",
+    "dis": false
+   },
+   "pic": "main-D03-D-log-disarm.png"
+  },
+  "D04-D-log-older-zero": {
+   "id": "D04-D-log-older-zero",
+   "scen": "S19",
+   "desc": "older than 7 Nov: zero",
+   "v": {
+    "btn": "Clear edit history…",
+    "toast": "No edits on record in that period"
+   },
+   "pic": "main-D04-D-log-older-zero.png"
+  },
+  "D05-D-log-range": {
+   "id": "D05-D-log-range",
+   "scen": "S19",
+   "desc": "range 5–7 Nov: zero; range mode shows the calendar",
+   "v": {
+    "run": 1,
+    "group": null,
+    "labelled": null,
+    "btn": "Clear edit history…"
+   },
+   "pic": "main-D05-D-log-range.png"
+  },
+  "D06-D-log-clear-today": {
+   "id": "D06-D-log-clear-today",
+   "scen": "S19",
+   "desc": "specific date 8 Nov: arm then clear",
+   "v": {
+    "armed": "Tap again to clear 1 entry",
+    "toast": "Cleared 1 entry",
+    "btn": "Clear edit history…",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDCLR’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-D06-D-log-clear-today.png"
+  },
+  "D07-D-wipe-zero": {
+   "id": "D07-D-wipe-zero",
+   "scen": "S19",
+   "desc": "old clutter: older than 7 Nov, nothing to clear",
+   "v": {
+    "btn": "Clear old clutter…",
+    "toast": "No old clutter in that period"
+   },
+   "pic": "main-D07-D-wipe-zero.png"
+  },
+  "D08-D-period-label": {
+   "id": "D08-D-period-label",
+   "scen": "S18",
+   "desc": "press the Period label of each form",
+   "v": {
+    "admWipe": "",
+    "admLog": ""
+   },
+   "pic": "main-D08-D-period-label.png"
+  },
+  "D-D-errors": {
+   "id": "D-D-errors",
+   "v": []
+  },
+  "V01-D-war-open": {
+   "id": "V01-D-war-open",
+   "scen": "S02",
+   "desc": "Leave War open: approvals count",
+   "v": {
+    "count": "13",
+    "seen": []
+   },
+   "pic": "main-V01-D-war-open.png"
+  },
+  "V02-D-approvals-first": {
+   "id": "V02-D-approvals-first",
+   "scen": "S02",
+   "desc": "first visit to Approvals",
+   "v": {
+    "count": "13",
+    "seen": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-V02-D-approvals-first.png"
+  },
+  "V03-D-approvals-leave-return": {
+   "id": "V03-D-approvals-leave-return",
+   "scen": "S02",
+   "desc": "back to the grid and again; reload",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "afterReload": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "count": "13"
+   },
+   "pic": "main-V03-D-approvals-leave-return.png"
+  },
+  "V04-D-my-leave": {
+   "id": "V04-D-my-leave",
+   "scen": "S02",
+   "desc": "own window: My leave",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff",
+     "raptor:settings/lwseen:stiff"
+    ],
+    "win": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMI"
+   },
+   "pic": "main-V04-D-my-leave.png"
+  },
+  "V-D-errors": {
+   "id": "V-D-errors",
+   "v": []
+  }
+ },
+ "branch": {
+  "R01-D-access-screen": {
+   "id": "R01-D-access-screen",
+   "scen": "S20",
+   "desc": "unknown sign-in: access screen, where the caret is, then fill",
+   "v": {
+    "focus": "accCs",
+    "text": "Request access Signed in as rdrequest@example.test You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… OCU D C B A IP IR FI Request access Sign out",
+    "cat": "C"
+   },
+   "pic": "branch-R01-D-access-screen.png"
+  },
+  "R02-D-long-name": {
+   "id": "R02-D-long-name",
+   "scen": "S20",
+   "desc": "15-character name is refused, 14 accepted",
+   "v": {
+    "e15": "A callsign or name is at most 14 letters — use a short form",
+    "long15": "A callsign or name is at most 14 letters — use a short form",
+    "longAfter": 0
+   },
+   "pic": "branch-R02-D-long-name.png"
+  },
+  "R04-D-seat-change": {
+   "id": "R04-D-seat-change",
+   "scen": "S20",
+   "desc": "change Pilot/WSO/Personnel: CAT handling",
+   "v": {
+    "cats": [
+     "Pick…",
+     "OCU",
+     "D",
+     "C",
+     "B",
+     "A",
+     "IW",
+     "FI"
+    ],
+    "gnd": 0,
+    "cat": ""
+   },
+   "pic": "branch-R04-D-seat-change.png"
+  },
+  "R05-D-send": {
+   "id": "R05-D-send",
+   "scen": "S20",
+   "desc": "valid request sent",
+   "v": {
+    "text": "TALON Waiting for an admin ABCDEFGHIJKLMN INITIALS RX SEAT Pilot CAT C Request sent An admin approves You're on the schedule Sign out Signed in as rdrequest@example.test RDMATCH added to the roster — set flight and quals on the Quals page"
+   },
+   "pic": "branch-R05-D-send.png"
+  },
+  "R03-D-blank-ini": {
+   "id": "R03-D-blank-ini",
+   "scen": "S20",
+   "desc": "blank initials: sent or refused",
+   "v": {
+    "err": null,
+    "text": "TALON\nWaiting for an admin\nRDBLANK\nSEAT\nPer onnel\nReque t  ent\nAn admin approve \nYou're on the  chedule\nSign out\n\nSigned in a  rdreque t4@example.te t\n\nRDMATCH added to the ro ter —  et flight and qua"
+   },
+   "pic": "branch-R03-D-blank-ini.png"
+  },
+  "R06-D-second-admin-bell": {
+   "id": "R06-D-second-admin-bell",
+   "scen": "S17",
+   "desc": "second admin signed in: the bell and the admin count before viewing Users",
+   "v": {
+    "bell": null,
+    "nav": [
+     "4",
+     "4",
+     "4"
+    ]
+   },
+   "pic": "branch-R06-D-second-admin-bell.png"
+  },
+  "R07-D-categories-only": {
+   "id": "R07-D-categories-only",
+   "scen": "S17",
+   "desc": "Admin categories only (not Users): alert still up on a phone",
+   "v": {
+    "alert": [
+     "4",
+     "4",
+     "4"
+    ],
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-R07-D-categories-only.png"
+  },
+  "R08-D-waiting-list": {
+   "id": "R08-D-waiting-list",
+   "scen": "S17",
+   "desc": "Users list: waiting requests",
+   "v": {
+    "waiting": 4,
+    "rows": [
+     "rdrequest@example.test asked as ABCDEFGHIJKLMN · RX · Pilot · CAT C · 8/11 09:00 Give access Refuse",
+     "rdrequest2@example.test asked as RDMATCH · RM · Pilot · CAT C · 8/11 09:00 Give access Refuse",
+     "rdrequest3@example.test asked as RDNEWBIE · RN · WSO · CAT B · 8/11 09:00 Give access Refuse",
+     "rdrequest4@example.test asked as RDBLANK · Personnel · 8/11 09:00 Give access Refuse"
+    ],
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-R08-D-waiting-list.png"
+  },
+  "R09-D-giveaccess-roster": {
+   "id": "R09-D-giveaccess-roster",
+   "scen": "S17",
+   "desc": "Give access on RDMATCH: default mode, note, switch modes, cancel, reopen",
+   "v": {
+    "a": {
+     "mode": "On the roster",
+     "pressed": "true",
+     "note": "He typed RDMATCH — RDMATCH is on the roster. Pick them if this is them."
+    },
+    "n": {
+     "cs": "RDMATCH",
+     "note": "Filled from what he gave when he signed up — change anything before you give access."
+    },
+    "reopen": "true"
+   },
+   "pic": "branch-R09-D-giveaccess-roster.png"
+  },
+  "R10-D-approve-roster": {
+   "id": "R10-D-approve-roster",
+   "scen": "S04",
+   "desc": "pick RDMATCH on the roster, give access",
+   "v": {
+    "toast": "rdrequest2@example.test can sign in now",
+    "bar": "rdrequest2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving access"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 3
+    },
+    "row RDMATCH": "RDMATCH rdrequest2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "waiting": 3
+   },
+   "pic": "branch-R10-D-approve-roster.png"
+  },
+  "R11-D-approve-new": {
+   "id": "R11-D-approve-new",
+   "scen": "S04",
+   "desc": "RDNEWBIE: New person with a future post-in date, give access",
+   "v": {
+    "m": "true",
+    "pi": "2026-11-16",
+    "toast": "RDNEWBIE added — rdrequest3@example.test can sign in now",
+    "bar": "RDNEWBIE added — rdrequest3@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving access"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 64",
+     "arch": null,
+     "waiting": 2
+    },
+    "row RDNEWBIE": "RDNEWBIE rdrequest3@example.test · WSO · CAT B POSTING IN 16 NOV ¦ Can sign in/On the roster ¦ Member",
+    "waiting": 2
+   },
+   "pic": "branch-R11-D-approve-new.png"
+  },
+  "R12-D-refuse": {
+   "id": "R12-D-refuse",
+   "scen": "S17",
+   "desc": "Refuse the last request",
+   "v": {
+    "toast": "Refused rdrequest@example.test",
+    "waiting": 1,
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-R12-D-refuse.png"
+  },
+  "R13-D-reload": {
+   "id": "R13-D-reload",
+   "scen": "S17",
+   "desc": "reload: waiting list and rows",
+   "v": {
+    "waiting": 1,
+    "rows": "RDNEWBIE rdrequest3@example.test · WSO · CAT B POSTING IN 16 NOV ¦ Can sign in/On the roster ¦ Member",
+    "match": "RDMATCH rdrequest2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-R13-D-reload.png"
+  },
+  "R-D-errors": {
+   "id": "R-D-errors",
+   "v": []
+  },
+  "G01-D-guest-on": {
+   "id": "G01-D-guest-on",
+   "scen": "S10",
+   "desc": "Guest view switch on",
+   "v": {
+    "on": true,
+    "toast": "People waiting can now view the schedule",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-G01-D-guest-on.png"
+  },
+  "G02-D-guest-undo": {
+   "id": "G02-D-guest-undo",
+   "scen": "S10",
+   "desc": "Undo, Redo",
+   "v": {
+    "a": false,
+    "b": true,
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-G02-D-guest-undo.png"
+  },
+  "G03-D-guest-reload": {
+   "id": "G03-D-guest-reload",
+   "scen": "S10",
+   "desc": "reload keeps it",
+   "v": {
+    "on": true
+   },
+   "pic": "branch-G03-D-guest-reload.png"
+  },
+  "G04-D-secorder-open": {
+   "id": "G04-D-secorder-open",
+   "scen": "S10",
+   "desc": "Squadron config: default arrangement",
+   "v": {
+    "order": [
+     "▲▼Overall notes1",
+     "▲▼Common Programme2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ]
+   },
+   "pic": "branch-G04-D-secorder-open.png"
+  },
+  "G05-D-secorder-down": {
+   "id": "G05-D-secorder-down",
+   "scen": "S10",
+   "desc": "move the first section down; Undo; Redo; reload",
+   "v": {
+    "a": [
+     "▲▼Common Programme1",
+     "▲▼Overall notes2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ],
+    "u": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the default arrangement"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "b": [
+     "▲▼Overall notes1",
+     "▲▼Common Programme2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ],
+    "c": [
+     "▲▼Common Programme1",
+     "▲▼Overall notes2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ],
+    "afterReload": [
+     "▲▼Common Programme1",
+     "▲▼Overall notes2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ]
+   },
+   "pic": "branch-G05-D-secorder-down.png"
+  },
+  "G06-D-secorder-reset": {
+   "id": "G06-D-secorder-reset",
+   "scen": "S10",
+   "desc": "Reset to standard order",
+   "v": {
+    "order": [
+     "▲▼Overall notes1",
+     "▲▼Common Programme2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ],
+    "toast": ""
+   },
+   "pic": "branch-G06-D-secorder-reset.png"
+  },
+  "G07-D-inputs-gear": {
+   "id": "G07-D-inputs-gear",
+   "scen": "S10",
+   "desc": "Inputs gear: member filing on, Save",
+   "v": {
+    "was": true,
+    "now": false,
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — members filing for other people — off"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-G07-D-inputs-gear.png"
+  },
+  "G08-D-inputs-undo-reload": {
+   "id": "G08-D-inputs-undo-reload",
+   "scen": "S10",
+   "desc": "Undo, Redo, reload",
+   "v": {
+    "a": true,
+    "b": false,
+    "afterReload": false
+   },
+   "pic": "branch-G08-D-inputs-undo-reload.png"
+  },
+  "G-D-errors": {
+   "id": "G-D-errors",
+   "v": []
+  },
+  "Q01-D-start": {
+   "id": "Q01-D-start",
+   "scen": "S03",
+   "desc": "Quals open",
+   "v": {
+    "ace": " ¦ Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-Q01-D-start.png"
+  },
+  "Q02-D-edit-flight": {
+   "id": "Q02-D-edit-flight",
+   "scen": "S03",
+   "desc": "Edit on, Ace flight set to \"ZZ\", Save",
+   "v": {
+    "ace": " ¦ Ace ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "toast": "Quals saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — Ace’s flight"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-Q02-D-edit-flight.png"
+  },
+  "Q03-D-undo-redo": {
+   "id": "Q03-D-undo-redo",
+   "scen": "S03",
+   "desc": "Undo, Redo",
+   "v": {
+    "a": " ¦ Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "b": " ¦ Ace ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — Ace’s flight"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-Q03-D-undo-redo.png"
+  },
+  "Q04-D-rename": {
+   "id": "Q04-D-rename",
+   "scen": "S03",
+   "desc": "rename Ace to AceX on Quals (callsign box), Save; reload",
+   "v": {
+    "a": " ¦ AceX ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "afterReload": " ¦ AceX ZZ AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "old": null
+   },
+   "pic": "branch-Q04-D-rename.png"
+  },
+  "Q-D-errors": {
+   "id": "Q-D-errors",
+   "v": []
+  },
+  "H01-D-first-admin-bell": {
+   "id": "H01-D-first-admin-bell",
+   "scen": "S09",
+   "desc": "admin who archived: bell",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ],
+    "toast": "RDPOST archived — his sign-in is suspended"
+   },
+   "pic": "branch-H01-D-first-admin-bell.png"
+  },
+  "H02-D-second-admin-bell": {
+   "id": "H02-D-second-admin-bell",
+   "scen": "S09",
+   "desc": "second admin: bell lines (posting notice)",
+   "v": {
+    "bell": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-H02-D-second-admin-bell.png"
+  },
+  "H03-D-read-one": {
+   "id": "H03-D-read-one",
+   "scen": "S09",
+   "desc": "tap one line",
+   "v": {
+    "none": true
+   },
+   "pic": "branch-H03-D-read-one.png"
+  },
+  "H04-D-mark-all": {
+   "id": "H04-D-mark-all",
+   "scen": "S09",
+   "desc": "Mark all read, then reload: stays read",
+   "v": {
+    "a": [
+     "Nothing new"
+    ],
+    "afterReload": [
+     "Nothing new"
+    ]
+   },
+   "pic": "branch-H04-D-mark-all.png"
+  },
+  "H05-D-changes-window": {
+   "id": "H05-D-changes-window",
+   "scen": "S08",
+   "desc": "changes window, Mark all as seen",
+   "v": {
+    "before": "1",
+    "had": "enabled",
+    "after": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-H05-D-changes-window.png"
+  },
+  "H-D-errors": {
+   "id": "H-D-errors",
+   "v": []
+  },
+  "D01-D-forms": {
+   "id": "D01-D-forms",
+   "scen": "S19",
+   "desc": "both forms: labels, modes",
+   "v": {
+    "forms": [
+     {
+      "mode": "before",
+      "lbl": "Period",
+      "btn": "Clear old clutter…",
+      "dis": true
+     },
+     {
+      "mode": "before",
+      "lbl": "Period",
+      "btn": "Clear edit history…",
+      "dis": true
+     }
+    ]
+   },
+   "pic": "branch-D01-D-forms.png"
+  },
+  "D02-D-log-specific": {
+   "id": "D02-D-log-specific",
+   "scen": "S19",
+   "desc": "edit history: specific date 8 Nov, arm",
+   "v": {
+    "btn": "Tap again to clear 1 entry",
+    "toast": ""
+   },
+   "pic": "branch-D02-D-log-specific.png"
+  },
+  "D03-D-log-disarm": {
+   "id": "D03-D-log-disarm",
+   "scen": "S19",
+   "desc": "change mode: disarms",
+   "v": {
+    "btn": "Clear edit history…",
+    "dis": false
+   },
+   "pic": "branch-D03-D-log-disarm.png"
+  },
+  "D04-D-log-older-zero": {
+   "id": "D04-D-log-older-zero",
+   "scen": "S19",
+   "desc": "older than 7 Nov: zero",
+   "v": {
+    "btn": "Clear edit history…",
+    "toast": "No edits on record in that period"
+   },
+   "pic": "branch-D04-D-log-older-zero.png"
+  },
+  "D05-D-log-range": {
+   "id": "D05-D-log-range",
+   "scen": "S19",
+   "desc": "range 5–7 Nov: zero; range mode shows the calendar",
+   "v": {
+    "run": 1,
+    "group": "group",
+    "labelled": "admLogRunLbl",
+    "btn": "Clear edit history…"
+   },
+   "pic": "branch-D05-D-log-range.png"
+  },
+  "D06-D-log-clear-today": {
+   "id": "D06-D-log-clear-today",
+   "scen": "S19",
+   "desc": "specific date 8 Nov: arm then clear",
+   "v": {
+    "armed": "Tap again to clear 1 entry",
+    "toast": "Cleared 1 entry",
+    "btn": "Clear edit history…",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDCLR’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-D06-D-log-clear-today.png"
+  },
+  "D07-D-wipe-zero": {
+   "id": "D07-D-wipe-zero",
+   "scen": "S19",
+   "desc": "old clutter: older than 7 Nov, nothing to clear",
+   "v": {
+    "btn": "Clear old clutter…",
+    "toast": "No old clutter in that period"
+   },
+   "pic": "branch-D07-D-wipe-zero.png"
+  },
+  "D08-D-period-label": {
+   "id": "D08-D-period-label",
+   "scen": "S18",
+   "desc": "press the Period label of each form",
+   "v": {
+    "admWipe": "admWipeMode",
+    "admLog": "admLogMode"
+   },
+   "pic": "branch-D08-D-period-label.png"
+  },
+  "D-D-errors": {
+   "id": "D-D-errors",
+   "v": []
+  },
+  "V01-D-war-open": {
+   "id": "V01-D-war-open",
+   "scen": "S02",
+   "desc": "Leave War open: approvals count",
+   "v": {
+    "count": "13",
+    "seen": []
+   },
+   "pic": "branch-V01-D-war-open.png"
+  },
+  "V02-D-approvals-first": {
+   "id": "V02-D-approvals-first",
+   "scen": "S02",
+   "desc": "first visit to Approvals",
+   "v": {
+    "count": "13",
+    "seen": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-V02-D-approvals-first.png"
+  },
+  "V03-D-approvals-leave-return": {
+   "id": "V03-D-approvals-leave-return",
+   "scen": "S02",
+   "desc": "back to the grid and again; reload",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "afterReload": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "count": "13"
+   },
+   "pic": "branch-V03-D-approvals-leave-return.png"
+  },
+  "V04-D-my-leave": {
+   "id": "V04-D-my-leave",
+   "scen": "S02",
+   "desc": "own window: My leave",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff",
+     "raptor:settings/lwseen:stiff"
+    ],
+    "win": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMI"
+   },
+   "pic": "branch-V04-D-my-leave.png"
+  },
+  "V-D-errors": {
+   "id": "V-D-errors",
+   "v": []
+  }
+ }
+}
