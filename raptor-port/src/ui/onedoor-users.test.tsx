@@ -280,3 +280,42 @@ describe('D309 / D308 — Give access · Refuse; the post-in date on every door 
     expect($('#accAddNote').textContent).toBe('Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date.')
   })
 })
+
+/* [RD-LEFT-1108] part 2 (8 Nov 26): each row's open editor became a piece of its own, for React Doctor's
+   no-high-complexity-react-function. What must not change: the row is drawn afresh each time it opens, so what was typed
+   and not saved, and a Delete armed by its first tap, are gone when the row is closed and opened again. */
+describe('a row closed and opened again starts from his saved values', () => {
+  it('on the roster: an unsaved sign-in and an armed Delete do not come back', async () => {
+    await users()
+    const saved = accountOfPid('rocky')!.name
+    await click($('#accList [data-person="rocky"] .acc-tap'))
+    await type($('#accEdName') as HTMLInputElement, 'typed@not.saved')
+    await click($('#accEdDel'))
+    expect($('#accEdDel').textContent).toBe(`Tap again to delete ${P('rocky').cs}`)
+    expect($('#accEdDelNote')).toBeTruthy()
+    await click($('#accEdCancel'))
+    await click($('#accList [data-person="rocky"] .acc-tap'))
+    expect(($('#accEdName') as HTMLInputElement).value).toBe(saved)
+    expect($('#accEdDel').textContent).toBe('Delete')
+    expect($('#accEdDelNote')).toBeNull()
+    expect(P('rocky')).toBeTruthy()
+  })
+
+  it('archived: an unsaved callsign, an error and an armed Delete do not come back', async () => {
+    P('casper').archived = true; indexCallsigns()
+    await users()
+    await click($('#accArchToggle'))
+    await click($('#accArchList [data-person="casper"] .acc-tap'))
+    await type($('#accArCs') as HTMLInputElement, P('bane').cs)
+    await click($('#accArSave'))
+    expect($('#accArErr')).toBeTruthy()
+    await click($('#accArDel'))
+    expect($('#accArDelNote')).toBeTruthy()
+    await click($('#accArCancel'))
+    await click($('#accArchList [data-person="casper"] .acc-tap'))
+    expect(($('#accArCs') as HTMLInputElement).value).toBe(P('casper').cs)
+    expect($('#accArErr')).toBeNull()
+    expect($('#accArDel').textContent).toBe('Delete')
+    expect($('#accArDelNote')).toBeNull()
+  })
+})

@@ -173,6 +173,7 @@ export function AccessScreen() {
           <p className="acc-p">You're not on the squadron's list yet. Tell the admins who you are and they'll give you access.</p>
           {/* no maxLength on this box (D226): a longer name is SAID, never quietly cut */}
           <label htmlFor="accCs">{SIGNUP_CALLSIGN_LABEL}</label>
+          {/* eslint-disable-next-line react-doctor/no-autofocus -- the request card is the whole page a newcomer meets after signing in, and the callsign its first box: the caret waits there so he types straight away, as the sign-in card's username does (Login.tsx) */}
           <input id="accCs" autoComplete="off" placeholder="callsign or name" autoFocus
             value={cs} onChange={e => setCs(e.target.value)} />
           {cs.trim().length > MAX_CS && <div className="cs-long" id="accCsLong">{CS_TOO_LONG}</div>}
