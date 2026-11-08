@@ -1991,7 +1991,11 @@ export function Matrix() {
   const avgDayWRef = useRef<{ key: string; avg: number; frozen: number; zoom: number } | null>(null)
 
   useEffect(() => {
-    setStuck(null)
+    /* WHERE THE BROWSER SHOWS IT (D1870) THE COPY IS KEPT ACROSS A ZOOM OR A REDRAW and measured afresh (the setup's
+       `pin(true)` below — the fresh Opus code read of 8 Nov 26, finding 1 and question 1): taken off the page here, a
+       desktop zoom made part-way down left one to three frames with no pinned row while the real row stood under the bar,
+       and its showing step had to be made afresh. The old way still lets it go and pins it again. */
+    if (!pinSda) setStuck(null)
     // jsdom has no layout — the mirror is a browser-only creature, and a
     // 0-height header (jsdom, or not yet laid out) never activates.
     if (typeof window.matchMedia !== 'function') return
@@ -2112,8 +2116,9 @@ export function Matrix() {
       heights.set(document.body, hOf(document.body)); moved.observe(document.body)
       if (bar) { heights.set(bar, hOf(bar)); moved.observe(bar) }
     }
-    /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26) */
-    pin(false)
+    /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26);
+       where the browser shows the copy it is kept, so it is forced to measure afresh (above) */
+    pin(pinSda)
     return () => {
       repinRef.current = () => {}
       moved?.disconnect()
