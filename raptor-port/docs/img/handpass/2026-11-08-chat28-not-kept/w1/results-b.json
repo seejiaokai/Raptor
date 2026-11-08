@@ -1,0 +1,65 @@
+{
+ "R": [
+  {
+   "step": "3 board band in its own bar",
+   "res": "PASS",
+   "said": "{\"sb\":{\"t\":109,\"b\":145,\"l\":0,\"r\":1536,\"h\":36},\"boardBar\":{\"t\":0,\"b\":146},\"oneLine\":1,\"topbarBand\":\"covered by DIV.sb-top\"}",
+   "pics": "w1/03-board.png"
+  },
+  {
+   "step": "3 board first row not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":145,\"firstRow\":{\"t\":167,\"txt\":\"Sign-off\",\"cls\":\"so-h\"}}",
+   "pics": "w1/03-board.png"
+  },
+  {
+   "step": "3 ✓ Done: band back in the bar",
+   "res": "PASS",
+   "said": "{\"t\":57,\"b\":93,\"text\":\"Not kept — this browser loses your work on a reload\"}",
+   "pics": "w1/03-after-done.png"
+  },
+  {
+   "step": "6 changes window head below band",
+   "res": "PASS",
+   "said": "{\"bandB\":93,\"win\":{\"t\":132,\"b\":692,\"l\":1140,\"r\":1520}}",
+   "pics": "w1/06-changes-open.png"
+  },
+  {
+   "step": "6 changes window moved keeps its place when reopened",
+   "res": "FAIL",
+   "said": "{\"first\":[1140,132],\"moved\":[840,272],\"closedAfterX\":true,\"reopened\":[1140,132]}",
+   "pics": "w1/06-changes-reopened.png"
+  },
+  {
+   "step": "6 changes window: moved, closed with its clock button, reopened",
+   "res": "RECORD",
+   "said": "{\"moved\":[926,332],\"closed\":true,\"reopened\":[1140,132]}",
+   "pics": ""
+  },
+  {
+   "step": "6 Escape on the changes window",
+   "res": "RECORD",
+   "said": "window still shown",
+   "pics": ""
+  },
+  {
+   "step": "6 ALL AVAIL window",
+   "res": "NOTRUN",
+   "said": "tap on ALL AVAIL puck on Saturday duty: no window found; windows []",
+   "pics": "w1/06-allavail-open.png"
+  },
+  {
+   "step": "4 OIL tab bands",
+   "res": "RECORD",
+   "said": "[{\"cls\":\"savestat nokeep\",\"par\":\".topbar has-undo save-failed\",\"t\":56,\"b\":92,\"covered\":true},{\"cls\":\"saveband\",\"par\":\".oil-top\",\"t\":62,\"b\":98,\"covered\":false}]",
+   "pics": ""
+  },
+  {
+   "step": "4 OIL tracker band under its bar, not covered",
+   "res": "PASS",
+   "said": "{\"band\":[62,98,19,1517],\"first\":{\"t\":104,\"txt\":\"?\"},\"topbarBandCovered\":true}",
+   "pics": "w1/04-oil-tab.png"
+  }
+ ],
+ "errors": []
+}

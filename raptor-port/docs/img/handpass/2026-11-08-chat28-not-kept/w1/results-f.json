@@ -1,0 +1,53 @@
+{
+ "R": [
+  {
+   "step": "11 /?nostore: band shows at sign-in, in, after reload",
+   "res": "PASS",
+   "said": "{\"signin\":[\"saveband is-screen:Not kept — this browser loses your work on a reload\"],\"signedIn\":[\"savestat nokeep:Not kept — this browser loses your work on a reload\"],\"afterReload\":[\"saveband is-screen:Not kept — this browser loses your work on a reload\"],\"reloadLandedOnSignIn\":true}",
+   "pics": "w1/11-1-in.png"
+  },
+  {
+   "step": "11 /?nostore=1: band shows at sign-in, in, after reload",
+   "res": "PASS",
+   "said": "{\"signin\":[\"saveband is-screen:Not kept — this browser loses your work on a reload\"],\"signedIn\":[\"savestat nokeep:Not kept — this browser loses your work on a reload\"],\"afterReload\":[\"saveband is-screen:Not kept — this browser loses your work on a reload\"],\"reloadLandedOnSignIn\":true}",
+   "pics": "w1/11-2-in.png"
+  },
+  {
+   "step": "11 /?a=1&nostore: band shows at sign-in, in, after reload",
+   "res": "PASS",
+   "said": "{\"signin\":[\"saveband is-screen:Not kept — this browser loses your work on a reload\"],\"signedIn\":[\"savestat nokeep:Not kept — this browser loses your work on a reload\"],\"afterReload\":[\"saveband is-screen:Not kept — this browser loses your work on a reload\"],\"reloadLandedOnSignIn\":true}",
+   "pics": "w1/11-3-in.png"
+  },
+  {
+   "step": "11 /?nostorex: band absent at sign-in, in, after reload",
+   "res": "PASS",
+   "said": "{\"signin\":[],\"signedIn\":[],\"afterReload\":[],\"reloadLandedOnSignIn\":true}",
+   "pics": "w1/11-4-in.png"
+  },
+  {
+   "step": "12 /: no band anywhere",
+   "res": "PASS",
+   "said": "{\"signin\":[],\"tracker\":[],\"cornerBefore\":\"● saved\",\"cornerAfterMark\":\"● saved\"}",
+   "pics": "w1/12-plain-tracker.png"
+  },
+  {
+   "step": "12 /?fresh=1: no band anywhere",
+   "res": "PASS",
+   "said": "{\"signin\":[],\"tracker\":[],\"cornerBefore\":\"● saved\",\"cornerAfterMark\":\"● saved\"}",
+   "pics": "w1/12-fresh-tracker.png"
+  },
+  {
+   "step": "13 ?nostore&savefail",
+   "res": "RECORD",
+   "said": "{\"before\":[],\"how\":\"no change made: locator.click: Timeout 5000ms exceeded.\",\"afterChange\":[\"savestat failed:Not saved — keep this page openRetry\"]}",
+   "pics": "w1/13-after.png"
+  },
+  {
+   "step": "16 first row lower by exactly the band height, nothing else moved",
+   "res": "FAIL",
+   "said": "{\"shifts\":{\"week\":36,\"firstDay\":0,\"inputs\":36},\"plain\":{\"barB\":58,\"wkT\":66,\"dayT\":null,\"inT\":73,\"wkL\":20,\"dayL\":null,\"dayH\":null,\"pic\":\"w1/16-plain-editsched.png\"},\"refusing\":{\"barB\":94,\"wkT\":102,\"dayT\":null,\"inT\":109,\"wkL\":20,\"dayL\":null,\"dayH\":null,\"pic\":\"w1/16-refusing-editsched.png\"}}",
+   "pics": "w1/16-refusing-editsched.png"
+  }
+ ],
+ "errors": []
+}

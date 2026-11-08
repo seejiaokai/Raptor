@@ -1,0 +1,918 @@
+{
+ "spec": "The \"Not kept\" band",
+ "dist": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\beautiful-merkle-20a6b2\\raptor-port\\dist",
+ "all": false,
+ "report": [
+  {
+   "state": "nokeep-desk",
+   "title": "The \"Not kept\" band on Edit Schedule, desktop, admin",
+   "drawing": {
+    "script": "scripts/handpass/trk-chat20-questions.mjs",
+    "shot": "q2-d-es-A"
+   },
+   "approved": {
+    "picture": "q2-d-es-A.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "bar",
+     "label": "the top bar, the band its last line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 2,
+       "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1536,
+        "h": 94
+       },
+       "ink": {
+        "x": 45,
+        "y": 10.5,
+        "w": 1458,
+        "h": 73
+       },
+       "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin Not kept this browser loses your work on a reload ↶ ↷ Insights Logout Saber · Admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(rgb(21, 56, 76), rgb(11, 28, 39))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.topbar.editing.has-undo.save-failed"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1536,
+        "h": 94
+       },
+       "ink": {
+        "x": 45,
+        "y": 10.5,
+        "w": 1458,
+        "h": 73
+       },
+       "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin Not kept this browser loses your work on a reload ↶ ↷ Insights Logout Saber · Admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(rgb(21, 56, 76), rgb(11, 28, 39))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.topbar.editing.has-undo.save-failed"
+      }
+     }
+    },
+    {
+     "part": "band",
+     "label": "the band",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 57,
+        "w": 1536,
+        "h": 36
+       },
+       "ink": {
+        "x": 45,
+        "y": 67.5,
+        "w": 287,
+        "h": 16
+       },
+       "text": "Not kept this browser loses your work on a reload",
+       "typed": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.savestat.failed"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 57,
+        "w": 1536,
+        "h": 36
+       },
+       "ink": {
+        "x": 45,
+        "y": 67.5,
+        "w": 287,
+        "h": 16
+       },
+       "text": "Not kept this browser loses your work on a reload",
+       "typed": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.savestat.nokeep"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its warning sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 20,
+        "y": 67.5,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 20,
+        "y": 67.5,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "\"Not kept\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 45,
+        "y": 67.5,
+        "w": 51.5,
+        "h": 16
+       },
+       "ink": {
+        "x": 45,
+        "y": 67.5,
+        "w": 51.5,
+        "h": 16
+       },
+       "text": "Not kept",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 45,
+        "y": 67.5,
+        "w": 51.5,
+        "h": 16
+       },
+       "ink": {
+        "x": 45,
+        "y": 67.5,
+        "w": 51.5,
+        "h": 16
+       },
+       "text": "Not kept",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "\"this browser loses your work on a reload\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 105.5,
+        "y": 67.5,
+        "w": 226.5,
+        "h": 16
+       },
+       "ink": {
+        "x": 105.5,
+        "y": 67.5,
+        "w": 226.5,
+        "h": 16
+       },
+       "text": "this browser loses your work on a reload",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 105.5,
+        "y": 67.5,
+        "w": 226.5,
+        "h": 16
+       },
+       "ink": {
+        "x": 105.5,
+        "y": 67.5,
+        "w": 226.5,
+        "h": 16
+       },
+       "text": "this browser loses your work on a reload",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "nokeep-phone",
+   "title": "The \"Not kept\" band on Edit Schedule, iPhone (WebKit), admin",
+   "drawing": {
+    "script": "scripts/handpass/trk-chat20-questions.mjs",
+    "shot": "q2-p-es-A"
+   },
+   "approved": {
+    "picture": "q2-p-es-A.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "bar",
+     "label": "the top bar, the band its last line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 0,
+        "w": 402,
+        "h": 85
+       },
+       "ink": {
+        "x": 39,
+        "y": 10,
+        "w": 279.6,
+        "h": 63.5
+       },
+       "text": "142 TALON Not kept this browser loses your work on a reload ↶ ↷",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(rgb(21, 56, 76), rgb(11, 28, 39))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.topbar.editing.has-undo.save-failed"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 0,
+        "w": 402,
+        "h": 85
+       },
+       "ink": {
+        "x": 39,
+        "y": 10,
+        "w": 279.6,
+        "h": 63.5
+       },
+       "text": "142 TALON Not kept this browser loses your work on a reload ↶ ↷",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(rgb(21, 56, 76), rgb(11, 28, 39))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.topbar.editing.has-undo.save-failed"
+      }
+     }
+    },
+    {
+     "part": "band",
+     "label": "the band",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 48,
+        "w": 402,
+        "h": 36
+       },
+       "ink": {
+        "x": 39,
+        "y": 59.5,
+        "w": 279.6,
+        "h": 14
+       },
+       "text": "Not kept this browser loses your work on a reload",
+       "typed": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.savestat.failed"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 48,
+        "w": 402,
+        "h": 36
+       },
+       "ink": {
+        "x": 39,
+        "y": 59.5,
+        "w": 279.6,
+        "h": 14
+       },
+       "text": "Not kept this browser loses your work on a reload",
+       "typed": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.savestat.nokeep"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its warning sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 14,
+        "y": 58.5,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 14,
+        "y": 58.5,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "\"Not kept\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 39,
+        "y": 59.5,
+        "w": 49.5,
+        "h": 14
+       },
+       "ink": {
+        "x": 39,
+        "y": 59.5,
+        "w": 49.5,
+        "h": 14
+       },
+       "text": "Not kept",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 39,
+        "y": 59.5,
+        "w": 49.5,
+        "h": 14
+       },
+       "ink": {
+        "x": 39,
+        "y": 59.5,
+        "w": 49.5,
+        "h": 14
+       },
+       "text": "Not kept",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)",
+         "0px none rgb(242, 212, 107)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 212, 107)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "\"this browser loses your work on a reload\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 97.5,
+        "y": 59.5,
+        "w": 221.1,
+        "h": 14
+       },
+       "ink": {
+        "x": 97.5,
+        "y": 59.5,
+        "w": 221.1,
+        "h": 14
+       },
+       "text": "this browser loses your work on a reload",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 97.5,
+        "y": 59.5,
+        "w": 221.1,
+        "h": 14
+       },
+       "ink": {
+        "x": 97.5,
+        "y": 59.5,
+        "w": 221.1,
+        "h": 14
+       },
+       "text": "this browser loses your work on a reload",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.sv-rest"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

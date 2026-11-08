@@ -26,34 +26,38 @@ Thing: the band a browser that keeps nothing shows. Drawers: `ui/SaveStatus.tsx`
 
 | # | Place | SHOWS the band | USABLE (nothing to press; the page under it reachable) | What else is PAINTED there | Proved by |
 |---|---|---|---|---|---|
-| 1 | Edit Schedule's top bar | | | | |
-| 2 | View-only Sched's top bar | | | | |
-| 3 | Inputs (list and calendar) | | | | |
-| 4 | Quals | | | | |
-| 5 | Logic | | | | |
-| 6 | Leave War (its pinned dates row) | | | | |
-| 7 | Tracker's top bar | | | | |
-| 8 | Help | | | | |
-| 9 | Admin | | | | |
-| 10 | Scheduler Board (its own bar, `SaveBand active`) | | | | |
-| 11 | OIL tracker (both of its bars) | | | | |
-| 12 | Medical view, full screen | | | | |
-| 13 | Sign-in screen | | | | |
-| 14 | Access screen ("Your request is with the admins") — its pass must NOT read "Not sent yet" (D1664: failed saves only) | | | | |
-| 15 | Guest page | | | | |
-| 16 | Changes window and ALL AVAIL window, not yet moved — open below the band | | | | |
-| 17 | An input's own window and the question boxes (cover the bar, D1645) | | | | |
-| 18 | Phone side menu open with the band up | | | | |
-| 19 | The Tracker's corner (`#saveStat`) — no "saved", no "saving"; an error still said | | | | |
-| 20 | "Saving…" — never beside the band | | | | |
-| 21 | A failed save in a browser that keeps nothing — "Not saved" with Retry wins | | | | |
-| 22 | `?fresh=1`, a normal browser — no band; the Tracker corner says "saved" as before | | | | |
+| 1 | Edit Schedule's top bar | has it — 36 tall, one line, full width, foot on the bar's last line, the line amber | the first row below it; scrolled, it stays and nothing shows through | the bar; no "Saving…" | route; W1 2 (and at 1.25); W2 2; the drawing check |
+| 2 | View-only Sched's top bar | has it | first control below; scrolls clean | the bar | W1 2; W2 2 |
+| 3 | Inputs (list and calendar) | has it | the heading below | the bar | W1 2; W2 2 |
+| 4 | Quals | has it | first button below; scrolls clean | the bar | W1 2; W2 2 |
+| 5 | Logic | has it | filter button below; scrolls clean | the bar | W1 2; W2 2 |
+| 6 | Leave War (its pinned dates row) | has it | the year picker and the dates row below; scrolls clean | the bar | W1 2 (and at 1.25); W2 2 |
+| 7 | Tracker's top bar | has it | the Tracker's own bar below | the corner empty | route; W1 2; W2 2 |
+| 8 | Help | has it | the heading below | the bar | W1 2; W2 2 |
+| 9 | Admin | has it | below | the bar | W1 2; W2 2 |
+| 10 | Scheduler Board (its own bar, `SaveBand active`) | has it, in the board's bar | first row below; ✓ Done back to Edit Schedule, the band in its bar again | — | W1 3; W2 |
+| 11 | OIL tracker (both of its bars) | has it, under its bar, inside the screen's own 8px margin — where its "Not saved" band has always stood (the one drawer) | the Show row below | — | W1 4; W2 4 |
+| 12 | Medical view, full screen | has it | the document below | — | W1 5; W2 |
+| 13 | Sign-in screen | has it, across the top (`is-screen`) | the card wholly below | — | route; W1 1; W2 1 (and with wide letters) |
+| 14 | Access screen ("Waiting for an admin" since D1650 — the brief's older words) — its pass must NOT read "Not sent yet" (D1664: failed saves only) | has it | the screen below; the pass in its ordinary words, no "Not sent yet" | — | W1 8; W2 8 (and with wide letters) |
+| 15 | Guest page | has it | below its bar | its bar keeps the room class `.save-failed` — the room's name, for either band | W1 9; W2 9 |
+| 16 | Changes window and ALL AVAIL window, not yet moved — open below the band | has it | each window's head below the band; a moved window keeps no place on reopen — the same in a plain browser, older and unruled | — | W1 6 (ALL AVAIL not opened — NOTRUN); W2 6 (both) |
+| 17 | An input's own window and the question boxes (cover the bar, D1645) | must not cover | phone: the window covers the bar and the band, as D1645 says; desktop: the floating window opens below the band and the bar stays pressable — as before this change (D1645's bar part still open, [VEILED-WINDOWS-BAR]) | the question box hangs from the window's ✕ | W1 7; W2 7 |
+| 18 | Phone side menu open with the band up | covered by the menu, as the page is | the menu whole; nothing shows through | — | W2 |
+| 19 | The Tracker's corner (`#saveStat`) — no "saved", no "saving"; an error still said | must not, because the band says it | empty after a mark and an Undo | — | route; W1 10; W2 10; the corner's test |
+| 20 | "Saving…" — never beside the band | must not | none seen | — | route; W1; W2; the band's test |
+| 21 | A failed save in a browser that keeps nothing — "Not saved" with Retry wins | must not show "Not kept" | `?nostore&savefail`: "Not saved · Retry" alone, from the sign-in on (the sign-in's own write is refused) | — | W1 13; W2 13; the band's test |
+| 22 | `?fresh=1`, a normal browser — no band; the Tracker corner says "saved" as before | must not | no band; corner "● saved" | — | route; W1 12; W2 12 |
 
 ## The door check (the `?nostore` switch)
 
 | Action | Control | Result |
 |---|---|---|
-| | | |
+| Open `/?nostore` in a browser that keeps | the address | the band at sign-in, signed in, and after a reload (W1 11, W2 11) |
+| `/?nostore=1`, `/?a=1&nostore` | the address | the band (W1, W2) |
+| `/?nostorex` | the address | no band — a longer word is not the switch (W1, W2; the boot's test) |
+| `/` and `/?fresh=1` | the address | no band (route, W1, W2) |
+| `/?nostore&savefail` | the address | "Not saved · Retry" wins (W1, W2) |
 
 ## The five sizing lines (§7.0)
 
@@ -119,14 +123,66 @@ screen-reader dash between the two halves, which the "Not saved" band has too); 
 
 ## The drawing check
 
+**GREEN** (an Opus helper; the host read the report and opened the pictures). Part list
+`scripts/drawcheck/specs/not-kept-band.mjs` — the bar, the band, its sign, "Not kept", "this browser loses your work on a
+reload" — against chat 20's approved option A (`q2-d-es-A.png` desktop 1536 Chromium, `q2-p-es-A.png` his iPhone 402
+WebKit), the drawing's band `.savestat.failed` with its words swapped, the build's `.savestat.nokeep`. Recorded by
+replaying chat 20's own script on a build of `fb5d18c21` (a scratch checkout, so chat 20's pictures here stayed untouched):
+both replays drew the approved pictures pixel for pixel, every part found. The check of this branch's build: every part
+matches on both screens within 2px — 0 unexplained, 0 kept, 0 not checked; no button in the band (the reach fails if one
+shows). Records: `docs/mock/2026-11-08-not-kept-band/drawcheck/`; report and build pictures:
+`docs/img/handpass/2026-11-08-chat28-not-kept/drawcheck/`.
+
 ## The magnifier, before and after
+
+Script `scripts/handpass/nk28-mag.mjs`, once on the `fb5d18c21` build (before) and once on this branch's (after), close-ups
+at 4×, pictures in `docs/img/handpass/2026-11-08-chat28-not-kept/magnifier/`. Measured from the drawing (every icon 15px,
+its ring 7, its line 2px): the Tracker's handle before was 3.1px long on screen (the desktop Find box, the phone's Find
+button and its Find strip alike); after, 3.8px — the same as Edit Schedule's search box on the desktop and the phone
+(D1127). Nothing else of the icon or its place in the box moved (the host opened `d-trk-icon-before/after`, `d-es-icon`,
+`p-trk-box-after`); the phone page was not zoomed with Find open; no page errors.
 
 ## Break tests
 
 ## Errors seen
 
+None: no page error, console error or failed request in any run — the route check, W1, W2, the drawing check, the
+magnifier.
+
 ## What was NOT walked, and why
+
+- **His own iPhone:** the band's one line and its look on his device is his look, by `?nostore` on the preview link — the
+  test browser's WebKit with wider letters stood in for it (lesson 21).
+- **W1's plain-user round** was shortened (windows opened and closed, the bell, the viewer); W2 ran it whole (an input
+  filed and found, a Tracker mark and its Undo).
+- **The Tracker for the page's drop (16):** its chart is drawn behind the loading claw; its band and bar were measured
+  in scenario 2 instead.
+- **A storage that refuses only writes (a full disk):** that is the failed save's case ("Not saved"), walked many times
+  since 5 Oct; here only `?nostore&savefail` beside it.
 
 ## The gates
 
 ## What the walk found, and each disposition
+
+The walkers (Sonnet): **W1** his PC 1536 Chromium — 51 PASS, 2 FAIL, 1 NOTRUN, no page errors (report
+`docs/handpass/parts/chat28/w1.md`); **W2** his iPhone 402 WebKit, touch — 66 PASS, 2 FAIL, 0 NOTRUN, no page errors
+(`parts/chat28/w2.md`, 154 pictures). **Nothing found in the change.** Each FAIL and each note, as the host judged it
+(the host opened the deciding pictures and reproduced the one filed):
+- **A moved changes window does not keep its place when closed and reopened** (W1 6, W2 6): the same in a plain browser
+  (W1's control, W2's), so older than this change; no ruling says it should — the brief's expectation was the host's own.
+  Not filed.
+- **Escape does not close the changes window** (W2 14; W1's note): reproduced by the host in a plain browser
+  (`scripts/handpass/nk28-esc.mjs` — open, Escape, still open; a click inside, Escape, still open); its ✕ and a tap
+  outside close it. Older; filed, [CHGWIN-ESCAPE].
+- **W1 16 FAIL:** the walker's own selector found no day column; what it did measure — the week's bar and the Inputs page's
+  first control — sat exactly 36 lower, left edges equal. W2 16 measured 8 pages, each exactly 36 lower. Not a fault.
+- **W1 6 ALL AVAIL NOTRUN:** W2 opened it, its head below the band.
+- **The desktop input window does not cover the bar** (W1 note): D1645's bar part is still open ([VEILED-WINDOWS-BAR]);
+  the window opens below the band, as it opened below the bar before. Not of this change.
+- **The OIL tracker's band is inset 8px each side** (W2 note): the one drawer's place there since the "Not saved" band.
+- **The Tracker's Find button's magnifier is white, Edit Schedule's search box's grey** (W2 note): the button's own
+  colour, white before this change too (`magnifier/p-btn-before.png`); the drawing is the same.
+- **"Sync / slow" in the phone's side menu on the Help page** (W2 note): the sync pill's words in the menu; nothing of
+  this change.
+- W2's "right after the tap" pictures came 93–884 ms after the press (the picture itself takes time); none showed a tint,
+  a see-through cell or a shifted box.
