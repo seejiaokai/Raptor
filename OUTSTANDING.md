@@ -380,22 +380,6 @@ The 202 rules after the wrapper's close in the bid sheet's stylesheet (the count
 ### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
 **What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.
 
-### [TRK-KEPT-COPIES] The Tracker's own copies of the app's glyphs, pencil and colours (filed 5 Nov 26 — the Tracker tidy's read, L2)
-**What:** three things the standalone Tracker carried for itself were kept on purpose by [TRK-STANDALONE-LEFTOVERS], since
-merging them could move a pixel if a copy has drifted: the Tracker's own drawings of the app's glyphs and pencil
-(`src/tracker/components/Glyphs.jsx`, `SrchGlyph.jsx`, held equal by `tracker.test.tsx`), and its own colour list for a page
-with no `:root` (`trk-palette.test.ts`). Today they live only in `docs/tracker/known-gaps.md`. **To do:** draw each from the
-app's one copy instead, with pictures of the Tracker before and after at a desktop and a phone size; nothing a person sees
-should change. **Place:** low, the agent's — with the Tracker's next batch (D490). Evidence:
-`raptor-port/docs/handpass/parts/trk1105/read-opus.md`.
-**Built 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, PR #696):** the pencil, Reorder, gear, Reset and list
-are the app's own icons; the page colours link to Raptor's tokens; pictures before (twice) and after, pixel-compared —
-nothing a person can see changed (`raptor-port/docs/handpass/2026-11-08-chat20-tracker.md`). **Left:** the magnifier
-(`SrchGlyph.jsx`) has drifted from the app's — its handle a fifth shorter — so matching it is a change he would see: put
-to him with a picture (D1625). **His answer, 8 Nov 26 (D1900): match the app's** — draw the app's magnifier (`ui/icons.tsx`)
-in place of `SrchGlyph.jsx`'s, checked by pictures before and after; archive this item once that is built and live.
-**Place:** with [TRK-NOSTORE-SAVED]'s build, one job.
-
 ### [TRK-MARKS-LEFT] Typed marks left in Tracker words, and its Export / Import drawings (filed 8 Nov 26 — chat 20)
 **What:** building D1860, more typed marks were found in words a message box or a hint carries, where the app cannot draw
 its marks: the built-in syllabus delete's "you can bring it back later from ⇅ Reorder" (`core.js`, about line 6276),
@@ -435,20 +419,6 @@ written twice in `storage/boot.ts`; (8) `Shell.tsx`'s `saveFailed` now means "a 
 `SaveStatus.tsx` and its CSS describe only the failed band; the Tracker's new setter guards a call with no value.
 **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
 the tidiness audit ([CODE-TIDY-AUDIT]).
-
-### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
-**What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
-top bar says nothing, yet nothing survives a reload: mark an event, reload, and the mark is gone. Older — the same before
-the tidy. **The case to put to him:** a line telling the person "This browser won't keep your work after a reload" (or the
-app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.**
-**Drawn 8 Nov 26 (chat 20's questions page, https://claude.ai/artifact/RL8hZp77xYhRYcBS1a8cay; `raptor-port/docs/mock/2026-11-08-chat20-tracker-questions.html`) —
-his answer the same day (D1901): option A.** **To build:** a band under the top bar on every page while the browser refuses
-storage — the drawn warning sign, **Not kept**, "this browser loses your work on a reload", no Retry, the "Not saved"
-strip's look (D1655), the page moved down under it as that band does (D587, D1657 for the screens without the top bar to
-weigh); the Tracker's corner empty while it is up. It touches the storage boot (how the app knows storage is refused),
-every page's top, and the Tracker's corner — a bug check of its own (saved data: the tier's question 3). **Place:** the
-next Tracker / app job, with D1900's magnifier, one branch. Evidence:
-`raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
 
 ### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
 **8 Nov 26 — the IT side's answers 3, 8, 9 (`[IT-QUESTIONS]`):** database-level rights are the PP CoE's — one user security group gives basic access, and who may do what is the app's own roles, controlled inside the app. So (1)–(3) below are not ours to set; put to him 8 Nov 26 (the day lock is settled: D1751).
