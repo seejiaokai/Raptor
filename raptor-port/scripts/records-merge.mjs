@@ -48,8 +48,8 @@
  *     whole rows or no rows, and neither ended without a line end (round 3, the host's guardrails — whyNotJoin). Any
  *     other region, a day heading both opened among them, is left exactly as git marked it.
  *   In the log and HANDOFF.md alike, a new record goes after its predecessor as placed (a heading both sides opened
- *     included), never past the other side's next new heading; both sides opening different new headings at one place
- *     leaves the file (Astra 2, Opus 1–3 of the code read).
+ *     included), never past the other side's next new heading (Astra 2, Opus 1–3 of the code read); both sides opening
+ *     different new `## ` sections at one place keeps both in HANDOFF.md, this branch's first (round 3, Opus re-read 5).
  *   DECISIONS.md and the rulings files — not touched. `backlog-archive.mjs --rulings --merge` merges every ruling three
  *     ways from git's own copies and refuses to start while any other file is unmerged, so: this step first, then the chat
  *     stages what this step settled (`git add`), then that command, which this step prints when a rulings file is left.
@@ -157,7 +157,7 @@ const notesKey = l => { const m = OBS_HEAD.exec(l); return m ? `obs:${m[1]}` : /
 const describe = k => k === 'head' ? 'the head of the file' : k.startsWith('now:') ? `the ## Now block for ${k.slice(4)}` : k.startsWith('obs:') ? `Observation ${k.slice(4)}` : `the section "${k.slice(4)}"`
 
 /* ---------- the three-way merge of records ---------- */
-function orderKeys(B, O, T, first) {
+function orderKeys(B, O, T, first, leaveNewHeadings) {
   const bk = B.map(r => r.key), ok = O.map(r => r.key), tk = T.map(r => r.key)
   const bs = new Set(bk), all = new Set(bk.filter(k => ok.includes(k) && tk.includes(k)))
   const seq = a => a.filter(k => all.has(k)).join('\0')
@@ -170,8 +170,10 @@ function orderKeys(B, O, T, first) {
   /* the first side's new records after their base predecessor; then each of the other side's new records after ITS
      predecessor as placed so far (a base record, or a new one either side added — a day heading both opened), past the
      first side's own new records there but never past one of their headings, so each entry stays under the heading it
-     was written under (Astra 2 of the code read). Both sides opening different new headings at one base spot: which
-     goes first, and which entries go under which, cannot be known — the file is left. */
+     was written under (Astra 2 of the code read). Both sides opening different new headings at one base spot: in the
+     skill log (leaveNewHeadings) which goes first, and which entries go under which, cannot be known — the file is
+     left; in HANDOFF.md a section holds no other side's entries, so both are kept, the first side's first (round 3,
+     Opus re-read 5 — the leave had left every chat's block). */
   const [A1, A2] = first === 'ours' ? [ok, tk] : [tk, ok]
   const isSec = k => k.startsWith('sec:')
   const baseBefore = (side, i) => side.slice(0, i).reverse().find(p => bs.has(p)) ?? '^'
@@ -182,7 +184,7 @@ function orderKeys(B, O, T, first) {
   const firstSecsAt = new Set(A1.flatMap((k, i) => !bs.has(k) && isSec(k) && !a2.has(k) ? [baseBefore(A1, i)] : []))
   A2.forEach((k, i) => {
     if (inList.has(k)) return
-    if (isSec(k) && firstSecsAt.has(baseBefore(A2, i))) throw new Leave('both sides added new headings at one place — which goes first, and which entries go under which, is yours to judge')
+    if (leaveNewHeadings && isSec(k) && firstSecsAt.has(baseBefore(A2, i))) throw new Leave('both sides added new headings at one place — which goes first, and which entries go under which, is yours to judge')
     const anchor = A2.slice(0, i).reverse().find(p => inList.has(p))
     let pos = anchor === undefined ? 0 : list.indexOf(anchor) + 1
     while (pos < list.length && !bs.has(list[pos]) && !a2.has(list[pos]) && (isSec(k) || !isSec(list[pos]))) pos++
@@ -194,10 +196,10 @@ function renderConflict(o, b, t, labels) {
   const mid = STYLE === 'merge' ? '' : `||||||| ${labels[1]}\n${nl(b || '')}`
   return `<<<<<<< ${labels[0]}\n${nl(o || '')}${mid}=======\n${nl(t || '')}>>>>>>> ${labels[2]}\n`
 }
-function mergeRecords(B, O, T, { labels, first, alwaysLeave = () => false }) {
+function mergeRecords(B, O, T, { labels, first, alwaysLeave = () => false, leaveNewHeadings = false }) {
   const mb = new Map(B.map(r => [r.key, r.text])), mo = new Map(O.map(r => [r.key, r.text])), mt = new Map(T.map(r => [r.key, r.text]))
   const out = [], left = [], settled = []
-  for (const k of orderKeys(B, O, T, first)) {
+  for (const k of orderKeys(B, O, T, first, leaveNewHeadings)) {
     const b = mb.get(k), o = mo.get(k), t = mt.get(k)
     if (o === t) { if (o !== undefined) out.push(o); if (o !== b) settled.push(`${describe(k)}: the same change on both sides`); continue }
     if (o === b) { if (t !== undefined) out.push(t); settled.push(`${describe(k)}: ${t === undefined ? 'removed' : b === undefined ? 'added' : 'changed'} on main's side`); continue }
@@ -367,7 +369,7 @@ function settle(f, st, labels, ctx) {
     for (const [side, x] of [['this branch', o], ["main's side", t]]) for (const [l, n] of days(x)) if (n > (db.get(l) || 0)) throw new Leave(`${side} added a day heading ("${l.trim().slice(0, 60)}") — which note goes under which day is yours to judge`)
     const [B, O0, T] = [b, o, t].map(x => cut(x, notesKey, true))
     const { O } = renumber(B, O0, T, ctx)
-    const res = mergeRecords(B, O, T, { labels, first: 'theirs' })
+    const res = mergeRecords(B, O, T, { labels, first: 'theirs', leaveNewHeadings: true })
     /* each citation renumber() found, at its line in the merged file (a line written twice is given its places in turn) */
     const lines = res.text.split('\n').map(l => l.replace(/\r$/, '')), taken = new Set()
     for (const c of ctx.cited || []) {

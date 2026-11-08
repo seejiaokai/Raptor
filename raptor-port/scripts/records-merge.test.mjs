@@ -126,6 +126,15 @@ test('HANDOFF: the gate baseline changed on both sides is left, even where its l
   assert.match(c.read('HANDOFF.md'), /- a, ours/)
 }))
 
+/* the narrow re-read (Opus re-read 5, 8 Nov 26): the "different new headings at one place" leave, meant for the skill
+   log's days, left the WHOLE handoff — every chat's block with it. A handoff section holds no other side's entries, so
+   both are kept, this branch's first */
+test('HANDOFF: two different new sections added at one place are both kept, this branch\'s first (Opus re-read 5)', withRepo({ 'HANDOFF.md': H0 }, c => {
+  c.sides(x => x.edit('HANDOFF.md', t => t + '\n## Ours\n\n- ours\n'), x => x.edit('HANDOFF.md', t => t + '\n## Theirs\n\n- theirs\n'))
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  assert.equal(c.read('HANDOFF.md'), H0 + '\n## Ours\n\n- ours\n\n## Theirs\n\n- theirs\n')
+}))
 test('HANDOFF: a block removed on one side and changed on the other is left', withRepo({ 'HANDOFF.md': H0 }, c => {
   c.sides(x => x.write('HANDOFF.md', handoff([block('claude/a', '- a line'), block('claude/b', '- b line'), block('claude/z', '- z')])),
     x => x.write('HANDOFF.md', handoff([block('claude/a', '- a line'), block('claude/b', '- b line'), block('claude/merged', '- finished, merged, and one more fact')])))
