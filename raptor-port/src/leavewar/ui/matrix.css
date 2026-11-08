@@ -2306,6 +2306,18 @@ touch-action: pan-x pan-y;
   transform: translateZ(0);
 }
 
+/* PROTOTYPE ([LW-PIN-LAST-FRAME], his D1850): the copy is always mounted and the BROWSER shows it — an opacity animation
+   on the page's own scroll, off below `--lwy-s` (the scroll at which the real row meets the top bar), on from there, so it
+   appears in the very frame the browser moves the page. Taps and the shadow wait for `.up` (Matrix.tsx `placeY`). */
+.lw-pinsda .mxfixed {
+  animation: lwy-show linear both;
+  animation-timeline: scroll(root block);
+  animation-range: calc(var(--lwy-s, 1e7) * 1px - 1px) calc(var(--lwy-s, 1e7) * 1px);
+  pointer-events: none;
+  box-shadow: none;
+}
+.lw-pinsda .mxfixed.up { pointer-events: auto; box-shadow: 0 2px 10px rgba(0, 0, 0, .4); }
+
 /* WHILE A PINCH STRETCHES THE GRID ([LW-PHONE-PINCH-ZOOM], Matrix.tsx): the frozen row's contents grow with it, so its
    box clips only sideways — the screen's edges, as at rest — and lets them grow down over the rows under it, which the
    row at its new size covers anyway once the fingers lift. Only while the fingers are down. */
@@ -2599,6 +2611,12 @@ touch-action: pan-x pan-y;
    the frame the two overlapped, the animation blended from that held value and
    the bar landed 1,819px off. With both ends fixed, the animation's answer is
    −progress × travel whatever else sits on the element. */
+/* PROTOTYPE ([LW-PIN-LAST-FRAME]) — driven by `.lw-pinsda .mxfixed` above: hidden until the page's scroll reaches the
+   point where the real row meets the top bar, shown from there on, by the browser */
+@keyframes lwy-show {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 @keyframes lwx-follow {
   from { transform: translateX(0px); }
   to { transform: translateX(calc(-1 * var(--lwx-max, 0) * 1px)); }

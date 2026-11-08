@@ -1919,6 +1919,15 @@ export function Matrix() {
   // would slide under, at every width. No width gate any more.
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
+  /* PROTOTYPE ([LW-PIN-LAST-FRAME]): where the page's scroll turns the always-mounted copy on (`--lwy-s`, the scroll at
+     which the real row's top meets the top bar's foot), and whether it is up now (taps, shadow) — written on the copy's
+     own box only, never an ancestor, and only when it changes */
+  const placeY = (box: HTMLElement | null, rowTop: number, topEdge: number) => {
+    if (!box) return
+    const s = String(Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10))
+    if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
+    box.classList.toggle('up', rowTop < topEdge)
+  }
 
   // Can this browser drive the frozen bar's horizontal follow on the COMPOSITOR
   // via a CSS scroll-driven animation (owner, 28 Aug 26 — "the top bar not
@@ -1935,6 +1944,16 @@ export function Matrix() {
     try {
       return typeof CSS !== 'undefined' && typeof CSS.supports === 'function' &&
         CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
+    } catch { return false }
+  })
+  /* PROTOTYPE ([LW-PIN-LAST-FRAME], his D1850 — measured before anything is built): the pinned copy is always mounted and
+     the BROWSER shows it, by an opacity animation on the page's own scroll that turns it on at the scroll where the real
+     row meets the top bar (`--lwy-s`, matrix.css `lwy-show`) — so it shows in the very frame the browser moves the page,
+     before this code hears of the scroll. Taps and the shadow follow the `up` class, set by the scroll listener a frame
+     late, which nobody can see. Off where the browser cannot run it: today's way, unchanged. */
+  const [pinSda] = useState(() => {
+    try {
+      return sdaActive && CSS.supports('animation-timeline: scroll(root block)') && CSS.supports('animation-range: 0px 1px')
     } catch { return false }
   })
 
@@ -2013,6 +2032,24 @@ export function Matrix() {
           const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? r.top
           fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
         }
+        return
+      }
+      /* PROTOTYPE ([LW-PIN-LAST-FRAME]): the copy is measured and mounted wherever the row is; the browser shows it */
+      if (pinSda) {
+        placeY(mirrorRef.current?.parentElement ?? null, r.top, topEdge)
+        // eslint-disable-next-line react-doctor/no-impure-state-updater -- the same measure as `pinUp` below, only when the copy is not yet mounted or is forced
+        setStuck(prev => {
+          if (prev && !force) return prev
+          if (wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx')?.style.transform) return prev
+          const wrap = wrapRef.current
+          if (!wrap) return prev
+          const wr = wrap.getBoundingClientRect()
+          const cells = Array.from(head.querySelectorAll('tr:last-child > th')) as HTMLElement[]
+          const cols = cells.map(c => c.getBoundingClientRect().width)
+          if (cols.length === 0 || cols.some(w => !w)) return prev
+          const next = { top: topEdge, left: wr.left, width: wr.width, cols }
+          return prev && sameStuck(prev, next) ? prev : next
+        })
         return
       }
       /* IN THE SAME FRAME (his D1789, 8 Nov 26 — [LW-FROZEN-BAR-GAP]): set as React state from this passive scroll listener,
@@ -2109,6 +2146,9 @@ export function Matrix() {
   // Pinned by "the frozen bar is in step with the grid the moment it appears"
   // (e2e/leavewar.spec.ts).
   useLayoutEffect(() => {
+    /* PROTOTYPE ([LW-PIN-LAST-FRAME]): the freshly mounted copy learns where the page's scroll turns it on before its
+       first frame */
+    if (pinSda && stuck && mirrorRef.current && headRef.current) placeY(mirrorRef.current.parentElement, headRef.current.getBoundingClientRect().top, stuck.top)
     if (stuck && mirrorRef.current && wrapRef.current) {
       const w = wrapRef.current
       if (sdaActive) {
@@ -3711,7 +3751,7 @@ export function Matrix() {
             wrapper, like `mx-banded`, which the same tap already toggles on a
             phone — one restyle per mode change, never per frame. */}
         <div
-          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}${arranging && role === 'admin' ? ' mx-arranging' : ''}`}
+          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}${pinSda ? ' lw-pinsda' : ''}${arranging && role === 'admin' ? ' mx-arranging' : ''}`}
           ref={mxOuterRef}
         >
         <div

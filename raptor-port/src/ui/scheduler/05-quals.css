@@ -123,6 +123,12 @@
    standing for it — in both paths, the browser's follow or not ([QUALS-PINCH-NOSDA-HEAD], the night of 6 Nov 26; the
    Leave War's answer, D1287): stretched with the row it was carried left of the table's edge until the lift */
 .qfixed.q-pinching .qfixed-scroll thead th[data-sort="cs"]{visibility:hidden}
+/* PROTOTYPE ([LW-PIN-LAST-FRAME], his D1850): the pinned row always mounted and shown by the browser on the page's own
+   scroll from the point where the heading meets the top bar (QualsPage.tsx `pinSda`, class q-psda); taps and the shadow wait for .up; a copy not yet placed stays hidden */
+.qfixed.q-psda{animation:qy-show linear both;animation-timeline:scroll(root block);animation-range:calc(var(--lwy-s,1e7) * 1px - 1px) calc(var(--lwy-s,1e7) * 1px);pointer-events:none;box-shadow:none}
+.qfixed.q-psda.up{pointer-events:auto;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+/* its own steps: the Leave War's sheet (with `lwy-show`) loads only with the Leave War */
+@keyframes qy-show{from{opacity:0}to{opacity:1}}
 @keyframes qx-follow{from{transform:translateX(0px)}to{transform:translateX(calc(-1 * var(--qx-max, 0) * 1px))}}
 /* the mirror table drops the grid's own left margin/min-width — it is sized to
    the measured widths (table-layout:fixed) and positioned by the fixed wrapper */

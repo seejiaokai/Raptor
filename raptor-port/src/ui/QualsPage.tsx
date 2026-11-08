@@ -408,6 +408,13 @@ export function QualsPage() {
         CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
     } catch { return false }
   })
+  /* PROTOTYPE ([LW-PIN-LAST-FRAME], his D1850): the pinned row always mounted, shown by the browser on the page's own
+     scroll (05-quals.css `.q-pinsda .qfixed`), as the Leave War's (Matrix.tsx `pinSda`) */
+  const [pinSda] = useState(() => {
+    try {
+      return sdaActive && CSS.supports('animation-timeline: scroll(root block)') && CSS.supports('animation-range: 0px 1px')
+    } catch { return false }
+  })
   const admin = isAdmin()
 
   /* WHO MAY EDIT WHAT HERE (owner, 5 Aug 26). `Enable editing` is open to a
@@ -813,7 +820,16 @@ export function QualsPage() {
        half under the top bar with no pinned copy (or none at all). So when the row FLIPS — pinned or let go — the change is
        committed at once (`flushSync`) and painted with the scroll that caused it; a scroll of a row already pinned or
        already free sets nothing, and an effect's call (`now` false — React will not flush inside one) stays as it was. */
-      if (r.top >= topEdge) { unstick(now); return }
+      /* PROTOTYPE ([LW-PIN-LAST-FRAME]): the row is mounted wherever the heading is; the browser shows it at `--lwy-s` */
+      if (pinSda) {
+        const box = document.querySelector<HTMLElement>('#page-quals .qfixed')
+        if (box) {
+          const s = String(Math.max(0, Math.round((window.scrollY + r.top - topEdge) * 10) / 10))
+          if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
+          box.classList.toggle('up', r.top < topEdge)
+        }
+        now = false
+      } else if (r.top >= topEdge) { unstick(now); return }
       /* measured here, in the listener, never inside a state updater; a plain scroll of a row already pinned measures nothing */
       if (stuckRef.current && !force) return
       /* never a stretched table measured, whoever asks (a cell's own box under a stretch is k times its width) */
@@ -902,6 +918,15 @@ export function QualsPage() {
   useLayoutEffect(() => {
     const m = mirrorRef.current, w = wrapRef.current
     if (!stuck || !m || !w) return
+    /* PROTOTYPE ([LW-PIN-LAST-FRAME]): the freshly mounted copy learns where the page's scroll turns it on before its
+       first frame */
+    const qbox = m.parentElement, qhead = tblRef.current?.tHead
+    if (pinSda && qbox && qhead) {
+      const top = qhead.getBoundingClientRect().top
+      const s = String(Math.max(0, Math.round((window.scrollY + top - stuck.top) * 10) / 10))
+      if (qbox.dataset.s !== s) { qbox.dataset.s = s; qbox.style.setProperty('--lwy-s', s) }
+      qbox.classList.toggle('up', top < stuck.top)
+    }
     if (sdaActive) {
       /* the browser's follow (D993): the row's table runs from 0 to minus the table's whole sideways travel across the
          scroll's range, so the travel is told it here, measured whenever the row is pinned or re-measured (a rotate) */
@@ -1067,7 +1092,7 @@ export function QualsPage() {
           click on a heading still sorts, so the frozen bar is usable while scrolled. */}
       {stuck && (
         // eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- a picture of the heading row, hidden from a screen reader (aria-hidden on its tables): the keyboard sorts from the table's own headings under it, which stay the one interactive copy; a press here is the finger's shortcut while the table is scrolled
-        <div className="qfixed" data-testid="qsticky-head"
+        <div className={'qfixed' + (pinSda ? ' q-psda' : '')} data-testid="qsticky-head"
           style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
           onClick={e => {
             const th = (e.target as HTMLElement).closest?.('th[data-sort]') as HTMLElement | null
