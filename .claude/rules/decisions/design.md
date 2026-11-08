@@ -63,8 +63,8 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - Help's and Admin's titles take the size and weight of Logic's page name — 18px, weight 700 on a desktop, 16px on a
   phone (the agent's reading) — and keep their place; the pages without a title stay without one [D1138].
 - On his iPhone the top bar stays on screen, on every page, when a flick reaches a page's foot and the page springs past
-  its end; Astra is called in to fix it now, and he tries the fix on his iPhone before it goes live — built on the
-  pinned row's branch, the agent's reading [D1873].
+  its end — the top bar fixed to the screen; built with the pinned row and live since 8 Nov 26, after his iPhone
+  look [D1873].
 
 ## The page names beside TALON
 - The page names, Edit Schedule to Admin, stand on the top bar's first row beside TALON wherever they all fit, the bar's
