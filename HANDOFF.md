@@ -20,6 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/lw-pin-last-frame -->
+### CHAT 14 — [LW-PIN-LAST-FRAME], `claude/lw-pin-last-frame` (from `main` 0bbb1c686); written 8 Nov 26 — verify before use
+- **The job (his D1850):** the Leave War's pinned dates row and Quals' heading still show the real row cut under the top bar for one painted frame on a quick scroll — the browser moves the page before the page's code hears of it. Try a pinned row the browser keeps itself, measure painted frames before and after (desktop 1536×864 wheel, phone 402×874 finger), stop if scrolling slows, then **put it to him with pictures before building** (his iPhone first, lesson 7). Ruling range D1870–D1879.
+- **The prototype's idea:** the pinned copy (`.mxfixed` / `.qfixed`) is always mounted while the grid is laid out, and is SHOWN by a scroll-driven opacity animation on the page's own scroll (`animation-timeline: scroll(root)`, range ending at the scroll where the real row meets the top bar, `--lwy-s` written on the copy's box) — so the compositor flips it in the very frame the row passes under the bar; taps and its shadow follow a class the scroll handler sets (a frame late, harmless). The sideways follow already runs this way and was confirmed on his iPhone (28 Aug 26, D993). Gated on the browser supporting it; otherwise today's way.
+- **Measuring:** each painted frame (Chromium's screencast) carries the page's scroll; the band under the top bar is compared with the pinned row at rest, so blink frames are counted, not judged by eye. Frame times at 4× CPU as chat 8 did. Before = `main`'s bundle.
+- **Not done yet:** the prototype, the measure, the question to him. Nothing built for keeps; no pull request.
+<!-- /now -->
 <!-- now:claude/pr-leave-war-4988a8 -->
 ### CHAT 8 — the pictures round's group 6, the Leave War — MERGED 8 Nov 26 (pull request 680, on his "merge live")
 - **Live:** the day window's grey foot "↓ N more" (D1788) and the pinned dates row and Quals' header in the frame of the scroll (D1789), with the code readers' two fixes (a phone pull of the day window kept under the finger; the pinned rows' setup by the ordinary route). Evidence: `raptor-port/docs/handpass/2026-11-08-lw-group6.md`; [LW-MORE-BELOW-CUE], [LW-FROZEN-BAR-GAP] and [LW-TWO-BOX-LETTERS] archived.
