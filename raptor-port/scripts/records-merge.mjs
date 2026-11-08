@@ -39,8 +39,8 @@
  *     number, in the log or any other file, is listed "look by hand: <file>:<line> cites Observation N (renumbered here
  *     to M)" (a pushed commit message cannot be changed). Main's new notes are placed before this branch's at the same
  *     spot, so the numbers run upward (the agent's reading of the plan's "where their side put them" — Opus 9).
- *     A day heading (`## `) added on either side since the base leaves the whole log (round 3 — which note goes under
- *     which day is never guessed).
+ *     Day headings (`## `) changed on either side since the base — added, removed, reworded or moved — leave the whole
+ *     log (rounds 3 and 4 — which note goes under which day is never guessed).
  *   walk-ledger.md, file-map.md, OUTSTANDING-ARCHIVE.md, DECISIONS-ARCHIVE.md, OUTSTANDING.md — git's own clash regions,
  *     read three ways: a region where BOTH sides only inserted text at the same place (its base is empty) is settled as
  *     this branch's text, then main's (one blank line between where either is paragraph-shaped, not table rows) ONLY
@@ -362,12 +362,17 @@ function settle(f, st, labels, ctx) {
     return mergeRecords(B, O, T, { labels, first: 'ours', alwaysLeave: k => k === 'sec:## Gate baseline' })
   }
   if (f === SKILL_LOG) {
-    /* ROUND 3 (the host's guardrail after the narrow re-read — Astra re-read 2 and its mirror): a note could still move
-       under the wrong day, so a day heading (`## `) added on either side since the base leaves the whole log */
-    const days = x => { const ls = x.split('\n').map(l => l.replace(/\r$/, '')), fz = closedFencedFlags(ls), n = new Map(); ls.forEach((l, i) => { if (!fz[i] && /^## /.test(l)) n.set(l, (n.get(l) || 0) + 1) }); return n }
-    const db = days(b)
-    for (const [side, x] of [['this branch', o], ["main's side", t]]) for (const [l, n] of days(x)) if (n > (db.get(l) || 0)) throw new Leave(`${side} added a day heading ("${l.trim().slice(0, 60)}") — which note goes under which day is yours to judge`)
     const [B, O0, T] = [b, o, t].map(x => cut(x, notesKey, true))
+    /* ROUND 3, then ROUND 4 (Astra re-read 2; Astra r3-2, Opus r3-1): a note can move under the wrong day whenever a side
+       changes the day headings — adds one, removes one (a skill review archiving a whole day), rewords or moves one; the
+       count of headings missed a move and a removal. So each side's days, in order, each with the BASE notes under it
+       that the side still holds, must be exactly the base's; any difference leaves the whole log */
+    const baseObs = new Set(B.filter(r => r.key.startsWith('obs:')).map(r => r.key))
+    const layout = (recs, keep) => { const out = [['(the head)', []]]; for (const r of recs) { if (r.key.startsWith('sec:')) out.push([r.key, []]); else if (baseObs.has(r.key) && keep.has(r.key)) out[out.length - 1][1].push(r.key) } return JSON.stringify(out) }
+    for (const [side, S] of [['this branch', O0], ["main's side", T]]) {
+      const held = new Set(S.map(r => r.key))
+      if (layout(S, held) !== layout(B, held)) throw new Leave(`${side} changed the day headings (added, removed, reworded or moved one, or moved a note across one) — which note goes under which day is yours to judge`)
+    }
     const { O } = renumber(B, O0, T, ctx)
     const res = mergeRecords(B, O, T, { labels, first: 'theirs', leaveNewHeadings: true })
     /* each citation renumber() found, at its line in the merged file (a line written twice is given its places in turn) */

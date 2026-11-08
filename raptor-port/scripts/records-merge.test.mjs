@@ -495,7 +495,7 @@ test('file map: a row both sides added the same is left (round 3; was kept once 
    chat — which note goes under which day is never guessed */
 const leftWholeForDays = r => {
   assert.equal(r.code, 2, r.out)
-  assert.match(r.out, /LEFT for you in \.claude\/skill-observations\/log\.md:\n\s+- left whole — .*added a day heading/)
+  assert.match(r.out, /LEFT for you in \.claude\/skill-observations\/log\.md:\n\s+- left whole — .*changed the day headings/)
 }
 test('skill log: a day heading both sides opened is left whole (round 3; was settled — Astra 2)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
   c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(13, 'ours')),
@@ -513,6 +513,32 @@ test('skill log: a day heading only this branch added is left whole (Astra re-re
   const before = c.read('.claude/skill-observations/log.md')
   leftWholeForDays(c.run())
   assert.equal(c.read('.claude/skill-observations/log.md'), before, 'git\'s own marks untouched')
+}))
+/* ROUND 4 (Astra r3-2, Opus r3-1, 9 Nov 26): the count of day headings missed a heading MOVED (the same count) and one
+   REMOVED (a skill review archiving a whole day) — each carried a new note of the other side under another day. Now the
+   log is left whole when either side's day headings, with the base notes under each, differ from the base's at all */
+const LOG2 = '# Skill Observation Log\n\nObservations captured during task-oriented work.\n\n## 2026-11-07\n\n' + obs(10, 'ten') + '## 2026-11-08\n\n' + obs(20, 'twenty')
+const moved = '# Skill Observation Log\n\nObservations captured during task-oriented work.\n\n## 2026-11-07\n\n## 2026-11-08\n\n' + obs(10, 'ten') + obs(11, 'ours') + obs(20, 'twenty')
+const added12 = LOG2.replace(obs(20, 'twenty'), '').replace('## 2026-11-08', obs(12, 'main') + '## 2026-11-08').replace(/$/, obs(20, 'twenty'))
+test('skill log: a day heading moved on this branch is left whole (round 4 — Astra r3-2)', withRepo({ '.claude/skill-observations/log.md': LOG2 }, c => {
+  c.sides(x => x.write('.claude/skill-observations/log.md', moved), x => x.write('.claude/skill-observations/log.md', added12))
+  const before = c.read('.claude/skill-observations/log.md')
+  leftWholeForDays(c.run())
+  assert.equal(c.read('.claude/skill-observations/log.md'), before, 'git\'s own marks untouched')
+}))
+test('skill log: a day heading moved on main is left whole (round 4 — Astra r3-2, its mirror)', withRepo({ '.claude/skill-observations/log.md': LOG2 }, c => {
+  c.sides(x => x.write('.claude/skill-observations/log.md', added12), x => x.write('.claude/skill-observations/log.md', moved))
+  leftWholeForDays(c.run())
+}))
+const DAYS3 = '# Skill Observation Log\n\n## D1\n\n' + obs(9, 'nine') + '## D2\n\n' + obs(10, 'ten')
+test('skill log: a day removed whole on this branch while main adds a note under it is left whole (round 4 — Opus r3-1 dayrm)', withRepo({ '.claude/skill-observations/log.md': DAYS3 }, c => {
+  c.sides(x => x.write('.claude/skill-observations/log.md', '# Skill Observation Log\n\n## D1\n\n' + obs(9, 'nine')), x => x.write('.claude/skill-observations/log.md', DAYS3 + obs(11, 'main under D2')))
+  leftWholeForDays(c.run())
+}))
+test('skill log: a middle day removed whole, a note added under it on main, is left whole (round 4 — Opus r3-1 dayrm2)', withRepo({ '.claude/skill-observations/log.md': DAYS3 + '## D3\n\n' + obs(12, 'twelve') }, c => {
+  c.sides(x => x.write('.claude/skill-observations/log.md', '# Skill Observation Log\n\n## D1\n\n' + obs(9, 'nine') + '## D3\n\n' + obs(12, 'twelve')),
+    x => x.write('.claude/skill-observations/log.md', DAYS3 + obs(11, 'main under D2') + '## D3\n\n' + obs(12, 'twelve')))
+  leftWholeForDays(c.run())
 }))
 test('skill log: a day heading only main added is left whole (Astra re-read 2, its mirror)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
   c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + obs(12, 'ours under the old day')), x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(11, 'main on the new day')))
