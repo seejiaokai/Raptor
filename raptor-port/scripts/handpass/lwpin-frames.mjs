@@ -50,7 +50,7 @@ async function world(vp, touch) {
   page.on('console', m => { if (m.type() === 'error') ERRORS.push('console ' + m.text()) })
   page.on('response', r => { if (r.status() >= 400) ERRORS.push('HTTP ' + r.status() + ' ' + r.url()) })
   await page.goto(BASE + '/'); await login(page, 'a')
-  await page.addStyleTag({ content: '*{scroll-behavior:auto!important} .toast,.snack{display:none!important}' })
+  await page.addStyleTag({ content: '*{scroll-behavior:auto!important} .toast,.snack{display:none!important}' + (process.env.EXTRA_CSS || '') })
   return { ctx, page, vp, touch, cdp: await ctx.newCDPSession(page) }
 }
 async function openPage(w, which) {
