@@ -728,6 +728,70 @@ draft 44,148; after the account 47,201; after the reads 50,466 (about 19,000 tok
 and the IT guide's did, but this one loads with files most jobs open (the board's and the week's builders, the store,
 the view state, the shell), so the re-measure before 5b must count it; narrowing its `paths:` is a question for him.
 
+### Step 5a — Screen design as a page (8 Nov 26, chat 24, `claude/rules-diet-step-5a-design-9bc219` — pull request 708, waiting for his "merge live")
+
+`.claude/rules/decisions/design.md` is a page, "Screen design — how it works now" (`<!-- shape: page -->`, its `paths:`
+unchanged): its 74 rulings (D347–D1901) stated by topic — the top bar, the page names, the board's own bar, icons and
+marks, controls and arrows, menus and the keyboard, questions at the control, the "Not saved" band, "Blocked:" refusals,
+loading and the claw, TALON and the access screens, the phone, words on screen, the design guide's standing rules — with
+a "Settled" section and 35 pointers to other areas, found by subject. `DECISIONS.md`, `AGENTS.md` (items 4 and 5), the
+project guide's map row and the head of the full-text file name it as a page. D349's full row was marked NARROWED by the
+Inputs pages' D854 (the board's "Schedule updated" note gone) and the scheduler's D475's by D1792 (its ↺ now the drawn
+Reset arrow) — D201. No ruling archived: the drafter proposed D1654 as restated in full by D1656; the account found that
+D1656 carries neither lesson 82 nor the pass and its foot as one surface, so D1654 stays live. Three documents were
+corrected on what the page found: `ui-contracts.md` (D1631 and D1632 built; D1523's resized window), `PRODUCT.md`
+principle 7 (D1628's three places — the design skill reads it) and one pointer on the People page (D1614 beside D887).
+
+**How it was made — three fresh Opus helpers and the host:** one drafted the page from every full row (34,903 bytes); a
+second, who had not written it, wrote the account by requirement (`../briefs/2026-11-08-rules-diet-step5a-design-account.md`)
+— 73 rulings, 509 parts (397 stated, 22 spent, 15 superseded, 54 detail, 21 in a gap): **17 gaps, 6 that bent or dropped
+a rule** — a blanket "never a typed symbol" the rulings contradict (the ✕, ⇄ Move, a ✎ in help text); D587's band given
+to the Inputs calendar and the Medical view, which since D574, D620 and D626 sit inside the Inputs page and carry none;
+four of D672's readings stated as his rule; D1652's "confirm leave it?" stated as a ruling; D1666's own words put among
+the readings; words added to D1670 — and 11 smaller. `main`, 64 commits ahead by then, was brought in with `--rulings
+--merge`: D1901 (the "Not kept" band, recorded there in the old shape) stated by hand, D1792 now all built, the Tracker's
+D1900 pointed to. A third helper applied the two reads' findings, each checked first against its row, the guide's
+wording or the code.
+
+**The two blind reads (D1739, D1763 "keep two"), each of the page at `be2cf7171`, each blind to the other:**
+
+| Read | Findings | What was done |
+|---|---|---|
+| Astra (`../briefs/2026-11-08-rules-diet-step5a-design-read-astra.md`) | 7: 3 high, 3 medium, 1 low | all taken, each checked against its row and the guide's wording first |
+| A fresh Opus reader (`../briefs/2026-11-08-rules-diet-step5a-design-read-opus.md`) | 10: 4 medium, 6 low (one holding eight small points) | all taken, each checked against its row, the screen contracts or the code first |
+
+- **Astra:** the design guide's rules that rulings approve "as worded" — the drag rule's two kinds of drop, and a drag
+  already built that differs put to him, never changed unasked (D895, high); one row of controls — 36 tall, what is not
+  in it, shorter words drawn for him first on the narrowest phone, and the Inputs pages' later D1125 (D926, high);
+  feedback told in words to a screen reader, steady for less motion, the keyboard left in place, and every case a note
+  is raised for (D850, high); the ring's 2px and half-second fade, a new block's heading and rows, a flash of something
+  inside it its own, a taken suggestion's time turning white (D876, D1038); "a solid ring drawn as a shadow is a line"
+  (D887); D1529's mouse drag held at the edge; the tripwire's reason.
+- **The Opus reader:** the ✕ that stays typed widened to every ✕, against the Tracker's D1705 and D1135 (medium);
+  D1567's no-zoom rule missing the Balances page and the Tracker's chart, and narrowed from a touch screen to a phone
+  (medium); the scheduler's D997, D1081, D1412 and D828 — phone rules for every screen — pointed to nowhere (medium);
+  People's D1694, the posting line's ring kept 8px outside its row; D349 uncited; the access screen's two guest-only
+  items; `ui-contracts.md`'s "moved or resized" against D1523; Codex never sent to the page (`AGENTS.md` item 4); the
+  tripwire's reason; eight small wordings and citations.
+- **Both found:** D1529's "with the mouse"; D1038's white time; the tripwire's reason. Nothing else in common.
+
+**The two reads compared (D1732).** Astra found the most serious again, all of one kind: five rulings that approve the
+design guide's wording "as worded", which the draft — and the account, marking each "stated" — had shortened to a
+headline, dropping the safeguards that live only in the guide's text. The Opus reader read wider — about 45 rulings of
+other areas — and found what changes the page's scope across areas: a widened ✕, a pinch rule missing two grids, four
+phone rules for every screen filed with the scheduler, a kept exception on People. Neither alone was enough, for the
+sixth step running. **For the rest of step 5:** where a ruling approves a guide's or a document's wording "as worded",
+the account reads that wording clause by clause and the page states each safeguard, pointing to the section for the
+rest; and the scheduler's file carries rulings for every screen (the phone, its keys, passing notes), so its page in 5b
+states them as app-wide and the design page keeps pointing to them. **Size:** the table was 22,050 bytes; the draft
+34,903; after the account 37,774; after the merge 38,186; after the reads 42,087 (about 15,700 tokens; the tripwire
+raised from 23,700 to 46,300, its reason beside it). It loads with every file of the app's code, so every screen job
+reads it — the re-measure before 5b must count it, and whether its `paths:` should narrow is a question for him then.
+**Left for other pages, not done here:** the Inputs pages' D1300 calls the medical card's mark "the plain cyan ring",
+citing D851 and D860, which are the app's one blue — a wrong word in its row and short line, for the Inputs page in 5b;
+the scheduler's D1038 row still says "Not built", though the code draws it — for the scheduler's page; D349's dated mark
+from D481 still calls the board's Insights door "proposed".
+
 ### Review log
 
 | Version | Reader | Result | Folded in |

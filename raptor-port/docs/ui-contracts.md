@@ -6970,7 +6970,7 @@ view and in reach (D1610, his "A").
 - **Moves only by sliding and fading**, so it keeps drawing while the page is busy building itself (walked: 91 screen
   frames, 46 changed, while the Leave War drew its grid on a phone slowed 4x).
 - Walked 3 Nov 26: `docs/handpass/2026-11-03-talon-pages.md` (61 checks, Chromium and WebKit).
-- *(To build — D1631, [LAZY-PAGE-LOAD-FAIL]:)* **a failed download touches only its own page.** Each of the two pages is
+- *(Built 4 Nov 26 — D1631, [LAZY-PAGE-LOAD-FAIL]:)* **a failed download touches only its own page.** Each of the two pages is
   caught on its own: its area shows a card copied from the Tracker's "No course yet" card — "Couldn't open the Leave War"
   (or the Tracker), "It didn't download. Check your signal, then retry.", Retry — the top bar staying; the desktop's hidden
   pre-warm that fails shows nothing until the page is opened, then the card. Retry reloads the app (D1633, narrowing
@@ -6991,7 +6991,7 @@ view and in reach (D1610, his "A").
   address (the SWiFT kit: a code app's address never changes) — `ui/pagedownload.ts noteReopen` / `takeReopen`, read by `ui/Login.tsx`. **D1636 (built 4 Nov 26):** after a Retry that did not bring
   the page, the keyboard is back on Retry, which wears the app's own cyan focus ring; the claw stands at least one full
   round, about 1.3 s. **D1637:** the card's words stay "It didn't download. Check your signal, then retry." **D1638:** with no signal, a file cut off or a save waiting, Retry does not reload — the card comes back, still signed in (narrowing D1633).
-- *(To build — D1632:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
+- *(Built 4 Nov 26 — D1632, `ui/pageclaw.ts`:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
 
 ## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
 
@@ -11864,8 +11864,11 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
   person works, and under a two-line bar would open on Retry); they are drawn beside the shell, so `#shell` carries
   `.save-failed` too. Desktop only (621px and wider) — on a phone both are bottom panels and the rule must not reach
   them — and shorter by the band, so the foot stays on a short screen. Only a window still at its default spot: one a
-  person has moved or resized carries `data-placed` (`ui/floatwin.ts`) and keeps its own box — capped by the stylesheet,
-  its shrunken height would be recorded as the size he chose. Where he puts it is his, over the warning included. **A new thing pinned at a fixed height near
+  person has moved or resized carries `data-placed` (`ui/floatwin.ts`), so this stylesheet rule leaves it alone — capped
+  by the stylesheet, its shrunken height would be recorded as the size he chose. One he has moved keeps its own box;
+  one he has only resized, never moved, keeps its size but is placed by `ui/floatwin.ts` as an unplaced window is,
+  below the bar and the band, so "Not saved" and Retry are never covered (owner D1523, 30 Oct 26). Where he puts it is
+  his, over the warning included. **A new thing pinned at a fixed height near
   the top must do the same**, or be measured from the bar.
 - **…and under a two-line top bar** (the schedule pages and the Inputs page, about 900–1366 wide on his PC; at 1440 too on
   GitHub's Linux machines, whose letters are wider) a window still at its default spot — the changes window, the ALL

@@ -5,7 +5,7 @@ written down — the work absorbing a ruling is not the record keeping it (the s
 
 **How the rulings are kept — by RELEVANCE, not all at once (D136, D137, 24 Sep 26), and as ONE LINE each (D390,
 28 Sep 26).** Every ruling is ONE short line — its number, its date, the rule as it stands — in ONE area file under
-`.claude/rules/decisions/` (in an area converted to a page — How we work since 7 Nov 26, D1735, OIL, the IT flow guide and People & accounts since 8 Nov 26 — a statement of it, its steps below), and ONE full row (his words, the readings, where it lives), kept whole in the same-named
+`.claude/rules/decisions/` (in an area converted to a page — How we work since 7 Nov 26, D1735, OIL, the IT flow guide, People & accounts and Screen design since 8 Nov 26 — a statement of it, its steps below), and ONE full row (his words, the readings, where it lives), kept whole in the same-named
 file under `.claude/decisions-full/`, which is never loaded by itself and is SEARCHED — open a ruling's full row
 before acting on its detail or asking him about it (`grep -h '^| D38 |' .claude/decisions-full/*.md`). How we work
 loads in EVERY session; each other area's file loads BY ITSELF the moment a session reads a file in that area (the

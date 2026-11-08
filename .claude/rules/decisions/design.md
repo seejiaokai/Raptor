@@ -11,93 +11,442 @@ paths:
   - raptor-port/e2e/**
 ---
 
-# Rulings — Screen design (how a screen looks and behaves)
+# Screen design — how it works now
 
-**Loads by itself** whenever a session reads a file of screen work (the `paths:` at the top of this file): the app's
-code, the mock-ups, the screen rules, the design guide and the design skill — the design guide's own paths
-(`.claude/rules/ui-design.md`) — and the walks' pictures, evidence sheets and browser tests, where a fault on screen is
-judged. Moved out of the general rulings on 1 Nov 26 (D1554), every line whole. The general rulings are in
-`.claude/rules/decisions/how-we-work.md`, loaded in every session — the rulings on how the agent works on design (pictures
-with every design question, how mock-ups are drawn and checked, the design guide's lessons, the design skill, what the app
-is meant to be) stay there; the map of every ruling and how to add or retire one: `DECISIONS.md`.
-**One line per ruling — its number, its date, the rule as it stands (D390). Its full row** — his words, the readings he
-was told, where it lives — **is in `.claude/decisions-full/design.md`, never loaded by itself: open it before acting on a
-ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
-hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
+<!-- shape: page -->
 
-| # | Date | The rule |
-|---|---|---|
-| D1901 | 8 Nov 26 | In a browser that refuses to store anything, every page shows a "Not kept" band under the top bar: the drawn warning sign, "Not kept" in bold, "this browser loses your work on a reload" quieter, no Retry, in the look of the "Not saved" strip (D1655); the page moves down under it, and the Tracker's corner shows nothing while it is up. |
-| D1771 | 8 Nov 26 | Under the keys, an item of the board's or the week's ⋯ menu and the board's + Block and Templates buttons wear the app's cyan keyboard ring in place of the browser's own; the ⋯ item keeps its raised row. |
-| D1772 | 8 Nov 26 | Tab and Shift+Tab out of a board menu stay exactly as built, each case listed in the full row — nothing to change. |
-| D1792 | 8 Nov 26 | Four typed marks become the app's drawn line marks, as drawn: the 👁 on a look at a published version takes the wave templates window's line eye; the Inputs calendar's ⤢ and ⤡ two new marks, arrows out and arrows in; the Tracker's ↺ Restore and a hidden warning's ↺ the Reset arrow; the ✕ stays typed. |
-| D1793 | 8 Nov 26 | On a phone the Scheduler Board's day bar shows the desktop's marks before Templates and OIL Earn — the page of blocks and the ticket — on one row, the buttons keeping their height. |
-| D1670 | 7 Nov 26 | The Leave War's grey "Blocked" tag hangs from its own box's left edge on a phone as on a desktop, as built; the approved drawing's phone tag, 53px to the right, is not kept. |
-| D1669 | 7 Nov 26 | The schedule's refusal of a change that carries its own reason takes the grey "Blocked" note too — "Blocked: <reason>. Nothing was saved…" — like every other refusal of one change (D1667, D1668). |
-| D1707 | 5 Nov 26 | The one gear (D1509) is drawn in its button's own colour, as every other drawn icon in the app is — white on the Inputs, SANS, Tracker, OIL tracker and board rows, grey on the Leave War as today — the SANS calendar's gear included; the OIL tracker's 📅 becomes Edit Schedule's line calendar (D1508). |
-| D1706 | 5 Nov 26 | Every menu of actions takes the Scheduler Board's look, plain rows in one panel: the Leave War window's ⋯ and the Tracker's File and two pencil menus join the board's and Edit Schedule's; rows stay 38 tall, Grant OIL keeps its green (D1320), and menus of choices — the board's Templates and + Wave — stay as they are. |
-| D1704 | 5 Nov 26 | OIL has one mark of its own, a ticket — a day off held — on the Scheduler Board's OIL Earn and the Leave War's OIL tab alike, in place of ◧ and the plain clock, so a clock means only History. — changed by D1793 |
-| D1703 | 5 Nov 26 | The typed marks on the Scheduler Board and the Leave War become the app's drawn line icons, as drawn: every ⇅ (Sort all, Auto sort, Rearrange the grid, Done) takes the Tracker's Reorder mark, Templates a page of blocks, Reset order an arrow turning back, and the phone menu's layout switch a phone and a screen. — changed by D1793 |
-| D1701 | 5 Nov 26 | The app's four legends stay as they are: Edit Schedule's fold (D926), the Leave War's and the Tracker's Legend buttons opening the same panel, and the Inputs and SANS calendars' colour key always in view. |
-| D1700 | 5 Nov 26 | The board's OIL Earn is not drawn with a clock while History's clock stands beside it on the same bar; any new mark a person could mistake for another on its bar or page is redrawn before it is built (the agent's reading, lesson 70's other half). — changed by D1792, D1704 |
-| D1680 | 5 Nov 26 | The boxes and buttons whose font line the browser dropped show the app's letters at the size and weight each line meant, as drawn. |
-| D1668 | 6 Nov 26 | Every "Blocked:" refusal of one change takes the app's plain grey note, with only the "no entry" sign in red and "Blocked:" in bold white, not a red box, so that red keeps meaning a change kept that clashes. |
-| D1667 | 5 Nov 26 | A refusal of one change opens with the bold word "Blocked:", the rest after the colon in quieter words; never "Not saved", which stays the failed-save band's alone, and never "Refused", which already names a leave bid or access request turned down; a document too big to store keeps its own words. |
-| D1666 | 5 Nov 26 | The app's address takes a test switch, `?savefail`: in the one tab opened with it every save is refused, so the "Not saved" band, its Retry and the pass's "Not sent yet" can be seen on his own iPhone; without it the app saves as always, and nobody else is touched. |
-| D1665 | 5 Nov 26 | The app's other "not saved" messages — a refusal of one change (a Leave War figure box, the grades window, the schedule's refused change, a document too big to store) — take one matching look of their own, kept apart from the "Not saved" band's; each is pictured today and the common look drawn for him before anything is built (D1625). — changed by D1667 |
-| D1664 | 5 Nov 26 | While a save has failed, the pass after asking for access reads "Not sent yet" in the band's amber — its mark and its first step — and its approved look comes back by itself once the save lands. |
-| D1663 | 5 Nov 26 | His direction: the "Not saved" design is one design across the whole app. — changed by D1665 |
-| D1657 | 5 Nov 26 | When a save has failed, the "Not saved — keep this page open · Retry" band also shows on the screen after asking for access, on the guest page and on the sign-in screen, the page moved down under it so nothing is covered, so a stranger whose request was not saved is never told it was sent. |
-| D1656 | 5 Nov 26 | The screen after asking for access is built as drawn: the pass on top with its blue fade from the top left laid over the whole card, thinning out across the tear, then the three steps, the read-only line, View the schedule, Sign out and "Signed in as …" small at the foot. |
-| D1655 | 5 Nov 26 | The "Not saved" band takes look 1, the strip, everywhere it shows: a drawn warning sign, "Not saved" in bold and "keep this page open" quieter, read from the left, and Retry a solid amber button at the right, its height, place and amber line unchanged (D587, D841). |
-| D1654 | 5 Nov 26 | On the screen after asking for access, the pass keeps its blue fade from the top left, laid over the whole card so it thins out across the tear line — the softened fade approved as drawn (D1656). |
-| D1652 | 5 Nov 26 | The keyboard batch's three details the mock-up did not draw stay as built: the cyan keyboard ring on the Scheduler Board menus' small buttons; Enter on the calendar button with "Jump to a date" open closing and reopening it in place (a mouse click only closes it); after "Don't add" on the OIL question, the keys on "Answer OIL" in the bar. |
-| D1650 | 5 Nov 26 | The screen after asking for access takes look B's pass at its top — the claws, a "Waiting for an admin" mark, his callsign large, his initials, seat and CAT — and look A's foot under it: the three steps (request sent, an admin approves, you're on the schedule), the read-only line and its two buttons; drawn for him once more before it is built. |
-| D1649 | 5 Nov 26 | The screen a newcomer sees after asking for access ("Your request is with the admins") is redesigned to look cooler and more welcoming, in the TALON look, and drawn for him as mock-ups to choose from before anything is built (D1625); he chose a combination of the two looks (D1650). — changed by D1650 |
-| D1646 | 5 Nov 26 | On the Scheduler Board its small menus, its day and week chips and Edit Schedule's day name are reached and pressed by the keyboard, with the app's cyan focus ring; a menu opened by Enter or the down arrow puts the keys on its first item, the arrows moving through it. |
-| D1645 | 5 Nov 26 | The top bar stays pressable over "Jump to a date", the day-details window and the document viewer, as over the Traffic window: the grey starts at the bar's foot, Undo and Redo work with the window open, any other bar button closes the window first; an input's own window and the question boxes keep the bar covered. |
-| D1643 | 4 Nov 26 | On a phone held sideways the page names always go into the side menu and the top bar is one row, for everyone, even where a member's fewer names would fit beside TALON. |
-| D1642 | 4 Nov 26 | The page names beside TALON are built as the mock-up of 4 Nov 26 draws them: where they all fit beside TALON they stand there, the buttons after them or on a row of their own to the right; where they do not, they go into the side menu, unchanged, and the bar is one row. |
-| D1641 | 4 Nov 26 | The page names, Edit Schedule to Admin, sit on the top bar's first row beside TALON; on any screen where they cannot all fit there, a phone or a narrow desktop, they go into the side menu as on a phone today; on a phone held sideways they always do (D1643). — changed by D1643 |
-| D1638 | 4 Nov 26 | When Retry cannot fetch the page's files — no signal, a file cut off, or a save still waiting — it does not reload: the claw holds a full round and the card comes back, still signed in, the keyboard on Retry. |
-| D1637 | 4 Nov 26 | The failed-download card keeps his words, "It didn't download. Check your signal, then retry.", though an app update since the tab opened is the other cause: Retry cures that case too. |
-| D1636 | 4 Nov 26 | After a Retry that did not bring the page, the keyboard is back on Retry, which wears the app's own cyan focus ring; and the claw stands at least one full round of its three claws, about 1.3 s, so the press reads as tried. |
-| D1635 | 4 Nov 26 | After Retry reloads the app, the app reopens the page that failed — the Leave War or the Tracker — by itself, once signed in, instead of its first page. |
-| D1633 | 4 Nov 26 | Retry on the "Couldn't open the Leave War" (or the Tracker) card reloads the app once the page's files have come again (D1638): everything saved is kept, he signs in again until the database step, the Undo list starts empty; the card and its words stay; a failed background fetch shows the card when the page is opened. — changed by D1638 |
-| D1632 | 4 Nov 26 | While the Leave War or the Tracker is still downloading after 8 seconds, a quiet grey line "Still loading…" shows under the loading claw, going with the claw when the page arrives, so a long wait on a slow signal does not look stuck. |
-| D1631 | 4 Nov 26 | When the Leave War's or the Tracker's own download fails, only that page shows a card, "Couldn't open the Leave War" (or the Tracker), "It didn't download. Check your signal, then retry." and Retry, the top bar staying; a failed background fetch on a desktop shows nothing until the page is opened; the whole app never goes blank. — changed by D1633 |
-| D1628 | 4 Nov 26 | The Leave War posting's delete from the Post out button, in the one-day sheet and the drag sheet, and the Delete key's "Delete this input for all N people?" on an input's card in the opened day become cards too, so each of these questions looks the same wherever it is raised. |
-| D1627 | 4 Nov 26 | Of the questions drawn for D1626, only five become a card hanging from the control pressed: the input window's "Open the other input and lose them?", "Delete this input for all N people?" and "Take yourself out of this input?", and the Leave War posting's delete at its Delete chip and at its PO from date; every other question stays as today. — changed by D1628 |
-| D1626 | 3 Nov 26 | A question raised by pressing a control appears right at that control, a small card hanging from it, because the hand is already there, never at the window's foot; the input window's "Close it and lose them?" (✕ and Escape) is built so, and every similar question in the app follows it. — changed by D1627 |
-| D1618 | 4 Nov 26 | The start-up claw does not glide onto the logo: it keeps today's plain 0.2 s fade where it stands while the first screen appears, both logos briefly on screen; the hand-over of D1616 is not built. |
-| D1617 | 4 Nov 26 | The claw's round stays as it is — its three claws drawn, held, faded, and drawn again from nothing, with its short dark moment between rounds; the overlapping next round is not built. |
-| D1615 | 3 Nov 26 | The start-up claw shows on every start of the app, from its first moment, with no 0.3 s wait, even when the app is up a moment later; it still goes the moment the app has drawn itself, never adding to the load. |
-| D1614 | 3 Nov 26 | Every page's background is the claw's plain dark: the faint blue wash at the top of the page goes, everywhere, so the moment before a slow page's claw and the claw look the same and the claw simply appears; the claw's one-frame-early raise (D1612) is taken out, so no time is added. |
-| D1611 | 3 Nov 26 | The loading claw over a slow page shows from the tap, with no 0.3 s wait; only the pages measured to go blank raise it — the Leave War and the Tracker, on their first open after sign-in — so a page that opens at once never shows it. |
-| D1610 | 3 Nov 26 | The loading claw for a slow page is one overlay for the whole app, covering the page area under the top bar, the top bar staying in view and in reach; any page not drawn within 0.3 s raises it; it is tried first on the Leave War, built on the branch as a test for his phone before the other pages are measured. — changed by D1612, D1611 |
-| D1608 | 3 Nov 26 | On the sign-in and the access screens the claw sits 7px nearer "TALON" (option B): the word's left padding, which only balanced the letter spacing after its last letter, becomes a pull-in on its right, so the pair stays centred and reads as one mark. |
-| D1607 | 3 Nov 26 | The loading claw also shows while any page that loads slowly opens — the Leave War and the Tracker among them, as his recording shows — in the blank moment before the page is drawn, never added to the time it takes; designed and drawn for him before it is built. — changed by D1610 |
-| D1606 | 3 Nov 26 | The rename to TALON is built as the page listed: the sign-in and access screens, the line "Training · Availability / Leave & Ops Nexus", the top bars' "142 TALON", the tab title, the start-up failure messages, the spoken names; the Leave War's "Raptor-owned" words become "filed on the Inputs page"; a home-screen name TALON; the web address stays. |
-| D1605 | 3 Nov 26 | The loading claw is built as its page recommended: each claw drawn along its own line, 0.42 s each, 0.16 s apart, held whole 0.55 s, then faded and drawn again; the sign-in's light round it, 72px, the claw alone; shown only after 0.3 s, so a quick load shows nothing; still for less motion; gone the moment the app is up. — changed by D1615 |
-| D1591 | 3 Nov 26 | While the app loads it shows the blue talon logo drawn as a claw scratch: the left claw first, top to bottom, then the middle, then the right, then all three whole, repeating; light enough to add nothing to the load time, and shown to him as a moving mock-up before it is built. — changed by D1612, D1607 |
-| D1590 | 3 Nov 26 | The app is called TALON (Training, Availability, Leave & Ops Nexus), not RAPTOR: everywhere the app names itself for a person is changed, the sign-in, the top bar, the browser tab, prints and exports; the talon logo stays. |
-| D1567 | 2 Nov 26 | On a phone the page itself never zooms: only the grids that zoom by their own pinch (the Leave War grid and its OIL tab, Quals, the Scheduler Board’s desktop layout) zoom, and a pinch anywhere else does nothing, so the page can never be left zoomed in with no way out. |
-| D1523 | 30 Oct 26 | A window he has resized but never moved moves down below a failed save's "Not saved" band, as a window not yet placed does, so the band and its Retry are never covered (D587); a window he has moved keeps its place. |
-| D1518 | 29 Oct 26 | Nothing pinned on screen leaks: a bar, or any other part that stays put while what is under it scrolls, shows none of that content behind it or through a gap at its edges — at every zoom and every scroll position; the desktop week's ‹ › arrows excepted, which stay see-through (D1522). — changed by D1522 |
-| D1509 | 29 Oct 26 | The one settings gear everywhere in the app is the Leave War's drawn line gear, the ⚙ symbol going wherever it stands today (the Inputs calendar, the OIL tracker, the Tracker's flex settings, the Scheduler Board's flying-waves gear). — changed by D1707 |
-| D1138 | 21 Oct 26 | Help's and Admin's titles take the size and weight of Logic's page name and keep their place; the pages without a title stay without one. |
-| D1134 | 21 Oct 26 | Every pencil in the app is one design, the solid pencil of his picture (filled, eraser at the top left, tip at the bottom right), drawn by the app so every device shows it alike, never the ✏ emoji, the line pencil included; only a ✎ inside help text, or after an edited chart's name in the Tracker's Syllabus list, stays typed. |
-| D1126 | 21 Oct 26 | On every page the top bar's compact look reaches up to 1599 wide — Undo and Redo as their arrows only, their names on hover, and the sync pill its dot alone — so Edit Schedule's top bar, which carries the changes clock too, stays on one line at his PC's 1536 like every other page. |
-| D1127 | 21 Oct 26 | Every search box in the app looks like the Edit Schedule week's: a grey line magnifier inside the box on the left, the box as tall as the buttons beside it; each keeps its own words, because each finds something different. |
-| D1122 | 21 Oct 26 | Arrows on either side of words that change — a day, a month, a count — keep their place as the words change: the words get the room their longest value needs, so the arrow pressed again and again never moves; first Edit Schedule's crew panel ‹ day ›, then every such place in the app, found and fixed. |
-| D926 | 15 Oct 26 | The design guide carries "a page's controls are one row" as worded in version 2 (§3 — D911), and the Edit Schedule's "Legend" fold stays alone on its row as built: a fold is not a button. |
-| D895 | 15 Oct 26 | The design guide's two drag rules go in as worded in version 2 (one drop, one landing line; carried to the edge, the view follows — a section of their own, §5A "Dragging"), and the branch carrying them and the work behind them goes live on this "merge live". |
-| D887 | 15 Oct 26 | The design guide carries "No mark in this app glows" as worded in version 4, all its readings approved; the balance bar's and move banner's band, the fast sync dot's and Admin → Users' dots' bands go; the sign-in logo's light and the page's faint wash stay, as the app's own sign. — changed by D1614 |
-| D876 | 15 Oct 26 | The design guide carries "one mark, one look" as drafted in version 2 — the plain blue ring (the Leave War's cyan, D1449), no glow, on the edge of the thing added — all five readings approved: a row's controls outside the ring; a line, row or wave ringed round itself; any table row one box; no other flash over it; a new kind of mark his to rule. — changed by D1449, D1038 |
-| D850 | 14 Oct 26 | Feedback for an action is designed into the screen itself, and a passing note is not raised for every action — only for what is important and not intuitive, or complicated; the design guide says so. |
-| D726 | 10 Oct 26 | The app's screens are not wordy: a label, a hint or a line of small print earns its place or goes — fewer words on screen, the same information. — changed by D836 |
-| D672 | 8 Oct 26 | Everywhere in the app, undo and redo leave the screen where it is when what they change is already in view; the screen moves to the change only when it is out of view. |
-| D587 | 5 Oct 26 | A failed save's warning ("Not saved — keep this page open", retry) has a band of its own along the bottom of the top bar — the page moves down one line, nothing is covered; the same band under the bar of every full-screen surface that covers the top bar, but not in a window, sheet or menu (a short visit); the passing "Saving…" note stays as it is. — changed by D841 |
-| D349 | 28 Sep 26 | The undo-topbar mock-up is approved as drawn: the Tracker's own Undo / Redo move to the top bar too, and the Scheduler Board's bar gets sync and the bell and one exit, ✓ Done (✕ Close goes), with Sort all and the layout switch behind one ⋯ on a phone. — changed by D481 |
-| D348 | 28 Sep 26 | On a phone the top bar's buttons run in the desktop's order: Undo · Redo (· the changes clock on Edit Schedule) · the sync dot · the bell — the bell at the far right. |
-| D347 | 28 Sep 26 | Every Undo / Redo pair sits in the top bar, in the same place, order and look as Edit Schedule's — on the desktop and on the phone; the Scheduler Board keeps its own bar (D349). — changed by D348 |
+Loads by itself whenever a chat reads a file of screen work (the `paths:` above): the app's code, the mock-ups, the screen
+rules, the design guide and the design skill — the design guide's own paths (`.claude/rules/ui-design.md`) — and the
+walks' pictures, evidence sheets and browser tests, where a fault on screen is judged.
+
+Each line is a rule as it stands today; the numbers after it are the rulings that set it. His words, the readings he was
+told, each ruling's date and the history are in the full rows, `.claude/decisions-full/design.md` — open the row before
+acting on a rule's detail or asking him about it (`grep -h '^| D1626 |' .claude/decisions-full/*.md`, the shell; the
+Grep tool hides a long row).
+
+These rulings moved here from the general rulings on 1 Nov 26, in the trim of what every chat loads (D1554, D1735).
+The rulings on how the agent works on design — pictures with every design question, mock-ups first, drawings checked,
+the design guide's lessons, the design skill, what the app is meant to be — stay in How we work,
+`.claude/rules/decisions/how-we-work.md`, loaded in every chat.
+
+The design guide is `raptor-port/docs/design-practices.md`; each surface's contract, `raptor-port/docs/ui-contracts.md`.
+The main rulings of other areas that bear on a screen's look are pointed to at the end, each stated on its own area's
+file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
+
+## The top bar — Undo and Redo, sync, the bell
+- Every Undo / Redo pair sits in the app's top bar, in the same place, order and look as Edit Schedule's, on a desktop
+  and a phone, on every page where a change the one Undo takes back is made — the agent's reading, as built: Edit
+  Schedule, the Leave War, Inputs, Quals, Admin and Logic, and none on View-only Sched or Help, which change nothing; the
+  Tracker's own pair sits there too, still taking back only the Tracker's own changes; the Scheduler Board keeps a bar of
+  its own (below) [D347, D348, D349, D854, D481].
+- The group runs in the desktop's order on a phone too — Undo · Redo · (the changes clock, Edit Schedule only) · the
+  sync dot · the bell, the bell at the far right — together at the bar's right end, the menu button and the mark pinned
+  at its left; the board's own bar is below [D348, D347, D349, D854, D481].
+- The changes clock stays on Edit Schedule only — his question answered no, as he allowed: its window is laid out by the
+  schedule's days, and a change made on another page already shows in it as a line on its day [D348].
+- On every page up to 1599 wide the top bar takes its compact look — Undo and Redo as their arrows only, their names on
+  hover, the sync pill its dot alone — so Edit Schedule's bar, which carries the changes clock too, stays on one line at
+  his PC's 1536 like every other page; every page's pair still looks the same [D1126, D347, D348].
+- Everywhere in the app Undo and Redo leave the screen where it is when what they change is already in view, and move to
+  the change only when it is out of view [D672].
+- The agent's readings, as built: "in view" for a row is wholly on screen, clear of the top bar, and a moved-to change
+  lands just under the bar; the changed row or day is still outlined; an Undo of a change on another page still takes him
+  to that page; a save of an input on the Inputs list follows the same rule [D672].
+- Page by page, the agent's readings, as built: Edit Schedule's week steps sideways only to a changed day off screen, the
+  Scheduler Board changes day only for a change on another day, the Inputs calendar changes month only for one in
+  another month; the Inputs list and Quals move only when the changed row is not wholly on screen; the Tracker's Undo
+  moves nothing [D672].
+- The top bar stays pressable over "Jump to a date", the day-details window and the document viewer, as over the Traffic
+  window: the grey starts at the bar's foot, Undo and Redo work with the window open, any other bar button (a page name,
+  the bell, ✓ Done) closes the window first, and Escape still closes it after an Undo; an input's own window, which holds
+  typing not saved, and the question boxes, which exist to stop a change until answered, keep the bar covered [D1645].
+- Help's and Admin's titles take the size and weight of Logic's page name — 18px, weight 700 on a desktop, 16px on a
+  phone (the agent's reading) — and keep their place; the pages without a title stay without one [D1138].
+
+## The page names beside TALON
+- The page names, Edit Schedule to Admin, stand on the top bar's first row beside TALON wherever they all fit, the bar's
+  buttons after them or on a row of their own to the right; where they do not all fit — a phone, a narrow desktop — they
+  go into the side menu, unchanged, and the bar is one row; built as the mock-up of 4 Nov 26 draws them
+  (`raptor-port/docs/mock/2026-11-04-topbar-names/`) [D1641, D1642, D1643].
+- Whether they fit is measured on the screen in use, never set at one width — a member has two names fewer, and his
+  iPhone's letters are wider than a PC's; the buttons (Undo, Redo, the sync dot, the bell, Insights, Logout, the role
+  chip) keep their order at the right (the agent's reading) [D1641, D1642, D1643].
+- On a phone held sideways the names always go into the side menu and the bar is one row, for everyone, even where a
+  member's fewer names would fit, the side menu scrolling to its Account part; "held sideways" is the agent's reading — a
+  touch screen with no fine pointer, wider than tall and under about 500 tall — so an iPad is measured as any screen
+  [D1643, D1642].
+
+## The Scheduler Board's own bar
+- The board covers the top bar, so its own bar carries the same group laid out as Edit Schedule's — Undo · Redo ·
+  History · Sync · the bell — then one way out, ✓ Done, its ✕ Close gone since it did exactly what Done does; Done
+  raises no "Schedule updated" note, nothing in its place — the agent's reading that it kept the word gave way to the
+  Inputs pages' D854; Escape and a tap outside still close the board (the agent's reading) [D349, D854, D481].
+- On a desktop Sort all stays a button, before Undo, and Insights stands beside the bell; on a phone Sort all, the
+  Phone / Desktop layout switch and Insights sit behind one ⋯ button in the bar's second row, beside the highlighter,
+  which still opens its own row; the ⋯ menu closes on a tap outside it (the agent's reading) [D349, D481, D854].
+
+## Icons and marks — one drawn icon for one thing
+- One thing has one icon throughout the app — one pencil, one gear, one calendar — each drawn by the app in its button's
+  own colour, so every device shows it alike, never the emoji his iPhone would draw in its own colours for ✏, ⚙ or 📅;
+  the agent's reading, told to him: the app's other icons are line icons, the one solid pencil aside [D1134, D1509,
+  D1707, D1508].
+- The ✕ that hides a warning, the ⇄ of Move and a ✎ inside help text stay typed — the Tracker's ✕ marks are drawn
+  (below) — and any other icon drawn two ways is put to him with pictures before it changes, in the rounds of the
+  consistency look (How we work's D1124) [D1703, D1793, D1792, D1134, D1124, D1508].
+- Every pencil is the one solid pencil of his picture — filled, eraser at the top left, tip at the bottom right — never
+  the ✏ emoji, the line pencil included; only a ✎ inside a sentence of help text, or after an edited chart's name in the
+  Tracker's Syllabus list, stays typed; its places are listed in the full row [D1134].
+- The one settings gear everywhere is the Leave War's drawn line gear, the ⚙ symbol gone wherever it stood (the Inputs and
+  SANS calendars, the OIL tracker, the Tracker's flex settings, the board's flying-waves gear), in its button's colour —
+  white on the Inputs, SANS, Tracker, OIL tracker and board rows, grey on the Leave War — each keeping its button's size;
+  the OIL tracker's 📅 becomes Edit Schedule's line calendar (How we work's D1508) [D1509, D1707, D1508].
+- On the Scheduler Board and the Leave War the typed marks are drawn line icons: every ⇅ (Sort all, Auto sort, Rearrange
+  the grid, Done) takes the Tracker's Reorder mark, Templates a page of blocks, Reset order an arrow turning back, the phone
+  menu's layout switch a phone and a screen; ⇄ Move keeps its arrow, the board's Undo and Redo the top bar's arrows
+  [D1703, D1793].
+- OIL has one mark of its own, a ticket — a day off held — on the board's OIL Earn and the Leave War's OIL tab, in place
+  of ◧ and the plain clock, so a clock means only History; on a phone the board's day bar shows the desktop's marks
+  before Templates and OIL Earn — the page of blocks and the ticket — on one row, the buttons keeping their height
+  [D1704, D1703, D1793].
+- Four more typed marks take drawn line marks, as drawn: the 👁 on a look at a published version the wave templates
+  window's line eye; the Inputs calendar's ⤢ and ⤡ two new marks, arrows out and arrows in — a departure named to him,
+  the old ⤡ pointing out on the other slant; the Tracker's ↺ Restore and a hidden warning's ↺ the Reset arrow; the ✕
+  that hides a warning stays typed [D1792].
+- As the code shows on 8 Nov 26, all four are built: the Inputs calendar's pair, the Tracker's Restore, the 👁 and a
+  hidden warning's ↺ [D1792].
+- The board's OIL Earn wears no clock while History's clock stands on its bar; the agent's reading, lesson 70's other
+  half: a new mark is set beside every mark on its bar and its page before it is proposed, and one a person could
+  mistake for another is redrawn, or one of the two takes its words alone, before it is built; the reset arrow
+  (Reset order, Reset layout, the Tracker's Restore, a hidden warning) is History's arrow without the clock, meaning "put back" wherever it
+  stands, kept — he tells it apart [D1700, D1704, D1792, D1793].
+- Every search box looks like the Edit Schedule week's — a grey line magnifier inside the box at its left, the box as tall
+  as the buttons beside it — on the Scheduler Board, Quals, Logic, Admin, the Inputs list and the Tracker, each keeping its
+  own words since each finds something different; the agent's readings, told to him: the coloured emoji magnifier goes
+  everywhere, and the Tracker's ✕ that clears its search stays [D1127].
+
+## Controls, arrows and rows
+- Arrows on either side of words that change — a day, a month, a count — keep their place as the words change: the
+  words get the room their longest value needs, never a cut word (the agent's reading), so the arrow pressed again and
+  again never moves — his standing rule that a control tapped again and again never moves under the finger; every ‹ ›
+  pair was swept — the schedule, the Inputs, SANS and Medical calendars, the Calendar window, a document viewer, the
+  Leave War and the Tracker [D1122].
+- The design guide's §3 and lesson 16 carry it — his "make this part of the design skill" read as the app's own design
+  guide, the outside design skill's files not edited (the agent's reading) [D1122].
+- A page's controls are one row, as the design guide's §3 words it: the buttons that belong to the page in view — what it
+  adds, its dates or filter, its settings — stand in the one row under the top bar and the page's tabs, at that row's
+  button height (36 where it holds only the page's own buttons), even when it holds one button; a fold is not a button;
+  the places it named were the Medical tab, Quals' "Export to Excel" and Logic's "Edit rules" [D926].
+- Not in that row: a window's or a sheet's own buttons, one item's controls in a list, a bar the app shows for a while
+  (the "Not saved" band, the OIL answer's bar); where the row runs out of room on the narrowest phone a button keeps its
+  size and place, its words a shorter form drawn for him first — if they still do not fit, the layout is drawn and put
+  to him; on a desktop the Inputs and SANS calendars keep their tabs and controls in one row, as drawn (the Inputs
+  pages' D1125) [D926, D1125].
+- The boxes and buttons whose font line the browser had dropped show the app's letters at the size and weight each line
+  meant, as drawn — the board's cancel box and its reasons list, an input's own window (its boxes, a member's fixed name,
+  Several people, the groups' All), the opened day's note + and + people [D1680].
+- The agent's readings of it: all nine such lines are written out, the ninth (the old day pop-up's boxes) changing
+  nothing seen; a stylesheet check keeps a font line naming "inherit" from coming back; the measured shifts (the cancel
+  box 4px taller on a desktop, the window's boxes 2px) are part of what he approved [D1680].
+
+## Menus, the keyboard and focus
+- Every menu of actions takes the Scheduler Board's look, plain rows in one panel — the board's and Edit Schedule's ⋯,
+  the Leave War window's ⋯, the Tracker's File and two pencil menus, the bell's list copying it — rows 38 tall, Grant OIL
+  keeping its green; what each item does is unchanged; menus of choices — the board's Templates and + Wave — stay as they
+  are [D1706].
+- On the Scheduler Board its small menus (+ Block, Templates, the plans selector, a jet's stores, + Wave, the duty role
+  list), its day and week chips and Edit Schedule's day name are reached and pressed by the keyboard: a menu opened by
+  Enter or the down arrow puts the keys on its first item, the arrows moving through it, Escape closing it back to its
+  button; Tab stays inside the board while it is open, and Escape closes the Sort all box [D1646].
+- The keyboard's ring is the app's cyan focus ring, for the keys only, never after a click; under the keys an item of the
+  board's or the week's ⋯ menu keeps its raised row and wears the cyan ring, and the board's + Block and Templates
+  buttons wear it in place of the browser's own — built, + Wave, the plans selector and a jet's stores wearing it too by
+  D1646's own words; the duty role box, a text box, wears the boxes' cyan edge [D1646, D1771].
+
+## Questions raised at the control
+- A question raised by pressing a control appears right at that control, a small card hanging from it and pointing at
+  it, because the hand is already there — never at the window's foot; the agent's readings: "similar" is a confirmation
+  or choice put up because a control was pressed — close, delete, discard, open another over unsaved work — and one
+  raised by a key with no control (Escape) hangs from the control that does the same thing, the ✕ [D1626, D1627,
+  D1628].
+- Built so, and only these, every other question staying as today (the "press again" buttons and the sheets among them):
+  the input window's "Close it and lose them?" (its ✕ and Escape), "Open the other input and lose them?", "Delete this
+  input for all N people?" and "Take yourself out of this input?"; the Delete key's "Delete this input for all N
+  people?" on an input's card in the opened day, hanging from that card; and the Leave War posting's delete [D1626,
+  D1627, D1628].
+- The posting's delete hangs from its Delete chip, its PO from date and the Post out button in the one-day sheet and the
+  drag sheet; it keeps its two steps — the press, then Delete in the card — the second the card "Delete <name>?" with
+  Delete and Cancel, Cancel putting the outcome or the date back [D1627, D1628].
+- A question designed from now on follows the rule, his "This should be in the design skill" — the design guide's lesson
+  77 and the design skill's principle 7 (`raptor-port/docs/PRODUCT.md`) carry it; that the narrowing covers only the
+  questions already drawn, leaving new designs to the rule, is the agent's reading [D1626, D1627, D1628].
+
+## Saving — the "Not saved" band
+- A failed save's warning is a band of its own along the bottom of the top bar — the page moves down one line, nothing is
+  covered — in look 1, the strip: a drawn warning sign, "Not saved" in bold and "keep this page open" quieter, read from
+  the left, and Retry a solid amber button at the right; the line under it is the band's own amber, never the top bar's
+  cyan edge; the passing "Saving…" note stays as it is [D587, D841, D1655].
+- The same band sits under the bar of every full-screen surface that covers the top bar — the Scheduler Board, and the
+  Leave War's full-screen OIL tracker, its grid and its settings, a working surface whatever its kind; a window, a sheet
+  or the phone's menu is a short visit and gets none, the bar's own band there when it closes [D587, D841].
+- The Inputs calendar and the Medical view, first given the band by the agent's extension, told to him, are part of the
+  Inputs page since its calendar and its three tabs, under the top bar, so they carry none: the bar's own band shows
+  [D587, D841, D574, D620, D626].
+- The "Not saved" design is one design across the whole app: the band wears the strip wherever it shows — the top bar of
+  every page, the guest bar, the board's bar, the OIL tracker, the sign-in and the access screens; the "OIL not
+  answered" bar, one height with it (36, the buttons too), is restyled alike; a refusal of one change takes a look of its
+  own (below) [D1663, D1665, D1667, D1655, D841].
+- When a save has failed the band shows on the screen after asking for access, the guest page and the sign-in screen
+  too, the page moved down under it, so a stranger whose request was not saved is never told it was sent; the pass there
+  reads "Not sent yet" in the band's amber — its mark and its first step, the dot an amber ring with "!", the rest plain
+  (the agent's reading, as drawn) — its look coming back by itself once the save lands [D1657, D1664].
+- In a browser that refuses to store anything, every page shows a "Not kept" band under the top bar: the drawn warning
+  sign, "Not kept" in bold, "this browser loses your work on a reload" quieter, no Retry, in the "Not saved" strip's
+  look; the page moves down under it, and the Tracker's corner shows nothing while it is up; "Not saved" stays the
+  failed-save band's own words; its words measured to fit one line at his iPhone's width; not built yet (filed) [D1901,
+  D1655, D1667].
+- A window he has resized but never moved moves down below the band, as a window not yet placed does, so the band and
+  its Retry are never covered; a window he has moved keeps its place [D1523, D587, D841].
+- The test switch `?savefail` on the app's address refuses every save in the one tab opened with it, so the band, its
+  Retry and the pass's "Not sent yet" can be seen on his iPhone; without it the app saves as always, and nobody else is
+  touched; the agent's readings: reading still works, so the app opens as usual, Retry is refused again while it is on,
+  and opening the link without it ends the test, what that tab could not save lost [D1666].
+
+## Refusals — "Blocked:"
+- A refusal of one change is not a failed save: the schedule's refused change and its "not yours to make", a Leave War
+  figure box and its passing note, the Grades window and a document too big to store take one matching look of their
+  own, apart from the band's (`raptor-port/docs/mock/2026-11-05-notsaved-refusal/`, round 2) [D1665, D1667, D1668].
+- It opens with the bold word "Blocked:", the rest after the colon in quieter words — never "Not saved", the band's
+  alone, and never "Refused", which names a leave bid or an access request turned down; the schedule's general refusal
+  reads "Blocked: nothing was kept" (the agent's reading, approved with round 2's drawing); a document too big to store keeps its own words, in the same note [D1667, D1668,
+  D1665].
+- Its look is the app's plain grey note, only the "no entry" sign in red and "Blocked:" in bold white — not a red box, so
+  red keeps meaning a change kept that clashes; the cost he was told: on the Balances page the other refusals ("Type a
+  whole number…") stay red tags beside a grey "Blocked" one [D1668, D1667].
+- The schedule's refusal of a change that carries its own reason takes the grey note too — "Blocked: <reason>. Nothing
+  was saved…" — the words after the reason as they were, made a sentence ("for anyone: take that person off the list, or
+  change it" where the input holds several people) [D1669, D1667, D1668].
+
+## Loading — the claw
+- While the app starts it shows the blue talon logo drawn as a claw scratch — the left claw first, top to bottom, then
+  the middle, then the right, then all three whole, repeating — each claw drawn along its own line, 0.42 s each, 0.16 s
+  apart, held whole 0.55 s, then faded and drawn again; the sign-in's light round it, 72px, the claw alone; still for a
+  reader who asked for less motion [D1591, D1605, D1607, D1610, D1611, D1615].
+- It adds nothing to the load: drawn by the browser from the logo's own lines in the first page the phone receives, no
+  animation library (motion.dev only if it added nothing — the agent's reading), and gone the moment the app is up,
+  fading without waiting for its round to end [D1591, D1605, D1607, D1610, D1611, D1615].
+- The start-up claw shows on every start, from its first moment, with no 0.3 s wait, even when the app is up a moment
+  later; the agent's reading, for the build: it starts 0.2 s into its round, so the first frame already shows part of it
+  [D1615, D1605].
+- The claw also shows over a page that opens slowly, in the blank moment before it is drawn, never adding to its time:
+  one overlay for the whole app over the page area under the top bar, the bar staying in view and in reach; the same claw,
+  timing and light, from the tap with no wait; only the pages measured to go blank raise it — the Leave War and the
+  Tracker, on their first open after sign-in — so a page that opens at once never shows it [D1607, D1610, D1611].
+- Every page's background is the claw's plain dark, the faint blue wash at the top of a page gone everywhere, so the
+  moment before a slow page's claw and the claw look the same and the claw simply appears; nothing raises it early, so no
+  time is added; the sign-in logo's light is a separate thing and stays [D1614, D887].
+- While the Leave War or the Tracker is still downloading after 8 seconds, a quiet grey line "Still loading…" shows
+  under the claw, going with it when the page arrives; it is told to a screen reader as the claw's words are (the agent's
+  reading) [D1632].
+- When the Leave War's or the Tracker's own download fails, only that page shows a card — "Couldn't open the Leave War"
+  (or the Tracker), "It didn't download. Check your signal, then retry." and Retry — copying the Tracker's "No course
+  yet" card, the top bar staying; the whole app never goes blank; a failed background fetch on a desktop shows nothing
+  until the page is opened, then the card [D1631, D1633, D1638].
+- Retry fetches the page's files again and, once they have come, reloads the app — everything saved kept, the sign-in
+  asked again until the database step, the Undo list empty — then reopens the page that failed by itself once he is
+  signed in, from a note kept in that tab only until the reopen, never in the address; it holds after the move too, a
+  reload still starting on the first page [D1633, D1638, D1635].
+- No words are added to the card or the sign-in for it (the agent's reading); the update check and the stylesheet
+  re-fetch built for a retry in place are gone (the agent's reading) [D1635, D1633, D1638].
+- When Retry cannot fetch the files — no signal, a file cut off, or a save still waiting — it does not reload: the claw
+  holds at least one full round, about 1.3 s, and the card comes back, still signed in, the keyboard back on Retry in the
+  app's cyan focus ring, so the press reads as tried [D1638, D1636].
+
+## The name TALON and the access screens
+- The app is called TALON (Training, Availability, Leave & Ops Nexus), not RAPTOR, everywhere it names itself for a
+  person — the screens, the sign-in, the top bar, the tab's title, prints, PDFs, exports and the help text; the talon
+  logo stays; the agent's reading: the code's own names, its folders and the saved data's keys (`raptor:` …) keep
+  theirs, and the project's documents keep "Raptor" as the project's name [D1590, D1606].
+- As built: the sign-in and access screens' word and its line "Training · Availability / Leave & Ops Nexus", the top
+  bars' "142 TALON", the tab title, the start-up failure messages, the spoken names; the Leave War's "Raptor-owned" words
+  read "filed on the Inputs page"; a home-screen name TALON (the agent's reading, checked only in the page); the web
+  address, his setting, stays "raptor" until the move to Power Apps [D1606, D1590].
+- On the sign-in and the access screens the claw sits 7px nearer "TALON" (his option B): the word's left padding, which
+  only balanced the letter spacing after its last letter, becomes a pull-in on its right, so the pair stays centred and
+  reads as one mark [D1608].
+- The screen after asking for access is redesigned in the TALON look, cooler and more welcoming, as he chose: on top look
+  B's pass — the claws, a "Waiting for an admin" mark, his callsign large, his initials, seat and CAT — its blue fade from
+  the top left laid over the whole card, thinning out across the tear, the pass and the foot one surface, the dashed tear
+  the only divider [D1649, D1650, D1654, D1656].
+- Under it look A's foot: the three steps (request sent, an admin approves, you're on the schedule), the read-only line
+  and View the schedule (both only while the admins' guest switch is on — People and accounts', below), Sign out, and
+  "Signed in as …" small at the foot (first the agent's reading, then approved with the drawing); the heading "Your request is with the admins", the strip of the week with his puck and "You'll be able to sign in…" are
+  gone; what its buttons do is unchanged [D1650, D1656, D1649].
+- The drawing of record: `raptor-port/docs/mock/2026-11-05-access-wait/img/C-diag-phone.png`, with `C-phone.png` and
+  `C-desk.png`; a fade is never cut off abruptly partway across what it tints (the design guide's lesson 82) [D1656,
+  D1654].
+
+## On a phone
+- On a touch screen, a phone or a tablet, the page itself never zooms: only the grids that zoom by their own pinch — the
+  Leave War grid, its OIL tab and its Balances page, Quals, the Scheduler Board's desktop layout and the Tracker's chart —
+  zoom, and a pinch anywhere else does nothing; the agent's readings:
+  a double tap no longer zooms the page either, the phone's own larger-text setting is untouched, and on a desktop the
+  browser's Ctrl + / − cannot be switched off and stays [D1567].
+- Inside a Power Apps code app the page sits in the host's own frame, which may set its own zoom — not checked; found
+  out when the app is first put there [D1567].
+
+## Words on screen and feedback
+- The app's screens are not wordy: a label, a hint or a line of small print earns its place or goes — fewer words on
+  screen, the same information — though a sentence a person would say may cost a word or two, by the writing guide's
+  order: every fact first, then a sentence a person would say, then as short as those two allow (the scheduler's D836)
+  [D726, D836].
+- The agent's readings: it weighs on every screen's design; it is about words on screen, never removing what
+  a man needs in order not to make a mistake — such a word is shortened or moved behind the screen's "How this works"
+  fold; nothing built is reworded on its strength alone — a change of wording is shown to him on a picture first [D726,
+  D836].
+- Feedback for an action is designed into the screen itself: the result is the feedback — a thing added appears, in view,
+  wearing the just-added mark, a changed value shows changed, a removed thing is gone with Undo lit — and a passing note
+  is raised only for what is important and not intuitive, or complicated; the design guide's §1 states its three cases
+  [D850].
+- With or without a note, a screen reader is told the same thing in words; for a reader who asked for less motion the
+  mark still shows, steady, without its fade; the keyboard stays where it was — back on the button that opened the
+  window — never moved to the new thing [D850].
+- A note is still raised where the screen does not show what happened — the result out of view, or the screen the same
+  after the press as before; where the press did more or less than he would expect, in view or not, or carries a
+  warning; and whenever it failed or was refused; the "Saving…" and "Not saved" signs are not this rule's; a note
+  already built that only says what the screen shows is put to him as a delete candidate, never deleted unasked [D850].
+
+## The design guide's standing rules
+- One mark, one look (the guide's §4): the just-added mark is the plain blue ring, 2px, no glow, for about six seconds
+  (a taken suggestion and the Leave War's day aside, below), its last half second a fade — steady, without the fade,
+  for a reader who asked for less motion — on the edge of the thing added: a row's controls outside it; a line, row or
+  wave ringed round itself; any table row one box; a new block round its heading and each of its rows; a puck dropped
+  in a seat wears none, the puck the sign [D876, D854, D1038, D1449].
+- A thing wearing the mark shows no other flash over it — a flash on something inside it, such as a puck dropped into a
+  new line or its new flag, belongs to that thing; a new kind of mark is his to rule; a taken suggested brief or rally
+  turns ordinary white at once and wears the ring as a short flash, about a second (built — the scheduler's D1038); on
+  the Leave War a day brought into view wears the Leave War's cyan [D876, D1038, D1449].
+- No mark in this app glows (the guide's §4): a ring, stripe, box, line, panel, dot or button is drawn as it is; a shadow
+  in its own colour or a pale band round it (a halo) is a glow, a solid ring drawn as a shadow is a line, and a dark
+  shadow under a window or a menu is depth; the
+  balance bar's and move banner's band and the fast sync dot's and Admin → Users' dots' bands are gone; a new on/off
+  control takes the filter chip's "on" look unless he rules otherwise, the app's other "on" looks staying as they are; a
+  new glow is his to rule [D887, D1614].
+- The app's own sign is not a mark: the sign-in logo keeps its light, as the loading claw does; the page's faint wash,
+  once kept with it, is gone [D887, D1614].
+- Dragging (the guide's §5A): a thing moved between the rows of a list shows one landing line, in one place — the top
+  edge of the row under, the bottom edge only under a list's last row or above a heading it cannot land on; a thing
+  dropped onto a place — a puck onto a seat, a chip onto a day, a heading onto a column — marks that one place, once
+  [D895].
+- Carried near the edge of what it sits in, it scrolls that box in the direction the thing can move, at the edge distance
+  and speed the app already uses, on for a reader who asked for less motion; a drag already built that does otherwise
+  is named to him, never changed without his word; the full wording: the design guide §5A [D895].
+- Nothing pinned leaks: a bar, or any part that stays put while what is under it scrolls, shows none of that content
+  behind it or through a gap at its edges, at every zoom and every scroll position, since a pinned part reads as a solid
+  surface; the agent's reading: on a phone and a desktop, a heading row included, each check of a screen with a pinned
+  part made zoomed in and out and scrolled on his iPhone's engine; the desktop week's ‹ › arrows are its one exception
+  (the scheduler's D1522) [D1518, D1522].
+
+## Settled — leave as they are
+- Tab and Shift+Tab out of a board menu, as built: the board's string-drawn menus close on a Tab past their end and give
+  the keys back to their button; the ⋯ menu lets Tab move on to the next control and closes, as the week's ⋯ does;
+  Shift+Tab from its first item back onto ⋯ leaves it open [D1772].
+- The keyboard batch's three details the mock-up did not draw, as built: the cyan ring on the board menus' small
+  buttons; Enter on the calendar button with "Jump to a date" open closing and reopening it in place (a mouse click only
+  closes it); after "Don't add" on the OIL question, the keys on "Answer OIL" in the bar — the agent's reading of his
+  "4 confirm leave it?", taken as his answer unless he says otherwise [D1652].
+- The app's four legends: Edit Schedule's "Legend" fold, alone on its row as built, the Leave War's and the Tracker's
+  Legend buttons opening the same panel, and the Inputs and SANS calendars' colour key always in view — a long legend
+  behind a button or the fold, a key of two or three colours in view [D1701, D926].
+- The claw's round: its three claws drawn, held, faded and drawn again from nothing, with its short dark moment between
+  rounds — the overlapping next round not built, and a walk does not treat that moment as a fault, only a first frame's
+  [D1617].
+- The start-up claw does not glide onto the logo: today's plain 0.2 s fade where it stands while the first screen
+  appears, both logos briefly on screen ("No change", the mock-up's label for today's look — the agent's reading, told to
+  him) [D1618].
+- The failed-download card's words, "It didn't download. Check your signal, then retry.", though an app update since the
+  tab opened is the other cause — Retry cures that too; the cause-neutral "Retry to load it again" is not taken [D1637].
+- The Leave War figure box's grey "Blocked" tag hangs from its own box's left edge on a phone as on a desktop, as built;
+  the approved drawing's phone tag, 53px to the right, is not kept, the drawing check's difference accepted with this
+  ruling [D1670].
+- The board's bar and every top bar's pair: the undo-topbar mock-up, `raptor-port/docs/mock/undo-topbar.html` (version
+  4), approved as drawn, is the design of record as the later rulings changed it — the compact bar up to 1599 wide, the
+  board's too (D1126, the scheduler's D1130), and the page names beside TALON (D1641–D1643) — on a phone the sync pill
+  its dot alone wherever the pair shows; a changes button for each page an idea filed, not built (`[HIST-PER-PAGE]`)
+  [D349, D481, D854, D347, D348, D1126, D1130, D1641, D1642, D1643].
+- The band, look 1: `raptor-port/docs/mock/2026-11-05-save-band/img/look1-*.png`; the keyboard and windows batch:
+  `raptor-port/docs/mock/2026-11-05-keys-windows/` [D1655, D1645, D1646].
+
+## From other areas (each stated on its own area's file)
+- How we work's: every calendar icon is Edit Schedule's line calendar, drawn by the app, never 📅; button sizes never
+  change without his word; anything new a person will see is drawn as a mock-up first [D1508, D487, D1625].
+- How we work's: the consistency look goes on in rounds, each thing drawn two ways put to him with pictures before it
+  changes; a standing test keeps a dense screen's controls from turning a pinned cell see-through [D1124, D1508, D1281].
+- The scheduler's: up to 1599 wide on a desktop the board's own bar draws Undo, Redo and History as icons, their names on
+  hover, and sync as its dot, as every top bar does; wider, the words come back; the board on a phone is left as it is
+  [D1130].
+- The scheduler's: over the board a window not yet moved opens just below the board's own bar, so the bell, Insights and
+  ✓ Done stay in reach [D1106].
+- The scheduler's: on a phone on its side the board's Calendar, title, day strip and search scroll away with the list
+  while its bar of buttons stays at the top [D1780, D1800].
+- The scheduler's: the bar that stays after an unanswered OIL question ("Not swapped — OIL not answered · Answer OIL ·
+  OK") takes the band under the top bar, always one line, under the "Not saved" warning when both are up [D831, D840,
+  D841].
+- The scheduler's: the desktop week's ‹ › arrows stay see-through — a slim tab, 14 wide and 70 tall, sliding out to the
+  full arrow when the pointer comes near, frosted as the old arrow was at rest [D1522, D1526, D1527].
+- The scheduler's: the just-added ring began as the board's plain blue ring with no glow, a note ringed round its own box;
+  the board's other glows went, each keeping its ring [D860, D877].
+- The scheduler's: a picked answer with the keyboard on it shows one ring, the keyboard's on its own edge; the one date
+  calendar's picked date is a plain disc, ringed only while a keyboard is on it [D842, D824].
+- The scheduler's: a week whose saved copy cannot be read refuses a change in the grey "Blocked:" note [D1785].
+- OIL's: in OIL Earn a tap on a puck that cannot earn picks nothing and says why in the plain passing note, "Nothing
+  changed for <callsign>." and the reason — not the grey "Blocked:" note [D1783].
+- The scheduler's: on Edit Schedule a man carried with the mouse and held at the week's side moves it one day at a time,
+  after a short wait, the drag rule taking a day's step; a name only passing through moves nothing; it stops at Monday
+  and Sunday, never carried into another week; the finger's drag is unchanged (the agent's reading) [D1529, D1573].
+- The scheduler's: OIL Earn's day button is the app's own switch, as on the Logic page — a slider, "No OIL earned", lit
+  in the switch's cyan when on — not the filter chip's "on" look [D1782].
+- The scheduler's: on a phone the board's desktop layout pinches the day only, never its bar, and a puck carried to the
+  screen's edge scrolls the board [D1107, D1109].
+- The scheduler's settled rule (11–12 Aug 26): the phone board's top bar is one row, its day stepped by arrows — no
+  control is added to its first line without taking one off.
+- The scheduler's: on a phone every window that pops up for a task stands in the middle of the screen, as tall as what is
+  in it up to the visible screen less 24px; the Inputs and SANS calendars' day panels and the ALL AVAIL and changes
+  windows stay at the foot [D997].
+- The scheduler's: when the phone's keys open or close nothing on screen jumps, even for one frame; the box tapped rises
+  in step with the keys, a box already above them not moved, no window shortening and growing back [D1081, D1412].
+- The scheduler's: on a phone a passing note takes the screen's full width less a small margin, never half the screen;
+  the desktop's note stays as it is [D828].
+- The Inputs pages': the "Schedule updated" note after the board's ✓ Done is gone, nothing in its place; "Input added"
+  and "Input updated" go where the input is in view, its card wearing the just-added mark; a puck's drop raises no note
+  [D851, D854].
+- The Inputs pages': an input window's ✕ asks the same question as Escape when anything is not saved; Cancel still closes
+  at once [D1622].
+- The Inputs pages': the title box's pencil sits inside the box at its right end, the app's one solid pencil [D919,
+  D1134].
+- The Inputs pages': the settings icon reads as a gear, never like a Sun, which means day flying there; the Inputs
+  calendar's filters and gear move as one group [D635, D1702, D1708].
+- The Inputs pages': the drags that follow the edge — a note or puck in an opened day, Quals' column headings, the
+  month's pick turning the month, the SANS calendar's pick across days, the Tracker's select box and ⇅ Reorder list, the
+  people picker [D893, D897, D900].
+- The Leave War's: a row dragged in Rearrange scrolls the grid at the screen's edge [D892].
+- The Leave War's: undo and redo leave its grid where it is when the day they change is on screen [D670, D672].
+- The Leave War's: its Balances page, the first case of nothing pinned leaking, shows nothing of its rows behind or
+  through its bar; its pinned dates row and Quals' header take the row's place in the same frame, live with one painted
+  frame still cut on a quick scroll, a job of its own [D1519, D1789, D1850].
+- The Leave War's: a pinch zooms its grid only, the frozen dates and names growing with it, its OIL tab alike; no key
+  zooms the grid on a desktop, where the browser's Ctrl + / − zooms the whole page [D1282, D1285, D1286].
+- The Leave War's: its glows gone — the open-bidding box, his own row's ring, today's card, a SANS stripe's and the
+  landing line's light; Rearrange "on" as the filter chip, the Show SANS switch since replaced by "+ SANS" [D881, D882,
+  D1221].
+- The Leave War's: in the "Open for bidding" window each open stretch carries a calendar icon, not a pencil [D1172].
+- The Tracker's: its typed marks are line icons — its bar's and menus', each tool of Edit chart layout, Merge and Unmerge
+  in words, the lull's × the drawn ✕, the × on each student a line icon — its pencils the app's one solid pencil [D1132,
+  D1135, D1705, D1134].
+- The Tracker's: its "Delete course" question and an import's note drop their typed ↺ and ⇅ marks [D1860].
+- The Tracker's: on a phone its Find strip's ✕ empties the box and puts Find away, the ✕ staying in the box [D1791].
+- The Tracker's: its search magnifier becomes the app's own, its handle as long as every other search box's, in place
+  of its own shorter one; to build [D1900, D1127].
+- People and accounts': the waiting screen's "View the schedule", and its line that he can look read only meanwhile, show
+  only while the admins' guest switch is on, off by default [D221, D204].
+- People and accounts': on Admin → Users the blue ring on a row a bell's posting line lands on stands 8px outside the row,
+  clear of his name, as built — not on the row's edge [D1694].

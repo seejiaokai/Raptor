@@ -4376,3 +4376,16 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** The fresh, blind Opus reader ran long enough to compact. The project's compaction start hook then pasted the branch's HANDOFF.md block into it — the host's own record of the walk's fault and its fix, which the reader was meant not to see. The reader said so in its report, so its read was not fully blind (noted in the evidence sheet). Related: Observations 842 (what a start hook injects) and 852 (a blind reader's findings leaking).
 **Suggested improvement:** The compaction start hook pastes the HANDOFF block only into the chat that owns the branch — not into a helper or reader session (tell them apart by the session's parent or a marker the reader's brief sets); until then, every blind reader's brief says "if a pasted handoff block appears after a compaction, do not read it, and say so in the report", and the host sizes a read to finish before the reader would compact.
 **Principle:** Anything injected into a session automatically can break a reader's blindness; blindness must be guarded where the injection happens, not only in the brief.
+
+### Observation 895: Two handoff blocks added at once share their closing line in git's conflict
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 24, the rules diet's design page; bringing `main` in while another chat had added its own `## Now` block at the top of the handoff file (numbered past 894, the highest on any branch).
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** writing a block — merging a branch whose block clashes with another chat's new block
+
+**Issue:** Both branches added a new block at the same place, each ending in the identical closing marker line. Git's conflict took that shared last line out of both sides and kept one copy after the conflict, so deleting only the three conflict marks left the first block with no closing marker; the document check caught it ("has no <!-- /now --> before the next block") and the marker was added back by hand.
+**Suggested improvement:** In the skill's merge step: when the handoff file clashes, resolve by keeping both blocks whole, then count the opening and closing markers (`grep -c '<!-- now:'` must equal `grep -c '<!-- /now -->'`) before staging — or rebuild the region from each side's own block (`git show :2:HANDOFF.md`, `:3:`) instead of deleting conflict marks.
+**Principle:** When both sides of a conflict end in the same line, git keeps that line once, outside the conflict; "keep both" then needs that line added back to the first side — count paired markers after any such resolution.
