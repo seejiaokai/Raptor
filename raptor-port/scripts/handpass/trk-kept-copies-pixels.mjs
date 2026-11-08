@@ -12,6 +12,15 @@ console.log('kcpix v1')
 process.env.C9_RESULTS ||= resolve(process.env.PIX_OUT || '.', '..', 'unused-results.json')
 const L = await import('./trk-chat9-lib.mjs')
 const { mkWorld, closeW, closeAll, geo, land, sleep, PHONE, PC } = L
+/* WALK_DIR (a frozen copy of a build's dist folder) is served inside the test browser at HP_URL — no server holds a port
+   (walk-scripts.md §8): each browser's new worlds are routed to it before the lib opens the page */
+const { serveFrozen, WALK_DIR } = await import('./isr-serve.mjs')
+if (!WALK_DIR) { console.error('set WALK_DIR to the frozen build folder'); process.exit(2) }
+console.log('serving ' + WALK_DIR + ' at ' + L.BASE)
+for (const e of ['chromium', 'webkit']) {
+  const b = await L.browserFor(e, true, false); const orig = b.newContext.bind(b)
+  b.newContext = async o => { const c = await orig(o); await serveFrozen(c, L.BASE); return c }
+}
 
 const OUT = process.env.PIX_OUT
 if (!OUT) { console.error('set PIX_OUT to the folder for this run'); process.exit(2) }
