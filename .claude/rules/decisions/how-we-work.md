@@ -47,10 +47,11 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   cited after it, every live ruling cited on a statement of a file that loads — with the full rows kept whole and
   searched; the working rules and the bug-check order become one-page checklists; until an area converts, it works as
   today [D1732, D1735].
-- The diet runs on Opus in the plan's order — the checks and scripts, the moves, reading by section, the every-chat
-  layer, OIL first as a full trial, the smaller areas, then a measure and a report to him before the Inputs, scheduler
-  and Leave War pages; every rewritten page is accounted part by part and read by a fresh reader; where Astra reads
-  beside it, the two blind reads are compared to see which is better [D1732, D1735].
+- The diet ran on Opus in the plan's order (its reads: below) and stopped 8 Nov 26: its five area pages came out
+  about twice their old lists [D1732, D1735, D1932].
+- Fable 5.1, on his call, brings each page under its old list's size, no rule dropped; a page's tripwire is a hard
+  limit, never raised without his word; no area converts until all six are under; Fable and Astra also review 8 Nov
+  26's Opus jobs, a fresh chat [D1932, D1933, D903, D1770, D141, D390, D1735].
 - Every step of the rules diet goes live only on his "merge live", a step that changes only rulings files or other notes
   included [D1737].
 - Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page, the
