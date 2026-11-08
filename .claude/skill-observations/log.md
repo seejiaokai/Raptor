@@ -4415,3 +4415,16 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** Two of the walk's FAILs came from expectations the host wrote without a source: "a moved window, closed and reopened, keeps the place you gave it" (no ruling says so; the app has always reopened it at its first place), and the host's own route check expected the band's text without the hidden screen-reader separator that the existing band also carries. Both cost a control run and a reproduction to set aside, and either could have been reported as a fault of the change.
 **Suggested improvement:** In the walkers' brief template, every EXPECTED line names its source — a ruling, a contract line, or "as on main today (control run)"; an expectation with no source is written as RECORD (measure and report), not PASS/FAIL. For text checks, compare the visible parts (or a fixture taken from the existing sibling element), not a string typed by hand.
 **Principle:** An expected result with no source is a guess; grade only against a cited rule or a measured baseline, and record everything else.
+
+### Observation 901: Two reviewers flag one clash and propose opposite fixes — the host decides by the project's conflict rule before the fixer starts
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 34, the rules diet's step 5a — the Tracker's rulings as a page, two blind reads (numbered past 900, the highest on any branch)
+**Skill:** receiving-code-review
+**Type:** open-source
+**Phase/Area:** acting on reviewers' findings — before handing fixes to a helper
+
+**Issue:** Both blind readers' first finding was the same clash (a later decision's rule sentence says every student is on the roster; an earlier one, still built, adds typed students). One proposed marking the earlier decision superseded; the other read the later decision's own interpretation as narrower and proposed putting the question to the owner. Handing both reports to a fix helper as they stood would have let it pick either fix.
+**Suggested improvement:** In "receiving-code-review", add a step: where two reviewers' fixes for one finding disagree, the host settles it first by the project's own conflict rule (here: the newer instruction wins only where it clearly covers the case, otherwise it goes to the owner) and writes that decision into the fixer's brief.
+**Principle:** Agreement on a finding is not agreement on its fix; the coordinator resolves divergent fixes by an explicit rule before delegating, never by letting the implementer choose.
