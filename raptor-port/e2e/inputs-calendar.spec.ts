@@ -1313,14 +1313,16 @@ test('the month: a timed bar is painted lighter than an all-day one, with a soli
   await expect(page.locator('.ib-bar', { hasText: /\+\d/ }), 'no bar hides people behind "+N"').toHaveCount(0)
   await expect(page.locator('[data-testid="ib-legend"]')).toHaveText(/absence\s*duty$/)
 })
-test('the desktop list: "+ Input" first in its row and the table straight under it; nine names wrap inside the Name column; "By" shares the remark’s line (D727, D729)', async ({ page }) => {
+/* "+ Input" stood first in its row here until D1787 (8 Nov 26) moved it, on a desktop, to the row's right end after the dates
+   button, as "+ Medical" stands (D1300); the rest of this test is D727's and D729's, unchanged. */
+test('the desktop list: "+ Input" at the right end of its row and the table straight under it; nine names wrap inside the Name column; "By" shares the remark’s line (D727, D729, D1787)', async ({ page }) => {
   await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
   await vetWorld(page)
   await page.click('#inListBtn'); await page.click('#inRangeBtn'); await page.click('#inRangeAll')
   await expect(page.locator('.inbar'), 'no form over the list').toHaveCount(0)
   const m = await page.evaluate(() => {
     const box = (sel: string) => document.querySelector(sel)!.getBoundingClientRect()
-    const add = box('#inNew'), range = box('#inRangeBtn'), table = box('#intbl')
+    const add = box('#inNew'), range = box('#inRangeBtn'), table = box('#intbl'), tools = box('.inputs-listtools')
     const row = [...document.querySelectorAll('#inBody tr')].find(tr => /Squadron photo/.test(tr.textContent || ''))!
     const name = row.querySelector('[data-label="Name"]')!, btn = name.querySelector('.in-open')!
     const rmk = row.querySelector('[data-label="Remarks"]')!, by = rmk.querySelector('.in-placed')!
@@ -1330,7 +1332,7 @@ test('the desktop list: "+ Input" first in its row and the table straight under 
     const tr = document.createRange(); tr.selectNodeContents(text)
     const one = [...document.querySelectorAll('#inBody tr')].find(tr => !tr.querySelector('.intitle') && !/,/.test(tr.querySelector('[data-label="Name"]')!.textContent || ''))!
     return {
-      addLeft: add.right <= range.left + 1, sameRow: Math.abs((add.top + add.height / 2) - (range.top + range.height / 2)) <= 6,
+      addRight: add.left >= range.right - 1 && Math.abs(add.right - tools.right) <= 2, sameRow: Math.abs((add.top + add.height / 2) - (range.top + range.height / 2)) <= 6,
       tableTop: table.top - add.bottom, names: btn.textContent, lines, inCol: btn.getBoundingClientRect().right <= name.getBoundingClientRect().right + 0.5,
       nameW: Math.round(name.getBoundingClientRect().width), by: by.textContent,
       bySameLine: Math.abs(by.getBoundingClientRect().top - tr.getBoundingClientRect().top) <= 6, byAfter: by.getBoundingClientRect().left >= tr.getBoundingClientRect().right + 8,
@@ -1338,7 +1340,7 @@ test('the desktop list: "+ Input" first in its row and the table straight under 
       wide: document.documentElement.scrollWidth <= innerWidth,
     }
   })
-  expect(m.addLeft && m.sameRow, '"+ Input" stands at the left of the dates button, on its line').toBe(true)
+  expect(m.addRight && m.sameRow, '"+ Input" stands at the right end of the row, after the dates button, on its line (D1787)').toBe(true)
   expect(m.tableTop, 'the table starts straight under the tools — no form between').toBeLessThan(40)
   expect(m.names!.split(', '), 'every name').toHaveLength(9)
   expect(m.lines, 'wrapping in its column').toBeGreaterThanOrEqual(2)
