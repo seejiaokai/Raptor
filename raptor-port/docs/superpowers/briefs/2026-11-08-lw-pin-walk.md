@@ -47,7 +47,7 @@ page's own scroll). So:
   — the app then takes the old way. The partial case: make only `animation-range` answer false. Say in the report that
   this is a stand-in, not a real browser.
 
-**The build:** served at `http://localhost:4393` (rebuilt from commit c23920f0d, with the height-watch fix). Never rebuild it, never start another
+**The build:** served at `http://localhost:4393` (rebuilt from commit 56f738937: the height-watch fix, and the pinned row placed from the top bar's height, never where it stands). Never rebuild it, never start another
 server on that port. Before your first step, check the served index names the same bundle as the folder
 `C:/Users/User/AppData/Local/Temp/claude/ba46d636af5eaefe/bfddd1cb-8b24-453c-b9e5-f54c2d5dd233/scratchpad/dist-final/index.html`
 (walk-scripts §1). Each walker uses its own fresh browser context(s) — that keeps the two worlds apart. Do not take or
@@ -149,6 +149,7 @@ Open the Leave War grid as admin unless a scenario says otherwise. The scenarios
   way, open a day by its date and close it each way, place a bid and decide it, open a person, go back to the top,
   leave the page and come back. Press every control that opens or closes something. EXPECTED: everything works as a
   user expects, the dates row always there when the dates are under the bar, never over the month buttons.
+- **L-foot (his iPhone recording, 8 Nov 26 — lesson 24)**, 402 Chromium and WebKit, and 1536: a hard finger flick (phone) or a fast wheel (desktop) from the top to the page's very foot, then back up to T + 40; at the foot also stand the top bar out of place for a moment — `document.querySelector('.topbar').style.transform='translateY(-90px)'`, send `window.dispatchEvent(new Event('resize'))`, wait 600 ms, put it back — then look without scrolling. EXPECTED: at the foot the pinned dates row is shown, its top at the bar's foot (within 1px), never missing, never above the bar; the same after the bar is put back. The PC has no bounce: say so in the report, his iPhone is the look for the bounce itself.
 - **L-height**: the copy's height equals the real row's at 402 (Chromium and WebKit) and 1536. RECORD both numbers.
 
 ## Walker Q — Quals
@@ -197,6 +198,7 @@ Open Quals as admin (`go(page, 'quals')`) unless a scenario says otherwise. Astr
 - **Q22 (Astra 22) turning the phone and the width**, as L22.
 - **Q23 (Astra 23) a member**: the same sorting and pinning as the member. EXPECTED: as the admin's, nothing more
   offered.
+- **Q-foot (his iPhone recording, 8 Nov 26 — lesson 24)**, 402 Chromium and WebKit, and 1536: a hard finger flick (phone) or a fast wheel (desktop) from the top to the page's very foot, then back up to T + 40; at the foot also stand the top bar out of place for a moment — `document.querySelector('.topbar').style.transform='translateY(-90px)'`, send `window.dispatchEvent(new Event('resize'))`, wait 600 ms, put it back — then look without scrolling. EXPECTED: at the foot the pinned heading is shown, its top at the bar's foot (within 1px), never missing, never above the bar; the same after the bar is put back. The PC has no bounce: say so in the report, his iPhone is the look for the bounce itself.
 - **Q24 (Astra 24) the old way**, both sizes, with the stand-in (full and partial), as L24.
 - **Q-plain, the plain-user round (§7.0a)**, both sizes, admin then member: open Quals, filter, sort, scroll a long way,
   Enable editing and change a tick, Done, Undo, leave and come back; press every control that opens or closes something.
