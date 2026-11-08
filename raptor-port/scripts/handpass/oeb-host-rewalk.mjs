@@ -4,7 +4,7 @@ import { openBoard, oilOn, selCount, toast, sleep, tag, standAt, fingerprint } f
 import { fileSansOnBoard } from './oeb-host-sans-file.mjs'
 import { mkdirSync } from 'node:fs'
 const DIST = process.env.DIST, size = process.env.SIZE || 'pc', phone = size === 'phone'
-const OUT = 'C:/Users/User/projects/Raptor/.claude/worktrees/pr-oil-earn-ffbf07/raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/host'
+const OUT = process.env.OUT || 'C:/Users/User/projects/Raptor/.claude/worktrees/pr-oil-earn-ffbf07/raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/host'
 mkdirSync(OUT, { recursive: true })
 const SIZES = {
   phone: { viewport: { width: 402, height: 874 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true },
@@ -53,29 +53,36 @@ try {
   // pick a man from the crew list (a SANS card would open its editor outside the mode)
   const rp = page.locator('#sbRoster .puck[data-person], #sbRoster .rpuck, #sbBoard .sb-panel.grnd .puck[data-person]').filter({ visible: true }).first()
   if (await rp.count()) { await rp.scrollIntoViewIfNeeded().catch(() => {}); await press(rp); await sleep(400) }
-  const before = await selCount(page)
+  const picked = () => page.evaluate(() => [...new Set([...document.querySelectorAll('#schedBoard .puck.sel')].map(e => e.dataset.person || ''))].join(','))
   await oilOn(w, true)
+  // the words must be on screen first — a press off screen lands on nothing (the first run of this script, 8 Nov 26)
   const lab = page.locator('#schedBoard label.lgmix.daysw').filter({ visible: true }).first()
-  const box = await lab.boundingBox()
-  if (phone) await page.touchscreen.tap(box.x + box.width - 12, box.y + box.height / 2); else await page.mouse.click(box.x + box.width - 12, box.y + box.height / 2)
-  await sleep(700)
+  await lab.scrollIntoViewIfNeeded(); await sleep(300)
+  const before = await selCount(page), who = await picked()
+  const pressWords = async () => {
+    const box = await lab.boundingBox()
+    if (phone) await page.touchscreen.tap(box.x + box.width - 12, box.y + box.height / 2); else await page.mouse.click(box.x + box.width - 12, box.y + box.height / 2)
+    await sleep(700)
+  }
+  await pressWords()
   const on2 = await page.locator('#schedBoard [data-oilblank]').filter({ visible: true }).first().isChecked()
-  const after = await selCount(page)
+  const after = await selCount(page), who2 = await picked()
   await shot('R2-words-keep-pick')
-  row('R2 press on the words keeps the pick', before > 0 && after === before && on2, `picked before ${before}, after ${after}, switch ${on2 ? 'on' : 'off'}`)
+  row('R2 press on the words keeps the pick', before > 0 && after === before && who2 === who && on2, `picked ${who} (${before}) before, ${who2} (${after}) after, switch ${on2 ? 'on' : 'off'}`)
   // switch back off by its words
-  if (phone) await page.touchscreen.tap(box.x + box.width - 12, box.y + box.height / 2); else await page.mouse.click(box.x + box.width - 12, box.y + box.height / 2)
-  await sleep(700)
+  await pressWords()
   // R3 — a placeholder under an event switched off says the event's refusal
   const ph = page.locator('#sbBoard .puck.allavail').filter({ visible: true }).first()
   if (await ph.count()) {
     const row3 = ph.locator('xpath=ancestor::*[.//*[@data-oilitem]][1]')
     const ev = row3.locator('[data-oilitem]').first()
     await ev.scrollIntoViewIfNeeded(); await press(ev); await sleep(600)
-    await clearNote(); await ph.scrollIntoViewIfNeeded(); await press(ph); await sleep(250)
+    await clearNote(); await ph.scrollIntoViewIfNeeded()
+    const s0 = await selCount(page)   // R2's pick may still stand: the tap must change nothing, not clear it
+    await press(ph); await sleep(250)
     const said = (await toast(page))?.text
     await shot('R3-placeholder-event-off')
-    row('R3 placeholder under an event switched off', said === 'This event earns nobody any OIL. Turn the event back on first.' && (await selCount(page)) === 0, said)
+    row('R3 placeholder under an event switched off', said === 'This event earns nobody any OIL. Turn the event back on first.' && (await selCount(page)) === s0, `${said} (picks ${s0} → ${await selCount(page)})`)
     await press(ev); await sleep(600)   // the event back on
   } else row('R3 placeholder under an event switched off', false, 'no ALL AVAIL on the board')
   // R4 — the switch's keyboard ring (PC only): keys onto the switch

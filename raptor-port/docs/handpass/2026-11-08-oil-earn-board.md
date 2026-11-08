@@ -135,6 +135,10 @@ words in every place they are said (now 6 on the board). Checked to exist: all t
 its own. Opened by the host and agreeing with their rows: `w1/W1.1-phone-bar-rest.png`, `w1/W1.2-phone-words-on-now.png`,
 `w1/W1.4-pc-ring.png` (the white ring — the find), `w1/A11-phone-tap-now.png`, `w1/A27-phone-desktop-layout.png`,
 `w2/a1-Ace-oil-phone-phone-note.png`, `w2/s6-allavail-body-pc-pc-note.png`. The drawing check's: §3, GREEN.
+The host's re-walk after the code reads (§11), in `…/host/`, each opened by the host: `R1-sans-tap-switch-on-phone.png` (the note
+for Bolt's SANS card, nobody picked), `R2-words-keep-pick-phone.png` (the switch on by its words, Saber still picked),
+`R3-placeholder-event-off-pc.png` (FAMILY DAY switched off, the placeholder's note, Saber still picked), `R4-switch-ring-pc.png`
+(the cyan ring under the keys); the rest of the folder are the same checks at the other size.
 
 ## 7. The break tests
 
@@ -159,7 +163,14 @@ be full…" after taps outside the mode (W2.8) is the known test-browser fact (`
 
 ## 10. The gate counts
 
-(At the close: GitHub's run on the last pushed commit.)
+- **On his PC, this branch with `main` at `4d5b3828a` merged in (8 Nov 26):** `npm run build` clean, under the checks lock (the
+  build of `7009fe1f2` the host re-walked); the OIL, board, SANS, click and words test files — 86 files, 1794 of 1795 passed: the one
+  failure, the day-dots test "the click after a scrub does not snap back", leans on a real 350 ms window, took 3009 ms in the
+  crowded run and passes alone three times out of three; its code is untouched by this branch — filed,
+  `[BOARDNAV-SCRUB-CLICK-TIMER]`. Before `main` came in: 54 files, 1185 tests green; code check no new finding.
+- **GitHub:** the run on `1a2379e51` green (Secrets scan, Docs guard, the full check — build, the original's 728, unit, browser,
+  the Tracker's, the rule and document checks). The run on the last pushed commit is the job's full check (D1086): read before any
+  merge, and nothing merges unless it is green.
 
 ## 11. What the walk and the reads found, each disposition
 
@@ -170,4 +181,31 @@ layout on a phone, Templates and OIL Earn stand off the right edge — confirmed
 screen), FILED. (W2) A cancelled or ⓘ row with times says "This row gives him no working hours to count OIL from" — as
 ruled (D1783's full row), a finer reason FILED as a question. (W2) the window's faded man: footer, no passing note — as
 built (D65). (W2) an input's ground row cleared of times still earns: its cleared time reads "all day", older, as built.
-**The reads:** (to come — Astra, Sol 6.1, a fresh Opus reader on `e4677d032`, blind to each other and to this sheet.)
+**The reads:** three, on `e4677d032`, each on the same brief (`docs/superpowers/briefs/2026-11-08-oil-earn-board-code-read.md`)
+and blind to the others and to this sheet — Astra (`…-read-astra.md`), Sol 6.1 (`…-read-sol.md`, inside D1743's window) and a
+fresh Opus reader (`…-read-opus.md`). **A limit on their blindness:** Astra and Sol both note that the handoff block the brief has
+them read carried the walk's summaries, so none of the three was wholly blind to the walk.
+- **F1 (all three):** a SANS Avail card's man in OIL Earn — a tap picked him blue and said nothing. Reproduced on the walked
+  build and on `main` (older, inside D1783's promise); FIXED red-first (`8af29de5c`): the card's puck is inert in the mode and
+  says "Nothing changed for <callsign>. A SANS availability request earns no OIL.", under the day's switch too (an inert puck
+  keeps its own reason; the switch's refusal is for a man who could earn); outside the mode the card still opens its editor.
+- **F2 (Opus):** a press on the switch's words also ran the board's blank-space clear — the pick, the search and the highlights
+  dropped. New in this branch; FIXED red-first (`140727d5f`): the app's switch counts as a control there, every other label as
+  before.
+- **F3 (Opus):** a placeholder's body said its people are switched in the window, which is false on a row that cannot earn;
+  FIXED red-first (`410ece316`): no end → D360's words; a request that never asks → its kind's reason; its event switched off →
+  "This event earns nobody any OIL. Turn the event back on first."; otherwise the window sentence (the host's reading 1).
+- **F4 (Opus):** a test that could not fail — it checked the absence of a phrase the app no longer has; FIXED (`8af29de5c`): it
+  checks the old general reason is gone.
+- **F5 (Opus):** a press on the switch that saved nothing would leave the box showing the opposite of the day — not reachable
+  today; FILED, `[OIL-SWITCH-NOSAVE-SHOW]`. **F6 (Opus):** the ALL AVAIL window's foot keeps its older "<callsign> — <reason>"
+  shape — older, his question; FILED, `[OIL-WINDOW-FOOT-SHAPE]`. A tap on a man in the crew list still picks him in the mode —
+  his question; FILED, `[OIL-ROSTER-TAP-SELECTS]`. The tidiness notes (D489): FILED, `[OIL-EARN-BOARD-TIDY]`.
+
+**The host's re-walk of the fixes** (`scripts/handpass/oeb-host-rewalk.mjs`, on the build of `7009fe1f2`, his iPhone's 402 in
+WebKit by touch and his PC's 1536 at 1.25 by mouse and keys; pictures in `…/host/`, §6): R1 the SANS tap, the switch off and on —
+PASS at both sizes; R2 a press on the switch's words keeps the pick (Saber picked before and after, the switch on) — PASS at both;
+R3 a placeholder on a row whose event is switched off — PASS at both; R4 the switch under the keys wears the cyan ring (solid
+2px, 2px out) — PASS (PC). **Calibrated** on the walked build `a827307a5`: all four FAIL there (R2: the pick dropped from 3 to 0),
+so each check can see its fault. The script's first run pressed the switch's words while they were scrolled off screen and
+measured nothing — the script's fault, fixed (it brings the switch into view first). No page or console error on any run.
