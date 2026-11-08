@@ -139,6 +139,7 @@ function DocMark() {
   )
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the tab's three sections, its as-of picker and its room for the input window share one set of state (the as-of date, the picker's month and where it hangs, the card just saved, phone or desktop); its length is mostly the sections' and the picker's plain markup, and split, the same few values would only be passed down
 export function MedicalView({ onClose }: { onClose?: () => void }) {
   useVersion()
   const todayIso = keyToIso(TODAY)
@@ -263,6 +264,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
         {calOpen && <>
           <button type="button" className="med-cal-scrim" aria-label="Close the date picker"
             onClick={() => setCalOpen(false)} />
+          {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the input window and the app's own stacking order, with its own backdrop and focus rules; the as-of picker hangs from its button over its own scrim, layered on purpose */}
           <div className="med-cal" role="dialog" aria-label="Pick the as-of date" style={{ left: calLeft }}>
             <div className="med-cal-head">
               <button type="button" className="abtn" id="medCalPrev" aria-label="Previous month"

@@ -38,8 +38,13 @@ export function TypeLegend({ shut, front }: { shut?: boolean; front?: () => bool
   const box = useRef<any>(null)
   /* THE CARD GIVES WAY TO A QUESTION (Astra's read of the code, 10 Oct 26 — finding 4): Add pressed from the keyboard
      leaves the card open — no press closes it — and the document, OIL, upchit or medical question then stood over the
-     window while the card took the first Escape. */
-  useEffect(() => { if (shut) setOpen(false) }, [shut])
+     window while the card took the first Escape.
+     Closed in the render that sees the question come, not in an effect after it (React Doctor, [RD-LEFT-1108]): React
+     draws again at once with the card shut, before anything reaches the screen. As the effect did, it acts only when
+     `shut` changes — a press while the question stands still opens the card, and once the question goes the card stays
+     shut until pressed. */
+  const [wasShut, setWasShut] = useState(shut)
+  if (shut !== wasShut) { setWasShut(shut); if (shut) setOpen(false) }
   /* mousedown rather than click, for the same reason the date window uses it:
      a click that starts inside and ends outside must not close the popover */
   useEffect(() => {

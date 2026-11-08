@@ -78,7 +78,7 @@
   .intbl thead th:nth-child(4){width:124px}
 }
 @media (min-width:1340px){
-  body:has(.floatwin.inpedwin:not([data-placed])) .in-room .inwrap{padding-right:calc(min(430px, 100vw - 24px) + 16px)}
+  body:has(.floatwin.inpedwin:not([data-placed])) .in-room .inwrap{padding-right:var(--inpwin-room)}   /* the window's own size, 25-inputs-calendar.css */
   body:has(.floatwin.inpedwin:not([data-placed])) .in-room .intbl thead th:nth-child(1){width:110px}
   body:has(.floatwin.inpedwin:not([data-placed])) .in-room .intbl thead th:nth-child(2){width:140px}
   body:has(.floatwin.inpedwin:not([data-placed])) .in-room .intbl thead th:nth-child(3){width:90px}

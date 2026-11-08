@@ -29,7 +29,8 @@ import { CALMONTH } from '../state/view'
 import { FloatWin } from './FloatWindow'
 import { bringForward, openBeside } from './winorder'
 import { SANSSET, setDaysWin, setSansSet } from './pops'
-import { CutFields, cutDraftOf, cutRuleOf } from './CutFields'
+import { CutFields } from './CutFields'
+import { cutDraftOf, cutRuleOf } from './cutdraft'
 import { useVersion } from './useStore'
 
 export function SansSettings() {
