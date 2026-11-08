@@ -148,7 +148,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
-- [TRK-ROUND-SEEN] — two phone covers the plain-user round saw (the marking pop-up and Find over the tabs); the dropdown words closed by his iPhone look (D1564).
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
 - [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's).
 - [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; drawn for him with the Tracker's next batch (D1660).
@@ -330,16 +329,6 @@ The 202 rules after the wrapper's close in the bid sheet's stylesheet (the count
 
 ### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
 **What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.
-
-### [TRK-ROUND-SEEN] Older things the Tracker's plain-user round saw, none caused by the clean-up (2 Nov 26)
-From `raptor-port/docs/handpass/2026-11-02-tracker-user-round.md` (the same on the code before pull request 603): (1) in the iPhone-size
-test browser (WebKit) the bar's dropdowns draw their words cut in half — Chromium draws them whole, so likely the test browser:
-his iPhone look decides (`docs/img/handpass/2026-11-02-tracker-user-round/selects/tracker-bar-webkit.png`); (2) on a phone the marking
-pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it still works and closes); (3) on a phone Find covers those
-tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
-gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
-Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
-**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1790, D1791) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, questions "The Tracker's marking pop-up" ((2)) and "The Tracker's Find ✕" ((3)) (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
 
 ### [TRK-KEPT-COPIES] The Tracker's own copies of the app's glyphs, pencil and colours (filed 5 Nov 26 — the Tracker tidy's read, L2)
 **What:** three things the standalone Tracker carried for itself were kept on purpose by [TRK-STANDALONE-LEFTOVERS], since

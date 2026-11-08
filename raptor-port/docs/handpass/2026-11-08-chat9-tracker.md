@@ -2,6 +2,37 @@
 
 **Walk:** 34 scenarios run (S1-S34), 32 pass, 1 fail, 1 not run (S32's drawing-check specs are the host's and were not written; S3 has a step not reachable and two S3 inner-scroll rows not run, below); 270 pictures; sizes: phone 402x874 touch at 2x, phone on its side 874x402, a PC at 1536x864 (125% scaling), his PC's 1536x730, a narrow desktop 1000x800 with scroll bars, 768x432, 1000x500, 2560x1440; browsers: Chromium (headless, smooth scrolling switched on - headless Chromium otherwise draws every smooth scroll as one jump) and WebKit (his iPhone's engine) for S13, S17, S21, S24, S30 and S33's closes. Build: this branch at d9ff94014 (dist-walk-chat9, port 4297).
 
+## The host's close (8 Nov 26)
+
+**Walk: docs/handpass/2026-11-08-chat9-tracker.md · 270 pictures (+ 4 of the drawing check) · 71 surfaces (the
+roll-call's rows, `docs/superpowers/briefs/2026-11-08-chat9-tracker-scenarios.md` §3) · 34 scenarios at 8 sizes in 2
+engines · MISSING: 12 — 4 fixed (A16 on its side at the chart's end, A26 a press elsewhere during the slide, A27 a
+second press during the slide, A32 the phone turned with the window open), 8 built to the agent's reading and walked
+PASS (A6 S3, A25 S16, A31 S20, A33 S19, A36 S5, A38 S1 / S6, B15 S26, B18 S27), the ones he would meet named at his
+look.**
+
+- **S8's FAIL — reproduced, fixed, pinned.** The host opened `s08-c1.png` (cropped): ACG-09 ringed at the chart's top,
+  the marking window open far below it, over other events — as the walker read it (103px below). Cause: the keys still
+  reached the chart while it slid, so a second Enter or Space opened the window again mid-slide, from where the event
+  stood then — the fresh Opus read's F2. Fixed by `1ef307135` (while the chart slides it takes no tap and no key but
+  Escape and Tab). Pinned in the Tracker's browser suite: S8_PIN_NUMBERS.
+- **S32 — the drawing check, the host's: one difference, made on purpose.** Spec
+  `scripts/drawcheck/specs/chat9-tracker.mjs`; the four drawings recorded from `main` at `6e6c55667`, each replay
+  identical to its approved picture (records `docs/img/handpass/2026-11-08-chat9-tracker/drawcheck-records/`); checked on
+  a build of the code at `1ef307135` (`…/drawcheck/report.md`). 10 parts match: ACG-09 slid to exactly the drawing's
+  place; the tabs; Find put away (the tabs and 🔍 back in place); Restore and its arrow on a desktop and a phone, within
+  1px. The one difference: the marking window's top 6.3px lower than drawn (220.3 against 214) — the drawing's window
+  covered the event's last 2.3px, the build opens it 4px under the event (the notes' "seen while drawing", Q6). Side by
+  side: `…/drawcheck/trkpop-ph--pop.png`. Red until he rules (D1495); put to him with its reason (D1424).
+- **The readers.** Astra (`docs/superpowers/briefs/2026-11-08-chat9-tracker-code-read-astra.md`): three findings, all
+  fixed in `7bdce2a41`. The fresh Opus read (`…-code-read-opus.md`): eight — four the same as Astra's or his pin gaps,
+  F1, F2, F6, F7 fixed in `1ef307135`, F8 (the words "↺ Restore in ⇅ Reorder" in two messages) put to him.
+- **Records from the walk, put to him or named:** S9 (the window neither follows nor closes when the chart is
+  wheel-scrolled under it — as before this change); S14c (a drag during the slide — no longer possible, the chart takes
+  no press while it slides); S30 (Restore's keyboard ring is the browser's own, as before — the app's cyan ring is
+  another job's); S31 (the two messages' typed marks, F8); S33 (i) (Last Flown (Syllabus) read "Pick a date" after a DCO
+  — not this job's, named as seen in passing, D123).
+
 Row verdicts are per step; a scenario is FAIL if any step failed. RECORD rows are measurements for the host to read, not verdicts. Pictures are in `raptor-port/docs/img/handpass/2026-11-08-chat9-tracker/` (2x; on a phone, one right after each tap and a settled one).
 
 ## The fails

@@ -7999,3 +7999,17 @@ scenario 7, Opus 10) — re-read today on the page's next show or a timer at mid
 closed landing** reads "That lands outside what you can edit — pick another day." — true but vague; "That day is closed
 for bidding. Pick an open day." (Opus, words read cold). **Place:** with the Leave War's next batch, each small — M2 went live on 23 Oct 26 without (1), (2) and (4), so M3.
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([TRK-ROUND-SEEN]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [TRK-ROUND-SEEN] Older things the Tracker's plain-user round saw, none caused by the clean-up (2 Nov 26)
+From `raptor-port/docs/handpass/2026-11-02-tracker-user-round.md` (the same on the code before pull request 603): (1) in the iPhone-size
+test browser (WebKit) the bar's dropdowns draw their words cut in half — Chromium draws them whole, so likely the test browser:
+his iPhone look decides (`docs/img/handpass/2026-11-02-tracker-user-round/selects/tracker-bar-webkit.png`); (2) on a phone the marking
+pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it still works and closes); (3) on a phone Find covers those
+tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
+gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
+Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1790, D1791) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, questions "The Tracker's marking pop-up" ((2)) and "The Tracker's Find ✕" ((3)) (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+**BUILT 8 Nov 26 on `claude/pr-tracker-787259` (chat 9, the plan's group 7):** (2) D1790 — where the window would not fit under the event, the chart slides the event up under the tabs (to the drawing's place) and the window opens whole under it; at the chart's end it opens above the event, nothing moving; (3) D1791 — on a phone Find's ✕ empties the box and puts Find away, a pick puts it away too. Walked (`raptor-port/docs/handpass/2026-11-08-chat9-tracker.md`), read by Astra and a fresh Opus reader, the drawing check one difference made on purpose (the window 4px under the event) — put to him at his look. How each now behaves: `raptor-port/docs/ui-contracts.md` §The pictures round's answers and §The Tracker tab (Find).
+

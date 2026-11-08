@@ -4061,3 +4061,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The new ruling changed one reviewer's role. Rewriting each line about "the reviewers", the writer re-stated the safeguards for the named reviewer only — "a job he could not read goes on the owed list" — and silently dropped the same safeguard for the other, unchanged one; it also left lines elsewhere that still described the old arrangement as current. Both blind readers caught it, in five files.
 **Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
 **Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
+
+### Observation 866: A helper's "the code is unchanged since commit X" must be checked before its build label is believed
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 9, the Tracker's group 7 — the drawing check run by a background helper while the host fixed the readers' findings (numbered past 865, the highest on any branch)
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** taking a helper's result — what build it measured
+
+**Issue:** The drawing-check helper labelled its measured build "the branch at 7d750640e" and wrote that the app's code was unchanged between that commit and the tip, so it built from the working folder. Two commits since had changed the code, and the host's fixes were landing in the same folder while it built; its build matched neither commit. The numbers happened to hold (the fixes did not move what it measured), but the label was false. Separately, the check script can measure only a part that is drawn, so a part meant to be gone on both sides read as a red "not found".
+**Suggested improvement:** In the step that takes a helper's result: when a helper names the commit it measured, run `git diff --stat <its commit> HEAD -- <code folder>` and compare the build's time with the commits' times before quoting it; where the code moved under it, re-run the cheap part (build + check) on a fixed commit. In a helper's brief for any check that builds: "build from a named commit (a `git worktree` or `git archive`), never from the live folder while the host is editing".
+**Principle:** A measurement is only as good as the label on what was measured; a helper working beside an editing host must pin its input to a commit, and the host verifies the pin rather than the helper's word.
