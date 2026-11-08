@@ -155,6 +155,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
 - [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's). BUILT 8 Nov 26 (chat 20, PR #696) but the magnifier, put to him.
 - [TRK-MARKS-LEFT] — typed marks still in four Tracker messages and hints, and the Tracker's Export / Import drawings unlike Admin's; for the consistency look (found by chat 20).
+- [TRK-MENU-KEYS] — the Tracker's course, syllabus and File menus wear the browser's white keyboard ring, not the app's cyan, and the arrow keys do not move through them, unlike the board's menus (found by chat 20's walk).
 - [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; drawn for him with the Tracker's next batch (D1660).
 - [TRK-POP-ASKED] — drop the typed ↺ and ⇅ marks in two Tracker messages (D1860, answered 8 Nov 26); built with the Tracker's next batch.
 - *(The Tracker's database-step items are in that group below.)*
@@ -373,6 +374,15 @@ a ✎ in help text stays (D1134). Separately, the Tracker's Export and Import dr
 download and upload marks Admin and the input window wear. **The case to put to him:** the same treatment as D1860 (the
 words alone) for the four messages, and whether the Tracker's two marks should match Admin's — with pictures, in a
 consistency-look round. Not asked yet (D994). **Place:** low, with the Tracker's next batch or the consistency look.
+
+### [TRK-MENU-KEYS] The Tracker's menus under the keys (filed 8 Nov 26 — chat 20)
+**What:** chat 20's walk pressed the Tracker's course, syllabus and File menus with the keyboard on a desktop: a row with
+the keys on it wears the browser's own white rounded ring, not the app's cyan keyboard ring, and the down arrow does not
+move to the next row — only Tab does. The board's ⋯ menus have both (D1646 the arrows, D1771 the cyan ring); D1706 gave
+the Tracker's menus the board's look but said nothing of the keys. Not caused by chat 20's change (the menus' code was not
+touched). Pictures: `raptor-port/docs/img/handpass/2026-11-08-chat20-tracker/walk/s4-desktop-*-keyboard-crop.png`.
+**The case to put to him:** the same keys and ring as the board's menus, with a picture. Not asked yet (D994).
+**Place:** low, with the Tracker's next batch or the consistency look.
 
 ### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
 **What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
