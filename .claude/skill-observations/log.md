@@ -4503,3 +4503,16 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** A walker noted that an admin's bell read "Nothing new" after an access request, on both builds. The handoff carried it forward as a fault "to reproduce and file". Read against the ruling, the behaviour was exactly as ruled: each admin's bell goes out once he has had the waiting list on screen, and the walker's admin had opened that list first. A two-minute script on a fresh request showed the bell lit and its tap opening the list.
 **Suggested improvement:** Before a side note enters a handoff or the backlog as a fault, check it against the area's rulings for that subject and, where they allow it, reproduce it with the precondition that would make it right; the handoff names it "to check" until then, never "to file".
 **Principle:** A walker sees behaviour, not intent; a side note is a question until it is read against the rules that govern it.
+
+### Observation 901: Two reviewers flag one clash and propose opposite fixes — the host decides by the project's conflict rule before the fixer starts
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 34, the rules diet's step 5a — the Tracker's rulings as a page, two blind reads (numbered past 900, the highest on any branch)
+**Skill:** receiving-code-review
+**Type:** open-source
+**Phase/Area:** acting on reviewers' findings — before handing fixes to a helper
+
+**Issue:** Both blind readers' first finding was the same clash (a later decision's rule sentence says every student is on the roster; an earlier one, still built, adds typed students). One proposed marking the earlier decision superseded; the other read the later decision's own interpretation as narrower and proposed putting the question to the owner. Handing both reports to a fix helper as they stood would have let it pick either fix.
+**Suggested improvement:** In "receiving-code-review", add a step: where two reviewers' fixes for one finding disagree, the host settles it first by the project's own conflict rule (here: the newer instruction wins only where it clearly covers the case, otherwise it goes to the owner) and writes that decision into the fixer's brief.
+**Principle:** Agreement on a finding is not agreement on its fix; the coordinator resolves divergent fixes by an explicit rule before delegating, never by letting the implementer choose.
