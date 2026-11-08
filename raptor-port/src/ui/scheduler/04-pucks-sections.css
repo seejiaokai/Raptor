@@ -646,8 +646,15 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    its seats reuse the generic .seat[data-alc]/[data-aln] rules.) */
 #schedBoard :is(input,textarea)[data-alc]{outline:1px solid var(--alc);outline-offset:-1px}
 #eWeek :is(span,b,i,div)[data-aln]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes),
-#schedBoard :is(span,b,i,div)[data-aln]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell){
+#eWeek button.inpedit[data-aln],
+#schedBoard :is(span,b,i,div)[data-aln]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.sbi-ty){
   text-decoration:underline dotted var(--alc);text-decoration-thickness:1px;text-underline-offset:2px}
+/* AN UNAVAILABLE ROW WAITING TO GO OUT (owner D1784, 8 Nov 26 — "the same waiting mark on its Unavailable row as on a
+   Ground Programme row"): on the week its name — the input's button — is underlined dotted as any waiting text is (the
+   rule above); on the board its name box, the type pill, is outlined dotted as a Ground Programme box is, the pill
+   keeping its own tint and border (10-board-history.css .sbi-ty.ty-*), read-only or not — so `.sbi-ty` is out of the
+   underline rule above. Never over the keyboard's ring (14-input-editors.css .inpedit:focus-visible). */
+#schedBoard .sbi-ty[data-aln]:not(:focus-visible){outline:1px dotted var(--alc);outline-offset:-1px}
 /* every OTHER inline-edited string (timings, labels, remarks, notes, list-row
    fields): once PUBLISHED, the mark rides on the text itself — underlined in
    the AL colour with a trailing ALn tag. Pending edits show no text-level

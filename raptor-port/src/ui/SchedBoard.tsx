@@ -20,6 +20,7 @@ import { verSeq } from '../engine/verid'
 import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
+import { glyphSvg, EYE_INNER } from './glyphs'
 import { holdingPlace } from './dayswap'
 import { useSheetFocus, useEscClose, locate, pressedByKeys, menuItems } from './sheetfocus'
 import { wireBoardEscape } from './boardescape'
@@ -481,9 +482,10 @@ export function SchedBoard() {
         `<div class="dprev-bar"${(!pvd && verSeq(ver) !== 0) ? ` style="--alc:${alColor(verSeq(ver))}"` : ''}>`
         + `<button class="dbeak dprev-back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`
         + (pvd
-          ? `👁 Viewing plan <b>${esc(draftVerLabel(di, ver))}</b> — read-only. Switch to it to make it your working copy.`
+          /* the look's eye is the app's drawn line eye, as the week's banner and the selector wear it (D1792 (a)) */
+          ? `${glyphSvg(EYE_INNER, 'pveye')} Viewing plan <b>${esc(draftVerLabel(di, ver))}</b> — read-only. Switch to it to make it your working copy.`
             + `<button class="dbeak dprev-switch" data-draftgo="${di}" data-draftid="${esc(String(ver).slice(2))}" title="Make this plan your live working copy — your current one is stowed under its own name">Switch to this plan</button>`
-          : `👁 Viewing the issued <b>${esc(draftVerLabel(di, ver))}</b> — read-only. This is what was sent out; it never changes.`
+          : `${glyphSvg(EYE_INNER, 'pveye')} Viewing the issued <b>${esc(draftVerLabel(di, ver))}</b> — read-only. This is what was sent out; it never changes.`
             + (armed
               ? `<button class="dbeak dprev-restore warn" data-restore="${di}" data-rver="${ver}" title="This discards your ${pend} unpublished edit${pend === 1 ? '' : 's'} on the working copy — the issued versions stay unchanged">Discard ${pend} edit${pend === 1 ? '' : 's'} &amp; load — confirm</button><button class="dbeak ro dprev-cancel" data-restcancel="${di}" title="Keep your current working copy">Keep editing</button>`
               : `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${ver}" title="Load this issued version onto your working copy to edit — nothing is published until you Publish AL, and the issued versions stay unchanged">Load onto working copy</button>`))

@@ -20,6 +20,7 @@ import { setDayPreview, DPREV, VWORK, setPage, setRestArm } from '../state/view'
 import { setSession } from '../state/auth'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { PIOPEN } from '../state/view'
+import { glyphSvg, EYE_INNER } from './glyphs'
 
 
 let w: any
@@ -657,9 +658,12 @@ describe('version dropdown and preview build', () => {
     const orig = SCHED.orig[0].id            // Phase 2: the Original's immutable verId
     txtSet('dn:0.0', 'LIVE CHANGE'); sgn(0); alIssue(0)
     setDayPreview(0, orig)
-    const h = dayHTML(0, true, true)          // previewing → the selector goes amber "👁 …"
+    const h = dayHTML(0, true, true)          // previewing → the selector goes amber, the app's line eye before the version
     expect(h).toContain('planselbtn pv')
-    expect(h).toContain('👁')
+    /* D1792 (a), 8 Nov 26: the eye is the wave templates window's drawn line eye, never the typed 👁 (an iPhone draws
+       that as a coloured emoji) */
+    expect(h).toContain(`<span class="psl">${glyphSvg(EYE_INNER, 'pveye')} Original</span>`)
+    expect(h).not.toContain('👁')
     setDayPreview(0, null)
   })
 
@@ -972,14 +976,32 @@ describe('a quarantined week surfaces the notice on the week AND the board (Q2R-
      unapproved days and the scheduler board all fell through to the ordinary
      builders and painted the seed as if it were the schedule. The check now sits
      in dayHTML (view + edit) and boardHTML (the board), the shared builders. */
-  it('dayHTML and boardHTML both show the unavailable notice for a preserved week', () => {
+  /* D1785, 8 Nov 26: the preserved blob here ('x') is a saved copy that will not read as a week, so since then the
+     notice says THAT — on every day, on the edit week, the view week, the issued face and the board — and keeps the
+     older version's words for a week an older version did publish (the second case) */
+  const UNREADABLE = 'This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.'
+  it('dayHTML and boardHTML both show the unavailable notice for a preserved week — a saved copy that will not read says so, on every day', () => {
     setPreservedBlob(CURWEEK, 'x')     // force the loaded week read-only (isPreservedWeek → protectedWeek)
     try {
       expect(protectedWeek(), 'the loaded week is read-only').toBe(true)
-      expect(dayHTML(0, true), 'the edit week surfaces the notice').toContain('older version of the app')
-      expect(dayHTML(0, false), 'the view week too').toContain('older version of the app')
-      expect(boardHTML(0), 'and the scheduler board').toContain('older version of the app')
+      DAYS.forEach((_: any, di: number) => {
+        for (const [where, h] of [['the edit week', dayHTML(di, true)], ['the view week', dayHTML(di, false)], ['the issued face', dayIssuedHTML(di)], ['the scheduler board', boardHTML(di)]] as [string, string][]) {
+          expect(h, `${where}, day ${di}`).toContain(UNREADABLE)
+          expect(h, `${where}, day ${di}: never the older version's words`).not.toContain('older version of the app')
+        }
+      })
     } finally { clearPreservedBlob(CURWEEK) }
+  })
+  it('a week an older version of the app published keeps its own notice (D1785 changes only the unreadable case)', () => {
+    const amV = SCHED.amV, cur = SCHED.cur
+    SCHED.amV = undefined; SCHED.cur = { ...(SCHED.cur || {}), 0: SCHED.cur?.[0] ?? 'orig' }   // a pre-Phase-2 book → read-only
+    try {
+      expect(protectedWeek(), 'the loaded week is read-only').toBe(true)
+      for (const h of [dayHTML(0, true), dayHTML(0, false), dayIssuedHTML(0), boardHTML(0)]) {
+        expect(h).toContain('older version of the app')
+        expect(h).not.toContain(UNREADABLE)
+      }
+    } finally { SCHED.amV = amV; SCHED.cur = cur }
   })
 })
 

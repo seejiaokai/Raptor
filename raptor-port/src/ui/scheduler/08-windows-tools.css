@@ -332,6 +332,11 @@
 .dwlist .witem.hid>span:not(.wbar){color:var(--ink-3);text-decoration:line-through;text-decoration-color:var(--ink-3)}
 .dwlist .witem.hid b,.dwlist .witem.hid .wcode{color:var(--ink-3)}
 .dwlist .witem.hid .witem-mute{opacity:.9;color:var(--ink-2);font-size:14px;background:rgba(255,255,255,.07)}
+/* THE FLAG-AGAIN ARROW (owner D1792 (d), 8 Nov 26 — "All as recommended"): a hidden line's typed arrow becomes the app's
+   drawn Reset arrow (ui/glyphs.ts RESET_INNER — "put back", as on the Leave War's Reset order), 13px, in the button's own
+   colour, on Edit Schedule's list and the board's (whose .wln-mute recipe lives in 10-board-history.css; this rule sits
+   here, beside the week's, so both lists draw it alike). The ✕ that hides a line stays typed. */
+.wmuteico{display:inline-block;width:13px;height:13px;vertical-align:-2px}
 /* every issue of the day hidden (D472, D475): the bar stays so the list can be reached, quiet, saying "✓ No issues" */
 .daywarn.calm{background:var(--panel-2);border-color:var(--edge);color:var(--ink-2)}
 .dwclear{margin-top:1px;background:transparent;border:1px dashed var(--edge-2);color:var(--ink-3);

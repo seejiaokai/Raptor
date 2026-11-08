@@ -1,0 +1,148 @@
+{
+ "state": "unav-week-phone",
+ "drawing": {
+  "script": "scripts/handpass/pr-sched.mjs",
+  "shot": "q-unavmark-ph-unav-A"
+ },
+ "recorded": "2026-11-08T05:06:29.413Z",
+ "drawnOn": "main at 6e6c55667",
+ "checkout": "9fc5961d9",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 2294
+ },
+ "parts": {
+  "sec": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 11,
+    "y": 375.2,
+    "w": 356,
+    "h": 267.1
+   },
+   "ink": {
+    "x": 26,
+    "y": 378.2,
+    "w": 334.7,
+    "h": 246.1
+   },
+   "text": "⠿ Unavailable Name Start People Rmks LL C Bolt C LATE till 15 Jul OL Cobra IP Overseas leave — off island till 15 Jul ATT C Grit C Medically down till 17 Jul OD C Nomad C Overseas duty — exercise, off island till 17 Jul Reject OIL C Gambit C till 15 Jul",
+   "typed": false,
+   "look": {
+    "fill": "rgba(240, 85, 95, 0.055)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "3px solid rgb(240, 85, 95)"
+    ],
+    "corners": [
+     "0px",
+     "9px",
+     "9px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.sub.plist.one.sec"
+  },
+  "row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 20,
+    "y": 417.2,
+    "w": 347,
+    "h": 40
+   },
+   "ink": {
+    "x": 26,
+    "y": 422.9,
+    "w": 292.4,
+    "h": 23.3
+   },
+   "text": "LL C Bolt C LATE till 15 Jul",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(255, 255, 255, 0.03)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.pl-row"
+  },
+  "name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 26,
+    "y": 425.2,
+    "w": 132,
+    "h": 13.8
+   },
+   "ink": {
+    "x": 26,
+    "y": 424.2,
+    "w": 10.2,
+    "h": 15
+   },
+   "text": "LL",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "button.ntx.inpedit.zz-tagged"
+  }
+ },
+ "approved": {
+  "picture": "q-unavmark-ph-unav-A.png",
+  "identical": true
+ }
+}

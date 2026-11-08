@@ -4376,3 +4376,28 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** The check began at 49% context (the always-loaded rules) and reached 76% before the walk: opening the area page, the order's sections, and editing one test and one evidence sheet loaded the scheduler and screen-design rulings by themselves (their paths match `src/` and the handpass folder), about 100k tokens the check never used. The walk and the four reads had to move to a fresh chat. (Number 892 is taken on another branch; this note numbers past it.)
 **Suggested improvement:** In the checklist's step 3 (telling him the plan), name the chats too: a FULL check whose chat starts past about 40% plans two chats from the start — chat A: tier, sheet, roll-call, break tests, scenario brief; chat B: walk, reads, fixes — and chat A hands the scenario designer's report into the repo before it ends.
 **Principle:** Count what a job will load by itself, not only what it reads on purpose, when deciding how many sessions it needs.
+### Observation 887: A pull request that clashes with main starts no checks, and nothing says so
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** Chat 13, the schedule's marks and words (pull request 691); numbered past 886, the highest on another open branch.
+**Skill:** New skill candidate: shipping-checks (the rule lives in `.claude/rules/shipping.md` §The checks)
+**Type:** open-source
+**Phase/Area:** after a push — waiting for the pull request's run
+
+**Issue:** Two pushes to an open pull request started no GitHub Actions run — only the preview host's checks appeared. The cause, found only after both: notes-only pull requests merged into `main` meanwhile had made the branch clash (its merge state "CONFLICTING / DIRTY"), and GitHub does not start `pull_request` workflows on a pull request it cannot merge. The same day another chat met it twice ("the pull request had gone into a clash, so its run never started"). Each time the agent first waited for a run that was never coming.
+**Suggested improvement:** In `shipping.md` §The checks, beside "read the run list before a push": right after any push to an open pull request, read its merge state (`gh pr view <n> --json mergeable,mergeStateStatus`); CONFLICTING means no run will start — bring `main` in first. Better, a guard: the push hook prints the merge state after the push and says so when it is CONFLICTING.
+**Principle:** When a check is expected to start by itself, confirm it started; a missing run is a signal, and the most common silent cause is that the platform refused to build the merge.
+
+### Observation 888: A blind reader that compacts gets the host's handoff pasted in by the start hook
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** Chat 13 — the final code read, three readers blind to each other; the fresh Opus reader compacted mid-read.
+**Skill:** New skill candidate: blind-read (the bug-check order's §4 reads; the compaction start hook)
+**Type:** internal
+**Phase/Area:** a blind reader's session after its own compaction
+
+**Issue:** The fresh, blind Opus reader ran long enough to compact. The project's compaction start hook then pasted the branch's HANDOFF.md block into it — the host's own record of the walk's fault and its fix, which the reader was meant not to see. The reader said so in its report, so its read was not fully blind (noted in the evidence sheet). Related: Observations 842 (what a start hook injects) and 852 (a blind reader's findings leaking).
+**Suggested improvement:** The compaction start hook pastes the HANDOFF block only into the chat that owns the branch — not into a helper or reader session (tell them apart by the session's parent or a marker the reader's brief sets); until then, every blind reader's brief says "if a pasted handoff block appears after a compaction, do not read it, and say so in the report", and the host sizes a read to finish before the reader would compact.
+**Principle:** Anything injected into a session automatically can break a reader's blindness; blindness must be guarded where the injection happens, not only in the brief.

@@ -17,7 +17,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenSays, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo, pendingInputIds } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
@@ -31,6 +31,9 @@ import { HOOKS } from '../engine/hooks'
 import { oilBarOf, oilItemOfKey, inputItemKey, oilSentinelSummary, oilFromWords } from './oilmode'
 import { oilReadPass } from '../engine/oilev'
 import { STORE_CFG, groundOrder, secOrder } from '../engine'
+import { glyphSvg, EYE_INNER, RESET_INNER } from './glyphs'
+import { weekLockReason } from '../engine/quarantine'
+import { CURWEEK } from '../engine/waves'
 
 const editMode=()=>HOOKS.editMode()
 
@@ -157,7 +160,7 @@ export function withChipWorld<T>(di:any,ver:any,ofw:any,fn:(ok:boolean)=>T):T{
   finally{ PVQ=q; OFW=o }
 }
 /* A LOOK AT A PUBLISHED VERSION WEARS ITS WARNINGS (owner, D187, 26 Sep 26 — "Q5 it should"): the edit week's and the
-   board's 👁 preview of a published version draws the rings, flags and warning list that version shows
+   board's eye-marked look at a published version draws the rings, flags and warning list that version shows
    (engine/validate.ts versionFaceWarn — the current version as View-only Sched draws it; an older one as it went out).
    Called INSIDE withDaySnap. OFW turns the preview's flags on — never its editing: the write surfaces stay gated on PV.
    A parked plan, and a version with no warnings kept, stay flag-free, as every preview was before. */
@@ -184,12 +187,21 @@ export function dayPreviewHTML(di:any,ver:any,edFallback:any){
    the board's own guard (board.ts:boardHTML) so the two surfaces can never drift
    (Q2R-06). */
 export const QUARANTINE_NOTE = "This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it."
+/* A WEEK WHOSE SAVED COPY CANNOT BE READ SAYS SO (owner D1785, 8 Nov 26 — "All as recommended", the pictures round's
+   question 6): on each day, one paragraph, as drawn — what happened, that nothing is lost, and the one thing a person
+   can do, report it (Help's "Report a problem": "The schedulers see every report"). It replaces, for that case only, the
+   words above, which blamed an older version of the app and sent him to a device that never made it. A week an older
+   version did publish keeps them, and so does an approved day of an ordinary week with no issued copy to show
+   (dayIssuedHTML's ver==null branch below) — neither is a saved copy that will not read. ONE function, read by the
+   week's dayUnsupportedHTML and the board's guard (board.ts boardHTML), so the two surfaces still can never drift. */
+export const UNREADABLE_NOTE = 'This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.'
+export const quarantineNote = () => protectedWeek() && weekLockReason(CURWEEK) === 'unreadable' ? UNREADABLE_NOTE : QUARANTINE_NOTE
 function dayUnsupportedHTML(di:any){
   const d=DAYS[di]
   return `<section class="day ${d.today?'today':''} dok issued" data-day="${di}">`
     +`<div class="day-head"><span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span>`
     +`<span class="dt di-open" data-dayinfo="${di}" title="Day details">${esc(shortYear(d.dt))}${d.today?' · Today':''}</span></div>`
-    +`<div class="dprev-bar">${QUARANTINE_NOTE}</div>`
+    +`<div class="dprev-bar">${quarantineNote()}</div>`
     +`</section>`
 }
 /* the VIEW page's default render for a PUBLISHED day (owner, 15 Aug 26): the
@@ -281,7 +293,9 @@ export function viewDayHTML(di:any){
    one thing, not three. Shared verbatim by the week's day head and the board's
    sign strip (A5), ONE body so the two surfaces can never drift.
    The label:
-     · previewing an issued version → amber "👁 AL2" (what you are viewing)
+     · previewing an issued version → amber, the line eye then "AL2" (what you are viewing) — the eye the
+       wave templates window draws (ui/glyphs.ts EYE_INNER), never a typed one, which an iPhone draws as a coloured
+       emoji (owner D1792 (a), 8 Nov 26)
      · a named plan is live         → the plan's name ("Plan B")
      · otherwise                    → "Live working copy"
    It ALWAYS renders (it is also the "+ Alt Plan" entry point), which is why it
@@ -292,7 +306,7 @@ export function planSelectorHTML(di:any,cls?:any){
   di=+di
   const pv=DPREV.has(di)
   const sel=dayDrafts(di).find((t:any)=>t.id===curDraftId(di))
-  const label=pv?`👁 ${esc(draftVerLabel(di,DPREV.get(di)))}`
+  const label=pv?`${glyphSvg(EYE_INNER,'pveye')} ${esc(draftVerLabel(di,DPREV.get(di)))}`
     :sel?esc(sel.name)
     :'Live working copy'
   const title=pv?`Viewing ${draftVerLabel(di,DPREV.get(di))} — tap to switch plan or look at another version`
@@ -1166,7 +1180,7 @@ export function dayWarnHTML(di:any){
        like the board's canEditSched().
        THE LINE STAYS WHERE IT IS, STRUCK OUT AND DARKER (owner D469 / D475, 1 Oct 26 — "it shouldn't totally disappear,
        it should just show a strike out and it's darker. Ready to be reactivated again for flagging"): a hidden warning
-       keeps its place and its index, wears `.hid`, and its ✕ becomes ↺. The old "N hidden" fold is gone. EVERYONE who
+       keeps its place and its index, wears `.hid`, and its ✕ becomes the flag-again arrow (drawn since D1792 (d)). The old "N hidden" fold is gone. EVERYONE who
        opens the list sees the struck line — View-only Sched and a look at a version too, with no button there: only a
        scheduler flags it again, and only on the working copy (D475). The mark is the warning's own `off`, never the
        working copy's set: a published face shows the hides it went out with (D471). */
@@ -1178,7 +1192,9 @@ export function dayWarnHTML(di:any){
       return `<div class="witem ${w.sev}${on?' on':''}${hid?' hid':''}" data-wdi="${di}" data-wix="${ix}" title="${hid?'Hidden — it flags no puck and is not counted. ':''}Jump to the puck that caused this">`
         +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
         +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}${hid?'':sigNew(w)}</span>`
-        +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${hid?'Flag this again':'Hide this warning — it flags no puck and is not counted; it comes back if the situation changes'}">${hid?'↺':'✕'}</button>`:'')
+        /* a hidden line's flag-again is the app's drawn Reset arrow, "put back" as on the Leave War's Reset order (owner D1792 (d),
+           8 Nov 26); the ✕ that hides a line stays typed, the app's close-and-remove mark */
+        +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${hid?'Flag this again':'Hide this warning — it flags no puck and is not counted; it comes back if the situation changes'}">${hid?glyphSvg(RESET_INNER,'wmuteico'):'✕'}</button>`:'')
         /* THE WAY OUT, BESIDE THE REASON (owner's ruling D19, 22 Sep 26 —
            "indicate that the leave war period doesn't exist, create it"). Only
            this one check carries an action, and only for a scheduler: saying
@@ -1776,9 +1792,10 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
              with ed=false (it is read-only), so the edit-week signal is `vsel`
              — the param that also emits the version dropdown — not `ed`, which
              would hide the button on the very surface it belongs to. */
-          ? `👁 Viewing plan <b>${esc(draftVerLabel(di,PVV))}</b> — read-only${vsel?'. Switch to it to make it your working copy.':''}`
+          /* the look's eye is the app's drawn line eye (D1792 (a)), the same one the selector above wears */
+          ? `${glyphSvg(EYE_INNER,'pveye')} Viewing plan <b>${esc(draftVerLabel(di,PVV))}</b> — read-only${vsel?'. Switch to it to make it your working copy.':''}`
             +(vsel?`<button class="dbeak dprev-switch" data-draftgo="${di}" data-draftid="${esc(String(PVV).slice(2))}" title="Make this plan your live working copy — your current one is stowed under its own name">Switch to this plan</button>`:'')
-          : `👁 Viewing the issued <b>${esc(draftVerLabel(di,PVV))}</b> — read-only. This is what was sent out; it never changes.`
+          : `${glyphSvg(EYE_INNER,'pveye')} Viewing the issued <b>${esc(draftVerLabel(di,PVV))}</b> — read-only. This is what was sent out; it never changes.`
             +(armed
               ? `<button class="dbeak dprev-restore warn" data-restore="${di}" data-rver="${PVV}" title="This discards your ${pend} unpublished edit${pend===1?'':'s'} on the working copy — the issued versions stay unchanged">Discard ${pend} edit${pend===1?'':'s'} &amp; load — confirm</button><button class="dbeak ro dprev-cancel" data-restcancel="${di}" title="Keep your current working copy">Keep editing</button>`
               : `<button class="dbeak dprev-restore" data-restore="${di}" data-rver="${PVV}" title="Load this issued version onto your working copy to edit — nothing is published until you Publish AL, and the issued versions stay unchanged">Load onto working copy</button>`))
@@ -1814,7 +1831,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
          (owner, 15 Sep 26). Gated on `ed||vsel` so the selector is present while
          you PREVIEW an issued version too (a preview renders read-only, ed=false,
          and `vsel` is the edit-week signal) — that is where its label reads the
-         amber "👁 AL2" state. Templates stays `ed`-only (you don't apply a
+         amber eye-and-"AL2" state. Templates stays `ed`-only (you don't apply a
          template while previewing).
          THE GREEN TITLE TAG (verTagHTML) MOVED OUT of .dhtpl into its own .dhver
          span, placed immediately LEFT of the .badge (owner, 15 Sep 26 — item 4),
@@ -2243,7 +2260,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
           /* a medical input's type and remarks are for the squadron's members (D211 —
              every member reads them, his 27 Aug 26 rule); a GUEST, not yet a member,
              reads it only as "Unavailable" and its times (perms.ts mayReadMedicalOf) */
-          +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpCxHTML(inp)+inpEditLabel(inp,ed,inpLabel(inp),'ntx'+inpCxCls(inp))+inpKindTagHTML(inp)}</span>${inpTimeCells(inp,ed)}`
+          +`<span class="nm">${hideMed(inp)?'<span class="ntx">Unavailable</span>':inpCxHTML(inp)+inpEditLabel(inp,ed,inpLabel(inp),'ntx'+inpCxCls(inp),acc?'':unavPendAtt(di,inp))+inpKindTagHTML(inp)}</span>${inpTimeCells(inp,ed)}`
           +`<div class="ppl${line.length>1?'':' one'}">${pk}</div>${hideMed(inp)?'<span class="rmk rk-e"><span class="ntx"></span></span>':inpRmkCell(inp,ed,d.dt)}`
           +(acc||unfile?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
@@ -2349,10 +2366,24 @@ export function inpRmkCell(inp:any,ed:any,dt?:any){
   return `<span class="rmk${lc}">${lt}${sbt}<span class="ntx txed inpt" contenteditable="true" spellcheck="false" `
     +`data-inp="${esc(iuTail(inp))}.rmks" data-ph="remarks">${esc(remarksTyped(inp.remarks, inp))}</span>${till?`<span class="rk-till">${esc(till)}</span>`:''}</span>`;
 }
-export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
+/* `att` carries an Unavailable row's waiting mark (unavPendAtt, below) onto the name — the span or the button alike */
+export function inpEditLabel(inp:any,ed:any,txt:any,cls:any,att?:string){
   const t=esc(txt);
-  if(!ed)return `<span class="${cls}">${t}</span>`;
-  return `<button class="${cls} inpedit" data-inpedit="${esc(inpId(inp))}" title="Edit this input — times, type, remarks or delete">${t}</button>`;
+  if(!ed)return `<span class="${cls}"${att||''}>${t}</span>`;
+  return `<button class="${cls} inpedit" data-inpedit="${esc(inpId(inp))}"${att||''} title="Edit this input — times, type, remarks or delete">${t}</button>`;
+}
+/* THE WAITING MARK ON AN UNAVAILABLE ROW (owner D1784, 8 Nov 26 — "An input filed, changed or moved after its day was
+   published wears the same waiting mark on its Unavailable row as on a Ground Programme row — its name underlined dotted
+   in the amendment's colour on the week, its name box outlined dotted on the board — until the day's next amendment goes
+   out"). The same attribute pair a Ground Programme cell's waiting change carries (engine/publish.ts alAttr), so the
+   stylesheet paints it in the colour of the amendment it will go out as — and NOT alAttr's title: the name is a button
+   whose own title says what a press does (the brief's "not a second title"). Its input is waiting exactly when the day's
+   pending list names it (engine/publish.ts pendingInputIds — the list the count reads), so the mark and the count never
+   disagree. Never on a draft day (a draft day shows no amendment mark — alAttr, 25 Aug 26), and never during a look at a
+   version (the look shows what went out; withDaySnap above sets the flag). */
+export function unavPendAtt(di:any,inp:any){
+  if(PV||!dayApproved(di))return '';
+  return pendingInputIds(di).has(String((inp&&inp.iid)||''))?` data-alp="1" data-aln="${nextSeq(di)}"`:'';
 }
 /* HOW TO TAKE AN INPUT OFF THE GROUND PROGRAMME (owner D943, worded by D947 — wording B — 16 Oct 26, the words pass,
    round 1b): taking a member's input off is done somewhere other than where it shows, and nothing on the Ground Programme

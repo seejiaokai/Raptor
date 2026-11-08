@@ -1,0 +1,369 @@
+{
+ "publish": {
+  "published": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "clean": {
+  "pending": "5 changes",
+  "week": [
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": null
+ },
+ "fileShared": {
+  "iid": "imriimpyfz3n6yc",
+  "type": "Other",
+  "who": [
+   {
+    "p": "yeti",
+    "by": "stiff",
+    "at": 1783904417511
+   },
+   {
+    "p": "salsa",
+    "by": "stiff",
+    "at": 1783904417511
+   }
+  ]
+ },
+ "filed": {
+  "pending": "1 pending",
+  "week": [
+   {
+    "name": "Other",
+    "who": "CBoltC",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "SaintB",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": "⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 6 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Other · 2 people Saber 13/7 09:00 Bolt, Saint not on the programme → under Unavailable Tap a change to go to it."
+ },
+ "filed.board": {
+  "sbPending": null,
+  "rows": [
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "CBoltC",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "SaintB",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CobraIP",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "cls": "sbi-ty inpty ty-dn inpedit",
+    "who": "GritC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "cls": "sbi-ty inpty ty-dt inpedit",
+    "who": "CNomadC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CGambitC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   }
+  ]
+ },
+ "editRemarks": {
+  "pending": "1 pending",
+  "week": [
+   {
+    "name": "Other",
+    "who": "CBoltC",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "SaintB",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": "⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Other · 2 people Saber 13/7 09:00 Bolt, Saint not on the programme → under Unavailable Tap a change to go to it."
+ },
+ "addPerson": {
+  "pending": "1 pending",
+  "week": [
+   {
+    "name": "Other",
+    "who": "CBoltC",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "SaintB",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "HunterIP",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": "⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 8 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Other · 3 people Saber 13/7 09:00 Bolt, Hunter, Saint not on the programme → under Unavailable Tap a change to go to it."
+ },
+ "removePerson": {
+  "pending": "1 pending",
+  "week": [
+   {
+    "name": "Other",
+    "who": "CBoltC",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "HunterIP",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": "⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 9 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Other · 2 people Saber 13/7 09:00 Bolt, Hunter not on the programme → under Unavailable Tap a change to go to it."
+ },
+ "board.end": {
+  "sbPending": null,
+  "rows": [
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "CBoltC",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "HunterIP",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CobraIP",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "cls": "sbi-ty inpty ty-dn inpedit",
+    "who": "GritC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "cls": "sbi-ty inpty ty-dt inpedit",
+    "who": "CNomadC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CGambitC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   }
+  ]
+ },
+ "errs": []
+}
