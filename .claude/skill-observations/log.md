@@ -4220,3 +4220,16 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Issue:** the builder's account and the brief both searched the other areas for rulings that bear on the guide by the guide's own name; only two rulings named it. One reader, searching the same way, found nothing more; the other found the most serious gap of the step — a later ruling that changes what the guide pictures (full editing on another screen) and a second that sets a preferred order, neither naming the guide. The page had stated the old behaviour as current.
 **Suggested improvement:** in the brief template for a conformance read (a summary, a page, a port checked against its sources), add a line: "search related sources by the subject of each claim — the actions, screens and terms it names — not by the name of the document under review; a later rule that changes a subject rarely names every document that describes it."
 **Principle:** dependencies are found by topic, not by title — a check that searches only for references to the artefact misses the changes to what the artefact describes.
+
+### Observation 883: The cure a note recommended for a hang was itself a hang for one interpreter; and a new hook cannot be proved live in the chat that adds it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 19 building [SHELL-SCRIPT-GUARD] (D811) — measuring the shell before writing the guard (numbered past 882, the highest on another open branch)
+**Skill:** New skill candidate: writing a command-refusing hook (the conditions of notes 270, 285, 598, 626)
+**Type:** open-source
+**Phase/Area:** measuring the harness; proving a hook live
+
+**Issue:** A filed note's advice for commands that wait on input was "give every script `< /dev/null`". Measured before building: right for `cat` and `node`, but Python on Windows takes `/dev/null` for a keyboard (`isatty()` True) and opens its interactive prompt, which loops until stopped — the measuring itself hung two minutes on it. Second: the hook settings file is read when a chat starts, so a hook added mid-chat does not run in that chat; a "proof live" there shows nothing.
+**Suggested improvement:** In the hook-writing conditions: measure each remedy a note proposes, per tool and interpreter, before a refusal message repeats it; prove a new hook by running the settings file's exact command on a refused and an allowed input (stdin JSON), and leave the in-chat proof to the next new chat, saying so in the handoff.
+**Principle:** A workaround recorded once is a claim like any other; measure the cure as well as the fault, in each environment the advice will reach.
