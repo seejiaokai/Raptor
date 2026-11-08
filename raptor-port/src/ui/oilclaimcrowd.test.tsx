@@ -344,7 +344,7 @@ describe('the crowd on a request row is drawn, and every man in it is tappable',
    NAME BOX earn beside the member who filed it, default yes. There is no "beside" in the name box any more: put there
    through the door (ui/reqdoor.ts rowPut) he IS the input's one person, the first man's OIL answer is void with him
    (D762 reading 1) and the question is asked again. What D470 was FOR still holds, and is what this pins: his puck on
-   the row is a real switch — never the inert "nothing measurable to earn from here" — it glows once the input's
+   the row is a real switch — never the inert "no working hours to count OIL from" (D1783's words; "nothing measurable to earn from here" before it) — it glows once the input's
    question is answered Yes, and a tap is a decision about him alone. */
 describe('a named man put in the request row\'s NAME BOX takes the input over, and is his own switch (D470 as changed by D755 (2), D762)', () => {
   /* A NAMED RULING CHANGED HOW HE GETS THERE (owner D783, 12 Oct 26 — a swap that raises the OIL question "is NOT MADE
