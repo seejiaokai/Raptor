@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { SrchGlyph } from './Glyphs.jsx';
 import * as core from '../app/core.js';
 import { groupByCategory, filterEvents } from '../app/eventOrder.js';
 import { isComposing } from './keys.js';
-import { SrchGlyph } from './SrchGlyph.jsx';
 
 /* Compact in-place editor for one row of the Show All list — same five fields as the
    pop-up editor, so there is no need to open a modal on top of this panel. */

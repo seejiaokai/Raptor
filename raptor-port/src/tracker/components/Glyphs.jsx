@@ -1,5 +1,5 @@
 import React from 'react';
-import { GearIcon, ListIcon, PenIcon, ReorderIcon, ResetIcon } from '../../ui/icons';
+import { GearIcon, ListIcon, PenIcon, ReorderIcon, ResetIcon, SrchIcon } from '../../ui/icons';
 
 /* THE APP'S LINE ICONS ON THE TRACKER'S BUTTONS (owner D1132, 21 Oct 26 — round 2 of the consistency look): in place of
    the typed marks it came with (✎ ⓘ ☰ ⇪ ⌃ ⌄ and the 🗺 emoji, which an iPhone draws in colour), the same Lucide-style
@@ -26,6 +26,10 @@ export const DownloadGlyph = () => <G><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 
 export const XGlyph = () => <G><path d="M18 6 6 18" /><path d="m6 6 12 12" /></G>;
 export const InfoGlyph = () => <G><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></G>;
 export const ListGlyph = () => <ListIcon className="trkglyph" />;
+/* THE APP'S OWN MAGNIFIER (owner D1900, 8 Nov 26 — "as recommended"): ui/icons.tsx SrchIcon itself, its handle as long as
+   on every other search box (D1127). The Tracker's own drawing (components/SrchGlyph.jsx, its handle a fifth shorter)
+   went with it. Sized by `.srchglyph` (tracker.css). */
+export const SrchGlyph = () => <SrchIcon className="srchglyph" />;
 export const UploadGlyph = () => <G><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m17 8-5-5-5 5" /><path d="M12 3v12" /></G>;
 export const UpGlyph = () => <G><path d="m18 15-6-6-6 6" /></G>;
 export const DownGlyph = () => <G><path d="m6 9 6 6 6-6" /></G>;

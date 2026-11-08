@@ -71,6 +71,14 @@ function refusingWrites(store: Storage): Storage {
   } as Storage
 }
 
+/* WHETHER THIS BROWSER KEEPS ANYTHING (owner D1901, 8 Nov 26 — [TRK-NOSTORE-SAVED]). A built site whose browser refuses its
+   storage runs on the memory store: the work is kept only while the page is open, and a reload loses it. Set by
+   chooseBackend below, and read once by main.tsx, which raises the "Not kept" band on every page (ui/SaveStatus.tsx) and
+   quietens the Tracker's corner (tracker/storage.js). The memory store chosen on purpose — `?fresh=1`, tests, the dev
+   server — is not this: those are no browser's refusal, and nobody there is told so. */
+let refused = false
+export const storageRefused = (): boolean => refused
+
 /* Which backend (spec §Backend choice): ?fresh=1 → Memory; tests or
    VITE_STORAGE=memory → Memory; `vite` dev → Memory unless
    VITE_STORAGE=browser; a built site → Browser, or Memory when browser
@@ -80,6 +88,7 @@ export function chooseBackend(
   search: string = typeof location !== 'undefined' ? location.search : '',
   ls?: Storage,
 ): Backend {
+  refused = false
   if (/[?&]fresh=1(&|$)/.test(search)) return new MemoryBackend()
   if (env.MODE === 'test' || env.VITE_STORAGE === 'memory') return new MemoryBackend()
   if (env.DEV && env.VITE_STORAGE !== 'browser') return new MemoryBackend()
@@ -91,8 +100,14 @@ export function chooseBackend(
        D1664) can be seen on a real phone. Reading still works, so the app opens on what is saved; Retry is refused again
        while the switch is on; the link without it ends the test. Like ?swdebug and ?kbdebug, nobody without it is touched. */
     if (/[?&]savefail(=[^&]*)?(&|$)/.test(search)) return new BrowserBackend(refusingWrites(store))
+    /* THE TEST SWITCH `?nostore` (the agent's, 8 Nov 26, beside D1666's): a tab opened with it runs as a browser that
+       refuses its storage does — the memory store, the "Not kept" band (D1901) — so the band can be seen on a phone whose
+       browser keeps everything (an iPhone's private window keeps it too). Nothing is read or written; the link without
+       it ends the test; nobody without it is touched. */
+    if (/[?&]nostore(=[^&]*)?(&|$)/.test(search)) { refused = true; return new MemoryBackend() }
     return new BrowserBackend(store)
   } catch (e) {
+    refused = true
     return new MemoryBackend()
   }
 }
