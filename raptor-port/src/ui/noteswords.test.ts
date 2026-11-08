@@ -132,7 +132,7 @@ const LEFT: [string, string, string, number][] = [
   ['"… now sits on published work — …"', 'leavewar/sync.ts', "`${said.join(', ')} now sits on published work — the day is flagged, the bid is still live`", 1],
   ['…and the dot that joins those lines', 'leavewar/sync.ts', "lines.join(' · ')", 1],
   ['the names a blind place goes by (the day’s own warning reads them too)', 'engine/oil.ts', "add('the common programme');", 1],
-  ['the day bar under "Nothing today earns"', 'ui/oilmode.ts', "'Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.'", 1],
+  ['the day bar under the "No OIL earned" switch (D1782)', 'ui/oilmode.ts', "'Nothing on this day earns OIL. Turn off the switch and each man earns as he did before.'", 1],
   ['"That is not a time" in an input’s own editors', 'ui/inputedit.tsx', "'That is not a time — try 0900 or 09:00'", 2],
   ['N32’s twin on the Holidays list', 'ui/HolidaysPanel.tsx', '`A leave period already covers part of ${year} — open the Leave War and extend it instead.`', 1],
   ['N10’s words in a hover title — the tag', 'ui/board-html.ts', 'title="Info only — not checked against the rules, and earns no OIL"', 2],

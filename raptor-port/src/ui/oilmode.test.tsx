@@ -19,7 +19,7 @@ import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
-import { toggleOilPerson, toggleOilItem, oilModeOn, oilItemMasked, oilItemMark } from './oilmode'
+import { toggleOilPerson, toggleOilItem, oilModeOn, oilItemMasked, oilItemMark, DAY_EARNS_NOTHING } from './oilmode'
 import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilWouldEarn, oilReadPass, itemMasked } from '../engine/oilev'
 import { ensureRowIds } from '../engine/rowids'
 import { rowItemKey, inputItemKey } from '../engine/oil'
@@ -29,7 +29,8 @@ import { validate } from '../engine/validate'
 import { openScheduler, boardWeekStep } from './board'
 import { setOilDay } from '../state/view'
 import { oilOffReason } from './oilmode'
-import { TICKET_INNER } from './glyphs'
+import { TICKET_INNER, TEMPLATES_INNER } from './glyphs'
+import * as view from '../state/view'
 import { drawnAs } from '../testing/drawn'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -764,6 +765,115 @@ describe('the OIL evidence is never served from a cache across a change', () => 
       expect(oilItemMasked(SAT, rowItemKey(a.rid)), 'the Saturday item is off').toBe(true)
       expect(oilItemMasked(6, rowItemKey(b.rid)), 'the Sunday item is not').toBe(false)
     })
+  })
+})
+
+/* THE PICTURES ROUND'S ANSWERS FOR OIL EARN (owner D1782, D1783, D1793, 8 Nov 26 — "All as recommended"; drawn in
+   docs/img/handpass/2026-11-07-pictures-round/, notes-board.md Q3 and Q4, notes-marks.md §4). */
+describe('the pictures round: the day switch, a tap that cannot earn, the phone bar’s marks', () => {
+  const said: string[] = []
+  const was = HOOKS.toast
+  beforeEach(() => { said.length = 0; HOOKS.toast = (m: any) => { said.push(String(m)) } })
+  afterEach(() => { HOOKS.toast = was })
+  const sw = () => $('#sbBoard .daybar input[data-oilblank]') as HTMLInputElement
+
+  it('D1782 — the day button is the app’s own switch, "No OIL earned", and the note under the bar says how to undo it', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    const s = sw()
+    expect(s, 'a switch, not a button').toBeTruthy()
+    expect(s.type).toBe('checkbox')
+    expect(s.getAttribute('role')).toBe('switch')
+    expect(s.checked, 'off at first').toBe(false)
+    const lab = s.closest('label.lgmix') as HTMLElement
+    expect(lab, 'the Logic page’s switch').toBeTruthy()
+    expect(lab.textContent!.trim()).toBe('No OIL earned')
+    expect(lab.title).toBe('Anything added to this day later earns no OIL either.')
+    expect($$('#sbBoard .daybar button.blank').length, 'the old button is gone').toBe(0)
+    await click(sw())
+    expect((DAYS[SAT] as any).oild.blanket, 'one press, one change').toBe(1)
+    expect(sw().checked, 'drawn on').toBe(true)
+    expect($('#sbBoard .daybar-note').textContent)
+      .toBe('Nothing on this day earns OIL. Turn off the switch and each man earns as he did before.')
+    await click(sw())
+    expect((DAYS[SAT] as any).oild.blanket, 'and off again').toBeUndefined()
+    expect(sw().checked).toBe(false)
+  })
+
+  it('D1782 — a press on the switch’s words changes the day once, not twice', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    /* a real label press: the browser sends the click to the label, then one more to its box */
+    const lab = sw().closest('label') as HTMLElement
+    await act(async () => { lab.click() })
+    expect((DAYS[SAT] as any).oild.blanket, 'on, once').toBe(1)
+  })
+
+  it('D1783 — a tap on a man with no working hours on his row picks nothing and says why', async () => {
+    addRow(SAT, { prog: 'NO TIMES', str: '', end: '', who: 'plasma' })
+    await open(SAT)
+    await click(oilBtn())
+    const inert = $('#sbBoard .sb-panel.grnd .seat.oilpk.inert')
+    await click(inert.querySelector('.puck') || inert)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. This row gives him no working hours to count OIL from.`])
+    expect(view.SELID, 'nobody picked').toBeFalsy()
+    expect(inert.title, 'the hover says the same reason').toContain('this row gives him no working hours to count OIL from')
+  })
+
+  it('D1783 — a row with a start and no end says his own words (D360)', async () => {
+    addRow(SAT, { prog: 'OPEN END', str: '0800', end: '', who: 'plasma' })
+    await open(SAT)
+    await click(oilBtn())
+    const inert = $('#sbBoard .sb-panel.grnd .seat.oilpk.inert')
+    await click(inert.querySelector('.puck') || inert)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. No OIL worked out — this row has no end time.`])
+    expect(view.SELID).toBeFalsy()
+  })
+
+  it('D1783, D845 — under the day’s switch a tap on a man keeps his words, and picks nothing', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    await click(sw())
+    said.length = 0
+    const pk = $('#sbBoard .sb-panel.grnd .seat.oilpk.inert')
+    await click(pk.querySelector('.puck') || pk)
+    expect(said).toEqual([DAY_EARNS_NOTHING])
+    expect(view.SELID).toBeFalsy()
+  })
+
+  it('D1783 — under an event switched off a tap on a man says to turn the event back on, and picks nothing', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    await click(groundRowEl(0).querySelector('[data-oilitem]'))
+    said.length = 0
+    const pk = groundRowEl(0).querySelector('.seat.oilpk.inert') as HTMLElement
+    await click(pk.querySelector('.puck') || pk)
+    expect(said).toEqual(['This event earns nobody any OIL. Turn the event back on first.'])
+    expect(view.SELID).toBeFalsy()
+  })
+
+  it('D1783 — a placeholder’s count still opens its window', async () => {
+    addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
+    await open(SAT)
+    await click(oilBtn())
+    await click(groundRowEl(0).querySelector('.oilcount'))
+    expect($('.availwin'), 'the window opened').toBeTruthy()
+  })
+
+  it('D1793 — the phone bar’s Templates and OIL Earn wear the desktop’s marks; ✓ OIL done stays plain', async () => {
+    await open(SAT)
+    const tpl = $('#sbBoard .daybar [data-daytpladd]')
+    expect(tpl.textContent!.trim()).toBe('Templates')
+    expect(drawnAs(tpl.querySelector('svg'), TEMPLATES_INNER), 'a page of blocks').toBe(true)
+    expect(oilBtn().textContent!.trim()).toBe('OIL Earn')
+    expect(drawnAs(oilBtn().querySelector('svg'), TICKET_INNER), 'the ticket').toBe(true)
+    await click(oilBtn())
+    expect(oilBtn().textContent!.trim()).toBe('✓ OIL done')
+    expect(oilBtn().querySelector('svg'), 'the way out has no mark').toBeNull()
   })
 })
 

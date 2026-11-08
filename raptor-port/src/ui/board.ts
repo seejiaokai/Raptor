@@ -42,7 +42,7 @@ import { openAvailWinFrom } from './availopen'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { penSvg } from './pen'
-import { glyphSvg, GEAR_INNER } from './glyphs'
+import { glyphSvg, GEAR_INNER, TEMPLATES_INNER } from './glyphs'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
@@ -57,6 +57,8 @@ import { followVisible } from './vvfollow'
 import { screenBox } from './kbscroll'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
+/* an event's own OIL switched off: what a tap on it or on a man under it says (owner D838, D843 — N12) */
+const EVENT_EARNS_NOBODY = 'This event earns nobody any OIL. Turn the event back on first.'
 const afterSchedMutate = () => view.afterSchedMutate()
 
 /* renderScheduler's board string, verbatim. pv = published-version preview:
@@ -140,7 +142,8 @@ function boardHTMLBody(di: number, pv?: boolean) {
      together in a single row, where they used to be a full-width panel each with
      a heading and a sub-line. ui/oilmode.ts dayBarHTML draws it and explains the
      phone/desktop split. */
-  const tplBtn = mvRO ? '' : `<button class="mbtn daybtn" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button>`
+  /* (owner D1793, 8 Nov 26: on a phone this bar wears the desktop's marks — a page of blocks before Templates, D1703) */
+  const tplBtn = mvRO ? '' : `<button class="mbtn daybtn" data-daytpladd="${di}" title="Save this day, or apply a saved one">${glyphSvg(TEMPLATES_INNER)}Templates</button>`
   /* Overall Notes and Common Programme are two separate sections now (owner, 31 Aug
      26 — "split them apart"); each is built and wrapped on its own below (sect). */
   let fly = ''
@@ -917,6 +920,20 @@ export function boardMbtn(e: MouseEvent) {
      the tests themselves would keep passing right up until whatever future
      change actually narrows it. */
   if (!canEditSched() || !HOOKS.editMode()) return
+  /* THE DAY'S "No OIL earned" SWITCH (owner D1782, 8 Nov 26) — a checkbox drawn as the Logic page's slider, so not an
+     .mbtn. Read off its BOX: a press on its words sends one click to the label and one more to the box, and only the
+     box carries the day, so the day changes once. The bar is drawn again by the change, so the keys, if they were on
+     the switch, are put back on the new one. */
+  const sw = (e.target as HTMLElement).closest('input[data-oilblank]') as HTMLInputElement | null
+  if (sw) {
+    const di = +sw.dataset.oilblank!
+    const keys = document.activeElement === sw
+    const on = !oilBlanketOn(di)
+    setOilBlanket(di, on)
+    notify()
+    if (keys) setTimeout(() => (document.querySelector(`#sbBoard input[data-oilblank="${di}"]`) as HTMLElement | null)?.focus({ preventScroll: true }), 0)
+    return act(di, on ? 'Nothing on this day earns OIL, including anything added later' : 'This day can earn OIL again, and the marks underneath are back')
+  }
   const t = (e.target as HTMLElement).closest('.mbtn') as HTMLElement | null; if (!t) return
   const ds = t.dataset
   /* ▲/▼ — the phone's reorder gesture. The target is read off the NEIGHBOURING
@@ -1116,13 +1133,6 @@ export function boardMbtn(e: MouseEvent) {
     /* (owner D838 + D839, 14 Oct 26 — N9: the button reads "OIL Earn", so the note names it that, not "OIL mode"; and
        "take a man off that event" was read as taking him off the SCHEDULE. The same words: ui/SchedBoard.tsx.) */
     return toast(on ? 'OIL Earn: tap a puck to stop that man earning from that event, or an item to stop the whole item earning' : 'Back to editing the schedule')
-  }
-  if (ds.oilblank != null) {
-    const di = +ds.oilblank
-    const on = !oilBlanketOn(di)
-    setOilBlanket(di, on)
-    notify()
-    return act(di, on ? 'Nothing on this day earns OIL, including anything added later' : 'This day can earn OIL again, and the marks underneath are back')
   }
   if (ds.daytpladd != null) {
     const di = +ds.daytpladd
@@ -1433,9 +1443,7 @@ export function boardArmClick(e: MouseEvent) {
       e.stopPropagation()
       /* (owner D838, 14 Oct 26 — N12: a fact, then what to do; the day's sentence says what to turn off and has one source,
          ui/oilmode.ts — D844, D845. The event's own OIL mark below and the ALL AVAIL window say the same words: D843.) */
-      return toast(oilBlanketOn(di)
-        ? DAY_EARNS_NOTHING
-        : 'This event earns nobody any OIL. Turn the event back on first.')
+      return toast(oilBlanketOn(di) ? DAY_EARNS_NOTHING : EVENT_EARNS_NOBODY)
     }
     const on = toggleOilPerson(di, person, item)
     notify(); e.stopPropagation()
@@ -1473,6 +1481,17 @@ export function boardArmClick(e: MouseEvent) {
     openAvailWinFrom(osn)
     notify()
     return
+  }
+  /* A TAP ON A PUCK THAT CANNOT EARN (owner D1783, 8 Nov 26 — the pictures round's Q4, A). An inert puck has no
+     `data-oilp`, so its tap fell through to the ordinary selection: on a phone it lit the man blue and said nothing, the
+     reason living only in a hover title. In the mode a tap selects nobody (D65's rule, carried to the board) — it says
+     why in the plain passing note and stops. After the count's own branch above, so the window still opens. A puck under
+     a mask says the mask's own refusal, his words (D845). */
+  const inert = t.closest('.oilpk.inert') as HTMLElement | null
+  if (inert && view.SBDAY != null && oilModeOn(view.SBDAY)) {
+    e.stopPropagation()
+    const mask = inert.dataset.oilmask
+    return toast(mask === 'day' ? DAY_EARNS_NOTHING : mask === 'event' ? EVENT_EARNS_NOBODY : inert.dataset.oilsay || '')
   }
   const oit = t.closest('[data-oilitem]') as HTMLElement | null
   if (oit) {
