@@ -135,9 +135,11 @@ test.describe('D1780 — a phone on its side: the head scrolls away, the bar sta
     const at = await page.evaluate(([low, kb]) => {
       const b = document.querySelector<HTMLElement>('.schedboard')!, br = b.getBoundingClientRect()
       const max = b.scrollHeight - b.clientHeight
-      for (const n of document.querySelectorAll<HTMLElement>('#schedBoard .sb-boardwrap input')) {
+      for (const n of document.querySelectorAll<HTMLInputElement>('#schedBoard .sb-boardwrap input')) {
         const r = n.getBoundingClientRect()
         if (!n.getClientRects().length || r.height <= 6 || r.height >= 60) continue
+        /* only a box a person types in — the keyboard lift's own kind (kbscroll isTypingBox) */
+        if (n.disabled || n.readOnly || /^(checkbox|radio|range|button|hidden)$/i.test(n.type)) continue
         /* the board's scroll that puts this box's foot at `low` on the screen, with `kb` of list still under it */
         const s = Math.round(r.bottom - br.top + b.scrollTop - (low - br.top))
         if (s < 0 || s + kb > max) continue
