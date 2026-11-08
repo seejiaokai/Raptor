@@ -1598,6 +1598,9 @@ for (const width of [1536, 1340, 1280, 1024, 821]) {
 test('D1787: the input window dragged away gives the list its room back, and reopened where he left it, makes none', async ({ page }) => {
   await login(page)
   await listAt(page, 1536)
+  // every date, so the list holds rows to reopen (the test's own clock is today's, whose fortnight may be empty)
+  await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+  await expect(page.locator('#inBody tr .in-open').first()).toBeVisible()
   const closed = await colW(page)
   await page.locator('#inNew').click()
   const win = page.locator('[data-testid="win-inputedit"]')
