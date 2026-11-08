@@ -39,6 +39,17 @@ function span(s: Scroller, axis: 'x' | 'y'): [number, number] {
   return axis === 'y' ? [r.top, r.bottom] : [r.left, r.right]
 }
 
+/** The top of what a scrolling box SHOWS, from its own top `top`. On a phone on its side the Scheduler Board itself is the
+ *  scroller (owner D1780, 8 Nov 26 — 10-board-history.css): its head scrolls away and its bar stays pinned over the top of
+ *  it, so the day he sees, and the band a carried puck or row scrolls it by, begin at that bar's foot. Measured from the
+ *  board's own top edge, hidden under the bar, a finger held just under the bar scrolled nothing — only one held over the
+ *  bar did (e2e/boardside.spec.ts, GitHub's run of 8 Nov 26). Any other box: its own top. */
+export function shownTop(el: Element, top: number): number {
+  if ((el as HTMLElement).id !== 'schedBoard') return top
+  const bar = el.querySelector('.sb-top')
+  return bar ? Math.max(top, bar.getBoundingClientRect().bottom) : top
+}
+
 /** How far to scroll this frame for a pointer at `p` inside the span [lo, hi]: negative toward lo, positive toward hi. */
 export function edgeStep(p: number, lo: number, hi: number, touch: boolean): number {
   if (touch) {

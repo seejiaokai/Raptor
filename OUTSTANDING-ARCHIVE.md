@@ -8098,3 +8098,73 @@ frame). The Quals page's frozen header has the same shape. **Place:** the next L
 after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at all.
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1789) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The dates row blink" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([BOARD-SIDEWAYS-KEYS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [BOARD-SIDEWAYS-KEYS] A phone on its side with the keys up: the Scheduler Board's heading fills what is left (found 19 Oct 26 — the D1048 walk, walker A's A2; low)
+*(Since 19–20 Oct 26 the board no longer follows the visible screen — it is page content, D1081 — so look again on a phone on
+its side before building.)* With the phone on its side (874 × 402) and a keyboard of about 200px up, the board follows the visible screen (its fit to
+`visualViewport`, `SchedBoard.tsx`) and is 202px tall; its bar, day strip and headings take 186px of it, leaving a 16px
+strip to scroll in — a time box tapped low ends under the keys, and none can be brought up (`kbscroll.ts` scrolls the
+panel to its end). Older than D1048 (the layout of the board's top on a short screen). Pictures:
+`raptor-port/docs/img/handpass/2026-10-19-keyboard-scroll/walk/A/A2-*.png`; the sheet
+`raptor-port/docs/handpass/2026-10-19-keyboard-scroll.md`. **To do:** on a short screen with the keys up, fold the board's
+top to its one bar (the day strip and section headings scroll with the panel). A picture to him first (D853). **Place:**
+low — with the next change to the board's top on a phone.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1780) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The board on a phone on its side, keys up" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([BOARD-NARROW-DESKTOP-REMARKS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [BOARD-NARROW-DESKTOP-REMARKS] The desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; low)
+Walker A: at 821, 900 and 1000 wide (the desktop layout, pucks on the line) the remarks box is 16px and a line 189px tall; measured the same with the
+R box taken away (`raptor-port/scripts/handpass/rally-narrow.mjs`), so it is older than [RALLY-PER-FORMATION] (which keeps the remarks within 2px of
+before from 1100 to 1439 — `13-board-rows-responsive.css`). Picture `raptor-port/docs/img/handpass/2026-10-19-rally-build/A/A15-d821-board.png`.
+**Place:** with the next change to the board's layout — a picture to him first (a visual change, D541): stack the times there as a phone does, or
+let the remarks take a line of their own.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1781) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The board 821 to 1000 wide" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([BOARD-KEYS-LOOKS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [BOARD-KEYS-LOOKS] Three looks under the keys on the Scheduler Board, left by the board-keys job (the night of 7–8 Nov 26; low)
+Built that night on `claude/board-keys` ([BOARD-KEYS-LEFT]'s last two menus, [WEEK-GLIDE-TWO-PAGES]); what a person would SEE
+differently was not built (D1625) and waits as three questions, each with its pictures and a recommendation in
+`raptor-port/docs/handpass/2026-11-08-board-keys.md` §11: **Q1** an item of the board's ⋯ menu under the keys wears its raised
+row and the browser's own ring, where the board's other menus wear the app's cyan ring — recommended: the cyan ring, on the
+board's ⋯ and the week's alike; **Q2** a button that opens a board menu (+ Block, the day bar's Templates) wears the browser's
+white ring under the keys, as on `main` — recommended: the cyan ring, as D1646 reads; **Q3** Tab out of a menu works two ways
+(the board's string-drawn menus close and give the keys back to their button; the ⋯ menu lets Tab move on, and Shift+Tab back
+onto ⋯ leaves it open) — recommended: leave as built. Also, the agent's: the ⋯ menu's list of its items repeats the shared
+menus' own list-maker (`SchedBoard.tsx moreItems`, `sheetfocus.ts menuItems`) — one could serve both (the Opus read of 8 Nov 26,
+finding 4). **His answers, 8 Nov 26 — D1771, D1772 (all as recommended):** Q1 and Q2 the cyan ring, to build; Q3 stays
+as built. **Place:** Q1 and Q2 one small job — the look, a walk; the tidy-up with it — built inside the pictures round's build,
+its group 1 (the board's layout, wave 2, the same board files), his word 8 Nov 26; chat 3 asked to add it to its plan. The
+same job checks + Wave, the plans selector, a jet's stores and the duty role box under the keys — D1646 asks the cyan ring
+there too, and a fresh reader found none in the stylesheet (8 Nov 26, not looked at on screen).
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([INP-ADD-RIGHT]). Forward facts: `.claude/decisions-full/inputs.md`, `raptor-port/docs/walk-ledger.md`.*
+
+### [INP-ADD-RIGHT] "+ Input" on the desktop Inputs list where its window opens (D1300's reading, 24 Oct 26)
+**BUILT 8 Nov 26 (chat 7) on `claude/pr-inputs-add-right-5b2653`, pull request 676** — the button at the right end after the
+dates button; the room while an input's window (from "+ Input" or a row) is open, from 1340 wide, Name / Start / End 110 / 140 /
+90; the same three narrowed with no window from 821 to 1099 (the older fault); a window dragged away gives the room back (both
+readers' finding, fixed red first). Bug check: `raptor-port/docs/handpass/2026-11-08-chat7-inputs.md`. **Left for his look:**
+confirm the smaller-screen safety is part of his answer (D1787's full row); the narrowest desktop's Remarks, 57px at 821 wide
+(words broken in two — `raptor-port/docs/img/handpass/2026-11-08-chat7-inputs/w821-a-viewport.png`), put to him with a
+recommendation; "+ Input" stands under the open window, as drawn and as "+ Medical" does. Close once live.
+**Seen (M3's follow-up walk, `raptor-port/docs/img/handpass/2026-10-24-lw-m3-follow/m5-input-list-desk.png`, `m5-input-open-desk.png`):**
+on a desktop "+ Input" stands at the left of the list's row and its window opens at the right, over the list's right
+columns — as "+ Medical" did before D1300. **To do, on his word:** the same as the Medical tab (design lesson 47) — the
+button at the right, the list making room while the window is open, the row filed wearing its mark (it already does); a
+picture first (D853). **Place:** with the next Inputs batch.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1787) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "+ Input on the right" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`). **Drawn again 8 Nov 26 at smaller widths (his question, "how would 8 look like for a smaller screen if i choose A"; the page's question 8, "On a smaller screen"):** copied as is, A crushes Remarks below about 1500 wide (the other six columns are fixed, 875px, `06-inputs.css`, and the room kept for the window 446) — so A is redrawn with a safety: the list makes room only from about 1340 wide, Name 110, Start 140 and End 90 while it does (Remarks measured 150 at 1340, 346 at 1536); narrower, the button still at the right and the window covering the list as today. **Found, older, a fault whatever he answers:** today, with no window open, the desktop list below about 950 wide squeezes Remarks to a letter or two (11px measured at 950, none at 821; rows over 400px tall) — the phone's list has a 640px floor and scrolls sideways, the desktop's has none; fixed by the same narrowing on a narrow screen. Pictures `q-addright-1280-open-A`, `-1280-open-A-fit`, `-1024-A-safe`, `-821-today` (and the others of `q4n`), script `pr-sched.mjs` q4n, q4f, q4t, q4m.
+
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([INP-LIST-RIGHT-EDGE]). Forward facts: `raptor-port/docs/ui-contracts.md`, `.claude/decisions-full/inputs.md`.*
+
+### [INP-LIST-RIGHT-EDGE] The desktop Inputs list's right end looks cut off (D1842)
+**BUILT 8 Nov 26 (chat 7, D1843):** option A in `06-inputs.css`, its browser test red first then green, the drawing check GREEN, the before and after pictures — `raptor-port/docs/handpass/2026-11-08-chat7-inputs.md` §14. Leaves for the archive once pull request 676 merges.
+**His correction, 8 Nov 26, on chat 7's 821-wide picture:** each row's coloured line on the left has nothing to match it on the right, and "No document" (the last column, right-aligned) sits against the list's end, so the list reads as running on and he tried to scroll sideways. **Drawn 8 Nov 26 (chat 7):** today and three options on the real app at 821, 1024 and 1536 — A a thin line round the whole list in the rows' own line colour, B the rows on the panel surface, C only "No document" brought inside its column (each with it 14px in, from 3px); **He picked A, 8 Nov 26 (D1843) — build it next**; put to him on chat 7's look page (https://claude.ai/artifact/14FMTxfkU37UZPcGPrpUQw); script and pictures `raptor-port/docs/img/handpass/2026-11-08-chat7-inputs/d1842-*`. Lesson 93 written and read. **Was to do:** draw the fix on the real app with the design skill at 821, 1024 and 1536 (and say why the phone's cards are untouched), put it to him (D1625), then build it with its check; write the lesson for the design guide's §9 the same day (D852, one fresh reader) and name up to four other tables in the app the same fix would apply to. **Place:** `raptor-port/src/ui/scheduler/06-inputs.css` (the list's table), `ui/InputsPage.tsx` (the last column).

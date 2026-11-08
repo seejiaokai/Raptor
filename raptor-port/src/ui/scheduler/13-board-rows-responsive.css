@@ -48,6 +48,30 @@
 @media (min-width:821px) and (max-width:1439px){
   .schedboard:not(.sb-wide) .sb-lcols,.schedboard:not(.sb-wide) .sb-line{grid-template-columns:18px 56px 64px 48px 48px 48px 48px 1fr 1fr 1.2fr 92px;gap:6px}
 }
+/* FROM 821 TO 1099 WIDE THE REMARKS TAKE A ROW OF THEIR OWN AND THE TIMES STACK (owner D1781, 8 Nov 26 — the pictures
+   round's question 2, option C, "All as recommended"). Below about 1100 the eleven tracks above did not fit a line: at
+   821–1000 it stood 189px tall with the remarks 0–16px wide, and below about 950 the back seat, the remarks and the
+   line's buttons were past the panel's edge, out of reach. Here the line keeps the phone's stacked cells — R over B,
+   TO over LD, their headings stacked the same way (the max-width:820 block's own rules) — and puts the remarks and the
+   line's CX, red box, + and ✕ on a second row under the seats: 111px a line, the remarks 323px at 821 and 468 at 1099,
+   every part in reach. The NOTES heading and the buttons' heading go, nothing standing under them now. Built exactly as
+   drawn (scripts/handpass/pr-board.mjs C_CSS — the approved drawing is the one source, D1478); the desktop layout
+   (.sb-wide) and 1100 up are untouched, so D1029's one line of times still holds there. A standby line (SC, AVALON,
+   BB) is the same .sb-line with START over END (D1085). */
+/* The back seat's column has a 94px floor, in the headings and the line alike: under the back seat, on the second row,
+   stand the line's CX, ■, + and ✕, about 94px at their own size with their 3px gaps. Without the floor, from 821 to
+   about 839 wide those buttons widened the line's last column alone — the headings are a grid of their own — and the
+   RCP heading stood up to 5px right of its seat (the board-layout walk, 8 Nov 26; e2e/board-layout.spec.ts). */
+@media (min-width:821px) and (max-width:1099px){
+  .schedboard:not(.sb-wide) .sb-lcols,.schedboard:not(.sb-wide) .sb-line{grid-template-columns:18px 56px 64px 48px 48px 1fr minmax(94px,1fr)}
+  .schedboard:not(.sb-wide) .sb-line>.sb-rb,.schedboard:not(.sb-wide) .sb-line>.sb-tl{display:flex;flex-direction:column;justify-content:flex-end;gap:4px}
+  .schedboard:not(.sb-wide) .sb-lcols>.sb-hrb,.schedboard:not(.sb-wide) .sb-lcols>.sb-htl{display:block;line-height:1.25}
+  .schedboard:not(.sb-wide) .sb-lcols>.sb-hrb>span,.schedboard:not(.sb-wide) .sb-lcols>.sb-htl>span{display:block}
+  .schedboard:not(.sb-wide) .sb-line>.sb-grip{grid-row:1}
+  .schedboard:not(.sb-wide) .sb-line>.sb-rcell{grid-column:2 / 7;grid-row:2}
+  .schedboard:not(.sb-wide) .sb-line>.lctl{grid-column:7 / -1;grid-row:2;align-self:center}
+  .schedboard:not(.sb-wide) .sb-lcols>:nth-child(8),.schedboard:not(.sb-wide) .sb-lcols>:nth-child(9){display:none}
+}
 /* the remarks cell wraps the input, the stores chips and C so the line keeps
    exactly the same grid-item count it had when remarks was a bare input —
    same move as .sb-bcell above, and the reason the nine-column template and

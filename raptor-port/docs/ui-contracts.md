@@ -12419,9 +12419,14 @@ His "All as recommended" to the pictures round's page (https://claude.ai/artifac
 and notes in `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`). Each is built to its drawing and checked beside
 it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`.
 - **D1780** — the Scheduler Board on a phone on its side: Calendar, the title, the day strip and search scroll away with the
-  list; the bar of buttons stays.
+  list; the bar of buttons stays. How (`10-board-history.css`, the sideways block): the board scrolls as one page, its top
+  sticky at minus the head's height (`--sb-headH`, published by `SchedBoard.tsx`), the crew column sticky under the bar, a
+  jump's scroll padding the bar's height; the app's own sideways query from 821 wide; `.sb-wide` as it was. His iPhone look, 8 Nov 26 (D1800): on its side, with the keys up, the bar stays at the top.
 - **D1781** — the desktop board from 821 to 1099 wide: the remarks on a row of their own, R over B and TO over LD as on a
-  phone (D1029 and D1026 narrowed).
+  phone (D1029 and D1026 narrowed). How: `13-board-rows-responsive.css`, the band after the 821–1439 one, the drawing's
+  own rules, on `.schedboard:not(.sb-wide)` only.
+- **D1771** — under the keys the board's and the week's ⋯ items keep their raised row and wear the cyan ring inside it;
+  + Block, + Wave, the plans selector, a jet's stores and the day bar's buttons wear it just outside them (the board only).
 - **D1782** — OIL Earn's day button is the slider switch "No OIL earned", cyan when on; the refusal words of D845 stay.
 - **D1783** — in OIL Earn a tap on a puck that cannot earn picks nothing; the plain passing note says "Nothing changed for
   <callsign>." and the reason.
@@ -12429,7 +12434,20 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1785** — an unreadable week's notice and refusal words, the refusal in the grey "Blocked:" note.
 - **D1787** — the desktop Inputs list's "+ Input" at its row's right end; the list makes room for the window from about
   1340 wide, Name, Start and End narrowing first; narrower, the window covers it as today. The older narrow-list fault
-  (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing.
+  (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing. *Built 8 Nov 26 (chat 7,
+  `claude/pr-inputs-add-right-5b2653`):* the button after the dates button and a spring (`ui/InputsPage.tsx` `listTools`);
+  `in-room` on the page while any input's window is open on the desktop list, the room and the narrowing at 1340 and up
+  (`scheduler/06-inputs.css`); the same three widths (Name 110, Start 140, End 90) with no window from 821 to 1099 wide —
+  from 1100 the full widths leave Remarks 160 or more. Pins: `ui/inputs.test.tsx`, `e2e/inputs-calendar.spec.ts` "D1787".
+  **D1840** (8 Nov 26, his "all as recommended" to chat 7's look): from 821 to 1099 wide with no window Type narrows
+  to 124 as well, so Remarks keeps about 93 at 821 with every word whole; from 1100 Type keeps 160. **D1841**: the
+  safety for smaller screens is part of his D1787 answer (below 1340 the window covers the list, no room made), and
+  the window over "+ Input" while open stays as drawn, as over "+ Medical".
+  **D1842** (8 Nov 26, his correction on the 821-wide picture): the list's right end must not look as if it runs on — the rows'
+  left line has no match on the right and "No document" sits at the very end, so he tried to scroll sideways; the fix is
+  drawn for him first (filed as [INP-LIST-RIGHT-EDGE]).
+  **D1843** (8 Nov 26, his "A, as recommended"): the list is closed by a thin line round it in the colour of the lines between its rows,
+  and "No document" stands inside its column (about 14px from the end as drawn, the agent's measurement); no column changes width; the phone's cards unchanged.
 - **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
 - **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after. **D1850:** it went live with one painted frame left on a quick scroll (the browser's own frame); that last frame is a job of its own, [LW-PIN-LAST-FRAME]. **D1870:** he sees that frame on his iPhone and the trial cures it — the pinned row shown by the browser itself, on the page's own scroll (a scroll-driven fade where the row meets the top bar; today's way where a browser lacks it), is built for keeps, with the full check. **As built (8 Nov 26, [LW-PIN-LAST-FRAME]):** each screen's copy (the Leave War's `.mxfixed`, Quals' `.qfixed`) stays in the page; it is hidden by default (`opacity:0` — a page too short to scroll has no scroll timeline) and shown by a 1px opacity step on the page's own scroll at `--lwy-s`, the scroll where the real row meets the top bar's foot, written on the copy's own box (Matrix.tsx `placeY`, QualsPage.tsx `placeQ`); taps, the shadow and `inert` follow `.up`, a frame late, so a hidden copy is out of the keys and of what a screen reader reads; the step is kept for a reader who asked for less motion (it moves nothing — an `!important` exemption from the app's `*{animation:none!important}`); while the fingers pinch the copy is off the step and shown by the pinch's own rule (hidden while the real row's top is at or below the bar's foot), with no shadow; anything above the grid that changes height re-places it (a height watch on the page and the top bar). Where the browser lacks the scroll timeline, the old way, unchanged.
 - **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
@@ -12457,7 +12475,8 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   "Clear the search and close Find"; pressed from the keyboard, the keys go back to 🔍; wider, ✕ clears and keeps the
   box focused, its words "Clear the search", as before. A pick from the list puts the strip away. Pins: the smoke suite.
 - **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
-  hidden warning's ↺; the ✕ stays typed.
+  hidden warning's ↺; the ✕ stays typed. *(b) built 8 Nov 26 (chat 7):* `ui/glyphs.ts` `EXPAND_INNER` / `COMPACT_INNER`
+  (`ui/icons.tsx` `ExpandIcon` / `CompactIcon`) on `ui/InputsCal.tsx`'s `ib-expand`, 16px; pin `ui/inputsmonth.test.tsx`.
   **(c) built 8 Nov 26 (chat 9):** the Tracker's Restore — ⇅ Reorder courses' and syllabi's deleted lists — wears the
   Tracker's own drawn Reset arrow (`components/Glyphs.jsx` `ResetGlyph`, the same paths as the app's `RESET_INNER`), at
   the drawing's 15px; no shared icon set touched. Pins: `trk-round-seen.test.ts`, the smoke suite.
