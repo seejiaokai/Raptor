@@ -1,6 +1,7 @@
 # [MERGE-ONCE-RECORDS] — the plan (8 Nov 26, chat 27; plan only, nothing built — his D822)
 
-**Status:** put to him 8 Nov 26; nothing is built before his go. Once he says go, the plan's red team comes first (an
+**Status:** put to him 8 Nov 26; **his go for all three parts the same evening ("Go, all three", D1930)** — to be built by
+a fresh chat (33). Nothing is built yet: the plan's red team comes first (an
 important plan: Astra, then a fresh, blind Opus reader — D1760, D1770), then the build on its own branch, merged on his
 "merge live" (it changes `.gitattributes`, a script and `shipping.md` — not notes only).
 
