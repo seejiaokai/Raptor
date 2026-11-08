@@ -1659,9 +1659,14 @@ for (const [width, withWin] of [[2560, false], [1536, false], [1536, true], [102
     /* the line, as drawn: halfway down a row (clear of the rows' own lines), from 3px inside the list to 4px past it —
        one pixel there wears the rows' line colour, and the page beyond it does not */
     const x0 = Math.floor(m.right) - 3, px = await strip(page, x0, Math.round(m.nodoc[0].midY), 8)
-    const hit = px.findIndex(c => near(c, EDGE))
-    expect.soft(hit, `a pixel of the rows' line colour at the list's right edge (${JSON.stringify(px)})`).toBeGreaterThanOrEqual(2)
+    /* found by how much brighter it is than the page past it: the line's colour sums 141 against the page's 34 — and
+       under the veil an open window lays over the page (about four fifths of each colour, measured 8 Nov 26) 121
+       against 27; its exact colour is checked where no window is open */
+    const lum = (c: number[]) => c[0] + c[1] + c[2], beyond = lum(px[7])
+    const hit = px.findIndex(c => lum(c) - beyond >= 60)
+    expect.soft(hit, `a line at the list's right edge, brighter than the page past it (${JSON.stringify(px)})`).toBeGreaterThanOrEqual(2)
     expect.soft(hit, 'the line stands at the list\'s edge, not inside it').toBeLessThanOrEqual(4)
+    if (!withWin) expect.soft(hit >= 0 && near(px[hit], EDGE), `the line wears the rows' line colour (${JSON.stringify(px[hit])})`).toBe(true)
     expect.soft(near(px[7], EDGE), 'the page past the line is not the line').toBe(false)
   })
 }

@@ -1329,6 +1329,8 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 **Met again 20 Oct 26 ([STANDBY-WEEK-B]):** E2E_PORT=4191 — chosen as "another port" without checking — was held by a 17 Oct worktree's vite preview; 12 of 14 rally-box tests failed, old ones included; 4197 (proved free) passed 14/14. The third time: the guard above (refuse a server this checkout did not start) is now overdue.
 
+**Met again 8 Nov 26 (chat 7, D1843):** a background run under the checks lock left E2E_PORT unset, so 4173 — held by a vite preview started from the MAIN checkout — was reused: both the red and the green runs tested that bundle, nothing was built, and the drawing check and pictures that followed ran on a stale `dist` (10:52). Read from the green run's failures ("+ Input" 934px from the row's end, a change this branch built that morning). Guard taken in the run script: a fixed free port, refused if anything answers on it before each run, and the pictures stopped unless `dist` is newer than the run's start and carries the change. Proposed guard for the lock tool: `gatelock.mjs exec` sets a free E2E_PORT itself when none is given, as its port check already does for a port that IS given.
+
 ### Observation 645: A tap-to-fill handler fought the app's own focus-arrival refresh
 
 **Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): SD Phase 4 step 4 (re-run the finder's script; instrument before a second guess)
