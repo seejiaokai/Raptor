@@ -1,0 +1,107 @@
+{
+ "state": "notice-phone",
+ "drawing": {
+  "script": "scripts/handpass/pr-sched.mjs",
+  "shot": "q-readonly-ph-notice-A"
+ },
+ "recorded": "2026-11-08T05:07:42.284Z",
+ "drawnOn": "main at 6e6c55667",
+ "checkout": "9fc5961d9",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "day": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 124,
+    "w": 378,
+    "h": 159
+   },
+   "ink": {
+    "x": 16,
+    "y": 138,
+    "w": 329.3,
+    "h": 93
+   },
+   "text": "Wednesday Jul 15 This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "linear-gradient(rgba(255, 255, 255, 0.027), rgba(255, 255, 255, 0)), none",
+    "edge": [
+     "1px solid rgba(87, 201, 122, 0.34)",
+     "1px solid rgba(87, 201, 122, 0.34)",
+     "1px solid rgba(87, 201, 122, 0.34)",
+     "1px solid rgba(87, 201, 122, 0.34)"
+    ],
+    "corners": [
+     "16px",
+     "16px",
+     "16px",
+     "16px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.9) 0px 24px 60px -34px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "section.day.dok.issued"
+  },
+  "note": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 11,
+    "y": 179,
+    "w": 356,
+    "h": 59
+   },
+   "ink": {
+    "x": 22,
+    "y": 186,
+    "w": 323.3,
+    "h": 45
+   },
+   "text": "This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0.25)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.dprev-bar.zz-ring.zz-tagged"
+  }
+ },
+ "approved": {
+  "picture": "q-readonly-ph-notice-A.png",
+  "identical": true
+ }
+}

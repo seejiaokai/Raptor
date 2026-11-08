@@ -529,7 +529,8 @@ how to record or retire one: `DECISIONS.md`.
   the guest page and the sign-in screen too, and the pass reads "Not sent yet" [D1657, D1664].
 - The design file's: the app is called TALON, not RAPTOR, the sign-in and the access screens included, where the claw
   sits 7px nearer the name [D1590, D1606, D1608].
-- The design file's: Admin → Users' dots carry no band round them — no mark in the app glows [D887].
+- The design file's: Admin → Users' dots carry no band round them — no mark in the app glows, the app's own sign
+  aside, the faint wash once kept with it gone from every page [D887, D1614].
 - The design file's: the posting's delete — at its Delete chip, its PO from date and the Post out button — asks its
   second step in a card hanging from the control, "Delete <name>?" with Delete and Cancel [D1627, D1628].
 - The design file's: on a phone the page itself never zooms; Quals is one of the grids that zoom by their own pinch

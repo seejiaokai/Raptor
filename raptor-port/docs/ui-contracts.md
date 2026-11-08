@@ -6970,7 +6970,7 @@ view and in reach (D1610, his "A").
 - **Moves only by sliding and fading**, so it keeps drawing while the page is busy building itself (walked: 91 screen
   frames, 46 changed, while the Leave War drew its grid on a phone slowed 4x).
 - Walked 3 Nov 26: `docs/handpass/2026-11-03-talon-pages.md` (61 checks, Chromium and WebKit).
-- *(To build — D1631, [LAZY-PAGE-LOAD-FAIL]:)* **a failed download touches only its own page.** Each of the two pages is
+- *(Built 4 Nov 26 — D1631, [LAZY-PAGE-LOAD-FAIL]:)* **a failed download touches only its own page.** Each of the two pages is
   caught on its own: its area shows a card copied from the Tracker's "No course yet" card — "Couldn't open the Leave War"
   (or the Tracker), "It didn't download. Check your signal, then retry.", Retry — the top bar staying; the desktop's hidden
   pre-warm that fails shows nothing until the page is opened, then the card. Retry reloads the app (D1633, narrowing
@@ -6991,7 +6991,7 @@ view and in reach (D1610, his "A").
   address (the SWiFT kit: a code app's address never changes) — `ui/pagedownload.ts noteReopen` / `takeReopen`, read by `ui/Login.tsx`. **D1636 (built 4 Nov 26):** after a Retry that did not bring
   the page, the keyboard is back on Retry, which wears the app's own cyan focus ring; the claw stands at least one full
   round, about 1.3 s. **D1637:** the card's words stay "It didn't download. Check your signal, then retry." **D1638:** with no signal, a file cut off or a save waiting, Retry does not reload — the card comes back, still signed in (narrowing D1633).
-- *(To build — D1632:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
+- *(Built 4 Nov 26 — D1632, `ui/pageclaw.ts`:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
 
 ## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
 
@@ -11864,8 +11864,11 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
   person works, and under a two-line bar would open on Retry); they are drawn beside the shell, so `#shell` carries
   `.save-failed` too. Desktop only (621px and wider) — on a phone both are bottom panels and the rule must not reach
   them — and shorter by the band, so the foot stays on a short screen. Only a window still at its default spot: one a
-  person has moved or resized carries `data-placed` (`ui/floatwin.ts`) and keeps its own box — capped by the stylesheet,
-  its shrunken height would be recorded as the size he chose. Where he puts it is his, over the warning included. **A new thing pinned at a fixed height near
+  person has moved or resized carries `data-placed` (`ui/floatwin.ts`), so this stylesheet rule leaves it alone — capped
+  by the stylesheet, its shrunken height would be recorded as the size he chose. One he has moved keeps its own box;
+  one he has only resized, never moved, keeps its size but is placed by `ui/floatwin.ts` as an unplaced window is,
+  below the bar and the band, so "Not saved" and Retry are never covered (owner D1523, 30 Oct 26). Where he puts it is
+  his, over the warning included. **A new thing pinned at a fixed height near
   the top must do the same**, or be measured from the bar.
 - **…and under a two-line top bar** (the schedule pages and the Inputs page, about 900–1366 wide on his PC; at 1440 too on
   GitHub's Linux machines, whose letters are wider) a window still at its default spot — the changes window, the ALL
@@ -12431,7 +12434,9 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1783** — in OIL Earn a tap on a puck that cannot earn picks nothing; the plain passing note says "Nothing changed for
   <callsign>." and the reason.
 - **D1784** — an input filed after publishing wears the waiting mark on its Unavailable row too, as on Ground Programme.
+  Built (chat 13): `engine/publish.ts pendingInputIds` (the list the count reads), `ui/html.ts unavPendAtt` on the week's and the board's (`board-html.ts sbInpRow`) Unavailable name, drawn by `scheduler/04-pucks-sections.css`; pins `ui/unavmark.test.tsx`.
 - **D1785** — an unreadable week's notice and refusal words, the refusal in the grey "Blocked:" note.
+  Built (chat 13): `engine/quarantine.ts weekLockReason`; the notice `ui/html.ts quarantineNote` (the week and the board); the refusal `engine/publish.ts lockedWeekNote` / `lockedDayNote`, at every door that refused a locked week; pins `engine/lockednote.test.ts`, `state/quarantine-funnel.test.ts`, `ui/html.test.ts`.
 - **D1787** — the desktop Inputs list's "+ Input" at its row's right end; the list makes room for the window from about
   1340 wide, Name, Start and End narrowing first; narrower, the window covers it as today. The older narrow-list fault
   (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing. *Built 8 Nov 26 (chat 7,
@@ -12468,7 +12473,14 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   place (chat 10, 8 Nov 26; the smoke's "no event on it takes a press" and the half-speed double-click pin it).
 - **D1860** — the Tracker's "Delete course" question and an import's note on a deleted course drop their typed ↺ and ⇅
   marks ("Restore in Reorder courses brings it back…"), every other word kept; to build with the Tracker's next batch
-  ([TRK-POP-ASKED]).
+  ([TRK-POP-ASKED]). **Built 8 Nov 26 (chat 20, pull request 696).**
+- **D1900** — the Tracker's search magnifier is the app's own (`ui/icons.tsx`), its handle as long as every other
+  search box's (D1127), in place of `components/SrchGlyph.jsx`'s shorter one; to build ([TRK-KEPT-COPIES]).
+- **D1901** — in a browser that refuses to store anything, every page shows a "Not kept" band under the top bar (the
+  drawn warning sign, **Not kept**, "this browser loses your work on a reload", no Retry), in the "Not saved" strip's look
+  (D1655), the page moved down under it; the Tracker's corner shows nothing while it is up; "Not saved" stays the
+  failed-save band's words (D1667). The drawing: chat 20's questions page (`docs/mock/2026-11-08-chat20-tracker-questions.html`);
+  to build ([TRK-NOSTORE-SAVED]).
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
   **Built 8 Nov 26 (chat 9):** `components/Header.jsx` — wherever Find is the strip (`max-width:1050px`, tracker.css's
   own break) ✕ clears, closes the strip and blurs the box (the keyboard goes down, the tabs come back), its hover words
@@ -12477,6 +12489,7 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
   hidden warning's ↺; the ✕ stays typed. *(b) built 8 Nov 26 (chat 7):* `ui/glyphs.ts` `EXPAND_INNER` / `COMPACT_INNER`
   (`ui/icons.tsx` `ExpandIcon` / `CompactIcon`) on `ui/InputsCal.tsx`'s `ib-expand`, 16px; pin `ui/inputsmonth.test.tsx`.
+  Built (chat 13 — the eye and the warning's arrow): `ui/glyphs.ts EYE_INNER`, drawn in the plan selector, the version banner (`html.ts`, `SchedBoard.tsx`) and the wave templates window; the Reset arrow on a hidden warning (`html.ts`, `board.ts`); pins `ui/planselector.test.tsx`, `ui/warnmute-week.test.ts`.
   **(c) built 8 Nov 26 (chat 9):** the Tracker's Restore — ⇅ Reorder courses' and syllabi's deleted lists — wears the
   Tracker's own drawn Reset arrow (`components/Glyphs.jsx` `ResetGlyph`, the same paths as the app's `RESET_INNER`), at
   the drawing's 15px; no shared icon set touched. Pins: `trk-round-seen.test.ts`, the smoke suite.

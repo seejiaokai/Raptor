@@ -222,10 +222,17 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   DOES show in GitHub's record — a new `Production` deployment with a `success` status. Check that its commit is the
   one named in (1) — not merely that a deployment appeared — after he says it is done, then send the one "it is live"
   notification (D143). If it is some other commit, say so at once: the wrong thing is live.
-- **Docs-only changes skip the gates** (`paths-ignore`: `**.md`, `.claude/**`, `raptor-port/scripts/docsize*.mjs`,
-  `backlog-archive.mjs`, `docs-guard.yml`); the Docs guard (`docs-guard.yml`) still runs on every PR and every push
-  to `main`; since D1407 (27 Oct 26) a change of notes only merges by itself once its run is green, and any other docs
-  change still waits for his "merge live" (`.claude/rules/shipping.md`).
+- **Docs-only changes skip the gates** (the list: `**.md`, `.claude/**`, `.impeccable/**`,
+  `raptor-port/scripts/docsize*.mjs`, `backlog-archive.mjs`, `docs-guard.yml`). A push to `main` skips them by the
+  trigger's `paths-ignore`; a pull request, since 8 Nov 26 ([TESTS-REQUIRED-ON-MAIN], chat 19), always starts the
+  workflow, and its first job, "what changed" (`raptor-port/scripts/ci/checks-passed.mjs`, a test holding its list
+  equal to the push list), skips every gate job when only notes changed — so the last job, **"checks passed"**, always
+  reports, and is the one check GitHub can require — required on `main` since 8 Nov 26, his click adding it to the ruleset "main: secrets scan" beside the secrets scan (a workflow `paths-ignore` skips reports nothing, and a required
+  check that never reports leaves a pull request waiting for ever). "checks passed" fails if any gate failed or was
+  cancelled, or if code changed and no whole gate run passed (a skipped gate reports success, so it is never taken as
+  a pass). The Docs guard (`docs-guard.yml`) still runs on every PR and every push to `main`; since D1407 (27 Oct 26) a
+  change of notes only merges by itself once its run is green, and any other docs change still waits for his "merge
+  live" (`.claude/rules/shipping.md`).
 
 ## How the gates lie — moved whole from `HANDOFF.md` §Gate status (24 Sep 26)
 
@@ -499,7 +506,9 @@ routing every look through the gated Pages deploy.
   (corrected 17 Sep 26; the old wording said "merges immediately", the same
   stale exemption that got a fix merged without him on 9 Sep; narrowed 27 Oct 26 by D1407: a notes-only pull
   request now merges itself once its run is green — `.claude/rules/shipping.md`). A mixed
-  code+docs PR still runs the full gates.
+  code+docs PR still runs the full gates. **Changed 8 Nov 26 for pull requests ([TESTS-REQUIRED-ON-MAIN]):** a notes-only
+  pull request now starts the workflow, which skips its gates from inside and reports "checks passed" — §Now above,
+  the bullet "Docs-only changes skip the gates"; a push to `main` still skips the workflow entirely.
 - **Known cosmetic warning, deliberately deferred (15 Aug 26):** the runner
   logs "actions/checkout@v4, setup-node@v4, cache@v4 target Node 20, forced
   onto Node 24". A warning, not a failure — every run passes with it. Bump

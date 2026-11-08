@@ -21,6 +21,9 @@ import { txtSet } from '../engine/slots'
 import { DPREV, setDayPreview } from '../state/view'
 import { HOOKS } from '../engine/hooks'
 import { planSelectorHTML, verTagHTML } from './html'
+import { glyphSvg, EYE_INNER } from './glyphs'
+import { readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 
 /* sign all four roles so a day can be published / an AL issued */
@@ -79,15 +82,18 @@ describe('the selector LABEL + title tag — the five-state matrix (A6)', () => 
     expect(verTagHTML(0)).toContain('verchip orig')  // still issued as ORIG
   })
 
-  it('5 · previewing an issued version → amber "👁 AL1", tag still names the live issue', () => {
+  it('5 · previewing an issued version → amber, the line eye then "Original", tag still names the live issue', () => {
     sign(0); setDayApproved(0, 1)
     txtSet('dn:0.0', 'LIVE CHANGE'); sign(0); alIssue(0)   // now issued at AL1
     const origVer = SCHED.orig[0].id
     setDayPreview(0, origVer)                              // look back at ORIG
     const sel = planSelectorHTML(0)
     expect(sel).toContain('planselbtn pv')                // amber state
-    expect(sel).toContain('👁')
-    expect(sel).toContain('Original')                     // what you are viewing (verLabel)
+    /* D1792 (a), 8 Nov 26: the wave templates window's own line eye, drawn by the app — not the typed 👁, which an
+       iPhone draws as a coloured emoji — then the same space and the version's name; the hover words unchanged */
+    expect(sel).toContain(`<span class="psl">${glyphSvg(EYE_INNER, 'pveye')} Original</span>`)
+    expect(sel).not.toContain('👁')
+    expect(sel).toContain('title="Viewing Original — tap to switch plan or look at another version"')
     /* the title tag still names what the day IS (AL1), not what you preview */
     expect(verTagHTML(0)).toContain('AL1')
     setDayPreview(0, null)
@@ -178,6 +184,11 @@ describe('the menu + the must-fix behaviours', () => {
     const bar = $('#eWeek .day[data-day="0"] .dprev-bar')
     expect(bar).toBeTruthy()
     expect(bar.querySelector('[data-golive]')).toBeTruthy()
+    /* D1792 (a): the selector and the banner both draw the line eye, and the banner's words are unchanged */
+    expect($('#eWeek .day[data-day="0"] .planselbtn.pv .psl svg.pveye'), 'the selector draws the eye').toBeTruthy()
+    expect(bar.querySelector('svg.pveye'), 'the banner draws the eye').toBeTruthy()
+    expect(bar.textContent).toContain('Viewing the issued Original — read-only. This is what was sent out; it never changes.')
+    expect(bar.textContent).not.toContain('👁')
     /* A3: Publish AL is NOT reachable while previewing */
     expect($('#eWeek .day[data-day="0"] [data-alpub]')).toBeFalsy()
     /* A3 (Codex PS-006 / Fable #2): live == AL1, so nothing is pending — the
@@ -225,5 +236,31 @@ describe('the menu + the must-fix behaviours', () => {
     await act(async () => { notify() })
     expect(dayDrafts(0)).toEqual([])                  // plans cleared (option a)
     expect($('#eWeek .day[data-day="0"] .dhtpl [data-planmenu] .psl')!.textContent).toBe('Live working copy')
+  })
+})
+
+/* D1792 (a), 8 Nov 26 — "All as recommended": the 👁 of a look at a published version takes the wave templates window's
+   line eye. A typed 👁 is an emoji his iPhone draws in colour, so none may stay anywhere a person sees in the screens'
+   code — the selector, the week's banner and the board's banner draw the one shared eye (ui/glyphs.ts EYE_INNER).
+   Comments are left out of the scan (a comment may name the old mark); the engine's comment stays (an engine change
+   is a behaviour change only). */
+describe('D1792 (a): no typed eye left in the screens', () => {
+  it('no 👁 in any shipped file under src/ui, outside comments', () => {
+    const walk = (d: string): string[] => readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(join(d, e.name))
+      : /\.(ts|tsx|css)$/.test(e.name) && !/\.test\./.test(e.name) ? [join(d, e.name)] : [])
+    const hits: string[] = []
+    for (const f of walk('src/ui')) {
+      /* block comments blanked (their line breaks kept, so a hit names its true line), then a line comment's tail */
+      const code = readFileSync(f, 'utf8').replace(/\/\*[\s\S]*?\*\//g, m => m.replace(/[^\n]/g, ' ')).split('\n').map(l => l.replace(/\/\/.*$/, ''))
+      code.forEach((l, i) => { if (l.includes('\u{1F441}')) hits.push(`${f}:${i + 1}`) })
+    }
+    expect(hits).toEqual([])
+  })
+
+  it('the wave templates window draws its eye from the same shared drawing', () => {
+    const src = readFileSync('src/ui/WaveTplModal.tsx', 'utf8')
+    expect(src, 'EyeOn reads the one eye').toMatch(/const EyeOn = [^\n]*EYE_INNER/)
+    expect(EYE_INNER).toBe('<path d="M1.5 12S5 5 12 5s10.5 7 10.5 7S19 19 12 19 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.2"/>')
+    expect(glyphSvg(EYE_INNER, 'pveye')).toContain('class="pveye"')
   })
 })

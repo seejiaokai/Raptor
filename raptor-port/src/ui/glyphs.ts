@@ -32,6 +32,12 @@ export const DESKTOP_INNER = '<rect x="2" y="3" width="20" height="14" rx="2"/><
 export const TICKET_INNER = '<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>'
   + '<path d="M13 5v2M13 17v2M13 11v2"/>'
 
+/** The eye — the wave templates window's own "shown" mark (`ui/WaveTplModal.tsx` EyeOn draws from here, its look
+ *  unchanged). Since D1792 (a), 8 Nov 26, it is also the eye of a look at a published version or a saved plan — the
+ *  day's plan selector and the look's banner, on Edit Schedule's week and the Scheduler Board — where a typed eye stood,
+ *  which his iPhone draws as a coloured emoji. */
+export const EYE_INNER = '<path d="M1.5 12S5 5 12 5s10.5 7 10.5 7S19 19 12 19 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.2"/>'
+
 /** A drawing as markup, for the HTML-string builders. `cls` sizes it where it stands. */
 export function glyphSvg(inner: string, cls = 'btnglyph'): string {
   return `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"`

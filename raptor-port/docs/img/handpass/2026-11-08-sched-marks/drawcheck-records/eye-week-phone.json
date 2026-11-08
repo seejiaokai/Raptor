@@ -1,0 +1,179 @@
+{
+ "state": "eye-week-phone",
+ "drawing": {
+  "script": "scripts/handpass/pr-marks.mjs",
+  "shot": "q-r5a-ph-week-drawn"
+ },
+ "recorded": "2026-11-08T05:08:14.605Z",
+ "drawnOn": "main at 6e6c55667",
+ "checkout": "9fc5961d9",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "sel": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 38,
+    "y": 173,
+    "w": 84.5,
+    "h": 22
+   },
+   "ink": {
+    "x": 58,
+    "y": 177,
+    "w": 55.5,
+    "h": 14
+   },
+   "text": "Original ▾",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 10.5px",
+    "spacing": "0.21px"
+   },
+   "tag": "button.planselbtn.pv.zz-ring.zz-tb"
+  },
+  "seleye": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 47,
+    "y": 178.5,
+    "w": 11,
+    "h": 11
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 10.5px",
+    "spacing": "0.21px"
+   },
+   "tag": "svg"
+  },
+  "bar": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 11,
+    "y": 236,
+    "w": 356,
+    "h": 91
+   },
+   "ink": {
+    "x": 22,
+    "y": 246.5,
+    "w": 324,
+    "h": 69.5
+   },
+   "text": "← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0.25)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.dprev-bar.zz-ring"
+  },
+  "bareye": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 150.3,
+    "y": 248,
+    "w": 12,
+    "h": 12
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q-r5a-ph-week-drawn.png",
+  "identical": true
+ }
+}

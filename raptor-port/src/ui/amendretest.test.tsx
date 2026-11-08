@@ -401,13 +401,15 @@ describe('an input brought back by a load (W4-F3)', () => {
 })
 
 describe('the board keeps the plans selector and the version tag while you look at an issued version (W2-F1, AM28)', () => {
-  it('the amber "👁 Original" and the tag stay; the sign-offs and every publish door go', () => {
+  it('the amber eye-and-"Original" selector and the tag stay; the sign-offs and every publish door go', () => {
     publishDay(MON)
     writeText(`dn:${MON}.0`, 'A CHANGE AFTER PUBLISHING')
     DPREV.set(MON, SCHED.orig[MON].id)
     try {
       const s = el(boardSignHTML(MON, true))              // exactly as SchedBoard calls it under a preview
-      expect(s.querySelector('.planselbtn')?.textContent || '', 'what you are looking at').toMatch(/👁\s*Original/)
+      /* D1792 (a), 8 Nov 26: the eye is the app's drawn line eye before the version's name, never the typed emoji */
+      expect(s.querySelector('.planselbtn .psl svg.pveye'), 'the drawn eye').toBeTruthy()
+      expect((s.querySelector('.planselbtn .psl')?.textContent || '').trim(), 'what you are looking at').toBe('Original')
       expect(s.querySelector('.verchip')?.textContent, 'what the day IS').toBe('ORIG')
       expect(s.querySelector('select[data-sign]'), 'no signing a past version').toBeNull()
       expect(s.querySelector('[data-alpub], [data-beak], [data-unpub]'), 'no publish door under a preview').toBeNull()

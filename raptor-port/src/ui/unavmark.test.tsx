@@ -1,0 +1,453 @@
+// @vitest-environment jsdom
+/* THE WAITING MARK ON AN UNAVAILABLE ROW (owner D1784, 8 Nov 26 — "All as recommended", the pictures round's question 5,
+   "A waiting mark on Unavailable"): an input filed, changed or moved after its day was published wears, on its
+   Unavailable row, the same waiting mark a Ground Programme row wears — on the week its name underlined dotted in the
+   amendment's colour, on the board its name box outlined dotted — until the day's next amendment goes out. No new words,
+   no new look: the mark is the attribute pair every other waiting change carries (` data-alp="1" data-aln="<n>"`, n the
+   amendment it will go out as — engine/publish.ts nextSeq), and the stylesheet draws it.
+
+   The mark and the day's count read ONE list (engine/publish.ts dayPendingItems, through pendingInputIds), so every
+   input the count names wears it: a leave filed since, one whose details changed, one re-dated onto the day, a request
+   moved off the Ground Programme under Unavailable ("→ Unavail", an Other's "Goes to"), a man split out of a shared
+   input (his own new record), both inputs of a man moved between two, and a man's record replaced by another of his.
+   Never on a draft day, a look at a version, the issued face, in OIL Earn (where the Ground name wears none either —
+   measured below first), under Personal Inputs, or on an input untouched since the day went out.
+
+   Driven through the doors the screens call (the input window's commitNewInput / commitInputEdit / commitInput /
+   setInpField / removeInput, the accept buttons' acceptInput / unacceptInput, publishing through setDayApproved /
+   publishALDay) and read off the week's and the board's own builders. */
+import { beforeAll, beforeEach, afterEach, describe, expect, it } from 'vitest'
+import { DAYS } from '../engine/data'
+import { INPUTS, inpId, idsOf } from '../engine/inputs'
+import { acceptInput, unacceptInput, txtSet } from '../engine/slots'
+import { SCHED, signOf, setSign, setDayApproved, dayPendingItems, dayShownPendCount, nextSeq, publishALDay, pendingInputIds, dayCurVer, inputIdOf } from '../engine/publish'
+import { PEOPLE } from '../engine/people'
+import { validate } from '../engine/validate'
+import { initStore } from '../state/store'
+import { setSession } from '../state/auth'
+import { setPage, DPREV, VWORK, PIOPEN, setUnpubArm, setRestArm } from '../state/view'
+import { dayHTML, dayIssuedHTML, dayPreviewHTML, withDaySnap, accCtl } from './html'
+import { routeClick, jumpToChange } from './interactions'
+import { boardHTML } from './board'
+import { commitNewInput, commitInputEdit, commitInput, draftOf, removeInput, setInpField } from './inputedit'
+import { toggleOilMode, oilModeOn } from './oilmode'
+import { pendListHTML, pendKeysFor } from './pendlist'
+import { findInputCell } from './histbubble'
+
+const MON = 0, WED = 2, THU = 3
+let pristine: any[], inputs0: string
+const FOUR: Array<[string, string]> = [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']]
+const sign = (di: number) => { const g = signOf(di); for (const [r, w] of FOUR) (g as any)[r] = w }
+const publishDay = (di: number) => { sign(di); setDayApproved(di, true); validate() }
+/* a pending change wipes the sign-offs (D103): an amendment is signed again, against what it carries, before it goes out */
+const publishAL = (di: number) => { validate(); for (const [r, w] of FOUR) setSign(di, r, w); publishALDay(di); validate() }
+const el = (html: string) => { const d = document.createElement('div'); d.innerHTML = html; return d }
+const leaveDraft = (person: string, iso: string, remarks: string, type = 'LL') =>
+  ({ person, type, allday: true, half: '', start: iso, end: '', sTime: '06:00', eTime: '18:00', remarks, sans: null, docIds: [] })
+const byRemark = (t: string) => INPUTS.find((r: any) => r.remarks === t)!
+const taipanOL = () => INPUTS.find((r: any) => r.person === 'taipan' && r.type === 'OL')!   // seed: Wed 15 Jul, all day
+const pikeOD = () => INPUTS.find((r: any) => r.person === 'pike' && r.type === 'OD')!         // seed: Wed 15 – Fri 17 Jul
+
+/* the week's Unavailable names (Edit Schedule), each with its waiting mark — by the input's id */
+const weekUnav = (di: number) => { setPage('editsched'); return el(dayHTML(di, true, true)).querySelector('.sec-unav') as HTMLElement }
+const weekName = (di: number, iid: string) => weekUnav(di)?.querySelector(`button.inpedit[data-inpedit="${iid}"]`) as HTMLElement | null
+/* the board's Unavailable panel and its name pills */
+const boardUnav = (di: number) => { setPage('editsched'); return el(boardHTML(di)).querySelector('.sb-panel.unav') as HTMLElement }
+const boardName = (di: number, iid: string) => boardUnav(di)?.querySelector(`.sbi-ty[data-inpedit="${iid}"]`) as HTMLElement | null
+const aln = (e: Element | null | undefined) => (e ? e.getAttribute('data-aln') : 'NO ELEMENT')
+/* every mark under a surface's Unavailable list */
+const marksIn = (root: Element | null) => Array.from(root ? root.querySelectorAll('[data-aln]') : [])
+
+beforeAll(() => {
+  initStore()
+  setSession({ user: 'ad', role: 'admin' } as any)
+  pristine = structuredClone(DAYS)
+  inputs0 = JSON.stringify(INPUTS)
+})
+beforeEach(() => {
+  DAYS.length = 0; structuredClone(pristine).forEach((d: any) => DAYS.push(d))
+  INPUTS.length = 0; JSON.parse(inputs0).forEach((i: any) => INPUTS.push(i))
+  SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
+  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.signBind = {}; SCHED.orig = {}; SCHED.cur = {}
+  SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.retired = {}; SCHED.correcting = {}
+  DPREV.clear(); VWORK.clear()
+  setUnpubArm(null); setRestArm(null, null)
+  setPage('editsched')
+  validate()
+})
+afterEach(() => { for (const di of [MON, WED, THU]) if (oilModeOn(di)) toggleOilMode(di) })
+
+describe('D1784 — an input changed after its day was published wears the waiting mark on its Unavailable row', () => {
+  it('a leave FILED after publishing: its name on the week and on the board carry the next amendment, the count names it, and the amendment clears it', () => {
+    publishDay(MON)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'LATE LEAVE D1784'))).toBe(true)
+    validate()
+    const id = String(inpId(byRemark('LATE LEAVE D1784')))
+    expect(dayShownPendCount(MON), 'the day counts it').toBe(1)
+    expect(pendingInputIds(MON).has(id), 'the one list the count reads names it').toBe(true)
+    expect(nextSeq(MON), 'it goes out as AL1').toBe(1)
+    expect(aln(weekName(MON, id)), 'the week: its name').toBe('1')
+    expect(weekName(MON, id)!.getAttribute('data-alp')).toBe('1')
+    expect(weekName(MON, id)!.getAttribute('title'), 'its own title stays — no second one').toMatch(/^Edit this input/)
+    expect(aln(boardName(MON, id)), 'the board: its name box').toBe('1')
+    expect(marksIn(weekUnav(MON)), 'only that row of the list').toHaveLength(1)
+    publishAL(MON)
+    expect(dayShownPendCount(MON), 'gone out').toBe(0)
+    expect(aln(weekName(MON, id)), 'the mark goes with it (week)').toBe(null)
+    expect(aln(boardName(MON, id)), 'the mark goes with it (board)').toBe(null)
+  })
+
+  it('the next amendment after AL1 is AL2, and the mark says so', () => {
+    publishDay(MON)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'FIRST'))).toBe(true)
+    publishAL(MON)
+    expect(dayShownPendCount(MON), 'AL1 went out').toBe(0)
+    expect(commitNewInput(leaveDraft('split', '2026-07-13', 'SECOND'))).toBe(true)
+    validate()
+    expect(aln(weekName(MON, String(inpId(byRemark('SECOND')))))).toBe('2')
+    expect(aln(weekName(MON, String(inpId(byRemark('FIRST'))))), 'the one already out wears nothing waiting').toBe(null)
+  })
+
+  it('its details changed after publishing (the remark, then the times): marked', () => {
+    publishDay(WED)
+    const inp = taipanOL(), id = String(inpId(inp))
+    expect(aln(weekName(WED, id)), 'untouched since publishing: no mark').toBe(null)
+    expect(commitInputEdit(inp, { ...draftOf(inp), remarks: 'EDITED AFTER PUBLISH' })).toBeTruthy()
+    validate()
+    expect(aln(weekName(WED, id))).toBe('1')
+    expect(aln(boardName(WED, id))).toBe('1')
+  })
+
+  it('re-dated onto the published day: marked there', () => {
+    publishDay(WED)
+    expect(commitNewInput(leaveDraft('split', '2026-07-16', 'MOVES ONTO WED'))).toBe(true)
+    const inp = byRemark('MOVES ONTO WED'), id = String(inpId(inp))
+    expect(commitInputEdit(inp, { ...draftOf(inp), start: '2026-07-15' })).toBeTruthy()
+    validate()
+    expect(dayShownPendCount(WED)).toBe(1)
+    expect(aln(weekName(WED, id))).toBe('1')
+    expect(aln(boardName(WED, id))).toBe('1')
+  })
+
+  it('"→ Unavail" of a request the issued day had on the Ground Programme: marked under Unavailable', () => {
+    const inp = INPUTS.find((r: any) => r.person === 'bane' && r.type === 'Appointment')!   // Thu 16 Jul
+    if (inp.acc !== 'g') expect(acceptInput(THU, inp, 'g')).toBe(true)
+    expect(inp.acc, 'on the Ground Programme when the day goes out').toBe('g')
+    publishDay(THU)
+    const id = String(inpId(inp))
+    expect(unacceptInput(THU, inp)).toBe(true)
+    expect(acceptInput(THU, inp, 'u'), 'filed under Unavailable').toBe(true)
+    validate()
+    expect(dayPendingItems(THU).some((it: any) => it.inp), 'the one change pairs the row and its filing (D114)').toBe(true)
+    expect(aln(weekName(THU, id))).toBe('1')
+    expect(aln(boardName(THU, id))).toBe('1')
+  })
+
+  it('an Other whose "Goes to" moves it from the programme to Unavailable after publishing: marked', () => {
+    expect(commitNewInput({ ...leaveDraft('split', '2026-07-15', 'AN OTHER', 'Other'), allday: false, sTime: '09:00', eTime: '10:00', goes: 'g' })).toBe(true)
+    const inp = byRemark('AN OTHER'), id = String(inpId(inp))
+    if (inp.acc !== 'g') expect(acceptInput(WED, inp, 'g')).toBe(true)
+    publishDay(WED)
+    expect(aln(weekName(WED, id)), 'not under Unavailable yet').toBe('NO ELEMENT')
+    expect(commitInputEdit(inp, { ...draftOf(inp), goes: 'u' })).toBeTruthy()
+    validate()
+    expect(byRemark('AN OTHER').acc).toBe('u')
+    expect(aln(weekName(WED, id))).toBe('1')
+    expect(aln(boardName(WED, id))).toBe('1')
+  })
+
+  it('a man split out of a shared input after publishing: his own new record wears the mark too (Astra, required)', () => {
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 15', yr: 2026, allday: true, remarks: 'Exercise X' }), ['bane', 'split', 'rocky'])).toBe(true)
+    publishDay(WED)
+    const od = INPUTS.find((r: any) => r.remarks === 'Exercise X' && r.type === 'OD')!
+    expect(setInpField(od, 'rmks', 'Exercise X — back Thursday', 'rocky'), 'typed on Rocky’s own row').toBe(true)
+    validate()
+    const now = INPUTS.filter((r: any) => r.type === 'OD' && /^Exercise X/.test(String(r.remarks || '')))
+    expect(now.map((r: any) => idsOf(r).map(String)), 'Rocky has a record of his own').toEqual([['bane', 'split'], ['rocky']])
+    expect(dayShownPendCount(WED), 'one change (the input’s)').toBe(1)
+    for (const r of now) expect(aln(weekName(WED, String(inpId(r)))), `${idsOf(r).join('+')}’s row`).toBe('1')
+    for (const r of now) expect(aln(boardName(WED, String(inpId(r)))), `${idsOf(r).join('+')}’s row (board)`).toBe('1')
+  })
+
+  it('a man moved between two inputs: the input he left wears it as well as the one he joined (Astra)', () => {
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 15', yr: 2026, allday: true, remarks: 'Exercise A' }), ['bane', 'split'])).toBe(true)
+    expect(commitInput(null, draftOf({ person: 'rocky', type: 'OD', date: 'Jul 15', yr: 2026, allday: true, remarks: 'Exercise B' }), ['rocky'])).toBe(true)
+    publishDay(WED)
+    const A = INPUTS.find((r: any) => r.remarks === 'Exercise A')!, B = INPUTS.find((r: any) => r.remarks === 'Exercise B')!
+    const a = String(inpId(A)), b = String(inpId(B))
+    expect(commitInput(A, draftOf(A), ['bane'])).toBe(true)
+    expect(commitInput(B, draftOf(B), ['rocky', 'split'])).toBe(true)
+    validate()
+    const items = dayPendingItems(WED)
+    expect(items.some((it: any) => it.pp && it.pp.role === 'move'), 'one move (D109): the input he left rides it').toBe(true)
+    expect(aln(weekName(WED, a)), 'the input he left').toBe('1')
+    expect(aln(weekName(WED, b)), 'the input he joined').toBe('1')
+    expect(aln(boardName(WED, a))).toBe('1')
+    expect(aln(boardName(WED, b))).toBe('1')
+  })
+
+  it('a man’s record replaced by another of his (deleted, then a new one filed of the same type): the new row wears it', () => {
+    publishDay(WED)
+    const old = taipanOL()
+    expect(removeInput(old)).toBeTruthy()
+    expect(commitNewInput(leaveDraft('taipan', '2026-07-15', 'NEW OL', 'OL'))).toBe(true)
+    validate()
+    const nw = byRemark('NEW OL'), id = String(inpId(nw))
+    expect(dayShownPendCount(WED), 'one edit (inputs.ts frozenInputMatch, step 4)').toBe(1)
+    expect(aln(weekName(WED, id))).toBe('1')
+    expect(aln(boardName(WED, id))).toBe('1')
+  })
+})
+
+describe('D1784 — where the mark never shows', () => {
+  it('a draft (unpublished) day: no mark, as on the Ground Programme (a draft day shows none)', () => {
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'DRAFT DAY LEAVE'))).toBe(true)
+    validate()
+    const id = String(inpId(byRemark('DRAFT DAY LEAVE')))
+    expect(weekName(MON, id), 'the row is there').toBeTruthy()
+    expect(aln(weekName(MON, id))).toBe(null)
+    expect(aln(boardName(MON, id))).toBe(null)
+    expect(pendingInputIds(MON).size).toBe(0)
+  })
+
+  it('an input untouched since publishing, beside one that changed: only the changed one', () => {
+    publishDay(WED)
+    expect(commitNewInput(leaveDraft('split', '2026-07-15', 'NEW ON WED'))).toBe(true)
+    validate()
+    expect(aln(weekName(WED, String(inpId(taipanOL()))))).toBe(null)
+    expect(aln(weekName(WED, String(inpId(pikeOD()))))).toBe(null)
+    expect(marksIn(weekUnav(WED))).toHaveLength(1)
+    expect(marksIn(boardUnav(WED))).toHaveLength(1)
+  })
+
+  it('a look at the Original: no mark, on the week or the board (the look shows what went out)', () => {
+    publishDay(WED)
+    const inp = taipanOL(), id = String(inpId(inp))
+    expect(commitInputEdit(inp, { ...draftOf(inp), remarks: 'EDITED, THEN LOOKED BACK' })).toBeTruthy()
+    validate()
+    expect(aln(weekName(WED, id)), 'the working copy wears it').toBe('1')
+    const ver = dayCurVer(WED)
+    setPage('editsched')
+    const week = el(dayPreviewHTML(WED, ver, true)), unav = week.querySelector('.sec-unav')
+    expect(unav && unav.textContent, 'the look draws his row as it went out').toContain('Overseas leave')
+    expect(marksIn(unav), 'the week look').toHaveLength(0)
+    const board = el(withDaySnap(WED, ver, () => boardHTML(WED, true)))
+    expect(board.querySelector('.sb-panel.unav')!.textContent).toContain('OL')
+    expect(marksIn(board.querySelector('.sb-panel.unav')), 'the board look').toHaveLength(0)
+  })
+
+  it('the issued face (View-only Sched, what a member reads): no mark, as the Ground row has none', () => {
+    publishDay(WED)
+    expect(commitInputEdit(taipanOL(), { ...draftOf(taipanOL()), remarks: 'MEMBER SEES NOT' })).toBeTruthy()
+    validate()
+    setPage('viewsched')
+    try { expect(marksIn(el(dayIssuedHTML(WED)).querySelector('.sec-unav'))).toHaveLength(0) } finally { setPage('editsched') }
+  })
+
+  it('Personal Inputs rows: no mark (Unavailable only)', () => {
+    publishDay(WED)
+    expect(commitNewInput({ ...leaveDraft('split', '2026-07-15', 'A MEETING', 'Meeting'), allday: false, sTime: '09:00', eTime: '10:00' })).toBe(true)
+    validate()
+    expect(dayShownPendCount(WED), 'it is waiting').toBeGreaterThan(0)
+    setPage('editsched')
+    expect(marksIn(el(dayHTML(WED, true, true)).querySelector('.sec-inp'))).toHaveLength(0)
+    expect(marksIn(el(boardHTML(WED)).querySelector('.sb-panel.pinp'))).toHaveLength(0)
+  })
+
+  it('OIL Earn: the Ground name wears no mark in the mode (measured), and neither does either kind of Unavailable name — an OIL claim’s cell or a plain name', () => {
+    publishDay(WED)
+    /* the Ground name first: a row's name changed after publishing wears the mark outside the mode, none inside */
+    const ri = ((DAYS[WED] as any).ground || []).findIndex((g: any) => g && !g.src)
+    expect(ri, 'a scheduler’s own Ground row').toBeGreaterThanOrEqual(0)
+    txtSet(`gr:${WED}.${ri}.prog`, 'RENAMED AFTER PUBLISH')
+    expect(commitInputEdit(taipanOL(), { ...draftOf(taipanOL()), remarks: 'PLAIN NAME CHANGED' })).toBeTruthy()
+    expect(commitInputEdit(pikeOD(), { ...draftOf(pikeOD()), remarks: 'OD CLAIM CHANGED' })).toBeTruthy()
+    validate()
+    const ground = (root: Element) => root.querySelector(`[data-bfld="gr:${WED}.${ri}.prog"]`)
+    setPage('editsched')
+    const out = el(boardHTML(WED))
+    expect(aln(ground(out)), 'outside the mode the Ground name is marked').toBe('1')
+    expect(aln(out.querySelector(`.sb-panel.unav .sbi-ty[data-inpedit="${inpId(taipanOL())}"]`)), 'and so is the plain Unavailable name').toBe('1')
+    expect(aln(out.querySelector(`.sb-panel.unav .sbi-ty[data-inpedit="${inpId(pikeOD())}"]`)), 'and the OD claim’s').toBe('1')
+    toggleOilMode(WED)
+    const inMode = el(boardHTML(WED))
+    expect(inMode.textContent, 'the Ground row is drawn').toContain('RENAMED AFTER PUBLISH')
+    expect(ground(inMode), 'in the mode the Ground name is the item’s switch, not the box').toBe(null)
+    expect(marksIn(inMode.querySelector('.sb-panel.unav')), 'no Unavailable name is marked in the mode, of either kind').toHaveLength(0)
+    expect(inMode.querySelector('.sb-panel.unav')!.textContent).toContain('OD')
+  })
+})
+
+/* THE TAP ON ITS LINE GOES TO THE ROW THE MARK IS ON (the walk of 8 Nov 26, W1b S30 — Astra's scenario design: a tap on
+   the line in the changes window's "To go out" list lands on the marked row). The line of an input filed, changed or
+   re-dated after publishing was drawn as having "no place of its own on the schedule to go to", though its row stands
+   under Unavailable (or Personal Inputs) and now wears the waiting mark — older than D1784: the same on main's build. A
+   Ground request's line already went to its programme row; this one goes to its input row, the History window's
+   twin (ui/changesjump.ts jumpOf: one man's row first, then the input). */
+describe('the waiting list: a tap on an Unavailable input’s line takes the view to its row', () => {
+  const lineFor = (di: number, text: RegExp) => {
+    const root = el(pendListHTML(di))
+    return [...root.querySelectorAll('.pl-item')].find(e => text.test(e.textContent || '')) as HTMLElement | undefined
+  }
+  it('a leave filed after publishing: its line is a button, and its keys land on its row on the week and on the board', () => {
+    publishDay(MON)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'TAP ME'))).toBe(true)
+    validate()
+    const id = String(inpId(byRemark('TAP ME')))
+    const line = lineFor(MON, /filed/)
+    expect(line, 'the filing has a line').toBeTruthy()
+    expect(line!.tagName, 'a line to tap, not a still one').toBe('BUTTON')
+    const keys = pendKeysFor(line!)
+    expect(keys, 'it goes to the input’s row').toEqual([`iu:${id}`])
+    expect(findInputCell(weekUnav(MON), keys![0]!)?.getAttribute('data-inprow'), 'the week draws that row to land on').toBeTruthy()
+    expect(findInputCell(boardUnav(MON), keys![0]!), 'and so does the board').toBeTruthy()
+    expect(el(pendListHTML(MON)).querySelector('.pl-foot')!.textContent).toBe('Tap a change to go to it.')
+  })
+  it('its details changed: the same', () => {
+    publishDay(WED)
+    const inp = taipanOL(), id = String(inpId(inp))
+    expect(commitInputEdit(inp, { ...draftOf(inp), remarks: 'CHANGED AFTER' })).toBeTruthy()
+    validate()
+    const line = [...el(pendListHTML(WED)).querySelectorAll('button.pl-item')].find(b => pendKeysFor(b as HTMLElement)?.includes(`iu:${id}`))
+    expect(line, 'its line goes to its row').toBeTruthy()
+  })
+  it('one man put into a shared input: his own row first, then the input', () => {
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 15', yr: 2026, allday: true, remarks: 'Exercise J' }), ['bane', 'split'])).toBe(true)
+    publishDay(WED)
+    const od = INPUTS.find((r: any) => r.remarks === 'Exercise J')!, id = String(inpId(od))
+    expect(commitInput(od, draftOf(od), ['bane', 'split', 'rocky'])).toBe(true)
+    validate()
+    const keys = [...el(pendListHTML(WED)).querySelectorAll('button.pl-item')].map(b => pendKeysFor(b as HTMLElement)).find(k => k && k.some(x => x.startsWith(`iu:${id}`)))
+    expect(keys, 'Rocky’s own row, then the input').toEqual([`iu:${id}~rocky`, `iu:${id}`])
+    expect(findInputCell(weekUnav(WED), keys![0]!), 'his row is drawn').toBeTruthy()
+  })
+  it('a man split out of a shared input (a remark typed on his own row): the tap goes to his own new row first', () => {
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 15', yr: 2026, allday: true, remarks: 'Exercise S' }), ['bane', 'split', 'rocky'])).toBe(true)
+    publishDay(WED)
+    const od = INPUTS.find((r: any) => r.remarks === 'Exercise S')!, id = String(inpId(od))
+    expect(setInpField(od, 'rmks', 'Exercise S — back Thursday', 'rocky'), 'typed on Rocky’s own row').toBe(true)
+    validate()
+    const own = INPUTS.find((r: any) => r.type === 'OD' && idsOf(r).map(String).join() === 'rocky' && /^Exercise S/.test(String(r.remarks || '')))!
+    const keys = [...el(pendListHTML(WED)).querySelectorAll('button.pl-item')].map(b => pendKeysFor(b as HTMLElement)).filter(Boolean)
+    expect(keys, 'one line, his own row first, then the input he left').toEqual([[`iu:${inpId(own)}`, `iu:${id}`]])
+    expect(findInputCell(weekUnav(WED), keys[0]![0]!), 'his own row is drawn').toBeTruthy()
+  })
+  it('an input deleted since publishing has no row to go to: its line stays still', () => {
+    publishDay(WED)
+    const inp = taipanOL()
+    removeInput(inp)
+    validate()
+    const line = lineFor(WED, /deleted/)
+    expect(line, 'the deletion has a line').toBeTruthy()
+    expect(line!.tagName, 'nothing to go to').toBe('DIV')
+  })
+})
+
+/* THE FINAL CODE READ'S FINDINGS (8 Nov 26 — Sol 6.1 S1, S2; Astra 1–3; the fresh Opus reader F1, F2, F4): the line goes
+   to the input's row only where the page draws one — under Unavailable on every page, under Personal Inputs on Edit
+   Schedule and the board only (View-only Sched draws none, ui/html.ts crewInputs) — and never for a kind drawn as
+   neither (a SANS availability is a card with no row address, an upchit stands nowhere); the filing lines get it too
+   (a course filed under Unavailable, a request put "→ Unavail"), worked out in one place for every line; and the tap
+   opens Personal Inputs only for an input listed there that has no programme row on the day. */
+describe('the waiting list’s taps go only where the page draws the input’s row', () => {
+  const TUE = 1
+  const keysFor = (di: number, id: string) => [...el(pendListHTML(di)).querySelectorAll('button.pl-item')]
+    .map(b => pendKeysFor(b as HTMLElement)).find(k => !!k && k.some(x => x === `iu:${id}` || x.startsWith(`iu:${id}~`))) || null
+  const waits = (di: number, id: string) => dayPendingItems(di).some(it => inputIdOf(it) === id)
+  const weekPI = (di: number) => { setPage('editsched'); return el(dayHTML(di, true, true)).querySelector('.sec-inp') as HTMLElement }
+  const press = (di: number, r: any, dest: 'x' | 'g' | 'u') => {
+    const b = el(accCtl(di, r)).querySelector(`[data-acc="${dest}"]`) as HTMLElement
+    expect(b, `the "${dest}" button`).toBeTruthy()
+    document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  it('a SANS availability filed after publishing: its line has no row to go to, so it stays still', () => {
+    publishDay(WED)
+    const who = Object.keys(PEOPLE).find(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special
+      && !INPUTS.some((i: any) => i.type === 'SANS Availability' && i.date === 'Jul 15' && idsOf(i).map(String).includes(id)))!
+    expect(commitInput(null, draftOf({ person: who, type: 'SANS Availability', date: 'Jul 15', yr: 2026, allday: true, sans: { f: true }, remarks: 'SANS TAP' }), [who])).toBe(true)
+    validate()
+    const id = String(inpId(byRemark('SANS TAP')))
+    expect(waits(WED, id), 'the filing waits to go out').toBe(true)
+    expect(keysFor(WED, id), 'no line goes to an input row the SANS card does not carry').toBeNull()
+  })
+  it('a course filed after publishing lands under Unavailable: its line goes to its row there, on the week and the board', () => {
+    publishDay(WED)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-15', 'COURSE TAP', 'CSE'))).toBe(true)
+    validate()
+    const inp = byRemark('COURSE TAP'), id = String(inpId(inp))
+    expect(inp.acc, 'a course files itself under Unavailable').toBe('u')
+    const keys = keysFor(WED, id)
+    expect(keys, 'its line goes to its row').toEqual([`iu:${id}`])
+    expect(findInputCell(weekUnav(WED), keys![0]!), 'the week draws it').toBeTruthy()
+    expect(findInputCell(boardUnav(WED), keys![0]!), 'and the board').toBeTruthy()
+  })
+  it('a request on the Ground Programme, Rejected then put "→ Unavail" after publishing: its line goes to its row under Unavailable', () => {
+    expect(commitNewInput({ ...leaveDraft('bane', '2026-07-15', 'MOVE TAP', 'Meeting'), allday: false, sTime: '09:00', eTime: '10:00' })).toBe(true)
+    validate()
+    const id = String(inpId(byRemark('MOVE TAP')))
+    expect(DAYS[WED].ground.some((g: any) => g && g.src === id), 'on Wednesday’s Ground Programme').toBe(true)
+    publishDay(WED)
+    press(WED, byRemark('MOVE TAP'), 'x'); validate()
+    press(WED, byRemark('MOVE TAP'), 'u'); validate()
+    expect(byRemark('MOVE TAP').acc, 'filed under Unavailable').toBe('u')
+    const keys = keysFor(WED, id)
+    expect(keys, 'its line goes to its row').toEqual([`iu:${id}`])
+    expect(findInputCell(weekUnav(WED), keys![0]!), 'the week draws it').toBeTruthy()
+    expect(findInputCell(boardUnav(WED), keys![0]!), 'and the board').toBeTruthy()
+  })
+  it('a Mon–Tue meeting standing on Monday’s programme, Tuesday published, its remarks changed: Tuesday’s line opens Personal Inputs and lands there; View-only Sched has no row to go to', () => {
+    expect(commitNewInput({ ...leaveDraft('bane', '2026-07-13', 'TWO DAY TAP', 'Meeting'), end: '2026-07-14' })).toBe(true)
+    validate()
+    const inp = byRemark('TWO DAY TAP'), id = String(inpId(inp))
+    expect(inp.acc, 'accepted onto the programme').toBe('g')
+    expect(DAYS[MON].ground.some((g: any) => g && g.src === id) && !DAYS[TUE].ground.some((g: any) => g && g.src === id), 'its one row is Monday’s').toBe(true)
+    publishDay(TUE)
+    expect(commitInputEdit(inp, { ...draftOf(inp), remarks: 'TWO DAY TAP changed' })).toBeTruthy()
+    validate()
+    expect(waits(TUE, id), 'Tuesday has it waiting').toBe(true)
+    const keys = keysFor(TUE, id)
+    expect(keys, 'Tuesday’s line goes to its row under Personal Inputs').toEqual([`iu:${id}`])
+    PIOPEN.delete(TUE)
+    jumpToChange(keys!, TUE)
+    expect(PIOPEN.has(TUE), 'the tap opens the folded Personal Inputs').toBe(true)
+    expect(findInputCell(weekPI(TUE), keys![0]!), 'which draws its row to land on').toBeTruthy()
+    setPage('viewsched')
+    expect(keysFor(TUE, id), 'View-only Sched draws no Personal Inputs: nothing to go to').toBeNull()
+    setPage('editsched')
+  })
+  /* the narrow re-read of the fixes (Sol 6.1, 8 Nov 26): a man taken out of a shared input, with no record of his own
+     left, has no row — his line landed on the first man still in it */
+  it('a man taken out of a shared input after publishing has no row left: his line stays still, the others’ rows untouched', () => {
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 15', yr: 2026, allday: true, remarks: 'Exercise R' }), ['bane', 'split', 'rocky'])).toBe(true)
+    publishDay(WED)
+    const od = INPUTS.find((r: any) => r.remarks === 'Exercise R')!, id = String(inpId(od))
+    expect(commitInput(od, draftOf(od), ['bane', 'split'])).toBe(true)
+    validate()
+    expect(waits(WED, id), 'his going out waits').toBe(true)
+    const line = [...el(pendListHTML(WED)).querySelectorAll('.pl-item')].find(e => /taken out/.test(e.textContent || '')) as HTMLElement | undefined
+    expect(line, 'his line').toBeTruthy()
+    expect(line!.tagName, 'nothing of his to go to').toBe('DIV')
+    expect(keysFor(WED, id), 'no line goes to another man’s row').toBeNull()
+  })
+  it('a leave’s tap does not open Personal Inputs: it is not listed there', () => {
+    publishDay(MON)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'LEAVE NO PI'))).toBe(true)
+    validate()
+    const keys = keysFor(MON, String(inpId(byRemark('LEAVE NO PI'))))
+    expect(keys, 'its line goes to its row under Unavailable').toBeTruthy()
+    PIOPEN.delete(MON)
+    jumpToChange(keys!, MON)
+    expect(PIOPEN.has(MON), 'Personal Inputs stays as it was').toBe(false)
+  })
+  it('on View-only Sched an Unavailable line still goes to its row: Unavailable is drawn there', () => {
+    publishDay(MON)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'VIEW TAP'))).toBe(true)
+    validate()
+    setPage('viewsched')
+    const id = String(inpId(byRemark('VIEW TAP')))
+    expect(keysFor(MON, id), 'its line goes to its row').toEqual([`iu:${id}`])
+    setPage('editsched')
+  })
+})
+

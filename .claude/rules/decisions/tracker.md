@@ -18,7 +18,7 @@ Tracker from anywhere else picks these up too. The general rulings are in `.clau
 was told, where it lives — **is in `.claude/decisions-full/tracker.md`, never loaded by itself: open it before acting on a
 ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
 hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
-**Also read** — in `inputs.md`: **D900** (the Tracker's ▣ Select box and its ⇅ Reorder list follow the edge too, with the SANS calendar's pick and the people picker). In `leave-war.md`: **D881** (the Tracker's gold "can fly next" and turquoise "search found" rings lose their glow, keeping their lines). In How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
+**Also read** — in `design.md`: **D1901** (a browser that keeps nothing shows a "Not kept" band under the top bar on every page, the Tracker's corner then empty — answers D1660). In `inputs.md`: **D900** (the Tracker's ▣ Select box and its ⇅ Reorder list follow the edge too, with the SANS calendar's pick and the people picker). In `leave-war.md`: **D881** (the Tracker's gold "can fly next" and turquoise "search found" rings lose their glow, keeping their lines). In How we work, so already loaded: **D62** and **D63** (the Tracker's syllabus data is out of
 every privacy sweep; the aircraft type elsewhere reads "F-15" or "fighter squadron"); **D347** (every Undo / Redo
 pair — the Tracker's own included — sits in the top bar, in the same place and look as Edit Schedule's).
 
@@ -34,12 +34,12 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1900 | 8 Nov 26 | The Tracker's search magnifier is the app's own, its handle as long as on every other search box (D1127): the Tracker's own shorter drawing goes. |
 | D1860 | 8 Nov 26 | The Tracker's "Delete course" question and an import's note on a deleted course drop their typed ↺ and ⇅ marks: they read "Restore in Reorder courses brings it back…" and "(Restore in Reorder brings it back)", every other word kept; built with the Tracker's next batch. |
 | D1861 | 8 Nov 26 | On a screen too short for the Tracker's marking window, such as a phone on its side, the chart lifts the event tapped as high as it may go and the window opens under it, scrolling inside itself, as built: the event stays in view and the grade buttons show first. |
 | D1790 | 8 Nov 26 | When the Tracker's marking window would not fit below the event tapped, the chart slides the event up under the tabs with its own smooth scroll, only as far as needed, and stays there after Close, and the window opens whole below it, on a phone and a desktop; an event too near the chart's end to slide falls back to the page's option B. — changed by D1861 |
 | D1791 | 8 Nov 26 | On a phone the ✕ in the Tracker's Find strip empties the box and puts Find away — the keyboard down, the tabs back — as Escape does, its hover words "Clear the search and close Find"; a pick from the list puts Find away on purpose; on a desktop nothing changes. |
 | D1705 | 5 Nov 26 | The Tracker's typed marks become drawn line icons, as drawn: each tool of Edit chart layout takes a mark in the app's line style, Merge and Unmerge keep their words alone, and the lull's Copy to… takes the copy mark, its × the drawn ✕. |
-| D1660 | 5 Nov 26 | The Tracker's "● saved" shown in a browser that refuses to keep anything is drawn for him with the Tracker's next batch, not now: a fix adds words on screen, so a mock-up comes first (D1625). |
 | D1564 | 2 Nov 26 | On his iPhone the Tracker bar's student, course and year dropdowns draw their words whole: the cut words seen in the test browser were that browser's own drawing, not the app's, and nothing is changed. |
 | D1538 | 31 Oct 26 | The Tracker is no longer to be exported back out as a standalone app: it lives in Raptor for good, as one of its tabs. |
 | D1406 | 27 Oct 26 | On a touch screen the Tracker's chart draws no scroll bars: it still scrolls, glides and pinches as before; the Info half, Show All and every window keep their normal bars, and a desktop with a mouse keeps both the chart's and the Info panel's bars, which are how a mouse scrolls them. |

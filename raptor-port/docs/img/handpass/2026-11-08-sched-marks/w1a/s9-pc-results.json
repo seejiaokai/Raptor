@@ -1,0 +1,154 @@
+{
+ "publish": {
+  "published": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "clean": {
+  "pending": "5 changes",
+  "week": [],
+  "ground": [],
+  "changes": null
+ },
+ "files": [
+  {
+   "iid": "imriimq7h1xptqx",
+   "type": "LL",
+   "who": [
+    {
+     "p": "yeti",
+     "by": "stiff",
+     "at": 1783904417837
+    }
+   ]
+  },
+  {
+   "iid": "imriimtp3wj95rp",
+   "type": "Meeting",
+   "who": [
+    {
+     "p": "salsa",
+     "by": "stiff",
+     "at": 1783904422359
+    }
+   ]
+  },
+  {
+   "iid": "imriimx96hkon58",
+   "type": "OD",
+   "who": [
+    {
+     "p": "nact",
+     "by": "stiff",
+     "at": 1783904426970
+    }
+   ]
+  },
+  {
+   "iid": "imriin0ubdz4h65",
+   "type": "Other",
+   "who": [
+    {
+     "p": "pump",
+     "by": "stiff",
+     "at": 1783904431619
+    }
+   ]
+  }
+ ],
+ "board.normal": {
+  "sbPending": null,
+  "rows": [
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "PistonIP",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "OD",
+    "cls": "sbi-ty inpty ty-dt inpedit",
+    "who": "WardenIP",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "LL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "BoltC",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   }
+  ]
+ },
+ "board.groundnormal": [
+  {
+   "cls": "ain",
+   "text": "MEETING",
+   "outline": "dotted"
+  },
+  {
+   "cls": "sbi-ty inpty ty-gp inped",
+   "text": "Other",
+   "outline": "dotted"
+  },
+  {
+   "cls": "sbi-ty inpty ty-dt inped",
+   "text": "OD",
+   "outline": "dotted"
+  },
+  {
+   "cls": "sbi-ty inpty ty-lv inped",
+   "text": "LL",
+   "outline": "dotted"
+  }
+ ],
+ "oil.on": true,
+ "oil.unav": [
+  {
+   "text": "⠿OtherLATEPiston—",
+   "boxes": [],
+   "alnAttr": 0
+  },
+  {
+   "text": "⠿ODLATEWarden—",
+   "boxes": [],
+   "alnAttr": 0
+  }
+ ],
+ "oil.ground": [],
+ "oil.pending": null,
+ "oil.off": false,
+ "back.unav": [
+  {
+   "name": "Other",
+   "cls": "sbi-ty inpty ty-gp inpedit",
+   "who": "PistonIP",
+   "aln": "1",
+   "outline": "dotted 1px",
+   "marked": true
+  },
+  {
+   "name": "OD",
+   "cls": "sbi-ty inpty ty-dt inpedit",
+   "who": "WardenIP",
+   "aln": "1",
+   "outline": "dotted 1px",
+   "marked": true
+  },
+  {
+   "name": "LL",
+   "cls": "sbi-ty inpty ty-lv inpedit",
+   "who": "BoltC",
+   "aln": "1",
+   "outline": "dotted 1px",
+   "marked": true
+  }
+ ],
+ "errs": []
+}

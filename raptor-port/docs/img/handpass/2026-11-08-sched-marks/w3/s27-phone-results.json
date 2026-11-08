@@ -1,0 +1,89 @@
+{
+ "1.hidden-working": {
+  "open": true,
+  "bar": "⚠ 3 issues · 2 warning ▲",
+  "lines": [
+   "0:live:✕",
+   "1:live:✕",
+   "2:live:✕",
+   "3:hid:reset"
+  ],
+  "pend": "1 change"
+ },
+ "2.after-ORIG-publish": {
+  "open": true,
+  "bar": "⚠ 3 issues · 2 warning ▲",
+  "lines": [
+   "0:live:✕",
+   "1:live:✕",
+   "2:live:✕",
+   "3:hid:reset"
+  ],
+  "pend": "6 changes"
+ },
+ "3.hide-second-after-publish": {
+  "open": true,
+  "bar": "⚠ 2 issues · 2 warning ▲",
+  "lines": [
+   "0:live:✕",
+   "1:live:✕",
+   "2:hid:reset",
+   "3:hid:reset"
+  ],
+  "pend": "1 pending"
+ },
+ "3b.chip": {
+  "win": [
+   "⠿ Changes · Tuesday 14/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Warning · Saint — No time for the VL SAT flight brief — APPOINTMEN"
+  ]
+ },
+ "4.look-original": {
+  "muteBtns": 0,
+  "resetSvgs": 0,
+  "daywarn": [
+   "⚠ 3 issues · 2 warning ▲"
+  ]
+ },
+ "4b.back": {
+  "open": true,
+  "bar": "⚠ 2 issues · 2 warning ▲",
+  "lines": [
+   "0:live:✕",
+   "1:live:✕",
+   "2:hid:reset",
+   "3:hid:reset"
+  ],
+  "pend": "1 pending"
+ },
+ "5.after-AL1": {
+  "open": true,
+  "bar": "⚠ 2 issues · 2 warning ▲",
+  "lines": [
+   "0:live:✕",
+   "1:live:✕",
+   "2:hid:reset",
+   "3:hid:reset"
+  ],
+  "pend": "12 changes"
+ },
+ "6.after-reload": {
+  "open": true,
+  "bar": "⚠ 2 issues · 2 warning ▲",
+  "lines": [
+   "0:live:✕",
+   "1:live:✕",
+   "2:hid:reset",
+   "3:hid:reset"
+  ],
+  "pend": "12 changes"
+ },
+ "7.member": {
+  "bar": "⚠ 2 issues · 2 warning ▲",
+  "lines": [
+   "0:live:nobtn:",
+   "1:live:nobtn:",
+   "2:hid:nobtn:",
+   "3:hid:nobtn:"
+  ]
+ }
+}

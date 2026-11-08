@@ -155,10 +155,12 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   the same when asked; settle an overlap between you at once; repeat what you promised in your own `HANDOFF.md` block.
   The merge order and "merge live" stay his — a chat never merges for another, and two never merge at once (the merge
   lock, §"Push" and "merge live") (D302, D60, D78, D1746; notes only: D1407, D1737).
-- Docs-only changes skip the gates (`paths-ignore` in `deploy.yml`: `**.md`, `.claude/**`, the document-gate scripts
-  `raptor-port/scripts/docsize*.mjs` and `backlog-archive.mjs`, and `docs-guard.yml`), but the Docs guard
+- Docs-only changes skip the gates (`deploy.yml`'s list: `**.md`, `.claude/**`, `.impeccable/**`, the document-gate
+  scripts `raptor-port/scripts/docsize*.mjs` and `backlog-archive.mjs`, and `docs-guard.yml` — on a push to `main` by
+  `paths-ignore`; on a pull request the run still starts, its first job skips the gates, and its last, "checks passed",
+  always reports, the one check GitHub can require — `raptor-port/docs/gates-and-deploy.md`), but the Docs guard
   (`docs-guard.yml`, two to three billed minutes) still runs on every pull request and every push to `main`.
-- That is an exemption from the gates only: a change of notes only (the list above) merges by itself once its run is
+- That is an exemption from the gates only: a change of notes only (the "only notes" list of §"Push" and "merge live") merges by itself once its run is
   green (a rules-diet step on his word all the same), and any other docs change — a rule that governs the agent, a
   hook, a setting, a working guide, a workflow — still merges only on his "merge live" (D1407, D1737).
 - A pull request that mixes code and docs runs everything — and GitHub judges the whole pull request, so once it
