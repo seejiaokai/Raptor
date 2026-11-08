@@ -212,8 +212,9 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     }
     await touch(cdp, 'touchEnd', []); await sleep(500)
     expect(seen, 'mid-pinch').toEqual([])
-    // and after the lift, settled from rest: still pinned, still shown (the Leave War's twin checks the same)
-    await expectPinned(page, 'qsticky-head', true, 'after the lift')
+    // and after the lift, settled from rest: the copy in the page, shown exactly while the heading is under the bar (the
+    // Leave War's twin checks the same; the pinch zoomed the table out, so the heading may have come back below the bar)
+    await expect.poll(() => page.evaluate(() => { const el = document.querySelector<HTMLElement>('[data-testid="qsticky-head"]'); if (!el) return 'no pinned copy in the page'; const cs = getComputedStyle(el); const shown = Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden'; const under = (document.querySelector('#qtbl') as HTMLTableElement).tHead!.querySelector('th')!.getBoundingClientRect().top < document.querySelector('.topbar')!.getBoundingClientRect().bottom - 0.5; return shown === under ? 'ok' : 'shown ' + shown + ', the heading ' + (under ? 'under' : 'below') + ' the bar' }), { message: 'after the lift' }).toBe('ok')
     expect(errs).toEqual([])
     await context.close()
   })
