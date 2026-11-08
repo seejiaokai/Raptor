@@ -12415,9 +12415,14 @@ His "All as recommended" to the pictures round's page (https://claude.ai/artifac
 and notes in `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`). Each is built to its drawing and checked beside
 it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`.
 - **D1780** — the Scheduler Board on a phone on its side: Calendar, the title, the day strip and search scroll away with the
-  list; the bar of buttons stays.
+  list; the bar of buttons stays. How (`10-board-history.css`, the sideways block): the board scrolls as one page, its top
+  sticky at minus the head's height (`--sb-headH`, published by `SchedBoard.tsx`), the crew column sticky under the bar, a
+  jump's scroll padding the bar's height; the app's own sideways query from 821 wide; `.sb-wide` as it was.
 - **D1781** — the desktop board from 821 to 1099 wide: the remarks on a row of their own, R over B and TO over LD as on a
-  phone (D1029 and D1026 narrowed).
+  phone (D1029 and D1026 narrowed). How: `13-board-rows-responsive.css`, the band after the 821–1439 one, the drawing's
+  own rules, on `.schedboard:not(.sb-wide)` only.
+- **D1771** — under the keys the board's and the week's ⋯ items keep their raised row and wear the cyan ring inside it;
+  + Block, + Wave, the plans selector, a jet's stores and the day bar's buttons wear it just outside them (the board only).
 - **D1782** — OIL Earn's day button is the slider switch "No OIL earned", cyan when on; the refusal words of D845 stay.
 - **D1783** — in OIL Earn a tap on a puck that cannot earn picks nothing; the plain passing note says "Nothing changed for
   <callsign>." and the reason.
