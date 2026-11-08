@@ -172,6 +172,9 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   [D1530].
 - The kit's own files, marked for use inside the service only, are not put into the public project — the agent's reading
   of keeping the project public, not checked with him [D1530].
+- Vercel is on its Pro plan from 8 Nov 26, and he spends no more on it than the plan he subscribed to, US$20 a month,
+  its included usage with it: the Basic build machine, a US$1 budget that only warns (its pause off), and back to the
+  free plan if the warning comes [D1794].
 - Two guards stand: a backgrounded npm command must move into `raptor-port` [D162]; the push-and-lock guard [D976].
 
 ## Showing him, asking him
@@ -360,6 +363,9 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   fix — a saved context is a summary (decisions, state, next step), never the conversation [D69].
 - Every chat's title starts with its number — 1 the M365 package chat, 2 the rules diet's step 4, then counting on — and
   each chat says its number when it reports to him; the handoff file keeps the next free number [D1744].
+- On his "auto merge live" of 8 Nov 26, for that session only, chats 5–9 each merge their own job of the pictures round's
+  build live once it is completed — its walk, gates, green run and readers' findings done — one at a time through the
+  merge lock, the live app confirmed after; a job missing Astra's read, or with a question for him, is parked [D1795].
 
 ## Names and privacy
 - The bare squadron number only; never the squadron or service abbreviation [D58]; "a fighter squadron", the bare
