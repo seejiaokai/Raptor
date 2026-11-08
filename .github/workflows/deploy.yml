@@ -194,8 +194,10 @@ jobs:
         run: |
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # the pull request's merge commit: its first parent is main, so this is every file the pull request changes
-            git diff --name-only HEAD~1 HEAD | node raptor-port/scripts/ci/checks-passed.mjs changes
+            # the pull request's merge commit: its first parent is main, so this is every file the pull request changes.
+            # --no-renames: a rename is listed by its old AND new name (a code file renamed to .md still counts as code),
+            # and the comparison reads only the folder listings, never a file's contents, which this copy does not hold
+            git diff --no-renames --name-only HEAD~1 HEAD | node raptor-port/scripts/ci/checks-passed.mjs changes
           else
             echo "code=true" >> "$GITHUB_OUTPUT"
           fi

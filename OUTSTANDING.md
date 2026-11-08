@@ -1850,6 +1850,7 @@ here-document and here-string bodies, comments, `$( … )`, `bash -c` / `eval`, 
 first (a commit with a here-document message, a pull request body, a grep for the tool's own name); list every situation
 in which the platform fires the hook's event and refuse only in the one the rule is for, never twice on unchanged state.
 The cheaper helper's find-and-replace pairs match each spot's own line endings (694).
+**Built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged — a hook, his "merge live" in that chat):** `.claude/hooks/script-guard.mjs`, 20 tests written first, the everyday commands among them; what the shell does was measured before each refusal (the file's header) — so the "every script gets `< /dev/null`" point above was not taken: Python takes `/dev/null` for a keyboard and waits in its prompt, so the guard refuses that instead. The in-chat proof comes in the first chat started after the merge (the app reads hook settings when a chat starts). Readers owed: Astra and a fresh Opus reader (D811, D1761).
 
 ### [CHECK-TOOLS-HARDEN] Small hardening of the checking tools, asked for by seventeen skill notes (filed 13 Oct 26 by the skill-notes review; none urgent)
 
@@ -2259,6 +2260,7 @@ stop at 30 minutes. The smoke itself has never hung (4.0 minutes at most over ab
 changes. **Also here (D1716):** React Doctor told to skip `docs/mock/`, `docs/img/` and `reference/` — records nobody edits — one setting, no file of them changed, the full run re-made after to confirm the count (about 400 today, about 215 once nights 1–2 are in). **And:** the design check's one false alarm on `src/tracker/trk-palette.test.ts`
 (a test's pattern that reads the Tracker's `borderLeft` text, flagged as a side stripe) — a narrow ignore with its reason, in
 `.impeccable/config.json`. **Place:** night 3, job 7 of the sizing plan; a workflow change — his "merge live".
+**Both points built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged):** React Doctor's three skips — its full check 421 findings → 236, none left in those folders. The design check's "false alarm" was not the test file: the checker reads its settings only from the chat's current folder, so a chat whose shell had moved into `raptor-port/` had no skip list at all (his ruled side stripes flagged with it); a byte-for-byte copy there, and the document check fails if the two differ (`raptor-port/docs/file-map.md`, the `.impeccable` row). Leaves for the archive once merged.
 **Astra's read (8 Nov 26, the morning after — D1743; the night's helper had run only the fresh Opus read):** no finding in the
 change — it measured the same 20 green runs (build 0:54 at most, unit 7:29, geometry 16:26, the smoke half 17:41, the smoke
 step 3:53), found every test job covered and each limit where GitHub reads it, and nothing else in the workflow changed; one
@@ -2273,6 +2275,7 @@ notes-only one (the gates skip those by `paths-ignore`) and otherwise passes onl
 one job then made a required check on `main` in the same ruleset — never the path-filtered jobs themselves, or a notes-only pull
 request could never merge. **Place:** with the checks batch (night 3); the workflow job his "merge live", the ruleset setting
 his own click, as D1540's was — the steps put to him with the build.
+**Built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged):** the "checks passed" job and its script (8 tests). The notes-only skip for pull requests moved from the trigger into a first job, "what changed" — left on the trigger, a required check would never report on a notes-only pull request, which could then never merge (`raptor-port/docs/gates-and-deploy.md` §Now). **Left:** his click in the ruleset, once one notes-only pull request after the merge has shown "checks passed" green.
 
 ### [LW-ZOOM-TEST-SLOW] A Leave War desktop browser test timed out twice in one GitHub run (found 3 Nov 26; low, the agent's)
 On pull request 621 (`claude/week-swipe-pdf-print`, a branch that changes nothing in the Leave War), GitHub's run of commit
