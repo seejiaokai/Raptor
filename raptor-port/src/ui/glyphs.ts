@@ -4,8 +4,9 @@
    (a 24-unit box, a 2-wide line, round ends — ui/icons.tsx), each in its button's own colour, so every device draws them
    alike. One source, as the pencil's (ui/pen.ts): each drawing's shapes are here, fed to the React icons (`ui/icons.tsx`)
    and, as markup, to the builders that print a button as text (`glyphSvg` — the waves menu's gear, a section's Auto sort).
-   The shapes are the approved drawing's own (`scripts/handpass/cr4-look.mjs` ICON); the Tracker keeps its own copies
-   (`tracker/components/Glyphs.jsx`) so a standalone export carries them, and its tests keep the two the same. */
+   The shapes are the approved drawing's own (`scripts/handpass/cr4-look.mjs` ICON); the Tracker draws the React icons too
+   (`tracker/components/Glyphs.jsx` — the copies it kept for a standalone export went with [TRK-KEPT-COPIES], 8 Nov 26,
+   D1538). */
 
 /** The one settings gear (D1509 — the Leave War's own; D1707 — in its button's colour, the Leave War's grey as today). */
 export const GEAR_INNER = '<circle cx="12" cy="12" r="3"/>'

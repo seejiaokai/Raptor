@@ -1,0 +1,502 @@
+{
+ "errors": {
+  "q1-desktop": [],
+  "q1-phone": [],
+  "q2-pw-band": [],
+  "q2-d-locked": [],
+  "q2-p-locked": [],
+  "q2-d-band": [],
+  "q2-p-band": []
+ },
+ "notes": [
+  "Q1 desktop: the app's handle swapped into 2 Tracker magnifiers in the page",
+  "Q1 handle length on screen (px): {\"trk\":3.09,\"app\":3.8,\"appAtTrkSize\":3.8}; Tracker glyph 15px, Edit Schedule glyph 15px",
+  "Q1 phone: the page's zoom with the strip open 1",
+  "Q2 pw A: \"This browser will not keep your work · a reload loses it\" CUT (needs ~392px, band 402×36, 12.5px); \"This browser won't keep your work · a reload loses it\" CUT (needs ~380px, band 402×36, 12.5px); \"This browser keeps nothing · a reload loses your work\" CUT (needs ~380px, band 402×36, 12.5px); \"Not kept · this browser loses your work on a reload\" fits (needs ~347px, band 402×36, 12.5px); \"Lost on a reload · this browser keeps nothing\" fits (needs ~314px, band 402×36, 12.5px); \"This browser won't keep work · a reload loses it\" fits (needs ~344px, band 402×36, 12.5px)",
+  "Q2 pw A: the corner while the band is up: \"\" shown=false",
+  "Q2 pw B (wide letters): \"● kept until a reload\" CUT (120px in 72px); \"● lost on a reload\" CUT (107px in 72px); \"● lost on reload\" CUT (97px in 72px); \"● not kept\" fits (71px in 71px)",
+  "drawn: A \"Not kept · this browser loses your work on a reload\"; B \"● not kept\"",
+  "Q2 d locked: storage throws SecurityError; the corner before \"● saved\", after a mark \"● saved\" (rgb(87, 201, 122))",
+  "Q2 d locked: a band on the top bar: false; a \"Saving…\" note: false",
+  "Q2 d B: \"● kept until a reload\" fits (117px in 117px, cap 170px); \"● lost on a reload\" fits (104px in 104px, cap 170px); \"● lost on reload\" fits (96px in 96px, cap 170px); \"● not kept\" fits (70px in 70px, cap 170px)",
+  "Q2 d reload: ST-02's grade before \"(none)\", after the mark \"dco\" → after a reload \"(none)\"; the corner then \"● saved\"",
+  "Q2 p locked: storage throws SecurityError; the corner before \"● saved\", after a mark \"● saved\" (rgb(87, 201, 122))",
+  "Q2 p locked: a band on the top bar: false; a \"Saving…\" note: false",
+  "Q2 p B: \"● kept until a reload\" CUT (108px in 72px, cap 72px); \"● lost on a reload\" CUT (96px in 72px, cap 72px); \"● lost on reload\" CUT (89px in 72px, cap 72px); \"● not kept\" fits (65px in 65px, cap 72px)",
+  "Q2 p reload: ST-02's grade before \"(none)\", after the mark \"dco\" → after a reload \"(none)\"; the corner then \"● saved\"",
+  "Q2 d A: \"This browser will not keep your work · a reload loses it\" fits (needs ~336px, band 1536×36, 12.5px); \"This browser won't keep your work · a reload loses it\" fits (needs ~325px, band 1536×36, 12.5px); \"This browser keeps nothing · a reload loses your work\" fits (needs ~330px, band 1536×36, 12.5px); \"Not kept · this browser loses your work on a reload\" fits (needs ~312px, band 1536×36, 12.5px); \"Lost on a reload · this browser keeps nothing\" fits (needs ~279px, band 1536×36, 12.5px); \"This browser won't keep work · a reload loses it\" fits (needs ~295px, band 1536×36, 12.5px)",
+  "Q2 d A: the corner while the band is up: \"\" shown=false",
+  "Q2 p A: \"This browser will not keep your work · a reload loses it\" fits (needs ~337px, band 402×36, 12.5px); \"This browser won't keep your work · a reload loses it\" fits (needs ~326px, band 402×36, 12.5px); \"This browser keeps nothing · a reload loses your work\" fits (needs ~332px, band 402×36, 12.5px); \"Not kept · this browser loses your work on a reload\" fits (needs ~304px, band 402×36, 12.5px); \"Lost on a reload · this browser keeps nothing\" fits (needs ~277px, band 402×36, 12.5px); \"This browser won't keep work · a reload loses it\" fits (needs ~296px, band 402×36, 12.5px)",
+  "Q2 p A: the corner while the band is up: \"\" shown=false"
+ ],
+ "q1": {
+  "trk": {
+   "w": 15,
+   "h": 15,
+   "d": "m20 20-3.5-3.5",
+   "color": "rgb(138, 150, 163)"
+  },
+  "es": {
+   "w": 15,
+   "h": 15,
+   "d": "m21 21-4.3-4.3",
+   "color": "rgb(138, 150, 163)"
+  },
+  "esBoxH": 26,
+  "trkBoxH": 30,
+  "handlePx": {
+   "trk": 3.09,
+   "app": 3.8,
+   "appAtTrkSize": 3.8
+  }
+ },
+ "q1p": {
+  "scale": 1,
+  "glyph": {
+   "w": 15,
+   "h": 15,
+   "d": "m20 20-3.5-3.5",
+   "color": "rgb(138, 150, 163)"
+  }
+ },
+ "wide": {
+  "cornerWithBand": {
+   "text": "",
+   "hidden": true,
+   "shown": false,
+   "cls": "savestat ",
+   "color": "rgb(138, 150, 163)",
+   "maxW": "72px",
+   "font": "10px"
+  },
+  "scale": 1,
+  "A": [
+   {
+    "words": "This browser will not keep your work · a reload loses it",
+    "ok": true,
+    "fits": false,
+    "needs": 392,
+    "room": 374,
+    "restCut": true,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "This browser won't keep your work · a reload loses it",
+    "ok": true,
+    "fits": false,
+    "needs": 380,
+    "room": 374,
+    "restCut": true,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "This browser keeps nothing · a reload loses your work",
+    "ok": true,
+    "fits": false,
+    "needs": 380,
+    "room": 374,
+    "restCut": true,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "Not kept · this browser loses your work on a reload",
+    "ok": true,
+    "fits": true,
+    "needs": 347,
+    "room": 347,
+    "restCut": false,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "Lost on a reload · this browser keeps nothing",
+    "ok": true,
+    "fits": true,
+    "needs": 314,
+    "room": 314,
+    "restCut": false,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "This browser won't keep work · a reload loses it",
+    "ok": true,
+    "fits": true,
+    "needs": 344,
+    "room": 343,
+    "restCut": false,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   }
+  ],
+  "Apick": "Not kept · this browser loses your work on a reload",
+  "B": [
+   {
+    "words": "● kept until a reload",
+    "ok": true,
+    "fits": false,
+    "needs": 120,
+    "room": 72,
+    "cap": "72px",
+    "color": "rgb(229, 168, 59)"
+   },
+   {
+    "words": "● lost on a reload",
+    "ok": true,
+    "fits": false,
+    "needs": 107,
+    "room": 72,
+    "cap": "72px",
+    "color": "rgb(229, 168, 59)"
+   },
+   {
+    "words": "● lost on reload",
+    "ok": true,
+    "fits": false,
+    "needs": 97,
+    "room": 72,
+    "cap": "72px",
+    "color": "rgb(229, 168, 59)"
+   },
+   {
+    "words": "● not kept",
+    "ok": true,
+    "fits": true,
+    "needs": 71,
+    "room": 71,
+    "cap": "72px",
+    "color": "rgb(229, 168, 59)"
+   }
+  ]
+ },
+ "dLocked": {
+  "premise": "throws SecurityError",
+  "before": {
+   "text": "● saved",
+   "hidden": false,
+   "shown": true,
+   "cls": "savestat ok",
+   "color": "rgb(87, 201, 122)",
+   "maxW": "170px",
+   "font": "11px"
+  },
+  "gradeBefore": "(none)",
+  "ballAfterMark": "dco",
+  "after": {
+   "text": "● saved",
+   "hidden": false,
+   "shown": true,
+   "cls": "savestat ok",
+   "color": "rgb(87, 201, 122)",
+   "maxW": "170px",
+   "font": "11px"
+  },
+  "band": false,
+  "saving": false,
+  "scale": 1,
+  "B": [
+   {
+    "words": "● kept until a reload",
+    "ok": true,
+    "fits": true,
+    "needs": 117,
+    "room": 117,
+    "cap": "170px",
+    "color": "rgb(229, 168, 59)"
+   },
+   {
+    "words": "● lost on a reload",
+    "ok": true,
+    "fits": true,
+    "needs": 104,
+    "room": 104,
+    "cap": "170px",
+    "color": "rgb(229, 168, 59)"
+   },
+   {
+    "words": "● lost on reload",
+    "ok": true,
+    "fits": true,
+    "needs": 96,
+    "room": 96,
+    "cap": "170px",
+    "color": "rgb(229, 168, 59)"
+   },
+   {
+    "words": "● not kept",
+    "ok": true,
+    "fits": true,
+    "needs": 70,
+    "room": 70,
+    "cap": "170px",
+    "color": "rgb(229, 168, 59)"
+   }
+  ],
+  "Bpick": "● kept until a reload",
+  "esBand": false,
+  "ballAfterReload": "(none)",
+  "cornerAfterReload": {
+   "text": "● saved",
+   "hidden": false,
+   "shown": true,
+   "cls": "savestat ok",
+   "color": "rgb(87, 201, 122)",
+   "maxW": "170px",
+   "font": "11px"
+  }
+ },
+ "pLocked": {
+  "premise": "throws SecurityError",
+  "before": {
+   "text": "● saved",
+   "hidden": false,
+   "shown": true,
+   "cls": "savestat ok",
+   "color": "rgb(87, 201, 122)",
+   "maxW": "72px",
+   "font": "10px"
+  },
+  "gradeBefore": "(none)",
+  "ballAfterMark": "dco",
+  "after": {
+   "text": "● saved",
+   "hidden": false,
+   "shown": true,
+   "cls": "savestat ok",
+   "color": "rgb(87, 201, 122)",
+   "maxW": "72px",
+   "font": "10px"
+  },
+  "band": false,
+  "saving": false,
+  "scale": 1,
+  "B": [
+   {
+    "words": "● kept until a reload",
+    "ok": true,
+    "fits": false,
+    "needs": 108,
+    "room": 72,
+    "cap": "72px",
+    "color": "rgb(229, 168, 59)"
+   },
+   {
+    "words": "● lost on a reload",
+    "ok": true,
+    "fits": false,
+    "needs": 96,
+    "room": 72,
+    "cap": "72px",
+    "color": "rgb(229, 168, 59)"
+   },
+   {
+    "words": "● lost on reload",
+    "ok": true,
+    "fits": false,
+    "needs": 89,
+    "room": 72,
+    "cap": "72px",
+    "color": "rgb(229, 168, 59)"
+   },
+   {
+    "words": "● not kept",
+    "ok": true,
+    "fits": true,
+    "needs": 65,
+    "room": 65,
+    "cap": "72px",
+    "color": "rgb(229, 168, 59)"
+   }
+  ],
+  "Bpick": "● not kept",
+  "esBand": false,
+  "ballAfterReload": "(none)",
+  "cornerAfterReload": {
+   "text": "● saved",
+   "hidden": false,
+   "shown": true,
+   "cls": "savestat ok",
+   "color": "rgb(87, 201, 122)",
+   "maxW": "72px",
+   "font": "10px"
+  }
+ },
+ "dBand": {
+  "cornerWithBand": {
+   "text": "",
+   "hidden": true,
+   "shown": false,
+   "cls": "savestat ",
+   "color": "rgb(138, 150, 163)",
+   "maxW": "170px",
+   "font": "11px"
+  },
+  "scale": 1,
+  "A": [
+   {
+    "words": "This browser will not keep your work · a reload loses it",
+    "ok": true,
+    "fits": true,
+    "needs": 336,
+    "room": 336,
+    "restCut": false,
+    "bandW": 1536,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "This browser won't keep your work · a reload loses it",
+    "ok": true,
+    "fits": true,
+    "needs": 325,
+    "room": 325,
+    "restCut": false,
+    "bandW": 1536,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "This browser keeps nothing · a reload loses your work",
+    "ok": true,
+    "fits": true,
+    "needs": 330,
+    "room": 331,
+    "restCut": false,
+    "bandW": 1536,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "Not kept · this browser loses your work on a reload",
+    "ok": true,
+    "fits": true,
+    "needs": 312,
+    "room": 312,
+    "restCut": false,
+    "bandW": 1536,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "Lost on a reload · this browser keeps nothing",
+    "ok": true,
+    "fits": true,
+    "needs": 279,
+    "room": 279,
+    "restCut": false,
+    "bandW": 1536,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "This browser won't keep work · a reload loses it",
+    "ok": true,
+    "fits": true,
+    "needs": 295,
+    "room": 295,
+    "restCut": false,
+    "bandW": 1536,
+    "bandH": 36,
+    "font": "12.5px"
+   }
+  ],
+  "Apick": "Not kept · this browser loses your work on a reload"
+ },
+ "pBand": {
+  "cornerWithBand": {
+   "text": "",
+   "hidden": true,
+   "shown": false,
+   "cls": "savestat ",
+   "color": "rgb(138, 150, 163)",
+   "maxW": "72px",
+   "font": "10px"
+  },
+  "scale": 1,
+  "A": [
+   {
+    "words": "This browser will not keep your work · a reload loses it",
+    "ok": true,
+    "fits": true,
+    "needs": 337,
+    "room": 338,
+    "restCut": false,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "This browser won't keep your work · a reload loses it",
+    "ok": true,
+    "fits": true,
+    "needs": 326,
+    "room": 327,
+    "restCut": false,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "This browser keeps nothing · a reload loses your work",
+    "ok": true,
+    "fits": true,
+    "needs": 332,
+    "room": 332,
+    "restCut": false,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "Not kept · this browser loses your work on a reload",
+    "ok": true,
+    "fits": true,
+    "needs": 304,
+    "room": 305,
+    "restCut": false,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "Lost on a reload · this browser keeps nothing",
+    "ok": true,
+    "fits": true,
+    "needs": 277,
+    "room": 277,
+    "restCut": false,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   },
+   {
+    "words": "This browser won't keep work · a reload loses it",
+    "ok": true,
+    "fits": true,
+    "needs": 296,
+    "room": 297,
+    "restCut": false,
+    "bandW": 402,
+    "bandH": 36,
+    "font": "12.5px"
+   }
+  ],
+  "Apick": "Not kept · this browser loses your work on a reload"
+ },
+ "picked": {
+  "A": [
+   "Not kept",
+   "this browser loses your work on a reload"
+  ],
+  "B": "● not kept"
+ }
+}
