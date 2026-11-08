@@ -40,7 +40,7 @@ export function lgSettings(): LgGroup<LgSet>[] {
       { name: 'Crew rest', keys: ['crewRest'], line: () => 'The rest a flyer needs before his day starts. The crew-rest warning and the tight crew-rest advisory move with it.' },
       { name: 'Days in a row', keys: ['maxRun'], line: () => 'A day on the programme beyond this many in a row raises the red break-day warning.' },
       { name: 'Long work day', keys: ['longDay'], line: () => 'A longer day, first commitment to last, shows the grey long-day note.' },
-      { name: 'Default rally before take-off', keys: ['reportLead'], line: () => 'An empty R box suggests take-off less this time, and "+ In-time" fills in the same time. With no in-time or rally entered, a flyer\'s day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows.' },
+      { name: 'Default rally before take-off', keys: ['reportLead'], line: () => 'An empty R box, a formation\'s rally, suggests a time this long before take-off, and "+ In-time" fills in that same time. When no in-time or rally is entered, a flyer\'s day starts at that time: his long day, OIL and Insights hours count from it. The tight crew-rest advisory also checks his rest as if he reported at that time.' },
     ] },
     { g: 'Flying lines', items: [
       { name: 'Brief before take-off', keys: ['briefLead'], line: () => 'Sets the suggested B on a line with no brief typed, and a blank B is checked against it. With no in-time typed, crew rest counts to this B. A published day keeps its B until it is published again.' },

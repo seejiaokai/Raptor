@@ -1,0 +1,42 @@
+{
+ "base": {
+  "saint": "12h30",
+  "echo": "21h25"
+ },
+ "results": [
+  {
+   "id": "R1",
+   "pass": true,
+   "did": "VL, TO 05:00, LD blank, Saint front, Echo back",
+   "expected": "hours equal baseline; no long-day note",
+   "saw": "Saint 12h30, Echo 21h25 (baseline 12h30 / 21h25); long-day notes []",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/r1-line-on-board.png",
+    "docs/img/handpass/2026-11-08-day-start/r1-insights-rows.png"
+   ]
+  },
+  {
+   "id": "R2",
+   "pass": true,
+   "did": "VL, TO blank, LD 13:00, R 08:00 typed",
+   "expected": "hours equal baseline; no long-day note",
+   "saw": "Saint 12h30, Echo 21h25; long-day notes []",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/r2-line-on-board.png",
+    "docs/img/handpass/2026-11-08-day-start/r2-insights-rows.png"
+   ]
+  },
+  {
+   "id": "R3",
+   "pass": true,
+   "did": "then typed TO 12:00 on the R2 line",
+   "expected": "hours +7h over baseline (Saint 12h30 to 19h30)",
+   "saw": "Saint 19h30, Echo 28h25; long-day notes []",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/r3-line-on-board.png",
+    "docs/img/handpass/2026-11-08-day-start/r3-insights-rows.png"
+   ]
+  }
+ ],
+ "errors": []
+}

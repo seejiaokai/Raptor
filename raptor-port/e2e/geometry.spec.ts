@@ -4553,6 +4553,34 @@ test.describe('the frozen callsign column', () => {
     expect(Math.abs(at.mirror - at.grid), 'the frozen header starts where the table is, not at its first column').toBeLessThan(2)
   })
 
+  /* QUALS' PINNED HEADING ROW ARRIVES IN THE SAME FRAME (his D1789, 8 Nov 26 — the Leave War's dates row and this one
+     share the mechanism): read inside the frame that paints the scroll, which runs its scroll events before its
+     animation callbacks and paints after both — so a heading a frame late fails here. */
+  for (const size of [PHONE, { width: 1536, height: 864 }]) {
+    test(`the Quals pinned heading row is up in the same frame the row reaches the top bar, ${size.width} wide (D1789)`, async ({ page }) => {
+      await page.setViewportSize(size)
+      await login(page)
+      await go(page, 'quals')
+      await page.waitForSelector('#qtbl td.qname')
+      await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(0)
+      const seen = await page.evaluate(() => new Promise<{ under: boolean; up: boolean }>(done => {
+        window.scrollTo(0, 700)
+        requestAnimationFrame(() => {
+          const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+          const row = (document.querySelector('#qtbl') as HTMLTableElement).tHead!.getBoundingClientRect().top
+          done({ under: row < bar, up: !!document.querySelector('[data-testid="qsticky-head"]') })
+        })
+      }))
+      expect(seen.under, 'the scroll really sent the heading row under the top bar').toBe(true)
+      expect(seen.up, 'the pinned copy is painted in that same frame, not a frame later').toBe(true)
+      const back = await page.evaluate(() => new Promise<boolean>(done => {
+        window.scrollTo(0, 0)
+        requestAnimationFrame(() => done(!document.querySelector('[data-testid="qsticky-head"]')))
+      }))
+      expect(back, 'and let go in the frame the row comes back down').toBe(true)
+    })
+  }
+
   /* THE PINNED ROW IS MOVED BY THE BROWSER (owner D993, 18 Oct 26 — "Could u try to just fix the quals pinned header with
      the 120 frames fix"): where scroll-driven animations exist — Chromium, and his iPhone, where the Leave War's row
      already moves this way — the row's table is translated by the table's own scroll timeline and its scroller never

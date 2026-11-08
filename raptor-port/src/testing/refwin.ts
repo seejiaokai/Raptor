@@ -30,7 +30,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 
 export async function refWindow(): Promise<any> {
-  const html = relabel(reshift(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(rejet(remap(retier(redt(renm(readFileSync('reference/scheduler.html', 'utf8')))))))))))))))))))
+  const html = redaystart(relabel(reshift(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(rejet(remap(retier(redt(renm(readFileSync('reference/scheduler.html', 'utf8'))))))))))))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -798,6 +798,18 @@ function rering(html: string): string {
   const n = html.split(from).length - 1
   if (n !== 1) throw new Error(`refwin rering: expected exactly 1 match, got ${n}`)
   return html.replace(from, "markChip(di,id,'TT');")
+}
+
+/* WHERE A DAY WITH NOTHING ENTERED STARTS (owner D1786, 8 Nov 26): the port's sortie EVENT carries only the report
+   entered for it, so the work span — the long-day note — falls to take-off less the default rally, as OIL does, never
+   the step. The seed's five days have no sortie with nothing entered, so parity passes without this; it is mirrored so a
+   future fixture with such a line compares the rule, not the old start (the fresh Opus read). Only the core is mirrored:
+   the port's unfinished-line NaN rides its own W4/RF1 guard, which the reference does not have. A shift keeps its report. */
+function redaystart(html: string): string {
+  const from = 'ld:ldM,report,brief:briefM,label:'
+  const n = html.split(from).length - 1
+  if (n !== 1) throw new Error(`refwin redaystart: expected exactly 1 match, got ${n}`)
+  return html.replace(from, 'ld:ldM,report:shiftLine?report:intime,brief:briefM,label:')
 }
 
 /* CLOSED, 10 Aug 26. This used to read "one divergence the sync CANNOT close":

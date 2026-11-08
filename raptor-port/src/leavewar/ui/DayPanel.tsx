@@ -6,16 +6,21 @@
    day's figure in its amber or red (names in one column, figures in another — his lessons 20, 29; halves .5 — D1246);
    then "Away · N", one line a person (LeaveLine.tsx). Never a remark (D1143). Read only in M3.
 
+   "↓ N MORE" AT ITS FOOT (his D1295, answered by D1788, 8 Nov 26): when the Away lines run past what the window shows, a
+   line under the list and outside it says how many are not wholly in view — the bell's own foot (a hairline above, small
+   grey words at the left), not pressable, counted by the bell's own counter (`ui/morebelow.ts`), gone at the list's end.
+
    ITS OPEN STATE IS ITS OWN (performance.md §E): a small listener set here, never a field of the store the grid's rows
    read — opening it, stepping it, or a bid placed with it open repaints no month of the grid. */
 
-import { useSyncExternalStore } from 'react'
+import { useRef, useSyncExternalStore, type RefObject } from 'react'
 import { addDays } from '../engine'
 import { availRowNames, availVerdictAt, dayFacts, flyAnswer, reqRowNames, useWarFacts } from '../sync'
 import { dayPanelData } from '../state/daypanel'
 import { getState } from '../state/store'
 import { useVersion } from './useStore'
 import { FloatWin } from '../../ui/FloatWindow'
+import { useMoreBelow } from '../../ui/morebelow'
 import { dayLabel } from './dates'
 import { LeaveLine } from './LeaveLine'
 /* the open day: one listener set (ui/daypanelopen.ts) */
@@ -27,6 +32,15 @@ const fig = (n: number | null) => (n === null ? '–' : String(Math.round(n * 2)
 export function DayPanelHost() {
   const iso = useSyncExternalStore(subscribe, dayPanelDate, dayPanelDate)
   return iso ? <DayPanel iso={iso} /> : null
+}
+
+/* THE FOOT COUNTS FOR ITSELF (the fresh code read of 8 Nov 26, F1): held by the day window, the count drew the whole
+   window again at each change, and the window's own every-draw placing wiped a phone pull's height and place under the
+   held finger — the panel snapped back to its lower rest (a pull changes the body's height, which recounts). Here a
+   recount redraws the foot alone. */
+function MoreFoot({ scroller }: { scroller: RefObject<HTMLElement | null> }) {
+  const below = useMoreBelow(scroller, '.lwday-away .ll-row')
+  return below > 0 ? <div className="lwday-more" data-testid="lwday-more"><span className="bl-more">↓ {below} more</span></div> : null
 }
 
 function DayPanel({ iso }: { iso: string }) {
@@ -43,6 +57,8 @@ function DayPanel({ iso }: { iso: string }) {
     { id: 'availw', label: an.w, value: fig(f.availW), level: f.covered ? availVerdictAt(iso, 'w', a) : '' },
   ]
   const step = (n: number) => openDayPanel(addDays(iso, n))
+  /* the list scrolls in the window's own body (`.win-body`), the parent of this panel's body */
+  const scroller = useRef<HTMLElement | null>(null)
   /* the year, two digits (D1096), where the date is not in the year the grid shows (C's F6 — stepped into 2027 it read
      "Fri 1 Jan" over a 2026 grid) */
   const shownYear = getState().period?.start.slice(0, 4)
@@ -51,11 +67,12 @@ function DayPanel({ iso }: { iso: string }) {
     /* AT THE LOWER OF ITS TWO HEIGHTS on a phone (M3's walk, C's F2): what it holds is short, and the grid above it is where
        he picks the next day — opened tall it covered the grid for 500px of nothing; its bar still pulls it up */
     <FloatWin id="lwday" title={title} testid="win-lwday" className="lwday" rests onClose={closeDayPanel}
+      foot={<MoreFoot scroller={scroller} />}
       tools={<>
         <button type="button" className="abtn win-step" data-testid="lwday-prev" aria-label="The day before" onClick={() => step(-1)}>‹</button>
         <button type="button" className="abtn win-step" data-testid="lwday-next" aria-label="The day after" onClick={() => step(1)}>›</button>
       </>}>
-      <div className="lwday-body" data-testid="lwday-body" data-iso={iso}>
+      <div className="lwday-body" data-testid="lwday-body" data-iso={iso} ref={n => { scroller.current = n?.parentElement ?? null }}>
         {!d.covered && <p className="lwday-note" data-testid="lwday-nocover">No leave period covers this date</p>}
         {d.covered && !d.open && <p className="lwday-note" data-testid="lwday-closed">Not open for bidding</p>}
         {d.events.length > 0 && (

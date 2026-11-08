@@ -4,6 +4,7 @@
    qualification takes the night one with it. */
 import { PenIcon, SrchIcon } from './icons'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { wirePinch } from './pinchzoom'
 import { rowOnScreen } from './onscreen'
 import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME } from '../engine/people'
@@ -770,14 +771,18 @@ export function QualsPage() {
     stuckRef.current = null; setStuck(null)
     if (typeof window.matchMedia !== 'function') return
     /* the row is unpinned, or pinned anew, only where it differs from the one already set (a set to the same is no redraw) */
-    const unstick = () => { if (stuckRef.current) { stuckRef.current = null; setStuck(null) } }
+    const unstick = (now = false) => {
+      if (!stuckRef.current) return
+      stuckRef.current = null
+      if (now) flushSync(() => setStuck(null)); else setStuck(null)
+    }
     /* `force` re-measures the pinned widths even while already stuck. A plain
        scroll keeps them (cheap, and they don't change as you scroll), but a
        rotate/resize changes EVERY column width — without a fresh measurement the
        mirror kept the old orientation's widths until a scroll un-stuck and
        re-pinned it (owner, 30 Aug 26 — flipping the phone left the frozen bar cut
        off to the portrait view "to fix it I need to scroll up then back down"). */
-    const pin = (force: boolean) => {
+    const pin = (force: boolean, now = false) => {
       const head = tblRef.current?.tHead
       if (!head) { unstick(); return }
       const r = head.getBoundingClientRect()
@@ -803,7 +808,12 @@ export function QualsPage() {
         }
         return
       }
-      if (r.top >= topEdge) { unstick(); return }
+      /* IN THE SAME FRAME (his D1789, 8 Nov 26 — [LW-FROZEN-BAR-GAP]): set as React state from this passive scroll listener,
+       the change was drawn in a later task, after the browser had painted the scroll — for one or two frames the row stood
+       half under the top bar with no pinned copy (or none at all). So when the row FLIPS — pinned or let go — the change is
+       committed at once (`flushSync`) and painted with the scroll that caused it; a scroll of a row already pinned or
+       already free sets nothing, and an effect's call (`now` false — React will not flush inside one) stays as it was. */
+      if (r.top >= topEdge) { unstick(now); return }
       /* measured here, in the listener, never inside a state updater; a plain scroll of a row already pinned measures nothing */
       if (stuckRef.current && !force) return
       /* never a stretched table measured, whoever asks (a cell's own box under a stretch is k times its width) */
@@ -815,10 +825,12 @@ export function QualsPage() {
       const cols = cells.map(c => c.getBoundingClientRect().width)
       if (cols.length === 0 || cols.some(w => !w)) return
       const next = { top: topEdge, left: wr.left, width: wr.width, cols }
-      stuckRef.current = next; setStuck(next)
+      const wasUp = !!stuckRef.current
+      stuckRef.current = next
+      if (now && !wasUp) flushSync(() => setStuck(next)); else setStuck(next)
     }
     qRepinRef.current = () => pin(true)
-    const onScroll = () => pin(false)
+    const onScroll = () => pin(false, true)
     /* a rotate/resize fires BEFORE iOS settles the new viewport, so an immediate
        read takes the OLD geometry — re-measure on the next two frames AND once
        more after a beat, forcing fresh widths each time. */
@@ -859,7 +871,8 @@ export function QualsPage() {
       if (wrapRef.current) ro.observe(wrapRef.current)
       watchCells()
     }
-    onScroll()
+    /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26) */
+    pin(false)
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', remeasure)

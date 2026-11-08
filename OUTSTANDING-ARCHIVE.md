@@ -7999,3 +7999,30 @@ scenario 7, Opus 10) — re-read today on the page's next show or a timer at mid
 closed landing** reads "That lands outside what you can edit — pick another day." — true but vague; "That day is closed
 for bidding. Pick an open day." (Opus, words read cold). **Place:** with the Leave War's next batch, each small — M2 went live on 23 Oct 26 without (1), (2) and (4), so M3.
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LOGIC-WORDS-WORKHOURS]). Forward facts: `raptor-port/docs/engine-rules.md`.*
+
+### [LOGIC-WORDS-WORKHOURS] The Logic page says a line with nothing entered starts its long day and Insights hours at the default rally; the app starts them at take-off less the step (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; a question for him)
+The Logic page's "Default rally before take-off" (renamed by D1031; the sentence itself dates from [LOGIC-PAGE-LAYOUT], D928) says "With no in-time or
+rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it". Walked: an empty R box, the setting 3h → 2h30 — the
+Insights hours did not move (1510 min both times); a typed R at the default time added 120 min, so with nothing entered the work span starts at the
+take-off less the step (1h). OIL does start at the default rally (D592 (2)); the long day and Insights read the one work span (`engine/validate.ts
+workSpan`, RT8 — "report/work hours … keep separate definitions"). Walker A's table `raptor-port/docs/handpass/parts/rally-box/walker-A.md` (scenario 9).
+**The question for him** (when he says so, D994): with nothing entered, should a flyer's long day and Insights hours start at the default rally
+(3 hours before take-off, as OIL does) or at the step (1 hour)? **Recommended:** the default rally — one start for a day with nothing entered,
+as the Logic page already says and OIL already does; it makes more long-day notes appear. Until he answers, the words are left as they are.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1786) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "Where a day starts when nothing is entered" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+**Built 8 Nov 26 by chat 6 on `claude/pr-day-start-7b064c`** — the engine (`engine/events.ts`) and the Logic page's drawn words; `engine-rules.md` §Where a day with nothing entered starts. Waits for its bug check, readers and his "merge live"; leaves for the archive once live.
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LW-TWO-BOX-LETTERS]). Forward facts: `raptor-port/docs/handpass/2026-11-06-lw-cell-combos.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-TWO-BOX-LETTERS] Two boxes side by side clip three letters (found 25 Oct 26, the M3 build's FULL check, W2 30)
+
+A day holding two whole-day entries draws them side by side, each the full height (his D1167), each half about 10 px wide on
+a 26 px day; a three-letter code there ("FO*", "TRG", "CSE", "DTY") is clipped by its box ("O*", "RG" — picture
+`raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/w2/f-30-cell-zoom.png`). Older than the M3 build (a course beside a
+leave did it), but common now: a weekend duty under Unavailable that earns OIL always shows its FO* beside it (D1357). How
+to draw it is his: options to draw for him — letters a step smaller and closer set; the letters stacked; the day's second
+entry as the "+1" corner when either code has three letters (narrowing D1167). Not built.
+**Overtaken 6 Nov 26 by D1727 (pull request 650):** two whole days stand side by side with their codes reading bottom to top, whole — checked by the pictures round on 8 Nov 26 (`raptor-port/docs/img/handpass/2026-11-07-pictures-round/q-twobox-ph-today-x4.png`); nothing to ask him. To archive.
+

@@ -174,6 +174,9 @@ export function workSpan(evs:any){
        landing is not, and 08:00 from the unfinished line with 14:00 from a ground row read "six hours" for one hour
        of work. An event counts only when both its ends are real numbers. */
     if((typeof os==='number'&&isNaN(os))||(typeof oe==='number'&&isNaN(oe)))return;
+    /* D1786, Astra's read: a sortie that measures nothing — both leads zero, take-off = landing — earns no OIL
+       (fltOilWin) and so stretches no day here either; one with a report or a debrief to measure still counts (D49) */
+    if(o.kind==='fly'&&!(oe>os))return;
     if(os!=null&&(s==null||os<s))s=os;
     if(oe!=null&&(e==null||oe>e)){e=oe;ef=o.kind==='fly'?o:null;}
   });
