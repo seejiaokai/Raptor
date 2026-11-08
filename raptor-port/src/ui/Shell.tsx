@@ -3,7 +3,7 @@
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
-import { wireTopbarVar } from './topbarvar'
+import { syncTopbarVar, wireTopbarVar } from './topbarvar'
 import { wireNavFold } from './navfold'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -358,6 +358,9 @@ export function Shell() {
   const oilTop = useOilBarTop()
   const bands = (saveFailed ? 1 : 0) + (oilTop ? 1 : 0)
   const bandsWas = useRef(bands)
+  /* D1873: the bar is fixed, so the page moves down under a band only when --topbar-h changes — written before paint,
+     so the band never covers the page's first line for a frame (the bar's own watch writes a frame later) */
+  useLayoutEffect(() => syncTopbarVar(topbarRef.current), [saveFailed, oilTop, navFold])
   useEffect(() => {
     if (bandsWas.current === bands) return
     bandsWas.current = bands

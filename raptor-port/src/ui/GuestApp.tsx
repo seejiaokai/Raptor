@@ -17,7 +17,7 @@
    perms.ts mayReadMedicalOf). The day swipe / arrows (ui/pan.ts) move the week — reading
    is not editing. Every write refuses him anyway, at the command gate (perms.ts). */
 import { useEffect, useLayoutEffect, useRef } from 'react'
-import { wireTopbarVar } from './topbarvar'
+import { syncTopbarVar, wireTopbarVar } from './topbarvar'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { SESSION } from '../state/auth'
@@ -39,6 +39,8 @@ export function GuestApp() {
   const name = String((SESSION && SESSION.name) || '')
   /* a failed save's band is the bar's last line here as on every page (D587) — his request may be what did not save (D1657) */
   const failed = useSaveFailed()
+  // the band's first frame moves the page down too: written before paint, not by the bar's watch a frame later (D1873)
+  useLayoutEffect(() => syncTopbarVar(topbarRef.current), [failed])
   return (
     <div id="guestApp">
       <div ref={topbarRef} className={'topbar guestbar' + (failed ? ' save-failed' : '')}>

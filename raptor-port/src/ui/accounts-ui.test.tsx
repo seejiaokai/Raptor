@@ -377,4 +377,41 @@ describe('D1657 — the failed-save band on the sign-in, the access screens and 
     expect($('#guestApp .savestat.failed')).toBeFalsy()
     await signInAs('ad', 'a'); setGuestView(false)
   })
+  /* D1873 (round 2): the bar is fixed now, so the page moves down under the band only when --topbar-h changes. The bar's
+     own resize watch writes it a frame late (to stay out of the browser's resize-watch loop), so the band's coming and
+     going must write it before paint by itself, or for one frame the band covers the page's first line. jsdom has no
+     resize watch, so only that before-paint write can pass this. */
+  it('D1873 — the band moves the page in the same frame: the reserved height follows the bar as the band comes and goes', async () => {
+    const rect = HTMLElement.prototype.getBoundingClientRect
+    const measured = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+      if (this.matches('#shell > .topbar, #guestApp > .topbar')) {
+        const h = this.classList.contains('save-failed') ? 94.375 : 58.375
+        return { height: h, top: 0, bottom: h } as DOMRect
+      }
+      return rect.call(this)
+    })
+    const height = () => document.documentElement.style.getPropertyValue('--topbar-h')
+    try {
+      await signInAs('ad', 'a')
+      expect(height()).toBe('58.375px')
+      await fail()
+      expect($('#shell > .topbar').classList.contains('save-failed')).toBe(true)
+      expect(height(), 'the page moved down with the band').toBe('94.375px')
+      await retry($('#shell > .topbar .savestat.failed'))
+      expect(height(), 'and back up when it went').toBe('58.375px')
+      await signInAs('band1873@mail'); ask('Band1873')
+      await signInAs('ad', 'a'); setGuestView(true)
+      await signInAs('band1873@mail')
+      expect($('#guestApp')).toBeTruthy()
+      expect(height()).toBe('58.375px')
+      await fail()
+      expect(height(), 'the guest page too').toBe('94.375px')
+      await retry($('#guestApp .topbar .savestat.failed'))
+      expect(height()).toBe('58.375px')
+    } finally {
+      measured.mockRestore()
+      be.failNext(0)
+      await signInAs('ad', 'a'); setGuestView(false)
+    }
+  })
 })
