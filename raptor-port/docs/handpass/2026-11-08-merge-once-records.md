@@ -18,8 +18,10 @@ compared byte for byte with the committed merge, and each file it settled in par
 section or item it settled, against the chat's of the same name). Every difference is kept whole, nothing shortened, in the
 companion file [2026-11-08-merge-once-records-diffs.md](2026-11-08-merge-once-records-diffs.md); below, each file has its counts and a
 link. **The replay can fail:** in every file the step settled, an identity — a skill-note number, a handoff block's marker, an `[ID]`
-heading, a ruling's row, a `## ` heading, a walk-ledger row — or ANY line that is not blank, standing more often than in the chat's
-file and in each parent, fails it (only a renumbered note's heading is exempt); so does a step that stopped with an error. Re-run:
+heading, a ruling's row, a `## ` heading, a walk-ledger row — standing more often than in the chat's file and in each parent, or ANY
+line that is not blank, standing more often than in the chat's file and more than the most of each parent's count and the two
+parents' counts less the base's (a line both sides added stands that often in a correct merge — the host's option 2), fails it
+(only a renumbered note's heading is exempt); so does a step that stopped with an error. Re-run:
 `node raptor-port/scripts/records-merge-replay.mjs --out raptor-port/docs/handpass/2026-11-08-merge-once-records.md`.
 
 **Nothing below is judged fine by the builder.** Every difference is listed for the host and the readers; the marks on each line say
@@ -27,16 +29,16 @@ only where the line came from.
 
 ## What the builder saw in it — a sort, not a verdict (for the host and the readers to check)
 
-- **The replay FAILS this run — twice, on one line, and both times the step's file is the sound one.** The new every-line rule
-  counts `<!-- /now -->` (the line that closes a handoff block): **0db7d583b** — the base had 6 blocks, each side added one (7 and
-  7), the step wrote 8 blocks with 8 closing lines; the chat's file has 8 blocks but only 7 closing lines (the lost closer of skill
-  note 895, found in the earlier runs). **8b54a2cd5** — base 4 blocks, each side added one, the step kept both (6 closing lines);
-  the chat dropped one, its branch being merged (5). In both, the step's count is the base plus each side's addition; the rule as
-  specified ("more than the chat's and more than each parent's") cannot tell that from a doubling, because a line both sides added
-  stands more often in a correct merge than in either parent. **Not changed by the builder — for the host to rule:** keep the rule
-  and accept these two by name, or bound it by the base too (a line fails above the chat's and above the most of: each parent's
-  count, and the two parents' counts less the base's — which would no longer catch a row both sides added the same and the step
-  wrote twice; round 3 never settles such a region, and the identities still catch a doubled block or note).
+- **The replay passes (exit 0): nothing doubled, no error, on the list or the held-out set.** The first run after round 3 failed
+  twice, on one line, both times with the step's file the sound one: the new every-line rule counted `<!-- /now -->` (the line
+  that closes a handoff block). **0db7d583b** — the base had 6 blocks, each side added one (7 and 7), the step wrote 8 blocks with
+  8 closing lines; the chat's file has 8 blocks but only 7 closing lines (the lost closer of skill note 895). **8b54a2cd5** —
+  base 4 blocks, each side added one, the step kept both (6 closing lines); the chat dropped one, its branch being merged (5). A
+  line both sides added stands more often in a correct merge than in either parent, so the host ruled (option 2) that the rule
+  is bounded by the base: a line fails only above the chat's count and above the most of each parent's count and the two
+  parents' counts less the base's. What that no longer catches — a row both sides added the same and the step wrote twice — the
+  step cannot write in round 3 (it never settles a region whose sides share a line), and a doubled block or note is still caught
+  by its identity. The regressions (a doubled ledger row, a doubled file-map row, a doubled handoff block, a crash) still fail.
 - **Merges.** Of the list's 76 clashing merges the step settled everything in **48**, part in **22** (left: the rulings files, which
   go to `backlog-archive.mjs --rulings --merge`, app code, a working guide, or a record it leaves), nothing in **6**. It stopped with
   an error on none. Against the run before round 3 (52 / 19 / 5): fewer settled, as accepted.
@@ -52,8 +54,9 @@ only where the line came from.
     file map's head are paragraph-shaped, so the host's rule puts one blank line between this branch's note and main's; the chats
     wrote them one under the other with none. The one differing line in each is that blank line.
   - No file that the step still settles changed in any other way.
-- **The held-out set: 6** clashing merges committed after the list was cut (19:26) and before this run (one more than last run,
-  64655d92a): everything settled in 2, part in 3 (the backlog, `OUTSTANDING.md`, left; app code), nothing in 1 (the backlog). Of
+- **The held-out set: 7** clashing merges committed after the list was cut (19:26) and before this run (two more than round 2's
+  run: 64655d92a, and a01a3d6cc, whose only clash is `DECISIONS.md`, a rulings file the step leaves): everything settled in 2,
+  part in 3 (the backlog, `OUTSTANDING.md`, left; app code), nothing in 2 (the backlog; a01a3d6cc). Of
   the **11** files it settled, **7** are the chat's bytes and **4** differ (a walk-ledger row in the other order, twice; one line of
   7dd5dd730's handoff block; 64655d92a's log, where the step renumbered 891 → 903 and the chat chose otherwise against other open
   branches) — whole in the companion. Nothing doubled, no error.
@@ -82,9 +85,7 @@ only where the line came from.
 - the step settled nothing (every clash outside what it settles, or left): **6**
 - files it settled whole: **108** — the same bytes as the chat's: **49**, different: **59**
 - files it settled in part: **1** — their records it settled, compared with the chat's: **10** (the same: **9**, different: **1**); records left in git's marks: **1**
-- **identities the step's file holds more often than the chat's and both parents' (a doubled record — the replay fails on any): 2**
-  - 0db7d583b HANDOFF.md: every line — "<!-- /now -->" stands 8 times in the step's file; the chat's 7, the first parent's 7, the second's 7
-  - 8b54a2cd5 HANDOFF.md: every line — "<!-- /now -->" stands 6 times in the step's file; the chat's 5, the first parent's 5, the second's 5
+- **identities the step's file holds more often than the chat's and both parents' (a doubled record — the replay fails on any): 0**
 - the step stopped with an error: **0**
 
 | merge | parents | git left | the step settled | left for the chat |
@@ -241,12 +242,12 @@ Each with its identity counts that differ and its count of differing lines; ever
 - **2cfdfe2d2 — .claude/skill-observations/log.md** — 88 differing line(s) ([whole](2026-11-08-merge-once-records-diffs.md#2cfdfe2d2--claudeskill-observationslogmd)); identity counts: all equal
 - **2cfdfe2d2 — raptor-port/docs/file-map.md** — 1 differing line(s) ([whole](2026-11-08-merge-once-records-diffs.md#2cfdfe2d2--raptor-portdocsfile-mapmd)); identity counts: all equal
 
-## The held-out merges — committed after the list was cut (6)
+## The held-out merges — committed after the list was cut (7)
 
-- merges replayed: **6**
+- merges replayed: **7**
 - the step settled EVERYTHING git left (nothing for the chat): **2**
 - the step settled part, the rest left for the chat (rulings files, app code or a record it leaves): **3**
-- the step settled nothing (every clash outside what it settles, or left): **1**
+- the step settled nothing (every clash outside what it settles, or left): **2**
 - files it settled whole: **11** — the same bytes as the chat's: **7**, different: **4**
 - files it settled in part: **0** — their records it settled, compared with the chat's: **0** (the same: **0**, different: **0**); records left in git's marks: **0**
 - **identities the step's file holds more often than the chat's and both parents' (a doubled record — the replay fails on any): 0**
@@ -260,6 +261,7 @@ Each with its identity counts that differ and its count of differing lines; ever
 | 46917540c | 16ece0fe1 ← 4db6473e8 | .claude/skill-observations/log.md, HANDOFF.md, OUTSTANDING.md | .claude/skill-observations/log.md (=), HANDOFF.md (=) | OUTSTANDING.md |
 | 01590506f | e8dc83e96 ← 027b2923f | OUTSTANDING.md | — | OUTSTANDING.md |
 | 64655d92a | f4736152b ← 9e493393b | .claude/skill-observations/log.md, raptor-port/docs/file-map.md, raptor-port/src/ui/GuestApp.tsx | .claude/skill-observations/log.md (≠), raptor-port/docs/file-map.md (=) | raptor-port/src/ui/GuestApp.tsx |
+| a01a3d6cc | ba81f7b51 ← 405a42801 | DECISIONS.md | — | DECISIONS.md |
 
 ### Renumbers the step made
 

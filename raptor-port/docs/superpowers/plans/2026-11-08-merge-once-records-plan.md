@@ -102,7 +102,9 @@ inserted, the two share no non-blank line, neither holds a `#` line or a table h
 at a line end — this branch's text, one blank line only for paragraph-shaped text, then `main`'s; anything else, an archive's
 "## Moved <day>" both opened among it, is left in git's marks. Also: a code block still open at the end of a text is read as text
 (the document check names a new one); in `HANDOFF.md` two different new `## ` sections at one place are both kept, this branch's
-first; the replay also fails on a step that crashed, on a doubled ledger row and on any non-blank line doubled.
+first; the replay also fails on a step that crashed, on a doubled ledger row and on any non-blank line doubled — above the chat's
+count and above the most of each parent's and the two parents' less the base's (the host's option 2: a line both sides added stands
+that often in a correct merge).
 Run after `git merge origin/main` stops on clashes (the chat's own hand edits AFTER it, never before).
 - **Inputs:** only paths git still lists as unmerged, read from git's three staged copies (base, ours, theirs) — never the files on disk.
   A file whose working copy is no longer git's own conflicted output is refused by name (the chat has edited it — leave it to the chat).

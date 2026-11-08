@@ -1321,7 +1321,7 @@ Identity counts that differ:
 +    «chat kept»
 ```
 
-## The held-out merges — committed after the list was cut (6)
+## The held-out merges — committed after the list was cut (7)
 
 Each line: `-` the step wrote it and the chat's file lacks it, `+` the chat's file has it and the step's lacks it; «chat wrote» marks a line neither parent holds (written in the merge itself). None is judged here. Nothing is shortened.
 
