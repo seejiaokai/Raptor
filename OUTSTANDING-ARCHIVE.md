@@ -8143,3 +8143,43 @@ its group 1 (the board's layout, wave 2, the same board files), his word 8 Nov 2
 same job checks + Wave, the plans selector, a jet's stores and the duty role box under the keys — D1646 asks the cyan ring
 there too, and a fresh reader found none in the stylesheet (8 Nov 26, not looked at on screen).
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([CLOUD-WALKS]). Forward facts: `.claude/rules/decisions/how-we-work.md`.*
+
+### [CLOUD-WALKS] Walks run in the cloud instead of on his PC (filed 8 Nov 26, D1797)
+
+**What:** the walks queue for his PC's one checks lock while several chats build at once. His D1797: try running them on
+Anthropic's cloud machines; if it works, every chat adopts it. **Steps:** (1) the trial — a walker started by a chat on its
+own (a helper in the cloud, not a new chat, which the app refuses on another chat's word) builds the app, runs one walk
+script with pictures, and leaves them where the host can open them; today's walk scripts name folders on his PC, so a
+script that runs anywhere is part of the trial; (2) if it works, chat 3 tells the open chats (walks not yet started move)
+and writes the walking-instructions change for D1761's two readers and his approval; (3) if each cloud walk needs his
+click, or the cloud cannot build or show the app, the way is dropped and he is told. **Place:** chat 3, 8 Nov 26.
+
+**DROPPED (8 Nov 26, the trial's result, under D1797's own terms):** a helper sent to the cloud (the Agent tool's remote isolation) ran on his PC instead — the app fell back without a word; the walk itself worked (built, signed in, six pictures at a desktop and a phone size, no errors, pushed to `claude/cloud-walk-trial` with a walk script that names no folder on his PC, `raptor-port/scripts/handpass/cloud-walk-trial.mjs` on that branch). A cloud chat is the only cloud way left, and only he can open one, so each walk would need him. Kept for later: that script, if cloud helpers are switched on for his account.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([INP-ADD-RIGHT]). Forward facts: `.claude/decisions-full/inputs.md`, `raptor-port/docs/walk-ledger.md`.*
+
+### [INP-ADD-RIGHT] "+ Input" on the desktop Inputs list where its window opens (D1300's reading, 24 Oct 26)
+**BUILT 8 Nov 26 (chat 7) on `claude/pr-inputs-add-right-5b2653`, pull request 676** — the button at the right end after the
+dates button; the room while an input's window (from "+ Input" or a row) is open, from 1340 wide, Name / Start / End 110 / 140 /
+90; the same three narrowed with no window from 821 to 1099 (the older fault); a window dragged away gives the room back (both
+readers' finding, fixed red first). Bug check: `raptor-port/docs/handpass/2026-11-08-chat7-inputs.md`. **Left for his look:**
+confirm the smaller-screen safety is part of his answer (D1787's full row); the narrowest desktop's Remarks, 57px at 821 wide
+(words broken in two — `raptor-port/docs/img/handpass/2026-11-08-chat7-inputs/w821-a-viewport.png`), put to him with a
+recommendation; "+ Input" stands under the open window, as drawn and as "+ Medical" does. Close once live.
+**Seen (M3's follow-up walk, `raptor-port/docs/img/handpass/2026-10-24-lw-m3-follow/m5-input-list-desk.png`, `m5-input-open-desk.png`):**
+on a desktop "+ Input" stands at the left of the list's row and its window opens at the right, over the list's right
+columns — as "+ Medical" did before D1300. **To do, on his word:** the same as the Medical tab (design lesson 47) — the
+button at the right, the list making room while the window is open, the row filed wearing its mark (it already does); a
+picture first (D853). **Place:** with the next Inputs batch.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1787) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "+ Input on the right" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`). **Drawn again 8 Nov 26 at smaller widths (his question, "how would 8 look like for a smaller screen if i choose A"; the page's question 8, "On a smaller screen"):** copied as is, A crushes Remarks below about 1500 wide (the other six columns are fixed, 875px, `06-inputs.css`, and the room kept for the window 446) — so A is redrawn with a safety: the list makes room only from about 1340 wide, Name 110, Start 140 and End 90 while it does (Remarks measured 150 at 1340, 346 at 1536); narrower, the button still at the right and the window covering the list as today. **Found, older, a fault whatever he answers:** today, with no window open, the desktop list below about 950 wide squeezes Remarks to a letter or two (11px measured at 950, none at 821; rows over 400px tall) — the phone's list has a 640px floor and scrolls sideways, the desktop's has none; fixed by the same narrowing on a narrow screen. Pictures `q-addright-1280-open-A`, `-1280-open-A-fit`, `-1024-A-safe`, `-821-today` (and the others of `q4n`), script `pr-sched.mjs` q4n, q4f, q4t, q4m.
+
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([INP-LIST-RIGHT-EDGE]). Forward facts: `raptor-port/docs/ui-contracts.md`, `.claude/decisions-full/inputs.md`.*
+
+### [INP-LIST-RIGHT-EDGE] The desktop Inputs list's right end looks cut off (D1842)
+**BUILT 8 Nov 26 (chat 7, D1843):** option A in `06-inputs.css`, its browser test red first then green, the drawing check GREEN, the before and after pictures — `raptor-port/docs/handpass/2026-11-08-chat7-inputs.md` §14. Leaves for the archive once pull request 676 merges.
+**His correction, 8 Nov 26, on chat 7's 821-wide picture:** each row's coloured line on the left has nothing to match it on the right, and "No document" (the last column, right-aligned) sits against the list's end, so the list reads as running on and he tried to scroll sideways. **Drawn 8 Nov 26 (chat 7):** today and three options on the real app at 821, 1024 and 1536 — A a thin line round the whole list in the rows' own line colour, B the rows on the panel surface, C only "No document" brought inside its column (each with it 14px in, from 3px); **He picked A, 8 Nov 26 (D1843) — build it next**; put to him on chat 7's look page (https://claude.ai/artifact/14FMTxfkU37UZPcGPrpUQw); script and pictures `raptor-port/docs/img/handpass/2026-11-08-chat7-inputs/d1842-*`. Lesson 93 written and read. **Was to do:** draw the fix on the real app with the design skill at 821, 1024 and 1536 (and say why the phone's cards are untouched), put it to him (D1625), then build it with its check; write the lesson for the design guide's §9 the same day (D852, one fresh reader) and name up to four other tables in the app the same fix would apply to. **Place:** `raptor-port/src/ui/scheduler/06-inputs.css` (the list's table), `ui/InputsPage.tsx` (the last column).
