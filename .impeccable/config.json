@@ -2,7 +2,7 @@
   "detector": {
     "ignoreRules": [],
     "ignoreFiles": [
-      "raptor-port/src/engine/**",
+      "**/raptor-port/src/engine/**",
       "**/*.test.*"
     ],
     "ignoreValues": [
