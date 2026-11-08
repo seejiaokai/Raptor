@@ -195,7 +195,7 @@ rgb(59, 198, 232)" on the PC and the phone.
 - Unit: the 53 files that read the waiting list, the jump or the accept buttons — 1483 tests, green at `26aa4de19`.
 - The drawing check: 15 of 15, 0 differences, on the build of `9d330d50c` (`drawcheck-fix2/report.md`).
 - `e2e/warnhide.spec.ts` 8 of 8; React Doctor clean.
-- GitHub's full run of the pull request: GITHUB_RUN
+- GitHub's full run of the pull request on `32e9b096d` (with `main` in): every check green — the build, the code check, the documents guard, the secrets scan, the browser checks (7 groups), the Tracker's (2), the unit tests (10 groups). The records commit after it runs the same set again before the merge.
 
 ## 15. What the walk found, and each disposition
 
