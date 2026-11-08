@@ -556,7 +556,7 @@ the readers): a choice put to him, not taken.
 checked about 194 and found the two shipping conditions that a split bullet had loosened, which Astra passed. The
 Opus read was the better of the two on this part; on part 1 Astra caught the two most serious.
 
-### Step 5a — OIL as a page, the full trial (8 Nov 26, `claude/rules-diet-step-5a-oil`)
+### Step 5a — OIL as a page, the full trial (8 Nov 26, `claude/rules-diet-step-5a-oil` — merged 8 Nov 26 on his "merge live", pull request 684)
 
 `.claude/rules/decisions/oil.md` is a page, "OIL (off in lieu) — how it works now" (`<!-- shape: page -->`, its
 `paths:` unchanged), drafted from the sample (v3) and brought up to date: D1783 (8 Nov 26) added, the two statements
