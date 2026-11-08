@@ -159,6 +159,8 @@ Walker A (Sonnet), 8 Nov 26, Chromium (and WebKit at 1000), 821–1536 and 820 /
 - **W-A3** — no "Notes" heading over the remarks' own row in the band. **As drawn:** the drawing has none, and nothing stands under it on the line's first row (the band's comment, `13-board-rows-responsive.css`).
 - **Met in passing, not findings:** a long mission wraps and makes its box taller (typed data); deleting a line asks nothing and says so in a passing note, as built; after Publish day the sign-off box reads "4 to sign" — the next amendment's four, as built; Escape does not close the changes window (row B5: non-blocking, as on a desktop).
 
+- **W-GH1 — found by GitHub's run of 5723ef5c0, not by the walk:** on a phone on its side a crew-list puck held just under the pinned bar did not scroll the day; only one held over the bar did (walker B6 held at the foot and over the bar, never just under it). Since D1780 the board itself scrolls, and both drags' edge bands (`drag.ts tdAutoScroll`, `rowdrag.ts edgeVel`) began at the board's own top edge, hidden under the bar. **FIXED:** one helper, `edgescroll.ts shownTop` — the band begins at the bar's foot. The puck test (`e2e/boardside.spec.ts`, pointed at the board's own scroller, D1780) red before (scroll 300 → 300), green after; a new test for a row held by its grip, green after — its red run waits for the checks lock (held by chat 13's walk). 103 drag unit tests pass.
+
 ## 15. The reads
 
 ## Walk line
