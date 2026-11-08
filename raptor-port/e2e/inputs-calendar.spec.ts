@@ -1650,18 +1650,19 @@ for (const [width, withWin] of [[2560, false], [1536, false], [1536, true], [102
       await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
     }
     const m = await rightEnd(page)
+    /* each check reports on its own (soft), so the old look shows every one of them failing, not only the first */
     expect(m.nodoc.length, 'rows with "No document" to measure').toBeGreaterThan(0)
-    expect(Math.max(...m.nodoc.map(n => n.spill)), '"No document" ends inside its column\'s padding').toBeLessThanOrEqual(0.5)
-    expect(Math.min(...m.nodoc.map(n => n.toEnd)), '"No document" stands clear of the list\'s end').toBeGreaterThanOrEqual(12)
-    expect(m.sideways, 'the list does not scroll sideways').toBe(false)
-    expect(m.pageSideways, 'the page does not scroll sideways').toBe(false)
+    expect.soft(Math.max(...m.nodoc.map(n => n.spill)), '"No document" ends inside its column\'s padding').toBeLessThanOrEqual(0.5)
+    expect.soft(Math.min(...m.nodoc.map(n => n.toEnd)), '"No document" stands clear of the list\'s end').toBeGreaterThanOrEqual(12)
+    expect.soft(m.sideways, 'the list does not scroll sideways').toBe(false)
+    expect.soft(m.pageSideways, 'the page does not scroll sideways').toBe(false)
     /* the line, as drawn: halfway down a row (clear of the rows' own lines), from 3px inside the list to 4px past it —
        one pixel there wears the rows' line colour, and the page beyond it does not */
     const x0 = Math.floor(m.right) - 3, px = await strip(page, x0, Math.round(m.nodoc[0].midY), 8)
     const hit = px.findIndex(c => near(c, EDGE))
-    expect(hit, `a pixel of the rows' line colour at the list's right edge (${JSON.stringify(px)})`).toBeGreaterThanOrEqual(2)
-    expect(hit, 'the line stands at the list\'s edge, not inside it').toBeLessThanOrEqual(4)
-    expect(near(px[7], EDGE), 'the page past the line is not the line').toBe(false)
+    expect.soft(hit, `a pixel of the rows' line colour at the list's right edge (${JSON.stringify(px)})`).toBeGreaterThanOrEqual(2)
+    expect.soft(hit, 'the line stands at the list\'s edge, not inside it').toBeLessThanOrEqual(4)
+    expect.soft(near(px[7], EDGE), 'the page past the line is not the line').toBe(false)
   })
 }
 /* A WINDOW HE HAS MOVED TAKES ITS ROOM WITH IT (both code reads of 8 Nov 26, Astra's and the fresh Opus reader's): a window
