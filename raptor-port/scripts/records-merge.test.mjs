@@ -267,13 +267,15 @@ for (const [name, end] of [['no line ending', ''], ['one line ending', '\n'], ['
     assert.equal(c.read('.claude/skill-observations/log.md'), LOG0 + '### Observation 12: theirs\n\ntheirs\n\n' + '### Observation 11: ours\n\nours' + end)
   }))
 }
-/* the insertion-only files read git's own clash regions, and git ends every line of a region — so this one guards it
-   (green before the fix: git's region gave the file a last line ending, which is kept) */
-test('rulings archive: rows both sides added as the last line, with no line ending, stay on lines of their own (Astra 1)', withRepo({ 'DECISIONS-ARCHIVE.md': '# Archive\n\n| # | ruling |\n|---|---|\n| D1 | one |\n' }, c => {
+/* the insertion-only files read git's own clash regions, and git ends every line of a region — so a side whose text did
+   not end at a line end cannot be told apart there; round 3 (the host's guardrails, 8 Nov 26): such a region is LEFT,
+   never joined (was settled — Astra 1) */
+test('rulings archive: rows both sides added as the last line, with no line ending, are left (round 3; Astra 1)', withRepo({ 'DECISIONS-ARCHIVE.md': '# Archive\n\n| # | ruling |\n|---|---|\n| D1 | one |\n' }, c => {
   c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + '| D2 | ours |'), x => x.edit('DECISIONS-ARCHIVE.md', t => t + '| D3 | theirs |'))
+  const before = c.read('DECISIONS-ARCHIVE.md')
   const r = c.run()
-  assert.equal(r.code, 0, r.out)
-  assert.equal(c.read('DECISIONS-ARCHIVE.md'), '# Archive\n\n| # | ruling |\n|---|---|\n| D1 | one |\n| D2 | ours |\n| D3 | theirs |\n')
+  assert.equal(r.code, 2, r.out)
+  assert.equal(c.read('DECISIONS-ARCHIVE.md'), before, 'nothing settled there: git\'s own marks untouched')
 }))
 
 /* Opus 5, 6 (the code read, 8 Nov 26): the other chats on this PC work in worktrees of the same repository, so their
@@ -359,70 +361,94 @@ test('file map: a paragraph each side added at the top changelog are both kept (
 }))
 
 const DARCH0 = '# Archive\n\n## Moved 7 Nov 26\n\n| # | Date | ruling |\n|---|---|---|\n| D1 | 7 Nov 26 | one |\n'
-test('rulings archive: a "## Moved <day>" heading both sides inserted is kept once, both rows under it (Astra 8, Opus 13)', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
-  const day = row => '\n## Moved 8 Nov 26\n\n| # | Date | ruling |\n|---|---|---|\n' + row + '\n'
-  c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + day('| D2 | 8 Nov 26 | ours |')), x => x.edit('DECISIONS-ARCHIVE.md', t => t + day('| D3 | 8 Nov 26 | theirs |')))
-  const r = c.run()
-  assert.equal(r.code, 0, r.out)
-  assert.equal(c.read('DECISIONS-ARCHIVE.md'), DARCH0 + '\n## Moved 8 Nov 26\n\n| # | Date | ruling |\n|---|---|---|\n| D2 | 8 Nov 26 | ours |\n| D3 | 8 Nov 26 | theirs |\n')
+/* ROUND 3 (the host's decision after the narrow re-reads, 8 Nov 26 — a cascade of faults in the joining logic): a region
+   of an insertion-only file is settled ONLY when both sides only inserted, share no line that is not blank, hold no line
+   starting with `#` and no table head, and each is whole rows or whole paragraphs. Anything else is left exactly as git
+   marked it — fewer settled, never silently wrong. The cases the earlier rounds settled with headings are left now. */
+const leftAsGitMarked = (c, f, r, before) => {
+  assert.equal(r.code, 2, r.out)
+  assert.match(r.out, new RegExp(`LEFT for you in ${f.replace(/[.]/g, '\\.')}`))
+  assert.equal(c.read(f), before, 'nothing settled there: git\'s own marks untouched')
+}
+test('rulings archive: a "## Moved <day>" heading both sides inserted is left for the chat (round 3; was kept once — Astra 8, Opus 13)', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
+  const day1 = row => '\n## Moved 8 Nov 26\n\n| # | Date | ruling |\n|---|---|---|\n' + row + '\n'
+  c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + day1('| D2 | 8 Nov 26 | ours |')), x => x.edit('DECISIONS-ARCHIVE.md', t => t + day1('| D3 | 8 Nov 26 | theirs |')))
+  const before = c.read('DECISIONS-ARCHIVE.md')
+  leftAsGitMarked(c, 'DECISIONS-ARCHIVE.md', c.run(), before)
 }))
-
-/* Astra 2, Opus 1, 2, 3 (the code read, 8 Nov 26): git's regions are read under --diff3, which never trims lines both
-   sides share, so a heading or a row both inserted can sit anywhere in the region. Each entry must stay under its own
-   day heading, no heading or row may be doubled, and where that cannot be known the region is left. */
 const day = (d, ...rows) => `\n## Moved ${d} Nov 26\n\n| # | Date | ruling |\n|---|---|---|\n${rows.map(r => `| ${r} | ${d} Nov 26 | x |\n`).join('')}`
 test('rulings archive: one day heading both sides added at different places is left, never doubled (Opus 1)', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
   c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D2')), x => x.edit('DECISIONS-ARCHIVE.md', t => t + '| D3 | 7 Nov 26 | later |\n' + day(8, 'D4')))
   const before = c.read('DECISIONS-ARCHIVE.md')
-  const r = c.run()
-  assert.equal(r.code, 2, r.out)
-  assert.match(r.out, /LEFT for you in DECISIONS-ARCHIVE\.md/)
-  assert.equal(c.read('DECISIONS-ARCHIVE.md'), before, 'nothing settled there: git\'s own marks untouched')
+  leftAsGitMarked(c, 'DECISIONS-ARCHIVE.md', c.run(), before)
 }))
-test('rulings archive: main\'s row under a day this branch also opened stays under that day, before this branch\'s next day (Astra 2, Opus 2)', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
+test('rulings archive: main\'s row and this branch\'s new day at one place are left (round 3; was settled — Astra 2, Opus 2)', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
   c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D2') + day(9, 'D3')), x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D4')))
-  const r = c.run()
-  assert.equal(r.code, 0, r.out)
-  assert.equal(c.read('DECISIONS-ARCHIVE.md'), DARCH0 + day(8, 'D2', 'D4') + day(9, 'D3'))
+  const before = c.read('DECISIONS-ARCHIVE.md')
+  leftAsGitMarked(c, 'DECISIONS-ARCHIVE.md', c.run(), before)
 }))
 test('rulings archive: both sides opening different new days at one place is left (Astra 2)', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
   c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D2') + day(9, 'D3')), x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D4') + day(10, 'D5')))
-  const r = c.run()
-  assert.equal(r.code, 2, r.out)
-  assert.match(r.out, /LEFT for you in DECISIONS-ARCHIVE\.md/)
+  const before = c.read('DECISIONS-ARCHIVE.md')
+  leftAsGitMarked(c, 'DECISIONS-ARCHIVE.md', c.run(), before)
 }))
-/* the replay's finding after the fixes (ab43e7413, 8 Nov 26): main opened "## Moved 8 Nov 26" ABOVE a base row it then
-   counted under the new day, so git kept main's heading outside the clash and this branch's same heading inside it —
-   joined, the day stood twice. A heading in the region that already stands outside it: the region is left */
+/* the replay's finding (ab43e7413): main opened the day ABOVE a base row, so its heading stood outside the clash and this
+   branch's inside it */
 test('rulings archive: a day heading inside the clash that already stands outside it is left, never doubled', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 + '| D9 | 7 Nov 26 | nine |\n' }, c => {
   const st = c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D2')),
-    x => x.edit('DECISIONS-ARCHIVE.md', t => t.replace('| D9 |', '| D3 | 7 Nov 26 | three |\n' + day(8).slice(0) + '| D9 |') + '| D4 | 8 Nov 26 | four |\n'))
+    x => x.edit('DECISIONS-ARCHIVE.md', t => t.replace('| D9 |', '| D3 | 7 Nov 26 | three |\n' + day(8) + '| D9 |') + '| D4 | 8 Nov 26 | four |\n'))
   assert.equal(st, 1, 'the merge must clash')
-  const r = c.run()
-  assert.equal(r.code, 2, r.out)
-  assert.match(r.out, /LEFT for you in DECISIONS-ARCHIVE\.md/)
-  assert.ok((c.read('DECISIONS-ARCHIVE.md').match(/^## Moved 8 Nov 26$/gm) || []).length <= 1 || /^<{7} /m.test(c.read('DECISIONS-ARCHIVE.md')), 'never two day headings outside git\'s marks')
+  const before = c.read('DECISIONS-ARCHIVE.md')
+  leftAsGitMarked(c, 'DECISIONS-ARCHIVE.md', c.run(), before)
 }))
-test('backlog archive: main\'s item after this branch\'s keeps a blank line before its heading (Opus 2)', withRepo({ 'OUTSTANDING-ARCHIVE.md': '# Archive\n\n## Moved 6 Nov 26\n\n### [A] a\n\nbody a\n' }, c => {
-  c.sides(x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n## Moved 7 Nov 26\n\n### [B] b\n\nbody b\n'), x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n## Moved 7 Nov 26\n\n### [C] c\n\nbody c\n'))
+test('rulings archive: rows both sides added under the same day, no heading in the clash, are settled — this branch\'s, then main\'s', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
+  c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + '| D2 | 7 Nov 26 | ours |\n'), x => x.edit('DECISIONS-ARCHIVE.md', t => t + '| D3 | 7 Nov 26 | theirs |\n'))
   const r = c.run()
   assert.equal(r.code, 0, r.out)
-  assert.equal(c.read('OUTSTANDING-ARCHIVE.md'), '# Archive\n\n## Moved 6 Nov 26\n\n### [A] a\n\nbody a\n\n## Moved 7 Nov 26\n\n### [B] b\n\nbody b\n\n### [C] c\n\nbody c\n')
+  assert.equal(c.read('DECISIONS-ARCHIVE.md'), DARCH0 + '| D2 | 7 Nov 26 | ours |\n| D3 | 7 Nov 26 | theirs |\n')
 }))
-/* the replay's finding after the fixes (32e9b096d, 31ac0ebd8, 8b54a2cd5): the file map's notes at its head are lines of
-   one paragraph, one under the other — the seam must not part them with a blank line (only a heading is set apart) */
-test('file map: a note line each side added under the others stays one under the other, no blank line between', withRepo({ 'raptor-port/docs/file-map.md': '# File map\n\n8 Nov 26 on `claude/old` (a note).\n\n| file | what |\n|---|---|\n' }, c => {
+test('backlog archive: items both sides archived at one place are left (round 3; was settled with a blank line — Opus 2)', withRepo({ 'OUTSTANDING-ARCHIVE.md': '# Archive\n\n## Moved 6 Nov 26\n\n### [A] a\n\nbody a\n' }, c => {
+  c.sides(x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n## Moved 7 Nov 26\n\n### [B] b\n\nbody b\n'), x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n## Moved 7 Nov 26\n\n### [C] c\n\nbody c\n'))
+  const before = c.read('OUTSTANDING-ARCHIVE.md')
+  leftAsGitMarked(c, 'OUTSTANDING-ARCHIVE.md', c.run(), before)
+}))
+/* the narrow re-read's findings (Opus re-read 1, 2, 7): the shared start fused two versions of one archived item, the
+   shared end moved a last line from one item to the other, and a day heading written with different spacing doubled a
+   table head inside one table */
+test('backlog archive: two versions of one item archived on both sides are never fused into one (Opus re-read 1)', withRepo({ 'OUTSTANDING-ARCHIVE.md': '# Archive\n\n### [A] a\n\nbody a\n' }, c => {
+  c.sides(x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n### [X] the item\n\nFirst line.\nBuilt and live 8 Nov 26 (PR 700).\n'), x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n### [X] the item\n\nFirst line.\nDropped on his word, 8 Nov 26.\n'))
+  const before = c.read('OUTSTANDING-ARCHIVE.md')
+  leftAsGitMarked(c, 'OUTSTANDING-ARCHIVE.md', c.run(), before)
+}))
+test('backlog: one new item added on both sides with different lines is never fused (Opus re-read 1)', withRepo({ 'OUTSTANDING.md': '# Outstanding\n\n## Items\n\n### [ALPHA] a\n\nbody\n' }, c => {
+  c.sides(x => x.edit('OUTSTANDING.md', t => t + '\n### [NEW] new\n\n**Place:** the board\n'), x => x.edit('OUTSTANDING.md', t => t + '\n### [NEW] new\n\n**Place:** the week\n'))
+  const before = c.read('OUTSTANDING.md')
+  leftAsGitMarked(c, 'OUTSTANDING.md', c.run(), before)
+}))
+test('backlog archive: a last line both items share is never moved from one to the other (Opus re-read 2)', withRepo({ 'OUTSTANDING-ARCHIVE.md': '# Archive\n\n### [A] a\n\nbody a\n' }, c => {
+  c.sides(x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n### [X] x\n\nbody x\nStatus: closed, live.\n'), x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n### [Y] y\n\nbody y\nStatus: closed, live.\n'))
+  const before = c.read('OUTSTANDING-ARCHIVE.md')
+  leftAsGitMarked(c, 'OUTSTANDING-ARCHIVE.md', c.run(), before)
+}))
+test('rulings archive: one day heading written with different spacing never doubles a table head (Opus re-read 7)', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
+  c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + '\n## Moved 8 Nov 26\n\n| # | Date | ruling |\n|---|---|---|\n| D2 | 8 Nov 26 | ours |\n'), x => x.edit('DECISIONS-ARCHIVE.md', t => t + '\n## Moved 8 Nov 26\n| # | Date | ruling |\n|---|---|---|\n| D3 | 8 Nov 26 | theirs |\n'))
+  const before = c.read('DECISIONS-ARCHIVE.md')
+  leftAsGitMarked(c, 'DECISIONS-ARCHIVE.md', c.run(), before)
+}))
+/* the file map's notes at its head are lines one under the other: under round 3's rule a paragraph-shaped insertion gets
+   one blank line between this branch's text and main's (the host's rule; the chats wrote them with none — the replay
+   counts those files as different) */
+test('file map: a note line each side added at the head — this branch\'s, one blank line, then main\'s (round 3)', withRepo({ 'raptor-port/docs/file-map.md': '# File map\n\n8 Nov 26 on `claude/old` (a note).\n\n| file | what |\n|---|---|\n' }, c => {
   c.sides(x => x.edit('raptor-port/docs/file-map.md', t => t.replace('# File map\n\n', '# File map\n\n8 Nov 26 on `claude/ours` (x).\n')),
     x => x.edit('raptor-port/docs/file-map.md', t => t.replace('# File map\n\n', '# File map\n\n8 Nov 26 on `claude/theirs` (y).\n')))
   const r = c.run()
   assert.equal(r.code, 0, r.out)
-  assert.equal(c.read('raptor-port/docs/file-map.md'), '# File map\n\n8 Nov 26 on `claude/ours` (x).\n8 Nov 26 on `claude/theirs` (y).\n8 Nov 26 on `claude/old` (a note).\n\n| file | what |\n|---|---|\n')
+  assert.equal(c.read('raptor-port/docs/file-map.md'), '# File map\n\n8 Nov 26 on `claude/ours` (x).\n\n8 Nov 26 on `claude/theirs` (y).\n8 Nov 26 on `claude/old` (a note).\n\n| file | what |\n|---|---|\n')
 }))
-test('file map: a row both sides added the same, first or last, is kept once (Opus 3)', withRepo({ 'raptor-port/docs/file-map.md': FMAP0 }, c => {
+test('file map: a row both sides added the same is left (round 3; was kept once — Opus 3)', withRepo({ 'raptor-port/docs/file-map.md': FMAP0 }, c => {
   c.sides(x => x.edit('raptor-port/docs/file-map.md', t => t + '| shared.ts | same |\n| o.ts | o |\n| z.ts | z |\n'), x => x.edit('raptor-port/docs/file-map.md', t => t + '| shared.ts | same |\n| t.ts | t |\n| z.ts | z |\n'))
-  const r = c.run()
-  assert.equal(r.code, 0, r.out)
-  assert.equal(c.read('raptor-port/docs/file-map.md'), FMAP0 + '| shared.ts | same |\n| o.ts | o |\n| t.ts | t |\n| z.ts | z |\n')
+  const before = c.read('raptor-port/docs/file-map.md')
+  leftAsGitMarked(c, 'raptor-port/docs/file-map.md', c.run(), before)
 }))
 test('skill log: this branch\'s note under a day both sides opened stays under that day, before main\'s next day (Astra 2)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
   c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(13, 'ours')),
