@@ -1,0 +1,116 @@
+{
+ "rows": [
+  {
+   "id": "S1.desk.edit",
+   "verdict": "PASS",
+   "what": "scrollY=3138 of 3138; bar top=0, height 58 (at rest 58), position fixed",
+   "pic": "s1-desk-edit-foot.png"
+  },
+  {
+   "id": "S2.desk.edit",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (941,1726,2510) differs by 0/0 px; bar top 0, bar width 1536 vs page width 1536; background linear-gradient(rgb(21, 56, 76), rgb(11, 28, 39)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-desk-edit-mid-top300.png"
+  },
+  {
+   "id": "S1.desk.inputs",
+   "verdict": "NOT REACHED",
+   "what": "page is not scrollable here (scroll room 0px)",
+   "pic": ""
+  },
+  {
+   "id": "S1.desk.quals",
+   "verdict": "PASS",
+   "what": "scrollY=414 of 414; bar top=0, height 57 (at rest 57), position fixed",
+   "pic": "s1-desk-quals-foot.png"
+  },
+  {
+   "id": "S2.desk.quals",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (124,228,331) differs by 0/0 px; bar top 0, bar width 1536 vs page width 1536; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-desk-quals-mid-top300.png"
+  },
+  {
+   "id": "S1.desk.lwgrid",
+   "verdict": "PASS",
+   "what": "scrollY=1268 of 1268; bar top=0, height 57 (at rest 57), position fixed",
+   "pic": "s1-desk-lwgrid-foot.png"
+  },
+  {
+   "id": "S2.desk.lwgrid",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (380,697,1014) differs by 0/0 px; bar top 0, bar width 1536 vs page width 1536; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-desk-lwgrid-mid-top300.png"
+  },
+  {
+   "id": "S1.desk.admin",
+   "verdict": "PASS",
+   "what": "scrollY=3071 of 3071; bar top=0, height 57 (at rest 57), position fixed",
+   "pic": "s1-desk-admin-foot.png"
+  },
+  {
+   "id": "S2.desk.admin",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (921,1689,2457) differs by 0/0 px; bar top 0, bar width 1536 vs page width 1536; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-desk-admin-mid-top300.png"
+  },
+  {
+   "id": "S1.phone.edit",
+   "verdict": "PASS",
+   "what": "scrollY=3044 of 3044; bar top=0, height 49 (at rest 49), position fixed",
+   "pic": "s1-phone-edit-foot.png"
+  },
+  {
+   "id": "S2.phone.edit",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (913,1674,2435) differs by 0/0 px; bar top 0, bar width 402 vs page width 402; background linear-gradient(rgb(21, 56, 76), rgb(11, 28, 39)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-phone-edit-mid-top300.png"
+  },
+  {
+   "id": "S1.phone.inputs",
+   "verdict": "NOT REACHED",
+   "what": "page is not scrollable here (scroll room 0px)",
+   "pic": ""
+  },
+  {
+   "id": "S1.phone.quals",
+   "verdict": "PASS",
+   "what": "scrollY=467 of 467; bar top=0, height 49 (at rest 49), position fixed",
+   "pic": "s1-phone-quals-foot.png"
+  },
+  {
+   "id": "S2.phone.quals",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (140,257,374) differs by 0/0 px; bar top 0, bar width 402 vs page width 402; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-phone-quals-mid-top300.png"
+  },
+  {
+   "id": "S1.phone.lwgrid",
+   "verdict": "PASS",
+   "what": "scrollY=627 of 627; bar top=0, height 49 (at rest 49), position fixed",
+   "pic": "s1-phone-lwgrid-foot.png"
+  },
+  {
+   "id": "S2.phone.lwgrid",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (188,345,502) differs by 0/0 px; bar top 0, bar width 402 vs page width 402; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-phone-lwgrid-mid-top300.png"
+  },
+  {
+   "id": "S1.phone.admin",
+   "verdict": "NOT REACHED",
+   "what": "page is not scrollable here (scroll room 0px)",
+   "pic": ""
+  },
+  {
+   "id": "S2.desk.board",
+   "verdict": "PASS",
+   "what": "top 300px of the board mid-scroll, before vs after: 0 px differ; scroller {\"id\":\"\",\"cls\":\"sb-boardwrap\",\"h\":2892}; board bar before {\"top\":0,\"h\":106,\"pos\":\"static\"} after {\"top\":0,\"h\":106,\"pos\":\"static\"}",
+   "pic": "s2-board-after.png (and s2-board-before.png)"
+  }
+ ],
+ "errors": [],
+ "seconds": {
+  "1": 67
+ }
+}
