@@ -70,10 +70,44 @@ Each cell: YES / NO-because / MISSING. EXPECTED everywhere: the same as on `main
 
 ## 3. The walk's size (D607)
 
-1. Type of change:
-2. What only a walk could find here:
-3. What the ledger says:
-4. The walk chosen:
+1. Type of change: **G** (the save layer's registration — the command types it accepts and the four loaders a rollback
+   or undo re-runs, now handed in by start-up), **H** (where the account and seen-mark types are declared to the
+   permission gate; Admin → Users' editors), **E** (the widened `.mfield` heading rule; Admin → Users' editors split
+   into their own components), **C** (a press on "Period" now puts the keys on its list).
+2. What only a walk could find here: a writer whose type or loader is not handed in on a real start-up route of the
+   BUILT app (sign-in, reload, `?fresh=1`, a second tab, a member) — the tests boot through their own set-up; an
+   editor, now its own component, that keeps or drops typed values differently when closed by Cancel, a row tap,
+   another row, a save or a refusal; any form heading elsewhere drawn differently by the widened rule; the access
+   screen's caret. Already covered: §7's break tests (every wire RED when cut, one pin added); the touched tests.
+3. What the ledger says: three React Doctor tidy-ups walked — 31 Oct (FULL, two walkers, 113/113 the same, 0 by the
+   walk, the reads 1), 6 Nov People and Quals (WALK, 0 by the walk, the read 1 low), 8 Nov the shell and state (WALK,
+   the host alone, 0 by the walk, the reads 7 low). Walks of this type find nothing by themselves; the picture and value
+   comparison against `main` is what proves "the same", and the 31 Oct lesson says it proves it only for the data
+   states the demo holds — so Astra's fixtures (seven made people, a taken archived name, postings past, due and future)
+   are built through the app's controls first.
+4. The walk chosen: **two Sonnet 5.5 walkers at once under the checks lock** (a fanned-out walk, D16), each in its own
+   browser worlds, both on the same two frozen builds — `main` at `d8d5b1f57` and the branch at `8b54a2cd5` (main
+   brought in), the clock held at 8 Nov 26 09:00 Singapore, desktop 1536 Chromium and iPhone 402 × 874 WebKit by touch.
+   **Walker A, the screens:** `scripts/handpass/rdl1108-same.mjs` — `main`'s build twice first, then picture for picture
+   against the branch: Admin → Users in every row state and every open editor, the archived group and its editor,
+   Give access's "Person" choice, Admin → Data's two clearing forms in both modes, the access screen, the sign-in
+   screen, and S8's other `.mfield` forms (Add a person, the approval form, the input window's fields, every Admin
+   window drawing the heading); then Astra's S12, S13, S14, S16, S18, S20, S23, S24 on both builds, values compared,
+   and the plain-user round (§7.0a) on Admin → Users and Admin → Data. **Walker B, the save layer:**
+   `scripts/handpass/rdl1108-walk.mjs` — Astra's S01–S05, S07–S11, S15, S17, S19, S21, S22 on both builds, each with
+   the reload, second tab, `?savefail` and phone her marks name, values compared. **Carried by tests, red first** (the
+   host): S06 and Astra's three gaps — real values through real Undo / Redo, a signed-in actor's refusal of an
+   undeclared type, a rollback after a change kept apart from `?savefail` — each a test that goes RED when its wire is
+   cut; these change the data through the layer, so they prove the wire, never that a screen offers the route (the
+   walk proves that). No approved drawing is touched: the access screen's one changed line is a comment.
+   **The lessons (§7.11):** applying — 1 (the editors' state table, S12), 3 (a picture after every press), 9 (Admin →
+   Users' list measured, both sizes), 10 (a second tab hidden and shown after a write, WebKit, S11), 14 (the keyboard
+   boxes from Astra's inventory, found in the code), 16 (after a refusal at a box, S16), 17 (each editor opened, closed
+   and opened again), 19 (each window closed by each of its ways, S23), 22 (what is drawn, pixels), 23 (what a tap on a
+   row opens — the rulings', D322), the second 23 (side-by-side boxes one height, both sizes); not applying — 2, 7, 13,
+   20, 21 (no gesture changed), 4 and 12 (no window leaves its page working, none opened from a new place), 5 (no row
+   moved), 6 (nothing handed to the phone), 8 (no drawing touched), 11 (nothing depends on what fits), 15 (no bar
+   changed), 18 (nothing printed).
 5. After the walk:
 
 ## 4. Scenarios (designed by Astra — `docs/superpowers/briefs/2026-11-08-rd-last-findings-scenarios.md`)
