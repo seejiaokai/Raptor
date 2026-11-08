@@ -43,6 +43,11 @@ jobs:
       # held equal to deploy.yml's push list. Here because this job runs on every pull request, notes-only ones too.
       - name: The "checks passed" script's tests
         run: node --test raptor-port/scripts/ci/checks-passed.test.mjs
+      # The records' settle step's own tests (chat 33, 8 Nov 26 — [MERGE-ONCE-RECORDS]): each builds a throwaway repo and
+      # makes a real clashing merge (about 45 s). Here for the same reason: the script is on the notes-only list, so a
+      # change to it skips the gates and only this job would see it break.
+      - name: The records' settle step's tests
+        run: node --test raptor-port/scripts/records-merge.test.mjs
       - name: Inventory and ceilings against the base
         env:
           DOCSGUARD_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
