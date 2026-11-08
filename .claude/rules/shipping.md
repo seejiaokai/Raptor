@@ -160,7 +160,7 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   `paths-ignore`; on a pull request the run still starts, its first job skips the gates, and its last, "checks passed",
   always reports, the one check GitHub can require — `raptor-port/docs/gates-and-deploy.md`), but the Docs guard
   (`docs-guard.yml`, two to three billed minutes) still runs on every pull request and every push to `main`.
-- That is an exemption from the gates only: a change of notes only (the list above) merges by itself once its run is
+- That is an exemption from the gates only: a change of notes only (the "only notes" list of §"Push" and "merge live") merges by itself once its run is
   green (a rules-diet step on his word all the same), and any other docs change — a rule that governs the agent, a
   hook, a setting, a working guide, a workflow — still merges only on his "merge live" (D1407, D1737).
 - A pull request that mixes code and docs runs everything — and GitHub judges the whole pull request, so once it

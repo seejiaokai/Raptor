@@ -11,7 +11,7 @@
 //
 //   node checks-passed.mjs changes   < file list   → writes code=true|false to $GITHUB_OUTPUT
 //   node checks-passed.mjs verdict                 → reads NEEDS (the run's `needs` as JSON) and EVENT; exit 0 or 1
-// Tests: node --test raptor-port/scripts/ci/
+// Tests: node --test raptor-port/scripts/ci/checks-passed.test.mjs (the Docs guard runs them on every pull request)
 import { appendFileSync, readFileSync } from 'node:fs';
 import { basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -46,7 +46,11 @@ export function verdict(needs, event) {
   if (r('changes') !== 'success') return { ok: false, why: `the first job, which decides what changed, ended "${r('changes')}"` };
   const bad = GATES.filter((k) => ['failure', 'cancelled'].includes(r(k)));
   if (bad.length) return { ok: false, why: `${bad.map((k) => `${k} ${r(k)}`).join(', ')}` };
-  if (String(n.changes.outputs && n.changes.outputs.code) !== 'true') return { ok: true, why: 'notes only — the gates skip a change of only notes' };
+  // only a plain "false" is notes only: a first job that passed without writing its answer (its step id or output
+  // renamed) would otherwise skip every gate and pass (the Opus read, 8 Nov 26)
+  const code = String(n.changes.outputs && n.changes.outputs.code);
+  if (code === 'false') return { ok: true, why: 'notes only — the gates skip a change of only notes' };
+  if (code !== 'true') return { ok: false, why: `the first job gave no answer on what changed (code "${code}")` };
   if (r('pc') !== 'success' && !SPLIT.every((k) => r(k) === 'success')) {
     return { ok: false, why: `no whole gate run passed (pc ${r('pc')}; ${SPLIT.map((k) => `${k} ${r(k)}`).join(', ')})` };
   }

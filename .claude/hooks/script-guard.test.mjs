@@ -7,7 +7,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { refusal } from './script-guard.mjs';
+import { refusal, realDeps } from './script-guard.mjs';
 
 const ROOT = 'C:/Users/User/projects/Raptor';
 /* git is never asked in these tests: `tracked` answers from this list (paths as the guard resolves them) */
@@ -180,6 +180,49 @@ test('refuses a here-document and a < redirect on one command — the later inpu
 test('the same rules hold for a command sent to the background', () => {
   assert.ok(refusal(bash('cat > f.txt', { run_in_background: true }), deps));
   assert.equal(refusal(bash('cd raptor-port && npm test', { run_in_background: true }), deps), null);
+});
+
+// ---- the two blind reads of 8 Nov 26 (chat 27): Astra's and a fresh Opus reader's findings, each pinned ----------------
+test('reads: never refused — here-strings, --help, single-quoted inline scripts, messages with a quoted < or a tee', () => {
+  ok('cat <<< hello');                                                                  // Astra 3
+  ok('git commit -m "$(cat <<< fix)"');
+  ok("tee out.txt <<< 'plain'");
+  ok('cat --help');                                                                     // Astra 5
+  ok('tee --version');
+  ok(`python -c 'open("x","w").write("$y")'`);                                          // Astra 4, Opus 6
+  ok("node -e 'require(\"fs\").writeFileSync(\"x\", `${1}`)'");
+  ok("git commit --author=\"Jo Bloggs <jo@example.com>\" -F - <<'EOF'\nmessage\nEOF");   // Opus 1A
+  ok("gh pr create --title=\"a <b> c\" --body-file - <<'EOF'\nbody\nEOF");
+  ok("git commit -q -m \"$(cat <<'EOF'\nFix the \\d regex\nEOF\n)\" 2>&1 | tee commit.log");   // Opus 1B
+  ok("gh pr create --title \"x\" --body \"$(cat <<'EOF'\na \\n here\nEOF\n)\" | tee pr-url.txt");
+});
+
+test('reads: still refused — a single-quoted inline script that writes a file and holds a backslash', () => {
+  no(String.raw`node -e 'require("fs").writeFileSync("x", "a\nb")'`, /backslash/);
+});
+
+test('reads: refused — sed with an attached -e or -f, launcher options with values, a reserved word first', () => {
+  no("sed -i -e's/a/b/' OUTSTANDING.md", /Edit tool/);                                  // Astra 1
+  no('sed -i -fscript.sed OUTSTANDING.md', /Edit tool/);
+  no("env -u X sed -i 's/a/b/' OUTSTANDING.md", /Edit tool/);                           // Astra 2
+  no("printf 'OUTSTANDING.md' | xargs -n 1 sed -i 's/a/b/'", /pipe/);
+  no('env -u NODE_OPTIONS node', /input/);
+  no('timeout -k 5 30 cat > f.txt', /input/);
+  no("if [ -d raptor-port ]; then python - <<'PY'\np = 'x'\nopen(p, 'w', newline='').write('a\\b')\nPY\nfi");   // Opus 4
+  no('for f in *.md; do cat > "$f.bak"; done', /input/);
+  no('! cat > f.txt', /input/);
+  no('while true; do node; done', /input/);
+});
+
+test('reads: sed -i asks git about each file in its own folder, a path outside the repo never hiding one inside', () => {
+  // Opus 5: git ls-files over a list exits 128 when one path is outside the repo — the tracked one was missed
+  const repo = fileURLToPath(new URL('../..', import.meta.url)).replace(/\\/g, '/').replace(/\/$/, '');
+  assert.equal(realDeps.tracked(['OUTSTANDING.md', 'C:/Windows/not-in-the-repo.txt'], repo), true);
+  assert.equal(realDeps.tracked([`${repo}/OUTSTANDING.md`], 'C:/Windows'), true);
+  assert.equal(realDeps.tracked([`${repo}/OUTSTANDING.md`], null), true);
+  assert.equal(realDeps.tracked(['C:/Windows/not-in-the-repo.txt', 'no-such-file.txt'], repo), false);
+  // an absolute repo path is checked even when the folder the command runs in is unknown
+  no(`cd "$TMP" && sed -i 's/a/b/' ${ROOT}/OUTSTANDING.md`, /Edit tool/);
 });
 
 // ---- as the hook --------------------------------------------------------------------------------------------------------

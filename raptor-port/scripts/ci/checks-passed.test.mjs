@@ -1,4 +1,5 @@
-// Tests for checks-passed.mjs ([TESTS-REQUIRED-ON-MAIN], chat 19, 8 Nov 26). Run: node --test raptor-port/scripts/ci/
+// Tests for checks-passed.mjs ([TESTS-REQUIRED-ON-MAIN], chat 19, 8 Nov 26). Run: node --test raptor-port/scripts/ci/checks-passed.test.mjs
+// — the Docs guard runs this file on every pull request and push to main, so the notes-only list cannot drift unseen.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -63,4 +64,11 @@ test('fails when the first job, which decides what changed, did not pass', () =>
   assert.equal(verdict({ ...SKIPPED, changes: ok('cancelled') }, PR).ok, false);
   assert.equal(verdict({ ...SPLIT }, PR).ok, false);
   assert.equal(verdict(null, PR).ok, false);
+});
+
+test('fails when the first job passed but gave no answer — never read as notes only (the Opus read, 8 Nov 26)', () => {
+  for (const changes of [{ result: 'success', outputs: {} }, { result: 'success', outputs: { code: '' } }, { result: 'success' }]) {
+    assert.equal(verdict({ ...SKIPPED, changes }, PR).ok, false, JSON.stringify(changes));
+  }
+  assert.equal(verdict(needs(false, SKIPPED), PR).ok, true);
 });

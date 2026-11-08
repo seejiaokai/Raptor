@@ -52,7 +52,7 @@
 // (exit 0) — a guard that breaks every command would be worse than the traps it guards. The PreToolUse event fires only
 // for a tool call the agent makes, and refusing one breaks no recovery of the app's own (note 598); a retry of the same
 // command is the same slip, refused again. Tests: `node --test .claude/hooks/script-guard.test.mjs`.
-import { basename, resolve, isAbsolute } from 'node:path';
+import { basename, dirname, resolve, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -107,7 +107,9 @@ export function extractBodies(cmd) {
     if (c === '#' && (i === 0 || /[\s;&|()]/.test(s[i - 1]))) {
       const nl = s.indexOf('\n', i); const e = nl < 0 ? s.length : nl; out += s.slice(i, e); i = e - 1; continue;
     }
-    if (c === '<' && s[i + 1] === '<' && s[i + 2] !== '<') {
+    // a here-string `<<<` is one operator: its last two `<` are never a here-document opener (Astra's read, 8 Nov 26)
+    if (c === '<' && s[i + 1] === '<' && s[i + 2] === '<') { out += '<<<'; i += 2; continue; }
+    if (c === '<' && s[i + 1] === '<') {
       const m = OPEN.exec(s.slice(i));
       if (m) {
         const d = { strip: m[1] === '-', delim: m[3] || m[5], quoted: !!m[2] || m[4] === '\\', body: '' };
@@ -121,6 +123,16 @@ export function extractBodies(cmd) {
 
 // ---- reading one step ------------------------------------------------------------------------------------------------
 const LAUNCH = /^(timeout|env|nice|nohup|time|command|exec|stdbuf|winpty|xargs)$/;
+/** A launcher's options that take their value as the NEXT word (a value written on, `-n1` or `--max-args=1`, is one word). */
+const LAUNCH_ARG = {
+  env: { short: /^-[uCS]$/, long: ['--unset', '--chdir', '--split-string'] },
+  timeout: { short: /^-[ks]$/, long: ['--kill-after', '--signal'] },
+  nice: { short: /^-n$/, long: ['--adjustment'] },
+  xargs: { short: /^-[nILPsdEa]$/, long: ['--max-args', '--max-lines', '--max-procs', '--max-chars', '--delimiter', '--eof', '--arg-file', '--replace'] },
+  stdbuf: { short: /^-[ioe]$/, long: ['--input', '--output', '--error'] },
+};
+/** The shell's words that stand before a command in its place: the command after them is the one judged. */
+const RESERVED = /^(if|then|else|elif|do|while|until|!|\{)$/;
 const SHELLS = /^(bash|sh|zsh|dash)$/;
 const INTERP = /^(node|nodejs|python|python2|python3|py|perl|ruby|deno|bun|tsx|ts-node)$/;
 const PYTHON = /^(python|python2|python3|py)$/;
@@ -173,20 +185,25 @@ function readStep(w, q, pipeIn) {
     else if (/^\d*<$/.test(t)) inFiles.push(target);
     else if (/^(1?>>?\|?|&>>?)$/.test(t) && target && !NOT_A_FILE.test(target)) outFiles.push(target);
   }
-  // step over variable settings and launcher words to the word in command position
+  // step over variable settings, the shell's reserved words and launcher words to the word in command position
+  // (`if …; then python - <<…`, `for …; do cat > f; done`, `! cat > f` — the Opus read, 8 Nov 26)
   let ci = 0;
   for (;;) {
     const x = words[ci] && words[ci].t;
     if (x === undefined) break;
     if (/^[A-Za-z_]\w*=/.test(x) && !words[ci].q) { ci++; continue; }
+    if (RESERVED.test(x) && !words[ci].q) { ci++; continue; }
     const name = basename(x).toLowerCase().replace(/\.(exe|cmd)$/, '');
     if (!LAUNCH.test(name)) break;
     if (name === 'command' && words[ci + 1] && /^-[vV]$/.test(words[ci + 1].t)) break;   // `command -v node` looks node up
     ci++;
-    // the launcher's own options and values: `timeout -k 5 30`, `env -i A=1`, `nice -n 5`, `xargs -0 -n1`
+    // the launcher's own options and values: `timeout -k 5 30`, `env -i A=1`, `env -u X`, `nice -n 5`, `xargs -0 -n 1`
+    // — an option that takes a value consumes the next word too (`env -u X`: X is not the command — Astra's read)
+    const takes = LAUNCH_ARG[name];
     while (words[ci] && (/^-/.test(words[ci].t) || (name === 'timeout' && /^\d+(\.\d+)?[smhd]?$/.test(words[ci].t))
       || (name === 'env' && /^[A-Za-z_]\w*=/.test(words[ci].t)))) {
-      if (name === 'nice' && words[ci].t === '-n') ci++;
+      const o = words[ci].t;
+      if (takes && (takes.short.test(o) || takes.long.includes(o))) ci++;
       ci++;
     }
   }
@@ -230,6 +247,8 @@ function inPlace(name, args) {
       if (/^--in-place(=|$)/.test(a)) { on = true; continue; }
       if (/^--(expression|file)=/.test(a)) { script = true; continue; }
       if (/^--(expression|file)$/.test(a) || /^-[nErsuz]*[ef]$/.test(a)) { if (/i/.test(a.slice(1, -1))) on = true; script = true; j++; continue; }
+      // the script written on to its flag, `-e's/a/b/'` or `-fscript.sed`: the next word is a file (Astra's read)
+      if (/^-[nErsuz]*[ef]./.test(a)) { script = true; continue; }
       if (/^-l$/.test(a)) { j++; continue; }
       if (/^-[nErsuz]*i/.test(a)) { on = true; continue; }
       if (/^-/.test(a)) continue;
@@ -264,12 +283,16 @@ const nativePath = (p) => (process.platform === 'win32' ? String(p).replace(/^\/
 const fwd = (p) => String(p).replace(/\\/g, '/');
 
 /** The reason to refuse one step, or null. `here`: the folder it runs in (null when unknown). */
-function judge(st, docs, here, deps, depth) {
+function judge(st, docs, here, deps, depth, raw) {
   const { name, args, outFiles, inFiles, strings } = st;
-  // bodies this step reads: its own here-documents, and those of the steps piped into it
+  // bodies this step reads: its own here-documents, and those the steps piped into it feed on their own input — read
+  // as steps, so a here-document inside an earlier step's `$( … )` (a commit message) is not piped in (the Opus read)
   const own = st.docs.map((n) => docs[n]).filter(Boolean);
-  const piped = st.piped ? [...st.pipeIn.matchAll(MARK_RE)].map((m) => docs[Number(m[1])]).filter(Boolean) : [];
+  const piped = st.piped
+    ? parse(st.pipeIn.replace(/\s*\|\s*$/, ''), 'Bash').flatMap((p) => (p.w.length ? readStep(p.w, p.q, '').docs : [])).map((n) => docs[n]).filter(Boolean)
+    : [];
   const fed = own.length + strings.length + inFiles.length > 0 || st.piped;
+  const isInterp = INTERP.test(name);
 
   // a shell fed a script: read the script as commands
   if (SHELLS.test(name) && !args.some((a) => !/^-/.test(a)) && own.length && depth < 3) {
@@ -277,8 +300,9 @@ function judge(st, docs, here, deps, depth) {
     return null;
   }
 
-  // (3) two inputs on one command: the later replaces the first
-  if ((own.length || strings.length) && inFiles.length) {
+  // (3) two inputs on one command: the later replaces the first — judged for the commands that run what they read only:
+  // a `<` inside a quoted option (`git commit --author="Jo <jo@x>" -F - <<…`) can read as a redirect (the Opus read)
+  if ((own.length || strings.length) && inFiles.length && (name === 'cat' || name === 'tee' || isInterp || SHELLS.test(name))) {
     return `${HEAD}\nThis command has a here-document AND a "<" redirect: the later input replaces the here-document, so the ` +
       `script never reaches ${name || 'the command'}${PYTHON.test(name) ? ' — and Python given /dev/null opens its prompt and loops (measured)' : ''}. ` +
       `Keep one input. ${FIX_WRITE}`;
@@ -292,17 +316,18 @@ function judge(st, docs, here, deps, depth) {
         'every Windows line ending in a file it edits (measured 8 Nov 26), so a one-line change becomes a whole-file change. ' +
         'Use the Edit tool for each file.';
     }
-    // a file named by a variable cannot be read here; a glob can (git reads it as a pattern)
-    const files = edits.filter((f) => !/[$`]/.test(f)).map(nativePath);
-    if (here && files.length && deps.tracked(files, here)) {
+    // a file named by a variable cannot be read here; a glob can (git reads it as a pattern); with the folder unknown, an
+    // absolute path is still checked (the Opus read)
+    const files = edits.filter((f) => !/[$`]/.test(f)).map(nativePath).filter((f) => here || isAbsolute(f));
+    if (files.length && deps.tracked(files, here)) {
       return `${HEAD}\n"${name} -i" rewrites every Windows line ending in the file it edits (measured 8 Nov 26: 3 of 3 turned plain), ` +
         'so a one-line change to a tracked file becomes a whole-file change. Use the Edit tool.';
     }
   }
 
-  // (3) input that never comes
-  const isInterp = INTERP.test(name);
-  const readsInput = ((name === 'cat' || name === 'tee') && (name === 'tee' || !args.some((a) => !/^-/.test(a) || a === '-') || args.includes('-')))
+  // (3) input that never comes (`--help` and `--version` print and end — Astra's read)
+  const readsInput = (((name === 'cat' || name === 'tee') && (name === 'tee' || !args.some((a) => !/^-/.test(a) || a === '-') || args.includes('-')))
+    && !args.some((a) => a === '--help' || a === '--version'))
     || (isInterp && programFromInput(name, args));
   const fromNull = inFiles.some((f) => /^\/dev\/null$|^nul$/i.test(f));
   if (readsInput && PYTHON.test(name) && fromNull && !own.length) {
@@ -320,7 +345,9 @@ function judge(st, docs, here, deps, depth) {
   const inline = isInterp ? inlineScript(name, args) : null;
   const bodies = [...own, ...piped];
   const scripts = [...bodies.map((d) => ({ text: d.body, expands: !d.quoted })), ...strings.map((t) => ({ text: t, expands: false }))];
-  if (inline !== null) scripts.push({ text: inline, expands: true });
+  // an inline script in single quotes is kept as typed by the shell — no $ or backtick expands (Astra's and the Opus
+  // read); its backslashes are still halved by the tool (M1), so the backslash check below still holds for it
+  if (inline !== null) scripts.push({ text: inline, expands: !(inline && String(raw || '').includes(`'${inline}'`)) });
   if (!scripts.length) return null;
   const writes = (name === 'cat' && outFiles.length > 0) || (name === 'tee' && (outFiles.length > 0 || args.some((a) => !/^-/.test(a))))
     || (isInterp && (outFiles.length > 0 || scripts.some((x) => WRITES.test(x.text)) || (name === 'perl' && inPlace(name, args))));
@@ -354,7 +381,7 @@ function commandRefusal(cmd, cwd, deps, depth = 0) {
         const ci = st.args.findIndex((a) => /^-[a-z]*c$/.test(a));
         if (ci >= 0 && st.args[ci + 1] !== undefined && depth + d < 3) { const r = commandRefusal(st.args[ci + 1], here, deps, depth + d + 1); if (r) return r; continue; }
       }
-      const r = judge(st, docs, here, deps, depth + d);
+      const r = judge(st, docs, here, deps, depth + d, text);
       if (r) return r;
     }
     return null;
@@ -372,13 +399,21 @@ export function refusal(input, deps = realDeps) {
 }
 
 export const realDeps = {
-  /** Does git track any of these files? (null / false when git cannot say — the guard then lets the edit through) */
-  tracked: (files, cwd) => {
+  /** Does git track any of these files? Asked one file at a time, in that file's own folder: over a list, git refuses the
+   *  whole list when one path is outside the repo (exit 128), which hid a tracked file beside it (the Opus read, 8 Nov 26).
+   *  A folder that does not exist (a glob in it) is asked from `cwd` with the path as written. false when git cannot say —
+   *  the guard then lets the edit through. */
+  tracked: (files, cwd) => files.some((f) => {
     try {
-      const r = spawnSync('git', ['ls-files', '--', ...files], { cwd: existsSync(cwd) ? cwd : undefined, encoding: 'utf8', timeout: 3000, windowsHide: true });
+      const abs = isAbsolute(f) ? f : cwd ? resolve(cwd, f) : null;
+      if (!abs) return false;
+      const dir = dirname(abs);
+      const [at, path] = existsSync(dir) ? [dir, basename(abs)] : cwd && existsSync(cwd) ? [cwd, f] : [null, null];
+      if (!at) return false;
+      const r = spawnSync('git', ['ls-files', '--', path], { cwd: at, encoding: 'utf8', timeout: 3000, windowsHide: true });
       return r.status === 0 && String(r.stdout || '').trim() !== '';
     } catch { return false; }
-  },
+  }),
 };
 
 // Run as the hook only when this file is the one invoked (the test imports refusal() instead).
