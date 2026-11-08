@@ -170,7 +170,7 @@ slow CPU, a scripted finger) the page's frames run at about half rate while a fi
 scroll took about 0.8 s longer to follow the finger — by D1789's own test ("stops if scrolling gets slower") a stop.
 What his iPhone (WebKit) does is not measured here. **The job is PARKED at this point** (D1796: a question for him is
 open), before the walk and the code reads, so neither is spent on a build whose way may change; the question is his
-(D765, "never at a cost of speed", against D1870's blink). **Answered 8 Nov 26 (D1871):** on his iPhone the build's preview "doesn't feel slow" — kept as built; the job goes on to the walk.
+(D765, "never at a cost of speed", against D1870's blink). **Answered 8 Nov 26 (D1871):** on his iPhone the build's preview "doesn't feel slow" — kept as built; the job goes on to the walk. **His find in the same message:** scrolled all the way to the bottom, the top bar goes out of view (his recording, 14:31; frames `docs/img/handpass/2026-11-08-lw-pin-last-frame/his-recording-bottom.png`): the iPhone's bounce carries the bar off for a moment — the live app too, filed as `[TOPBAR-BOUNCE-AWAY]` — and a re-measure in that moment left the pinned dates row up where the bar stood, missing until he scrolled back up. That half is this build's and is fixed red-first: the bar's foot is read as its height (`barFoot`, Matrix.tsx and QualsPage.tsx), never where it stands; the tests "…carried off for a moment" were red on the build (the row 90px too high: the Leave War on a phone, Quals at both sizes; the Leave War's desktop case passed before the fix as well) and green after. Lesson 24 in the order's §7.11.
 
 ## The orders walked
 

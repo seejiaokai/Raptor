@@ -4624,6 +4624,24 @@ test.describe('the frozen callsign column', () => {
       await expectPinned(page, 'qsticky-head', true, 'and pins again when the block goes')
     })
   }
+  /* HIS RECORDING OF 8 NOV 26, 14:31 (chat 16): at the page's foot the iPhone's bounce carried the top bar off screen for a
+     moment, and a re-measure in that moment put the pinned row up where the bar then stood — as the Leave War's test. */
+  for (const size of [PHONE, { width: 1536, height: 864 }]) {
+    test(`the Quals pinned heading keeps its place when re-measured while the top bar is carried off for a moment, ${size.width} wide (D1870)`, async ({ page }) => {
+      await page.setViewportSize(size)
+      await login(page)
+      await go(page, 'quals')
+      await page.waitForSelector('#qtbl td.qname')
+      await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+      await expectPinned(page, 'qsticky-head', true, 'at the page’s foot the heading is pinned')
+      await page.evaluate(() => { (document.querySelector('.topbar') as HTMLElement).style.transform = 'translateY(-90px)'; window.dispatchEvent(new Event('resize')) })
+      await page.waitForTimeout(600)   // the page's own re-measure: two frames, then once more 300 ms later
+      await page.evaluate(() => { (document.querySelector('.topbar') as HTMLElement).style.transform = '' })
+      const gap = () => page.evaluate(() => Math.round(document.querySelector('[data-testid="qsticky-head"]')!.getBoundingClientRect().top - document.querySelector('.topbar')!.getBoundingClientRect().bottom))
+      await expect.poll(gap, { message: 'the copy stands at the bar’s foot, not where the bar was carried' }).toBe(0)
+      await expectPinned(page, 'qsticky-head', true, 'and it is shown')
+    })
+  }
 
   /* REDUCE MOTION, AND A PAGE TOO SHORT TO SCROLL (his D1870 — Astra's scenarios 1 and 9), as the Leave War's: the copy
      stays on its step for a reader who asked for less motion, and with no scroll timeline (one man found) it stays hidden */

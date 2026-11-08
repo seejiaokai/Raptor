@@ -2047,6 +2047,21 @@ test('the pinned dates row follows a block put above the grid in the very moment
   await expect.poll(async () => (await lwPin(page))?.under, { message: 'the block pushed the row back below the bar' }).toBe(false)
   await expectPinned(page, 'sticky-head', false, 'so the copy lets go, though the watch was set up again in that moment')
 })
+/* HIS RECORDING OF 8 NOV 26, 14:31 (chat 16 — [LW-PIN-LAST-FRAME]): a flick to the page's foot on his iPhone, and the
+   page's bounce carried the top bar off screen for a moment; the screen-size change Safari's folding toolbar sends in that
+   moment re-measured the pinned row, which took its place from where the bar then stood — and stayed up there, under the
+   bar, the dates row missing until a later re-measure. The bounce is the iPhone's own: here the bar is carried off by
+   hand, the screen-size change sent, and the bar put back. */
+test('the pinned dates row keeps its place when it is re-measured while the top bar is carried off for a moment (D1870)', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+  await expectPinned(page, 'sticky-head', true, 'at the page’s foot the row is pinned')
+  await page.evaluate(() => { (document.querySelector('.topbar') as HTMLElement).style.transform = 'translateY(-90px)'; window.dispatchEvent(new Event('resize')) })
+  await page.waitForTimeout(600)   // the page's own re-measure: two frames, then once more 300 ms later
+  await page.evaluate(() => { (document.querySelector('.topbar') as HTMLElement).style.transform = '' })
+  const gap = () => page.evaluate(() => Math.round(document.querySelector('[data-testid="sticky-head"]')!.getBoundingClientRect().top - document.querySelector('.topbar')!.getBoundingClientRect().bottom))
+  await expect.poll(gap, { message: 'the copy stands at the bar’s foot, not where the bar was carried' }).toBe(0)
+  await expectPinned(page, 'sticky-head', true, 'and it is shown')
+})
 test('while the fingers pinch part-way down, the pinned dates row shows by the pinch’s rule (D1870, D1287)', async ({ page }) => {
   test.skip(!isPhone(), 'a two-finger pinch')
   const y = await page.evaluate(() => {

@@ -799,8 +799,8 @@ export function QualsPage() {
       if (r.height === 0) return // jsdom, or not laid out yet — never activate
       /* the app top bar stays pinned (sticky, z-index 60), so "the top" is its
          LOWER edge: the mirror freezes there the instant the real header would
-         slide under it. Measured live, so it is right whatever the bar wrapped to. */
-      const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+         slide under it. Read as the bar's height (`barFoot`), so it is right whatever the bar wrapped to. */
+      const topEdge = barFoot()
       /* WHILE THE FINGERS ARE DOWN THE PINNED ROW STAYS AS IT WAS AT THE PINCH'S START (the code read of 31 Oct 26, finding
          1, and the fix rounds 2–3; D1110). Part-way down a pinch out scrolls the page up with the pinch (`scrollPage`) and a
          pinch that turns scrolls it down again: re-pinned mid-gesture the row stood at rest over the stretched table with
@@ -1149,6 +1149,13 @@ export function QualsPage() {
   )
 }
 
+/* WHERE THE TOP BAR'S FOOT STANDS (his recording of 8 Nov 26, 14:31 — [LW-PIN-LAST-FRAME]): the app's top bar is pinned to
+   the top of the screen (sticky, top 0), so its foot is its own height — and that is what is read, never where the bar
+   happens to stand. A flick to the page's foot on his iPhone bounced the page, the bounce carried the bar off screen for a
+   moment, and a re-measure in that moment (Safari's toolbar folding away sends a screen-size change) put the pinned row
+   up where the bar then stood: under the bar, the row missing until a later re-measure. A taller bar (it wraps, or the
+   "Not saved" band along its foot, D587) is still read, as its height. */
+function barFoot() { return document.querySelector('.topbar')?.getBoundingClientRect().height ?? 0 }
 /* — the pinned copy's two helpers (D1870), kept outside the component: they read only the page, so no effect depends on them — */
 /* where the page's scroll turns the copy on (`--lwy-s`) and whether it is up — `up` gives it taps and its shadow, and a
    copy not up is `inert`, out of the focus order and of what a screen reader reads (D1870's loose end 1); on the copy's
@@ -1167,7 +1174,7 @@ function placeQ(box: HTMLElement, rowTop: number, topEdge: number) {
 function qPinchShow(head: HTMLTableSectionElement | null | undefined) {
   const box = document.querySelector<HTMLElement>('#page-quals .qfixed')
   if (!box || !head) return
-  const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+  const topEdge = barFoot()
   const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? head.getBoundingClientRect().top
   box.style.visibility = ownTop >= topEdge ? 'hidden' : ''
 }

@@ -2009,7 +2009,7 @@ export function Matrix() {
       // The app top bar stays pinned (sticky, both widths), so "the top" is its
       // LOWER edge: the mirror freezes there the instant the real header would
       // slide under it. Both phone and desktop now (owner, 27 Aug 26).
-      const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      const topEdge = barFoot()
       /* WHILE THE FINGERS ARE DOWN THE FROZEN DATE ROW STAYS AS IT WAS AT THE PINCH'S START (D1287: the pinned parts stay
          pinned; the code read of 31 Oct 26, finding 1, and the fix rounds 2–3). Since D1288 a pinch out scrolls the page up
          with the pinch and a pinch that turns scrolls it down again: re-pinned mid-gesture the row stood at rest over the
@@ -4746,6 +4746,13 @@ export function Matrix() {
   )
 }
 
+/* WHERE THE TOP BAR'S FOOT STANDS (his recording of 8 Nov 26, 14:31 — [LW-PIN-LAST-FRAME]): the app's top bar is pinned to
+   the top of the screen (sticky, top 0), so its foot is its own height — and that is what is read, never where the bar
+   happens to stand. A flick to the page's foot on his iPhone bounced the page, the bounce carried the bar off screen for a
+   moment, and a re-measure in that moment (Safari's toolbar folding away sends a screen-size change) put the pinned row
+   up where the bar then stood: under the bar, the row missing until a later re-measure. A taller bar (it wraps, or the
+   "Not saved" band along its foot, D587) is still read, as its height. */
+function barFoot() { return document.querySelector('.topbar')?.getBoundingClientRect().height ?? 0 }
 /* — the pinned copy's two helpers (D1870), kept outside the component: they read only the page, so no effect depends on them — */
 /* THE PINNED ROW THE BROWSER SHOWS ITSELF (his D1870, 8 Nov 26 — [LW-PIN-LAST-FRAME]; Matrix's `pinSda`): where the page's
    scroll turns the always-mounted copy on (`--lwy-s`, the scroll at which the real row's top meets the top bar's foot),
@@ -4768,7 +4775,7 @@ function placeY(box: HTMLElement | null, rowTop: number, topEdge: number) {
    the pinch is stretching), so a copy not up would otherwise stand over the grid until the first scroll. */
 function pinchShow(fixedRow: HTMLElement | null | undefined, head: HTMLElement | null) {
   if (!fixedRow || !head) return
-  const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+  const topEdge = barFoot()
   const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? head.getBoundingClientRect().top
   fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
 }
