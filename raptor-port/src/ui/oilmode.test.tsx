@@ -19,7 +19,7 @@ import { PEOPLE } from '../engine/people'
 import { INPUTS, inpId } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
-import { toggleOilPerson, toggleOilItem, oilModeOn, oilItemMasked, oilItemMark } from './oilmode'
+import { toggleOilPerson, toggleOilItem, oilModeOn, oilItemMasked, oilItemMark, DAY_EARNS_NOTHING } from './oilmode'
 import { oilEvidence, oilEvidenceOf, oilEarnedWork, oilWouldEarn, oilReadPass, itemMasked } from '../engine/oilev'
 import { ensureRowIds } from '../engine/rowids'
 import { rowItemKey, inputItemKey } from '../engine/oil'
@@ -29,8 +29,10 @@ import { validate } from '../engine/validate'
 import { openScheduler, boardWeekStep } from './board'
 import { setOilDay } from '../state/view'
 import { oilOffReason } from './oilmode'
-import { TICKET_INNER } from './glyphs'
+import { TICKET_INNER, TEMPLATES_INNER } from './glyphs'
+import * as view from '../state/view'
 import { drawnAs } from '../testing/drawn'
+import { INPEDIT, setInpEdit } from './pops'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -166,13 +168,13 @@ describe('the mode itself (§2.1)', () => {
     expect(groundRowEl(0).querySelector('.role.oilamt')!.textContent, 'his day is a half now').toBe('HO')
   })
 
-  it('OIL9 — the day blanket stops everything, and says the marks underneath are kept', async () => {
+  it('OIL9, D1782 — the day switch stops everything, and the note says each man earns as before once it is off', async () => {
     await click(oilBtn())
     await click(groundRowEl(1).querySelector('.seat.oilpk'))       // a person mark underneath
     await click($('#sbBoard [data-oilblank]'))
     expect((DAYS[SAT] as any).oild.blanket).toBe(1)
     expect($$('#sbBoard .sb-panel.grnd .puck.oilglow').length, 'nothing glows').toBe(0)
-    expect($('#sbBoard .daybar-note').textContent).toContain('kept')
+    expect($('#sbBoard .daybar-note').textContent).toContain('each man earns as he did before')
     await click($('#sbBoard [data-oilblank]'))
     expect((DAYS[SAT] as any).oild.blanket).toBeUndefined()
     expect((DAYS[SAT] as any).oild.people, 'the person mark survived underneath').toBeTruthy()
@@ -764,6 +766,280 @@ describe('the OIL evidence is never served from a cache across a change', () => 
       expect(oilItemMasked(SAT, rowItemKey(a.rid)), 'the Saturday item is off').toBe(true)
       expect(oilItemMasked(6, rowItemKey(b.rid)), 'the Sunday item is not').toBe(false)
     })
+  })
+})
+
+/* THE PICTURES ROUND'S ANSWERS FOR OIL EARN (owner D1782, D1783, D1793, 8 Nov 26 — "All as recommended"; drawn in
+   docs/img/handpass/2026-11-07-pictures-round/, notes-board.md Q3 and Q4, notes-marks.md §4). */
+describe('the pictures round: the day switch, a tap that cannot earn, the phone bar’s marks', () => {
+  const said: string[] = []
+  const was = HOOKS.toast
+  beforeEach(() => { said.length = 0; HOOKS.toast = (m: any) => { said.push(String(m)) } })
+  afterEach(() => { HOOKS.toast = was })
+  const sw = () => $('#sbBoard .daybar input[data-oilblank]') as HTMLInputElement
+
+  it('D1782 — the day button is the app’s own switch, "No OIL earned", and the note under the bar says how to undo it', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    const s = sw()
+    expect(s, 'a switch, not a button').toBeTruthy()
+    expect(s.type).toBe('checkbox')
+    expect(s.getAttribute('role')).toBe('switch')
+    expect(s.checked, 'off at first').toBe(false)
+    const lab = s.closest('label.lgmix') as HTMLElement
+    expect(lab, 'the Logic page’s switch').toBeTruthy()
+    expect(lab.textContent!.trim()).toBe('No OIL earned')
+    expect(lab.title).toBe('Anything added to this day later earns no OIL either.')
+    expect($$('#sbBoard .daybar button.blank').length, 'the old button is gone').toBe(0)
+    await click(sw())
+    expect((DAYS[SAT] as any).oild.blanket, 'one press, one change').toBe(1)
+    expect(sw().checked, 'drawn on').toBe(true)
+    expect($('#sbBoard .daybar-note').textContent)
+      .toBe('Nothing on this day earns OIL. Turn off the switch and each man earns as he did before.')
+    await click(sw())
+    expect((DAYS[SAT] as any).oild?.blanket, 'and off again').toBeUndefined()
+    expect(sw().checked).toBe(false)
+  })
+
+  it('D1782 — a press on the switch’s words changes the day once, not twice', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    /* a real label press: the browser sends the click to the label, then one more to its box */
+    const lab = sw().closest('label') as HTMLElement
+    await act(async () => { lab.click() })
+    expect((DAYS[SAT] as any).oild.blanket, 'on, once').toBe(1)
+  })
+
+  /* F2 OF THE OPUS CODE READ (8 Nov 26): the words' own click reached the page's blank-space clear — a label was not in
+     its list of controls — so a press on "No OIL earned" also dropped the picked man, the search and the highlights; a
+     press on its slider did not. One control, one behaviour. */
+  it('D1782 — a press on the switch’s words keeps the picked man, as a press on its slider does', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    await act(async () => { view.selectPerson('bane'); notify() })
+    expect(view.SELID).toBe('bane')
+    const lab = sw().closest('label') as HTMLElement
+    await act(async () => { lab.click() })
+    expect((DAYS[SAT] as any).oild.blanket, 'on, once').toBe(1)
+    expect(view.SELID, 'the picked man stays picked').toBe('bane')
+    await act(async () => { view.selDrop(); notify() })   // the pick is module state: never hand it to the next test
+  })
+
+  it('D1783 — a tap on a man with no working hours on his row picks nothing and says why', async () => {
+    addRow(SAT, { prog: 'NO TIMES', str: '', end: '', who: 'plasma' })
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0   // the mode's own opening note
+    const inert = $('#sbBoard .sb-panel.grnd .seat.oilpk.inert')
+    await click(inert.querySelector('.puck') || inert)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. This row gives him no working hours to count OIL from.`])
+    expect(view.SELID, 'nobody picked').toBeFalsy()
+    expect(inert.title, 'the hover says the same reason').toContain('this row gives him no working hours to count OIL from')
+  })
+
+  it('D1783 — a row with a start and no end says his own words (D360)', async () => {
+    addRow(SAT, { prog: 'OPEN END', str: '0800', end: '', who: 'plasma' })
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0   // the mode's own opening note
+    const inert = $('#sbBoard .sb-panel.grnd .seat.oilpk.inert')
+    await click(inert.querySelector('.puck') || inert)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. No OIL worked out — this row has no end time.`])
+    expect(view.SELID).toBeFalsy()
+  })
+
+  it('D1783, D845 — under the day’s switch a tap on a man keeps his words, and picks nothing', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    await click(sw())
+    said.length = 0
+    const pk = $('#sbBoard .sb-panel.grnd .seat.oilpk.inert')
+    await click(pk.querySelector('.puck') || pk)
+    expect(said).toEqual([DAY_EARNS_NOTHING])
+    expect(view.SELID).toBeFalsy()
+  })
+
+  it('D1783 — under an event switched off a tap on a man says to turn the event back on, and picks nothing', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    await click(groundRowEl(0).querySelector('[data-oilitem]'))
+    said.length = 0
+    const pk = groundRowEl(0).querySelector('.seat.oilpk.inert') as HTMLElement
+    await click(pk.querySelector('.puck') || pk)
+    expect(said).toEqual(['This event earns nobody any OIL. Turn the event back on first.'])
+    expect(view.SELID).toBeFalsy()
+  })
+
+  /* ASTRA'S SCENARIOS 1 AND 2 (8 Nov 26, reproduced on the running build before these were written). Inside the mode no
+     tap selects (D65, carried to the board by D1783): a request that never earns — leave, medical, Personal — drew its men
+     as ordinary pucks, and a placeholder's body on a row was drawn plain too, so a tap on either still picked it, silently. */
+  const request = (r: any) => {
+    const row: any = { person: 'plasma', type: 'LL', date: 'Jul 18', allday: false, s: 8 * 60, e: 10 * 60, remarks: '', mod: 'now', yr: 2026, ...r }
+    inpId(row); INPUTS.unshift(row); return INPUTS[0]
+  }
+  const inputPuck = (who: string) => $$(`#sbBoard .inprow .puck[data-person="${who}"], #sbBoard .sbi-row .puck[data-person="${who}"]`)[0]
+
+  it('D1783, D65 — a man on leave under Unavailable picks nothing in the mode and says why', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    request({})
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    const pk = inputPuck('plasma')
+    expect(pk, 'his leave is drawn on the board').toBeTruthy()
+    await click(pk)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. Leave earns no OIL.`])
+    expect(view.SELID, 'nobody picked').toBeFalsy()
+  })
+
+  it('D1783, D65 — a man on medical leave says why too', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    request({ type: 'OML' })
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    await click(inputPuck('plasma'))
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. A medical request earns no OIL.`])
+    expect(view.SELID).toBeFalsy()
+  })
+
+  /* THE CODE READ'S FINDING 1 (Astra and Sol 6.1, blind to each other, 8 Nov 26; reproduced on the running build, both
+     sizes, and on main's): a SANS availability card is drawn by the week's card grid, not by the input panels, so the
+     wrap above never reached it — in OIL Earn a tap on its man picked him blue and said nothing. */
+  const sansOffer = () => { setInpEdit(null); return request({ type: 'SANS Availability', allday: true, s: 0, e: 1439, sans: { f: true } }) }
+  const sansPuck = (who: string) => $$(`#sbBoard .sansav .sanscard .puck[data-person="${who}"]`)[0]
+
+  it('D1783, D65 — a man’s SANS availability picks nothing in the mode and says why', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    sansOffer()
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    const pk = sansPuck('plasma')
+    expect(pk, 'his offer is drawn on the board’s SANS Avail card').toBeTruthy()
+    await click(pk)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. A SANS availability request earns no OIL.`])
+    expect($$('#sbBoard .puck.sel').length, 'nobody picked').toBe(0)
+    expect(INPEDIT, 'no editor opened').toBeFalsy()
+  })
+
+  /* under the day's switch he keeps his own reason, as leave and a row with no times do (oilSeatHTML: the switch's
+     refusal is for a man who could earn — turning it off would not make an offer earn) */
+  it('D1783 — under the day’s switch his SANS availability keeps its own reason, and picks nothing', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    sansOffer()
+    await open(SAT)
+    await click(oilBtn())
+    await click(sw())
+    said.length = 0
+    await click(sansPuck('plasma'))
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. A SANS availability request earns no OIL.`])
+    expect($$('#sbBoard .puck.sel').length).toBe(0)
+  })
+
+  it('outside the mode his SANS card still opens his offer for editing, as built', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    const rec = sansOffer()
+    await open(SAT)
+    said.length = 0
+    const pk = sansPuck('plasma')
+    expect(pk.closest('.oilpk'), 'no OIL wrap outside the mode').toBeNull()
+    await click(pk)
+    expect(INPEDIT && inpId(INPEDIT), 'the card’s editor').toBe(inpId(rec))
+    expect(said.filter(s => s.startsWith('Nothing changed')), 'no OIL note outside the mode').toEqual([])
+  })
+
+  it('D1783, D65 — outside the mode the same tap does what it always did: it opens his Unavailable seat for a swap', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    request({})
+    await open(SAT)
+    said.length = 0
+    await click(inputPuck('plasma'))
+    expect(view.armedKey(), 'the seat is armed, as built (interactions.ts — the data-inpseat exception)').toMatch(/^iu:/)
+    expect(said.filter(s => s.startsWith('Nothing changed')), 'no OIL note outside the mode').toEqual([])
+  })
+
+  it('D65, the host’s reading 1 — a placeholder’s body on a row picks nothing and says where its people are switched', async () => {
+    addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    const ph = groundRowEl(0).querySelector('.puck.allavail') as HTMLElement
+    expect(ph, 'the placeholder is drawn on its row').toBeTruthy()
+    await click(ph)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).allavail.cs}. The people behind it are switched in the window its count opens.`])
+    expect(view.SELID, 'nothing picked').toBeFalsy()
+    expect($('.availwin:not([hidden])'), 'the body is not the count').toBeFalsy()
+  })
+
+  it('D845, the host’s reading 1 — under the day’s switch a placeholder’s body says the day’s refusal', async () => {
+    addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
+    await open(SAT)
+    await click(oilBtn())
+    await click(sw())
+    said.length = 0
+    await click(groundRowEl(0).querySelector('.puck.allavail'))
+    expect(said).toEqual([DAY_EARNS_NOTHING])
+    expect(view.SELID).toBeFalsy()
+  })
+
+  /* F3 OF THE OPUS CODE READ (8 Nov 26): the body's note sent him to the window on every row, where on a row nobody
+     behind it can earn the window switches nobody. Where that is so, the row's own reason, in words already ruled. */
+  it('D360, D1783 — a placeholder on a row with no end says the row has no end time', async () => {
+    addRow(SAT, { prog: 'DINNER', str: '1830', end: '', who: 'allavail' })
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    await click(groundRowEl(0).querySelector('.puck.allavail'))
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).allavail.cs}. No OIL worked out — this row has no end time.`])
+    expect($$('#sbBoard .puck.sel').length).toBe(0)
+  })
+
+  it('the host’s reading 2 — a placeholder on an event switched off says to turn the event back on', async () => {
+    addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
+    await open(SAT)
+    await click(oilBtn())
+    await click(groundRowEl(0).querySelector('[data-oilitem]'))
+    said.length = 0
+    await click(groundRowEl(0).querySelector('.puck.allavail'))
+    expect(said).toEqual(['This event earns nobody any OIL. Turn the event back on first.'])
+  })
+
+  it('D778, D1783 — ALL AVAIL on a personal request says the kind’s reason, not the window', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    request({ person: 'allavail', type: 'Personal', s: 10 * 60, e: 12 * 60 })
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    const ph = inputPuck('allavail')
+    expect(ph, 'drawn under Personal Inputs').toBeTruthy()
+    await click(ph)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).allavail.cs}. A personal request earns no OIL.`])
+  })
+
+  it('D1783 — a placeholder’s count still opens its window', async () => {
+    addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
+    await open(SAT)
+    await click(oilBtn())
+    await click(groundRowEl(0).querySelector('.oilcount'))
+    expect($('.availwin:not([hidden])'), 'the window opened (its empty frame is always on the page, hidden)').toBeTruthy()
+  })
+
+  it('D1793 — the phone bar’s Templates and OIL Earn wear the desktop’s marks; ✓ OIL done stays plain', async () => {
+    await open(SAT)
+    const tpl = $('#sbBoard .daybar [data-daytpladd]')
+    expect(tpl.textContent!.trim()).toBe('Templates')
+    expect(drawnAs(tpl.querySelector('svg'), TEMPLATES_INNER), 'a page of blocks').toBe(true)
+    expect(oilBtn().textContent!.trim()).toBe('OIL Earn')
+    expect(drawnAs(oilBtn().querySelector('svg'), TICKET_INNER), 'the ticket').toBe(true)
+    await click(oilBtn())
+    expect(oilBtn().textContent!.trim()).toBe('✓ OIL done')
+    expect(oilBtn().querySelector('svg'), 'the way out has no mark').toBeNull()
   })
 })
 

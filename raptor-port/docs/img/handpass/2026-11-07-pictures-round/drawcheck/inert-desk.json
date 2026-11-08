@@ -1,0 +1,107 @@
+{
+ "state": "inert-desk",
+ "drawing": {
+  "script": "scripts/handpass/pr-board.mjs",
+  "shot": "q-inert-a-desk"
+ },
+ "recorded": "2026-11-08T00:37:01.971Z",
+ "drawnOn": "main at 549482bd5",
+ "checkout": "67bacc1c6",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "puck": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 516.3,
+    "y": 639.8,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 521.3,
+    "y": 640.5,
+    "w": 63.5,
+    "h": 12.3
+   },
+   "text": "Fable C",
+   "typed": false,
+   "look": {
+    "fill": "rgb(31, 110, 82)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(234, 251, 243)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.r.sm"
+  },
+  "note": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 544.8,
+    "y": 800,
+    "w": 446.5,
+    "h": 38
+   },
+   "ink": {
+    "x": 561.8,
+    "y": 811,
+    "w": 412.5,
+    "h": 16
+   },
+   "text": "Nothing changed for Fable. No OIL worked out — this row has no end time.",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.zz-ring"
+  }
+ },
+ "approved": {
+  "picture": "q-inert-a-desk.png",
+  "identical": true
+ }
+}

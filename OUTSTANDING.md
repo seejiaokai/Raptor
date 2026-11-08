@@ -96,16 +96,21 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [KBD-PUCK] — a puck cannot be picked up, put down, swapped or taken off by keyboard — a job of its own, his questions first.
 - [REST-FIRST-CREW-HINT] — an empty formation gives no crew-rest hint for its first man — with caps and ops limits.
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
+- [BOARD-DESKLAYOUT-DAYBAR-EDGE] — on a phone in the board's desktop layout, the day bar's Templates and OIL Earn stand off the right edge until he pans — older; his question with a picture.
 
 **Inputs and calendars**
 - [PRINT-FLYING-ONLY-ASK] — the printed page and the schedule's spreadsheet carry flying lines only, no Ground Programme row — his question, kept from [ALLAVAIL-CHECK-SEEN] (not walked again 3 Nov 26).
-- [UI-CONSISTENCY-LOOK] — the whole app looked over for the same thing drawn differently (D1124): rounds 1–3 answered and live; round 4 (findings 12, 15, 17, 18; the gear and calendar drawn as ruled — D1509, D1508) ANSWERED 5 Nov 26 "all as recommended" (D1701–D1707, with D1700) — BUILT, bug-checked and LIVE on his "merge live" of 5 Nov 26 (pull request 643), with his answer to the one question, A (D1708 — where the Inputs row wraps, the filters and gear at the LEFT of the second line), drawn and approved ("Yes"); round 5 (the 👁 line, the Inputs ⤢) after.
+- [UI-CONSISTENCY-LOOK] — the whole app looked over for the same thing drawn differently (D1124): rounds 1–3 answered and live; round 4 (findings 12, 15, 17, 18; the gear and calendar drawn as ruled — D1509, D1508) ANSWERED 5 Nov 26 "all as recommended" (D1701–D1707, with D1700) — BUILT, bug-checked and LIVE on his "merge live" of 5 Nov 26 (pull request 643), with his answer to the one question, A (D1708 — where the Inputs row wraps, the filters and gear at the LEFT of the second line), drawn and approved ("Yes"); round 5 (the 👁 line, the Inputs ⤢) after — its (e), the phone day bar's marks (D1793), BUILT and bug-checked 8 Nov 26 by chat 5 (`claude/pr-oil-earn-ffbf07`, pull request 679).
 - [INPUTS-LIVE-LEFT] — what the Inputs pages' work left: readings he has not answered, his iPhone looks, three unconfirmed observations.
 - [SANS-PREVIOUS-REPORT-OFFER] — a previous evening's availability is not combined with the day's — his rule first; with caps and ops limits.
 
 **OIL**
-- [OIL-EARN-DAY-SWITCH-WORDS] — OIL Earn's "Nothing today earns" button reads like a status — new words are his, with a picture.
-- [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
+- [OIL-INERT-WHY-CX-INFO] — in OIL Earn a cancelled or ⓘ row with times says "This row gives him no working hours to count OIL from" (as D1783 ruled); a finer reason is his question.
+- [OIL-EARN-WORDS-LEFT] — two OIL Earn wordings not ruled: the switch's passing note "…and the marks underneath are back" and an item's hover "the day blanket is on" — his look.
+- [OIL-WINDOW-FOOT-SHAPE] — in OIL Earn the ALL AVAIL window's foot gives an inert man's reason as "<callsign> — <reason>", where the board now says "Nothing changed for <callsign>. <Reason>." — older; his question.
+- [OIL-ROSTER-TAP-SELECTS] — in OIL Earn a tap on a man in the board's crew list still picks him; D65's "no tap selects" read literally reaches it, D1783's "row" does not — his question.
+- [OIL-SWITCH-NOSAVE-SHOW] — "No OIL earned" is a box the browser ticks itself; a press that saves nothing would leave it showing the opposite of the day (not reachable today) — a one-line guard, with the database step's failed saves.
+- [OIL-EARN-BOARD-TIDY] — the three code reads' tidiness notes on the OIL Earn board change (D489), filed not fixed.
 
 **Leave War**
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
@@ -151,6 +156,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
 - [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's).
 - [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; drawn for him with the Tracker's next batch (D1660).
+- [TRK-POP-ASKED] — two questions on the marking window's round, put to him 8 Nov 26 with pictures: drop the typed marks in two messages ("↺ Restore in ⇅ Reorder"), and the short-screen placement; his answers to record and build.
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -169,6 +175,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOGIC-IOS-REFOCUS] — on his iPhone, does the keyboard stay up when a Logic setting is saved by tapping the next box? (a check on his phone; found 21 Oct 26).
 - [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
 - [STACK-LEFTOVERS] — three small loose ends left (the Insights edges and the shared wording helper done 8 Nov 26): an old audit script's three checks (with its own job), a "back to last published" button (only if he raises it), one tidiness note — a line's callsign tidied in three places for the Blue/Red answer (with the next change to its role question).
+- [LOGIC-SWITCH-RING] — the Logic page's own switches wear the browser's keyboard ring, where the board's "No OIL earned" now wears the app's cyan one — to match, his look first.
 
 **Look, words and the phone (the whole app)**
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
@@ -187,6 +194,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [BOARDNAV-SCRUB-CLICK-TIMER] — the board's day-dots test "the click after a scrub does not snap back" leans on a real 350 ms window; it failed once in a crowded run (86 files) and passes alone — make the test wait on what it needs.
 - [TESTS-REQUIRED-ON-MAIN] — GitHub refuses a merge to main only when the secrets scan fails, not the tests; a summary job made required would close it (Astra, 8 Nov 26) — night 3, the setting his own click.
 - [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs live 8 Nov 26 (pull request 670); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
@@ -269,6 +277,17 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+### [BOARDNAV-SCRUB-CLICK-TIMER] A day-dots test leans on a real 350 ms window (found 8 Nov 26, chat 5's wide run)
+**What:** `raptor-port/src/ui/boardnav.test.tsx`, "dragging along the day dots runs through the week › the click after a scrub does not
+snap back to where the drag started". After a drag along the board's day dots the browser fires a click naming the dot the finger went
+down on; `src/ui/board.ts` eats that one click for 350 ms (`setTimeout(…, 350)`). The test releases, then dispatches the click in a
+second `act` — on a crowded machine that gap passed 350 ms: in chat 5's run of 86 OIL, board and SANS files at once (8 Nov 26, branch
+`claude/pr-oil-earn-ffbf07` with `main` at `4d5b3828a` merged in) the test took 3009 ms and the click moved the day back (expected 6,
+got 2); alone it passed three times out of three. The code is untouched by that branch. The app is not wrong — a real click follows the
+release within a few milliseconds. **To do:** make the test hold the window open while it clicks (a fake timer around the release and
+the click), never widen the app's 350 ms. **Place:** Checks and tooling, small — with the next board-navigation change, or sooner if
+GitHub's run trips on it.
+
 ### [RD-LEFT-1108] React Doctor's 31 findings left in the app after the shell-and-state job (found 8 Nov 26)
 **What:** after `claude/rd-shell-state` (evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md`), React Doctor 0.9.18 finds 31 in the app's own code
 (not the rules engine, not tests). **(1) 13 import cycles**, every one through `raptor-port/src/state/people-settings-commit.ts`
@@ -346,6 +365,8 @@ the tidy. **The case to put to him:** a line telling the person "This browser wo
 app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.** Evidence:
 `raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
 
+### [TRK-POP-ASKED] Two questions from the Tracker's marking-window round (filed 8 Nov 26 — chat 10, put to him that day)
+**What:** (1) **F8** (the fresh Opus code read of chat 9's job): two messages carry the old typed marks in their words — the "Delete course …?" question and the import's note on a deleted course (`src/tracker/app/core.js`, the course delete and the import) read "↺ Restore in ⇅ Reorder courses brings it back…"; the app draws those marks everywhere else and a message box cannot. Recommended: drop the two marks ("Restore in Reorder courses brings it back…"), a two-line change for the Tracker's next batch. Pictures before and after: `raptor-port/docs/img/handpass/2026-11-08-chat9-tracker/f8/`. (2) **The short-screen placement** (Astra's reading 6, "his to decide"): on a phone held on its side the chart lifts the event as high as it may go and the window opens under it, scrolling inside itself, as the drawings do not show; picture `…/2026-11-08-chat9-tracker/s10-open-window.png`. Also recorded by the walk, as before this change and not faults: S9 (the window neither follows nor closes when the chart is wheel-scrolled under it) and S30 (Restore's keyboard ring is the browser's own). Evidence: `raptor-port/docs/handpass/2026-11-08-chat9-tracker.md`. **To do:** record his answers as rulings, then build them with the Tracker's next batch.
 ### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
 **What:** at the database step (D473) the agent writes the security-role design from `raptor-port/docs/data-model.md` §11
 (26 tables × admin, member, guest, pending): (1) each table's create / read / change / delete per role, at none, own rows or
@@ -1958,16 +1979,6 @@ before from 1100 to 1439 — `13-board-rows-responsive.css`). Picture `raptor-po
 let the remarks take a line of their own.
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1781) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The board 821 to 1000 wide" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
 
-### [OIL-EARN-DAY-SWITCH-WORDS] OIL Earn's "Nothing today earns" button reads like a status — two walkers took it for one (found 6–7 Oct 26, the walks of `[OIL-WORK-START]`; OLD; LOW, words)
-On the Scheduler Board in OIL Earn mode the bar carries a button labelled "Nothing today earns". It is a SWITCH — pressed, it
-makes nothing on that day earn — and its label does not change with the day's state (only its tooltip does). With a man on the
-day plainly earning (his puck reads FO), the bar still says "Nothing today earns" beside it. Two walkers, on separate walks and
-without seeing each other's work, each reported it as the app contradicting itself (the first walk's W8; the D606 walk's E03 —
-picture `raptor-port/docs/img/handpass/2026-10-06-oil-work-start/E/dk-08-E03-oilearn-board.png`). **To build:** word the button
-as the action it is, and say the day's state apart from it — a product wording choice, so a picture and his word first.
-**Tier:** WALK (a control's label on the board, both sizes). **Place (the agent's line):** low — with the next change to OIL Earn.
-**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1782) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "OIL Earn's day switch" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
-
 ### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
 **DONE 7 Oct 26 under his ruling, on `claude/docs-tidy-7-oct` — options 1 to 6 (what each did and saved: the foot of the
 spec named below); 7 found nothing to do; the document check is green. Still open, why this item stays: step (4)'s check
@@ -2276,16 +2287,6 @@ Independent bounded cause/disposition: `raptor-port/docs/superpowers/plans/2026-
 ### [SANS-PREVIOUS-REPORT-OFFER] Prior-date availability is not combined across a previous-evening reporting window (characterized 3 Oct 26)
 Actual I2 walk on the Rally review-fix snapshot: Tuesday01:00–11:00 flying reportsMonday22:00, dekitTuesday11:30. Kraken's MondayPM Fly offer gives the actual armed picker "no availability filed for today"; accepted placement has no persistent SANS_AVAIL warning under the existing none-offer rule. Adding TuesdayAM Fly gives picker00:00–12:00-only and the same placed advisory: the target-day window cannot cover report−120 through690. The two date-specific offers are not combined. This characterizes the prior-date gap named unproven in Claude's small review; it does not assert cross-date support, invent coverage policy, or treat live writes as stored-demo harm. Evidence: `raptor-port/docs/handpass/2026-10-02-rally-workspan.md`, downstream07 results/pictures in this round's portable proof. **Place:** caps and ops limits with availability under D490/D495; owner policy/design and a scoped independently challenged plan precede any repair. No source change or owner acceptance here; the final Rally inspector judges this explicit scope.
 
-### [OIL-INERT-TAP-SILENT] In OIL Earn a tap on a puck that cannot earn says nothing (walk find, 1 Oct 26)
-Walker A's O1 (pictures `…/2026-10-01-dbr-phase7/a/A3r-phone-1.png`, `A3r-desk-1.png`). A puck with nothing to earn from its row
-(a row with no end time, a Personal request — and every other inert case) carries its reason as a hover title only; a tap
-selects it (blue) and says nothing, so on a phone the reason cannot be read on the row — only in the ALL AVAIL window's foot.
-The mode's general behaviour, older than phase 7. D31 says a seat with nothing to measure "says why instead"; D26 (leave the
-mode's phone tap targets as they are) is about the targets, not this silence. **To do, if he wants it:** a tap on an inert
-puck in the mode says its reason (the app's own message line), selecting nothing. **Place:** low — with the next OIL Earn change;
-a question for him first.
-**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1783) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "A tap on a puck that cannot earn" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
-
 ### [COUNT-CHIP-PHONE-TAP] A finger tap on an ALL AVAIL count on the phone's week — FIXED for Chromium 1 Oct 26; his iPhone look left
 Found by walker C of the `[DB-READINESS]` phase 7 walk (F1), pressed by Astra's final read (1), reproduced by the host on that
 build and on the build before the batch (`9191910b`) — older than phase 7. **What happened:** at 390 px a finger tap on the count
@@ -2323,3 +2324,64 @@ recommended red when any row turns red, a row a line, before → after. Not answ
 line's rows side by side and only amber or red (design lesson 50 names the bubble as a place it would apply), so it is redrawn
 with those in place before it is asked again (D1301's step 4). **Place:** after [LW-ROUND3-BUILD].
 
+### [OIL-INERT-WHY-CX-INFO] A cancelled or ⓘ row's reason in OIL Earn (walk find, 8 Nov 26 — chat 5, `claude/pr-oil-earn-ffbf07`)
+W2's A21 (pictures `raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w2/s21-*`): in OIL Earn a tap on a man on a cancelled (CX) or information-only (ⓘ) row says
+"Nothing changed for <callsign>. This row gives him no working hours to count OIL from." — while the row shows its times
+(09:00–11:00). As ruled: D1783's full row gives every "nothing measurable to earn from here" case that sentence, and a
+cancelled or ⓘ row gives him no working hours. **To do, if he wants it:** a reason of its own — recommended "This row is
+cancelled." / "This row is information only." (`ui/oilmode.ts inertWhy`). **Place:** low — his question with a picture,
+with the next OIL Earn change.
+
+### [OIL-EARN-WORDS-LEFT] Two OIL Earn wordings never put to him (seen building D1782, 8 Nov 26 — chat 5)
+(1) The passing note after "No OIL earned" is switched off: "This day can earn OIL again, and the marks underneath are
+back" — "the marks underneath" names nothing he sees by that name; recommended "This day can earn OIL again. Each man
+earns as he did before." (the bar's own note, D1782). The "on" note, "Nothing on this day earns OIL, including anything
+added later", reads plainly. (2) An event's OIL mark under the switch says, on hover, "the day blanket is on"
+(`ui/oilmode.ts` near the item's title) — "blanket" is the code's word; recommended "the day's No OIL earned switch is
+on". Pictures: `raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w1/W1.3-pc-slider-off-now.png`. **Place:** low — with the next words pass or OIL Earn change; his
+look first (D836's guide).
+
+### [LOGIC-SWITCH-RING] The Logic page's switches wear the browser's keyboard ring (seen 8 Nov 26 — chat 5)
+The board's "No OIL earned" borrows the Logic page's switch (`01-logic.css .lgmix`), which sets no keyboard ring; the
+board's was given the app's cyan one (D1646, walk find W1.4, `18-oil-board.css`), so the Logic page's own switches now
+differ from it under the keys. **To do:** the same `:focus-visible` ring on `.lgmix input` — a one-line match, shown to him
+with its picture first. **Place:** low — with the next Logic or consistency round.
+
+### [BOARD-DESKLAYOUT-DAYBAR-EDGE] On a phone, the desktop layout's day bar buttons stand off the right edge (walk find, 8 Nov 26 — chat 5)
+W1's A27 (`raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w1/A27-phone-desktop-layout.png`): in the Scheduler Board's desktop layout on a phone (⋯ → desktop
+layout) the day bar spans the day's desktop width, so Templates and OIL Earn sit past the screen's right edge — measured
+on `main` at 650–818 on a 402-wide screen (this branch 616–818, the marks' width); the phone layout's bar has neither
+button, so in that layout they are reached only by panning sideways. Older than D1793. **To do, if he wants it:** keep the
+two buttons in view (at the bar's left, or stuck to the screen's right) — drawn for him first. **Place:** low — with the
+next phone-board change.
+
+### [OIL-WINDOW-FOOT-SHAPE] The ALL AVAIL window's foot keeps the old shape for an inert man (code read, 8 Nov 26 — chat 5, `claude/pr-oil-earn-ffbf07`)
+F6 of the fresh Opus read (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-opus.md`): in OIL Earn a tap on a man who cannot earn in the window's OIL half sets its foot to
+"<callsign> — <reason>" (`AvailWindow.tsx onBody`, from the seat's title); the board's own tap now says "Nothing changed for
+<callsign>. <Reason>." (D1783). D1783 is worded as carrying the rule to the board; Astra's scenario 3 saw the same and did not
+call it a fault. **To do, if he wants the window too:** set the foot from the seat's `data-oilsay`, the title as the fallback.
+**Place:** low — his question with a picture, with the next OIL Earn change.
+
+### [OIL-ROSTER-TAP-SELECTS] In OIL Earn the crew list still picks a man (code read, 8 Nov 26 — chat 5)
+The Opus read's negatives (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-opus.md`): a tap on a man in the board's crew list (`#sbRoster`) in the mode still picks him — the
+new placeholder guard leaves the list out on purpose. D65's "inside the mode no tap selects" read literally would reach it;
+D1783 speaks of a man's puck "on its row". **To do, if he wants it:** his answer first — the crew list is how a seat is
+planned, so picking there may be wanted in the mode. **Place:** low — his question.
+
+### [OIL-SWITCH-NOSAVE-SHOW] "No OIL earned" could show the opposite of the day after a press that saves nothing (code read, 8 Nov 26 — chat 5)
+F5 of the Opus read (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-opus.md`): the switch is a checkbox the browser ticks before the board's handler runs; the screen comes right
+only because the bar is drawn again. A press the handler drops before the switch's branch (a stale preview, not in edit mode),
+or a save the store refuses (`toastFail`, which never fires today), would leave the box showing the opposite of the day. Not
+reachable today. **To do:** `e.preventDefault()` as soon as `boardMbtn` finds the switch, so the box always shows the day
+after the redraw — with a test that a refused press leaves it as it was. **Place:** with the database step's failed-save work.
+
+### [OIL-EARN-BOARD-TIDY] The code reads' tidiness notes on the OIL Earn board change (D489 — filed, not fixed; 8 Nov 26 — chat 5)
+From the three reads (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-{astra,sol,opus}.md`): the inert
+wrap is built in two places (`oilInertWrap` and `oilSeatHTML`), and `oilSeatHTML` calls `inertWhy` twice for one puck;
+`EVENT_EARNS_NOBODY` is a constant in `board.ts` while `AvailWindow.tsx` keeps its own copy — one export beside
+`DAY_EARNS_NOTHING` would serve both; `.mbtn.daybtn` has two rules in `18-oil-board.css`; the placeholder's day-switch
+refusal is reached by two branches of `boardArmClick`; `sbInpRow`'s puck line nests two arrow functions called on the spot
+inside a ternary — a named `inner` would read straighter; the switch's keys put-back hand-rolls what `sheetfocus.ts`
+`locate` / `keysBack` do; `inert.dataset.oilsay || ''` would toast an empty note if the attribute were missing; `.mbtn.oilblank.on`
+and `.mbtn.oilbtn.on` in `18-oil-board.css` have no user. **Place:** low — with the next OIL Earn change or the tidiness audit
+before the database step (D486).
