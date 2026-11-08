@@ -288,6 +288,11 @@ got 2); alone it passed three times out of three. The code is untouched by that 
 release within a few milliseconds. **To do:** make the test hold the window open while it clicks (a fake timer around the release and
 the click), never widen the app's 350 ms. **Place:** Checks and tooling, small — with the next board-navigation change, or sooner if
 GitHub's run trips on it.
+**Built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged):** the test's clock stands still from the release to the
+click (only `setTimeout` faked, restored in a `finally`); the app's 350 ms untouched. Red first: a real 400 ms wait put between
+the release and the click failed it exactly as chat 5 saw (expected 6, got 2); with the fake clock it passed with the wait still
+in; the wait then taken out — the file 41/41. Chats 11 and 13 asked first (D302): chat 11's work is merged and leaves the file
+alone, chat 13's branch only renames an import in `board.ts`. Leaves for the archive once merged.
 
 ### [RD-LEFT-1108] React Doctor's 31 findings left in the app after the shell-and-state job (found 8 Nov 26)
 **What:** after `claude/rd-shell-state` (evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md`), React Doctor 0.9.18 finds 31 in the app's own code

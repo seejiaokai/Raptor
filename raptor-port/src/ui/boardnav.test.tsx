@@ -11,7 +11,7 @@
    and that the open drawer clears the bar — is not testable here: jsdom reports
    every rect as 0x0. It is pinned in e2e/geometry.spec.ts, the gate that exists
    for exactly this. */
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
@@ -342,15 +342,28 @@ describe('dragging along the day dots runs through the week', () => {
   })
 
   /* the release fires a click naming the dot the finger went DOWN on; left
-     alone it would undo the whole drag */
+     alone it would undo the whole drag. The board eats that one click for
+     350 ms (board.ts wireDayDots); a real click follows the release within a
+     few milliseconds, but on a crowded machine the gap between this test's
+     release and its click passed 350 ms and the day moved back (8 Nov 26,
+     [BOARDNAV-SCRUB-CLICK-TIMER]). So the test's clock stands still from the
+     release to the click: only setTimeout is faked (React's act and the
+     drag need nothing else), the window cannot close early, and the app's
+     350 ms is left as it is. Shown red first with a real 400 ms wait put
+     between the release and the click, then green with it still there. */
   it('the click after a scrub does not snap back to where the drag started', async () => {
     layOutDots()
-    await scrub(50, 130)
-    expect(view.SBDAY).toBe(6)
-    await act(async () => {
-      $$('#sbDays [data-sbtab]')[2].dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    })
-    expect(view.SBDAY, 'the swallowed click left the scrubbed day alone').toBe(6)
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    try {
+      await scrub(50, 130)
+      expect(view.SBDAY).toBe(6)
+      await act(async () => {
+        $$('#sbDays [data-sbtab]')[2].dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      })
+      expect(view.SBDAY, 'the swallowed click left the scrubbed day alone').toBe(6)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   /* a plain tap must still reach the ordinary click handler — the scrub
