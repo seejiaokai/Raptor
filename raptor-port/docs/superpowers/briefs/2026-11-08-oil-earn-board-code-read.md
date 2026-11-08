@@ -13,8 +13,8 @@ host will run it before your finding is judged.
 
 ## What to read
 
-- The change: branch `claude/pr-oil-earn-ffbf07` at commit `<COMMIT>` against `main` at `549482bd5`
-  (`git diff 549482bd5 <COMMIT> -- raptor-port/src`): `raptor-port/src/ui/oilmode.ts`, `raptor-port/src/ui/board.ts`,
+- The change: branch `claude/pr-oil-earn-ffbf07` at commit `e4677d032` against `main` at `549482bd5`
+  (`git diff 549482bd5 e4677d032 -- raptor-port/src`): `raptor-port/src/ui/oilmode.ts`, `raptor-port/src/ui/board.ts`,
   `raptor-port/src/ui/board-html.ts`, `raptor-port/src/ui/scheduler/18-oil-board.css`, and their tests
   (`raptor-port/src/ui/oilmode.test.tsx`, the last describe blocks; `raptor-port/src/ui/noteswords.test.ts`;
   `raptor-port/src/ui/oilclaimcrowd.test.tsx`).
