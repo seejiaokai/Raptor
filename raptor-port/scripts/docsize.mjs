@@ -985,6 +985,15 @@ function skillLogNumbers() {
     const where = [...e.by].map(([f, k]) => `${k} in ${f}`).join(', ')
     fails.push(`${SKILL_LOG}: Observation ${n} heads ${e.total} entries — ${where}; each note has its own number, and an archived number is never used again: renumber the one your branch added past the highest on every branch (the skill notes' short form, step 1), and its citations in your own lines`)
   }
+  /* round 3 (Opus re-read 3, 8 Nov 26): a code block that never closes would hide every later note heading — the shared
+     definition now reads its opener as text, and the gate names it, in the log and each archive file. Only a NEW one
+     fails: a file holding more such openers now than at the base, the way the numbers above compare (D56) */
+  const unclosed = (text) => RL.unclosedFences((text || '').split('\n'))
+  const baseFiles = new Set(filesBase())
+  for (const f of filesNow()) {
+    const at = unclosed(readNow(f)), was = baseFiles.has(f) ? unclosed(readBase(f)).length : 0
+    if (at.length > was) fails.push(`${f}: a code block opened at line ${at.map(i => i + 1).join(', line ')} never closes — close it with the same fence (three or more of the same backtick or tilde), or a later note heading may be read as part of it`)
+  }
   return fails
 }
 function structure() {

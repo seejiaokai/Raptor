@@ -72,7 +72,7 @@ import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { fenceStep, fencedFlags, OBS_HEAD, observationHeads } from './docsize-rulings.mjs'
+import { closedFencedFlags, OBS_HEAD, observationHeads } from './docsize-rulings.mjs'
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const args = process.argv.slice(2)
@@ -139,11 +139,11 @@ const nl = t => (t && !t.endsWith('\n') ? t + '\n' : t)
 
 /* ---------- cutting a file into its records ---------- */
 function cut(text, keyOf, fenced) {
-  const recs = []; let cur = { key: 'head', text: '' }, fence = null
-  for (const line of linesOf(text)) {
+  const recs = [], ls = linesOf(text), inF = fenced ? closedFencedFlags(ls) : ls.map(() => false) // a fence open at the end is text (round 3, Opus re-read 3)
+  let cur = { key: 'head', text: '' }
+  for (const [i, line] of ls.entries()) {
     const bare = line.replace(/\r?\n$/, '')
-    const was = fence; if (fenced) fence = fenceStep(fence, bare)
-    const k = !was && !fence ? keyOf(bare) : null
+    const k = !inF[i] ? keyOf(bare) : null
     if (k) { recs.push(cur); cur = { key: k, text: '' } }
     cur.text += line
   }
@@ -284,7 +284,7 @@ function renumber(B, O, T, ctx) {
   const cited = []
   const O2 = O.map(r => {
     const own = r.key.startsWith('obs:') && map.has(r.key.slice(4)) ? r.key.slice(4) : null
-    const ls = linesOf(r.text), fenced = fencedFlags(ls)
+    const ls = linesOf(r.text), fenced = closedFencedFlags(ls)
     const text = ls.map((l, i) => {
       if (own && i === 0) return l.replace(/^### Observation \d+:/, `### Observation ${map.get(own)}:`)
       if (baseLines.has(l) || fenced[i]) return l
@@ -362,7 +362,7 @@ function settle(f, st, labels, ctx) {
   if (f === SKILL_LOG) {
     /* ROUND 3 (the host's guardrail after the narrow re-read — Astra re-read 2 and its mirror): a note could still move
        under the wrong day, so a day heading (`## `) added on either side since the base leaves the whole log */
-    const days = x => { const ls = x.split('\n').map(l => l.replace(/\r$/, '')), fz = fencedFlags(ls), n = new Map(); ls.forEach((l, i) => { if (!fz[i] && /^## /.test(l)) n.set(l, (n.get(l) || 0) + 1) }); return n }
+    const days = x => { const ls = x.split('\n').map(l => l.replace(/\r$/, '')), fz = closedFencedFlags(ls), n = new Map(); ls.forEach((l, i) => { if (!fz[i] && /^## /.test(l)) n.set(l, (n.get(l) || 0) + 1) }); return n }
     const db = days(b)
     for (const [side, x] of [['this branch', o], ["main's side", t]]) for (const [l, n] of days(x)) if (n > (db.get(l) || 0)) throw new Leave(`${side} added a day heading ("${l.trim().slice(0, 60)}") — which note goes under which day is yours to judge`)
     const [B, O0, T] = [b, o, t].map(x => cut(x, notesKey, true))

@@ -511,6 +511,13 @@ scenario('skill log: one number heading two notes inside one archive', true, c =
 scenario('skill log: one number heading a note in each of two archives', true, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(3, 'three')); c.write(SKARCH2, '# archive\n\n' + obs(3, 'a later three')) }, { mustSay: `Observation 3 heads 2 entries — 1 in ${SKARCH}, 1 in ${SKARCH2}` })
 scenario('skill log: both notes of a doubled number moved to the archive', true, c => { c.write(SKLOG, '# Skill Observation Log\n\n' + obs(7, 'seven')); c.write(SKARCH, '# archive\n\n' + obs(8, 'eight') + obs(8, 'a different eight')) }, { mustSay: 'Observation 8 heads 2 entries' })
 scenario('skill log: a doubling already at the base is the store as it stands, not failed (D56)', false, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(3, 'three') + obs(3, 'another three')); c.commit('an older doubling, already on main') }, { base: 'HEAD' })
+/* round 3 (Opus re-read 3, 8 Nov 26): a code block that never closes hid every later note heading — so a doubled number
+   after it went unseen. The opener is now text, the doubling is seen, and a NEW unclosed block is named */
+const STRAY = obs(7, 'a stray fence').replace("the note's body", "the note's body\n\n```")
+scenario('skill log: a code block that never closes, new', true, c => c.write(SKLOG, '# Skill Observation Log\n\n' + STRAY + obs(8, 'eight')), { mustSay: `${SKLOG}: a code block opened at line 7 never closes` })
+scenario('skill log: a code block that never closes, new, in an archive', true, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + STRAY) }, { mustSay: `${SKARCH}: a code block opened at line 7 never closes` })
+scenario('skill log: a doubled number after a code block that never closes is still seen', true, c => c.write(SKLOG, '# Skill Observation Log\n\n' + STRAY + obs(8, 'eight') + obs(8, 'a different eight')), { mustSay: 'Observation 8 heads 2 entries' })
+scenario('skill log: a code block that never closes, already at the base, is not failed (D56)', false, c => { c.write(SKLOG, '# Skill Observation Log\n\n' + STRAY + obs(8, 'eight')); c.commit('an older stray fence, already on main') }, { base: 'HEAD' })
 scenario('a new top-level reference doc that no map names', true, c => c.write('raptor-port/docs/newref.md', '# new\n'), { mustSay: 'no map names' })
 scenario('a new top-level reference doc on the map', false, c => { c.write('raptor-port/docs/newref.md', '# new\n'); c.write('raptor-port/CLAUDE.md', '| the new reference | `docs/newref.md` |\n') })
 scenario('a design for one task, under superpowers/ (tier 3, no map needed)', false, c => c.write('raptor-port/docs/superpowers/specs/2026-09-24-x.md', '# x\n'))

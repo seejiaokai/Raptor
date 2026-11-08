@@ -31,7 +31,7 @@ import { join, dirname, basename } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { fencedFlags, OBS_HEAD, observationHeads } from './docsize-rulings.mjs'
+import { closedFencedFlags, OBS_HEAD, observationHeads } from './docsize-rulings.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const REPO = join(HERE, '..', '..')
@@ -82,7 +82,7 @@ function withoutRegions(t) {
    record's start is a record of its own, one inside a record marks that record; fences are text */
 const recKey = l => { let m; if ((m = /^<!-- now:(\S+) -->\s*$/.exec(l))) return `now:${m[1]}`; if ((m = OBS_HEAD.exec(l))) return `obs:${m[1]}`; if (/^## /.test(l)) return `sec:${l.trim()}`; if ((m = /^#{2,3} \[([A-Z0-9-]+)\]/.exec(l))) return `id:${m[1]}`; return null }
 function records(t) {
-  const ls = t.split('\n').map(l => l.replace(/\r$/, '')), fenced = fencedFlags(ls), recs = []
+  const ls = t.split('\n').map(l => l.replace(/\r$/, '')), fenced = closedFencedFlags(ls), recs = []
   let cur = { key: 'head', lines: [] }, inside = false, boundary = false, n = 0
   const start = key => { recs.push(cur); cur = { key, lines: [] } }
   ls.forEach((l, i) => {
