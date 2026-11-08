@@ -49,10 +49,17 @@ describe('boot — the accounts come back after a reload', () => {
   })
   it('every settings loader the rollback runs is also run at boot (the drift that hid it)', () => {
     const psc = readFileSync(join(__dirname, 'people-settings-commit.ts'), 'utf8')
-    const list = psc.match(/const SETTINGS_LOADERS[^\n]*= \[([^\]]+)\]/)
+    /* since [RD-LEFT-1108] (8 Nov 26) the list holds the save layer's own loaders by name and the four files' loaders
+       as MODULE_LOADERS.<x>, handed in by people-settings-wire.ts — so read both, and check every one by its own name */
+    const list = psc.match(/const settingsLoaders = \(\)[^\n]*=> \[([^\]]+)\]/)
     expect(list, 'the rollback loader list').toBeTruthy()
-    const loaders = list![1].split(',').map(x => x.trim()).filter(Boolean)
-    expect(loaders.length).toBeGreaterThan(8)
+    const own = list![1].split(',').map(x => x.trim()).filter(x => x && !x.startsWith('MODULE_LOADERS.'))
+    const wire = readFileSync(join(__dirname, 'people-settings-wire.ts'), 'utf8')
+    const handed = wire.match(/\{ accounts: (\w+), changes: (\w+), noticeSeen: (\w+), flyplan: (\w+) \}/)
+    expect(handed, 'the loaders the wire file hands in').toBeTruthy()
+    expect(list![1].match(/MODULE_LOADERS\./g)?.length, 'each handed-in loader is in the list').toBe(4)
+    const loaders = [...own, ...handed!.slice(1)]
+    expect(loaders.length).toBe(15)
     const src = readFileSync(join(__dirname, 'store.ts'), 'utf8')
     const boot = src.slice(src.indexOf('export function initStore'))
     for (const l of loaders) expect(boot, `${l}() at boot`).toMatch(new RegExp('\\b' + l + '\\(\\)'))

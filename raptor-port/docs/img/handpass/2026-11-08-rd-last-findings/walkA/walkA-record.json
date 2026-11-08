@@ -1,0 +1,2514 @@
+{
+ "rows": [
+  {
+   "size": "desk",
+   "step": "fixtures",
+   "v": "SAME",
+   "main": "[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]",
+   "branch": "[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDACTIVE opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l1wghrtb\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l1wglksv\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDACTIVE typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l1wghrtb\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDACTIVE(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"acmw74l1wglksv\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDACTIVE(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDACTIVE closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDACTIVE reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l1wghrtb\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l1wglksv\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDACTIVE same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDACTIVE reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l1wghrtb\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l1wglksv\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDACTIVE other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28ydwda\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28yfylq\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDACTIVE back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l1wghrtb\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l1wglksv\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDWSO opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28ydwda\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28yfylq\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDWSO typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28ydwda\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDWSO(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"acmw74l28yfylq\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDWSO(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDWSO closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDWSO reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28ydwda\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28yfylq\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDWSO same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDWSO reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28ydwda\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28yfylq\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDWSO other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2lgu68hgk\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2lg8ymsey\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDWSO back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28ydwda\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28yfylq\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDGROUND opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2lgu68hgk\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2lg8ymsey\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDGROUND typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2lgu68hgk\",\"fields\":[\"accGiveName=unsaved@example.test\",\"accGiveRole=Admin — schedules and manages\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Tap again to delete RDGROUND(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"pmw74l2lg8ymsey\",\"fields\":[\"accGiveName=unsaved@example.test\",\"accGiveRole=Admin — schedules and manages\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Tap again to delete RDGROUND(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDGROUND closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDGROUND reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2lgu68hgk\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2lg8ymsey\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDGROUND same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDGROUND reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2lgu68hgk\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2lg8ymsey\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDGROUND other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28ydwda\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28yfylq\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDGROUND back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2lgu68hgk\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2lg8ymsey\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDNOSIGN opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xyyfehr9\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2xyd2lau8\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDNOSIGN typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xyyfehr9\",\"fields\":[\"accGiveName=unsaved@example.test\",\"accGiveRole=Admin — schedules and manages\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Tap again to delete RDNOSIGN(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"pmw74l2xyd2lau8\",\"fields\":[\"accGiveName=unsaved@example.test\",\"accGiveRole=Admin — schedules and manages\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Tap again to delete RDNOSIGN(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDNOSIGN closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDNOSIGN reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xyyfehr9\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2xyd2lau8\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDNOSIGN same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDNOSIGN reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xyyfehr9\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2xyd2lau8\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDNOSIGN other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28ydwda\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28yfylq\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDNOSIGN back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xyyfehr9\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2xyd2lau8\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDSUSP opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3agwkud\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3agejem\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDSUSP typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3agwkud\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Tap again to delete RDSUSP(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"acmw74l3agejem\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Tap again to delete RDSUSP(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDSUSP closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDSUSP reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3agwkud\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3agejem\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDSUSP same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDSUSP reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3agwkud\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3agejem\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDSUSP other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28ydwda\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28yfylq\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDSUSP back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3agwkud\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3agejem\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDADMIN2 opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3myznas\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3my0j6a\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDADMIN2 typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3myznas\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDADMIN2(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"acmw74l3my0j6a\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDADMIN2(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDADMIN2 closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDADMIN2 reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3myznas\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3my0j6a\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDADMIN2 same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDADMIN2 reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3myznas\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3my0j6a\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDADMIN2 other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28ydwda\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28yfylq\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 RDADMIN2 back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3myznas\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3my0j6a\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s12 own row: tap",
+   "v": "SAME",
+   "main": "{\"editors\":0,\"disabled\":true}",
+   "branch": "{\"editors\":0,\"disabled\":true}"
+  },
+  {
+   "size": "desk",
+   "step": "s12 Torch (posted out) opened",
+   "v": "SAME",
+   "main": "[{\"who\":\"ignite\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"ignite\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s16 give with blank",
+   "v": "DIFF",
+   "main": "{\"note\":\"Type the sign-in name (the defence mail address)\",\"editors\":[{\"who\":\"pmw74l2xyyfehr9\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]}",
+   "branch": "{\"note\":\"Type the sign-in name (the defence mail address)\",\"editors\":[{\"who\":\"pmw74l2xyd2lau8\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]}"
+  },
+  {
+   "size": "desk",
+   "step": "s16 give duplicate",
+   "v": "DIFF",
+   "main": "{\"note\":\"rdwso@example.test already has an account\",\"editors\":[{\"who\":\"pmw74l2xyyfehr9\",\"fields\":[\"accGiveName=rdwso@example.test\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]}",
+   "branch": "{\"note\":\"rdwso@example.test already has an account\",\"editors\":[{\"who\":\"pmw74l2xyd2lau8\",\"fields\":[\"accGiveName=rdwso@example.test\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]}"
+  },
+  {
+   "size": "desk",
+   "step": "s16 same duplicate typed again",
+   "v": "SAME",
+   "main": "{\"note\":\"rdwso@example.test already has an account\",\"active\":\"accGive\"}",
+   "branch": "{\"note\":\"rdwso@example.test already has an account\",\"active\":\"accGive\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s16 give valid",
+   "v": "SAME",
+   "main": "{\"note\":\"RDNOSIGN can sign in now\",\"undoBefore\":\"off:Undo / off:Redo\",\"undoAfter\":\"on:Undo — giving a sign-in / off:Redo\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHF | rdarchf@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN | no sign-in · WSO · CAT B | No sign-in,Archived\"]}",
+   "branch": "{\"note\":\"RDNOSIGN can sign in now\",\"undoBefore\":\"off:Undo / off:Redo\",\"undoAfter\":\"on:Undo — giving a sign-in / off:Redo\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHF | rdarchf@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN | no sign-in · WSO · CAT B | No sign-in,Archived\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "s16 save unchanged",
+   "v": "SAME",
+   "main": "{\"note\":\"RDNOSIGN can sign in now\",\"undoBefore\":\"on:Undo — giving a sign-in / off:Redo\",\"undoAfter\":\"on:Undo — giving a sign-in / off:Redo\"}",
+   "branch": "{\"note\":\"RDNOSIGN can sign in now\",\"undoBefore\":\"on:Undo — giving a sign-in / off:Redo\",\"undoAfter\":\"on:Undo — giving a sign-in / off:Redo\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s16 delete armed, edit, Save",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s16 delete armed, Cancel, reopen",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74m8vopq3p\",\"fields\":[\"accEdName=rdnosign@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74m8vonp4z\",\"fields\":[\"accEdName=rdnosign@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s16 delete armed, other row, return",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74m8vopq3p\",\"fields\":[\"accEdName=rdnosign@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74m8vonp4z\",\"fields\":[\"accEdName=rdnosign@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCH opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3zgb4fn5b\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]",
+   "branch": "[{\"who\":\"pmw74l3zgoagdvt\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCH typed a taken name",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3zgb4fn5b\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]",
+   "branch": "[{\"who\":\"pmw74l3zgoagdvt\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCH Restore as a taken name: refusal",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l3zgb4fn5b\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l3zgoagdvt\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCH typed again",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3zgb4fn5b\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]",
+   "branch": "[{\"who\":\"pmw74l3zgoagdvt\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCH refused again",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l3zgb4fn5b\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l3zgoagdvt\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCH delete armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3zgb4fn5b\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCH(ARMED)\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"pmw74l3zgoagdvt\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCH(ARMED)\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCH reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3zgb4fn5b\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]",
+   "branch": "[{\"who\":\"pmw74l3zgoagdvt\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHF opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogviwtjr\",\"fields\":[\"accArCs=RDARCHF\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4ogjypdlm\",\"fields\":[\"accArCs=RDARCHF\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHF typed a taken name",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogviwtjr\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4ogjypdlm\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHF Restore as a taken name: refusal",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4ogviwtjr\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4ogjypdlm\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHF typed again",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogviwtjr\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]",
+   "branch": "[{\"who\":\"pmw74l4ogjypdlm\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHF refused again",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4ogviwtjr\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4ogjypdlm\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHF delete armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogviwtjr\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCHF(ARMED)\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"pmw74l4ogjypdlm\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCHF(ARMED)\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHF reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogviwtjr\",\"fields\":[\"accArCs=RDARCHF\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4ogjypdlm\",\"fields\":[\"accArCs=RDARCHF\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHN opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byz6d5og\",\"fields\":[\"accArCs=RDARCHN\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4bye5z58o\",\"fields\":[\"accArCs=RDARCHN\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHN typed a taken name",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byz6d5og\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4bye5z58o\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHN Restore as a taken name: refusal",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4byz6d5og\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4bye5z58o\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHN typed again",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byz6d5og\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]",
+   "branch": "[{\"who\":\"pmw74l4bye5z58o\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHN refused again",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4byz6d5og\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4bye5z58o\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHN delete armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byz6d5og\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCHN(ARMED)\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"pmw74l4bye5z58o\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCHN(ARMED)\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHN reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byz6d5og\",\"fields\":[\"accArCs=RDARCHN\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4bye5z58o\",\"fields\":[\"accArCs=RDARCHN\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHN Save name",
+   "v": "SAME",
+   "main": "{\"note\":\"Renamed RDARCHN2\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHF | rdarchf@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}",
+   "branch": "{\"note\":\"Renamed RDARCHN2\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHF | rdarchf@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCHF Restore",
+   "v": "SAME",
+   "main": "{\"note\":\"RDARCHF restored — he can sign in, and he'll be asked to check his quals and CAT\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"],\"undo\":[\"on:Undo — RDARCHN’s callsign / off:Redo\",\"on:Undo — RDARCHN’s callsign / off:Redo\"]}",
+   "branch": "{\"note\":\"RDARCHF restored — he can sign in, and he'll be asked to check his quals and CAT\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"],\"undo\":[\"on:Undo — RDARCHN’s callsign / off:Redo\",\"on:Undo — RDARCHN’s callsign / off:Redo\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCH (taken) before Restore as",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3zgb4fn5b\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]",
+   "branch": "[{\"who\":\"pmw74l3zgoagdvt\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s13 RDARCH Restore as RDARCHB",
+   "v": "SAME",
+   "main": "{\"note\":\"RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}",
+   "branch": "{\"note\":\"RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "s14 before hiding",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l1wghrtb\",\"fields\":[\"accEdName=hidden-draft@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDACTIVE(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"acmw74l1wglksv\",\"fields\":[\"accEdName=hidden-draft@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDACTIVE(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s14 after another category and back",
+   "v": "DIFF",
+   "main": "{\"editors\":[{\"who\":\"acmw74l1wghrtb\",\"fields\":[\"accEdName=hidden-draft@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDACTIVE(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}],\"find\":\"RD\"}",
+   "branch": "{\"editors\":[{\"who\":\"acmw74l1wglksv\",\"fields\":[\"accEdName=hidden-draft@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDACTIVE(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}],\"find\":\"RD\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s14 after leaving Admin and returning",
+   "v": "SAME",
+   "main": "{\"editors\":[],\"find\":\"\"}",
+   "branch": "{\"editors\":[],\"find\":\"\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s14 after idle (70 s)",
+   "v": "SAME",
+   "main": "{\"editors\":[]}",
+   "branch": "{\"editors\":[]}"
+  },
+  {
+   "size": "desk",
+   "step": "s14 search hides the row",
+   "v": "SAME",
+   "main": "{\"editors\":[]}",
+   "branch": "{\"editors\":[]}"
+  },
+  {
+   "size": "desk",
+   "step": "s14 search shows it again",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l1wghrtb\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l1wglksv\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s14 Archived folded",
+   "v": "SAME",
+   "main": "{\"editors\":[]}",
+   "branch": "{\"editors\":[]}"
+  },
+  {
+   "size": "desk",
+   "step": "s14 Archived unfolded again",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byz6d5og\",\"fields\":[\"accArCs=RDARCHN2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4bye5z58o\",\"fields\":[\"accArCs=RDARCHN2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s17 give access opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"rqmw74l9qeu5el\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"rqmw74l9qernk1\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s17 New person",
+   "v": "DIFF",
+   "main": "[{\"who\":\"rqmw74l9qeu5el\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"rqmw74l9qernk1\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s17 switched away and back",
+   "v": "DIFF",
+   "main": "[{\"who\":\"rqmw74l9qeu5el\",\"fields\":[\"apvCs=TYPED\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"rqmw74l9qernk1\",\"fields\":[\"apvCs=TYPED\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s17 reopened after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"rqmw74l9qeu5el\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"rqmw74l9qernk1\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admWipe: press on \"Period\"",
+   "v": "DIFF",
+   "main": "{\"keysOn\":\"body\"}",
+   "branch": "{\"keysOn\":\"admWipeMode\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admWipe: Down key",
+   "v": "DIFF",
+   "main": "{\"mode\":\"before\",\"active\":\"body\"}",
+   "branch": "{\"mode\":\"on\",\"active\":\"admWipeMode\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admWipe: range shown",
+   "v": "DIFF",
+   "main": "{\"role\":null,\"labelledby\":null,\"name\":null,\"head\":\"label:Dates\",\"look\":\"10px 600 1px uppercase rgb(138, 150, 163) 0px\"}",
+   "branch": "{\"role\":\"group\",\"labelledby\":\"admWipeRunLbl\",\"name\":null,\"head\":\"span:Dates\",\"look\":\"10px 600 1px uppercase rgb(138, 150, 163) 0px\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admWipe: a11y of the range",
+   "v": "DIFF",
+   "main": "\"- button \\\"November 2026 — choose the month and year\\\": November 2026\\n- button \\\"Go to today\\\": \\\"8\\\"\\n- button \\\"Previous month\"",
+   "branch": "\"- group \\\"Dates\\\":\\n  - button \\\"November 2026 — choose the month and year\\\": November 2026\\n  - button \\\"Go to today\\\": \\\"8\\\"\\n  -\""
+  },
+  {
+   "size": "desk",
+   "step": "s18 admWipe: run 5–7 Nov picked",
+   "v": "SAME",
+   "main": "{\"from\":\"2026-11-05\",\"to\":\"2026-11-07\",\"foot\":\"Thu 5 Nov 26 to Sat 7 Nov 26\",\"btn\":\"Clear old clutter…\",\"dis\":false}",
+   "branch": "{\"from\":\"2026-11-05\",\"to\":\"2026-11-07\",\"foot\":\"Thu 5 Nov 26 to Sat 7 Nov 26\",\"btn\":\"Clear old clutter…\",\"dis\":false}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admWipe: first press",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear old clutter…\",\"note\":\"No old clutter in that period\"}",
+   "branch": "{\"btn\":\"Clear old clutter…\",\"note\":\"No old clutter in that period\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admWipe: mode changed while armed",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear old clutter…\"}",
+   "branch": "{\"btn\":\"Clear old clutter…\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admWipe: date calendar closed by Escape",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admWipe: date calendar closed by scrim",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admWipe: date calendar closed by ring",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admLog: press on \"Period\"",
+   "v": "DIFF",
+   "main": "{\"keysOn\":\"body\"}",
+   "branch": "{\"keysOn\":\"admLogMode\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admLog: Down key",
+   "v": "DIFF",
+   "main": "{\"mode\":\"before\",\"active\":\"body\"}",
+   "branch": "{\"mode\":\"on\",\"active\":\"admLogMode\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admLog: range shown",
+   "v": "DIFF",
+   "main": "{\"role\":null,\"labelledby\":null,\"name\":null,\"head\":\"label:Dates\",\"look\":\"10px 600 1px uppercase rgb(138, 150, 163) 0px\"}",
+   "branch": "{\"role\":\"group\",\"labelledby\":\"admLogRunLbl\",\"name\":null,\"head\":\"span:Dates\",\"look\":\"10px 600 1px uppercase rgb(138, 150, 163) 0px\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admLog: a11y of the range",
+   "v": "DIFF",
+   "main": "\"- button \\\"November 2026 — choose the month and year\\\": November 2026\\n- button \\\"Go to today\\\": \\\"8\\\"\\n- button \\\"Previous month\"",
+   "branch": "\"- group \\\"Dates\\\":\\n  - button \\\"November 2026 — choose the month and year\\\": November 2026\\n  - button \\\"Go to today\\\": \\\"8\\\"\\n  -\""
+  },
+  {
+   "size": "desk",
+   "step": "s18 admLog: run 5–7 Nov picked",
+   "v": "SAME",
+   "main": "{\"from\":\"2026-11-05\",\"to\":\"2026-11-07\",\"foot\":\"Thu 5 Nov 26 to Sat 7 Nov 26\",\"btn\":\"Clear edit history…\",\"dis\":false}",
+   "branch": "{\"from\":\"2026-11-05\",\"to\":\"2026-11-07\",\"foot\":\"Thu 5 Nov 26 to Sat 7 Nov 26\",\"btn\":\"Clear edit history…\",\"dis\":false}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admLog: first press",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear edit history…\",\"note\":\"No edits on record in that period\"}",
+   "branch": "{\"btn\":\"Clear edit history…\",\"note\":\"No edits on record in that period\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admLog: mode changed while armed",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear edit history…\"}",
+   "branch": "{\"btn\":\"Clear edit history…\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admLog: date calendar closed by Escape",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admLog: date calendar closed by scrim",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 admLog: date calendar closed by ring",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "desk",
+   "step": "s18 both forms range",
+   "v": "DIFF",
+   "main": "[\"/\",\"/\"]",
+   "branch": "[\"admWipeRunLbl/Dates\",\"admLogRunLbl/Dates\"]"
+  },
+  {
+   "size": "desk",
+   "step": "s18 labels for= of both Period",
+   "v": "DIFF",
+   "main": "[\"Period>no-for\",\"Dates>no-for\",\"Period>no-for\",\"Dates>no-for\"]",
+   "branch": "[\"Period>admWipeMode\",\"Period>admLogMode\"]"
+  },
+  {
+   "size": "desk",
+   "step": "s18 approval form headings",
+   "v": "DIFF",
+   "main": "[\"label:Person:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Callsign/Name:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Initials:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Pilot, WSO or personnel:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:CAT:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Post in:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Role:10px 600 1px uppercase rgb(138, 150, 163)\"]",
+   "branch": "[\"span:Person:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Callsign/Name:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Initials:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Pilot, WSO or personnel:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:CAT:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Post in:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Role:10px 600 1px uppercase rgb(138, 150, 163)\"]"
+  },
+  {
+   "size": "desk",
+   "step": "s18 Person: press its word",
+   "v": "SAME",
+   "main": "{\"keysOn\":\"body\"}",
+   "branch": "{\"keysOn\":\"body\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s23 Quals + Add person lands",
+   "v": "SAME",
+   "main": "{\"page\":true,\"cs\":1,\"keysOn\":\"accAddCs\",\"scroll\":3607}",
+   "branch": "{\"page\":true,\"cs\":1,\"keysOn\":\"accAddCs\",\"scroll\":3607}"
+  },
+  {
+   "size": "desk",
+   "step": "s23 draft kept after leaving",
+   "v": "SAME",
+   "main": "\"\"",
+   "branch": "\"\""
+  },
+  {
+   "size": "desk",
+   "step": "s23 bell list",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "desk",
+   "step": "s23 bell access line",
+   "v": "SAME",
+   "main": "\"no line\"",
+   "branch": "\"no line\""
+  },
+  {
+   "size": "desk",
+   "step": "s24 approval New person: paired boxes",
+   "v": "SAME",
+   "main": "{\"cols\":[\"607,276,584,68\",\"607,344,584,68\",\"607,438.5,584,68\"],\"mfields\":[\"607,276,287,57\",\"904,276,287,57\",\"607,344,287,57\",\"904,344,287,57\",\"607,438.5,287,57\",\"904,438.5,287,57\"],\"labels\":[\"607,276,287,14\",\"904,276,287,14\",\"607,344,287,14\",\"904,344,287,14\",\"607,438.5,287,14\",\"904,438.5,287,14\"],\"inputs\":[\"607,293,287,40\",\"904,293,287,40\",\"607,361,287,40\",\"904,361,287,40\",\"607,455.5,287,40\",\"904,455.5,287,40\"]}",
+   "branch": "{\"cols\":[\"607,276,584,68\",\"607,344,584,68\",\"607,438.5,584,68\"],\"mfields\":[\"607,276,287,57\",\"904,276,287,57\",\"607,344,287,57\",\"904,344,287,57\",\"607,438.5,287,57\",\"904,438.5,287,57\"],\"labels\":[\"607,276,287,14\",\"904,276,287,14\",\"607,344,287,14\",\"904,344,287,14\",\"607,438.5,287,14\",\"904,438.5,287,14\"],\"inputs\":[\"607,293,287,40\",\"904,293,287,40\",\"607,361,287,40\",\"904,361,287,40\",\"607,455.5,287,40\",\"904,455.5,287,40\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "s24 Add a person: paired boxes",
+   "v": "SAME",
+   "main": "{\"cols\":[\"607,3981,584,68\",\"607,4049,584,68\",\"607,4117,584,68\"],\"labels\":[\"607,3981,287,14\",\"904,3981,287,14\",\"607,4049,287,14\",\"904,4049,287,14\",\"607,4117,287,14\",\"904,4117,287,14\"],\"inputs\":[\"607,3998,287,40\",\"904,3998,287,40\",\"607,4066,287,40\",\"904,4066,287,40\",\"607,4134,287,40\",\"904,4134,287,40\"]}",
+   "branch": "{\"cols\":[\"607,3981,584,68\",\"607,4049,584,68\",\"607,4117,584,68\"],\"labels\":[\"607,3981,287,14\",\"904,3981,287,14\",\"607,4049,287,14\",\"904,4049,287,14\",\"607,4117,287,14\",\"904,4117,287,14\"],\"inputs\":[\"607,3998,287,40\",\"904,3998,287,40\",\"607,4066,287,40\",\"904,4066,287,40\",\"607,4134,287,40\",\"904,4134,287,40\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "s24 list heading vs rows",
+   "v": "SAME",
+   "main": "{\"head\":[\"1005,292,52,14\",\"1067,292,52,14\"],\"dots\":[\"1005,333.5,52,9\",\"1067,333.5,52,9\",\"1005,384.5,52,9\",\"1067,384.5,52,9\"]}",
+   "branch": "{\"head\":[\"1005,292,52,14\",\"1067,292,52,14\"],\"dots\":[\"1005,333.5,52,9\",\"1067,333.5,52,9\",\"1005,384.5,52,9\",\"1067,384.5,52,9\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "s24 overflow",
+   "v": "SAME",
+   "main": "{\"sw\":1536,\"iw\":1536}",
+   "branch": "{\"sw\":1536,\"iw\":1536}"
+  },
+  {
+   "size": "desk",
+   "step": "s24 editor armed: boxes",
+   "v": "SAME",
+   "main": "{\"editor\":[\"607,361,584,136.5\"],\"btns\":[\"607,439,54,28\",\"667,439,76.7,28\",\"749.7,439,70,28\",\"825.7,439,198.5,28\",\"1030.2,439,65.4,28\"],\"note\":[\"607,465,584,16.5\"]}",
+   "branch": "{\"editor\":[\"607,361,584,136.5\"],\"btns\":[\"607,439,54,28\",\"667,439,76.7,28\",\"749.7,439,70,28\",\"825.7,439,198.5,28\",\"1030.2,439,65.4,28\"],\"note\":[\"607,465,584,16.5\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: added RDPLAIN",
+   "v": "SAME",
+   "main": "{\"note\":\"RDPLAIN added to the roster — set flight and quals on the Quals page\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDPLAIN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}",
+   "branch": "{\"note\":\"RDPLAIN added to the roster — set flight and quals on the Quals page\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDPLAIN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: gave sign-in",
+   "v": "SAME",
+   "main": "{\"note\":\"RDPLAIN can sign in now\",\"list\":[\"RDPLAIN | rdplain@example.test · Member · Pilot · CAT C | Can sign in,On the roster\"]}",
+   "branch": "{\"note\":\"RDPLAIN can sign in now\",\"list\":[\"RDPLAIN | rdplain@example.test · Member · Pilot · CAT C | Can sign in,On the roster\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: suspended RDACTIVE",
+   "v": "SAME",
+   "main": "{\"note\":\"RDACTIVE suspended\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\"]}",
+   "branch": "{\"note\":\"RDACTIVE suspended\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: enabled RDACTIVE",
+   "v": "SAME",
+   "main": "{\"note\":\"RDACTIVE can sign in again\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\"]}",
+   "branch": "{\"note\":\"RDACTIVE can sign in again\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: archived RDGROUND",
+   "v": "SAME",
+   "main": "{\"note\":\"RDGROUND archived\",\"list\":[\"ARCH RDGROUND | no sign-in · Personnel | No sign-in,Archived\"]}",
+   "branch": "{\"note\":\"RDGROUND archived\",\"list\":[\"ARCH RDGROUND | no sign-in · Personnel | No sign-in,Archived\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: restored RDGROUND",
+   "v": "SAME",
+   "main": "{\"note\":\"RDGROUND restored — he'll be asked to check his quals and CAT\",\"list\":[\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\"]}",
+   "branch": "{\"note\":\"RDGROUND restored — he'll be asked to check his quals and CAT\",\"list\":[\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: delete first press",
+   "v": "DIFF",
+   "main": "{\"note\":\"RDGROUND archived\",\"editors\":[{\"who\":\"pmw74l2lgu68hgk\",\"fields\":[\"accArCs=RDGROUND\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Tap again to delete RDGROUND(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]}",
+   "branch": "{\"note\":\"RDGROUND archived\",\"editors\":[{\"who\":\"pmw74l2lg8ymsey\",\"fields\":[\"accArCs=RDGROUND\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Tap again to delete RDGROUND(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: delete second press",
+   "v": "SAME",
+   "main": "{\"note\":\"RDGROUND deleted\",\"list\":[]}",
+   "branch": "{\"note\":\"RDGROUND deleted\",\"list\":[]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: approved as New person",
+   "v": "SAME",
+   "main": "{\"note\":\"RDREQUEST added — rdrequest@example.test can sign in now\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDPLAIN | rdplain@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDREQUEST | rdrequest@example.test · Member · Pilot · CAT D | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]}",
+   "branch": "{\"note\":\"RDREQUEST added — rdrequest@example.test can sign in now\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDPLAIN | rdplain@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDREQUEST | rdrequest@example.test · Member · Pilot · CAT D | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: roster pick",
+   "v": "SAME",
+   "main": "\"locator.selectOption: Timeout 30000ms exceeded.\"",
+   "branch": "\"locator.selectOption: Timeout 30000ms exceeded.\""
+  },
+  {
+   "size": "desk",
+   "step": "plain: approved On the roster (RDPLAIN already has a sign-in, so refused or picked)",
+   "v": "DIFF",
+   "main": "{\"note\":\"Pick the callsign or name this account belongs to\",\"editors\":[{\"who\":\"rqmw74pl68x49g\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[]}]}",
+   "branch": "{\"note\":\"Pick the callsign or name this account belongs to\",\"editors\":[{\"who\":\"rqmw74pl68b1wp\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[]}]}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: waiting list",
+   "v": "SAME",
+   "main": "[\"rdreq2@example.testasked as RDREQ2 · R2 · Pilot · CAT D · 8/11 09:03Give accessRefuse\",\"rdreq3@example.testasked as RDNOSIGN · R3 · Pilot · CAT D · 8/11 09:03Give accessRefuse\"]",
+   "branch": "[\"rdreq2@example.testasked as RDREQ2 · R2 · Pilot · CAT D · 8/11 09:03Give accessRefuse\",\"rdreq3@example.testasked as RDNOSIGN · R3 · Pilot · CAT D · 8/11 09:03Give accessRefuse\"]"
+  },
+  {
+   "size": "desk",
+   "step": "plain: refused one",
+   "v": "SAME",
+   "main": "{\"note\":\"Refused rdreq2@example.test\"}",
+   "branch": "{\"note\":\"Refused rdreq2@example.test\"}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: where each place shows them",
+   "v": "SAME",
+   "main": "{\"Quals\":\"RDPLAIN,RDACTIVE,RDREQUEST\",\"Leave War\":\"RDPLAIN,RDACTIVE,RDREQUEST\",\"Edit Schedule\":\"RDPLAIN,RDACTIVE,RDREQUEST\"}",
+   "branch": "{\"Quals\":\"RDPLAIN,RDACTIVE,RDREQUEST\",\"Leave War\":\"RDPLAIN,RDACTIVE,RDREQUEST\",\"Edit Schedule\":\"RDPLAIN,RDACTIVE,RDREQUEST\"}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: change history window",
+   "v": "SAME",
+   "main": "true",
+   "branch": "true"
+  },
+  {
+   "size": "desk",
+   "step": "plain: clear history, first press",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear edit history…\",\"note\":\"No edits on record in that period\"}",
+   "branch": "{\"btn\":\"Clear edit history…\",\"note\":\"No edits on record in that period\"}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: clear history, second press",
+   "v": "SAME",
+   "main": "{\"note\":\"No edits on record in that period\"}",
+   "branch": "{\"note\":\"No edits on record in that period\"}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: clear clutter, first press",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear old clutter…\",\"note\":\"No old clutter in that period\"}",
+   "branch": "{\"btn\":\"Clear old clutter…\",\"note\":\"No old clutter in that period\"}"
+  },
+  {
+   "size": "desk",
+   "step": "plain: clear clutter, second press",
+   "v": "SAME",
+   "main": "{\"note\":\"No old clutter in that period\"}",
+   "branch": "{\"note\":\"No old clutter in that period\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 on arrival",
+   "v": "SAME",
+   "main": "{\"keysOn\":\"accCs\",\"cs\":\"\"}",
+   "branch": "{\"keysOn\":\"accCs\",\"cs\":\"\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 typed at once",
+   "v": "SAME",
+   "main": "{\"cs\":\"abc\"}",
+   "branch": "{\"cs\":\"abc\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 Tab inventory",
+   "v": "SAME",
+   "main": "[\"accIni\",\"accSeat\",\"accCat\",\"accSend\",\"accOut\",\"body\",\"accCs\"]",
+   "branch": "[\"accIni\",\"accSeat\",\"accCat\",\"accSend\",\"accOut\",\"body\",\"accCs\"]"
+  },
+  {
+   "size": "desk",
+   "step": "s20 blank send",
+   "v": "SAME",
+   "main": "{\"err\":\"Type the callsign or name\"}",
+   "branch": "{\"err\":\"Type the callsign or name\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 15 characters",
+   "v": "SAME",
+   "main": "{\"long\":\"A callsign or name is at most 14 letters — use a short form\",\"cs\":\"ABCDEFGHIJKLMNO\"}",
+   "branch": "{\"long\":\"A callsign or name is at most 14 letters — use a short form\",\"cs\":\"ABCDEFGHIJKLMNO\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 15 chars send",
+   "v": "SAME",
+   "main": "{\"err\":\"A callsign or name is at most 14 letters — use a short form\",\"asked\":0}",
+   "branch": "{\"err\":\"A callsign or name is at most 14 letters — use a short form\",\"asked\":0}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 no seat",
+   "v": "SAME",
+   "main": "{\"err\":\"Pick pilot, WSO or personnel\"}",
+   "branch": "{\"err\":\"Pick pilot, WSO or personnel\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 personnel: CAT",
+   "v": "SAME",
+   "main": "{\"cat\":\"none\"}",
+   "branch": "{\"cat\":\"none\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 sent",
+   "v": "SAME",
+   "main": "{\"asked\":\"ABCDEFGHIJKLMN\",\"state\":\"Waiting for an admin\",\"steps\":\"Request sentAn admin approvesYou're on the schedule\",\"band\":\"\"}",
+   "branch": "{\"asked\":\"ABCDEFGHIJKLMN\",\"state\":\"Waiting for an admin\",\"steps\":\"Request sentAn admin approvesYou're on the schedule\",\"band\":\"\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 another identity",
+   "v": "SAME",
+   "main": "{\"keysOn\":\"accCs\",\"cs\":\"\"}",
+   "branch": "{\"keysOn\":\"accCs\",\"cs\":\"\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 F on arrival",
+   "v": "SAME",
+   "main": "{\"keysOn\":\"accCs\",\"cs\":\"\"}",
+   "branch": "{\"keysOn\":\"accCs\",\"cs\":\"\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 F typed at once",
+   "v": "SAME",
+   "main": "{\"cs\":\"abc\"}",
+   "branch": "{\"cs\":\"abc\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 F Tab inventory",
+   "v": "SAME",
+   "main": "[\"accIni\",\"accSeat\",\"accCat\",\"accSend\",\"accOut\",\"body\",\"button\"]",
+   "branch": "[\"accIni\",\"accSeat\",\"accCat\",\"accSend\",\"accOut\",\"body\",\"button\"]"
+  },
+  {
+   "size": "desk",
+   "step": "s20 F blank send",
+   "v": "SAME",
+   "main": "{\"err\":\"Type the callsign or name\"}",
+   "branch": "{\"err\":\"Type the callsign or name\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 F 15 characters",
+   "v": "SAME",
+   "main": "{\"long\":\"A callsign or name is at most 14 letters — use a short form\",\"cs\":\"ABCDEFGHIJKLMNO\"}",
+   "branch": "{\"long\":\"A callsign or name is at most 14 letters — use a short form\",\"cs\":\"ABCDEFGHIJKLMNO\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 F 15 chars send",
+   "v": "SAME",
+   "main": "{\"err\":\"A callsign or name is at most 14 letters — use a short form\",\"asked\":0}",
+   "branch": "{\"err\":\"A callsign or name is at most 14 letters — use a short form\",\"asked\":0}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 F no seat",
+   "v": "SAME",
+   "main": "{\"err\":\"Pick pilot, WSO or personnel\"}",
+   "branch": "{\"err\":\"Pick pilot, WSO or personnel\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 F personnel: CAT",
+   "v": "SAME",
+   "main": "{\"cat\":\"none\"}",
+   "branch": "{\"cat\":\"none\"}"
+  },
+  {
+   "size": "desk",
+   "step": "s20 F sent",
+   "v": "SAME",
+   "main": "{\"asked\":\"ABCDEFGHIJKLMN\",\"state\":\"Not sent yet\",\"steps\":\"!Not sent yetAn admin approvesYou're on the schedule\",\"band\":\"Not saved — keep this page openRetry\"}",
+   "branch": "{\"asked\":\"ABCDEFGHIJKLMN\",\"state\":\"Not sent yet\",\"steps\":\"!Not sent yetAn admin approvesYou're on the schedule\",\"band\":\"Not saved — keep this page openRetry\"}"
+  },
+  {
+   "size": "phone",
+   "step": "fixtures",
+   "v": "SAME",
+   "main": "[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]",
+   "branch": "[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDACTIVE opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28yaa7o\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28ye7yu\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDACTIVE typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28yaa7o\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDACTIVE(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"acmw74l28ye7yu\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDACTIVE(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDACTIVE closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDACTIVE reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28yaa7o\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28ye7yu\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDACTIVE same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDACTIVE reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28yaa7o\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28ye7yu\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDACTIVE other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l2lgcvfh\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l2lg2pmz\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDACTIVE back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28yaa7o\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28ye7yu\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDWSO opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l2lgcvfh\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l2lg2pmz\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDWSO typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l2lgcvfh\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDWSO(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"acmw74l2lg2pmz\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDWSO(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDWSO closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDWSO reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l2lgcvfh\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l2lg2pmz\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDWSO same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDWSO reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l2lgcvfh\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l2lg2pmz\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDWSO other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xy0rcvjp\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2xytiefml\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDWSO back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l2lgcvfh\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l2lg2pmz\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDGROUND opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xy0rcvjp\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2xytiefml\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDGROUND typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xy0rcvjp\",\"fields\":[\"accGiveName=unsaved@example.test\",\"accGiveRole=Admin — schedules and manages\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Tap again to delete RDGROUND(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"pmw74l2xytiefml\",\"fields\":[\"accGiveName=unsaved@example.test\",\"accGiveRole=Admin — schedules and manages\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Tap again to delete RDGROUND(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDGROUND closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDGROUND reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xy0rcvjp\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2xytiefml\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDGROUND same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDGROUND reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xy0rcvjp\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2xytiefml\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDGROUND other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l2lgcvfh\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l2lg2pmz\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDGROUND back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l2xy0rcvjp\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l2xytiefml\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDNOSIGN opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3agtfjbtw\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l3aghrumhd\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDNOSIGN typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3agtfjbtw\",\"fields\":[\"accGiveName=unsaved@example.test\",\"accGiveRole=Admin — schedules and manages\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Tap again to delete RDNOSIGN(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"pmw74l3aghrumhd\",\"fields\":[\"accGiveName=unsaved@example.test\",\"accGiveRole=Admin — schedules and manages\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Tap again to delete RDNOSIGN(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDNOSIGN closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDNOSIGN reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3agtfjbtw\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l3aghrumhd\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDNOSIGN same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDNOSIGN reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3agtfjbtw\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l3aghrumhd\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDNOSIGN other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l2lgcvfh\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l2lg2pmz\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDNOSIGN back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l3agtfjbtw\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l3aghrumhd\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDSUSP opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3myew0r\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3mybfva\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDSUSP typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3myew0r\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Tap again to delete RDSUSP(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"acmw74l3mybfva\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Tap again to delete RDSUSP(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDSUSP closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDSUSP reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3myew0r\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3mybfva\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDSUSP same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDSUSP reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3myew0r\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3mybfva\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDSUSP other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l2lgcvfh\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l2lg2pmz\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDSUSP back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3myew0r\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3mybfva\",\"fields\":[\"accEdName=rdsusp@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Enable\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDADMIN2 opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3zg03md\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3zgywrw\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDADMIN2 typed+armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3zg03md\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDADMIN2(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"acmw74l3zgywrw\",\"fields\":[\"accEdName=unsaved@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDADMIN2(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDADMIN2 closed by Cancel",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDADMIN2 reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3zg03md\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3zgywrw\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDADMIN2 same-row tap closes",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDADMIN2 reopen after row tap",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3zg03md\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3zgywrw\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDADMIN2 other row opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l2lgcvfh\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l2lg2pmz\",\"fields\":[\"accEdName=rdwso@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 RDADMIN2 back after other row",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l3zg03md\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l3zgywrw\",\"fields\":[\"accEdName=rdadmin2@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s12 own row: tap",
+   "v": "SAME",
+   "main": "{\"editors\":0,\"disabled\":true}",
+   "branch": "{\"editors\":0,\"disabled\":true}"
+  },
+  {
+   "size": "phone",
+   "step": "s12 Torch (posted out) opened",
+   "v": "SAME",
+   "main": "[{\"who\":\"ignite\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"ignite\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s16 give with blank",
+   "v": "DIFF",
+   "main": "{\"note\":\"Type the sign-in name (the defence mail address)\",\"editors\":[{\"who\":\"pmw74l3agtfjbtw\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]}",
+   "branch": "{\"note\":\"Type the sign-in name (the defence mail address)\",\"editors\":[{\"who\":\"pmw74l3aghrumhd\",\"fields\":[\"accGiveName=\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]}"
+  },
+  {
+   "size": "phone",
+   "step": "s16 give duplicate",
+   "v": "DIFF",
+   "main": "{\"note\":\"rdwso@example.test already has an account\",\"editors\":[{\"who\":\"pmw74l3agtfjbtw\",\"fields\":[\"accGiveName=rdwso@example.test\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]}",
+   "branch": "{\"note\":\"rdwso@example.test already has an account\",\"editors\":[{\"who\":\"pmw74l3aghrumhd\",\"fields\":[\"accGiveName=rdwso@example.test\",\"accGiveRole=Member — own inputs, quals and bids\"],\"btns\":[\"Give sign-in\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]}"
+  },
+  {
+   "size": "phone",
+   "step": "s16 same duplicate typed again",
+   "v": "SAME",
+   "main": "{\"note\":\"rdwso@example.test already has an account\",\"active\":\"body\"}",
+   "branch": "{\"note\":\"rdwso@example.test already has an account\",\"active\":\"body\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s16 give valid",
+   "v": "SAME",
+   "main": "{\"note\":\"RDNOSIGN can sign in now\",\"undoBefore\":\"off:Undo / off:Redo\",\"undoAfter\":\"on:Undo — giving a sign-in / off:Redo\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHF | rdarchf@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN | no sign-in · WSO · CAT B | No sign-in,Archived\"]}",
+   "branch": "{\"note\":\"RDNOSIGN can sign in now\",\"undoBefore\":\"off:Undo / off:Redo\",\"undoAfter\":\"on:Undo — giving a sign-in / off:Redo\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHF | rdarchf@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN | no sign-in · WSO · CAT B | No sign-in,Archived\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "s16 save unchanged",
+   "v": "SAME",
+   "main": "{\"note\":\"RDNOSIGN can sign in now\",\"undoBefore\":\"on:Undo — giving a sign-in / off:Redo\",\"undoAfter\":\"on:Undo — giving a sign-in / off:Redo\"}",
+   "branch": "{\"note\":\"RDNOSIGN can sign in now\",\"undoBefore\":\"on:Undo — giving a sign-in / off:Redo\",\"undoAfter\":\"on:Undo — giving a sign-in / off:Redo\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s16 delete armed, edit, Save",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s16 delete armed, Cancel, reopen",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74m9x6e2bq\",\"fields\":[\"accEdName=rdnosign@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74m9x6cjxl\",\"fields\":[\"accEdName=rdnosign@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s16 delete armed, other row, return",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74m9x6e2bq\",\"fields\":[\"accEdName=rdnosign@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74m9x6cjxl\",\"fields\":[\"accEdName=rdnosign@example.test\",\"accEdRole=Admin — schedules and manages\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCH opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byauio3w\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]",
+   "branch": "[{\"who\":\"pmw74l4by6g3st6\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCH typed a taken name",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byauio3w\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]",
+   "branch": "[{\"who\":\"pmw74l4by6g3st6\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCH Restore as a taken name: refusal",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4byauio3w\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4by6g3st6\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCH typed again",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byauio3w\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]",
+   "branch": "[{\"who\":\"pmw74l4by6g3st6\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCH refused again",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4byauio3w\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4by6g3st6\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCH delete armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byauio3w\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCH(ARMED)\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"pmw74l4by6g3st6\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCH(ARMED)\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\",\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCH reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byauio3w\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]",
+   "branch": "[{\"who\":\"pmw74l4by6g3st6\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHF opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l50y6ic88j\",\"fields\":[\"accArCs=RDARCHF\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l50y6jt02x\",\"fields\":[\"accArCs=RDARCHF\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHF typed a taken name",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l50y6ic88j\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l50y6jt02x\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHF Restore as a taken name: refusal",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l50y6ic88j\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l50y6jt02x\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHF typed again",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l50y6ic88j\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]",
+   "branch": "[{\"who\":\"pmw74l50y6jt02x\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHF refused again",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l50y6ic88j\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l50y6jt02x\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHF delete armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l50y6ic88j\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCHF(ARMED)\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"pmw74l50y6jt02x\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCHF(ARMED)\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHF reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l50y6ic88j\",\"fields\":[\"accArCs=RDARCHF\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l50y6jt02x\",\"fields\":[\"accArCs=RDARCHF\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHN opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogozupt4\",\"fields\":[\"accArCs=RDARCHN\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4ogfempvd\",\"fields\":[\"accArCs=RDARCHN\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHN typed a taken name",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogozupt4\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4ogfempvd\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHN Restore as a taken name: refusal",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4ogozupt4\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4ogfempvd\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHN typed again",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogozupt4\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]",
+   "branch": "[{\"who\":\"pmw74l4ogfempvd\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHN refused again",
+   "v": "DIFF",
+   "main": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4ogozupt4\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}",
+   "branch": "{\"note\":\"\",\"editors\":[{\"who\":\"pmw74l4ogfempvd\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\"]}]}"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHN delete armed",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogozupt4\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCHN(ARMED)\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"pmw74l4ogfempvd\",\"fields\":[\"accArCs=RDACTIVE\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDACTIVE\",\"Save name\",\"Tap again to delete RDARCHN(ARMED)\",\"Cancel\"],\"notes\":[\"RDACTIVE is already taken — callsigns must be unique\",\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHN reopen after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogozupt4\",\"fields\":[\"accArCs=RDARCHN\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4ogfempvd\",\"fields\":[\"accArCs=RDARCHN\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHN Save name",
+   "v": "SAME",
+   "main": "{\"note\":\"Renamed RDARCHN2\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHF | rdarchf@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}",
+   "branch": "{\"note\":\"Renamed RDARCHN2\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHF | rdarchf@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCHF Restore",
+   "v": "SAME",
+   "main": "{\"note\":\"RDARCHF restored — he can sign in, and he'll be asked to check his quals and CAT\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"],\"undo\":[\"on:Undo — RDARCHN’s callsign / off:Redo\",\"on:Undo — RDARCHN’s callsign / off:Redo\"]}",
+   "branch": "{\"note\":\"RDARCHF restored — he can sign in, and he'll be asked to check his quals and CAT\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"ARCH RDARCH | rdarch@example.test · Pilot · CAT C | Sign-in suspended,Archived\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"],\"undo\":[\"on:Undo — RDARCHN’s callsign / off:Redo\",\"on:Undo — RDARCHN’s callsign / off:Redo\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCH (taken) before Restore as",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4byauio3w\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]",
+   "branch": "[{\"who\":\"pmw74l4by6g3st6\",\"fields\":[\"accArCs=RDARCH 2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore as RDARCH 2\",\"Save name\",\"Delete\",\"Cancel\"],\"notes\":[\"RDARCH is taken on the roster — give him another callsign.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s13 RDARCH Restore as RDARCHB",
+   "v": "SAME",
+   "main": "{\"note\":\"RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}",
+   "branch": "{\"note\":\"RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT\",\"list\":[\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "s14 before hiding",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28yaa7o\",\"fields\":[\"accEdName=hidden-draft@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDACTIVE(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]",
+   "branch": "[{\"who\":\"acmw74l28ye7yu\",\"fields\":[\"accEdName=hidden-draft@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Tap again to delete RDACTIVE(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s14 after another category and back",
+   "v": "SAME",
+   "main": "{\"editors\":[],\"find\":\"none\"}",
+   "branch": "{\"editors\":[],\"find\":\"none\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s14 after leaving Admin and returning",
+   "v": "SAME",
+   "main": "{\"editors\":[],\"find\":\"\"}",
+   "branch": "{\"editors\":[],\"find\":\"\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s14 after idle (70 s)",
+   "v": "SAME",
+   "main": "{\"editors\":[]}",
+   "branch": "{\"editors\":[]}"
+  },
+  {
+   "size": "phone",
+   "step": "s14 search hides the row",
+   "v": "SAME",
+   "main": "{\"editors\":[]}",
+   "branch": "{\"editors\":[]}"
+  },
+  {
+   "size": "phone",
+   "step": "s14 search shows it again",
+   "v": "DIFF",
+   "main": "[{\"who\":\"acmw74l28yaa7o\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"acmw74l28ye7yu\",\"fields\":[\"accEdName=rdactive@example.test\",\"accEdRole=Member — own inputs, quals and bids\"],\"btns\":[\"Save\",\"Suspend\",\"Archive\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s14 Archived folded",
+   "v": "SAME",
+   "main": "{\"editors\":[]}",
+   "branch": "{\"editors\":[]}"
+  },
+  {
+   "size": "phone",
+   "step": "s14 Archived unfolded again",
+   "v": "DIFF",
+   "main": "[{\"who\":\"pmw74l4ogozupt4\",\"fields\":[\"accArCs=RDARCHN2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]",
+   "branch": "[{\"who\":\"pmw74l4ogfempvd\",\"fields\":[\"accArCs=RDARCHN2\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Delete\",\"Cancel\"],\"notes\":[]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s17 give access opened",
+   "v": "DIFF",
+   "main": "[{\"who\":\"rqmw74lafegc2x\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"rqmw74lafe7z34\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s17 New person",
+   "v": "DIFF",
+   "main": "[{\"who\":\"rqmw74lafegc2x\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"rqmw74lafe7z34\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s17 switched away and back",
+   "v": "DIFF",
+   "main": "[{\"who\":\"rqmw74lafegc2x\",\"fields\":[\"apvCs=TYPED\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"rqmw74lafe7z34\",\"fields\":[\"apvCs=TYPED\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s17 reopened after Cancel",
+   "v": "DIFF",
+   "main": "[{\"who\":\"rqmw74lafegc2x\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]",
+   "branch": "[{\"who\":\"rqmw74lafe7z34\",\"fields\":[\"apvCs=RDREQUEST\",\"apvIni=RQ\",\"apvSeat=Pilot\",\"apvCat=D\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Sun 8 Nov 26▾\",\"Add person and give access\",\"Cancel\"],\"notes\":[\"Filled from what he gave when he signed up — change anything before you give access.\"]}]"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admWipe: press on \"Period\"",
+   "v": "DIFF",
+   "main": "{\"keysOn\":\"body\"}",
+   "branch": "{\"keysOn\":\"admWipeMode\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admWipe: Down key",
+   "v": "DIFF",
+   "main": "{\"mode\":\"before\",\"active\":\"body\"}",
+   "branch": "{\"mode\":\"on\",\"active\":\"admWipeMode\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admWipe: range shown",
+   "v": "DIFF",
+   "main": "{\"role\":null,\"labelledby\":null,\"name\":null,\"head\":\"label:Dates\",\"look\":\"10px 600 1px uppercase rgb(138, 150, 163) 0px\"}",
+   "branch": "{\"role\":\"group\",\"labelledby\":\"admWipeRunLbl\",\"name\":null,\"head\":\"span:Dates\",\"look\":\"10px 600 1px uppercase rgb(138, 150, 163) 0px\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admWipe: a11y of the range",
+   "v": "DIFF",
+   "main": "\"- button \\\"November 2026 — choose the month and year\\\": November 2026\\n- button \\\"Go to today\\\": \\\"8\\\"\\n- button \\\"Previous month\"",
+   "branch": "\"- group \\\"Dates\\\":\\n  - button \\\"November 2026 — choose the month and year\\\": November 2026\\n  - button \\\"Go to today\\\": \\\"8\\\"\\n  -\""
+  },
+  {
+   "size": "phone",
+   "step": "s18 admWipe: run 5–7 Nov picked",
+   "v": "SAME",
+   "main": "{\"from\":\"2026-11-05\",\"to\":\"2026-11-07\",\"foot\":\"Thu 5 Nov 26 to Sat 7 Nov 26\",\"btn\":\"Clear old clutter…\",\"dis\":false}",
+   "branch": "{\"from\":\"2026-11-05\",\"to\":\"2026-11-07\",\"foot\":\"Thu 5 Nov 26 to Sat 7 Nov 26\",\"btn\":\"Clear old clutter…\",\"dis\":false}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admWipe: first press",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear old clutter…\",\"note\":\"No old clutter in that period\"}",
+   "branch": "{\"btn\":\"Clear old clutter…\",\"note\":\"No old clutter in that period\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admWipe: mode changed while armed",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear old clutter…\"}",
+   "branch": "{\"btn\":\"Clear old clutter…\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admWipe: date calendar closed by Escape",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admWipe: date calendar closed by scrim",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admWipe: date calendar closed by ring",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admLog: press on \"Period\"",
+   "v": "DIFF",
+   "main": "{\"keysOn\":\"body\"}",
+   "branch": "{\"keysOn\":\"admLogMode\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admLog: Down key",
+   "v": "DIFF",
+   "main": "{\"mode\":\"before\",\"active\":\"body\"}",
+   "branch": "{\"mode\":\"on\",\"active\":\"admLogMode\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admLog: range shown",
+   "v": "DIFF",
+   "main": "{\"role\":null,\"labelledby\":null,\"name\":null,\"head\":\"label:Dates\",\"look\":\"10px 600 1px uppercase rgb(138, 150, 163) 0px\"}",
+   "branch": "{\"role\":\"group\",\"labelledby\":\"admLogRunLbl\",\"name\":null,\"head\":\"span:Dates\",\"look\":\"10px 600 1px uppercase rgb(138, 150, 163) 0px\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admLog: a11y of the range",
+   "v": "DIFF",
+   "main": "\"- button \\\"November 2026 — choose the month and year\\\": November 2026\\n- button \\\"Go to today\\\": \\\"8\\\"\\n- button \\\"Previous month\"",
+   "branch": "\"- group \\\"Dates\\\":\\n  - button \\\"November 2026 — choose the month and year\\\": November 2026\\n  - button \\\"Go to today\\\": \\\"8\\\"\\n  -\""
+  },
+  {
+   "size": "phone",
+   "step": "s18 admLog: run 5–7 Nov picked",
+   "v": "SAME",
+   "main": "{\"from\":\"2026-11-05\",\"to\":\"2026-11-07\",\"foot\":\"Thu 5 Nov 26 to Sat 7 Nov 26\",\"btn\":\"Clear edit history…\",\"dis\":false}",
+   "branch": "{\"from\":\"2026-11-05\",\"to\":\"2026-11-07\",\"foot\":\"Thu 5 Nov 26 to Sat 7 Nov 26\",\"btn\":\"Clear edit history…\",\"dis\":false}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admLog: first press",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear edit history…\",\"note\":\"No edits on record in that period\"}",
+   "branch": "{\"btn\":\"Clear edit history…\",\"note\":\"No edits on record in that period\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admLog: mode changed while armed",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear edit history…\"}",
+   "branch": "{\"btn\":\"Clear edit history…\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admLog: date calendar closed by Escape",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admLog: date calendar closed by scrim",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 admLog: date calendar closed by ring",
+   "v": "SAME",
+   "main": "{\"openBefore\":1,\"openAfter\":0}",
+   "branch": "{\"openBefore\":1,\"openAfter\":0}"
+  },
+  {
+   "size": "phone",
+   "step": "s18 both forms range",
+   "v": "DIFF",
+   "main": "[\"/\",\"/\"]",
+   "branch": "[\"admWipeRunLbl/Dates\",\"admLogRunLbl/Dates\"]"
+  },
+  {
+   "size": "phone",
+   "step": "s18 labels for= of both Period",
+   "v": "DIFF",
+   "main": "[\"Period>no-for\",\"Dates>no-for\",\"Period>no-for\",\"Dates>no-for\"]",
+   "branch": "[\"Period>admWipeMode\",\"Period>admLogMode\"]"
+  },
+  {
+   "size": "phone",
+   "step": "s18 approval form headings",
+   "v": "DIFF",
+   "main": "[\"label:Person:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Callsign/Name:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Initials:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Pilot, WSO or personnel:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:CAT:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Post in:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Role:10px 600 1px uppercase rgb(138, 150, 163)\"]",
+   "branch": "[\"span:Person:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Callsign/Name:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Initials:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Pilot, WSO or personnel:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:CAT:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Post in:10px 600 1px uppercase rgb(138, 150, 163)\",\"label:Role:10px 600 1px uppercase rgb(138, 150, 163)\"]"
+  },
+  {
+   "size": "phone",
+   "step": "s18 Person: press its word",
+   "v": "SAME",
+   "main": "{\"keysOn\":\"body\"}",
+   "branch": "{\"keysOn\":\"body\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s23 Quals + Add person lands",
+   "v": "SAME",
+   "main": "{\"page\":true,\"cs\":1,\"keysOn\":\"body\",\"scroll\":3464}",
+   "branch": "{\"page\":true,\"cs\":1,\"keysOn\":\"body\",\"scroll\":3464}"
+  },
+  {
+   "size": "phone",
+   "step": "s23 draft kept after leaving",
+   "v": "SAME",
+   "main": "\"\"",
+   "branch": "\"\""
+  },
+  {
+   "size": "phone",
+   "step": "s23 bell list",
+   "v": "SAME",
+   "main": "[]",
+   "branch": "[]"
+  },
+  {
+   "size": "phone",
+   "step": "s23 bell access line",
+   "v": "SAME",
+   "main": "\"no line\"",
+   "branch": "\"no line\""
+  },
+  {
+   "size": "phone",
+   "step": "s24 approval New person: paired boxes",
+   "v": "SAME",
+   "main": "{\"cols\":[\"37,268,328,65\",\"37,333,328,76\",\"37,452,328,65\"],\"mfields\":[\"37,268,159,54\",\"206,268,159,54\",\"37,333,159,65\",\"206,344,159,54\",\"37,452,159,54\",\"206,452,159,54\"],\"labels\":[\"37,268,159,11\",\"206,268,159,11\",\"37,333,159,22\",\"206,344,159,11\",\"37,452,159,11\",\"206,452,159,11\"],\"inputs\":[\"37,282,159,40\",\"206,282,159,40\",\"37,358,159,40\",\"206,358,159,40\",\"37,466,159,40\",\"206,466,159,40\"]}",
+   "branch": "{\"cols\":[\"37,268,328,65\",\"37,333,328,76\",\"37,452,328,65\"],\"mfields\":[\"37,268,159,54\",\"206,268,159,54\",\"37,333,159,65\",\"206,344,159,54\",\"37,452,159,54\",\"206,452,159,54\"],\"labels\":[\"37,268,159,11\",\"206,268,159,11\",\"37,333,159,22\",\"206,344,159,11\",\"37,452,159,11\",\"206,452,159,11\"],\"inputs\":[\"37,282,159,40\",\"206,282,159,40\",\"37,358,159,40\",\"206,358,159,40\",\"37,466,159,40\",\"206,466,159,40\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "s24 Add a person: paired boxes",
+   "v": "SAME",
+   "main": "{\"cols\":[\"37,3814,328,65\",\"37,3879,328,76\",\"37,3955,328,65\"],\"labels\":[\"37,3814,159,11\",\"206,3814,159,11\",\"37,3879,159,22\",\"206,3890,159,11\",\"37,3955,159,11\",\"206,3955,159,11\"],\"inputs\":[\"37,3828,159,40\",\"206,3828,159,40\",\"37,3904,159,40\",\"206,3904,159,40\",\"37,3969,159,40\",\"206,3969,159,40\"]}",
+   "branch": "{\"cols\":[\"37,3814,328,65\",\"37,3879,328,76\",\"37,3955,328,65\"],\"labels\":[\"37,3814,159,11\",\"206,3814,159,11\",\"37,3879,159,22\",\"206,3890,159,11\",\"37,3955,159,11\",\"206,3955,159,11\"],\"inputs\":[\"37,3828,159,40\",\"206,3828,159,40\",\"37,3904,159,40\",\"206,3904,159,40\",\"37,3969,159,40\",\"206,3969,159,40\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "s24 list heading vs rows",
+   "v": "SAME",
+   "main": "{\"head\":[\"261.3,346,46,11\",\"317.3,346,47.7,11\"],\"dots\":[\"263,382,46,9\",\"319,382,46,9\",\"263,428,46,9\",\"319,428,46,9\"]}",
+   "branch": "{\"head\":[\"261.3,346,46,11\",\"317.3,346,47.7,11\"],\"dots\":[\"263,382,46,9\",\"319,382,46,9\",\"263,428,46,9\",\"319,428,46,9\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "s24 overflow",
+   "v": "SAME",
+   "main": "{\"sw\":402,\"iw\":402}",
+   "branch": "{\"sw\":402,\"iw\":402}"
+  },
+  {
+   "size": "phone",
+   "step": "s24 editor armed: boxes",
+   "v": "SAME",
+   "main": "{\"editor\":[\"37,423,328,184\"],\"btns\":[\"37,498,54,28\",\"97,498,76.7,28\",\"179.7,498,70,28\",\"37,532,198.5,28\",\"241.5,532,65.4,28\"],\"note\":[\"37,558,328,33\"]}",
+   "branch": "{\"editor\":[\"37,423,328,184\"],\"btns\":[\"37,498,54,28\",\"97,498,76.7,28\",\"179.7,498,70,28\",\"37,532,198.5,28\",\"241.5,532,65.4,28\"],\"note\":[\"37,558,328,33\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: added RDPLAIN",
+   "v": "SAME",
+   "main": "{\"note\":\"RDPLAIN added to the roster — set flight and quals on the Quals page\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDPLAIN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}",
+   "branch": "{\"note\":\"RDPLAIN added to the roster — set flight and quals on the Quals page\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDPLAIN | no sign-in · Pilot · CAT C | No sign-in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\",\"ARCH RDARCHN2 | no sign-in · WSO · CAT B | No sign-in,Archived\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: gave sign-in",
+   "v": "SAME",
+   "main": "{\"note\":\"RDPLAIN can sign in now\",\"list\":[\"RDPLAIN | rdplain@example.test · Member · Pilot · CAT C | Can sign in,On the roster\"]}",
+   "branch": "{\"note\":\"RDPLAIN can sign in now\",\"list\":[\"RDPLAIN | rdplain@example.test · Member · Pilot · CAT C | Can sign in,On the roster\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: suspended RDACTIVE",
+   "v": "SAME",
+   "main": "{\"note\":\"RDACTIVE suspended\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\"]}",
+   "branch": "{\"note\":\"RDACTIVE suspended\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: enabled RDACTIVE",
+   "v": "SAME",
+   "main": "{\"note\":\"RDACTIVE can sign in again\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\"]}",
+   "branch": "{\"note\":\"RDACTIVE can sign in again\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: archived RDGROUND",
+   "v": "SAME",
+   "main": "{\"note\":\"RDGROUND archived\",\"list\":[\"ARCH RDGROUND | no sign-in · Personnel | No sign-in,Archived\"]}",
+   "branch": "{\"note\":\"RDGROUND archived\",\"list\":[\"ARCH RDGROUND | no sign-in · Personnel | No sign-in,Archived\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: restored RDGROUND",
+   "v": "SAME",
+   "main": "{\"note\":\"RDGROUND restored — he'll be asked to check his quals and CAT\",\"list\":[\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\"]}",
+   "branch": "{\"note\":\"RDGROUND restored — he'll be asked to check his quals and CAT\",\"list\":[\"RDGROUND | no sign-in · Personnel | No sign-in,On the roster\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: delete first press",
+   "v": "DIFF",
+   "main": "{\"note\":\"RDGROUND archived\",\"editors\":[{\"who\":\"pmw74l2xy0rcvjp\",\"fields\":[\"accArCs=RDGROUND\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Tap again to delete RDGROUND(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]}",
+   "branch": "{\"note\":\"RDGROUND archived\",\"editors\":[{\"who\":\"pmw74l2xytiefml\",\"fields\":[\"accArCs=RDGROUND\"],\"btns\":[\"Sun 8 Nov 26▾\",\"Restore\",\"Tap again to delete RDGROUND(ARMED)\",\"Cancel\"],\"notes\":[\"Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can\"]}]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: delete second press",
+   "v": "SAME",
+   "main": "{\"note\":\"RDGROUND deleted\",\"list\":[]}",
+   "branch": "{\"note\":\"RDGROUND deleted\",\"list\":[]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: approved as New person",
+   "v": "SAME",
+   "main": "{\"note\":\"RDREQUEST added — rdrequest@example.test can sign in now\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDPLAIN | rdplain@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDREQUEST | rdrequest@example.test · Member · Pilot · CAT D | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]}",
+   "branch": "{\"note\":\"RDREQUEST added — rdrequest@example.test can sign in now\",\"list\":[\"RDACTIVE | rdactive@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDADMIN2 | rdadmin2@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDARCH | no sign-in · WSO · CAT B | No sign-in,On the roster\",\"RDARCHB | rdarch@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDARCHF | rdarchf@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDNOSIGN | rdnosign@example.test · Admin · Pilot · CAT C | Can sign in,On the roster\",\"RDPLAIN | rdplain@example.test · Member · Pilot · CAT C | Can sign in,On the roster\",\"RDREQUEST | rdrequest@example.test · Member · Pilot · CAT D | Can sign in,On the roster\",\"RDSUSP | rdsusp@example.test · Member · Pilot · CAT C | Sign-in suspended,On the roster\",\"RDWSO | rdwso@example.test · Member · WSO · CAT B | Can sign in,On the roster\"]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: roster pick",
+   "v": "SAME",
+   "main": "\"locator.selectOption: Timeout 30000ms exceeded.\"",
+   "branch": "\"locator.selectOption: Timeout 30000ms exceeded.\""
+  },
+  {
+   "size": "phone",
+   "step": "plain: approved On the roster (RDPLAIN already has a sign-in, so refused or picked)",
+   "v": "DIFF",
+   "main": "{\"note\":\"Pick the callsign or name this account belongs to\",\"editors\":[{\"who\":\"rqmw74pr2qrjve\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[]}]}",
+   "branch": "{\"note\":\"Pick the callsign or name this account belongs to\",\"editors\":[{\"who\":\"rqmw74pr2qkkbq\",\"fields\":[\"apvPid=Pick a callsign or name…\",\"apvRole=Member — own inputs, quals and bids\"],\"btns\":[\"On the roster\",\"New person\",\"Give access\",\"Cancel\"],\"notes\":[]}]}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: waiting list",
+   "v": "SAME",
+   "main": "[\"rdreq2@example.testasked as RDREQ2 · R2 · Pilot · CAT D · 8/11 09:03Give accessRefuse\",\"rdreq3@example.testasked as RDNOSIGN · R3 · Pilot · CAT D · 8/11 09:03Give accessRefuse\"]",
+   "branch": "[\"rdreq2@example.testasked as RDREQ2 · R2 · Pilot · CAT D · 8/11 09:03Give accessRefuse\",\"rdreq3@example.testasked as RDNOSIGN · R3 · Pilot · CAT D · 8/11 09:03Give accessRefuse\"]"
+  },
+  {
+   "size": "phone",
+   "step": "plain: refused one",
+   "v": "SAME",
+   "main": "{\"note\":\"Refused rdreq2@example.test\"}",
+   "branch": "{\"note\":\"Refused rdreq2@example.test\"}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: where each place shows them",
+   "v": "SAME",
+   "main": "{\"Quals\":\"RDPLAIN,RDACTIVE,RDREQUEST\",\"Leave War\":\"RDPLAIN,RDACTIVE,RDREQUEST\",\"Edit Schedule\":\"RDPLAIN,RDACTIVE,RDREQUEST\"}",
+   "branch": "{\"Quals\":\"RDPLAIN,RDACTIVE,RDREQUEST\",\"Leave War\":\"RDPLAIN,RDACTIVE,RDREQUEST\",\"Edit Schedule\":\"RDPLAIN,RDACTIVE,RDREQUEST\"}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: change history window",
+   "v": "SAME",
+   "main": "true",
+   "branch": "true"
+  },
+  {
+   "size": "phone",
+   "step": "plain: clear history, first press",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear edit history…\",\"note\":\"No edits on record in that period\"}",
+   "branch": "{\"btn\":\"Clear edit history…\",\"note\":\"No edits on record in that period\"}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: clear history, second press",
+   "v": "SAME",
+   "main": "{\"note\":\"No edits on record in that period\"}",
+   "branch": "{\"note\":\"No edits on record in that period\"}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: clear clutter, first press",
+   "v": "SAME",
+   "main": "{\"btn\":\"Clear old clutter…\",\"note\":\"No old clutter in that period\"}",
+   "branch": "{\"btn\":\"Clear old clutter…\",\"note\":\"No old clutter in that period\"}"
+  },
+  {
+   "size": "phone",
+   "step": "plain: clear clutter, second press",
+   "v": "SAME",
+   "main": "{\"note\":\"No old clutter in that period\"}",
+   "branch": "{\"note\":\"No old clutter in that period\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 on arrival",
+   "v": "SAME",
+   "main": "{\"keysOn\":\"accCs\",\"cs\":\"\"}",
+   "branch": "{\"keysOn\":\"accCs\",\"cs\":\"\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 typed at once",
+   "v": "SAME",
+   "main": "{\"cs\":\"abc\"}",
+   "branch": "{\"cs\":\"abc\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 Tab inventory",
+   "v": "SAME",
+   "main": "[\"accIni\",\"accSeat\",\"accCat\",\"accSend\",\"accOut\",\"body\",\"accCs\"]",
+   "branch": "[\"accIni\",\"accSeat\",\"accCat\",\"accSend\",\"accOut\",\"body\",\"accCs\"]"
+  },
+  {
+   "size": "phone",
+   "step": "s20 blank send",
+   "v": "SAME",
+   "main": "{\"err\":\"Type the callsign or name\"}",
+   "branch": "{\"err\":\"Type the callsign or name\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 15 characters",
+   "v": "SAME",
+   "main": "{\"long\":\"A callsign or name is at most 14 letters — use a short form\",\"cs\":\"ABCDEFGHIJKLMNO\"}",
+   "branch": "{\"long\":\"A callsign or name is at most 14 letters — use a short form\",\"cs\":\"ABCDEFGHIJKLMNO\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 15 chars send",
+   "v": "SAME",
+   "main": "{\"err\":\"A callsign or name is at most 14 letters — use a short form\",\"asked\":0}",
+   "branch": "{\"err\":\"A callsign or name is at most 14 letters — use a short form\",\"asked\":0}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 no seat",
+   "v": "SAME",
+   "main": "{\"err\":\"Pick pilot, WSO or personnel\"}",
+   "branch": "{\"err\":\"Pick pilot, WSO or personnel\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 personnel: CAT",
+   "v": "SAME",
+   "main": "{\"cat\":\"none\"}",
+   "branch": "{\"cat\":\"none\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 sent",
+   "v": "SAME",
+   "main": "{\"asked\":\"ABCDEFGHIJKLMN\",\"state\":\"Waiting for an admin\",\"steps\":\"Request sentAn admin approvesYou're on the schedule\",\"band\":\"\"}",
+   "branch": "{\"asked\":\"ABCDEFGHIJKLMN\",\"state\":\"Waiting for an admin\",\"steps\":\"Request sentAn admin approvesYou're on the schedule\",\"band\":\"\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 another identity",
+   "v": "SAME",
+   "main": "{\"keysOn\":\"accCs\",\"cs\":\"\"}",
+   "branch": "{\"keysOn\":\"accCs\",\"cs\":\"\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 F on arrival",
+   "v": "SAME",
+   "main": "{\"keysOn\":\"accCs\",\"cs\":\"\"}",
+   "branch": "{\"keysOn\":\"accCs\",\"cs\":\"\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 F typed at once",
+   "v": "SAME",
+   "main": "{\"cs\":\"abc\"}",
+   "branch": "{\"cs\":\"abc\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 F Tab inventory",
+   "v": "SAME",
+   "main": "[\"accIni\",\"accSeat\",\"accCat\",\"accSend\",\"accOut\",\"body\",\"button\"]",
+   "branch": "[\"accIni\",\"accSeat\",\"accCat\",\"accSend\",\"accOut\",\"body\",\"button\"]"
+  },
+  {
+   "size": "phone",
+   "step": "s20 F blank send",
+   "v": "SAME",
+   "main": "{\"err\":\"Type the callsign or name\"}",
+   "branch": "{\"err\":\"Type the callsign or name\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 F 15 characters",
+   "v": "SAME",
+   "main": "{\"long\":\"A callsign or name is at most 14 letters — use a short form\",\"cs\":\"ABCDEFGHIJKLMNO\"}",
+   "branch": "{\"long\":\"A callsign or name is at most 14 letters — use a short form\",\"cs\":\"ABCDEFGHIJKLMNO\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 F 15 chars send",
+   "v": "SAME",
+   "main": "{\"err\":\"A callsign or name is at most 14 letters — use a short form\",\"asked\":0}",
+   "branch": "{\"err\":\"A callsign or name is at most 14 letters — use a short form\",\"asked\":0}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 F no seat",
+   "v": "SAME",
+   "main": "{\"err\":\"Pick pilot, WSO or personnel\"}",
+   "branch": "{\"err\":\"Pick pilot, WSO or personnel\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 F personnel: CAT",
+   "v": "SAME",
+   "main": "{\"cat\":\"none\"}",
+   "branch": "{\"cat\":\"none\"}"
+  },
+  {
+   "size": "phone",
+   "step": "s20 F sent",
+   "v": "SAME",
+   "main": "{\"asked\":\"ABCDEFGHIJKLMN\",\"state\":\"Not sent yet\",\"steps\":\"!Not sent yetAn admin approvesYou're on the schedule\",\"band\":\"Not saved — keep this page openRetry\"}",
+   "branch": "{\"asked\":\"ABCDEFGHIJKLMN\",\"state\":\"Not sent yet\",\"steps\":\"!Not sent yetAn admin approvesYou're on the schedule\",\"band\":\"Not saved — keep this page openRetry\"}"
+  }
+ ],
+ "errs": {
+  "desk-main": {
+   "page": [],
+   "http": []
+  },
+  "desk-main-access": {
+   "page": [],
+   "http": []
+  },
+  "desk-main-access?savefail": {
+   "page": [],
+   "http": []
+  },
+  "desk-branch": {
+   "page": [],
+   "http": []
+  },
+  "desk-branch-access": {
+   "page": [],
+   "http": []
+  },
+  "desk-branch-access?savefail": {
+   "page": [],
+   "http": []
+  },
+  "phone-main": {
+   "page": [],
+   "http": []
+  },
+  "phone-main-access": {
+   "page": [],
+   "http": []
+  },
+  "phone-main-access?savefail": {
+   "page": [],
+   "http": []
+  },
+  "phone-branch": {
+   "page": [],
+   "http": []
+  },
+  "phone-branch-access": {
+   "page": [],
+   "http": []
+  },
+  "phone-branch-access?savefail": {
+   "page": [],
+   "http": []
+  }
+ },
+ "pics": [
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s12-RDACTIVE-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s12-RDACTIVE-typed.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s12-Torch-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s16-duplicate.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s13-RDARCH-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s13-RDARCH-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s13-RDARCHF-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s13-RDARCHF-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s13-RDARCHN-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s13-RDARCHN-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s17-give-roster.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s17-give-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s18-admWipe-period.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s18-admWipe-range.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s18-admLog-period.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s18-admLog-range.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s23-quals-add-person.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s23-bell.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s24-approval-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s24-armed.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-plain-suspended.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-plain-enabled.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-plain-history.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-plain-cleared.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s20-arrival.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s20-15chars.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s20-sent.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s20F-arrival.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s20F-15chars.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-desk-s20F-sent.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s12-RDACTIVE-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s12-RDACTIVE-typed.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s12-Torch-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s16-duplicate.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s13-RDARCH-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s13-RDARCH-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s13-RDARCHF-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s13-RDARCHF-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s13-RDARCHN-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s13-RDARCHN-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s17-give-roster.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s17-give-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s18-admWipe-period.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s18-admWipe-range.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s18-admLog-period.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s18-admLog-range.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s23-quals-add-person.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s23-bell.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s24-approval-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s24-armed.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-plain-suspended.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-plain-enabled.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-plain-history.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-plain-cleared.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s20-arrival.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s20-15chars.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s20-sent.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s20F-arrival.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s20F-15chars.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-desk-s20F-sent.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s12-RDACTIVE-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s12-RDACTIVE-typed.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s12-Torch-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s16-duplicate.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s13-RDARCH-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s13-RDARCH-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s13-RDARCHF-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s13-RDARCHF-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s13-RDARCHN-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s13-RDARCHN-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s17-give-roster.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s17-give-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s18-admWipe-period.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s18-admWipe-range.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s18-admLog-period.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s18-admLog-range.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s23-quals-add-person.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s23-bell.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s24-approval-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s24-armed.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-plain-suspended.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-plain-enabled.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-plain-history.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-plain-cleared.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s20-arrival.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s20-15chars.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s20-sent.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s20F-arrival.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s20F-15chars.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\main-phone-s20F-sent.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s12-RDACTIVE-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s12-RDACTIVE-typed.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s12-Torch-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s16-duplicate.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s13-RDARCH-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s13-RDARCH-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s13-RDARCHF-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s13-RDARCHF-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s13-RDARCHN-open.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s13-RDARCHN-refusal.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s17-give-roster.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s17-give-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s18-admWipe-period.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s18-admWipe-range.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s18-admLog-period.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s18-admLog-range.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s23-quals-add-person.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s23-bell.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s24-approval-new.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s24-armed.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-plain-suspended.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-plain-enabled.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-plain-history.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-plain-cleared.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s20-arrival.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s20-15chars.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s20-sent.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s20F-arrival.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s20F-15chars.png",
+  "docs\\img\\handpass\\2026-11-08-rd-last-findings\\walkA\\branch-phone-s20F-sent.png"
+ ]
+}

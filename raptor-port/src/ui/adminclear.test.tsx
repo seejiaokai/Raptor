@@ -150,3 +150,20 @@ describe('a sweep that finds nothing', () => {
     expect(run).toHaveBeenCalledTimes(1)
   })
 })
+
+/* [RD-LEFT-1108] part 2 (8 Nov 26), React Doctor label-has-associated-control: "Period" names its list, and "Dates" —
+   the heading of a calendar, not of a box — names the calendar's group; both keep the label's look */
+describe('the form\'s headings name what they head', () => {
+  it('"Period" is the list\'s label: a press on the word reaches the list', () => {
+    const lbl = [...document.querySelectorAll('.mfield label')].find(l => l.textContent === 'Period') as HTMLLabelElement
+    expect(lbl.htmlFor).toBe('xMode')
+    expect(lbl.control).toBe($('#xMode'))
+  })
+  it('"Dates" names the range calendar\'s group', () => {
+    mode('range')
+    const grp = $('#xRun')
+    expect(grp.getAttribute('role')).toBe('group')
+    expect(document.getElementById(grp.getAttribute('aria-labelledby')!)!.textContent).toBe('Dates')
+    expect(document.getElementById(grp.getAttribute('aria-labelledby')!)!.className).toBe('mfield-lbl')
+  })
+})
