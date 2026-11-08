@@ -97,7 +97,8 @@
 >   roster (via the no-import bridge `people.js`, fed by `TrackerPage.tsx`);
 >   picking one adds an entry `{ id, name, pid }` under their callsign (the
 >   9 Sep 26 `v3:links` record is folded into `pid` by the once-per-course
->   migration and gone). A typed name still adds an unlinked student — and with NO
+>   migration and gone). A typed name still adds an unlinked student *[8 Nov 26, D1931: no student can be
+>   added by a typed name — filed as [TRK-NO-TYPED-STUDENT], to build]* — and with NO
 >   roster handed over the dialog IS the old `Student callsign:` prompt, byte
 >   for byte (kept since D1538 because Raptor can hand over nobody — aircrew only).
 >   **That was the standalone rule** (owner, 9 Sep 26 — retired by D1538): the Tracker

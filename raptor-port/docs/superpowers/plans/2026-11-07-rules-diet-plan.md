@@ -838,6 +838,8 @@ first against its row, the design guide's wording, the screen contracts or the c
   typed down-days box, and the app still adds a typed name — the newer ruling does not clearly cover the case, so it is
   a question (D90), filed as `[TRK-TYPED-STUDENT-Q]` and kept until he asks for the backlog's questions (D994); the page
   states the clash and the app as it is. The cancelled medical input is filed as `[TRK-DOWN-DAYS-CANCELLED]`.
+  *He answered it the same day, typed in chat 34 — "Typed student can't be added" (D1931): no student is added by a
+  typed name, D191 replaced and D1005 answered; the build filed as `[TRK-NO-TYPED-STUDENT]`, drawn for him first.*
 
 **The two reads compared (D1732).** Astra found the most serious again: a later ruling's own rule against a built rule
 (D191), a pointer that kept another area's headline and lost its exception (Retry), and drag-rule clauses the account had

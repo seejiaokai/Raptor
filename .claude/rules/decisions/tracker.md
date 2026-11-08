@@ -82,21 +82,19 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
   admin's (below); the rest of the app's roles are untouched [D121, D1014].
 
 ## Students and courses
-- Every student is a man on the roster, so his down days always come from the Inputs, and the typed "No. of Down Days"
-  box is gone for everyone [D1005].
-- Open, a question for him: D1005's words, "a student can't be a typed student as I'm removing this feature", and its
-  rule say every student is a man on the roster, but the agent read them as the typed down-days box only, and the app
-  still adds a typed name as a student linked to nobody, his down days reading "—"; whether typed students go is filed
-  as `[TRK-TYPED-STUDENT-Q]`, and nothing is built or removed until he answers [D1005, D191].
-- The app today, until he answers: when the + Add search matches nobody and "Or type a callsign" is empty, OK adds the
-  typed name as a new crew member linked to nobody, "Nobody on the roster matches" saying so first; a name typed below
-  always wins, and a search still matching someone adds nothing by itself; the agent's call, told to him: Enter in the
-  search does the same as OK [D191].
-- With nobody on the roster to offer — it offers aircrew only — + Add is the plain "Student callsign:" box, kept as
-  built when the standalone Tracker's leftovers went [D191, D1538].
+- Every student is a man on the roster, picked from it — no student can be added by a typed name — so his down days
+  always come from the Inputs, and the typed "No. of Down Days" box is gone for everyone [D1931, D1005].
+- To build, filed as `[TRK-NO-TYPED-STUDENT]`: + Add loses its "Or type a callsign" box, a search that matches nobody
+  adds nothing, and with nobody on the roster to offer — it offers aircrew only — it adds nobody; the agent's reading:
+  the window and its words are drawn for him first [D1931].
+- Until it is built the app still adds a typed name as a student linked to nobody, his down days reading "—": OK or
+  Enter on a search that matches nobody ("Nobody on the roster matches" saying so), a name in the box below, and the
+  plain "Student callsign:" box when nobody is on the roster; none of it is kept or extended [D1931].
+- The agent's readings, not checked with him: a student already stored with no roster link is demo data, left as it
+  is; a student's pencil still renames his label [D1931].
 - A course start is entered when a student is added — a date box at the top of "+ Add", today by default, above the list
   because a tap on a name adds him at once — and is changed in the Info panel, where the Upchit box was, with no clear
-  cross and no height added [D1003, D1004, D1005, D1018].
+  cross and no height added [D1003, D1004, D1005, D1018, D1931].
 - A man deleted through Post out leaves every course where he still has an event neither done (DCO, DPCO, Marginal) nor
   N.A., and stays, his record kept, on a course where all of his are — what People and accounts' "a course still
   running" means [D981, D299, D300, D1105].
@@ -211,7 +209,8 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 
 ## The Info panel — down days, currency, flex and the legend
 - The Upchit Date box is gone: the down days are worked out from the Inputs — every medical day since his course start,
-  ATT B included, a half-day medical counting as half a day [D1002, D1003, D1004, D1005].
+  ATT B included, a half-day medical counting as half a day — for every student, each on the roster [D1002, D1003,
+  D1004, D1005, D1931].
 - "No. of Down Days" reads such as "14½ days", with a chevron; a tap opens the down-days window, a copy of the Failures
   window: one row an input with its kind, dates and days ("½ day"), a cut one "cut by an upchit on … · filed to …" with
   its old end struck, and a running one "still running · counted to today" [D1018, D1002].
@@ -224,13 +223,13 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
   pages' D999), and it reads the Inputs through the people bridge, a rider on a seam, not a fourth seam [D1018].
 - The landing-currency bar counts only the days since his last currency or non-syllabus flight, medical down days taking
   no part — "(−5 down = 5d)" and "(minus down days)" are gone; the down days are a figure of record with their window,
-  feeding no bar [D1004, D1005].
+  feeding no bar [D1004, D1005, D1931].
 - Answered: the agent's open point — whether a non-syllabus flight graded on the chart moves "Last currency" by itself,
   or it is typed — was settled by his D1005 the same day: the member types it (next line); nothing is put to him; that a
-  currency date sets only its own was checked in the Tracker's code that day [D1004, D1005].
+  currency date sets only its own was checked in the Tracker's code that day [D1004, D1005, D1931].
 - "Last flown currency" is typed by the member for a non-syllabus flight and moves only the IP requirement (landing
   currency); a syllabus flight moves both the IP requirement and the flex — "syllabus" the agent's reading of his "a
-  last flown currency", as the app worked [D1005].
+  last flown currency", as the app worked [D1005, D1931].
 - The flex figures are editable, and one switch for the whole Tracker turns flex off, everything about flex then gone —
   its bar, windows, words and the legend's part [D1006].
 - Today's default limits, which an admin can change (below): under 7 days current; 7–13 one optional flex; 14–20 one
