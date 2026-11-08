@@ -202,7 +202,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [CHK-ROUTE-2A] — the bug-check checklist sends a walk to the order's §2a table only; route it to §2a whole (D1937) — a guide change: Astra and a fresh Opus read, then his "merge live".
 - [E2E-BOARD-KEYS-SKIP] — the board-layout keyboard test skips itself when its box already sits above the keys; put the box under them first so it never skips (D1936).
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
@@ -281,9 +280,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
-
-### [CHK-ROUTE-2A] The bug-check checklist sends a walk to §2a's table only (found 8 Nov 26, chat 37's review)
-**What:** steps 6, 8 and 10 of `raptor-port/docs/bug-check-checklist.md` route to the bug-check order's §2a table only; §2a's own words — what "the day that has everything on it" means for the Tracker and the Leave War, and that a new area writes its own everything-case once — are reached only when a change adds a new gesture, and §7.1 describes the scheduler's day alone, so a Leave War or Tracker walk can build the convenient day §7.1 forbids. **Fix (his go, D1937):** route "§2a whole" at step 10, or move the two area sentences into §7.1 — a working-guide change: Astra and a fresh, blind Opus reader, then his "merge live". **Source:** `raptor-port/docs/superpowers/briefs/2026-11-08-review-8nov-jobs-fable.md` §2, F-CHK-1.
 
 ### [E2E-BOARD-KEYS-SKIP] The board-layout keyboard test can skip itself (found 8 Nov 26, Astra's read in chat 37's review)
 **What:** the browser test pull request 689 added for the keyboard-clearance case (`raptor-port/e2e/board-layout.spec.ts`) skips itself when its chosen box already sits above the simulated keyboard, so it does not prove the case on every run; neither reader found it hiding a failure. **Fix (his go, D1936):** a fixture that puts the box under the keys first, then drop the skip — a test change only. **Source:** `raptor-port/docs/superpowers/briefs/2026-11-08-review-8nov-jobs-fable.md` §4, F-689-1.
