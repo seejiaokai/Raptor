@@ -464,3 +464,40 @@ test('a NEW check failure puts every settled file back to git\'s conflicted stat
   assert.match(c.read('HANDOFF.md'), /^<{7} /m, 'put back to git\'s conflicted state')
   assert.match(r.out, /back to git's conflicted state: HANDOFF\.md/)
 }))
+
+/* ---------- the replay (records-merge-replay.mjs) ---------- */
+/* Astra 6, Opus 8 (the code read, 8 Nov 26): the replay skipped a file settled in part, and could not fail. Here a
+   stand-in step settles HANDOFF.md in part — one block left in git's marks — and DOUBLES a block it settled: the replay
+   must compare that settled block, name the doubling and exit 1; with the stand-in writing it once, the replay passes. */
+test('the replay compares the records of a file settled in part, and fails on a doubled one (Astra 6, Opus 8)', () => {
+  const c = makeRepo({ 'HANDOFF.md': H0 })
+  try {
+    const ours = handoff([block('claude/n1', '- n1'), block('claude/a', '- a, ours'), block('claude/b', '- b line'), block('claude/merged', '- finished, merged')])
+    const theirs = handoff([block('claude/n2', '- n2'), block('claude/a', '- a, theirs'), block('claude/b', '- b line'), block('claude/merged', '- finished, merged')])
+    c.sides(x => x.write('HANDOFF.md', ours), x => x.write('HANDOFF.md', theirs))
+    const p1 = c.git('rev-parse', 'HEAD').trim(), p2 = c.git('rev-parse', 'main').trim()
+    /* the chat's own merge */
+    c.write('HANDOFF.md', handoff([block('claude/n1', '- n1'), block('claude/n2', '- n2'), block('claude/a', '- a, both'), block('claude/b', '- b line'), block('claude/merged', '- finished, merged')]))
+    c.git('add', '-A'); c.git('commit', '-q', '-m', 'the chat\'s merge')
+    const merge = c.git('rev-parse', 'HEAD').trim()
+    c.write('raptor-port/scripts/records-merge-replay.mjs', readFileSync(join(HERE, 'records-merge-replay.mjs'), 'utf8'))
+    c.write('raptor-port/scripts/records-merge-replay.json', JSON.stringify({ window: { since: '2026-11-08T00:00:00+08:00', until: '2099-01-01T00:00:00+08:00', by: 'a test' }, merges: [{ merge, p1, p2, committed: 'x', clashed: ['HANDOFF.md'] }] }))
+    const left = '<<<<<<< HEAD\n<!-- now:claude/a -->\n### `claude/a`\n- a, ours\n<!-- /now -->\n\n=======\n<!-- now:claude/a -->\n### `claude/a`\n- a, theirs\n<!-- /now -->\n\n>>>>>>> main\n'
+    const stand = text => `import { writeFileSync } from 'node:fs'\nwriteFileSync('HANDOFF.md', ${JSON.stringify(text)})\nconsole.log('records-merge: 1 unmerged path(s)\\n  settled: HANDOFF.md (in part)\\n  LEFT for you in HANDOFF.md:\\n    - the ## Now block for claude/a')\nprocess.exit(2)\n`
+    const settled = (...bs) => `# HANDOFF\n\nRead this first.\n\n## Now\n\n${bs.join('')}${left}${block('claude/b', '- b line')}${block('claude/merged', '- finished, merged')}## Next, in order\n\n1. the order\n\n## Gate baseline\n\nGate: 100 green (7 Nov).\n\n## Standing constraints\n\n- none\n`
+    const sheet = join(c.dir, 'sheet.md'), run = () => spawnSync(process.execPath, ['raptor-port/scripts/records-merge-replay.mjs', '--out', sheet], { cwd: c.dir, encoding: 'utf8' })
+    c.write('raptor-port/scripts/records-merge.mjs', stand(settled(block('claude/n1', '- n1'), block('claude/n2', '- n2'), block('claude/n1', '- n1'))))
+    c.git('add', '-A'); c.git('commit', '-q', '-m', 'the replay and a stand-in step')
+    const bad = run()
+    assert.equal(bad.status, 1, bad.stdout + bad.stderr)
+    assert.match(bad.stderr, /FAILED — 1 identity/)
+    assert.match(bad.stderr, /now markers — "<!-- now:claude\/n1 -->" stands 2 times in the step's file; the chat's 1, the first parent's 1, the second's 0/)
+    assert.match(readFileSync(sheet, 'utf8'), /HANDOFF\.md \(part: \d+ =, 1 ≠, 1 left\)/)
+    assert.match(readFileSync(join(c.dir, 'sheet-diffs.md'), 'utf8'), /Record "now:claude\/n1 \(2\)"/)
+    c.write('raptor-port/scripts/records-merge.mjs', stand(settled(block('claude/n1', '- n1'), block('claude/n2', '- n2'))))
+    c.git('add', '-A'); c.git('commit', '-q', '-m', 'the stand-in writes each block once')
+    const good = run()
+    assert.equal(good.status, 0, good.stdout + good.stderr)
+    assert.match(readFileSync(sheet, 'utf8'), /HANDOFF\.md \(part: \d+ =, 0 ≠, 1 left\)/)
+  } finally { c.done() }
+})

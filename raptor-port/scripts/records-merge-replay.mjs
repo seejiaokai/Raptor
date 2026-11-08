@@ -16,15 +16,22 @@
  * renumber sees only the two sides as the chat's own merge did (the other open branches of that moment cannot be
  * rebuilt): check out the first parent, `git merge --no-commit --no-ff <second parent>`, run the step (`--no-checks`: the
  * checks' put-back would hide what it settled), and compare each file it settled with the merge's committed file — bytes
- * equal, or every difference listed, each line marked when neither parent holds it (a line the chat wrote in the merge);
- * plus the count of each identity in both: `<!-- now:` markers, `### Observation N` numbers, ledger rows, `[ID]` headings,
- * D-numbers. NOTHING is judged fine here: every difference is listed for the host and the readers. */
+ * equal, or every difference listed, each line marked when neither parent holds it (a line the chat wrote in the merge).
+ * A file the step settled IN PART is compared record by record (a handoff block, a skill note, a `## ` section, an `[ID]`
+ * item): every record free of git's marks against the chat's record of the same name (Astra 6 of the code read).
+ *
+ * THE CHECK THAT CAN FAIL (Opus 8 of the code read): in every file the step settled, whole or in part (its left regions
+ * set aside), no identity — a skill-note number, a `<!-- now:` marker, an `[ID]` heading, a ruling's D-number row, a `## `
+ * heading — may stand MORE often than in the chat's file and in either parent. One that does is a record doubled by the
+ * step: it is named, and the replay exits 1. Everything else is listed for the host and the readers, never judged fine
+ * here: the sheet summarises, and every difference is kept whole, untruncated, in a companion file beside the sheet
+ * (`--out <sheet>.md` → `<sheet>-diffs.md`; Astra 6). */
 import { readFileSync, writeFileSync, mkdtempSync, rmSync, copyFileSync, mkdirSync, existsSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import { join, dirname, basename } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { observationHeads } from './docsize-rulings.mjs'
+import { fencedFlags, OBS_HEAD, observationHeads } from './docsize-rulings.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const REPO = join(HERE, '..', '..')
@@ -59,33 +66,68 @@ if (args.includes('--list')) {
   process.exit(0)
 }
 
-/* ---------- the replay ---------- */
-const listed = JSON.parse(readFileSync(LIST, 'utf8'))
-const heldOut = clashing(listed.window.until, null).filter(m => !listed.merges.some(x => x.merge === m.merge))
-const work = mkdtempSync(join(tmpdir(), 'records-merge-replay-'))
-const clone = join(work, 'repo')
-execFileSync('git', ['clone', '-q', '--shared', '--no-checkout', REPO, clone], { stdio: 'ignore' })
-const cg = (...a) => git(clone, ...a)
-cg('config', 'core.autocrlf', 'false'); cg('config', 'user.email', 'replay@example.invalid'); cg('config', 'user.name', 'replay')
-spawnSync('git', ['remote', 'remove', 'origin'], { cwd: clone })
+/* ---------- reading a file the step wrote ---------- */
+const MARK = /^(<{7}|\|{7}|={7}|>{7})( |\r?$)/
+/* the text with git's clash regions (marks included) taken out — what the step itself settled */
+function withoutRegions(t) {
+  const out = []; let inside = false
+  for (const l of t.split('\n')) {
+    if (/^<{7}( |\r?$)/.test(l)) { inside = true; continue }
+    if (inside) { if (/^>{7}( |\r?$)/.test(l)) inside = false; continue }
+    out.push(l)
+  }
+  return out.join('\n')
+}
+/* records by name — a handoff block, a skill note, a `## ` section, an `[ID]` item; a clash region that starts at a
+   record's start is a record of its own, one inside a record marks that record; fences are text */
+const recKey = l => { let m; if ((m = /^<!-- now:(\S+) -->\s*$/.exec(l))) return `now:${m[1]}`; if ((m = OBS_HEAD.exec(l))) return `obs:${m[1]}`; if (/^## /.test(l)) return `sec:${l.trim()}`; if ((m = /^#{2,3} \[([A-Z0-9-]+)\]/.exec(l))) return `id:${m[1]}`; return null }
+function records(t) {
+  const ls = t.split('\n').map(l => l.replace(/\r$/, '')), fenced = fencedFlags(ls), recs = []
+  let cur = { key: 'head', lines: [] }, inside = false, boundary = false, n = 0
+  const start = key => { recs.push(cur); cur = { key, lines: [] } }
+  ls.forEach((l, i) => {
+    if (!inside && /^<{7}( |$)/.test(l)) {
+      inside = true
+      const next = ls[i + 1] ?? ''
+      boundary = !!(recKey(next) || MARK.test(next))
+      if (boundary) start(`region ${++n}`)
+    } else if (inside) { if (/^>{7}( |$)/.test(l)) { inside = false; cur.lines.push(l); cur.marks = true; if (boundary) start(`after region ${n}`); return } }
+    else if (!fenced[i]) { const k = recKey(l); if (k) start(k) }
+    if (inside || MARK.test(l)) cur.marks = true
+    cur.lines.push(l)
+  })
+  recs.push(cur)
+  const map = new Map()
+  for (const r of recs) { if (!r.lines.length && r.key.startsWith('after region')) continue; let k = r.key, j = 1; while (map.has(k)) k = `${r.key} (${++j})`; map.set(k, r) }
+  return map
+}
 
+/* ---------- the identities ---------- */
 const IDS = {
+  'skill-note numbers': t => observationHeads(t).map(h => `Observation ${h.n}`), // the shared definition (Astra 5)
   'now markers': t => t.match(/^<!-- now:\S+ -->/gm) || [],
-  'Observation numbers': t => observationHeads(t).map(h => `Observation ${h.n}`), // the shared definition (Astra 5)
-  'ledger rows': t => { const a = t.indexOf('<!-- ledger:rows -->'), b = t.indexOf('<!-- /ledger:rows -->'); return a < 0 || b < 0 ? [] : t.slice(a, b).split('\n').filter(l => l.startsWith('|')) },
   '[ID] headings': t => t.match(/^#{2,3} \[[A-Z0-9-]+\]/gm) || [],
-  'D-numbers': t => t.match(/\bD\d{1,4}\b/g) || [],
+  'ruling rows': t => (t.match(/^\|\s*D\d+\s*\|/gm) || []).map(s => s.replace(/\s+/g, '')),
+  '## headings': t => (t.match(/^## .*$/gm) || []).map(s => s.replace(/\r$/, '').trim()),
 }
 const tally = a => a.reduce((m, x) => m.set(x, (m.get(x) || 0) + 1), new Map())
-function idDiffs(mine, chat) {
-  const out = []
+/* counts that differ from the chat's (listed), and counts above the chat's AND both parents' (a failure) */
+function identities(mine, chat, p1Text, p2Text) {
+  const differ = [], doubled = []
   for (const [name, f] of Object.entries(IDS)) {
-    const a = tally(f(mine)), b = tally(f(chat)), diffs = []
-    for (const k of new Set([...a.keys(), ...b.keys()])) if ((a.get(k) || 0) !== (b.get(k) || 0)) diffs.push(`${k}: step ${a.get(k) || 0}, chat ${b.get(k) || 0}`)
-    if (diffs.length) out.push(`${name} — ${diffs.slice(0, 12).join('; ')}${diffs.length > 12 ? `; … ${diffs.length - 12} more` : ''}`)
+    const a = tally(f(mine)), b = tally(f(chat)), x = tally(f(p1Text)), y = tally(f(p2Text)), diffs = []
+    for (const k of new Set([...a.keys(), ...b.keys()])) {
+      const s = a.get(k) || 0, c = b.get(k) || 0
+      if (s !== c) diffs.push(`${k}: step ${s}, chat ${c}`)
+      if (s > Math.max(c, x.get(k) || 0, y.get(k) || 0)) doubled.push(`${name} — "${k}" stands ${s} times in the step's file; the chat's ${c}, the first parent's ${x.get(k) || 0}, the second's ${y.get(k) || 0}`)
+    }
+    if (diffs.length) differ.push(`${name} — ${diffs.join('; ')}`)
   }
-  return out
+  return { differ, doubled }
 }
+
+/* ---------- the comparison ---------- */
+let work
 function lineDiff(mine, chat, p1Text, p2Text) {
   const a = join(work, 'mine'), b = join(work, 'chat')
   writeFileSync(a, mine); writeFileSync(b, chat)
@@ -95,13 +137,32 @@ function lineDiff(mine, chat, p1Text, p2Text) {
     if (l.startsWith('@@')) return l.replace(/ @@.*$/, ' @@')
     const body = l.slice(1)
     const mark = l[0] === '+' ? (parents.has(body) ? 'chat kept' : 'chat wrote (in neither parent)') : (parents.has(body) ? 'step kept' : 'step wrote')
-    return `${l[0]} ${body.length > 160 ? body.slice(0, 157) + '...' : body}   «${mark}»`
+    return `${l[0]} ${body}   «${mark}»`
   })
 }
+function compare(clone, m, f, part) {
+  const mine = readFileSync(join(clone, f), 'utf8')
+  const chat = tryGit(clone, 'cat-file', 'blob', `${m.merge}:${f}`)
+  if (chat === null) return { f, part, gone: true, doubled: [] }
+  const p1Text = tryGit(clone, 'cat-file', 'blob', `${m.p1}:${f}`) || '', p2Text = tryGit(clone, 'cat-file', 'blob', `${m.p2}:${f}`) || ''
+  const settled = part ? withoutRegions(mine) : mine
+  const { differ, doubled } = identities(settled, chat, p1Text, p2Text)
+  if (!part) return mine === chat ? { f, same: true, doubled } : { f, same: false, lines: lineDiff(mine, chat, p1Text, p2Text), ids: differ, doubled }
+  /* in part: each record the step settled (free of marks) against the chat's record of the same name */
+  const ours = records(mine), theirs = records(chat), recs = []
+  for (const [k, r] of ours) {
+    if (r.marks) { recs.push({ k, left: true }); continue }
+    const c = theirs.get(k), text = r.lines.join('\n')
+    if (!c) recs.push({ k, same: false, lines: [`(the chat's file has no record "${k}")`, ...r.lines.map(l => `- ${l}`)] })
+    else if (c.lines.join('\n') === text) recs.push({ k, same: true })
+    else recs.push({ k, same: false, lines: lineDiff(text + '\n', c.lines.join('\n') + '\n', p1Text, p2Text) })
+  }
+  return { f, part: true, recs, ids: differ, doubled }
+}
 
-function replay(m) {
+function replay(clone, m) {
   spawnSync('git', ['merge', '--abort'], { cwd: clone })
-  cg('reset', '-q', '--hard'); cg('clean', '-q', '-fdx'); cg('checkout', '-q', '-f', '--detach', m.p1)
+  git(clone, 'reset', '-q', '--hard'); git(clone, 'clean', '-q', '-fdx'); git(clone, 'checkout', '-q', '-f', '--detach', m.p1)
   const st = spawnSync('git', ['merge', '--no-commit', '--no-ff', m.p2], { cwd: clone, encoding: 'utf8' })
   mkdirSync(join(clone, 'raptor-port', 'scripts'), { recursive: true })
   copyFileSync(STEP, join(clone, 'raptor-port', 'scripts', 'records-merge.mjs'))
@@ -113,61 +174,83 @@ function replay(m) {
   const left = new Set([...out.matchAll(/^ {2}LEFT for you in (\S+):$/gm)].map(x => x[1]))
   const notRecord = [...out.matchAll(/^ {2}not a record file — yours to settle: (\S+)$/gm)].map(x => x[1])
   const rulings = (/^ {2}rulings files, not touched here: (.*)$/m.exec(out) || [, ''])[1].split(', ').filter(Boolean)
-  const files = settled.map(({ f, part }) => {
-    if (part) return { f, part: true }
-    const mine = readFileSync(join(clone, f), 'utf8')
-    const chat = tryGit(clone, 'cat-file', 'blob', `${m.merge}:${f}`)
-    if (chat === null) return { f, gone: true }
-    if (mine === chat) return { f, same: true }
-    const p1Text = tryGit(clone, 'cat-file', 'blob', `${m.p1}:${f}`) || '', p2Text = tryGit(clone, 'cat-file', 'blob', `${m.p2}:${f}`) || ''
-    return { f, same: false, lines: lineDiff(mine, chat, p1Text, p2Text), ids: idDiffs(mine, chat) }
-  })
+  const files = settled.map(({ f, part }) => compare(clone, m, f, part))
   const renumbers = [...out.matchAll(/^ {2}renumbered in .*$/gm)].map(x => x[0].trim())
   return { ...m, gitStatus: st.status, stepCode: r.status, unmerged, files, left: [...left], notRecord, rulings, renumbers, crashed: r.status === 1 ? out.trim().split('\n').slice(-3).join(' / ') : null }
 }
 
-const runAll = ms => ms.map((m, i) => { process.stderr.write(`\r  ${i + 1}/${ms.length} ${m.merge.slice(0, 9)}   `); return replay(m) })
+/* ---------- the run ---------- */
+const listed = JSON.parse(readFileSync(LIST, 'utf8'))
+const heldOut = clashing(listed.window.until, null).filter(m => !listed.merges.some(x => x.merge === m.merge))
+work = mkdtempSync(join(tmpdir(), 'records-merge-replay-'))
+const clone = join(work, 'repo')
+execFileSync('git', ['clone', '-q', '--shared', '--no-checkout', REPO, clone], { stdio: 'ignore' })
+git(clone, 'config', 'core.autocrlf', 'false'); git(clone, 'config', 'user.email', 'replay@example.invalid'); git(clone, 'config', 'user.name', 'replay')
+spawnSync('git', ['remote', 'remove', 'origin'], { cwd: clone })
+const runAll = ms => ms.map((m, i) => { process.stderr.write(`\r  ${i + 1}/${ms.length} ${m.merge.slice(0, 9)}   `); return replay(clone, m) })
 const main = runAll(listed.merges), held = runAll(heldOut)
 process.stderr.write('\n')
 spawnSync('git', ['merge', '--abort'], { cwd: clone })
 rmSync(work, { recursive: true, force: true })
 
-/* ---------- the report ---------- */
+/* ---------- the report: the sheet's summary, and every difference whole in the companion ---------- */
+const outFile = opt('--out')
+const diffsFile = outFile ? join(dirname(outFile), basename(outFile).replace(/\.md$/, '') + '-diffs.md') : null
 const short = id => id.slice(0, 9)
-function section(title, rs) {
+const anchor = (r, f) => `${short(r.merge)} — ${f.f}`
+const slug = s => s.toLowerCase().replace(/[^a-z0-9 -]/g, '').trim().replace(/ /g, '-')
+const failures = []
+function section(title, rs, C) {
   const L = [`## ${title}`, '']
+  C.push(`## ${title}`, '')
   const all = rs.filter(r => r.unmerged.length && !r.left.length && !r.notRecord.length && !r.rulings.length && !r.crashed)
   const part = rs.filter(r => !all.includes(r) && r.files.length)
   const none = rs.filter(r => !all.includes(r) && !part.includes(r))
-  const files = rs.flatMap(r => r.files)
-  const diff = rs.flatMap(r => r.files.filter(f => f.same === false).map(f => ({ r, f })))
+  const files = rs.flatMap(r => r.files), whole = files.filter(f => !f.part), parts = files.filter(f => f.part)
+  const diff = rs.flatMap(r => r.files.filter(f => f.same === false || (f.part && f.recs.some(x => x.same === false))).map(f => ({ r, f })))
+  const recs = parts.flatMap(f => f.recs)
+  const doubled = rs.flatMap(r => r.files.flatMap(f => f.doubled.map(d => `${short(r.merge)} ${f.f}: ${d}`)))
+  failures.push(...doubled)
   L.push(`- merges replayed: **${rs.length}**`)
   L.push(`- the step settled EVERYTHING git left (nothing for the chat): **${all.length}**`)
   L.push(`- the step settled part, the rest left for the chat (rulings files, app code or a record it leaves): **${part.length}**`)
   L.push(`- the step settled nothing (every clash outside what it settles, or left): **${none.length}**`)
-  L.push(`- files it settled whole: **${files.filter(f => !f.part).length}** — the same bytes as the chat's: **${files.filter(f => f.same).length}**, different: **${diff.length}**; settled in part (a record left): **${files.filter(f => f.part).length}**`)
+  L.push(`- files it settled whole: **${whole.length}** — the same bytes as the chat's: **${whole.filter(f => f.same).length}**, different: **${whole.filter(f => f.same === false).length}**`)
+  L.push(`- files it settled in part: **${parts.length}** — their records it settled, compared with the chat's: **${recs.filter(x => !x.left).length}** (the same: **${recs.filter(x => x.same).length}**, different: **${recs.filter(x => x.same === false).length}**); records left in git's marks: **${recs.filter(x => x.left).length}**`)
+  L.push(`- **identities the step's file holds more often than the chat's and both parents' (a doubled record — the replay fails on any): ${doubled.length}**${doubled.map(d => `\n  - ${d}`).join('')}`)
   L.push(`- the step stopped with an error: **${rs.filter(r => r.crashed).length}**${rs.filter(r => r.crashed).map(r => ` (${short(r.merge)}: ${r.crashed})`).join('')}`)
   L.push('')
   L.push('| merge | parents | git left | the step settled | left for the chat |', '|---|---|---|---|---|')
-  for (const r of rs) L.push(`| ${short(r.merge)} | ${short(r.p1)} ← ${short(r.p2)} | ${r.unmerged.join(', ') || '—'} | ${r.files.map(f => `${f.f}${f.part ? ' (part)' : f.same ? ' (=)' : f.gone ? ' (gone in the merge)' : ' (≠)'}`).join(', ') || '—'} | ${[...r.left, ...r.notRecord, ...r.rulings].join(', ') || '—'} |`)
+  for (const r of rs) L.push(`| ${short(r.merge)} | ${short(r.p1)} ← ${short(r.p2)} | ${r.unmerged.join(', ') || '—'} | ${r.files.map(f => `${f.f}${f.part ? ` (part: ${f.recs.filter(x => x.same).length} =, ${f.recs.filter(x => x.same === false).length} ≠, ${f.recs.filter(x => x.left).length} left)` : f.same ? ' (=)' : f.gone ? ' (gone in the merge)' : ' (≠)'}`).join(', ') || '—'} | ${[...r.left, ...r.notRecord, ...r.rulings].join(', ') || '—'} |`)
   L.push('')
   if (rs.some(r => r.renumbers.length)) { L.push('### Renumbers the step made', ''); for (const r of rs) for (const x of r.renumbers) L.push(`- ${short(r.merge)}: ${x}`); L.push('') }
   L.push(`### Every file whose settled result differs from the chat's (${diff.length})`, '')
-  L.push('Each line: `-` the step wrote it and the chat\'s file lacks it, `+` the chat\'s file has it and the step\'s lacks it; «chat wrote» marks a line neither parent holds (written in the merge itself). None is judged here.', '')
+  L.push(`Each with its identity counts that differ and its count of differing lines; every line of every difference, whole, is in the companion file${diffsFile ? `, [${basename(diffsFile)}](${basename(diffsFile)})` : ''}, under the same heading.`, '')
+  C.push('Each line: `-` the step wrote it and the chat\'s file lacks it, `+` the chat\'s file has it and the step\'s lacks it; «chat wrote» marks a line neither parent holds (written in the merge itself). None is judged here. Nothing is shortened.', '')
   for (const { r, f } of diff) {
-    L.push(`#### ${short(r.merge)} — ${f.f}`, '')
-    if (f.ids.length) { L.push('Identity counts that differ:', ''); for (const x of f.ids) L.push(`- ${x}`); L.push('') } else L.push('Identity counts: all equal.', '')
-    L.push('```diff', ...f.lines.slice(0, 80), ...(f.lines.length > 80 ? [`… ${f.lines.length - 80} more lines`] : []), '```', '')
+    const n = f.part ? f.recs.filter(x => x.same === false).reduce((a, x) => a + x.lines.filter(l => /^[-+]/.test(l)).length, 0) : f.lines.filter(l => /^[-+]/.test(l)).length
+    L.push(`- **${anchor(r, f)}**${f.part ? ` (settled in part; records different: ${f.recs.filter(x => x.same === false).map(x => x.k).join(', ')})` : ''} — ${n} differing line(s)${diffsFile ? ` ([whole](${basename(diffsFile)}#${slug(anchor(r, f))}))` : ''}; identity counts: ${f.ids.length ? f.ids.join(' · ') : 'all equal'}`)
+    C.push(`### ${anchor(r, f)}`, '')
+    if (f.ids.length) { C.push('Identity counts that differ:', ''); for (const x of f.ids) C.push(`- ${x}`); C.push('') }
+    if (f.part) for (const x of f.recs.filter(y => y.same === false)) C.push(`Record "${x.k}":`, '', '```diff', ...x.lines, '```', '')
+    else C.push('```diff', ...f.lines, '```', '')
   }
+  L.push('')
   return L
 }
+const C = [`# [MERGE-ONCE-RECORDS] — the replay's differences, whole (generated by raptor-port/scripts/records-merge-replay.mjs)`, '', `The companion of ${outFile ? `[${basename(outFile)}](${basename(outFile)})` : 'the replay report'}: every difference between a file the settle step wrote and the file the chat committed, with nothing shortened.`, '']
 const report = [
   `<!-- generated by raptor-port/scripts/records-merge-replay.mjs — the list: ${listed.merges.length} merges, ${listed.window.since} to ${listed.window.until} (${listed.window.by}) -->`,
-  '', ...section(`The list — 8 Nov 26's clashing merges to ${listed.window.until}`, main), ...section(`The held-out merges — committed after the list was cut (${heldOut.length})`, held)]
-const outFile = opt('--out')
+  '', ...section(`The list — 8 Nov 26's clashing merges to ${listed.window.until}`, main, C), ...section(`The held-out merges — committed after the list was cut (${heldOut.length})`, held, C)]
 if (outFile) {
   const prev = existsSync(outFile) ? readFileSync(outFile, 'utf8') : ''
   const cutAt = prev.indexOf('<!-- generated by raptor-port/scripts/records-merge-replay.mjs')
   writeFileSync(outFile, (cutAt >= 0 ? prev.slice(0, cutAt) : prev) + report.join('\n') + '\n')
-  console.log(`records-merge-replay: the report → ${outFile}`)
+  writeFileSync(diffsFile, C.join('\n') + '\n')
+  console.log(`records-merge-replay: the report → ${outFile}; every difference whole → ${diffsFile}`)
 } else console.log(report.join('\n'))
+if (failures.length) {
+  console.error(`\nrecords-merge-replay: FAILED — ${failures.length} identity(ies) the step's file holds more often than the chat's and both parents' (a doubled record):`)
+  for (const f of failures) console.error(`  ${f}`)
+  process.exit(1)
+}
