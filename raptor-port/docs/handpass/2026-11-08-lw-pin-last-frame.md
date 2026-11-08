@@ -108,6 +108,25 @@ The second 23 — the copy and the real row one height, at 402 with WebKit's let
 
 ## The frame measure (Astra's scenario 25)
 
+Run 8 Nov 26 05:40–05:48Z under the checks lock (the PC otherwise quiet), `scripts/handpass/lwpin-frames.mjs`, 5 runs
+each way per case: **before** = `main`'s pinning (chat 14's `dist-before`; the pinned rows' four files are the same on
+`main` today — bringing `main` in changed none of them), label `main2`; **after** = this build (`dist-final`, built
+from 110b3a2c2), label `final`. Results `docs/img/handpass/2026-11-08-lw-pin-last-frame/main2-results.json` and
+`final-results.json`, the painted-frame sheets `main2-*.png` / `final-*.png` beside them.
+
+| Case | Runs with a blink, before → after | Frames over 33.4 ms at 4× CPU, median of 5, before → after | Main thread's work, ms, before → after |
+|---|---|---|---|
+| Leave War, desktop 1536 | 10 of 10 → **0 of 10** | 15 → 15 | 1966 → 1843 |
+| Leave War, phone 402 | 10 of 10 → **0 of 10** | 4 → 17 | 1098 → 958 |
+| Quals, desktop 1536 | 10 of 10 → **0 of 10** | 1 → 0 | 273 → 221 |
+| Quals, phone 402 | 10 of 10 → **0 of 10** | 1 → 8 | 373 → 338 |
+
+The median frame is 16.7 ms in every case, before and after. **The phone's "over 33.4 ms" rises** (as chat 14's did,
+6 → 20) while the main thread does less: the script counts frames over 33.4 ms, which is the edge of two screen
+refreshes (33.3 ms), and its 95th percentile reads 33.3 before and 33.4 after — so whether these are slower frames or
+two-refresh frames landing a tenth of a millisecond later is not told by this count (Astra's warning). The raw frame
+times are measured next (below) before this is judged.
+
 ## The orders walked
 
 ## The cases carried by a test
