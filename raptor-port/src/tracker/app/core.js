@@ -3944,6 +3944,8 @@ function enableHScroll(el) {
   el.style.outline = 'none';
   el.addEventListener('keydown', e => {
     if (arrangeMode) return;
+    /* the chart sliding under a marking window about to open takes no key but Escape and Tab (popSliding, below) */
+    if (popSliding && e.key !== 'Escape' && e.key !== 'Tab') { e.preventDefault(); return; }
     const t = e.target, tag = (t && t.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'select' || tag === 'textarea' || (t && t.isContentEditable)) return;
     /* the arrows walk the chart's events now (D980 — chartKey); Home and End still take the chart to its two sides */
@@ -4829,6 +4831,11 @@ export function openPop(id, evt) {
 }
 /* popByKey: the pop-up was opened from the keyboard, so it takes the keyboard (Pop.jsx) */
 export let popByKey = false;
+/* the chart sliding under a marking window about to open (Pop.jsx, D1790): meanwhile the chart takes no key but Escape
+   and Tab, so an arrow pressed during the slide never moves the ring off the event being marked, and Escape still comes
+   back to it (D980; the fresh Opus read's F2, 8 Nov 26). Pop.jsx sets it for the slide and clears it at rest or close. */
+export let popSliding = false;
+export function setPopSliding(v) { popSliding = !!v; }
 export function closePop(toWindow) {
   /* the KEYBOARD was inside the pop-up: it goes back to the chart, on the same event, never to nothing (D980). A mouse
      press on a grade also puts the focus on that button (Chrome does), but that is no keyboard: the chart is not given

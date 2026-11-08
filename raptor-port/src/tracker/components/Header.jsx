@@ -183,7 +183,7 @@ function HeaderSearch() {
                handler, it simply clears the box first. */
             if (e.key === 'Escape') { core.clearSearch(); e.currentTarget.blur(); setOpen(false); }
           }} /></span>
-        <button className="sm" id="hSearchClear" title={strip ? 'Clear the search and close Find' : 'Clear the search'}
+        <button className="sm" id="hSearchClear" title={strip ? 'Clear the search and close Find' : 'Clear the search'} aria-label={strip ? 'Clear the search and close Find' : 'Clear the search'}
           onClick={clearX}>✕</button>
         <span className="findstat" id="hSearchStat">{stat}</span>
         {/* Always in the DOM, hidden by CSS (the menu panels' rule): the list

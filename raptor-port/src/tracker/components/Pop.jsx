@@ -108,23 +108,36 @@ export default function Pop() {
        slide early, a chart that could not go so far). Less motion asked for: the chart jumps there at once. */
     setPosn(null);
     core.stopGlide(bd);
-    const target = bd.scrollTop + plan.slide;
-    const settle = () => setPosn(placePop(geo(0)));
+    /* WHILE IT SLIDES the chart takes no tap and no key (the fresh Opus read's F1, F2, 8 Nov 26): a second tap or a
+       double-click would land on the moving chart — no window, another event's, or one left far from its event — and an
+       arrow would move the ring off the event being marked. Given back at rest, or when the window closes first. */
+    const hold = on => { bd.style.pointerEvents = on ? 'none' : ''; core.setPopSliding(on); };
+    const settle = () => { hold(false); setPosn(placePop(geo(0))); };
     let still = false;
     try { still = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (_) { still = false; }
-    if (still || typeof bd.scrollTo !== 'function' || typeof requestAnimationFrame === 'undefined') { bd.scrollTop = target; settle(); return undefined; }
-    bd.scrollTo({ top: target, behavior: 'smooth' });
-    /* at rest: at the place asked for, or no movement for 150ms (stopped short), or a second gone (never stuck unseen) */
-    const t0 = performance.now();
-    let raf = 0, last = bd.scrollTop, movedAt = t0;
-    const tick = now => {
-      const y = bd.scrollTop;
-      if (y !== last) { last = y; movedAt = now; }
-      if (Math.abs(y - target) < 1 || now - movedAt > 150 || now - t0 > 1000) { raf = 0; settle(); return; }
+    if (still || typeof bd.scrollTo !== 'function' || typeof requestAnimationFrame === 'undefined') { bd.scrollTop += plan.slide; settle(); return undefined; }
+    hold(true);
+    let raf = 0;
+    /* two frames on, measured again: a finger's glide that stopGlide stopped writes its last place back a frame later,
+       which would cut a smooth scroll begun at once short (the fresh Opus read's F6) */
+    const start = () => {
+      const again = placePop(geo(Math.max(0, bd.scrollHeight - bd.clientHeight - bd.scrollTop)));
+      if (!again.slide) { raf = 0; settle(); return; }
+      const target = bd.scrollTop + again.slide;
+      bd.scrollTo({ top: target, behavior: 'smooth' });
+      /* at rest: at the place asked for, or no movement for 150ms (stopped short), or a second gone (never stuck unseen) */
+      const t0 = performance.now();
+      let last = bd.scrollTop, movedAt = t0;
+      const tick = now => {
+        const y = bd.scrollTop;
+        if (y !== last) { last = y; movedAt = now; }
+        if (Math.abs(y - target) < 1 || now - movedAt > 150 || now - t0 > 1000) { raf = 0; settle(); return; }
+        raf = requestAnimationFrame(tick);
+      };
       raf = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
-    return () => { if (raf) cancelAnimationFrame(raf); };
+    raf = requestAnimationFrame(() => { raf = requestAnimationFrame(start); });
+    return () => { if (raf) cancelAnimationFrame(raf); hold(false); };
   }, [p]);
   /* TURNED OR RESIZED WHILE OPEN (Astra's read, finding 1, 8 Nov 26 — older than D1790, kept from before): placed again,
      nothing sliding, two frames after the change so the chart's own refit has landed, beside the event where it now
