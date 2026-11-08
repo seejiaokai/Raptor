@@ -4446,3 +4446,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** D1871's full row named the backlog as one of its homes, through the job's own item. Archiving that item, and dropping its priority line, removed every mention of D1871 from the backlog, so the document check failed on the ruling's home only after the archive, at the closing step.
 **Suggested improvement:** before archiving an item, grep the backlog for each ruling number the item carries; where the item is a ruling's last mention there and the ruling's row names the backlog as a home, write the number onto the item that stays (here the follow-up item), or have the archive script warn of it before it moves anything.
 **Principle:** a check that one record is mentioned in another breaks when the mentioning record is moved; run the check, or the search it does, before the move rather than after.
+
+### Observation 902: A test runner's output folder is emptied by its next run — never keep walk evidence or scripts there
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** A re-walk of a top-bar fix: two measuring scripts and a reviewer's evidence folder (pixel records, side-by-side pictures) sat in the browser-test runner's output folder; a test run started an hour later deleted all of it. (Numbered past 901, held by another open branch.)
+**Skill:** New skill candidate: walk-scripts (the project's walk-script guide)
+**Type:** open-source
+**Phase/Area:** Where a walk's scripts and evidence are written
+
+**Issue:** The folder looked like the natural home for test pictures, and nothing marks it as temporary; the loss showed only when the scripts failed with "cannot find module", and the reviewer's evidence could not be reopened afterwards.
+**Suggested improvement:** The walk-script guide's §5 now says it; a reviewer's or walker's brief names an output folder outside the runner's, and a check before a test run could warn when that folder holds files not written by the runner.
+**Principle:** A tool's output folder belongs to the tool, which may clear it at any run; keep anything meant to last in a folder no tool owns.
