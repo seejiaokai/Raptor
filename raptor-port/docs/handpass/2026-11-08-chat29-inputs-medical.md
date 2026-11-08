@@ -57,5 +57,20 @@ The rest do not apply: no print, no pinch, no hidden page, no keyboard rise, no 
 ## Errors seen
 ## Not walked, and why
 ## The reads
+Both read `d8d5b1f57..7c1a13e9f` from one brief (`docs/superpowers/briefs/2026-11-08-chat29-inputs-medical-read-brief.md`),
+each blind to the other and to the walk. Started before the walk, on the built code, since neither is handed the sheet
+(D790); the fixes below go back to the walk.
+- **Astra (Codex, gpt-6-astra, high)** — `…-read-astra.md`: no app fault. **A1** the new browser test reopened the
+  window by a card press, which opens the document viewer first → fixed (`066d96f70`): the test presses its "Edit input".
+  Tidiness: the "?" card's comment imprecise → reworded in the same commit (my own new line).
+- **The fresh Opus reader** (helper; its report kept below): **O1** a plain press on the input window's bar, with no
+  movement, set `data-placed` at once, so the Medical cards (and the Inputs list, and the calendars' day windows —
+  older there) jumped out from under the window and back → fixed red first (`d9e3bc6fc`, `floatwin.ts`: placed from the
+  first movement past 3px; test `floatwindow.test.tsx`); the walk re-checks it (scenario I) and that other windows still
+  drag and keep their place (J). **O2** the "not a `<dialog>`" reason untrue for a non-modal `<dialog>` → reworded.
+  Tidiness (filed, D489): the `body:has(…:not([data-placed]))` test written five times; the draft sentence in both
+  `CutFields.tsx` and `cutdraft.ts`; the browser test repeats 430 and 16; the test now runs at 1229 × 600 too (fixed).
+- **A fix is new code (§5):** O1's fix rewrites one condition in the shared window code — its own narrow read is owed
+  before the merge.
 ## Gate counts
 ## What the walk found, and each disposition
