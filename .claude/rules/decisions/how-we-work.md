@@ -300,6 +300,8 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - That test account is set up to match the IT side's restrictions — no plug-ins, no outside connectors, the same roles —
   or a pass there proves nothing, the match put to them as a question; only the app's made-up demo data goes there
   [D1749, D1532].
+- His own test tables use the short code "talon" for now; if the IT side later sets a different one for their tables,
+  the app's table names are changed once to match theirs [D1753].
 - February 2027 is not a deadline: the M365 and database work is planned by what it needs, never squeezed to a date,
   and no step is rushed or its checks cut to meet one [D1745].
 - At the move: each aircraft type set by a setting, the code check every session and on every change, a medical change
@@ -377,8 +379,8 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   another person's change, and where someone has since changed the very same thing it refuses and says who [D148];
   in this build it does not take back adding a person, archive, restore, delete or a posting, and the greyed button says
   why [D350].
-- "Clear edit history…" stays until the database step, where the organisation's retention rule decides how long the
-  change history is kept [D351].
+- At the database step Admin → Data's "Clear edit history…" is removed, so nobody erases the app's change history by
+  hand; until then it stays as built; how long that history is kept is still set by the IT side's audit rule [D1752].
 - A scheduler is always an admin: nothing is built, tested or walked for a scheduler who is not one, no walker's or
   reader's brief sets one up, and a finding of that shape is not a finding; a member, a guest and a person with no
   sign-in stay in scope as people who are not schedulers [D785].
