@@ -363,9 +363,11 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   fix — a saved context is a summary (decisions, state, next step), never the conversation [D69].
 - Every chat's title starts with its number — 1 the M365 package chat, 2 the rules diet's step 4, then counting on — and
   each chat says its number when it reports to him; the handoff file keeps the next free number [D1744].
-- On his "auto merge live" of 8 Nov 26, for that session only, chats 5–9 each merge their own job of the pictures round's
-  build live once it is completed — its walk, gates, green run and readers' findings done — one at a time through the
-  merge lock, the live app confirmed after; a job missing Astra's read, or with a question for him, is parked [D1795].
+- On his "auto merge live" of 8 Nov 26, widened the same day, every chat of the pictures round's build that chat 3
+  started or that took over one's job — chats 5–11, 13 and 14, not chat 12 nor chat 4 — merges its own current job live
+  once it is completed — its walk, gates, green run and readers' findings done — one at a time through the merge lock,
+  the live app confirmed after; a job missing Astra's read, or with a question for him, is parked; chat 14 asks him its
+  question before building [D1795, D1796].
 
 ## Names and privacy
 - The bare squadron number only; never the squadron or service abbreviation [D58]; "a fighter squadron", the bare
