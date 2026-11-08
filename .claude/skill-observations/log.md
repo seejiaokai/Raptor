@@ -4062,6 +4062,72 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
 **Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
 
+### Observation 861: Parallel build chats proposed to him on his phone could not be opened — the app starts no chat over Remote Control, even on his own message
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 3, the pictures round's build: after his answers he agreed to five parallel build chats ("Yes, both": merge the plan, then start them), on his phone.
+**Skill:** New skill candidate: running a build as parallel chats (the day-time cousin of overnight's Part 2); cites the closed Observation 715
+**Type:** internal
+**Phase/Area:** starting side sessions
+
+**Issue:** The app refused all five starts three times: first on a turn a finished background wait had woken (as Observation 715 found overnight), then on his own reply "Start them" sent from his phone — over Remote Control the app opens no chat at all. He had to go to his PC and type the go there; the five started at once. Nothing was lost, but he was asked twice and had to move.
+**Suggested improvement:** Guard: when a plan proposes parallel chats, say in the same message that the app can open them only on a message he types at the PC, and offer the other way at once — helpers inside this chat (D1416) — so he chooses before the work that precedes the starts. Never put the start on a turn that a background wait or timer will wake.
+**Principle:** Before promising a delegation step, check which surface the user is on and whether the host allows that step from it; offer the fallback in the same breath as the plan.
+
+### Observation 862: A side session on the rules engine reaches three-quarters full before its first commit
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 6, the pictures round's group 4 (D1786) — an engine change started as a side session (numbered past 861, the highest on any pushed branch)
+**Skill:** New skill candidate: side-session-briefing
+**Type:** open-source
+**Phase/Area:** starting a delegated build session
+
+**Issue:** The session reached 75% of its context window after about twenty tool calls, before any commit: opening one engine file loaded every scheduler-area rulings file and design rule set by path (well over 100 KB), on top of the always-loaded rules. The save-state warning arrived when the build had only one change in it.
+**Suggested improvement:** A brief for a side session names, up front, the slices it needs (the full rows by number, the exact sections), and the session commits its handoff block after its first change rather than at the first warning; the starting session warns its children that opening an area file costs that area's whole rulings load.
+**Principle:** In a repository whose rules load by file path, the first file a delegated session opens can cost most of its context; a delegated session should save its state early and read by slice.
+
+### Observation 863: A code reader's proof test, written into the shared checkout, swept into the builder's commit
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 6, D1786 (a day with nothing entered starts at the default rally): a fresh, blind Opus reader ran as a subagent in the same worktree while the builder fixed the other readers' findings
+**Skill:** New skill candidate: none — the bug-check order's reader brief (§4) and the one-checkout note; met again after Observation 648 (closed)
+**Type:** open-source
+**Phase/Area:** committing while a helper works in the same checkout
+
+**Issue:** The reader wrote a throwaway proof test (a deliberately failing one) under the app's source folder; the builder's commit staged that folder whole (`git add -A <dir>`) and took the file in. Caught only because the reader reported it; had the branch been pushed, the pull request's run would have gone red on a test nobody meant to keep.
+**Suggested improvement:** Two guards, both unconditional: (1) every code reader's brief says where proof tests go — a name the repo ignores (for example `*.reader-tmp.test.*` in `.gitignore`) or the reader's own scratch folder — never a plain test name under the source folder; (2) while any helper works in the checkout, the builder stages by named paths only and reads `git show --stat HEAD` before pushing.
+**Principle:** A helper sharing the checkout writes files the builder did not make; a whole-folder stage turns them into the builder's commit. Give helpers' throwaway files a name the repository ignores, and stage by name while they work.
+
+### Observation 870: A blink counted "gone" by the page's own frame log was still there in the painted frames
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 8 — measuring D1789's fix (the Leave War's pinned dates row and Quals' heading drawn in the same frame as the scroll) before and after; numbered past 865, the highest on any branch at 10:00, 866–869 left for the sibling chats writing tonight
+**Skill:** walk-scripts (project guide, not a skill file) — measuring a visual change's frames; verification-before-completion
+**Type:** open-source
+**Phase/Area:** measuring frames before and after a change to what is drawn while scrolling
+**Reference file:** raptor-port/docs/handpass/2026-11-08-lw-group6.md §The frames
+
+**Issue:** The speed helper counted the frames in which the pinned row was missing from a log the page's own code kept, read on each animation frame. Before the fix it counted 2, after it 0, and the evidence sheet and the speed ledger said "the blink is gone". The walker's painted-frame sheets (a screencast of what the browser actually painted) showed one frame still missing after the fix — the desktop wheel 2 → 1, a phone flick 1. The browser moves and paints a scroll before the page's code hears of it, so a log kept by that code can never see that frame. The walker itself also judged the desktop case a PASS; the host's own look at the painted frames overturned it.
+**Suggested improvement:** In the walk-scripts guide's part on measuring frames, say that a glitch tied to scrolling or the compositor is counted on PAINTED frames (a screencast or a recording), never only on a frame log kept by the page's own code; the page's log may stand beside it for timing, not for "is it on screen". Name the frame the decision rests on in the evidence sheet, and have the host open it.
+**Principle:** A measurement taken by the code under test can only see what that code sees. When what matters is what the screen showed, measure the screen's own output, and treat a count of zero from inside the page as unproven.
+
+### Observation 871: Code that runs only when a box has a size was never run by tests drawn without layout
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 8 — D1789's fix to the Leave War's pinned dates row and Quals' heading; Astra's code read found the setup path broken
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the failing test for a change behind a layout guard
+
+**Issue:** The fix added an "instant" flag for calls from the scroll listener and a comment that the effect's own call keeps the old route. The effect's last line called the listener itself, so it took the instant route too, and React refused it on every setup. The unit tests never saw it: the test environment has no layout, every box measures 0, and the code returns early on a 0-height box — so the pinning code never ran in any unit test. Only the browser tests ran it, and they do not fail on a warning. A reader running the effect with given box sizes found it at once.
+**Suggested improvement:** In the skill's "write the failing test" step: when the changed code sits behind a layout or feature guard (a 0-size box, no matchMedia, no ResizeObserver), the test gives the sizes and the feature so the changed lines actually run, and it fails on the framework's own warnings for the path (a spy on console.error), not only on the result. Before writing, list every caller of a function whose behaviour now depends on a new flag, including callers through an alias.
+**Principle:** A test proves only the lines it runs. Code behind a guard that the test environment always trips needs the guard's conditions supplied, or the test passes without testing anything.
+
 ### Observation 866: A helper's "the code is unchanged since commit X" must be checked before its build label is believed
 
 **Status:** OPEN

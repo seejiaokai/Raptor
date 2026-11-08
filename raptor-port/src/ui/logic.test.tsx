@@ -342,6 +342,17 @@ describe('the thresholds are editable, and only by an admin (tfin B52)', () => {
     expect(VCONF.reportLead).toBe(180)
   })
 
+  /* D1786 (8 Nov 26, the pictures round's A): a line with nothing entered now starts a flyer's long day and Insights
+     hours at the default rally, as his OIL — so the row's facts are true, said in the clearer words drawn for him
+     (notes-sched.md Q3 §(d), "The words, before → after") */
+  it('the default rally row says, in the drawn words, that a day with nothing entered starts at it (D1786)', async () => {
+    const t = setRow('reportLead').textContent
+    expect(t).toContain('An empty R box, a formation\'s rally, suggests a time this long before take-off, and "+ In-time" fills in that same time.')
+    expect(t).toContain('When no in-time or rally is entered, a flyer\'s day starts at that time: his long day, OIL and Insights hours count from it.')
+    expect(t).toContain('The tight crew-rest advisory also checks his rest as if he reported at that time.')
+    expect(t, 'the old words are gone').not.toContain('starts here')
+  })
+
   it('the promoted settings render boxes and take the squadron spellings', async () => {
     /* every edit repaints the built markup, so the box is re-queried before
        each write — the old node is off the DOM the moment the toast fires */

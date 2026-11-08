@@ -597,3 +597,17 @@ trusting the service account. PR #428's evidence (the Leave War fixes):
 
 Any push to a branch with an open PR re-runs the whole check set, even notes-only (D151's reason). Notes wait
 and ride along with the next real change or the merge; the merge itself earns one run on `main`.
+
+## Vercel's daily build limit and build billing (8 Nov 26, D1794)
+
+- **The free plan allows 100 builds a day,** over a rolling 24 hours. Past it, a build fails with "Deployment rate limited
+  — retry in 24 hours" and gets through only when an older one ages out. On the morning of 8 Nov 26 the repo had made 144
+  in 24 hours, and the production build of a notes merge on `main` was refused, so the live app did not update. A merge
+  is live only when the Production deployment for its own commit is Ready: check it, never assume.
+- **A build the Ignored Build Step cancels still counts toward that limit,** so skipping notes-only pushes that way does
+  not lower the count; a branch with automatic deployments turned off (`git.deploymentEnabled`) makes no build at all.
+- **Pro (from 8 Nov 26) allows 6,000 a day but bills build minutes** past its US$20 monthly usage credit: US$0.0035 per
+  CPU minute, the duration rounded up to whole minutes, 2 CPUs on the Basic machine and at least 4 on Elastic, the default
+  after upgrading. He spends no more than US$20 a month on it (D1794), so builds are kept inside that credit: the Basic machine, a US$1
+  budget that only warns, and back to the free plan if it warns; the budget's
+  "Pause Production Deployments" stays off, since it takes the live app down.
