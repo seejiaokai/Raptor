@@ -4101,6 +4101,21 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** Two guards, both unconditional: (1) every code reader's brief says where proof tests go — a name the repo ignores (for example `*.reader-tmp.test.*` in `.gitignore`) or the reader's own scratch folder — never a plain test name under the source folder; (2) while any helper works in the checkout, the builder stages by named paths only and reads `git show --stat HEAD` before pushing.
 **Principle:** A helper sharing the checkout writes files the builder did not make; a whole-folder stage turns them into the builder's commit. Give helpers' throwaway files a name the repository ignores, and stage by name while they work.
 
+### Observation 866: A "nothing happened" check that reads a value which is never set passes whatever the app does
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 5, `claude/pr-oil-earn-ffbf07` — OIL Earn on the Scheduler Board (D1783: a tap on a puck that cannot earn picks nothing). Numbered past 865, the highest on the other branches.
+**Skill:** New skill candidate: none — the walk-script and drawing-check method (`raptor-port/docs/walk-scripts.md`, `raptor-port/scripts/drawcheck/`), and the bug-check order's §8 (tests find rather than confirm)
+**Type:** open-source
+**Phase/Area:** writing an assertion that something did NOT happen (nobody picked, no window opened)
+
+**Issue:** Two checks in one job proved "nothing happened" by reading something that never changes. (1) The drawing check's "the tap picked nobody" step read `window.SELID`, a name that does not exist in the built app; it was always undefined, so the step passed even on the build where the tap visibly picked the man blue. The same name had been written into the walkers' brief. (2) Two unit tests proved "the ALL AVAIL window opened" by finding its frame on the page; the frame is always there, hidden, so "opened" was always true. Both were found only because a reproduction on screen disagreed with a green check. They were fixed by reading the mark the app draws (`.puck.sel` on the board) and the frame's shown state (`.availwin:not([hidden])`).
+**Suggested improvement:** In `walk-scripts.md`'s rules for a step's assertion, and in the bug-check order §8: every assertion of absence ("nothing picked", "no note", "not opened") is first run once against a state where the thing DID happen (a positive control: tap an ordinary puck and see the same read report it picked), and the step names that control. A read of a global, a frame or an attribute that never changes value across the two states fails the step.
+**Principle:** A check that something did not happen is only evidence if the same check, run where it did happen, says so; run the positive case once before trusting the negative.
+Met again 8 Nov 26 (chat 5, the host's re-walk): a press made by screen position on a switch scrolled off screen landed on nothing, so the check failed on the fixed build and the old build alike — the calibration run caught it only because the row also printed the switch's state ("switch off"). Guard: a press by position first brings its target into view, and the row prints the press's own effect beside the result it measures.
+Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked for the ALL AVAIL window's frame, which is always on the page and only hidden, so it read "open" whatever the app did. Guard: a check that something appeared reads whether it is shown (its size, or the property that hides it), never whether it exists.
+
 ### Observation 870: A blink counted "gone" by the page's own frame log was still there in the painted frames
 
 **Status:** OPEN
@@ -4140,3 +4155,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** the starting session wrote "this chat is number 5" from its own reading of the handoff, but a parallel session had already given 5 to a build chat (and held 10 and 11) in a commit made minutes before; the started chat found the clash only by reading the newest handoff on the main branch. (Numbers 862 to 871 were taken by other branches; this note was renumbered 863 → 864 → 872 at the merges.)
 **Suggested improvement:** in the handoff skill's opening-line step and in any brief for a started session, give the number as "the next free number in the handoff on main when you start (was N at <time>)", and have the new chat confirm it against the main branch's handoff before using it.
 **Principle:** an identifier handed from one parallel worker to another is a hint, not a grant — the receiver checks it against the shared, newest record before acting on it.
+
+### Observation 873: Time stamps written into a handoff from the agent's sense of elapsed time ran up to two hours ahead of the clock
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 5, `claude/pr-oil-earn-ffbf07` — the close of OIL Earn on the board, across five compactions
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** writing the "where it stands" lines of a handoff block as the work goes on
+
+**Issue:** Each line the chat added to its handoff block carried a time ("~11:20", "~12:30", "~12:45"), written from a feel for how long the work had taken. After the sixth compaction the clock read 11:16 and the commits showed the lines had run ahead by 20 minutes to two hours. A later chat that orders events by these times, or a person told "merged at 12:45", is misled; the error grew with each compaction, since a compacted chat has no sense of the time that passed.
+**Suggested improvement:** In the handoff step (and wherever a record takes a time): read the clock (`date`) or the commit's own time before writing a time, never estimate; where a time cannot be read, write none.
+**Principle:** An agent has no reliable sense of elapsed time, least of all across a context reset; any time written into a record is read from a clock or left out.

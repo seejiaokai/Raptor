@@ -1,0 +1,189 @@
+{
+ "state": "switch-off-desk",
+ "drawing": {
+  "script": "scripts/handpass/pr-board.mjs",
+  "shot": "q-oilswitch-a-off-desk"
+ },
+ "recorded": "2026-11-08T00:35:28.845Z",
+ "drawnOn": "main at 549482bd5",
+ "checkout": "67bacc1c6",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "bar": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 14,
+    "y": 254,
+    "w": 1188,
+    "h": 64
+   },
+   "ink": {
+    "x": 26,
+    "y": 265.3,
+    "w": 1153,
+    "h": 45.8
+   },
+   "text": "OIL EARN No OIL earned ✓ OIL done Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(47, 166, 92)",
+     "1px solid rgb(47, 166, 92)",
+     "1px solid rgb(47, 166, 92)",
+     "1px solid rgb(47, 166, 92)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.sb-panel.daybar.oilon"
+  },
+  "switch": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 962.7,
+    "y": 262,
+    "w": 124.3,
+    "h": 23
+   },
+   "ink": {
+    "x": 1010.7,
+    "y": 265.5,
+    "w": 76.3,
+    "h": 16
+   },
+   "text": "No OIL earned",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "-0.065px"
+   },
+   "tag": "label.lgmix.zz-new.zz-ring"
+  },
+  "slider": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 962.7,
+    "y": 262,
+    "w": 40,
+    "h": 23
+   },
+   "ink": {
+    "x": 963.7,
+    "y": 265.5,
+    "w": 14.8,
+    "h": 16
+   },
+   "text": "on ",
+   "typed": true,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "12px",
+     "12px",
+     "12px",
+     "12px"
+    ],
+    "shadow": "none",
+    "color": "rgb(255, 255, 255)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13.3333px",
+    "spacing": "normal"
+   },
+   "tag": "input"
+  },
+  "done": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1100,
+    "y": 262,
+    "w": 90,
+    "h": 23
+   },
+   "ink": {
+    "x": 1111,
+    "y": 265.3,
+    "w": 68,
+    "h": 15
+   },
+   "text": "✓ OIL done",
+   "typed": false,
+   "look": {
+    "fill": "rgb(47, 166, 92)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(47, 166, 92)",
+     "1px solid rgb(47, 166, 92)",
+     "1px solid rgb(47, 166, 92)",
+     "1px solid rgb(47, 166, 92)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(4, 34, 15)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 10.5px",
+    "spacing": "0.525px"
+   },
+   "tag": "button.mbtn.daybtn.done"
+  }
+ },
+ "approved": {
+  "picture": "q-oilswitch-a-off-desk.png",
+  "identical": true
+ }
+}

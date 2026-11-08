@@ -20,6 +20,12 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/pr-oil-earn-ffbf07 -->
+### CHAT 5 — the pictures round's group 2, OIL Earn on the Scheduler Board — MERGED 8 Nov 26 (pull request 679, on his "auto merge live" for chats 5–9, D1795)
+- **Live:** the day switch "No OIL earned", cyan when on (D1782); in OIL Earn a tap on a puck that cannot earn picks nothing and says "Nothing changed for <callsign>." and its reason (D1783); the phone day bar's marks — the page of blocks and the ticket (D1793); with the code reads' three fixes (a SANS availability card's man inert in the mode; a press on the switch's words keeps the pick and the search; a placeholder on a row nobody can earn from says that row's reason). Evidence: `raptor-port/docs/handpass/2026-11-08-oil-earn-board.md` (the walk, the drawing check, the three blind reads and the host's re-walk); [OIL-EARN-DAY-SWITCH-WORDS] and [OIL-INERT-TAP-SILENT] archived; [UI-CONSISTENCY-LOOK] round 5 (e) built.
+- **Filed, open:** [OIL-SWITCH-NOSAVE-SHOW], [OIL-WINDOW-FOOT-SHAPE], [OIL-ROSTER-TAP-SELECTS], [OIL-INERT-WHY-CX-INFO], [OIL-EARN-WORDS-LEFT], [OIL-EARN-BOARD-TIDY], and [BOARDNAV-SCRUB-CLICK-TIMER] (a board test's 350 ms window that can fail under load; no app code). No reads owed — Astra, Sol 6.1 and a fresh Opus reader each read it. No rulings recorded (D1810–D1819 returned unused).
+- **Remove this block at the next handoff** — nothing else is open from chat 5.
+<!-- /now -->
 <!-- now:claude/rules-diet-step-5a-oil -->
 ### CHAT 12 — the rules diet's step 5a, OIL as a page (the full trial) — MERGED 8 Nov 26 (pull request 684, on his "merge live")
 - **Live:** `.claude/rules/decisions/oil.md` is a page of how OIL works now, each rule stated once with its rulings cited (D1735); its tripwire in `docsize.mjs` raised 15,500 → 22,600 bytes with his "merge live". The account by requirement (`raptor-port/docs/superpowers/briefs/2026-11-08-rules-diet-step5a-account.md`) and the two blind reads (Astra, a fresh Opus reader — `…-step5a-read-astra.md`, `…-read-opus.md`) found 48 parts in all, each fixed against its full row; the trial of the whole route and the lessons for the rest of step 5: the plan's §Step 5a. The page saves nothing for OIL (20,564 bytes against the table's 14,525) — said in the plan, measured again before 5b.

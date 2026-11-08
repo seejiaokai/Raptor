@@ -8014,6 +8014,41 @@ as the Logic page already says and OIL already does; it makes more long-day note
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1786) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "Where a day starts when nothing is entered" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
 **Built 8 Nov 26 by chat 6 on `claude/pr-day-start-7b064c`** — the engine (`engine/events.ts`) and the Logic page's drawn words; `engine-rules.md` §Where a day with nothing entered starts. Waits for its bug check, readers and his "merge live"; leaves for the archive once live.
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([OIL-EARN-DAY-SWITCH-WORDS]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-11-08-oil-earn-board.md`.*
+
+### [OIL-EARN-DAY-SWITCH-WORDS] OIL Earn's "Nothing today earns" button reads like a status — two walkers took it for one (found 6–7 Oct 26, the walks of `[OIL-WORK-START]`; OLD; LOW, words)
+On the Scheduler Board in OIL Earn mode the bar carries a button labelled "Nothing today earns". It is a SWITCH — pressed, it
+makes nothing on that day earn — and its label does not change with the day's state (only its tooltip does). With a man on the
+day plainly earning (his puck reads FO), the bar still says "Nothing today earns" beside it. Two walkers, on separate walks and
+without seeing each other's work, each reported it as the app contradicting itself (the first walk's W8; the D606 walk's E03 —
+picture `raptor-port/docs/img/handpass/2026-10-06-oil-work-start/E/dk-08-E03-oilearn-board.png`). **To build:** word the button
+as the action it is, and say the day's state apart from it — a product wording choice, so a picture and his word first.
+**Tier:** WALK (a control's label on the board, both sizes). **Place (the agent's line):** low — with the next change to OIL Earn.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1782) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "OIL Earn's day switch" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+**BUILT 8 Nov 26 (chat 5, `claude/pr-oil-earn-ffbf07`, pull request 679), FULL bug check:** the day button is the app's own switch,
+"No OIL earned", grey off and cyan on; a press on its words keeps the pick; the cyan ring under the keys. Contract:
+`raptor-port/docs/ui-contracts.md` §The mode (the D1782 note); evidence `raptor-port/docs/handpass/2026-11-08-oil-earn-board.md`.
+Left for his look, filed: [OIL-EARN-WORDS-LEFT], [OIL-SWITCH-NOSAVE-SHOW].
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([OIL-INERT-TAP-SILENT]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-11-08-oil-earn-board.md`.*
+
+### [OIL-INERT-TAP-SILENT] In OIL Earn a tap on a puck that cannot earn says nothing (walk find, 1 Oct 26)
+Walker A's O1 (pictures `…/2026-10-01-dbr-phase7/a/A3r-phone-1.png`, `A3r-desk-1.png`). A puck with nothing to earn from its row
+(a row with no end time, a Personal request — and every other inert case) carries its reason as a hover title only; a tap
+selects it (blue) and says nothing, so on a phone the reason cannot be read on the row — only in the ALL AVAIL window's foot.
+The mode's general behaviour, older than phase 7. D31 says a seat with nothing to measure "says why instead"; D26 (leave the
+mode's phone tap targets as they are) is about the targets, not this silence. **To do, if he wants it:** a tap on an inert
+puck in the mode says its reason (the app's own message line), selecting nothing. **Place:** low — with the next OIL Earn change;
+a question for him first.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1783) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "A tap on a puck that cannot earn" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+**BUILT 8 Nov 26 (chat 5, `claude/pr-oil-earn-ffbf07`, pull request 679), FULL bug check:** a tap on a puck that cannot earn picks
+nothing and says "Nothing changed for <callsign>." and its reason — every drawer, a leave, medical, Personal or SANS request's man,
+a placeholder's body. Contract: `raptor-port/docs/ui-contracts.md` §The mode (the D1783 note); evidence
+`raptor-port/docs/handpass/2026-11-08-oil-earn-board.md`. Left, filed: [OIL-INERT-WHY-CX-INFO], [OIL-WINDOW-FOOT-SHAPE],
+[OIL-ROSTER-TAP-SELECTS], [OIL-EARN-BOARD-TIDY].
+
 *Moved here 2026-11-08 by backlog-archive.mjs ([LW-TWO-BOX-LETTERS]). Forward facts: `raptor-port/docs/handpass/2026-11-06-lw-cell-combos.md`, `raptor-port/docs/ui-contracts.md`.*
 
 ### [LW-TWO-BOX-LETTERS] Two boxes side by side clip three letters (found 25 Oct 26, the M3 build's FULL check, W2 30)
