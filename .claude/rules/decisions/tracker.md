@@ -169,17 +169,17 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 ## The marking window
 - When the marking window would not fit below the event tapped, the chart slides the event up under the tabs with its
   own smooth scroll, only as far as needed, and it stays there after Close; the window opens whole below it, on a phone
-  and a desktop [D1790, D1861].
+  and a desktop [D1790, D1861, D1935].
 - An event too near the chart's end to slide falls back to the page's option B: nothing moves, and the window stands
   above the event — as built, whole where it fits, else held between the tabs and the event, scrolling inside; on a
-  desktop the same, under the Tracker's bar; no new words [D1790, D1861].
+  desktop the same, under the Tracker's bar; no new words — kept, his word [D1790, D1861, D1935].
 - As built: the window opens 4px under the event; the slide brings the event's top to 22px under the chart box's top,
   the chart's end allowed to stop it short while the window still fits; while it slides the chart takes no
   press and no key but Escape and Tab; for less motion it jumps; the window shows only once the chart rests [D1790,
-  D1861].
+  D1861, D1935].
 - It follows the Leave War's grid, which scrolls the picked days into view just above their window (the Leave War's
   D1290), and that day's lesson that a window never hides what it is about; where the chart lands is unchanged, since
-  the slide comes only when the window opens [D1790, D1861, D1290, D984].
+  the slide comes only when the window opens [D1790, D1861, D1935, D1290, D984].
 - On a screen too short for the window — a phone on its side — the chart lifts the event as high as it may go and the
   window opens under it, scrolling inside itself, as built: the event stays in view and the grade buttons show first
   [D1861].
@@ -274,11 +274,11 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 
 ## Find
 - On a phone the Find ✕ empties the box and puts Find away — the keyboard down, the tabs back — as Escape does, its
-  hover words "Clear the search and close Find"; a pick from the list puts Find away on purpose; on a desktop nothing
-  changes, and the ✕ stays in the box [D1791, D1127].
+  hover words "Clear the search and close Find"; a pick from the list puts Find away on purpose; on a desktop wider than 1050
+  nothing changes, and the ✕ stays in the box [D1791, D1935, D1127].
 - As built, and as the question's page told him ("how Find shows on any screen up to 1050 wide"): the phone's way holds
   wherever Find is the strip, up to 1050 wide, a narrow desktop window too; wider, the ✕ clears and keeps the keys in
-  the box, its words "Clear the search"; from the keyboard, the keys go back to the magnifier [D1791].
+  the box, its words "Clear the search"; from the keyboard, the keys go back to the magnifier — kept, his word [D1791, D1935].
 
 ## Edit chart layout and its drags
 - On a short screen — a phone on its side — Edit chart layout folds its tools into one row: the tool in use with its

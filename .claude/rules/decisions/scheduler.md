@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1936 | 8 Nov 26 | A sortie with its take-off typed and its landing blank or "TBD" counts no hours in Insights and raises no long-day note, as built — kept; and the board-layout test that skips itself when its box already sits above the keyboard is fixed to always prove the case, filed as [E2E-BOARD-KEYS-SKIP]. |
 | D1890 | 8 Nov 26 | The design checker skips the gold history dot in the History mode's style file: one gold dot in a box's corner is not a dotted grid pattern, so it is not flagged. |
 | D1800 | 8 Nov 26 | On his iPhone on its side, with the keys up, the Scheduler Board’s bar of buttons stays at the top, as D1780 rules, so D1780’s look on his iPhone is done and nothing more is built for it. |
 | D1780 | 8 Nov 26 | On a phone on its side the Scheduler Board's Calendar, title, day strip and search scroll away with the list, as any page does, while its bar of buttons stays at the top, so with the keys up the list gets about 151px and nothing jumps when the keys open. — changed by D1800 |

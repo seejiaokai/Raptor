@@ -20,6 +20,12 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/review-8nov-jobs-3ac34b -->
+### CHAT 37 — the review of 8 Nov 26's merged work (D1933; a handful first, D1934) — `claude/review-8nov-jobs-3ac34b`, pull request 719 — written 8 Nov 26 — verify before use
+- **Done:** both blind reads and his answer — no damage found on the evidence (`raptor-port/docs/superpowers/briefs/2026-11-08-review-8nov-jobs-{brief,fable,astra}.md`, §5 of Fable's has the limits). He said "No, enough" to Fable reading further.
+- **His six points, all answered (compacted once, 8 Nov 26):** 1 fix it — chat 36's trimmed OIL page drops the sentence; 2 and 3 kept as built, the rows marked (D1935); 5 kept (D1936); 4 the checklist fix, filed as [CHK-ROUTE-2A] (D1937); 6 the test fix, filed as [E2E-BOARD-KEYS-SKIP] (D1936) — both for a fresh chat.
+- **Next:** his "merge live" for 719 (the D1934 and D1937 lines fitted under How we work's 38000 by tighter wording, his "Tighten, no raise", D1940 — Astra and a fresh Opus reader, blind, found no meaning changed in the three reworded lines; D1938 and D1939 are chat 36's; chat 36 also changes that page — the later merge brings `main` in first). Remove this block at the next handoff.
+<!-- /now -->
 <!-- now:claude/rules-diet-step-5a-tracker-de959c -->
 ### CHAT 34 — the rules diet's step 5a, the Tracker's rulings as a page — `claude/rules-diet-step-5a-tracker-de959c`, pull request 714 — MERGED 8 Nov 26 on his "merge live" typed in chat 34; records follow-up `claude/rules-diet-5a-records-de959c`; written 8 Nov 26 — verify before use
 - **Started** from the parent session's card (chat 24's line of work); reports to it; coordinator chat 30 (`local_d1e628b6-c170-4fc3-80b3-29fcb671c669`). Told before touching shared files (D302): chat 28 agreed chat 34 alone edits `tracker.md` and its full rows until this merges; chat 33 ([MERGE-ONCE-RECORDS]) may add a check function to `docsize.mjs`, never the tripwire list — no clash.

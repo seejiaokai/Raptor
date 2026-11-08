@@ -446,7 +446,7 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   in words, the lull's × the drawn ✕, the × on each student a line icon — its pencils the app's one solid pencil [D1132,
   D1135, D1705, D1134].
 - The Tracker's: its "Delete course" question and an import's note drop their typed ↺ and ⇅ marks [D1860].
-- The Tracker's: on a phone its Find strip's ✕ empties the box and puts Find away, the ✕ staying in the box [D1791].
+- The Tracker's: on a phone, and on any window up to 1050 wide, its Find strip's ✕ empties the box and puts Find away, the ✕ staying in the box [D1791, D1935].
 - The Tracker's: its search magnifier becomes the app's own, its handle as long as every other search box's, in place
   of its own shorter one; built (chat 28) [D1900, D1127].
 - People and accounts': the waiting screen's "View the schedule", and its line that he can look read only meanwhile, show
