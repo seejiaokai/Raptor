@@ -168,9 +168,14 @@ body.dw-lock{overflow:hidden}
    the crew column stays under the bar (sticky at the bar's height), as tall as the board less the bar, its own lists
    scrolling inside it as before. The same query as the app's own (navfold.ts SIDEWAYS_PHONE), from 821 wide — below
    that a phone on its side has the phone board's one-row bar. The desktop layout (.sb-wide, its own pinch-zoom
-   scroller — D1107, D1109) is left as it was. */
+   scroller — D1107, D1109) is left as it was.
+   A jump the app makes — a warning's tap, a change's tap, the just-added ring, an Undo bringing its row on screen —
+   asks the browser to bring a row into view, and the browser counts the pinned bar's strip as view: a row "brought
+   into view" could stop under the bar. The scroll padding is the bar's height, so every such jump stops below it;
+   with the head still showing the row lies below the head anyway, so the one figure is right at every scroll. */
 @media (min-width:821px) and (pointer:coarse) and (orientation:landscape) and (max-height:500px){
-  .schedboard:not(.sb-wide){overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain}
+  .schedboard:not(.sb-wide){overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain;
+    scroll-padding-top:calc(var(--sb-topH,0px) - var(--sb-headH,0px))}
   .schedboard:not(.sb-wide) .sb-top{position:sticky;top:calc(-1 * var(--sb-headH,0px));z-index:30;flex:none}
   .schedboard:not(.sb-wide) .sb-main{flex:none}
   .schedboard:not(.sb-wide) .sb-boardwrap{overflow:visible}

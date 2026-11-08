@@ -73,12 +73,17 @@ menuItems`. Evidence `docs/handpass/2026-11-08-board-keys.md` §11.
   after the rebase) and the week's `.schedule-moreitem` (`ScheduleInsightsMenu.tsx`), outline 2px `var(--accent)`,
   offset −2px to hug the raised row as picture 003 draws; + Block's and Templates' (`.abtn.sb-daybtn`, 18-oil-board.css:89,
   and the phone day bar's) `:focus-visible` the same at offset 2px; find + Block's class in board.ts (~line 380, CSS only);
-  + Wave, the plans selector, a jet's stores, the duty role box checked; (c) the tidy-up `moreItems` → `menuItems`
-  (read `sheetfocus.ts` first); (d) read kbscroll.ts's board path (`keepAboveKeyboard`, which scroller it scrolls) and
+  + Wave, the plans selector, a jet's stores, the duty role box checked; (c) DONE, committed — the tidy-up
+  (`menuItems` exported from `sheetfocus.ts`, `moreItems` uses it; `boardkeys.test.tsx` 22/22); (d) read kbscroll.ts's board path (`keepAboveKeyboard`, which scroller it scrolls) and
   every place that resets or reads `.sb-boardwrap`'s scroll (day change, D672, a warning's tap, the just-added ring, the
   drag's edge scroll) — in the sideways look the scroller is `.schedboard`. kbscroll.ts names no board scroller (it
 scrolls the nearest one — fine); the files that name `.sb-boardwrap` / `.sb-main`, each to read: `board.ts`,
-`highlights.ts`, `histbubble.ts`, `interactions.ts`, `rowdrag.ts`, `SchedBoard.tsx`; (e) `--sb-topH` users (the drawer, D1106's
+`highlights.ts`, `histbubble.ts`, `interactions.ts`, `rowdrag.ts`, `SchedBoard.tsx`. DONE, read: both drag
+edge-scrolls find the nearest scrolling box by its style (now `.schedboard`; the top band lies over the pinned bar, so
+a finger held over the bar scrolls up — a walk step); the History bubble listens to every scroll; D672's in-view test
+asks the browser what stands at the row (`seen.ts inView`), so the pinned bar counts; the floating windows read
+`.sb-top`'s foot (`floatwin.ts clearTop`), right at every scroll; no day change resets the board's scroll; the drawer's
+`--sb-topH` rule is phone-only. One fix: `scroll-padding-top` = the bar's height, so a jump never stops under the bar; (e) `--sb-topH` users (the drawer, D1106's
   windows) with the head scrolled away; (f) build, a quick Playwright look at 874×402 touch and 821/1000/1099/1100, the
   drawing check; then the Order below from step 5.
 
