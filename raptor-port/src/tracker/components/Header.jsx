@@ -89,6 +89,24 @@ function FindRow({ id, on, i, pick }) {
   );
 }
 
+/* Where Find is the strip under the bar rather than a box in it: the same width as tracker.css's
+   `@media(max-width:1050px)` block that makes `.findpanel` the fixed strip (a phone, an iPad, a narrow window). */
+const STRIP_Q = '(max-width:1050px)';
+function isStripNow() {
+  try { return typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia(STRIP_Q).matches; } catch (_) { return false; }
+}
+function useStrip() {
+  const [on, setOn] = useState(isStripNow);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return undefined;
+    const mq = window.matchMedia(STRIP_Q), hear = () => setOn(mq.matches);
+    hear();
+    if (mq.addEventListener) { mq.addEventListener('change', hear); return () => mq.removeEventListener('change', hear); }
+    return undefined;
+  }, []);
+  return on;
+}
+
 function HeaderSearch() {
   const [open, setOpen] = useState(false);
   const [at, setAt] = useState(null);
@@ -107,7 +125,24 @@ function HeaderSearch() {
     if (li && li.scrollIntoView) li.scrollIntoView({ block: 'nearest' });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- core.searchAt is a live module binding: when ↑ ↓ move the ring to another row, the newly ringed row is scrolled into view
   }, [showList, core.searchAt, hitIds]);
-  const pick = i => { core.searchGo(i); setList(false); if (input.current) input.current.blur(); };
+  /* A PICK PUTS FIND AWAY ON PURPOSE (owner D1791, 8 Nov 26): the strip used to close after a pick only by accident —
+     the picked row was gone before the "tap outside" check ran, which then read the tap as outside (notes-marks.md §2).
+     Where Find is the bar's own box (a desktop) `open` is not used, so this changes nothing there. */
+  const pick = i => { core.searchGo(i); setList(false); if (input.current) input.current.blur(); setOpen(false); };
+  /* FIND'S ✕ WHERE FIND IS THE STRIP (owner D1791): it empties the box and puts Find away — the keyboard down, the tabs
+     back — as Escape does (line below), in one tap; its hover words say so. Where Find is the bar's own box (wider than
+     1050, tracker.css) the ✕ is as it was: the box emptied and the keyboard kept in it. Pressed from the keyboard, the
+     keys go back to 🔍, the button that opened the strip (the design guide §2); a tap leaves them nowhere, as Escape does. */
+  const strip = useStrip();
+  const clearX = e => {
+    core.clearSearch();
+    if (!isStripNow()) { if (input.current) input.current.focus(); return; }
+    setList(false); setOpen(false);
+    if (input.current) input.current.blur();
+    const btn = document.getElementById('hSearchBtn');
+    if (e && e.detail === 0 && btn) btn.focus({ preventScroll: true });
+    else if (e && e.currentTarget && e.currentTarget.blur) e.currentTarget.blur();
+  };
   useLayoutEffect(() => {
     if (!open) { setAt(null); return; }
     const place = () => {
@@ -148,8 +183,8 @@ function HeaderSearch() {
                handler, it simply clears the box first. */
             if (e.key === 'Escape') { core.clearSearch(); e.currentTarget.blur(); setOpen(false); }
           }} /></span>
-        <button className="sm" id="hSearchClear" title="Clear the search"
-          onClick={() => { core.clearSearch(); if (input.current) input.current.focus(); }}>✕</button>
+        <button className="sm" id="hSearchClear" title={strip ? 'Clear the search and close Find' : 'Clear the search'} aria-label={strip ? 'Clear the search and close Find' : 'Clear the search'}
+          onClick={clearX}>✕</button>
         <span className="findstat" id="hSearchStat">{stat}</span>
         {/* Always in the DOM, hidden by CSS (the menu panels' rule): the list
             is measured by the smoke suite while shut, and the ref has to

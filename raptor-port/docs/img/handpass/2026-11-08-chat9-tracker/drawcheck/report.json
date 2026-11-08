@@ -1,0 +1,1038 @@
+{
+ "spec": "Chat 9's Tracker — the marking window's place, Find put away, the Restore button's drawn arrow",
+ "dist": "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\e5a9e348dc0d9712\\48941a58-617e-4217-acf5-4197f9f0a2b3\\scratchpad\\drawcheck\\dist-head",
+ "all": false,
+ "report": [
+  {
+   "state": "trkpop-ph",
+   "title": "The Tracker's marking window after the chart slides the event up, iPhone",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-trkpop-ph-A-drawn"
+   },
+   "approved": {
+    "picture": "q-trkpop-ph-A-drawn.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "ball",
+     "label": "ACG-09's ball",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 211.2,
+        "y": 186.7,
+        "w": 29.6,
+        "h": 29.6
+       },
+       "ink": {
+        "x": 219.9,
+        "y": 198.8,
+        "w": 12.2,
+        "h": 5
+       },
+       "text": "ACG-09",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "g"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 211.2,
+        "y": 186.7,
+        "w": 29.6,
+        "h": 29.6
+       },
+       "ink": {
+        "x": 219.9,
+        "y": 198.8,
+        "w": 12.2,
+        "h": 5
+       },
+       "text": "ACG-09",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "g"
+      }
+     }
+    },
+    {
+     "part": "pop",
+     "label": "the marking window",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top)",
+       "drawing": "214",
+       "build": "220.3",
+       "by": "6.3px lower",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "trkpop-ph--pop.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184,
+        "y": 214,
+        "w": 210,
+        "h": 429.4
+       },
+       "ink": {
+        "x": 194,
+        "y": 224,
+        "w": 183,
+        "h": 401.9
+       },
+       "text": "ACG-09 · STUDENT A Not done DCO DPCO Marginal N.A. Close Done on (when marked) Mon 13 Jul 26 ▾ Fails: − 0 + Failed on Mon 13 Jul 26 ▾ Emergency Procedures and Abnormal Operations Type: Lecture · 2.0 Hrs Prerequisites: ACG-08 Edit details",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "11px",
+         "11px",
+         "11px",
+         "11px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.6) 0px 12px 40px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pop.zz-ring.zz-tb.zz-x"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 184,
+        "y": 220.3,
+        "w": 210,
+        "h": 429.4
+       },
+       "ink": {
+        "x": 194,
+        "y": 230.3,
+        "w": 183,
+        "h": 401.9
+       },
+       "text": "ACG-09 · STUDENT A Not done DCO DPCO Marginal N.A. Close Done on (when marked) Mon 13 Jul 26 ▾ Fails: − 0 + Failed on Mon 13 Jul 26 ▾ Emergency Procedures and Abnormal Operations Type: Lecture · 2.0 Hrs Prerequisites: ACG-08 Edit details",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "11px",
+         "11px",
+         "11px",
+         "11px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.6) 0px 12px 40px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pop"
+      }
+     }
+    },
+    {
+     "part": "tabs",
+     "label": "the Flow chart · Info · Show All tabs",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 118.5,
+        "w": 402,
+        "h": 46
+       },
+       "ink": {
+        "x": 57.1,
+        "y": 134,
+        "w": 304,
+        "h": 14
+       },
+       "text": "Flow chart Info Show All",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.viewtabs"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 118.5,
+        "w": 402,
+        "h": 46
+       },
+       "ink": {
+        "x": 57.1,
+        "y": 134,
+        "w": 304,
+        "h": 14
+       },
+       "text": "Flow chart Info Show All",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.viewtabs"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "trkfind-ph",
+   "title": "Find put away after ✕, iPhone",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-trkfind-ph-A-drawn"
+   },
+   "approved": {
+    "picture": "q-trkfind-ph-A-drawn.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "tabs",
+     "label": "the Flow chart · Info · Show All tabs (shown)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 118.5,
+        "w": 402,
+        "h": 46
+       },
+       "ink": {
+        "x": 57.1,
+        "y": 134,
+        "w": 304,
+        "h": 14
+       },
+       "text": "Flow chart Info Show All",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.viewtabs.zz-ring.zz-tb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 118.5,
+        "w": 402,
+        "h": 46
+       },
+       "ink": {
+        "x": 57.1,
+        "y": 134,
+        "w": 304,
+        "h": 14
+       },
+       "text": "Flow chart Info Show All",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.viewtabs"
+      }
+     }
+    },
+    {
+     "part": "btn",
+     "label": "the 🔍 button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 168.8,
+        "y": 86.3,
+        "w": 29,
+        "h": 26
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "normal"
+       },
+       "tag": "button.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 168.8,
+        "y": 86.3,
+        "w": 29,
+        "h": 26
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "normal"
+       },
+       "tag": "button.sm"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "r5c-pc",
+   "title": "The Tracker Reorder window's Restore with the drawn arrow, desktop",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5c-pc-restore-drawn"
+   },
+   "approved": {
+    "picture": "q-r5c-pc-restore-drawn.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "restore",
+     "label": "the Restore button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 870.6,
+        "y": 504,
+        "w": 77.4,
+        "h": 21
+       },
+       "ink": {
+        "x": 894.6,
+        "y": 508,
+        "w": 45.4,
+        "h": 14
+       },
+       "text": "Restore",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.zz-ring.zz-tb.zz-x"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 871.6,
+        "y": 504,
+        "w": 76.4,
+        "h": 21
+       },
+       "ink": {
+        "x": 894.6,
+        "y": 508,
+        "w": 45.4,
+        "h": 14
+       },
+       "text": "Restore",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      }
+     }
+    },
+    {
+     "part": "arrow",
+     "label": "its Reset arrow",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 878.6,
+        "y": 507,
+        "w": 15,
+        "h": 15
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 879.6,
+        "y": 507,
+        "w": 15,
+        "h": 15
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      }
+     }
+    },
+    {
+     "part": "word",
+     "label": "the word \"Restore\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 870.6,
+        "y": 504,
+        "w": 77.4,
+        "h": 21
+       },
+       "ink": {
+        "x": 894.6,
+        "y": 508,
+        "w": 45.4,
+        "h": 14
+       },
+       "text": "Restore",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.zz-ring.zz-tb.zz-x"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 871.6,
+        "y": 504,
+        "w": 76.4,
+        "h": 21
+       },
+       "ink": {
+        "x": 894.6,
+        "y": 508,
+        "w": 45.4,
+        "h": 14
+       },
+       "text": "Restore",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "r5c-ph",
+   "title": "The Tracker Reorder window's Restore with the drawn arrow, iPhone",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5c-ph-restore-drawn"
+   },
+   "approved": {
+    "picture": "q-r5c-ph-restore-drawn.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "restore",
+     "label": "the Restore button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 278.6,
+        "y": 517,
+        "w": 77.4,
+        "h": 21
+       },
+       "ink": {
+        "x": 302.6,
+        "y": 521,
+        "w": 45.4,
+        "h": 14
+       },
+       "text": "Restore",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.zz-ring.zz-tb.zz-x"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 279.6,
+        "y": 517,
+        "w": 76.4,
+        "h": 21
+       },
+       "ink": {
+        "x": 302.6,
+        "y": 521,
+        "w": 45.4,
+        "h": 14
+       },
+       "text": "Restore",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      }
+     }
+    },
+    {
+     "part": "arrow",
+     "label": "its Reset arrow",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 286.6,
+        "y": 520,
+        "w": 15,
+        "h": 15
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 287.6,
+        "y": 520,
+        "w": 15,
+        "h": 15
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      }
+     }
+    },
+    {
+     "part": "word",
+     "label": "the word \"Restore\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 278.6,
+        "y": 517,
+        "w": 77.4,
+        "h": 21
+       },
+       "ink": {
+        "x": 302.6,
+        "y": 521,
+        "w": 45.4,
+        "h": 14
+       },
+       "text": "Restore",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.zz-ring.zz-tb.zz-x"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 279.6,
+        "y": 517,
+        "w": 76.4,
+        "h": 21
+       },
+       "ink": {
+        "x": 302.6,
+        "y": 521,
+        "w": 45.4,
+        "h": 14
+       },
+       "text": "Restore",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}
