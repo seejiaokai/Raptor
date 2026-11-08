@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/pr-leave-war-4988a8 -->
+### CHAT 8 — the pictures round's group 6, the Leave War, `claude/pr-leave-war-4988a8`; written 8 Nov 26 — verify before use
+- **The job (chat 3's brief, 8 Nov 26):** build group 6 of `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md` — D1788 (the day panel's "↓ N more" as the bell's grey foot: under the list, outside it, hairline above, small grey words at the left, not pressable, counting lines NOT WHOLLY in view, gone at the list's end; the bell's own cue follows the same counter) and D1789 (the grid's pinned dates row, and Quals' header, in the same frame as the rows; frames measured before and after at a phone and a desktop size; stop and tell him if scrolling slows); archive [LW-TWO-BOX-LETTERS] (overtaken by D1727) with `--homes raptor-port/docs/handpass/2026-11-06-lw-cell-combos.md raptor-port/docs/ui-contracts.md`. Items [LW-MORE-BELOW-CUE], [LW-FROZEN-BAR-GAP].
+- **Drawings and the build's notes:** `raptor-port/docs/img/handpass/2026-11-07-pictures-round/notes-lw.md` §2(g), §3(g); pictures `q-morebelow-*`, `q-blink-*`; measuring script `raptor-port/scripts/handpass/pr-lw.mjs` (`PR_ONLY=blink`). Code: `src/leavewar/ui/DayPanel.tsx` (window `lwday`), the bell's `.bl-foot` / `.bl-more` and `countBelow` in `src/ui/topbits.tsx`, its look in `src/ui/scheduler/02-shell.css`; the bar `pin()` in `src/leavewar/ui/Matrix.tsx` (`setStuck` in a passive scroll listener; `[data-testid="sticky-head"]`); Quals `src/ui/QualsPage.tsx` (same `stuck` shape).
+- **Lane:** `src/leavewar/` and the Quals header only; siblings chat 5 (board, OIL Earn), 6 (engine), 7 (Inputs page), 9 (Tracker). Rulings D1850–D1859; skill notes past every branch's. This branch tracks nothing (`branch.<b>.merge` empty) — push as `git push origin claude/pr-leave-war-4988a8:refs/heads/claude/pr-leave-war-4988a8`.
+- **State:** read in; nothing built yet. Next: frames before, build, drawing check, frames after, the bug check (tier, roll-call, walk with pictures, plain-user round), Astra + a fresh blind Opus read, pull request into `main`, his look.
+- **Rulings:** none yet.
+<!-- /now -->
 <!-- now:claude/pictures-round -->
 ### CHAT 3 — the pictures round, `claude/pictures-round` (D1747); written 7 Nov 26, 23:55 — verify before use
 - **His go (7 Nov 26, about 23:30), unattended:** draw the pictures round of the sizing plan's §3 (`raptor-port/docs/superpowers/plans/2026-11-05-backlog-sizing.md`) — each question pictured on the real app today and each fix drawn, one Artifact page he answers from his phone; nothing built in the app (D1625, D853, D1222, D1363, D1496, D1478).
