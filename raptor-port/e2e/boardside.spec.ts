@@ -151,7 +151,8 @@ test('a phone on its side: a row held by its grip just under the bar scrolls the
     const dayTop = document.querySelector('#schedBoard .sb-top')!.getBoundingClientRect().bottom
     const g = [...document.querySelectorAll('#schedBoard .sb-board .sb-grip')].map(e => e.getBoundingClientRect())
       .find(r => r.width > 0 && r.top > dayTop + 60 && r.bottom < innerHeight - 60)
-    return { g: g ? { x: g.left + g.width / 2, y: g.top + g.height / 2 } : null, dayTop, st: board.scrollTop }
+    const br = board.getBoundingClientRect()
+    return { g: g ? { x: g.left + g.width / 2, y: g.top + g.height / 2 } : null, dayTop, st: board.scrollTop, boardTop: br.top, boardH: br.height }
   })
   expect(m.g, 'a line\'s grip in view, clear of both bands').toBeTruthy()
   expect(m.st).toBe(300)
@@ -159,7 +160,12 @@ test('a phone on its side: a row held by its grip just under the bar scrolls the
   const at = (x: number, y: number) => cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y, id: 1 }] })
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ ...m.g!, id: 1 }] })
   await sleep(300)
-  const to = { x: m.g!.x, y: m.dayTop + 8 }
+  /* held past where the band would end if it began at the board's own top edge (hidden under the bar), yet inside the
+     band that begins at the bar's foot: only the fix scrolls here (its red run, 8 Nov 26 — held 8px under the bar the
+     finger was inside the old band too, and the test passed without the fix) */
+  const oldLip = m.boardTop + Math.min(72, m.boardH / 6), newLip = m.dayTop + Math.min(72, (m.boardTop + m.boardH - m.dayTop) / 6)
+  const to = { x: m.g!.x, y: Math.round(oldLip + 6) }
+  expect(to.y, 'the fixture: the hold lies between the inner edges of the two bands').toBeLessThan(newLip - 4)
   for (let i = 1; i <= 8; i++) await at(m.g!.x, m.g!.y + (to.y - m.g!.y) * i / 8)
   for (let i = 0; i < 12; i++) { await at(to.x, to.y + (i % 2)); await sleep(30) }
   const st = await page.evaluate(() => (document.getElementById('schedBoard') as HTMLElement).scrollTop)
