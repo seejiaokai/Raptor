@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1752 | 8 Nov 26 | At the database step Admin → Data's "Clear edit history…" button is removed, so nobody can erase the app's change history by hand; until then it stays as built; how long the app keeps that history is still set by the IT side's rule on how long their audit is kept. |
 | D1749 | 7 Nov 26 | At the database step the app and its tables go first into his own premium M365 test account: the tables built there with the IT side's own table-building kit, the app tested on them, then the tested table list handed to the IT side, who build the same tables with the same kit; nothing of the database is built there before that step. |
 | D1745 | 7 Nov 26 | February 2027 is not a deadline: the M365 and database work is planned by what it needs, never squeezed to a date, and no step is rushed or its checks cut to meet one. |
 | D1744 | 7 Nov 26 | Every chat has a number at the start of its title — 1 for the M365 package chat, 2 for the rules diet's step 4, then counting on — so he can tell the chats apart; each chat says its number when it reports to him, and the handoff file keeps the next free number. |
@@ -177,7 +178,6 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 | D465 | 30 Sep 26 | [DB-READINESS] phase 6's build permission is spent (built and merged). The final hand-over of the day and request tables waits for the IT side's written answer; if IT's reports cannot reproduce the worked-out picture, a reportable piece is added then — nothing built is undone. — changed by D609, D467 |
 | D453 | 29 Sep 26 | The order to the database: the day-lock design fixed with the red team's findings; then group A — what decides the tables' shape (built, phases 0–7); then group B — what is tuned against the real database — after the app is connected, which is at the end, once the features are built (D473); the lock's screens last. — changed by D473 |
 | D353 | 28 Sep 26 | Scenarios and side questions one reviewer (Astra first, Sol 6.1 if Astra is unavailable); important plans and risky code two — Astra and Sol 6.1 for what Opus wrote (D590), Fable on call only. — changed by D590, D496 |
-| D351 | 28 Sep 26 | Admin → Data → "Clear edit history…" stays as it is until the database step, where the organisation's retention rule decides how long the change history is kept. |
 | D350 | 28 Sep 26 | In this build the one undo does not take back adding a person (with or without his sign-in), archive, Restore / Restore as, delete, or a posting (post out / post in and their sheet's undos). |
 | D390 | 28 Sep 26 | Every ruling loads as one short line — its number, its date, the rule — with its full row kept whole beside it in .claude/decisions-full/, searched, never loaded; a chat opens the full row before acting on its detail or asking him; the project guide gets the same treatment, now (D391). — changed by D1735, D391 |
 | D343 | 28 Sep 26 | No public GitHub web address — D341 is withdrawn the same hour. |

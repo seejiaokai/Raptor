@@ -1687,7 +1687,10 @@ are kept for a period the squadron sets, then purged by a scheduled job;
    full — D169, D211; each person's own "seen" is `EditLogSeen`, §11.) **And `EditLog.seq` is yours (30 Sep 26):** the
    store's own rising number, assigned as each line is saved; until then the app orders the log by `(at, lineId)`, and
    "seen" and an account's `seenFrom` are positions in that order — please confirm you can assign it. **8 Nov 26:** the
-   platform's audit is on and managed by the PP CoE; how long it — and this log — are kept is still to ask (D351).
+   platform's audit is on and managed by the PP CoE; how long it — and this log — are kept is still to ask. **D1752 (8 Nov 26,
+   replacing D351):** Admin → Data's "Clear edit history…" is removed at the database step — no one deletes log lines by
+   hand, and the log is kept as long as the audit rule says (the agent's reading: if room is short, older lines are
+   dropped by the app itself).
 5. **Is `Attempt` history required from day one?** Two routes: build the
    table at stage 1 and back-fill it from the existing `{ g, f, fd, d }`
    summary (one pass, dates present for most rows), or keep the summary

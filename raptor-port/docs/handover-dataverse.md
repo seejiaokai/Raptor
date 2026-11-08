@@ -100,10 +100,10 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
      off by default, lets people waiting read the published week as a guest; the app keeps no password. The `User` and `AccessRequest` tables, and the
      permissions table the app mirrors (drift-tested), are `data-model.md` §3 and §11. Who may enter the app at
      all (the security group / environment roles) is set in your environment, not by the app;
-  4. how long the edit log is kept and who may read it; **(owner, D351, 28 Sep 26): until then Admin → Data's "Clear edit
-     history…" stays as it is (admin-only, two taps, permanent, leaving a dated line naming who cleared how much); your
-     retention rule decides whether it follows that rule or goes** — *8 Nov 26: auditing is on and managed by you; how
-     long it is kept still to ask*;
+  4. how long the edit log is kept and who may read it; **(owner, D1752, 8 Nov 26 — replacing D351): at the database step
+     Admin → Data's "Clear edit history…" is removed, so nobody erases the change history by hand; until then it stays as
+     built. The app keeps its history as long as your audit rule says (our plan: older lines dropped by the app itself
+     only if room is short)** — *8 Nov 26: auditing is on and managed by you; how long it is kept still to ask*;
   5. whether the attempt-by-attempt training history is built from day one
      or after the first migration stage;
   6. whether a day of the flying programme is split into its rows from the start or later — **a week is
