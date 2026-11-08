@@ -2017,10 +2017,35 @@ test('the pinned dates row follows when something above the grid grows or shrink
     document.querySelector('#page-leavewar')!.prepend(d)
   })
   await expect.poll(async () => (await lwPin(page))?.under, { message: 'the block pushed the row back below the bar' }).toBe(false)
-  await expectPinned(page, 'sticky-head', false, 'so the copy lets go, though the page did not scroll')
+  // GitHub's phone run of 8 Nov 26 failed here and the PC never has: if it fails again, the copy's state is printed
+  await expectPinned(page, 'sticky-head', false, 'so the copy lets go, though the page did not scroll').catch(async e => {
+    console.log('D1870 state', JSON.stringify(await page.evaluate(() => {
+      const el = document.querySelector('[data-testid="sticky-head"]') as HTMLElement
+      const cs = getComputedStyle(el)
+      return { s: el.style.getPropertyValue('--lwy-s'), up: el.classList.contains('up'), opacity: cs.opacity, anim: cs.animationName, range: cs.getPropertyValue('animation-range'),
+        sda: !!document.querySelector('.lw-pinsda'), y: window.scrollY, row: document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect().top,
+        bar: document.querySelector('.topbar')!.getBoundingClientRect().bottom, body: document.body.getBoundingClientRect().height }
+    })))
+    throw e
+  })
   await page.evaluate(() => document.getElementById('__above')!.remove())
   await expect.poll(async () => (await lwPin(page))?.under).toBe(true)
   await expectPinned(page, 'sticky-head', true, 'and pins again when the block goes')
+})
+/* GitHub's phone run of 8 Nov 26 (chat 16): the block went in while the grid was redrawing, so the height watch, set up
+   afresh by the redraw, took its first reading with the block already there and never saw a change. Forced here: a
+   group folded (the grid redraws, the watch is set up again) and the block put above the grid in the same moment. */
+test('the pinned dates row follows a block put above the grid in the very moment the grid redraws (D1870)', async ({ page }) => {
+  await page.addStyleTag({ content: '* { overflow-anchor: none !important; }' })
+  const y = await page.evaluate(() => { const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect(); const bar = document.querySelector('.topbar')!.getBoundingClientRect(); return Math.round(window.scrollY + head.top - bar.bottom + 30) })
+  await page.evaluate(y => window.scrollTo(0, y), y)
+  await expectPinned(page, 'sticky-head', true, '30px past the bar, the row is pinned')
+  await page.evaluate(() => {
+    (document.querySelector('#page-leavewar [data-testid^="groupfold-"]') as HTMLElement).click()
+    const d = document.createElement('div'); d.id = '__above'; d.style.cssText = 'display:block;height:100px'; document.querySelector('#page-leavewar')!.prepend(d)
+  })
+  await expect.poll(async () => (await lwPin(page))?.under, { message: 'the block pushed the row back below the bar' }).toBe(false)
+  await expectPinned(page, 'sticky-head', false, 'so the copy lets go, though the watch was set up again in that moment')
 })
 test('while the fingers pinch part-way down, the pinned dates row shows by the pinch’s rule (D1870, D1287)', async ({ page }) => {
   test.skip(!isPhone(), 'a two-finger pinch')

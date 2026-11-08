@@ -141,6 +141,20 @@ times are measured next (below) before this is judged.
 
 ## The gate counts
 
+**GitHub's first run (on the merge of `main`, 8 Nov 26): 3 failed, 238 passed in the phone group.** Each, and what was done:
+1. and 2. D1789's two unit tests (the Leave War's and Quals') expected the pinned copy to leave the page on a scroll; the
+   test browser runs the scroll timeline, so the copy now stays in the page and only lets go. Rewritten to run both
+   ways — the browser's way checks the copy lets go and pins again in the scroll's own step (its `up` class), the old
+   way keeps the original check (the copy taken out) — 12 of 12 pass; nothing they proved is dropped.
+3. The phone browser test "the pinned dates row follows when something above the grid grows or shrinks with no scroll"
+   failed twice on GitHub: the block pushed the row below the bar, but the copy stayed shown. **Never reproduced on the
+   PC** — 6 of 6 pass, and 6 of 6 with the browser slowed six times. One real gap found by reading the watch: set up
+   afresh by a redraw, it took its first height a frame late, so a block put in that same frame was never seen as a
+   change — closed on both pages (the first height read as the watch is set up); a test forcing that moment (a group
+   folded and the block put in at once) passed before the fix too, so it is not proof of GitHub's cause. The test now
+   prints the copy's state if it fails again; **GitHub's next run decides it** — if it fails, its printed state is the
+   next step. All 14 pinned-row browser tests pass on the PC on the fixed build.
+
 ## What the walk found, and each disposition
 
 ## The reads

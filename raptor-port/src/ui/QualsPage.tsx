@@ -882,20 +882,26 @@ export function QualsPage() {
     }
     /* SOMETHING ABOVE THE TABLE GROWS OR SHRINKS WITH NO SCROLL (his D1870's loose end: a fold, a band) — or the top bar's
        foot moves (the "Not saved" band, D587): where the page's scroll turns the pinned heading on, and its top, would be
-       stale until the next scroll. The page's own height and the top bar's are watched — heights only, and not their first
-       report — and a change re-pins. */
+       stale until the next scroll. The page's own height and the top bar's are watched — heights only — and a change
+       re-pins. The first height is read as the watch is set up, not at its first report a frame later: set up afresh (a
+       view switched, editing begun), a watch whose first report already held a block put in that same frame would never
+       see it as a change (as the Leave War's, Matrix.tsx). */
     const heights = new Map<Element, number>()
+    const hOf = (el: Element) => el.getBoundingClientRect().height
     const moved = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
       let changed = false
       for (const e of entries) {
-        const h = e.contentRect.height
-        if (heights.has(e.target) && heights.get(e.target) !== h) changed = true
+        const h = hOf(e.target)
+        if (heights.get(e.target) !== h) changed = true
         heights.set(e.target, h)
       }
       if (changed) pin(true)
     }) : null
     const bar = document.querySelector('.topbar')
-    if (moved) { moved.observe(document.body); if (bar) moved.observe(bar) }
+    if (moved) {
+      heights.set(document.body, hOf(document.body)); moved.observe(document.body)
+      if (bar) { heights.set(bar, hOf(bar)); moved.observe(bar) }
+    }
     /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26) */
     pin(false)
     return () => {

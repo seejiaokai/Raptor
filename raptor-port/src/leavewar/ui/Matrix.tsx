@@ -2092,19 +2092,25 @@ export function Matrix() {
        row still in sight or a beat after the row went under, and stand at the bar's old foot. The page's height and the
        bar's are watched, and a change of either re-pins at once — a fresh turn-on point and the bar's new foot (in the
        old way too, where a pinned copy kept the bar's old foot until it was let go). Only a HEIGHT that changed counts:
-       the watch's first report, and a width alone (a resize, which `remeasure` already takes), do nothing. */
+       a width alone (a resize, which `remeasure` already takes) does nothing. The first height is read as the watch is
+       set up, not at its first report a frame later: set up afresh by a redraw (more months drawn, a group folded), a
+       watch whose first report already held a block put in that same frame would never see it as a change. */
     const heights = new Map<Element, number>()
+    const hOf = (el: Element) => el.getBoundingClientRect().height
     const moved = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
       let changed = false
       for (const e of entries) {
-        const h = e.contentRect.height
-        if (heights.has(e.target) && heights.get(e.target) !== h) changed = true
+        const h = hOf(e.target)
+        if (heights.get(e.target) !== h) changed = true
         heights.set(e.target, h)
       }
       if (changed) pin(true)
     }) : null
     const bar = document.querySelector('.topbar')
-    if (moved) { moved.observe(document.body); if (bar) moved.observe(bar) }
+    if (moved) {
+      heights.set(document.body, hOf(document.body)); moved.observe(document.body)
+      if (bar) { heights.set(bar, hOf(bar)); moved.observe(bar) }
+    }
     /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26) */
     pin(false)
     return () => {
