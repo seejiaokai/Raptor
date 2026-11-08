@@ -1,0 +1,82 @@
+{
+ "a.tabindex": {
+  "tag": "BUTTON",
+  "tabindex": null,
+  "role": null,
+  "parentTag": "SPAN"
+ },
+ "a.tab-to-name": {
+  "i": 0,
+  "tag": "BUTTON",
+  "cls": "ntx inpedit",
+  "text": "LL",
+  "title": "Edit this input — times, type,",
+  "outline": "solid 2px rgb(59, 198, 232)",
+  "boxShadow": "none",
+  "deco": "underline dotted",
+  "x": 379,
+  "y": 370
+ },
+ "a.enter-opens": {
+  "open": false
+ },
+ "a.after-escape": {
+  "open": false,
+  "focus": "ntx inpedit"
+ },
+ "b.focus-first-mute": {
+  "tag": "BUTTON",
+  "cls": "witem-mute",
+  "text": "✕",
+  "title": "Hide this warning — it flags n",
+  "outline": "auto 1px rgb(16, 16, 16)",
+  "boxShadow": "none",
+  "deco": "none solid",
+  "x": 860,
+  "y": 457
+ },
+ "b.enter-hides": {
+  "hasReset": true,
+  "title": "Flag this again",
+  "focusNow": "BODY"
+ },
+ "b.focus-on-reset": {
+  "tag": "BODY",
+  "cls": "",
+  "text": "142TALONEdit ScheduleView-only",
+  "title": "",
+  "outline": "none 3px rgb(241, 244, 247)",
+  "boxShadow": "none",
+  "deco": "none solid",
+  "x": 0,
+  "y": 0
+ },
+ "b.space-flags-again": {
+  "hasReset": false,
+  "text": "✕",
+  "bar": "⚠ 4 issues · 2 warning ▲"
+ },
+ "c.resize-2560": "ok",
+ "c.eyes": [
+  [
+   11,
+   11,
+   "psl"
+  ],
+  [
+   12,
+   12,
+   "dprev-bar"
+  ]
+ ],
+ "c.board-2560": [
+  [
+   11,
+   11
+  ],
+  [
+   12,
+   12
+  ]
+ ]
+}

@@ -1,0 +1,102 @@
+{
+ "state": "eye-board-bar-desk",
+ "drawing": {
+  "script": "scripts/handpass/pr-marks.mjs",
+  "shot": "q-r5a-pc-board-bar-drawn"
+ },
+ "recorded": "2026-11-08T05:08:02.991Z",
+ "drawnOn": "main at 6e6c55667",
+ "checkout": "9fc5961d9",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "bar": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1239,
+    "y": 116,
+    "w": 275,
+    "h": 130
+   },
+   "ink": {
+    "x": 1250,
+    "y": 126.5,
+    "w": 245.9,
+    "h": 108.5
+   },
+   "text": "← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0.25)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.dprev-bar.zz-ring.zz-tb.zz-x"
+  },
+  "bareye": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1378.3,
+    "y": 128,
+    "w": 12,
+    "h": 12
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q-r5a-pc-board-bar-drawn.png",
+  "identical": true
+ }
+}

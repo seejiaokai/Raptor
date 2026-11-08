@@ -36,7 +36,7 @@ const readList = (page: Page, surf: string, di: number) => page.evaluate(([s, i]
       const txt = (e.querySelector('.wtx') || e.children[1]) as HTMLElement, cs = getComputedStyle(txt), b = e.querySelector('button.witem-mute') as HTMLElement | null
       let top = false
       if (b) { const r = b.getBoundingClientRect(); const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); top = !!hit && (hit === b || b.contains(hit)) }
-      return { ix: +(e as HTMLElement).dataset.wix!, hid: e.classList.contains('hid'), struck: cs.textDecorationLine.includes('line-through'), color: cs.color, btn: b ? b.innerText.trim() : '', btnOnTop: top }
+      return { ix: +(e as HTMLElement).dataset.wix!, hid: e.classList.contains('hid'), struck: cs.textDecorationLine.includes('line-through'), color: cs.color, btn: b ? (b.querySelector('svg.wmuteico') ? 'reset' : b.innerText.trim()) : '', btnOnTop: top }
     }),
   }
 }, [surf, di] as const)
@@ -67,8 +67,9 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
       expect(after.lines[3]!.struck, 'painted struck through').toBe(true)
       expect(after.lines[2]!.struck).toBe(false)
       expect(after.lines[3]!.color, 'and greyed, unlike a live line').not.toBe(after.lines[2]!.color)
-      expect(after.lines[3]!.btn).toBe('↺')
-      expect(after.lines[3]!.btnOnTop, 'the ↺ is what a finger lands on').toBe(true)
+      /* D1792 (d), 8 Nov 26: the flag-again is the app's drawn Reset arrow, no longer a typed ↺ */
+      expect(after.lines[3]!.btn).toBe('reset')
+      expect(after.lines[3]!.btnOnTop, 'the arrow is what a finger lands on').toBe(true)
       const pk = await pucks(page, `#eWeek .day[data-day="${TUE}"]`, STATIC)
       expect(pk.length, 'his puck is on the day').toBeGreaterThan(0)
       expect(pk.some(p => p.warn || p.chip), 'no ring, no chip (D469)').toBe(false)
@@ -101,10 +102,10 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
       const rows = await page.evaluate(() => [...document.querySelectorAll('#schedBoard .sb-warn .wln[data-wix]')].map(e => {
         const t = e.querySelector('.wln-t') as HTMLElement, b = e.querySelector('button.wln-mute') as HTMLElement
         const r = b.getBoundingClientRect(), hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
-        return { hid: e.classList.contains('hid'), struck: getComputedStyle(t).textDecorationLine.includes('line-through'), btn: b.innerText.trim(), onTop: !!hit && (hit === b || b.contains(hit)) }
+        return { hid: e.classList.contains('hid'), struck: getComputedStyle(t).textDecorationLine.includes('line-through'), btn: b.querySelector('svg.wmuteico') ? 'reset' : b.innerText.trim(), onTop: !!hit && (hit === b || b.contains(hit)) }
       }))
       expect(rows.map(r => r.hid)).toEqual([false, false, false, true])
-      expect(rows[3]).toMatchObject({ struck: true, btn: '↺', onTop: true })
+      expect(rows[3]).toMatchObject({ struck: true, btn: 'reset', onTop: true })   // the drawn Reset arrow (D1792 (d))
       expect(await page.locator('#schedBoard .sb-warn').innerText()).not.toMatch(/\d+ hidden/)
       expect((await pucks(page, '#schedBoard', STATIC)).some(p => p.warn || p.chip), 'no flag on the board either').toBe(false)
     })

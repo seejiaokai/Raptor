@@ -1,0 +1,98 @@
+[
+ {
+  "id": "S21.0 clean published Wed",
+  "size": "phone",
+  "exp": "no row, no pending",
+  "got": "pend=null ver=ORIG rows=OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s21-0-clean.png"
+ },
+ {
+  "id": "S21.1 filed LL",
+  "size": "phone",
+  "exp": "Bolt marked, 1 pending",
+  "got": "pend=1 pending ver=ORIG rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s21-1-filed.png"
+ },
+ {
+  "id": "S21.2 Undo",
+  "size": "phone",
+  "exp": "input gone, no pending, no mark",
+  "got": "pend=null ver=ORIG rows=OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s21-2-undo.png"
+ },
+ {
+  "id": "S21.3 Redo",
+  "size": "phone",
+  "exp": "input back, marked, 1 pending",
+  "got": "pend=1 pending ver=ORIG rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s21-3-redo.png"
+ },
+ {
+  "id": "S21.4 week buttons",
+  "size": "phone",
+  "exp": "RECORD",
+  "got": "no visible week button named Jul 20 on this size; week switch not driven",
+  "verdict": "NOT DRIVEN",
+  "pic": ""
+ },
+ {
+  "id": "S21.4a week away (Monday Jul 13 · Today Templates Live wor) and back",
+  "size": "phone",
+  "exp": "marked, 1 pending",
+  "got": "pend=1 pending ver=ORIG rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s21-4a-weekback.png"
+ },
+ {
+  "id": "S21.4b board after week return",
+  "size": "phone",
+  "exp": "Bolt box outlined dotted",
+  "got": "[{\"name\":\"LL\",\"tag\":\"BUTTON\",\"aln\":\"1\",\"outline\":\"dotted 1px rgb(59, 198, 232)\",\"bg\":\"rgba(178, 77, 234, 0.12)\",\"color\":\"rgb(221, 168, 245)\"}]",
+  "verdict": "PASS",
+  "pic": "phone-s21-4b-board.png"
+ },
+ {
+  "id": "S21.5 reload while pending (sign-in screen came back; signed in again)",
+  "size": "phone",
+  "exp": "marked, 1 pending",
+  "got": "pend=1 pending ver=ORIG rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s21-5-reload.png"
+ },
+ {
+  "id": "S21.6 Publish AL1 {\"published\":true,\"label\":\"Publish AL1\",\"version\":\"AL1\",\"signSelects\":4}",
+  "size": "phone",
+  "exp": "row stays, mark gone, pending gone (colour before rgb(59, 198, 232))",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s21-6-published.png"
+ },
+ {
+  "id": "S21.7 reload after AL1",
+  "size": "phone",
+  "exp": "clean: row, no mark, no pending",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s21-7-reload-clean.png"
+ },
+ {
+  "id": "S21.8 week away/back after AL1",
+  "size": "phone",
+  "exp": "still clean",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s21-8-awayback-clean.png"
+ },
+ {
+  "id": "S21 errors",
+  "size": "phone",
+  "exp": "none",
+  "got": "none",
+  "verdict": "RECORDED",
+  "pic": ""
+ }
+]

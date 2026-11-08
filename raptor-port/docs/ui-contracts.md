@@ -12431,7 +12431,9 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1783** — in OIL Earn a tap on a puck that cannot earn picks nothing; the plain passing note says "Nothing changed for
   <callsign>." and the reason.
 - **D1784** — an input filed after publishing wears the waiting mark on its Unavailable row too, as on Ground Programme.
+  Built (chat 13): `engine/publish.ts pendingInputIds` (the list the count reads), `ui/html.ts unavPendAtt` on the week's and the board's (`board-html.ts sbInpRow`) Unavailable name, drawn by `scheduler/04-pucks-sections.css`; pins `ui/unavmark.test.tsx`.
 - **D1785** — an unreadable week's notice and refusal words, the refusal in the grey "Blocked:" note.
+  Built (chat 13): `engine/quarantine.ts weekLockReason`; the notice `ui/html.ts quarantineNote` (the week and the board); the refusal `engine/publish.ts lockedWeekNote` / `lockedDayNote`, at every door that refused a locked week; pins `engine/lockednote.test.ts`, `state/quarantine-funnel.test.ts`, `ui/html.test.ts`.
 - **D1787** — the desktop Inputs list's "+ Input" at its row's right end; the list makes room for the window from about
   1340 wide, Name, Start and End narrowing first; narrower, the window covers it as today. The older narrow-list fault
   (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing. *Built 8 Nov 26 (chat 7,
@@ -12484,6 +12486,7 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
   hidden warning's ↺; the ✕ stays typed. *(b) built 8 Nov 26 (chat 7):* `ui/glyphs.ts` `EXPAND_INNER` / `COMPACT_INNER`
   (`ui/icons.tsx` `ExpandIcon` / `CompactIcon`) on `ui/InputsCal.tsx`'s `ib-expand`, 16px; pin `ui/inputsmonth.test.tsx`.
+  Built (chat 13 — the eye and the warning's arrow): `ui/glyphs.ts EYE_INNER`, drawn in the plan selector, the version banner (`html.ts`, `SchedBoard.tsx`) and the wave templates window; the Reset arrow on a hidden warning (`html.ts`, `board.ts`); pins `ui/planselector.test.tsx`, `ui/warnmute-week.test.ts`.
   **(c) built 8 Nov 26 (chat 9):** the Tracker's Restore — ⇅ Reorder courses' and syllabi's deleted lists — wears the
   Tracker's own drawn Reset arrow (`components/Glyphs.jsx` `ResetGlyph`, the same paths as the app's `RESET_INNER`), at
   the drawing's 15px; no shared icon set touched. Pins: `trk-round-seen.test.ts`, the smoke suite.

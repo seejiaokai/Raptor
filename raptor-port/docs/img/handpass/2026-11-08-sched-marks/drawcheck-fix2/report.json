@@ -1,0 +1,3853 @@
+{
+ "spec": "The schedule’s marks and words — the waiting mark on Unavailable, the unreadable week, the drawn eye and Reset arrow",
+ "dist": "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\e63929f0a8c01089\\bf4e1ab0-4906-4138-afef-e67911a71441\\scratchpad\\dist-sm2",
+ "all": false,
+ "report": [
+  {
+   "state": "unav-week-desk",
+   "title": "The waiting mark on Edit Schedule’s Unavailable list, desktop (D1784)",
+   "drawing": {
+    "script": "scripts/handpass/pr-sched.mjs",
+    "shot": "q-unavmark-pc-unav-A"
+   },
+   "approved": {
+    "picture": "q-unavmark-pc-unav-A.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "sec",
+     "label": "the Unavailable list",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 360,
+        "y": 374.6,
+        "w": 530,
+        "h": 229.6
+       },
+       "ink": {
+        "x": 375,
+        "y": 378.1,
+        "w": 503.5,
+        "h": 222.1
+       },
+       "text": "⠿ Unavailable Name Start End People Rmks LL C Bolt C LATE till 15 Jul OL Cobra IP Overseas leave — off island till 15 Jul ATT C Grit C Medically down till 17 Jul OD C Nomad C Overseas duty — exercise, off island till 17 Jul Reject OIL C Gambit C till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgba(240, 85, 95, 0.055)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "3px solid rgb(240, 85, 95)"
+        ],
+        "corners": [
+         "0px",
+         "9px",
+         "9px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sub.plist.one.sec"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 360,
+        "y": 374.6,
+        "w": 530,
+        "h": 229.6
+       },
+       "ink": {
+        "x": 375,
+        "y": 378.1,
+        "w": 503.5,
+        "h": 222.1
+       },
+       "text": "⠿ Unavailable Name Start End People Rmks LL C Bolt C LATE till 15 Jul OL Cobra IP Overseas leave — off island till 15 Jul ATT C Grit C Medically down till 17 Jul OD C Nomad C Overseas duty — exercise, off island till 17 Jul Reject OIL C Gambit C till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgba(240, 85, 95, 0.055)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "3px solid rgb(240, 85, 95)"
+        ],
+        "corners": [
+         "0px",
+         "9px",
+         "9px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sub.plist.one.sec"
+      }
+     }
+    },
+    {
+     "part": "row",
+     "label": "Bolt's LL row",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 369,
+        "y": 418.6,
+        "w": 521,
+        "h": 27
+       },
+       "ink": {
+        "x": 375,
+        "y": 424.3,
+        "w": 489.7,
+        "h": 17.3
+       },
+       "text": "LL C Bolt C LATE till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(255, 255, 255, 0.03)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pl-row"
+      },
+      "build": {
+       "found": true,
+       "count": 5,
+       "box": {
+        "x": 369,
+        "y": 418.6,
+        "w": 521,
+        "h": 27
+       },
+       "ink": {
+        "x": 375,
+        "y": 424.3,
+        "w": 489.7,
+        "h": 17.3
+       },
+       "text": "LL C Bolt C LATE till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(255, 255, 255, 0.03)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pl-row"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "its name \"LL\" (the waiting mark under it)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 375,
+        "y": 426.6,
+        "w": 183.8,
+        "h": 15
+       },
+       "ink": {
+        "x": 375,
+        "y": 425.6,
+        "w": 11.2,
+        "h": 16
+       },
+       "text": "LL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "button.ntx.inpedit.zz-tagged"
+      },
+      "build": {
+       "found": true,
+       "count": 5,
+       "box": {
+        "x": 375,
+        "y": 426.6,
+        "w": 183.8,
+        "h": 15
+       },
+       "ink": {
+        "x": 375,
+        "y": 425.6,
+        "w": 11.2,
+        "h": 16
+       },
+       "text": "LL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "button.ntx.inpedit"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "unav-week-phone",
+   "title": "The waiting mark on Edit Schedule’s Unavailable list, phone (D1784)",
+   "drawing": {
+    "script": "scripts/handpass/pr-sched.mjs",
+    "shot": "q-unavmark-ph-unav-A"
+   },
+   "approved": {
+    "picture": "q-unavmark-ph-unav-A.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "sec",
+     "label": "the Unavailable list",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 11,
+        "y": 375.2,
+        "w": 356,
+        "h": 267.1
+       },
+       "ink": {
+        "x": 26,
+        "y": 378.2,
+        "w": 334.7,
+        "h": 246.1
+       },
+       "text": "⠿ Unavailable Name Start People Rmks LL C Bolt C LATE till 15 Jul OL Cobra IP Overseas leave — off island till 15 Jul ATT C Grit C Medically down till 17 Jul OD C Nomad C Overseas duty — exercise, off island till 17 Jul Reject OIL C Gambit C till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgba(240, 85, 95, 0.055)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "3px solid rgb(240, 85, 95)"
+        ],
+        "corners": [
+         "0px",
+         "9px",
+         "9px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sub.plist.one.sec"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 11,
+        "y": 375.2,
+        "w": 356,
+        "h": 267.1
+       },
+       "ink": {
+        "x": 26,
+        "y": 378.2,
+        "w": 334.7,
+        "h": 246.1
+       },
+       "text": "⠿ Unavailable Name Start People Rmks LL C Bolt C LATE till 15 Jul OL Cobra IP Overseas leave — off island till 15 Jul ATT C Grit C Medically down till 17 Jul OD C Nomad C Overseas duty — exercise, off island till 17 Jul Reject OIL C Gambit C till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgba(240, 85, 95, 0.055)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "3px solid rgb(240, 85, 95)"
+        ],
+        "corners": [
+         "0px",
+         "9px",
+         "9px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sub.plist.one.sec"
+      }
+     }
+    },
+    {
+     "part": "row",
+     "label": "Bolt's LL row",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 20,
+        "y": 417.2,
+        "w": 347,
+        "h": 40
+       },
+       "ink": {
+        "x": 26,
+        "y": 422.9,
+        "w": 292.4,
+        "h": 23.3
+       },
+       "text": "LL C Bolt C LATE till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(255, 255, 255, 0.03)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pl-row"
+      },
+      "build": {
+       "found": true,
+       "count": 5,
+       "box": {
+        "x": 20,
+        "y": 417.2,
+        "w": 347,
+        "h": 40
+       },
+       "ink": {
+        "x": 26,
+        "y": 422.9,
+        "w": 292.4,
+        "h": 23.3
+       },
+       "text": "LL C Bolt C LATE till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(255, 255, 255, 0.03)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pl-row"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "its name \"LL\" (the waiting mark under it)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 26,
+        "y": 425.2,
+        "w": 132,
+        "h": 13.8
+       },
+       "ink": {
+        "x": 26,
+        "y": 424.2,
+        "w": 10.2,
+        "h": 15
+       },
+       "text": "LL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "button.ntx.inpedit.zz-tagged"
+      },
+      "build": {
+       "found": true,
+       "count": 5,
+       "box": {
+        "x": 26,
+        "y": 425.2,
+        "w": 132,
+        "h": 13.8
+       },
+       "ink": {
+        "x": 26,
+        "y": 424.2,
+        "w": 10.2,
+        "h": 15
+       },
+       "text": "LL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "button.ntx.inpedit"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "unav-board-desk",
+   "title": "The waiting mark on the board’s Unavailable panel, desktop (D1784)",
+   "drawing": {
+    "script": "scripts/handpass/pr-sched.mjs",
+    "shot": "q-unavmark-pc-board-unav-A"
+   },
+   "approved": {
+    "picture": "q-unavmark-pc-board-unav-A.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "panel",
+     "label": "the board’s Unavailable panel",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 14,
+        "y": 592.6,
+        "w": 1188,
+        "h": 247
+       },
+       "ink": {
+        "x": 28,
+        "y": 604.6,
+        "w": 1151,
+        "h": 216
+       },
+       "text": "⠿ Unavailable + Add Item Start End People Rmks LL LATE C Bolt C till 15 Jul OL Cobra IP Overseas leave — off island till 15 Jul ATT C Grit C Medically down till 17 Jul OD C Nomad C Overseas duty — exercise, off island till 17 Jul Reject OIL C Gambit C till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "3px solid rgb(240, 85, 95)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sb-panel.unav"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 14,
+        "y": 592.6,
+        "w": 1188,
+        "h": 247
+       },
+       "ink": {
+        "x": 28,
+        "y": 604.6,
+        "w": 1151,
+        "h": 216
+       },
+       "text": "⠿ Unavailable + Add Item Start End People Rmks LL LATE C Bolt C till 15 Jul OL Cobra IP Overseas leave — off island till 15 Jul ATT C Grit C Medically down till 17 Jul OD C Nomad C Overseas duty — exercise, off island till 17 Jul Reject OIL C Gambit C till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "3px solid rgb(240, 85, 95)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sb-panel.unav"
+      }
+     }
+    },
+    {
+     "part": "row",
+     "label": "Bolt's LL row",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 28,
+        "y": 658.6,
+        "w": 1162,
+        "h": 34
+       },
+       "ink": {
+        "x": 54,
+        "y": 667.6,
+        "w": 1036,
+        "h": 17
+       },
+       "text": "LL LATE C Bolt C till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(255, 255, 255, 0.03)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sb-arow.c6r.inprow.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 5,
+       "box": {
+        "x": 28,
+        "y": 658.6,
+        "w": 1162,
+        "h": 34
+       },
+       "ink": {
+        "x": 54,
+        "y": 667.6,
+        "w": 1036,
+        "h": 17
+       },
+       "text": "LL LATE C Bolt C till 15 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(255, 255, 255, 0.03)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.sb-arow.c6r.inprow"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "its name box (dotted outline, its purple tint kept)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 54,
+        "y": 667.6,
+        "w": 290.6,
+        "h": 17
+       },
+       "ink": {
+        "x": 54,
+        "y": 667.6,
+        "w": 12.1,
+        "h": 17
+       },
+       "text": "LL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(178, 77, 234, 0.12)",
+        "image": "",
+        "edge": [
+         "0px none rgba(178, 77, 234, 0.45)",
+         "0px none rgba(178, 77, 234, 0.45)",
+         "0px none rgba(178, 77, 234, 0.45)",
+         "0px none rgba(178, 77, 234, 0.45)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(221, 168, 245)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "button.sbi-ty.inpty.ty-lv.inpedit"
+      },
+      "build": {
+       "found": true,
+       "count": 5,
+       "box": {
+        "x": 54,
+        "y": 667.6,
+        "w": 290.6,
+        "h": 17
+       },
+       "ink": {
+        "x": 54,
+        "y": 667.6,
+        "w": 12.1,
+        "h": 17
+       },
+       "text": "LL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(178, 77, 234, 0.12)",
+        "image": "",
+        "edge": [
+         "0px none rgba(178, 77, 234, 0.45)",
+         "0px none rgba(178, 77, 234, 0.45)",
+         "0px none rgba(178, 77, 234, 0.45)",
+         "0px none rgba(178, 77, 234, 0.45)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(221, 168, 245)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "button.sbi-ty.inpty.ty-lv.inpedit"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "notice-desk",
+   "title": "The unreadable week’s notice, desktop (D1785)",
+   "drawing": {
+    "script": "scripts/handpass/pr-sched.mjs",
+    "shot": "q-readonly-pc-notice-A"
+   },
+   "approved": {
+    "picture": "q-readonly-pc-notice-A.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "day",
+     "label": "Wednesday",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 353,
+        "y": 212,
+        "w": 552,
+        "h": 131
+       },
+       "ink": {
+        "x": 367,
+        "y": 223,
+        "w": 499.8,
+        "h": 68
+       },
+       "text": "Wednesday Jul 15 This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(rgba(255, 255, 255, 0.027), rgba(255, 255, 255, 0)), none",
+        "edge": [
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.9) 0px 24px 60px -34px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "section.day.dok.issued"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 353,
+        "y": 212,
+        "w": 552,
+        "h": 93
+       },
+       "ink": {
+        "x": 367,
+        "y": 223,
+        "w": 499.8,
+        "h": 68
+       },
+       "text": "Wednesday Jul 15 This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(rgba(255, 255, 255, 0.027), rgba(255, 255, 255, 0)), none",
+        "edge": [
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.9) 0px 24px 60px -34px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "section.day.dok.issued"
+      }
+     }
+    },
+    {
+     "part": "note",
+     "label": "the notice",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 364,
+        "y": 254,
+        "w": 530,
+        "h": 44
+       },
+       "ink": {
+        "x": 375,
+        "y": 261,
+        "w": 491.8,
+        "h": 30
+       },
+       "text": "This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar.zz-ring.zz-tagged"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 364,
+        "y": 254,
+        "w": 530,
+        "h": 44
+       },
+       "ink": {
+        "x": 375,
+        "y": 261,
+        "w": 491.8,
+        "h": 30
+       },
+       "text": "This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "notice-phone",
+   "title": "The unreadable week’s notice, phone (D1785)",
+   "drawing": {
+    "script": "scripts/handpass/pr-sched.mjs",
+    "shot": "q-readonly-ph-notice-A"
+   },
+   "approved": {
+    "picture": "q-readonly-ph-notice-A.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "day",
+     "label": "Wednesday",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 124,
+        "w": 378,
+        "h": 159
+       },
+       "ink": {
+        "x": 16,
+        "y": 138,
+        "w": 329.3,
+        "h": 93
+       },
+       "text": "Wednesday Jul 15 This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(rgba(255, 255, 255, 0.027), rgba(255, 255, 255, 0)), none",
+        "edge": [
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.9) 0px 24px 60px -34px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "section.day.dok.issued"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 124,
+        "w": 378,
+        "h": 121
+       },
+       "ink": {
+        "x": 16,
+        "y": 138,
+        "w": 329.3,
+        "h": 93
+       },
+       "text": "Wednesday Jul 15 This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(rgba(255, 255, 255, 0.027), rgba(255, 255, 255, 0)), none",
+        "edge": [
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)",
+         "1px solid rgba(87, 201, 122, 0.34)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.9) 0px 24px 60px -34px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "section.day.dok.issued"
+      }
+     }
+    },
+    {
+     "part": "note",
+     "label": "the notice",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 11,
+        "y": 179,
+        "w": 356,
+        "h": 59
+       },
+       "ink": {
+        "x": 22,
+        "y": 186,
+        "w": 323.3,
+        "h": 45
+       },
+       "text": "This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar.zz-ring.zz-tagged"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 11,
+        "y": 179,
+        "w": 356,
+        "h": 59
+       },
+       "ink": {
+        "x": 22,
+        "y": 186,
+        "w": 323.3,
+        "h": 45
+       },
+       "text": "This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "refusal-desk",
+   "title": "The refusal in the grey \"Blocked:\" note, desktop (D1785)",
+   "drawing": {
+    "script": "scripts/handpass/pr-sched.mjs",
+    "shot": "q-readonly-pc-refusal-A"
+   },
+   "approved": {
+    "picture": "q-readonly-pc-refusal-A.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "note",
+     "label": "the grey \"Blocked:\" note",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 384,
+        "y": 784,
+        "w": 768,
+        "h": 54
+       },
+       "ink": {
+        "x": 422,
+        "y": 795,
+        "w": 707.1,
+        "h": 32
+       },
+       "text": "Blocked: this week’s saved copy could not be read, so it can’t be edited. Nothing was saved. Report it with “Report a problem” on the Help page.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.zz-ring.zz-tagged"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 384,
+        "y": 784,
+        "w": 768,
+        "h": 54
+       },
+       "ink": {
+        "x": 422,
+        "y": 795,
+        "w": 707.1,
+        "h": 32
+       },
+       "text": "Blocked: this week’s saved copy could not be read, so it can’t be edited. Nothing was saved. Report it with “Report a problem” on the Help page.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "eye-week-desk",
+   "title": "The drawn eye on the week’s look, desktop (D1792 a)",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5a-pc-week-drawn"
+   },
+   "approved": {
+    "picture": "q-r5a-pc-week-drawn.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "sel",
+     "label": "the plans selector",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 163.3,
+        "y": 223,
+        "w": 84.5,
+        "h": 22
+       },
+       "ink": {
+        "x": 183.3,
+        "y": 227,
+        "w": 55.5,
+        "h": 14
+       },
+       "text": "Original ▾",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "button.planselbtn.pv.zz-ring.zz-tb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 163.3,
+        "y": 223,
+        "w": 84.5,
+        "h": 22
+       },
+       "ink": {
+        "x": 183.3,
+        "y": 227,
+        "w": 55.5,
+        "h": 14
+       },
+       "text": "Original ▾",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "button.planselbtn.pv"
+      }
+     }
+    },
+    {
+     "part": "seleye",
+     "label": "the selector's eye",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 172.3,
+        "y": 228.5,
+        "w": 11,
+        "h": 11
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 172.3,
+        "y": 228.5,
+        "w": 11,
+        "h": 11
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "svg"
+      }
+     }
+    },
+    {
+     "part": "bar",
+     "label": "the \"Viewing the issued\" banner",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 11,
+        "y": 283,
+        "w": 530,
+        "h": 67
+       },
+       "ink": {
+        "x": 22,
+        "y": 293.5,
+        "w": 498,
+        "h": 46
+       },
+       "text": "← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 11,
+        "y": 283,
+        "w": 530,
+        "h": 67
+       },
+       "ink": {
+        "x": 22,
+        "y": 293.5,
+        "w": 498,
+        "h": 46
+       },
+       "text": "← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar"
+      }
+     }
+    },
+    {
+     "part": "bareye",
+     "label": "the banner's eye",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 150.3,
+        "y": 295,
+        "w": 12,
+        "h": 12
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 150.3,
+        "y": 295,
+        "w": 12,
+        "h": 12
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "eye-week-phone",
+   "title": "The drawn eye on the week’s look, phone (D1792 a)",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5a-ph-week-drawn"
+   },
+   "approved": {
+    "picture": "q-r5a-ph-week-drawn.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "sel",
+     "label": "the plans selector",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 38,
+        "y": 173,
+        "w": 84.5,
+        "h": 22
+       },
+       "ink": {
+        "x": 58,
+        "y": 177,
+        "w": 55.5,
+        "h": 14
+       },
+       "text": "Original ▾",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "button.planselbtn.pv.zz-ring.zz-tb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 38,
+        "y": 173,
+        "w": 84.5,
+        "h": 22
+       },
+       "ink": {
+        "x": 58,
+        "y": 177,
+        "w": 55.5,
+        "h": 14
+       },
+       "text": "Original ▾",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "button.planselbtn.pv"
+      }
+     }
+    },
+    {
+     "part": "seleye",
+     "label": "the selector's eye",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 47,
+        "y": 178.5,
+        "w": 11,
+        "h": 11
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 47,
+        "y": 178.5,
+        "w": 11,
+        "h": 11
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "svg"
+      }
+     }
+    },
+    {
+     "part": "bar",
+     "label": "the \"Viewing the issued\" banner",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 11,
+        "y": 236,
+        "w": 356,
+        "h": 91
+       },
+       "ink": {
+        "x": 22,
+        "y": 246.5,
+        "w": 324,
+        "h": 69.5
+       },
+       "text": "← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 11,
+        "y": 236,
+        "w": 356,
+        "h": 91
+       },
+       "ink": {
+        "x": 22,
+        "y": 246.5,
+        "w": 324,
+        "h": 69.5
+       },
+       "text": "← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar"
+      }
+     }
+    },
+    {
+     "part": "bareye",
+     "label": "the banner's eye",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 150.3,
+        "y": 248,
+        "w": 12,
+        "h": 12
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 150.3,
+        "y": 248,
+        "w": 12,
+        "h": 12
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "eye-board-sel-desk",
+   "title": "The drawn eye in the board’s selector, desktop (D1792 a)",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5a-pc-board-sel-drawn"
+   },
+   "approved": {
+    "picture": "q-r5a-pc-board-sel-drawn.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "sel",
+     "label": "the plans selector",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 26,
+        "y": 168,
+        "w": 84.5,
+        "h": 22
+       },
+       "ink": {
+        "x": 46,
+        "y": 172,
+        "w": 55.5,
+        "h": 14
+       },
+       "text": "Original ▾",
+       "typed": false,
+       "look": {
+        "fill": "rgba(229, 194, 74, 0.12)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 214, 153)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "button.planselbtn.pv.zz-ring.zz-tb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 26,
+        "y": 168,
+        "w": 84.5,
+        "h": 22
+       },
+       "ink": {
+        "x": 46,
+        "y": 172,
+        "w": 55.5,
+        "h": 14
+       },
+       "text": "Original ▾",
+       "typed": false,
+       "look": {
+        "fill": "rgba(229, 194, 74, 0.12)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 214, 153)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "button.planselbtn.pv"
+      }
+     }
+    },
+    {
+     "part": "seleye",
+     "label": "the selector's eye",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 173.5,
+        "w": 11,
+        "h": 11
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 214, 153)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 173.5,
+        "w": 11,
+        "h": 11
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 214, 153)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "eye-board-bar-desk",
+   "title": "The drawn eye in the board’s banner, desktop (D1792 a)",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5a-pc-board-bar-drawn"
+   },
+   "approved": {
+    "picture": "q-r5a-pc-board-bar-drawn.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "bar",
+     "label": "the \"Viewing the issued\" banner",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1239,
+        "y": 116,
+        "w": 275,
+        "h": 130
+       },
+       "ink": {
+        "x": 1250,
+        "y": 126.5,
+        "w": 245.9,
+        "h": 108.5
+       },
+       "text": "← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar.zz-ring.zz-tb.zz-x"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1239,
+        "y": 116,
+        "w": 275,
+        "h": 130
+       },
+       "ink": {
+        "x": 1250,
+        "y": 126.5,
+        "w": 245.9,
+        "h": 108.5
+       },
+       "text": "← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar"
+      }
+     }
+    },
+    {
+     "part": "bareye",
+     "label": "the banner's eye",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1378.3,
+        "y": 128,
+        "w": 12,
+        "h": 12
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1378.3,
+        "y": 128,
+        "w": 12,
+        "h": 12
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "eye-board-phone",
+   "title": "The drawn eye on the board’s look, phone (D1792 a)",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5a-ph-board-drawn"
+   },
+   "approved": {
+    "picture": "q-r5a-ph-board-drawn.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "sel",
+     "label": "the plans selector",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 24,
+        "y": 134,
+        "w": 84.5,
+        "h": 22
+       },
+       "ink": {
+        "x": 44,
+        "y": 138,
+        "w": 55.5,
+        "h": 14
+       },
+       "text": "Original ▾",
+       "typed": false,
+       "look": {
+        "fill": "rgba(229, 194, 74, 0.12)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 214, 153)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "button.planselbtn.pv.zz-ring.zz-tb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 24,
+        "y": 134,
+        "w": 84.5,
+        "h": 22
+       },
+       "ink": {
+        "x": 44,
+        "y": 138,
+        "w": 55.5,
+        "h": 14
+       },
+       "text": "Original ▾",
+       "typed": false,
+       "look": {
+        "fill": "rgba(229, 194, 74, 0.12)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)",
+         "1px solid rgba(229, 194, 74, 0.5)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 214, 153)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "button.planselbtn.pv"
+      }
+     }
+    },
+    {
+     "part": "seleye",
+     "label": "the selector's eye",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 33,
+        "y": 139.5,
+        "w": 11,
+        "h": 11
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 214, 153)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 33,
+        "y": 139.5,
+        "w": 11,
+        "h": 11
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)",
+         "0px none rgb(242, 214, 153)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 214, 153)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.21px"
+       },
+       "tag": "svg"
+      }
+     }
+    },
+    {
+     "part": "bar",
+     "label": "the \"Viewing the issued\" banner",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 40,
+        "y": 174,
+        "w": 322,
+        "h": 91
+       },
+       "ink": {
+        "x": 51,
+        "y": 184.5,
+        "w": 299.8,
+        "h": 69.5
+       },
+       "text": "← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 40,
+        "y": 174,
+        "w": 322,
+        "h": 91
+       },
+       "ink": {
+        "x": 51,
+        "y": 184.5,
+        "w": 299.8,
+        "h": 69.5
+       },
+       "text": "← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0.25)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.dprev-bar"
+      }
+     }
+    },
+    {
+     "part": "bareye",
+     "label": "the banner's eye",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 179.3,
+        "y": 186,
+        "w": 12,
+        "h": 12
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 179.3,
+        "y": 186,
+        "w": 12,
+        "h": 12
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "reset-board-desk",
+   "title": "The Reset arrow on the board’s hidden warning, desktop (D1792 d)",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5d-pc-board-drawn"
+   },
+   "approved": {
+    "picture": "q-r5d-pc-board-drawn.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "line",
+     "label": "the hidden warning line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1229,
+        "y": 149,
+        "w": 295,
+        "h": 40.5
+       },
+       "ink": {
+        "x": 1239,
+        "y": 153,
+        "w": 233.9,
+        "h": 32.3
+       },
+       "text": "Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "3px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "6px",
+         "6px",
+         "6px",
+         "6px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.wln.hard.hid"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1229,
+        "y": 149,
+        "w": 295,
+        "h": 40.5
+       },
+       "ink": {
+        "x": 1239,
+        "y": 153,
+        "w": 233.9,
+        "h": 32.3
+       },
+       "text": "Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "3px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "6px",
+         "6px",
+         "6px",
+         "6px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.wln.hard.hid"
+      }
+     }
+    },
+    {
+     "part": "btn",
+     "label": "its flag-again button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1498,
+        "y": 152,
+        "w": 19,
+        "h": 18.2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(255, 255, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "button.wln-mute.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1498,
+        "y": 152,
+        "w": 19,
+        "h": 18.2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(255, 255, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "button.wln-mute"
+      }
+     }
+    },
+    {
+     "part": "arrow",
+     "label": "the Reset arrow",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1501,
+        "y": 155,
+        "w": 13,
+        "h": 13
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1501,
+        "y": 155,
+        "w": 13,
+        "h": 13
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "reset-board-phone",
+   "title": "The Reset arrow on the board’s hidden warning, phone (D1792 d)",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5d-ph-board-drawn"
+   },
+   "approved": {
+    "picture": "q-r5d-ph-board-drawn.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "line",
+     "label": "the hidden warning line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 30,
+        "y": 297,
+        "w": 342,
+        "h": 24.2
+       },
+       "ink": {
+        "x": 40,
+        "y": 301,
+        "w": 287.4,
+        "h": 15
+       },
+       "text": "Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "3px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "6px",
+         "6px",
+         "6px",
+         "6px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.wln.hard.hid"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 30,
+        "y": 297,
+        "w": 342,
+        "h": 24.2
+       },
+       "ink": {
+        "x": 40,
+        "y": 301,
+        "w": 287.4,
+        "h": 15
+       },
+       "text": "Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "3px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "6px",
+         "6px",
+         "6px",
+         "6px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.wln.hard.hid"
+      }
+     }
+    },
+    {
+     "part": "btn",
+     "label": "its flag-again button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 346,
+        "y": 300,
+        "w": 19,
+        "h": 18.2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(255, 255, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "button.wln-mute.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 346,
+        "y": 300,
+        "w": 19,
+        "h": 18.2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(255, 255, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "button.wln-mute"
+      }
+     }
+    },
+    {
+     "part": "arrow",
+     "label": "the Reset arrow",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 349,
+        "y": 303,
+        "w": 13,
+        "h": 13
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 349,
+        "y": 303,
+        "w": 13,
+        "h": 13
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "reset-week-desk",
+   "title": "The Reset arrow on the week’s hidden warning, desktop (D1792 d)",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5d-pc-week-drawn"
+   },
+   "approved": {
+    "picture": "q-r5d-pc-week-drawn.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "line",
+     "label": "the hidden warning line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 19,
+        "y": 415,
+        "w": 514,
+        "h": 44.7
+       },
+       "ink": {
+        "x": 40,
+        "y": 423,
+        "w": 276.5,
+        "h": 27.8
+       },
+       "text": "Conflict — two events at once Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.witem.hard.hid"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 19,
+        "y": 415,
+        "w": 514,
+        "h": 44.7
+       },
+       "ink": {
+        "x": 40,
+        "y": 423,
+        "w": 276.5,
+        "h": 27.8
+       },
+       "text": "Conflict — two events at once Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.witem.hard.hid"
+      }
+     }
+    },
+    {
+     "part": "btn",
+     "label": "its flag-again button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 504,
+        "y": 423,
+        "w": 19,
+        "h": 18.2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(255, 255, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "button.witem-mute.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 504,
+        "y": 423,
+        "w": 19,
+        "h": 18.2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(255, 255, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "button.witem-mute"
+      }
+     }
+    },
+    {
+     "part": "arrow",
+     "label": "the Reset arrow",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 507,
+        "y": 426,
+        "w": 13,
+        "h": 13
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 507,
+        "y": 426,
+        "w": 13,
+        "h": 13
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "reset-week-phone",
+   "title": "The Reset arrow on the week’s hidden warning, phone (D1792 d)",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5d-ph-week-drawn"
+   },
+   "approved": {
+    "picture": "q-r5d-ph-week-drawn.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "line",
+     "label": "the hidden warning line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 19,
+        "y": 412,
+        "w": 340,
+        "h": 44.7
+       },
+       "ink": {
+        "x": 40,
+        "y": 420,
+        "w": 276.5,
+        "h": 27.8
+       },
+       "text": "Conflict — two events at once Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.witem.hard.hid"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 19,
+        "y": 412,
+        "w": 340,
+        "h": 44.7
+       },
+       "ink": {
+        "x": 40,
+        "y": 420,
+        "w": 276.5,
+        "h": 27.8
+       },
+       "text": "Conflict — two events at once Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)",
+         "1px dashed rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "8px",
+         "8px",
+         "8px",
+         "8px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.witem.hard.hid"
+      }
+     }
+    },
+    {
+     "part": "btn",
+     "label": "its flag-again button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 330,
+        "y": 420,
+        "w": 19,
+        "h": 18.2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(255, 255, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "button.witem-mute.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 330,
+        "y": 420,
+        "w": 19,
+        "h": 18.2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(255, 255, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "button.witem-mute"
+      }
+     }
+    },
+    {
+     "part": "arrow",
+     "label": "the Reset arrow",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 333,
+        "y": 423,
+        "w": 13,
+        "h": 13
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 333,
+        "y": 423,
+        "w": 13,
+        "h": 13
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

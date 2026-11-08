@@ -1,0 +1,138 @@
+{
+ "state": "reset-board-phone",
+ "drawing": {
+  "script": "scripts/handpass/pr-marks.mjs",
+  "shot": "q-r5d-ph-board-drawn"
+ },
+ "recorded": "2026-11-08T05:08:35.756Z",
+ "drawnOn": "main at 6e6c55667",
+ "checkout": "9fc5961d9",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "line": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 30,
+    "y": 297,
+    "w": 342,
+    "h": 24.2
+   },
+   "ink": {
+    "x": 40,
+    "y": 301,
+    "w": 287.4,
+    "h": 15
+   },
+   "text": "Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "3px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "6px",
+     "6px",
+     "6px",
+     "6px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.wln.hard.hid"
+  },
+  "btn": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 346,
+    "y": 300,
+    "w": 19,
+    "h": 18.2
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(255, 255, 255, 0.07)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 14px",
+    "spacing": "normal"
+   },
+   "tag": "button.wln-mute.zz-ring"
+  },
+  "arrow": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 349,
+    "y": 303,
+    "w": 13,
+    "h": 13
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 14px",
+    "spacing": "normal"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q-r5d-ph-board-drawn.png",
+  "identical": true
+ }
+}

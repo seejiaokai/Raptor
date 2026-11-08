@@ -22,7 +22,7 @@ import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay, iuParts } from '../engine/keys'
 import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, saBadgesHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
+import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, saBadgesHTML, availHTML, quarantineNote , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
 import { setInpField, howMany, markMoved } from './inputedit'
 import { reqRowText } from './reqrow'
@@ -42,7 +42,7 @@ import { openAvailWinFrom } from './availopen'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { penSvg } from './pen'
-import { glyphSvg, GEAR_INNER, TEMPLATES_INNER } from './glyphs'
+import { glyphSvg, GEAR_INNER, TEMPLATES_INNER, RESET_INNER } from './glyphs'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
@@ -82,7 +82,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
      seed as the schedule, with no quarantine indication (Q2R-06). Surface the same
      one notice the week pages show — the mutators already refuse on a protected
      week, this makes the state visible. */
-  if (protectedWeek()) return `<div class="sb-panel"><div class="dprev-bar">${QUARANTINE_NOTE}</div></div>`
+  if (protectedWeek()) return `<div class="sb-panel"><div class="dprev-bar">${quarantineNote()}</div></div>`
   const d = DAYS[di]
   /* the stores chips/C follow HOOKS.editMode(), not just pv: the render gate
      is then EXACTLY the click gate interactions.ts uses for
@@ -438,7 +438,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
    directly below it (owner, 14 Aug 26). On a frozen preview the sign-off pills and
    every publish door stay away — a past version's signatures live on the AL record —
    but the PLANS SELECTOR and the VERSION TAG stay, as they do on the week: the
-   selector's amber "👁 AL1" says what you are looking at and is the way to another
+   selector's amber eye-and-"AL1" says what you are looking at and is the way to another
    version, the tag says what the day IS (register AM28 — the one selector both
    surfaces share, A5). The strip used to go blank here, older than the 15 Sep
    redesign that moved the two into it ([HUMAN-RETEST] walk W2-F1, 24 Sep 26). */
@@ -520,7 +520,7 @@ export function boardWarnHTML(di: number, look = false) {
        index these rows now carry. Same order as the week's .dwlist, which also
        iterates as stored; the two lists could previously disagree.
        A scheduler can HIDE a specific warning (owner, Aug 26). Since [WARN-HIDE-KEPT] (owner D469 / D475, 1 Oct 26)
-       its line STAYS WHERE IT IS, struck out and darker, its ✕ become ↺ — "it shouldn't totally disappear … ready to
+       its line STAYS WHERE IT IS, struck out and darker, its ✕ becomes the flag-again arrow (drawn since D1792 (d)) — "it shouldn't totally disappear … ready to
        be reactivated again for flagging"; the "N hidden" fold is gone. A look at a version draws its own hidden lines
        struck too, with no button (D187 read with D469: every warning the version holds, the hidden ones struck). */
     all.forEach((w: any, ix: number) => {
@@ -539,7 +539,9 @@ export function boardWarnHTML(di: number, look = false) {
       const sel = view.SELID && (w.who || []).includes(view.SELID) ? ' pksel' : ''
       wh += `<div class="wln ${w.sev}${on}${sel}${hid ? ' hid' : ''}" data-wdi="${di}" data-wix="${ix}" title="${hid ? 'Hidden — it flags no puck and is not counted. ' : ''}Jump to the puck that caused this">`
         + `<span class="wln-t">${wtext(w)}</span>`
-        + (canMute ? `<button class="wln-mute" data-woff="${di}.${ix}" title="${hid ? 'Flag this again' : 'Hide this warning — it flags no puck and is not counted; it comes back if the situation changes'}">${hid ? '↺' : '✕'}</button>` : '')
+        /* a hidden line's flag-again is the app's drawn Reset arrow, as on Edit Schedule's list (owner D1792 (d), 8 Nov 26);
+           the ✕ stays typed */
+        + (canMute ? `<button class="wln-mute" data-woff="${di}.${ix}" title="${hid ? 'Flag this again' : 'Hide this warning — it flags no puck and is not counted; it comes back if the situation changes'}">${hid ? glyphSvg(RESET_INNER, 'wmuteico') : '✕'}</button>` : '')
         /* THE WAY OUT, BESIDE THE REASON, HERE TOO (owner's ruling D19; walk
            find, 22 Sep 26). The week's list already carried this and the
            board's did not, so the surface that tells a scheduler the credit can

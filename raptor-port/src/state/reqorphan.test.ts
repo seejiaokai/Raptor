@@ -112,7 +112,9 @@ describe('a saved week that cannot be read — every door fails closed', () => {
     HOOKS.toast = (m: any) => { said.push(String(m)) }
     try { expect(removeInput(inp), 'refused').toBe(false) } finally { HOOKS.toast = keep }
     expect(INPUTS.includes(inp), 'the request stays').toBe(true)
-    expect(said.join(' | '), 'refused with a reason — the lock on the unreadable week, or the door\'s own').toMatch(/This week is locked|Can't tell whether this input has a row on another week/)
+    /* the lock on the unreadable week says it could not be read (D1785, 8 Nov 26), never "an older version" */
+    expect(said.join(' | '), 'refused with a reason — the lock on the unreadable week, or the door\'s own').toMatch(/this week’s saved copy could not be read|Can't tell whether this input has a row on another week/)
+    expect(said.join(' | ')).not.toContain('older version')
   })
   it('the edit refuses too', async () => {
     const inp = unreadableW1()

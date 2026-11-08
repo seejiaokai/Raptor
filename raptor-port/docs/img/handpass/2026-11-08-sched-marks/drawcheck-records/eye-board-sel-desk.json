@@ -1,0 +1,102 @@
+{
+ "state": "eye-board-sel-desk",
+ "drawing": {
+  "script": "scripts/handpass/pr-marks.mjs",
+  "shot": "q-r5a-pc-board-sel-drawn"
+ },
+ "recorded": "2026-11-08T05:08:02.494Z",
+ "drawnOn": "main at 6e6c55667",
+ "checkout": "9fc5961d9",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "sel": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 26,
+    "y": 168,
+    "w": 84.5,
+    "h": 22
+   },
+   "ink": {
+    "x": 46,
+    "y": 172,
+    "w": 55.5,
+    "h": 14
+   },
+   "text": "Original ▾",
+   "typed": false,
+   "look": {
+    "fill": "rgba(229, 194, 74, 0.12)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(229, 194, 74, 0.5)",
+     "1px solid rgba(229, 194, 74, 0.5)",
+     "1px solid rgba(229, 194, 74, 0.5)",
+     "1px solid rgba(229, 194, 74, 0.5)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 214, 153)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 10.5px",
+    "spacing": "0.21px"
+   },
+   "tag": "button.planselbtn.pv.zz-ring.zz-tb"
+  },
+  "seleye": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 35,
+    "y": 173.5,
+    "w": 11,
+    "h": 11
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(242, 214, 153)",
+     "0px none rgb(242, 214, 153)",
+     "0px none rgb(242, 214, 153)",
+     "0px none rgb(242, 214, 153)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 214, 153)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 10.5px",
+    "spacing": "0.21px"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q-r5a-pc-board-sel-drawn.png",
+  "identical": true
+ }
+}

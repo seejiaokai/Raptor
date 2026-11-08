@@ -18,7 +18,7 @@
    state layers do — filing was the writer that bypassed the round-1 funnel. */
 import { DATES, inputCoversDate } from './inputs'
 import { amFormatOf, protectedWeek } from './publish'
-import { stashKeys, stashGet, isPreservedWeek } from './weekstash'
+import { stashKeys, stashGet, isPreservedWeek, preservedBlob } from './weekstash'
 import { weekDatesAbs } from './weeks-data'
 import { CURWEEK } from './waves'
 
@@ -47,6 +47,40 @@ export function stashProtected(key: any, json: any): boolean {
        a wrong-week book is caught too (the same reading applyWeekModel/OIL use). */
     return amFormatOf({ amV: sc.am, als: sc.a, orig: sc.o, cur: sc.cv }, key) === 'unsupported'
   } catch { return true }
+}
+
+/* WHY A WEEK IS READ-ONLY (owner D1785, 8 Nov 26 — "All as recommended", the pictures round's question 6): a week whose
+   saved copy cannot be read says so, and refuses a change in the same terms, where it used to blame "an older version of
+   the app" as an older book does. The two cases, told apart by the one test persist and applyWeekModel already make:
+     'unreadable' — the saved copy will not read as a week (not JSON, or not an object carrying a `d` days array: a
+       damaged row, which state/persist.ts keeps as it is and stores as a record with no days);
+     'older'      — it reads, but in a form this app will not edit: an older version's book (amFormatOf 'unsupported'), a
+       whole-week old record kept as it is, or records of another week.
+   null when the week is not read-only. The LOADED week is read-only by protectedWeek() and the bytes it keeps are its
+   preserved blob; a STASHED week by stashProtected(), its bytes the preserved blob if it has one, else its stash.
+   Guarded like stashProtected: a damaged blob never throws out of a reader — it reads as unreadable. */
+const readsAsWeek = (json: any): boolean => {
+  try { const sc = JSON.parse(json); return !!sc && typeof sc === 'object' && Array.isArray(sc.d) } catch { return false }
+}
+export function weekLockReason(key: any): 'unreadable' | 'older' | null {
+  try {
+    const k = String(key)
+    if (k === String(CURWEEK)) {
+      if (!protectedWeek()) return null
+      return isPreservedWeek(k) && !readsAsWeek(preservedBlob(k)) ? 'unreadable' : 'older'
+    }
+    if (!stashProtected(k, stashGet(k))) return null
+    return readsAsWeek(isPreservedWeek(k) ? preservedBlob(k) : stashGet(k)) ? 'older' : 'unreadable'
+  } catch { return 'unreadable' }
+}
+/* is ANY week — the loaded one, or any stashed one — unreadable? The refusal's words read this (publish.ts
+   lockedWeekNote), not the week the refused change touches: a refusal only ever comes from a read-only week, and the one
+   case where the two readings part — an unreadable week somewhere while the change touches only an older-format week —
+   needs an older-format week, which only data already stored can hold (owner D56: no fix for a harm that lives only in
+   stored data; the scenario design's R2, kept on D56). */
+export function anyUnreadableWeek(): boolean {
+  if (weekLockReason(CURWEEK) === 'unreadable') return true
+  return stashKeys().some(k => k !== CURWEEK && weekLockReason(k) === 'unreadable')
 }
 
 /* every date label under read-only quarantine — the loaded week if its own book
