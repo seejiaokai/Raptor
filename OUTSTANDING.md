@@ -135,8 +135,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INP-HEAD-SORT-READER] — the Inputs List's column headings sort from the keys since 6 Nov 26, but a screen reader is not told a heading can be pressed; the fix, a button in each heading, changes its look — a picture first (low, with the keyboard sweep D807).
 - [QUALS-HEAD-SORT-KEYS] — the Quals table's headings sort by a click only; the keys cannot reach them (low, with the keyboard sweep D807).
 - [WALK-SCRIPT-UTF8] — a walk script saved partly in another letter coding made the code check fail (6 Nov 26); a line in the walkers' brief guide that scripts are saved as UTF-8 — a guide change, on his word.
-- [MED-ROOM-DRAGGED] — the Medical tab's room for its window (D1300) stays when the window is dragged away, so the cards are squeezed and covered; the Inputs list's fix of 8 Nov 26 applies as it is (low, found by both readers of chat 7).
-- [INP-ROOM-TIDY] — two tidy-ups the code read of 8 Nov 26 filed: the room's size written in two stylesheets, the calendar expand button's unused font size and line height (low, the agent's).
+- [INP-ROOM-TIDY-2] — four tidy-ups chat 29's code reads filed: the window-at-rest test written five times, a sentence in two files, a test's fixed sizes, a stale comment (low, the agent's).
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295) — built as the bell's grey foot (D1788) on `claude/pr-leave-war-4988a8`, pull request 680; walk, reads and his look to come.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
@@ -208,7 +207,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check.
-- [RD-LEFT-1108] — React Doctor's 31 findings left after the shell-and-state job: 13 import cycles through the people-settings save (a cycle cannot be kept with a reason) and 18 in other areas' files — each with its area's next batch.
+- [RD-LEFT-1108] — React Doctor's findings left after the shell-and-state job: 13 import cycles through the people-settings save (a cycle cannot be kept with a reason) and 10 in other areas' files (the Inputs and Medical 8 settled by chat 29, 8 Nov 26) — each with its area's next batch.
 - [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
@@ -330,10 +329,12 @@ GitHub's run trips on it.
 test passes, so none reads a value before it is set today; the risk is a later import that does. **To do:** find which of
 its functions each importer takes, and move those to a file with no app imports, as the save indicator's source was moved
 to `ui/savestatus-source.ts` — a change to saved data's path, so its own check (tier WALK at least). **(2) 18 in files outside
-that job:** `ui/UsersPanel.tsx` 3, `ui/AdminPage.tsx` 2, `ui/CutFields.tsx` 2, `ui/DateCal.tsx` 2, `ui/MedicalView.tsx` 2,
-`ui/TypeLegend.tsx` 2, `ui/AccessScreen.tsx` 1, `ui/SansCal.tsx` 1, `ui/SansDay.tsx` 1, and `ui/interactions.ts` 2 (a list
+that job:** `ui/UsersPanel.tsx` 3, `ui/AdminPage.tsx` 2, `ui/AccessScreen.tsx` 1, `ui/SansCal.tsx` 1, `ui/SansDay.tsx` 1, and `ui/interactions.ts` 2 (a list
 lookup in a loop — a file of job 1's pull request 664, left alone that night). Each rides with its area's next batch (D490,
-D1534). **Place:** the agent's, low — (1) with the next People and accounts change, (2) as listed.
+D1534). **8 Nov 26, chat 29 (`claude/chat29-inputs-medical`, pull request 707):** `CutFields.tsx` 2, `DateCal.tsx` 2,
+`MedicalView.tsx` 2 and `TypeLegend.tsx` 2 settled — 5 fixed, 3 kept with written reasons (evidence
+`raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`). **Place:** the agent's, low — (1) with the next People and
+accounts change, (2) as listed.
 
 ### [BUGCHECK-LESSON-ORDER] The bug-check order's list of missed faults is out of order (found 7 Nov 26, the rules diet's step 3)
 **What:** in `raptor-port/docs/bug-check-order.md` §7.11 the lessons run 1–6, 8, 7, 9–23, and a second lesson numbered 23
@@ -2408,17 +2409,13 @@ one (a measured layout — a picture first). **Place:** his look; then close, or
 
 **Delivered D566 combined branch preview,5Oct26:** https://raptor-q27mo3zqg-kai-e2f5.vercel.app (source7f0b78bf; completed VercelSUCCESS/Preview9ZKYvXmsMPbWpc3RkwppHcWKzqqN). All3interface fixes checked/fresh independent R1PASS; owner look/Claude reads/authorized merge remain outstanding. Shipping method/limits in current accepted-batch evidence; no live authority.
 
-### [MED-ROOM-DRAGGED] The Medical tab's room stays for a window dragged away (found 8 Nov 26)
-**Found by both code readers of chat 7** (Astra, `raptor-port/docs/superpowers/briefs/2026-11-08-chat7-inputs-read-astra.md` (1),
-and the fresh Opus reader): the Medical tab makes room for the input window (D1300, `.med-room`, `16-medical.css`), but a window
-he has dragged away keeps its place for the session, so the cards stay squeezed AND covered. **Fix:** as the Inputs list's of
-8 Nov 26 (`06-inputs.css`): the room only while the window stands where it opens — `body:has(.floatwin.inpedwin:not([data-placed]))`
-before the room's rules; a browser test that drags the window away first, red. **Place:** with the next Medical or Inputs batch.
-
-### [INP-ROOM-TIDY] Tidy-ups the code read of 8 Nov 26 filed
-**Filed by the fresh Opus reader of chat 7, not fixed (D489):** (1) the room's size (the window's 430px, its 16px) is written in
-both `06-inputs.css` and `16-medical.css` — one variable would keep them together; (2) `.ib-sub .ib-expand`'s font size and
-line height (`25-inputs-calendar.css`) styled the typed mark and now style nothing. **Place:** with [MED-ROOM-DRAGGED].
+### [INP-ROOM-TIDY-2] Tidy-ups chat 29's code reads filed (8 Nov 26)
+**Filed, not fixed (D489), by the fresh Opus readers of `claude/chat29-inputs-medical`:** (1) the test "the input window stands
+where it opens", `body:has(.floatwin.inpedwin:not([data-placed]))`, is written five times across `06-inputs.css` and
+`16-medical.css` — one class set on the page would keep them together; (2) the sentence on how a cut-off's draft is read is in
+both `ui/CutFields.tsx` and `ui/cutdraft.ts`; (3) the Medical browser test repeats the window's 430 and its 16 instead of
+reading `--inpwin-room`; (4) the comment above `dragging()` in `ui/floatwin.ts` names a caller that no longer exists (older
+than that job). **Place:** low, the agent's — with the next Inputs or Medical batch.
 ### [LW-READS-OWED-1024] Fresh reads owed from 24 Oct 26
 **25 Oct 26 (the night): the reader of D1305–D1355 and lessons 45–54 RAN** — `raptor-port/docs/handpass/parts/lw-1025/reads-1305-1355.md`; its short-line and full-row findings and lesson 54 fixed the same night. **Left:** lessons 49, 50 and 52 (each claims a little more than he said — the fix worded in that file), and D1297's sweep of earlier evidence sheets with its reader.
 One fresh, blind Opus reader of the short lines of D1305–D1334 against their full rows (D138) and of design lessons 45–53

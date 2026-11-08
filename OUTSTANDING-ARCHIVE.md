@@ -8187,3 +8187,21 @@ picture first (D853). **Place:** with the next Inputs batch.
 
 ### [TRK-POP-ASKED] Two questions from the Tracker's marking-window round (filed 8 Nov 26 — chat 10, put to him that day)
 **What:** (1) **F8** (the fresh Opus code read of chat 9's job): two messages carry the old typed marks in their words — the "Delete course …?" question and the import's note on a deleted course (`src/tracker/app/core.js`, the course delete and the import) read "↺ Restore in ⇅ Reorder courses brings it back…"; the app draws those marks everywhere else and a message box cannot. Recommended: drop the two marks ("Restore in Reorder courses brings it back…"), a two-line change for the Tracker's next batch. Pictures before and after: `raptor-port/docs/img/handpass/2026-11-08-chat9-tracker/f8/`. (2) **The short-screen placement** (Astra's reading 6, "his to decide"): on a phone held on its side the chart lifts the event as high as it may go and the window opens under it, scrolling inside itself, as the drawings do not show; picture `…/2026-11-08-chat9-tracker/s10-open-window.png`. Also recorded by the walk, as before this change and not faults: S9 (the window neither follows nor closes when the chart is wheel-scrolled under it) and S30 (Restore's keyboard ring is the browser's own). Evidence: `raptor-port/docs/handpass/2026-11-08-chat9-tracker.md`. **His answer, 8 Nov 26: "Yes to both"** — (1) D1860, drop the marks; (2) D1861, the short-screen placement stays as built, nothing to build. **To do:** build (1) with the Tracker's next batch — the two messages' words only, their tests with them; then archive this item.
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([MED-ROOM-DRAGGED]). Forward facts: `raptor-port/src/ui/scheduler/16-medical.css`, `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`.*
+
+### [MED-ROOM-DRAGGED] The Medical tab's room stays for a window dragged away (found 8 Nov 26)
+**Found by both code readers of chat 7** (Astra, `raptor-port/docs/superpowers/briefs/2026-11-08-chat7-inputs-read-astra.md` (1),
+and the fresh Opus reader): the Medical tab makes room for the input window (D1300, `.med-room`, `16-medical.css`), but a window
+he has dragged away keeps its place for the session, so the cards stay squeezed AND covered. **Fix:** as the Inputs list's of
+8 Nov 26 (`06-inputs.css`): the room only while the window stands where it opens — `body:has(.floatwin.inpedwin:not([data-placed]))`
+before the room's rules; a browser test that drags the window away first, red. **Place:** with the next Medical or Inputs batch.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([INP-ROOM-TIDY]). Forward facts: `raptor-port/src/ui/scheduler/25-inputs-calendar.css`, `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`.*
+
+### [INP-ROOM-TIDY] Tidy-ups the code read of 8 Nov 26 filed
+**Filed by the fresh Opus reader of chat 7, not fixed (D489):** (1) the room's size (the window's 430px, its 16px) is written in
+both `06-inputs.css` and `16-medical.css` — one variable would keep them together; (2) `.ib-sub .ib-expand`'s font size and
+line height (`25-inputs-calendar.css`) styled the typed mark and now style nothing. **Place:** with [MED-ROOM-DRAGGED].
+
