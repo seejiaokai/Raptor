@@ -1988,7 +1988,7 @@ export function Matrix() {
     // re-pinned it (owner, 30 Aug 26 — "flip my screen horizontally … the top bar
     // is cut off to what the vertical view was … I need to scroll up then back
     // down to reset the frozen bar").
-    const pin = (force: boolean) => {
+    const pin = (force: boolean, now = false) => {
       const head = headRef.current
       if (!head) { setStuck(prev => (prev ? null : prev)); return }
       const r = head.getBoundingClientRect()
@@ -2015,9 +2015,19 @@ export function Matrix() {
         }
         return
       }
-      if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
+      /* IN THE SAME FRAME (his D1789, 8 Nov 26 — [LW-FROZEN-BAR-GAP]): set as React state from this passive scroll listener,
+         the change was drawn in a later task, after the browser had painted the scroll — for one or two frames the row stood
+         half under the top bar with no pinned copy (or none at all). So when the row FLIPS — pinned or let go — the change is
+         committed at once (`flushSync`) and painted with the scroll that caused it; a scroll of a row already pinned or
+         already free sets nothing, and an effect's call (`now` false — React will not flush inside one) stays as it was. */
+      if (r.top >= topEdge) {
+        if (now && mirrorRef.current) flushSync(() => setStuck(null))
+        else setStuck(prev => (prev ? null : prev))
+        return
+      }
+      const wasUp = !!mirrorRef.current
       // eslint-disable-next-line react-doctor/no-impure-state-updater -- only reads the layout, and only when the bar is not yet frozen or is forced: read outside, every column would be measured on every scroll while the bar is frozen
-      setStuck(prev => {
+      const pinUp = () => setStuck(prev => {
         if (prev && !force) return prev
         /* never a stretched grid measured, whoever asks (a cell's own box under a stretch is k times its width) */
         if (wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx')?.style.transform) return prev
@@ -2032,9 +2042,11 @@ export function Matrix() {
         // re-measuring on every store change costs no re-render of this grid.
         return prev && sameStuck(prev, next) ? prev : next
       })
+      if (now && !wasUp) flushSync(pinUp)
+      else pinUp()
     }
     repinRef.current = () => pin(true)
-    const onScroll = () => pin(false)
+    const onScroll = () => pin(false, true)
     // A rotate/resize fires BEFORE iOS has settled the new viewport, so an
     // immediate read would take the OLD geometry — re-measure on the next two
     // frames AND once more after a beat, forcing fresh widths each time.
