@@ -875,7 +875,10 @@ export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
      locked to the SANS type and offering SANS aircrew only */
   const addBtn=ro?'':`<button class="sb-addinp" data-inpadd="${di}.s" title="Add a SANS availability for this day">+ Add</button>`;
   let s=`<div class="sb-panel sansav"><div class="sb-ph">SANS Avail ${addBtn}</div><div class="sb-pb">`;
-  s+=rows.length?sansCardsHTML(rows,di,ro):`<div class="sb-empty">No SANS availability filed for this day.</div>`;
+  /* in OIL Earn a SANS offer is inert like every request that never asks the OIL question (D804, D1783, D65): its man
+     is drawn as before, and a tap picks nobody and says why (the code read's finding 1, Astra and Sol 6.1, 8 Nov 26) */
+  const inert=oilModeOn(di)?(inp:any,pk:string)=>oilInertWrap(inp.person,inputEarnsNoOilWhy(inp.type),pk):undefined;
+  s+=rows.length?sansCardsHTML(rows,di,ro,inert):`<div class="sb-empty">No SANS availability filed for this day.</div>`;
   return s+`</div></div>`;
 }
 /* the board never carried the amendment marks the week view had — added with

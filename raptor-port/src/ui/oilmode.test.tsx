@@ -32,6 +32,7 @@ import { oilOffReason } from './oilmode'
 import { TICKET_INNER, TEMPLATES_INNER } from './glyphs'
 import * as view from '../state/view'
 import { drawnAs } from '../testing/drawn'
+import { INPEDIT, setInpEdit } from './pops'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -889,6 +890,52 @@ describe('the pictures round: the day switch, a tap that cannot earn, the phone 
     await click(inputPuck('plasma'))
     expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. A medical request earns no OIL.`])
     expect(view.SELID).toBeFalsy()
+  })
+
+  /* THE CODE READ'S FINDING 1 (Astra and Sol 6.1, blind to each other, 8 Nov 26; reproduced on the running build, both
+     sizes, and on main's): a SANS availability card is drawn by the week's card grid, not by the input panels, so the
+     wrap above never reached it — in OIL Earn a tap on its man picked him blue and said nothing. */
+  const sansOffer = () => { setInpEdit(null); return request({ type: 'SANS Availability', allday: true, s: 0, e: 1439, sans: { f: true } }) }
+  const sansPuck = (who: string) => $$(`#sbBoard .sansav .sanscard .puck[data-person="${who}"]`)[0]
+
+  it('D1783, D65 — a man’s SANS availability picks nothing in the mode and says why', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    sansOffer()
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    const pk = sansPuck('plasma')
+    expect(pk, 'his offer is drawn on the board’s SANS Avail card').toBeTruthy()
+    await click(pk)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. A SANS availability request earns no OIL.`])
+    expect($$('#sbBoard .puck.sel').length, 'nobody picked').toBe(0)
+    expect(INPEDIT, 'no editor opened').toBeFalsy()
+  })
+
+  /* under the day's switch he keeps his own reason, as leave and a row with no times do (oilSeatHTML: the switch's
+     refusal is for a man who could earn — turning it off would not make an offer earn) */
+  it('D1783 — under the day’s switch his SANS availability keeps its own reason, and picks nothing', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    sansOffer()
+    await open(SAT)
+    await click(oilBtn())
+    await click(sw())
+    said.length = 0
+    await click(sansPuck('plasma'))
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. A SANS availability request earns no OIL.`])
+    expect($$('#sbBoard .puck.sel').length).toBe(0)
+  })
+
+  it('outside the mode his SANS card still opens his offer for editing, as built', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    const rec = sansOffer()
+    await open(SAT)
+    said.length = 0
+    const pk = sansPuck('plasma')
+    expect(pk.closest('.oilpk'), 'no OIL wrap outside the mode').toBeNull()
+    await click(pk)
+    expect(INPEDIT && inpId(INPEDIT), 'the card’s editor').toBe(inpId(rec))
+    expect(said.filter(s => s.startsWith('Nothing changed')), 'no OIL note outside the mode').toEqual([])
   })
 
   it('D1783, D65 — outside the mode the same tap does what it always did: it opens his Unavailable seat for a swap', async () => {
