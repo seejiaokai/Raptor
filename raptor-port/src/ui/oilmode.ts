@@ -681,8 +681,28 @@ export function oilNoAskWhy(di: any, item: string): string {
   const req = (INPUTS as any[]).find(r => r && String(r.iid || '') === iid)
   const type = (g && g.srcType) || (req && req.type)
   if (!g || !type || oilAsks(type)) return ''
+  return inputEarnsNoOilWhy(type)
+}
+/** Why a request of a kind that never asks the OIL question earns nothing (D804, D778): leave and medical by their group,
+ *  the rest (Personal, SANS availability) by their own name — a medical kind's own name ("medically down — no flying, may
+ *  still work") does not read as a sentence. */
+export function inputEarnsNoOilWhy(type: any): string {
   const meta: any = inpMeta(type)
+  if (meta && meta.grp === 'leave') return 'leave earns no OIL'
+  if (meta && (meta.grp === 'med' || meta.grp === 'upchit')) return 'a medical request earns no OIL'
   return `a ${String((meta && meta.name) || type).trim()} request earns no OIL`
+}
+/** What a tap on a placeholder's body says in the mode (the host's reading 1, put to him at his look): it is nobody, and
+ *  the men behind it are switched in the window its count opens. */
+export const PLACEHOLDER_WHY = 'the people behind it are switched in the window its count opens'
+/** A puck drawn elsewhere than oilSeatHTML that cannot earn on its row — a request that never asks (D804) — made inert
+ *  in the mode as oilSeatHTML's are (D1783, D65): the same markup, its own puck kept as drawn, so nothing it looks like
+ *  changes; only the tap now says why and picks nobody. */
+export function oilInertWrap(person: any, why: string, inner: string): string {
+  const p = (PEOPLE as any)[person]
+  if (!p) return inner
+  const w = isSpecial(person) ? PLACEHOLDER_WHY : why
+  return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${esc(w)}" data-oilsay="${esc(inertSays(p.cs, w))}">${inner}</span>`
 }
 /** What a tap on an inert puck says (owner D1783): what the tap did, the man its subject, then the reason as a sentence. */
 export function inertSays(cs: string, why: string): string {
@@ -734,7 +754,7 @@ export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) =
      now carries what its tap says — "Nothing changed for <callsign>." then the reason — read by board.ts boardArmClick;
      a puck under a mask carries which mask, the words being the refusals he already ruled (D845). */
   const says = (why: string) => ` data-oilsay="${esc(inertSays(p.cs, why))}"`
-  if (isSpecial(person)) return `<span class="seat oilpk inert" title="${esc(p.cs)} — the people behind it are switched in the window its count opens"${says('the people behind it are switched in the window its count opens')}>${pk(null)}</span>`
+  if (isSpecial(person)) return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${PLACEHOLDER_WHY}"${says(PLACEHOLDER_WHY)}>${pk(null)}</span>`
   const eligible = oilEligible(di, person, item)
   if (!eligible) return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${esc(inertWhy(di, item))}"${says(inertWhy(di, item))}>${pk(null)}</span>`
   /* UNDER A MASK THE PUCK IS NOT A CONTROL. The old markup left it tappable and

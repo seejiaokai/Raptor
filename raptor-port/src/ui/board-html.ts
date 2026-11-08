@@ -15,7 +15,7 @@ import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { isMember } from '../state/perms'
-import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey } from './oilmode'
+import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey, oilInertWrap, inputEarnsNoOilWhy } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
 import { rowKindTag, inpKindTagHTML, inpCxHTML, inpCxCls, oilSeatDeco, reqRmkParts, onCommon, commonOrder } from './html'
 import { ORD, puck, puckMarks, rowCls, accCtl, GP_TAKEOFF_NOTE, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn, exemptLineOwn } from './html'
@@ -720,7 +720,13 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
          other puck he is on — which is the ONLY place an OD earner is visible.
          It is addressed by the claim's OWN item since O-1, so the figure shows
          here only when this claim is one of the things that earned it. */
-      : `<span class="seat"${seatable?` data-inpseat="${esc(iuTail(one))}"`:''}>${(m=>puck(one.person,m.sev,true,m.flag,m.dash,m.trace,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil))(puckMarks(di,one.person))}</span>`)
+      : (inner=>oilModeOn(di)
+        /* a request that never asks the OIL question (leave, medical, Personal — D804, D778) cannot earn here: in the
+           mode its man is inert like every other puck that cannot earn — the tap picks nobody and says why (D1783,
+           D65; Astra's scenario 1, 8 Nov 26). Drawn as before; only the tap changes. */
+        ? oilInertWrap(one.person,inputEarnsNoOilWhy(inp.type),inner)
+        : `<span class="seat"${seatable?` data-inpseat="${esc(iuTail(one))}"`:''}>${inner}</span>`)
+        ((m=>puck(one.person,m.sev,true,m.flag,m.dash,m.trace,oilSeatDeco(di,one.person,'',inputItemKey(inpId(one))).oil))(puckMarks(di,one.person))))
     : `<span class="itxt">${esc(one.person)}</span>`).join('');
   /* THE ROW'S ADDRESS FOR THE CHANGES WINDOW'S JUMP — the week's twin (html.ts, Astra DP-08): an absence line tapped while
      the board is open lands on the board's own Unavailable row ([DRAFT-PENDING], Fable P5 — it said "shown on the week,

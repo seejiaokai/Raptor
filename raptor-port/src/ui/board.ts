@@ -49,7 +49,7 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemHistName, oilPersonSays, DAY_EARNS_NOTHING } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemHistName, oilPersonSays, DAY_EARNS_NOTHING, inertSays, PLACEHOLDER_WHY } from './oilmode'
 import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
@@ -1491,7 +1491,21 @@ export function boardArmClick(e: MouseEvent) {
   if (inert && view.SBDAY != null && oilModeOn(view.SBDAY)) {
     e.stopPropagation()
     const mask = inert.dataset.oilmask
+    /* under the day's switch nothing can be switched anywhere, a placeholder's men included: the day's refusal (D845) */
+    if (oilBlanketOn(view.SBDAY) && inert.querySelector('.puck.allavail')) return toast(DAY_EARNS_NOTHING)
     return toast(mask === 'day' ? DAY_EARNS_NOTHING : mask === 'event' ? EVENT_EARNS_NOBODY : inert.dataset.oilsay || '')
+  }
+  /* A PLACEHOLDER'S BODY ON A ROW (ALL / ALL AVAIL on a desk, a sim, a ground or programme row — Astra's scenario 2, 8 Nov
+     26). Those drawers draw it plain beside its count, so a tap fell through and picked it blue, while the same placeholder
+     under Personal Inputs said why. Inside the mode no tap selects (D65, carried to the board by D1783): it says where its
+     men are switched — the host's reading 1, put to him at his look — or the day's refusal under the switch (D845). Its
+     count is a separate button, caught above, so the window still opens. */
+  const phb = t.closest('.puck.allavail') as HTMLElement | null
+  if (phb && !phb.closest('#sbRoster, .rpuck, .availwin') && view.SBDAY != null && oilModeOn(view.SBDAY)) {
+    e.stopPropagation()
+    if (oilBlanketOn(view.SBDAY)) return toast(DAY_EARNS_NOTHING)
+    const cs = (PEOPLE[phb.dataset.person || ''] || {}).cs || phb.textContent || ''
+    return toast(inertSays(cs, PLACEHOLDER_WHY))
   }
   const oit = t.closest('[data-oilitem]') as HTMLElement | null
   if (oit) {

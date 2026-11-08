@@ -858,12 +858,79 @@ describe('the pictures round: the day switch, a tap that cannot earn, the phone 
     expect(view.SELID).toBeFalsy()
   })
 
+  /* ASTRA'S SCENARIOS 1 AND 2 (8 Nov 26, reproduced on the running build before these were written). Inside the mode no
+     tap selects (D65, carried to the board by D1783): a request that never earns — leave, medical, Personal — drew its men
+     as ordinary pucks, and a placeholder's body on a row was drawn plain too, so a tap on either still picked it, silently. */
+  const request = (r: any) => {
+    const row: any = { person: 'plasma', type: 'LL', date: 'Jul 18', allday: false, s: 8 * 60, e: 10 * 60, remarks: '', mod: 'now', yr: 2026, ...r }
+    inpId(row); INPUTS.unshift(row); return INPUTS[0]
+  }
+  const inputPuck = (who: string) => $$(`#sbBoard .inprow .puck[data-person="${who}"], #sbBoard .sbi-row .puck[data-person="${who}"]`)[0]
+
+  it('D1783, D65 — a man on leave under Unavailable picks nothing in the mode and says why', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    request({})
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    const pk = inputPuck('plasma')
+    expect(pk, 'his leave is drawn on the board').toBeTruthy()
+    await click(pk)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. Leave earns no OIL.`])
+    expect(view.SELID, 'nobody picked').toBeFalsy()
+  })
+
+  it('D1783, D65 — a man on medical leave says why too', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    request({ type: 'OML' })
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    await click(inputPuck('plasma'))
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. A medical request earns no OIL.`])
+    expect(view.SELID).toBeFalsy()
+  })
+
+  it('D1783, D65 — outside the mode the same tap does what it always did: it opens his Unavailable seat for a swap', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    request({})
+    await open(SAT)
+    said.length = 0
+    await click(inputPuck('plasma'))
+    expect(view.armedKey(), 'the seat is armed, as built (interactions.ts — the data-inpseat exception)').toMatch(/^iu:/)
+    expect(said.filter(s => s.startsWith('Nothing changed')), 'no OIL note outside the mode').toEqual([])
+  })
+
+  it('D65, the host’s reading 1 — a placeholder’s body on a row picks nothing and says where its people are switched', async () => {
+    addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    const ph = groundRowEl(0).querySelector('.puck.allavail') as HTMLElement
+    expect(ph, 'the placeholder is drawn on its row').toBeTruthy()
+    await click(ph)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).allavail.cs}. The people behind it are switched in the window its count opens.`])
+    expect(view.SELID, 'nothing picked').toBeFalsy()
+    expect($('.availwin:not([hidden])'), 'the body is not the count').toBeFalsy()
+  })
+
+  it('D845, the host’s reading 1 — under the day’s switch a placeholder’s body says the day’s refusal', async () => {
+    addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
+    await open(SAT)
+    await click(oilBtn())
+    await click(sw())
+    said.length = 0
+    await click(groundRowEl(0).querySelector('.puck.allavail'))
+    expect(said).toEqual([DAY_EARNS_NOTHING])
+    expect(view.SELID).toBeFalsy()
+  })
+
   it('D1783 — a placeholder’s count still opens its window', async () => {
     addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
     await open(SAT)
     await click(oilBtn())
     await click(groundRowEl(0).querySelector('.oilcount'))
-    expect($('.availwin'), 'the window opened').toBeTruthy()
+    expect($('.availwin:not([hidden])'), 'the window opened (its empty frame is always on the page, hidden)').toBeTruthy()
   })
 
   it('D1793 — the phone bar’s Templates and OIL Earn wear the desktop’s marks; ✓ OIL done stays plain', async () => {

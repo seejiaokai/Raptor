@@ -69,7 +69,9 @@ const reachInert = async (page, { origin, phone }) => {
   await oilOn(page, phone)
   await standAt(page, '#schedBoard .oilpk.inert', 640); await sleep(300)
   await press(page, '#schedBoard .oilpk.inert', phone); await sleep(350)
-  if (await page.evaluate(() => !!window.SELID)) return 'the tap picked the man'
+  /* a picked man's pucks wear `.sel` (ui/highlights.ts); the app keeps its selection off `window`, so an earlier
+     `window.SELID` read here always passed (found 8 Nov 26) */
+  if (await page.evaluate(() => !!document.querySelector('#schedBoard .puck.sel'))) return 'the tap picked the man'
 }
 const reachMarks = async (page, { origin }) => {
   await open(page, origin, SAT)

@@ -25,8 +25,9 @@ Chat 5, 8 Nov 26. Read `raptor-port/docs/walk-scripts.md` whole before writing a
   has its END box at `[data-bfld="dr:5.0.0.end"]`; on a phone clear it by setting the value and sending `input` and
   `change` (never type into it on an emulated phone); on the PC click it, Backspace, Tab.
 - The passing note is `#toastEl`; read its text within about 400 ms of the press, and picture it then.
-- "Picked" (selected) shows as the blue selection ring on his pucks; `window.SELID` holds the picked man's id, empty when
-  none. Read both.
+- "Picked" (selected) shows as the blue fill on every puck of that man (or placeholder); each wears the class `sel`.
+  Read it as `document.querySelectorAll('#schedBoard .puck.sel').length` — 0 when nobody is picked. There is NO
+  `window.SELID` (it reads undefined whatever happens: never use it).
 - Stop and report after 3 failed attempts at one gesture. Stop every browser you started before you report. Send your
   report ONCE, to the file named below; your hand-back message is five lines.
 
@@ -73,7 +74,7 @@ Chat 5, 8 Nov 26. Read `raptor-port/docs/walk-scripts.md` whole before writing a
 
 - **W2.1 the open end (D360):** the SDO desk's END cleared (the route above), OIL Earn on, tap Fable's puck. EXPECTED
   (D1783): passing note exactly "Nothing changed for Fable. No OIL worked out — this row has no end time."; nobody picked
-  (no blue ring, `SELID` empty). On the PC, RECORD the puck's hover title.
+  (no `.puck.sel`). On the PC, RECORD the puck's hover title.
 - **W2.2 no working hours:** clear both the SDO desk's START and END, OIL Earn on, tap Fable. EXPECTED (D1783): "Nothing
   changed for Fable. This row gives him no working hours to count OIL from."; nobody picked.
 - **W2.3 a cockpit seat:** on any day with a flying line, clear that line's take-off and landing through the board's own
@@ -87,7 +88,7 @@ Chat 5, 8 Nov 26. Read `raptor-port/docs/walk-scripts.md` whole before writing a
   opens. Close it. Tap the placeholder's puck itself (not the count). RECORD exactly the note; EXPECTED nobody picked.
 - **W2.7 the ALL AVAIL window's man that cannot earn:** with the SDO END cleared, open the window from a placeholder on a
   row (if any), its OIL tab; tap a man drawn faded there. EXPECTED (D65): nobody picked; RECORD the footer's words.
-- **W2.8 outside the mode:** OIL Earn off, tap Fable's puck. EXPECTED: he is picked as always (blue ring, `SELID` set) —
+- **W2.8 outside the mode:** OIL Earn off, tap Fable's puck. EXPECTED: he is picked as always (his pucks wear `.sel`) —
   the change must not reach outside the mode.
 - **W2.9 a man who CAN earn still switches:** OIL Earn on, END not cleared, tap Fable. EXPECTED: his earning turns off
   (the puck shows it), a passing note says so (RECORD its words); tap again: on.
