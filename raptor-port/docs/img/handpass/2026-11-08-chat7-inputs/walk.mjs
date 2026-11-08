@@ -38,6 +38,7 @@ const eq = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 
 async function room(page, W, label, closed) {
   const w = await box(page, '[data-testid="win-inputedit"]'), t = await box(page, '#intbl'), cols = await colW(page)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a walk: each step reads the page the step before left
   const wrap = await page.evaluate(() => { const e = document.querySelector('.inwrap'); return e ? { pr: getComputedStyle(e).paddingRight, cls: document.querySelector('.inputs-workspace')?.className } : null })
   const gap = w && t ? Math.round((w.x - (t.x + t.width)) * 10) / 10 : null
   return { winLeft: w && w.x, winTop: w && w.y, winW: w && w.width, listRight: t && Math.round((t.x + t.width) * 10) / 10, gap, cols, wrap }
@@ -62,6 +63,7 @@ async function widthWalk(browser, W, H) {
   const tag = 'w' + W
   // (a) the row
   const row = await box(page, '.inputs-listtools'), btn = await box(page, '#inNew'), dates = await box(page, '#inRangeBtn')
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a walk: each step reads the page the step before left
   const closed = await colW(page)
   const pic = await shot(page, `${tag}-a-row`, pad(row, 16))
   await shot(page, `${tag}-a-viewport`)
@@ -72,6 +74,7 @@ async function widthWalk(browser, W, H) {
   // (b)
   await press(page, '#inNew'); await winOpen(page)
   const b = await room(page, W, 'b', closed)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a walk: each step reads the page the step before left
   const picB = await shot(page, `${tag}-b-newwindow`)
   let pass, exp
   if (W >= 1340) { exp = 'list stops short of the window (gap>=0); Name/Start/End 110/140/90; Remarks>=145'; pass = b.gap >= 0 && eq(b.cols.slice(0, 3), [110, 140, 90]) && b.cols[4] >= 145 }
@@ -80,6 +83,7 @@ async function widthWalk(browser, W, H) {
   // (d) with window open: dates pop-up
   await press(page, '#inRangeBtn'); await page.waitForTimeout(400)
   const popOpen = await page.locator('#inRangePop').isVisible()
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a walk: each step reads the page the step before left
   const picD2 = await shot(page, `${tag}-d-dates-withwindow`)
   await press(page, '#inRangeBtn'); await page.waitForTimeout(400)
   const popClosed = !(await page.locator('#inRangePop').isVisible())
@@ -111,6 +115,7 @@ async function widthWalk(browser, W, H) {
   // (d) dates pop-up with window closed
   await press(page, '#inRangeBtn'); await page.waitForTimeout(400)
   const p1 = await page.locator('#inRangePop').isVisible()
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a walk: each step reads the page the step before left
   const picD1 = await shot(page, `${tag}-d-dates-nowindow`)
   await press(page, '#inRangeBtn'); await page.waitForTimeout(400)
   const p2 = !(await page.locator('#inRangePop').isVisible())
@@ -133,12 +138,14 @@ async function fileRound(page, W, phone, tag) {
   const before = await page.locator('#inBody tr[data-iid], #inList [data-iid]').count()
   await press(page, '#inNew', touch); await winOpen(page)
   const type = await page.locator('#inpEditType').inputValue().catch(() => null)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a walk: each step reads the page the step before left
   const personOpts = await page.locator('#inpEditPerson option').allTextContents()
   // pick the second person
   const val = await page.locator('#inpEditPerson option').nth(1).getAttribute('value')
   await page.locator('#inpEditPerson').selectOption(val)
   // pick a day inside the list window: list "as of today" range -> choose a day a couple of cells after today
   const days = await page.locator('#inpEdCal [data-iso]').evaluateAll(els => els.map(e => ({ iso: e.getAttribute('data-iso'), dis: e.hasAttribute('disabled') || e.getAttribute('aria-disabled') === 'true' })))
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a walk: each step reads the page the step before left
   const today = await page.evaluate(() => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') })
   const pick = days.filter(d => !d.dis && d.iso > today)[2]
   await shot(page, `${tag}-p1-window`)
@@ -150,8 +157,10 @@ async function fileRound(page, W, phone, tag) {
   await page.waitForTimeout(900)
   const innew = page.locator('#inBody tr.innew, #inList .icard.innew, #inList [data-fresh]')
   const nNew = await innew.count()
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a walk: each step reads the page the step before left
   const after = await page.locator('#inBody tr[data-iid], #inList [data-iid]').count()
   const iid = await page.evaluate(() => { const e = document.querySelector('#inBody tr.innew, #inList .innew, #inList [data-fresh]'); return e && e.getAttribute('data-iid') })
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a walk: each step reads the page the step before left
   const winLeft = await page.locator('[data-testid="win-inputedit"]').count()
   await shot(page, `${tag}-p3-added-viewport`)
   if (iid) { const rb = await box(page, `[data-iid="${iid}"]`); if (rb) await shot(page, `${tag}-p3-added-row`, pad(rb, 10)) }
@@ -169,6 +178,7 @@ async function fileRound(page, W, phone, tag) {
   const nb = page.locator('[data-testid="docconf-nodoc"]'); if (await nb.isVisible().catch(() => false)) await nb.click()
   await page.waitForTimeout(500)
   const rowText = await page.locator(`[data-iid="${iid}"]`).first().innerText().catch(() => null)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a walk: each step reads the page the step before left
   const winAfterSave = await page.locator('[data-testid="win-inputedit"]').count()
   await shot(page, `${tag}-p5-saved-viewport`)
   const rb2 = await box(page, `[data-iid="${iid}"]`); if (rb2) await shot(page, `${tag}-p5-saved-row`, pad(rb2, 10))

@@ -99,7 +99,8 @@ input at 864 and 844 tall, so a second run at 390×560 showed the change: four "
 
 **Pictures the host opened** (each deciding one): `w1536-b-newwindow.png` (the room — the list stops short, the window clear of
 it), `w821-a-viewport.png` (Remarks 57: words broken in two, "Medic / al" — §12 Q1), `w1536-cal-2-pressed-closeup.png` (arrows in,
-cyan outline), … (completed below as each is opened).
+cyan outline), `w1340-b-newwindow.png` (Remarks 150, a timed start "13 Jul 09:00–17:00" on one line in Start's 140), `ph-a-row.png`
+("+ Input" first), `ph-cal-1-rest-closeup.png` (arrows out), and the re-walk's `host-1536-2-dragged.png` (§6).
 
 **Notes a plain user might meet (the walker's, checked):** (1) at 1536 the window's top edge stands over the lower part of the
 filter row and over "+ Input", of which a cyan sliver shows at the window's right — the drawing shows the same, as "+ Medical"
@@ -108,11 +109,32 @@ still readable; (3) the New input window's calendar opens on the month of today,
 
 ## 5. The drawing check (D1424, D1495) — `scripts/drawcheck/specs/inp-add-right.mjs`
 
-(filled after the run)
+Eight states, each beside its approved drawing (recorded on `ead868ee9`'s build, every replay identical to its picture):
+the List at 1536 with no window and with it open, at 1024 and 821 with no window; the expand button at rest and pressed, desktop and
+iPhone. Run on the fixed build: **GREEN — 0 unexplained, 17 kept** (`docs/img/handpass/2026-11-08-drawcheck-inp-add-right/report.md`).
+Kept, each with its reason in the part list: 16 are the column widths D1787 asked for — Name / Start / End 110 / 140 / 90 with the
+window open at 1536 (the drawing kept the full widths) and with no window at 1024 and 821 (the older fault the drawings showed as it
+was; Remarks 260 at 1024, 57 at 821 where the drawing had none). The 17th is the drawing's own: the expand button's edge at rest was
+drawn with the mouse still on it (its hover edge); the phone's drawing, with no hover, matches. "+ Input", the dates button, the list's
+place and the drawn marks: no difference over 2px.
 
 ## 6. The fixes, and the host's re-walk of what they touched
 
-(filled after the fixes)
+**R1 — a window dragged away kept the room** (both readers): red first — the browser test "D1787: the input window dragged away…"
+FAILED on the build before the fix (the list kept 110 / 140 / 90 / 346 with the window 800px away), the other seven passed; the fix
+(`06-inputs.css`: the room's three rules only while the window stands where it opens, `:not([data-placed])`, as the calendar's
+day windows); then **8 passed**. The phone's test now opens the window; a unit test covers a row's window. A comment of the page that
+said the window always opened in one place, corrected.
+**The host's re-walk** (`docs/img/handpass/2026-11-08-chat7-inputs/host-rewalk.mjs`, `host-rewalk.json`, pictures `host-*`), all PASS,
+no errors: at 1536 and 1340, the room made → dragged 800px away: the full widths back and the list full width under the window
+(`host-1536-2-dragged.png`) → Escape, a row clicked: the window reopens where he left it, no room; a click on the window's bar with
+no move keeps the room; Medical's own room as before; **with the page's real scroll bar** (the test browser hides it — §7.11
+lesson 6): Remarks 331 at 1536 and 135 at 1340, the list still clear of the window.
+**Not reached:** the window opened from the Calendar's day and the List shown after — the script's click on the day did not open
+it (`host-1536-5-fromcal.png`); see §10.
+**The readers' open questions, answered from the pictures:** (a) a row clicked from 1340 up moves down as the narrowed columns make
+rows taller — it stays beside the window, in view (`w1340-e-rowwindow.png`); named to him; (c) Start's 140 holds "13 Jul 09:00–17:00"
+on one line (`w1340-b`); (d) with a real scroll bar Remarks loses 15px — 331 / 135, as above.
 
 ## 7. Cases carried by a test
 
@@ -133,25 +155,41 @@ browser-test file that does not exist → fixed.
 **The fresh, blind Opus read** (a helper; its report could not be saved word for word — this is the host's summary, said so):
 (1) MEDIUM, the same as Astra's (1) — R1; (2) LOW, the phone's browser test never opened a window → added (§7); (3) LOW, nothing
 tested a row's window making the room → added (§7); (4) the comment's file name → fixed. Its open questions, looked at in the
-pictures: (a) a row clicked at 1340 and up may jump as the columns narrow — (filled); (b) "+ Input" stands under the open window
-— drawn so on purpose, named to him; (c) Start 140 may wrap a timed span — (filled); (d) a real scroll bar takes about 15px from
-Remarks (the test browser hides it) — (filled); (e) the room goes the moment the row lands, as Medical's does — as built, the
+pictures: (a) a row clicked at 1340 and up may jump as the columns narrow — §6; (b) "+ Input" stands under the open window
+— drawn so on purpose, named to him; (c) Start 140 may wrap a timed span — §6; (d) a real scroll bar takes about 15px from
+Remarks (the test browser hides it) — §6; (e) the room goes the moment the row lands, as Medical's does — as built, the
 comment corrected. **Tidiness (filed, not fixed):** the room's size written twice (Inputs and Medical stylesheets); the expand
 button's font size and line height now unused; a comment of the page untrue → corrected.
 **R1, the same in Medical:** Medical's room (D1300) makes the same room for a dragged window — outside this job's lane, filed.
 
 ## 9. Break tests
 
-(filled)
+The dragged-window browser test was run red on the unfixed build before the fix (§6). The width tests (e2e "D1787") read the
+geometry the stylesheet makes, so a lost media rule or a wrong width fails them; the unit tests fail if the button goes back to the
+row's left or the room's class stops following the window.
 
 ## 10. What was NOT walked, and why
 
-(filled)
+- **The window opened from the Calendar's day, then the List shown:** the re-walk script did not open it. The List reads only
+  whether an input's window is open and whether it stands where it opens — the same two tests as "+ Input"'s and a row's, both walked;
+  so a third way in changes nothing the stylesheet reads (the agent's reading, not proved on screen).
+- **A member's List:** the same page and the same rules; nothing differs by role (question 7).
+- **A browser zoom, a phone on its side 844 wide:** the List takes the phone's layout up to 820 and the desktop's from 821; 844 wide
+  is the 821–1099 band, walked at 821 and 1024.
+- **WebKit:** the room is a desktop rule; the phone's walk (Chromium, touch) shows no room is made. His iPhone shows the phone's List.
+- **The one `body` rule's cost:** the first rule of its kind reading the whole page; it applies only from 1340 wide and asks only
+  whether the input window is on the page and placed. Not measured — the agent's reading that it costs nothing a person would see.
 
 ## 11. The gates
 
-(filled)
+On his PC: the two unit files 106 passed; the D1787 browser tests and the older "desktop list" test 8 passed (under the checks lock);
+the drawing check GREEN. GitHub's full run on the pushed commit: (the closing report).
 
 ## 12. His look
 
-(filled)
+Put to him with the preview link and the pictures: (1) confirm the smaller-screen safety is part of his answer (D1787's full row);
+(2) **Q1 — the narrowest desktop:** at 821 to about 880 wide Remarks is still very narrow (57px at 821; words broken in two —
+`w821-a-viewport.png`); recommended: narrow Type too at those widths, drawn for him first (D1625); (3) named, as drawn: "+ Input"
+stands under the open window, as "+ Medical" does; a row clicked from 1340 up moves down a little as the list narrows.
+
+`Walk: docs/handpass/2026-11-08-chat7-inputs.md · 93 pictures · 4 surfaces · 6 widths · MISSING: 1 fixed (R1), 1 filed (Medical's room, [MED-ROOM-DRAGGED])`
