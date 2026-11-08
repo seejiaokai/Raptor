@@ -1044,6 +1044,13 @@ move the row with the finger, which is not the motion the setting is for. **Plac
 
 ### [TOPBAR-BOUNCE-AWAY] A flick to a page's foot on his iPhone carries the top bar off screen (8 Nov 26)
 
+**His D1873 (8 Nov 26, a second recording, on the pinned row's preview):** fix it now — Astra builds the fix on
+`claude/lw-pin-last-frame` (pull request 694), Opus reads it, he tries it on his iPhone before "merge live". The second
+recording (`C:/Users/User/.claude/uploads/bfddd1cb-8b24-453c-b9e5-f54c2d5dd233/f9890820-ScreenRecording_11-08-2026_19-43-37_1.mp4`)
+shows the same fault and only it: the bar leaves for about 14 frames at 60 a second, only while the page springs past its
+foot (twice, once with Safari's toolbar folded, once with it open); mid-scroll, as the toolbar folds, the bar stays. The
+fixed pinned dates row stays put through the spring — the evidence that a bar fixed to the screen would hold.
+
 **His words (8 Nov 26, to chat 16, with D1871 — the same message kept the pinned row as built):** "I found an existing bug, when in scroll all the way to the bottom, the top bar goes
 out of view" — his recording `C:/Users/User/.claude/uploads/bfddd1cb-8b24-453c-b9e5-f54c2d5dd233/94560df1-ScreenRecording_11-08-2026_14-31-42_1.mp4`
 (the Leave War, Safari on his iPhone; frames tiled in `raptor-port/docs/img/handpass/2026-11-08-lw-pin-last-frame/his-recording-bottom.png`).

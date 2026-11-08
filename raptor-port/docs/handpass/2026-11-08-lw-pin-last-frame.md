@@ -321,3 +321,39 @@ a call of its own after the press can miss the very frame it is meant to catch �
 
 Walk: re-walk, 7 checks at desktop 1536 and phone 402, each frame read from the press, 7 PASS after the fix (2 FAIL before
 it, fixed red-first); pictures in `walk/rewalk-lift/`.
+
+## Part 2 — the top bar held through the page's spring (D1873, 8 Nov 26)
+
+His second recording on this branch's preview showed the fault filed as [TOPBAR-BOUNCE-AWAY] (a flick to a page's foot
+springs the page past its end and carries the top bar off screen for ~0.23 s; the fixed pinned dates row stays put —
+`docs/img/handpass/2026-11-08-lw-pin-last-frame/his-recording-2-bounce.png`, frames 100–123). He ruled D1873: Astra fixes
+it now, on this branch. Astra's work order: `docs/superpowers/briefs/2026-11-08-topbar-bounce-fix.md`.
+
+### The eight answers and the tier
+1 money — NO, the bar's place only; 2 published record — NO; 3 saved data — NO; 4 a shared drawer — **YES**, the one top
+bar on every page; 5 a new gesture or mode — NO (nothing new to press; the spring is the phone's); 6 a new surface — NO;
+7 roles — NO; 8 the warning list — NO. **Tier: WALK** (a cosmetic change to a shared drawer is never LOOK).
+
+### The roll-call — the top bar, every place it is drawn (SHOW at rest / scrolled / at the foot · USABLE · PAINTED under or through it)
+| Place | SHOW | USABLE | PAINTED |
+|---|---|---|---|
+| Edit Schedule (blue bar), desktop · phone | | | |
+| View-only Sched, desktop · phone | | | |
+| Scheduler Board (covers the bar with its own) | | | |
+| Inputs — list, calendar, Medical, SANS | | | |
+| Quals (pinned heading under the bar) | | | |
+| Leave War — Grid (pinned dates row), Approvals, Balances (its bar), OIL | | | |
+| Tracker | | | |
+| Logic · Admin · Help | | | |
+| "Not saved" band (`?savefail`) · "OIL not answered" bar | | | |
+| Windows opened below the bar; the bar pressable over Jump to a date / day window / document viewer | | | |
+| Page names beside TALON, two rows on a narrow desktop · folded into ☰ | | | |
+| Phone on its side; the bar's own sideways scroll and its burger-and-mark lead | | | |
+| Sign-in, access and guest screens | | | |
+
+### The sizing lines
+(written when Astra's change is read — §7.0, the ledger's sizing step)
+
+### What only his iPhone can show
+The spring at a page's foot and top, Safari's toolbar folding, the keyboard: the PC's Chromium and Playwright's WebKit do
+none of them (lesson 6) — his look on his iPhone before "merge live".
