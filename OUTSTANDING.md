@@ -74,6 +74,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
   - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; next people, design and the Tracker, each on his word, and a re-measure before 5b.
     Found by its step 3, low, the agent's: [BUGCHECK-LESSON-ORDER] — the bug-check order's list of missed faults has a second 23 outside it and 8 before 7.
+    Found by its step 5a (People), medium, the agent's: [DOCSIZE-PATHS-OPEN] — a rules file whose `paths:` list is never closed passes the document check, its page checks skipped.
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
   ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
@@ -309,6 +310,17 @@ the checklist (`raptor-port/docs/bug-check-checklist.md`) names it "the second 2
 §7.11, whole (D138), and put 7's text before 8's; lessons are cited by number elsewhere (the backlog, evidence sheets,
 briefs), so search for each number first and keep a number that is cited; then match the checklist's list. **Place:**
 low, the agent's — with the rules diet's step 4 or the next change to the order.
+
+### [DOCSIZE-PATHS-OPEN] A rules file whose `paths:` list is never closed passes the document check (found 8 Nov 26, the rules diet's step 5a, chat 17)
+**What:** the People & accounts page's first draft lost the `---` line that closes its `paths:` list. With it open, the
+file would not load by itself with the files it names, and `npm run docsize` and `backlog-archive.mjs --rulings` both
+passed it — the check read the page as unscoped (the general page's shape), so the area-page checks (the "Settled" and
+"From other areas" sections, statement sizes, no table rows) never ran on it. Found only by the account's helper reading
+the file; fixed on the branch `claude/rules-diet-step-5a-people-1288c3` before the reads. **To do:** in
+`raptor-port/scripts/docsize-rulings.mjs` (and the self-test, `docsize-selftest.mjs`), fail a rules file under
+`.claude/rules/` that opens a frontmatter block (`---` on its first line) and never closes it, and fail a page whose
+`paths:` list cannot be parsed; a self-test case for each. A script change — goes live on his "merge live" (D1407).
+**Place:** medium, the agent's — before the next area converts (design, the Tracker), or with it.
 
 ### [QUALS-PINNED-HEAD-NO-DRAG] A heading in Quals' pinned row cannot start a column drag (the night of 6 Nov 26)
 In Edit quals with the page scrolled down, a heading in the pinned row under the top bar cannot be pressed to start a column drag: the press listener is on the table alone. Scrolling up to the table's own heading row works. Older than the night's job (`raptor-port/docs/handpass/2026-11-06-people-quals.md`). **Place:** small, with the next Quals job.
