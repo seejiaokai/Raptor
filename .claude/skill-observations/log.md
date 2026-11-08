@@ -4189,6 +4189,57 @@ rewritten) against the saved figures, in place of building a part list first; ea
 **Principle:** When a design was drawn by code that measured itself, compare the build with the same measuring code —
 the same ruler on both sides removes a whole class of false differences.
 
+### Observation 876: A pin that goes red or green by the machine's pace was handed over as "unexplained" — slow the processor to reproduce it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 10, the Tracker's group 7 — fixing the one red browser check chat 9 left (a double-click during the chart's slide); 872 is taken on another branch, so this one is 873 (was 873. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, and 874 is taken on `claude/lw-pin-last-frame`.)
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** reproducing a timing-dependent fault before guessing at a cause
+
+**Issue:** The check was red in the previous chat's full run and green in this chat's first probes at every click gap tried, so it looked fixed or flaky. Slowing the page's processor to half speed (the browser's own CPU throttling) made it fail every time, and a per-frame log then showed the real cause in one run: a child element with its own "takes presses" setting ignored the parent's "no presses" — neither of the two suspects handed over. The suite's pace alone had decided whether the fault showed.
+**Suggested improvement:** In the reproduce phase: when a fault involves a press, key or frame during an animation or scroll and does not reproduce, re-run it at two or three slowed processor speeds before calling it flaky or fixed; once found, add a check that proves the cause whatever the pace (here, hit-testing every element mid-animation), beside the end-to-end check run at a slowed pace.
+**Principle:** A timing fault that a test catches only on some machines is still a fault; slow the clock down to make it certain, then pin the cause with a check that does not depend on timing.
+
+### Observation 877: A merge approval relayed in another session's brief is refused by the safety check — the merging chat needs his word typed there
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 10, a side session started by chat 9 to fix the Tracker's last red check and carry chat 9's "merge live" through to the live app (was 874. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, and 874 is taken on `claude/lw-pin-last-frame`.)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** handing a job that already holds the owner's merge approval to another chat (a side session's brief, or the next chat's opening line)
+
+**Issue:** The owner typed "merge live" in chat 9. Chat 9 started chat 10 as a side session and wrote the approval into its brief, with the time and his words. Chat 10 fixed the red check, got the run green, took the merge lock and found the branch level — and the merge command was refused by the app's auto-mode safety check ("merge without review"): a brief written by another session is not the owner's message, so the approval did not count. The lock was released and the job stopped to ask him again, a round-trip the plan had not allowed for.
+**Suggested improvement:** In session-handoff (and wherever a job is passed on with an approval attached): say plainly that an approval does not travel in another agent's text. Either the chat that received the approval does the merge itself, or the new chat starts from an opening line the owner pastes himself (his own message), with the approval in it — never from a side session's brief alone. If a side session must merge, say so in the brief and warn the owner that he will be asked once more there.
+**Principle:** A permission given to one agent is not carried by that agent's message to another; automated guards judge the speaker, not the quoted words. Plan the step that needs the approval to run where the person gave it, or have the person repeat it where it will run.
+
+### Observation 878: A helper's "the code is unchanged since commit X" must be checked before its build label is believed
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 9, the Tracker's group 7 — the drawing check run by a background helper while the host fixed the readers' findings (numbered past 865, the highest on any branch) (was 866, then 875. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, 874 is taken on `claude/lw-pin-last-frame` and 875 on `claude/pr-board-layout-62eb71`; moved to the end.)
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** taking a helper's result — what build it measured
+
+**Issue:** The drawing-check helper labelled its measured build "the branch at 7d750640e" and wrote that the app's code was unchanged between that commit and the tip, so it built from the working folder. Two commits since had changed the code, and the host's fixes were landing in the same folder while it built; its build matched neither commit. The numbers happened to hold (the fixes did not move what it measured), but the label was false. Separately, the check script can measure only a part that is drawn, so a part meant to be gone on both sides read as a red "not found".
+**Suggested improvement:** In the step that takes a helper's result: when a helper names the commit it measured, run `git diff --stat <its commit> HEAD -- <code folder>` and compare the build's time with the commits' times before quoting it; where the code moved under it, re-run the cheap part (build + check) on a fixed commit. In a helper's brief for any check that builds: "build from a named commit (a `git worktree` or `git archive`), never from the live folder while the host is editing".
+**Principle:** A measurement is only as good as the label on what was measured; a helper working beside an editing host must pin its input to a commit, and the host verifies the pin rather than the helper's word.
+
+### Observation 879: A blind reader told to find related rules "by name" misses the ones that change the subject
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 15, the rules diet's step 5a on the IT flow guide — two blind readers checked that a rewritten rules page still carried every part of its rulings and pointed to every other area's ruling that bears on it (first written as 878 past 873–877 on other open branches; renumbered 879 when `main` was brought in, where chat 10 had taken 876–878)
+**Skill:** requesting-code-review
+**Type:** open-source
+**Phase/Area:** writing the reviewer's brief — what the reviewer searches beyond the change itself
+
+**Issue:** the builder's account and the brief both searched the other areas for rulings that bear on the guide by the guide's own name; only two rulings named it. One reader, searching the same way, found nothing more; the other found the most serious gap of the step — a later ruling that changes what the guide pictures (full editing on another screen) and a second that sets a preferred order, neither naming the guide. The page had stated the old behaviour as current.
+**Suggested improvement:** in the brief template for a conformance read (a summary, a page, a port checked against its sources), add a line: "search related sources by the subject of each claim — the actions, screens and terms it names — not by the name of the document under review; a later rule that changes a subject rarely names every document that describes it."
+**Principle:** dependencies are found by topic, not by title — a check that searches only for references to the artefact misses the changes to what the artefact describes.
 ### Observation 880: A change of what scrolls breaks every test that names the old scroller, not only its own spec
 
 **Status:** OPEN

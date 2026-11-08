@@ -1,0 +1,1976 @@
+{
+ "s01": {
+  "id": "s01",
+  "title": "The ruled case on his iPhone size, with the frames",
+  "rows": [
+   {
+    "step": "1 landed (D984)",
+    "status": "PASS",
+    "said": "ACG-09 centre 433.5 vs the chart box middle 502.9; ball 418.7–448.4 (notes: 419–448); scrollTop 339; found ring true",
+    "pics": "s01-landed.png"
+   },
+   {
+    "step": "2-3 slide + window (W1–W8)",
+    "status": "PASS",
+    "said": "slide 232px in 267ms over 12 frames; window first shown at 313ms, 19ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 220.3–649.7; gap ball foot→top 4, ring foot→top 4; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s01-landed,s01-midslide,s01-tap100,s01-open"
+   },
+   {
+    "step": "W4 pixels",
+    "status": "RECORD",
+    "said": "the mid-slide picture (taken ~60ms after the tap) is s01-midslide; frame trace: first scroll change at 42ms, chart rested at 294ms, window first shown 313ms. Window rect on the trace's first shown frame [184,220,394,650]",
+    "pics": ""
+   },
+   {
+    "step": "Q1 the slide",
+    "status": "RECORD",
+    "said": "slid 232px (scrollTop 339→571); ACG-09 top 418.7 → 186.7, window 220.3–649.7; drawing: ACG-09 187–216, window 214–643 (slid 232)",
+    "pics": ""
+   },
+   {
+    "step": "4 beside the drawing",
+    "status": "RECORD",
+    "said": "differences over 2px: window top 220.3 vs 214 (drawn 2px over the ball; built 4px under it); window foot 649.7 vs 643",
+    "pics": ""
+   },
+   {
+    "step": "5 every control found at its centre",
+    "status": "PASS",
+    "said": "{\"Not done\":true,\"DCO\":true,\"DPCO\":true,\"Marginal\":true,\"N.A.\":true,\"Close\":true,\"Sun 8 Nov 26▾\":true,\"−\":true,\"+\":true,\"Edit details\":true}",
+    "pics": ""
+   },
+   {
+    "step": "6 Close; W7 holds 1s",
+    "status": "PASS",
+    "said": "scrollTop 571 → 571",
+    "pics": "s01-closed"
+   },
+   {
+    "step": "7 tap again (now high): opens, no slide",
+    "status": "PASS",
+    "said": "slide 0px in 0ms over 0 frames; window first shown at 29ms, -ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 220.3–649.7; gap ball foot→top 4, ring foot→top 4; foot margin 224.3",
+    "pics": "s01-reopen"
+   },
+   {
+    "step": "errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s02": {
+  "id": "s02",
+  "title": "Where the window goes, all down the chart",
+  "rows": [
+   {
+    "step": "1 a real finger drag moves the chart",
+    "status": "PASS",
+    "said": "scrollTop 339 → 444",
+    "pics": ""
+   },
+   {
+    "step": "2-3 table of places",
+    "status": "PASS",
+    "said": "(places below centre 772 cannot be reached: the chart's top ends there) y185:NO-SLIDE win 203.3–632.7 ball→169.7 | y225:NO-SLIDE win 243.3–672.7 ball→209.7 | y265:NO-SLIDE win 283.3–712.7 ball→249.7 | y305:NO-SLIDE win 323.3–752.7 ball→289.7 | y345:NO-SLIDE win 363.3–792.7 ball→329.7 | y385:NO-SLIDE win 403.3–832.7 ball→369.7 | y425:SLIDE(223) win 220.3–649.7 ball→186.7 | y465:SLIDE(263) win 220.3–649.7 ball→186.7 | y505:SLIDE(303) win 220.3–649.7 ball→186.7 | y545:SLIDE(343) win 220.3–649.7 ball→186.7 | y585:SLIDE(383) win 220.3–649.7 ball→186.7 | y625:SLIDE(423) win 220.3–649.7 ball→186.7 | y665:SLIDE(463) win 220.3–649.7 ball→186.7 | y705:SLIDE(503) win 220.3–649.7 ball→186.7 | y745:SLIDE(543) win 220.3–649.7 ball→186.7 | 785: could not place (772.5) | 825: could not place (772.5)",
+    "pics": ""
+   },
+   {
+    "step": "threshold",
+    "status": "RECORD",
+    "said": "no slide at centre 417.5, slide at 418.8 (a 2px bracket where the window stops fitting below)",
+    "pics": ""
+   },
+   {
+    "step": "4 premise",
+    "status": "RECORD",
+    "said": "ACG-09's centre placed at the limit 164.5: ball 149.7–179.4",
+    "pics": ""
+   },
+   {
+    "step": "4 event with its top under the tabs (A7)",
+    "status": "RECORD",
+    "said": "ball 149.7–179.4 with limit 164.5: 14.9px of 29.6 show; window opened: window 183.3–612.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 261.3; slid false",
+    "pics": "s02-halfhidden-before,s02-halfhidden"
+   }
+  ]
+ },
+ "s03": {
+  "id": "s03",
+  "title": "The chart's end: option B, and part of a slide",
+  "rows": [
+   {
+    "step": "phone 1 end",
+    "status": "RECORD",
+    "said": "scrollTop 4529 of 4529 max; lowest events [{\"id\":\"ST-18\",\"t\":289,\"b\":313,\"x\":134},{\"id\":\"SAT-2\",\"t\":250,\"b\":274,\"x\":134},{\"id\":\"SAT(S)-2\",\"t\":212,\"b\":235,\"x\":256},{\"id\":\"SAT-1\",\"t\":212,\"b\":235,\"x\":134},{\"id\":\"SAT(S)-1\",\"t\":173,\"b\":197,\"x\":256},{\"id\":\"SATN-1\",\"t\":173,\"b\":197,\"x\":184}]",
+    "pics": ""
+   },
+   {
+    "step": "phone 2 option B",
+    "status": "PASS",
+    "said": "slide 0px in 0ms over 0 frames; window first shown at 38ms, -ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 316.5–728.5; gap ball foot→top 4, ring foot→top 4; foot margin 145.5 | scrollTop 4529→4529; window 316.5–728.5, event 288.8–312.5, limit 164.5",
+    "pics": "s03-phone-B"
+   },
+   {
+    "step": "phone 2b inner scroll, chart holds",
+    "status": "NOTRUN",
+    "said": "window scrollTop 0→0 (content 410 in 410); chart scrollTop 4529→4529 (window does not overflow here)",
+    "pics": "s03-phone-inner-scrolled"
+   },
+   {
+    "step": "3 the last screenful, event by event",
+    "status": "PASS",
+    "said": "SAT-2:B/NO-SLIDE | SAT(S)-2:B/NO-SLIDE | SAT-1:B/NO-SLIDE | SAT(S)-1:B/NO-SLIDE | SATN-1:B/NO-SLIDE | NAAR-2:B/NO-SLIDE | ST-15:offscreen | NAAR-1:offscreen | NTR-2:offscreen | SAN-1:offscreen | SA-6:offscreen | NTR-1:offscreen | NTR(S)-1:offscreen",
+    "pics": ""
+   },
+   {
+    "step": "3b zoomed in 82%, the lowest events (Q2: part of a slide, B)",
+    "status": "PASS",
+    "said": "at no zoom does the chart end low enough on a phone for B to arise: it ends with room below its last row. ST-18@271:B/NO-SLIDE win 298.7–710.6 | SAT-2@196:B/NO-SLIDE win 223.2–738.1",
+    "pics": ""
+   },
+   {
+    "step": "3c zoomed right out (10%): scroll room 1218px",
+    "status": "PASS",
+    "said": "ST-18@325 room 0: NO-SLIDE win 331.5–743.5 | SAT-2@315 room 0: NO-SLIDE win 322.3–837.2 | SAT(S)-2@306 room 0: NO-SLIDE win 313.1–742.5 | SAT-1@306 room 0: NO-SLIDE win 313.1–793.2 | SAT(S)-1@297 room 0: NO-SLIDE win 303.9–750.7",
+    "pics": "s03-phone-zoomed-out.png"
+   },
+   {
+    "step": "phone errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "pc 1 end",
+    "status": "RECORD",
+    "said": "scrollTop 10372 of 10372 max; lowest events [{\"id\":\"ST-18\",\"t\":354,\"b\":410,\"x\":296},{\"id\":\"SAT-2\",\"t\":262,\"b\":318,\"x\":296},{\"id\":\"SAT-1\",\"t\":170,\"b\":226,\"x\":296},{\"id\":\"SAT(S)-2\",\"t\":170,\"b\":226,\"x\":589},{\"id\":\"SATN-1\",\"t\":78,\"b\":134,\"x\":416},{\"id\":\"NAAR-2\",\"t\":78,\"b\":134,\"x\":116}]",
+    "pics": ""
+   },
+   {
+    "step": "pc 2 option B",
+    "status": "PASS",
+    "said": "slide 0px in 0ms over 0 frames; window first shown at 17ms, -ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 414.3–826.2; gap ball foot→top 4, ring foot→top 4; foot margin 37.8 | scrollTop 10372→10372; window 414.3–826.2, event 353.7–410.3, limit 108",
+    "pics": "s03-pc-B"
+   },
+   {
+    "step": "pc 2b inner scroll, chart holds",
+    "status": "NOTRUN",
+    "said": "window scrollTop 0→0 (content 410 in 410); chart scrollTop 10372→10372 (window does not overflow here)",
+    "pics": "s03-pc-inner-scrolled"
+   },
+   {
+    "step": "pc errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s04": {
+  "id": "s04",
+  "title": "The chart's top",
+  "rows": [
+   {
+    "step": "phone highest event ST-01 (slides only if its window would not fit below)",
+    "status": "PASS",
+    "said": "scrollTop 0, event at 528–553.4 (the chart's own first row sits low on a phone: premise \"no slide at the top\" does not hold for it); window 394.6 tall, fits below: false; slide 341px in 302ms over 18 frames; window first shown at 367ms, 18ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 216.4–611; gap ball foot→top 4, ring foot→top 2.7; foot margin 263; event top 187 (22.5 below the limit 164.5)",
+    "pics": "s04-phone-before,s04-phone-top"
+   },
+   {
+    "step": "pc highest event ST-01 (slides only if its window would not fit below)",
+    "status": "PASS",
+    "said": "scrollTop 0, event at 511.7–572.3 (the chart's own first row sits low on a phone: premise \"no slide at the top\" does not hold for it); window 394.6 tall, fits below: false; slide 381px in 313ms over 19 frames; window first shown at 373ms, 22ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 195.3–589.8; gap ball foot→top 4, ring foot→top 2.7; foot margin 274.2; event top 130.7 (22.7 below the limit 108)",
+    "pics": "s04-pc-before,s04-pc-top"
+   }
+  ]
+ },
+ "s05": {
+  "id": "s05",
+  "title": "The other openers, and the taps that must not open it",
+  "rows": [
+   {
+    "step": "1 Crew → Student B (D984)",
+    "status": "RECORD",
+    "said": "STUDENT A → STUDENT B; scrollTop 339 → 339; balls nearest the landing band [{\"id\":\"ACG-09\",\"d\":1.0492401123046875,\"y\":434},{\"id\":\"ST-06\",\"d\":19.528945922851562,\"y\":452},{\"id\":\"ACG-08\",\"d\":37.590118408203125,\"y\":395}]",
+    "pics": "s05-studentB-landed.png"
+   },
+   {
+    "step": "1 tap the landed event: window names Student B",
+    "status": "PASS",
+    "said": "ACG-09: heading \"ACG-09  ·  STUDENT B\"; slide 235px in 243ms over 15 frames; window first shown at 298ms, 19ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 214.4–643.8; gap ball foot→top 4, ring foot→top 3.2; foot margin 230.2; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s05-studentB-open.png"
+   },
+   {
+    "step": "2 another student’s wedge picks him; nothing opens; the chart does not move (A3)",
+    "status": "PASS",
+    "said": "wedge point 226,429 (ring 215,420,237,431); crew STUDENT A → STUDENT B; scrollTop 353 → 353; window shown false",
+    "pics": "s05-wedge-tap-now,s05-wedge-tap-set.png"
+   },
+   {
+    "step": "2b his own wedge",
+    "status": "RECORD",
+    "said": "mine wedge 1: window opened (ACG-09  ·  STUDENT B); scrollTop 353",
+    "pics": "s05-ownwedge.png"
+   },
+   {
+    "step": "3 ⓘ on: the bubble, not the marking window, and no slide",
+    "status": "PASS",
+    "said": "scrollTop 373 → 373; marking window shown false; bubble [{\"id\":\"detailBubble\",\"cls\":\"\",\"t\":452,\"b\":571,\"l\":96,\"r\":356}]; tabs foot 197.5; bubble over the bars or tabs: false",
+    "pics": "s05-details-bubble.png"
+   },
+   {
+    "step": "4 Edit chart layout: a tap arranges — no window, no slide",
+    "status": "PASS",
+    "said": "scrollTop 130 → 130; window shown false",
+    "pics": "s05-arrange.png"
+   },
+   {
+    "step": "4b arrange mode left",
+    "status": "PASS",
+    "said": "the menu row reads Edit chart layout again",
+    "pics": ""
+   },
+   {
+    "step": "5 Show All: the row for ACG-09 pressed",
+    "status": "RECORD",
+    "said": "row found 1; marking window shown false; what opened: nothing visible",
+    "pics": "s05-showall-row.png"
+   },
+   {
+    "step": "errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s06": {
+  "id": "s06",
+  "title": "His PC",
+  "rows": [
+   {
+    "step": "pc 1 landed by the bar's Find + Enter",
+    "status": "PASS",
+    "said": "ACG-09 434.7–505.3, board 108–831.2, scrollTop 624, found ring true",
+    "pics": "s06-pc-landed.png"
+   },
+   {
+    "step": "pc 2 click: slide only if it would not fit (limit = the Tracker bar's foot 108)",
+    "status": "PASS",
+    "said": "fits below: false; slide 304px in 283ms over 17 frames; window first shown at 327ms, 19ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 205.3–634.6; gap ball foot→top 4, ring foot→top 2.8; foot margin 229.4; event top 130.7 (22.7 below the limit 108)",
+    "pics": "s06-pc-open.png"
+   },
+   {
+    "step": "pc 3 closed (W7) and clicked again: no slide",
+    "status": "PASS",
+    "said": "scrollTop after close 928 → 928; second click slide 0px in 0ms over 0 frames; window first shown at 9ms, -ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 205.3–634.6; gap ball foot→top 4, ring foot→top 2.8; foot margin 229.4",
+    "pics": ""
+   },
+   {
+    "step": "pc 5 zoom in ×3 / out ×3",
+    "status": "PASS",
+    "said": "in×3 (130%): slide 293 ok; window 226.4–655.8; gap ball foot→top 4, ring foot→top 2.8 | out×3 from there (70%): slide 314 ok; window 184.1–613.4; gap ball foot→top 4, ring foot→top 2.8; \"⤢ Fit\" button exists on the chart bar: true (only in Edit chart layout)",
+    "pics": ""
+   },
+   {
+    "step": "pc errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "pcreal 1 landed by the bar's Find + Enter",
+    "status": "PASS",
+    "said": "ACG-09 367.7–438.3, board 108–697.2, scrollTop 624, found ring true",
+    "pics": "s06-pcreal-landed.png"
+   },
+   {
+    "step": "pcreal 2 click: slide only if it would not fit (limit = the Tracker bar's foot 108)",
+    "status": "PASS",
+    "said": "fits below: false; slide 237px in 250ms over 15 frames; window first shown at 295ms, 20ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 205.3–634.6; gap ball foot→top 4, ring foot→top 2.8; foot margin 95.4; event top 130.7 (22.7 below the limit 108)",
+    "pics": "s06-pcreal-open.png"
+   },
+   {
+    "step": "pcreal 3 closed (W7) and clicked again: no slide",
+    "status": "PASS",
+    "said": "scrollTop after close 861 → 861; second click slide 0px in 0ms over 0 frames; window first shown at 18ms, -ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 205.3–634.6; gap ball foot→top 4, ring foot→top 2.8; foot margin 95.4",
+    "pics": ""
+   },
+   {
+    "step": "pcreal errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "big 1 landed by the bar's Find + Enter",
+    "status": "PASS",
+    "said": "ACG-09 707.3–777.8, board 118.6–1407.2, scrollTop 645, found ring true",
+    "pics": "s06-big-landed.png"
+   },
+   {
+    "step": "big 2 click: slide only if it would not fit (limit = the Tracker bar's foot 118.6)",
+    "status": "PASS",
+    "said": "fits below: true; slide 0px in 0ms over 0 frames; window first shown at 14ms, -ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 781.8–1211.2; gap ball foot→top 4, ring foot→top 2.8; foot margin 228.8",
+    "pics": "s06-big-open.png"
+   },
+   {
+    "step": "big 3 closed (W7) and clicked again: no slide",
+    "status": "PASS",
+    "said": "scrollTop after close 645 → 645; second click slide 0px in 0ms over 0 frames; window first shown at 9ms, -ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 781.8–1211.2; gap ball foot→top 4, ring foot→top 2.8; foot margin 228.8",
+    "pics": ""
+   },
+   {
+    "step": "big errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "4 PC-REAL (730 tall): places needing the slide",
+    "status": "RECORD",
+    "said": "128:- 168:- 208:- 248:- 288:S 328:S 368:S 408:S 448:S 488:S 528:S 568:S 608:S 648:S",
+    "pics": ""
+   }
+  ]
+ },
+ "s07": {
+  "id": "s07",
+  "title": "By keyboard (D980)",
+  "rows": [
+   {
+    "step": "pc 1 the chart takes the keys on a Tab",
+    "status": "PASS",
+    "said": "active element after 5 Tab press(es) from the control before the chart: board",
+    "pics": ""
+   },
+   {
+    "step": "pc 1b arrows to ACG-09",
+    "status": "RECORD",
+    "said": "ring on ACG-09; path ACG-09; ACG-09 703.7–760.3, would fit below: false",
+    "pics": "s07-pc-ring.png"
+   },
+   {
+    "step": "pc 2 Enter: slide then window; the keys inside from its first shown frame",
+    "status": "PASS",
+    "said": "slide 573px in 384ms over 23 frames; window first shown at 423ms, 17ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0; keys first in the window at 423ms (window first shown 423ms), inside while unseen: false; on the page body once shown: false; frame ae path board>BUTTON@pop | window 191.3–620.6; gap ball foot→top 4, ring foot→top 4; foot margin 243.4; event top 130.7 (22.7 below the limit 108)",
+    "pics": "s07-pc-open.png"
+   },
+   {
+    "step": "pc 3 Tab / Shift+Tab round the window, each stop in view",
+    "status": "PASS",
+    "said": "stops DCO > DPCO > Marginal > N.A. > Close > popDoneDate > popFailMinus > popFailPlus > popFailDate > popEditInfo > Not done > DCO > DPCO > Marginal",
+    "pics": "s07-pc-tab.png"
+   },
+   {
+    "step": "pc 4 Escape: window gone, the keys back on ACG-09 and its ring clear of the bar",
+    "status": "PASS",
+    "said": "ring on ACG-09; active board; ring top 124.7 vs limit 108; element at the ring's top point: path.; scrollTop 930 → 930",
+    "pics": "s07-pc-escape.png"
+   },
+   {
+    "step": "pc 5 ↓ then Enter within 100ms (D989): the window for the event the ring is on, whole",
+    "status": "PASS",
+    "said": "ring ACG-09 → ST-06; heading \"ST-06  ·  STUDENT A\"; window 242.3–636.8; gap ball foot→top 4, ring foot→top 2.7; foot margin 227.2",
+    "pics": "s07-pc-down-enter.png"
+   },
+   {
+    "step": "pc errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "narrow 1 the chart takes the keys on a Tab",
+    "status": "PASS",
+    "said": "active element after 7 Tab press(es) from the control before the chart: board",
+    "pics": ""
+   },
+   {
+    "step": "narrow 1b arrows to ACG-09",
+    "status": "RECORD",
+    "said": "ring on ACG-09; path ACG-09; ACG-09 682.2–738.8, would fit below: false",
+    "pics": "s07-narrow-ring.png"
+   },
+   {
+    "step": "narrow 2 Enter: slide then window; the keys inside from its first shown frame",
+    "status": "PASS",
+    "said": "slide 473px in 349ms over 21 frames; window first shown at 389ms, 18ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0; keys first in the window at 389ms (window first shown 389ms), inside while unseen: false; on the page body once shown: false; frame ae path board>BUTTON@pop | window 269.8–699.1; gap ball foot→top 4, ring foot→top 4; foot margin 100.9; event top 209.2 (22.7 below the limit 186.5)",
+    "pics": "s07-narrow-open.png"
+   },
+   {
+    "step": "narrow 3 Tab / Shift+Tab round the window, each stop in view",
+    "status": "PASS",
+    "said": "stops DCO > DPCO > Marginal > N.A. > Close > popDoneDate > popFailMinus > popFailPlus > popFailDate > popEditInfo > Not done > DCO > DPCO > Marginal",
+    "pics": "s07-narrow-tab.png"
+   },
+   {
+    "step": "narrow 4 Escape: window gone, the keys back on ACG-09 and its ring clear of the bar",
+    "status": "PASS",
+    "said": "ring on ACG-09; active board; ring top 203.2 vs limit 186.5; element at the ring's top point: path.; scrollTop 859 → 859",
+    "pics": "s07-narrow-escape.png"
+   },
+   {
+    "step": "narrow 5 ↓ then Enter within 100ms (D989): the window for the event the ring is on, whole",
+    "status": "PASS",
+    "said": "ring ACG-09 → ST-06; heading \"ST-06  ·  STUDENT A\"; window 320.8–715.3; gap ball foot→top 4, ring foot→top 2.7; foot margin 84.7",
+    "pics": "s07-narrow-down-enter.png"
+   },
+   {
+    "step": "narrow errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "7 Enter on the last event reached by the arrows (BFM-4)",
+    "status": "RECORD",
+    "said": "window 215.2–747.5; gap ball foot→top 4, ring foot→top 4; foot margin 126.5",
+    "pics": "s07-phone-last-enter.png"
+   }
+  ]
+ },
+ "s08": {
+  "id": "s08",
+  "title": "A second press while the chart slides",
+  "rows": [
+   {
+    "step": "a1 phone two taps 300ms apart: no grade written; invariants",
+    "status": "PASS",
+    "said": "slide 232px; slide 232px in 250ms over 15 frames; window first shown at 299ms, 18ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0; wedges unchanged; undo true/Nothing to undo → true/Nothing to undo; after 1.8s window shown (Not done,DCO,DPCO,Marginal,N.A.,Close) | window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s08-a1.png"
+   },
+   {
+    "step": "a2 phone two taps 600ms apart: no grade written; invariants",
+    "status": "PASS",
+    "said": "slide 232px; slide 232px in 245ms over 15 frames; window first shown at 304ms, 18ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0; wedges unchanged; undo true/Nothing to undo → true/Nothing to undo; after 1.8s window shown (Not done,DCO,DPCO,Marginal,N.A.,Close) | window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s08-a2.png"
+   },
+   {
+    "step": "b1 pc double click: no grade written; invariants",
+    "status": "PASS",
+    "said": "slide 304px; slide 304px in 282ms over 17 frames; window first shown at 336ms, 19ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0; wedges unchanged; undo true/Nothing to undo → true/Nothing to undo; after 1.8s window shown (Not done,DCO,DPCO,Marginal,N.A.,Close) | window 205.3–634.6; gap ball foot→top 4, ring foot→top 2.8; foot margin 229.4; event top 130.7 (22.7 below the limit 108)",
+    "pics": "s08-b1.png"
+   },
+   {
+    "step": "b2 pc two clicks 250ms apart: no grade written; invariants",
+    "status": "PASS",
+    "said": "slide 304px; slide 304px in 283ms over 17 frames; window first shown at nullms, -ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0; wedges unchanged; undo true/Nothing to undo → true/Nothing to undo; after 1.8s window gone (no window) | FAILS: no window shown | ",
+    "pics": "s08-b2.png"
+   },
+   {
+    "step": "c1 pc keys Enter, Enter within 150ms: no grade written; invariants",
+    "status": "FAIL",
+    "said": "slide 304px; slide 304px in 282ms over 17 frames; window first shown at 134ms, -166ms after the chart rested; frames showing it during the slide 10; moved after shown 0; unseen-yet-pressable frames 0; wedges unchanged; undo true/Nothing to undo → true/Nothing to undo; after 1.8s window shown (Not done,DCO,DPCO,Marginal,N.A.,Close) | FAILS: W2b window 103px below the event's foot (4 expected): detached from it | window 304.3–733.6; gap ball foot→top 103, ring foot→top 101.8; foot margin 130.4; event top 130.7 (22.7 below the limit 108)",
+    "pics": "s08-c1.png"
+   },
+   {
+    "step": "c2 pc keys Enter, Space within 150ms: no grade written; invariants",
+    "status": "FAIL",
+    "said": "slide 304px; slide 304px in 283ms over 17 frames; window first shown at 140ms, -164ms after the chart rested; frames showing it during the slide 10; moved after shown 0; unseen-yet-pressable frames 0; wedges unchanged; undo true/Nothing to undo → true/Nothing to undo; after 1.8s window shown (Not done,DCO,DPCO,Marginal,N.A.,Close) | FAILS: W2b window 103px below the event's foot (4 expected): detached from it | window 304.3–733.6; gap ball foot→top 103, ring foot→top 101.8; foot margin 130.4; event top 130.7 (22.7 below the limit 108)",
+    "pics": "s08-c2.png"
+   }
+  ]
+ },
+ "s09": {
+  "id": "s09",
+  "title": "The narrow desktop with a mouse",
+  "rows": [
+   {
+    "step": "1 tabs show, and the chart’s scroll bars (D1406)",
+    "status": "PASS",
+    "said": "tabs 140.5–186.5; chart bar width 15, height 0",
+    "pics": "s09-open.png"
+   },
+   {
+    "step": "2 Find (strip): lands, strip goes",
+    "status": "PASS",
+    "said": "ACG-09 441.2–511.8; found true",
+    "pics": "s09-landed.png"
+   },
+   {
+    "step": "3 click: slide under the TABS; window whole",
+    "status": "PASS",
+    "said": "limit 186.5 = tabs foot 186.5; slide 232px in 248ms over 15 frames; window first shown at 289ms, 18ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 283.8–713.1; gap ball foot→top 4, ring foot→top 2.8; foot margin 86.9; event top 209.2 (22.7 below the limit 186.5); window 516–726 wide, chart's scroll bar at x 985–1000: overlaps false",
+    "pics": "s09-open-window.png"
+   },
+   {
+    "step": "4 wheel over the chart with the window open",
+    "status": "RECORD",
+    "said": "scrollTop 857 → 1157; window stays at 283.8–713.1 while ACG-09 is now -90.8–-20.2; over the event's new place: false",
+    "pics": "s09-wheel.png"
+   },
+   {
+    "step": "errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s10": {
+  "id": "s10",
+  "title": "The phone on its side",
+  "rows": [
+   {
+    "step": "1 heights",
+    "status": "RECORD",
+    "said": "top bar 59, Tracker bar 37.5, tabs 46, chart box 226.7 (viewport 402), limit 142.5",
+    "pics": "s10-open.png"
+   },
+   {
+    "step": "2 ACG-09 as high as it may go, the window under it scrolling inside itself",
+    "status": "PASS",
+    "said": "limit 142.5, event top 165.4 (22.9 below it); window 236.4–394, content 427 in 156, foot margin 8; slide 57px in 119ms over 7 frames; window first shown at 165ms, 16ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 236.4–394 (scrolls inside: 427 in 156); gap ball foot→top 4, ring foot→top 2.8; foot margin 8; event top 165.4 (22.9 below the limit 142.5)",
+    "pics": "s10-open-window.png"
+   },
+   {
+    "step": "3 a finger drag inside the window scrolls it; the chart does not move",
+    "status": "PASS",
+    "said": "window scrollTop 0 → 105; chart 651 → 651",
+    "pics": "s10-inner.png"
+   },
+   {
+    "step": "3b dragged on past its end: the chart still does not move",
+    "status": "PASS",
+    "said": "chart 651 → 651; window scrollTop 271 of 271",
+    "pics": ""
+   },
+   {
+    "step": "3c Close and Edit details reached by a tap",
+    "status": "PASS",
+    "said": "window 236.4–394 (scrolls inside: 427 in 156); gap ball foot→top 4, ring foot→top 2.8; foot margin 8; event top 165.4 (22.9 below the limit 142.5)",
+    "pics": ""
+   },
+   {
+    "step": "4 Done on: the calendar whole on screen (or scrollable)",
+    "status": "PASS",
+    "said": "{\"r\":[0,0,874,402],\"vw\":874,\"vh\":402,\"corners\":[true,true,true,true],\"sc\":false}",
+    "pics": "s10-calendar.png"
+   },
+   {
+    "step": "4b pick a past day: the calendar goes, the window where it was, the chart unmoved",
+    "status": "PASS",
+    "said": "calendar days 8; window 236.4 (was 236.4); chart 651 → 651",
+    "pics": "s10-picked.png"
+   },
+   {
+    "step": "5 premise",
+    "status": "RECORD",
+    "said": "at the chart's end (scrollTop 10012 of 10012) the last event ST-18 sits above the chart box (the chart ends with about 173px of blank below it), so no event is ever short of room to slide; ST-18 is placed 70px under the limit instead",
+    "pics": ""
+   },
+   {
+    "step": "5 the chart’s last event (ST-18): B or the short-screen rule (Q3)",
+    "status": "RECORD",
+    "said": "slide 21px in 67ms over 4 frames; window first shown at 117ms, 17ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0; scrollTop 9814 → 9835; event 165–218.7, limit 142.5; window 222.7–394 (scrolls inside: 410 in 169); gap ball foot→top 4, ring foot→top 4; foot margin 8; event top 165 (22.5 below the limit 142.5); W1–W3 fails: none",
+    "pics": "s10-last.png"
+   },
+   {
+    "step": "5 W1–W3 for it",
+    "status": "PASS",
+    "said": "window 222.7–394 (scrolls inside: 410 in 169); gap ball foot→top 4, ring foot→top 4; foot margin 8; event top 165 (22.5 below the limit 142.5)",
+    "pics": ""
+   },
+   {
+    "step": "6 turned upright and back with a window open: never over the bars or off the screen with no way to close it",
+    "status": "PASS",
+    "said": "upright: {\"top\":236.4,\"foot\":394,\"overBars\":false,\"off\":false}; back on its side: {\"top\":236.4,\"foot\":394,\"overBars\":false,\"off\":false}",
+    "pics": "s10-turn-upright,s10-turn-back"
+   },
+   {
+    "step": "errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s11": {
+  "id": "s11",
+  "title": "A short desktop",
+  "rows": [
+   {
+    "step": "768x432 2 click: slide, window scrolls inside, W1–W8",
+    "status": "PASS",
+    "said": "limit 132.5, viewport 432; slide 81px in 129ms over 8 frames; window first shown at 157ms, 17ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 217.8–424 (scrolls inside: 427 in 204); gap ball foot→top 4, ring foot→top 2.8; foot margin 8; event top 155.2 (22.7 below the limit 132.5)",
+    "pics": "s11-768x432-open.png"
+   },
+   {
+    "step": "768x432 3 the wheel scrolls the window, not the chart",
+    "status": "PASS",
+    "said": "window 0 → 223; chart 602 → 602",
+    "pics": "s11-768x432-wheel.png"
+   },
+   {
+    "step": "768x432 4 by Enter (ring on AGD-03)",
+    "status": "PASS",
+    "said": "window 205.8–424 (scrolls inside: 410 in 216); gap ball foot→top 4, ring foot→top 4; foot margin 8; event top 154.9 (22.4 below the limit 132.5)",
+    "pics": "s11-768x432-enter.png"
+   },
+   {
+    "step": "1000x500 2 click: slide, window scrolls inside, W1–W8",
+    "status": "PASS",
+    "said": "limit 186.5, viewport 500; slide 82px in 132ms over 8 frames; window first shown at 170ms, 18ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 283.8–492 (scrolls inside: 427 in 206); gap ball foot→top 4, ring foot→top 2.8; foot margin 8; event top 209.2 (22.7 below the limit 186.5)",
+    "pics": "s11-1000x500-open.png"
+   },
+   {
+    "step": "1000x500 3 the wheel scrolls the window, not the chart",
+    "status": "PASS",
+    "said": "window 0 → 221; chart 707 → 707",
+    "pics": "s11-1000x500-wheel.png"
+   },
+   {
+    "step": "1000x500 4 by Enter (ring on AGD-03)",
+    "status": "PASS",
+    "said": "window 269.8–492 (scrolls inside: 410 in 220); gap ball foot→top 4, ring foot→top 4; foot margin 8; event top 209.2 (22.7 below the limit 186.5)",
+    "pics": "s11-1000x500-enter.png"
+   }
+  ]
+ },
+ "s12": {
+  "id": "s12",
+  "title": "The chart pinched",
+  "rows": [
+   {
+    "step": "1 pinched to 116% (from 42%): tap ACG-09 — W1–W8, W2 from the ball's edge at this zoom",
+    "status": "PASS",
+    "said": "ball 519.7–601.1 (81.4 tall); slide 333px in 300ms over 18 frames; window first shown at 346ms, 18ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 272.1–701.5; gap ball foot→top 4, ring foot→top 2.8; foot margin 172.5; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s12-zoomed-open.png"
+   },
+   {
+    "step": "2 pinched in to 10%: tap ST-01",
+    "status": "PASS",
+    "said": "slide 322px in 283ms over 17 frames; window first shown at 331ms, 19ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 197.5–592.1; gap ball foot→top 4, ring foot→top 2.7; foot margin 281.9; event top 187.5 (23 below the limit 164.5)",
+    "pics": "s12-smallest-open.png"
+   },
+   {
+    "step": "errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s13": {
+  "id": "s13",
+  "title": "Less motion",
+  "rows": [
+   {
+    "step": "phone (reduced motion matched: true): the chart jumps (≤1 frame), the window shows within 2 frames, in the same place",
+    "status": "PASS",
+    "said": "scrollTop 339 → 571; slide 232px in 19ms over 1 frames; window first shown at 34ms, 0ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0; scroll changed in 1 frame(s) seen by the recorder; op/vis path of the window -/-/0 > block/visible/1 (no fade if 1/…/1 alone); | window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s13-phone.png"
+   },
+   {
+    "step": "pc (reduced motion matched: true): the chart jumps (≤1 frame), the window shows within 2 frames, in the same place",
+    "status": "PASS",
+    "said": "scrollTop 624 → 928; slide 304px in 19ms over 1 frames; window first shown at 19ms, 0ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0; scroll changed in 1 frame(s) seen by the recorder; op/vis path of the window -/-/0 > block/visible/1 (no fade if 1/…/1 alone); | window 205.3–634.6; gap ball foot→top 4, ring foot→top 2.8; foot margin 229.4; event top 130.7 (22.7 below the limit 108)",
+    "pics": "s13-pc.png"
+   },
+   {
+    "step": "phone-webkit (reduced motion matched: true): the chart jumps (≤1 frame), the window shows within 2 frames, in the same place",
+    "status": "PASS",
+    "said": "scrollTop 339 → 571; slide 0px in 0ms over 0 frames; window first shown at 55ms, -ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0; scroll changed in 0 frame(s) seen by the recorder; op/vis path of the window block/visible/1 (no fade if 1/…/1 alone); | window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3",
+    "pics": "s13-phone-webkit.png"
+   }
+  ]
+ },
+ "s14": {
+  "id": "s14",
+  "title": "Something else pressed during the slide",
+  "rows": [
+   {
+    "step": "a tap on another ball one row down",
+    "status": "PASS",
+    "said": "the chart was still sliding when the 2nd press landed: true (scrollTop at ~80ms 488); after 2s: window shown at 326.9–738.9; page tracker; scrollTop 339 → 571; wedges unchanged; undo {\"off\":true,\"title\":\"Nothing to undo\"} → \"true/Nothing to undo\"; unseen-yet-pressable frames 0; errors none",
+    "pics": "s14-a.png"
+   },
+   {
+    "step": "a next ordinary tap on ACG-09 opens it at once",
+    "status": "PASS",
+    "said": "window shown 220.3–649.7",
+    "pics": ""
+   },
+   {
+    "step": "b tap on the Info tab",
+    "status": "PASS",
+    "said": "the chart was still sliding when the 2nd press landed: true (scrollTop at ~80ms 488); after 2s: window gone; page tracker; scrollTop 339 → 0; wedges unchanged; undo {\"off\":true,\"title\":\"Nothing to undo\"} → \"true/Nothing to undo\"; unseen-yet-pressable frames 0; errors none",
+    "pics": "s14-b.png"
+   },
+   {
+    "step": "c 60px finger drag on empty chart",
+    "status": "PASS",
+    "said": "the chart was still sliding when the 2nd press landed: true (scrollTop at ~80ms 488); after 2s: window shown at 220.3–649.7; page tracker; scrollTop 339 → 601; wedges unchanged; undo {\"off\":true,\"title\":\"Nothing to undo\"} → \"true/Nothing to undo\"; unseen-yet-pressable frames 0; errors none",
+    "pics": "s14-c.png"
+   },
+   {
+    "step": "d tap on the top bar’s Undo (one grade made earlier)",
+    "status": "PASS",
+    "said": "grade DCO made on ST-01; the chart was still sliding when the 2nd press landed: true (scrollTop at ~80ms 445); after 2s: window gone; page tracker; scrollTop 339 → 552; wedges unchanged; undo {\"off\":false,\"title\":\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\"} → \"true/Nothing to undo\"; unseen-yet-pressable frames 0; errors none",
+    "pics": "s14-d.png"
+   },
+   {
+    "step": "d next ordinary tap on ACG-09 opens it at once",
+    "status": "PASS",
+    "said": "window shown 239.3–668.7",
+    "pics": ""
+   },
+   {
+    "step": "e three notches of the wheel over the chart",
+    "status": "PASS",
+    "said": "the chart was still sliding when the 2nd press landed: true (scrollTop at ~80ms 721); after 2s: window shown at 205.3–634.6; page tracker; scrollTop 624 → 928; wedges unchanged; undo {\"off\":true,\"title\":\"Nothing to undo\"} → \"true/Nothing to undo\"; unseen-yet-pressable frames 0; errors none",
+    "pics": "s14-e.png"
+   },
+   {
+    "step": "f Escape",
+    "status": "PASS",
+    "said": "the chart was still sliding when the 2nd press landed: true (scrollTop at ~80ms 626); after 2s: window gone; page tracker; scrollTop 624 → 928; wedges unchanged; undo {\"off\":true,\"title\":\"Nothing to undo\"} → \"true/Nothing to undo\"; unseen-yet-pressable frames 0; errors none",
+    "pics": "s14-f.png"
+   },
+   {
+    "step": "g click on the Course pencil",
+    "status": "PASS",
+    "said": "the chart was still sliding when the 2nd press landed: true (scrollTop at ~80ms 721); after 2s: window gone; page tracker; scrollTop 624 → 928; wedges unchanged; undo {\"off\":true,\"title\":\"Nothing to undo\"} → \"true/Nothing to undo\"; unseen-yet-pressable frames 0; errors none",
+    "pics": "s14-g.png"
+   }
+  ]
+ },
+ "s15": {
+  "id": "s15",
+  "title": "A second event while a window is open",
+  "rows": [
+   {
+    "step": "phone 2 tap a ball beside the open window (AVI-06): one tap",
+    "status": "PASS",
+    "said": "its window opened, heading \"AVI-06  ·  STUDENT A\"; first window showing while the chart moved: false; slide 273px in 266ms over 16 frames; window first shown at 15ms, -282ms after the chart rested; frames showing it during the slide 1; moved after shown 97; unseen-yet-pressable frames 0 | window 214.9–626.9; gap ball foot→top 4, ring foot→top 4; foot margin 247.1; event top 187.2 (22.7 below the limit 164.5)",
+    "pics": "s15-phone-second.png"
+   },
+   {
+    "step": "phone 3 ACG-09’s own ball tapped while its window is open",
+    "status": "RECORD",
+    "said": "window open → after a second tap on the ball: still open (220.3)",
+    "pics": "s15-phone-same.png"
+   },
+   {
+    "step": "phone 4 Student A’s window open, tap Student B’s wedge on ST-03: never a window naming A while B is picked",
+    "status": "PASS",
+    "said": "crew now STUDENT B; window closed",
+    "pics": "s15-phone-lesson4.png"
+   },
+   {
+    "step": "phone errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "pc 2 tap a ball beside the open window (IAT-01): one tap",
+    "status": "PASS",
+    "said": "its window opened, heading \"IAT-01  ·  STUDENT A\"; first window showing while the chart moved: false; slide 477px in 351ms over 21 frames; window first shown at 389ms, 17ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 190.5–637.3; gap ball foot→top 4, ring foot→top 4; foot margin 226.7; event top 130 (22 below the limit 108)",
+    "pics": "s15-pc-second.png"
+   },
+   {
+    "step": "pc 3 ACG-09’s own ball tapped while its window is open",
+    "status": "RECORD",
+    "said": "window open → after a second tap on the ball: still open (205.3)",
+    "pics": "s15-pc-same.png"
+   },
+   {
+    "step": "pc errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s16": {
+  "id": "s16",
+  "title": "The window grows; a refusal inside it",
+  "rows": [
+   {
+    "step": "1 the window open",
+    "status": "RECORD",
+    "said": "window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5); height 429.4, foot 649.7",
+    "pics": "s16-open.png"
+   },
+   {
+    "step": "2 Failed on → the calendar",
+    "status": "RECORD",
+    "said": "shows \"July 2026›\"; Tue 14 Jul 26 button: {\"cls\":\"dcal-d is-out\",\"dis\":true} (a future day is greyed and cannot be picked: the refusal line cannot be reached from the calendar)",
+    "pics": "s16-calendar.png"
+   },
+   {
+    "step": "2b failures added on Fri 10, Thu 9, Wed 8 Jul: after each W1–W3, top and chart unchanged, Close reachable",
+    "status": "PASS",
+    "said": "10 Jul: count 0→1, window 220.3–669.4, chart 571 | 9 Jul: count 1→2, window 220.3–669.4, chart 571 | 8 Jul: count 2→3, window 220.3–687.1, chart 571 (window was 220.3–649.7, chart 571); Failures card: Failures — STUDENT A3 failsACG-09ACG-09XACG-09XX",
+    "pics": ""
+   },
+   {
+    "step": "3 Done on → Sun 12 Jul → DCO: the wedge DCO, the box in words, the chart unmoved",
+    "status": "PASS",
+    "said": "box read \"Sun 12 Jul 26 ▾\" before the grade; wedge fill #000000; chart 571 → 571; window closed",
+    "pics": "s16-dco.png"
+   },
+   {
+    "step": "4 − takes back one failure",
+    "status": "PASS",
+    "said": "count 3 → 2; Failures card: Failures — STUDENT A2 failsACG-09ACG-09X",
+    "pics": "s16-minus.png"
+   },
+   {
+    "step": "errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s17": {
+  "id": "s17",
+  "title": "Every way it closes, and the windows over it",
+  "rows": [
+   {
+    "step": "phone (a) Close; W7",
+    "status": "PASS",
+    "said": "window closed; chart 571 → 571",
+    "pics": "s17-phone-a.png"
+   },
+   {
+    "step": "phone (b) a tap on empty chart; W7",
+    "status": "PASS",
+    "said": "window closed; chart 571 → 571",
+    "pics": "s17-phone-b.png"
+   },
+   {
+    "step": "phone (c) the Info tab: Info shows with no window over it; Flow chart: the chart where it was",
+    "status": "PASS",
+    "said": "Info half shown true; window over Info false; chart 571 → 571; window after returning false",
+    "pics": "s17-phone-c-info"
+   },
+   {
+    "step": "phone (e) a grade, Undo, Redo: the grade goes and comes back; the chart does not move",
+    "status": "PASS",
+    "said": "wedge #ffffff → (DCO) #000000 → undo #ffffff → redo #000000; window after the grade closed, after Undo closed; chart 571 → 571 → 571 → 571",
+    "pics": "s17-phone-e-grade,s17-phone-e-undo"
+   },
+   {
+    "step": "phone (f) Edit details window",
+    "status": "RECORD",
+    "said": "{\"id\":\"infoModal\",\"r\":[12,276,390,598],\"vh\":874,\"vw\":402,\"btns\":\"ifReset,ifCancel,ifSave\"}",
+    "pics": "s17-phone-f-open.png"
+   },
+   {
+    "step": "phone (f) every way Edit details closes",
+    "status": "RECORD",
+    "said": "Cancel: details closed, marking window gone, chart unmoved | ✕: details closed, marking window gone, chart unmoved | a press outside: details closed, marking window gone, chart unmoved",
+    "pics": ""
+   },
+   {
+    "step": "phone (g) the calendar over the window, closed each way",
+    "status": "RECORD",
+    "said": "a pick: calendar closed, marking window there, chart unmoved | a tap on the window’s own area (its title): calendar closed, marking window there, chart unmoved | a tap on the chart: calendar closed, marking window there, chart unmoved",
+    "pics": "s17-phone-g.png"
+   },
+   {
+    "step": "phone errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "phone-webkit (a) Close; W7",
+    "status": "PASS",
+    "said": "window closed; chart 571 → 571",
+    "pics": "s17-phone-webkit-a.png"
+   },
+   {
+    "step": "phone-webkit (b) a tap on empty chart; W7",
+    "status": "PASS",
+    "said": "window closed; chart 571 → 571",
+    "pics": "s17-phone-webkit-b.png"
+   },
+   {
+    "step": "phone-webkit (c) the Info tab: Info shows with no window over it; Flow chart: the chart where it was",
+    "status": "PASS",
+    "said": "Info half shown true; window over Info false; chart 571 → 571; window after returning false",
+    "pics": "s17-phone-webkit-c-info"
+   },
+   {
+    "step": "phone-webkit (e) a grade, Undo, Redo: the grade goes and comes back; the chart does not move",
+    "status": "PASS",
+    "said": "wedge #ffffff → (DCO) #000000 → undo #ffffff → redo #000000; window after the grade closed, after Undo closed; chart 571 → 571 → 571 → 571",
+    "pics": "s17-phone-webkit-e-grade,s17-phone-webkit-e-undo"
+   },
+   {
+    "step": "phone-webkit (f) Edit details window",
+    "status": "RECORD",
+    "said": "{\"id\":\"infoModal\",\"r\":[12,275,390,599],\"vh\":874,\"vw\":402,\"btns\":\"ifReset,ifCancel,ifSave\"}",
+    "pics": "s17-phone-webkit-f-open.png"
+   },
+   {
+    "step": "phone-webkit (f) every way Edit details closes",
+    "status": "RECORD",
+    "said": "Cancel: details closed, marking window gone, chart unmoved | ✕: details closed, marking window gone, chart unmoved | a press outside: details closed, marking window gone, chart unmoved",
+    "pics": ""
+   },
+   {
+    "step": "phone-webkit (g) the calendar over the window, closed each way",
+    "status": "RECORD",
+    "said": "a pick: calendar closed, marking window there, chart unmoved | a tap on the window’s own area (its title): calendar closed, marking window there, chart unmoved | a tap on the chart: calendar closed, marking window there, chart unmoved",
+    "pics": "s17-phone-webkit-g.png"
+   },
+   {
+    "step": "phone-webkit errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "pc (a) Close; W7",
+    "status": "PASS",
+    "said": "window closed; chart 928 → 928",
+    "pics": "s17-pc-a.png"
+   },
+   {
+    "step": "pc (b) a tap on empty chart; W7",
+    "status": "PASS",
+    "said": "window closed; chart 928 → 928",
+    "pics": "s17-pc-b.png"
+   },
+   {
+    "step": "pc (d) Escape; W7",
+    "status": "PASS",
+    "said": "window closed; chart 928 → 928",
+    "pics": "s17-pc-d.png"
+   },
+   {
+    "step": "pc (e) a grade, Undo, Redo: the grade goes and comes back; the chart does not move",
+    "status": "PASS",
+    "said": "wedge #ffffff → (DCO) #000000 → undo #ffffff → redo #000000; window after the grade closed, after Undo closed; chart 928 → 928 → 928 → 928",
+    "pics": "s17-pc-e-grade,s17-pc-e-undo"
+   },
+   {
+    "step": "pc (f) Edit details window",
+    "status": "RECORD",
+    "said": "{\"id\":\"infoModal\",\"r\":[548,271,988,593],\"vh\":864,\"vw\":1536,\"btns\":\"ifReset,ifCancel,ifSave\"}",
+    "pics": "s17-pc-f-open.png"
+   },
+   {
+    "step": "pc (f) every way Edit details closes",
+    "status": "RECORD",
+    "said": "Cancel: details closed, marking window gone, chart unmoved | ✕: details closed, marking window gone, chart unmoved | Escape: details closed, marking window gone, chart unmoved | a press outside: details closed, marking window gone, chart unmoved",
+    "pics": ""
+   },
+   {
+    "step": "pc (g) the calendar over the window, closed each way",
+    "status": "RECORD",
+    "said": "a pick: calendar closed, marking window there, chart unmoved | Escape: calendar closed, marking window there, chart unmoved | a tap on the window’s own area (its title): calendar closed, marking window there, chart unmoved | a tap on the chart: calendar closed, marking window there, chart unmoved",
+    "pics": "s17-pc-g.png"
+   },
+   {
+    "step": "pc errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s18": {
+  "id": "s18",
+  "title": "What stands over the slid event and the window",
+  "rows": [
+   {
+    "step": "phone (a) the ball at its centre and top point; the window at its corners",
+    "status": "PASS",
+    "said": "{\"centre\":\"ball ACG-09\",\"top\":\"ball ACG-09\",\"popCorners\":[\"#pop\",\"#pop\",\"#pop\",\"#pop\",\"#pop\"]}",
+    "pics": ""
+   },
+   {
+    "step": "phone (d) the chart’s zoom control against the window",
+    "status": "RECORD",
+    "said": "zoom control 0,841,402,874; window 184–394 × 220.3–649.7; overlap false",
+    "pics": ""
+   },
+   {
+    "step": "phone (b) 🔍 with the window open",
+    "status": "RECORD",
+    "said": "Find strip true; window closed",
+    "pics": "s18-phone-find-with-window.png"
+   },
+   {
+    "step": "phone (b2) ACG-09 under the bars, \"ACG\" typed",
+    "status": "RECORD",
+    "said": "ACG-09 421.7–445.4; Find's list 166,423: covers it true",
+    "pics": "s18-phone-list.png"
+   },
+   {
+    "step": "phone (c) Legend, both pencils’ menus, ⚙ over the chart with ACG-09 under the bars",
+    "status": "PASS",
+    "said": "Legend: trkLegend 43,117,355,764, closed by a press outside true, ACG-09 unmoved | Course pencil: courseMenuPanel 196,85,396,252, closed by a press outside true, ACG-09 unmoved | Syllabus pencil: sylMenuPanel 196,85,396,333, closed by a press outside true, ACG-09 unmoved | ⚙ flex settings: trkFlexWin 6,117,396,686, closed by a press outside true, ACG-09 unmoved",
+    "pics": ""
+   },
+   {
+    "step": "phone (e) the passing note after a grade",
+    "status": "RECORD",
+    "said": "[]; Close button at null",
+    "pics": "s18-phone-e.png"
+   },
+   {
+    "step": "phone (f) the bars over the slid chart show no ball through them (D1518)",
+    "status": "PASS",
+    "said": "element at the bars' own points: {\"header\":\"itself\",\"tabs\":\"itself\"}; ACG-09 156.7–180.4 under limit 164.5 — judged by the picture",
+    "pics": "s18-phone-f.png"
+   },
+   {
+    "step": "pc (a) the ball at its centre and top point; the window at its corners",
+    "status": "PASS",
+    "said": "{\"centre\":\"ball ACG-09\",\"top\":\"path\",\"popCorners\":[\"#pop\",\"#pop\",\"#pop\",\"#pop\",\"#pop\"]}",
+    "pics": ""
+   },
+   {
+    "step": "pc (d) the chart’s zoom control against the window",
+    "status": "RECORD",
+    "said": "zoom control 0,831,1180,864; window 516–726 × 205.3–634.6; overlap false",
+    "pics": ""
+   },
+   {
+    "step": "pc (b2) ACG-09 under the bars, \"ACG\" typed",
+    "status": "RECORD",
+    "said": "ACG-09 703.7–760.3; Find's list 101,358: covers it false",
+    "pics": "s18-pc-list.png"
+   },
+   {
+    "step": "pc (c) Legend, both pencils’ menus, ⚙ over the chart with ACG-09 under the bars",
+    "status": "PASS",
+    "said": "Legend: trkLegend 716,102,1028,742, closed by a press outside true, ACG-09 unmoved | Course pencil: courseMenuPanel 315,102,515,269, closed by a press outside true, ACG-09 unmoved | Syllabus pencil: sylMenuPanel 549,102,749,350, closed by a press outside true, ACG-09 unmoved | ⚙ flex settings: trkFlexWin 672,102,1072,671, closed by a press outside true, ACG-09 unmoved",
+    "pics": ""
+   },
+   {
+    "step": "pc (e) the passing note after a grade",
+    "status": "RECORD",
+    "said": "[]; Close button at null",
+    "pics": "s18-pc-e.png"
+   },
+   {
+    "step": "pc (f) the bars over the slid chart show no ball through them (D1518)",
+    "status": "PASS",
+    "said": "element at the bars' own points: {\"header\":\"itself\",\"tabs\":\"DIV\"}; ACG-09 83.7–140.3 under limit 108 — judged by the picture",
+    "pics": "s18-pc-f.png"
+   }
+  ]
+ },
+ "s19": {
+  "id": "s19",
+  "title": "The failed-save band",
+  "rows": [
+   {
+    "step": "phone 1 the band",
+    "status": "RECORD",
+    "said": "band 48,84; tabs 200 (was 200); Tracker bar foot 154 (was 154); limit 200",
+    "pics": "s19-phone-band.png"
+   },
+   {
+    "step": "phone 1 the band comes (it sits in the top bar's own row; the limit is the lowest foot)",
+    "status": "PASS",
+    "said": "band true; limit 200 → 200",
+    "pics": ""
+   },
+   {
+    "step": "phone 2 tap ACG-09: the slide stops at the new foot; W1 against the band too",
+    "status": "PASS",
+    "said": "limit 200 (band included); slide 323px in 283ms over 17 frames; window first shown at 325ms, 17ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 255.9–685.2; gap ball foot→top 4, ring foot→top 2.8; foot margin 188.8; event top 222.3 (22.3 below the limit 200)",
+    "pics": "s19-phone-open.png"
+   },
+   {
+    "step": "phone 3 the band arrives while the window is open: the window not over the band, the tabs or ACG-09",
+    "status": "PASS",
+    "said": "band 48,84; window closed after the grade (was 255.9–685.2); ACG-09 222.3–251.9 (was 222.3); limit 200",
+    "pics": "s19-phone-band-with-window.png"
+   },
+   {
+    "step": "pc 1 the band",
+    "status": "RECORD",
+    "said": "band 56,92; tabs - (was -); Tracker bar foot 144 (was 144); limit 144",
+    "pics": "s19-pc-band.png"
+   },
+   {
+    "step": "pc 1 the band comes (it sits in the top bar's own row; the limit is the lowest foot)",
+    "status": "PASS",
+    "said": "band true; limit 144 → 144",
+    "pics": ""
+   },
+   {
+    "step": "pc 2 tap ACG-09: the slide stops at the new foot; W1 against the band too",
+    "status": "PASS",
+    "said": "limit 144 (band included); slide 398px in 316ms over 19 frames; window first shown at 357ms, 20ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 241.3–670.6; gap ball foot→top 4, ring foot→top 2.8; foot margin 193.4; event top 166.7 (22.7 below the limit 144)",
+    "pics": "s19-pc-open.png"
+   },
+   {
+    "step": "pc 3 the band arrives while the window is open: the window not over the band, the tabs or ACG-09",
+    "status": "PASS",
+    "said": "band 56,92; window closed after the grade (was 241.3–670.6); ACG-09 166.7–237.3 (was 166.7); limit 144",
+    "pics": "s19-pc-band-with-window.png"
+   }
+  ]
+ },
+ "s20": {
+  "id": "s20",
+  "title": "Hidden or turned during the slide",
+  "rows": [
+   {
+    "step": "(a) phone: Info tab at ~60ms: no window over Info, no stale window after",
+    "status": "PASS",
+    "said": "Info showing true; window over Info false; back on Flow chart: window false, scrollTop 543; errors none",
+    "pics": "s20-a-phone.png"
+   },
+   {
+    "step": "(a) phone-webkit: Info tab at ~60ms: no window over Info, no stale window after",
+    "status": "PASS",
+    "said": "Info showing true; window over Info false; back on Flow chart: window false, scrollTop 566; errors none",
+    "pics": "s20-a-phone-webkit.png"
+   },
+   {
+    "step": "(b) PC: Edit Schedule at ~60ms: no Tracker window over it, none stale on return",
+    "status": "PASS",
+    "said": "page editsched; Tracker window over it false; back on the Tracker: window false, chart at 928; errors none",
+    "pics": "s20-b-back.png"
+   },
+   {
+    "step": "(c) WebKit phone: ☰ → Edit Schedule at ~60ms: no Tracker window over it",
+    "status": "PASS",
+    "said": "page editsched; Tracker window over it false; errors none",
+    "pics": "s20-c-webkit.png"
+   },
+   {
+    "step": "(d) turning with a window open",
+    "status": "RECORD",
+    "said": "walked in S10 step 6 (upright → sideways → upright with the window open)",
+    "pics": ""
+   }
+  ]
+ },
+ "s21": {
+  "id": "s21",
+  "title": "His iPhone’s engine",
+  "rows": [
+   {
+    "step": "1 onscrollend in this WebKit",
+    "status": "RECORD",
+    "said": "true",
+    "pics": ""
+   },
+   {
+    "step": "2 slide + window in WebKit (the window shows within 1s of the chart resting; none before the rest, none at its old place)",
+    "status": "PASS",
+    "said": "slide 232px in 212ms over 8 frames; window first shown at 260ms, 28ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s21-midslide,s21-open"
+   },
+   {
+    "step": "3 the chart’s end in WebKit",
+    "status": "PASS",
+    "said": "ST-18: slide 0px in 0ms over 0 frames; window first shown at 24ms, -ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 316.5–728.5; gap ball foot→top 4, ring foot→top 4; foot margin 145.5",
+    "pics": "s21-end"
+   },
+   {
+    "step": "errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s22": {
+  "id": "s22",
+  "title": "The member",
+  "rows": [
+   {
+    "step": "1–3 member: slide + window (W1–W8)",
+    "status": "PASS",
+    "said": "slide 232px in 250ms over 15 frames; window first shown at 297ms, 18ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s22-open.png"
+   },
+   {
+    "step": "6 Close; W7",
+    "status": "PASS",
+    "said": "closed",
+    "pics": "s22-closed.png"
+   },
+   {
+    "step": "S24 (a) as the member: ✕ empties the box and puts Find away",
+    "status": "PASS",
+    "said": "{\"box\":\"\",\"strip\":false,\"ae\":\"BODY\"}",
+    "pics": "s22-find-x.png"
+   },
+   {
+    "step": "errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s23": {
+  "id": "s23",
+  "title": "The ways a hand taps",
+  "rows": [
+   {
+    "step": "a quick tap (down 40ms): as S1",
+    "status": "PASS",
+    "said": "slide 232px in 249ms over 15 frames; window first shown at 365ms, 17ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s23-a.png"
+   },
+   {
+    "step": "b slow tap (down 400ms): as S1",
+    "status": "PASS",
+    "said": "slide 232px in 250ms over 15 frames; window first shown at 709ms, 17ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s23-b.png"
+   },
+   {
+    "step": "c a tap that drifts 4px: as S1",
+    "status": "PASS",
+    "said": "slide 232px in 249ms over 15 frames; window first shown at 452ms, 17ms after the chart rested; frames showing it during the slide 0; moved after shown 0; unseen-yet-pressable frames 0 | window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s23-c.png"
+   },
+   {
+    "step": "d a 15px touch beginning on the event, then lift (inside the browser’s own touch slop: the browser counts it a tap)",
+    "status": "RECORD",
+    "said": "the window opened as for a tap — scrollTop 339 → 339 (a drag off the ball) → 571 (a drag on it); window true",
+    "pics": "s23-d.png"
+   },
+   {
+    "step": "d2 a 45px drag beginning on the event, then lift: the chart scrolls with the finger, nothing opens, no slide of the app’s own",
+    "status": "PASS",
+    "said": "scrollTop 339 → 369; window false",
+    "pics": "s23-d2.png"
+   },
+   {
+    "step": "e flick, tap while it glides (D986)",
+    "status": "RECORD",
+    "said": "chart 339 → 339 at 80ms (still gliding false) → 571; window after the tap true (nothing should open from a touch on a gliding chart)",
+    "pics": "s23-e-glide.png"
+   },
+   {
+    "step": "e a second tap, once it rests: the window with its slide",
+    "status": "PASS",
+    "said": "window true",
+    "pics": "s23-e-second.png"
+   },
+   {
+    "step": "f the first tap on DCO right after the window shows lands the grade",
+    "status": "PASS",
+    "said": "wedge #ffffff → #000000",
+    "pics": "s23-f.png"
+   },
+   {
+    "step": "g Close, then another event within 150ms: its window with its slide on the first tap",
+    "status": "PASS",
+    "said": "AVI-02: window true \"AVI-02  ·  STUDENT A\"",
+    "pics": "s23-g.png"
+   }
+  ]
+ },
+ "s24": {
+  "id": "s24",
+  "title": "✕ on the phone’s strip, in every state",
+  "rows": [
+   {
+    "step": "phone (a typed, no Enter, the list open): F1–F6, then one tap on Info shows Info",
+    "status": "PASS",
+    "said": "no failure | before box \"ACG-09\", strip true, keys on hSearch, found rings 1, list true(1), stat \"1 match\", chart 339, half \"Flow chart\", tabs hit false/false/false, panels [] | after box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels [] | Info tapped once → half \"Info\"; F7 the ✕'s words \"Clear the search and close Find\", spoken name null; ✕ box 319,130,23,26 in the strip's box 45,136,259,14",
+    "pics": "s24-phone-a-before,s24-phone-a-now,s24-phone-a-set"
+   },
+   {
+    "step": "phone F7 the ✕'s hover words",
+    "status": "PASS",
+    "said": "title \"Clear the search and close Find\"; spoken name null; box 45,136,259,14, ✕ 319,130,23,26: same height false",
+    "pics": ""
+   },
+   {
+    "step": "phone (b typed, Enter: it lands, the strip and the keys stay): F1–F6, then one tap on Info shows Info",
+    "status": "PASS",
+    "said": "no failure | before box \"ACG-09\", strip true, keys on hSearch, found rings 1, list true(1), stat \"1 match\", chart 339, half \"Flow chart\", tabs hit false/false/false, panels [] | after box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels [] | Info tapped once → half \"Info\"; F7 the ✕'s words \"Clear the search and close Find\", spoken name null; ✕ box 319,130,23,26 in the strip's box 45,136,259,14",
+    "pics": "s24-phone-b-before,s24-phone-b-now,s24-phone-b-set"
+   },
+   {
+    "step": "phone (c the box empty): F1–F6, then one tap on Info shows Info",
+    "status": "PASS",
+    "said": "no failure | before box \"\", strip true, keys on hSearch, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit false/false/false, panels [] | after box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels [] | Info tapped once → half \"Info\"; F7 the ✕'s words \"Clear the search and close Find\", spoken name null; ✕ box 358,130,23,26 in the strip's box 45,136,298,14",
+    "pics": "s24-phone-c-before,s24-phone-c-now,s24-phone-c-set"
+   },
+   {
+    "step": "phone (d \"zz\" typed, no match): F1–F6, then one tap on Info shows Info",
+    "status": "PASS",
+    "said": "no failure | before box \"zz\", strip true, keys on hSearch, found rings 0, list false(0), stat \"no match\", chart 339, half \"Flow chart\", tabs hit false/false/false, panels [] | after box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels [] | Info tapped once → half \"Info\"; F7 the ✕'s words \"Clear the search and close Find\", spoken name null; ✕ box 313,130,23,26 in the strip's box 45,136,253,14",
+    "pics": "s24-phone-d-before,s24-phone-d-now,s24-phone-d-set"
+   },
+   {
+    "step": "phone-webkit (a typed, no Enter, the list open): F1–F6, then one tap on Info shows Info",
+    "status": "PASS",
+    "said": "no failure | before box \"ACG-09\", strip true, keys on hSearch, found rings 1, list true(1), stat \"1 match\", chart 339, half \"Flow chart\", tabs hit false/false/false, panels [] | after box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels [] | Info tapped once → half \"Info\"; F7 the ✕'s words \"Clear the search and close Find\", spoken name null; ✕ box 319,130,23,26 in the strip's box 45,136,259,15",
+    "pics": "s24-phone-webkit-a-before,s24-phone-webkit-a-now,s24-phone-webkit-a-set"
+   },
+   {
+    "step": "phone-webkit (b typed, Enter: it lands, the strip and the keys stay): F1–F6, then one tap on Info shows Info",
+    "status": "PASS",
+    "said": "no failure | before box \"ACG-09\", strip true, keys on hSearch, found rings 1, list true(1), stat \"1 match\", chart 339, half \"Flow chart\", tabs hit false/false/false, panels [] | after box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels [] | Info tapped once → half \"Info\"; F7 the ✕'s words \"Clear the search and close Find\", spoken name null; ✕ box 319,130,23,26 in the strip's box 45,136,259,15",
+    "pics": "s24-phone-webkit-b-before,s24-phone-webkit-b-now,s24-phone-webkit-b-set"
+   },
+   {
+    "step": "phone-webkit (c the box empty): F1–F6, then one tap on Info shows Info",
+    "status": "PASS",
+    "said": "no failure | before box \"\", strip true, keys on hSearch, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit false/false/false, panels [] | after box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels [] | Info tapped once → half \"Info\"; F7 the ✕'s words \"Clear the search and close Find\", spoken name null; ✕ box 358,130,23,26 in the strip's box 45,136,298,15",
+    "pics": "s24-phone-webkit-c-before,s24-phone-webkit-c-now,s24-phone-webkit-c-set"
+   },
+   {
+    "step": "phone-webkit (d \"zz\" typed, no match): F1–F6, then one tap on Info shows Info",
+    "status": "PASS",
+    "said": "no failure | before box \"zz\", strip true, keys on hSearch, found rings 0, list false(0), stat \"no match\", chart 339, half \"Flow chart\", tabs hit false/false/false, panels [] | after box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels [] | Info tapped once → half \"Info\"; F7 the ✕'s words \"Clear the search and close Find\", spoken name null; ✕ box 313,130,23,26 in the strip's box 45,136,253,15",
+    "pics": "s24-phone-webkit-d-before,s24-phone-webkit-d-now,s24-phone-webkit-d-set"
+   },
+   {
+    "step": "e after a pick, 🔍 again",
+    "status": "RECORD",
+    "said": "after the pick: box \"ACG-09\", strip false, keys on BODY, found rings 1, list false(0), stat \"1 match\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels [] | 🔍 again: box holds \"ACG-09\", strip true, keys on hSearch, list true",
+    "pics": "s24-e-again.png"
+   }
+  ]
+ },
+ "s25": {
+  "id": "s25",
+  "title": "✕ is Escape; the rest as today",
+  "rows": [
+   {
+    "step": "1 ✕ and Escape leave the identical state",
+    "status": "PASS",
+    "said": "✕: {\"box\":\"\",\"strip\":false,\"ae\":\"BODY\",\"found\":0,\"list\":false,\"st\":339,\"half\":\" Flow chart\",\"panels\":[]} | Escape: {\"box\":\"\",\"strip\":false,\"ae\":\"BODY\",\"found\":0,\"list\":false,\"st\":339,\"half\":\" Flow chart\",\"panels\":[]}",
+    "pics": "s25-x,s25-escape"
+   },
+   {
+    "step": "2 Enter / 🔍 again / a tap outside (BRANCH; MAIN not built)",
+    "status": "RECORD",
+    "said": "Enter: {\"box\":\"ACG-09\",\"strip\":true,\"ae\":\"hSearch\",\"found\":1,\"list\":true,\"st\":339,\"half\":\" Flow chart\",\"panels\":[]} | 🔍 again: {\"box\":\"ACG-09\",\"strip\":false,\"ae\":\"hSearchBtn\",\"found\":1,\"list\":false,\"st\":339,\"half\":\" Flow chart\",\"panels\":[]} | outside: {\"box\":\"ACG-09\",\"strip\":false,\"ae\":\"board\",\"found\":1,\"list\":false,\"st\":339,\"half\":\" Flow chart\",\"panels\":[]}",
+    "pics": ""
+   },
+   {
+    "step": "3 a pick: lands, the ring on the picked event, the keys down, the tabs back; no window, no student picked",
+    "status": "PASS",
+    "said": "box \"ACG-09\", strip false, keys on BODY, found rings 1, list false(0), stat \"1 match\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels []; box words kept: \"ACG-09\"; window false; the row lay at y 171–198 (over the chart); crew unchanged STUDENT A",
+    "pics": "s25-pick.png"
+   }
+  ]
+ },
+ "s26": {
+  "id": "s26",
+  "title": "The strip on a narrow desktop and on a phone on its side",
+  "rows": [
+   {
+    "step": "1 narrow desktop with a mouse: ✕ closes Find (F1–F6; the chart’s own settling when the bar shrinks is the same as Escape’s, row 1b)",
+    "status": "PASS",
+    "said": "no failure; hover words \"Clear the search and close Find\" | box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 291, half \"Flow chart\", tabs hit true/true/true, panels []",
+    "pics": "s26-narrow-x.png"
+   },
+   {
+    "step": "1b the same on a narrow desktop with Escape (what Find did before ✕): chart before and after",
+    "status": "RECORD",
+    "said": "chart 625 → 291; strip false; box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 291, half \"Flow chart\", tabs hit true/true/true, panels []",
+    "pics": "s26-narrow-escape.png"
+   },
+   {
+    "step": "2 narrow desktop by keys: Tab to ✕, Enter — closes; the keys go to 🔍 and not the page body (Q7)",
+    "status": "PASS",
+    "said": "1 Tab(s) to ✕; after Enter box \"\", strip false, keys on hSearchBtn, found rings 0, list false(0), stat \"\", chart 291, half \"Flow chart\", tabs hit true/true/true, panels []; keys on \"hSearchBtn\"",
+    "pics": "s26-narrow-keys.png"
+   },
+   {
+    "step": "3 base (a typed, no Enter) with Escape instead",
+    "status": "RECORD",
+    "said": "chart 594 → 114; strip false",
+    "pics": ""
+   },
+   {
+    "step": "3 on its side (a typed, no Enter): ✕ puts Find away",
+    "status": "PASS",
+    "said": "no failure | box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 114, half \"Flow chart\", tabs hit true/true/true, panels []",
+    "pics": "s26-side-a.png"
+   },
+   {
+    "step": "3 base (b typed, Enter) with Escape instead",
+    "status": "RECORD",
+    "said": "chart 594 → 114; strip false",
+    "pics": ""
+   },
+   {
+    "step": "3 on its side (b typed, Enter): ✕ puts Find away",
+    "status": "PASS",
+    "said": "no failure | box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 114, half \"Flow chart\", tabs hit true/true/true, panels []",
+    "pics": "s26-side-b.png"
+   }
+  ]
+ },
+ "s27": {
+  "id": "s27",
+  "title": "His PC’s box is untouched",
+  "rows": [
+   {
+    "step": "1 the bar’s box: ✕ empties it, the ring goes, the box stays, the keys stay IN it",
+    "status": "PASS",
+    "said": "hover \"Clear the search\"; box \"\", strip false, keys on hSearch, found rings 0, list false(0), stat \"\", chart 362, half \"Flow chart\", tabs hit , panels []; box shown true",
+    "pics": "s27-pc-x.png"
+   },
+   {
+    "step": "2 a pick from the list: the list shuts, the keys leave, the words stay",
+    "status": "PASS",
+    "said": "1 row(s); box \"ACG-09\", strip false, keys on BODY, found rings 1, list false(0), stat \"1 match\", chart 624, half \"Flow chart\", tabs hit , panels []",
+    "pics": "s27-pc-pick.png"
+   },
+   {
+    "step": "3 narrowed 1536 → 1000 with words typed",
+    "status": "RECORD",
+    "said": "strip open false; box \"ACG-09\"; ✕ words \"Clear the search and close Find\"; box \"ACG-09\", strip false, keys on BODY, found rings 1, list false(0), stat \"1 match\", chart 624, half \"Flow chart\", tabs hit true/true/true, panels []",
+    "pics": ""
+   },
+   {
+    "step": "3b narrowed: the strip opened by 🔍",
+    "status": "RECORD",
+    "said": "✕ words \"Clear the search and close Find\"; box \"ACG-09\"",
+    "pics": ""
+   },
+   {
+    "step": "3b ✕ at 1000 closes Find",
+    "status": "PASS",
+    "said": "box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 291, half \"Flow chart\", tabs hit true/true/true, panels []",
+    "pics": ""
+   },
+   {
+    "step": "3c back at 1536: the box; ✕ \"Clear the search\", emptying and keeping the keys (B18)",
+    "status": "PASS",
+    "said": "words \"Clear the search\"; after ✕: box \"\", strip false, keys on hSearch, found rings 0, list false(0), stat \"\", chart 362, half \"Flow chart\", tabs hit , panels []",
+    "pics": "s27-back.png"
+   },
+   {
+    "step": "errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s28": {
+  "id": "s28",
+  "title": "Find from the Info and Show All halves",
+  "rows": [
+   {
+    "step": "1 Info: Find, ACG-09, Enter",
+    "status": "RECORD",
+    "said": "half now \"Flow chart\"; box \"ACG-09\", strip true, keys on hSearch, found rings 1, list true(1), stat \"1 match\", chart 339, half \"Flow chart\", tabs hit false/false/false, panels []",
+    "pics": "s28-I-enter.png"
+   },
+   {
+    "step": "1 Info: ✕ leaves the half as it was just before",
+    "status": "PASS",
+    "said": "no failure | box \"\", strip false, keys on BODY, found rings 0, list false(0), stat \"\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels []",
+    "pics": "s28-I-x.png"
+   },
+   {
+    "step": "2 Info: a pick",
+    "status": "RECORD",
+    "said": "half \"Flow chart\"; box \"ACG-09\", strip false, keys on BODY, found rings 1, list false(0), stat \"1 match\", chart 339, half \"Flow chart\", tabs hit true/true/true, panels []",
+    "pics": "s28-I-pick.png"
+   },
+   {
+    "step": "2b Info → pick → tap ACG-09: the slide and the window (W1–W8)",
+    "status": "PASS",
+    "said": "window 220.3–649.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 224.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s28-I-open.png"
+   },
+   {
+    "step": "1 Show All: Find is reachable?",
+    "status": "RECORD",
+    "said": "🔍 is under the Show All panel — Show All is a panel over the Tracker bar, so Find cannot be pressed from it; not a fault of this change (the panel opens over the bar as before)",
+    "pics": "s28-S-covered.png"
+   }
+  ]
+ },
+ "s29": {
+  "id": "s29",
+  "title": "Find shown and hidden, back and forth",
+  "rows": [
+   {
+    "step": "🔍 → ✕ → 🔍 → Escape → 🔍 → outside → 🔍 → pick → 🔍 → ✕: the chart box and tabs never move; each 🔍 puts the keys in the box",
+    "status": "PASS",
+    "said": "🔍: layout as at the start, strip true, keys on hSearch | ✕: layout as at the start, strip false, keys on BODY | 🔍: layout as at the start, strip true, keys on hSearch | Escape: layout as at the start, strip false, keys on BODY | 🔍: layout as at the start, strip true, keys on hSearch | a tap outside: layout as at the start, strip false, keys on board | 🔍: layout as at the start, strip true, keys on hSearch | a pick: layout as at the start, strip false, keys on BODY | 🔍: layout as at the start, strip true, keys on hSearch | ✕: layout as at the start, strip false, keys on BODY",
+    "pics": "s29-end.png"
+   }
+  ]
+ },
+ "s30": {
+  "id": "s30",
+  "title": "The Syllabus order window — Restore",
+  "rows": [
+   {
+    "step": "phone fixture",
+    "status": "RECORD",
+    "said": "after Duplicate the picker listed [\"2024\",\"2026\",\"Tx 2026\",\"A/G - A/A 2026\",\"Tx 2026 copy for the long-name fit check, Wednesday 28 October ✎\"]; after the three deletes it lists [\"2026\"]",
+    "pics": ""
+   },
+   {
+    "step": "phone R1–R4 on every deleted row (3 rows)",
+    "status": "PASS",
+    "said": "2024: arrow true, before word true, one line true, word's colour true, btn h 21, row h 38 | Tx 2026: arrow true, before word true, one line true, word's colour true, btn h 21, row h 38 | A/G - A/A 2026: arrow true, before word true, one line true, word's colour true, btn h 21, row h 37; button heights [21]; row heights [38,37] (a long name may make its row taller); font 12px",
+    "pics": ""
+   },
+   {
+    "step": "phone R5 spoken name is \"Restore\", the arrow silent",
+    "status": "PASS",
+    "said": "aria snapshot: - button \"Restore\"",
+    "pics": ""
+   },
+   {
+    "step": "phone R4 with the keys on it (Shift+Tab from A–Z)",
+    "status": "RECORD",
+    "said": "{\"out\":\"auto 1px rgb(16, 16, 16)\",\"sh\":\"none\",\"c\":\"rgb(241, 244, 247)\",\"s\":\"rgb(241, 244, 247)\",\"r\":[274.9609375,525.46875,80.953125,21]}",
+    "pics": "s30-phone-keys.png"
+   },
+   {
+    "step": "phone row parts",
+    "status": "RECORD",
+    "said": "[{\"n\":\"2024\",\"row\":38,\"onm\":18.125,\"tag\":15.9375,\"btn\":21,\"cs\":\"flex 8px center\"},{\"n\":\"Tx 2026\",\"row\":38,\"onm\":18.125,\"tag\":15.9375,\"btn\":21,\"cs\":\"flex 8px center\"},{\"n\":\"A/G - A/A 2026\",\"row\":37,\"onm\":18.125,\"tag\":15.9375,\"btn\":21,\"cs\":\"flex 8px center\"}]",
+    "pics": ""
+   },
+   {
+    "step": "phone R6 Restore on \"Tx 2026\": gone from the deleted list, the others keep the arrow",
+    "status": "PASS",
+    "said": "deleted rows 3 → 2; picker now [\"2026\",\"Tx 2026\"]",
+    "pics": "s30-phone-restored.png"
+   },
+   {
+    "step": "phone the window's ways of closing",
+    "status": "RECORD",
+    "said": "Escape: closed | Cancel: closed | a press on the shade: closed",
+    "pics": ""
+   },
+   {
+    "step": "phone errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "pc fixture",
+    "status": "RECORD",
+    "said": "after Duplicate the picker listed [\"2024\",\"2026\",\"Tx 2026\",\"A/G - A/A 2026\",\"Tx 2026 copy for the long-name fit check, Wednesday 28 October ✎\"]; after the three deletes it lists [\"2026\"]",
+    "pics": ""
+   },
+   {
+    "step": "pc R1–R4 on every deleted row (3 rows)",
+    "status": "PASS",
+    "said": "2024: arrow true, before word true, one line true, word's colour true, btn h 21, row h 38 | Tx 2026: arrow true, before word true, one line true, word's colour true, btn h 21, row h 38 | A/G - A/A 2026: arrow true, before word true, one line true, word's colour true, btn h 21, row h 37; button heights [21]; row heights [38,37] (a long name may make its row taller); font 12px",
+    "pics": ""
+   },
+   {
+    "step": "pc R5 spoken name is \"Restore\", the arrow silent",
+    "status": "PASS",
+    "said": "aria snapshot: - button \"Restore\"",
+    "pics": ""
+   },
+   {
+    "step": "pc R4 on hover the arrow follows the word",
+    "status": "PASS",
+    "said": "{\"c\":\"rgb(241, 244, 247)\",\"s\":\"rgb(241, 244, 247)\"}",
+    "pics": "s30-pc-hover.png"
+   },
+   {
+    "step": "pc R4 with the keys on it (Shift+Tab from A–Z)",
+    "status": "RECORD",
+    "said": "{\"out\":\"auto 1px rgb(16, 16, 16)\",\"sh\":\"none\",\"c\":\"rgb(241, 244, 247)\",\"s\":\"rgb(241, 244, 247)\",\"r\":[871.640625,505.03125,76.359375,21]}",
+    "pics": "s30-pc-keys.png"
+   },
+   {
+    "step": "pc row parts",
+    "status": "RECORD",
+    "said": "[{\"n\":\"2024\",\"row\":38,\"onm\":18.125,\"tag\":15.9375,\"btn\":21,\"cs\":\"flex 8px center\"},{\"n\":\"Tx 2026\",\"row\":38,\"onm\":18.125,\"tag\":15.9375,\"btn\":21,\"cs\":\"flex 8px center\"},{\"n\":\"A/G - A/A 2026\",\"row\":37,\"onm\":18.125,\"tag\":15.9375,\"btn\":21,\"cs\":\"flex 8px center\"}]",
+    "pics": ""
+   },
+   {
+    "step": "pc R6 Restore on \"Tx 2026\": gone from the deleted list, the others keep the arrow",
+    "status": "PASS",
+    "said": "deleted rows 3 → 2; picker now [\"2026\",\"Tx 2026\"]",
+    "pics": "s30-pc-restored.png"
+   },
+   {
+    "step": "pc the window's ways of closing",
+    "status": "RECORD",
+    "said": "Escape: closed | Cancel: closed | a press on the shade: closed",
+    "pics": ""
+   },
+   {
+    "step": "pc errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "phone-webkit fixture",
+    "status": "RECORD",
+    "said": "after Duplicate the picker listed [\"2024\",\"2026\",\"Tx 2026\",\"A/G - A/A 2026\",\"Tx 2026 copy for the long-name fit check, Wednesday 28 October ✎\"]; after the three deletes it lists [\"2026\"]",
+    "pics": ""
+   },
+   {
+    "step": "phone-webkit R1–R4 on every deleted row (3 rows)",
+    "status": "PASS",
+    "said": "2024: arrow true, before word true, one line true, word's colour true, btn h 21, row h 38 | Tx 2026: arrow true, before word true, one line true, word's colour true, btn h 21, row h 38 | A/G - A/A 2026: arrow true, before word true, one line true, word's colour true, btn h 21, row h 37; button heights [21]; row heights [38,37] (a long name may make its row taller); font 12px",
+    "pics": ""
+   },
+   {
+    "step": "phone-webkit R5 spoken name is \"Restore\", the arrow silent",
+    "status": "PASS",
+    "said": "aria snapshot: - button \"Restore\"",
+    "pics": ""
+   },
+   {
+    "step": "phone-webkit R4 with the keys on it (Shift+Tab from A–Z)",
+    "status": "RECORD",
+    "said": "{\"out\":\"auto 3px rgb(241, 244, 247)\",\"sh\":\"none\",\"c\":\"rgb(241, 244, 247)\",\"s\":\"rgb(241, 244, 247)\",\"r\":[274.875,525.4375,80.953125,21]}",
+    "pics": "s30-phone-webkit-keys.png"
+   },
+   {
+    "step": "phone-webkit row parts",
+    "status": "RECORD",
+    "said": "[{\"n\":\"2024\",\"row\":38,\"onm\":18.125,\"tag\":15.9375,\"btn\":21,\"cs\":\"flex 8px center\"},{\"n\":\"Tx 2026\",\"row\":38,\"onm\":18.125,\"tag\":15.9375,\"btn\":21,\"cs\":\"flex 8px center\"},{\"n\":\"A/G - A/A 2026\",\"row\":37,\"onm\":18.125,\"tag\":15.9375,\"btn\":21,\"cs\":\"flex 8px center\"}]",
+    "pics": ""
+   },
+   {
+    "step": "phone-webkit R6 Restore on \"Tx 2026\": gone from the deleted list, the others keep the arrow",
+    "status": "PASS",
+    "said": "deleted rows 3 → 2; picker now [\"2026\",\"Tx 2026\"]",
+    "pics": "s30-phone-webkit-restored.png"
+   },
+   {
+    "step": "phone-webkit the window's ways of closing",
+    "status": "RECORD",
+    "said": "Escape: closed | Cancel: closed | a press on the shade: closed",
+    "pics": ""
+   },
+   {
+    "step": "phone-webkit errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ },
+ "s31": {
+  "id": "s31",
+  "title": "The Course order window, and nowhere else",
+  "rows": [
+   {
+    "step": "phone 1 the course pencil's items",
+    "status": "RECORD",
+    "said": "addCourse:+ Add course | renCourse:Rename course | ordCourse:Reorder courses | delCourse:Delete course",
+    "pics": ""
+   },
+   {
+    "step": "phone 1 the course pencil has no Duplicate item, so a course was ADDED instead (a deleted course keeps its students and marks; the added one has none)",
+    "status": "RECORD",
+    "said": "dialog dlgModal:New course name (e.g. 26BBSG):CancelOK | dlgInput:; the course picker now lists [\"26ABSG COPY (ADDED FOR THE RESTORE CHECK)*\",\"26ABSG\"]",
+    "pics": ""
+   },
+   {
+    "step": "phone C10 the delete-course question",
+    "status": "RECORD",
+    "said": "its words carry typed marks: \"Delete course 26ABSG COPY (ADDED FOR THE RESTORE CHECK)? Its students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back in this browser. Cancel OK\"",
+    "pics": "s31-phone-delete-question.png"
+   },
+   {
+    "step": "phone 1 Deleted courses: R1–R4 on each row",
+    "status": "PASS",
+    "said": "[{\"n\":\"26ABSG COPY (ADDED FOR THE RESTORE CHECK)\",\"svg\":[287.6,491,15,15],\"btn\":[279.6,488,76.4,21],\"lines\":1}]",
+    "pics": ""
+   },
+   {
+    "step": "phone 1 R5 spoken name",
+    "status": "PASS",
+    "said": "- button \"Restore\"",
+    "pics": ""
+   },
+   {
+    "step": "phone 1 R6 Restore: the course back in the picker, gone from the deleted list",
+    "status": "PASS",
+    "said": "deleted rows 1 → 0; picker [\"26ABSG\",\"26ABSG COPY (ADDED FOR THE RESTORE CHECK)\"]",
+    "pics": "s31-phone-restored.png"
+   },
+   {
+    "step": "phone 2 (C8, C9) the crew window: no deleted list, no Restore; ⠿ ▲ ▼ typed",
+    "status": "PASS",
+    "said": "deleted list 0; buttons BUTTON:▲ | BUTTON:▼ | BUTTON:▲ | BUTTON:▼ | ordAlpha:A–Z | ordCancel:Cancel | ordSave:Save order; marks {\"grip\":[\"⠿\",\"⠿\"],\"mv\":[\"▲\",\"▼\",\"▲\",\"▼\"]}",
+    "pics": "s31-phone-crew.png"
+   },
+   {
+    "step": "phone 4 (C9) ⠿ ▲ ▼ in the syllabus window stay typed",
+    "status": "PASS",
+    "said": "{\"grip\":[\"⠿\",\"⠿\"],\"mv\":[\"▲\",\"▼\",\"▲\",\"▼\"],\"svgIn\":0}",
+    "pics": "s31-phone-syl-window.png"
+   },
+   {
+    "step": "phone errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "pc 1 the course pencil's items",
+    "status": "RECORD",
+    "said": "addCourse:+ Add course | renCourse:Rename course | ordCourse:Reorder courses | delCourse:Delete course",
+    "pics": ""
+   },
+   {
+    "step": "pc 1 the course pencil has no Duplicate item, so a course was ADDED instead (a deleted course keeps its students and marks; the added one has none)",
+    "status": "RECORD",
+    "said": "dialog dlgModal:New course name (e.g. 26BBSG):CancelOK | dlgInput:; the course picker now lists [\"26ABSG COPY (ADDED FOR THE RESTORE CHECK)*\",\"26ABSG\"]",
+    "pics": ""
+   },
+   {
+    "step": "pc C10 the delete-course question",
+    "status": "RECORD",
+    "said": "its words carry typed marks: \"Delete course 26ABSG COPY (ADDED FOR THE RESTORE CHECK)? Its students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back in this browser. Cancel OK\"",
+    "pics": "s31-pc-delete-question.png"
+   },
+   {
+    "step": "pc 1 Deleted courses: R1–R4 on each row",
+    "status": "PASS",
+    "said": "[{\"n\":\"26ABSG COPY (ADDED FOR THE RESTORE CHECK)\",\"svg\":[879.6,486,15,15],\"btn\":[871.6,483,76.4,21],\"lines\":1}]",
+    "pics": ""
+   },
+   {
+    "step": "pc 1 R5 spoken name",
+    "status": "PASS",
+    "said": "- button \"Restore\"",
+    "pics": ""
+   },
+   {
+    "step": "pc 1 R6 Restore: the course back in the picker, gone from the deleted list",
+    "status": "PASS",
+    "said": "deleted rows 1 → 0; picker [\"26ABSG\",\"26ABSG COPY (ADDED FOR THE RESTORE CHECK)\"]",
+    "pics": "s31-pc-restored.png"
+   },
+   {
+    "step": "pc 2 (C8, C9) the crew window: no deleted list, no Restore; ⠿ ▲ ▼ typed",
+    "status": "PASS",
+    "said": "deleted list 0; buttons BUTTON:▲ | BUTTON:▼ | BUTTON:▲ | BUTTON:▼ | ordAlpha:A–Z | ordCancel:Cancel | ordSave:Save order; marks {\"grip\":[\"⠿\",\"⠿\"],\"mv\":[\"▲\",\"▼\",\"▲\",\"▼\"]}",
+    "pics": "s31-pc-crew.png"
+   },
+   {
+    "step": "pc 4 (C9) ⠿ ▲ ▼ in the syllabus window stay typed",
+    "status": "PASS",
+    "said": "{\"grip\":[\"⠿\",\"⠿\"],\"mv\":[\"▲\",\"▼\",\"▲\",\"▼\"],\"svgIn\":0}",
+    "pics": "s31-pc-syl-window.png"
+   },
+   {
+    "step": "pc errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "3 (C10) the typed ↺ ↻ still in src/tracker",
+    "status": "RECORD",
+    "said": "The host’s search of the code: ↺ stands in comments (core.js 1045, 5882, 6659, 7198) and in TWO on-screen sentences — the delete-course question (\"↺ Restore in ⇅ Reorder courses brings it back…\", core.js 5893, shown and pictured in step 1) and the import message (\"…(↺ Restore in ⇅ Reorder brings it/them back)\", core.js 7278, not reached here: it needs a backup file with deleted charts). D1792 names the button; these sentences keep the typed marks. Put to him, not judged here.",
+    "pics": ""
+   }
+  ]
+ },
+ "s32": {
+  "id": "s32",
+  "title": "The drawing check (partial — the host’s)",
+  "rows": [
+   {
+    "step": "1 the drawcheck specs (scripts/drawcheck/specs) for the three drawings",
+    "status": "NOTRUN",
+    "said": "no part list exists for these drawings and the brief says the host writes them and records them on the drawing’s own build (main at 6e6c55667); I did not write specs. What was done instead: the slide’s numbers against the drawing are in S1 step 4 (window top 220.3 vs drawn 214; foot 649.7 vs 643 — the notes’ 4px under the ball against the drawing’s 2px over it); the Find ✕ end-state and Restore pictures (s24-*, s30-*) are for the host to lay beside q-trkfind-ph-A-drawn and q-r5c-*-restore-drawn.",
+    "pics": ""
+   }
+  ]
+ },
+ "s33": {
+  "id": "s33",
+  "title": "The everyday round on his iPhone’s size",
+  "rows": [
+   {
+    "step": "33 (a)(b) in the Tracker, Student A",
+    "status": "RECORD",
+    "said": "student box \"STUDENT A\"; chart 339",
+    "pics": "s33-a-start.png"
+   },
+   {
+    "step": "33 (c) Find → ACG-09 → pick",
+    "status": "RECORD",
+    "said": "Find strip gone: true; chart 339",
+    "pics": "s33-c-found.png"
+   },
+   {
+    "step": "33 (d) the tap: the slide, the window",
+    "status": "PASS",
+    "said": "window 220.3–653.7; gap ball foot→top 4, ring foot→top 2.8; foot margin 220.3; event top 186.7 (22.2 below the limit 164.5)",
+    "pics": "s33-d-open.png"
+   },
+   {
+    "step": "33 (e) Failed on Fri 10 Jul +",
+    "status": "PASS",
+    "said": "count 1; Failures card: Failures — STUDENT A1 failACG-09",
+    "pics": "s33-e-failed.png"
+   },
+   {
+    "step": "33 (f) Done on Sun 12 Jul → DCO",
+    "status": "PASS",
+    "said": "wedge #000000; window closed",
+    "pics": "s33-f-dco.png"
+   },
+   {
+    "step": "33 (g) Edit details read",
+    "status": "RECORD",
+    "said": "\"ACG-09 — details Name Type / format Hours Crew Prerequisites Reset to doc Cancel Save\"",
+    "pics": "s33-g-details.png"
+   },
+   {
+    "step": "33 (i) the ball",
+    "status": "RECORD",
+    "said": "wedge #000000; colours #00e5c8 #000000 #F0555F #ffffff #3BC6E8 #57C97A",
+    "pics": ""
+   },
+   {
+    "step": "33 (i) the Info half",
+    "status": "RECORD",
+    "said": "Failures card: Failures — STUDENT A1 failACG-09; Last Flown (Syllabus) Pick a date ▾ Last Flown (Currency) Pick a date ",
+    "pics": "s33-i-info.png"
+   },
+   {
+    "step": "33 (i) the save corner and Undo's words",
+    "status": "RECORD",
+    "said": "save \"● saved\"; Undo \"Undo the mark on ACG-09 for STUDENT A (Ctrl+Z)\"",
+    "pics": ""
+   },
+   {
+    "step": "33 (j) Undo takes DCO away, the chart unmoved; Redo brings it back",
+    "status": "PASS",
+    "said": "wedge #ffffff after Undo, #000000 after Redo; chart 571 → 571",
+    "pics": ""
+   },
+   {
+    "step": "33 (k) every control that opens or closes",
+    "status": "RECORD",
+    "said": "Course pencil: opened, closed | Syllabus pencil: opened, closed | Legend: opened, closed | Flex settings: opened, closed | Find: opened, closed | Reorder syllabi: opened, closed | Reorder courses: opened, closed | Info tab: shown | Show All tab: shown | Flow chart tab: shown",
+    "pics": ""
+   },
+   {
+    "step": "33 (l) reload and sign in: the DCO is still there",
+    "status": "PASS",
+    "said": "wedge #000000; Failures card Failures — STUDENT A1 failACG-09; student/course/chart as before: STUDENT A / 26ABSG / 2026",
+    "pics": "s33-l-reload.png"
+   },
+   {
+    "step": "33 errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   },
+   {
+    "step": "33 (k) WebKit: the closes again",
+    "status": "RECORD",
+    "said": "Course pencil: opened, closed | Syllabus pencil: opened, closed | Legend: opened, closed | Find: opened, closed",
+    "pics": "s33-k-webkit.png"
+   }
+  ]
+ },
+ "s34": {
+  "id": "s34",
+  "title": "The same round on his PC",
+  "rows": [
+   {
+    "step": "34 (a)(b) in the Tracker, Student A",
+    "status": "RECORD",
+    "said": "student box \"STUDENT A\"; chart 295",
+    "pics": "s34-a-start.png"
+   },
+   {
+    "step": "34 (c) Find → ACG-09 → Enter",
+    "status": "RECORD",
+    "said": "Find strip gone: true; chart 624",
+    "pics": "s34-c-found.png"
+   },
+   {
+    "step": "34 (d) the tap: the slide, the window",
+    "status": "PASS",
+    "said": "window 205.3–634.6; gap ball foot→top 4, ring foot→top 2.8; foot margin 95.4; event top 130.7 (22.7 below the limit 108)",
+    "pics": "s34-d-open.png"
+   },
+   {
+    "step": "34 (e) Failed on Fri 10 Jul +",
+    "status": "PASS",
+    "said": "count 1; Failures card: Failures — STUDENT A1 failACG-09",
+    "pics": "s34-e-failed.png"
+   },
+   {
+    "step": "34 (f) Done on Sun 12 Jul → DCO",
+    "status": "PASS",
+    "said": "wedge #000000; window closed",
+    "pics": "s34-f-dco.png"
+   },
+   {
+    "step": "34 (g) Edit details read",
+    "status": "RECORD",
+    "said": "\"ACG-09 — details Name Type / format Hours Crew Prerequisites Reset to doc Cancel Save\"",
+    "pics": "s34-g-details.png"
+   },
+   {
+    "step": "34 (i) the ball",
+    "status": "RECORD",
+    "said": "wedge #000000; colours #00e5c8 #000000 #F0555F #ffffff #3BC6E8 #57C97A",
+    "pics": ""
+   },
+   {
+    "step": "34 (i) the Info half",
+    "status": "RECORD",
+    "said": "Failures card: Failures — STUDENT A1 failACG-09; Last Flown (Syllabus) Pick a date ▾ Last Flown (Currency) Pick a date ",
+    "pics": "s34-i-info.png"
+   },
+   {
+    "step": "34 (i) the save corner and Undo's words",
+    "status": "RECORD",
+    "said": "save \"● saved\"; Undo \"Undo the mark on ACG-09 for STUDENT A (Ctrl+Z)\"",
+    "pics": ""
+   },
+   {
+    "step": "34 (j) Undo takes DCO away, the chart unmoved; Redo brings it back",
+    "status": "PASS",
+    "said": "wedge #ffffff after Undo, #000000 after Redo; chart 861 → 861",
+    "pics": ""
+   },
+   {
+    "step": "34 by keys: one Tab from the bar’s last control reaches the chart (D980)",
+    "status": "RECORD",
+    "said": "keys on \"board\"",
+    "pics": ""
+   },
+   {
+    "step": "34 by keys: Tab to the chart, → , Enter, Escape",
+    "status": "RECORD",
+    "said": "one Tab from the bar's last control (keys then on \"board\"); → then Enter opened the window true; Escape closed it true; keys now on board",
+    "pics": "s34-keys-escape.png"
+   },
+   {
+    "step": "34 reload: the DCO is still there",
+    "status": "PASS",
+    "said": "wedge #000000",
+    "pics": "s34-reload.png"
+   },
+   {
+    "step": "34 errors",
+    "status": "PASS",
+    "said": "none",
+    "pics": ""
+   }
+  ]
+ }
+}

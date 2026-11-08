@@ -626,6 +626,55 @@ rulings D1794 and D1795, the page as first drafted:
 - **One slip of the trial's own:** the old route's first step writes the new full row into the area file's table (the
   command then moves it), not into the full-text file; written there first, the command refused, as it should.
 
+### Step 5a — the IT flow guide as a page (8 Nov 26, chat 15, `claude/rules-diet-step-5a-it-guide-8b561f` — merged 8 Nov 26 on his "merge live", pull request 690)
+
+`.claude/rules/decisions/it-flow-guide.md` is a page, "The IT flow guide — how it works now" (`<!-- shape: page -->`, its
+`paths:` unchanged): its 9 rulings (D403, D410–D417) stated by topic — what the guide is, what it covers, when it is
+remade — with a "Settled" section and five pointers to the Leave War's rulings. D413 is cited with D1177, which narrowed
+it. `DECISIONS.md`, `AGENTS.md`, the project guide's map row and the head of the full-text file name the IT guide as a
+page. No ruling archived: D410's sample is spent, but its format stands.
+
+**The account by requirement** (`../briefs/2026-11-08-rules-diet-step5a-it-guide-account.md`, written by the chat that
+wrote the page — 9 rulings, small enough for one chat, and both readers checked it): 92 parts — 86 stated, 1 spent, 3
+detail, 2 superseded by D1177. Step 5a's lesson applied: the slide parts, who the guide is for and each thing the deck
+must show are parts, never detail; two agent's calls first stated as his rule were corrected before the reads. Size: the
+table was 4,028 bytes; the first draft 7,719; after the reads 9,330 (about 3,600 tokens) — the page states what the short
+lines had cut (the slide parts, the agent's calls) and what the reads found. The tripwire raised from 5,000 to 10,300 in
+`docsize.mjs`, its reason beside it (D141; a script change, put to him with his "merge live").
+**Found, not fixed — filed:** the deck still pictures the Leave War's stages (D1177) and its words still state stage-era
+rules; on `[ITFLOW-OIL-RESHOOT]`, done with the rebuild he asks for (D403). The README's two stage-era lines were marked at
+once, as its drag line was (both readers).
+**Left for the Leave War, not done here:** D418's full row carries no mark from D1724, though D1724 replaces the agent's
+reading D418's mark states (leave changed only on the Inputs page); the page's pointer says so, and the mark belongs to
+the Leave War's own work — with `[LW-FULL-EDITING]` or its page in step 5b.
+
+**The two blind reads (D1739, D1763 "keep two"), each of the page at `23874fe07`, each blind to the other:**
+
+| Read | Findings | What was done |
+|---|---|---|
+| Astra (`../briefs/2026-11-08-rules-diet-step5a-it-guide-read-astra.md`) | 6: 1 high, 4 medium, 1 low | all taken, each checked against its full row first |
+| A fresh Opus reader (`../briefs/2026-11-08-rules-diet-step5a-it-guide-read-opus.md`) | 9: 1 medium, 8 low | all taken, each checked against its full row first |
+
+- **Astra:** D1724, his later direction for full editing on the Leave War, not pointed to while the page stated the
+  agent's reading it replaces (high); D1208, "close the bids, then approve", his best order, missing from the flow; the
+  agent's readings of D1177 stated as his rules; the README's lines left unmarked on D403's grounds, which cover only
+  the deck; D1166's condition; the account's count.
+- **The Opus reader:** D1166 cited but not stated — verbal approval first, the leave landing approved, never in
+  Approvals (medium); the "Bidding closed" chip and D1225's note; D1177's readings; the backlog line (Draft missing, the
+  deck's own stage-era words, the README now); the Settled line silent on what the deck pictures out of date; D415's
+  "still screens" and D412's "several slides" — the agent's calls stated as his; one slide per journey against several;
+  the account's count and D418's two marks.
+- **Both found:** D1166's condition; D1177's readings stated as rules; the README to mark now; the count (92, not 91).
+
+**The two reads compared (D1732).** Astra found the most serious again — D1724, a later ruling of the Leave War that
+changes what the guide draws but never names the guide, so neither the account's search nor the Opus reader's (both by
+the guide's name) found it — and D1208, the same way. The Opus reader read the page closest: three agent's calls stated
+as his rules, the slide-count clash, the chip's words, the deck's own words in its scripts; Astra passed those. As in
+steps 3, 4 and OIL, neither alone was enough. **For the rest of step 5:** search the other areas by the subject of each
+pointer and each rule — here "Inputs page", "approve", "close the bids", "edit on the war" — not by the area's name; a
+ruling that changes what an area shows rarely names it (`record-decisions.md`: search for a claim's subject, never its
+phrasing). The small area's account cost one chat, not a helper.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |
