@@ -337,7 +337,7 @@ function settleInsertions(o, b, t, labels) {
    when it cannot be wrong: the two texts share no line that is not blank, neither holds a line starting with `#` nor a
    table's separator line, each is whole table rows or holds no table row at all, and neither ended without a line end.
    Anything else is left exactly as git marked it — fewer settled, never silently wrong. */
-const blank = l => !l.trim(), tableRow = l => /^\|/.test(l), tableRule = l => /^\|[\s:|-]*-[\s:|-]*$/.test(l.trim())
+const blank = l => !l.trim(), tableRow = l => /^\|/.test(l), listItem = l => /^([-*] |\d+\. )/.test(l), tableRule = l => /^\|[\s:|-]*-[\s:|-]*$/.test(l.trim())
 function whyNotJoin(o, t, ragged, above) {
   if (ragged) return 'a side\'s text does not end at a line end'
   /* ROUND 4 (Astra r3-1, Opus r3-2): only at an entry boundary — the line just above blank, a table row or the start of
@@ -350,14 +350,17 @@ function whyNotJoin(o, t, ragged, above) {
   if ([...o, ...t].some(l => /^#/.test(l))) return 'a heading is among them'
   if ([...o, ...t].some(tableRule)) return 'a table\'s head is among them'
   for (const s of [o, t]) { const filled = s.filter(l => !blank(l)); if (filled.some(tableRow) && !filled.every(tableRow)) return 'table rows and other text are mixed' }
+  /* ROUND 4 (Opus r3-3): list items join like table rows, so a side mixing them with other text is left */
+  for (const s of [o, t]) { const filled = s.filter(l => !blank(l)); if (filled.some(listItem) && !filled.every(listItem)) return 'list items and other text are mixed' }
   return null
 }
 /* this branch's text, then main's; one blank line between them only where either side is paragraph-shaped (not table
    rows) and no blank line already parts them */
 function joinInsertions(o, t) {
   if (!o.length || !t.length) return [...o, ...t]
-  const rows = s => s.filter(l => !blank(l)).every(tableRow)
-  const apart = !(rows(o) && rows(t)) && !blank(o[o.length - 1]) && !blank(t[0])
+  const all = (s, is) => s.filter(l => !blank(l)).every(is)
+  /* table rows on both sides, or list items on both sides (round 4, Opus r3-3), run on with no blank line between */
+  const apart = !(all(o, tableRow) && all(t, tableRow)) && !(all(o, listItem) && all(t, listItem)) && !blank(o[o.length - 1]) && !blank(t[0])
   return [...o, ...(apart ? ['\n'] : []), ...t]
 }
 

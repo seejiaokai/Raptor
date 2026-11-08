@@ -497,6 +497,20 @@ test('file map: an indented line continuing a note never moves under the other s
   const before = c.read('raptor-port/docs/file-map.md')
   leftAsGitMarked(c, 'raptor-port/docs/file-map.md', c.run(), before)
 }))
+/* ROUND 4 (Opus r3-3, 9 Nov 26): two sides' list items were parted by a blank line, splitting one list. List items join
+   like table rows; a side mixing list items with other text is left */
+const PRIO = '# Outstanding\n\n## Priority list\n\n- [ALPHA] alpha\n\n## Items\n'
+test('backlog: list items both sides added at one place stay one list, no blank line between (round 4 — Opus r3-3)', withRepo({ 'OUTSTANDING.md': PRIO }, c => {
+  c.sides(x => x.edit('OUTSTANDING.md', t => t.replace('- [ALPHA]', '- [C] ours\n- [ALPHA]')), x => x.edit('OUTSTANDING.md', t => t.replace('- [ALPHA]', '1. [D] theirs\n- [ALPHA]')))
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  assert.equal(c.read('OUTSTANDING.md'), PRIO.replace('- [ALPHA]', '- [C] ours\n1. [D] theirs\n- [ALPHA]'))
+}))
+test('backlog: a side mixing list items with other text is left (round 4 — Opus r3-3)', withRepo({ 'OUTSTANDING.md': PRIO }, c => {
+  c.sides(x => x.edit('OUTSTANDING.md', t => t.replace('- [ALPHA]', '- [C] ours\nA line of text.\n- [ALPHA]')), x => x.edit('OUTSTANDING.md', t => t.replace('- [ALPHA]', '* [D] theirs\n- [ALPHA]')))
+  const before = c.read('OUTSTANDING.md')
+  leftAsGitMarked(c, 'OUTSTANDING.md', c.run(), before)
+}))
 test('backlog archive: a last line both items share is never moved from one to the other (Opus re-read 2)', withRepo({ 'OUTSTANDING-ARCHIVE.md': '# Archive\n\n### [A] a\n\nbody a\n' }, c => {
   c.sides(x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n### [X] x\n\nbody x\nStatus: closed, live.\n'), x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n### [Y] y\n\nbody y\nStatus: closed, live.\n'))
   const before = c.read('OUTSTANDING-ARCHIVE.md')
