@@ -2306,9 +2306,10 @@ touch-action: pan-x pan-y;
   transform: translateZ(0);
 }
 
-/* PROTOTYPE ([LW-PIN-LAST-FRAME], his D1850): the copy is always mounted and the BROWSER shows it — an opacity animation
-   on the page's own scroll, off below `--lwy-s` (the scroll at which the real row meets the top bar), on from there, so it
-   appears in the very frame the browser moves the page. Taps and the shadow wait for `.up` (Matrix.tsx `placeY`). */
+/* THE PINNED ROW THE BROWSER SHOWS ITSELF (his D1870, 8 Nov 26 — [LW-PIN-LAST-FRAME]): the copy is always mounted and the
+   BROWSER shows it — an opacity animation on the page's own scroll, off below `--lwy-s` (the scroll at which the real row
+   meets the top bar), on from there, so it appears in the very frame the browser moves the page. Taps and the shadow wait
+   for `.up` (Matrix.tsx `placeY`). A copy not yet placed (no `--lwy-s`) stays hidden. */
 .lw-pinsda .mxfixed {
   animation: lwy-show linear both;
   animation-timeline: scroll(root block);
@@ -2317,6 +2318,10 @@ touch-action: pan-x pan-y;
   box-shadow: none;
 }
 .lw-pinsda .mxfixed.up { pointer-events: auto; box-shadow: 0 2px 10px rgba(0, 0, 0, .4); }
+/* …and while the fingers pinch it is off the scroll's animation, shown by the pinch's own rule (Matrix.tsx `pinchShow`):
+   the pinch moves the page while `--lwy-s` cannot follow the row it stretches, so the animation would hide a copy the
+   pinch says shows (the build's loose end 2). Its shadow goes as `.lw-sda .mxfixed.lw-pinching` below says. */
+.lw-pinsda .mxfixed.lw-pinching { animation: none; }
 
 /* WHILE A PINCH STRETCHES THE GRID ([LW-PHONE-PINCH-ZOOM], Matrix.tsx): the frozen row's contents grow with it, so its
    box clips only sideways — the screen's edges, as at rest — and lets them grow down over the rows under it, which the
@@ -2611,8 +2616,8 @@ touch-action: pan-x pan-y;
    the frame the two overlapped, the animation blended from that held value and
    the bar landed 1,819px off. With both ends fixed, the animation's answer is
    −progress × travel whatever else sits on the element. */
-/* PROTOTYPE ([LW-PIN-LAST-FRAME]) — driven by `.lw-pinsda .mxfixed` above: hidden until the page's scroll reaches the
-   point where the real row meets the top bar, shown from there on, by the browser */
+/* The pinned row the browser shows itself (D1870) — driven by `.lw-pinsda .mxfixed` above: hidden until the page's scroll
+   reaches the point where the real row meets the top bar, shown from there on, by the browser */
 @keyframes lwy-show {
   from { opacity: 0; }
   to { opacity: 1; }

@@ -4,7 +4,7 @@
    go) and Quals (the table zooms, the buttons stay; the pinned heading row lines up with the zoomed columns). jsdom has
    no layout and no touch, so these live here. */
 import { expect, test, type Browser, type Page, type CDPSession } from '@playwright/test'
-import { go, login } from './app'
+import { go, login, expectPinned } from './app'
 
 const PHONE = { width: 402, height: 874 }
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
@@ -178,6 +178,41 @@ test.describe('the board\'s desktop layout on a phone pinches (D1109)', () => {
 })
 
 test.describe('Quals on a phone pinches (D1110)', () => {
+  /* THE PINNED HEADING THE BROWSER SHOWS ITSELF, WHILE THE FINGERS PINCH (his D1870's loose ends, 8 Nov 26): part-way
+     down, the copy is off the scroll's animation (the pinch scrolls the page but its turn-on point waits for the lift),
+     shown exactly while the heading is under the bar, and without its shadow (`.qfixed.q-pinching`). Red on the trial. */
+  test('part-way down, a pinch shows the pinned heading by its own rule, without a shadow (D1870)', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phone(browser, baseURL)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    const y = await page.evaluate(() => {
+      const head = (document.querySelector('#qtbl') as HTMLTableElement).tHead!.getBoundingClientRect()
+      return Math.round(window.scrollY + head.top - document.querySelector('.topbar')!.getBoundingClientRect().bottom + 40)
+    })
+    await page.evaluate(y => window.scrollTo(0, y), y); await sleep(300)
+    await expectPinned(page, 'qsticky-head', true)
+    const at = (d: number) => [[200 - d / 2, 500], [200 + d / 2, 500]]
+    const seen: string[] = []
+    await touch(cdp, 'touchStart', [at(200)[0]]); await sleep(30)
+    await touch(cdp, 'touchStart', at(200)); await sleep(30)
+    for (let i = 1; i <= 10; i++) {
+      await touch(cdp, 'touchMove', at(200 - 10 * i)); await sleep(16)
+      const q = await page.evaluate(() => (() => {
+        const el = document.querySelector<HTMLElement>('[data-testid="qsticky-head"]')
+        if (!el) return null
+        const cs = getComputedStyle(el)
+        const row = (document.querySelector('#qtbl') as HTMLTableElement).tHead!.querySelector('th')!.getBoundingClientRect().top
+        const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+        return { inert: el.inert, shown: Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden', under: row < bar - 0.5, anim: cs.animationName, shadow: cs.boxShadow }
+      })())
+      if (q && q.anim !== 'none') seen.push(`step ${i}: still on the scroll's animation (${q.anim})`)
+      if (q && q.shadow !== 'none') seen.push(`step ${i}: a shadow (${q.shadow})`)
+      if (q && q.shown !== q.under) seen.push(`step ${i}: shown ${q.shown}, the heading ${q.under ? 'under' : 'below'} the bar`)
+    }
+    await touch(cdp, 'touchEnd', []); await sleep(500)
+    expect(seen, 'mid-pinch').toEqual([])
+    expect(errs).toEqual([])
+    await context.close()
+  })
   /* a pinch whose first finger lands on a heading in Edit quals lets the heading go (the code read, finding 3 —
      QualsPage cancelColDrag): the board's twin is pinned above; the finger's drag itself is pinned just below */
 
@@ -305,7 +340,7 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     const { context, page, errs, cdp } = await phone(browser, baseURL)
     await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
     await page.evaluate(() => window.scrollTo(0, 420)); await sleep(500)
-    await expect(page.locator('[data-testid="qsticky-head"]'), 'part-way down, the heading row is pinned under the top bar').toHaveCount(1)
+    await expectPinned(page, 'qsticky-head', true, 'part-way down, the heading row is pinned under the top bar')
     const rest = await bandUnderHeading(page, 200, 440)
     expect(rest.bare, 'at rest, nothing bare under the heading row (the reading is sound)').toEqual([])
     const out = await midPinch(cdp, 200, 450, 230, 80, async () => ({ band: await bandUnderHeading(page, 200, 440), names: await namesAtLeft(page) }))
@@ -320,7 +355,7 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     const { context, page, errs, cdp } = await phone(browser, baseURL)
     await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
     await page.evaluate(() => window.scrollTo(0, 420)); await sleep(500)
-    await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(1)
+    await expectPinned(page, 'qsticky-head', true)
     const rest = await namesAtLeft(page)
     expect(rest.n, 'names in sight').toBeGreaterThan(3)
     const inn = await midPinch(cdp, 200, 450, 90, 250, () => namesAtLeft(page))
@@ -333,7 +368,7 @@ test.describe('Quals on a phone pinches (D1110)', () => {
        name heading at the left (the walk's picture: the heading row and the names both gone until the lift) */
     await go(page, 'editsched'); await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')   // back at today's size
     await page.evaluate(() => window.scrollTo(0, 0)); await sleep(500)
-    await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(0)
+    await expectPinned(page, 'qsticky-head', false)
     const h0 = await page.evaluate(() => document.querySelector('#qtbl thead th[data-sort="cs"]')!.getBoundingClientRect().top)
     const top = await midPinch(cdp, 200, 450, 90, 250, async () => ({ ...(await namesAtLeft(page)), headT: await page.evaluate(() => document.querySelector('#qtbl thead th[data-sort="cs"]')!.getBoundingClientRect().top) }))
     expect(top.off, `at the top, mid-pinch in, the names at the left edge (${JSON.stringify(top)})`).toEqual([])
@@ -362,7 +397,7 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
     expect(await page.locator('#page-quals .qwrap.q-sda').count(), 'the page took the path without the browser\'s follow').toBe(0)
     await page.evaluate(() => window.scrollTo(0, 420)); await sleep(500)
-    await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(1)
+    await expectPinned(page, 'qsticky-head', true)
     const seen = () => page.evaluate(() => {
       const wrapL = document.querySelector('#page-quals .qwrap')!.getBoundingClientRect().left
       const m = document.querySelector('[data-testid="qsticky-head"]')!
@@ -432,7 +467,7 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     const { context, page, errs, cdp } = await phone(browser, baseURL)
     await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
     await page.evaluate(() => window.scrollTo(0, 420)); await sleep(500)
-    await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(1)
+    await expectPinned(page, 'qsticky-head', true)
     const lineUp = () => page.evaluate(() => {
       const m = document.querySelector('[data-testid="qsticky-head"]')
       const real = [...document.querySelectorAll('#qtbl thead tr:last-child > th')].map(t => t.getBoundingClientRect())

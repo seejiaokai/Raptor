@@ -408,13 +408,36 @@ export function QualsPage() {
         CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
     } catch { return false }
   })
-  /* PROTOTYPE ([LW-PIN-LAST-FRAME], his D1850): the pinned row always mounted, shown by the browser on the page's own
-     scroll (05-quals.css `.q-pinsda .qfixed`), as the Leave War's (Matrix.tsx `pinSda`) */
+  /* THE PINNED HEADING THE BROWSER SHOWS ITSELF (his D1870, 8 Nov 26 — [LW-PIN-LAST-FRAME]): the pinned row is always
+     mounted, and shown by the browser on the page's own scroll from the point where the heading meets the top bar
+     (05-quals.css `.qfixed.q-psda`), as the Leave War's (Matrix.tsx `pinSda`) — in the very frame the browser moves the
+     page, so the heading never blinks cut or missing. Off where the browser cannot run it: the old way, unchanged. */
   const [pinSda] = useState(() => {
     try {
       return sdaActive && CSS.supports('animation-timeline: scroll(root block)') && CSS.supports('animation-range: 0px 1px')
     } catch { return false }
   })
+  /* where the page's scroll turns the copy on (`--lwy-s`) and whether it is up — `up` gives it taps and its shadow, and a
+     copy not up is `inert`, out of the focus order and of what a screen reader reads (D1870's loose end 1); on the copy's
+     own box only, and only when it changes */
+  const placeQ = (box: HTMLElement, rowTop: number, topEdge: number) => {
+    const s = String(Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10))
+    if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
+    const up = rowTop < topEdge
+    box.classList.toggle('up', up)
+    if (box.inert === up) box.inert = !up
+  }
+  /* WHILE THE FINGERS PINCH the copy is shown by the pinch's own rule (D1110; `pin` below): hidden while the table's own
+     heading — held from rising — is in sight below the top bar. The pinch's start applies it at once: the always-mounted
+     copy is off the scroll's animation while pinching (05-quals.css `.qfixed.q-psda.q-pinching`), so a copy not up would
+     otherwise stand over the table until the first scroll. */
+  const qPinchShow = () => {
+    const box = document.querySelector<HTMLElement>('#page-quals .qfixed'), head = tblRef.current?.tHead
+    if (!box || !head) return
+    const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+    const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? head.getBoundingClientRect().top
+    box.style.visibility = ownTop >= topEdge ? 'hidden' : ''
+  }
   const admin = isAdmin()
 
   /* WHO MAY EDIT WHAT HERE (owner, 5 Aug 26). `Enable editing` is open to a
@@ -713,6 +736,7 @@ export function QualsPage() {
         const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
         if (a) a.style.animationPlayState = 'paused'
         document.querySelector('#page-quals .qfixed')?.classList.add('q-pinching')
+        qPinchShow()   /* the pinned copy takes the pinch's rule from the pinch's first frame (D1870) */
         qPinchingRef.current = true
       },
       /* (called with the stretch already taken off, before the zoom is written: the row is measured at rest; a new zoom
@@ -807,27 +831,17 @@ export function QualsPage() {
          its place or lower — is in sight below the top bar (two heading rows, never: the Leave War's D1288 picture), shown
          again the moment that row would pass under it. A row not frozen at the start never needs one: its own heading row,
          held from rising, never passes under the top bar. The lift settles it once, from rest (`qRepinRef`). */
-      if (qPinchingRef.current) {
-        const fixedRow = document.querySelector<HTMLElement>('#page-quals .qfixed')
-        if (fixedRow) {
-          const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? r.top
-          fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
-        }
-        return
-      }
+      if (qPinchingRef.current) { qPinchShow(); return }
       /* IN THE SAME FRAME (his D1789, 8 Nov 26 — [LW-FROZEN-BAR-GAP]): set as React state from this passive scroll listener,
        the change was drawn in a later task, after the browser had painted the scroll — for one or two frames the row stood
        half under the top bar with no pinned copy (or none at all). So when the row FLIPS — pinned or let go — the change is
        committed at once (`flushSync`) and painted with the scroll that caused it; a scroll of a row already pinned or
        already free sets nothing, and an effect's call (`now` false — React will not flush inside one) stays as it was. */
-      /* PROTOTYPE ([LW-PIN-LAST-FRAME]): the row is mounted wherever the heading is; the browser shows it at `--lwy-s` */
+      /* THE BROWSER SHOWS IT (his D1870): the row is mounted wherever the heading is, and told where the page's scroll
+         turns it on (`placeQ`); nothing flips here, so nothing is flushed */
       if (pinSda) {
         const box = document.querySelector<HTMLElement>('#page-quals .qfixed')
-        if (box) {
-          const s = String(Math.max(0, Math.round((window.scrollY + r.top - topEdge) * 10) / 10))
-          if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
-          box.classList.toggle('up', r.top < topEdge)
-        }
+        if (box) placeQ(box, r.top, topEdge)
         now = false
       } else if (r.top >= topEdge) { unstick(now); return }
       /* measured here, in the listener, never inside a state updater; a plain scroll of a row already pinned measures nothing */
@@ -887,6 +901,22 @@ export function QualsPage() {
       if (wrapRef.current) ro.observe(wrapRef.current)
       watchCells()
     }
+    /* SOMETHING ABOVE THE TABLE GROWS OR SHRINKS WITH NO SCROLL (his D1870's loose end: a fold, a band) — or the top bar's
+       foot moves (the "Not saved" band, D587): where the page's scroll turns the pinned heading on, and its top, would be
+       stale until the next scroll. The page's own height and the top bar's are watched — heights only, and not their first
+       report — and a change re-pins. */
+    const heights = new Map<Element, number>()
+    const moved = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
+      let changed = false
+      for (const e of entries) {
+        const h = e.contentRect.height
+        if (heights.has(e.target) && heights.get(e.target) !== h) changed = true
+        heights.set(e.target, h)
+      }
+      if (changed) pin(true)
+    }) : null
+    const bar = document.querySelector('.topbar')
+    if (moved) { moved.observe(document.body); if (bar) moved.observe(bar) }
     /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26) */
     pin(false)
     return () => {
@@ -895,6 +925,7 @@ export function QualsPage() {
       window.removeEventListener('orientationchange', remeasure)
       window.visualViewport?.removeEventListener('resize', remeasure)
       ro?.disconnect()
+      moved?.disconnect()
       if (watchCellsRef.current === watchCells) watchCellsRef.current = null
       qRepinRef.current = () => {}
       cancelAnimationFrame(raf); clearTimeout(t)
@@ -918,15 +949,9 @@ export function QualsPage() {
   useLayoutEffect(() => {
     const m = mirrorRef.current, w = wrapRef.current
     if (!stuck || !m || !w) return
-    /* PROTOTYPE ([LW-PIN-LAST-FRAME]): the freshly mounted copy learns where the page's scroll turns it on before its
-       first frame */
+    /* the freshly mounted copy learns where the page's scroll turns it on before its first frame (D1870) */
     const qbox = m.parentElement, qhead = tblRef.current?.tHead
-    if (pinSda && qbox && qhead) {
-      const top = qhead.getBoundingClientRect().top
-      const s = String(Math.max(0, Math.round((window.scrollY + top - stuck.top) * 10) / 10))
-      if (qbox.dataset.s !== s) { qbox.dataset.s = s; qbox.style.setProperty('--lwy-s', s) }
-      qbox.classList.toggle('up', top < stuck.top)
-    }
+    if (pinSda && qbox && qhead) placeQ(qbox, qhead.getBoundingClientRect().top, stuck.top)
     if (sdaActive) {
       /* the browser's follow (D993): the row's table runs from 0 to minus the table's whole sideways travel across the
          scroll's range, so the travel is told it here, measured whenever the row is pinned or re-measured (a rotate) */

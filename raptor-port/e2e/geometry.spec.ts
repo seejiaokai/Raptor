@@ -8,7 +8,7 @@
    production build, so a CSS change that breaks one fails a gate. */
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
-import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek } from './app'
+import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek, expectPinned } from './app'
 
 const PHONE = { width: 390, height: 844 }
 const DESK = { width: 1500, height: 950 }
@@ -4547,7 +4547,7 @@ test.describe('the frozen callsign column', () => {
       mo.observe(document.body, { childList: true, subtree: true })
     })
     await page.evaluate(() => window.scrollTo(0, 700))   // slide the real header under the top bar
-    await expect(page.locator('[data-testid="qsticky-head"]')).toBeVisible()
+    await expectPinned(page, 'qsticky-head', true)
     const at = await page.evaluate(() => (window as any).__qAt)
     expect(at, 'the bar was seen as it appeared').not.toBeNull()
     expect(Math.abs(at.mirror - at.grid), 'the frozen header starts where the table is, not at its first column').toBeLessThan(2)
@@ -4562,22 +4562,57 @@ test.describe('the frozen callsign column', () => {
       await login(page)
       await go(page, 'quals')
       await page.waitForSelector('#qtbl td.qname')
-      await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(0)
+      await expectPinned(page, 'qsticky-head', false)
       const seen = await page.evaluate(() => new Promise<{ under: boolean; up: boolean }>(done => {
         window.scrollTo(0, 700)
         requestAnimationFrame(() => {
           const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
           const row = (document.querySelector('#qtbl') as HTMLTableElement).tHead!.getBoundingClientRect().top
-          done({ under: row < bar, up: !!document.querySelector('[data-testid="qsticky-head"]') })
+          done({ under: row < bar, up: (el => !!el && Number(getComputedStyle(el).opacity) > 0.5 && getComputedStyle(el).visibility !== 'hidden')(document.querySelector('[data-testid="qsticky-head"]'))   /* shown, not merely there (D1870) */ })
         })
       }))
       expect(seen.under, 'the scroll really sent the heading row under the top bar').toBe(true)
       expect(seen.up, 'the pinned copy is painted in that same frame, not a frame later').toBe(true)
       const back = await page.evaluate(() => new Promise<boolean>(done => {
         window.scrollTo(0, 0)
-        requestAnimationFrame(() => done(!document.querySelector('[data-testid="qsticky-head"]')))
+        requestAnimationFrame(() => done(!(el => !!el && Number(getComputedStyle(el).opacity) > 0.5 && getComputedStyle(el).visibility !== 'hidden')(document.querySelector('[data-testid="qsticky-head"]'))))
       }))
       expect(back, 'and let go in the frame the row comes back down').toBe(true)
+    })
+  }
+  /* THE PINNED HEADING THE BROWSER SHOWS ITSELF — the build's loose ends (his D1870, 8 Nov 26): hidden, the always-mounted
+     copy is out of the keys and of a screen reader; something above the table that grows with no scroll moves its turn-on
+     point (the iPhone's Safari keeps the scroll — no scroll anchoring — so the test browser is made to). Red on the trial. */
+  for (const size of [PHONE, { width: 1536, height: 864 }]) {
+    test(`the Quals pinned heading: inert while hidden, and it follows a block above with no scroll, ${size.width} wide (D1870)`, async ({ page }) => {
+      await page.setViewportSize(size)
+      await login(page)
+      await go(page, 'quals')
+      await page.waitForSelector('#qtbl td.qname')
+      await page.addStyleTag({ content: '* { overflow-anchor: none !important; }' })
+      const st = () => page.evaluate(() => (() => {
+        const el = document.querySelector<HTMLElement>('[data-testid="qsticky-head"]')
+        if (!el) return null
+        const cs = getComputedStyle(el)
+        const row = (document.querySelector('#qtbl') as HTMLTableElement).tHead!.querySelector('th')!.getBoundingClientRect().top
+        const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+        return { inert: el.inert, shown: Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden', under: row < bar - 0.5, anim: cs.animationName, shadow: cs.boxShadow }
+      })())
+      await expect.poll(async () => { const p = await st(); return p === null || (p.inert && !p.shown) }, { message: 'at rest the hidden copy is inert' }).toBe(true)
+      const y = await page.evaluate(() => {
+        const head = (document.querySelector('#qtbl') as HTMLTableElement).tHead!.getBoundingClientRect()
+        return Math.round(window.scrollY + head.top - document.querySelector('.topbar')!.getBoundingClientRect().bottom + 30)
+      })
+      await page.evaluate(y => window.scrollTo(0, y), y)
+      await expect.poll(async () => { const p = await st(); return !!p && p.shown && !p.inert }, { message: 'pinned, it can be reached' }).toBe(true)
+      await page.evaluate(() => {
+        const d = document.createElement('div'); d.id = '__above'; d.style.cssText = 'display:block;height:100px'
+        document.querySelector('#page-quals')!.prepend(d)
+      })
+      await expect.poll(async () => (await st())?.under, { message: 'the block pushed the heading back below the bar' }).toBe(false)
+      await expectPinned(page, 'qsticky-head', false, 'so the copy lets go, though the page did not scroll')
+      await page.evaluate(() => document.getElementById('__above')!.remove())
+      await expectPinned(page, 'qsticky-head', true, 'and pins again when the block goes')
     })
   }
 
@@ -4620,7 +4655,7 @@ test.describe('the frozen callsign column', () => {
     await go(page, 'quals')
     await page.waitForSelector('#qtbl td.qname')
     await page.evaluate(() => window.scrollTo(0, 700))
-    await expect(page.locator('[data-testid="qsticky-head"]')).toBeVisible()
+    await expectPinned(page, 'qsticky-head', true)
     const grew = await page.evaluate(() => {
       const w = document.querySelector('.qwrap') as HTMLElement, before = w.scrollWidth - w.clientWidth
       /* a person's row (the first row is the group heading's) */
@@ -4662,7 +4697,7 @@ test.describe('the frozen callsign column', () => {
     await go(page, 'quals')
     await page.waitForSelector('#qtbl td.qname')
     await page.evaluate(() => window.scrollTo(0, 500))
-    await expect(page.locator('[data-testid="qsticky-head"]')).toBeVisible()
+    await expectPinned(page, 'qsticky-head', true)
     const before = await page.evaluate(() => {
       const t = document.querySelector('#qtbl') as HTMLElement, w = document.querySelector('.qwrap') as HTMLElement
       return { table: t.getBoundingClientRect().width, range: w.scrollWidth - w.clientWidth }
@@ -4723,7 +4758,7 @@ test.describe('the frozen callsign column', () => {
     await expect(page.locator('#qtbl input[data-init]')).toHaveCount(0)
     const wide = await page.evaluate(() => (document.querySelector('#qtbl thead tr:last-child > th:nth-child(2)') as HTMLElement).getBoundingClientRect().width)
     await page.evaluate(() => window.scrollTo(0, 500))
-    await expect(page.locator('[data-testid="qsticky-head"]')).toBeVisible()
+    await expectPinned(page, 'qsticky-head', true)
     const rowTop = () => page.evaluate(id => (document.querySelector(`#qtbl td.qname[data-person="${id}"]`) as HTMLElement).getBoundingClientRect().top, pid)
     const top0 = await rowTop()
     expect(top0, 'the edited row is on screen below the pinned row').toBeGreaterThan(120)
