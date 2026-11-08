@@ -34,7 +34,9 @@
  *   The skill log — the head, each `## <day>` heading, each `### Observation N:` entry (to the next heading of either
  *     kind). Two different entries with one number, added on both sides since the base: this branch's is renumbered past
  *     the highest number on this branch, main, the log's archive and every remote branch (the skill notes' short form,
- *     step 1); in this branch's own new lines of the log, `Observation N` for a renumbered N is rewritten; each renumber is
+ *     step 1); in this branch's own new lines of the log, `Observation N` for a renumbered N is rewritten only where it
+ *     surely means this branch's note — inside that note, or naming its title and not main's (Astra 3); any other is
+ *     left as written and listed for the chat; each renumber is
  *     printed, old → new, with the note's title, and every other file whose new lines on this branch cite it is listed for
  *     the chat (a pushed commit message cannot be changed). Main's new notes are placed before this branch's at the same
  *     spot, so the numbers run upward (the agent's reading of the plan's "where their side put them" — Opus 9).
@@ -248,20 +250,28 @@ function renumber(B, O, T, ctx) {
   const map = new Map()
   for (const r of clash) map.set(r.key.slice(4), String(next++))
   const baseLines = new Set(linesOf(B.map(r => r.text).join('')))
+  const titleOf = text => (OBS_HEAD.exec(text.split('\n')[0].replace(/\r$/, '')) || [, , ''])[2].trim()
+  const ourTitle = new Map(clash.map(r => [r.key.slice(4), titleOf(r.text)])), mainTitle = new Map(clash.map(r => [r.key.slice(4), titleOf(mt.get(r.key))]))
+  const names = (l, title) => !!title && l.toLowerCase().includes(title.toLowerCase())
   const cite = new RegExp(`\\bObservation (${[...map.keys()].join('|')})(?!\\d)`, 'g')
+  /* a citation in this branch's new lines is rewritten only where its target is certain (Astra 3 of the code read): the
+     line is inside this branch's own renumbered note, or names that note's title — and does not name main's note of the
+     same number. Any other is left as written and listed for the chat: "see Observation 11 on main" means main's. */
   const O2 = O.map(r => {
-    const own = r.key.startsWith('obs:') && map.has(r.key.slice(4))
+    const own = r.key.startsWith('obs:') && map.has(r.key.slice(4)) ? r.key.slice(4) : null
     const ls = linesOf(r.text), fenced = fencedFlags(ls)
     const text = ls.map((l, i) => {
-      if (own && i === 0) return l.replace(/^### Observation \d+:/, `### Observation ${map.get(r.key.slice(4))}:`)
-      return baseLines.has(l) || fenced[i] ? l : l.replace(cite, (s, n) => { ctx.cites.push(`Observation ${n} → ${map.get(n)} in a line of yours: ${l.trim().slice(0, 100)}`); return `Observation ${map.get(n)}` })
+      if (own && i === 0) return l.replace(/^### Observation \d+:/, `### Observation ${map.get(own)}:`)
+      if (baseLines.has(l) || fenced[i]) return l
+      return l.replace(cite, (s, n) => {
+        if ((own === n || names(l, ourTitle.get(n))) && !names(l, mainTitle.get(n))) { ctx.cites.push(`Observation ${n} → ${map.get(n)} in a line of yours: ${l.trim().slice(0, 100)}`); return `Observation ${map.get(n)}` }
+        ctx.unsure.push(`${SKILL_LOG} — Observation ${n} in a line of this branch's may mean main's "${mainTitle.get(n)}" or this branch's, now ${map.get(n)} "${ourTitle.get(n)}"; left as written: ${l.trim().slice(0, 100)}`)
+        return s
+      })
     }).join('')
-    return { key: own ? `obs:${map.get(r.key.slice(4))}` : r.key, text }
+    return { key: own ? `obs:${map.get(own)}` : r.key, text }
   })
-  for (const r of clash) {
-    const title = (OBS_HEAD.exec(r.text.split('\n')[0]) || [, , ''])[2].trim()
-    ctx.renumbers.push({ from: r.key.slice(4), to: map.get(r.key.slice(4)), title })
-  }
+  for (const r of clash) ctx.renumbers.push({ from: r.key.slice(4), to: map.get(r.key.slice(4)), title: ourTitle.get(r.key.slice(4)) })
   return { O: O2, map }
 }
 
@@ -359,7 +369,7 @@ const stale = [...stages.keys()].filter(f => existsSync(join(REPO, f + TMP)))
 if (stale.length) die(`a temporary copy from an interrupted run is still here (${stale.map(f => f + TMP).join(', ')}) — compare it with its file, keep what you need, delete it, then run this again.`)
 
 const remotes = (tryGit('for-each-ref', '--format=%(refname)', 'refs/remotes') || '').split('\n').filter(r => r && !r.endsWith('/HEAD'))
-const ctx = { refs: [head, mergeHead, ...remotes], renumbers: [], cites: [] }
+const ctx = { refs: [head, mergeHead, ...remotes], renumbers: [], cites: [], unsure: [] }
 const written = [], already = [], refused = [], leftBy = new Map(), settledBy = new Map(), rulingsLeft = [], others = [], unreadable = []
 const plan = []
 for (const [f, ids] of stages) {
@@ -402,6 +412,7 @@ for (const f of already) say(`  already settled by an earlier run, unchanged: ${
 for (const [f, s] of settledBy) for (const x of s) say(`    ${f} — ${x}`)
 for (const r of ctx.renumbers) say(`  renumbered in ${SKILL_LOG}: Observation ${r.from} → ${r.to} "${r.title}" (main has its own ${r.from})`)
 for (const c of ctx.cites) say(`    rewritten: ${c}`)
+for (const u of ctx.unsure) say(`    look by hand: ${u}`)
 if (ctx.renumbers.length && mergeBase) {
   /* the citations outside the log are this branch's to look at: its new lines that still name the old number */
   const nums = ctx.renumbers.map(r => r.from)

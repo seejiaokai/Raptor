@@ -183,16 +183,34 @@ test('skill log: a doubled number is renumbered past every branch\'s highest; on
   c.git('checkout', '-q', '-b', 'other'); c.edit('.claude/skill-observations/log.md', t => t + obs(15, 'fifteen', 'b')); c.commit('other')
   c.git('update-ref', 'refs/remotes/origin/other', 'other'); c.git('checkout', '-q', 'main'); c.git('branch', '-q', '-D', 'other')
   c.sides(
-    x => { x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'ours eleven', 'see Observation 11 and Observation 10') + obs(12, 'ours twelve', 'follows Observation 11')); x.edit('HANDOFF.md', t => t.replace('- a line', '- a line (Observation 11)')) },
+    x => { x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'ours eleven', 'see Observation 11 and Observation 10') + obs(12, 'ours twelve', 'follows Observation 11', 'as Observation 11, ours eleven, said')); x.edit('HANDOFF.md', t => t.replace('- a line', '- a line (Observation 11)')) },
     x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main eleven', 'main cites Observation 11')))
   const r = c.run()
   assert.equal(r.code, 0, r.out)
-  assert.equal(c.read('.claude/skill-observations/log.md'), LOG0 + obs(11, 'main eleven', 'main cites Observation 11') + obs(16, 'ours eleven', 'see Observation 16 and Observation 10') + obs(12, 'ours twelve', 'follows Observation 16'))
+  /* Astra 3: inside the renumbered note, and in a line naming its title, the citation is rewritten; a bare "follows
+     Observation 11" in another note may mean main's eleven — left as written, and listed */
+  assert.equal(c.read('.claude/skill-observations/log.md'), LOG0 + obs(11, 'main eleven', 'main cites Observation 11') + obs(16, 'ours eleven', 'see Observation 16 and Observation 10') + obs(12, 'ours twelve', 'follows Observation 11', 'as Observation 16, ours eleven, said'))
+  assert.match(r.out, /look by hand: \.claude\/skill-observations\/log\.md — Observation 11 in a line of this branch's may mean main's "main eleven" or this branch's, now 16 "ours eleven"; left as written: follows Observation 11/)
   assert.match(r.out, /Observation 11 → 16 "ours eleven"/)
   assert.match(r.out, /look by hand: HANDOFF\.md cites the old number/)
   assert.match(c.read('.claude/skill-observations/log.md'), /carriage return\r\n/, 'a carriage return in a line is kept')
   /* and a second run changes nothing */
   const again = c.run(); assert.equal(again.code, 0, again.out); assert.match(again.out, /already settled by an earlier run/)
+}))
+
+/* Astra 3 (the code read, 8 Nov 26): a line being new on this branch says who wrote the citation, not which note it
+   means — "see Observation 11 on main" must stay attached to main's note */
+test('skill log: a citation of main\'s note in this branch\'s lines is not redirected to the renumbered note (Astra 3)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+  const st = c.sides(x => x.edit('.claude/skill-observations/log.md', t => t.replace('body nine\n', 'body nine\nSee Observation 11 on main, titled main finding.\n') + obs(11, 'branch finding', 'b')),
+    x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main finding', 'm')))
+  assert.equal(st, 1, 'the merge must clash')
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  assert.match(r.out, /Observation 11 → 12 "branch finding"/)
+  const log = c.read('.claude/skill-observations/log.md')
+  assert.match(log, /See Observation 11 on main, titled main finding\./)
+  assert.match(log, /### Observation 12: branch finding/)
+  assert.match(r.out, /look by hand: .*Observation 11 in a line of this branch's may mean main's "main finding"/)
 }))
 
 /* Astra 5 (the code read, 8 Nov 26): a heading inside a code block is an example — never cut as a note, never counted
