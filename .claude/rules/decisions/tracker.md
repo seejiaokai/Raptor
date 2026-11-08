@@ -84,9 +84,16 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 ## Students and courses
 - Every student is a man on the roster, so his down days always come from the Inputs, and the typed "No. of Down Days"
   box is gone for everyone [D1005].
-- When the + Add search matches nobody and "Or type a callsign" is empty, OK adds the typed name as a new crew member
-  linked to nobody, "Nobody on the roster matches" saying so first; a name typed below always wins, and a search still
-  matching someone adds nothing by itself; the agent's call, told to him: Enter in the search does the same as OK [D191].
+- Open, a question for him: D1005's words, "a student can't be a typed student as I'm removing this feature", and its
+  rule say every student is a man on the roster, but the agent read them as the typed down-days box only, and the app
+  still adds a typed name as a student linked to nobody, his down days reading "—"; whether typed students go is filed
+  as `[TRK-TYPED-STUDENT-Q]`, and nothing is built or removed until he answers [D1005, D191].
+- The app today, until he answers: when the + Add search matches nobody and "Or type a callsign" is empty, OK adds the
+  typed name as a new crew member linked to nobody, "Nobody on the roster matches" saying so first; a name typed below
+  always wins, and a search still matching someone adds nothing by itself; the agent's call, told to him: Enter in the
+  search does the same as OK [D191].
+- With nobody on the roster to offer — it offers aircrew only — + Add is the plain "Student callsign:" box, kept as
+  built when the standalone Tracker's leftovers went [D191, D1538].
 - A course start is entered when a student is added — a date box at the top of "+ Add", today by default, above the list
   because a tap on a name adds him at once — and is changed in the Info panel, where the Upchit box was, with no clear
   cross and no height added [D1003, D1004, D1005, D1018].
@@ -165,12 +172,13 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 - When the marking window would not fit below the event tapped, the chart slides the event up under the tabs with its
   own smooth scroll, only as far as needed, and it stays there after Close; the window opens whole below it, on a phone
   and a desktop [D1790, D1861].
-- An event too near the chart's end to slide falls back to the page's option B: nothing moves, and the window is held
-  between the tabs and the event, its lower part scrolling inside; on a desktop the same, under the Tracker's bar; no new
-  words [D1790, D1861].
-- As built: the window opens 4px under the event; the slide brings the event's top to 22px under the chart box's top;
-  while it slides the chart takes no press and no key but Escape and Tab; for less motion it jumps; the window shows only
-  once the chart rests [D1790, D1861].
+- An event too near the chart's end to slide falls back to the page's option B: nothing moves, and the window stands
+  above the event — as built, whole where it fits, else held between the tabs and the event, scrolling inside; on a
+  desktop the same, under the Tracker's bar; no new words [D1790, D1861].
+- As built: the window opens 4px under the event; the slide brings the event's top to 22px under the chart box's top,
+  the chart's end allowed to stop it short while the window still fits; while it slides the chart takes no
+  press and no key but Escape and Tab; for less motion it jumps; the window shows only once the chart rests [D1790,
+  D1861].
 - It follows the Leave War's grid, which scrolls the picked days into view just above their window (the Leave War's
   D1290), and that day's lesson that a window never hides what it is about; where the chart lands is unchanged, since
   the slide comes only when the window opens [D1790, D1861, D1290, D984].
@@ -210,20 +218,24 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 - The window only shows, the Inputs page edits; it counts the inputs as they stand, an upchit's cut included, a running
   one to today; before a course start it reads "—" and "Pick a date", with the line "Set the course start to count
   them." [D1018, D1002].
+- Left open for his look when the down days were built: a cancelled medical input still counts — filed as
+  `[TRK-DOWN-DAYS-CANCELLED]`, not a ruling [D1002, D1018].
 - The agent's readings of that: the window shows how far a cut input first ran once its first end is kept (the Inputs
   pages' D999), and it reads the Inputs through the people bridge, a rider on a seam, not a fourth seam [D1018].
 - The landing-currency bar counts only the days since his last currency or non-syllabus flight, medical down days taking
   no part — "(−5 down = 5d)" and "(minus down days)" are gone; the down days are a figure of record with their window,
-  feeding no bar [D1004].
-- The agent's reading, told to him: whether a non-syllabus flight graded on the chart moves "Last currency" by itself,
-  or it is typed, is checked in the build and put to him if it does not [D1004].
+  feeding no bar [D1004, D1005].
+- Answered: the agent's open point — whether a non-syllabus flight graded on the chart moves "Last currency" by itself,
+  or it is typed — was settled by his D1005 the same day: the member types it (next line); nothing is put to him; that a
+  currency date sets only its own was checked in the Tracker's code that day [D1004, D1005].
 - "Last flown currency" is typed by the member for a non-syllabus flight and moves only the IP requirement (landing
   currency); a syllabus flight moves both the IP requirement and the flex — "syllabus" the agent's reading of his "a
   last flown currency", as the app worked [D1005].
 - The flex figures are editable, and one switch for the whole Tracker turns flex off, everything about flex then gone —
   its bar, windows, words and the legend's part [D1006].
-- The agent's reading of today's limits: under 7 days current; 7–13 one optional flex; 14–20 one mandatory; 21–30 two;
-  31–59 two mandatory; 60–119 a short refresher; beyond, a re-course [D1006].
+- Today's default limits, which an admin can change (below): under 7 days current; 7–13 one optional flex; 14–20 one
+  mandatory; 21–30 two; 31–59 two mandatory; 60–119 a short refresher; beyond, a re-course — reading "the flex number"
+  as these day limits was the agent's [D1006, D1014, D1018].
 - The flex figures and the switch open from a settings icon in the Tracker's top bar — the app's one drawn gear, white
   there — and only an admin changes them; a member sees the window read only, with no Save [D1014, D1018, D1509, D1707].
 - That window is a copy of the Inputs calendar's settings window, with the Logic page's on/off switch and Cancel / Save;
@@ -241,9 +253,9 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 - The phone's bar stays two rows and the desktop's one, all of it built as the night-pictures brief drew it [D1018].
 
 ## The bar and its controls
-- Every control on the bar is as tall as its dropdowns, 30 on a desktop and 26 on a phone, the bar growing no taller and
-  nothing moving — his word for a button's size; before, the pencils, ⓘ, Show All and File were 23, Legend 20, the gear
-  22 [D1170, D1171, D487].
+- Every control on the bar is as tall as its dropdowns, 30 on a desktop and 26 on a phone, the bar growing no taller —
+  except where a narrow desktop wraps it (Settled, below) — and nothing moving; his word for a button's size; before,
+  the pencils, ⓘ, Show All and File were 23, Legend 20, the gear 22 [D1170, D1171, D487].
 - On a desktop the labels Crew, Course and Syllabus take the small spaced capitals of Quals' "Viewing" — its size,
   weight, spacing and grey — the words kept and nothing moved; the phone has no labels [D1136].
 - The bar's buttons wear the app's line icons — its pencils the one solid pencil, ⓘ, ☰ before Show All, ⇪ before File,
@@ -265,8 +277,9 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 - On a phone the Find ✕ empties the box and puts Find away — the keyboard down, the tabs back — as Escape does, its
   hover words "Clear the search and close Find"; a pick from the list puts Find away on purpose; on a desktop nothing
   changes, and the ✕ stays in the box [D1791, D1127].
-- As built: that holds wherever Find is the strip, up to 1050 wide; wider, the ✕ clears and keeps the keys in the box,
-  its words "Clear the search"; from the keyboard, the keys go back to the magnifier [D1791].
+- As built, and as the question's page told him ("how Find shows on any screen up to 1050 wide"): the phone's way holds
+  wherever Find is the strip, up to 1050 wide, a narrow desktop window too; wider, the ✕ clears and keeps the keys in
+  the box, its words "Clear the search"; from the keyboard, the keys go back to the magnifier [D1791].
 
 ## Edit chart layout and its drags
 - On a short screen — a phone on its side — Edit chart layout folds its tools into one row: the tool in use with its
@@ -297,7 +310,8 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
   Ctrl+Y puts it again [D372].
 - The agent's readings of that, told to him: keystrokes in one box within two seconds are one step; setting, changing
   and removing a lull period are each a step, the removal still asking first; Copy to… is one step for every student it
-  ticked; it works the same from the Tracker's bar or the app's top bar [D372].
+  ticked; it works from the app's top bar, the Tracker's own pair gone with the standalone leftovers [D372, D347,
+  D348, D1538].
 - Not undoable, as before: adding, removing or renaming students, courses and syllabi; event details; Import [D372].
 
 ## Import, export and backups
@@ -360,28 +374,35 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 - The design file's: every search box looks like the Edit Schedule week's, the Tracker's ✕ that clears its search kept
   — that part the agent's reading there [D1127].
 - The design file's: arrows either side of words that change keep their place, the Tracker's among those swept [D1122].
-- The design file's: on a phone the page never zooms, the Tracker's chart among the grids that zoom by their own pinch
-  [D1567].
+- The design file's: on a touch screen, a phone or a tablet, the page itself never zooms, the Tracker's chart among the
+  grids that zoom by their own pinch [D1567].
 - The design file's: the claw shown over a page that opens slowly — not the start-up claw — shows over the Tracker's
   first open after sign-in, from the tap with no wait, in the blank moment before it is drawn, never adding to its time,
   the top bar staying in view and in reach [D1607, D1610, D1611].
 - The design file's: while the Tracker is still downloading after 8 seconds, a quiet grey "Still loading…" shows under
   the claw [D1632].
 - The design file's: when the Tracker's own download fails, only its page shows a card copying the Tracker's "No course
-  yet" card, with Retry, which reloads the app and reopens the Tracker by itself once he is signed in [D1631, D1633,
-  D1638, D1635].
+  yet" card, with Retry, which fetches the files again and, once they have come, reloads the app and reopens the Tracker
+  by itself once he is signed in; when they cannot come — no signal, a file cut off, a save still waiting — it does not
+  reload: the card comes back, still signed in, the keyboard on Retry [D1631, D1633, D1638, D1635].
 - The design file's: the just-added mark is the plain blue ring — a taken suggestion flashing it about a second, the
   Leave War's day brought into view in its cyan — and no mark in the app glows [D876, D1038, D1449, D887, D1614].
 - The design file's: dragging, as the design guide's §5A words it — a thing moved between a list's rows shows one
-  landing line, on the top edge of the row under; a thing dropped onto a place marks that one place, once; carried near
-  the edge it scrolls its box in the direction it can move, at the app's edge distance and speed, on for less motion; a
-  drag already built that does otherwise is named to him, never changed without his word [D895].
+  landing line, on the top edge of the row under, a bottom edge only under a list's last row or above a heading it cannot
+  land on; a thing dropped onto a place marks that one place, once [D895].
+- The design file's, the same §5A: carried near the edge, a dragged thing scrolls its box in the direction it can move,
+  at the app's edge distance and speed, on for less motion; a look drags slowly across every gap and carries one thing
+  off the screen, on a phone and a desktop; a drag already built that does otherwise is named to him, never changed
+  without his word [D895].
 - The Inputs pages': the Tracker's Select box and its Reorder list follow the edge too, with the SANS calendar's pick and
   the people picker [D900, D893, D897].
 - The Leave War's: the Tracker's gold "can fly next" and turquoise "search found" rings lose their glow, keeping their
   lines [D881].
 - The Leave War's: while the fingers pinch its grid its pinned parts stay pinned; the agent's reading there: the same
   rule for Quals' and the Tracker's pinch is put to him as a suggestion, not built [D1287].
+- The Leave War's, the design guide's lesson 37: a half is written as .5, never ½; the Tracker's down days ("11½ days")
+  are named there as another place it may apply, suggested and not changed, so they keep ½ until he says [D1246,
+  D1397].
 - The scheduler's: the app's one date calendar, its weeks starting on Monday, a sideways finger turning its month,
   Escape closing its month or year list first, and the picked date a plain disc with no ring — a ring only while a
   keyboard is on a date [D796, D797, D800, D824, D1012, D1020].
@@ -389,6 +410,8 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
   boxes, a date dim until a mark carries it, and one width for the side panel's boxes [D830].
 - The scheduler's: the change history and every other record of who did something show the name as it was at the time,
   the person kept underneath [D1589].
+- The scheduler's, stated on the design file: when the phone's keys open or close nothing on screen jumps, even for one
+  frame, the box tapped rising in step with the keys — checked everywhere the app follows the keyboard [D1081, D1412].
 - People and accounts': a man deleted keeps his Tracker record from the courses he finished, and loses his place on any
   course still running [D299, D300, D1105, D981].
 - People and accounts': "one database" in the architecture guide meant one deployment's schedule, Leave War and
@@ -396,8 +419,9 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 - The IT flow guide's: it covers the Tracker in full — how a flow chart is made, each tool, joining events, editing an
   event's details, how a member updates it and what he sees, what it refuses, students, courses, export and import — in
   several slides, each checked in the running app [D414].
-- How we work: the Tracker's syllabus data is outside every privacy sweep, and the aircraft type elsewhere reads the bare
-  "F-15" or "a fighter squadron" [D62, D63, D64].
+- How we work: the Tracker's syllabus data is outside every privacy sweep; elsewhere a sentence that describes the
+  squadron or him reads "a fighter squadron", one that names the aircraft or its documents the bare "F-15", the event
+  box's hint among them [D62, D63, D64].
 - How we work: what does not read the one table — a Tracker student read from the person among it — is one item for the
   database step [D1587, D473].
 - How we work: every React Doctor finding in the Tracker went into the one clean-up batch before new feature work, and

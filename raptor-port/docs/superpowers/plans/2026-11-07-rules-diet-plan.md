@@ -792,6 +792,69 @@ citing D851 and D860, which are the app's one blue — a wrong word in its row a
 the scheduler's D1038 row still says "Not built", though the code draws it — for the scheduler's page; D349's dated mark
 from D481 still calls the board's Insights door "proposed".
 
+### Step 5a — the Tracker as a page (8 Nov 26, chat 34, `claude/rules-diet-step-5a-tracker-de959c`, pull request 714 — waiting for his "merge live")
+
+`.claude/rules/decisions/tracker.md` is a page, "The Tracker — how it works now" (`<!-- shape: page -->`, its `paths:`
+unchanged — the Tracker's own code, documents, scripts and walks, and the sign-out file): its 72 rulings (D64–D1900)
+stated by topic, with a "Settled" section and about 30 pointer lines citing about 70 rulings of other areas. The
+architecture stays in `.claude/rules/seams/tracker.md` (one mark added: its map row's D1014 is built). `DECISIONS.md`,
+`AGENTS.md` (item 5), the project guide's two map rows and the head of the full-text file name it as a page. D1004's full
+row was marked ANSWERED by D1005 (a non-syllabus flight's "Last flown currency" is typed by the member). No ruling
+archived: the drafter proposed D564 (by D566), D560, D1405 and D985 (by D992); the account confirmed only D1405's fixing
+order as spent, its standing part carried by D1406 — so all four stay live (D971). Two stale lines were corrected: the
+Tracker's gaps document called the repo private (D106, D1530); the seam file's D1014 "to build".
+
+**How it was made — three fresh Opus helpers and the host:** one drafted the page from every full row (30,999 bytes); a
+second, who had not written it, wrote the account by requirement (`../briefs/2026-11-08-rules-diet-step5a-tracker-account.md`)
+— 72 rulings, 466 parts (346 stated, 31 spent, 15 superseded, 30 detail, 44 in a gap): **31 gaps, 8 that bent or
+dropped a rule** — D464's one-off export reminder widened to every merge; the claw pointer naming the start-up claw, not
+the slow page's; the D895 pointer stretching one landing line over every drag and dropping its safeguards; readings of
+D371–D374 and D1018 stated as his rule (D373's "under 500px" made the rule's scope); D924's landing mark dropped; the
+half day written "1/2" where the drawing and the app write "½" — and 23 smaller. `main` was brought in once (706, 707):
+D1900 and D1901 then built and live, the page saying so. A third helper applied the two reads' findings, each checked
+first against its row, the design guide's wording, the screen contracts or the code.
+
+**The two blind reads (D1739, D1763 "keep two"), each of the page at `05d2aeec3`, each blind to the other:**
+
+| Read | Findings | What was done |
+|---|---|---|
+| Astra (`../briefs/2026-11-08-rules-diet-step5a-tracker-read-astra.md`) | 7: 2 high, 4 medium, 1 low | all held; all fixed, each checked against its authority first |
+| A fresh Opus reader (`../briefs/2026-11-08-rules-diet-step5a-tracker-read-opus.md`) | 10: 1 medium, 9 low | 8 held and fixed (the tripwire's reason by the host); D1366 not cited — archived; of four phone rules, D1081 and D1412 pointed to, D997, D828 and D686 not — each scoped to the app's own windows, notes or the calendar job |
+
+- **Astra:** D191 against D1005 — typed students stated as today's instruction while D1005 says every student is on the
+  roster (high); Retry's no-reload case, D1638's narrowing of D1633, dropped from the pointer (high); the drag rules'
+  bottom-edge cases and the two checks of every gap, still missing after the account said "clause by clause" (D895);
+  D1790 and D1861's fitting conditions — a slide the chart's end stops short, the window whole above where it fits;
+  D1004's open point, answered by D1005, still put as open; D1567's touch screens narrowed to a phone; D63's two
+  wordings merged.
+- **The Opus reader:** D191 against D1005 (with Astra); the design guide's lesson 37 (D1246), which writes a half as .5
+  and names the Tracker's "11½ days" as a place left as it is; D372's undo "from the Tracker's bar", gone since D347 and
+  D1538; D1171's exception missing from the bar's main line; D1790's option B (with Astra); D1791's 1050-wide scope, as
+  built and as told him; D1006's default limits labelled a reading; the tripwire's reason; a cancelled medical input
+  still counting toward down days, left open by the finished item and carried by no live one.
+- **Both found:** D191 against D1005 — for the first time in step 5 both readers' first finding was the same; and D1790's
+  fitting conditions. **D191 against D1005 goes to him:** his words in D1005 ("a student can't be a typed student as I'm
+  removing this feature") and its rule sentence say every student is on the roster, its reading narrowed them to the
+  typed down-days box, and the app still adds a typed name — the newer ruling does not clearly cover the case, so it is
+  a question (D90), filed as `[TRK-TYPED-STUDENT-Q]` and kept until he asks for the backlog's questions (D994); the page
+  states the clash and the app as it is. The cancelled medical input is filed as `[TRK-DOWN-DAYS-CANCELLED]`.
+
+**The two reads compared (D1732).** Astra found the most serious again: a later ruling's own rule against a built rule
+(D191), a pointer that kept another area's headline and lost its exception (Retry), and drag-rule clauses the account had
+claimed restored. The Opus reader read wider again — a design lesson naming the Tracker, an undo reading stale since
+D347, a phone rule, an open point no backlog item carried. Neither alone was enough, for the seventh step running.
+**For 5b:** where a row's rule sentence is wider than its own reading, the page states both and the clash goes to him as
+a question — the account checks every rule sentence against its readings; an account's "restored clause by clause" is a
+claim the reader checks, not proof; a pointer carries its ruling's exceptions and narrowings, not only its headline.
+**Size:** the table was 20,061 bytes; the draft 30,999; after the account 35,234; after the reads 37,758 (about 14,100
+tokens; the tripwire raised from 32,500 to 41,500, its reason beside it). It loads only with the Tracker's own files, so
+it costs a chat little that does not work on the Tracker.
+**Left, not done here:** full rows still saying "to build" of rulings now built (D1900, D1860, D1018, D982, D981, D980,
+D985, D1170) and "Where it lives" cells naming the old file's §Architecture (now the seam file) — history, the page says
+what is built; D1790's words cell describes its option B unlike the pictures round's notes (noted in the account, his
+words cell untouched); `docsize.mjs`'s older comment naming D560 and D564 as archive candidates — the account found
+neither restated in full.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |

@@ -72,7 +72,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
-  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; People & accounts as a page merged 8 Nov 26 on his "merge live" (chat 17, pull request 700), accounted and read blind by both — it loads with files most jobs open, so the re-measure counts it and narrowing its `paths:` is a question for him then; the scheduler's D212 stale clause (a member may tick SCHEDULER, since D1651) goes with the scheduler's page in 5b; the screen-design rulings as a page merged 8 Nov 26 on his "merge live" (chat 24, pull request 708), accounted and read blind by both — it loads with every file of the app's code, so the re-measure counts it; for 5b, the Inputs pages' D1300 "cyan ring" (the mark is the one blue) and the scheduler's D1038 row's "Not built" (it is drawn); next the Tracker, on his word, and a re-measure before 5b.
+  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; People & accounts as a page merged 8 Nov 26 on his "merge live" (chat 17, pull request 700), accounted and read blind by both — it loads with files most jobs open, so the re-measure counts it and narrowing its `paths:` is a question for him then; the scheduler's D212 stale clause (a member may tick SCHEDULER, since D1651) goes with the scheduler's page in 5b; the screen-design rulings as a page merged 8 Nov 26 on his "merge live" (chat 24, pull request 708), accounted and read blind by both — it loads with every file of the app's code, so the re-measure counts it; for 5b, the Inputs pages' D1300 "cyan ring" (the mark is the one blue) and the scheduler's D1038 row's "Not built" (it is drawn); the Tracker as a page built (chat 34, pull request 714 — waiting for his "merge live"), accounted and read blind by both, D191 against D1005 filed for him as [TRK-TYPED-STUDENT-Q]; next the re-measure before 5b.
     Found by its step 3, low, the agent's: [BUGCHECK-LESSON-ORDER] — the bug-check order's list of missed faults has a second 23 outside it and 8 before 7.
     Found by its step 5a (People), medium, the agent's: [DOCSIZE-PATHS-OPEN] — a rules file whose `paths:` list is never closed passes the document check, its page checks skipped.
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
@@ -161,6 +161,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [TRK-MENU-KEYS] — the Tracker's course, syllabus and File menus wear the browser's white keyboard ring, not the app's cyan, and the arrow keys do not move through them, unlike the board's menus (found by chat 20's walk).
 - [TRK-COPIES-TIDY] — the code reads' tidiness notes on [TRK-KEPT-COPIES] (D489), filed not fixed.
 - [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work, on every page; he chose a "Not kept" band under the top bar on every page (D1901) — to build.
+- [TRK-TYPED-STUDENT-Q] — a question for him, kept until he asks for the backlog's questions (D994): does his "a student can't be a typed student as I'm removing this feature" (D1005) take typed students out of + Add, or only the typed down-days box? Today + Add still adds a typed name, linked to nobody (D191).
+- [TRK-DOWN-DAYS-CANCELLED] — a cancelled medical input still counts toward a student's down days; left open for his look when the down days were built (18 Oct 26), carried by no item since.
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -449,6 +451,30 @@ weigh); the Tracker's corner empty while it is up. It touches the storage boot (
 every page's top, and the Tracker's corner — a bug check of its own (saved data: the tier's question 3). **Place:** the
 next Tracker / app job, with D1900's magnifier, one branch. Evidence:
 `raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
+
+### [TRK-TYPED-STUDENT-Q] Can a Tracker student still be a typed name? (filed 8 Nov 26 — the rules diet's step 5a, both blind reads)
+**What:** his words of 18 Oct 26 (D1005), "a student can't be a typed student as I'm removing this feature", and D1005's
+rule, "Every Tracker student is a man on the roster", say a student is always a man on the roster; but the agent's reading
+(2) in the same row narrowed it to the typed "No. of Down Days" box ("no student keeps a typed box"), and the app was built
+that way. **Today:** on + Add, a name typed in the search that matches nobody, or typed in "Or type a callsign", still adds
+a student linked to nobody (D191, built — `src/tracker/app/core.js addStudent`); his down days read "—", since there are no
+inputs to count; with nobody on the roster to offer, + Add is the plain "Student callsign:" box (kept by
+[TRK-STANDALONE-LEFTOVERS]). No later ruling says which he meant, so it goes to him as a question (How we work: where the
+newer ruling does not clearly cover the case — D90, D201). Nothing is built or removed until he answers. **The question:**
+does "I'm removing this feature" take typed students out of + Add, or was it only the typed down-days box? **To do:** ask him
+with a picture of the + Add box, its "Or type a callsign" line marked (D853); then record his answer and, if typed students
+go, file the build. **Place:** kept until he asks for the backlog's questions (D994). The page line:
+`.claude/rules/decisions/tracker.md` §Students and courses.
+
+### [TRK-DOWN-DAYS-CANCELLED] A cancelled medical input still counts toward the down days (filed 8 Nov 26 — the rules diet's step 5a, the fresh Opus read)
+**What:** the finished item [TRK-DOWN-DAYS-AUTO] (`OUTSTANDING-ARCHIVE.md`, built 18 Oct 26, pull request 534) left this
+open: "Open for his look: a CANCELLED medical input still counts (the Medical tab's own reading)". No live item carried it
+after the archive. The night's evidence (`raptor-port/docs/handpass/2026-10-18-night-jobs.md`) called it not a finding then,
+since a cancel mark was set only on ground-programme rows, never a medical one. The Tracker's count reads every medical
+input of the man (`src/tracker/peoplewire.ts medForTracker`), with no test of a cancel. **To do:** check whether a medical
+input can be cancelled today; if it can, put it to him with a picture of the down-days window — should a cancelled one
+count? Not a ruling until he answers. **Place:** low, with the Tracker's next batch. The page line:
+`.claude/rules/decisions/tracker.md` §The Info panel.
 
 ### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
 **8 Nov 26 — the IT side's answers 3, 8, 9 (`[IT-QUESTIONS]`):** database-level rights are the PP CoE's — one user security group gives basic access, and who may do what is the app's own roles, controlled inside the app. So (1)–(3) below are not ours to set; put to him 8 Nov 26 (the day lock is settled: D1751).
