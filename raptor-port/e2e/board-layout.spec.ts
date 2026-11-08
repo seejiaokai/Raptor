@@ -52,7 +52,9 @@ test.describe('D1781 — 821 to 1099 wide: the remarks on a row of their own, th
     const m = await lineParts(page)
     expect(m, 'a flying line on the board').not.toBeNull()
     expect(Math.abs(m!.rbKids[1]!.t - m!.rbKids[0]!.t), 'R and B side by side').toBeLessThan(2)
-    expect(m!.rc!.t, 'the remarks on the times\' row').toBeLessThan(m!.tl!.b)
+    /* one line: the times' own boxes stand in the line's grid (their wrapper draws no box of its own here), so the
+       remarks are measured against R's box */
+    expect(m!.rc!.t, 'the remarks on the times\' row').toBeLessThan(m!.rbKids[0]!.b)
   })
 })
 
