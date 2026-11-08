@@ -2163,6 +2163,19 @@ test('back on the grid from Balances while scrolled down, the pinned dates row s
   const f = await lwFramesRead(page, 30)
   expect(f.some(x => x.under), 'the grid came back scrolled down, at ' + await page.evaluate(() => window.scrollY)).toBe(true)
   expect(f.map((x, i) => (x.under && !x.shown ? `frame ${i}` : '')).filter(Boolean), 'no frame with the row under the bar and no copy').toEqual([])
+  /* and the hold never over-shows: no frame with the copy up while the real row is in view (the fresh read of the fix, gap a) */
+  expect(f.map((x, i) => (x.shown && !x.under ? `frame ${i}` : '')).filter(Boolean), 'no frame with the copy shown and the row not under the bar').toEqual([])
+})
+/* the same tab return made at the page's top: the real row is in view, so the copy must stay hidden in every frame */
+test('back on the grid from Balances at the top, the pinned dates row never shows (D1870)', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expectPinned(page, 'sticky-head', false)
+  await page.evaluate(() => (document.querySelector('[data-testid="lw-tab-balances"]') as HTMLElement).click())
+  await expect(page.locator('#page-leavewar .lw-gridhost')).toBeHidden()
+  await page.waitForTimeout(300)
+  await lwFrames(page, 30, 'grid')
+  const f = await lwFramesRead(page, 30)
+  expect(f.map((x, i) => (x.shown ? `frame ${i}` : '')).filter(Boolean), 'no frame with the copy shown').toEqual([])
 })
 /* the same, the whole page left for another and come back to: it returns where it was on the grid (the re-walk of 8 Nov 26) */
 test('back on the Leave War from another page while scrolled down, the pinned dates row shows from the first frame (D1870)', async ({ page }) => {
@@ -2175,6 +2188,7 @@ test('back on the Leave War from another page while scrolled down, the pinned da
   const f = await lwFramesRead(page, 40)
   expect(f.some(x => x.under), 'the page came back scrolled down, at ' + await page.evaluate(() => window.scrollY)).toBe(true)
   expect(f.map((x, i) => (x.under && !x.shown ? `frame ${i}` : '')).filter(Boolean), 'no frame with the row under the bar and no copy').toEqual([])
+  expect(f.map((x, i) => (x.shown && !x.under ? `frame ${i}` : '')).filter(Boolean), 'no frame with the copy shown and the row not under the bar').toEqual([])
 })
 /* its question 1: a zoom changes the page's height with no scroll — is the turn-on point worked out again? One forced
    re-measure with nothing moved first (a line at the page's foot), so the hundredth-off writes fall the unlucky way. */

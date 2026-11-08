@@ -288,8 +288,19 @@ None: 0 console errors, page errors or 4xx responses in either walk or the re-wa
     comments at the Leave War's `[stuck]` layout effect and at two places in Quals' pin code; no D1870 entry in
     `performance.md`; cheaper measures not taken — the frozen corner drawing only its columns, `@property --lwy-s` not
     inherited, no `translateZ(0)`.
-- **Reads owed:** the F2 fix (110267a33) changed the app after both reads; a short fresh read of that diff is owed, or the
-  job goes on the reads-owed list — put to him.
+- **The fresh blind Opus read of the F2 fix (110267a33), 8 Nov 26 ~20:40 — no proven fault.** Each point checked in the
+  browser before it counted: (Q1, inferred) a request's dates tapped on Approvals call `ringCell`, whose `look` scrolls
+  inside a frame callback, so frame 0 might paint the held copy over a real row brought into view — **not reproduced**:
+  a probe on the served fixed build, the frame reader registered after the tap so it reads after `look`'s scroll, 30
+  tries (desktop 1536 and phone 402 × five places just past the turn-on point × the first three requests), every frame
+  the copy shown exactly while the row was under the bar; (gap a) the return tests asserted only "under and not shown" —
+  **closed**: both now also assert no frame "shown and not under", and a new test returns at the page's top and asserts
+  no frame shown (6 of 6 pass, both sizes); (gap b) no WebKit test — stands, as before: his iPhone is the WebKit check.
+  Tidiness, filed not fixed (D489): "measure, then hold" in two places (the observer and the `[stuck]` effect); the
+  observer finds `.lw-gridhost` and `.page` by class names other files own; the "Hidden, the copy has no step" comment
+  does not cover the dozing page.
+- **Reads owed:** Astra did not read the F2 fix (110267a33) — the job goes on the reads-owed list for that diff; the
+  fresh Opus read above stands beside it. Put to him.
 
 ### The re-walk after the reads (8 Nov 26, `scripts/handpass/lwpin-rewalk-lift.mjs`, a build of 39d1f4ca0)
 
