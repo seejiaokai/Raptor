@@ -18,7 +18,7 @@ import { isMember } from '../state/perms'
 import { oilModeOn, oilSeatHTML, oilItemCellHTML, oilItemOfKey, oilRowPeople, oilClaimWin, inputItemKey, oilInertWrap, inputEarnsNoOilWhy } from './oilmode'
 import { rowItemKey, groundItemKey } from '../engine/oil'
 import { rowKindTag, inpKindTagHTML, inpCxHTML, inpCxCls, oilSeatDeco, reqRmkParts, onCommon, commonOrder } from './html'
-import { ORD, puck, puckMarks, rowCls, accCtl, GP_TAKEOFF_NOTE, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn, exemptLineOwn } from './html'
+import { ORD, puck, puckMarks, rowCls, accCtl, GP_TAKEOFF_NOTE, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn, exemptLineOwn, unavPendAtt } from './html'
 
 /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 29 Aug
    4-digit pass: "most of the timing format is 08:00 … make sure everything
@@ -732,10 +732,17 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
      the board is open lands on the board's own Unavailable row ([DRAFT-PENDING], Fable P5 — it said "shown on the week,
      not on the board" about a row the board draws). Signed-in readers only, never the drag attribute. */
   const inprow=isMember()?` data-inprow="${esc(iuTail(inp))}"`:'';   // the Personal Inputs rows too (Fable F5)
+  /* THE WAITING MARK ON AN UNAVAILABLE ROW (owner D1784 — the week's twin, html.ts unavPendAtt): its name box outlined
+     dotted in the colour of the amendment it will go out as, read-only board or not, as a Ground Programme box carries
+     its mark either way (sbTxt). Unavailable only, never Personal Inputs (`acc`). In OIL Earn none, for either kind —
+     an OIL claim's switch or a plain name — because there the Ground name wears none either: it is the item's switch
+     (sbName → oilModeOn), not the marked box (Astra's scenario design, 8 Nov 26: mirror the Ground name, measured
+     first — ui/unavmark.test.tsx). */
+  const pend=!acc&&!oilModeOn(di)?unavPendAtt(di,inp):'';
   if(RO&&!oilItem){
     const t=inp.allday?'all day':`${hhmm(inp.s)} – ${hhmm(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}${inprow}><span class="sbi-t">${t}</span>${pk}`
-      +sbiName(inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}${inpCxCls(inp)}`),inp)
+      +sbiName(inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}${inpCxCls(inp)}`,pend),inp)
       +sbiRmk(inp,dt)+`</div>`;
   }
   /* (one man's row of an input that holds several names its man — engine/inputs.ts iuTail — so a box typed on it
@@ -771,7 +778,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
   const lc=modeRO?lateTag(inp):lateChip(inp);
   const itemCell=oilItem
     ? oilItemCellHTML(di,oilItem,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}${inpCxCls(inp)}`)
-    : inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}${inpCxCls(inp)}`);
+    : inpEditLabel(inp,true,inpLabel(inp),`sbi-ty inpty ${inTypeCls(inp.type)}${inpCxCls(inp)}`,pend);
   /* a cancelled input's red CX tag (D767 reading 3) rides the item cell too, ahead of the name — never a grid child of
      its own, for the reason the LATE chip is not (below) */
   const cxh=inpCxHTML(inp);

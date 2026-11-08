@@ -35,7 +35,7 @@ import { elogFlush, elogLoad, setElogDefer, setElogDoor, elogAdoptHeld } from '.
 import { changesLoad } from './changes'
 import { noticeSeenLoad } from './noticeseen'
 import { registerChangeLines } from './changelines'
-import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf, LOCKED_WEEK_NOTE } from '../engine/publish'
+import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf, lockedWeekNote } from '../engine/publish'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
 import { baseReset, baseSnapshot, rederive } from './holderbase'
@@ -206,8 +206,9 @@ function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
        could restore on its own (the C11 gap where the input batch rolled back but
        the stash drop, done outside it, stuck). The toast fires now (HOOKS.toast is
        not latched, so it survives the rollback); the wrapper repaints the reverted
-       model. NO history step, nothing persisted — the write never happened. */
-    HOOKS.toast(LOCKED_WEEK_NOTE, 'warn')
+       model. NO history step, nothing persisted — the write never happened. Said in the grey "Blocked:" note, in the
+       words of why the week is read-only (D1785, D1667–D1669 — engine/publish.ts lockedWeekNote). */
+    HOOKS.toast(lockedWeekNote(), 'blocked')
     throw new CmdRefused('protected-week write refused')
   }
   HOOKS.renderInputs(); HOOKS.reflow(); HOOKS.histPush()

@@ -1,0 +1,134 @@
+{
+ "r1.publish": {
+  "published": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "r1.file": {
+  "iid": "imriimlrotdxz3j",
+  "type": "LL"
+ },
+ "r1.week": {
+  "pend": "1 pending",
+  "mark": [
+   {
+    "name": "LL",
+    "tag": "BUTTON",
+    "aln": "1",
+    "alp": "1",
+    "deco": "underline dotted rgb(59, 198, 232)",
+    "title": "Edit this input — times, type, remarks or delete"
+   }
+  ]
+ },
+ "r1.board": [
+  {
+   "name": "LL",
+   "tag": "BUTTON",
+   "aln": "1",
+   "outline": "dotted 1px rgb(59, 198, 232)",
+   "bg": "rgba(178, 77, 234, 0.12)",
+   "color": "rgb(221, 168, 245)"
+  }
+ ],
+ "r3.look": {
+  "rows": [
+   "Originalread-only — look, don't change"
+  ],
+  "selText": "Original▾",
+  "selEye": [
+   [
+    11,
+    11
+   ]
+  ],
+  "banner": "SignedORIGCUR CKAceSKED CKBasherPLANNEDBoltAPPROVEDCinch Original▾ORIGOverall notes ⠿1.ORD",
+  "bannerEye": [
+   [
+    11,
+    11
+   ],
+   [
+    12,
+    12
+   ]
+  ],
+  "typedEye": false,
+  "unavAlnInLook": 0
+ },
+ "r4.week": {
+  "err": "no warning to hide on Thu"
+ },
+ "r4.board": [
+  {
+   "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+   "svg": false,
+   "text": "✕"
+  },
+  {
+   "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+   "svg": false,
+   "text": "✕"
+  },
+  {
+   "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+   "svg": false,
+   "text": "✕"
+  },
+  {
+   "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+   "svg": false,
+   "text": "✕"
+  },
+  {
+   "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+   "svg": false,
+   "text": "✕"
+  },
+  {
+   "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+   "svg": false,
+   "text": "✕"
+  }
+ ],
+ "r1.errs": [],
+ "r1.phone.week": {
+  "pend": "1 pending",
+  "mark": [
+   {
+    "name": "LL",
+    "tag": "BUTTON",
+    "aln": "1",
+    "alp": "1",
+    "deco": "underline dotted rgb(59, 198, 232)",
+    "title": "Edit this input — times, type, remarks or delete"
+   }
+  ]
+ },
+ "r1.phone.board": [
+  {
+   "name": "LL",
+   "tag": "BUTTON",
+   "aln": "1",
+   "outline": "dotted 1px rgb(59, 198, 232)",
+   "bg": "rgba(178, 77, 234, 0.12)",
+   "color": "rgb(221, 168, 245)"
+  }
+ ],
+ "r1.phone.errs": [],
+ "r2.notices": {
+  "days": 14,
+  "notices": 7,
+  "text": "This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page."
+ },
+ "r2.refusal": {
+  "toast": {
+   "text": "Blocked: this week’s saved copy could not be read, so it can’t be edited. Nothing was saved. Report it with “Report a problem” on the Help page.",
+   "face": "blocked",
+   "shown": true
+  },
+  "winOpen": 1
+ },
+ "r2.errs": []
+}

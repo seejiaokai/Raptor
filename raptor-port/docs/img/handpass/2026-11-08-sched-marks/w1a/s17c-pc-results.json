@@ -1,0 +1,78 @@
+{
+ "publish": {
+  "published": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "clean": {
+  "pending": "5 changes",
+  "week": [
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": null
+ },
+ "files": [
+  {
+   "iid": "imriimpmoxk2tra",
+   "type": "Personal",
+   "who": [
+    {
+     "p": "split",
+     "by": "stiff",
+     "at": 1783904417088
+    }
+   ]
+  },
+  {
+   "iid": "imriimscsez0j6p",
+   "type": "Training",
+   "who": [
+    {
+     "p": "prowler",
+     "by": "stiff",
+     "at": 1783904420620
+    }
+   ]
+  }
+ ],
+ "unfold": {
+  "open": 170,
+  "text": "⠿\nPERSONAL INPUTS\n⌃\nA rejected input flag  nothing until accepted again. Delete it here if it  hould go entirely.\nNAME\nSTART\nEND\nPEOPLE\nRMKS\nTraining\n06:00\n18:00\nHunter\nIP\nLATE\nREJECT\nPer onal\n06:00\n18:00\nVandal\nIP\nLATE\nREJECT",
+  "marked": []
+ },
+ "sans": {
+  "cards": 3,
+  "text": "⠿\nSANS AVAIL\nScribe\nD\nO\nAM\nZenith\nC\nF\nall day\nCP\nKraken\nD\nF\nall day",
+  "dottedOrAln": 0
+ },
+ "errs": []
+}

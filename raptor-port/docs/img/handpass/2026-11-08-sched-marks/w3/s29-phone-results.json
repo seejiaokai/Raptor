@@ -1,0 +1,250 @@
+{
+ "1.week-after-file": {
+  "wk": [
+   {
+    "name": "LL",
+    "tag": "BUTTON",
+    "aln": "1",
+    "alp": "1",
+    "deco": "underline dotted rgb(59, 198, 232)",
+    "title": "Edit this input — times, type, remarks or delete"
+   }
+  ],
+  "pend": "1 pending"
+ },
+ "1b.bell": {
+  "badge": null
+ },
+ "2.open-from-week": {
+  "open": true,
+  "cls": null,
+  "btns": []
+ },
+ "3.close-by-Close button": {
+  "before": true,
+  "note": null,
+  "after": false,
+  "inputs": 53,
+  "pageBehind": "editsched"
+ },
+ "3.close-by-x": {
+  "before": true,
+  "note": null,
+  "after": false,
+  "inputs": 53,
+  "pageBehind": "editsched"
+ },
+ "3.close-by-Escape": {
+  "before": true,
+  "note": null,
+  "after": false,
+  "inputs": 53,
+  "pageBehind": "editsched"
+ },
+ "3.close-by-outside": {
+  "before": true,
+  "note": null,
+  "after": false,
+  "inputs": 53,
+  "pageBehind": "editsched"
+ },
+ "4.dirty-close": {
+  "open": false,
+  "question": []
+ },
+ "5.edit-save": {
+  "win": false,
+  "remarks": [
+   "Dentist 14:00",
+   "Medical leave 13 Jul",
+   "Medical / PHA",
+   "Dental appt",
+   "Overseas leave — off island",
+   "Local leave",
+   "OIL — CO approved, post-detachment",
+   "Medically down till 17 Jul",
+   "Keen for any wave",
+   "Desk / staff work",
+   "Overseas duty — exercise, off island",
+   "HSP blood panel",
+   "Medical leave — grounded",
+   "Medical / PHA",
+   "Local leave",
+   "Medically down till 9 Jul",
+   "Grounded — may still work, till 19 Jun",
+   "Medically up 20 Jun",
+   "Flight safety brief",
+   "Hangar clean-up",
+   "PT kit",
+   "ATT C — filed on Inputs",
+   "OML — filed on Inputs",
+   "Medically up 7 Jan",
+   "SDO — weekend duty crew"
+  ],
+  "wk": [
+   {
+    "name": "LL",
+    "tag": "BUTTON",
+    "aln": "1",
+    "alp": "1",
+    "deco": "underline dotted rgb(59, 198, 232)",
+    "title": "Edit this input — times, type, remarks or delete"
+   }
+  ],
+  "pend": "1 pending"
+ },
+ "6.board-mark": [
+  {
+   "name": "LL",
+   "tag": "BUTTON",
+   "aln": "1",
+   "outline": "dotted 1px rgb(59, 198, 232)",
+   "bg": "rgba(178, 77, 234, 0.12)",
+   "color": "rgb(221, 168, 245)"
+  }
+ ],
+ "7.open-from-board": {
+  "open": true,
+  "cls": null,
+  "btns": []
+ },
+ "7b.escape-on-board": {
+  "win": false,
+  "board": 1
+ },
+ "7c.board-still-open": {
+  "win": false,
+  "boardVisible": true
+ },
+ "8.undo": {
+  "remarks": [
+   "",
+   "Medical leave 13 Jul",
+   "Medical / PHA",
+   "Dental appt",
+   "Overseas leave — off island",
+   "Local leave",
+   "OIL — CO approved, post-detachment",
+   "Medically down till 17 Jul",
+   "Keen for any wave",
+   "Desk / staff work",
+   "Overseas duty — exercise, off island",
+   "HSP blood panel",
+   "Medical leave — grounded",
+   "Medical / PHA",
+   "Local leave",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "Medically down till 9 Jul",
+   "Grounded — may still work, till 19 Jun",
+   "Medically up 20 Jun",
+   "Flight safety brief",
+   "Hangar clean-up",
+   "PT kit",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "ATT C — filed on Inputs",
+   "OML — filed on Inputs",
+   "Medically up 7 Jan",
+   "SDO — weekend duty crew"
+  ],
+  "mark": [
+   {
+    "name": "LL",
+    "tag": "BUTTON",
+    "aln": "1",
+    "outline": "dotted 1px rgb(59, 198, 232)",
+    "bg": "rgba(178, 77, 234, 0.12)",
+    "color": "rgb(221, 168, 245)"
+   }
+  ],
+  "toast": {
+   "text": "Undid: Bolt’s LL",
+   "face": null,
+   "shown": true
+  }
+ },
+ "8b.undo-the-filing": {
+  "inputs": 52,
+  "mark": {
+   "err": "no board Unavailable row for Bolt"
+  },
+  "toast": {
+   "text": "Undid: Bolt’s LL",
+   "face": null,
+   "shown": true
+  }
+ },
+ "9.redo": {
+  "inputs": 53,
+  "mark": [
+   {
+    "name": "LL",
+    "tag": "BUTTON",
+    "aln": "1",
+    "outline": "dotted 1px rgb(59, 198, 232)",
+    "bg": "rgba(178, 77, 234, 0.12)",
+    "color": "rgb(221, 168, 245)"
+   }
+  ],
+  "toast": {
+   "text": "Redid: Bolt’s LL",
+   "face": null,
+   "shown": true
+  }
+ },
+ "10.week-after-redo": {
+  "wk": [
+   {
+    "name": "LL",
+    "tag": "BUTTON",
+    "aln": "1",
+    "alp": "1",
+    "deco": "underline dotted rgb(59, 198, 232)",
+    "title": "Edit this input — times, type, remarks or delete"
+   }
+  ],
+  "pend": "1 pending"
+ },
+ "11.viewonly": [],
+ "12.after-AL1": {
+  "wk": [
+   {
+    "name": "LL",
+    "tag": "BUTTON",
+    "aln": null,
+    "alp": null,
+    "deco": "none solid rgb(182, 192, 203)",
+    "title": "Edit this input — times, type, remarks or delete"
+   }
+  ],
+  "pend": "15 changes"
+ },
+ "13.changes-clock": {
+  "found": 0
+ }
+}

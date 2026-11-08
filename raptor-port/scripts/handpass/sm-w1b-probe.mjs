@@ -1,0 +1,10 @@
+import * as L from './sm-lib.mjs'
+console.log('sm-w1b-probe v6')
+const OUT = L.outDir('w1b')
+const W = await L.launch('pc', { origin: 'http://localhost:4392' })
+await L.signIn(W)
+await L.fileInput(W, { who: 'Bolt', type: 'LL', iso: '2026-07-15' })
+await L.openInputsList(W)
+console.log(await W.page.evaluate(() => [...document.querySelectorAll('[data-testid]')].filter(e => e.getBoundingClientRect().width && /^in-/.test(e.dataset.testid)).slice(0, 40).map(e => e.dataset.testid + '|' + e.tagName + '|' + e.textContent.trim().replace(/\s+/g, ' ').slice(0, 40))))
+await L.pic(W, OUT, 'probe-inputs', {})
+await L.closeAll(W)

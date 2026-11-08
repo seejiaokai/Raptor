@@ -19,6 +19,7 @@ import { validate, workingWarn } from '../engine/validate'
 import { DWOPEN, WARNOFF, warnMuteKey, toggleWarnOff, selDrop } from '../state/view'
 import { setSession } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
+import { glyphSvg, RESET_INNER } from './glyphs'
 // This warning-hide fixture deliberately contains the four unrelated Tuesday checks.
 
 const DSNAP = JSON.stringify(DAYS)
@@ -28,6 +29,10 @@ const warns = (di: number) => (workingWarn().byDay[di] || {}).warns || []
 const ixOf = (di: number, code: string) => warns(di).findIndex((w: any) => w.code === code)
 const hideAt = (di: number, ix: number) => toggleWarnOff(warnMuteKey(warns(di)[ix]))   // the ✕ / ↺'s own write
 const hideAll = (di: number) => warns(di).forEach((_: any, i: number) => hideAt(di, i))
+/* D1792 (d), 8 Nov 26 — "All as recommended": a hidden line's flag-again is the app's drawn Reset arrow (the Leave War's
+   Reset order, the Tracker's Reset layout), no longer the typed ↺; the ✕ that hides a line stays typed. */
+const ARROW = glyphSvg(RESET_INNER, 'wmuteico')
+const arrows = (h: string) => h.split(ARROW).length - 1
 const rowsOf = (h: string, cls: string) => [...h.matchAll(new RegExp(`<div class="${cls} ([^"]*)" data-wdi="\\d+" data-wix="(\\d+)"`, 'g'))].map(m => ({ cls: m[1]!, ix: +m[2]! }))
 
 beforeEach(() => {
@@ -47,12 +52,13 @@ describe("Edit Schedule's list", () => {
     expect((h.match(/data-woff=/g) || []).length).toBe(4)
     expect(h).toContain('>✕</button>')
     expect(h).not.toContain('↺')
+    expect(arrows(h), 'no flag-again arrow while nothing is hidden').toBe(0)
     expect(h).not.toMatch(/ hid"/)
     expect(h).not.toContain('data-wmtog')
     expect(h).not.toMatch(/\d+ hidden/)
   })
 
-  it('WH4, WH5 (D469 / D472): the hidden line stays in its place, struck out, with ↺ — and the count drops to 3 and says nothing of it', () => {
+  it('WH4, WH5 (D469 / D472): the hidden line stays in its place, struck out, with the Reset arrow — and the count drops to 3 and says nothing of it', () => {
     HOOKS.editMode = () => true
     const ix = ixOf(TUE, 'LONGDAY')
     expect(ix, "Static's long work day is the last of Tuesday's four").toBe(3)
@@ -66,7 +72,8 @@ describe("Edit Schedule's list", () => {
     expect(rows.map(r => r.ix), 'four lines, in the same order').toEqual([0, 1, 2, 3])
     expect(rows[3]!.cls, 'the hidden one is struck').toMatch(/\bhid\b/)
     expect(rows.slice(0, 3).some(r => /\bhid\b/.test(r.cls))).toBe(false)
-    expect(h, 'its button is the flag-again').toMatch(/data-woff="1\.3" title="Flag this again">↺</)
+    expect(h, 'its button is the flag-again, the drawn arrow, its hover words unchanged').toContain(`data-woff="1.3" title="Flag this again">${ARROW}</button>`)
+    expect(h, 'no typed arrow is left').not.toContain('↺')
     expect(h, 'the others keep their ✕').toMatch(/data-woff="1\.0"[^>]*>✕</)
     expect(h).toContain('has a long work day')
   })
@@ -83,7 +90,7 @@ describe("Edit Schedule's list", () => {
     expect(rows.filter(r => /\bhid\b/.test(r.cls)).map(r => r.ix), 'the two hard lines stay at the top, struck').toEqual([0, 1])
   })
 
-  it('↺ flags it again: the count and the line are back as they were', () => {
+  it('the Reset arrow flags it again: the count and the line are back as they were', () => {
     HOOKS.editMode = () => true
     const before = dayWarnHTML(TUE)
     hideAt(TUE, 3); hideAt(TUE, 3)
@@ -100,19 +107,21 @@ describe("Edit Schedule's list", () => {
     const rows = rowsOf(h, 'witem')
     expect(rows.length, 'all four lines are still there').toBe(4)
     expect(rows.every(r => /\bhid\b/.test(r.cls)), 'every one struck').toBe(true)
-    expect((h.match(/↺/g) || []).length, 'each with its flag-again').toBe(4)
+    expect(arrows(h), 'each with its flag-again arrow').toBe(4)
+    expect(h).not.toContain('↺')
     expect(h).not.toMatch(/\d+ hidden/)
   })
 })
 
 describe('WH7 — View-only Sched (D475): the same struck line, no button', () => {
-  it('draws no ✕ and no ↺, counts 3, and strikes the hidden line', () => {
+  it('draws no ✕ and no Reset arrow, counts 3, and strikes the hidden line', () => {
     HOOKS.editMode = () => true
     hideAt(TUE, 3)
     HOOKS.editMode = () => false
     const h = dayWarnHTML(TUE)
     expect(h).not.toContain('witem-mute')
     expect(h).not.toContain('data-woff')
+    expect(arrows(h), 'no flag-again for a reader').toBe(0)
     expect(h).toContain('⚠ 3 issues')
     const rows = rowsOf(h, 'witem')
     expect(rows.length).toBe(4)
@@ -121,7 +130,7 @@ describe('WH7 — View-only Sched (D475): the same struck line, no button', () =
 })
 
 describe("the board's panel — one set of hides, both surfaces (29 Aug 26)", () => {
-  it('a hide made on the week shows on the board: 3 issues, the line struck in place with ↺', () => {
+  it('a hide made on the week shows on the board: 3 issues, the line struck in place with the Reset arrow', () => {
     HOOKS.editMode = () => true
     expect(boardWarnHTML(TUE)).toContain('⚠ 4 issues')
     hideAt(TUE, 3)
@@ -133,7 +142,9 @@ describe("the board's panel — one set of hides, both surfaces (29 Aug 26)", ()
     const rows = rowsOf(b, 'wln')
     expect(rows.map(r => r.ix)).toEqual([0, 1, 2, 3])
     expect(rows[3]!.cls).toMatch(/\bhid\b/)
-    expect(b).toMatch(/data-woff="1\.3" title="Flag this again">↺</)
+    expect(b, 'the board draws the same arrow').toContain(`data-woff="1.3" title="Flag this again">${ARROW}</button>`)
+    expect(b).not.toContain('↺')
+    expect(b, 'the other lines keep their typed ✕').toMatch(/data-woff="1\.0"[^>]*>✕</)
   })
 
   it('a look at a version draws no button, struck or not (D187)', () => {

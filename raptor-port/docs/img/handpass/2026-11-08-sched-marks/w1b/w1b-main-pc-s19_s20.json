@@ -1,0 +1,138 @@
+[
+ {
+  "id": "S19.0 LL published as AL1 {\"published\":true,\"label\":\"Publish AL1\",\"version\":\"AL1\",\"signSelects\":4}",
+  "size": "pc",
+  "exp": "row, plain, no pending",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s19-0-clean.png"
+ },
+ {
+  "id": "S19.1 fields the LL window offers",
+  "size": "pc",
+  "exp": "RECORD",
+  "got": "undoBtn:submit redoBtn:submit histBtn:submit fastSync:submit notifyBell:submit insightBtn:submit logout:submit roleBadge:button :submit Jul 06:submit Jul 13:submit Jul 20:submit Jul 27:submit exportSched:submit exportPdf:submit CAT:button Type:button Quals:button searchE:text Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Make public:submit Make public:submit Make public:submit CPTallyOFPM:submit OML:submit ATT C:submit Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Make public:submit Make public:submit Make public:submit ZuluOF/O/Aal:submit RebelBFall d:submit LL:submit OIL:submit ATT C:submit Templates:submit Live working:submit 11 changes:submit i:submit Unpublish:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Make public:submit Make public:submit Make public:submit ScribeDOAM:submit ZenithCFall :submit CPKrakenDFal:submit LL:submit OL:submit ATT C:submit OD:submit Reject:submit OIL:submit Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Make public:submit Make public:submit Make public:submit ZenithCFall :submit ATT C:submit OD:submit Reject:submit OIL:submit Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Make public:submit Make public:submit Make public:submit ATT C:submit OD:submit Reject:submit Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Make public:submit Make public:submit Make public:submit Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Make public:submit Make public:submit Make public:submit ‹:submit ›:submit CREW:button Grid:button Approvals13:button Balances:button OIL:button JAN - DEC 26:select-one My leaveLVE :button :button ▾ Manning:button Bidding clos:submit Legend:submit JAN:submit FEB:submit MAR:submit APR:submit MAY:submit JUN:submit JUL:submit AUG:submit SEP:submit OCT:submit NOV:submit DEC:submit Crew sets:submit IP:submit IWSO:submit OPSP:submit OPSW:submit SXO:submit Required PRe:button Required WRe:button Available PA:button Available WA:button ReaperIR:submit AnvilIP:submit CinchIP:submit PistonIP:submit RangerIP:submit SaberIP:submit SidewinderIP:submit WardenIP:submit DrifterA:submit RidgeC:submit BasherIW:submit EchoIW:submit BladeIP:submit CobraIP:submit CometIP:submit ForgeIP:submit HavocIP:submit HunterIP:submit TridentIP:submit VandalIP:submit AceA:submit SaintB:submit GambitC:submit NomadC:submit OutlawC:submit TorchC:submit DieselD:submit VaporD:submit LedgerIW:submit QuillIW:submit RelayIW:submit ScopeIW:submit StaticIW:submit CinderB:submit RuneB:submit CutterC:submit DashC:submit FableC:submit GhostC:submit GritC:submit HexC:submit RyderC:submit VectorC:submit WispC:submit ReconO:submit TalismanO:submit WildcardO:submit CotterG:submit RatchetG:submit WidgetG:submit weekPrev:submit weekNext:submit hsL:submit hsR:submit inpEditClose:submit inpEditPerson:select-one inpEditType:select-one All day:button AM:button PM:button Custom:button Document:button inpEditRmk:text inpEditTill:checkbox inpEditDel:submit inpEditCancel:submit inpEditSave:submit",
+  "verdict": "RECORDED",
+  "pic": "pc-s19-1-window.png"
+ },
+ {
+  "id": "S19.2 remarks changed to Dentist (window left open=1)",
+  "size": "pc",
+  "exp": "marked, 1 pending",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s19-2-changed.png"
+ },
+ {
+  "id": "S19.3 remarks restored (empty)",
+  "size": "pc",
+  "exp": "pending and mark leave together",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s19-3-restored.png"
+ },
+ {
+  "id": "S19.4 remarks \"  Dentist  \" (spaces)",
+  "size": "pc",
+  "exp": "RECORD (changed)",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "RECORDED",
+  "pic": "pc-s19-4-spaces.png"
+ },
+ {
+  "id": "S19.5 restored again",
+  "size": "pc",
+  "exp": "clean",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s19-5-restored2.png"
+ },
+ {
+  "id": "S19.6 board after remarks change",
+  "size": "pc",
+  "exp": "Bolt box dotted outline",
+  "got": "[{\"name\":\"LL\",\"tag\":\"BUTTON\",\"aln\":\"2\",\"outline\":\"dotted 1px rgb(229, 194, 74)\",\"bg\":\"rgba(178, 77, 234, 0.12)\",\"color\":\"rgb(221, 168, 245)\"}]",
+  "verdict": "PASS",
+  "pic": "pc-s19-6-board.png"
+ },
+ {
+  "id": "S19.7a clean again before the inline time test",
+  "size": "pc",
+  "exp": "clean",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": ""
+ },
+ {
+  "id": "S19.7b start time typed inline 0800",
+  "size": "pc",
+  "exp": "RECORD: marked + 1 pending if the time counts as a change",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];OL[plain];ATT C[plain];OD[plain];OIL[plain] startText=08:00",
+  "verdict": "RECORDED",
+  "pic": "pc-s19-7b-inline-time.png"
+ },
+ {
+  "id": "S19.7c start time cleared inline (back to the issued all-day)",
+  "size": "pc",
+  "exp": "pending and mark leave together",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain] startText=",
+  "verdict": "PASS",
+  "pic": "pc-s19-7c-inline-cleared.png"
+ },
+ {
+  "id": "S19.8a Duration AM set in the window",
+  "size": "pc",
+  "exp": "marked + pending",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s19-8a-am.png"
+ },
+ {
+  "id": "S19.8b Duration back to ALL DAY",
+  "size": "pc",
+  "exp": "pending and mark leave together",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s19-8b-allday.png"
+ },
+ {
+  "id": "S19.9a till-date tick switched off",
+  "size": "pc",
+  "exp": "RECORD",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "RECORDED",
+  "pic": "pc-s19-9a-till-off.png"
+ },
+ {
+  "id": "S19.9b till-date tick switched back on",
+  "size": "pc",
+  "exp": "pending and mark leave together",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s19-9b-till-on.png"
+ },
+ {
+  "id": "S19 errors",
+  "size": "pc",
+  "exp": "none",
+  "got": "none",
+  "verdict": "RECORDED",
+  "pic": ""
+ },
+ {
+  "id": "S20.0 start: LL on Wed only; Wed+Thu published, Fri draft",
+  "size": "pc",
+  "exp": "Wed row plain",
+  "got": "D2 pend=null ver=ORIG rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain] // D3 pend=null ver=ORIG rows=ATT C[plain];OD[plain];OIL[plain] // D4 pend=null ver=DRAFT rows=ATT C[plain];OD[plain]",
+  "verdict": "RECORDED",
+  "pic": "pc-s20-0-start.png"
+ },
+ {
+  "id": "s20.CRASH",
+  "size": "pc",
+  "exp": "",
+  "got": "input not found in the list @ at openFromList (file:///C:/Users/User/projects/Raptor/.claude/worktrees/pr-day-start-7b064c/raptor-port/scripts/handpass/sm-w1b-main.mjs:47:9)",
+  "verdict": "NOT DRIVEN",
+  "pic": ""
+ }
+]

@@ -14,6 +14,10 @@ import { projectPeople } from './state/raptorRoster'
 const seed = JSON.stringify(INPUTS)
 const toast = HOOKS.toast
 let said: string[]
+let kinds: any[]
+/* the stashed week below is the JSON text 'null' — a saved copy that will not read as a week — so the refusal says so,
+   in the grey note (D1785, 8 Nov 26; it said "an older version of the app" until then) */
+const UNREADABLE_WORDS = 'Blocked: this week’s saved copy could not be read, so it can’t be edited. Nothing was saved. Report it with “Report a problem” on the Help page.'
 beforeEach(() => {
   stashClear()
   INPUTS.splice(0, INPUTS.length, ...JSON.parse(seed))
@@ -23,7 +27,8 @@ beforeEach(() => {
   setPeople(projectPeople())
   setRole('admin')
   said = []
-  HOOKS.toast = (m: any) => { said.push(String(m)) }
+  kinds = []
+  HOOKS.toast = (m: any, k?: any) => { said.push(String(m)); kinds.push(k) }
 })
 afterEach(() => { cleanup(); setInpEdit(null); stashClear(); HOOKS.toast = toast; setSession(null) })
 const plant = (type: string, date: string, endDate?: string) => {
@@ -59,7 +64,9 @@ describe('Pile 1 whole-form medical preflight', () => {
     expect(JSON.stringify(getState().wars)).toBe(war)
     expect(HIST.stack).toHaveLength(history)
     expect(INPEDIT).toBeTruthy()
-    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
+    expect(said.join(' ')).toContain(UNREADABLE_WORDS)
+    expect(said.join(' ')).not.toContain('older version')
+    expect(kinds).toContain('blocked')
   })
 
   it.each([true, false])('refuses ticked protected removals before adding or editing an upchit (new=%s)', isNew => {
@@ -82,6 +89,8 @@ describe('Pile 1 whole-form medical preflight', () => {
     expect(JSON.stringify(getState().wars)).toBe(war)
     expect(HIST.stack).toHaveLength(history)
     expect(INPEDIT).toBeTruthy()
-    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
+    expect(said.join(' ')).toContain(UNREADABLE_WORDS)
+    expect(said.join(' ')).not.toContain('older version')
+    expect(kinds).toContain('blocked')
   })
 })

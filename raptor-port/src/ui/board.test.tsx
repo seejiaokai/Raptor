@@ -2255,10 +2255,17 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
     /* UPDATED 24 Sep 26 ([HUMAN-RETEST] amendment re-test, walk W2-F1; register AM28): this
        used to pin the WHOLE strip empty under a preview — older than the 15 Sep redesign that
        moved the plans selector and the version tag into it. The locked design keeps the
-       selector (its amber "👁" label says what you are looking at) and the tag on both
+       selector (its amber eye label says what you are looking at) and the tag on both
        surfaces; what a preview must never offer is unchanged and still pinned below. */
     expect($$('#sbSign select[data-sign]').length, 'no sign-off pills on a past version').toBe(0)
-    expect($('#sbSign .planselbtn')?.textContent || '', 'the selector says what you are looking at').toMatch(/👁/)
+    /* D1792 (a), 8 Nov 26: the selector and the board's banner draw the app's line eye (the wave templates window's),
+       not the typed emoji an iPhone colours; the banner's words are unchanged */
+    expect($('#sbSign .planselbtn .psl svg.pveye'), 'the selector says what you are looking at, with the drawn eye').toBeTruthy()
+    expect($('#sbSign .planselbtn')?.textContent || '').not.toContain('\u{1F441}')
+    const bar = $('#sbWarn .dprev-bar')
+    expect(bar?.querySelector('svg.pveye'), 'the board banner draws the eye').toBeTruthy()
+    expect(bar?.textContent || '').toMatch(/Viewing the issued \S+ — read-only\. This is what was sent out; it never changes\./)
+    expect(bar?.textContent || '').not.toContain('\u{1F441}')
     expect($$('#sbSign [data-beak]').length).toBe(0)
     expect($$('#sbSign [data-alpub]').length).toBe(0)
     expect($$('#sbSign [data-unpub]').length, 'nor an Unpublish').toBe(0)
