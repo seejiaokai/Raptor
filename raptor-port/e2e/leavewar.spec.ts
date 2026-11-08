@@ -2022,7 +2022,7 @@ test('the pinned dates row follows when something above the grid grows or shrink
   await expect.poll(async () => (await lwPin(page))?.under).toBe(true)
   await expectPinned(page, 'sticky-head', true, 'and pins again when the block goes')
 })
-test('while the fingers pinch part-way down, the pinned dates row shows by the pinch's rule (D1870, D1287)', async ({ page }) => {
+test('while the fingers pinch part-way down, the pinned dates row shows by the pinch’s rule (D1870, D1287)', async ({ page }) => {
   test.skip(!isPhone(), 'a two-finger pinch')
   const y = await page.evaluate(() => {
     const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect()
