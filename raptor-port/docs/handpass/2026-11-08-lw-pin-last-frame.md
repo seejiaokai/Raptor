@@ -337,19 +337,19 @@ bar on every page; 5 a new gesture or mode — NO (nothing new to press; the spr
 ### The roll-call — the top bar, every place it is drawn (SHOW at rest / scrolled / at the foot · USABLE · PAINTED under or through it)
 | Place | SHOW | USABLE | PAINTED |
 |---|---|---|---|
-| Edit Schedule (blue bar), desktop · phone | | | |
-| View-only Sched, desktop · phone | | | |
-| Scheduler Board (covers the bar with its own) | | | |
-| Inputs — list, calendar, Medical, SANS | | | |
-| Quals (pinned heading under the bar) | | | |
-| Leave War — Grid (pinned dates row), Approvals, Balances (its bar), OIL | | | |
-| Tracker | | | |
-| Logic · Admin · Help | | | |
-| "Not saved" band (`?savefail`) · "OIL not answered" bar | | | |
-| Windows opened below the bar; the bar pressable over Jump to a date / day window / document viewer | | | |
-| Page names beside TALON, two rows on a narrow desktop · folded into ☰ | | | |
-| Phone on its side; the bar's own sideways scroll and its burger-and-mark lead | | | |
-| Sign-in, access and guest screens | | | |
+| Edit Schedule (blue bar), desktop · phone | has it — fixed, top 0 at the page's foot (3138 / 3044 px down), the bar's picture the same at three scroll points (S1, S2) | has it — Undo, Redo, the bell and a page name pressed mid-scroll (R12, R13, S6) | has it — at rest identical before and after (A, 0 px); content flush under the bar at every size (S3) |
+| View-only Sched, desktop · phone | has it — gap 0 at five sizes and after page switches scrolled (S3, S7); its foot not walked: the same shell and bar as Edit Schedule's | must not have Undo / Redo, because it changes nothing (D347): none, as before | has it — identical at rest (A) |
+| Scheduler Board (covers the bar with its own) | must not show the top bar over the board, because the board's own bar replaces it (D349): its top 300 px mid-scroll identical before and after (S2.board) | has it — its own bar unchanged (A) | has it — identical at rest, desktop and phone (A) |
+| Inputs — list, calendar, Medical, SANS | has it — gap 0 at five sizes and after switches (S3, S7); the foot NOT REACHED (43 / 4 px of scroll at the walker's sizes, S1); Medical and SANS not checked apart — they draw inside the same page under the same bar | has it — a page name pressed lands on Inputs, the page 0 px under the bar (R12, R13) | has it — list and calendar identical at rest, desktop and phone (A) |
+| Quals (pinned heading under the bar) | has it — top 0 at the foot (918 / 981), picture the same at three scrolls (S1, S2); its pinned heading at the bar's foot, fully shown (S5) | has it — a page name pressed lands on Quals, flush (R14) | has it — identical at rest (A) |
+| Leave War — Grid (pinned dates row), Approvals, Balances (its bar), OIL | has it — the grid top 0 at the foot (1772 / 1141), picture the same (S1, S2); its pinned dates row at the bar's foot at 30% and 60% down (S5); Balances' own bar and headings below the top bar (S5) | has it — a day ringed lands below the bar (S9); the bell and ☰ pressed on the grid (R14) | has it — Approvals identical; the grid identical over 4 + 4 alternated runs at both sizes (R2 `grid-xs.json` — the walk's ~1 px was the build's own run-to-run spread); OIL identical after round 2 (was 438 px); Balances 17 px inside the two greyed arrows on a desktop, before against before again 0 — paint only, kept (R2 pictures) |
+| Tracker | has it — gap 0 at five sizes and after switches (S3, S7) | has it — no control of its own changed; the shared ones as above | has it — identical at rest (A) |
+| Logic · Admin · Help | has it — Admin top 0 at the foot (3575 / 73), picture the same (S1, S2); Logic and Help gap 0 (S3, S7) | has it — the shared controls (R12–R14) | has it — identical at rest (A) |
+| "Not saved" band (`?savefail`) · "OIL not answered" bar | has it — the band up: the bar grows 36, the page and its first line move 36, flush (S4, desktop and phone); gone on reopening without the switch, back to 58 / 49 (S4); in the band's FIRST frame the space above the page is already the bar's new height (R2 `band-desk.png`, `band-phone.png`, after the host's fix); "OIL not answered": by tests (`oilwait.test.tsx`), the same layout step now keyed on it | has it — Retry pressed, the band stays while the switch refuses saves (S4) | has it — nothing covered (the pictures) |
+| Windows opened below the bar; the bar pressable over Jump to a date / day window / document viewer | has it — each window's top at or under the bar's foot (S6) | has it — Undo, Redo and the bell are what a press reaches with each open (S6) | has it — the bell's list starts 7 px into the bar's foot, the same before and after (it follows the bell button — Astra's round 2): must not change, and did not |
+| Page names beside TALON, two rows on a narrow desktop · folded into ☰ | has it — beside TALON at 1536, two rows at 1024 (bar 104), folded at 830 and 402, gap 0 each (S3); 1536 → 830 → 1536 → 1024 → 402 → 1536 scrolled, the space always the bar's height (S7) | has it — page names pressed land flush (R12–R14) | has it — identical at rest (A) |
+| Phone on its side; the bar's own sideways scroll and its burger-and-mark lead | has it — 874×402 gap 0 on every page (S3); every page scrolled, turned upright and back: 0 errors on 9 pages after round 2 (R2; round 1 had one) | has it — ☰ opens and closes by a tap outside and by Escape (R13, R14); at 320 wide the bar's 25 px sideways scroll slides the same before and after (B `s8b` pictures — a test browser's swipe does not scroll, S8.320); at 402 no sideways room (S8) | has it — `sideways-last.png` |
+| Sign-in, access and guest screens | has it — the guest bar fixed, top 0 at the foot, content flush, desktop and phone (S11); sign-in and access have no top bar, and must not: they come before signing in | has it — the guest bar's buttons unchanged | has it — sign-in and access identical at rest (R2); the guest band's first frame pinned by a test, red before the host's fix (`accounts-ui.test.tsx`) |
 
 ### The sizing lines (Opus, 8 Nov 26, after reading Astra's change e7f20fef5)
 1. **Type:** E (layout — the one top bar, every page: shared styling makes it the whole app), with D (every reader of the
@@ -369,7 +369,35 @@ bar on every page; 5 a new gesture or mode — NO (nothing new to press; the spr
    directly), the "OIL not answered" bar (the same route as the save band — the bar's padding grows and the observer
    re-measures; `oilwait.test.tsx`), print's flow (Astra's browser case in `e2e/topbar-names.spec.ts`). Only his iPhone:
    the spring, the toolbar folding, the keyboard.
-5. **The row:** added to the ledger after the walk.
+5. **The row:** added to the ledger after the walk (`docs/walk-ledger.md`, 8 Nov 26, D1873).
+
+### What the walk found, round 2, and the re-walk
+- **The walk on round 1** (Sonnet walker, scripts `scripts/handpass/topbar1108-*.mjs`, pictures `walk/topbar/A/` and
+  `B/`): at rest every page identical before and after but three — the Leave War grid (day columns ~1 px wider), the OIL
+  tab (438 px on its SHOW / RANGE row) and Balances (17 px); 14 scenarios PASS but two rows to settle — the bell's list
+  7 px into the bar (not compared) and one page error, "ResizeObserver loop completed…", at 874×402 WebKit on the after
+  build only. Print keeps the sticky bar with no spacer (S10).
+- **Astra's round 2** (D1872, D1873; order `docs/superpowers/briefs/2026-11-08-topbar-bounce-fix-round2.md`): the
+  bar's watch writes its height in the next frame (the page error gone — red unit tests first); `will-change` on the
+  fixed bar (the OIL tab's paint kept apart); the bell's 7 px shown the same before and after; Balances' 17 px left
+  (a cure moved pixels elsewhere).
+- **The host's follow-up, red first:** round 2's next-frame write left the "Not saved" band over the page's first line
+  for one frame; the bar's height is now written before paint whenever the band comes or goes (Edit Schedule's shell
+  and the guest page) — test "D1873 — the band moves the page in the same frame…", red on the guest page before.
+- **The host's re-walk of round 2** (`scripts/handpass/topbar1108-r2-grid.mjs`, `…-r2-rewalk.mjs`; records and
+  pictures `walk/topbar/R2/`): the grid's day columns identical before and after over 4 + 4 alternated runs at 1536
+  Chromium and 402 WebKit; the OIL tab, sign-in and access identical; Balances 17 px in the two greyed arrows, before
+  against before again 0 — paint only, kept, named to him; the band's first frame flush on desktop and phone; 874×402
+  WebKit, every page scrolled, turned and back: 0 errors. The 320-wide swipe that moved nothing (S8.320) is the test
+  browser's: set by script the bar slides the same before and after.
+- **Not faults:** the grid's ~1 px (the build's own spread); the bell's 7 px (unchanged); S8.320's swipe (the tool).
+- **His iPhone only:** the spring itself, Safari's toolbar folding and the keyboard (above).
+
+Walk: one Sonnet walker on round 1 — 96 pictures at rest (before twice, after; 14 pages at 1536 Chromium and 402
+WebKit), 14 scenarios at 1536, 1024, 830, 402 and 874×402, the plain-user round on the bar's controls — 2 faults (the
+page error on a phone on its side, the OIL tab's paint), fixed in Astra's round 2; the host's re-walk of round 2 — the
+grid, OIL, Balances, sign-in and access at rest, the band's first frame on desktop and phone, every page on its side —
+all PASS but Balances' 17 px (kept); pictures in `walk/topbar/A/`, `B/`, `R2/`.
 
 ### What only his iPhone can show
 The spring at a page's foot and top, Safari's toolbar folding, the keyboard: the PC's Chromium and Playwright's WebKit do
