@@ -4433,3 +4433,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** Both branches added a new block at the same place, each ending in the identical closing marker line. Git's conflict took that shared last line out of both sides and kept one copy after the conflict, so deleting only the three conflict marks left the first block with no closing marker; the document check caught it ("has no <!-- /now --> before the next block") and the marker was added back by hand.
 **Suggested improvement:** In the skill's merge step: when the handoff file clashes, resolve by keeping both blocks whole, then count the opening and closing markers (`grep -c '<!-- now:'` must equal `grep -c '<!-- /now -->'`) before staging — or rebuild the region from each side's own block (`git show :2:HANDOFF.md`, `:3:`) instead of deleting conflict marks.
 **Principle:** When both sides of a conflict end in the same line, git keeps that line once, outside the conflict; "keep both" then needs that line added back to the first side — count paired markers after any such resolution.
+
+### Observation 900: Archiving a backlog item can strip a new ruling's only backlog mention
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 16, closing [LW-PIN-LAST-FRAME] (D1870, D1871) — numbered past 899, the highest on another open branch
+**Skill:** New skill candidate: closing a job's records (the backlog-archive step)
+**Type:** internal
+**Phase/Area:** archiving a finished backlog item, then the document check
+
+**Issue:** D1871's full row named the backlog as one of its homes, through the job's own item. Archiving that item, and dropping its priority line, removed every mention of D1871 from the backlog, so the document check failed on the ruling's home only after the archive, at the closing step.
+**Suggested improvement:** before archiving an item, grep the backlog for each ruling number the item carries; where the item is a ruling's last mention there and the ruling's row names the backlog as a home, write the number onto the item that stays (here the follow-up item), or have the archive script warn of it before it moves anything.
+**Principle:** a check that one record is mentioned in another breaks when the mentioning record is moved; run the check, or the search it does, before the move rather than after.
