@@ -42,31 +42,31 @@ Each cell: YES / NO-because / MISSING. EXPECTED everywhere: the same as on `main
 
 | Row | Writer → its in-memory copy re-run on rollback / undo | Saves and reloads the same | Undo / redo the same | Failed save puts it back the same | Proved by |
 |---|---|---|---|---|---|
-| P1 | People edits — Quals cells, a rename (`quals-write`, `commitPeopleEdit`) | | | | |
-| P2 | The eleven settings keys — Logic, stores, cancel reasons, day / duty / wave templates, qual columns, look-ahead, defaults, Insights | | | | |
-| P3 | Accounts — give sign-in, suspend, enable, role, sign-in name, request, approve, refuse (`accounts`, loader `accountsLoad`) | | | | |
-| P4 | The change history's seen marks (`changes`, loader `changesLoad`) | | | | |
-| P5 | The bell's read marks (`noticeseen`, loader `noticeSeenLoad`) | | | | |
-| P6 | The Leave War's and Approvals' seen marks (`lwseen`, `apprseen` — no loader, as on `main`) | | | | |
-| P7 | The flying plan (`flyplan`, loader `flyplanLoad`) | | | | |
-| P8 | The roster add — Add a person, approve as New person (`roster-add`) | | | | |
-| P9 | Members may file for others — the Admin switch (`memberfile`) | | | | |
-| P10 | Delete a person (`person-delete`) | | | | |
-| P11 | The Leave War's people projection (`leavewar/sync`) | | | | |
-| P12 | Start-up — every entry that registers the layer (`wireStore`), the order of types and loaders | | | | |
+| P1 | People edits — Quals cells, a rename (`quals-write`, `commitPeopleEdit`) | YES | YES | YES | B Q01–Q04 (flight edit, Undo, Redo, rename, reload), S01–S06 (`?savefail`); C S15 (rename from a second tab) |
+| P2 | The eleven settings keys — Logic, stores, cancel reasons, day / duty / wave templates, qual columns, look-ahead, defaults, Insights | YES, three settings of different shapes | YES | YES | B G01–G08 (Guest view, section order, member filing); the other keys NO-because §11 (types, loaders and their order byte for byte `main`'s; §7 cuts each loader) |
+| P3 | Accounts — give sign-in, suspend, enable, role, sign-in name, request, approve, refuse (`accounts`, loader `accountsLoad`) | YES | YES | YES | B U01–U09, R01–R13, S07; A's plain round; tests group 1–3 |
+| P4 | The change history's seen marks (`changes`, loader `changesLoad`) | YES | YES | YES (test) | B H05; tests `people-settings-wire-real.test.ts` |
+| P5 | The bell's read marks (`noticeseen`, loader `noticeSeenLoad`) | YES (empty bell, both) | YES (test) | YES (test) | B H03–H04 on an empty bell; real lines NO-because §11 — carried by `people-settings-wire-real.test.ts` groups 1–3 |
+| P6 | The Leave War's and Approvals' seen marks (`lwseen`, `apprseen` — no loader, as on `main`) | YES | — no undo, as on `main` | YES | B V01–V04 |
+| P7 | The flying plan (`flyplan`, loader `flyplanLoad`) | YES | YES | YES | B F01–F11 (Required figures, runs, Days window — Leave War cells agree) |
+| P8 | The roster add — Add a person, approve as New person (`roster-add`) | YES | not undoable, as on `main` (D350) | YES | A plain round and x2; B U01, R10–R13 |
+| P9 | Members may file for others — the Admin switch (`memberfile`) | YES | YES | YES | B G06–G08 |
+| P10 | Delete a person (`person-delete`) | YES | not undoable, as on `main` (D350) | YES | A plain round; B U09 (two-tap delete, reload) |
+| P11 | The Leave War's people projection (`leavewar/sync`) | YES | YES | YES | A plain round (Leave War shows the new people); B F01–F11 |
+| P12 | Start-up — every entry that registers the layer (`wireStore`), the order of types and loaders | YES | YES | YES | every first write after sign-in, reload, `?fresh=1`, a second tab and a member (B T01–T04, E01–E05); §7 (start-up skipping it: RED 33) |
 
 ### 2b. Part 2 — the screens
 
 | Row | Place | SHOWS the same (picture against `main`) | USABLE the same | What else is PAINTED there | Proved by |
 |---|---|---|---|---|---|
-| S1 | Admin → Users, a roster row — active, suspended, no sign-in, own row, a posting waiting, a held posting; its line under the callsign | | | | |
-| S2 | Admin → Users, a roster row's open editor — typed values, armed Delete, after Cancel / row tap / another row / save / refusal, opened again | | | | |
-| S3 | Admin → Users, an archived row and its editor — callsign free, taken, no sign-in; rename, Restore, Restore as, Delete | | | | |
-| S4 | Admin → Users, a waiting request's Give access — "Person" heading, On the roster / New person | | | | |
-| S5 | Admin → Data, "Clear old clutter…" — "Period" list, "Dates" range calendar | | | | |
-| S6 | Admin → Data, "Clear edit history…" — the same two | | | | |
-| S7 | The access screen, "Request access" — the callsign box's caret on arrival | | | | |
-| S8 | Every other form heading drawn by `.mfield label` — the widened rule must change none | | | | |
+| S1 | Admin → Users, a roster row — active, suspended, no sign-in, own row, a posting waiting, a held posting; its line under the callsign | YES, pixel for pixel | YES | the posting tags, the archived line — the same | A §1 (users-top, users-rd, own-row, torch-row); a waiting and a held posting NO-because the demo's run posting tag is the one drawn (A §5), and the row's line is the same builder for each tag |
+| S2 | Admin → Users, a roster row's open editor — typed values, armed Delete, after Cancel / row tap / another row / save / refusal, opened again | YES | YES | — | A §1 (ed-* screens), B U01–U09, C S14 and S15; tests `onedoor-users.test.tsx` (chat 32's two) |
+| S3 | Admin → Users, an archived row and its editor — callsign free, taken, no sign-in; rename, Restore, Restore as, Delete | YES | YES | — | A §1 (arch-* screens), B U08, C S15 (Save name from a second tab) |
+| S4 | Admin → Users, a waiting request's Give access — "Person" heading, On the roster / New person | YES ("Person" a plain line, same look) | YES | — | A §1 (give-*), A x2, B R10–R13 |
+| S5 | Admin → Data, "Clear old clutter…" — "Period" list, "Dates" range calendar | YES (same-data re-shot, 24 / 24) | YES, plus the one intended change: a press on "Period" puts the keys on its list | — | A §3 (S18), B D01–D08, C S19 with real clutter |
+| S6 | Admin → Data, "Clear edit history…" — the same two | YES | YES, the same intended change | — | A §3, B D01–D08, C S19 (history cleared once) |
+| S7 | The access screen, "Request access" — the callsign box's caret on arrival | YES | YES (caret in the callsign box on both) | the "Not sent yet" pass under `?savefail` — the same | A §1 (access-*), B R01–R04, S07 |
+| S8 | Every other form heading drawn by `.mfield label` — the widened rule must change none | YES — every heading measured the same style | YES | — | A §1 (add-person, help-form, inputs-window, approval form) |
 
 ## 3. The walk's size (D607)
 
@@ -108,13 +108,45 @@ Each cell: YES / NO-because / MISSING. EXPECTED everywhere: the same as on `main
    20, 21 (no gesture changed), 4 and 12 (no window leaves its page working, none opened from a new place), 5 (no row
    moved), 6 (nothing handed to the phone), 8 (no drawing touched), 11 (nothing depends on what fits), 15 (no bar
    changed), 18 (nothing printed).
-5. After the walk:
+5. After the walk: three Sonnet walkers in the end, not two — B left S14, S15 and S19 with real clutter, so chat 32 sent
+   walker C. A 458 steps, B 214, C 56: 728 steps, every one the same on both builds but the 28 that are the one
+   intended change (a press on "Period", its list, the "Dates" group); 0 faults found by the walk; the reads 0 defects
+   (one comment reworded, two tests added). The walk again found nothing by itself on a tidy-up of this type — the
+   ledger row says so; its worth here was proving "the same" on the routes the tests cannot reach (sign-in, reload,
+   a second tab, a member, `?savefail`).
 
 ## 4. Scenarios (designed by Astra — `docs/superpowers/briefs/2026-11-08-rd-last-findings-scenarios.md`)
 
+S01–S24, walked as §3's plan placed them: A S12, S13, S16, S18, S20, S23, S24 and the plain round; B S01–S05, S07, S08,
+S10, S11, S17, S19 (empty), S21, S22; C S14, S15, S19 (real clutter); S06 and the J variants by tests; what was left,
+each with its reason, in §11.
+
 ## 5. Results — what the screen said, both builds
 
+- **Walker A** (`parts/2026-11-08-rd-last-findings-walkA.md`): 76 screens the same pixel for pixel (`main` against
+  itself first), the 7 Admin → Data screens re-shot centred (24 / 24); 458 value steps, 436 the same, 22 the intended
+  S18 change; 440 pictures.
+- **Walker B** (`parts/…-walkB.md`): 214 steps, 208 the same, 6 the intended change (D01, D05, D08 at both sizes);
+  428 pictures. The host opened `walkB/branch-D08-P-period-label.png` — the keys on the list, its ring the one `main`
+  shows under Tab.
+- **Walker C** (`parts/…-walkC.md`): 56 steps, 56 the same, 112 pictures; the host opened
+  `walkC/branch-c-S14-D-roster-cat.png`.
+- **The host, chat 35** — the bell after an access request (§10 c): on the branch's build the admin's bell is lit
+  after he signs in and its tap says "1 waiting for access — opening Admin → Users" and opens it, as D216 and D227
+  rule; pictures `host/bell-before-tap.png`, `host/bell-after-tap.png`, script `scripts/handpass/rdl1108-bell-host.mjs`.
+
 ## 6. Cases carried by a test, each with what it proves
+
+- `src/state/people-settings-wire-real.test.ts` (9 tests, chat 31, Astra's three gaps): real values through Undo and
+  Redo for each of the four handed-in loaders; a signed-in actor's refusal of an undeclared type; a rollback after a
+  refused change with no `?savefail`. Each loader and type list cut by hand went RED; the host reproduced the accounts
+  loader cut (3 red). They change data through the layer — they prove the wire, not that a screen offers the route.
+- `src/ui/onedoor-users.test.tsx` — chat 32's two (Astra's and Sol's host check): typed values and an armed Delete
+  survive a redraw from elsewhere; a refused Save name keeps the box and its error. RED when each row is re-made on
+  every draw, green on the code (22 / 22). And chat 26's pin from §7: an archived row's editor is not drawn while closed.
+- `src/ui/adminclear.test.tsx` — "Period" tied to its list, the range calendar's group named "Dates" (§7, each RED when
+  cut).
+- The touched files' own tests — 116 / 116 across the 8 files chat 32 touched; 197 / 197 across the 9 chat 31 touched.
 
 ## 7. The break tests
 
@@ -141,9 +173,34 @@ Each wire cut by hand in the source, the named tests run, the source put back (`
 
 ## 8. Errors seen
 
+None — no console error, page error or 4xx on either build, at either size, in any of the three walkers' worlds (the
+access and `?savefail` worlds included) or in the host's bell check.
+
 ## 9. The reads — Astra, Sol 6.1, the fresh Opus read, the security read
 
+All four blind, on a clean two-commit copy (`main`'s `d8d5b1f57`, then the branch without the walk's papers), by chat 32;
+reports `parts/2026-11-08-rd-last-findings-read-{astra,sol,opus,security}.md`.
+- **Astra** (gpt-6-astra, high): no concrete defect; ranked host checks, not findings — two became chat 32's tests (§6).
+- **Sol 6.1** (D1743's window): no finding; its host check the same as Astra's (§6).
+- **The fresh, blind Opus read:** no high or medium finding.
+- **The security read** (D1411 — sign-in, Admin → Users, the permission declarations): none; each area behaves as on
+  `main`.
+- The one point they shared: the comment above `ModuleLoaders` in `state/people-settings-commit.ts` overstated the
+  gate (a headless actor is not checked by type; the safety is that every entry registers in wireStore first) —
+  reworded (§10 a). Reads owed: none.
+
 ## 10. What the walk and the reads found, and each disposition
+
+- **(a) The overstated comment** (all four reads) — reworded by chat 32; no behaviour.
+- **(b) Two routes no test held** (Astra's and Sol's host check) — two tests added, RED first (§6).
+- **(c) "The admin's bell read 'Nothing new' after an access request"** (A §5, both builds, seen in passing) — **not a
+  fault.** Reproduced by the host on the branch's build with a fresh request: the bell lit, its tap opened Admin → Users
+  with "1 waiting for access" (§5). Each admin's bell goes out once he has had the waiting list on screen (D227); the
+  walker's admin had opened Users first (A §4 item 6), so "Nothing new" was right. Not filed.
+- **(d) Seen the same on both builds, not this change** (C): folding Archived keeps the archived editor open but puts its
+  box back to his callsign and disarms Delete — older, low; filed `[USERS-ARCH-FOLD-DRAFT]`. Also C S15: a stale second
+  tab's Save name wins over a rename made since — the same on both, the two-tabs leftover of the database step.
+- The walk's own faults: none. The intended change on S5 and S6 (a press on "Period") — as designed (§1, question 5).
 
 ## 11. Not walked, and why
 

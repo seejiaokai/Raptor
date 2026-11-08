@@ -4464,3 +4464,16 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** The first copy (`git archive` of the whole tree into a scratch folder, then a fresh repo with two commits) took over ten minutes and then failed: `git add` refused a "Filename too long" in an old evidence folder, so the repo had no commits. Deleting the tree file by file between the two commits was the slow part. The second copy, archiving only the folders a code reader needs (source, docs without evidence and pictures, the rulings, the backlog), with `core.longpaths` set and `git rm -r` between the commits, worked.
 **Suggested improvement:** Give the copy step a ready script: archive named paths only, exclude evidence sheets, pictures and the archive, set `core.longpaths`, tag the base commit `BASE`, and tell the reader `BASE` stands for the real base id.
 **Principle:** A blind reader's copy should hold only what the read needs; copying the whole history-laden tree costs time and breaks on platform limits.
+
+### Observation 899: A walker's "seen in passing" fault was carried to the backlog step before anyone checked the ruling
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 35, closing the evidence sheet of pull request 702 (numbered past 898)
+**Skill:** the bug-check order §7 (the walk's side findings) and session-handoff (what a block hands on as "to file")
+**Type:** open-source
+**Phase/Area:** turning a walker's side note into a backlog item
+
+**Issue:** A walker noted that an admin's bell read "Nothing new" after an access request, on both builds. The handoff carried it forward as a fault "to reproduce and file". Read against the ruling, the behaviour was exactly as ruled: each admin's bell goes out once he has had the waiting list on screen, and the walker's admin had opened that list first. A two-minute script on a fresh request showed the bell lit and its tap opening the list.
+**Suggested improvement:** Before a side note enters a handoff or the backlog as a fault, check it against the area's rulings for that subject and, where they allow it, reproduce it with the precondition that would make it right; the handoff names it "to check" until then, never "to file".
+**Principle:** A walker sees behaviour, not intent; a side note is a question until it is read against the rules that govern it.
