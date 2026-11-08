@@ -4451,3 +4451,16 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** Both branches added a new block at the same place, each ending in the identical closing marker line. Git's conflict took that shared last line out of both sides and kept one copy after the conflict, so deleting only the three conflict marks left the first block with no closing marker; the document check caught it ("has no <!-- /now --> before the next block") and the marker was added back by hand.
 **Suggested improvement:** In the skill's merge step: when the handoff file clashes, resolve by keeping both blocks whole, then count the opening and closing markers (`grep -c '<!-- now:'` must equal `grep -c '<!-- /now -->'`) before staging — or rebuild the region from each side's own block (`git show :2:HANDOFF.md`, `:3:`) instead of deleting conflict marks.
 **Principle:** When both sides of a conflict end in the same line, git keeps that line once, outside the conflict; "keep both" then needs that line added back to the first side — count paired markers after any such resolution.
+
+### Observation 898: A blind reader's clean copy of the whole repo fails or crawls on Windows
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 32, the four blind code reads of pull request 702 (numbered past 896–897 on other branches)
+**Skill:** claudex-loop (the blind-reader set-up), and the bug-check order §4's "a clean copy for the readers"
+**Type:** open-source
+**Phase/Area:** preparing the copy a blind reader reads
+
+**Issue:** The first copy (`git archive` of the whole tree into a scratch folder, then a fresh repo with two commits) took over ten minutes and then failed: `git add` refused a "Filename too long" in an old evidence folder, so the repo had no commits. Deleting the tree file by file between the two commits was the slow part. The second copy, archiving only the folders a code reader needs (source, docs without evidence and pictures, the rulings, the backlog), with `core.longpaths` set and `git rm -r` between the commits, worked.
+**Suggested improvement:** Give the copy step a ready script: archive named paths only, exclude evidence sheets, pictures and the archive, set `core.longpaths`, tag the base commit `BASE`, and tell the reader `BASE` stands for the real base id.
+**Principle:** A blind reader's copy should hold only what the read needs; copying the whole history-laden tree costs time and breaks on platform limits.
