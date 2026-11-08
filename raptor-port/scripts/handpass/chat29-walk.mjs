@@ -20,6 +20,7 @@ async function cardsPast(page) {
   })
 }
 
+async function allDates(h) { await press(h, '#inRangeBtn'); await sleep(300); await press(h, '#inRangeAll'); await sleep(500) }
 /* ---------- A ---------- */
 for (const [W, H] of [[1536, 864], [1229, 600]]) {
   const h = await open({ width: W, height: H })
@@ -42,9 +43,11 @@ for (const [W, H] of [[1536, 864], [1229, 600]]) {
     const card = p.locator('.medsec .medcard').first(); await card.scrollIntoViewIfNeeded()
     const wb = await winBox(p), cb = await card.boundingBox()
     await card.click(); await sleep(700)
+    const pic0 = await shot(p, `med-${T}-A4-card-pressed-viewer`)
+    const edit = p.locator('#docViewEdit'); const hasEdit = await edit.count(); if (hasEdit) { await edit.click(); await sleep(800) }
     const v = await pad(p, '.med-body'), wcount = await p.locator('[data-testid="win-inputedit"]').count(), title = await p.locator('[data-testid="win-inputedit"] .win-ttl').first().innerText().catch(() => '')
     const docpop = await p.locator('#docViewPop:not([hidden])').count()
-    return { ok: v === '16px' && wcount >= 1, note: `padding-right ${v} (expected 16px); windows ${before}->${wcount}; title "${title.replace(/\n/g, ' ')}"; docViewPop open ${docpop}; card box ${JSON.stringify(cb && { x: Math.round(cb.x), y: Math.round(cb.y) })}; window ${JSON.stringify(wb && { x: Math.round(wb.x), y: Math.round(wb.y), w: Math.round(wb.width) })}`, pics: [await shot(p, `med-${T}-A4-card-pressed-behind`)] }
+    return { ok: v === '16px' && wcount >= 1, note: `padding-right ${v} (expected 16px); windows ${before}->${wcount}; title "${title.replace(/\n/g, ' ')}"; docViewPop open ${docpop}; Edit-input button present ${hasEdit}; card box ${JSON.stringify(cb && { x: Math.round(cb.x), y: Math.round(cb.y) })}; window ${JSON.stringify(wb && { x: Math.round(wb.x), y: Math.round(wb.y), w: Math.round(wb.width) })}`, pics: [pic0, await shot(p, `med-${T}-A4-card-input-opened`)] }
   })
   await step(`A5a-${T}`, 'close by X, reopen +Medical: where dropped, 16px', async () => {
     const dropped = await winBox(p)
@@ -99,7 +102,7 @@ for (const [W, H] of [[1536, 864], [1229, 600]]) {
   const heads = p => p.evaluate(() => [...document.querySelectorAll('.inwrap table thead th, .inwrap thead th')].slice(0, 3).map(t => Math.round(t.getBoundingClientRect().width)))
   const winOpen = p => p.locator('[data-testid="win-inputedit"]').count()
   const h = await open({ width: 1536, height: 864 }), p = h.page
-  await go(p, 'inputs'); await press(h, '#inListBtn'); await p.waitForSelector('.inwrap'); await sleep(500)
+  await go(p, 'inputs'); await press(h, '#inListBtn'); await p.waitForSelector('.inwrap'); await sleep(500); await allDates(h)
   let rest, restHeads
   await step('C1', 'List at 1536: + Input room 446 and headings 110/140/90', async () => {
     rest = await pad(p, '.inwrap'); restHeads = await heads(p); const pic0 = await shot(p, 'list-1536-C1-at-rest')
@@ -113,14 +116,14 @@ for (const [W, H] of [[1536, 864], [1229, 600]]) {
   })
   await step('C3', 'close; reopen a row: no room', async () => {
     await p.keyboard.press('Escape'); await sleep(400)
-    const op = p.locator('#inBody tr .in-open').first(); await op.scrollIntoViewIfNeeded(); await op.click(); await sleep(700)
+    const op = p.locator('#inBody tr .in-open').first(); const info = await op.evaluate(e => { const r = e.getBoundingClientRect(), cs = getComputedStyle(e); return `box ${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)} vis ${cs.visibility} op ${cs.opacity} display ${cs.display}` }).catch(e => 'none:' + e.message.slice(0, 40)); console.log('C3 open button', info); await op.click({ timeout: 5000 }); await sleep(700)
     const v = await pad(p, '.inwrap'), n = await winOpen(p), wb = await winBox(p)
     return { ok: n >= 1 && v === rest, note: `windows ${n}; padding ${v} (expected ${rest}); window x=${wb && Math.round(wb.x)}`, pics: [await shot(p, 'list-1536-C3-row-opened')] }
   })
   await h.browser.close()
   for (const [W, exp] of [[1340, 'room'], [1339, 'none']]) {
     const g = await open({ width: W, height: 800 }), q = g.page
-    await go(q, 'inputs'); await press(g, '#inListBtn'); await q.waitForSelector('.inwrap'); await sleep(500)
+    await go(q, 'inputs'); await press(g, '#inListBtn'); await q.waitForSelector('.inwrap'); await sleep(500); await allDates(g)
     await step(`C4-${W}`, `List at ${W}: window at rest -> ${exp}`, async () => {
       const r0 = await pad(q, '.inwrap'); await press(g, '#inNew'); await q.waitForSelector('[data-testid="win-inputedit"]'); await sleep(700)
       const v = await pad(q, '.inwrap'), wb = await winBox(q)
@@ -144,13 +147,16 @@ for (const phone of [false, true]) {
     return { ok, note: `button ${m.w}x${m.h} (expected 34x28); svg ${m.sw}x${m.sh} (expected 16x16); centre offset dx ${m.dx?.toFixed(2)} dy ${m.dy?.toFixed(2)}; aria-pressed ${m.pressed}`, pics: [pic] }
   })
   await step(`D2-${T}`, 'press: lights, every input shows; press again: back', async () => {
-    const cards = () => p.evaluate(() => document.querySelectorAll('#inpCal [data-testid^="ic-"], #inpCal .ic-in, #inpCal .ic-chip').length)
-    const n0 = await cards(); await press(h, sel); await sleep(500)
-    const on = await p.locator(sel).first().getAttribute('aria-pressed'), n1 = await cards(), bg1 = await p.locator(sel).first().evaluate(e => getComputedStyle(e).backgroundColor)
+    for (let i = 0; i < 6 && !/JULY/i.test(await p.locator('#inpCal .ic-mon').innerText()); i++) { await press(h, '#icPrev'); await sleep(450) }
+    const month = await p.locator('#inpCal .ic-mon').innerText()
+    const read = () => p.evaluate(() => ({ bars: document.querySelectorAll('#inpCal .ib-bar').length, more: [...document.querySelectorAll('#inpCal *')].filter(e => e.children.length === 0 && /^\+\d+/.test((e.textContent || '').trim())).length, gridH: Math.round(document.querySelector('#inpCal .ib-grid').getBoundingClientRect().height), scrollH: document.documentElement.scrollHeight }))
+    const a = await read(), pic0 = await shot(p, `inputs-cal-${T}-D2-july-before-press`)
+    await press(h, sel); await sleep(600)
+    const on = await p.locator(sel).first().getAttribute('aria-pressed'), b = await read(), bg1 = await p.locator(sel).first().evaluate(e => getComputedStyle(e).borderColor + '|' + getComputedStyle(e).color)
     const pic1 = await shotOf(p, `inputs-cal-${T}-D2-expand-pressed`, sel, 30), pic1b = await shot(p, `inputs-cal-${T}-D2-calendar-expanded`)
-    await press(h, sel); await sleep(500)
-    const off = await p.locator(sel).first().getAttribute('aria-pressed'), n2 = await cards(), bg2 = await p.locator(sel).first().evaluate(e => getComputedStyle(e).backgroundColor)
-    return { ok: on === 'true' && off !== 'true' && bg1 !== bg2, note: `aria-pressed ${on} then ${off}; background ${bg1} then ${bg2}; items counted ${n0} -> ${n1} -> ${n2}`, pics: [pic1, pic1b, await shotOf(p, `inputs-cal-${T}-D2-expand-back`, sel, 30)] }
+    await press(h, sel); await sleep(600)
+    const off = await p.locator(sel).first().getAttribute('aria-pressed'), c = await read(), bg2 = await p.locator(sel).first().evaluate(e => getComputedStyle(e).borderColor + '|' + getComputedStyle(e).color)
+    return { ok: on === 'true' && off !== 'true' && bg1 !== bg2 && b.more === 0 && b.bars >= a.bars && c.bars === a.bars && c.more === a.more, note: `month ${month}; aria-pressed ${on} then ${off}; look ${bg1} then ${bg2}; before ${JSON.stringify(a)}; pressed ${JSON.stringify(b)}; back ${JSON.stringify(c)}`, pics: [pic0, pic1, pic1b, await shotOf(p, `inputs-cal-${T}-D2-expand-back`, sel, 30)] }
   })
   await h.browser.close()
 }
