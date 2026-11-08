@@ -775,7 +775,10 @@ through sourcemaps for the JS split, paired A/B runs.
     sets nothing; a call from an effect stays as it was (React will not flush inside one). `Matrix.tsx` and
     `QualsPage.tsx` `pin(force, now)`. · *Invariant:* never `flushSync` per scroll event, never from an effect — the
     flip re-renders the grid. · Measured (built bundle, Chromium, paired A/B, 5 runs at 4× CPU, 3 unthrottled; the
-    before build `c11a5506e`): blink frames Leave War desktop 1–2 → 0, phone 1 → 0, Quals desktop 1–2 → 0, phone 1 → 0;
+    before build `c11a5506e`): blink frames in the page's own frame log Leave War desktop 1–2 → 0, phone 1 → 0, Quals desktop 1–2 → 0, phone 1 → 0 —
+    but counted on the PAINTED frames the browser's own scroll still shows the row cut for one frame (desktop wheel two →
+    one, a phone flick one): the blink is halved, not gone; the last frame is the browser's, before the page's code runs
+    (the walk, `docs/handpass/2026-11-08-lw-group6.md` finding A; `[LW-PIN-LAST-FRAME]`);
     the frame of the flip itself a little longer in 3 of 4 cases at 4× (the mount now lands in that frame instead of a
     later one — Leave War desktop 683 → 600 ms, phone 217 → 350, Quals desktop 83 → 133, phone 33 → 50, each inside the
     run-to-run spread but one phone outlier); median and p95 frames and the stays-pinned scroll unchanged within one or

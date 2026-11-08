@@ -137,7 +137,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26) — a design job of its own with pictures, before the database step.
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
-- [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — built (D1789; Quals too) on `claude/pr-leave-war-4988a8`, pull request 680; frames measured, walk, reads and his look to come.
+- [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — built (D1789; Quals too) on `claude/pr-leave-war-4988a8`, pull request 680; walked: halved, two painted frames to one, scrolling not slower; the last frame is [LW-PIN-LAST-FRAME]; reads and his look to come.
+- [LW-PIN-LAST-FRAME] — the pinned dates row (and Quals' heading) still blinks for one painted frame: the browser's own; a design question for him, after his look on his iPhone.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
 - [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
 - [LW-COMMIT-MANNING] — duty and commitments lowering the war's manning: parked "for now" (D998), his to raise.
@@ -955,6 +956,20 @@ show/hide it outside React; either needs a speed check (the re-render would land
 frame). The Quals page's frozen header has the same shape. **Place:** the next Leave War polish item,
 after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at all.
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1789) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The dates row blink" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+
+### [LW-PIN-LAST-FRAME] The pinned dates row still blinks for one painted frame (8 Nov 26)
+
+Found by the walk of [LW-FROZEN-BAR-GAP]'s build (chat 8, `raptor-port/docs/handpass/2026-11-08-lw-group6.md` finding A;
+pictures `raptor-port/docs/img/handpass/2026-11-08-lw-group6/pc-s10-painted-frames.png` frame 3,
+`ph-chromium-s11-painted-frames.png` frame 5). D1789's build commits the pinned row in the same frame the PAGE'S CODE
+hears of the scroll — that took the blink from two painted frames to one on the desktop wheel, and leaves one on a phone
+flick (the Leave War and Quals). The last frame is the browser's own: it moves the page and paints it before the page's
+code hears of the scroll, so a pinned row drawn by the code is always one frame late there. **To remove it:** the browser
+must keep the row pinned itself — a pinned copy always there, laid under what scrolls above it so it shows only once the
+real row has gone under the bar, or the browser's own pinning — a change to the grid's layering (its pinned names
+column, zoom, Rearrange, the month strip and the windows over it), with its own walk. **His question, with the pictures
+(lesson 7 — his iPhone first):** does he still see the blink on his iPhone, and if so, is it worth that change? Nothing
+built. **Place:** after his look at pull request 680.
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — half done 23 Sep 26 (D59)
 **18 Oct 26 (the backlog tidy):** the repo is PUBLIC today (GitHub says so) — made public for a short period under D106, for GitHub's faster machines. Making it private again, and restarting his PC's check runner (D89), is still open and his step.
