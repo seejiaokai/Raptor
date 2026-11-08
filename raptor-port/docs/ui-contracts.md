@@ -11864,8 +11864,11 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
   person works, and under a two-line bar would open on Retry); they are drawn beside the shell, so `#shell` carries
   `.save-failed` too. Desktop only (621px and wider) — on a phone both are bottom panels and the rule must not reach
   them — and shorter by the band, so the foot stays on a short screen. Only a window still at its default spot: one a
-  person has moved or resized carries `data-placed` (`ui/floatwin.ts`) and keeps its own box — capped by the stylesheet,
-  its shrunken height would be recorded as the size he chose. Where he puts it is his, over the warning included. **A new thing pinned at a fixed height near
+  person has moved or resized carries `data-placed` (`ui/floatwin.ts`), so this stylesheet rule leaves it alone — capped
+  by the stylesheet, its shrunken height would be recorded as the size he chose. One he has moved keeps its own box;
+  one he has only resized, never moved, keeps its size but is placed by `ui/floatwin.ts` as an unplaced window is,
+  below the bar and the band, so "Not saved" and Retry are never covered (owner D1523, 30 Oct 26). Where he puts it is
+  his, over the warning included. **A new thing pinned at a fixed height near
   the top must do the same**, or be measured from the bar.
 - **…and under a two-line top bar** (the schedule pages and the Inputs page, about 900–1366 wide on his PC; at 1440 too on
   GitHub's Linux machines, whose letters are wider) a window still at its default spot — the changes window, the ALL

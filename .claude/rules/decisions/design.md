@@ -38,10 +38,10 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   and a phone, on every page where a change the one Undo takes back is made — the agent's reading, as built: Edit
   Schedule, the Leave War, Inputs, Quals, Admin and Logic, and none on View-only Sched or Help, which change nothing; the
   Tracker's own pair sits there too, still taking back only the Tracker's own changes; the Scheduler Board keeps a bar of
-  its own (below) [D347, D348].
+  its own (below) [D347, D348, D349, D854, D481].
 - The group runs in the desktop's order on a phone too — Undo · Redo · (the changes clock, Edit Schedule only) · the
   sync dot · the bell, the bell at the far right — together at the bar's right end, the menu button and the mark pinned
-  at its left [D348, D347].
+  at its left; the board's own bar is below [D348, D347, D349, D854, D481].
 - The changes clock stays on Edit Schedule only — his question answered no, as he allowed: its window is laid out by the
   schedule's days, and a change made on another page already shows in it as a line on its day [D348].
 - On every page up to 1599 wide the top bar takes its compact look — Undo and Redo as their arrows only, their names on
@@ -90,9 +90,9 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   own colour, so every device shows it alike, never the emoji his iPhone would draw in its own colours for ✏, ⚙ or 📅;
   the agent's reading, told to him: the app's other icons are line icons, the one solid pencil aside [D1134, D1509,
   D1707, D1508].
-- Only the typed marks the rulings here name become drawn; the ✕, the ⇄ of Move and a ✎ inside help text stay typed, and
-  any other icon drawn two ways is put to him with pictures before it changes, in the rounds of the consistency look
-  (How we work's D1124) [D1703, D1793, D1792, D1134, D1124, D1508].
+- The ✕ that hides a warning, the ⇄ of Move and a ✎ inside help text stay typed — the Tracker's ✕ marks are drawn
+  (below) — and any other icon drawn two ways is put to him with pictures before it changes, in the rounds of the
+  consistency look (How we work's D1124) [D1703, D1793, D1792, D1134, D1124, D1508].
 - Every pencil is the one solid pencil of his picture — filled, eraser at the top left, tip at the bottom right — never
   the ✏ emoji, the line pencil included; only a ✎ inside a sentence of help text, or after an edited chart's name in the
   Tracker's Syllabus list, stays typed; its places are listed in the full row [D1134].
@@ -117,7 +117,7 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - The board's OIL Earn wears no clock while History's clock stands on its bar; the agent's reading, lesson 70's other
   half: a new mark is set beside every mark on its bar and its page before it is proposed, and one a person could
   mistake for another is redrawn, or one of the two takes its words alone, before it is built; the reset arrow
-  (Reset order, Reset layout, a hidden warning) is History's arrow without the clock, meaning "put back" wherever it
+  (Reset order, Reset layout, the Tracker's Restore, a hidden warning) is History's arrow without the clock, meaning "put back" wherever it
   stands, kept — he tells it apart [D1700, D1704, D1792, D1793].
 - Every search box looks like the Edit Schedule week's — a grey line magnifier inside the box at its left, the box as tall
   as the buttons beside it — on the Scheduler Board, Quals, Logic, Admin, the Inputs list and the Tracker, each keeping its
@@ -132,9 +132,15 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   Leave War and the Tracker [D1122].
 - The design guide's §3 and lesson 16 carry it — his "make this part of the design skill" read as the app's own design
   guide, the outside design skill's files not edited (the agent's reading) [D1122].
-- A page's controls are one row, as the design guide's §3 words it: the buttons that belong to the page in view stand in
-  the one row under the top bar and the page's tabs, at that row's button height, even when it holds one button; a fold
-  is not a button; the places it named were the Medical tab, Quals' "Export to Excel" and Logic's "Edit rules" [D926].
+- A page's controls are one row, as the design guide's §3 words it: the buttons that belong to the page in view — what it
+  adds, its dates or filter, its settings — stand in the one row under the top bar and the page's tabs, at that row's
+  button height (36 where it holds only the page's own buttons), even when it holds one button; a fold is not a button;
+  the places it named were the Medical tab, Quals' "Export to Excel" and Logic's "Edit rules" [D926].
+- Not in that row: a window's or a sheet's own buttons, one item's controls in a list, a bar the app shows for a while
+  (the "Not saved" band, the OIL answer's bar); where the row runs out of room on the narrowest phone a button keeps its
+  size and place, its words a shorter form drawn for him first — if they still do not fit, the layout is drawn and put
+  to him; on a desktop the Inputs and SANS calendars keep their tabs and controls in one row, as drawn (the Inputs
+  pages' D1125) [D926, D1125].
 - The boxes and buttons whose font line the browser had dropped show the app's letters at the size and weight each line
   meant, as drawn — the board's cancel box and its reasons list, an input's own window (its boxes, a member's fixed name,
   Several people, the groups' All), the opened day's note + and + people [D1680].
@@ -154,7 +160,7 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - The keyboard's ring is the app's cyan focus ring, for the keys only, never after a click; under the keys an item of the
   board's or the week's ⋯ menu keeps its raised row and wears the cyan ring, and the board's + Block and Templates
   buttons wear it in place of the browser's own — built, + Wave, the plans selector and a jet's stores wearing it too by
-  D1646's own words, the duty role box, a text box, the boxes' cyan edge [D1646, D1771].
+  D1646's own words; the duty role box, a text box, wears the boxes' cyan edge [D1646, D1771].
 
 ## Questions raised at the control
 - A question raised by pressing a control appears right at that control, a small card hanging from it and pointing at
@@ -196,7 +202,8 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - In a browser that refuses to store anything, every page shows a "Not kept" band under the top bar: the drawn warning
   sign, "Not kept" in bold, "this browser loses your work on a reload" quieter, no Retry, in the "Not saved" strip's
   look; the page moves down under it, and the Tracker's corner shows nothing while it is up; "Not saved" stays the
-  failed-save band's own words; not built yet (filed) [D1901, D1655, D1667].
+  failed-save band's own words; its words measured to fit one line at his iPhone's width; not built yet (filed) [D1901,
+  D1655, D1667].
 - A window he has resized but never moved moves down below the band, as a window not yet placed does, so the band and
   its Retry are never covered; a window he has moved keeps its place [D1523, D587, D841].
 - The test switch `?savefail` on the app's address refuses every save in the one tab opened with it, so the band, its
@@ -210,7 +217,7 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   own, apart from the band's (`raptor-port/docs/mock/2026-11-05-notsaved-refusal/`, round 2) [D1665, D1667, D1668].
 - It opens with the bold word "Blocked:", the rest after the colon in quieter words — never "Not saved", the band's
   alone, and never "Refused", which names a leave bid or an access request turned down; the schedule's general refusal
-  reads "Blocked: nothing was kept"; a document too big to store keeps its own words, in the same note [D1667, D1668,
+  reads "Blocked: nothing was kept" (the agent's reading, approved with round 2's drawing); a document too big to store keeps its own words, in the same note [D1667, D1668,
   D1665].
 - Its look is the app's plain grey note, only the "no entry" sign in red and "Blocked:" in bold white — not a red box, so
   red keeps meaning a change kept that clashes; the cost he was told: on the Balances page the other refusals ("Type a
@@ -270,18 +277,18 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   B's pass — the claws, a "Waiting for an admin" mark, his callsign large, his initials, seat and CAT — its blue fade from
   the top left laid over the whole card, thinning out across the tear, the pass and the foot one surface, the dashed tear
   the only divider [D1649, D1650, D1654, D1656].
-- Under it look A's foot: the three steps (request sent, an admin approves, you're on the schedule), the read-only line,
-  View the schedule and Sign out, "Signed in as …" small at the foot (first the agent's reading, then approved with the
-  drawing); the
-  heading "Your request is with the admins", the strip of the week with his puck and "You'll be able to sign in…" are
+- Under it look A's foot: the three steps (request sent, an admin approves, you're on the schedule), the read-only line
+  and View the schedule (both only while the admins' guest switch is on — People and accounts', below), Sign out, and
+  "Signed in as …" small at the foot (first the agent's reading, then approved with the drawing); the heading "Your request is with the admins", the strip of the week with his puck and "You'll be able to sign in…" are
   gone; what its buttons do is unchanged [D1650, D1656, D1649].
 - The drawing of record: `raptor-port/docs/mock/2026-11-05-access-wait/img/C-diag-phone.png`, with `C-phone.png` and
   `C-desk.png`; a fade is never cut off abruptly partway across what it tints (the design guide's lesson 82) [D1656,
   D1654].
 
 ## On a phone
-- On a phone the page itself never zooms: only the grids that zoom by their own pinch — the Leave War grid and its OIL
-  tab, Quals, the Scheduler Board's desktop layout — zoom, and a pinch anywhere else does nothing; the agent's readings:
+- On a touch screen, a phone or a tablet, the page itself never zooms: only the grids that zoom by their own pinch — the
+  Leave War grid, its OIL tab and its Balances page, Quals, the Scheduler Board's desktop layout and the Tracker's chart —
+  zoom, and a pinch anywhere else does nothing; the agent's readings:
   a double tap no longer zooms the page either, the phone's own larger-text setting is untouched, and on a desktop the
   browser's Ctrl + / − cannot be switched off and stays [D1567].
 - Inside a Power Apps code app the page sits in the host's own frame, which may set its own zoom — not checked; found
@@ -300,24 +307,39 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   wearing the just-added mark, a changed value shows changed, a removed thing is gone with Undo lit — and a passing note
   is raised only for what is important and not intuitive, or complicated; the design guide's §1 states its three cases
   [D850].
-- A note is still raised where the result is out of view, where the press did something the person cannot see or carries
-  a warning, and whenever it failed or was refused; the "Saving…" and "Not saved" signs are not this rule's; a note
+- With or without a note, a screen reader is told the same thing in words; for a reader who asked for less motion the
+  mark still shows, steady, without its fade; the keyboard stays where it was — back on the button that opened the
+  window — never moved to the new thing [D850].
+- A note is still raised where the screen does not show what happened — the result out of view, or the screen the same
+  after the press as before; where the press did more or less than he would expect, in view or not, or carries a
+  warning; and whenever it failed or was refused; the "Saving…" and "Not saved" signs are not this rule's; a note
   already built that only says what the screen shows is put to him as a delete candidate, never deleted unasked [D850].
 
 ## The design guide's standing rules
-- One mark, one look (the guide's §4): the just-added mark is the plain blue ring, no glow, for about six seconds, on the
-  edge of the thing added — a row's controls outside it; a line, row or wave ringed round itself; any table row one box;
-  no other flash over it; a new kind of mark his to rule; a taken suggested brief or rally wears it as a short flash,
-  about a second (built), and on the Leave War a day brought into view wears the Leave War's cyan [D876, D1038, D1449].
+- One mark, one look (the guide's §4): the just-added mark is the plain blue ring, 2px, no glow, for about six seconds
+  (a taken suggestion and the Leave War's day aside, below), its last half second a fade — steady, without the fade,
+  for a reader who asked for less motion — on the edge of the thing added: a row's controls outside it; a line, row or
+  wave ringed round itself; any table row one box; a new block round its heading and each of its rows; a puck dropped
+  in a seat wears none, the puck the sign [D876, D854, D1038, D1449].
+- A thing wearing the mark shows no other flash over it — a flash on something inside it, such as a puck dropped into a
+  new line or its new flag, belongs to that thing; a new kind of mark is his to rule; a taken suggested brief or rally
+  turns ordinary white at once and wears the ring as a short flash, about a second (built — the scheduler's D1038); on
+  the Leave War a day brought into view wears the Leave War's cyan [D876, D1038, D1449].
 - No mark in this app glows (the guide's §4): a ring, stripe, box, line, panel, dot or button is drawn as it is; a shadow
-  in its own colour or a pale band round it (a halo) is a glow, a dark shadow under a window or a menu is depth; the
+  in its own colour or a pale band round it (a halo) is a glow, a solid ring drawn as a shadow is a line, and a dark
+  shadow under a window or a menu is depth; the
   balance bar's and move banner's band and the fast sync dot's and Admin → Users' dots' bands are gone; a new on/off
   control takes the filter chip's "on" look unless he rules otherwise, the app's other "on" looks staying as they are; a
   new glow is his to rule [D887, D1614].
 - The app's own sign is not a mark: the sign-in logo keeps its light, as the loading claw does; the page's faint wash,
   once kept with it, is gone [D887, D1614].
-- Dragging (the guide's §5A): one drop, one landing line, in one place; a thing carried to the edge of what it sits in
-  scrolls it, at the edge distance and speed the app already uses, on for a reader who asked for less motion [D895].
+- Dragging (the guide's §5A): a thing moved between the rows of a list shows one landing line, in one place — the top
+  edge of the row under, the bottom edge only under a list's last row or above a heading it cannot land on; a thing
+  dropped onto a place — a puck onto a seat, a chip onto a day, a heading onto a column — marks that one place, once
+  [D895].
+- Carried near the edge of what it sits in, it scrolls that box in the direction the thing can move, at the edge distance
+  and speed the app already uses, on for a reader who asked for less motion; a drag already built that does otherwise
+  is named to him, never changed without his word; the full wording: the design guide §5A [D895].
 - Nothing pinned leaks: a bar, or any part that stays put while what is under it scrolls, shows none of that content
   behind it or through a gap at its edges, at every zoom and every scroll position, since a pinned part reads as a solid
   surface; the agent's reading: on a phone and a desktop, a heading row included, each check of a screen with a pinned
@@ -347,8 +369,10 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   the approved drawing's phone tag, 53px to the right, is not kept, the drawing check's difference accepted with this
   ruling [D1670].
 - The board's bar and every top bar's pair: the undo-topbar mock-up, `raptor-port/docs/mock/undo-topbar.html` (version
-  4), approved as drawn, is the design of record — on a phone the sync pill its dot alone wherever the pair shows; a
-  changes button for each page an idea filed, not built (`[HIST-PER-PAGE]`) [D349, D481, D854, D347, D348].
+  4), approved as drawn, is the design of record as the later rulings changed it — the compact bar up to 1599 wide, the
+  board's too (D1126, the scheduler's D1130), and the page names beside TALON (D1641–D1643) — on a phone the sync pill
+  its dot alone wherever the pair shows; a changes button for each page an idea filed, not built (`[HIST-PER-PAGE]`)
+  [D349, D481, D854, D347, D348, D1126, D1130, D1641, D1642, D1643].
 - The band, look 1: `raptor-port/docs/mock/2026-11-05-save-band/img/look1-*.png`; the keyboard and windows batch:
   `raptor-port/docs/mock/2026-11-05-keys-windows/` [D1655, D1645, D1646].
 
@@ -376,12 +400,22 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - The scheduler's: a week whose saved copy cannot be read refuses a change in the grey "Blocked:" note [D1785].
 - OIL's: in OIL Earn a tap on a puck that cannot earn picks nothing and says why in the plain passing note, "Nothing
   changed for <callsign>." and the reason — not the grey "Blocked:" note [D1783].
-- The scheduler's: on Edit Schedule a man carried to the week's side moves it one day at a time, the drag rule taking a
-  day's step, stopping at Monday and Sunday, never carried into another week [D1529, D1573].
+- The scheduler's: on Edit Schedule a man carried with the mouse and held at the week's side moves it one day at a time,
+  after a short wait, the drag rule taking a day's step; a name only passing through moves nothing; it stops at Monday
+  and Sunday, never carried into another week; the finger's drag is unchanged (the agent's reading) [D1529, D1573].
 - The scheduler's: OIL Earn's day button is the app's own switch, as on the Logic page — a slider, "No OIL earned", lit
   in the switch's cyan when on — not the filter chip's "on" look [D1782].
 - The scheduler's: on a phone the board's desktop layout pinches the day only, never its bar, and a puck carried to the
   screen's edge scrolls the board [D1107, D1109].
+- The scheduler's settled rule (11–12 Aug 26): the phone board's top bar is one row, its day stepped by arrows — no
+  control is added to its first line without taking one off.
+- The scheduler's: on a phone every window that pops up for a task stands in the middle of the screen, as tall as what is
+  in it up to the visible screen less 24px; the Inputs and SANS calendars' day panels and the ALL AVAIL and changes
+  windows stay at the foot [D997].
+- The scheduler's: when the phone's keys open or close nothing on screen jumps, even for one frame; the box tapped rises
+  in step with the keys, a box already above them not moved, no window shortening and growing back [D1081, D1412].
+- The scheduler's: on a phone a passing note takes the screen's full width less a small margin, never half the screen;
+  the desktop's note stays as it is [D828].
 - The Inputs pages': the "Schedule updated" note after the board's ✓ Done is gone, nothing in its place; "Input added"
   and "Input updated" go where the input is in view, its card wearing the just-added mark; a puck's drop raises no note
   [D851, D854].
@@ -406,10 +440,13 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   D1221].
 - The Leave War's: in the "Open for bidding" window each open stretch carries a calendar icon, not a pencil [D1172].
 - The Tracker's: its typed marks are line icons — its bar's and menus', each tool of Edit chart layout, Merge and Unmerge
-  in words, the lull's × the drawn ✕ — its pencils the app's one solid pencil [D1132, D1135, D1705, D1134].
+  in words, the lull's × the drawn ✕, the × on each student a line icon — its pencils the app's one solid pencil [D1132,
+  D1135, D1705, D1134].
 - The Tracker's: its "Delete course" question and an import's note drop their typed ↺ and ⇅ marks [D1860].
 - The Tracker's: on a phone its Find strip's ✕ empties the box and puts Find away, the ✕ staying in the box [D1791].
 - The Tracker's: its search magnifier becomes the app's own, its handle as long as every other search box's, in place
   of its own shorter one; to build [D1900, D1127].
-- People and accounts': the waiting screen's "View the schedule" shows only while the admins' guest switch is on, off by
-  default [D221, D204].
+- People and accounts': the waiting screen's "View the schedule", and its line that he can look read only meanwhile, show
+  only while the admins' guest switch is on, off by default [D221, D204].
+- People and accounts': on Admin → Users the blue ring on a row a bell's posting line lands on stands 8px outside the row,
+  clear of his name, as built — not on the row's edge [D1694].
