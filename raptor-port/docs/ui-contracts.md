@@ -12422,7 +12422,9 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1783** — in OIL Earn a tap on a puck that cannot earn picks nothing; the plain passing note says "Nothing changed for
   <callsign>." and the reason.
 - **D1784** — an input filed after publishing wears the waiting mark on its Unavailable row too, as on Ground Programme.
+  Built (chat 13): `engine/publish.ts pendingInputIds` (the list the count reads), `ui/html.ts unavPendAtt` on the week's and the board's (`board-html.ts sbInpRow`) Unavailable name, drawn by `scheduler/04-pucks-sections.css`; pins `ui/unavmark.test.tsx`.
 - **D1785** — an unreadable week's notice and refusal words, the refusal in the grey "Blocked:" note.
+  Built (chat 13): `engine/quarantine.ts weekLockReason`; the notice `ui/html.ts quarantineNote` (the week and the board); the refusal `engine/publish.ts lockedWeekNote` / `lockedDayNote`, at every door that refused a locked week; pins `engine/lockednote.test.ts`, `state/quarantine-funnel.test.ts`, `ui/html.test.ts`.
 - **D1787** — the desktop Inputs list's "+ Input" at its row's right end; the list makes room for the window from about
   1340 wide, Name, Start and End narrowing first; narrower, the window covers it as today. The older narrow-list fault
   (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing.
@@ -12432,4 +12434,5 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
 - **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
   hidden warning's ↺; the ✕ stays typed.
+  Built (chat 13 — the eye and the warning's arrow): `ui/glyphs.ts EYE_INNER`, drawn in the plan selector, the version banner (`html.ts`, `SchedBoard.tsx`) and the wave templates window; the Reset arrow on a hidden warning (`html.ts`, `board.ts`); pins `ui/planselector.test.tsx`, `ui/warnmute-week.test.ts`.
 - **D1793** — the phone's board day bar takes the page of blocks and the ticket before Templates and OIL Earn.

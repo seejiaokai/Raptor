@@ -17,15 +17,22 @@ import { commitInputEdit, setInpField, draftOf, removeInput, commitNewInput } fr
 import { SESSION, ME, setSession, setMe } from '../state/auth'
 import { SCHED } from '../engine/publish'
 import { stashClear, stashPut } from '../engine/weekstash'
+import { weekBundle } from '../engine/weeks-data'
 
 const ISNAP = JSON.stringify(INPUTS)
 let said: string[] = []
+let kinds: any[] = []
 const realToast = HOOKS.toast
+/* the read-only week's words to the letter (engine/lockednote.test.ts): an older version's week (D837's reason in D1667's
+   "Blocked:" form) and a week whose saved copy will not read (D1785, 8 Nov 26) — both in the grey note */
+const OLDER_WORDS = 'Blocked: this week was published by an older version of the app, so it can’t be edited. Nothing was saved.'
+const UNREADABLE_WORDS = 'Blocked: this week’s saved copy could not be read, so it can’t be edited. Nothing was saved. Report it with “Report a problem” on the Help page.'
 
 beforeEach(() => {
   INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
   said = []
-  HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
+  kinds = []
+  HOOKS.toast = ((m: any, k?: any) => { said.push(String(m)); kinds.push(k) }) as any
 })
 afterEach(() => { HOOKS.toast = realToast })
 
@@ -48,7 +55,8 @@ describe('an unsupported (protected) week is read-only from the input surfaces (
       expect(setInpField(r, 'str', '10:00'), 'in-place cell edit refused too').toBe(false)
       expect(removeInput(r), 'removal refused too').toBe(false)
       expect(INPUTS.includes(r), 'the input was not removed').toBe(true)
-      expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
+      expect(said.join(' ')).toContain(OLDER_WORDS)
+      expect(kinds, 'in the grey note').toContain('blocked')
     } finally { SCHED.amV = amV; SCHED.cur = cur }
   })
 
@@ -61,21 +69,54 @@ describe('an unsupported (protected) week is read-only from the input surfaces (
       const drafted: any = { person: 'dj', type: 'Meeting', allday: true, start: '2026-07-13' }
       expect(commitNewInput(drafted), 'create refused on a locked week').toBe(false)
       expect(INPUTS.length, 'no input was added').toBe(before)
-      expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
+      expect(said.join(' ')).toContain(OLDER_WORDS)
+      expect(kinds, 'in the grey note').toContain('blocked')
     } finally { SCHED.amV = amV; SCHED.cur = cur }
+  })
+
+  /* D1785, 8 Nov 26: the LOADED week's saved copy will not read (state/persist.ts keeps a damaged row as a record with no
+     days, and the week loads read-only on it): a filing on its dates is refused in its own words, grey, nothing saved */
+  it('a filing on a loaded week whose saved copy will not read is refused, saying so, in the grey note (D1785)', async () => {
+    const { loadWeek } = await import('../state/store')
+    const waves = await import('../engine/waves')   // read through the module: the loaded week is a live binding
+    const { protectedWeek } = await import('../engine/publish')
+    stashClear()
+    stashPut('20/07/2026', '{"unreadable":true}')
+    loadWeek('20/07/2026')
+    const before = JSON.stringify(INPUTS)
+    try {
+      expect(protectedWeek(), 'the loaded week is read-only').toBe(true)
+      said = []; kinds = []
+      expect(commitNewInput({ person: 'dj', type: 'Meeting', allday: true, start: '2026-07-21' } as any), 'refused').toBe(false)
+      expect(JSON.stringify(INPUTS), 'nothing was saved').toBe(before)
+      expect(said).toEqual([UNREADABLE_WORDS])
+      expect(kinds).toEqual(['blocked'])
+    } finally {
+      if (waves.CURWEEK !== waves.BOOT_WEEK) loadWeek(waves.BOOT_WEEK)
+      stashClear()
+    }
   })
 
   it('an input belonging to a STASHED protected week is refused even while a SUPPORTED week is loaded (P2-REREVIEW-02)', () => {
     // loaded week (Jul 13) stays supported; week B (Jul 20) is a stashed unsupported book
-    stashClear()
-    stashPut('20/07/2026', JSON.stringify({ o: { 0: { d: {}, c: {} } }, cv: { 0: 'orig' } }))
-    const r: any = INPUTS[0]; r.date = 'Jul 20'; delete r.endDate; r.allday = true; r.yr = 2026
-    try {
-      const d: any = draftOf(r); d.allday = true
-      expect(commitInputEdit(r, d), 'refused: the input is on a stashed protected week').toBe(false)
-      expect(removeInput(r), 'delete refused too').toBe(false)
-      expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
-    } finally { stashClear() }
+    /* D1785, 8 Nov 26: each says why. The older book carries its days (it reads as a week, in a form this app will not
+       edit); the same record without its days does not read as a week at all, so it says its saved copy could not be read */
+    const cases: [string, string, string][] = [
+      ['an older version’s book', JSON.stringify({ d: weekBundle('20/07/2026').days, o: { 0: { d: {}, c: {} } }, cv: { 0: 'orig' } }), OLDER_WORDS],
+      ['a record with no days', JSON.stringify({ o: { 0: { d: {}, c: {} } }, cv: { 0: 'orig' } }), UNREADABLE_WORDS],
+    ]
+    for (const [what, blob, words] of cases) {
+      stashClear(); said = []; kinds = []
+      stashPut('20/07/2026', blob)
+      const r: any = INPUTS[0]; r.date = 'Jul 20'; delete r.endDate; r.allday = true; r.yr = 2026
+      try {
+        const d: any = draftOf(r); d.allday = true
+        expect(commitInputEdit(r, d), `refused: the input is on a stashed protected week — ${what}`).toBe(false)
+        expect(removeInput(r), 'delete refused too').toBe(false)
+        expect(said, what).toEqual([words, words])
+        expect(kinds, what).toEqual(['blocked', 'blocked'])
+      } finally { stashClear() }
+    }
   })
 })
 

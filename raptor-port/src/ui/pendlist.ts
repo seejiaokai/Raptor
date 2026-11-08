@@ -24,7 +24,7 @@ import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isOD, INPUTS, inpId, inpLabel, goneRequestName, isFly, titleOf, toOf, inputCoversDate, idsOf, placeholderOf, remarksShown } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
-import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
+import { dayPendingItems, inputIdOf, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
 import { ELOG, elogWhen, elogWho, keyLabel, rowTouches, weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
@@ -171,14 +171,8 @@ function lastEdit(keys: string[]) {
    disagree. An INPUT's change (its details, its filing, a request's row with its filing) has no cells of its own: it is
    found by the input's id, which the change history keeps on every absence line (state/changelines.ts), preferring a
    line that touches this day; a cell change keeps its own cells' newest line (Astra's final read, ASTRA-DP-FINAL-02 —
-   a leave filed after publishing named nobody and sorted below older work). */
-function inputIdOf(it: PendItem): string | null {
-  for (const e of [it.val, it.inp, (it.kind === 'input' ? it.entry : null)] as any[]) {
-    const a = String((e && e.addr) || ''); if (!/^in[pv]:/.test(a)) continue
-    const id = decodeURIComponent(a.split('.').slice(1).join('.')); if (id) return id
-  }
-  return null
-}
+   a leave filed after publishing named nobody and sorted below older work). The input's id comes from engine/publish.ts
+   inputIdOf, the one the Unavailable row's waiting mark reads too (D1784). */
 function editRowOf(di: number, it: PendItem) {
   const id = inputIdOf(it)
   if (id) {
