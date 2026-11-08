@@ -20,6 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/rules-diet-step-5a-it-guide-8b561f -->
+### CHAT 15 — the rules diet's step 5a, the IT flow guide as a page — MERGED 8 Nov 26 (pull request 690, on his "merge live")
+- **Live:** `.claude/rules/decisions/it-flow-guide.md` is a page, "The IT flow guide — how it works now" (D1735): its 9 rulings stated by topic, D413 with D1177, pointers to the Leave War's D1177, D1225, D418, D1724 and D1208, D1166 stated beside D413; its tripwire in `docsize.mjs` raised 5,000 → 10,300 bytes with his "merge live" (the page 9,330). The account by requirement (92 parts) and the two blind reads (Astra 6, a fresh Opus reader 9 — all fixed): `raptor-port/docs/superpowers/briefs/2026-11-08-rules-diet-step5a-it-guide-*.md`; the reads compared and the lesson for the rest of step 5 (search other areas by each rule's subject, not by the area's name): the plan's §Step 5a on the IT guide. No reads owed.
+- **Left open:** the deck still pictures the Leave War's stages and its words state stage-era rules — on `[ITFLOW-OIL-RESHOOT]`, done with the rebuild he asks for (D403); the guide's README lines were marked. D418's full row has no mark from D1724 — with `[LW-FULL-EDITING]` or the Leave War's page in step 5b.
+- **Next for the diet:** people, design, the Tracker, each on his word (batching on one branch only if he says), then the re-measure before 5b (the plan's §7).
+- **Remove this block at the next handoff** — nothing else is open from chat 15.
+<!-- /now -->
 <!-- now:claude/pr-tracker-787259 -->
 ### CHAT 10 (took over chat 9's job) — the pictures round's group 7, the Tracker — MERGED 8 Nov 26 (pull request 687, on his "merge live" typed in chat 10; chat 9's, passed on in a brief, was refused by the app's safety check — skill note 877)
 - **Live:** D1790 (the marking window: where it would not fit under the event, the chart slides the event up under the tabs and the window opens whole 4px under it; at the chart's end, where it cannot slide, the page's option B), D1791 (on a phone Find's ✕ empties the box and puts Find away; a pick puts it away), D1792 (c) (Restore wears the drawn Reset arrow); and chat 10's fix — while the chart slides, no part of it takes a press (each event's invisible press circle did, so a double-click opened a second window from mid-slide; `components/Pop.jsx`, `tracker.css`). Evidence `raptor-port/docs/handpass/2026-11-08-chat9-tracker.md`; the drawing check's one difference (the window 6.3px lower than drawn) and the phone-on-its-side placement were shown to him 8 Nov 26.
@@ -43,14 +50,6 @@ the later merge keeps both (D78).
 - **Live:** the day switch "No OIL earned", cyan when on (D1782); in OIL Earn a tap on a puck that cannot earn picks nothing and says "Nothing changed for <callsign>." and its reason (D1783); the phone day bar's marks — the page of blocks and the ticket (D1793); with the code reads' three fixes (a SANS availability card's man inert in the mode; a press on the switch's words keeps the pick and the search; a placeholder on a row nobody can earn from says that row's reason). Evidence: `raptor-port/docs/handpass/2026-11-08-oil-earn-board.md` (the walk, the drawing check, the three blind reads and the host's re-walk); [OIL-EARN-DAY-SWITCH-WORDS] and [OIL-INERT-TAP-SILENT] archived; [UI-CONSISTENCY-LOOK] round 5 (e) built.
 - **Filed, open:** [OIL-SWITCH-NOSAVE-SHOW], [OIL-WINDOW-FOOT-SHAPE], [OIL-ROSTER-TAP-SELECTS], [OIL-INERT-WHY-CX-INFO], [OIL-EARN-WORDS-LEFT], [OIL-EARN-BOARD-TIDY], and [BOARDNAV-SCRUB-CLICK-TIMER] (a board test's 350 ms window that can fail under load; no app code). No reads owed — Astra, Sol 6.1 and a fresh Opus reader each read it. No rulings recorded (D1810–D1819 returned unused).
 - **Remove this block at the next handoff** — nothing else is open from chat 5.
-<!-- /now -->
-<!-- now:claude/rules-diet-step-5a-oil -->
-### CHAT 12 — the rules diet's step 5a, OIL as a page (the full trial) — MERGED 8 Nov 26 (pull request 684, on his "merge live")
-- **Live:** `.claude/rules/decisions/oil.md` is a page of how OIL works now, each rule stated once with its rulings cited (D1735); its tripwire in `docsize.mjs` raised 15,500 → 22,600 bytes with his "merge live". The account by requirement (`raptor-port/docs/superpowers/briefs/2026-11-08-rules-diet-step5a-account.md`) and the two blind reads (Astra, a fresh Opus reader — `…-step5a-read-astra.md`, `…-read-opus.md`) found 48 parts in all, each fixed against its full row; the trial of the whole route and the lessons for the rest of step 5: the plan's §Step 5a. The page saves nothing for OIL (20,564 bytes against the table's 14,525) — said in the plan, measured again before 5b.
-- **Left open, each named in the account and the plan:** D43's full row stops mid-sentence — filed in [RULES-DIET], not guessed at; whether a typed B starts a flying SPARE's own span (D606 against D1044 — the page claims neither); whether a BB duty desk offers the switch (not ruled); D592's readings 8 and 9, stated as readings put to him. No reads owed — Astra and a fresh Opus reader both read it.
-- **Its number:** started as "chat 5", already taken, so **12** (D1744). Compacted once, 8 Nov 26 about 11:10, during the merge — nothing lost.
-- **Next for the diet:** step 5a's next areas (the IT guide, people, design, the Tracker), each on his word, and the re-measure before 5b (the plan's §7).
-- **Remove this block at the next handoff** — nothing else is open from chat 12.
 <!-- /now -->
 <!-- now:claude/pr-leave-war-4988a8 -->
 ### CHAT 8 — the pictures round's group 6, the Leave War — MERGED 8 Nov 26 (pull request 680, on his "merge live")
