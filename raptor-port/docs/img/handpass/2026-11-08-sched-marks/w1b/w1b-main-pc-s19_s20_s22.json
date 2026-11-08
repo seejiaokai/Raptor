@@ -1,0 +1,106 @@
+[
+ {
+  "id": "S19.0 LL published as AL1 {\"published\":true,\"label\":\"Publish AL1\",\"version\":\"AL1\",\"signSelects\":4}",
+  "size": "pc",
+  "exp": "row, plain, no pending",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s19-0-clean.png"
+ },
+ {
+  "id": "s19.CRASH",
+  "size": "pc",
+  "exp": "",
+  "got": "page.waitForSelector: Timeout 30000ms exceeded.",
+  "verdict": "NOT DRIVEN",
+  "pic": ""
+ },
+ {
+  "id": "S20.0 start: LL on Wed only; Wed+Thu published, Fri draft",
+  "size": "pc",
+  "exp": "Wed row plain",
+  "got": "D2 pend=null ver=ORIG rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain] // D3 pend=null ver=ORIG rows=ATT C[plain];OD[plain];OIL[plain] // D4 pend=null ver=DRAFT rows=ATT C[plain];OD[plain]",
+  "verdict": "RECORDED",
+  "pic": "pc-s20-0-start.png"
+ },
+ {
+  "id": "s20.CRASH",
+  "size": "pc",
+  "exp": "",
+  "got": "page.waitForSelector: Timeout 30000ms exceeded.",
+  "verdict": "NOT DRIVEN",
+  "pic": ""
+ },
+ {
+  "id": "S22.0 setup: Bolt in AL1, Saint pending {\"published\":true,\"label\":\"Publish AL1\",\"version\":\"AL1\",\"signSelects\":4}",
+  "size": "pc",
+  "exp": "Bolt plain, Saint dotted",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s22-0-setup.png"
+ },
+ {
+  "id": "S22.1 look at Original (week)",
+  "size": "pc",
+  "exp": "drawn eye 11px in selector, 12px in banner; no live mark",
+  "got": "{\"selText\":\"Original▾\",\"selEye\":[\"11x11 stroke=rgb(241, 244, 247) color=rgb(241, 244, 247)\"],\"selWrapH\":22,\"banner\":\"← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes.Load \",\"bannerEye\":[\"12x12 stroke=rgb(182, 192, 203) color=rgb(182, 192, 203)\"],\"typed\":false,\"aln\":0,\"dotted\":0} // pend=1 pending ver=AL1 rows=OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s22-1-orig-look.png"
+ },
+ {
+  "id": "S22.1b look at Original at 2560 wide",
+  "size": "pc",
+  "exp": "eye 11/12px",
+  "got": "{\"selText\":\"Original▾\",\"selEye\":[\"11x11 stroke=rgb(241, 244, 247) color=rgb(241, 244, 247)\"],\"selWrapH\":22,\"banner\":\"← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes.Load \",\"bannerEye\":[\"12x12 stroke=rgb(182, 192, 203) color=rgb(182, 192, 203)\"],\"typed\":false,\"aln\":0,\"dotted\":0}",
+  "verdict": "RECORDED",
+  "pic": "pc-s22-1b-2560.png"
+ },
+ {
+  "id": "S22.2 look at AL1 (week)",
+  "size": "pc",
+  "exp": "drawn eye, frozen content, no live mark",
+  "got": "{\"selText\":\"AL1▾\",\"selEye\":[\"11x11 stroke=rgb(241, 244, 247) color=rgb(241, 244, 247)\"],\"selWrapH\":22,\"banner\":\"← Back to live copy Viewing the issued AL1 — read-only. This is what was sent out; it never changes.Load onto \",\"bannerEye\":[\"12x12 stroke=rgb(182, 192, 203) color=rgb(182, 192, 203)\"],\"typed\":false,\"aln\":0,\"dotted\":0} // pend=1 pending ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s22-2-al1-look.png"
+ },
+ {
+  "id": "S22.3 back to working copy (live colour was rgb(229, 194, 74))",
+  "size": "pc",
+  "exp": "Saint marked again, pending back",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s22-3-back-live.png"
+ },
+ {
+  "id": "S22.4 repeated looks and returns",
+  "size": "pc",
+  "exp": "marked in same colour",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain] liveColor=rgb(229, 194, 74)",
+  "verdict": "PASS",
+  "pic": ""
+ },
+ {
+  "id": "S22.5 look at AL1 (board)",
+  "size": "pc",
+  "exp": "drawn eye, no outlined name",
+  "got": "{\"selText\":\"AL1▾\",\"selEye\":[\"11x11\"],\"banner\":\"← Back to live copy Viewing the issued AL1 — read-only. This is what was sent out; it never changes.\",\"bannerEye\":[\"12x12\"],\"typed\":false,\"outlined\":0}",
+  "verdict": "PASS",
+  "pic": "pc-s22-5-board-look.png"
+ },
+ {
+  "id": "S22.6 board back to working copy",
+  "size": "pc",
+  "exp": "Saint outlined dotted",
+  "got": "[{\"name\":\"LL\",\"tag\":\"BUTTON\",\"aln\":\"2\",\"outline\":\"dotted 1px rgb(229, 194, 74)\",\"bg\":\"rgba(178, 77, 234, 0.12)\",\"color\":\"rgb(221, 168, 245)\"}]",
+  "verdict": "PASS",
+  "pic": "pc-s22-6-board-back.png"
+ },
+ {
+  "id": "S22 errors",
+  "size": "pc",
+  "exp": "none",
+  "got": "none",
+  "verdict": "RECORDED",
+  "pic": ""
+ }
+]

@@ -1,0 +1,119 @@
+{
+ "publish": {
+  "published": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "clean.week": {
+  "pend": "5 changes",
+  "unav": {
+   "err": "no Unavailable row for Bolt"
+  },
+  "ground": []
+ },
+ "file.bolt": {
+  "iid": "imriimoi9fw4sda",
+  "type": "LL"
+ },
+ "file.saint": {
+  "iid": "imriimrodfq3jaj",
+  "type": "Meeting",
+  "place": null,
+  "keys": "people,type,allday,s,e,date,yr,remarks,mod,iid,by,modBy,at,modAt,ord,acc"
+ },
+ "pending.week": {
+  "pend": "2 pending",
+  "unav": [
+   {
+    "name": "LL",
+    "tag": "BUTTON",
+    "aln": "1",
+    "alp": "1",
+    "deco": "underline dotted rgb(59, 198, 232)",
+    "title": "Edit this input — times, type, remarks or delete"
+   }
+  ],
+  "ground": [
+   {
+    "text": "MEETING06:0018:00SaintB+ addLATESafety brief",
+    "aln": "1",
+    "deco": "underline dotted rgb(59, 198, 232)"
+   }
+  ]
+ },
+ "ground.where": [
+  {
+   "cls": "pl-row gr-frominput",
+   "sec": "sub plist one sec sec-grnd",
+   "text": "MEETING06:0018:00SaintB+ addLATESafety brief"
+  }
+ ],
+ "changes.open": [],
+ "board.unav": [
+  {
+   "name": "LL",
+   "tag": "BUTTON",
+   "aln": "1",
+   "outline": "dotted 1px rgb(59, 198, 232)",
+   "bg": "rgba(178, 77, 234, 0.12)",
+   "color": "rgb(221, 168, 245)"
+  }
+ ],
+ "board.ground": [
+  {
+   "cls": "ain",
+   "text": "MEETING",
+   "aln": "1",
+   "outline": "dotted 1px rgb(59, 198, 232)"
+  },
+  {
+   "cls": "sbi-ty inpty ty-lv inpedit",
+   "text": "LL",
+   "aln": "1",
+   "outline": "dotted 1px rgb(59, 198, 232)"
+  }
+ ],
+ "board.pendchip": "2 pending",
+ "publish.al": {
+  "btns": [
+   {
+    "a": "data-alpub",
+    "t": "Publish AL1",
+    "dis": false
+   }
+  ],
+  "pressed": true,
+  "ver": "AL1"
+ },
+ "after.board": [
+  {
+   "name": "LL",
+   "tag": "BUTTON",
+   "aln": null,
+   "outline": "none 3px rgb(221, 168, 245)",
+   "bg": "rgba(178, 77, 234, 0.12)",
+   "color": "rgb(221, 168, 245)"
+  }
+ ],
+ "after.week": {
+  "pend": "12 changes",
+  "unav": [
+   {
+    "name": "LL",
+    "tag": "BUTTON",
+    "aln": null,
+    "alp": null,
+    "deco": "none solid rgb(182, 192, 203)",
+    "title": "Edit this input — times, type, remarks or delete"
+   }
+  ],
+  "ground": [
+   {
+    "text": "MEETING06:0018:00SaintB+ addLATESafety brief",
+    "deco": "underline solid rgb(59, 198, 232)"
+   }
+  ]
+ },
+ "errs": []
+}

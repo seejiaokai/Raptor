@@ -7,7 +7,7 @@ import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay, TIME_TXT, not
 import { CmdRefused } from '../command'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { isOD, INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate } from '../engine/inputs'
+import { isOD, INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate, listedPersonal } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -32,7 +32,7 @@ import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { menuEscape, menuKeys, menuFirst } from './sheetfocus'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { iuParts } from '../engine/keys'
-import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho, markMoved } from './inputedit'
+import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho, markMoved, protectedInput } from './inputedit'
 import { oilWaitThen, holdForOil } from './oilwait'
 import { openAvailWinFrom } from './availopen'
 import { withDaySnap, lateMates } from './html'
@@ -166,11 +166,15 @@ export function jumpToChange(key: string | string[], di: any) {
      left — nothing of the older version is loaded or changed. */
   if (di != null && view.DPREV.has(+di)) view.setDayPreview(+di, null)
   /* a request still waiting under Personal Inputs sits in a panel that is folded by default: open it on that day, so
-     the row the line is about is drawn to land on (Fable's final read, F5) */
+     the row the line is about is drawn to land on (Fable's final read, F5). Only for an input listed there — never a leave
+     or a course under Unavailable — and, for one accepted onto the programme, only on a day its programme row does not
+     stand on: a Mon–Tue meeting standing on Monday is a card under Personal Inputs on Tuesday (the final code read, 8 Nov
+     26 — Astra 2, the fresh Opus reader F2 (iii) and F4: Tuesday's tap left the panel folded and said "not shown"; a
+     leave's opened it for nothing) */
   for (const k of cands) {
     if (!k.startsWith('iu:') || di == null) continue
     const inp: any = INPUTS.find((x: any) => inpId(x) === (iuParts(k) || { iid: '' }).iid)
-    if (inp && inp.acc !== 'u' && inp.acc !== 'g') view.PIOPEN.add(+di)
+    if (inp && listedPersonal(inp) && (inp.acc !== 'g' || !standsOn(DAYS[+di], inpId(inp), inp))) view.PIOPEN.add(+di)
   }
   /* …and View-only Sched shows a PUBLISHED day's issued face by default, which draws nothing to land on (it is the
      document, frozen): the change lives on the working copy, so the day turns to its Working draft first and says so
@@ -1040,6 +1044,13 @@ export function routeClick(e: MouseEvent) {
     const di = +ab.dataset.accd!, k = ab.dataset.acck!, dest = ab.dataset.acc!
     const inp = INPUTS.find((x: any) => inpId(x) === k)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
+    /* A REQUEST THAT RUNS INTO A READ-ONLY WEEK is refused before anything is asked or tried, in that week's own words, in
+       the grey note (D1785, D1667–D1669 — the final code read, 8 Nov 26: Sol 6.1 S3, the fresh Opus reader F3). The
+       engine refuses it too (engine/slots.ts acceptInput, unacceptInput), but before any write, so the store's backstop
+       never sees one and this door said its own amber words — "can't be changed here right now", or "Can't tell whether
+       … load that week first" — and nobody learned the saved copy could not be read. ui/inputedit.tsx protectedInput is
+       the input window's same check, and says it. */
+    if (protectedInput(inp)) return
     const find = () => INPUTS.find((x: any) => inpId(x) === k)
     /* WHY A PRESS WAS REFUSED, in words (a refused press is never silent — [HUMAN-RETEST] walk W4-F3, 24 Sep 26: "→ Ground"
        on an input whose row is already on the programme, or on a locked week, used to do nothing at all). Named as the
@@ -1060,6 +1071,8 @@ export function routeClick(e: MouseEvent) {
        answer and the put-back are then ONE command, one Undo. (The body keeps the indentation it had before it was
        given a name, so the change reads as the change.) */
     const run = (inp: any, oil?: Record<string, number>): boolean => {
+    /* (asked again here: an OIL answer can come after the week turned read-only — the bar's "Answer OIL") */
+    if (protectedInput(inp)) return false
     /* read BEFORE the write: which day's row an Undo takes off ([REQ-DOOR-WORDS] 2 — the card is drawn on every day the
        request covers, its one row stands on one of them), and whether an Accept adopts a row already standing
        ([REQ-ORPHAN-ROW] 3 — a "taken off" request whose own row came back with a plan) */
@@ -1169,6 +1182,9 @@ export function routeClick(e: MouseEvent) {
     const press = (): string => {
       const r = find()
       if (!r) return 'none'
+      /* (the bar's "Answer OIL" comes back here: the week may have turned read-only since — refused before the question or
+         the dry run, as the first press is above; Astra's narrow re-read, 8 Nov 26) */
+      if (protectedInput(r)) return 'refused'
       const off = (x: any) => !!x && x.acc !== 'g' && x.acc !== 'u'
       /* …and still an input of THIS card's day: the bar keeps the day the card was pressed on, and the input's dates
          can be changed under it (the Opus read, F5 — a row was written on a day it no longer covered) */

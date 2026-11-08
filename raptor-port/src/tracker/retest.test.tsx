@@ -446,6 +446,9 @@ describe('[HUMAN-RETEST] the Tracker — a deleted built-in rides the backup (ro
     expect(C.orderedSylIds(), 'it stays deleted, as before the wipe').not.toContain(b24)
     expect(C.hiddenBuiltins().map((b: any) => b.id), 'still restorable from ⇅ Reorder').toContain(b24)
     expect(closing, 'the closing report names it').toMatch(/2024/)
+    /* D1860: the note names Restore and Reorder by their words alone — a message box cannot draw the marks */
+    expect(closing, 'D1860: the deleted chart\'s note, without the typed ↺ and ⇅').toContain('\n\nDeleted, as in the backup: 2024 (Restore in Reorder brings it back).')
+    expect(closing, 'D1860: no typed mark left in it').not.toMatch(/[↺⇅]/u)
     await C.restoreHiddenSyl(b24)
     await C.saveOrderList(C.orderedSylIds().map((id: string) => C.sylName(id)).sort((a: string, b: string) => (a === '2024' ? -1 : b === '2024' ? 1 : 0)))
     await C.whenLoaded()
@@ -723,6 +726,9 @@ describe('[HUMAN-RETEST] the Tracker — a deleted course can be restored (round
     expect(C.dlg.msg, 'the question names the way back').toMatch(/Restore/)
     expect(C.dlg.msg, 'and not the old promise with no door').not.toMatch(/marks remain in storage/)
     expect(C.dlg.msg, 'D131: it promises no more than it does').toMatch(/in this browser/)
+    /* D1860 (8 Nov 26 — "Yes to both"): a message box cannot draw the app's marks, so the question names Restore and
+       Reorder by their words alone, every other word kept */
+    expect(C.dlg.msg, 'D1860: the words, without the typed ↺ and ⇅').toBe('Delete course KEEP D128?\n\nIts students and marks are kept: Restore in Reorder courses brings it back in this browser.')
     C.dlgClose(true); await d; await C.whenLoaded()
     expect(C.COURSES.map((c: any) => c.id), 'gone from the dropdown').not.toContain(cid)
     expect(C.deletedCourses().map((c: any) => c.id), 'listed as deleted').toContain(cid)

@@ -4,8 +4,9 @@
    (a 24-unit box, a 2-wide line, round ends — ui/icons.tsx), each in its button's own colour, so every device draws them
    alike. One source, as the pencil's (ui/pen.ts): each drawing's shapes are here, fed to the React icons (`ui/icons.tsx`)
    and, as markup, to the builders that print a button as text (`glyphSvg` — the waves menu's gear, a section's Auto sort).
-   The shapes are the approved drawing's own (`scripts/handpass/cr4-look.mjs` ICON); the Tracker keeps its own copies
-   (`tracker/components/Glyphs.jsx`) so a standalone export carries them, and its tests keep the two the same. */
+   The shapes are the approved drawing's own (`scripts/handpass/cr4-look.mjs` ICON); the Tracker draws the React icons too
+   (`tracker/components/Glyphs.jsx` — the copies it kept for a standalone export went with [TRK-KEPT-COPIES], 8 Nov 26,
+   D1538). */
 
 /** The one settings gear (D1509 — the Leave War's own; D1707 — in its button's colour, the Leave War's grey as today). */
 export const GEAR_INNER = '<circle cx="12" cy="12" r="3"/>'
@@ -30,6 +31,12 @@ export const DESKTOP_INNER = '<rect x="2" y="3" width="20" height="14" rx="2"/><
  *  means History only (D1700 — his catch: OIL Earn had been drawn with History's clock beside it). */
 export const TICKET_INNER = '<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/>'
   + '<path d="M13 5v2M13 17v2M13 11v2"/>'
+
+/** The eye — the wave templates window's own "shown" mark (`ui/WaveTplModal.tsx` EyeOn draws from here, its look
+ *  unchanged). Since D1792 (a), 8 Nov 26, it is also the eye of a look at a published version or a saved plan — the
+ *  day's plan selector and the look's banner, on Edit Schedule's week and the Scheduler Board — where a typed eye stood,
+ *  which his iPhone draws as a coloured emoji. */
+export const EYE_INNER = '<path d="M1.5 12S5 5 12 5s10.5 7 10.5 7S19 19 12 19 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.2"/>'
 
 /** A drawing as markup, for the HTML-string builders. `cls` sizes it where it stands. */
 export function glyphSvg(inner: string, cls = 'btnglyph'): string {

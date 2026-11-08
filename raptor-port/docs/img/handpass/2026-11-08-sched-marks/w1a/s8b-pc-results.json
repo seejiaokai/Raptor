@@ -1,0 +1,199 @@
+{
+ "fileLL": {
+  "iid": "imriimgxo4xnukm",
+  "type": "LL",
+  "who": [
+   {
+    "p": "yeti",
+    "by": "stiff",
+    "at": 1783904405820
+   }
+  ]
+ },
+ "publish": {
+  "published": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "clean": {
+  "pending": "6 changes",
+  "week": [
+   {
+    "name": "LL",
+    "who": "CBoltC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": null
+ },
+ "delete": {
+  "snap": {
+   "pending": "1 pending",
+   "week": [
+    {
+     "name": "OL",
+     "who": "CobraIP",
+     "aln": null,
+     "deco": "none solid",
+     "marked": false
+    },
+    {
+     "name": "ATT C",
+     "who": "GritC",
+     "aln": null,
+     "deco": "none solid",
+     "marked": false
+    },
+    {
+     "name": "OD",
+     "who": "CNomadC",
+     "aln": null,
+     "deco": "none solid",
+     "marked": false
+    },
+    {
+     "name": "OIL",
+     "who": "CGambitC",
+     "aln": null,
+     "deco": "none solid",
+     "marked": false
+    }
+   ],
+   "ground": [],
+   "changes": "⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Bolt · LL Saber 13/7 09:00 deleted Tap a change to go to it."
+  }
+ },
+ "refileIdentical": {
+  "r": {
+   "iid": "imriin1far47xih",
+   "type": "LL",
+   "who": [
+    {
+     "p": "yeti",
+     "by": "stiff",
+     "at": 1783904432374
+    }
+   ]
+  },
+  "snap": {
+   "pending": "8 changes",
+   "week": [
+    {
+     "name": "LL",
+     "who": "CBoltC",
+     "aln": null,
+     "deco": "none solid",
+     "marked": false
+    },
+    {
+     "name": "OL",
+     "who": "CobraIP",
+     "aln": null,
+     "deco": "none solid",
+     "marked": false
+    },
+    {
+     "name": "ATT C",
+     "who": "GritC",
+     "aln": null,
+     "deco": "none solid",
+     "marked": false
+    },
+    {
+     "name": "OD",
+     "who": "CNomadC",
+     "aln": null,
+     "deco": "none solid",
+     "marked": false
+    },
+    {
+     "name": "OIL",
+     "who": "CGambitC",
+     "aln": null,
+     "deco": "none solid",
+     "marked": false
+    }
+   ],
+   "ground": [],
+   "changes": null
+  }
+ },
+ "board": {
+  "sbPending": null,
+  "rows": [
+   {
+    "name": "LL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CBoltC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CobraIP",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "cls": "sbi-ty inpty ty-dn inpedit",
+    "who": "GritC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "cls": "sbi-ty inpty ty-dt inpedit",
+    "who": "CNomadC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CGambitC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   }
+  ]
+ },
+ "errs": []
+}

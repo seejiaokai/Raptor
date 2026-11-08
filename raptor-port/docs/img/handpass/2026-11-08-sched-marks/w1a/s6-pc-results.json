@@ -1,0 +1,325 @@
+{
+ "fileShared": {
+  "iid": "imriimh4ue0qff3",
+  "type": "Other",
+  "who": [
+   {
+    "p": "yeti",
+    "by": "stiff",
+    "at": 1783904406078
+   },
+   {
+    "p": "salsa",
+    "by": "stiff",
+    "at": 1783904406078
+   }
+  ]
+ },
+ "publish": {
+  "published": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "clean": {
+  "pending": "6 changes",
+  "week": [
+   {
+    "name": "Other",
+    "who": "CBoltC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "Other",
+    "who": "SaintB",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": null
+ },
+ "shared.rows": {
+  "week": [
+   {
+    "name": "Other",
+    "who": "CBoltC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "Other",
+    "who": "SaintB",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ]
+ },
+ "board.clean": {
+  "sbPending": null,
+  "rows": [
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "CBoltC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "SaintB",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CobraIP",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "cls": "sbi-ty inpty ty-dn inpedit",
+    "who": "GritC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "cls": "sbi-ty inpty ty-dt inpedit",
+    "who": "CNomadC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CGambitC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   }
+  ]
+ },
+ "board.inline": [
+  {
+   "text": "⠿OtherLATECBoltCRange partyReject",
+   "inputs": [
+    "atm:06:00",
+    "atm:18:00",
+    "ain rmkin:Range party"
+   ]
+  },
+  {
+   "text": "⠿OtherLATESaintBRange partyReject",
+   "inputs": [
+    "atm:06:00",
+    "atm:18:00",
+    "ain rmkin:Range party"
+   ]
+  },
+  {
+   "text": "⠿OLCobraIPOverseas leave — off islandtill 15 Jul",
+   "inputs": [
+    "atm:",
+    "atm:",
+    "ain rmkin:Overseas leave — off island"
+   ]
+  },
+  {
+   "text": "⠿ATT CGritCMedically downtill 17 Jul",
+   "inputs": [
+    "atm:",
+    "atm:",
+    "ain rmkin:Medically down"
+   ]
+  },
+  {
+   "text": "⠿ODCNomadCOverseas duty — exercise, off islandtill 17 JulRej",
+   "inputs": [
+    "atm:",
+    "atm:",
+    "ain rmkin:Overseas duty — exercise, off island"
+   ]
+  },
+  {
+   "text": "⠿OILCGambitCtill 15 Jul",
+   "inputs": [
+    "atm:",
+    "atm:",
+    "ain rmkin:"
+   ]
+  }
+ ],
+ "editRemarksFromBolt": {
+  "pending": "1 pending",
+  "week": [
+   {
+    "name": "Other",
+    "who": "CBoltC",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "SaintB",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": "⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Other · 2 people Saber 13/7 09:00 Bolt, Saint “Range party” → “Range party — Bolt only?” Tap a change to go to it."
+ },
+ "board.edited": {
+  "sbPending": null,
+  "rows": [
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "CBoltC",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "SaintB",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CobraIP",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "cls": "sbi-ty inpty ty-dn inpedit",
+    "who": "GritC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "cls": "sbi-ty inpty ty-dt inpedit",
+    "who": "CNomadC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CGambitC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   }
+  ]
+ },
+ "errs": []
+}

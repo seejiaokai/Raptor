@@ -112,8 +112,8 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   window's line eye; the Inputs calendar's ⤢ and ⤡ two new marks, arrows out and arrows in — a departure named to him,
   the old ⤡ pointing out on the other slant; the Tracker's ↺ Restore and a hidden warning's ↺ the Reset arrow; the ✕
   that hides a warning stays typed [D1792].
-- As the code shows on 8 Nov 26: the Inputs calendar's pair and the Tracker's Restore are built; the 👁 and a hidden
-  warning's ↺ are built on the pictures round's schedule-marks branch, not yet live [D1792].
+- As the code shows on 8 Nov 26, all four are built: the Inputs calendar's pair, the Tracker's Restore, the 👁 and a
+  hidden warning's ↺ [D1792].
 - The board's OIL Earn wears no clock while History's clock stands on its bar; the agent's reading, lesson 70's other
   half: a new mark is set beside every mark on its bar and its page before it is proposed, and one a person could
   mistake for another is redrawn, or one of the two takes its words alone, before it is built; the reset arrow
@@ -193,6 +193,10 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   too, the page moved down under it, so a stranger whose request was not saved is never told it was sent; the pass there
   reads "Not sent yet" in the band's amber — its mark and its first step, the dot an amber ring with "!", the rest plain
   (the agent's reading, as drawn) — its look coming back by itself once the save lands [D1657, D1664].
+- In a browser that refuses to store anything, every page shows a "Not kept" band under the top bar: the drawn warning
+  sign, "Not kept" in bold, "this browser loses your work on a reload" quieter, no Retry, in the "Not saved" strip's
+  look; the page moves down under it, and the Tracker's corner shows nothing while it is up; "Not saved" stays the
+  failed-save band's own words; not built yet (filed) [D1901, D1655, D1667].
 - A window he has resized but never moved moves down below the band, as a window not yet placed does, so the band and
   its Retry are never covered; a window he has moved keeps its place [D1523, D587, D841].
 - The test switch `?savefail` on the app's address refuses every save in the one tab opened with it, so the band, its
@@ -405,6 +409,7 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   in words, the lull's × the drawn ✕ — its pencils the app's one solid pencil [D1132, D1135, D1705, D1134].
 - The Tracker's: its "Delete course" question and an import's note drop their typed ↺ and ⇅ marks [D1860].
 - The Tracker's: on a phone its Find strip's ✕ empties the box and puts Find away, the ✕ staying in the box [D1791].
-- The Tracker's: its "● saved" in a browser that refuses to keep anything is drawn for him with its next batch [D1660].
+- The Tracker's: its search magnifier becomes the app's own, its handle as long as every other search box's, in place
+  of its own shorter one; to build [D1900, D1127].
 - People and accounts': the waiting screen's "View the schedule" shows only while the admins' guest switch is on, off by
   default [D221, D204].

@@ -1,0 +1,33 @@
+kccmp v1
+SAME   d01-landing.png (byte for byte)
+SAME   d02-course-menu.png (byte for byte)
+SAME   d03-syllabus-menu.png (byte for byte)
+SAME   d04-file-menu.png (byte for byte)
+SAME   d05-find-typed.png (byte for byte)
+SAME   d06-show-all.png (byte for byte)
+SAME   d07-show-all-filtered.png (byte for byte)
+DIFF   d08-marking-window.png — 6 pixels in x 317–633, y 93–94
+SAME   d09-reorder-courses.png (byte for byte)
+SAME   d10-reorder-syllabi.png (byte for byte)
+SAME   d11-reorder-crew.png (byte for byte)
+DIFF   d12-edit-chart-layout.png — 67 pixels in x 317–1082, y 93–96
+SAME   d13-flex-settings.png (byte for byte)
+SAME   d14-legend.png (byte for byte)
+SAME   d15-details-bubble.png (byte for byte)
+SAME   d16-export-window.png (byte for byte)
+SAME   d17-hover-menu-row.png (byte for byte)
+SAME   p01-landing.png (byte for byte)
+SAME   p02-course-menu.png (byte for byte)
+SAME   p03-syllabus-menu.png (byte for byte)
+SAME   p04-file-menu.png (byte for byte)
+SAME   p05-find-typed.png (byte for byte)
+SAME   p06-info-tab.png (byte for byte)
+SAME   p07-show-all-tab.png (byte for byte)
+SAME   p08-marking-window.png (byte for byte)
+SAME   p09-reorder-courses.png (byte for byte)
+SAME   p10-reorder-syllabi.png (byte for byte)
+SAME   p11-edit-chart-layout.png (byte for byte)
+SAME   p12-flex-settings.png (byte for byte)
+DIFF   p13-legend.png — 5 pixels in x 159–282, y 266–722
+SAME   p14-info-tab-lower.png (byte for byte)
+total 31: 28 same, 3 not

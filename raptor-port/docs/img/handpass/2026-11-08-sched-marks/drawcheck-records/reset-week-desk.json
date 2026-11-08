@@ -1,0 +1,138 @@
+{
+ "state": "reset-week-desk",
+ "drawing": {
+  "script": "scripts/handpass/pr-marks.mjs",
+  "shot": "q-r5d-pc-week-drawn"
+ },
+ "recorded": "2026-11-08T05:08:29.397Z",
+ "drawnOn": "main at 6e6c55667",
+ "checkout": "9fc5961d9",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "line": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 19,
+    "y": 415,
+    "w": 514,
+    "h": 44.7
+   },
+   "ink": {
+    "x": 40,
+    "y": 423,
+    "w": 276.5,
+    "h": 27.8
+   },
+   "text": "Conflict — two events at once Saber — OPS SHARING + NAV SYS BRIEF & VL BFM clash",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px dashed rgb(42, 49, 58)",
+     "1px dashed rgb(42, 49, 58)",
+     "1px dashed rgb(42, 49, 58)",
+     "1px dashed rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.witem.hard.hid"
+  },
+  "btn": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 504,
+    "y": 423,
+    "w": 19,
+    "h": 18.2
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(255, 255, 255, 0.07)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 14px",
+    "spacing": "normal"
+   },
+   "tag": "button.witem-mute.zz-ring"
+  },
+  "arrow": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 507,
+    "y": 426,
+    "w": 13,
+    "h": 13
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 14px",
+    "spacing": "normal"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q-r5d-pc-week-drawn.png",
+  "identical": true
+ }
+}

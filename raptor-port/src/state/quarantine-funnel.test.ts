@@ -27,13 +27,19 @@ import { stashClear, stashPut } from '../engine/weekstash'
 import { weekBundle } from '../engine/weeks-data'
 
 let said: string[] = []
+let kinds: any[] = []
 const realToast = HOOKS.toast
+/* what an older version's week says (D837's reason in D1667's "Blocked:" form), and a week whose saved copy will not
+   read (D1785) — the words to the letter, as engine/lockednote.test.ts pins them */
+const OLDER_WORDS = 'Blocked: this week was published by an older version of the app, so it can’t be edited. Nothing was saved.'
+const UNREADABLE_WORDS = 'Blocked: this week’s saved copy could not be read, so it can’t be edited. Nothing was saved. Report it with “Report a problem” on the Help page.'
 
 beforeEach(() => {
   initStore()
   stashClear()
   said = []
-  HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
+  kinds = []
+  HOOKS.toast = ((m: any, k?: any) => { said.push(String(m)); kinds.push(k) }) as any
 })
 afterEach(() => { HOOKS.toast = realToast; stashClear() })
 
@@ -57,7 +63,8 @@ describe('the input funnel is the quarantine choke-point (P2-REV2-04)', () => {
     })
     expect(INPUTS.length, 'the illegal add was rolled back').toBe(before)
     expect(INPUTS.some((r: any) => r.iid === 'zzq1'), 'the row is gone').toBe(false)
-    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
+    expect(said.join(' ')).toContain(OLDER_WORDS)
+    expect(kinds, 'in the grey "Blocked:" note (D1785, D1668)').toContain('blocked')
   })
 
   /* the rollback is histRestore — the same deep restore undo runs — so it rebuilds
@@ -74,7 +81,8 @@ describe('the input funnel is the quarantine choke-point (P2-REV2-04)', () => {
     })
     expect(INPUTS.length, 'the illegal removal was rolled back').toBe(before)
     expect(INPUTS.some((r: any) => r.iid === 'zzq2'), 'the row is still there').toBe(true)
-    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
+    expect(said.join(' ')).toContain(OLDER_WORDS)
+    expect(kinds, 'in the grey "Blocked:" note (D1785, D1668)').toContain('blocked')
   })
 
   it('rolls back an in-place field change on an input covering a protected week', () => {
@@ -86,7 +94,22 @@ describe('the input funnel is the quarantine choke-point (P2-REV2-04)', () => {
     })
     const r: any = INPUTS.find((x: any) => x.iid === 'zzq3')
     expect(r.remarks, 'the change was rolled back').toBe('orig')
-    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
+    expect(said.join(' ')).toContain(OLDER_WORDS)
+    expect(kinds, 'in the grey "Blocked:" note (D1785, D1668)').toContain('blocked')
+  })
+
+  /* D1785, 8 Nov 26: a stashed week whose saved copy will not read (persist stores a record with no days for it) refuses
+     a change on its dates in its own words — never the older version's — in the same grey note */
+  it('an unreadable stashed week refuses an input on its dates, in its own words (D1785)', () => {
+    stashPut('20/07/2026', '{"unreadable":true}')
+    const before = INPUTS.length
+    writeInputsBatch(() => {
+      INPUTS.unshift({ person: 'dj', type: 'Meeting', allday: true, date: 'Jul 20', yr: 2026, iid: 'zzq7' })
+    })
+    expect(INPUTS.length, 'the add was rolled back').toBe(before)
+    expect(said, 'said once, in the unreadable words').toEqual([UNREADABLE_WORDS])
+    expect(kinds).toEqual(['blocked'])
+    expect(said.join(' '), 'never the older version’s words').not.toContain('older version')
   })
 
   it('LETS an ordinary add on a NON-protected week through untouched — no false lock', () => {
@@ -131,7 +154,8 @@ describe('the input funnel is the quarantine choke-point (P2-REV2-04)', () => {
       INPUTS.unshift({ person: 'dj', type: 'Meeting', allday: true, date: 'Jul 20', yr: 2026, iid: 'zzq6' })
     })
     expect(INPUTS.length, 'writeInputs rolls back too').toBe(before)
-    expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
+    expect(said.join(' ')).toContain(OLDER_WORDS)
+    expect(kinds, 'in the grey "Blocked:" note (D1785, D1668)').toContain('blocked')
   })
 })
 
@@ -148,7 +172,7 @@ describe('the LATE chip goes through the input funnel too (D1586)', () => {
     const b = document.createElement('button'); b.setAttribute('data-lateoff', 'zzq9'); document.body.appendChild(b)
     try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
     expect(!!(INPUTS.find((r: any) => r.iid === 'zzq9') as any).lateOff, 'the drop was not written').toBe(false)
-    expect(said.join(' '), 'the refusal is said').toContain('This week is locked')
+    expect(said.join(' '), 'the refusal is said').toContain(OLDER_WORDS)
     expect(said.join(' '), 'and not "hidden"').not.toContain('LATE mark hidden')
   })
 })

@@ -1,0 +1,50 @@
+[
+ {
+  "id": "S20.0 start: LL on Wed only; Wed+Thu published, Fri draft",
+  "size": "pc",
+  "exp": "Wed row plain",
+  "got": "D2 pend=null ver=ORIG rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain] // D3 pend=null ver=ORIG rows=ATT C[plain];OD[plain];OIL[plain] // D4 pend=null ver=DRAFT rows=ATT C[plain];OD[plain]",
+  "verdict": "RECORDED",
+  "pic": "pc-s20-0-start.png"
+ },
+ {
+  "id": "S20.1 stretched Wed to Fri (window left open=1)",
+  "size": "pc",
+  "exp": "Thu row marked + pending; Wed marked; Fri row present but never marked (draft)",
+  "got": "D2 pend=1 pending ver=ORIG rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain] // D3 pend=1 pending ver=ORIG rows=LL[DOTTED rgb(59, 198, 232)];ATT C[plain];OD[plain];OIL[plain] // D4 pend=null ver=DRAFT rows=LL[plain];ATT C[plain];OD[plain]",
+  "verdict": "PASS",
+  "pic": ""
+ },
+ {
+  "id": "S20.1p pictures",
+  "size": "pc",
+  "exp": "",
+  "got": "wed/thu/fri",
+  "verdict": "RECORDED",
+  "pic": "pc-s20-1-fri.png"
+ },
+ {
+  "id": "S20.2 trimmed back to Wed only",
+  "size": "pc",
+  "exp": "Thu row gone; Wed back to issued state (plain, no pending) or RECORD",
+  "got": "D2 pend=null ver=ORIG rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain] // D3 pend=null ver=ORIG rows=ATT C[plain];OD[plain];OIL[plain] // D4 pend=null ver=DRAFT rows=ATT C[plain];OD[plain]",
+  "verdict": "RECORDED",
+  "pic": "pc-s20-2-wed.png"
+ },
+ {
+  "id": "S20.3 year-end case",
+  "size": "pc",
+  "exp": "RECORD only (skip if no published day in that week)",
+  "got": "skipped: no published day exists in the week of 28 Dec 2026 in this world",
+  "verdict": "NOT DRIVEN",
+  "pic": ""
+ },
+ {
+  "id": "S20 errors",
+  "size": "pc",
+  "exp": "none",
+  "got": "none",
+  "verdict": "RECORDED",
+  "pic": ""
+ }
+]

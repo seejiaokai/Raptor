@@ -3,8 +3,8 @@
    solid, the eraser cap at the top left, the tip at the bottom right (D1133's direction). It is DRAWN, never the typed
    ✎ (each device's font draws its own, so his iPhone would differ) and never ✏ (an iPhone draws it as a coloured
    emoji). One source: `PEN_INNER` feeds the React icon (`ui/icons.tsx PenIcon`) and the string the dense builders
-   print (`penSvg`); the Tracker keeps its own copy (`tracker/components/Glyphs.jsx PenGlyph`) so a standalone export
-   carries it. Drawn as an upright pencil — cap, body, tip, each a little apart — then turned 45° so it lies as the ✎
+   print (`penSvg`); the Tracker draws the React icon too (`tracker/components/Glyphs.jsx PenGlyph` — its own copy, kept for a
+   standalone export, went with [TRK-KEPT-COPIES], 8 Nov 26, D1538). Drawn as an upright pencil — cap, body, tip, each a little apart — then turned 45° so it lies as the ✎
    does. Sized by `.pen-ic` (02-shell.css): 1.05em, a small gap before a following word; `.pen-ic.solo` drops the gap
    where the pencil is the button's only mark. */
 export const PEN_INNER = '<g transform="rotate(-45 12 12)" fill="currentColor">'
