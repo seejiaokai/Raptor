@@ -81,7 +81,12 @@ export function useBarFree(pop: RefObject<HTMLElement | null>, open: boolean, cl
     const bar = BAR_OVER()
     const ro = bar && typeof ResizeObserver !== 'undefined' ? new ResizeObserver(place) : null
     if (ro && bar) ro.observe(bar)
-    return () => { window.removeEventListener('resize', place); ro?.disconnect() }
+    /* and when the board scrolls — on a phone on its side it scrolls as one page (owner D1780), and a finger on its head,
+       which stands above the grey, carries the bar up or down with it: the grey follows in the same frame, so no strip
+       of the list lies open between them and the bar never slides under the grey (the fresh code read of 8 Nov 26) */
+    const onScroll = (e: Event) => { if ((e.target as HTMLElement | null)?.id === 'schedBoard') place() }
+    document.addEventListener('scroll', onScroll, { capture: true, passive: true })
+    return () => { window.removeEventListener('resize', place); ro?.disconnect(); document.removeEventListener('scroll', onScroll, { capture: true }) }
   })
   useEffect(() => {
     if (!open) return

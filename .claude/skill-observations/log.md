@@ -4169,6 +4169,26 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Suggested improvement:** In the handoff step (and wherever a record takes a time): read the clock (`date`) or the commit's own time before writing a time, never estimate; where a time cannot be read, write none.
 **Principle:** An agent has no reliable sense of elapsed time, least of all across a context reset; any time written into a record is read from a clock or left out.
 
+### Observation 875: A drawing with recorded figures but no part list — measure the build with the drawing script's own measure
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 11, the board's layout (D1780, D1781) — the drawing check; numbered past 873, held on another branch (Numbered 875 at the rebase on 8 Nov 26: 874 is held by the open branch claude/lw-pin-last-frame.)
+**Skill:** New skill candidate: drawing-check-from-figures (or a section of `raptor-port/docs/walk-scripts.md` §10)
+**Type:** open-source
+**Phase/Area:** the drawing check before the walk (bug-check order §7.0, §7.10)
+
+**Issue:** The approved drawings had been made by a script that measured each drawn option and saved the figures (line
+heights, widths, what was cut) to a file, but no part list existed for the standing drawing-check tool. Writing a part
+list first would have cost a separate job; instead the build was measured with the drawing script's own measuring
+function, copied whole, and compared figure by figure (78 figures, 2px). It caught nothing false and named the one real
+difference — a state the drawing showed scrolled while the build, rightly, does not scroll.
+**Suggested improvement:** In the walk-scripts guide's drawing-check section, add: where a drawing was produced by a
+script that saved its measured figures, the drawing check may reuse that script's measure (copied whole, never
+rewritten) against the saved figures, in place of building a part list first; each difference is still named.
+**Principle:** When a design was drawn by code that measured itself, compare the build with the same measuring code —
+the same ruler on both sides removes a whole class of false differences.
+
 ### Observation 876: A pin that goes red or green by the machine's pace was handed over as "unexplained" — slow the processor to reproduce it
 
 **Status:** OPEN
@@ -4220,6 +4240,18 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Issue:** the builder's account and the brief both searched the other areas for rulings that bear on the guide by the guide's own name; only two rulings named it. One reader, searching the same way, found nothing more; the other found the most serious gap of the step — a later ruling that changes what the guide pictures (full editing on another screen) and a second that sets a preferred order, neither naming the guide. The page had stated the old behaviour as current.
 **Suggested improvement:** in the brief template for a conformance read (a summary, a page, a port checked against its sources), add a line: "search related sources by the subject of each claim — the actions, screens and terms it names — not by the name of the document under review; a later rule that changes a subject rarely names every document that describes it."
 **Principle:** dependencies are found by topic, not by title — a check that searches only for references to the artefact misses the changes to what the artefact describes.
+### Observation 880: A change of what scrolls breaks every test that names the old scroller, not only its own spec
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 11, the board layout (D1780: the sideways board scrolls as one page). Numbered past 878–879, held by other branches.
+**Skill:** New skill candidate: bug-check sizing (walk-ledger / the bug-check order §3)
+**Type:** open-source
+**Phase/Area:** sizing the walk and the local test run before the first push
+
+**Issue:** The change moved a screen's scrolling from an inner pane to the whole surface. Its own new browser spec passed locally and the walk passed, but an older spec in another file set the inner pane's scroll and failed on CI; fixing that test then showed a real fault — the drag's edge band still measured from the old scroller's top, hidden under the newly pinned bar. The walker had held a drag at the foot and over the bar, never just under it.
+**Suggested improvement:** When a change alters which element scrolls, the sizing step greps every test and every scroll-reading function for the old scroller's selector and runs those specs before the first push; the walker's brief adds "hold a carried thing just inside each new edge of the visible area" (under a pinned bar, above a pinned foot).
+**Principle:** A layout change that moves the scroller invalidates every caller that measured the old one; find them by the selector, not by the files the change touched.
 
 ### Observation 883: The cure a note recommended for a hang was itself a hang for one interpreter; and a new hook cannot be proved live in the chat that adds it
 

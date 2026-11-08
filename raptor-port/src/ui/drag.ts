@@ -19,7 +19,7 @@ import { oilWaitThen, oilWaitAlso } from './oilwait'
 import { OIL_NO_MOVE } from './oilmode'
 import { landOn, liftOn, markLand } from './lift'
 import { DBG, initDragDbg } from './dragdbg'
-import { edgeStep, EDGE, TOUCH_EDGE } from './edgescroll'
+import { edgeStep, EDGE, TOUCH_EDGE, shownTop } from './edgescroll'
 import { panDays } from './pan'
 import { scaleOf } from './pinchzoom'
 
@@ -689,7 +689,8 @@ function tdScrollerFor(el: any) {
 export const tdEdge = (top: number, bot: number) => Math.min(TD_EDGE, Math.max(0, bot - top) / 6)
 function tdAutoScroll(y: any) {
   const el = TD.scroller; if (!el) return
-  const top = (el === document.scrollingElement || el === document.documentElement) ? 0 : el.getBoundingClientRect().top
+  /* below the board's pinned bar on a phone on its side (D1780 — edgescroll.ts shownTop) */
+  const top = (el === document.scrollingElement || el === document.documentElement) ? 0 : shownTop(el, el.getBoundingClientRect().top)
   const bot = (el === document.scrollingElement || el === document.documentElement) ? window.innerHeight : el.getBoundingClientRect().bottom
   /* the band scales to a SHORT pane ([OIL-NOTIFY-SEEN] (6), the OIL-ask walk, 13 Oct 26): on a phone on its side the
      board is about 190px tall, and two fixed 52px bands were more than half of it — a finger held anywhere near the top

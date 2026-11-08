@@ -209,6 +209,18 @@ export function useFloatWin(opts: {
     return () => window.removeEventListener('resize', on)
   // eslint-disable-next-line react-hooks/exhaustive-deps -- the caller's deps say when a new window opens; the rest is read live through `live`
   }, deps)
+  /* THE BOARD'S BAR MOVES WHEN THE BOARD SCROLLS — on a phone on its side, where the board scrolls as one page and its
+     head goes up and away over the bar (owner D1780). A window opened with the head away rests at the stylesheet's
+     corner; scrolled back, the head brought the bar down under it, over the bell, Insights and ✓ Done (D1106 — the two
+     code reads of 8 Nov 26). So while a window is up, the board's own scroll places it again, in the same frame, by
+     the same rule: a window he has moved keeps his place; one he has not, or only resized, starts below the bar. */
+  useEffect(() => {
+    if (!open) return
+    const on = (e: Event) => { if ((e.target as HTMLElement | null)?.id === 'schedBoard') live.current.place() }
+    document.addEventListener('scroll', on, { capture: true, passive: true })
+    return () => document.removeEventListener('scroll', on, { capture: true })
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- the caller's deps say when a new window opens; the rest is read live through `live`
+  }, deps)
   /* THE EXACT MOMENT THE BAR CHANGES. The board writes its preview bar in a PASSIVE effect, after this window's layout
      effect has placed it, so a preview started while the window is open would be measured one render late. The board
      REPLACES the panel's markup whenever the bar appears, is armed or goes, so a watch on that panel's children re-places
