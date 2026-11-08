@@ -4516,3 +4516,16 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** Both blind readers' first finding was the same clash (a later decision's rule sentence says every student is on the roster; an earlier one, still built, adds typed students). One proposed marking the earlier decision superseded; the other read the later decision's own interpretation as narrower and proposed putting the question to the owner. Handing both reports to a fix helper as they stood would have let it pick either fix.
 **Suggested improvement:** In "receiving-code-review", add a step: where two reviewers' fixes for one finding disagree, the host settles it first by the project's own conflict rule (here: the newer instruction wins only where it clearly covers the case, otherwise it goes to the owner) and writes that decision into the fixer's brief.
 **Principle:** Agreement on a finding is not agreement on its fix; the coordinator resolves divergent fixes by an explicit rule before delegating, never by letting the implementer choose.
+
+### Observation 904: "Add-only" was a guess about a file — its edit history said otherwise
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 33, [MERGE-ONCE-RECORDS] — the plan's red team and build (number checked past 903, the highest on any remote branch).
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** plan red team — the brief's questions
+
+**Issue:** A plan to merge record files with git's "keep both sides" setting rested on calling four files "add-only". Both blind red-team readers disproved it from the files' own git history in minutes (a ledger row rewritten in place, a note's status edited, notes archived), and showed the setting would have doubled records unseen and let some merges skip every check. The plan's author had measured clash counts on 113 real merges, but never measured how each file is edited.
+**Suggested improvement:** In the red-team brief template, add a standing question: "for every file the plan treats by its shape (add-only, one owner, never edited), check that shape against its own commit history and name a commit that breaks it."
+**Principle:** A plan's assumptions about a file's shape are claims to test against the file's history, not facts; ask the red team to break them with real commits.
