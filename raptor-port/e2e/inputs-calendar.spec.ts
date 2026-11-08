@@ -1603,6 +1603,67 @@ for (const width of [1536, 1340, 1280, 1024, 821]) {
     expect(await colW(page), 'the room goes with the window').toEqual(closed)
   })
 }
+/* THE LIST'S RIGHT END IS CLOSED (owner D1842, D1843 — 8 Nov 26, option A of his look page): its rows carried a coloured
+   line on the left and nothing on the right, and "No document" ended 3px from the list's end, so the list read as if it
+   ran on and he tried to scroll sideways. Now a thin line goes round the whole list, in the rows' own line colour, and
+   "No document" ends inside its column. What only a real browser can say: the line as DRAWN (the screen's own pixels
+   just past the list's right edge, not only its style), where "No document" ends against its cell and the list's end,
+   and that nothing scrolls sideways — at his PC's 1536, a wide 2560, 1024 and the 821 where the desktop list begins,
+   and at 1536 with the input window open, where the list makes room for it (D1787). */
+const rightEnd = (p: Page) => p.evaluate(() => {
+  const tbl = document.querySelector('#intbl')!, t = tbl.getBoundingClientRect(), wrap = document.querySelector('.inwrap')!
+  const nodoc = [...document.querySelectorAll('#inBody .in-nodoc')].map(s => {
+    const b = s.getBoundingClientRect(), td = s.closest('td')!, c = td.getBoundingClientRect()
+    return { spill: b.right - (c.right - parseFloat(getComputedStyle(td).paddingRight)), toEnd: t.right - b.right,
+      midY: (c.top + c.bottom) / 2 }
+  })
+  return { right: t.right, nodoc, sideways: wrap.scrollWidth > wrap.clientWidth,
+    pageSideways: document.documentElement.scrollWidth > innerWidth }
+})
+/* the colours of a one-pixel-high strip of the screen, left to right — decoded in a blank page of its own, so nothing the
+   app sets (its content rules, its scripts) has a say */
+async function strip(p: Page, x: number, y: number, w: number): Promise<number[][]> {
+  const png = await p.screenshot({ clip: { x, y, width: w, height: 1 } })
+  const dec = await p.context().newPage()
+  try {
+    return await dec.evaluate(async b64 => {
+      const img = new Image(); img.src = 'data:image/png;base64,' + b64; await img.decode()
+      const c = document.createElement('canvas'); c.width = img.width; c.height = 1
+      const g = c.getContext('2d')!; g.drawImage(img, 0, 0)
+      const d = g.getImageData(0, 0, img.width, 1).data, out: number[][] = []
+      for (let i = 0; i < d.length; i += 4) out.push([d[i], d[i + 1], d[i + 2]])
+      return out
+    }, png.toString('base64'))
+  } finally { await dec.close() }
+}
+const EDGE = [0x2a, 0x31, 0x3a]   // var(--edge), the rows' own lines
+const near = (a: number[], b: number[]) => a.every((v, i) => Math.abs(v - b[i]) <= 10)
+for (const [width, withWin] of [[2560, false], [1536, false], [1536, true], [1024, false], [821, false]] as const) {
+  test(`D1843 at ${width} wide${withWin ? ', the input window open' : ''}: a line closes the list's right end; "No document" inside its column`, async ({ page }) => {
+    await login(page)
+    await listAt(page, width)
+    /* every date shown, so the leaves and medicals with no document are on the list whatever today is */
+    await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+    await expect(page.locator('#inBody .in-nodoc').first()).toBeVisible()
+    if (withWin) {
+      await page.locator('#inNew').click()
+      await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
+    }
+    const m = await rightEnd(page)
+    expect(m.nodoc.length, 'rows with "No document" to measure').toBeGreaterThan(0)
+    expect(Math.max(...m.nodoc.map(n => n.spill)), '"No document" ends inside its column\'s padding').toBeLessThanOrEqual(0.5)
+    expect(Math.min(...m.nodoc.map(n => n.toEnd)), '"No document" stands clear of the list\'s end').toBeGreaterThanOrEqual(12)
+    expect(m.sideways, 'the list does not scroll sideways').toBe(false)
+    expect(m.pageSideways, 'the page does not scroll sideways').toBe(false)
+    /* the line, as drawn: halfway down a row (clear of the rows' own lines), from 3px inside the list to 4px past it —
+       one pixel there wears the rows' line colour, and the page beyond it does not */
+    const x0 = Math.floor(m.right) - 3, px = await strip(page, x0, Math.round(m.nodoc[0].midY), 8)
+    const hit = px.findIndex(c => near(c, EDGE))
+    expect(hit, `a pixel of the rows' line colour at the list's right edge (${JSON.stringify(px)})`).toBeGreaterThanOrEqual(2)
+    expect(hit, 'the line stands at the list\'s edge, not inside it').toBeLessThanOrEqual(4)
+    expect(near(px[7], EDGE), 'the page past the line is not the line').toBe(false)
+  })
+}
 /* A WINDOW HE HAS MOVED TAKES ITS ROOM WITH IT (both code reads of 8 Nov 26, Astra's and the fresh Opus reader's): a window
    keeps the place it was dragged to for the session (winorder.ts), so a list that kept its room at the right for it was
    squeezed AND covered. The room is made only while the window stands where it opens, as the calendar's opened day
