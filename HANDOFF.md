@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/rules-diet-step-5a-design-9bc219 -->
+### CHAT 24 — the rules diet's step 5a, the screen-design rulings as a page — BUILT, waiting for his "merge live" (pull request 708); written 8 Nov 26 — verify before use
+- **Built:** `.claude/rules/decisions/design.md` is a page, "Screen design — how it works now" (D1735): its 74 rulings stated by topic, a "Settled" section and 35 pointers to other areas, found by subject; its tripwire in `docsize.mjs` raised 23,700 → 46,300 bytes (the page 42,087, about 15,700 tokens) — a script change, so it waits for his "merge live" typed in this chat (D1737). D349 marked NARROWED by D854, the scheduler's D475 by D1792 (D201). The account by requirement (73 rulings, 509 parts, 17 gaps fixed) and the two blind reads (Astra 7, a fresh Opus reader 10 — all held, all fixed): `raptor-port/docs/superpowers/briefs/2026-11-08-rules-diet-step5a-design-*.md`; the reads compared and the lessons for 5b: the plan's §Step 5a — Screen design. No reads owed. On his PC: the document check and the rule check OK; the 15 unit files that read documents run before the merge.
+- **Before the merge:** GitHub's secrets scan failed twice (8 Nov 26, about 09:00 and 09:34 GitHub's time) because GitHub's own server timed out sending the scanning tool — every branch the same minutes, nothing scanned, nothing found; it must pass on the last pushed commit (a re-run, `gh run rerun <id> --failed`) before the merge (D1408).
+- **On his "merge live":** the four merge-lock steps (`.claude/rules/shipping.md`), `main`'s run and Vercel's Production READY; then a notes-only records follow-up (this block MERGED, the `[RULES-DIET]` line, the plan's heading), merged by the same steps once green (D1407).
+- **Left open (on `[RULES-DIET]`'s line):** the Inputs pages' D1300 "cyan ring" and the scheduler's D1038 "Not built", for their pages in 5b; the page loads with every file of the app's code, so the re-measure before 5b counts it. Chat 17's block (People & accounts, merged, its residue on the same line) removed here.
+- **Rulings:** none in chat 24.
+<!-- /now -->
 <!-- now:claude/chat19-checks -->
 ### CHAT 19 → CHAT 27 — night 3, job 7: the checks themselves, `claude/chat19-checks`, pull request 698; built by chat 19 (handed off about 15:10), read and fixed by chat 27 (8 Nov 26, about 16:20–17:30) — **MERGED 8 Nov 26 on his "merge live", typed in chat 27 (about 17:20), merge commit `fc85d7df9`; `main`'s run green and Vercel's Production Ready on it** — verify before use
 - **Live check, after the merge:** both secrets scans (the pull request's and `main`'s) failed first on GitHub's download of the scanning tool (error 504, other branches hit at the same minutes) and passed on re-run — not a finding; worth a retry in the workflow's download step if it recurs ([CHECK-TOOLS-HARDEN]).
@@ -51,13 +59,6 @@ the later merge keeps both (D78).
 - **Next:** (1) the Production deployment for `41b264227` Ready on Vercel (the branch's last preview hung on "deploying" — if Production does too, tell him, his Vercel page); (2) this branch: `npm run rulecheck` and the doc-reading unit tests, push, a pull request into `main` (Auto-fix off, not watched), merge it once green under the merge lock; (3) delete the stale remote branch `claude/chat20-records` (an older copy of these records); (4) tell chat 21 and him; remove this block at the next handoff.
 - **Filed, open:** [TRK-MARKS-LEFT], [TRK-MENU-KEYS], [TRK-COPIES-TIDY].
 - **Rulings:** D1900 → `tracker.md`, D1901 → `design.md` (D1902–D1909 free).
-<!-- /now -->
-<!-- now:claude/rules-diet-step-5a-people-1288c3 -->
-### CHAT 17 — the rules diet's step 5a, People & accounts as a page — MERGED 8 Nov 26 (pull request 700, on his "merge live" typed in chat 23, which carried the merge and this records follow-up)
-- **Live:** `.claude/rules/decisions/people-accounts.md` is a page, "People & accounts — how it works now" (D1735): its 80 rulings stated by topic, a "Settled" section and about 40 pointers to other areas, found by subject; its tripwire in `docsize.mjs` raised 22,000 → 55,500 bytes with his "merge live" (the page 50,466, about 19,000 tokens). D149 and D218 marked NARROWED by D1651 (D218 by D1510 and D1589 too), D285's by D322 (D201). The account by requirement (80 rulings, 553 parts, 35 gaps fixed) and the two blind reads (Astra 6, a fresh Opus reader 9 — all fixed): `raptor-port/docs/superpowers/briefs/2026-11-08-rules-diet-step5a-people-*.md`; the reads compared and the lessons for the rest of step 5: the plan's §Step 5a — People & accounts. No reads owed. Before the merge, on his PC: the rule check, the document check and the 16 unit files that read documents (576 tests) green.
-- **Left open:** `[DOCSIZE-PATHS-OPEN]` (filed — the draft lost its `paths:` closing line and the document check passed it); the page loads with files most jobs open (`ui/html.ts`, `state/store.ts`, `state/view.ts`, `ui/Shell.tsx`) — the re-measure before 5b counts it, and narrowing its `paths:` is a question for him then (on `[RULES-DIET]`'s priority line); the scheduler's D212 still says a member may tick SCHEDULER (stale since D1651) — for the scheduler's page in step 5b.
-- **Next for the diet:** design and the Tracker, each on his word, then the re-measure before 5b (the plan's §7).
-- **Remove this block at the next handoff** — its residue is filed above and on the backlog's `[RULES-DIET]` line.
 <!-- /now -->
 <!-- now:claude/coordinator-2 -->
 ### CHAT 30 — coordinator (took over from chat 21, 8 Nov 26 ~16:45) — verify before use
