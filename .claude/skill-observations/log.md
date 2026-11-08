@@ -4211,6 +4211,26 @@ met again 8 Nov 26: chat 7's D1840 follow-up — a new check of the Type column'
 **Principle:** when the fix came first, recreate the old behaviour by taking back only the fix's own diff — never by checking out an older file — prove the take-back happened, and restore it by a trap, so the red run costs no second turn of a shared resource and cannot leave the old code behind.
 
 
+### Observation 875: A drawing with recorded figures but no part list — measure the build with the drawing script's own measure
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 11, the board's layout (D1780, D1781) — the drawing check; numbered past 873, held on another branch (Numbered 875 at the rebase on 8 Nov 26: 874 is held by the open branch claude/lw-pin-last-frame.)
+**Skill:** New skill candidate: drawing-check-from-figures (or a section of `raptor-port/docs/walk-scripts.md` §10)
+**Type:** open-source
+**Phase/Area:** the drawing check before the walk (bug-check order §7.0, §7.10)
+
+**Issue:** The approved drawings had been made by a script that measured each drawn option and saved the figures (line
+heights, widths, what was cut) to a file, but no part list existed for the standing drawing-check tool. Writing a part
+list first would have cost a separate job; instead the build was measured with the drawing script's own measuring
+function, copied whole, and compared figure by figure (78 figures, 2px). It caught nothing false and named the one real
+difference — a state the drawing showed scrolled while the build, rightly, does not scroll.
+**Suggested improvement:** In the walk-scripts guide's drawing-check section, add: where a drawing was produced by a
+script that saved its measured figures, the drawing check may reuse that script's measure (copied whole, never
+rewritten) against the saved figures, in place of building a part list first; each difference is still named.
+**Principle:** When a design was drawn by code that measured itself, compare the build with the same measuring code —
+the same ruler on both sides removes a whole class of false differences.
+
 ### Observation 876: A pin that goes red or green by the machine's pace was handed over as "unexplained" — slow the processor to reproduce it
 
 **Status:** OPEN
@@ -4275,3 +4295,16 @@ met again 8 Nov 26: chat 7's D1840 follow-up — a new check of the Type column'
 **Issue:** A new browser test asserted that a short label ("No document") ends inside a fixed-width table column, with a 0.5px tolerance. It was written, proved red-then-green and pushed on a Windows PC only. On the CI's Linux machines, whose fallback sans-serif is much wider, the label overflowed the column by 3px at every width, so the test failed at all five widths and the merge stalled until the next chat diagnosed it. The same trap was met and documented on 23 Oct 26 (Observation 680, now ACTIONED: the gates guide says to rerun with wider letters forced from the first paint), and the repo already had a pattern for it — two tests pin Arial / Liberation Sans so a fit is measured in letters close to the owner's devices on every machine. The documented step was not taken, because nothing in the act of writing such a test calls for it.
 **Suggested improvement:** Make it a default rather than a judgement: in the bug-check order §8 (writing the tests) and the gates guide's trap, "a new browser test that asserts text fits a fixed width pins its letters from the first paint (Arial, Liberation Sans) unless the test is about the device's own letters; and before its first push it is run once with wide letters (Verdana) in that place, where it must fail only if the layout itself is too tight." A cheaper guard still: a unit check over `e2e/*.spec.ts` that flags a new `getBoundingClientRect` text-width assertion in a test with no pinned font — filed for the next review to weigh.
 **Principle:** When a system draws text in whatever font each machine has, every assertion about text width is an assertion about one machine's font. Pin the font the assertion is about, from the first paint, and prove the test both ways (fails on the old layout, passes on the new) in that font — otherwise the first other machine finds the gap.
+### Observation 883: A change of what scrolls breaks every test that names the old scroller, not only its own spec
+
+**Status:** OPEN
+**Renumbered:** 880 on `main` (chat 11, the board layout); renumbered 883 when chat 18 brought `main` into `claude/pr-inputs-add-right-5b2653`, which already held chat 7's 880 (881 is taken on another branch, 882 is chat 18's).
+**Date:** 8 Nov 26
+**Session context:** chat 11, the board layout (D1780: the sideways board scrolls as one page). Numbered past 878–879, held by other branches.
+**Skill:** New skill candidate: bug-check sizing (walk-ledger / the bug-check order §3)
+**Type:** open-source
+**Phase/Area:** sizing the walk and the local test run before the first push
+
+**Issue:** The change moved a screen's scrolling from an inner pane to the whole surface. Its own new browser spec passed locally and the walk passed, but an older spec in another file set the inner pane's scroll and failed on CI; fixing that test then showed a real fault — the drag's edge band still measured from the old scroller's top, hidden under the newly pinned bar. The walker had held a drag at the foot and over the bar, never just under it.
+**Suggested improvement:** When a change alters which element scrolls, the sizing step greps every test and every scroll-reading function for the old scroller's selector and runs those specs before the first push; the walker's brief adds "hold a carried thing just inside each new edge of the visible area" (under a pinned bar, above a pinned foot).
+**Principle:** A layout change that moves the scroller invalidates every caller that measured the old one; find them by the selector, not by the files the change touched.
