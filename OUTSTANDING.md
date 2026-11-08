@@ -1982,6 +1982,7 @@ workSpan`, RT8 — "report/work hours … keep separate definitions"). Walker A'
 (3 hours before take-off, as OIL does) or at the step (1 hour)? **Recommended:** the default rally — one start for a day with nothing entered,
 as the Logic page already says and OIL already does; it makes more long-day notes appear. Until he answers, the words are left as they are.
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1786) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "Where a day starts when nothing is entered" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+**Built 8 Nov 26 by chat 6 on `claude/pr-day-start-7b064c`** — the engine (`engine/events.ts`) and the Logic page's drawn words; `engine-rules.md` §Where a day with nothing entered starts. Waits for its bug check, readers and his "merge live"; leaves for the archive once live.
 
 ### [BOARD-NARROW-DESKTOP-REMARKS] The desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; low)
 Walker A: at 821, 900 and 1000 wide (the desktop layout, pucks on the line) the remarks box is 16px and a line 189px tall; measured the same with the

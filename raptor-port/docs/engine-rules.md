@@ -406,7 +406,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   nothing to assume, so the end stays bare. The START is left plain: for a
   **Superseded by In-time / Rally above (D497–D507):** the older formula below
   is retained as history; actual report now includes resolved Rally and a signed
-  previous-day origin, while absence of both retains step. Historically, for a
+  previous-day origin, while absence of both retained step until D1786 (8 Nov 26) — now take-off less the default
+  rally, as OIL (§Where a day with nothing entered starts). Historically, for a
   sortie it is the published report/step time (`report = in-time ?? step`,
   never the dead `T/O − 3h` fallback), not an overridable assumption. This is
   a port/reference divergence parity compares, mirrored in
@@ -4598,7 +4599,25 @@ ones.** What changes in the bullets below, each left as written:
 
 ## Where a day with nothing entered starts (D1786, 8 Nov 26)
 
-His ruling, not yet built: a flyer's line with no in-time or rally entered starts his day at take-off less the default
-rally (VCONF.reportLead) for his long day and his Insights hours, as it already does for his OIL — one start, not the step.
-Today `events.ts` sets the report to the in-time or else the step, so `validate.ts`'s work span never reaches its own
-take-off-less-rally fallback. The build and its checks: `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md` (group 4); the Logic page's words follow.
+His ruling, built 8 Nov 26 (chat 6, the pictures round's group 4): a flyer's line with no in-time or rally entered starts
+his day at take-off less the default rally (VCONF.reportLead) for his long day and his Insights hours, as it already does
+for his OIL — one start, not the step (D1786; it carries D1032 and D592 (1), one clock for OIL, the work-hours bar and the
+long-day note).
+- **How:** `events.ts` gives a sortie's EVENT only the report entered for it — its in-time or rally (`seatIntime`) — and
+  null when none is, so `validate.ts workSpan`, the one definition both the long-day note and Insights read, falls to its
+  own `to − VCONF.reportLead`: the same start as OIL's `oil.ts fltOilWin`, case for case (an unreadable clock or words with
+  no clock are nothing entered; a default rally before midnight is the evening before). An entered time later than the
+  default still starts the day where it says — never a min() of the two.
+- **What does not move:** `day.fly` keeps report-or-step, so the SANS checks' window (`min(report, step)`) and the
+  availability window (step to dekit, D36) are as before; crew rest reads `intime` and the brief (the tight advisory
+  already measures the nominal report); a shift (SC, and a standby row that flies) keeps its B / R or its start. OIL
+  already counted from here.
+- **What moves on screen:** a flying day with nothing entered counts `reportLead − step` longer (2h with the shipped
+  3h and 1h) in Insights' work hours and in the long-day note, which can newly show on such a day; changing the default
+  rally on the Logic page moves both at once (D482), where before it moved neither. Typing the R box's faint suggestion
+  changes nothing now.
+- **A published day (D179):** the long-day note is a frozen warning on the issued face (`LIVE_ON_FACE` does not hold it),
+  so the face keeps the note it went out with until its next amendment, and the day reads nothing pending for it;
+  Insights moves at once, as for a rule change (D482). The Logic page's default rally row says it in the drawn words.
+- Pinned: `engine/daystart-default-rally.test.ts` (the notes' Friday example: Saint 18h30, Echo 27h25), `ui/logic.test.tsx`.
+  The reference starts such a day at the step; the seed's five days have no sortie with nothing entered, so parity holds.
