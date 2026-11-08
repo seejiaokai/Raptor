@@ -2534,7 +2534,13 @@ if (two.length >= 2) {
   ok("the same wedge again — now the selected crew member's — opens the details",
     await pg.locator('#pop:visible').count() === 1);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
-  await pg.mouse.click(spot.cx, spot.cy); await pg.waitForTimeout(400);
+  /* the window just opened may have slid the chart (D1790, 8 Nov 26), and the chart stays where it slid after a close:
+     the ball's centre is read again where it stands now, not where it stood before the slide */
+  const centre = await pg.evaluate(id => {
+    const r = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id).querySelector('circle').getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }, deep.id);
+  await pg.mouse.click(centre.x, centre.y); await pg.waitForTimeout(700);
   ok('the centre of the ball opens the details too', await pg.locator('#pop:visible').count() === 1);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
 
