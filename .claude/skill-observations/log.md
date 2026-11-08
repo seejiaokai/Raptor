@@ -4169,19 +4169,6 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Suggested improvement:** In the handoff step (and wherever a record takes a time): read the clock (`date`) or the commit's own time before writing a time, never estimate; where a time cannot be read, write none.
 **Principle:** An agent has no reliable sense of elapsed time, least of all across a context reset; any time written into a record is read from a clock or left out.
 
-### Observation 875: A helper's "the code is unchanged since commit X" must be checked before its build label is believed
-
-**Status:** OPEN
-**Date:** 8 Nov 26
-**Session context:** chat 9, the Tracker's group 7 — the drawing check run by a background helper while the host fixed the readers' findings (numbered past 865, the highest on any branch) (was 866. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, and 874 is taken on `claude/lw-pin-last-frame`.)
-**Skill:** subagent-driven-development
-**Type:** open-source
-**Phase/Area:** taking a helper's result — what build it measured
-
-**Issue:** The drawing-check helper labelled its measured build "the branch at 7d750640e" and wrote that the app's code was unchanged between that commit and the tip, so it built from the working folder. Two commits since had changed the code, and the host's fixes were landing in the same folder while it built; its build matched neither commit. The numbers happened to hold (the fixes did not move what it measured), but the label was false. Separately, the check script can measure only a part that is drawn, so a part meant to be gone on both sides read as a red "not found".
-**Suggested improvement:** In the step that takes a helper's result: when a helper names the commit it measured, run `git diff --stat <its commit> HEAD -- <code folder>` and compare the build's time with the commits' times before quoting it; where the code moved under it, re-run the cheap part (build + check) on a fixed commit. In a helper's brief for any check that builds: "build from a named commit (a `git worktree` or `git archive`), never from the live folder while the host is editing".
-**Principle:** A measurement is only as good as the label on what was measured; a helper working beside an editing host must pin its input to a commit, and the host verifies the pin rather than the helper's word.
-
 ### Observation 876: A pin that goes red or green by the machine's pace was handed over as "unexplained" — slow the processor to reproduce it
 
 **Status:** OPEN
@@ -4207,3 +4194,16 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Issue:** The owner typed "merge live" in chat 9. Chat 9 started chat 10 as a side session and wrote the approval into its brief, with the time and his words. Chat 10 fixed the red check, got the run green, took the merge lock and found the branch level — and the merge command was refused by the app's auto-mode safety check ("merge without review"): a brief written by another session is not the owner's message, so the approval did not count. The lock was released and the job stopped to ask him again, a round-trip the plan had not allowed for.
 **Suggested improvement:** In session-handoff (and wherever a job is passed on with an approval attached): say plainly that an approval does not travel in another agent's text. Either the chat that received the approval does the merge itself, or the new chat starts from an opening line the owner pastes himself (his own message), with the approval in it — never from a side session's brief alone. If a side session must merge, say so in the brief and warn the owner that he will be asked once more there.
 **Principle:** A permission given to one agent is not carried by that agent's message to another; automated guards judge the speaker, not the quoted words. Plan the step that needs the approval to run where the person gave it, or have the person repeat it where it will run.
+
+### Observation 878: A helper's "the code is unchanged since commit X" must be checked before its build label is believed
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 9, the Tracker's group 7 — the drawing check run by a background helper while the host fixed the readers' findings (numbered past 865, the highest on any branch) (was 866, then 875. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, 874 is taken on `claude/lw-pin-last-frame` and 875 on `claude/pr-board-layout-62eb71`; moved to the end.)
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** taking a helper's result — what build it measured
+
+**Issue:** The drawing-check helper labelled its measured build "the branch at 7d750640e" and wrote that the app's code was unchanged between that commit and the tip, so it built from the working folder. Two commits since had changed the code, and the host's fixes were landing in the same folder while it built; its build matched neither commit. The numbers happened to hold (the fixes did not move what it measured), but the label was false. Separately, the check script can measure only a part that is drawn, so a part meant to be gone on both sides read as a red "not found".
+**Suggested improvement:** In the step that takes a helper's result: when a helper names the commit it measured, run `git diff --stat <its commit> HEAD -- <code folder>` and compare the build's time with the commits' times before quoting it; where the code moved under it, re-run the cheap part (build + check) on a fixed commit. In a helper's brief for any check that builds: "build from a named commit (a `git worktree` or `git archive`), never from the live folder while the host is editing".
+**Principle:** A measurement is only as good as the label on what was measured; a helper working beside an editing host must pin its input to a commit, and the host verifies the pin rather than the helper's word.
