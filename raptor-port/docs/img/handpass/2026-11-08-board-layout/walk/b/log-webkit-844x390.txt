@@ -1,0 +1,28 @@
+--- b1 (webkit-844x390)
+PASS B-look — sideways query true in webkit
+rest {"sc":0,"max":5279,"topT":0,"topB":182,"actB":171,"actT":141,"titleB":37,"sideT":182,"sideB":483,"ih":390,"vvh":452,"pageSc":0}
+PASS B1 rest — top foot 182, title foot 37
+slow 150 {"sc":140,"max":5279,"topT":-93,"topB":89,"actB":78,"actT":48,"titleB":-56,"sideT":89,"sideB":390,"ih":390,"vvh":452,"pageSc":0}
+slow 250 {"sc":378,"max":5279,"topT":-93,"topB":89,"actB":78,"actT":48,"titleB":-56,"sideT":89,"sideB":390,"ih":390,"vvh":452,"pageSc":0}
+FAIL B1 scrolled — scrollTop 378, bar foot 78 (actions) / 89 (top), title foot -56
+leak {"bg":"rgb(20, 24, 29)","n":190,"bad":[],"nbad":0}
+PASS B1 leak — 190 points, 0 not the bar, bg rgb(20, 24, 29)
+flick x2 {"sc":978,"max":5279,"topT":-93,"topB":89,"actB":78,"actT":48,"titleB":-56,"sideT":89,"sideB":390,"ih":390,"vvh":452,"pageSc":0}
+FAIL B1 flick — bar foot during 78, settled 78, scrollTop 978
+foot {"sc":5279,"max":5279,"topT":-93,"topB":89,"actB":78,"actT":48,"titleB":-56,"sideT":89,"sideB":390,"ih":390,"vvh":452,"pageSc":0}
+PASS B1 leak foot — 0 of 190 points not the bar
+back up {"sc":3455,"max":5279,"topT":-93,"topB":89,"actB":78,"actT":48,"titleB":-56,"sideT":89,"sideB":390,"ih":390,"vvh":452,"pageSc":0}
+PASS B1 return — scrollTop 0, title foot 37, top foot 182; page errs 0
+--- b2 (webkit-844x390)
+before {"sc":1125,"max":5279,"topT":-93,"topB":89,"actB":78,"actT":48,"titleB":-56,"sideT":89,"sideB":390,"ih":390,"vvh":390,"pageSc":0} after {"sc":1328,"max":5279,"topT":-93,"topB":89,"actB":78,"actT":48,"titleB":-56,"sideT":89,"sideB":390,"ih":390,"vvh":190,"pageSc":0} box {"t":157,"b":181,"tag":"INPUT"}
+PASS B2 box above keys — focused INPUT foot 181, keys top 190
+PASS B2 bar stays — top foot 89 -> 89
+FAIL B2 list above keys — list above the keys 101px (his figure 151 at 402 tall)
+B2 scrollTop before/after 1125 1328 side before/after {"t":89,"b":390,"l":524,"r":844} {"t":89,"b":390,"l":524,"r":844}
+high: before {"sc":1423,"max":5279,"topT":-93,"topB":89,"actB":78,"actT":48,"titleB":-56,"sideT":89,"sideB":390,"ih":390,"vvh":390,"pageSc":0} after {"sc":1423,"max":5279,"topT":-93,"topB":89,"actB":78,"actT":48,"titleB":-56,"sideT":89,"sideB":390,"ih":390,"vvh":190,"pageSc":0} 90 90
+PASS B2 high box nothing moves — scrollTop 1423 -> 1423, box top 90 -> 90
+--- b9 (webkit-844x390)
+scrolled {"sc":392,"max":5279,"topT":-93,"topB":89,"actB":78,"actT":48,"titleB":-56,"sideT":89,"sideB":390,"ih":390,"vvh":452,"pageSc":0}
+PASS B9 chip — title "Tuesday Jul 14 · scheduler board", scrollTop 0, top foot 182
+NOT WALKED B9 next arrow: not found
+PASS B9 clean — scrollTop 0, top foot 182; page errs 0

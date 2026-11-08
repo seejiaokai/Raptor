@@ -37,19 +37,19 @@ SHOW = drawn as it should be · USABLE = the gesture works · PAINTED = what els
 | A7 | Edit Schedule's week, View-only Sched, the next-week peek | must not change, because they are drawn by the week's own builder | — | — | — |
 | A8 | Board, a look at a published version (👁) at 821–1099 | stacked as A1 (same lines, read only) | — | — | — |
 | A9 | History on: gold dots on a stacked line's boxes | each dot on its own box | — | — | — |
-| B1 | Board on a phone on its side, ≥821 wide (his 874 × 402; 844 × 390) | head scrolls away, bar stays ~51px (D1780) | — | — | — |
-| B2 | The same, a box tapped with the keys up | rises above the keys; nothing jumps (D1081, D1412) | — | — | — |
-| B3 | The same, the crew and issues column | stands under the bar; its lists scroll inside it | — | — | — |
-| B4 | The same, the "Not saved" band and the OIL bar under the bar | stay with the bar | — | — | — |
-| B5 | The same, a window opened over the board (ALL AVAIL, changes) | opens below the board's bar (D1106) | — | — | — |
-| B6 | The same, a puck or a row dragged to the top or foot | the board scrolls under it (D895 §5A) | — | — | — |
-| B7 | The same, a warning's tap, a change's tap, an Undo | the row lands below the bar (D672) | — | — | — |
-| B8 | The same, History's bubble on a box, then the board scrolled | the bubble follows its box | — | — | — |
-| B9 | The same, the day changed (‹ › or a chip) | the new day shows; nothing left stuck | — | — | — |
-| B10 | Phone upright (402 × 874) | must not change, because the query is landscape only | — | — | — |
-| B11 | A desktop with a mouse, any size | must not change, because the query needs a coarse pointer | — | — | — |
-| B12 | A tablet on its side (taller than 500) | must not change, because the query needs a short screen | — | — | — |
-| B13 | The desktop layout switch on a phone on its side (`.sb-wide`) | must not change (its own pinch-zoom scroller, D1107, D1109) — filed | — | — | — |
+| B1 | Board on a phone on its side, ≥821 wide (his 874 × 402; 844 × 390) | head scrolls away, bar stays ~51px (D1780) | YES — WebKit and Chromium, 874 × 402: at rest the head 146 tall; scrolled, the head gone and the bar's foot at 51, held through a slow scroll, two flicks and the foot (`walk/b/*/b1-*`); at 844 × 390 the bar is TWO rows, 89px (finding W-B2) | YES — finger (Chromium), wheel and script (WebKit) | 200 points across the bar all the bar; its fill opaque (D1518) |
+| B2 | The same, a box tapped with the keys up | rises above the keys; nothing jumps (D1081, D1412) | YES — the low box rose to 193, keys' top 202; the bar stayed 51; the list above the keys 151; a box already above did not move (`walk/b/*/b2-*`); at 844 × 390 the list 101 (W-B2) | YES | nothing over the box |
+| B3 | The same, the crew and issues column | stands under the bar; its lists scroll inside it | YES — the column at 51, under the bar, to 402 | YES — its lists scroll inside it by a finger (Chromium 0 → 105); WebKit by script only | — |
+| B4 | The same, the "Not saved" band and the OIL bar under the bar | stay with the bar | YES — "Not saved" under the bar at rest; scrolled, inside the pinned bar (its foot 91), Retry hit (`?savefail`); the OIL bar NOT WALKED (no route but a swap question) | YES — Retry pressable | — |
+| B5 | The same, a window opened over the board (ALL AVAIL, changes) | opens below the board's bar (D1106) | PARTLY — History's and ALL AVAIL's windows open below the bar, never under it; at rest 8px below (154 v 146), scrolled 45px below (96 v 51) (finding W-B1); Insights a full-screen window (top 32) | YES — each closed by its ✕; Insights by ✕, Escape, a tap outside; the two windows not by Escape or a tap outside — as on a desktop (D41, D66: non-blocking) | the board behind as left |
+| B6 | The same, a puck or a row dragged to the top or foot | the board scrolls under it (D895 §5A) | YES — Chromium, a finger: held at the foot the board scrolled down (1516 → 1804 in 1.5 s); held over the bar it scrolled up; the drop landed on the seat shown | YES; WebKit NOT WALKED (no touch drag there) | — |
+| B7 | The same, a warning's tap, a change's tap, an Undo | the row lands below the bar (D672) | PARTLY — two warning taps from the foot landed their row below the bar, wholly in view (219–234 v 51); Undo of a change out of view did NOT scroll to it — the same at 1100 on a desktop, so older (finding W-B3, filed) | YES | — |
+| B8 | The same, History's bubble on a box, then the board scrolled | the bubble follows its box | PARTLY — a gold dot's bubble closes on a scroll, never left floating; a TAP showed it in WebKit, not in Chromium (the tap path is for 820 and narrower; at 874 a hover shows it) — his iPhone settles it | hover YES; tap: his iPhone | — |
+| B9 | The same, the day changed (‹ › or a chip) | the new day shows; nothing left stuck | YES — the day chips (reached by scrolling up) changed the day, each from its top, nothing stuck; ‹ › not drawn sideways | YES | — |
+| B10 | Phone upright (402 × 874) | must not change, because the query is landscape only | YES — upright 402 × 874: the query false, the board as before | YES | — |
+| B11 | A desktop with a mouse, any size | must not change, because the query needs a coarse pointer | YES — a mouse at 874 × 402 and at 1000 × 400: the query false, as before | YES | — |
+| B12 | A tablet on its side (taller than 500) | must not change, because the query needs a short screen | YES — a tablet 1180 × 820: the query false, as before | YES | — |
+| B13 | The desktop layout switch on a phone on its side (`.sb-wide`) | must not change (its own pinch-zoom scroller, D1107, D1109) — filed | YES — the desktop layout switch (made on the upright phone, then turned): its own scroller, the head does not scroll away; the ⋯ is not drawn sideways at 874 | YES | — |
 | C1 | The board's ⋯ menu, an item under the keys | raised row + cyan ring (D1771) | YES — 402 (the ⋯ is drawn only at 820 and narrower): Enter and ↓ put the keys on Insights, raised row + 2px cyan ring inside (`walk/c/chromium/051`, host opened); arrows walk the three items; Escape back to ⋯, ringed | YES — Enter, ↓, arrows, Escape; WebKit the same | nothing over it |
 | C2 | The week's ⋯ menu (Edit Schedule, View-only Sched), an item under the keys | raised row + cyan ring (D1771) | YES — 402, Edit Schedule and View-only Sched (one item, Insights), as C1 (`walk/c/chromium/001–008`) | YES; WebKit's Edit Schedule NOT WALKED (the walker's script did not find it — its limit) | nothing over it |
 | C3 | + Block (a duty section; the AMT section) | cyan ring (D1771) | YES — duty and AMT + Block, cyan ring just outside (`walk/c/chromium/004`, host opened; `006`) | YES — Enter opens the duty menu, Escape back; the AMT one adds a block at once (no menu) and the keys drop to the page — met in passing, older | — |
@@ -142,6 +142,13 @@ Walker C (Sonnet), 8 Nov 26, Chromium and WebKit, 1536 × 900 and 402 × 874 by 
 ## 13. The gate counts
 
 ## 14. What the walk found, and each disposition
+
+Walker B (Sonnet), 8 Nov 26, WebKit and Chromium, 874 × 402 and 844 × 390, script `scripts/handpass/bl-walk-b.mjs`, pictures and logs `docs/img/handpass/2026-11-08-board-layout/walk/b/`. Also YES in both: the phone turned 874 → 402 → 874 with the board open, and ✓ Done then reopened — the bar 51 scrolled, the head back at rest each time; the plain-user round sideways (a time and a remark typed with the keys up, + Line, ✕ a line, Undo / Redo, + Wave, Templates, History, Insights, ✓ Done), a picture after each tap and settled. To be reproduced by the host and disposed of:
+
+- **W-B1** — scrolled, History's and ALL AVAIL's windows open 45px below the pinned bar (96 v 51), not just under it (D1106); not under the bar. OPEN — the host to reproduce and read `floatwin.ts`.
+- **W-B2** — at 844 × 390 (a smaller iPhone on its side) the pinned bar is two rows, 89px, so the list above the keys is 101, not 151; his 874 × 402 is as drawn. OPEN — a design question for him (the drawing is at 874 only), with pictures.
+- **W-B3** — Undo of a change out of view leaves the screen where it was (D672 says it moves to the change) — the same at 1100 on a desktop: older, not this change. OPEN — to reproduce on `main`, then file.
+- **W-B4** — a tap on a gold dot at 874 sideways shows its bubble in WebKit, not in Chromium (the tap path is for 820 and narrower). On his look card.
 
 ## 15. The reads
 
