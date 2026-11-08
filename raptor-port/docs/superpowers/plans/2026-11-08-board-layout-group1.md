@@ -76,7 +76,9 @@ menuItems`. Evidence `docs/handpass/2026-11-08-board-keys.md` §11.
   + Wave, the plans selector, a jet's stores, the duty role box checked; (c) the tidy-up `moreItems` → `menuItems`
   (read `sheetfocus.ts` first); (d) read kbscroll.ts's board path (`keepAboveKeyboard`, which scroller it scrolls) and
   every place that resets or reads `.sb-boardwrap`'s scroll (day change, D672, a warning's tap, the just-added ring, the
-  drag's edge scroll) — in the sideways look the scroller is `.schedboard`; (e) `--sb-topH` users (the drawer, D1106's
+  drag's edge scroll) — in the sideways look the scroller is `.schedboard`. kbscroll.ts names no board scroller (it
+scrolls the nearest one — fine); the files that name `.sb-boardwrap` / `.sb-main`, each to read: `board.ts`,
+`highlights.ts`, `histbubble.ts`, `interactions.ts`, `rowdrag.ts`, `SchedBoard.tsx`; (e) `--sb-topH` users (the drawer, D1106's
   windows) with the head scrolled away; (f) build, a quick Playwright look at 874×402 touch and 821/1000/1099/1100, the
   drawing check; then the Order below from step 5.
 
