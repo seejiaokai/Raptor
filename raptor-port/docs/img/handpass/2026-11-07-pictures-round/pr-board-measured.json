@@ -1,0 +1,1153 @@
+{
+ "q1": {
+  "rest": {
+   "top": 0,
+   "h": 146,
+   "items": [
+    {
+     "cls": "abtn sb-calbtn",
+     "id": "sbCal",
+     "t": 10,
+     "b": 41,
+     "l": 16,
+     "w": 100
+    },
+    {
+     "cls": "sb-title",
+     "id": "",
+     "t": 16,
+     "b": 36,
+     "l": 128,
+     "w": 312
+    },
+    {
+     "cls": "sb-days",
+     "id": "sbDays",
+     "t": 53,
+     "b": 81,
+     "l": 16,
+     "w": 515
+    },
+    {
+     "cls": "searchbox sb-search",
+     "id": "",
+     "t": 54,
+     "b": 80,
+     "l": 543,
+     "w": 193
+    },
+    {
+     "cls": "sb-actions",
+     "id": "",
+     "t": 105,
+     "b": 135,
+     "l": 301,
+     "w": 557
+    },
+    {
+     "cls": "sb-hl",
+     "id": "sbHlStrip",
+     "t": 107,
+     "b": 133,
+     "l": 16,
+     "w": 251
+    }
+   ]
+  },
+  "keys": {
+   "topBottom": 146,
+   "visBottom": 202,
+   "listShown": 56,
+   "box": {
+    "t": 168,
+    "b": 193,
+    "fld": "ff:0.0.0.ld"
+   }
+  },
+  "fold": {
+   "hidden": [
+    "abtn sb-calbtn#sbCal",
+    "sb-title",
+    "sb-days#sbDays",
+    "searchbox sb-search"
+   ],
+   "after": {
+    "top": 0,
+    "h": 51,
+    "items": [
+     {
+      "cls": "sb-actions",
+      "id": "",
+      "t": 10,
+      "b": 40,
+      "l": 301,
+      "w": 557
+     },
+     {
+      "cls": "sb-hl",
+      "id": "sbHlStrip",
+      "t": 12,
+      "b": 38,
+      "l": 16,
+      "w": 251
+     }
+    ]
+   },
+   "keys": {
+    "topBottom": 51,
+    "visBottom": 202,
+    "listShown": 151,
+    "box": {
+     "t": 168,
+     "b": 193,
+     "fld": "ff:0.0.0.ld"
+    }
+   }
+  },
+  "foldHidden": [
+   "abtn sb-calbtn#sbCal",
+   "sb-title",
+   "sb-days#sbDays",
+   "searchbox sb-search"
+  ],
+  "foldScrolled": {
+   "top": 0,
+   "h": 51,
+   "items": [
+    {
+     "cls": "sb-actions",
+     "id": "",
+     "t": 10,
+     "b": 40,
+     "l": 301,
+     "w": 557
+    },
+    {
+     "cls": "sb-hl",
+     "id": "sbHlStrip",
+     "t": 12,
+     "b": 38,
+     "l": 16,
+     "w": 251
+    }
+   ]
+  }
+ },
+ "q2": {
+  "today": {
+   "821": {
+    "lineH": 189,
+    "lineW": 469,
+    "lineHs": [
+     189,
+     173,
+     165,
+     197,
+     225,
+     175
+    ],
+    "rmkW": 16,
+    "rmkSeen": 0,
+    "ctlInside": false,
+    "rcpInside": false,
+    "cutPx": 175,
+    "sideL": 501
+   },
+   "874": {
+    "lineH": 189,
+    "lineW": 522,
+    "lineHs": [
+     189,
+     173,
+     165,
+     197,
+     225,
+     175
+    ],
+    "rmkW": 16,
+    "rmkSeen": 0,
+    "ctlInside": false,
+    "rcpInside": false,
+    "cutPx": 122,
+    "sideL": 554
+   },
+   "900": {
+    "lineH": 189,
+    "lineW": 548,
+    "lineHs": [
+     189,
+     173,
+     165,
+     197,
+     225,
+     175
+    ],
+    "rmkW": 16,
+    "rmkSeen": 2,
+    "ctlInside": false,
+    "rcpInside": true,
+    "cutPx": 96,
+    "sideL": 580
+   },
+   "950": {
+    "lineH": 189,
+    "lineW": 598,
+    "lineHs": [
+     189,
+     173,
+     165,
+     197,
+     225,
+     175
+    ],
+    "rmkW": 16,
+    "rmkSeen": 16,
+    "ctlInside": false,
+    "rcpInside": true,
+    "cutPx": 46,
+    "sideL": 630
+   },
+   "1000": {
+    "lineH": 189,
+    "lineW": 648,
+    "lineHs": [
+     189,
+     173,
+     165,
+     197,
+     225,
+     175
+    ],
+    "rmkW": 16,
+    "rmkSeen": 16,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 680
+   },
+   "1020": {
+    "lineH": 189,
+    "lineW": 668,
+    "lineHs": [
+     189,
+     173,
+     165,
+     197,
+     225,
+     175
+    ],
+    "rmkW": 16,
+    "rmkSeen": 16,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 700
+   },
+   "1040": {
+    "lineH": 131,
+    "lineW": 688,
+    "lineHs": [
+     131,
+     115,
+     119,
+     127,
+     155,
+     127
+    ],
+    "rmkW": 32,
+    "rmkSeen": 32,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 720
+   },
+   "1060": {
+    "lineH": 93,
+    "lineW": 708,
+    "lineHs": [
+     93,
+     77,
+     93,
+     89,
+     105,
+     77
+    ],
+    "rmkW": 52,
+    "rmkSeen": 52,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 740
+   },
+   "1080": {
+    "lineH": 65,
+    "lineW": 728,
+    "lineHs": [
+     65,
+     65,
+     65,
+     77,
+     77,
+     77
+    ],
+    "rmkW": 72,
+    "rmkSeen": 72,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 760
+   },
+   "1099": {
+    "lineH": 65,
+    "lineW": 747,
+    "lineHs": [
+     65,
+     51,
+     65,
+     51,
+     65,
+     51
+    ],
+    "rmkW": 91,
+    "rmkSeen": 91,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 779
+   },
+   "1100": {
+    "lineH": 65,
+    "lineW": 748,
+    "lineHs": [
+     65,
+     51,
+     65,
+     51,
+     65,
+     51
+    ],
+    "rmkW": 92,
+    "rmkSeen": 92,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 780
+   }
+  },
+  "A": {
+   "821": {
+    "lineH": 137,
+    "lineW": 469,
+    "lineHs": [
+     137,
+     137,
+     137,
+     137,
+     137,
+     137
+    ],
+    "rmkW": 150,
+    "rmkSeen": 150,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 501
+   },
+   "874": {
+    "lineH": 137,
+    "lineW": 522,
+    "lineHs": [
+     137,
+     137,
+     137,
+     137,
+     137,
+     137
+    ],
+    "rmkW": 150,
+    "rmkSeen": 150,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 554
+   },
+   "900": {
+    "lineH": 137,
+    "lineW": 548,
+    "lineHs": [
+     137,
+     137,
+     137,
+     137,
+     137,
+     137
+    ],
+    "rmkW": 150,
+    "rmkSeen": 150,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 580
+   },
+   "1000": {
+    "lineH": 137,
+    "lineW": 648,
+    "lineHs": [
+     137,
+     137,
+     137,
+     137,
+     137,
+     137
+    ],
+    "rmkW": 150,
+    "rmkSeen": 150,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 680
+   },
+   "1099": {
+    "lineH": 137,
+    "lineW": 747,
+    "lineHs": [
+     137,
+     137,
+     137,
+     137,
+     137,
+     137
+    ],
+    "rmkW": 150,
+    "rmkSeen": 150,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 779
+   }
+  },
+  "B": {
+   "821": {
+    "lineH": 83,
+    "lineW": 469,
+    "lineHs": [
+     83,
+     83,
+     83,
+     83,
+     83,
+     83
+    ],
+    "rmkW": 424,
+    "rmkSeen": 424,
+    "ctlInside": false,
+    "rcpInside": false,
+    "cutPx": 89,
+    "sideL": 501
+   },
+   "874": {
+    "lineH": 83,
+    "lineW": 522,
+    "lineHs": [
+     83,
+     83,
+     83,
+     83,
+     83,
+     83
+    ],
+    "rmkW": 424,
+    "rmkSeen": 424,
+    "ctlInside": false,
+    "rcpInside": false,
+    "cutPx": 36,
+    "sideL": 554
+   },
+   "900": {
+    "lineH": 83,
+    "lineW": 548,
+    "lineHs": [
+     83,
+     83,
+     83,
+     83,
+     83,
+     83
+    ],
+    "rmkW": 424,
+    "rmkSeen": 424,
+    "ctlInside": false,
+    "rcpInside": false,
+    "cutPx": 10,
+    "sideL": 580
+   },
+   "1000": {
+    "lineH": 83,
+    "lineW": 648,
+    "lineHs": [
+     83,
+     83,
+     83,
+     83,
+     83,
+     83
+    ],
+    "rmkW": 472,
+    "rmkSeen": 472,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 680
+   },
+   "1099": {
+    "lineH": 83,
+    "lineW": 747,
+    "lineHs": [
+     83,
+     83,
+     83,
+     83,
+     83,
+     83
+    ],
+    "rmkW": 522,
+    "rmkSeen": 522,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 779
+   }
+  },
+  "C": {
+   "821": {
+    "lineH": 111,
+    "lineW": 469,
+    "lineHs": [
+     111,
+     111,
+     111,
+     111,
+     111,
+     111
+    ],
+    "rmkW": 323,
+    "rmkSeen": 323,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 501
+   },
+   "874": {
+    "lineH": 111,
+    "lineW": 522,
+    "lineHs": [
+     111,
+     111,
+     111,
+     111,
+     111,
+     111
+    ],
+    "rmkW": 355,
+    "rmkSeen": 355,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 554
+   },
+   "900": {
+    "lineH": 111,
+    "lineW": 548,
+    "lineHs": [
+     111,
+     111,
+     111,
+     111,
+     111,
+     111
+    ],
+    "rmkW": 368,
+    "rmkSeen": 368,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 580
+   },
+   "1000": {
+    "lineH": 111,
+    "lineW": 648,
+    "lineHs": [
+     111,
+     111,
+     111,
+     111,
+     111,
+     111
+    ],
+    "rmkW": 418,
+    "rmkSeen": 418,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 680
+   },
+   "1099": {
+    "lineH": 111,
+    "lineW": 747,
+    "lineHs": [
+     111,
+     111,
+     111,
+     111,
+     111,
+     111
+    ],
+    "rmkW": 468,
+    "rmkSeen": 468,
+    "ctlInside": true,
+    "rcpInside": true,
+    "cutPx": 0,
+    "sideL": 779
+   }
+  }
+ },
+ "q3": {
+  "words": {
+   "label": "No OIL earned",
+   "hover": "Anything added to this day later earns no OIL either.",
+   "noteSwitch": "Nothing on this day earns OIL. Turn off the switch and each man earns as he did before.",
+   "bRest": "Stop OIL earning",
+   "bOn": "Earn OIL again",
+   "noteB": "Nothing on this day earns OIL. Press “Earn OIL again” and each man earns as he did before."
+  },
+  "desk-today-off": {
+   "words": "Nothing today earns",
+   "title": "Nothing today earns — covers anything added later too",
+   "lit": false,
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "control": {
+    "x": 946,
+    "y": 262,
+    "w": 149,
+    "h": 23
+   },
+   "fit": {
+    "free": 860,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     149,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "desk-puckBelowBar": 493,
+  "desk-today-on": {
+   "words": "Nothing today earns",
+   "title": "Let this day earn again",
+   "lit": true,
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+   "control": {
+    "x": 946,
+    "y": 262,
+    "w": 149,
+    "h": 23
+   },
+   "fit": {
+    "free": 860,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     149,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "desk-a-off": {
+   "words": "Nothing today earns",
+   "title": "Nothing today earns — covers anything added later too",
+   "lit": false,
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "control": {
+    "x": 963,
+    "y": 262,
+    "w": 124,
+    "h": 23
+   },
+   "fit": {
+    "free": 876,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     124,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "desk-a-on": {
+   "words": "Nothing today earns",
+   "title": "Let this day earn again",
+   "lit": true,
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+   "control": {
+    "x": 963,
+    "y": 262,
+    "w": 124,
+    "h": 23
+   },
+   "fit": {
+    "free": 876,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     124,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "desk-b-off": {
+   "words": "Nothing today earns",
+   "title": "Nothing today earns — covers anything added later too",
+   "lit": false,
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "control": {
+    "x": 968,
+    "y": 262,
+    "w": 127,
+    "h": 23
+   },
+   "fit": {
+    "free": 882,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     127,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "desk-b-on": {
+   "words": "Nothing today earns",
+   "title": "Let this day earn again",
+   "lit": true,
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+   "control": {
+    "x": 980,
+    "y": 262,
+    "w": 115,
+    "h": 23
+   },
+   "fit": {
+    "free": 894,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     115,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "desk-c-off": {
+   "words": "Nothing today earns",
+   "title": "Nothing today earns — covers anything added later too",
+   "lit": false,
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "control": {
+    "x": 983,
+    "y": 262,
+    "w": 112,
+    "h": 23
+   },
+   "fit": {
+    "free": 897,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     112,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "desk-c-on": {
+   "words": "Nothing today earns",
+   "title": "Let this day earn again",
+   "lit": true,
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+   "control": {
+    "x": 983,
+    "y": 262,
+    "w": 112,
+    "h": 23
+   },
+   "fit": {
+    "free": 897,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     112,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "phone-today-off": {
+   "words": "Nothing today earns",
+   "title": "Nothing today earns — covers anything added later too",
+   "lit": false,
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "control": {
+    "x": 116,
+    "y": 295,
+    "w": 149,
+    "h": 23
+   },
+   "fit": {
+    "free": 30,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     149,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "phone-puckBelowBar": 551,
+  "phone-today-on": {
+   "words": "Nothing today earns",
+   "title": "Let this day earn again",
+   "lit": true,
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+   "control": {
+    "x": 116,
+    "y": 347,
+    "w": 149,
+    "h": 23
+   },
+   "fit": {
+    "free": 30,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     149,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "phone-a-off": {
+   "words": "Nothing today earns",
+   "title": "Nothing today earns — covers anything added later too",
+   "lit": false,
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "control": {
+    "x": 133,
+    "y": 295,
+    "w": 124,
+    "h": 23
+   },
+   "fit": {
+    "free": 46,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     124,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 18,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     135,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "phone-a-on": {
+   "words": "Nothing today earns",
+   "title": "Let this day earn again",
+   "lit": true,
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+   "control": {
+    "x": 133,
+    "y": 347,
+    "w": 124,
+    "h": 23
+   },
+   "fit": {
+    "free": 46,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     124,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 18,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     135,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "phone-b-off": {
+   "words": "Nothing today earns",
+   "title": "Nothing today earns — covers anything added later too",
+   "lit": false,
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "control": {
+    "x": 138,
+    "y": 295,
+    "w": 127,
+    "h": 23
+   },
+   "fit": {
+    "free": 52,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     127,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 19,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     142,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "phone-b-on": {
+   "words": "Nothing today earns",
+   "title": "Let this day earn again",
+   "lit": true,
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+   "control": {
+    "x": 150,
+    "y": 347,
+    "w": 115,
+    "h": 23
+   },
+   "fit": {
+    "free": 64,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     115,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 33,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     128,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "phone-c-off": {
+   "words": "Nothing today earns",
+   "title": "Nothing today earns — covers anything added later too",
+   "lit": false,
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "control": {
+    "x": 153,
+    "y": 295,
+    "w": 112,
+    "h": 23
+   },
+   "fit": {
+    "free": 67,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     112,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 37,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     124,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "phone-c-on": {
+   "words": "Nothing today earns",
+   "title": "Let this day earn again",
+   "lit": true,
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+   "control": {
+    "x": 153,
+    "y": 347,
+    "w": 112,
+    "h": 23
+   },
+   "fit": {
+    "free": 67,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     112,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 37,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     124,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  }
+ },
+ "q4": {
+  "title": "Fable — no OIL worked out — this row has no end time",
+  "phone-today": {
+   "said": "",
+   "picked": 2
+  },
+  "phone-endTag": {
+   "moved": false,
+   "before": [
+    314,
+    604,
+    46
+   ],
+   "after": [
+    314,
+    604,
+    46
+   ]
+  },
+  "phone-a": {
+   "said": "Nothing changed for Fable. No OIL worked out — this row has no end time."
+  },
+  "phone-b": {
+   "said": "Blocked: nothing changed for Fable. No OIL worked out — this row has no end time."
+  },
+  "desk-today": {
+   "said": "",
+   "picked": 2
+  },
+  "desk-endTag": {
+   "moved": false,
+   "before": [
+    456,
+    635,
+    52
+   ],
+   "after": [
+    456,
+    635,
+    52
+   ]
+  },
+  "desk-a": {
+   "said": "Nothing changed for Fable. No OIL worked out — this row has no end time."
+  },
+  "desk-b": {
+   "said": "Blocked: nothing changed for Fable. No OIL worked out — this row has no end time."
+  }
+ }
+}

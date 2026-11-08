@@ -10,6 +10,7 @@ export function deepClone<T>(v: T): T {
   if (typeof (globalThis as any).structuredClone === 'function') {
     return (globalThis as any).structuredClone(v)
   }
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the fallback for a runtime with no structuredClone at all (the line above serves every browser); a record is plain JSON-shaped data, so the JSON copy is whole
   return JSON.parse(JSON.stringify(v))
 }
 

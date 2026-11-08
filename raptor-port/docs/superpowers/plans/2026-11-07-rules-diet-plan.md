@@ -471,6 +471,161 @@ sixteen to eight, most where a step's wording or a tier gate kept part of a sect
 what was left — every finding held when checked, seven in lines the Opus reader had passed. As in the plan's own reads,
 neither alone was enough.
 
+### Step 4, part 1 — the general rulings as a page, measured (8 Nov 26, `claude/rules-diet-step-4-7b92cb`)
+
+`how-we-work.md` is a page (`<!-- shape: page -->`); eleven spent rulings archived (D86, D602, D775, D832, D972, D973,
+D974, D1556, D1566, D1659, D1736); D136 kept live (D1735 narrows it); the five always-loaded files gained only the
+citations the page shape's checks need, and four small additions the reads asked for (D228, D1297, D1742, the steps
+for a converted area). Account by requirement: `../briefs/2026-11-07-rules-diet-step4-account.md` (216 rulings).
+
+| Measure (`docsize --reads`, tokens) | Before | First draft | After the account's 66 gaps | After both reads' fixes |
+|---|---|---|---|---|
+| Start of every chat | 42,767 | 28,942 | 32,477 | 34,335 |
+| A Leave War job, all told | 326,028 | 312,203 | — | 321,862 |
+| The page itself (bytes) | 59,493 (short lines) | 21,430 | 31,022 | 35,695 |
+
+The saving is smaller than §3 projected (the sample's 6,602 tokens for the page): the sample had dropped or bent parts
+of 66 rulings, and the two reads found about 40 more — a condition, a reading told to him, an exception. Stated whole,
+the page is 13,337 tokens, about 6,700 more than the sample; the start of a chat is still about a fifth lighter.
+
+| Read | Reader | Findings | What was done |
+|---|---|---|---|
+| The account by requirement | a helper (Opus), every row against the page | 66 gaps | all fixed by the same helper, `63478ab30` |
+| The page and the five files' citations, blind | Astra (`../briefs/2026-11-07-rules-diet-step4-read-astra.md`) | 8: 2 high, 6 medium | all taken |
+| The same, blind | a fresh Opus reader (`../briefs/2026-11-07-rules-diet-step4-read-opus.md`) | 7 (4 medium, 3 low) and about 27 small | all taken but two, below |
+
+- **Astra:** the one fresh Opus read stood in for plans and guide changes too, where D790 limits it to finished code
+  (high); D785's instruction to walkers and readers (high); D1537's engine kept out of strict checking; what the drawing
+  check measures (D1494); the guard's hold limits and idle compaction (D1671, D884); the test account's match to the IT
+  side (D1749); the pass and fail of the code check (D1539); the re-read after compaction and the context % (D868).
+- **Opus:** D785 too; the standing rule that no outside skill is installed whole (D812, D835); the policy's and the
+  backlog's one-line wording (D201 — `doc-budget.md` §4, §5, `[RULING-HOME-HOOK]`); D625's readers; the merge lock and
+  the morning report (D1750); Sol 6.1 beside D1743 (stated as the agent's reading: the second seat is the Opus
+  reader's); and conditions dropped from D1222, D1531, D1551, D1557, D1572, D1717, D607, D808, D820, D822, D872, D941,
+  D971, D1732, D490, D350, D1495, D228, D1297, D1742.
+- **Not taken:** the Opus read's "round 4 of the consistency look is still open" — the backlog has it answered, built and
+  live (pull request 643), so "1–4 live" stands; its doubt on archiving D1736 — the ruling's own text ends it once steps
+  1 and 2 landed, Astra confirmed it, and step 5a waits for his word anyway (D1750), so a script or hook change 5a needs
+  is asked for with it.
+
+**The two reads compared (D1732).** Astra found the two most serious — the readers' rules — both in lines the Opus
+reader had passed; every one of its eight held. The Opus read was wider: about 34 findings, most a dropped condition,
+and the documents left in the old shape, which Astra did not look for. Four overlapped (D785, D1537, D884, D1749). As in
+step 3, neither alone was enough.
+
+### Step 4, part 2 — the five always-loaded files as checklists (8 Nov 26, the same branch)
+
+Each of `shipping.md`, `doc-structure.md`, `record-decisions.md`, `plain-language.md` and `bug-check.md` is a checklist:
+every rule one statement with its numbers, the headings other files point at kept. **A departure from §3, with its
+reason:** §3 sends the stories to `guide-full.md`, but that file's `##` headings must mirror `raptor-port/CLAUDE.md`'s
+sections and each `###` must be named by one short form there, so the five files' own headings would fail its check;
+each file's whole old text went instead, byte for byte by `--move`, to `raptor-port/docs/archive/rule-files-2026-11-08.md`
+(D138), a pointer left. The checklist was written above the old text before the move, since the move's own check puts a
+file back if a live ruling stops being stated in a file that loads. Account: `../briefs/2026-11-08-rules-diet-step4b-account.md`
+(147 rows; the same ruling numbers in each file before and after).
+
+| Measure | Before part 2 | After |
+|---|---|---|
+| The five files (tokens) | 16,214 | about 15,200 |
+| Start of every chat (`--reads`) | 34,335 | 33,423 |
+
+The saving is small — §3 estimated about 6,600: the old text was mostly rules, its stories about a tenth. More would
+come only from stating once what both the page and a checklist state now (the unattended-run and public-repo lines,
+the readers): a choice put to him, not taken.
+
+| Read | Findings | What was done |
+|---|---|---|
+| Astra (`../briefs/2026-11-08-rules-diet-step4b-read-astra.md`) | 1 low (part 1's D1572 line) | fixed |
+| A fresh Opus reader (`../briefs/2026-11-08-rules-diet-step4b-read-opus.md`) | 3 medium, 6 low | all fixed; one put to him |
+
+- **Fixed:** shipping's "no full gate run on his PC" kept to while the repo is public (D1086); the notification line
+  marked as narrowed by D1097; bug-check's readers — one fresh Opus reader unless he calls Astra, "both" on his call,
+  D1743's window; record-decisions' "overwrites or narrows" (D201); four commands kept on one line; part 1's D1572 line
+  (30 kept with reasons, one left), D1743 and D761 cited.
+- **Put to him (parked):** who red-teams an important plan when he has not called Astra and Sol 6.1 — D790 kept a plan's
+  read as it was, D1734 names a stand-in only for code and scenarios; recommended: a fresh, blind Opus reader meanwhile,
+  as plans have been read since 13 Oct.
+- **His answers, 8 Nov 26, to the morning report's questions:** "1 yes" — a fresh, blind Opus reader red-teams such a
+  plan meanwhile (D1760); "call in Astra" — every working-guide change is read by Astra, beside the fresh Opus reader
+  (D1761); "later" — stating once what both the page and a checklist state is left for a later step (D1762). On the
+  agent's reading that Sol 6.1 is not added as a third reader of the diet's reworded steps, he asked whether it is
+  important enough — told it was not needed, then that adding Sol until Monday would use the Codex allowance, he
+  answered "keep two" (D1763): no third reader.
+
+**The two reads compared (D1732).** Astra checked 174 requirements and found the five files whole; the Opus reader
+checked about 194 and found the two shipping conditions that a split bullet had loosened, which Astra passed. The
+Opus read was the better of the two on this part; on part 1 Astra caught the two most serious.
+
+### Step 5a — OIL as a page, the full trial (8 Nov 26, `claude/rules-diet-step-5a-oil`)
+
+`.claude/rules/decisions/oil.md` is a page, "OIL (off in lieu) — how it works now" (`<!-- shape: page -->`, its
+`paths:` unchanged), drafted from the sample (v3) and brought up to date: D1783 (8 Nov 26) added, the two statements
+step 1 found over 600 characters split, and the three change marks the rulings command asked for cited (D755 beside
+D43, D1042 beside D24 twice). `DECISIONS.md`, `AGENTS.md`, the project guide's map row and the head of the full-text
+file name OIL as a page. No ruling archived (the sample proposed none; the account confirms).
+
+**The account by requirement** (`../briefs/2026-11-08-rules-diet-step5a-account.md`, one Opus helper, every OIL full row
+read sentence by sentence — OIL being the full trial): 49 rulings split into 294 parts, and the old "Also read" and
+"Also know" paragraphs item by item. **30 gaps in the first draft — 15 that bent or dropped a rule** (among them D142's
+"the published record is what happened", D48's credit held until a correction is published, D31's list of what has
+nothing to measure, D606's earlier-of rule and the SPARE's B, D804's kinds asked and never asked, D19's offer to create
+the period, D80's "manning is not ruled — ask him", and the D731 pointer still quoting the split count D762 ended) **and
+15 smaller** — all fixed on the page. The sample's two blind reads had passed most of them: they read the short lines,
+not every full row. Size: the draft 14,525 bytes → 18,703 (about 7,160 tokens; the table was 15,109 bytes with
+D1783), so for OIL the page saves nothing — it states what the short lines had cut. The tripwire raised from 15,500 to
+20,500 in `docsize.mjs`, its reason beside it (D141; a script change, put to him with his "merge live").
+**Left open, each named in the account:** whether a typed B starts a flying SPARE's own span (D606 against D1044 — the
+page claims neither); whether a BB duty desk offers the switch (not ruled — the page says only "does not earn by
+default"); D592's readings 8 and 9, stated "as built, and put to him as readings"; D43's full row, cut off mid-sentence
+("it inherits the seat's") since it was first written — filed, not guessed at.
+
+**The two blind reads (D1739, D1763 "keep two"), each of the page at `5f08575bf`, each blind to the other:**
+
+| Read | Findings | What was done |
+|---|---|---|
+| Astra (`../briefs/2026-11-08-rules-diet-step5a-read-astra.md`) | 6: 1 high, 5 medium | all taken, each checked against its full row first |
+| A fresh Opus reader (`../briefs/2026-11-08-rules-diet-step5a-read-opus.md`) | 12: 2 medium, 10 low | all taken, each checked against its full row first |
+
+- **Astra:** D783's approved controls — the question's "Don't swap" and "Swap", Swap greyed until Yes or No; "Answer OIL"
+  opens the question again, "OK" only closes the bar; the holiday list's heading, "Yes · FO" / "Yes · HO", the grey No,
+  "Later" and "Save", no "OIL?" tag inside (high); D592's fallback for a time that cannot be read, as a reading; D606's
+  readings stated as rules; D327's gaps between an archive and a restore; D261's "how many days"; D21's leave charging.
+- **The Opus reader:** D43's placeholder takes the seat's default — off on the off-by-default seats, which D33 lets it
+  land on (medium); D606 beside the later D1041, D1045, D1046 (medium); D606's readings (with Astra); D682's clause
+  stale since D762; the head's "pointed to at the end" and D277, D1209 added; the flash only on a swap; D592's two
+  scopes; D48's demo-data clause; D400's "accepted duty input" since D804; D783's pictures of record; D755's No note;
+  D163's wording.
+- **Both found:** D606's readings stated as his rule; D783 (Astra the controls, the Opus reader the flash and the
+  pictures). The page after both: 20,564 bytes (about 7,870 tokens); the tripwire set at 22,600, its reason beside it.
+
+**The two reads compared (D1732).** Astra found the most serious — D783's controls, which the account had marked as
+detail — and five more, every one holding when checked; it also judged the account, rightly: "detail" was hiding
+requirements. The Opus reader read wider — about 40 rows of other areas beside the 49 — and found the two cross-area
+bends (D43's seat default against D24 and D33, D606 against the standby rulings of 19 Oct 26) that Astra passed, and
+ten small ones. Neither alone was enough, as in steps 3 and 4. **For the rest of step 5:** the account marks a wording
+on screen, a control or a scope as a part, never as detail; and each reader reads the pointers' rulings in their own
+areas, where both of this step's medium bends sat.
+
+**The trial of the whole route (§7), run on a scratch copy of the branch, never pushed, then deleted** — made-up
+rulings D1794 and D1795, the page as first drafted:
+- **A ruling recorded:** its full row written at the top of the full-text file, the page not yet edited — the command
+  wrote nothing and named the edit owed; with a bullet citing it, clean, and the document check green.
+- **One changing another:** D81's full row marked "NARROWED … BY D1794" — the command named the page line stating D81
+  (by line and section) and asked for D1794 there; cited, clean.
+- **One retired:** D80's full row marked "REPLACED BY D1794" — the command named the page line still citing D80; that
+  line rewritten, D80 moved to `DECISIONS-ARCHIVE.md`, clean, green.
+- **A merge from a branch still in the old shape** (from `main` before the conversion, D1795 recorded the old way, its
+  short line in the old table) — **both directions:** the page branch merging it, and it merging the page branch. Each
+  time git's conflict in `oil.md` was settled by `--rulings --merge`: the page kept whole, no table rows written back,
+  D1795's full row at the top of the full-text file, D1795 listed under PLACE ON THE PAGE, the gate red until a line
+  stated it; stated, clean and green.
+- **One friction, by design:** in the second direction the command also put back the old side's wording of two prose
+  lines the conversion had changed (the head of `DECISIONS.md` and of the full-text file) and listed them under
+  RE-APPLY BY HAND, as it does for any prose line — a chat merging an old-shape branch re-applies them; nothing is lost
+  silently.
+- **One slip of the trial's own:** the old route's first step writes the new full row into the area file's table (the
+  command then moves it), not into the full-text file; written there first, the command refused, as it should.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |

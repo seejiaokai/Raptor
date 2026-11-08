@@ -406,7 +406,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   nothing to assume, so the end stays bare. The START is left plain: for a
   **Superseded by In-time / Rally above (D497–D507):** the older formula below
   is retained as history; actual report now includes resolved Rally and a signed
-  previous-day origin, while absence of both retains step. Historically, for a
+  previous-day origin, while absence of both retained step until D1786 (8 Nov 26) — now take-off less the default
+  rally, as OIL (§Where a day with nothing entered starts). Historically, for a
   sortie it is the published report/step time (`report = in-time ?? step`,
   never the dead `T/O − 3h` fallback), not an overridable assumption. This is
   a port/reference divergence parity compares, mirrored in
@@ -2322,8 +2323,9 @@ were `FS`/`HS` until the 28 Aug 26 rename.
       (D24), the shift's WRITTEN hours; a shift whose written start and end are the
       same still measures nothing. The work-hours bar and the long-work-day note have counted an SC
       MAIN's B since 24 Aug 26 (`workSpan`). Pins: `engine/oilscintime.test.ts`, `engine/standbyflies.test.ts`;
-    - the work-hours bar with no line entered starts at STEP; OIL with no line
-      entered starts at the nominal report. The two differ there by ruling.
+    - with no line entered, the work-hours bar and the long-day note start at the
+      nominal report too, as OIL does — one start since D1786 (8 Nov 26); until
+      then they started at the step (§Where a day with nothing entered starts).
     `reporting.ts` is pure, so a frozen snapshot answers from its own lines.
     Pins: `engine/oilworkstart.test.ts`;
   - a **sim row** (AMT and OFT), by its `str`→`end`;
@@ -4595,3 +4597,35 @@ ones.** What changes in the bullets below, each left as written:
 - Pinned by `engine/inputtitle.test.ts`, `engine/scshift-inputs.test.ts` (a title's words decide nothing; two requests of
   one name), `engine/accept.test.ts`, `engine/dutyrest.test.ts`, `ui/inputtitle.test.tsx`, `ui/inputtitle-row.test.tsx`,
   `ui/latepub.test.tsx` (the published day), `state/demostamps.test.ts`.
+
+## Where a day with nothing entered starts (D1786, 8 Nov 26)
+
+His ruling, built 8 Nov 26 (chat 6, the pictures round's group 4; the backlog item [LOGIC-WORDS-WORKHOURS], now archived): a flyer's line with no in-time or rally entered starts
+his day at take-off less the default rally (VCONF.reportLead) for his long day and his Insights hours, as it already does
+for his OIL — one start, not the step (D1786; it carries D1032 and D592 (1), one clock for OIL, the work-hours bar and the
+long-day note).
+- **How:** `events.ts` gives a sortie's EVENT only the report entered for it — its in-time or rally (`seatIntime`) — and
+  null when none is, so `validate.ts workSpan`, the one definition both the long-day note and Insights read, falls to its
+  own `to − VCONF.reportLead`: the same start as OIL's `oil.ts fltOilWin`, case for case (an unreadable clock or words with
+  no clock are nothing entered; a default rally before midnight is the evening before). An entered time later than the
+  default still starts the day where it says — never a min() of the two. A sortie with no take-off or no landing typed
+  is unfinished — its event's report is NaN, so `workSpan`'s own guard counts it nowhere, as OIL counts it nothing (until
+  then a blank landing borrowed the take-off and stretched the day); and `workSpan` skips a sortie that measures nothing
+  (both leads zero, take-off equal to landing), as OIL does (Astra's and Sol 6.1's reads, 8 Nov 26).
+- **What does not move:** `day.fly` keeps report-or-step, so the SANS checks' window (`min(report, step)`) and the
+  availability window (step to dekit, D36) are as before; crew rest reads `intime` and the brief (the tight advisory
+  already measures the nominal report); a shift (SC, and a standby row that flies) keeps its B / R or its start. OIL
+  already counted from here.
+- **What moves on screen:** a flying day with nothing entered counts `reportLead − step` longer (2h with the shipped
+  3h and 1h) in Insights' work hours and in the long-day note, which can newly show on such a day; changing the default
+  rally on the Logic page moves both at once (D482), where before it moved neither. Typing the R box's faint suggestion
+  changes nothing now.
+- **A published day (D179, D103, D482):** the long-day note is a frozen warning on the issued face (`LIVE_ON_FACE` does
+  not hold it), so the face keeps the note it went out with until its next amendment; but a long-day note the working copy
+  now raises or drops differently is compared like every frozen warning (`warnDelta`): the day reads one change waiting
+  and the sign-offs given before it fall (D103), until the next amendment goes out or the Logic value is put back.
+  Insights moves at once, as for a rule change (D482). (The build's first account said such a day reads nothing pending —
+  wrong; Astra's and Sol 6.1's reads, 8 Nov 26.) The Logic page's default rally row says it in the drawn words.
+- Pinned: `engine/daystart-default-rally.test.ts` (the notes' Friday example: Saint 18h30, Echo 27h25; the unfinished and
+  zero-measure sorties; the published day reading one change waiting), `ui/logic.test.tsx`.
+  The reference starts such a day at the step; the seed's five days have no sortie with nothing entered, so parity holds.

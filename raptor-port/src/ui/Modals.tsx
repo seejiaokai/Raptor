@@ -5,12 +5,9 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { shortYear } from '../engine/inputs'
-import { PEOPLE } from '../engine/people'
 import { dayCount } from '../engine/waves'
-import { lgT } from '../engine/time'
-import { validate, WCODE, wlbl, withOfficialWarn, versionFaceWarn } from '../engine/validate'
+import { validate, withOfficialWarn, versionFaceWarn } from '../engine/validate'
 import { isDraftVer } from '../engine/drafts'
-import { computeInsights } from '../engine/insights'
 import { markEdit } from '../engine/publish'
 import { esc, afterSchedMutate, dayDisplaysOfficial, CURPAGE, DPREV } from '../state/view'
 import { isAdmin } from '../state/perms'
@@ -21,6 +18,7 @@ import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose, useEscWindow } from './sheetfocus'
 import { useBarFree } from './barfree'
+import { insightsHTML } from './insights-html'
 
 export function DayPop() {
   useVersion()
@@ -57,9 +55,11 @@ export function DayPop() {
     : dayDisplaysOfficial(di) ? withOfficialWarn(draw) : draw()
   const close = () => { setDayPop(null); notify() }
   return (
-    <div className="airpop" id="dayPop" ref={popRef} onClick={e => { if (clickedOutside(e, 'dayPop')) close() }}>
+    /* role="presentation": the shade behind the box is nothing a screen reader should name; a press on it closes, the
+       keyboard's way out is Escape and the ✕ (the same on Traffic and Insights below, and on the windows' shades elsewhere) */
+    <div className="airpop" id="dayPop" ref={popRef} role="presentation" onClick={e => { if (clickedOutside(e, 'dayPop')) close() }}>
       <div className="airpop-box" style={{ width: 520 }}>
-        <div className="airpop-head"><b id="dayPopTitle">{title}</b><button className="x" id="dayPopClose" onClick={close}>✕</button></div>
+        <div className="airpop-head"><b id="dayPopTitle">{title}</b><button className="x" id="dayPopClose" aria-label="Close" onClick={close}>✕</button></div>
         {/* scroll the list INSIDE its own height (owner, 26 Aug 26 — the Close
             button was landing in the middle of a long issues list). maxHeight
             without overflow lets the content paint straight through the footer;
@@ -70,58 +70,6 @@ export function DayPop() {
       </div>
     </div>
   )
-}
-
-/* openInsights' body, verbatim strings, as a pure builder */
-export function insightsHTML() {
-  /* every figure from ONE computation — each day's latest published version, the working copy only for a day not yet
-     published (owner D477, D478, 1 Oct 26; engine/insights.ts). The issues tile used to be counted here, off the working
-     copy's list: it now reads the same world as the lists under it. A hidden warning is not counted (D472). */
-  const I = computeInsights(), hard = I.hard, maxN = I.flyers.length ? I.flyers[0].n : 1
-  let h = `<div class="itiles">
-    <div class="itile"><div class="n">${I.sorties}</div><div class="l">Sorties</div></div>
-    <div class="itile"><div class="n">${I.forms}</div><div class="l">Formations</div></div>
-    <div class="itile"><div class="n">${I.flyers.length}</div><div class="l">Aircrew flying</div></div>
-    <div class="itile ${hard ? 'hard' : ''}"><div class="n">${I.issues}</div><div class="l">${hard} warning</div></div></div>`
-  h += `<div class="isec-h">Flying load · sorties this week</div>`
-  if(I.tracking) h+=`<div class="insights-legend"><span class="mix-blue">Blue</span><span class="mix-red">Red</span></div><p class="insights-explain">Total-only rows include unanswered mission roles.</p>`
-  I.flyers.slice(0, INSIGHTS_ALL ? I.flyers.length : 12).forEach((f: any) => {
-    const p = PEOPLE[f.id]
-    const mix=f.roleMix, split=I.tracking && mix && !mix.unresolved
-    const bar=split?`<span class="mix-segments" style="width:${f.n/maxN*100}%"><span class="mix-blue" style="width:${mix.blue/f.n*100}%"></span><span class="mix-red" style="width:${mix.red/f.n*100}%"></span>${mix.standby ? `<span class="mix-standby" title="Standby rows that flew" style="width:${mix.standby/f.n*100}%"></span>` : ''}</span>`:`<span class="fill" style="width:${f.n/maxN*100}%"></span>`
-    h += `<div class="ibar${I.tracking?' mission-mix-row':''}"><span class="nm" title="${esc(p?.name || '')}">${esc(p?.cs || f.id)}</span><span class="track">${bar}</span><span class="mix-numbers">${split?`<span class="mix-count-blue">${mix.blue}</span><span class="mix-count-red">${mix.red}</span>`:''}<span class="v">${f.n}</span></span></div>`
-  })
-  if (I.flyers.length > 12) h += `<button type="button" class="abtn insights-show-all" data-insights-all>${INSIGHTS_ALL?'Show less ↑':`Show all ${I.flyers.length} ↓`}</button>`
-  /* WORK HOURS (owner, 20 Aug 26 — "perhaps have a section to show everyone's
-     work hours in the insights for the week"). Beside the flying load on
-     purpose: the two answer the same question from opposite ends — who is
-     flying the most sorties, and who is at work the longest, which are
-     regularly not the same man (a duty stander flies nothing and is there all
-     day). Everyone with a scheduled hour is listed rather than a top 12: the
-     ask was everyone's, the number that matters may be at the bottom, and the
-     modal already scrolls.
-     The heading states the definition, because "work hours" would otherwise
-     read as hours airborne — it is report through debrief for a flying day and
-     start to end for everything else, the same span the long-work-day note is
-     raised from (engine/validate.ts `workSpan`). */
-  const maxW = I.hours.length ? I.hours[0].mins : 1
-  h += `<div class="isec-h">Work hours · report to debrief, this week</div>`
-  if (!I.hours.length) h += `<div style="color:var(--ink-3);font-size:12px">Nothing scheduled this week.</div>`
-  I.hours.forEach((w: any) => {
-    const p = PEOPLE[w.id]
-    h += `<div class="ibar"><span class="nm" title="${esc((p && p.name) || '')}">${esc((p && p.cs) || w.id)}</span>` +
-      `<span class="track"><span class="fill" style="width:${Math.round(w.mins / maxW * 100)}%"></span></span>` +
-      `<span class="v" title="${w.days} day${w.days > 1 ? 's' : ''} on the programme">${esc(lgT(w.mins))}</span></div>`
-  })
-  h += `<div class="isec-h">Not on the flying programme · ${I.idle.length} available</div><div class="ichips">` +
-    (I.idle.length ? I.idle.map((id: any) => `<span class="ichip">${esc(PEOPLE[id].cs)}</span>`).join('') : '<span style="color:var(--ink-3)">everyone is scheduled</span>') + `</div>`
-  const types = Object.keys(I.byType)
-  h += `<div class="isec-h">Conflicts by type</div>`
-  h += types.length ? types.sort((a, b) => I.byType[b] - I.byType[a]).map(t => `<div class="irow"><span>${esc(wlbl(WCODE[t] || t))}</span><span>${I.byType[t]}</span></div>`).join('')
-    : '<div style="color:var(--ok);font-size:12px">No conflicts flagged. ✓</div>'
-  h += `<div class="isec-h">By day</div>`
-  I.dayStats.forEach((s: any) => h += `<div class="irow"><span>${s.dow}</span><span style="color:var(--ink-3)">${s.ac} sorties · ${s.forms} formations · ${s.warns ? `<span style="color:${s.hard ? 'var(--hard)' : 'var(--adv)'}">${s.warns} issue${s.warns > 1 ? 's' : ''}</span>` : '<span style="color:var(--ok)">clear</span>'}</span></div>`)
-  return h
 }
 
 /* ---- airspace / traffic popup — renderAir + airEdit verbatim. Traffic is a
@@ -244,9 +192,10 @@ export function AirPop() {
   const close = () => { setAirKey(null); notify() }
   const admin = airEditable()
   return (
-    <div className="airpop" id="airpop" ref={popRef} onClick={e => { if (clickedOutside(e, 'airpop')) close() }}>
+    <div className="airpop" id="airpop" ref={popRef} role="presentation" onClick={e => { if (clickedOutside(e, 'airpop')) close() }}>
       <div className="airpop-box">
-        <div className="airpop-head"><b id="airTitle">{`Traffic · ${g.label || ''}`}</b><button className="x" id="airClose" onClick={close}>✕</button></div>
+        <div className="airpop-head"><b id="airTitle">{`Traffic · ${g.label || ''}`}</b><button className="x" id="airClose" aria-label="Close" onClick={close}>✕</button></div>
+        {/* eslint-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events -- the list's own typing boxes and ✕ buttons take the keys; this only hears them, one handler for the list */}
         <div className="airpop-body" id="airBody" ref={bodyRef}
           onInput={e => { const i = (e.target as HTMLElement).closest('[data-airi]') as HTMLInputElement | null; if (!i || !airEditable()) return; const gg = airGo(); if (gg && gg.traffic) gg.traffic[+i.dataset.airi!] = i.value }}
           onBlur={e => { if ((e.target as HTMLElement).closest('[data-airi]')) airEdit() }}
@@ -273,9 +222,10 @@ export function InsightsModal() {
   if (!INSIGHTS) return <div className="modal" id="insightModal" hidden />
   const close = () => { setInsights(false); notify() }
   return (
-    <div className="modal" id="insightModal" onClick={e => { if (clickedOutside(e, 'insightModal')) close() }}>
+    <div className="modal" id="insightModal" role="presentation" onClick={e => { if (clickedOutside(e, 'insightModal')) close() }}>
       <div className="modal-box" ref={boxRef} tabIndex={-1} style={{ width: 600, outline: 'none' }}>
-        <div className="modal-head"><b>Week insights · {DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</b><button className="x" id="insightClose" onClick={close}>✕</button></div>
+        <div className="modal-head"><b>Week insights · {DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</b><button className="x" id="insightClose" aria-label="Close" onClick={close}>✕</button></div>
+        {/* eslint-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events -- the press comes from the "Show all" button inside, which the keys already press; this only hears it */}
         <div className="modal-body" id="insightBody" onClick={e=>{if((e.target as HTMLElement).closest('[data-insights-all]')) {setInsightsAll(!INSIGHTS_ALL);notify()}}} dangerouslySetInnerHTML={{ __html: insightsHTML() }} />
       </div>
     </div>

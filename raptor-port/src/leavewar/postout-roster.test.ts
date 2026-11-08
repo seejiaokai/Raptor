@@ -278,6 +278,27 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     e.changes.push({ op: 'put', collection: 'people', id: 'rocky', before: { ...r, deleted: true, deletedFrom: '2026-07-01', archived: true, archivedBy: 'del' }, after: { ...r, deleted: false, archived: false } } as any)
     expect(ownershipViolation(e)).toMatch(/people\/rocky/)
   })
+  /* THE READS OF 8 Nov 26 (`docs/handpass/parts/rss1108/read-security.md`, `read-opus.md` Low 6): a posting record's outcome
+     is any string it carries, and the fields each outcome may change were looked up on a plain object — so an outcome named
+     as something every object has ("toString", "constructor") found a function there, not a list, and the check threw
+     instead of refusing (since 8 Nov 26 at once; before, only once a field differed — and with none differing it went on
+     to the Delete marks and could pass). Only the three outcomes the app writes have a list; anything else is refused. */
+  it('a posting whose outcome names something every object has is refused — never thrown, never passed', () => {
+    const marked = { cs: 'rocky', deleted: true, deletedFrom: '2026-07-01', archived: true, archivedBy: 'del' }
+    for (const outcome of ['toString', 'constructor', '__proto__', 'hasOwnProperty']) {
+      const pass = (person: any) => env([
+        { op: 'put', collection: 'lw.postouts', id: 'rocky', before: { to: '2026-07-13', poOutcome: outcome }, after: { to: '2026-07-13', poOutcome: outcome, poDone: '2026-07-14' } },
+        person,
+      ])
+      /* his record unchanged, already carrying the Delete marks */
+      let r: string | null = null
+      expect(() => { r = ownershipViolation(pass({ op: 'put', collection: 'people', id: 'rocky', before: { ...marked }, after: { ...marked } })) }, outcome).not.toThrow()
+      expect(r, `${outcome}: his unchanged record`).toMatch(/people\/rocky/)
+      /* his record changed as a Delete changes it */
+      expect(() => { r = ownershipViolation(pass({ op: 'put', collection: 'people', id: 'rocky', before: { cs: 'rocky' }, after: { ...marked } })) }, outcome).not.toThrow()
+      expect(r, `${outcome}: his record marked deleted`).toMatch(/people\/rocky/)
+    }
+  })
   it('a posting’s done mark not yet due (its date still to come) does not vouch for his change', () => {
     const e = realPass('bane', 'overseas')
     const p = ch(e, 'lw.postouts', 'bane')

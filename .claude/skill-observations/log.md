@@ -2793,6 +2793,11 @@ passes a "kept after reload" step from it passes by accident when the value happ
 **Principle:** A test fixture's "clean start" switch can also switch off the very behaviour under test; check what a
 reset mode disables before reusing it.
 
+Met again 8 Nov 26 (`claude/rd-shell-state`, `scripts/handpass/rss1108-same.mjs`): the "Not saved" band's test switch
+`?savefail` (D1666) works only on the browser's store, so under `?fresh=1` the band never showed and the comparison pictured
+two identical screens with no band. Guard proposed: `scripts/drawcheck/lib.mjs` (or the walk's start helper) refuses a
+start address carrying both `fresh=1` and `savefail`, so the trap stops the script rather than passing in silence.
+
 ### Observation 746: A walk that checks a font-dependent measurement must reopen the surface after changing the letters
 
 **Status:** OPEN
@@ -3885,3 +3890,253 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The plan and the brief were written into the session-family's shared notes folder (under the user's roaming application-data folder), kept outside the public project on purpose. `codex exec -s read-only` read the package in the session's scratchpad (under the local temporary folder) but was refused the notes folder, and answered after a full run with "access to its private notes folder was denied" — about 5 minutes lost and a second run needed.
 **Suggested improvement:** In the brief-building step, add: every file the reviewer must open sits inside the repo or the session scratchpad; a file kept elsewhere (a notes folder, the home folder) is copied into the scratchpad first and the brief names the copy. A one-line read probe of each named path before the full run would catch it in seconds.
 **Principle:** Before a long run by another tool, check that its sandbox can read every file the brief names; a location your own tools can read is not proof that the other tool's sandbox can.
+
+### Observation 847: A side chat's brief pointed at a handoff block that lives only on another branch
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** Chat 3 of the overnight run of 7–8 Nov 26 (the pictures round), started by the coordinating chat; numbered past 846, which another open branch holds.
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** starting the side chats of a night (their opening briefs)
+
+**Issue:** The brief told the side chat to cut its branch from `main` and then read the handoff file's block for the night. That block had been written on the coordinating chat's own branch and was not on `main`, so the fresh branch did not have it; the side chat found it only by searching every remote branch's copy of the file.
+**Suggested improvement:** In the overnight guide's step that starts side chats, the brief names the branch that carries the night's block (or the block is pushed to `main` first, or pasted into the brief).
+**Principle:** A pointer handed to a fresh worker must resolve from where that worker starts; state written on one branch is invisible to a worker started from another.
+
+### Observation 848: A tag on a ringed part was cut off by a panel that hides overflow, and the script ran clean
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 3's pictures round (D1747), the board helper's drawings; numbered past 846, which another open branch holds.
+**Skill:** brainstorming (the reference `mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** marking the place on a picture (the method's step 3)
+
+**Issue:** Twice in one night a plain-words tag drawn on a ringed part (its own `::before`) was clipped by a parent that hides what overflows it — the board's OIL Earn bar, and a flying wave's panel at 821 wide. The script reported no error; only looking at the picture showed the cut tag.
+**Suggested improvement:** In the method file's traps, and in the tag helper of the drawing scripts: before the picture, check that each tag's box lies inside every ancestor whose overflow is hidden or clipped, and refuse the picture (or move the tag) when it does not.
+**Principle:** A mark drawn inside a component inherits its clipping; a check that the mark is wholly visible belongs in the step that draws it, not in the eye afterwards.
+
+### Observation 849: Two headless-browser traps when picturing a scroll frame by frame
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 3's pictures round (D1747), the Leave War helper capturing a one-frame blink of a frozen header.
+**Skill:** New skill candidate: a "frame-by-frame capture" note in the walk-scripts guide (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** capturing motion as a series of still frames
+
+**Issue:** (1) The browser's synthesized scroll gesture moved nothing on the page in headless mode; raw touch events did. (2) The developer-protocol screenshot's clip is in page coordinates, so on a scrolled page the scroll offset has to be added or the crop lands in the wrong place.
+**Suggested improvement:** Add both to the walk-scripts guide's traps, with the working recipe (raw touch events for a phone scroll; clip plus scroll offset).
+**Principle:** A capture tool's defaults are tuned for a page at rest; a scroll under test needs the gesture and the coordinates checked against what the picture shows.
+
+### Observation 851: A replacement must be written before the old text is moved out
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 2, the rules diet's step 4 part 2 (the five always-loaded rule files as checklists); numbered past 850, the highest on any branch
+**Skill:** New skill candidate: rewriting a loaded rules file (the move script `backlog-archive.mjs --move` and the briefs that use it)
+**Type:** internal
+**Phase/Area:** the build brief's order of steps
+
+**Issue:** The build brief said to move each file's old text whole to the archive first, then write the checklist in its place. The move script checks the whole record after every move and puts both files back when a live ruling is no longer stated in a file that loads, so moving first failed every time; the helper wrote each checklist above the old text first, then moved the old text, which passed.
+**Suggested improvement:** In any brief or guide step that replaces loaded text by moving the old text out, say "write the replacement above the old text, then move the old text whole".
+**Principle:** When a tool verifies the whole state after each step, order the steps so every intermediate state is valid: add the new thing before you remove the old one.
+
+### Observation 852: A blind reader's findings leaked into a file the other reader could open
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 2, the rules diet's step 4 part 1 (two blind reads running at once, D1739)
+**Skill:** claudex-loop (blind cross-reads) and the bug-check order §4 (fresh, blind readers)
+**Type:** open-source
+**Phase/Area:** keeping two parallel readers blind to each other
+
+**Issue:** The first reader's report was kept outside the working folder, but its findings were then summarised into the handoff note inside the working folder while the second reader was still running, and the second reader's brief told it to read the project's notes. It was caught and the note set aside until the second report came in; nothing showed the second reader had read it.
+**Suggested improvement:** While any blind reader is running, write nothing about another reader's findings anywhere in the folder it reads — the handoff note included; keep reports and notes on them in a scratch folder outside it until every reader has reported.
+**Principle:** Blindness covers every copy and summary of a report, not only the report file; anything the reader can open is visible.
+
+### Observation 853: A handoff block's times were written from memory and were wrong twice in one night
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 3's pictures round (D1747), run unattended overnight; numbered past 852, which other open branches hold.
+**Skill:** session-handoff (and the overnight guide's "save the state at every step")
+**Type:** open-source
+**Phase/Area:** writing the progress lines of a handoff block during a long run
+
+**Issue:** The block's progress lines carry a time each. Three were written as guesses and had to be corrected against the clock in a commit of their own; later the same night a fourth line said 01:50 for a commit the log shows at 01:35. Nothing failed, but a reader who times the run, or compares it with another chat's block, is misled, and nothing in the step catches it.
+**Suggested improvement:** In the handoff guide's step that writes a progress line: take the time from the clock in the same command that writes it (the shell's date, or the time of the commit the line describes), never typed; the line names which ("01:35, the page's commit").
+**Principle:** A time in a record is a measured fact; read it from the clock or the commit at the moment of writing, the same as any other number a later reader will rely on.
+
+### Observation 854: A walk of a window that opens on a filtered view must press the view that shows everything
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the night of 7–8 Nov 26 (/overnight, 9 hours), reported by its job helpers
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2 — the walk briefs
+
+**Issue:** Job 3's walk of the change history saw nothing at first: the window opens on "New to you", and the changes the walk made were not new to the walker; it had to press "All changes" to see them.
+**Suggested improvement:** Each walker's brief names the filter or tab a window opens on and the one to press to see the walk's own changes.
+**Principle:** A view that opens filtered can hide exactly what the test just did; name the unfiltered view in the walk's steps.
+
+### Observation 855: Measure the step times before calling a CI job hung
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the night of 7–8 Nov 26 (/overnight, 9 hours), reported by its job helpers
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2 — the jobs; any job about a slow or stuck check
+
+**Issue:** The backlog item said the Tracker's smoke test "hung 16 minutes" on 5 Nov 26; the job measured GitHub's step times over 20 runs and found 12.3 of the 16 minutes were the browser install's system download, slow in 9 of 20 runs, and two older stalls of 62 and 43 minutes before the smoke.
+**Suggested improvement:** A job about a slow or stuck check first reads the step times of recent runs (`gh run view <id> --json jobs`) and names the slow step before setting limits or blaming a test.
+**Principle:** A label from one failed run is a guess; the step times across many runs say where the time goes.
+
+### Observation 857: The coordinator accepted a job's report without checking each reader the night's plan named
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the night of 7–8 Nov 26 (/overnight, 9 hours); found while writing the morning report
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2 — the coordinator checking each helper's report; Part 3's "before sending the morning report" check
+
+**Issue:** The night's plan named two readers for every job (a fresh, blind Opus reader and Astra). Job 4's helper ran only the Opus reader, said so in its pull request, and did not put the job on the reads-owed list; the coordinator accepted the report without comparing its readers to the plan, and the gap surfaced only at the morning check. Astra's read was then run in the morning.
+**Suggested improvement:** In Part 2, when a helper's report arrives, the coordinator ticks each reader the plan's block names for that job against the report before accepting it; a missing one is run then, or the job goes on the reads-owed list in the same change. Each job's brief lists its readers as a checklist the helper's report must answer one by one.
+**Principle:** A plan's named checks are verified against each result as it arrives, not at the end; a check the helper silently left out reads like a check done.
+
+### Observation 856: A key held down was never pressed by a keyboard walk — the reader found it
+
+**Status:** OPEN
+**Renumbered:** written as 850 on the board-keys branch; renumbered 856 when main came in on 8 Nov 26 (851 and 852 were live, 853 to 855 held by other branches)
+**Date:** 8 Nov 26
+**Session context:** the board-keys job of the night of 7–8 Nov 26 (`claude/board-keys`); numbered past the 849 another open branch holds
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md`) — the walk of a keyboard change
+**Type:** open-source
+**Phase/Area:** §7 the walk; §7.11 lessons — the orders a keyboard walk presses
+
+**Issue:** Two keyboard walks (5 Nov and 7 Nov) pressed Enter, Space and the arrows once each and passed. The fresh code reader then asked what a HELD Enter does: a button pressed by Enter's key-down opens a menu and moves the keys onto its first pick, and the same key, still down, repeats on that pick and presses it — on the live app a held Enter on + Block added a duty block nobody chose. The walk could have found it in one step (Playwright's `keyboard.down` twice sends a repeat) but no list of orders named it.
+**Suggested improvement:** in the walk's orders for any change that moves the keys when a control is pressed (a menu that opens on its first item, a window that takes the keys), add "the key held down" beside "the key pressed once"; and in the design guide's §2 keyboard rule, that a repeated key never presses what the first press moved the keys onto.
+**Principle:** When a press moves the focus, the key that pressed is still down: a held key's repeat lands on the new focus. Walk the held key as an order of its own.
+
+### Observation 858: A layout drawing made only at the owner's own screen width missed that the option breaks on smaller desktops
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the pictures round (chat 3); his follow-up on question 8, "how would 8 look like for a smaller screen if i choose A". Numbered past 855–857, which other branches hold.
+**Skill:** brainstorming (`mockups-on-the-real-app.md`) and the pictures-round brief
+**Type:** open-source
+**Phase/Area:** drawing a layout change on the running app — which screen sizes to draw it at
+
+**Issue:** A change that makes a table give up room for a side window was drawn only at the owner's PC width (1536) and his phone. It looked fine there. Asked about a smaller screen, the same drawing at 1280, 1024 and 821 showed the table crushing one column to a single letter, because the table's other columns had fixed widths. Drawing it at the narrower widths also showed the table was already broken below about 950 wide with no window open at all. The recommendation shown to him had named only the cost at his own width.
+**Suggested improvement:** In the mock-up guide's rules for drawing a change that alters widths or makes room (a side panel, a window that pushes content, a column added or narrowed), draw it at the narrowest width that still gets the desktop layout and at one laptop width (about 1280), as well as at the owner's own sizes. Measure the narrowest column at each width. Put that cost in the recommendation, or draw a safe version, before the page goes to him.
+**Principle:** A layout option is judged at the edges of the range it will run in, not only at the size of the person reviewing it. A fixed-width table that fits one screen can collapse on the next size down, so draw and measure at the narrowest width each layout covers.
+
+### Observation 859: A sweep for what a new ruling leaves behind missed the guides outside a hand-picked list
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 2 recording his answers D1760–D1762 (who reads a plan and a guide change) and bringing older text in step (D201); numbered past 857–858, which other open branches hold
+**Skill:** New skill candidate: ruling-sweep (the D201 step of recording a ruling)
+**Type:** open-source
+**Phase/Area:** finding every place an older rule is still stated
+
+**Issue:** the sweep for "who reads a guide change" searched a hand-picked list of files (the rule files, the project guide, the bug-check order, the Codex guide). Both blind readers then found four more guides still stating the old readers — two vendoring notes under the skills folder, the design guide, the agents' bridge file — and a backlog item. A chat following any of them would have called the wrong reader.
+**Suggested improvement:** the D201 sweep searches every Markdown file in the repo by the rule's subject (archives and full-text rulings excluded), not a list chosen from memory, and its brief to the readers names the search it ran so they can widen it.
+**Principle:** a search for stale statements of a rule must cover every place a rule can be written, chosen by the search itself, never by the writer's memory of where rules live.
+
+### Observation 860: A ruling that changes the rule for one of two named parties dropped a safeguard for the other
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** recording D1770 (one of two reviewers made standing again; the other left on call) across a rules page, two always-loaded rule files and a guide
+**Skill:** New skill candidate: recording a ruling (the steps at the head of DECISIONS.md)
+**Type:** open-source
+**Phase/Area:** step 2 — fixing what the older ruling left behind (D201)
+**Reference file:** raptor-port/docs/superpowers/briefs/2026-11-08-d1770-placed-read.md
+
+**Issue:** The new ruling changed one reviewer's role. Rewriting each line about "the reviewers", the writer re-stated the safeguards for the named reviewer only — "a job he could not read goes on the owed list" — and silently dropped the same safeguard for the other, unchanged one; it also left lines elsewhere that still described the old arrangement as current. Both blind readers caught it, in five files.
+**Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
+**Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
+
+### Observation 861: Parallel build chats proposed to him on his phone could not be opened — the app starts no chat over Remote Control, even on his own message
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 3, the pictures round's build: after his answers he agreed to five parallel build chats ("Yes, both": merge the plan, then start them), on his phone.
+**Skill:** New skill candidate: running a build as parallel chats (the day-time cousin of overnight's Part 2); cites the closed Observation 715
+**Type:** internal
+**Phase/Area:** starting side sessions
+
+**Issue:** The app refused all five starts three times: first on a turn a finished background wait had woken (as Observation 715 found overnight), then on his own reply "Start them" sent from his phone — over Remote Control the app opens no chat at all. He had to go to his PC and type the go there; the five started at once. Nothing was lost, but he was asked twice and had to move.
+**Suggested improvement:** Guard: when a plan proposes parallel chats, say in the same message that the app can open them only on a message he types at the PC, and offer the other way at once — helpers inside this chat (D1416) — so he chooses before the work that precedes the starts. Never put the start on a turn that a background wait or timer will wake.
+**Principle:** Before promising a delegation step, check which surface the user is on and whether the host allows that step from it; offer the fallback in the same breath as the plan.
+
+### Observation 862: A side session on the rules engine reaches three-quarters full before its first commit
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 6, the pictures round's group 4 (D1786) — an engine change started as a side session (numbered past 861, the highest on any pushed branch)
+**Skill:** New skill candidate: side-session-briefing
+**Type:** open-source
+**Phase/Area:** starting a delegated build session
+
+**Issue:** The session reached 75% of its context window after about twenty tool calls, before any commit: opening one engine file loaded every scheduler-area rulings file and design rule set by path (well over 100 KB), on top of the always-loaded rules. The save-state warning arrived when the build had only one change in it.
+**Suggested improvement:** A brief for a side session names, up front, the slices it needs (the full rows by number, the exact sections), and the session commits its handoff block after its first change rather than at the first warning; the starting session warns its children that opening an area file costs that area's whole rulings load.
+**Principle:** In a repository whose rules load by file path, the first file a delegated session opens can cost most of its context; a delegated session should save its state early and read by slice.
+
+### Observation 863: A code reader's proof test, written into the shared checkout, swept into the builder's commit
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 6, D1786 (a day with nothing entered starts at the default rally): a fresh, blind Opus reader ran as a subagent in the same worktree while the builder fixed the other readers' findings
+**Skill:** New skill candidate: none — the bug-check order's reader brief (§4) and the one-checkout note; met again after Observation 648 (closed)
+**Type:** open-source
+**Phase/Area:** committing while a helper works in the same checkout
+
+**Issue:** The reader wrote a throwaway proof test (a deliberately failing one) under the app's source folder; the builder's commit staged that folder whole (`git add -A <dir>`) and took the file in. Caught only because the reader reported it; had the branch been pushed, the pull request's run would have gone red on a test nobody meant to keep.
+**Suggested improvement:** Two guards, both unconditional: (1) every code reader's brief says where proof tests go — a name the repo ignores (for example `*.reader-tmp.test.*` in `.gitignore`) or the reader's own scratch folder — never a plain test name under the source folder; (2) while any helper works in the checkout, the builder stages by named paths only and reads `git show --stat HEAD` before pushing.
+**Principle:** A helper sharing the checkout writes files the builder did not make; a whole-folder stage turns them into the builder's commit. Give helpers' throwaway files a name the repository ignores, and stage by name while they work.
+
+### Observation 870: A blink counted "gone" by the page's own frame log was still there in the painted frames
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 8 — measuring D1789's fix (the Leave War's pinned dates row and Quals' heading drawn in the same frame as the scroll) before and after; numbered past 865, the highest on any branch at 10:00, 866–869 left for the sibling chats writing tonight
+**Skill:** walk-scripts (project guide, not a skill file) — measuring a visual change's frames; verification-before-completion
+**Type:** open-source
+**Phase/Area:** measuring frames before and after a change to what is drawn while scrolling
+**Reference file:** raptor-port/docs/handpass/2026-11-08-lw-group6.md §The frames
+
+**Issue:** The speed helper counted the frames in which the pinned row was missing from a log the page's own code kept, read on each animation frame. Before the fix it counted 2, after it 0, and the evidence sheet and the speed ledger said "the blink is gone". The walker's painted-frame sheets (a screencast of what the browser actually painted) showed one frame still missing after the fix — the desktop wheel 2 → 1, a phone flick 1. The browser moves and paints a scroll before the page's code hears of it, so a log kept by that code can never see that frame. The walker itself also judged the desktop case a PASS; the host's own look at the painted frames overturned it.
+**Suggested improvement:** In the walk-scripts guide's part on measuring frames, say that a glitch tied to scrolling or the compositor is counted on PAINTED frames (a screencast or a recording), never only on a frame log kept by the page's own code; the page's log may stand beside it for timing, not for "is it on screen". Name the frame the decision rests on in the evidence sheet, and have the host open it.
+**Principle:** A measurement taken by the code under test can only see what that code sees. When what matters is what the screen showed, measure the screen's own output, and treat a count of zero from inside the page as unproven.
+
+### Observation 871: Code that runs only when a box has a size was never run by tests drawn without layout
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 8 — D1789's fix to the Leave War's pinned dates row and Quals' heading; Astra's code read found the setup path broken
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the failing test for a change behind a layout guard
+
+**Issue:** The fix added an "instant" flag for calls from the scroll listener and a comment that the effect's own call keeps the old route. The effect's last line called the listener itself, so it took the instant route too, and React refused it on every setup. The unit tests never saw it: the test environment has no layout, every box measures 0, and the code returns early on a 0-height box — so the pinning code never ran in any unit test. Only the browser tests ran it, and they do not fail on a warning. A reader running the effect with given box sizes found it at once.
+**Suggested improvement:** In the skill's "write the failing test" step: when the changed code sits behind a layout or feature guard (a 0-size box, no matchMedia, no ResizeObserver), the test gives the sizes and the feature so the changed lines actually run, and it fails on the framework's own warnings for the path (a spy on console.error), not only on the result. Before writing, list every caller of a function whose behaviour now depends on a new flag, including callers through an alias.
+**Principle:** A test proves only the lines it runs. Code behind a guard that the test environment always trips needs the guard's conditions supplied, or the test passes without testing anything.
+
+### Observation 872: A chat number given in a starting brief was already taken
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the rules diet's step 5a (OIL as a page), a session started by another session with "this chat is number 5"
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the opening line / a started session's brief — naming the next chat's number
+
+**Issue:** the starting session wrote "this chat is number 5" from its own reading of the handoff, but a parallel session had already given 5 to a build chat (and held 10 and 11) in a commit made minutes before; the started chat found the clash only by reading the newest handoff on the main branch. (Numbers 862 to 871 were taken by other branches; this note was renumbered 863 → 864 → 872 at the merges.)
+**Suggested improvement:** in the handoff skill's opening-line step and in any brief for a started session, give the number as "the next free number in the handoff on main when you start (was N at <time>)", and have the new chat confirm it against the main branch's handoff before using it.
+**Principle:** an identifier handed from one parallel worker to another is a hint, not a grant — the receiver checks it against the shared, newest record before acting on it.

@@ -82,7 +82,8 @@ export function Drawer() {
     return () => document.removeEventListener('keydown', onKey, true)
   }, [drawerOpen])
   return (
-    <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer"
+    /* role="presentation": the shade beside the panel is nothing a screen reader should name; Escape closes the drawer */
+    <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer" role="presentation"
       onClick={e => { if (clickedOutside(e, 'drawer')) close() }}>
       <div className="drawer-panel">
         <h4>Menu</h4>
@@ -93,6 +94,7 @@ export function Drawer() {
         <nav className="drawer-nav" id="drawerNav">
           {items.filter(i => i[2]).map(([p, label]) => {
             const go = () => { setPage(p); setDrawer(false); notify() }
+            // eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab of the phone's menu, drawn by its rule for links (`.drawer-nav a`) as the top bar's tabs are; tests and walks find them as #drawerNav a[data-page]
             return <a key={p} data-page={p} role="button" tabIndex={0} className={p === CURPAGE ? 'on' : ''}
               onClick={go} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } }}>{label}{p === 'admin' && waiting > 0 && <span className="navbadge" id="drawerWaitBadge">{waiting}</span>}</a>
           })}

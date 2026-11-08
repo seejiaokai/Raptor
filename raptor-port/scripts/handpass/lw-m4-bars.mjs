@@ -58,7 +58,7 @@ for (const [size, opts] of Object.entries(SIZES)) {
   await shot('5-oil-bar', 'top')
   await mod(p, '/src/state/view.ts', 'm.setOilBar(null)'); await pause(p, 300)
   /* 6 — the failed-save band under the top bar */
-  await mod(p, '/src/ui/SaveStatus.tsx', "m.setSaveStatusSource({ status: 'failed', onStatus: () => {} })"); await pause(p, 700)
+  await mod(p, '/src/ui/savestatus-source.ts', "m.setSaveStatusSource({ status: 'failed', onStatus: () => {} })"); await pause(p, 700)
   await shot('6-not-saved', 'top')
   console.log(size, 'done', errs.length ? 'errors: ' + errs.join(' | ') : 'no page errors')
   await ctx.close()

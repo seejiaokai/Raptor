@@ -102,6 +102,7 @@ export function WeekCal() {
   const todayIso = keyToIso(TODAY)
 
   return (
+    /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop, focus and Escape rules; this calendar hangs from the week's date button in the app's own layer */
     <div className="airpop" id="weekCal" role="dialog" aria-label="Jump to a date" ref={popRef}
       onClick={e => { if (clickedOutside(e, 'weekCal')) close() }}>
       <div className="airpop-box weekcal-box" ref={boxRef}>

@@ -20,6 +20,7 @@ import { PLANPUCKS } from './plan'
 import { accountsRestoreProblem, accountsAfter, requestsAfter } from './accounts'
 import { getState as lwState } from '../leavewar/state/store'
 
+// eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- a restored record lands as saving stores it (keys set to undefined dropped), the same image a reload reads; structuredClone would keep them
 const clone = (v: any) => (v == null ? v : JSON.parse(JSON.stringify(v)))
 const lower = (s: any) => String(s ?? '').trim().toLowerCase()
 const active = (p: any) => !!p && !p.archived && !p.deleted

@@ -35,7 +35,7 @@ import { onCommit } from '../command'
 import type { CommitEnvelope, Change } from '../command/types'
 import { logAction, keyLabel } from '../engine/editlog'
 import { parseHideDetail } from '../engine/hidedetail'
-import { decodeRoleId } from '../engine/mission-role'
+import { decodeRoleId, roleAnswerName, roleSideWord } from '../engine/mission-role'
 import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
@@ -157,7 +157,8 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
      window and History find his line (the one-rule build, step 2 (c) — owner D755; the plan §4.4: "one line of the
      change history per thing that changed"). */
   { const A = idsOf(a).map(String), B = idsOf(b).map(String)
-    const out = B.filter(p => !A.includes(p)), inn = A.filter(p => !B.includes(p))
+    const inA = new Set(A), inB = new Set(B)
+    const out = B.filter(p => !inA.has(p)), inn = A.filter(p => !inB.has(p))
     if (A.length === 1 && B.length === 1 && out.length === 1) logAction(null, `${inpLabel(b)} ${spanWords(sb)} · whose`, base({ from: cs(B[0]), to: cs(A[0]), fld: 'whose' }))
     else {
       for (const p of inn) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · added${tail}`, base({ sub: p, one: 1 }))
@@ -373,7 +374,7 @@ function warInputLines(env: CommitEnvelope): WarInputs {
     /* the record the line points at is the one holding the days it is ABOUT — the new days for an approval or a move (a
        split's untouched remainder is never it — Astra's round-3 read, R3-01), the days that left otherwise; and it keeps
        every record of the decision (R3-02) */
-    const holds = (side: 'a' | 'b', ds: string[]) => { const x = g.changes.find(y => y[side].some(d => ds.includes(d))); return x ? String(x.c.id) : '' }
+    const holds = (side: 'a' | 'b', ds: string[]) => { const want = new Set(ds); const x = g.changes.find(y => y[side].some(d => want.has(d))); return x ? String(x.c.id) : '' }
     const iid = fresh.length ? holds('a', fresh) : holds('b', gone)
     const iids = [iid, ...g.changes.map(x => String(x.c.id)).filter(x => x !== iid)]
     const exact = (ds: string[]) => oneRun(ds) ? undefined : ds
@@ -383,7 +384,8 @@ function warInputLines(env: CommitEnvelope): WarInputs {
     if (gone.length && fresh.length) {
       /* what MOVED is the whole of each piece that landed on new days, and what it left is where those days were — so a
          two-day leave slid one day reads "2 Feb–3 Feb → 3 Feb–4 Feb", not "2 Feb → 4 Feb" (Fable's round-3 read, G1) */
-      const landed = g.changes.filter(x => !x.c.before && x.a.some(d => fresh.includes(d)))
+      const isFresh = new Set(fresh)
+      const landed = g.changes.filter(x => !x.c.before && x.a.some(d => isFresh.has(d)))
       const toDays = [...new Set([...fresh, ...landed.flatMap(x => x.a)])].sort()
       const fromDays = [...new Set([...gone, ...toDays.filter(d => g.was.has(d))])].sort()
       const was = at(fromDays), now = at(toDays)
@@ -672,9 +674,10 @@ export function changeLinesFor(env: CommitEnvelope): void {
         /* a copy (a day template) rides the day's own command, which carries no name: read the formation's callsign off
            the loaded week, where the copy has just landed. A line with no callsign is "Line", the app's word for it
            everywhere else (D340) — never its row code ([ROLE-BLANK-CALLSIGN], 6 Oct 26). */
-        const name=(typeof detail?.name==='string'&&detail.name.replace(/\s+/g,' ').trim().slice(0,80))||roleFormationName(role)||'Line'
+        const name=roleAnswerName(env.detail)||roleFormationName(role)||'Line'
         const origin=typeof detail?.origin==='string'?detail.origin.slice(0,80):'copied with the day template'
-        const side=(value:any)=>value?.side==='blue'?'Blue':value?.side==='red'?'Red':'Unresolved'
+        /* the side's word from the one body Undo's words read too (engine/mission-role.ts roleSideWord) */
+        const side=(value:any)=>roleSideWord(value?.side)??'Unresolved'
         logAction(null,`${name} · mission role · ${origin}`,{date:role.dayISO,sect:'day',sub:role.formationRid,fld:'mission-role',from:side(c.before),to:side(c.after)})
       }
       if (c.collection === 'inputs' && c.id !== '__order') { if (!wi.said.has(c)) inputLines(c, env, war) }

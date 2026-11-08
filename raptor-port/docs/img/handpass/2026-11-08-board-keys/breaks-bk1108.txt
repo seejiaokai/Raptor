@@ -1,0 +1,40 @@
+1. CAUGHT — 6 failed, 36 passed — the ⋯ menu opened by the keys does not put them on its first item (D1646)
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > Enter on ⋯ opens it on its first item; ↓ and ↑ move round it; Escape closes it, the keys back on ⋯
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > ↓ on ⋯ opens it on its first item
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > Astra 1: ↓ on ⋯ with another board menu up closes that one first — one menu at a time, one Escape
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > Opus Q2: a held Enter opens the menu but does not pick — its repeat, landing on the first item, is ignored
+2. CAUGHT — 3 failed, 39 passed — a pick in the ⋯ menu by the keys does not put them back on ⋯ first (Insights, Sort all give them back to nothing)
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > a pick by the keys gives them back to ⋯ (the layout switch, pressed twice back as it was)
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > Insights picked by the keys: closed by Escape, the keys come back to ⋯
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > Opus 3: Sort all picked by the keys — the keys come back to ⋯ when its box closes
+3. CAUGHT — 2 failed, 40 passed — Escape in the ⋯ menu leaves the keys on nothing
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > Enter on ⋯ opens it on its first item; ↓ and ↑ move round it; Escape closes it, the keys back on ⋯
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > Astra 1: ↓ on ⋯ with another board menu up closes that one first — one menu at a time, one Escape
+4. CAUGHT — 1 failed, 41 passed — Astra 1 — ↓ on a closed ⋯ opens it by state alone, another board menu left up
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > Astra 1: ↓ on ⋯ with another board menu up closes that one first — one menu at a time, one Escape
+5. CAUGHT — 1 failed, 41 passed — Opus question 2 — a held Enter's repeat picks the ⋯ menu's first item
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > Opus Q2: a held Enter opens the menu but does not pick — its repeat, landing on the first item, is ignored
+6. CAUGHT — 1 failed, 41 passed — Opus question 3 — the ⋯ menu stays up, out of sight, when the window is widened past 820
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the board's ⋯ menu by the keys > Opus Q3: a window widened past a phone's width with the menu up closes it, so the next Escape is the board's
+7. CAUGHT — 1 failed, 41 passed — Opus question 2 — a held Enter's repeat picks the first item of + Block's (or any string-drawn) menu
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the day bar's Templates (a phone's width) by the keys > Opus Q2: a held Enter on + Block opens its menu and adds nothing — the repeat on its first pick
+8. CAUGHT — 18 failed, 46 passed — a string-drawn menu opened by the keys does not put them on its first pick (D1646)
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] a board menu opened by the keys puts them on its first item > + Block: Enter opens it on its first pick; ↓ and ↑ move through it, round the ends; Escap
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] a board menu opened by the keys puts them on its first item > + Block: ↓ on its button opens it on its first pick
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] a board menu opened by the keys puts them on its first item > Templates: ↓ on its button opens it on its first pick
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] a board menu opened by the keys puts them on its first item > the plans selector: ↓ on its button opens it on its first pick
+9. CAUGHT — 1 failed, 41 passed — Astra 2 / Opus 2 — ↓ on a board menu button goes into whatever menu is up, not its own
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the day bar's Templates (a phone's width) by the keys > the reads (Astra 2, Opus 2): ↓ on it with ANOTHER board menu up opens its own, never goes into 
+10. CAUGHT — 2 failed, 40 passed — the day bar's Templates is not opened by ↓
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the day bar's Templates (a phone's width) by the keys > ↓ on it opens its menu on its first pick
+      |raptor| src/ui/boardmenukeys.test.tsx > [D1646] the day bar's Templates (a phone's width) by the keys > the reads (Astra 2, Opus 2): ↓ on it with ANOTHER board menu up opens its own, never goes into 
+11. CAUGHT — 3 failed, 15 passed — [WEEK-GLIDE-TWO-PAGES] — a burst keeps one week's styles only; the other page's week left covered
+      |raptor| src/ui/weekglide.test.ts > a fired glide leaves nothing behind > a burst over two pages puts back BOTH weeks — the first page's week is never left untouchable or unscrollable
+      |raptor| src/ui/weekglide.test.ts > a fired glide leaves nothing behind > a burst over two pages lands only the week crossed last — a week switched back to keeps the day it was given
+      |raptor| src/ui/weekglide.test.ts > a fired glide leaves nothing behind > a burst over two pages whose later slide ends first: nothing is put back until the last one ends
+12. CAUGHT — 1 failed, 17 passed — Opus 1 — every week a burst touched is landed again, a week switched back to dragged off its day
+      |raptor| src/ui/weekglide.test.ts > a fired glide leaves nothing behind > a burst over two pages lands only the week crossed last — a week switched back to keeps the day it was given
+
+DONE: 12 of 12 caught
+(node:79416) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)

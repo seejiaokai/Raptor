@@ -768,6 +768,24 @@ through sourcemaps for the JS split, paired A/B runs.
     slower when asked on its own (it opens a pass). `npm run perf`: 4 passed, the week 5131 nodes and the board 1018
     before and after · *No ceiling moved.*
 
+28. **The pinned row arrives in the frame that sends the real row under the bar** (his D1789, 8 Nov 26 —
+    [LW-FROZEN-BAR-GAP]; chat 8, `claude/pr-leave-war-4988a8`). The Leave War's dates row and Quals' heading row no
+    longer blink cut or missing for a frame or two. · The stuck-or-not flip is committed with `flushSync` from the
+    window's scroll listener, and ONLY when it flips (pinned ↔ free) — a scroll of a row already pinned or already free
+    sets nothing; a call from an effect stays as it was (React will not flush inside one). `Matrix.tsx` and
+    `QualsPage.tsx` `pin(force, now)`. · *Invariant:* never `flushSync` per scroll event, never from an effect — the
+    flip re-renders the grid. · Measured (built bundle, Chromium, paired A/B, 5 runs at 4× CPU, 3 unthrottled; the
+    before build `c11a5506e`): blink frames in the page's own frame log Leave War desktop 1–2 → 0, phone 1 → 0, Quals desktop 1–2 → 0, phone 1 → 0 —
+    but counted on the PAINTED frames the browser's own scroll still shows the row cut for one frame (desktop wheel two →
+    one, a phone flick one): the blink is halved, not gone; the last frame is the browser's, before the page's code runs
+    (the walk, `docs/handpass/2026-11-08-lw-group6.md` finding A; `[LW-PIN-LAST-FRAME]`);
+    the frame of the flip itself a little longer in 3 of 4 cases at 4× (the mount now lands in that frame instead of a
+    later one — Leave War desktop 683 → 600 ms, phone 217 → 350, Quals desktop 83 → 133, phone 33 → 50, each inside the
+    run-to-run spread but one phone outlier); median and p95 frames and the stays-pinned scroll unchanged within one or
+    two frame steps (a first Leave War phone difference was run order — gone with the order swapped). Pins:
+    `e2e/leavewar.spec.ts`, `e2e/geometry.spec.ts` "same frame" (red before, green after). Evidence:
+    `docs/handpass/2026-11-08-lw-group6.md` §The frames. *No ceiling moved.*
+
 ---
 
 # Where the rules live (pointer map)

@@ -7946,3 +7946,107 @@ full): loaded instructions ~4%, tool descriptions ~8%; the rest was that chat's 
 D609 (the start-of-chat measure of 7 Oct 26), D70 (a working-guide change is read before he approves it), D623 (guides
 stay readable by other models). **Place:** next, after pull request 524.
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([WEEK-GLIDE-TWO-PAGES]). Forward facts: `raptor-port/docs/handpass/2026-11-08-board-keys.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [WEEK-GLIDE-TWO-PAGES] Two crosses on two pages inside half a second leave Edit Schedule unscrollable (the fresh read of 3 Nov 26; low)
+The cross's slide covers the real week and, on a phone, stops it scrolling (`ui/weekglide.ts`) until the slide's end, keeping one
+baseline per burst and restoring it on `lastRoot` only. A cross on Edit Schedule, a switch to View-only Sched and a cross there before
+the first slide ends (about half a second) restores only View-only Sched's week: Edit Schedule's keeps its touches off (older than
+3 Nov 26) and its scrolling off (since 3 Nov 26) until a reload. **Fix:** keep every week touched in a burst and restore each at the
+last finish. Read: `raptor-port/docs/handpass/parts/ws-read-pull.md` (the fourth read, finding 2). **Place:** low — practically
+unreachable; with the next change to the slide.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([WINDOWS-KEEP-KEYS]). Forward facts: `raptor-port/docs/handpass/2026-11-05-keys-windows.md`, `raptor-port/docs/handpass/2026-11-08-board-keys.md`.*
+
+### [WINDOWS-KEEP-KEYS] Only the six question sheets keep the keyboard; the larger windows let Tab walk into the page behind (reader D2's second pass, 6 Oct 26 — OLD)
+**His answer, 5 Nov 26 ("Go" — the mock-up page's question 4): D1648** — an unreadable clock explained once under the wave's lines. The other two leftovers (the keys back after the OIL question, the red note's refresh test) need no answer. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
+The request's edit window, Insights, the document viewer and the template windows take no focus and hold none: Tab goes on into the
+schedule behind them (the Tab route stands down; a box there still saves on leaving). The same on `main`. The six sheets fixed in the
+check use `raptor-port/src/ui/sheetfocus.ts`; the same hook fits these. Also from that pass, low: after the OIL question is answered
+the caret is on nothing (his place in a Tab run is lost); the red explanation refresh (AB-F2) has no test of its own; with several
+unnamed lines an unreadable clock is explained once per line under the box. **Place:** low — with the next change to those windows.
+**The windows: BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** a request's window opened from the schedule (on the Inputs page it is a window the page behind
+works with, D641, and holds nothing), Week insights, the document viewer and the Flying waves window take and keep the keyboard;
+Insights and Flying waves close on Escape too (test `ui/windowkeys.test.tsx`). **The three low leftovers above stay open.**
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([BOARD-KEYS-LEFT]). Forward facts: `raptor-port/docs/handpass/2026-11-08-board-keys.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [BOARD-KEYS-LEFT] What the keyboard job of the night of 3 Nov 26 saw and left on the Scheduler Board (filed 3 Nov 26; low, the agent's)
+**His answer, 5 Nov 26 ("Go" — the mock-up page's question 2): D1646** — the board's small menus, its day and week chips and Edit Schedule's day name reached and pressed by the keyboard, the app's cyan ring; (2) and (5) ride with it. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
+Seen by the builder of [BOARD-OPEN-BY-KEYS] and [VEILED-WINDOWS-BAR]'s Escape part (`raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b), older than that job:
+(1) a board menu's items (+ Block, Templates, the plans selector, a jet's stores, + Wave, the duty role list) cannot be reached by
+the keys — the keyboard stays on the button and the menu is added at the page's end; the design guide wants Enter or ↓ to open a
+menu on its first item; (2) once the board is opened by the keys, Tab is not kept inside the board (the [WINDOWS-KEEP-KEYS] kind);
+(3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. (5) Escape does nothing on the Sort all dialog — Cancel, ✕ and a click outside close it (walker B, the sheet §6b; `main` the same). (4) the board's day and week chips take no keys — most felt on a desktop, where the ‹ › day buttons are not drawn (job 3's report, the sheet §1c). **Place:** low — with the next keyboard batch.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LW-M1-READ-LEFTOVERS]). Forward facts: `raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md`.*
+
+### [LW-M1-READ-LEFTOVERS] Four small things M1's code read found, older than M1 or needing two live sessions (filed 22 Oct 26)
+**ALL FOUR SETTLED — to archive once live (30 Oct 26).** (2) was built on 23 Oct 26 (M3's folded items — `inputgate.ts` hands the note to the command as a deferred effect; `memberclash.test.ts`) and was walked at its doors on 30 Oct 26 (`raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md` §5, S3): a filing that lands over another man's bid says it once, a refused one says nothing and the bid stays, Undo and Redo say nothing of it, the war's own filings never say it. (4) was built the same day (a Move onto a closed day reads "That day is closed for bidding. Pick an open day." — `Matrix.tsx moveReason`).
+From M1's two blind code reads (the evidence sheet `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` §13).
+(1) — **FOUND NOT TO ARISE (27 Oct 26, M4's build — the spec's 9.8):** only a leave or a medical replaces a pending bid; a member files neither for another man (D655) and may not change a shared leave someone else filed (D763), so no command of his replaces another man's bid — pinned in `raptor-port/src/leavewar/memberclash.test.ts` and `m4ride.test.ts`; no permission was widened for it. **A member's SHARED input over another man's pending bid** (D660 — he files for others): the clash rule writes a notice
+on the other man's war row inside the member's command, and the commit refuses "another person's war row" — so his whole
+filing fails. Older than M1 (the check is the same on any day), more often met now that Inputs-page filing is the way on a
+closed day. Check in the running app first; if it fails, let a notice the clash rule writes for another man ride a member's
+own filing. (2) **The "This replaces your LL bid…" note is raised before the commit's check**, so a filing the check refuses
+still shows it (Opus H1 step 4) — say it only once the command lands. (3) **— BUILT 23 Oct 26 on M1 (D1266, his word): `leavewar/ui/dayclock.ts`.** **Midnight with the page open:** a member's dim,
+lock, outline and chip read his today when the store last changed, so they stay a day behind until the next change (Fable
+scenario 7, Opus 10) — re-read today on the page's next show or a timer at midnight. (4) **A member's Move refused on a
+closed landing** reads "That lands outside what you can edit — pick another day." — true but vague; "That day is closed
+for bidding. Pick an open day." (Opus, words read cold). **Place:** with the Leave War's next batch, each small — M2 went live on 23 Oct 26 without (1), (2) and (4), so M3.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LOGIC-WORDS-WORKHOURS]). Forward facts: `raptor-port/docs/engine-rules.md`.*
+
+### [LOGIC-WORDS-WORKHOURS] The Logic page says a line with nothing entered starts its long day and Insights hours at the default rally; the app starts them at take-off less the step (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; a question for him)
+The Logic page's "Default rally before take-off" (renamed by D1031; the sentence itself dates from [LOGIC-PAGE-LAYOUT], D928) says "With no in-time or
+rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it". Walked: an empty R box, the setting 3h → 2h30 — the
+Insights hours did not move (1510 min both times); a typed R at the default time added 120 min, so with nothing entered the work span starts at the
+take-off less the step (1h). OIL does start at the default rally (D592 (2)); the long day and Insights read the one work span (`engine/validate.ts
+workSpan`, RT8 — "report/work hours … keep separate definitions"). Walker A's table `raptor-port/docs/handpass/parts/rally-box/walker-A.md` (scenario 9).
+**The question for him** (when he says so, D994): with nothing entered, should a flyer's long day and Insights hours start at the default rally
+(3 hours before take-off, as OIL does) or at the step (1 hour)? **Recommended:** the default rally — one start for a day with nothing entered,
+as the Logic page already says and OIL already does; it makes more long-day notes appear. Until he answers, the words are left as they are.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1786) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "Where a day starts when nothing is entered" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+**Built 8 Nov 26 by chat 6 on `claude/pr-day-start-7b064c`** — the engine (`engine/events.ts`) and the Logic page's drawn words; `engine-rules.md` §Where a day with nothing entered starts. Waits for its bug check, readers and his "merge live"; leaves for the archive once live.
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LW-TWO-BOX-LETTERS]). Forward facts: `raptor-port/docs/handpass/2026-11-06-lw-cell-combos.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-TWO-BOX-LETTERS] Two boxes side by side clip three letters (found 25 Oct 26, the M3 build's FULL check, W2 30)
+
+A day holding two whole-day entries draws them side by side, each the full height (his D1167), each half about 10 px wide on
+a 26 px day; a three-letter code there ("FO*", "TRG", "CSE", "DTY") is clipped by its box ("O*", "RG" — picture
+`raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/w2/f-30-cell-zoom.png`). Older than the M3 build (a course beside a
+leave did it), but common now: a weekend duty under Unavailable that earns OIL always shows its FO* beside it (D1357). How
+to draw it is his: options to draw for him — letters a step smaller and closer set; the letters stacked; the day's second
+entry as the "+1" corner when either code has three letters (narrowing D1167). Not built.
+**Overtaken 6 Nov 26 by D1727 (pull request 650):** two whole days stand side by side with their codes reading bottom to top, whole — checked by the pictures round on 8 Nov 26 (`raptor-port/docs/img/handpass/2026-11-07-pictures-round/q-twobox-ph-today-x4.png`); nothing to ask him. To archive.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LW-MORE-BELOW-CUE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-MORE-BELOW-CUE] The day panel says when more is below (his D1295, 24 Oct 26)
+**Seen (his iPhone, pull request 569):** Mon 30 Nov's panel reads "AWAY · 19" and shows nine; nothing says the rest are below. **To do:** a cue at the panel's foot, a down arrow and the count wholly out of view, gone at the list's end; a tap scrolls down; its look drawn for him first (D853); design lesson 46 names the other windows. **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave`.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1788) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "More names below" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LW-FROZEN-BAR-GAP]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-FROZEN-BAR-GAP] For one frame no dates header shows while the page scrolls it away (23 Sep 26)
+
+Found by the frame-by-frame pictures of the frozen-bar fix (evidence sheet §11, frame 1 of
+`fixed-desktop-frozen-bar-first-frames.png`). When the page scrolls the real dates header up under the
+top bar, the frozen copy arrives ONE painted frame later — it is React state set in the window's scroll
+handler, so it renders on the next frame — and that frame has no header at all. **Pre-existing, and not
+the owner's "scrolling rapidly horizontally"** (that jump is fixed): a blink, not a slide. Fix direction:
+in `Matrix.tsx`'s stuck effect, commit the change of stuck-or-not synchronously (`flushSync`) — ONLY when
+it changes, never per scroll event, because the whole grid re-renders on it — or keep the bar mounted and
+show/hide it outside React; either needs a speed check (the re-render would land inside the scroll
+frame). The Quals page's frozen header has the same shape. **Place:** the next Leave War polish item,
+after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at all.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1789) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The dates row blink" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+

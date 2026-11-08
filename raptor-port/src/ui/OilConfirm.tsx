@@ -124,7 +124,8 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel, lead,
     if (under > 0) box.scrollTop += Math.min(under, c.top - b.top)
   }, [mode])
   return (
-    <div className="airpop upconf-pop oilconf-pop" data-testid="oilconf"
+    /* role="presentation": the shade is nothing a screen reader should name; the sheet's ✕ and buttons take the keys */
+    <div className="airpop upconf-pop oilconf-pop" data-testid="oilconf" role="presentation"
       onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
       <div className="airpop-box upconf-box" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b>OIL: {who}, {typeLabel}</b>

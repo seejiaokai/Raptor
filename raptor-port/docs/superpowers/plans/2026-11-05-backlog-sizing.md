@@ -36,14 +36,14 @@ Times are the agent's working time per job, including its check; a night of abou
 |---|---|---|---|---|
 | **Night 1** | | | | |
 | 1 | **Leave War faults** | [LW-NIGHT1025-OLDER] (a) words typed for a new afternoon bid land on the morning bid — a real fault, first; (c) a posted-out man's gone days take a drag's bids, an OD over them skips with no note; (d) a double tap falls through to the grid; (f) a refused war change puts back the role and viewer; (g) the bubble's foot note under the day panel. [CSS-WRAPPER-GUARD] (the rule worked out, then the check) | FULL (bids are saved data) | 3½ h |
-| 2 | **The board and windows by the keys** | [BOARD-KEYS-LEFT] (1)–(5) — the board's menus reached by the keys, Tab kept in the board, the crew-day picker, the day and week chips, Escape on Sort all; [WINDOWS-KEEP-KEYS]' three leftovers; [WEEK-GLIDE-TWO-PAGES] | WALK | 2½ h |
-| 3 | **React Doctor — the shell, the state, the windows** | about 90 of the 183: `Shell.tsx`, `Modals.tsx`, `src/state/`, `src/storage/`, `src/command/`, the board's files; with [DOC-POINTERS-CODE] and [ONE-RULE-LEFTOVERS] (3) (comments that name removed code) | WALK (nothing a person sees; every screen pictured before and after, as 31 Oct 26) | 2½ h |
+| 2 | **The board and windows by the keys** — live 8 Nov 26 (pull request 664) | [BOARD-KEYS-LEFT] (1)–(5) — the board's menus reached by the keys, Tab kept in the board, the crew-day picker, the day and week chips, Escape on Sort all; [WINDOWS-KEEP-KEYS]' three leftovers; [WEEK-GLIDE-TWO-PAGES] | WALK | 2½ h |
+| 3 | **React Doctor — the shell, the state, the windows** — live 8 Nov 26 (667) | about 90 of the 183: `Shell.tsx`, `Modals.tsx`, `src/state/`, `src/storage/`, `src/command/`, the board's files; with [DOC-POINTERS-CODE] and [ONE-RULE-LEFTOVERS] (3) (comments that name removed code) | WALK (nothing a person sees; every screen pictured before and after, as 31 Oct 26) | 2½ h |
 | **Night 2** | | | | |
 | 4 | **People, accounts and Quals** | [QUALS-HEAD-FINGER-CAPTURE] (a heading dragged by a finger), [QUALS-PINCH-NOSDA-HEAD], [QUALS-ZOOM-EDGE-SLIVER] (the cause found first; may need his iPhone); React Doctor's ~55 there (`HolidaysPanel.tsx`, `PeoplePick.tsx`, `QualsPage.tsx`, `Login.tsx`, `accounts.ts`, Admin) | WALK; a security read if a change touches sign-in (D1411) | 3 h |
 | 5 | **Inputs** | [INP-CARD-COLUMNS] (his pick A, D1310 — the cards' three columns), [BATCH-14OCT-LEFTOVERS]' small faults (a)–(f); React Doctor's ~35 there (`InputsCal.tsx`, `DateBox.tsx`, `InputsPage.tsx`, `InputCard.tsx`) | WALK | 3 h |
-| 6 | **Insights and the last small ones** | [STACK-LEFTOVERS] (1) Insights' two untried edges, (2) one shared wording helper; React Doctor's 3 in Insights and Logic; [LW-M1-READ-LEFTOVERS] archived (live; [OIL-NOTIFY-SEEN] already was, 3 Nov 26) | LOOK | 1½ h |
+| 6 | **Insights and the last small ones** — live 8 Nov 26 (669) | [STACK-LEFTOVERS] (1) Insights' two untried edges, (2) one shared wording helper; React Doctor's 3 in Insights and Logic; [LW-M1-READ-LEFTOVERS] archived (live; [OIL-NOTIFY-SEEN] already was, 3 Nov 26) | LOOK | 1½ h |
 | **Night 3** — no app change | | | | |
-| 7 | **The checks themselves** | [CI-SMOKE-TIMEOUT] — a time limit on the Tracker's smoke test on GitHub (it hung 16 min on 5 Nov 26 and would have waited 6 h); [SHELL-SCRIPT-GUARD] (his go, D811 — the escape trap met three times on 5 Nov 26 alone); [MERGE-ONCE-RECORDS] (record files that merge without clashing) | a fresh reader for the guard; his "merge live" (hooks and workflows) | 3 h |
+| 7 | **The checks themselves** — the time limits live 8 Nov 26 (670); the rest open | [CI-SMOKE-TIMEOUT] — a time limit on the Tracker's smoke test on GitHub (it hung 16 min on 5 Nov 26 and would have waited 6 h); [SHELL-SCRIPT-GUARD] (his go, D811 — the escape trap met three times on 5 Nov 26 alone); [MERGE-ONCE-RECORDS] (record files that merge without clashing) | a fresh reader for the guard; his "merge live" (hooks and workflows) | 3 h |
 | 8 | **Documents** | [RULINGS-SPENT-PASS] (spent and restated rulings archived, a fresh reader), [CAL-JOB-LEFT] (stale lines in `AGENTS.md` — a guide change, his approval), [LW-READS-OWED-1024], [WORD-LIST] checked | a fresh reader; notes merge by themselves (D1407), guides on his word | 3 h |
 | 9 | **The folder** | [REPO-TIDY] (1) — the 47 old worktrees, each checked for unpushed work first; [MAIN-CHECKOUT-STALE] (2) — the guide line (his approval) | — | 1 h |
 
@@ -53,7 +53,7 @@ Tracker's standalone tidy — [TRK-STANDALONE-LEFTOVERS]), 639 (the "not saved" 
 ## 3. What needs him first — one pictures round
 
 These are small to build but each shows something new or changes how a screen looks, so each goes to him as a picture
-first (D1625, D853). One page, about 12 questions, about 2–3 hours to prepare; his answers then build in about one night.
+first (D1625, D853). One page, about 12 questions, about 2–3 hours to prepare; his answers then build in about one night. **Drawn on the night of 7 Nov 26 in a chat of its own (chat 3), ahead of night 3, whose jobs still run on a later night (D1747, narrowing D1717 for that night).**
 
 [BOARD-SIDEWAYS-KEYS] (the board's top on a phone on its side with the keys up) · [BOARD-NARROW-DESKTOP-REMARKS] (the board
 821–1000 wide) · [LW-TWO-BOX-LETTERS] (two boxes on one day clip "FO*") · [SCHED-UNAV-PENDING-MARK] (no "waiting" mark on an
@@ -63,7 +63,7 @@ on a phone) · [LOGIC-WORDS-WORKHOURS] · [OIL-EARN-DAY-SWITCH-WORDS] · [OIL-IN
 
 ## 4. His questions in this plan — ANSWERED 5 Nov 26
 
-**D1716: "Skip records, leave rest"** — React Doctor is set to skip `docs/mock/`, `docs/img/` and `reference/` (night 3, job 7 — [CI-SMOKE-TIMEOUT]); the tests' and scripts' 165 copy notes are left. **D1717: "Fixes first"** — nights 1–3, then the pictures round.
+**D1716: "Skip records, leave rest"** — React Doctor is set to skip `docs/mock/`, `docs/img/` and `reference/` (night 3, job 7 — [CI-SMOKE-TIMEOUT]); the tests' and scripts' 165 copy notes are left. **D1717: "Fixes first"** — nights 1–3, then the pictures round (for 7 Nov 26, narrowed by D1747 — §3).
 
 As they were put:
 

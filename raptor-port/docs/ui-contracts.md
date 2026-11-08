@@ -432,7 +432,11 @@ Four things make it work, and each is load-bearing:
   Safari would not re-snap from (the hold above); and the slide starts at a hand's pace, about 2.4 px/ms, easing out
   over 340 ms, not the 3.9 px/ms that crossed three-quarters of the screen in a tenth of a second. Pinned
   `ui/swipeweeks.test.tsx`, `ui/weekglide.test.ts`, and by a real finger `e2e/weekswipe.spec.ts`; the feel on his
-  iPhone is his look's to judge. *[D1577, 3 Nov 26: this slide stays — the end cards that would have replaced it (D1574) were set aside.]*
+  iPhone is his look's to judge. **A burst of crosses over the two pages** (a cross on Edit Schedule, a switch to
+  View-only Sched and a cross there inside one slide — [WEEK-GLIDE-TWO-PAGES], 7–8 Nov 26): each week the burst covers
+  keeps its own touches and sideways scroll from before it, the page's clip one value for the burst, and the burst's
+  last finish gives every week its touches and scroll back; only the week crossed LAST is landed again — an earlier one
+  keeps the day a switch back to its page gave it (the Opus read's finding 1, 8 Nov 26). *[D1577, 3 Nov 26: this slide stays — the end cards that would have replaced it (D1574) were set aside.]*
 
 `state/store.ts`'s `resetSession` clears it **after** its own `setPage`, which
 is why that line sits at the end of the function rather than beside the other
@@ -1681,6 +1685,17 @@ the view week keeps the reference's markup (`html.test.ts normDow`). While the b
 (`boardescape.ts keepTabOnBoard`) — last stop to first, first to last, a Tab from the page behind back onto it — what lies
 over the board keeping its own keys. Escape closes the Sort all box (`useEscClose`). Pinned by `ui/boardmenukeys.test.tsx`
 and `e2e/keys-windows.spec.ts`.
+**The board's last two menus, and one menu at a time ([BOARD-KEYS-LEFT], the night of 7–8 Nov 26; the two reads of 8 Nov
+26).** At a phone's width (a narrow window at a desk, a tablet with a keyboard) the ⋯ beside the highlighter (Insights,
+Sort all, the layout switch — `SchedBoard.tsx`, drawn ≤ 820 only) opens on its first item by Enter, Space or ↓ (↓ presses ⋯,
+so another board menu up closes as it opens), ↑ ↓ go round its items that can be pressed, Escape closes it and a pick by
+the keys puts them back on ⋯ before the pick acts (Insights and the Sort all box give them back to ⋯ as they close), the
+keys leaving it close it, as the week's ⋯ does; a window widened past 820 with it up closes it, so the next Escape is the
+board's. The day bar's Templates (`[data-daytpladd]`, drawn where `#sbTpl` is not) opens on ↓ as the others do. ↓ goes INTO
+an open menu only from its own button — each string-drawn menu records the button it hangs from (`menuKeys`, `_anchor`);
+from another menu button ↓ presses that button, which closes the first menu as a click outside it. A held Enter opens a
+menu and picks nothing: a repeated Enter inside a board menu or the ⋯ menu is ignored. Pinned by
+`ui/boardmenukeys.test.tsx`; walked `scripts/handpass/bk-walk.mjs` (`docs/handpass/2026-11-08-board-keys.md`).
 
 **The Traffic window leaves the bar over it pressable (`[TRAFFIC-WIN-COVERS-UNDO]`, 30 Oct 26 — `ui/Modals.tsx AirPop`).**
 Its veil (`.airpop.air-below`) starts at the foot of the bar over it — the top bar, or the Scheduler Board's own bar while
@@ -11865,7 +11880,10 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   D1728 — [LW-CELL-COMBOS]: two whole days stand side by side, codes turned to read bottom to top (`bx-tilt`); a whole day
   beside a half keeps the cell, the half over its own half (`bx-floor` / `bx-roof`, `matrixrowparts.ts pairLook`); three
   or more entries are a stack of cards (`bx-pile`, the "+n" tile kept hidden for its words); the "!" a small outlined amber
-  tag the boxes make room for (`bx-alarm`); every combination measured, `scripts/handpass/lw-cell-combos-measure.mjs`.]*
+  tag the boxes make room for (`bx-alarm`); every combination measured, `scripts/handpass/lw-cell-combos-measure.mjs`. This
+  answers [LW-TWO-BOX-LETTERS] (25 Oct 26 — two whole days side by side, each about 10px wide on a 26px day, clipped a
+  three-letter code such as "FO*" beside "TRG"): the codes turned to read bottom to top fit whole, so the item left the
+  backlog on 8 Nov 26 (`OUTSTANDING-ARCHIVE.md`).]*
   The Inputs-page edge and the moved
   edge are drawn inside the box (`::before`), above a pending box's dashed outline. One element a box — no node added
   per cell (`docs/performance.md` §E).
@@ -12366,3 +12384,28 @@ The page and its pictures: `raptor-port/docs/img/handpass/2026-11-05-consistency
 - **D1705 — the Tracker's typed marks** become line icons, as drawn (Merge and Unmerge in words).
 - **D1706 — one look for every menu of actions:** the board's plain rows (`.sb-moremenu`), for the Leave War window's ⋯ and the Tracker's File and pencil menus too; rows 38 tall; Grant OIL's green kept (D1320); the board's Templates and + Wave (choices) unchanged.
 - **D1707 — the one gear (D1509) in its button's own colour,** the SANS calendar's included; the OIL tracker's 📅 becomes Edit Schedule's calendar (D1508).
+
+## The pictures round's answers, 8 Nov 26
+
+His "All as recommended" to the pictures round's page (https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, its pictures
+and notes in `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`). Each is built to its drawing and checked beside
+it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`.
+- **D1780** — the Scheduler Board on a phone on its side: Calendar, the title, the day strip and search scroll away with the
+  list; the bar of buttons stays.
+- **D1781** — the desktop board from 821 to 1099 wide: the remarks on a row of their own, R over B and TO over LD as on a
+  phone (D1029 and D1026 narrowed).
+- **D1782** — OIL Earn's day button is the slider switch "No OIL earned", cyan when on; the refusal words of D845 stay.
+- **D1783** — in OIL Earn a tap on a puck that cannot earn picks nothing; the plain passing note says "Nothing changed for
+  <callsign>." and the reason.
+- **D1784** — an input filed after publishing wears the waiting mark on its Unavailable row too, as on Ground Programme.
+- **D1785** — an unreadable week's notice and refusal words, the refusal in the grey "Blocked:" note.
+- **D1787** — the desktop Inputs list's "+ Input" at its row's right end; the list makes room for the window from about
+  1340 wide, Name, Start and End narrowing first; narrower, the window covers it as today. The older narrow-list fault
+  (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing.
+- **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
+- **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after. **D1850:** it went live with one painted frame left on a quick scroll (the browser's own frame); that last frame is a job of its own, [LW-PIN-LAST-FRAME].
+- **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
+- **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
+- **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
+  hidden warning's ↺; the ✕ stays typed.
+- **D1793** — the phone's board day bar takes the page of blocks and the ticket before Templates and OIL Earn.

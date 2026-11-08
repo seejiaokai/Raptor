@@ -147,7 +147,8 @@ export function addPuckPeople(id: string, personIds: string[]) {
   if (!p) return false
   const ids = idsOf(p)
   let added = false
-  for (const pid of personIds) if (pid && !ids.includes(pid) && !goneOn(pid, p.date)) { ids.push(pid); added = true }
+  const on = new Set(ids)
+  for (const pid of personIds) if (pid && !on.has(pid) && !goneOn(pid, p.date)) { ids.push(pid); on.add(pid); added = true }
   return added
 }
 

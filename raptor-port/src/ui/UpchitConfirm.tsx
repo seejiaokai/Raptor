@@ -54,7 +54,8 @@ export function UpchitConfirm({ who, dateLabel, effects, cuts = [], onSave, onCa
   const boxRef = useRef<HTMLDivElement>(null)
   useSheetFocus(boxRef)
   return (
-    <div className="airpop upconf-pop" data-testid="upconf"
+    /* role="presentation": the shade is nothing a screen reader should name; the sheet's ✕ and buttons take the keys */
+    <div className="airpop upconf-pop" data-testid="upconf" role="presentation"
       onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
       <div className="airpop-box upconf-box" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b>Upchit — {who}, {dateLabel}</b>
@@ -63,6 +64,7 @@ export function UpchitConfirm({ who, dateLabel, effects, cuts = [], onSave, onCa
           <div className="upconf-h">{deleting ? 'Deleting this upchit will' : 'Saving this upchit will'}</div>
           {effects.plan.length
             ? <ul className="upconf-list" data-testid="upconf-plan">{effects.plan.map((p: any, i: number) => (
+              /* eslint-disable-next-line react-doctor/no-array-index-as-key -- the plan is worked out once when the sheet opens and never reorders */
               <li key={i}>{p.action === 'trim'
                 ? <>{p.row.type} {span(p.row)} → now ends <b>{ordLabel(p.newEndOrd, p.row.yr)}</b></>
                 : p.action === 'grow'
@@ -76,6 +78,7 @@ export function UpchitConfirm({ who, dateLabel, effects, cuts = [], onSave, onCa
           {effects.leftovers.length > 0 && <>
             <div className="upconf-h">Still on file after it — choose for each</div>
             {effects.leftovers.map((r: any, i: number) => (
+              /* eslint-disable-next-line react-doctor/no-array-index-as-key -- the entries left on file are worked out once when the sheet opens and never reorder; each choice is held by its place in that list */
               <div className="upconf-left" key={i} data-testid={`upconf-left-${i}`}>
                 <span>{r.type} {span(r)}</span>
                 {/* flat, in a wrapper of the sheet's own: `.seg` is the week strip's rule too, and gave these its darker patch
