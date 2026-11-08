@@ -675,7 +675,7 @@ pointer and each rule — here "Inputs page", "approve", "close the bids", "edit
 ruling that changes what an area shows rarely names it (`record-decisions.md`: search for a claim's subject, never its
 phrasing). The small area's account cost one chat, not a helper.
 
-### Step 5a — People & accounts as a page (8 Nov 26, chat 17, `claude/rules-diet-step-5a-people-1288c3`)
+### Step 5a — People & accounts as a page (8 Nov 26, chat 17, `claude/rules-diet-step-5a-people-1288c3` — merged 8 Nov 26 on his "merge live", pull request 700)
 
 `.claude/rules/decisions/people-accounts.md` is a page, "People & accounts — how it works now" (`<!-- shape: page -->`,
 its `paths:` unchanged): its 80 rulings (D149–D1709) stated by topic — accounts and signing in, how a person joins,
