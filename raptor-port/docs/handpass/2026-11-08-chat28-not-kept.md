@@ -80,9 +80,42 @@ Thing: the band a browser that keeps nothing shows. Drawers: `ui/SaveStatus.tsx`
 
 ## The lessons of §7.11, each with its cover
 
+The brief's scenarios checked against the list (23 lessons) before the walkers started; those that bear on a band drawn
+under every bar:
+- **1, one state only:** the band is walked in five states — storage refused (`LOCK_INIT`), `?nostore`, a failed save
+  beside it (`?nostore&savefail`), a plain browser and `?fresh=1` (scenarios 11–13, the route check).
+- **5, a box never checked against what stands over it:** every window's head and every page's first row measured against
+  the band's foot (scenarios 2–7, 16); the input window and question boxes recorded as covering the bar (D1645).
+- **6 and 21, what only the real phone draws:** W2 in WebKit with letters a seventh wider; the band's one line on his
+  own iPhone is his look, by `?nostore` on the preview link — the test browser cannot stand in for it.
+- **10, a way back walked one way only:** the board left by ✓ Done back to Edit Schedule (scenario 3); the access screen
+  reached by signing out (scenario 8).
+- **15, a pinned bar judged by where it sits:** every page scrolled under the band, its edges looked at for what shows
+  through (scenario 2); the phone side menu open over it (W2).
+- **19, a window over a window never closed:** the plain-user round closes every window by each of its ways (scenario 14).
+- **22, "shown" judged by being there:** every band step is a picture the walker opens, not a selector found.
+
 ## Orders walked
 
 ## Cases carried by a test
+
+Unit tests, green on his PC before the walk (7 files, 146 tests):
+- **The boot's flag** (`storage/boot.test.ts`): set only where storage was refused or under `?nostore`; never for
+  `?fresh=1` or the test modes that pick memory on purpose; `?nostore` reads and writes nothing in storage; a longer word
+  (`?nostorex`) is not the switch.
+- **The band** (`ui/SaveStatus.test.tsx`): no band in a browser that keeps; in the bar and under a full-screen surface its
+  words "Not kept — this browser loses your work on a reload", "Not kept" in bold, the sign hidden from screen readers,
+  no Retry, never the failed-save class; one band only; a failed save wins over it ("Not saved" with its class); the room
+  under the bar made; "Saving…" never beside it.
+- **The Tracker corner** (`tracker/trk-batch-store.test.ts`, `tracker/storage.test.ts`): "saved" and "saving" step aside
+  while the browser keeps nothing, an error still said, and back in a browser that keeps; the app hands the Tracker the
+  flag after the boot chose its store.
+
+The route check `scripts/handpass/nk28-route.mjs` (the host, on the served build, 30 of 30): the sign-in band; Edit
+Schedule's band, its words and its foot on the bar's last line; no "Saving…"; the Tracker corner blank and the band on the
+Tracker — storage refused on his PC and his iPhone (WebKit), and `?nostore` on his PC; no band, and the corner "saved",
+in a plain browser and at `?fresh=1`. Its first run failed 3 checks on its own expected words (it left out the hidden
+screen-reader dash between the two halves, which the "Not saved" band has too); corrected, 30 of 30.
 
 ## The drawing check
 

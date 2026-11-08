@@ -445,7 +445,9 @@ written twice (`onepencil.test.ts`, `tracker.test.tsx`, older); (4) comments now
 ("the marks only the Tracker wears" — Export, Import and the magnifier are the app's marks too, drawn differently),
 `tracker.css`'s palette block's last line ("the copy here kept…" → "the copy that stood here…"), `ui/pen.ts`'s
 "Sized by `.pen-ic`" (true of the app's pencil only), and, older, `tracker.css`'s header "The ONE rule outside the
-wrapper is #detailBubble". **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
+wrapper is #detailBubble". **(4) DONE 8 Nov 26 (chat 28, `claude/chat28-not-kept`)** — the four comments corrected,
+`Glyphs.jsx`'s header naming the magnifier among the app's own marks (D1900); (1)–(3) stay open: each reworks a
+test's recording or an icon's drawing, more than a band's branch should carry after its walk. **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
 the tidiness audit ([CODE-TIDY-AUDIT]).
 
 ### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)

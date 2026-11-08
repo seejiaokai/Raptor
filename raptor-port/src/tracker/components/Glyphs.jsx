@@ -4,9 +4,10 @@ import { GearIcon, ListIcon, PenIcon, ReorderIcon, ResetIcon, SrchIcon } from '.
 /* THE APP'S LINE ICONS ON THE TRACKER'S BUTTONS (owner D1132, 21 Oct 26 — round 2 of the consistency look): in place of
    the typed marks it came with (✎ ⓘ ☰ ⇪ ⌃ ⌄ and the 🗺 emoji, which an iPhone draws in colour), the same Lucide-style
    line drawings the rest of the app wears (ui/icons.tsx — the pencil is PenIcon's, D919, mirrored by D1133; the list is ListIcon's).
-   The marks the rest of the app draws too — the pencil, Reorder, the gear, Reset and the list — are the app's own icons,
-   given the Tracker's class ([TRK-KEPT-COPIES], 8 Nov 26: the copies it kept for a standalone export went with D1538);
-   the marks only the Tracker wears are drawn here. Sized by `.trkglyph`
+   The marks the rest of the app draws too — the pencil, Reorder, the gear, Reset, the list and the magnifier (D1900) — are
+   the app's own icons, given the Tracker's class ([TRK-KEPT-COPIES], 8 Nov 26: the copies it kept for a standalone export
+   went with D1538); the rest are drawn here — Export and Import among them, though the app draws marks of its own for
+   those too, differently ([TRK-COPIES-TIDY] (4)). Sized by `.trkglyph`
    (tracker.css); each is aria-hidden — the button's title or its word names it. The gear is the app's one drawn gear since
    D1509 / D1707 (it kept the typed ⚙ under D635 until round 4) — GearGlyph, below. */
 const G = ({ children }) => (
