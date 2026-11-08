@@ -194,6 +194,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [CLOUD-WALKS] — walks run in the cloud instead of on his PC (D1797): the trial first; if it works, the running chats told and the walking instructions changed (two readers, his approval).
 - [BOARDNAV-SCRUB-CLICK-TIMER] — the board's day-dots test "the click after a scrub does not snap back" leans on a real 350 ms window; it failed once in a crowded run (86 files) and passes alone — make the test wait on what it needs.
 - [TESTS-REQUIRED-ON-MAIN] — GitHub refuses a merge to main only when the secrets scan fails, not the tests; a summary job made required would close it (Astra, 8 Nov 26) — night 3, the setting his own click.
 - [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs live 8 Nov 26 (pull request 670); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
@@ -2395,3 +2396,13 @@ inside a ternary — a named `inner` would read straighter; the switch's keys pu
 `locate` / `keysBack` do; `inert.dataset.oilsay || ''` would toast an empty note if the attribute were missing; `.mbtn.oilblank.on`
 and `.mbtn.oilbtn.on` in `18-oil-board.css` have no user. **Place:** low — with the next OIL Earn change or the tidiness audit
 before the database step (D486).
+
+### [CLOUD-WALKS] Walks run in the cloud instead of on his PC (filed 8 Nov 26, D1797)
+
+**What:** the walks queue for his PC's one checks lock while several chats build at once. His D1797: try running them on
+Anthropic's cloud machines; if it works, every chat adopts it. **Steps:** (1) the trial — a walker started by a chat on its
+own (a helper in the cloud, not a new chat, which the app refuses on another chat's word) builds the app, runs one walk
+script with pictures, and leaves them where the host can open them; today's walk scripts name folders on his PC, so a
+script that runs anywhere is part of the trial; (2) if it works, chat 3 tells the open chats (walks not yet started move)
+and writes the walking-instructions change for D1761's two readers and his approval; (3) if each cloud walk needs his
+click, or the cloud cannot build or show the app, the way is dropped and he is told. **Place:** chat 3, 8 Nov 26.

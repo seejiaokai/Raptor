@@ -127,6 +127,9 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   [D68, D1735].
 
 ## Checking the running app (detail: `raptor-port/docs/bug-check-order.md`)
+- Walks run in the cloud instead of on his PC is on trial from 8 Nov 26; if a chat can start a cloud walk on its own and it
+  builds the app and leaves pictures, every chat adopts it for each walk not yet started, and the walking instructions
+  say so once read and approved; only the walks move — building, tests and Astra's reads stay on his PC [D1797].
 - Driving the running app is the bug test; a code review plus green tests is not one [D5]. All three kinds of check — a
   code read, automated tests, a hand pass — scaled by what the change touches; before a walk the agent says what type of
   change it is, Opus sizes the walk, and a record is kept of every walk — its type, size, cost and what it found — so the
