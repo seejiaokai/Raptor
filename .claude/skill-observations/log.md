@@ -4364,3 +4364,15 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** The worktree had no installed packages. `npx tsc -p tsconfig.app.json --noEmit` did not fail with "not installed": npx fetched an unrelated package named `tsc`, which printed a banner and exited non-zero, so the first type check looked like a broken build until the packages were installed (`npm ci`) and it ran clean.
 **Suggested improvement:** Before the first check in a worktree, test that the package folder exists and run the install if not; never read an `npx <tool>` failure as the project's until the tool is known to be the project's own.
 **Principle:** `npx` falls back to downloading whatever is published under a name; in a checkout without its dependencies, the tool that runs may not be the project's — install first, then trust the result.
+
+### Observation 893: A FULL check's chat fills before its walk when the area files load into it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 26, the FULL bug check of [RD-LEFT-1108] (a no-visible-change tidy-up of People & accounts)
+**Skill:** New skill candidate: bug-check sizing (the order's §7.0 and the session-handoff step)
+**Type:** internal
+**Phase/Area:** planning the check's chats before it starts
+**Issue:** The check began at 49% context (the always-loaded rules) and reached 76% before the walk: opening the area page, the order's sections, and editing one test and one evidence sheet loaded the scheduler and screen-design rulings by themselves (their paths match `src/` and the handpass folder), about 100k tokens the check never used. The walk and the four reads had to move to a fresh chat. (Number 892 is taken on another branch; this note numbers past it.)
+**Suggested improvement:** In the checklist's step 3 (telling him the plan), name the chats too: a FULL check whose chat starts past about 40% plans two chats from the start — chat A: tier, sheet, roll-call, break tests, scenario brief; chat B: walk, reads, fixes — and chat A hands the scenario designer's report into the repo before it ends.
+**Principle:** Count what a job will load by itself, not only what it reads on purpose, when deciding how many sessions it needs.
