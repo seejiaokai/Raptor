@@ -17,58 +17,23 @@ other always-loaded files — `record-decisions.md`, `shipping.md`, `plain-langu
 In every report, OIL is earned leave — time off banked, never pay or money [D25, filed under OIL].
 
 ## Records
-- Records state the decision, not the transcript: his words only where the exact words matter, otherwise one line, the
-  date and a pointer; a condensed record never changes what the original meant [D14, D138, D141, D390, D1735].
-- Where two of his rulings conflict, the later one wins: every clash is named — the ruling followed and the one set
-  aside, both dates; a rule with no date loses to a dated one; what the old one left behind is fixed in the same change —
-  the documents, the app (the build filed), the lists; where the newer one does not clearly cover the case, it goes to
-  him as a question [D90, D201].
-- A ruling's rule is written in ordinary letters — capitals only where a name or a short form such as OIL has them — and
-  no word is changed for it [D970].
-- No size targets: the test is whether each piece is needed where it sits, organised and written clearly; a size ceiling
-  is a tripwire — move what does not belong, or raise it with its reason; for a loaded rulings file it counts bytes; the
-  rules diet does not set this aside [D141, D390, D1735].
-- Each ruling's full row is kept whole in `.claude/decisions-full/`, searched, never loaded, and opened before acting on
-  a ruling's detail or asking him about it [D390, D1735]. The repo reads by relevance — a small general layer every
-  chat, each area by itself — and keeps itself tidy, each new fact to its one home, what is finished leaving for an
-  archive [D140, D141].
-- The rulings are read by relevance, not all at once, and the structure keeps itself [D137]. The list is never shrunk
-  by moving a live ruling out: each stays stated in a file that loads — a short line while its area is in that shape, a
-  statement on its page once the area converts, the gate checking it; only replaced rulings, rulings a later one restates
-  in full (a fresh reader checking each; one it only narrows stays) and spent permissions leave, for
-  `DECISIONS-ARCHIVE.md` [D136, D137, D390, D971, D1735].
-- The scheduler's rulings stay one file, the Inputs pages' rulings in a file of their own; the split question came back
-  when the file passed D611's mark, and he kept one file, D611's mark still standing [D611, D802, D976].
-- What a chat loads at its start is trimmed, never anything a job reads (D68) — the bug-check order, the design guide and
-  the ripple map read by section from checklists naming when: the every-chat rulings a later one restates in full are
-  archived, the screen-design rulings load only for screen work, the Codex guide is short; after an hour away from a chat
-  past about 30% full, the agent suggests a fresh chat from the handoff [D1554, D1735].
-- The rules diet: each area's rulings become a page of how it works now — each rule stated once, the rulings behind it
-  cited after it, every live ruling cited on a statement of a file that loads — with the full rows kept whole and
-  searched; the working rules and the bug-check order become one-page checklists; until an area converts, it works as
-  today [D1732, D1735].
-- The diet ran on Opus in the plan's order (its reads: below) and stopped 8 Nov 26: its five area pages came out
-  about twice their old lists [D1732, D1735, D1932].
-- Fable 5.1, on his call, brings each page under its old list's size, no rule dropped; a page's tripwire is a hard
-  limit, never raised without his word; no area converts until all six are under; Fable and Astra also review 8 Nov
-  26's Opus jobs, a fresh chat [D1932, D1933, D903, D1770, D141, D390, D1735].
-- Every step of the rules diet goes live only on his "merge live", a step that changes only rulings files or other notes
-  included [D1737].
-- Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page, the
-  Inputs, scheduler and Leave War pages among them — is read by Astra as well as by the fresh Opus reader, each blind to
-  the other, for whether any meaning changed; Sol 6.1 is not called, not even inside D1743's window — the fresh Opus
-  reader holds the second seat and no third reader is added, his "keep two"; if Astra cannot run, he is told first, and
-  the step never goes on without that read [D1738, D1739, D1761, D1743, D1770, D1763].
-- What rewords nothing in the diet — text moved whole, the checks and scripts — keeps the one fresh Opus reader; he may
-  widen it; text moved whole out of a working guide is a guide change, so Astra reads it too — the later D1761 over
-  D1739 there, the agent's reading [D1739, D1761].
-- Stating once what both this page and an always-loaded checklist now state waits for a later step of the rules diet,
-  not now; until then each keeps its statement with its rulings [D1762].
-- From the 17 Oct start-size page: his own settings to switch off were listed for him, and switching one off stays his;
-  every chat gets the skill-notes short form from the start hook in place of the full skill, which is invoked only for a
-  review, a skill's creation or edit, its setup, or a case the short form misses [D969, D976, D1740].
-- The start-of-chat size job is closed: its last point, his documents connector, stays his own setting with nothing for
-  the agent to do; cutting what a chat reads goes on as the rules diet [D1741].
+- Records state the decision, not the transcript: his words only where the exact words matter, otherwise one line, the date and a pointer; a condensed record never changes what the original meant [D14, D138, D141, D390, D1735].
+- Where two of his rulings conflict, the later one wins: every clash is named — the ruling followed and the one set aside, both dates; a rule with no date loses to a dated one; what the old one left behind is fixed in the same change — the documents, the app (the build filed), the lists; where the newer one does not clearly cover the case, it goes to him as a question [D90, D201].
+- A ruling's rule is written in ordinary letters — capitals only where a name or a short form such as OIL has them — and no word is changed for it [D970].
+- No size targets: the test is whether each piece is needed where it sits, organised and written clearly; a size ceiling is a tripwire — move what does not belong, or raise it with its reason; for a loaded rulings file it counts bytes; the rules diet does not set this aside [D141, D390, D1735].
+- Each ruling's full row is kept whole in `.claude/decisions-full/`, searched, never loaded, and opened before acting on a ruling's detail or asking him about it [D390, D1735]. The repo reads by relevance — a small general layer every chat, each area by itself — and keeps itself tidy, each new fact to its one home, what is finished leaving for an archive [D140, D141].
+- The rulings are read by relevance, not all at once, and the structure keeps itself [D137]. The list is never shrunk by moving a live ruling out: each stays stated in a file that loads — a short line while its area is in that shape, a statement on its page once the area converts, the gate checking it; only replaced rulings, rulings a later one restates in full (a fresh reader checking each; one it only narrows stays) and spent permissions leave, for `DECISIONS-ARCHIVE.md` [D136, D137, D390, D971, D1735].
+- The scheduler's rulings stay one file, the Inputs pages' rulings in a file of their own; the split question came back when the file passed D611's mark, and he kept one file, D611's mark still standing [D611, D802, D976].
+- What a chat loads at its start is trimmed, never anything a job reads (D68) — the bug-check order, the design guide and the ripple map read by section from checklists naming when: the every-chat rulings a later one restates in full are archived, the screen-design rulings load only for screen work, the Codex guide is short; after an hour away from a chat past about 30% full, the agent suggests a fresh chat from the handoff [D1554, D1735].
+- The rules diet: each area's rulings become a page of how it works now — each rule stated once, the rulings behind it cited after it, every live ruling cited on a statement of a file that loads — with the full rows kept whole and searched; the working rules and the bug-check order become one-page checklists; until an area converts, it works as today [D1732, D1735].
+- The diet ran on Opus and stopped 8 Nov 26, its five area pages twice their old lists; Fable 5.1 on his call, or Opus on his later word, brings each under its old list's size, no rule dropped; a page's tripwire is a hard limit, never raised without his word; no area converts until all six are under; Fable and Astra review 8 Nov 26's Opus jobs, a fresh chat [D1732, D1735, D1932, D1938, D1933, D903, D1770, D141, D390].
+- The rules are to be a short statement of how the app works and what he likes, a new ruling replacing the old one on its subject; the way there is put to him [D1939].
+- Every step of the rules diet goes live only on his "merge live", a step that changes only rulings files or other notes included [D1737].
+- Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page, the Inputs, scheduler and Leave War pages among them — is read by Astra as well as by the fresh Opus reader, each blind to the other, for whether any meaning changed; Sol 6.1 is not called, not even inside D1743's window — the fresh Opus reader holds the second seat and no third reader is added, his "keep two"; if Astra cannot run, he is told first, and the step never goes on without that read [D1738, D1739, D1761, D1743, D1770, D1763].
+- What rewords nothing in the diet — text moved whole, the checks and scripts — keeps the one fresh Opus reader; he may widen it; text moved whole out of a working guide is a guide change, so Astra reads it too — the later D1761 over D1739 there, the agent's reading [D1739, D1761].
+- Stating once what both this page and an always-loaded checklist now state waits for a later step of the rules diet, not now; until then each keeps its statement with its rulings [D1762].
+- From the 17 Oct start-size page: his own settings to switch off were listed for him, and switching one off stays his; every chat gets the skill-notes short form from the start hook in place of the full skill, which is invoked only for a review, a skill's creation or edit, its setup, or a case the short form misses [D969, D976, D1740].
+- The start-of-chat size job is closed: its last point, his documents connector, stays his own setting with nothing for the agent to do; cutting what a chat reads goes on as the rules diet [D1741].
 - The handoff file keeps only the newest gate count; each older one moves whole to its archive file [D1733].
 
 ## Models and readers
@@ -284,46 +249,19 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   change is — by Astra and a second reader — and merged on his "merge live" [D625, D1734, D1738, D1739, D1761, D1770].
 
 ## The platform and the database
-- The database comes at the end, once the features are built — after phase 7 no more database-readiness work until
-  then; the table list is kept true as each feature is added; he writes the table format with his AI for the IT side
-  [D473, D203, D453].
-- Work needing IT's confirmation waits for it, and he is told; the day and request tables' hand-over waits for IT's
-  written answer, and if IT's reports cannot reproduce the worked-out picture, a reportable piece is added then —
-  nothing built is undone [D466, D465]. After the connection, group B is tuned against the real database, the lock's
-  screens last [D453, D473].
-- The target: a Power Apps code app on Dataverse on his M365; every user holds Power Apps Premium, with 40,000 Power
-  Platform requests a day each, so no licence stands in the way [D1570].
-- The tables are the one master of saved data: every screen and area reads from them and writes to them, so everything
-  stays in step; only what makes no sense in a table stays out, each named with its reason [D1580]; what does not read
-  the one table is one item for the database step, nothing of it built before then [D1587, D473].
-- No tables, roles or day-lock flow on his M365 before the database step, and the table setup — now the IT side's own
-  kit — and the test of whether it may sign in as him on his PC wait for it: nothing of either written or tried before
-  then [D1571, D1662, D1749, D473]; the hosting trial is the app without a database, run inside Power Apps and still saving in the browser, for him to test
-  himself [D1532].
-- At the database step the app and its tables go first into his own premium M365 test account: the tables built there
-  with the IT side's own table-building kit, the app tested on them, then the tested table list handed to the IT side,
-  who build the same tables with the same kit; nothing of the database is built there before that step [D1749, D473].
-- That test account is set up to match the IT side's restrictions — no plug-ins, no outside connectors, the same roles —
-  or a pass there proves nothing, the match put to them as a question; only the app's made-up demo data goes there
-  [D1749, D1532].
-- His own test tables use the short code "talon" for now; if the IT side later sets a different one for their tables,
-  the app's table names are changed once to match theirs [D1753].
-- February 2027 is not a deadline: the M365 and database work is planned by what it needs, never squeezed to a date,
-  and no step is rushed or its checks cut to meet one [D1745].
-- At the move: each aircraft type set by a setting, the code check every session and on every change, a medical change
-  shown whole in the change history, words on screen kept to his design rulings, a clean copy for the PPCoE with this
-  project kept whole [D1536, D1537].
-- Strict checking of every value's kind — new code strict from the start, the screens, saved data and the Leave War
-  fixed area by area as each is next worked on — but the rules engine stays word for word, its strict checks switched
-  off, protected by the original app's 728 tests [D1537].
-- React Doctor — the free code check the SWiFT kit runs — comes from the same public package store as the app's other
-  building tools and changes nothing in the app; it runs the kit's way, its usage tracking off, sending its findings to
-  the tool's maker for its score, and the run with every outside connection off is no longer required [D1531, D1533].
-- React Doctor's findings are fixed with each area's batch, new and changed code following its rules [D1534]; it runs
-  on every pull request, where a new finding fails the check, and at each session's end, where it only reports the
-  count and blocks nothing [D1539]; the 31 old errors outside the app were settled as a job of their own before the
-  next full run — 30 kept with written reasons, one in the read-only original left as it is [D1572]; mock-up pages and the original app are not counted, and the tests' and scripts' notes of
-  copying data the old way are left as they are [D1716].
+- The database comes at the end, once the features are built — after phase 7 no more database-readiness work until then; the table list is kept true as each feature is added; he writes the table format with his AI for the IT side [D473, D203, D453].
+- Work needing IT's confirmation waits for it, and he is told; the day and request tables' hand-over waits for IT's written answer, and if IT's reports cannot reproduce the worked-out picture, a reportable piece is added then — nothing built is undone [D466, D465]. After the connection, group B is tuned against the real database, the lock's screens last [D453, D473].
+- The target: a Power Apps code app on Dataverse on his M365; every user holds Power Apps Premium, with 40,000 Power Platform requests a day each, so no licence stands in the way [D1570].
+- The tables are the one master of saved data: every screen and area reads from them and writes to them, so everything stays in step; only what makes no sense in a table stays out, each named with its reason [D1580]; what does not read the one table is one item for the database step, nothing of it built before then [D1587, D473].
+- No tables, roles or day-lock flow on his M365 before the database step, and the table setup — now the IT side's own kit — and the test of whether it may sign in as him on his PC wait for it: nothing of either written or tried before then [D1571, D1662, D1749, D473]; the hosting trial is the app without a database, run inside Power Apps and still saving in the browser, for him to test himself [D1532].
+- At the database step the app and its tables go first into his own premium M365 test account: the tables built there with the IT side's own table-building kit, the app tested on them, then the tested table list handed to the IT side, who build the same tables with the same kit; nothing of the database is built there before that step [D1749, D473].
+- That test account is set up to match the IT side's restrictions — no plug-ins, no outside connectors, the same roles — or a pass there proves nothing, the match put to them as a question; only the app's made-up demo data goes there [D1749, D1532].
+- His own test tables use the short code "talon" for now; if the IT side later sets a different one for their tables, the app's table names are changed once to match theirs [D1753].
+- February 2027 is not a deadline: the M365 and database work is planned by what it needs, never squeezed to a date, and no step is rushed or its checks cut to meet one [D1745].
+- At the move: each aircraft type set by a setting, the code check every session and on every change, a medical change shown whole in the change history, words on screen kept to his design rulings, a clean copy for the PPCoE with this project kept whole [D1536, D1537].
+- Strict checking of every value's kind — new code strict from the start, the screens, saved data and the Leave War fixed area by area as each is next worked on — but the rules engine stays word for word, its strict checks switched off, protected by the original app's 728 tests [D1537].
+- React Doctor — the free code check the SWiFT kit runs — comes from the same public package store as the app's other building tools and changes nothing in the app; it runs the kit's way, its usage tracking off, sending its findings to the tool's maker for its score, and the run with every outside connection off is no longer required [D1531, D1533].
+- React Doctor's findings are fixed with each area's batch, new and changed code following its rules [D1534]; it runs on every pull request, where a new finding fails the check, and at each session's end, where it only reports the count and blocks nothing [D1539]; the 31 old errors outside the app were settled as a job of their own before the next full run — 30 kept with written reasons, one in the read-only original left as it is [D1572]; mock-up pages and the original app are not counted, and the tests' and scripts' notes of copying data the old way are left as they are [D1716].
 
 ## Long runs, compaction and handoff
 - `/overnight` sizes the night to his hours and recommends the jobs that fit, he selects, its questions come first, then
