@@ -4062,6 +4062,45 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
 **Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
 
+### Observation 861: Parallel build chats proposed to him on his phone could not be opened — the app starts no chat over Remote Control, even on his own message
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 3, the pictures round's build: after his answers he agreed to five parallel build chats ("Yes, both": merge the plan, then start them), on his phone.
+**Skill:** New skill candidate: running a build as parallel chats (the day-time cousin of overnight's Part 2); cites the closed Observation 715
+**Type:** internal
+**Phase/Area:** starting side sessions
+
+**Issue:** The app refused all five starts three times: first on a turn a finished background wait had woken (as Observation 715 found overnight), then on his own reply "Start them" sent from his phone — over Remote Control the app opens no chat at all. He had to go to his PC and type the go there; the five started at once. Nothing was lost, but he was asked twice and had to move.
+**Suggested improvement:** Guard: when a plan proposes parallel chats, say in the same message that the app can open them only on a message he types at the PC, and offer the other way at once — helpers inside this chat (D1416) — so he chooses before the work that precedes the starts. Never put the start on a turn that a background wait or timer will wake.
+**Principle:** Before promising a delegation step, check which surface the user is on and whether the host allows that step from it; offer the fallback in the same breath as the plan.
+
+### Observation 862: A side session on the rules engine reaches three-quarters full before its first commit
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 6, the pictures round's group 4 (D1786) — an engine change started as a side session (numbered past 861, the highest on any pushed branch)
+**Skill:** New skill candidate: side-session-briefing
+**Type:** open-source
+**Phase/Area:** starting a delegated build session
+
+**Issue:** The session reached 75% of its context window after about twenty tool calls, before any commit: opening one engine file loaded every scheduler-area rulings file and design rule set by path (well over 100 KB), on top of the always-loaded rules. The save-state warning arrived when the build had only one change in it.
+**Suggested improvement:** A brief for a side session names, up front, the slices it needs (the full rows by number, the exact sections), and the session commits its handoff block after its first change rather than at the first warning; the starting session warns its children that opening an area file costs that area's whole rulings load.
+**Principle:** In a repository whose rules load by file path, the first file a delegated session opens can cost most of its context; a delegated session should save its state early and read by slice.
+
+### Observation 863: A code reader's proof test, written into the shared checkout, swept into the builder's commit
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 6, D1786 (a day with nothing entered starts at the default rally): a fresh, blind Opus reader ran as a subagent in the same worktree while the builder fixed the other readers' findings
+**Skill:** New skill candidate: none — the bug-check order's reader brief (§4) and the one-checkout note; met again after Observation 648 (closed)
+**Type:** open-source
+**Phase/Area:** committing while a helper works in the same checkout
+
+**Issue:** The reader wrote a throwaway proof test (a deliberately failing one) under the app's source folder; the builder's commit staged that folder whole (`git add -A <dir>`) and took the file in. Caught only because the reader reported it; had the branch been pushed, the pull request's run would have gone red on a test nobody meant to keep.
+**Suggested improvement:** Two guards, both unconditional: (1) every code reader's brief says where proof tests go — a name the repo ignores (for example `*.reader-tmp.test.*` in `.gitignore`) or the reader's own scratch folder — never a plain test name under the source folder; (2) while any helper works in the checkout, the builder stages by named paths only and reads `git show --stat HEAD` before pushing.
+**Principle:** A helper sharing the checkout writes files the builder did not make; a whole-folder stage turns them into the builder's commit. Give helpers' throwaway files a name the repository ignores, and stage by name while they work.
+
 ### Observation 870: A blink counted "gone" by the page's own frame log was still there in the painted frames
 
 **Status:** OPEN
