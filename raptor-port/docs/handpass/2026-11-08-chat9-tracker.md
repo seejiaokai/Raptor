@@ -31,7 +31,8 @@ look.**
   wheel-scrolled under it — as before this change); S14c (a drag during the slide — no longer possible, the chart takes
   no press while it slides); S30 (Restore's keyboard ring is the browser's own, as before — the app's cyan ring is
   another job's); S31 (the two messages' typed marks, F8); S33 (i) (Last Flown (Syllabus) read "Pick a date" after a DCO
-  — not this job's, named as seen in passing, D123).
+  on ACG-09 — as designed, not a fault: only a flight sets Last Flown, and ACG-09 is not one; its window reads "Done on"
+  without "— sets Last Flown", `components/Pop.jsx`).
 
 Row verdicts are per step; a scenario is FAIL if any step failed. RECORD rows are measurements for the host to read, not verdicts. Pictures are in `raptor-port/docs/img/handpass/2026-11-08-chat9-tracker/` (2x; on a phone, one right after each tap and a settled one).
 
