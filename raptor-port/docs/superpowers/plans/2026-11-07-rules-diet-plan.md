@@ -728,7 +728,7 @@ draft 44,148; after the account 47,201; after the reads 50,466 (about 19,000 tok
 and the IT guide's did, but this one loads with files most jobs open (the board's and the week's builders, the store,
 the view state, the shell), so the re-measure before 5b must count it; narrowing its `paths:` is a question for him.
 
-### Step 5a — Screen design as a page (8 Nov 26, chat 24, `claude/rules-diet-step-5a-design-9bc219` — pull request 708, waiting for his "merge live")
+### Step 5a — Screen design as a page (8 Nov 26, chat 24, `claude/rules-diet-step-5a-design-9bc219` — merged 8 Nov 26 on his "merge live", pull request 708)
 
 `.claude/rules/decisions/design.md` is a page, "Screen design — how it works now" (`<!-- shape: page -->`, its `paths:`
 unchanged): its 74 rulings (D347–D1901) stated by topic — the top bar, the page names, the board's own bar, icons and
