@@ -36,8 +36,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1850 | 8 Nov 26 | The Leave War's pinned dates row and Quals' header go live with one painted frame still showing the row cut under the top bar on a quick scroll, the browser's own frame that the page's code cannot reach; that last frame is a job of its own, its new way measured before anything is built. |
 | D1788 | 8 Nov 26 | The Leave War day panel's "↓ N more" cue takes the bell's own foot: under the list and outside it, a hairline above and small grey words at the left, not pressable, counting the lines not wholly in view, and gone at the list's end. |
-| D1789 | 8 Nov 26 | The Leave War grid's pinned dates row takes the row's place in the same frame the row reaches the top bar, on a desktop and on a phone, and Quals' header the same, so the dates never blink cut or missing — built as a small job of its own that measures the frames before and after at both sizes and stops if scrolling gets slower. |
+| D1789 | 8 Nov 26 | The Leave War grid's pinned dates row takes the row's place in the same frame the row reaches the top bar, on a desktop and on a phone, and Quals' header the same, so the dates never blink cut or missing — built as a small job of its own that measures the frames before and after at both sizes and stops if scrolling gets slower. — changed by D1850 |
 | D1731 | 6 Nov 26 | The Leave War's Legend is built as drawn: its section "Marks on a day" teaches two whole days side by side read bottom to top, the stack of cards, the "!" tag, his last day's yellow line ("His last day in the squadron") and a gone day's striped box ("Leave after a posting-out — not counted for manning"). |
 | D1730 | 6 Nov 26 | An entry on a day after a man's posting out keeps its box in full colour, with the faint stripes alone; it is not faded. |
 | D1729 | 6 Nov 26 | The stripes that mark an entry on a day after a man's posting out are the faint dark stripes, not stronger grey ones. |

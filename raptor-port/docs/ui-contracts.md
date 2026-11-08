@@ -12405,7 +12405,7 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   1340 wide, Name, Start and End narrowing first; narrower, the window covers it as today. The older narrow-list fault
   (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing.
 - **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
-- **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after.
+- **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after. **D1850:** it went live with one painted frame left on a quick scroll (the browser's own frame); that last frame is a job of its own, [LW-PIN-LAST-FRAME].
 - **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
   **Built 8 Nov 26 (chat 9, `claude/pr-tracker-787259`):** the rule is `src/tracker/app/popPlace.js`, pure: the window
   opens 4px under the event where it fits whole; else the chart slides the event up until its top is 22px under the
