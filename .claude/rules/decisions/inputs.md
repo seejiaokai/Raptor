@@ -148,7 +148,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
-| D1843 | 8 Nov 26 | On a desktop the Inputs list is closed by a thin line round the whole list, in the colour the rows' own lines already use, and "No document" stands inside its column (about 14px in from the list's end, where it ran 3px from it), so the right end no longer looks as if the list runs on; no column changes width, and the phone's cards are unchanged. |
+| D1843 | 8 Nov 26 | On a desktop the Inputs list is closed by a thin line round the whole list, in the colour of the lines between its rows, and "No document" stands inside its column, so the right end no longer looks as if the list runs on; no column changes width, and the phone's cards are unchanged. |
 | D1842 | 8 Nov 26 | His direction: the desktop Inputs list's right end must not look as if more of the list runs on past it — today each row's coloured line on the left has nothing to match it on the right and "No document" sits against the list's right end, so he tried to scroll sideways; the fix is drawn for him as a mock-up before it is built (D1625). — changed by D1843 |
 | D1840 | 8 Nov 26 | On a desktop from 821 to 1099 wide, with no input window open, the Inputs list's Type column narrows to 124 as Name, Start and End already do there, so Remarks keeps a readable width with every word whole; from 1100 Type keeps its 160. |
 | D1841 | 8 Nov 26 | The safety for smaller screens is part of his D1787 answer: below about 1340 wide no room is made and the input window covers the list as it always has; and the window standing over "+ Input" while it is open, as it stands over "+ Medical", stays as drawn. |
