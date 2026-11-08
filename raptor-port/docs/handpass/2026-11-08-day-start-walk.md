@@ -30,3 +30,15 @@ Console errors, page errors and 4xx responses over the whole run: none.
 - The Edit Schedule week's issues box stays folded; its notes were not opened there (the board's list was read instead).
 - Phone taps were not pictured at 100 ms after the lift (D1281); the phone steps use Playwright clicks on a 390-wide window, not touch emulation.
 - Only the settled screens were pictured. Eleven earlier script attempts (wrong expected hours, a hidden board counted as open, phone menu ids) were the script's own; the final run is the one cited.
+
+## Re-walk after the readers' fixes
+
+Bundle at commit 273b2e7cd (not rebuilt), served on port 4296; script `raptor-port/scripts/handpass/ds-rewalk.mjs` (adds r1-, r2-, r3- pictures, empties nothing; readings in `_rewalk-results.json`). Fresh sign-in as admin each time, Friday 17 Jul, Insights read before anything was added: Saint 12h30, Echo 21h25.
+
+| Scenario | Did | Expected | Saw | Result | Pictures |
+|---|---|---|---|---|---|
+| R1 | + Wave, VL, take-off 05:00, landing blank, Saint front, Echo back | hours equal baseline; no long-day note | Saint 12h30, Echo 21h25; no long-day note | PASS | r1-line-on-board, r1-insights-rows |
+| R2 | same line, take-off blank, landing 13:00, R 08:00 typed | hours equal baseline; no long-day note | Saint 12h30, Echo 21h25; no long-day note | PASS | r2-line-on-board, r2-insights-rows |
+| R3 | then take-off 12:00 on the R2 line | both rise 7h (08:00 to 13:00 + 2h debrief) | Saint 19h30, Echo 28h25 (each +7h); no long-day note | PASS | r3-line-on-board, r3-insights-rows |
+
+Console errors, page errors and 4xx over the re-walk: none.
