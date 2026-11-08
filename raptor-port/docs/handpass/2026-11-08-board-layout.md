@@ -108,7 +108,13 @@ the desktop layout switch, ✓ Done. Each is walked by walker B (B1–B9, B13 an
 
 ## 5. The orders walked
 
+- **Walker A — the desktop band (D1781):** 821, 874, 1000, 1099, 1100 (and 820, 1536 as the edges) — each kind of line read, its boxes typed in, the remarks measured, the headings over their columns; then the line's own controls (CX, the red box, delete) pressed. 88 pictures, `walk/a/`.
+- **Walker B — a phone on its side (D1780):** at rest → scrolled → back; a box tapped low with the stand-in keys up; the windows (History, ALL AVAIL) opened scrolled and at rest; a drag carried to the top and the foot; undo and redo in and out of view; the day changed; a gold dot tapped — in WebKit and Chromium, 874 × 402 and 844 × 390. 270 pictures, `walk/b/`.
+- **Walker C — by the keys (D1771):** Tab and the arrows through the board's and the week's ⋯ menus, + Block, Templates, + Wave, the plans selector, a jet's stores and the phone day bar; then the same with a mouse and a finger (no ring). 172 pictures, `walk/c/`.
+
 ## 6. The plain-user round (§7.0a)
+
+Each walker ran the area's everyday tasks end to end on top of the change's own cases: A at 1000 wide (a line's times typed, a remark written, a line added and deleted, a day changed, ✓ Done); B on its side (a puck dragged from the crew list to a seat, a box typed in with the keys up, History opened and closed, Insights, ✓ Done); C by the keys alone (a ⋯ item chosen, a block added from + Block, a template placed). Every control that opens or closes was pressed, and the other places that show the result were looked at (the week behind the board after ✓ Done). Findings: §14.
 
 ## 7. The drawing check
 
@@ -131,17 +137,32 @@ the list, as any page does"); the drawing's 151 is the scrolled state.
 
 ## 8. Cases carried by a test
 
+- `e2e/board-layout.spec.ts` — D1781 at 821, 874, 1000, 1099 (R over B, TO over LD, the remarks below over 300px, inside the line; FCP and RCP under their headings at 821, 830, 874 — W-A1) and 1100 one line; D1780 at rest, scrolled, a box tapped with the keys up; and the reads' four (§15): the last box of the list, a window as the head comes back, the grey while a finger scrolls, the hidden warning's To go out line.
+- `e2e/boardside.spec.ts` — a puck and a row held just under the pinned bar scroll the day (W-GH1).
+- `src/ui/boardlayout-css.test.ts` — the rules read off disk: the band, the sideways block, the cyan rings.
+
 ## 9. The keyboard walk
 
 Walker C (Sonnet), 8 Nov 26, Chromium and WebKit, 1536 × 900 and 402 × 874 by the keys; script `scripts/handpass/bl-walk-c.mjs`, pictures `docs/img/handpass/2026-11-08-board-layout/walk/c/` (89 + about 85, each line's computed ring in `run-chromium.txt` / `run-webkit.txt`). Rows C1–C6 above. The plain-user round by the keys (1536): Enter on a date opens the board; Templates, + Wave, the plans selector and + Block each opened by Enter and closed by Escape, the keys back on their button each time; a template saved, applied by the keys and undone by the top bar's Undo; ✓ Done by Enter, the keys back on the date. No page errors. **Met in passing, older (not this change — it touches no Tab route), the walker's, not yet reproduced by the host — filed `[BOARD-TAB-MENU-BUTTONS]`:** Tab, either way through about 331 stops, never stops on + Block, + Wave or a jet's "C", which D1646 says the keys reach; Enter on the AMT section's + Block adds a block and drops the keys to the page.
 
 ## 10. Break tests
 
+Each new test was seen red before its fix: W-A1's heading test (the RCP heading 5.4px off at 821); W-GH1's puck test (scroll 300 → 300) — its grip test, run with the row drag's fix taken out, still PASSED, so it does not yet pin that half of the fix (open, the handoff); the reads' four against the walk's build (the box's foot 291 > 195; the bell, Insights and Done under the window; a 95px strip under the bar; the list moved 19px).
+
 ## 11. Errors seen
+
+None: no page error and no console error in any walker's log or in the reads' re-check.
 
 ## 12. What was NOT walked, and why
 
+- **His iPhone with the real keys** — no test browser raises them (D1780's own row). Whether the iPhone's own pan carries the bar off the top is his look (§15, R-5).
+- **A drag by a finger in WebKit** — Playwright's WebKit has no touch drag; Chromium carried it (B, and W-GH1's tests).
+- **AVALON and BB lines added by hand in the band** — the seed has SC; A read the standby line's shape on SC, and the readers checked the others in the code.
+- **The OIL bar under the pinned bar on its side**, and **Edit Schedule in WebKit at 402 tall** — outside this change's rules; not touched.
+
 ## 13. The gate counts
+
+GitHub's run of the pull request is the full check while the repo is public (D1086): its result on the last pushed commit is in the closing report. On his PC: the touched code's unit tests (162 passed) and the six browser files the fixes touch (§15).
 
 ## 14. What the walk found, and each disposition
 
@@ -162,5 +183,15 @@ Walker A (Sonnet), 8 Nov 26, Chromium (and WebKit at 1000), 821–1536 and 820 /
 - **W-GH1 — found by GitHub's run of 5723ef5c0, not by the walk:** on a phone on its side a crew-list puck held just under the pinned bar did not scroll the day; only one held over the bar did (walker B6 held at the foot and over the bar, never just under it). Since D1780 the board itself scrolls, and both drags' edge bands (`drag.ts tdAutoScroll`, `rowdrag.ts edgeVel`) began at the board's own top edge, hidden under the bar. **FIXED:** one helper, `edgescroll.ts shownTop` — the band begins at the bar's foot. The puck test (`e2e/boardside.spec.ts`, pointed at the board's own scroller, D1780) red before (scroll 300 → 300), green after; a new test for a row held by its grip, green after — its red run waits for the checks lock (held by chat 13's walk). 103 drag unit tests pass.
 
 ## 15. The reads
+
+Two readers, blind to each other and to the walk, one brief (`docs/superpowers/briefs/2026-11-08-board-layout-read-brief.md`): **Astra** (`gpt-6-astra`, high, read only — his report kept whole: `docs/superpowers/briefs/2026-11-08-board-layout-read-astra.md`) and **a fresh Opus reader**. Neither changed a file. Every finding was reproduced by the host before it counted (`scripts/handpass/bl-reads.mjs`, pictures `reads/before-*.png`).
+
+- **R-1 — the last box of the list stays under the keys** (Astra 1, Opus 2). Sideways the board itself is the list's scroller, and the room the keyboard code gives at a list's foot was refused to the board. Reproduced: the box's foot 363, room given to nothing. **FIXED** (`kbscroll.ts panelRoom`: the board that scrolls is given the room, still never raised); test red (291 > 195), green after.
+- **R-2 — a window opened with the head away covers the bell, Insights and ✓ Done once the head comes back** (Astra 2, Opus 3). Reproduced: all three pressed the window. **FIXED** (`floatwin.ts`: the board's own scroll places the window again, by the same rule — moved windows keep his place). Walker B's W-B1 (the window resting at 96 with the head away) stands as ruled; this is the next step, which the walk did not take.
+- **R-3 — "Jump to a date" open, a finger on the head scrolls the board and leaves a 95px strip of the list open between the bar and the grey** (Opus 4; the reverse: the bar under the grey). Reproduced (a list's box pressable there). **FIXED** (`barfree.ts`: the grey follows the board's scroll in the same frame); test red (95), green after.
+- **R-4 — a published day's "Warning · … flagged → hidden" in To go out moved the board's list** (Opus 5). Reproduced: 19px. **FIXED** (`interactions.ts jumpToWarnLine`: sideways only the warnings list scrolls to the line; elsewhere as before); test red (19), green after. (A tap on a warning line itself still brings its crew into view, as built.)
+- **R-5 — on his iPhone the phone's own pan, when the keys open, may carry the bar off the top** (Opus 1). Not reproducible here: the test browser's page cannot scroll. **ANSWERED, not built:** D1780's row names his iPhone look for exactly this; the reader's remedy (moving the page's pan into the board after the phone's slide) would move the bar after the phone has placed the box, against D1412 and the keyboard code's rule that nothing of the app's own moves after the phone's slide. If the bar slides off on his iPhone, it is a design question for him (the reader: the bar cannot both stay and let the phone pan). The stylesheet's comment, which claimed the phone's scroll did it all, is corrected.
+- **Tidiness, filed not fixed (D489):** the band repeats the phone's stacking rules (Astra); the drags' one comment is written at both callers, some comments carry history, the test writes the sideways query out again, and the board's height falls back to the screen's for its first frame (Opus). The comment that claimed the scroll padding makes jumps for the just-added ring and undo is corrected (Astra).
+- **Checked and clean by both:** the other jumps, the day change, the drags, History's bubbles, the sign-off, the published look, the crew column, every kind of row in the band, the rings and their weight (one ring, D842), D1772's Tab.
 
 ## Walk line

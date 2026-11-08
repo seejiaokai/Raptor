@@ -143,4 +143,118 @@ test.describe('D1780 — a phone on its side: the head scrolls away, the bar sta
     expect(g.actTop, 'the bar is at the top of the screen').toBeGreaterThanOrEqual(g.boardTop - 1)
     expect(SIDE.height - KB - g.topBottom, 'the list gets about 151px above the keys').toBeGreaterThan(130)
   })
+
+  /* THE TWO CODE READS' FINDINGS (8 Nov 26 — Astra's 1 and 2, the fresh Opus read's 2, 3, 4 and 5; reproduced first by
+     scripts/handpass/bl-reads.mjs): what the board's scrolling as one page left out. */
+  const keys = (page: Page, up: boolean) => page.evaluate(([kb, up]) => {
+    const v = (window as any).__vv; v.height = up ? innerHeight - kb : innerHeight; v.dispatchEvent(new Event('resize'))
+  }, [KB, up] as const)
+  const pressable = (page: Page) => page.evaluate(() => ['#sbBell', '#sbInsights', '#sbDone'].map(s => {
+    const e = document.querySelector<HTMLElement>(s)!, r = e.getBoundingClientRect(), h = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+    return !!h && !!h.closest(s)
+  }))
+  const barFoot = (page: Page) => page.evaluate(() => Math.round(document.querySelector('#schedBoard .sb-top')!.getBoundingClientRect().bottom))
+
+  test('the last box of the list tapped with the keys up rises above them: the board is given room at its foot (D1048, D1081)', async ({ page }) => {
+    await openBoard(page)
+    await scrollBoard(page, 99999); await page.waitForTimeout(150)
+    /* the lowest box at the very end of the list, under where the keys will come: nothing left to scroll it up by */
+    const at = await page.evaluate(() => {
+      const all = [...document.querySelectorAll<HTMLElement>('#schedBoard .sb-boardwrap input, #schedBoard .sb-boardwrap textarea')]
+        .map(n => ({ n, r: n.getBoundingClientRect() }))
+        .filter(o => o.n.getClientRects().length && o.r.height > 6 && o.r.height < 60 && o.r.top >= 0 && o.r.bottom <= innerHeight)
+      all.sort((a, b) => b.r.bottom - a.r.bottom)
+      const o = all[0]; if (!o) return null
+      o.n.setAttribute('data-lastbox', '')
+      const b = document.querySelector<HTMLElement>('.schedboard')!
+      return { x: o.r.left + o.r.width / 2, y: o.r.top + Math.min(o.r.height / 2, 8), bottom: o.r.bottom, atEnd: b.scrollTop >= b.scrollHeight - b.clientHeight - 1 }
+    })
+    expect(at, 'the fixture: a box at the end of the list').not.toBeNull()
+    expect(at!.atEnd, 'the fixture: the board scrolled to its end').toBe(true)
+    expect(at!.bottom, 'the fixture: the box lies under where the keys come').toBeGreaterThan(SIDE.height - KB - GAP)
+    const box = page.locator('[data-lastbox]')
+    await page.touchscreen.tap(at!.x, at!.y)
+    await expect(box).toBeFocused()
+    await keys(page, true)
+    await expect.poll(async () => { const b = (await box.boundingBox())!; return b.y + b.height }, { message: 'the box rises above the keys' })
+      .toBeLessThanOrEqual(SIDE.height - KB - GAP + 1)
+    expect((await geo(page)).barHit, 'the bar still in sight at the top').toBe(true)
+    expect(await page.evaluate(() => getComputedStyle(document.querySelector('.schedboard')!).transform), 'scrolled, never moved as a window').toBe('none')
+    await keys(page, false)
+    await expect.poll(() => page.evaluate(() => document.querySelectorAll('[data-kbroom]').length), { message: 'the room goes with the keys' }).toBe(0)
+  })
+
+  test('a window opened with the head scrolled away stays clear of the bar as the head comes back and goes again (D1106)', async ({ page }) => {
+    await openBoard(page)
+    await scrollBoard(page, 600); await page.waitForTimeout(150)
+    await page.click('#sbHist')
+    const win = page.locator('.chgwin:not([hidden])').first()
+    await expect(win).toBeVisible()
+    expect(await pressable(page), 'opened with the head away: the bell, Insights and Done in reach').toEqual([true, true, true])
+    for (const y of [0, 600, 0]) {
+      await scrollBoard(page, y)
+      await expect.poll(() => pressable(page), { message: `scrolled to ${y}: the bell, Insights and Done in reach` }).toEqual([true, true, true])
+      const top = (await win.boundingBox())!.y, foot = await barFoot(page)
+      expect(top, `scrolled to ${y}: the window starts below the bar's foot (${foot})`).toBeGreaterThanOrEqual(foot)
+    }
+  })
+
+  test('"Jump to a date" open, the board scrolled by a finger on its head: the grey still starts at the bar\'s foot (D1645)', async ({ page }) => {
+    await openBoard(page)
+    await page.click('#sbCal')
+    const veilTop = () => page.evaluate(() => {
+      const v = [...document.querySelectorAll<HTMLElement>('.airpop')].filter(p => p.getClientRects().length).pop()
+      return v ? Math.round(v.getBoundingClientRect().top) : null
+    })
+    await expect.poll(veilTop, { message: 'the grey starts at the bar\'s foot' }).toBe(await barFoot(page))
+    const t = (await page.locator('#schedBoard .sb-title').boundingBox())!
+    const cdp = await page.context().newCDPSession(page)
+    const x = t.x + 40, y0 = t.y + t.height / 2
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: y0 }] })
+    for (let i = 1; i <= 12; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y0 - 160 * i / 12 }] }); await page.waitForTimeout(16) }
+    await page.waitForTimeout(100)
+    /* read once, with the finger still down and again just after: the grey must follow the bar as it moves, not catch up
+       at some later redraw (the first red run's poll passed on one) */
+    expect(await page.evaluate(() => document.querySelector('.schedboard')!.scrollTop), 'the fixture: the finger scrolled the board').toBeGreaterThan(40)
+    expect((await veilTop())! - (await barFoot(page)), 'the finger still down: no strip of the list open between the bar and the grey').toBe(0)
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    await page.waitForTimeout(150)
+    expect((await veilTop())! - (await barFoot(page)), 'the finger lifted: no strip of the list open between the bar and the grey').toBe(0)
+  })
+
+  test('a published day\'s "Warning · … flagged → hidden" in To go out lands on the struck line and leaves the list where it is', async ({ page }) => {
+    const TUE = 1, day = `#eWeek .day[data-day="${TUE}"]`
+    await login(page); await go(page, 'editsched')
+    await page.evaluate(i => {
+      const d = document.querySelector<HTMLElement>(`#eWeek .day[data-day="${i}"]`)!, sc = (d.closest('.week') || d.parentElement) as HTMLElement
+      if (sc.scrollWidth > sc.clientWidth) sc.scrollLeft = d.offsetLeft - ((sc.firstElementChild as HTMLElement)?.offsetLeft || 0)
+      window.scrollTo(0, 0)
+    }, TUE)
+    for (const role of ['cur', 'sked', 'plan', 'appr']) {
+      const sel = page.locator(`${day} select[data-sign="${role}"][data-signday="${TUE}"]`).first()
+      const opts = await sel.locator('option').evaluateAll(os => os.map(o => (o as HTMLOptionElement).value).filter(Boolean))
+      await sel.selectOption(opts[0]!)
+    }
+    const pub = page.locator(`${day} [data-beak="${TUE}"]`).first()
+    await pub.evaluate(e => e.scrollIntoView({ block: 'center' })); await pub.click()
+    await expect(page.locator(`${day} .verchip`).first()).toContainText('ORIG')
+    const box = page.locator(`${day} [data-dwbox="${TUE}"]`).first()
+    if (!(await box.evaluate(e => e.classList.contains('open')))) await page.locator(`${day} [data-daywarn="${TUE}"]`).first().click()
+    await page.locator(`${day} [data-woff="${TUE}.3"]`).first().click()
+    await expect(page.locator(`${day} .dpend`).first()).toContainText('1 pending')
+    await page.evaluate(i => (window as any).openScheduler(i), TUE)
+    await expect(page.locator('#schedBoard')).toBeVisible(); await page.waitForTimeout(400)
+    await page.click('#sbHist')
+    await page.locator('.chgwin:not([hidden]) .win-tab', { hasText: 'To go out' }).first().click()
+    const line = page.locator('.chgwin:not([hidden]) .pl-list button.pl-item').first()
+    await expect(line).toContainText('flagged')
+    const s0 = await page.evaluate(() => document.querySelector('.schedboard')!.scrollTop)
+    await line.click()
+    const struck = page.locator('#schedBoard .sb-warn .wln.hid').first()
+    await expect(struck, 'the struck line is shown').toBeVisible()
+    const at = () => page.evaluate(() => Math.round(document.querySelector('.schedboard')!.scrollTop))
+    await expect.poll(async () => { const a = await at(); await page.waitForTimeout(250); return (await at()) === a }, { message: 'the view comes to rest' }).toBe(true)
+    expect(await at(), 'the board\'s list did not move — only the warnings list scrolls to the line').toBe(s0)
+    expect(await struck.evaluate(e => { const r = e.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight }), 'the line is on screen').toBe(true)
+  })
 })

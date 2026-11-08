@@ -272,7 +272,11 @@ function unroom(p: HTMLElement) { delete p.dataset.kbroom; p.style.removePropert
 function panelRoom(el: HTMLElement, layer: Element, visTop: number, visBot: number): number {
   let p = el.parentElement
   while (p && p !== layer && !scroller(p)) p = p.parentElement
-  if (!p || p === layer) return 0
+  /* the board on a phone on its side scrolls as one page (owner D1780, 10-board-history.css): there the board itself is
+     the list's scroller, so it is the board that is given the room — still scrolled, never raised or held as a window
+     is (the two code reads of 8 Nov 26: a box at the very end of the list stayed under the keys). Elsewhere the board
+     clips, its list scrolls inside it, and the search stops there as before. */
+  if (!p || (p === layer && !(layer.hasAttribute('data-kblayer') && scroller(layer)))) return 0
   const r = el.getBoundingClientRect(), pr = p.getBoundingClientRect(), kc = keptClear(p)
   const bot = Math.min(pr.bottom - kc.bottom, visBot) - GAP, top = Math.max(pr.top + kc.top, visTop) + GAP
   const want = Math.min(r.bottom - bot, r.top - top)

@@ -97,7 +97,14 @@ function jumpToWarnLine(k: string, di: any) {
     const root: any = onBoard ? document.querySelector('#schedBoard .sb-warn') : document.querySelector(`#${warnWeekId()} .day[data-day="${+di}"]`)
     const row = root && root.querySelector(onBoard ? `.wln[data-wdi="${+di}"][data-wix="${ix}"]` : `.witem[data-wdi="${+di}"][data-wix="${ix}"]`) as HTMLElement | null
     if (!row) return
-    if (onBoard) { if (typeof row.scrollIntoView === 'function') row.scrollIntoView({ block: 'center', behavior: 'smooth' }) }
+    /* on a phone on its side the board itself scrolls as one page (owner D1780), and the browser's own centring scrolled
+       it too, trying to centre a line of the pinned crew column (the fresh code read of 8 Nov 26): there only the
+       warnings list's own box is scrolled to the line; everywhere else the browser's centring stands as before */
+    const board = onBoard ? document.getElementById('schedBoard') : null
+    if (board && root && /^(auto|scroll|overlay)$/.test(getComputedStyle(board).overflowY)) {
+      const r = row.getBoundingClientRect(), b = root.getBoundingClientRect()
+      root.scrollTo({ top: root.scrollTop + (r.top - b.top) - (b.height - r.height) / 2, behavior: 'smooth' })
+    } else if (onBoard) { if (typeof row.scrollIntoView === 'function') row.scrollIntoView({ block: 'center', behavior: 'smooth' }) }
     else bringIntoView(root, row, warnWeekId())
     flashChange(row, di)
   }, 0)

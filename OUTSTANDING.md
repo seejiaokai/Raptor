@@ -85,7 +85,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Schedule and amendments**
 - [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
 - [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
-- [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
 - [LOOK-COUNT-BOARD-ASK] — the board's look at a version shows no "N pending", the week's look shows one — whether a look should show it is his question, kept (D994).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
@@ -173,7 +172,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Insights and Logic**
 - [LOGIC-IOS-REFOCUS] — on his iPhone, does the keyboard stay up when a Logic setting is saved by tapping the next box? (a check on his phone; found 21 Oct 26).
-- [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
 - [STACK-LEFTOVERS] — three small loose ends left (the Insights edges and the shared wording helper done 8 Nov 26): an old audit script's three checks (with its own job), a "back to last published" button (only if he raises it), one tidiness note — a line's callsign tidied in three places for the Blue/Red answer (with the next change to its role question).
 - [LOGIC-SWITCH-RING] — the Logic page's own switches wear the browser's keyboard ring, where the board's "No OIL earned" now wears the app's cyan one — to match, his look first.
 
@@ -183,7 +181,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
-- [BOARD-KEYS-LOOKS] — his answers 8 Nov 26 (D1771): the ⋯ menu's item and the + Block and Templates buttons get the app's cyan keyboard ring — one small job, the look and a walk, with its small tidy-up, inside the pictures round's group 1; Tab out of a menu stays as built (D1772).
 - [BOARD-OTHER-RINGS] — most other Scheduler Board buttons and its time boxes still wear the browser's own ring under the keys, not the app's cyan one: a question for him with pictures, not built (D1625).
 - [BOARD-TAB-MENU-BUTTONS] — a walker found Tab never stops on the board's + Block, + Wave or a jet's stores, which D1646 says the keys reach: to reproduce, then fix or put to him.
 - [BOARD-UNDO-SAME-DAY] — on the Scheduler Board an Undo of a change out of view, on the same day, leaves the screen where it was; D672 says it moves to the change: to reproduce, then fix (older; found 8 Nov 26).
@@ -1985,14 +1982,6 @@ if the keyboard drops, keep the tapped box itself through the save (draw the lis
 markup did not change — `ui/dayswap.ts` is the week's own pattern) instead of rebuilding it. **Place:** low, with the
 Logic page's next change; it needs his phone.
 
-### [BOARD-NARROW-DESKTOP-REMARKS] The desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; low)
-Walker A: at 821, 900 and 1000 wide (the desktop layout, pucks on the line) the remarks box is 16px and a line 189px tall; measured the same with the
-R box taken away (`raptor-port/scripts/handpass/rally-narrow.mjs`), so it is older than [RALLY-PER-FORMATION] (which keeps the remarks within 2px of
-before from 1100 to 1439 — `13-board-rows-responsive.css`). Picture `raptor-port/docs/img/handpass/2026-10-19-rally-build/A/A15-d821-board.png`.
-**Place:** with the next change to the board's layout — a picture to him first (a visual change, D541): stack the times there as a phone does, or
-let the remarks take a line of their own.
-**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1781) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The board 821 to 1000 wide" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
-
 ### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
 **DONE 7 Oct 26 under his ruling, on `claude/docs-tidy-7-oct` — options 1 to 6 (what each did and saved: the foot of the
 spec named below); 7 found nothing to do; the document check is green. Still open, why this item stays: step (4)'s check
@@ -2195,18 +2184,6 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 ### [NOTICE-RETENTION] The bell's notices are kept for good — a retention rule at the database step (the one-rule build's step 7, 12 Oct 26 — deferred)
 **DEFERRED — for the database step.** Each notice is one saved record (`notices/<id>`), made inside the change that owes it and never pruned: a person's list shows his newest thirty, the rest stay stored. In this build that is demo data, cleared before the database (D56); in the database it grows with every change to a shared input. **Why it is not pruned now:** a notice is part of its maker's Undo step — a prune inside someone else's command would advance its revision and refuse that Undo, the fault the plan's F9 names for reading (`raptor-port/docs/undo-contract.md` §4). **At the database step:** how long a notice is kept is the organisation's retention rule, with the change history's (D351) — a server-side sweep by age, outside any person's command; and each person's read record (`settings/noticeseen:<pid>`) drops the ids of swept notices with it. `raptor-port/docs/data-model.md` §Notice says the same.
 
-### [BOARD-SIDEWAYS-KEYS] A phone on its side with the keys up: the Scheduler Board's heading fills what is left (found 19 Oct 26 — the D1048 walk, walker A's A2; low)
-*(Since 19–20 Oct 26 the board no longer follows the visible screen — it is page content, D1081 — so look again on a phone on
-its side before building.)* With the phone on its side (874 × 402) and a keyboard of about 200px up, the board follows the visible screen (its fit to
-`visualViewport`, `SchedBoard.tsx`) and is 202px tall; its bar, day strip and headings take 186px of it, leaving a 16px
-strip to scroll in — a time box tapped low ends under the keys, and none can be brought up (`kbscroll.ts` scrolls the
-panel to its end). Older than D1048 (the layout of the board's top on a short screen). Pictures:
-`raptor-port/docs/img/handpass/2026-10-19-keyboard-scroll/walk/A/A2-*.png`; the sheet
-`raptor-port/docs/handpass/2026-10-19-keyboard-scroll.md`. **To do:** on a short screen with the keys up, fold the board's
-top to its one bar (the day strip and section headings scroll with the panel). A picture to him first (D853). **Place:**
-low — with the next change to the board's top on a phone.
-**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1780) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The board on a phone on its side, keys up" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
-
 ### [IPHONE-CARET-CHECKS] Two checks of the one-tap time boxes only his iPhone can make (carried from pull request 541's round-3 read; filed 20 Oct 26)
 D1047: one tap into a time box then typing replaces its time; a second tap, dragging the caret or an arrow key puts the
 caret where he wants it. Chromium cannot show two iPhone gestures: (1) dragging the caret with the space bar held — it is
@@ -2227,22 +2204,6 @@ input's, a row's, a wave's), and match on them before the first mark? **To do:**
 which carry such a mark, and either teach it the list with a test per kind or close this with the reason. Nothing a person
 sees changes. **Place:** low, the agent's — with the next keyboard or windows job. Evidence:
 `raptor-port/docs/handpass/parts/kw1105/read-fixes2-opus.md`.
-
-### [BOARD-KEYS-LOOKS] Three looks under the keys on the Scheduler Board, left by the board-keys job (the night of 7–8 Nov 26; low)
-Built that night on `claude/board-keys` ([BOARD-KEYS-LEFT]'s last two menus, [WEEK-GLIDE-TWO-PAGES]); what a person would SEE
-differently was not built (D1625) and waits as three questions, each with its pictures and a recommendation in
-`raptor-port/docs/handpass/2026-11-08-board-keys.md` §11: **Q1** an item of the board's ⋯ menu under the keys wears its raised
-row and the browser's own ring, where the board's other menus wear the app's cyan ring — recommended: the cyan ring, on the
-board's ⋯ and the week's alike; **Q2** a button that opens a board menu (+ Block, the day bar's Templates) wears the browser's
-white ring under the keys, as on `main` — recommended: the cyan ring, as D1646 reads; **Q3** Tab out of a menu works two ways
-(the board's string-drawn menus close and give the keys back to their button; the ⋯ menu lets Tab move on, and Shift+Tab back
-onto ⋯ leaves it open) — recommended: leave as built. Also, the agent's: the ⋯ menu's list of its items repeats the shared
-menus' own list-maker (`SchedBoard.tsx moreItems`, `sheetfocus.ts menuItems`) — one could serve both (the Opus read of 8 Nov 26,
-finding 4). **His answers, 8 Nov 26 — D1771, D1772 (all as recommended):** Q1 and Q2 the cyan ring, to build; Q3 stays
-as built. **Place:** Q1 and Q2 one small job — the look, a walk; the tidy-up with it — built inside the pictures round's build,
-its group 1 (the board's layout, wave 2, the same board files), his word 8 Nov 26; chat 3 asked to add it to its plan. The
-same job checks + Wave, the plans selector, a jet's stores and the duty role box under the keys — D1646 asks the cyan ring
-there too, and a fresh reader found none in the stylesheet (8 Nov 26, not looked at on screen).
 
 ### [BOARD-OTHER-RINGS] The Scheduler Board's other buttons under the keys wear the browser's ring (found 8 Nov 26 by chat 11; low)
 Found while building D1771 (`claude/pr-board-layout-62eb71`, pull request 689): with the keyboard, most of the board's other

@@ -158,21 +158,26 @@ body.dw-lock{overflow:hidden}
 /* A PHONE ON ITS SIDE: THE HEAD SCROLLS AWAY, THE BAR STAYS (owner D1780, 8 Nov 26 — the pictures round's question 1,
    option B, "All as recommended"). His iPhone on its side is 874 × 402: the desktop board, whose top (Calendar and the
    title; the day strip and search; the bar) took 146px, so with the keys up the list had 56px. Here the board scrolls
-   as one page, as any page does: at rest exactly as before; scrolled, or a box low on the screen tapped with the keys up
-   (kbscroll.ts scrolls its nearest scroller, now the board itself), the head goes up and away and the bar's own line —
-   the highlighter chips, Templates, Sort all, Undo, Redo, History, sync, the bell, Insights, Done, and any warning band
-   under them — stays at the top, about 51px, so the list gets about 151px with the keys up. Nothing moves by itself
-   when the keys open (D1081, D1412): no fold watches the keyboard; the phone's own scroll does it all.
+   as one page, as any page does: at rest exactly as before; scrolled, or a box low on the screen tapped with the keys up,
+   the head goes up and away and the bar's own line — the highlighter chips, Templates, Sort all, Undo, Redo, History,
+   sync, the bell, Insights, Done, and any warning band under them — stays at the top, about 51px, so the list gets
+   about 151px with the keys up. Nothing moves by itself when the keys open (D1081, D1412): no fold watches the keyboard.
+   Where the page itself cannot scroll (Chromium; the browser tests' stand-in keys) kbscroll.ts scrolls the box's
+   nearest scroller, now the board itself, and at the list's very end gives the board room at its foot (panelRoom). An
+   iPhone pans the page first, by its own scroll, as it does for every box (kbscroll.ts, above keepAboveKeyboard), and
+   the page carries the board with it, its bar too: whether the bar stays in sight with the keys up is his iPhone's
+   look, as D1780's own row says (the fresh code read of 8 Nov 26, its finding 1).
    How: the whole top is sticky at minus the head's height (--sb-headH, SchedBoard.tsx), so it rides up until only its
    last line is left and stays there, its own fill in front (D1518); the board column is no scroller of its own here;
    the crew column stays under the bar (sticky at the bar's height), as tall as the board less the bar, its own lists
    scrolling inside it as before. The same query as the app's own (navfold.ts SIDEWAYS_PHONE), from 821 wide — below
    that a phone on its side has the phone board's one-row bar. The desktop layout (.sb-wide, its own pinch-zoom
    scroller — D1107, D1109) is left as it was.
-   A jump the app makes — a warning's tap, a change's tap, the just-added ring, an Undo bringing its row on screen —
-   asks the browser to bring a row into view, and the browser counts the pinned bar's strip as view: a row "brought
-   into view" could stop under the bar. The scroll padding is the bar's height, so every such jump stops below it;
-   with the head still showing the row lies below the head anyway, so the one figure is right at every scroll. */
+   A jump the app makes to bring a row into view — a warning's tap, a change's tap — asks the browser to scroll, and
+   the browser counts the pinned bar's strip as view: a row "brought into view" could stop under the bar. The scroll
+   padding is the bar's height, so every such scroll stops below it (it starts none of its own); with the head still
+   showing the row lies below the head anyway, so the one figure is right at every scroll. While the board scrolls, a
+   window over it (floatwin.ts) and the grey of a window that leaves the bar free (barfree.ts) follow the bar. */
 @media (min-width:821px) and (pointer:coarse) and (orientation:landscape) and (max-height:500px){
   .schedboard:not(.sb-wide){overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain;
     scroll-padding-top:calc(var(--sb-topH,0px) - var(--sb-headH,0px))}
