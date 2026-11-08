@@ -167,16 +167,33 @@ record now differ, or a reading was stated as his word — not that the app or h
   the pull request's "What changes" list did not say so. **Fix:** his word — keep it (one line to him), or rule the old
   count back. Not a finding (D56): already-published days with such a sortie across the long-day line read "1
   pending" and lose their sign-offs until the next amendment.
-- Astra's blind read of all sixteen app pull requests and the seven rules pages — running when this was written.
+- **Astra's blind read (`…-astra.md`, Codex `gpt-6-astra`, read-only) of all sixteen app pull requests and the seven
+  rules pages: every pull request DELIVERED, no defect found; 680 PARTLY against its original "never blink" aim but
+  delivered against the scope he accepted (D1850, [LW-PIN-LAST-FRAME]). Its D-number audit matched the Fable
+  readers': no operative rule disappeared; every number absent from a page is archived or stated in another loaded
+  file. Its one verification note, host-reproduced: the board-layout browser test added by 689 skips itself when its
+  chosen box already sits above the simulated keyboard (`raptor-port/e2e/board-layout.spec.ts` line 136), so that test
+  does not prove the keyboard-clearance case on every run — LOW, F-689-1; neither reader found it hiding a failure.
+  Fix: a fixture that puts the box under the keys first, or drop the skip.
 - Not read by Fable (stopped under D1934): 664, 689, 680, 676, 707, 687, 696, 706, 667, 702, 670, 698, 662.
 
-## 5. His yes-or-no — not yet
+## 5. His yes-or-no: did Opus 5.5's work on 8 Nov 26 damage the project? — **NO, on the evidence gathered**
 
-Given once Astra's report is in and each finding is reproduced. What the handful says so far: the whole unit suite is
-green on live `main`; the two riskiest code jobs (the schedule's marks with the publish path; the rules engine and OIL
-Earn) were built as asked, with no fault a user would meet — one visible change on Insights he was not told of
-(F-678-1) and one wording question; the rules pages carry no dropped rule; three record mismatches (D606, D1790,
-D1791) and one checklist gap need his word or a one-line fix each.
+- The whole unit suite is green on live `main`; the document and rule checks pass.
+- Both readers, blind to each other, found no fault a user would meet in any app pull request: Astra read all sixteen;
+  Fable read the two riskiest (691; 678/669/679) and both verdicts agree with Astra's. Nothing trimmed from a document
+  by a code change, no test weakened, the rules engine changed only where a ruling asked.
+- The rules pages carry no dropped rule (both readers' audits agree). What the rewrite left: three places where the
+  page and his ruling's record now disagree (D606 host-reproduced; D1790, D1791 reader's comparison), one checklist gap
+  (F-CHK-1), one visible Insights change he was not told of (F-678-1), one conditional test skip (F-689-1), and a
+  handful of low wording points — each his word or a one-line fix, none a fault in the app.
+- **Limits:** Fable did not read thirteen of the sixteen app pull requests (stopped under D1934); Astra's read of them
+  is a source read, not a walk; no walk of the running app was made by this chat; the readers' comparisons marked
+  "reader's comparison" are not yet host-reproduced. Widening Fable's read is his call (D1934).
+
+Which reader found what: F-OIL-1 (D606), F-TRK-1, F-TRK-2, F-HWW-1, F-CHK-1, F-678-1 — Fable's readers; F-689-1 — Astra
+(host-reproduced). Did not reproduce: none — nothing a reader raised was contradicted by the files; the "reader's
+comparison" marks are reads the host has not repeated, not failures to reproduce.
 
 Rulings: 1 recorded this chat → `.claude/rules/decisions/how-we-work.md` (D1934). Walk: none — a read and the app's
 own checks, no walk of the running app (none was asked for; nothing here is ready for "merge live").
