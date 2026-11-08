@@ -77,9 +77,14 @@
    doesnt block the main bulk of the data behind and the user can also immediately see the data they input show"): while
    an input's window is open the sections stop short of it — its 430px, its 16px from the screen's edge, a 12px gap less
    the 12px the page's own edge already gives (25-inputs-calendar.css .inpedwin, 22-float-windows.css) — so a card
-   added lands in sight. A phone's window stands in the middle (D997) and is left as it is. */
+   added lands in sight. A phone's window stands in the middle (D997) and is left as it is.
+   THE ROOM ONLY WHILE THE WINDOW STANDS WHERE IT OPENS ([MED-ROOM-DRAGGED], both code reads of 8 Nov 26): a window he has
+   dragged keeps its place for the session (winorder.ts; floatwin.ts marks it `data-placed` from the drag's first
+   movement), so the sections take their full width back rather than staying squeezed beside a gap with the window over
+   them — as the Inputs list's room does (06-inputs.css). The window is drawn outside the page, so the test is on `body`.
+   The room's size is the window's own, `--inpwin-room` (25-inputs-calendar.css), one value for both rooms. */
 @media (min-width:821px){
-  .medview.med-room .med-body{padding-right:calc(min(430px, 100vw - 24px) + 16px)}
+  body:has(.floatwin.inpedwin:not([data-placed])) .medview.med-room .med-body{padding-right:var(--inpwin-room)}
 }
 /* the card just saved wears the app's one just-added mark (owner D1300; D851, D860 — the Inputs list's card's own
    `inflash`, 06-inputs.css), held, fading only at its end; held still for a reader who asked for less motion */

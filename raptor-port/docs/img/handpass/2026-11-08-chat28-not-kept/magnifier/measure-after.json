@@ -1,0 +1,84 @@
+{
+ "tag": "after",
+ "build": "dist",
+ "errors": {
+  "desktop": [],
+  "phone": []
+ },
+ "dTrk": {
+  "w": 15,
+  "h": 15,
+  "viewBox": "0 0 24 24",
+  "d": "m21 21-4.3-4.3",
+  "circle": {
+   "cx": "11",
+   "cy": "11",
+   "r": "7"
+  },
+  "stroke": "2px",
+  "color": "rgb(138, 150, 163)",
+  "handleUnits": 6.08,
+  "handlePx": 3.8
+ },
+ "dEs": {
+  "w": 15,
+  "h": 15,
+  "viewBox": "0 0 24 24",
+  "d": "m21 21-4.3-4.3",
+  "circle": {
+   "cx": "11",
+   "cy": "11",
+   "r": "7"
+  },
+  "stroke": "2px",
+  "color": "rgb(138, 150, 163)",
+  "handleUnits": 6.08,
+  "handlePx": 3.8
+ },
+ "pBtn": {
+  "w": 15,
+  "h": 15,
+  "viewBox": "0 0 24 24",
+  "d": "m21 21-4.3-4.3",
+  "circle": {
+   "cx": "11",
+   "cy": "11",
+   "r": "7"
+  },
+  "stroke": "2px",
+  "color": "rgb(241, 244, 247)",
+  "handleUnits": 6.08,
+  "handlePx": 3.8
+ },
+ "pScale": 1,
+ "pTrk": {
+  "w": 15,
+  "h": 15,
+  "viewBox": "0 0 24 24",
+  "d": "m21 21-4.3-4.3",
+  "circle": {
+   "cx": "11",
+   "cy": "11",
+   "r": "7"
+  },
+  "stroke": "2px",
+  "color": "rgb(138, 150, 163)",
+  "handleUnits": 6.08,
+  "handlePx": 3.8
+ },
+ "pEs": {
+  "w": 15,
+  "h": 15,
+  "viewBox": "0 0 24 24",
+  "d": "m21 21-4.3-4.3",
+  "circle": {
+   "cx": "11",
+   "cy": "11",
+   "r": "7"
+  },
+  "stroke": "2px",
+  "color": "rgb(138, 150, 163)",
+  "handleUnits": 6.08,
+  "handlePx": 3.8
+ }
+}

@@ -1,0 +1,11 @@
+{
+ "R": [
+  {
+   "step": "9 guest page: band under its bar, not covered",
+   "res": "PASS",
+   "said": "{\"cls\":\"savestat nokeep\",\"bandT\":56,\"bandB\":92,\"bars\":[\"topbar guestbar save-fail 0-93\"],\"atBand\":\"SPAN.savestat nokeep\",\"text\":\"142 TALON Waiting for access — view only Sign out Not kept — this browser loses your work on a reload Jul 06 Jul 13 Jul 20 Jul 27 Monday Jul 13 · Today DRAFT 4 X 4 COMMON PROGRAMME EP: ENGINE FIRE ON \"}",
+   "pics": "w1/09-guest-page.png"
+  }
+ ],
+ "errors": []
+}

@@ -259,7 +259,7 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 - Merge and Unmerge keep their words alone; the lull's Copy to… takes the copy mark and its × the drawn ✕; the copy, the
   bin, the list and the ✕ are the Tracker's own drawn marks, the rest new in the same line style [D1705].
 - The Tracker's search magnifier is the app's own, its handle as long as every other search box's, the Tracker's shorter
-  drawing gone — the handle grows by under a pixel; built in chat 28 (pull request 706), not yet live [D1900, D1127].
+  drawing gone — the handle grows by under a pixel; built (chat 28, pull request 706) [D1900, D1127].
 
 ## Find
 - On a phone the Find ✕ empties the box and puts Find away — the keyboard down, the tabs back — as Escape does, its
@@ -345,7 +345,7 @@ public, holds again: it went private on 23 Sep 26, public again on 25 Sep 26, an
 
 ## From other areas (each stated on its own area's file)
 - The design file's: in a browser that keeps nothing, every page shows the "Not kept" band under the top bar, and the
-  Tracker's corner shows nothing while it is up; not built yet (filed) [D1901, D1655, D1667].
+  Tracker's corner shows nothing while it is up; built (chat 28, pull request 706) [D1901, D1655, D1667].
 - The design file's: every Undo / Redo pair, the Tracker's own included, sits in the app's top bar in the place and look
   of Edit Schedule's, the Tracker's still taking back only the Tracker's own changes [D347, D348].
 - The design file's: the Tracker's Undo moves nothing — the agent's reading there, as built [D672].

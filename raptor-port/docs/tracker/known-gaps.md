@@ -13,8 +13,8 @@
 > chart engine, and the Tracker reads nothing of Raptor's store — the three seams); the answers each bridge gives with
 > nothing wired (only a unit test reaches them). **Taken back to Raptor's own ([TRK-KEPT-COPIES], 8 Nov 26):** the
 > Tracker's pencil, Reorder, gear, Reset and list are the app's own icons, and its page colours link to Raptor's tokens
-> (`trk-palette.test.ts`); still its own: the magnifier (`SrchGlyph.jsx`, drifted from the app's — he ruled it matched, D1900, to build — put to him with a
-> picture) and the chart's SVG colours in `core.js` (an SVG attribute cannot read a variable everywhere; pinned). The notes below that "a standalone export must carry" a file are history only.
+> (`trk-palette.test.ts`); the magnifier too since 8 Nov 26 (D1900 — the
+> app's `SrchIcon`, the Tracker's shorter `SrchGlyph.jsx` deleted); still its own: the chart's SVG colours in `core.js` (an SVG attribute cannot read a variable everywhere; pinned). The notes below that "a standalone export must carry" a file are history only.
 
 > **The route to the database (owner, 23 Sep 26 — D120).** Before the database step he EXPORTS
 > his hand-drawn charts (the balls, their positions and lines, and every event detail), WIPES the

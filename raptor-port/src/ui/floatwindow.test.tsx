@@ -173,6 +173,23 @@ describe('dragging', () => {
       return { left, top, x: left, y: top, width: 300, height: 200, right: left + 300, bottom: top + 200, toJSON() {} } as DOMRect
     }
   }
+  /* A PRESS ON THE BAR IS NOT YET A DRAG (the fresh Opus read of chat 29, 8 Nov 26): `data-placed` gives back the room a
+     page makes for a window at rest (the Inputs list, the Medical tab, the calendars' day windows), so set at the press
+     itself it made the page jump out from under the window and back on a plain click of its bar. It is set at the first
+     movement past the 3px a tap may wander. */
+  it('a press on the bar, or a wander under 3px, does not place the window; the first real movement does', () => {
+    layOut()
+    render(<Page />); open()
+    const bar = win().querySelector('.win-bar') as HTMLElement
+    fireEvent.pointerDown(bar, { clientX: 100, clientY: 100, pointerId: 1 })
+    expect(win().hasAttribute('data-placed'), 'pressed, not moved').toBe(false)
+    fireEvent.pointerMove(bar, { clientX: 102, clientY: 101, pointerId: 1 })
+    expect(win().hasAttribute('data-placed'), 'a 2px wander').toBe(false)
+    fireEvent.pointerMove(bar, { clientX: 160, clientY: 140, pointerId: 1 })
+    expect(win().hasAttribute('data-placed'), 'moved: placed from that moment').toBe(true)
+    fireEvent.pointerUp(bar, { clientX: 160, clientY: 140, pointerId: 1 })
+    expect(win().hasAttribute('data-placed')).toBe(true)
+  })
   it('the bar drags the window, and where he put it is kept for the next time that window opens', () => {
     layOut()
     render(<Page />); open()

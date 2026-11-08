@@ -1,0 +1,1136 @@
+[
+ {
+  "sc": "1",
+  "step": "sign-in band",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 cut=false btn=false firstTop={\"t\":80,\"tag\":\"svg\",\"text\":\"\"} formTop=188",
+  "pics": "w2/S1-signin.png"
+ },
+ {
+  "sc": "menu",
+  "step": "side menu with band up",
+  "res": "RECORD",
+  "said": "drawer box 0..402 x 0..874; band behind it: {\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"h\":36,\"text\":\"Not kept — this browser loses your work on a reload\",\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"btn\":false,\"svg\":true,\"sign\":16,\"restCut\":false,\"restTrunc\":\"ellipsis\",\"boldLeft\":39,\"restRight\":319,\"restH\":14,\"boldH\":14,\"border\":\"rgb(241, 244, 247)\"}; under points: a,a,div.drawer,div.drawer,div.drawer",
+  "pics": "w2/S2-menu-open.png"
+ },
+ {
+  "sc": "2",
+  "step": "Edit Schedule tap pictures",
+  "res": "RECORD",
+  "said": "tapped Edit Schedule; picture 235ms after the tap start; CURPAGE=editsched",
+  "pics": "w2/S2-editsched-tap-now.png | w2/S2-editsched-tap-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Edit Schedule",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":92,\"tag\":\"button#exportSched.abtn\",\"text\":\"\"}",
+  "pics": "w2/S2-editsched.png"
+ },
+ {
+  "sc": "2",
+  "step": "Edit Schedule scroll",
+  "res": "PASS",
+  "said": "scrolled page to 500 of 3080; band top 48->48; under band points: band,band,band,band,band,bar",
+  "pics": "w2/2-Edit_Schedule-scrolled.png"
+ },
+ {
+  "sc": "2",
+  "step": "View-only Sched tap pictures",
+  "res": "RECORD",
+  "said": "tapped View-only Sched; picture 295ms after the tap start; CURPAGE=viewsched",
+  "pics": "w2/S2-viewsched-tap-now.png | w2/S2-viewsched-tap-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "View-only Sched",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":92,\"tag\":\"button.wknav-mbtn\",\"text\":\"\"}",
+  "pics": "w2/S2-viewsched.png"
+ },
+ {
+  "sc": "2",
+  "step": "View-only Sched scroll",
+  "res": "PASS",
+  "said": "scrolled page to 500 of 1899; band top 48->48; under band points: band,band,band,band,band,bar",
+  "pics": "w2/2-View_only_Sched-scrolled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Inputs tap pictures",
+  "res": "RECORD",
+  "said": "tapped Inputs; picture 307ms after the tap start; CURPAGE=inputs",
+  "pics": "w2/S2-inputs-tap-now.png | w2/S2-inputs-tap-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Inputs",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":85,\"tag\":\"h1\",\"text\":\"Inputs\"}",
+  "pics": "w2/S2-inputs.png"
+ },
+ {
+  "sc": "2",
+  "step": "Inputs scroll",
+  "res": "RECORD",
+  "said": "nothing on this page scrolls (no scroller with room)",
+  "pics": "w2/2-Inputs-scrolled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Quals tap pictures",
+  "res": "RECORD",
+  "said": "tapped Quals; picture 184ms after the tap start; CURPAGE=quals",
+  "pics": "w2/S2-quals-tap-now.png | w2/S2-quals-tap-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Quals",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":93,\"tag\":\"button#qEdit.abtn\",\"text\":\"Edit\"}",
+  "pics": "w2/S2-quals.png"
+ },
+ {
+  "sc": "2",
+  "step": "Quals scroll",
+  "res": "PASS",
+  "said": "scrolled page to 500 of 515; band top 48->48; under band points: band,band,band,band,band,bar",
+  "pics": "w2/2-Quals-scrolled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Logic tap pictures",
+  "res": "RECORD",
+  "said": "tapped Logic; picture 369ms after the tap start; CURPAGE=logic",
+  "pics": "w2/S2-logic-tap-now.png | w2/S2-logic-tap-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Logic",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":93,\"tag\":\"button#lgFilterBtn.abtn\",\"text\":\"Filter\"}",
+  "pics": "w2/S2-logic.png"
+ },
+ {
+  "sc": "2",
+  "step": "Logic scroll",
+  "res": "PASS",
+  "said": "scrolled page to 500 of 7242; band top 48->48; under band points: band,band,band,band,band,bar",
+  "pics": "w2/2-Logic-scrolled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Leave War tap pictures",
+  "res": "RECORD",
+  "said": "tapped Leave War; picture 185ms after the tap start; CURPAGE=leavewar",
+  "pics": "w2/S2-leavewar-tap-now.png | w2/S2-leavewar-tap-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Leave War",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":141,\"tag\":\"select.wk\",\"text\":\"JAN - DEC 26\\nJAN - DEC 2\"}",
+  "pics": "w2/S2-leavewar.png"
+ },
+ {
+  "sc": "2",
+  "step": "Leave War scroll",
+  "res": "PASS",
+  "said": "scrolled page to 500 of 660; band top 48->48; under band points: band,band,band,band,band,bar",
+  "pics": "w2/2-Leave_War-scrolled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Leave War pinned row / arrows near top",
+  "res": "RECORD",
+  "said": "[] band bottom 84",
+  "pics": "w2/S2-leavewar.png"
+ },
+ {
+  "sc": "2",
+  "step": "Tracker tap pictures",
+  "res": "RECORD",
+  "said": "tapped Tracker; picture 625ms after the tap start; CURPAGE=tracker",
+  "pics": "w2/S2-tracker-tap-now.png | w2/S2-tracker-tap-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Tracker",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":90,\"tag\":\"select#activeSel\",\"text\":\"STUDENT A\\nSTUDENT B\"}",
+  "pics": "w2/S2-tracker.png"
+ },
+ {
+  "sc": "2",
+  "step": "Tracker scroll",
+  "res": "PASS",
+  "said": "scrolled div#board to 500 of 4529; band top 48->48; under band points: band,band,band,band,band,bar",
+  "pics": "w2/2-Tracker-scrolled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Tracker corner empty",
+  "res": "PASS",
+  "said": "{\"hidden\":true,\"text\":\"\"}",
+  "pics": "w2/S2-tracker.png"
+ },
+ {
+  "sc": "2",
+  "step": "Help tap pictures",
+  "res": "RECORD",
+  "said": "tapped Help; picture 445ms after the tap start; CURPAGE=help",
+  "pics": "w2/S2-help-tap-now.png | w2/S2-help-tap-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Help",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":103,\"tag\":\"h2\",\"text\":\"Help\"}",
+  "pics": "w2/S2-help.png"
+ },
+ {
+  "sc": "2",
+  "step": "Help scroll",
+  "res": "RECORD",
+  "said": "nothing on this page scrolls (no scroller with room)",
+  "pics": "w2/2-Help-scrolled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Admin tap pictures",
+  "res": "RECORD",
+  "said": "tapped Admin; picture 401ms after the tap start; CURPAGE=admin",
+  "pics": "w2/S2-admin-tap-now.png | w2/S2-admin-tap-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Admin",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":103,\"tag\":\"h2\",\"text\":\"Admin\"}",
+  "pics": "w2/S2-admin.png"
+ },
+ {
+  "sc": "2",
+  "step": "Admin scroll",
+  "res": "RECORD",
+  "said": "nothing on this page scrolls (no scroller with room)",
+  "pics": "w2/2-Admin-scrolled.png"
+ },
+ {
+  "sc": "3",
+  "step": "board bands visible",
+  "res": "RECORD",
+  "said": "[{\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false},{\"cls\":\"saveband\",\"par\":\"sb-top\",\"t\":76,\"b\":112,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false}]",
+  "pics": "w2/S3-board.png"
+ },
+ {
+  "sc": "3",
+  "step": "board band",
+  "res": "PASS",
+  "said": "band={\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false} firstRowish={\"t\":369,\"b\":491,\"l\":14,\"r\":372} firstTop={\"t\":6,\"tag\":\"button#sbCal.abtn\",\"text\":\"\"}",
+  "pics": "w2/S3-board.png"
+ },
+ {
+  "sc": "3",
+  "step": "what is just under the board band",
+  "res": "RECORD",
+  "said": "SPAN.sv-rest",
+  "pics": "w2/S3-board.png"
+ },
+ {
+  "sc": "3",
+  "step": "board topmost blocks",
+  "res": "RECORD",
+  "said": "[\"sb-sec@369\",\"nin@410\",\"nin@439\"]",
+  "pics": "w2/S3-board.png"
+ },
+ {
+  "sc": "3",
+  "step": "Done back to Edit Schedule, band in the top bar",
+  "res": "PASS",
+  "said": "bands=[{\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false}] cur={\"page\":\"editsched\",\"board\":false} tap 193ms",
+  "pics": "w2/S3-after-done.png | w2/S3-done-tap-now.png"
+ },
+ {
+  "sc": "6",
+  "step": "changes window head below band",
+  "res": "PASS",
+  "said": "band bottom 84; window box {\"t\":320,\"b\":862,\"l\":12,\"r\":390}; Hide button top 330",
+  "pics": "w2/S6-changes-window.png"
+ },
+ {
+  "sc": "6",
+  "step": "changes window grip found",
+  "res": "RECORD",
+  "said": "{\"t\":334,\"b\":350,\"l\":21,\"r\":33}",
+  "pics": "w2/S6-changes-window.png"
+ },
+ {
+  "sc": "6",
+  "step": "changes window after a drag by its grip",
+  "res": "RECORD",
+  "said": "Hide button top 330 -> 330",
+  "pics": "w2/S6-changes-moved.png"
+ },
+ {
+  "sc": "6",
+  "step": "moved window keeps its place on reopen",
+  "res": "PASS",
+  "said": "moved top 330; reopened top 330",
+  "pics": "w2/S6-changes-reopened.png"
+ },
+ {
+  "sc": "6",
+  "step": "ALL AVAIL window head below band",
+  "res": "PASS",
+  "said": "bands=[[\"topbar\",48,84],[\"sb-top\",76,112]] window={\"t\":320,\"b\":862,\"l\":12,\"r\":390} title={\"t\":329,\"b\":355,\"l\":40,\"r\":349}",
+  "pics": "w2/S6-allavail-window.png"
+ },
+ {
+  "sc": "4",
+  "step": "bands visible on the OIL page",
+  "res": "RECORD",
+  "said": "[{\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false},{\"cls\":\"saveband\",\"par\":\"oil-top\",\"t\":51,\"b\":87,\"l\":8,\"r\":394,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false}]",
+  "pics": "w2/S4-oil.png"
+ },
+ {
+  "sc": "4",
+  "step": "OIL tracker band",
+  "res": "FAIL",
+  "said": "band={\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false} firstTop={\"t\":0,\"tag\":\"div.sheetscrim\",\"text\":\"\"}",
+  "pics": "w2/S4-oil.png"
+ },
+ {
+  "sc": "4",
+  "step": "OIL page controls",
+  "res": "RECORD",
+  "said": "[\"burger|\",\"undoBtn|↶\",\"redoBtn|↷\",\"fastSync|\",\"notifyBell|\",\"wknav-mbtn|\",\"exportSched|\",\"exportPdf|\",\"hl-tog|\",\"editSchedMore|\",\"dhbtn|\",\"planselbtn|\",\"dinfobtn|\",\"dbeak|\",\"notepub|\",\"airbtn|\",\"airbtn|\",\"itx|\",\"itx|\",\"stcfg|\",\"stcfg|\",\"dhbtn|\",\"planselbtn|\",\"dinfobtn|\",\"dbeak|\"]",
+  "pics": "w2/S4-oil.png"
+ },
+ {
+  "sc": "B",
+  "step": "script",
+  "res": "NOTRUN",
+  "said": "stopped: page.tap: Timeout 12000ms exceeded.",
+  "pics": ""
+ },
+ {
+  "sc": "3",
+  "step": "board bands visible",
+  "res": "RECORD",
+  "said": "[{\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false},{\"cls\":\"saveband\",\"par\":\"sb-top\",\"t\":76,\"b\":112,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false}]",
+  "pics": "w2/S3-board.png"
+ },
+ {
+  "sc": "3",
+  "step": "board band",
+  "res": "PASS",
+  "said": "band={\"cls\":\"saveband\",\"par\":\"sb-top\",\"t\":76,\"b\":112,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false} firstRowish={\"t\":369,\"b\":491,\"l\":14,\"r\":372} firstTop={\"t\":6,\"tag\":\"button#sbCal.abtn\",\"text\":\"\"}",
+  "pics": "w2/S3-board.png"
+ },
+ {
+  "sc": "3",
+  "step": "what is just under the board band",
+  "res": "RECORD",
+  "said": "DIV.sb-sign",
+  "pics": "w2/S3-board.png"
+ },
+ {
+  "sc": "3",
+  "step": "board topmost blocks",
+  "res": "RECORD",
+  "said": "[\"sb-sec@369\",\"nin@410\",\"nin@439\"]",
+  "pics": "w2/S3-board.png"
+ },
+ {
+  "sc": "3",
+  "step": "Done back to Edit Schedule, band in the top bar",
+  "res": "PASS",
+  "said": "bands=[{\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false}] cur={\"page\":\"editsched\",\"board\":false} tap 237ms",
+  "pics": "w2/S3-after-done.png | w2/S3-done-tap-now.png"
+ },
+ {
+  "sc": "6",
+  "step": "changes window head below band",
+  "res": "PASS",
+  "said": "band bottom 84; window box {\"t\":320,\"b\":862,\"l\":12,\"r\":390}; Hide button top 330",
+  "pics": "w2/S6-changes-window.png"
+ },
+ {
+  "sc": "6",
+  "step": "changes window grip found",
+  "res": "RECORD",
+  "said": "{\"t\":334,\"b\":350,\"l\":21,\"r\":33}",
+  "pics": "w2/S6-changes-window.png"
+ },
+ {
+  "sc": "6",
+  "step": "changes window after a drag by its grip",
+  "res": "RECORD",
+  "said": "Hide button top 330 -> 210",
+  "pics": "w2/S6-changes-moved.png"
+ },
+ {
+  "sc": "6",
+  "step": "moved window keeps its place on reopen",
+  "res": "FAIL",
+  "said": "moved top 210; reopened top 330",
+  "pics": "w2/S6-changes-reopened.png"
+ },
+ {
+  "sc": "6",
+  "step": "ALL AVAIL window head below band",
+  "res": "PASS",
+  "said": "bands=[[\"topbar\",48,84],[\"sb-top\",76,112]] window={\"t\":320,\"b\":862,\"l\":12,\"r\":390} title={\"t\":329,\"b\":355,\"l\":40,\"r\":349}",
+  "pics": "w2/S6-allavail-window.png"
+ },
+ {
+  "sc": "4",
+  "step": "bands visible on the OIL page",
+  "res": "RECORD",
+  "said": "[{\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false},{\"cls\":\"saveband\",\"par\":\"oil-top\",\"t\":51,\"b\":87,\"l\":8,\"r\":394,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false}]",
+  "pics": "w2/S4-oil.png"
+ },
+ {
+  "sc": "4",
+  "step": "OIL tracker band",
+  "res": "PASS",
+  "said": "band={\"cls\":\"saveband\",\"par\":\"oil-top\",\"t\":51,\"b\":87,\"l\":8,\"r\":394,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false} first control row (From first entry) top={\"t\":91}",
+  "pics": "w2/S4-oil.png"
+ },
+ {
+  "sc": "4",
+  "step": "after Escape",
+  "res": "RECORD",
+  "said": "OIL sheet open? false",
+  "pics": ""
+ },
+ {
+  "sc": "4",
+  "step": "OIL page controls",
+  "res": "RECORD",
+  "said": "[\"burger|\",\"undoBtn|↶\",\"redoBtn|↷\",\"fastSync|\",\"notifyBell|\",\"wknav-mbtn|\",\"exportSched|\",\"exportPdf|\",\"hl-tog|\",\"editSchedMore|\",\"dhbtn|\",\"planselbtn|\",\"dinfobtn|\",\"dbeak|\",\"notepub|\",\"airbtn|\",\"airbtn|\",\"itx|\",\"itx|\",\"stcfg|\",\"stcfg|\",\"dhbtn|\",\"planselbtn|\",\"dinfobtn|\",\"dbeak|\"]",
+  "pics": "w2/S4-oil.png"
+ },
+ {
+  "sc": "5",
+  "step": "bands on the Medical tab",
+  "res": "RECORD",
+  "said": "[{\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false}]",
+  "pics": "w2/S5-medical.png"
+ },
+ {
+  "sc": "5",
+  "step": "Medical tab controls",
+  "res": "RECORD",
+  "said": "[\"wknav-mbtn|Jump to a date|94\",\"exportSched|Export to Excel |92\",\"exportPdf|Export as PDF (p|92\",\"hl-tog|Highlight filter|94\",\"editSchedMore|More schedule op|94\",\"dow|Show this day's |174\",\"dt|Open scheduler b|178\",\"dhbtn|Save this day, o|206\",\"planselbtn|Switch between y|206\",\"dinfobtn|Monday — approva|208\",\"dbeak|Sign off CUR CK,|206\",\"notepub|Show this note o|542\",\"airbtn||645\",\"airbtn|Add an In-time l|645\",\"itx|Remove this In-t|676\",\"itx|Remove this In-t|693\",\"stcfg|Stores configura|771\",\"stcfg|Stores configura|816\",\"dow|Show this day's |174\",\"dt|Open scheduler b|178\",\"dhbtn|Save this day, o|206\",\"planselbtn|Switch between y|206\",\"dinfobtn|Tuesday — approv|208\",\"dbeak|Sign off CUR CK,|206\",\"notepub|Show this note o|571\",\"airbtn||674\",\"airbtn|Add an In-time l|674\",\"itx|Remove this In-t|705\",\"itx|Remove this In-t|722\",\"stcfg|Stores configura|800\"]",
+  "pics": "w2/S5-medical.png"
+ },
+ {
+  "sc": "2",
+  "step": "Inputs calendar view",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 firstTop={\"t\":85,\"tag\":\"h1\",\"text\":\"Inputs\"}",
+  "pics": "w2/S2-inputs-calendar.png"
+ },
+ {
+  "sc": "2",
+  "step": "Inputs list view",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 firstTop={\"t\":89,\"tag\":\"h1\",\"text\":\"Inputs\"}",
+  "pics": "w2/S2-inputs-list.png"
+ },
+ {
+  "sc": "2",
+  "step": "List tap pictures",
+  "res": "RECORD",
+  "said": "107ms after the tap start",
+  "pics": "w2/S2-inputs-list-tap-now.png | w2/S2-inputs-list-tap-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Inputs list scrolled",
+  "res": "RECORD",
+  "said": "scroller {\"who\":\"DIV.ros-body\",\"top\":400}; band top 48",
+  "pics": "w2/S2-inputs-list-scrolled.png"
+ },
+ {
+  "sc": "5",
+  "step": "Medical tab band",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 firstTop={\"t\":89,\"tag\":\"h1\",\"text\":\"Inputs\"}",
+  "pics": "w2/S5-medical-tab.png"
+ },
+ {
+  "sc": "5",
+  "step": "document viewer with the band up",
+  "res": "PASS",
+  "said": "band 48..84; what a finger meets at band points & bar: band,band,band,bar; layers [\"airpop-box@367\",\"airpop-body@422\",\"docview-sub@434\",\"docview-placed@460\",\"docview-nav@490\",\"docview-count@497\",\"docview-img@528\"]",
+  "pics": "w2/S5-docviewer.png | w2/S5-zenith-tap-now.png"
+ },
+ {
+  "sc": "7",
+  "step": "input window: what stands at the top",
+  "res": "RECORD",
+  "said": "band 48..84; finger meets at band points & bar: span.win-ttl,div.win-bar,bar,div.win-bar; controls: [\"inMemberMode|Inputs|12,93\",\"inSansMode|SANS|139,93\",\"inMedBtn|Medical 2 1|265,93\",\"medNew|+ Medical|8,139\",\"medCalBtn|as of 13 Jul|92,139\",\"medcard|Grit C ATT C 13–17 J|17,240\",\"medcard|Vector C OML 13 Jul|142,240\",\"medcard|Quill IW OML 6–9 Jul|17,356\",\"medcard|Zenith C 20 Jun 2|17,486\",\"win-x|✕|339,36\",\"inpEditPerson|Ace Anvil Basher Bla|28,119\",\"inTypeHelp|?|69,173\",\"inpEditType|Upchit|28,193\",\"docname|document|37,276\",\"docdel|✕|89,274\",\"abtn|Add|116,267\",\"inpEditRmk|Medically up 20 Jun|28,328\",\"dcal-title|June 2026 ›|37,399\",\"wc-today|13|211,403\",\"dcal-nav|‹|281,399\",\"dcal-nav|›|325,399\",\"dcal-d|1|37,463\",\"dcal-d|2|84,463\",\"dcal-d|3|131,463\",\"dcal-d|4|178,463\",\"dcal-d|5|224,463\",\"dcal-d|6|271,463\",\"dcal-d|7|318,463\",\"dcal-d|8|37,507\",\"dcal-d|9|84,507\",\"dcal-d|10|131,507\",\"dcal-d|11|17",
+  "pics": "w2/S7-input-window.png"
+ },
+ {
+  "sc": "7",
+  "step": "question box after the cross with typing",
+  "res": "RECORD",
+  "said": "question text on screen: true; bands visible: [{\"cls\":\"savestat nokeep\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\"}]; topmost thing: {\"t\":8,\"tag\":\"button#notifyBell.bellbtn\",\"text\":\"\"}; controls: [\"burger|Menu|14,9\",\"undoBtn|↶|249,9\",\"redoBtn|↷|285,9\",\"fastSync|Toggle 1-second sync (fo|322,14\",\"notifyBell|Notifications|354,8\",\"inMemberMode|Inputs|12,93\",\"inSansMode|SANS|139,93\",\"inMedBtn|Medical 2 1|265,93\",\"medNew|+ Medical|8,139\",\"medCalBtn|as of 13 Jul|92,139\",\"medcard|Grit C ATT C 13–17 Jul|17,240\",\"medcard|Vector C OML 13 Jul|142,240\",\"medcard|Quill IW OML 6–9 Jul|17,356\",\"medcard|Zenith C 20 Jun 2|17,486\",\"win-x|✕|339,36\",\"abtn|Discard and close|132,149\",\"abtn|Keep editing|269,149\",\"inpEditPerson|Ace Anvil Basher Blade B|28,119\",\"inTypeHelp|?|69,173\",\"inpEditType|Upchit|28,193\",\"docname|document|37,276\",\"docdel|✕|89,274\",\"abtn|Add|116,2",
+  "pics": "w2/S7-typed.png | w2/S7-question.png"
+ },
+ {
+  "sc": "7",
+  "step": "question box raised",
+  "res": "PASS",
+  "said": "\"Close it and lose them?\" on screen = true",
+  "pics": "w2/S7-question.png"
+ },
+ {
+  "sc": "7",
+  "step": "after pressing Escape on the question",
+  "res": "RECORD",
+  "said": "question still on screen: false; window still open: true",
+  "pics": "w2/S7-after-escape.png"
+ },
+ {
+  "sc": "8",
+  "step": "after sign out: sign-in screen with the band",
+  "res": "PASS",
+  "said": "[{\"cls\":\"saveband is-screen\",\"t\":0,\"b\":36,\"l\":0,\"r\":402,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"cut\":false,\"text\":\"Not kept — this browser loses your work on a reload\"}]",
+  "pics": "w2/S8-signedout.png"
+ },
+ {
+  "sc": "8",
+  "step": "unknown sign-in zz/zz",
+  "res": "RECORD",
+  "said": "bands=[{\"cls\":\"saveband is-screen\",\"t\":0,\"b\":36,\"l\":0,\"r\":402,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"cut\":false,\"text\":\"Not kept — this browser loses your work on a reload\"}]; controls: [\"accCs|callsign or name|46,285\",\"accIni|initials|46,354\",\"accSeat|Pick… Pilot WSO Personne|46,423\",\"accCat|Pick…|46,492\",\"accSend|Request access|46,545\",\"accOut|Sign out|46,597\"]",
+  "pics": "w2/S8-unknown.png"
+ },
+ {
+  "sc": "8",
+  "step": "text on the screen",
+  "res": "RECORD",
+  "said": "Not kept — this browser loses your work on a reload TALON Request access Signed in as zz You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL CAT Request access Sign out",
+  "pics": "w2/S8-unknown.png"
+ },
+ {
+  "sc": "8",
+  "step": "access form filled, band still whole",
+  "res": "PASS",
+  "said": "[{\"cls\":\"saveband is-screen\",\"t\":0,\"b\":36,\"l\":0,\"r\":402,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"cut\":false,\"text\":\"Not kept — this browser loses your work on a reload\"}]",
+  "pics": "w2/S8-filled.png"
+ },
+ {
+  "sc": "8",
+  "step": "Request access sent: band across the top, never \"Not sent yet\"",
+  "res": "PASS",
+  "said": "bands=[{\"cls\":\"saveband is-screen\",\"t\":0,\"b\":36,\"l\":0,\"r\":402,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"cut\":false,\"text\":\"Not kept — this browser loses your work on a reload\"}]; \"Not sent yet\" on screen=false; \"with the admins\" on screen=false; tap picture 93ms after the tap start; text: Not kept — this browser loses your work on a reload TALON Waiting for an admin WALKER INITIALS WK SEAT Pilot CAT OCU Request sent An admin approves You're on the schedule Sign out Signed in as zz",
+  "pics": "w2/S8-sent.png | w2/S8-send-tap-now.png"
+ },
+ {
+  "sc": "8",
+  "step": "waiting screen controls",
+  "res": "RECORD",
+  "said": "[\"accOut|Sign out|46,401\"]",
+  "pics": "w2/S8-sent.png"
+ },
+ {
+  "sc": "8",
+  "step": "waiting screen first thing below the band",
+  "res": "RECORD",
+  "said": "{\"t\":80,\"tag\":\"svg\",\"text\":\"\"}",
+  "pics": "w2/S8-sent.png"
+ },
+ {
+  "sc": "9",
+  "step": "guest switch on Admin -> Users",
+  "res": "RECORD",
+  "said": "before {\"checked\":false,\"aria\":null,\"tag\":\"INPUT\",\"text\":\"\"} after {\"checked\":true,\"aria\":null,\"text\":\"\"}; Admin page band: [{\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"cut\":false,\"btn\":false}]",
+  "pics": "w2/S9-guest-switch.png"
+ },
+ {
+  "sc": "9",
+  "step": "waiting screen with the guest switch on keeps the band",
+  "res": "PASS",
+  "said": "[{\"cls\":\"saveband is-screen\",\"par\":\"login\",\"t\":0,\"b\":36,\"l\":0,\"r\":402,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"cut\":false,\"btn\":false}]",
+  "pics": "w2/S9-waiting.png"
+ },
+ {
+  "sc": "9",
+  "step": "guest page: band under the guest bar",
+  "res": "PASS",
+  "said": "bands=[{\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":43,\"b\":79,\"l\":0,\"r\":402,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"cut\":false,\"btn\":false}]; firstTop={\"t\":110.5,\"tag\":\"span.dow\",\"text\":\"Monday\"}; cur={\"page\":\"viewsched\",\"guestbar\":true}; tap picture 217ms after the tap start",
+  "pics": "w2/S9-guest-page.png | w2/S9-view-tap-now.png"
+ },
+ {
+  "sc": "9",
+  "step": "guest page controls",
+  "res": "RECORD",
+  "said": "[\"guestOut|Sign out|324,9\"]",
+  "pics": "w2/S9-guest-page.png"
+ },
+ {
+  "sc": "9",
+  "step": "guest page scrolled",
+  "res": "RECORD",
+  "said": "scroller null; bands [{\"cls\":\"savestat nokeep\",\"par\":\"topbar\",\"t\":43,\"b\":79,\"l\":0,\"r\":402,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"cut\":false,\"btn\":false}]",
+  "pics": "w2/S9-guest-scrolled.png"
+ },
+ {
+  "sc": "10",
+  "step": "Tracker corner empty before and after a ball is touched",
+  "res": "PASS",
+  "said": "before {\"vis\":false,\"text\":\"\",\"cls\":\"savestat \"}; after {\"vis\":false,\"text\":\"\",\"cls\":\"savestat \"}",
+  "pics": "w2/S10-tracker-refused.png | w2/S10-tracker-refused-ball.png"
+ },
+ {
+  "sc": "11",
+  "step": "/?nostore shows the band",
+  "res": "PASS",
+  "said": "[{\"cls\":\"savestat nokeep\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"text\":\"Not kept — this browser loses your work on a reload\"}]",
+  "pics": "w2/S11a-_nostore.png"
+ },
+ {
+  "sc": "11",
+  "step": "/?nostore after a reload still shows the band",
+  "res": "PASS",
+  "said": "signin screen after reload: true; [{\"cls\":\"savestat nokeep\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"text\":\"Not kept — this browser loses your work on a reload\"}]",
+  "pics": "w2/S11a-after-reload.png"
+ },
+ {
+  "sc": "11",
+  "step": "/?nostore=1 shows the band",
+  "res": "PASS",
+  "said": "[{\"cls\":\"savestat nokeep\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"text\":\"Not kept — this browser loses your work on a reload\"}]",
+  "pics": "w2/S11b-_nostore_1.png"
+ },
+ {
+  "sc": "11",
+  "step": "/?a=1&nostore shows the band",
+  "res": "PASS",
+  "said": "[{\"cls\":\"savestat nokeep\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"text\":\"Not kept — this browser loses your work on a reload\"}]",
+  "pics": "w2/S11c-_a_1_nostore.png"
+ },
+ {
+  "sc": "11",
+  "step": "/?nostorex shows none",
+  "res": "PASS",
+  "said": "[]",
+  "pics": "w2/S11d-_nostorex.png"
+ },
+ {
+  "sc": "12",
+  "step": "/ shows no Not kept band",
+  "res": "PASS",
+  "said": "[]",
+  "pics": "w2/S12a-_.png"
+ },
+ {
+  "sc": "12",
+  "step": "Tracker corner on plain / says saved",
+  "res": "PASS",
+  "said": "{\"vis\":true,\"text\":\"● saved\",\"cls\":\"savestat ok\"}",
+  "pics": "w2/S12-tracker-plain.png | w2/S12-tracker-plain-ball.png"
+ },
+ {
+  "sc": "12",
+  "step": "/?fresh=1 shows no Not kept band",
+  "res": "PASS",
+  "said": "[]",
+  "pics": "w2/S12b-_fresh_1.png"
+ },
+ {
+  "sc": "10",
+  "step": "Tracker corner stays empty after a ball is marked (DCO)",
+  "res": "PASS",
+  "said": "popover open: {\"vis\":false,\"text\":\"\",\"cls\":\"savestat \"}; after the mark {\"vis\":false,\"text\":\"\",\"cls\":\"savestat \"}; Undo button {\"disabled\":false,\"cls\":\"abtn hbtn\",\"title\":\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\"}; tap picture 884ms after the tap start",
+  "pics": "w2/S10-marked.png | w2/S10-mark-tap-now.png"
+ },
+ {
+  "sc": "10",
+  "step": "Tracker Undo of the mark; corner still empty",
+  "res": "PASS",
+  "said": "{\"vis\":false,\"text\":\"\",\"cls\":\"savestat \"}",
+  "pics": "w2/S10-undone.png"
+ },
+ {
+  "sc": "13",
+  "step": "before any change",
+  "res": "RECORD",
+  "said": "[{\"cls\":\"savestat failed\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not saved\",\"rest\":\"keep this page open\",\"btn\":[\"Retry\"],\"text\":\"Not saved — keep this page open Retry\"}]",
+  "pics": "w2/S13-before.png"
+ },
+ {
+  "sc": "13",
+  "step": "after a change with ?nostore&savefail",
+  "res": "RECORD",
+  "said": "times now [\"07:45\",\"08:15\"]; bands=[{\"cls\":\"savestat failed\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not saved\",\"rest\":\"keep this page open\",\"btn\":[\"Retry\"],\"text\":\"Not saved — keep this page open Retry\"}]; \"Not saved\" shows=true; \"Not kept\" shows=false",
+  "pics": "w2/S13-before.png | w2/S13-after.png"
+ },
+ {
+  "sc": "13",
+  "step": "a failed save wins over Not kept (Not saved + Retry, one band)",
+  "res": "PASS",
+  "said": "[{\"cls\":\"savestat failed\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not saved\",\"rest\":\"keep this page open\",\"btn\":[\"Retry\"],\"text\":\"Not saved — keep this page open Retry\"}]",
+  "pics": "w2/S13-after.png"
+ },
+ {
+  "sc": "13",
+  "step": "sign-in screen with ?nostore&savefail",
+  "res": "RECORD",
+  "said": "[{\"cls\":\"saveband is-screen\",\"t\":0,\"b\":36,\"h\":36,\"bold\":\"Not saved\",\"rest\":\"keep this page open\",\"btn\":[\"Retry\"],\"text\":\"Not saved — keep this page open Retry\"}]",
+  "pics": "w2/S13-signin.png"
+ },
+ {
+  "sc": "13",
+  "step": "just after sign-in (page viewsched)",
+  "res": "RECORD",
+  "said": "[{\"cls\":\"savestat failed\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not saved\",\"rest\":\"keep this page open\",\"btn\":[\"Retry\"],\"text\":\"Not saved — keep this page open Retry\"}]",
+  "pics": "w2/S13-after-signin.png"
+ },
+ {
+  "sc": "13",
+  "step": "before any change",
+  "res": "RECORD",
+  "said": "[{\"cls\":\"savestat failed\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not saved\",\"rest\":\"keep this page open\",\"btn\":[\"Retry\"],\"text\":\"Not saved — keep this page open Retry\"}]",
+  "pics": "w2/S13-before.png"
+ },
+ {
+  "sc": "13",
+  "step": "after a change with ?nostore&savefail",
+  "res": "RECORD",
+  "said": "times now [\"08:00\",\"08:15\"]; bands=[{\"cls\":\"savestat failed\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not saved\",\"rest\":\"keep this page open\",\"btn\":[\"Retry\"],\"text\":\"Not saved — keep this page open Retry\"}]; \"Not saved\" shows=true; \"Not kept\" shows=false",
+  "pics": "w2/S13-before.png | w2/S13-after.png"
+ },
+ {
+  "sc": "13",
+  "step": "a failed save wins over Not kept (Not saved + Retry, one band)",
+  "res": "PASS",
+  "said": "[{\"cls\":\"savestat failed\",\"t\":48,\"b\":84,\"h\":36,\"bold\":\"Not saved\",\"rest\":\"keep this page open\",\"btn\":[\"Retry\"],\"text\":\"Not saved — keep this page open Retry\"}]",
+  "pics": "w2/S13-after.png"
+ },
+ {
+  "sc": "15",
+  "step": "magnifier glyph measures",
+  "res": "RECORD",
+  "said": "Tracker Find: {\"svgBox\":{\"l\":176.03125,\"t\":126,\"w\":15,\"h\":15},\"viewBox\":\"0 0 24 24\",\"cls\":\"srchglyph\",\"stroke\":\"rgb(241, 244, 247)\",\"circleBox\":{\"w\":8.75,\"h\":8.75},\"handleBox\":{\"w\":2.69,\"h\":2.69,\"len\":3.8},\"d\":\"m21 21-4.3-4.3\",\"hasCircle\":true}; Edit Schedule search box: {\"svgBox\":{\"l\":264,\"t\":99.5,\"w\":15,\"h\":15},\"viewBox\":\"0 0 24 24\",\"cls\":\"btnglyph\",\"stroke\":\"rgb(138, 150, 163)\",\"circleBox\":{\"w\":8.75,\"h\":8.75},\"handleBox\":{\"w\":2.69,\"h\":2.69,\"len\":3.8},\"d\":\"m21 21-4.3-4.3\",\"hasCircle\":true}",
+  "pics": "w2/S15-tracker-find-4x.png | w2/S15-editsched-search-4x.png"
+ },
+ {
+  "sc": "15",
+  "step": "Tracker Find strip magnifier",
+  "res": "RECORD",
+  "said": "{\"svgBox\":{\"l\":264,\"t\":99.5,\"w\":15,\"h\":15},\"viewBox\":\"0 0 24 24\",\"cls\":\"btnglyph\",\"stroke\":\"rgb(138, 150, 163)\",\"circleBox\":{\"w\":8.75,\"h\":8.75},\"handleBox\":{\"w\":2.69,\"h\":2.69,\"len\":3.8},\"d\":\"m21 21-4.3-4.3\",\"hasCircle\":true}",
+  "pics": "w2/S15-tracker-find-open.png"
+ },
+ {
+  "sc": "15",
+  "step": "Tracker Find magnifier has the same handle as Edit Schedule search box",
+  "res": "PASS",
+  "said": "Tracker handle {\"w\":2.69,\"h\":2.69,\"len\":3.8} path m21 21-4.3-4.3; Edit Schedule handle {\"w\":2.69,\"h\":2.69,\"len\":3.8} path m21 21-4.3-4.3",
+  "pics": "w2/S15-tracker-find-4x.png | w2/S15-editsched-search-4x.png"
+ },
+ {
+  "sc": "16",
+  "step": "editsched moves down by exactly the band height",
+  "res": "PASS",
+  "said": "first content refused 92 (button#exportSched.abtn) vs plain 56 (button#exportSched.abtn): moved 36; band height 36; bar bottom 85 vs plain 49",
+  "pics": ""
+ },
+ {
+  "sc": "16",
+  "step": "viewsched moves down by exactly the band height",
+  "res": "PASS",
+  "said": "first content refused 92 (button.wknav-mbtn) vs plain 56 (button.wknav-mbtn): moved 36; band height 36; bar bottom 85 vs plain 49",
+  "pics": ""
+ },
+ {
+  "sc": "16",
+  "step": "inputs moves down by exactly the band height",
+  "res": "PASS",
+  "said": "first content refused 85 (h1) vs plain 49 (h1): moved 36; band height 36; bar bottom 85 vs plain 49",
+  "pics": ""
+ },
+ {
+  "sc": "16",
+  "step": "quals moves down by exactly the band height",
+  "res": "PASS",
+  "said": "first content refused 93 (button#qEdit.abtn) vs plain 57 (button#qEdit.abtn): moved 36; band height 36; bar bottom 85 vs plain 49",
+  "pics": ""
+ },
+ {
+  "sc": "16",
+  "step": "logic moves down by exactly the band height",
+  "res": "PASS",
+  "said": "first content refused 93 (button#lgFilterBtn.abtn) vs plain 57 (button#lgFilterBtn.abtn): moved 36; band height 36; bar bottom 85 vs plain 49",
+  "pics": ""
+ },
+ {
+  "sc": "16",
+  "step": "leavewar moves down by exactly the band height",
+  "res": "PASS",
+  "said": "first content refused 141 (select.wk) vs plain 105 (select.wk): moved 36; band height 36; bar bottom 85 vs plain 49",
+  "pics": ""
+ },
+ {
+  "sc": "16",
+  "step": "help moves down by exactly the band height",
+  "res": "PASS",
+  "said": "first content refused 103 (h2) vs plain 67 (h2): moved 36; band height 36; bar bottom 85 vs plain 49",
+  "pics": ""
+ },
+ {
+  "sc": "16",
+  "step": "admin moves down by exactly the band height",
+  "res": "PASS",
+  "said": "first content refused 103 (h2) vs plain 67 (h2): moved 36; band height 36; bar bottom 85 vs plain 49",
+  "pics": ""
+ },
+ {
+  "sc": "1",
+  "step": "sign-in band-wide",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 cut=false btn=false firstTop={\"t\":80,\"tag\":\"svg\",\"text\":\"\"} formTop=188",
+  "pics": "w2/S1-signin-wide.png"
+ },
+ {
+  "sc": "2",
+  "step": "Edit Schedule tap pictures-wide",
+  "res": "RECORD",
+  "said": "tapped Edit Schedule; picture 689ms after the tap start; CURPAGE=editsched",
+  "pics": "w2/S2-editsched-tap-wide-now.png | w2/S2-editsched-tap-wide-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Edit Schedule-wide",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":92,\"tag\":\"button#exportSched.abtn\",\"text\":\"\"}",
+  "pics": "w2/S2-editsched-wide.png"
+ },
+ {
+  "sc": "2",
+  "step": "Tracker tap pictures-wide",
+  "res": "RECORD",
+  "said": "tapped Tracker; picture 274ms after the tap start; CURPAGE=tracker",
+  "pics": "w2/S2-tracker-tap-wide-now.png | w2/S2-tracker-tap-wide-settled.png"
+ },
+ {
+  "sc": "2",
+  "step": "Tracker-wide",
+  "res": "PASS",
+  "said": "words=[\"Not kept\",\"this browser loses your work on a reload\"] h=36 box=0..402 bandBottom=84 barBottom=85 cut=false btn=false sign=16 line=rgb(241, 244, 247) firstTop={\"t\":90,\"tag\":\"select#activeSel\",\"text\":\"STUDENT A\\nSTUDENT B\"}",
+  "pics": "w2/S2-tracker-wide.png"
+ },
+ {
+  "sc": "2",
+  "step": "Tracker corner empty-wide",
+  "res": "PASS",
+  "said": "{\"hidden\":true,\"text\":\"\"}",
+  "pics": "w2/S2-tracker-wide.png"
+ },
+ {
+  "sc": "8",
+  "step": "access form filled, band still whole-wide",
+  "res": "PASS",
+  "said": "[{\"cls\":\"saveband is-screen\",\"t\":0,\"b\":36,\"l\":0,\"r\":402,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"cut\":false,\"text\":\"Not kept — this browser loses your work on a reload\"}]",
+  "pics": "w2/S8-filled-wide.png"
+ },
+ {
+  "sc": "8",
+  "step": "Request access sent: band across the top, never \"Not sent yet\"-wide",
+  "res": "PASS",
+  "said": "bands=[{\"cls\":\"saveband is-screen\",\"t\":0,\"b\":36,\"l\":0,\"r\":402,\"h\":36,\"bold\":\"Not kept\",\"rest\":\"this browser loses your work on a reload\",\"cut\":false,\"text\":\"Not kept — this browser loses your work on a reload\"}]; \"Not sent yet\" on screen=false; \"with the admins\" on screen=false; tap picture 164ms after the tap start; text: Not kept — this browser loses your work on a reload TALON Waiting for an admin WALKER INITIALS WK SEAT Pilot CAT OCU Request sent An admin approves You're on the schedule Sign out Signed in as zz",
+  "pics": "w2/S8-sent-wide.png | w2/S8-send-tap-wide-now.png"
+ },
+ {
+  "sc": "8",
+  "step": "waiting screen controls-wide",
+  "res": "RECORD",
+  "said": "[\"accOut|Sign out|46,404\"]",
+  "pics": "w2/S8-sent-wide.png"
+ },
+ {
+  "sc": "8",
+  "step": "waiting screen first thing below the band-wide",
+  "res": "RECORD",
+  "said": "{\"t\":80,\"tag\":\"svg\",\"text\":\"\"}",
+  "pics": "w2/S8-sent-wide.png"
+ },
+ {
+  "sc": "14",
+  "step": "change a time, Undo, Redo",
+  "res": "PASS",
+  "said": "times 07:45/08:15 -> 08:00/08:15 -> undo 07:45/08:15 -> redo 08:00/08:15; band whole: true",
+  "pics": "w2/S14-time-changed.png | w2/S14-undone.png | w2/S14-redone.png"
+ },
+ {
+  "sc": "14",
+  "step": "changes window closed by x",
+  "res": "PASS",
+  "said": "still-open parts: []; first content 92 (before 92); band whole true",
+  "pics": "w2/S14-changes_window-open-x.png | w2/S14-changes_window-closed-x.png"
+ },
+ {
+  "sc": "14",
+  "step": "changes window controls",
+  "res": "RECORD",
+  "said": "[\"burger|Menu|14,9\",\"undoBtn|↶|213,9\",\"redoBtn|↷|249,9\",\"histBtn|Changes — every change thi|285,9\",\"fastSync|Toggle 1-second sync (for |322,14\",\"notifyBell|Notifications|354,8\",\"wknav-mbtn|Jump to a date|12,94\",\"exportSched|Export to Excel (CSV)|51,92\",\"exportPdf|Export as PDF (print)|98,92\",\"hl-tog|Highlight filters|145,94\",\"editSchedMore|⋯|180,94\",\"searchE|Search by name or callsign|285,99\",\"dow|Monday|16,174\",\"dt|Jul 13 · Today|82,178\",\"dhbtn|Templates|16,206\",\"planselbtn|Live working copy ▾|198,206\",\"dpend|3 changes|95,209\",\"dinfobtn|i|176,208\",\"dbeak|Publish day|16,232\",\"sgn|CUR CK — name —|20,296\",\"sgn|SKED CK — name —|183,296\",\"sgn|PLANNED BY — name —|20,320\",\"sgn|APPROVED BY — name —|20,344\",\"win-hide|Hide ▾|289,330\",\"win-x|✕|356,330\",\"win-tab|New to you 0|13,398\",\"win-tab|All changes 3|201,398\",\"cw-day|Week|21,439\",\"cw-day|Mon|72,439\",\"cw-day|Tue|116,439\",\"cw-day|Wed|157,439\",\"c",
+  "pics": "w2/S14-changes_window-open-x.png"
+ },
+ {
+  "sc": "14",
+  "step": "changes window closed by esc",
+  "res": "FAIL",
+  "said": "still-open parts: [\"win-x\"]; first content 92 (before 92); band whole true",
+  "pics": "w2/S14-changes_window-open-esc.png | w2/S14-changes_window-closed-esc.png"
+ },
+ {
+  "sc": "14",
+  "step": "changes window closed by outside",
+  "res": "PASS",
+  "said": "still-open parts: []; first content 92 (before 92); band whole true",
+  "pics": "w2/S14-changes_window-open-outside.png | w2/S14-changes_window-closed-outside.png"
+ },
+ {
+  "sc": "14",
+  "step": "Jump to a date closed by esc",
+  "res": "NOTRUN",
+  "said": "NOTRUN: page.tap: Timeout 12000ms exceeded.",
+  "pics": ""
+ },
+ {
+  "sc": "14",
+  "step": "Jump to a date closed by outside",
+  "res": "NOTRUN",
+  "said": "NOTRUN: page.tap: Timeout 12000ms exceeded.",
+  "pics": ""
+ },
+ {
+  "sc": "14",
+  "step": "bell closed by esc",
+  "res": "PASS",
+  "said": "still-open parts: []; first content 92 (before 92); band whole true",
+  "pics": "w2/S14-bell-open-esc.png | w2/S14-bell-closed-esc.png"
+ },
+ {
+  "sc": "14",
+  "step": "bell closed by outside",
+  "res": "PASS",
+  "said": "still-open parts: []; first content 92 (before 92); band whole true",
+  "pics": "w2/S14-bell-open-outside.png | w2/S14-bell-closed-outside.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by x",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-x.png | w2/S14-newinput-closed-x.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by cancel",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-cancel.png | w2/S14-newinput-closed-cancel.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by esc",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-esc.png | w2/S14-newinput-closed-esc.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by outside",
+  "res": "RECORD",
+  "said": "window still on screen: true; band whole true",
+  "pics": "w2/S14-newinput-open-outside.png | w2/S14-newinput-closed-outside.png"
+ },
+ {
+  "sc": "14",
+  "step": "after Add",
+  "res": "RECORD",
+  "said": "142 TALON Not kept — this browser loses your work on a reload ↶ ↷ Inputs Inputs SANS Medical 2 1 + Input 8 Nov → 22 Nov Calendar List Filters No inputs 8–22 Nov. Try All dates. ⠿ New input · Jul 14 ✕ PERSON Several people TYPE ? DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 14 Jul DAT",
+  "pics": "w2/S14-newinput-filled.png | w2/S14-newinput-added.png"
+ },
+ {
+  "sc": "O",
+  "step": "script",
+  "res": "NOTRUN",
+  "said": "stopped: page.tap: Timeout 12000ms exceeded.",
+  "pics": ""
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by x",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-x.png | w2/S14-newinput-closed-x.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by cancel",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-cancel.png | w2/S14-newinput-closed-cancel.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by esc",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-esc.png | w2/S14-newinput-closed-esc.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by outside",
+  "res": "RECORD",
+  "said": "window still on screen: true; band whole true",
+  "pics": "w2/S14-newinput-open-outside.png | w2/S14-newinput-closed-outside.png"
+ },
+ {
+  "sc": "O",
+  "step": "script",
+  "res": "NOTRUN",
+  "said": "stopped: locator.tap: Timeout 12000ms exceeded.",
+  "pics": ""
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by x",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-x.png | w2/S14-newinput-closed-x.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by cancel",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-cancel.png | w2/S14-newinput-closed-cancel.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by esc",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-esc.png | w2/S14-newinput-closed-esc.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by outside",
+  "res": "RECORD",
+  "said": "window still on screen: true; band whole true",
+  "pics": "w2/S14-newinput-open-outside.png | w2/S14-newinput-closed-outside.png"
+ },
+ {
+  "sc": "14",
+  "step": "after Add",
+  "res": "RECORD",
+  "said": "142 TALON Not kept — this browser loses your work on a reload ↶ ↷ Inputs Inputs SANS Medical 2 1 + Input 8 Nov → 22 Nov Calendar List Filters TUE 14 JUL 1 input LATE No document All day SaberOL Pick a start date on the calendar firstInput added",
+  "pics": "w2/S14-newinput-filled.png | w2/S14-newinput-added.png"
+ },
+ {
+  "sc": "14",
+  "step": "schedule after the input (Mon 13 Jul is the open day; the input is 14 Jul)",
+  "res": "RECORD",
+  "said": "{\"unavail\":3606,\"snippet\":\"UNAVAILABLE NAME START PEOPLE RMKS OML C Vector C Medical leave 13 Jultill 13 Jul ATT C C Grit C Medically downtill 17 Jul Tuesday Jul 14 Templates Live working\",\"olAt\":6287}",
+  "pics": "w2/S14-schedule-after-input.png"
+ },
+ {
+  "sc": "O",
+  "step": "script",
+  "res": "NOTRUN",
+  "said": "stopped: Cannot read properties of null (reading 'x')",
+  "pics": ""
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by x",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-x.png | w2/S14-newinput-closed-x.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by cancel",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-cancel.png | w2/S14-newinput-closed-cancel.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by esc",
+  "res": "RECORD",
+  "said": "window still on screen: false; band whole true",
+  "pics": "w2/S14-newinput-open-esc.png | w2/S14-newinput-closed-esc.png"
+ },
+ {
+  "sc": "14",
+  "step": "+ Input window closed by outside",
+  "res": "RECORD",
+  "said": "window still on screen: true; band whole true",
+  "pics": "w2/S14-newinput-open-outside.png | w2/S14-newinput-closed-outside.png"
+ },
+ {
+  "sc": "14",
+  "step": "after Add",
+  "res": "RECORD",
+  "said": "142 TALON Not kept — this browser loses your work on a reload ↶ ↷ Inputs Inputs SANS Medical 2 1 + Input 8 Nov → 22 Nov Calendar List Filters TUE 14 JUL 1 input LATE No document All day SaberOL Pick a start date on the calendar firstInput added",
+  "pics": "w2/S14-newinput-filled.png | w2/S14-newinput-added.png"
+ },
+ {
+  "sc": "14",
+  "step": "schedule after the input (Mon 13 Jul is the open day; the input is 14 Jul)",
+  "res": "RECORD",
+  "said": "{\"unavail\":3606,\"snippet\":\"UNAVAILABLE NAME START PEOPLE RMKS OML C Vector C Medical leave 13 Jultill 13 Jul ATT C C Grit C Medically downtill 17 Jul Tuesday Jul 14 Templates Live working\",\"olAt\":6287,\"olSnippet\":\"AIL Zulu O F/O/A all day Rebel B F all day ⠿ UNAVAILABLE NAME START PEOPLE RMKS OL Saber IP LATEtill 14 Jul LL Quill IW LATELocal leavetill 14 Jul OIL Wisp C LA\"}",
+  "pics": "w2/S14-schedule-after-input.png"
+ },
+ {
+  "sc": "14",
+  "step": "Jump to a date opened",
+  "res": "RECORD",
+  "said": "parts []; text ates Live working copy ▾ DRAFT 4 X 4 i Publish day SIGN-OFF CUR CK — name — SKED CK — name — PLANNED BY — name — APPROVED BY — name — 4 to sign ⚠ 17 issues · 6 warning ▼ ⠿ COMMON PROGRAMME EP: ENGINE FIRE ON TAKE OFF ORDERS: FLYING ORDERS SECTION 2 NAME START ",
+  "pics": "w2/S14-jump-open.png"
+ },
+ {
+  "sc": "14",
+  "step": "Jump to a date closed by Escape",
+  "res": "PASS",
+  "said": "parts left []",
+  "pics": "w2/S14-jump-open.png | w2/S14-jump-after-esc.png"
+ },
+ {
+  "sc": "14",
+  "step": "Jump to a date closed by an outside tap",
+  "res": "PASS",
+  "said": "parts left []",
+  "pics": "w2/S14-jump-after-outside.png"
+ },
+ {
+  "sc": "14",
+  "step": "changes window Escape again",
+  "res": "RECORD",
+  "said": "parts still open after Escape (no tap inside): 1; after a tap on its title then Escape: 1",
+  "pics": "w2/S14-changes-esc-nofocus.png"
+ },
+ {
+  "sc": "6",
+  "step": "moved window reopen, plain world",
+  "res": "RECORD",
+  "said": "Hide button top: first open 330, after a drag 210, reopened 330",
+  "pics": "w2/S6-reopen-plain.png"
+ },
+ {
+  "sc": "6",
+  "step": "moved window reopen, refused world",
+  "res": "RECORD",
+  "said": "Hide button top: first open 330, after a drag 210, reopened 330",
+  "pics": "w2/S6-reopen-refused.png"
+ }
+]

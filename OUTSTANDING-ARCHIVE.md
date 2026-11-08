@@ -8297,4 +8297,20 @@ The cheaper helper's find-and-replace pairs match each spot's own line endings (
 ### [DESIGN-CHECK-GOLD-DOT] The design checker flags the gold history dot (filed 26 Oct 26 from the night of 21 Oct 26's handoff block)
 **Seen (21 Oct 26, the overnight run):** the design checker flags the gold history dot in `raptor-port/src/ui/scheduler/20-changes-quals.css` as a "grid background" — a false alarm. An ignore for that one file was added that night and taken out by job 5's helper; adding it needs his OK. **Place:** Checks and tooling — low, his word.
 **His OK, 8 Nov 26 (D1890, asked with a picture): built by chat 19 on `claude/chat19-checks`** — one scoped skip (rule `codex-grid-background`, that file only) in both copies of the checker's settings, its reason naming D1890. Leaves for the archive once merged.
+*Moved here 2026-11-08 by backlog-archive.mjs ([MED-ROOM-DRAGGED]). Forward facts: `raptor-port/src/ui/scheduler/16-medical.css`, `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`.*
+
+### [MED-ROOM-DRAGGED] The Medical tab's room stays for a window dragged away (found 8 Nov 26)
+**Found by both code readers of chat 7** (Astra, `raptor-port/docs/superpowers/briefs/2026-11-08-chat7-inputs-read-astra.md` (1),
+and the fresh Opus reader): the Medical tab makes room for the input window (D1300, `.med-room`, `16-medical.css`), but a window
+he has dragged away keeps its place for the session, so the cards stay squeezed AND covered. **Fix:** as the Inputs list's of
+8 Nov 26 (`06-inputs.css`): the room only while the window stands where it opens — `body:has(.floatwin.inpedwin:not([data-placed]))`
+before the room's rules; a browser test that drags the window away first, red. **Place:** with the next Medical or Inputs batch.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([INP-ROOM-TIDY]). Forward facts: `raptor-port/src/ui/scheduler/25-inputs-calendar.css`, `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`.*
+
+### [INP-ROOM-TIDY] Tidy-ups the code read of 8 Nov 26 filed
+**Filed by the fresh Opus reader of chat 7, not fixed (D489):** (1) the room's size (the window's 430px, its 16px) is written in
+both `06-inputs.css` and `16-medical.css` — one variable would keep them together; (2) `.ib-sub .ib-expand`'s font size and
+line height (`25-inputs-calendar.css`) styled the typed mark and now style nothing. **Place:** with [MED-ROOM-DRAGGED].
 

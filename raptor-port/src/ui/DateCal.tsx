@@ -70,6 +70,10 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
 }) {
   const [base, setBase] = useState(value)
   const ref = useRef<HTMLDivElement>(null)
+  /* walked past half the window: re-centre it on the chosen row. Done in the render, not in the layout effect below
+     (React Doctor, [RD-LEFT-1108]): React draws again at once with the new window, before the screen is painted, as the
+     effect's own re-centre did — the effect then finds the window moved and puts the chosen row in the band outright. */
+  if (Math.abs(value - base) > SPAN / 2) setBase(value)
   const first = base - SPAN
   const was = useRef({ first, drawn: false })
   /* a value the list's own scrolling chose: the list is already there, and writing its place would fight the finger */
@@ -79,8 +83,6 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
   useLayoutEffect(() => {
     const n = ref.current
     if (!n) return
-    /* walked past half the window: re-centre it on the chosen row */
-    if (Math.abs(value - base) > SPAN / 2) { setBase(value); return }
     const top = (value - first) * ROW
     /* THE WINDOW OF ROWS HAS JUST MOVED: the chosen row is put in the band OUTRIGHT. Not "by how far the rows moved":
        the browser may already have kept the rows on screen where they were when the ones above them went (scroll
@@ -136,6 +138,7 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
   )
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the app's one date calendar (D796) for every screen: its four kinds (one date, a run, several days, a month only) share one month, one keyboard place, one set of refs and the order its layout effects run in (the slide, the keys put back); split, the kinds could drift apart and that order would move
 export function DateCal(p: {
   /** one date (the default), a run of dates, several separate days (the OIL question's "Only some days…" — D923), or
    *  a month only: the calendar opened straight on its month and year lists, which it never leaves (the Inputs and SANS
