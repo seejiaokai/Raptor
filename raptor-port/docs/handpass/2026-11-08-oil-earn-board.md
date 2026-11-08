@@ -26,12 +26,12 @@ Nov 26 19:00) and a fresh blind Opus reader (D790), blind to each other, after t
 
 | Place | SHOWS the switch | Gesture USABLE | What else is PAINTED there | Evidence |
 |---|---|---|---|---|
-| Board, phone, OIL Earn on, a day not yet published | YES — expected | YES — label, slider, keys | the bar's name OIL EARN, "✓ OIL done", the note under it when on | |
-| Board, desktop, OIL Earn on | YES — expected | YES | as above | |
-| Board, phone, OIL Earn off | NO, because the switch belongs to the mode (the bar holds Templates and OIL Earn) | NO, because not drawn | Templates, OIL Earn (C) | |
-| Board, a published day, OIL Earn on | YES — expected | YES — a press is a change waiting for the next amendment | the amendment marks | |
-| Board for someone who cannot edit (a member's read of the board, a look at an issued version) | NO, because OIL Earn is a scheduler's mode (the gate ahead of `dayBarHTML`'s button) | NO | — | |
-| Edit Schedule's week, View-only Sched | NO, because OIL Earn is the board's alone | NO | — | |
+| Board, phone, OIL Earn on, a day not yet published | YES — expected | YES — label, slider, keys | the bar's name OIL EARN, "✓ OIL done", the note under it when on | W1.1d, W1.2–W1.8, A13 (phone) PASS — `w1/W1.2-phone-words-on-now.png` |
+| Board, desktop, OIL Earn on | YES — expected | YES | as above | W1.2–W1.8, A13 (PC) PASS; keys W1.4 PASS, its white ring FIXED (cyan, `d499b1c61`) — `w1/W1.2-pc-words-on-now.png`, `w1/W1.4-pc-ring.png` |
+| Board, phone, OIL Earn off | NO, because the switch belongs to the mode (the bar holds Templates and OIL Earn) | NO, because not drawn | Templates, OIL Earn (C) | W1.1a PASS (no switch at rest) — `w1/W1.1-phone-bar-rest.png` |
+| Board, a published day, OIL Earn on | YES — expected | YES — a press is a change waiting for the next amendment | the amendment marks | W1.9, A5/A6 both sizes PASS: on raises "Publish AL1", off is the published day exactly — `w1/W1.9-pc-switch-on.png`, `-switch-off.png` |
+| Board for someone who cannot edit (a member's read of the board, a look at an issued version) | NO, because OIL Earn is a scheduler's mode (the gate ahead of `dayBarHTML`'s button) | NO | — | A24 both sizes PASS: no board is offered to a member, nor on View-only Sched — `w1/A24-pc-member-board.png` |
+| Edit Schedule's week, View-only Sched | NO, because OIL Earn is the board's alone | NO | — | A24 PASS (View-only: no board, no switch); the week draws no day bar — `w1/A24-pc-admin-viewonly-board.png` |
 
 ### B. A puck in OIL Earn that cannot earn on its row (D1783) — one drawer, `oilSeatHTML`, five callers
 
@@ -41,20 +41,20 @@ row with a start and no end (D360, "No OIL worked out — this row has no end ti
 
 | Place (caller) | SHOWS why | Tap USABLE (picks nothing, says why) | What else is PAINTED there | Evidence |
 |---|---|---|---|---|
-| A flying line's cockpit seat (`sbSlot`) | YES — hover title | YES — the passing note | warning rings, the AL tag, his own purple | |
-| A duty desk, sim seat, ground row, extras (`sbSeat`) | YES | YES | as above | |
-| A Common Programme row's people (`sbProgPanel`) | YES | YES | the row's time and remark boxes | |
-| A Personal Inputs row (`sbInpRow`) | YES | YES | the row's input buttons, the LATE chip | |
-| The ALL AVAIL window, its OIL tab (`AvailWindow.tsx`) | YES — its footer, as built (D65; the window is mounted beside the board, so the board's tap rule never sees its taps) | YES — the window's own tap: footer, nothing picked | the window's counter and reasons | |
+| A flying line's cockpit seat (`sbSlot`) | YES — hover title | YES — the passing note | warning rings, the AL tag, his own purple | W2.3 both sizes: the no-times note, nobody picked — `w2/s3-fcp-ranger-phone-phone-note.png` |
+| A duty desk, sim seat, ground row, extras (`sbSeat`) | YES | YES | as above | W2.1, W2.2, A17, A18, A19 (ground), A23 both sizes PASS; extras NOT WALKED (§9) — `w2/w21-pc-tap-fable-pc-note.png`, `w2/s18-box-cinch-phone-phone-note.png` |
+| A Common Programme row's people (`sbProgPanel`) | YES | YES | the row's time and remark boxes | A19, W2.5 (event off), A9, A10, W2.6 / A2 (placeholder) both sizes PASS — `w2/s19-cp-saber-phone-phone-note.png`, `w2/s6-allavail-body-pc-pc-note.png` |
+| A Personal Inputs row (`sbInpRow`) | YES | YES | the row's input buttons, the LATE chip | A1 (Personal, and leave and medical under Unavailable) both sizes PASS; A8 (an earning input switches, not inert) PASS — `w2/a1-Comet-oil-phone-phone-note.png`, `w2/a1-Ace-oil-phone-phone-note.png` |
+| The ALL AVAIL window, its OIL tab (`AvailWindow.tsx`) | YES — its footer, as built (D65; the window is mounted beside the board, so the board's tap rule never sees its taps) | YES — the window's own tap: footer, nothing picked | the window's counter and reasons | W2.7, A3, A9 both sizes PASS: footer, nothing picked, the window stays — `w2/a3-cp-noend-inert-seat-phone-after.png` |
 
 ### C. The phone day bar's Templates and OIL Earn (D1793) — `tplBtn` (`ui/board.ts`) and the rest button (`ui/oilmode.ts`)
 
 | Place | SHOWS the marks | Gesture USABLE | What else is PAINTED there | Evidence |
 |---|---|---|---|---|
-| Board, phone, OIL Earn off | YES — the page of blocks, the ticket | YES — each opens as before | the bar's name THIS DAY | |
-| Board, phone, OIL Earn on | NO, because the bar then holds "✓ OIL done" (no mark, as drawn) and the switch | YES | A's row | |
-| Board, phone, read-only | Templates NO, because it is a scheduler's; OIL Earn per the gate | — | | |
-| Board, desktop | NO, because the bar is hidden at rest; the top bar's own Templates and OIL Earn already wear the marks (D1703, D1704) | YES | | |
+| Board, phone, OIL Earn off | YES — the page of blocks, the ticket | YES — each opens as before | the bar's name THIS DAY | W1.1a, A27 PASS (one row, 23 tall, marks 12px; mark and word both open) — `w1/W1.1-phone-bar-rest.png`, `w1/A27-phone-oil-mark.png` |
+| Board, phone, OIL Earn on | NO, because the bar then holds "✓ OIL done" (no mark, as drawn) and the switch | YES | A's row | W1.1d PASS — `w1/W1.1-phone-oil-settled.png` |
+| Board, phone, read-only | Templates NO, because it is a scheduler's; OIL Earn per the gate | — | | A24: no board is offered read-only — `w1/A24-phone-member-board.png` |
+| Board, desktop | NO, because the bar is hidden at rest; the top bar's own Templates and OIL Earn already wear the marks (D1703, D1704) | YES | | W1 notes: the bar hidden at rest on a PC; the drawing check `switch-off-desk` — `docs/img/handpass/2026-11-07-pictures-round/drawcheck/` |
 
 ### D. Rows by kind of change (§6), whatever the tier
 
@@ -99,16 +99,75 @@ row with a start and no end (D360, "No OIL worked out — this row has no end ti
 
 ## 4. The orders walked — what the screen said, what OIL said
 
+Two Sonnet walkers, 8 Nov 26 ~09:10–10:00, on the frozen build of `a827307a5`, each in its own browser world (W1
+origins 4381 / 4173, W2 4382 / 4173), his iPhone's 402 × 874 in WebKit by touch and his PC's 1536 × 864 at 1.25 by
+mouse and keys. Their whole tables: `parts/2026-11-08-oil-earn-w1.md` (30 PASS, 0 FAIL, 15 RECORDED, 3 not walked —
+each a size the brief marked phone-only or PC-only) and `parts/2026-11-08-oil-earn-w2.md` (33 PASS, 0 FAIL, 12
+RECORDED, 5 not walked — §9).
+- **The switch, every order (W1):** by its words, its slider and Space, once per press (A13: two quick presses 120 ms
+  apart change it twice, back where it was); Undo and Redo step it ("Undid: an OIL decision"); another day and back,
+  the mode left and entered, ✓ Done and the board reopened, a reload and sign-in — the day keeps its switch (A15). On a
+  published day the switch raises "Publish AL1" and the issues count moves 3 → 2; off, the day is the published one
+  exactly (W1.9, A5/A6). What OIL said: on, 0 earning and 29 faded; off, the 19 / 7 / 3 of before (W1.9 figures).
+- **The inert tap, every drawer and kind (W2):** cockpit seat, desk, sim seat, ground row, Common Programme row,
+  Personal Inputs, Unavailable; no end time, no times, cancelled, ⓘ, a desk 07:00–07:00; an event switched off; the day
+  switch; a placeholder's body and count; the ALL AVAIL window's faded man. Every note as ruled, nobody picked, the
+  day's stored data the same before and after the tap (W2 compared it).
+- **The fixes before the walk, re-walked (W2 A1, A2):** leave, medical and Personal requests filed on the Inputs page —
+  "Leave earns no OIL.", "A medical request earns no OIL.", "A personal request earns no OIL.", nobody picked; outside
+  the mode the Unavailable tap arms his seat and the Personal one picks him, as before. The placeholder's body on the
+  Common Programme, a ground row and a duty desk: the placeholder's note, D845's words under the switch; its count
+  still opens the window.
+- **The plain-user round (W1):** enter OIL Earn by the bar's mark and word, switch on and off, ✓ OIL done, Templates
+  opened and closed, the ALL AVAIL window opened by its count and closed by ✕, another day, Undo, Redo, publish.
+
 ## 5. The cases carried by a test
+
+`src/ui/oilmode.test.tsx` (the last describe blocks — the board's own markup pressed through the real click handler):
+each kind's exact sentence, the switch's one press, its keys after the redraw, the placeholder's note on and off the
+switch, leave / medical / Personal in and outside the mode (outside: the seat arms, `armedKey()` `iu:…`).
+`src/ui/oilswitch-ring-css.test.ts`: the switch's cyan keyboard ring (W1.4's find). `src/ui/noteswords.test.ts`: D845's
+words in every place they are said (now 6 on the board). Checked to exist: all three files.
 
 ## 6. The pictures
 
+`raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/w1/` and `/w2/` (about 230); each row of the two reports names
+its own. Opened by the host and agreeing with their rows: `w1/W1.1-phone-bar-rest.png`, `w1/W1.2-phone-words-on-now.png`,
+`w1/W1.4-pc-ring.png` (the white ring — the find), `w1/A11-phone-tap-now.png`, `w1/A27-phone-desktop-layout.png`,
+`w2/a1-Ace-oil-phone-phone-note.png`, `w2/s6-allavail-body-pc-pc-note.png`. The drawing check's: §3, GREEN.
+
 ## 7. The break tests
+
+The host's reproduction before the walk (`a827307a5`'s two fixes) broke the build on purpose by tapping every drawn
+puck kind in the mode (`<scratchpad>/host-repro.mjs`): two kinds still picked a man — fixed red-first. W2 A23 tapped a
+faded puck on its letters, its edge and its body; A13 pressed the switch twice in 120 ms.
 
 ## 8. Errors seen
 
+No page error on either size (both reports). The test WebKit's "Couldn't save that document: your browser storage may
+be full…" after taps outside the mode (W2.8) is the known test-browser fact (`docs/walk-scripts.md` §7a), not the app.
+
 ## 9. What was not walked, and why
+
+- ALL AVAIL dropped onto a ground row or desk **on a phone**: the test WebKit runs no touch drag; walked on the PC (A2).
+- The plain **ALL** tile in a row: the same class and branch as ALL AVAIL (`.puck.allavail`, `board.ts boardArmClick`).
+- A named man in a desk's **extras**: drawn by the desk's own drawer (`sbSeat`), walked on the desk.
+- An **OD** input: the same Personal Inputs branch as Duty and Training, walked (A8).
+- A **warning mark on a faded puck**: none on the board in either world; the inert wrapper encloses the puck whole.
+- Astra's scenarios set aside in the brief, each with its reason there (4, 7, 16, 20, 22, 28 — figures and publication
+  sums this build does not touch) and A5's amendment publication.
 
 ## 10. The gate counts
 
+(At the close: GitHub's run on the last pushed commit.)
+
 ## 11. What the walk and the reads found, each disposition
+
+**The walk:** (W1.4) the switch under the keys wore the browser's white ring — confirmed-new, FIXED red-first
+(`d499b1c61`). (W1) Escape leaves the ALL AVAIL window open, and it stays up after ✓ Done — as built and written
+(`docs/ui-contracts.md`: the movable windows leave Escape; D66 lists what closes it). (W1) In the board's desktop
+layout on a phone, Templates and OIL Earn stand off the right edge — confirmed-pre-existing (`main` 650–818 on a 402
+screen), FILED. (W2) A cancelled or ⓘ row with times says "This row gives him no working hours to count OIL from" — as
+ruled (D1783's full row), a finer reason FILED as a question. (W2) the window's faded man: footer, no passing note — as
+built (D65). (W2) an input's ground row cleared of times still earns: its cleared time reads "all day", older, as built.
+**The reads:** (to come — Astra, Sol 6.1, a fresh Opus reader on `e4677d032`, blind to each other and to this sheet.)

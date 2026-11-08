@@ -96,6 +96,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [KBD-PUCK] — a puck cannot be picked up, put down, swapped or taken off by keyboard — a job of its own, his questions first.
 - [REST-FIRST-CREW-HINT] — an empty formation gives no crew-rest hint for its first man — with caps and ops limits.
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
+- [BOARD-DESKLAYOUT-DAYBAR-EDGE] — on a phone in the board's desktop layout, the day bar's Templates and OIL Earn stand off the right edge until he pans — older; his question with a picture.
 
 **Inputs and calendars**
 - [PRINT-FLYING-ONLY-ASK] — the printed page and the schedule's spreadsheet carry flying lines only, no Ground Programme row — his question, kept from [ALLAVAIL-CHECK-SEEN] (not walked again 3 Nov 26).
@@ -106,6 +107,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **OIL**
 - [OIL-EARN-DAY-SWITCH-WORDS] — OIL Earn's "Nothing today earns" button reads like a status — new words are his, with a picture.
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
+- [OIL-INERT-WHY-CX-INFO] — in OIL Earn a cancelled or ⓘ row with times says "This row gives him no working hours to count OIL from" (as D1783 ruled); a finer reason is his question.
+- [OIL-EARN-WORDS-LEFT] — two OIL Earn wordings not ruled: the switch's passing note "…and the marks underneath are back" and an item's hover "the day blanket is on" — his look.
 
 **Leave War**
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
@@ -171,6 +174,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOGIC-WORDS-WORKHOURS] — the Logic page says the long day and Insights hours of a line with nothing entered count from the default rally; they count from take-off less the step — his question, which is right (older; found 19 Oct 26).
 - [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
 - [STACK-LEFTOVERS] — three small loose ends left (the Insights edges and the shared wording helper done 8 Nov 26): an old audit script's three checks (with its own job), a "back to last published" button (only if he raises it), one tidiness note — a line's callsign tidied in three places for the Blue/Red answer (with the next change to its role question).
+- [LOGIC-SWITCH-RING] — the Logic page's own switches wear the browser's keyboard ring, where the board's "No OIL earned" now wears the app's cyan one — to match, his look first.
 
 **Look, words and the phone (the whole app)**
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
@@ -2356,3 +2360,33 @@ recommended red when any row turns red, a row a line, before → after. Not answ
 line's rows side by side and only amber or red (design lesson 50 names the bubble as a place it would apply), so it is redrawn
 with those in place before it is asked again (D1301's step 4). **Place:** after [LW-ROUND3-BUILD].
 
+### [OIL-INERT-WHY-CX-INFO] A cancelled or ⓘ row's reason in OIL Earn (walk find, 8 Nov 26 — chat 5, `claude/pr-oil-earn-ffbf07`)
+W2's A21 (pictures `raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w2/s21-*`): in OIL Earn a tap on a man on a cancelled (CX) or information-only (ⓘ) row says
+"Nothing changed for <callsign>. This row gives him no working hours to count OIL from." — while the row shows its times
+(09:00–11:00). As ruled: D1783's full row gives every "nothing measurable to earn from here" case that sentence, and a
+cancelled or ⓘ row gives him no working hours. **To do, if he wants it:** a reason of its own — recommended "This row is
+cancelled." / "This row is information only." (`ui/oilmode.ts inertWhy`). **Place:** low — his question with a picture,
+with the next OIL Earn change.
+
+### [OIL-EARN-WORDS-LEFT] Two OIL Earn wordings never put to him (seen building D1782, 8 Nov 26 — chat 5)
+(1) The passing note after "No OIL earned" is switched off: "This day can earn OIL again, and the marks underneath are
+back" — "the marks underneath" names nothing he sees by that name; recommended "This day can earn OIL again. Each man
+earns as he did before." (the bar's own note, D1782). The "on" note, "Nothing on this day earns OIL, including anything
+added later", reads plainly. (2) An event's OIL mark under the switch says, on hover, "the day blanket is on"
+(`ui/oilmode.ts` near the item's title) — "blanket" is the code's word; recommended "the day's No OIL earned switch is
+on". Pictures: `raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w1/W1.3-pc-slider-off-now.png`. **Place:** low — with the next words pass or OIL Earn change; his
+look first (D836's guide).
+
+### [LOGIC-SWITCH-RING] The Logic page's switches wear the browser's keyboard ring (seen 8 Nov 26 — chat 5)
+The board's "No OIL earned" borrows the Logic page's switch (`01-logic.css .lgmix`), which sets no keyboard ring; the
+board's was given the app's cyan one (D1646, walk find W1.4, `18-oil-board.css`), so the Logic page's own switches now
+differ from it under the keys. **To do:** the same `:focus-visible` ring on `.lgmix input` — a one-line match, shown to him
+with its picture first. **Place:** low — with the next Logic or consistency round.
+
+### [BOARD-DESKLAYOUT-DAYBAR-EDGE] On a phone, the desktop layout's day bar buttons stand off the right edge (walk find, 8 Nov 26 — chat 5)
+W1's A27 (`raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w1/A27-phone-desktop-layout.png`): in the Scheduler Board's desktop layout on a phone (⋯ → desktop
+layout) the day bar spans the day's desktop width, so Templates and OIL Earn sit past the screen's right edge — measured
+on `main` at 650–818 on a 402-wide screen (this branch 616–818, the marks' width); the phone layout's bar has neither
+button, so in that layout they are reached only by panning sideways. Older than D1793. **To do, if he wants it:** keep the
+two buttons in view (at the bar's left, or stuck to the screen's right) — drawn for him first. **Place:** low — with the
+next phone-board change.
