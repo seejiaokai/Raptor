@@ -1,0 +1,562 @@
+[
+ {
+  "id": "setup",
+  "ok": null,
+  "note": "accent rgb(59, 198, 232)"
+ },
+ {
+  "id": "C2-edit-week-1536",
+  "ok": null,
+  "note": "the week ⋯ is drawn only at 820 and narrower (phone) — absent at 1536 by design; walked at 402"
+ },
+ {
+  "id": "open-board",
+  "ok": true,
+  "note": "Tabbed to a day date and pressed Enter; board open; focus DIV#schedBoard.schedboard \"CalendarMonday Jul 13 · sche\" fv=true outline=none 3px rgb(241, 244, 247) off=0px"
+ },
+ {
+  "id": "C1-board",
+  "ok": null,
+  "note": "NOT WALKED — could not Tab to the ⋯ button"
+ },
+ {
+  "id": "C4-templates-bar",
+  "ok": true,
+  "note": "BUTTON#sbTpl.abtn.sb-daybtn \"Templates\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=color(srgb 0.231373 0.776471 0.909804 / 0.14) | cyan px 683 | 002-c4-templates-bar.png"
+ },
+ {
+  "id": "C4-templates-bar-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BUTTON.wm \"+ Save this day as a templat\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px ; 003-c4-templates-bar-after-enter.png"
+ },
+ {
+  "id": "C4-templates-bar-escape",
+  "ok": null,
+  "note": "after Escape focus is BUTTON#sbTpl.abtn.sb-daybtn \"Templates\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "C3-plusblock-duty-reach",
+  "ok": null,
+  "note": "Tab (both directions, one full cycle of the board, 345 stops each way) never stops on it: reached by a script focus() after a key press"
+ },
+ {
+  "id": "C3-plusblock-duty",
+  "ok": true,
+  "note": "BUTTON.mbtn.add \"+ Block\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(32, 38, 46) | cyan px 273 | 004-c3-block-duty.png"
+ },
+ {
+  "id": "C3-plusblock-duty-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BUTTON.wm \"Standard3 roles\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px ; 005-c3-block-duty-after-enter.png"
+ },
+ {
+  "id": "C3-plusblock-duty-escape",
+  "ok": null,
+  "note": "after Escape focus is BUTTON.mbtn.add \"+ Block\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "C3-plusblock-amt-reach",
+  "ok": null,
+  "note": "Tab (both directions, one full cycle of the board, 345 stops each way) never stops on it: reached by a script focus() after a key press"
+ },
+ {
+  "id": "C3-plusblock-amt",
+  "ok": true,
+  "note": "BUTTON.mbtn.add \"+ Block\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(32, 38, 46) | cyan px 273 | 006-c3-block-amt.png"
+ },
+ {
+  "id": "C3-plusblock-amt-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px ; 007-c3-block-amt-after-enter.png"
+ },
+ {
+  "id": "C3-plusblock-amt-focus-lost",
+  "ok": null,
+  "note": "after Enter the keys are on the page body (the board redrew): Escape not pressed"
+ },
+ {
+  "id": "C3-plusblock-amt-escape",
+  "ok": null,
+  "note": "after Escape focus is BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px"
+ },
+ {
+  "id": "C5-plusWave-reach",
+  "ok": null,
+  "note": "Tab (both directions, one full cycle of the board, 345 stops each way) never stops on it: reached by a script focus() after a key press"
+ },
+ {
+  "id": "C5-plusWave",
+  "ok": true,
+  "note": "BUTTON.mbtn.add \"+ Wave\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(32, 38, 46) | cyan px 265 | 008-c5-wave.png"
+ },
+ {
+  "id": "C5-plusWave-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BUTTON.wm \"Flying wave\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px ; 009-c5-wave-after-enter.png"
+ },
+ {
+  "id": "C5-plusWave-escape",
+  "ok": null,
+  "note": "after Escape focus is BUTTON.mbtn.add \"+ Wave\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "C5-plans",
+  "ok": true,
+  "note": "BUTTON.planselbtn \"Live working copy▾\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(26, 31, 38) | cyan px 549 | 010-c5-plans.png"
+ },
+ {
+  "id": "C5-plans-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BUTTON.wm.sa \"Live working copy ●live now \" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px ; 011-c5-plans-after-enter.png"
+ },
+ {
+  "id": "C5-plans-escape",
+  "ok": null,
+  "note": "after Escape focus is BUTTON.planselbtn \"Live working copy▾\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "C5-stores-reach",
+  "ok": null,
+  "note": "Tab (both directions, one full cycle of the board, 345 stops each way) never stops on it: reached by a script focus() after a key press"
+ },
+ {
+  "id": "C5-stores",
+  "ok": true,
+  "note": "BUTTON.stcfg \"C\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgba(0, 0, 0, 0) | cyan px 125 | 012-c5-stores.png"
+ },
+ {
+  "id": "C5-rolebox",
+  "ok": false,
+  "note": "TEXTAREA.ain \"SDO\" fv=true outline=none 3px rgb(241, 244, 247) off=0px bg=rgb(11, 13, 16) | cyan px 676 | 013-c5-rolebox.png"
+ },
+ {
+  "id": "C5-rolebox-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px ; 014-c5-rolebox-after-enter.png"
+ },
+ {
+  "id": "C5-rolebox-focus-lost",
+  "ok": null,
+  "note": "after Enter the keys are on the page body (the board redrew): Escape not pressed"
+ },
+ {
+  "id": "C5-rolebox-escape",
+  "ok": null,
+  "note": "after Escape focus is BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px"
+ },
+ {
+  "id": "C2-viewonly-1536",
+  "ok": null,
+  "note": "the week ⋯ is drawn only at 820 and narrower — absent at 1536; walked at 402"
+ },
+ {
+  "id": "C6-mouse-sbMore",
+  "ok": null,
+  "note": "NOT WALKED — not on screen"
+ },
+ {
+  "id": "C6-mouse-tpl",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 194 | 016-c6-mouse-tpl.png"
+ },
+ {
+  "id": "C6-mouse-block",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 0 | 018-c6-mouse-block.png"
+ },
+ {
+  "id": "C6-mouse-amtblock",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 0 | 020-c6-mouse-amtblock.png"
+ },
+ {
+  "id": "C6-mouse-wave",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 0 | 022-c6-mouse-wave.png"
+ },
+ {
+  "id": "C6-mouse-plans",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 413 | 024-c6-mouse-plans.png"
+ },
+ {
+  "id": "C6-mouse-stores",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 28 | 026-c6-mouse-stores.png"
+ },
+ {
+  "id": "C6-mouse-role",
+  "ok": false,
+  "note": "TEXTAREA.ain \"SDO\" fv=true outline=none 3px rgb(241, 244, 247) off=0px | cyan px 674 | 028-c6-mouse-role.png"
+ },
+ {
+  "id": "round-sbTpl",
+  "ok": true,
+  "note": "Enter -> focus BUTTON.wm \"+ Save this day as a templat\"; after Escape focus BUTTON#sbTpl.abtn.sb-daybtn \"Templates\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "round-wave",
+  "ok": true,
+  "note": "Enter -> focus BUTTON.wm \"Flying wave\"; after Escape focus BUTTON.mbtn.add \"+ Wave\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "round-plans",
+  "ok": true,
+  "note": "Enter -> focus BUTTON.wm.sa \"Live working copy ●live now \"; after Escape focus BUTTON.planselbtn \"Live working copy▾\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "round-block",
+  "ok": true,
+  "note": "Enter -> focus BUTTON.wm \"Standard3 roles\"; after Escape focus BUTTON.mbtn.add \"+ Block\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "round-amtblock",
+  "ok": null,
+  "note": "Enter -> focus BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\"; after Escape focus BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px"
+ },
+ {
+  "id": "round-tpl-save",
+  "ok": null,
+  "note": "Enter on \"+ Save this day…\"; focus DIV.modal-box \"Day templates✕Template 12 wa\" fv=true outline=none 3px rgb(241, 244, 247) off=0px; dialog fields: []"
+ },
+ {
+  "id": "round-tpl-dialog-done",
+  "ok": true,
+  "note": "Tab to the dialog Done: 5 Tabs; BUTTON.abtn.primary \"Done\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "round-tpl-dialog-done-ring",
+  "ok": true,
+  "note": "BUTTON.abtn.primary \"Done\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(59, 198, 232) | cyan px 1629 | 035-round-tpl-dialog-done.png"
+ },
+ {
+  "id": "round-tpl-dialog-closed",
+  "ok": true,
+  "note": "focus now BUTTON#sbTpl.abtn.sb-daybtn \"Templates\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "round-undo-buttons",
+  "ok": null,
+  "note": "[\"sbSortAll|Reorder every section on this day back into its own reading order, waves and duty blocks included — one confirm, one undo step|dis=false|vis=true\",\"sbUndo|Undo — a day template|dis=false|vis=true\",\"sbRedo|Redo|dis=true|vis=true\"]"
+ },
+ {
+  "id": "round-tpl-menu",
+  "ok": null,
+  "note": "Templates open; focus BUTTON.wm \"Template 12 waves · 2 duty b\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px"
+ },
+ {
+  "id": "round-tpl-pick-focus",
+  "ok": null,
+  "note": "BUTTON.wm \"Template 12 waves · 2 duty b\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px"
+ },
+ {
+  "id": "round-tpl-picked",
+  "ok": null,
+  "note": "Enter on the template; focus BUTTON#sbTpl.abtn.sb-daybtn \"Templates\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px; dialogs: []"
+ },
+ {
+  "id": "round-undo-ring",
+  "ok": true,
+  "note": "BUTTON#sbUndo.abtn.hbtn \"↶ Undo\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(26, 31, 38) | cyan px 217 | 038-round-undo-focus.png"
+ },
+ {
+  "id": "round-undo",
+  "ok": null,
+  "note": "Undo title before \"Undo — a change to the schedule\", after \"Undo — a day template\"; lines 8 -> 8; Redo disabled=false; focus BUTTON#sbUndo.abtn.hbtn \"↶ Undo\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "round-done-ring",
+  "ok": true,
+  "note": "BUTTON#sbDone.abtn.primary \"✓ Done\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(59, 198, 232) | cyan px 2232 | 040-round-done-focus.png"
+ },
+ {
+  "id": "round-done",
+  "ok": true,
+  "note": "Enter on ✓ Done; board closed=true; focus SPAN.dt.sb-open \"Jul 13 · Today\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "errors-desktop-round",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "C2-viewonly-402-opener",
+  "ok": null,
+  "note": "Tabbed to BUTTON#viewSchedMore.abtn.schedule-more \"⋯\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px after 6 Tabs"
+ },
+ {
+  "id": "C2-viewonly-402-enter-first-item",
+  "ok": true,
+  "note": "BUTTON#viewSchedMoreInsights.schedule-moreitem \"Insights\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px bg=rgb(32, 38, 46) | cyan px 770 | 042-C2-viewonly-402-enter-first.png"
+ },
+ {
+  "id": "C2-viewonly-402-up",
+  "ok": true,
+  "note": "BUTTON#viewSchedMoreInsights.schedule-moreitem \"Insights\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px bg=rgb(32, 38, 46) | cyan px 770 | 043-C2-viewonly-402-up.png"
+ },
+ {
+  "id": "C2-viewonly-402-items",
+  "ok": null,
+  "note": "items reached by ArrowDown: Insights ; after ArrowUp on \"Insights\""
+ },
+ {
+  "id": "C2-viewonly-402-escape",
+  "ok": true,
+  "note": "after Escape: BUTTON#viewSchedMore.abtn.schedule-more \"⋯\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px ; menu closed=true"
+ },
+ {
+  "id": "C2-viewonly-402-escape-pic",
+  "ok": null,
+  "note": "044-C2-viewonly-402-escape-opener.png cyan 181"
+ },
+ {
+  "id": "C2-viewonly-402-arrow-open-first-item",
+  "ok": true,
+  "note": "BUTTON#viewSchedMoreInsights.schedule-moreitem \"Insights\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px bg=rgb(32, 38, 46) | cyan px 770 | 045-C2-viewonly-402-arrowopen-first.png"
+ },
+ {
+  "id": "C2-edit-402",
+  "ok": null,
+  "note": "NOT WALKED — could not Tab to the ⋯ button"
+ },
+ {
+  "id": "open-board-402",
+  "ok": true,
+  "note": "board open at 402 by Enter; focus DIV#schedBoard.schedboard \"CalendarTuesday Jul 14 · sch\" fv=true outline=none 3px rgb(241, 244, 247) off=0px"
+ },
+ {
+  "id": "C1-board-402-opener",
+  "ok": null,
+  "note": "Tabbed to BUTTON#sbMore.abtn.sb-more \"⋯\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px after 4 Tabs"
+ },
+ {
+  "id": "C1-board-402-enter-first-item",
+  "ok": true,
+  "note": "BUTTON#sbMoreInsights.sb-moreitem \"Insights\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px bg=rgb(32, 38, 46) | cyan px 758 | 047-C1-board-402-enter-first.png"
+ },
+ {
+  "id": "C1-board-402-down-Sort_all",
+  "ok": true,
+  "note": "BUTTON#sbMoreSort.sb-moreitem \"Sort all\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px bg=rgb(32, 38, 46) | cyan px 758 | 048-C1-board-402-down-2.png"
+ },
+ {
+  "id": "C1-board-402-down-Desktop_layout",
+  "ok": true,
+  "note": "BUTTON#sbMoreWide.sb-moreitem \"Desktop layout\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px bg=rgb(32, 38, 46) | cyan px 758 | 049-C1-board-402-down-3.png"
+ },
+ {
+  "id": "C1-board-402-up",
+  "ok": true,
+  "note": "BUTTON#sbMoreWide.sb-moreitem \"Desktop layout\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px bg=rgb(32, 38, 46) | cyan px 758 | 050-C1-board-402-up.png"
+ },
+ {
+  "id": "C1-board-402-items",
+  "ok": null,
+  "note": "items reached by ArrowDown: Insights | Sort all | Desktop layout ; after ArrowUp on \"Desktop layout\""
+ },
+ {
+  "id": "C1-board-402-escape",
+  "ok": true,
+  "note": "after Escape: BUTTON#sbMore.abtn.sb-more \"⋯\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px ; menu closed=true"
+ },
+ {
+  "id": "C1-board-402-escape-pic",
+  "ok": null,
+  "note": "051-C1-board-402-escape-opener.png cyan 185"
+ },
+ {
+  "id": "C1-board-402-arrow-open-first-item",
+  "ok": true,
+  "note": "BUTTON#sbMoreInsights.sb-moreitem \"Insights\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px bg=rgb(32, 38, 46) | cyan px 758 | 052-C1-board-402-arrowopen-first.png"
+ },
+ {
+  "id": "C4-templates-daybar-402",
+  "ok": true,
+  "note": "BUTTON.mbtn.daybtn \"Templates\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=color(srgb 0.231373 0.776471 0.909804 / 0.14) | cyan px 638 | 053-c4-templates-daybar.png"
+ },
+ {
+  "id": "C4-templates-daybar-402-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BUTTON.wm \"+ Save this day as a templat\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px ; 054-c4-templates-daybar-after-enter.png"
+ },
+ {
+  "id": "C4-templates-daybar-402-escape",
+  "ok": null,
+  "note": "after Escape focus is BUTTON.mbtn.daybtn \"Templates\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "C3-plusblock-duty-402-reach",
+  "ok": null,
+  "note": "Tab (both directions, one full cycle of the board, 345 stops each way) never stops on it: reached by a script focus() after a key press"
+ },
+ {
+  "id": "C3-plusblock-duty-402",
+  "ok": true,
+  "note": "BUTTON.mbtn.add \"+ Block\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(32, 38, 46) | cyan px 229 | 055-c3-block-duty-402.png"
+ },
+ {
+  "id": "C3-plusblock-duty-402-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BUTTON.wm \"Standard3 roles\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px ; 056-c3-block-duty-402-after-enter.png"
+ },
+ {
+  "id": "C3-plusblock-duty-402-escape",
+  "ok": null,
+  "note": "after Escape focus is BUTTON.mbtn.add \"+ Block\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "C3-plusblock-amt-402-reach",
+  "ok": null,
+  "note": "Tab (both directions, one full cycle of the board, 345 stops each way) never stops on it: reached by a script focus() after a key press"
+ },
+ {
+  "id": "C3-plusblock-amt-402",
+  "ok": true,
+  "note": "BUTTON.mbtn.add \"+ Block\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(32, 38, 46) | cyan px 273 | 057-c3-block-amt-402.png"
+ },
+ {
+  "id": "C3-plusblock-amt-402-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px ; 058-c3-block-amt-402-after-enter.png"
+ },
+ {
+  "id": "C3-plusblock-amt-402-focus-lost",
+  "ok": null,
+  "note": "after Enter the keys are on the page body (the board redrew): Escape not pressed"
+ },
+ {
+  "id": "C3-plusblock-amt-402-escape",
+  "ok": null,
+  "note": "after Escape focus is BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px"
+ },
+ {
+  "id": "C5-plusWave-402-reach",
+  "ok": null,
+  "note": "Tab (both directions, one full cycle of the board, 345 stops each way) never stops on it: reached by a script focus() after a key press"
+ },
+ {
+  "id": "C5-plusWave-402",
+  "ok": true,
+  "note": "BUTTON.mbtn.add \"+ Wave\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(32, 38, 46) | cyan px 221 | 059-c5-wave-402.png"
+ },
+ {
+  "id": "C5-plusWave-402-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BUTTON.wm \"Flying wave\" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px ; 060-c5-wave-402-after-enter.png"
+ },
+ {
+  "id": "C5-plusWave-402-escape",
+  "ok": null,
+  "note": "after Escape focus is BUTTON.mbtn.add \"+ Wave\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "C5-plans-402",
+  "ok": true,
+  "note": "BUTTON.planselbtn \"Live working copy▾\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgb(26, 31, 38) | cyan px 549 | 061-c5-plans-402.png"
+ },
+ {
+  "id": "C5-plans-402-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BUTTON.wm.sa \"Live working copy ●live now \" fv=true outline=solid 2px rgb(59, 198, 232) off=-2px ; 062-c5-plans-402-after-enter.png"
+ },
+ {
+  "id": "C5-plans-402-escape",
+  "ok": null,
+  "note": "after Escape focus is BUTTON.planselbtn \"Live working copy▾\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px"
+ },
+ {
+  "id": "C5-stores-402-reach",
+  "ok": null,
+  "note": "Tab (both directions, one full cycle of the board, 345 stops each way) never stops on it: reached by a script focus() after a key press"
+ },
+ {
+  "id": "C5-stores-402",
+  "ok": true,
+  "note": "BUTTON.stcfg \"C\" fv=true outline=solid 2px rgb(59, 198, 232) off=2px bg=rgba(0, 0, 0, 0) | cyan px 126 | 063-c5-stores-402.png"
+ },
+ {
+  "id": "C5-rolebox-402",
+  "ok": false,
+  "note": "TEXTAREA.ain \"SDO\" fv=true outline=none 3px rgb(241, 244, 247) off=0px bg=rgb(11, 13, 16) | cyan px 412 | 064-c5-rolebox-402.png"
+ },
+ {
+  "id": "C5-rolebox-402-enter",
+  "ok": null,
+  "note": "Enter pressed; menus visible: [] ; focus now BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px ; 065-c5-rolebox-402-after-enter.png"
+ },
+ {
+  "id": "C5-rolebox-402-focus-lost",
+  "ok": null,
+  "note": "after Enter the keys are on the page body (the board redrew): Escape not pressed"
+ },
+ {
+  "id": "C5-rolebox-402-escape",
+  "ok": null,
+  "note": "after Escape focus is BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px"
+ },
+ {
+  "id": "errors-402",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "C6-tap-week-more",
+  "ok": true,
+  "note": "BODY. \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 51 | 066-c6-tap-week-more.png"
+ },
+ {
+  "id": "C6-tap-week-menu",
+  "ok": null,
+  "note": "menu open after tap, focus BODY. \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px"
+ },
+ {
+  "id": "C6-tap-sbMore",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 10 | 069-c6-tap-sbmore.png"
+ },
+ {
+  "id": "C6-tap-board-menu",
+  "ok": null,
+  "note": "menu after tap; focus BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px cyan 0 070-c6-tap-board-menu.png"
+ },
+ {
+  "id": "C6-tap-daybar-tpl",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 198 | 072-c6-tap-daybar-tpl.png"
+ },
+ {
+  "id": "C6-tap-block",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 0 | 074-c6-tap-block.png"
+ },
+ {
+  "id": "C6-tap-amtblock",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 0 | 076-c6-tap-amtblock.png"
+ },
+ {
+  "id": "C6-tap-wave",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 0 | 078-c6-tap-wave.png"
+ },
+ {
+  "id": "C6-tap-plans",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 413 | 080-c6-tap-plans.png"
+ },
+ {
+  "id": "C6-tap-stores",
+  "ok": true,
+  "note": "BODY.sb-lock.sb-board-up \"142TALONEdit ScheduleView-on\" fv=false outline=none 3px rgb(241, 244, 247) off=0px | cyan px 27 | 082-c6-tap-stores.png"
+ },
+ {
+  "id": "C6-tap-role",
+  "ok": false,
+  "note": "TEXTAREA.ain \"SDO\" fv=true outline=none 3px rgb(241, 244, 247) off=0px | cyan px 410 | 084-c6-tap-role.png"
+ },
+ {
+  "id": "errors-touch",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -6,6 +6,7 @@ import { notify } from '../state/store'
 import { moveSectionTo } from '../state/store'
 import { setSecDefOffer } from './pops'
 import { liftOn, liftOff, markLand } from './lift'
+import { shownTop } from './edgescroll'
 
 /* ---- dragging to reorder, in place (owner, 8 Aug 26; sections + wave blocks
    added 29 Aug 26 pt.3, replacing the Arrange sheet) ------------------------
@@ -123,7 +124,8 @@ export function wireRowDrag(el: HTMLElement) {
     if (!scroller) return 0
     const win = isWin(scroller)
     const r = win ? null : scroller.getBoundingClientRect()
-    const top = win ? 0 : r!.top
+    /* below the board's pinned bar on a phone on its side (D1780 — edgescroll.ts shownTop) */
+    const top = win ? 0 : shownTop(scroller, r!.top)
     const bot = win ? window.innerHeight : r!.bottom
     /* a sixth of the pane each, at most 72 — the puck drag's rule (drag.ts tdEdge, [OIL-NOTIFY-SEEN] (6)): on a phone on its
        side the board is about 190px tall and two 72px bands were most of it, so a row, a wave or an In-time line held

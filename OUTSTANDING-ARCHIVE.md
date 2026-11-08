@@ -8098,3 +8098,48 @@ frame). The Quals page's frozen header has the same shape. **Place:** the next L
 after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at all.
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1789) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The dates row blink" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([BOARD-SIDEWAYS-KEYS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [BOARD-SIDEWAYS-KEYS] A phone on its side with the keys up: the Scheduler Board's heading fills what is left (found 19 Oct 26 — the D1048 walk, walker A's A2; low)
+*(Since 19–20 Oct 26 the board no longer follows the visible screen — it is page content, D1081 — so look again on a phone on
+its side before building.)* With the phone on its side (874 × 402) and a keyboard of about 200px up, the board follows the visible screen (its fit to
+`visualViewport`, `SchedBoard.tsx`) and is 202px tall; its bar, day strip and headings take 186px of it, leaving a 16px
+strip to scroll in — a time box tapped low ends under the keys, and none can be brought up (`kbscroll.ts` scrolls the
+panel to its end). Older than D1048 (the layout of the board's top on a short screen). Pictures:
+`raptor-port/docs/img/handpass/2026-10-19-keyboard-scroll/walk/A/A2-*.png`; the sheet
+`raptor-port/docs/handpass/2026-10-19-keyboard-scroll.md`. **To do:** on a short screen with the keys up, fold the board's
+top to its one bar (the day strip and section headings scroll with the panel). A picture to him first (D853). **Place:**
+low — with the next change to the board's top on a phone.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1780) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The board on a phone on its side, keys up" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([BOARD-NARROW-DESKTOP-REMARKS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [BOARD-NARROW-DESKTOP-REMARKS] The desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; low)
+Walker A: at 821, 900 and 1000 wide (the desktop layout, pucks on the line) the remarks box is 16px and a line 189px tall; measured the same with the
+R box taken away (`raptor-port/scripts/handpass/rally-narrow.mjs`), so it is older than [RALLY-PER-FORMATION] (which keeps the remarks within 2px of
+before from 1100 to 1439 — `13-board-rows-responsive.css`). Picture `raptor-port/docs/img/handpass/2026-10-19-rally-build/A/A15-d821-board.png`.
+**Place:** with the next change to the board's layout — a picture to him first (a visual change, D541): stack the times there as a phone does, or
+let the remarks take a line of their own.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1781) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The board 821 to 1000 wide" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([BOARD-KEYS-LOOKS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [BOARD-KEYS-LOOKS] Three looks under the keys on the Scheduler Board, left by the board-keys job (the night of 7–8 Nov 26; low)
+Built that night on `claude/board-keys` ([BOARD-KEYS-LEFT]'s last two menus, [WEEK-GLIDE-TWO-PAGES]); what a person would SEE
+differently was not built (D1625) and waits as three questions, each with its pictures and a recommendation in
+`raptor-port/docs/handpass/2026-11-08-board-keys.md` §11: **Q1** an item of the board's ⋯ menu under the keys wears its raised
+row and the browser's own ring, where the board's other menus wear the app's cyan ring — recommended: the cyan ring, on the
+board's ⋯ and the week's alike; **Q2** a button that opens a board menu (+ Block, the day bar's Templates) wears the browser's
+white ring under the keys, as on `main` — recommended: the cyan ring, as D1646 reads; **Q3** Tab out of a menu works two ways
+(the board's string-drawn menus close and give the keys back to their button; the ⋯ menu lets Tab move on, and Shift+Tab back
+onto ⋯ leaves it open) — recommended: leave as built. Also, the agent's: the ⋯ menu's list of its items repeats the shared
+menus' own list-maker (`SchedBoard.tsx moreItems`, `sheetfocus.ts menuItems`) — one could serve both (the Opus read of 8 Nov 26,
+finding 4). **His answers, 8 Nov 26 — D1771, D1772 (all as recommended):** Q1 and Q2 the cyan ring, to build; Q3 stays
+as built. **Place:** Q1 and Q2 one small job — the look, a walk; the tidy-up with it — built inside the pictures round's build,
+its group 1 (the board's layout, wave 2, the same board files), his word 8 Nov 26; chat 3 asked to add it to its plan. The
+same job checks + Wave, the plans selector, a jet's stores and the duty role box under the keys — D1646 asks the cyan ring
+there too, and a fresh reader found none in the stylesheet (8 Nov 26, not looked at on screen).
+

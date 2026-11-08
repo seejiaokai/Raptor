@@ -149,6 +149,11 @@
 .wm-pen.wm-mng{padding:.5px 2.5px}
 .wm-pen.wm-mng>.btnglyph{display:block;width:14px;height:14px;color:currentColor}
 .sb-moreitem:hover,.sb-moreitem:focus-visible{background:var(--raised)}
+/* UNDER THE KEYS the item keeps its raised row and wears the app's cyan ring inside its own edge, in place of the
+   browser's (owner D1771, 8 Nov 26 — the approved picture docs/img/handpass/2026-11-08-board-keys/walk/003-narrow-q1-proposed.png;
+   the board's other menus' picks wear it the same way, 10-board-history.css .wavemenu button.wm). The keys only. */
+.sb-moreitem:focus{outline:none}
+.sb-moreitem:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .sb-moreitem:disabled{opacity:.45;cursor:default}
 @media (min-width:821px){ .sb-panel.daybar:not(.oilon){display:none} }
 
