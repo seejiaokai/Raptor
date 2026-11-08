@@ -140,7 +140,7 @@ time between two of its animation frames) at 4× slow CPU, five runs each, all i
 | Quals, phone 402, after | 953 | 850 | **103** | 0 | 0 | 33 ms | — |
 
 **What it says:** on the phone the long pauses are fewer and shorter (the worst frame 283 → 67 ms on the Leave War) and
-the page does about a third less work, but the page's frames skip one screen refresh far more often — the Leave War
+the page did about a third less work in this run (struck below: not repeated), but the page's frames skip one screen refresh far more often — the Leave War
 27% of frames against 5% before, Quals 11% against 4% — and each scroll's run lasted about 0.8 s longer. These are
 the page's own frames, not the frames the phone's scroller paints (a touch scroll is drawn off the page's thread), so
 this count does not prove the scroll looks less smooth; it does not prove it looks as smooth either. The desktop
@@ -148,6 +148,29 @@ counts move both ways within the run-to-run spread (Leave War: one-refresh 17 �
 533 → 217 ms). **Judged:** a cost on a slow phone that this measure cannot settle — set to the code readers as a
 question (why the page's frames halve while its work drops, and whether the always-present copy can cost less), and
 on his look card as the one thing his iPhone decides: the Leave War scrolled fast and slowly, beside the live app.
+
+**The diagnosis (8 Nov 26 06:14–06:24Z, under the checks lock, phone 402 only, 5 runs each; results
+`diag-*-results.json`).** The same scroll on the same after build with one style changed for the run (the script's
+`EXTRA_CSS`), against `main` again:
+
+| Run | Leave War: one refresh skipped / over 50 ms (of ~900 frames) | Quals: one refresh skipped / over 50 ms |
+|---|---|---|
+| `main` again (`diag-main`) | 37 / 8 | 50 / 1 |
+| the after build again (`diag-final`) | 231 / 38 | 134 / 17 |
+| the copy's scroll step switched off (`diag-noanim`) | 46 / 13 | 33 / 3 |
+| the copy on its own layer (`will-change: opacity`) | 186 / 46 | 126 / 11 |
+| the copy's painting contained (`contain: layout paint style`) | 232 / 17 | 120 / 3 |
+| the step's range written as plain numbers, no `var()` | 225 / 39 | 107 / 1 |
+
+**Found:** the cost is the copy's show-on-scroll step itself (the opacity animation on the page's scroll timeline):
+switched off, the phone's frames are `main`'s again; its own layer, contained painting or a plain-number range does not
+help. The second after run also did MORE work than `main` (the page's work 1464–2487 ms a run against 1009–1437), so
+the earlier "a third less work" did not hold up — run-to-run spread; struck. In this test browser (Chromium at 4×
+slow CPU, a scripted finger) the page's frames run at about half rate while a finger scrolls the Leave War, and each
+scroll took about 0.8 s longer to follow the finger — by D1789's own test ("stops if scrolling gets slower") a stop.
+What his iPhone (WebKit) does is not measured here. **The job is PARKED at this point** (D1796: a question for him is
+open), before the walk and the code reads, so neither is spent on a build whose way may change; the question is his
+(D765, "never at a cost of speed", against D1870's blink).
 
 ## The orders walked
 
