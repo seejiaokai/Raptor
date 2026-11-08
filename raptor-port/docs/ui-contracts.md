@@ -6378,7 +6378,8 @@ The three category panels:
     War tab is withdrawn from the war for real and does NOT come back
     with Undo (the war has no shared undo — same as deleting such a row
     by hand).
-  - **Clear edit history** (`#admLog` → `clearEditHistory` →
+  - **Clear edit history** — *removed at the database step (owner, D1752, 8 Nov 26, replacing D351); as built until then:*
+    (`#admLog` → `clearEditHistory` →
     `elogSweep`, `engine/editlog.ts`) clears ELOG rows by the LOCAL
     calendar date the edit was MADE (the date the History list prints),
     never touching the schedule. Permanent for real — the edit log was
