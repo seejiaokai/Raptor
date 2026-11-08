@@ -22,7 +22,7 @@
 import { DAYS } from '../engine/data'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
-import { isOD, INPUTS, inpId, inpLabel, goneRequestName, isFly, titleOf, toOf, inputCoversDate, idsOf, holds, placeholderOf, remarksShown } from '../engine/inputs'
+import { isOD, INPUTS, inpId, inpLabel, goneRequestName, isFly, titleOf, toOf, inputCoversDate, idsOf, holds, placeholderOf, remarksShown, listedUnavail, listedPersonal } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, inputIdOf, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
@@ -32,7 +32,7 @@ import { oilEvidence, oilKeptVals, oilRuleShift } from '../engine/oilev'
 import { oilRuleValsNow } from '../engine/oil'
 import { RULE_SPEC, ruleFmt } from '../engine/rules'
 import { standsOn } from '../engine/overlay'
-import { esc } from '../state/view'
+import { esc, CURPAGE, SBDAY } from '../state/view'
 
 let items: PendItem[] = []
 /* the per-row places of a multi-row line (several placeholders' crowds), by "item.row" — read by the click */
@@ -203,6 +203,25 @@ function inputRowKeys(inp: any, it: PendItem): string[] {
   const id = String(inpId(inp)), p = it.pp && it.pp.p != null ? String(it.pp.p) : ''
   return (p && idsOf(inp).length > 1 && holds(inp, p) ? [`iu:${id}~${p}`] : []).concat(`iu:${id}`)
 }
+/* A LINE ABOUT AN INPUT THAT FOUND NO PLACE OF ITS OWN GOES TO THE INPUT'S ROW — WHERE THE PAGE DRAWS ONE (the walk of
+   8 Nov 26, W1b S30: "Bolt · LL · filed" stood still, the same on main's build, while its row wears the waiting mark the
+   line is about, D1784; the History window's twin is ui/changesjump.ts jumpOf). Worked out once, for every line, after
+   its words (pendListHTML): a filing's line as well as a details line (the final code read, 8 Nov 26 — Sol 6.1 S2, Astra
+   3, the fresh Opus reader F1: a course filed under Unavailable, a request put "→ Unavail", stood still).
+   The input as it stands on the day — the record the comparison paired (a man's record replaced by another of his comes
+   as `now`), else the one by the line's id — and only where that row is drawn: under Unavailable on every page, under
+   Personal Inputs on Edit Schedule and the board, never on View-only Sched, which draws no Personal Inputs (ui/html.ts
+   crewInputs); a kind listed in neither — a SANS availability, a card with no row address; an upchit — has nowhere to go
+   (Sol 6.1 S1, Astra 1, the fresh Opus reader F2: those lines had become buttons that landed nowhere). A deleted or
+   moved-off input, and a man taken out of an input (his record is gone), keep their still line. */
+function drawnRowKeys(di: number, it: PendItem): string[] | null {
+  const id = inputIdOf(it)
+  if (!id || !DAYS[di]) return null
+  const now: any = it.now || INPUTS.find((x: any) => inpId(x) === id) || null
+  if (!now || !INPUTS.some((x: any) => inpId(x) === inpId(now)) || !inputCoversDate(now, (DAYS[di] as any).dt)) return null
+  const drawn = listedUnavail(now) || (listedPersonal(now) && (CURPAGE === 'editsched' || SBDAY != null))
+  return drawn ? inputRowKeys(now, it) : null
+}
 function inputWords(di: number, it: PendItem): Words {
   const e: any = it.val || {}, id = String(e.addr || '').split('.').slice(1).join('.')
   /* the two records the comparison paired — the live one may be another record of the same man's (a medical takeover's
@@ -210,13 +229,9 @@ function inputWords(di: number, it: PendItem): Words {
   const snap: any = daySnapOf(di, dayCurVer(di)), was = it.was || (snap && snap.inp && snap.inp[id]) || null
   const now = it.now || INPUTS.find((x: any) => inpId(x) === id) || null
   const here = !!now && !!DAYS[di] && inputCoversDate(now, (DAYS[di] as any).dt)
-  /* a line whose input re-landed a row on this day takes the view to it (Fable F4); a leave with no programme row goes to
-     its row under Unavailable or Personal Inputs — which since D1784 wears the waiting mark the line is about (the walk of
-     8 Nov 26, W1b S30: it stood still, "no place of its own", the same on main's build). The History window's twin
-     (ui/changesjump.ts jumpOf): one man's row first, then the input; a deleted or moved-off input has no row here and
-     stays still. */
-  const rowKeys = !(it.jump && it.jump.length) && here ? inputRowKeys(now, it) : null
-  const none = { ...whoWhen(editRowOf(di, it)), jump: !!(it.jump && it.jump.length) || !!rowKeys, ...(rowKeys ? { keys: rowKeys } : {}) }
+  /* a line whose input re-landed a row on this day takes the view to it (Fable F4); one with no programme row goes to the
+     input's own row where the page draws it — worked out after the words, for every line (drawnRowKeys) */
+  const none = { ...whoWhen(editRowOf(di, it)), jump: !!(it.jump && it.jump.length) }
   const name = requestName(here ? now : (was || now))
   if (!was) {
     const f: any = it.inp || (it.entry && String((it.entry as any).addr || '').startsWith('inp:') ? it.entry : null)
@@ -239,8 +254,8 @@ function inputWords(di: number, it: PendItem): Words {
   const piece = it.pp && it.pp.role === 'off' && now ? INPUTS.find((x: any) => x && x !== now && inpId(x) !== inpId(now)
     && idsOf(x).length === 1 && String(idsOf(x)[0]) === String(it.pp!.p) && x.type === now.type
     && x.at != null && x.at === now.at && (x.by === now.by || (!!was && x.by === was.by)) && !!DAYS[di] && inputCoversDate(x, (DAYS[di] as any).dt)) : null
-  /* (his own record is where he now is, so the tap goes there first) */
-  if (it.pp && piece) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: `his own now — ${winWords(piece)}`, ...none, ...(rowKeys ? { keys: [`iu:${inpId(piece)}`, ...rowKeys] } : {}), edited: true } as Words
+  /* (his own record is where he now is, so a tap that goes to the input's row goes there first — `lead`, pendListHTML) */
+  if (it.pp && piece) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: `his own now — ${winWords(piece)}`, ...none, lead: [`iu:${inpId(piece)}`], edited: true } as Words
   if (it.pp) return { where: `${cs(it.pp.p)} · ${inpLabel(now)}`, from: '', to: it.pp.role === 'on' ? 'added' : 'taken out', ...none, edited: true } as Words
   const from: string[] = [], to: string[] = []
   const pair = (a: string, b: string) => { if (a !== b) { from.push(a); to.push(b) } }
@@ -599,7 +614,13 @@ export function pendListHTML(di: number): string {
     .sort((a, b) => (b.t - a.t) || (RANK(a.x) - RANK(b.x)) || (a.i - b.i)).map(o => o.x)
   const n = items.length, seq = nextSeq(di)
   const rows = items.map((it, i) => {
-    const w = pendItemWords(di, it)
+    let w = pendItemWords(di, it)
+    /* a line about an input with no place of its own goes to the input's row, where this page draws it (drawnRowKeys) —
+       a man split out of a shared input to his own record first (`lead`) */
+    if (!w.jump && !(w as any).rows && !(it.jump && it.jump.length)) {
+      const k = drawnRowKeys(di, it)
+      if (k) w = { ...w, jump: true, keys: [...((w as any).lead || []), ...k] } as Words
+    }
     /* a line that found its own place to go (the crowd behind a placeholder) carries it for the tap */
     if (w.jump && !(it.jump && it.jump.length) && (w as any).keys) items[i] = { ...it, jump: (w as any).keys }
     const chg = w.from || w.to

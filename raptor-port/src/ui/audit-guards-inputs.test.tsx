@@ -120,6 +120,50 @@ describe('an unsupported (protected) week is read-only from the input surfaces (
   })
 })
 
+/* THE ACCEPT BUTTONS SAY IT THE SAME WAY (D1785 — the final code read of 8 Nov 26: Sol 6.1 S3, the fresh Opus reader F3,
+   Astra's reading (d)). A request on a healthy loaded week that runs into a stashed week whose saved copy will not read:
+   Accept, Reject and → Unavail are refused by the engine before anything is written (engine/slots.ts acceptInput,
+   unacceptInput), so the store's backstop never sees a write to refuse, and the door said its own amber "can't be changed
+   here right now". Pressed as the screens press them (the buttons' own markup, ui/html.ts accCtl, through the click
+   router): one grey note in D1785's words, the input and the day unchanged, no step for Undo. */
+describe('the accept buttons on an input that runs into a damaged week refuse in the grey note, in D1785’s words', () => {
+  const MON = 0
+  const el = (html: string) => { const d = document.createElement('div'); d.innerHTML = html; return d }
+  const press = async (di: number, r: any, dest: 'x' | 'g' | 'u') => {
+    const { accCtl } = await import('./html')
+    const { routeClick } = await import('./interactions')
+    const b = el(accCtl(di, r)).querySelector(`[data-acc="${dest}"]`) as HTMLElement
+    expect(b, `the "${dest}" button`).toBeTruthy()
+    document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  for (const [dest, label] of [['g', 'Accept'], ['u', '→ Unavail'], ['x', 'Reject']] as const) {
+    it(`${label} on Monday's card of a Sun 12 – Mon 13 Jul meeting, the week of 6 Jul unreadable`, async () => {
+      const { initStore } = await import('../state/store')
+      const { setSession: setS } = await import('../state/auth')
+      const { acceptInput } = await import('../engine/slots')
+      const { setPage } = await import('../state/view')
+      const { _timelineEntries } = await import('../undo/timeline')
+      initStore(); setS({ user: 'ad', role: 'admin' } as any); setPage('editsched')
+      stashClear()
+      const row: any = { iid: 'span-dmg', person: 'bane', type: 'Meeting', date: 'Jul 12', endDate: 'Jul 13', yr: 2026, allday: true, remarks: 'spans', mod: '', acc: 'r' }
+      INPUTS.unshift(row)
+      if (dest === 'x') expect(acceptInput(MON, row, 'g'), 'on Monday’s programme to start').toBeTruthy()
+      stashPut('06/07/2026', '{"unreadable":true}')
+      const before = JSON.stringify(INPUTS), days = JSON.stringify(DAYS), steps = _timelineEntries().length
+      try {
+        said = []; kinds = []
+        await press(MON, INPUTS.find((x: any) => x.iid === 'span-dmg'), dest)
+        expect(said, 'one note, in D1785’s words').toEqual([UNREADABLE_WORDS])
+        expect(kinds, 'the grey note').toEqual(['blocked'])
+        expect(JSON.stringify(INPUTS), 'the input unchanged').toBe(before)
+        expect(JSON.stringify(DAYS), 'the day unchanged').toBe(days)
+        expect(_timelineEntries().length, 'no step for Undo').toBe(steps)
+      } finally { stashClear() }
+    })
+  }
+})
+
 describe('an input time has to be a time', () => {
   it('refuses an out-of-range clock in the in-place cells', () => {
     const r = timed()

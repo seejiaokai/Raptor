@@ -20,12 +20,14 @@ import { beforeAll, beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId, idsOf } from '../engine/inputs'
 import { acceptInput, unacceptInput, txtSet } from '../engine/slots'
-import { SCHED, signOf, setSign, setDayApproved, dayPendingItems, dayShownPendCount, nextSeq, publishALDay, pendingInputIds, dayCurVer } from '../engine/publish'
+import { SCHED, signOf, setSign, setDayApproved, dayPendingItems, dayShownPendCount, nextSeq, publishALDay, pendingInputIds, dayCurVer, inputIdOf } from '../engine/publish'
+import { PEOPLE } from '../engine/people'
 import { validate } from '../engine/validate'
 import { initStore } from '../state/store'
 import { setSession } from '../state/auth'
-import { setPage, DPREV, VWORK, setUnpubArm, setRestArm } from '../state/view'
-import { dayHTML, dayIssuedHTML, dayPreviewHTML, withDaySnap } from './html'
+import { setPage, DPREV, VWORK, PIOPEN, setUnpubArm, setRestArm } from '../state/view'
+import { dayHTML, dayIssuedHTML, dayPreviewHTML, withDaySnap, accCtl } from './html'
+import { routeClick, jumpToChange } from './interactions'
 import { boardHTML } from './board'
 import { commitNewInput, commitInputEdit, commitInput, draftOf, removeInput, setInpField } from './inputedit'
 import { toggleOilMode, oilModeOn } from './oilmode'
@@ -338,6 +340,100 @@ describe('the waiting list: a tap on an Unavailable input’s line takes the vie
     const line = lineFor(WED, /deleted/)
     expect(line, 'the deletion has a line').toBeTruthy()
     expect(line!.tagName, 'nothing to go to').toBe('DIV')
+  })
+})
+
+/* THE FINAL CODE READ'S FINDINGS (8 Nov 26 — Sol 6.1 S1, S2; Astra 1–3; the fresh Opus reader F1, F2, F4): the line goes
+   to the input's row only where the page draws one — under Unavailable on every page, under Personal Inputs on Edit
+   Schedule and the board only (View-only Sched draws none, ui/html.ts crewInputs) — and never for a kind drawn as
+   neither (a SANS availability is a card with no row address, an upchit stands nowhere); the filing lines get it too
+   (a course filed under Unavailable, a request put "→ Unavail"), worked out in one place for every line; and the tap
+   opens Personal Inputs only for an input listed there that has no programme row on the day. */
+describe('the waiting list’s taps go only where the page draws the input’s row', () => {
+  const TUE = 1
+  const keysFor = (di: number, id: string) => [...el(pendListHTML(di)).querySelectorAll('button.pl-item')]
+    .map(b => pendKeysFor(b as HTMLElement)).find(k => !!k && k.some(x => x === `iu:${id}` || x.startsWith(`iu:${id}~`))) || null
+  const waits = (di: number, id: string) => dayPendingItems(di).some(it => inputIdOf(it) === id)
+  const weekPI = (di: number) => { setPage('editsched'); return el(dayHTML(di, true, true)).querySelector('.sec-inp') as HTMLElement }
+  const press = (di: number, r: any, dest: 'x' | 'g' | 'u') => {
+    const b = el(accCtl(di, r)).querySelector(`[data-acc="${dest}"]`) as HTMLElement
+    expect(b, `the "${dest}" button`).toBeTruthy()
+    document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  it('a SANS availability filed after publishing: its line has no row to go to, so it stays still', () => {
+    publishDay(WED)
+    const who = Object.keys(PEOPLE).find(id => PEOPLE[id].san && !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special
+      && !INPUTS.some((i: any) => i.type === 'SANS Availability' && i.date === 'Jul 15' && idsOf(i).map(String).includes(id)))!
+    expect(commitInput(null, draftOf({ person: who, type: 'SANS Availability', date: 'Jul 15', yr: 2026, allday: true, sans: { f: true }, remarks: 'SANS TAP' }), [who])).toBe(true)
+    validate()
+    const id = String(inpId(byRemark('SANS TAP')))
+    expect(waits(WED, id), 'the filing waits to go out').toBe(true)
+    expect(keysFor(WED, id), 'no line goes to an input row the SANS card does not carry').toBeNull()
+  })
+  it('a course filed after publishing lands under Unavailable: its line goes to its row there, on the week and the board', () => {
+    publishDay(WED)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-15', 'COURSE TAP', 'CSE'))).toBe(true)
+    validate()
+    const inp = byRemark('COURSE TAP'), id = String(inpId(inp))
+    expect(inp.acc, 'a course files itself under Unavailable').toBe('u')
+    const keys = keysFor(WED, id)
+    expect(keys, 'its line goes to its row').toEqual([`iu:${id}`])
+    expect(findInputCell(weekUnav(WED), keys![0]!), 'the week draws it').toBeTruthy()
+    expect(findInputCell(boardUnav(WED), keys![0]!), 'and the board').toBeTruthy()
+  })
+  it('a request on the Ground Programme, Rejected then put "→ Unavail" after publishing: its line goes to its row under Unavailable', () => {
+    expect(commitNewInput({ ...leaveDraft('bane', '2026-07-15', 'MOVE TAP', 'Meeting'), allday: false, sTime: '09:00', eTime: '10:00' })).toBe(true)
+    validate()
+    const id = String(inpId(byRemark('MOVE TAP')))
+    expect(DAYS[WED].ground.some((g: any) => g && g.src === id), 'on Wednesday’s Ground Programme').toBe(true)
+    publishDay(WED)
+    press(WED, byRemark('MOVE TAP'), 'x'); validate()
+    press(WED, byRemark('MOVE TAP'), 'u'); validate()
+    expect(byRemark('MOVE TAP').acc, 'filed under Unavailable').toBe('u')
+    const keys = keysFor(WED, id)
+    expect(keys, 'its line goes to its row').toEqual([`iu:${id}`])
+    expect(findInputCell(weekUnav(WED), keys![0]!), 'the week draws it').toBeTruthy()
+    expect(findInputCell(boardUnav(WED), keys![0]!), 'and the board').toBeTruthy()
+  })
+  it('a Mon–Tue meeting standing on Monday’s programme, Tuesday published, its remarks changed: Tuesday’s line opens Personal Inputs and lands there; View-only Sched has no row to go to', () => {
+    expect(commitNewInput({ ...leaveDraft('bane', '2026-07-13', 'TWO DAY TAP', 'Meeting'), end: '2026-07-14' })).toBe(true)
+    validate()
+    const inp = byRemark('TWO DAY TAP'), id = String(inpId(inp))
+    expect(inp.acc, 'accepted onto the programme').toBe('g')
+    expect(DAYS[MON].ground.some((g: any) => g && g.src === id) && !DAYS[TUE].ground.some((g: any) => g && g.src === id), 'its one row is Monday’s').toBe(true)
+    publishDay(TUE)
+    expect(commitInputEdit(inp, { ...draftOf(inp), remarks: 'TWO DAY TAP changed' })).toBeTruthy()
+    validate()
+    expect(waits(TUE, id), 'Tuesday has it waiting').toBe(true)
+    const keys = keysFor(TUE, id)
+    expect(keys, 'Tuesday’s line goes to its row under Personal Inputs').toEqual([`iu:${id}`])
+    PIOPEN.delete(TUE)
+    jumpToChange(keys!, TUE)
+    expect(PIOPEN.has(TUE), 'the tap opens the folded Personal Inputs').toBe(true)
+    expect(findInputCell(weekPI(TUE), keys![0]!), 'which draws its row to land on').toBeTruthy()
+    setPage('viewsched')
+    expect(keysFor(TUE, id), 'View-only Sched draws no Personal Inputs: nothing to go to').toBeNull()
+    setPage('editsched')
+  })
+  it('a leave’s tap does not open Personal Inputs: it is not listed there', () => {
+    publishDay(MON)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'LEAVE NO PI'))).toBe(true)
+    validate()
+    const keys = keysFor(MON, String(inpId(byRemark('LEAVE NO PI'))))
+    expect(keys, 'its line goes to its row under Unavailable').toBeTruthy()
+    PIOPEN.delete(MON)
+    jumpToChange(keys!, MON)
+    expect(PIOPEN.has(MON), 'Personal Inputs stays as it was').toBe(false)
+  })
+  it('on View-only Sched an Unavailable line still goes to its row: Unavailable is drawn there', () => {
+    publishDay(MON)
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'VIEW TAP'))).toBe(true)
+    validate()
+    setPage('viewsched')
+    const id = String(inpId(byRemark('VIEW TAP')))
+    expect(keysFor(MON, id), 'its line goes to its row').toEqual([`iu:${id}`])
+    setPage('editsched')
   })
 })
 
