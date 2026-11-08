@@ -174,15 +174,65 @@ open), before the walk and the code reads, so neither is spent on a build whose 
 
 ## The orders walked
 
+Two Sonnet walkers at once, 8 Nov 26 ~07:35–08:20Z by the PC clock, under the checks lock, each in its own browser
+context on the one frozen build (`dist-final` from 56f738937 — the bar's-height fix — served on port 4393), on the brief
+`docs/superpowers/briefs/2026-11-08-lw-pin-walk.md`: **L, the Leave War** (script `scripts/handpass/lwpin-walk-l.mjs`, report
+`docs/handpass/parts/2026-11-08-lw-pin-walk-L.md`) — 22 passed, **1 failed (L22)**, 1 recorded (L11); **Q, Quals**
+(`scripts/handpass/lwpin-walk-q.mjs`, `docs/handpass/parts/2026-11-08-lw-pin-walk-Q.md`) — 48 passed, 1 failed (Q-height),
+1 recorded, 2 not walked. Sizes: 1536 Chromium by mouse and wheel, 402 Chromium by CDP fingers, 402 WebKit for the looks
+(scripted WebKit touches drive no scroll), a stand-in without the scroll timeline (L24, Q24). Each with the plain-user round
+as admin and as member (L-plain, Q-plain). L-foot and Q-foot are his find's stand-in: at the page's foot the bar carried
+off 90px, a screen-size change sent, the bar put back.
+
+**The re-walk after L22's fix** (8dfa5dec0; `dist-final` rebuilt from it, the served bundle checked to carry the fix; 08:52–09:05Z
+by the PC clock, under the checks lock): L22 (both sizes), L22's narrowing extra, L6, L8, L-foot (three sizes), Q22a, Q22b, Q6,
+Q-foot (three sizes) — every one PASS, 0 console, page or 4xx errors. The host also ran walker L's exact turn and narrowing
+steps (phone at device scale 2, mobile, touch; 874×402 → 402×874; desktop 1536 → 420 → 1536; 30 and 10px short of the
+meeting point) on the walked build — wrong at three points — and on the fixed build — right at all eight.
+
 ## The cases carried by a test
+
+The pinned-row browser tests, all green on 8dfa5dec0 (84 passed, 18 skipped — a phone-only or desktop-only test in the
+other project): `e2e/leavewar.spec.ts` (lw-desktop, lw-phone), `geometry.spec.ts` and `pinchzoom.spec.ts` (raptor),
+`year-leavewar.spec.ts`, `save-note.spec.ts` — hidden at rest, shown once pinned, out of the keys while hidden, the first
+frame, reduce motion, a page too short to scroll, mid-pinch, the "Not saved" band, a block above the grid at rest, the bar
+carried off for a moment (his find), and **after the screen changes width** (L22: red on lw-desktop on the walked build;
+the phone and Quals cases did not go red in the test browser's phone set-up — the walker's exact steps prove those, above).
+Unit: `pinframe.test.tsx`, `quals-pinframe.test.tsx` 12 of 12.
 
 ## The pictures
 
+`docs/img/handpass/2026-11-08-lw-pin-last-frame/walk/L/` and `walk/Q/` (each name starts with the scenario; L's with
+the browser and size inside). L22's pictures from the walked build are kept as `walk/L/before-fix-L22-*`; the re-walk wrote
+the fixed build's over the plain names. **Opened by the host, cropped:** Q-foot's bar out and bar back (402), Q4's mid-pinch,
+Q6's "Not saved" band (402) — the copy at the bar's foot, under the band, stretched with the table; L22's phone pair,
+before and after (`before-fix-L22-ph402-ch-just_before_T-402x874.png` beside `L22-ph402-ch-just_before_T-402x874.png`):
+before, two "2026 CS/Name" date rows and the month buttons covered; after, the months in view and one date row. The
+desktop pair at that moment differs by 5px and decides nothing. His recording's frames: `his-recording-bottom.png`.
+
 ## The break tests
+
+The bar carried off at the page's foot and put back (L-foot, Q-foot, three sizes each; the tests "…carried off for a
+moment"); a save refused with `?savefail` while pinned (L6, Q6); Manning and the group folds opened and closed 2px either
+side of the meeting point (L8); a block put above the grid at rest (the tests); a window narrowed and widened, a phone turned
+both ways, at and just before the meeting point (L22, Q22a, Q22b); a pinch across the meeting point, and one cancelled
+(L4/L5, Q4, Q5); the old way forced (L24, Q24).
 
 ## Errors seen
 
+None: 0 console errors, page errors or 4xx responses in either walk or the re-walk.
+
 ## What was NOT walked, and why
+
+- Safari's folding address bar, the iPhone's bounce and a real momentum fling — only his iPhone has them (the test browser's
+  finger makes no fling); the bounce's stand-in is L-foot / Q-foot. On his look card.
+- The Leave War at 2560 zoomed out (the brief's lesson 11) — not reached in the walker's time; the fit and the largest zoom
+  were walked at 402 (L11).
+- L3 (the keys and the screen reader) on the phone — walked at 1536; a phone has no Tab.
+- A member's bid with the row pinned, the Required keypad pinned (its row is out of view while pinned), a second finger in
+  Rearrange on the phone (L15) — named in L's report.
+- Quals: the returnee notice ("Later", Q7) needs an archived man restored through Admin first; Q17's tick sub-step left
+  the cell unchanged — the same tick is walked in Q-plain as admin and member.
 
 ## The gate counts
 
@@ -201,5 +251,19 @@ open), before the walk and the code reads, so neither is spent on a build whose 
    next step. All 14 pinned-row browser tests pass on the PC on the fixed build.
 
 ## What the walk found, and each disposition
+
+1. **L22 — after a narrowing or a turn the Leave War's copy showed ~37px early, until a reload (FAULT, this build's):**
+   the browser works out where the page's scroll turns the copy on against the page as it stands when the value changes;
+   during a resize the page is still settling, and the settled re-measure found the same value, so nothing made the
+   browser work it out again. **Fixed red-first (8dfa5dec0):** a forced re-measure that finds the value unchanged writes it
+   a hundredth of a pixel off, and the next writes it back (Matrix.tsx `placeY`, QualsPage.tsx `placeQ`); tests "after the
+   screen changes width…"; re-walked, above. `main` cannot do it (its copy is mounted by the page's code, not the browser).
+2. **Q-height — Quals' pinned box is 1px taller than the real heading** (24.28 against 23.28px at every size): measured by
+   the host on `main`'s build (port 4381) and this one alike — the box's own 1px edge under the heading row, whose heading
+   inside is the real one's height (23.28). Not this job's and not seen to misalign anything; not a fault.
+3. **L20's note — a tap outside the day panel does not close it:** the same at the page's top with no pinned row; the
+   panel is built to leave the grid behind it working (D1143, `DayPanel.tsx`), so not a fault.
+4. **L11 recorded:** at the exact meeting point at scale 2 and 3 the band against the pinned picture differed by under
+   0.003 — no seam; Q11 the same.
 
 ## The reads
