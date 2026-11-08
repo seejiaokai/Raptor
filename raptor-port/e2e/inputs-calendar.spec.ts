@@ -1591,6 +1591,29 @@ for (const width of [1536, 1340, 1280, 1024, 821]) {
     expect(await colW(page), 'the room goes with the window').toEqual(closed)
   })
 }
+/* A WINDOW HE HAS MOVED TAKES ITS ROOM WITH IT (both code reads of 8 Nov 26, Astra's and the fresh Opus reader's): a window
+   keeps the place it was dragged to for the session (winorder.ts), so a list that kept its room at the right for it was
+   squeezed AND covered. The room is made only while the window stands where it opens, as the calendar's opened day
+   already gives its room back once dragged (25-inputs-calendar.css, `:not([data-placed])`). */
+test('D1787: the input window dragged away gives the list its room back, and reopened where he left it, makes none', async ({ page }) => {
+  await login(page)
+  await listAt(page, 1536)
+  const closed = await colW(page)
+  await page.locator('#inNew').click()
+  const win = page.locator('[data-testid="win-inputedit"]')
+  await expect(win).toBeVisible()
+  expect((await colW(page)).slice(0, 3), 'at its own place the room is made').toEqual([110, 140, 90])
+  const t = (await win.locator('.win-ttl').boundingBox())!
+  await page.mouse.move(t.x + 10, t.y + t.height / 2); await page.mouse.down()
+  await page.mouse.move(t.x - 800, t.y + 150, { steps: 10 }); await page.mouse.up()
+  await expect.poll(() => colW(page), 'dragged away: the full widths back').toEqual(closed)
+  await page.keyboard.press('Escape')
+  await expect(win).toHaveCount(0)
+  await page.locator('#inBody tr .in-open').first().click()
+  await expect(win).toBeVisible()
+  expect(await colW(page), 'reopened where he left it: no room').toEqual(closed)
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector('.inwrap')!).paddingRight), 'no strip kept at the right').not.toBe('446px')
+})
 test('D1787 on a phone: + Input still first in its row; a window makes no room (D910, D997)', async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true })
   const page = await context.newPage()
@@ -1600,6 +1623,11 @@ test('D1787 on a phone: + Input still first in its row; a window makes no room (
   const btn = (await page.locator('#inNew').boundingBox())!
   const dates = (await page.locator('#inRangeBtn').boundingBox())!
   expect(btn.x, 'first, before the dates button').toBeLessThan(dates.x)
+  const pad0 = await page.evaluate(() => getComputedStyle(document.querySelector('.inwrap')!).paddingRight)
+  /* with its window open, as the claim says (the Opus code read: the test never opened one) */
+  await page.locator('#inNew').tap()
+  await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
   await expect(page.locator('.inputs-workspace.in-room')).toHaveCount(0)
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector('.inwrap')!).paddingRight), 'no room made on a phone').toBe(pad0)
   await context.close()
 })

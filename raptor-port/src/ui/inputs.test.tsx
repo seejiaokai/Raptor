@@ -137,6 +137,17 @@ describe('the Inputs page (tfin)', () => {
     expect(ws().classList.contains('in-room'), 'the room goes with the window').toBe(false)
   })
 
+  /* a row's own window makes the same room as "+ Input"'s (D1787 — the Opus code read of 8 Nov 26: only "+ Input" was
+     tested, so a room tied to a new input alone would have passed) */
+  it('a row\'s own window makes the same room as "+ Input"\'s', async () => {
+    const ws = () => D('.inputs-workspace')
+    await openRow(0)
+    expect(W(), 'the row opened its window').toBeTruthy()
+    expect(ws().classList.contains('in-room')).toBe(true)
+    await click(D('#inpEditCancel'))
+    expect(ws().classList.contains('in-room')).toBe(false)
+  })
+
   it('no TDY, and the retired types are gone', async () => {
     await openNew()
     const opts = [...(D('#inpEditType') as unknown as HTMLSelectElement).options].map(o => o.value)
