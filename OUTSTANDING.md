@@ -195,7 +195,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [CLOUD-WALKS] — walks run in the cloud instead of on his PC (D1797): the trial first; if it works, the running chats told and the walking instructions changed (two readers, his approval).
+- [CLOUD-WALKS] — walks run in the cloud instead of on his PC (D1797): DROPPED 8 Nov 26 — the helper sent to the cloud ran on his PC, and only he can open a cloud chat; the portable walk script kept on its branch.
 - [BOARDNAV-SCRUB-CLICK-TIMER] — the board's day-dots test "the click after a scrub does not snap back" leans on a real 350 ms window; it failed once in a crowded run (86 files) and passes alone — make the test wait on what it needs.
 - [TESTS-REQUIRED-ON-MAIN] — GitHub refuses a merge to main only when the secrets scan fails, not the tests; a summary job made required would close it (Astra, 8 Nov 26) — night 3, the setting his own click.
 - [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs live 8 Nov 26 (pull request 670); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
