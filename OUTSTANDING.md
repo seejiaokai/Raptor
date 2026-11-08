@@ -156,6 +156,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's). BUILT 8 Nov 26 (chat 20, PR #696) but the magnifier, put to him.
 - [TRK-MARKS-LEFT] — typed marks still in four Tracker messages and hints, and the Tracker's Export / Import drawings unlike Admin's; for the consistency look (found by chat 20).
 - [TRK-MENU-KEYS] — the Tracker's course, syllabus and File menus wear the browser's white keyboard ring, not the app's cyan, and the arrow keys do not move through them, unlike the board's menus (found by chat 20's walk).
+- [TRK-COPIES-TIDY] — the code reads' tidiness notes on [TRK-KEPT-COPIES] (D489), filed not fixed.
 - [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; drawn for him with the Tracker's next batch (D1660).
 - [TRK-POP-ASKED] — drop the typed ↺ and ⇅ marks in two Tracker messages (D1860, answered 8 Nov 26); built with the Tracker's next batch.
 - *(The Tracker's database-step items are in that group below.)*
@@ -383,6 +384,21 @@ the Tracker's menus the board's look but said nothing of the keys. Not caused by
 touched). Pictures: `raptor-port/docs/img/handpass/2026-11-08-chat20-tracker/walk/s4-desktop-*-keyboard-crop.png`.
 **The case to put to him:** the same keys and ring as the board's menus, with a picture. Not asked yet (D994).
 **Place:** low, with the Tracker's next batch or the consistency look.
+
+### [TRK-COPIES-TIDY] The code reads' tidiness notes on the Tracker's copies taken back (D489 — filed, not fixed; 8 Nov 26 — chat 20)
+**What:** the fresh Opus read of [TRK-KEPT-COPIES] (`raptor-port/docs/superpowers/briefs/2026-11-08-chat20-tracker-read-opus.md`,
+its tidiness note; Astra had none): (1) `tracker.css`'s `#ordList .ordrow.dragging` keeps a fallback that repeats
+Raptor's `--lift-box` value for value — the sheet's last copy; dropping it changes nothing on screen; (2)
+`src/ui/icons-markup.test.tsx`'s recording switch (`PRINT_ICON_MARKUP`) makes its six checks pass without comparing —
+a separate script, or the checks marked skipped while it is set; (3) `ListIcon` (`ui/icons.tsx`) still writes its own
+`<svg>` — a `LIST_INNER` drawn through `Drawn` would make it one source (its recorded markup then re-recorded), and the
+Tracker's own wrapper `G` (`components/Glyphs.jsx`) repeats `Drawn`'s attributes; the `shapes()` test helper is
+written twice (`onepencil.test.ts`, `tracker.test.tsx`, older); (4) comments now overstated: `Glyphs.jsx`'s header
+("the marks only the Tracker wears" — Export, Import and the magnifier are the app's marks too, drawn differently),
+`tracker.css`'s palette block's last line ("the copy here kept…" → "the copy that stood here…"), `ui/pen.ts`'s
+"Sized by `.pen-ic`" (true of the app's pencil only), and, older, `tracker.css`'s header "The ONE rule outside the
+wrapper is #detailBubble". **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
+the tidiness audit ([CODE-TIDY-AUDIT]).
 
 ### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
 **What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the

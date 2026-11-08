@@ -95,6 +95,19 @@ describe("the Tracker's page colours are Raptor's (tracker.css)", () => {
     const coreSrc = readFileSync(join(__dirname, 'app', 'core.js'), 'utf8')
     for (const fn of ['infoHtml', 'markHtml', 'showDetailBubble']) expect(coreSrc, fn).toMatch(new RegExp(`function ${fn}\\(`))
   })
+  it("every colour name the Tracker's sheet reads is defined — by the Tracker, by Raptor's :root, or at run time", () => {
+    /* Inside the wrapper the Tracker also reads some of Raptor's names bare — the menus' border (--edge-2) and a row's
+       shade under the mouse or keys (--raised). Until [TRK-KEPT-COPIES] each carried Raptor's value as a fallback, so a
+       renamed token still drew; with the fallbacks gone (D1538) a missing name draws nothing (a transparent row, a
+       border in the text colour), and this is the guard that took their place (chat 20's fresh Opus read, L1). */
+    const declared = new Set(Object.keys(vars(trkCss)))     // every --x: the sheet declares (its palette block, its sizes)
+    const runtime = new Set(['tr-top', 'sideW'])             // set on the page by TrackerPage.tsx and App.jsx
+    const used = [...new Set([...strip(trkCss).matchAll(/var\(--([\w-]+)/g)].map(m => m[1]!))]
+    expect(used.length).toBeGreaterThan(20)
+    expect(used).toContain('raised')
+    expect(used).toContain('edge-2')
+    expect(used.filter(n => !(n in RAPTOR) && !declared.has(n) && !runtime.has(n))).toEqual([])
+  })
   it("the washes and the light-red text are Raptor's own recipes", () => {
     const [ar, ag, ab] = rgbOf(RAPTOR.accent!), [hr, hg, hb] = rgbOf(RAPTOR.hard!)
     expect(TRK.on).toBe(`rgba(${ar},${ag},${ab},.16)`)

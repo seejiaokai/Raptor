@@ -94,4 +94,15 @@ code at commit `ef035e763` against its base `bf09f369b`.
   commits: 27 renders of the app's icons called without a class — markup identical; 23 renders of the Tracker's icons —
   the same shapes and attributes; 25 former palette values — the same resolved colours; 9 removed fallbacks — each the
   same as the app's token. Tidiness: no standalone leftover in the changed lines, no avoidable copy, no untrue comment.
-- **The fresh, blind Opus read:** (to come — `…-read-opus.md`.)
+- **The fresh, blind Opus read:** 0 high, 0 medium, 1 low (`…-read-opus.md`). It rendered both versions of the icons
+  two ways (server and client, every element's namespace compared): identical; resolved every colour link: the same;
+  D1860's two strings exactly as ruled; no test weakened. **L1 (low), reproduced and fixed:** the Tracker's menus read
+  two of Raptor's names bare — `--edge-2` (their border) and `--raised` (a row's shade under the mouse or keys) — whose
+  fallbacks were their only guard; with the fallbacks gone, a renamed token would leave a menu row unshaded and every
+  test green. **Fix:** a test in `trk-palette.test.ts` — every colour name the Tracker's sheet reads is defined by the
+  Tracker, by Raptor's `:root` or at run time. Red first: with `var(--raised)` misspelt it fails, naming the name (and so
+  does the older focus test); restored, 44 green. Nothing a person sees changed, so no re-walk.
+- **The tidiness notes** (D489, filed not fixed) → `[TRK-COPIES-TIDY]`: Astra none; the Opus reader's — the last copied
+  fallback (`--lift-box`), the markup test's recording switch passing without comparing, `ListIcon` and the Tracker's
+  own wrapper repeating what `Drawn` carries, and three comments now overstated (the Tracker's glyph file's header, the
+  palette block's last line, the pencil file's sizing note).
