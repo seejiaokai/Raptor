@@ -1175,6 +1175,9 @@ export function routeClick(e: MouseEvent) {
     const press = (): string => {
       const r = find()
       if (!r) return 'none'
+      /* (the bar's "Answer OIL" comes back here: the week may have turned read-only since — refused before the question or
+         the dry run, as the first press is above; Astra's narrow re-read, 8 Nov 26) */
+      if (protectedInput(r)) return 'refused'
       const off = (x: any) => !!x && x.acc !== 'g' && x.acc !== 'u'
       /* …and still an input of THIS card's day: the bar keeps the day the card was pressed on, and the input's dates
          can be changed under it (the Opus read, F5 — a row was written on a day it no longer covered) */

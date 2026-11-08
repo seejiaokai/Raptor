@@ -133,7 +133,8 @@ export function reportingLineWords(addr: any, from: any, to: any): { from: strin
 }
 const FIL: any = { '': 'not on the programme', g: 'on the programme', u: 'under Unavailable', r: 'taken off' }
 
-type Words = { where: string; from: string; to: string; who: string; when: string; jump: boolean; edited?: boolean }
+/* `lead`: where a tap that goes to the input's row goes first — a man split out to his own record (pendListHTML) */
+type Words = { where: string; from: string; to: string; who: string; when: string; jump: boolean; edited?: boolean; lead?: string[] }
 /* a request's filing entry in words: whose request, what it is, where it stood → where it stands. A request DELETED on
    the Inputs page is no longer there to name — its row, when the change has one, still carries whose and what (the
    landing mints the row from the request: who, the type, the remarks), so the line names it from the row and says it was
@@ -213,7 +214,7 @@ function inputRowKeys(inp: any, it: PendItem): string[] {
    Personal Inputs on Edit Schedule and the board, never on View-only Sched, which draws no Personal Inputs (ui/html.ts
    crewInputs); a kind listed in neither — a SANS availability, a card with no row address; an upchit — has nowhere to go
    (Sol 6.1 S1, Astra 1, the fresh Opus reader F2: those lines had become buttons that landed nowhere). A deleted or
-   moved-off input, and a man taken out of an input (his record is gone), keep their still line. */
+   moved-off input keeps its still line here; a man taken out of an input that goes on, in pendListHTML. */
 function drawnRowKeys(di: number, it: PendItem): string[] | null {
   const id = inputIdOf(it)
   if (!id || !DAYS[di]) return null
@@ -617,9 +618,13 @@ export function pendListHTML(di: number): string {
     let w = pendItemWords(di, it)
     /* a line about an input with no place of its own goes to the input's row, where this page draws it (drawnRowKeys) —
        a man split out of a shared input to his own record first (`lead`) */
-    if (!w.jump && !(w as any).rows && !(it.jump && it.jump.length)) {
+    /* …but never a man taken out of an input with no record of his own left: his row is gone, and the input's own address
+       would land on the first man still in it (the narrow re-read of the fixes, 8 Nov 26 — Sol 6.1 and Astra, the same
+       finding). A man split out to his own record has `lead`, and goes there. */
+    const takenOut = !!it.pp && it.pp.role === 'off' && !(w.lead && w.lead.length)
+    if (!w.jump && !(w as any).rows && !(it.jump && it.jump.length) && !takenOut) {
       const k = drawnRowKeys(di, it)
-      if (k) w = { ...w, jump: true, keys: [...((w as any).lead || []), ...k] } as Words
+      if (k) w = { ...w, jump: true, keys: [...(w.lead || []), ...k] } as Words
     }
     /* a line that found its own place to go (the crowd behind a placeholder) carries it for the tap */
     if (w.jump && !(it.jump && it.jump.length) && (w as any).keys) items[i] = { ...it, jump: (w as any).keys }

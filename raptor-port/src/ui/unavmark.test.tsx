@@ -416,6 +416,20 @@ describe('the waiting list’s taps go only where the page draws the input’s r
     expect(keysFor(TUE, id), 'View-only Sched draws no Personal Inputs: nothing to go to').toBeNull()
     setPage('editsched')
   })
+  /* the narrow re-read of the fixes (Sol 6.1, 8 Nov 26): a man taken out of a shared input, with no record of his own
+     left, has no row — his line landed on the first man still in it */
+  it('a man taken out of a shared input after publishing has no row left: his line stays still, the others’ rows untouched', () => {
+    expect(commitInput(null, draftOf({ person: 'bane', type: 'OD', date: 'Jul 15', yr: 2026, allday: true, remarks: 'Exercise R' }), ['bane', 'split', 'rocky'])).toBe(true)
+    publishDay(WED)
+    const od = INPUTS.find((r: any) => r.remarks === 'Exercise R')!, id = String(inpId(od))
+    expect(commitInput(od, draftOf(od), ['bane', 'split'])).toBe(true)
+    validate()
+    expect(waits(WED, id), 'his going out waits').toBe(true)
+    const line = [...el(pendListHTML(WED)).querySelectorAll('.pl-item')].find(e => /taken out/.test(e.textContent || '')) as HTMLElement | undefined
+    expect(line, 'his line').toBeTruthy()
+    expect(line!.tagName, 'nothing of his to go to').toBe('DIV')
+    expect(keysFor(WED, id), 'no line goes to another man’s row').toBeNull()
+  })
   it('a leave’s tap does not open Personal Inputs: it is not listed there', () => {
     publishDay(MON)
     expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'LEAVE NO PI'))).toBe(true)
