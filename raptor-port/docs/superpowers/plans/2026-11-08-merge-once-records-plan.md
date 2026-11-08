@@ -92,6 +92,17 @@ log and its archive). Red first on a copy with a doubled number. It runs in the 
 can no longer reach `main` from a merge that finished cleanly.
 
 ### Part 2 — the settle step, `node raptor-port/scripts/records-merge.mjs`
+**Round 3 (8 Nov 26, after the narrow re-read of the fixes — `…-reread-{astra,opus}.md`):** the fixes' joining logic caused a
+cascade (two versions of one archived item fused, a shared last line moved between items, a table head doubled), so the host chose
+guardrails that settle less but are never silently wrong, and two statements below no longer hold. (1) A citation of a renumbered
+note is **never rewritten** — only the heading's number changes, and every line this branch added that cites it is listed "look by
+hand: <file>:<line> cites Observation N (renumbered here to M)". A day heading (`## `) added on either side leaves the whole skill
+log. (2) In the insertion-only files, a heading both inserted is **not** kept once: a region is settled only when both sides only
+inserted, the two share no non-blank line, neither holds a `#` line or a table head, each is whole rows or whole paragraphs and ends
+at a line end — this branch's text, one blank line only for paragraph-shaped text, then `main`'s; anything else, an archive's
+"## Moved <day>" both opened among it, is left in git's marks. Also: a code block still open at the end of a text is read as text
+(the document check names a new one); in `HANDOFF.md` two different new `## ` sections at one place are both kept, this branch's
+first; the replay also fails on a step that crashed, on a doubled ledger row and on any non-blank line doubled.
 Run after `git merge origin/main` stops on clashes (the chat's own hand edits AFTER it, never before).
 - **Inputs:** only paths git still lists as unmerged, read from git's three staged copies (base, ours, theirs) — never the files on disk.
   A file whose working copy is no longer git's own conflicted output is refused by name (the chat has edited it — leave it to the chat).
