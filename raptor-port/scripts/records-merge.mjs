@@ -370,7 +370,7 @@ if (stale.length) die(`a temporary copy from an interrupted run is still here ($
 
 const remotes = (tryGit('for-each-ref', '--format=%(refname)', 'refs/remotes') || '').split('\n').filter(r => r && !r.endsWith('/HEAD'))
 const ctx = { refs: [head, mergeHead, ...remotes], renumbers: [], cites: [], unsure: [] }
-const written = [], already = [], refused = [], leftBy = new Map(), settledBy = new Map(), rulingsLeft = [], others = [], unreadable = []
+const written = [], already = [], leftBy = new Map(), settledBy = new Map(), rulingsLeft = [], others = []
 const plan = []
 for (const [f, ids] of stages) {
   if (!RECORD(f)) { (isRulings(f) ? rulingsLeft : others).push(f); continue }
@@ -379,17 +379,20 @@ for (const [f, ids] of stages) {
     const st = { 1: ids[1] ? blob(ids[1]) : null, 2: blob(ids[2]), 3: blob(ids[3]) }
     const disk = existsSync(join(REPO, f)) ? readFileSync(join(REPO, f), 'utf8') : null
     const labels = labelsOf(disk || '')
-    const res = settle(f, st, labels, ctx)
+    /* this file's own renumbers and citations, reported only once the file is written or found settled by an earlier
+       run — a refused or left file reports none (the tidiness notes 2 of the code read) */
+    const fctx = { refs: ctx.refs, renumbers: [], cites: [], unsure: [], disk }
+    const res = settle(f, st, labels, fctx)
     const gitsOwn = mergeFile(st[2], st[1] ?? '', st[3], labels, STYLE_ARGS).text
+    const report = () => { ctx.renumbers.push(...fctx.renumbers); ctx.cites.push(...fctx.cites); ctx.unsure.push(...fctx.unsure); if (res.settled.length) settledBy.set(f, res.settled) }
     if (res.left.length) leftBy.set(f, res.left)
-    if (res.settled.length) settledBy.set(f, res.settled)
-    if (disk === res.text) { already.push(f); continue }
-    if (disk === null || !sameConflict(disk, gitsOwn)) { refused.push(f); leftBy.set(f, ['its working copy is not what git wrote when the merge stopped — edited since; left to you, untouched']); settledBy.delete(f); continue }
+    if (disk === res.text) { if (res.settled.length) { already.push(f); report() } continue }
+    if (disk === null || !sameConflict(disk, gitsOwn)) { leftBy.set(f, ['its working copy is not what git wrote when the merge stopped — edited since; left to you, untouched']); continue }
     if (!res.settled.length) continue // nothing a rule could settle: git's own marks stay exactly as git wrote them
-    plan.push({ f, text: res.text, before: disk })
+    plan.push({ f, text: res.text, before: disk }); report()
   } catch (e) {
     if (!(e instanceof Leave)) throw e
-    leftBy.set(f, [`left whole — ${e.message}`]); settledBy.delete(f)
+    leftBy.set(f, [`left whole — ${e.message}`])
   }
 }
 

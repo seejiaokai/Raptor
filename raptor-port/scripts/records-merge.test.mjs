@@ -161,6 +161,14 @@ test('a second run on the same input changes nothing; --dry-run writes nothing',
   assert.equal(c.git('diff', '--name-only', '--diff-filter=U').trim(), 'HANDOFF.md', 'it never stages anything')
 }))
 
+/* Astra's and Opus's tidiness notes 2 (the code read, 8 Nov 26): no report line that is not true */
+test('a first run that settles nothing never says "already settled by an earlier run"', withRepo({ 'HANDOFF.md': H0 }, c => {
+  c.sides(x => x.edit('HANDOFF.md', t => t.replace('- a line', '- a, ours')), x => x.edit('HANDOFF.md', t => t.replace('- a line', '- a, theirs')))
+  const r = c.run()
+  assert.equal(r.code, 2, r.out)
+  assert.doesNotMatch(r.out, /already settled/)
+}))
+
 test('a revert on one side is settled like any one-sided change', withRepo({ 'HANDOFF.md': H0 }, c => {
   c.git('checkout', '-q', '-b', 'feature')
   c.edit('HANDOFF.md', t => t.replace('- a line', '- a line, a mistake')); c.commit('mistake')
@@ -268,6 +276,15 @@ test('skill log: a note archived on one side and its status changed on the other
   assert.equal(r.code, 2, r.out)
   assert.match(r.out, /Observation 10 — removed on main's side and changed on the other/)
   assert.match(c.read('.claude/skill-observations/log.md'), /### Observation 11: eleven/)
+}))
+
+test('a refused skill log reports no renumber (the tidiness notes 2)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+  c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'ours', 'o')), x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main', 'm')))
+  c.edit('.claude/skill-observations/log.md', t => t.replace('# Skill Observation Log', '# Skill Observation Log, edited by the chat'))
+  const r = c.run()
+  assert.equal(r.code, 2, r.out)
+  assert.match(r.out, /its working copy is not what git wrote/)
+  assert.doesNotMatch(r.out, /renumbered/)
 }))
 
 /* ---------- the insertion-only files ---------- */
