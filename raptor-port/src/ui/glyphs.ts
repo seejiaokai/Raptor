@@ -37,3 +37,12 @@ export function glyphSvg(inner: string, cls = 'btnglyph'): string {
   return `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"`
     + ` stroke-linecap="round" stroke-linejoin="round">${inner}</svg>`
 }
+
+/** The Inputs calendar's "Show every input" and "Show the month compact" (owner D1792 (b), 8 Nov 26 — the pictures round's
+ *  question 13, "All as recommended"; drawn by scripts/handpass/pr-marks.mjs r5b, ICON.expand / ICON.compact): arrows out
+ *  to two corners, and arrows in from them, in place of the typed ⤢ / ⤡. A departure named to him with the drawing: the
+ *  typed ⤡ pointed OUT on the other slant, saying nothing of "smaller"; the drawn one points in. */
+export const EXPAND_INNER = '<polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>'
+  + '<line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/>'
+export const COMPACT_INNER = '<polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/>'
+  + '<line x1="14" x2="21" y1="10" y2="3"/><line x1="3" x2="10" y1="21" y2="14"/>'

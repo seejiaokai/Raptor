@@ -6,7 +6,7 @@
    Lucide-style line glyphs sized by `.btnglyph`. */
 
 import { PEN_INNER } from './pen'
-import { GEAR_INNER, REORDER_INNER, TEMPLATES_INNER, RESET_INNER, PHONE_INNER, DESKTOP_INNER, TICKET_INNER } from './glyphs'
+import { GEAR_INNER, REORDER_INNER, TEMPLATES_INNER, RESET_INNER, PHONE_INNER, DESKTOP_INNER, TICKET_INNER, EXPAND_INNER, COMPACT_INNER } from './glyphs'
 
 /* ROUND 4'S DRAWN MARKS (owner D1703, D1704, D1707, 5 Nov 26): each drawn from its one source, `ui/glyphs.ts`, which the
    builders that print a button as text share. Sized and coloured where each stands — `.btnglyph`'s own grey is for a bare
@@ -267,3 +267,6 @@ export function TalonMark() {
     </div>
   )
 }
+/** The Inputs calendar's expand and compact (D1792 (b)): arrows out, arrows in. */
+export const ExpandIcon = () => <Drawn inner={EXPAND_INNER} />
+export const CompactIcon = () => <Drawn inner={COMPACT_INNER} />

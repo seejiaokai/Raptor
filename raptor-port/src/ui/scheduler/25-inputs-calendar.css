@@ -691,3 +691,9 @@ body.in-cal{padding-bottom:0}
    row's height; lit while every input is shown */
 .ib-sub .ib-expand{flex:none;width:34px;height:28px;min-width:0;padding:0;font-size:16px;line-height:1}
 .ib-sub .ib-expand[aria-pressed="true"]{color:var(--accent);border-color:currentColor}
+/* ITS MARK IS DRAWN, NOT TYPED (owner D1792 (b), 8 Nov 26 — the pictures round's question 13; ui/glyphs.ts EXPAND_INNER,
+   COMPACT_INNER): arrows out to the corners while the month is compact, arrows in while every input shows, at the 16px
+   the typed ⤢ / ⤡ stood at (the drawing's own size, pr-marks.mjs r5b), in the button's own colour — its colour at rest, the
+   cyan while pressed. The button keeps its 34 × 28. */
+.ib-sub .ib-expand{display:inline-flex;align-items:center;justify-content:center}
+.ib-sub .ib-expand .btnglyph{width:16px;height:16px;color:currentColor;display:block}
