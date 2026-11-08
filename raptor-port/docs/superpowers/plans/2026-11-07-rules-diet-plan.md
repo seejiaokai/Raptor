@@ -556,6 +556,49 @@ the readers): a choice put to him, not taken.
 checked about 194 and found the two shipping conditions that a split bullet had loosened, which Astra passed. The
 Opus read was the better of the two on this part; on part 1 Astra caught the two most serious.
 
+### Step 5a — OIL as a page, the full trial (8 Nov 26, `claude/rules-diet-step-5a-oil`)
+
+`.claude/rules/decisions/oil.md` is a page, "OIL (off in lieu) — how it works now" (`<!-- shape: page -->`, its
+`paths:` unchanged), drafted from the sample (v3) and brought up to date: D1783 (8 Nov 26) added, the two statements
+step 1 found over 600 characters split, and the three change marks the rulings command asked for cited (D755 beside
+D43, D1042 beside D24 twice). `DECISIONS.md`, `AGENTS.md`, the project guide's map row and the head of the full-text
+file name OIL as a page. No ruling archived (the sample proposed none; the account confirms).
+
+**The account by requirement** (`../briefs/2026-11-08-rules-diet-step5a-account.md`, one Opus helper, every OIL full row
+read sentence by sentence — OIL being the full trial): 49 rulings split into 294 parts, and the old "Also read" and
+"Also know" paragraphs item by item. **30 gaps in the first draft — 15 that bent or dropped a rule** (among them D142's
+"the published record is what happened", D48's credit held until a correction is published, D31's list of what has
+nothing to measure, D606's earlier-of rule and the SPARE's B, D804's kinds asked and never asked, D19's offer to create
+the period, D80's "manning is not ruled — ask him", and the D731 pointer still quoting the split count D762 ended) **and
+15 smaller** — all fixed on the page. The sample's two blind reads had passed most of them: they read the short lines,
+not every full row. Size: the draft 14,525 bytes → 18,703 (about 7,160 tokens; the table was 15,109 bytes with
+D1783), so for OIL the page saves nothing — it states what the short lines had cut. The tripwire raised from 15,500 to
+20,500 in `docsize.mjs`, its reason beside it (D141; a script change, put to him with his "merge live").
+**Left open, each named in the account:** whether a typed B starts a flying SPARE's own span (D606 against D1044 — the
+page claims neither); whether a BB duty desk offers the switch (not ruled — the page says only "does not earn by
+default"); D592's readings 8 and 9, stated "as built, and put to him as readings"; D43's full row, cut off mid-sentence
+("it inherits the seat's") since it was first written — filed, not guessed at.
+
+**The trial of the whole route (§7), run on a scratch copy of the branch, never pushed, then deleted** — made-up
+rulings D1794 and D1795, the page as first drafted:
+- **A ruling recorded:** its full row written at the top of the full-text file, the page not yet edited — the command
+  wrote nothing and named the edit owed; with a bullet citing it, clean, and the document check green.
+- **One changing another:** D81's full row marked "NARROWED … BY D1794" — the command named the page line stating D81
+  (by line and section) and asked for D1794 there; cited, clean.
+- **One retired:** D80's full row marked "REPLACED BY D1794" — the command named the page line still citing D80; that
+  line rewritten, D80 moved to `DECISIONS-ARCHIVE.md`, clean, green.
+- **A merge from a branch still in the old shape** (from `main` before the conversion, D1795 recorded the old way, its
+  short line in the old table) — **both directions:** the page branch merging it, and it merging the page branch. Each
+  time git's conflict in `oil.md` was settled by `--rulings --merge`: the page kept whole, no table rows written back,
+  D1795's full row at the top of the full-text file, D1795 listed under PLACE ON THE PAGE, the gate red until a line
+  stated it; stated, clean and green.
+- **One friction, by design:** in the second direction the command also put back the old side's wording of two prose
+  lines the conversion had changed (the head of `DECISIONS.md` and of the full-text file) and listed them under
+  RE-APPLY BY HAND, as it does for any prose line — a chat merging an old-shape branch re-applies them; nothing is lost
+  silently.
+- **One slip of the trial's own:** the old route's first step writes the new full row into the area file's table (the
+  command then moves it), not into the full-text file; written there first, the command refused, as it should.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |
