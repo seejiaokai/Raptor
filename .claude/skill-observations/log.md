@@ -4188,3 +4188,16 @@ script that saved its measured figures, the drawing check may reuse that script'
 rewritten) against the saved figures, in place of building a part list first; each difference is still named.
 **Principle:** When a design was drawn by code that measured itself, compare the build with the same measuring code —
 the same ruler on both sides removes a whole class of false differences.
+
+### Observation 880: A change of what scrolls breaks every test that names the old scroller, not only its own spec
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 11, the board layout (D1780: the sideways board scrolls as one page). Numbered past 878–879, held by other branches.
+**Skill:** New skill candidate: bug-check sizing (walk-ledger / the bug-check order §3)
+**Type:** open-source
+**Phase/Area:** sizing the walk and the local test run before the first push
+
+**Issue:** The change moved a screen's scrolling from an inner pane to the whole surface. Its own new browser spec passed locally and the walk passed, but an older spec in another file set the inner pane's scroll and failed on CI; fixing that test then showed a real fault — the drag's edge band still measured from the old scroller's top, hidden under the newly pinned bar. The walker had held a drag at the foot and over the bar, never just under it.
+**Suggested improvement:** When a change alters which element scrolls, the sizing step greps every test and every scroll-reading function for the old scroller's selector and runs those specs before the first push; the walker's brief adds "hold a carried thing just inside each new edge of the visible area" (under a pinned bar, above a pinned foot).
+**Principle:** A layout change that moves the scroller invalidates every caller that measured the old one; find them by the selector, not by the files the change touched.
