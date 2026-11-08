@@ -70,7 +70,9 @@ each blind to the other and to the walk. Started before the walk, on the built c
   drag and keep their place (J). **O2** the "not a `<dialog>`" reason untrue for a non-modal `<dialog>` → reworded.
   Tidiness (filed, D489): the `body:has(…:not([data-placed]))` test written five times; the draft sentence in both
   `CutFields.tsx` and `cutdraft.ts`; the browser test repeats 430 and 16; the test now runs at 1229 × 600 too (fixed).
-- **A fix is new code (§5):** O1's fix rewrites one condition in the shared window code — its own narrow read is owed
-  before the merge.
+- **A fix is new code (§5):** O1's fix had its own narrow fresh Opus read (helper, handed only the fix and its finding):
+  **no finding** — every reader of `data-placed` checked, the failed-save rules lose to the inline place written at the
+  press, the room comes back at the first movement. Its one note, older than this job (the comment above `dragging()` in
+  `floatwin.ts` names a caller that no longer exists), filed with the tidiness notes. Last fix round: this one.
 ## Gate counts
 ## What the walk found, and each disposition
