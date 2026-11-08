@@ -4166,3 +4166,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The check was red in the previous chat's full run and green in this chat's first probes at every click gap tried, so it looked fixed or flaky. Slowing the page's processor to half speed (the browser's own CPU throttling) made it fail every time, and a per-frame log then showed the real cause in one run: a child element with its own "takes presses" setting ignored the parent's "no presses" — neither of the two suspects handed over. The suite's pace alone had decided whether the fault showed.
 **Suggested improvement:** In the reproduce phase: when a fault involves a press, key or frame during an animation or scroll and does not reproduce, re-run it at two or three slowed processor speeds before calling it flaky or fixed; once found, add a check that proves the cause whatever the pace (here, hit-testing every element mid-animation), beside the end-to-end check run at a slowed pace.
 **Principle:** A timing fault that a test catches only on some machines is still a fault; slow the clock down to make it certain, then pin the cause with a check that does not depend on timing.
+
+### Observation 874: A merge approval relayed in another session's brief is refused by the safety check — the merging chat needs his word typed there
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 10, a side session started by chat 9 to fix the Tracker's last red check and carry chat 9's "merge live" through to the live app
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** handing a job that already holds the owner's merge approval to another chat (a side session's brief, or the next chat's opening line)
+
+**Issue:** The owner typed "merge live" in chat 9. Chat 9 started chat 10 as a side session and wrote the approval into its brief, with the time and his words. Chat 10 fixed the red check, got the run green, took the merge lock and found the branch level — and the merge command was refused by the app's auto-mode safety check ("merge without review"): a brief written by another session is not the owner's message, so the approval did not count. The lock was released and the job stopped to ask him again, a round-trip the plan had not allowed for.
+**Suggested improvement:** In session-handoff (and wherever a job is passed on with an approval attached): say plainly that an approval does not travel in another agent's text. Either the chat that received the approval does the merge itself, or the new chat starts from an opening line the owner pastes himself (his own message), with the approval in it — never from a side session's brief alone. If a side session must merge, say so in the brief and warn the owner that he will be asked once more there.
+**Principle:** A permission given to one agent is not carried by that agent's message to another; automated guards judge the speaker, not the quoted words. Plan the step that needs the approval to run where the person gave it, or have the person repeat it where it will run.
