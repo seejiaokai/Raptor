@@ -4061,3 +4061,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The new ruling changed one reviewer's role. Rewriting each line about "the reviewers", the writer re-stated the safeguards for the named reviewer only — "a job he could not read goes on the owed list" — and silently dropped the same safeguard for the other, unchanged one; it also left lines elsewhere that still described the old arrangement as current. Both blind readers caught it, in five files.
 **Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
 **Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
+
+### Observation 862: A side session on the rules engine reaches three-quarters full before its first commit
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 6, the pictures round's group 4 (D1786) — an engine change started as a side session (numbered past 861, the highest on any pushed branch)
+**Skill:** New skill candidate: side-session-briefing
+**Type:** open-source
+**Phase/Area:** starting a delegated build session
+
+**Issue:** The session reached 75% of its context window after about twenty tool calls, before any commit: opening one engine file loaded every scheduler-area rulings file and design rule set by path (well over 100 KB), on top of the always-loaded rules. The save-state warning arrived when the build had only one change in it.
+**Suggested improvement:** A brief for a side session names, up front, the slices it needs (the full rows by number, the exact sections), and the session commits its handoff block after its first change rather than at the first warning; the starting session warns its children that opening an area file costs that area's whole rulings load.
+**Principle:** In a repository whose rules load by file path, the first file a delegated session opens can cost most of its context; a delegated session should save its state early and read by slice.
