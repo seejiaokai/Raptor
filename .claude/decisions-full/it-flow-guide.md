@@ -1,10 +1,10 @@
 # Rulings — The IT flow guide: the full rows
 
-**Never loaded by itself — searched** (D390). Each row's one-line short form is in `.claude/rules/decisions/it-flow-guide.md`, which is what a
+**Never loaded by itself — searched** (D390). Each ruling is stated on the page `.claude/rules/decisions/it-flow-guide.md` (converted 8 Nov 26, D1735), which is what a
 chat loads. Open a ruling's full row before acting on its detail or asking him about it:
 `grep -h '^| D149 |' .claude/decisions-full/*.md` (the shell — the Grep tool hides a long row). A mark on an older ruling
-(DECISIONS.md step 2) is written HERE, in its full row; `backlog-archive.mjs --rulings` then refreshes its short line's
-change tail. Newest first; each row keeps the date it was recorded.
+(DECISIONS.md step 2) is written HERE, in its full row, and the page's lines that state it are rewritten in the same
+change (DECISIONS.md, the steps for a converted area). Newest first; each row keeps the date it was recorded.
 
 | # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
 |---|---|---|---|---|

@@ -433,7 +433,7 @@ const RULING_BYTES = [
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
-  ['.claude/rules/decisions/it-flow-guide.md', 2, 5000],
+  ['.claude/rules/decisions/it-flow-guide.md', 2, 10300],   // raised 8 Nov 26 from 5000: the rules diet's step 5a made it a page (D1735); the account by requirement put back the slide parts and the agent's calls the short lines had cut, and the two blind reads the Leave War's later rulings the guide draws (D1166, D1208, D1724 — 9,330 bytes); a ruling is never cut to fit (D141), a tenth above again
   /* NEW 1 Nov 26 ([START-LOAD-TRIM], owner D1554): the screen-design rulings - how a screen looks and behaves (the gear,
      the pencils, the top bar, search boxes, arrows, pinned bars, the failed-save band, rings, glows, drag) - moved here
      whole by the script from How we work, which carried them into every chat; they load with the design guide's paths

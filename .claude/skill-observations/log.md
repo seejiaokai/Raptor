@@ -4207,3 +4207,16 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Issue:** The drawing-check helper labelled its measured build "the branch at 7d750640e" and wrote that the app's code was unchanged between that commit and the tip, so it built from the working folder. Two commits since had changed the code, and the host's fixes were landing in the same folder while it built; its build matched neither commit. The numbers happened to hold (the fixes did not move what it measured), but the label was false. Separately, the check script can measure only a part that is drawn, so a part meant to be gone on both sides read as a red "not found".
 **Suggested improvement:** In the step that takes a helper's result: when a helper names the commit it measured, run `git diff --stat <its commit> HEAD -- <code folder>` and compare the build's time with the commits' times before quoting it; where the code moved under it, re-run the cheap part (build + check) on a fixed commit. In a helper's brief for any check that builds: "build from a named commit (a `git worktree` or `git archive`), never from the live folder while the host is editing".
 **Principle:** A measurement is only as good as the label on what was measured; a helper working beside an editing host must pin its input to a commit, and the host verifies the pin rather than the helper's word.
+
+### Observation 879: A blind reader told to find related rules "by name" misses the ones that change the subject
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 15, the rules diet's step 5a on the IT flow guide — two blind readers checked that a rewritten rules page still carried every part of its rulings and pointed to every other area's ruling that bears on it (first written as 878 past 873–877 on other open branches; renumbered 879 when `main` was brought in, where chat 10 had taken 876–878)
+**Skill:** requesting-code-review
+**Type:** open-source
+**Phase/Area:** writing the reviewer's brief — what the reviewer searches beyond the change itself
+
+**Issue:** the builder's account and the brief both searched the other areas for rulings that bear on the guide by the guide's own name; only two rulings named it. One reader, searching the same way, found nothing more; the other found the most serious gap of the step — a later ruling that changes what the guide pictures (full editing on another screen) and a second that sets a preferred order, neither naming the guide. The page had stated the old behaviour as current.
+**Suggested improvement:** in the brief template for a conformance read (a summary, a page, a port checked against its sources), add a line: "search related sources by the subject of each claim — the actions, screens and terms it names — not by the name of the document under review; a later rule that changes a subject rarely names every document that describes it."
+**Principle:** dependencies are found by topic, not by title — a check that searches only for references to the artefact misses the changes to what the artefact describes.
