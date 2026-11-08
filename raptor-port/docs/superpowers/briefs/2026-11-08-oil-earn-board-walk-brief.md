@@ -9,7 +9,7 @@ Chat 5, 8 Nov 26. Read `raptor-port/docs/walk-scripts.md` whole before writing a
   to the shell (backslashes are lost, an apostrophe fails). Never rewrite a script and run it in one step. Print a
   version line at the top of every run. In Node edit scripts use `s.replace(a, () => b)`.
 - Run from `raptor-port/` by its full path: `cd "C:/Users/User/projects/Raptor/.claude/worktrees/pr-oil-earn-ffbf07/raptor-port"`.
-- **Serve no server.** The build is the frozen folder the host names below; serve it inside each browser context with
+- **Serve no server.** The build is the frozen folder `C:/Users/User/AppData/Local/Temp/claude/ba46d636af5eaefe/e324d8f6-0c85-4339-be37-1d188075a056/scratchpad/dist-a827307a5` (commit `a827307a5`) — never `raptor-port/dist`, never a rebuild; serve it inside each browser context with
   `serveDist(ctx, origin, folder)` from `scripts/drawcheck/lib.mjs` (it answers every request to `origin` from the
   folder). Use your own origin: W1 `http://localhost:4381`, W2 `http://localhost:4382`. Take `chromium` and `webkit` from
   the same file.
@@ -93,6 +93,82 @@ Chat 5, 8 Nov 26. Read `raptor-port/docs/walk-scripts.md` whole before writing a
 - **W2.9 a man who CAN earn still switches:** OIL Earn on, END not cleared, tap Fable. EXPECTED: his earning turns off
   (the puck shows it), a passing note says so (RECORD its words); tap again: on.
 
-## Astra's scenarios
+## Two starting worlds
 
-(The host adds them here, each to W1 or W2, before the brief leaves.)
+- **The fresh world** (the route above, no saved state, your own origin): W1.1–W1.8, W2.1, W2.2, W2.8, W2.9 — Saturday
+  holds only Fable on the SDO desk. Use it wherever a scenario names Fable on the SDO desk.
+- **The saved Saturday** — `docs/handpass/state-sat.json`, loaded as the context's `storageState`; it is keyed to the
+  origin `http://localhost:4173`, so serve the frozen build at THAT origin with `serveDist` in that context (each walker
+  its own browser context, so the two never share storage; serve no real server). Checked by the host on this build:
+  Saturday comes up with 26 men, 19 event OIL marks, an ALL AVAIL with its count (28) on the Common Programme, sim rows,
+  flying lines, three Personal Inputs men, and three faded pucks (Warden and Outlaw on duty rows, Vandal on a ground
+  row). No day of the week is published in either world: publish Saturday with `publish(page, 5)` from
+  `scripts/handpass/lib.mjs` (it picks the four sign-offs, then Publish day) — read it, copy its steps.
+- A request you need (leave, medical, Personal, an overseas duty) that the world lacks is filed through the app's
+  own Inputs page — the worked example is `openNew` / `fileInput` in `scripts/handpass/aa-B-lib.mjs`; read them first.
+  If filing fails three times, report NOT WALKED with why.
+
+## Astra's scenarios — each placed (her report: `docs/superpowers/briefs/2026-11-08-oil-earn-board-scenarios-astra.md`; read each one there before walking it)
+
+**W1 adds** (both sizes unless marked; the saved Saturday unless it names Fable's SDO):
+- **A5 + A6** — publish Saturday; RECORD its pending count and sign-offs; switch on: RECORD the count, the sign-offs,
+  Fable's / the men's figures on the board; switch off: EXPECTED back to nothing pending (D98) — RECORD the sign-offs.
+  Do NOT publish an amendment (the credit after publication is not changed by this build — see "Not walked").
+- **A11** — switch on, leave the mode, add Bane to a new 08:00–18:00 ground row, re-enter: EXPECTED his puck does not
+  earn and a tap says "Nothing on this day earns. Turn off the switch first."; switch off: RECORD whether he earns.
+- **A12** — Undo and Redo after each of: the switch, an event's OIL mark, a man's switch; and after a refused tap
+  (a faded puck, a puck under the switch): EXPECTED the refused tap adds NO Undo step (count the Undo presses back).
+- **A13** — the switch: words once, slider once, then two quick presses on the slider (< 300 ms apart): EXPECTED each
+  press changes the day once (two quick presses: back where it started); one Undo undoes one press.
+- **A14** (PC, keys only) — Tab to the switch, Space, Space; then Space then Tab at once; Shift+Tab; Enter: RECORD what
+  Enter does. EXPECTED Space changes once and the keyboard ring stays on the switch; Tab then moves on normally.
+- **A15** — the switch on Saturday, off Sunday: Sat → Sun → Sat; leave and enter the mode; ✓ Done and reopen; reload
+  the page, sign in, reopen Saturday: EXPECTED each day keeps its own switch. RECORD whether the mode stays on across a
+  day change.
+- **A24** — sign out, sign in as `us` / `us` (a member): open Saturday on View-only Sched and its board if offered:
+  EXPECTED no OIL Earn, no switch. As `ad`: View-only Sched — EXPECTED no switch.
+- **A25** — open the ALL AVAIL window (the placeholder's count) and the changes window (the board's History clock) at
+  once over the board; press the switch; tap a faded puck: EXPECTED the note is visible (not under a window), the press
+  reaches only what was pressed, the windows stay open.
+- **A26** — on the PC hover the switch's words: EXPECTED "Anything added to this day later earns no OIL either.";
+  RECORD both passing notes (on, off).
+- **A27** (phone) — tap Templates on its mark and on its word, OIL Earn on its mark and on its word: each opens. Turn on
+  the board's desktop layout (its ⋯ menu): RECORD the bar.
+
+**W2 adds** (both sizes; the saved Saturday):
+- **A1 — the fix, walked:** file a leave (LL) and a medical (OML) for Saturday for two men, and a Personal 10:00–11:00
+  for a third; in the mode tap each under Unavailable / Personal Inputs: EXPECTED nobody picked (no `.puck.sel`) and
+  "Nothing changed for <callsign>. Leave earns no OIL." / "… A medical request earns no OIL." / "… A personal request
+  earns no OIL."; outside the mode RECORD what the same tap does.
+- **A2 — the fix, walked:** every ALL / ALL AVAIL body you can find on Saturday's rows (Common Programme first; put one
+  on a duty desk's extras and a ground row through the board if allowed — RECORD if refused): in the mode tap the BODY:
+  EXPECTED nobody picked, "Nothing changed for ALL AVAIL. The people behind it are switched in the window its count
+  opens."; with the switch on: "Nothing on this day earns. Turn off the switch first."; tap its COUNT: EXPECTED the
+  window opens.
+- **A3** — the window from a placeholder's count, its OIL tab: tap a man drawn faded (or RECORD none); then with the
+  switch on tap a man: RECORD the footer's words and the passing note; EXPECTED nobody picked.
+- **A8** — a man with an overseas duty (OD) or a Training under Unavailable / Personal Inputs that CAN earn: in the mode
+  switch him off and on, Undo, Redo: EXPECTED it works (he is not faded); with the day switch on: D845's words.
+- **A9** — with the switch on: tap a named man on the Common Programme, the row's event OIL mark, and a man in the ALL
+  AVAIL window: EXPECTED all three "Nothing on this day earns. Turn off the switch first."; nothing changes.
+- **A10** — switch one man off, then the day switch on, tap him, the day switch off: EXPECTED he is still off; then
+  switch an event off and tap its men: EXPECTED "This event earns nobody any OIL. Turn the event back on first."; event
+  back on: EXPECTED each man as before.
+- **A17** — the duty desk's extras (if a man is there) and the desk set 08:00–08:00: RECORD what a tap says.
+- **A18** — a sim row with a seat, a passenger, extras: clear its END: tap each: EXPECTED nobody picked, the open-end
+  sentence each time.
+- **A19** — a Common Programme row and a Ground Programme row with both times cleared: tap a man on each: EXPECTED
+  "… This row gives him no working hours to count OIL from."
+- **A21** — a ground row cancelled (its CX) and one made information-only (its ⓘ): tap its man: RECORD the note;
+  EXPECTED nobody picked.
+- **A23** — a faded puck: tap its letters, its edge and any warning mark on it: EXPECTED the same note each time, nobody
+  picked; then pick a man outside the mode first, enter the mode, tap a faded puck: RECORD whether the earlier pick
+  stays lit.
+
+**Not walked, with the reason (the host writes these into the sheet's §9):** A4 (issued crowd vs working crowd — the
+count and window code are untouched by this build; the count is caught before the new branches, pinned by a test);
+A7 (a shared input's one answer — the engine and the window are untouched; the new taps write nothing); A16 (which
+days offer OIL Earn — the gate is untouched, pinned by OIL1 and OIL18); A20 (a default-off seat stays switchable — the
+earning test `oilEligible` is untouched; W2.9 walks a switchable seat); A22 (a multi-day input's reason — the reason
+paths are untouched but for the plain sentence; RECORD if met); A28 (amounts and credit — no figure or credit code
+changed), and A5's publication of an amendment for the same reason.
