@@ -50,6 +50,15 @@
         ],
         "createdAt": "2026-11-05T12:35:10.469Z",
         "reason": "owner ruling D729 (10 Oct 26): a timed input bar is lighter - a tint of its colour and its left edge, approved as drawn"
+      },
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "raptor-port/src/ui/scheduler/20-changes-quals.css"
+        ],
+        "createdAt": "2026-11-08T15:00:00.000Z",
+        "reason": "owner D1890 (8 Nov 26, 'As recommended to all'): the gold history dot is one no-repeat dot in a box's corner while History is on (D339, D345), not a dotted grid background"
       }
     ]
   },
