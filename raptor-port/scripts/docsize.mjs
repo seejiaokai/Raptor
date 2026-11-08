@@ -302,7 +302,7 @@ const RULING_BYTES = [
      D1747 stated on the page (the pictures round's night, the step-4 line pointing at the merge lock's steps); live
      rulings every chat reads, none spent or replaced - a rulings file is never trimmed (D136). */
   ['.claude/rules/decisions/how-we-work.md', 0, 38000],   // reset 7 Nov 26 from 61000, raised to 36000 (above): the file became a page (D1735), its dropped parts restored (D138); 36000 -> 38000 (8 Nov 26): D1746, D1747 (above)
-  ['.claude/rules/decisions/people-accounts.md', 2, 22000],
+  ['.claude/rules/decisions/people-accounts.md', 2, 55500],   // raised 8 Nov 26 from 22000: the rules diet's step 5a made it a page (D1735); the account by requirement put back 35 gaps of rulings the short lines had cut and merged 10 doubled ones, and the two blind reads 15 more, the Inputs pages' and the scheduler's later rulings among them (50,466 bytes); a ruling is never cut to fit (D141), a tenth above again
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
      D565); what is left - 161 and 34 rulings, and the scheduler's settled notes - is live, and a ruling is never
