@@ -4625,6 +4625,28 @@ test.describe('the frozen callsign column', () => {
     })
   }
 
+  /* REDUCE MOTION, AND A PAGE TOO SHORT TO SCROLL (his D1870 — Astra's scenarios 1 and 9), as the Leave War's: the copy
+     stays on its step for a reader who asked for less motion, and with no scroll timeline (one man found) it stays hidden */
+  for (const size of [PHONE, { width: 1536, height: 864 }]) {
+    test(`the Quals pinned heading: with reduce motion on, hidden at rest and shown once pinned; never shown on a page too short to scroll, ${size.width} wide (D1870)`, async ({ page }) => {
+      await page.setViewportSize(size)
+      await page.emulateMedia({ reducedMotion: 'reduce' })
+      await login(page)
+      await go(page, 'quals')
+      await page.waitForSelector('#qtbl td.qname')
+      await expectPinned(page, 'qsticky-head', false, 'reduce motion, at rest: no copy over the buttons')
+      await page.evaluate(() => window.scrollTo(0, 700))
+      await expectPinned(page, 'qsticky-head', true, 'reduce motion, pinned')
+      await page.evaluate(() => window.scrollTo(0, 0))
+      await expectPinned(page, 'qsticky-head', false, 'reduce motion, back at the top')
+      await page.emulateMedia({ reducedMotion: 'no-preference' })
+      await page.locator('#qFilter').fill('Saber')
+      await expect(page.locator('#qtbl td.qname')).toHaveCount(1)
+      expect(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1), 'one man found: the page fits the screen').toBe(true)
+      await expectPinned(page, 'qsticky-head', false, 'a page too short to scroll shows no copy')
+    })
+  }
+
   /* THE PINNED ROW IS MOVED BY THE BROWSER (owner D993, 18 Oct 26 — "Could u try to just fix the quals pinned header with
      the 120 frames fix"): where scroll-driven animations exist — Chromium, and his iPhone, where the Leave War's row
      already moves this way — the row's table is translated by the table's own scroll timeline and its scroller never

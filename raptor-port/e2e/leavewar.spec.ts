@@ -8715,3 +8715,16 @@ test('M5a drawing F (D1497): on a phone a read-only figure ends where a box’s 
   expect(inset.length, 'his row is read only, its figures drawn as words').toBeGreaterThan(3)
   for (const f of inset) expect(Math.abs(f.gap - 10), `the figure ${f.text} ends ${f.gap}px in from its edge, not 10`).toBeLessThanOrEqual(0.5)
 })
+
+/* REDUCE MOTION (his D1870 — Astra's scenario 1): the copy is shown by a step on the page's scroll, and the app switches
+   every animation off for a reader who asked for less motion — so this one is kept, or the copy would sit over the month
+   buttons at rest (shown by default) or never show (hidden by default). */
+test('with reduce motion on, the pinned dates row is hidden at rest and shown once pinned (D1870)', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expectPinned(page, 'sticky-head', false, 'at rest, no copy over the month buttons')
+  await page.evaluate(() => window.scrollTo(0, 1400))
+  await expectPinned(page, 'sticky-head', true, 'pinned once the dates are under the top bar')
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expectPinned(page, 'sticky-head', false, 'hidden again back at the top')
+})

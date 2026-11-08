@@ -126,12 +126,15 @@
 /* THE PINNED HEADING THE BROWSER SHOWS ITSELF (his D1870, [LW-PIN-LAST-FRAME]): always mounted and shown by the browser on
    the page's own scroll from the point where the heading meets the top bar (QualsPage.tsx `pinSda`, class q-psda), in
    the same frame the page moves; taps and the shadow wait for .up; a copy not yet placed stays hidden */
-.qfixed.q-psda{animation:qy-show linear both;animation-timeline:scroll(root block);animation-range:calc(var(--lwy-s,1e7) * 1px - 1px) calc(var(--lwy-s,1e7) * 1px);pointer-events:none;box-shadow:none}
+.qfixed.q-psda{animation:qy-show linear both;animation-timeline:scroll(root block);animation-range:calc(var(--lwy-s,1e7) * 1px - 1px) calc(var(--lwy-s,1e7) * 1px);pointer-events:none;box-shadow:none;opacity:0}
 .qfixed.q-psda.up{pointer-events:auto;box-shadow:0 2px 10px rgba(0,0,0,.4)}
 /* while the fingers pinch, the pinch's own rule shows or hides the copy (QualsPage.tsx `qPinchShow`, D1110), not the scroll's
    animation — the page scrolls with the pinch but the turn-on point is not moved until the lift — and it keeps no shadow,
    as `.qfixed.q-pinching` above means, which `.up` would otherwise outrank (D1870's loose ends) */
-.qfixed.q-psda.q-pinching{animation:none;box-shadow:none}
+.qfixed.q-psda.q-pinching{animation:none;box-shadow:none;opacity:1}
+/* hidden by default (a page too short to scroll has no scroll timeline), and kept on its step for a reader who asked for
+   less motion — it moves nothing (Astra's scenarios 9 and 1, D1870; the Leave War's matrix.css the same) */
+@media (prefers-reduced-motion:reduce){.qfixed.q-psda:not(.q-pinching){animation-name:qy-show!important;animation-duration:auto!important;animation-timing-function:linear!important;animation-fill-mode:both!important;animation-timeline:scroll(root block)!important;animation-range:calc(var(--lwy-s,1e7) * 1px - 1px) calc(var(--lwy-s,1e7) * 1px)!important}}
 /* its own steps: the Leave War's sheet (with `lwy-show`) loads only with the Leave War */
 @keyframes qy-show{from{opacity:0}to{opacity:1}}
 @keyframes qx-follow{from{transform:translateX(0px)}to{transform:translateX(calc(-1 * var(--qx-max, 0) * 1px))}}
