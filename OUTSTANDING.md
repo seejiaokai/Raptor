@@ -153,7 +153,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Tracker**
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
-- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's).
+- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's). BUILT 8 Nov 26 (chat 20, PR #696) but the magnifier, put to him.
+- [TRK-MARKS-LEFT] — typed marks still in four Tracker messages and hints, and the Tracker's Export / Import drawings unlike Admin's; for the consistency look (found by chat 20).
 - [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; drawn for him with the Tracker's next batch (D1660).
 - [TRK-POP-ASKED] — drop the typed ↺ and ⇅ marks in two Tracker messages (D1860, answered 8 Nov 26); built with the Tracker's next batch.
 - *(The Tracker's database-step items are in that group below.)*
@@ -358,6 +359,20 @@ with no `:root` (`trk-palette.test.ts`). Today they live only in `docs/tracker/k
 app's one copy instead, with pictures of the Tracker before and after at a desktop and a phone size; nothing a person sees
 should change. **Place:** low, the agent's — with the Tracker's next batch (D490). Evidence:
 `raptor-port/docs/handpass/parts/trk1105/read-opus.md`.
+**Built 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, PR #696):** the pencil, Reorder, gear, Reset and list
+are the app's own icons; the page colours link to Raptor's tokens; pictures before (twice) and after, pixel-compared —
+nothing a person can see changed (`raptor-port/docs/handpass/2026-11-08-chat20-tracker.md`). **Left:** the magnifier
+(`SrchGlyph.jsx`) has drifted from the app's — its handle a fifth shorter — so matching it is a change he would see: put
+to him with a picture (D1625); archive this item once that is answered and the job is live.
+
+### [TRK-MARKS-LEFT] Typed marks left in Tracker words, and its Export / Import drawings (filed 8 Nov 26 — chat 20)
+**What:** building D1860, more typed marks were found in words a message box or a hint carries, where the app cannot draw
+its marks: the built-in syllabus delete's "you can bring it back later from ⇅ Reorder" (`core.js`, about line 6276),
+the import's "Set them again in ⚙." (about 7292), and the "No details yet" hints with ☰ and ⓘ (about 234–236 and 4878);
+a ✎ in help text stays (D1134). Separately, the Tracker's Export and Import drawings (its own, D1135) differ from the
+download and upload marks Admin and the input window wear. **The case to put to him:** the same treatment as D1860 (the
+words alone) for the four messages, and whether the Tracker's two marks should match Admin's — with pictures, in a
+consistency-look round. Not asked yet (D994). **Place:** low, with the Tracker's next batch or the consistency look.
 
 ### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
 **What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
