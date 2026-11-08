@@ -291,6 +291,56 @@ test('rulings archive: a "## Moved <day>" heading both sides inserted is kept on
   assert.equal(c.read('DECISIONS-ARCHIVE.md'), DARCH0 + '\n## Moved 8 Nov 26\n\n| # | Date | ruling |\n|---|---|---|\n| D2 | 8 Nov 26 | ours |\n| D3 | 8 Nov 26 | theirs |\n')
 }))
 
+/* Astra 2, Opus 1, 2, 3 (the code read, 8 Nov 26): git's regions are read under --diff3, which never trims lines both
+   sides share, so a heading or a row both inserted can sit anywhere in the region. Each entry must stay under its own
+   day heading, no heading or row may be doubled, and where that cannot be known the region is left. */
+const day = (d, ...rows) => `\n## Moved ${d} Nov 26\n\n| # | Date | ruling |\n|---|---|---|\n${rows.map(r => `| ${r} | ${d} Nov 26 | x |\n`).join('')}`
+test('rulings archive: one day heading both sides added at different places is left, never doubled (Opus 1)', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
+  c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D2')), x => x.edit('DECISIONS-ARCHIVE.md', t => t + '| D3 | 7 Nov 26 | later |\n' + day(8, 'D4')))
+  const before = c.read('DECISIONS-ARCHIVE.md')
+  const r = c.run()
+  assert.equal(r.code, 2, r.out)
+  assert.match(r.out, /LEFT for you in DECISIONS-ARCHIVE\.md/)
+  assert.equal(c.read('DECISIONS-ARCHIVE.md'), before, 'nothing settled there: git\'s own marks untouched')
+}))
+test('rulings archive: main\'s row under a day this branch also opened stays under that day, before this branch\'s next day (Astra 2, Opus 2)', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
+  c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D2') + day(9, 'D3')), x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D4')))
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  assert.equal(c.read('DECISIONS-ARCHIVE.md'), DARCH0 + day(8, 'D2', 'D4') + day(9, 'D3'))
+}))
+test('rulings archive: both sides opening different new days at one place is left (Astra 2)', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 }, c => {
+  c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D2') + day(9, 'D3')), x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D4') + day(10, 'D5')))
+  const r = c.run()
+  assert.equal(r.code, 2, r.out)
+  assert.match(r.out, /LEFT for you in DECISIONS-ARCHIVE\.md/)
+}))
+test('backlog archive: main\'s item after this branch\'s keeps a blank line before its heading (Opus 2)', withRepo({ 'OUTSTANDING-ARCHIVE.md': '# Archive\n\n## Moved 6 Nov 26\n\n### [A] a\n\nbody a\n' }, c => {
+  c.sides(x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n## Moved 7 Nov 26\n\n### [B] b\n\nbody b\n'), x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n## Moved 7 Nov 26\n\n### [C] c\n\nbody c\n'))
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  assert.equal(c.read('OUTSTANDING-ARCHIVE.md'), '# Archive\n\n## Moved 6 Nov 26\n\n### [A] a\n\nbody a\n\n## Moved 7 Nov 26\n\n### [B] b\n\nbody b\n\n### [C] c\n\nbody c\n')
+}))
+test('file map: a row both sides added the same, first or last, is kept once (Opus 3)', withRepo({ 'raptor-port/docs/file-map.md': FMAP0 }, c => {
+  c.sides(x => x.edit('raptor-port/docs/file-map.md', t => t + '| shared.ts | same |\n| o.ts | o |\n| z.ts | z |\n'), x => x.edit('raptor-port/docs/file-map.md', t => t + '| shared.ts | same |\n| t.ts | t |\n| z.ts | z |\n'))
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  assert.equal(c.read('raptor-port/docs/file-map.md'), FMAP0 + '| shared.ts | same |\n| o.ts | o |\n| t.ts | t |\n| z.ts | z |\n')
+}))
+test('skill log: this branch\'s note under a day both sides opened stays under that day, before main\'s next day (Astra 2)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+  c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(13, 'ours')),
+    x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(11, 'main') + '## 2026-11-09\n\n' + obs(12, 'main later')))
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  assert.equal(c.read('.claude/skill-observations/log.md'), LOG0 + '## 2026-11-08\n\n' + obs(11, 'main') + obs(13, 'ours') + '## 2026-11-09\n\n' + obs(12, 'main later'))
+}))
+test('skill log: both sides opening different new days at one place is left (Astra 2)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+  c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-09\n\n' + obs(12, 'ours')), x => x.edit('.claude/skill-observations/log.md', t => t + '## 2026-11-08\n\n' + obs(11, 'main')))
+  const r = c.run()
+  assert.equal(r.code, 2, r.out)
+  assert.match(r.out, /LEFT for you in \.claude\/skill-observations\/log\.md:\n\s+- left whole — both sides added new headings/)
+}))
+
 const OUT0 = '# Outstanding\n\n## Priority list\n\n- [ALPHA] alpha\n- [BRAVO] bravo\n\n## Items\n\n### [ALPHA] a\n\n### [BRAVO] b\n'
 test('backlog: an item line removed on one side and a line added beside it on the other is left, never revived (Astra 8, Opus 8)', withRepo({ 'OUTSTANDING.md': OUT0 }, c => {
   c.sides(x => x.edit('OUTSTANDING.md', t => t.replace('- [ALPHA] alpha\n', '')), x => x.edit('OUTSTANDING.md', t => t.replace('- [ALPHA] alpha\n', '- [ALPHA] alpha\n- [NEW] new\n')))

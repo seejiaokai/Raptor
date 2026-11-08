@@ -40,8 +40,12 @@
  *     spot, so the numbers run upward (the agent's reading of the plan's "where their side put them" — Opus 9).
  *   walk-ledger.md, file-map.md, OUTSTANDING-ARCHIVE.md, DECISIONS-ARCHIVE.md, OUTSTANDING.md — git's own clash regions,
  *     read three ways: a region where BOTH sides only inserted text at the same place (its base is empty) is settled as
- *     this branch's text, then main's; a `## ` heading both inserted the same (an archive's "## Moved <day>", with its
- *     table head) is kept once, each side's entries under it. Any other region is left as git marked it.
+ *     this branch's text, then main's; text both inserted the same at its start or end (an archive's "## Moved <day>"
+ *     with its table head, a row) is kept once, and each entry stays under its own `## ` heading — where both sides'
+ *     remaining text opens a heading, the region is left (joinInsertions). Any other region is left as git marked it.
+ *   In the log and HANDOFF.md alike, a new record goes after its predecessor as placed (a heading both sides opened
+ *     included), never past the other side's next new heading; both sides opening different new headings at one place
+ *     leaves the file (Astra 2, Opus 1–3 of the code read).
  *   DECISIONS.md and the rulings files — not touched. `backlog-archive.mjs --rulings --merge` merges every ruling three
  *     ways from git's own copies and refuses to start while any other file is unmerged, so: this step first, then the chat
  *     stages what this step settled (`git add`), then that command, which this step prints when a rulings file is left.
@@ -154,15 +158,28 @@ function orderKeys(B, O, T, first) {
      predecessor (it may still be live on the other side) */
   const skel = S.filter(k => bs.has(k))
   bk.forEach((k, i) => { if (!skel.includes(k)) { const prev = bk.slice(0, i).reverse().find(p => skel.includes(p)); skel.splice(prev ? skel.indexOf(prev) + 1 : 0, 0, k) } })
-  const groups = new Map(), placed = new Set()
-  for (const side of first === 'ours' ? [ok, tk] : [tk, ok]) {
-    side.forEach((k, i) => {
-      if (bs.has(k) || placed.has(k)) return
-      const anchor = side.slice(0, i).reverse().find(p => bs.has(p)) ?? '^'
-      groups.set(anchor, [...(groups.get(anchor) || []), k]); placed.add(k)
-    })
-  }
-  return [...(groups.get('^') || []), ...skel.flatMap(k => [k, ...(groups.get(k) || [])])]
+  /* the first side's new records after their base predecessor; then each of the other side's new records after ITS
+     predecessor as placed so far (a base record, or a new one either side added — a day heading both opened), past the
+     first side's own new records there but never past one of their headings, so each entry stays under the heading it
+     was written under (Astra 2 of the code read). Both sides opening different new headings at one base spot: which
+     goes first, and which entries go under which, cannot be known — the file is left. */
+  const [A1, A2] = first === 'ours' ? [ok, tk] : [tk, ok]
+  const isSec = k => k.startsWith('sec:')
+  const baseBefore = (side, i) => side.slice(0, i).reverse().find(p => bs.has(p)) ?? '^'
+  const groups = new Map()
+  A1.forEach((k, i) => { if (!bs.has(k)) { const a = baseBefore(A1, i); groups.set(a, [...(groups.get(a) || []), k]) } })
+  const list = [...(groups.get('^') || []), ...skel.flatMap(k => [k, ...(groups.get(k) || [])])]
+  const inList = new Set(list), a2 = new Set(A2)
+  const firstSecsAt = new Set(A1.flatMap((k, i) => !bs.has(k) && isSec(k) && !a2.has(k) ? [baseBefore(A1, i)] : []))
+  A2.forEach((k, i) => {
+    if (inList.has(k)) return
+    if (isSec(k) && firstSecsAt.has(baseBefore(A2, i))) throw new Leave('both sides added new headings at one place — which goes first, and which entries go under which, is yours to judge')
+    const anchor = A2.slice(0, i).reverse().find(p => inList.has(p))
+    let pos = anchor === undefined ? 0 : list.indexOf(anchor) + 1
+    while (pos < list.length && !bs.has(list[pos]) && !a2.has(list[pos]) && (isSec(k) || !isSec(list[pos]))) pos++
+    list.splice(pos, 0, k); inList.add(k)
+  })
+  return list
 }
 function renderConflict(o, b, t, labels) {
   const mid = STYLE === 'merge' ? '' : `||||||| ${labels[1]}\n${nl(b || '')}`
@@ -262,22 +279,51 @@ function settleInsertions(o, b, t, labels) {
       if (at === 'b' && is(L[i], '=')) { at = 't'; continue }
       part[at].push(L[i])
     }
-    if (part.b.length === 0) { out.push(...joinInsertions(part.o, part.t)); settled.push(`text both sides inserted at one place (${part.o.length} line(s) of this branch's, then ${part.t.length} of main's)`); continue }
+    const joined = part.b.length === 0 ? joinInsertions(part.o, part.t) : null
+    if (joined) { out.push(...joined); settled.push(`text both sides inserted at one place (${part.o.length} line(s) of this branch's, then ${part.t.length} of main's)`); continue }
+    if (part.b.length === 0) { left.push(`a place where both sides inserted text under new headings — which goes first, and which entries go under which heading, is yours to judge; near: ${(part.o.find(l => /^## /.test(l)) || '').trim().slice(0, 80)}`); out.push(renderConflict(part.o.join(''), '', part.t.join(''), labels)); continue }
     left.push(`a place where ${part.o.length && part.t.length ? 'both sides changed the same lines' : 'one side changed lines the other removed'}, near: ${(part.b.find(l => l.trim()) || '').trim().slice(0, 80)}`)
     out.push(renderConflict(part.o.join(''), part.b.join(''), part.t.join(''), labels))
   }
   return { text: out.join(''), left, settled }
 }
-/* this branch's text, then main's; a `## ` heading both inserted the same is kept once (with whatever else both inserted
-   the same right after it — a table's head), each side's entries under it, the blank lines that ended this branch's
-   entries moved after main's so a table is not split */
+/* this branch's text, then main's, each entry kept under its own `## ` heading (Astra 2, Opus 1, 2, 3 of the code read).
+   Git's regions are read under --diff3, which never trims what both sides share, so:
+   - text both sides inserted the same at the START or the END of the region (a day heading with its table head, a row)
+     is kept once there — when it holds a line that is not blank (blank lines alone stay each side's own);
+   - what is left of each side: if BOTH hold a `## ` heading, which day goes first and which entries go under which
+     cannot be known — the region is LEFT (null). If only this branch's opens a new heading, main's goes before that
+     heading, under the section both were writing in; otherwise main's simply follows this branch's;
+   - at each seam a line ending is made whole, a table is never split by a blank line, and an entry is kept apart from a
+     following heading or paragraph by one blank line (two list items or table rows stay together). */
+const isHeading = l => /^## /.test(l), blank = l => !l.trim(), tableRow = l => /^\|/.test(l), listItem = l => /^\s*(?:[-*+]|\d+\.) /.test(l)
+function seam(a, b) {
+  if (!a.length || !b.length) return [...a, ...b]
+  a = [...a]
+  if (!a[a.length - 1].endsWith('\n')) a[a.length - 1] += '\n'
+  let e = a.length; while (e > 0 && blank(a[e - 1])) e--
+  /* rows on both sides of the seam: the table runs on, the blank lines that ended this side's go after the other's */
+  if (e > 0 && tableRow(a[e - 1]) && tableRow(b[0])) return [...a.slice(0, e), ...b, ...(blank(b[b.length - 1]) ? [] : a.slice(e))]
+  const last = a[a.length - 1]
+  if (!blank(last) && !blank(b[0]) && !(tableRow(last) && tableRow(b[0])) && !(listItem(last) && listItem(b[0]))) return [...a, '\n', ...b]
+  return [...a, ...b]
+}
 function joinInsertions(o, t) {
   let p = 0
   while (p < o.length && p < t.length && o[p] === t[p]) p++
-  if (!o.slice(0, p).some(l => /^## /.test(l))) return [...o, ...t]
-  const ro = o.slice(p), rt = t.slice(p)
-  let e = ro.length; while (e > 0 && !ro[e - 1].trim()) e--
-  return [...o.slice(0, p), ...ro.slice(0, e), ...rt, ...(rt.length && rt[rt.length - 1].trim() ? ro.slice(e) : [])]
+  if (!o.slice(0, p).some(l => !blank(l))) p = 0
+  let s = 0
+  while (s < o.length - p && s < t.length - p && o[o.length - 1 - s] === t[t.length - 1 - s]) s++
+  if (!o.slice(o.length - s).some(l => !blank(l))) s = 0
+  const ro = o.slice(p, o.length - s), rt = t.slice(p, t.length - s)
+  const hO = ro.findIndex(isHeading), hT = rt.findIndex(isHeading)
+  if (hO >= 0 && hT >= 0) return null
+  let body
+  if (hO >= 0) {
+    let e = hO; while (e > 0 && blank(ro[e - 1])) e--
+    body = seam(seam(ro.slice(0, e), rt), ro.slice(e))
+  } else body = seam(ro, rt)
+  return [...o.slice(0, p), ...body, ...o.slice(o.length - s)]
 }
 
 /* ---------- one file ---------- */
