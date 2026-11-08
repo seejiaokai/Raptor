@@ -78,8 +78,9 @@ how to record or retire one: `DECISIONS.md`.
 - Accounts are built in the app now, shaped as the real thing: the Admin tab creates and manages them, each tied to one
   callsign (the person), admin or member, and an admin creates new admins and members; signing in makes you that
   callsign, so "View as" another person is gone — every account already is a callsign, as his plan for the database
-  step has it; the Leave War follows the signed-in callsign, a member bidding only on his own row; everything that
-  records who did something names the callsign [D166, D292, D165].
+  step has it; the Leave War follows the signed-in callsign, a member bidding only on his own row [D166, D292, D165].
+- Everything that records who did something names the callsign — as it was at the time, the person kept underneath so
+  his record is still found after a rename (the scheduler's D1589) [D166, D292, D1589].
 - Today's sign-in screen stands for the defence-mail sign-in, in his words: the account's sign-in name plays the
   defence-mail address and its password the organisation's; at the database step Microsoft's sign-in, with an
   authenticator, replaces it and nobody signs in twice, the one piece left to the IT side being to tie each account to
@@ -95,7 +96,7 @@ how to record or retire one: `DECISIONS.md`.
   in this repository [D165].
 - The sign-in keeps its password box until the database step, when Microsoft's sign-in replaces the whole page; only
   the two seeded sign-ins check it, and the app never stores a password; his "ok" took that recommendation — "remove it"
-  would reverse it [D223].
+  would reverse it; how the hosting trial on his own M365 meets it, before then, is below [D223].
 - No "Sign up" button on the sign-in page: anyone who signs in and is on no list lands on "Request access" by himself,
   and at the database step the sign-in is Microsoft's; kept in reserve, not built, is one line under the button — "New
   here? Sign in with your defence mail to ask for access." — if new people are confused once it is live [D293].
@@ -103,22 +104,24 @@ how to record or retire one: `DECISIONS.md`.
   his return an admin enables it and he signs in as before; suspend is the old "Switch off", which a posting out can
   also do on its date (the agent's reading) — and deleted, for a man who leaves flying for good, the delete taking the
   person too (below) [D280, D287, D290, D297, D299, D1102, D981, D300, D1105].
-- The account buttons read "Suspend" / "Enable" and "Delete account", "Suspend / Enable" in place of "Switch off / Switch
-  on"; the screens that name the state follow — the account's tag "suspended", the sign-in screen "Your access is
-  suspended" (the agent's reading) [D285].
+- The account buttons read "Suspend" / "Enable", in place of "Switch off / Switch on", and the "Delete account" he
+  approved has read "Delete" since the one door, as drawn and built; the screens that name the state follow — the account's tag
+  "suspended", the sign-in screen "Your access is suspended" (the agent's reading) [D285, D310, D322].
 
 ## How a person joins
 - A new user joins either way: the admin adds him first — his defence mail, the puck (callsign) it belongs to, member
-  or admin — and his first sign-in has that access at once; or he signs in on no list, asks with "Request access", and
-  an admin, told of it, approves, sets member or admin and links him to a puck — a typed callsign never claims a puck by
-  itself; either way the admin changes his role, his puck or his account later [D204].
+  or admin — and his first sign-in has that access at once; or he signs in on no list and asks with "Request access",
+  which takes his defence mail from the sign-in itself, so it cannot be faked and he never types it, and an admin, told
+  of it, approves, sets member or admin and links him to a puck — a typed callsign never claims a puck by itself; either
+  way the admin changes his role, his puck or his account later [D204].
 - The sign-up card (Request access) and Admin → Users' New person ask the same things — callsign/name, initials, Pilot /
   WSO / Personnel and CAT — so approving a request makes his Quals row from what he gave; the sign-up no longer asks only
   callsign and name [D214, D224, D204].
 - Admin → Users can create a brand-new person with his account in one step, making his Quals row and his account
-  together through the same one add Quals uses — the one callsign rule, never a second copy; the same "New person" is
-  offered when approving a request, filled from what he typed; the rest of his Quals row (flight, quals) is set on Quals
-  (the agent's readings) [D214].
+  together; approving a request — Give access — offers "On the roster / New person", as drawn and built, the first
+  linking him to a man already on the roster; the agent's readings: it goes through the same one add Quals uses — the one
+  callsign rule, never a second copy — the New person on the approve filled from what he typed, and the rest of his
+  Quals row (flight, quals) set on Quals [D214, D224, D322].
 - While he waits he sees the waiting screen; an admin switch, off by default, can let people waiting see the programme
   read only, as a guest — the agent's reading of his "both ways", off because anyone who reaches the app could then read
   the squadron's programme [D204].
@@ -134,10 +137,11 @@ how to record or retire one: `DECISIONS.md`.
   mounted for a guest [D213, D211].
 - Every member sees a medical input's type, remarks and documents, as today, setting aside the database brief's "the
   person and admins only" — chosen knowing the database step then departs from that rule; the change history shows a
-  medical change in full to members too (the agent's reading) [D211, D213].
-- A new access request notifies the admins beyond the Admin tab's count: the top-bar bell lights, on a desktop and a
-  phone; a tap says "N waiting for access" and takes him to Admin → Users; a member's bell never lights for it; at the
-  database step it also becomes a Teams message — the agent's readings, shown on the mock-up [D216, D204].
+  medical change in full to members too, at first the agent's reading, his own since his answers on the M365 plan (How
+  we work's D1536, D1537) [D211, D213, D1536, D1537].
+- A new access request notifies the admins beyond the Admin tab's count, and at the database step it also becomes a
+  Teams message; the agent's readings, shown on the mock-up: the top-bar bell lights, on a desktop and a phone, a tap
+  saying "N waiting for access" and taking him to Admin → Users, and a member's bell never lights for it [D216, D204].
 - Each admin's bell is his own: a new request lights every admin's bell and goes out for one admin only once he has had
   the waiting list on screen — Admin → Users itself, on a phone only once he taps into Users, stored with the request so
   it survives a reload and goes once the request is answered (the agent's readings); another admin looking does not put it out; the Admin tab's count stays
@@ -156,13 +160,13 @@ how to record or retire one: `DECISIONS.md`.
 
 ## Roles, the member view and permissions
 - An admin can switch himself to the member view and back by tapping his name badge, "SABER · ADMIN" to "SABER ·
-  MEMBER"; in the member view the app behaves exactly as for a member (his own Quals row and inputs only, no Admin tab,
-  no Edit Schedule); every sign-in starts as admin; he stays himself throughout; on a phone the switch sits in the
-  drawer's account line (the agent's reading) [D292, D166].
+  MEMBER"; in the member view the app behaves exactly as for a member (his own Quals row and the inputs a member may
+  file, as the Inputs pages have them, below; no Admin tab, no Edit Schedule); every sign-in starts as admin; he stays
+  himself throughout; on a phone the switch sits in the drawer's account line (the agent's reading) [D292, D166].
 - One place in the app answers "may this person do this?", mirroring the data model's permissions table
   (`raptor-port/docs/data-model.md` §11, what IT builds the security roles from), which matches every ruling, with a
   test that fails when the two disagree; built with `[ACCOUNTS]`, a member's own Quals row held at the page and the
-  write path, a test per column [D200, D149, D218, D1510, D1651].
+  write path, a test per column [D200, D149, D218, D1510, D1651, D1589].
 - The database's security roles are designed by the agent at the database step, not before: each table's permissions
   per role, row ownership set by the app, the protected columns, and what stands in for each rule a role cannot hold; IT
   enters them, and a member-only account tests them; the IT side's answers of 8 Nov 26 — database rights are theirs, who
@@ -175,12 +179,15 @@ how to record or retire one: `DECISIONS.md`.
   on the roster, and carries every action on him but the dated posting, whose sheets stay on the Leave War, his row
   showing a posting that waits for its date (below) [D309, D310].
 - One row per person on the roster, A to Z, with a search box; a Sign-in dot and a Roster dot in two columns — green on,
-  red off, grey no sign-in; a tap on a row opens his sign-in, his role and the buttons for his state; the list never
-  reorders itself (the agent's call, approved with the mock-up) [D322, D310].
+  red off, grey no sign-in; a tap on a row opens his sign-in, his role and the buttons for his state — but never the
+  signed-in admin's own row, which another admin changes, as drawn ("Your own row can't be opened") and built; the list
+  never reorders itself (the agent's call, approved with the mock-up) [D322, D310].
 - The buttons by state: Active → Suspend · Archive · Delete; Suspended → Enable · Archive · Delete; no sign-in → Give
   sign-in · Archive · Delete; Archived, in the folded "▸ Archived · N" group at the foot → Restore · Delete; Waiting →
   Give access · Refuse; the words stay — Suspend / Enable, Archive / Restore, Delete — and "Give sign-in" is new [D310,
   D322, D285, D298].
+- An archived row opens his callsign box — a rename, and "Restore as …" when a man on the roster holds his callsign —
+  a Post in date opening on today, Restore and Delete [D322, D295, D310, D308].
 - Archive also suspends the sign-in; Restore brings both back, asks the post-in date and tells him to check his quals
   and CAT, so there is no "can sign in but archived" half-state; the agent's calls, approved with the mock-up: Archive is
   one tap, Restore undoing it, and no Enable on an archived row, so no signing in while archived [D310, D322].
@@ -205,14 +212,15 @@ how to record or retire one: `DECISIONS.md`.
 ## Quals — who edits what
 - On Quals a member edits his own row only, never another person's, so members keep their own qualifications up to date
   themselves: every column of it — initials, flight, CAT, SXO, SANS, every qualification — but three, each an admin's:
-  the callsign, the Management tick and the Scheduler tick [D149, D218, D1510, D1651].
+  the callsign, the Management tick and the Scheduler tick [D149, D218, D1510, D1651, D1589].
 - A member's own Management and Scheduler cells read only, and a member's command that changes one is refused at the
   Quals write and the commit gate as well; for Management, refused at the screen, the write and the gate alike is the
   agent's reading [D1510, D1651].
 - The Scheduler tick decides who may sign SKED CK, PLANNED BY and APPROVED BY, and a scheduler is always an admin; a
   member unticking his own had blanked his signatures, the reason the tick became an admin's [D1651, D1510].
-- A callsign's rename stays on Quals, an admin's alone, and stays a label: every puck, the history and his account
-  follow it [D218, D1510, D1651].
+- A callsign's rename stays on Quals, an admin's alone, and stays a label: every puck and his account follow it; the
+  change history and every other record of who did something keep the name as it was at the time, the person kept
+  underneath, so his record is still found after a rename (the scheduler's D1589, below) [D218, D1510, D1651, D1589].
 
 ## Quals — its row of buttons, and on a phone
 - Quals' row of buttons is one row at 36, as drawn — the date box that did nothing removed, "Export to Excel" reading
@@ -248,10 +256,10 @@ how to record or retire one: `DECISIONS.md`.
   with a post-in date, he reads "away" between the two — not counted in manning or availability, no bids, the posting
   hatch — his months before the posting stay as they were, his leave there included, and he counts again from the
   post-in date [D320, D308].
-- A leave period he is away for the whole of shows no row for him; one holding his posting-out date shows his days
-  before it as normal; a stint opens on a post-in date and closes on a posting-out date, Restore opens a new one, never
-  rewriting an old one, and the war's own Post in / Post out edit the stint the day falls in (the agent's readings)
-  [D320].
+- A leave period he is away for the whole of shows no row for him, and one holding his posting-out date shows his days
+  before it as normal; the agent's readings: a stint opens on a post-in date and closes on a posting-out date, Restore
+  opens a new one, never rewriting an old one, the war's own Post in / Post out edit the stint the day falls in, and the
+  records he left in an earlier stint stay and show there [D320].
 - The posting sheets are the admin's, open at any time — a posting date is an official date, not a bid — and never the
   man's, as he was told; an earlier stint's dates are read-only on the Leave War, as built: the Post in sheet of the
   stint he came back for says "Back from a posting on …" and offers no Undo, and a date aimed into an earlier stint is
@@ -374,7 +382,8 @@ how to record or retire one: `DECISIONS.md`.
   him; the demo's own "today" (13 Jul) is not the clock [D304, D297].
 - The post-out chip reads "Delete", not "Fully delete" — the past keeps his record, so "fully" overstates it — and the
   same word names the act everywhere: the post-out chip, the account editor's second tap and the confirm line (the
-  agent's reading); "Delete account" stands [D298, D285].
+  agent's reading); the account's own button, once "Delete account", has read "Delete" since the one door [D298, D285,
+  D310, D322].
 
 ## Many squadrons and aircraft types — not built yet
 - One app is built for every squadron and aircraft type (F-15, F-16, F-35), each squadron configuring it inside the app,
@@ -390,17 +399,18 @@ how to record or retire one: `DECISIONS.md`.
   would have to be undone; nothing of the feature itself is built early [D1100, D1101].
 - The app is deployed separately for each aircraft type, each with its own database — his leaning of 21 Oct 26 ("Im
   thinking"), answering D1100's open question; one code base still serves them all, and the squadrons of one type, with
-  their detachments, share that type's database — so far at most two squadrons a type, so lending a man between the two
-  F-15 squadrons stays inside one system (the agent's reading) [D1101, D1100].
+  their detachments, share that type's database — so far at most two squadrons a type, his next message; the agent's
+  reading, told to him: lending a man between the two F-15 squadrons stays inside one system [D1101, D1100].
 - Not settled: his direction of 5 Nov 26 below names one database for many squadrons, not aircraft types, so by its
   words it does not end the split by type; but the IT side's answer of 8 Nov 26 — one production environment for code
   apps, so no database per type today — was put to him that day, recommended: no change now, the F-15 squadrons first,
   settled when a second type joins; held on `[AIRCRAFT-TYPE-SETTING]` and `[MULTI-SQN-DESIGN]` (the agent's reading)
   [D1101, D1695].
-- How a guest flyer from another type, or a man moving from one aircraft type to another — his data travelling with him
-  today only within one system — crosses from one database to another is his question at the database step, not before;
-  "one database" in the architecture guide meant one deployment's schedule, Leave War and Tracker; nothing is built for
-  it now (the agent's readings) [D1101].
+- How a guest flyer from another type, or a man moving from one aircraft type to another, crosses from one database to
+  another is his question at the database step, not before — today's rule (13 Sep 26) has a man who leaves the whole
+  system start fresh, his data travelling with him only within one system; "one database" in the architecture guide
+  meant one deployment's schedule, Leave War and Tracker; nothing is built for it now (the agent's readings, told to
+  him) [D1101].
 - His direction (5 Nov 26): one app and one database for many squadrons — each person's squadron set when his account
   is made, rights to view other squadrons read only, a permanent transfer when he posts out, a day planned half in one
   squadron and half in another; its design is put to him with pictures as a job of its own before the database step;
@@ -416,8 +426,9 @@ how to record or retire one: `DECISIONS.md`.
   across the app, so the database must not make one unique across the whole app; a guest flyer from another community is
   always marked as one — future, nothing built now [D288, D289].
 - The guest mark is an orange corner on his puck (option A), taken knowing it is a little less distinct beside a red
-  warning chip; the mark never hides the callsign — "Viper · F-16" in full wherever there is room: the lists, the pickers,
-  a tap (the agent's reading) [D296, D289].
+  warning chip; his concern stands with it: the mark must never hide the callsign, a puck being a fixed width that never
+  wraps; the agent's reading: on the puck a small colour mark, not text, with "Viper · F-16" in full wherever there is
+  room — the lists, the pickers, a tap or hover [D296, D289].
 - The agent's proposal of the same day, not yet answered by him: a guest is picked from a list of guest flyers, never by
   typing a bare callsign — a typed callsign means your own community's man; and a guest's leave, quals and account stay
   with his own squadron, as a neighbour's man's do [D288].
@@ -431,7 +442,9 @@ how to record or retire one: `DECISIONS.md`.
   D300, D981, D1105, D296].
 - The new person and the sign-up: the new-person mock-up, `raptor-port/docs/mock/new-person-account.html`, is the design
   of record for `[ACCOUNTS-NEW-PERSON]`, the post-in date added to its form; his message left the template's "[or:
-  change X]" unfilled, read as approved as drawn — a change he names later is a new ruling [D224, D308].
+  change X]" unfilled, read as approved as drawn — a change he names later is a new ruling; its add's "On the roster"
+  choice gave way to the one door's: "Add a person" makes a New person only, a man already on the roster getting his
+  sign-in with Give sign-in, while Give access keeps "On the roster / New person" [D224, D308, D322].
 - The posting bell's line: its drawing of record, `raptor-port/docs/mock/2026-11-05-postout-bell/` (pictures 4 and 6),
   its ring 8px outside the row kept as built [D1690, D1694].
 - The post-out and one-door look cards' answers, as built: an earlier stint read-only, a posting with no chip, a delete
@@ -488,8 +501,11 @@ how to record or retire one: `DECISIONS.md`.
 - The scheduler's: members see the full change history, a medical change in full too [D169, D211, D213]; a Quals change is a
   line dated the day it was made, and someone given access later starts with nothing new [D338].
 - The scheduler's: every bell line is taken back by the undo of what made it — a posting out's by its sheet's "Undo post
-  out", or by a change of its date or outcome once it has run; a read line is struck through, then "taken back · <who>",
-  unread, and an unread one simply goes [D1693, D1699, D1710].
+  out", or, once it has run, by a change on its sheet, its date moved later or another outcome, the admin who changed it
+  told nothing and the changed posting telling again when it runs; a read line is struck through, then "taken back ·
+  <who>", unread, and an unread one simply goes [D1693, D1699, D1710].
+- The scheduler's: the change history and every other record of who did something show the name as it was at the
+  time, the person kept underneath; at the database step each stores his id beside that name [D1589].
 - The scheduler's: a new person's Post in date — on Restore and on giving access too — opens the app's one date calendar
   over its form, its weeks starting on Monday [D796, D797].
 - The scheduler's: a flying line with only its front seat filled works as fully as a two-seat one, for F-16 and F-35
@@ -500,9 +516,15 @@ how to record or retire one: `DECISIONS.md`.
 - The Tracker's: each signed-in person reopens the Tracker on his own last course, chart and student; the admin's member
   view is the same person [D376].
 - The Inputs pages': a column heading dragged on Quals to the table's edge scrolls the table sideways [D893].
+- The Inputs pages': a member may file for other people only duties and commitments — never leave, medical or SANS
+  availability, which a SANS member files for himself only; who is in a shared input is changed only by its filer or a
+  scheduler, though a man may always take himself out; an input for several people has one OIL answer, its filer's or
+  an admin's; once a scheduler has moved a member's input, only a scheduler changes where it goes [D655, D658, D763,
+  D762, D660, D1388, D1398].
 - The design file's: the screen after asking for access takes look B's pass at its top — the claws, "Waiting for an
   admin", his callsign large, his initials, seat and CAT — and look A's three steps, the read-only line, "View the
-  schedule" and "Sign out", with "Signed in as …" small at the foot [D1649, D1650, D1654, D1656].
+  schedule" and "Sign out", with "Signed in as …" small at the foot; the pass keeps its blue fade from the top left, laid
+  over the whole card so it thins out across the tear line, as drawn [D1649, D1650, D1654, D1656].
 - The design file's: while a save has failed, the "Not saved — keep this page open · Retry" band shows on that screen,
   the guest page and the sign-in screen too, and the pass reads "Not sent yet" [D1657, D1664].
 - The design file's: the app is called TALON, not RAPTOR, the sign-in and the access screens included, where the claw
@@ -516,15 +538,19 @@ how to record or retire one: `DECISIONS.md`.
   week's look [D1134, D1127]; undo and redo move Quals to a man's row only when it is not wholly on screen [D672].
 - How we work: a scheduler is always an admin — nothing is built, tested or walked for one who is not; a member, a guest
   and a person with no sign-in stay in scope; the admin's own member view is a member while it is on [D785].
-- How we work: the one undo does not take back adding a person, archive, Restore / Restore as, delete or a posting —
-  each has its own way back, and the greyed button says why; Undo steps back only through the signed-in person's own
-  changes [D350, D148].
+- How we work: in this build the one undo does not take back adding a person, archive, Restore / Restore as, delete or
+  a posting — Restore undoes Archive, the sheet's "Undo post out" a posting, Delete a man added by mistake, and a Delete
+  is never undone at all; the greyed button says why; Undo steps back only through the signed-in person's own changes
+  [D350, D148].
 - How we work: at the database step Admin → Data's "Clear edit history…" is removed; until then it stays as built
   [D1752].
 - How we work: a security read — an extra fresh reader looking only for holes — on any change to sign-in, permissions or
   what one person sees of another; one full security review of the app before the database step [D1411].
 - How we work: at the move each aircraft type's deployment is set to its type by a setting, not by code — built then,
   not now, the agent's reading [D1536, D1537].
+- How we work: the hosting trial on his own M365 — the app with no database, run inside Power Apps, started only once
+  he says he is ready — is where he tests Microsoft's sign-in in place of the sign-in card, the agent's reading told to
+  him; the app on Vercel keeps its password box until the database step [D1532, D1682].
 - How we work: no tables, security roles or day-lock flow on his M365 before the database step; his test account is set
   up then to match the IT side's restrictions, the same roles among them [D1662, D1749, D1571, D473].
 - How we work: what does not read the one table — Quals ticks homed in one record, a posted-out man read from the person
