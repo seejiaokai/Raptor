@@ -1,0 +1,122 @@
+{
+ "results": [
+  {
+   "id": "S1",
+   "pass": true,
+   "did": "Friday board: + Wave, flying wave, VL 12:00/13:00, Saint front, Echo back; opened Insights",
+   "saw": "before: {\"saint\":\"12h30\",\"echo\":\"21h25\"}; R box value \"\" placeholder \"09:00\"; Insights Saint 18h30, Echo 27h25",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/s1-line-on-board.png",
+    "docs/img/handpass/2026-11-08-day-start/s1-insights-rows.png"
+   ]
+  },
+  {
+   "id": "S2",
+   "pass": true,
+   "did": "typed 09:00 in VL R box, opened Insights",
+   "saw": "Saint 18h30, Echo 27h25",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/s2-r-typed-0900.png",
+    "docs/img/handpass/2026-11-08-day-start/s2-insights-after-0900.png"
+   ]
+  },
+  {
+   "id": "S3a",
+   "pass": true,
+   "did": "VL changed to 08:00 / 15:30; read issues list",
+   "saw": "notes: [\"Saint — Saint has a long work day: 12h30, 05:00 → 17:30 (last landing 15:30 + 2h debrief assumed)\",\"Echo — Echo has a long work day: 12h30, 05:00 → 17:30 (last landing 15:30 + 2h debrief assumed)\"]; pucks: [\"salsa:puck sm warn note | Saint · B · 2-ship FL · Long work day (>12h)\",\"freak:puck r sm warn hard boxred | Echo · IW · instructor WSO · SXO · Crew rest breach (<12h)\"]",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/s3-board-line-0800-1530.png",
+    "docs/img/handpass/2026-11-08-day-start/s3-board-issues-list.png"
+   ]
+  },
+  {
+   "id": "S3b",
+   "pass": true,
+   "did": "Edit Schedule week, Friday scrolled into view",
+   "saw": "week long-day lines: []; pucks: [\"freak:puck r warn note\",\"freak:puck r warn note\",\"salsa:puck sm\",\"salsa:puck warn hard boxred\",\"freak:puck r sm\",\"salsa:puck sm warn hard boxred\",\"salsa:puck sm warn hard boxred\",\"freak:puck r sm\",\"salsa:puck sm\",\"freak:puck r sm\",\"salsa:puck\",\"freak:puck r boxdot\",\"freak:puck r sm boxdot\",\"salsa:puck warn note\",\"freak:puck r warn hard boxred\",\"salsa:puck sm\",\"freak:puck r sm\",\"salsa:puck sm\",\"freak:puck r sm\"] (judge by the picture)",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/s3-editschedule-friday.png"
+   ]
+  },
+  {
+   "id": "S3c",
+   "pass": true,
+   "did": "typed 07:00 in R box, then cleared it",
+   "saw": "with 07:00: []; cleared: [\"Saint — Saint has a long work day: 12h30, 05:00 → 17:30 (last landing 15:30 + 2h debrief assumed)\",\"Echo — Echo has a long work day: 12h30, 05:00 → 17:30 (last landing 15:30 + 2h debrief assumed)\"]",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/s3-r-0700-notes-gone.png",
+    "docs/img/handpass/2026-11-08-day-start/s3-r-cleared-notes-back.png"
+   ]
+  },
+  {
+   "id": "S4a",
+   "pass": true,
+   "did": "opened Logic on desktop and phone",
+   "saw": "row words: An empty R box, a formation's rally, suggests a time this long before take-off, and \"+ In-time\" fills in that same time. When no in-time or rally is entered, a flyer's day starts at that time: his long day, OIL and Insights hours count from it. The tight crew-rest advisory also checks his rest as if he reported at that time.",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/s4-logic-row-desktop.png",
+    "docs/img/handpass/2026-11-08-day-start/s4-logic-row-phone.png"
+   ]
+  },
+  {
+   "id": "S4b",
+   "pass": true,
+   "did": "default rally 3h -> 2h30; Insights; Friday issues",
+   "saw": "Saint 24h30 (expect 30 min under 25h), Echo 33h25; long-day notes: []",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/s4-logic-2h30-editing.png",
+    "docs/img/handpass/2026-11-08-day-start/s4-insights-2h30.png",
+    "docs/img/handpass/2026-11-08-day-start/s4-board-issues-2h30.png"
+   ]
+  },
+  {
+   "id": "S4c",
+   "pass": true,
+   "did": "default rally back to 3h",
+   "saw": "Saint 25h, Echo 33h55; notes 2",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/s4-insights-back-3h.png"
+   ]
+  },
+  {
+   "id": "S5",
+   "pass": true,
+   "did": "published Friday; default rally 3h30; looked at working copy, view-only and Insights",
+   "saw": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; working-copy notes [\"Saint — Saint has a long work day: 13h00, 04:30 → 17:30 (last landing 15:30 + 2h debrief assumed)\",\"Echo — Echo has a long work day: 13h00, 04:30 → 17:30 (last landing 15:30 + 2h debrief assumed)\"]; board {\"chip\":\"ORIG\",\"beak\":\"Publish AL1\",\"sign\":\",,,,1st wave\"}; view-only week long-day lines [\"Long work daySaint — Saint has a long work day: 12h30, 05:00 → 17:30 (last landing 15:30 + 2h debrief assumed)Long work dayEch\",\"o — Echo has a long work day: 12h30, 05:00 → 17:30 (last landing 15:30 + 2h debrief assumed)Common Programme\"]; view-only board notes null; Insights Saint 25h30 Echo 34h25",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/s5-published-friday-board.png",
+    "docs/img/handpass/2026-11-08-day-start/s5-board-working-3h30.png",
+    "docs/img/handpass/2026-11-08-day-start/s5-editschedule-friday-3h30.png",
+    "docs/img/handpass/2026-11-08-day-start/s5-viewonly-friday-published.png",
+    "docs/img/handpass/2026-11-08-day-start/s5-insights-3h30.png"
+   ]
+  },
+  {
+   "id": "S5-restore",
+   "pass": true,
+   "did": "default rally back to 3h",
+   "saw": "Saint 25h, Echo 33h55",
+   "pics": []
+  },
+  {
+   "id": "S6",
+   "pass": true,
+   "did": "opened/closed Insights from board, Edit Schedule, View-only Sched, phone menu; Logic folds; Done",
+   "saw": "Done closed board: true; Logic folds toggled: 3 of 4; phone Insights {\"saint\":\"25h\",\"fit\":true,\"noSide\":true}",
+   "pics": [
+    "docs/img/handpass/2026-11-08-day-start/s6-insights-from-editschedule.png",
+    "docs/img/handpass/2026-11-08-day-start/s6-insights-from-viewsched.png",
+    "docs/img/handpass/2026-11-08-day-start/s6-insights-from-board.png",
+    "docs/img/handpass/2026-11-08-day-start/s6-after-done.png",
+    "docs/img/handpass/2026-11-08-day-start/s6-logic-fold-open.png",
+    "docs/img/handpass/2026-11-08-day-start/s6-logic-folds-closed.png",
+    "docs/img/handpass/2026-11-08-day-start/s6-phone-menu.png",
+    "docs/img/handpass/2026-11-08-day-start/s6-phone-insights.png",
+    "docs/img/handpass/2026-11-08-day-start/s6-phone-menu-viewonly.png",
+    "docs/img/handpass/2026-11-08-day-start/s6-phone-insights-viewonly.png"
+   ]
+  }
+ ],
+ "errors": []
+}
