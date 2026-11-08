@@ -138,7 +138,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26) — a design job of its own with pictures, before the database step.
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
 - [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — built (D1789; Quals too) on `claude/pr-leave-war-4988a8`, pull request 680; walked: halved, two painted frames to one, scrolling not slower; the last frame is [LW-PIN-LAST-FRAME]; reads and his look to come.
-- [LW-PIN-LAST-FRAME] — the pinned dates row (and Quals' heading) still blinks for one painted frame: the browser's own; a design question for him, after his look on his iPhone.
+- [LW-PIN-LAST-FRAME] — the pinned dates row (and Quals' heading) still blinks for one painted frame: the browser's own; it went live so (D1850), and this is the job: a new way of pinning, measured first.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
 - [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
 - [LW-COMMIT-MANNING] — duty and commitments lowering the war's manning: parked "for now" (D998), his to raise.
@@ -957,6 +957,8 @@ after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at a
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1789) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The dates row blink" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
 
 ### [LW-PIN-LAST-FRAME] The pinned dates row still blinks for one painted frame (8 Nov 26)
+
+**His answer, 8 Nov 26 (D1850):** "Merge live" — the fix went live with this frame left, and this item is the job of its own: the fresh code reader's idea, a pinned row the browser moves by itself (a scroll-driven timeline, the pinned copy always drawn), tried and its frames measured before anything is built.
 
 Found by the walk of [LW-FROZEN-BAR-GAP]'s build (chat 8, `raptor-port/docs/handpass/2026-11-08-lw-group6.md` finding A;
 pictures `raptor-port/docs/img/handpass/2026-11-08-lw-group6/pc-s10-painted-frames.png` frame 3,
