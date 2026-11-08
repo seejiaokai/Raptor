@@ -167,13 +167,13 @@ describe('the mode itself (§2.1)', () => {
     expect(groundRowEl(0).querySelector('.role.oilamt')!.textContent, 'his day is a half now').toBe('HO')
   })
 
-  it('OIL9 — the day blanket stops everything, and says the marks underneath are kept', async () => {
+  it('OIL9, D1782 — the day switch stops everything, and the note says each man earns as before once it is off', async () => {
     await click(oilBtn())
     await click(groundRowEl(1).querySelector('.seat.oilpk'))       // a person mark underneath
     await click($('#sbBoard [data-oilblank]'))
     expect((DAYS[SAT] as any).oild.blanket).toBe(1)
     expect($$('#sbBoard .sb-panel.grnd .puck.oilglow').length, 'nothing glows').toBe(0)
-    expect($('#sbBoard .daybar-note').textContent).toContain('kept')
+    expect($('#sbBoard .daybar-note').textContent).toContain('each man earns as he did before')
     await click($('#sbBoard [data-oilblank]'))
     expect((DAYS[SAT] as any).oild.blanket).toBeUndefined()
     expect((DAYS[SAT] as any).oild.people, 'the person mark survived underneath').toBeTruthy()
@@ -797,7 +797,7 @@ describe('the pictures round: the day switch, a tap that cannot earn, the phone 
     expect($('#sbBoard .daybar-note').textContent)
       .toBe('Nothing on this day earns OIL. Turn off the switch and each man earns as he did before.')
     await click(sw())
-    expect((DAYS[SAT] as any).oild.blanket, 'and off again').toBeUndefined()
+    expect((DAYS[SAT] as any).oild?.blanket, 'and off again').toBeUndefined()
     expect(sw().checked).toBe(false)
   })
 
@@ -815,6 +815,7 @@ describe('the pictures round: the day switch, a tap that cannot earn, the phone 
     addRow(SAT, { prog: 'NO TIMES', str: '', end: '', who: 'plasma' })
     await open(SAT)
     await click(oilBtn())
+    said.length = 0   // the mode's own opening note
     const inert = $('#sbBoard .sb-panel.grnd .seat.oilpk.inert')
     await click(inert.querySelector('.puck') || inert)
     expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. This row gives him no working hours to count OIL from.`])
@@ -826,6 +827,7 @@ describe('the pictures round: the day switch, a tap that cannot earn, the phone 
     addRow(SAT, { prog: 'OPEN END', str: '0800', end: '', who: 'plasma' })
     await open(SAT)
     await click(oilBtn())
+    said.length = 0   // the mode's own opening note
     const inert = $('#sbBoard .sb-panel.grnd .seat.oilpk.inert')
     await click(inert.querySelector('.puck') || inert)
     expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).plasma.cs}. No OIL worked out — this row has no end time.`])
