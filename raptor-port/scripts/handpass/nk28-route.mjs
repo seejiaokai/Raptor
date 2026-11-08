@@ -6,7 +6,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-console.log('nk28-route v1')
+console.log('nk28-route v2')
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = resolve(HERE, '../../docs/img/handpass/2026-11-08-chat28-not-kept/route')
 mkdirSync(OUT, { recursive: true })
@@ -46,7 +46,7 @@ async function walkOne(tag, opts, expectBand) {
     await L.login(p, 'a'); await p.evaluate(() => window.go('editsched')); await L.sleep(1200)
     const band = await vis(p, '.topbar > .savestat.nokeep'), bar = await vis(p, '.topbar')
     await shot(p, tag + '-2-editsched')
-    ok(tag + ' Edit Schedule band', expectBand ? !!band && band.text === 'Not kept this browser loses your work on a reload' && !band.btn && Math.abs(band.b - bar.b) <= 2 : !band, JSON.stringify({ band, barB: bar && bar.b }))
+    ok(tag + ' Edit Schedule band', expectBand ? !!band && band.text === 'Not kept — this browser loses your work on a reload' && !band.btn && Math.abs(band.b - bar.b) <= 2 : !band, JSON.stringify({ band, barB: bar && bar.b }))
     const saving = await vis(p, '.topbar > .savestat:not(.nokeep):not(.failed)')
     ok(tag + ' no "Saving…" beside it', !saving || !expectBand, JSON.stringify(saving))
     await L.navTracker(p)
