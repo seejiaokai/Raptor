@@ -38,3 +38,13 @@ read as one.
 **Sizes against the live files:** bug-check order +8.6%, checklist +5.5%, walk-scripts +28.7%, gates guide +6.2%,
 doc-budget +6.1%, codex-guide +11.7%, overnight +11.7%, session-handoff +19.5%, mock-up guide +45.4% (was +49.1%),
 dispatching guide +6.9%, superpowers register +26.3%. The readers' replacement texts are longer than what they replaced.
+
+## Round 2 — Astra's re-read of the fix round (`reread-astra.md`, REVISE, 4 findings), all four taken word for word
+1. The main-folder recipe also checks that the folder's own `main` sits inside GitHub's `main` before switching, and that
+   the folder ends exactly on GitHub's `main` (a case passed every check while still loading unmerged work).
+2. A new job's own folder starts on a branch of its own (`git worktree add --no-track -b claude/<new-name> …`), so its
+   commits never land on no branch.
+3. A reader's report stays outside the checkout until every required reader of that job has reported, including one not
+   yet started.
+4. The bug-check order's FULL row and its "Order of steps" no longer hand the evidence sheet to the readers.
+These four are Astra's own replacement texts; with the review's cap of about three rounds (D70), no further round is run.

@@ -312,7 +312,7 @@ index 8a35ab860..d2041a7d7 100644
    never re-run a suite they already started — backgrounded full runs pile up
 
 diff --git a/.claude/skills/overnight/SKILL.md b/.claude/skills/overnight/SKILL.md
-index 517b78913..b6e2293f4 100644
+index 517b78913..4b385f95a 100644
 --- a/.claude/skills/overnight/SKILL.md
 +++ b/.claude/skills/overnight/SKILL.md
 @@ -17,8 +17,10 @@ jobs he selected, on branches, in this chat. It is NOT permission to build a job
@@ -393,8 +393,8 @@ index 517b78913..b6e2293f4 100644
 +- **A helper's report** (reader, walker, scenario designer). A helper returns its report as its final reply. Save it
 +  at once. The tool refuses a background helper's write of a file it calls a report (10 Nov 26, note 915), so the report
 +  is saved into the repo — its brief's folder or the evidence sheet — the moment it arrives, before anything is done
-+  about it — except a reader's report while another reader of the same job is still reading: it waits in a scratch
-+  folder outside the checkout and enters the repo once every reader has reported (the bug-check order §4). Before it
++  about it — except that each reader's report and every copy or summary stay in a scratch folder outside the checkout
++  until all required blind readers of that job have reported, including readers not yet started (the bug-check order §4). Before it
 +  is accepted, each reader the
 +  night's block names for that job is ticked against it; a missing one is run then, or the job goes on
 +  `[NO-ASTRA-LIST]` in the same change (8 Nov 26). A notice that a helper stopped with background work of its own still
@@ -472,7 +472,7 @@ index 71fca4d00..3e97d973e 100644
  
 
 diff --git a/.claude/skills/session-handoff/SKILL.md b/.claude/skills/session-handoff/SKILL.md
-index 93627075a..17927bef5 100644
+index 93627075a..76e8a14ae 100644
 --- a/.claude/skills/session-handoff/SKILL.md
 +++ b/.claude/skills/session-handoff/SKILL.md
 @@ -50,7 +50,11 @@ pushed and waiting for him — the normal end state, not unfinished business.
@@ -515,7 +515,7 @@ index 93627075a..17927bef5 100644
 +  taken). Every opening line says: "if `git status --short
 +  --untracked-files=no` shows changes you did not make, or another chat works
 +  in this folder, do not switch branches here: a new job runs `git worktree add
-+  --detach ../Raptor-<short> origin/main`, a continuing one `git worktree add
++  --no-track -b claude/<new-name> ../Raptor-<short> origin/main`, a continuing one `git worktree add
 +  ../Raptor-<short> claude/<name>` (the branch itself, never detached, so its
 +  commits land on it) — a short path, never under a temp or scratchpad folder —
 +  and works only there; make one write there first, and if the file tools
@@ -894,7 +894,7 @@ index 36b833390..fb931e673 100644
 +    the PC cannot show (the bounce, the folding toolbar) named as a look for his iPhone.
 
 diff --git a/raptor-port/docs/bug-check-order.md b/raptor-port/docs/bug-check-order.md
-index b3a71a9d4..0d9b95a6f 100644
+index b3a71a9d4..5551d166c 100644
 --- a/raptor-port/docs/bug-check-order.md
 +++ b/raptor-port/docs/bug-check-order.md
 @@ -52,7 +52,11 @@ is the agent's job, answered out of §5.
@@ -1078,6 +1078,24 @@ index b3a71a9d4..0d9b95a6f 100644
 +Opus read required by D790 remains beside Astra's, including when Opus wrote the code (D1770). Full detail: §4a of the order.
  
  ## 5. Which checks for which change
+ 
+@@ -488,7 +536,7 @@ lived in a shared drawer and a new mode. **A cosmetic change to a shared drawer
+ | **NONE** | Nothing. | 0 |
+ | **LOOK** | The gates; one before/after picture at phone and desktop; a two-line evidence sheet. | 15–20 min |
+ | **WALK** | The gates; the roll-call (if a shared drawer); the door check (if a gesture); a walk of the touched surfaces at both widths, sized by the sizing step (§7.0); the new gesture in both orders; a break test per surface; the sheet. | 1–1½ h |
+-| **FULL** | Everything: the rules sweep; the other model designs the scenarios; the roll-call; the door check; a walk sized by the sizing step (§7.0); break tests; the case seeded into the demo data; **both** models read the code, given the sheet and asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
++| **FULL** | Everything: the rules sweep; the other model designs the scenarios; the roll-call; the door check; a walk sized by the sizing step (§7.0); break tests; the case seeded into the demo data; **both** models read the finished code and the same brief under §4's blindness rules, and are asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
+ 
+ The walk is the dearest part and the part whose cost varies most: what past walks of each type of change cost
+ and found is in `docs/walk-ledger.md` §The figures (D607).
+@@ -515,7 +563,7 @@ and the walk's build. Once the repo is private again, the gates run on his PC (`
+ 
+ **Order of steps in FULL:** build → open the pull request into `main` (GitHub's run is the gates; it goes during the walk)
+ → roll-call and door check → **the sizing step (§7.0)** → walk, and fix what it finds (the touched tests on his PC; the
+-fixes pushed once the run in progress has finished, D151) → the two reads, *with the evidence sheet in their hands* → fix
++fixes pushed once the run in progress has finished, D151) → the two reads, given the finished code and the same brief under §4's blindness rules → fix
+ → re-walk only what the fixes touched → GitHub's run green on the last pushed commit → finish the sheet → the owner's look
+ → his "merge live". Once the repo is private again, each "gates" step is the full set on his PC (D1086).
  
 @@ -524,7 +572,10 @@ roll-call for gaps — reading for absence works when there is a list in hand.
  
@@ -1315,7 +1333,7 @@ index 7ca5bc11d..9387eedef 100644
    row marked, then `node raptor-port/scripts/backlog-archive.mjs --rulings` moves marked rows and rewrites the map.
 
 diff --git a/raptor-port/docs/gates-and-deploy.md b/raptor-port/docs/gates-and-deploy.md
-index 6f36f8da8..46e9a3fa9 100644
+index 6f36f8da8..4dcf0065e 100644
 --- a/raptor-port/docs/gates-and-deploy.md
 +++ b/raptor-port/docs/gates-and-deploy.md
 @@ -129,7 +129,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
@@ -1412,7 +1430,7 @@ index 6f36f8da8..46e9a3fa9 100644
  **Stopping a gate run's background task does not stop the run (15 Oct 26, twice).** Stopping the task that ran
  `gatelock.mjs run` ended only its shell: the `gatelock` process, vitest and its fifteen workers ran on, and the lock stayed
  held. End them by their command lines (this checkout's path in them), then `gatelock.mjs status` → `release`, and see
-@@ -305,9 +331,18 @@ desktop app starts, `.claude/settings*.json`, `.claude/hooks/`, `.claude/skills/
+@@ -305,9 +331,19 @@ desktop app starts, `.claude/settings*.json`, `.claude/hooks/`, `.claude/skills/
  from the main checkout's root (`C:\Users\User\projects\Raptor` — the process's `--project-config-root`); only `CLAUDE.md`
  and `.claude/rules/` load from the worktree. With the main checkout on an old branch, a merged hook or skill is in force in
  no chat (that day: the whole compaction set-up and `/overnight`, the main checkout 208 commits behind). After a merge that
@@ -1422,8 +1440,9 @@ index 6f36f8da8..46e9a3fa9 100644
 +changes these files, bring the main checkout level — on `main` and up to date ([MAIN-CHECKOUT-STALE]) — only when no
 +chat is using it, it has no tracked changes, and its current commit is safely held on a fetched remote branch. Use
 +`git -C C:/Users/User/projects/Raptor` on every command: fetch `origin`; confirm `status --short --untracked-files=no` prints nothing (the walks'
-+untracked pictures are not changes); confirm `log HEAD --not --remotes=origin --oneline` prints nothing (no commit there that is not on GitHub — a detached folder's included); then `switch main` if
-+needed and `merge --ff-only origin/main`. An unpublished commit, a failed check or a refused command stops this update:
++untracked pictures are not changes); confirm `log HEAD --not --remotes=origin --oneline` prints nothing (no commit there that is not on GitHub — a detached folder's included); confirm `merge-base --is-ancestor
++refs/heads/main refs/remotes/origin/main` exits 0; then `switch main` if needed and `merge --ff-only origin/main`, and
++confirm `rev-parse HEAD` equals `rev-parse refs/remotes/origin/main` before calling the update complete. An unpublished commit, a failed check or a refused command stops this update:
 +leave the folder as it is and say what holds it. Never reset, restore or clean the folder. Verify the loaded settings and
 +skills in a new chat, by what the app reports (`get_usage`, the skill list), never by running the script by hand.
 +A hook added or changed in a chat is not in force in that chat either: the hook settings are read when a chat starts.

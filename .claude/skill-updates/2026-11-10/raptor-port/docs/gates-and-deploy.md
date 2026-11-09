@@ -334,8 +334,9 @@ no chat (that day: the whole compaction set-up and `/overnight`, the main checko
 changes these files, bring the main checkout level — on `main` and up to date ([MAIN-CHECKOUT-STALE]) — only when no
 chat is using it, it has no tracked changes, and its current commit is safely held on a fetched remote branch. Use
 `git -C C:/Users/User/projects/Raptor` on every command: fetch `origin`; confirm `status --short --untracked-files=no` prints nothing (the walks'
-untracked pictures are not changes); confirm `log HEAD --not --remotes=origin --oneline` prints nothing (no commit there that is not on GitHub — a detached folder's included); then `switch main` if
-needed and `merge --ff-only origin/main`. An unpublished commit, a failed check or a refused command stops this update:
+untracked pictures are not changes); confirm `log HEAD --not --remotes=origin --oneline` prints nothing (no commit there that is not on GitHub — a detached folder's included); confirm `merge-base --is-ancestor
+refs/heads/main refs/remotes/origin/main` exits 0; then `switch main` if needed and `merge --ff-only origin/main`, and
+confirm `rev-parse HEAD` equals `rev-parse refs/remotes/origin/main` before calling the update complete. An unpublished commit, a failed check or a refused command stops this update:
 leave the folder as it is and say what holds it. Never reset, restore or clean the folder. Verify the loaded settings and
 skills in a new chat, by what the app reports (`get_usage`, the skill list), never by running the script by hand.
 A hook added or changed in a chat is not in force in that chat either: the hook settings are read when a chat starts.

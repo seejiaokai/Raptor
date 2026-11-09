@@ -87,7 +87,7 @@ pushed and waiting for him — the normal end state, not unfinished business.
   taken). Every opening line says: "if `git status --short
   --untracked-files=no` shows changes you did not make, or another chat works
   in this folder, do not switch branches here: a new job runs `git worktree add
-  --detach ../Raptor-<short> origin/main`, a continuing one `git worktree add
+  --no-track -b claude/<new-name> ../Raptor-<short> origin/main`, a continuing one `git worktree add
   ../Raptor-<short> claude/<name>` (the branch itself, never detached, so its
   commits land on it) — a short path, never under a temp or scratchpad folder —
   and works only there; make one write there first, and if the file tools

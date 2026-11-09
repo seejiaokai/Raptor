@@ -536,7 +536,7 @@ lived in a shared drawer and a new mode. **A cosmetic change to a shared drawer 
 | **NONE** | Nothing. | 0 |
 | **LOOK** | The gates; one before/after picture at phone and desktop; a two-line evidence sheet. | 15–20 min |
 | **WALK** | The gates; the roll-call (if a shared drawer); the door check (if a gesture); a walk of the touched surfaces at both widths, sized by the sizing step (§7.0); the new gesture in both orders; a break test per surface; the sheet. | 1–1½ h |
-| **FULL** | Everything: the rules sweep; the other model designs the scenarios; the roll-call; the door check; a walk sized by the sizing step (§7.0); break tests; the case seeded into the demo data; **both** models read the code, given the sheet and asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
+| **FULL** | Everything: the rules sweep; the other model designs the scenarios; the roll-call; the door check; a walk sized by the sizing step (§7.0); break tests; the case seeded into the demo data; **both** models read the finished code and the same brief under §4's blindness rules, and are asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
 
 The walk is the dearest part and the part whose cost varies most: what past walks of each type of change cost
 and found is in `docs/walk-ledger.md` §The figures (D607).
@@ -563,7 +563,7 @@ and the walk's build. Once the repo is private again, the gates run on his PC (`
 
 **Order of steps in FULL:** build → open the pull request into `main` (GitHub's run is the gates; it goes during the walk)
 → roll-call and door check → **the sizing step (§7.0)** → walk, and fix what it finds (the touched tests on his PC; the
-fixes pushed once the run in progress has finished, D151) → the two reads, *with the evidence sheet in their hands* → fix
+fixes pushed once the run in progress has finished, D151) → the two reads, given the finished code and the same brief under §4's blindness rules → fix
 → re-walk only what the fixes touched → GitHub's run green on the last pushed commit → finish the sheet → the owner's look
 → his "merge live". Once the repo is private again, each "gates" step is the full set on his PC (D1086).
 

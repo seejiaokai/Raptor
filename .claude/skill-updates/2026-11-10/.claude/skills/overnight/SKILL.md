@@ -128,8 +128,8 @@ block says so. Never a pull request based on another branch — it runs none of 
 - **A helper's report** (reader, walker, scenario designer). A helper returns its report as its final reply. Save it
   at once. The tool refuses a background helper's write of a file it calls a report (10 Nov 26, note 915), so the report
   is saved into the repo — its brief's folder or the evidence sheet — the moment it arrives, before anything is done
-  about it — except a reader's report while another reader of the same job is still reading: it waits in a scratch
-  folder outside the checkout and enters the repo once every reader has reported (the bug-check order §4). Before it
+  about it — except that each reader's report and every copy or summary stay in a scratch folder outside the checkout
+  until all required blind readers of that job have reported, including readers not yet started (the bug-check order §4). Before it
   is accepted, each reader the
   night's block names for that job is ticked against it; a missing one is run then, or the job goes on
   `[NO-ASTRA-LIST]` in the same change (8 Nov 26). A notice that a helper stopped with background work of its own still
