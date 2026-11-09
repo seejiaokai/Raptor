@@ -17,7 +17,9 @@ navigation, loading and checks that save nothing included. Then go down §4's he
 docs/feature-impact.md`, those after `## 4.`) and read each funnel or drift-seam the change writes through, reads,
 crosses or could copy — a new one is named under "A new drift-seam is named in this list". Then each dated part whose
 subject the change is in, or whose rule it reads: the bold starts under this title, and the sections after §4
-(`grep -n '^## ' docs/feature-impact.md`). Unsure whether one applies: read it.
+(`grep -n '^## ' docs/feature-impact.md`). Unsure whether one applies: read it. The rulings behind a surface are on its
+area's page under `.claude/rules/decisions/`, which loads with that area's own files, not with this map: a Leave War or
+Tracker change that reaches a surface of the schedule opens the scheduler's page, `scheduler.md`, for it (D1949).
 
 **Schedule keyboard flow,4 Oct26 (D550–D556):** week contenteditable and Board
 native/shared text boxes → gesture-time current-day DOM route → native blur/change

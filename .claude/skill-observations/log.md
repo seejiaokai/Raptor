@@ -4720,3 +4720,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** the readers' brief, written by chat 45 to be sent "word for word" in chat 46, named chat 45's own worktree folder as the place to work. Chat 46 ran in a different worktree on the same branch; the old folder happened still to exist at the same commit, so the brief would have worked by luck, but a helper could have read a stale or moved checkout. Chat 46 sent the brief unchanged with a one-line host's note naming the right folder.
 **Suggested improvement:** in the handoff skill's step for briefs left for the next chat: a brief meant for a later chat names the branch and the commit to read, never a worktree path; the chat that sends it adds the folder it runs in.
 **Principle:** a brief that outlives its writer's session should name what is stable (the branch, the commit), not where the writer happened to be working.
+
+### Observation 914: Before narrowing what loads a rules file, list what the other jobs lose — by the file's lines, not its section names
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** the rules diet's follow-up (chat 48): two guides taken out of the scheduler rulings page's load paths so Leave War and Tracker jobs stop loading it.
+**Skill:** New skill candidate: narrowing a context file's load scope
+**Type:** open-source
+**Phase/Area:** before the edit — the impact check
+
+**Issue:** the load link looked accidental (two guides pulling a whole area's rulings into unrelated jobs), but a line-by-line check of the scheduler page found rulings that govern the Leave War's own screens (its Event sheet, its panel for picked days, its bidding dates' calendar) stated only there; cutting the link alone would have silently hidden them from the very jobs that change those screens. A second trap: widening an existing pointer line made the document check re-test that line's old citations and its length limit, so the addition went on new lines instead.
+**Suggested improvement:** a short procedure for any change that narrows when a context file loads: (1) list the jobs that lose it (by the measure's model jobs and by every other file's load paths); (2) grep the file for every line naming those jobs' areas or claiming to hold "everywhere / every screen"; (3) check each cited ruling against what the losing jobs still load; (4) add pointers on the losing side for what is stated nowhere else, as new lines; (5) measure again.
+**Principle:** a load path that looks accidental may be the only route a rule has to the job that needs it; check what travels on it before cutting it.

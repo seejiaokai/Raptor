@@ -13,8 +13,9 @@
  *            fallback, not the short form — D1740), HANDOFF.md, OUTSTANDING.md up to its
  *            items (its head and priority list) — and what the files it opens load;
  *   check    what a bug check of a screen, interface work and the ripple map read (§1's layers G, H, I — none for a
- *            notes job), and what those reads load in turn (layer J: the ripple map and the performance guide load the
- *            scheduler's rulings, the performance guide the Leave War's);
+ *            notes job), and what those reads load in turn (layer J: whatever their `paths:` match — since D1949,
+ *            10 Nov 26, no rulings page but the screen-design page, `design.md`, through the design guide (with
+ *            `ui-design.md`); the performance guide still loads the Leave War's architecture file);
  *   message  the decision-check note on each of his messages, × 40 a chat — over a chat's life, not before code, so it
  *            is printed beside the total, never in it (§1).
  * What a read loads, followed until nothing new loads: a rules file loads when a file read matches its paths:, a

@@ -24,6 +24,12 @@ this index, don't fork it.
 
 # Part 1 — The guardrails
 
+> **His settled rulings on speed are not in this file and do not load with it** (D1949, 10 Nov 26): the board's —
+> its ceiling of 1150 page elements, the dragged ghost, the per-block swap — are on the scheduler's rulings page,
+> `.claude/rules/decisions/scheduler.md` §Speed of the dense screens and §Settled; the Leave War grid's on
+> `leave-war.md` §Settled. Each page loads with its own area's files; a change that moves a figure or a dead end here,
+> for a screen whose page has not loaded, opens that page first.
+
 ## The one law: measure first, on the built bundle, at throttle
 
 Every speed decision here was made on a fresh measurement, never a remembered
