@@ -1006,6 +1006,55 @@ minutes here — never under a 15-minute time limit (skill note 910). **Left for
 heading, D1751's readings, D511
 against D1026 and D1034, 17 proposed archivals, two Inputs-only settled entries.
 
+### Step 5b — the Leave War's page (9 Nov 26, chats 45–46, `claude/rules-diet-leave-war-page` — D1947)
+
+His "Leave War page" (D1947), picked in chat 44: the last area still a one-line list — 378 rulings (D159 to D1947),
+§Settled before this list (two groups, about 150 lines) and the head's "Also read" and OIL paragraphs; 121,825 bytes at
+`0ce71adab`, loaded in every Leave War job (about 46,000 tokens). One page, as the scheduler's (D1944), not split by
+screen — not asked, D1944 having chosen one page for the bigger file. Its architecture stays in
+`.claude/rules/seams/leave-war.md`. The page's hard limit is the list it replaces, 121,825 (D1932).
+**How, as the scheduler's:** chat 45 — four fresh Opus sorters in parallel (three on a third of the rows each: lines
+39–164, D1947 to D1400; 165–290, D1399 to D1236; 291–417, D1235 to D159; one on the head and §Settled before this list),
+one fresh Opus drafter, the readers' brief; chat 46 — Astra and a fresh Opus reader, blind; a fixer; the host checks the
+serious lines; measured; his look; his "merge live" (D1737). Briefs and tables: `../briefs/2026-11-09-leave-war-page-*`.
+**Other pages first (chat 43's lesson):** marking the list a page, the gate was run once before any drafting — 10 lines
+of four converted pages state a Leave War ruling without the later ones that changed it: Inputs (D1381 by D1389, D1390;
+D1356 by D1388, D1357, D1365), the scheduler (D1356 likewise; D882 by D1782, D1221), the IT flow guide (D1177 by D1225,
+twice — 8 bytes of room, 14 needed) and People & accounts (D1850 by D1870; D1692 by D1697, D1698, three lines — 236
+bytes of room). Each is rewritten as the rule stands since then and cites the later rulings, in the change that converts
+the page; the IT flow guide's shortfall went to him (D1940 and D1945 were one job each): his "Tighten, no raise"
+(D1948, spent) — "in the app" cut from its "What happens by itself" line and D1225 cited on both lines, 4,023 of 4,028
+bytes, done by the host before the drafter started.
+
+| | The list (0ce71adab) | The draft | After the reads (chat 46, 3d8fb984a) |
+|---|---|---|---|
+| Bytes (hard limit 121,825) | 121,825 | 78,707 (694602fac) | 81,445 |
+| On "Built, held by tests" | — | 64 | 57 |
+| A Leave War job reads (tokens) | 326,275 | 309,834 | 311,540 |
+
+**The draft** (chat 45): four sorters (A 9 held, B 28, C 28, D none; one question for him, D1318 against D1211 — a
+member's overseas duty or course on a past day; about 22 proposed archivals), then the drafter: 64 numbers on the held
+line, 13 "as built" rulings moved to Settled, nothing moved out of the page, three other-page lines reworded (People &
+accounts' SANS mark, Inputs' rejected course or overseas duty and its Other pointer) — the readers check each. Left for
+the host: later rulings that change earlier ones without a mark (D1330, D1332 over D1212, D331, D335; D1254 over D1227;
+D1316 over D1175; D1019 overtaken; D1326's stale short line) and stale reference docs (`ui-contracts.md`, `file-map.md`,
+`performance.md`'s section name). The reads, the fixer and his look: chat 46 (`HANDOFF.md`).
+
+**The reads** (chat 46; `…-read-astra.md`, `…-read-opus.md`, the fixes `…-fixes.md`). Astra 11 findings; the Opus reader 19;
+26 distinct, 25 held, 1 not held (three numbers the Opus reader thought idle on other pages are owed by the gate's marks).
+The serious ones: the manning line let a rejected overseas duty still lower manning (D1390), against the next line; eight
+lines stated an agent's reading as his — the admin deciding bids at any time and the landing order (D1177), the admin
+moving any bid (D333), a picked range widening Decide, Move and Delete (D335), the second-entry rule carried to Inputs
+entries (D1563, D1565), "This Other …", the OIL tab as a way back (D1503, D1506), the day list's words rule spread
+(D1328); his "not the official qualification" (D460), his "The grey2 is ok" (D1730), two readings he took (D1467) and the
+column window's month-0 invariant dropped; the head's claim that the OIL page loads with every file. **7 of the 64
+built-line numbers were not held whole** (D1270, D1331, D1351, D1360, D1375, D1469, D1476) — far fewer than the other
+trials, the sorters this time told the earlier trials' lesson. The host's check: "only his own" put back on the move line
+(D333). Marks written: D1212, D331, D335 (by D1330, D1332), D1175 (by D1316), D1019 (by D1254); D1254 over D1227 and
+D1326 by D1356 left unmarked (each would pull numbers onto lines it does not touch). **Left for him**
+(`[LW-PAGE-LEFTOVERS]`): D1177's three readings and D333's admin half as "keep as built", D1318 against D1211, the tests
+for the 7, about 22 proposed archivals, the stale reference docs.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |

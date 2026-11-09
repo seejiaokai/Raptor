@@ -4694,3 +4694,29 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** Right after the chat switched to its branch, something (not the host's own commands — likely a helper of a read-only reader) moved the checkout to a detached state at the same commit. The host's next three commits went onto that detached state; the branch name stayed one commit behind. `git push -u origin <branch>` then answered "Everything up-to-date" and pushed nothing. Only `git status -sb` showing "HEAD (no branch)" revealed it; the branch was moved forward with a fast-forward and pushed.
 **Suggested improvement:** In the push step, before pushing: `git branch --show-current` must print the branch; if it prints nothing, fast-forward the branch to HEAD (`git switch <branch> && git merge --ff-only <sha>`) first. And treat "Everything up-to-date" after new commits as a fault to check, never a success. A helper's brief that says "read only" also says "never check out, switch or detach".
 **Principle:** a push reports on the branch name, not on the commits you just made; confirm the checkout is on the branch before trusting a push's "up to date".
+
+### Observation 912: Find what a conversion will demand of other files by trial-running the gate on a marked copy
+
+**Status:** OPEN
+**Date:** 9 Nov 26
+**Session context:** chat 45, the Leave War's rulings becoming one page (D1947)
+**Skill:** New skill candidate: rules-diet-area-conversion
+**Type:** open-source
+**Phase/Area:** before drafting a converted area — the other pages it touches
+
+**Issue:** Twice (the Inputs and the scheduler conversions) the drafter only learned at the gate that converting an area made other, already converted pages owe the numbers of later rulings — and one of those pages was at its hard size limit, so the job stopped mid-way for an owner question. This time the host copied the area file aside, added the page marker to it, ran the documents check once, read only the other-page failures, and put the file back: ten lines on four pages, one page 6 bytes short — the owner's question was asked while the sorters were still working, and the drafter's brief listed every owed line.
+**Suggested improvement:** In a conversion workflow (the rules diet's step 5b, or any skill that converts an area), add a step before the sorters start: trial-run the gate with the marker added to a copy, record every failure in another file and each page's room under its hard limit, and put any shortfall to the owner at once. Restore the file and confirm `git status` is clean.
+**Principle:** when a change switches on checks that reach other files, run the check once with the switch flipped before doing the work, so the cross-file debts and any owner questions surface first instead of at the end.
+
+### Observation 913: A brief written for a later chat named the writer's own worktree folder
+
+**Status:** OPEN
+**Date:** 9 Nov 26
+**Session context:** chat 46, the Leave War page's two blind reads (D1947), run from a brief chat 45 wrote
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** briefs written for the next chat's helpers
+
+**Issue:** the readers' brief, written by chat 45 to be sent "word for word" in chat 46, named chat 45's own worktree folder as the place to work. Chat 46 ran in a different worktree on the same branch; the old folder happened still to exist at the same commit, so the brief would have worked by luck, but a helper could have read a stale or moved checkout. Chat 46 sent the brief unchanged with a one-line host's note naming the right folder.
+**Suggested improvement:** in the handoff skill's step for briefs left for the next chat: a brief meant for a later chat names the branch and the commit to read, never a worktree path; the chat that sends it adds the folder it runs in.
+**Principle:** a brief that outlives its writer's session should name what is stable (the branch, the commit), not where the writer happened to be working.

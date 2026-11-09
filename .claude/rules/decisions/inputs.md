@@ -146,7 +146,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - With anything typed and not saved, an input window's ✕ asks the very question Escape asks, "Close it and lose them?"; Cancel still closes at once [D1622].
 - The input window's unsaved-changes question is design C, a card hanging from its ✕ — so too "Open the other input and lose them?", "Delete this input for all N people?" and "Take yourself out of this input?"; the rule itself is on the Screen design page [D1624, D1626, D1627, D1628].
 - For an Other the window asks once where it goes, Ground Programme or Unavailable, with no separate tick, a grey line under the choice saying what the Leave War does with it; the buttons are look C — the picked one solid in its colour (amber, red) with dark words, the other its words in its colour, ordinary letters, 36px [D1368, D1369, D1367].
-- "Fly with" is renamed "Attach", its window holding one short "To" box shown in its name on the schedule — "Attach · 145 Sqn"; an Attach, like a course (CSE), lands under the schedule's Unavailable list by itself and counts him out on the Leave War, its filer not asked; a course a scheduler rejects counts him back in [D1373, D1374, D1372, D1381].
+- "Fly with" is renamed "Attach", its window holding one short "To" box shown in its name on the schedule — "Attach · 145 Sqn"; an Attach, like a course (CSE), lands under the schedule's Unavailable list by itself and counts him out on the Leave War, its filer not asked; a course or an overseas duty a scheduler rejects counts him back in, and still in once moved onto the Ground Programme [D1373, D1374, D1372, D1381, D1389, D1390, D1393].
 - An input filed for a weekend no Leave War period covers asks its OIL question and saves the answer as on any day, never creating or offering a period; the OIL shows on the Leave War, his count and OIL earned once a period holds that date; the question says nothing about the missing period — the scheduler is told on the schedule [D1578, D1585, D19].
 - The card, for the opened day and the list: a top line of who, the kind in small grey capitals, late and the hours; the title at the left on its own row, a remark after it; every name of a shared input; "By Saber", not "for Ranger"; on the list a heading a day, no pencil, no cross [D723, D720, D724].
 
@@ -194,7 +194,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - Built, held by tests (each named by a test that holds it whole; the detail is in the app and its full row): D572, D675, D685, D732, D768, D773, D879, D999, D1022, D1023, D1581.
 
 ## From other areas (each stated on its own area's file)
-- The Leave War's Other, which goes to the Ground Programme or to Unavailable: D1356.
+- The Leave War's Other — on the Ground Programme or under Unavailable as its filer picks on the Inputs page, straight under Unavailable when filed from the war, where it stands a scheduler's alone once he has moved it, counting him out only under Unavailable: D1356, D1365, D1388, D1357, D1398, D1390, D1381, D1372, D1374, D1393, D1389.
 - The scheduler's one rule of a row that came from an input, and its people: D755, D756, D757, D759, D776.
 - The schedule's one row for a shared input — its pucks, time, remark and window: D734, D735, D736, D737, D739, D740, D742, D743, D748, D776.
 - A cancelled row's CX cancels the input: D760.
