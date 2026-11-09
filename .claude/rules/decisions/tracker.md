@@ -98,7 +98,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - The Inputs pages' (edge lists, title pencil, cut inputs): D900, D893, D897, D919, D999.
 - The Leave War's (glow, pinch, scroll, order, the day in view; the half as .5, the Tracker's ½ kept until he says): D881, D1287, D1246, D1397, D1290, D1404, D1449.
 - The scheduler's (the one calendar, the 13 Oct fixes, names at the time, the keys, a flash): D796, D797, D800, D824, D1012, D1020, D830, D1589, D1081, D1412, D1038.
-- The scheduler's page no longer loads through the performance guide or the ripple map, so a Tracker job that opens only the Tracker's own files does not have it: it is opened before changing what the line above governs, or how a time reads (its §Settled: every time 08:00) [D1949].
+- The scheduler's page no longer loads through the performance guide or the ripple map, so a Tracker job that opens only the Tracker's own files does not have it (the sign-out file and a Tracker mock-up still load it): it is opened before changing what the line above governs, or how a time reads (its §Settled: every time 08:00) [D1949].
 - People and accounts' (a deleted man, one database): D299, D300, D1105, D1101, D292.
 - The IT flow guide's (the Tracker in full, checked in the app): D414.
 - How we work's (privacy, the one table, React Doctor, strict checks, the lock, the graph, pinned cells, stored data, the public repo): D62, D63, D1587, D473, D1534, D1537, D228, D774, D1281, D487, D56, D106, D1530.
