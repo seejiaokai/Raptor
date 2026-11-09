@@ -458,7 +458,7 @@ const RULING_BYTES = [
 const PAGE_LIMITS = [
   // file,                                         set (D1932),  limit, by
   ['.claude/rules/decisions/how-we-work.md',     38000, 38000, 'D1932'],   // its tripwire as it stood; the page shrank (59,493 -> 37,952), left as it is
-  ['.claude/rules/decisions/oil.md',             15407, 15407, 'D1932'],   // the one-line list at a6265cae0; 9 Nov 26, D1945: the scheduler's page made it owe 32 numbers of later rulings — room made by tighter wording, never a raise
+  ['.claude/rules/decisions/oil.md',             15407, 15407, 'D1932'],   // the one-line list at a6265cae0; 9 Nov 26, D1945: the scheduler's page made it owe 32 numbers of later rulings — room made by tighter wording, never a raise; D1946 the same for D1041's two
   ['.claude/rules/decisions/it-flow-guide.md',    4028,  4028, 'D1932'],   // the one-line list at cd8a5dd67
   ['.claude/rules/decisions/tracker.md',         20061, 20061, 'D1932'],   // the one-line list at aee0de3f2
   ['.claude/rules/decisions/design.md',          22050, 22050, 'D1932'],   // the one-line list at 0abda89d5
