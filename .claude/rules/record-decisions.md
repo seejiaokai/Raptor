@@ -62,7 +62,7 @@ that merely got done.
 
 ## Read it before you ask him anything
 
-Writing a ruling down is half the rule; reading it is the other: on 22 Sep 26 a design ruled on four times (D38–D41) was
+Writing a ruling down is half the rule; reading it is the other: on 22 Sep 26 a design ruled on four times (D38–D41, since changed by D77, D1106) was
 put to him as an open question, answered from a code comment gone stale the same afternoon (D53, D137).
 
 ### The check
