@@ -968,8 +968,53 @@ function designCheckerCopies() {
   if (a !== b) return [`${DESIGN_CFG_COPY} must be the same as ${DESIGN_CFG}, byte for byte — the design checker reads the copy in whichever folder the chat is in; copy the changed one over the other`]
   return []
 }
+/* THE SKILL LOG'S NOTE NUMBERS ([MERGE-ONCE-RECORDS] part 1, 8 Nov 26 — his go, D1930). Each chat numbers its next note
+   past the highest it can see, so two branches routinely give two different notes the same number; on 8 Nov 26 the chat
+   renumbered by hand in 30 of the log's 34 clashes, and a merge that ends WITHOUT a clash (or a hand merge that forgot)
+   would have put both numbers on main with nothing going red — nothing here read the log. So: every `### Observation N:`
+   number heads exactly one entry in the log, and no number in the log also heads an entry in the archive folder (a note
+   archived on one branch and written anew under its number on another). The archive's own older history is not judged:
+   an archived number is never reused, but what was filed there before this check is the store as it stands (D56). A
+   heading is read by the one shared definition (docsize-rulings.mjs observationHeads — outside code blocks, Astra 5 of the
+   code read): the merge step (records-merge.mjs) cuts entries and finds the next number the same way. */
+const SKILL_LOG = '.claude/skill-observations/log.md', SKILL_ARCHIVE = '.claude/skill-observations/archive'
+/* Astra 4 of the code read (8 Nov 26): each number is counted across the log AND every archive file together — inside one
+   archive, across two, and after both notes of a doubling left the log — and fails when it heads more entries now than it
+   did at the base. The base is the gate's own BASE (findBase: the pull request's base commit in CI, DOCSGUARD_BASE;
+   locally the fork point from origin/main, else main), read from git the way the backlog's checks read theirs, so a
+   doubling already filed before this check is the store as it stands (D56) and only a new one fails. */
+function skillLogNumbers() {
+  const filesNow = () => [SKILL_LOG, ...[...new Set([...(tryGit('ls-files', '--', SKILL_ARCHIVE) || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', SKILL_ARCHIVE) || '').split('\n')])].filter(a => a.endsWith('.md') && existsSync(join(REPO, a))).sort()]
+  const filesBase = () => BASE ? [SKILL_LOG, ...(tryGit('ls-tree', '-r', '--name-only', BASE, '--', SKILL_ARCHIVE) || '').split('\n').filter(a => a.endsWith('.md'))] : []
+  /* number → { total, by: Map(file → count) } */
+  const tallyOf = (files, read) => {
+    const t = new Map()
+    for (const f of files) for (const { n } of RL.observationHeads(read(f))) {
+      if (!t.has(n)) t.set(n, { total: 0, by: new Map() })
+      const e = t.get(n); e.total++; e.by.set(f, (e.by.get(f) || 0) + 1)
+    }
+    return t
+  }
+  const now = tallyOf(filesNow(), readNow), base = tallyOf(filesBase(), readBase)
+  const fails = []
+  for (const [n, e] of now) {
+    if (e.total < 2 || e.total <= (base.get(n)?.total || 0)) continue
+    const where = [...e.by].map(([f, k]) => `${k} in ${f}`).join(', ')
+    fails.push(`${SKILL_LOG}: Observation ${n} heads ${e.total} entries — ${where}; each note has its own number, and an archived number is never used again: renumber the one your branch added past the highest on every branch (the skill notes' short form, step 1), and its citations in your own lines`)
+  }
+  /* round 3 (Opus re-read 3, 8 Nov 26): a code block that never closes would hide every later note heading — the shared
+     definition now reads its opener as text, and the gate names it, in the log and each archive file. Only a NEW one
+     fails: a file holding more such openers now than at the base, the way the numbers above compare (D56) */
+  const unclosed = (text) => RL.unclosedFences((text || '').split('\n'))
+  const baseFiles = new Set(filesBase())
+  for (const f of filesNow()) {
+    const at = unclosed(readNow(f)), was = baseFiles.has(f) ? unclosed(readBase(f)).length : 0
+    if (at.length > was) fails.push(`${f}: a code block opened at line ${at.map(i => i + 1).join(', line ')} never closes — close it with the same fence (three or more of the same backtick or tilde), or a later note heading may be read as part of it`)
+  }
+  return fails
+}
 function structure() {
-  const fails = [...guidePairing(), ...designCheckerCopies()], warns = []
+  const fails = [...guidePairing(), ...designCheckerCopies(), ...skillLogNumbers()], warns = []
   const listed = [...new Set([...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')])].filter(f => f && existsSync(join(REPO, f)))
   const atBase = new Set(BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE) || '').split('\n').filter(Boolean) : [])
   const isNew = f => BASE && !atBase.has(f)

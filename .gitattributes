@@ -11,3 +11,8 @@ HANDOFF.md              text eol=lf
 DECISIONS-ARCHIVE.md            text eol=lf
 .claude/rules/decisions/**      text eol=lf
 .claude/decisions-full/**       text eol=lf
+# [MERGE-ONCE-RECORDS] (8 Nov 26): the walk ledger and the file map, which the records' settle step
+# (raptor-port/scripts/records-merge.mjs) rewrites from git's own copies — LF in the repository when pinned.
+# No merge= line: "keep both sides" would double a row edited in place, and GitHub ignores it anyway.
+raptor-port/docs/walk-ledger.md  text eol=lf
+raptor-port/docs/file-map.md     text eol=lf

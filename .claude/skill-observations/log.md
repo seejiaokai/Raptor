@@ -4615,3 +4615,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** The test picked "the seventh box", hoped it landed low on the screen, and called a skip when it did not. A skip reads green in a run summary, so on any run where the seed shifted the box, the case went unproved with no sign. Two independent readers found it only by reading the code. The fix placed the box deliberately (chose a box with enough list under it and scrolled it to a set spot) and asserted the fixture, so a fixture that cannot be built fails instead.
 **Suggested improvement:** In the order's §8 (tests find rather than confirm) and the walk-scripts guide, add: "A test builds its own precondition and asserts it; a conditional skip on the precondition is a finding. A break test — the feature switched off for one run — must turn the test red at the assertion that matters, not at the fixture."
 **Principle:** A test must create the situation it checks and fail if it cannot; a skip conditioned on the situation silently turns a check into a no-op, and only a break test proves the check bites.
+
+### Observation 905: "Add-only" was a guess about a file — its edit history said otherwise
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 33, [MERGE-ONCE-RECORDS] — the plan's red team and build (number checked past 903, the highest on any remote branch).
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** plan red team — the brief's questions
+
+**Issue:** A plan to merge record files with git's "keep both sides" setting rested on calling four files "add-only". Both blind red-team readers disproved it from the files' own git history in minutes (a ledger row rewritten in place, a note's status edited, notes archived), and showed the setting would have doubled records unseen and let some merges skip every check. The plan's author had measured clash counts on 113 real merges, but never measured how each file is edited.
+**Suggested improvement:** In the red-team brief template, add a standing question: "for every file the plan treats by its shape (add-only, one owner, never edited), check that shape against its own commit history and name a commit that breaks it."
+**Principle:** A plan's assumptions about a file's shape are claims to test against the file's history, not facts; ask the red team to break them with real commits.

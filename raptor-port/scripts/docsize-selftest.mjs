@@ -500,6 +500,33 @@ scenario('HANDOFF.md: deleted', true, c => rmSync(join(c.dir, 'HANDOFF.md')), { 
 scenario('HANDOFF.md: a block rewritten, one added, one removed whole', false, c => c.edit('HANDOFF.md', t => t.replace('- b line\n', '- b line, rewritten\n- and a second line\n').replace(/<!-- now:claude\/a -->[\s\S]*?<!-- \/now -->\n\n/, '').replace('## Next, in order', '<!-- now:claude/d -->\n### `claude/d` — new\n- d line\n<!-- /now -->\n\n## Next, in order')))
 scenario('HANDOFF.md: an example marker inside a code block is not a block', false, c => c.edit('HANDOFF.md', t => t.replace('- b line\n', '- b line\n~~~md\n<!-- now:claude/example -->\n## Next, in order\n~~~\n')))
 scenario('HANDOFF.md: damage already at the base is reported, not failed', false, c => { c.edit('HANDOFF.md', t => t.replace('- a line\n<!-- /now -->\n', '- a line\n')); c.commit('an older break, already on main') }, { base: 'HEAD', mustSay: '(already so at the base)' })
+/* THE SKILL LOG'S NOTE NUMBERS ([MERGE-ONCE-RECORDS] part 1, 8 Nov 26): two branches each give their next note the same
+   number; a merge that ends without a clash (or a hand merge that forgot the renumber) put both on main unseen. Each number
+   heads one entry, across the log and its archive folder. */
+const SKLOG = '.claude/skill-observations/log.md', SKARCH = '.claude/skill-observations/archive/log-2026-10-27.md'
+const obs = (n, t) => `### Observation ${n}: ${t}\n\nthe note's body\n\n`
+const SKLOG0 = '# Skill Observation Log\n\n' + obs(7, 'seven') + obs(8, 'eight')
+scenario('skill log: every note number once', false, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(3, 'three')) })
+scenario('skill log: one number heading two notes', true, c => c.write(SKLOG, SKLOG0 + obs(8, 'a different eight')), { mustSay: 'Observation 8 heads 2 entries' })
+scenario('skill log: a live number that also heads an archived note', true, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(7, 'an older seven')) }, { mustSay: 'Observation 7 heads 2 entries — 1 in .claude/skill-observations/log.md, 1 in .claude/skill-observations/archive/log-2026-10-27.md' })
+/* Astra 5 (the code read, 8 Nov 26): a heading inside a code block is an example, not a note — backtick and tilde fences,
+   their numbers colliding with real notes */
+const OBS_FENCED = obs(7, 'explaining a heading').replace("the note's body", "the note's body\n\n```md\n### Observation 7: an example\n```\n\n~~~\n### Observation 8: another\n~~~")
+scenario('skill log: a fenced example heading is not a note', false, c => c.write(SKLOG, '# Skill Observation Log\n\n' + OBS_FENCED + obs(8, 'eight')))
+/* Astra 4 (the code read, 8 Nov 26): every number counted across the log and EVERY archive file — within one archive,
+   across two, and after both colliding notes left the log; only a doubling already at the base passes (D56) */
+const SKARCH2 = '.claude/skill-observations/archive/log-2026-11-01.md'
+scenario('skill log: one number heading two notes inside one archive', true, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(3, 'three') + obs(3, 'another three')) }, { mustSay: 'Observation 3 heads 2 entries' })
+scenario('skill log: one number heading a note in each of two archives', true, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(3, 'three')); c.write(SKARCH2, '# archive\n\n' + obs(3, 'a later three')) }, { mustSay: `Observation 3 heads 2 entries — 1 in ${SKARCH}, 1 in ${SKARCH2}` })
+scenario('skill log: both notes of a doubled number moved to the archive', true, c => { c.write(SKLOG, '# Skill Observation Log\n\n' + obs(7, 'seven')); c.write(SKARCH, '# archive\n\n' + obs(8, 'eight') + obs(8, 'a different eight')) }, { mustSay: 'Observation 8 heads 2 entries' })
+scenario('skill log: a doubling already at the base is the store as it stands, not failed (D56)', false, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(3, 'three') + obs(3, 'another three')); c.commit('an older doubling, already on main') }, { base: 'HEAD' })
+/* round 3 (Opus re-read 3, 8 Nov 26): a code block that never closes hid every later note heading — so a doubled number
+   after it went unseen. The opener is now text, the doubling is seen, and a NEW unclosed block is named */
+const STRAY = obs(7, 'a stray fence').replace("the note's body", "the note's body\n\n```")
+scenario('skill log: a code block that never closes, new', true, c => c.write(SKLOG, '# Skill Observation Log\n\n' + STRAY + obs(8, 'eight')), { mustSay: `${SKLOG}: a code block opened at line 7 never closes` })
+scenario('skill log: a code block that never closes, new, in an archive', true, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + STRAY) }, { mustSay: `${SKARCH}: a code block opened at line 7 never closes` })
+scenario('skill log: a doubled number after a code block that never closes is still seen', true, c => c.write(SKLOG, '# Skill Observation Log\n\n' + STRAY + obs(8, 'eight') + obs(8, 'a different eight')), { mustSay: 'Observation 8 heads 2 entries' })
+scenario('skill log: a code block that never closes, already at the base, is not failed (D56)', false, c => { c.write(SKLOG, '# Skill Observation Log\n\n' + STRAY + obs(8, 'eight')); c.commit('an older stray fence, already on main') }, { base: 'HEAD' })
 scenario('a new top-level reference doc that no map names', true, c => c.write('raptor-port/docs/newref.md', '# new\n'), { mustSay: 'no map names' })
 scenario('a new top-level reference doc on the map', false, c => { c.write('raptor-port/docs/newref.md', '# new\n'); c.write('raptor-port/CLAUDE.md', '| the new reference | `docs/newref.md` |\n') })
 scenario('a design for one task, under superpowers/ (tier 3, no map needed)', false, c => c.write('raptor-port/docs/superpowers/specs/2026-09-24-x.md', '# x\n'))
