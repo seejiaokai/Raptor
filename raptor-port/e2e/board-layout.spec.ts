@@ -127,13 +127,36 @@ test.describe('D1780 — a phone on its side: the head scrolls away, the bar sta
 
   test('a box low on the screen tapped with the keys up rises above them; the bar stays in sight, the list about 151px', async ({ page }) => {
     await openBoard(page)
-    const box: Locator = page.locator('#schedBoard .sb-boardwrap input:visible').nth(6)
-    await box.scrollIntoViewIfNeeded()
-    /* the box low on the screen, under where the keys will come */
-    await page.evaluate(() => { const b = document.querySelector<HTMLElement>('.schedboard')!; b.scrollTop = Math.max(0, b.scrollTop - 120) })
+    /* the fixture (D1936): a box PUT low on the screen, under where the keys will come, with list enough under it to rise
+       by scrolling alone (the end of the list, where the board must make room, is the next test's). This test used to
+       pick the seventh box and skip itself whenever that box already sat above the keys, so it proved nothing on such
+       a run; now the box is placed, and a fixture that cannot be built fails rather than skips. */
+    const LOW = SIDE.height - 30
+    const at = await page.evaluate(([low, kb]) => {
+      const b = document.querySelector<HTMLElement>('.schedboard')!, br = b.getBoundingClientRect()
+      const max = b.scrollHeight - b.clientHeight
+      for (const n of document.querySelectorAll<HTMLInputElement>('#schedBoard .sb-boardwrap input')) {
+        const r = n.getBoundingClientRect()
+        if (!n.getClientRects().length || r.height <= 6 || r.height >= 60) continue
+        /* only a box a person types in — the keyboard lift's own kind (kbscroll isTypingBox) */
+        if (n.disabled || n.readOnly || /^(checkbox|radio|range|button|hidden)$/i.test(n.type)) continue
+        /* the board's scroll that puts this box's foot at `low` on the screen, with `kb` of list still under it */
+        const s = Math.round(r.bottom - br.top + b.scrollTop - (low - br.top))
+        if (s < 0 || s + kb > max) continue
+        b.scrollTop = s
+        n.setAttribute('data-lowbox', '')
+        return { scroll: b.scrollTop, want: s }
+      }
+      return null
+    }, [LOW, KB] as const)
+    expect(at, 'the fixture: a box that can be put low, with list under it').not.toBeNull()
+    expect(Math.abs(at!.scroll - at!.want), 'the fixture: the board took the scroll').toBeLessThanOrEqual(1)
     await page.waitForTimeout(100)
+    const box: Locator = page.locator('[data-lowbox]')
     const bb = (await box.boundingBox())!
-    test.skip(bb.y + bb.height <= SIDE.height - KB, 'the fixture: the box is already above the keys')
+    expect(bb.y + bb.height, 'the fixture: the box lies under where the keys come').toBeGreaterThan(SIDE.height - KB)
+    expect(bb.y + bb.height, 'the fixture: the whole box is on the screen').toBeLessThanOrEqual(SIDE.height)
+    expect(bb.y, 'the fixture: the box stands below the bar, not under it').toBeGreaterThanOrEqual(await barFoot(page))
     await page.touchscreen.tap(bb.x + bb.width / 2, bb.y + Math.min(bb.height / 2, 8))
     await expect(box).toBeFocused()
     await page.evaluate(kb => { const v = (window as any).__vv; v.height = innerHeight - kb; v.dispatchEvent(new Event('resize')) }, KB)

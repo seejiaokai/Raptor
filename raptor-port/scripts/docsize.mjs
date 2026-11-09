@@ -301,8 +301,8 @@ const RULING_BYTES = [
   /* how-we-work 36000 -> 38000 (8 Nov 26, claude/merge-one-at-a-time): 36,091 bytes once main was brought in with D1746 and
      D1747 stated on the page (the pictures round's night, the step-4 line pointing at the merge lock's steps); live
      rulings every chat reads, none spent or replaced - a rulings file is never trimmed (D136). */
-  ['.claude/rules/decisions/how-we-work.md', 0, 38000],   // reset 7 Nov 26 from 61000, raised to 36000 (above): the file became a page (D1735), its dropped parts restored (D138); 36000 -> 38000 (8 Nov 26): D1746, D1747 (above); 8 Nov 26, chat 37: D1934 and D1937 fitted under 38000 by tighter wording, no raise (D1932; his "Tighten, no raise", D1940)
-  ['.claude/rules/decisions/people-accounts.md', 2, 55500],   // raised 8 Nov 26 from 22000: the rules diet's step 5a made it a page (D1735); the account by requirement put back 35 gaps of rulings the short lines had cut and merged 10 doubled ones, and the two blind reads 15 more, the Inputs pages' and the scheduler's later rulings among them (50,466 bytes); a ruling is never cut to fit (D141), a tenth above again
+  ['.claude/rules/decisions/how-we-work.md', 0, 38000],   // reset 7 Nov 26 from 61000, raised to 36000 (above): the file became a page (D1735), its dropped parts restored (D138); 36000 -> 38000 (8 Nov 26): D1746, D1747 (above); 8 Nov 26, chat 37: D1934 and D1937 fitted under 38000 by tighter wording, no raise (D1932; his "Tighten, no raise", D1940). A HARD LIMIT since 8 Nov 26 (D1932, PAGE_LIMITS below): the page stays as it is, under its old list (59,493)
+  ['.claude/rules/decisions/people-accounts.md', 2, 21160],   // 8 Nov 26, D1932: set to the one-line list's size the page replaced (97eaa5251) — a HARD LIMIT (PAGE_LIMITS below). Before that, raised 8 Nov 26 from 22000: the rules diet's step 5a made it a page (D1735); the account by requirement put back 35 gaps of rulings the short lines had cut and merged 10 doubled ones, and the two blind reads 15 more, the Inputs pages' and the scheduler's later rulings among them (50,466 bytes); a ruling is never cut to fit (D141), a tenth above again
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
      D565); what is left - 161 and 34 rulings, and the scheduler's settled notes - is live, and a ruling is never
@@ -363,7 +363,7 @@ const RULING_BYTES = [
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
      none is trimmed (D136). Room for the next rulings, not a target. */
-  ['.claude/rules/decisions/oil.md',     2, 22600],   // raised 8 Nov 26 from 15500: the rules diet's step 5a made it a page (D1735); the account by requirement put back 30 parts of rulings the sample had cut, and the two blind reads 18 more (20,560 bytes); a ruling is never cut to fit (D141), a tenth above again
+  ['.claude/rules/decisions/oil.md',     2, 15407],   // 8 Nov 26, D1932: set to the one-line list's size the page replaced (a6265cae0) — a HARD LIMIT (PAGE_LIMITS below). Before that, raised 8 Nov 26 from 15500: the rules diet's step 5a made it a page (D1735); the account by requirement put back 30 parts of rulings the sample had cut, and the two blind reads 18 more (20,560 bytes); a ruling is never cut to fit (D141), a tenth above again
   /* leave-war 37000 -> 39000 (15 Oct 26, night): 37,040 bytes with D890-D892 (one landing line a gap, the other lists,
      a drag held at the edge scrolls - his finds on his iPhone) - live; none is trimmed (D136). Room, not a target. */
   /* leave-war 39000 -> 44000 (21 Oct 26): 39,630 bytes with D1140-D1143 (the Leave War overhaul, D1140, and his answers
@@ -423,7 +423,7 @@ const RULING_BYTES = [
   /* tracker 27500 -> 29500 (22 Oct 26, the Leave War design's merge on his "merge live"): 28,018 bytes on `main` with
      D1170, D1171 (main's round 3 - the Tracker bar's height), already over on `main` and failing the documents check of
      every pull request; none is trimmed (D136). The split or the spent-rulings pass stays filed in [RULINGS-SPENT-PASS]. */
-  ['.claude/rules/decisions/tracker.md', 2, 41500],   // raised 8 Nov 26 from 32500: the rules diet's step 5a made it a page (D1735) stating each ruling's full requirements, which the short lines had cut — the account by requirement put back 31 gaps where the first draft bent or dropped a part (8 of them a rule: readings stated as his rule, a one-off reminder widened, the drag rules' safeguards), the two blind reads 15 more (D191 against D1005 put to him as a question, Retry's no-reload case, the drag rules' bottom edge, D1004 answered), and about 30 pointer lines cite about 70 rulings of other areas (37,758 bytes); a ruling is never cut to fit (D141), a tenth above again. Before that, raised 5 Nov 26 from 29500: D1705 (round 4's Tracker marks) took it 91 over; never trimmed (D136), a tenth above
+  ['.claude/rules/decisions/tracker.md', 2, 20061],   // 8 Nov 26, D1932: set to the one-line list's size the page replaced (aee0de3f2) — a HARD LIMIT (PAGE_LIMITS below). Before that, raised 8 Nov 26 from 32500: the rules diet's step 5a made it a page (D1735) stating each ruling's full requirements, which the short lines had cut — the account by requirement put back 31 gaps where the first draft bent or dropped a part (8 of them a rule: readings stated as his rule, a one-off reminder widened, the drag rules' safeguards), the two blind reads 15 more (D191 against D1005 put to him as a question, Retry's no-reload case, the drag rules' bottom edge, D1004 answered), and about 30 pointer lines cite about 70 rulings of other areas (37,758 bytes); a ruling is never cut to fit (D141), a tenth above again. Before that, raised 5 Nov 26 from 29500: D1705 (round 4's Tracker marks) took it 91 over; never trimmed (D136), a tenth above
   /* 7 Nov 26 (D1735, the rules diet's step 1): the two seam files, registered before they are written (step 2 moves
      the Leave War's and the Tracker's "## Architecture" sections into them whole — 13,077 and 10,988 bytes measured
      that day), each a tenth above its section and its paths: header. Registered with their probe files in
@@ -433,7 +433,7 @@ const RULING_BYTES = [
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
-  ['.claude/rules/decisions/it-flow-guide.md', 2, 10300],   // raised 8 Nov 26 from 5000: the rules diet's step 5a made it a page (D1735); the account by requirement put back the slide parts and the agent's calls the short lines had cut, and the two blind reads the Leave War's later rulings the guide draws (D1166, D1208, D1724 — 9,330 bytes); a ruling is never cut to fit (D141), a tenth above again
+  ['.claude/rules/decisions/it-flow-guide.md', 2, 4028],   // 8 Nov 26, D1932: set to the one-line list's size the page replaced (cd8a5dd67) — a HARD LIMIT (PAGE_LIMITS below). Before that, raised 8 Nov 26 from 5000: the rules diet's step 5a made it a page (D1735); the account by requirement put back the slide parts and the agent's calls the short lines had cut, and the two blind reads the Leave War's later rulings the guide draws (D1166, D1208, D1724 — 9,330 bytes); a ruling is never cut to fit (D141), a tenth above again
   /* NEW 1 Nov 26 ([START-LOAD-TRIM], owner D1554): the screen-design rulings - how a screen looks and behaves (the gear,
      the pencils, the top bar, search boxes, arrows, pinned bars, the failed-save band, rings, glows, drag) - moved here
      whole by the script from How we work, which carried them into every chat; they load with the design guide's paths
@@ -445,7 +445,24 @@ const RULING_BYTES = [
      target (D141). */
   /* design 11500 -> 14000 (4 Nov 26, claude/ask-at-the-control): 11,694 bytes with D1627, D1628 (which questions hang from
      their button); live rulings, never trimmed (D136). Room, not a target (D141). */
-  ['.claude/rules/decisions/design.md',  2, 46300],   // raised 8 Nov 26 from 23700: the rules diet's step 5a made it a page (D1735) stating each ruling's full requirements, which the short lines had cut; the account by requirement corrected 17 places where the first draft bent or dropped a part, the two blind reads 17 more (the design guide's wording of the drag, one-row, feedback, one-mark and no-glow rules among them), D1901 was stated at the merge of main, and about 35 pointers to other areas were found by subject (42,087 bytes); a ruling is never cut to fit (D141), a tenth above again. Before that, raised 8 Nov 26 from 21500: D1792–D1793, his pictures-round answers, took it 179 over; never trimmed (D136), a tenth above again. Before that, raised 7 Nov 26 from 19000: D1667–D1670 (the grey "Blocked" refusal, his answers) took it 2085 over once main and the branch met; a rulings file is never trimmed (D136). Before that, raised 5 Nov 26 from 17000: round 4's answers D1701–D1707 took it 266 over. Before that, raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
+  ['.claude/rules/decisions/design.md',  2, 22050],   // 8 Nov 26, D1932: set to the one-line list's size the page replaced (0abda89d5) — a HARD LIMIT (PAGE_LIMITS below). Before that, raised 8 Nov 26 from 23700: the rules diet's step 5a made it a page (D1735) stating each ruling's full requirements, which the short lines had cut; the account by requirement corrected 17 places where the first draft bent or dropped a part, the two blind reads 17 more (the design guide's wording of the drag, one-row, feedback, one-mark and no-glow rules among them), D1901 was stated at the merge of main, and about 35 pointers to other areas were found by subject (42,087 bytes); a ruling is never cut to fit (D141), a tenth above again. Before that, raised 8 Nov 26 from 21500: D1792–D1793, his pictures-round answers, took it 179 over; never trimmed (D136), a tenth above again. Before that, raised 7 Nov 26 from 19000: D1667–D1670 (the grey "Blocked" refusal, his answers) took it 2085 over once main and the branch met; a rulings file is never trimmed (D136). Before that, raised 5 Nov 26 from 17000: round 4's answers D1701–D1707 took it 266 over. Before that, raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
+]
+/* THE CONVERTED PAGES' HARD LIMITS (owner, D1932, 8 Nov 26 — narrowing D141's "a tripwire, never a target" for a page):
+   the rules diet's five pages came out about twice the one-line lists they replaced, through five tripwire raises
+   none of which was told to him plainly. His ruling: each page is brought back UNDER THE SIZE OF THE LIST IT REPLACED,
+   no rule dropped, and a converted page's tripwire is a HARD LIMIT — never raised without his word. So, for every
+   area file that is a page (`<!-- shape: page -->`): its RULING_BYTES ceiling must equal the `limit` here; a page over
+   it FAILS, on a code change too (no D29 deferral — a page is tightened in wording, never trimmed of a rule); and
+   `limit` may stand above `set` (the figure D1932 fixed) only when `by` names a LIVE ruling of his, later than D1932,
+   that allows it — cite its number here when he gives the word, never before. A new page gets a row here first. */
+const PAGE_LIMITS = [
+  // file,                                         set (D1932),  limit, by
+  ['.claude/rules/decisions/how-we-work.md',     38000, 38000, 'D1932'],   // its tripwire as it stood; the page shrank (59,493 -> 37,952), left as it is
+  ['.claude/rules/decisions/oil.md',             15407, 15407, 'D1932'],   // the one-line list at a6265cae0
+  ['.claude/rules/decisions/it-flow-guide.md',    4028,  4028, 'D1932'],   // the one-line list at cd8a5dd67
+  ['.claude/rules/decisions/tracker.md',         20061, 20061, 'D1932'],   // the one-line list at aee0de3f2
+  ['.claude/rules/decisions/design.md',          22050, 22050, 'D1932'],   // the one-line list at 0abda89d5
+  ['.claude/rules/decisions/people-accounts.md', 21160, 21160, 'D1932'],   // the one-line list at 97eaa5251
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
@@ -1123,10 +1140,22 @@ function ceilings(codeChange) {
   /* the area rulings files, in UTF-8 bytes of the whole file (D390) — the same tripwire rules as the lines above */
   console.log(`\n  ${pad('rulings file (loaded)', 44)} ${pad('tier', 5)} ${pad('bytes', 8)} ${pad('~tokens', 8)} ${pad('changed', 8)} tripwire`)
   let rTier0 = 0, rTok0 = 0
+  /* D1932: a converted page's ceiling is a hard limit — checked against PAGE_LIMITS, and the ruling cited for any raise */
+  const liveNow = new Set(rulingRows('now').map(r => r.d))
   for (const [f, tier, ceiling] of RULING_BYTES) {
     if (!existsSync(join(REPO, f))) { if (!f.startsWith(RL.SEAM_DIR + '/')) console.log(`  ${pad(f, 44)} MISSING`); continue }
     const text = readNow(f), n = Buffer.byteLength(text, 'utf8'), tok = estTokens(text)
     if (tier === 0) { rTier0 += n; rTok0 += tok }
+    const page = f.startsWith(RULINGS_DIR + '/') && RL.isPage(text), hard = PAGE_LIMITS.find(r => r[0] === f)
+    if (page) {
+      if (!hard) fails.push(`${f} is a converted page with no row in ${SELF}'s PAGE_LIMITS — a page's tripwire is a hard limit (D1932): add its row (the size of the list it replaced, and D1932) in a docs-only commit`)
+      else {
+        const [, set, limit, by] = hard
+        if (ceiling !== limit) fails.push(`${f}'s tripwire in RULING_BYTES is ${ceiling} but its hard limit in PAGE_LIMITS is ${limit} — the two must agree (D1932)`)
+        if (limit > set && (by === 'D1932' || !/^D\d+$/.test(by) || !liveNow.has(by))) fails.push(`${f}'s hard limit was raised from ${set} to ${limit} without a ruling of his cited beside it — a converted page's limit is never raised without his word (D1932): cite the live ruling that allows it in PAGE_LIMITS, or put the limit back and tighten the page's wording (no rule dropped)`)
+      }
+      if (n > ceiling) { fails.push(`${f} is ${n - ceiling} bytes over its HARD LIMIT of ${ceiling} — a converted page is never raised without his word (D1932): tighten its wording (one-line bullets, merged repeats, pointers for other areas' rulings), never dropping a rule, a condition, an exception or a citation; a raise needs his ruling, cited in PAGE_LIMITS`); console.log(`  ${pad(f, 44)} ${pad(tier, 5)} ${pad(n, 8)} ${pad('~' + tok, 8)} ${pad(0, 8)} ${ceiling}   *** OVER THE HARD LIMIT by ${n - ceiling} bytes ***`); continue }
+    }
     /* the short lines a later ruling changed — read each against it at the next tidy: one it restates in full leaves (D971) */
     const shorts = splitLines(text).filter(l => ROW_ID.test(l) && RL.kindOf(l) === 'short')
     const changedL = shorts.filter(l => / — changed by D\d/.test(l)), changed = changedL.length
