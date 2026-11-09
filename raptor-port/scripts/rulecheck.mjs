@@ -21,9 +21,12 @@
  *
  * Run: node scripts/rulecheck.mjs        (part of the gate suite)
  */
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+/* the test finder lives in docsize-rulings.mjs since 9 Nov 26 (D1941), so the document gate's trial of built rulings
+   and this check read "a test names it" one way */
+import { TEST_DIRS as TEST_DIR_NAMES, testFiles, namesId } from './docsize-rulings.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -355,22 +358,8 @@ const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q15', 'OIL19', 'OIL26',
   /* AM55: a long bubble scrolling is layout, which the test browser does not have: the walk proves it (25 Sep 26) */
   'AM55'])
 
-const TEST_DIRS = [join(ROOT, 'src'), join(ROOT, 'e2e')]
-const isTest = (f) => /\.(test|spec)\.(ts|tsx)$/.test(f)
-
-function walk(dir, out = []) {
-  let entries
-  try { entries = readdirSync(dir) } catch { return out }
-  for (const e of entries) {
-    if (e === 'node_modules' || e.startsWith('.')) continue
-    const p = join(dir, e)
-    if (statSync(p).isDirectory()) walk(p, out)
-    else if (isTest(e)) out.push(p)
-  }
-  return out
-}
-
-const files = TEST_DIRS.flatMap((d) => walk(d))
+const TEST_DIRS = TEST_DIR_NAMES.map((d) => join(ROOT, d))
+const files = testFiles(ROOT)
 /* no test files at all means the script was run from the wrong place, not
    that every rule lost its test — say so rather than raising 26 alarms */
 if (!files.length) {
@@ -380,9 +369,9 @@ if (!files.length) {
 }
 const haystack = files.map((f) => readFileSync(f, 'utf8')).join('\n')
 
-/* `(?!\.\d)`: a drawing's path ("Q11.5 35.8") is not a test naming Q11 (Astra's read, 8 Nov 26 — Q11 had left the
-   baseline on that coincidence and a review note's "Q11") */
-const unnamed = Object.keys(RULES).filter((id) => !new RegExp(`\\b${id}\\b(?!\\.\\d)`).test(haystack))
+/* namesId: `(?!\.\d)` — a drawing's path ("Q11.5 35.8") is not a test naming Q11 (Astra's read, 8 Nov 26 — Q11 had
+   left the baseline on that coincidence and a review note's "Q11") */
+const unnamed = Object.keys(RULES).filter((id) => !namesId(id, haystack))
 
 const added = unnamed.filter((id) => !BASELINE.has(id))
 const cleared = [...BASELINE].filter((id) => !unnamed.includes(id))

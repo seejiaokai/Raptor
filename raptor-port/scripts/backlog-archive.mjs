@@ -592,9 +592,10 @@ if (args.includes('--rulings')) {
     const rules = listed('.claude/rules').filter(f => /^\.claude\/rules\/[^/]+\.md$/.test(f) && !RL.isScoped(disk(f))).map(f => ({ f, text: disk(f), homes: new Set(general) }))
     const textAt = f => pageSrc.find(p => p.f === f)?.text ?? disk(f) ?? ''
     const at = x => `${x.f} line ${x.line} (${RL.sectionAt(textAt(x.f), x.line)})`
-    const debts = RL.pageDebts([...pageSrc, ...rules], live, archived)
+    const debts = RL.pageDebts([...pageSrc, ...rules], live, archived, RL.testNamer(join(REPO, 'raptor-port'))) // D1941's trial: the one test finder
     for (const x of debts) {
-      if (x.kind === 'mark') owed.push(`${at(x)} states ${x.d}: cite ${x.missing.join(', ')} on it too — ${x.missing.length > 1 ? 'they change' : 'it changes'} ${x.d} (the mark in ${x.d}'s full row) — and write the line as the rule stands since then`)
+      if (x.kind === 'built') owed.push(`${at(x)} names ${x.d} on its "Built, held by tests" line, but ${x.why === 'area' ? `${x.d} is another area's ruling — point to it under "## From other areas"` : `no test names ${x.d} — name it in the test that pins it, or state the rule on the page again`} (D1941)`)
+      else if (x.kind === 'mark') owed.push(`${at(x)} states ${x.d}: cite ${x.missing.join(', ')} on it too — ${x.missing.length > 1 ? 'they change' : 'it changes'} ${x.d} (the mark in ${x.d}'s full row) — and write the line as the rule stands since then`)
       else if (x.kind === 'stale') owed.push(`${at(x)} cites ${x.d}, which ${x.by} replaced: rewrite the line as the rule stands now, citing the ruling that holds it (D201)`)
       else if (x.kind === 'none') owed.push(`${at(x)} cites ${x.d}, which is no ruling — a renumbered clash (D78) or a typo: cite the number it has now`)
       else if (!debts.some(y => y.kind === 'mark' && y.missing.includes(x.d) && y.f === `${DIR}/${x.area}`)) {

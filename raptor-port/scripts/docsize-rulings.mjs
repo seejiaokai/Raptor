@@ -9,6 +9,8 @@
  * count is refused (Astra's red team: four rows once had five, one had seven). A ruling's IDENTITY is its full row.
  *
  * Named after the gate (docsize-*.mjs) so the deploy workflow's docs-only skip list covers it. */
+import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { join } from 'node:path'
 
 export const DECISIONS = 'DECISIONS.md'
 export const RULINGS_DIR = '.claude/rules/decisions'
@@ -153,6 +155,37 @@ export const capsText = t => { const s = t || '', l = (s.match(/[A-Za-z]/g) || [
    keeps loading in every chat — and the gate and the recorder treat a marked file the new way and every other the old
    way, so the areas convert one at a time and main stays green between them (Astra's read of the plan, finding 1). */
 export const PAGE_MARK = '<!-- shape: page -->'
+/* THE TRIAL OF BUILT RULINGS HELD BY TESTS (owner, D1941, 9 Nov 26 — first on the Tracker's page, shown to him before any
+   other area). A page carrying this marker, on a line of its own under PAGE_MARK, may name a live ruling of its own area on
+   ONE bullet that opens "Built, held by tests" instead of stating it: the detail of what is built lives in the app and its
+   tests, and the full row keeps his words. The gate takes a number there only when a test names it, found by the one test
+   finder below, which rulecheck.mjs uses too; any other number there fails, by name. Every other check stands. */
+export const TRIAL_MARK = '<!-- trial: built rulings by test -->'
+export const BUILT_LINE = /^Built, held by tests\b/
+/* THE TEST FINDER (moved here whole from rulecheck.mjs, 9 Nov 26 — D1941: one finder, so the gate and the rule check can
+   never disagree about whether a test names a ruling). A test is a *.test.ts(x) or *.spec.ts(x) file under raptor-port's
+   src/ or e2e/; it names a ruling when the id stands as a word — `(?!\.\d)`: a drawing's path ("Q11.5 35.8") is not a
+   test naming Q11 (Astra's read, 8 Nov 26). */
+export const TEST_DIRS = ['src', 'e2e']
+export const isTestFile = f => /\.(test|spec)\.(ts|tsx)$/.test(f)
+export function testFilesUnder(dir, out = []) {
+  let entries
+  try { entries = readdirSync(dir) } catch { return out }
+  for (const e of entries) {
+    if (e === 'node_modules' || e.startsWith('.')) continue
+    const p = join(dir, e)
+    if (statSync(p).isDirectory()) testFilesUnder(p, out)
+    else if (isTestFile(e)) out.push(p)
+  }
+  return out
+}
+export const testFiles = root => TEST_DIRS.flatMap(d => testFilesUnder(join(root, d)))
+export const namesId = (id, text) => new RegExp(`\\b${id}\\b(?!\\.\\d)`).test(text)
+/* a function id -> whether some test under `root` (the raptor-port folder) names it; the tests read once, on first use */
+export function testNamer(root) {
+  let hay = null
+  return id => { if (hay === null) hay = testFiles(root).map(f => readFileSync(f, 'utf8')).join('\n'); return namesId(id, hay) }
+}
 /* a statement's length, in characters — "one statement a bullet"; the detail stays in the full rows (plan §5) */
 export const STATEMENT_MAX = 600
 /* a range "D36–D41" cites each ruling in it; a wider span is read as its two ends (a typo must not cite a thousand) */
@@ -177,6 +210,8 @@ function bodyOf(text) {
 }
 /* is this file a page? — the marker on a line of its own, outside code blocks and frontmatter */
 export const isPage = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), inF = fencedFlags(ls), fm = fmEnd(ls); return ls.some((l, i) => i >= fm && !inF[i] && l.trim() === PAGE_MARK) }
+/* is this page in the trial (D1941)? — a page, and the trial's marker on a line of its own, read as the page's is */
+export const isTrialPage = text => { if (!isPage(text)) return false; const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), inF = fencedFlags(ls), fm = fmEnd(ls); return ls.some((l, i) => i >= fm && !inF[i] && l.trim() === TRIAL_MARK) }
 /* does the file load only with its area (a `paths:` key in its frontmatter)? */
 export const isScoped = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), fm = fmEnd(ls); return fm > 0 && ls.slice(1, fm - 1).some(l => /^paths:/.test(l)) }
 /* A rules file's `paths:` globs, comments and blank lines left out — the files whose opening loads it. */
@@ -303,12 +338,24 @@ export const sectionAt = (text, line) => (sectionsOf(text).filter(s => s.line < 
    with words enough to state a ruling of a converted area also cites the rulings that changed it, wherever it stands —
    its page, another page's pointer, an always-loaded rules file even while the general area is still in short lines —
    since a restatement out of date misleads wherever it loads, and in an always-loaded file in every chat (D201). */
-export function pageDebts(sources, live, archived) {
+/* THE TRIAL (D1941): `namedByTest` (id -> whether a test names it, testNamer above) lets a page carrying TRIAL_MARK name a
+   live ruling of its own area on its "Built, held by tests" bullet instead of stating it. A number there that no test
+   names, or that is another area's, is a debt: { kind: 'built', f, line, d, why: 'untested' | 'area' }. */
+export function pageDebts(sources, live, archived, namedByTest) {
   const out = [], stated = new Set(), pointed = new Map(), pages = new Set(sources.filter(s => s.area).map(s => s.area))
   for (const { f, text, homes } of sources) for (const s of statementsOf(text)) {
-    for (const d of s.cites) {
-      if (s.states && homes.has(live.get(d)?.area)) { stated.add(d); continue }
-      const why = s.states ? 'elsewhere' : 'short'
+    if (s.kind === 'bullet' && BUILT_LINE.test(s.text) && homes.size && isTrialPage(text)) {
+      for (const d of s.cites) {
+        if (!live.has(d)) continue // the 'none' and 'stale' checks below read it
+        if (!homes.has(live.get(d).area)) out.push({ kind: 'built', f, line: s.line, d, why: 'area' })
+        else if (!namedByTest || !namedByTest(d)) out.push({ kind: 'built', f, line: s.line, d, why: 'untested' })
+        else stated.add(d)
+      }
+    } else for (const d of s.cites) {
+      /* a "Built, held by tests" line outside the trial states nothing — only the trial's marker lets it stand for a rule */
+      const states = s.states && !(s.kind === 'bullet' && BUILT_LINE.test(s.text))
+      if (states && homes.has(live.get(d)?.area)) { stated.add(d); continue }
+      const why = states ? 'elsewhere' : 'short'
       if (!pointed.has(d) || (why === 'elsewhere' && pointed.get(d).why === 'short')) pointed.set(d, { at: `${f} line ${s.line}`, why })
     }
     if (s.states) for (const d of s.cites) {

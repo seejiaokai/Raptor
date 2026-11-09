@@ -206,6 +206,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check.
 - [RD-LEFT-1108] — React Doctor's last 4 findings, in other areas' files (SansCal 1, SansDay 1, interactions 2) — each with its area's next batch; the 13 import cycles and People & accounts' 6 went live 8 Nov 26 (pull request 702), the Inputs and Medical 8 settled by chat 29 (pull request 707).
+- [RECORDS-MERGE-SAME-ADD] — the settle step kept a skill note both sides had added word for word as two notes, renumbering one; found 9 Nov 26, settled by hand.
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [REPO-TIDY] — clear the old worktrees (47 today) and the 6 Nov night's three build folders after safety checks; moving the walk pictures out is his call.
 - [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
@@ -279,6 +280,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+
+### [RECORDS-MERGE-SAME-ADD] The settle step doubles a skill note both sides added word for word (found 9 Nov 26, chat 36)
+**What:** bringing `main` into the Tracker trial's branch (pull request 725), `records-merge.mjs` reported the skill log's note 905 ("Add-only" was a guess…) as "added on main's side" and again as "added on this branch", and kept both, renumbering this branch's copy to 909. The two were identical, apart from the number. The base held neither: this branch had taken the note in an earlier bring-in of `main`, and `main`'s side then carried it from chat 40's merge. Chat 36 dropped the copy by hand. **Expected:** a note added on both sides with the same text is one note (the step's own rule: "the same on both sides … that side"), whatever its place. **Fix:** in the skill log's settle, match added notes by their text without the number before renumbering, with a test of this case in `records-merge.test.mjs`. Nothing was lost; the cost is a doubled note when unchecked.
 
 ### [USERS-ARCH-FOLD-DRAFT] Folding Archived resets an open archived editor (found 8 Nov 26, walker C of pull request 702)
 **What:** on Admin → Users, with an archived man's editor open, a new callsign typed and Delete armed, folding the Archived group and unfolding it shows the editor still open, but its box reads his old callsign again and Delete is no longer armed; the roster's editors keep both through the same fold. The same on `main` and on pull request 702's branch (`raptor-port/docs/handpass/parts/2026-11-08-rd-last-findings-walkC.md`, S14 "Fold Archived, unfold — archived"). Nothing saved is wrong — only typing not yet saved is dropped, silently. **To do:** keep the archived editor's typing and armed Delete across the fold as the roster's are, or close it on the fold so it does not look kept; a test red first. **Place:** low, the agent's — with the next People and accounts job.

@@ -738,6 +738,28 @@ gitRulings('an old row this side moved and the other side marked keeps BOTH chan
   ]
   for (const [name, got, want] of cases) { const ok = got === want; if (!ok) failed++; console.log(`${ok ? 'PASS' : 'MISS'}  marks: ${name} — expected [${want}], got [${got}]`) }
 }
+{ /* D1941's trial: a page carrying the trial marker may name a built ruling of its own area on its "Built, held by tests"
+     line instead of stating it — only when a test names it; read directly from pageDebts, the gate's and the recorder's one reading */
+  const RLt = await import(pathToFileURL(join(HERE, 'docsize-rulings.mjs')).href)
+  const row = d => `| ${d} | 9 Nov 26 | w | **Rule ${d}.** | x |`
+  const live = new Map(['D1', 'D2', 'D3'].map(d => [d, { line: row(d), area: 'trk.md' }]).concat([['D9', { line: row('D9'), area: 'other.md' }]]))
+  const page = (built, trial = true) => ['---', 'paths:', '  - a/**', '---', '', '# Trk — how it works now', '', RLt.PAGE_MARK, ...(trial ? [RLt.TRIAL_MARK] : []), '',
+    '## What', '- The first rule is stated here in words [D1].', '', '## Settled — leave', '- Nothing settled here at all [D1].', '', '## Built, held by tests', `- Built, held by tests: ${built}.`, '', '## From other areas', '- Other: D9.', ''].join('\n')
+  const debts = (text, named) => RLt.pageDebts([{ f: 'trk.md', text, homes: new Set(['trk.md']), area: 'trk.md' }], live, new Map(), id => named.includes(id))
+  const say = x => x.map(y => `${y.kind}:${y.d}${y.why ? ':' + y.why : ''}`).sort().join(',')
+  const cases = [
+    ['a built ruling a test names leaves the page', say(debts(page('D2, D3'), ['D2', 'D3'])), ''],
+    /* D3, stated nowhere else on the page, is also unstated: both debts name it */
+    ['a number no test names fails, by name', say(debts(page('D2, D3'), ['D2'])), 'built:D3:untested,unstated:D3'],
+    ['another area\'s number on the line fails', say(debts(page('D2, D3, D9'), ['D2', 'D3', 'D9'])), 'built:D9:area'],
+    /* three numbers, so the line's four words are fewer than two a ruling: a list, as the real line is */
+    ['without the trial marker the line states nothing', say(debts(page('D1, D2, D3', false), ['D1', 'D2', 'D3'])), 'unstated:D2:short,unstated:D3:short'],
+    /* …nor with two: words enough for the ordinary rule, but a "Built, held by tests" line outside the trial states nothing */
+    ['…nor with two numbers, words enough to state by the ordinary rule', say(debts(page('D2, D3', false), ['D2', 'D3'])), 'unstated:D2:short,unstated:D3:short'],
+    ['the finder: a word, not a longer number or a drawing\'s path', [RLt.namesId('D12', 'see D12)'), RLt.namesId('D12', 'D123'), RLt.namesId('D12', 'M D12.5 3')].join(','), 'true,false,false'],
+  ]
+  for (const [name, got, want] of cases) { const ok = got === want; if (!ok) failed++; console.log(`${ok ? 'PASS' : 'MISS'}  trial: ${name} — expected [${want}], got [${got}]`) }
+}
 mover('a lookalike under an archived number (its own bold words, then the same tail) is refused, not dropped', false, { prep: c => c.edit(AREA, t => topOf(t, '| D0 | 20 Sep 26 | **A brand-new instruction.** z | z | `OUTSTANDING.md` |')), args: ['--rulings'], check: (c, r) => /never reused/.test(r.stderr) ? '' : 'it was not refused as a reused number' })
 mover('a stale live copy whose ruling cell opens with HIS bold words is dropped as the same ruling', true, { prep: c => {
   c.edit('DECISIONS-ARCHIVE.md', t => t.replace('**REPLACED BY D1 (21 Sep 26).** z', '**REPLACED BY D1 (21 Sep 26).** **Never** z')); c.commit('an archived row with his own bold words')
