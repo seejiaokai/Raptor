@@ -1055,6 +1055,45 @@ D1326 by D1356 left unmarked (each would pull numbers onto lines it does not tou
 (`[LW-PAGE-LEFTOVERS]`): D1177's three readings and D333's admin half as "keep as built", D1318 against D1211, the tests
 for the 7, about 22 proposed archivals, the stale reference docs.
 
+### Step 6 — the final measure, before and after (9 Nov 26, chat 47, `claude/rules-diet-step-6-measure-22f70d`, `main` at `3b9735413`)
+
+**How:** `docsize.mjs --reads` run twice — "before" in a detached worktree of `main` at `8e807cf3d` (step 1 merged: the
+measure existed, nothing yet reshaped), with that commit's own script; "after" on `main` today. The same old state
+measured with today's script reads 26,743 less in each area job's check column — that is step 3's reading by section
+being counted, the diet's own rule, so the step-1 script is the fair "before". Tokens, `estTokens`, ±10%.
+
+| A chat that… | Before (7 Nov) | After (9 Nov) | Change | The plan forecast (Part 1, after all) |
+|---|---|---|---|---|
+| only writes notes | 77,166 | 67,399 | −9,767 (−13%) | 36,000 |
+| fixes the Leave War, with a walk | 359,657 | 303,218 | −56,439 (−16%) | 176,000 |
+| changes a scheduler screen, with a walk | 346,300 | 258,372 | −87,928 (−25%) | 169,000 |
+| works on the Inputs pages, with a walk | 369,650 | 276,162 | −93,488 (−25%) | 157,000 |
+| works on the Tracker, with a walk | 357,701 | 269,435 | −88,266 (−25%) | 166,000 |
+| the note on each of his messages, ×40 | 18,800 | 9,400 | −9,400 (−50%) | 7,500 |
+
+**The rulings files** (every area): 168,117 → 116,389 tokens (−31%), plus the two seam files moved whole (11,921). By
+area: general 21,829 → 14,202; Leave War 51,059 → 30,896; scheduler 45,057 → 31,193; Inputs 17,494 → 11,869; Tracker
+11,401 → 6,017; design 7,920 → 8,262, people 7,501 → 8,029, OIL 5,856 → 5,921 (each under its old list's bytes, D1932 —
+tokens a little up). The start of every chat 39,756 → 35,806; the skill-notes guide 10,198 → 2,767 (its short form).
+Grew: `HANDOFF.md` 12,284 → 14,437, `OUTSTANDING.md`'s head 14,928 → 17,156. Live rulings 1,337 → 1,392 (the full rows).
+
+**The app's own count** (the status line is not drawn in the desktop app, D870, so the app's usage reading stands in):
+this fresh chat, after reading the handoff and the plan, 149,479 of 400,000 (37%); its fixed share (tools 39,915,
+connectors' tools 20,592, prompt 14,422, skills 8,071) about 83,000, as on 7 Nov; the files loaded at the start
+33,427 (his own global notes and memory index included) against about 38,000 for the project's files alone on 7 Nov.
+The app compacts at 92% (about 368,000). So a job that obeyed every read whole: Leave War 303,218 + 83,000 = about
+386,000 — still over; scheduler about 341,000, Tracker about 352,000, Inputs about 359,000 — under, with 9,000–27,000
+left. Every read is still an upper bound: a real chat reads less.
+
+**Why far short of the forecast:** reading by section saved about 7% where three quarters was forecast (step 3: the
+checklist keeps fifteen parts of the order and his design lessons whole); the pages were held to their old lists'
+size (D1932), not the projected 43%; the Leave War page is 30,896 against a projected 20,400; and the scheduler's page
+still loads in the Leave War and Tracker jobs through the performance guide's and ripple map's `paths:` (31,193 each).
+**Where a Leave War job's weight sits now:** the design guide's parts 45,800, the scheduler's page 31,193 (loaded by
+the performance guide), its own page 30,896, the bug-check order's parts 30,878, the ripple map's parts 17,929, the
+backlog's head 17,156, the project guide 14,541, the handoff 14,437, the general page 14,202, the walk-scripts guide
+13,393.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |

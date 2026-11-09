@@ -20,6 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/rules-diet-step-6-measure-22f70d -->
+### CHAT 47 — the rules diet's step 6, the final measure — written 9 Nov 26 — verify before use
+- **Done:** the before-and-after measure, in the plan's §Step 6 (`raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md`): "before" is `main` at `8e807cf3d` (step 1 merged, nothing reshaped) with its own script, in a scratch worktree; "after" is `main` at `3b9735413`. A job's whole read: notes 77,166 → 67,399, Leave War 359,657 → 303,218, scheduler 346,300 → 258,372, Inputs 369,650 → 276,162, Tracker 357,701 → 269,435 (−13% to −25%; the plan forecast about half). The app's own count for this fresh chat 37% after the handoff and plan; its fixed share about 83,000, unchanged. `[RULES-DIET]` brought up to date.
+- **Branch:** `claude/rules-diet-step-6-measure-22f70d`, notes only (the plan, the backlog, this block) — a rules-diet step, so it waits for his "merge live" (D1737). **Gates:** docsize green. **Walk:** none — notes only.
+- **Open question for him:** whether the diet ends here, or takes one small follow-up: the scheduler page stops loading with the performance guide and the ripple map in Leave War and Tracker jobs (about 31,000 each; the Leave War job would then fit a chat), and the handoff's four merged blocks are filed and removed. Recommended: yes, as one small job in a fresh chat, read by Astra and a fresh Opus reader (it changes what loads).
+- **Rulings:** none this session. **Reads owed:** none (a measure, nothing reworded). **Next chat number:** 48 (D1744).
+<!-- /now -->
 <!-- now:claude/rules-diet-leave-war-page -->
 ### CHAT 46 (after chat 45) — the rules diet: the Leave War's rulings as one page (D1947) — MERGED 9 Nov 26 on his "merge live" typed in chat 46 (pull request 732, `d0f507491`; main's runs green, Vercel's Production deployment ready) — written 9 Nov 26 — verify before use
 - **Where it started:** chat 45 drafted the page; chat 46 ran the two blind reads, the fixer and the host's check, as chat 43 did for the scheduler. Every area's rulings are now a page (step 5b done).
