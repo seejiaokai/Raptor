@@ -23,7 +23,8 @@ both first. The last review's table, for its style: `git show 38e509fd6^:.claude
   capitals and square brackets — check the ID is not already used: `grep -n '\[ID\]' OUTSTANDING*.md`); memory notes →
   `_memory/additions.md` (name, one-line hook for the index, the body — the memory format is in any file of
   `C:\Users\User\.claude\projects\C--Users-User-projects-Raptor\memory\`); questions for him → `_review/questions.md`.
-- **Your report**: `_review/report-<your group>.md` — the counts per code, the files you drafted and what changed in
+- **Your report** (returned as your final reply — the tool refuses a helper's write of a report file; the coordinator
+  saves it as `_review/report-<your group>.md`): the counts per code, the files you drafted and what changed in
   each (a line per change, naming the notes), the places you were unsure (the readers will be pointed at them), and any
   stale line you met (below).
 - Do not commit, push, or run the gates. Do not start other helpers.
@@ -79,5 +80,5 @@ under "Stale lines fixed" in your report. Check a ruling's full row before relyi
 ## When you finish
 
 Check your table has exactly one row per note of your group (a script will check it too), every APPLY's file exists in
-the holding folder, and your report lists your doubts. Then reply in under 15 lines: the counts per code, the files
-drafted, and the three places you are least sure of.
+the holding folder, and your report lists your doubts. Then reply with the whole report (it is saved as you send it),
+ending with the three places you are least sure of. If a write of a draft, table or addition is refused, say so.
