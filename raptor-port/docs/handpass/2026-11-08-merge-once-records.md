@@ -11,7 +11,7 @@ sections at one place are both kept, and the replay's fail rule counts every lin
 `…-round3-astra.md`, `…-round3-opus.md`), refusals only: the log is left whole when either side changes its day headings
 at all, or any version holds a code block that never closes; an insertion is settled only at an entry's boundary with no
 indented first line; list items join like table rows; the replay fails on every abnormal end of the step. The list's
-figures are unchanged by it; the replay passes (exit 0).
+figures are unchanged by it; the replay passes (exit 0). **Rerun after round 5** (9 Nov 26, chat 40, `…/briefs/2026-11-09-merge-once-records-round4-{astra,opus}.md`), one refusal — a clash inside a backlog item, under its `[ID]` heading, is never settled: every figure below unchanged (the generated text compared line by line), the replay passes (exit 0).
 
 **How.** The list — each merge and its two parents — is committed as data, `raptor-port/scripts/records-merge-replay.json`: every
 two-parent merge on any branch whose committer date falls between 8 Nov 26 00:00 and the moment the list was cut (Singapore time,

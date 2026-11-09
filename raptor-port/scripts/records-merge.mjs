@@ -321,7 +321,12 @@ function settleInsertions(o, b, t, labels) {
     if (part.b.length === 0) {
       /* the line just above the region, as written so far (null at the start of the file) */
       const above = out.length ? out[out.length - 1].split('\n').filter((l, j, a) => j < a.length - 1 || l).pop() ?? '' : null
-      const why = whyNotJoin(part.o, part.t, ragged && atEnd, above)
+      /* ROUND 5 (Astra r4-1): a blank line inside a backlog item is not an entry boundary — an item holds several
+         paragraphs — so a region under an [ID] item's heading continues that item and is never joined */
+      const heading = out.flatMap(s => s.split('\n')).reverse().find(l => /^#{1,6} /.test(l)) ?? ''
+      const why = /^#{2,} \[[A-Z0-9][A-Z0-9-]*\]/.test(heading)
+        ? 'it is inside a backlog item, whose paragraphs may be two versions of one outcome'
+        : whyNotJoin(part.o, part.t, ragged && atEnd, above)
       if (!why) { out.push(...joinInsertions(part.o, part.t)); settled.push(`text both sides inserted at one place (${part.o.length} line(s) of this branch's, then ${part.t.length} of main's)`); continue }
       left.push(`a place where both sides inserted text — ${why}; which goes where is yours to judge; near: ${([...part.o, ...part.t].find(l => l.trim()) || '').trim().slice(0, 80)}`)
       out.push(renderConflict(part.o.join(''), '', part.t.join(''), labels)); continue

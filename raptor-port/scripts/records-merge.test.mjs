@@ -486,6 +486,18 @@ for (const f of ['OUTSTANDING.md', 'OUTSTANDING-ARCHIVE.md']) {
     const before = c.read(f)
     leftAsGitMarked(c, f, c.run(), before)
   }))
+  /* ROUND 5 (Astra r4-1, 9 Nov 26): a blank line inside an item passed for an entry boundary, so two paragraphs both
+     sides added to one item — its body, or just before the next item — were joined. Inside an [ID] item, never settled */
+  test(`${f}: paragraphs both sides added to an existing item after a blank line are left, never joined (round 5 — Astra r4-1)`, withRepo({ [f]: '# Items\n\n### [X] the item\n\nFirst line.\n\n### [Y] next\n\nbody y\n' }, c => {
+    c.sides(x => x.edit(f, t => t.replace('First line.\n\n', 'First line.\n\nBuilt and live 8 Nov 26 (PR 700).\n\n')), x => x.edit(f, t => t.replace('First line.\n\n', 'First line.\n\nDropped on his word, 8 Nov 26.\n\n')))
+    const before = c.read(f)
+    leftAsGitMarked(c, f, c.run(), before)
+  }))
+  test(`${f}: paragraphs both sides appended at an item's end after a blank line are left (round 5 — Astra r4-1)`, withRepo({ [f]: '# Items\n\n### [X] the item\n\nFirst line.\n\n' }, c => {
+    c.sides(x => x.edit(f, t => t + 'Built and live 8 Nov 26 (PR 700).\n'), x => x.edit(f, t => t + 'Dropped on his word, 8 Nov 26.\n'))
+    const before = c.read(f)
+    leftAsGitMarked(c, f, c.run(), before)
+  }))
 }
 test('backlog: an indented sub-bullet main added under an entry never moves under this branch\'s new entry (round 4 — Opus r3-2)', withRepo({ 'OUTSTANDING.md': '# Outstanding\n\n## Priority list\n\n- **Night 1:** [A] first\n- **Night 2:** [B] second\n\n## Items\n' }, c => {
   c.sides(x => x.edit('OUTSTANDING.md', t => t.replace('[B] second\n', '[B] second\n- **Night 3:** [C] ours\n')), x => x.edit('OUTSTANDING.md', t => t.replace('[B] second\n', '[B] second\n  - (b) of night 2: [D] theirs\n')))
