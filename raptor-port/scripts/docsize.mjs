@@ -1041,6 +1041,9 @@ function structure() {
     const scoped = head.startsWith('---\n') && /^paths:/m.test(head.slice(4, head.indexOf('\n---', 4) + 1))
     if (!scoped && !registered.has(f)) fails.push(`${f} loads in EVERY chat (no paths:) but is not registered in ${SELF}'s FILES — register it with a ceiling (tier 0), or give it paths: so it loads only with its area`)
   }
+  /* every rules file, new or old, has a frontmatter its readers can read ([DOCSIZE-PATHS-OPEN], 8 Nov 26): one left open,
+     or a paths: list that is no list, passed this gate as a file with no paths: — a page's area checks skipped */
+  for (const f of md.filter(f => f.startsWith('.claude/rules/'))) for (const p of RL.frontmatterProblems(readNow(f))) fails.push(`${f} ${p}`)
   /* the seam files (D1735; plan §2): each registered, loading inside its area and on its seam, its area file no longer on
      the seam, and each with a byte tripwire */
   fails.push(...RL.seamProblems(md, readNow))

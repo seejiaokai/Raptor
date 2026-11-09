@@ -402,6 +402,22 @@ mover('--rulings --move-rows moves the short line and the full row, and the map 
 mover('--rulings puts every file back when the inventory is not clean afterwards', false, { prep: c => { c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]); c.edit(FULL, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **SPENT 21 Sep 26 — used.** a |')) }, args: ['--rulings'], check: (c, r) =>
   !has(c, FULL, '| D1 |') ? 'D1 was not put back' : has(c, 'DECISIONS-ARCHIVE.md', '| D1 |') ? 'the archive was not put back' : !/put back/.test(r.stderr) ? 'did not say so' : '' })
 
+/* [DOCSIZE-PATHS-OPEN] (found 8 Nov 26, the rules diet's step 5a): the People & accounts page's first draft lost the `---`
+   that closes its frontmatter. The file then would not load by itself with the files its `paths:` name, and both the gate
+   and --rulings passed it — read as unscoped, the area-page checks never ran. Each case starts from a page (or a scoped
+   rules file) already committed, as that page was, so only the frontmatter check can fail it: the base is HEAD. */
+const committedPage = c => { withPage(c); c.commit('the other page, its frontmatter whole') }
+const breakFm = (a, b) => t => { const u = t.replace(a, () => b); if (u === t) throw new Error('the frontmatter edit found nothing — update this self-test'); return u }
+const PAGE_CLOSE = 'raptor-port/src/other/**\n---\n'
+scenario('a page whose frontmatter is never closed (the 8 Nov 26 draft)', true, c => { committedPage(c); c.edit(OTHER, breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\n')) }, { base: 'HEAD', mustSay: `${OTHER} opens a frontmatter block` })
+scenario('…its frontmatter never closed, a `---` rule further down taken for its close', true, c => { committedPage(c); c.edit(OTHER, t => breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\n')(t) + '\n---\n\nA closing note.\n') }, { base: 'HEAD', mustSay: 'is not a "- <glob>" item' })
+scenario('a page whose paths: key has no list items', true, c => { committedPage(c); c.edit(OTHER, breakFm('paths:\n  - raptor-port/src/other/**\n', 'paths:\n')) }, { base: 'HEAD', mustSay: 'its paths: list has no items' })
+scenario('a page whose paths: list holds a line that is no "- <glob>" item', true, c => { committedPage(c); c.edit(OTHER, breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\nraptor-port/src/more/**\n---\n')) }, { base: 'HEAD', mustSay: 'is not a "- <glob>" item' })
+scenario('a scoped rules file (not a page) whose frontmatter is never closed', true, c => { c.write('.claude/rules/area-x.md', '---\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n'); c.commit('a scoped rules file'); c.edit('.claude/rules/area-x.md', breakFm('/**\n---\n', '/**\n')) }, { base: 'HEAD', mustSay: '.claude/rules/area-x.md opens a frontmatter block' })
+scenario('…a whole frontmatter, its list with a comment line and a blank line, passes', false, c => { c.write('.claude/rules/area-x.md', '---\npaths:\n  - raptor-port/src/x/**\n  # a comment, as the seam files carry\n\n  - raptor-port/docs/x.md\n---\n\n# x\n'); c.commit('a scoped rules file') }, { base: 'HEAD' })
+mover('--rulings refuses a page whose frontmatter is never closed', false, { prep: c => { committedPage(c); c.edit(OTHER, breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\n')) }, args: ['--rulings'], check: (c, r) =>
+  /opens a frontmatter block/.test(r.stdout + r.stderr) ? '' : 'refused for another reason, or not at all' })
+
 /* --rulings --merge (D390; Fable and Astra's red team): a real `git merge` between a branch in the OLD layout and one in
    the new, both ways. It starts from the new side, replays the other side's ruling changes three-way, stops on a row both
    sides changed, and prints — never writes — the other side's prose. */

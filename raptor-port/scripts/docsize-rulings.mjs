@@ -216,6 +216,33 @@ export const isTrialPage = text => { if (!isPage(text)) return false; const ls =
 export const isScoped = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), fm = fmEnd(ls); return fm > 0 && ls.slice(1, fm - 1).some(l => /^paths:/.test(l)) }
 /* A rules file's `paths:` globs, comments and blank lines left out — the files whose opening loads it. */
 export const pathsOf = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), fm = fmEnd(ls); if (!fm) return []; const at = ls.findIndex((l, i) => i < fm && /^paths:/.test(l)); if (at < 0) return []; const out = []; for (let i = at + 1; i < fm - 1; i++) { const m = /^\s+-\s+(.+?)\s*$/.exec(ls[i]); if (m) out.push(m[1].replace(/^['"]|['"]$/g, '')); else if (/^\S/.test(ls[i])) break } return out }
+/* What is wrong with a rules file's frontmatter — [] when nothing ([DOCSIZE-PATHS-OPEN], found 8 Nov 26: the People &
+   accounts page's first draft lost the `---` that closes it, and the gate passed it). A file whose first line is `---`
+   opens a frontmatter block. Never closed, it loads with none of the files its `paths:` name, and every reader here
+   (fmEnd) takes it for a file with no frontmatter — unscoped, so a page's area checks never run on it. Closed, its
+   `paths:` key holds one `- <glob>` item at least, each indented as pathsOf reads it; a comment or a blank line among
+   them is kept (the seam files carry comments) and another key ends the list. Any other line before the close is one no
+   reader takes for a path — a glob not written as an item, or the body itself, swallowed when the close was lost and a
+   `---` further down was taken for it. Each problem reads after the file's name. */
+export function frontmatterProblems(text) {
+  const ls = (text || '').split('\n').map(l => l.replace(/\r$/, ''))
+  if (ls[0] !== '---') return []
+  const fm = fmEnd(ls)
+  if (!fm) return ['opens a frontmatter block (`---` on its first line) and never closes it — so it loads with none of the files its paths: name, and is checked as a file with no paths: at all: add the closing `---` line after its paths: list']
+  const at = ls.findIndex((l, i) => i > 0 && i < fm - 1 && /^paths:/.test(l))
+  if (at < 0) return []
+  const out = []
+  let items = 0
+  for (let i = at + 1; i < fm - 1; i++) {
+    const l = ls[i]
+    if (/^\s+-\s+\S/.test(l)) { items++; continue }
+    if (!l.trim() || /^\s*#/.test(l)) continue
+    if (/^[A-Za-z_][\w-]*:/.test(l)) break
+    out.push(`has line ${i + 1} ("${l.length > 60 ? l.slice(0, 57) + '...' : l}") inside its frontmatter, which is not a "- <glob>" item of its paths: list — no reader takes it for a path: write it as "  - <glob>", or, if it is the file's text, put the closing \`---\` line above it`)
+  }
+  if (!items) out.push(`has a paths: key (line ${at + 1}) but its paths: list has no items — so it loads with no file at all: list each glob under it as "  - <glob>"`)
+  return out
+}
 /* One glob of a `paths:` list as a pattern: `**` any number of folders, `*` and `?` within one name. */
 export const globRe = g => new RegExp('^' + g.split(/(\*\*\/|\/\*\*$|\*\*|\*|\?)/).map(p => p === '**/' ? '(?:.*/)?' : p === '/**' ? '(?:/.*)?' : p === '**' ? '.*' : p === '*' ? '[^/]*' : p === '?' ? '[^/]' : p.replace(/[.+^${}()|[\]\\]/g, '\\$&')).join('') + '$')
 export const matchesPaths = (globs, file) => globs.some(g => globRe(g).test(file))
