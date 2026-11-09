@@ -92,7 +92,7 @@ This page translates between the app’s words, their everyday meaning and the n
 | ATT B / B — two names on screen | A medical restriction that prevents flying but allows other work. | `INPUT_META`, `canWork`, `displayCell` |
 | ATT C / C — two names on screen | A medical restriction that prevents reporting to work. | `INPUT_META`, `displayCell` |
 | HL | Hospitalisation leave recorded as medical absence. | `INPUT_META`, `MEDICAL_TYPES` |
-| OML — ordinary medical leave / outpatient medical leave — two names on screen | A medical absence; the intended expansion of OML is **unsure** because the two legends disagree. | `INPUT_META`, `MEDICAL_LABELS` |
+| OML — ordinary medical leave | A medical absence; ordinary medical leave everywhere it is spelled out, the Leave War included (his ruling D1950, 10 Nov 26). | `INPUT_META`, `MEDICAL_LABELS` |
 | Upchit | A record that the person has been medically cleared to fly again. | `isUpchit`, `medAskFor`, `UpchitConfirm` |
 | CSE / Course — two names on screen | A course commitment, normally filed under Unavailable. | `INPUT_META`, `landsUnavail` |
 | OD / Overseas duty — two names on screen | Duty away overseas, normally filed under Unavailable. | `INPUT_META`, `landsUnavail` |
@@ -287,7 +287,6 @@ These are naming differences found in the interface source, including shortened 
 | No issues / No conflicts flagged | No issues on the week’s checks bar; No conflicts flagged in the board’s empty checks list and Insights. |
 | childcare leave / child care leave | The Inputs type explanation uses childcare leave; the Leave War legend uses child care leave. |
 | ATT B / B; ATT C / C | ATT B and ATT C in Inputs; B and C on the Leave War grid and its legend. |
-| ordinary medical leave / outpatient medical leave | The Inputs explanation expands OML as ordinary medical leave; the Leave War legend expands it as outpatient medical leave. |
 | CSE / Course | CSE as an input type and grid code; Course in explanations and the Leave War legend. |
 | OD / Overseas duty | OD as an input type and grid code; Overseas duty in explanatory labels. |
 | Attach / ATCH | Attach on Inputs; ATCH on the Leave War grid and legend. |
@@ -308,6 +307,5 @@ These are naming differences found in the interface source, including shortened 
 
 | Term | What is unsure | What would settle it |
 |---|---|---|
-| OML | Whether its intended expansion is ordinary medical leave or outpatient medical leave; both are currently shown by different legends. | Check the intended term against the owner’s approved vocabulary, then confirm both legends in the running app. |
 | DCO | The full wording and the operational distinction from DPCO; the code establishes only that it is a completion grade. | An approved training-grade definition or the owner’s explanation. |
 | DPCO | The full wording and the operational distinction from DCO; the code establishes only that it is a completion grade. | An approved training-grade definition or the owner’s explanation. |
