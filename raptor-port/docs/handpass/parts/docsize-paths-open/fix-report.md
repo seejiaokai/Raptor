@@ -24,3 +24,11 @@ frontmatter, none with CRLF, a byte-order mark or a column-0 `#` in its frontmat
 settled); the quote check looks only at an item's two ends (`a"b` passes); a first line of spaces only gets the message naming
 the byte-order mark as well; Claude Code's own handling of a byte-order mark, a spaced `---` and one-line `paths:` is not
 established — the checks enforce what this project's readers read.
+
+## Round 3 — Astra's re-read (`reread-astra.md`, REVISE, 3 holes), each fix taken as written (5b530d07b)
+A second `paths:` key refused ("keep one paths: list"); indented text before any key refused (an indented line passes only
+under a key); a quoted item with a backslash or an inner quote refused ("the project's checks do not decode escapes").
+Red: the 3 new cases MISS on 80b1c1ae6's checker; green: all PASS, the whole self-test 354 PASS, 0 MISS, `npm run docsize`
+OK, the checker on all 18 live rules files 0 problems. Left (named): a single-quoted item with a doubled `''` (valid YAML,
+unused here) is refused; a swallowed body made only of `key:`-shaped lines still passes. The cap of about three rounds
+(D70) reached: no further round.
