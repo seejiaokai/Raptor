@@ -54,3 +54,16 @@ helpers' start (`scripts/handpass/lib.mjs`, `scripts/drawcheck/lib.mjs`) refuse 
 and a `reload()` in a page opened on `fresh=1`, whose every reload begins from the demo world again — met 29 Oct 26 (six
 "not kept after a reload" FAILs that were the script's) and 8 Nov 26 (a comparison of two identical screens) (745;
 `docs/walk-scripts.md` §3 carries the guide's line).
+
+## From group C1-handoff
+
+### Addition to [CHECK-TOOLS-HARDEN] (append under its "Added 10 Nov 26" paragraph, after groups A-walks' and B-design's (c)–(g))
+**Added 10 Nov 26 (the skill-notes review, group C1-handoff):** (h) **The check lock's `exec`** (`scripts/gatelock.mjs`):
+one quoted string after `--` is handed to Windows' own shell, not bash, so a compound with `;` or `>` ran something else
+and the lock reported a clean exit (31 Oct 26) — refuse a one-string command holding `;`, `>`, `<` or `&&`, with the
+advice to write a script and pass `-- bash <script>`, and say so in the usage line (760; `docs/gates-and-deploy.md`
+carries the guide's line). (i) **The push guard** (`.claude/hooks/push-guard.mjs`, a hook — on his word, read as a guide
+change is): before a push to a branch with an open pull request, read its merge state and, when it is CONFLICTING, say
+that no check run will start until `main` is brought in — met three times on 8 Nov 26, each time after a wait for a run
+that never came (887; the guide's line in `docs/gates-and-deploy.md`, "After a push", and the memory note on stacked
+and clashing pull requests).

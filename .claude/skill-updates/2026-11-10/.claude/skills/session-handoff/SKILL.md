@@ -50,7 +50,11 @@ pushed and waiting for him — the normal end state, not unfinished business.
   backlog id, a ruling or an evidence sheet — never taken from a later block's
   sentence that "its leftovers are filed" (one such sentence was wrong by six
   items). A long block goes to a helper with that exact brief, and the host
-  checks its quotes.
+  checks its quotes. Before removing any, list the open pull requests that
+  change `HANDOFF.md` (`gh pr list --state open --json number,headRefName,files`):
+  while one is open, leave the blocks beside its own, or tell its chat that its
+  next push needs `main` brought in (8 Nov 26: one tidy sent three open pull
+  requests into a clash, and a clashing pull request runs no checks).
 - **Open residue goes to the backlog, not the block:** anything still open
   becomes (or updates) an `OUTSTANDING.md` item with its place in the priority
   list; the block names it in one line. A standing item already in the backlog
@@ -60,8 +64,14 @@ pushed and waiting for him — the normal end state, not unfinished business.
   each one no `## Now` block owns ("Also open, waiting for his merge live: …"), with how far behind `main` each is
   (26 Oct 26: six built and checked pull requests sat unmerged for days, 317 to 668 commits behind, because every
   block named only its own branch).
+- **One notes branch per chat:** an inherited notes-only pull request and this
+  chat's own block go on one branch and merge once — each extra pull request is
+  another race with the level check while other chats merge (8 Nov 26).
 - **`## Next, in order`** changes only when the order itself changed (his word,
-  or an item finished); it is the project's, not this chat's.
+  or an item finished); it is the project's, not this chat's. Read its first
+  line before the commit all the same: a "RIGHT NOW" line whose work has merged
+  is moved whole to `raptor-port/docs/archive/` and replaced by a pointer to
+  `OUTSTANDING.md`'s priority list — no writer owns it, so it rots (3 Nov 26).
 - Print the same block in chat, and give him the **ready-to-paste opening line**
   for the fresh chat: the line itself puts the new chat on its branch (the
   next bullet), then "Read `HANDOFF.md` — the `claude/<branch>` block under
@@ -71,7 +81,16 @@ pushed and waiting for him — the normal end state, not unfinished business.
   never "git pull", which pulls nothing on a branch with no upstream; "git
   pull" is for a chat continuing a pushed branch. For a design or question job
   the line says why the job is due now and what he will get from it (pictures
-  and questions; nothing in the app changes). And tell him to TYPE a word of his own after pasting it
+  and questions; nothing in the app changes). A chat number in it is a hint:
+  "the next free number in `main`'s `HANDOFF.md` when you start (was N at
+  <time>)", checked there before use (8 Nov 26: a number given was already
+  taken). Every opening line says: "if `git status` shows changes you did not
+  make, or another chat works in this folder, run `git worktree add --detach
+  ../Raptor-<short> origin/main` (a continuing chat: its branch in place of
+  `origin/main`; a short path — never under a temp or scratchpad folder) and
+  work only there" — two chats switching one folder put
+  one chat's commit on the other's branch (3 and 5 Nov 26).
+  And tell him to TYPE a word of his own after pasting it
   ("go"; "I'm away — run it"): a first message that is only pasted text may
   be held for his confirmation, which stalls a start he meant to leave
   unattended.
@@ -102,7 +121,12 @@ pushed and waiting for him — the normal end state, not unfinished business.
   released — push waiting" and the release waits for the push. If he gives
   this chat more work afterwards, switch back first (`git switch
   claude/<name>`); if git refuses because a new chat now holds the branch,
-  that work belongs to the new chat — tell him so.
+  that work belongs to the new chat — tell him so. When this chat stays open by
+  design (it hands a side session the work), the opening line instead keeps the
+  new chat on its own branch: `git fetch origin`, `git merge --ff-only
+  origin/claude/<name>`, `git branch -u origin/claude/<name>` (check
+  `branch.<b>.merge` never names `main`), pushes by `git push origin
+  HEAD:refs/heads/claude/<name>` — and this chat pushes nothing more to it (2 Nov 26).
 
 **Either way, it has to be COMMITTED AND PUSHED to the designated branch —
 and NEVER merged by you.** SUPERSEDED 2 Sep 26 (`.claude/rules/shipping.md`,
@@ -313,7 +337,8 @@ stable structure is the point.
 - **Branch:** `claude/<name>`; its PR <#n or none>; released here (`git switch --detach`) — or why not. If it has MERGED, the next chat starts as a new job — its own
   fresh branch, level with `origin/main` — and never switches to this one.
 - **Gates:** `npm test` · `npm run build` · `node reference/tfin.js` · `npm run test:e2e` —
-  <green / red / not run, with counts>; `npm run probes:adapted` · `npm run perf` — <green / red / not run>
+  <each: the run that made it and its count — "the whole Leave War project, 227 files / 4,037 tests" or "only the
+  touched files: a, b" — or red / not run; never a bare "green">; `npm run probes:adapted` · `npm run perf` — <the same>
   (not in CI, so a UI or validation change shipped without them is Unfinished, not a footnote).
   Run from `raptor-port/`; a fresh checkout needs `npm ci` first.
 - **Open questions for him:** <question> — <context needed to answer it> (or "none")
@@ -347,6 +372,24 @@ a handoff that could not be:
   beats a message.
 - Name any document-size marker carried over (`docsize: OVER by <n>,
   deferred`): the next documents-only change must settle it.
+- A next step that names a numbered piece of a plan (a merge, a phase, a
+  batch) is checked against the plan and its ruling's full row — it exists and
+  is not done; when the plan is finished, say so (29 Oct 26: an "M6" the plan
+  never had).
+- How a job ships is decided by the files it will change, checked against
+  `.claude/rules/shipping.md`'s "only notes" list — a size-tripwire raise
+  changes a script and waits for "merge live" (29 Oct 26).
+- A step that removed a field, a mark or a rule ran its area's whole suite (or
+  searched the tests for the removed name) before the block says green (31 Oct
+  26: six old tests far from the touched files were red).
+- A brief written for another chat — a side session, the next chat's helpers —
+  names the branch and commit its pointers live on, never this chat's
+  worktree folder; a block not yet on `main` is named by its branch or pasted
+  in (7 and 9 Nov 26).
+- His "merge live" does not travel in another chat's text: the app's safety
+  check refused a merge made on an approval quoted in a side session's brief
+  (8 Nov 26). The chat he said it in merges, or the block says the merge waits
+  for his word typed in the chat that will make it.
 
 ## Rules
 
@@ -356,7 +399,11 @@ a handoff that could not be:
 2. **Never invent state.** "none" beats a guess. A build note that says how
    an existing mechanism will behave (Undo, a save, a permission) names the
    ruling or test that shows it, or says "unchecked" (5 Nov 26: "an Undo takes
-   it back" — a ruling says Undo never takes a posting back, D350).
+   it back" — a ruling says Undo never takes a posting back, D350). A time is
+   read from the clock (`date`) or the commit or file it names, in the step
+   that writes it — never estimated or carried from a compaction summary; a
+   progress line may name its commit instead (8 Nov 26: three chats' times ran
+   up to two hours out).
 3. Paths must be repo-relative from the repo root, or absolute. Never
    relative to a working directory the next session may not share.
 4. If a plan file drove the session, name it first under "Pick up here".

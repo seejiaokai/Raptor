@@ -47,6 +47,9 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   report goes to a named file, and the hand-back message is a short summary. A walker's cost is its own token count
   (the harness's figure): a reading of his allowance needs the host silent for the whole window, so promise one only
   when it can be.
+- **A window that opens on a filtered view** names, in the brief, the view it opens on and the one to press to see
+  the walk's own changes (8 Nov 26: the change history opens on "New to you", and the walker's own changes were not new
+  to it — "All changes" showed them).
 - **A scenario with an EXPECTED line is PASS or FAIL** (the order's §4), and its EXPECTED line was checked against the
   rulings before the brief left (the order's §4, "Before a brief leaves").
 - **Each helper gets its own scratch sub-folder, its own output folder and a file prefix of its own** (`<job>-a-*`) for
@@ -229,6 +232,10 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   code keeps: the browser moves and paints a scroll before the page hears of it, so that log cannot see that frame
   (8 Nov 26: the page's log said the blink was gone, the painted frames still showed one). The page's log may stand
   beside it for timing. Name the frame the decision rests on in the sheet; the host opens it.
+- **His phone recordings are read frame by frame**, with no video tool needed: Playwright on `channel: 'msedge'` (Edge
+  plays the iPhone's video, the bundled Chromium does not), a local HTML file holding the `<video>` opened by `goto`,
+  seek by `currentTime` and wait for `seeked`, then a picture of the video element; frames every 0.25 s laid 8 to a
+  sheet, the sheets saved with the evidence (3 Nov 26).
 - **A response is timed from the press**: a capture-phase `pointerdown` read with `performance.now()`, and each frame
   stamped with `performance.now()` inside its own callback — the click's time stamp and a frame's start time both fall
   after a freeze that begins at the press. Cross-check an "it was instant" once against the browser's long-task record.
