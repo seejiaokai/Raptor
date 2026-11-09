@@ -21,776 +21,322 @@ paths:
   - raptor-port/docs/**/*amend*
   - raptor-port/docs/**/*crewrest*
 ---
+# The scheduler — how it works now
 
-# Rulings — the scheduler and amendments
+<!-- shape: page -->
+<!-- trial: built rulings by test -->
 
-**Loads by itself** whenever a session reads a scheduler, board, engine, amendment or storage file (the
-`paths:` at the top of this file). The general rulings are in `.claude/rules/decisions/how-we-work.md`, loaded in every session; the map of every ruling and how to add or retire one: `DECISIONS.md`.
-**One line per ruling — its number, its date, the rule as it stands (D390). Its full row** — his words, the readings he
-was told, where it lives — **is in `.claude/decisions-full/scheduler.md`, never loaded by itself: open it before acting on a
-ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
-hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
-**The Inputs pages have a file of their own since 13 Oct 26 (owner D802): `inputs.md`** — the Inputs list and calendar, the
-SANS calendar, the Calendar window, an input's own window and card (101 rulings, moved out of this file whole). It loads
-by itself with those screens' files; **open it yourself before planning or changing anything of an input, the Inputs or the SANS calendar, the Calendar
-window or the late cut-off** — who may
-file or change one (**D655, D658, D763, D770**), what ALL / ALL AVAIL is not offered for (**D712**), an input's own
-title box (**D715**), its card and the cancelled input's place and window (**D718–D725, D727–D729, D768, D771**), its OIL sign (**D777**), the
-late cut-off (**D628, D639**), a day's class and the holidays (**D627, D631, D633, D638**), the SANS day's needs
-(**D617–D622**). A ruling that governs BOTH an Inputs page and the schedule stayed HERE.
-**Also read** — in `leave-war.md`: **D881** (the green "he can take this seat" ring on Edit Schedule loses its glow, keeping its solid green ring — with three Leave War and Tracker places); **D882** (the light under today's day card and a SANS puck's stripe's light go too). In `oil.md` (it loads by itself with the placeholder, publishing and OIL files): **D28, D31,
-D32, D43, D46, D52** (what the ALL / ALL AVAIL pucks earn wherever they may land — the earning list follows
-the landing list), **D48, D49** (a published day and a rule change), **D19** (a weekend no Leave War period
-covers). In `people-accounts.md` (it loads by itself with the accounts, Quals and posting files): **D297, D299**
-(a deleted man keeps his puck on every day he already flew; the past keeps its record of him), **D321, D327** (an
-archived man on published days and in the ALL AVAIL crowd), **D213, D215** (a guest sees what a member sees on
-View-only Sched, medical inputs included).
+Loads by itself with a scheduler, board, engine, amendment or storage file (the `paths:` above). It holds his standing rules, what he likes and what a fresh model would get wrong if not told, each line's rulings after it. What is built lives in the app and its tests, listed by number on the "Built, held by tests" line, each named by a test that holds it whole; one its tests hold only in part stays written out. The built detail is in `raptor-port/docs/`: `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `performance.md`, `data-schema.md`, `undo-contract.md`, `file-map.md`.
 
-**Where the detail lives:** the rules engine — `raptor-port/docs/engine-rules.md`; how each surface renders,
-drags and edits — `raptor-port/docs/ui-contracts.md`; what a change touches — `raptor-port/docs/feature-impact.md`;
-speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/docs/data-schema.md`; undo —
-`raptor-port/docs/undo-contract.md`; the files — `raptor-port/docs/file-map.md`. The rules every area shares
-(the store, the funnels, what persists, the robustness doctrine) stay in `raptor-port/CLAUDE.md`.
+His words, the agent's readings (never stated here as his rule) and the history are in the full rows, `.claude/decisions-full/scheduler.md`: open the row before acting on a rule's detail or asking him about it. The map: `DECISIONS.md`. A ruling of an Inputs page alone lives in `inputs.md`; one that governs both an Inputs page and the schedule lives here. The rules every area shares (the store, the funnels, what persists) stay in `raptor-port/CLAUDE.md`.
 
-| # | Date | The rule |
-|---|---|---|
-| D1944 | 9 Nov 26 | The scheduler's rulings become one page in the Tracker and Inputs trials' shape, not split by screen: his standing rules, what he likes and what a fresh model would get wrong, by screen inside the one page; a built ruling leaves for the "Built, held by tests" line only when a test holds it whole; read by Astra and a fresh Opus reader, blind. |
-| D1936 | 8 Nov 26 | A sortie with its take-off typed and its landing blank or "TBD" counts no hours in Insights and raises no long-day note, as built — kept; and the board-layout test that skips itself when its box already sits above the keyboard is fixed to always prove the case, filed as [E2E-BOARD-KEYS-SKIP]. |
-| D1890 | 8 Nov 26 | The design checker skips the gold history dot in the History mode's style file: one gold dot in a box's corner is not a dotted grid pattern, so it is not flagged. |
-| D1800 | 8 Nov 26 | On his iPhone on its side, with the keys up, the Scheduler Board’s bar of buttons stays at the top, as D1780 rules, so D1780’s look on his iPhone is done and nothing more is built for it. |
-| D1780 | 8 Nov 26 | On a phone on its side the Scheduler Board's Calendar, title, day strip and search scroll away with the list, as any page does, while its bar of buttons stays at the top, so with the keys up the list gets about 151px and nothing jumps when the keys open. — changed by D1800 |
-| D1781 | 8 Nov 26 | On the desktop Scheduler Board from 821 to 1099 wide each jet's line puts its remarks on a row of their own and stacks R over B and TO over LD as a phone does, so every part of the line is in reach and the remarks get over 300px; wider, the times stay in one line. |
-| D1782 | 8 Nov 26 | OIL Earn's day button becomes the app's own switch, as on the Logic page: a small slider with the words "No OIL earned", grey when off and lit in the switch's cyan when on; the refusal under it keeps his words, "Nothing on this day earns. Turn off the switch first." |
-| D1784 | 8 Nov 26 | An input filed, changed or moved after its day was published wears the same waiting mark on its Unavailable row as on a Ground Programme row — its name underlined dotted in the amendment's colour on the week, its name box outlined dotted on the board — until the day's next amendment goes out. |
-| D1785 | 8 Nov 26 | A week whose saved copy cannot be read says so on each day, says the saved copy is kept as it was and to report it with "Report a problem" on the Help page, and refuses a change in the grey "Blocked:" note in the same terms. |
-| D1786 | 8 Nov 26 | A flyer's line with no in-time or rally entered starts his day at take-off less the default rally for his long day and his Insights hours, as it already does for his OIL — one start, not the step — and the Logic page says so. |
-| D1751 | 8 Nov 26 | The day lock is a simple mark, not a hard lock: a day shows who is editing it, set when he starts and cleared once his work is saved, so two people never edit it at once by accident; the database itself refuses nobody, since the app is used within the unit. |
-| D1710 | 5 Nov 26 | A posting out that has run and is then changed on its Post out sheet — its date moved later, or another outcome — takes back its bell lines as Undo post out does: a line an admin had read is struck through, then "taken back · <who>", unread; an unread one goes; the admin who changed it is told nothing; the changed posting tells again when it runs. |
-| D1699 | 5 Nov 26 | A bell line taken back by an undo keeps what it said, struck through, then "taken back · <who>" — "~~Posted out · now SANS~~ · taken back · Saber" — unread, so the bell lights; the Leave War's taken-back lines take the same look in the same build ("~~LL approved~~ · taken back · Saber"), so every taken-back line looks alike. |
-| D1693 | 5 Nov 26 | Every bell line is retracted by the undo of what made it: a line its reader has not read simply goes, and one he has read is replaced by a line saying it was taken back and by whom — the posting out's line by its posting sheet's Undo post out, and every other line by the Undo of its change. — changed by D1710, D1699 |
-| D1648 | 5 Nov 26 | An in-time line whose clock the app cannot read is explained once in the red note under the wave's lines, not once for every line of the wave; the day's issues list is unchanged. |
-| D1647 | 5 Nov 26 | On View-only Sched the Traffic window is the plain read-only list for everyone, an admin included, as a member sees it there today; traffic is edited on Edit Schedule and the Scheduler Board only. |
-| D1644 | 4 Nov 26 | The PDF export work is not started until he says so: [PDF-PRINT-TWICE] (his iPhone printing the working copy) and [FLAG-EXPORT] (the published day only, the nicer report) wait for his word. |
-| D1621 | 3 Nov 26 | A LATE mark a scheduler drops on a day already published leaves the issued schedule at once, as built: nothing reads pending and the four sign-offs stay; it does not wait for the next amendment, as a hidden warning does (D471). |
-| D1620 | 3 Nov 26 | When a member changes his input again after a scheduler dropped its LATE mark, the drop goes: if that new change is itself late, LATE shows again for everyone until a scheduler drops it again; a scheduler's own change keeps the drop. |
-| D1592 | 3 Nov 26 | On a day already published, making a scheduler note public, or scheduler-only again, waits for the next amendment like any other change there: until that amendment is published the view-only schedule shows the note as the day went out. |
-| D1589 | 3 Nov 26 | The change history and every other record of who did something show the person's name as it was at the time, and keep the person himself underneath, so his record can still be found after a rename. |
-| D1588 | 3 Nov 26 | A scheduler note's "Make public" is saved with the note and shared: every scheduler and member sees the same choice, and it stays after a reload, a sign-out and a week change; built with the next Inputs batch. — changed by D1592 |
-| D1586 | 3 Nov 26 | A LATE mark a scheduler drops is dropped for everyone: saved on the input, so every scheduler and member sees it gone, and it stays gone after a reload, a sign-out and a week change; a tap on the dimmed chip brings it back for everyone. — changed by D1620 |
-| D1577 | 3 Nov 26 | The cross between weeks stays as built, on the phone and the desktop: the phone's swipe past Monday or Sunday still slides into the other week, and the end cards are not built. |
-| D1573 | 2 Nov 26 | Cross-week dragging is not built: on Edit Schedule a carried man still stops at Monday and Sunday and is never carried into another week (D1529 stands), and the work is not filed in the backlog. |
-| D1529 | 31 Oct 26 | On Edit Schedule a man carried with the mouse and held at the left or right side of the week moves the week one day at a time, as one press of ‹ or › does: after a short wait at the side it glides one day, and again while he is held; a name only passing through moves nothing; it stops at Monday and Sunday, never carrying him into another week. |
-| D1528 | 30 Oct 26 | Edit Schedule, like View-only, never shows the browser's own grey sideways scroll bar on a desktop — the week's foot bar is its one sideways scroll — and that foot bar fits the week each time the crew panel is hidden or shown. |
-| D1527 | 30 Oct 26 | The week's ‹ › arrow, slid out, looks as the old arrow did at rest — the same frosted glass at the same see-through level, grey edge and grey arrow, never lit blue nor more solid; the slim tab and its slide stay as D1526. |
-| D1526 | 30 Oct 26 | The desktop week's ‹ › arrows become a slim tab, 14 wide and 70 tall, flush on the window's edge, that slides out to today's full arrow when the pointer comes near and back when it leaves — see-through at rest and still slightly see-through when open; his word for the size change (D487). — changed by D1527 |
-| D1522 | 30 Oct 26 | The desktop week's ‹ › arrows stay see-through, not solid — an exception to D1518 — because they already cover the day's information at times; and a design in which the arrows block nothing behind them is looked for with the design skill and drawn for him, before and after, before anything changes. — changed by D1526 |
-| D1442 | 28 Oct 26 | On a phone the changes window's bar — the window hidden while History is on — takes the slim Approvals bar's plain look (D1440): "Show ▴" as plain cyan words and a plain ✕, each keeping its full tap area; its words stay as they are. |
-| D1412 | 27 Oct 26 | When the keyboard opens on a phone, the box tapped rises in step with the keys, proportionately, and nothing else on screen jerks or bounces — not a box already above the keys, and no window shortening and growing back or showing the page behind it; the app's smooth feel outranks any mechanism, and a fix that trades it away made the app worse. |
-| D1383 | 26 Oct 26 | Before the app is put out for testing, signing in always opens on today's date; until then it may open on the demo week's date, because the demo data is what is being worked on. |
-| D1107 | 21 Oct 26 | On a phone, the Scheduler Board's desktop layout can be pinched to zoom in and out, and a puck dragged to the edge of what is on screen scrolls the board that way, so it can be dropped anywhere — as the design guide's drag rule says (D895, §5A "Dragging"). — changed by D1109 |
-| D1106 | 21 Oct 26 | Over the Scheduler Board, a window that has not been moved (the changes window, the ALL AVAIL window and the other windows that open below the top bar) opens just below the board's own bar, as it opens below the app's top bar elsewhere, so the bell, Insights and ✓ Done stay in reach. |
-| D1099 | 21 Oct 26 | A flying line with only its front seat (FCP) filled works as fully as a two-seat line, its checks, marks, counts and pages included, so the app can serve F-16 squadrons (some jets single-seat) and F-35 squadrons (all single-seat); a switch hiding the back seat (RCP), one of the aircraft-type settings (D1100), is his idea, designed with him first. — changed by D1100 |
-| D1098 | 21 Oct 26 | The yellow RULES MODIFIED tag no longer shows on View Schedule or Edit Schedule when a Logic setting is changed from the squadron standard: changing the rules is normal for every squadron, so it is not flagged on the schedule; the Logic page keeps its own strip naming how many settings are changed. |
-| D1131 | 21 Oct 26 | On a desktop the Scheduler Board's highlighter mark is drawn as the week's is — a plain mark leading its CAT / TYPE / QUALS row — and the boxed button by its search, which folds nothing at that width, goes; on a phone both pages keep their button, which folds the row away; SANS's "Highlight" button stays, another job (one man, his callsign shown). |
-| D1130 | 21 Oct 26 | On a desktop up to 1599 wide the Scheduler Board's own bar draws Undo, Redo and History as their icons only, their names on hover, and the sync pill its dot alone — as every page's top bar does (D1126); wider, the words come back on both; the board on a phone is left as it is. |
-| D1121 | 21 Oct 26 | A crossed-out man's reason in the crew list says each fact once: where the kind's meaning and his own remark repeat a fact it is said once, and a fact only one of them carries stays; done later, not in the right-panel job, on its own or with the words pass, his to place. |
-| D1120 | 21 Oct 26 | In the crew list a man whose only task that day is standing by — on an SC SPARE line, an AVALON or BB line that does not fly, or that standby's desk — is never faded as tasked: the standby look, counted in "N free"; the day's figures and the Leave War are not changed. |
-| D1119 | 21 Oct 26 | The crew list's SANS section is ordered as the pilots and WSOs are — free first, then crossed out, callsign order within each — and its heading carries its count ("SANS Avail · 8 free"); the strip over the list drops its dot when the picked line has no callsign or mission yet ("Planning FCP"). |
-| D1118 | 21 Oct 26 | The right panel as drawn: its edge drags it from 320px to 40% of the screen, a double-click puts it back; a struck man's reason sits beside his puck where 92px is free, else under; with no seat picked an ATT B man with no other task is full colour with "ATT B: no flying", after the free men, not counted free; the strike is on the puck only. |
-| D1116 | 21 Oct 26 | On Edit Schedule's week on a desktop, the AIRCREW panel's heading with its day picker (‹ Monday ›) stays in sight while the page scrolls down, so the day the crew list is for can always be seen and changed. |
-| D1115 | 21 Oct 26 | The right-panel job ([BOARD-SIDE-WIDTH]) also looks over the whole crew list — every look a puck can wear there, its reason, the counts and the order, with and without a seat picked — to check each is correct and makes sense; the findings go to him with pictures before anything changes. — changed by D1119 |
-| D1114 | 21 Oct 26 | How an ATT B man (grounded but able to work) looks in the crew list with no seat picked is one of the right-panel job's design questions, drawn for him with pictures — recommended: full colour with a small "can't fly" mark, not the faded look of a man already tasked. — changed by D1118 |
-| D1113 | 21 Oct 26 | On a desktop, the Scheduler Board's right panel keeps its pilots and WSOs as two equal columns, and its left edge becomes a grip he can drag to widen it, from today's 320 up to about 40% of the screen, remembered on that computer; built as its own job, its questions and a picture first. — changed by D1118 |
-| D1112 | 21 Oct 26 | In the Scheduler Board's desktop layout on a phone, the side column is laid out as on a desktop: the issues list uses the column's width with the desktop's margins, and the crew list's two columns share the column's width as on a desktop, so its reasons wrap no narrower. |
-| D1111 | 21 Oct 26 | In the Scheduler Board's desktop layout on a phone, the sign-off box scrolls away with the day as it does on a desktop, never frozen above it. |
-| D1109 | 21 Oct 26 | On a phone, in the Scheduler Board's desktop layout a pinch zooms the day only, never the bar: the bar is the phone layout's own, at its phone size, so ✓ Done and the day arrows stay in reach; it zooms out until the whole day's width fits the screen and in to twice normal; it opens at today's size and keeps its zoom across days until ✓ Done. |
-| D1085 | 20 Oct 26 | On the Scheduler Board an SC, AVALON or BB wave's time headings read START and END where they read TO and LD — R · B · START · END in one line on a desktop, R over B and START over END on a phone — as the week does since D1083; a flying wave keeps TO and LD. |
-| D1084 | 20 Oct 26 | On a phone the standby wave's START / END heading stands as built: 7 instead of the headings' 8.5, with no letter spacing, so START fits its column with room for an iPhone's wider letters; a desktop keeps the normal size. |
-| D1083 | 20 Oct 26 | On the week's SC, AVALON and BB lines — Edit Schedule, View-only Sched and the next-week peek — the second time column is R over B and the third START over END, the B box showing the line's own B as the Scheduler Board does; on a phone the START over END heading is drawn in smaller letters so it fits its column. — changed by D1085 |
-| D1081 | 19 Oct 26 | When the keyboard opens or closes, nothing on screen jumps out of place, even for one frame: whatever follows the visible screen — the Scheduler Board, the Leave War's sheets and bars, the calendars' day panels, a window raised for the keys — moves with it smoothly; the same is checked everywhere the app follows the keyboard. |
-| D1080 | 19 Oct 26 | One tap then typing replaces the value, as in the schedule's time boxes (D1047), in four more places: the duty and wave templates' time boxes; the Leave War's typed numbers (a counter's amber and red numbers, the OIL figure boxes); the SANS settings' and the late cut-off's number boxes; and the Logic page's settings. |
-| D1067 | 19 Oct 26 | The three stand as built: the no-times warning's tap outlines its line as every line-anchored warning does; a seatless row of a flying shift keeps its lit "✓ FLIES" though it counts nothing; the Flies chip keeps the badge's size on the board. |
-| D1066 | 19 Oct 26 | On Edit Schedule's week and View-only Sched the Flies chip is drawn smaller than the MAIN / SPARE badge and sits under it wherever the two do not fit side by side, its word kept whole as "✓ FLIES"; a chip never breaks inside; rows that only stand by are unchanged, and the Scheduler Board's tap button keeps its size. |
-| D1065 | 19 Oct 26 | On SC, AVALON and BB lines every empty R and B box shows a faint dash in the app's grey ghost (the colour of the faint "Remarks"), so a new user sees they are normally left blank and the shift's START and END carry its times; typing replaces it, a typed time shows as today, and the flying lines keep their faint suggested times. |
-| D1064 | 19 Oct 26 | The dashed "FLIES" chip — the way to tick a standby row by hand — shows only on the Scheduler Board; Edit Schedule's week and View-only Sched show nothing on a row that does not fly, and all three screens show the lit "✓ FLIES" on a row that flies. |
-| D1063 | 19 Oct 26 | On View-only Sched, for a member and on the next-week peek, a standby row that flies shows the lit "✓ FLIES" chip read only, and a row that does not fly shows nothing — the dashed chip is the scheduler's control on Edit Schedule and the board only. |
-| D1062 | 19 Oct 26 | A standby row with nobody seated does not count as a jet or a sortie even when its shift flies — an SC AM with R typed and both SPARE rows empty reads 2 jets, not 4; an ordinary flying line with nobody on it still counts (D1009). |
-| D1061 | 19 Oct 26 | A Flies tick set by hand lights one standby row only, never its whole shift: the activated row flies and the shift's other rows stay standby; a second tap takes a hand tick off, while a row on a shift with B or R typed stays lit and is taken out by its own CX (D1046). |
-| D1060 | 19 Oct 26 | Beside each MAIN / SPARE badge on a standby row (SC, AVALON, BB), on the Scheduler Board and the week, phone and desktop, a small chip shows "✓ FLIES" lit where the row flies and a dashed "FLIES" where it does not, as drawn; duty desks never carry it. — changed by D1066, D1064 |
-| D1048 | 19 Oct 26 | On a phone, a box tapped to type in that the keyboard would cover is scrolled to sit just above the keyboard when it opens — every box in the app — rising in step with the keys, nothing else on screen moving (D1412); built as its own small job next, not in the rally box pull request. — changed by D1412 |
-| D1047 | 19 Oct 26 | In every time box on the Scheduler Board and the week, one tap then typing replaces the time there, and one tap then Backspace clears it; a second tap, dragging the caret or an arrow key puts the caret where he wants it, and digits are then edited as usual; the same with a mouse. — changed by D1080 |
-| D1046 | 19 Oct 26 | A row on a standby line with B or R typed that does not come in is cancelled with its own CX, as any jet is — its crew rest, OIL and count go and the rest of the line still flies; there is no untick: the Flies tick only adds a line by hand, for one activated with no B or R typed. |
-| D1045 | 19 Oct 26 | On a standby line with B or R typed every row is a jet that flies — SPARE rows included — in the day's flying count and Insights as well as crew rest and OIL; the line's day ends at its END, with no debrief added; a rally is never typed on a standby line that will not fly, and one that does not fly is cancelled (CX), which takes it out. |
-| D1044 | 19 Oct 26 | The standby lines are a planned schedule: an SC, AVALON or BB line with its B or R typed counts as a flight for every row on it, its SPARE rows included, using the line's planned START and END — no separate take-off and landing is kept; for a SPARE, what counting as a flight changes is its crew rest and its OIL. |
-| D1043 | 19 Oct 26 | A standby row (SC, AVALON, BB) carries a "Flies" tick: typing its B or R ticks it by itself, as a row with a brief or rally typed is planned to fly; a standby row activated later is ticked by hand; the tick, however it was set, is what makes the row count as a flight (D1042). — changed by D1061, D1060, D1044 |
-| D1042 | 19 Oct 26 | An SC, AVALON or BB line that actually flies counts as a real flight — in the day's flying count and Insights' flying load, earning OIL by default, and with every warning an ordinary flying line gets; built as its own job after the rally box changes. — changed by D1043 |
-| D1041 | 19 Oct 26 | A rally typed on an SC MAIN line starts that crew's day as SC's in-time box does today — crew rest, the long day, work hours and OIL; on an SC SPARE, AVALON or BB line, which stay outside the warnings, it is shown, printed and exported only, and an empty box counts for nothing. |
-| D1040 | 19 Oct 26 | On SC, AVALON and BB lines the new rally box sits above B, in the same R-over-B column as a flying line, so every wave looks the same; their take-off and landing boxes stay as they are. — changed by D1083 |
-| D1039 | 19 Oct 26 | Only SC, AVALON and BB lines stop showing the faint worked-out brief and rally — their empty boxes stay empty; the flying lines keep their faint suggestions, with the clearer mark when one is taken (D1038). — changed by D1065 |
-| D1038 | 19 Oct 26 | When a suggested brief or rally is taken, the time turns ordinary white at once and the box wears the app's plain blue ring as a short flash — about a second, not the six seconds of a thing just added — so it reads as accepted. |
-| D1037 | 19 Oct 26 | The worked-out brief and rally are no longer shown faint in their empty boxes, because they are rarely used and usually only the take-off and landing are typed; a brief or rally that is typed is used in the timing checks. — changed by D1039 |
-| D1036 | 19 Oct 26 | SC, AVALON and BB lines get a rally time too, as the flying formations have, so every wave is the same. — changed by D1041, D1040 |
-| D1035 | 19 Oct 26 | A suggested brief or rally, once taken, must look plainly different from the suggestion at once — today both are blue; he suggests a flash as the feedback. — changed by D1038 |
-| D1034 | 19 Oct 26 | A typed line that still says RALLY stays a rally, as the app reads it today, and never becomes a formation's in-time: a whole-wave in-time is every formation's in-time, except a formation whose own typed in-time line carries its callsign. |
-| D1032 | 19 Oct 26 | A formation's R box counts exactly as a typed rally did: the earliest applicable in-time or rally starts its report (with no in-time, the rally) for crew rest, OIL and the rest, where it is the man's first event; an empty box's default counts only where no in-time or rally is entered (D592). — changed by D1034 |
-| D1031 | 19 Oct 26 | The default rally uses the Logic page's existing "Nominal report before T/O" setting (3 hours to start), renamed to say it is the default rally; there is no second setting, and "+ In-time" keeps filling in the same time (D510). |
-| D1030 | 19 Oct 26 | A suggested time (the brief's, and the default rally) sits faint inside its own empty box; one tap puts it in, highlighted, so whatever is typed next replaces it at once — the scheduler never deletes it first. — changed by D1037 |
-| D1029 | 19 Oct 26 | On the desktop Scheduler Board each jet's line keeps its times in one line, R · B · TO · LD (the mock-up's picture 11); on a phone the board stacks R over B and TO over LD (picture 6); the week stays as D1026; from 821 to 1099 wide the desktop board stacks them as a phone does (D1781). — changed by D1781 |
-| D1028 | 19 Oct 26 | A suggested time (the brief's, and a formation's default rally) is shown faint inside its own empty box (D1030), never on a line of its own above the box, so a row's boxes stay level and the row grows no taller; a tap puts it in. — changed by D1030 |
-| D1027 | 19 Oct 26 | A formation's rally box offers a default rally — its take-off less the Logic page's existing report setting, 3 hours to start (D1031) — which the scheduler selects; an empty box's default counts only where no in-time or rally is entered for the formation, as the nominal report does today (D592, D1032). — changed by D1032, D1031 |
-| D1026 | 19 Oct 26 | Each formation gets its own rally box: on the week (View-only Sched and Edit Schedule) a flying row's second time column is R over B, the third TO over LD; the Scheduler Board stacks them on a phone and keeps one line on a desktop (D1029); the typed lines above the wave are for the in-time only, their button "+ In-time". — changed by D1781, D1036, D1029 |
-| D1021 | 18 Oct 26 | When tomorrow's crew-rest warning is focused, the day before keeps the dashed "same man, other day" mark over its dotted ring, as built; nothing changes. |
-| D1020 | 18 Oct 26 | The calendar that floats over a date box behaves as the calendars inside a form do (D1012): Escape with its month or year list open closes only that list; a second Escape closes the calendar. |
-| D1017 | 18 Oct 26 | Every copy of a man's puck on a day — the Ground and Personal Inputs rows, the SANS card, the Unavailable row and the crew list — wears his seat's crew-rest ring and chip; a puck lit by an open issues list keeps its dotted or dashed ring, standing out because the rest dims, as today. |
-| D1013 | 18 Oct 26 | Every copy of a man's puck on a day wears the same crew-rest ring as his seat (dotted, dashed or solid) — his SANS card, Unavailable and Personal Inputs rows and the crew list included — and an open issues list lights its crew without hiding those rings; drawn for him before it is built. |
-| D1012 | 18 Oct 26 | In a calendar inside a form — the OIL question's "Only some days…" and an input's own window — Escape with the month or year list open closes only that list; a second Escape closes the form — and the calendar over a date box the same (D1020). — changed by D1020 |
-| D1011 | 18 Oct 26 | On the Scheduler Board, Escape in a take-off, landing, brief or duty-start box puts the old time back and saves nothing, as every other box does. |
-| D1010 | 18 Oct 26 | On View-only Sched the next-week preview shows a published day's published version; Edit Schedule's preview keeps the working copy. |
-| D1009 | 18 Oct 26 | Insights keeps counting a flying line with nobody on it as a sortie and its formation as a formation — the same count as the day's own heading; nothing changes. |
-| D997 | 18 Oct 26 | On a phone every window that pops up for a task stands in the middle of the screen, as tall as what is in it up to the visible screen less 24px; the day panels pulled up and down by their bar (the Inputs and SANS calendars' day) and the ALL AVAIL and changes windows stay at the foot. |
-| D995 | 18 Oct 26 | On a phone the schedule's own input window, opened from Edit Schedule or the Scheduler Board, stands in the middle of the screen, not at its foot; it is still as tall as what is in it, up to the visible screen less 24px. |
-| D958 | 17 Oct 26 | Where an ALL AVAIL / ALL input's row sits on the Common Programme (D955), the three places that named it "ground" say "Common" — the board's note after ✕, Personal Inputs' button and the phone's banner while a place waits for a puck; a row on the Ground Programme keeps "ground". |
-| D957 | 17 Oct 26 | Where an ALL AVAIL / ALL input stands on the Common Programme (D955), the same line as the Ground Programme's stands under the Common Programme's heading — "to take an input off, press reject on it in Personal Inputs below." — only on a day where such an input stands there, on the Scheduler Board and Edit Schedule's week, never on View-only Sched. |
-| D955 | 17 Oct 26 | An ALL AVAIL / ALL input lands on the Common Programme, in time order, for every kind it is offered for; no move between the two programmes (reject still takes it off); changed to named people only it goes to the Ground Programme, and back with ALL AVAIL; everything else about it is unchanged. |
-| D950 | 17 Oct 26 | Round 2 of the words pass, as answered: View-only Sched's boxed "Draft" goes (the DRAFT tag stays); the peek reads "Next week: click a day to load it"; "· accepted" / "· removed" once a row, after the name; "Placeholders · drag in" reads "Placeholders". |
-| D949 | 17 Oct 26 | The night's Q1–Q3 as recommended: the board's wave header shows a small "(prev day)" where a wave's in-time / rally is the evening before; a rejected input is called "rejected", never "removed"; a Ground Programme row's "till <date>" stands in grey after its remark box. |
-| D947 | 16 Oct 26 | Round 1B, as answered: the board's wave header loses "in-time / rally HH:MM · N AC"; the Ground Programme's line reads "to take an input off, press reject on it in Personal Inputs below."; on a phone an input's button sits on its puck's line (board and week); Unavailable stays as it is. |
-| D945 | 16 Oct 26 | The button on an accepted input's row that takes it off the programme (or back out of Unavailable) reads "Reject", not "undo" — on the Scheduler Board and Edit Schedule's week, phone and desktop; what it does is unchanged, and the row still offers accept again. |
-| D940 | 16 Oct 26 | On Edit Schedule and the Scheduler Board: the board's nine panel subtitles go (a folded Personal Inputs keeps its count, "show" goes); "tap to review", "press a card to edit" and the fold words go, the carets stay; the removed-input note's dash becomes a full stop; the empty amendments box says "No amendments published yet." |
-| D938 | 16 Oct 26 | The editing hint on Edit Schedule's and the Scheduler Board's Personal Inputs and Unavailable panels ("times and remarks type in place · clear a time for all day · press the type to change it") is deleted, not moved into the legend: nothing takes its place. — changed by D942 |
-| D936 | 16 Oct 26 | On the Logic page the passing note after a value is changed ("crew rest → 11H") is deleted — the row itself shows the new value and its standard (D850); and on a phone, while editing, "Reset to standard" reads "Reset all" so the row stays one row, as built. |
-| D933 | 15 Oct 26 | On the Logic page a check's key info is said as his crew-rest example says it: who and what it applies to, and its limit, in a few plain words — for crew rest: a flying member's earliest in-time, at least the crew rest setting after the day before. |
-| D932 | 15 Oct 26 | On the Logic page, every number in the text that is an editable setting is read from that setting, so it changes the moment the setting changes — never typed as a fixed number; and every line is correct for whatever the settings are. |
-| D931 | 15 Oct 26 | The Logic page is a guide for a user who wants to know how the app's rules work in depth — without jargon and without what is not essential; every line is written and checked by reading it as that user would. |
-| D929 | 15 Oct 26 | The Logic page is written so a member or an admin reading it understands how each rule applies to them and how the rules affect one another — key pointers, never the app's inside detail. |
-| D928 | 15 Oct 26 | The Logic page is built as drawn: two parts, settings then the checks, in the groups shown; every check listed with one line, four with a folded "How it works"; the "fired this week" count leaves each row (the filter stays); the two unused settings are removed from the page. |
-| D925 | 15 Oct 26 | The Logic page is designed for the scheduler or admin reading it, not as a description of how the app works: intuitive, less cluttered, the editable settings together at the top (D809), each with what changing it affects (the brief time moves the automatic B); the app's fine detail left out, a short "How it works" only where needed (crew rest). — changed by D928 |
-| D901 | 15 Oct 26 | Calendar step two is built as recommended on its page: no "Clear" under any calendar except the bidding dates, which keep a small "Clear dates"; today is shown on the Leave War's calendars too; one finger-sized date everywhere; and the inputs list's date filter moves in step two too. |
-| D877 | 15 Oct 26 | The Scheduler Board's other glows go, each keeping its ring: the landing flash after a drag or an undo and the picked-up look; the crew and the time boxes a tapped warning lights (red, amber, grey); a puck earning OIL in OIL Earn; his own puck ("this is you", its purple fill and ring kept) and a puck lit by a highlight chip. |
-| D860 | 15 Oct 26 | The just-added mark is one look everywhere — the Scheduler Board's plain blue ring with no glow, on the inputs pages too — and it sits on the edge of the thing added: a note added on the board is ringed round its own box, not round its whole row. |
-| D845 | 14 Oct 26 | The refusal under the day's switch ("Nothing today earns", relabelled "No OIL earned" by D1782) reads "Nothing on this day earns. Turn off the switch first." — his own wording, in every place it is said: a man's puck, an event's own OIL mark, a man in the ALL AVAIL window. — changed by D1782 |
-| D844 | 14 Oct 26 | The refusal under the day's switch (to be relabelled "No OIL earned", D1782) never says "turn that off" — it says what to turn off, in every place it is said (a man's puck, an event's own OIL mark, a man in the ALL AVAIL window), from one source; its wording is now D845's ("turn off the switch first"), not the switch's name in quotes. — changed by D1782 |
-| D842 | 14 Oct 26 | A picked answer that also has the keyboard on it shows one ring, never two: the keyboard's ring sits on the picked answer's own edge (one slightly thicker cyan ring) instead of a second ring round it. |
-| D841 | 14 Oct 26 | While a bar that stays is up under the top bar — the "Not saved" warning, the OIL bar, or both — the line under it is the bar's own amber, never the top bar's cyan edge; and the two bars are the same height. |
-| D840 | 14 Oct 26 | The bar that stays after an unanswered OIL question is built in the band under the top bar as drawn, and it is always one line — its words and its two buttons — on his iPhone's wider letters too; the drawing's second line for wider letters is not built. |
-| D839 | 14 Oct 26 | The ten wordings a fresh reader tripped on are all taken, as the writing-guide page's section 4 gives them, and are built with the rest — each replaces the wording its note has in the other two lists. |
-| D838 | 14 Oct 26 | The notes left whole on 13 Oct 26 have their dashes changed in the same build as the rest, as the writing-guide page's section 3 gives them — every word kept, the dash becoming its linking word, a colon or a full stop — not left for the whole-app words job. — changed by D843 |
-| D837 | 14 Oct 26 | The wordings reworked by the writing guide are approved as the writing-guide page gives them and are the ones built: the passing notes N1 to N4, N7, N10, N11, N14, N16, N19, N24 and N26, the clash note's words and the OIL question's words — they replace the wordings of 13 Oct 26. |
-| D836 | 14 Oct 26 | The writing guide is approved as written — what each kind of text says, how text is shortened, how the app speaks — with its order when the aims pull apart: every fact first, then a sentence a person would say, then as short as those two allow. |
-| D834 | 13 Oct 26 | The long dash is not the app's ordinary way of joining two thoughts — it reads as machine-written, not as a person writes; a colon may be used in its place, and a dash may still be used where it makes sense. |
-| D833 | 13 Oct 26 | The writing guide is a standing companion to the design guide and the design skill, used every time text in the app is written or changed — its aim: intuitive, clean, simple, smooth, less verbose, more human, with fewer dashes — and the wordings approved on 13 Oct 26 are rechecked against the finished guide before anything is built. — changed by D839, D836, D834 |
-| D831 | 13 Oct 26 | The bar that stays after an unanswered OIL question ("Not swapped — OIL not answered · Answer OIL · OK") takes the band under the top bar, where the "Not saved" warning sits (D587) — not the foot of the screen; a picture is put to him before it is built. — changed by D840 |
-| D830 | 13 Oct 26 | The small fixes of the design look of 13 Oct 26 — its findings L1 to L17 and the keyboard gaps K1 to K4, K7 to K10 and K12, none left out — are built as one batch with its own check, before calendar step two. — changed by D839, D837, D833 |
-| D828 | 13 Oct 26 | On a phone a passing note takes the screen's full width less a small margin — never half the screen; the desktop's note stays as it is. |
-| D825 | 13 Oct 26 | A shorter wording keeps every key word — what happened, why, what it costs and where to put it right; only filler is cut. A wording that reads as a summary of the old one is redone, and one that cannot lose a word without losing a fact is left as it is. — changed by D833 |
-| D824 | 13 Oct 26 | On the app's one date calendar the picked date is the plain bright disc with no ring round it — a ring shows only while a keyboard is on a date, never after a tap or a click. |
-| D815 | 13 Oct 26 | A member's bell says "Filed under Unavailable" when a scheduler files his input there and "Taken out of Unavailable" when it is taken out again — never "Back on the programme" or "Taken off the programme" for those two; fixed with the inputs batch. |
-| D809 | 13 Oct 26 | The Logic page is re-laid: everything that can be edited is gathered at the top, everything that only explains a rule sits below it, and each of the two parts is arranged into its types; a picture is put to him before it is built. — changed by D925 |
-| D807 | 13 Oct 26 | The designs just built and the ones coming are looked over with the design guide, keyboard use included — whatever a keyboard cannot yet do is listed; the findings are put to him before anything is changed. |
-| D806 | 13 Oct 26 | The passing notes the app shows after an action are shortened — the ones after publishing and unpublishing a day first: the fewest words that still say what happened and the one thing he must know; the shorter wordings are put to him, before beside after, before they are built. — changed by D836 |
-| D800 | 13 Oct 26 | A sideways finger on the app's one date calendar turns its month — left for the next, right for the last — as it does in the Calendar window and on his iPhone's own; a swipe that begins on a date picks nothing; the arrows and the lists stay. And calendar step two waited for his look at step one — given 15 Oct 26, happy with it as built (D889). — changed by D889 |
-| D797 | 13 Oct 26 | The one calendar sits by what the date is to its form: one box among others opens it over the form; where the dates are what the form is for, it stays inside; its weeks start on MONDAY; it is built in two steps — the Calendar window and every date box still the phone's own first, the app's small calendars second, with a check of their own. — changed by D914 |
-| D796 | 13 Oct 26 | The app gets one date calendar of its own, on the iPhone calendar's pattern in the Raptor look — the month and year as a title that opens a month-and-year chooser, a today icon right of the year (no reset), no tick: a tap picks — used wherever the app picks a date: every small calendar it draws today and every date box still the phone's own. |
-| D776 | 12 Oct 26 | A personal input may hold several people, as every other kind of input does — "A Personal input is one person's own" is no longer refused — and a puck dropped on its row swaps or joins as on any input's. |
-| D769 | 12 Oct 26 | The bell's list of notices uses the shorter wording — the input first, in bold, with its date; then what happened and who; its age at the right — and a tap on the bell still goes straight to an OIL question, an access request or a bug report where one waits, opening the list only otherwise. |
-| D778 | 12 Oct 26 | A personal input is the same as an event for everything about people — several people (D776), ALL AVAIL or ALL on a one-day one, a member may file it for other people under the same switch — and it is still not work: no OIL question, nothing earned. |
-| D767 | 12 Oct 26 | A cancelled input on the inputs calendar's card and the List's row shows a small red "CX" tag before its title, the title struck through, and the reason after it in red; on the month's bar its words are struck through and the bar faded, with no tag. |
-| D762 | 11 Oct 26 | For an input with several people the OIL question has one answer, for everyone in it: whoever filed it, or an admin, gives it; no man in it gives an answer of his own, and the filer does not pick people out; only the scheduler leaves one person out, in OIL Earn on the day. |
-| D760 | 11 Oct 26 | A CX the scheduler puts on a row that came from an input cancels the input itself: the Inputs calendar shows it cancelled with its reason, the member is told by his bell, and it goes with the input if it moves; the red box and "information only" go with the input too, shown on the schedule only. |
-| D759 | 11 Oct 26 | The stored shape of D756 is confirmed now that its cost has been laid out to him: one record per input with the list of its people, changed in this job and built in steps — the first step changes nothing on screen. |
-| D757 | 11 Oct 26 | The walk-through in words of the one rule is agreed as the behaviour the plan is written to: a person or ALL AVAIL dropped on an input's row shows on the schedule and the Inputs calendar alike and follows the input's OIL answer; ALL AVAIL stays when anyone leaves; the member is told by his bell; a drop that cannot apply is refused with its reason. — changed by D776 |
-| D756 | 11 Oct 26 | An input is stored as one record with the list of its people — not as one record a person kept in step — and the stored shape is changed in the one-rule job itself, not left for the database step. |
-| D755 | 11 Oct 26 | A row that came from an input is the input: whoever stands on it — a named person or ALL AVAIL / ALL, whoever put them there, whether the input began with one person or several — is in the input, and the schedule and the Inputs calendar always show the same people, time and remark. — changed by D776 |
-| D753 | 11 Oct 26 | When ALL AVAIL or ALL is one of a shared input's own people: the men behind it follow the OIL answer given for the input, and the scheduler may still switch any one man; it is offered only where the input is a single day; and an input takes all or ALL AVAIL, never both. — changed by D755 |
-| D751 | 11 Oct 26 | A long work day is grey wherever the app shows it — its line in the day's issues list, the ring on the puck at rest, and the ring that lights when the list is open or its line is tapped; it never lights amber. |
-| D748 | 11 Oct 26 | The window a tap on a shared input opens from the schedule — its line under Personal Inputs, its row on the Ground Programme — shows everyone in the input and changes it for everyone, the same as the input's window on the Inputs page; it is never one man's form. |
-| D747 | 11 Oct 26 | On the Scheduler Board the coloured line down the left of a row — amber for a late input, blue for a row that came from an input — sits clear of the row's pucks and buttons, a little to their left; it is never drawn through them. |
-| D743 | 10 Oct 26 | The ten pictures of the schedule's one row for a shared input are approved as drawn and are the design of record for its build: the Ground Programme and Personal Inputs, the week and the board, a phone and a desktop, a man on leave flagged on the row, a published day, ten people. |
-| D742 | 10 Oct 26 | For every kind of input, what the scheduler changes on its row on the schedule changes the input itself, and no change made there makes an input that was on time read late — on the Unavailable list and under Personal Inputs as on the Ground Programme. |
-| D740 | 10 Oct 26 | A one-man request's row follows the same rule as a shared input's (D739) — a time or a remark the scheduler types on it changes the request itself — and it is built inside the shared-row job: the shared row first, the one-man rows second, one merge. |
-| D739 | 10 Oct 26 | A time or a remark the scheduler types on a shared input's row on the schedule changes the input itself, for everyone in it: the schedule and the Inputs calendar always agree, and what was filed is kept only in the change history, with the scheduler's name. |
-| D737 | 10 Oct 26 | An input filed for several people that lands on the schedule's Unavailable list — leave, an overseas duty, a course — stays one row a man there; the single row (D661) is for Personal Inputs and the Ground Programme only. |
-| D736 | 10 Oct 26 | On a published day a shared input filed, taken off the programme or re-timed is one change waiting — one line, naming its people — and one man taken off its row or added to it is one change each. |
-| D735 | 10 Oct 26 | One shared row has one time for everyone on it: to give one man a different time, or to cancel it for him alone, the scheduler takes him off the row and gives him a row of his own — the row never splits or joins by itself. |
-| D734 | 10 Oct 26 | On a shared input's row the pucks are the input's people: a puck taken off the row takes that man out of the input itself, and a puck put on the row adds him to it — the same as doing it in the input's own window. — changed by D755 |
-| D733 | 10 Oct 26 | In the changes window, a tap on a change whose place another man has since taken lands on that place, whoever stands there now — as built; nothing more is said, because the line tapped already names who moved. |
-| D731 | 10 Oct 26 | The small choices of the inputs pages are answered "Yes to all" — each as recommended on the pictures page (1 to 5 and 7 to 12; 6 withdrawn as no fault) — and the second batch is built on his word: the ten ready small faults and these answers as one batch, tests first, with its own check; no merge without "merge live". — changed by D762 |
-| D717 | 9 Oct 26 | Where an input's title differs from its kind's own name, the kind stays in sight, small: under the title on the schedule's row, and on the small-print line of the opened day's card; the drawing is approved and the title is built. |
-| D714 | 9 Oct 26 | An event clashes as Training, appointment and duty do — a red clash across a standby shift, not Meeting’s amber advisory; and there is no "count me in / out". |
-| D713 | 9 Oct 26 | A new input kind, "Event", is added as a commitment like the others: it asks the OIL question (it is work — it may be official), it clashes as a Ground Programme item does, and it shows on the Inputs calendar and lands on the schedule unless an admin takes it off; for ALL AVAIL, ALL or several people. |
-| D711 | 9 Oct 26 | For an input filed for ALL / ALL AVAIL: (1) the filer answers the OIL question once and the scheduler may switch any one man — a man behind it does not change his own answer; (2) not for an overseas duty or a course; (3) one day at a time; (4) an OIL question nobody answered goes to the filer’s bell, and only his. |
-| D710 | 9 Oct 26 | The list a delete shows of what it took away names the notes the man was taken off, one line a note — built as a small later job. |
-| D706 | 9 Oct 26 | On a phone a window is as tall as what is in it, up to nearly the whole screen — never a short box to scroll inside while the screen above it stands empty; a window with little in it stays short. The three-quarters limit goes. |
-| D703 | 9 Oct 26 | D686 is confirmed on his iPhone: a finger on a window no longer scrolls the page behind it — "it’s fixed". |
-| D702 | 9 Oct 26 | An input filed for "ALL AVAIL" or "ALL" stands for whoever is free, worked out live — it changes as availability changes; members may choose it too; it shows on the day and the schedule only; on a weekend or holiday the filer answers the OIL question once for everyone (D660). Duties and other commitments only (D700). |
-| D686 | 9 Oct 26 | A finger on a window never scrolls the page behind it: a scroll that begins on a window moves what is in the window, or nothing. |
-| D682 | 9 Oct 26 | When whoever filed a shared input answers its OIL question again, the answer is written for everyone in it — a man’s own earlier answer, a "no" included, is replaced; the scheduler’s refusal on the day still wins. — changed by D762 |
-| D716 | 9 Oct 26 | An input's own title, as recommended: (1) only the "Duty & other commitments" kinds take one, never leave or medical; (2) the title shows wherever the kind's name stands as a name, the kind small beside it where there is room; (3) "Other" takes the same title box and its remarks become plain remarks; (4) the remarks stay as they are. |
-| D668 | 8 Oct 26 | The required P and required W rows are not re-defined — their figures are typed in their cells — but since D1193 they may be renamed, as the two available rows are (D640). — changed by D1193 |
-| D665 | 8 Oct 26 | The Leave War's four rows (required P and W, available P and W) sit at the foot of the manning block, not under the event rows; built there, nothing covers the month buttons and the green open-bidding outline stays round the dates. — changed by D674 |
-| D663 | 7 Oct 26 | In the changes window a group filing is one item — its kind and how many people, the names listed under it — not a line for each man; built in the calendar job. — changed by D736 |
-| D661 | 7 Oct 26 | On the schedule a group input is one row holding everyone in it — not a row for each man. |
-| D660 | 7 Oct 26 | When an input is filed for other people, the person filing it answers the OIL question for all of them, once, at the save — nobody is left to be asked by his own bell. — changed by D762, D738, D711, D682 |
-| D645 | 7 Oct 26 | The Leave War's Event sheet is built as redrawn — a "Presets" row with the picked one lit, an optional name, "On grid" for the short form, the Kind row only under "Other…"; the grid shows the short form and a tap opens the full name and kind; every preset carries its own short form — PH, OFF, NL and SC to start. |
-| D644 | 7 Oct 26 | The event sheet as drawn is too wordy — it carries fewer words; and its first row is not called "type": those buttons are the squadron's own ready-made events, set up by them, and the row — and the button that edits them — takes a word that says so. — changed by D645 |
-| D642 | 7 Oct 26 | Saturday and Sunday start with no flying set; a no-fly day still shows and takes OFT and AMT commitments; the Leave War's panel for a picked block of people's days is brought into line with D641 in this job — it stays up and the grid behind it works — and the war's other windows are left for a job of their own. |
-| D641 | 7 Oct 26 | Every pop-up window drawn in this job's mock-ups can be dragged around the screen, and the page behind it still works — clickable and editable — while the window is up. — changed by D642 |
-| D640 | 7 Oct 26 | The available P and available W rows the SANS calendar reads are ordinary Leave War count rows: an admin can rename them in free text and change who they count — for example leaving out OCU — and the SANS calendar uses whatever they count; they get an amber point too (D1190, D1191). — changed by D1191, D1190 |
-| D637 | 7 Oct 26 | The required P and required W rows are the typed ones (available is worked out); the four rows sit at the foot of the Leave War's manning block (D665 — first "Under the event rows"); a figure can run "from a date on", skipping weekends, public holidays, off days and no-fly days; there is no "SANS needed" row. — changed by D665 |
-| D636 | 7 Oct 26 | The required pilots and WSOs are typed straight into their cells on the Leave War — no sheet to open — and several cells can be picked at once and given one number: shift and drag on a desktop, a long press and drag on a phone, and the long press and drag works on a desktop too, so nobody wonders why it does not. — changed by D637 |
-| D634 | 7 Oct 26 | The Leave War's Event sheet stays as built — its coloured type chips, its tag row, "Edit types", the typed event, "This day" or "A range": nothing of it is removed or redrawn in this job. — changed by D643 |
-| D605 | 6 Oct 26 | A man who is on leave or grounded for the whole day is flagged the moment he is seated anywhere that day — on a line or row with no times yet too; a part-day absence against a seat with no times stays silent (nothing to compare). |
-| D603 | 6 Oct 26 | A blue/red answer can be changed to the other colour but not put back to "not chosen" once the sign-in has ended — left as built; undo still clears it while he is signed in. |
-| D600 | 6 Oct 26 | The second press of "+ In-time / Rally" on a wave that already has a line copies that line's clock — left as built; only a wave's first line is filled with its earliest take-off less the Logic time (D510). |
-| D599 | 6 Oct 26 | On Edit Schedule's week an open blue/red question waits on its day until it is answered or later is pressed — swiping or stepping to another day does not end it; on the Scheduler Board moving to another day still ends it (D535). |
-| D598 | 6 Oct 26 | When a second formation needs a blue/red answer while another formation's question is still open, both questions show, each under its own formation; a newer question never removes an older one. |
-| D597 | 6 Oct 26 | When a day has no button below its last open text box, tab from that box keeps the caret in it — nothing vanishes and no other day is reached; shift+tab goes back as before. |
-| D594 | 5 Oct 26 | D593's details: the in-time / rally lines drag on the Scheduler Board only — Edit Schedule's week gets no drag and shows the board's order; auto sort (the wave's own and Sort all) orders them by time, earliest first — an evening-before clock before the same day's, a line with no clock last; a new order on a published day is a pending change. |
-| D562 | 4 Oct 26 | Keep the existing close cross visible and reachable at the top while scrolling the Week Insights window. — changed by D563 |
-| D561 | 4 Oct 26 | On Logic, keep search visible while scrolling alongside the controls already kept visible, and pack those buttons more closely into fewer rows. — changed by D563 |
-| D558 | 4 Oct 26 | The owner accepts the phone Insights menu picture and authorizes its build: ellipsis then Insights on Edit Schedule and View-only Sched, with the drawer's week section removed. |
-| D555 | 4 Oct 26 | Flow B includes the already-open headings and notes, continuing through open sections in their displayed order. |
-| D554 | 4 Oct 26 | Tab uses flow B: callsign, mission, brief, take-off, landing, then remarks and stores text, on both Edit Schedule week and board; shift+tab reverses that sequence. — changed by D555 |
-| D553 | 4 Oct 26 | After the day's last open text box, tab continues to the next normal button or control without looping or changing day; where the day has no button below that box, the caret stays in it (D597). — changed by D597 |
-| D551 | 4 Oct 26 | Tab traverses only text boxes already available for typing, including empty ones; closed editors, folded sections and popups stay closed. — changed by D555 |
-| D550 | 4 Oct 26 | The new tab route covers both Edit Schedule's week view and the Scheduler Board. |
-| D548 | 4 Oct 26 | Fix only the phone board's desktop layout; leave the other investigated UI behaviours unchanged. |
-| D546 | 4 Oct 26 | Defer the earlier day-scheduling and phone-usability priorities; the owner will introduce ideas during building. The keyboard and tab work stays pending. |
-| D544 | 4 Oct 26 | Prioritise faster keyboard entry of times and notes in the workflow UI pass; keep the existing enter and Escape meanings. |
-| D537 | 3 Oct 26 | On a phone a tall pop-up window runs up to a thin strip at the top of the visible screen — no large gap above it; a short window stays as tall as its content, at the bottom — only the calendars' day panels and the ALL AVAIL and changes windows; every other pop-up window stands in the middle (D997). — changed by D997, D996, D995 |
-| D535 | 3 Oct 26 | An open blue/red question stays until blue, red or later is pressed, the formation's own mission or cue wording changes, the formation goes, or he moves to another week, version or sign-in — on the Scheduler Board, another day too (the week: D599); an unrelated edit that day, or another formation's question (D598), does not remove it. — changed by D599, D598 |
-| D532 | 3 Oct 26 | Approve the final Insights look: temporary choose/change mission role below area, working/published context wording, latest-published read-only remarks access, chart and board entry placement. Build the agreed revised plan in this isolated build chat. |
-| D531 | 3 Oct 26 | A mission box that contains DS or red but is not exactly DS, red or red air (for example DS-2, red air 2, ACM/DS) asks the blue/red question; it is never counted blue or red by guessing. |
-| D530 | 3 Oct 26 | A blue/red answer counts in Insights at once, on a published day too: it needs no amendment and does not touch the day's sign-offs. A change to the mission or remarks wording on a published day still waits for its amendment. |
-| D529 | 3 Oct 26 | Ask blue/red automatically only straight after the scheduler's own edit — to remarks or to the mission — leaves a formation needing an answer; otherwise show a temporary "Choose mission role" button while its remarks box is being edited. Passing through an unchanged remarks box never asks. |
-| D527 | 3 Oct 26 | Offer change mission role temporarily while editing relevant remarks so a chosen blue/red answer can be corrected without rewriting the wording. |
-| D526 | 3 Oct 26 | Save completed remarks even if the blue/red question is unanswered; keep ordinary total bars until the role is chosen. — changed by D530 |
-| D525 | 3 Oct 26 | Remember the chosen formation role until its mission or relevant DS/red support wording changes; crew and timing changes do not ask again. |
-| D524 | 3 Oct 26 | Approve the shown Logic Insights switch labelled track blue/red sorties, starting off. |
-| D523 | 3 Oct 26 | When blue/red tracking is enabled, a person with unanswered flight roles keeps an ordinary total bar until those roles are chosen; do not guess colours; one gesture never opens several questions, but questions asked one at a time after his own edits stand together (D598). — changed by D598, D530 |
-| D522 | 3 Oct 26 | Blue/red sortie tracking starts off for a squadron's first setup; enable it on Logic when wanted. |
-| D521 | 3 Oct 26 | Blue/red sortie tracking can be turned on or off per squadron on the Logic page. |
-| D520 | 3 Oct 26 | Approve the temporary blue/red question below the formation after leaving completed remarks; remarks stay visible and either answer removes the question's temporary space. — changed by D529 |
-| D519 | 3 Oct 26 | Do not add a red indicator to schedule lines for Insights' mission role; the scheduler's remarks are enough. |
-| D518 | 3 Oct 26 | When blue/red tracking is enabled, missions DS, red and red air count red without a question. For other missions, DS or red in remarks triggers a blue/red mission-role question; the remarks do not decide the answer. — changed by D531, D529, D521, D520 |
-| D517 | 3 Oct 26 | Blue/red mission role applies to the whole formation; its aircraft are not on different sides. |
-| D516 | 3 Oct 26 | SC, AVALON and BB standby duties do not count as flying load. SC main counts towards work hours. — changed by D1042 |
-| D514 | 3 Oct 26 | DS for another formation means our flight is red air for them. DS wording may also name another formation supporting us, so a DS mention in remarks alone does not settle our blue/red category. |
-| D513 | 3 Oct 26 | Insights initially shows the first twelve flying people, with a show all option for the rest. |
-| D512 | 3 Oct 26 | When tracking is on and all a person's sortie roles are resolved, split their weekly bar into blue/red; mixed shows both. DS/red/red air are red; other missions are blue except D518's conditional answer. Any unanswered role keeps their ordinary total bar (D523). — changed by D523, D521, D518 |
-| D511 | 3 Oct 26 | The words the "+ In-time / Rally" button fills in are a free-text setting in Logic, beside its time (D510); the default stays "in time + WX/NOTAMS". — changed by D1026 |
-| D510 | 3 Oct 26 | The "+ In-time / Rally" button fills in a time set in Logic: the wave's earliest take-off less the "Nominal report before T/O" setting — 3 hours by default; on a wave that already has a line it copies that line's clock (D600). — changed by D600 |
-| D509 | 3 Oct 26 | No timing-order problem blocks publishing: an in-time, rally or brief out of order shows as a red warning in the warning list and is explained while editing, and the day can still be published — like every other warning. A blank brief is checked as the suggested brief, and the message says "suggested brief". |
-| D507 | 2 Oct 26 | Rally and flight brief may have the same time. Do not require a new gap between them; keep existing brief-before-take-off and exception checks. |
-| D506 | 2 Oct 26 | For multiple applicable lines for the same formation and activity, use the earliest resolved time, regardless of line order. |
-| D505 | 2 Oct 26 | Resolve formation-specific overrides separately for in-time and rally. A formation rally does not cancel the whole-wave in-time, or vice versa. Use the earliest applicable stage as report start. |
-| D504 | 2 Oct 26 | Approve the actual-app in-time / rally label in its existing position. Reporting instructions apply to named formations or, when unnamed, the whole wave; do not add individual-person targeting. |
-| D503 | 2 Oct 26 | Assume a reporting clock later than its applicable take-off clock is on the immediately preceding day, never more than one day back. Omit the routine reporting/day interpretation line and change day control. |
-| D502 | 2 Oct 26 | Explain an incorrect timing pair during draft editing. Keep the draft editable and saveable; block publication until the timing conflict is corrected. — changed by D509 |
-| D501 | 2 Oct 26 | Use one operative reporting clock per in-time / rally line, with activity wording and remarks. Preserve the existing recognised free-text format and formation callsigns. |
-| D500 | 2 Oct 26 | Preserve existing formation callsign recognition in the in-time / rally design: a named formation gets that line; without a formation name, the line supplies the wave-wide time. Keep the existing free-text format for the typed lines, now for the in-time only; a formation's rally is its own box (D1026). — changed by D1026 |
-| D498 | 2 Oct 26 | Assess the simpler in-time / rally box: the earliest applicable entered time is the flying wave report start; a person's earlier qualifying event may start their day sooner. — changed by D591, D502, D501 |
-| D497 | 2 Oct 26 | Design rally time with three options: rally only, in-time with rally immediately after, or separate in-time and rally. The order is in-time, rally, brief, take-off, landing. Rally is the report start when in-time is absent. — changed by D1026, D502 |
-| D488 | 2 Oct 26 | The "Discard marks" button is removed from the amendments box: a day not yet published keeps its change marks until it is published, which clears them as now. |
-| D482 | 1 Oct 26 | A rule changed on the Logic page moves Insights' work hours at once, published days included — as built; it does not wait for an amendment. |
-| D481 | 1 Oct 26 | The Scheduler Board gets a way to open Insights. |
-| D479 | 1 Oct 26 | The amber "already on …" note stays: a drop that recreates a clash already hidden still says, once, to the scheduler doing it, that the man is already busy then — leave it. |
-| D478 | 1 Oct 26 | Insights counts each day's latest published version — the original, or the latest amendment (AL1, AL2 …) — and the working copy only for a day not yet published; changes waiting on a published day are not counted until they go out. — changed by D530 |
-| D475 | 1 Oct 26 | The hidden-warning mock-up is approved as drawn — the design of record for [WARN-HIDE-KEPT]: View-only Sched shows the struck-out line too, with no ↺; a day with every issue hidden keeps a quiet "✓ No issues" bar that opens the list; the hidden line is struck out and grey, dashed-outlined on Edit Schedule, its ↺ at full strength. — changed by D1792 |
-| D472 | 1 Oct 26 | A hidden warning is not counted: a day with 3 issues and one hidden reads "2 issues" — no "1 hidden" beside it; the hidden one is seen only by opening the day's issues list, where its line is struck through and darker. |
-| D471 | 1 Oct 26 | The hidden-warning change (D469) is built as its own job, on its own branch, after phase 7; a warning hidden on a day already published waits for the next amendment, like every other change to a published day; and the published and printed schedule drop the hidden item's flag too. |
-| D469 | 1 Oct 26 | A hidden warning stays hidden — for everyone, across a reload and a sign-in — until someone unhides it; while it is hidden the pucks carry no flag for that item, and its line in the day's warning list stays where it is, struck out and darker, one tap from being flagged again. — changed by D475, D472, D471 |
-| D454 | 29 Sep 26 | A take-over asks the holder first ("Saber asks to take over Tuesday" — Hand over / Keep editing); no answer within 1 minute hands it over; Keep editing tells the asker, who can still "Take over anyway" (asked again, noted in the history); every take-over first saves the day as a saved plan "<callsign> — at take-over HH:MM". |
-| D452 | 29 Sep 26 | In the database, fast sync (every second) switches itself off after 20 minutes, or when the page is left, with a small note saying so; one tap turns it back on; the normal check every 30 seconds carries on. |
-| D451 | 29 Sep 26 | A change on a day no one holds takes the day for the scheduler at once — the strip turns to "you're editing" — and the ✎ edit button stays as the other way in. |
-| D356 | 29 Sep 26 | In the database: (A) "idle" means no change by the lock's holder on that day for 30 minutes (looking does not count), with a warning at 25; closing the page or signing out frees it at once; (B) changes save as they are made, "Done editing" releases the lock; (C) others' changes arrive by themselves every 30 seconds. |
-| D355 | 29 Sep 26 | Once the app is in the database, a scheduler edits a day by taking it: the lock is per day (one day or several chosen), others see "<callsign> – editing" and read it only; it frees itself after 30 minutes idle, and an admin can take it over. — changed by D454, D451 |
-| D367 | 29 Sep 26 | A flying line's callsign on the week wraps onto more lines and the cell grows downward, so the whole name always shows — never cut to "…" — on Edit Schedule, View-only Sched, a published day and the next-week peek; the column takes no more room from the remarks (76PX desktop, 50PX phone, 36PX on a phone under 375PX wide). |
-| D363 | 29 Sep 26 | Loading an older issued version puts back every row that version had — a deleted request's row included — and the pending list names it ("… on the programme → deleted"); left as built. |
-| D362 | 29 Sep 26 | AL8 and every later amendment wear AL7's orange; the tag's number tells them apart — left as it is, no new colours. |
-| D361 | 29 Sep 26 | The ALL AVAIL count on a row with a start and no end stays as built — a plain number, the assumed hour named in the window a tap opens, set by the Logic tab (a change on a published day reads pending); a "?" where a row has no timing or no end time is a future job, filed. |
-| D360 | 28 Sep 26 | ALL AVAIL / ALL on a row with a start but no end: count availability over the schedule’s one-hour Logic default and show the assumed time. Credit no OIL. Admin OIL views say “No OIL worked out — this row has no end time”; the public view shows only the assumption. Frozen at publication; changes are pending. No start: a ? opens the existing reason. |
-| D346 | 28 Sep 26 | Three readings of the changes window stand as built: changes that belong to no single item sit under one group, "The day"; on a desktop a remark's gold dot sits at the far right of its column; in the week view an input covering two days shows as an item under each day. |
-| D345 | 28 Sep 26 | Both mock-ups are the designs of record: [CHG-BY-ITEM] — the changes window grouped by item (the default, "Group by: Item / Who"), the latest-changed on top, every group open; [HIST-PHONE-HIDE] — the phone's "Hide ▾" to a slim bar and a gold dot on every detail with a history. |
-| D344 | 28 Sep 26 | The history hint reads, in his words: "History on: Tap a gold dot on the schedule". |
-| D340 | 28 Sep 26 | The changes window sorts by item and every line is labelled by its item first — the item in bold, the change under it, never the man first; one group per item, the group whose latest change is newest at the top, a sub-line per change inside an item changed more than once; settled by D345's approved mock-up, its calls with it. — changed by D345 |
-| D339 | 28 Sep 26 | History on a phone says it is on and lets the schedule be seen: the hint "History on: Tap a gold dot on the schedule" (D344); "Hide ▾" sends the changes window to a slim bar at the bottom ("Show ▴" brings it back, ✕ turns History off); a gold dot on every detail with a history — as approved with D345's mock-up. — changed by D345, D344 |
-| D338 | 28 Sep 26 | The one changes window's eleven readings stand as built — among them: the change history outlives a sign-out and a reload, what is new kept per person; one count per day; History mode is on while the window is open; the clock icon is on Edit Schedule only; members see the To go out tab, read only. |
-| D337 | 28 Sep 26 | Deleting a man lists everything the delete took away, one line each, as built — changed by D710 |
-| D279 | 27 Sep 26 | A struck name looks the same whether a tap will be refused or only warned — the words say which. |
-| D278 | 27 Sep 26 | A placeholder (ALL / ALL AVAIL) may stand on a row twice — "one man, once per row" (D271) is about men. |
-| D277 | 27 Sep 26 | In OIL Earn mode his own puck that earns nothing keeps its purple "this is you" ring, faded with the puck. |
-| D276 | 27 Sep 26 | One man in both seats of one jet stays a warning (the red "two events at once"), not a refusal. |
-| D275 | 27 Sep 26 | The desktop week goes back to no room beside the ‹ arrow — the day at the front sits flush at the left, the arrow floating over its first few pixels, as on `main`. |
-| D274 | 27 Sep 26 | Three of the five-flags batch's four visible changes are approved as built — his own flagged puck without the glow, Leave War ⚙ Reset order, a swap inside one crowd without "already on"; the room beside the ‹ arrow was not approved. — changed by D275 |
-| D272 | 27 Sep 26 | In OIL Earn mode his own puck shows the green OIL ring, not the purple one — the purple fill stays. |
-| D271 | 27 Sep 26 | A man put on a row he is already on is refused — one man, once per row. |
-| D270 | 27 Sep 26 | On your own puck a flag's ring wins over the purple "this is you" ring — amber, thin red, grey, dotted, as on anyone's puck, with no glow; the purple fill stays; in OIL Earn mode the green OIL ring shows too (D272). — changed by D877, D272 |
-| D263 | 27 Sep 26 | The change history records every change to an absence, not only its filing and removal |
-| D212 | 26 Sep 26 | The four sign-offs stay as they are: an admin picks all four names |
-| D189 | 26 Sep 26 | Keep it: when a leave or downchit is stretched or trimmed, every published day it still covers reads "1 pending" and its sign-offs fall, because the "till <date>" note it printed is now out of date; View-only Sched keeps the old words until the next AL. |
-| D188 | 26 Sep 26 | Confirmed as built (D185's reading): on a published face the Qualification-flag warnings and the crew-rest tight-turn note stay live; the crew-pairing warnings stay frozen and read pending when they change. |
-| D187 | 26 Sep 26 | The board's (and the edit week's) 👁 look at a published version shows its warnings, as View-only Sched does |
-| D186 | 26 Sep 26 | Keep it: a man's CAT / seat / posting on his puck and a blank line's suggested brief time stay as published until the next AL (a change reads pending, the four sign-offs fall); a callsign rename updates at once; this narrows the "no rule versioning" invariant for that one printed value. |
-| D185 | 26 Sep 26 | A crew-rest or 7-day break on a published day, and a lapsed qualification, stay live on its face; a medical downchit stays frozen (D179 unchanged for it). |
-| D184 | 26 Sep 26 | The 7-day run warning stays live on a published day's face too |
-| D183 | 26 Sep 26 | The dotted "breaks tomorrow's crew rest" mark (and its RUN twin) stays live on a published day's face — an exception to D179's "freeze everything for now". |
-| D179 | 25 Sep 26 | Everything on a published day freezes for now, and a change shows as pending for the admin — a medical downchit included; the exceptions ruled since stay live on the face: the dotted crew-rest mark and its RUN twin, a crew-rest or 7-day breach on the day, and the Qualification-flag warnings (D183, D184, D185). — changed by D185, D184, D183 |
-| D178 | 25 Sep 26 | Every member input change after a day is published — filed, edited, deleted or moved — is a pending change for the admin, and the published face keeps what it was issued with; what still stays live on the face is D179's rule with its exceptions (D183, D184, D185). — changed by D179 |
-| D177 | 25 Sep 26 | A leave filed after a day is published is a pending change: the day reads "1 pending", the four sign-offs fall, the published face keeps what it was issued with until the next AL — widened to every input change (D178); a medical downchit freezes and reads pending too (D179, D185). — changed by D185, D179, D178 |
-| D176 | 25 Sep 26 | A request that was "taken off" when the day was published, and is since deleted (or re-dated off the day), is no pending change — the day reads 0 and the four sign-offs hold. |
-| D175 | 25 Sep 26 | A load or a plan switch never puts a request on a second day: it leaves that row out and says so — built on its own small branch right after PR #435 merges, BEFORE `[ACCOUNTS]`. |
-| D174 | 25 Sep 26 | A request that was not there when the day was published, filed since and then taken off, is no pending change — the day reads 0. |
-| D172 | 25 Sep 26 | The corner tag on a changed puck of a day not yet published reads "OG", in the plain white dotted outline — shorter than "ORIG", never gold or amber; the day headings stay as they are: ORIG keeps its ticked seal (D111), the AL tags stay solid with no tick. |
-| D171 | 25 Sep 26 | The ways into the changes window: members open it from a day's own count (no top-bar button); admins get a top-bar clock icon only — on Edit Schedule, desktop too — whose number counts what is new to you across the whole loaded week; every day heading's count stays the per-day way in. — changed by D338 |
-| D170 | 25 Sep 26 | No hand over button. Changes are "new to you" until you mark them seen — like unread email. |
-| D169 | 25 Sep 26 | Members see the full change history too — who changed what, on every day — from View-only Sched via the live working copy, read only; a medical change in full too (D211). — changed by D211 |
-| D168 | 25 Sep 26 | One changes window for the whole app — the published day's pending list, an unpublished day's hand-over list and the Edit history list merged: movable, resizable, a day picker, "Group by", a tap goes there; grouped by item, every line led by its item (D340). — changed by D340 |
-| D167 | 25 Sep 26 | The changes list is a movable, resizable window that does not block the schedule (on a phone a bottom panel that shrinks to a bar); a tap takes the schedule to the change and the window stays; it lists people and sittings, not hand overs (D170); every group opens by default (D345). — changed by D345, D170 |
-| D119 | 25 Sep 26 | The pending list shows the newest change first, as edit history does. |
-| D118 | 25 Sep 26 | An unpublished day's count must not miscount or be untappable: it is a hand-over between schedulers, the next one seeing what changed — settled by D170: changes are "new to you" until you mark them seen; the hollow corner tag reads "OG" (D172). — changed by D172, D170 |
-| D117 | 25 Sep 26 | The edit history list shows the whole week, with a day picker to narrow it to one day. |
-| D116 | 25 Sep 26 | Edit Schedule's History button works like the board's: a toggle. |
-| D114 | 25 Sep 26 | Taking an accepted request off a published day is one pending change, not two. |
-| D113 | 25 Sep 26 | A replacement in one seat is one pending change. |
-| D111 | 25 Sep 26 | The ORIG tag is "A1, seal": a faint white wash, a thin light outline, and a drawn tick in a white disc before "ORIG" |
-| D110 | 25 Sep 26 | The ORIG tag takes option A's direction — no colour, a tick — and gets a nicer design within it. |
-| D109 | 25 Sep 26 | A man moved from one place to another on the same day is one pending change, not two. |
-| D107 | 25 Sep 26 | A tap on a change in edit history keeps him on the page he is on. |
-| D105 | 25 Sep 26 | The change bubble stays — hover on a desktop, tap on a phone — and a long one scrolls inside itself. |
-| D103 | 25 Sep 26 | Any change that shows as pending on a published day wipes the sign-offs — one rule: something waiting means sign again. |
-| D102 | 25 Sep 26 | The slim "Signed ALn" line under the day head — on View-only Sched, the Scheduler Board and the edit week. |
-| D101 | 25 Sep 26 | No "Reissue AL1" button: after an Unpublish the withdrawn amendment's changes stay on the working copy as pending, and "Publish AL1" brings the day back. |
-| D100 | 25 Sep 26 | The pending-list mock-up was approved, look and function, as D99's design of record: "N pending ▾" opens the short list of what will go out (where, before → after, who, when), a tap takes the view to it, a long list scrolls inside the window — since D168 that list lives in the one changes window. — changed by D168 |
-| D99 | 25 Sep 26 | "N pending" becomes a button that lists what is waiting to go out on that day, and tapping an item takes the view to it. |
-| D98 | 25 Sep 26 | A day that is back to what was published shows nothing pending and is no amendment — and "Load onto working copy" must get it there. |
-| D97 | 25 Sep 26 | The working-copy marker on a published day with changes waiting has two states: "Not yet signed" while any of the four sign-offs is missing or no longer valid; "Not yet published" once all four are valid — never on the issued face. |
-| D96 | 25 Sep 26 | A day template cannot be applied to a published day. |
-| D95 | 25 Sep 26 | View-only Sched shows who signed off each published version — the original and every amendment — compactly. |
-| D94 | 25 Sep 26 | The board draws all three warning rings as the edit week does |
-| D93 | 24 Sep 26 | The mock-up is the design of record for [AMEND-MARK-RING-CLASH]: a change waiting to go out is a hollow ALn tag with no dotted line round the puck (a published one its solid tag, no ring); a puck's edge carries only its warnings; times, areas and remarks keep their marks. |
-| D92 | 24 Sep 26 | A published change on a puck is marked by its solid ALn tag only — no ring round the puck. |
-| D91 | 24 Sep 26 | Don't build it. Taking a man off a seat leaves no mark on the row |
-| D161 | 24 Sep 26 | Not now — [ADMIN-DISPLAY] stays open and unbuilt; put it to him again when Admin or the section folds are next touched, not before. |
-| D77 | 23 Sep 26 | No phone resize corner for the ALL AVAIL window: on a phone it keeps the full-width bottom panel (62% tall), movable, not resizable; desktop resizing unchanged — do not build it or ask again unless he raises it. |
-| D66 | 23 Sep 26 | The ALL AVAIL window closes when he changes page — and on a switch between Edit Schedule and View-only Sched, a week change and logout; a click on the schedule behind it never closes it. |
-| D65 | 23 Sep 26 | A tap on a man in the ALL AVAIL window depends on the mode: with OIL Earn off it highlights him everywhere (the ordinary selection) and the window shows his reason; with OIL Earn on it only switches his earning and selects nothing. |
-| D51 | 22 Sep 26 | Pilots left, WSOs right when a crowd opens on a phone in the earn mode — but this adds nothing new and is not built on its own: it is D38–D41's ALL AVAIL window ([ALL-AVAIL-WINDOW]), which shows the crowd as real pucks in two columns; do not patch two-across into the in-row crowd. |
-| D50 | 22 Sep 26 | A sim row always shows one spare seat, even when it is full. |
-| D47 | 22 Sep 26 | D33 stands whole: ALL / ALL AVAIL are refused on flying-line cockpit seats at every door, but a placeholder still arms its seat everywhere else it is legal, and tapping an empty cockpit seat still narrows the crew list — only the cockpit instance of the 13 Aug shortcut is gone. |
-| D45 | 22 Sep 26 | Nothing on a published schedule may change without the scheduler acknowledging it — the standing test for any change that touches an issued day: who was available is frozen at publication, a later change shows as pending (cleared by an amendment or the EOD version), every day the same; any pending change now wipes the sign-offs (D103). — changed by D103 |
-| D44 | 22 Sep 26 | Who was behind a placeholder puck is frozen at publication on every day, earning or not. |
-| D41 | 22 Sep 26 | The ALL AVAIL window mock-up is the design of record for [ALL-AVAIL-WINDOW]: movable by the six-dot grip, resizable, non-blocking; one puck per row, pilots left, WSOs right; 212px default, 186px floor; reasons under pucks; a counter with no "free"; the OIL tab only while OIL Earn is on; over the board, unmoved, it opens below its bar (D1106). — changed by D1106 |
-| D40 | 22 Sep 26 | The window opens skinny, and its drag handle is the app’s own six-dot grip. |
-| D39 | 22 Sep 26 | Two fixes to the ALL AVAIL window's default, both from his own picture: one puck per row — each column a list running down, pilots left, WSOs right, at every width; and the counter chip drops the word "free" (it reads "ALL AVAIL · 27"). |
-| D38 | 22 Sep 26 | The name bubble is replaced by a movable, non-blocking window of real pucks — pilots left, WSOs right, flagged, clickable — serving both counters (who is available, who is credited OIL); resizable on desktop, not on a phone (D77). — changed by D77 |
-| D37 | 22 Sep 26 | The count stays, on every seat the puck can land on — but it must read as what it is, not as a promise. |
-| D36 | 22 Sep 26 | The availability window stays narrow — step before take-off to dekit after landing. Do not widen it to the report or the debrief. |
-| D33 | 22 Sep 26 | The two placeholder pucks (ALL / ALL AVAIL) are refused on flying lines only — both cockpit seats of every flying line, with the reason on screen; everywhere else they land (sim seats, duty desks, passengers, extras, ground and programme rows), and there they earn by default (D43). — changed by D43 |
-| D27 | 22 Sep 26 | ALL AVAIL / ALL are a scheduling feature, not an OIL feature: dropped anywhere, the puck works out who would be available and shows the count, with OIL Earn off too; where they earn is D43's rule — on by default wherever they land. — changed by D43 |
+## What it keeps
+- This page is the rules diet's step for the scheduler's rulings, in the shape he approved for the Tracker and the Inputs pages: one page, by screen inside it, not split by screen; it keeps his standing rules, what he likes and what a fresh model would get wrong; a built ruling leaves for the "Built, held by tests" line only when a test holds it whole; each full row is kept whole and searched; the page stays under the size of the list it replaced; read by Astra and a fresh Opus reader, blind [D1944, D1943, D1942, D1941, D1932, D390, D1735, D1938].
+- The Inputs pages — the Inputs list and calendar, the SANS calendar, the Calendar window, an input's own window and card — have their own page, `inputs.md`, opened before planning or changing anything of an input, those calendars or the late cut-off; a ruling that governs both an Inputs page and the schedule stays on this page [D802].
+- Nothing on a published schedule may change without the scheduler acknowledging it — the standing test for any change that touches an issued day: who was available, and who stood behind a placeholder, is frozen at publication on every day, earning or not, and a later change shows as pending, cleared by an amendment or the EOD version; any change that shows as pending wipes the four sign-offs — something waiting means sign again — and putting it back restores them [D45, D44, D103].
 
-## Settled before this list — moved from `raptor-port/CLAUDE.md` §Stable decisions (24 Sep 26)
+## Every screen
+- The writing guide is a standing companion to the design guide and the design skill, used every time text in the app is written or changed, its aim intuitive, clean, simple, smooth, less verbose and more human, with fewer dashes [D833, D834, D836, D839].
+- The writing guide is approved as written, and when its aims pull apart the order is every fact first, then a sentence a person would say, then as short as those two allow — so a wording may end a word or two longer [D836, D806, D825, D833, D834, D839].
+- A shorter wording keeps every key word — what happened, why, what it costs and where to put it right — and only filler is cut; one that reads as a summary of the old is redone, and one that cannot lose a word without losing a fact is left as it is [D825, D833, D834, D836, D839].
+- The long dash is not the app's ordinary way of joining two thoughts, because it reads as machine-written; a colon may take its place, and a dash may still be used where it makes sense [D834].
 
-**CLOSED: a new decision is a row in the table above, with a D-number — never a line added here.** These are
-the scheduler's (the board, the week, the waves and duties, time, inputs and Admin) settled decisions from before the rulings list began (21 Sep 26), MOVED WHOLE, word for word
-(D138), so they load with this area instead of in every chat (D140). Where a row above changes an entry
-here, the row wins (newest instruction wins). The preamble they carried in `raptor-port/CLAUDE.md`, unchanged:
+## The week on Edit Schedule
+- Cross-week dragging is not built and the work is not filed: on Edit Schedule a carried man stops at Monday and Sunday and is never carried into another week [D1573, D1529].
+- The desktop week's ‹ › arrows stay see-through, never solid — an exception to D1518, because they cover the day's information at times — and are a slim tab, 14 wide and 70 tall, flush on the window's edge, that slides out to the full arrow when the pointer comes near and back when it leaves; at rest and slid out it looks as the old arrow did at rest — the same frosted glass at the same see-through level, grey edge and grey arrow, never lit blue nor more solid [D1522, D1526, D1527].
+- Faster keyboard entry of times and notes keeps the existing Enter and Escape meanings [D544, D550].
+- A wave's reporting runs in-time, rally, brief, take-off, landing, never the other way: a squadron may report with a rally only, an in-time with the rally straight after, or an in-time then a rally; with no in-time the rally starts the report; a rally may share the brief's time with no new gap demanded; each formation's rally is its own box, the typed lines above the wave for the in-time [D497, D507, D502, D509, D1026, D1029, D1036, D1781, D1040, D1041, D1083, D1085].
+- The earliest applicable entered time is a flying wave's report start — of several lines for one formation and one activity the earliest counts, whatever their order — and a person's own earlier qualifying event may start his day sooner; OIL is worked out from the entered in-time and rally too [D498, D506, D591, D501, D502, D509].
+- A formation's own instruction replaces the whole-wave one of the same activity only: a formation's rally never cancels the whole-wave in-time, nor the reverse, so a whole-wave in-time of 08:00 and VL's rally of 08:30 still mean VL reports at 08:00 — the earliest applicable stage starts the report [D505, D498, D501, D502, D591, D509].
+- A reporting line applies to the formation it names — that wave's own formation callsigns, read case-insensitively, in remarks too — or, naming none, to the whole wave, never to a named person; the typed lines above the wave keep their free-text format, one operative clock a line with its activity words and remarks, and a typed line saying RALLY stays a rally [D500, D501, D504, D1026, D1034, D1029, D1036, D1781, D1040, D1041, D1083, D1085].
 
-Each entry is a tripwire: the decision is SETTLED — don't rebuild, re-propose or
-re-litigate it. Where a reference doc holds the full story, the line keeps the
-decision + a pointer. Owner + date establish authority; keep them.
+## Crew and pucks
+- ALL AVAIL and ALL are a scheduling feature, not an OIL feature: dropped anywhere, on every seat they can land on and with OIL Earn off too, they work out who would be available and show the count — worded as what it is (who has nothing else on the programme then), a starting point and never a promise; where they earn is the OIL page's rule [D27, D37, D43, D755, D776].
+- The two placeholder pucks are refused on flying lines only — both cockpit seats of every flying line, at every door, with the reason on screen — and land everywhere else (sim seats, duty desks, passengers, extras, ground and programme rows), where a placeholder still arms its seat; tapping an empty cockpit seat still narrows the crew list; where they earn is the OIL page's rule [D33, D47, D43, D755, D776].
 
-### The late-input mark (owner, 9 Aug 26 unless noted)
-Rules: `docs/engine-rules.md` §The late-input mark. Placement: `docs/ui-contracts.md`
-§The late-input mark on screen, §The LATE marks can be dropped per input.
-- **It is a MARK, not a warning** — never in the checks list, never closes a slot,
-  invisible to `validate()`. Measures the input's **last change**, not first
-  submission (an early input amended after the deadline reads late).
-- **Downchits are EXEMPT** (going DNIF isn't planned); leave and overseas duty stay
-  in scope (they're applied for). Don't re-propose either.
-- **It reads in the REMARKS cell**, not beside name/type (moved there the day after
-  it shipped) — except the board's promoted ground row (bare `<input>`, no room to
-  nest a chip) which keeps its amber row edge.
-- **The word stays a word — a compact dot was OFFERED and DECLINED.** Measured on an
-  11-input day: desktop costs nothing (666px w/ and w/o); phone costs 33px over 11
-  rows (757 vs 724) and splits long remarks mid-word ("Medic al appt"); a dot
-  measured 724 (free). Owner kept the word and the cost. Dead ends, don't retry:
-  word at END of remark saved nothing (759); turning off mid-word breaking saved
-  nothing (757). Don't "fix" the split by shrinking the badge — its WIDTH is the
-  whole cost. (These measurements live only here.)
-- *[NARROWED 3 Nov 26 by D1586: a dropped mark is saved on the input and dropped for everyone, kept across a reload, a sign-out and a week change — no longer a session-only registry.]* **It CAN be dropped per input** (owner, 21 Aug 26; REPLACED the 20 Aug global
-  "Hide LATE marks" button, now removed). A session-only forgiven registry
-  (`LATEOFF` in `state/view.ts`) with the way back = tapping the same chip again.
-  Three fixed parts: the board's LIVE rows (Personal Inputs + Unavailable) always
-  draw a clickable `latechip` (solid shown, dim ghost dropped); the GATE is at the
-  passive printers (`ui/html.ts lateShown`, `isLateInput` still answers); the Inputs
-  page KEEPS printing it (paperwork record). Admin-only at the write path, cleared
-  on login/logout. Don't move the gate into the engine, don't bring back the global
-  button, don't silence the Inputs page.
+## Inputs on the schedule
+- The ten pictures of the schedule's one row for a shared input are its design of record — one row of every puck with one title, time, remark and set of buttons, a man on leave flagged on it, a published day counting it once, a big group shown whole and the row growing downward [D743].
 
-### Board behaviour
-- **No warning / advisory / note counts in the top bar** (owner, 20 Aug 26). The
-  three `pillbtn` counts are gone (each day leads with its own "N issues · N
-  warning · tap to review"). `openWarns` KEPT with no caller (reference behaviour /
-  future "expand everything"). Pinned in `app.test.tsx` — don't put the sum back.
-- **Nothing on the board re-orders itself** (owner, 10 Aug 26 — "prevent … the line
-  jumps"). Auto sort / Sort all are the only reorderers, by START TIME not role
-  rank. Don't add an automatic sort to any board list. (The Ground Programme's
-  render-time time sort predates this and stays — time-less rows sink to append.)
-- **MAIN/SPARE on a standalone line is a clickable BADGE in the remarks cell; a click
-  flips the line** (owner, 24 Aug 26; supersedes the 10 Aug ghost-text). `saRoleHTML`
-  draws it week+board (button in edit mode, chip read-only); placeholder is plain
-  `Remarks`. The flip is ENGINE-VISIBLE: `a.spare`+`a.role` flip together,
-  `scSpare`/`saExempt`/shift count follow, marks the `st:` key pending (rides next
-  AL). Next-week peek keeps role as fallback text (`saRoleText`). Don't restore the
-  placeholder or make the flip label-only. Pins: `sarole.test.tsx`.
-- **On SC, the B box is an IN-TIME; its sortie furniture is gone** (owner, 24 Aug 26,
-  SC only; AVALON/BB untouched). Board drops the SC header "in-time · N ac" note; SC
-  lines lose the blue suggested-brief ghost but KEEP the empty B box; the engine
-  reads a typed SC `f.br` as the crew's in-time (`events.ts` → `intime`,
-  `insOf` anchors crew rest on the earlier of it and shift start). Blank = byte-
-  identical to before. Extended same day: an early B on a MAIN starts the long-day/
-  duty-hours span (`workSpan` = `min(report,start)`), and anything cutting into the
-  B→start window raises the amber `SC_INTIME` advisory (already-overlapping events
-  stay with the hard-clash loop). SPARE rows have no event stream (both MAIN-only).
-  Known seam (documented, don't silently "fix"): the SC in-time shows on the board
-  only — the desktop week renders SC as SHIFT/START/END with no B, so a board value
-  isn't mirrored to the week. Owner said it'll be rare; raise mirroring only if he
-  asks. *[AMENDED 20 Oct 26 by D1083: he asked ([STANDBY-WEEK-B]) — the week now draws R over B and
-  START over END on SC, AVALON and BB, the B the board's own box, so the seam is closed.]* Pins: `scintime.test.ts`, `scboard.test.tsx`. Rules: `engine-rules.md`;
-  placement: `ui-contracts.md` §The B box.
-- **Amendment marks are a PUBLISHED-day thing — a draft day shows none** (owner,
-  25 Aug 26). `alAttr` emits `data-alp`/`data-aln` only when `dayApproved`; a draft
-  edit emits nothing but is still tracked in `SCHED.pending` (count/publish/History
-  unchanged — History finds cells by key+edit log). Don't re-add a draft-day mark.
-  Pinned in `publish.test.ts`/`interact.test.tsx`; `ui-contracts.md` §Amendment marks.
-- **A new flying line comes up blank** (owner, 10 Aug 26) — `+ Line` no longer copies
-  the previous callsign/mission/times. **`+ Wave` follows the same rule** (owner,
-  25 Aug 26): a plain flying wave's first line is blank (`cs/msn/to/ld` empty),
-  byte-identical to a `+ Line` add — no more `NEW / 12:00 / 13:00` seed and its green
-  suggested-brief. Standalone waves (`makeStandalone`) keep their kind-specific
-  structure (the `!kind` branch only). Pinned in `board.test.tsx`.
+## Warnings and the rules engine
+- The Logic page is designed for the scheduler or admin reading it, and written so a member or an admin understands how each rule applies to them and how the rules affect one another — a guide for a user who wants to know how the app's rules work in depth [D925, D929, D928].
+- The Logic page reads intuitive and less cluttered: without jargon, without what is not essential and never the app's inside detail, every line written and checked by reading it as that user would; the editable settings together at the top (D809), each with what changing it affects (the brief time moves the automatic B), a short "How it works" only where needed [D925, D928, D929, D931].
 
-### Waves & duties — templates and defaults
-- **Duties are decoupled from waves** (owner, 13 Aug 26; supersedes 10 Aug "AVALON
-  auto-creates its desk"). No wave auto-creates a duty desk (AVALON included);
-  deleting a wave leaves duty blocks alone. Every desk comes from the `+ Block`
-  template picker (`engine/dutytpl.ts`, persisted): a chosen template copies onto the
-  day as a block carrying the template's WAVE, if it names one (owner, 7 Sep 26 —
-  "a duty role that falls under AVALON will not have any warning … unless OL, HL,
-  OML, ATT C, OD" / "sc duties desk … not … the same time as main or spare"): the
-  editor's "For wave" picker (None / SC / AVALON / BB) → `blockFromTpl` mints `sa`
-  (+ `noconf` for AVALON and BB — BB is AVALON's twin, owner 7 Sep 26), so that
-  desk is exempt as its wave is and earns no
-  OIL, an SC desk is an SC seat for the spare rule, and a template with no wave
-  mints the PLAIN block it always did. This amends the 13 Aug "always plain"
-  clause; the decoupling itself stands. Seed week carries no template desk, parity
-  untouched. Editor `ui/DutyTplModal.tsx`. Do NOT re-add
-  `SAWAVE.autoDuty` or the wave-delete → `saDutyIx` linkage (`waveDutyBlock`/
-  `saDutyIx` remain in `waves.ts` only for old AL snapshots).
-- **Flying-wave templates + a + Wave show/hide list** (owner, 25 Aug 26). Sibling of
-  duty templates one level up: `engine/wavetpl.ts` library, `ui/WaveTplModal.tsx`
-  editor (from the + Wave pencil, `WAVEEDIT`), `+ Wave` lists templates beside its 4
-  built-in kinds. Template `{id,title,kind,lines}`: **one rule-set per template** —
-  exactly one of `fly`/`sc`/`avalon`/`bb`. Placing one mints an ordinary wave
-  (`waveFromTpl`) whose OWN kind flags drive checking — `validate.ts` never reads a
-  template, parity untouched. **A STANDBY-kind template mints the built-in's SHAPE**
-  (owner, 26 Aug 26): consecutive same-shift lines become ONE formation with a crew
-  row per line (like `makeStandalone`); a fly line stays one formation per line —
-  don't return the standby mint to 1:1. Times store raw, normalise on blur/mint/load
-  (`waveTime`, colon form `07:00`). Show/hide via a `WAVEHIDE` set (default all-shown,
-  deleted template drops its flag), persisted (`wavetpl`+`wavehide`), boot-loaded,
-  untrusted storage clamped. Don't seed built-in templates (library starts empty),
-  don't make `validate` read a template, don't move the gate off `WAVEHIDE`. Pins:
-  `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
-  - **Manage + edit are ONE sheet, ONE gear** (owner, 30 Aug 26; folds in the 29 Aug
-    "remove it from Admin"). The + Wave menu carries a single ⚙ (`data-wvedit`) +
-    "N hidden · Manage", both opening the unified `WaveTplModal.tsx` (edits templates
-    AND shows/hides/deletes: a "Wave types" list with an EYE per built-in kind,
-    `setWaveHidden`; per template an EYE + footer Delete; built-ins hide but never
-    delete). Old `WaveManageSheet.tsx`/`WAVEMANAGE` DELETED — don't re-add it or a
-    second button. Admin's `WaveVisibility` stays REMOVED; Admin keeps only the
-    template-editor button (same sheet). Don't strand a hidden wave — the "N hidden"
-    line + eyes are the way back.
-  - **Kind-picker rule notes have ONE source, on the picker AND the Logic page**
-    (owner, 30 Aug 26). `wavetpl.kindNote(k)` is the single count-free summary of
-    each kind's checking rule, verified against `validate.ts`/`events.ts`; the editor
-    and the Logic "Wave types at a glance" group render the SAME strings. Deliberately
-    NOT `SAWAVE.note` (keeps its "2 MAIN + 2 SPARE" count for the built-in popup where
-    the count is real). When a kind's rule changes, update rule + `kindNote` + the
-    Logic "standby lines" row together (`logic.test.tsx` pins it). *[AMENDED 15 Oct 26 by D928 (the Logic page
-    rewritten): the "Wave types at a glance" group and "The standby lines" are gone; each kind's `kindNote` is now one
-    check line on the Logic page (Flying lines; Standby) — still the SAME strings, still pinned by `logic.test.tsx`.]*
-  - **The leave/absence "what each type costs" sentence has ONE source too** (owner,
-    30 Aug 26), shared by the Inputs "?" legend and the Logic type matrix.
-    `inputs.ts inputRuleText(t)`, derived from the enforced flags; both `InputsPage`
-    and `logic-html.ts` read it (they'd drifted). `inputs.test.tsx`/`logic.test.tsx`
-    guard it. *[AMENDED 15 Oct 26 by D928: the Logic page's type matrix is gone with its rewrite — the Inputs "?"
-    legend is the sentence's one reader now, guarded by `inputs.test.tsx`.]* Deliberately still separate, don't "helpfully" merge: `SAWAVE.note`,
-    the `satag` caption, the OIL-confirm prose (different jobs/voices).
-- **The DEFAULT arrangement is admin-set; the wave half is "new schedules only"**
-  (owner, 29 Aug 26 pt.2). Admin → Squadron config → **Default arrangement** panel,
-  two ▲▼ lists persisted on the `wavehide` footing: **section order**
-  (`engine/order.ts SEC_DEFAULT`, `secdefault`) is display-only fallback `secOrder`
-  uses for un-arranged sections (hand-arranged day still wins, canonical baseline
-  keeps 728/0); **wave order** (`engine/reorder.ts WAVE_DEFAULT`, `wavedefault`,
-  default OFF) applies ONLY at wave-add on a not-signed-off day. DON'T make the wave
-  default reorder existing/published days, and DON'T give it a display-only layer (it
-  would fight `sortWaves`). Unset = append. Pins: `arrdefaults.test.ts`,
-  `wavedefault-add.test.tsx`, `admin.test.tsx`.
+## Publishing, amendments and signing
+- Everything on a published day freezes for now, and a change to what it shows reads pending for the admin — a medical downchit included — except what stays live on its face, drawn from today's judgement and never making the day pending: the dotted "breaks tomorrow's crew rest" mark and its RUN twin, a crew-rest or 7-day breach on the day with the crew-rest tight-turn note, and the Qualification-flag warnings (an illegal seat, SC currency, AAR currency, an AAR instructor not cleared); the crew-pairing warnings stay frozen [D179, D183, D184, D185, D188].
+- No "Reissue AL1" button: after an Unpublish the withdrawn amendment's changes stay on the working copy as pending, and "Publish AL1" brings the day back [D101].
 
-### Drag-reordering (sections, waves, dense rows)
-Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reorder.
-- **Sections and waves re-order by IN-PLACE DRAG, not a sheet** (owner, 30 Aug 26;
-  the 29 Aug `⇅ Arrange` sheet is DELETED). One machine `ui/rowdrag.ts` (board wrap +
-  edit-week root) tells section/wave/row apart by the grip pressed and validates via
-  `applyMove`'s same-container rule. Grips draggable at EVERY width. The SECTION grip
-  is the SAME dotted `⠿` (owner, 31 Aug 26, reversing the 30 Aug drawn-rail),
-  placed INLINE at the panel header (not an overlay rail); headers set
-  `user-select:none`. Don't turn it back into a rail or drop the no-select. Don't add
-  arrows back to any of them.
-  - **Overall Notes and Common Programme are two SEPARATE draggable board sections**
-    (owner, 31 Aug 26). On the EDIT WEEK day notes still print inside the Common
-    Programme block, so the week keeps 'notes' EMPTY/skipped (keeps view week ==
-    reference byte-identical). The week's Flying-waves `.wv-sech` header stays (its
-    grip needs a header; stripped in the reference compare).
-  - **The four CREW WORKING-AID panels join the SAME draggable list** (owner, 31 Aug
-    26): Personal Inputs, Available crew, SANS availability, Unavailable are ordinary
-    section keys, each a `.sb-sec` card. **They drag on the EDIT SCHEDULER too** —
-    `dayHTML` in EDIT mode emits all ten sections through the SAME `secOrder` loop, so
-    a drag on either surface drives the ONE per-day order. The VIEW week is UNTOUCHED
-    and parity-locked (four not draggable, only Unavailable prints in its fixed tail;
-    whole change gated on `ed`, 728/0). This is a scheduler WORKSPACE arrangement, not
-    a published property. A SECTION drag is display-only (`moveSectionTo` →
-    `reorderSectionTo`, histPush, no markEdit) then offers the "Set default order?"
-    snackbar (`SecDefaultSnackbar.tsx`, promotes via the SAME `setSecDefault` as
-    Admin). A WAVE drag is a real amendment (`applyMove('mv:w…')` → `moveWave`). A held
-    drag AUTO-SCROLLS at screen edges (`pointermove` on the DOCUMENT — don't move it
-    back onto the container). Don't fold the crew panels into a fixed tail or let
-    their order reach the VIEW week. The old one-week "Apply to all days" is GONE.
-    Pins: `rowdrag.test.tsx`, `SecDefaultSnackbar.test.tsx`, `board.test.tsx`,
-    `html.test.ts`.
-- **Dense ROW reorder is by DRAG too — the ▲▼ nudge is GONE** (owner, 31 Aug 26;
-  reverses the 8 Aug "phone hides grip, shows ▲▼"). Every dense row shows its dotted
-  `⠿` at ALL widths; `sbNudge` returns '' (also ~2 nodes/row off the board budget);
-  phone grid gains a leading marker track, first box shortens by it, each box stays
-  under its heading. A same-week follow-up widened the lane 13→20px (glyph
-  left-aligned, handle clear of the first box) and shifted puck containers to span
-  track 1 (`.sb-line .sb-seatpair 1/4`, `.sb-arow.c6r>.ppl 1/3`) so crew pucks go
-  flush-left and a two-wide box's second puck clears the remarks. No puck resized.
-  **ALIGNMENT is a HARD RULE**: every grip's centre measured to delta-0 against the
-  box beside it (flying-line grip bottom-aligns `align-self:end;height:24px`; c6r/
-  notes centre naturally). Don't re-add ▲▼, don't hide the row grip on a phone, don't
-  move a grip without re-measuring delta-0. `boardMbtn mv:up/dn` stays as inert guard.
-  Pins: `rowdrag.test.tsx`, `board.test.tsx`.
-- **No ⋯ collapse of the phone row control strips** (owner, 16 Aug 26 — built +
-  rolled back same day). Row `▲▼/CX/■/✕` strips stay always-visible on a phone; the
-  `CTLOPEN` implementation is one `git revert` away — don't rebuild or re-propose.
-  Sibling touches from that batch (aircrew-tab gutter, plural warnings, week's faded
-  `Remarks` placeholder) STAND; only the ⋯ collapse was undone (and the batch's
-  4-digit board input times were later reversed by the 30 Aug hh:mm decision).
+## View-only Sched, print and export
+- The PDF export work is not started until he says so: [PDF-PRINT-TWICE] (his iPhone printing the working copy) and [FLAG-EXPORT] (the published day only, the nicer report) wait for his word [D1644].
 
-### Time format
-- **EVERY time in the app reads `08:00` — colon, 24-hour, everywhere** (owner, 30 Aug
-  26, reversing their own 29 Aug "just 0800"). hh:mm is native and the reference gate
-  PINS it (`tfin.js`). Three layers: **Display** wraps every stored time in
-  `engine/time.ts fmtHM` (the ONE display fold; board renderers, week already folds
-  via `fmtT`); **Minting** `dutytpl.tplTime`/`DUTYTPL_STD`/`waveDutyBlock`/"+ In time"
-  now mint `07:00` (old templates refold on load); **Typing** every box accepts
-  `800`/`0800`/`8:00`/`08:00` (`parseHM`), shows hh:mm after commit (user never types
-  the colon). Engine untouched (readers go through `parseHM`), parity **728/0**. ONE
-  deliberate 4-digit survivor: the AREA window token (`0800-0900`, `atimeText`) — the
-  reference pins it compact; changing it needs owner sign-off. Don't add a second
-  display formatter — `fmtHM` is the one. `ui-contracts.md` §Every time reads hh:mm.
+## Insights
+- No red mark is added to the schedule's lines for the mission role, because the scheduler's remarks say it [D519].
+- DS for another formation means our flight is red air for them, but DS wording may name a formation supporting us, so a DS mention in remarks never settles our blue or red side by itself [D514, D518, D520, D521, D529, D531].
 
-### Week navigation & cross-week continuity
-- **The phone board's top bar is ONE row; the day is STEPPED BY ARROWS** (owner,
-  11–12 Aug 26). Getting the bar from 166→70px was the whole point — don't add a
-  control to its FIRST LINE without taking one off (the geometry gate counts ROWS).
-  History added an 8th button and stayed at 70px only because the same change fixed
-  `.sb-title` to shrink (`flex:1 1 0`) — that was the last free 33px; the next control
-  must displace one (the changes list is the worked alternative — it went to the
-  checks panel). `+ Line` is off the bar (every wave header has one); labels icon-only
-  under 820px. **The swipe is GONE (12 Aug); do not rebuild it** — `#sbPrevDay`/
-  `#sbNextDay` call `boardDayStep(±1)`, CONTINUOUS across weeks since 22 Aug
-  (`loadWeek`+`boardTab`; don't re-add the end-of-week `disabled`). `#sbCal` opens the
-  week picker in 'board' context. Arrows flank the DAY STRIP (bar 70→75px). Above
-  820px they aren't drawn (desktop has 7 day chips). The Mon–Sun chips became dots
-  then LEFT the phone bar on 23 Aug (freed row carries `#searchB`+`#sbHl`), removal is
-  CSS `display:none` so `dayTabsHTML`/`wireDayDots`/jsdom tests untouched. **Day name
-  is THREE letters on a phone** (12 Aug — split `Wed`+`.bl` tail, desktop still reads
-  `Wednesday` off one path; don't restore/ shorten). The DESKTOP scrub survives
-  (Mon–Sun chips): every chip keeps its footprint whatever is selected — don't grow
-  the current one. `boardTab` is view-only (must not validate; its board lane must not
-  wake EditWeek/EditRoster). `ui-contracts.md` §The board on a phone is ONE window.
-- **Week navigation is a rolling window + a calendar, and it is CONTINUOUS** (owner,
-  22–25 Aug 26). The fixed 5-chip `WEEKS` strip is gone; `weekWindow(CURWEEK)`
-  (`ui/weeknav.ts`) draws four `data-wk` buttons (prev·current·+1·+2, re-centring).
-  `WeekCal` (single-date, whole-week highlight) jumps to any day's week; it's a DAY
-  picker (loads that week AND lands that exact day) — don't turn it back into a
-  week-row picker. All week/Monday math lives in `weeknav.ts` (one drift seam). The
-  big `#vTitle`/`#vSub` were removed as clutter (cards carry dates) — don't re-add
-  them, the fixed chips, or the end-of-week clamp. `WEEKS` kept for probe-bridge/
-  reference only. Pinned mechanics:
-  - *[D1577, 3 Nov 26: the glide below stays — the end cards of D1574, D1575, D1576 set aside.]*
-  - **Phone**: view/edit stepped day-to-day by SWIPE, continuous across weeks
-    (`pan.ts` edge-overswipe + `WEEKJUMP`). A wave-dense day no longer traps it
-    (owner, 23 Aug) — the `.go` block's ownership is decided at touch-END (a wave
-    already at its edge lets the gesture fall through); don't restore the touch-start
-    `.go` bail. The cross GLIDES (owner, 23 Aug, `ui/weekglide.ts:beginGlide`,
-    phone-only ≤820px, reduced-motion-aware, no-ops without layout). It slides TWO
-    FROZEN CLONES (owner, 24 Aug) — outgoing frozen on the finger's day, incoming
-    frozen on its landing day, both `overflow:hidden` so neither scrolls/flings, real
-    week painted but COVERED behind them (`pointer-events:none`, never
-    `visibility:hidden` — 5 Sep 26, a hidden week came back unpainted). Load-bearing
-    details: landing day derives from cross DIRECTION (`fwd?0:weekScrollMax`), NOT
-    live `scrollLeft`; the clone box is as TALL as the taller of the two weeks,
-    measured on both sides of the swap (5 Sep 26 — sized from the leaving week it
-    clipped a tall arriving Monday at a short week's height: the "split" / "lower
-    half black"); each clone is ONE opaque day card (`snapshot()`), inserted
-    ON-SCREEN under the leaving one and left two frames to paint before it slides;
-    real week covered so its fling/snap never shows. Clones at `z-index` 40/41,
-    BELOW the sticky `.topbar` (60) — keep them under the chrome. Don't slide the
-    live week, use a single clone, size a clone from one week, clone the whole
-    week, or start a clone off-screen.
-    Swipe NOT locked to one day (owner kept this) — no `scroll-snap-stop`; within-week
-    swipes never glide, desktop instant.
-    *[AMENDED 3 Nov 26 by [WEEK-SWIPE-CROSS] — his iPhone recording, the cross abrupt and some swipes only bouncing; a
-    fault fix inside this design, no new ruling: the landing is `pan.ts weekLanding` (on a phone Monday's own snap point,
-    12px in, not 0); neither clone snaps; the leaving clone starts where the day stands (a pull past the end capped at a
-    quarter of a day); the slide is 340ms, starting near the browser's own snap speed; the edge counts while the week is
-    still settling toward its end day, a quick flick of 24px crosses, and a swipe's direction is its first 10px —
-    `ui-contracts.md` §the snap-hold's next bullet The morning after (his recordings 05:41, 06:00): a swipe Safari gives the page no touch for — begun while the strip still glides into its snap — crosses by the strip's own pull past its end, `pan.ts pullPastEnd`.]*
-  - **Desktop arrows are continuous across weeks** (owner, 23 Aug), landings instant.
-    They **walk EVERY live day incl Sat/Sun to the FRONT before crossing** —
-    `weekScrollMax` = "last live day at the front" (`(liveDays−1)×dayStep` clamped),
-    the next-week peek's real columns are the runway; the JS-sized trailing spacer
-    stays (`.week::after`/`--week-tail`, desktop only). Don't reintroduce a fixed
-    `calc()` spacer or the flush-right ceiling. **One press = one day even mid-glide,
-    both directions** — `panDays` counts from the COMMANDED target (`panTgt`) via a
-    BURST CORRIDOR anchored at the burst start (`panAnchor`→`panTgt` = `panBase`); a
-    manual pan or new week drops it. Don't narrow the corridor back to the last step.
-    **A park NEAR a boundary counts as ON it, and a plain horizontal wheel drops the
-    corridor** (owner, 24 Aug) — `PARK_TOL` 0.35-of-a-day decides step counting and
-    edge-cross; `onWheel` drops `panWk` on any plain horizontal tick. Don't shrink
-    `PARK_TOL` to a hairline or remove the deltaX invalidation. **The glide OWNS the
-    week while in flight** (owner, 24–25 Aug) — the proxy scrollbar and any repaint
-    are pure FOLLOWERS: `panDays` arms a short `glideEnd`/`GLIDE_MS` window (cleared on
-    land or manual pan) during which `onTrackScroll` never drives the week, and a
-    mid-glide repaint holds the glide's TARGET (`panHold` in EditWeek/ViewWeek), not
-    the captured mid-glide position; `mirrorToTrack` records `trkEcho`. Don't remove
-    the `glideEnd` guard, revert `panHold` to pinning live `sl`, or let `onTrackScroll`
-    write unconditionally. Pinned `pan.test.tsx`; `ui-contracts.md` §desktop arrow
-    glide + §spacer; `performance.md` §Single-writer during a glide.
-  - **The desktop scheduler BOARD now has week navigation** (owner, 23 Aug) — `‹ ›`
-    week-jump chips inside `#sbDays` (`data-sbweek`, `boardWeekStep`, one press = a
-    week keeping the open day); `#sbDays` is `display:none` on a phone so the phone
-    board keeps its edge arrows. The `.crew-hint` edge hint stays RETIRED.
-- **Personal INPUTS are GLOBAL, not week-scoped** (owner, 22 Aug 26). `loadWeek` swaps
-  DAYS/DATES but NOT `INPUTS`; every authored week's inputs merge into one `INPUTS`
-  at boot (idempotent, boot-only → parity 728/0). Each week's schedule shows only its
-  own (builders match by DATE). Gotcha kept in `loadWeek`: it clears every input's
-  `acc` so `autoAcceptSeedInputs` re-lands date-matching rows on the fresh days. Don't
-  re-add the `INPUTS` swap or move the `acc` clear. Flow: `feature-impact.md` §Flow E.
-- **The flagging engine reads across week boundaries** (owner, 23 Aug 26). Two rules
-  fixed to look past the loaded week: `DAYS_RUN` (`VCONF.maxRun`) walks in seeded days
-  before Monday; Monday's `CREW_REST`/`CREW_TIGHT` runs against the previous week's
-  Sunday (so `REST[0]` is real). Bounded to those lookbacks + one lookahead day (the
-  midnight-tail sliver past Sunday + the forward crew-rest trace); nothing else looks
-  further — don't widen either window without a named case. **A flag still lands on the
-  day it BREAKS**: next Monday's breach only becomes clickable when next week is
-  loaded. **The forward "Breaks Monday" trace** (owner asked from the deployed site,
-  23 Aug, reversing this entry's old "don't build a same-page hint") — a loaded week's
-  Sunday whose late finish busts next Monday draws the same trace box, off
-  `nextMondaySeed` + a phantom pass of the real `crewRestDay` (one body, two callers,
-  can't drift); it carries `di:null` (no jump target) and writes no second warning.
-  `CREW_TIGHT` never traces. Session edits ARE read now via the stash
-  (`weekctx.ts:bundle()` checks it before the pure seed); `SCHED`/publish state still
-  isn't read by these seed functions. Rules: `engine-rules.md` §validation/crew rest;
-  screen: `ui-contracts.md` §Three crew-rest rings; `feature-impact.md` Flow F.
-- **Weeks remember their edits — the per-week stash** (owner, 23 Aug 26).
-  `engine/weekstash.ts` remembers, per week-start key, the last snapshot `loadWeek`
-  handed it on the way OUT — decided parts:
-  - **SUPERSEDED 17 Sep 26 — stashed weeks PERSIST.** The 23 Aug "session memory
-    only, a reload forgets" decision (and its reasoning that `INPUTS` and Leave War
-    forget in lockstep) was overtaken by the 8 Sep 26 storage work: `persistAll`
-    writes `inputs`, `people`, the `plan` layer AND every stashed week to the
-    whiteboard, and a built site runs on the Browser backend. A reload KEEPS them.
-    Memory-only is now just dev/tests/`?fresh=1`. Don't "fix" this by removing the
-    persistence — it is deliberate; see `docs/data-schema.md`. *(30 Sep 26: the weeks
-    are no longer written by `persistAll` but as ROWS from each command's changes —
-    `[DB-READINESS]` group A, phase 1; still persisted, `docs/data-schema.md` §The week record.)*
-  - **Pristine weeks are deliberately NOT stashed** (a persisted byte-copy of the seed
-    would outrank a later demo-week update forever). Stashed on the way out only if
-    changed since load or already carrying an entry. Don't re-add the unconditional
-    stash.
-  - **Publish state rides the restore** — the stash shares its SCHED field list with
-    `history.ts:schedFields` (the two serializers can't drift).
-  - **Seeds read the stash first** — cross-week reads go through `weekctx.ts:bundle()`,
-    stash ahead of the pure seed.
-  - **The "Sync" chip stays decorative** — per-browser, no server; don't present the
-    stash as shared/multi-device or move storage off `HOOKS.storeBackend`.
-  - Undo still re-baselines per week; the edit log stays session-only — the stash is
-    additive to both. Flow: `feature-impact.md` Flow E.
+## Speed of the dense screens
+- The board's ceiling of 1150 page elements is settled: the raise is not re-litigated and the board is not trimmed back to the old ceiling; its detail is in `performance.md` §The perf gate.
+- A dragged puck's ghost moves by one transform on its own layer, with the cells' hover lights off during a drag, and the measured dead ends are not chased again; detail: `performance.md` §D. Drag and drop, §Dead ends.
+- A changed day rewrites only its changed blocks, compared by their freshly drawn markup, falling back to the whole day when the shapes differ, and a drop finds its target before the ghost comes down; the measured dead ends are not retried; detail: `performance.md` §A, `ui-contracts.md` §Rendering.
 
-### Inputs & Admin
-- **Manage users lives on the Admin tab** (owner, 23 Aug 26). Topbar `#manageUsers`
-  and `#userModal` gone; same fields/list/mutations on `ui/AdminPage.tsx` (7th nav
-  tab, ALWAYS LAST, admin-hidden like Edit — but the PAGE is the gate, `#admDeny`).
-  Don't put the button back on the topbar or add a tab after Admin.
-- **No repeat-weeks on inputs** (owner, 22 Aug 26). The "Repeat wks" field, Recurring
-  column and `recur` write are deleted — the feature never actually repeated (one
-  span stored, `recur` a label nothing expanded). A truly repeating input is a real
-  future feature (build only if he asks); a member files the same absence per week.
-  Pinned in `inputs.test.tsx`. (`reference/` keeps its own Repeat field — test-only.)
-  Moving an `Other` row to Ground/Unavailable is the `→ Ground`/`→ Unavail` buttons
-  in `html.ts` (week + board); don't add drop targets to `drag.ts` (pucks only).
-- **The calendar day popover — five owner asks** (23 Aug 26, all in `InputsCal.tsx`/
-  `scheduler.css`; `ui-contracts.md` §The Inputs month calendar):
-  - A SANS input reads its F/O/A letters on the popover row too (`isSansAvail ?
-    (sansLetters||'F/O/A') : inpLabel`) — don't put "SANS Availability" back.
-  - The day TITLE matches the date number's size (15px/700) — don't drop the explicit
-    size (without it the input takes the 16px UA default).
-  - A cell NOTE is plain text, no box (the dashed accent border is gone); on a phone a
-    muted `--edge-2` bar so it stays visible — don't re-add the dashed border.
-  - The cell mini-pucks (`.ic-pk`) are standard-olive (`--fcp`), CAT a right-edge line
-    (`--pk-cat` via `::after`), a SANS person a purple LEFT line — pseudo-elements not
-    inline box-shadows. Not the old full CAT-tint fill.
-  - `+ Pucks` opens the MULTI-SELECT picker (`.ic-pick`): category buttons
-    (`personMatchesCat` — the SAME predicate as the highlight chips, one body) light a
-    category, ✓ Add batches the ticks (`addPuckRow`/`addPuckPeople`, dedupe). A seated
-    puck removes 3 ways (✕, right-click, drag off its row). Don't restore the
-    per-person `<select>`; keep `personMatchesCat` the one predicate.
+## Not built yet
+- The day lock is a simple mark, not a hard lock: a day shows who is editing it, set when he starts and cleared once his work is saved, so two people never edit it at once by accident; the database itself refuses nobody, since the app is used within the unit — at the database step, [DB-SYNC-MODEL] [D1751].
+- Once the app is in the database a scheduler edits a day by taking it — one day or several, by ✎ Edit or by a change on a day no one holds — others seeing "<callsign> – editing" and reading it only; it frees after 30 minutes with no change by its holder on that day (a warning at 25), or at once when he closes the page or signs out; changes save as made and "Done editing" releases it — [DB-SYNC-MODEL] [D355, D356, D451, D454].
+- Others' changes arrive by themselves every 30 seconds, and fast sync (every second) switches itself off after 20 minutes or when the page is left, with a note, one tap turning it back on; an admin may take a day over but asks the holder first ("Saber asks to take over Tuesday" — Hand over / Keep editing), no answer in a minute handing it over, Keep editing telling the asker, who may still "Take over anyway", every take-over first saving the day as a saved plan "<callsign> — at take-over HH:MM" — [DB-SYNC-MODEL] [D452, D454, D451, D355].
+- The change history and every other record of who did something show the person's name as it was at the time and keep the person himself underneath, so his record can still be found after a rename — the rest at the database step, [DB-ONE-MASTER-FIXES] [D1589].
+- Before the app is put out for testing, signing in always opens on today's date; until then it may open on the demo week's date, because the demo data is what is being worked on — [LOGIN-OPENS-TODAY] [D1383].
+- A flying line with only its front seat (FCP) filled works as fully as a two-seat line, its checks, marks, counts and pages included, so the app can serve F-16 squadrons (some jets single-seat) and F-35 squadrons (all single-seat); an admin switch hiding the back seat (RCP), one of the aircraft-type settings that carry a type's rules, is his idea, designed with him first, and the rules a single-seat jet needs are new rules, designed with him later — [SINGLE-SEAT] [D1099, D1100, D1101].
+- A crossed-out man's reason in the crew list says each fact once: where the kind's meaning and his own remark repeat a fact it is said once, and a fact only one of them carries stays; done later, not in the right-panel job, on its own or with the words pass, his to place — [CREW-REASON-TWICE] [D1121].
+- A "?" where a row has no timing or no end time is a future job, scoped with him first — [ROW-NO-TIME-MARK]; the "~" was declined [D361, D360].
+- An Admin "Display" area of section fold defaults is not built: put it to him again only when Admin or the section folds are next touched — [ADMIN-DISPLAY] [D161].
 
-### Leave War grid & scheduler render/drag performance
-Full detail for this whole group: `docs/performance.md` (Part 1 invariants + Part 2
-ledger). Read it before any layout/render/drag-touching change.
-- **The board DOM ceiling of 1150 is settled** (owner, 28 Aug 26). Raised 960→1150 in
-  PR #333 (board ~1051 nodes; timings held at 0.57× reference). Lives at
-  `DOM_CEILING` in `perf-port.cjs`. Don't re-litigate the raise or trim the board to
-  the old ceiling. (`performance.md`.)
-- **The Leave War grid — the open-bidding box, opening on the war being bid on, the window of months** — moved 24 Sep 26, whole, to `../.claude/rules/decisions/leave-war.md` §Settled before this list → Leave War grid performance.
-- **A dragged puck's ghost rides its own compositor layer, moved by ONE transform;
-  cell hover highlights are off in flight** (6 Sep 26). `.dragimg`/`.tdghost` carry
-  `will-change:transform` with left/top pinned at 0; `drag.ts ghostXf` writes
-  `translate(x,y)…` — no page paint (left/top moves relaid the whole page, ~170ms/
-  move). The three cell-hover rules are scoped `body:not(.tdrag)` (`.dragover` is the
-  drag's feedback). Don't move the ghost by left/top or re-enable hover under a drag.
-  Measured-and-done dead ends (don't chase): toggling ghost `pointer-events`,
-  any cursor rule on body, every re-layering ghost variant (the cost is the page's
-  ~230 compositor layers, not the ghost); the `translateZ(0)` "fix" was a broken-
-  experiment artefact, retracted. Nothing here touches native drag. `performance.md`
-  §Drag; `ui-contracts.md` §the mouse rides the pointer machine.
-- **A changed day rewrites only its changed BLOCKS, and a drop hit-tests before it
-  takes the ghost down** (6 Sep 26). `ui/dayswap.ts` parses the new day into a
-  `<template>` and replaces only the top-level/`.day-body` blocks whose CANONICAL
-  markup (freshly parsed, never the live decorated node) differs from the last write;
-  any shape mismatch falls back to whole-day replace (the old `outerHTML=`). Both
-  weeks use it (keep `prev.chunks`). `drag.ts onPointerUp` hit-tests with the ghost
-  still up, removes it after, leaves `body.tdrag/.mdrag` to `tdClear()`. Drop long
-  task ~600→400–490ms at 4×. Dead ends (don't retry): every paint-isolation variant on
-  the week (equal/worse — the ~60–100ms repaint records the two visible days); a
-  "quiet path" in `refreshHighlights` (2× slower). Don't swap by live `outerHTML`
-  comparison, match blocks by index across a count mismatch, or take the ghost down
-  before the hit-test. Pins `ui/dayswap.test.ts` (`drag.test.tsx` unchanged).
-  `performance.md`; `ui-contracts.md` §Rendering (per-block swap).
+## Settled — leave as they are
+- A sortie with its take-off typed and its landing blank or "TBD" counts no hours in Insights and raises no long-day note, as built — kept [D1936].
+- The design checker skips the gold history dot in History mode's style file: one gold dot in a box's corner is not a dotted grid pattern, so it is not flagged [D1890].
+- Three stand as built: the no-times warning's tap outlines its line as every line-anchored warning does; a seatless row of a flying shift keeps its lit "✓ FLIES" though it counts nothing; the Flies chip keeps the badge's size on the board [D1067].
+- Insights counts a flying line with nobody on it as a sortie and its formation as a formation — the same count as the day's own heading [D1009].
+- A blue/red answer can be changed to the other colour but not put back to "not chosen" once the sign-in has ended — left as built; Undo still clears it while he is signed in [D603].
+- Of the phone faults looked at on 4 Oct 26 only the phone board's desktop layout was fixed; the crew list's header overlap and the popup behaviour were left as they are [D548].
+- A rule changed on the Logic page moves Insights' work hours at once, published days included — as built, not a defect; do not hold the hours or re-file it [D482].
+- The amber "already on …" note stays: a drop that recreates a clash already hidden still says once, to the scheduler doing it, that the man is busy then — leave it [D479].
+- Loading an older issued version puts back every row that version had — a deleted request's row included — and the pending list names it; left as built [D363].
+- AL8 and every later amendment wear AL7's orange, the tag's number telling them apart — no new colours [D362].
+- As built: changes that belong to no single item sit under one group, "The day"; on a desktop a remark's gold dot sits at the far right of its column; in the week view an input covering two days is an item under each day [D346].
+- The changes window's eleven readings stand as built — among them the history outlives a sign-out and a reload, what is new kept per person; one count a day; History mode on while the window is open; the admin's clock icon on Edit Schedule only; members see the To go out tab, read only — the whole list in `raptor-port/docs/handpass/2026-09-28-draft-pending.md` §10 [D338].
+- A struck name in the crew list looks the same whether a tap will be refused or only warned — the words say which [D279].
+- A placeholder (ALL / ALL AVAIL) may stand on a row nobody filed twice — "one man, once per row" is about men — but an input takes ALL or ALL AVAIL, never both, never the same one twice [D278, D753, D755, D776].
+- In OIL Earn mode his own puck that earns nothing keeps its purple "this is you" ring, faded with the puck [D277].
+- One man in both seats of one jet stays a warning (the red "two events at once"), not a refusal — "once per row" covers rows of people's places, not a flying line's two seats [D276].
+- The desktop week keeps no room beside the ‹ arrow: the front day sits flush at the left, the arrow floating over its first few pixels — not re-added without his ask [D275].
+- The four sign-offs stay as they are: an admin picks all four names, whoever is signed in — convenience wins [D212].
+- Keep it: when a leave or downchit is stretched or trimmed, every published day it still covers reads "1 pending" and its four sign-offs fall, because the "till <date>" note it printed is out of date; View-only Sched keeps the old words until the next AL [D189].
+- Keep it: a man's CAT, seat or posting on his puck and a blank line's suggested brief time stay as published until the next AL, a change to either reading pending and taking the four down; a callsign rename updates the published schedule at once — the one printed value for which the "no rule versioning" invariant is narrowed [D186].
+- Taking a man off a seat leaves no mark on the row — the seat simply reads empty, the change still counted and going out like any other; don't build a mark, and a walker who finds it has found this ruling, not a fault [D91].
+- On a phone the ALL AVAIL window keeps its full-width bottom panel, 62% tall, movable and never resizable — no touch resize corner, and the question not put to him again unless he raises it [D77].
+- The availability window stays narrow — step before take-off to dekit after landing, never widened to the report or the debrief — so a man in an ops brief slotted before his step, or before a debrief moved later, counts as available and is shown flagged; nothing to build, and the gap is not a fault to close [D36].
+
+### Settled before this list — his decisions of Aug–Sep 26, moved from the project guide on 24 Sep 26
+- His settled decisions from before the numbered rulings (to 21 Sep 26), moved here from the project guide on 24 Sep 26 and stated here since 9 Nov 26 under their old groups' names, are tripwires — not rebuilt, re-proposed or re-litigated — and a later ruling that changes one wins; each one's built detail is in the reference doc it names [D138, D140, D141, D390, D1735].
+- The late-input mark: the LATE mark on an input is a mark, never a warning — never in the checks list, never closing a slot, unseen by the rules engine — and it measures the input's last change; but for every kind of input what a scheduler changes on its row on the schedule — on the Unavailable list and under Personal Inputs as on the Ground Programme — changes the input itself and never makes an on-time input read late [D742, D739, D740].
+- The late-input mark: a downchit never reads late, while leave and an overseas duty stay in scope as things applied for; neither is re-proposed; detail: `engine-rules.md` §The late-input mark.
+- The late-input mark: it reads in the remarks cell on every surface that draws an input, except the board's promoted ground row, which keeps its amber row edge because its boxes cannot hold a chip; detail: `ui-contracts.md` §The late-input mark on screen.
+- The late-input mark: it stays the word — a compact dot was offered and declined, its cost on a phone accepted, the badge never shrunk to save the space, and the measured dead ends not retried; the measurements are in `ui-contracts.md` §The late-input mark on screen.
+- The late-input mark: a scheduler drops a late input's mark by tapping its chip on the board's Personal Inputs or Unavailable row and taps the same spot to bring it back; the Inputs page keeps printing the mark as the paperwork record; only an admin writes the drop; the gate stays at the printers, never in the engine, and no global hide button returns [D1586, D1620, D1621].
+- The late-input mark: a dropped mark is dropped for everyone — saved on the input, so every scheduler and member sees it gone, and it stays gone after a reload, a sign-out and a week change; a tap on the dimmed chip brings it back for everyone; a member's own later change of his input takes the drop off, LATE showing again for everyone if that change is late until a scheduler drops it again, while a scheduler's own change keeps the drop [D1586, D1620, D1621].
+- The late-input mark: on a day already published a drop leaves the issued schedule at once, as built — nothing reads pending and the four sign-offs stay, never waiting for the next amendment as a hidden warning does (D471) [D1621, D1586, D1620].
+- Board behaviour: the top bar carries no warning, advisory or note counts — each day leads with its own issues line — and the sum is not put back; detail: `ui-contracts.md` §No warning / advisory / note counts in the top bar.
+- Board behaviour: nothing on the board re-orders itself while a scheduler types: Auto sort and Sort all, by start time, are the only reorderers, and no automatic sort is added to any board list — the Ground Programme's time order on every draw predates this and stays.
+- Board behaviour: on a standalone line MAIN or SPARE is a badge above the remarks box, a button that flips the line in edit mode and a chip elsewhere; the flip is a real change the rules engine reads and the next amendment carries, never a label only, and the old placeholder is not restored; detail: `ui-contracts.md` §The board edits everything the week does.
+- Board behaviour: on an SC line the B box is the crew's in-time, not a brief — no suggested-brief ghost and no "in-time · N ac" header note; a typed one anchors the crew's rest, an early one on a MAIN starts the long-day span and raises the in-time advisory, blank changes nothing, AVALON and BB untouched; the week draws it as the board does [D1083, D1085].
+- Board behaviour: an amendment mark is drawn only on a published day: an edit on a draft day shows no mark, though it is still counted as pending and goes out with the publish, and a draft-day mark is not re-added; detail: `ui-contracts.md` §Amendment marks on screen.
+- Board behaviour: a new flying line from "+ Line", and a plain flying wave's first line from "+ Wave", comes up blank — no copied callsign, mission or times, no seeded "NEW / 12:00" line and its suggested brief — while a standby wave keeps its own shape.
+- Waves & duties: no wave makes a duty desk and deleting a wave leaves duty blocks alone: every desk comes from a "+ Block" template, and a template naming SC, AVALON or BB mints its desk as that wave's — exempt as its wave is, earning no OIL, an SC desk an SC seat for the spare rule — and the wave-to-desk link is not re-added; detail: `engine-rules.md` §Duty desks minted from templates.
+- Waves & duties: "+ Wave" lists saved flying-wave templates beside its built-in kinds, each template of one kind only; placing one makes an ordinary wave whose own kind drives the checks (the engine never reads a template), a standby template keeps the built-in's shape, the library starts empty and any kind can be hidden from the list; detail: `ui-contracts.md` §Duty templates.
+- Waves & duties: the "+ Wave" menu's one gear opens one sheet that edits the templates and shows, hides or deletes them — built-in kinds hide but never delete — Admin keeps only a door to the same sheet, no second button or sheet comes back, and a hidden wave is never stranded: the "N hidden" line and the eyes are the way back; detail: `ui-contracts.md` §Duty templates.
+- Waves & duties: each wave kind's one-line checking note has one source, shown the same on the template picker and as that kind's check line on the Logic page, kept apart from the built-in popup's count, and a change to a kind's rule changes its note in the same change; detail: `engine-rules.md` §Editable rules (Logic tab) [D928].
+- Waves & duties: what each leave or absence type costs is one sentence from one source, read by the Inputs "?" legend, and the other descriptions — the built-in wave popup, the standby caption, the OIL question's wording — stay separate on purpose; detail: `engine-rules.md` §Input types, their predicates, and when an input counts [D928].
+- Waves & duties: Admin's Default arrangement sets the house order of the sections, which every day not arranged by hand shows, and an optional order of the wave kinds applied only when a wave is added to a day not yet signed off — never re-ordering an existing or published day, and never a display-only layer.
+- Drag-reordering: sections and waves move by dragging their own dotted grip, inline in the header, at every width, the header never selecting its text; no Arrange sheet, drawn rail or arrows come back.
+- Drag-reordering: on the board Overall Notes and the Common Programme are two sections dragged apart, while Edit Schedule's week still prints the day notes inside the Common Programme block.
+- Drag-reordering: the four crew panels — Personal Inputs, Available crew, SANS availability, Unavailable — drag in the same one order of the day as the other sections, on the board and Edit Schedule, as the scheduler's workspace, never reaching View-only Sched; a section drag changes display only and offers "Set default order?", a wave drag is a real amendment, and a held drag scrolls at the screen's edges.
+- Drag-reordering: every board row moves by its dotted grip at every width — no ▲▼ nudge, the grip never hidden on a phone — and each grip's centre lines up exactly with the box beside it, re-measured whenever a grip moves.
+- Drag-reordering: on a phone the row control strips stay always visible: the ⋯ collapse was built and rolled back the same day, and is not rebuilt or re-proposed; detail: `ui-contracts.md` §The board on a phone is ONE window.
+- Time format: every time in the app reads as 08:00 — colon, 24-hour, everywhere — whatever is typed (800, 0800, 8:00) or minted, through one display fold, the only exception the area window's compact token, which changes only on his word.
+- Week navigation: the phone board's top bar keeps one first line — a new control there displaces one — the day is stepped by the two arrows, continuous across weeks, with no swipe rebuilt, the day name three letters on a phone, and a step on the board never re-checks or wakes the week pages; this is the phone board's settled one-row rule.
+- Week navigation: weeks are reached by a rolling window of four week buttons and a calendar that lands the exact day picked, all week arithmetic in one place, and the fixed chips, the big week title and the end-of-week stop are not re-added.
+- Week navigation: on a phone the week pages step day to day by swipe, continuous across weeks, never locked to one day; the cross between weeks glides as two frozen copies over the real week, which stays painted beneath; the cross stays as built on the phone and the desktop, the swipe past Monday or Sunday still sliding into the other week, and the end cards are not built [D1577].
+- Week navigation: on a desktop the arrows step one day a press, even mid-glide and in both directions, walking every day of the week to the front before crossing, continuous across weeks, and nothing else moves the week while a glide is in flight; detail: `ui-contracts.md` §The aircrew panel's day is pickable.
+- Week navigation: on a desktop the board's day row carries week arrows — one press a week, keeping the open day — and the old edge hint stays retired; detail: `ui-contracts.md` §Stepping the day by two arrows.
+- Week navigation: personal inputs belong to no week: changing the loaded week never swaps them, and each week's schedule shows only the inputs dated in it.
+- Week navigation: the checks read across the week's edge only for the run of days and Monday's crew rest (one day ahead for the midnight tail and the forward trace), not widened without a named case; a flag lands on the day it breaks, and a Sunday that breaks next Monday draws the trace with no second warning.
+- Week navigation: a week keeps its edits when another is loaded and after a reload, while an untouched week is never stored (a stored copy of the demo week would outrank a later update for ever); its publish state rides with it, and nothing presents this as shared between devices until the database.
+- Inputs & Admin: managing users lives on the Admin page — never back on the top bar — the Admin tab is always the last tab, and the page itself refuses a member, not only the hidden tab.
+- Inputs & Admin: inputs do not repeat over weeks — a member files the same absence each week, a repeating input built only if he asks — and an Other row moves to Ground or Unavailable by its two buttons, never by a drop.
+- Inputs & Admin: on the Inputs calendar's day a SANS input reads its letters, not "SANS Availability"; the day title matches the date's size; a note is plain text with no box; the small pucks are olive with a category line; and "+ Pucks" opens the many-person picker with the highlight chips' one category test — each as built, not undone.
+- Render and drag performance (the board's ceiling of 1150, the dragged ghost, the per-block swap): stated under "Speed of the dense screens" above.
+
+## Built, stated here: their tests hold only part
+
+### Every screen
+- On a phone, a box tapped to type in that the keyboard would cover — every box in the app — rises in step with the keys, proportionately, to sit just above them when they open, and nothing else on screen jerks, bounces or jumps, even for one frame, as the keys open or close: not a box already above the keys, no window shortening and growing back or showing the page behind it [D1048, D1081, D1412].
+- Whatever follows the visible screen as the phone's keys open or close — the Scheduler Board, the Leave War's sheets and bars, the calendars' day panels, a window raised for the keys — moves with it smoothly, the same checked everywhere the app follows the keyboard; the app's smooth feel outranks any mechanism, and a fix that trades it away made the app worse [D1081, D1412, D1048].
+- In every time box on the Scheduler Board and the week — R, B, take-off, landing, START, END, duty and sim times — one tap then typing replaces the time and one tap then Backspace clears it; a second tap, dragging the caret or an arrow key puts the caret where he wants it and digits are then edited as usual, the same with a mouse [D1047, D1080].
+- One tap then typing replaces the value in four more places: the duty and wave templates' time boxes, the Leave War's typed numbers (a counter's amber and red numbers, the OIL figure boxes), the SANS settings' and the late cut-off's number boxes, and the Logic page's settings [D1080, D1047].
+- In a calendar inside a form — the OIL question's "Only some days…" and an input's own window — and in the calendar that floats over a date box, Escape with the month or year list open closes only that list; a second Escape closes the form or the calendar [D1012, D1020].
+- On a phone every window that pops up for a task — the schedule's own input window, opened from Edit Schedule or the Scheduler Board, among them — stands in the middle, as tall as what is in it up to the visible screen less 24px: a tall one runs up to a thin strip at the top, never a large gap nor a short box to scroll inside while the screen above stands empty, and one with little in it stays short; only the day panels pulled up and down by their bar (the Inputs and SANS calendars' day) and the ALL AVAIL and changes windows stay at the foot [D537, D706, D995, D996, D997].
+- The windows of the Inputs and SANS calendars' job, and the Leave War's panel for picked days, can be dragged and leave the page behind working: a click outside acts on the page and the window stays, closing by its ✕, Escape or its finishing button — for these windows the rule that a popup closes on a click outside is set aside [D641, D642].
+- The app has one date calendar of its own on the iPhone calendar's pattern in the Raptor look — its month and year a title opening a scrolled month-and-year chooser, a today icon right of the year, no reset, no tick, a tap picks — used wherever a date is picked [D796, D797].
+- The one calendar sits by what the date is to its form — one box among others opens it over the form, and where the dates are what the form is for it stays inside, never folded — and its weeks start on Monday [D797, D916].
+- The app's one date calendar has no "Clear" under it anywhere except the Leave War's bidding dates, which keep a small "Clear dates"; today shows on the Leave War's calendars too; every date is finger-sized, a smaller one only where a sheet would not fit his iPhone, shown to him first; and the Inputs list's date filter uses it [D901, D797].
+- A picked answer that also has the keyboard on it shows one ring, never two: the keyboard's ring sits on the picked answer's own edge, one slightly thicker cyan ring [D842].
+- While a bar that stays is up under the top bar — the "Not saved" warning, the OIL bar or both — the line under it is the bar's own amber, never the top bar's cyan edge, and the two bars are the same height [D841].
+- The wordings reworked by the writing guide are the ones built, as its page gives them — the passing notes N1–N4, N7, N10, N11, N14, N16, N19, N24 and N26, the clash note's words and the OIL question's words; N8 is not built, N33 stays removed, and the two bars he ruled with a dash keep it; the words: `raptor-port/docs/superpowers/briefs/2026-10-13-wording-recheck.md` [D837, D839].
+- The notes left whole on 13 Oct 26 had their dashes changed as the writing-guide page's section 3 gives them — every word kept, the dash becoming its linking word, a colon or a full stop — N12's sentence now in D845's words [D838, D844, D845, D1782].
+- The ten wordings a fresh reader tripped on are built as the writing-guide page's section 4 gives them, each replacing its note's wording in the other two lists; the tenth, the OIL question's small print, was later deleted [D839, D846].
+
+### The week on Edit Schedule
+- Edit Schedule, like View-only, never shows the browser's own grey sideways scroll bar on a desktop — the week's foot bar is its one sideways scroll — and that foot bar fits the week each time the crew panel is hidden or shown [D1528].
+- On Edit Schedule's week on a desktop, the AIRCREW panel's heading with its day picker (‹ Monday ›) stays in sight while the page scrolls down, so the day the crew list is for can always be seen and changed [D1116].
+- A flying line's callsign on the week wraps onto more lines and its cell grows downward, the whole name always shown, never cut to "…" — on Edit Schedule, View-only Sched, a published day and the next-week peek — the column taking no more room from the remarks (76px on a desktop, 50px on a phone, 36px on a phone under 375px wide) [D367].
+- Each formation has its own rally time in a box of its own: on the week (View-only Sched, Edit Schedule and the next-week peek) a flying row's second time column is R over B and the third TO over LD; the Scheduler Board stacks R over B and TO over LD on a phone and up to 1099 wide, and keeps R · B · TO · LD in one line on a wider desktop; the typed lines above the wave are for the in-time only, their button "+ In-time" [D1026, D1029, D1781, D1036, D1040, D1041, D1083, D1085].
+- The "+ In-time" button fills a wave's first line with its earliest take-off less Logic's "Nominal report before T/O" (3 hours by default), and on a wave that already has a line copies that line's clock, left as built; the words it writes are a free-text Logic setting beside that time, by default "in time + WX/NOTAMS" [D510, D511, D600, D1026, D1034, D1029, D1036, D1781, D1040, D1041, D1083, D1085].
+- No timing-order problem blocks publishing: an in-time, rally or brief out of order is a red warning in the warning list, explained while the draft is edited, and the day can still be published, like every other warning; a blank brief is checked as the suggested brief and its message says "suggested brief" [D509, D502].
+- A reporting clock later than its formation's take-off is read as the evening before — never more than one day back — with no routine line explaining the day and no change-day control [D503].
+- On SC, AVALON and BB lines — Edit Schedule, View-only Sched and the next-week peek — the second time column is R over B and the third START over END, the B box showing the line's own B as the Scheduler Board does; on the Scheduler Board such a wave's headings read START and END where a flying wave's read TO and LD — R · B · START · END in one line on a desktop, R over B and START over END on a phone [D1083, D1084, D1085].
+- On a phone the standby wave's START over END heading stands at 7 against the headings' 8.5, with no letter spacing, so START fits its column with room for an iPhone's wider letters, a desktop keeping the normal size [D1084, D1083, D1085].
+- SC, AVALON and BB lines have a rally box too, as the flying formations have, so every wave is the same: it sits above B, in the same R-over-B column as a flying line, their take-off and landing boxes staying as they are; a rally typed on an SC MAIN line starts that crew's day as SC's in-time box does — crew rest, the long day, work hours and OIL — and a rally (or a B) typed on any standby line makes the whole line fly [D1036, D1040, D1041, D1044, D1045, D1083, D1085].
+- On SC, AVALON and BB lines an empty R or B box counts for nothing and shows a faint dash in the app's grey ghost (the colour of the faint "Remarks") — never a suggested time — so a new user sees they are normally left blank and the shift's START and END carry its times; typing replaces it and a typed time shows as usual [D1065, D1036, D1039, D1040, D1041, D1083, D1085].
+- A suggested time — the brief's, and a formation's default rally — sits faint inside its own empty box, never on a line of its own above it, so a row's boxes stay level and the row grows no taller; one tap puts it in, the time turning ordinary white at once with the app's plain blue ring as a short flash — about a second, not the six seconds of a thing just added — so it reads as accepted, and whatever is typed next replaces it at once, the scheduler never deleting it first [D1030, D1028, D1035, D1038, D1037, D1039, D1065].
+- On SC, AVALON and BB lines no worked-out brief or rally is shown faint (their empty boxes keep only the faint dash), the flying lines keeping their suggestions; a brief or rally that is typed is used in the timing checks [D1039, D1037, D1065, D1030].
+- An SC, AVALON or BB line that actually flies is a real flight — in the day's flying count and Insights' flying load, earning OIL by default, with every warning an ordinary flying line gets — and the standby lines are a planned schedule: a "Flies" tick is what makes a row count as a flight, typing its B or R ticking it by itself, and with B or R typed every row on the line flies, its SPARE rows included, on the line's planned START and END — no separate take-off and landing kept [D1042, D1043, D1044, D1045, D1061, D1060, D1064, D1066].
+- For a flying SPARE its crew rest and its OIL change, its day ending at END with no debrief added; a standby row activated later with nothing typed is ticked by hand, which lights that one row only, never its shift, a second tap taking a hand tick off; a rally is never typed on a standby line that will not fly [D1045, D1044, D1061, D1043, D1060, D1064, D1066].
+- A row on a standby line with B or R typed that does not come in is cancelled with its own CX, as any jet is — its crew rest, OIL and count go and the rest of the line still flies — and there is no untick [D1046, D1043, D1044, D1060, D1061, D1064, D1066].
+- A standby row with nobody seated counts as no jet or sortie even when its shift flies (an SC AM with R typed and both SPARE rows empty reads 2 jets, not 4), while an ordinary flying line with nobody on it still counts [D1062, D1009, D1043, D1044, D1060, D1061, D1064, D1066].
+- Beside each MAIN / SPARE badge on a standby row (SC, AVALON, BB), phone and desktop, a "✓ FLIES" chip shows lit where the row flies — on the Scheduler Board, Edit Schedule's week and View-only Sched, read only there, for a member and on the next-week peek; the dashed "FLIES" chip, the way to tick a row by hand, shows only on the Scheduler Board, and the week shows nothing on a row that does not fly; duty desks never carry it [D1060, D1063, D1064, D1066].
+- On Edit Schedule's week and View-only Sched the "✓ FLIES" chip is drawn smaller than the badge and sits under it wherever the two do not fit side by side, its word kept whole, a chip never breaking inside, rows that only stand by unchanged, the board's tap button keeping its size [D1066, D1060, D1064].
+- The board's wave header shows a small "(prev day)" where a wave's in-time / rally is the evening before; a rejected input is called "rejected", never "removed"; a Ground Programme row's "till <date>" stands in grey after its remark box [D949].
+- Tab follows flow B on the week and the board — callsign, mission, brief, take-off, landing, then remarks and stores — through the open sections in their displayed order, and Shift+Tab reverses it; the formation's rally box, added later, stands after the mission as built (the agent's reading) [D554, D555].
+
+### Crew and pucks
+- The count opens the ALL AVAIL window, which replaced the name bubble: real pucks with their flags — a clash shown, never filtered out — pilots left and WSOs right, one per row at every width; movable by the app's six-dot grip and resizable on a desktop, where it opens skinny, 212px wide (186px its floor), never blocking the schedule behind; the counter reading "ALL AVAIL · 27", no "free"; the earning half only while OIL Earn is on; the approved mock-up its design of record; over the board a window not yet moved opens below the board's bar [D38, D39, D40, D41, D51, D77, D1106].
+- An ALL AVAIL or ALL on a row with a start and no end shows its count — a plain number, no "~" — worked out over the Logic tab's one-hour default, the window naming the assumed hour (a change of that setting on a published day reads pending), and credits nobody OIL: where OIL is decided the admin is told "No OIL worked out — this row has no end time"; the crowd is frozen at publication like any other; a row with no start shows a "?" that opens its reason [D360, D361].
+- An ALL AVAIL / ALL input lands on the Common Programme, in time order, for every kind it is offered for — never moved between the two programmes, reject still taking it off; changed to named people only it goes to the Ground Programme, and back with ALL AVAIL; everything else about it is unchanged [D955, D957, D958].
+- On a day where an ALL AVAIL / ALL input stands on the Common Programme, the Ground Programme's line stands under the Common Programme's heading too — "to take an input off, press reject on it in Personal Inputs below." — on the Scheduler Board and Edit Schedule's week, never on View-only Sched; and where its row sits there, the three places that named it "ground" say "Common" [D957, D958, D955].
+- Every copy of a man's puck on a day — the Ground and Personal Inputs rows, the SANS card, the Unavailable row and the crew list — wears his seat's crew-rest ring (dotted, dashed or solid) and chip; an open issues list lights its crew without hiding those rings, a lit puck keeping its dotted or dashed ring and standing out because the rest dims; when tomorrow's crew-rest warning is focused, the day before keeps the dashed "same man, other day" mark over its dotted ring, as built [D1013, D1017, D1021].
+- In the crew list a man whose only task that day is standing by — on an SC SPARE line, an AVALON or BB line that does not fly, or that standby's desk — is never faded as tasked: the standby look, counted in "N free"; the day's figures and the Leave War are not changed [D1120].
+- The button on an accepted input's row that takes it off the programme (or back out of Unavailable) reads "Reject", not "undo" — on the Scheduler Board and Edit Schedule's week, phone and desktop; what it does is unchanged, and the row still offers accept again [D945].
+
+### Inputs on the schedule
+- A row that came from an input is the input: whoever stands on it — a named person or ALL AVAIL / ALL, whoever put them there, one person at first or several — is in it, the schedule and the Inputs calendar always show the same people, time and remark, a man dropped on the only man's puck replaces him, the member is told by his bell and may always take himself out, and a drop that cannot apply is refused with its reason [D755, D776, D762].
+- On every row that came from an input the pucks are the input's people: a puck taken off takes that man out of the input, and a puck put on adds him, as in the input's own window [D734, D755, D776].
+- A person or ALL AVAIL dropped on an input's row shows on the schedule and the Inputs calendar alike and follows the input's OIL answer; ALL AVAIL stays when anyone leaves; the member is told by his bell; a drop that cannot apply is refused with its reason [D757, D755, D776].
+- A time or a remark the scheduler types on an input's row — a shared input's, or a one-man request's — changes the input or the request itself, for everyone in it: the schedule and the Inputs calendar always agree, and what was filed is kept only in the change history, with the scheduler's name [D739, D740].
+- An input is stored as one record with the list of its people, never one record a person kept in step [D756, D759].
+- On the schedule a group input is one row holding everyone in it, on Personal Inputs and the Ground Programme; on the Unavailable list an input for several people — leave, an overseas duty, a course — stays one row a man [D661, D737].
+- One shared row has one time for everyone on it: to give one man another time, or to cancel it for him alone, the scheduler takes him off and gives him a row of his own — the row never splits or joins by itself [D735].
+- The window a tap on a shared input opens from the schedule — its line under Personal Inputs, its row on the Ground Programme — shows everyone in the input and changes it for everyone, as its window on the Inputs page does, never one man's form [D748].
+- A Personal input is the same as an Event for everything about people — several people, ALL AVAIL or ALL on a one-day one, a member may file it for others under the same switch — and it is still not work: no OIL question, nothing earned [D778, D776, D712].
+- A Personal input may hold several people, as every other kind does, and a puck dropped on its row swaps or joins as on any input's [D776, D778].
+- The input kind "Event" is a commitment like the others: it asks the OIL question (it is work, it may be official), clashes as a Ground Programme item does, shows on the Inputs calendar and lands on the schedule unless an admin takes it off, for ALL AVAIL, ALL or several people [D713, D714].
+- An input filed for ALL AVAIL or ALL stands for whoever is free, worked out live and changing as availability changes; members may choose it too; it shows on the day and the schedule only, not in each man's own inputs or bell; for the kinds D712 lists [D702, D711, D712, D778].
+- An input filed for ALL / ALL AVAIL is one day at a time, never an overseas duty or a course; its filer answers the OIL question once for everyone, the scheduler may switch any one man, and an unanswered question goes to the filer's bell, his only [D711, D712, D762, D778].
+- When ALL AVAIL or ALL is one of a shared input's people, the men behind it follow the input's OIL answer and the scheduler may still switch any one man; it is offered only where the input is a single day, and an input takes ALL or ALL AVAIL, never both [D753, D755, D762, D776].
+- An input's own title is for the "Duty & other commitments" kinds only, never leave or medical; it shows wherever the kind's name stands as a name, the kind small with it where there is room; "Other" takes the same title box and its remarks become plain remarks; the kind still decides every rule [D716, D717].
+- Where an input's title differs from its kind's own name the kind stays in sight, small — under the title on the schedule's row and on the opened day's card's small-print line [D717, D716].
+- A CX the scheduler puts on a row that came from an input cancels the input itself — the Inputs calendar shows it cancelled with its reason, the member is told by his bell, it goes with the input if it moves — and the red box and "information only" go with the input too, shown on the schedule only [D760].
+- A cancelled input on the Inputs calendar's card and the List's row shows a small red "CX" tag before its title, the title struck through, and the reason after it in red — left out where there is no room for it, by his word; on the month's bar its words are struck through and the bar faded, with no tag [D767].
+- A member's bell says "Filed under Unavailable" when a scheduler files his input there and "Taken out of Unavailable" when it leaves it, by a Reject or by "Goes to" moved back to the programme — never "Back on the programme" or "Taken off the programme" for those two [D815, D1356].
+- The small choices of the Inputs pages are as answered "yes to all" on their pictures page — each an as-built line in `raptor-port/docs/ui-contracts.md` — save answer 4, which D762 changed: a shared input's OIL line states its one answer [D731, D762].
+
+### Warnings and the rules engine
+- A formation's R box counts exactly as a typed rally did: the earliest applicable in-time or rally starts its report (with no in-time, the rally) for crew rest, OIL and the rest, where it is the man's first event; a typed line that still says RALLY stays a rally and never becomes a formation's in-time: a whole-wave in-time is every formation's in-time, except a formation whose own typed in-time line carries its callsign [D1032, D1027, D1031, D1034, D1786].
+- An empty R box's default — take-off less the Logic page's one existing report setting, 3 hours to start, renamed to say it is the default rally, never a second setting, the same time "+ In-time" fills in — counts only where no in-time or rally is entered, then starting his long day and Insights hours as it does his OIL [D1031, D1032, D1027, D1786, D1034].
+- A hidden warning stays hidden for everyone, across a reload and a sign-in, until someone flags it again: no puck carries its flag, the day's count drops it and says nothing of it, and its line stays in place in the day's list, struck out and darker — dashed-outlined with the Reset arrow on Edit Schedule, no arrow on View-only Sched — a day with every issue hidden keeping a quiet "✓ No issues" bar that opens the list; on a published day a hide waits for the next amendment, and the published and printed schedule drop the hidden flag too [D469, D471, D472, D475, D1792].
+- A long work day is grey wherever the app shows it — its line in the day's issues list, the ring on the puck at rest, and the ring that lights when the list is open or its line is tapped — never amber [D751].
+- An Event clashes as Training, Appointment and Duty do — a red clash across a standby shift, never Meeting's amber advisory — and there is no "count me in / out" [D714, D713].
+- The yellow RULES MODIFIED tag never shows on View-only Sched or Edit Schedule when a Logic setting is changed from the squadron standard — changing the rules is normal for every squadron — and the Logic page keeps its own strip naming how many settings are changed [D1098].
+- The Logic page has everything that can be edited gathered at the top and everything that only explains a rule below it, each part arranged into its types [D809, D925, D928].
+- The Logic page is built as drawn: two parts, settings then the checks, in the groups shown; every check listed with one line, four with a folded "How it works"; no "fired this week" count on a row, the filter staying; the two unused settings removed from the page; no passing note after a value is changed ("crew rest → 11H") — the row itself shows the new value and its standard — and on a phone, while editing, "Reset to standard" reads "Reset all" so the row stays one row, as built [D928, D936].
+- Every number in the Logic page's text that is an editable setting is read from that setting, so it changes the moment the setting changes, never typed as a fixed number, and every line is correct for whatever the settings are; a check's key info is said as his crew-rest example says it — who and what it applies to, and its limit, in a few plain words (for crew rest: a flying member's earliest in-time, at least the crew rest setting after the day before) [D932, D933].
+
+### Publishing, amendments and signing
+- Every input change after a day is published — filed, edited, deleted or moved, a late leave and a medical downchit among them — is a pending change for the admin: the day reads pending, its four sign-offs fall, and the published face keeps what it was issued with until the next AL, or an Unpublish and publish again when it affects no one [D178, D177, D179, D185, D183, D184].
+- An input filed, changed or moved after its day was published wears the same waiting mark on its Unavailable row as on a Ground Programme row — its name underlined dotted in the amendment's colour on the week, its name box outlined dotted on the board — until the day's next amendment goes out [D1784].
+- On a published day a shared input filed, taken off the programme or re-timed is one change waiting — one line naming its people — and one man taken off its row or added to it is one change each [D736, D663].
+- A replacement in one seat — a flying seat, a sim seat, a desk's holder, a ground row's name — is one pending change, read as one line ("VIPER 1 · FCP: Rune → Tally"); in a crowd each man taken off or added is one [D113].
+- A day back to what was published shows nothing pending and is no amendment — and "Load onto working copy" gets it there, putting back what that version had filed [D98].
+- A scheduler note's "Make public" is saved with the note and shared: every scheduler and member sees the same choice, and it stays after a reload, a sign-out and a week change; on a day already published, making a note public or scheduler-only again waits for the next amendment like any other change there, the view-only schedule showing the note as the day went out until that amendment is published [D1588, D1592].
+- A changed puck is marked by its ALn tag alone — solid once it has gone out, hollow while waiting — never a ring or dotted line round it, so a puck's edge carries only its warnings; times, areas and remarks keep their marks; View-only Sched included [D92, D93].
+- The ORIG tag is "A1, seal": no colour, so it never reads as an AL colour — a faint white wash, a thin light outline and a drawn tick in a white disc before "ORIG" — on every surface it is drawn [D111, D110].
+- The working-copy marker on a published day with changes waiting reads "Not yet signed" while any of the four sign-offs is missing or no longer valid, and "Not yet published" once all four are valid — never on the issued face [D97].
+- Everyone who reads View-only Sched, members included, sees who signed off each published version — the original and every amendment — compactly: a slim "Signed ALn" line under the day head naming its four, on View-only Sched, the Scheduler Board and the edit week [D95, D102].
+
+### History and undo
+- One changes window for the whole app — a published day's pending list, an unpublished day's changes and the edit history in one — movable, resizable and never blocking the schedule (on a phone a bottom panel that shrinks to a bar), opening on the whole loaded week with a day picker to narrow it; a tap takes the schedule to the change on the page he is on, and the window stays open [D168, D167, D117, D107, D340, D345, D170].
+- The changes window groups by item by default ("Group by: Item / Who"): every line led by its item in bold, the change under it, never the man first; one group per item, the latest-changed on top, a sub-line per change newest first; in the week view the day leads the item; Who keeps its sittings, its lines item-first too; the mock-up of 28 Sep 26 is the design of record [D340, D345, D168].
+- A day's "N pending" is a button: it opens what is waiting to go out on that day — the net difference from the published version, each line where, before → after, who and when, newest first — a tap takes the view to the change, and a long list scrolls inside the window [D99, D100, D119, D168, D340, D345].
+- Members open the changes window from a day's own count, with no top-bar button; an admin's door is the clock icon only, on Edit Schedule only, its number what is new to him across the whole loaded week; every day heading's count stays the per-day way in for everyone [D171, D338].
+- No hand-over button: a change made by someone else is "new to you" until you mark it seen, which touches only your own view; a day not yet published counts its changes as a published day counts pending — a move one, put back nothing — and its count opens the list; a changed puck on such a day wears the "OG" corner tag, plain white and dotted, never gold or amber, the day headings left as they are [D170, D118, D172].
+- Members see the full change history too — who changed what, on every day, a medical change in full — from View-only Sched, read only; his reason is full transparency, so an admin who plans himself an easier life is seen doing it [D169, D211, D213].
+- On a phone History says it is on and lets the schedule be seen: "Hide ▾" beside ✕ sends the window to a slim bar at the bottom ("Show ▴" brings it back, ✕ turns History off), its hint reading "History on: Tap a gold dot on the schedule"; while History is on every detail with a history wears a small gold dot, on a desktop too [D339, D345, D344].
+- On a phone the changes window's bar — the window hidden while History is on — takes the slim Approvals bar's plain look: "Show ▴" as plain cyan words and a plain ✕, each keeping its full tap area; its words stay as they are [D1442].
+- Edit Schedule's History button is a toggle, as the board's is — one History mode for both, a changed detail answering with its bubble on hover on a desktop and on tap on a phone [D116].
+- The change bubble stays — hover on a desktop, tap on a phone — and a long one scrolls inside itself [D105].
+- The change history records every change to an absence, not only its filing and removal — an input edited, cut by a medical, moved or deleted; the Leave War's approve, refuse, back-to-bid and move — each a line saying what changed, who did it and when [D263].
+- Deleting a man lists everything the delete took away, one line each — his "deleted" line, each future input, bid and OIL award, each on its own day — never a credit the schedule earned; the notes he was taken off are to be named too, one line a note (not built: `[DELETE-LIST-CAL-NOTES]`) [D337, D710].
+- The list a delete shows of what it took away names each note the man was taken off, one line a note [D710].
+- Every bell line is taken back by the undo of what made it — the posting out's lines by its Post out sheet's Undo post out, or by a change of the posting on that sheet once it has run (its date moved later, or another outcome), and every other line by the Undo of its change [D1693, D1699, D1710].
+- A bell line its reader has not read simply goes when taken back; one he has read keeps what it said, struck through, then "taken back · <who>" — "~~Posted out · now SANS~~ · taken back · Saber" — unread, so the bell lights, and every taken-back line, the Leave War's too, looks alike; the admin who changed the posting is told nothing, and the changed posting tells again when it runs [D1699, D1693, D1710].
+
+### View-only Sched, print and export
+- On View-only Sched the Traffic window is the plain read-only list for everyone, an admin included, as a member sees it there; traffic is edited on Edit Schedule and the Scheduler Board only [D1647].
+- The words pass's round 2 stands: View-only Sched's boxed "Draft" goes (the DRAFT tag stays); the peek reads "Next week: click a day to load it"; "· accepted" / "· rejected" once a row, after the name — his "· removed" became "rejected" by D949; "Placeholders · drag in" reads "Placeholders" [D950, D949].
+
+### The Scheduler Board
+- The Scheduler Board's other glows go, each keeping its ring: the landing flash after a drag or an undo and the picked-up look; the crew and the time boxes a tapped warning lights (red, amber, grey); a puck earning OIL in OIL Earn; his own puck ("this is you", its purple fill and ring kept) and a puck lit by a highlight chip [D877, D860].
+- On a phone on its side the Scheduler Board's Calendar, title, day strip and search scroll away with the list, as any page does, while its bar of buttons stays at the top — on his iPhone with the keys up too — so with the keys up the list gets about 151px and nothing jumps when the keys open [D1780, D1800].
+- On a phone the Scheduler Board's desktop layout can be pinched to zoom — the day only, never the bar, which is the phone layout's own at its phone size, so ✓ Done and the day arrows stay in reach — out until the whole day's width fits the screen and in to twice normal, opening at today's size and keeping its zoom across days until ✓ Done [D1107, D1109].
+- In the pinched desktop layout on a phone a puck dragged to the edge of what is on screen scrolls the board that way, so it can be dropped anywhere, as the design guide's drag rule says [D1107, D1109].
+- In the Scheduler Board's desktop layout on a phone, the side column is laid out as on a desktop: the issues list uses the column's width with the desktop's margins, and the crew list's two columns share the column's width as on a desktop, so its reasons wrap no narrower [D1112].
+- Over the Scheduler Board, a window that has not been moved (the changes window, the ALL AVAIL window and the other windows that open below the top bar) opens just below the board's own bar, as it opens below the app's top bar elsewhere, so the bell, Insights and ✓ Done stay in reach [D1106].
+- On a desktop the Scheduler Board's right panel keeps its pilots and WSOs as two equal columns; its left edge is a grip that drags it from 320px to 40% of the screen, remembered on that computer, a double-click putting it back; a struck man's reason sits beside his puck where 92px is free, else under, the strike on the puck only; with no seat picked an ATT B man with no other task is full colour with "ATT B: no flying", after the free men, not counted free [D1113, D1114, D1118].
+- On a desktop the Scheduler Board's highlighter mark is drawn as the week's is — a plain mark leading its CAT / TYPE / QUALS row — and the boxed button by its search, which folds nothing at that width, goes; on a phone both pages keep their button, which folds the row away; SANS's "Highlight" button stays, another job (one man, his callsign shown) [D1131].
+- On a desktop up to 1599 wide the Scheduler Board's own bar draws Undo, Redo and History as their icons only, their names on hover, and the sync pill its dot alone — as every page's top bar does (D1126); wider, the words come back on both; the board on a phone is left as it is [D1130].
+- The Scheduler Board has a way to open Insights — on a desktop a button beside the bell, on a phone inside the bar's ⋯ (the board's bar is stated in `design.md`) [D481].
+- On the Scheduler Board, Escape in a take-off, landing, brief or duty-start box puts the old time back and saves nothing, as every other box does [D1011].
+- The board draws all three crew-rest rings as the edit week does — the dashed ring of a sanctioned late show and the dotted ring on the day that causes tomorrow's breach among them [D94].
+- A sim row always shows one spare seat, even when it is full [D50].
+- The board's wave header no longer says "in-time / rally HH:MM · N AC"; the Ground Programme's line reads "to take an input off, press reject on it in Personal Inputs below."; on a phone an input's button sits on its puck's line, on the board and the week; Unavailable stays as it is [D947].
+- On Edit Schedule and the Scheduler Board the board's nine panel subtitles are gone (a folded Personal Inputs keeps its count, without "show"); "tap to review", "press a card to edit" and the fold words are gone, the carets staying; the removed-input note's dash is a full stop; the empty amendments box says "No amendments published yet." [D940].
+- The editing hint on Edit Schedule's and the Scheduler Board's Personal Inputs and Unavailable panels ("times and remarks type in place · clear a time for all day · press the type to change it") stays deleted from those two panels, not moved into the legend — nothing takes its place; it is not a general lesson [D938, D942].
+
+### Insights
+- When blue/red tracking is on (a Logic setting, per squadron) and all of a person's sortie roles are answered, his weekly sortie bar splits blue and red, a mix showing both — DS, red and red air red, every other mission blue unless its blue/red question says red — and any unanswered role keeps his ordinary total bar [D512, D523, D521, D518, D520, D529, D530, D531, D598].
+- Blue/red sortie tracking is a squadron's switch on the Logic page, "Track blue/red sorties", off at a squadron's first setup and turned on when wanted, on or off per squadron; it governs only the split, never ordinary Insights [D524, D521, D522].
+- With tracking on, a mission of exactly DS, red or red air counts red with no question; for any other mission DS or red in its remarks asks blue or red, and the remarks never decide the answer [D518, D514, D520, D521, D529, D531].
+- Blue or red is asked by itself only straight after his own edit — to remarks or to the mission — leaves a formation needing an answer; otherwise a temporary "Choose mission role" button shows while its remarks box is edited, and passing through an unchanged box never asks [D529].
+- While its relevant remarks are edited a temporary "Change mission role" corrects a chosen answer without rewriting the words; the exact DS, red and red air missions get no override [D527, D529].
+- The blue/red question sits below the formation's area strip, its remarks still in sight, and either answer removes its space [D520, D529].
+- An open blue/red question stays until Blue, Red or Later is pressed, the formation's own mission or cue wording changes, the formation goes, or he moves to another week, version or sign-in; on the Scheduler Board moving to another day ends it too, while on Edit Schedule's week it waits on its day; an unrelated edit, or another formation's question, never removes it [D535, D598, D599].
+- With tracking on, a person with any unanswered flight role keeps an ordinary total bar until it is chosen; no colour is guessed, and one gesture never opens several questions [D523, D598, D530].
+- Remarks are saved even while the blue/red question is unanswered, and the person keeps an ordinary total bar until the role is chosen [D526, D523, D530, D598].
+- A chosen role is remembered until its mission or its relevant DS or red wording changes; crew and timing changes never ask again [D525].
+- A blue/red answer counts in Insights at once, on a published day too — no amendment, the sign-offs untouched — while a change to the mission or remarks wording on a published day still waits for its amendment [D530].
+- Insights counts each day's latest published version — the original or the latest amendment — and the working copy only for a day not yet published, the same on every page; changes waiting on a published day count only once they go out, except a blue/red answer, which counts at once [D478, D530].
+- SC, AVALON and BB standby duties are not flying load unless the line actually flies, and SC main counts towards work hours [D516, D1042, D1043, D1044, D1060, D1061, D1064, D1066].
+
+### OIL on the schedule
+- OIL Earn's day button is the app's own switch, as on the Logic page: a small slider with the words "No OIL earned", grey when off and lit in the switch's cyan when on; the refusal under it keeps his words, "Nothing on this day earns. Turn off the switch first." [D1782].
+- In OIL Earn a tap on a man in the ALL AVAIL window only switches him on or off earning and selects nothing; with OIL Earn off the tap highlights him everywhere on the schedule, the ordinary puck selection, and the window still shows his reason [D65].
+- For an input with several people the OIL question has one answer for everyone in it: whoever filed it, or an admin, gives it, no man in it gives his own and the filer picks nobody out; only the scheduler leaves one person out, in OIL Earn on the day [D762, D660, D682, D711, D753, D755, D776].
+- When an input is filed for other people, its filer answers the OIL question for all of them, once, at the save — nobody is left to be asked by his own bell — and that is the input's one answer [D660, D682, D711, D762].
+- When whoever filed a shared input, or an admin, answers its OIL question again, the answer is written for everyone in it, replacing what stood, and the scheduler's refusal on the day still wins [D682, D762].
+
+### The Leave War's rows and the Event sheet on the schedule
+- The Leave War's four rows — Required P and W, Available P and W — sit at the foot of the Manning block, a counter row droppable among them in Rearrange; nothing covers the month buttons, and the green open-bidding outline stays round the dates [D665, D637, D674].
+- The Required rows are typed and the Available worked out; a figure can run from a date on, skipping weekends, public holidays, Off days and no-fly days; there is no "SANS needed" row [D637, D665, D674].
+- Required pilots and WSOs are typed straight into their cells, and several cells picked at once take one number — shift and drag on a desktop, a long press and drag on a phone, and on a desktop too [D636, D637, D665, D674].
+- The Required P and W rows' figures are typed in their cells, and the rows may be renamed as the Available rows are [D668, D1193, D640, D1190, D1191].
+- The Available P and W rows the SANS calendar reads are ordinary Leave War count rows: an admin renames them in free text, changes who they count — leaving out OCU, say — and sets their amber point as a number plus or minus that day's Required; the SANS calendar uses whatever they count [D640, D1190, D1191].
+- Saturday and Sunday start with no flying set; a no-fly day still shows and takes OFT and AMT commitments; the Leave War's panel for a picked block of people's days stays up with the grid behind it working, and the war's other windows wait for their own job — not built, `[LW-WINDOWS-NONBLOCKING]` [D642, D641].
+- The Leave War's Event sheet is as redrawn, with few words: a first row of the squadron's own ready-made events, "Presets", never "type", the picked one lit; an optional name, "On grid" for the short form, the Kind row only under "Other…"; the grid shows the short form and a tap opens the full name and kind; every preset has a short form, PH, OFF, NL and SC to start [D645, D644].
+- Through any tidy the Event sheet keeps its colours and its button that edits the presets [D634, D645].
+
+## Done once — kept until he archives them
+- The right-panel job looked over the whole crew list — every look a puck can wear there, its reason, the counts and the order, with and without a seat picked — and put its findings to him with pictures before anything changed [D1115, D1119].
+- The small fixes of the 13 Oct 26 design look, L1–L17 and K1–K4, K7–K10 and K12, were built as one batch, their words as the writing guide reworked them; K5, K6 and K11 are jobs of their own, his to place [D830, D833, D837, D839, D834, D836].
+- The designs of 13 Oct 26 were looked over with the design guide, keyboard use included, and the findings put to him before anything changed [D807].
+- The passing notes after publishing and unpublishing a day, and the other long notes, were shortened to the writing guide's order and put to him before they were built [D806, D836].
+- The stored shape of D756 was confirmed once its cost was laid out, and built in steps, the first changing nothing on screen [D759, D756].
+- D686 was confirmed on his iPhone: the page behind a window no longer scrolls [D703, D686].
+- The day-scheduling and phone-usability priorities of 4 Oct 26 were set aside for his own ideas as building goes on [D546].
+- The final Insights look was approved and built: the temporary choose / change mission role below the area, the working / published wording, read-only access to the latest published remarks, the chart and the board's door [D532].
+- His approval as built of three of the five-flags batch's changes — his own flagged puck without the glow, the Leave War's ⚙ Reset order, a swap inside one crowd without "already on" — the fourth, room beside the ‹ arrow, refused [D274, D275].
+
+## Built, held by tests
+- Built, held by tests (each named by a test that holds it whole; the detail is in the app and its full row in `.claude/decisions-full/scheduler.md`): D65, D66, D96, D109, D114, D174, D175, D176, D187, D270, D271, D272, D344, D488, D513, D517, D531, D550, D551, D553, D555, D558, D561, D562, D594, D597, D598, D605, D663, D686, D733, D747, D769, D800, D824, D828, D831, D840, D844, D845, D860, D958, D995, D1010, D1020, D1031, D1064, D1111, D1119, D1529, D1620, D1648, D1710, D1781, D1785, D1786.
+
+## From other areas (each stated on its own area's file)
+- The Inputs pages' — who files or changes an input; what ALL / ALL AVAIL is not offered for; an input's title; its card and a cancelled input's place and window; its OIL sign; the late cut-off; a day's class and the holidays; the SANS day's needs: D655, D658, D763, D770, D712, D719, D720, D721, D722, D723, D724, D725, D727, D728, D729, D768, D771, D777, D628, D639, D627, D631, D633, D638, D617, D618, D619, D620, D621, D622.
+- The Leave War's — the glow off the green "he can take this seat" ring on Edit Schedule, the light under today's day card and a SANS puck's stripe: D881, D882.
+- OIL's — what ALL / ALL AVAIL earn wherever they may land, the earning list following the landing list; a published day and a rule change; a weekend no Leave War period covers: D28, D31, D32, D43, D52, D48, D49, D19, D755, D776.
+- People and accounts' — a deleted man keeps his puck on every day he already flew, the past keeping its record of him; an archived man on published days and in the ALL AVAIL crowd; a guest sees what a member sees on View-only Sched, medical inputs included: D297, D299, D321, D327, D213, D215, D300, D981, D1105.
+- The Leave War's grid speed — the open-bidding box, opening on the war being bid on, the window of months: `leave-war.md`'s Settled section.

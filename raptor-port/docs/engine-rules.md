@@ -740,6 +740,14 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   LABEL — the engine reads only `s`/`e`. A half-day closes its own half only;
   see §Availability is time-aware below.
 
+  - **The leave/absence "what each type costs" sentence has ONE source too** (owner,
+    30 Aug 26), shared by the Inputs "?" legend and the Logic type matrix.
+    `inputs.ts inputRuleText(t)`, derived from the enforced flags; both `InputsPage`
+    and `logic-html.ts` read it (they'd drifted). `inputs.test.tsx`/`logic.test.tsx`
+    guard it. *[AMENDED 15 Oct 26 by D928: the Logic page's type matrix is gone with its rewrite — the Inputs "?"
+    legend is the sentence's one reader now, guarded by `inputs.test.tsx`.]* Deliberately still separate, don't "helpfully" merge: `SAWAVE.note`,
+    the `satag` caption, the OIL-confirm prose (different jobs/voices).
+
 ### The CAT ladder and crew pairing
 
 - **The CAT ladder is `OCU → D → C → B → A → IW → IP → IR → FI`** (owner,
@@ -2831,6 +2839,16 @@ The normal parser reads minted text and the leading first valid clock wins.
 "12h", "2h20", "90", "0700". Storage keeps ONLY the diff in
 `localStorage['sqn142_rules']`; `rulesLoad` (called by `initStore` at boot —
 do not remove) treats storage as untrusted: number, finite, in bounds.
+
+  - **Kind-picker rule notes have ONE source, on the picker AND the Logic page**
+    (owner, 30 Aug 26). `wavetpl.kindNote(k)` is the single count-free summary of
+    each kind's checking rule, verified against `validate.ts`/`events.ts`; the editor
+    and the Logic "Wave types at a glance" group render the SAME strings. Deliberately
+    NOT `SAWAVE.note` (keeps its "2 MAIN + 2 SPARE" count for the built-in popup where
+    the count is real). When a kind's rule changes, update rule + `kindNote` + the
+    Logic "standby lines" row together (`logic.test.tsx` pins it). *[AMENDED 15 Oct 26 by D928 (the Logic page
+    rewritten): the "Wave types at a glance" group and "The standby lines" are gone; each kind's `kindNote` is now one
+    check line on the Logic page (Flying lines; Standby) — still the SAME strings, still pinned by `logic.test.tsx`.]*
 
 ## Stores configuration (`engine/stores.ts`, owner, 7 Aug 26)
 

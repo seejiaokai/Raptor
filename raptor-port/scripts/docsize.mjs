@@ -348,7 +348,7 @@ const RULING_BYTES = [
      answers on the late mark, Make public and history names, live; none is trimmed (D136); the file stays one (D976).
      Room, not a target. */
   /* 119000 -> 125000 (8 Nov 26, claude/pictures-round): 119,637 bytes with D1780–D1782 and D1784–D1786, his answers to the pictures round; a rulings file is never trimmed (D136), about a twentieth above again */
-  ['.claude/rules/decisions/scheduler.md', 2, 125000],
+  ['.claude/rules/decisions/scheduler.md', 2, 120888],   // 9 Nov 26, D1932, D1944: the trial on the scheduler; set to the one-line list's size the page replaced (5d8ddf6f8) — a HARD LIMIT (PAGE_LIMITS below). Before that, 125000 (above)
   /* inputs 32000 -> 37000 (16 Oct 26, the documents tidy after pull request 519): 35,026 bytes with the calendar's step
      two, the input window's and the Medical tab's rulings of 14-15 Oct (D900-D920, D927) - live; none is trimmed (D136). [RULINGS-SPENT-PASS]
      reads it for spent rows. Room, not a target. */
@@ -464,6 +464,7 @@ const PAGE_LIMITS = [
   ['.claude/rules/decisions/design.md',          22050, 22050, 'D1932'],   // the one-line list at 0abda89d5
   ['.claude/rules/decisions/people-accounts.md', 21160, 21160, 'D1932'],   // the one-line list at 97eaa5251
   ['.claude/rules/decisions/inputs.md', 52689, 52689, 'D1932'],   // the one-line list at b87243496
+  ['.claude/rules/decisions/scheduler.md', 120888, 120888, 'D1932'],   // the one-line list at 5d8ddf6f8
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
