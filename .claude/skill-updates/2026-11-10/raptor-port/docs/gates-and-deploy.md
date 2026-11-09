@@ -149,7 +149,8 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   `npx tsc` downloads an unrelated package named `tsc` and fails, so `npm ci` first and read no `npx` failure as the
   project's until the tool is its own (8 Nov 26); `git worktree add` of an OLD commit fails on this repo
   (long picture names) — to serve the build before a change, `git archive <commit> raptor-port/src …` into a short path
-  and junction `node_modules`; `codex exec` started in the background waits on its input for ever — end the command with
+  and junction `node_modules` (PowerShell's `New-Item -ItemType Junction -Path <copy>\node_modules -Target <checkout>\node_modules`;
+  `cmd //c mklink //J` was refused in helpers' shells, 31 Oct 26); `codex exec` started in the background waits on its input for ever — end the command with
   `< /dev/null`.
 - **Six more, from the skill notes of 26 Sep – 9 Oct 26:**
   **(1) Read only a results folder THIS run made.** A shared scratch folder still held another chat's summary from that
@@ -337,6 +338,11 @@ in it, `switch main` if it is elsewhere and `merge --ff-only origin/main`. That 
 work and the walks' untracked pictures: never `reset --hard`, `checkout -- .`, `clean` or a merge that is not a
 fast-forward — when a condition fails or the fast-forward refuses, tell him in one plain line what holds it. Verify in a
 NEW chat by what the app reports (`get_usage`, the skill list), never by running the script by hand.
+A hook added or changed in a chat is not in force in that chat either: the hook settings are read when a chat starts.
+There, prove it by running the settings file's exact command on one input it must refuse and one it must let through
+(the tool call's JSON on its input), leave the in-force proof to the next new chat and say so in the handoff; and before
+a refusal's message gives a remedy, measure the remedy for each tool it will reach — "add `< /dev/null`" is right for
+`node` and wrong for Python, which takes it for a keyboard and waits (`.claude/hooks/script-guard.mjs` M3, 8 Nov 26).
 
 *The baselines in the first paragraphs are history; the current one is `HANDOFF.md` §Gate baseline.*
 

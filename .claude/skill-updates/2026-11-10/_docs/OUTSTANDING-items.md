@@ -103,3 +103,28 @@ failed only at the closing step, 8 Nov 26). (l) **The document check** (`scripts
 beginning `<<<<<<< ` or `>>>>>>> ` in a file it reads, and on a `=======` line between two such lines (a heading's
 underline is not one) (803: a rulings file kept a merge's clash marks through a
 passing check, 6 Nov 26; only the commit refused; `docs/gates-and-deploy.md`, the settle step, carries the guide's line).
+
+## From group D-reads-code
+
+### Addition to [CHECK-TOOLS-HARDEN] (append under its "Added 10 Nov 26" paragraph, after the earlier groups' (c)–(l))
+**Added 10 Nov 26 (the skill-notes review, group D-reads-code):** (m) **The backlog script's git wrapper**
+(`scripts/backlog-archive.mjs`, its `git()`): it returns an empty text whenever git fails, and it sets no output buffer,
+so a listing past Node's 1 MB default — the untracked walk pictures alone can pass it — reads as "no files" with no
+error (840: the same wrapper made `docsize --reads` report every rules file as not loading, 300,000 tokens wrong, 7 Nov
+26; `docsize.mjs` and `docsize-reads.mjs` were fixed then, this one was not). Set `maxBuffer`, and let a listing whose
+empty result means "none" fail loudly; the rule for any new script: swallow an error only where "none" and "failed" lead
+to the same action. (n) **The document check's self-test takes a name filter** (`scripts/docsize-selftest.mjs`, an
+environment variable), so a red-first round can run only its new cases — without one, each round of fixes to the merge
+tool meant a scratch copy with every case-runner patched (841, 7 Nov 26; about 12 minutes a round). (o) **The inputs
+guard reads comments** (`src/engine/inputs-readers.test.ts`): its file list is chosen by `NAMES` over the raw text, so a
+comment heading with the word INPUTS in capitals put a file in the set and turned the unit run red (767, 2 Nov 26) —
+choose the list through the guard's own `code()` that strips comments, as its other checks do. (p) **The tests that
+name a changed file, listed and run before its first push:** a small script that takes the branch's changed files and
+lists every test file — unit, browser, smoke scripts — whose text names each one's base name (`grep -rl` over `src`,
+`e2e` and `scripts`), unfiltered, to be run before the first push; the test-driven-development guide's "Which other
+tests?" already says to find them, and it was missed twice — a filtered search missed five browser tests on 5 Nov 26,
+and the date box's look test on 8 Nov 26, each found only by GitHub's run (833). (q) **The Inputs list's browser
+tests open on every date by default:** the list shows a window of dates from today, so a new test on today's clock
+found no rows and failed its own setup, twice on 8 Nov 26 (865) — the list's test helper shows every date unless a test
+asks otherwise, and a test that measures the list's rows asserts a row is visible first; the guide's premises line
+carries the rest.

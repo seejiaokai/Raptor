@@ -289,7 +289,12 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 anywhere a reader can open, the handoff note included: until every reader has reported, they stay in a scratch folder
 outside the checkout (8 Nov 26). A blind reader's brief also says that a handoff block pasted into it after its own
 compaction is not read, and is named in its report — the start hook pastes the branch's block into any chat that
-compacts (`[READER-COMPACT-HANDOFF]`); the host sizes a read to finish before the reader would compact.
+compacts (`[READER-COMPACT-HANDOFF]`); the host sizes a read to finish before the reader would compact. Blindness is
+what a reader can reach, not what its brief tells it not to open: when the version under review is not the branch head,
+or the branch already holds another reader's report or a revision built from it, the reader runs in an exported copy of
+that commit (`git archive <commit> -- . ':(exclude)<picture folders>'` unpacked into a scratch folder, `git init` and one
+commit there so the repo's scripts run, then `codex exec -C <copy> -s read-only`), and the saved report's head says so
+(7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (f)).
 
 **Before a brief leaves** — a brief is the one place a wrong sentence is multiplied by every reader of it:
 
@@ -309,12 +314,21 @@ compacts (`[READER-COMPACT-HANDOFF]`); the host sizes a read to finish before th
 - A recommended answer to a question parked for him is checked against his words in the full rows — not only that
   the question is still open.
 - A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
-  owner's to decide. Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
+  owner's to decide — and every file the plan treats by its shape (add-only, one owner, never edited) as a claim the
+  red team breaks with a named commit from that file's own history (8 Nov 26: four "add-only" record files were
+  disproved in minutes). Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
   design are one round, with one brief — sent to as many readers as the plan's red team needs (D353: two for an
   important plan — Astra first, then Sol 6.1 on his call or otherwise a fresh, blind Opus reader, D1760, D1770; one
   otherwise), never a second scenarios-only run.
 - Offer a reader only the checks its sandbox can perform. One that cannot run anything is told so, and asked to name
-  the exact input it would run; the host runs every such case before dispositioning the finding.
+  the exact input it would run; the host runs every such case before dispositioning the finding. Every file the brief
+  names sits inside the copy the reader is given or the session's scratchpad: Codex's read-only sandbox was refused the
+  shared notes folder under the roaming application-data folder, after a full run (7 Nov 26) — copy such a file in, and
+  probe each named path with a one-line read before the long run.
+- A conformance read's brief (a page, a summary or a port checked against its sources) has the reader search related
+  sources by the subject of each claim — the actions, screens and terms it names — never by the name of the document
+  under review: a later ruling that changes a subject rarely names every document that describes it (8 Nov 26: the
+  step's most serious gap was found only that way).
 
 **What to do with what they hand back** — this is the requesting agent's job, not theirs:
 
@@ -340,6 +354,10 @@ compacts (`[READER-COMPACT-HANDOFF]`); the host sizes a read to finish before th
 6. Settle disagreements with evidence, never by confidence or majority.
 7. Every confirmed defect gets a regression test and a row in the roll-call.
 
+A saved report's head — who read, blind to what, which commit, how long, why an earlier run stopped — is copied from
+the brief, the run command and the run log, opened at that moment; a claim not found there is left out (7 Nov 26: two
+heads written from memory were wrong on exactly the facts the reads were later compared by).
+
 **Opus sizes the coverage for this change (§7.0; owner, D607, 7 Oct 26). A short walk may be run by the host or
 by one helper; if the chosen pass is long, D16 requires parallel helpers, as below.**
 **A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
@@ -357,7 +375,11 @@ and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait fo
 later round makes a new one (6 Oct 26: a frozen folder "refreshed" for the next round, under a walker of the last).
 **And the reader's half: while a reader reads the folder, nothing rewrites the source it reads** — a break test, a
 mid-flight fix, the next step's build. Break in a separate worktree, or hand the reader a commit (10 Oct 26: a
-reader reported a line a break test had cut out for one minute).
+reader reported a line a break test had cut out for one minute). The same for a helper running a check that builds
+(the drawing check, a measure): it builds from a named commit the host hands it (`git archive`), never from the live
+folder while the host fixes; and before its result is quoted, the host checks its label (`git diff --stat <its commit>
+HEAD -- raptor-port/src`, and the build's time against the commits') and re-runs the cheap part on a fixed commit
+where the code moved under it (8 Nov 26: a helper's "unchanged since" was false by two commits).
 
 **What each part of a check holds still, on ONE checkout** (14 Oct 26 — written once, so the order is not worked out
 again under load; a wrong order costs a false finding or a mixed walk):
@@ -699,7 +721,9 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
   and OPERATED on its own surface (§7.3) — the roll-call is not sized.
 - **A screen with an approved drawing gets the drawing check (his D1494, 29 Oct 26; made a standing step, D1495).** The
   sizing lines name each such surface's drawing and the check's part list for it (`scripts/drawcheck/specs/`); the
-  check is run as §7.10 says, and the walk does not stand in for it, nor it for the walk. A surface whose drawing has no
+  check is run as §7.10 says, and the walk does not stand in for it, nor it for the walk: a drawing proves appearance, never reachability — a
+  build faithful to it carries the drawing's own faults too, so every control the change moves is PRESSED in each state
+  the drawing shows (a window open over it) (5 Nov 26: a control the drawing showed covered). A surface whose drawing has no
   part list or no record yet gets both first — or, where the drawing script saved its own measured figures, is checked
   by that script's own measure (`docs/walk-scripts.md` §10). A screen drawn at one size only is said so
   here, and its other size is carried by the walk. Where no drawing exists, nothing here applies.
