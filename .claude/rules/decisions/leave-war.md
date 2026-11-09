@@ -36,6 +36,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1947 | 9 Nov 26 | The Leave War's rulings become one page in the Tracker, Inputs and scheduler trials' shape: his standing rules, what he likes and what a fresh model would get wrong; a built ruling leaves for the "Built, held by tests" line only when a test holds it whole; read by Astra and a fresh Opus reader, blind; merged on his "merge live". |
 | D1871 | 8 Nov 26 | The pinned row the browser shows by itself (D1870) is kept as built: on his iPhone the build's preview does not feel slow, so the cost the PC's slowed Chromium phone test shows does not stop it; the job goes on to its walk, reads and merge (D1796). |
 | D1870 | 8 Nov 26 | On his iPhone the Leave War's pinned dates row and Quals' heading blink for one frame on a quick flick on the live app and not on the trial, so the pinned row the browser shows by itself on the page's own scroll is built for keeps, with the full check, the trial's loose ends fixed. |
 | D1850 | 8 Nov 26 | The Leave War's pinned dates row and Quals' header go live with one painted frame still showing the row cut under the top bar on a quick scroll, the browser's own frame that the page's code cannot reach; that last frame is a job of its own, its new way measured before anything is built. — changed by D1870 |

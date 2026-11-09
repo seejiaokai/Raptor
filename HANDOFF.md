@@ -20,6 +20,12 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/rules-diet-leave-war-page -->
+### CHAT 44 — the rules diet: the Leave War's rulings as one page (D1947) — `claude/rules-diet-leave-war-page`, no pull request yet — written 9 Nov 26 — verify before use
+- **Done (chat 44):** checked `main` (every block below is merged; no pull request open); recommended four jobs; his pick "Leave War page" recorded as **D1947** (its full row in `.claude/decisions-full/leave-war.md`, its short line on top of `.claude/rules/decisions/leave-war.md` — the row's own bold sentence word for word; the [TRK-TRIAL-TESTS] item's part 3 names it). docsize and rulecheck GREEN. Nothing of the page started.
+- **Next — a fresh chat (45), on this branch:** do for the Leave War what chats 42–43 did for the scheduler (the plan's §Step 5b — the scheduler's page, its sorters, drafter, two blind reads, fixer and host check; the briefs `raptor-port/docs/superpowers/briefs/2026-11-09-scheduler-page-*`), in the Tracker, Inputs and scheduler trials' shape: the page `leave-war.md` today, 121,471 bytes, 378 rulings plus §Settled before this list; its architecture stays in `.claude/rules/seams/leave-war.md`. Add a §Step 5b — the Leave War's page section to the plan; about 2–3 chats, the state saved at each step; the documents check eased for that page only; Astra and a fresh Opus reader, blind; his "merge live" (D1737). Open first: D1947's and D1944's full rows, the plan's §Step 5b — the scheduler's page and §Re-measure before 5b.
+- **Rulings:** D1947 → `.claude/rules/decisions/leave-war.md`. **Reads owed:** none yet. **Walk:** none — notes only.
+<!-- /now -->
 <!-- now:claude/rules-diet-scheduler-page -->
 ### CHAT 43 (after chat 42) — the rules diet: the scheduler's rulings as one page (D1944) — MERGED 9 Nov 26 on his "merge live" typed in chat 43 (pull request 730, merge commit `57c03afa8`), under the merge lock, level, its run green; `main`'s run green and Vercel's Production Ready on it; records follow-up `claude/rules-diet-scheduler-records` — written 9 Nov 26 — verify before use
 - **After a compaction: re-read this block and the plan's §Step 5b — the scheduler's page before the next change.**
