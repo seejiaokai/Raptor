@@ -969,6 +969,21 @@ citations of it before drafting; How we work has no room left by joins of its "M
 **Left for him:** 16 proposed archivals (7 spent, 9 answered directions) (the sorting table's end; D1386 and D961 noted for the D971 reader); two
 questions — D701 against D723, and the scheduler's D660 against D762.
 
+### Step 5b — the scheduler's page (9 Nov 26, chat 42, `claude/rules-diet-scheduler-page` — D1944)
+
+Put to him first, as D611 and the plan's step 5b row ask: one page, or split by screen. The file was 120,521 bytes, 333
+rulings and 30 settled entries from before the list, loaded in four of the five jobs (the scheduler, Inputs, Leave War
+and Tracker — about 46,000 tokens each). Recommended one page: the Inputs trial's shape took that list 42% down, so the
+same here should land at about 65,000–75,000 bytes, back under D611's mark; a split saves little, since the engine,
+saving and undo files serve every screen and would load every part, or risks a ruling in a part not loaded (D611, D976);
+about 47 rulings on the phone cut across screens. **His word: "One page" (D1944).** D611's row marked answered; D976's
+point (2) is not changed (no split), so it carries no mark.
+**How, as the Inputs trial, scaled:** four fresh Opus sorters in parallel — three on a third of the rows each, one on the
+30 settled entries and the "Also read" paragraph — each a table in the Inputs table's columns plus a proposed section;
+one fresh Opus drafter writes the page from the four tables, by screen inside the one page, the rules for every screen
+stated as app-wide (step 5a's lesson); Astra and a fresh Opus reader, blind; a fixer; the host checks the serious lines.
+Briefs and tables: `../briefs/2026-11-09-scheduler-page-*`. The page's hard limit is the list it replaces (D1932).
+
 ### Review log
 
 | Version | Reader | Result | Folded in |
