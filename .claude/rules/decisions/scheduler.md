@@ -12,8 +12,6 @@ paths:
   - raptor-port/probes/**
   - raptor-port/docs/engine-rules.md
   - raptor-port/docs/ui-contracts.md
-  - raptor-port/docs/feature-impact.md
-  - raptor-port/docs/performance.md
   - raptor-port/docs/undo-contract.md
   - raptor-port/docs/data-schema.md
   - raptor-port/docs/mock/**
