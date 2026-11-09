@@ -4602,3 +4602,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** The first guess was timing (a slower machine exposing a frame-late write), so the test was re-run slowed - still green. The real difference was the fonts: Linux's wider letters wrapped one page's top bar to two rows at the test's 1440 width, Windows' did not. Measuring the bar's height on both pages at a few widths found 1360 as the width where the PC wraps too, and the test went red at once.
 **Suggested improvement:** In the skill's "reproduce first" phase, for a layout-dependent browser test that fails only in CI: before slowing anything, measure the elements the failure depends on across a few viewport widths on the local machine, and run the test at the width where the local layout matches CI's; then make the test itself cover that width so it fails on any machine.
 **Principle:** A CI-only layout failure is often the fonts, not the clock: text metrics differ by operating system, so measure the layout across widths before reaching for throttling.
+
+### Observation 906: A test that skips when its setup did not happen proves nothing on that run
+
+**Status:** OPEN
+**Date:** 2026-11-09
+**Session context:** [E2E-BOARD-KEYS-SKIP] (D1936) — fixing a browser test that skipped itself when its chosen box already sat above the simulated keyboard. Numbered past 905, which another open branch holds.
+**Skill:** New skill candidate: browser-test fixtures (or the bug-check order, §8 and `docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** writing a browser test; reviewing one
+
+**Issue:** The test picked "the seventh box", hoped it landed low on the screen, and called a skip when it did not. A skip reads green in a run summary, so on any run where the seed shifted the box, the case went unproved with no sign. Two independent readers found it only by reading the code. The fix placed the box deliberately (chose a box with enough list under it and scrolled it to a set spot) and asserted the fixture, so a fixture that cannot be built fails instead.
+**Suggested improvement:** In the order's §8 (tests find rather than confirm) and the walk-scripts guide, add: "A test builds its own precondition and asserts it; a conditional skip on the precondition is a finding. A break test — the feature switched off for one run — must turn the test red at the assertion that matters, not at the fixture."
+**Principle:** A test must create the situation it checks and fail if it cannot; a skip conditioned on the situation silently turns a check into a no-op, and only a break test proves the check bites.
