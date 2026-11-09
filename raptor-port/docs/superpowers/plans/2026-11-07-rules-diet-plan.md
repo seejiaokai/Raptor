@@ -914,7 +914,32 @@ a live ruling other than D1932 is cited beside it, a converted page with no row 
 
 **Next (D1941):** a trial on the Tracker's page — his standing rules and likes only, each built detail leaving once a
 test that pins it is confirmed, the gate's "every live ruling stated on its page" eased for it — shown to him before any
-other area.
+other area. *Done: the trial merged live 9 Nov 26 (pull request 725), approved as shown (D1942); its leftovers are
+`[TRK-TRIAL-TESTS]`.*
+
+### Re-measure before 5b (9 Nov 26, chat 41, `claude/rules-diet-inputs-trial`, `main` at a8167a9a6)
+
+**What a chat reads (`docsize.mjs --reads`, tokens):**
+
+| Job | Before the fix (8 Nov 26) | After the fix (9 Nov 26) | After the Tracker trial (9 Nov 26) |
+|---|---|---|---|
+| notes | 74,035 | 76,474 | 76,539 |
+| Leave War | 359,837 | 342,296 | 342,490 |
+| scheduler | 286,925 | 282,178 | 282,372 |
+| Inputs | 314,530 | 307,804 | 307,998 |
+| Tracker | 306,064 | 294,773 | 293,435 |
+
+**The rulings files in each area job (tokens, `--reads --verbose`):** the scheduler's file 46,108 — loaded in the
+scheduler, Inputs and Leave War jobs, and in the Tracker job through `performance.md`, which its `paths:` name; the Leave
+War's 46,235 (its job only); the Inputs file 19,735 (its job: 6.4% of 307,998); the Tracker page 6,017 (from 20,061 bytes
+as a one-line list to 15,884 after the trial, 21% under).
+
+**What it says for 5b.** The Tracker trial took about 1,300 tokens off a Tracker job (0.5%). The same shape on the Inputs
+file (164 rulings, 52,318 bytes, 136 of them named by some test — named is not held whole: on the Tracker 19 of about 39
+left) would take an estimated 30–45% off it, about 6,000–9,000 tokens, 2–3% of an Inputs job. The larger cost is the
+scheduler's file, in four of the five jobs; the Leave War's is the same size in one. The gain the diet now buys is mostly
+D1939's — a page that says how the app works and what he likes, not a store of detail a model may misread — more than
+tokens.
 
 ### Review log
 

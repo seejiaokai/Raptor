@@ -20,6 +20,12 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/rules-diet-inputs-trial -->
+### CHAT 41 — the rules diet: the re-measure before 5b, then the Inputs page in the Tracker trial's shape (D1941, D1942) — `claude/rules-diet-inputs-trial`, cut from `main` at a8167a9a6 — written 9 Nov 26 — verify before use
+- **Done:** the re-measure, in the plan's §Re-measure before 5b: an Inputs job reads 307,998 tokens, the Inputs file 19,735 of it (6.4%); the trial shape there would save an estimated 6,000–9,000 (2–3%); the scheduler's file (46,108) loads in four of five area jobs. Reported to him with a recommendation.
+- **Next:** on his word, the Inputs page converted in the Tracker trial's shape (the trial's sorting table and brief: `raptor-port/docs/superpowers/briefs/2026-11-09-tracker-trial-*`), read by Astra and a fresh Opus reader, blind; before-and-after page for his look; merges on his "merge live" (D1737).
+- **Rulings:** none yet. **Reads owed:** none. **Walk:** none — notes only.
+<!-- /now -->
 <!-- now:claude/merge-once-records-f59c5d -->
 ### CHAT 33 → CHAT 40 — [MERGE-ONCE-RECORDS], record files that merge without clashing (his go D1930) — MERGED 9 Nov 26 on his "merge live" typed in chat 40 (pull request 715, merge commit `c12d1afb6`), under the merge lock, level, its run green; [MERGE-ONCE-RECORDS] archived; this block goes at the next handoff; written 9 Nov 26 — verify before use
 - **The plan's red team** (Astra 10, a fresh Opus reader 14 — `raptor-port/docs/superpowers/briefs/2026-11-08-merge-once-records-redteam-*.md`) changed the plan: **no `merge=union`**; every record merged three ways against the base, never by branch name; settle what it can, leave the rest in git's marks; the rulings via `backlog-archive.mjs --rulings --merge`. As built: the plan's §After the red team, with its Round 3 and Round 4 notes.
