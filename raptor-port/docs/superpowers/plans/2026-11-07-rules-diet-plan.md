@@ -984,6 +984,27 @@ one fresh Opus drafter writes the page from the four tables, by screen inside th
 stated as app-wide (step 5a's lesson); Astra and a fresh Opus reader, blind; a fixer; the host checks the serious lines.
 Briefs and tables: `../briefs/2026-11-09-scheduler-page-*`. The page's hard limit is the list it replaces (D1932).
 
+| | The list (5d8ddf6f8) | The draft (43f2bfd02) | After the reads (chat 43) |
+|---|---|---|---|
+| Bytes (hard limit 120,888) | 120,888 | 75,470 | 82,294 |
+| On "Built, held by tests" | — | 56 | 28 |
+| The file in a job (tokens) | 46,246 | 28,617 | 31,156 |
+| A scheduler job reads (tokens) | 280,261 | 262,632 | 265,171 |
+| An Inputs / Leave War / Tracker job | 297,914 / 340,412 / 291,324 | 280,285 / 322,783 / 273,695 | 282,824 / 325,322 / 276,234 |
+
+**The reads** (chat 43; `…-read-astra.md`, `…-read-opus.md`, the fixes `…-fixes.md`). Astra 15 findings; the Opus reader 19,
+69 points with their sub-items; 71 distinct, 67 held, 3 not held, 1 left for him. The serious ones: D755's "once the
+scheduler has added others, changing it for everyone is the scheduler's" lost from every page; D531's mission that only
+contains DS or red asking the question; D1751's day-lock details stated as his where they are the agent's reading; D186's
+narrowed invariant pinned on the callsign rename, not the brief lead; D1045 narrowed to the SPARE; duty desks from
+templates "earning no OIL" against the OIL page; D663's group heading stated nowhere while the build differs (a question
+for him). **25 of the 56 built-line numbers were not held whole** (28 came off: those, and D550, D733, D1020) — the third trial
+in a row near half: the sorters' "held" is a first guess, and the readers' test check is the step that decides. The
+how-we-work line now reads "not split by screen" (D611's look-again kept open). The docsize self-test runs about 17
+minutes here — never under a 15-minute time limit (skill note 910). **Left for him** (`[SCHED-PAGE-LEFTOVERS]`): D663's
+heading, D1041's change-mark (it makes the OIL page owe 14 bytes, 7 under its limit, D1945 spent), D1751's readings, D511
+against D1026 and D1034, 17 proposed archivals, two Inputs-only settled entries.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |
