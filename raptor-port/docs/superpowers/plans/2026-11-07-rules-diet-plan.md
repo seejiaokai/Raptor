@@ -792,7 +792,7 @@ citing D851 and D860, which are the app's one blue — a wrong word in its row a
 the scheduler's D1038 row still says "Not built", though the code draws it — for the scheduler's page; D349's dated mark
 from D481 still calls the board's Insights door "proposed".
 
-### Step 5a — the Tracker as a page (8 Nov 26, chat 34, `claude/rules-diet-step-5a-tracker-de959c`, pull request 714 — waiting for his "merge live")
+### Step 5a — the Tracker as a page (8 Nov 26, chat 34, `claude/rules-diet-step-5a-tracker-de959c` — merged 8 Nov 26 on his "merge live", pull request 714)
 
 `.claude/rules/decisions/tracker.md` is a page, "The Tracker — how it works now" (`<!-- shape: page -->`, its `paths:`
 unchanged — the Tracker's own code, documents, scripts and walks, and the sign-out file): its 72 rulings (D64–D1900)
@@ -856,6 +856,65 @@ D985, D1170) and "Where it lives" cells naming the old file's §Architecture (no
 what is built; D1790's words cell describes its option B unlike the pictures round's notes (noted in the account, his
 words cell untouched); `docsize.mjs`'s older comment naming D560 and D564 as archive candidates — the account found
 neither restated in full.
+
+### Step 5a — the fix: the five pages back under their old lists (8–9 Nov 26, chat 36, `claude/rules-diet-pages-fix-7697fa` — D1932, D1938, D1939, D1941)
+
+**Why.** The five pages converted on 8 Nov 26 came out about twice the one-line lists they replaced (82,706 → 160,224
+characters), each growth through a raised tripwire with its reason, none of them reported to him plainly. He stopped the
+diet (D1932): each page back under its old list's size, no rule dropped, the tripwire a hard limit, no area converting
+until all six are under. Opus may carry the fix (D1938). The night it ran he set the direction for every page after it
+(D1939, D1941): a page holds his standing rules and likes and what a fresh model would get wrong untold; the exact detail
+of what is built lives in the app and its tests; his words, the history and the agent's readings stay in the full rows.
+
+**The method (OIL the trial, then a written brief for each page's helper).** "From other areas" to bare pointer lines,
+every number kept (two clauses no loaded file carried — D755's added person, D731's day no longer covered — went back on
+the OIL page); the agent's readings off the page once each was confirmed in its full row, the head saying so; the
+Settled lists to pointers naming the design of record; one-line bullets (a wrapped line costs 3 bytes); repeats merged,
+citations unioned; the head under 600 characters.
+
+**Sizes (bytes):**
+
+| Page | The one-line list | The page, 8 Nov 26 | Now | Under by |
+|---|---|---|---|---|
+| OIL | 15,407 | 20,564 | 15,366 | 41 |
+| IT flow guide | 4,028 | 9,330 | 4,020 | 8 |
+| Tracker | 20,061 | 37,686 | 20,007 | 54 |
+| Screen design | 22,050 | 42,088 | 21,951 | 99 |
+| People & accounts | 21,160 | 50,556 | 20,910 | 250 |
+| How we work | 59,493 | 37,990 | 37,996 | 4 of its 38,000 |
+
+People & accounts could not come under by wording alone: about 40 of its old lines were bare headlines whose conditions
+sat only in the full rows, and the 8 Nov page had restored them as his rules. Under D1941 the conditions its helper
+listed went back to the rows (the list and what each saved: `…-fix-people-trim-notes.md`). How we work took D1938, D1939
+and D1941 by joining wrapped lines in six of its sections, no word changed.
+
+**What a chat reads (`docsize.mjs --reads`, tokens):**
+
+| Job | Before the fix (8 Nov 26) | After (9 Nov 26, `main` brought in) |
+|---|---|---|
+| notes | 74,035 | 76,474 |
+| Leave War | 359,837 | 342,296 |
+| scheduler | 286,925 | 282,178 |
+| Inputs | 314,530 | 307,804 |
+| Tracker | 306,064 | 294,773 |
+
+The notes job rose because `main` brought in other chats' work the same night; the area jobs fell by what the five pages
+shed (the pages load only with their own files, so a job reads one or two of them).
+
+**The reads.** Each trimmed page was read by a fresh, blind Opus reader and by Astra, each blind to the other, against
+the page's account by requirement (the briefs and reports: `raptor-port/docs/superpowers/briefs/2026-11-08-rules-diet-fix-<area>-read-*.md`).
+No citation was lost on any page. OIL's and the IT guide's findings were taken (the standby line's hand tick, D19's
+"never made silently", D755 and D731's clauses, the IT guide's slides). On the Tracker, Screen design and People pages
+the findings were sorted under D1941: an agent's reading that read as his rule, and a statement whose meaning changed,
+were fixed; the rest — detail the trim moved to the rows — held, not restored (listed in `…-fix-report.md`).
+
+**The gate (`raptor-port/scripts/docsize.mjs`).** Each converted page's tripwire is set to its old list's size, and a
+PAGE_LIMITS table makes it a hard limit: a page over it fails on any change, a limit above its D1932 figure fails unless
+a live ruling other than D1932 is cited beside it, a converted page with no row fails.
+
+**Next (D1941):** a trial on the Tracker's page — his standing rules and likes only, each built detail leaving once a
+test that pins it is confirmed, the gate's "every live ruling stated on its page" eased for it — shown to him before any
+other area.
 
 ### Review log
 

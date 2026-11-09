@@ -8409,6 +8409,11 @@ this case. **To do:** build (a) on a branch, he tries it on his iPhone (does the
 bounces all right); (b) only if (a) fails. **Place:** the whole app's look and phone group, on his word.
 
 
+*Moved here 2026-11-08 by backlog-archive.mjs ([CHK-ROUTE-2A]). Forward facts: `raptor-port/docs/bug-check-checklist.md`.*
+
+### [CHK-ROUTE-2A] The bug-check checklist sends a walk to §2a's table only (found 8 Nov 26, chat 37's review)
+**What:** steps 6, 8 and 10 of `raptor-port/docs/bug-check-checklist.md` route to the bug-check order's §2a table only; §2a's own words — what "the day that has everything on it" means for the Tracker and the Leave War, and that a new area writes its own everything-case once — are reached only when a change adds a new gesture, and §7.1 describes the scheduler's day alone, so a Leave War or Tracker walk can build the convenient day §7.1 forbids. **Fix (his go, D1937):** route "§2a whole" at step 10, or move the two area sentences into §7.1 — a working-guide change: Astra and a fresh, blind Opus reader, then his "merge live". **Source:** `raptor-port/docs/superpowers/briefs/2026-11-08-review-8nov-jobs-fable.md` §2, F-CHK-1.
+
 *Moved here 2026-11-09 by backlog-archive.mjs ([E2E-BOARD-KEYS-SKIP]). Forward facts: `raptor-port/e2e/board-layout.spec.ts`.*
 
 ### [E2E-BOARD-KEYS-SKIP] The board-layout keyboard test can skip itself (found 8 Nov 26, Astra's read in chat 37's review)

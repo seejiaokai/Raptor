@@ -28,31 +28,33 @@ next. Never from memory — the order changes.
    after, shown to him before it is built, whoever filed it and even when it came as a defect (§11).
 6. **The rulings that apply** — listed for him in the app's words, any clash flagged and resolved (§12's second box;
    `raptor-port/CLAUDE.md`'s standing order "sweep the rules"); each checked against the running build, pass or fail;
-   on FULL, swept one mark per surface (§5's table, §2a's "Rules and logic"). A ruling's "left as it is today" half is
-   pinned by a test before the changed half is built (§8, its point 7). **FULL also:** the scenarios designed by a
-   reader who did not build it — open **§4** (who reads now, the finder wording, what is not a finding, "before a brief
-   leaves").
+   on FULL, swept one mark per surface (§5's table; open **§2a** whole, its "Rules and logic" row). A ruling's "left as
+   it is today" half is pinned by a test before the changed half is built (§8, its point 7). **FULL also:** the
+   scenarios designed by a reader who did not build it — open **§4** (who reads now, the finder wording, what is not a
+   finding, "before a brief leaves").
 7. **Build, then open the pull request into `main`** — GitHub's run is the gates while the repo is public (§5, D1086).
-8. **The roll-call** — open **§6**. **Its table** (WALK with a shared drawer, and FULL), with §2a's table for the kind of
-   work: name the thing; list every place the app draws it; three columns — does it SHOW, is the gesture USABLE, what
-   else is PAINTED there; each cell YES / NO-because / MISSING, no blanks. **Its rows by kind of change, whatever the
-   tier:** read the list each time and run every row the change is a kind of — among them a floating surface, a wording
-   or one writer of a record, a navigating action (one row per opener), a changed quantity, a removed or replaced
-   control, form, event or way out (its list sizes the check), a writer's "nothing happened", a listener above its own
-   component, a component's second home, a storage writer, a skipped call, a dry-run save, a new kind of record, who
-   counts as away.
+8. **The roll-call** — open **§6**. **Its table** (WALK with a shared drawer, and FULL), with **§2a** opened whole
+   (its table for the kind of work): name the thing; list every place the app draws it; three columns — does it SHOW,
+   is the gesture USABLE, what else is PAINTED there; each cell YES / NO-because / MISSING, no blanks. **Its rows by
+   kind of change, whatever the tier:** read the list each time and run every row the change is a kind of — among
+   them a floating surface, a wording or one writer of a record, a navigating action (one row per opener), a changed
+   quantity, a removed or replaced control, form, event or way out (its list sizes the check), a writer's "nothing
+   happened", a listener above its own component, a component's second home, a storage writer, a skipped call, a
+   dry-run save, a new kind of record, who counts as away.
 9. **The door check** (a new gesture or mode): every action the data allows → the control that does it, in every state
    and order (§3, §2a).
-10. **Size the walk** — open **§7.0**, **§2a's table** (what must be covered for each kind of work this change is) and
-    the walk ledger's sizing step (`docs/walk-ledger.md` §Before any walk). Five lines into the sheet; a WALK or FULL
-    never has no walk; a screen with an approved drawing gets the drawing check; a test carries only repeated cases of a
-    route already walked; resize when the evidence changes. **Go through every lesson below**, in the sizing lines and
-    in each walker's brief: for each, the scenario or named test that covers it, or why it cannot apply — opening its
-    full text in **§7.11** (the second 23: after §8) for each that applies.
+10. **Size the walk** — open **§7.0**, **§2a** whole (its table: what must be covered for each kind of work this change
+    is; the words under it: what the day that has everything on it is for the Tracker and the Leave War, and that a new
+    area writes its own once) and the walk ledger's sizing step (`docs/walk-ledger.md` §Before any walk). Five lines
+    into the sheet; a WALK or FULL never has no walk; a screen with an approved drawing gets the drawing check; a test
+    carries only repeated cases of a route already walked; resize when the evidence changes. **Go through every lesson
+    below**, in the sizing lines and in each walker's brief: for each, the scenario or named test that covers it, or
+    why it cannot apply — opening its full text in **§7.11** (the second 23: after §8) for each that applies.
 11. **The plain-user round** (**§7.0a**): the area's everyday tasks start to finish, every control that opens or closes
     something pressed, every other place that shows the result looked at.
 12. **The fixture** — the day that has everything on it, in the demo seed (**§7.1**), made through the app's own controls
-    (**§7.7**).
+    (**§7.7**); outside the scheduler, the everything-case **§2a** names for the Tracker and the Leave War, or the one a
+    new area writes once (§2a whole, D1937).
 13. **Stand up the real build** (**§7.2**): the production build served locally, fresh, phone and desktop, errors watched;
     before writing a walk script or a walker's brief, `docs/walk-scripts.md`.
 14. **Walk** — open **§7.3 to §7.10**: surfaces, not rulings; every order and state table; a gesture asserted as the person
