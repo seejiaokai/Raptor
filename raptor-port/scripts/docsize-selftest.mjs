@@ -432,6 +432,11 @@ scenario('a paths: item whose quotes do not match', true, c => scopedFile(c, X_W
 scenario('paths: written on one line as a string', true, c => scopedFile(c, X_WHOLE, '---\npaths: "raptor-port/src/x/**"\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'the project\'s checks read only that shape' })
 scenario('paths: written on one line as a bracketed list', true, c => scopedFile(c, X_WHOLE, '---\npaths: ["raptor-port/src/x/**"]\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'the project\'s checks read only that shape' })
 scenario('…a whole frontmatter saved with CRLF line endings, quoted items among them, passes', false, c => scopedFile(c, '---\r\npaths:\r\n  - raptor-port/src/x/**\r\n  # a comment\r\n  - "raptor-port/docs/x.md"\r\n  - \'raptor-port/docs/y.md\'\r\n---\r\n\r\n# x\r\n'), { base: 'HEAD' })
+/* Astra's re-read of the fix round (REVISE, three holes): a second paths: key the readers ignore, indented text under no
+   key, and a closing quote escaped by a backslash, which no reader here decodes. */
+scenario('a frontmatter with a second paths: key', true, c => scopedFile(c, X_WHOLE, '---\npaths:\n  - raptor-port/src/x/**\npaths: [raptor-port/src/y/**]\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'has a second paths: key (line 4)' })
+scenario('a frontmatter with indented text before any key', true, c => scopedFile(c, X_WHOLE, '---\n  orphan text\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n'), { base: 'HEAD', mustSay: '("  orphan text") inside its frontmatter, which is not a "- <glob>" item' })
+scenario('a paths: item whose closing quote is escaped by a backslash', true, c => scopedFile(c, X_WHOLE, '---\npaths:\n  - "raptor-port/src/x/**\\"\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'the project\'s checks do not decode escapes' })
 mover('--rulings refuses a page whose frontmatter is never closed', false, { prep: c => { committedPage(c); c.edit(OTHER, breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\n')) }, args: ['--rulings'], check: (c, r) =>
   /opens a frontmatter block/.test(r.stdout + r.stderr) ? '' : 'refused for another reason, or not at all' })
 
