@@ -23,6 +23,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 
 ## What it keeps
 - Never again exported as a standalone app: it lives in the app for good, as a tab [D1538].
+- This page is the rules diet's trial, approved as shown: it keeps his standing rules, likes and what a fresh model would get wrong; a built ruling leaves for the "Built, held by tests" line only when a test holds it whole; no other area changes until he says, one at a time [D1942, D1941].
 - A syllabus is one shared thing, one Syllabus row a chart: an edit reaches every course and student on it, never a copy per course (a variant: Duplicate); marks are the student's, filed under his enrolment (one student, course, chart) and the event's fixed code, so moving, redrawing or re-wording a ball keeps them, a new ball is ungraded, a deleted one loses them [D474, D124].
 - His charts, syllabi and ball details are kept: no change wipes them without putting them back, and he is told first so he can export a copy [D464, D120].
 - The database route is export, wipe, import, so a fault it removes is not a finding: today's stored data, the converters of older stored data and older file formats are out of every check; what the app would do again to new data is a finding [D120, D56].
