@@ -1094,6 +1094,10 @@ the performance guide), its own page 30,896, the bug-check order's parts 30,878,
 backlog's head 17,156, the project guide 14,541, the handoff 14,437, the general page 14,202, the walk-scripts guide
 13,393.
 
+**His answer (D1949, 10 Nov 26 — "Yes, one follow-up"):** no more pages rewritten to save space; one small follow-up in
+a fresh chat — the scheduler's rulings out of Leave War and Tracker jobs (through the performance guide and the ripple
+map), the handoff's merged blocks filed and removed — `[RULES-DIET-FOLLOWUP]`.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |
