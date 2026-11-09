@@ -1,6 +1,6 @@
 # Rulings — the Leave War: the full rows
 
-**Never loaded by itself — searched** (D390). Each row's one-line short form is in `.claude/rules/decisions/leave-war.md`, which is what a
+**Never loaded by itself — searched** (D390). Each ruling is stated on the page `.claude/rules/decisions/leave-war.md` (converted 9 Nov 26, D1947), which is what a
 chat loads. Open a ruling's full row before acting on its detail or asking him about it:
 `grep -h '^| D149 |' .claude/decisions-full/*.md` (the shell — the Grep tool hides a long row). A mark on an older ruling
 (DECISIONS.md step 2) is written HERE, in its full row; `backlog-archive.mjs --rulings` then refreshes its short line's

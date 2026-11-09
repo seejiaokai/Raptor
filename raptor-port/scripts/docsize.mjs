@@ -411,7 +411,7 @@ const RULING_BYTES = [
   /* leave-war 132000 -> 136000 (6 Nov 26, claude/overnight-1106): 132,146 bytes with D1720-D1725 (his answers on the night's
      Leave War questions and his iPhone look); every line a live ruling (D136), not trimmed without his word (D1262).
      Room for the two Leave War jobs filed with them; the split or archive is still [RULINGS-SPENT-PASS]'s. Room, not a target. */
-  ['.claude/rules/decisions/leave-war.md', 2, 136000],
+  ['.claude/rules/decisions/leave-war.md', 2, 121825],   // 9 Nov 26, D1932, D1947: the page; set to the one-line list's size the page replaced (0ce71adab) — a HARD LIMIT (PAGE_LIMITS below). Before that, 136000 (above)
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);
@@ -465,6 +465,7 @@ const PAGE_LIMITS = [
   ['.claude/rules/decisions/people-accounts.md', 21160, 21160, 'D1932'],   // the one-line list at 97eaa5251
   ['.claude/rules/decisions/inputs.md', 52689, 52689, 'D1932'],   // the one-line list at b87243496
   ['.claude/rules/decisions/scheduler.md', 120888, 120888, 'D1932'],   // the one-line list at 5d8ddf6f8
+  ['.claude/rules/decisions/leave-war.md', 121825, 121825, 'D1932'],   // the one-line list at 0ce71adab
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
