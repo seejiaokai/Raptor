@@ -95,7 +95,45 @@ but change no always-loaded rule file beyond a name in a list of converted areas
   unsure of; where you overrode a sorter; "Questions for him"; the "Proposed to archive" list. Do not paste the page.
 
 ## The host's notes from the four sorters' reports (read with the tables)
-(added by the host once the four reports are in)
+- **Keep a heading named "Settled before this list"** (a `###` under `## Settled — leave as they are`, holding the
+  settled entries' statements): `raptor-port/CLAUDE.md`, `guide-full.md`, `performance.md`, `scheduler.md` and the full
+  rows of D159, D160 and D1476 point to it or its old group names ("Leave War roster & display", "Leave War grid
+  performance") — each must still land. **Sorter D's proposal to move the old head and settled text whole to
+  `docs/archive/` is not taken:** state each entry; move only the detail sorter D marks "move whole" to a reference doc
+  that already covers it. Its four pieces of detail with no reference doc yet (the chip's quals list, the built-in
+  groups' colours, the groups list's drop rule, pilots above WSOs) stay stated on the page — do not invent a home.
+- **Stale reference docs sorter D found** (`ui-contracts.md`'s "TWO orders", its old one-row top and zoom-pair passages;
+  `file-map.md`'s "no grip"; the pointer to "`performance.md` §Leave War window engine", which is §C and §E): not yours
+  to fix — list them in your report; the host files them. On the page itself, point to the sections that exist.
+- **The head:** D347 is on `design.md`, not How we work — point there. D265 and D1440 are this area's own rows.
+- **Held by tests — 65 of 379 proposed** (A 9, B 28, C 28): more than any trial kept after its reads (the scheduler kept
+  28 of 56). Re-open strictly every one a sorter listed as unsure or close: A's D1440, D1476 (accepted against a helper's
+  doubt); B's permissions D1242, D1263, D1379, and D1288 (pinch tested only on shared code); C's D1225 (it narrows
+  D1177, which the IT guide and others state) and C's seven kept stated (D1235, D1228, D1215, D1164, D1147, D1016, D882 —
+  keep them stated). B's D1357 and D1277: a test reader said held, B said part — keep them stated.
+- **Cross-table merges** (each sorter's table head names the members): COLOURS (B's colour sets D1316, D1322, D1323 with
+  C's D1165, D1175 and A's CELL), NAV (D1254, D1244, D1227 and A's PHONE-TOP), ZOOM and PINCH (D1282–D1288, D159, D1228,
+  D1276), BUBBLE (D1258, D1272, D1274, D1277, D1358, D1344), DAY-LINE (D1313, D1314), AUTO-APPROVE (D1302, D1463, D1186,
+  D1182), LEAVE-YEAR (D1235, D1474, D1489), PENDING / TILES (D1472, D1479, D1238, D1252), HELD-DAY (A's and B's), ROUND3
+  / DATE-DURATION (D1330, D1332 with D1212, D331, D335), OPEN-PAST / OPEN-WHOLE (D1265, D1267, D1269, D1177), SANS
+  (D1215, D1221, D1692, D1697, D1698), Rearrange (D160, D1254, D1275), the settings window (D1499, D1205, D669).
+- **A later ruling that changed an earlier one without a mark** — state the rule as it stands, both numbers on the line;
+  mark no full row yourself; list each pair in your report for the host to check and mark: D1330 / D1332 over D1212,
+  D331, D335 (C); D1254 over D1227's place for My leave (C); D1316 over D1175's course, overseas-duty and medical colours
+  (C); D1019 largely overtaken (C — say by what). **D1326's short line is stale** (B): it reads "CSE · OD · UNA" and cites
+  the archived D1338 — state the bid row as it stands; the gate will name the citation owed.
+- **Question for him (B):** may a member file an overseas duty or a course on a past day — D1318 says "any date", D1211
+  says a member never bids before today. Keep both stated; list it under "Questions for him" with that example.
+- **Not built:** D1724 ([LW-FULL-EDITING]) and D1001 (sorting by flight) — one short line each naming the item.
+- **Proposed to archive — about 24** (A: D1850, D1723, D1559, D1563, D1475, D1404; B: D1348, D1343, D1340, D1319,
+  D1317, D1299, D1265, D1250; C: D1140, D1204, D1206, D1232, D1199, D1182, D1165, D1161; D: the table-format note, the
+  "CLOSED" preamble and two moved-out pointers). Each still stated briefly under "Done once"; check none is cited as a
+  live rule elsewhere (D1265's past-dates note, D1182's tick, D1165's colours — B and C use some on merged lines: if a
+  number carries a live part, it is not spent; say so).
+- **Every screen:** D1188 (a button in the same place on a phone as on a desktop), D1387, D1327, D1328, D1525, D1246,
+  D1150 / D1159 — stated as app-wide; D1151 stays here. Note in your report which `design.md` does not state.
+- Sorter D kept "a remembered war is never reopened at the next start" beside D1177 (the code and a test hold it) — keep
+  it, named in your report for the readers.
 
 ## Traps on this PC
 Edit files with the Edit and Write tools. A script: write it to a file with Write, then run the file (a typed script
