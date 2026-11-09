@@ -35,7 +35,8 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   2. `git fetch origin main <branch>`, then `git merge-base --is-ancestor origin/main origin/<branch> && echo level || echo behind`.
      Behind: release the lock; once no run of the branch is queued or in progress (D151), bring `main` in, wait for that
      run to pass and start again at 1. His word still stands unless settling a clash changed this branch's own app code,
-     which goes back for his look (D1742, D1746).
+     which goes back for his look (D1742, D1746). Bringing `main` in is `git merge --no-commit --no-ff origin/main`, then
+     the settle step first, `node raptor-port/scripts/records-merge.mjs`, then the rulings merge it names, then your own edits (D1930).
   3. Level, its last run green: `gh pr merge <PR> --merge` — never `--auto`, which merges later, outside the lock
      (`main` does not make GitHub ask for an up-to-date branch, so this check is the only guard) (D1746).
   4. Release a lock you took at once, whatever happened next — merged, refused or stopped — never after a `take` stopped
@@ -47,6 +48,12 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
 
 - Not held to the end: two to four related jobs of one area share one branch, one check and one merge on his "merge
   live"; a job he wants live at once goes on its own; nothing is piled up for one merge at the end (D1087, D485, D822).
+- Finished jobs waiting on his "merge live" at once may merge as one (D822, D1930): each job's chat agrees and freezes its
+  branch at a named commit; a new branch from `main` takes each by its own merge commit (a job is dropped by building it
+  again without it, never a revert), its run green, its link and job list sent to him, jobs sharing a screen or file checked
+  together (D485); his "merge live" for that named batch, typed in the chat that merges it (D1742; a clash settled in a job's
+  app code goes back for his look, D1746); the job pull requests closed with a pointer once it is green; then the four steps
+  above. Not a notes-only pull request (D1407, D1737) nor the D1795/D1796 chats' own rule; never stacked on another's branch.
 - Change → its own tests green locally (the whole gate set too once the repo is private again — §The checks) → commit
   and push to the session branch (one open pull request accumulates the lot) → once the work is ready for his look
   (built and checked) and its Vercel preview is Ready, send him the link — not after every push of unfinished work
@@ -156,7 +163,7 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   The merge order and "merge live" stay his — a chat never merges for another, and two never merge at once (the merge
   lock, §"Push" and "merge live") (D302, D60, D78, D1746; notes only: D1407, D1737).
 - Docs-only changes skip the gates (`deploy.yml`'s list: `**.md`, `.claude/**`, `.impeccable/**`, the document-gate
-  scripts `raptor-port/scripts/docsize*.mjs` and `backlog-archive.mjs`, and `docs-guard.yml` — on a push to `main` by
+  scripts `raptor-port/scripts/docsize*.mjs`, `backlog-archive.mjs`, `records-merge*`, and `docs-guard.yml` — on a push to `main` by
   `paths-ignore`; on a pull request the run still starts, its first job skips the gates, and its last, "checks passed",
   always reports, the one check GitHub can require — `raptor-port/docs/gates-and-deploy.md`), but the Docs guard
   (`docs-guard.yml`, two to three billed minutes) still runs on every pull request and every push to `main`.

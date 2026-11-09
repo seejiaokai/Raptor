@@ -23,6 +23,7 @@ export const NOTES_ONLY = [
   '.impeccable/**',
   'raptor-port/scripts/docsize*.mjs',
   'raptor-port/scripts/backlog-archive.mjs',
+  'raptor-port/scripts/records-merge*',
   '.github/workflows/docs-guard.yml',
 ];
 /** GitHub's pattern rules: `**` crosses folders, `*` does not. */

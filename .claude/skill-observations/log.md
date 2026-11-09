@@ -4629,7 +4629,6 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Suggested improvement:** In the red-team brief template, add a standing question: "for every file the plan treats by its shape (add-only, one owner, never edited), check that shape against its own commit history and name a commit that breaks it."
 **Principle:** A plan's assumptions about a file's shape are claims to test against the file's history, not facts; ask the red team to break them with real commits.
 
-
 ### Observation 907: A helper that "completed" while waiting on its own runs can wake and write later
 
 **Status:** OPEN

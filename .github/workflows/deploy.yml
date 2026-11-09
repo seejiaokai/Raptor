@@ -78,6 +78,8 @@ name: Deploy to GitHub Pages
 # runs the full gates. The document gate's own files are skipped too (23 Sep 26,
 # [DOCS-GUARD]): they are run by docs-guard.yml, and nothing in src/ imports
 # them — without this, every edit to the guard would bill a full gate run.
+# The records' settle step, its tests, its replay and the replay's list (`records-merge*`, [MERGE-ONCE-RECORDS],
+# 8 Nov 26) are skipped too: a chat runs them during a merge, nothing in src/ imports them, and no gate reads them.
 # `.gitattributes` is NOT skipped any more (Fable CI-PATHS-001, 23 Sep 26): it decides the bytes every
 # job checks out — line endings broke the PC runner's first trial — so a change to it runs the gates.
 # `.impeccable/**` IS skipped (13 Oct 26, D822): the design skill's own settings and its saved looks - nothing in
@@ -91,6 +93,7 @@ on:
       - '.impeccable/**'
       - 'raptor-port/scripts/docsize*.mjs'
       - 'raptor-port/scripts/backlog-archive.mjs'
+      - 'raptor-port/scripts/records-merge*'
       - '.github/workflows/docs-guard.yml'
   # A pull request ALWAYS starts this workflow ([TESTS-REQUIRED-ON-MAIN], chat 19, 8 Nov 26): its "checks passed" job is
   # one GitHub can require, and a workflow skipped by paths-ignore reports nothing, which would leave every notes-only

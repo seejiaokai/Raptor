@@ -1,0 +1,776 @@
+{
+ "window": {
+  "since": "2026-11-08T00:00:00+08:00",
+  "until": "2026-11-08T19:26:27+08:00",
+  "by": "committer date, Singapore time (+08:00)"
+ },
+ "note": "every two-parent merge on any branch in the window whose two parents clash when merged again (git merge-tree --write-tree exits 1); the merge, its first and second parent, its committer time and the paths that clashed",
+ "merges": [
+  {
+   "merge": "c233ee7dad5f1600e639b425d596287ee4c0dcdd",
+   "p1": "ca03cb8be5052c33571e330bb6ddf09237ca7cb3",
+   "p2": "9b42a96b658e46791ece153b2d71a8dac130764e",
+   "committed": "2026-11-08T00:17:26+08:00",
+   "clashed": [
+    ".claude/decisions-full/how-we-work.md",
+    ".claude/rules/decisions/how-we-work.md",
+    "DECISIONS-ARCHIVE.md",
+    "DECISIONS.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "7c3b3afe174d9df29d37fd0ff8b47d0d60578f1b",
+   "p1": "6d80a1ce904df36f601c96fd38fbbfa1d0e6513c",
+   "p2": "7744e66db89920895e12df807ee47786730e69f5",
+   "committed": "2026-11-08T00:58:36+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "086bf4e0a90c0b4ba9427e8136084296ff21d726",
+   "p1": "b4a3c86afffaebd9bbedf48a2cb073018e8c9b27",
+   "p2": "7744e66db89920895e12df807ee47786730e69f5",
+   "committed": "2026-11-08T01:42:08+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "1ac1c0e8e6345493dfc7316cd88b291954f12532",
+   "p1": "8899067ab476d6ab990b45a15920c84e3bb779dc",
+   "p2": "4fbf85a494163652c598fe4dc221a9b2ebabd99a",
+   "committed": "2026-11-08T01:50:15+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "0e147b03eb53a904792ecf52755c35357ad4b0b1",
+   "p1": "647a4d4c65fcf0cd72b85425a8b026b03bcda662",
+   "p2": "4fbf85a494163652c598fe4dc221a9b2ebabd99a",
+   "committed": "2026-11-08T02:39:40+08:00",
+   "clashed": [
+    ".claude/decisions-full/how-we-work.md",
+    ".claude/rules/decisions/how-we-work.md",
+    ".claude/rules/shipping.md",
+    "DECISIONS.md",
+    "raptor-port/scripts/docsize.mjs"
+   ]
+  },
+  {
+   "merge": "239b258437aaa66f34e82fed56722221f3408c45",
+   "p1": "7c3b3afe174d9df29d37fd0ff8b47d0d60578f1b",
+   "p2": "4fbf85a494163652c598fe4dc221a9b2ebabd99a",
+   "committed": "2026-11-08T04:36:10+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "45a9c99b36a8f05a6f61cf573f1a802b8377b78d",
+   "p1": "ead868ee99f6f34a8717fe0c12ab5ca5bb98ca86",
+   "p2": "3a44fdb5f631614687a78e995969376d5312dafe",
+   "committed": "2026-11-08T05:59:29+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "68f0f221a86087a00189dd5f556637d9678ee02e",
+   "p1": "cba72d4252d0674c14c0cbf20a04ca2776634556",
+   "p2": "b67d658fad551da4e184855d0073a16dac40565b",
+   "committed": "2026-11-08T06:18:45+08:00",
+   "clashed": [
+    "raptor-port/docs/file-map.md",
+    "raptor-port/src/state/mission-roles.ts",
+    "raptor-port/src/ui/mission-role-offer.ts"
+   ]
+  },
+  {
+   "merge": "edf223de38c26323cb54d32549340a7db1e8052f",
+   "p1": "525d48ffb1e1dcc97c83d6b96952716df85b3f0b",
+   "p2": "bc3c43bced6a1710b075fcda2b41accea0e83066",
+   "committed": "2026-11-08T06:19:08+08:00",
+   "clashed": [
+    ".claude/decisions-full/how-we-work.md",
+    ".claude/rules/decisions/how-we-work.md",
+    ".claude/skill-observations/log.md",
+    "DECISIONS.md"
+   ]
+  },
+  {
+   "merge": "1264dc6771ff99f4f497ab88f67f15d7f0e226ed",
+   "p1": "239b258437aaa66f34e82fed56722221f3408c45",
+   "p2": "4dfabb63d21489609f6e50189094258bea4a6bd6",
+   "committed": "2026-11-08T06:32:48+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "OUTSTANDING.md",
+    "raptor-port/docs/file-map.md",
+    "raptor-port/docs/walk-ledger.md"
+   ]
+  },
+  {
+   "merge": "f12d6f5a6ad914ef012b6a2d3f215fd4515a2c70",
+   "p1": "65157bb5a5cb57aea9a53df84f92371018206946",
+   "p2": "c61c334804977da8dfd6d6f5da49685076561bc0",
+   "committed": "2026-11-08T06:54:46+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "57f1587e29237bb334c38377ebcb0ec80b199cca",
+   "p1": "0bec8c0f940dc46ceac6a8ea8058873d83291f05",
+   "p2": "c61c334804977da8dfd6d6f5da49685076561bc0",
+   "committed": "2026-11-08T07:03:51+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "321529dc534b70116a9bbf6d59c6d8b5b664a88d",
+   "p1": "57f1587e29237bb334c38377ebcb0ec80b199cca",
+   "p2": "eafef16344b0d67089b1b6a96f1f0e96772f28d8",
+   "committed": "2026-11-08T07:15:53+08:00",
+   "clashed": [
+    ".claude/decisions-full/how-we-work.md",
+    ".claude/rules/bug-check.md",
+    ".claude/rules/decisions/how-we-work.md",
+    ".claude/rules/doc-structure.md",
+    ".claude/skill-observations/log.md",
+    "DECISIONS.md",
+    "raptor-port/docs/bug-check-order.md"
+   ]
+  },
+  {
+   "merge": "4c43c8fdf2aac60c286a39f50f825f8f66845c6f",
+   "p1": "e363be80ce05027be082e1ae6c0342439ee4f255",
+   "p2": "eafef16344b0d67089b1b6a96f1f0e96772f28d8",
+   "committed": "2026-11-08T07:17:11+08:00",
+   "clashed": [
+    ".claude/decisions-full/design.md",
+    ".claude/rules/decisions/design.md",
+    ".claude/skill-observations/log.md",
+    "DECISIONS.md"
+   ]
+  },
+  {
+   "merge": "ae71c90f2734ea962c192b7b045e3a6614081873",
+   "p1": "5ed392df8948e1b11d475361154c69a281b490bd",
+   "p2": "d7ed6441dcd6d72d23221445c6fc79f79c41723b",
+   "committed": "2026-11-08T07:28:31+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "DECISIONS.md"
+   ]
+  },
+  {
+   "merge": "f90e51614a90da40b93098c1f10e926f996b30ba",
+   "p1": "273b2e7cd51d35c11d97ee5ff9cf6b68cdeae418",
+   "p2": "4e517e948241ecd4c055ce41c9e2458f42cf2210",
+   "committed": "2026-11-08T09:01:03+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "e42a746ca332f15f91d8d08efa930af0d16572c3",
+   "p1": "a3f1cbffbd15938281dd4c93a4432a3fe52051b2",
+   "p2": "4e517e948241ecd4c055ce41c9e2458f42cf2210",
+   "committed": "2026-11-08T09:20:03+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "3773304173f1000713ba2314e3afa560c27588fe",
+   "p1": "647853e718f66b05248d61d50e3b292f7f8cc38a",
+   "p2": "4f743c21f4aa2f1282a0cb884e49cb240f745cc9",
+   "committed": "2026-11-08T09:25:46+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "d87d4076622ea23cfb41eacede61538a540535a9",
+   "p1": "a860f6850811b60a588cbf4ba7d02af047e0a7b5",
+   "p2": "4d5b3828aaa18cd1a2b376e693b0b51547f216ae",
+   "committed": "2026-11-08T10:26:10+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "OUTSTANDING-ARCHIVE.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "7009fe1f2692744e8e36ba9a9ade1f1320abd6d1",
+   "p1": "d21b4e72f1aac667b5d3304aeabf8b88e9f9617c",
+   "p2": "4d5b3828aaa18cd1a2b376e693b0b51547f216ae",
+   "committed": "2026-11-08T10:38:22+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "2474800d62eab421847d9337a5364c56c1b25a3a",
+   "p1": "473b69a6a1441d7d5166eb8fe862368002ea265b",
+   "p2": "d3e0d90ff6f7d1308eaaf32f6768160c6f2938d5",
+   "committed": "2026-11-08T10:57:34+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md",
+    "OUTSTANDING-ARCHIVE.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "68be77639cf9f030aa43e5caa9f5abacf77fab48",
+   "p1": "eef1f8eb0e91bc890984c40a7729501c34bda064",
+   "p2": "d3e0d90ff6f7d1308eaaf32f6768160c6f2938d5",
+   "committed": "2026-11-08T10:57:39+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md",
+    "OUTSTANDING-ARCHIVE.md",
+    "raptor-port/docs/file-map.md",
+    "raptor-port/docs/walk-ledger.md"
+   ]
+  },
+  {
+   "merge": "adee1d199bede25f29487cb2c26bffc378c5d4c6",
+   "p1": "539d5f3ec5e99090cc23443b2b6265c281bc8593",
+   "p2": "d3e0d90ff6f7d1308eaaf32f6768160c6f2938d5",
+   "committed": "2026-11-08T10:58:34+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md",
+    "OUTSTANDING.md",
+    "raptor-port/docs/walk-ledger.md"
+   ]
+  },
+  {
+   "merge": "f142d848c2c3c6cb655ddcc4f48c7199fd4fe174",
+   "p1": "30d47559d1d3af83b5778d108a718f4048f471b4",
+   "p2": "d3e0d90ff6f7d1308eaaf32f6768160c6f2938d5",
+   "committed": "2026-11-08T11:00:18+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "6698140d6332a0caf5f2aa60daf85e4a221a544b",
+   "p1": "adee1d199bede25f29487cb2c26bffc378c5d4c6",
+   "p2": "db0c6640bb1c6b70829f4e06951534ec71d380a1",
+   "committed": "2026-11-08T11:15:40+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "2588688b73df38c8069dda4ec3b4709f8d321ea2",
+   "p1": "3db6b4100b3f0483721b2e91139b9ed873dfb541",
+   "p2": "db0c6640bb1c6b70829f4e06951534ec71d380a1",
+   "committed": "2026-11-08T11:17:31+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "ab43e741305028805d49b423473897317985d33d",
+   "p1": "ee16bd4e549a86e0c48bb4be90fc478c1a9ba93f",
+   "p2": "db0c6640bb1c6b70829f4e06951534ec71d380a1",
+   "committed": "2026-11-08T11:17:40+08:00",
+   "clashed": [
+    ".claude/decisions-full/how-we-work.md",
+    ".claude/decisions-full/scheduler.md",
+    ".claude/rules/decisions/how-we-work.md",
+    ".claude/rules/decisions/scheduler.md",
+    "DECISIONS-ARCHIVE.md",
+    "DECISIONS.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "b348f7bdc81096e36fa13d06e99cea470c9529b7",
+   "p1": "12167eb77e48782d9d0c176e75f855ddc386c337",
+   "p2": "cd8a5dd674f107e2dd3b4f16cf821e11ce57e594",
+   "committed": "2026-11-08T11:21:10+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "031288dc8588482db7b2599a645cc71cbb3eedf4",
+   "p1": "583f83f810d832ac3369e9bb1aa5e5bfb5d6fb54",
+   "p2": "dddcc8277e6982a2723a403ac4d3683331e829bb",
+   "committed": "2026-11-08T11:48:07+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "7c00f7b1c70eaab22d2e8f0eb8ea7a3a56d87cd1",
+   "p1": "1d4562559758dfd98129cd635d58fce4ed8f788a",
+   "p2": "dddcc8277e6982a2723a403ac4d3683331e829bb",
+   "committed": "2026-11-08T11:49:46+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "18487fc2e7ed5037c0823151416c6116095453fb",
+   "p1": "8d238b08c94cdcbca2fd9d03c3395505d9119898",
+   "p2": "dddcc8277e6982a2723a403ac4d3683331e829bb",
+   "committed": "2026-11-08T11:51:58+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "0db7d583b4a9bb104f0e657656c1595cac607488",
+   "p1": "ea6cbea7e6422cbb3a573954c31b8b78e75173fd",
+   "p2": "dddcc8277e6982a2723a403ac4d3683331e829bb",
+   "committed": "2026-11-08T11:57:29+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md",
+    "raptor-port/docs/walk-ledger.md"
+   ]
+  },
+  {
+   "merge": "655dbb6bc240d3719283f5ad7621b868ef4b7742",
+   "p1": "a7a0519f6f72cca0295440d5a7d72c04b56ae761",
+   "p2": "d41066ae5b8342a7efe0de3fe170159c7fe06a0b",
+   "committed": "2026-11-08T12:00:48+08:00",
+   "clashed": [
+    "DECISIONS.md"
+   ]
+  },
+  {
+   "merge": "bd56fcb712a9177d4b383814684e8030e52cad18",
+   "p1": "ca70ece3c68ae0733cbf795dc068adef8f3ba9ad",
+   "p2": "dec261e0baa89eb6b516de45e26ba4f4a15097e1",
+   "committed": "2026-11-08T12:14:14+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "a4d23f2fa1188abe07df8317598136dd7bee361e",
+   "p1": "18487fc2e7ed5037c0823151416c6116095453fb",
+   "p2": "dec261e0baa89eb6b516de45e26ba4f4a15097e1",
+   "committed": "2026-11-08T12:16:55+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "66d3a613f1bde757eb998fd37779fac6e09b24de",
+   "p1": "8d951c79db1d0c618e8c9e8726c2bc097293ac34",
+   "p2": "dec261e0baa89eb6b516de45e26ba4f4a15097e1",
+   "committed": "2026-11-08T12:22:49+08:00",
+   "clashed": [
+    "DECISIONS.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "b1edcf82b25c2b28daf1c6a5687c0f5d98be4911",
+   "p1": "38e6d38ff681501f36f4f7dce46be525bee9ac17",
+   "p2": "47adcc39f695903e1482a62390cc5f700dbb53ee",
+   "committed": "2026-11-08T12:44:04+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "7d403d12c06ade9a9afd444d93c956b3af48e2c1",
+   "p1": "41d7481d0a7f04b8cf68820874ed23b96f39a993",
+   "p2": "47adcc39f695903e1482a62390cc5f700dbb53ee",
+   "committed": "2026-11-08T12:48:01+08:00",
+   "clashed": [
+    "HANDOFF.md",
+    "raptor-port/docs/file-map.md",
+    "raptor-port/docs/ui-contracts.md"
+   ]
+  },
+  {
+   "merge": "b8011e768040a624f78fa73fb824cbe65ddf541c",
+   "p1": "6462d8229b370e934c965a71a8366d3dc65e9cb5",
+   "p2": "f9267b2fe04e28f0f78d7c2d86ba08e9ace25fdc",
+   "committed": "2026-11-08T12:52:50+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "1c86501336e922f4e8c0f6a7a26cf2e4fa27e346",
+   "p1": "a0b3f0de511a5df31f6cb624f2b091e6e2ff7fb5",
+   "p2": "bf09f369b009e7d51fbbae0dfdffa6d511e1a93d",
+   "committed": "2026-11-08T13:27:06+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md",
+    "raptor-port/docs/ui-contracts.md"
+   ]
+  },
+  {
+   "merge": "e0b0b0d364e05f7de531bbedce5eb6fe6ea78af0",
+   "p1": "b84a96ac0d6d11c9f380f6c92919980035a4cfd8",
+   "p2": "bf09f369b009e7d51fbbae0dfdffa6d511e1a93d",
+   "committed": "2026-11-08T13:27:30+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "110b3a2c274e88bf0171e3514ca3201ca7268e1f",
+   "p1": "58031149c263571c8994610fc0b0a34818e5e099",
+   "p2": "bf09f369b009e7d51fbbae0dfdffa6d511e1a93d",
+   "committed": "2026-11-08T13:37:36+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "DECISIONS.md",
+    "HANDOFF.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "f0cc7636c115ab322e85339ea16cd8d2b9e55de4",
+   "p1": "ef035e7636fc6769b05cb92bcc154e0b0fdcd2a4",
+   "p2": "87eb8297818addc533af51486fae81a2acf784ea",
+   "committed": "2026-11-08T14:18:20+08:00",
+   "clashed": [
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "1b3661f7efa74d4b4715d84d6436dcc613c0530b",
+   "p1": "811aca3ab2a2e7c3acc4abb62543147bf7074448",
+   "p2": "87eb8297818addc533af51486fae81a2acf784ea",
+   "committed": "2026-11-08T14:21:55+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "8ed7e85a891d01fe1a36f22b3bebf5ba065f380d",
+   "p1": "5cd094766ff87fa603a3d5c133c1bbc1823fcb24",
+   "p2": "e865e8ad3d6d898a37fa96a93a6efd92524d6d84",
+   "committed": "2026-11-08T14:31:11+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "d0334d539c24af862a35441edc3895116c50c7fa",
+   "p1": "1b3661f7efa74d4b4715d84d6436dcc613c0530b",
+   "p2": "e865e8ad3d6d898a37fa96a93a6efd92524d6d84",
+   "committed": "2026-11-08T14:33:22+08:00",
+   "clashed": [
+    "DECISIONS.md"
+   ]
+  },
+  {
+   "merge": "32e9b096dec2c478fff2e4c149eb34aada5d4a2f",
+   "p1": "29938aa22834438e8d714ce8a6ae54595ecb5abd",
+   "p2": "8ae7285fc74a91bcb303d4195d44b167ebecc219",
+   "committed": "2026-11-08T14:46:34+08:00",
+   "clashed": [
+    "HANDOFF.md",
+    "raptor-port/docs/file-map.md",
+    "raptor-port/docs/ui-contracts.md"
+   ]
+  },
+  {
+   "merge": "7141b1bd86b218c16577c0c9e683d42206af4f21",
+   "p1": "b7a81fbd877f800dd3debba23063bad7253b0116",
+   "p2": "8ae7285fc74a91bcb303d4195d44b167ebecc219",
+   "committed": "2026-11-08T14:48:24+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "d2194c2d3419c87852ddb8332ed4614059bc97e4",
+   "p1": "6c6e4e6676aa8ae728058db1b5ae5a226d058c34",
+   "p2": "8ae7285fc74a91bcb303d4195d44b167ebecc219",
+   "committed": "2026-11-08T14:48:37+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "50cc26a5c1edfec7a37ba706e208277e59ee145a",
+   "p1": "cfa24efc373f87dc6db6f99232ce12d17560fee7",
+   "p2": "6010c3e35b05a239d0d6ec78cbe3668527e356ce",
+   "committed": "2026-11-08T14:55:27+08:00",
+   "clashed": [
+    "OUTSTANDING-ARCHIVE.md"
+   ]
+  },
+  {
+   "merge": "7faf81f3bd377948b2c813cc0683e115b5ce8169",
+   "p1": "86ac0c54bfee0254dc163bb632ccf5a30ed6c75f",
+   "p2": "6010c3e35b05a239d0d6ec78cbe3668527e356ce",
+   "committed": "2026-11-08T15:00:35+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "DECISIONS.md",
+    "HANDOFF.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "883efe49cb6ccfa31f3d85437c53d6826bc8740a",
+   "p1": "ce312b01bbd676a6b76e2e18d36d017b8c69c986",
+   "p2": "6010c3e35b05a239d0d6ec78cbe3668527e356ce",
+   "committed": "2026-11-08T15:00:46+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "c6fe5a302f9d1c98c4e0edfb7d9a938c62e24d52",
+   "p1": "f10abbc44829d50d76731bc45dd590d2c7868838",
+   "p2": "0568264be90090e2f9f74236b0f0bfedbbc24845",
+   "committed": "2026-11-08T15:10:53+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "966712bc0ad73bd321995915e4dd42110eff0abc",
+   "p1": "2e5ac7eb55cb8ae379021610884d8ecdc9a48a18",
+   "p2": "0568264be90090e2f9f74236b0f0bfedbbc24845",
+   "committed": "2026-11-08T15:11:19+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "2a825037bd836b23c804e1f7f151b874fcdd34d9",
+   "p1": "d2194c2d3419c87852ddb8332ed4614059bc97e4",
+   "p2": "0568264be90090e2f9f74236b0f0bfedbbc24845",
+   "committed": "2026-11-08T15:13:33+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "95dd5a9c07f14558c94377ea21c4401219aae8c8",
+   "p1": "883efe49cb6ccfa31f3d85437c53d6826bc8740a",
+   "p2": "0568264be90090e2f9f74236b0f0bfedbbc24845",
+   "committed": "2026-11-08T15:14:17+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "2b2fbefc7ba0cdf5e85c328be602c16c876827c3",
+   "p1": "7faf81f3bd377948b2c813cc0683e115b5ce8169",
+   "p2": "0568264be90090e2f9f74236b0f0bfedbbc24845",
+   "committed": "2026-11-08T15:15:53+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "2792c00a1559f2f88adcef3650fd1535fe56e459",
+   "p1": "966712bc0ad73bd321995915e4dd42110eff0abc",
+   "p2": "dd2b7c234d916e3597a0dcb9c39f227a5c5b6b9c",
+   "committed": "2026-11-08T15:30:50+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "fdbe3b4b9e9c5f2b36383a0c9f33c65a022f6c10",
+   "p1": "2a825037bd836b23c804e1f7f151b874fcdd34d9",
+   "p2": "dd2b7c234d916e3597a0dcb9c39f227a5c5b6b9c",
+   "committed": "2026-11-08T15:31:44+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "c4ab4a889da72918d3ff4a0203308e7977480fe9",
+   "p1": "ef05afd5dd135920df34807dbb4cc88d5899088b",
+   "p2": "0abda89d51d1fc2a6fb7ae1ed7238025a196b8aa",
+   "committed": "2026-11-08T15:42:45+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "52de38189ec83d2c4156787e8af0960b4638ca2c",
+   "p1": "f713485d2b8e75c9a0400defa20c4d8487fff6c4",
+   "p2": "0abda89d51d1fc2a6fb7ae1ed7238025a196b8aa",
+   "committed": "2026-11-08T15:59:53+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md"
+   ]
+  },
+  {
+   "merge": "916d42e3c00944328e3256afe0804ed7691b5a78",
+   "p1": "f936541cccb7535c1bf692aac6eb46d081f30fdd",
+   "p2": "41b264227712c43249543867db3cd8119d3ea9b6",
+   "committed": "2026-11-08T16:01:09+08:00",
+   "clashed": [
+    "HANDOFF.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "31ac0ebd859c176f37d06660fe741ef0b0326633",
+   "p1": "0edba187a595a27bd90d60c131a579036cbdfbd4",
+   "p2": "41b264227712c43249543867db3cd8119d3ea9b6",
+   "committed": "2026-11-08T16:01:34+08:00",
+   "clashed": [
+    "HANDOFF.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "790598011ccb71768021689c47924fa16cd4aade",
+   "p1": "52de38189ec83d2c4156787e8af0960b4638ca2c",
+   "p2": "41b264227712c43249543867db3cd8119d3ea9b6",
+   "committed": "2026-11-08T16:02:49+08:00",
+   "clashed": [
+    "raptor-port/docs/file-map.md",
+    "raptor-port/docs/walk-ledger.md"
+   ]
+  },
+  {
+   "merge": "015000f0bb00edf43a4962bd225a86d002118883",
+   "p1": "31ac0ebd859c176f37d06660fe741ef0b0326633",
+   "p2": "99ecc114deffe90f57fe639b64d53ef396cadb00",
+   "committed": "2026-11-08T16:17:54+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "765b2b9a00d11470be254fc60f1afc99cb88182a",
+   "p1": "91fb25ed141c4851a12dc0bb327655f4a07a4f2b",
+   "p2": "99ecc114deffe90f57fe639b64d53ef396cadb00",
+   "committed": "2026-11-08T16:23:55+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "8b54a2cd542f80db7e056de230ece134e328608e",
+   "p1": "29fa3147e1ce527edc28195cf1d59244262d629e",
+   "p2": "d8d5b1f578fc66579b20872aeefd1c245bb29577",
+   "committed": "2026-11-08T16:37:34+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "e97e0852b4be93d4e9baaa7a298d408ff586ca2c",
+   "p1": "5ae068c34c72ca7aecd63f7d720ffbb98a46460a",
+   "p2": "e7fb20aadb218147e329811c5de22d691184a145",
+   "committed": "2026-11-08T16:54:26+08:00",
+   "clashed": [
+    ".claude/rules/decisions/design.md"
+   ]
+  },
+  {
+   "merge": "a3bb57b3edc6b9bcda341a86719c63f1d5ee6bd4",
+   "p1": "0f2697c783eedad58233cb5722a6a3edfe03c67b",
+   "p2": "e7fb20aadb218147e329811c5de22d691184a145",
+   "committed": "2026-11-08T16:58:01+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "f54a6a272524644f6be3680ea56573f519625143",
+   "p1": "2c0d4d545dd880b964ca95735ce695f0f22188e4",
+   "p2": "fc85d7df9b52bf062f8293f214c893a6e8ab3f0d",
+   "committed": "2026-11-08T17:33:54+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "f9a2ff6e5076c68d157028310c6c070740682609",
+   "p1": "24fe29936a2a948cb17d9cfeb8a17a84b9ffb072",
+   "p2": "fc85d7df9b52bf062f8293f214c893a6e8ab3f0d",
+   "committed": "2026-11-08T17:34:48+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "8712be8d28d14dcb40ded4ceffc37a89bd89c289",
+   "p1": "2acd75a51ddf47fd4ed773c0efc7abb48400e145",
+   "p2": "535fdc94f0ed64918ce2b307ef63991a0fa980c5",
+   "committed": "2026-11-08T18:12:22+08:00",
+   "clashed": [
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "423e6c76b2eff5c899ba285b7b1deac848db96c5",
+   "p1": "f635a5442b9bd231767bdddbb47f500eca26c907",
+   "p2": "ae0fe14fe2ff1f813773449c74447e4502986680",
+   "committed": "2026-11-08T18:24:24+08:00",
+   "clashed": [
+    "HANDOFF.md",
+    "OUTSTANDING-ARCHIVE.md",
+    "OUTSTANDING.md"
+   ]
+  },
+  {
+   "merge": "d55797d9936daff0e5d1eee7cc2cc8c785a081a5",
+   "p1": "2f06b181563a5f617b1afc3c36b0a0a4ab610dad",
+   "p2": "ae0fe14fe2ff1f813773449c74447e4502986680",
+   "committed": "2026-11-08T18:28:02+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "HANDOFF.md"
+   ]
+  },
+  {
+   "merge": "2cfdfe2d205caece87453234a0db6e3f8d158e2e",
+   "p1": "b0809f55171f2051cc0a90ac418d32028dff90f9",
+   "p2": "6376895f449831f137f341ce4f8b4bb0f0517e1b",
+   "committed": "2026-11-08T19:00:31+08:00",
+   "clashed": [
+    ".claude/skill-observations/log.md",
+    "DECISIONS.md",
+    "raptor-port/docs/file-map.md"
+   ]
+  },
+  {
+   "merge": "5d2de831ba6d43e68f26ccd4feaf36a234a73b76",
+   "p1": "606285e5d69368321ce83590813392aabd51dbdf",
+   "p2": "aee0de3f2897f6727ff63c113a2ca6e0fb2701b3",
+   "committed": "2026-11-08T19:11:16+08:00",
+   "clashed": [
+    "OUTSTANDING.md"
+   ]
+  }
+ ]
+}
