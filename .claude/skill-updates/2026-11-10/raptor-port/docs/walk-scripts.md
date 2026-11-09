@@ -55,8 +55,11 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
 
 ## 3. Fixtures
 
-- **A fixture that will be SAVED and reopened** — at another size, as another role, by another walker — is built on
-  real storage in a fresh browser context, never on the app's "start fresh" address, which keeps nothing. Built there,
+- **A fixture that will be SAVED and reopened** — at another size, as another role, by another walker — and any script
+  that reloads, checks that something is kept, or uses a test switch that works on the browser's store (`?savefail`,
+  D1666), is built on real storage in a fresh browser context, never on the app's "start fresh" address (`?fresh=1`),
+  which keeps nothing (29 Oct and 8 Nov 26: six "not kept after a reload" FAILs, and a failed-save band that never
+  showed; a guard is filed, `[CHECK-TOOLS-HARDEN]`). Built there,
   the saved file is empty, the reopened world is a perfectly valid demo week, and every later step fails "no such
   line", which reads like a defect in the app. A new browser context is already clean. Straight after reopening a
   saved world, assert one fact the fixture made — a man on a row — before any step runs. (A saved world is also tied
@@ -125,7 +128,12 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
 - **A negative assertion first asserts that its subject exists:** "not greyed" passes on a row that was never drawn. So
   a check of a clip, a pin or a hide reads both sides — what must not show AND what must — and a pinch step asserts that
   its zoom changed (31 Oct 26: "names never drawn over the corner" passed a names column left blank mid-pinch, and "no
-  frozen row off its columns" passed a frozen row that was missing).
+  frozen row off its columns" passed a frozen row that was missing). **And the read itself is calibrated:** an
+  assertion that something did NOT happen is run once on a state where it did (tap an ordinary puck and see the same
+  read report "picked"), and the step names that control; a read that gives the same value in both states fails the
+  step. A check that something appeared reads whether it is SHOWN (its size, the property that hides it), never whether
+  it exists, and a press by screen position first brings its target into view (8 Nov 26, three times in one job: a
+  global the built app never sets, a window frame always on the page but hidden, a press on a switch scrolled off).
 - **An absence is judged after the slowest route to presence.** Name what would have moved and wait out the slowest way
   it could (14 Oct 26: End in a scrolling list settles after about 750ms; a check at 450ms passed), or read the cause
   directly (the scroll position over time). A judge for "X is absent" is written as absence, never through X's own
@@ -321,7 +329,9 @@ A refactor, a storage-only change, "leave the other sizes exactly as they are":
   free port>`: the app's test hooks answer only on localhost, and no second server holds a port (15 Oct 26). For one
   measured number, swap the touched files from
   `origin/main`, rebuild, run the SAME script into a scratch folder, put the files back and prove it with
-  `git diff --stat` — never while walkers are served that build.
+  `git diff --stat` — never while walkers are served that build. **A "before" is proved old before its pictures are
+  used:** the change's own checks run on it and FAIL; a before whose checks pass shows the change (30 Oct 26: the
+  checkout's built bundle had been built on the change's branch, and the before walk passed every new word).
 - **A storage conversion is walked on data the OLD build really wrote.** Serve the old build, make the owner's kind
   of work through its own controls, and save the browser's storage; serve the new build on the SAME address (storage
   belongs to an address) and assert that it reads — and exports — exactly what the old one did. Hand-made "old"
@@ -385,7 +395,15 @@ and `selftest.mjs`. The worked example is M5a's (`specs/lw-m5a.mjs`). When it is
 - **Name the parts a person would point at** — the window, a row, a switch and its lit half, a column of figures, a
   name — each with its drawing selector, its build selector and what is compared. A part inside another is measured
   from it (`rel`), so a row that moved down the page does not make every figure in it "move". A figure with no box of
-  its own is judged by where its words are drawn (`words-place`), never by an invisible box's width.
+  its own is judged by where its words are drawn (`words-place`), never by an invisible box's width. Where the drawing
+  colours words through a child (a bold span) and the build colours the column, the part names the child for the
+  colour and the column for the place (29 Oct 26). A part the drawing script marks for him with an inline ring (a
+  box-shadow or border in the marker colour, `#ff2d95`) leaves that look out of its checks, a comment naming the
+  marker — or the run reports his marker as a missing design (29 Oct 26, M5b's Quals heading).
+- **A drawing script that saved its own measured figures** may be checked without a part list: the build is measured
+  by that script's own measuring function, copied whole, never rewritten, against the saved figures at the same 2px,
+  each difference still named and pictured side by side, the run red until each is put back or kept on his word, as
+  for a part list (8 Nov 26: 78 figures, no false difference — the same ruler on both sides).
 - **Bring the build to the drawing's own world** — the same people, leave and clock, the same lock and switches: each
   state's `reach` in the part list brings the build there through the same doors the drawing's stage script used
   (M5a's: the bids by the localhost bridge, approve and refuse pressed in the real window), and returns a sentence when

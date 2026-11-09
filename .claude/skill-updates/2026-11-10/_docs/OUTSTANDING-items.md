@@ -28,3 +28,29 @@ trap met twice, 23 Oct and 8 Nov 26 (680, 882). (f) **A ready script for a blind
 paths only (the source, the docs without evidence sheets, pictures or the archive, the rulings, the backlog), set
 `core.longpaths`, two commits with `git rm -r` between them, the base tagged `BASE` and the reader told what it stands
 for — a whole-tree copy took over ten minutes and then failed on a long file name (898).
+
+## From group B-design
+
+### [DRAW-MARK-HELPER] One shared helper that marks a part on a drawing, and refuses a mark that moves or loses it (skill notes 820, 822, 848; 5–8 Nov 26)
+**What:** each drawing script writes its own ring-and-tag code, and the same three faults have passed scripts that ran
+clean: a mark's class set `position:relative` on a fixed list and took it out of the picture (820); a tag in its own
+`::before` was cut off by a parent that hides what overflows it, twice in one night (848); a part taken away with
+`remove()` blanked the whole app at its next redraw, and three runs chased the wrong cause before the page's own error
+was printed (822). **To do:** one helper under `raptor-port/scripts/handpass/` that every new drawing script imports:
+it rings a part with an outline and a tag (a child for a static element), asserts the part's box is the same before and
+after the mark, refuses the picture (or moves the tag) when a tag is not wholly inside every ancestor that clips, offers
+`hide()` and no `remove()`, and prints the page's errors to the run's log as they happen; with a self-test on one case of
+each fault. A part the drawing marks with an inline ring in the marker colour could then be left out by the drawing
+check's recorder by itself (742). The guide's lines stay (`.claude/skills/brainstorming/mockups-on-the-real-app.md`,
+step 3 and the Traps); this is the guard for the one met twice. **Place:** with the next drawing job; low.
+
+Priority-list line: `- [DRAW-MARK-HELPER] — one shared helper for marking a part on a drawing, refusing a mark that moves or clips — low.`
+
+### Addition to [CHECK-TOOLS-HARDEN] (append under its "Added 10 Nov 26" paragraph, after group A-walks' (c)–(f))
+**Added 10 Nov 26 (the skill-notes review, group B-design):** (g) **The "start fresh" address, refused where it hides
+the thing under test** — beside the walk helpers' refusal to save a world from it (237, 506): the walk and drawing
+helpers' start (`scripts/handpass/lib.mjs`, `scripts/drawcheck/lib.mjs`) refuse an address carrying both `fresh=1` and
+`savefail` (D1666 — the failed-save switch works only on the browser's store, so under `fresh=1` the band never shows),
+and a `reload()` in a page opened on `fresh=1`, whose every reload begins from the demo world again — met 29 Oct 26 (six
+"not kept after a reload" FAILs that were the script's) and 8 Nov 26 (a comparison of two identical screens) (745;
+`docs/walk-scripts.md` §3 carries the guide's line).

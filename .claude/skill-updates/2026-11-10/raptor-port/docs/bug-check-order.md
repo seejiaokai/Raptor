@@ -700,7 +700,8 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
 - **A screen with an approved drawing gets the drawing check (his D1494, 29 Oct 26; made a standing step, D1495).** The
   sizing lines name each such surface's drawing and the check's part list for it (`scripts/drawcheck/specs/`); the
   check is run as §7.10 says, and the walk does not stand in for it, nor it for the walk. A surface whose drawing has no
-  part list or no record yet gets both first (`docs/walk-scripts.md` §10). A screen drawn at one size only is said so
+  part list or no record yet gets both first — or, where the drawing script saved its own measured figures, is checked
+  by that script's own measure (`docs/walk-scripts.md` §10). A screen drawn at one size only is said so
   here, and its other size is carried by the walk. Where no drawing exists, nothing here applies.
 - **What a test may carry, and what it may not.** A named test may carry repeated cases of a calculation where the
   sizing step says why their route on screen and their behaviour there are the same as a route already walked. It
@@ -880,7 +881,12 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
   corners, where its words sit and what they say — and lists every difference over about 2px with the two side by side
   and laid over each other. Its part list carries a state at his iPhone's size and at his PC's for every screen drawn
   at both. It runs while the screen is built and after every fix. The check sees only the parts its list names; the
-  side-by-side look by eye stays, for everything the list does not name.
+  side-by-side look by eye stays, for everything the list does not name. **"Matches" is a verdict that needs its
+  evidence too:** every surface with an approved drawing gets its pair — differences ringed, a match shown unringed —
+  or its check's record, and a "matches" line cites it; a surface with neither is "not compared", never "matching"
+  (27 Oct 26: a phone bar listed as matching carried the three differences he then ruled on for the desktop). Before
+  a difference is built "back to the drawing", look at where the drawing meets the live page: a drawn panel can cover
+  a live part, and the difference is then the drawing's own (29 Oct 26).
   While the screen is built, a difference is put back to the drawing (D1424), or kept on purpose for a better design
   and named to him with its picture; once the build has gone for his look, each difference is shown to him side by
   side before any is put back, an outright fault (words breaking, something covered or off screen, a wrong behaviour)
