@@ -262,7 +262,7 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   never aborts the merge. It leaves for the chat, in git's marks, whatever both sides changed — the gate baseline always —
   and the rulings files, whose own merge (`backlog-archive.mjs --rulings --merge`) it names (the files still clashed:
   `git diff --name-only --diff-filter=U`, never a merge's printout cut short by `tail` — 6 Nov 26, a missed rulings file
-  kept its clash marks through a passing document check, and only the commit refused; [CHECK-TOOLS-HARDEN] (l)); with nothing left it runs
+  kept its clash marks through a passing document check, and only the commit refused; [CHECK-TOOLS-HARDEN] (m)); with nothing left it runs
   `npm run docsize` and `npm run rulecheck`, counting only a failure the merged-in commit does not have. **Trap — why
   there is no `merge=union` in `.gitattributes`:** "keep both sides" doubles a ledger row or a skill note edited in place,
   lets a clash in those files end as a clean merge that no step looks at, and GitHub's own merge ignores attributes
@@ -331,13 +331,13 @@ desktop app starts, `.claude/settings*.json`, `.claude/hooks/`, `.claude/skills/
 from the main checkout's root (`C:\Users\User\projects\Raptor` — the process's `--project-config-root`); only `CLAUDE.md`
 and `.claude/rules/` load from the worktree. With the main checkout on an old branch, a merged hook or skill is in force in
 no chat (that day: the whole compaction set-up and `/overnight`, the main checkout 208 commits behind). After a merge that
-touches them, the chat that saw the merge brings the main checkout LEVEL with `main` — on `main` and up to date, since a
-folder on `main` but behind it is the same fault ([MAIN-CHECKOUT-STALE]): `git -C C:/Users/User/projects/Raptor fetch
-origin`, then, only when its `status --short` shows no tracked change, its `status -sb` no "ahead" and no other chat works
-in it, `switch main` if it is elsewhere and `merge --ff-only origin/main`. That folder can hold another chat's uncommitted
-work and the walks' untracked pictures: never `reset --hard`, `checkout -- .`, `clean` or a merge that is not a
-fast-forward — when a condition fails or the fast-forward refuses, tell him in one plain line what holds it. Verify in a
-NEW chat by what the app reports (`get_usage`, the skill list), never by running the script by hand.
+changes these files, bring the main checkout level — on `main` and up to date ([MAIN-CHECKOUT-STALE]) — only when no
+chat is using it, it has no tracked changes, and its current commit is safely held on a fetched remote branch. Use
+`git -C C:/Users/User/projects/Raptor` on every command: fetch `origin`; confirm `status --short --untracked-files=no` prints nothing (the walks'
+untracked pictures are not changes); confirm `log HEAD --not --remotes=origin --oneline` prints nothing (no commit there that is not on GitHub — a detached folder's included); then `switch main` if
+needed and `merge --ff-only origin/main`. An unpublished commit, a failed check or a refused command stops this update:
+leave the folder as it is and say what holds it. Never reset, restore or clean the folder. Verify the loaded settings and
+skills in a new chat, by what the app reports (`get_usage`, the skill list), never by running the script by hand.
 A hook added or changed in a chat is not in force in that chat either: the hook settings are read when a chat starts.
 There, prove it by running the settings file's exact command on one input it must refuse and one it must let through
 (the tool call's JSON on its input), leave the in-force proof to the next new chat and say so in the handoff; and before

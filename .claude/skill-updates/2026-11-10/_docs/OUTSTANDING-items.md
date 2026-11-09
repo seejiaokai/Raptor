@@ -15,16 +15,16 @@ compaction hooks; low.
 
 Priority-list line: `- [READER-COMPACT-HANDOFF] — a blind reader that compacts is pasted the host's handoff — a hook change, his word.`
 
-### Addition to [CHECK-TOOLS-HARDEN] (append under its "Added 10 Nov 26" paragraph)
-**Added 10 Nov 26 (the skill-notes review, group A-walks):** (c) **the code check's message** (`scripts/code-check.mjs`
+### Addition to [CHECK-TOOLS-HARDEN] (append after the chat-48 paragraph's (c) — the one that starts "**Added 10 Nov 26 (chat 48, from chat 19's handoff block):**")
+**Added 10 Nov 26 (the skill-notes review, group A-walks):** (d) **the code check's message** (`scripts/code-check.mjs`
 `read()`): when React Doctor marks the comparison degraded, the message blames `main`'s side whatever the cause — print
 its own skip reasons (`skippedCheckReasons`) first, since on 3 Nov 26 the cause was a walk script on the branch with one
 character not in UTF-8 (778); and a changed code file that is not valid UTF-8 is refused by name before React Doctor
-runs (778; [WALK-SCRIPT-UTF8] carries the guide's line). (d) **One shared "letters fit" helper** for walk scripts,
+runs (778; [WALK-SCRIPT-UTF8] carries the guide's line). (e) **One shared "letters fit" helper** for walk scripts,
 measuring the letters' ink as `lw-cell-combos-measure.mjs` does, so a new script imports it instead of writing its own —
-the guide's line was missed the day it was written (834). (e) **A unit check over `e2e/*.spec.ts`** that flags a new
+the guide's line was missed the day it was written (834). (f) **A unit check over `e2e/*.spec.ts`** that flags a new
 text-width assertion (`getBoundingClientRect` against a fixed width) in a test that pins no letters — the Linux-letters
-trap met twice, 23 Oct and 8 Nov 26 (680, 882). (f) **A ready script for a blind reader's clean copy**: archive named
+trap met twice, 23 Oct and 8 Nov 26 (680, 882). (g) **A ready script for a blind reader's clean copy**: archive named
 paths only (the source, the docs without evidence sheets, pictures or the archive, the rulings, the backlog), set
 `core.longpaths`, two commits with `git rm -r` between them, the base tagged `BASE` and the reader told what it stands
 for — a whole-tree copy took over ten minutes and then failed on a long file name (898).
@@ -46,8 +46,8 @@ step 3 and the Traps); this is the guard for the one met twice. **Place:** with 
 
 Priority-list line: `- [DRAW-MARK-HELPER] — one shared helper for marking a part on a drawing, refusing a mark that moves or clips — low.`
 
-### Addition to [CHECK-TOOLS-HARDEN] (append under its "Added 10 Nov 26" paragraph, after group A-walks' (c)–(f))
-**Added 10 Nov 26 (the skill-notes review, group B-design):** (g) **The "start fresh" address, refused where it hides
+### Addition to [CHECK-TOOLS-HARDEN] (append after the chat-48 paragraph's (c) and group A-walks' (d)–(g))
+**Added 10 Nov 26 (the skill-notes review, group B-design):** (h) **The "start fresh" address, refused where it hides
 the thing under test** — beside the walk helpers' refusal to save a world from it (237, 506): the walk and drawing
 helpers' start (`scripts/handpass/lib.mjs`, `scripts/drawcheck/lib.mjs`) refuse an address carrying both `fresh=1` and
 `savefail` (D1666 — the failed-save switch works only on the browser's store, so under `fresh=1` the band never shows),
@@ -57,12 +57,12 @@ and a `reload()` in a page opened on `fresh=1`, whose every reload begins from t
 
 ## From group C1-handoff
 
-### Addition to [CHECK-TOOLS-HARDEN] (append under its "Added 10 Nov 26" paragraph, after groups A-walks' and B-design's (c)–(g))
-**Added 10 Nov 26 (the skill-notes review, group C1-handoff):** (h) **The check lock's `exec`** (`scripts/gatelock.mjs`):
+### Addition to [CHECK-TOOLS-HARDEN] (append after the chat-48 paragraph's (c) and groups A-walks' and B-design's (d)–(h))
+**Added 10 Nov 26 (the skill-notes review, group C1-handoff):** (i) **The check lock's `exec`** (`scripts/gatelock.mjs`):
 one quoted string after `--` is handed to Windows' own shell, not bash, so a compound with `;` or `>` ran something else
 and the lock reported a clean exit (31 Oct 26) — refuse a one-string command holding `;`, `>`, `<` or `&&`, with the
 advice to write a script and pass `-- bash <script>`, and say so in the usage line (760; `docs/gates-and-deploy.md`
-carries the guide's line). (i) **The push guard** (`.claude/hooks/push-guard.mjs`, a hook — on his word, read as a guide
+carries the guide's line). (j) **The push guard** (`.claude/hooks/push-guard.mjs`, a hook — on his word, read as a guide
 change is): before a push to a branch with an open pull request, read its merge state and, when it is CONFLICTING, say
 that no check run will start until `main` is brought in — met three times on 8 Nov 26, each time after a wait for a run
 that never came (887; the guide's line in `docs/gates-and-deploy.md`, "After a push", and the memory note on stacked
@@ -92,38 +92,38 @@ other (D1761, D1770); on his word, and his "merge live". **Place:** his to place
 
 Priority-list line: `- [RULE-FILE-LESSONS] — four lessons for the rule files and the steps for recording a ruling — his word.`
 
-### Addition to [CHECK-TOOLS-HARDEN] (append under its "Added 10 Nov 26" paragraph, after the earlier groups' (c)–(i))
-**Added 10 Nov 26 (the skill-notes review, group C2-records):** (j) **The change-mark check** (`scripts/docsize-rulings.mjs`
+### Addition to [CHECK-TOOLS-HARDEN] (append after the chat-48 paragraph's (c) and the earlier groups' (d)–(j))
+**Added 10 Nov 26 (the skill-notes review, group C2-records):** (k) **The change-mark check** (`scripts/docsize-rulings.mjs`
 `backMarks`): it reads only the first number after a change verb, so "Narrows D1510 and D149" checked D1510 and never
 D149, and it runs only on new rows — read every number of the list after the verb, and run it once over every live
-row, listing what is owed (881: D149 and D218 unmarked, found only by a drafter reading row by row, 8 Nov 26). (k) **The
+row, listing what is owed (881: D149 and D218 unmarked, found only by a drafter reading row by row, 8 Nov 26). (l) **The
 backlog script** (`backlog-archive.mjs <ID>`): before it moves an item, warn when the item is the backlog's last mention of
 a ruling whose row names the backlog as a home, naming the item that could carry the number (900: D1871's home check
-failed only at the closing step, 8 Nov 26). (l) **The document check** (`scripts/docsize.mjs`): fail on any line
+failed only at the closing step, 8 Nov 26). (m) **The document check** (`scripts/docsize.mjs`): fail on any line
 beginning `<<<<<<< ` or `>>>>>>> ` in a file it reads, and on a `=======` line between two such lines (a heading's
 underline is not one) (803: a rulings file kept a merge's clash marks through a
 passing check, 6 Nov 26; only the commit refused; `docs/gates-and-deploy.md`, the settle step, carries the guide's line).
 
 ## From group D-reads-code
 
-### Addition to [CHECK-TOOLS-HARDEN] (append under its "Added 10 Nov 26" paragraph, after the earlier groups' (c)–(l))
-**Added 10 Nov 26 (the skill-notes review, group D-reads-code):** (m) **The backlog script's git wrapper**
+### Addition to [CHECK-TOOLS-HARDEN] (append after the chat-48 paragraph's (c) and the earlier groups' (d)–(m))
+**Added 10 Nov 26 (the skill-notes review, group D-reads-code):** (n) **The backlog script's git wrapper**
 (`scripts/backlog-archive.mjs`, its `git()`): it returns an empty text whenever git fails, and it sets no output buffer,
 so a listing past Node's 1 MB default — the untracked walk pictures alone can pass it — reads as "no files" with no
 error (840: the same wrapper made `docsize --reads` report every rules file as not loading, 300,000 tokens wrong, 7 Nov
 26; `docsize.mjs` and `docsize-reads.mjs` were fixed then, this one was not). Set `maxBuffer`, and let a listing whose
 empty result means "none" fail loudly; the rule for any new script: swallow an error only where "none" and "failed" lead
-to the same action. (n) **The document check's self-test takes a name filter** (`scripts/docsize-selftest.mjs`, an
+to the same action. (o) **The document check's self-test takes a name filter** (`scripts/docsize-selftest.mjs`, an
 environment variable), so a red-first round can run only its new cases — without one, each round of fixes to the merge
-tool meant a scratch copy with every case-runner patched (841, 7 Nov 26; about 12 minutes a round). (o) **The inputs
+tool meant a scratch copy with every case-runner patched (841, 7 Nov 26; about 12 minutes a round). (p) **The inputs
 guard reads comments** (`src/engine/inputs-readers.test.ts`): its file list is chosen by `NAMES` over the raw text, so a
 comment heading with the word INPUTS in capitals put a file in the set and turned the unit run red (767, 2 Nov 26) —
-choose the list through the guard's own `code()` that strips comments, as its other checks do. (p) **The tests that
+choose the list through the guard's own `code()` that strips comments, as its other checks do. (q) **The tests that
 name a changed file, listed and run before its first push:** a small script that takes the branch's changed files and
 lists every test file — unit, browser, smoke scripts — whose text names each one's base name (`grep -rl` over `src`,
 `e2e` and `scripts`), unfiltered, to be run before the first push; the test-driven-development guide's "Which other
 tests?" already says to find them, and it was missed twice — a filtered search missed five browser tests on 5 Nov 26,
-and the date box's look test on 8 Nov 26, each found only by GitHub's run (833). (q) **The Inputs list's browser
+and the date box's look test on 8 Nov 26, each found only by GitHub's run (833). (r) **The Inputs list's browser
 tests open on every date by default:** the list shows a window of dates from today, so a new test on today's clock
 found no rows and failed its own setup, twice on 8 Nov 26 (865) — the list's test helper shows every date unless a test
 asks otherwise, and a test that measures the list's rows asserts a row is visible first; the guide's premises line

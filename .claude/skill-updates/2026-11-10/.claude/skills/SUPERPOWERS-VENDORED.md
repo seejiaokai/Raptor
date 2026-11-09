@@ -90,7 +90,7 @@ did not.
    | `test-driven-development` | RED: a committed fix proved red by taking back only its own diff, restored in a trap, red and green in one lock turn; a date-windowed list's row among a case's premises; a change behind a guard the test environment trips (sizes and features supplied, the framework's warnings fail it); a frame-sampled loop given a frame per position; GREEN: a new flag's every caller listed, aliases included; `writing-good-tests.md`: a reload that re-bases the change comparison, the baseline put back level in shared set-up |
    | `systematic-debugging` | Phase 1: a press during an animation re-run with the processor slowed, the cause pinned pace-free; a CI-only layout failure measured across widths before slowing anything, the width added to the test; instrumentation taken out by an exact edit, never a file restore; Phase 3: how many passes an intermittent failure needs, and recording what the failing step did |
    | `receiving-code-review` | two reviewers agreeing on a finding but not its fix — the fix settled before the fixer starts; a "decided from one source" finding treated as a family, a case per sibling state, a name filter for a long suite |
-   | `dispatching-parallel-agents` | shared vocabulary (one type per shared record, an owner per movable helper) decided before the fan-out |
+   | `dispatching-parallel-agents` | shared vocabulary (one type per shared record, an owner per movable helper) decided before the fan-out; a helper that shares the checkout never moves it (no checkout, switch, stash or detach — it reads by `git show <commit>:<path>`) |
 
 ## Updating
 

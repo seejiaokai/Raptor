@@ -36,7 +36,7 @@ index 4737a984c..e5a647159 100644
  
 
 diff --git a/.claude/skills/SUPERPOWERS-VENDORED.md b/.claude/skills/SUPERPOWERS-VENDORED.md
-index f8850906b..d6b84548d 100644
+index f8850906b..5d6571642 100644
 --- a/.claude/skills/SUPERPOWERS-VENDORED.md
 +++ b/.claude/skills/SUPERPOWERS-VENDORED.md
 @@ -80,6 +80,18 @@ did not.
@@ -53,7 +53,7 @@ index f8850906b..d6b84548d 100644
 +   | `test-driven-development` | RED: a committed fix proved red by taking back only its own diff, restored in a trap, red and green in one lock turn; a date-windowed list's row among a case's premises; a change behind a guard the test environment trips (sizes and features supplied, the framework's warnings fail it); a frame-sampled loop given a frame per position; GREEN: a new flag's every caller listed, aliases included; `writing-good-tests.md`: a reload that re-bases the change comparison, the baseline put back level in shared set-up |
 +   | `systematic-debugging` | Phase 1: a press during an animation re-run with the processor slowed, the cause pinned pace-free; a CI-only layout failure measured across widths before slowing anything, the width added to the test; instrumentation taken out by an exact edit, never a file restore; Phase 3: how many passes an intermittent failure needs, and recording what the failing step did |
 +   | `receiving-code-review` | two reviewers agreeing on a finding but not its fix — the fix settled before the fixer starts; a "decided from one source" finding treated as a family, a case per sibling state, a name filter for a long suite |
-+   | `dispatching-parallel-agents` | shared vocabulary (one type per shared record, an owner per movable helper) decided before the fan-out |
++   | `dispatching-parallel-agents` | shared vocabulary (one type per shared record, an owner per movable helper) decided before the fan-out; a helper that shares the checkout never moves it (no checkout, switch, stash or detach — it reads by `git show <commit>:<path>`) |
 +
  ## Updating
  
@@ -88,10 +88,10 @@ index 281515b9d..261fdea40 100644
  - **The skill's default log location does not persist on web/phone** — an
 
 diff --git a/.claude/skills/brainstorming/mockups-on-the-real-app.md b/.claude/skills/brainstorming/mockups-on-the-real-app.md
-index 90ba231f5..aeb17d163 100644
+index 90ba231f5..bf90e8653 100644
 --- a/.claude/skills/brainstorming/mockups-on-the-real-app.md
 +++ b/.claude/skills/brainstorming/mockups-on-the-real-app.md
-@@ -13,21 +13,45 @@ someone.
+@@ -13,21 +13,42 @@ someone.
  marked picture), find and open that picture first: his words name the surface
  as he calls it, which may not be the app's own name for it. Say on the page
  which surface you read his words as, and why (19 Oct 26: "Edit Schedule" in a
@@ -132,17 +132,14 @@ index 90ba231f5..aeb17d163 100644
     always, never as a box laid over the page at measured coordinates: on a
     phone, and on a layer that scrolls or glides by itself, the laid-over box
 -   drifts off its text with no error (16 and 20 Oct 26).
-+   drifts off its text with no error (16 and 20 Oct 26). The mark must not move
-+   what it marks: its class never sets `position`, display, size or overflow on
-+   the element (a fixed list given `position:relative` left the picture —
-+   5 Nov 26); a static element gets its tag as a child. The script asserts the
-+   marked box is unchanged by the mark, and that each tag lies inside every
-+   ancestor that clips its overflow (8 Nov 26: two tags cut off, both scripts
-+   clean).
++   drifts off its text with no error (16 and 20 Oct 26). A mark must not change
++   the element's position, display, size or overflow; use a child tag for a
++   static element. Assert that marking leaves its box unchanged and keeps every
++   tag inside all clipping ancestors.
  4. Picture the same frames again at the same sizes. Lay them out
     today-beside-proposed, numbered, so the owner answers by number, and say on
     the page which pictures are real and which are drawn in.
-@@ -36,15 +60,22 @@ ruling was the Scheduler Board in the picture he ruled from).
+@@ -36,15 +57,22 @@ ruling was the Scheduler Board in the picture he ruled from).
     after all. That list goes into the plan: each item is a requirement nobody
     had written down.
  6. Commit the injection script beside the pictures, so the set can be shot
@@ -170,7 +167,7 @@ index 90ba231f5..aeb17d163 100644
  
  ## Traps When Injecting Into a Live Page
  
-@@ -52,7 +83,25 @@ ruling was the Scheduler Board in the picture he ruled from).
+@@ -52,7 +80,25 @@ ruling was the Scheduler Board in the picture he ruled from).
    state silently. Do every scroll first, inject last, and re-apply the fragile
    part immediately before the picture. Have the capture step ASSERT its
    premise is still there (a hand-set class, an injected node) — or refuse the
@@ -197,7 +194,7 @@ index 90ba231f5..aeb17d163 100644
  - Clear injected nodes before staging the next option: the app swaps only what
    changed, so option A's markup survives into option B's frames.
  - A script that toggles styles by finding "the original rule" finds its own
-@@ -60,12 +109,16 @@ ruling was the Scheduler Board in the picture he ruled from).
+@@ -60,12 +106,16 @@ ruling was the Scheduler Board in the picture he ruled from).
    sheet. A before/after made by removing a rule from the BUILT stylesheet
    prints how many rules it removed and the measured size on both sides — the
    build rewrites selectors and media conditions; zero removed, or equal sizes,
@@ -216,7 +213,7 @@ index 90ba231f5..aeb17d163 100644
    keeps hidden copies (the week behind the Scheduler Board), and a page-wide
    query draws a mark twice. For a mark bigger than the screen, or one whose
    effect falls outside its own box (a light below a card, a halo), bring the
-@@ -109,7 +162,18 @@ ruling was the Scheduler Board in the picture he ruled from).
+@@ -109,7 +159,17 @@ ruling was the Scheduler Board in the picture he ruled from).
    included) and its markup, reproduce them verbatim, scale them as one piece,
    and put a close-up of the real one beside the mock's before anyone sees it.
    A copy made by eye converges one correction at a time, each paid for by the
@@ -226,8 +223,7 @@ index 90ba231f5..aeb17d163 100644
 +  inherit (5 Nov 26: a "cyan" gear that was grey on screen).
 +- **Reusing an older drawing or its script reuses its shortcuts.** List every
 +  app component it draws and replace each hand-made stand-in with the app's own
-+  markup (on a local build the probe bridge exposes builders, `window.puck`
-+  among them — 27 Oct 26: a hand-drawn puck where his ruling asked for his own).
++  markup (27 Oct 26: a hand-drawn puck where his ruling asked for his own).
 +  Where its page now sits under controls built since, check each control it
 +  carries against them for one doing the same job: a duplicate is put to him,
 +  never carried over because the old drawing had it (28 Oct 26: two year
@@ -236,7 +232,7 @@ index 90ba231f5..aeb17d163 100644
  - **Include one BUSY state by default** — the fullest realistic mix of what
    the change touches (every mark colour, every ring kind, issued and pending
    together, a plain case) — and take the fix's scope from what the rule being
-@@ -132,6 +196,12 @@ ruling was the Scheduler Board in the picture he ruled from).
+@@ -132,6 +192,12 @@ ruling was the Scheduler Board in the picture he ruled from).
    after, on every device and role it touches, with each row's overflow; the
    page states the figures per device, including one where nothing was saved
    (22 Oct 26: 50px saved on the desktop, 10px on the phone).
@@ -249,7 +245,7 @@ index 90ba231f5..aeb17d163 100644
  - **A machine check that cannot reach a drawn mock-up gets a copy it can
    read:** write the drawn element, the page's stylesheets inlined, to a
    standalone file per state and point the design skill's detector at it, and
-@@ -146,6 +216,10 @@ ruling was the Scheduler Board in the picture he ruled from).
+@@ -146,6 +212,10 @@ ruling was the Scheduler Board in the picture he ruled from).
    measured (the node's own markup) or the code read, never from a ruling's
    summary or a code comment's notation — or it says "not checked" (22 and
    24 Oct 26: what a count counted, and what a grid box shows, both wrong).
@@ -260,7 +256,7 @@ index 90ba231f5..aeb17d163 100644
  - **A LAYOUT question over a range of content** (long and short text, optional
    parts) is not answered by a re-lettered screenshot — that shows one
    instance. Build working markup in the app's own style values: the same
-@@ -154,6 +228,16 @@ ruling was the Scheduler Board in the picture he ruled from).
+@@ -154,6 +224,13 @@ ruling was the Scheduler Board in the picture he ruled from).
    today/proposed toggle. When checking such a page locally, assert the layout
    width first — a file with no viewport tag opens 980 wide in a phone-emulated
    browser.
@@ -270,14 +266,11 @@ index 90ba231f5..aeb17d163 100644
 +  the proposed behaviour scripted, a switch per open choice; tried by a real
 +  finger in a visible browser before it is sent (3 Nov 26: drawing it surfaced
 +  four requirements nobody had written). An animation is checked frame by frame
-+  first, in WebKit (the iPhone's engine) as well as Chromium: every animation
-+  paused at fixed moments (`document.getAnimations()`, `currentTime`), one strip
-+  per engine and option, read for order and direction
-+  (`raptor-port/scripts/handpass/talon-claw-frames.mjs`).
++  in WebKit and Chromium (`raptor-port/docs/walk-scripts.md` §5).
  - **A reproduction written as assertions of the RIGHT behaviour**, with a hook
    that injects a candidate stylesheet, gives three things from one script: the
    defect's evidence, the proposal's pictures, and a pass/fail measurement of
-@@ -175,7 +259,9 @@ ruling was the Scheduler Board in the picture he ruled from).
+@@ -175,7 +252,9 @@ ruling was the Scheduler Board in the picture he ruled from).
    exactly"), it is a request for the picture, not for more words.
  - Republishing a page of pictures is a sync of the whole set against what is
    live: list the published files, compare each with the local copy, and send
@@ -290,7 +283,7 @@ index 90ba231f5..aeb17d163 100644
    (search the drawing scripts for the element or the role) and redraw each in
 
 diff --git a/.claude/skills/dispatching-parallel-agents/SKILL.md b/.claude/skills/dispatching-parallel-agents/SKILL.md
-index 8a35ab860..09cf6acec 100644
+index 8a35ab860..d2041a7d7 100644
 --- a/.claude/skills/dispatching-parallel-agents/SKILL.md
 +++ b/.claude/skills/dispatching-parallel-agents/SKILL.md
 @@ -154,6 +154,12 @@ brief:
@@ -306,26 +299,36 @@ index 8a35ab860..09cf6acec 100644
  - **Scratch files go in each agent's own scratch folder**, never the repo
    tree — name each helper's own sub-folder or file prefix in its brief, or two
    of them will pick the same output name. An untracked file an agent did not
+@@ -165,6 +171,10 @@ brief:
+   the rule below is kept when your own commit cannot wait: only files you
+   finished go in, by name; nothing a running agent has written or may still
+   write is staged.
++- **A helper that shares the checkout never moves it:** its brief says no
++  `checkout`, `switch`, `stash` or detach there — it reads by `git show
++  <commit>:<path>` (9 Nov 26: the checkout went detached under the host while
++  helpers worked, and three commits went off the branch).
+ - **Machine resources:** which test suites, ports and folders are already in
+   use. Agents run named test files in the foreground, one at a time, and
+   never re-run a suite they already started — backgrounded full runs pile up
 
 diff --git a/.claude/skills/overnight/SKILL.md b/.claude/skills/overnight/SKILL.md
-index 517b78913..be2025a11 100644
+index 517b78913..b6e2293f4 100644
 --- a/.claude/skills/overnight/SKILL.md
 +++ b/.claude/skills/overnight/SKILL.md
-@@ -17,8 +17,11 @@ jobs he selected, on branches, in this chat. It is NOT permission to build a job
+@@ -17,8 +17,10 @@ jobs he selected, on branches, in this chat. It is NOT permission to build a job
  stay his, every night.
  
  **If his message names the work** ("continue this till step 8"), that is the night's work: Part 1 shrinks to the
 -questions his words leave open — asked, and answered, before it starts — then steps 8 and 9. With none open, it goes
 -straight to steps 8 and 9 without ending the turn.
 +questions his words leave open — asked, and answered, before it starts — then steps 8 and 9. Even then the first
-+message tells him the night's jobs before it starts — numbered, in order, each with what he will have in the morning,
-+its check and its rough time, how many fit in his hours, and what waits for him — beside "Low or Medium?" (his D1443,
-+D1104). The list does not hold the start: with no question open, it goes straight to steps 8 and 9 without ending the
-+turn, the recommended Low or Medium taken.
++message lists the night's jobs as step 6 does, beside "Low or Medium?" (his D1443, D1104); the list does not hold the
++start: with no question open it goes straight to steps 8 and 9 without ending the turn, the recommended Low or Medium
++taken (the agent's reading).
  
  ## Part 1 — before he sleeps: recommend, he selects, then start
  
-@@ -28,7 +31,10 @@ straight to steps 8 and 9 without ending the turn.
+@@ -28,7 +30,10 @@ straight to steps 8 and 9 without ending the turn.
     guard, a minute or two; the full checks, up to about twenty), so look for any run of the branch's last pushed commit
     that is `queued` or `in_progress`, never only the newest row. The check lock:
     `node raptor-port/scripts/gatelock.mjs status`. Other live chats: `ListAgents` (or `list_sessions`) — a job another
@@ -337,7 +340,7 @@ index 517b78913..be2025a11 100644
  2. **Read the order.** `HANDOFF.md` (`## Now`, `## Next, in order`) and `OUTSTANDING.md`'s priority list. For every
     job you might recommend, its item and its rulings' full rows (`grep -h '^| D… |' .claude/decisions-full/*.md`) —
     never only the short line (D53, D390). **Before a job counts as a candidate, confirm it is not already done:** its
-@@ -49,8 +55,8 @@ straight to steps 8 and 9 without ending the turn.
+@@ -49,8 +54,8 @@ straight to steps 8 and 9 without ending the turn.
       hook, a setting, a working guide — even one he has approved, because it is done while he is awake.
  5. **Size each job, and the night.** For each job (or batch of related jobs on one branch — checked once at the
     riskiest tier, D485): its branch (below); its bug-check tier and walk size (`raptor-port/docs/bug-check-order.md` §5
@@ -348,7 +351,7 @@ index 517b78913..be2025a11 100644
     or marked a guess. Add the times in the recommended order and mark where his hours run out — keeping the last hour
     for the report — so the list shows how many jobs fit (D867). The allowance can shorten it too. Order them so the
     most valuable finished job does not depend on the last one finishing.
-@@ -83,11 +89,11 @@ straight to steps 8 and 9 without ending the turn.
+@@ -83,11 +88,11 @@ straight to steps 8 and 9 without ending the turn.
     and 3) and count his hours from the reply; if anything changed, say so in one line and go on. A
     new decision in his reply (a "yes, build it", a "Opus alone reads it", a correction) is recorded as a ruling by the
     three steps at the head of `DECISIONS.md`; his selection itself is not — the command's ruling is its standing
@@ -363,7 +366,7 @@ index 517b78913..be2025a11 100644
     "Questions waiting for him: none yet". A compaction loses nothing that is already here (D667).
  9. **Then start**, without ending the turn: call `request_keep_awake` with `until: "session_idle"`; switch the
     compaction guard off for the night — `node "$(git rev-parse --show-toplevel)/.claude/hooks/compact-ready.mjs" --away`
-@@ -107,17 +113,26 @@ block says so. Never a pull request based on another branch — it runs none of
+@@ -107,17 +112,29 @@ block says so. Never a pull request based on another branch — it runs none of
  - **Each job is handed to one fresh helper** (the Agent tool, in the background), one job at a time — never two builders
    in this one checkout; Medium means more walkers or a scenario designer inside a job, not two jobs at once — with a
    complete brief: its branch, its items, its check, the helper limit Low or Medium sets, push by explicit refspec, no
@@ -387,9 +390,12 @@ index 517b78913..be2025a11 100644
 -  sheet — the moment it arrives, before anything is done about it.
 +  job still works when he types the night's message in the desktop app, all of them started together, each brief
 +  naming the branch that carries the night's block — a block not yet on `main` is not on a branch cut from it (7 Nov 26).
-+- **A helper's report** (reader, walker, scenario designer) comes back as its final reply — the tool refuses a
-+  background helper's write of a file it calls a report (10 Nov 26) — and is saved into the repo — its brief's folder or
-+  the evidence sheet — the moment it arrives, before anything is done about it. Before it is accepted, each reader the
++- **A helper's report** (reader, walker, scenario designer). A helper returns its report as its final reply. Save it
++  at once. The tool refuses a background helper's write of a file it calls a report (10 Nov 26, note 915), so the report
++  is saved into the repo — its brief's folder or the evidence sheet — the moment it arrives, before anything is done
++  about it — except a reader's report while another reader of the same job is still reading: it waits in a scratch
++  folder outside the checkout and enters the repo once every reader has reported (the bug-check order §4). Before it
++  is accepted, each reader the
 +  night's block names for that job is ticked against it; a missing one is run then, or the job goes on
 +  `[NO-ASTRA-LIST]` in the same change (8 Nov 26). A notice that a helper stopped with background work of its own still
 +  running is no report: stop it or wait for the real one before the checkout is switched or written, then read its
@@ -397,7 +403,7 @@ index 517b78913..be2025a11 100644
  - **At every commit:** this chat's block and the backlog true; `cd raptor-port && npm run docsize` before a commit of
    records; the branch pushed — never while its checks are running (step 1's command; D151) — by explicit refspec, alone
    in its own command (`git push origin HEAD:refs/heads/<branch>`: a refused push stops a compound command's earlier
-@@ -139,7 +154,7 @@ block says so. Never a pull request based on another branch — it runs none of
+@@ -139,7 +156,7 @@ block says so. Never a pull request based on another branch — it runs none of
    - if ever told a compaction is waiting (the guard is on — the away mark lapsed or was never set): set it again with
      `--away` as in step 9, so the compaction is not held;
    - **after a compaction, re-read the block, this guide and the files the step in hand touches before the next change,
@@ -406,7 +412,7 @@ index 517b78913..be2025a11 100644
      or a test result.
  - **A roadblock that needs him** waits until he wakes (D596, D867): search the rulings and the backlog first (D53); a
    technical choice is yours — decide and write down why; a choice truly his goes into the block's "Questions waiting
-@@ -174,7 +189,8 @@ block says so. Never a pull request based on another branch — it runs none of
+@@ -174,7 +191,8 @@ block says so. Never a pull request based on another branch — it runs none of
  - **One notification**, one line: done, or blocked, and where to look.
  - **The report**, short, plain words, in this order:
    1. what is ready for his look — per job: what it does in the app, the preview link, the pictures (several pictures go
@@ -416,7 +422,7 @@ index 517b78913..be2025a11 100644
    2. what of his selection was not done, and why — and any stale record found on the way;
    3. the questions waiting for him — each with its recommended answer, its picture where it is a design;
    4. the allowance used (the weekly figure at the start and now), how full this chat is, and whether it compacted;
-@@ -185,7 +201,8 @@ block says so. Never a pull request based on another branch — it runs none of
+@@ -185,7 +203,8 @@ block says so. Never a pull request based on another branch — it runs none of
  
  ## Before sending the Part 1 message — check
  
@@ -426,7 +432,7 @@ index 517b78913..be2025a11 100644
  - [ ] Each job has a rough time, and the message says how many fit in his hours.
  - [ ] At most four questions, each with a recommended answer; no technical choice is put to him.
  - [ ] "Low or Medium?" is asked, with the recommended one (D1104).
-@@ -201,6 +218,6 @@ block says so. Never a pull request based on another branch — it runs none of
+@@ -201,6 +220,6 @@ block says so. Never a pull request based on another branch — it runs none of
  
  - [ ] Every pull request's checks read, both runs; none described as green that was not seen green.
  - [ ] Every job has its evidence sheet with a `Walk:` line, or is reported as not checked.
@@ -466,7 +472,7 @@ index 71fca4d00..3e97d973e 100644
  
 
 diff --git a/.claude/skills/session-handoff/SKILL.md b/.claude/skills/session-handoff/SKILL.md
-index 93627075a..798050a2e 100644
+index 93627075a..17927bef5 100644
 --- a/.claude/skills/session-handoff/SKILL.md
 +++ b/.claude/skills/session-handoff/SKILL.md
 @@ -50,7 +50,11 @@ pushed and waiting for him — the normal end state, not unfinished business.
@@ -498,7 +504,7 @@ index 93627075a..798050a2e 100644
  - Print the same block in chat, and give him the **ready-to-paste opening line**
    for the fresh chat: the line itself puts the new chat on its branch (the
    next bullet), then "Read `HANDOFF.md` — the `claude/<branch>` block under
-@@ -71,7 +81,16 @@ pushed and waiting for him — the normal end state, not unfinished business.
+@@ -71,7 +81,21 @@ pushed and waiting for him — the normal end state, not unfinished business.
    never "git pull", which pulls nothing on a branch with no upstream; "git
    pull" is for a chat continuing a pushed branch. For a design or question job
    the line says why the job is due now and what he will get from it (pictures
@@ -506,17 +512,22 @@ index 93627075a..798050a2e 100644
 +  and questions; nothing in the app changes). A chat number in it is a hint:
 +  "the next free number in `main`'s `HANDOFF.md` when you start (was N at
 +  <time>)", checked there before use (8 Nov 26: a number given was already
-+  taken). Every opening line says: "if `git status` shows changes you did not
-+  make, or another chat works in this folder, run `git worktree add --detach
-+  ../Raptor-<short> origin/main` (a continuing chat: its branch in place of
-+  `origin/main`; a short path — never under a temp or scratchpad folder) and
-+  work only there" — two chats switching one folder put
-+  one chat's commit on the other's branch (3 and 5 Nov 26).
++  taken). Every opening line says: "if `git status --short
++  --untracked-files=no` shows changes you did not make, or another chat works
++  in this folder, do not switch branches here: a new job runs `git worktree add
++  --detach ../Raptor-<short> origin/main`, a continuing one `git worktree add
++  ../Raptor-<short> claude/<name>` (the branch itself, never detached, so its
++  commits land on it) — a short path, never under a temp or scratchpad folder —
++  and works only there; make one write there first, and if the file tools
++  refuse it (a chat started in a worktree may not write into another), stop and
++  tell him." The walks' untracked pictures are not another chat's changes. Two
++  chats switching one folder put one chat's commit on the other's branch (3 and
++  5 Nov 26).
 +  And tell him to TYPE a word of his own after pasting it
    ("go"; "I'm away — run it"): a first message that is only pasted text may
    be held for his confirmation, which stalls a start he meant to leave
    unattended.
-@@ -102,7 +121,12 @@ pushed and waiting for him — the normal end state, not unfinished business.
+@@ -102,7 +126,12 @@ pushed and waiting for him — the normal end state, not unfinished business.
    released — push waiting" and the release waits for the push. If he gives
    this chat more work afterwards, switch back first (`git switch
    claude/<name>`); if git refuses because a new chat now holds the branch,
@@ -530,25 +541,24 @@ index 93627075a..798050a2e 100644
  
  **Either way, it has to be COMMITTED AND PUSHED to the designated branch —
  and NEVER merged by you.** SUPERSEDED 2 Sep 26 (`.claude/rules/shipping.md`,
-@@ -203,11 +227,14 @@ force only once the main checkout (`C:\Users\User\projects\Raptor`) is on
+@@ -203,11 +232,11 @@ force only once the main checkout (`C:\Users\User\projects\Raptor`) is on
  `main`:** a worktree chat started from the desktop app loads those from the
  main checkout, not from its own folder (14 Oct 26: a whole compaction set-up
  and a new skill were in force in no chat, the main checkout 208 commits
 -behind). When that folder is not on `main`: if `git -C
-+behind). When that folder is not on `main`, or behind it: if `git -C
- C:\Users\User\projects\Raptor status --short` shows no tracked change, its
- branch has nothing unpushed (`git -C … status -sb` shows no "ahead"), and no
+-C:\Users\User\projects\Raptor status --short` shows no tracked change, its
+-branch has nothing unpushed (`git -C … status -sb` shows no "ahead"), and no
 -chat is working in it, switch it (`git -C … switch main`) and say so;
 -otherwise tell him in one plain line what holds it. The block's pick-up then
-+chat is working in it, switch it (`git -C … switch main`) if needed, bring it level
-+(`git -C … merge --ff-only origin/main` after a fetch — never a hard reset:
++behind). When the main checkout is on another branch or behind
++`origin/main`, follow the guarded, full-path recipe in
 +`raptor-port/docs/gates-and-deploy.md`, "A worktree chat loads its settings,
-+hooks and skills from the MAIN checkout") and say so; otherwise tell him in
-+one plain line what holds it. The block's pick-up then
++hooks and skills from the MAIN checkout". If any condition fails, leave it
++alone and name what holds it. The block's pick-up then
  tells the next chat to verify by what the app itself reports (`get_usage`,
  the skill list) — never by running the script by hand
  (`raptor-port/docs/gates-and-deploy.md`).
-@@ -313,7 +340,8 @@ stable structure is the point.
+@@ -313,7 +342,8 @@ stable structure is the point.
  - **Branch:** `claude/<name>`; its PR <#n or none>; released here (`git switch --detach`) — or why not. If it has MERGED, the next chat starts as a new job — its own
    fresh branch, level with `origin/main` — and never switches to this one.
  - **Gates:** `npm test` · `npm run build` · `node reference/tfin.js` · `npm run test:e2e` —
@@ -558,7 +568,7 @@ index 93627075a..798050a2e 100644
    (not in CI, so a UI or validation change shipped without them is Unfinished, not a footnote).
    Run from `raptor-port/`; a fresh checkout needs `npm ci` first.
  - **Open questions for him:** <question> — <context needed to answer it> (or "none")
-@@ -347,13 +375,46 @@ a handoff that could not be:
+@@ -347,13 +377,47 @@ a handoff that could not be:
    beats a message.
  - Name any document-size marker carried over (`docsize: OVER by <n>,
    deferred`): the next documents-only change must settle it.
@@ -584,10 +594,11 @@ index 93627075a..798050a2e 100644
 +  area loads that area's whole rulings page — and the side chat commits its
 +  own block after its first change, not at the first warning (8 Nov 26: two
 +  side chats past three-quarters full before a line was built).
-+- His "merge live" does not travel in another chat's text: the app's safety
-+  check refused a merge made on an approval quoted in a side session's brief
-+  (8 Nov 26). The chat he said it in merges, or the block says the merge waits
-+  for his word typed in the chat that will make it.
++- The app's safety check judges who typed the word: a merge made on his "merge
++  live" quoted in a side session's brief was refused (8 Nov 26), even though his
++  standing word covered that chat (D1796). So the chat he said it in merges; or
++  the brief says the merge will need his word typed in the chat that makes it,
++  and he is told now that he will be asked there once more.
  
  ## Rules
  
@@ -822,7 +833,7 @@ index 8ff96a13f..8f8e19a4b 100644
  inventory of every reader AND writer of the record, with a verdict per site
 
 diff --git a/raptor-port/docs/bug-check-checklist.md b/raptor-port/docs/bug-check-checklist.md
-index 36b833390..daf647b70 100644
+index 36b833390..fb931e673 100644
 --- a/raptor-port/docs/bug-check-checklist.md
 +++ b/raptor-port/docs/bug-check-checklist.md
 @@ -20,7 +20,9 @@ next. Never from memory — the order changes.
@@ -830,9 +841,9 @@ index 36b833390..daf647b70 100644
     cosmetic on one surface → LOOK; words only → NONE. A cosmetic change to a shared drawer is never LOOK.
  3. **Tell him, in one block** (§0a step 3): the tier, its checks, the walk's size and why (step 10), and how long — from
 -   the last recorded run or "not measured". He reads it; he does not choose it.
-+   the last recorded run or "not measured". He reads it; he does not choose it. A FULL check whose chat starts past
-+   about 40% full names its chats too: A for the tier, sheet, roll-call, break tests and scenario brief, B for the walk,
-+   the reads and the fixes.
++   the last recorded run or "not measured". He reads it; he does not choose it. A FULL check names its chats too when
++   its start plus what its area pages will load (`docsize.mjs --reads`) leaves too little room for the walk: A for the
++   tier, sheet, roll-call, break tests and scenario brief, B for the walk, the reads and the fixes.
  4. **Lay down the evidence sheet now** (WALK and FULL) — open **§9**: every section it lists as an empty heading, the
     roll-call table drawn one row per surface, so a row nobody walked shows as a blank during the walk, not at the close.
  5. **Something new he will see** — a box, a message, a mark, a button, even inside a fix: drawn and shown to him before
@@ -859,7 +870,16 @@ index 36b833390..daf647b70 100644
  11. **The plain-user round** (**§7.0a**): the area's everyday tasks start to finish, every control that opens or closes
      something pressed, every other place that shows the result looked at.
  12. **The fixture** — the day that has everything on it, in the demo seed (**§7.1**), made through the app's own controls
-@@ -123,7 +126,7 @@ script already pictures re-runs that one step into a new folder (§5; `docs/walk
+@@ -71,7 +74,7 @@ next. Never from memory — the order changes.
+ 17. **The reads, after the walk** (FULL, and any job that needs a code read) — open **§4** ("Who reads the finished code
+     now", the brief, "What to do with what they hand back") and **§4a**. §4's current arrangement wins: the fresh Opus
+     reader gets the same brief and the finished code, and has seen neither the walk's report nor another reader's (D790);
+-    §4a's hand-over of the evidence sheet and the roll-call applies only where that allows. Readers are asked for what is
++    any evidence handed to a reader follows §4's blindness rules. Readers are asked for what is
+     missing; before the sheet goes to anyone, every test or file a "proved by" cell names is checked to exist (§9). **Whatever the tier:** a change that touches sign-in, who may do or see what, or what one
+     person can see of another gets the security read too (§5, D1411).
+ 18. **Fix, then re-walk what the fixes touched** (§5: the re-walk, a fix is new code, the touched suite between rounds).
+@@ -123,7 +126,8 @@ script already pictures re-runs that one step into a new folder (§5; `docs/walk
  22. What a person is meant to see is checked by what is drawn — pixels in its box — first frames included.
  23. Before asserting what a tap opens: what the rulings say a tap on that kind of entry opens on an ordinary day, walked
      side by side — the ruled window is the expected one, never the build's.
@@ -870,25 +890,27 @@ index 36b833390..daf647b70 100644
 +23. (the second 23) Every screen a walk pictures is checked for the standing layout lessons — each pair of side-by-side
 +    boxes measured one height and one line, at a phone's width with an iPhone's letters as well as a desktop's.
 +24. Anything placed against the top bar, or measured on a scroll or a screen-size change: flicked to the page's very
-+    foot and back on a phone; what the PC cannot show (the bounce, the folding toolbar) named as a look for his iPhone.
++    foot and back on a phone; a test stands the bar out of place for a moment and sends the screen-size change; what
++    the PC cannot show (the bounce, the folding toolbar) named as a look for his iPhone.
 
 diff --git a/raptor-port/docs/bug-check-order.md b/raptor-port/docs/bug-check-order.md
-index b3a71a9d4..e12f9717a 100644
+index b3a71a9d4..0d9b95a6f 100644
 --- a/raptor-port/docs/bug-check-order.md
 +++ b/raptor-port/docs/bug-check-order.md
-@@ -52,7 +52,10 @@ is the agent's job, answered out of §5.
+@@ -52,7 +52,11 @@ is the agent's job, answered out of §5.
     is his call to make, not the agent's to assume. Name no check beyond the tier's own list unless its route is traced —
     which control, in which state, proves it — and quote a duration from the last recorded run (`HANDOFF.md` §Gate baseline,
     the walk ledger), or say it is not measured: a check withdrawn later, or an hour that turns out to be fourteen
 -   minutes, costs trust.
-+   minutes, costs trust. A FULL check whose chat starts past about 40% full also names its chats: the area rulings and
-+   pages that load by themselves as its files are opened can fill one before the walk (8 Nov 26: 49% to 76% before
-+   it) — chat A the tier, sheet, roll-call, break tests and scenario brief, its report handed into the repo; chat B the
-+   walk, the reads and the fixes.
++   minutes, costs trust. A FULL check also names its chats when where its chat starts, plus what will load by itself as
++   its files are opened (the area pages — `node raptor-port/scripts/docsize.mjs --reads`, by job), leaves too little
++   room for the walk and the reads (8 Nov 26: 49% to 76% before the walk) — chat A the tier, sheet, roll-call, break
++   tests and scenario brief, its report handed into the repo; chat B the walk, the reads and the fixes. Unattended, the
++   night stays one chat: name the clean point and compact there instead (D667, D867).
  4. **Execute it in the order §5 gives**, and finish with the `Walk:` line from §9.
  
  **If you are about to skip a step, say so and say why.** A skipped check he agreed to is a
-@@ -208,7 +211,8 @@ deliberately. Ranked by value for the cost:
+@@ -208,7 +212,8 @@ deliberately. Ranked by value for the cost:
  | 4 | **Attacking the method itself, after a defect escapes** | One drafts, the other attacks | Outsiders change the checking system; the builder defends the process that missed it. After escapes, not routinely. |
  
  **How many, and which (owner, D353, 28 Sep 26):** scenario design (rank 1) and any side question — ONE reviewer, Astra
@@ -898,7 +920,7 @@ index b3a71a9d4..e12f9717a 100644
  red team of an important plan (rank 3) — BOTH; the code reads on high-consequence work (rank 2) — BOTH. Measured on
  28 Sep 26: three Fable runs cost ~1.4M Claude tokens and found the serious issues; the doubled scenario and side-question
  runs mostly repeated each other.
-@@ -229,7 +233,7 @@ fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 ke
+@@ -229,7 +234,7 @@ fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 ke
  Sol, the fresh, blind Opus reader holds the second seat; where Astra cannot run, a fresh Opus reader takes the one-reviewer
  jobs (D903, D1770 — the agent's reading).*
  
@@ -907,7 +929,7 @@ index b3a71a9d4..e12f9717a 100644
  **every job that needs a code read gets a FRESH Opus read of its finished code — a reader that did not write it and has seen
  neither the walk's report nor another reader's, given the same brief** — on the riskiest changes too (rank 2's list above): **Fable
  reads nothing unless he calls for it (D903, 15 Oct 26 — "don't include fable in anything anymore unless I call for it";
-@@ -281,25 +285,50 @@ Also: demand **exact, step-by-step fix instructions per finding**, not a directi
+@@ -281,25 +286,50 @@ Also: demand **exact, step-by-step fix instructions per finding**, not a directi
  **explicit negatives** ("I checked X and found nothing") — a confident all-clear from one model on
  an area the other found a defect in is the cheapest possible pointer to a real bug.
  
@@ -919,9 +941,8 @@ index b3a71a9d4..e12f9717a 100644
 +compacts (`[READER-COMPACT-HANDOFF]`); the host sizes a read to finish before the reader would compact. Blindness is
 +what a reader can reach, not what its brief tells it not to open: when the version under review is not the branch head,
 +or the branch already holds another reader's report or a revision built from it, the reader runs in an exported copy of
-+that commit (`git archive <commit> -- . ':(exclude)<picture folders>'` unpacked into a scratch folder, `git init` and one
-+commit there so the repo's scripts run, then `codex exec -C <copy> -s read-only`), and the saved report's head says so
-+(7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (f)).
++that commit (the recipe: `docs/codex-guide.md`, "Reading a commit that is not the branch head"), and the saved report's
++head says so (7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (g)).
  
  **Before a brief leaves** — a brief is the one place a wrong sentence is multiplied by every reader of it:
  
@@ -933,15 +954,16 @@ index b3a71a9d4..e12f9717a 100644
 -  host cannot say what the right answer is. (13 Oct 26: four of one walk's five FAILs, and about twelve on the job
 -  before, were the host's own expected line contradicting an older ruling.)
 +- A scenario's EXPECTED line gets the same check before it goes to a walker: each names its source — a ruling, a
-+  contract line, or "as on `main` today" from a control run — and one with none, or one the host cannot settle (a
++  contract line, "as on `main` today" from a control run, or two surfaces of the app that must agree (the mark and the
++  changes list) — and one with none, or one the host cannot settle (a
 +  COUNT, a REFUSAL or a PUBLISHED-DAY state above all), is rewritten "RECORD exactly what it says". An expectation that
 +  differs by surface (a window that blocks or not, a role, a size) is read from its own roll-call column, set row by
 +  row before the script is written. (13 Oct 26: four of one walk's five FAILs, and about twelve on the job before, were
 +  the host's own expected line contradicting an older ruling; 2 and 8 Nov 26: three more, each an expectation with no
 +  source.)
 +- A code reader's brief says where its proof tests go — its own scratch folder, never a test name under the app's
-+  source — and while any helper works in the checkout the builder stages by named paths and reads `git show --stat
-+  HEAD` before pushing (8 Nov 26: a reader's deliberately failing test was swept into the builder's commit).
++  source (staging while helpers work: the dispatching guide's "Stage by explicit path") (8 Nov 26: a reader's
++  deliberately failing test was swept into the builder's commit).
  - A recommended answer to a question parked for him is checked against his words in the full rows — not only that
    the question is still open.
  - A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
@@ -967,7 +989,7 @@ index b3a71a9d4..e12f9717a 100644
  
  **What to do with what they hand back** — this is the requesting agent's job, not theirs:
  
-@@ -307,7 +336,10 @@ an area the other found a defect in is the cheapest possible pointer to a real b
+@@ -307,7 +337,10 @@ an area the other found a defect in is the cheapest possible pointer to a real b
     symptom: where a finding says something is "unchanged" or "invisible", probe every reader of that state (what
     draws it, what validates it, who is available because of it, what consumes it downstream). A finding that fails
     there is dispositioned a false positive (item 5), marked "checked", with the reader that disproves it, and the
@@ -979,7 +1001,7 @@ index b3a71a9d4..e12f9717a 100644
  2. Check it against the governing ruling. Then search the tests, the code comments and the records for a decision that
     pins as INTENDED either the behaviour the finding calls a defect, or any behaviour the fix would change beyond the
     rule the finding cites. If the finding's own behaviour is pinned, it goes to him as a question and is not fixed; if
-@@ -322,6 +354,10 @@ an area the other found a defect in is the cheapest possible pointer to a real b
+@@ -322,6 +355,10 @@ an area the other found a defect in is the cheapest possible pointer to a real b
  6. Settle disagreements with evidence, never by confidence or majority.
  7. Every confirmed defect gets a regression test and a row in the roll-call.
  
@@ -990,7 +1012,7 @@ index b3a71a9d4..e12f9717a 100644
  **Opus sizes the coverage for this change (§7.0; owner, D607, 7 Oct 26). A short walk may be run by the host or
  by one helper; if the chosen pass is long, D16 requires parallel helpers, as below.**
  **A long walk is FANNED OUT across parallel helpers, not walked serially (owner, D16, 21 Sep 26).** The
-@@ -339,7 +375,11 @@ and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait fo
+@@ -339,7 +376,11 @@ and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait fo
  later round makes a new one (6 Oct 26: a frozen folder "refreshed" for the next round, under a walker of the last).
  **And the reader's half: while a reader reads the folder, nothing rewrites the source it reads** — a break test, a
  mid-flight fix, the next step's build. Break in a separate worktree, or hand the reader a commit (10 Oct 26: a
@@ -1003,7 +1025,30 @@ index b3a71a9d4..e12f9717a 100644
  
  **What each part of a check holds still, on ONE checkout** (14 Oct 26 — written once, so the order is not worked out
  again under load; a wrong order costs a false finding or a mixed walk):
-@@ -421,7 +461,8 @@ This order adds checks; it never removes one of Claudex's.
+@@ -401,8 +442,9 @@ walker trial is run or offered. The host still opens the pictures, reproduces ev
+ ## 4a. How this fits the Claudex loop
+ 
+ They do not compete. **Claudex covers the plan and the code; this order covers the running app** (D11).
+-Claudex's own rules stand unchanged — in particular *the provider that built never inspects* (one exception: D588's ONE Sonnet trial fix, whose diff and tests Opus reads), and
+-*never disable or bypass the workflow's independent reviewer* (`.claude/rules/raptor-executor.md`).
++Claudex's independent reviewer is never bypassed (`.claude/rules/raptor-executor.md`). The chat that wrote the code
++never reviews it; the fresh, blind Opus read required by D790 remains beside Astra's, including when Opus wrote the
++code (D1770).
+ This order adds checks; it never removes one of Claudex's.
+ 
+ | Claudex stage | What it is | What this order says about it |
+@@ -414,14 +456,17 @@ This order adds checks; it never removes one of Claudex's.
+ 
+ **Three things this order changes about how Claudex is used:**
+ 
+-1. **The WALK goes BEFORE the final inspection, not after.** Drive the app first, fix what it
+-   finds, then hand the inspector the finished code *and the evidence sheet*. Reading for absence
++1. **The WALK goes BEFORE the final inspection, not after.** Walk first and fix what it finds, then
++   give the readers the finished code and the same brief. The fresh Opus reader sees neither the walk's
++   report nor another reader's report (D790); any evidence handed to a reader follows §4's blindness
++   rules. Reading for absence
+    works when there is a roll-call in hand; reading cold does not. On the OIL build the inspection
+    ran first, passed, and three unwired surfaces went out behind it.
  2. **On FULL-tier work, one inspector is not enough.** Claudex's default is a single fresh session
     of the other provider. Where money, entitlement, published records, permissions or persistence
     are touched, run **two** readers independently and blind to each other (§4 rank 2 — for work Opus wrote
@@ -1013,28 +1058,40 @@ index b3a71a9d4..e12f9717a 100644
     what found five money defects here that driving the app would not have.
  3. **The inspection brief gets the finder wording from §4.** Claudex's inspector is asked whether
     the code is wrong. Add the sentence that asks what is MISSING, or it will answer only the first
-@@ -444,7 +485,8 @@ Claudex has no step that runs it. Order of operations: harden the plan with Clau
- **WALK THE APP** → then Claudex's final inspection, given the finished code AND the evidence sheet
- → report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
+@@ -441,12 +486,15 @@ line.
+ 
+ They do not compete (D11): Claudex covers the PLAN and the CODE, this order covers the RUNNING APP, and
+ Claudex has no step that runs it. Order of operations: harden the plan with Claudex → build →
+-**WALK THE APP** → then Claudex's final inspection, given the finished code AND the evidence sheet
+-→ report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
++**WALK THE APP** → then Claudex's final inspection → report. Walk first and fix what it finds, then
++give the readers the finished code and the same brief. The fresh Opus reader sees neither the walk's
++report nor another reader's report (D790); any evidence handed to a reader follows §4's blindness
++rules. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
  first, passed, and three unwired surfaces went out behind it. On money, published records,
 -permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and Sol 6.1 — D590).
+-Claudex's own rules stand: the provider that built never inspects (one exception — D588's ONE Sonnet trial fix, read by Opus), and its reviewer is never
+-bypassed. Full detail: §4a of the order.
 +permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and, second,
 +Sol 6.1 on his call or otherwise a fresh, blind Opus reader — D590, D1734, D1770).
- Claudex's own rules stand: the provider that built never inspects (one exception — D588's ONE Sonnet trial fix, read by Opus), and its reviewer is never
- bypassed. Full detail: §4a of the order.
++Claudex's independent reviewer is never bypassed. The chat that wrote the code never reviews it; the fresh, blind
++Opus read required by D790 remains beside Astra's, including when Opus wrote the code (D1770). Full detail: §4a of the order.
  
-@@ -524,7 +566,9 @@ roll-call for gaps — reading for absence works when there is a list in hand.
+ ## 5. Which checks for which change
+ 
+@@ -524,7 +572,10 @@ roll-call for gaps — reading for absence works when there is a list in hand.
  
  **Between fix rounds, run the touched surface's own suite — not once at the end** (23 Sep 26). Two fixes that
  are each right can contradict each other: a hint that names a door, beside a fix that removed that door. And
 -when a fix removes or gates a door, search every sentence on screen that names it.
-+when a fix removes or gates a door, search every sentence on screen that names it. And run `npm run build` (the type
-+check) beside the touched tests before each push: the unit runner does not type-check (29 Oct 26: a fix's new test
++when a fix removes or gates a door, search every sentence on screen that names it. And run the type check —
++`npx tsc -b` in `raptor-port/` (it writes no `dist`; after `npm ci` in a fresh worktree) — beside the touched tests
++before each push: the unit runner does not type-check (29 Oct 26: a fix's new test
 +passed its runner and turned GitHub's whole run red three pushes in a row, unseen until the next chat).
  
  **The re-walk** (23 Sep 26). Write walk scripts as assertions of the RIGHT behaviour (a PASS means correct), so
  re-running them on the fixed build IS the re-walk. Send it to a separate output folder — the first walk's
-@@ -583,9 +627,12 @@ inside the puck, over exactly the strip the mark occupies (column 3).
+@@ -583,9 +634,12 @@ inside the puck, over exactly the strip the mark occupies (column 3).
  - **A wording ruling, or a fix to one writer of a record, gets its own small roll-call in the same commit** —
    every place that draws that text or writes that record. The fix is STRUCTURAL (one shared constant or one
    shared body), with a test that renders or drives each place. The "grep for the old wording" rule already
@@ -1050,7 +1107,7 @@ index b3a71a9d4..e12f9717a 100644
  
  **And more rows, each from a fault a roll-call missed (24 Sep – 12 Oct 26):**
  
-@@ -607,6 +654,13 @@ inside the puck, over exactly the strip the mark occupies (column 3).
+@@ -607,6 +661,13 @@ inside the puck, over exactly the strip the mark occupies (column 3).
    down once the form above it was gone); what else ran on the event it removes — a deferred paint, a save, a
    tidy-up: still runs / now triggered here / no longer needed, because…; and, for a way out, the surface's own
    positioning rules, with a real-browser test that presses the new way out.
@@ -1064,7 +1121,7 @@ index b3a71a9d4..e12f9717a 100644
  - **A fix that changes when a writer reports "nothing happened"** — its return value, its no-change condition — lists
    every caller that reads the return or compares again after the call.
  - **A listener added above its own component** (the document or the window; a key, a press) lists every state in
-@@ -636,6 +690,17 @@ inside the puck, over exactly the strip the mark occupies (column 3).
+@@ -636,6 +697,17 @@ inside the puck, over exactly the strip the mark occupies (column 3).
    free-crew strip, ALL AVAIL, the Leave War's count — not only the screens that draw the input (25 Oct 26: a course
    moved under Unavailable was drawn free on all four).
  
@@ -1082,7 +1139,7 @@ index b3a71a9d4..e12f9717a 100644
  ---
  
  ## 7. The walk
-@@ -656,8 +721,11 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
+@@ -656,8 +728,11 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
    and OPERATED on its own surface (§7.3) — the roll-call is not sized.
  - **A screen with an approved drawing gets the drawing check (his D1494, 29 Oct 26; made a standing step, D1495).** The
    sizing lines name each such surface's drawing and the check's part list for it (`scripts/drawcheck/specs/`); the
@@ -1091,12 +1148,12 @@ index b3a71a9d4..e12f9717a 100644
 +  check is run as §7.10 says, and the walk does not stand in for it, nor it for the walk: a drawing proves appearance, never reachability — a
 +  build faithful to it carries the drawing's own faults too, so every control the change moves is PRESSED in each state
 +  the drawing shows (a window open over it) (5 Nov 26: a control the drawing showed covered). A surface whose drawing has no
-+  part list or no record yet gets both first — or, where the drawing script saved its own measured figures, is checked
-+  by that script's own measure (`docs/walk-scripts.md` §10). A screen drawn at one size only is said so
++  part list or no record yet gets both first (`docs/walk-scripts.md` §10). Saved figures from the drawing script may
++  help prepare them; they do not replace the checks approved in D1495. A screen drawn at one size only is said so
    here, and its other size is carried by the walk. Where no drawing exists, nothing here applies.
  - **What a test may carry, and what it may not.** A named test may carry repeated cases of a calculation where the
    sizing step says why their route on screen and their behaviour there are the same as a route already walked. It
-@@ -733,7 +801,10 @@ finding.
+@@ -733,7 +808,10 @@ finding.
  - **A layout fix is walked once with wider letters too.** GitHub's Linux machines and his iPhone draw wider letters
    than this PC: force them from the first paint (the Leave War browser tests' `LW_WIDE_LETTERS=1`, an init script — a
    style added after the page loads misses what the app measures as it loads), in the test's own order of resizes
@@ -1108,7 +1165,7 @@ index b3a71a9d4..e12f9717a 100644
  - **How a walk script, a walker's brief and a break-test list are written — and what each trap in them has cost —
    is `docs/walk-scripts.md`.** Read it before writing one; every walker's brief names it.
  
-@@ -757,7 +828,10 @@ smallest table: the same trigger again inside the lifetime; a second, different
+@@ -757,7 +835,10 @@ smallest table: the same trigger again inside the lifetime; a second, different
  hidden or re-made while it runs; and its end arriving while another is running. **The states include the one each
  role's DEFAULT controls produce** (an admin's "Approve what I enter" is ticked, so his bid lands approved, not pending),
  and the red test of a fix goes once through the real door that makes that state (24 Oct 26: a store-only fixture kept
@@ -1120,7 +1177,7 @@ index b3a71a9d4..e12f9717a 100644
  
  **7.5 You have walked enough when** every roll-call row has a mark in every column, every order line
  has a result — from the walk, or from a test §7.0 allows to carry it — every MISSING has a disposition, the error list is empty or named, and the pictures
-@@ -831,7 +905,12 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
+@@ -831,7 +912,12 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
    corners, where its words sit and what they say — and lists every difference over about 2px with the two side by side
    and laid over each other. Its part list carries a state at his iPhone's size and at his PC's for every screen drawn
    at both. It runs while the screen is built and after every fix. The check sees only the parts its list names; the
@@ -1134,7 +1191,7 @@ index b3a71a9d4..e12f9717a 100644
    While the screen is built, a difference is put back to the drawing (D1424), or kept on purpose for a better design
    and named to him with its picture; once the build has gone for his look, each difference is shown to him side by
    side before any is put back, an outright fault (words breaking, something covered or off screen, a wrong behaviour)
-@@ -883,6 +962,13 @@ the reader's instructions or model change, it is run on every case and a change
+@@ -883,6 +969,13 @@ the reader's instructions or model change, it is run on every case and a change
     **Lesson:** when a change hands anything to the phone itself (its scrolling, its keyboard, its bounce), the sizing step
     names what only the real phone draws and asks him for a look or a recording on his iPhone before merge; a walk that
     judges scroll bars launches with the test browser's `--hide-scrollbars` taken off.
@@ -1148,7 +1205,7 @@ index b3a71a9d4..e12f9717a 100644
  8. **A fix that reshaped an approved drawing, and a reading of it nobody held beside the picture (D1424, the Leave War M4's
     Approvals, 27 Oct 26).** On a phone "New 1" broke onto two lines; the fix gave New two columns and Approve all a row of its
     own — four rows where his drawing has three — chosen without opening the drawing. On a desktop the build read "the list
-@@ -891,13 +977,6 @@ the reader's instructions or model change, it is run on every case and a change
+@@ -891,13 +984,6 @@ the reader's instructions or model change, it is run on every case and a change
     **Lesson:** a screen with an approved drawing is compared with it while it is built and after every fix to it — the
     sizing step names the drawing for each surface and the walker's brief carries it; a fix for a fault keeps the drawn
     layout, and a departure chosen on purpose is named to him with its picture and reason.
@@ -1162,7 +1219,7 @@ index b3a71a9d4..e12f9717a 100644
  9. **A list's alignment judged by eye, one kind of row at a time (D1437, D1438, the Leave War M4's Approvals, 27 Oct 26).** Three
     walkers and a drawing comparison passed the Approvals list's alignment; he found, from two pictures, its headings off
     their figures by 12 to 24px on a phone and 16px on a desktop, and a WSO's name at the right of its puck — the list's own
-@@ -1010,6 +1089,13 @@ the reader's instructions or model change, it is run on every case and a change
+@@ -1010,6 +1096,13 @@ the reader's instructions or model change, it is run on every case and a change
     **Lesson:** before a walk asserts what a tap opens, search the rulings for what a tap on that kind of entry opens on an
     ordinary day, and walk the two side by side — the ruled window is the expected one, never the build's; and the sizing
     lines name, lesson by lesson, what covers this list (`scripts/handpass/lw-d1720-walk.mjs` step B, re-walked; his D1722).
@@ -1176,7 +1233,7 @@ index b3a71a9d4..e12f9717a 100644
  24. **A walk that never flicked to the page's foot on a phone (his iPhone recording, the Leave War, 8 Nov 26, 14:31).**
     Every walk of the pinned dates row scrolled to set places and flicked in the middle of the page. On his iPhone a hard
     flick to the page's foot bounced it, Safari folded its toolbar, and for a moment the bounce carried the top bar off
-@@ -1040,7 +1126,10 @@ the reader's instructions or model change, it is run on every case and a change
+@@ -1040,7 +1133,10 @@ the reader's instructions or model change, it is run on every case and a change
     `scripts/handpass/breaks-browser.mjs` (what only a browser can see): a job writes a LIST for them, never
     another copy of the loop. And before writing the missing test, rule out the other readings of a break that
     stayed green — it never met a test able to see it, the wire is invisible to that test world, or the line
@@ -1188,7 +1245,7 @@ index b3a71a9d4..e12f9717a 100644
  5. **The other model designs the scenarios.** The builder's tests encode the builder's picture of
     the feature and share its blind spots.
  6. **Reviewers are handed the roll-call and asked for absences**, not only for errors.
-@@ -1057,14 +1146,6 @@ the reader's instructions or model change, it is run on every case and a change
+@@ -1057,14 +1153,6 @@ the reader's instructions or model change, it is run on every case and a change
  
  ---
  
@@ -1204,11 +1261,30 @@ index b3a71a9d4..e12f9717a 100644
  
  One file per build, mostly tables, plus a folder of pictures, written DURING the walk:
 
+diff --git a/raptor-port/docs/codex-guide.md b/raptor-port/docs/codex-guide.md
+index 2f32247c7..deb8a0f79 100644
+--- a/raptor-port/docs/codex-guide.md
++++ b/raptor-port/docs/codex-guide.md
+@@ -23,6 +23,13 @@ kept whole in `raptor-port/docs/archive/codex-arrangement-2026-10-07.md`.
+   data already stored is not a finding (D56).
+ - Read-only: change no file. You never review, inspect or approve an artifact your own model wrote (D67).
+ 
++## Reading a commit that is not the branch head
++
++The recipe for the exported copy the bug-check order §4 calls for, when the version under review is not the branch
++head or the branch already holds another reader's report (7 Nov 26): `git archive <commit> -- . ':(exclude)<picture
++folders>'` unpacked into a scratch folder, `git init` and one commit there so the repo's scripts run, then
++`codex exec -C <copy> -s read-only`; the saved report's head says so.
++
+ ## When you build — only on his word
+ 
+ - For that job, take the builder's tasks. What Codex writes, Opus 5.5 reviews; the arrangement of 2–5 Oct 26 (D496)
+
 diff --git a/raptor-port/docs/doc-budget.md b/raptor-port/docs/doc-budget.md
-index 7ca5bc11d..da6695099 100644
+index 7ca5bc11d..9387eedef 100644
 --- a/raptor-port/docs/doc-budget.md
 +++ b/raptor-port/docs/doc-budget.md
-@@ -76,6 +76,13 @@ Stale is worse than absent — the next session trusts it.
+@@ -76,6 +76,16 @@ Stale is worse than absent — the next session trusts it.
  **What a new chat costs, measured, and the three rulings of 17 Oct 26 (D969–D974; `[CONTEXT-START-SIZE]`, the page `docs/superpowers/specs/2026-10-17-context-start-size.html`).** An empty chat measured 14% of the app's 880,000-token room and a build chat about 31% before any work, most of the difference the rulings files its first app file pulls in. Capitals cost about 1.8 times ordinary letters, so **the rulings' one-line rules, and the bold sentences they come from, are written in ordinary letters — the same words, capitals only where a name or a short form has them (D970)**; **a ruling a later ruling restates in full leaves the loaded list for the archive, as a replaced one does, one fresh reader checking each (D971 — it widens D136)**; used-up one-off permissions leave as the standing rule already said; and the gate's token figures are calibrated on the measured loads, not on letters (D969, §4); the job's commits reached `main` by a push-setting slip and stay there on his "Keep them" (D974). **The other places written in capitals for emphasis follow, as
  a job of their own, by a cheaper model, checked by a fresh reader (D972 — `[CAPS-SWEEP]`; only the backlog, the screen rules and the engine rules, the archives left — D973).** Done 17 Oct 26: 551 lines, about 4,800 tokens, every changed line equal to the old in lower case; only runs of two or more capital words were turned (a lone capital word is left, as it may be a short form, a status or a label), and quoted words, code, backlog tags and the app's own capital phrases — those in `remarks-vocabulary.md` and in the app's text — were kept; a fresh Opus reader's five findings were fixed. **Measured again the same day, in the next chat:** an empty chat 13% (114,521), a build chat 22% (197,417) once its first app file is open — the scheduler's rulings about 35,000 tokens of it, at 91,777 bytes, under D611's mark for splitting them again (about 100,000) — so not split, his D976. **The job closed 7 Nov 26 (D1741):** its last point, E — his documents connector, about 0.3 points of a chat's room — stays his own setting; F was built as the skill-notes short form (D1740); cutting what a chat reads goes on as the rules diet (D1735).
  
@@ -1216,13 +1292,16 @@ index 7ca5bc11d..da6695099 100644
 +fitted on the app's own measured loads, by layer and by job — never a stock tokenizer or a bytes-per-token guess, both
 +of which read about a third low (7 Nov 26); check it against one fresh measured load before a plan rests on the figure.
 +**A peek costs an area's whole load:** reading or editing a file on an area's `paths:` with the Read or Edit tool loads
-+that area's rulings, while a shell read (`sed`, `grep`) and an edit script load nothing — so for a few lines of a file
-+whose area the job does not need, use those (7 Nov 26: three lines of the ripple map cost about 45,000 tokens, twice).
++that area's rulings, while a shell read (`sed`, `grep`) and an edit script load nothing — so for a few lines of a
++reference document or note whose area the job does not touch, use those — never for a file under `raptor-port/src`,
++`e2e` or the handpass scripts, and never to edit what that area's rulings govern (doc-structure.md: before planning or
++editing in an area, open its file yourself; D68). Three lines of the ripple map cost about 45,000 tokens, twice
++(7 Nov 26).
 +
  ## 4. The gate
  
  `npm run docsize` does two jobs ([DOCS-GUARD], 23 Sep 26 — Fable's attack on D29, owner D30):
-@@ -163,7 +170,10 @@ to bloat the ai to context that doesn't matter."* So the rulings are **split by
+@@ -163,7 +173,10 @@ to bloat the ai to context that doesn't matter."* So the rulings are **split by
  accounts — D390; since 2 Oct 26, the IT flow guide; since 13 Oct 26, the Inputs pages — D802; since 1 Nov 26, Screen design — D1554) — every row keeping its date:
  - **How we work loads in every session** (no `paths:`); **each other area loads by itself** when a session READS a
    file matching its `paths:` — so work that strays into a second area picks that area up too. Choose paths
@@ -1236,7 +1315,7 @@ index 7ca5bc11d..da6695099 100644
    row marked, then `node raptor-port/scripts/backlog-archive.mjs --rulings` moves marked rows and rewrites the map.
 
 diff --git a/raptor-port/docs/gates-and-deploy.md b/raptor-port/docs/gates-and-deploy.md
-index 6f36f8da8..77dccdaa2 100644
+index 6f36f8da8..46e9a3fa9 100644
 --- a/raptor-port/docs/gates-and-deploy.md
 +++ b/raptor-port/docs/gates-and-deploy.md
 @@ -129,7 +129,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
@@ -1315,7 +1394,7 @@ index 6f36f8da8..77dccdaa2 100644
 -  and the rulings files, whose own merge (`backlog-archive.mjs --rulings --merge`) it names; with nothing left it runs
 +  and the rulings files, whose own merge (`backlog-archive.mjs --rulings --merge`) it names (the files still clashed:
 +  `git diff --name-only --diff-filter=U`, never a merge's printout cut short by `tail` — 6 Nov 26, a missed rulings file
-+  kept its clash marks through a passing document check, and only the commit refused; [CHECK-TOOLS-HARDEN] (l)); with nothing left it runs
++  kept its clash marks through a passing document check, and only the commit refused; [CHECK-TOOLS-HARDEN] (m)); with nothing left it runs
    `npm run docsize` and `npm run rulecheck`, counting only a failure the merged-in commit does not have. **Trap — why
    there is no `merge=union` in `.gitattributes`:** "keep both sides" doubles a ledger row or a skill note edited in place,
    lets a clash in those files end as a clean merge that no step looks at, and GitHub's own merge ignores attributes
@@ -1340,13 +1419,13 @@ index 6f36f8da8..77dccdaa2 100644
 -touches them, the main checkout must be on `main`, clean of tracked changes — the chat that saw the merge switches
 -it, as the handoff guide says —; verify in a NEW chat by what the app reports
 -(`get_usage`, the skill list), never by running the script by hand.
-+touches them, the chat that saw the merge brings the main checkout LEVEL with `main` — on `main` and up to date, since a
-+folder on `main` but behind it is the same fault ([MAIN-CHECKOUT-STALE]): `git -C C:/Users/User/projects/Raptor fetch
-+origin`, then, only when its `status --short` shows no tracked change, its `status -sb` no "ahead" and no other chat works
-+in it, `switch main` if it is elsewhere and `merge --ff-only origin/main`. That folder can hold another chat's uncommitted
-+work and the walks' untracked pictures: never `reset --hard`, `checkout -- .`, `clean` or a merge that is not a
-+fast-forward — when a condition fails or the fast-forward refuses, tell him in one plain line what holds it. Verify in a
-+NEW chat by what the app reports (`get_usage`, the skill list), never by running the script by hand.
++changes these files, bring the main checkout level — on `main` and up to date ([MAIN-CHECKOUT-STALE]) — only when no
++chat is using it, it has no tracked changes, and its current commit is safely held on a fetched remote branch. Use
++`git -C C:/Users/User/projects/Raptor` on every command: fetch `origin`; confirm `status --short --untracked-files=no` prints nothing (the walks'
++untracked pictures are not changes); confirm `log HEAD --not --remotes=origin --oneline` prints nothing (no commit there that is not on GitHub — a detached folder's included); then `switch main` if
++needed and `merge --ff-only origin/main`. An unpublished commit, a failed check or a refused command stops this update:
++leave the folder as it is and say what holds it. Never reset, restore or clean the folder. Verify the loaded settings and
++skills in a new chat, by what the app reports (`get_usage`, the skill list), never by running the script by hand.
 +A hook added or changed in a chat is not in force in that chat either: the hook settings are read when a chat starts.
 +There, prove it by running the settings file's exact command on one input it must refuse and one it must let through
 +(the tool call's JSON on its input), leave the in-force proof to the next new chat and say so in the handoff; and before
@@ -1357,7 +1436,7 @@ index 6f36f8da8..77dccdaa2 100644
  
 
 diff --git a/raptor-port/docs/walk-scripts.md b/raptor-port/docs/walk-scripts.md
-index ec856b49a..826d8f0f9 100644
+index ec856b49a..aae60b290 100644
 --- a/raptor-port/docs/walk-scripts.md
 +++ b/raptor-port/docs/walk-scripts.md
 @@ -6,7 +6,7 @@ The method is `docs/bug-check-order.md` (§4 the fan-out, §5 the re-walk, §7 t
@@ -1451,16 +1530,17 @@ index ec856b49a..826d8f0f9 100644
  - **An absence is judged after the slowest route to presence.** Name what would have moved and wait out the slowest way
    it could (14 Oct 26: End in a scrolling list settles after about 750ms; a check at 450ms passed), or read the cause
    directly (the scroll position over time). A judge for "X is absent" is written as absence, never through X's own
-@@ -187,16 +217,41 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
+@@ -187,16 +217,44 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
    where it pressed, besides the settled picture — an iPhone keeps the tapped thing "hovered", the test browser does
    not, and a fault that lives in that state is otherwise never pictured (the bug-check order §7.10).
  - **One run, one folder.** A script that numbers its pictures empties its folder first, or writes a folder per run:
 -  two runs' pictures under interleaved numbers are no evidence.
 +  two runs' pictures under interleaved numbers are no evidence. It empties it only on an unfiltered run: a run with a
 +  step filter (§6) writes to its own sub-folder (`<folder>/only-<filter>`) or refuses to clear (2 Nov 26: a one-step
-+  re-run wiped the full run's pictures). A picture number is never used twice in one walk: each attempt at a scenario
-+  writes a fresh range or sub-folder, and before hand-back the walker deletes its failed attempts' pictures and states
-+  the final count (8 Nov 26: about sixty stale pictures sat among the cited ones, some sharing a number).
++  re-run wiped the full run's pictures). Each attempt writes to a fresh sub-folder and never reuses a picture number
++  within that attempt. Before hand-back, identify the final run and its picture count; label earlier attempts
++  separately. Keep every picture that supports a finding or a before-and-after comparison. Failed attempts must never
++  be mixed into the cited run (8 Nov 26: about sixty stale pictures sat among the cited ones, some sharing a number).
  - **A picture of something moving carries its own moment, on the clock its motion is drawn on** (25 Oct 26, the keyboard
    slide walk). Chromium's screencast stamps a frame later than what it shows, and its compositor draws a moving window
    between the page's own frames — a frame ahead of anything the page itself paints: pictures timed by either showed the
@@ -1471,18 +1551,20 @@ index ec856b49a..826d8f0f9 100644
 +  code keeps: the browser moves and paints a scroll before the page hears of it, so that log cannot see that frame
 +  (8 Nov 26: the page's log said the blink was gone, the painted frames still showed one). The page's log may stand
 +  beside it for timing. Name the frame the decision rests on in the sheet; the host opens it.
-+- **His phone recordings are read frame by frame**, with no video tool needed: Playwright on `channel: 'msedge'` (Edge
-+  plays the iPhone's video, the bundled Chromium does not), a local HTML file holding the `<video>` opened by `goto`,
-+  seek by `currentTime` and wait for `seeked`, then a picture of the video element; frames every 0.25 s laid 8 to a
-+  sheet, the sheets saved with the evidence (3 Nov 26).
++- **His phone recordings are read frame by frame.** Read his phone recordings in Edge (`channel: 'msedge'`): open a
++  local video page, seek with `currentTime`, wait for `seeked`, and capture the video element. Save sheets of eight
++  frames sampled every 0.25 s with the evidence.
++- **An animation is checked frame by frame** first, in WebKit (the iPhone's engine) as well as Chromium: every
++  animation paused at fixed moments (`document.getAnimations()`, `currentTime`), one strip per engine and option, read
++  for order and direction (`raptor-port/scripts/handpass/talon-claw-frames.mjs`).
 +- **A response is timed from the press**: a capture-phase `pointerdown` read with `performance.now()`, and each frame
 +  stamped with `performance.now()` inside its own callback — the click's time stamp and a frame's start time both fall
 +  after a freeze that begins at the press. Cross-check an "it was instant" once against the browser's long-task record.
 +  A check that something animates samples a whole cycle, never two looks that may both fall in a hold (3 Nov 26).
-+- **A frame measure keeps every raw interval** and reports them in buckets around each refresh (under 20 ms, one
-+  refresh skipped, 34.5–50 ms, over 50), never as one count over a threshold placed on a refresh's edge (33.4 ms
-+  measured rounding, 8 Nov 26); it repeats a run before believing a total, and a suspected style is switched off for
-+  one run before any fix is written.
++- **A frame measure keeps every raw interval.** Establish the display's refresh interval and report buckets around
++  its multiples, stating the boundaries used. The 20 / 34.5 / 50 ms boundaries are the recorded 60 Hz case, not
++  defaults for every display. Repeat the run before trusting a total, and switch the suspected style off for one
++  comparison before choosing a fix.
 +- **A close-up is made by its browser context:** set the pixel density when the context is created — an override sent
 +  later, on a second debugging session, was ignored (6 Nov 26). A developer-protocol screenshot's clip is in PAGE
 +  coordinates: on a scrolled page, add the scroll offset (8 Nov 26).
@@ -1494,7 +1576,7 @@ index ec856b49a..826d8f0f9 100644
    And WebKit — the phone tests' browser, as on an iPhone — never shrinks under a zoom a letter set at 9px or more below
    9px: the grid's 10px boxes are drawn at 9px at the phone's opening zoom and spill past their boxes zoomed right out.
    Read the drawn size; never the stylesheet's size times the zoom.
-@@ -220,6 +275,11 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
+@@ -220,6 +278,11 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
    26: a one-line change re-walked whole, stopped by an unrelated page change before the one step that mattered).
  - **Once a finding is fixed, the note that observed it becomes a CHECK** asserting the fixed behaviour, before the
    re-walk runs.
@@ -1506,7 +1588,7 @@ index ec856b49a..826d8f0f9 100644
  
  ## 7. Reading a FAIL — the script's world first
  
-@@ -229,12 +289,26 @@ step)? What did the script actually press, and what did the box actually read? W
+@@ -229,12 +292,26 @@ step)? What did the script actually press, and what did the box actually read? W
  world? Then the order's rule: the host reproduces it. A script's mistake is written on the sheet as one. A fault that
  depends on zoom or display scaling is reproduced in a browser STARTED at that scaling (`--force-device-scale-factor`),
  never with an emulated picture scale, which leaves the page's own arithmetic at 1.
@@ -1534,7 +1616,7 @@ index ec856b49a..826d8f0f9 100644
  
  ## 8. When nothing on screen should change
  
-@@ -251,15 +325,20 @@ A refactor, a storage-only change, "leave the other sizes exactly as they are":
+@@ -251,15 +328,22 @@ A refactor, a storage-only change, "leave the other sizes exactly as they are":
  - **For one size, role or mode that must not move:** dump everything of the out-of-scope cases (words, boxes, type,
    colours) from the build BEFORE the first edit, and compare after it. Write the out-of-scope test first and see it
    pass on the OLD build — that is what makes it a description of "as it was", not of "as I built it".
@@ -1554,13 +1636,15 @@ index ec856b49a..826d8f0f9 100644
    measured number, swap the touched files from
    `origin/main`, rebuild, run the SAME script into a scratch folder, put the files back and prove it with
 -  `git diff --stat` — never while walkers are served that build.
-+  `git diff --stat` — never while walkers are served that build. **A "before" is proved old before its pictures are
-+  used:** the change's own checks run on it and FAIL; a before whose checks pass shows the change (30 Oct 26: the
++  `git diff --stat` — never while walkers are served that build. **Prove which build supplies the "before".** Build
++  from the named base commit and verify the served bundle belongs to it. Where a check distinguishes the intended
++  change from the old behaviour, run it on the base and confirm it fails for that difference. Checks of behaviour that
++  must stay unchanged should pass on both builds; their passing does not identify the build (30 Oct 26: the
 +  checkout's built bundle had been built on the change's branch, and the before walk passed every new word).
  - **A storage conversion is walked on data the OLD build really wrote.** Serve the old build, make the owner's kind
    of work through its own controls, and save the browser's storage; serve the new build on the SAME address (storage
    belongs to an address) and assert that it reads — and exports — exactly what the old one did. Hand-made "old"
-@@ -323,7 +402,15 @@ and `selftest.mjs`. The worked example is M5a's (`specs/lw-m5a.mjs`). When it is
+@@ -323,7 +407,15 @@ and `selftest.mjs`. The worked example is M5a's (`specs/lw-m5a.mjs`). When it is
  - **Name the parts a person would point at** — the window, a row, a switch and its lit half, a column of figures, a
    name — each with its drawing selector, its build selector and what is compared. A part inside another is measured
    from it (`rel`), so a row that moved down the page does not make every figure in it "move". A figure with no box of
@@ -1570,10 +1654,10 @@ index ec856b49a..826d8f0f9 100644
 +  colour and the column for the place (29 Oct 26). A part the drawing script marks for him with an inline ring (a
 +  box-shadow or border in the marker colour, `#ff2d95`) leaves that look out of its checks, a comment naming the
 +  marker — or the run reports his marker as a missing design (29 Oct 26, M5b's Quals heading).
-+- **A drawing script that saved its own measured figures** may be checked without a part list: the build is measured
-+  by that script's own measuring function, copied whole, never rewritten, against the saved figures at the same 2px,
-+  each difference still named and pictured side by side, the run red until each is put back or kept on his word, as
-+  for a part list (8 Nov 26: 78 figures, no false difference — the same ruler on both sides).
++- **Reuse a drawing script's own measuring function, copied whole, for the measures it already covers.** Keep the
++  part list and every safeguard above and below: the approved-picture comparison, the states and properties measured,
++  the refusal of missing records or unreachable states, the marked comparisons and the precise record of each
++  difference he keeps (D1494, D1495). Add any missing measures before calling the drawing check complete.
  - **Bring the build to the drawing's own world** — the same people, leave and clock, the same lock and switches: each
    state's `reach` in the part list brings the build there through the same doors the drawing's stage script used
    (M5a's: the bids by the localhost bridge, approve and refuse pressed in the real window), and returns a sentence when

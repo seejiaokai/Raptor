@@ -219,9 +219,10 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
 - **One run, one folder.** A script that numbers its pictures empties its folder first, or writes a folder per run:
   two runs' pictures under interleaved numbers are no evidence. It empties it only on an unfiltered run: a run with a
   step filter (§6) writes to its own sub-folder (`<folder>/only-<filter>`) or refuses to clear (2 Nov 26: a one-step
-  re-run wiped the full run's pictures). A picture number is never used twice in one walk: each attempt at a scenario
-  writes a fresh range or sub-folder, and before hand-back the walker deletes its failed attempts' pictures and states
-  the final count (8 Nov 26: about sixty stale pictures sat among the cited ones, some sharing a number).
+  re-run wiped the full run's pictures). Each attempt writes to a fresh sub-folder and never reuses a picture number
+  within that attempt. Before hand-back, identify the final run and its picture count; label earlier attempts
+  separately. Keep every picture that supports a finding or a before-and-after comparison. Failed attempts must never
+  be mixed into the cited run (8 Nov 26: about sixty stale pictures sat among the cited ones, some sharing a number).
 - **A picture of something moving carries its own moment, on the clock its motion is drawn on** (25 Oct 26, the keyboard
   slide walk). Chromium's screencast stamps a frame later than what it shows, and its compositor draws a moving window
   between the page's own frames — a frame ahead of anything the page itself paints: pictures timed by either showed the
@@ -232,18 +233,20 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   code keeps: the browser moves and paints a scroll before the page hears of it, so that log cannot see that frame
   (8 Nov 26: the page's log said the blink was gone, the painted frames still showed one). The page's log may stand
   beside it for timing. Name the frame the decision rests on in the sheet; the host opens it.
-- **His phone recordings are read frame by frame**, with no video tool needed: Playwright on `channel: 'msedge'` (Edge
-  plays the iPhone's video, the bundled Chromium does not), a local HTML file holding the `<video>` opened by `goto`,
-  seek by `currentTime` and wait for `seeked`, then a picture of the video element; frames every 0.25 s laid 8 to a
-  sheet, the sheets saved with the evidence (3 Nov 26).
+- **His phone recordings are read frame by frame.** Read his phone recordings in Edge (`channel: 'msedge'`): open a
+  local video page, seek with `currentTime`, wait for `seeked`, and capture the video element. Save sheets of eight
+  frames sampled every 0.25 s with the evidence.
+- **An animation is checked frame by frame** first, in WebKit (the iPhone's engine) as well as Chromium: every
+  animation paused at fixed moments (`document.getAnimations()`, `currentTime`), one strip per engine and option, read
+  for order and direction (`raptor-port/scripts/handpass/talon-claw-frames.mjs`).
 - **A response is timed from the press**: a capture-phase `pointerdown` read with `performance.now()`, and each frame
   stamped with `performance.now()` inside its own callback — the click's time stamp and a frame's start time both fall
   after a freeze that begins at the press. Cross-check an "it was instant" once against the browser's long-task record.
   A check that something animates samples a whole cycle, never two looks that may both fall in a hold (3 Nov 26).
-- **A frame measure keeps every raw interval** and reports them in buckets around each refresh (under 20 ms, one
-  refresh skipped, 34.5–50 ms, over 50), never as one count over a threshold placed on a refresh's edge (33.4 ms
-  measured rounding, 8 Nov 26); it repeats a run before believing a total, and a suspected style is switched off for
-  one run before any fix is written.
+- **A frame measure keeps every raw interval.** Establish the display's refresh interval and report buckets around
+  its multiples, stating the boundaries used. The 20 / 34.5 / 50 ms boundaries are the recorded 60 Hz case, not
+  defaults for every display. Repeat the run before trusting a total, and switch the suspected style off for one
+  comparison before choosing a fix.
 - **A close-up is made by its browser context:** set the pixel density when the context is created — an override sent
   later, on a second debugging session, was ignored (6 Nov 26). A developer-protocol screenshot's clip is in PAGE
   coordinates: on a scrolled page, add the scroll offset (8 Nov 26).
@@ -336,8 +339,10 @@ A refactor, a storage-only change, "leave the other sizes exactly as they are":
   free port>`: the app's test hooks answer only on localhost, and no second server holds a port (15 Oct 26). For one
   measured number, swap the touched files from
   `origin/main`, rebuild, run the SAME script into a scratch folder, put the files back and prove it with
-  `git diff --stat` — never while walkers are served that build. **A "before" is proved old before its pictures are
-  used:** the change's own checks run on it and FAIL; a before whose checks pass shows the change (30 Oct 26: the
+  `git diff --stat` — never while walkers are served that build. **Prove which build supplies the "before".** Build
+  from the named base commit and verify the served bundle belongs to it. Where a check distinguishes the intended
+  change from the old behaviour, run it on the base and confirm it fails for that difference. Checks of behaviour that
+  must stay unchanged should pass on both builds; their passing does not identify the build (30 Oct 26: the
   checkout's built bundle had been built on the change's branch, and the before walk passed every new word).
 - **A storage conversion is walked on data the OLD build really wrote.** Serve the old build, make the owner's kind
   of work through its own controls, and save the browser's storage; serve the new build on the SAME address (storage
@@ -407,10 +412,10 @@ and `selftest.mjs`. The worked example is M5a's (`specs/lw-m5a.mjs`). When it is
   colour and the column for the place (29 Oct 26). A part the drawing script marks for him with an inline ring (a
   box-shadow or border in the marker colour, `#ff2d95`) leaves that look out of its checks, a comment naming the
   marker — or the run reports his marker as a missing design (29 Oct 26, M5b's Quals heading).
-- **A drawing script that saved its own measured figures** may be checked without a part list: the build is measured
-  by that script's own measuring function, copied whole, never rewritten, against the saved figures at the same 2px,
-  each difference still named and pictured side by side, the run red until each is put back or kept on his word, as
-  for a part list (8 Nov 26: 78 figures, no false difference — the same ruler on both sides).
+- **Reuse a drawing script's own measuring function, copied whole, for the measures it already covers.** Keep the
+  part list and every safeguard above and below: the approved-picture comparison, the states and properties measured,
+  the refusal of missing records or unreachable states, the marked comparisons and the precise record of each
+  difference he keeps (D1494, D1495). Add any missing measures before calling the drawing check complete.
 - **Bring the build to the drawing's own world** — the same people, leave and clock, the same lock and switches: each
   state's `reach` in the part list brings the build there through the same doors the drawing's stage script used
   (M5a's: the bids by the localhost bridge, approve and refuse pressed in the real window), and returns a sentence when

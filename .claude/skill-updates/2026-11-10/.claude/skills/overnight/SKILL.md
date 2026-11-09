@@ -18,10 +18,9 @@ stay his, every night.
 
 **If his message names the work** ("continue this till step 8"), that is the night's work: Part 1 shrinks to the
 questions his words leave open — asked, and answered, before it starts — then steps 8 and 9. Even then the first
-message tells him the night's jobs before it starts — numbered, in order, each with what he will have in the morning,
-its check and its rough time, how many fit in his hours, and what waits for him — beside "Low or Medium?" (his D1443,
-D1104). The list does not hold the start: with no question open, it goes straight to steps 8 and 9 without ending the
-turn, the recommended Low or Medium taken.
+message lists the night's jobs as step 6 does, beside "Low or Medium?" (his D1443, D1104); the list does not hold the
+start: with no question open it goes straight to steps 8 and 9 without ending the turn, the recommended Low or Medium
+taken (the agent's reading).
 
 ## Part 1 — before he sleeps: recommend, he selects, then start
 
@@ -126,9 +125,12 @@ block says so. Never a pull request based on another branch — it runs none of 
   job woke, so the night ran helpers instead — this line is his approval of that change (D1416, 27 Oct 26). A session per
   job still works when he types the night's message in the desktop app, all of them started together, each brief
   naming the branch that carries the night's block — a block not yet on `main` is not on a branch cut from it (7 Nov 26).
-- **A helper's report** (reader, walker, scenario designer) comes back as its final reply — the tool refuses a
-  background helper's write of a file it calls a report (10 Nov 26) — and is saved into the repo — its brief's folder or
-  the evidence sheet — the moment it arrives, before anything is done about it. Before it is accepted, each reader the
+- **A helper's report** (reader, walker, scenario designer). A helper returns its report as its final reply. Save it
+  at once. The tool refuses a background helper's write of a file it calls a report (10 Nov 26, note 915), so the report
+  is saved into the repo — its brief's folder or the evidence sheet — the moment it arrives, before anything is done
+  about it — except a reader's report while another reader of the same job is still reading: it waits in a scratch
+  folder outside the checkout and enters the repo once every reader has reported (the bug-check order §4). Before it
+  is accepted, each reader the
   night's block names for that job is ticked against it; a missing one is run then, or the job goes on
   `[NO-ASTRA-LIST]` in the same change (8 Nov 26). A notice that a helper stopped with background work of its own still
   running is no report: stop it or wait for the real one before the checkout is switched or written, then read its

@@ -52,10 +52,11 @@ is the agent's job, answered out of §5.
    is his call to make, not the agent's to assume. Name no check beyond the tier's own list unless its route is traced —
    which control, in which state, proves it — and quote a duration from the last recorded run (`HANDOFF.md` §Gate baseline,
    the walk ledger), or say it is not measured: a check withdrawn later, or an hour that turns out to be fourteen
-   minutes, costs trust. A FULL check whose chat starts past about 40% full also names its chats: the area rulings and
-   pages that load by themselves as its files are opened can fill one before the walk (8 Nov 26: 49% to 76% before
-   it) — chat A the tier, sheet, roll-call, break tests and scenario brief, its report handed into the repo; chat B the
-   walk, the reads and the fixes.
+   minutes, costs trust. A FULL check also names its chats when where its chat starts, plus what will load by itself as
+   its files are opened (the area pages — `node raptor-port/scripts/docsize.mjs --reads`, by job), leaves too little
+   room for the walk and the reads (8 Nov 26: 49% to 76% before the walk) — chat A the tier, sheet, roll-call, break
+   tests and scenario brief, its report handed into the repo; chat B the walk, the reads and the fixes. Unattended, the
+   night stays one chat: name the clean point and compact there instead (D667, D867).
 4. **Execute it in the order §5 gives**, and finish with the `Walk:` line from §9.
 
 **If you are about to skip a step, say so and say why.** A skipped check he agreed to is a
@@ -292,9 +293,8 @@ compaction is not read, and is named in its report — the start hook pastes the
 compacts (`[READER-COMPACT-HANDOFF]`); the host sizes a read to finish before the reader would compact. Blindness is
 what a reader can reach, not what its brief tells it not to open: when the version under review is not the branch head,
 or the branch already holds another reader's report or a revision built from it, the reader runs in an exported copy of
-that commit (`git archive <commit> -- . ':(exclude)<picture folders>'` unpacked into a scratch folder, `git init` and one
-commit there so the repo's scripts run, then `codex exec -C <copy> -s read-only`), and the saved report's head says so
-(7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (f)).
+that commit (the recipe: `docs/codex-guide.md`, "Reading a commit that is not the branch head"), and the saved report's
+head says so (7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (g)).
 
 **Before a brief leaves** — a brief is the one place a wrong sentence is multiplied by every reader of it:
 
@@ -302,15 +302,16 @@ commit there so the repo's scripts run, then `codex exec -C <copy> -s read-only`
   copied from the ruling's FULL row and cites it. A sentence with no row behind it is marked "the host's reading", so
   the reader treats it as a question, not a requirement.
 - A scenario's EXPECTED line gets the same check before it goes to a walker: each names its source — a ruling, a
-  contract line, or "as on `main` today" from a control run — and one with none, or one the host cannot settle (a
+  contract line, "as on `main` today" from a control run, or two surfaces of the app that must agree (the mark and the
+  changes list) — and one with none, or one the host cannot settle (a
   COUNT, a REFUSAL or a PUBLISHED-DAY state above all), is rewritten "RECORD exactly what it says". An expectation that
   differs by surface (a window that blocks or not, a role, a size) is read from its own roll-call column, set row by
   row before the script is written. (13 Oct 26: four of one walk's five FAILs, and about twelve on the job before, were
   the host's own expected line contradicting an older ruling; 2 and 8 Nov 26: three more, each an expectation with no
   source.)
 - A code reader's brief says where its proof tests go — its own scratch folder, never a test name under the app's
-  source — and while any helper works in the checkout the builder stages by named paths and reads `git show --stat
-  HEAD` before pushing (8 Nov 26: a reader's deliberately failing test was swept into the builder's commit).
+  source (staging while helpers work: the dispatching guide's "Stage by explicit path") (8 Nov 26: a reader's
+  deliberately failing test was swept into the builder's commit).
 - A recommended answer to a question parked for him is checked against his words in the full rows — not only that
   the question is still open.
 - A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
@@ -441,8 +442,9 @@ walker trial is run or offered. The host still opens the pictures, reproduces ev
 ## 4a. How this fits the Claudex loop
 
 They do not compete. **Claudex covers the plan and the code; this order covers the running app** (D11).
-Claudex's own rules stand unchanged — in particular *the provider that built never inspects* (one exception: D588's ONE Sonnet trial fix, whose diff and tests Opus reads), and
-*never disable or bypass the workflow's independent reviewer* (`.claude/rules/raptor-executor.md`).
+Claudex's independent reviewer is never bypassed (`.claude/rules/raptor-executor.md`). The chat that wrote the code
+never reviews it; the fresh, blind Opus read required by D790 remains beside Astra's, including when Opus wrote the
+code (D1770).
 This order adds checks; it never removes one of Claudex's.
 
 | Claudex stage | What it is | What this order says about it |
@@ -454,8 +456,10 @@ This order adds checks; it never removes one of Claudex's.
 
 **Three things this order changes about how Claudex is used:**
 
-1. **The WALK goes BEFORE the final inspection, not after.** Drive the app first, fix what it
-   finds, then hand the inspector the finished code *and the evidence sheet*. Reading for absence
+1. **The WALK goes BEFORE the final inspection, not after.** Walk first and fix what it finds, then
+   give the readers the finished code and the same brief. The fresh Opus reader sees neither the walk's
+   report nor another reader's report (D790); any evidence handed to a reader follows §4's blindness
+   rules. Reading for absence
    works when there is a roll-call in hand; reading cold does not. On the OIL build the inspection
    ran first, passed, and three unwired surfaces went out behind it.
 2. **On FULL-tier work, one inspector is not enough.** Claudex's default is a single fresh session
@@ -482,13 +486,15 @@ line.
 
 They do not compete (D11): Claudex covers the PLAN and the CODE, this order covers the RUNNING APP, and
 Claudex has no step that runs it. Order of operations: harden the plan with Claudex → build →
-**WALK THE APP** → then Claudex's final inspection, given the finished code AND the evidence sheet
-→ report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
+**WALK THE APP** → then Claudex's final inspection → report. Walk first and fix what it finds, then
+give the readers the finished code and the same brief. The fresh Opus reader sees neither the walk's
+report nor another reader's report (D790); any evidence handed to a reader follows §4's blindness
+rules. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
 first, passed, and three unwired surfaces went out behind it. On money, published records,
 permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and, second,
 Sol 6.1 on his call or otherwise a fresh, blind Opus reader — D590, D1734, D1770).
-Claudex's own rules stand: the provider that built never inspects (one exception — D588's ONE Sonnet trial fix, read by Opus), and its reviewer is never
-bypassed. Full detail: §4a of the order.
+Claudex's independent reviewer is never bypassed. The chat that wrote the code never reviews it; the fresh, blind
+Opus read required by D790 remains beside Astra's, including when Opus wrote the code (D1770). Full detail: §4a of the order.
 
 ## 5. Which checks for which change
 
@@ -566,8 +572,9 @@ roll-call for gaps — reading for absence works when there is a list in hand.
 
 **Between fix rounds, run the touched surface's own suite — not once at the end** (23 Sep 26). Two fixes that
 are each right can contradict each other: a hint that names a door, beside a fix that removed that door. And
-when a fix removes or gates a door, search every sentence on screen that names it. And run `npm run build` (the type
-check) beside the touched tests before each push: the unit runner does not type-check (29 Oct 26: a fix's new test
+when a fix removes or gates a door, search every sentence on screen that names it. And run the type check —
+`npx tsc -b` in `raptor-port/` (it writes no `dist`; after `npm ci` in a fresh worktree) — beside the touched tests
+before each push: the unit runner does not type-check (29 Oct 26: a fix's new test
 passed its runner and turned GitHub's whole run red three pushes in a row, unseen until the next chat).
 
 **The re-walk** (23 Sep 26). Write walk scripts as assertions of the RIGHT behaviour (a PASS means correct), so
@@ -724,8 +731,8 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
   check is run as §7.10 says, and the walk does not stand in for it, nor it for the walk: a drawing proves appearance, never reachability — a
   build faithful to it carries the drawing's own faults too, so every control the change moves is PRESSED in each state
   the drawing shows (a window open over it) (5 Nov 26: a control the drawing showed covered). A surface whose drawing has no
-  part list or no record yet gets both first — or, where the drawing script saved its own measured figures, is checked
-  by that script's own measure (`docs/walk-scripts.md` §10). A screen drawn at one size only is said so
+  part list or no record yet gets both first (`docs/walk-scripts.md` §10). Saved figures from the drawing script may
+  help prepare them; they do not replace the checks approved in D1495. A screen drawn at one size only is said so
   here, and its other size is carried by the walk. Where no drawing exists, nothing here applies.
 - **What a test may carry, and what it may not.** A named test may carry repeated cases of a calculation where the
   sizing step says why their route on screen and their behaviour there are the same as a route already walked. It

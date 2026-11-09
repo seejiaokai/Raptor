@@ -80,8 +80,11 @@ a job of their own, by a cheaper model, checked by a fresh reader (D972 — `[CA
 fitted on the app's own measured loads, by layer and by job — never a stock tokenizer or a bytes-per-token guess, both
 of which read about a third low (7 Nov 26); check it against one fresh measured load before a plan rests on the figure.
 **A peek costs an area's whole load:** reading or editing a file on an area's `paths:` with the Read or Edit tool loads
-that area's rulings, while a shell read (`sed`, `grep`) and an edit script load nothing — so for a few lines of a file
-whose area the job does not need, use those (7 Nov 26: three lines of the ripple map cost about 45,000 tokens, twice).
+that area's rulings, while a shell read (`sed`, `grep`) and an edit script load nothing — so for a few lines of a
+reference document or note whose area the job does not touch, use those — never for a file under `raptor-port/src`,
+`e2e` or the handpass scripts, and never to edit what that area's rulings govern (doc-structure.md: before planning or
+editing in an area, open its file yourself; D68). Three lines of the ripple map cost about 45,000 tokens, twice
+(7 Nov 26).
 
 ## 4. The gate
 

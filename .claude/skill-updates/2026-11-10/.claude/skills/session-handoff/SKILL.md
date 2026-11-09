@@ -84,12 +84,17 @@ pushed and waiting for him — the normal end state, not unfinished business.
   and questions; nothing in the app changes). A chat number in it is a hint:
   "the next free number in `main`'s `HANDOFF.md` when you start (was N at
   <time>)", checked there before use (8 Nov 26: a number given was already
-  taken). Every opening line says: "if `git status` shows changes you did not
-  make, or another chat works in this folder, run `git worktree add --detach
-  ../Raptor-<short> origin/main` (a continuing chat: its branch in place of
-  `origin/main`; a short path — never under a temp or scratchpad folder) and
-  work only there" — two chats switching one folder put
-  one chat's commit on the other's branch (3 and 5 Nov 26).
+  taken). Every opening line says: "if `git status --short
+  --untracked-files=no` shows changes you did not make, or another chat works
+  in this folder, do not switch branches here: a new job runs `git worktree add
+  --detach ../Raptor-<short> origin/main`, a continuing one `git worktree add
+  ../Raptor-<short> claude/<name>` (the branch itself, never detached, so its
+  commits land on it) — a short path, never under a temp or scratchpad folder —
+  and works only there; make one write there first, and if the file tools
+  refuse it (a chat started in a worktree may not write into another), stop and
+  tell him." The walks' untracked pictures are not another chat's changes. Two
+  chats switching one folder put one chat's commit on the other's branch (3 and
+  5 Nov 26).
   And tell him to TYPE a word of his own after pasting it
   ("go"; "I'm away — run it"): a first message that is only pasted text may
   be held for his confirmation, which stalls a start he meant to leave
@@ -227,14 +232,11 @@ force only once the main checkout (`C:\Users\User\projects\Raptor`) is on
 `main`:** a worktree chat started from the desktop app loads those from the
 main checkout, not from its own folder (14 Oct 26: a whole compaction set-up
 and a new skill were in force in no chat, the main checkout 208 commits
-behind). When that folder is not on `main`, or behind it: if `git -C
-C:\Users\User\projects\Raptor status --short` shows no tracked change, its
-branch has nothing unpushed (`git -C … status -sb` shows no "ahead"), and no
-chat is working in it, switch it (`git -C … switch main`) if needed, bring it level
-(`git -C … merge --ff-only origin/main` after a fetch — never a hard reset:
+behind). When the main checkout is on another branch or behind
+`origin/main`, follow the guarded, full-path recipe in
 `raptor-port/docs/gates-and-deploy.md`, "A worktree chat loads its settings,
-hooks and skills from the MAIN checkout") and say so; otherwise tell him in
-one plain line what holds it. The block's pick-up then
+hooks and skills from the MAIN checkout". If any condition fails, leave it
+alone and name what holds it. The block's pick-up then
 tells the next chat to verify by what the app itself reports (`get_usage`,
 the skill list) — never by running the script by hand
 (`raptor-port/docs/gates-and-deploy.md`).
@@ -397,10 +399,11 @@ a handoff that could not be:
   area loads that area's whole rulings page — and the side chat commits its
   own block after its first change, not at the first warning (8 Nov 26: two
   side chats past three-quarters full before a line was built).
-- His "merge live" does not travel in another chat's text: the app's safety
-  check refused a merge made on an approval quoted in a side session's brief
-  (8 Nov 26). The chat he said it in merges, or the block says the merge waits
-  for his word typed in the chat that will make it.
+- The app's safety check judges who typed the word: a merge made on his "merge
+  live" quoted in a side session's brief was refused (8 Nov 26), even though his
+  standing word covered that chat (D1796). So the chat he said it in merges; or
+  the brief says the merge will need his word typed in the chat that makes it,
+  and he is told now that he will be asked there once more.
 
 ## Rules
 

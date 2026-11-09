@@ -45,13 +45,10 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
    element (an outline, which takes no room, and a tag in its own `::before`),
    always, never as a box laid over the page at measured coordinates: on a
    phone, and on a layer that scrolls or glides by itself, the laid-over box
-   drifts off its text with no error (16 and 20 Oct 26). The mark must not move
-   what it marks: its class never sets `position`, display, size or overflow on
-   the element (a fixed list given `position:relative` left the picture —
-   5 Nov 26); a static element gets its tag as a child. The script asserts the
-   marked box is unchanged by the mark, and that each tag lies inside every
-   ancestor that clips its overflow (8 Nov 26: two tags cut off, both scripts
-   clean).
+   drifts off its text with no error (16 and 20 Oct 26). A mark must not change
+   the element's position, display, size or overflow; use a child tag for a
+   static element. Assert that marking leaves its box unchanged and keeps every
+   tag inside all clipping ancestors.
 4. Picture the same frames again at the same sizes. Lay them out
    today-beside-proposed, numbered, so the owner answers by number, and say on
    the page which pictures are real and which are drawn in.
@@ -167,8 +164,7 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
   inherit (5 Nov 26: a "cyan" gear that was grey on screen).
 - **Reusing an older drawing or its script reuses its shortcuts.** List every
   app component it draws and replace each hand-made stand-in with the app's own
-  markup (on a local build the probe bridge exposes builders, `window.puck`
-  among them — 27 Oct 26: a hand-drawn puck where his ruling asked for his own).
+  markup (27 Oct 26: a hand-drawn puck where his ruling asked for his own).
   Where its page now sits under controls built since, check each control it
   carries against them for one doing the same job: a duplicate is put to him,
   never carried over because the old drawing had it (28 Oct 26: two year
@@ -234,10 +230,7 @@ his iPhone's wider letters wrapped a bar the PC drew on two rows).
   the proposed behaviour scripted, a switch per open choice; tried by a real
   finger in a visible browser before it is sent (3 Nov 26: drawing it surfaced
   four requirements nobody had written). An animation is checked frame by frame
-  first, in WebKit (the iPhone's engine) as well as Chromium: every animation
-  paused at fixed moments (`document.getAnimations()`, `currentTime`), one strip
-  per engine and option, read for order and direction
-  (`raptor-port/scripts/handpass/talon-claw-frames.mjs`).
+  in WebKit and Chromium (`raptor-port/docs/walk-scripts.md` §5).
 - **A reproduction written as assertions of the RIGHT behaviour**, with a hook
   that injects a candidate stylesheet, gives three things from one script: the
   defect's evidence, the proposal's pictures, and a pass/fail measurement of

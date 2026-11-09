@@ -171,6 +171,10 @@ brief:
   the rule below is kept when your own commit cannot wait: only files you
   finished go in, by name; nothing a running agent has written or may still
   write is staged.
+- **A helper that shares the checkout never moves it:** its brief says no
+  `checkout`, `switch`, `stash` or detach there — it reads by `git show
+  <commit>:<path>` (9 Nov 26: the checkout went detached under the host while
+  helpers worked, and three commits went off the branch).
 - **Machine resources:** which test suites, ports and folders are already in
   use. Agents run named test files in the foreground, one at a time, and
   never re-run a suite they already started — backgrounded full runs pile up
