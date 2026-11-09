@@ -941,6 +941,34 @@ scheduler's file, in four of the five jobs; the Leave War's is the same size in 
 D1939's — a page that says how the app works and what he likes, not a store of detail a model may misread — more than
 tokens.
 
+### Step 5b — the Inputs pages in the trial's shape (9 Nov 26, chat 41, `claude/rules-diet-inputs-trial` — D1943)
+
+His "Go" to the re-measure report (D1943): the Inputs list straight to the Tracker trial's shape — the first area to go
+from a one-line list to the trial page without a page in between. **How:** a fresh Opus helper sorted all 165 rulings and
+drafted the page (brief `../briefs/2026-11-09-inputs-trial-brief.md`, table `…-inputs-trial-sorting.md`), told the
+Tracker readers' lesson first (20 of 39 "held by tests" were sent back); Astra and a fresh Opus reader read it blind
+(`…-read-brief.md`, `…-read-astra.md`, `…-read-opus.md`); a third helper checked and fixed every finding (`…-fixes.md`).
+
+| | The list (b87243496) | The draft (34176a2ec) | After the reads (268d9906c) |
+|---|---|---|---|
+| Bytes (hard limit 52,689) | 52,689 | 29,032 | 30,800 |
+| On "Built, held by tests" | — | 17 | 11 |
+| An Inputs job reads (tokens) | 307,998 | 299,965 | 300,928 |
+
+**The reads.** Astra 7 (5 medium, 2 low), the Opus reader 9 on meaning, 2 test notes and a lost pointer — 19, all held;
+both found D621's keyboard set lost. The serious ones: D1398's widening of the scheduler's lock dropped back to D1388's
+"an Other" (a permissions rule); ALL / ALL AVAIL's merged line leaving out Event and putting "one day" on Personal only;
+D569's no-placeholder remarks filed as history and proposed for archive on a wrong claim; four lines narrowed to the phone
+or to one width. Six numbers left the "held by tests" line (D649, D651, D707, D968, D1179, D1622 — a test holding part).
+The Medical tab's files added to `paths:` (the page states its rulings; before, none of its files loaded them).
+
+**Beyond the page.** Converting an area makes the gate check every other page's citations of it: design's D626 line took
+D630, and How we work's batch-order line D569's four changers — 24 bytes on a page 4 under its limit, made room for by
+joining 12 wrapped lines, no word changed (D1940's "tighten, no raise"). **For the next area:** check other pages'
+citations of it before drafting; How we work has no room left by joins of its "Models and readers" section.
+**Left for him:** 16 proposed archivals (7 spent, 9 answered directions) (the sorting table's end; D1386 and D961 noted for the D971 reader); two
+questions — D701 against D723, and the scheduler's D660 against D762.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |
