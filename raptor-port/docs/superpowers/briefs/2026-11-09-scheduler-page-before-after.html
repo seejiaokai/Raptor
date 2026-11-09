@@ -1,0 +1,161 @@
+<title>Scheduler rules page</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one narrow reading column — what to look at now first, then the sizes, three before-and-after pairs, what the two readers caught, what is filed for later. */
+:root {
+  --bg: #f7f7f5; --card: #ffffff; --ink: #1d1d1f; --muted: #5f6368; --line: #e3e3e0;
+  --left: #0b6b3a; --left-bg: #e7f4ec; --stay: #8a5a00; --stay-bg: #fdf3e0; --back: #8a2f5a; --back-bg: #f9e6ef; --bar: #2f6fdf; --bar-old: #b9b9b4;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #151517; --card: #1f1f22; --ink: #ececec; --muted: #a4a4aa; --line: #333338;
+  --left: #6fd39c; --left-bg: #173325; --stay: #f2c46b; --stay-bg: #3a2e14; --back: #f09ac2; --back-bg: #3d1a2b; --bar: #6f9cf0; --bar-old: #55555a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #151517; --card: #1f1f22; --ink: #ececec; --muted: #a4a4aa; --line: #333338;
+  --left: #6fd39c; --left-bg: #173325; --stay: #f2c46b; --stay-bg: #3a2e14; --back: #f09ac2; --back-bg: #3d1a2b; --bar: #6f9cf0; --bar-old: #55555a; color-scheme: dark }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; }
+main { max-width: 720px; margin: 0 auto; padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 12px; }
+h1 { font-size: 1.5rem; line-height: 1.25; margin: 0; text-wrap: balance; }
+h2 { font-size: 1.15rem; margin: 20px 0 0; text-wrap: balance; }
+p { margin: 0; max-width: 64ch; }
+.sub { color: var(--muted); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.bars { display: grid; gap: 12px; }
+.row { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 10px; }
+.track { background: var(--line); border-radius: 6px; height: 22px; overflow: hidden; }
+.fill { height: 100%; border-radius: 6px; }
+.num { font-variant-numeric: tabular-nums; color: var(--muted); font-size: .9rem; }
+.tag { align-self: flex-start; font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; font-weight: 700; border-radius: 999px; padding: 2px 10px; }
+.left .tag { color: var(--left); background: var(--left-bg); }
+.stay .tag { color: var(--stay); background: var(--stay-bg); }
+.back .tag { color: var(--back); background: var(--back-bg); }
+.topic { color: var(--bar); background: var(--line); }
+.why { color: var(--muted); }
+.rec { font-weight: 600; }
+ul { padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+details summary { cursor: pointer; font-weight: 600; }
+details summary:focus-visible { outline: 2px solid var(--bar); outline-offset: 2px; border-radius: 4px; }
+details ul { margin-top: 8px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pair > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.pair .lbl { font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; font-weight: 700; color: var(--muted); }
+.old p { color: var(--muted); font-size: .95rem; }
+@media (max-width: 560px) { .pair { grid-template-columns: 1fr; } }
+</style>
+
+<main>
+  <h1>The scheduler's rules page: before and after</h1>
+  <p class="sub">Your "One page" (D1944): the scheduler's 334 rulings, one line each, turned into one page in the same shape as the Tracker and Inputs pages. It keeps your standing rules, what you like, and what a fresh AI would get wrong; a rule the app's tests fully check is listed by number only. Nothing is deleted, your words stay in the full record, and nothing is live until you say "merge live".</p>
+
+  <h2>What to look at now</h2>
+  <div class="card stay">
+    <span class="tag">1 · The page itself</span>
+    <p>Keep it as shown and merge it, change something on it, or drop it.</p>
+    <p class="rec">Recommended: keep it and merge it. Both readers' findings are fixed, every one of the 334 rulings is still on the page, and no other area changes beyond a few added ruling numbers.</p>
+  </div>
+  <div class="card stay">
+    <span class="tag">2 · Room on the OIL page for two numbers</span>
+    <p>One of your older rulings (D1041: a rally typed on an SC SPARE, AVALON or BB line is only shown, printed and exported) was changed by a later one (D1045: such a line now flies). The old ruling's record should carry a note saying so. Writing that note makes the document check ask the OIL page to name the later rulings too, and the OIL page has 7 bytes of room where it needs 14.</p>
+    <p>Earlier today you let me tighten the OIL page's wording once, without losing meaning (D1945); that permission is used up.</p>
+    <p class="rec">Recommended: let me tighten a few more words on the OIL page, the same way, so the note can be written. The scheduler's page already states the change, so nothing goes wrong if you say no; the old record just stays without its note.</p>
+  </div>
+
+  <h2>The sizes</h2>
+  <div class="card">
+    <div class="bars">
+      <div>
+        <div class="row"><strong>Before</strong><div class="track"><div class="fill" style="width:100%;background:var(--bar-old)"></div></div></div>
+        <div class="num">120,888 bytes — 334 rulings, one line each</div>
+      </div>
+      <div>
+        <div class="row"><strong>After</strong><div class="track"><div class="fill" style="width:68%;background:var(--bar)"></div></div></div>
+        <div class="num">82,294 bytes — a page; 28 listed by number only (hard limit 120,888)</div>
+      </div>
+    </div>
+  </div>
+  <p>This rules file loads in four of the five kinds of job: the scheduler, Inputs, Leave War and Tracker. What an AI reads to start a scheduler job: 280,261 → 265,171 tokens, about 5% less; the other three drop by the same 15,000. Like the Inputs page, the bigger gain is a page that says how the scheduler works and what you like, instead of 334 separate lines a model can misread.</p>
+
+  <h2>Before and after: three examples</h2>
+  <div class="card">
+    <span class="tag topic">A row that came from an input</span>
+    <div class="pair">
+      <div class="old"><span class="lbl">Before — 2 rulings, plus a condition only in the full record</span>
+        <p>D755: A row that came from an input is the input: whoever stands on it — a named person or ALL AVAIL / ALL, whoever put them there — is in the input, and the schedule and the Inputs calendar always show the same people, time and remark.</p>
+        <p>D776: A personal input may hold several people, as every other kind does, and a puck dropped on its row swaps or joins as on any input's.</p>
+      </div>
+      <div><span class="lbl">After — 1 line</span>
+        <p>A row that came from an input is the input: whoever stands on it is in it, the schedule and the Inputs calendar always show the same people, time and remark, a man dropped on the only man's puck replaces him, the member is told by his bell and may always take himself out — once the scheduler has added others, changing it for everyone is the scheduler's — and a drop that cannot apply is refused with its reason.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <span class="tag topic">A flying standby line</span>
+    <div class="pair">
+      <div class="old"><span class="lbl">Before — 1 of 7 lines on standby lines</span>
+        <p>D1045: On a standby line with B or R typed every row is a jet that flies — SPARE rows included — in the day's flying count and Insights as well as crew rest and OIL; the line's day ends at its END, with no debrief added; a rally is never typed on a standby line that will not fly.</p>
+      </div>
+      <div><span class="lbl">After — the 7 in two lines; this one</span>
+        <p>On a flying standby line every row's day ends at the line's END, with no debrief added; for a SPARE what counting as a flight changes is its crew rest and its OIL; a standby row activated later with nothing typed is ticked by hand, which lights that one row only, never its shift; a rally is never typed on a standby line that will not fly.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <span class="tag topic">What a published day keeps</span>
+    <div class="pair">
+      <div class="old"><span class="lbl">Before</span>
+        <p>D186: Keep it: a man's CAT / seat / posting on his puck and a blank line's suggested brief time stay as published until the next AL; a callsign rename updates at once; this narrows the "no rule versioning" invariant for that one printed value.</p>
+      </div>
+      <div><span class="lbl">After</span>
+        <p>Keep it: a man's CAT, seat or posting on his puck and a blank line's suggested brief time stay as published until the next AL, a change reading pending and taking the four sign-offs down; a callsign rename updates the published schedule at once (a label); the published brief lead is the one printed value that narrows "no rule versioning", the rulebook itself staying unversioned.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>What the two readers caught</h2>
+  <p>Astra and a fresh Opus reader each read the draft, blind to each other: 71 points in all, 67 fixed, 3 set aside with reasons, 1 for you (above). The most serious:</p>
+  <div class="card back">
+    <span class="tag">Fixed</span>
+    <p>"Once the scheduler has added others to an input's row, changing it for everyone is the scheduler's" was lost from every page.</p>
+    <p class="why">A later AI could let the member who filed a Training re-time it and move the men the scheduler had added. It is back in the first example above (D755).</p>
+  </div>
+  <div class="card back">
+    <span class="tag">Fixed</span>
+    <p>A mission named like "DS-2" or "ACM/DS" with empty remarks would have been counted blue without asking.</p>
+    <p class="why">You ruled it asks blue or red and is never guessed (D531). The draft only asked when the remarks said DS or red.</p>
+  </div>
+  <div class="card back">
+    <span class="tag">Fixed</span>
+    <p>The day lock's details (taking a day, the 30 minutes, an admin's take-over) were stated as yours.</p>
+    <p class="why">When you said the lock should be a simple mark (D1751), keeping those details was the agent's reading, told to you but never checked. The page now says so, so no AI builds them as settled.</p>
+  </div>
+  <div class="card back">
+    <span class="tag">Fixed</span>
+    <p>Duty desks made from an SC, AVALON or BB template were said to earn no OIL.</p>
+    <p class="why">That was an old rule; the OIL page's later defaults say an SC desk earns and AVALON has a switch. The line now points to the OIL page.</p>
+  </div>
+  <ul>
+    <li>Two places stated a rule as yours when it is only the agent's reading (what stays live on a published day; where the admin is told about an ALL AVAIL row with no end time). Both are now marked.</li>
+    <li>28 rulings went back from "listed by number" to written out: their tests check only part of what you ruled. On the Tracker and Inputs pages it was about half too.</li>
+    <li>Words dropped from several rules are back: a hidden warning's knock-on effects on the issues bar (D475), every history group open until folded (D345), a crowded phone row's input button dropping below the people (D947), and others.</li>
+  </ul>
+
+  <h2>What changed outside the page</h2>
+  <ul>
+    <li>How we work's line now says the scheduler's rules are "not split by screen" where it said "never": your earlier ruling (D611) said to look again if the file grows a lot, and "One page" did not close that door.</li>
+    <li>On the People and accounts page, two ruling numbers moved to the sentence they actually change.</li>
+    <li>Two older rulings' records now carry a note naming the later ruling that changed them.</li>
+  </ul>
+
+  <details class="card">
+    <summary>Filed for later, not asked now</summary>
+    <ul>
+      <li>The changes window's heading for a group input differs from the one you picked (D663). It comes to you with pictures of the app when you ask for the filed questions.</li>
+      <li>Whether the day lock's details stay once the app moves to the database (D1751): one short question when that work is planned.</li>
+      <li>Whether RALLY typed in "+ In-time" makes a rally (D511 against D1026, D1034).</li>
+      <li>17 proposed archivals, and two settled entries that concern only the Inputs pages.</li>
+      <li>The tests that would let the 28 written-out rulings go back to "listed by number".</li>
+    </ul>
+  </details>
+</main>

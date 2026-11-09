@@ -367,6 +367,28 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   roster is a separate `.sb-side` panel. Pinned in `editweek.test.tsx` (the class
   toggle) and `e2e/geometry.spec.ts` (the real slide + width reclaim).
 
+  - **Desktop arrows are continuous across weeks** (owner, 23 Aug), landings instant.
+    They **walk EVERY live day incl Sat/Sun to the FRONT before crossing** —
+    `weekScrollMax` = "last live day at the front" (`(liveDays−1)×dayStep` clamped),
+    the next-week peek's real columns are the runway; the JS-sized trailing spacer
+    stays (`.week::after`/`--week-tail`, desktop only). Don't reintroduce a fixed
+    `calc()` spacer or the flush-right ceiling. **One press = one day even mid-glide,
+    both directions** — `panDays` counts from the COMMANDED target (`panTgt`) via a
+    BURST CORRIDOR anchored at the burst start (`panAnchor`→`panTgt` = `panBase`); a
+    manual pan or new week drops it. Don't narrow the corridor back to the last step.
+    **A park NEAR a boundary counts as ON it, and a plain horizontal wheel drops the
+    corridor** (owner, 24 Aug) — `PARK_TOL` 0.35-of-a-day decides step counting and
+    edge-cross; `onWheel` drops `panWk` on any plain horizontal tick. Don't shrink
+    `PARK_TOL` to a hairline or remove the deltaX invalidation. **The glide OWNS the
+    week while in flight** (owner, 24–25 Aug) — the proxy scrollbar and any repaint
+    are pure FOLLOWERS: `panDays` arms a short `glideEnd`/`GLIDE_MS` window (cleared on
+    land or manual pan) during which `onTrackScroll` never drives the week, and a
+    mid-glide repaint holds the glide's TARGET (`panHold` in EditWeek/ViewWeek), not
+    the captured mid-glide position; `mirrorToTrack` records `trkEcho`. Don't remove
+    the `glideEnd` guard, revert `panHold` to pinning live `sl`, or let `onTrackScroll`
+    write unconditionally. Pinned `pan.test.tsx`; `ui-contracts.md` §desktop arrow
+    glide + §spacer; `performance.md` §Single-writer during a glide.
+
 ## The day carries across a page switch — the four things that make it work
 
 Four things make it work, and each is load-bearing:
@@ -2068,6 +2090,11 @@ edit week now:
   week and the board. Pinned by `src/ui/boardbackground.test.tsx` (the board lane
   fires once, the global lane not at all) and by `boardnav.test.tsx`.
 
+  - **The desktop scheduler BOARD now has week navigation** (owner, 23 Aug) — `‹ ›`
+    week-jump chips inside `#sbDays` (`data-sbweek`, `boardWeekStep`, one press = a
+    week keeping the open day); `#sbDays` is `display:none` on a phone so the phone
+    board keeps its edge arrows. The `.crew-hint` edge hint stays RETIRED.
+
 ### The aircrew drawer and the Live checks fold on a phone
 
 - **The roster is a right-edge AIRCREW drawer** (`.sb-ros`, carrying
@@ -2233,6 +2260,13 @@ first panel, the parked handle a centred band whose taps never steal from
 Close / the day chips / input ends, the fold opening and closing, the drawer
 parking on a fill, seats clear of every input and of each other).
 
+- **No ⋯ collapse of the phone row control strips** (owner, 16 Aug 26 — built +
+  rolled back same day). Row `▲▼/CX/■/✕` strips stay always-visible on a phone; the
+  `CTLOPEN` implementation is one `git revert` away — don't rebuild or re-propose.
+  Sibling touches from that batch (aircrew-tab gutter, plural warnings, week's faded
+  `Remarks` placeholder) STAND; only the ⋯ collapse was undone (and the batch's
+  4-digit board input times were later reversed by the 30 Aug hh:mm decision).
+
 ## The board edits everything the week does (owner, 14 Aug 26)
 
 "The scheduler board mode should be the most editable platform." The board
@@ -2315,6 +2349,14 @@ routes `data-air`):
   its own flex row (`flex:0 0 100%`) under the sign-off names rather than
   folded into `.signoff` itself, so a long Publish-AL button on a narrow board
   never crowds the last sign-off pill onto half a line.
+
+- **MAIN/SPARE on a standalone line is a clickable BADGE in the remarks cell; a click
+  flips the line** (owner, 24 Aug 26; supersedes the 10 Aug ghost-text). `saRoleHTML`
+  draws it week+board (button in edit mode, chip read-only); placeholder is plain
+  `Remarks`. The flip is ENGINE-VISIBLE: `a.spare`+`a.role` flip together,
+  `scSpare`/`saExempt`/shift count follow, marks the `st:` key pending (rides next
+  AL). Next-week peek keeps role as fallback text (`saRoleText`). Don't restore the
+  placeholder or make the flip label-only. Pins: `sarole.test.tsx`.
 
 ## Empty cells show a standing "add here" box (owner, 14 Aug 26)
 
@@ -4575,6 +4617,31 @@ so it persists per-device like the stores list. The library is never left
 empty — deleting the last template re-seeds one. Storage and the plain-block
 rule: `docs/engine-rules.md` §the duty block. This surface replaced the old
 wave-driven desk.
+
+- **Flying-wave templates + a + Wave show/hide list** (owner, 25 Aug 26). Sibling of
+  duty templates one level up: `engine/wavetpl.ts` library, `ui/WaveTplModal.tsx`
+  editor (from the + Wave pencil, `WAVEEDIT`), `+ Wave` lists templates beside its 4
+  built-in kinds. Template `{id,title,kind,lines}`: **one rule-set per template** —
+  exactly one of `fly`/`sc`/`avalon`/`bb`. Placing one mints an ordinary wave
+  (`waveFromTpl`) whose OWN kind flags drive checking — `validate.ts` never reads a
+  template, parity untouched. **A STANDBY-kind template mints the built-in's SHAPE**
+  (owner, 26 Aug 26): consecutive same-shift lines become ONE formation with a crew
+  row per line (like `makeStandalone`); a fly line stays one formation per line —
+  don't return the standby mint to 1:1. Times store raw, normalise on blur/mint/load
+  (`waveTime`, colon form `07:00`). Show/hide via a `WAVEHIDE` set (default all-shown,
+  deleted template drops its flag), persisted (`wavetpl`+`wavehide`), boot-loaded,
+  untrusted storage clamped. Don't seed built-in templates (library starts empty),
+  don't make `validate` read a template, don't move the gate off `WAVEHIDE`. Pins:
+  `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
+  - **Manage + edit are ONE sheet, ONE gear** (owner, 30 Aug 26; folds in the 29 Aug
+    "remove it from Admin"). The + Wave menu carries a single ⚙ (`data-wvedit`) +
+    "N hidden · Manage", both opening the unified `WaveTplModal.tsx` (edits templates
+    AND shows/hides/deletes: a "Wave types" list with an EYE per built-in kind,
+    `setWaveHidden`; per template an EYE + footer Delete; built-ins hide but never
+    delete). Old `WaveManageSheet.tsx`/`WAVEMANAGE` DELETED — don't re-add it or a
+    second button. Admin's `WaveVisibility` stays REMOVED; Admin keeps only the
+    template-editor button (same sheet). Don't strand a hidden wave — the "N hidden"
+    line + eyes are the way back.
 
 ## Day templates and Drafts — the whole-day controls (owner, 15 Aug 26)
 

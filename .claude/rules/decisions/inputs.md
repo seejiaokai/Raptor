@@ -69,7 +69,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - The settings icon on these calendars reads as a gear, never like a Sun, because here the Sun means day flying [D635].
 
 ## Who files an input, and who changes it
-- A member files for other people only duties and commitments — never leave, never medical, never SANS availability (a SANS man files his own; an admin files it for one SANS man or several); a group filing is one shared input, one thing for everyone in it, the man himself, its filer and an admin changing or deleting it — but who is in it is changed only by its filer or a scheduler, each man free to take himself out; where it goes, once a scheduler has moved it, is the next line's; its OIL answer: the scheduler's rulings [D655, D658, D763, D1388, D1398, D660, D762].
+- A member files for other people only duties and commitments — never leave, never medical, never SANS availability (a SANS man files his own; an admin files it for one SANS man or several); a group filing is one shared input, one thing for everyone in it, the man himself, its filer and an admin changing or deleting it — but who is in it is changed only by its filer or a scheduler, each man free to take himself out; where it goes, once a scheduler has moved it, is the next line's; its OIL answer: the scheduler's rulings [D655, D658, D763, D1388, D1398, D660, D762, D682, D711].
 - Once a scheduler has moved a member's input — any kind he can move: an Other, a commitment, an Event, a Personal, an Attach, a course, an overseas duty; never leave, medical, an upchit or SANS availability — only a scheduler changes where it goes; its times, dates, remarks, title, document, taking himself out and deleting stay the member's [D1388, D1398].
 - A person who is the only named person in an input that also holds ALL AVAIL or ALL reads it and may take himself out, but does not change it for everyone — whoever filed it, or a scheduler, does [D770].
 - ALL / ALL AVAIL is offered for Training, Meeting, Appointment, Duty, Event, Other and Personal, one day at a time; never for leave, medical, an Attach (the old "Fly with", renamed), an overseas duty or a course [D712, D778, D713, D711, D1373].
@@ -164,8 +164,8 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - On a phone its "How this works" and colour key share one line, as the inputs calendar's do, the key's words shortened; "One commitment a day each." is gone from it, its last line the late cut-off alone, in bold [D697, D704].
 
 ### The Calendar window and the year's days
-- A day is day flying by default, night flying, or no fly — exactly one; an NF day needs nobody, its counters 0, "NF", in step with the Leave War; public holidays (green) and off days show on the SANS and inputs calendars from one record; the sun and moon on the SANS calendar only [D627, D631, D633, D636, D638, D577].
-- The baseline is set once: no-fly days repeat — Every Thursday from a date, no end; the holidays are seen and set in one list; each date carries its own select button, no normal-week view; the required pilots and WSOs are typed on the Leave War's own columns [D631, D633, D636, D638].
+- A day is day flying by default, night flying, or no fly — exactly one; an NF day needs nobody, its counters 0, "NF", in step with the Leave War; public holidays (green) and off days show on the SANS and inputs calendars from one record; the sun and moon on the SANS calendar only [D627, D631, D633, D636, D638, D577, D637, D665, D674].
+- The baseline is set once: no-fly days repeat — Every Thursday from a date, no end; the holidays are seen and set in one list; each date carries its own select button, no normal-week view; the required pilots and WSOs are typed on the Leave War's own columns [D631, D633, D636, D638, D637, D665, D674].
 - On the days month a phone date carries one stepping button, a desktop date three; a weekday's heading sets repeating days; a public holiday and an off day each have two doors onto one record — the Leave War's Event row and the Holidays list; No Leave is on the Leave War only [D638].
 - It stays open when he changes page, closing only with its ✕ or Escape, opened from several places and belonging to no one page [D1623].
 - "Every <weekday>"'s from date and Until's "A date" are the app's own date field opening the app's own calendar, never the phone's box; any date may be picked, the weekday standing out [D795, D796].
@@ -195,13 +195,13 @@ His words, the agent's readings (never stated here as his rule) and the history 
 
 ## From other areas (each stated on its own area's file)
 - The Leave War's Other, which goes to the Ground Programme or to Unavailable: D1356.
-- The scheduler's one rule of a row that came from an input, and its people: D755, D756, D757, D759.
+- The scheduler's one rule of a row that came from an input, and its people: D755, D756, D757, D759, D776.
 - The schedule's one row for a shared input — its pucks, time, remark and window: D734, D735, D736, D737, D739, D740, D742, D743, D748, D776.
 - A cancelled row's CX cancels the input: D760.
-- One row on the schedule, the changes window, the Unavailable list: D661, D662, D663.
+- One row on the schedule, the changes window, the Unavailable list: D661, D662, D663, D736.
 - What an input is filed for — ALL, ALL AVAIL, Event, Personal, its title: D702, D711, D713, D714, D716, D717, D778.
 - A cancelled input's look on its card, the list and the month's bar: D767.
-- The small choices of these pages, answered "yes to all": D731.
+- The small choices of these pages, answered "yes to all": D731, D762.
 - The scheduler's other rulings that reach these pages: D189, D660, D682, D753, D762.
 - The late mark: the scheduler's Settled section, the cut-off itself on this page.
 - OIL asked and answered on these pages: D781, D782, D783, D793, D470.

@@ -641,6 +641,7 @@ Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-po
 **Principle:** A push is done when the remote says so, not when the command exits; any quiet or filtered push needs a read-back of the remote head.
 
 met again 2026-10-21: the handoff's pasted opening line for round 2 of the consistency look said `git switch -c claude/consistency-round2 origin/main` - the new branch tracked `origin/main` (`branch.<b>.merge = refs/heads/main`), and with this repo's push.default=upstream a plain `git push` would have gone to MAIN. Caught by the memory note, unset at once. The guard to propose: the opening-line template ends with `--no-track` (an unconditional default, not a condition to judge).
+met again 2026-11-09 (chat 42, rules diet): his opening message said "switch to a new branch level with main"; the host ran `git switch -c <b> origin/main` (tracking main) and the first `git push -u origin <b>` went for MAIN — refused by main's repository rule, nothing landed. The guard stands as proposed: a pre-push check in the push guard that refuses a push whose upstream is `refs/heads/main` from a branch not named main.
 
 ### Observation 600: In the desktop app a worktree chat takes its settings, hooks and skills from the MAIN checkout, so a merged change to them is dead until that folder is brought to main
 
@@ -4667,3 +4668,29 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** the Tracker trial (chat 36) and the Inputs pages (chat 41) ran the same shape: a drafting brief told the last trial's lessons, a fresh helper sorts every ruling (standing / built held whole / not built / spent) and drafts the page, Astra and a fresh Opus reader read blind on four questions, a third helper checks and fixes every finding, then a before-and-after page. Each time the brief was rebuilt by hand, and this time the drafting helper stopped on a duty the brief missed: converting an area makes the gate check other pages' citations of it, and How we work had 4 bytes spare.
 **Suggested improvement:** a project skill holding the brief template (the strict "held whole" test with its exclusions, conditions and scope; the readers' four questions; the check of other pages' citations of the area before drafting, with each page's spare bytes), the order of helpers, and the before-and-after page's sections. Wait for his word on the next area before writing it.
 **Principle:** when a multi-helper documentation job has run twice with the same shape, its brief and its reader questions belong in one reusable place, with each run's surprise added as a check before the step it would have blocked.
+
+### Observation 910: A time limit around the document self-test turns a pass into a fake crash
+
+**Status:** OPEN
+**Date:** 9 Nov 26
+**Session context:** chat 43, the rules diet's scheduler page — re-running the document checks' self-test before the readers' fixes
+**Skill:** task-observer short form (the project's gate habits); note 908's "about 10 minutes" figure
+**Type:** open-source
+**Phase/Area:** running a long check script in the background
+
+**Issue:** The self-test was started under `timeout 900`. At 15 minutes the limit killed the child check of the case then running; the case read the killed child's empty answer as a failure and threw, so the log showed a stack trace and "the inventory was not clean", and the exit code was 124. It looked like a broken script. Twenty minutes went on comparing against main's copy before the cause was plain. Run again with no limit, the same self-test passed all 334 cases in about 17 minutes (with two other heavy jobs on the PC); note 908 says "about 10 minutes".
+**Suggested improvement:** Run the document self-test in the background with no `timeout` wrapper (the harness notifies when it ends); if a limit is wanted, make it 40 minutes. Before diagnosing a failure of anything run under `timeout`, read the exit code first: 124 means the limit fired, not the script. Update note 908's duration to "10–20 minutes".
+**Principle:** a time limit that kills a child process makes the parent report a failure that looks real; check for the limit's own exit code before reading the failure, and run long checks unbounded in the background instead.
+
+### Observation 911: Commits landed off the branch, and the push said "Everything up-to-date"
+
+**Status:** OPEN
+**Date:** 9 Nov 26
+**Session context:** chat 43, the rules diet's scheduler page — three commits made while helpers worked in the same checkout
+**Skill:** session-handoff / the shipping loop (push step)
+**Type:** open-source
+**Phase/Area:** committing and pushing in a checkout that helpers also use
+
+**Issue:** Right after the chat switched to its branch, something (not the host's own commands — likely a helper of a read-only reader) moved the checkout to a detached state at the same commit. The host's next three commits went onto that detached state; the branch name stayed one commit behind. `git push -u origin <branch>` then answered "Everything up-to-date" and pushed nothing. Only `git status -sb` showing "HEAD (no branch)" revealed it; the branch was moved forward with a fast-forward and pushed.
+**Suggested improvement:** In the push step, before pushing: `git branch --show-current` must print the branch; if it prints nothing, fast-forward the branch to HEAD (`git switch <branch> && git merge --ff-only <sha>`) first. And treat "Everything up-to-date" after new commits as a fault to check, never a success. A helper's brief that says "read only" also says "never check out, switch or detach".
+**Principle:** a push reports on the branch name, not on the commits you just made; confirm the checkout is on the branch before trusting a push's "up to date".

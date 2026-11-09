@@ -348,7 +348,7 @@ const RULING_BYTES = [
      answers on the late mark, Make public and history names, live; none is trimmed (D136); the file stays one (D976).
      Room, not a target. */
   /* 119000 -> 125000 (8 Nov 26, claude/pictures-round): 119,637 bytes with D1780–D1782 and D1784–D1786, his answers to the pictures round; a rulings file is never trimmed (D136), about a twentieth above again */
-  ['.claude/rules/decisions/scheduler.md', 2, 125000],
+  ['.claude/rules/decisions/scheduler.md', 2, 120888],   // 9 Nov 26, D1932, D1944: the trial on the scheduler; set to the one-line list's size the page replaced (5d8ddf6f8) — a HARD LIMIT (PAGE_LIMITS below). Before that, 125000 (above)
   /* inputs 32000 -> 37000 (16 Oct 26, the documents tidy after pull request 519): 35,026 bytes with the calendar's step
      two, the input window's and the Medical tab's rulings of 14-15 Oct (D900-D920, D927) - live; none is trimmed (D136). [RULINGS-SPENT-PASS]
      reads it for spent rows. Room, not a target. */
@@ -458,12 +458,13 @@ const RULING_BYTES = [
 const PAGE_LIMITS = [
   // file,                                         set (D1932),  limit, by
   ['.claude/rules/decisions/how-we-work.md',     38000, 38000, 'D1932'],   // its tripwire as it stood; the page shrank (59,493 -> 37,952), left as it is
-  ['.claude/rules/decisions/oil.md',             15407, 15407, 'D1932'],   // the one-line list at a6265cae0
+  ['.claude/rules/decisions/oil.md',             15407, 15407, 'D1932'],   // the one-line list at a6265cae0; 9 Nov 26, D1945: the scheduler's page made it owe 32 numbers of later rulings — room made by tighter wording, never a raise; D1946 the same for D1041's two
   ['.claude/rules/decisions/it-flow-guide.md',    4028,  4028, 'D1932'],   // the one-line list at cd8a5dd67
   ['.claude/rules/decisions/tracker.md',         20061, 20061, 'D1932'],   // the one-line list at aee0de3f2
   ['.claude/rules/decisions/design.md',          22050, 22050, 'D1932'],   // the one-line list at 0abda89d5
   ['.claude/rules/decisions/people-accounts.md', 21160, 21160, 'D1932'],   // the one-line list at 97eaa5251
   ['.claude/rules/decisions/inputs.md', 52689, 52689, 'D1932'],   // the one-line list at b87243496
+  ['.claude/rules/decisions/scheduler.md', 120888, 120888, 'D1932'],   // the one-line list at 5d8ddf6f8
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 

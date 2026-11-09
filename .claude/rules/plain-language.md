@@ -42,7 +42,7 @@ Run it on every message before sending — a rule you agree with and don't apply
    screen, describe what it does in a short phrase.
 3. **Every claim gets its consequence.** Never "X was wrong, fixed". Always "X said this, it's actually that, and here's
    what would have gone wrong." He judges importance by consequence; a bare correction reads as noise or invention.
-4. **Cut it — but shorter is never thinner (D825, D832).** If a section is longer than the point needs, most of the
+4. **Cut it — but shorter is never thinner (D825, D832, D833, D834, D836, D839).** If a section is longer than the point needs, most of the
    excess is restatement: cut restatement and filler, never the app's name for a thing, a number he would judge or act
    by (a count, a date, a time, a size — an id, a hash, a code or a line number is check 1's to remove), a reason, a
    consequence or what he must do. Before sending something he will act on, find each of these in the words themselves
