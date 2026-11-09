@@ -1026,11 +1026,11 @@ the page; the IT flow guide's shortfall went to him (D1940 and D1945 were one jo
 (D1948, spent) — "in the app" cut from its "What happens by itself" line and D1225 cited on both lines, 4,023 of 4,028
 bytes, done by the host before the drafter started.
 
-| | The list (0ce71adab) | The draft | After the reads |
+| | The list (0ce71adab) | The draft | After the reads (chat 46, 3d8fb984a) |
 |---|---|---|---|
-| Bytes (hard limit 121,825) | 121,825 | 78,707 (694602fac) | |
-| On "Built, held by tests" | — | 64 | |
-| A Leave War job reads (tokens) | 326,275 | 309,834 | |
+| Bytes (hard limit 121,825) | 121,825 | 78,707 (694602fac) | 81,445 |
+| On "Built, held by tests" | — | 64 | 57 |
+| A Leave War job reads (tokens) | 326,275 | 309,834 | 311,540 |
 
 **The draft** (chat 45): four sorters (A 9 held, B 28, C 28, D none; one question for him, D1318 against D1211 — a
 member's overseas duty or course on a past day; about 22 proposed archivals), then the drafter: 64 numbers on the held
@@ -1039,6 +1039,21 @@ accounts' SANS mark, Inputs' rejected course or overseas duty and its Other poin
 the host: later rulings that change earlier ones without a mark (D1330, D1332 over D1212, D331, D335; D1254 over D1227;
 D1316 over D1175; D1019 overtaken; D1326's stale short line) and stale reference docs (`ui-contracts.md`, `file-map.md`,
 `performance.md`'s section name). The reads, the fixer and his look: chat 46 (`HANDOFF.md`).
+
+**The reads** (chat 46; `…-read-astra.md`, `…-read-opus.md`, the fixes `…-fixes.md`). Astra 11 findings; the Opus reader 19;
+26 distinct, 25 held, 1 not held (three numbers the Opus reader thought idle on other pages are owed by the gate's marks).
+The serious ones: the manning line let a rejected overseas duty still lower manning (D1390), against the next line; eight
+lines stated an agent's reading as his — the admin deciding bids at any time and the landing order (D1177), the admin
+moving any bid (D333), a picked range widening Decide, Move and Delete (D335), the second-entry rule carried to Inputs
+entries (D1563, D1565), "This Other …", the OIL tab as a way back (D1503, D1506), the day list's words rule spread
+(D1328); his "not the official qualification" (D460), his "The grey2 is ok" (D1730), two readings he took (D1467) and the
+column window's month-0 invariant dropped; the head's claim that the OIL page loads with every file. **7 of the 64
+built-line numbers were not held whole** (D1270, D1331, D1351, D1360, D1375, D1469, D1476) — far fewer than the other
+trials, the sorters this time told the earlier trials' lesson. The host's check: "only his own" put back on the move line
+(D333). Marks written: D1212, D331, D335 (by D1330, D1332), D1175 (by D1316), D1019 (by D1254); D1254 over D1227 and
+D1326 by D1356 left unmarked (each would pull numbers onto lines it does not touch). **Left for him**
+(`[LW-PAGE-LEFTOVERS]`): D1177's three readings and D333's admin half as "keep as built", D1318 against D1211, the tests
+for the 7, about 22 proposed archivals, the stale reference docs.
 
 ### Review log
 
