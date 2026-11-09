@@ -207,6 +207,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check.
 - [RD-LEFT-1108] — React Doctor's last 4 findings, in other areas' files (SansCal 1, SansDay 1, interactions 2) — each with its area's next batch; the 13 import cycles and People & accounts' 6 went live 8 Nov 26 (pull request 702), the Inputs and Medical 8 settled by chat 29 (pull request 707).
 - [RECORDS-MERGE-SAME-ADD] — the settle step kept a skill note both sides had added word for word as two notes, renumbering one; found 9 Nov 26, settled by hand.
+- [TRK-TRIAL-TESTS] — the Tracker trial's leftovers (D1941, D1942): the tests that would let 20 written-out rulings leave the Tracker's page, D1405 to archive, the other areas — each on his word.
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [REPO-TIDY] — clear the old worktrees (47 today) and the 6 Nov night's three build folders after safety checks; moving the walk pictures out is his call.
 - [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
@@ -280,6 +281,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+
+### [TRK-TRIAL-TESTS] The Tracker trial's leftovers — each on his word (D1941, D1942; filed 9 Nov 26, chat 36)
+**What:** the rules diet's Tracker trial merged live 9 Nov 26 (pull request 725). Three things it left, none started without his word: (1) **the tests** that would let the 20 rulings on the Tracker page's "Built, stated here: their tests hold only part" leave for the "Built, held by tests" line — D64, D121 with D1014, D124 with D130, D372, D373, D374, D376, D922, D924, D980, D1003 with D1018, D1132, D1135, D1170, D1406, D1705 — each missing check named in the two readers' reports, `raptor-port/docs/superpowers/briefs/2026-11-09-tracker-trial-read-{astra,opus}.md`; (2) **D1405 is spent** (the stray scroll bars fixed first, done): archiving its full row waits for his word; (3) **the other areas** take the trial's shape one at a time, each on his word (D1942), How we work last (its page 4 bytes under its limit). Before-and-after page shown to him: https://claude.ai/artifact/LKGs13C3NBJnSurmtcDwdg.
 
 ### [RECORDS-MERGE-SAME-ADD] The settle step doubles a skill note both sides added word for word (found 9 Nov 26, chat 36)
 **What:** bringing `main` into the Tracker trial's branch (pull request 725), `records-merge.mjs` reported the skill log's note 905 ("Add-only" was a guess…) as "added on main's side" and again as "added on this branch", and kept both, renumbering this branch's copy to 909. The two were identical, apart from the number. The base held neither: this branch had taken the note in an earlier bring-in of `main`, and `main`'s side then carried it from chat 40's merge. Chat 36 dropped the copy by hand. **Expected:** a note added on both sides with the same text is one note (the step's own rule: "the same on both sides … that side"), whatever its place. **Fix:** in the skill log's settle, match added notes by their text without the number before renumbering, with a test of this case in `records-merge.test.mjs`. Nothing was lost; the cost is a doubled note when unchecked.
