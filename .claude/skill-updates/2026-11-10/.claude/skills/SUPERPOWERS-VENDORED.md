@@ -85,6 +85,7 @@ did not.
 
    | Skill | What was added |
    |---|---|
+   | `writing-plans` | Task Right-Sizing: a task of more than one session lists each slice and its clean stop; Self-Review 4: a promised saving estimated from the parts a stated case must use; 8: old findings re-checked on today's build first; 10: a table of open questions is a home of each answer |
    | `brainstorming` | `mockups-on-the-real-app.md`: his picture's device answered on; the "today" premise asserted on screen, for every role, a code-filed fault reproduced, a safety-net message reached through a real refusal; hide, never remove, a part the app drew; a mark that moves nothing and is not clipped; the recorder beside the script, a computed place said in words; four traps (code sent into the page, a panel covering live parts, a restyled element's leftovers, a CSS fix drawn in the real rule); a colour read on the drawn part; a drawn event's result asserted to fire; reusing an older drawing; width changes drawn at the narrow end; a question about feel, and animations frame by frame; the approved pictures kept as files |
 
 ## Updating

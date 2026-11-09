@@ -938,6 +938,13 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** when a change hands anything to the phone itself (its scrolling, its keyboard, its bounce), the sizing step
    names what only the real phone draws and asks him for a look or a recording on his iPhone before merge; a walk that
    judges scroll bars launches with the test browser's `--hide-scrollbars` taken off.
+7. **A mechanism tuned to a model of the phone is proved only by the model (D1412, the keyboard's six rounds, 25–27 Oct 26).** Six
+   rounds moved, held and then glided a window against a model of his iPhone's keyboard slide; each passed the stand-in keyboard,
+   which played that very model, and each failed on his phone, where the real slide, its timing and what the phone draws between
+   the app's frames were never quite the model. **Lesson:** where a change steers something frame by frame against a motion the
+   phone itself makes, no stand-in can prove it — the sizing step says so, asks for his recording before anything is called
+   fixed, and the design question comes first: hand the motion to the phone (the board, D1081; the windows, D1412) rather than
+   model it, and keep a model only where he has seen it work on his own screen.
 8. **A fix that reshaped an approved drawing, and a reading of it nobody held beside the picture (D1424, the Leave War M4's
    Approvals, 27 Oct 26).** On a phone "New 1" broke onto two lines; the fix gave New two columns and Approve all a row of its
    own — four rows where his drawing has three — chosen without opening the drawing. On a desktop the build read "the list
@@ -946,13 +953,6 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** a screen with an approved drawing is compared with it while it is built and after every fix to it — the
    sizing step names the drawing for each surface and the walker's brief carries it; a fix for a fault keeps the drawn
    layout, and a departure chosen on purpose is named to him with its picture and reason.
-7. **A mechanism tuned to a model of the phone is proved only by the model (D1412, the keyboard's six rounds, 25–27 Oct 26).** Six
-   rounds moved, held and then glided a window against a model of his iPhone's keyboard slide; each passed the stand-in keyboard,
-   which played that very model, and each failed on his phone, where the real slide, its timing and what the phone draws between
-   the app's frames were never quite the model. **Lesson:** where a change steers something frame by frame against a motion the
-   phone itself makes, no stand-in can prove it — the sizing step says so, asks for his recording before anything is called
-   fixed, and the design question comes first: hand the motion to the phone (the board, D1081; the windows, D1412) rather than
-   model it, and keep a model only where he has seen it work on his own screen.
 9. **A list's alignment judged by eye, one kind of row at a time (D1437, D1438, the Leave War M4's Approvals, 27 Oct 26).** Three
    walkers and a drawing comparison passed the Approvals list's alignment; he found, from two pictures, its headings off
    their figures by 12 to 24px on a phone and 16px on a desktop, and a WSO's name at the right of its puck — the list's own
@@ -1065,6 +1065,13 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** before a walk asserts what a tap opens, search the rulings for what a tap on that kind of entry opens on an
    ordinary day, and walk the two side by side — the ruled window is the expected one, never the build's; and the sizing
    lines name, lesson by lesson, what covers this list (`scripts/handpass/lw-d1720-walk.mjs` step B, re-walked; his D1722).
+23. **A fault in the picture, looked past because it was not the thing under test (his iPhone picture, Admin → Users' "Add a
+   person", 5 Nov 26).** The posting-out bell walk pictured Admin → Users on a phone at every landing; in those very pictures
+   "PILOT, WSO OR PERSONNEL" broke onto two lines and its box stood lower than CAT's, a text box shorter than the pick-list
+   beside it — against his lesson 43 since 23 Oct 26. The walk checked the ringed row and nothing else on the screen.
+   **Lesson:** every screen a walk pictures is also checked for the standing layout lessons — each pair of side-by-side boxes
+   measured one height and one line (lesson 43), at a phone's width with an iPhone's letters as well as a desktop's — not only
+   the part the change made (`scripts/handpass/adm-pairs-measure.mjs` is the pattern).
 24. **A walk that never flicked to the page's foot on a phone (his iPhone recording, the Leave War, 8 Nov 26, 14:31).**
    Every walk of the pinned dates row scrolled to set places and flicked in the middle of the page. On his iPhone a hard
    flick to the page's foot bounced it, Safari folded its toolbar, and for a moment the bounce carried the top bar off
@@ -1114,14 +1121,6 @@ the reader's instructions or model change, it is run on every case and a change 
    that walk real records never meet it.
 
 ---
-
-23. **A fault in the picture, looked past because it was not the thing under test (his iPhone picture, Admin → Users' "Add a
-   person", 5 Nov 26).** The posting-out bell walk pictured Admin → Users on a phone at every landing; in those very pictures
-   "PILOT, WSO OR PERSONNEL" broke onto two lines and its box stood lower than CAT's, a text box shorter than the pick-list
-   beside it — against his lesson 43 since 23 Oct 26. The walk checked the ringed row and nothing else on the screen.
-   **Lesson:** every screen a walk pictures is also checked for the standing layout lessons — each pair of side-by-side boxes
-   measured one height and one line (lesson 43), at a phone's width with an iPhone's letters as well as a desktop's — not only
-   the part the change made (`scripts/handpass/adm-pairs-measure.mjs` is the pattern).
 
 ## 9. The evidence, and the owner's sixty-second check
 

@@ -227,11 +227,14 @@ force only once the main checkout (`C:\Users\User\projects\Raptor`) is on
 `main`:** a worktree chat started from the desktop app loads those from the
 main checkout, not from its own folder (14 Oct 26: a whole compaction set-up
 and a new skill were in force in no chat, the main checkout 208 commits
-behind). When that folder is not on `main`: if `git -C
+behind). When that folder is not on `main`, or behind it: if `git -C
 C:\Users\User\projects\Raptor status --short` shows no tracked change, its
 branch has nothing unpushed (`git -C … status -sb` shows no "ahead"), and no
-chat is working in it, switch it (`git -C … switch main`) and say so;
-otherwise tell him in one plain line what holds it. The block's pick-up then
+chat is working in it, switch it (`git -C … switch main`) if needed, bring it level
+(`git -C … merge --ff-only origin/main` after a fetch — never a hard reset:
+`raptor-port/docs/gates-and-deploy.md`, "A worktree chat loads its settings,
+hooks and skills from the MAIN checkout") and say so; otherwise tell him in
+one plain line what holds it. The block's pick-up then
 tells the next chat to verify by what the app itself reports (`get_usage`,
 the skill list) — never by running the script by hand
 (`raptor-port/docs/gates-and-deploy.md`).
@@ -375,7 +378,11 @@ a handoff that could not be:
 - A next step that names a numbered piece of a plan (a merge, a phase, a
   batch) is checked against the plan and its ruling's full row — it exists and
   is not done; when the plan is finished, say so (29 Oct 26: an "M6" the plan
-  never had).
+  never had). Work that spans chats: "Pick up here" names the next slice by
+  its parts and its clean stop, sized against what a fresh chat has left after
+  its start-up load, measured — one build to a slice where its scripts must be
+  read whole (7 Nov 26: a "part 3" held three builds; the chat reached 76% on
+  reading alone).
 - How a job ships is decided by the files it will change, checked against
   `.claude/rules/shipping.md`'s "only notes" list — a size-tripwire raise
   changes a script and waits for "merge live" (29 Oct 26).
@@ -385,7 +392,11 @@ a handoff that could not be:
 - A brief written for another chat — a side session, the next chat's helpers —
   names the branch and commit its pointers live on, never this chat's
   worktree folder; a block not yet on `main` is named by its branch or pasted
-  in (7 and 9 Nov 26).
+  in (7 and 9 Nov 26). It names the rulings the job needs by number (their
+  full rows) and the sections to read, because the first file it opens in an
+  area loads that area's whole rulings page — and the side chat commits its
+  own block after its first change, not at the first warning (8 Nov 26: two
+  side chats past three-quarters full before a line was built).
 - His "merge live" does not travel in another chat's text: the app's safety
   check refused a merge made on an approval quoted in a side session's brief
   (8 Nov 26). The chat he said it in merges, or the block says the merge waits

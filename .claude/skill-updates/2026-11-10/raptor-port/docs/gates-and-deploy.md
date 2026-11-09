@@ -243,8 +243,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   check that never reports leaves a pull request waiting for ever). "checks passed" fails if any gate failed or was
   cancelled, or if code changed and no whole gate run passed (a skipped gate reports success, so it is never taken as
   a pass). The Docs guard (`docs-guard.yml`) still runs on every PR and every push to `main`, and runs the document check's
-  self-test — so a change to that check's own scripts runs `node raptor-port/scripts/docsize-selftest.mjs` (about ten
-  minutes) on the PC before the push, and a new rule gets self-test cases of its own (9 Nov 26: 8 cases red, met only
+  self-test — so a change to that check's own scripts runs `node raptor-port/scripts/docsize-selftest.mjs` (10 to 20
+  minutes, in the background with no `timeout` around it: a limit that kills a case's child check reads as that case
+  failing, and exit code 124 is the limit, not the script — 9 Nov 26) on the PC before the push, and a new rule gets self-test cases of its own (9 Nov 26: 8 cases red, met only
   on GitHub); since D1407 (27 Oct 26) a
   change of notes only merges by itself once its run is green, and any other docs change still waits for his "merge
   live" (`.claude/rules/shipping.md`).
@@ -258,7 +259,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   paragraphs (rounds 3 and 4 of its reads: fewer settled, never silently wrong). It
   reads git's own three copies, never the files on disk; it refuses a file already edited by hand, stages nothing and
   never aborts the merge. It leaves for the chat, in git's marks, whatever both sides changed — the gate baseline always —
-  and the rulings files, whose own merge (`backlog-archive.mjs --rulings --merge`) it names; with nothing left it runs
+  and the rulings files, whose own merge (`backlog-archive.mjs --rulings --merge`) it names (the files still clashed:
+  `git diff --name-only --diff-filter=U`, never a merge's printout cut short by `tail` — 6 Nov 26, a missed rulings file
+  kept its clash marks through a passing document check, and only the commit refused; [CHECK-TOOLS-HARDEN] (l)); with nothing left it runs
   `npm run docsize` and `npm run rulecheck`, counting only a failure the merged-in commit does not have. **Trap — why
   there is no `merge=union` in `.gitattributes`:** "keep both sides" doubles a ledger row or a skill note edited in place,
   lets a clash in those files end as a clean merge that no step looks at, and GitHub's own merge ignores attributes
@@ -310,6 +313,13 @@ others, never a placeholder (a patch that missed its anchor wrote one and droppe
 `backlog-archive.mjs --rulings --move-rows --dry-run`, then the move, then a row-by-row compare against the base: the dry
 run does not run the real run's last inventory, so its pass is not the move's.
 
+**Loaded text is replaced by writing the new text first (8 Nov 26).** `backlog-archive.mjs --move` checks the whole record
+after each move and puts both files back when a live ruling is no longer stated in a file that loads: write the
+replacement above the old text, then move the old text whole. **And a change that switches on checks reaching other files**
+(an area file marked a page, a new rule in the check) is tried first: flip the switch on the file, run the check once,
+read only the other files' failures and each page's room under its limit, then put the file back (`git status` clean) —
+the debts, and any question for him, come up before the work instead of at its end (9 Nov 26).
+
 **Stopping a gate run's background task does not stop the run (15 Oct 26, twice).** Stopping the task that ran
 `gatelock.mjs run` ended only its shell: the `gatelock` process, vitest and its fifteen workers ran on, and the lock stayed
 held. End them by their command lines (this checkout's path in them), then `gatelock.mjs status` → `release`, and see
@@ -320,9 +330,13 @@ desktop app starts, `.claude/settings*.json`, `.claude/hooks/`, `.claude/skills/
 from the main checkout's root (`C:\Users\User\projects\Raptor` — the process's `--project-config-root`); only `CLAUDE.md`
 and `.claude/rules/` load from the worktree. With the main checkout on an old branch, a merged hook or skill is in force in
 no chat (that day: the whole compaction set-up and `/overnight`, the main checkout 208 commits behind). After a merge that
-touches them, the main checkout must be on `main`, clean of tracked changes — the chat that saw the merge switches
-it, as the handoff guide says —; verify in a NEW chat by what the app reports
-(`get_usage`, the skill list), never by running the script by hand.
+touches them, the chat that saw the merge brings the main checkout LEVEL with `main` — on `main` and up to date, since a
+folder on `main` but behind it is the same fault ([MAIN-CHECKOUT-STALE]): `git -C C:/Users/User/projects/Raptor fetch
+origin`, then, only when its `status --short` shows no tracked change, its `status -sb` no "ahead" and no other chat works
+in it, `switch main` if it is elsewhere and `merge --ff-only origin/main`. That folder can hold another chat's uncommitted
+work and the walks' untracked pictures: never `reset --hard`, `checkout -- .`, `clean` or a merge that is not a
+fast-forward — when a condition fails or the fast-forward refuses, tell him in one plain line what holds it. Verify in a
+NEW chat by what the app reports (`get_usage`, the skill list), never by running the script by hand.
 
 *The baselines in the first paragraphs are history; the current one is `HANDOFF.md` §Gate baseline.*
 

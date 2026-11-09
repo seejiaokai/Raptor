@@ -67,3 +67,39 @@ change is): before a push to a branch with an open pull request, read its merge 
 that no check run will start until `main` is brought in — met three times on 8 Nov 26, each time after a wait for a run
 that never came (887; the guide's line in `docs/gates-and-deploy.md`, "After a push", and the memory note on stacked
 and clashing pull requests).
+
+## From group C2-records
+
+### [RULE-FILE-LESSONS] Four lessons whose only home is an always-loaded rule file or the steps for recording a ruling (skill notes 733, 734, 859, 860; 28 Oct – 8 Nov 26)
+**What:** the skill-notes review of 10 Nov 26 could not draft these, because they belong in files only the rules diet or
+his word may change (`.claude/rules/record-decisions.md`, `.claude/rules/plain-language.md`, `DECISIONS.md`'s steps).
+(a) **The sweep for what a new ruling leaves behind (D201) searches by the rule's subject across every Markdown file in
+the repo** (the archives and the full-text rulings left out), not a list chosen from memory — the plans under
+`raptor-port/docs/superpowers/plans/` among them, whose tables of open questions are homes of each answer — and the
+readers' brief names the search that was run, so they can widen it (859, 724: four guides and a backlog item still
+named the old readers on 8 Nov 26; a plan showed two answered questions as open for five days). (b) **A ruling that
+changes the rule for one of several parties is rewritten clause by clause:** before rewriting each line it touches, list
+every clause of the old line (each party, each safeguard, each window or date) and mark it changed or carried over; the
+rewritten line keeps every carried clause (860: D1770 dropped the "owed list" safeguard for the unchanged reader, in five
+files). (c) **A blanket approval ("all as recommended") is recorded from the page he answered:** each rule is written from
+that page's own recommended words, at the version he saw (`git show <commit>:<page>`); anything only in the plan behind
+it is the agent's reading, marked; and the fresh reader of such rulings checks every number and condition of the line
+against that page version (734, met twice on 28 Oct 26). (d) **The check before sending, a step that counts:** list every
+screen, tile, figure or control the message names; each has a picture in the same message, or it is not sent (733:
+D853 and D921 were loaded and missed, "rules, not screens").
+**To do:** draft each as the smallest change to its file; read by Astra and a fresh, blind Opus reader, each blind to the
+other (D1761, D1770); on his word, and his "merge live". **Place:** his to place — with the next change to those files.
+
+Priority-list line: `- [RULE-FILE-LESSONS] — four lessons for the rule files and the steps for recording a ruling — his word.`
+
+### Addition to [CHECK-TOOLS-HARDEN] (append under its "Added 10 Nov 26" paragraph, after the earlier groups' (c)–(i))
+**Added 10 Nov 26 (the skill-notes review, group C2-records):** (j) **The change-mark check** (`scripts/docsize-rulings.mjs`
+`backMarks`): it reads only the first number after a change verb, so "Narrows D1510 and D149" checked D1510 and never
+D149, and it runs only on new rows — read every number of the list after the verb, and run it once over every live
+row, listing what is owed (881: D149 and D218 unmarked, found only by a drafter reading row by row, 8 Nov 26). (k) **The
+backlog script** (`backlog-archive.mjs <ID>`): before it moves an item, warn when the item is the backlog's last mention of
+a ruling whose row names the backlog as a home, naming the item that could carry the number (900: D1871's home check
+failed only at the closing step, 8 Nov 26). (l) **The document check** (`scripts/docsize.mjs`): fail on any line
+beginning `<<<<<<< ` or `>>>>>>> ` in a file it reads, and on a `=======` line between two such lines (a heading's
+underline is not one) (803: a rulings file kept a merge's clash marks through a
+passing check, 6 Nov 26; only the commit refused; `docs/gates-and-deploy.md`, the settle step, carries the guide's line).
