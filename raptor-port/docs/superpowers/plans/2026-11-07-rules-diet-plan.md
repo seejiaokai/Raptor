@@ -1028,9 +1028,17 @@ bytes, done by the host before the drafter started.
 
 | | The list (0ce71adab) | The draft | After the reads |
 |---|---|---|---|
-| Bytes (hard limit 121,825) | 121,825 | | |
-| On "Built, held by tests" | — | | |
-| A Leave War job reads (tokens) | 326,275 | | |
+| Bytes (hard limit 121,825) | 121,825 | 78,707 (694602fac) | |
+| On "Built, held by tests" | — | 64 | |
+| A Leave War job reads (tokens) | 326,275 | 309,834 | |
+
+**The draft** (chat 45): four sorters (A 9 held, B 28, C 28, D none; one question for him, D1318 against D1211 — a
+member's overseas duty or course on a past day; about 22 proposed archivals), then the drafter: 64 numbers on the held
+line, 13 "as built" rulings moved to Settled, nothing moved out of the page, three other-page lines reworded (People &
+accounts' SANS mark, Inputs' rejected course or overseas duty and its Other pointer) — the readers check each. Left for
+the host: later rulings that change earlier ones without a mark (D1330, D1332 over D1212, D331, D335; D1254 over D1227;
+D1316 over D1175; D1019 overtaken; D1326's stale short line) and stale reference docs (`ui-contracts.md`, `file-map.md`,
+`performance.md`'s section name). The reads, the fixer and his look: chat 46 (`HANDOFF.md`).
 
 ### Review log
 
