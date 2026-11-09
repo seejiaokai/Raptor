@@ -4654,3 +4654,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** The document check passed on the PC, but the pull request's documents guard ran the check's self-test, which builds practice files; the new rule failed 8 of its cases. The self-test was never run locally, so the red came back only from the remote run.
 **Suggested improvement:** Under "at every commit", add: a commit that changes a check's own script runs that check's self-test (the documents guard's: `node raptor-port/scripts/docsize-selftest.mjs`, about 10 minutes) before the push, and a new rule gets self-test cases of its own.
 **Principle:** A checker that has its own test harness must pass that harness, not only the real files, before its change ships.
+
+### Observation 909: Converting a rulings area to a page is now a repeatable workflow
+
+**Status:** OPEN
+**Date:** 9 Nov 26
+**Session context:** chat 41, the rules diet's Inputs pages in the Tracker trial's shape (D1943)
+**Skill:** New skill candidate: rulings-page-conversion
+**Type:** internal
+**Phase/Area:** the whole job — brief, sort, draft, blind reads, fix, before-and-after page
+
+**Issue:** the Tracker trial (chat 36) and the Inputs pages (chat 41) ran the same shape: a drafting brief told the last trial's lessons, a fresh helper sorts every ruling (standing / built held whole / not built / spent) and drafts the page, Astra and a fresh Opus reader read blind on four questions, a third helper checks and fixes every finding, then a before-and-after page. Each time the brief was rebuilt by hand, and this time the drafting helper stopped on a duty the brief missed: converting an area makes the gate check other pages' citations of it, and How we work had 4 bytes spare.
+**Suggested improvement:** a project skill holding the brief template (the strict "held whole" test with its exclusions, conditions and scope; the readers' four questions; the check of other pages' citations of the area before drafting, with each page's spare bytes), the order of helpers, and the before-and-after page's sections. Wait for his word on the next area before writing it.
+**Principle:** when a multi-helper documentation job has run twice with the same shape, its brief and its reader questions belong in one reusable place, with each run's surprise added as a check before the step it would have blocked.
