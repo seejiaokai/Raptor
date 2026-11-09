@@ -11,7 +11,7 @@ wrong if not told. Rulings judged "built" left for one line, "Built, held by tes
 accepts only where a test file names each number; those whose tests hold only part stay written out.
 
 - The list before: `git show b87243496:.claude/rules/decisions/inputs.md` (set `MSYS_NO_PATHCONV=1` first in Git Bash).
-- The page now: `.claude/rules/decisions/inputs.md` at commit `__COMMIT__` (`git show __COMMIT__:<path>`, or the file as
+- The page now: `.claude/rules/decisions/inputs.md` at commit `34176a2ec` (`git show 34176a2ec:<path>`, or the file as
   checked out).
 - The helper's sorting table — each ruling's kind and the test said to hold it:
   `raptor-port/docs/superpowers/briefs/2026-11-09-inputs-trial-sorting.md`.
@@ -19,7 +19,7 @@ accepts only where a test file names each number; those whose tests hold only pa
   marked "the agent's reading" are not), where it lives: `.claude/decisions-full/inputs.md` (`grep -h '^| D569 |'`).
 - Tests: `*.test.ts(x)` and `*.spec.ts(x)` under `raptor-port/src` and `raptor-port/e2e`.
 - The same diff also changes one map line each in `DECISIONS.md`, `AGENTS.md`, `raptor-port/CLAUDE.md` (and perhaps
-  the full-text file's head), and the size rows in `raptor-port/scripts/docsize.mjs`: `git diff b87243496 __COMMIT__`.
+  the full-text file's head), and the size rows in `raptor-port/scripts/docsize.mjs`: `git diff b87243496 34176a2ec`.
 
 ## The four questions — answer each, with evidence
 1. **A standing rule or like lost.** For every ruling the list stated, and the page does not state now: is it really
@@ -33,8 +33,12 @@ accepts only where a test file names each number; those whose tests hold only pa
    that name it: does an assertion fail if each part of the rule goes — every condition, exception, exclusion ("not X",
    "never Y"), scope, and any words on screen he chose? A number only in a comment or a title, or a test holding only
    part, is a finding: name the part left unheld. (On the Tracker's trial, 20 of 39 failed this.)
-4. **The map lines.** Does each changed line in `DECISIONS.md`, `AGENTS.md` and `raptor-port/CLAUDE.md` say only that
-   Inputs is now a page, without changing, dropping or contradicting anything else those files say?
+4. **The map lines and the two other pages.** Does each changed line in `DECISIONS.md`, `AGENTS.md`,
+   `raptor-port/CLAUDE.md` and the full-text file's head say only that Inputs is now a page, without changing, dropping
+   or contradicting anything else those files say? Two other pages changed only to carry citations the page shape now
+   requires: `.claude/rules/decisions/design.md` (one number added) and `.claude/rules/decisions/how-we-work.md` (four
+   numbers added to the batch-order line; 12 wrapped lines of its "Models and readers" section joined onto their
+   bullets to make room). Confirm no word changed there except the added numbers (`git diff -w --word-diff`).
 
 ## Not findings
 - Anything about data already stored (the store is demo data, cleared before the database step — D56).
