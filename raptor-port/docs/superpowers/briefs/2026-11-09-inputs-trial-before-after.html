@@ -1,0 +1,185 @@
+<title>Inputs page trial</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one narrow reading column — what to look at now first, then the sizes, three before-and-after pairs, what the two readers caught, what changed elsewhere. */
+:root {
+  --bg: #f7f7f5; --card: #ffffff; --ink: #1d1d1f; --muted: #5f6368; --line: #e3e3e0;
+  --left: #0b6b3a; --left-bg: #e7f4ec; --stay: #8a5a00; --stay-bg: #fdf3e0; --back: #8a2f5a; --back-bg: #f9e6ef; --bar: #2f6fdf; --bar-old: #b9b9b4;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #151517; --card: #1f1f22; --ink: #ececec; --muted: #a4a4aa; --line: #333338;
+  --left: #6fd39c; --left-bg: #173325; --stay: #f2c46b; --stay-bg: #3a2e14; --back: #f09ac2; --back-bg: #3d1a2b; --bar: #6f9cf0; --bar-old: #55555a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #151517; --card: #1f1f22; --ink: #ececec; --muted: #a4a4aa; --line: #333338;
+  --left: #6fd39c; --left-bg: #173325; --stay: #f2c46b; --stay-bg: #3a2e14; --back: #f09ac2; --back-bg: #3d1a2b; --bar: #6f9cf0; --bar-old: #55555a; color-scheme: dark }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; }
+main { max-width: 720px; margin: 0 auto; padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 12px; }
+h1 { font-size: 1.5rem; line-height: 1.25; margin: 0; text-wrap: balance; }
+h2 { font-size: 1.15rem; margin: 20px 0 0; text-wrap: balance; }
+p { margin: 0; max-width: 64ch; }
+.sub { color: var(--muted); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.bars { display: grid; gap: 12px; }
+.row { display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 10px; }
+.track { background: var(--line); border-radius: 6px; height: 22px; overflow: hidden; }
+.fill { height: 100%; border-radius: 6px; }
+.num { font-variant-numeric: tabular-nums; color: var(--muted); font-size: .9rem; }
+.tag { align-self: flex-start; font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; font-weight: 700; border-radius: 999px; padding: 2px 10px; }
+.left .tag { color: var(--left); background: var(--left-bg); }
+.stay .tag { color: var(--stay); background: var(--stay-bg); }
+.back .tag { color: var(--back); background: var(--back-bg); }
+.why { color: var(--muted); }
+.rec { font-weight: 600; }
+ul { padding-left: 20px; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+details summary { cursor: pointer; font-weight: 600; }
+details ul { margin-top: 8px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pair > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.pair .lbl { font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; font-weight: 700; color: var(--muted); }
+.old p { color: var(--muted); font-size: .95rem; }
+@media (max-width: 560px) { .pair { grid-template-columns: 1fr; } }
+</style>
+
+<main>
+  <h1>The Inputs rules page: before and after</h1>
+  <p class="sub">Your "Go" (D1943): the Inputs pages' 165 rulings turned into a page in the Tracker trial's shape. It keeps your standing rules, what you like, and what a fresh AI would get wrong; a rule fully checked by the app's tests is listed by number only. Nothing is deleted, your words stay in the full record, and nothing is live until you say "merge live".</p>
+
+  <h2>What to look at now</h2>
+  <div class="card stay">
+    <span class="tag">1 · The page itself</span>
+    <p>Keep it as shown and merge it, change something on it, or drop it.</p>
+    <p class="rec">Recommended: keep it and merge it. Both readers' findings are fixed, and it is a trial on Inputs alone; no other area changes.</p>
+  </div>
+  <div class="card stay">
+    <span class="tag">2 · Who placed it: D701 against D723</span>
+    <p>On 9 Oct (D701) you chose name, date and time in the small print — "Grit · 12 Jul, 14:42" — on an opened day, the SANS day to follow. On 10 Oct (D723, with D724) you approved the input card with only "By Saber", and only where someone else filed it or it holds several people; the day and time moved to the input's own window. D723 did not cover the SANS day.</p>
+    <p><strong>What the app shows today:</strong> Grit files a SANS commitment for 12 Jul at 14:42 — the SANS day shows "Grit · 12 Jul, 14:42" beside his remark. Saber files a Meeting for Ranger at the same moment — Ranger's card shows "By Saber", no day or time; opening the input shows "Placed by Saber for Ranger · 12 Jul 26, 14:42". Had Ranger filed it himself, his card would say nothing. A SANS commitment never appears as an input card, so the two never meet.</p>
+    <p class="rec">Recommended: keep it as it is — the input card follows the later ruling (D723), the SANS day keeps D701's name, date and time. Nothing to build.</p>
+  </div>
+  <div class="card stay">
+    <span class="tag">3 · Shared input's OIL: D660 against D762</span>
+    <p>On 7 Oct (D660) the person who files an input for several people answers the OIL question for all of them, once — and, as the agent read it, each man could still change his own answer afterwards. On 11 Oct (D762) you chose "one answer for all, nothing more": no man in it answers for himself; only the scheduler leaves one person out, in OIL Earn on the day.</p>
+    <p><strong>Example:</strong> Saber files a Saturday Duty for Ranger, Drifter and Wisp and answers "yes, OIL" once. Under the old reading Drifter could switch his own to "no". Under D762 — what the app does today — he cannot: he asks Saber or the scheduler, or takes himself out.</p>
+    <p class="rec">Recommended: the later ruling, D762, stands, as built; D660 keeps only its first part — the filer answers once, at the save. This belongs to the scheduler's rulings; nothing on the Inputs page changes either way.</p>
+  </div>
+  <div class="card stay">
+    <span class="tag">4 · 16 proposed archivals</span>
+    <p>Seven rulings that were one-off jobs, now done, and nine your later rulings restate in full. Each is still listed briefly on the page.</p>
+    <p class="rec">Recommended: leave them for a later round of their own — each needs your word and a fresh reader checking that nothing is lost (two already carry a note for that reader).</p>
+    <details>
+      <summary>The 16, a few words each</summary>
+      <ul>
+        <li><strong>D1376</strong> — Attach built with its batch, one full check.</li>
+        <li><strong>D657</strong> — the Inputs and SANS design accepted, built next chat.</li>
+        <li><strong>D584</strong> — the handoff to explain your intent.</li>
+        <li><strong>D583</strong> — show the design on desktop and phone.</li>
+        <li><strong>D582</strong> — simplify the page's header with the design skill.</li>
+        <li><strong>D574</strong> — design a calendar view for member inputs.</li>
+        <li><strong>D624</strong> — that job's check set each drawing beside the built screen.</li>
+        <li><strong>D1842</strong> — the desktop list's right end (answered by D1843).</li>
+        <li><strong>D1560</strong> — tapping the month's title opens a calendar (D1562).</li>
+        <li><strong>D1386</strong> — the ⤢ show-everything button (D1396) — reader to check "no '+n more'".</li>
+        <li><strong>D1385</strong> — a phone's opened day edge to edge (D1396).</li>
+        <li><strong>D1384</strong> — each card's small square in its kind's colour (D1396).</li>
+        <li><strong>D1367</strong> — an Other's two "where it goes" buttons (D1368, D1369).</li>
+        <li><strong>D1123</strong> — both calendars' top rows alike (D1125).</li>
+        <li><strong>D961</strong> — the Medical tab's cards (D965) — reader to check "no 'upchitted'".</li>
+        <li><strong>D1624</strong> — the window's unsaved-changes question (D1626).</li>
+      </ul>
+    </details>
+  </div>
+
+  <h2>The sizes</h2>
+  <div class="card">
+    <div class="bars">
+      <div>
+        <div class="row"><strong>Before</strong><div class="track"><div class="fill" style="width:100%;background:var(--bar-old)"></div></div></div>
+        <div class="num">52,689 bytes — 165 rulings, one line each</div>
+      </div>
+      <div>
+        <div class="row"><strong>After</strong><div class="track"><div class="fill" style="width:58%;background:var(--bar)"></div></div></div>
+        <div class="num">30,800 bytes — a page; 11 listed by number only (hard limit 52,689)</div>
+      </div>
+    </div>
+  </div>
+  <p>What an AI reads to start an Inputs job: 307,998 → 300,928 tokens, about 2% less. That saving is small. The real gain is a page that says how Inputs works and what you like, instead of 165 separate lines a model can misread.</p>
+
+  <h2>Before and after: three examples</h2>
+  <div class="card">
+    <span class="tag" style="color:var(--bar);background:var(--line)">The SANS calendar</span>
+    <div class="pair">
+      <div class="old"><span class="lbl">Before — 3 lines</span>
+        <p>D569: Add a SANS flying calendar: demand from the Leave War, editable yellow / amber / red baselines; count each person once with their hours; members add their own with custom times. Remarks has no placeholder.</p>
+        <p>D570: The daily requirement and shortage colours are for flying only.</p>
+        <p>D572: Count each person offering flying once for the day; show their hours.</p>
+      </div>
+      <div><span class="lbl">After — 1 line</span>
+        <p>The SANS flying calendar you asked for: demand from the Leave War, three colours, each man counted once with his hours, the counts for flying only; members see the day's commitments and add their own with custom times; a commitment's remarks box shows no faded placeholder words.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <span class="tag" style="color:var(--bar);background:var(--line)">ALL / ALL AVAIL</span>
+    <div class="pair">
+      <div class="old"><span class="lbl">Before — 4 rulings, in 2 files</span>
+        <p>D712: not offered for a "Fly with" or a Personal — only Training, meeting, appointment, duty and other.</p>
+        <p>D778: a Personal is the same as an event for people — ALL AVAIL or ALL on a one-day one.</p>
+        <p>D713: a new kind, Event — for ALL AVAIL, ALL or several people.</p>
+        <p>D711: not for an overseas duty or a course; one day at a time.</p>
+      </div>
+      <div><span class="lbl">After — 1 line</span>
+        <p>ALL / ALL AVAIL is offered for Training, Meeting, Appointment, Duty, Event, Other and Personal, one day at a time; never for leave, medical, an Attach (the old "Fly with"), an overseas duty or a course.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <span class="tag" style="color:var(--bar);background:var(--line)">Who files for whom</span>
+    <div class="pair">
+      <div class="old"><span class="lbl">Before — 3 lines</span>
+        <p>D655: a member files for others only duties and commitments — never leave, medical or SANS availability; a group filing is one shared input; the man, the filer and an admin may change or delete it.</p>
+        <p>D658: a SANS member files his own availability only; an admin for one or several.</p>
+        <p>D763: who is in it is changed only by the filer or a scheduler; anyone may take himself out.</p>
+      </div>
+      <div><span class="lbl">After — 1 line</span>
+        <p>A member files for other people only duties and commitments — never leave, medical or SANS availability (a SANS man files his own; an admin for one or several); a group filing is one shared input that the man, its filer and an admin change or delete — but who is in it only its filer or a scheduler changes, each man free to take himself out.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2>What the two readers caught</h2>
+  <p>Astra and a fresh Opus reader each read the draft, blind to each other. The four most serious:</p>
+  <div class="card back">
+    <span class="tag">Fixed</span>
+    <p>The scheduler's lock had shrunk back to "an Other" only.</p>
+    <p class="why">A later AI could have let a member move back a Training or a course the scheduler had moved. Now it covers every kind he can move (D1388, D1398).</p>
+  </div>
+  <div class="card back">
+    <span class="tag">Fixed</span>
+    <p>The ALL / ALL AVAIL line left out Event, and put "one day at a time" on Personal only.</p>
+    <p class="why">An AI could have refused ALL on an Event, or let a Training with ALL run several days. The line above is the corrected one.</p>
+  </div>
+  <div class="card back">
+    <span class="tag">Fixed</span>
+    <p>"No faded placeholder words in a commitment's remarks box" was filed as history and nearly archived.</p>
+    <p class="why">The claim that later rulings said it was wrong: none did. Once gone, a later change could bring the faded words back. Now a standing rule.</p>
+  </div>
+  <div class="card back">
+    <span class="tag">Fixed</span>
+    <p>Four lines had been narrowed to the phone, or to one screen width.</p>
+    <p class="why">Rules you gave for every screen (the ⤢ show-everything button, where the Calendar / List switch stands, the window over "+ Input") would have looked free to change on a desktop.</p>
+  </div>
+  <ul>
+    <li>19 findings in all — all fixed, none set aside. Both readers also found the calendar's keyboard set (arrows, Enter, Delete, Escape) dropped; it is back.</li>
+    <li>6 rulings sent back from "held by tests" to written out (D649, D651, D707, D968, D1179, D1622): their tests check only part.</li>
+  </ul>
+
+  <h2>What changed outside the page</h2>
+  <ul>
+    <li>How we work's line on the order of batches took four ruling numbers (D570, D572, D617, D618). That page is at its size limit, so room was made by joining wrapped lines; no word changed.</li>
+    <li>The screen-design page took one number (D630).</li>
+    <li>The Medical tab's files now load this page. Before, an AI working on the Medical tab never saw its rulings.</li>
+  </ul>
+</main>
