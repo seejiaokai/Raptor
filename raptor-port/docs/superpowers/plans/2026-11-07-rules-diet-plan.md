@@ -1098,6 +1098,11 @@ backlog's head 17,156, the project guide 14,541, the handoff 14,437, the general
 a fresh chat — the scheduler's rulings out of Leave War and Tracker jobs (through the performance guide and the ripple
 map), the handoff's merged blocks filed and removed — `[RULES-DIET-FOLLOWUP]`.
 
+**The follow-up, done 10 Nov 26 (chat 48, `claude/rules-diet-followup-4a76cd`):** the two guides out of the scheduler
+page's `paths:`, the Leave War rulings stated only there named on the Leave War page; with the handoff's six merged
+blocks gone, a Leave War job 304,434 → about 265,000 tokens (about 348,000 with the app's share, under the compaction
+point), a Tracker job 270,651 → about 230,400; read by Astra and a fresh Opus reader — `[RULES-DIET-FOLLOWUP]`.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |
