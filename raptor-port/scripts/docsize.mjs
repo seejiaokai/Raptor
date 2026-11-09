@@ -358,7 +358,7 @@ const RULING_BYTES = [
   /* inputs 42000 -> 46000 (26 Oct 26, pull request 560 on his D1402): 42,909 bytes on main with the Inputs pages' rulings
      of the Leave War's M3 (D1367-D1396 - Other's two sections, Attach, the calendar's colours, widths and expand), merged
      with code while the size check was deferred (D29); live, none trimmed (D136). Room, not a target. */
-  ['.claude/rules/decisions/inputs.md', 2, 55500],   // raised 7 Nov 26 from 50500 (rules diet step 2): the pointer list to the Leave War's rulings that govern the Inputs pages (plan §2) took it to 50,569; never trimmed (D136), a tenth above. Before: raised 5 Nov 26 from 46000 for D1702
+  ['.claude/rules/decisions/inputs.md', 2, 52689],   // 9 Nov 26, D1932, D1943: the trial on Inputs; set to the one-line list's size the page replaced (b87243496) — a HARD LIMIT (PAGE_LIMITS below). Before that, raised 7 Nov 26 from 50500 (rules diet step 2): the pointer list to the Leave War's rulings that govern the Inputs pages (plan §2) took it to 50,569; never trimmed (D136), a tenth above. Before: raised 5 Nov 26 from 46000 for D1702
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
@@ -463,6 +463,7 @@ const PAGE_LIMITS = [
   ['.claude/rules/decisions/tracker.md',         20061, 20061, 'D1932'],   // the one-line list at aee0de3f2
   ['.claude/rules/decisions/design.md',          22050, 22050, 'D1932'],   // the one-line list at 0abda89d5
   ['.claude/rules/decisions/people-accounts.md', 21160, 21160, 'D1932'],   // the one-line list at 97eaa5251
+  ['.claude/rules/decisions/inputs.md', 52689, 52689, 'D1932'],   // the one-line list at b87243496
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
