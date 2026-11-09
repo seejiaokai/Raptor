@@ -914,7 +914,60 @@ a live ruling other than D1932 is cited beside it, a converted page with no row 
 
 **Next (D1941):** a trial on the Tracker's page — his standing rules and likes only, each built detail leaving once a
 test that pins it is confirmed, the gate's "every live ruling stated on its page" eased for it — shown to him before any
-other area.
+other area. *Done: the trial merged live 9 Nov 26 (pull request 725), approved as shown (D1942); its leftovers are
+`[TRK-TRIAL-TESTS]`.*
+
+### Re-measure before 5b (9 Nov 26, chat 41, `claude/rules-diet-inputs-trial`, `main` at a8167a9a6)
+
+**What a chat reads (`docsize.mjs --reads`, tokens):**
+
+| Job | Before the fix (8 Nov 26) | After the fix (9 Nov 26) | After the Tracker trial (9 Nov 26) |
+|---|---|---|---|
+| notes | 74,035 | 76,474 | 76,539 |
+| Leave War | 359,837 | 342,296 | 342,490 |
+| scheduler | 286,925 | 282,178 | 282,372 |
+| Inputs | 314,530 | 307,804 | 307,998 |
+| Tracker | 306,064 | 294,773 | 293,435 |
+
+**The rulings files in each area job (tokens, `--reads --verbose`):** the scheduler's file 46,108 — loaded in the
+scheduler, Inputs and Leave War jobs, and in the Tracker job through `performance.md`, which its `paths:` name; the Leave
+War's 46,235 (its job only); the Inputs file 19,735 (its job: 6.4% of 307,998); the Tracker page 6,017 (from 20,061 bytes
+as a one-line list to 15,884 after the trial, 21% under).
+
+**What it says for 5b.** The Tracker trial took about 1,300 tokens off a Tracker job (0.5%). The same shape on the Inputs
+file (164 rulings, 52,318 bytes, 136 of them named by some test — named is not held whole: on the Tracker 19 of about 39
+left) would take an estimated 30–45% off it, about 6,000–9,000 tokens, 2–3% of an Inputs job. The larger cost is the
+scheduler's file, in four of the five jobs; the Leave War's is the same size in one. The gain the diet now buys is mostly
+D1939's — a page that says how the app works and what he likes, not a store of detail a model may misread — more than
+tokens.
+
+### Step 5b — the Inputs pages in the trial's shape (9 Nov 26, chat 41, `claude/rules-diet-inputs-trial` — D1943)
+
+His "Go" to the re-measure report (D1943): the Inputs list straight to the Tracker trial's shape — the first area to go
+from a one-line list to the trial page without a page in between. **How:** a fresh Opus helper sorted all 165 rulings and
+drafted the page (brief `../briefs/2026-11-09-inputs-trial-brief.md`, table `…-inputs-trial-sorting.md`), told the
+Tracker readers' lesson first (20 of 39 "held by tests" were sent back); Astra and a fresh Opus reader read it blind
+(`…-read-brief.md`, `…-read-astra.md`, `…-read-opus.md`); a third helper checked and fixed every finding (`…-fixes.md`).
+
+| | The list (b87243496) | The draft (34176a2ec) | After the reads (268d9906c) |
+|---|---|---|---|
+| Bytes (hard limit 52,689) | 52,689 | 29,032 | 30,800 |
+| On "Built, held by tests" | — | 17 | 11 |
+| An Inputs job reads (tokens) | 307,998 | 299,965 | 300,928 |
+
+**The reads.** Astra 7 (5 medium, 2 low), the Opus reader 9 on meaning, 2 test notes and a lost pointer — 19, all held;
+both found D621's keyboard set lost. The serious ones: D1398's widening of the scheduler's lock dropped back to D1388's
+"an Other" (a permissions rule); ALL / ALL AVAIL's merged line leaving out Event and putting "one day" on Personal only;
+D569's no-placeholder remarks filed as history and proposed for archive on a wrong claim; four lines narrowed to the phone
+or to one width. Six numbers left the "held by tests" line (D649, D651, D707, D968, D1179, D1622 — a test holding part).
+The Medical tab's files added to `paths:` (the page states its rulings; before, none of its files loaded them).
+
+**Beyond the page.** Converting an area makes the gate check every other page's citations of it: design's D626 line took
+D630, and How we work's batch-order line D569's four changers — 24 bytes on a page 4 under its limit, made room for by
+joining 12 wrapped lines, no word changed (D1940's "tighten, no raise"). **For the next area:** check other pages'
+citations of it before drafting; How we work has no room left by joins of its "Models and readers" section.
+**Left for him:** 16 proposed archivals (7 spent, 9 answered directions) (the sorting table's end; D1386 and D961 noted for the D971 reader); two
+questions — D701 against D723, and the scheduler's D660 against D762.
 
 ### Review log
 

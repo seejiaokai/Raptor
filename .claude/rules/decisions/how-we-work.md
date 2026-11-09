@@ -37,23 +37,11 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - The handoff file keeps only the newest gate count; each older one moves whole to its archive file [D1733].
 
 ## Models and readers
-- Opus 5.5 plans and builds; what Codex plans or builds, Opus reads; the chat that wrote a piece never reads it — a
-  fresh, blind Opus reader may read code Opus wrote [D67, D353, D590, D601, D790, D903, D1761].
-- Every job that needs a code read gets a fresh, blind Opus read of its finished code — an Opus that did not write it and
-  has seen neither the walk's nor any other reader's report, given the same brief; every claim is written as a failing
-  test before it is believed, and the host reproduces every finding before it counts; Fable reads nothing unless he
-  calls for it [D590, D601, D790, D903, D1761].
-- Astra is the standing reviewer, with no end date: called without asking him each time for each job's code read, beside
-  the fresh, blind Opus read above, and wherever a read below names him, first of two where two are required; Sol 6.1
-  only when he calls for him — and, until Mon 9 Nov 26 19:00, wherever a second reader fits (D1743) — otherwise the
-  fresh, blind Opus reader keeps the second seat (the agent's reading); a job that went without Astra's read, or without
-  Sol 6.1's where two are required, goes on the reads-owed list, `[NO-ASTRA-LIST]` [D1770, D1734, D1738, D1739, D1761,
-  D1743, D761].
-- The reads-owed list names each job, who did read it and which read it went without; the reads owed are put to him to
-  call or drop, never called by the agent on its own [D761, D1734, D1738, D1739, D1761, D1770].
-- Scenarios are designed by a reader other than the builder, and Opus runs them in the app [D6]. Scenario design and
-  side questions: one reader — Astra, or a fresh Opus reader when Astra cannot run [D353, D590, D601, D790, D903, D1734,
-  D1738, D1739, D1761, D1770].
+- Opus 5.5 plans and builds; what Codex plans or builds, Opus reads; the chat that wrote a piece never reads it — a fresh, blind Opus reader may read code Opus wrote [D67, D353, D590, D601, D790, D903, D1761].
+- Every job that needs a code read gets a fresh, blind Opus read of its finished code — an Opus that did not write it and has seen neither the walk's nor any other reader's report, given the same brief; every claim is written as a failing test before it is believed, and the host reproduces every finding before it counts; Fable reads nothing unless he calls for it [D590, D601, D790, D903, D1761].
+- Astra is the standing reviewer, with no end date: called without asking him each time for each job's code read, beside the fresh, blind Opus read above, and wherever a read below names him, first of two where two are required; Sol 6.1 only when he calls for him — and, until Mon 9 Nov 26 19:00, wherever a second reader fits (D1743) — otherwise the fresh, blind Opus reader keeps the second seat (the agent's reading); a job that went without Astra's read, or without Sol 6.1's where two are required, goes on the reads-owed list, `[NO-ASTRA-LIST]` [D1770, D1734, D1738, D1739, D1761, D1743, D761].
+- The reads-owed list names each job, who did read it and which read it went without; the reads owed are put to him to call or drop, never called by the agent on its own [D761, D1734, D1738, D1739, D1761, D1770].
+- Scenarios are designed by a reader other than the builder, and Opus runs them in the app [D6]. Scenario design and side questions: one reader — Astra, or a fresh Opus reader when Astra cannot run [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1770].
 - The final code reads on risky work — earned leave, permissions, the published record, saved data: two readers, blind
   to each other, Astra first, and Sol 6.1 in the second seat when he calls for him, otherwise the fresh, blind Opus
   reader (the agent's reading), the job on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761,
@@ -153,7 +141,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Finished jobs that close together merge as one pull request, checked once, each keeping its own check and evidence, and the record files are to merge without clashing (`[MERGE-ONCE-RECORDS]`, open) [D822]. His go for all three parts of its plan — the add-only record files keep both sides, a step that settles the other record files by their shape, one merge for jobs that close together — red-teamed first, then built and merged on his "merge live" [D1930, D822].
 - The backlog's priority list shows only what is open, one line an item, grouped by area; finished work leaves it for the archive, the stories staying in git, the evidence sheets and the archive [D1024].
 - The sized plan's fix nights come first and the pictures round after, each night's jobs still starting on his word — except that the round of about twelve small questions was drawn on the night of 7 Nov 26, in a chat of its own beside the night's fixes, ahead of night 3's jobs, which still run on a later night; nothing of it is built before his answers [D1717, D1747].
-- The original batch order stays the reference: work-hours, Insights, workflow UI, inputs, Tracker, caps and ops (started only on his word; its handoff stays cancelled, the SANS calendar in its place), the whole-app check [D495, D568, D569]; the earlier builds' re-test as a person uses them has the Leave War links left, with the 7 Sep phone check [D4, D147, D203, D453, D473].
+- The original batch order stays the reference: work-hours, Insights, workflow UI, inputs, Tracker, caps and ops (started only on his word; its handoff stays cancelled, the SANS calendar in its place), the whole-app check [D495, D568, D569, D570, D572, D617, D618]; the earlier builds' re-test as a person uses them has the Leave War links left, with the 7 Sep phone check [D4, D147, D203, D453, D473].
 - No guide for bringing a third app in as a tab until one comes [D73]. The SANS availability calendar's new layout is work in progress: only the chat he starts for it reviews, rebuilds or merges it, and no tidy-up deletes its branch, records, pictures, backlog items or rulings [D610].
 - Not started until he says: the Tracker's progress graph [D774]; the M365 hosting trial, which waits until he has his test account and says he is ready — no chat starts it, plans it or asks him about it, nor proposes it again until he raises it [D1682].
 - Of the code-tidiness read's separations, the Leave War's saved-data reading waits for the database step, and its link to the schedule stays whole — split only if a later feature must work heavily inside it, a new question for him then; nothing is restructured outside an approved item [D493, D486].
