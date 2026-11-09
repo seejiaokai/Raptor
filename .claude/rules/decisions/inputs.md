@@ -5,6 +5,8 @@ paths:
   - raptor-port/src/ui/input*.ts*
   - raptor-port/src/ui/Sans*.tsx
   - raptor-port/src/ui/sans*.ts*
+  - raptor-port/src/ui/Med*.tsx
+  - raptor-port/src/ui/med*.test.ts*
   - raptor-port/src/ui/DaysWindow.tsx
   - raptor-port/src/ui/HolidaysPanel.tsx
   - raptor-port/src/ui/EveryWeekday.tsx
@@ -59,16 +61,18 @@ Loads by itself with a file of the Inputs pages (the `paths:` above): the Inputs
 His words, the agent's readings (never stated here as his rule) and the history are in the full rows, `.claude/decisions-full/inputs.md`: open the row before acting on a rule's detail or asking him about it. The map: `DECISIONS.md`. A ruling that governs both an Inputs page and the schedule lives in `scheduler.md`, which loads with nearly every file this page loads with: this page points to it (the last section), never the other way round.
 
 ## What it keeps
-- This page is the rules diet's trial on the Inputs rulings, in the shape he approved for the Tracker: it keeps his standing rules, likes and what a fresh model would get wrong; a built ruling leaves for the "Built, held by tests" line only when a test holds it whole; no other area changes until he says, one at a time [D1943, D1942, D1941].
+- This page is the rules diet's trial on the Inputs rulings, in the shape he approved for the Tracker: it keeps his standing rules, likes and what a fresh model would get wrong; a built ruling leaves for the "Built, held by tests" line only when a test holds it whole; the documents check eased for this page only; no other area changes until he says, one at a time [D1943, D1942, D1941].
+- Where the detail lives: how each surface draws and edits — `raptor-port/docs/ui-contracts.md` (§The Inputs month calendar, §Days — the month, §The SANS calendar); what a change touches — `feature-impact.md`; what is stored — `data-schema.md`; the files — `file-map.md` (all in `raptor-port/docs/`).
 - Every input and every SANS commitment shows who placed it and when; on an input's card only "By Saber", and only where someone other than its own person placed it — always on a card for several people, even where the filer is one of them — with the day and time left to the input's own window and the change history; the desktop list the same, for several people too; the Medical tab's cards carry no placed line [D629, D720, D723, D724, D729, D1787, D1841, D1840, D960, D965, D1137, D1300, D968, D967, D977].
 - Wherever the app prints a date with its year the year is two digits — "15 Feb 27", "till 15 Feb 27" — the Inputs list's date column, its phone day headings, the LATE mark's note and any other place; a till date in the loaded week's own year carries no year; every date the app keeps keeps its full year [D1096, D1095].
 - An input's card stays short: a long title or remark is never cut off by what stands at its right — it wraps and the card grows downward; a shared input's people are all named, wrapping, never "+1"; the title starts at the left on a row of its own [D719, D721, D722].
 - The settings icon on these calendars reads as a gear, never like a Sun, because here the Sun means day flying [D635].
 
 ## Who files an input, and who changes it
-- A member files for other people only duties and commitments — never leave, never medical, never SANS availability (a SANS man files his own; an admin files it for one SANS man or several); a group filing is one shared input, one thing for everyone in it, the man himself, its filer and an admin changing or deleting it — but who is in it is changed only by its filer or a scheduler, each man free to take himself out; once a scheduler has moved a member's Other only a scheduler changes where it goes; its OIL answer: the scheduler's rulings [D655, D658, D763, D1388, D660, D762].
+- A member files for other people only duties and commitments — never leave, never medical, never SANS availability (a SANS man files his own; an admin files it for one SANS man or several); a group filing is one shared input, one thing for everyone in it, the man himself, its filer and an admin changing or deleting it — but who is in it is changed only by its filer or a scheduler, each man free to take himself out; where it goes, once a scheduler has moved it, is the next line's; its OIL answer: the scheduler's rulings [D655, D658, D763, D1388, D1398, D660, D762].
+- Once a scheduler has moved a member's input — any kind he can move: an Other, a commitment, an Event, a Personal, an Attach, a course, an overseas duty; never leave, medical, an upchit or SANS availability — only a scheduler changes where it goes; its times, dates, remarks, title, document, taking himself out and deleting stay the member's [D1388, D1398].
 - A person who is the only named person in an input that also holds ALL AVAIL or ALL reads it and may take himself out, but does not change it for everyone — whoever filed it, or a scheduler, does [D770].
-- ALL / ALL AVAIL is offered only for training, a meeting, an appointment, a duty and other, and for a one-day Personal input; never for an Attach (the old "Fly with", renamed) [D712, D778, D1373].
+- ALL / ALL AVAIL is offered for Training, Meeting, Appointment, Duty, Event, Other and Personal, one day at a time; never for leave, medical, an Attach (the old "Fly with", renamed), an overseas duty or a course [D712, D778, D713, D711, D1373].
 - A saved shared input's dates are changed in its own window, by whoever may change the input, for everyone in it at once [D681].
 
 ## Not built yet
@@ -92,9 +96,10 @@ His words, the agent's readings (never stated here as his rule) and the history 
 
 ### The Inputs list
 - On a desktop the list is closed by a thin line round the whole of it, in the colour of the lines between its rows, and "No document" stands inside its column, so its right end no longer looks as if the list runs on; no column changes width; the phone's cards are unchanged [D1843, D1842].
-- On a desktop "+ Input" stands at the right end of its row, as "+ Medical" does; while its window is open the list makes room from about 1340 wide, Name, Start and End narrowing first, Remarks keeping a usable width; below about 1340 no room is made and the window covers the list, standing over "+ Input" while open; from 821 to 1099 wide with no window open Type narrows to 124, so Remarks stays readable with every word whole, and from 1100 keeps its 160; the phone is unchanged [D1787, D1841, D1840].
+- On a desktop "+ Input" stands at the right end of its row, as "+ Medical" does; while its window is open the list makes room from about 1340 wide, Name, Start and End narrowing first, Remarks keeping a usable width; below about 1340 no room is made and the window covers the list; at any width the open window stands over "+ Input", as it stands over "+ Medical"; from 821 to 1099 wide with no window open Type narrows to 124, so Remarks stays readable with every word whole, and from 1100 keeps its 160; the phone is unchanged [D1787, D1841, D1840].
 - On a desktop the column headings sort from the keyboard: Tab reaches each, Enter or Space sorts as a click does, the heading the keys are on wears the app's cyan ring inside its cell; a mouse click draws no ring [D1719].
 - The design vet's five changes stand: the list's add form is one "+ Input" button (at its row's right end on a desktop); the desktop list says "By Saber" only where someone else filed it; the window's instructions go; a shared bar leads with its count and a timed bar is lighter; the settings and small words are shorter [D729, D1787, D1841, D1840].
+- The list's type filter picks a whole family — every kind of leave at once, every kind of medical — so in one view an admin sees which carry their document and which do not [D1179].
 - On the desktop list a shared input names everyone in it, never "Drifter +3", and the kind keeps its pill [D727].
 - On a desktop the list's "+ Input" and dates button are 36 tall, as on a phone and the rest of the page; nothing moves and the words stay [D1139].
 - On a phone the list's "+ Input" and dates buttons stand in the row of the calendar / list switch, the filter and the gear, at that row's button height; the desktop list is unchanged [D910].
@@ -104,14 +109,16 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - Undo and Redo name what they take back by person and kind — "Undid: Drifter's ISR brief", "Undo — Ranger's OL" — and several at once by count, "Undid: 3 inputs", never "a personal input" [D1582].
 
 ### The Inputs and SANS calendars' month
-- Three tabs across the top — Inputs, SANS, Medical — less tall, one place reaching all three, each calendar opening on its calendar; Inputs keeps its List; SANS availability is filed on the SANS calendar only, which has no list [D620, D626, D630, D576].
+- Three tabs across the top — Inputs, SANS, Medical — less tall, one place reaching all three, each calendar opening on its calendar; Inputs keeps its List; SANS availability is filed on the SANS calendar only, which has no list; the rest of the first mock-ups' drawings stand as drawn [D620, D626, D630, D576].
+- Of the ideas he asked to see drawn, all four stand: inputs as bars, as Google calendar does; a drag across dates to pick them; the fold of instructions, stating the late cut-off as set; the keyboard set — arrows, Enter, Delete, Escape — as drawn [D621, D626, D630, D628, D639, D646].
 - The two calendars' top rows are built as drawn: on a desktop one row — the tabs, then ‹ month › and Today in the same place on both, then at the right end Inputs' Calendar / List, filters and gear, or SANS' Highlight and gear; the month's name in the Inputs style on both, desktop and phone; the buttons 36 tall [D1125, D1123].
 - On the Inputs calendar's top row the filters and gear move as one group, at its right end where the row holds one line; where it wraps they start the second line at its left, together, so the gear is never alone and never under an open input window; from 1340 to 1439 wide the search box is a little narrower, so 1366 holds one line; a phone's row is unchanged [D1702, D1708].
 - The month's title wears the small cyan ▾ of Jump to a date's title; a tap opens the app's own floating calendar on its month and year wheels: the month follows the wheels, a tap outside closes it, ‹ › and Today stay as they are [D1562, D1560].
 - The row of buttons under the three tabs is drawn as tall as the tabs, not taller — on a phone 36, each button still answering a finger over 44; the month itself fills the screen as below [D698, D653, D664, D1386, D1396].
-- On a phone the inputs calendar's month arrows, name and Today stand at the left of their row, as on the SANS calendar, the calendar / list switch at the right end, in the same place on the Calendar and the List, never moving under the finger that pressed it [D705, D687].
+- On a phone and a desktop the Inputs calendar's Calendar / List switch stands in the same place on the Calendar and the List, never moving under the finger that pressed it; on a phone the month's arrows, name and Today stand at the left of the row, as on the SANS calendar, the switch at its right end [D687, D705].
 - On a phone the filter button and gear stay where they are when the filters open: the fields open on their own line under the row, and nothing on the row moves [D693].
-- On a phone the month — Inputs and SANS alike — takes the full screen to its foot, fits whatever height the phone gives and is never a short box scrolled inside the page; the inputs month draws thin bars; expanded (⤢ at the end of the "How this works" row) its weeks grow as tall as their inputs need and the page scrolls, remembered per person [D653, D664, D1386, D1396, D698].
+- On a phone the month — Inputs and SANS alike — takes the full screen to its foot, fits whatever height the phone gives and is never a short box scrolled inside the page, except while expanded (below); the inputs month draws thin bars [D653, D664, D1386, D1396, D698].
+- On a phone and a desktop ⤢ at the end of the Inputs calendar's "How this works" row shows every input of each day in the month, no "+n more", each week as tall as its inputs need, the page scrolling; remembered per person [D1386, D1396].
 - The calendar's bars take the Leave War's colour for each kind, so a leave, an OIL, a course, an overseas duty or a medical looks the same on both pages; duties and other commitments are outlined — a dark bar, a light edge, light words [D1304, D1321, D1384, D1396].
 - A drag across days held at the month's edge turns to the next month, or the last at the other edge, and the pick carries on into it, so a run of days crosses a month's end in one drag; a note or puck dragged in an opened day scrolls the day's list at its edge, and a column heading on Quals scrolls its table sideways [D897, D893].
 - Four more drags follow the edge: the SANS calendar's pick across days turns the month; the Tracker's ▣ select box pans the chart in Edit chart layout; the Tracker's ⇅ Reorder list and the people picker's drag across faces scroll their list [D900].
@@ -136,6 +143,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - On a phone the window on the Inputs page — "+ Input" or a tap on an input — stands in the middle of the screen, as the schedule's does, opening in the same place from every page [D996].
 - On a phone the days of the window's calendar are a finger's size, as the list's pencil calendar had [D725].
 - A cancelled input's window says so, read only: the small red CX tag and its reason in red, following the title, not the ✕; the input keeps its place in the day's order [D771, D849, D768].
+- With anything typed and not saved, an input window's ✕ asks the very question Escape asks, "Close it and lose them?"; Cancel still closes at once [D1622].
 - The input window's unsaved-changes question is design C, a card hanging from its ✕ — so too "Open the other input and lose them?", "Delete this input for all N people?" and "Take yourself out of this input?"; the rule itself is on the Screen design page [D1624, D1626, D1627, D1628].
 - For an Other the window asks once where it goes, Ground Programme or Unavailable, with no separate tick, a grey line under the choice saying what the Leave War does with it; the buttons are look C — the picked one solid in its colour (amber, red) with dark words, the other its words in its colour, ordinary letters, 36px [D1368, D1369, D1367].
 - "Fly with" is renamed "Attach", its window holding one short "To" box shown in its name on the schedule — "Attach · 145 Sqn"; an Attach, like a course (CSE), lands under the schedule's Unavailable list by itself and counts him out on the Leave War, its filer not asked; a course a scheduler rejects counts him back in [D1373, D1374, D1372, D1381].
@@ -146,11 +154,12 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - One person from an A-to-Z list by default; a switch for several shows the pucks in groups — Pilots, WSOs, SANS (a SANS man under SANS only), each A to Z, drawn compact — and a fourth, "Personnel", for ground crew, only where the roster holds ground crew [D656, D659].
 
 ### The SANS calendar
+- The SANS flying calendar he asked for: demand from the Leave War, three colours, each man counted once with his hours, the counts for flying only; members see the day's commitments and add their own with custom times; a commitment's remarks box shows no faded placeholder words [D569, D570, D572, D617, D618].
 - Each date shows, as pilots / WSOs, how many more are still needed to fly — the Leave War's PAX required, less those it shows available, less the SANS committed to fly — and how many SANS have committed to F, O and A; the requirement and shortage colours are for flying only [D617, D581, D570].
 - The days are coloured in three steps — yellow, amber, red — set by an admin from the gear, one setting for the squadron; the date cell keeps the first mock-ups' soft wash, the still-needed pair in its colour, in lined-up columns, pilots left, WSOs right [D618, D630, D626].
 - The day's requirement is two figures, pilots and WSOs, so a squadron of partly single-seat aircraft sets them apart; one number typed can fill both [D622].
 - A picker at the top chooses one SANS person, and every day he has committed to wears a cyan ring, the letters he offered underlined, with no second chooser for F, O or A [D619, D626, D630].
-- A day opened on it lists everyone and scrolls, no "+ more"; on a phone it opens tall, its top bar bringing it down to two-thirds and back; each man is the schedule's own puck, its CAT chip attached, the puck smaller, in proportion with the words beside it [D648, D707, D647, D649, D650].
+- A day opened on it lists everyone and scrolls, no "+ more"; on a phone it opens tall, its top bar bringing it down to two-thirds and back; each man is the schedule's own puck, never a name and a badge — the CAT chip attached at its end, every puck one size, smaller, in proportion with the words beside it; a SANS man's purple edge on its right exactly as on the schedule, chip and edge inside the puck's thin frame, nothing spilling out [D648, D707, D647, D649, D651, D650].
 - Each line of the SANS day is laid out as drawing B: who placed it beside a short remark and under a long one, at the line's right end, the small print shortened to name, date and time — "Grit · 12 Jul, 14:42" — with a little less padding [D701].
 - On a phone its "How this works" and colour key share one line, as the inputs calendar's do, the key's words shortened; "One commitment a day each." is gone from it, its last line the late cut-off alone, in bold [D697, D704].
 
@@ -164,11 +173,11 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - The holiday form picks its dates on the Leave War Event sheet's one-calendar picker — a tap for the start, a tap for the end; its "Add a day" form carries the short form "On grid" beside the name [D671, D652].
 
 ### The late cut-off
-- It is set as a number of days or as a weekday of a number of weeks before, behind each calendar's own gear (the SANS calendar and the Inputs calendar each their own), the Logic page listing both; it is the end of its day; the desktop inputs month is compact, no roomy / compact switch; "How this works" states it as set, nothing more [D628, D639, D646, D632].
-- "How this works" states the cut-off as set — in bold — and nothing more: no worked example, no "later than that is marked late" [D646, D691, D628, D639].
+- It is set as a number of days or as a weekday of a number of weeks before, behind each calendar's own gear (the SANS calendar and the Inputs calendar each their own), the Logic page listing both; it is the end of its day; the desktop inputs month is compact, no roomy / compact switch [D628, D639, D646, D632].
+- The cut-off line in "How this works" states the cut-off as set, in bold, changing when the setting changes — no worked example, no "later than that is marked late" [D646, D691, D628, D639].
 
 ### The Medical tab
-- Built as drawn: no "Medical" heading, the "as of" button in the row under the tabs at 36; a card is its puck, then the kind and period on one row ("ATT C 13–17 Jul"); pending upchit drops "was down"; the period a range (Upchit Complete its one day), no placed line; nothing else on the tab changes [D965, D961, D927, D960, D967, D977, D968, D1137, D1300].
+- Built as drawn: no "Medical" heading, the "as of" button in the row under the tabs at 36; a card is its puck, then the kind and period on one row ("ATT C 13–17 Jul"); pending upchit drops "was down"; Upchit Complete shows its date and documents only, no kind, no "upchitted"; no placed line; nothing else on the tab changes [D965, D961, D927, D960, D967, D977, D968, D1137, D1300].
 - "+ Medical", a filled cyan button, opens the same window as the Inputs tab with a medical kind set, the Inputs tab keeping its own door; on a phone it stands first at the left of its row; on a desktop at the right, its window clear of the cards, the new card wearing the plain just-added ring a few seconds [D963, D1137, D1300].
 - The frame round the tab goes, its three sections keeping their boxes; the Inputs list's dates button wears the app's line calendar, not the 📅 emoji; on a desktop "+ Medical" stands at the right [D1137, D1300].
 - Every card is one even width in all three sections — a third of the row on a phone, one fixed width on a desktop, words wrapping inside; two or more documents show one page drawing and the number, one document none [D977, D967].
@@ -178,13 +187,11 @@ His words, the agent's readings (never stated here as his rule) and the history 
 ## Done once — kept until he archives them
 - The inputs / SANS design was accepted as shown, its build started in the next chat; the handoff explained his intent for a fresh challenge; the design was shown on desktop and phone, vetted, the header simplified with the design skill [D657, D584, D583, D582].
 - A calendar view for Member Inputs beside the SANS calendar was designed, the entry flow recommended before building [D574].
-- Ideas shown in the mock-ups: bars as Google calendar does, a drag across dates, a fold of instructions, keyboard use; bars and the drag were chosen [D621, D626, D630, D628, D639, D646].
-- A SANS flying calendar: demand from the Leave War, three colours, each person counted once with his hours; members see day commitments and add their own with custom times; remarks have no placeholder; the counts for flying only [D569, D570, D617, D618, D572].
 - In the calendar job's bug check each approved mock-up was set beside a picture of the built screen at the same size [D624].
 - "Attach" was built with its batch, one full check with the "Other" work [D1376].
 
 ## Built, held by tests
-- Built, held by tests (each named by a test that holds it whole; the detail is in the app and its full row): D572, D649, D651, D675, D685, D707, D732, D768, D773, D879, D968, D999, D1022, D1023, D1179, D1581, D1622.
+- Built, held by tests (each named by a test that holds it whole; the detail is in the app and its full row): D572, D675, D685, D732, D768, D773, D879, D999, D1022, D1023, D1581.
 
 ## From other areas (each stated on its own area's file)
 - The Leave War's Other, which goes to the Ground Programme or to Unavailable: D1356.
