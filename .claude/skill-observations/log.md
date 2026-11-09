@@ -2349,3 +2349,18 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** the load link looked accidental (two guides pulling a whole area's rulings into unrelated jobs), but a line-by-line check of the scheduler page found rulings that govern the Leave War's own screens (its Event sheet, its panel for picked days, its bidding dates' calendar) stated only there; cutting the link alone would have silently hidden them from the very jobs that change those screens. A second trap: widening an existing pointer line made the document check re-test that line's old citations and its length limit, so the addition went on new lines instead.
 **Suggested improvement:** a short procedure for any change that narrows when a context file loads: (1) list the jobs that lose it (by the measure's model jobs and by every other file's load paths); (2) grep the file for every line naming those jobs' areas or claiming to hold "everywhere / every screen"; (3) check each cited ruling against what the losing jobs still load; (4) add pointers on the losing side for what is stated nowhere else, as new lines; (5) measure again.
 **Principle:** a load path that looks accidental may be the only route a rule has to the job that needs it; check what travels on it before cutting it.
+
+### Observation 915: A helper's write of its own report file was refused; the brief must say to return it as text
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** Chat 49, the overnight skill-notes review: helper A sorted 43 notes and tried to save its report as `_review/report-A-walks.md`.
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2, "A helper's report … is saved into the repo"
+
+**Issue:** The tool refused the helper's write of the report file ("Subagents should return findings as text"); the helper's other writes (drafts, a table) went through. The coordinator saved the report from the hand-back by hand, and later briefs told helpers to return the report as their final reply. A transcript file later held no copy of one reader's report, so the hand-back in the chat was the only copy.
+
+**Suggested improvement:** Overnight Part 2 and every helper brief: "return your report as your final reply; the coordinator saves it" — never "write your report to <file>". The coordinator saves it the moment it arrives, before anything else.
+
+**Principle:** A helper's report reaches the host as its final reply; a brief that asks for a report file may be refused, and the reply is then the only copy, so save it at once.
