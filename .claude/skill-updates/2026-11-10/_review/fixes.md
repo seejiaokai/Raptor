@@ -1,4 +1,4 @@
-# What was done with each reader's finding — the fixer's report (chat 49, 11 Nov 26), saved by the coordinator
+# What was done with each reader's finding — the fixer's report (chat 49, 10 Nov 26), saved by the coordinator
 
 The fixer worked on `_review/fix-brief.md` (the coordinator's settled decision for each finding of `read-astra.md` (A1–A9)
 and `read-opus.md` (O1–O12)). Every anchor was found once; every file stays LF; no live file, `HANDOFF.md` or log touched.
