@@ -1,11 +1,8 @@
 ---
 paths:
   - raptor-port/src/**/*Oil*
-  - raptor-port/src/**/*Oil*
   - raptor-port/src/leavewar/**
   - raptor-port/src/**/*Avail*
-  - raptor-port/src/**/*Avail*
-  - raptor-port/src/**/*Publish*
   - raptor-port/src/**/*Publish*
   - raptor-port/e2e/*leavewar*
   - raptor-port/src/ui/board-html.ts
@@ -29,213 +26,66 @@ paths:
 
 <!-- shape: page -->
 
-Loads by itself whenever a chat reads an OIL, Leave War, placeholder-puck or publishing file (the `paths:` above). Each
-line is a rule as it stands today; the numbers after it are the rulings that set it. His words, the readings he was told,
-each ruling's date and the history are in the full rows, `.claude/decisions-full/oil.md` — open the row before acting on
-a rule's detail or asking him about it (`grep -h '^| D142 |' .claude/decisions-full/*.md`, the shell; the Grep tool hides
-a long row).
-
-The main rulings of other areas that bear on OIL are pointed to at the end, each stated on its own area's file. The general rulings
-are in `.claude/rules/decisions/how-we-work.md`, loaded in every chat; the map of every ruling, and how to record or
-retire one: `DECISIONS.md`.
+Loads with any OIL, Leave War, placeholder-puck or publishing file (the `paths:` above). Each line is a rule as it stands, its rulings after it; his words, the agent's readings told to him, dates and history are in the full rows, `.claude/decisions-full/oil.md` — open the row before acting on a rule's detail or asking him about it. Other areas' rulings are pointed to at the end, each stated on its own page; the map: `DECISIONS.md`.
 
 ## What OIL is
-- OIL is earned leave — time off banked, never pay or money; say it that way, in every report and on every screen [D25].
-- OIL is owed all the same: the bug-check order's money question — what a man is owed or paid — fires on any change
-  that touches it [D25].
+- OIL is earned leave — time off banked, never pay or money; say so in every report and on every screen. It is owed all the same: the bug-check order's money question (what a man is owed or paid) fires on any change touching it [D25].
 
 ## What earns, and from what
-- Only the issued (published) schedule earns OIL, in both directions: a holiday declared after publication waits for a
-  republication and the day says so; revoking one no longer removes OIL silently [D2].
-- A day's OIL comes from its latest published version — the latest amendment, or the EOD if that is the latest — however
-  long ago the day was; no lock, no clock [D142]. An issued day keeps the OIL it went out with when a rule changes under
-  it [D48]; a published day keeps its OIL until it is published again — a later time or Logic change reads as pending
-  [D592].
-- The published record is what happened, with no test of whether the day was really worked: a later amendment or EOD
-  that takes a man off a past day takes that day's OIL from him — to keep it, he is not taken off — and a published EOD
-  is the final word on the day [D142].
-- An issued day is held to the rule it went out under: its credit stays until someone corrects the times and publishes
-  again, the correction an ordinary amendment; the rule that clears wrong demo data still holds for stored data that is
-  merely wrong, but never covers OIL on a published record silently changing amount [D48].
-- One principle instead of an allow-list: every seat can earn, its default decides whether it does, and the admin can
-  always override in OIL Earn; the placeholder pucks take the seat's default wherever they land, as a named man does —
-  except on a row that came from an input, where they follow its one OIL answer; the one boundary is a seat with nothing to measure, which offers no OIL
-  switch and says why instead [D28, D31, D43, D755].
-- A seat has nothing to measure when it has no times, a zero length, is cancelled or is an ⓘ row: no switch, and a
-  short line gives the reason — never a silent absence; a flying line whose written take-off and landing are the same
-  is not such a seat, and earns (below) [D31, D49].
-- On by default: flying lines, SC MAIN, Common Programme, Standard and SC-shift duty desks, ground rows, sims, sim
-  passengers, the extra-people line, and a standby line that actually flies (below) [D15, D24, D43, D755, D1042]. An ⓘ
-  row and a BB duty desk do not earn by default [D15, D24].
-- Off by default but offering the OIL switch in the mode: SC SPARE, AVALON flying lines and duty desks, BB flying lines,
-  and a duty block minted from an AVALON template — the same seat, one answer; an activated one can be credited, on a
-  published day through an ordinary amendment, and a standby line that actually flies earns by default (below)
-  [D24, D35, D1042].
-- A standby line that actually flies counts as a real flight and earns OIL by default; when it counts as flying — its B or
-  R typed, or its row ticked "Flies" — is stated on the scheduler's file [D24, D1042, D1043, D1044].
-- The placeholder pucks (ALL / ALL AVAIL) behave exactly like named people: on by default wherever a named man is, off
-  on the off-by-default seats above until the line actually flies, and wherever one is allowed to land it also offers the OIL switch —
-  one list, not two; landing and earning are one decision [D32, D43, D24, D755, D1042]. On a row that came from an input, a placeholder is one of the input's people and follows its one OIL
-  answer [D43, D755].
-- A man the scheduler puts in the name box of another man's request row replaces him in the input, or joins it beside
-  him, and follows the input's OIL answer; either can be tapped off in OIL Earn; a request that never asks the OIL
-  question (Personal) earns nobody anything, whoever is on its row [D470, D755].
-- Three behaviours are correct as built and not in conflict: a ground crewman named on a weekend duty earns; a
-  placeholder on it earns for the men it stands for unless switched off; ALL / ALL AVAIL never include ground crew [D52].
-- An OIL award and a worked day add up [D82]. OIL may be credited by hand on any day: the weekend and holiday limit
-  belongs to the automatic pass, which reads the published schedule [D79].
+- Only the issued (published) schedule earns OIL, both ways: a holiday declared after publication waits for a republication and the day says so; revoking one no longer removes OIL silently [D2].
+- A day's OIL comes from its latest published version — the latest amendment, or the EOD if later — however old the day; no lock, no clock. The published record is what happened, with no test of whether the day was worked: a later amendment or EOD taking a man off a past day takes that day's OIL from him (to keep it, leave him on); a published EOD is the day's final word [D142].
+- An issued day is held to the rule it went out under and keeps the OIL it went out with when a rule changes under it: the credit stays until someone corrects the times and publishes again, an ordinary amendment; clearing wrong demo data covers stored data merely wrong, never OIL on a published record silently changing amount [D48]; a later time or Logic change reads as pending until the day is published again [D592].
+- One principle, no allow-list: every seat can earn, its default decides whether it does, the admin can always override in OIL Earn, and a placeholder takes the seat's default as a named man does; the one boundary is a seat with nothing to measure — no times, zero length, cancelled, or an ⓘ row — no switch, a short line saying why, never a silent absence; a flying line with the same written take-off and landing is not such a seat, and earns (below) [D28, D31, D43, D755, D49].
+- On by default: flying lines, SC MAIN, Common Programme, Standard and SC-shift duty desks, ground rows, sims, sim passengers, the extra-people line, a standby line that actually flies [D15, D24, D43, D755, D1042]; an ⓘ row and a BB duty desk do not earn by default [D15, D24].
+- Off by default, the switch offered in the mode: SC SPARE, AVALON flying lines and duty desks, BB flying lines, a duty block minted from an AVALON template — the same seat, one answer; an activated one can be credited, on a published day through an ordinary amendment [D24, D35, D1042].
+- A standby line that actually flies is a real flight and earns by default; the scheduler's file says when it flies — B or R typed, or a row ticked "Flies" by hand, lighting that row only — and that with B or R typed every row, SPARE rows included, flies, for OIL as for the rest, the day ending at END with no debrief, a row not coming in cancelled by its own CX [D24, D1042, D1043, D1044, D1045, D1046, D1061].
+- The placeholder pucks (ALL / ALL AVAIL) behave exactly like named people: on by default wherever a named man is, off on the off-by-default seats until the line actually flies, and wherever one may land it also offers the switch — one list, not two: landing and earning are one decision; on a row from an input a placeholder is one of its people and follows its one OIL answer [D32, D43, D24, D755, D1042].
+- A man the scheduler puts in the name box of another man's request row replaces him in the input or joins him, and follows its OIL answer; either can be tapped off in OIL Earn; a request that never asks (Personal) earns nobody anything, whoever is on its row [D470, D755].
+- Correct as built, no conflict: a ground crewman named on a weekend duty earns; a placeholder on it earns for the men it stands for unless switched off; ALL / ALL AVAIL never include ground crew [D52].
+- An award and a worked day add up [D82]. OIL may be credited by hand on any day; the weekend and holiday limit belongs to the automatic pass, which reads the published schedule [D79].
 
 ## What does not earn
-- An "Off day" does not earn OIL — settled, do not reopen: it is time given to a man, not a holiday he was called in
-  on, and only a PH turns a day into one that can earn; the Leave War's own Off day stays inert for OIL, and leave charging is
-  untouched [D21].
-- Leave and medical inputs never earn OIL and are never asked the OIL question; nor are a Personal input, a SANS
-  availability or an upchit asked it [D804].
-- A cancelled input is never asked the OIL question — not at a save, a put-back or a filing — wears no "OIL?" tag and
-  stands in neither the one list nor the bell, because it can earn nothing; an information-only input the same [D814].
-- An ALL AVAIL / ALL row with a start and no end counts over the one-hour default, earns nobody OIL, and tells the admin
-  "no OIL worked out — this row has no end time" — stated on the scheduler's file [D360].
-- A worked weekend that earns nobody any OIL says so, on the day and at publish, with its reason [D81].
+- An "Off day" does not earn — settled, do not reopen: time given to a man, not a holiday he was called in on; only a PH turns a day into one that can earn; the Leave War's own Off day stays inert for OIL, and leave charging is untouched [D21].
+- Leave and medical inputs never earn and are never asked the OIL question; nor are a Personal input, a SANS availability or an upchit [D804].
+- A cancelled input is never asked — not at a save, a put-back or a filing — wears no "OIL?" tag and stands in neither the one list nor the bell, since it can earn nothing; an information-only input the same [D814].
+- A worked weekend that earns nobody any OIL says so, on the day and at publish, with its reason [D81]; an ALL AVAIL / ALL row with a start and no end counts over the one-hour default and earns nobody, the admin told "no OIL worked out — this row has no end time" (the scheduler's file) [D360].
 
 ## How long a day counts
-- A flying line's OIL is worked out from its earliest applicable entered in-time / rally for the formation — the nominal
-  report time only where none is entered — and, as built and put to him as readings, where the time cannot be read as a
-  clock or a rally after in-time has no in-time [D591, D592]; an evening-before report lengthens that line's own day only; the
-  day counts first event to last end, breaks included [D592].
-- As built, and put to him as readings: on a published day a Logic change reads pending only where anyone's OIL record
-  for it — his amount or the worked times stored beside it — would be written differently, and one that rewrites nothing
-  reads nothing; on a day not yet published, or with an amendment waiting, the four sign-offs fall when a Logic change
-  made after they signed would alter the day's OIL, standing again when the value is put back [D592].
-- An SC shift's typed B (its in-time), where filled, counts as work: the shift's OIL and its work hours run from it to
-  the shift's end; a blank B leaves the shift its written start to end [D606]. A rally typed on an SC MAIN line starts
-  that crew's day as the B does — stated on the scheduler's file [D1041].
-- As built, and put to him as the agent's readings: the earlier of the B and the written start counts — a B typed later
-  shortens nothing — and a B on the evening before lengthens the shift's own day only; a SPARE that only stands by
-  reports nowhere, so his B does nothing, and switched on in OIL Earn he earns the shift's written hours [D606].
-- On a standby line with its B or R typed every row, SPARE rows included, is a jet that flies, for OIL as for the rest;
-  the line's day ends at its END, with no debrief added; a row that does not come in is cancelled with its own CX —
-  stated on the scheduler's file [D1044, D1045, D1046].
-- A flying line whose written take-off and landing are the same still earns, and the day says the times look wrong so
-  someone fixes them — a warning, not a refusal [D49]. An overnight line earns on the day it sits on, and the hours
-  spilling past midnight earn the next day nothing [D42].
+- A flying line's OIL runs from the earliest applicable entered in-time / rally for the formation, the nominal report time where none is entered; an evening-before report lengthens that line's own day only; the day counts first event to last end, breaks included [D591, D592].
+- An SC shift's typed B (its in-time), where filled, counts as work: its OIL and work hours run from it to the shift's end; a blank B leaves the written start to end [D606]; a rally typed on an SC MAIN line starts that crew's day as the B does (the scheduler's file) [D1041].
+- A flying line with the same written take-off and landing still earns, the day saying the times look wrong so someone fixes them — a warning, not a refusal [D49]. An overnight line earns on the day it sits on; the hours past midnight earn the next day nothing [D42].
 
 ## The OIL question (inputs on non-working days)
-- Every input kind that can earn — Training, Course, Meeting, Fly with, Appointment, Duty, Event, Overseas duty and
-  Other — is asked the OIL question and its answer decides, wherever it is filed, under Unavailable included [D804].
-  "→ Unavail", "Accept", a put-back after the day became a holiday, and a swap, an add or a move from one input's row
-  to another's that raises the question all put the question first — nothing moves, and nothing is put back, until it
-  is answered [D783, D793, D804, D831].
-- A swap waits: the question's buttons are "Don't swap" and "Swap", Swap greyed until Yes or No is picked [D783]. Not
-  answered, both pucks of the swap flash and a bar stays until tapped — "Not swapped — OIL not answered · Answer OIL ·
-  OK" — always one line, in the band under the top bar; "Answer OIL" opens the question again, "OK" only closes the
-  bar [D783, D831, D840].
-- Every door that waits keeps that bar, naming what was not done ("Not added", "Not filed", "Not un-cancelled"), and
-  nobody else is told of a swap or an add not made. Answered, the answer and the change are one step and one Undo; an
-  Undo never asks the question, the input's "OIL?" tag, the list and the bell going on saying it needs an answer
-  [D783, D793, D804, D816, D831].
-- Taking the cancel, or the information-only ⓘ mark, off an input that has no OIL answer for a non-working day puts the
-  question first, as "Accept" does — nothing is un-cancelled until it is answered; already answered, or nothing to ask,
-  it comes off at once and the answer counts again [D816]. With the bar up, "Answer OIL" un-cancels at once where
-  nothing is left to ask [D865].
-- A day made a holiday afterwards: the admin declaring it is told at once, and what he answers there notifies nobody;
-  only what is left unanswered goes to the schedulers and to whoever answers for each input [D781, D783]. The one list
-  opens by itself when a holiday is saved, and the schedulers' bell carries one line a holiday, counting what is left
-  [D783, D831].
-- The admin answers a day's open OIL questions from one list — every input of that day that needs an answer, each with
-  its yes and no, and a "Yes to all" and a "No to all" [D782]; the list a load opens shows the day's whole open list
-  [D865].
-- In that list an input of several people is one line with its one answer, a yes offering a full or a half day (FO or
-  HO) as the single question does, and each answer stays the input's own, stamped with who gave it; "Later" leaves what
-  is left for the bells; the bell's line, and the Leave War's Event row that makes a holiday, open the same list
-  [D782, D783, D831].
-- Saved as a holiday, the list opens under "<its name> is now a public holiday."; each yes reads "Yes · FO" or "Yes · HO",
-  a chosen No in quiet grey; it ends in "Later" and "Save", and no "OIL?" tag shows inside it; the pictures,
-  `raptor-port/docs/mock/oil-notify.html`, are its design of record [D782, D783, D831].
-- A published version loaded back onto the working copy is not held: its note, in short plain sentences, says what the
-  day is back to, what viewers still see, what else came back or stayed out, and how many inputs need an OIL answer —
-  never the edits thrown away, which the confirming button has just said [D818, D863]; and the OIL list opens for the
-  day that needs the answer — another day of an input of several days included, which the note counts; what is
-  answered there notifies nobody [D818, D862].
-- "Switch to this plan" that brings back an unanswered input gets the load's short note and list [D865].
-- The "Only some days…" calendar is the app's one date calendar in its look: a tap turns each separate day on or off,
-  only the input's non-working days tappable, and which days earn OIL is decided as before — a way of its own for this
-  one place, every other calendar still picking one date or one run [D923]; on a phone up to 400 wide it has no box of
-  its own, and its count line reads "No days selected — tap a day to credit it" [D978].
-- A weekend or holiday that no Leave War period covers names the reason — that year's period does not exist — and
-  offers to create it, never a bare refusal and never silently: the offer hands the scheduler to the Leave War to set
-  the period's window [D19]; an input filed for such a weekend asks and saves its OIL answer as on any other day and
-  never offers to create a period — stated on the Inputs file [D1578].
+- Every kind that can earn — Training, Course, Meeting, Fly with, Appointment, Duty, Event, Overseas duty and Other — is asked the OIL question and its answer decides, wherever filed, under Unavailable included [D804]. "→ Unavail", "Accept", a put-back after the day became a holiday, and a swap, add or move from one input's row to another's that raises it put the question first — nothing moves or is put back until answered [D783, D793, D804, D831].
+- A swap waits: its buttons "Don't swap" and "Swap", Swap greyed until Yes or No is picked; unanswered, both pucks flash and a bar stays until tapped — "Not swapped — OIL not answered · Answer OIL · OK", one line in the band under the top bar; "Answer OIL" reopens the question, "OK" only closes the bar. Every waiting door keeps that bar, naming what was not done ("Not added", "Not filed", "Not un-cancelled"); nobody else is told of a swap or add not made [D783, D831, D840].
+- Answered, the answer and the change are one step and one Undo; an Undo never asks the question — the input's "OIL?" tag, the list and the bell go on saying it needs an answer [D783, D793, D804, D816, D831].
+- Taking the cancel, or the information-only ⓘ mark, off an input with no OIL answer for a non-working day puts the question first, as "Accept" does — nothing is un-cancelled until it is answered; already answered, or nothing to ask, it comes off at once and the answer counts again [D816]; with the bar up, "Answer OIL" un-cancels at once where nothing is left to ask [D865].
+- A day made a holiday afterwards: the admin declaring it is told at once, what he answers there notifies nobody, and only what is left goes to the schedulers and to whoever answers for each input; the one list opens by itself when the holiday is saved, and the schedulers' bell carries one line a holiday, counting what is left [D781, D783, D831].
+- The admin answers a day's open questions from one list — every input of that day needing an answer, each with its yes and no, and "Yes to all" and "No to all" [D782]; a load opens the day's whole open list [D865]. A several-people input is one line with its one answer, a yes offering a full or half day (FO or HO) as the single question does, each answer the input's own, stamped with who gave it; "Later" leaves the rest for the bells; the bell's line and the Leave War's Event row that makes a holiday open the same list [D782, D783, D831].
+- Saved as a holiday, the list opens under "<its name> is now a public holiday."; each yes reads "Yes · FO" or "Yes · HO", a chosen No in quiet grey; it ends in "Later" and "Save", and no "OIL?" tag shows inside it; its design of record is the pictures, `raptor-port/docs/mock/oil-notify.html` [D782, D783, D831].
+- A published version loaded back onto the working copy is not held: its note, short plain sentences, says what the day is back to, what viewers still see, what else came back or stayed out, and how many inputs need an OIL answer — never the edits thrown away, which the confirming button just said [D818, D863]; the OIL list opens for the day needing the answer — another day of a several-day input included, counted in the note; what is answered there notifies nobody [D818, D862]; "Switch to this plan" bringing back an unanswered input gets the same note and list [D865].
+- The "Only some days…" calendar is the app's one date calendar in its look, a tap turning each separate day on or off, only the input's non-working days tappable, which days earn decided as before — a way of its own for this one place, every other calendar still picking one date or one run [D923]; on a phone up to 400 wide it has no box of its own and its count line reads "No days selected — tap a day to credit it" [D978].
+- A weekend or holiday no Leave War period covers names the reason — that year's period does not exist — and offers to create it, never a bare refusal, and the period is never made silently — the offer hands the scheduler to the Leave War to set its window [D19]; an input filed for such a weekend asks and saves its OIL answer as on any other day and never offers to create a period (the Inputs file) [D1578].
 
 ## Earned and awarded
-- "Earned" counts only what the app credited itself — the published schedule or an input's yes to the OIL question; every OIL an
-  admin gives by hand, typed on the war grid or credited from the OIL Tracker, is shown apart as "awarded"; the balance
-  itself does not change, only how its parts are named [D400, D804].
-- Every OIL award given by hand shows on the Leave War grid on its date, wherever it was given, as an FO or HO box; a
-  tap says who gave it and why; a credit dated in no Leave War period shows on no cell, and a correction (a negative
-  entry) is never drawn [D402]. A member opens his own OIL award, read
-  only, at every stage — one tap shows its reason, who gave it and how many days, whether or not bidding is open [D261].
-- Every member may see every man's OIL tracker entries, figures and grants, with their reasons, as the app shows today;
-  the database's access table says so [D1008]. A member cannot type his own OIL figure in his person window; a tap on OIL
-  opens the OIL tracker — stated on the Leave War's file [D1209].
-- An OIL award does not flag a leave day — it says he is owed a day, not where he was; whether an award counts him on
-  duty for manning is not ruled, so ask him before changing it [D80].
-- A dragged block's delete removes everything in it, OIL awards included — its confirm names each award first, and one
-  Undo brings them back; the bid sheet's Clear does the same, naming an award and asking once; a move or a drag leaves
-  awards where they are [D260].
-- At the database step earned OIL is stored in a table of its own, one row a person and a date, not tied to a Leave War
-  period; the Leave War, the OIL tracker and every other screen read it from there; until then the Inputs file's D1578
-  stands [D1579].
+- "Earned" counts only what the app credited itself — the published schedule or an input's yes to the OIL question; OIL an admin gives by hand, typed on the war grid or credited from the OIL Tracker, shows apart as "awarded"; the balance does not change, only how its parts are named [D400, D804].
+- Every award given by hand shows on the Leave War grid on its date, wherever given, as an FO or HO box; a tap says who gave it and why; a credit dated in no Leave War period shows on no cell; a correction (a negative entry) is never drawn [D402]. A member opens his own award, read only, at every stage — one tap shows its reason, who gave it and how many days, bidding open or not [D261].
+- Every member may see every man's OIL tracker entries, figures and grants, with their reasons, as the app shows today; the database's access table says so [D1008]. A member cannot type his own OIL figure in his person window — a tap on OIL opens the tracker (the Leave War's file) [D1209].
+- An award does not flag a leave day — it says he is owed a day, not where he was; whether it counts him on duty for manning is not ruled: ask him before changing it [D80].
+- A dragged block's delete removes everything in it, awards included — its confirm names each award first, one Undo brings them back; the bid sheet's Clear does the same, naming an award and asking once; a move or a drag leaves awards where they are [D260].
+- At the database step earned OIL is a table of its own, one row a person and a date, not tied to a Leave War period, which the Leave War, the OIL tracker and every other screen read; until then the Inputs file's D1578 stands [D1579].
 
 ## How it shows, and OIL Earn
-- The green OIL bar shows only on the events that counted towards a man's day, not on every puck he wears; the ALL AVAIL
-  count chip agrees with it [D1].
-- In OIL Earn a tap on a man's puck that cannot earn on its row picks nothing and says why in the app's plain passing
-  note — "Nothing changed for <callsign>." and then the reason, such as "No OIL worked out — this row has no end time."
-  — not in the grey "Blocked:" note [D1783].
-- Every reason that tap gives takes that shape: "nothing measurable to earn from here" becomes "This row gives him no
-  working hours to count OIL from."; the tap targets stay as they are [D1783, D26].
-- The OIL batch's new words stand as built: when an amendment is withdrawn, the Unpublish warning, its done note and the
-  armed button's title; and the same-time line's "earns nobody any OIL" sentence [D1094].
-- The OIL question's words when an input's ⓘ (information only) mark comes off stay as built [D865].
+- The green OIL bar shows only on the events that counted towards a man's day, not on every puck he wears; the ALL AVAIL count chip agrees with it [D1].
+- In OIL Earn a tap on a puck that cannot earn on its row picks nothing and says why in the app's plain passing note — "Nothing changed for <callsign>." then the reason — not the grey "Blocked:" note; every such reason takes that shape ("This row gives him no working hours to count OIL from."); the tap targets stay [D1783, D26].
+- Words that stand as built: the OIL batch's — the Unpublish warning, its done note and the armed button's title when an amendment is withdrawn, and the same-time line's "earns nobody any OIL" [D1094]; the OIL question's when an input's ⓘ (information only) mark comes off [D865].
 
-## Settled — leave as they are
-- The OIL mode's phone tap targets: he settles OIL on his phone easily — do not re-open them or re-file them as a
-  defect; nothing to build; a real user's complaint of mis-taps would be new evidence and a new question [D26].
-- Stored awards in the old shape: demo data, wiped before the database, so only the demo seed is rewritten in the new
-  one kind of award — and a record in the old shape must still not break a load [D401, D54, D56].
-- The demo data's award dates, and a demo man still flying after his posting out, are left as they are — demo data only, wiped before the
-  database; the two items that raised them are closed [D163, D54, D56].
-- The OIL Earn mode went live (22 Sep 26, on a one-off permission since spent and archived) with his five-minute look
-  waived: its evidence is the walk, `raptor-port/docs/handpass/2026-09-22-oil-walk.md`, and the gates — the defects the
-  walk found are fixed red-first, do not re-do them — never an owner sighting, so never assume he saw the walked Saturday.
-- The OIL Earn mode's design of record, with the rulings not to relitigate (its §8 and §9):
-  `raptor-port/docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`; the finished item is in
-  `OUTSTANDING-ARCHIVE.md`, under `[OIL-AUTO-REMOVE]`.
+## Settled
+- The OIL mode's phone tap targets stay: he settles OIL on his phone easily — not re-opened, not re-filed, nothing to build; a real user's mis-tap complaint would be new evidence, a new question [D26].
+- No stored award is converted: demo data, wiped before the database — only the demo seed is rewritten in the new one kind of award, and an old-shape record must still not break a load [D401, D54, D56]. The demo award dates and a demo man still flying after his posting out stay — demo data; the two items that raised them are closed [D163, D54, D56].
+- The OIL Earn mode (`[OIL-AUTO-REMOVE]` in `OUTSTANDING-ARCHIVE.md`) went live 22 Sep 26 on a spent one-off permission, his five-minute look waived: its evidence is the walk `raptor-port/docs/handpass/2026-09-22-oil-walk.md` (defects fixed red-first, not to re-do) and the gates, never his sighting — never assume he saw the walked Saturday; its design of record, §8–§9 not to relitigate: `raptor-port/docs/superpowers/specs/2026-09-21-oil-auto-remove-decisions.md`.
 
-## From other areas (each stated on its own area's file)
-- The scheduler's, an input with several people: one OIL answer for everyone in it, given by whoever filed it or an
-  admin — no man in it gives his own, and the filer picks nobody out; only the scheduler leaves one person out, in OIL
-  Earn on the day; a person added follows that answer — the scheduler asked on the spot only where there is none yet, and where it is No
-  the note says they are not counted [D762, D755]. Whoever files an input for other people answers its OIL question for all of them at the save [D660].
-- The scheduler's: when the filer answers a shared input's OIL question again, the answer is written for everyone in
-  it; the latest answer counts, and the scheduler's refusal still wins [D682].
-- The scheduler's: a shared input's OIL line states its one answer — its people can no longer differ, so nothing is
-  counted [D762]; an answer for a day the input no longer covers stays on the record, credited for nothing and shown nowhere, and stands again if the input moves back [D731].
-- The scheduler's: where ALL AVAIL / ALL is one of a shared input's own people, the men behind it follow the input's
-  OIL answer, and the scheduler may still switch any one man [D753]; whoever stands on a row that came from an input is
-  in the input, however they got there [D755].
-- The scheduler's, OIL Earn on the board: his own puck shows the green OIL ring, not the purple one [D272], and his puck that earns nothing keeps its purple
-  "this is you" ring, faded with it [D277]; a tap on a
-  man in the ALL AVAIL window only switches his earning and selects nothing [D65]; the day button is the app's own
-  slider switch, "No OIL earned", its refusal keeping his words [D1782].
-- The scheduler's, the placeholders: where the ALL / ALL AVAIL pucks may land and where they are refused [D27, D33,
-  D47]; who counts as available, and the window that lists them [D36, D37, D38, D39, D40, D41, D51]; the crowd frozen
-  at publication, and the pending mark [D44, D45].
-- The design file's: on a phone the board's day bar shows the desktop's marks before Templates and OIL Earn, on one
-  row [D1793].
-- The Leave War's: a bid that shares its day with an OIL award moves alone; the award stays where it is [D265, D260].
-  People and accounts: an archived man stays in the ALL AVAIL crowd on the earlier days he was in the squadron — a gap between an archive and
-  a restore reads him out [D327].
-- How we work: an issued weekend carrying a placeholder on a duty desk, sim seat or extras line raises the pending mark
-  once `[OIL-SEATS-CAN-EARN]` ships — leave it, he republishes it once [D54]; a problem living only in data already
-  stored is not a finding [D56].
+## From other areas
+- The scheduler's, on OIL (shared inputs, ALL AVAIL, OIL Earn on the board, placeholders, availability, the crowd at publication): D762, D660, D682, D753, D272, D277, D65, D1782, D27, D33, D47, D36, D37, D38, D39, D40, D41, D51, D44, D45.
+- Two parts its short lines lack: a person added to a shared input follows its answer, the scheduler asked on the spot only where there is none yet, a No's note saying they are not counted [D755]; an answer for a day the input no longer covers stays on the record, credited for nothing, and counts again if the input moves back [D731].
+- The design file's D1793; the Leave War's D265 with D260; People & accounts' D327; How we work's D54 (leave it — the pending mark once `[OIL-SEATS-CAN-EARN]` ships) and D56.
