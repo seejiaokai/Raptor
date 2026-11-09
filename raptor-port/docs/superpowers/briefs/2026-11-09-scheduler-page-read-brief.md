@@ -14,13 +14,13 @@ which the document check accepts only where a test file names each number; those
 written out. Some settled entries' built detail moved whole into a reference document, leaving a pointer.
 
 - The list before: `git show 5d8ddf6f8:.claude/rules/decisions/scheduler.md` (set `MSYS_NO_PATHCONV=1` first in Git Bash).
-- The page now: `.claude/rules/decisions/scheduler.md` at commit `PAGE_COMMIT` (the file as checked out).
+- The page now: `.claude/rules/decisions/scheduler.md` at commit `43f2bfd02` (the file as checked out).
 - The four sorting tables — each ruling's kind and the test said to hold it:
   `raptor-port/docs/superpowers/briefs/2026-11-09-scheduler-page-sort-{A,B,C,D}.md`; the drafter's brief, beside them.
 - Each ruling's full row — his words (column 3), what it means (column 4: the first bold sentence is his rule; parts
   marked "the agent's reading" are not), where it lives: `.claude/decisions-full/scheduler.md` (`grep -h '^| D569 |'`).
 - Tests: `*.test.ts(x)` and `*.spec.ts(x)` under `raptor-port/src` and `raptor-port/e2e`.
-- The whole change: `git diff 5d8ddf6f8 PAGE_COMMIT` — beside the page: other pages given the numbers of later rulings
+- The whole change: `git diff 5d8ddf6f8 43f2bfd02` — beside the page: other pages given the numbers of later rulings
   (`.claude/rules/decisions/design.md`, `inputs.md`, `oil.md`, `people-accounts.md`), the map lines (`DECISIONS.md`,
   `AGENTS.md`, `raptor-port/CLAUDE.md`, the full-text file's head), the size rows in `raptor-port/scripts/docsize.mjs`,
   and any text moved into `raptor-port/docs/`.
@@ -44,8 +44,13 @@ written out. Some settled entries' built detail moved whole into a reference doc
 4. **The moved text.** Each block moved into `raptor-port/docs/` — moved byte for byte (`node raptor-port/scripts/docsize.mjs
    --moves` lists what left and did not arrive), its pointer landing, nothing lost? Do the many documents and code comments
    that point to "§Settled before this list" (and to the old group names) still land on this page?
-5. **The other pages and the map lines.** On `design.md`, `inputs.md`, `oil.md` and `people-accounts.md`, confirm no word
-   changed except added ruling numbers and lines joined (`git diff -w --word-diff 5d8ddf6f8 PAGE_COMMIT -- <file>`). Does
+5. **The other pages and the map lines.** On `design.md`, `inputs.md` and `people-accounts.md`, and in the always-loaded
+   `.claude/rules/plain-language.md` (check 4) and `.claude/rules/record-decisions.md` (the D38–D41 story line), confirm
+   no word changed except added ruling numbers (record-decisions: "since changed by D77, D1106") — and that each added
+   number does change the ruling beside it. **The OIL page (`oil.md`) was also reworded** to make room, under his D1945
+   (`git diff 98df9fd80 43f2bfd02 -- .claude/rules/decisions/oil.md`): eight lines tightened — does each keep every rule,
+   condition, exception and scope of the rulings it cites (their full rows in `.claude/decisions-full/oil.md` and
+   `scheduler.md`)? Its numbers added as on the others (`git diff -w --word-diff 5d8ddf6f8 43f2bfd02 -- <file>`). Does
    each map line say only that the scheduler is now a page, changing or contradicting nothing else those files say?
 6. **The reworded line on the general rulings page.** Commit `5d8ddf6f8` rewrote one line of
    `.claude/rules/decisions/how-we-work.md` §Records (`git diff af3a6c12c 5d8ddf6f8 -- .claude/rules/decisions/how-we-work.md`)
