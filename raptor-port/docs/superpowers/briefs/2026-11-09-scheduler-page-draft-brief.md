@@ -79,6 +79,37 @@ change no always-loaded rule file beyond a name in a list of converted areas, an
   part"; what moved where; the other pages' additions (and any OIL shortfall); the gate results; every judgement you
   were unsure of; where you overrode a sorter; "Questions for him"; the "Proposed to archive" list. Do not paste the page.
 
+## The host's notes from the four sorters' reports (read with the tables)
+- **Keep a heading named "Settled before this list"** on the page (a `###` under `## Settled — leave as they are`, holding
+  the settled entries' statements): about a dozen documents and two code comments point to "§Settled before this list"
+  (`inputs.md`, `leave-war.md`, `engine-rules.md`, `performance.md`, `ui-contracts.md`, the project guide, its full text,
+  `OUTSTANDING.md`, `DECISIONS.md`, `html.ts`, `latemark.test.tsx`), and each must still land. Do not archive the old
+  settled text wholesale (sorter D's proposal): state each entry, move only the detail sorter D marks "move whole".
+- **Cross-table merges:** the late mark (D's five rows, A's D1586, D1620, D1621, B's D742); the reporting group D497–D511
+  (C) with D1026, D1034 (A), D591, D600 (B); the ALL AVAIL window with D1106; the placeholders with D43; the blue/red mix
+  with D518, D521, D523, D530; D928 with the Logic notes; D1577 with the week cross; D1083 with the SC in-time.
+- **A later ruling that changed an earlier one without a mark** (sorter A: D1063 against D1064; D1041 against D1044,
+  D1045; D1030's "highlighted" against D1038; D1782 narrowing D844, D845, D882; D1106 narrowing D41; sorter C: D278 by
+  D753 — C's reading): state the rule as it stands, both numbers on the line; mark no full row yourself — list each pair
+  in your report for the host to check and mark.
+- **Archived numbers cited in the settled text** (D46, D715, D718, D1574–D1576): if the gate calls one stale, cite the
+  ruling that replaced it beside it, as the gate names.
+- **Two settled entries belong to the Inputs pages alone** (sorter D): leave them on this page — moving them changes his
+  D802 split, which is his call; list them under "Questions for him".
+- **The three speed entries** fit no section: give them a section of their own, "Speed of the dense screens", before
+  "Admin, settings and saving".
+- **Question already found:** D511 against D1026 and D1034 (does RALLY in the "+ In-time" button's text make a rally) —
+  sorter C's worked example; keep both stated. Sorter B's D660 against D762, likewise.
+- **Sorter B's two new sections are taken:** "Inputs on the schedule" (after Crew and pucks) and "The Leave War's rows and
+  the Event sheet on the schedule" (after OIL on the schedule). B's other notes: D838 cites the archived D843; D806 to
+  archive only if a reader finds D836 restates it in full; B's unsure list (D877, D831, D840, D767, D769, D605, D748,
+  D600, D594, D554) — check each against its test or row.
+- **The held count:** 64 of 334 (A 18, B 28, C 18) are marked held whole — more than either trial kept after its reads.
+  Re-open every one whose sorter listed it as unsure or "close" (A: D1044, D1061, D950; C: D505, D50, D40, D65, D270,
+  D272, D175) and send back any whose test holds only part.
+- **Stale "Not built" in full rows** (D1038, D1042–D1046, D1060–D1065 — built and tested, sorter A): state them as built;
+  list them for the host to correct the rows.
+
 ## Traps on this PC
 Edit files with the Edit and Write tools. A script: write it to a file with Write, then run the file (a typed script
 with a backslash is refused by a guard; `node -e` loses escapes; in JS use `s.replace(a, () => b)`). No `sed -i` (a
