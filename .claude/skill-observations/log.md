@@ -4681,3 +4681,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** The self-test was started under `timeout 900`. At 15 minutes the limit killed the child check of the case then running; the case read the killed child's empty answer as a failure and threw, so the log showed a stack trace and "the inventory was not clean", and the exit code was 124. It looked like a broken script. Twenty minutes went on comparing against main's copy before the cause was plain. Run again with no limit, the same self-test passed all 334 cases in about 17 minutes (with two other heavy jobs on the PC); note 908 says "about 10 minutes".
 **Suggested improvement:** Run the document self-test in the background with no `timeout` wrapper (the harness notifies when it ends); if a limit is wanted, make it 40 minutes. Before diagnosing a failure of anything run under `timeout`, read the exit code first: 124 means the limit fired, not the script. Update note 908's duration to "10–20 minutes".
 **Principle:** a time limit that kills a child process makes the parent report a failure that looks real; check for the limit's own exit code before reading the failure, and run long checks unbounded in the background instead.
+
+### Observation 911: Commits landed off the branch, and the push said "Everything up-to-date"
+
+**Status:** OPEN
+**Date:** 9 Nov 26
+**Session context:** chat 43, the rules diet's scheduler page — three commits made while helpers worked in the same checkout
+**Skill:** session-handoff / the shipping loop (push step)
+**Type:** open-source
+**Phase/Area:** committing and pushing in a checkout that helpers also use
+
+**Issue:** Right after the chat switched to its branch, something (not the host's own commands — likely a helper of a read-only reader) moved the checkout to a detached state at the same commit. The host's next three commits went onto that detached state; the branch name stayed one commit behind. `git push -u origin <branch>` then answered "Everything up-to-date" and pushed nothing. Only `git status -sb` showing "HEAD (no branch)" revealed it; the branch was moved forward with a fast-forward and pushed.
+**Suggested improvement:** In the push step, before pushing: `git branch --show-current` must print the branch; if it prints nothing, fast-forward the branch to HEAD (`git switch <branch> && git merge --ff-only <sha>`) first. And treat "Everything up-to-date" after new commits as a fault to check, never a success. A helper's brief that says "read only" also says "never check out, switch or detach".
+**Principle:** a push reports on the branch name, not on the commits you just made; confirm the checkout is on the branch before trusting a push's "up to date".
