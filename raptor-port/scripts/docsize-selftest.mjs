@@ -415,6 +415,23 @@ scenario('a page whose paths: key has no list items', true, c => { committedPage
 scenario('a page whose paths: list holds a line that is no "- <glob>" item', true, c => { committedPage(c); c.edit(OTHER, breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\nraptor-port/src/more/**\n---\n')) }, { base: 'HEAD', mustSay: 'is not a "- <glob>" item' })
 scenario('a scoped rules file (not a page) whose frontmatter is never closed', true, c => { c.write('.claude/rules/area-x.md', '---\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n'); c.commit('a scoped rules file'); c.edit('.claude/rules/area-x.md', breakFm('/**\n---\n', '/**\n')) }, { base: 'HEAD', mustSay: '.claude/rules/area-x.md opens a frontmatter block' })
 scenario('…a whole frontmatter, its list with a comment line and a blank line, passes', false, c => { c.write('.claude/rules/area-x.md', '---\npaths:\n  - raptor-port/src/x/**\n  # a comment, as the seam files carry\n\n  - raptor-port/docs/x.md\n---\n\n# x\n'); c.commit('a scoped rules file') }, { base: 'HEAD' })
+/* The two blind reads of 3c0b3ac65 (both REVISE): a byte-order mark or spaces around a --- line, which every reader here
+   takes for no frontmatter; body lines a lost close swallowed into a scoped file that is not a page (a column-0 "#" line is
+   body, not a comment — every live comment is indented); an item whose quotes do not match; and the one-line forms of
+   paths:, which pathsOf does not read, refused with a message that says so. */
+const AREA_X = '.claude/rules/area-x.md'
+const scopedFile = (c, whole, broken) => { c.write(AREA_X, whole); c.commit('a scoped rules file'); if (broken !== undefined) c.write(AREA_X, broken) }
+const X_WHOLE = '---\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n'
+scenario('a page saved with a byte-order mark before its frontmatter', true, c => { committedPage(c); c.edit(OTHER, t => '\uFEFF' + t) }, { base: 'HEAD', mustSay: 'byte-order mark' })
+scenario('…a byte-order mark and its frontmatter never closed', true, c => { committedPage(c); c.edit(OTHER, t => '\uFEFF' + breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\n')(t)) }, { base: 'HEAD', mustSay: 'byte-order mark' })
+scenario('a frontmatter whose closing --- has a trailing space', true, c => scopedFile(c, X_WHOLE, X_WHOLE.replace('/**\n---\n', '/**\n--- \n')), { base: 'HEAD', mustSay: 'line 4 closes the frontmatter but has spaces around its' })
+scenario('a scoped file\'s frontmatter never closed, its headings swallowed up to a later ---', true, c => { const whole = '---\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n\n## y\n\n---\n\nbody text\n'; scopedFile(c, whole, whole.replace('/**\n---\n', '/**\n')) }, { base: 'HEAD', mustSay: 'line 5 ("# x") inside its frontmatter, which is not a "- <glob>" item' })
+scenario('…its frontmatter never closed, a "Status: draft" line and prose swallowed', true, c => { const whole = '---\npaths:\n  - raptor-port/src/x/**\n---\n\nStatus: draft\nmore prose\n\n---\n\nbody text\n'; scopedFile(c, whole, whole.replace('/**\n---\n', '/**\n')) }, { base: 'HEAD', mustSay: '("more prose") inside its frontmatter, which is not a "- <glob>" item' })
+scenario('a frontmatter with a column-0 "# comment" inside its paths: list', true, c => scopedFile(c, X_WHOLE, '---\npaths:\n# a comment at column 0\n  - raptor-port/src/x/**\n---\n\n# x\n'), { base: 'HEAD', mustSay: '("# a comment at column 0") inside its frontmatter, which is not a "- <glob>" item' })
+scenario('a paths: item whose quotes do not match', true, c => scopedFile(c, X_WHOLE, '---\npaths:\n  - "raptor-port/src/x/**\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'a paths: item whose quotes do not match' })
+scenario('paths: written on one line as a string', true, c => scopedFile(c, X_WHOLE, '---\npaths: "raptor-port/src/x/**"\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'the project\'s checks read only that shape' })
+scenario('paths: written on one line as a bracketed list', true, c => scopedFile(c, X_WHOLE, '---\npaths: ["raptor-port/src/x/**"]\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'the project\'s checks read only that shape' })
+scenario('…a whole frontmatter saved with CRLF line endings, quoted items among them, passes', false, c => scopedFile(c, '---\r\npaths:\r\n  - raptor-port/src/x/**\r\n  # a comment\r\n  - "raptor-port/docs/x.md"\r\n  - \'raptor-port/docs/y.md\'\r\n---\r\n\r\n# x\r\n'), { base: 'HEAD' })
 mover('--rulings refuses a page whose frontmatter is never closed', false, { prep: c => { committedPage(c); c.edit(OTHER, breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\n')) }, args: ['--rulings'], check: (c, r) =>
   /opens a frontmatter block/.test(r.stdout + r.stderr) ? '' : 'refused for another reason, or not at all' })
 

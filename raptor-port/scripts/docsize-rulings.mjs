@@ -219,28 +219,49 @@ export const pathsOf = text => { const ls = (text || '').split('\n').map(l => l.
 /* What is wrong with a rules file's frontmatter — [] when nothing ([DOCSIZE-PATHS-OPEN], found 8 Nov 26: the People &
    accounts page's first draft lost the `---` that closes it, and the gate passed it). A file whose first line is `---`
    opens a frontmatter block. Never closed, it loads with none of the files its `paths:` name, and every reader here
-   (fmEnd) takes it for a file with no frontmatter — unscoped, so a page's area checks never run on it. Closed, its
-   `paths:` key holds one `- <glob>` item at least, each indented as pathsOf reads it; a comment or a blank line among
-   them is kept (the seam files carry comments) and another key ends the list. Any other line before the close is one no
-   reader takes for a path — a glob not written as an item, or the body itself, swallowed when the close was lost and a
-   `---` further down was taken for it. Each problem reads after the file's name. */
+   (fmEnd) takes it for a file with no frontmatter — unscoped, so a page's area checks never run on it. The readers
+   (fmEnd, isScoped, pathsOf, docsize.mjs's own) take only the plain shape, so this refuses whatever they would misread
+   rather than teach each of them more (the two blind reads of 3c0b3ac65, the coordinator's settling): a first or a
+   closing line that is `---` only once a byte-order mark or spaces are taken off; `paths:` written on one line (a string
+   or a bracketed list, which pathsOf does not read); an item whose quotes do not match; a `paths:` key with no items; and
+   any other line inside the frontmatter that is neither a key, an indented line under a key other than `paths:`, an
+   indented comment nor a blank — a glob not written as an item, or the body itself, swallowed when the close was lost and
+   a `---` further down was taken for it (a column-0 `#` line is such body: every live comment is indented). CRLF is
+   read as LF here, as by every reader. Each problem reads after the file's name. */
 export function frontmatterProblems(text) {
   const ls = (text || '').split('\n').map(l => l.replace(/\r$/, ''))
+  if (ls[0] !== '---' && ls[0].replace(/^\uFEFF/, '').trim() === '---') return ['has "---" on its first line with a byte-order mark or spaces around it, so every reader here takes it for a file with no frontmatter: save it as UTF-8 without a byte-order mark, line 1 exactly ---']
   if (ls[0] !== '---') return []
+  const near = i => `— line ${i + 1} closes the frontmatter but has spaces around its \`---\`, so no reader here takes it for the close: make it exactly ---`
   const fm = fmEnd(ls)
-  if (!fm) return ['opens a frontmatter block (`---` on its first line) and never closes it — so it loads with none of the files its paths: name, and is checked as a file with no paths: at all: add the closing `---` line after its paths: list']
-  const at = ls.findIndex((l, i) => i > 0 && i < fm - 1 && /^paths:/.test(l))
-  if (at < 0) return []
-  const out = []
-  let items = 0
-  for (let i = at + 1; i < fm - 1; i++) {
-    const l = ls[i]
-    if (/^\s+-\s+\S/.test(l)) { items++; continue }
-    if (!l.trim() || /^\s*#/.test(l)) continue
-    if (/^[A-Za-z_][\w-]*:/.test(l)) break
-    out.push(`has line ${i + 1} ("${l.length > 60 ? l.slice(0, 57) + '...' : l}") inside its frontmatter, which is not a "- <glob>" item of its paths: list — no reader takes it for a path: write it as "  - <glob>", or, if it is the file's text, put the closing \`---\` line above it`)
+  if (!fm) {
+    const spaced = ls.findIndex((l, i) => i > 0 && l.trim() === '---')
+    return [spaced > 0 ? near(spaced) : 'opens a frontmatter block (`---` on its first line) and never closes it — so it loads with none of the files its paths: name, and is checked as a file with no paths: at all: add the closing `---` line after its paths: list']
   }
-  if (!items) out.push(`has a paths: key (line ${at + 1}) but its paths: list has no items — so it loads with no file at all: list each glob under it as "  - <glob>"`)
+  const at = ls.findIndex((l, i) => i > 0 && i < fm - 1 && /^paths:/.test(l))
+  const shown = l => l.length > 60 ? l.slice(0, 57) + '...' : l
+  const out = []
+  let items = 0, inPaths = false, oneLine = false
+  for (let i = 1; i < fm - 1; i++) {
+    const l = ls[i]
+    if (!l.trim() || /^\s+#/.test(l)) continue
+    if (l.trim() === '---') { out.push(near(i)); continue }
+    if (/^[A-Za-z_][\w-]*:/.test(l)) {
+      inPaths = i === at
+      if (inPaths && /^paths:\s*[^\s#]/.test(l)) { oneLine = true; out.push(`writes its paths: on one line (line ${i + 1}) — write paths: as indented \`- <glob>\` lines, one per line — the project's checks read only that shape`) }
+      continue
+    }
+    const m = inPaths && /^\s+-\s+(\S.*?)\s*$/.exec(l)
+    if (m) {
+      items++
+      const v = m[1], q0 = /^["']/.test(v) ? v[0] : '', q1 = /["']$/.test(v) ? v[v.length - 1] : ''
+      if ((q0 || q1) && !(v.length > 1 && q0 && q0 === q1)) out.push(`has line ${i + 1} ("${shown(l)}"), a paths: item whose quotes do not match — write it as "  - <glob>", with the same quote at both ends or none`)
+      continue
+    }
+    if (!inPaths && /^\s/.test(l)) continue
+    out.push(`has line ${i + 1} ("${shown(l)}") inside its frontmatter, which is not a "- <glob>" item of its paths: list nor a key — no reader takes it for a path: write a glob as "  - <glob>", indent a comment, or, if it is the file's text, put the closing \`---\` line above it`)
+  }
+  if (at >= 0 && !items && !oneLine) out.push(`has a paths: key (line ${at + 1}) but its paths: list has no items — so it loads with no file at all: list each glob under it as "  - <glob>"`)
   return out
 }
 /* One glob of a `paths:` list as a pattern: `**` any number of folders, `*` and `?` within one name. */
