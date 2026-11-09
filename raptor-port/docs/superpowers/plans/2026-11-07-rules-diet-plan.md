@@ -1022,13 +1022,15 @@ of four converted pages state a Leave War ruling without the later ones that cha
 D1356 by D1388, D1357, D1365), the scheduler (D1356 likewise; D882 by D1782, D1221), the IT flow guide (D1177 by D1225,
 twice — 8 bytes of room, 14 needed) and People & accounts (D1850 by D1870; D1692 by D1697, D1698, three lines — 236
 bytes of room). Each is rewritten as the rule stands since then and cites the later rulings, in the change that converts
-the page; the IT flow guide's shortfall goes to him (D1940 and D1945 were one job each).
+the page; the IT flow guide's shortfall went to him (D1940 and D1945 were one job each): his "Tighten, no raise"
+(D1948, spent) — "in the app" cut from its "What happens by itself" line and D1225 cited on both lines, 4,023 of 4,028
+bytes, done by the host before the drafter started.
 
 | | The list (0ce71adab) | The draft | After the reads |
 |---|---|---|---|
 | Bytes (hard limit 121,825) | 121,825 | | |
 | On "Built, held by tests" | — | | |
-| A Leave War job reads (tokens) | | | |
+| A Leave War job reads (tokens) | 326,275 | | |
 
 ### Review log
 
