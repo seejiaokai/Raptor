@@ -1,6 +1,6 @@
 # The app’s words — what a person sees, what it means, what the code calls it
 
-This page translates between the app’s words, their everyday meaning and the names a reviewer can search for in the code. Search it when writing to the owner or briefing a reviewer; never load it in every chat. Add a term the moment its meaning is settled in a planning round. Labels below come from the interface source, including button hints and accessible labels; descriptions in brackets identify visible things with no separate caption. “Two names on screen” records a difference without choosing a replacement. Checked against the app’s source on 11 Nov 26 — every label and code name searched; not walked on screen.
+This page translates between the app’s words, their everyday meaning and the names a reviewer can search for in the code. Search it when writing to the owner or briefing a reviewer; never load it in every chat. Add a term the moment its meaning is settled in a planning round. Labels below come from the interface source, including button hints and accessible labels; descriptions in brackets identify visible things with no separate caption. “Two names on screen” records a difference without choosing a replacement. Checked against the app’s source on 10 Nov 26 — every label and code name searched; not walked on screen.
 
 ## Scheduler Board and Edit Schedule
 
@@ -20,7 +20,7 @@ This page translates between the app’s words, their everyday meaning and the n
 | [A person’s puck] | The small name tile used to show, select or place a person. | `puck`, `Person`, `PEOPLE` |
 | FCP (pilot) / RCP (WSO) | The front and rear flying seats to which people are assigned. | `Seat`, `AircraftSeat` |
 | Placeholders | Group pucks that stand for people worked out from the day’s circumstances. | `palette-html.ts`, `Person.special` |
-| ALL | A placeholder for the whole eligible group, without ALL AVAIL’s availability filtering. | `PEOPLE` |
+| ALL | A placeholder that works exactly like ALL AVAIL: it stands for the people available for that row’s time; the two differ only in name. | `PEOPLE.all`, `isSpecial`, `avail.ts` |
 | ALL AVAIL | A placeholder for the people available for that row’s time and activity. | `avail.ts`, `AvailWindow` |
 | AIRCREW / CREW — two names on screen | The crew panel from which the scheduler picks people. | `EditRoster`, `paletteHTML` |
 | Available crew | People the app considers available for the selected day or time. | `availHTML`, `avail.ts` |
@@ -32,7 +32,7 @@ This page translates between the app’s words, their everyday meaning and the n
 | Duties | Duty blocks containing roles, times and assigned people. | `DutyBlock`, `DutyRow` |
 | Sims | Simulator sessions, their crew, passengers and supporting rows. | `SimRow`, `Day` |
 | Ground Programme | Scheduled ground activities and inputs placed on the programme. | `GroundRow`, `Input.acc` |
-| Remarks / Rmks — two names on screen | Notes attached to a row, some of whose recognised words also affect checks. | `AircraftSeat.rmks`, `GroundRow.rmks`, `remarks-vocabulary.md` |
+| Remarks / Rmks — two names on screen | Notes attached to a row, some of whose recognised words also affect checks. | `AircraftSeat.rmks`, `GroundRow.rmks`, `remarks-vocabulary.md` (doc) |
 | Traffic | The wave’s airspace bookings. | `AirPop`, `setAirKey` |
 | CX | Cancels an item while leaving its cancelled line visible. | `RowFlags.cx`, `cxCommit` |
 | CX DUE | Introduces the reason written beside a cancellation. | `cxText`, `CXT` |
@@ -69,7 +69,7 @@ This page translates between the app’s words, their everyday meaning and the n
 | Tight turn | A short gap between landing and the next take-off. | `VCONF.tightTurn`, `validate.ts` |
 | + In-time | Adds a reporting instruction above the wave’s formations. | `REPORTING_LABEL`, `Wave.intimes` |
 | R / Rally | The formation’s rally time, which can supply its reporting time. | `Formation.rl`, `resolveReporting` |
-| B | The formation’s brief time, or the suggested brief where none is entered. | `Formation.br`, `flightBrief` |
+| B | The brief time on a flying formation, suggested when blank. On SC it is the crew’s in-time. Standby lines have no suggested brief. | `Formation.br`, `flightBrief`, `scReport` |
 | TO / LD | The formation’s take-off and landing times. | `Formation.to`, `Formation.ld` |
 | START / END | A standby line’s planned start and finish. | `Formation`, `scReport` |
 | Flies | Marks a standby aircraft row as actually flying. | `saFlies`, `AircraftSeat` |
@@ -160,7 +160,7 @@ This page translates between the app’s words, their everyday meaning and the n
 | Events | Lists and manages events applying to the leave period. | `EventsSheet`, `EventSheet`, `saveEvent` |
 | Public holiday / Off day | Marks a non-working date used by the calendars, manning and OIL rules. | `eventdefs.ts`, `holidays.ts` |
 | Rearrange | Changes the display order of the grid’s rows and groups. | `LeaveWarPage`, `leavewar/state/screen.ts` |
-| [The moved mark on leave] | Shows that approved leave was moved from another date. | `cellring.ts`, `moveRecords` |
+| [The moved mark on leave] | Shows that approved leave was moved from another date. | `shiftedFrom`, `moveRecords` |
 
 ## The Tracker
 
@@ -214,9 +214,9 @@ This page translates between the app’s words, their everyday meaning and the n
 | Callsign/Name / Displayed callsign/name — two names on screen | The name shown on the person’s puck and roster row. | `CALLSIGN_LABEL`, `Person.cs` |
 | Sign-in / Roster | The two status dots showing account access and active roster membership. | `UsersPanel`, `ACCOUNTS`, `PEOPLE` |
 | Suspend / Enable | Turns an existing account’s sign-in access off or back on. | `accounts.ts`, `UsersPanel` |
-| Archive | Takes the person off the active roster from today while keeping earlier records. | `UsersPanel`, `people-accounts.md` |
-| Restore | Returns an archived person to the roster from a chosen post-in date. | `UsersPanel`, `leavewar/state/store.ts` |
-| Delete | Removes the person and account from current and future use while retaining applicable past records. | `UsersPanel`, `accounts.ts` |
+| Archive | Takes the person off the active roster from today (on the Leave War, posted out from today) and suspends their sign-in, keeping earlier records. | `archivePerson`, `leavewar/sync.ts`, `UsersPanel` |
+| Restore | Returns an archived person to the roster from a chosen post-in date. | `UsersPanel`, `restoreArchivedPerson`, `restoreArchivedAs` |
+| Delete | Removes the person, their account, their Quals row and every day still to come; days they flew keep their puck. Cannot be undone. | `deletePerson`, `state/person-delete.ts`, `UsersPanel` |
 | Post in / PI from — two names on screen | The date from which the person belongs in the squadron’s manning. | `PostInField`, `BidPicker`, `postouts` |
 | Post out / PO from — two names on screen | The date from which the chosen posting outcome applies. | `BidPicker`, `PostOutcome`, `postouts` |
 | SANS | An aircrew status for people who file availability to join flying or simulator tasks. | `Person.san`, `SansOffer` |
@@ -238,7 +238,7 @@ This page translates between the app’s words, their everyday meaning and the n
 | Blue / Red | Splits flying load by the formation’s mission role when tracking is enabled. | `resolveMissionRole`, `mission-role.ts` |
 | Choose mission role / Change mission role | Records or corrects the formation’s Blue or Red answer. | `mission-role-offer.ts`, `readRole` |
 | Work hours · report to debrief, this week | Totals each person’s working-day spans, rather than airborne time alone. | `workSpan`, `computeInsights` |
-| Not on the flying programme | Lists available people with no counted flying sortie that week. | `computeInsights` |
+| Not on the flying programme | Lists every aircrew member on that week’s roster with no counted flying sortie; it does not check leave or other absences, though its heading counts them as “available”. | `computeInsights`, `rosterIds` |
 | Conflicts by type / By day | Groups the week’s scheduling findings by their kind or date. | `computeInsights`, `insightsHTML` |
 
 ## Admin and settings
