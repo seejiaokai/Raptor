@@ -54,7 +54,10 @@ box or inside it: nothing stands over it — not the bar, not a window, not the 
   moved rows are out of view; Undo. EXPECTED: a row that MOVED comes into view. Redo likewise. (b) Drag ONE row — the
   last Common Programme row to the head — scroll to the head; Undo. EXPECTED: the list goes to the foot, where that
   row went back; then at the foot press Redo: the row leaves for the head and the list follows it there. (c) A row
-  moved while both its old and new place are in view: nothing moves.
+  moved while both its old and new place are in view: nothing moves. (d) Scroll down to the Ground Programme and press
+  Sort all on a day where it re-sorts Ground rows in view AND rows far above; with the Ground rows still in view press
+  Undo, then Redo. EXPECTED: the list does not move either time — part of what changed is in view (the third fix
+  round).
 - **R4 — Personal Inputs folded** (`pc`, `phone`). Change the remarks of a rejected input under Personal Inputs, tap
   away to save, fold the panel, scroll away, Undo. EXPECTED: the panel is open again and the input's line is in view.
   Redo likewise. And: with the panel folded, undo a change to something ELSE on the day (a remark): the panel stays
