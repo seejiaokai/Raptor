@@ -938,7 +938,7 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
 
 **7.11 The faults he found that a walk missed — and what each teaches (owner D1297, 24 Oct 26).** Whenever he finds a
 fault a bug check's walk let through, the same day and without asking him: the fault is fixed red-first, and WHY the walk
-missed it is written here as a lesson about the KIND of gap, newest first. **Every sizing step (§7.0) and every walker's
+missed it is written here as a lesson about the KIND of gap, numbered in the order written (lessons 25–30 are older finds, swept in on 10 Nov 26). **Every sizing step (§7.0) and every walker's
 brief reads this list and says, for each lesson, which scenario or named test covers it for the change in hand** — or why
 it cannot apply. One fresh reader checks each lesson; the closing report names the lessons added; he may strike any.
 **And each lesson's fault is a case in the code reader's test set (his D1410, 27 Oct 26 — to build, [REVIEW-LAYERS]):** when
@@ -1112,8 +1112,10 @@ the reader's instructions or model change, it is run on every case and a change 
    the page's very foot and back on a phone, and the walk's sizing names what the PC cannot show (the bounce, the folding
    toolbar) as a look for his iPhone; a test stands the bar out of place for a moment and sends the screen-size change
    (`e2e/leavewar.spec.ts` and `e2e/geometry.spec.ts`, "…carried off for a moment"; `[TOPBAR-BOUNCE-AWAY]`).
+
 *Lessons 25 to 30 come from D1297's sweep of the evidence sheets up to 24 Oct 26 (10 Nov 26, chat 53 — the sweep's table,
 and a seventh kind left out as doubtful, in `docs/superpowers/briefs/2026-11-10-d1297-sweep-candidates.md`).*
+
 25. **A thing walked only where the demo already had it (his find on his phone, OIL mode's ALL AVAIL count, 22 Sep 26).**
    Every ALL AVAIL row the OIL walk examined was one the demo seed already carried — a Common Programme row, one of the two
    places the crowd is honoured. Minutes after the sheet called the walk done he put ALL AVAIL on a duty desk he had added
@@ -1125,14 +1127,15 @@ and a seventh kind left out as doubtful, in `docs/superpowers/briefs/2026-11-10-
    §11).
 26. **A gesture checked by the number it moved, not by where the thing went (his report, the Tracker's pinch, 23 Sep 26).**
    The walk's Edit-layout step asked that "the pinch zooms" — the zoom figure changed — and passed. The chart was zooming
-   about a point below and right of the fingers, 807px off on a phone. **Lesson:** a gesture step measures what the person
+   about a point below and right of the fingers, 807px off on a phone in the ordinary chart, 56px in Edit chart layout.
+   **Lesson:** a gesture step measures what the person
    sees in screen terms — what was under the fingers stays under them, the dragged thing follows the finger — before and
    after, in every mode the surface has; a figure that moved proves nothing (§7.8; `scripts/handpass/trk-pinch.mjs`;
    `docs/handpass/2026-09-23-tracker-pinch.md` §6).
 27. **A control's place never measured across the change beside it (his iPhone pictures, the Inputs tab, 9 Oct 26; again
    21 and 23 Oct 26).** His standing rule (2 Sep 26) is that a control never moves under the finger that pressed it. Three
    walks passed screens where it did: the Calendar / List switch jumped left on the List (D687); pressing the filter button
-   sent the gear to a line of its own (D693); the › beside a day or month name moved as the words changed, up to 38px
+   sent the gear to a line of its own (D693); the › beside a day or month name moved as the words changed, up to 38.7px
    (D1122); "Open for bidding", docked at the foot, grew upward and moved its month buttons each time a line was added
    (D1264). Lesson 17 measures that a page still fits after such a press, not that the controls around it stay put.
    **Lesson:** for every press that changes what stands beside a control — a view switched, a fold opened, a value with
@@ -1149,10 +1152,13 @@ and a seventh kind left out as doubtful, in `docs/superpowers/briefs/2026-11-10-
    or down the page (§7.2; `scripts/handpass/rng-repro.mjs`; `docs/handpass/2026-10-10-list-dates-picker.md` §1).
 29. **A page left open while the day turns (his iPhone, the Leave War's today ring, 23 Oct 26).** He opened the page before
    midnight and looked after it: the today ring stayed on 22 Oct while the chip already read from the 23rd, and a member's
-   dimmed and outlined days stayed a day behind. No walk kept a page open across midnight. **Lesson:** anything that reads
+   dimmed and outlined days stayed a day behind. M1's code read had found it and filed it, older than M1, for M2
+   ([LW-M1-READ-LEFTOVERS] item 3); no walk kept a page open across midnight, so nothing showed it would meet him the
+   next morning. **Lesson:** anything that reads
    today — a ring, a lock, a "from today" count, a landing day — is walked with the clock moved past midnight while the
    page stays open, and again on reopening, and every reading is checked to follow the new day without a reload
-   (`ui/dayclock.ts`, `dayclock.test.ts`; `docs/handpass/2026-10-22-lw-m1-open-dates.md` §16, D1266).
+   (`src/leavewar/ui/dayclock.ts`, `src/leavewar/ui/dayclock.test.ts`; `docs/handpass/2026-10-22-lw-m1-open-dates.md` §16,
+   D1266).
 30. **A tint left by a press, unseen because the test browser drops it (his report, the Leave War's month strip,
    23 Oct 26).** When months were pressed, the grid's row-hover tint reached the month strip and turned its pinned cell
    see-through for as long as the strip counted as under the pointer — on an iPhone until the next tap, in the test
