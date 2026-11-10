@@ -33,6 +33,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - What rewords nothing in the diet — text moved whole, the checks and scripts — keeps the one fresh Opus reader; he may widen it; text moved whole out of a working guide is a guide change, so Astra reads it too — the later D1761 over D1739 there, the agent's reading [D1739, D1761].
 - Stating once what both this page and an always-loaded checklist now state waits for a later step of the rules diet, not now; until then each keeps its statement with its rulings [D1762].- From the 17 Oct start-size page: his own settings to switch off were listed for him, and switching one off stays his; every chat gets the skill-notes short form from the start hook in place of the full skill, which is invoked only for a review, a skill's creation or edit, its setup, or a case the short form misses [D969, D976, D1740].
 - The start-of-chat size job is closed: his documents connector stays his own setting, nothing for the agent to do; cutting what a chat reads goes on as the rules diet, one follow-up filed [D1741, D1949].
+- What a Leave War job loads at its start is cut again, a follow-up to the rules diet: its main screen file loads five area pages and the project guide where the job needs one; filed, not started; nothing a job must read is cut — it is read by section from the checklists [D1960, D68, D1735, D1949].
 - The handoff file keeps only the newest gate count; each older one moves whole to its archive file [D1733].
 
 ## Models and readers
