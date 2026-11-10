@@ -1047,6 +1047,8 @@ function structure() {
   /* the seam files (D1735; plan §2): each registered, loading inside its area and on its seam, its area file no longer on
      the seam, and each with a byte tripwire */
   fails.push(...RL.seamProblems(md, readNow))
+  /* every browser test loads a rulings page (D1973): the scheduler's page lists its tests one by one */
+  fails.push(...RL.testPageProblems(listed, readNow))
   for (const f of md.filter(f => f.startsWith(RL.SEAM_DIR + '/'))) if (!RULING_BYTES.some(r => r[0] === f)) fails.push(`${f} has no byte tripwire in ${SELF}'s RULING_BYTES — add its row, with the reason, in a docs-only commit`)
   /* HANDOFF.md ## Now: one block per branch, and a merged branch's block is stale */
   const seen = new Map()

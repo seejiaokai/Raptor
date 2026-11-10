@@ -590,6 +590,13 @@ scenario('a seam file gone once its area file no longer loads on its seam', true
   console.log(`${ok ? 'PASS' : 'MISS'}  …but no seam file while the area file still loads on every seam path (today)${ok ? '' : ` — got: ${got[0]}`}`)
 }
 scenario('a seam file that misses its own area', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/ui/InputsPage.tsx')), { mustSay: 'a file inside its area' })
+{ /* a browser test loads a rulings page (D1973): one the scheduler's list misses is named, and only it — a listed test,
+     a Leave War test (the war's own page loads) and a file outside the tests are not */
+  const read = f => f === RLs.TEST_PAGES[0] ? seamFile('raptor-port/e2e/app.ts') : f === RLs.TEST_PAGES[1] ? seamFile('raptor-port/e2e/*leavewar*') : ''
+  const got = RLs.testPageProblems(['raptor-port/e2e/app.ts', 'raptor-port/e2e/leavewar.spec.ts', 'raptor-port/e2e/new.spec.ts', 'raptor-port/src/a.ts'], read)
+  const ok = got.length === 1 && got[0].startsWith('raptor-port/e2e/new.spec.ts '); if (!ok) failed++
+  console.log(`${ok ? 'PASS' : 'MISS'}  a browser test that loads no rulings page is named, and only it${ok ? '' : ` — got: ${got.join(' / ')}`}`)
+}
 scenario('a seam file whose area file still loads on the seam', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/InputsPage.tsx')); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/InputsPage.tsx').replace('its architecture', 'rulings')) }, { mustSay: 'still loads on raptor-port/src/ui/InputsPage.tsx' })
 scenario('a seam file nobody registered', true, c => c.write('.claude/rules/seams/other.md', seamFile('raptor-port/src/other/**')), { mustSay: 'a seam file nobody registered' })
 { /* the paths: matcher, read directly — the globs the rules files use today */

@@ -28,8 +28,6 @@ paths:
   - raptor-port/src/leavewar/engine/access.ts
   - raptor-port/src/leavewar/state/**
   - raptor-port/src/leavewar/ui/BidPicker.tsx
-  - raptor-port/src/leavewar/ui/Matrix.tsx
-  - raptor-port/src/leavewar/ui/MatrixRows.tsx
   - raptor-port/src/leavewar/ui/OutcomeChips.tsx
   - raptor-port/e2e/*accounts*
   - raptor-port/e2e/*users*

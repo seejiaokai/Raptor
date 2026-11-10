@@ -8,7 +8,50 @@ paths:
   - raptor-port/src/storage/**
   - raptor-port/src/*.ts*
   - raptor-port/src/testing/**
-  - raptor-port/e2e/**
+  # the browser tests, one by one (D1973): the Leave War's own (*leavewar*) no longer load this page; the document
+  # check fails a test that loads neither this page nor the Leave War's — add a new test here or name it *leavewar*
+  - raptor-port/e2e/amendbatch.spec.ts
+  - raptor-port/e2e/app.ts
+  - raptor-port/e2e/availwin.spec.ts
+  - raptor-port/e2e/blankabsence.spec.ts
+  - raptor-port/e2e/board-escape-traffic.spec.ts
+  - raptor-port/e2e/board-layout.spec.ts
+  - raptor-port/e2e/boardside.spec.ts
+  - raptor-port/e2e/changeswin.spec.ts
+  - raptor-port/e2e/consistency-heights.spec.ts
+  - raptor-port/e2e/datecal.spec.ts
+  - raptor-port/e2e/feedback-marks.spec.ts
+  - raptor-port/e2e/geometry.spec.ts
+  - raptor-port/e2e/grouprow.spec.ts
+  - raptor-port/e2e/input-allavail.spec.ts
+  - raptor-port/e2e/input-title.spec.ts
+  - raptor-port/e2e/inputs-batch2.spec.ts
+  - raptor-port/e2e/inputs-calendar.spec.ts
+  - raptor-port/e2e/inputs-sans-calendar.spec.ts
+  - raptor-port/e2e/insights.spec.ts
+  - raptor-port/e2e/kbscroll.spec.ts
+  - raptor-port/e2e/keys-windows.spec.ts
+  - raptor-port/e2e/logicedit.spec.ts
+  - raptor-port/e2e/look-keys.spec.ts
+  - raptor-port/e2e/medical.spec.ts
+  - raptor-port/e2e/nopagezoom.spec.ts
+  - raptor-port/e2e/og-tag-count.spec.ts
+  - raptor-port/e2e/oil-someday-cal.spec.ts
+  - raptor-port/e2e/oil-uncancel-load.spec.ts
+  - raptor-port/e2e/oilwait.spec.ts
+  - raptor-port/e2e/oilworkstart.spec.ts
+  - raptor-port/e2e/onedoor.spec.ts
+  - raptor-port/e2e/pinchzoom.spec.ts
+  - raptor-port/e2e/puck-dot.spec.ts
+  - raptor-port/e2e/rallybox.spec.ts
+  - raptor-port/e2e/restblank.spec.ts
+  - raptor-port/e2e/save-note.spec.ts
+  - raptor-port/e2e/sched-phone.spec.ts
+  - raptor-port/e2e/schedule-tab.spec.ts
+  - raptor-port/e2e/topbar-names.spec.ts
+  - raptor-port/e2e/trk-scrollbars.spec.ts
+  - raptor-port/e2e/warnhide.spec.ts
+  - raptor-port/e2e/weekswipe.spec.ts
   - raptor-port/probes/**
   - raptor-port/docs/engine-rules.md
   - raptor-port/docs/ui-contracts.md
