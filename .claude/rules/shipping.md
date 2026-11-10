@@ -9,25 +9,26 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
 
 - Push a branch freely; ask before `main`. A branch push changes nothing official and gives him a Vercel link to look
   at, so it needs no permission; `main` stays gated behind his "merge live" — "push" and "merge live" are not the same
-  thing (D60, D1407, D1737).
+  thing (D60, D1407, D1737, D1980).
 - Nothing reaches `main` without his explicit "merge live", whatever the change that touches the app — but a pull
   request that changes only notes goes live by itself once its run is green: the agent checks the file list, merges and
   says so in its report. A rules-diet step waits for his "merge live" all the same, even one that changes only notes
-  (D60, D1407, D1737).
+  (D60, D1407, D1737, D1980). On an unattended run nothing merges by itself, notes included, unless he gave "auto merge live"
+  for it; the night's notes are merged in the morning (D1980, D596, D1093).
 - "Only notes" means every file is one of: the rulings files (`.claude/rules/decisions/`, `.claude/decisions-full/`,
   `DECISIONS*.md`), `HANDOFF.md`, `OUTSTANDING*.md`, evidence sheets and their pictures (`raptor-port/docs/handpass/`,
   the picture folders) and the other reference documents under `raptor-port/docs/` — never a working guide, and never
   the unscoped `.claude/rules/*.md` (this merge rule among them), `.claude/hooks/`, `.claude/settings*.json`,
   `.claude/skills/`, `.claude/agents/`, `.claude/launch.json`, `AGENTS.md`, `raptor-port/CLAUDE.md` or anything under
-  `.github/` (D1407, D1737).
+  `.github/` (D1407, D1737, D1980).
 - Before such a merge — since a few checks read documents (the permissions table in `raptor-port/docs/data-model.md`
   §11, `engine-rules.md`, `remarks-vocabulary.md`, the behaviour registers) and the gates skip a notes-only pull
   request — the agent runs `npm run rulecheck` and the unit tests that read documents on his PC, until
-  [REVIEW-LAYERS] builds the guard that does it, with the secrets scan (D1407, D1737).
+  [REVIEW-LAYERS] builds the guard that does it, with the secrets scan (D1407, D1737, D1980).
 - Chats may run side by side as long as they never clash in anything, and above all two never merge at once: parallel
   chats merge one at a time — each on his word, or by itself where the next bullet allows — each under the merge lock
   and level check below; the later one merges `main` in first and renumbers its own clashing rulings (D78, D1746).
-- Every merge into `main` — on his word, a notes-only pull request merging by itself (D1407, D1737), an "auto merge
+- Every merge into `main` — on his word, a notes-only pull request merging by itself (D1407, D1737, D1980), an "auto merge
   live" run (D1093) — is made in the Bash tool from the repo root, each command whole on one line (split, it runs without the
   folder setting and takes the checks lock), in four steps (D1746):
   1. Take the merge lock — the Bash call's timeout 600000 — and go on only once it prints `gatelock: taken`:
@@ -53,7 +54,7 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   again without it, never a revert), its run green, its link and job list sent to him, jobs sharing a screen or file checked
   together (D485); his "merge live" for that named batch, typed in the chat that merges it (D1742; a clash settled in a job's
   app code goes back for his look, D1746); the job pull requests closed with a pointer once it is green; then the four steps
-  above. Not a notes-only pull request (D1407, D1737) nor the D1795/D1796 chats' own rule; never stacked on another's branch.
+  above. Not a notes-only pull request (D1407, D1737, D1980) nor the D1795/D1796 chats' own rule; never stacked on another's branch.
 - Change → its own tests green locally (the whole gate set too once the repo is private again — §The checks) → commit
   and push to the session branch (one open pull request accumulates the lot) → once the work is ready for his look
   (built and checked) and its Vercel preview is Ready, send him the link — not after every push of unfinished work
@@ -123,7 +124,7 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
 - While the repo is public, on his PC run only the tests of what you change and the build the walk drives — no full
   gate run there (D1086).
 - Nothing merges until GitHub's run is green and he has said "merge live" (a notes-only pull request: D1407 — not a
-  rules-diet step, D1737); a red run is fixed before his look is asked for (D1086).
+  rules-diet step, D1737, nor on an unattended run, D1980); a red run is fixed before his look is asked for (D1086).
 - GitHub's machines download the project without the walks' pictures, which no check reads (D1091).
 - The run that counts is the one on the branch's last pushed commit; fixes found during the walk are batched and pushed
   only once the run in progress has finished (D151).
@@ -161,7 +162,7 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   message that chat (`ListAgents`, then `SendMessage`) — what you will change there and what you will leave; answer
   the same when asked; settle an overlap between you at once; repeat what you promised in your own `HANDOFF.md` block.
   The merge order and "merge live" stay his — a chat never merges for another, and two never merge at once (the merge
-  lock, §"Push" and "merge live") (D302, D60, D78, D1746; notes only: D1407, D1737).
+  lock, §"Push" and "merge live") (D302, D60, D78, D1746; notes only: D1407, D1737, D1980).
 - Docs-only changes skip the gates (`deploy.yml`'s list: `**.md`, `.claude/**`, `.impeccable/**`, the document-gate
   scripts `raptor-port/scripts/docsize*.mjs`, `backlog-archive.mjs`, `records-merge*`, and `docs-guard.yml` — on a push to `main` by
   `paths-ignore`; on a pull request the run still starts, its first job skips the gates, and its last, "checks passed",
@@ -169,7 +170,7 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   (`docs-guard.yml`, two to three billed minutes) still runs on every pull request and every push to `main`.
 - That is an exemption from the gates only: a change of notes only (the "only notes" list of §"Push" and "merge live") merges by itself once its run is
   green (a rules-diet step on his word all the same), and any other docs change — a rule that governs the agent, a
-  hook, a setting, a working guide, a workflow — still merges only on his "merge live" (D1407, D1737).
+  hook, a setting, a working guide, a workflow — still merges only on his "merge live" (D1407, D1737, D1980).
 - A pull request that mixes code and docs runs everything — and GitHub judges the whole pull request, so once it
   carries code even a notes-only push re-runs every gate (D151).
 

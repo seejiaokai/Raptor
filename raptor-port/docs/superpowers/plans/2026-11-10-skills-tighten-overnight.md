@@ -7,7 +7,10 @@ session-handoff skill) are live. This file is the list put to him BEFORE anythin
 
 **Status:** the skill read whole by chat 60 on `main` at `1db898d45`; every file, heading, command and ruling it names
 checked the same day (§A); the saving MEASURED by a script that sums the listed passages (§G, skill note 924), not
-guessed; the list put to him 10 Nov 26 — **waiting for his answer.** Line numbers below are the skill's at that commit.
+guessed; the list put to him 10 Nov 26; **his answer the same day, D1979 — "As recommended": §B, §C and §D, §E left
+alone; chat 60 does the change. His answer to §C's question, D1980 — as recommended: on an unattended run nothing
+merges by itself, notes included, unless he gave "auto merge live"; the night's notes are merged in the morning.**
+Line numbers below are the skill's at that commit.
 
 ## A. Measured, and checked
 

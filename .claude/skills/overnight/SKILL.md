@@ -7,13 +7,13 @@ description: Use when the owner types /overnight, or says he is going to sleep o
 
 He types `/overnight` (or `/overnight 6` — the hours he will be away; 8 when he gives none). The agent lays out the jobs
 that fit in that time, he selects them and answers its questions, and then it runs the night unattended in this one
-chat (D867). This guide replaces the questions he used to ask by hand each night (D596, D667, D766, D856–D859); it was approved as this command by D869. Its
-worked example is the night of 14 Oct 26: the rows D856–D858 and the handoff block written that night
-(`git show 81b65274b:HANDOFF.md`).
+chat (D867). Its rulings: D596, D667, D766, D869.
 
 **What the command is, and is not.** The command and his selection are his go for the night: the agent builds the
-jobs he selected, on branches, in this chat. It is NOT permission to build a job he did not select, to merge, to touch
-`main`, to change his Claude settings, the hooks or a working guide, or to answer a product question for him. Those
+jobs he selected, on branches, in this chat. It is NOT permission to build a job he did not select, to merge or touch
+`main` (unless he gave "auto merge live" for the night — D1093; then by `.claude/rules/shipping.md`'s four steps;
+otherwise nothing merges by itself, the night's notes included — they are merged in the morning, D1980), to change his
+Claude settings, the hooks or a working guide, or to answer a product question for him. Those
 stay his, every night.
 
 **If his message names the work** ("continue this till step 8"), that is the night's work: Part 1 shrinks to the
@@ -26,14 +26,14 @@ taken (the agent's reading).
 
 1. **Level and look.** `git fetch origin`, then `git rev-list --left-right --count HEAD...origin/main` (`0 0` = level).
    Open pull requests: `gh pr list --state open --json number,headRefName,title`. Whether a branch's checks are running:
-   `gh run list --branch <branch> --limit 6 --json status,workflowName,headSha` — a push makes TWO runs (the documents
-   guard, a minute or two; the full checks, up to about twenty), so look for any run of the branch's last pushed commit
-   that is `queued` or `in_progress`, never only the newest row. The check lock:
+   `gh run list --branch <branch> --limit 6 --json status,workflowName,headSha` — no run of the branch's last pushed commit
+   `queued` or `in_progress`, never only the newest row read (a push starts two runs: `.claude/rules/shipping.md`,
+   D151). The check lock:
    `node raptor-port/scripts/gatelock.mjs status`. Other live chats: `ListAgents` (or `list_sessions`) — a job another
    chat holds is not tonight's (D302). If this guide loaded from another folder than this checkout (the Skill tool's
    base directory names it), compare the two copies and follow this branch's own, saying so in the first message
-   (28 Oct 26: a night began on the main folder's older guide — `raptor-port/docs/gates-and-deploy.md`, "A worktree chat
-   loads its settings, hooks and skills from the MAIN checkout").
+   (`raptor-port/docs/gates-and-deploy.md`, "A worktree chat loads its settings, hooks and skills from the MAIN
+   checkout").
 2. **Read the order.** `HANDOFF.md` (`## Now`, `## Next, in order`) and `OUTSTANDING.md`'s priority list. For every
    job you might recommend, its item and its rulings' full rows (`grep -h '^| D… |' .claude/decisions-full/*.md`) —
    never only the short line (D53, D390). **Before a job counts as a candidate, confirm it is not already done:** its
@@ -41,7 +41,7 @@ taken (the agent's reading).
    named in the morning report, not acted on.
 3. **Read the allowance** — `get_usage` (a deferred tool: load it first): the 5-hour figure and when it resets, the
    weekly figure, the Fable weekly figure, and this chat's fullness. If the chat is past about half full, say so in the
-   message, with its figure; the night still runs here (D667, D857, D867).
+   message, with its figure; the night still runs here (D667, D867).
 4. **Sort every candidate:**
    - **Can run tonight:** his ruling orders it, or its backlog item is placed by the agent and changes no look and no
      words a person sees; its design is settled. A new sentence his ruling leaves to the build is written to the
@@ -73,10 +73,11 @@ taken (the agent's reading).
      work is cut to save allowance (D1033) — outside the four questions; "go" takes the recommended one;
    - when he is waiting up for drawings to answer before he sleeps, the questions page is published with the first
      finished one and each further question added as its helper returns — a republish and one line to him each time,
-     never held for the slowest (25 Oct 26: two looks were ready ten minutes before he went to sleep without any);
+     never held for the slowest;
    - the allowance: the weekly figure now and roughly after the night; how full this chat is;
    - "Nothing merges and nothing touches the live app. One notification in the morning. Leave the PC on and plugged
-     in, the lid open.";
+     in, the lid open." — or, where he has given "auto merge live" for the night, what will merge in place of its
+     first sentence (D1093);
    - "Nothing starts until you reply. If you are about to sleep, reply "go" first.";
    - last line: "Reply with the job numbers you want and your answers, or "go" for the recommended jobs AND the
      recommended answers."
@@ -107,7 +108,7 @@ block says so. Never a pull request based on another branch — it runs none of 
 ## Part 2 — through the night
 
 - **Each selected job, or batch, runs the bug-check order in full** — roll-call, sized walk with pictures (the walkers
-  Sonnet 5.5, D787), gates under the lock (D228), the model reads, fixes, re-walk, evidence sheet. Unattended is not a
+  Sonnet 5.5, D787), the checks as `.claude/rules/shipping.md` §The checks sets them (D1086, D228), the model reads, fixes, re-walk, evidence sheet. Unattended is not a
   reason for a smaller check; if the night runs short, the LAST job is left, not a check.
 - **Each job is handed to one fresh helper** (the Agent tool, in the background), one job at a time — never two builders
   in this one checkout; Medium means more walkers or a scenario designer inside a job, not two jobs at once — with a
@@ -120,64 +121,60 @@ block says so. Never a pull request based on another branch — it runs none of 
   then opens each job's pull request; and it checks each report. A background helper returns at once, so the
   coordinator waits by ending its turn with the keep-awake hold on and a silent background timer of under an hour armed
   (a Monitor re-armed at each expiry), never by polling the helper's transcript — the timer wakes the night before its
-  cache goes cold (21 Oct 26, 1 Nov 26). His
-  D1103 asked for a fresh session per job; on 21 Oct 26 the app started none from a turn his phone sent or a finished
-  job woke, so the night ran helpers instead — this line is his approval of that change (D1416, 27 Oct 26). A session per
-  job still works when he types the night's message in the desktop app, all of them started together, each brief
-  naming the branch that carries the night's block — a block not yet on `main` is not on a branch cut from it (7 Nov 26).
+  cache goes cold. A session per
+  job is used only when he types the night's message in the desktop app, all of them started together, each brief
+  naming the branch that carries the night's block — a block not yet on `main` is not on a branch cut from it (D1416).
 - **A helper's report** (reader, walker, scenario designer). A helper returns its report as its final reply. Save it
-  at once. The tool refuses a background helper's write of a file it calls a report (10 Nov 26, note 915), so the report
+  at once. The tool refuses a background helper's write of a file it calls a report, so the report
   is saved into the repo — its brief's folder or the evidence sheet — the moment it arrives, before anything is done
   about it — except that each reader's report and every copy or summary stay in a scratch folder outside the checkout
   until all required blind readers of that job have reported, including readers not yet started (the bug-check order §4). Before it
   is accepted, each reader the
   night's block names for that job is ticked against it; a missing one is run then, or the job goes on
-  `[NO-ASTRA-LIST]` in the same change (8 Nov 26). A notice that a helper stopped with background work of its own still
+  `[NO-ASTRA-LIST]` in the same change. A notice that a helper stopped with background work of its own still
   running is no report: stop it or wait for the real one before the checkout is switched or written, then read its
-  branch's log for commits made after the notice (9 Nov 26).
+  branch's log for commits made after the notice.
 - **At every commit:** this chat's block and the backlog true; `cd raptor-port && npm run docsize` before a commit of
   records; the branch pushed — never while its checks are running (step 1's command; D151) — by explicit refspec, alone
   in its own command (`git push origin HEAD:refs/heads/<branch>`: a refused push stops a compound command's earlier
-  steps too, 21 Oct 26); `get_usage` read.
+  steps too); `get_usage` read.
   **No record is written into the repo while a gate run is going** — draft it in the scratch folder (the document check
   is the run's last gate, and an edit during the run fails it).
-- **Compact smartly, by how full the chat is (D766, D867, D868).** Not at a fixed point: from the first note (75% of the app's room — D878; D868's
-  "about 80%") the agent chooses the moment itself, without asking him — the next clean point, so a big job does not compact twice; on a
-  night it never stops to offer a handoff (D871 — he is away). The project's compaction set-up (D870) does the rest,
-  with its guard OFF at night (D872 — step 9): a note arrives from 75% of the app's own room (about 300,000 of 400,000 —
-  D878, D1671); the app's own compaction comes at about 96% of it (about 384,000) whenever it gets there — nothing holds it, because a compaction refused by mistake at night would end the run;
+- **Compact smartly, by how full the chat is (D766, D867, D868).** Not at a fixed point: from the first note — 75% of the app's room, about
+  300,000 of 400,000 (D878, D1671; D868's "about 80%") — the agent chooses the moment itself, without asking him: the
+  next clean point, so a big job does not compact twice; on a night it never stops to offer a handoff (D871 — he is
+  away). The project's compaction set-up (D870) runs with its guard OFF at night (D872 — step 9): the app's own
+  compaction comes at about 96% of the app's room (about 384,000) whenever it gets there — nothing holds it, because a compaction refused by mistake at night would end the run;
   after it, the chat's saved block is handed back. Any piece of that may not run — then the app compacts by itself
   near full — so the agent keeps every compaction harmless and the work accurate:
   - keep the chat lean: heavy reading, walking and code reads go to helpers that return conclusions, never file dumps;
   - at each commit, the block names exactly what the rest of the night needs — the job and step in hand, the files it
     touches, the open faults, the questions parked — and what it does not;
-  - from the first note (75% of the app's room — D878): at the next clean point — the step in hand finished, committed,
+  - from the first note, the next clean point is: the step in hand finished, committed,
     pushed, the block rewritten; no new helper, walk or gate run starts after that note until the block is written;
   - if ever told a compaction is waiting (the guard is on — the away mark lapsed or was never set): set it again with
     `--away` as in step 9, so the compaction is not held;
-  - **after a compaction, re-read the block, this guide and the files the step in hand touches before the next change,
-    and note the compaction in the block with its time, read from the clock** — never carry on from the summary's memory of a file, a ruling
-    or a test result.
+  - **after a compaction, do what the block's first line says (step 8)** — never carry on from the summary's memory
+    of a file, a ruling or a test result.
 - **A roadblock that needs him** waits until he wakes (D596, D867): search the rulings and the backlog first (D53); a
   technical choice is yours — decide and write down why; a choice truly his goes into the block's "Questions waiting
   for him" — written into the block, never sent as a message that ends the turn — the question in the app's own words,
   opening with the case (a named person, a day, what he pressed) and what the app does today, a recommended answer,
-  what waits on it; a word that is on no screen is not used in it (13 Oct 26: a parked question with no case was
-  answered about something else) — and the job's evidence sheet
+  what waits on it; a word that is on no screen is not used in it — and the job's evidence sheet
   points to it; only that piece waits, the rest goes on. Before recommending "leave it as built", write the case in
   which "as built" fails the ruling's own words; if that case is real, it is a finding to fix, not a question.
-- **Pull requests:** a job cut from `main` gets its pull request when its check closes, so GitHub's checks run while he
-  sleeps; stop watching it at once. Write, commit and push the block BEFORE opening it (the block names the pull request "to
-  be opened"), then open it and push nothing more until step 1's command shows no run of the last pushed commit going
-  (17 Oct 26: the block pushed seconds after the pull request opened cancelled its first run). A job cut from another unmerged branch gets none at night: the morning report
-  offers him one pull request carrying the related work (D822, D864).
+- **Pull requests:** a job cut from `main` gets its pull request as soon as it is built, so GitHub's run goes while the
+  app is walked (D1086); stop watching it at once. Write, commit and push the block BEFORE opening it (the block names the pull request "to
+  be opened"), then open it and push nothing more until step 1's command shows no run of the last pushed commit going.
+  A job cut from another unmerged branch gets none at night: the morning report
+  offers him one pull request carrying the related work (D822).
 - **Stop starting new jobs** when the time he gave is nearly up (keep the last hour for the report), or when his
-  selection is done. **The weekly figure stops nothing (his D1415, 27 Oct 26; D1033):** past 90%, jobs go on being
+  selection is done. **The weekly figure stops nothing (D1415, D1033):** past 90%, jobs go on being
   started until the limit, whenever the reset falls — and every step is saved, so the limit strands nothing. **When the 5-hour figure passes 85%:** commit, push and write the
   block before it runs out, and carry on after it resets. A job half built at a stop is committed, pushed and written
   into the block as unfinished — never left in a state its tests do not describe.
-- **Never:** build a job he did not select, or one step 4 holds that his reply did not settle; merge; push to `main`; change his Claude settings, the hooks or a working
-  guide; send more than one notification. If truly blocked — nothing he selected can continue — that is the one
+- **Never** what the head says the command is not, nor a job step 4 holds that his reply did not settle, nor a second
+  notification. If truly blocked — nothing he selected can continue — that is the one
   notification.
 
 ## Part 3 — the morning report
@@ -192,7 +189,7 @@ block says so. Never a pull request based on another branch — it runs none of 
 - **The report**, short, plain words, in this order:
   1. what is ready for his look — per job: what it does in the app, the preview link, the pictures (several pictures go
      as one Artifact page, sharp, tap to zoom); a list written during the night — differences from a drawing, findings —
-     is checked against a picture of the last build first, and an item a later fix closed is marked so (29 Oct 26);
+     is checked against a picture of the last build first, and an item a later fix closed is marked so;
   2. what of his selection was not done, and why — and any stale record found on the way;
   3. the questions waiting for him — each with its recommended answer, its picture where it is a design;
   4. the allowance used (the weekly figure at the start and now), how full this chat is, and whether it compacted;
@@ -222,4 +219,5 @@ block says so. Never a pull request based on another branch — it runs none of 
 - [ ] Every job has its evidence sheet with a `Walk:` line, or is reported as not checked.
 - [ ] Every job read without Astra, or without Sol 6.1 where two are required, is on `[NO-ASTRA-LIST]` (D761, D1770).
 - [ ] Every new ruling is recorded; the `Rulings:` line is filled.
-- [ ] One notification sent, no more. Nothing merged; nothing pushed to `main`.
+- [ ] One notification sent, no more. Nothing merged, unless he gave "auto merge live" for the night (D1093, D1980);
+      nothing pushed to `main`.
