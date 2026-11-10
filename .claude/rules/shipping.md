@@ -13,8 +13,7 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
 - Nothing reaches `main` without his explicit "merge live", whatever the change that touches the app — but a pull
   request that changes only notes goes live by itself once its run is green: the agent checks the file list, merges and
   says so in its report. A rules-diet step waits for his "merge live" all the same, even one that changes only notes
-  (D60, D1407, D1737, D1980). On an unattended run nothing merges by itself, notes included, unless he gave "auto merge live"
-  for it; the night's notes are merged in the morning (D1980, D596, D1093).
+  (D60, D1407, D1737, D1980); an unattended run's notes wait for the morning unless he gave "auto merge live" (D1093).
 - "Only notes" means every file is one of: the rulings files (`.claude/rules/decisions/`, `.claude/decisions-full/`,
   `DECISIONS*.md`), `HANDOFF.md`, `OUTSTANDING*.md`, evidence sheets and their pictures (`raptor-port/docs/handpass/`,
   the picture folders) and the other reference documents under `raptor-port/docs/` — never a working guide, and never
