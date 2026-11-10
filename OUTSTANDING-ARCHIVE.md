@@ -8495,3 +8495,13 @@ an admin.").
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1785) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "A week that cannot be read" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`). Seen drawing it: that week's refusal is still the amber note, where D1669 made every other refusal of one change the grey "Blocked:" note — to build with this item's words.
 **BUILT 8 Nov 26 by chat 13 and LIVE (pull request 691, his "merge live")** — the words and the grey refusal, `raptor-port/docs/ui-contracts.md` (D1785's line, how it is built), evidence `raptor-port/docs/handpass/2026-11-08-sched-marks.md`; what a damaged week still gets wrong is [DAMAGED-WEEK-LEFTOVERS]. Archived 10 Nov 26 by chat 50.
 
+
+*Moved here 2026-11-10 by backlog-archive.mjs ([LW-READS-OWED-1024]). Forward facts: `raptor-port/docs/superpowers/briefs/2026-11-10-d1297-sweep-candidates.md`.*
+
+### [LW-READS-OWED-1024] Fresh reads owed from 24 Oct 26
+**10 Nov 26 (chat 53): DONE on `claude/night3-guides`** — lessons 49, 50, 52 reworded as the reader's file worded the fix; D1297's sweep of the 224 evidence sheets up to 24 Oct 26 (a fresh Opus helper, its table `raptor-port/docs/superpowers/briefs/2026-11-10-d1297-sweep-candidates.md`) added §7.11's lessons 25–30, one doubtful kind left out; both read by Astra and a fresh Opus reader (D1297's fresh reader among them). Archived once that pull request is live.
+**25 Oct 26 (the night): the reader of D1305–D1355 and lessons 45–54 RAN** — `raptor-port/docs/handpass/parts/lw-1025/reads-1305-1355.md`; its short-line and full-row findings and lesson 54 fixed the same night. **Left:** lessons 49, 50 and 52 (each claims a little more than he said — the fix worded in that file), and D1297's sweep of earlier evidence sheets with its reader.
+One fresh, blind Opus reader of the short lines of D1305–D1334 against their full rows (D138) and of design lessons 45–53
+against his words (D941); and D1297's sweep — each earlier evidence sheet's "found at his look" fault given a §7.11 lesson where
+the walk missed it, then one fresh reader of §7.11's lessons. **Place:** with [LW-ROUND3-BUILD]'s code read, or before it.
+
