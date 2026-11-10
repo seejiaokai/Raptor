@@ -1112,6 +1112,54 @@ the reader's instructions or model change, it is run on every case and a change 
    the page's very foot and back on a phone, and the walk's sizing names what the PC cannot show (the bounce, the folding
    toolbar) as a look for his iPhone; a test stands the bar out of place for a moment and sends the screen-size change
    (`e2e/leavewar.spec.ts` and `e2e/geometry.spec.ts`, "…carried off for a moment"; `[TOPBAR-BOUNCE-AWAY]`).
+*Lessons 25 to 30 come from D1297's sweep of the evidence sheets up to 24 Oct 26 (10 Nov 26, chat 53 — the sweep's table,
+and a seventh kind left out as doubtful, in `docs/superpowers/briefs/2026-11-10-d1297-sweep-candidates.md`).*
+25. **A thing walked only where the demo already had it (his find on his phone, OIL mode's ALL AVAIL count, 22 Sep 26).**
+   Every ALL AVAIL row the OIL walk examined was one the demo seed already carried — a Common Programme row, one of the two
+   places the crowd is honoured. Minutes after the sheet called the walk done he put ALL AVAIL on a duty desk he had added
+   himself, and it counted and earned nobody, silently. The same gap let a counter row's Rearrange fault through on
+   15 Oct 26: the default war has no counter, so no walk dragged one (`docs/handpass/2026-10-15-lw-landing-line.md`).
+   **Lesson:** the roll-call lists every place a person can PUT the thing — each kind of row, seat or list it can be
+   dropped on, typed into or dragged within — not only the places the demo data already shows it; the walk makes each one
+   through the app's own controls (§7.7) and reads the result there (anti-pattern 2; `docs/handpass/2026-09-22-oil-walk.md`
+   §11).
+26. **A gesture checked by the number it moved, not by where the thing went (his report, the Tracker's pinch, 23 Sep 26).**
+   The walk's Edit-layout step asked that "the pinch zooms" — the zoom figure changed — and passed. The chart was zooming
+   about a point below and right of the fingers, 807px off on a phone. **Lesson:** a gesture step measures what the person
+   sees in screen terms — what was under the fingers stays under them, the dragged thing follows the finger — before and
+   after, in every mode the surface has; a figure that moved proves nothing (§7.8; `scripts/handpass/trk-pinch.mjs`;
+   `docs/handpass/2026-09-23-tracker-pinch.md` §6).
+27. **A control's place never measured across the change beside it (his iPhone pictures, the Inputs tab, 9 Oct 26; again
+   21 and 23 Oct 26).** His standing rule (2 Sep 26) is that a control never moves under the finger that pressed it. Three
+   walks passed screens where it did: the Calendar / List switch jumped left on the List (D687); pressing the filter button
+   sent the gear to a line of its own (D693); the › beside a day or month name moved as the words changed, up to 38px
+   (D1122); "Open for bidding", docked at the foot, grew upward and moved its month buttons each time a line was added
+   (D1264). Lesson 17 measures that a page still fits after such a press, not that the controls around it stay put.
+   **Lesson:** for every press that changes what stands beside a control — a view switched, a fold opened, a value with
+   words of another length, a line added to a window — the walk measures each neighbouring control's box before and after,
+   at a phone's width and a desktop's, and any move is a fault unless he ruled it
+   (`docs/handpass/2026-10-08-inputs-sans-calendar-check.md` §17, §20; `scripts/handpass/bsw-arrows.mjs`).
+28. **A press made by a script that scrolls first (his iPhone picture, the Inputs List's dates calendar, 10 Oct 26).** On a
+   phone the calendar opened a whole screen below its button, out of sight. Four browser tests and every walker of the
+   night's FULL check pressed its dates by a scripted press that first scrolls its target into view, so each step passed;
+   a finger does not scroll the page to something it cannot see. The removal that moved the button (the List's own add
+   form) was listed as taken away, never as moving what stood under it. **Lesson:** on a phone, what a press opens is
+   proved on screen before anything in it is pressed — the page not scrolled by the script, the pop-up's box inside the
+   screen, a finger at a point on it — and a change that removes or adds a part names in its roll-call what that moves up
+   or down the page (§7.2; `scripts/handpass/rng-repro.mjs`; `docs/handpass/2026-10-10-list-dates-picker.md` §1).
+29. **A page left open while the day turns (his iPhone, the Leave War's today ring, 23 Oct 26).** He opened the page before
+   midnight and looked after it: the today ring stayed on 22 Oct while the chip already read from the 23rd, and a member's
+   dimmed and outlined days stayed a day behind. No walk kept a page open across midnight. **Lesson:** anything that reads
+   today — a ring, a lock, a "from today" count, a landing day — is walked with the clock moved past midnight while the
+   page stays open, and again on reopening, and every reading is checked to follow the new day without a reload
+   (`ui/dayclock.ts`, `dayclock.test.ts`; `docs/handpass/2026-10-22-lw-m1-open-dates.md` §16, D1266).
+30. **A tint left by a press, unseen because the test browser drops it (his report, the Leave War's month strip,
+   23 Oct 26).** When months were pressed, the grid's row-hover tint reached the month strip and turned its pinned cell
+   see-through for as long as the strip counted as under the pointer — on an iPhone until the next tap, in the test
+   browser for a quarter of a second. It made §7.10's first two bullets (D1281); this entry points there so this list
+   alone answers the sizing step. **Lesson:** on a phone every tap is pictured within about 100ms of the lift with the
+   pointer left where it pressed, beside the settled picture, and each dense screen keeps a standing test that its pinned
+   cells stay opaque while pressed (§7.10; `docs/handpass/2026-10-23-lw-m2-looks.md`, his look of 23 Oct midday).
 
 ## 8. Making the checks FIND rather than CONFIRM
 
