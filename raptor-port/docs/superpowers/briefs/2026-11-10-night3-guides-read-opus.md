@@ -47,3 +47,5 @@ justified as pointers.
   swept in on 10 Nov 26)".
 
 **The host, 10 Nov 26:** every finding reproduced; M1, M2 (with Astra's 2), L1, L2, L3, L5 fixed on `claude/night3-guides`; L4 already done on `claude/night3-leftovers`.
+
+**Re-read of the fixed lines (same reader, at f5d8143ab):** each fix does what its finding asked, no meaning changed elsewhere, no new fault; the checklist entries 25-30 are faithful short forms of their lessons.
