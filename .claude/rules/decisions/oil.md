@@ -51,7 +51,7 @@ Loads with any OIL, Leave War, placeholder-puck or publishing file (the `paths:`
 - A worked weekend that earns nobody any OIL says so, on the day and at publish, with its reason [D81]; an ALL AVAIL / ALL row with a start and no end counts over the one-hour default and earns nobody, the admin told "no OIL worked out — this row has no end time" (the scheduler's file) [D360].
 
 ## How long a day counts
-- A flying line's OIL runs from the earliest applicable entered in-time / rally for the formation, the nominal report time where none is entered; an evening-before report lengthens that line's own day only; the day counts first event to last end, breaks included [D591, D592].
+- A flying line's OIL runs from the earliest applicable entered in-time / rally for the formation, the nominal report time where none is entered; an evening-before report lengthens that line's own day only; the day counts first event to last end, breaks included [D592].
 - An SC shift's typed B (its in-time) counts as work: its OIL and work hours run from it to the shift's end; a blank B leaves the written start to end [D606]; a rally typed on an SC MAIN line starts that crew's day as the B does (the scheduler's file) [D1041, D1044, D1045].
 - A flying line with the same written take-off and landing still earns, the day saying the times look wrong so someone fixes them — a warning, not a refusal [D49]. An overnight line earns on the day it sits on; the hours past midnight earn the next day nothing [D42].
 
