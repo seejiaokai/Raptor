@@ -17,6 +17,12 @@ export const R = []
 export const ok = (step, cond, said, pics = '') => { const res = cond === null ? 'NOTRUN' : cond ? 'PASS' : 'FAIL'; R.push({ step, res, said: String(said), pics }); console.log(res + ' ' + step + ' — ' + String(said).slice(0, 700)) }
 export const note = (step, said, pics = '') => { R.push({ step, res: 'RECORD', said: String(said), pics }); console.log('RECORD ' + step + ' — ' + String(said).slice(0, 700)) }
 export async function shot(page, name, opts = {}) { await page.screenshot({ path: resolve(OUT, name + '.png'), ...opts }); return name + '.png' }
+/** to a page by its name on the top bar — or, where the names are in the side menu (a phone), through the ☰ button (v2, chat 62) */
+export async function goPage(page, name) {
+  const link = page.locator(`a[data-page="${name}"]:visible`).first()
+  if (!(await link.count())) { await page.locator('#burger:visible').click(); await sleep(500) }
+  await page.locator(`a[data-page="${name}"]:visible`).first().click(); await sleep(1100)
+}
 export async function world({ size = PC, dpr = 1, phone = false, engine = 'chromium' } = {}) {
   const b = await L.browserFor(engine, true, false)
   const ctx = await b.newContext({ viewport: size, deviceScaleFactor: dpr, ...(phone ? { hasTouch: true, isMobile: engine === 'chromium' } : {}) })
@@ -30,7 +36,7 @@ export async function world({ size = PC, dpr = 1, phone = false, engine = 'chrom
   await page.goto(L.BASE + '/')
   await L.login(page, 'a')
   // the sign-in lands on View-only Sched: every step here starts from Edit Schedule
-  await page.locator('#topnav a[data-page="editsched"]:visible').first().click(); await sleep(1100)
+  await goPage(page, 'editsched')
   return { ctx, page, errors }
 }
 /** the drawn element matching sel (a box wider than zero), as a plain rect — or null */
