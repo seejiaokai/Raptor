@@ -64,7 +64,17 @@ export function bringBoardChangeOnScreen(keys: string[]): void {
   /* the board's own bar stays at the top over whatever scrolls under it: the visible list begins at its foot */
   const bar = document.querySelector('#schedBoard .sb-top')?.getBoundingClientRect()
   const top = Math.max(view ? view.top : 0, bar && bar.height > 0 && bar.top <= 1 ? bar.bottom : 0)
-  const bottom = Math.min(view ? view.bottom : Infinity, window.innerHeight || document.documentElement.clientHeight)
+  const screenFoot = window.innerHeight || document.documentElement.clientHeight
+  let bottom = Math.min(view ? view.bottom : Infinity, screenFoot)
+  /* a window standing on the screen's foot over the box's column hides the list under it: on a phone the changes window
+     and the ALL AVAIL window are bottom panels (D997), and a box brought up "clear of the foot" landed under the changes
+     window's own foot (chat 63's walk, W9b, 11 Nov 26). There the list's visible foot is the window's top — counted
+     only while the room above it still holds the box. "On the foot" allows the panel's own margin (12px measured on a
+     phone); a window floating clear of the foot (a desktop's, opened under the bar) is not one. */
+  for (const w of document.querySelectorAll('.chgwin, .availwin')) {
+    const r = w.getBoundingClientRect()
+    if (r.height > 0 && r.bottom >= screenFoot - 40 && r.left < box.right && r.right > box.left && r.top - top > box.height) bottom = Math.min(bottom, r.top)
+  }
   const dy = scrollToShow(box, top, bottom)
   if (!dy) return
   const target: any = sc || window

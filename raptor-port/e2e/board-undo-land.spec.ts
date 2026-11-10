@@ -118,5 +118,26 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       expect(back.onTop, 'and nothing lies over it').toBe(true)
       expect(back.viewBottom - back.bottom, 'it came up just clear of the foot, not to the top').toBeLessThan(40)
     })
+
+    /* chat 63's walk (W9b, 11 Nov 26): on a phone the changes window stands at the screen's foot (D997), and the change
+       brought up "clear of the foot" landed under it — on top of the box lay the window's own foot. What stands over the
+       list's foot is the window's top. */
+    test('the changes window open, a change below the screen: Undo brings it up clear of the window, not under it', async ({ page }) => {
+      const m = await mark(page, 'last')
+      expect(m.room).toBeGreaterThan(300)
+      await retype(page, ' u4')
+      await scrollTo(page, 'top'); await settled(page)
+      await page.locator('#sbHist:visible').click()
+      await expect(page.locator('.chgwin:not([hidden])').first()).toBeVisible()
+      const out = await where(page)
+      test.skip(out.inView && out.onTop, 'the last flying line is in sight from the top at this size: nothing to bring up')
+      await undo(page)
+      await expect.poll(async () => (await where(page)).value).not.toContain('u4')
+      await settled(page)
+      const back = await where(page)
+      expect(back.inView, `the remark is on screen after Undo (box ${back.top}–${back.bottom})`).toBe(true)
+      expect(back.onTop, 'and the changes window does not lie over it').toBe(true)
+      await expect(page.locator('.chgwin:not([hidden])').first(), 'the window stays open').toBeVisible()
+    })
   })
 }
