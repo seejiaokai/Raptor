@@ -2094,17 +2094,20 @@ test('the pinned dates are trimmed by a clip path, not by overflow, and none sho
   await page.waitForTimeout(200)
   const got = await page.evaluate(() => {
     const box = document.querySelector<HTMLElement>('[data-testid="sticky-head"]')!, track = box.querySelector<HTMLElement>('.mxfixed-track')!
-    const b = box.getBoundingClientRect(), y = b.top + b.height / 2
-    const inDates = (x: number) => !!document.elementFromPoint(x, y)?.closest('.mxfixed-anim')
-    const corner = box.querySelector('.mxfixed-frozen')!.getBoundingClientRect()
+    const b = box.getBoundingClientRect(), t = track.getBoundingClientRect(), mid = b.top + b.height / 2
+    const inDates = (x: number, y = mid) => !!document.elementFromPoint(x, y)?.closest('.mxfixed-anim')
+    /* On a phone the box runs edge to edge, so no point lies beside it to try (the fresh read's finding, 10 Nov 26):
+       what holds there is that the clipped track lies wholly inside the box, and that nothing of the dates shows
+       just under it. */
     return {
       box: getComputedStyle(box).overflowX, track: getComputedStyle(track).overflowX, clip: getComputedStyle(track).clipPath,
-      leftOfBox: b.left >= 3 ? inDates(b.left - 2) : false, overCorner: inDates(corner.left + corner.width / 2),
+      trackInBox: t.left >= b.left - 0.5 && t.right <= b.right + 0.5 && t.top >= b.top - 0.5 && t.bottom <= b.bottom + 0.5,
+      leftOfBox: b.left >= 3 ? inDates(b.left - 2) : false, below: inDates(b.left + b.width / 2, b.bottom + 2),
       rightOfBox: b.right <= innerWidth - 3 ? inDates(b.right + 2) : false, inStrip: inDates(b.right - 20),
     }
   })
   expect(got, 'the box and the track trim nothing by overflow; the track’s clip path does; the dates show only in their strip')
-    .toEqual({ box: 'visible', track: 'visible', clip: 'inset(0px)', leftOfBox: false, overCorner: false, rightOfBox: false, inStrip: true })
+    .toEqual({ box: 'visible', track: 'visible', clip: 'inset(0px)', trackInBox: true, leftOfBox: false, below: false, rightOfBox: false, inStrip: true })
 })
 test('while the fingers pinch part-way down, the pinned dates row shows by the pinch’s rule (D1870, D1287)', async ({ page }) => {
   test.skip(!isPhone(), 'a two-finger pinch')
