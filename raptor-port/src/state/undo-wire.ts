@@ -270,8 +270,15 @@ function snapView(entry: UndoEntry, dir: 'undo' | 'redo'): void {
   /* the board: bring the changed day onto it — and reopen it there when a week load closed it (A1-F2) */
   /* …and the changed box onto the screen when it is out of view, never when it is in view (D672 — [BOARD-UNDO-SAME-DAY]:
      the board only changed day, so a change scrolled out of view on the day already open went back unseen). Which box
-     is read NOW, from the step's own images; the screen is moved once the step is applied and the board repainted. */
-  const toBox = () => { const keys = boardLandKeys(entry, dir, di); if (keys.length) setTimeout(() => bringBoardChangeOnScreen(keys), 0) }
+     is read NOW, from the step's own images; the screen is moved once the step is applied and the board repainted.
+     ONLY ONCE IT HAS BEEN APPLIED (the fresh Opus reader, F3, 11 Nov 26): this is asked before the restore, and a
+     restore can still be REFUSED — the landing was booked all the same and scrolled the board to a box whose value never
+     changed back. undo/timeline.ts marks the step in the same turn it applies it (`undone` true after an Undo, false
+     after a Redo), so by the time the landing runs the mark says whether it went through. */
+  const toBox = () => {
+    const keys = boardLandKeys(entry, dir, di)
+    if (keys.length) setTimeout(() => { if (!!entry.undone === (dir === 'undo')) bringBoardChangeOnScreen(keys, di) }, 0)
+  }
   if (SBDAY != null) { if (SBDAY !== di) boardTab(di); toBox(); return }
   if (boardWas != null) { setBoardDay(di); toBox(); return }
   /* the week (walker A1-F3): the changed day brought on screen — stepped to on a phone, to the front on a desktop — once

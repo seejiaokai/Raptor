@@ -7,40 +7,142 @@
    Inputs list and Quals by row (onscreen.ts); the board only ever changed DAY (state/undo-wire.ts snapView).
 
    TWO HALVES, because the landing is asked BEFORE the step's writes are put back and the screen is right only after:
-     · boardLandKeys — pure: which boxes the step changes on this day, as the addresses the board draws. Read from the
-       step's own two images of the day by the one comparison the "To go out" list uses (engine/canonical.ts
-       canonicalUnits), so a change is found here exactly where a tap on its line would land. The addresses are
-       positions on the day AS IT WILL STAND once the step is applied — the image this direction restores.
-     · bringBoardChangeOnScreen — once the board has repainted: the first of those boxes the board draws, brought just
+     · boardLandKeys — pure: what the step changes on this day of the loaded week, as the addresses the board draws.
+       Read from the step's own two images of the day by the one comparison the "To go out" list uses
+       (engine/canonical.ts canonicalUnits), so a change is found here exactly where a tap on its line would land. The
+       addresses are positions on the day AS IT WILL STAND once the step is applied — the image this direction restores.
+     · bringBoardChangeOnScreen — once the board has repainted: the first of those changes the board draws, brought just
        under the board's own bar (or up from under the screen's foot) by the least movement, and not moved at all when
-       it is wholly in view. A step that leaves nothing to point at (a row it removes) moves nothing. */
+       it is in view. A step that leaves nothing to point at (a row it removes) moves nothing.
+
+   WHAT THE TWO BLIND READS OF 11 NOV 26 ADDED (Astra's; the fresh Opus reader's), each seen failing first:
+     · a row RE-ORDERED is a 'move' in the comparison, which names no box: its place is found here (movedRowKeys);
+     · a sign-off, a publish mark and a hidden warning are records of the day that are not its content: they land on the
+       sign-off line and on the warning's own line or the day's issues bar (`sign:`, `warnline:`);
+     · an INPUT is drawn in up to three places — its row on the programme, its line under Personal Inputs or Unavailable,
+       its SANS availability card — and a step of it names the input, not a box: the change is in view when ANY of them
+       is; and where none is drawn because Personal Inputs is folded, the panel is opened first, by the test a tap on a
+       change uses;
+     · a box in the page but not laid out is passed over; a change of another week names nothing; and inside the pinched
+       desktop layout the list is moved in ITS units, not the screen's. */
 import { canonicalUnits } from '../engine/canonical'
+import { DAYS } from '../engine/data'
+import { onCommon } from '../engine/grouprows'
+import { INPUTS, inpId, listedPersonal } from '../engine/inputs'
+import { iuParts } from '../engine/keys'
+import { groundOrder } from '../engine/order'
+import { standsOn } from '../engine/overlay'
+import { rowsOf } from '../engine/rowids'
+import { CURWEEK } from '../engine/waves'
 import type { UndoEntry } from '../undo/types'
 import { dayKeyOf } from '../undo/derive'
+import { notify } from '../state/store'
+import * as view from '../state/view'
 import { findHistCell, findInputCell } from './histbubble'
 import { scrollToShow } from './onscreen'
+import { scaleOf } from './pinchzoom'
 
-/** the boxes an Undo (or Redo) of `entry` changes on day `di`, in the order to try them — [] when it changes none there */
-export function boardLandKeys(entry: UndoEntry, dir: 'undo' | 'redo', di: number): string[] {
-  const keys: string[] = []
-  for (const ch of entry.forward) {
-    if (ch.collection === 'days') {
-      const dk = dayKeyOf(ch.collection, ch.id)
-      if (!dk || !dk.includes('#') || Number(dk.split('#')[1]) !== di) continue
-      /* undo: the day goes from its `after` back to its `before`; redo: the other way */
-      const from: any = dir === 'undo' ? ch.after : ch.before, to: any = dir === 'undo' ? ch.before : ch.after
-      if (!from || !to || typeof from !== 'object' || typeof to !== 'object') continue
-      try { for (const u of canonicalUnits(from, to, di)) for (const k of u.jump || []) if (k) keys.push(String(k)) } catch { /* an image the comparison cannot read: nothing to point at */ }
-    } else if (ch.collection === 'inputs') {
-      /* an input's row on the day (Personal Inputs, Unavailable) — found by its input, whoever it is addressed by */
-      keys.push(`iu:${ch.id}`)
-    }
+/* the two places a step lands on that are not a box of the day: the sign-off line (`sign:<di>`), and a hidden warning's
+   own line or the day's issues bar (`warnline:<the warning's hide key>` — the changes window's name for the same line,
+   ui/interactions.ts jumpToChange) */
+const SIGN = 'sign:', WARNLINE = 'warnline:'
+/* what the sign-off line shows of a day's book: published or not, the four sign-offs, the version it stands at. The
+   book's other fields (the pending marks, the saved plans) change with every edit of a published day and are no change
+   to that line. */
+const SIGN_FIELDS = ['ok', 'sg', 'cv']
+const same = (a: unknown, b: unknown) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null)
+
+/* A ROW RE-ORDERED — a drag by its grip, Auto sort, Sort all — changes no box, so the comparison's 'move' names none
+   (canonical.ts: `mov:<di>.<kind>`, no jump) and the landing had nowhere to go (Astra 2, the fresh Opus reader F2a). Its
+   place, by the comparison's own test of a move: in each list, the rows BOTH images hold, matched by their hidden ids;
+   the first whose place differs, addressed as it stands on the day this direction restores. A row only added or only
+   taken away re-orders nothing. */
+function movedRowKeys(from: any, to: any, di: number): string[] {
+  const out: string[] = []
+  const ids = (d: any) => new Set<string>(rowsOf(d).map((r: any) => r && r.rid).filter(Boolean))
+  const inFrom = ids(from), inTo = ids(to)
+  /* `now`: the list as it will stand, each row with the addresses to try for it; `was`: the same list before */
+  const first = (now: Array<[any, string[]]>, was: any[]) => {
+    const a = now.filter(([r]) => r && r.rid && inFrom.has(r.rid))
+    const b = (was || []).filter((r: any) => r && r.rid && inTo.has(r.rid))
+    if (a.length < 2) return
+    const hit = a.find(([r], n) => !b[n] || b[n].rid !== r.rid)
+    if (hit) out.push(...hit[1])
   }
-  return [...new Set(keys)]
+  const list = (rows: any, key: (i: number) => string[]): Array<[any, string[]]> => ((rows || []) as any[]).map((r, i) => [r, key(i)])
+  const byRid = (rows: any) => { const m = new Map<string, any>(); for (const r of (rows || []) as any[]) if (r && r.rid) m.set(r.rid, r); return m }
+  /* a wave's or a duty block's own heading first, then its first line — whichever the board draws */
+  first(list(to.waves, gi => [`wl:${di}.${gi}`, `ff:${di}.${gi}.0.cs`, `fr:${di}.${gi}.0.0`]), from.waves)
+  first(list(to.allhands, i => [`ap:${di}.${i}.prog`]), from.allhands)
+  first(list(to.dutywaves, wi => [`dl:${di}.${wi}`, `dr:${di}.${wi}.0.role`]), from.dutywaves)
+  /* the Ground Programme as DRAWN: by time unless arranged by hand, an input's row on the Common Programme not in it */
+  const ground = (d: any): any[] => groundOrder(d.ground, d.gman).filter((x: any) => !onCommon(x.row))
+  first(ground(to).map((x: any): [any, string[]] => [x.row, [`gr:${di}.${x.ri}.prog`]]), ground(from).map((x: any) => x.row))
+  for (const kind of new Set([...Object.keys(to.sims || {}), ...Object.keys(from.sims || {})])) {
+    first(list((to.sims || {})[kind], i => [`sr:${di}.${kind}.${i}.label`]), (from.sims || {})[kind])
+  }
+  const wavesWas = byRid(from.waves)
+  ;((to.waves || []) as any[]).forEach((w, gi) => {
+    const ww = w && w.rid && wavesWas.get(w.rid)
+    if (!ww) return
+    first(list(w.formations, li => [`ff:${di}.${gi}.${li}.cs`]), ww.formations)
+    const formsWas = byRid(ww.formations)
+    ;((w.formations || []) as any[]).forEach((f, li) => {
+      const wf = f && f.rid && formsWas.get(f.rid)
+      if (wf) first(list(f.aircraft, ai => [`fr:${di}.${gi}.${li}.${ai}`]), wf.aircraft)
+    })
+  })
+  const blocksWas = byRid(from.dutywaves)
+  ;((to.dutywaves || []) as any[]).forEach((b, wi) => {
+    const wb = b && b.rid && blocksWas.get(b.rid)
+    if (wb) first(list(b.rows, ri => [`dr:${di}.${wi}.${ri}.role`]), wb.rows)
+  })
+  return out
 }
 
-/* what scrolls the board's list up and down: the first ancestor that does (the board's list on a desktop and an upright
-   phone; the whole board on a phone on its side, D1780) — null when the page itself does */
+/** what an Undo (or Redo) of `entry` changes on day `di` of the loaded week, in the order to try them — [] when it
+ *  changes nothing there */
+export function boardLandKeys(entry: UndoEntry, dir: 'undo' | 'redo', di: number): string[] {
+  const keys: string[] = [], lines: string[] = []
+  /* did the step change what the day HOLDS — its own content, or an input? Then the change is shown by that, or (a row
+     it only removes) by nothing, the known limit: the sign-offs such an edit wipes on a signed day are its
+     consequence, and following them would carry the screen off a change made in view (D672) */
+  let content = false
+  for (const ch of entry.forward) {
+    if (ch.collection === 'inputs') {
+      /* an input's drawings on the day (its programme row, its line, its card) — found by its input, whoever it is addressed by */
+      keys.push(`iu:${ch.id}`); content = true
+      continue
+    }
+    if (ch.collection !== 'days' && ch.collection !== 'sched.book' && ch.collection !== 'sched.mutes') continue
+    /* this day of the LOADED week only: the day number alone let a step of another week put that week's positions onto
+       this week's board (the fresh Opus reader, F5) */
+    const dk = dayKeyOf(ch.collection, ch.id), h = dk ? dk.lastIndexOf('#') : -1
+    if (!dk || h < 0 || dk.slice(0, h) !== String(CURWEEK) || Number(dk.slice(h + 1)) !== di) continue
+    /* undo: the record goes from its `after` back to its `before`; redo: the other way */
+    const from: any = dir === 'undo' ? ch.after : ch.before, to: any = dir === 'undo' ? ch.before : ch.after
+    if (ch.collection === 'days') {
+      content = true
+      if (!from || !to || typeof from !== 'object' || typeof to !== 'object') continue
+      try {
+        for (const u of canonicalUnits(from, to, di)) for (const k of u.jump || []) if (k) keys.push(String(k))
+        keys.push(...movedRowKeys(from, to, di))
+      } catch { /* an image the comparison cannot read: nothing to point at */ }
+    } else if (ch.collection === 'sched.book') {
+      if (SIGN_FIELDS.some(f => !same(from && from[f], to && to[f]))) lines.push(`${SIGN}${di}`)
+    } else if (!same(from, to)) {
+      /* the warnings hidden on the day: the ones this step hides or flags again, by their own keys */
+      const a: string[] = Array.isArray(from) ? from.map(String) : [], b: string[] = Array.isArray(to) ? to.map(String) : []
+      const inA = new Set(a), inB = new Set(b)
+      const changed = [...a.filter(k => !inB.has(k)), ...b.filter(k => !inA.has(k))]
+      for (const k of changed.length ? changed : ['']) lines.push(`${WARNLINE}${k}`)
+    }
+  }
+  return [...new Set(content ? keys : lines)]
+}
+
+/* what scrolls a box up and down: the first ancestor that does (the board's list on a desktop and an upright phone; the
+   whole board on a phone on its side, D1780; the issues list's own column on a desktop) — null when the page itself does */
 function scrollerOf(el: HTMLElement): HTMLElement | null {
   for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
     if (p.scrollHeight > p.clientHeight + 1 && /^(auto|scroll|overlay)$/.test(getComputedStyle(p).overflowY)) return p
@@ -48,24 +150,59 @@ function scrollerOf(el: HTMLElement): HTMLElement | null {
   return null
 }
 
-/** bring the first of `keys` the board draws wholly on screen — under the board's bar, above the screen's foot — by the
- *  least movement; nothing moves when it already is, when the board draws none of them, or where nothing is laid out */
-export function bringBoardChangeOnScreen(keys: string[]): void {
-  if (!keys.length || typeof document === 'undefined') return
-  const root = document.querySelector('.sb-boardwrap')
-  if (!root) return
-  let el: HTMLElement | null = null
-  for (const k of keys) { el = findHistCell(root, k) || (k.startsWith('iu:') ? findInputCell(root, k) : null); if (el) break }
-  if (!el) return
+/* a look at a saved plan or an issued version is a document, not the working day: nothing in it is a landing
+   (ui/histbubble.ts LOOK) */
+const LOOK = '.preview,.pv-frozen'
+const laidOut = (el: Element | null | undefined): el is HTMLElement => !!el && (el as HTMLElement).getBoundingClientRect().height > 0
+
+/* EVERY DRAWING OF WHAT ONE KEY NAMES, the one to go to first. A box of the day is drawn once. An input is not (case S1,
+   settled red by the browser on 11 Nov 26: an accepted input's time retyped on its Ground Programme row, in view, and
+   the landing scrolled to its line under an open Personal Inputs, the first drawing its finder met): its row on the
+   programme, which the day always draws, then its lines under Personal Inputs or Unavailable (one a man there), then its
+   SANS availability card — a button that opens the input (`data-inpedit`), which neither finder of a change's box
+   looked for (the fresh Opus reader, F2c). */
+function drawingsOf(root: Element, key: string, di: number | null): Element[] {
+  const board = document.querySelector('#schedBoard') || document
+  if (key.startsWith(SIGN)) return [board.querySelector('#sbSignBar') || board.querySelector('#sbSign')].filter(Boolean) as Element[]
+  if (key.startsWith(WARNLINE)) {
+    /* its own line where the list draws it (a desktop's column, a phone's opened list), the day's bar where it does not */
+    const k = key.slice(WARNLINE.length), out: Element[] = []
+    let ix = -1
+    try { ix = k && di != null ? ((view.displayedByDay(di)?.warns || []) as any[]).findIndex(w => view.warnMuteKey(w) === k) : -1 } catch { /* no warnings to read: the bar */ }
+    const line = ix >= 0 ? board.querySelector(`#sbWarn .wln[data-wdi="${di}"][data-wix="${ix}"]`) : null
+    if (line) out.push(line)
+    const bar = board.querySelector('#sbWarn .wh')
+    if (bar) out.push(bar)
+    return out
+  }
+  const p = iuParts(key)
+  if (!p || !p.iid) { const el = findHistCell(root, key); return el ? [el] : [] }
+  const out: Element[] = []
+  const inp: any = (INPUTS as any[]).find(x => inpId(x) === p.iid)
+  const row = inp && di != null && DAYS[di] ? standsOn(DAYS[di], p.iid, inp) : null
+  const ri = row ? ((DAYS[di!] as any).ground || []).indexOf(row) : -1
+  if (ri >= 0) out.push(...root.querySelectorAll(`[data-bfld^="gr:${di}.${ri}."]`))
+  /* its line: the exact one a key naming one of its people asks for, then whichever of its people's is drawn first */
+  for (const el of [findHistCell(root, key), findInputCell(root, key)]) if (el) out.push(el)
+  for (const el of root.querySelectorAll('[data-inprow],[data-inpedit]')) {
+    const d = (el as HTMLElement).dataset
+    const iid = d.inprow != null ? (iuParts(`iu:${d.inprow}`) || { iid: '' }).iid : d.inpedit
+    if (iid === p.iid) out.push(el)
+  }
+  return [...new Set(out)].filter(el => !el.closest(LOOK))
+}
+
+/* where a laid-out drawing stands against what is visible of its own list, and how far that list must move (in the
+   SCREEN's pixels, down positive) to bring it wholly on screen — 0 when it already is */
+function roomOf(el: HTMLElement): { sc: HTMLElement | null; dy: number } {
   const box = el.getBoundingClientRect()
-  if (!(box.height > 0)) return
   const sc = scrollerOf(el)
-  const view = sc ? sc.getBoundingClientRect() : null
+  const seen = sc ? sc.getBoundingClientRect() : null
   /* the board's own bar stays at the top over whatever scrolls under it: the visible list begins at its foot */
   const bar = document.querySelector('#schedBoard .sb-top')?.getBoundingClientRect()
-  const top = Math.max(view ? view.top : 0, bar && bar.height > 0 && bar.top <= 1 ? bar.bottom : 0)
+  const top = Math.max(seen ? seen.top : 0, bar && bar.height > 0 && bar.top <= 1 ? bar.bottom : 0)
   const screenFoot = window.innerHeight || document.documentElement.clientHeight
-  let bottom = Math.min(view ? view.bottom : Infinity, screenFoot)
+  let bottom = Math.min(seen ? seen.bottom : Infinity, screenFoot)
   /* a window standing on the screen's foot over the box's column hides the list under it: on a phone the changes window
      and the ALL AVAIL window are bottom panels (D997), and a box brought up "clear of the foot" landed under the changes
      window's own foot (chat 63's walk, W9b, 11 Nov 26). There the list's visible foot is the window's top — counted
@@ -75,9 +212,52 @@ export function bringBoardChangeOnScreen(keys: string[]): void {
     const r = w.getBoundingClientRect()
     if (r.height > 0 && r.bottom >= screenFoot - 40 && r.left < box.right && r.right > box.left && r.top - top > box.height) bottom = Math.min(bottom, r.top)
   }
-  const dy = scrollToShow(box, top, bottom)
-  if (!dy) return
+  return { sc, dy: scrollToShow(box, top, bottom) }
+}
+
+/* A CHANGED PERSONAL INPUT UNDER A FOLDED PANEL has no drawn line to land on (Astra 3): open Personal Inputs on the day,
+   by the test a tap on a change in the changes window uses (ui/interactions.ts jumpToChange) — an input listed there,
+   and for one accepted onto the programme only on a day its programme row does not stand on; never for a leave under
+   Unavailable. True when it opened the panel. */
+function unfoldFor(keys: string[], di: number | null): boolean {
+  if (di == null || view.PIOPEN.has(di)) return false
+  for (const k of keys) {
+    const p = iuParts(k)
+    if (!p || !p.iid) continue
+    const inp: any = (INPUTS as any[]).find(x => inpId(x) === p.iid)
+    if (inp && listedPersonal(inp) && (inp.acc !== 'g' || !standsOn(DAYS[di], inpId(inp), inp))) { view.PIOPEN.add(di); return true }
+  }
+  return false
+}
+
+function land(keys: string[], di: number | null, mayUnfold: boolean): void {
+  const root = document.querySelector('.sb-boardwrap')
+  if (!root) return
+  /* the first change the board draws AND lays out: a box in the page with no size (a folded section's) is passed over
+     for the fall-back address the change carries on purpose (the fresh Opus reader, F4) */
+  let shown: HTMLElement[] = []
+  for (const k of keys) { shown = drawingsOf(root, k, di).filter(laidOut); if (shown.length) break }
+  if (!shown.length) {
+    if (mayUnfold && unfoldFor(keys, di)) { notify(); setTimeout(() => land(keys, di, false), 0) }
+    return
+  }
+  /* in view in ANY of its drawings: the screen stays (D672) */
+  const rooms = shown.map(roomOf)
+  if (rooms.some(r => !r.dy)) return
+  const { sc, dy } = rooms[0]!
+  /* inside the board's desktop layout pinched on a phone (D1107 — ui/pinchzoom.ts) a list scrolls in its OWN units while
+     every box is measured on the screen: the screen's distance is divided by the list's scale, or the landing falls
+     short when pinched small and overshoots when pinched large (Astra 1, the fresh Opus reader F1) */
+  const by = sc ? dy / scaleOf(sc) : dy
   const target: any = sc || window
-  if (typeof target.scrollBy === 'function') target.scrollBy({ top: dy, behavior: 'smooth' })
-  else if (sc) sc.scrollTop += dy
+  if (typeof target.scrollBy === 'function') target.scrollBy({ top: by, behavior: 'smooth' })
+  else if (sc) sc.scrollTop += by
+}
+
+/** bring the first of `keys` the board draws wholly on screen — under the board's bar, above the screen's foot — by the
+ *  least movement; nothing moves when it already is, when the board draws none of them, or where nothing is laid out.
+ *  `di`: the board's day, for what is found by the day's own data (an input's programme row, a warning's line). */
+export function bringBoardChangeOnScreen(keys: string[], di?: number): void {
+  if (!keys.length || typeof document === 'undefined') return
+  land(keys, di ?? view.SBDAY ?? null, true)
 }
