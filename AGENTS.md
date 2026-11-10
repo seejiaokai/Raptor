@@ -32,8 +32,7 @@ or change anything.**
   `DECISIONS.md` (for a file converted to a page, the steps for a converted area just below them), then `node raptor-port/scripts/backlog-archive.mjs --rulings`. Ask yourself on EVERY message of his:
   is this a decision, a preference, a correction, a "leave it", a no? Every closing report carries a `Rulings:` line.
   **Take the next free number after checking the live rulings, the archived numbers and the ranges held by parallel
-  branches.** A number named in `HANDOFF.md` is a hint to verify, never permission to reuse one. D567–D585 stay
-  reserved for the calendar branch.
+  branches.** A number named in `HANDOFF.md` is a hint to verify, never permission to reuse one.
 - **Run the document check before you end any turn that changed a document:** `cd raptor-port && npm run docsize`.
   It must pass; read what it says rather than working around it.
 - **A background command starts in the wrong folder** — move into `raptor-port/` by its full path inside the command.
@@ -46,7 +45,7 @@ or change anything.**
   and it cannot be given for anything you built until Claude has read it (D67). Push BRANCHES freely — each gives him
   a Vercel link to look at (`shipping.md`).
 - **Branches:** each build job gets its own branch, `codex/<short-name>`, cut from `main` unless he names another
-  base; the calendar's work continues on `codex/inputs-sans-calendar`.
+  base.
 - **One full check at a time on his PC:** take the lock before the full unit suite, a multi-file browser run, the
   Tracker smoke or a fanned-out walk — `node raptor-port/scripts/gatelock.mjs take "<branch> — <what>"`; release it
   the moment the run ends (`shipping.md` §The checks).

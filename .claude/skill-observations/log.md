@@ -2208,6 +2208,48 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 
 **Principle:** A helper's report reaches the host as its final reply; a brief that asks for a report file may be refused, and the reply is then the only copy, so save it at once.
 
+### Observation 917: The shared-folder trap of Observation 787 met again — an opening line written in chat, outside the handoff guide
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Numbering:** first appended as 916; chat 51 appended its own 916 on `claude/lw-frozen-bar-stutter` the same minute (the same event, from the other chat's side), so this one is renumbered 917 — read the two together at the next review.
+**Session context:** Chat 50 (night 3's notes leftovers); mid-turn he said he would open a parallel chat for a Leave War fault, and the agent wrote its opening line in the reply
+**Skill:** session-handoff (and every place the agent writes an opening line for a parallel chat)
+**Type:** open-source
+**Phase/Area:** Opening lines for a chat that will run beside this one
+
+**Issue:** Observation 787 (3 Nov 26) was actioned the morning of 10 Nov 26 in the handoff guide's Step 1: a parallel chat gets its own short-path worktree. Two hours later the agent wrote a parallel chat's opening line by hand in a reply, not through the handoff guide, and it said "start a new branch level with origin/main" with no folder. The new chat cut its branch in the main folder this chat was using; this chat's next commit (notes only) landed on the new chat's branch. Caught by reading `git worktree list` before the next job (the main folder showed the other branch); moved with `git branch -f` and `git reset --keep`, nothing pushed, nothing of either chat lost; this chat moved to `../Raptor-n3`. The rule to check `git branch --show-current` before each commit was known and not run.
+
+**Suggested improvement:** (1) An unconditional guard in place of the judgement: a commit hook (beside `push-guard.mjs`) that records the branch this session last checked out or created and refuses `git commit` when the folder's current branch differs, naming both — the check then cannot be forgotten. (2) In the handoff guide's Step 1 and the general rules on parallel chats: the own-folder line applies to EVERY opening line the agent writes for a chat that will run beside this one, written in a reply as much as in a handoff, and the line itself carries `git worktree add ../<repo>-<name> -b <branch> origin/main`.
+
+**Principle:** A rule placed only in the workflow where it was first learned does not reach the same act done by hand elsewhere; where a check costs nothing, a guard inside the act (here, the commit) beats a step in one guide.
+
+### Observation 918: A handoff's "Next" told the next chat to drop owed reads that a ruling reserves for him
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** chat 53, night 3's leftovers — carrying out chat 50's handoff block, step (c) for [CAL-JOB-LEFT]
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** writing a block's "Next" steps
+
+**Issue:** Chat 50's block said of the calendar job's owed reads: "record that [they are overtaken] and archive the item". The reads sit on the reads-owed list, and a standing ruling (D761) says the reads owed are put to him to call or drop, never dropped by the agent. Followed literally, the next chat would have dropped them unasked; caught only because the rulings were searched before acting.
+**Suggested improvement:** in the handoff guide's step that writes "Next", add: for each step that closes, drops, archives or decides something, name the ruling that lets the agent do it alone — or write it as "put to him". The receiving chat checks that line before acting.
+**Principle:** A handoff's instruction carries no authority of its own; a next step that disposes of something must cite what permits the agent to do it alone, or it becomes a question for the owner.
+
+### Observation 919: The missed-faults list had two entries numbered 23, and nothing checks the numbering
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** chat 53, D1297's sweep — adding lessons 25–30 to the bug-check order's §7.11
+**Skill:** New skill candidate: none — the document check (`docsize`)
+**Type:** internal
+**Phase/Area:** the bug-check order's §7.11 list
+
+**Issue:** §7.11 holds two lessons numbered 23 (added by two chats on different days); the sweep helper noticed it. Lessons are cited by number ("§7.11 lesson 7"), so a doubled number makes a citation ambiguous. Left as it is this time — renumbering would change citations elsewhere.
+**Suggested improvement:** the document check counts §7.11's lesson numbers and fails on a gap or a repeat; the second 23 becomes 23b (or the list is renumbered once, every citation searched and fixed in the same change).
+**Principle:** A numbered list that several writers append to needs its numbering checked by a tool, or two writers will take the same number.
+
 ### Observation 916: Two chats opened in one folder — a "start a new branch" opening line switches the other chat's branch
 
 **Status:** OPEN

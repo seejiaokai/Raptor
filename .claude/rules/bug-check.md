@@ -53,10 +53,10 @@ Then, before you execute anything:
   review pile-on.
 - **Who they are now:** Astra is the standing reviewer again, with no end date (D1770): for work Opus wrote Astra
   reviews, called without asking him each time — the rules diet's reworded steps among them, which never go on without his
-  read (D1738, D1739), and every working-guide change (D1761). Sol 6.1 is called only when he calls for him — and until Mon 9 Nov 26 19:00 where a second reader fits (D1743); otherwise, where
+  read (D1738, D1739), and every working-guide change (D1761). Sol 6.1 is called only when he calls for him; otherwise, where
   two readers are required, the fresh, blind Opus reader keeps the second seat (the agent's reading). Fable is on call
   only — a bug Opus cannot crack, or a big open-ended plan — on his word. What Codex wrote, Opus reads (D590, D601,
-  D790, D903, D1734, D1738, D1739, D1761, D1743, D1770).
+  D790, D903, D1734, D1738, D1739, D1761, D1770).
 - **Beside Astra's read,** every job that needs a code read gets a fresh, blind Opus read of its finished code, never
   by the chat that wrote it; a job that went without Astra's read, or without Sol 6.1's where two are required, goes on the reads-owed list (D790, D903, D1734, D1738,
   D1739, D1761, D1770).

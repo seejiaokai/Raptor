@@ -179,9 +179,9 @@ bid windows' Auto-approve switch shares the "Several people" look and takes the 
   first landed in the WRONG media block and no jsdom test can see a media
   query.
 
-## The app's top bar — the page names beside TALON (owner D1641, D1642, D1643, 4 Nov 26 — built and live, pull request 634, `[TOPBAR-NAMES-BESIDE-TALON]`)
+## The app's top bar — the page names beside TALON (owner D1642, D1643, 4 Nov 26 — built and live, pull request 634, `[TOPBAR-NAMES-BESIDE-TALON]`)
 
-**D1641:** the page names, Edit Schedule to Admin, sit on the top bar's first row beside TALON; on any screen where they
+**D1641 (his request; restated in full by D1642):** the page names, Edit Schedule to Admin, sit on the top bar's first row beside TALON; on any screen where they
 cannot all fit there — a phone or a narrow desktop — they go into the side menu (the ☰ drawer, `ui/Drawer.tsx`) as on a
 phone today. **Before it was built (`ui/Shell.tsx`, `ui/scheduler/02-shell.css`, `09-week-responsive.css`):** the side menu took over
 only below 821 wide; above it the bar wrapped, the names on a row of their own under TALON and the buttons on a third

@@ -15,7 +15,7 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## Now (24 Sep 26) — how the checks and the deploy run today
 
-- **The 31 errors left in old walk scripts are fixed before the next full run (his D1572, 2 Nov 26):** the app's own errors
+- **The 31 errors left in old walk scripts were settled before the next full run (his D1572, 2 Nov 26 — spent, archived 10 Nov 26):** the app's own errors
   are 0 since the 31 Oct 26 clean-up; the 31 errors a full run still reported (2 Nov 26) were all one rule, `no-eval` —
   30 in the Leave War overhaul's mock-up scripts (`docs/mock/lw-overhaul/`, which load their approved drawing's own code,
   D1478), each now kept with its reason on the line above; 1 in `reference/probes/`, read-only, left as it is (the
