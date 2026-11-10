@@ -86,6 +86,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
+- [ENGINE-RULES-REVIEW] — the whole rules engine reviewed rules-first, ruling by ruling with a test each, a report for him (his D1983) — the night of 11 Nov 26, on Fable 5.2.
 - [DAMAGED-WEEK-LEFTOVERS] — a week whose saved copy cannot be read still prints and exports the demo days, shows them in the next-week preview, and refuses a person's delete in the amber note, not the grey "Blocked:" one (older; found 8 Nov 26, chat 13's walk).
 - [SCHED-MARKS-WALK-ODDS] — four small older things chat 13's walk saw: the changes window's foot says "Tap a change to go to it." over a line that cannot be tapped; the look banner on two lines on the phone board; "2 warning" beside the board's "2 warnings"; a day's "N changes" chip beside "N pending".
 - [SCHED-MARKS-ASKS] — five small points chat 13 left open: two readers' readings and one wording to put to him, the design check's flag on the section side-bars, a warning's hide ✕ under the keys never checked.
@@ -347,6 +348,24 @@ other (D1761, D1770); on his word, and his "merge live". **Place:** his to place
 
 ### [USERS-ARCH-FOLD-DRAFT] Folding Archived resets an open archived editor (found 8 Nov 26, walker C of pull request 702)
 **What:** on Admin → Users, with an archived man's editor open, a new callsign typed and Delete armed, folding the Archived group and unfolding it shows the editor still open, but its box reads his old callsign again and Delete is no longer armed; the roster's editors keep both through the same fold. The same on `main` and on pull request 702's branch (`raptor-port/docs/handpass/parts/2026-11-08-rd-last-findings-walkC.md`, S14 "Fold Archived, unfold — archived"). Nothing saved is wrong — only typing not yet saved is dropped, silently. **To do:** keep the archived editor's typing and armed Delete across the fold as the roster's are, or close it on the fold so it does not look kept; a test red first. **Place:** low, the agent's — with the next People and accounts job.
+
+### [ENGINE-RULES-REVIEW] The whole rules engine reviewed rules-first — his D1983, 11 Nov 26 (chat 63)
+**What:** no review of the whole engine was ever run (searched 11 Nov 26: the rulings, the backlog, the evidence sheets); each change to it was checked alone (FULL, two readers). A rules-first review — the standing brief `raptor-port/docs/superpowers/briefs/rules-first-red-team.md` — lists every ruling about what the warnings flag and how a rule is read (`.claude/rules/decisions/scheduler.md` §Warnings and the rules engine and the rest of that page, OIL's hours, `raptor-port/docs/engine-rules.md`), checks each against `raptor-port/src/engine/` with a test, and reports gaps, contradictions and weak spots — above all where the rules built on the original meet (report times and rallies, standby lines that fly, hidden warnings, the published-day freeze, OIL hours). **Done is:** a report for him in plain words, each finding with its ruling, its failing test or its reason, put to him or filed; nothing in the app changed by the review (the original's engine stays word for word, D1537). **Who:** Fable 5.2 hosts (D1972), the night of 11 Nov 26, its own branch from `main`. **Under way, chat 64, 11 Nov 26** (branch `claude/engine-rules-review`): the worklist `raptor-port/docs/superpowers/specs/2026-11-11-engine-rules-review-worklist.md` (96 items, nine families), each family's reviewer's brief `raptor-port/docs/superpowers/briefs/2026-11-11-engine-rules-review-family-brief.md`, its tests `raptor-port/src/engine/rulesfirst-<n>-<slug>.test.ts`, the report `raptor-port/docs/superpowers/specs/2026-11-11-engine-rules-review-report.md`.
+**The review ran 11 Nov 26 (chat 64); its report:** `raptor-port/docs/superpowers/specs/2026-11-11-engine-rules-review-report.md`. 96 items; 86 match; 11 faults; 10 questions; 119 tests added (108 `it`, 11 `it.fails`); the nine reviewers' results beside it (`…-engine-rules-review-results-<n>.md`). The faults:
+1. F1 — a published day's live crew-rest warning measures to today's brief setting, not the B the day printed (7.1) — test marked `it.fails` in `rulesfirst-7-published-day`; waits on Q8.
+2. F2 — a seventh day in a row is not flagged while that day's only task is a row with no times yet (3.1) — test marked `it.fails` in `rulesfirst-3-crew-rest`.
+3. F3 — hiding a "takes off and lands at the same time" warning leaves a second, identically worded line's time box amber (6.1) — test marked `it.fails` in `rulesfirst-6-hidden-warnings`.
+4. F4 — the duty-template sheet's AVALON and BB notes say the desk "earns no OIL"; it is off by default and can be switched on (D24, D35) (9.2) — test marked `it.fails` in `rulesfirst-9-oil-earners`.
+5. F5 — Logic, crew rest: the fold never names the rally (3.4) — test marked `it.fails` in `rulesfirst-3-crew-rest`.
+6. F6 — Logic, crew rest: "An SC SPARE carries no crew rest either way", untrue of a SPARE that flies (3.3) — test marked `it.fails` in `rulesfirst-3-crew-rest`.
+7. F7 — Logic, tight turn: names only a typed in-time, but fires with nothing typed (3.2) — test marked `it.fails` in `rulesfirst-3-crew-rest`; waits on Q1.
+8. F8 — Logic, OIL: a flying standby row earns "from its B or R (the earlier)", untrue of a B later than START (8.1) — test marked `it.fails` in `rulesfirst-8-oil-hours`.
+9. F9 — Logic, OIL: "A row with no times … earns nothing", untrue of an accepted all-day request's row (9.1) — test marked `it.fails` in `rulesfirst-9-oil-earners`.
+10. F10 — Logic, personnel: ground crew "checked only for clashes, the long day and days in a row", but their absences flag too (5.2) — test marked `it.fails` in `rulesfirst-5-seats-quals`; waits on Q6.
+11. F11 — Logic, AAR: "an instructor without the mark is flagged instead", untrue of an instructor WSO behind (5.1) — test marked `it.fails` in `rulesfirst-5-seats-quals`.
+
+**Waiting for his answers:** Q1–Q10 of the report.
+**Not fixed by the review** (his words: a report, nothing changed) — each fault is a small build of its own once he has read the report.
 
 ### [SCHED-MARKS-WALK-ODDS] Four small older things the schedule-marks walk saw (found 8 Nov 26, chat 13's walk)
 **What:** seen by the walk of chat 13's job (D1784, D1785, D1792 a, d — branch `claude/pr-sched-marks-3205d7`, evidence
