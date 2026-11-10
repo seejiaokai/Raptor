@@ -28,7 +28,7 @@
 import { canonicalUnits } from '../engine/canonical'
 import { DAYS } from '../engine/data'
 import { onCommon } from '../engine/grouprows'
-import { INPUTS, DATES, inpId, inputCoversDate, listedPersonal } from '../engine/inputs'
+import { DATES, inpById, inputCoversDate, listedPersonal } from '../engine/inputs'
 import { iuParts } from '../engine/keys'
 import { groundOrder } from '../engine/order'
 import { standsOn } from '../engine/overlay'
@@ -208,7 +208,9 @@ function drawingsOf(root: Element, key: string, di: number | null): Element[] {
   const p = iuParts(key)
   if (!p || !p.iid) { const el = findHistCell(root, key); return el ? [el] : [] }
   const out: Element[] = []
-  const inp: any = (INPUTS as any[]).find(x => inpId(x) === p.iid)
+  /* the INPUT, by its id (engine/inputs.ts inpById — the record: where it is drawn is a question about the input, never
+     about one man's day; engine/inputs-readers.test.ts lists this file under RECORDS) */
+  const inp: any = inpById(p.iid)
   const row = inp && di != null && DAYS[di] ? standsOn(DAYS[di], p.iid, inp) : null
   const ri = row ? ((DAYS[di!] as any).ground || []).indexOf(row) : -1
   if (ri >= 0) out.push(...root.querySelectorAll(`[data-bfld^="gr:${di}.${ri}."]`))
@@ -256,9 +258,9 @@ function unfoldFor(keys: string[], di: number | null): boolean {
   for (const k of keys) {
     const p = iuParts(k)
     if (!p || !p.iid) continue
-    const inp: any = (INPUTS as any[]).find(x => inpId(x) === p.iid)
+    const inp: any = inpById(p.iid)
     if (!inp || !inputCoversDate(inp, DATES[di]) || !listedPersonal(inp)) continue
-    if (inp.acc !== 'g' || !standsOn(DAYS[di], inpId(inp), inp)) { view.PIOPEN.add(di); return true }
+    if (inp.acc !== 'g' || !standsOn(DAYS[di], p.iid, inp)) { view.PIOPEN.add(di); return true }
   }
   return false
 }
