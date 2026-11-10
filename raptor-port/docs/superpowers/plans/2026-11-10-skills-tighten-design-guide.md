@@ -4,8 +4,9 @@ His D1975: the skills written here and the design guide are tightened — the sa
 and what no longer applies is taken out, moved whole to an archive; the design guide first. This file is the list put
 to him BEFORE anything changes. Nothing in `raptor-port/docs/design-practices.md` has been edited.
 
-**Status:** the guide read whole by chat 56 on `main` at `c8fc76429`; the list below put to him 10 Nov 26; his answers
-to the two questions in §E are awaited. The rewrite is not started.
+**Status:** the guide read whole by chat 56 on `main` at `c8fc76429`; the list below put to him 10 Nov 26; **his answer
+the same day, D1976 — "As recommended": both of §E as recommended, and chat 57 does the rewrite.** The rewrite is not
+started.
 
 ## A. Measured
 
@@ -108,7 +109,7 @@ These are estimates until the rewrite is measured by `docsize --reads`.
   point 2, "Words", restates §1, §1a and §1b at length — tightened in the same job, as a working guide (the same two
   readers).
 
-## E. His to decide
+## E. His to decide — answered 10 Nov 26, D1976: "As recommended", both
 
 1. **Lessons to one line each** (§C) — his D941 set that shape; his case, the other places and the readers' notes move
    whole to a file that is searched. Recommended: yes.

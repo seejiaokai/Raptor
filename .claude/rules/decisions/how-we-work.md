@@ -36,7 +36,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Cutting what a chat reads at its start goes on as the rules diet; its one follow-up after the last measure — the scheduler's rulings no longer loading into Leave War and Tracker jobs — went live 10 Nov 26 [D1949].
 - What a Leave War job loads at its start is cut again, a follow-up to the rules diet: its main screen file loaded five area pages and the project guide where the job needs one; nothing a job must read is cut — it is read by section from the checklists [D1960, D68, D1735, D1949].
 - Which pages stop loading there is the agent's choice: the scheduler's no longer with the Leave War's own browser tests, People & accounts' no longer with the war's two grid files, OIL's stays; a job opens either by hand before changing what it governs [D1973].
-- The skills written here and the design guide are tightened too — the same rules in fewer words, none dropped — and what no longer applies is taken out, moved whole to an archive; a job of its own, the design guide first [D1975].
+- The skills written here and the design guide are tightened too — the same rules in fewer words, none dropped — and what no longer applies is taken out, moved whole to an archive; a job of its own, the design guide first — each design lesson back to one line, a lesson only about one built screen, already ruled on its page, to the archive [D1975, D1976].
 - The handoff file keeps only the newest gate count; each older one moves whole to its archive file [D1733].
 
 ## Models and readers
