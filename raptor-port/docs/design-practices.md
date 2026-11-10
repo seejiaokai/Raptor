@@ -657,7 +657,7 @@ the merge renumbers only the branch's own side, by script, and the closing repor
 
 **Lesson 65 (28 Oct 26, D1462 — "do u think the Tue 13 Apr title should be abit more brighter and obvious?").** A window's title makes the day it is about bright and obvious, not faint. *(The agent's reading: the date the size of the name, in the app's white, a little lighter so the name still leads; not cyan, which reads as something to press.)*
 
-**Lesson 64 (27 Oct 26, D1438 — "Why is static name aligned to the right? should it be left … Can lowest avail align the numbers instead of the word text?").** In a list, names and figures read from the left; where a figure carries a name of its own, the figures line up with each other and the heading stands over the figures. *(The agent's reading: a name always at the left of its puck; a phone's last column may stay at the right edge.)*
+**Lesson 64 (27 Oct 26, D1438 — "Why is static name aligned to the right? should it be left … Can lowest avail align the numbers instead of the word text?").** In a list, names and figures read from the left; where a figure carries a name of its own, the figures line up with each other and the heading stands over the figures. *(The agent's reading: a name always at the left of its puck; the phone's last column in the Approvals list, PLACED, may stay at the right edge.)*
 
 **Lesson 63 (27 Oct 26, D1437 — "Seems like the alignment of the title and the text is off. fix it. Check the desktop too").** A column's heading and the figures under it line up, on a phone and on a desktop alike. *(The agent's reading: a figure set to the left starts where its heading starts and one set to the right ends where its heading ends, checked by measuring, not by eye.)*
 
