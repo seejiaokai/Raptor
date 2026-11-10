@@ -2336,6 +2336,12 @@ touch-action: pan-x pan-y;
   }
 }
 
+/* HOW THE PINNED DATES ARE TRIMMED (his D1963, 10 Nov 26): on his iPhone the dates went blank sooner on a flick to the
+   page's foot while the box and its track trimmed them by `overflow` — so here the box trims nothing and the track
+   (below, `.lw-sda .mxfixed-track`) trims by a clip path. A small compromise, his words: a hard pull past the foot still
+   blanks them (D1961). Stated BEFORE the pinch's rules, which have the same weight and must win while the fingers are down. */
+.lw-sda .mxfixed { overflow: visible; }
+
 /* WHILE A PINCH STRETCHES THE GRID ([LW-PHONE-PINCH-ZOOM], Matrix.tsx): the frozen row's contents grow with it, so its
    box clips only sideways — the screen's edges, as at rest — and lets them grow down over the rows under it, which the
    row at its new size covers anyway once the fingers lift. Only while the fingers are down. */
@@ -2344,7 +2350,7 @@ touch-action: pan-x pan-y;
    fingers move, so on a pinch out the rows show under the shrunken date row rather than an empty band, and no shadow
    is left standing at the old foot */
 .lw-sda .mxfixed.lw-pinching { background: transparent; box-shadow: none; }
-.lw-sda .mxfixed.lw-pinching .mxfixed-track { overflow-x: clip; overflow-y: visible; }
+.lw-sda .mxfixed.lw-pinching .mxfixed-track { overflow-x: clip; overflow-y: visible; clip-path: none; }
 /* …the frozen row's own table keeps the box's colour under its cells, so its tinted dates (a holiday, a no-leave day,
    a closed date, which are see-through tints) never show the rows through them (the fix read, finding 2) */
 .mxfixed.lw-pinching .mx { background: var(--panel-2); }
@@ -2440,7 +2446,9 @@ touch-action: pan-x pan-y;
 /* In the scroll-driven path the layer is TRANSLATED, not scrolled — so it must
    not be a scroller (an overflow scroller would clip/scroll instead). */
 .lw-sda .mxfixed-track {
-  overflow: hidden;
+  /* trimmed by a clip path, never by `overflow` (D1963 — the note above `.lw-sda .mxfixed`); the pinch lifts it */
+  overflow: visible;
+  clip-path: inset(0);
   touch-action: auto;
 }
 .lw-sda .mxfixed-anim {
