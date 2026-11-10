@@ -13,7 +13,8 @@
        addresses are positions on the day AS IT WILL STAND once the step is applied — the image this direction restores.
      · bringBoardChangeOnScreen — once the board has repainted: the first of those changes the board draws, brought just
        under the board's own bar (or up from under the screen's foot) by the least movement, and not moved at all when
-       it is in view. A step that leaves nothing to point at (a row it removes) moves nothing.
+       it is in view — or when ANY other place the step changed is. A step that leaves nothing to point at (a row it
+       removes) moves nothing.
 
    WHAT THE TWO BLIND READS OF 11 NOV 26 ADDED (Astra's; the fresh Opus reader's), each seen failing first:
      · a row RE-ORDERED is a 'move' in the comparison, which names no box: its place is found here (movedRowKeys);
@@ -131,9 +132,13 @@ export function boardLandKeys(entry: UndoEntry, dir: 'undo' | 'redo', di: number
   /* did the step change what the day HOLDS — its own content, or an input? Then the change is shown by that, and the
      sign-offs such an edit wipes on a signed day are its consequence: following them first would carry the screen off a
      change made in view (D672). They are the FALL-BACK, tried by the landing only when the board draws none of the
-     step's own places (the narrow read, finding 4 — an area or the traffic changed on a signed day: the sign-off line is
-     then the one thing on the board that changed). Never for a step that only takes something away — a row (it names
-     no place), an input (`gone`): that lands nowhere, the known limit. */
+     step's own places (the narrow read, finding 4). Never for a step that only takes something away — a row (it names
+     no place), an input (`gone`): that lands nowhere, the known limit.
+     WHAT THIS DOES NOT REACH (seen with real steps, 11 Nov 26 — boardland.test.ts "real steps on a signed day"): an
+     ordinary edit does not change the SAVED sign-offs at all. The names stay stored and stop being shown while the day
+     differs from what they signed (engine/publish.ts signShown), so such a step's records carry no `sg` change and
+     no sign-off line is named for it — the traffic changed on a signed day, the one box the board does not draw, lands
+     nowhere. The fall-back serves a step whose own records change the sign-offs. */
   let content = false, gone = false
   for (const ch of entry.forward) {
     if (ch.collection === 'inputs') {
@@ -271,12 +276,18 @@ function land(keys: string[], di: number | null, mayUnfold: boolean): void {
   /* the first change the board draws AND lays out: a box in the page with no size (a folded section's) is passed over
      for the fall-back address the change carries on purpose (the fresh Opus reader, F4) */
   let shown: HTMLElement[] = [], drawn = false
+  /* …and every OTHER place of the step the board lays out: a step may change several — rows that changed places, Auto
+     sort, Sort all, two boxes typed by one action — and the screen stays when ANY of them is in view (D672), not only
+     the first named (the narrow read of the second fix round, finding 1: Sort all pressed with the Ground Programme in
+     view scrolled the board up to a row re-sorted far above) */
+  const rest: HTMLElement[] = []
   for (const k of keys) {
     if (isLine(k)) continue
     const all = drawingsOf(root, k, di)
     if (all.length) drawn = true
-    shown = all.filter(laidOut)
-    if (shown.length) break
+    const laid = all.filter(laidOut)
+    if (!shown.length) shown = laid
+    else rest.push(...laid)
   }
   if (!shown.length && mayUnfold && unfoldFor(keys, di)) { notify(); setTimeout(() => land(keys, di, false), 0); return }
   /* the sign-off line and the issues list: the change itself for a step that is only a sign-off, a publish or a hidden
@@ -284,9 +295,9 @@ function land(keys: string[], di: number | null, mayUnfold: boolean): void {
      but folded away is still the step's own, and nothing stands in for it */
   if (!shown.length && !drawn) for (const k of keys) { if (isLine(k)) { shown = drawingsOf(root, k, di).filter(laidOut); if (shown.length) break } }
   if (!shown.length) return
-  /* in view in ANY of its drawings: the screen stays (D672) */
+  /* in view in ANY of its drawings, or any other place of the step in view: the screen stays (D672) */
   const rooms = shown.map(roomOf)
-  if (rooms.some(r => !r.dy)) return
+  if (rooms.some(r => !r.dy) || rest.some(el => !roomOf(el).dy)) return
   const { sc, dy } = rooms[0]!
   /* inside the board's desktop layout pinched on a phone (D1107 — ui/pinchzoom.ts) a list scrolls in its OWN units while
      every box is measured on the screen: the screen's distance is divided by the list's scale, or the landing falls
@@ -298,7 +309,8 @@ function land(keys: string[], di: number | null, mayUnfold: boolean): void {
 }
 
 /** bring the first of `keys` the board draws wholly on screen — under the board's bar, above the screen's foot — by the
- *  least movement; nothing moves when it already is, when the board draws none of them, or where nothing is laid out.
+ *  least movement; nothing moves when it already is, when any other of the step's own places is in view, when the board
+ *  draws none of them, or where nothing is laid out.
  *  `di`: the board's day, for what is found by the day's own data (an input's programme row, a warning's line). */
 export function bringBoardChangeOnScreen(keys: string[], di?: number): void {
   if (!keys.length || typeof document === 'undefined') return

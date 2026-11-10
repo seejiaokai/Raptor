@@ -14,8 +14,9 @@ import { standsOn } from '../engine/overlay'
 import * as view from '../state/view'
 import { setSession } from '../state/auth'
 import { _snapView, installGlobalUndo } from '../state/undo-wire'
-import { commitSetDayApproved } from '../state/sched-commit'
-import { signOf, dayApproved } from '../engine/publish'
+import { commitSetDayApproved, schedWrite, SCHED_TYPES } from '../state/sched-commit'
+import { signOf, dayApproved, setSign, signAt, signShown, markEdit } from '../engine/publish'
+import { canonicalUnits } from '../engine/canonical'
 import { globalUndo } from '../undo'
 import { _resetTimeline, _timelineEntries } from '../undo/timeline'
 import { boardLandKeys, bringBoardChangeOnScreen } from './boardland'
@@ -165,6 +166,63 @@ describe('the board\'s Undo landing: a row re-ordered and nothing else', () => {
     expect(twoRows(ABOVE, SEEN), 'the row that went back to the foot is in view').toEqual([])
     expect(twoRows(SEEN, BELOW), 'it is below the screen, the head in view').toEqual([328])
     document.body.innerHTML = ''
+  })
+  /* the narrow read of the second fix round, finding 1 (11 Nov 26): a step that changed SEVERAL places — two rows that
+     changed places, Auto sort, Sort all — names them all, and only the FIRST named decided "in view": with that one out
+     of view the board scrolled to it, away from rows that changed in view. D672: the screen stays where it is when
+     what the step changes is in view — any of it. Only when none of it is in view does the list go to the first. */
+  const twoBoxes = (k1: string, k2: string, at1: Place, at2: Place, keys: string[]) => {
+    const sc = board(`<textarea data-bfld="${k1}"></textarea><textarea data-bfld="${k2}"></textarea>`)
+    place($(`[data-bfld="${k1}"]`), at1); place($(`[data-bfld="${k2}"]`), at2)
+    bringBoardChangeOnScreen(keys, MON)
+    const by = moved(sc)
+    document.body.innerHTML = ''
+    return by
+  }
+  it('two rows that changed places, the head and the foot of a list: the foot in view, the head above the screen — nothing moves', () => {
+    const before = copy(DAYS[MON]), n = before.allhands.length
+    const swap = copy(DAYS[MON]); swap.allhands[0] = before.allhands[n - 1]; swap.allhands[n - 1] = before.allhands[0]
+    const head = `ap:${MON}.0.prog`, foot = `ap:${MON}.${n - 1}.prog`
+    for (const dir of ['undo', 'redo'] as const) {
+      const keys = boardLandKeys(step(MON, before, swap), dir, MON)
+      expect(keys, `${dir}: both rows moved, the upper named first`).toEqual([head, foot])
+      expect(twoBoxes(head, foot, ABOVE, SEEN, keys), `${dir}: the foot in view`).toEqual([])
+      expect(twoBoxes(head, foot, SEEN, BELOW, keys), `${dir}: the head in view`).toEqual([])
+      expect(twoBoxes(head, foot, ABOVE, BELOW, keys), `${dir}: neither in view — the list goes to the first named`).toEqual([-508])
+      expect(twoBoxes(head, foot, ABOVE, { top: 0, bottom: 0 }, keys), `${dir}: a row in the page but not laid out is not "in view"`).toEqual([-508])
+    }
+  })
+  it('Sort all — rows re-ordered in two lists by one step: the lower list in view, the upper out of view — nothing moves', () => {
+    const d: any = DAYS[MON]
+    const wi = d.dutywaves.findIndex((b: any) => (b.rows || []).length > 1)
+    expect(wi, 'a duty block with two desks').toBeGreaterThanOrEqual(0)
+    const before = copy(d), after = copy(d)
+    after.allhands = [after.allhands[0], after.allhands[2], after.allhands[1], ...after.allhands.slice(3)]
+    after.dutywaves[wi].rows = swapped(after.dutywaves[wi].rows)
+    const upper = `ap:${MON}.1.prog`, lower = `dr:${MON}.${wi}.0.role`
+    for (const dir of ['undo', 'redo'] as const) {
+      const keys = boardLandKeys(step(MON, before, after), dir, MON)
+      expect(keys.indexOf(upper), `${dir}: the Common Programme's row is named`).toBeGreaterThanOrEqual(0)
+      expect(keys.indexOf(lower), `${dir}: …and the duty desk, after it`).toBeGreaterThan(keys.indexOf(upper))
+      expect(twoBoxes(upper, lower, ABOVE, SEEN, keys), `${dir}: the desks in view`).toEqual([])
+      expect(twoBoxes(upper, lower, ABOVE, BELOW, keys), `${dir}: neither list in view — to the first named`).toEqual([-508])
+    }
+  })
+  it('an ordinary step that changed two boxes: one in view, the other out of view — nothing moves', () => {
+    const d: any = DAYS[MON]
+    const gi = d.waves.findIndex((w: any) => (w.formations || []).length > 1)
+    expect(gi, 'a wave with two formations').toBeGreaterThanOrEqual(0)
+    const retype = (x: any, li: number, add: string) => { const ac = x.waves[gi].formations[li].aircraft[0]; ac.rmks = (ac.rmks || '') + add }
+    const before = copy(d), one = copy(d), two = copy(d), both = copy(d)
+    retype(one, 0, ' one'); retype(two, 1, ' two'); retype(both, 0, ' one'); retype(both, 1, ' two')
+    const k1 = boardLandKeys(step(MON, before, one), 'undo', MON)[0]!, k2 = boardLandKeys(step(MON, before, two), 'undo', MON)[0]!
+    expect(k1).not.toBe(k2)
+    const keys = boardLandKeys(step(MON, before, both), 'undo', MON)
+    expect(keys, 'the step names both boxes').toEqual(expect.arrayContaining([k1, k2]))
+    const [first, other] = keys.indexOf(k1) < keys.indexOf(k2) ? [k1, k2] : [k2, k1]
+    expect(twoBoxes(first, other, ABOVE, SEEN, keys), 'the second box in view, the first above the screen').toEqual([])
+    expect(twoBoxes(first, other, SEEN, BELOW, keys), 'the first in view').toEqual([])
+    expect(twoBoxes(first, other, ABOVE, BELOW, keys), 'neither in view — to the first named').toEqual([-508])
   })
   it('a row only added or only taken away re-orders nothing: no row is named for it', () => {
     const before = copy(DAYS[MON]), after = copy(DAYS[MON])
@@ -554,5 +612,79 @@ describe('the board\'s Undo landing: a real publish step', () => {
       }
     } finally { globalUndo(); _resetTimeline() }
     expect(dayApproved(MON), 'the day is a draft again for whatever runs next').toBe(false)
+  })
+})
+
+/* the narrow read of the second fix round, point 3 (11 Nov 26): "the board draws none of the step's own places" was tested
+   with a made-up step only. REAL steps here, each written the way the app writes it, on a day signed through the app's
+   one sign-off write (engine/publish.ts setSign, which BINDS each name to the content it signed):
+   - the traffic (the Traffic window's write, ui/Modals.tsx airEdit) — the one of the three the board has no box for;
+   - an area and its time (ui/textedit.ts) — the board DOES draw these, on the strip under a formation's lines.
+   What they pin: the comparison names each by its own key (`tr:` / `ar:` / `at:`), so such a step is never read as
+   naming nothing. What they also show, and the made-up step hid: an edit on a signed day does not CLEAR the sign-offs
+   in what is saved — the names stay stored and stop being shown while the content differs from what they signed, coming
+   back when it is put back. So the step's own records carry no change of the sign-offs, and a real traffic step names
+   the traffic alone: the sign-off line is not among its places. The fall-back of finding 4 serves a step whose own
+   records DO change the sign-offs (the made-up step's shape, above). */
+describe('the board\'s Undo landing: real steps on a signed day — the traffic, an area, an area\'s time', () => {
+  const ROLES = [['cur', 'ignite'], ['sked', 'bane'], ['plan', 'stiff'], ['appr', 'pump']] as const
+  const signed = () => {
+    _resetTimeline(); installGlobalUndo()
+    setSession({ role: 'admin', user: 'ad' } as any); view.setPage('editsched')
+    schedWrite(SCHED_TYPES.sign, () => { for (const [role, who] of ROLES) setSign(MON, role, who) })
+    expect(Object.values(signShown(MON)).filter(Boolean).length, 'all four sign-offs stand').toBe(4)
+  }
+  const newest = () => { const all = _timelineEntries(); return all[all.length - 1]! }
+  const undoAll = () => { for (let i = _timelineEntries().length; i > 0; i--) globalUndo(); _resetTimeline(); view.setPage('viewsched') }
+  const dayChange = (e: UndoEntry) => e.forward.find(ch => ch.collection === 'days') as any
+  afterEach(() => { document.body.innerHTML = '' })
+
+  it('the traffic changed: the step names the traffic, by the comparison\'s own key; the sign-offs are not in its records', () => {
+    signed()
+    try {
+      const n = _timelineEntries().length
+      const g: any = DAYS[MON].waves[0], was = ((g.traffic || []) as string[]).join(' · ')
+      /* the Traffic window: "Add row" writes the line in place, then airEdit marks it and runs the epilogue */
+      g.traffic = g.traffic || []; g.traffic.push('1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H')
+      markEdit(`tr:${MON}.0`, was, g.traffic.join(' · ')); view.afterSchedMutate()
+      expect(_timelineEntries().length, 'one step').toBe(n + 1)
+      const e = newest(), ch = dayChange(e)
+      expect(ch, 'the step holds the day').toBeTruthy()
+      expect(canonicalUnits(ch.after, ch.before, MON).flatMap((u: any) => u.jump || []), 'the comparison names the traffic').toContain(`tr:${MON}.0`)
+      for (const dir of ['undo', 'redo'] as const) expect(boardLandKeys(e, dir, MON), dir).toContain(`tr:${MON}.0`)
+      /* the sign-offs: still stored, no longer shown — and so not a change in the step's own records */
+      expect(Object.values(signAt(MON)).filter(Boolean).length, 'the four names are still stored').toBe(4)
+      expect(Object.values(signShown(MON)).filter(Boolean).length, 'and none is shown while the day differs from what they signed').toBe(0)
+      const book = e.forward.find(c => c.collection === 'sched.book') as any
+      if (book) expect(book.after?.sg, 'the saved sign-offs are the same before and after the step').toEqual(book.before?.sg)
+      globalUndo()
+      expect(Object.values(signShown(MON)).filter(Boolean).length, 'the edit undone: all four show again').toBe(4)
+    } finally { undoAll() }
+  })
+
+  it('an area, and its time, retyped: each named by its own key, and the board lands on the strip it draws', () => {
+    signed()
+    try {
+      const f: any = DAYS[MON].waves[0].formations[0]
+      for (const [pre, fld, attr] of [['ar', 'area', 'data-area'], ['at', 'atime', 'data-atime']] as const) {
+        const key = `${pre}:${MON}.0.0`, was = String(f[fld] || ''), now = was + ' X'
+        /* ui/textedit.ts: the box's value written in place, then one text command that marks it */
+        f[fld] = now; schedWrite(SCHED_TYPES.text, () => markEdit(key, was, now), { key })
+        const e = newest(), ch = dayChange(e)
+        expect(ch, `${pre}: the step holds the day`).toBeTruthy()
+        expect(canonicalUnits(ch.after, ch.before, MON).flatMap((u: any) => u.jump || []), `${pre}: the comparison names it`).toContain(key)
+        for (const dir of ['undo', 'redo'] as const) {
+          const keys = boardLandKeys(e, dir, MON)
+          expect(keys, `${pre} ${dir}`).toContain(key)
+          let sc = board(`<span ${attr}="${MON}.0.0"></span>`); place($(`[${attr}]`), ABOVE)
+          bringBoardChangeOnScreen(keys, MON)
+          expect(moved(sc), `${pre} ${dir}: out of view above`).toEqual([-508])
+          sc = board(`<span ${attr}="${MON}.0.0"></span>`); place($(`[${attr}]`), SEEN)
+          bringBoardChangeOnScreen(keys, MON)
+          expect(moved(sc), `${pre} ${dir}: in view`).toEqual([])
+        }
+      }
+    } finally { undoAll() }
+    expect(Object.values(signAt(MON)).filter(Boolean).length, 'the day is unsigned again for whatever runs next').toBe(0)
   })
 })

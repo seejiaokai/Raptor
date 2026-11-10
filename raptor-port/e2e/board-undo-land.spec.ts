@@ -338,6 +338,63 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       expect(down.value).toBe(before[0])
     })
 
+    /* the narrow read of the second fix round, finding 1: ONE STEP THAT RE-ORDERS SEVERAL LISTS. Sort all can be pressed
+       from anywhere on the board; it puts every list in time order as one step. Here two lists are out of order — the
+       Common Programme near the top (its first row given a late time) and the Ground Programme far below it (a row
+       carried down by its grip) — and Sort all is pressed. With the Ground Programme's re-sorted row in view and the
+       Common Programme out of view above, Undo and Redo change a row in view: the screen stays (D672). Only the FIRST
+       place the step named decided "in view", and the board scrolled up, away from the rows changing in front of him
+       (2509 → 1242 on his PC, 4746 → 2378 on his iPhone, measured on the build before the fix). */
+    test('Sort all with the Ground Programme in view and rows re-sorted far above it: Undo and Redo, a re-sorted row in view, leave the board where it is', async ({ page }) => {
+      const ITEMS = '#sbBoard [data-bfld^="ap:0."][data-bfld$=".prog"]', GROUND = '#sbBoard .sb-panel.grnd .sb-arow'
+      const prog = () => page.evaluate(sel => [...document.querySelectorAll(sel)].map(e => (e as HTMLTextAreaElement).value), ITEMS)
+      const ground = () => page.evaluate(sel => [...document.querySelectorAll(sel)].map(r => (r.querySelector('[data-bfld$=".prog"]') as HTMLTextAreaElement | null)?.value || ''), GROUND)
+      /* a Ground Programme row's item box, by its words — its place in the list is what changes here */
+      const groundBox = async (item: string) => `#sbBoard [data-bfld="${await page.evaluate(([sel, item]) => {
+        const box = [...document.querySelectorAll(`${sel} [data-bfld$=".prog"]`)].find(e => (e as HTMLTextAreaElement).value === item)
+        return box ? box.getAttribute('data-bfld') : 'none'
+      }, [GROUND, item] as const)}"]`
+      /* the Common Programme's first row late */
+      await retime(page, '#sbBoard [data-bfld="ap:0.0.str"]', '2200')
+      await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
+      await expect.poll(async () => (await spot(page, '#sbBoard [data-bfld="ap:0.0.str"]'))?.value).toBe('22:00')
+      /* a Ground Programme row carried down by its grip: the list in an order of the hand */
+      const g0 = await ground()
+      expect(g0.length, 'the demo Monday\'s Ground Programme is a list').toBeGreaterThan(3)
+      expect(new Set(g0).size, 'its rows are told apart by their words').toBe(g0.length)
+      const grips = page.locator(`${GROUND} .sb-grip:visible`), rows = page.locator(GROUND)
+      await grips.first().scrollIntoViewIfNeeded(); await rested(page)
+      const a = (await grips.first().boundingBox())!, b = (await rows.nth(2).boundingBox())!
+      await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2)
+      await page.mouse.down()
+      await page.mouse.move(b.x + b.width / 2, b.y + 8, { steps: 12 })
+      await page.mouse.up()
+      await expect.poll(ground, { message: 'the drop re-ordered the Ground Programme' }).not.toEqual(g0)
+      const mixed = { prog: await prog(), ground: await ground() }
+      /* Sort all — a button on a desktop's bar, behind ⋯ on a phone — and its question answered */
+      if (size === DESK) await page.locator('#sbSortAll').click()
+      else { await page.locator('#sbMore').click(); await page.locator('#sbMoreSort').click() }
+      await page.locator('#sortAllConfirm').click()
+      await expect.poll(prog, { message: 'Sort all moved the Common Programme\'s late row' }).not.toEqual(mixed.prog)
+      await expect.poll(ground, { message: 'and put the Ground Programme back in time order' }).not.toEqual(mixed.ground)
+      const sorted = { prog: await prog(), ground: await ground() }
+      /* the ground row Sort all moved, a little under the bar: in view before and after either step */
+      const mover = sorted.ground.find((x, i) => mixed.ground[i] !== x)!
+      await nearTop(page, await groundBox(mover)); const at = await rested(page)
+      expect((await spot(page, await groundBox(mover)))!.inView, 'the Ground Programme row Sort all moved is in view').toBe(true)
+      expect((await spot(page, '#sbBoard [data-bfld="ap:0.0.prog"]'))!.inView, 'the Common Programme is out of view above').toBe(false)
+      await undo(page)
+      await expect.poll(prog, { message: 'Undo put the Common Programme\'s order back' }).toEqual(mixed.prog)
+      expect(await ground(), 'and the Ground Programme\'s').toEqual(mixed.ground)
+      expect(await rested(page), 'Undo of Sort all, a re-sorted row in view, moves nothing').toBe(at)
+      expect((await spot(page, await groundBox(mover)))!.inView, 'the row is still in view, back where the hand left it').toBe(true)
+      await redo(page)
+      await expect.poll(prog, { message: 'Redo sorted again' }).toEqual(sorted.prog)
+      expect(await ground()).toEqual(sorted.ground)
+      expect(await rested(page), 'Redo of Sort all, a re-sorted row in view, moves nothing').toBe(at)
+      expect((await spot(page, await groundBox(mover)))!.inView).toBe(true)
+    })
+
     /* finding 3 (Astra's steps): a rejected input's remark retyped under Personal Inputs, the panel folded, Undo — the
        remark went back inside a folded panel, with no row drawn to bring on screen */
     test('a rejected input\'s remark retyped, Personal Inputs folded, the board scrolled away: Undo opens the panel and brings its line into view; in view, Redo and Undo move nothing', async ({ page }) => {
@@ -399,7 +456,10 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       await page.locator('#sbSign [data-beak]:visible').first().click()
       await expect.poll(published, { message: 'the day is published' }).toBe(true)
       await list(page, 'foot'); await rested(page)
-      test.skip((await spot(page, LINE))!.inView, 'the sign-off line is in view from the foot at this size: nothing to bring down')
+      /* a precondition, never a skip (the narrow read of the second fix round, point 2): a test that could skip itself
+         at both sizes left the claim standing on nothing. It ran at both on 11 Nov 26; a day grown short enough to
+         show the line from the foot fails here, and the test is then given the room it needs */
+      expect((await spot(page, LINE))!.inView, 'the sign-off line is out of view from the board\'s foot').toBe(false)
       await undo(page)
       await expect.poll(published, { message: 'Undo took the publish back' }).toBe(false)
       await rested(page)
@@ -461,7 +521,8 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       const ix = await page.locator(`${X}:visible`).last().evaluate(b => b.closest('.wln')!.getAttribute('data-wix'))
       const LINE = `#sbWarn .wln[data-wix="${ix}"]`
       await head()
-      test.skip((await spot(page, LINE))!.inView, 'the whole issues list is in view from its head at this size: nothing to bring up')
+      /* a precondition, never a skip (as the publish test above): it ran at both sizes on 11 Nov 26 */
+      expect((await spot(page, LINE))!.inView, 'the last warning\'s line is out of view from the head of the issues list').toBe(false)
       const was = (await spot(page, BAR))!.value
       await page.locator(`${X}:visible`).last().click()
       await expect.poll(async () => (await spot(page, BAR))?.value, { message: 'the bar counts one issue fewer' }).not.toBe(was)
