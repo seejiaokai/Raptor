@@ -10,8 +10,8 @@ that fit in that time, he selects them and answers its questions, and then it ru
 chat (D867). Its rulings: D596, D667, D766, D869.
 
 **What the command is, and is not.** The command and his selection are his go for the night: the agent builds the
-jobs he selected, on branches, in this chat. It is NOT permission to build a job he did not select, to merge or touch
-`main` (unless he gave "auto merge live" for the night — D1093; then by `.claude/rules/shipping.md`'s four steps;
+jobs he selected, on branches, in this chat. It is NOT permission to build a job he did not select, to push to `main`, to
+merge (unless he gave "auto merge live" for the night — D1093; then by `.claude/rules/shipping.md`'s four steps;
 otherwise nothing merges by itself, the night's notes included — they are merged in the morning, D1980), to change his
 Claude settings, the hooks or a working guide, or to answer a product question for him. Those
 stay his, every night.
@@ -112,9 +112,11 @@ block says so. Never a pull request based on another branch — it runs none of 
   reason for a smaller check; if the night runs short, the LAST job is left, not a check.
 - **Each job is handed to one fresh helper** (the Agent tool, in the background), one job at a time — never two builders
   in this one checkout; Medium means more walkers or a scenario designer inside a job, not two jobs at once — with a
-  complete brief: its branch, its items, its check, the helper limit Low or Medium sets, push by explicit refspec, no
-  edits to `HANDOFF.md`, its own Sonnet walker and fresh, blind Opus reader beside Astra's read (D1770); under Low the read's fixes and the re-walk go back to
-  the same helper while its copy is warm (D1104). The night's chat only coordinates: while a helper runs it writes nothing
+  complete brief: its branch, its items, its check, the helper limit Low or Medium sets, push by explicit refspec, a
+  stop once the job is built so its pull request can open, no edits to `HANDOFF.md`, its own Sonnet walker and fresh, blind Opus reader beside Astra's read (D1770); under Low the read's fixes and the re-walk go back to
+  the same helper while its copy is warm (D1104). The helper stops once the job is built, before its walk; the
+  coordinator then commits and pushes the block, opens the pull request (D1086), and sends the same helper on to the
+  walk, the reads and the fixes. The night's chat only coordinates: while a helper runs it writes nothing
   into the tree (records are drafted in the scratch folder and committed between jobs); it switches Auto-fix off itself
   right after each pull request opens — the app turns it on for every new one (D1090), and a Vercel status comment
   relayed as a review comment needs no reply; it commits and pushes the block,
@@ -154,8 +156,9 @@ block says so. Never a pull request based on another branch — it runs none of 
     pushed, the block rewritten; no new helper, walk or gate run starts after that note until the block is written;
   - if ever told a compaction is waiting (the guard is on — the away mark lapsed or was never set): set it again with
     `--away` as in step 9, so the compaction is not held;
-  - **after a compaction, do what the block's first line says (step 8)** — never carry on from the summary's memory
-    of a file, a ruling or a test result.
+  - **after a compaction, re-read the block, this guide and the files the step in hand touches before the next change,
+    and note the compaction in the block with its time, read from the clock** (the block's first line, step 8, which
+    every rewrite of the block keeps) — never carry on from the summary's memory of a file, a ruling or a test result.
 - **A roadblock that needs him** waits until he wakes (D596, D867): search the rulings and the backlog first (D53); a
   technical choice is yours — decide and write down why; a choice truly his goes into the block's "Questions waiting
   for him" — written into the block, never sent as a message that ends the turn — the question in the app's own words,
@@ -205,8 +208,9 @@ block says so. Never a pull request based on another branch — it runs none of 
 - [ ] Each job has a rough time, and the message says how many fit in his hours.
 - [ ] At most four questions, each with a recommended answer; no technical choice is put to him.
 - [ ] "Low or Medium?" is asked, with the recommended one (D1104).
-- [ ] The message says nothing merges and the live app is untouched, says nothing starts until he replies, and ends
-      by asking for his selection ("go" = the recommended jobs and answers).
+- [ ] The message says nothing merges and the live app is untouched — or, where he gave "auto merge live" for the
+      night, what will merge (D1093) — says nothing starts until he replies, and ends by asking for his selection
+      ("go" = the recommended jobs and answers).
 
 ## Before the first job — check
 

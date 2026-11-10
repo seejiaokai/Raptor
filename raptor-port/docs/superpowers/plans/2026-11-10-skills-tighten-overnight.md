@@ -12,6 +12,17 @@ alone; chat 60 does the change. His answer to §C's question, D1980 — as recom
 merges by itself, notes included, unless he gave "auto merge live"; the night's notes are merged in the morning.**
 Line numbers below are the skill's at that commit.
 
+**Done 10 Nov 26 by chat 60, on `claude/skills-tighten-3`:** the old wording copied whole to
+`raptor-port/docs/archive/overnight-skill-2026-11-10.md`; §B out, §C put right, §D once — 21,958 → 21,167 bytes
+before the reads, less than §G's 1,141 because D1980's sentence went in and "never only the newest row" was kept.
+**Both reads in and fixed:** the fresh Opus reader five findings, Astra one (the Opus reader's third) — reports
+`raptor-port/docs/superpowers/briefs/2026-11-10-overnight-tighten-read-opus.md` and `…-read-astra.md`. The fixes put
+§D 4's rule back whole in the skill (a pointer to a line the night rewrites was not enough), brought the opening
+checklist level with §C 3, set "push to `main`" outside the "auto merge live" exception, and added the step §C 2
+needed to be possible — each job's helper stops once the job is built so its pull request can open. **Final measure:
+227 lines, 21,725 bytes — about 1% fewer bytes than the 21,958 it started at.** Merged on his advance "merge live"
+(D1981).
+
 ## A. Measured, and checked
 
 - 225 lines, 21,958 bytes — about 7,300 tokens at a third of a token to the byte (an estimate). It is read only on a

@@ -2328,4 +2328,30 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Suggested improvement:** Before a saving is quoted, measure it: mark each passage listed to leave or to be stated once (by line range), sum their bytes with a script, and quote that sum as the ceiling; quote the "said in fewer words" part separately and as a guess, or not at all. State what share of the file is protected text (commands, templates, quoted sentences) — that share cannot shrink.
 **Principle:** An estimate put to the person who decides is a measurement or it is labelled a guess; when the parts to be removed are already listed, summing them costs one script and replaces the guess.
 
-Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each passage listed was written into a script with the text that would replace it, found exactly once in the file, and summed — 1,141 of 21,958 bytes, about 5%, quoted to the owner before his answer; corrections that add words were counted against the saving; the rewording part was labelled a guess and not recommended. A first try at measuring the "protected share" by matching quote marks gave a nonsense figure (text between unrelated quote marks) and was dropped — that share needs marking by hand or not quoting. Script: `raptor-port/docs/superpowers/plans/2026-11-10-skills-tighten-overnight-measure.mjs`.
+Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each passage listed was written into a script with the text that would replace it, found exactly once in the file, and summed — 1,141 of 21,958 bytes, about 5%, quoted to the owner before his answer; corrections that add words were counted against the saving; the rewording part was labelled a guess and not recommended. A first try at measuring the "protected share" by matching quote marks gave a nonsense figure (text between unrelated quote marks) and was dropped — that share needs marking by hand or not quoting. Script: `raptor-port/docs/superpowers/plans/2026-11-10-skills-tighten-overnight-measure.mjs`. The final figure was about 1%: the owner's answer to the list's question added a sentence, and the readers' fixes put text back — a measured ceiling is still a ceiling, and the list should say so.
+
+### Observation 925: A correction to one paragraph of a guide contradicted paragraphs the list promised to leave alone
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** Chat 60, [SKILLS-TIGHTEN] step 3 — the overnight skill's three corrections to later rulings, read by Astra and a fresh Opus reader (number read from the log and every remote branch just before the append: 924 was the highest).
+**Skill:** New skill candidate: tightening a guide (the list first, then the rewrite and its reads)
+**Type:** open-source
+**Phase/Area:** The corrections — a rule a later ruling overtook, put right in place
+
+**Issue:** Three of the readers' five findings were one shape: a rule was corrected where it was stated, and another place that depended on the old rule was left as it was. "The pull request opens as soon as the job is built" was written into one bullet while the bullet beside it still gave the whole job to one background helper and forbade the coordinator to write while it ran — the new rule could not be followed. "Nothing merges, unless he gave auto merge live" was put into the head, one step and one checklist, and missed the other checklist, which still demanded the old sentence. A rule folded into a pointer ("do what the block's first line says") leaned on a line nothing required to stay first. The list to the owner had named each correction by the lines that STATED the old rule, never by the lines that RELIED on it.
+**Suggested improvement:** For each correction, before the list goes to the owner: search the guide for every place that relies on the old rule — the steps that carry it out, the checklist that checks it, the brief that hands it on — and list those lines with it; for each rule turned into a pointer, name what guarantees the thing pointed at still exists when it is needed. The writer's pass asks of every corrected rule "can a reader following the steps in order now do this?", not only "does it say what the ruling says?".
+**Principle:** Correcting a rule is a change to everything that depends on it; find the dependants by what they do, not by where the rule's words appear.
+
+### Observation 926: "check; commit" on one line committed past a failed check
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** Chat 60, [SKILLS-TIGHTEN] step 3 — committing the skill change (number read from the log just before the append: 925 was the highest).
+**Skill:** New skill candidate: committing behind a check (shell habits on this PC)
+**Type:** open-source
+**Phase/Area:** The commit after a document check
+
+**Issue:** The document check and the commit were typed as one command with the check's output sent to a file, its exit code echoed, and the commit after a semicolon. The check failed (a rules file one line over its size tripwire); the commit ran anyway and the failure was read only afterwards. A trap met again: the memory note "a pipe hides a failed check" (3 Nov 26) covers the pipe, and this is the same fault through a semicolon. Nothing was pushed; a second commit fixed it, and the session then committed through a small script that stops when the check fails.
+**Suggested improvement:** A guard, not a reminder: one project script, "check then commit", that runs the document check, prints its last lines and refuses the commit on a non-zero exit — used for every records commit; or the commit hook runs the check itself.
+**Principle:** When a check gates an action, the gate is the check's own exit code joined to the action — never two statements that happen to sit on one line.
