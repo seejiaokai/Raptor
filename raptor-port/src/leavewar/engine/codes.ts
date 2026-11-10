@@ -102,7 +102,7 @@ const MEDICAL_LABELS: Record<string, string> = {
   ATTB: 'medical — ATT B, no flying but may still work',
   ATTC: 'medical — ATT C',
   HL: 'medical — hospitalisation leave',
-  OML: 'medical — outpatient medical leave',
+  OML: 'medical — ordinary medical leave',
 }
 
 // The owner's own grid shorthand: a cell reads `B` / `C`, stored canonically
