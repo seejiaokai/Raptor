@@ -8470,3 +8470,28 @@ the file; fixed on the branch `claude/rules-diet-step-5a-people-1288c3` before t
 **Place:** medium, the agent's — before the next area converts (design, the Tracker), or with it.
 **BUILT 10 Nov 26 on `claude/docsize-paths-open`, live on his "merge live":** the document check now fails a rules file under `.claude/rules/` whose frontmatter is opened and never closed, a `paths:` key with no list items, and a line inside the frontmatter that is no `- <glob>` item (`docsize-rulings.mjs` frontmatterProblems, called from `docsize.mjs`'s misfiling job, which runs with the inventory — so `backlog-archive.mjs --rulings` refuses the same shapes through the inventory it runs); five self-test cases that must fail and one for --rulings, each seen red first, and one whole frontmatter (comments and a blank line in its list) that must pass. After both blind reads (REVISE, saved under `raptor-port/docs/handpass/parts/docsize-paths-open/`) it also refuses a first or closing `---` with a byte-order mark or spaces around it, `paths:` written on one line (which the project's own readers do not read), an item whose quotes do not match, and body lines a lost close swallowed into a scoped file that is not a page (a column-0 `#` line among them); nine more cases that must fail, each seen red first, and one CRLF frontmatter that must pass. After Astra's re-read (REVISE, three holes) it also refuses a second `paths:` key, indented text before any key, and a quoted item with a backslash or another quote of its kind inside it; three more cases, each seen red first. Archived once live.
 
+
+*Moved here 2026-11-10 by backlog-archive.mjs ([SCHED-UNAV-PENDING-MARK]). Forward facts: `raptor-port/docs/handpass/2026-11-08-sched-marks.md`.*
+
+### [SCHED-UNAV-PENDING-MARK] No pending mark on an Unavailable row of a published day (found 25 Oct 26, W2 15)
+
+On a published day, an input filed under Unavailable — a leave filed after publishing (D177), and now an Other's Goes to, a
+"→ Unavail" — reads "1 pending" on the day and in the changes window, but its row on the Unavailable list wears no mark,
+where a Ground Programme row's name is underlined as waiting (pictures `…/w2/e-15-1-ground-edit.png` beside
+`…/w2/e-15-2-unavail-edit.png`). The Unavailable list is drawn from the inputs, not from the schedule's rows, so no mark ever
+reached it. Older than the M3 build; to put to him whether its rows should wear the mark.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1784) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "A waiting mark on Unavailable" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+**BUILT 8 Nov 26 by chat 13 and LIVE (pull request 691, his "merge live")** — `raptor-port/docs/ui-contracts.md` (D1784's line, how it is built), evidence `raptor-port/docs/handpass/2026-11-08-sched-marks.md`; its leftovers are [SCHED-MARKS-ASKS] and [SCHED-MARKS-WALK-ODDS]. Archived 10 Nov 26 by chat 50.
+
+
+*Moved here 2026-11-10 by backlog-archive.mjs ([READONLY-WEEK-WORDS]). Forward facts: `raptor-port/docs/handpass/2026-11-08-sched-marks.md`.*
+
+### [READONLY-WEEK-WORDS] A week read-only because a row will not read says "created by an older version … open it on the device that created it" (filed 30 Sep 26)
+**Place:** low — before the database step's first shared use. Seen by the group-A FULL walk (W4 observation 1): a
+hand-damaged day row makes the week read-only (correct), with a notice written for an older app's published schedule;
+"the device that created it" means nothing once the store is shared. `main`'s read-only week says the same. **Do:** say
+what happened and what to do in the app's words ("This week's saved copy could not be read — it is shown read-only. Ask
+an admin.").
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1785) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "A week that cannot be read" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`). Seen drawing it: that week's refusal is still the amber note, where D1669 made every other refusal of one change the grey "Blocked:" note — to build with this item's words.
+**BUILT 8 Nov 26 by chat 13 and LIVE (pull request 691, his "merge live")** — the words and the grey refusal, `raptor-port/docs/ui-contracts.md` (D1785's line, how it is built), evidence `raptor-port/docs/handpass/2026-11-08-sched-marks.md`; what a damaged week still gets wrong is [DAMAGED-WEEK-LEFTOVERS]. Archived 10 Nov 26 by chat 50.
+
