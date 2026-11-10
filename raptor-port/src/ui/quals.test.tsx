@@ -1147,6 +1147,56 @@ describe('Edit quals', () => {
     } finally { layDown() }
   })
 
+  /* ONE FINGER, ONE DRAG (the fix round of 11 Nov 26 — Astra's read; the fingers themselves are a browser's to drive:
+     e2e/geometry.spec.ts "a second finger put down, moved and lifted alone…"). The drag belongs to the pointer that began
+     it: another pointer's move chooses no landing and its lift drops nothing, a second finger put down cancels the drag,
+     and a pointer the browser takes away cancels it rather than dropping it. */
+  it('only the pointer that began a column drag moves or drops it; a second finger, or a cancelled pointer, ends it with nothing written', async () => {
+    await on()
+    layOut()
+    const finger = async (type: string, el: Element | Document, pointerId: number, isPrimary: boolean) =>
+      act(async () => { el.dispatchEvent(Object.assign(new MouseEvent(type, { bubbles: true }), { pointerId, isPrimary, pointerType: 'touch' })) })
+    const head = (k: string) => $(`#qtbl thead th[data-col="${k}"]`)
+    const lit = () => $$('#qtbl thead th.qdrop').map(t => t.dataset.col)
+    try {
+      const before = qualCols()
+      const a = before[0]!, b = before[1]!, c = before[2]!
+      /* another pointer's move and lift, the first still down */
+      await finger('pointerdown', head(a), 1, true)
+      expect($$('.qwrap .lift-frame.lift').length, 'armed').toBe(1)
+      await finger('pointermove', head(c), 2, false)
+      expect(lit(), 'another pointer\'s move lights no landing').toEqual([])
+      await finger('pointerup', document, 2, false)
+      expect(qualCols(), 'and its lift drops nothing').toEqual(before)
+      expect($$('.qwrap .lift-frame.lift').length, 'the first finger still holds its column').toBe(1)
+      /* the first finger's own move and lift still make the drop */
+      await finger('pointermove', head(b), 1, true)
+      expect(lit()).toEqual([b])
+      await finger('pointerup', document, 1, true)
+      expect(qualCols().slice(0, 2), 'the column moved under the finger that held it').toEqual([b, a])
+      await dragCol(a, b)   // put back as it was
+      expect(qualCols()).toEqual(before)
+      /* a second finger put down ends the drag: nothing after it is a drop */
+      await finger('pointerdown', head(a), 1, true)
+      await finger('pointermove', head(b), 1, true)
+      await finger('pointerdown', head(c), 2, false)
+      expect(frame().className, 'the frame is let go').toBe('lift-frame')
+      expect($$('#qtbl thead th.qdrop, #qtbl thead th.qdragging').length, 'and no mark is left').toBe(0)
+      await finger('pointermove', head(b), 2, false)
+      await finger('pointerup', document, 2, false)
+      await finger('pointerup', document, 1, true)
+      expect(qualCols(), 'a second finger: nothing written').toEqual(before)
+      /* the browser takes the pointer away mid-drag: cancelled, not dropped */
+      await finger('pointerdown', head(a), 1, true)
+      await finger('pointermove', head(b), 1, true)
+      expect(lit()).toEqual([b])
+      await finger('pointercancel', document, 1, true)
+      expect(qualCols(), 'a cancelled pointer drops nothing').toEqual(before)
+      expect(frame().className).toBe('lift-frame')
+      expect($$('#qtbl thead th.qdrop, #qtbl thead th.qdragging').length).toBe(0)
+    } finally { layDown() }
+  })
+
   /* `[CAL-CHECK-SEEN]` (walker D, in passing): the save's note read "Quals saved (prototype — writes to Dataverse in the
      full build)" — a prototype caveat on screen, against his standing rule that the app's words read production
      (25 Aug 26). `[SEEN-BATCH-2]` A9, 10 Oct 26. */
@@ -1287,6 +1337,100 @@ describe('[QUALS-OUTLINE-RESCROLL] the outlined row: the page goes to it once fo
       await click($('#qSave'))
     } finally {
       if (had) proto.scrollIntoView = real; else delete proto.scrollIntoView
+    }
+  })
+
+  /* THE FILTER BOX HIDING HIS ROW WHEN THE ASK ARRIVES (the walk's A8 and both code reads, 11 Nov 26): the ask used to be
+     spent on that repaint, with no row to go to — clearing the filter then outlined him and left the page where it was.
+     The ask waits for the first repaint that DRAWS his row and makes its one trip there. */
+  const typeFilter = async (v: string) => {
+    const box = $('#qFilter') as HTMLInputElement
+    const set = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!
+    await act(async () => { set.call(box, v); box.dispatchEvent(new Event('input', { bubbles: true })) })
+  }
+  const spyTrips = () => {
+    const proto = Element.prototype as any
+    const had = Object.prototype.hasOwnProperty.call(proto, 'scrollIntoView'), real = proto.scrollIntoView
+    const went: string[] = []
+    proto.scrollIntoView = function (this: Element) { went.push((this.querySelector('td.qname') as HTMLElement | null)?.dataset.person || '?') }
+    return { went, off: () => { if (had) proto.scrollIntoView = real; else delete proto.scrollIntoView } }
+  }
+  const outlinedNow = () => $$('#qtbl tr.back-hl td.qname').map(x => x.dataset.person)
+  const drawn = (id: string) => !!$(`#qtbl td.qname[data-person="${id}"]`)
+
+  it('"Check his quals" with the filter hiding his row: no trip and no outline while he is hidden, one trip when the filter is cleared, none after', async () => {
+    const { focusQualsRow } = await import('../state/view')
+    const { went, off } = spyTrips()
+    try {
+      await typeFilter('ace')
+      expect(drawn('bane'), 'the filter hides his row').toBe(false)
+      expect(drawn('dj'), 'and leaves another man\'s').toBe(true)
+      await act(async () => { focusQualsRow('bane'); notify() })
+      expect(outlinedNow(), 'hidden: nothing is outlined').toEqual([])
+      expect(went, 'hidden: the page goes nowhere').toEqual([])
+      /* a repaint, and a tick on another man's row, while he is still hidden */
+      await act(async () => { notify() })
+      if (!$('#qEdit').hidden) await click($('#qEdit'))
+      const other = $$('#qtbl td.qcell[data-q]:not(.na):not(.qro)')[0]
+      const q = other.dataset.q!
+      await click(other)
+      expect(went, 'a tick elsewhere while he is hidden moves nothing').toEqual([])
+      await click($(`#qtbl td[data-q="${q}"]`))   // the tick put back as it was
+      /* the filter cleared: his row is drawn — outlined, and the page goes to it, once */
+      await typeFilter('')
+      expect(outlinedNow(), 'the filter cleared: his row is outlined').toEqual(['bane'])
+      expect(went, 'and the page goes to it — the ask\'s one trip').toEqual(['bane'])
+      await act(async () => { notify() })
+      await click($('#qtbl thead th[data-sort="flight"]'))
+      expect(outlinedNow()).toEqual(['bane'])
+      expect(went, 'a later repaint and a sort leave the page alone').toEqual(['bane'])
+      await click($('#qtbl thead th[data-sort="cs"]'))
+      /* a newer ask replaces an older one that never found its row */
+      await typeFilter('ace')
+      await act(async () => { focusQualsRow('bane'); notify() })
+      await act(async () => { focusQualsRow('stiff'); notify() })
+      expect(went, 'two asks while both are hidden: still nowhere').toEqual(['bane'])
+      await typeFilter('')
+      expect(outlinedNow(), 'the newer ask is the one outlined').toEqual(['stiff'])
+      expect(went, 'and the one trip is to the newer ask\'s row').toEqual(['bane', 'stiff'])
+      await click($('#qSave'))
+    } finally {
+      off()
+    }
+  })
+
+  it('Undo and Redo of a change to a man the filter hides: no trip while he is hidden, one when the filter is cleared', async () => {
+    /* the app's one Undo, wired as main.tsx wires it (this file's other tests never press it) */
+    const { _resetTimeline } = await import('../undo/timeline')
+    const { installGlobalUndo } = await import('../state/undo-wire')
+    _resetTimeline(); installGlobalUndo()
+    const { went, off } = spyTrips()
+    try {
+      if (!$('#qEdit').hidden) await click($('#qEdit'))
+      const cell = $$('#qtbl td.qcell[data-q]:not(.na):not(.qro)').find(td => td.dataset.q!.startsWith('bane|'))!
+      const q = cell.dataset.q!
+      const held = () => !!$(`#qtbl td[data-q="${q}"] .qchk`)
+      const was = held()
+      await click(cell)
+      expect(held(), 'the tick was taken').toBe(!was)
+      await typeFilter('ace')
+      expect(drawn('bane')).toBe(false)
+      went.length = 0
+      await click(document.querySelector('#undoBtn'))
+      expect(went, 'Undo, his row hidden: the page goes nowhere').toEqual([])
+      expect(outlinedNow()).toEqual([])
+      await click(document.querySelector('#redoBtn'))
+      expect(went, 'Redo, his row hidden: nor then').toEqual([])
+      await click(document.querySelector('#undoBtn'))
+      await typeFilter('')
+      expect(held(), 'the Undo took the tick back').toBe(was)
+      expect(outlinedNow(), 'the filter cleared: the row the Undo changed is outlined').toEqual(['bane'])
+      expect(went, 'and the page goes to it once — the last ask\'s trip').toEqual(['bane'])
+      await act(async () => { notify() })
+      expect(went, 'a later repaint leaves the page alone').toEqual(['bane'])
+      await click($('#qSave'))
+    } finally {
+      off()
     }
   })
 })
