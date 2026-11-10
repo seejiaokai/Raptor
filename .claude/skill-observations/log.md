@@ -2207,3 +2207,18 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Suggested improvement:** Overnight Part 2 and every helper brief: "return your report as your final reply; the coordinator saves it" — never "write your report to <file>". The coordinator saves it the moment it arrives, before anything else.
 
 **Principle:** A helper's report reaches the host as its final reply; a brief that asks for a report file may be refused, and the reply is then the only copy, so save it at once.
+
+### Observation 916: The shared-folder trap of Observation 787 met again — an opening line written in chat, outside the handoff guide
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** Chat 50 (night 3's notes leftovers); mid-turn he said he would open a parallel chat for a Leave War fault, and the agent wrote its opening line in the reply
+**Skill:** session-handoff (and every place the agent writes an opening line for a parallel chat)
+**Type:** open-source
+**Phase/Area:** Opening lines for a chat that will run beside this one
+
+**Issue:** Observation 787 (3 Nov 26) was actioned the morning of 10 Nov 26 in the handoff guide's Step 1: a parallel chat gets its own short-path worktree. Two hours later the agent wrote a parallel chat's opening line by hand in a reply, not through the handoff guide, and it said "start a new branch level with origin/main" with no folder. The new chat cut its branch in the main folder this chat was using; this chat's next commit (notes only) landed on the new chat's branch. Caught by reading `git worktree list` before the next job (the main folder showed the other branch); moved with `git branch -f` and `git reset --keep`, nothing pushed, nothing of either chat lost; this chat moved to `../Raptor-n3`. The rule to check `git branch --show-current` before each commit was known and not run.
+
+**Suggested improvement:** (1) An unconditional guard in place of the judgement: a commit hook (beside `push-guard.mjs`) that records the branch this session last checked out or created and refuses `git commit` when the folder's current branch differs, naming both — the check then cannot be forgotten. (2) In the handoff guide's Step 1 and the general rules on parallel chats: the own-folder line applies to EVERY opening line the agent writes for a chat that will run beside this one, written in a reply as much as in a handoff, and the line itself carries `git worktree add ../<repo>-<name> -b <branch> origin/main`.
+
+**Principle:** A rule placed only in the workflow where it was first learned does not reach the same act done by hand elsewhere; where a check costs nothing, a guard inside the act (here, the commit) beats a step in one guide.
