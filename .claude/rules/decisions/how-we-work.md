@@ -36,7 +36,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Cutting what a chat reads at its start goes on as the rules diet; its one follow-up after the last measure — the scheduler's rulings no longer loading into Leave War and Tracker jobs — went live 10 Nov 26 [D1949].
 - What a Leave War job loads at its start is cut again, a follow-up to the rules diet: its main screen file loaded five area pages and the project guide where the job needs one; nothing a job must read is cut — it is read by section from the checklists [D1960, D68, D1735, D1949].
 - Which pages stop loading there is the agent's choice: the scheduler's no longer with the Leave War's own browser tests, People & accounts' no longer with the war's two grid files, OIL's stays; a job opens either by hand before changing what it governs [D1973].
-- The skills written here and the design guide are tightened too — the same rules in fewer words, none dropped — and what no longer applies is taken out, moved whole to an archive; a job of its own, the design guide first — each design lesson back to one line, a lesson only about one built screen, already ruled on its page, to the archive; a fresh chat rewrites it; the session-handoff skill next, as its list recommends, its five corrections included [D1975, D1976, D1977, D1978].
+- The skills written here and the design guide are tightened, the same rules in fewer words, none dropped, and what no longer applies is moved whole to an archive; a job of its own, the design guide first: each design lesson back to one line, a lesson only about one built screen, already ruled on its page, to the archive; a fresh chat rewrites it; then the session-handoff and overnight skills, each as its list recommends, corrections included [D1975, D1976, D1977, D1978, D1979].
 - The handoff file keeps only the newest gate count; each older one moves whole to its archive file [D1733].
 
 ## Models and readers
@@ -186,7 +186,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Using up his weekly allowance before it resets is his aim: work is not held back, cut down or stopped early to save it;
   the agent still reads and reports the figure and saves the state before the limit can stop it [D1033, D1415].
 - Unattended: a question never stops the run — search the rulings, decide technical points, park his choices in one list;
-  one notification at the end; no merge, no `main` [D596]; at a full chat, write the state and carry on [D667]. Before a
+  one notification at the end; no merge, no `main`, notes included, unless he gave "auto merge live" [D596, D1980]; at a full chat, write the state and carry on [D667]. Before a
   compaction the state is in the repo and the compaction is told exactly what to keep — the step in hand, the files it
   touches, the open faults, the parked questions — and what to drop [D766].
 - Every chat compacts at about 400,000 tokens — the project's compaction window 400,000, not 880,000: the first note at
