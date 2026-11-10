@@ -276,11 +276,15 @@ export const globRe = g => new RegExp('^' + g.split(/(\*\*\/|\/\*\*$|\*\*|\*|\?)
 export const matchesPaths = (globs, file) => globs.some(g => globRe(g).test(file))
 /* Every browser test loads the rulings page of the screen it tests (D1973, 10 Nov 26): the scheduler's page names its
    browser tests one by one, so that the Leave War's own no longer load it — and a new test nobody listed would load
-   neither page, with nothing said. files: every file's path; read: a file's text ('' when it is missing). */
+   neither page, with nothing said. Every script under the tests' folder counts, whatever its ending (the test runner's
+   pattern takes a `.spec.tsx` too); a page with no `paths:` loads in every chat, so nothing is owed then; a page that is
+   missing fails every test. files: every file's path, with forward slashes; read: a file's text ('' when it is missing). */
 export const TEST_PAGES = ['.claude/rules/decisions/scheduler.md', '.claude/rules/decisions/leave-war.md']
 export function testPageProblems(files, read) {
-  const globs = TEST_PAGES.map(f => pathsOf(read(f)))
-  return files.filter(f => /^raptor-port\/e2e\/.+\.ts$/.test(f) && !globs.some(g => matchesPaths(g, f)))
+  const texts = TEST_PAGES.map(f => read(f))
+  if (texts.some(t => t && !isScoped(t))) return []
+  const globs = texts.map(t => pathsOf(t))
+  return files.filter(f => /^raptor-port\/e2e\/.+\.[cm]?[jt]sx?$/.test(f) && !globs.some(g => matchesPaths(g, f)))
     .map(f => `${f} is a browser test that loads no rulings page — add it to the paths: of ${TEST_PAGES[0]} (its browser tests are listed one by one since D1973), or name it *leavewar* if it tests the Leave War, whose page then loads`)
 }
 /* THE SEAM FILES (D1735; the rules-diet plan §2): the Leave War's and the Tracker's architecture, moved whole out of
