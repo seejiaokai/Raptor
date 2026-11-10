@@ -21,9 +21,9 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/skills-tighten-2-9a9f74 -->
-### CHAT 59 — [SKILLS-TIGHTEN] step 2: the session-handoff skill's list PUT TO HIM, his answer awaited; the skill NOT changed — written 10 Nov 26, 19:35 — verify before use
+### CHAT 59 — [SKILLS-TIGHTEN] step 2: the session-handoff skill's list PUT TO HIM, his answer awaited; the skill NOT changed — written 10 Nov 26, 19:22, its merge noted 19:31 — verify before use
 - **Where it started:** chat 58's opening line, pull request 750 merged and live; he added: first correct the record lines that still said step 1 waited for his "merge live".
-- **Shipped (notes only, a pull request that merges itself once green — D1407):** those lines corrected (chat 58's block below, [SKILLS-TIGHTEN]'s item and its priority-list line); the list put to him, `raptor-port/docs/superpowers/plans/2026-11-10-skills-tighten-session-handoff.md` — what would leave the skill (§B), where it has fallen behind a later ruling (§C, five corrections, one of which adds a line to the template), what is said once (§D) and shorter (§E), the estimate (§G: 29,508 bytes to about 17,000–19,000) and the method (§H).
+- **Shipped (notes only — pull request 751, merged by itself once green, 10 Nov 26 19:30, D1407):** those lines corrected (chat 58's block below, [SKILLS-TIGHTEN]'s item and its priority-list line); the list put to him, `raptor-port/docs/superpowers/plans/2026-11-10-skills-tighten-session-handoff.md` — what would leave the skill (§B), where it has fallen behind a later ruling (§C, five corrections, one of which adds a line to the template), what is said once (§D) and shorter (§E), the estimate (§G: 29,508 bytes to about 17,000–19,000) and the method (§H).
 - **Unfinished:** the rewrite itself — nothing in `.claude/skills/session-handoff/SKILL.md` is changed; it waits for his answer to the list.
 - **Branch:** `claude/skills-tighten-2-9a9f74` — the app's own fresh folder and branch for this chat, level with `origin/main` when it started. The opening line's `git worktree add … ../Raptor-st2` was NOT run: this chat already had its own folder, and a chat started in a worktree may not write into another. Not released — the chat is open.
 - **Gates:** `npm run docsize` OK (10 Nov 26). No app code changed.

@@ -2301,3 +2301,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** The writer's one-line versions passed the writer's own reading, yet two blind readers found eleven losses in 68 lessons, and nearly all were of one kind: a short qualifying clause inside a longer sentence (an exception scoped to one named column, a "where … is shown another way" condition, a pointer to a rule that narrows this one carried only by a passage that was itself leaving, a note of what was built turned into a requirement by rewording).
 **Suggested improvement:** Before the readers, the writer runs one mechanical pass: for every sentence cut or reworded, list its qualifying words (where, only, unless, except, for … only, narrows, narrowed by, built) and every cross-reference into a passage that is leaving, and show each is still carried; a "built / as built" note is never reworded into the rule's own list.
 **Principle:** When text is condensed, the main clause survives and its conditions do not; a condensing pass needs a check aimed at qualifiers and cross-references, not a re-read for sense.
+
+### Observation 923: An opening line gave the own-folder fallback as an order, without its condition or its write test
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** Chat 59, started from chat 58's opening line to begin [SKILLS-TIGHTEN] step 2 (number read from the log and every remote branch just before the append: 922 was the highest).
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Step 1 — the ready-to-paste opening line (the sentence every opening line carries)
+
+**Issue:** The skill gives the own-folder step as a fallback with a condition ("if `git status` shows changes you did not make, or another chat works in this folder") and a test ("make one write there first, and if the file tools refuse it, stop and tell him"). The opening line handed over dropped both: "run `git worktree add --no-track -b … ../Raptor-st2 origin/main` and work only there". The new chat had been started by the app in its own fresh folder on its own fresh branch, level with `main` — the condition was false — and a chat started in a worktree may not write into another, so obeying the line would have ended in refused writes. The chat stayed where it was and told him; the relative path would also have landed inside `.claude/worktrees/`, not beside the repo, because the line was written from a different starting folder. Related: Observations 916 and 917 (open), whose suggested fix puts `git worktree add` into every such line.
+**Suggested improvement:** In the opening-line step: the fallback is always written with its condition and its write test, never as a bare order; the line first has the new chat say where it is (`git branch --show-current`, `git status --short --untracked-files=no`, level with `origin/main` or not) and use its own folder when that folder is clean, on a fresh branch and no other chat is in it; a path in the line is absolute. When Observations 916 and 917 are acted on, keep this condition.
+**Principle:** A fallback copied into an instruction without its condition becomes the main path; write the check that decides it into the instruction itself, not only into the guide the writer read.
