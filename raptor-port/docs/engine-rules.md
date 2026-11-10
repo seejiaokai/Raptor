@@ -219,7 +219,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   more FORMATION-SPECIFIC rally: it replaces the whole-wave typed RALLY lines (D505) and stands beside a typed rally line
   naming the formation, the earlier counting (D506), with the same evening-before rule (D503). It is never an in-time: a
   whole-wave in-time 06:00 with a rally 07:00 still reports at 06:00 (D1034); the typed lines are read exactly as before.
-  So every reader of the report — crew rest, the long day and work hours, OIL (D591), the wave's header and window, the
+  So every reader of the report — crew rest, the long day and work hours, OIL (D592), the wave's header and window, the
   order check (a box after the brief is the red "rally … is later than brief", never blocking — D507, D509) — counts it as
   it counted a typed rally (D1032). An empty box is nothing entered: the nominal report, the take-off less `reportLead`
   (D592) — the time the empty box SUGGESTS as its default rally (D1027, D1031) and the time "+ In-time" fills (D510,

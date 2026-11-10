@@ -25,7 +25,7 @@ Loads by itself with any file of screen work (the `paths:` above). Each line is 
 - Help's and Admin's titles take the size and weight of Logic's page name and keep their place; the pages without a title stay without one [D1138].
 - On his iPhone the top bar stays on screen on every page when a flick reaches a page's foot and the page springs past its end [D1873].
 - The board covers the top bar, so its own bar carries the same group laid out as Edit Schedule's — Undo · Redo · History · Sync · the bell — then one way out, ✓ Done, no ✕ Close; Done raises no "Schedule updated" note, nothing in its place; on a desktop Sort all stays a button, before Undo, and Insights stands beside the bell; on a phone Sort all, the Phone / Desktop layout switch and Insights sit behind one ⋯ button in the bar's second row, beside the highlighter [D349, D854, D481].
-- The page names, Edit Schedule to Admin, stand on the top bar's first row beside TALON wherever they all fit, the bar's buttons after them or on a row of their own to the right; where they do not all fit they go into the side menu, unchanged, and the bar is one row, as the mock-up of 4 Nov 26 draws them [D1641, D1642, D1643].
+- The page names, Edit Schedule to Admin, stand on the top bar's first row beside TALON wherever they all fit, the bar's buttons after them or on a row of their own to the right; where they do not all fit they go into the side menu, unchanged, and the bar is one row, as the mock-up of 4 Nov 26 draws them [D1642, D1643].
 - On a phone held sideways the names always go into the side menu and the bar is one row, for everyone, even where a member's fewer names would fit [D1643, D1642].
 
 ## Icons and marks — one drawn icon, one thing
@@ -90,7 +90,7 @@ Loads by itself with any file of screen work (the `paths:` above). Each line is 
 - The claw's round (three claws drawn, held, faded, drawn again from nothing, a dark moment between; the overlapping round not built) and the start-up claw's plain 0.2 s fade where it stands, both logos briefly on screen, the glide onto the logo not built [D1617, D1618].
 - The failed-download card's words, "It didn't download. Check your signal, then retry.", though an app update since the tab opened is the other cause — Retry cures that too; "Retry to load it again" not taken [D1637].
 - The Leave War figure box's grey "Blocked" tag hangs from its own box's left edge on a phone as on a desktop, as built; the approved drawing's phone tag, 53px to the right, is not kept [D1670].
-- The undo top bar's mock-up, `raptor-port/docs/mock/undo-topbar.html`, is the design of record as D1126, the scheduler's D1130 and D1641–D1643 changed it; a changes button per page filed (`[HIST-PER-PAGE]`) [D349, D481, D854, D347, D348, D1126, D1130, D1641, D1642, D1643].
+- The undo top bar's mock-up, `raptor-port/docs/mock/undo-topbar.html`, is the design of record as D1126, the scheduler's D1130, D1642 and D1643 changed it; a changes button per page filed (`[HIST-PER-PAGE]`) [D349, D481, D854, D347, D348, D1126, D1130, D1642, D1643].
 - The band, look 1: `raptor-port/docs/mock/2026-11-05-save-band/img/look1-*.png`; the keys batch: `raptor-port/docs/mock/2026-11-05-keys-windows/` [D1655, D1645, D1646].
 
 ## From other areas (each stated on its own area's file)
