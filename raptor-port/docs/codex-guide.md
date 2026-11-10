@@ -10,8 +10,7 @@ root.
 Astra reviews what Opus wrote — the standing reviewer again since D1770 (8 Nov 26), first of two where two are required
 (OIL, published records, permissions, saved data, an important plan, a changed working guide); a fresh, blind Opus read of
 finished code stays beside his on every code read (D790); where two are required, Sol 6.1 is the second only on his call,
-otherwise the fresh, blind Opus reader (D1760, D1761); each reads independently and never reads the other's report first. **Codex BUILDS only on his word, each time** — the job on hold is the SANS availability
-calendar's new layout (`OUTSTANDING.md` `[SANS-CALENDAR-WIP]`, D610). For a build, follow his instruction for it and the
+otherwise the fresh, blind Opus reader (D1760, D1761); each reads independently and never reads the other's report first. **Codex BUILDS only on his word, each time.** For a build, follow his instruction for it and the
 current rulings; what Codex writes, Opus 5.5 reviews, and the writer never approves its own artifact (D67). The
 arrangement that ran until Monday 5 Oct 26 (D494, D496 — Codex planning and building by itself) is over; its text is
 kept whole in `raptor-port/docs/archive/codex-arrangement-2026-10-07.md`.

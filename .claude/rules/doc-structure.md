@@ -81,7 +81,7 @@ tiers: `raptor-port/docs/doc-budget.md`; this file is its short, always-loaded f
   they never clash in anything and never merge at once — each merge under the merge lock, after a level check
   (`shipping.md`) — and the later merge brings `main` in first (D78, D1746).
 - **The Claudex loop** (Opus 5.5 builds; the code read Astra's, the standing reviewer, beside a fresh, blind Opus
-  read; Sol 6.1 on his call (D1743's until Mon 9 Nov 26 19:00, where a second reader fits) and Fable on his call
+  read; Sol 6.1 and Fable each on his call
   only — D67, D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1770): plans and review logs are tier-3
   docs (the table above); the ripple walk reads `feature-impact.md`.
 
