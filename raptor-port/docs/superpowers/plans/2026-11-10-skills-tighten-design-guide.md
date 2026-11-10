@@ -8,6 +8,13 @@ to him BEFORE anything changes. Nothing in `raptor-port/docs/design-practices.md
 the same day, D1976 — "As recommended": both of §E as recommended, and chat 57 does the rewrite.** The rewrite is not
 started.
 
+**Done 10 Nov 26 by chat 58 (D1977) on `claude/skills-tighten`:** §B's checks re-run and all hold but item 11 — D987
+stands, met by the phone's own scrolling (D992), so §5's exception stays, reworded; the old wording copied whole to
+`raptor-port/docs/archive/design-practices-2026-11-10.md` and §9's lessons moved whole to
+`raptor-port/docs/archive/design-lessons-detail-2026-11-10.md`; a fresh reader confirmed thirteen single-screen lessons
+for §E 2 (93, 92, 81, 76, 74, 71, 67, 50, 21, 14, 5, 4, 3) and kept lesson 60. Measured: 137,131 → about 97,800 bytes;
+§9 66,925 → about 33,200. §D's §3 "one row" and §0 item 1 were left: no word could go without a rule.
+
 ## A. Measured
 
 - The guide is 870 lines, 137,131 bytes, about 45,900 tokens (`docsize --reads`, chat 56).
