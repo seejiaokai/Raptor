@@ -249,11 +249,16 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       })
     }
 
-    /* finding 2: a re-order names a row now. The Common Programme's first row given a late time, then ⇅ Auto sort: it
-       drops down the list. From the board's foot, Undo puts the order back — the first row whose place differs is the
-       head of the Common Programme, far above. */
-    test('rows re-ordered by Auto sort, the board scrolled to its foot: Undo brings the first row that moved into view; Redo, now in view, moves nothing', async ({ page }) => {
+    /* finding 2: a re-order names a row now. The Common Programme's first row given a late time, then ⇅ Auto sort: that
+       ONE row drops to the foot of the list. From the board's foot, Undo puts it back at the head, far above.
+       CORRECTED 11 Nov 26 (the narrow read of the first fix round, finding 1): this test ended "Redo, the head now in
+       view, moves nothing" — the wrong target. Redo sends the row back DOWN: the change is the row that moved, at the
+       foot of the Common Programme, not "the first place that differs" (the head, a different row by then). */
+    test('ONE row re-ordered by Auto sort, the board scrolled to its foot: Undo and Redo each bring the row that MOVED into view; with its place in view and the head of the list out of it, Redo moves nothing', async ({ page }) => {
       const HEAD = '#sbBoard [data-bfld="ap:0.0.prog"]'
+      const n = await page.locator('#sbBoard [data-bfld^="ap:0."][data-bfld$=".prog"]').count()
+      expect(n, 'the demo Monday\'s Common Programme is a list').toBeGreaterThan(3)
+      const FOOT = `#sbBoard [data-bfld="ap:0.${n - 1}.prog"]`
       const first = (await spot(page, HEAD))!.value
       await retime(page, '#sbBoard [data-bfld="ap:0.0.str"]', '2200')
       /* a Common Programme time box keeps the keys after Enter and reads as typed until they leave it */
@@ -265,12 +270,72 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       expect((await spot(page, HEAD))!.inView, 'the head of the Common Programme is out of view').toBe(false)
       await undo(page)
       await expect.poll(async () => (await spot(page, HEAD))?.value, { message: 'Undo put the order back' }).toBe(first)
-      const at = await rested(page)
+      await rested(page)
       const back = (await spot(page, HEAD))!
       expect(back.inView, `the row that moved is on screen after Undo (box ${back.top}–${back.bottom}, list ${back.viewTop}–${back.viewBottom})`).toBe(true)
+      /* Redo from the foot again: the row goes back down, and it is THAT row — last of the list now — that comes just
+         under the bar, not the head of the list with the moved row left wherever it falls below it */
+      await list(page, 'foot'); await rested(page)
       await redo(page)
-      await expect.poll(async () => (await spot(page, HEAD))?.value, { message: 'Redo sorted again' }).not.toBe(first)
-      expect(await rested(page), 'Redo of a re-order in view moves nothing').toBe(at)
+      await expect.poll(async () => (await spot(page, FOOT))?.value, { message: 'Redo sorted again: the late row is the last' }).toBe(first)
+      await rested(page)
+      const down = (await spot(page, FOOT))!
+      expect(down.inView, `the row that moved is on screen after Redo (box ${down.top}–${down.bottom}, list ${down.viewTop}–${down.viewBottom})`).toBe(true)
+      expect(down.top - down.viewTop, 'it is the moved row that came just under the bar, not the head of its list').toBeLessThan(40)
+      /* and where the row LANDS in view, the screen stays (D672) — though the head of the list, "the first place that
+         differs", is out of view above */
+      await undo(page)
+      await expect.poll(async () => (await spot(page, HEAD))?.value).toBe(first)
+      await rested(page)
+      await nearTop(page, FOOT); const room = await rested(page)
+      expect((await spot(page, FOOT))!.inView, 'the foot of the Common Programme is in view').toBe(true)
+      expect((await spot(page, HEAD))!.inView, 'its head is out of view above').toBe(false)
+      await redo(page)
+      await expect.poll(async () => (await spot(page, FOOT))?.value).toBe(first)
+      expect(await rested(page), 'Redo of a row that lands in view moves nothing').toBe(room)
+    })
+
+    /* the narrow read, finding 1, by ONE ROW DRAGGED BY ITS GRIP (the mouse, as e2e/geometry.spec.ts drags a row): the
+       first row of the Common Programme carried down past two or more others. Undo sends it back to the head, out of
+       view above: it comes under the bar. Redo carries it down again: with the place it lands in view and the head
+       above the screen, nothing may move — "the first place that differs" (the head, another row by then) scrolled the
+       board up, away from the change. */
+    test('ONE row dragged down the Common Programme: Undo, its old place out of view, brings it into view; Redo, the place it lands in view, moves nothing', async ({ page }) => {
+      const ITEMS = '#sbBoard [data-bfld^="ap:0."][data-bfld$=".prog"]'
+      const row = (i: number) => `#sbBoard [data-move="mv:p.0.${i}"]`, item = (i: number) => `#sbBoard [data-bfld="ap:0.${i}.prog"]`
+      const names = () => page.evaluate(sel => [...document.querySelectorAll(sel)].map(e => (e as HTMLTextAreaElement).value), ITEMS)
+      const before = await names()
+      expect(before.length, 'the demo Monday\'s Common Programme is a list').toBeGreaterThan(4)
+      expect(new Set(before).size, 'its items are told apart by their words').toBe(before.length)
+      await nearTop(page, row(0)); await rested(page)
+      const a = (await page.locator(`${row(0)} .sb-grip`).boundingBox())!, b = (await page.locator(row(3)).boundingBox())!
+      await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2)
+      await page.mouse.down()
+      await page.mouse.move(b.x + b.width / 2, b.y + 8, { steps: 12 })
+      await expect(page.locator('#sbBoard .lift'), 'the row is picked up').toHaveCount(1)
+      await page.mouse.up()
+      await expect.poll(names, { message: 'the drop re-ordered the list' }).not.toEqual(before)
+      const dragged = await names(), to = dragged.indexOf(before[0]!)
+      expect(to, 'the carried row went down past two rows or more, so it alone is the row that moved').toBeGreaterThanOrEqual(2)
+      expect(dragged.filter(x => x !== before[0]), 'and every other row kept its order').toEqual(before.slice(1))
+      const place = async () => { await nearTop(page, item(to)); const at = await rested(page)
+        expect((await spot(page, item(to)))!.inView, 'the place the row was dropped at is in view').toBe(true)
+        expect((await spot(page, item(0)))!.inView, 'the head of the list is out of view above').toBe(false)
+        return at }
+      await place()
+      await undo(page)
+      await expect.poll(names, { message: 'Undo put the order back' }).toEqual(before)
+      await rested(page)
+      const up = (await spot(page, item(0)))!
+      expect(up.inView, `the row that moved is on screen after Undo, at the head again (box ${up.top}–${up.bottom}, list ${up.viewTop}–${up.viewBottom})`).toBe(true)
+      expect(up.value).toBe(before[0])
+      const at = await place()
+      await redo(page)
+      await expect.poll(names, { message: 'Redo carried it down again' }).toEqual(dragged)
+      expect(await rested(page), 'Redo of a row that lands in view moves nothing').toBe(at)
+      const down = (await spot(page, item(to)))!
+      expect(down.inView, 'and the row that moved is in view where it landed').toBe(true)
+      expect(down.value).toBe(before[0])
     })
 
     /* finding 3 (Astra's steps): a rejected input's remark retyped under Personal Inputs, the panel folded, Undo — the
@@ -321,6 +386,36 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       expect(await rested(page), 'Redo of a sign-off in view moves nothing').toBe(at)
     })
 
+    /* the narrow read, finding 5: nothing stood behind "a publish Undo from the foot lands on the sign-off line" */
+    test('a day signed and published, the board scrolled to its foot: Undo and Redo each bring the sign-off line into view; in view, Undo moves nothing', async ({ page }) => {
+      const LINE = '#sbSignBar'
+      for (const who of ['cur', 'sked', 'plan', 'appr']) {
+        const PICK = `#sbSign select[data-sign="${who}"]`
+        const name = await page.locator(PICK).evaluate(e => [...(e as HTMLSelectElement).options].map(o => o.value).find(v => v)!)
+        await page.locator(PICK).selectOption(name)
+        await expect.poll(() => page.locator(PICK).inputValue(), { message: `${who} is signed` }).toBe(name)
+      }
+      const published = () => page.evaluate(() => /^\s*Signed/.test(document.querySelector('#sbSignBar')!.textContent || ''))
+      await page.locator('#sbSign [data-beak]:visible').first().click()
+      await expect.poll(published, { message: 'the day is published' }).toBe(true)
+      await list(page, 'foot'); await rested(page)
+      test.skip((await spot(page, LINE))!.inView, 'the sign-off line is in view from the foot at this size: nothing to bring down')
+      await undo(page)
+      await expect.poll(published, { message: 'Undo took the publish back' }).toBe(false)
+      await rested(page)
+      const back = (await spot(page, LINE))!
+      expect(back.inView, `the sign-off line is on screen after Undo (box ${back.top}–${back.bottom}, list ${back.viewTop}–${back.viewBottom})`).toBe(true)
+      await list(page, 'foot'); await rested(page)
+      await redo(page)
+      await expect.poll(published, { message: 'Redo published it again' }).toBe(true)
+      const at = await rested(page)
+      const again = (await spot(page, LINE))!
+      expect(again.inView, `the sign-off line is on screen after Redo (box ${again.top}–${again.bottom}, list ${again.viewTop}–${again.viewBottom})`).toBe(true)
+      await undo(page)
+      await expect.poll(published).toBe(false)
+      expect(await rested(page), 'Undo of a publish with the sign-off line in view moves nothing').toBe(at)
+    })
+
     /* finding 4, the hidden warning: on a phone the issues list heads the board's one scroller and goes out of view
        with it; on a desktop it stands in the side column and scrolls on its own, the warning's line still in sight —
        there neither the board's list nor the issues list may move (D672). The change is the warning's own LINE. */
@@ -352,6 +447,31 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       await expect.poll(async () => (await spot(page, BAR))?.value).not.toBe(was)
       expect(await rested(page), 'Redo of a hidden warning whose line is in view moves nothing').toBe(at)
       expect(await own(), '…nor the issues list').toBe(ownBack)
+    })
+
+    /* the narrow read, finding 2: the LAST warning of a long issues list hidden, the list back at its head — its bar in
+       view, the warning's own line far down it. The bar in view counted as "the change in view", and the line came back
+       unseen. The line is the change wherever the list lays it out. */
+    test('a warning low in a long issues list hidden, the list back at its head with its bar in view: Undo brings the warning\'s own line into view', async ({ page }) => {
+      const BAR = '#sbWarn .wh', X = '#sbWarn .wln-mute'
+      if (!(await page.locator(`${X}:visible`).count())) await page.locator(BAR).click()
+      const head = async () => { await page.evaluate(() => { document.querySelector('#sbWarn')!.scrollTop = 0 }); await list(page, 'top'); await rested(page) }
+      const own = () => page.evaluate(() => Math.round(document.querySelector('#sbWarn')!.scrollTop))
+      const still = async () => { let a = -1, b = await own(); while (a !== b) { await page.waitForTimeout(250); a = b; b = await own() } return rested(page) }
+      const ix = await page.locator(`${X}:visible`).last().evaluate(b => b.closest('.wln')!.getAttribute('data-wix'))
+      const LINE = `#sbWarn .wln[data-wix="${ix}"]`
+      await head()
+      test.skip((await spot(page, LINE))!.inView, 'the whole issues list is in view from its head at this size: nothing to bring up')
+      const was = (await spot(page, BAR))!.value
+      await page.locator(`${X}:visible`).last().click()
+      await expect.poll(async () => (await spot(page, BAR))?.value, { message: 'the bar counts one issue fewer' }).not.toBe(was)
+      await head()
+      expect((await spot(page, BAR))!.inView, 'the issues bar is in view').toBe(true)
+      await undo(page)
+      await expect.poll(async () => (await spot(page, BAR))?.value, { message: 'Undo flagged it again' }).toBe(was)
+      await still()
+      const back = (await spot(page, LINE))!
+      expect(back.inView, `the warning's own line is on screen after Undo (box ${back.top}–${back.bottom}, list ${back.viewTop}–${back.viewBottom})`).toBe(true)
     })
 
     /* finding 5: a SANS availability card is a button that opens its input — neither finder of a change's box knew it */
