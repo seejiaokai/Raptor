@@ -285,7 +285,7 @@ export function testPageProblems(files, read) {
   if (texts.some(t => t && !isScoped(t))) return []
   const globs = texts.map(t => pathsOf(t))
   return files.filter(f => /^raptor-port\/e2e\/.+\.[cm]?[jt]sx?$/.test(f) && !globs.some(g => matchesPaths(g, f)))
-    .map(f => `${f} is a browser test that loads no rulings page — add it to the paths: of ${TEST_PAGES[0]} (its browser tests are listed one by one since D1973), or name it *leavewar* if it tests the Leave War, whose page then loads`)
+    .map(f => `${f} is a browser test that loads no rulings page — add it to the paths: of ${TEST_PAGES[0]} (its browser tests are listed one by one since D1973), or, at the top of the tests' folder, name it *leavewar* if it tests the Leave War, whose page then loads`)
 }
 /* THE SEAM FILES (D1735; the rules-diet plan §2): the Leave War's and the Tracker's architecture, moved whole out of
    their area files into files of their own that load on the area's own paths AND on the files where the area meets
