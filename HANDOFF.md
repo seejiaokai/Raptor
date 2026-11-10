@@ -21,17 +21,18 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/skills-tighten-2-9a9f74 -->
-### CHAT 59 — [SKILLS-TIGHTEN] step 2: the session-handoff skill's list PUT TO HIM, his answer awaited; the skill NOT changed — written 10 Nov 26, 19:22, its merge noted 19:31 — verify before use
+### CHAT 59 — [SKILLS-TIGHTEN] step 2: the session-handoff skill REWRITTEN on his "As recommended" (D1978), committed, NOT pushed; the two reads RUNNING — written 10 Nov 26, 19:39 — verify before use
 - **Where it started:** chat 58's opening line, pull request 750 merged and live; he added: first correct the record lines that still said step 1 waited for his "merge live".
-- **Shipped (notes only — pull request 751, merged by itself once green, 10 Nov 26 19:30, D1407):** those lines corrected (chat 58's block below, [SKILLS-TIGHTEN]'s item and its priority-list line); the list put to him, `raptor-port/docs/superpowers/plans/2026-11-10-skills-tighten-session-handoff.md` — what would leave the skill (§B), where it has fallen behind a later ruling (§C, five corrections, one of which adds a line to the template), what is said once (§D) and shorter (§E), the estimate (§G: 29,508 bytes to about 17,000–19,000) and the method (§H).
-- **Unfinished:** the rewrite itself — nothing in `.claude/skills/session-handoff/SKILL.md` is changed; it waits for his answer to the list.
-- **Branch:** `claude/skills-tighten-2-9a9f74` — the app's own fresh folder and branch for this chat, level with `origin/main` when it started. The opening line's `git worktree add … ../Raptor-st2` was NOT run: this chat already had its own folder, and a chat started in a worktree may not write into another. Not released — the chat is open.
-- **Gates:** `npm run docsize` OK (10 Nov 26). No app code changed.
-- **Open questions for him:** the list — go as recommended, §C's corrections included?
-- **Running when written:** none.
-- **Pick up here:** on his answer, the plan's §H in order — copy the skill whole to `raptor-port/docs/archive/session-handoff-skill-2026-11-10.md`, rewrite, the writer's pass of skill note 922, then Astra and a fresh, blind Opus reader (D1761, D1738), fix, measure, his "merge live". Then step 3, the overnight skill, the same way (a list to him first); last, ask him about the outside skills. Chat 58's block below goes at this chat's handoff, after its residue read.
+- **Shipped (notes only — pull request 751, merged by itself once green, 10 Nov 26 19:30, D1407):** those lines corrected; the list put to him, `raptor-port/docs/superpowers/plans/2026-11-10-skills-tighten-session-handoff.md`.
+- **Done since, on this branch (commit `9c9dadb5e`, local):** his answer recorded, D1978; the old skill copied whole to `raptor-port/docs/archive/session-handoff-skill-2026-11-10.md`; `.claude/skills/session-handoff/SKILL.md` rewritten — 444 lines / 29,508 bytes to 310 lines / 25,653 bytes, about 13%, well short of the list's estimate of a third or more (the plan's Status says why: the stories were about half the size guessed, the rest is commands and conditions kept word for word). He is told.
+- **Unfinished:** the two blind reads (D1761, D1738) on the brief `raptor-port/docs/superpowers/briefs/2026-11-10-session-handoff-tighten-read-brief.md` — Astra by `codex exec -C <this folder> -s read-only`, a fresh Opus reader as a helper — both started 19:38, neither report in; then each finding set beside the old wording and fixed, both reports saved beside the brief (`…-read-astra.md`, `…-read-opus.md`), `npm run docsize`, the push, a pull request into `main`, his "merge live" (a working guide).
+- **Branch:** `claude/skills-tighten-2-9a9f74` — the app's own fresh folder and branch for this chat; level with `origin/main` at `ed9aaf7f5` plus two local commits. The opening line's `git worktree add … ../Raptor-st2` was NOT run: this chat already had its own folder, and a chat started in a worktree may not write into another. Not released — the chat is open.
+- **Gates:** `npm run docsize` OK on the rewrite (10 Nov 26). No app code changed; no pull request open for the rewrite yet.
+- **Open questions for him:** none.
+- **Running when written:** Astra's read and the fresh Opus reader's — both report to this chat; nothing else.
+- **Pick up here:** if this chat is gone — check `git log origin/claude/skills-tighten-2-9a9f74`: if `9c9dadb5e` is not there, the rewrite was never pushed and is only in this chat's folder (`C:\Users\User\projects\Raptor\.claude\worktrees\rules-diet-followup-4a76cd`); run the two reads again from the brief, fix, push, open the pull request. After his "merge live": the main checkout must be on `main` for the new skill to be in force (the skill's Step 3). Then step 3, the overnight skill, the same way (a list to him first); last, ask him about the outside skills. Chat 58's block below goes at this chat's handoff, after its residue read.
 - **Opening line:** none yet — the chat is open.
-- **Rulings:** none this chat. **Walk:** none — nothing of the app changed. **Reads owed:** none yet. **Next chat number:** 60 (D1744).
+- **Rulings:** D1978. **Walk:** none — nothing of the app changed. **Reads owed:** none yet. **Next chat number:** 60 (D1744).
 <!-- /now -->
 <!-- now:claude/skills-tighten -->
 ### CHAT 58 — [SKILLS-TIGHTEN] step 1: the design guide REWRITTEN, both reads IN and every finding fixed — MERGED and live 10 Nov 26 on his "merge live", pull request 750 (D1737); the two skills NOT started — written 10 Nov 26, its merge noted by chat 59 — verify before use
