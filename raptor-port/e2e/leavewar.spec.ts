@@ -2082,6 +2082,30 @@ test('after the screen changes width the pinned dates row shows only once the ro
   await page.setViewportSize(size)
   await check(isPhone() ? 'turned back' : 'made wide again')
 })
+/* HIS IPHONE, 10 NOV 26 (chat 52, D1963): the pinned dates went blank on a flick to the page's foot, sooner while the box
+   and its track trimmed them by `overflow` than by a clip path — he tried the two side by side and chose the clip path.
+   No PC browser shows the blank, so what is held here is the way of trimming he chose, and that it still trims: none of
+   the year-wide dates shows left of the corner or over it. */
+test('the pinned dates are trimmed by a clip path, not by overflow, and none shows outside their strip (D1963)', async ({ page }) => {
+  test.skip(!(await page.evaluate(() => !!document.querySelector('#page-leavewar .mx-outer.lw-sda'))), 'only where the dates follow the grid by the scroll itself')
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+  await expectPinned(page, 'sticky-head', true, 'at the page’s foot the row is pinned')
+  await page.evaluate(() => { document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft = 900 })
+  await page.waitForTimeout(200)
+  const got = await page.evaluate(() => {
+    const box = document.querySelector<HTMLElement>('[data-testid="sticky-head"]')!, track = box.querySelector<HTMLElement>('.mxfixed-track')!
+    const b = box.getBoundingClientRect(), y = b.top + b.height / 2
+    const inDates = (x: number) => !!document.elementFromPoint(x, y)?.closest('.mxfixed-anim')
+    const corner = box.querySelector('.mxfixed-frozen')!.getBoundingClientRect()
+    return {
+      box: getComputedStyle(box).overflowX, track: getComputedStyle(track).overflowX, clip: getComputedStyle(track).clipPath,
+      leftOfBox: b.left >= 3 ? inDates(b.left - 2) : false, overCorner: inDates(corner.left + corner.width / 2),
+      rightOfBox: b.right <= innerWidth - 3 ? inDates(b.right + 2) : false, inStrip: inDates(b.right - 20),
+    }
+  })
+  expect(got, 'the box and the track trim nothing by overflow; the track’s clip path does; the dates show only in their strip')
+    .toEqual({ box: 'visible', track: 'visible', clip: 'inset(0px)', leftOfBox: false, overCorner: false, rightOfBox: false, inStrip: true })
+})
 test('while the fingers pinch part-way down, the pinned dates row shows by the pinch’s rule (D1870, D1287)', async ({ page }) => {
   test.skip(!isPhone(), 'a two-finger pinch')
   const y = await page.evaluate(() => {
