@@ -402,6 +402,44 @@ mover('--rulings --move-rows moves the short line and the full row, and the map 
 mover('--rulings puts every file back when the inventory is not clean afterwards', false, { prep: c => { c.edit('OUTSTANDING.md', t => cut(t, 'BRAVO')[0]); c.edit(FULL, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **SPENT 21 Sep 26 — used.** a |')) }, args: ['--rulings'], check: (c, r) =>
   !has(c, FULL, '| D1 |') ? 'D1 was not put back' : has(c, 'DECISIONS-ARCHIVE.md', '| D1 |') ? 'the archive was not put back' : !/put back/.test(r.stderr) ? 'did not say so' : '' })
 
+/* [DOCSIZE-PATHS-OPEN] (found 8 Nov 26, the rules diet's step 5a): the People & accounts page's first draft lost the `---`
+   that closes its frontmatter. The file then would not load by itself with the files its `paths:` name, and both the gate
+   and --rulings passed it — read as unscoped, the area-page checks never ran. Each case starts from a page (or a scoped
+   rules file) already committed, as that page was, so only the frontmatter check can fail it: the base is HEAD. */
+const committedPage = c => { withPage(c); c.commit('the other page, its frontmatter whole') }
+const breakFm = (a, b) => t => { const u = t.replace(a, () => b); if (u === t) throw new Error('the frontmatter edit found nothing — update this self-test'); return u }
+const PAGE_CLOSE = 'raptor-port/src/other/**\n---\n'
+scenario('a page whose frontmatter is never closed (the 8 Nov 26 draft)', true, c => { committedPage(c); c.edit(OTHER, breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\n')) }, { base: 'HEAD', mustSay: `${OTHER} opens a frontmatter block` })
+scenario('…its frontmatter never closed, a `---` rule further down taken for its close', true, c => { committedPage(c); c.edit(OTHER, t => breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\n')(t) + '\n---\n\nA closing note.\n') }, { base: 'HEAD', mustSay: 'is not a "- <glob>" item' })
+scenario('a page whose paths: key has no list items', true, c => { committedPage(c); c.edit(OTHER, breakFm('paths:\n  - raptor-port/src/other/**\n', 'paths:\n')) }, { base: 'HEAD', mustSay: 'its paths: list has no items' })
+scenario('a page whose paths: list holds a line that is no "- <glob>" item', true, c => { committedPage(c); c.edit(OTHER, breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\nraptor-port/src/more/**\n---\n')) }, { base: 'HEAD', mustSay: 'is not a "- <glob>" item' })
+scenario('a scoped rules file (not a page) whose frontmatter is never closed', true, c => { c.write('.claude/rules/area-x.md', '---\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n'); c.commit('a scoped rules file'); c.edit('.claude/rules/area-x.md', breakFm('/**\n---\n', '/**\n')) }, { base: 'HEAD', mustSay: '.claude/rules/area-x.md opens a frontmatter block' })
+scenario('…a whole frontmatter, its list with a comment line and a blank line, passes', false, c => { c.write('.claude/rules/area-x.md', '---\npaths:\n  - raptor-port/src/x/**\n  # a comment, as the seam files carry\n\n  - raptor-port/docs/x.md\n---\n\n# x\n'); c.commit('a scoped rules file') }, { base: 'HEAD' })
+/* The two blind reads of 3c0b3ac65 (both REVISE): a byte-order mark or spaces around a --- line, which every reader here
+   takes for no frontmatter; body lines a lost close swallowed into a scoped file that is not a page (a column-0 "#" line is
+   body, not a comment — every live comment is indented); an item whose quotes do not match; and the one-line forms of
+   paths:, which pathsOf does not read, refused with a message that says so. */
+const AREA_X = '.claude/rules/area-x.md'
+const scopedFile = (c, whole, broken) => { c.write(AREA_X, whole); c.commit('a scoped rules file'); if (broken !== undefined) c.write(AREA_X, broken) }
+const X_WHOLE = '---\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n'
+scenario('a page saved with a byte-order mark before its frontmatter', true, c => { committedPage(c); c.edit(OTHER, t => '\uFEFF' + t) }, { base: 'HEAD', mustSay: 'byte-order mark' })
+scenario('…a byte-order mark and its frontmatter never closed', true, c => { committedPage(c); c.edit(OTHER, t => '\uFEFF' + breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\n')(t)) }, { base: 'HEAD', mustSay: 'byte-order mark' })
+scenario('a frontmatter whose closing --- has a trailing space', true, c => scopedFile(c, X_WHOLE, X_WHOLE.replace('/**\n---\n', '/**\n--- \n')), { base: 'HEAD', mustSay: 'line 4 closes the frontmatter but has spaces around its' })
+scenario('a scoped file\'s frontmatter never closed, its headings swallowed up to a later ---', true, c => { const whole = '---\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n\n## y\n\n---\n\nbody text\n'; scopedFile(c, whole, whole.replace('/**\n---\n', '/**\n')) }, { base: 'HEAD', mustSay: 'line 5 ("# x") inside its frontmatter, which is not a "- <glob>" item' })
+scenario('…its frontmatter never closed, a "Status: draft" line and prose swallowed', true, c => { const whole = '---\npaths:\n  - raptor-port/src/x/**\n---\n\nStatus: draft\nmore prose\n\n---\n\nbody text\n'; scopedFile(c, whole, whole.replace('/**\n---\n', '/**\n')) }, { base: 'HEAD', mustSay: '("more prose") inside its frontmatter, which is not a "- <glob>" item' })
+scenario('a frontmatter with a column-0 "# comment" inside its paths: list', true, c => scopedFile(c, X_WHOLE, '---\npaths:\n# a comment at column 0\n  - raptor-port/src/x/**\n---\n\n# x\n'), { base: 'HEAD', mustSay: '("# a comment at column 0") inside its frontmatter, which is not a "- <glob>" item' })
+scenario('a paths: item whose quotes do not match', true, c => scopedFile(c, X_WHOLE, '---\npaths:\n  - "raptor-port/src/x/**\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'a paths: item whose quotes do not match' })
+scenario('paths: written on one line as a string', true, c => scopedFile(c, X_WHOLE, '---\npaths: "raptor-port/src/x/**"\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'the project\'s checks read only that shape' })
+scenario('paths: written on one line as a bracketed list', true, c => scopedFile(c, X_WHOLE, '---\npaths: ["raptor-port/src/x/**"]\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'the project\'s checks read only that shape' })
+scenario('…a whole frontmatter saved with CRLF line endings, quoted items among them, passes', false, c => scopedFile(c, '---\r\npaths:\r\n  - raptor-port/src/x/**\r\n  # a comment\r\n  - "raptor-port/docs/x.md"\r\n  - \'raptor-port/docs/y.md\'\r\n---\r\n\r\n# x\r\n'), { base: 'HEAD' })
+/* Astra's re-read of the fix round (REVISE, three holes): a second paths: key the readers ignore, indented text under no
+   key, and a closing quote escaped by a backslash, which no reader here decodes. */
+scenario('a frontmatter with a second paths: key', true, c => scopedFile(c, X_WHOLE, '---\npaths:\n  - raptor-port/src/x/**\npaths: [raptor-port/src/y/**]\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'has a second paths: key (line 4)' })
+scenario('a frontmatter with indented text before any key', true, c => scopedFile(c, X_WHOLE, '---\n  orphan text\npaths:\n  - raptor-port/src/x/**\n---\n\n# x\n'), { base: 'HEAD', mustSay: '("  orphan text") inside its frontmatter, which is not a "- <glob>" item' })
+scenario('a paths: item whose closing quote is escaped by a backslash', true, c => scopedFile(c, X_WHOLE, '---\npaths:\n  - "raptor-port/src/x/**\\"\n---\n\n# x\n'), { base: 'HEAD', mustSay: 'the project\'s checks do not decode escapes' })
+mover('--rulings refuses a page whose frontmatter is never closed', false, { prep: c => { committedPage(c); c.edit(OTHER, breakFm(PAGE_CLOSE, 'raptor-port/src/other/**\n')) }, args: ['--rulings'], check: (c, r) =>
+  /opens a frontmatter block/.test(r.stdout + r.stderr) ? '' : 'refused for another reason, or not at all' })
+
 /* --rulings --merge (D390; Fable and Astra's red team): a real `git merge` between a branch in the OLD layout and one in
    the new, both ways. It starts from the new side, replays the other side's ruling changes three-way, stops on a row both
    sides changed, and prints — never writes — the other side's prose. */
