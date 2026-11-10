@@ -23,7 +23,9 @@ so the next chat just pulls and reads. The structure every fact follows: `.claud
 **The handoff is COMMITTED AND PUSHED to the chat's `claude/<name>` branch.** It reaches `main` only by
 `.claude/rules/shipping.md`'s rule: on the owner's explicit "merge live" (D60 — pushing the branch needs no
 permission) — or, where the whole pull request changes only notes (that file's "only notes" list), by itself once its
-run is green, the agent merging it (D1407; a rules-diet step waits for his word all the same, D1737). So most sessions
+run is green, the agent merging it by that file's steps — the file list checked, `npm run rulecheck` and the unit
+tests that read documents run first, under the merge lock, and said in its report (D1407; a rules-diet step waits for
+his word all the same, D1737). So most sessions
 end on "pushed, PR open, awaiting merge live": hand him the Vercel preview link and say so in chat. **That is the
 NORMAL end state, not an Unfinished item.**
 
@@ -113,6 +115,8 @@ committed after it.
 
 - If the push has to wait (a check run in progress, D151), the line says "not released — push waiting" and the release
   waits for the push.
+- A notes-only pull request this chat merges by itself (D1407) is merged first, once its run is green: the release
+  comes after that merge — and, if `main` had to be brought in, after that push.
 - If he gives this chat more work afterwards, switch back first (`git switch claude/<name>`); if git refuses because a
   new chat now holds the branch, that work belongs to the new chat — tell him so.
 - When this chat stays open by design (it hands a side session the work), the opening line instead keeps the new chat
@@ -254,7 +258,7 @@ Same structure every time. Write "none" rather than dropping a line — stable s
 - **Running when written:** <helper / served build / lock / background run — who receives its report, who releases it> (or "none")
 - **Pick up here:** <1-2 sentences: the single most likely next action; a plan file that drove the session first>
 - **Opening line:** <the exact line he was given for the fresh chat — the next chat compares its first message with it>
-- **Rulings:** <the numbers recorded this chat, or "none"> · **Walk:** <the closing report's line, or "none", and why> · **Reads owed:** <each read a job went without, or "none"> · **Next chat number:** <n+1> (D1744)
+- **Rulings:** <the numbers recorded this chat, or "none"> · **Walk:** <the closing report's line, or "none", and why> · **Reads owed:** <each read a job went without, or "none"> · **Next chat number:** <the next free number, checked against `main`'s `HANDOFF.md` and every open block when this block is written> (D1744)
 <!-- /now -->
 ```
 

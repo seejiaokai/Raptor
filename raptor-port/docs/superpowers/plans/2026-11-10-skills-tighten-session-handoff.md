@@ -20,6 +20,13 @@ sentence on purpose (§C 1); the refused merge of 8 Nov 26 is now stated as a ru
 case; and §E's "thirteen points" were twelve — now thirteen, the one on plans and slices split in two. The brief for
 the two reads: `raptor-port/docs/superpowers/briefs/2026-11-10-session-handoff-tighten-read-brief.md`.
 
+**Both reads in and fixed, 10 Nov 26:** the fresh Opus reader three findings, Astra one (the Opus reader's first) —
+all in §C's corrections, none in the shortened text: the template's "next chat number" now asks for the next FREE
+number (D1744); the merge sentence names `shipping.md`'s steps before a notes-only merge (D1407); the release says a
+notes-only pull request this chat merges by itself is merged first. Reports: `…-read-opus.md`, `…-read-astra.md`,
+beside the brief. The fixes were read by nobody but their writer. **Final measure: 314 lines, 26,118 bytes — about 11%
+fewer bytes than the 29,508 it started at.** Waits for his "merge live".
+
 ## A. Measured, and checked
 
 - 444 lines, 29,508 bytes — about 9,800 tokens at a third of a token to the byte (an estimate; `docsize --reads` does
