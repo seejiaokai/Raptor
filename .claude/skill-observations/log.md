@@ -2263,6 +2263,32 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Suggested improvement:** In the handoff skill's step that writes the opening line: when another chat is open or is being opened beside the new one, the line names the folder each works in (or tells the new chat to check the live chats and the checkout's reflog before switching a branch), and the new chat lists the live chats before its first branch switch.
 **Principle:** Parallel sessions need separate working folders as well as separate branches; a branch switch in a shared folder moves every session in it.
 
+### Observation 920: Closing a backlog item — never edit its own lines before the archive move
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** Chat 54/56 closing backlog items with the archive command; logged by chat 57 for chat 56, which held it back across two handoffs
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** closing a finished backlog item before a handoff
+
+**Issue:** The archive command checks that an item's lines move byte for byte, and refused two moves after the item's own lines had been edited to say it was closed. It also refused while a ruling archived on the branch that made it still pointed its home cell at a live item.
+**Suggested improvement:** In the handoff skill's step for closing items: a closing note goes on a line of its own, added after the item's last line, never by editing the item's existing lines; a piece still open is restated in a new item pointing to the archived original; a ruling archived on the branch that made it gets its home cell pointed at the archived item that records the work before the move.
+**Principle:** When a tool verifies a move by exact bytes, mark completion by adding, never by rewriting what is being moved.
+
+### Observation 921: An outgoing chat that resumes after compaction should mark its handoff block as taken back
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** Chat 57 opened from chat 56's handoff to start [SKILLS-TIGHTEN]; chat 56 had compacted, been asked to carry on, and was already writing the same list; a third fresh chat had the same opening line
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** handoff block; a new chat's first steps
+
+**Issue:** The handoff block said the next job was "for a fresh chat". The outgoing chat compacted, was asked to continue, and took the job back without changing the block, while two fresh chats were opened with the same line. All three read the same 46,000-token guide before the overlap was found by listing the live chats and messaging.
+**Suggested improvement:** When a chat resumes work its own handoff block gave to a fresh chat, it first adds one line to that block ("taken back by chat N at <time> — do not start") and pushes it, or messages any chat opened since. A new chat lists the live chats and messages the block's writer BEFORE its first heavy read, not after.
+**Principle:** A handoff note is a lock; whoever takes work back from it must update the note before starting, and a new reader checks for a live owner before spending effort.
+
 ### Observation 922: Shortening a rule drops the small conditions first — check each cut clause for one
 
 **Status:** OPEN
