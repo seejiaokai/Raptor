@@ -70,6 +70,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     its plan (`raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`, which names each ruling); every item of it
     archived (the last two, [SCHED-UNAV-PENDING-MARK] and [READONLY-WEEK-WORDS], on 10 Nov 26, chat 50); round 5's leftovers
     stay in [UI-CONSISTENCY-LOOK].
+  - **Filed (his D1961, 10 Nov 26):** [PAGE-FOOT-FLASH] — on his iPhone in Edge the top bar and the Leave War's pinned dates vanish for a few frames on a swipe to a page's foot; the one cure left is a large change to how every page scrolls, put to him first. Not started.
   - **Filed (his D1960, 10 Nov 26):** [LW-START-LOAD] — a one-page Leave War job reached about 300,000 of a chat's 400,000 tokens before building; cut what its files load. Not started.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
@@ -434,6 +435,15 @@ A refused change restores the war's records, and since 6 Nov 26 keeps the role a
 
 ### [LW-BIDPICKER-CSS-INSIDE] The bid sheet's style rules after its wrapper (the night of 6 Nov 26)
 The 202 rules after the wrapper's close in the bid sheet's stylesheet (the counter form onward, since 19 Aug 26) are not deliberate — every war window draws inside the Leave War's page — and work only because their names are unique. **To do:** move them inside the wrapper as a walked job (their weight changes), lowering the guard's allowed count as they leave. **Place:** the next Leave War batch.
+
+### [PAGE-FOOT-FLASH] On his iPhone the top bar and the pinned dates vanish for a few frames at a page's foot (his D1961, 10 Nov 26)
+
+- **What he sees:** on a swipe down to the Leave War's foot, the "142 TALON" bar and the pinned dates are gone for about three frames and the grid is drawn up to the top of the screen — "It makes the app feel cheap. Can u fix that." In Edge on his iPhone, on the live app too; Safari on the same phone does not show it. D1961 asks for it to be fixed.
+- **What was measured (chat 52, 10 Nov 26, the trial link `?lwpin=20`, never merged):** while the page is sprung past its foot, Edge's bottom bar grows back; for those frames the visible screen sits lower than the page's own frame (`visualViewport.offsetTop` up to 154, equal to how far the page is sprung; the window's height 576 ↔ 757), so everything pinned to the top of the screen — the top bar (D1873) and the dates — is drawn above the glass.
+- **What was tried and dropped:** following that offset (trial 21) moved the bars twice and was worse, his word; stopping the page dead at its ends (trial 10) cured it and he refused it — D1962, a page keeps its spring.
+- **The one cure left:** the app scrolls inside a screen-high page of its own (its own scrolling box under a top bar that is not pinned to the screen), so nothing depends on where the browser puts pinned things while its bars move. It changes how every page scrolls — the scroll-driven pinned rows (D1870), "back to where I was", the keyboard lift (D1048, D1081) and the pinch among what must be re-proved — so it is a job of its own: a plan red-teamed first, a trial link on his iPhone before anything is built for keeps, put to him before it starts.
+- **Also open, his to answer:** whether people on managed phones will open the app in Edge at all once it is a Power Apps code app (asked by him 10 Nov 26; a question for the IT side, offered, not yet sent).
+- Evidence: chat 52's block history in git (`HANDOFF.md` at `2fc8fcb09`); the sheet `raptor-port/docs/handpass/2026-11-10-lw-pinned-dates-clip.md`.
 
 ### [LW-START-LOAD] A Leave War job fills three quarters of a chat before it builds (his D1960, 10 Nov 26)
 - **What happened (chat 52, 10 Nov 26):** a fix to one part of the Leave War grid (the pinned dates row) stood at about 302,000 of 400,000 tokens after reading the handoff, the bug-check sections and the row's code, and at 320,000 (80%, the app's own figure) after one measurement. The app's figure then: messages 165,000 (the rule pages that load with a file arrive here), the app's tool lists about 100,000, always-loaded files 33,000.
