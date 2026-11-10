@@ -131,3 +131,15 @@ script already pictures re-runs that one step into a new folder (§5; `docs/walk
 24. Anything placed against the top bar, or measured on a scroll or a screen-size change: flicked to the page's very
     foot and back on a phone; a test stands the bar out of place for a moment and sends the screen-size change; what
     the PC cannot show (the bounce, the folding toolbar) named as a look for his iPhone.
+25. The thing made through the app's own controls in every place it can be put — each kind of row, seat or list — not
+    only where the demo data has it; each result read there.
+26. A gesture measured by what the person sees: what was under the fingers stays under them, in every mode; a figure
+    that moved proves nothing.
+27. Every press that changes what stands beside a control: each neighbouring control's box measured before and after,
+    phone and desktop; a move is a fault unless he ruled it.
+28. On a phone, what a press opens proved on screen before anything in it is pressed — never a script that scrolls
+    first; what a removed or added part moves up or down the page named in the roll-call.
+29. Anything that reads today: the clock moved past midnight with the page open, and again on reopening; every reading
+    follows the new day without a reload.
+30. On a phone every tap pictured within about 100ms of the lift, pointer left where it pressed, beside the settled
+    picture; a dense screen's pinned cells stay opaque while pressed (§7.10).
