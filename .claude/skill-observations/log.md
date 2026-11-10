@@ -2207,3 +2207,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Suggested improvement:** Overnight Part 2 and every helper brief: "return your report as your final reply; the coordinator saves it" — never "write your report to <file>". The coordinator saves it the moment it arrives, before anything else.
 
 **Principle:** A helper's report reaches the host as its final reply; a brief that asks for a report file may be refused, and the reply is then the only copy, so save it at once.
+
+### Observation 916: Two chats opened in one folder — a "start a new branch" opening line switches the other chat's branch
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** Chat 51 (a Leave War fault) was opened beside chat 50 (notes only), both in the main folder; number taken past 915, the highest on every branch
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** The opening line for a chat that runs beside another
+
+**Issue:** Both chats started in the same checkout. The second chat followed its opening line ("start a new branch level with main") and switched the folder's branch; the first chat's next commit landed on the second chat's branch and had to be reset off and redone. The opening line named each chat's rulings range and handoff block, but not a folder.
+**Suggested improvement:** In the handoff skill's step that writes the opening line: when another chat is open or is being opened beside the new one, the line names the folder each works in (or tells the new chat to check the live chats and the checkout's reflog before switching a branch), and the new chat lists the live chats before its first branch switch.
+**Principle:** Parallel sessions need separate working folders as well as separate branches; a branch switch in a shared folder moves every session in it.
