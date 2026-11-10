@@ -3651,7 +3651,9 @@ Leave War fling lesson — and placed before its first paint by a layout effect,
 23 Sep 26, pinned by "phone: the frozen header is in step with the table the
 moment it appears") so the frozen callsign column's own sticky-left works
 inside it. `z-index:55` sits under the top bar's 60. A click on a heading in the
-bar still sorts. Browser-only — jsdom has no layout, so the mirror never mounts
+bar still sorts, and in Edit quals a heading pressed in the bar drags its column
+as the table's own does ([QUALS-PINNED-HEAD-NO-DRAG], 11 Nov 26 — pinned by
+`e2e/geometry.spec.ts`, its last block). Browser-only — jsdom has no layout, so the mirror never mounts
 there (`quals.test.tsx` pins its absence); the freeze is verified on the live
 view at desktop and phone widths.
 
@@ -7815,7 +7817,10 @@ view. Unless it's outside the screen view then it's ok to snap into view."
   under-manned list, a period opened, switched or made.
 - **Quals (D672).** The man's row is outlined as before; the page moves to it — the row to the middle of the window —
   only when the row is not wholly on screen, clear of the top bar and the table's stuck heading (`ui/onscreen.ts
-  rowOnScreen`).
+  rowOnScreen`). **Once for each ask ([QUALS-OUTLINE-RESCROLL], 11 Nov 26):** the outline is put back on every repaint
+  of the table, the page is moved only on the first repaint after "Check his quals", "Check my quals" or the Undo — a
+  later tick on another man's row, a sort or any other repaint never moves the page to the outlined row again
+  (`QualsPage.tsx backWent`; pins `e2e/geometry.spec.ts` (its last block), `quals.test.tsx`).
 - **The Inputs list (D672).** The changed input is lifted to the top of the list only when its row is not on screen (a
   row the Undo has just brought back is lifted, so it is found). A save shows the saved input by the same rule (it is
   the same reveal). **And when the page does move, the row lands in view — just under the top bar** (`ui/onscreen.ts
@@ -8346,7 +8351,12 @@ Four asks from the same sitting, all on the Leave War grid:
     Pinned as a SET in `lift-css.test.ts`, read out of the file and compared to
     each other. **`.qfixed`, the frozen header mirror, carries no drag handlers at
     all** — pre-existing, recorded, not fixed here: a heading is dragged on the
-    real table.
+    real table. *(CORRECTED 11 Nov 26 — [QUALS-PINNED-HEAD-NO-DRAG]: a heading
+    pressed in the mirror now starts the same column drag. The mirror hands its
+    press and move to the table's own two handlers (`QualsPage.tsx pinnedDrag`);
+    the frame is still measured round the TABLE's heading of that column and the
+    edge scroll still runs `.qwrap`. Pinned by `e2e/geometry.spec.ts` (its last block),
+    by mouse and by finger.)*
   - **The per-cell drag paint is DELETED** (`matrix.css`: the `.who`/`.bal` ring +
     halo, the day-cell lines, the heading twin). With it gone, **a manning row's
     shortfall ring paints on the picked-up row exactly as it does at rest** — the

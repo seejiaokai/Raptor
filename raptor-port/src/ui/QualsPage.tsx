@@ -315,13 +315,17 @@ export function QualsPage() {
      set with the seat view, in the same render, so the outline below first runs on the man's own view. As a ref it was seen
      at once by the outline effect after an Undo (focusQualsRow → the effect above), on the old All table: the page jumped
      to his row there, then again once the view changed. */
+  /* ONE ASK, ONE TRIP ([QUALS-OUTLINE-RESCROLL], 11 Nov 26 — found by the code read of 6 Nov 26): each "Check his quals"
+     and each Undo is an ask of its own (a new object, though it may name the same man), and `backWent` is the ask whose
+     trip to the row has been made — see the outline below. */
   // eslint-disable-next-line react-doctor/rerender-state-only-in-handlers -- its render is what lines the outline up with the seat view set beside it (above)
-  const [backHl, setBackHl] = useState<string | null>(null)
+  const [backHl, setBackHl] = useState<{ id: string } | null>(null)
+  const backWent = useRef<{ id: string } | null>(null)
   const checkBack = (id: string) => {
     const p = PEOPLE[id]
     clearBack(id)
     setSeat(p.pers || p.seat === 'GND' ? 'GND' : p.seat === 'RCP' ? 'RCP' : 'FCP')
-    setBackHl(id); notify()
+    setBackHl({ id }); notify()
   }
   /* [ONE-DOOR] (D305): the man's own "Check my quals" — his row, opened and outlined, once */
   /* QUALS OPENS AT ITS TOP (owner D937, 16 Oct 26), as the Inputs page does (InputsPage.tsx): the app keeps the window's
@@ -337,9 +341,19 @@ export function QualsPage() {
   })
   useEffect(() => {
     if (!backHl) return
-    const el = document.querySelector(`#qtbl td.qname[data-person="${backHl}"]`)?.closest('tr') as HTMLElement | null
+    /* THE PAGE GOES TO HIS ROW ONCE FOR EACH ASK ([QUALS-OUTLINE-RESCROLL], 11 Nov 26). The table is drawn again on every
+       change of the store, which wipes the outline's class, so this runs after every repaint to put the outline back —
+       and it used to move the page with it each time: he pressed "Check his quals" (or Undo), scrolled away to another
+       man's row, ticked a box there, and the page jumped back to the outlined row (seen in a real browser:
+       e2e/geometry.spec.ts "[QUALS-OUTLINE-RESCROLL]"). The outline is still put back on every repaint, as it was; the trip is made
+       only on the first repaint that carries the ask — the one that also carries his seat view (above) — and is spent
+       there even when his row is not drawn (the filter box hides him), so no later repaint ever moves the page for it. */
+    const went = backWent.current === backHl
+    backWent.current = backHl
+    const el = document.querySelector(`#qtbl td.qname[data-person="${backHl.id}"]`)?.closest('tr') as HTMLElement | null
     if (!el) return
     el.classList.add('back-hl')
+    if (went) return
     /* ONLY WHEN HIS ROW IS NOT ALREADY ON SCREEN (owner, D672, 8 Oct 26 — "if it's already in view, undo/redo don't need
        to snap to view"): this is where an Undo of a Quals change lands, and it used to put the row in the middle of the
        screen every time. The outline above still shows which row it was. */
@@ -396,6 +410,9 @@ export function QualsPage() {
   const qRepinRef = useRef<() => void>(() => {})
   /* a heading drag pressed by a pinch's first finger is let go when the pinch starts (the code read's finding 3) */
   const cancelColDrag = useRef<(() => void) | null>(null)
+  /* the column drag's press and move, for the pinned heading row to hand its own to ([QUALS-PINNED-HEAD-NO-DRAG] — set
+     where the drag is wired, below) */
+  const pinnedDrag = useRef<{ down: (e: PointerEvent) => void; move: (e: PointerEvent) => void } | null>(null)
   /* THE PINNED HEADER FOLLOWS BY THE BROWSER (owner D993, 18 Oct 26 — "Could u try to just fix the quals pinned header
      with the 120 frames fix"): where the browser can drive an animation from a scroll (CSS scroll-driven animations),
      the pinned row's table is moved sideways by the table's own scroll timeline, off the page's code — the Leave War's
@@ -565,6 +582,11 @@ export function QualsPage() {
        itself changes state. */
     let from = '', over: HTMLElement | null = null
     const clear = () => { if (over) over.classList.remove('qdrop'); over = null }
+    /* the picked-up look comes off the heading pressed, in the table or in the pinned row under the top bar */
+    const undrag = () => {
+      tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
+      mirrorRef.current?.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
+    }
     /* CARRIED TO THE EDGE, THE VIEW FOLLOWS (owner D893, 15 Oct 26 — "Yes", after D892): a heading held near the
        left or right edge of the table's sideways scroll runs it that way at the app's one edge feel (`./edgescroll`),
        and the heading under the still pointer is read again, so a column can be carried to one off the screen. */
@@ -592,6 +614,11 @@ export function QualsPage() {
       const pressed = e.target as Element
       if (pressed !== th) try { pressed.releasePointerCapture?.(e.pointerId) } catch { /* nothing held there */ }
       th.classList.add('qdragging')
+      /* PRESSED IN THE PINNED ROW, THE COLUMN IS STILL THE TABLE'S ([QUALS-PINNED-HEAD-NO-DRAG], 11 Nov 26): the pinned
+         heading is a picture of the table's own, so the frame is measured round the table's heading of the same column
+         and the edge scroll runs the table's own sideways scroll — the pinned row's strip scrolls nothing itself. Pressed
+         in the table, `col` is the heading pressed. */
+      const col = th.closest('#qtbl') ? th : (tbl.querySelector<HTMLElement>(`thead th[data-col="${from}"]`) ?? th)
       /* the frame goes up in the same tick as the pointerdown — ONE measurement
          here and one at the landing, nothing per pointermove. It is placed in
          the wrap's CONTENT coordinates (the heading's x, the table's y, plus
@@ -601,10 +628,10 @@ export function QualsPage() {
       /* 'rect': the heading's OWN border box, so the frame is the column's full
          width — its clientWidth is the padding box rounded, a border and a
          fraction short of it (lift.ts boxOf) */
-      if (w) frameLift(qLiftRef.current, boxOf(w, tbl, th, w.scrollLeft, 'rect'))
+      if (w) frameLift(qLiftRef.current, boxOf(w, tbl, col, w.scrollLeft, 'rect'))
       lx = e.clientX; ly = e.clientY
       auto?.stop()
-      auto = edgeAutoScroll({ from: th, axis: 'x', touch: e.pointerType === 'touch', x: lx, y: ly, onScroll: () => { if (from) overAt(lx, ly) } })
+      auto = edgeAutoScroll({ from: col, axis: 'x', touch: e.pointerType === 'touch', x: lx, y: ly, onScroll: () => { if (from) overAt(lx, ly) } })
     }
     const onMove = (e: any) => {
       if (!from) return
@@ -631,16 +658,22 @@ export function QualsPage() {
       auto?.stop(); auto = null
       if (from && over && live.current.moveQual(from, over.dataset.col!)) qLandRef.current = from
       else if (from) frameLift(qLiftRef.current, null)
-      tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
+      undrag()
       clear(); from = ''
     }
     cancelColDrag.current = () => {
       if (!from) return
       auto?.stop(); auto = null
       frameLift(qLiftRef.current, null)
-      tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
+      undrag()
       clear(); from = ''
     }
+    /* THE PINNED HEADING ROW STARTS THE SAME DRAG ([QUALS-PINNED-HEAD-NO-DRAG], 11 Nov 26): with the page scrolled down
+       the heading row a person can reach is the pinned copy under the top bar, which is outside the table — and the press
+       was listened for on the table alone, so a heading there wore the grab cursor and moved nothing. The copy comes and
+       goes with the page, so it hands its presses and moves to these same two handlers through this ref (its own
+       onPointerDown / onPointerMove, below); the lift, the landing mark, the drop and its Undo are the ones above. */
+    pinnedDrag.current = { down: onDown, move: onMove }
     tbl.addEventListener('click', onClick)
     tbl.addEventListener('change', onChange)
     tbl.addEventListener('pointerdown', onDown)
@@ -669,6 +702,7 @@ export function QualsPage() {
     return () => {
       tbl.removeEventListener('click', onClick); tbl.removeEventListener('change', onChange)
       tbl.removeEventListener('pointerdown', onDown); tbl.removeEventListener('pointermove', onMove)
+      pinnedDrag.current = null
       auto?.stop()
       document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onUp)
       wrap.removeEventListener('scroll', onXScroll)
@@ -1105,6 +1139,8 @@ export function QualsPage() {
         // eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- a picture of the heading row, hidden from a screen reader (aria-hidden on its tables): the keyboard sorts from the table's own headings under it, which stay the one interactive copy; a press here is the finger's shortcut while the table is scrolled
         <div className={'qfixed' + (pinSda ? ' q-psda' : '')} data-testid="qsticky-head"
           style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
+          onPointerDown={e => pinnedDrag.current?.down(e.nativeEvent)}
+          onPointerMove={e => pinnedDrag.current?.move(e.nativeEvent)}
           onClick={e => {
             const th = (e.target as HTMLElement).closest?.('th[data-sort]') as HTMLElement | null
             if (th) { const key = th.dataset.sort!; setSort(s => ({ key, dir: s.key === key ? -s.dir : 1 })) }
