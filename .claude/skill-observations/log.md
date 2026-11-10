@@ -2355,3 +2355,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The document check and the commit were typed as one command with the check's output sent to a file, its exit code echoed, and the commit after a semicolon. The check failed (a rules file one line over its size tripwire); the commit ran anyway and the failure was read only afterwards. A trap met again: the memory note "a pipe hides a failed check" (3 Nov 26) covers the pipe, and this is the same fault through a semicolon. Nothing was pushed; a second commit fixed it, and the session then committed through a small script that stops when the check fails.
 **Suggested improvement:** A guard, not a reminder: one project script, "check then commit", that runs the document check, prints its last lines and refuses the commit on a non-zero exit — used for every records commit; or the commit hook runs the check itself.
 **Principle:** When a check gates an action, the gate is the check's own exit code joined to the action — never two statements that happen to sit on one line.
+
+### Observation 927: A "needs no answer from him" batch was recommended from the backlog's one-line list, and most of it needed his answer
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** chat 61 — recommending the next three jobs from the handoff and the backlog's priority list, then starting the first
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the next chat's first task — "recommend the next jobs"; the opening line a handoff writes
+
+**Issue:** The recommendation named five small faults as a batch needing no answer from the owner, read from the priority list's one line each. Opening the items after he chose it showed that two were filed as questions for him, most parts of two more must be drawn for him first, and one rested on two rulings that disagree; three small fixes were left. He had already chosen on the wrong description, and the chat was three-quarters full before the build began.
+**Suggested improvement:** In the handoff skill's opening line for a "recommend the next jobs" chat, and in the list's own "how to read it" note: before a job is recommended as needing nothing from the owner, open each item's full text and read its "to do" and "put to him" lines; say in the recommendation which parts can be built at once and which wait on him.
+**Principle:** An index line says what an item is, not what it needs; a claim about what a job requires is made from the item itself, read before the recommendation, not after the choice.
