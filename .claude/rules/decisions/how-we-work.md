@@ -114,6 +114,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 
 ## Showing him, asking him
 - Anything new a person will see — a box, a message, a mark, a button — is drawn as a mock-up and shown before it is built, even when it is only one part of a fault fix or copies a look the app already has; the check before any build of a fix asks "does this add something he will see?", and if so the mock-up comes first [D1625].
+- When he asks about a screen, the answer is shown on the device his question is about — phone for phone, desktop for desktop, as his picture shows — the place marked, never a nearer picture of the other device [D1951].
 - A picture for a question shows only what it is about — cut to it, or the rest dimmed — the change named on it in plain words; a whole screen only when the question is about the whole screen [D1222].
 - Every mock-up or questions page put to him has what he should look at now at the very top — each open question in one line with its recommendation and a link to its pictures, newest first; answered and replaced ones leave the page and are kept in the project [D1237, D1363]; product questions come in small rounds, each with a recommendation and a picture [D541, D853].
 - No preview link while work is in progress: the link comes when the work is ready for his look, whenever his review is needed, and when the work is done; no extra lines are added to the closing report [D905, D906].
