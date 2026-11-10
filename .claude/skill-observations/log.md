@@ -2262,3 +2262,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** Both chats started in the same checkout. The second chat followed its opening line ("start a new branch level with main") and switched the folder's branch; the first chat's next commit landed on the second chat's branch and had to be reset off and redone. The opening line named each chat's rulings range and handoff block, but not a folder.
 **Suggested improvement:** In the handoff skill's step that writes the opening line: when another chat is open or is being opened beside the new one, the line names the folder each works in (or tells the new chat to check the live chats and the checkout's reflog before switching a branch), and the new chat lists the live chats before its first branch switch.
 **Principle:** Parallel sessions need separate working folders as well as separate branches; a branch switch in a shared folder moves every session in it.
+
+### Observation 922: Shortening a rule drops the small conditions first — check each cut clause for one
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** [SKILLS-TIGHTEN] step 1 — the design guide's 81 lessons cut to one line each (chat 58); numbered past 920–921, held by pull request 749
+**Skill:** New skill candidate: tightening a guide (the method [SKILLS-TIGHTEN] uses; session-handoff and overnight are next)
+**Type:** open-source
+**Phase/Area:** the rewrite step, before the readers
+
+**Issue:** The writer's one-line versions passed the writer's own reading, yet two blind readers found eleven losses in 68 lessons, and nearly all were of one kind: a short qualifying clause inside a longer sentence (an exception scoped to one named column, a "where … is shown another way" condition, a pointer to a rule that narrows this one carried only by a passage that was itself leaving, a note of what was built turned into a requirement by rewording).
+**Suggested improvement:** Before the readers, the writer runs one mechanical pass: for every sentence cut or reworded, list its qualifying words (where, only, unless, except, for … only, narrows, narrowed by, built) and every cross-reference into a passage that is leaving, and show each is still carried; a "built / as built" note is never reworded into the rule's own list.
+**Principle:** When text is condensed, the main clause survives and its conditions do not; a condensing pass needs a check aimed at qualifiers and cross-references, not a re-read for sense.
