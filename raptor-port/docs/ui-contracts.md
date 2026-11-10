@@ -5518,8 +5518,18 @@ heading gains a grip, a `.qlbl` label element and a `✕`.
   Since 7 Sep 26 the picked-up column wears one measured overlay frame down the
   whole table and the column flashes where it lands (§What a drag LOOKS like —
   one recipe, every surface, and the quals z-index set there); the frozen header
-  mirror `.qfixed` still carries no drag handlers, so a heading is dragged on the
-  real table.
+  mirror `.qfixed` carried no drag handlers until 11 Nov 26, so a heading was
+  dragged on the real table alone. *(CORRECTED 11 Nov 26 —
+  [QUALS-PINNED-HEAD-NO-DRAG]: a heading pressed in the mirror starts the same
+  drag — the mirror hands its press and move to the table's own two handlers
+  (`QualsPage.tsx pinnedDrag`), the frame is measured round the TABLE's heading
+  of that column and the edge scroll runs `.qwrap`; see the corrected note in
+  §What a drag LOOKS like. One finger, one drag, in either row: only the pointer
+  that began the drag moves or drops it, a second finger put down cancels it and
+  writes nothing, and a `pointercancel` cancels it too. The mirror's markup is
+  set again only when it changes, as the table's is, so a redraw of the page
+  mid-drag leaves the picked-up look on the pressed heading. Pinned by
+  `e2e/geometry.spec.ts`, its last block.)*
 
 None of it is persisted, exactly like the ticks, initials and flights beside
 it: reload and the LoX is the default set again. `rules` is still the only
@@ -7818,8 +7828,13 @@ view. Unless it's outside the screen view then it's ok to snap into view."
 - **Quals (D672).** The man's row is outlined as before; the page moves to it — the row to the middle of the window —
   only when the row is not wholly on screen, clear of the top bar and the table's stuck heading (`ui/onscreen.ts
   rowOnScreen`). **Once for each ask ([QUALS-OUTLINE-RESCROLL], 11 Nov 26):** the outline is put back on every repaint
-  of the table, the page is moved only on the first repaint after "Check his quals", "Check my quals" or the Undo — a
-  later tick on another man's row, a sort or any other repaint never moves the page to the outlined row again
+  of the table, the page is moved only on the first repaint after "Check his quals", "Check my quals" or the Undo that
+  DRAWS his row — a later tick on another man's row, a sort or any other repaint never moves the page to the outlined
+  row again. Where the filter box hides his row when the ask arrives, nothing is outlined and the page stays; the ask
+  waits, and its one trip is made when the filter is cleared and his row is drawn (the fix round, 11 Nov 26 — a newer
+  ask still takes an older one's place). That trip is made one frame after the keystroke that drew the row: a browser
+  ends every edit of a text box by bringing its caret back into view, which undid a trip made inside the keystroke
+  (seen in Chromium: the page came back and left his row just under the screen's foot)
   (`QualsPage.tsx backWent`; pins `e2e/geometry.spec.ts` (its last block), `quals.test.tsx`).
 - **The Inputs list (D672).** The changed input is lifted to the top of the list only when its row is not on screen (a
   row the Undo has just brought back is lifted, so it is found). A save shows the saved input by the same rule (it is
