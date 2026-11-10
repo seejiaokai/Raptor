@@ -2249,3 +2249,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** §7.11 holds two lessons numbered 23 (added by two chats on different days); the sweep helper noticed it. Lessons are cited by number ("§7.11 lesson 7"), so a doubled number makes a citation ambiguous. Left as it is this time — renumbering would change citations elsewhere.
 **Suggested improvement:** the document check counts §7.11's lesson numbers and fails on a gap or a repeat; the second 23 becomes 23b (or the list is renumbered once, every citation searched and fixed in the same change).
 **Principle:** A numbered list that several writers append to needs its numbering checked by a tool, or two writers will take the same number.
+
+### Observation 916: Two chats opened in one folder — a "start a new branch" opening line switches the other chat's branch
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** Chat 51 (a Leave War fault) was opened beside chat 50 (notes only), both in the main folder; number taken past 915, the highest on every branch
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** The opening line for a chat that runs beside another
+
+**Issue:** Both chats started in the same checkout. The second chat followed its opening line ("start a new branch level with main") and switched the folder's branch; the first chat's next commit landed on the second chat's branch and had to be reset off and redone. The opening line named each chat's rulings range and handoff block, but not a folder.
+**Suggested improvement:** In the handoff skill's step that writes the opening line: when another chat is open or is being opened beside the new one, the line names the folder each works in (or tells the new chat to check the live chats and the checkout's reflog before switching a branch), and the new chat lists the live chats before its first branch switch.
+**Principle:** Parallel sessions need separate working folders as well as separate branches; a branch switch in a shared folder moves every session in it.
