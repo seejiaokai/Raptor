@@ -1,6 +1,6 @@
 // Chat 64, job 1: the re-walk of the reads' fixes (Undo / Redo land on the change only when it is out of view). Version: sb64-rewalk v13
 // From raptor-port/:  WALK_DIR=dist node scripts/handpass/sb64-rewalk.mjs      ONLY=r2,r3 picks scenarios; SIZES=pc,phone picks sizes.
-console.log('sb64-rewalk v13')
+console.log('sb64-rewalk v15')
 process.env.SB61_OUT ||= 'docs/img/handpass/2026-11-10-sched-board-small/rewalk'
 const { world, sleep, shot, ok, note, openBoard, finish, PC, PHONE, OUT } = await import('./sb61-lib.mjs')
 const { resolve } = await import('node:path')
@@ -27,7 +27,7 @@ const spot = (page, sel, idx = 0) => page.evaluate(([sel, idx]) => {
   const bar = document.querySelector('#schedBoard .sb-top')?.getBoundingClientRect()
   const top = Math.max(v.top, bar && bar.top <= 1 ? bar.bottom : 0), bottom = Math.min(v.bottom, innerHeight)
   const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
-  return { t: Math.round(r.top), b: Math.round(r.bottom), top: Math.round(top), bottom: Math.round(bottom), inView: r.top >= top - 0.5 && r.bottom <= bottom + 0.5, onTop: !!hit && (hit === el || el.contains(hit) || hit.contains(el)), hitIs: hit ? (hit.className + '').slice(0, 30) : null, value: String(el.value ?? el.textContent ?? '').slice(0, 80), scroll: Math.round(sc.scrollTop), n: els.length }
+  return { l: Math.round(r.left), r: Math.round(r.right), t: Math.round(r.top), b: Math.round(r.bottom), top: Math.round(top), bottom: Math.round(bottom), inView: r.top >= top - 0.5 && r.bottom <= bottom + 0.5, onTop: !!hit && (hit === el || el.contains(hit) || hit.contains(el)), hitIs: hit ? (hit.className + '').slice(0, 30) : null, value: String(el.value ?? el.textContent ?? '').slice(0, 80), scroll: Math.round(sc.scrollTop), n: els.length }
 }, [sel, idx])
 const list = (page, to) => page.evaluate(([sel, to]) => {
   let s = document.querySelector(sel).parentElement
@@ -563,6 +563,159 @@ if (want('r9')) for (const sk of ['pc', 'phone']) if (hasSz(sk)) await run('R9',
   const redone = []; for (const c of changes) redone.push(String(await c.read()) === String(c.v1))
   ok(`${tag} three changes (all in view), Undo all, Redo all: the screen never moves`, !!inV?.inView && !!tIn?.inView && moved.every(m => m === base) && undone.every(Boolean) && redone.every(Boolean), `list at ${base}; after each step ${moved.join(', ')}; every Undo took its change back: ${undone.join('/')}; every Redo restored it: ${redone.join('/')}`, `${n}-1..${k}`)
 })
+
+// ---------------- W1 (after the fix): the changed box rests clear of the passing "Undid: ..." note ----------------
+const toastNow = page => page.evaluate(() => {
+  const t = document.getElementById('toastEl'); if (!t) return null
+  const r = t.getBoundingClientRect()
+  return { l: Math.round(r.left), r: Math.round(r.right), t: Math.round(r.top), b: Math.round(r.bottom), op: t.style.opacity, cs: getComputedStyle(t).opacity, showing: t.style.opacity !== '0' && getComputedStyle(t).opacity !== '0' && r.height > 0, text: (t.textContent || '').slice(0, 40) }
+})
+const apart = (b, t) => !!b && !!t && (b.b <= t.t + 0.5 || b.t >= t.b - 0.5 || b.r <= t.l + 0.5 || b.l >= t.r - 0.5)
+const rs = x => x ? `${x.l}–${x.r} × ${x.t}–${x.b}` : 'none'
+// press Undo/Redo, picture at once, wait for the scroll to stop (two readings 200 ms apart), read the rects, THEN the settled picture
+async function pressAndRead(page, kind, name, sel, idx = 0) {
+  await ur(page, kind, `${name}-1-just-after-${kind}`)
+  await sleep(250)
+  let a = -1, b = await list(page); const t0 = Date.now()
+  while (a !== b && Date.now() - t0 < 5000) { await sleep(200); a = b; b = await list(page) }
+  const box = await spot(page, sel, idx), note = await toastNow(page)
+  await shot(page, `${name}-2-settled-${kind}`)
+  return { box, note, scroll: b }
+}
+const clear = r => !!r.box && !!r.note && r.note.showing && apart(r.box, r.note) && r.box.inView && r.box.onTop
+const say = r => `box ${rs(r.box)} (list ${r.box?.top}–${r.box?.bottom}, in view ${r.box?.inView}, on top ${r.box?.onTop}); note ${rs(r.note)} showing ${r.note?.showing} "${r.note?.text}"`
+const nearFoot = (page, sel) => page.evaluate(sel => {
+  const el = [...document.querySelectorAll(sel)].find(e => e.getBoundingClientRect().height > 0)
+  let s = el.parentElement; while (s && !(s.scrollHeight > s.clientHeight + 4 && /auto|scroll|overlay/.test(getComputedStyle(s).overflowY))) s = s.parentElement
+  const v = s.getBoundingClientRect()
+  s.scrollTop += el.getBoundingClientRect().bottom - (Math.min(v.bottom, innerHeight) - 30)
+}, sel)
+
+if (want('w1')) {
+  // W1a — R4 on the phone
+  await run('W1a', 'phone', async (page, tag) => {
+    const n = 'w1-a-phone'
+    await page.locator(PI_HEAD).scrollIntoViewIfNeeded(); await tapOrClick(page, page.locator(PI_HEAD)); await sleep(500)
+    const iid = await inputOf(page, 'Meeting')
+    if (!iid) { ok(`${tag} a Meeting under Personal Inputs`, null, 'NOT RUN: none drawn'); return }
+    const LINE = `#sbBoard [data-inprow="${iid}"]`, RMK = `#sbBoard [data-ifld="${iid}.rmks"]`
+    await page.locator(`${LINE} [data-acc="x"]`).click(); await sleep(600)
+    await page.locator(RMK).click(); await page.keyboard.press('End'); await page.keyboard.type(' w1a')
+    await page.locator('#sbBoard .sb-panel.pinp .sb-pinote').click(); await sleep(600)
+    await page.locator(PI_HEAD).scrollIntoViewIfNeeded(); await tapOrClick(page, page.locator(PI_HEAD)); await sleep(500)
+    await list(page, 'top'); await rested(page)
+    const u = await pressAndRead(page, 'undo', n, LINE)
+    ok(`${tag} Undo with Personal Inputs folded, far away: the input's line rests clear of the note`, clear(u), say(u), `${n}-1,2`)
+    await list(page, 'top'); await rested(page); await sleep(2600)
+    const r = await pressAndRead(page, 'redo', n + 'r', LINE)
+    ok(`${tag} Redo likewise: the line rests clear of the note`, clear(r), say(r), `${n}r-1,2`)
+  })
+  // W1b — R5b on the phone, both ways
+  await run('W1b', 'phone', async (page, tag) => {
+    const n = 'w1-b-phone'
+    await openWarn(page)
+    const was = (await spot(page, BAR)).value
+    const ix = await page.locator(`${XB}:visible`).first().evaluate(b => b.closest('.wln').getAttribute('data-wix'))
+    const LINE = `#sbWarn .wln[data-wix="${ix}"]`
+    await tapOrClick(page, page.locator(`${XB}:visible`).first())
+    await until(async () => (await spot(page, BAR)).value !== was)
+    await list(page, 'foot'); await rested(page)
+    const u = await pressAndRead(page, 'undo', n + 'i', LINE)
+    ok(`${tag} a warning hidden, scrolled to the foot: Undo brings its line down from above, clear of the note`, clear(u), say(u), `${n}i-1,2`)
+    await sleep(2600)
+    // the reverse: the LAST warning of the long list hidden, the board at its top, its line below the screen
+    const ix2 = await page.locator(`${XB}:visible`).last().evaluate(b => b.closest('.wln').getAttribute('data-wix'))
+    const LINE2 = `#sbWarn .wln[data-wix="${ix2}"]`
+    const was2 = (await spot(page, BAR)).value
+    await page.locator(`${XB}:visible`).last().scrollIntoViewIfNeeded(); await tapOrClick(page, page.locator(`${XB}:visible`).last())
+    await until(async () => (await spot(page, BAR)).value !== was2)
+    await list(page, 'top'); await rested(page)
+    const pre = await spot(page, LINE2)
+    const d = await pressAndRead(page, 'undo', n + 'ii', LINE2)
+    ok(`${tag} a warning low in the list hidden, its line BELOW the screen (was ${pre?.inView ? 'IN' : 'out of'} view): Undo brings it up, clear of the note`, !!pre && !pre.inView && clear(d), say(d), `${n}ii-1,2`)
+  })
+  // W1c — R6 on the phone: the card BELOW the screen
+  await run('W1c', 'phone', async (page, tag) => {
+    const n = 'w1-c-phone'
+    const CARD = '#sbBoard .sb-panel.sansav .sanscard'
+    const remark = () => page.evaluate(() => String((window.INPUTS || []).find(x => x.type === 'SANS Availability' && x.date === 'Jul 13')?.remarks || ''))
+    await page.locator(CARD).first().scrollIntoViewIfNeeded(); await tapOrClick(page, page.locator(CARD).first())
+    await page.waitForSelector('#inpEditPop:not([hidden]) .airpop-box')
+    await page.locator('#inpEditRmk').fill('w1c card'); await tapOrClick(page, page.locator('#inpEditSave')); await sleep(700)
+    await list(page, 'top'); await rested(page)
+    const pre = await spot(page, CARD)
+    const u = await pressAndRead(page, 'undo', n, CARD)
+    ok(`${tag} a SANS card changed, the card BELOW the screen (was ${pre?.inView ? 'IN' : 'out of'} view): Undo brings it up, clear of the note`, !!pre && !pre.inView && (await remark()) !== 'w1c card' && clear(u), say(u), `${n}-1,2`)
+  })
+  // W1d — R3b on the pc, and one plain case
+  await run('W1d', 'pc', async (page, tag) => {
+    const n = 'w1-d-pc'
+    const row = i => `#sbBoard [data-move="mv:p.0.${i}"]`, item = i => `#sbBoard [data-bfld="ap:0.${i}.prog"]`
+    const before = await progNames(page), cnt = before.length
+    let dragged = null
+    for (let t = 1; t <= 3 && !dragged; t++) {
+      await page.locator(row(Math.floor((cnt - 1) / 2))).evaluate(e => e.scrollIntoView({ block: 'center' })); await rested(page)
+      const a = await page.locator(`${row(cnt - 1)} .sb-grip`).boundingBox()
+      await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2); await page.mouse.down(); await sleep(250)
+      const b = await page.locator(row(0)).boundingBox()
+      await page.mouse.move(b.x + b.width / 2, b.y, { steps: 12 }); await sleep(150); await page.mouse.up(); await sleep(600)
+      const now = await progNames(page); if (now[0] === before[cnt - 1]) dragged = now
+    }
+    if (!dragged) { ok(`${tag} one row dragged to the head`, null, 'NOT RUN: the drag never re-ordered in 3 attempts'); return }
+    await list(page, 'top'); await rested(page)
+    const u = await pressAndRead(page, 'undo', n + 'a', item(cnt - 1))
+    ok(`${tag} one row dragged to the head, scroll at the head: Undo brings the row up from below, clear of the note`, clear(u), say(u), `${n}a-1,2`)
+    await sleep(2600)
+    // plain case: the last flying line's remark near the foot of the day retyped, scrolled to the top, Undo
+    await retype(page, REMARKS, -1, ' w1d')
+    await list(page, 'top'); await rested(page)
+    const pre = await spot(page, REMARKS, -1)
+    const p = await pressAndRead(page, 'undo', n + 'b', REMARKS, -1)
+    ok(`${tag} a remark near the foot retyped, scroll to the top (box ${pre?.inView ? 'IN' : 'out of'} view), Undo: the box rests clear of the note`, !!pre && !pre.inView && clear(p), say(p), `${n}b-1,2`)
+  })
+  // W1e — a box in view near the foot, changed and undone without scrolling: nothing moves
+  for (const sk of ['phone', 'pc']) await run('W1e', sk, async (page, tag) => {
+    const n = 'w1-e-' + sk
+    await retype(page, REMARKS, 0, ' w1e')
+    await nearFoot(page, REMARKS); const s0 = await rested(page)
+    const pre = await spot(page, REMARKS, 0)
+    await shot(page, `${n}-0-before`)
+    const u = await pressAndRead(page, 'undo', n + 'u', REMARKS)
+    await sleep(2600)
+    const r = await pressAndRead(page, 'redo', n + 'r', REMARKS)
+    const cov = x => x.note && x.note.showing && !apart(x.box, x.note)
+    ok(`${tag} a box in view near the foot: Undo and Redo move nothing (list ${s0} → ${u.scroll} → ${r.scroll})`, !!pre && pre.inView && u.scroll === s0 && r.scroll === s0, `Undo: ${say(u)}; note covers box ${cov(u)}. Redo: ${say(r)}; note covers box ${cov(r)}`, `${n}u-1,2 ${n}r-1,2`)
+  })
+  // W1f — OBSERVATION: the very last box of the last section, scroll to the top, Undo
+  for (const sk of ['phone', 'pc']) await run('W1f', sk, async (page, tag) => {
+    const n = 'w1-f-' + sk
+    const SELS = '#sbBoard input[type=text], #sbBoard input:not([type]), #sbBoard textarea'
+    const last = await page.evaluate(sels => {
+      const all = [...document.querySelectorAll(sels)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 })
+      const e = all[all.length - 1]; if (!e) return null
+      return { k: all.length - 1, n: all.length, cls: (e.className + '').slice(0, 40), attrs: [...e.attributes].map(a => a.name + '=' + a.value).filter(s => /^data-/.test(s)).join(' ').slice(0, 100), value: e.value, sec: (e.closest('.sb-panel')?.className || '').slice(0, 40) }
+    }, SELS)
+    note(`${tag} the very last box the board draws`, JSON.stringify(last))
+    if (!last) { ok(`${tag} a last box`, null, 'NOT RUN: none found'); return }
+    const el = page.locator(SELS).filter({ visible: true }).nth(last.k)
+    await el.scrollIntoViewIfNeeded()
+    if (/^\d\d:\d\d$/.test(last.value)) { await el.click(); await page.keyboard.type('1100'); await page.keyboard.press('Enter') }
+    else { await el.click(); await page.keyboard.press('End'); await page.keyboard.type(' w1f'); await page.keyboard.press('Enter') }
+    await sleep(700)
+    const after = await page.locator(SELS).filter({ visible: true }).nth(last.k).inputValue()
+    await list(page, 'top'); await rested(page)
+    const read = () => page.evaluate(([sels, k]) => { const all = [...document.querySelectorAll(sels)].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 }); const e = all[k]; if (!e) return null; const r = e.getBoundingClientRect(); return { l: Math.round(r.left), r: Math.round(r.right), t: Math.round(r.top), b: Math.round(r.bottom), value: e.value } }, [SELS, last.k])
+    await ur(page, 'undo', `${n}-1-just-after-undo`)
+    await sleep(250)
+    let a = -1, b = await list(page); const t0 = Date.now()
+    while (a !== b && Date.now() - t0 < 5000) { await sleep(200); a = b; b = await list(page) }
+    const box = await read(), nt = await toastNow(page)
+    await shot(page, `${n}-2-settled-undo`)
+    const covered = nt && nt.showing && box && !apart(box, nt)
+    const said = `changed "${last.value}" → "${after}", Undo put "${box?.value}" back; box ${rs(box)}; note ${rs(nt)} showing ${nt?.showing}; list scroll ${b}`
+    note(`${tag} OBSERVED (W1f): the last box of the last section, Undo from the top: ${covered ? 'COVERED by the note' : 'CLEAR of the note'}`, said, `${n}-1,2`)
+  })
+}
 
 note('errors across the whole walk', ALLERR.length ? ALLERR.join(' | ').slice(0, 900) : 'none')
 finish(process.env.ONLY || process.env.SIZES ? 'rewalk-partial.json' : 'rewalk.json')

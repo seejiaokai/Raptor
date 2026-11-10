@@ -1,0 +1,136 @@
+{
+ "R": [
+  {
+   "step": "W1a phone Undo with Personal Inputs folded, far away: the input's line rests clear of the note",
+   "res": "PASS",
+   "said": "box 28–360 × 718–804 (list 75–874, in view true, on top true); note 12–390 × 812–848 showing true \"Undid: Zenith’s Meeting\"",
+   "pics": "w1-a-phone-1,2"
+  },
+  {
+   "step": "W1a phone Redo likewise: the line rests clear of the note",
+   "res": "PASS",
+   "said": "box 28–360 × 718–804 (list 75–874, in view true, on top true); note 12–390 × 812–848 showing true \"Redid: Zenith’s Meeting\"",
+   "pics": "w1-a-phoner-1,2"
+  },
+  {
+   "step": "W1a phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W1b phone a warning hidden, scrolled to the foot: Undo brings its line down from above, clear of the note",
+   "res": "PASS",
+   "said": "box 30–372 × 83–124 (list 75–874, in view true, on top true); note 12–390 × 812–848 showing true \"Undid: hiding a warning\"",
+   "pics": "w1-b-phonei-1,2"
+  },
+  {
+   "step": "W1b phone a warning low in the list hidden, its line BELOW the screen (was out of view): Undo brings it up, clear of the note",
+   "res": "PASS",
+   "said": "box 30–372 × 763–804 (list 75–874, in view true, on top true); note 12–390 × 812–848 showing true \"Undid: hiding a warning\"",
+   "pics": "w1-b-phoneii-1,2"
+  },
+  {
+   "step": "W1b phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W1c phone a SANS card changed, the card BELOW the screen (was out of view): Undo brings it up, clear of the note",
+   "res": "PASS",
+   "said": "box 34–191 × 761–804 (list 75–874, in view true, on top true); note 12–390 × 812–848 showing true \"Undid: Tally’s SANS Availability\"",
+   "pics": "w1-c-phone-1,2"
+  },
+  {
+   "step": "W1c phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W1d pc one row dragged to the head, scroll at the head: Undo brings the row up from below, clear of the note",
+   "res": "PASS",
+   "said": "box 54–388 × 634–658 (list 106–730, in view true, on top true); note 663–873 × 666–704 showing true \"Undid: a change to the schedule\"",
+   "pics": "w1-d-pca-1,2"
+  },
+  {
+   "step": "W1d pc a remark near the foot retyped, scroll to the top (box out of view), Undo: the box rests clear of the note",
+   "res": "PASS",
+   "said": "box 855–1090 × 634–658 (list 106–730, in view true, on top true); note 666–870 × 666–704 showing true \"Undid: a remark on a flying line\"",
+   "pics": "w1-d-pcb-1,2"
+  },
+  {
+   "step": "W1d pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W1e phone a box in view near the foot: Undo and Redo move nothing (list 987 → 987 → 987)",
+   "res": "PASS",
+   "said": "Undo: box 206–360 × 821–845 (list 75–874, in view true, on top true); note 12–390 × 812–848 showing true \"Undid: a remark on a flying line\"; note covers box true. Redo: box 206–360 × 821–845 (list 75–874, in view true, on top true); note 12–390 × 812–848 showing true \"Redid: a remark on a flying line\"; note covers box true",
+   "pics": "w1-e-phoneu-1,2 w1-e-phoner-1,2"
+  },
+  {
+   "step": "W1e phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W1e pc a box in view near the foot: Undo and Redo move nothing (list 361 → 361 → 361)",
+   "res": "PASS",
+   "said": "Undo: box 855–1090 × 676–700 (list 106–730, in view true, on top true); note 666–870 × 666–704 showing true \"Undid: a remark on a flying line\"; note covers box true. Redo: box 855–1090 × 676–700 (list 106–730, in view true, on top true); note 667–869 × 666–704 showing true \"Redid: a remark on a flying line\"; note covers box true",
+   "pics": "w1-e-pcu-1,2 w1-e-pcr-1,2"
+  },
+  {
+   "step": "W1e pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W1f phone the very last box the board draws",
+   "res": "RECORD",
+   "said": "{\"k\":201,\"n\":202,\"cls\":\"ain rmkin\",\"attrs\":\"data-ifld=imriimcs3dro91q.rmks\",\"value\":\"Medically down\",\"sec\":\"sb-panel unav\"}",
+   "pics": ""
+  },
+  {
+   "step": "W1f phone OBSERVED (W1f): the last box of the last section, Undo from the top: COVERED by the note",
+   "res": "RECORD",
+   "said": "changed \"Medically down\" → \"Medically down w1f\", Undo put \"Medically down\" back; box 206–312 × 805–829; note 12–390 × 812–848 showing true; list scroll 5849",
+   "pics": "w1-f-phone-1,2"
+  },
+  {
+   "step": "W1f phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W1f pc the very last box the board draws",
+   "res": "RECORD",
+   "said": "{\"k\":201,\"n\":202,\"cls\":\"ain rmkin\",\"attrs\":\"data-ifld=imriimcjyzoiw9q.rmks\",\"value\":\"Medically down\",\"sec\":\"sb-panel unav\"}",
+   "pics": ""
+  },
+  {
+   "step": "W1f pc OBSERVED (W1f): the last box of the last section, Undo from the top: COVERED by the note",
+   "res": "RECORD",
+   "said": "changed \"Medically down\" → \"Medically down w1f\", Undo put \"Medically down\" back; box 833–1042 × 666–690; note 700–836 × 666–704 showing true; list scroll 3026",
+   "pics": "w1-f-pc-1,2"
+  },
+  {
+   "step": "W1f pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "errors across the whole walk",
+   "res": "RECORD",
+   "said": "none",
+   "pics": ""
+  }
+ ]
+}

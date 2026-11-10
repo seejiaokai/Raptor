@@ -37,3 +37,19 @@ None in any scenario (every scenario collected console errors, page errors, fail
 - On a phone the passing "Undid: …" note lies over the foot of the list for a moment, where an Undo that lands a box "just clear of the foot" puts it (R4 phone, R6 phone, R5b phone). The box is wholly on screen and the note takes no presses; it is the passing note only. Pictures `r4-phone-3-after-undo`, `r6-phone-3-after-undo`.
 - The walk's own world: a drag UP onto a Common Programme row only re-orders with the pointer on the row's very top edge and the row's edge away from the list's edge-scroll zone (a drop 4–8px inside it, or one made 64px under the bar, did nothing). Written in the script as such.
 - The phone's WebKit mouse drag did not re-order the Common Programme list in 3 attempts (see R3b), though it did re-order the Ground Programme (R3d phone passed).
+
+## The short re-walk of W1 (after the fix)
+
+Build: the NEW `raptor-port/dist` (built from the fix, not rebuilt by the walker). No port (served from inside the test browser). Script `sb64-rewalk.mjs`, last version line `sb64-rewalk v15`, run as `ONLY=w1`; output `job1-walk/w1b.txt`. Pictures: `rewalk/w1-*` (28), each step with `-1-just-after-<undo|redo>` and `-2-settled-<undo|redo>` (the settled picture has the note on it; rects read just before it, the note showing each time). Rects are css px: left–right × top–bottom; the list runs from the board's bar to the foot (phone 75–874, pc 106–730). PASS = note showing, box wholly in the list, nothing over it (`elementFromPoint`), and the box's rect does not meet the note's rect.
+
+- **W1a phone — PASS** (Personal Inputs folded, Undo from far away): line 28–360 × 718–804; note 12–390 × 812–848 ("Undid: Zenith’s Meeting"). Redo likewise: line 28–360 × 718–804; note 12–390 × 812–848 ("Redid: …"). `w1-a-phone-*`, `w1-a-phoner-*`. Opened: `w1-a-phone-2-settled-undo`.
+- **W1b phone — PASS** ×2: (i) hidden warning, board at its foot, Undo brings the line down from above: line 30–372 × 83–124; note 12–390 × 812–848. (ii) the LAST warning hidden, board at its top (line was below the screen), Undo: line 30–372 × 763–804; note 12–390 × 812–848. `w1-b-phonei-*`, `w1-b-phoneii-*`.
+- **W1c phone — PASS** (SANS card below the screen, Undo): card 34–191 × 761–804; note 12–390 × 812–848. `w1-c-phone-*`.
+- **W1d pc — PASS** ×2: (a) one row dragged to the head, Undo brings it up from below: row 54–388 × 634–658; note 663–873 × 666–704 (clear sideways as well as above). (b) a remark near the foot retyped, scrolled to the top (out of view), Undo: box 855–1090 × 634–658; note 666–870 × 666–704 (above it). `w1-d-pca-*`, `w1-d-pcb-*`. Opened: `w1-d-pcb-2-settled-undo`.
+- **W1e phone — PASS** (box in view near the foot, Undo then Redo, no scroll): list 987 → 987 → 987. Box 206–360 × 821–845 lies under the note 12–390 × 812–848: the note COVERS the box for its two seconds (both Undo and Redo); nothing moved. `w1-e-phone-0-before`, `w1-e-phone-u-*`, `w1-e-phone-r-*`.
+- **W1e pc — PASS**: list 361 → 361 → 361. Box 855–1090 × 676–700; note 666–870 × 666–704: covered (the note's right part over the box's left part, as the rects say). `w1-e-pc-*`.
+- **W1f (OBSERVED, not pass/fail)** — the very last box the board draws is the remark of the last Unavailable row ("Medically down"):
+  - phone: **OBSERVED: covered**. Box 206–312 × 805–829; note 12–390 × 812–848; list scroll 5849 (the end). Picture `w1-f-phone-2-settled-undo` (opened).
+  - pc: **OBSERVED: covered** by 3 px at the box's right edge only (box 833–1042 × 666–690; note 700–836 × 666–704); list scroll 3026 (the end). `w1-f-pc-*`.
+
+Totals: 15 PASS, 0 FAIL, 0 NOT RUN, 2 OBSERVED (W1f). The first run of this block (v14) showed W1f NOT RUN because the walk's own variable name clashed with its helper; v15 fixed that and the whole block was re-run — the figures above are v15's. Console, page and network errors: none.
