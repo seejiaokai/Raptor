@@ -6,8 +6,19 @@ and what no longer applies is taken out, moved whole to an archive. Step 1, the 
 has been edited.
 
 **Status:** the skill read whole by chat 59 on `main` at `b1806a3c0`; every file, heading, command and ruling it names
-checked the same day (§A); the list put to him 10 Nov 26; his answer not yet given. Line numbers below are the skill's
-at that commit.
+checked the same day (§A); the list put to him 10 Nov 26; **his answer the same day, D1978 — "As recommended": all of
+§B to §F, §C's five corrections and the template's added line included; chat 59 does the rewrite.** Line numbers below
+are the skill's at that commit.
+
+**Done 10 Nov 26 by chat 59, on `claude/skills-tighten-2-9a9f74`, before the reads:** the old wording copied whole to
+`raptor-port/docs/archive/session-handoff-skill-2026-11-10.md`; the skill rewritten — §B out, §C's five put right, §D
+once, §E shorter. Measured: 444 lines and 29,508 bytes → 310 lines and 25,653 bytes, about 13% fewer bytes — **well
+short of §G's estimate.** Why: the dated stories came to about half the size guessed, and most of what remains is
+commands, quoted sentences and conditions that §F keeps word for word; nothing was cut further to reach a number
+(D141). The writer's pass (§H 3) found three things to name to the readers: "`main` always does" left the merge
+sentence on purpose (§C 1); the refused merge of 8 Nov 26 is now stated as a rule ("is refused"), not as the one
+case; and §E's "thirteen points" were twelve — now thirteen, the one on plans and slices split in two. The brief for
+the two reads: `raptor-port/docs/superpowers/briefs/2026-11-10-session-handoff-tighten-read-brief.md`.
 
 ## A. Measured, and checked
 
