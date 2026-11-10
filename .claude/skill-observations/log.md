@@ -2288,3 +2288,16 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** The handoff block said the next job was "for a fresh chat". The outgoing chat compacted, was asked to continue, and took the job back without changing the block, while two fresh chats were opened with the same line. All three read the same 46,000-token guide before the overlap was found by listing the live chats and messaging.
 **Suggested improvement:** When a chat resumes work its own handoff block gave to a fresh chat, it first adds one line to that block ("taken back by chat N at <time> — do not start") and pushes it, or messages any chat opened since. A new chat lists the live chats and messages the block's writer BEFORE its first heavy read, not after.
 **Principle:** A handoff note is a lock; whoever takes work back from it must update the note before starting, and a new reader checks for a live owner before spending effort.
+
+### Observation 922: Shortening a rule drops the small conditions first — check each cut clause for one
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** [SKILLS-TIGHTEN] step 1 — the design guide's 81 lessons cut to one line each (chat 58); numbered past 920–921, held by pull request 749
+**Skill:** New skill candidate: tightening a guide (the method [SKILLS-TIGHTEN] uses; session-handoff and overnight are next)
+**Type:** open-source
+**Phase/Area:** the rewrite step, before the readers
+
+**Issue:** The writer's one-line versions passed the writer's own reading, yet two blind readers found eleven losses in 68 lessons, and nearly all were of one kind: a short qualifying clause inside a longer sentence (an exception scoped to one named column, a "where … is shown another way" condition, a pointer to a rule that narrows this one carried only by a passage that was itself leaving, a note of what was built turned into a requirement by rewording).
+**Suggested improvement:** Before the readers, the writer runs one mechanical pass: for every sentence cut or reworded, list its qualifying words (where, only, unless, except, for … only, narrows, narrowed by, built) and every cross-reference into a passage that is leaving, and show each is still carried; a "built / as built" note is never reworded into the rule's own list.
+**Principle:** When text is condensed, the main clause survives and its conditions do not; a condensing pass needs a check aimed at qualifiers and cross-references, not a re-read for sense.
