@@ -87,7 +87,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - The buttons are one row at 36, as drawn — the idle date box removed, "Export to Excel" reading "Export" on a phone — and the paragraph under it ("similar to a LoX…", with its links) deleted whole [D935].
 - The edit buttons read as Logic's: "✎ Edit" plain grey to start, "Done" bright blue while editing, on every width — for "Enable editing" and "Save changes" ("Save" on a phone), what each does unchanged: changes kept as made, "Done" only ends editing [D1128, D937]. While editing "Edit quals" is plain grey until pressed, as "✎ Edit" is, so "Done" is the one bright-blue button, the way out; pressed it reads "✕ Edit quals", plain, unchanged in what it does — this one button apart from his 5 Aug 26 rule that the thing to press is blue [D1129, D1128].
 - Quals opens at its top — its buttons in sight — wherever opened from, as the Inputs page does [D937, D1128].
-- Its pinned header row follows the table sideways, as the Leave War's pinned date row does, so it keeps up on his iPhone — that row alone, the Leave War's left as it was; both since take the row's place in the frame it reaches the top bar (the Leave War's D1789, D1850, D1870) [D993].
+- Its pinned header row follows the table sideways, as the Leave War's pinned date row does, so it keeps up on his iPhone — that row alone, the Leave War's left as it was; both since take the row's place in the frame it reaches the top bar (the Leave War's D1789, D1870) [D993].
 - On a phone a pinch zooms the table only — the top bar, "✎ Edit" (then "Enable editing"), Export, the filter and the Pilots · WSOs · Personnel · All switch stay; the heading row and name column stay pinned and lined up; out until the whole width fits, in to twice normal, the zoom kept while he stays on Quals [D1108, D1110, D1128].
 
 ## Posting in and stints
@@ -141,7 +141,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - Edit Schedule's "Publish AL1", which a member sees looking pressable only through this PC's developer route, is left as it is: no member reaches the page anywhere else, every change he tries there is refused [D1658].
 
 ## From other areas (each stated on its own area's file)
-- The Leave War's (a posting and his leave, the Management tick, SANS on the war, Quals as its one source, its row and bid controls, a member's filing): D1555, D1545, D1541, D1521, D1447, D1460, D1502, D1200, D1149, D1223, D1215, D1221, D461, D460, D1692, D1697, D1698, D1711, D1446, D1728, D1729, D1730, D1720, D1326, D1173, D1542, D1789, D1850, D1388, D1398.
+- The Leave War's (a posting and his leave, the Management tick, SANS on the war, Quals as its one source, its row and bid controls, a member's filing): D1555, D1545, D1541, D1521, D1447, D1460, D1502, D1200, D1149, D1223, D1215, D1221, D461, D460, D1692, D1697, D1698, D1711, D1446, D1728, D1729, D1730, D1720, D1326, D1173, D1542, D1789, D1388, D1398.
 - The scheduler's (the published day, the delete's lines, sign-offs, the history, bell lines, the date calendar, one seat, a shared input): D44, D45, D103, D337, D710, D186, D212, D169, D338, D1693, D1699, D1710, D1589, D796, D797, D1099, D762, D660.
 - The Tracker's: D981, D376.
 - The Inputs pages' (Quals' drag, filing): D893, D655, D658, D763.

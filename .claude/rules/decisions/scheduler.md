@@ -35,7 +35,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 
 ## Every screen
 - The writing guide is a standing companion to the design guide and the design skill, used every time text in the app is written or changed, its aim intuitive, clean, simple, smooth, less verbose and more human, with fewer dashes [D833, D834, D836, D839].
-- The writing guide is approved as written, and when its aims pull apart the order is every fact first, then a sentence a person would say, then as short as those two allow — so a wording may end a word or two longer [D836, D806, D825, D833, D834, D839].
+- The writing guide is approved as written, and when its aims pull apart the order is every fact first, then a sentence a person would say, then as short as those two allow — so a wording may end a word or two longer [D836, D825, D833, D834, D839].
 - A shorter wording keeps every key word — what happened, why, what it costs and where to put it right — and only filler is cut; one that reads as a summary of the old is redone, and one that cannot lose a word without losing a fact is left as it is [D825, D833, D834, D836, D839].
 - The long dash is not the app's ordinary way of joining two thoughts, because it reads as machine-written; a colon may take its place, and a dash may still be used where it makes sense [D834].
 
@@ -218,7 +218,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - On every row that came from an input the pucks are the input's people: a puck taken off takes that man out of the input, and a puck put on adds him, as in the input's own window [D734, D755, D776].
 - A person or ALL AVAIL dropped on an input's row shows on the schedule and the Inputs calendar alike and follows the input's OIL answer; ALL AVAIL stays when anyone leaves; the member is told by his bell; a drop that cannot apply is refused with its reason [D757, D755, D776].
 - A time or a remark the scheduler types on an input's row — a shared input's, or a one-man request's — changes the input or the request itself, for everyone in it: the schedule and the Inputs calendar always agree, and what was filed is kept only in the change history, with the scheduler's name [D739, D740].
-- An input is stored as one record with the list of its people, never one record a person kept in step [D756, D759].
+- An input is stored as one record with the list of its people, never one record a person kept in step [D756].
 - On the schedule a group input is one row holding everyone in it, on Personal Inputs and the Ground Programme; on the Unavailable list an input for several people — leave, an overseas duty, a course — stays one row a man [D661, D737].
 - One shared row has one time for everyone on it: to give one man another time, or to cancel it for him alone, the scheduler takes him off and gives him a row of his own — the row never splits or joins by itself [D735].
 - The window a tap on a shared input opens from the schedule — its line under Personal Inputs, its row on the Ground Programme — shows everyone in the input and changes it for everyone, as its window on the Inputs page does, never one man's form [D748].
@@ -339,17 +339,6 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - Saturday and Sunday start with no flying set; a no-fly day still shows and takes OFT and AMT commitments; the Leave War's panel for a picked block of people's days stays up with the grid behind it working, and the war's other windows wait for their own job — not built, `[LW-WINDOWS-NONBLOCKING]` [D642, D641].
 - The Leave War's Event sheet is as redrawn, with few words: a first row of the squadron's own ready-made events, "Presets", never "type", the picked one lit; an optional name, "On grid" for the short form, the Kind row only under "Other…"; the grid shows the short form and a tap opens the full name and kind; every preset has a short form, PH, OFF, NL and SC to start [D645, D644].
 - Through any tidy the Event sheet keeps its colours and its button that edits the presets [D634, D645].
-
-## Done once — kept until he archives them
-- The right-panel job looked over the whole crew list — every look a puck can wear there, its reason, the counts and the order, with and without a seat picked — and put its findings to him with pictures before anything changed [D1115, D1119].
-- The small fixes of the 13 Oct 26 design look, L1–L17 and K1–K4, K7–K10 and K12, were built as one batch, their words as the writing guide reworked them; K5, K6 and K11 are jobs of their own, his to place (the agent's reading) [D830, D833, D837, D839, D834, D836].
-- The designs of 13 Oct 26, and the ones then coming, were looked over with the design guide, keyboard use included, and the findings put to him before anything changed [D807].
-- The passing notes after publishing and unpublishing a day, and the other long notes, were shortened to the writing guide's order and put to him before they were built [D806, D836].
-- The stored shape of D756 was confirmed once its cost was laid out, and built in steps, the first changing nothing on screen [D759, D756].
-- D686 was confirmed on his iPhone: the page behind a window no longer scrolls [D703, D686].
-- The day-scheduling and phone-usability priorities of 4 Oct 26 were set aside for his own ideas as building goes on [D546].
-- The final Insights look was approved and built: the temporary choose / change mission role below the area, the working / published wording, read-only access to the latest published remarks, the chart and the board's door [D532].
-- His approval as built of three of the five-flags batch's changes — his own flagged puck without the glow, the Leave War's ⚙ Reset order, a swap inside one crowd without "already on" — the fourth, room beside the ‹ arrow, refused [D274, D275].
 
 ## Built, held by tests
 - Built, held by tests (each named by a test that holds it whole; the detail is in the app and its full row in `.claude/decisions-full/scheduler.md`): D66, D96, D109, D174, D175, D176, D271, D344, D488, D555, D558, D561, D597, D598, D686, D747, D800, D844, D845, D995, D1111, D1119, D1529, D1620, D1648, D1710, D1785, D1786.

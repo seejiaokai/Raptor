@@ -184,18 +184,12 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - The words pass round 3: the Medical tab's grey lines under "medically down" and "pending upchit" go; help's "report a problem" line reads "spotted something wrong, or something that could work better? The schedulers see every report."; an empty bug-reports card says "no reports yet." [D959].
 - The upchit and medical-clash questions lose the waiting-button hint and the small print, a day holding one status said another way; their answers sit flat [D848, D849].
 
-## Done once — kept until he archives them
-- The inputs / SANS design was accepted as shown, its build started in the next chat; the handoff explained his intent for a fresh challenge; the design was shown on desktop and phone, vetted, the header simplified with the design skill [D657, D584, D583, D582].
-- A calendar view for Member Inputs beside the SANS calendar was designed, the entry flow recommended before building [D574].
-- In the calendar job's bug check each approved mock-up was set beside a picture of the built screen at the same size [D624].
-- "Attach" was built with its batch, one full check with the "Other" work [D1376].
-
 ## Built, held by tests
 - Built, held by tests (each named by a test that holds it whole; the detail is in the app and its full row): D572, D675, D685, D732, D768, D773, D879, D999, D1022, D1023, D1581.
 
 ## From other areas (each stated on its own area's file)
 - The Leave War's Other — on the Ground Programme or under Unavailable as its filer picks on the Inputs page, straight under Unavailable when filed from the war, where it stands a scheduler's alone once he has moved it, counting him out only under Unavailable: D1356, D1365, D1388, D1357, D1398, D1390, D1381, D1372, D1374, D1393, D1389.
-- The scheduler's one rule of a row that came from an input, and its people: D755, D756, D757, D759, D776.
+- The scheduler's one rule of a row that came from an input, and its people: D755, D756, D757, D776.
 - The schedule's one row for a shared input — its pucks, time, remark and window: D734, D735, D736, D737, D739, D740, D742, D743, D748, D776.
 - A cancelled row's CX cancels the input: D760.
 - One row on the schedule, the changes window, the Unavailable list: D661, D662, D663, D736.
@@ -207,9 +201,9 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - OIL asked and answered on these pages: D781, D782, D783, D793, D470.
 - The scheduler's earlier rulings on inputs: D174, D175, D176, D177, D178.
 - The one date calendar the whole app shares: D796, D797, D800.
-- More of the scheduler's that these pages follow: D641, D686, D703, D706, D769, D1080, D710.
+- More of the scheduler's that these pages follow: D641, D686, D706, D769, D1080, D710.
 - The Leave War's own pages, which these follow: D891, D890.
 - The SANS calendar reads the Leave War's rows of these: D634, D636, D637, D640, D642, D644, D645, D665, D668.
 - Settled before, for inputs and admin: the scheduler's Settled section, Inputs & Admin.
-- From the Leave War's own work, rulings that govern these pages too — placing leave, the Other, the colours (each on the Leave War's file, or this page's where it is this area's): D1724, D1722, D1565, D1563, D1553, D1552, D1548, D1542, D1501, D1401, D1400, D1399, D1398, D1395, D1397, D1393, D1390, D1389, D1388, D1381, D1380, D1379, D1378, D1371, D1525, D1370, D1365, D1357, D1374, D1372.
-- And more from the Leave War's work that these pages follow — the calendars, the people, the windows and the marks: D1354, D1353, D1352, D1350, D1328, D1327, D1323, D1322, D1321, D1318, D1317, D1316, D1307, D1299, D1226, D1212, D1211, D1176, D1225, D1175, D1291, D1166, D1177, D1159, D1155, D1500, D1154, D1150, D998, D418.
+- From the Leave War's own work, rulings that govern these pages too — placing leave, the Other, the colours (each on the Leave War's file, or this page's where it is this area's): D1724, D1722, D1565, D1553, D1552, D1548, D1542, D1501, D1401, D1400, D1399, D1398, D1395, D1397, D1393, D1390, D1389, D1388, D1381, D1380, D1379, D1378, D1371, D1525, D1370, D1365, D1357, D1374, D1372.
+- And more from the Leave War's work that these pages follow — the calendars, the people, the windows and the marks: D1354, D1353, D1352, D1350, D1328, D1327, D1323, D1322, D1321, D1318, D1316, D1307, D1226, D1212, D1211, D1176, D1225, D1175, D1291, D1166, D1177, D1159, D1155, D1500, D1154, D1150, D998, D418.
