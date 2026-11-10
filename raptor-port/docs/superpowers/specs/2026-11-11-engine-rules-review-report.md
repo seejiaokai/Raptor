@@ -179,8 +179,10 @@ Each question is one decision, and none depends on another's answer. "As built" 
     tapping the suggestion can turn a day red, or ask for the tap not to count for crew rest.
 - **Why both fit your words.** "An empty box's default counts only where no in-time or rally is entered" (D1032) can be
   read either way. D1786 moved only the long day and Insights to the default rally, and said nothing about crew rest.
-- **Recommended:** neither reviewer gave one, because both readings fit your words. Today's mix — where accepting the
-  app's own suggestion turns a clean day red — is the part worth ending.
+- **Recommended: A** (the coordinating chat's recommendation; neither reviewer gave one, because both readings fit your
+  words). One start of the day for every rule — crew rest, OIL and the long work day — so accepting the app's own
+  suggestion never changes anything. The cost: days that show the amber note today would show a red breach, which is
+  the safer side to be wrong on, and the amber "Tight turning" note would go.
 - **Waits on it:** F7's words.
 
 ### Q2 — Can the "+ In-time" button's words still make a rally?
@@ -195,7 +197,10 @@ Each question is one decision, and none depends on another's answer. "As built" 
   - **An in-time only.** "The button will just be intime only… No Rally" (D1026).
   - **A rally, as built.** "A typed line that still says RALLY stays a rally" (D1034). Both rulings were made the same
     day.
-- **Recommended:** none given. It matters only if a squadron puts the word RALLY into that setting.
+- **Recommended: an in-time only** (the coordinating chat's recommendation; the reviewer gave none). The line the
+  button makes is always an in-time, whatever its words (D1026); a line typed by hand that says RALLY stays a rally
+  (D1034). The two rulings then cover different things and never meet. It matters only if a squadron puts the word
+  RALLY into that setting.
 - **Waits on it:** nothing else.
 
 ### Q3 — Is a standby line that flies checked like a sortie, or like a standby shift?
@@ -265,8 +270,10 @@ Each question is one decision, and none depends on another's answer. "As built" 
   back once that clash has gone after an edit. You ruled it stays hidden "until another person unhides it" (D469). You
   were told a clash recreated by putting the same man back on the same seat "returns already struck" (D479) — but not
   about a different line.
-- **Recommended:** none given — there is a cost either way. As built, a later, different clash can arrive already
-  acknowledged. The other way, a small edit like sliding the brief 30 minutes brings a hidden clash back.
+- **Recommended: a hide covers that one clash** (the coordinating chat's recommendation; the reviewer gave none): it
+  stays hidden while the same man is on the same two lines, whatever their times — so (a) stays hidden — and comes back
+  when the man or either line is a different one — so (b) shows. The harm today is (b): a clash nobody has looked at
+  arrives already acknowledged.
 - **Waits on it:** nothing else.
 
 ### Q8 — On a published day, which brief does the live crew-rest check measure to?
@@ -279,8 +286,10 @@ Each question is one decision, and none depends on another's answer. "As built" 
     brings the printed B into line.
 - **Why both fit your words.** You ruled that a published day keeps the brief it printed (D186), and that crew rest
   stays live on a published day so the break can be seen (D184). They disagree on one day until its next amendment.
-- **Recommended:** none given. The reviewer notes that D186 itself says "the validator and every working surface read
-  today's rules", which may make today's behaviour the ruled side.
+- **Recommended: today's setting, as built** (the coordinating chat's recommendation). D186 itself says "the validator
+  and every working surface read today's rules", so today's behaviour is the ruled side; a red that says a man is told
+  to report earlier is the safer side; and the day already reads pending until its next amendment prints the new B.
+  F1 is then cured by words: the Logic page's line, and the warning naming the time it measured to.
 - **Waits on it:** F1 — this answer decides how it is fixed.
 
 ### Q9 — A published day made a holiday afterwards: should its red "no usable times" line show at once?
@@ -313,8 +322,10 @@ Each question is one decision, and none depends on another's answer. "As built" 
     The man reported and debriefed" (D49). The shift would earn from its R or B, with the amber note.
   - **Earn nothing until the times are fixed (as built).** This choice was made before you ruled that a standby line
     that flies counts as a real flight (D1042).
-- **Recommended:** none given. As built, a man who reported at 06:00 and flew loses his day until someone corrects the
-  times; the red line tells the scheduler which line to fix.
+- **Recommended: earn, like a flying line** (the coordinating chat's recommendation; the reviewer gave none). You ruled
+  both halves already — a line that flies with the same two times still earns (D49), and a standby line that flies is
+  a real flight (D1042) — and a man who reported at 06:00 and flew should not lose his OIL to a typing slip. The amber
+  "times look wrong" note still tells the scheduler which line to fix.
 - **Waits on it:** nothing else.
 
 ---
