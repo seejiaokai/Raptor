@@ -2208,10 +2208,11 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 
 **Principle:** A helper's report reaches the host as its final reply; a brief that asks for a report file may be refused, and the reply is then the only copy, so save it at once.
 
-### Observation 916: The shared-folder trap of Observation 787 met again — an opening line written in chat, outside the handoff guide
+### Observation 917: The shared-folder trap of Observation 787 met again — an opening line written in chat, outside the handoff guide
 
 **Status:** OPEN
 **Date:** 10 Nov 26
+**Numbering:** first appended as 916; chat 51 appended its own 916 on `claude/lw-frozen-bar-stutter` the same minute (the same event, from the other chat's side), so this one is renumbered 917 — read the two together at the next review.
 **Session context:** Chat 50 (night 3's notes leftovers); mid-turn he said he would open a parallel chat for a Leave War fault, and the agent wrote its opening line in the reply
 **Skill:** session-handoff (and every place the agent writes an opening line for a parallel chat)
 **Type:** open-source
