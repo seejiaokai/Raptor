@@ -274,6 +274,19 @@ export function frontmatterProblems(text) {
 /* One glob of a `paths:` list as a pattern: `**` any number of folders, `*` and `?` within one name. */
 export const globRe = g => new RegExp('^' + g.split(/(\*\*\/|\/\*\*$|\*\*|\*|\?)/).map(p => p === '**/' ? '(?:.*/)?' : p === '/**' ? '(?:/.*)?' : p === '**' ? '.*' : p === '*' ? '[^/]*' : p === '?' ? '[^/]' : p.replace(/[.+^${}()|[\]\\]/g, '\\$&')).join('') + '$')
 export const matchesPaths = (globs, file) => globs.some(g => globRe(g).test(file))
+/* Every browser test loads the rulings page of the screen it tests (D1973, 10 Nov 26): the scheduler's page names its
+   browser tests one by one, so that the Leave War's own no longer load it — and a new test nobody listed would load
+   neither page, with nothing said. Every script under the tests' folder counts, whatever its ending (the test runner's
+   pattern takes a `.spec.tsx` too); a page with no `paths:` loads in every chat, so nothing is owed then; a page that is
+   missing fails every test. files: every file's path, with forward slashes; read: a file's text ('' when it is missing). */
+export const TEST_PAGES = ['.claude/rules/decisions/scheduler.md', '.claude/rules/decisions/leave-war.md']
+export function testPageProblems(files, read) {
+  const texts = TEST_PAGES.map(f => read(f))
+  if (texts.some(t => t && !isScoped(t))) return []
+  const globs = texts.map(t => pathsOf(t))
+  return files.filter(f => /^raptor-port\/e2e\/.+\.[cm]?[jt]sx?$/.test(f) && !globs.some(g => matchesPaths(g, f)))
+    .map(f => `${f} is a browser test that loads no rulings page — add it to the paths: of ${TEST_PAGES[0]} (its browser tests are listed one by one since D1973), or, at the top of the tests' folder, name it *leavewar* if it tests the Leave War, whose page then loads`)
+}
 /* THE SEAM FILES (D1735; the rules-diet plan §2): the Leave War's and the Tracker's architecture, moved whole out of
    their area files into files of their own that load on the area's own paths AND on the files where the area meets
    the rest of the app — so the area's rulings load only on its own files, and a seam file alone where they meet. Each

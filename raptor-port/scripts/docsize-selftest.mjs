@@ -590,6 +590,16 @@ scenario('a seam file gone once its area file no longer loads on its seam', true
   console.log(`${ok ? 'PASS' : 'MISS'}  …but no seam file while the area file still loads on every seam path (today)${ok ? '' : ` — got: ${got[0]}`}`)
 }
 scenario('a seam file that misses its own area', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/ui/InputsPage.tsx')), { mustSay: 'a file inside its area' })
+{ /* a browser test loads a rulings page (D1973): one the scheduler's list misses is named, and only it — a listed test,
+     a Leave War test (the war's own page loads) and a file outside the tests are not */
+  const read = f => f === RLs.TEST_PAGES[0] ? seamFile('raptor-port/e2e/app.ts') : f === RLs.TEST_PAGES[1] ? seamFile('raptor-port/e2e/*leavewar*') : ''
+  const files = ['raptor-port/e2e/app.ts', 'raptor-port/e2e/leavewar.spec.ts', 'raptor-port/e2e/new.spec.ts', 'raptor-port/e2e/new2.spec.tsx', 'raptor-port/e2e/sub/leavewar.spec.ts', 'raptor-port/src/a.ts']
+  const got = RLs.testPageProblems(files, read), named = got.map(g => g.split(' ')[0]).join(' ')
+  /* …a .tsx test and one in a sub-folder too (the war's pattern does not cross folders); a page with no paths: loads in every chat, so nothing is owed */
+  const open = RLs.testPageProblems(files, f => f === RLs.TEST_PAGES[0] ? '# The scheduler\n' : read(f))
+  const ok = named === 'raptor-port/e2e/new.spec.ts raptor-port/e2e/new2.spec.tsx raptor-port/e2e/sub/leavewar.spec.ts' && !open.length; if (!ok) failed++
+  console.log(`${ok ? 'PASS' : 'MISS'}  a browser test that loads no rulings page is named, and only it${ok ? '' : ` — got: ${got.join(' / ')}`}`)
+}
 scenario('a seam file whose area file still loads on the seam', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/InputsPage.tsx')); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/InputsPage.tsx').replace('its architecture', 'rulings')) }, { mustSay: 'still loads on raptor-port/src/ui/InputsPage.tsx' })
 scenario('a seam file nobody registered', true, c => c.write('.claude/rules/seams/other.md', seamFile('raptor-port/src/other/**')), { mustSay: 'a seam file nobody registered' })
 { /* the paths: matcher, read directly — the globs the rules files use today */
