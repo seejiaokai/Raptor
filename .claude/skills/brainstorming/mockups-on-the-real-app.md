@@ -13,21 +13,42 @@ someone.
 marked picture), find and open that picture first: his words name the surface
 as he calls it, which may not be the app's own name for it. Say on the page
 which surface you read his words as, and why (19 Oct 26: "Edit Schedule" in a
-ruling was the Scheduler Board in the picture he ruled from).
+ruling was the Scheduler Board in the picture he ruled from). **His picture is
+part of the question:** name its device and width, and answer on the same one
+(27 Oct 26: a phone question answered with a desktop picture). Where it shows
+what the PC's render does not, find the input that differs — letters, zoom,
+text size — before drawing; his picture is then the "today" frame, and the
+proposal is drawn as his device measures it, said so on the page (4 Nov 26:
+his iPhone's wider letters wrapped a bar the PC drew on two rows).
 
 1. Drive a local or preview build — throwaway data, the clock held still where
    the date colours the screen — to the "today" state through the app's own
-   controls, and picture it at each size the app ships.
+   controls, and picture it at each size the app ships. The "today" premise is
+   checked as strictly as the proposal: each staged record is asserted ON
+   SCREEN before anything is drawn (31 Oct 26: an entry staged under the wrong
+   type name never reached the grid, and the empty day passed), and "today" is
+   pictured for every role the change touches — a role may already have a
+   window of its own there. A fault filed from reading code is reproduced
+   (refuse the request, cut the signal, feed the bad value) and the proposal
+   sized by what the screen does (4 Nov 26: "nothing to show" was the whole
+   app going black). A message no control reaches (a safety net) is pictured
+   by reaching its element through the nearest real state that raises it and
+   changing only its words, named on the page — a forced state the app
+   corrects takes its box away with it (5 Nov 26).
 2. Do the nearest REAL interaction first (a real drag, a real open) and record
    its look and its markup. Reuse those; never restyle them.
-3. Apply ONE named transform on the page: it moves, removes or clones existing
-   nodes. New parts are cloned from a real neighbour and marked as new. Any
+3. Apply ONE named transform on the page: it moves, hides or clones existing
+   nodes, never removes one the app drew (Traps). New parts are cloned from a
+   real neighbour and marked as new. Any
    style the app does not already have is a design decision to tell the owner.
    A mark that shows him the place — a ring, a number — is drawn ON the
    element (an outline, which takes no room, and a tag in its own `::before`),
    always, never as a box laid over the page at measured coordinates: on a
    phone, and on a layer that scrolls or glides by itself, the laid-over box
-   drifts off its text with no error (16 and 20 Oct 26).
+   drifts off its text with no error (16 and 20 Oct 26). A mark must not change
+   the element's position, display, size or overflow; use a child tag for a
+   static element. Assert that marking leaves its box unchanged and keeps every
+   tag inside all clipping ancestors.
 4. Picture the same frames again at the same sizes. Lay them out
    today-beside-proposed, numbered, so the owner answers by number, and say on
    the page which pictures are real and which are drawn in.
@@ -36,15 +57,22 @@ ruling was the Scheduler Board in the picture he ruled from).
    after all. That list goes into the plan: each item is a requirement nobody
    had written down.
 6. Commit the injection script beside the pictures, so the set can be shot
-   again and the build starts from it. The picture the owner picks — or the
+   again and the build starts from it — drawn with the drawing check's
+   recorder beside it, so its measures are kept as it is drawn
+   (`raptor-port/docs/walk-scripts.md` §10). The picture the owner picks — or the
    script that drew it, with its exact values — is committed too, and the
    record of the decision names it: words describing a picture are a summary,
    not the spec. **From the picture to the build:** keep the drawing's
    prefixed class names, or prefix every new class with the component's own
-   word — a bare `.go` or `.day` already belongs to the app's global
-   stylesheet (14 Oct 26: a wave's margin reached a new span, 46px tall for
-   30) — and the built screen's first check re-measures the figures the
-   drawing printed (heights, edges), not only its words.
+   word — a bare `.go`, `.day` or `.r` already belongs to the app (14 Oct 26: a
+   wave's margin reached a new span, 46px tall for 30; 27 Oct 26: a mock row's
+   `.r` stretched the real puck's rear seat) — and the built screen's first
+   check re-measures the figures the drawing printed (heights, edges), not only
+   its words. A place the script
+   computes from the live page (the scroll, a neighbour's box) is a means of
+   drawing, not the spec: the note says in words where the part stands ("under
+   the top bar, whatever the scroll"), and the builder takes the picture's
+   place (29 Oct 26: a copied formula put a window 136px low at the page's top).
 
 ## Traps When Injecting Into a Live Page
 
@@ -52,7 +80,25 @@ ruling was the Scheduler Board in the picture he ruled from).
   state silently. Do every scroll first, inject last, and re-apply the fragile
   part immediately before the picture. Have the capture step ASSERT its
   premise is still there (a hand-set class, an injected node) — or refuse the
-  picture.
+  picture. To take away a part the app draws, HIDE it (`display:none`), never
+  `remove()` it: the app's next redraw of it throws and the screen goes blank
+  (5 Nov 26: three runs chased the wrong cause). Print the page's own errors to
+  the run's log as they happen.
+- **Code sent into the page runs without its module:** a function given to
+  `page.evaluate` declares inside itself every helper it calls. A kit shared by
+  several drawing helpers is tried once on one real case at both sizes first,
+  and a card placed "on the side its control is on" measures that side within
+  the control's own window or sheet, not the screen (4 Nov 26).
+- **A panel laid in at a measured place can cover the live parts beside it** —
+  a row above may be taller for another role. Look at its top and bottom edges
+  against them on every role and size drawn, and assert no live control's box
+  is overlapped (29 Oct 26: 6px of a member's boxes covered, approved unseen;
+  a later "back to the drawing" would have built the cover in).
+- **Restyling a live element in place keeps what the app set on it for its old
+  look** (an inline nudge, a transform, a measured width): clear those, or
+  re-run the app's own placing, and name any element the app places by its own
+  size (6 Nov 26: the drawn tag stood 53px off its box; the build, rightly, did
+  not).
 - Clear injected nodes before staging the next option: the app swaps only what
   changed, so option A's markup survives into option B's frames.
 - A script that toggles styles by finding "the original rule" finds its own
@@ -60,12 +106,16 @@ ruling was the Scheduler Board in the picture he ruled from).
   sheet. A before/after made by removing a rule from the BUILT stylesheet
   prints how many rules it removed and the measured size on both sides — the
   build rewrites selectors and media conditions; zero removed, or equal sizes,
-  means the "before" is not a before.
+  means the "before" is not a before. A fix that only corrects existing CSS is
+  drawn by editing that rule in place in the page's stylesheet object
+  (`rule.style.setProperty`), found by its exact selector and asserted found
+  once — an injected sheet sits elsewhere in the cascade (5 Nov 26).
 - Hide transient toasts. Frame clear of sticky bars by asking the page what is
   at the element's own top edge (`elementFromPoint`), not by trusting
   scroll-into-view.
 - **A close-up picks the n-th VISIBLE match** (a box wider than zero), never
-  the first, and every query is scoped to the surface being pictured: the app
+  the first — of windows, the front one, not the first in the page's order —
+  and every query is scoped to the surface being pictured: the app
   keeps hidden copies (the week behind the Scheduler Board), and a page-wide
   query draws a mark twice. For a mark bigger than the screen, or one whose
   effect falls outside its own box (a light below a card, a halo), bring the
@@ -109,7 +159,17 @@ ruling was the Scheduler Board in the picture he ruled from).
   included) and its markup, reproduce them verbatim, scale them as one piece,
   and put a close-up of the real one beside the mock's before anyone sees it.
   A copy made by eye converges one correction at a time, each paid for by the
-  reviewer.
+  reviewer. A colour is read on the drawn part itself (the svg, the glyph's
+  element), never its container — an icon's class may override what it would
+  inherit (5 Nov 26: a "cyan" gear that was grey on screen).
+- **Reusing an older drawing or its script reuses its shortcuts.** List every
+  app component it draws and replace each hand-made stand-in with the app's own
+  markup (27 Oct 26: a hand-drawn puck where his ruling asked for his own).
+  Where its page now sits under controls built since, check each control it
+  carries against them for one doing the same job: a duplicate is put to him,
+  never carried over because the old drawing had it (28 Oct 26: two year
+  pickers on one screen — a side-by-side with the old drawing proves sameness,
+  not fitness).
 - **Include one BUSY state by default** — the fullest realistic mix of what
   the change touches (every mark colour, every ring kind, issued and pending
   together, a plain case) — and take the fix's scope from what the rule being
@@ -132,6 +192,12 @@ ruling was the Scheduler Board in the picture he ruled from).
   after, on every device and role it touches, with each row's overflow; the
   page states the figures per device, including one where nothing was saved
   (22 Oct 26: 50px saved on the desktop, 10px on the phone).
+- **A change that takes or gives width** (a side window, a column added or
+  narrowed) is drawn at the narrowest width that still gets the desktop layout
+  and at a laptop's (about 1280) as well as at his own sizes, its narrowest
+  column measured at each; the cost goes into the recommendation, or a safe
+  version is drawn (8 Nov 26: fine at 1536, one column crushed to a letter at
+  1024).
 - **A machine check that cannot reach a drawn mock-up gets a copy it can
   read:** write the drawn element, the page's stylesheets inlined, to a
   standalone file per state and point the design skill's detector at it, and
@@ -146,6 +212,10 @@ ruling was the Scheduler Board in the picture he ruled from).
   measured (the node's own markup) or the code read, never from a ruling's
   summary or a code comment's notation — or it says "not checked" (22 and
   24 Oct 26: what a count counted, and what a grid box shows, both wrong).
+  A drawing of what an event produces (a bell line, a mark) asserts for every
+  case drawn that the event fires in the running app, never clones the result
+  by hand; a case where it does not is a design question (5 Nov 26: one of four
+  posting outcomes runs nothing on its date, so its line had no moment).
 - **A LAYOUT question over a range of content** (long and short text, optional
   parts) is not answered by a re-lettered screenshot — that shows one
   instance. Build working markup in the app's own style values: the same
@@ -154,6 +224,13 @@ ruling was the Scheduler Board in the picture he ruled from).
   today/proposed toggle. When checking such a page locally, assert the layout
   width first — a file with no viewport tag opens 980 wide in a phone-emulated
   browser.
+- **A question about FEEL** — a swipe, a scroll, an animation — is answered by
+  a page he operates on his own phone: real pictures of each part at the
+  device's size, inside a container built to the app's measured scroll rules,
+  the proposed behaviour scripted, a switch per open choice; tried by a real
+  finger in a visible browser before it is sent (3 Nov 26: drawing it surfaced
+  four requirements nobody had written). An animation is checked frame by frame
+  in WebKit and Chromium (`raptor-port/docs/walk-scripts.md` §5).
 - **A reproduction written as assertions of the RIGHT behaviour**, with a hook
   that injects a candidate stylesheet, gives three things from one script: the
   defect's evidence, the proposal's pictures, and a pass/fail measurement of
@@ -175,7 +252,9 @@ ruling was the Scheduler Board in the picture he ruled from).
   exactly"), it is a request for the picture, not for more words.
 - Republishing a page of pictures is a sync of the whole set against what is
   live: list the published files, compare each with the local copy, and send
-  every one that differs, whoever changed it.
+  every one that differs, whoever changed it. Each approved state's picture is
+  also kept as a file of its own beside any side-by-side sheet, so a later
+  measurement can compare against it (29 Oct 26).
 - **An answer changes every picture of the thing it governs.** After
   recording it, find every picture on the page that draws the changed thing
   (search the drawing scripts for the element or the role) and redraw each in

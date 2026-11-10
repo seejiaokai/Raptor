@@ -114,6 +114,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 
 ## Showing him, asking him
 - Anything new a person will see — a box, a message, a mark, a button — is drawn as a mock-up and shown before it is built, even when it is only one part of a fault fix or copies a look the app already has; the check before any build of a fix asks "does this add something he will see?", and if so the mock-up comes first [D1625].
+- When he asks about a screen, the answer is shown on the device his question is about — phone for phone, desktop for desktop, as his picture shows — the place marked, never a nearer picture of the other device [D1951].
 - A picture for a question shows only what it is about — cut to it, or the rest dimmed — the change named on it in plain words; a whole screen only when the question is about the whole screen [D1222].
 - Every mock-up or questions page put to him has what he should look at now at the very top — each open question in one line with its recommendation and a link to its pictures, newest first; answered and replaced ones leave the page and are kept in the project [D1237, D1363]; product questions come in small rounds, each with a recommendation and a picture [D541, D853].
 - No preview link while work is in progress: the link comes when the work is ready for his look, whenever his review is needed, and when the work is done; no extra lines are added to the closing report [D905, D906].
@@ -210,11 +211,6 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   fix — a saved context is a summary (decisions, state, next step), never the conversation [D69].
 - Every chat's title starts with its number — 1 the M365 package chat, 2 the rules diet's step 4, then counting on — and
   each chat says its number when it reports to him; the handoff file keeps the next free number [D1744].
-- On his "auto merge live" of 8 Nov 26, widened the same day, every chat of the pictures round's build that chat 3
-  started or that took over one's job — chats 5–11, 13 and 14, not chat 12 nor chat 4 — merges its own current job live
-  once it is completed — its walk, gates, green run and readers' findings done — one at a time through the merge lock,
-  the live app confirmed after; a job missing Astra's read, or with a question for him, is parked; chat 14 asks him its
-  question before building [D1795, D1796].
 
 ## Names and privacy
 - The bare squadron number only; never the squadron or service abbreviation [D58]; "a fighter squadron", the bare

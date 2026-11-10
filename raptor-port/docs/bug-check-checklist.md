@@ -20,7 +20,9 @@ next. Never from memory — the order changes.
    not answerable NO with a written reason is YES. YES to 1, 2, 3, 7 or 8 → FULL; else YES to 4, 5 or 6 → WALK; else
    cosmetic on one surface → LOOK; words only → NONE. A cosmetic change to a shared drawer is never LOOK.
 3. **Tell him, in one block** (§0a step 3): the tier, its checks, the walk's size and why (step 10), and how long — from
-   the last recorded run or "not measured". He reads it; he does not choose it.
+   the last recorded run or "not measured". He reads it; he does not choose it. A FULL check names its chats too when
+   its start plus what its area pages will load (`docsize.mjs --reads`) leaves too little room for the walk: A for the
+   tier, sheet, roll-call, break tests and scenario brief, B for the walk, the reads and the fixes.
 4. **Lay down the evidence sheet now** (WALK and FULL) — open **§9**: every section it lists as an empty heading, the
    roll-call table drawn one row per surface, so a row nobody walked shows as a blank during the walk, not at the close.
 5. **Something new he will see** — a box, a message, a mark, a button, even inside a fix: drawn and shown to him before
@@ -38,9 +40,10 @@ next. Never from memory — the order changes.
    is the gesture USABLE, what else is PAINTED there; each cell YES / NO-because / MISSING, no blanks. **Its rows by
    kind of change, whatever the tier:** read the list each time and run every row the change is a kind of — among
    them a floating surface, a wording or one writer of a record, a navigating action (one row per opener), a changed
-   quantity, a removed or replaced control, form, event or way out (its list sizes the check), a writer's "nothing
-   happened", a listener above its own component, a component's second home, a storage writer, a skipped call, a
-   dry-run save, a new kind of record, who counts as away.
+   quantity, a removed or replaced control, form, event or way out (its list sizes the check), a removed, renamed or
+   moved selector (what scrolls among them), a writer's "nothing happened", a listener above its own component, a
+   component's second home, a storage writer, a skipped call, a dry-run save, a new kind of record, who counts as away,
+   a part drawn in several copies, a part drawn inside another surface by a different owner.
 9. **The door check** (a new gesture or mode): every action the data allows → the control that does it, in every state
    and order (§3, §2a).
 10. **Size the walk** — open **§7.0**, **§2a** whole (its table: what must be covered for each kind of work this change
@@ -49,7 +52,7 @@ next. Never from memory — the order changes.
     into the sheet; a WALK or FULL never has no walk; a screen with an approved drawing gets the drawing check; a test
     carries only repeated cases of a route already walked; resize when the evidence changes. **Go through every lesson
     below**, in the sizing lines and in each walker's brief: for each, the scenario or named test that covers it, or
-    why it cannot apply — opening its full text in **§7.11** (the second 23: after §8) for each that applies.
+    why it cannot apply — opening its full text in **§7.11** (two lessons there are numbered 23) for each that applies.
 11. **The plain-user round** (**§7.0a**): the area's everyday tasks start to finish, every control that opens or closes
     something pressed, every other place that shows the result looked at.
 12. **The fixture** — the day that has everything on it, in the demo seed (**§7.1**), made through the app's own controls
@@ -71,7 +74,7 @@ next. Never from memory — the order changes.
 17. **The reads, after the walk** (FULL, and any job that needs a code read) — open **§4** ("Who reads the finished code
     now", the brief, "What to do with what they hand back") and **§4a**. §4's current arrangement wins: the fresh Opus
     reader gets the same brief and the finished code, and has seen neither the walk's report nor another reader's (D790);
-    §4a's hand-over of the evidence sheet and the roll-call applies only where that allows. Readers are asked for what is
+    any evidence handed to a reader follows §4's blindness rules. Readers are asked for what is
     missing; before the sheet goes to anyone, every test or file a "proved by" cell names is checked to exist (§9). **Whatever the tier:** a change that touches sign-in, who may do or see what, or what one
     person can see of another gets the security read too (§5, D1411).
 18. **Fix, then re-walk what the fixes touched** (§5: the re-walk, a fix is new code, the touched suite between rounds).
@@ -123,7 +126,8 @@ script already pictures re-runs that one step into a new folder (§5; `docs/walk
 22. What a person is meant to see is checked by what is drawn — pixels in its box — first frames included.
 23. Before asserting what a tap opens: what the rulings say a tap on that kind of entry opens on an ordinary day, walked
     side by side — the ruled window is the expected one, never the build's.
-
-**And the second "23", written after §8:** every screen a walk pictures is checked for the standing layout lessons — each
-pair of side-by-side boxes measured one height and one line, at a phone's width with an iPhone's letters as well as a
-desktop's.
+23. (the second 23) Every screen a walk pictures is checked for the standing layout lessons — each pair of side-by-side
+    boxes measured one height and one line, at a phone's width with an iPhone's letters as well as a desktop's.
+24. Anything placed against the top bar, or measured on a scroll or a screen-size change: flicked to the page's very
+    foot and back on a phone; a test stands the bar out of place for a moment and sends the screen-size change; what
+    the PC cannot show (the bounce, the folding toolbar) named as a look for his iPhone.

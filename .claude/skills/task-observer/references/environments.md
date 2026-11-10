@@ -22,6 +22,16 @@ of observations before they're permanently integrated during the weekly
 review.
 ```
 
+**If a session-start hook prints a longer text read from a file** (a
+project's own short form of this skill, say) rather than the short
+instruction above, it fails silently at its edges: a host may cut a long
+injected text to a preview the agent is not asked to read (Claude Code: past
+10,000 characters), and one stray control character can make the hook's
+output invalid JSON, so the session starts with no note at all. Strip
+control characters before escaping, fall back to the short instruction when
+the text is empty or near the cap, and test the hook on a missing, empty,
+oversized and control-character file, not only the normal one.
+
 **Config detection (once per session):** with filesystem access, check the
 workspace root's CLAUDE.md (or equivalent) for a task-observer activation
 instruction — suggest adding it if absent, creating the file if none

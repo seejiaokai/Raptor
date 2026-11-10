@@ -17,8 +17,10 @@ jobs he selected, on branches, in this chat. It is NOT permission to build a job
 stay his, every night.
 
 **If his message names the work** ("continue this till step 8"), that is the night's work: Part 1 shrinks to the
-questions his words leave open — asked, and answered, before it starts — then steps 8 and 9. With none open, it goes
-straight to steps 8 and 9 without ending the turn.
+questions his words leave open — asked, and answered, before it starts — then steps 8 and 9. Even then the first
+message lists the night's jobs as step 6 does, beside "Low or Medium?" (his D1443, D1104); the list does not hold the
+start: with no question open it goes straight to steps 8 and 9 without ending the turn, the recommended Low or Medium
+taken (the agent's reading).
 
 ## Part 1 — before he sleeps: recommend, he selects, then start
 
@@ -28,7 +30,10 @@ straight to steps 8 and 9 without ending the turn.
    guard, a minute or two; the full checks, up to about twenty), so look for any run of the branch's last pushed commit
    that is `queued` or `in_progress`, never only the newest row. The check lock:
    `node raptor-port/scripts/gatelock.mjs status`. Other live chats: `ListAgents` (or `list_sessions`) — a job another
-   chat holds is not tonight's (D302).
+   chat holds is not tonight's (D302). If this guide loaded from another folder than this checkout (the Skill tool's
+   base directory names it), compare the two copies and follow this branch's own, saying so in the first message
+   (28 Oct 26: a night began on the main folder's older guide — `raptor-port/docs/gates-and-deploy.md`, "A worktree chat
+   loads its settings, hooks and skills from the MAIN checkout").
 2. **Read the order.** `HANDOFF.md` (`## Now`, `## Next, in order`) and `OUTSTANDING.md`'s priority list. For every
    job you might recommend, its item and its rulings' full rows (`grep -h '^| D… |' .claude/decisions-full/*.md`) —
    never only the short line (D53, D390). **Before a job counts as a candidate, confirm it is not already done:** its
@@ -49,8 +54,8 @@ straight to steps 8 and 9 without ending the turn.
      hook, a setting, a working guide — even one he has approved, because it is done while he is awake.
 5. **Size each job, and the night.** For each job (or batch of related jobs on one branch — checked once at the
    riskiest tier, D485): its branch (below); its bug-check tier and walk size (`raptor-port/docs/bug-check-order.md` §5
-   and §7.0 — read it, not from memory); its model reads (D790, D903: a fresh, blind Opus read of the finished code;
-   Fable only on his word); and a rough time, from `raptor-port/docs/walk-ledger.md`
+   and §7.0 — read it, not from memory); its model reads (Astra's, the standing reviewer, and beside it a fresh, blind Opus
+   read of the finished code — D1770, D790, D903; Fable only on his word); and a rough time, from `raptor-port/docs/walk-ledger.md`
    or marked a guess. Add the times in the recommended order and mark where his hours run out — keeping the last hour
    for the report — so the list shows how many jobs fit (D867). The allowance can shorten it too. Order them so the
    most valuable finished job does not depend on the last one finishing.
@@ -83,11 +88,11 @@ straight to steps 8 and 9 without ending the turn.
    and 3) and count his hours from the reply; if anything changed, say so in one line and go on. A
    new decision in his reply (a "yes, build it", a "Opus alone reads it", a correction) is recorded as a ruling by the
    three steps at the head of `DECISIONS.md`; his selection itself is not — the command's ruling is its standing
-   permission. While the ChatGPT readers are out, every selected job that needs a code read is written onto
-   `OUTSTANDING.md` `[NO-ASTRA-LIST]` in the same change (D761).
+   permission. A selected job that will go without Astra's read, or without Sol 6.1's where two are required, is
+   written onto `OUTSTANDING.md` `[NO-ASTRA-LIST]` in the same change (D761, D1770).
 8. **Write the night into the repo BEFORE the first job, and push it:** this chat's block in `HANDOFF.md` opens with
    "THE NIGHT OF <date>", and its first line reads: "After a compaction: re-read this block, the overnight guide and the
-   files of the step in hand before the next change; note the compaction here with its time." Then: his selection in order, each job's branch, check, reads and rough time, his answers, Low or Medium, and
+   files of the step in hand before the next change; note the compaction here with its time, read from the clock (`date`)." Then: his selection in order, each job's branch, check, reads and rough time, his answers, Low or Medium, and
    "Questions waiting for him: none yet". A compaction loses nothing that is already here (D667).
 9. **Then start**, without ending the turn: call `request_keep_awake` with `until: "session_idle"`; switch the
    compaction guard off for the night — `node "$(git rev-parse --show-toplevel)/.claude/hooks/compact-ready.mjs" --away`
@@ -107,17 +112,29 @@ block says so. Never a pull request based on another branch — it runs none of 
 - **Each job is handed to one fresh helper** (the Agent tool, in the background), one job at a time — never two builders
   in this one checkout; Medium means more walkers or a scenario designer inside a job, not two jobs at once — with a
   complete brief: its branch, its items, its check, the helper limit Low or Medium sets, push by explicit refspec, no
-  edits to `HANDOFF.md`, its own Sonnet walker and fresh Opus reader; under Low the read's fixes and the re-walk go back to
+  edits to `HANDOFF.md`, its own Sonnet walker and fresh, blind Opus reader beside Astra's read (D1770); under Low the read's fixes and the re-walk go back to
   the same helper while its copy is warm (D1104). The night's chat only coordinates: while a helper runs it writes nothing
   into the tree (records are drafted in the scratch folder and committed between jobs); it switches Auto-fix off itself
-  when a pull request's event arrives, since a helper may not have the tool (D1090); it commits and pushes the block,
-  then opens each job's pull request; and it checks each report. It waits inside the turn; where it must end the turn, it
-  first arms a background timer of under an hour, so the night is woken before its cache goes cold (21 Oct 26). His
+  right after each pull request opens — the app turns it on for every new one (D1090), and a Vercel status comment
+  relayed as a review comment needs no reply; it commits and pushes the block,
+  then opens each job's pull request; and it checks each report. A background helper returns at once, so the
+  coordinator waits by ending its turn with the keep-awake hold on and a silent background timer of under an hour armed
+  (a Monitor re-armed at each expiry), never by polling the helper's transcript — the timer wakes the night before its
+  cache goes cold (21 Oct 26, 1 Nov 26). His
   D1103 asked for a fresh session per job; on 21 Oct 26 the app started none from a turn his phone sent or a finished
   job woke, so the night ran helpers instead — this line is his approval of that change (D1416, 27 Oct 26). A session per
-  job still works when he types the night's message in the desktop app, all of them started together.
-- **A helper's report** (reader, walker, scenario designer) is saved into the repo — its brief's folder or the evidence
-  sheet — the moment it arrives, before anything is done about it.
+  job still works when he types the night's message in the desktop app, all of them started together, each brief
+  naming the branch that carries the night's block — a block not yet on `main` is not on a branch cut from it (7 Nov 26).
+- **A helper's report** (reader, walker, scenario designer). A helper returns its report as its final reply. Save it
+  at once. The tool refuses a background helper's write of a file it calls a report (10 Nov 26, note 915), so the report
+  is saved into the repo — its brief's folder or the evidence sheet — the moment it arrives, before anything is done
+  about it — except that each reader's report and every copy or summary stay in a scratch folder outside the checkout
+  until all required blind readers of that job have reported, including readers not yet started (the bug-check order §4). Before it
+  is accepted, each reader the
+  night's block names for that job is ticked against it; a missing one is run then, or the job goes on
+  `[NO-ASTRA-LIST]` in the same change (8 Nov 26). A notice that a helper stopped with background work of its own still
+  running is no report: stop it or wait for the real one before the checkout is switched or written, then read its
+  branch's log for commits made after the notice (9 Nov 26).
 - **At every commit:** this chat's block and the backlog true; `cd raptor-port && npm run docsize` before a commit of
   records; the branch pushed — never while its checks are running (step 1's command; D151) — by explicit refspec, alone
   in its own command (`git push origin HEAD:refs/heads/<branch>`: a refused push stops a compound command's earlier
@@ -139,7 +156,7 @@ block says so. Never a pull request based on another branch — it runs none of 
   - if ever told a compaction is waiting (the guard is on — the away mark lapsed or was never set): set it again with
     `--away` as in step 9, so the compaction is not held;
   - **after a compaction, re-read the block, this guide and the files the step in hand touches before the next change,
-    and note the compaction in the block with its time** — never carry on from the summary's memory of a file, a ruling
+    and note the compaction in the block with its time, read from the clock** — never carry on from the summary's memory of a file, a ruling
     or a test result.
 - **A roadblock that needs him** waits until he wakes (D596, D867): search the rulings and the backlog first (D53); a
   technical choice is yours — decide and write down why; a choice truly his goes into the block's "Questions waiting
@@ -174,7 +191,8 @@ block says so. Never a pull request based on another branch — it runs none of 
 - **One notification**, one line: done, or blocked, and where to look.
 - **The report**, short, plain words, in this order:
   1. what is ready for his look — per job: what it does in the app, the preview link, the pictures (several pictures go
-     as one Artifact page, sharp, tap to zoom);
+     as one Artifact page, sharp, tap to zoom); a list written during the night — differences from a drawing, findings —
+     is checked against a picture of the last build first, and an item a later fix closed is marked so (29 Oct 26);
   2. what of his selection was not done, and why — and any stale record found on the way;
   3. the questions waiting for him — each with its recommended answer, its picture where it is a design;
   4. the allowance used (the weekly figure at the start and now), how full this chat is, and whether it compacted;
@@ -185,7 +203,8 @@ block says so. Never a pull request based on another branch — it runs none of 
 
 ## Before sending the Part 1 message — check
 
-- [ ] Every recommended job meets step 4's "can run tonight", and none is already done.
+- [ ] Every recommended job meets step 4's "can run tonight", and none is already done — and when his message named
+      the work, the jobs are still listed before the start (D1443).
 - [ ] Each job has a rough time, and the message says how many fit in his hours.
 - [ ] At most four questions, each with a recommended answer; no technical choice is put to him.
 - [ ] "Low or Medium?" is asked, with the recommended one (D1104).
@@ -201,6 +220,6 @@ block says so. Never a pull request based on another branch — it runs none of 
 
 - [ ] Every pull request's checks read, both runs; none described as green that was not seen green.
 - [ ] Every job has its evidence sheet with a `Walk:` line, or is reported as not checked.
-- [ ] Every job read without Astra or Sol 6.1 is on `[NO-ASTRA-LIST]`.
+- [ ] Every job read without Astra, or without Sol 6.1 where two are required, is on `[NO-ASTRA-LIST]` (D761, D1770).
 - [ ] Every new ruling is recorded; the `Rulings:` line is filled.
 - [ ] One notification sent, no more. Nothing merged; nothing pushed to `main`.

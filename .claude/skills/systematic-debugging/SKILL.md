@@ -81,6 +81,13 @@ You MUST complete each phase before proceeding to the next.
      and reproduces nothing. Show which it is — the app never did it (mark
      the element, watch for its replacement) or the test looked too early —
      and prove the repair by running it WITH the pause that used to break it
+   - A press, key or frame DURING an animation or scroll that will not
+     reproduce is different: the app's motion, not the driver, carries the
+     timing. Re-run it with the page's processor slowed (the browser's CPU
+     throttling, at two or three rates) before calling it flaky or fixed;
+     once it shows, pin the cause with a check that does not depend on pace
+     (hit-test every element mid-animation), beside the end-to-end check run
+     slowed
 
 3. **Check Recent Changes**
    - What changed that could cause this?
@@ -108,8 +115,12 @@ You MUST complete each phase before proceeding to the next.
        display scaling, scrollbar width) is moving the page under the
        pointer. Record geometry and DOM mutations per frame ON that machine,
        and re-measure the same surface locally at other widths — the other
-       machine is often just another width. Where the app is what moves, fix
-       the app; the test then passes unchanged
+       machine is often just another width. Measure the elements the failure
+       depends on across a few widths BEFORE slowing anything (another
+       system's wider letters wrap a bar at a width yours does not), run the
+       test at the width where your layout matches, and add that width to the
+       test so it fails on any machine. Where the app is what moves, fix the
+       app; the test then passes unchanged
    - Did YOUR last change cause it? A symptom that appears right after a fix
      may be the fix's side effect on top of behaviour the app had on
      purpose — ask what the user expected before removing a deliberate rule.
@@ -161,6 +172,11 @@ You MUST complete each phase before proceeding to the next.
    ```
 
    **This reveals:** Which layer fails (secrets → workflow ✓, workflow → build ✗)
+
+   **Take instrumentation out by an exact edit of its own lines** (tag each
+   with one unique marker and delete the tagged lines), never by restoring the
+   file — a restore takes every uncommitted edit in that file with it. Or
+   commit before instrumenting, so a restore can only take the instrumentation.
 
    **A failure only a remote CI machine shows:** instrument the one test
    with a cheap in-page event log, dumped only when it fails; record a trace
@@ -225,6 +241,12 @@ You MUST complete each phase before proceeding to the next.
    - Did it work? Yes → Phase 4
    - Didn't work? Form NEW hypothesis
    - DON'T add more fixes on top
+   - An intermittent failure: a run of passes proves nothing until the old
+     rate would almost surely have shown in it — at one failure in five, 8
+     clean runs happen about one time in six; 21 are needed to be 99%
+     sure. Before believing a story, record what the failing step actually
+     did (the event's real target, the element's position at each moment)
+     rather than reasoning from the code
 
 4. **When You Don't Know**
    - Say "I don't understand X"

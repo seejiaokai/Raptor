@@ -153,7 +153,10 @@ same start-up path the app runs: a loader the test calls by hand hides a
 loader nothing calls at boot. Where the system derives its changes by
 comparing state before and after a command, a fixture never edits live state
 outside a command if the test goes on to undo, replay or reload — the next
-command records that edit as its own.
+command records that edit as its own, or, once a reload has re-based the
+comparison on the edited state, sees no change at all and records nothing. A
+file that mixes such hand-made fixtures with tests of the real write path puts
+the comparison's baseline back level with the records in its shared set-up.
 
 **Pick the fixture for THIS test.** One borrowed from another test carries
 that test's assumptions. When a test asserts which result LEADS, choose the

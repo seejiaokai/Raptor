@@ -224,6 +224,12 @@ drafts first, copy them over the live files, run the check, then restore ONLY
 the live paths, by name, and delete only the files the drafts add — never a
 whole-tree restore, which also returns the drafts to their last commit and
 throws away every edit since. One list of live paths serves the rehearsal
-and the install. **Keep-two rule:** for any skill, keep only
+and the install. **A draft is a diff against a moment:** record the base
+(each live file's fingerprint, or the commit) when the drafts are made, and
+have the install refuse a live file that changed since — rebase that draft
+first. A file a project script keeps rewriting (a backlog, an index the
+script regenerates) is never staged as a whole copy, which goes stale at
+every write: stage only the addition — its text and where it goes — and
+apply it at install. **Keep-two rule:** for any skill, keep only
 the two most recent date directories under `skill-updates/`; delete
 older ones.

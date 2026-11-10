@@ -100,7 +100,11 @@ part on its own:
   passes with the fix removed has proven nothing about the fix.
 
 Where two reviewers disagree on a fact, measure the fact — never settle it by
-majority or by whichever report is more detailed.
+majority or by whichever report is more detailed. Where they agree on a
+finding but propose different fixes, agreement on the finding is not
+agreement on the fix: settle the fix by the project's own rule for conflicts
+before anyone starts on it, and write the decision into the fixer's brief —
+never leave the implementer to pick.
 
 **A batch of claims from a read that ran nothing** is a list of hypotheses:
 write one failing test per claim, through the real entry points, BEFORE
@@ -139,6 +143,11 @@ its confidence, says what its next "this is sound" is worth.
 Two findings of the same class are a sample, not the population. State the
 rule they break in one sentence, list every place that rule applies, check
 each, and fix the whole list — another review round would only sample again.
+One finding of the form "X is decided from one source when two exist" is
+already a family: list every place that decides X, and write a case for each
+sibling state of the data (created, changed, moved, retired) before fixing —
+each fix round otherwise finds the next sibling. A long suite used this way
+needs a name filter, so the new cases can be watched failing on their own.
 
 ### "Can't Happen" Needs Proof
 

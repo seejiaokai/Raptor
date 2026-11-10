@@ -80,6 +80,18 @@ did not.
    | `verification-before-completion` | the push row reads the remote back; two rows (a summary list rewritten, a merge's conflicts); `browser-checks.md`: an edge-anchored element on a phone; an exclusion that changes a rule's weight |
    | `brainstorming` | `mockups-on-the-real-app.md`: the picture a ruling was made from; marks drawn on the element; from the picture to the build; five traps; choosing the state, one data set, a quantity measured, a detector's copy; captions from what was measured; four lines on showing it |
 
+7. **Local lessons from the skill review of 10 Nov 26** (his approval to come; the drafts read by Astra and a fresh,
+   blind Opus reader, each blind to the other, D1761, D1770; the same rules as changes 3 to 6).
+
+   | Skill | What was added |
+   |---|---|
+   | `writing-plans` | Task Right-Sizing: a task of more than one session lists each slice and its clean stop; Self-Review 4: a promised saving estimated from the parts a stated case must use; 8: old findings re-checked on today's build first; 10: a table of open questions is a home of each answer |
+   | `brainstorming` | `mockups-on-the-real-app.md`: his picture's device answered on; the "today" premise asserted on screen, for every role, a code-filed fault reproduced, a safety-net message reached through a real refusal; hide, never remove, a part the app drew; a mark that moves nothing and is not clipped; the recorder beside the script, a computed place said in words; four traps (code sent into the page, a panel covering live parts, a restyled element's leftovers, a CSS fix drawn in the real rule); a colour read on the drawn part; a drawn event's result asserted to fire; reusing an older drawing; width changes drawn at the narrow end; a question about feel, and animations frame by frame; the approved pictures kept as files |
+   | `test-driven-development` | RED: a committed fix proved red by taking back only its own diff, restored in a trap, red and green in one lock turn; a date-windowed list's row among a case's premises; a change behind a guard the test environment trips (sizes and features supplied, the framework's warnings fail it); a frame-sampled loop given a frame per position; GREEN: a new flag's every caller listed, aliases included; `writing-good-tests.md`: a reload that re-bases the change comparison, the baseline put back level in shared set-up |
+   | `systematic-debugging` | Phase 1: a press during an animation re-run with the processor slowed, the cause pinned pace-free; a CI-only layout failure measured across widths before slowing anything, the width added to the test; instrumentation taken out by an exact edit, never a file restore; Phase 3: how many passes an intermittent failure needs, and recording what the failing step did |
+   | `receiving-code-review` | two reviewers agreeing on a finding but not its fix — the fix settled before the fixer starts; a "decided from one source" finding treated as a family, a case per sibling state, a name filter for a long suite |
+   | `dispatching-parallel-agents` | shared vocabulary (one type per shared record, an owner per movable helper) decided before the fan-out; a helper that shares the checkout never moves it (no checkout, switch, stash or detach — it reads by `git show <commit>:<path>`) |
+
 ## Updating
 
 There is no auto-update. Re-clone upstream, copy `skills/` over, and re-apply

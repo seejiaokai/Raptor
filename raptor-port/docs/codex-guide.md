@@ -23,6 +23,13 @@ kept whole in `raptor-port/docs/archive/codex-arrangement-2026-10-07.md`.
   data already stored is not a finding (D56).
 - Read-only: change no file. You never review, inspect or approve an artifact your own model wrote (D67).
 
+## Reading a commit that is not the branch head
+
+The recipe for the exported copy the bug-check order §4 calls for, when the version under review is not the branch
+head or the branch already holds another reader's report (7 Nov 26): `git archive <commit> -- . ':(exclude)<picture
+folders>'` unpacked into a scratch folder, `git init` and one commit there so the repo's scripts run, then
+`codex exec -C <copy> -s read-only`; the saved report's head says so.
+
 ## When you build — only on his word
 
 - For that job, take the builder's tasks. What Codex writes, Opus 5.5 reviews; the arrangement of 2–5 Oct 26 (D496)

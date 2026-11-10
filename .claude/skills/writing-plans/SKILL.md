@@ -62,6 +62,12 @@ migration tasks then run under those checks, and reviewers get the checker's
 report of what left and did not arrive rather than the whole diff. Checks
 written after a migration can only audit it.
 
+A task sized at more than one session lists each session's slice and the
+clean stop after it — built, tested, committed — sized against what a fresh
+session has left once its start-up reading is loaded (measured, not guessed),
+and one build to a slice where that build's scripts must be read whole.
+Work is split where it is planned, never where a session happens to fill up.
+
 ## Bite-Sized Task Granularity
 
 **Each step is one action (2-5 minutes):**
@@ -202,7 +208,11 @@ print. A claim about a third-party platform (its privileges, defaults, limits,
 ordering) is verified against the vendor's documentation, and cited, before
 anyone reviews the design. A rule that parses or splits user-typed text is run
 over the real stored examples of that field; a promised on-screen moment names
-the guard or event that lets the screen change then.
+the guard or event that lets the screen change then. A promised "after"
+figure — a size, a cost, a time saved — is estimated from the parts one
+stated case must use under the plan's own safety condition (write the rule
+that bounds it first), never from a typical case, and the plan names the
+parts that are always used whole.
 
 **5. Replacement code:** For each code block that REPLACES existing lines,
 list the guards and early returns in the original and confirm each survives
@@ -222,7 +232,10 @@ true.
 
 **8. Plans built from review findings:** Each finding's code site, its callers
 and the tests that pin it were re-read. A finding names a symptom; a task
-needs the write path and the existing pins its fix must not move.
+needs the write path and the existing pins its fix must not move. Findings
+filed more than a week or two ago are re-checked on today's build first —
+still there, gone, or cannot reproduce, with the evidence kept: later work
+often fixes them in passing without closing them.
 
 **9. Shared state in tests:** A plan-authored test that switches shared state
 restores it, and a test over a collection first asserts the collection is not
@@ -235,7 +248,10 @@ listed as a "reading" is held against the decision's own words AND every
 reading recorded beside it: if it narrows, widens or contradicts either, it is
 a question, with a recommended answer and a stated until-answered default that
 follows the owner's words. Name your own readings as readings, so the plan's
-reviewer attacks them as targets rather than reading them as facts.
+reviewer attacks them as targets rather than reading them as facts. A table
+of the questions a step waits on names the plan file itself as a home of
+each answer, updated in the same change that records it — or the next
+session meets settled questions shown as open.
 
 **11. Plans that reshape or re-read stored data:** Before the design, an
 inventory of every reader AND writer of the record, with a verdict per site

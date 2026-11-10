@@ -129,7 +129,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   a full check run (the whole unit suite, a browser run of more than one file, the Tracker smoke) unless this chat holds
   the lock (the lock's owner line names its branch), and anything else that builds while another chat holds it. The way
   through is `gatelock.mjs exec "<branch> — <what>" -- <command>`: it waits for the lock, takes it, runs the command,
-  ALWAYS releases it and passes the command's exit code on; an interrupt releases it too, and a run killed outright
+  ALWAYS releases it and passes the command's exit code on (one quoted string after `--` goes to Windows' own shell,
+  not bash: `"cmd1 > f1; cmd2 > f2"` ran something else and reported a clean exit, 31 Oct 26 — for more than one
+  command, write them to a script and pass `-- bash <script>`); an interrupt releases it too, and a run killed outright
   (a tool timeout, a stop) leaves a `holder-pid:` line the next `take` sees is gone and breaks at once, not after two
   hours. A full run outlasts the tool's 2-minute default — run it in the background or with a 10-minute timeout. The
   guard reads a command as a shell does (quotes, `$( … )`, heredoc bodies), so a commit message or a pull request's
@@ -143,9 +145,12 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 - **Four traps met running the checks by hand (30 Sep – 1 Oct 26, `[DB-READINESS]` phases 0–6; carried here from their
   handoff blocks when those were removed):** `gatelock.mjs run`'s gate list has NO perf — run `PORT_URL=<the build's
   address> npm run perf` under `gatelock.mjs take`; `tsc -p tsconfig.json` checks nothing here (the root config lists no
-  files) — the typecheck is `npx tsc --noEmit -p tsconfig.app.json`; `git worktree add` of an OLD commit fails on this repo
+  files) — the typecheck is `npx tsc --noEmit -p tsconfig.app.json` — in a checkout with no `node_modules` (a fresh worktree)
+  `npx tsc` downloads an unrelated package named `tsc` and fails, so `npm ci` first and read no `npx` failure as the
+  project's until the tool is its own (8 Nov 26); `git worktree add` of an OLD commit fails on this repo
   (long picture names) — to serve the build before a change, `git archive <commit> raptor-port/src …` into a short path
-  and junction `node_modules`; `codex exec` started in the background waits on its input for ever — end the command with
+  and junction `node_modules` (PowerShell's `New-Item -ItemType Junction -Path <copy>\node_modules -Target <checkout>\node_modules`;
+  `cmd //c mklink //J` was refused in helpers' shells, 31 Oct 26); `codex exec` started in the background waits on its input for ever — end the command with
   `< /dev/null`.
 - **Six more, from the skill notes of 26 Sep – 9 Oct 26:**
   **(1) Read only a results folder THIS run made.** A shared scratch folder still held another chat's summary from that
@@ -185,6 +190,12 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 - **Never push while a PR's checks are running** (D151, measured 23 Sep 26): GitHub judges the WHOLE pull request,
   so once it carries code any push — even notes-only — restarts every gate and cancels the run in progress. The
   older note in the `unit (raptor)` row below ("a docs-only push … starts no new one") predates that measurement.
+- **After a push, see that it landed and that its run started.** A run missing for the pushed commit: read
+  `gh pr view <n> --json mergeable,mergeStateStatus` — a pull request that clashes with `main` (CONFLICTING) starts no
+  run on any push until `main` is brought in (8 Nov 26, met three times in a day). A push that answers "Everything
+  up-to-date" after new commits is a fault, not a success: the checkout was detached (`git branch --show-current` prints
+  nothing) and the commits sit off the branch — fast-forward the branch to them, then push; pushing
+  `HEAD:refs/heads/<branch>` avoids it (9 Nov 26).
 - **An intermittent gate stop gets evidence and a filed item BEFORE its one re-run** (24 Sep 26, PR #431): check
   the failing step's code path against the diff; reproduce that step alone, repeatedly, on the change's build
   AND on the base's; file the residual as a backlog item with that evidence. The push that files it IS the one
@@ -192,11 +203,13 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   `gh run rerun` on top of it, and never push while a run is still going. Two or more stops on the change's
   build and none on the base's, in that isolated probe, is a regression: stop there. Re-running first is hoping;
   refusing to merge forever blocks on a race the change never touched. (A known family, already measured and
-  filed, keeps its own rule — D84.)
+  filed, keeps its own rule — D84.) A check called hung or slow: read the step times of recent runs first
+  (`gh run view <id> --json jobs`) and name the slow step before setting a limit or blaming a test (8 Nov 26: a smoke
+  "hung 16 minutes" was 12 of them in the browser install's download, slow in 9 runs of 20).
 - **There is no GitHub Pages site** (D59, 23 Sep 26; D343, 28 Sep 26 — D341 switched it back on for under an hour and was
   withdrawn before anything published): the publish job is off, and every Pages trap below is history. The app is seen on VERCEL: a preview per branch (his surface — the agent's is the local `vite preview`) and the
-  live app from `main`. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green on
-  his PC → the Production deployment for that commit READY (`gh api repos/<owner>/<repo>/deployments?environment=Production`,
+  live app from `main`. **"Done" after "merge live" means live on Vercel** (D143): merge → `main`'s run green (on
+  GitHub's machines while the repo is public, on his PC once it is private — D1086, D1530) → the Production deployment for that commit READY (`gh api repos/<owner>/<repo>/deployments?environment=Production`,
   then its statuses) → one notification with the link. The whole loop: `.claude/rules/shipping.md`.
 - **VERCEL CAN MISS A MERGE — check that a Production deployment actually STARTED** (met 6 Oct 26, PR #482, the crew-rest
   fix). The merge to `main` was green everywhere and Vercel started NO Production deployment for it, while every branch
@@ -230,7 +243,11 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   reports, and is the one check GitHub can require — required on `main` since 8 Nov 26, his click adding it to the ruleset "main: secrets scan" beside the secrets scan (a workflow `paths-ignore` skips reports nothing, and a required
   check that never reports leaves a pull request waiting for ever). "checks passed" fails if any gate failed or was
   cancelled, or if code changed and no whole gate run passed (a skipped gate reports success, so it is never taken as
-  a pass). The Docs guard (`docs-guard.yml`) still runs on every PR and every push to `main`; since D1407 (27 Oct 26) a
+  a pass). The Docs guard (`docs-guard.yml`) still runs on every PR and every push to `main`, and runs the document check's
+  self-test — so a change to that check's own scripts runs `node raptor-port/scripts/docsize-selftest.mjs` (10 to 20
+  minutes, in the background with no `timeout` around it: a limit that kills a case's child check reads as that case
+  failing, and exit code 124 is the limit, not the script — 9 Nov 26) on the PC before the push, and a new rule gets self-test cases of its own (9 Nov 26: 8 cases red, met only
+  on GitHub); since D1407 (27 Oct 26) a
   change of notes only merges by itself once its run is green, and any other docs change still waits for his "merge
   live" (`.claude/rules/shipping.md`).
 - **Bringing `main` in: the settle step for the record files** ([MERGE-ONCE-RECORDS], 8 Nov 26, his D1930). After
@@ -243,7 +260,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   paragraphs (rounds 3 and 4 of its reads: fewer settled, never silently wrong). It
   reads git's own three copies, never the files on disk; it refuses a file already edited by hand, stages nothing and
   never aborts the merge. It leaves for the chat, in git's marks, whatever both sides changed — the gate baseline always —
-  and the rulings files, whose own merge (`backlog-archive.mjs --rulings --merge`) it names; with nothing left it runs
+  and the rulings files, whose own merge (`backlog-archive.mjs --rulings --merge`) it names (the files still clashed:
+  `git diff --name-only --diff-filter=U`, never a merge's printout cut short by `tail` — 6 Nov 26, a missed rulings file
+  kept its clash marks through a passing document check, and only the commit refused; [CHECK-TOOLS-HARDEN] (m)); with nothing left it runs
   `npm run docsize` and `npm run rulecheck`, counting only a failure the merged-in commit does not have. **Trap — why
   there is no `merge=union` in `.gitattributes`:** "keep both sides" doubles a ledger row or a skill note edited in place,
   lets a clash in those files end as a clean merge that no step looks at, and GitHub's own merge ignores attributes
@@ -295,6 +314,13 @@ others, never a placeholder (a patch that missed its anchor wrote one and droppe
 `backlog-archive.mjs --rulings --move-rows --dry-run`, then the move, then a row-by-row compare against the base: the dry
 run does not run the real run's last inventory, so its pass is not the move's.
 
+**Loaded text is replaced by writing the new text first (8 Nov 26).** `backlog-archive.mjs --move` checks the whole record
+after each move and puts both files back when a live ruling is no longer stated in a file that loads: write the
+replacement above the old text, then move the old text whole. **And a change that switches on checks reaching other files**
+(an area file marked a page, a new rule in the check) is tried first: flip the switch on the file, run the check once,
+read only the other files' failures and each page's room under its limit, then put the file back (`git status` clean) —
+the debts, and any question for him, come up before the work instead of at its end (9 Nov 26).
+
 **Stopping a gate run's background task does not stop the run (15 Oct 26, twice).** Stopping the task that ran
 `gatelock.mjs run` ended only its shell: the `gatelock` process, vitest and its fifteen workers ran on, and the lock stayed
 held. End them by their command lines (this checkout's path in them), then `gatelock.mjs status` → `release`, and see
@@ -305,9 +331,19 @@ desktop app starts, `.claude/settings*.json`, `.claude/hooks/`, `.claude/skills/
 from the main checkout's root (`C:\Users\User\projects\Raptor` — the process's `--project-config-root`); only `CLAUDE.md`
 and `.claude/rules/` load from the worktree. With the main checkout on an old branch, a merged hook or skill is in force in
 no chat (that day: the whole compaction set-up and `/overnight`, the main checkout 208 commits behind). After a merge that
-touches them, the main checkout must be on `main`, clean of tracked changes — the chat that saw the merge switches
-it, as the handoff guide says —; verify in a NEW chat by what the app reports
-(`get_usage`, the skill list), never by running the script by hand.
+changes these files, bring the main checkout level — on `main` and up to date ([MAIN-CHECKOUT-STALE]) — only when no
+chat is using it, it has no tracked changes, and its current commit is safely held on a fetched remote branch. Use
+`git -C C:/Users/User/projects/Raptor` on every command: fetch `origin`; confirm `status --short --untracked-files=no` prints nothing (the walks'
+untracked pictures are not changes); confirm `log HEAD --not --remotes=origin --oneline` prints nothing (no commit there that is not on GitHub — a detached folder's included); confirm `merge-base --is-ancestor
+refs/heads/main refs/remotes/origin/main` exits 0; then `switch main` if needed and `merge --ff-only origin/main`, and
+confirm `rev-parse HEAD` equals `rev-parse refs/remotes/origin/main` before calling the update complete. An unpublished commit, a failed check or a refused command stops this update:
+leave the folder as it is and say what holds it. Never reset, restore or clean the folder. Verify the loaded settings and
+skills in a new chat, by what the app reports (`get_usage`, the skill list), never by running the script by hand.
+A hook added or changed in a chat is not in force in that chat either: the hook settings are read when a chat starts.
+There, prove it by running the settings file's exact command on one input it must refuse and one it must let through
+(the tool call's JSON on its input), leave the in-force proof to the next new chat and say so in the handoff; and before
+a refusal's message gives a remedy, measure the remedy for each tool it will reach — "add `< /dev/null`" is right for
+`node` and wrong for Python, which takes it for a keyboard and waits (`.claude/hooks/script-guard.mjs` M3, 8 Nov 26).
 
 *The baselines in the first paragraphs are history; the current one is `HANDOFF.md` §Gate baseline.*
 
