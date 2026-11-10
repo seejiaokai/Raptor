@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/skills-tighten-3 -->
+### CHAT 60 — [SKILLS-TIGHTEN] step 3: the overnight skill's LIST put to him, measured; the skill NOT changed — waiting for his answer — written 10 Nov 26, about 20:45 (the commit's time is the record) — verify before use
+- **Where it started:** chat 59's opening line, pull request 752 merged. The main folder held two changed pictures not this chat's, so this chat works only in its own folder, `C:/Users/User/projects/Raptor-st3`, branch `claude/skills-tighten-3`, cut level with `origin/main`.
+- **Done:** the list — `raptor-port/docs/superpowers/plans/2026-11-10-skills-tighten-overnight.md` — and the script that measured it, `…-overnight-measure.mjs` beside it. Measured: the listed passages save 1,141 of the skill's 21,958 bytes, about 5%; the skill was gone over in the same day's skill-notes review and has little left to take out. Three places where it has fallen behind a later ruling (D1089's six minutes, D1086's where the checks run, D1093's "auto merge live" for a night).
+- **Open questions for him:** (1) go ahead as recommended — §B, §C and §D of the list, §E (the rewording of its four densest paragraphs) left alone; (2) at night, do a night's notes merge by themselves (D1407) or does nothing merge (D596) — recommended: nothing, unless he said "auto merge live"; (3) chat 59's, still open: whose are the two changed pictures in the main folder.
+- **Pick up here:** on his answer, the list's §H — the archive copy, the listed changes only, the writer's pass, Astra and a fresh, blind Opus reader, then his "merge live". Last, ask him about the outside skills (step 4).
+- **Gates:** `npm run docsize` on his PC. No app code changed. **Running when written:** none.
+- **Rulings:** none yet. **Walk:** none — nothing of the app changed. **Reads owed:** none. **Next chat number:** 61 (D1744).
+<!-- /now -->
 <!-- now:claude/skills-tighten-2-9a9f74 -->
 ### CHAT 59 — [SKILLS-TIGHTEN] step 2: the session-handoff skill REWRITTEN (D1978), both reads in and fixed — MERGED and live 10 Nov 26, 20:00, on his "merge live", pull request 752; NOT yet in force in new chats (the main checkout is behind); the overnight skill NOT started — written 10 Nov 26, 20:02 — verify before use
 - **Where it started:** chat 58's opening line, pull request 750 merged and live; he added: first correct the record lines that still said step 1 waited for his "merge live".
