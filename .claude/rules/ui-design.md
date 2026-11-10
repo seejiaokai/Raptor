@@ -60,8 +60,8 @@ itself:** its last part, "Changing this guide". Unsure whether one applies: open
    each change shows the exact words cut, added or swapped and is read cold by someone who has not seen the original;
    a note that cannot lose a word is left whole. **How the app speaks (D833, D834, D836 — §1b):** as a capable
    colleague would say it aloud — every fact first, then a sentence a person would say, then as short as those allow;
-   a dash does not join two thoughts — §1b test 2's order picks the linking word, a comma, a colon or a full stop, a
-   dash only as a named choice, never two in a note; no fact or link added on a guess; the squadron's words and the
+   a dash does not join two thoughts — a full stop or a colon after an opening done thing and before an instruction;
+   otherwise §1b test 2's order picks the linking word, a comma, a colon or a full stop, a dash only as a named choice, never two in a note; no fact or link added on a guess; the squadron's words and the
    app's own names kept, everyday words for the rest; "you", never "we"; one steady voice, plainer as the stakes rise;
    pairs and families worded alike; none of the habits that mark machine-written text; a new wording with a reason, a
    cost or an instruction is read cold by someone else; a wording he has ruled stays until he says.

@@ -77,9 +77,9 @@ one, and neither is an instruction about the work itself.
    in its line, and that rule gets a short pointer to it, checked by the same fresh reader as part of the lesson. The rest of the guide, apart from a lesson's line and its pointer, changes as "Changing this guide" says (D70).
 3. **Other places the same improvement would apply are named** — at most four, from what the chat already knows, each
    with what would change; if it knows of none it says so and does not go looking. They are suggestions: nothing is
-   changed unasked, and one he takes up is drawn for him before it is built (D541). The list is filed with the
-   whole-app pass (`OUTSTANDING.md` `[UI-SLEEK-PASS]`), where the fuller one belongs (D808, D765) — in the lessons'
-   detail file §9 names (D1976).
+   changed unasked, and one he takes up is drawn for him before it is built (D541). The list is written in the
+   lessons' detail file §9 names, under a new dated heading (D1976); the whole-app pass (`OUTSTANDING.md`
+   `[UI-SLEEK-PASS]`), where the fuller one belongs (D808, D765), works from it.
 
 ## 1. Words on screen
 
@@ -409,7 +409,7 @@ reached: tests of each step prove the steps, not the coverage.
 | A menu button | Enter, Space or ↓ opens it on its first item; arrows move; Escape closes and returns to the button |
 | A fold ("How this works", a section) | its heading is a real button; Enter and Space open and close it; it says whether it is open |
 | A list to pick from | arrows move the choice; Enter picks; one Tab stop |
-| A date calendar | arrows by day and week; Page Up / Down by month; Enter or Space picks; a way to today; Home / End to the week's ends, and Shift + Page Up / Down by year (as the date calendar has); a way to clear ON THE BOX where a date may be empty (the calendar itself has none — D796) |
+| A date calendar | arrows by day and week; Page Up / Down by month; Enter or Space picks; a way to today; Home / End to the week's ends (the built date calendar also steps a year with Shift + Page Up / Down — D830); a way to clear ON THE BOX where a date may be empty (the calendar itself has none — D796) |
 | A text box | Enter and Escape keep the meanings the schedule gives them (D544, D732); Tab follows the ruled route on the schedule (D554, D555) |
 | A dangerous question | the keyboard starts on the SAFE answer |
 
@@ -639,7 +639,7 @@ the merge renumbers only the branch's own side, by script, and the closing repor
 
 **Lesson 82 (5 Nov 26, D1654, D1656 — "is it weird that the fade is abruptly stopped at the top half").** A fade is not cut off abruptly partway across the thing it tints; laid over the whole card as one surface and thinning out, he approved it — "My fade looks good". *(The agent's reading: the same holds for any tint or wash on a card, a band or a page.)*
 
-**Lesson 77 (3 Nov 26, D1626 — "if u want to close, you position your hand to reach it. Now u put it at the bottom the user has to shift drastically making it not ergonomic").** A question raised by pressing a control appears right at that control, where the hand already is — a small card hanging from it and pointing at it — never at the foot of the window; his pick "for all similar cases". *(The agent's reading: "similar" is any confirmation or choice put up because a control was pressed; one raised by a key with no control hangs from the control that does the same thing.)* **Narrowed by D1627 and D1628:** of the questions already built only the ones those rulings name change — listed on the screen-design rulings page, §Menus, the keyboard and questions; the rest stay as today.
+**Lesson 77 (3 Nov 26, D1626 — "if u want to close, you position your hand to reach it. Now u put it at the bottom the user has to shift drastically making it not ergonomic").** A question raised by pressing a control appears right at that control, where the hand already is — a small card hanging from it and pointing at it — never at the foot of the window; his pick "for all similar cases". *(The agent's reading: "similar" is any confirmation or choice put up because a control was pressed; one raised by a key with no control hangs from the control that does the same thing; the card covers what is under it only while it is up.)* **Narrowed by D1627 and D1628:** of the questions already built only the ones those rulings name change — listed on the screen-design rulings page, §Menus, the keyboard and questions; the rest stay as today.
 
 **Lesson 75 (2 Nov 26, D1568, D1569 — "when I click on my own row … the highlighted grid selected can’t be seen since it’s the same colour").** A mark that shows what was picked can be seen on every row it lands on — his own highlighted row included. *(The agent's readings: a mark is checked on each background it can sit on; where a mark and its background share a colour the mark is made heavier, not given a new colour — his pick, D1569.)*
 
@@ -653,7 +653,7 @@ the merge renumbers only the branch's own side, by script, and the closing repor
 
 **Lesson 68 (29 Oct 26, D1496 — "I would like all mockups to standardise the design to the rest of the app").** Every mock-up's design is standardised to the rest of the app. *(The agent's reading: each part is drawn the way the app already draws that kind of part — what it is, where it sits, its icon, colours, letters, sizes, corners and spacing — found on the running app; a part that has to differ is named to him as a new design, with its picture and its reason.)*
 
-**Lesson 66 (28 Oct 26, D1463 — "is there way shorter way to write it but still have the same meaning").** A control's words are kept as short as they can be without changing their meaning ("Approve what I enter" became "Auto-approve").
+**Lesson 66 (28 Oct 26, D1463 — "is there way shorter way to write it but still have the same meaning").** A control's words are kept as short as they can be without changing their meaning ("Approve what I enter" became "Auto-approve"). *(The agent's reading: the switch beside the words already shows whether it is on, so the words need not say it.)*
 
 **Lesson 65 (28 Oct 26, D1462 — "do u think the Tue 13 Apr title should be abit more brighter and obvious?").** A window's title makes the day it is about bright and obvious, not faint. *(The agent's reading: the date the size of the name, in the app's white, a little lighter so the name still leads; not cyan, which reads as something to press.)*
 
@@ -661,7 +661,7 @@ the merge renumbers only the branch's own side, by script, and the closing repor
 
 **Lesson 63 (27 Oct 26, D1437 — "Seems like the alignment of the title and the text is off. fix it. Check the desktop too").** A column's heading and the figures under it line up, on a phone and on a desktop alike. *(The agent's reading: a figure set to the left starts where its heading starts and one set to the right ends where its heading ends, checked by measuring, not by eye.)*
 
-**Lesson 62 (27 Oct 26, D1429 — "dont wanna confused the lve bal numbers on the left").** Figures in two columns side by side stand far enough apart that one column's numbers are not confused with the next one's.
+**Lesson 62 (27 Oct 26, D1429 — "dont wanna confused the lve bal numbers on the left").** Figures in two columns side by side stand far enough apart that one column's numbers are not confused with the next one's. *(The agent's reading: the gap between those two columns is clearly wider than the gaps between the other figure columns.)*
 
 **Lesson 61 (27 Oct 26, D1412 — "Why can’t the text box I click on, auto scroll proportionately with the keyboard that appears and the window doesn’t shrink awhile. My idea is a smooth feel for this app and this made it worse").** When the keyboard opens, the box tapped rises in step with the keys, proportionately — one motion, the keys' own — and nothing else on screen moves: a box already above the keys stays exactly where it is, and no window shortens and grows back or lets the page behind it show while the keys move. What it says about the app he intends (D852): a correct end place is not the measure; the feel of the motion is, and a mechanism is judged by what he sees, not by its numbers.
 
@@ -703,7 +703,7 @@ the merge renumbers only the branch's own side, by script, and the closing repor
 
 **Lesson 40 (23 Oct 26, D1264 — "put the open for bidding at the top full page. So that when the dates below jumps it doesn't affect the user to chase the buttons").** A window whose buttons are pressed again and again keeps them in one place while what is under them grows or shrinks: it stands from the top of the screen and grows downward, never from the foot growing upward. *(The agent's reading: it holds for any window docked at the foot whose content changes under repeated presses.)* Widens §3's "a control tapped again and again never moves under the finger" and lesson 16 to a window's growth.
 
-**Lesson 39 (22 Oct 26, D1252 — "the numbers on 1 side and the words on the other … the pending should be not amber, which follows the rest of the text of the title").** Lines that pair a word with a figure, stacked, read as a small list: the words down one side, the figures down the other, lined up; a word is a label, coloured like every other label — only the figure carries a status colour; and space under a heading is not left empty: the content sits close under it. *(The agent's reading: the figures go to the right.)*
+**Lesson 39 (22 Oct 26, D1252 — "the numbers on 1 side and the words on the other … the pending should be not amber, which follows the rest of the text of the title").** Lines that pair a word with a figure, stacked, read as a small list: the words down one side, the figures down the other, lined up; a word is a label, coloured like every other label — only the figure carries a status colour; and space under a heading is not left empty: the content sits close under it. *(The agent's reading: the figures go to the right.)* Narrowed for the Leave War bid windows' day line by D1313 (the Leave War's page): its rows run side by side on one line.
 
 **Lesson 38 (22 Oct 26, D1251 — "pending is amber, why dont the lve pending follow it too?").** One meaning, one colour: where a figure is pending in one place and drawn in a colour, every pending figure beside it takes the same colour. *(The agent's reading: this holds wherever "pending" is shown.)*
 
@@ -711,7 +711,7 @@ the merge renumbers only the branch's own side, by script, and the closing repor
 
 **Lesson 36 (22 Oct 26, D1239 — "3 taken above war bal seems like 1 title … the rest of the numbers are aligned to the left but the LVE portion is aligned to the right").** A small fact sits beside the thing it belongs to, never stacked over a neighbouring label it could be read as part of; and figures that stand side by side align the same way, not one group left and another right. *(The agent's reading: left is the way here because every other tile already reads from the left.)* Narrows lesson 35 for the balance tiles: their figures read from the left, with no "−" or "=" between them. Narrowed by lesson 39 for a small tile's stacked lines: the words left, the figures right.
 
-**Lesson 35 (22 Oct 26, D1238 — "can this be designed with alignment in consideration so that it looks neat on the formatting").** Tiles or cards that stand side by side share one grid: their labels on one line, their main figures on one line, their small lines on one line; and inside a tile a label stands right over its own figure, figures in a column sharing one edge — nothing floats between them. *(The agent's reading: it holds for any group of tiles or cards side by side.)* Narrowed by lesson 36 for the balance tiles.
+**Lesson 35 (22 Oct 26, D1238 — "can this be designed with alignment in consideration so that it looks neat on the formatting").** Tiles or cards that stand side by side share one grid: their labels on one line, their main figures on one line, their small lines on one line; and inside a tile a label stands right over its own figure, figures in a column sharing one edge — nothing floats between them. *(The agent's readings: it holds for any group of tiles or cards side by side; a sign such as "−" or "=" between figures gets a narrow column of its own.)* Narrowed by lesson 36 for the balance tiles.
 
 **Lesson 34 (22 Oct 26, D1233 — "Perhaps state that it's Auto + LVE on 1st Jan … better to convert the message").** A figure the app acts on says what happens to it, not what it is: "+36" under "Auto + LVE on 1 Jan", not "36" under "Days on 1 Jan". *(The agent's readings: the sign and the word "Auto" are what make it read as an action the app takes by itself; it holds for other figures the app applies later.)*
 
@@ -737,7 +737,7 @@ the merge renumbers only the branch's own side, by script, and the closing repor
 
 **Lesson 24 (21 Oct 26, D1168 — "majority of the time its usually opened from the start till the end of the month. only the rare times they can use the edit icon to select specific days").** Where a choice is nearly always the same shape, that shape is one tap: in the Leave War's "Open for bidding" window a whole month is opened by tapping it, and exact days, the rare case, stay behind the pencil. *(The agent's readings: a second tap closes the month; it holds for other pickers whose usual answer is a whole unit — a whole week, a whole day.)*
 
-**Lesson 23 (21 Oct 26, D1161 — "I feel like all green feels abit boring and mundane to see").** A grid that is all one colour reads as boring and mundane to him: on the Leave War, every approved leave in the same green. *(The agent's reading: colour may then tell the kinds of leave apart, and the same may hold for other grids read at a glance — the Inputs and SANS calendars.)*
+**Lesson 23 (21 Oct 26, D1161 — "I feel like all green feels abit boring and mundane to see").** A grid that is all one colour reads as boring and mundane to him: on the Leave War, every approved leave in the same green. *(The agent's reading: colour may then tell the kinds of leave apart, where it stands being shown another way, and the same may hold for other grids read at a glance — the Inputs and SANS calendars.)*
 
 **Lesson 22 (21 Oct 26, D1159 — "maybe use this instead for document to standardise it").** Adding a document is done with the app's one Document button (the upload arrow and "Document", then "Add"), drawn the same wherever it appears — not a new button drawn for a new screen. *(The agent's reading: a general rule — one action, one control, the same everywhere, so a date box, a person picker, Save and Cancel too.)*
 
@@ -753,7 +753,7 @@ the merge renumbers only the branch's own side, by script, and the closing repor
 
 **Lesson 15 (21 Oct 26, D1121 — "we shouldnt have the reason explained twice").** A reason says each fact once: where the meaning of a man's kind of input and his own remark repeat a fact, the screen says it once, keeping any fact only one of them gives. *(The agent's reading: it holds wherever the same sentence is said; the rewording is a later job, `[CREW-REASON-TWICE]`, its words read cold first — §1a.)*
 
-**Lesson 13 (20 Oct 26, D1095, D1096 — "Make it 27 instead of 2027?"; "All 27 instead").** Every date printed with its year carries the year in two digits — "till 15 Feb 27".
+**Lesson 13 (20 Oct 26, D1095, D1096 — "Make it 27 instead of 2027?"; "All 27 instead").** A date prints its year only where it must, to tell it from this year's; then, like every date printed with its year, it carries the year in two digits — "till 15 Feb 27".
 
 **Lesson 12 (19 Oct 26, D1081 — "when I close my keyboard there is 1 frame of some other out of position screen then back … It makes it look like a stutter").** When the keyboard opens or closes, nothing on screen jumps out of place, even for one frame: whatever follows the visible screen moves with it every frame, never a frame behind it. A screen that stutters reads as broken, however briefly.
 
