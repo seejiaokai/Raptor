@@ -28,7 +28,7 @@
 import { canonicalUnits } from '../engine/canonical'
 import { DAYS } from '../engine/data'
 import { onCommon } from '../engine/grouprows'
-import { INPUTS, inpId, listedPersonal } from '../engine/inputs'
+import { INPUTS, DATES, inpId, inputCoversDate, listedPersonal } from '../engine/inputs'
 import { iuParts } from '../engine/keys'
 import { groundOrder } from '../engine/order'
 import { standsOn } from '../engine/overlay'
@@ -52,50 +52,74 @@ const SIGN = 'sign:', WARNLINE = 'warnline:'
 const SIGN_FIELDS = ['ok', 'sg', 'cv']
 const same = (a: unknown, b: unknown) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null)
 
+/* THE ROWS A RE-ORDER LEFT WHERE THEY WERE, relative to one another: the longest run of rows still in their old order
+   (`old[n]` = the old place of the row now at n, −1 for a row that was not in the list). Every other row is one that
+   MOVED. Of two runs equally long the one ending lowest is kept, so of two rows that changed places the upper is the
+   one named. */
+function keptInOrder(old: number[]): Set<number> {
+  const tails: number[] = [], prev: number[] = old.map(() => -1)
+  old.forEach((p, n) => {
+    if (p < 0) return
+    let lo = 0, hi = tails.length
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (old[tails[mid]!]! < p) lo = mid + 1; else hi = mid }
+    prev[n] = lo > 0 ? tails[lo - 1]! : -1
+    tails[lo] = n
+  })
+  const kept = new Set<number>()
+  for (let n = tails.length ? tails[tails.length - 1]! : -1; n >= 0; n = prev[n]!) kept.add(n)
+  return kept
+}
+
 /* A ROW RE-ORDERED — a drag by its grip, Auto sort, Sort all — changes no box, so the comparison's 'move' names none
    (canonical.ts: `mov:<di>.<kind>`, no jump) and the landing had nowhere to go (Astra 2, the fresh Opus reader F2a). Its
-   place, by the comparison's own test of a move: in each list, the rows BOTH images hold, matched by their hidden ids;
-   the first whose place differs, addressed as it stands on the day this direction restores. A row only added or only
-   taken away re-orders nothing. */
+   place, by the comparison's own test of a move: in each list, the rows BOTH images hold, matched by their hidden ids —
+   and of those, THE ROWS THAT MOVED, each addressed as it stands on the day this direction restores. Not "the first
+   whose place differs" (the first fix round; the narrow read, finding 1): one row dragged down shifts every row above
+   its new place, and the landing went to the head while the row that moved went back unseen to the foot. A row only
+   added or only taken away re-orders nothing. */
 function movedRowKeys(from: any, to: any, di: number): string[] {
   const out: string[] = []
   const ids = (d: any) => new Set<string>(rowsOf(d).map((r: any) => r && r.rid).filter(Boolean))
   const inFrom = ids(from), inTo = ids(to)
   /* `now`: the list as it will stand, each row with the addresses to try for it; `was`: the same list before */
-  const first = (now: Array<[any, string[]]>, was: any[]) => {
+  const moved = (now: Array<[any, string[]]>, was: any[]) => {
     const a = now.filter(([r]) => r && r.rid && inFrom.has(r.rid))
     const b = (was || []).filter((r: any) => r && r.rid && inTo.has(r.rid))
     if (a.length < 2) return
-    const hit = a.find(([r], n) => !b[n] || b[n].rid !== r.rid)
-    if (hit) out.push(...hit[1])
+    const placeWas = new Map<string, number>()
+    b.forEach((r: any, n: number) => placeWas.set(r.rid, n))
+    const old = a.map(([r]) => placeWas.get(r.rid) ?? -1)
+    if (old.every((p, n) => p === n)) return
+    const kept = keptInOrder(old)
+    a.forEach(([, keys], n) => { if (!kept.has(n)) out.push(...keys) })
   }
   const list = (rows: any, key: (i: number) => string[]): Array<[any, string[]]> => ((rows || []) as any[]).map((r, i) => [r, key(i)])
   const byRid = (rows: any) => { const m = new Map<string, any>(); for (const r of (rows || []) as any[]) if (r && r.rid) m.set(r.rid, r); return m }
   /* a wave's or a duty block's own heading first, then its first line — whichever the board draws */
-  first(list(to.waves, gi => [`wl:${di}.${gi}`, `ff:${di}.${gi}.0.cs`, `fr:${di}.${gi}.0.0`]), from.waves)
-  first(list(to.allhands, i => [`ap:${di}.${i}.prog`]), from.allhands)
-  first(list(to.dutywaves, wi => [`dl:${di}.${wi}`, `dr:${di}.${wi}.0.role`]), from.dutywaves)
+  moved(list(to.waves, gi => [`wl:${di}.${gi}`, `ff:${di}.${gi}.0.cs`, `fr:${di}.${gi}.0.0`]), from.waves)
+  moved(list(to.allhands, i => [`ap:${di}.${i}.prog`]), from.allhands)
+  moved(list(to.dutywaves, wi => [`dl:${di}.${wi}`, `dr:${di}.${wi}.0.role`]), from.dutywaves)
   /* the Ground Programme as DRAWN: by time unless arranged by hand, an input's row on the Common Programme not in it */
   const ground = (d: any): any[] => groundOrder(d.ground, d.gman).filter((x: any) => !onCommon(x.row))
-  first(ground(to).map((x: any): [any, string[]] => [x.row, [`gr:${di}.${x.ri}.prog`]]), ground(from).map((x: any) => x.row))
+  moved(ground(to).map((x: any): [any, string[]] => [x.row, [`gr:${di}.${x.ri}.prog`]]), ground(from).map((x: any) => x.row))
   for (const kind of new Set([...Object.keys(to.sims || {}), ...Object.keys(from.sims || {})])) {
-    first(list((to.sims || {})[kind], i => [`sr:${di}.${kind}.${i}.label`]), (from.sims || {})[kind])
+    moved(list((to.sims || {})[kind], i => [`sr:${di}.${kind}.${i}.label`]), (from.sims || {})[kind])
   }
   const wavesWas = byRid(from.waves)
   ;((to.waves || []) as any[]).forEach((w, gi) => {
     const ww = w && w.rid && wavesWas.get(w.rid)
     if (!ww) return
-    first(list(w.formations, li => [`ff:${di}.${gi}.${li}.cs`]), ww.formations)
+    moved(list(w.formations, li => [`ff:${di}.${gi}.${li}.cs`]), ww.formations)
     const formsWas = byRid(ww.formations)
     ;((w.formations || []) as any[]).forEach((f, li) => {
       const wf = f && f.rid && formsWas.get(f.rid)
-      if (wf) first(list(f.aircraft, ai => [`fr:${di}.${gi}.${li}.${ai}`]), wf.aircraft)
+      if (wf) moved(list(f.aircraft, ai => [`fr:${di}.${gi}.${li}.${ai}`]), wf.aircraft)
     })
   })
   const blocksWas = byRid(from.dutywaves)
   ;((to.dutywaves || []) as any[]).forEach((b, wi) => {
     const wb = b && b.rid && blocksWas.get(b.rid)
-    if (wb) first(list(b.rows, ri => [`dr:${di}.${wi}.${ri}.role`]), wb.rows)
+    if (wb) moved(list(b.rows, ri => [`dr:${di}.${wi}.${ri}.role`]), wb.rows)
   })
   return out
 }
@@ -104,14 +128,18 @@ function movedRowKeys(from: any, to: any, di: number): string[] {
  *  changes nothing there */
 export function boardLandKeys(entry: UndoEntry, dir: 'undo' | 'redo', di: number): string[] {
   const keys: string[] = [], lines: string[] = []
-  /* did the step change what the day HOLDS — its own content, or an input? Then the change is shown by that, or (a row
-     it only removes) by nothing, the known limit: the sign-offs such an edit wipes on a signed day are its
-     consequence, and following them would carry the screen off a change made in view (D672) */
-  let content = false
+  /* did the step change what the day HOLDS — its own content, or an input? Then the change is shown by that, and the
+     sign-offs such an edit wipes on a signed day are its consequence: following them first would carry the screen off a
+     change made in view (D672). They are the FALL-BACK, tried by the landing only when the board draws none of the
+     step's own places (the narrow read, finding 4 — an area or the traffic changed on a signed day: the sign-off line is
+     then the one thing on the board that changed). Never for a step that only takes something away — a row (it names
+     no place), an input (`gone`): that lands nowhere, the known limit. */
+  let content = false, gone = false
   for (const ch of entry.forward) {
     if (ch.collection === 'inputs') {
       /* an input's drawings on the day (its programme row, its line, its card) — found by its input, whoever it is addressed by */
       keys.push(`iu:${ch.id}`); content = true
+      if ((dir === 'undo' ? ch.before : ch.after) == null) gone = true
       continue
     }
     if (ch.collection !== 'days' && ch.collection !== 'sched.book' && ch.collection !== 'sched.mutes') continue
@@ -138,8 +166,9 @@ export function boardLandKeys(entry: UndoEntry, dir: 'undo' | 'redo', di: number
       for (const k of changed.length ? changed : ['']) lines.push(`${WARNLINE}${k}`)
     }
   }
-  return [...new Set(content ? keys : lines)]
+  return [...new Set(!content ? lines : keys.length && !gone ? [...keys, ...lines] : keys)]
 }
+const isLine = (k: string) => k.startsWith(SIGN) || k.startsWith(WARNLINE)
 
 /* what scrolls a box up and down: the first ancestor that does (the board's list on a desktop and an upright phone; the
    whole board on a phone on its side, D1780; the issues list's own column on a desktop) — null when the page itself does */
@@ -165,15 +194,16 @@ function drawingsOf(root: Element, key: string, di: number | null): Element[] {
   const board = document.querySelector('#schedBoard') || document
   if (key.startsWith(SIGN)) return [board.querySelector('#sbSignBar') || board.querySelector('#sbSign')].filter(Boolean) as Element[]
   if (key.startsWith(WARNLINE)) {
-    /* its own line where the list draws it (a desktop's column, a phone's opened list), the day's bar where it does not */
-    const k = key.slice(WARNLINE.length), out: Element[] = []
+    /* its own line where the list lays it out (a desktop's column, a phone's opened list); the day's bar ONLY where it
+       does not (a phone's folded list). Never both: the bar in view is not the change in view while its line is drawn —
+       a warning hidden low in a long list, the list back at its top, went back unseen (the narrow read, finding 2) */
+    const k = key.slice(WARNLINE.length)
     let ix = -1
     try { ix = k && di != null ? ((view.displayedByDay(di)?.warns || []) as any[]).findIndex(w => view.warnMuteKey(w) === k) : -1 } catch { /* no warnings to read: the bar */ }
     const line = ix >= 0 ? board.querySelector(`#sbWarn .wln[data-wdi="${di}"][data-wix="${ix}"]`) : null
-    if (line) out.push(line)
+    if (laidOut(line)) return [line]
     const bar = board.querySelector('#sbWarn .wh')
-    if (bar) out.push(bar)
-    return out
+    return bar ? [bar] : []
   }
   const p = iuParts(key)
   if (!p || !p.iid) { const el = findHistCell(root, key); return el ? [el] : [] }
@@ -218,14 +248,17 @@ function roomOf(el: HTMLElement): { sc: HTMLElement | null; dy: number } {
 /* A CHANGED PERSONAL INPUT UNDER A FOLDED PANEL has no drawn line to land on (Astra 3): open Personal Inputs on the day,
    by the test a tap on a change in the changes window uses (ui/interactions.ts jumpToChange) — an input listed there,
    and for one accepted onto the programme only on a day its programme row does not stand on; never for a leave under
-   Unavailable. True when it opened the panel. */
+   Unavailable. AND ONLY ON A DAY THE INPUT IS ON (the narrow read, finding 3): a tap already knows that; an Undo or Redo
+   can bring the board to a day the input has left (its date moved), and that day's panel opened for nothing. True when
+   it opened the panel. */
 function unfoldFor(keys: string[], di: number | null): boolean {
   if (di == null || view.PIOPEN.has(di)) return false
   for (const k of keys) {
     const p = iuParts(k)
     if (!p || !p.iid) continue
     const inp: any = (INPUTS as any[]).find(x => inpId(x) === p.iid)
-    if (inp && listedPersonal(inp) && (inp.acc !== 'g' || !standsOn(DAYS[di], inpId(inp), inp))) { view.PIOPEN.add(di); return true }
+    if (!inp || !inputCoversDate(inp, DATES[di]) || !listedPersonal(inp)) continue
+    if (inp.acc !== 'g' || !standsOn(DAYS[di], inpId(inp), inp)) { view.PIOPEN.add(di); return true }
   }
   return false
 }
@@ -235,12 +268,20 @@ function land(keys: string[], di: number | null, mayUnfold: boolean): void {
   if (!root) return
   /* the first change the board draws AND lays out: a box in the page with no size (a folded section's) is passed over
      for the fall-back address the change carries on purpose (the fresh Opus reader, F4) */
-  let shown: HTMLElement[] = []
-  for (const k of keys) { shown = drawingsOf(root, k, di).filter(laidOut); if (shown.length) break }
-  if (!shown.length) {
-    if (mayUnfold && unfoldFor(keys, di)) { notify(); setTimeout(() => land(keys, di, false), 0) }
-    return
+  let shown: HTMLElement[] = [], drawn = false
+  for (const k of keys) {
+    if (isLine(k)) continue
+    const all = drawingsOf(root, k, di)
+    if (all.length) drawn = true
+    shown = all.filter(laidOut)
+    if (shown.length) break
   }
+  if (!shown.length && mayUnfold && unfoldFor(keys, di)) { notify(); setTimeout(() => land(keys, di, false), 0); return }
+  /* the sign-off line and the issues list: the change itself for a step that is only a sign-off, a publish or a hidden
+     warning — and the fall-back for one whose own places the board draws NONE of (boardLandKeys); a place that is drawn
+     but folded away is still the step's own, and nothing stands in for it */
+  if (!shown.length && !drawn) for (const k of keys) { if (isLine(k)) { shown = drawingsOf(root, k, di).filter(laidOut); if (shown.length) break } }
+  if (!shown.length) return
   /* in view in ANY of its drawings: the screen stays (D672) */
   const rooms = shown.map(roomOf)
   if (rooms.some(r => !r.dy)) return

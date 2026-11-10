@@ -13,7 +13,11 @@ import { INPUTS, DATES, inpId } from '../engine/inputs'
 import { standsOn } from '../engine/overlay'
 import * as view from '../state/view'
 import { setSession } from '../state/auth'
-import { _snapView } from '../state/undo-wire'
+import { _snapView, installGlobalUndo } from '../state/undo-wire'
+import { commitSetDayApproved } from '../state/sched-commit'
+import { signOf, dayApproved } from '../engine/publish'
+import { globalUndo } from '../undo'
+import { _resetTimeline, _timelineEntries } from '../undo/timeline'
 import { boardLandKeys, bringBoardChangeOnScreen } from './boardland'
 import type { UndoEntry } from '../undo/types'
 
@@ -123,11 +127,44 @@ describe('the board\'s Undo landing: a row re-ordered and nothing else', () => {
     /* the first row dragged to the foot */
     after.allhands = [...after.allhands.slice(1), after.allhands[0]]
     expect(boardLandKeys(step(MON, before, after), 'undo', MON)[0], 'back at the head').toBe(`ap:${MON}.0.prog`)
-    expect(boardLandKeys(step(MON, before, after), 'redo', MON)[0], 'the head row is another now').toBe(`ap:${MON}.0.prog`)
+    /* CORRECTED 11 Nov 26 (the narrow read, finding 1): this line named the head row ("the head row is another now") —
+       the first PLACE that differs, not the row that moved. Redo drags the row to the foot again: the foot is the change. */
+    expect(boardLandKeys(step(MON, before, after), 'redo', MON)[0], 'at the foot, where it went').toBe(`ap:${MON}.${n - 1}.prog`)
     /* the LAST row dragged up one: only the last two differ, and the first of those is named */
     const up = copy(DAYS[MON])
     up.allhands = [...up.allhands.slice(0, n - 2), up.allhands[n - 1], up.allhands[n - 2]]
     expect(boardLandKeys(step(MON, before, up), 'undo', MON)[0]).toBe(`ap:${MON}.${n - 2}.prog`)
+  })
+  /* the narrow read, finding 1 (11 Nov 26): "the first whose place differs" is not the row that moved — one row dragged
+     DOWN shifts every row above its new place, and one dragged UP every row below it. The rows that moved are the ones
+     outside the longest run of rows still in their old order. */
+  it('ONE row dragged: the last to the head, the first to the foot — Undo and Redo each name that row where it ends up', () => {
+    const before = copy(DAYS[MON]), n = before.allhands.length
+    expect(n).toBeGreaterThan(3)
+    const up = copy(DAYS[MON]); up.allhands = [up.allhands[n - 1], ...up.allhands.slice(0, n - 1)]
+    expect(boardLandKeys(step(MON, before, up), 'undo', MON)[0], 'last to head, Undo: back at the foot').toBe(`ap:${MON}.${n - 1}.prog`)
+    expect(boardLandKeys(step(MON, before, up), 'redo', MON)[0], 'last to head, Redo: at the head').toBe(`ap:${MON}.0.prog`)
+    const down = copy(DAYS[MON]); down.allhands = [...down.allhands.slice(1), down.allhands[0]]
+    expect(boardLandKeys(step(MON, before, down), 'undo', MON)[0], 'first to foot, Undo: back at the head').toBe(`ap:${MON}.0.prog`)
+    expect(boardLandKeys(step(MON, before, down), 'redo', MON)[0], 'first to foot, Redo: at the foot').toBe(`ap:${MON}.${n - 1}.prog`)
+    /* a row dragged from the middle to the middle: only it is named, never a row it passed */
+    const mid = copy(DAYS[MON]); const [r] = mid.allhands.splice(1, 1); mid.allhands.splice(n - 2, 0, r)
+    expect(boardLandKeys(step(MON, before, mid), 'redo', MON), 'second row to last but one').toEqual([`ap:${MON}.${n - 2}.prog`])
+    expect(boardLandKeys(step(MON, before, mid), 'undo', MON)).toEqual([`ap:${MON}.1.prog`])
+  })
+  it('…and the screen follows the row that moved: in view it moves nothing though the head is out of view; out of view it is brought on screen though the head is in view', () => {
+    const before = copy(DAYS[MON]), n = before.allhands.length
+    const up = copy(DAYS[MON]); up.allhands = [up.allhands[n - 1], ...up.allhands.slice(0, n - 1)]
+    const keys = boardLandKeys(step(MON, before, up), 'undo', MON)
+    const twoRows = (head: Place, foot: Place) => {
+      const sc = board(`<textarea data-bfld="ap:${MON}.0.prog"></textarea><textarea data-bfld="ap:${MON}.${n - 1}.prog"></textarea>`)
+      place($(`[data-bfld="ap:${MON}.0.prog"]`), head); place($(`[data-bfld="ap:${MON}.${n - 1}.prog"]`), foot)
+      bringBoardChangeOnScreen(keys, MON)
+      return moved(sc)
+    }
+    expect(twoRows(ABOVE, SEEN), 'the row that went back to the foot is in view').toEqual([])
+    expect(twoRows(SEEN, BELOW), 'it is below the screen, the head in view').toEqual([328])
+    document.body.innerHTML = ''
   })
   it('a row only added or only taken away re-orders nothing: no row is named for it', () => {
     const before = copy(DAYS[MON]), after = copy(DAYS[MON])
@@ -283,11 +320,11 @@ describe('the board\'s Undo landing: a sign-off, a publish mark, a hidden warnin
     const w = (view.displayedByDay(MON)?.warns || [])[0]
     expect(w, 'the demo Monday raises a warning').toBeTruthy()
     const e = { forward: [{ op: 'put', collection: 'sched.mutes', id: `${CURWEEK}#${MON}`, before: [], after: [view.warnMuteKey(w)] }] } as unknown as UndoEntry
-    const desk = (line: Place) => {
+    const desk = (line: Place, bar: Place = ABOVE) => {
       document.body.innerHTML = `<div id="schedBoard"><div class="sb-main"><div class="sb-boardwrap"><div class="sb-board" id="sbBoard"></div></div>`
         + `<div class="sb-side"><div class="sb-warn" id="sbWarn" style="overflow-y:auto"><div class="sbwrap open"><div class="wh" data-sbwtog></div>`
         + `<div class="wln" data-wdi="${MON}" data-wix="0"></div><div class="wln" data-wdi="${MON}" data-wix="1"></div></div></div></div></div></div>`
-      const sc = scroller($('#sbWarn'), 1); place($('.wh'), ABOVE); place($('[data-wix="0"]'), line); place($('[data-wix="1"]'), { top: 2000, bottom: 2020 })
+      const sc = scroller($('#sbWarn'), 1); place($('.wh'), bar); place($('[data-wix="0"]'), line); place($('[data-wix="1"]'), { top: 2000, bottom: 2020 })
       return sc
     }
     for (const dir of ['undo', 'redo'] as const) {
@@ -297,6 +334,18 @@ describe('the board\'s Undo landing: a sign-off, a publish mark, a hidden warnin
       sc = desk(BELOW)
       bringBoardChangeOnScreen(boardLandKeys(e, dir, MON), MON)
       expect(moved(sc), `${dir}: its line below its list's foot`).toEqual([328])
+      /* the narrow read, finding 2 (11 Nov 26): the bar in view is NOT the change in view while its line is laid out —
+         a warning hidden low in a long list, the list back at its top, went back unseen */
+      sc = desk(BELOW, SEEN)
+      bringBoardChangeOnScreen(boardLandKeys(e, dir, MON), MON)
+      expect(moved(sc), `${dir}: its line below its list's foot, the bar in view`).toEqual([328])
+      /* …and where the list is folded (a phone), its lines in the page with no size, the bar is the change: in view, nothing moves */
+      sc = desk({ top: 0, bottom: 0 }, SEEN)
+      bringBoardChangeOnScreen(boardLandKeys(e, dir, MON), MON)
+      expect(moved(sc), `${dir}: its line not laid out, the bar in view`).toEqual([])
+      sc = desk({ top: 0, bottom: 0 }, ABOVE)
+      bringBoardChangeOnScreen(boardLandKeys(e, dir, MON), MON)
+      expect(moved(sc), `${dir}: its line not laid out, the bar above`).toEqual([-508])
     }
   })
   it('a step that changed a box of the day AND wiped its sign-offs goes to the box, not the sign-off line', () => {
@@ -305,6 +354,47 @@ describe('the board\'s Undo landing: a sign-off, a publish mark, a hidden warnin
     const keys = boardLandKeys(step(MON, before, after, book(MON).forward as any[]), 'undo', MON)
     const own = boardLandKeys(step(MON, before, after), 'undo', MON)
     expect(keys.slice(0, own.length)).toEqual(own)
+  })
+
+  /* the narrow read, finding 4 (11 Nov 26): on a signed day every change wipes the four sign-offs, and its Undo puts them
+     back. Where the change itself is something the board does not draw (the area strip, the traffic window), the
+     sign-off line is the one thing on the board that changed — and the first fix round dropped it for any step that
+     touched the day's content. It is the fall-back now: only when NONE of the step's own places is drawn on the board. */
+  const signedDayStep = () => {
+    const before = copy(DAYS[MON]), after = copy(DAYS[MON])
+    after.waves[0].formations[0].aircraft[0].rmks = "signed day"
+    return { e: step(MON, before, after, book(MON).forward as any[]), box: boardLandKeys(step(MON, before, after), 'undo', MON)[0]! }
+  }
+  it('a signed day, a step whose own change the board does not draw, its sign-offs wiped or put back: the sign-off line comes into view', () => {
+    const { e } = signedDayStep()
+    for (const dir of ['undo', 'redo'] as const) {
+      const sc = phoneBoard(); place($('#sbSign'), ABOVE); place($('#sbSignBar'), ABOVE)
+      bringBoardChangeOnScreen(boardLandKeys(e, dir, MON), MON)
+      expect(moved(sc), dir).toEqual([-508])
+    }
+  })
+  it('…its own change drawn on the board: the box is the change — in view nothing moves, out of view the list goes to the box, folded away nothing moves', () => {
+    const { e, box } = signedDayStep()
+    const both = (boxAt: Place, signAt: Place) => {
+      const sc = phoneBoard(`<input data-bfld="${box}">`); place($('#sbSign'), signAt); place($('#sbSignBar'), signAt); place($('[data-bfld]'), boxAt)
+      bringBoardChangeOnScreen(boardLandKeys(e, 'undo', MON), MON)
+      return moved(sc)
+    }
+    expect(both(SEEN, ABOVE), 'the box in view, the sign-off line above').toEqual([])
+    expect(both(ABOVE, BELOW), 'the box above: the list goes to it, not down to the sign-off line').toEqual([-508])
+    expect(both({ top: 0, bottom: 0 }, ABOVE), 'the box in a folded section: drawn, so the sign-off line is not its stand-in').toEqual([])
+  })
+  it('…a row only REMOVED on a signed day still lands nowhere (the known limit), and so does an input taken away', () => {
+    const before = copy(DAYS[MON]), after = copy(DAYS[MON])
+    after.allhands = after.allhands.slice(1)
+    const rowGone = boardLandKeys(step(MON, before, after, book(MON).forward as any[]), 'redo', MON)
+    expect(rowGone).toEqual([])
+    const inputGone = { forward: [{ op: 'del', collection: 'inputs', id: 'i-gone', before: { iid: 'i-gone' }, after: null }, ...(book(MON).forward as any[])] } as unknown as UndoEntry
+    for (const keys of [rowGone, boardLandKeys(inputGone, 'redo', MON)]) {
+      const sc = phoneBoard(); place($('#sbSign'), ABOVE); place($('#sbSignBar'), ABOVE)
+      bringBoardChangeOnScreen(keys, MON)
+      expect(moved(sc)).toEqual([])
+    }
   })
 })
 
@@ -343,6 +433,17 @@ describe('the board\'s Undo landing: a Personal Input under a folded panel', () 
     bringBoardChangeOnScreen([`iu:${iid}`], MON)
     expect(view.PIOPEN.size).toBe(0)
     expect(moved(sc)).toEqual([])
+  })
+  /* the narrow read, finding 3 (11 Nov 26): the test of a tap on a change is asked about a day the tap already knows the
+     input is on; an Undo can bring the board to a day the input has LEFT (its date moved), and Monday's panel opened for
+     an input dated Wednesday */
+  it('an input that is not on the board\'s day opens nothing there', () => {
+    const iid = file({ type: 'Meeting', acc: 'r', date: DATES[2] })
+    board('')
+    bringBoardChangeOnScreen([`iu:${iid}`], MON)
+    expect(view.PIOPEN.size, 'Monday\'s Personal Inputs stays folded for an input dated Wednesday').toBe(0)
+    bringBoardChangeOnScreen([`iu:${iid}`], 2)
+    expect([...view.PIOPEN], 'and opens on its own day').toEqual([2])
   })
   it('an input the step took away altogether opens nothing', () => {
     board('')
@@ -424,5 +525,34 @@ describe('the board\'s Undo landing: only once the step has actually been applie
     _snapView(e, 'redo'); e.undone = false
     vi.runAllTimers()
     expect(moved(sc)).toEqual([-508])
+  })
+})
+
+/* the narrow read, finding 5 (11 Nov 26): "a publish undone from the foot lands on the sign-off line" had no test behind
+   it — were a publish to write the day's own record too, the landing would be dropped without a sound. A REAL publish
+   step here, through the app's own wiring: its records, whatever they are, name the sign-off line and nothing else. */
+describe('the board\'s Undo landing: a real publish step', () => {
+  afterEach(() => { document.body.innerHTML = '' })
+  it('a day published, then Undo or Redo from the foot of a phone\'s board: the sign-off line comes down into view; in view, nothing moves', () => {
+    _resetTimeline(); installGlobalUndo()
+    setSession({ role: 'admin', user: 'ad' } as any)
+    const g = signOf(MON); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    commitSetDayApproved(MON, true)
+    try {
+      expect(dayApproved(MON), 'the day went out').toBe(true)
+      const all = _timelineEntries(), e = all[all.length - 1]!
+      expect(e.forward.some(ch => ch.collection === 'sched.book'), 'the newest step is the publish').toBe(true)
+      for (const dir of ['undo', 'redo'] as const) {
+        const keys = boardLandKeys(e, dir, MON)
+        expect(keys, `${dir}: the sign-off line, and no box`).toEqual([`sign:${MON}`])
+        let sc = phoneBoard(); place($('#sbSign'), ABOVE); place($('#sbSignBar'), ABOVE)
+        bringBoardChangeOnScreen(keys, MON)
+        expect(moved(sc), `${dir}: from the foot`).toEqual([-508])
+        sc = phoneBoard(); place($('#sbSign'), SEEN); place($('#sbSignBar'), SEEN)
+        bringBoardChangeOnScreen(keys, MON)
+        expect(moved(sc), `${dir}: in view`).toEqual([])
+      }
+    } finally { globalUndo(); _resetTimeline() }
+    expect(dayApproved(MON), 'the day is a draft again for whatever runs next').toBe(false)
   })
 })
