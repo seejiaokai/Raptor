@@ -1,0 +1,496 @@
+{
+ "R": [
+  {
+   "step": "R2 small phoneC the day is pinched (zoom 0.50, wanted 0.3–0.75)",
+   "res": "PASS",
+   "said": "zoom 0.5",
+   "pics": ""
+  },
+  {
+   "step": "R2 small phoneC Undo of a remark near the top, the day at its foot: the box comes into view, not under the bar, on top",
+   "res": "PASS",
+   "said": "retyped \"1B: BFM-6 r2\"; before: box -767–-754 list 75–874; after: box 83–96 list 75–874, on top true (nts), words \"1B: BFM-6\"",
+   "pics": "r2-small-1..3"
+  },
+  {
+   "step": "R2 small phoneC Redo with the box in view moves nothing",
+   "res": "PASS",
+   "said": "list 1234 → 1234",
+   "pics": "r2-small-4,5"
+  },
+  {
+   "step": "R2 small phoneC no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R2 twice phoneC the day is pinched (zoom 2.00, wanted 1.9–2.05)",
+   "res": "PASS",
+   "said": "zoom 2",
+   "pics": ""
+  },
+  {
+   "step": "R2 twice phoneC Undo of a remark near the top, the day at its foot: the box comes into view, not under the bar, on top",
+   "res": "PASS",
+   "said": "retyped \"1B: BFM-6 r2\"; before: box -5017–-4969 list 75–874; after: box 83–131 list 75–874, on top true (nts), words \"1B: BFM-6\"",
+   "pics": "r2-twice-1..3"
+  },
+  {
+   "step": "R2 twice phoneC Redo with the box in view moves nothing",
+   "res": "PASS",
+   "said": "list 1075 → 1075",
+   "pics": "r2-twice-4,5"
+  },
+  {
+   "step": "R2 twice phoneC no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R3a pc Auto sort, the moved rows out of view: Undo brings a row that MOVED into view",
+   "res": "PASS",
+   "said": "sorted true; head before undo in view false; after: head \"SODB\" box 114–138 list 106–730 on top true",
+   "pics": "r3a-pc-1..3"
+  },
+  {
+   "step": "R3a pc Redo likewise: the row that moved (now last of the list) comes into view",
+   "res": "PASS",
+   "said": "foot row \"SODB\" box 114–138 list 106–730 on top true",
+   "pics": "r3a-pc-4,5"
+  },
+  {
+   "step": "R3a pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R3b pc the Common Programme is a list of distinct items",
+   "res": "PASS",
+   "said": "10 rows: SODB | MET + NOTAM BRIEF | FLIGHT SAFETY STAND-DOWN | WPNS & TACTICS SYNC | STANDARDISATION MEETING | OCU PROGRESS REVIEW | INTEL UPDATE | OPS SHARING + NAV SYS BRIEF | DINNER WITH CMD | CMD ENGAGEMEN",
+   "pics": ""
+  },
+  {
+   "step": "R3b pc (b) Undo from the head: the list goes to the foot, where that row went back",
+   "res": "PASS",
+   "said": "head row before undo \"CMD ENGAGEMENT @ CREW ROOM (ALL)\" in view true; after: foot row \"CMD ENGAGEMENT @ CREW ROOM (ALL)\" box 698–722 list 106–730 on top true",
+   "pics": "r3b-pc-1..3"
+  },
+  {
+   "step": "R3b pc (b) Redo at the foot: the row leaves for the head and the list follows it there",
+   "res": "PASS",
+   "said": "head row \"CMD ENGAGEMENT @ CREW ROOM (ALL)\" box 114–138 list 106–730 on top true",
+   "pics": "r3b-pc-4,5"
+  },
+  {
+   "step": "R3b pc (c) a row moved, old and new place both in view: Undo and Redo move nothing",
+   "res": "PASS",
+   "said": "places in view true/true; list 0 → 0 → 0",
+   "pics": "r3b-pc-6..9"
+  },
+  {
+   "step": "R3b pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R3d pc (d) Sort all, Ground rows in view and rows far above: Undo and Redo move nothing",
+   "res": "PASS",
+   "said": "Ground row in view true, Common head in view false; list 2690 → 2690 → 2690",
+   "pics": "r3d-pc-1..5"
+  },
+  {
+   "step": "R3d pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R3a phone Auto sort, the moved rows out of view: Undo brings a row that MOVED into view",
+   "res": "PASS",
+   "said": "sorted true; head before undo in view false; after: head \"SODB\" box 83–107 list 75–874 on top true",
+   "pics": "r3a-phone-1..3"
+  },
+  {
+   "step": "R3a phone Redo likewise: the row that moved (now last of the list) comes into view",
+   "res": "PASS",
+   "said": "foot row \"SODB\" box 83–107 list 75–874 on top true",
+   "pics": "r3a-phone-4,5"
+  },
+  {
+   "step": "R3a phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R3b phone the Common Programme is a list of distinct items",
+   "res": "PASS",
+   "said": "10 rows: SODB | MET + NOTAM BRIEF | FLIGHT SAFETY STAND-DOWN | WPNS & TACTICS SYNC | STANDARDISATION MEETING | OCU PROGRESS REVIEW | INTEL UPDATE | OPS SHARING + NAV SYS BRIEF | DINNER WITH CMD | CMD ENGAGEMEN",
+   "pics": ""
+  },
+  {
+   "step": "R3b phone (b) attempt 1 did not re-order (lifted 1)",
+   "res": "RECORD",
+   "said": "SODB | MET + NOTAM BRIEF | FLIGHT SAFETY STAND-DOWN | WPNS & TACTICS SYNC | STANDARDISATION MEETING | OCU PROGRESS REVIEW | INTEL UPDATE | OPS SHARING + NAV SYS BRIEF | DINNER WITH CMD | CMD ENGAGEMEN",
+   "pics": ""
+  },
+  {
+   "step": "R3b phone (b) attempt 2 did not re-order (lifted 1)",
+   "res": "RECORD",
+   "said": "SODB | MET + NOTAM BRIEF | FLIGHT SAFETY STAND-DOWN | WPNS & TACTICS SYNC | STANDARDISATION MEETING | OCU PROGRESS REVIEW | INTEL UPDATE | OPS SHARING + NAV SYS BRIEF | DINNER WITH CMD | CMD ENGAGEMEN",
+   "pics": ""
+  },
+  {
+   "step": "R3b phone (b) attempt 3 did not re-order (lifted 1)",
+   "res": "RECORD",
+   "said": "SODB | MET + NOTAM BRIEF | FLIGHT SAFETY STAND-DOWN | WPNS & TACTICS SYNC | STANDARDISATION MEETING | OCU PROGRESS REVIEW | INTEL UPDATE | OPS SHARING + NAV SYS BRIEF | DINNER WITH CMD | CMD ENGAGEMEN",
+   "pics": ""
+  },
+  {
+   "step": "R3b phone (b) the last Common Programme row dragged to the head",
+   "res": "NOTRUN",
+   "said": "NOT RUN: the drag never re-ordered in 3 attempts",
+   "pics": ""
+  },
+  {
+   "step": "R3b phone (c) a row moved, old and new place both in view: Undo and Redo move nothing",
+   "res": "PASS",
+   "said": "places in view true/true; list 0 → 0 → 0",
+   "pics": "r3b-phone-6..9"
+  },
+  {
+   "step": "R3b phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R3d phone (d) Sort all, Ground rows in view and rows far above: Undo and Redo move nothing",
+   "res": "PASS",
+   "said": "Ground row in view true, Common head in view false; list 5031 → 5031 → 5031",
+   "pics": "r3d-phone-1..5"
+  },
+  {
+   "step": "R3d phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R4 pc Undo of an input's remark with Personal Inputs folded and out of view: the panel opens and the line is in view",
+   "res": "PASS",
+   "said": "kept true, folded true, panel head in view before false; after: line box 688–722 list 106–730 on top true",
+   "pics": "r4-pc-1..3"
+  },
+  {
+   "step": "R4 pc Redo likewise: the input's line is in view",
+   "res": "PASS",
+   "said": "line box 688–722 list 106–730 on top true",
+   "pics": "r4-pc-4,5"
+  },
+  {
+   "step": "R4 pc with the panel folded, Undo of a remark elsewhere leaves it folded",
+   "res": "PASS",
+   "said": "folded before true, after true",
+   "pics": "r4-pc-6,7"
+  },
+  {
+   "step": "R4 pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R4 phone Undo of an input's remark with Personal Inputs folded and out of view: the panel opens and the line is in view",
+   "res": "PASS",
+   "said": "kept true, folded true, panel head in view before false; after: line box 780–866 list 75–874 on top true",
+   "pics": "r4-phone-1..3"
+  },
+  {
+   "step": "R4 phone Redo likewise: the input's line is in view",
+   "res": "PASS",
+   "said": "line box 780–866 list 75–874 on top true",
+   "pics": "r4-phone-4,5"
+  },
+  {
+   "step": "R4 phone with the panel folded, Undo of a remark elsewhere leaves it folded",
+   "res": "PASS",
+   "said": "folded before true, after true",
+   "pics": "r4-phone-6,7"
+  },
+  {
+   "step": "R4 phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R5a phone a sign-off picked, the board at its foot: Undo brings the sign-off line into view",
+   "res": "PASS",
+   "said": "before: line -5784–-5611 in view false; after: 83–234 list 75–874 on top true",
+   "pics": "r5a-phone-1..3"
+  },
+  {
+   "step": "R5a phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R5b phone a warning hidden, the board at its foot: Undo brings that warning's own line into view",
+   "res": "PASS",
+   "said": "before: line -6325–-6284 in view false; after: 83–124 list 75–874 on top true",
+   "pics": "r5b-phone-1..3"
+  },
+  {
+   "step": "R5b phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R5c pc a warning low in the issues list hidden, the list back at its top: Undo brings that line into view, the board's list does not move",
+   "res": "PASS",
+   "said": "line before out of view; after: 295–335 in issues list 106–343 on top true; issues list scroll 0 → 585; board list 0 → 0",
+   "pics": "r5c-pc-1..3"
+  },
+  {
+   "step": "R5c pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R5d pc the warning's line in view: Undo moves nothing",
+   "res": "PASS",
+   "said": "line in view before true, after true; board list 3026 → 3026; issues list 0 → 0",
+   "pics": "r5d-pc-1..3"
+  },
+  {
+   "step": "R5d pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R6 pc a SANS card's remark changed and saved, scrolled away: Undo brings the card into view",
+   "res": "PASS",
+   "said": "changed \"r6 card\"; before: card 3515–3573 in view false; after: 679–722 list 106–730 on top true",
+   "pics": "r6-pc-1..3"
+  },
+  {
+   "step": "R6 pc with the card in view, Redo moves nothing",
+   "res": "PASS",
+   "said": "card in view before true, after true; list 3026 → 3026",
+   "pics": "r6-pc-4,5"
+  },
+  {
+   "step": "R6 pc with the card in view, Undo moves nothing",
+   "res": "PASS",
+   "said": "list 3026 → 3026",
+   "pics": "r6-pc-6,7"
+  },
+  {
+   "step": "R6 pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R6 phone a SANS card's remark changed and saved, scrolled away: Undo brings the card into view",
+   "res": "PASS",
+   "said": "changed \"r6 card\"; before: card 6400–6459 in view false; after: 823–866 list 75–874 on top true",
+   "pics": "r6-phone-1..3"
+  },
+  {
+   "step": "R6 phone with the card in view, Redo moves nothing",
+   "res": "PASS",
+   "said": "card in view before true, after true; list 5849 → 5849",
+   "pics": "r6-phone-4,5"
+  },
+  {
+   "step": "R6 phone with the card in view, Undo moves nothing",
+   "res": "PASS",
+   "said": "list 5849 → 5849",
+   "pics": "r6-phone-6,7"
+  },
+  {
+   "step": "R6 phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R7 pc an accepted input's time retyped on its Ground row (in view; Personal Inputs IN view at this size, panel folded): Undo moves nothing",
+   "res": "PASS",
+   "said": "time box in view true; Personal Inputs head in view true; list 2724 → 2724",
+   "pics": "r7-pc-1..3"
+  },
+  {
+   "step": "R7 pc Redo likewise moves nothing",
+   "res": "PASS",
+   "said": "list 2724 → 2724",
+   "pics": "r7-pc-4,5"
+  },
+  {
+   "step": "R7 pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R7 phone an accepted input's time retyped on its Ground row (in view; Personal Inputs out of view, panel folded): Undo moves nothing",
+   "res": "PASS",
+   "said": "time box in view true; Personal Inputs head in view false; list 5118 → 5118",
+   "pics": "r7-phone-1..3"
+  },
+  {
+   "step": "R7 phone Redo likewise moves nothing",
+   "res": "PASS",
+   "said": "list 5118 → 5118",
+   "pics": "r7-phone-4,5"
+  },
+  {
+   "step": "R7 phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R8 below phone changes window open, the change below the screen: Undo brings the box into view clear of the window",
+   "res": "PASS",
+   "said": "window 320–862 × 12–390; box before 3023–3047; after 288–312 (list 75–874), on top true (nts); window still open true",
+   "pics": "r8below-phone-1..3"
+  },
+  {
+   "step": "R8 below phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R8 above phone changes window open, the change above the screen: Undo brings the box into view clear of the window",
+   "res": "PASS",
+   "said": "window 320–862 × 12–390; box before -4041–-4017; after 83–107 (list 75–874), on top true (nts); window still open true",
+   "pics": "r8above-phone-1..3"
+  },
+  {
+   "step": "R8 above phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R8 below pc changes window open, the change below the screen: Undo brings the box into view clear of the window",
+   "res": "PASS",
+   "said": "window 114–674 × 1140–1520; box before 1595–1619; after 698–722 (list 106–730), on top true (nts); window still open true",
+   "pics": "r8below-pc-1..3"
+  },
+  {
+   "step": "R8 below pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R8 above pc changes window open, the change above the screen: Undo brings the box into view clear of the window",
+   "res": "PASS",
+   "said": "window 114–674 × 1140–1520; box before -1989–-1965; after 114–138 (list 106–730), on top true (nts); window still open true",
+   "pics": "r8above-pc-1..3"
+  },
+  {
+   "step": "R8 above pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R9 pc the line's boxes",
+   "res": "RECORD",
+   "said": "{\"rm\":\"[data-bfld=\\\"fr:0.0.0.0\\\"]\",\"tm\":\"[data-bfld=\\\"ff:0.0.0.to\\\"]\",\"seat\":\"[data-slot=\\\"0.0.0.0.p\\\"]\"}",
+   "pics": ""
+  },
+  {
+   "step": "R9 pc the changes made",
+   "res": "RECORD",
+   "said": "seat: \"stiff\" → \"beams\" ; remark: \"1B: BFM-6\" → \"1B: BFM-6 r9\" ; time: \"12:40\" → \"08:45\"; remark in view true, time in view true; list 907",
+   "pics": ""
+  },
+  {
+   "step": "R9 pc three changes (all in view), Undo all, Redo all: the screen never moves",
+   "res": "PASS",
+   "said": "list at 907; after each step 907, 907, 907, 907, 907, 907; every Undo took its change back: true/true/true; every Redo restored it: true/true/true",
+   "pics": "r9-pc-1..9"
+  },
+  {
+   "step": "R9 pc no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "R9 phone the line's boxes",
+   "res": "RECORD",
+   "said": "{\"rm\":\"[data-bfld=\\\"fr:0.0.0.0\\\"]\",\"tm\":\"[data-bfld=\\\"ff:0.0.0.to\\\"]\",\"seat\":\"[data-slot=\\\"0.0.0.0.p\\\"]\"}",
+   "pics": ""
+  },
+  {
+   "step": "R9 phone seat drag attempt 1",
+   "res": "RECORD",
+   "said": "seat still \"stiff\"",
+   "pics": ""
+  },
+  {
+   "step": "R9 phone seat drag attempt 2",
+   "res": "RECORD",
+   "said": "seat still \"stiff\"",
+   "pics": ""
+  },
+  {
+   "step": "R9 phone seat drag attempt 3",
+   "res": "RECORD",
+   "said": "seat still \"stiff\"",
+   "pics": ""
+  },
+  {
+   "step": "R9 phone seat by tap",
+   "res": "RECORD",
+   "said": "failed: locator.tap: Timeout 15000ms exceeded.",
+   "pics": ""
+  },
+  {
+   "step": "R9 phone a seat change (a roster man dragged onto the line's first seat)",
+   "res": "NOTRUN",
+   "said": "NOT RUN: the seat never changed in 3 attempts; a second time change stands in as the third change",
+   "pics": ""
+  },
+  {
+   "step": "R9 phone the changes made",
+   "res": "RECORD",
+   "said": "remark: \"1B: BFM-6\" → \"1B: BFM-6 r9\" ; time: \"12:40\" → \"08:45\" ; time2: \"14:05\" → \"09:00\"; remark in view true, time in view true; list 1285",
+   "pics": ""
+  },
+  {
+   "step": "R9 phone three changes (all in view), Undo all, Redo all: the screen never moves",
+   "res": "PASS",
+   "said": "list at 1285; after each step 1285, 1285, 1285, 1285, 1285, 1285; every Undo took its change back: true/true/true; every Redo restored it: true/true/true",
+   "pics": "r9-phone-1..9"
+  },
+  {
+   "step": "R9 phone no console error, page error or failed request",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "errors across the whole walk",
+   "res": "RECORD",
+   "said": "none",
+   "pics": ""
+  }
+ ]
+}
