@@ -36,6 +36,7 @@ import { armDrop, prunePreviews, SBDAY, CURPAGE, setPage, setBoardDay, focusQual
 import { canEditSched } from './auth'
 import { bringDayIntoView } from '../ui/highlights'
 import { boardTab } from '../ui/board'
+import { boardLandKeys, bringBoardChangeOnScreen } from '../ui/boardland'
 import { toast } from '../ui/toast'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
@@ -267,8 +268,12 @@ function snapView(entry: UndoEntry, dir: 'undo' | 'redo'): void {
   const di = schedDayOf(entry) ?? inputDayOf(entry)
   if (di == null || CURPAGE !== 'editsched') return
   /* the board: bring the changed day onto it — and reopen it there when a week load closed it (A1-F2) */
-  if (SBDAY != null) { if (SBDAY !== di) boardTab(di); return }
-  if (boardWas != null) { setBoardDay(di); return }
+  /* …and the changed box onto the screen when it is out of view, never when it is in view (D672 — [BOARD-UNDO-SAME-DAY]:
+     the board only changed day, so a change scrolled out of view on the day already open went back unseen). Which box
+     is read NOW, from the step's own images; the screen is moved once the step is applied and the board repainted. */
+  const toBox = () => { const keys = boardLandKeys(entry, dir, di); if (keys.length) setTimeout(() => bringBoardChangeOnScreen(keys), 0) }
+  if (SBDAY != null) { if (SBDAY !== di) boardTab(di); toBox(); return }
+  if (boardWas != null) { setBoardDay(di); toBox(); return }
   /* the week (walker A1-F3): the changed day brought on screen — stepped to on a phone, to the front on a desktop — once
      the undo has repainted it */
   setTimeout(() => bringDayIntoView(di), 0)
