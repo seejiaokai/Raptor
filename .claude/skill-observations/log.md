@@ -2368,3 +2368,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The recommendation named five small faults as a batch needing no answer from the owner, read from the priority list's one line each. Opening the items after he chose it showed that two were filed as questions for him, most parts of two more must be drawn for him first, and one rested on two rulings that disagree; three small fixes were left. He had already chosen on the wrong description, and the chat was three-quarters full before the build began.
 **Suggested improvement:** In the handoff skill's opening line for a "recommend the next jobs" chat, and in the list's own "how to read it" note: before a job is recommended as needing nothing from the owner, open each item's full text and read its "to do" and "put to him" lines; say in the recommendation which parts can be built at once and which wait on him.
 **Principle:** An index line says what an item is, not what it needs; a claim about what a job requires is made from the item itself, read before the recommendation, not after the choice.
+
+### Observation 928: A new file is not read by the changed-files code check until it is staged; a wording fix on the week must be run against the word-for-word test
+
+**Status:** OPEN
+**Date:** 11 Nov 26
+**Session context:** Chat 62 — three small schedule-and-board fixes; GitHub's run of the first push came back red on two things the local checks had passed.
+**Skill:** New skill candidate: pre-push checks for a small fix (or the bug-check checklist's step 7)
+**Type:** internal
+**Phase/Area:** Before the first push of a job
+
+**Issue:** (1) `npm run lint:changed` was run while a new test file was still untracked: it read 15 changed files, not the new one, and reported no finding; GitHub's run, reading the committed file, found one. (2) A change to words the week draws (the issues bar's plural) was checked with the tests that name the bar, but not with `src/ui/html.test.ts`, which compares the whole week with the original app word for word and failed on GitHub. A search for the old words could not find that test: it holds no words, it compares everything.
+**Suggested improvement:** In the pre-push step, stage new files (`git add -A`) before `lint:changed`, and check its "N changed files" count against `git status`. For any change to markup or words drawn by the week's builder (`src/ui/html.ts`), always run `src/ui/html.test.ts` with the touched tests, and add the deliberate difference to its list in the same change. A guard would be better than a rule: `code-check.mjs` could read untracked files too.
+**Principle:** A check that reads "what changed" must be asked what it counted; a test that compares everything is found by knowing which builder it covers, never by searching for the words changed.

@@ -9,7 +9,7 @@ import { boardLandKeys, bringBoardChangeOnScreen } from './boardland'
 import type { UndoEntry } from '../undo/types'
 
 const MON = 0
-const copy = <T,>(v: T): T => JSON.parse(JSON.stringify(v))
+const copy = <T,>(v: T): T => structuredClone(v)
 /* a step that changed one day from `before` to `after` — only the fields the landing reads */
 const step = (di: number, before: unknown, after: unknown, more: any[] = []): UndoEntry =>
   ({ forward: [{ op: 'put', collection: 'days', id: `${CURWEEK}#${di}`, before, after }, ...more] } as unknown as UndoEntry)
