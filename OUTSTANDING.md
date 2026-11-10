@@ -513,6 +513,7 @@ count? Not a ruling until he answers. **Place:** low, with the Tracker's next ba
 `.claude/rules/decisions/tracker.md` §The Info panel.
 
 ### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
+**10 Nov 26 — his direction, D1971 (chat 55):** three levels — a few master admins (the developers, into the database directly), admins, members — and account creation with each person's rights by the two admin levels, not the IT side. The design at the database step is for these three; whether members can hold a weaker database key than admins without an IT request per change rests on the question sent to the IT side (can each database role's team be tied to a group the unit manages; can ordinary users open the tables on the Power Apps website) — `[IT-QUESTIONS]`, the 10 Nov 26 record. The agent's point for that design, not yet checked: every save a member's action causes must fit inside the member key.
 **8 Nov 26 — the IT side's answers 3, 8, 9 (`[IT-QUESTIONS]`):** database-level rights are the PP CoE's — one user security group gives basic access, and who may do what is the app's own roles, controlled inside the app. So (1)–(3) below are not ours to set; put to him 8 Nov 26 (the day lock is settled: D1751).
 **What:** at the database step (D473) the agent writes the security-role design from `raptor-port/docs/data-model.md` §11
 (26 tables × admin, member, guest, pending): (1) each table's create / read / change / delete per role, at none, own rows or
