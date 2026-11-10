@@ -111,6 +111,12 @@ const inputOf = (page: Page, kind: string) => page.evaluate(kind => {
   return b ? b.getAttribute('data-inpedit') : null
 }, kind)
 const PI_HEAD = '#sbBoard .sb-panel.pinp [data-pitog]', PI_ROWS = '#sbBoard .sb-panel.pinp .inprow'
+/* the passing note ("Undid: …" — ui/toast.ts): one element, never removed, only faded; where it stands and whether it shows */
+const note = (page: Page) => page.evaluate(() => {
+  const t = document.getElementById('toastEl'), r = t ? t.getBoundingClientRect() : null
+  return { showing: !!t && t.style.opacity === '1' && !!r && r.height > 0, words: t ? String(t.textContent || '') : '',
+    left: r ? r.left : 0, right: r ? r.right : 0, top: r ? r.top : 0, bottom: r ? r.bottom : 0 }
+})
 
 for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
   test.describe(`[BOARD-UNDO-SAME-DAY] ${name} (${size.width}×${size.height})`, () => {
@@ -172,7 +178,45 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       const back = await where(page)
       expect(back.inView, `the remark is wholly on screen after Undo (box ${back.top}–${back.bottom}, list ${back.viewTop}–${back.viewBottom})`).toBe(true)
       expect(back.onTop, 'and nothing lies over it').toBe(true)
-      expect(back.viewBottom - back.bottom, 'it came up just clear of the foot, not to the top').toBeLessThan(40)
+      /* CHANGED 11 Nov 26 (the re-walk's W1): this read "just clear of the FOOT" (viewBottom − bottom < 40) — and that
+         place is exactly where the Undo's own passing note stands, so the box lay hidden under it. What the list's foot
+         is, while the note shows, is the note's top: the box rests just clear of THAT, still by the least movement. */
+      const n = await note(page)
+      expect(n.showing, 'the Undo\'s passing note is showing').toBe(true)
+      expect(back.bottom, `the remark does not lie under the note (box ${back.top}–${back.bottom}, note ${n.top}–${n.bottom})`).toBeLessThanOrEqual(n.top)
+      expect(n.top - back.bottom, 'it came up just clear of the note at the foot, not to the top').toBeLessThan(40)
+    })
+
+    /* the re-walk's W1 (11 Nov 26, the host, from the walker's pictures): the test above never asked about the passing
+       note — it takes no presses, so "nothing lies over it" looked straight through it. By the RECTS, in the note's own
+       columns at both sizes: a remark of the Common Programme's last row (under the note's middle on a desktop; a
+       phone's note is the screen's width). On the code before the fix the box rested UNDER the note at both sizes —
+       his PC: box 552–576, note 520–558; his iPhone: box 842–866, note 810–848. */
+    test('a box brought up from below while the Undo\'s passing note shows: it rests clear of the note, never under it; in view, Redo moves nothing', async ({ page }) => {
+      const n = await page.locator('#sbBoard [data-bfld^="ap:0."][data-bfld$=".prog"]').count()
+      expect(n, 'the demo Monday\'s Common Programme is a list').toBeGreaterThan(3)
+      const BOX = `#sbBoard [data-bfld="ap:0.${n - 1}.rmks"]`
+      await page.locator(BOX).scrollIntoViewIfNeeded()
+      await page.locator(BOX).click(); await page.keyboard.type('u7 note'); await page.keyboard.press('Enter')
+      await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur())
+      await expect.poll(async () => (await spot(page, BOX))?.value, { message: 'the remark is kept' }).toBe('u7 note')
+      await list(page, 'top'); await rested(page)
+      expect((await spot(page, BOX))!.inView, 'the remark is out of view below, from the board\'s top').toBe(false)
+      expect((await note(page)).showing, 'no note is showing before Undo').toBe(false)
+      await undo(page)
+      await expect.poll(async () => (await spot(page, BOX))?.value, { message: 'Undo took the words back' }).toBe('')
+      const at = await rested(page)
+      const box = (await spot(page, BOX))!, nt = await note(page)
+      expect(nt.showing, 'the passing note is showing: ' + nt.words).toBe(true)
+      expect(nt.words).toMatch(/^Undid: /)
+      expect(box.inView, `the remark is wholly on screen after Undo (box ${box.top}–${box.bottom}, list ${box.viewTop}–${box.viewBottom})`).toBe(true)
+      const b = await page.locator(BOX).boundingBox()
+      const meets = !!b && b.x < nt.right && b.x + b.width > nt.left && b.y < nt.bottom && b.y + b.height > nt.top
+      expect(meets, `the remark's box does not meet the note's (box ${b?.x},${b?.y} ${b?.width}×${b?.height}; note ${nt.left},${nt.top}–${nt.right},${nt.bottom})`).toBe(false)
+      expect(!!b && b.x < nt.right && b.x + b.width > nt.left, 'the note stands over the box\'s own columns at this size, so the test asks what it means to').toBe(true)
+      await redo(page)
+      await expect.poll(async () => (await spot(page, BOX))?.value, { message: 'Redo typed it again' }).toBe('u7 note')
+      expect(await rested(page), 'Redo of a box in view moves nothing').toBe(at)
     })
 
     /* chat 63's walk (W9b, 11 Nov 26): on a phone the changes window stands at the screen's foot (D997), and the change

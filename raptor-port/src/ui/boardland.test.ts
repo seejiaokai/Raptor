@@ -304,6 +304,65 @@ describe('the board\'s Undo landing: how far the list is asked to move (the boar
       expect(moved(sc), `at ${scale}`).toEqual([])
     }
   })
+})
+
+/* the re-walk's W1 (11 Nov 26, seen by the host in the walker's pictures): an Undo raises its passing note — "Undid: …" —
+   at the screen's foot in the same turn, and a box brought UP from below came to rest at the list's foot: exactly under
+   the note, hidden for as long as the note showed (his iPhone: the box 842–866, the note 810–848 of 874; his PC: 552–576
+   under 520–558 of 584). A landing that MOVES the list rests clear of the note; a box already in view moves nothing,
+   under the note or not (D672: it was in view, and the note passes). The screen here is told to be as tall as the
+   list's own 600, so the note stands on the list's foot: 34 tall, 26 from the foot — 540 to 574. */
+describe('the board\'s Undo landing: a box brought up from below rests clear of the passing note', () => {
+  const tall = window.innerHeight
+  afterEach(() => { document.body.innerHTML = ''; (window as any).innerHeight = tall })
+  const NOTE: Place = { top: 540, bottom: 574, left: 12, right: 288 }
+  const UNDER: Place = { top: 550, bottom: 570 }
+  /* the board, a box of it told where it stands, and the note as ui/toast.ts leaves it: one element, never removed,
+     only faded (opacity 0) when it is not showing */
+  const withNote = (box: Place, note: Place | null, how: { showing?: boolean; rise?: number; win?: Place } = {}) => {
+    const sc = board('<input data-bfld="fr:0.0.0.0">'); place($('[data-bfld]'), box)
+    ;(window as any).innerHeight = 600
+    if (note) {
+      const t = document.createElement('div'); t.id = 'toastEl'; t.style.opacity = how.showing === false ? '0' : '1'
+      const rise = how.rise || 0
+      if (rise) t.style.transform = `matrix(1, 0, 0, 1, 0, ${rise})`
+      document.body.appendChild(t); place(t, { ...note, top: note.top + rise, bottom: note.bottom + rise })
+    }
+    if (how.win) { const w = document.createElement('div'); w.className = 'chgwin'; document.body.appendChild(w); place(w, how.win) }
+    bringBoardChangeOnScreen(['fr:0.0.0.0'])
+    return moved(sc)
+  }
+
+  it('the note showing at the foot: the box comes up clear of the note\'s top, not only of the screen\'s foot', () => {
+    expect(withNote(BELOW, NOTE), '920 up to 540, less the gap').toEqual([388])
+  })
+  it('no note in the page, or one that has faded: the box comes up clear of the foot as before', () => {
+    expect(withNote(BELOW, null)).toEqual([328])
+    expect(withNote(BELOW, NOTE, { showing: false })).toEqual([328])
+  })
+  it('measured while the note is still rising into its place (8px low — ui/toast.ts): its place at rest is what counts', () => {
+    expect(withNote(BELOW, NOTE, { rise: 8 })).toEqual([388])
+  })
+  it('a box in view moves nothing — clear of the note, or under it', () => {
+    expect(withNote(SEEN, NOTE), 'in view, clear of the note').toEqual([])
+    expect(withNote(UNDER, NOTE), 'in view, where the note stands: it was in view, and the note passes (D672)').toEqual([])
+  })
+  it('a box above the screen comes down under the bar as before: the note at the foot plays no part', () => {
+    expect(withNote(ABOVE, NOTE)).toEqual([-508])
+  })
+  it('a desktop\'s note, centred and not over the box\'s own columns: the landing still rests above it — one rule at every size', () => {
+    expect(withNote(BELOW, { top: 540, bottom: 574, left: 400, right: 600 })).toEqual([388])
+  })
+  it('a note drawn at the TOP (a phone with a window up) is not on the foot and plays no part', () => {
+    expect(withNote(BELOW, { top: 10, bottom: 44, left: 12, right: 288 })).toEqual([328])
+  })
+  it('a window on the screen\'s foot as well (W9b): the box rests clear of whichever stands higher', () => {
+    const WIN: Place = { top: 300, bottom: 600, left: 0, right: 300 }
+    expect(withNote(BELOW, null, { win: WIN }), 'the window alone, as before').toEqual([628])
+    expect(withNote(BELOW, { top: 10, bottom: 44, left: 12, right: 288 }, { win: WIN }), 'the window, the note drawn at the top over it').toEqual([628])
+    expect(withNote(BELOW, NOTE, { win: WIN }), 'both on the foot: the window\'s top is the higher').toEqual([628])
+    expect(withNote(BELOW, NOTE, { win: { top: 560, bottom: 600, left: 0, right: 300 } }), 'a short window under the note: the note\'s top is the higher').toEqual([388])
+  })
 
   /* finding 7 (the fresh Opus reader, F4): the first cell FOUND ended the search even when it was not laid out, so the
      fall-back address a change carries on purpose was never tried */

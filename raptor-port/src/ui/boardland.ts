@@ -249,7 +249,33 @@ function roomOf(el: HTMLElement): { sc: HTMLElement | null; dy: number } {
     const r = w.getBoundingClientRect()
     if (r.height > 0 && r.bottom >= screenFoot - 40 && r.left < box.right && r.right > box.left && r.top - top > box.height) bottom = Math.min(bottom, r.top)
   }
-  return { sc, dy: scrollToShow(box, top, bottom) }
+  let dy = scrollToShow(box, top, bottom)
+  /* …AND A BOX BROUGHT UP FROM BELOW RESTS CLEAR OF THE PASSING NOTE (the re-walk's W1, 11 Nov 26): the Undo raises its
+     "Undid: …" note at the screen's foot in the same turn, before this runs, and "clear of the foot" was exactly under
+     it — the box that changed hidden for as long as the note showed. Only a landing that MOVES the list counts the note:
+     a box already in view stays (D672), under the note or not — it was in view, and the note passes. On a desktop too,
+     whatever columns the note is over: one rule at every size (a row's changed box may be another than the one landed
+     on), at the cost of a landing resting a note's height higher than it strictly must. */
+  if (dy > 0) {
+    const note = noteTop(screenFoot)
+    if (note != null && note < bottom && note - top > box.height) dy = scrollToShow(box, top, note)
+  }
+  return { sc, dy }
+}
+
+/* where the passing note's top RESTS while it shows on the screen's foot — null when none does. The note is one element
+   (`#toastEl`, ui/toast.ts), made once and never removed, only faded: showing is its own inline opacity. It is read
+   from its real box, so a long note's extra lines are counted; and since it is measured in the turn it is raised, its
+   rise-in still holds it a few pixels low — what its running transform says, taken back off. A note drawn at the top
+   (a phone with a window up) is not on the foot: the same test as a window's above, whose 40px allowance holds the
+   note's own 26px from the foot (ui/toast.ts placeToast). */
+function noteTop(screenFoot: number): number | null {
+  const t = document.getElementById('toastEl')
+  if (!t || t.style.opacity === '0') return null
+  const r = t.getBoundingClientRect()
+  if (!(r.height > 0) || r.bottom < screenFoot - 40) return null
+  const m = /^matrix\((?:[^,]+,){5}\s*([^)]+)\)$/.exec(getComputedStyle(t).transform || '')
+  return r.top - (m ? parseFloat(m[1]!) || 0 : 0)
 }
 
 /* A CHANGED PERSONAL INPUT UNDER A FOLDED PANEL has no drawn line to land on (Astra 3): open Personal Inputs on the day,
