@@ -154,6 +154,12 @@ brief:
 - **Who owns which files.** A second writer's brief lists the files another
   agent owns as read-only, with an escape hatch: "report the change you need
   instead of making it". You apply cross-boundary edits when you integrate.
+- **Shared vocabulary is decided before the fan-out.** Disjoint files are not
+  enough when the work adds types at an edge two agents share, or moves a
+  helper another also calls: name the one type for each shared record and
+  which agent owns each movable helper — or let one agent own the shared edge
+  and finish first. Each agent's own check stays green; the clash shows only
+  when the branches meet, and the merge becomes the integration step.
 - **Scratch files go in each agent's own scratch folder**, never the repo
   tree — name each helper's own sub-folder or file prefix in its brief, or two
   of them will pick the same output name. An untracked file an agent did not
@@ -165,6 +171,10 @@ brief:
   the rule below is kept when your own commit cannot wait: only files you
   finished go in, by name; nothing a running agent has written or may still
   write is staged.
+- **A helper that shares the checkout never moves it:** its brief says no
+  `checkout`, `switch`, `stash` or detach there — it reads by `git show
+  <commit>:<path>` (9 Nov 26: the checkout went detached under the host while
+  helpers worked, and three commits went off the branch).
 - **Machine resources:** which test suites, ports and folders are already in
   use. Agents run named test files in the foreground, one at a time, and
   never re-run a suite they already started — backgrounded full runs pile up

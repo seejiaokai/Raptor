@@ -47,8 +47,7 @@ resolved statuses always carry their resolution date
 ## 2026-10-13
 
 ### Observation 722: A rehearsal of the project's check, and a fingerprint of each live file, caught two faults in a review's drafts before the reader saw them
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/task-observer/references/weekly-review.md` Delivering updated skills: "a draft is a diff against a moment" — the base recorded, the install refuses a changed live file; the rehearsal before the read was already there
 **Date:** 2026-10-27
 **Session context:** The skill review of 27 Oct 26 (152 notes, 19 drafted guides). Positive signal.
 **Skill:** task-observer (`references/weekly-review.md`, Delivering updated skills)
@@ -62,8 +61,7 @@ resolved statuses always carry their resolution date
 **Principle:** A draft is a diff against a moment; check the moment still holds before applying it, and run the target's own checks on the drafts while they are still cheap to change.
 
 ### Observation 723: Every rulings filing rewrote the map a staged DECISIONS.md draft is built on
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/task-observer/references/weekly-review.md` Delivering updated skills: a file a script keeps rewriting is staged as its addition only, applied at install (the same change as 722)
 **Date:** 2026-10-27
 **Session context:** the skill-notes review of 27 Oct 26, recording his answers to two rounds while the drafts waited for install
 **Skill:** task-observer (references/weekly-review.md — staging and delivering)
@@ -77,8 +75,7 @@ resolved statuses always carry their resolution date
 **Principle:** Stage a change to a generated or script-maintained file as a patch applied at install, not as a whole-file copy; a whole-file draft of a file that keeps changing goes stale at every write.
 
 ### Observation 724: A plan's "waits on his answer" table is not updated when the answers come
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/writing-plans/SKILL.md` Self-Review 10: a table of the questions a step waits on is a home of each answer; the D201 sweep's half filed as [RULE-FILE-LESSONS] (a)
 **Date:** 2026-10-27
 **Session context:** Planning the Leave War overhaul's M4 from the approved build plan of 22 Oct 26
 **Skill:** writing-plans (and the record-decisions rule's D201 sweep)
@@ -92,8 +89,7 @@ resolved statuses always carry their resolution date
 **Principle:** A list of open questions is one more home of every answer to it; record the answer there too, or the list keeps asking.
 
 ### Observation 725: A mock-up built from an older drawing's script inherits its look-alikes
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Judging, new bullet "Reusing an older drawing or its script" (stand-ins replaced by the app's own markup; the probe-bridge example cut for size by the Opus reader's O12) and step 6's prefix line (`.r`) — one change with 737; his correction itself is already lesson 25 / D1180
 **Date:** 2026-10-27
 **Session context:** Drawing the Leave War's Approvals tab for M4, reusing round 7's Approvals markup
 **Skill:** brainstorming (mockups-on-the-real-app.md, "An existing component shown inside a mock is measured, not styled")
@@ -107,8 +103,7 @@ resolved statuses always carry their resolution date
 **Principle:** Reusing an old mock's code reuses its shortcuts; re-check every component it draws against the real one before the picture goes out.
 
 ### Observation 726: Never `git checkout <file>` to drop a debug line — it drops every uncommitted edit in that file
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/systematic-debugging/SKILL.md` Phase 1 step 4: instrumentation taken out by an exact edit of its tagged lines, never a file restore; or commit first
 **Date:** 2026-10-27
 **Session context:** The Leave War overhaul's M4 build — two temporary debug prints were added to a file that also held two hours of uncommitted edits.
 **Skill:** systematic-debugging
@@ -122,8 +117,7 @@ resolved statuses always carry their resolution date
 **Principle:** A restore works on files, not on intentions: before using one to undo a small temporary change, check what else in that file is uncommitted — or make the temporary change only on top of a commit.
 
 ### Observation 727: A fit fix reshaped an approved drawing; nobody held the build beside the drawing until the owner did
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): BCO §7.10 "Built to the drawing, from the first line" (D1424, as built and after every fix) and §7.11 lesson 8 (the same Approvals fix); BCO §7.0 names the drawing per surface
 **Date:** 27 Oct 26
 **Session context:** The Leave War M4 bug check (Approvals page), the third chat
 **Skill:** brainstorming (mockups-on-the-real-app) / the bug-check order — New skill candidate: none
@@ -137,8 +131,7 @@ resolved statuses always carry their resolution date
 **Principle:** A layout fix is checked against the approved picture, not only against the fault it fixes — a fix that satisfies the test can still undo the design.
 
 ### Observation 728: A rule begun at body in a page-scoped stylesheet never matches; a walk's pinned date makes faults that are not there
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §7 (a walk that pins the war's today but not the real clock: reproduce in a unit test with both pinned); its CSS part is already in the Leave War stylesheets' scoping comments (matrix.css head, approvals.css), its picture part in BCO §4 (D1271)
 **Date:** 2026-10-27
 **Session context:** the Leave War overhaul's M4, fixing the walk's faults (branch claude/leave-war-m4-planning-d18224)
 **Skill:** New skill candidate: none — the bug-check order's walk scripts (raptor-port/docs/walk-scripts.md) and the design guide's CSS notes
@@ -152,8 +145,7 @@ resolved statuses always carry their resolution date
 **Principle:** When a fix has no effect, read what the build actually produced before trying again; when a test passes, look at the screen it measures, since a test checks only what it names.
 
 ### Observation 729: A walker's "the mark is missing" on a few-pixel mark is checked enlarged before it is called a fault
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §7 (a small mark said missing is looked at cropped and enlarged, or measured, before it is a finding or code is traced)
 **Date:** 27 Oct 26
 **Session context:** Leave War M4 bug check, the fifth chat — confirming walker A's observation O3 (a SANS man's puck in Approvals "has no purple edge").
 **Skill:** New skill candidate: none — walk-scripts.md (project guide) / the walker's brief
@@ -167,8 +159,7 @@ resolved statuses always carry their resolution date
 **Principle:** Absence of a small visual mark is a claim about pixels; check it at a scale where the mark would be unmistakable before spending effort explaining why it is missing.
 
 ### Observation 730: A "matches the drawing" verdict needs its own pair, the same as a difference
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §7.10 drawing-check bullet: "Matches" needs its pair or its check's record, else "not compared"
 **Date:** 27 Oct 26
 **Session context:** Leave War M4 — building the owner's answers to a drawing-vs-build page; the page had listed three surfaces as "matches, nothing to choose".
 **Skill:** brainstorming (mockups-on-the-real-app.md) / the bug-check order §7.10 (the built screen beside its drawing)
@@ -182,8 +173,7 @@ resolved statuses always carry their resolution date
 **Principle:** A negative verdict ("no difference") is a claim like any other and needs the same evidence as a positive one; listing a surface as checked without its evidence is how a difference survives a careful review.
 
 ### Observation 731: Answer a question about a screen on the device of the picture he attached
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §The Method head paragraph, "His picture is part of the question" (name its device and width, answer on the same one) — one change with 800
 **Date:** 27 Oct 26
 **Session context:** Leave War M4 — he asked how a lowered Manning row would show in Approvals' LOWEST AVAIL, attaching a phone screenshot; the answer came with a desktop picture, and he had to say "i said this is for a phone".
 **Skill:** New skill candidate: none — plain-language.md / the D921 picture rule
@@ -197,8 +187,7 @@ resolved statuses always carry their resolution date
 **Principle:** The picture a person attaches is part of the question: answer on the same view they asked about, not the one that is easiest to find.
 
 ### Observation 732: A skill loaded from the main checkout's stale copy, not the worktree's current one
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/overnight/SKILL.md` Part 1 step 1: a guide loaded from another folder is compared with this branch's copy, the branch's followed; the mechanism is already in gates-and-deploy "A worktree chat loads…" and the handoff guide's Step 3
 **Date:** 2026-10-28
 **Session context:** /overnight 12 for the Leave War M4 bug check, run in a worktree whose branch carries the installed skill-notes review (D1419)
 **Skill:** overnight (and every project skill loaded from a worktree)
@@ -214,8 +203,7 @@ resolved statuses always carry their resolution date
 **Met again 28 Oct 26:** the records-and-M5 chat (`claude/lw-whole-records`) — the session-start hook's task-observer loaded from the main folder (on 26 Oct 26's commit); the worktree's copy differs (the size trigger, the cross-branch `git grep`). Caught by diffing the two; nothing in this session turned on the difference. Every project skill differs the same way, overnight included.
 
 ### Observation 733: A planning report put screen questions to him in words only
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): [RULE-FILE-LESSONS] (d), new in `_docs/OUTSTANDING-items.md`: the counting step belongs in plain-language.md's check before sending, a rule file not drafted here
 **Date:** 2026-10-28
 **Session context:** planning the Leave War overhaul's M5 (claude/leave-war-m5-handoff-3a6602)
 **Skill:** New skill candidate: planning-report (or the closing-report check in plain-language.md)
@@ -229,8 +217,7 @@ resolved statuses always carry their resolution date
 **Principle:** A rule judged case by case ("is this a screen question?") slips under the pressure of a long job; a checklist step that counts the screen names in the draft does not.
 
 ### Observation 734: An "all as recommended" ruling was written from the plan's wording, not the page he saw
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): [RULE-FILE-LESSONS] (c), new: blanket approvals recorded from the page version he answered, and the reader checks the line against it — DECISIONS.md's steps, not drafted here
 **Date:** 2026-10-28
 **Session context:** recording the owner's "All as recommended" to the Leave War M5 plan's four points (claude/leave-war-m5-handoff-3a6602)
 **Skill:** New skill candidate: recording-rulings (record-decisions.md's three steps)
@@ -246,8 +233,7 @@ resolved statuses always carry their resolution date
 **Met again 2026-10-28** (claude/leave-war-m5a-screens-ced9d7): D1483's short line said the tabs drop their icons "under 400 wide" — the drawing script's cut-off; the page he answered showed only 375 wide. The fresh reader of D1478–D1489 caught it (and three more). **Proposed guard:** the fresh reader's brief for every blanket-approved ruling names the page version answered (`git show <sha>:<page>`) and checks each number and condition in the short line against it — an unconditional step, not a judgement.
 
 ### Observation 735: A roll-call's search for a removed class was confined to the area's own files
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §6 new row after the removal row (a removed, renamed or moved selector searched across the whole app, every test folder and the probes; tests checked not hollow); CL step 8 names it
 **Date:** 2026-10-28
 **Session context:** [LW-NAME-PUCKS] — the Leave War grid's name bar and badge replaced by the schedule's puck (claude/leave-war-m5-handoff-3a6602)
 **Skill:** bug-check order §6 (the roll-call)
@@ -261,8 +247,7 @@ resolved statuses always carry their resolution date
 **Principle:** A removal's readers are found by searching for the removed thing everywhere, not where the change lives; a check that reads a removed element passes silently.
 
 ### Observation 736: The `\b` backspace trap of observation 668 met again — a quoted heredoc feeding a node edit script
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): `.claude/hooks/script-guard.mjs` refusal 1 (live, read today; it refused this helper's own first script): a file-writing script typed into the shell holding a backslash
 **Date:** 2026-10-28
 **Session context:** `claude/leave-war-m5a-screens-ced9d7`, drawing M5a's person window on the real app
 **Skill:** New skill candidate: none — the project's script-writing memory notes and [SHELL-SCRIPT-GUARD] (observation 668, closed 27 Oct 26)
@@ -276,8 +261,7 @@ resolved statuses always carry their resolution date
 **Principle:** A trap noted three times and still met wants a check in the action itself, not a fourth note.
 
 ### Observation 737: A control added to a new tab page duplicated one the app's own top row already carries
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Judging, "Reusing an older drawing" bullet (each carried control checked against the controls built since; a duplicate put to him) — one change with 725
 **Date:** 2026-10-28
 **Session context:** Leave War M5a round 2 — the Balances page redrawn from round 14's drawing onto today's app, which now has a tab row with the View period picker above every tab's page.
 **Skill:** brainstorming (mockups-on-the-real-app.md) / impeccable (critique)
@@ -291,8 +275,7 @@ resolved statuses always carry their resolution date
 **Principle:** A side-by-side with the old drawing proves sameness, not fitness: re-check each carried control against what the screen around it now already offers.
 
 ### Observation 738: A differences list written mid-night goes stale before the morning look
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/overnight/SKILL.md` Part 3, report item 1: a list written in the night is checked against a picture of the last build, closed items marked
 **Date:** 2026-10-29
 **Session context:** Showing him M5a's drawing differences from the night's walk triage, the morning after the build.
 **Skill:** overnight
@@ -305,8 +288,7 @@ resolved statuses always carry their resolution date
 
 **Principle:** A list of findings is dated by the build it was taken from; before putting it to someone for a decision, re-verify each item against the latest build.
 ### Observation 739: A drawing's placement formula is not the spec — its picture is
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK step 6 "From the picture to the build" (a computed place is a means of drawing; the note says where in words); its second-state half is already WS §10 "Bring the build to the drawing's own world"
 **Date:** 2026-10-29
 **Session context:** Building the drawing check (D1494) and proving it on the Leave War M5a build. (Numbered past 736–738, held on `claude/leave-war-m5a-screens-ced9d7`.)
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -320,8 +302,7 @@ resolved statuses always carry their resolution date
 **Principle:** A drawing's code reproduces one picture; what the picture means must be written in words, or a builder will copy the code's accidents.
 
 ### Observation 740: Drawings drawn on the real app can be replayed exactly — record their measures as they are drawn
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK step 6 (drawn with the drawing check's recorder beside it, pointing at WS §10); the recorder and the replay proof are already WS §10 "Record the drawing when it is drawn"
 **Date:** 2026-10-29
 **Session context:** Building the drawing check (D1494).
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -335,8 +316,7 @@ resolved statuses always carry their resolution date
 **Principle:** A picture that was drawn by a script on the real thing is a measurement waiting to be taken; take it when it is drawn, and prove the replay before trusting it.
 
 ### Observation 741: A drawing laid over the live page can cover the page's own parts, and a ruling "back to the drawing" then copies the cover
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Traps new bullet (a panel laid in at a measured place can cover live parts; assert no overlap), MOCK §Showing It (approved pictures kept as files), BCO §7.10 (look where the drawing meets the page before "back to the drawing")
 **Date:** 29 Oct 26
 **Session context:** the Leave War's iPhone locked Balances page brought back to its approved drawing (a ruled fix found by the drawing check), then M5b's drawings
 **Skill:** brainstorming (its reference mockups-on-the-real-app.md)
@@ -350,8 +330,7 @@ resolved statuses always carry their resolution date
 **Principle:** A drawing is evidence of intent, not ground truth: before building "to the drawing" a difference measured against it, look at where the drawing meets the live page — a drawing's own defect is found there, and copying it is a regression.
 
 ### Observation 742: A drawing's own marker ring is measured as a design difference by the drawing check
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §10 "Name the parts" (a drawing's inline marker ring left out of the checks); the recorder stripping it rides [DRAW-MARK-HELPER]
 **Date:** 2026-10-29
 **Session context:** M5b's build (the Leave War's Settings, Events list, holidays by file, Management on Quals) and its drawing-check part list, recorded from full-m5b-draw.mjs
 **Skill:** walk-scripts §10 (the drawing check) — project guide, not a skill file
@@ -365,8 +344,7 @@ resolved statuses always carry their resolution date
 **Principle:** A measurement of an annotated picture must separate the annotation from the design, or the check reports the annotation as a fault.
 
 ### Observation 743: Walk fixes pushed with only their unit tests left the PR's build red for three pushes, unseen
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §5 "Between fix rounds" (the type check, `npx tsc -b`, which writes no `dist`, beside the touched tests before each push — the Opus reader's O6); the handoff half is already in session-handoff Step 1 ("a gate that is red" is Unfinished)
 **Date:** 2026-10-29
 **Session context:** M5b's FULL check, picking up a handoff mid-walk (fixes F1, F3–F6 already pushed)
 **Skill:** bug-check-order §5 "Between fix rounds" / shipping §The checks — project guides, not skill files
@@ -380,8 +358,7 @@ resolved statuses always carry their resolution date
 **Principle:** A test runner that does not type-check cannot stand in for the build; a handoff states the last check run's result, not only what was meant to run.
 
 ### Observation 744: A walker's unpictured note became a finding that did not reproduce
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §7 (a note without a picture, or a fault seen in passing, is a lead: reproduced and read against the rulings before it is a finding; "to check", never "to file") — one change with 899
 **Date:** 2026-10-29
 **Session context:** M5b's FULL check, finding F8
 **Skill:** walk-scripts (walker briefs) / bug-check-order §7 — project guides
@@ -395,8 +372,7 @@ resolved statuses always carry their resolution date
 **Principle:** An observation with no captured evidence is a lead to reproduce, not a finding.
 
 ### Observation 745: A walk script that reloads must not open the app in its no-save mode
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): TOOLS addition (h) in _docs/OUTSTANDING-items.md (refuse fresh=1 with savefail, and a reload on fresh=1 — met twice); WS §3 fixture line widened to scripts that reload or use ?savefail
 **Date:** 2026-10-29
 **Session context:** D1510 (Quals Management, admin only) — the walk script `quals-mgmt-walk.mjs`
 **Skill:** brainstorming (its walk-script companion, `raptor-port/docs/walk-scripts.md`)
@@ -420,8 +396,7 @@ two identical screens with no band. Guard proposed: `scripts/drawcheck/lib.mjs` 
 start address carrying both `fresh=1` and `savefail`, so the trap stops the script rather than passing in silence.
 
 ### Observation 746: A walk that checks a font-dependent measurement must reopen the surface after changing the letters
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §10 "Name the parts" (a child coloured in the drawing named for colour, the column for place); its letters-at-open half is already BCO §7.2 "force them from the first paint … a style added after the page loads misses what the app measures as it loads"
 **Date:** 29 Oct 26
 **Session context:** Building the Leave War's Events list split (D1512–D1516); the walk checked its columns in letters a seventh wider (his iPhone's).
 **Skill:** brainstorming (its guide `mockups-on-the-real-app.md`) and the walk-script guide (`raptor-port/docs/walk-scripts.md`)
@@ -435,8 +410,7 @@ start address carrying both `fresh=1` and `savefail`, so the trap stops the scri
 **Principle:** A check that changes an input the code reads only once (at mount) must re-run that read, or it tests the stale value, not the code.
 
 ### Observation 747: A handoff's "next" named a merge the plan does not have
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 4, "acts on" list: a next step naming a numbered piece of a plan is checked against the plan and its ruling's full row
 **Date:** 29 Oct 26
 **Session context:** the closing records after the Leave War's M5b went live
 **Skill:** session-handoff
@@ -450,8 +424,7 @@ start address carrying both `fresh=1` and `savefail`, so the trap stops the scri
 **Principle:** A "next step" written from the series' pattern (M1…M5, so M6) is a guess; check it against the plan that defines the series before handing it on.
 
 ### Observation 748: A "notes-only" job that edits a check script is not notes-only
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 4, "acts on" list: how a job ships is decided by its files against shipping's "only notes" list
 **Date:** 29 Oct 26
 **Session context:** raising two rulings files' size tripwires after M5b
 **Skill:** session-handoff
@@ -465,8 +438,7 @@ start address carrying both `fresh=1` and `savefail`, so the trap stops the scri
 **Principle:** Whether a change may merge by itself is decided by the files it touches, not by what kind of job it is called.
 
 ### Observation 749: A search for words a ruling changes must also read the tests' patterns
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §6 wording row (each old word alone, case ignored, no assertion shape around it, every test folder)
 **Date:** 2026-10-30
 **Session context:** building D1525 (a half day written "LL (AM)" in place of "LL (morning)") on `claude/lw-small-fixes-1030`
 **Skill:** New skill candidate: wording-change sweep (or the bug-check order's roll-call)
@@ -480,8 +452,7 @@ start address carrying both `fresh=1` and `savefail`, so the trap stops the scri
 **Principle:** A test can pin text in many shapes — a literal, a pattern, a list — so the search for changed words looks for the bare word, not for one shape of assertion.
 
 ### Observation 750: A before picture must prove it is of the old build
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §8 "The build before the change": prove which build supplies the "before" — the served bundle checked against the base commit; a check of the intended change fails on the base, a check of what must not change passes on both and identifies nothing (Astra's A7)
 **Date:** 2026-10-30
 **Session context:** showing him two built changes before and after, on `claude/lw-scroll-pinned-sweep`, with the after pictures taken on their own branches
 **Skill:** brainstorming/mockups-on-the-real-app.md (or the bug-check order's evidence sheet)
@@ -496,8 +467,7 @@ start address carrying both `fresh=1` and `savefail`, so the trap stops the scri
 
 
 ### Observation 751: The background-command guard refuses a full path written the Git Bash way
-
-**Status:** OPEN
+**Status:** DECLINED (2026-11-10) — closed on his word in the skill review of 10 Nov 26: recommend closing: the background-command guard, tested tonight, lets the `/c/…` spelling through (unchanged since 26 Sep 26), so the refusal cannot be reproduced; question in `_review/questions.md`
 **Date:** 2026-10-31
 **Session context:** [WEEK-DRAG-EDGE-PAN] — installing packages in a fresh worktree in the background before taking pictures
 **Skill:** New skill candidate: none — the project's background-command guard (`.claude/hooks/bg-cwd-guard.mjs`, D162)
@@ -511,8 +481,7 @@ start address carrying both `fresh=1` and `savefail`, so the trap stops the scri
 **Principle:** A guard that checks a path must accept every spelling the shell it guards accepts, or its refusal sends the agent to do what it already did.
 
 ### Observation 752: A walk script's "cancel" assumed Escape puts a dragged man back — it does not
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §4 new line "A clean-up step is a claim too" (a cancel is asserted, or ends on a no-op move)
 **Date:** 2026-10-31
 **Session context:** [WEEK-DRAG-EDGE-PAN] walk (D1529), Edit Schedule, a mouse drag held at the week's side
 **Skill:** New skill candidate: none — the walk-script guide (`raptor-port/docs/walk-scripts.md`)
@@ -526,8 +495,7 @@ start address carrying both `fresh=1` and `savefail`, so the trap stops the scri
 **Principle:** A clean-up step in a test script is itself a claim about the app; verify it like any other, or choose one that cannot change the state.
 
 ### Observation 753: A unit test of a frame-loop gesture sent two moves inside one frame
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/test-driven-development/SKILL.md` RED, the "flash or a jump" paragraph: a frame-sampled loop gets at least one frame per in-between position
 **Date:** 2026-10-31
 **Session context:** [WEEK-DRAG-EDGE-PAN], `src/ui/weekdragstep.test.tsx` with fake timers and fake frames
 **Skill:** test-driven-development
@@ -541,8 +509,7 @@ start address carrying both `fresh=1` and `savefail`, so the trap stops the scri
 **Principle:** A test drives the code at the code's own sampling rate; an event the sampler never sees did not happen.
 
 ### Observation 754: The app switches Auto-fix on for every new pull request, not once a session
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/overnight/SKILL.md` Part 2, helper bullet: Auto-fix switched off right after each pull request opens; a relayed Vercel status comment needs no reply
 **Date:** 31 Oct 26
 **Session context:** the overnight run of 31 Oct 26 (four pull requests, 596–599)
 **Skill:** overnight
@@ -558,8 +525,7 @@ start address carrying both `fresh=1` and `savefail`, so the trap stops the scri
 Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switched Auto-fix on as the pull request opened; switched off at once (D1090).
 
 ### Observation 755: Walk checks that only read for what must not be drawn pass a blank screen
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §4 "A negative assertion first asserts that its subject exists" sharpened (a clip, pin or hide check reads both sides; a pinch asserts its zoom changed)
 **Date:** 31 Oct 26
 **Session context:** job 4 of the overnight run (the pinch fixes, pull request 599)
 **Skill:** bug-check order (§7.11) / walk scripts
@@ -573,8 +539,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A check that only forbids can be satisfied by nothing; pair every "must not" with a "must".
 
 ### Observation 756: A before-build from `git archive` needs the scripts folder too
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §8 "The build before the change" (archive the whole app folder but docs/, since the type check compiles tests that import scripts/, e2e/, probes/) — one change with 835
 **Date:** 2026-10-31
 **Session context:** [REACT-DOCTOR-CLEANUP] — building main's code in a scratch folder as the "before" side of a nothing-on-screen-changes comparison.
 **Skill:** walk-scripts guidance (raptor-port/docs/walk-scripts.md §8, "The build before the change")
@@ -588,8 +553,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A recipe that says "the source" should name the folders, because the build's own definition of source is wider than the app's.
 
 ### Observation 757: A linter's "changed only" mode can pass silently when it cannot see the base
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): GD §Now, the code check's "Trap — the silent pass" (the script goes red unless React Doctor's own report says it compared)
 **Date:** 2026-10-31
 **Session context:** [CODE-CHECK-CI] — React Doctor's "no new finding" check as a GitHub check and a Stop hook (D1539)
 **Skill:** New skill candidate: wiring a third-party check into CI / hooks (or the bug-check order's tooling walk)
@@ -603,8 +567,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A gate is only as good as its failure mode: find out what the tool does when it cannot do its job, and make that case red.
 
 ### Observation 758: Parallel helpers that each type a shared record give it different shapes, which clash only at the merge
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/dispatching-parallel-agents/SKILL.md` When Agents Share the Working Tree: shared vocabulary decided before the fan-out; the junction command in `raptor-port/docs/gates-and-deploy.md` (four traps)
 **Date:** 2026-10-31
 **Session context:** the Leave War's strict-checking and React Doctor clean-up, fanned out to four Opus helpers, each in its own worktree on a disjoint set of files.
 **Skill:** dispatching-parallel-agents
@@ -618,8 +581,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** Partitioning parallel work by file is not enough when the work introduces shared vocabulary (types, moved helpers): decide the shared vocabulary before the fan-out, or the merge becomes the integration step.
 
 ### Observation 759: A handoff's "tests green" that named no run hid six red tests
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 4: the template's Gates line names the run and its count, never a bare green; a removal runs its area's whole suite before green
 **Date:** 2026-10-31
 **Session context:** continuing `claude/leave-war-fixes-react-doctor-d90ac5` from its HANDOFF block (build D1542–D1544, then the bug check)
 **Skill:** session-handoff (the block's "Built and committed (tests green on his PC)" line)
@@ -633,8 +595,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A verification claim carries its scope. "Green" without the run that made it is read as the whole suite, and a removal breaks tests far from the files it touched.
 
 ### Observation 760: `gatelock.mjs exec` mangles a compound command passed as one string
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md` (the push guard's `exec` line): one quoted string goes to Windows' shell, several commands go in a script; refusal filed as [CHECK-TOOLS-HARDEN] (i)
 **Date:** 2026-10-31
 **Session context:** the same branch — running the Leave War suite and the build under the PC's check lock
 **Skill:** shipping rule, the checks (`.claude/rules/shipping.md`) and `raptor-port/scripts/gatelock.mjs`
@@ -648,8 +609,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A wrapper that re-parses a shell string should refuse what it cannot run faithfully rather than run part of it and report success.
 
 ### Observation 761: A "today" picture taken from a test fixture can silently show nothing staged
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK step 1 (each staged record asserted on screen; "today" pictured for every role the change touches)
 **Date:** 2026-10-31
 **Session context:** [LW-HELD-DAY-ADD] — drawing the Leave War's bid window on a day held by an entry filed on the Inputs page
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -664,8 +624,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 
 
 ### Observation 762: The overnight guide's "wait inside the turn" meets helpers that launch in the background
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/overnight/SKILL.md` Part 2, helper bullet: how the coordinator waits on a background helper (turn ended, keep-awake on, silent re-armed timer, no polling); Auto-fix as 754
 **Date:** 2026-11-01
 **Session context:** The night of 1–2 Nov 26 (Leave War batch + start-load trim), run from the owner's phone.
 **Skill:** overnight
@@ -679,8 +638,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A rule about how to wait must name the waiting mechanism the tools actually offer; when a delegated step opens a pull request, the coordinator re-applies the project's PR switches itself.
 
 ### Observation 763: A mark drawn in a copied part was walked only at rest
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §6 new row "A part the app draws in more than one COPY" (listed copy by copy from the running page; a moving value walked in each, judged on what is on top); CL step 8 names it
 **Date:** 2026-11-02
 **Session context:** building the Leave War grid's corner year (D1561) — a value repainted on scroll into a header that the app draws in three copies (the grid, a pinned bar's sliding row, its frozen corner)
 **Skill:** New skill candidate: none — the project's bug-check order (`raptor-port/docs/bug-check-order.md` §7.11) and the walk-scripts guide
@@ -694,8 +652,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A value that changes as the view moves must be walked moving in every copy of the part that shows it; a check at rest proves only the copy that happened to be painted last.
 
 ### Observation 764: Python run from a Bash heredoc mangles non-ASCII and escapes on Windows
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): memory note node-e-in-git-bash-mangles-escapes ("unconditionally: every edit script is written with the Write tool", 19 Oct 26) and the script guard's refusal 1 for the backslash case
 **Date:** 2026-11-02
 **Session context:** editing CSS and TSX through short Python scripts
 **Skill:** New skill candidate: none — the project's memory notes on shell edits (`node-e-in-git-bash`, `bash-heredoc-apostrophes`)
@@ -709,8 +666,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A rule with a condition ("unless it holds an apostrophe") fails on the next unforeseen character; where the safe route costs nothing extra, make it the only route.
 
 ### Observation 765: A member's walk step needs the days open for him first
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §7 (c) sharpened with the recipe: open his month by the admin's "Open for bidding" window, then the name badge (walkM)
 **Date:** 2 Nov 26
 **Session context:** walking [LW-INPUT-RANGE-WHOLE] (the Leave War's bid window opening an Inputs entry whole)
 **Skill:** internal — `raptor-port/docs/walk-scripts.md`
@@ -724,8 +680,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A walk step's premise is checked against the state the demo really starts in, before its FAIL is read as the app's.
 
 ### Observation 766: Git Bash `sed -i` on a CRLF file rewrites every line ending
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): `.claude/hooks/script-guard.mjs` refusal 2: `sed -i` on a file git tracks is refused (M5 measured the line-ending rewrite)
 **Date:** 2 Nov 26
 **Session context:** a one-word comment fix in `src/leavewar/state/store.ts`
 **Skill:** internal — the memory note on edit scripts (Python newline='')
@@ -739,8 +694,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** The safe default for any in-place edit on Windows is the one tool known to keep line endings; a quick tool that silently rewrites them costs more than it saves.
 
 ### Observation 767: The inputs guard reads comments — a capitalised INPUTS trips it
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): [CHECK-TOOLS-HARDEN] (p), added: the inputs guard chooses its file list through its own comment-stripping `code()`; the TDD guide's "tests that scan source text (they read comments too)" already warns
 **Date:** 2 Nov 26
 **Session context:** GitHub's run of pull request 612
 **Skill:** internal — `src/engine/inputs-readers.test.ts`
@@ -754,8 +708,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A source-scanning guard that strips comments in some checks and not others will trip on prose; make it consistent.
 
 ### Observation 768: A walk script's "holds Tab" expectation applied to a window that, by ruling, never holds the keyboard
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §4 "Before a brief leaves", the EXPECTED-line bullet (an expectation that differs by surface is read from its own roll-call column) — one change with 897
 **Date:** 2 Nov 26
 **Session context:** the WALK of [LW-VIEWER-TAB] (the document viewer over Leave War windows), a side session continuing a handed-off task
 **Skill:** New skill candidate: walk-script authoring (docs/walk-scripts.md)
@@ -769,8 +722,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** An expectation that differs per surface belongs in the roll-call as a column, decided per row before the script runs; a uniform expectation across mixed surfaces manufactures false failures.
 
 ### Observation 769: Handing a task to a new session while its branch is still checked out in the old worktree
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 1, release bullet: when this chat stays open, the new chat works the branch from its own (fast-forward, upstream set, explicit push)
 **Date:** 2 Nov 26
 **Session context:** a forked side session continuing [LW-VIEWER-TAB] from another worktree
 **Skill:** session-handoff
@@ -784,8 +736,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** A hand-off between two checkouts of one repository either releases the branch first or tells the receiver how to work on it from a second checkout.
 
 ### Observation 770: A shaky test chased by a guess that a small repeat count seemed to confirm
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/systematic-debugging/SKILL.md` Phase 3 step 3: how many passes an intermittent failure needs (8 at one in five proves little; 21 for 99%), and recording what the failing step did
 **Date:** 2 Nov 26
 **Session context:** the test-reliability batch — [INPCAL-HOLD-FLAKE], a browser test failing about one run in five
 **Skill:** systematic-debugging
@@ -799,8 +750,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 **Principle:** An intermittent failure is diagnosed by recording what the failing step actually did, and a fix is believed only after a run long enough that the old rate could not hide in it.
 
 ### Observation 771: A walk script's step filter emptied the whole run's picture folder
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §5 "One run, one folder" (only an unfiltered run empties the folder; a filtered run writes its own sub-folder) — one change with 896
 **Date:** 2026-11-02
 **Session context:** the schedule leftovers' WALK (pull request 620) — a filtered re-run of one step group (`ONLY=S`) after fixing a script step
 **Skill:** project doc `raptor-port/docs/walk-scripts.md` (§5 "One run, one folder", §6 the re-walk's step filter)
@@ -815,8 +765,7 @@ Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switch
 
 
 ### Observation 772: An iPhone screen recording read frame by frame with no video tool installed
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/walk-scripts.md` §5 Pictures: reading his phone recordings frame by frame (Edge channel, file page, seek, element picture, contact sheets)
 **Date:** 2026-11-03
 **Session context:** the night of 3 Nov 26 — the owner sent an iPhone .mp4 of a swipe fault; the PC has no ffmpeg or OpenCV.
 **Skill:** overnight (and any bug-diagnosis from a recording) — New skill candidate: a short "read a recording" note in the walk-scripts guide
@@ -837,8 +786,7 @@ Edge channel, file page, seek + element screenshot, contact sheets; frames saved
 format is a sufficient video tool, and a contact sheet of evenly spaced frames shows the whole gesture at a glance.
 
 ### Observation 773: A question about how something FEELS (motion) gets a swipeable page of real pictures, not a picture
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Judging new bullet "A question about FEEL" (a page he operates on his phone, real captures, the app's scroll rules, a switch per choice) — one change with 786
 **Date:** 3 Nov 26
 **Session context:** [WEEK-CROSS-END-CARDS] — he asked for a mock-up "to test the feel first before building" a change to how the phone crosses between weeks.
 **Skill:** brainstorming (`mockups-on-the-real-app.md`)
@@ -852,8 +800,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** When the question is how an interaction feels, the mock-up must be operable on the target device; build it from real captures inside a container that reproduces the real scroll physics, so what is judged is the behaviour, not a drawing of it.
 
 ### Observation 774: The handoff's "Next, in order" section had become history, so a fresh chat read the order from the backlog
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 1, the Next-in-order bullet: its first line read before the commit, a merged RIGHT NOW line archived and replaced by a pointer to the backlog
 **Date:** 3 Nov 26
 **Session context:** a fresh chat told to "start the next job from ## Next, in order" — HANDOFF.md's section opened with "RIGHT NOW" lines dated 13–21 Oct 26, every step done; the live order was the backlog's priority list (his D994: small fixes by area).
 **Skill:** session-handoff
@@ -867,8 +814,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A shared section that no writer owns goes stale; give it an owner at the moment every chat already touches the file, or point it at the one place that is kept current.
 
 ### Observation 775: A backlog of small "seen" finds goes stale as later batches fix them — re-walk before planning
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/writing-plans/SKILL.md` Self-Review 8: findings filed more than a week or two ago re-checked on today's build first
 **Date:** 3 Nov 26
 **Session context:** planning the next Inputs small-fixes batch from [TITLE-CHECK-SEEN], [ALLAVAIL-CHECK-SEEN] and [CAL-CHECK-SEEN], filed 8–10 Oct 26.
 **Skill:** New skill candidate: batch-planning (or the bug-check order's sizing step)
@@ -882,8 +828,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A list of observed faults describes the app on the day it was written; re-observe before acting on it, and close a finding where it is fixed, not later.
 
 ### Observation 776: A test that writes records by hand leaves the save layer's baseline stale, and a later real tap then records nothing
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/test-driven-development/writing-good-tests.md` Reach the state the way production does: a reload re-bases the change comparison; baseline put level in shared set-up; "fails only in the full file" was already in SKILL.md RED
 **Date:** 3 Nov 26
 **Session context:** the Inputs batch ([INPUTS-FIXES-1103]) — moving the LATE mark's drop from a session-only set onto the input, through its own command
 **Skill:** test-driven-development
@@ -897,8 +842,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A diff-based save layer judges a change against its last snapshot; any test that edits the records behind its back must re-level that snapshot, or later tests inherit a false "nothing changed".
 
 ### Observation 777: A walk's frozen build served from inside the test browser frees the lock question from the server
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §1 "One served folder a round" (serve the frozen folder inside the test browser; every new walk library takes its build and picture folders from settings)
 **Date:** 2026-11-03
 **Session context:** the FULL bug check of the Inputs batch (PR 625) — a host walk, a re-run of an earlier round's scripts and three Sonnet walkers, all on one frozen build
 **Skill:** New skill candidate: bug-check walk set-up (or `raptor-port/docs/walk-scripts.md` §1)
@@ -911,8 +855,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 
 **Principle:** Evidence-producing scripts take their output location and their target as settings from the start; a re-run must never overwrite the run it is compared with.
 ### Observation 786: A motion mock-up checked on the iPhone's engine without a phone, by pausing its animations at fixed moments
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/walk-scripts.md` §5, "An animation is checked frame by frame" (animations paused at fixed moments in WebKit and Chromium, a strip per engine; talon-claw-frames.mjs), moved whole there from MOCK's "A question about FEEL" bullet, which keeps a one-line pointer (the Opus reader's O12)
 **Date:** 3 Nov 26
 **Session context:** [TALON-LOADING-CLAW] — a loading animation (three claws drawn in turn) put to the owner as a page he plays on his iPhone.
 **Skill:** brainstorming (`mockups-on-the-real-app.md`)
@@ -927,8 +870,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** Motion is verified by sampling it at known times on the target device's engine, not by watching it play: a paused frame at a fixed moment is a fact, a recording is an impression.
 
 ### Observation 787: Two parallel chats told to switch branches in the same folder — one chat's commit landed on the other's branch
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 1, opening line: tracked changes not this chat's (the walks' untracked pictures are not another chat's), or another chat in the folder, means its own short-path worktree — a new job detached at origin/main, a continuing one on its branch itself — with o
 **Date:** 3 Nov 26
 **Session context:** [TALON-LOADING-CLAW] / [TALON-RENAME], run beside the Inputs batch chat as the handoff allowed ("Two chats may run side by side").
 **Skill:** session-handoff (the opening lines it writes for parallel chats)
@@ -942,8 +884,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** Parallel agents need separate working folders, not just separate branches: a branch switch is a change to the shared folder, felt by every agent in it.
 
 ### Observation 778: A walk script saved in a Windows encoding blinds the code check, and its message blames main
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): TOOLS addition (d) in _docs/OUTSTANDING-items.md (the code check prints React Doctor's own skip reasons and refuses a non-UTF-8 file); WS §2 gains the UTF-8 line, which closes [WALK-SCRIPT-UTF8]
 **Date:** 2026-11-03
 **Session context:** Inputs batch [INPUTS-FIXES-1103] — reading GitHub's run after main was merged in; number 778 from this branch's reserved range 776–785.
 **Skill:** internal — the code check (`raptor-port/scripts/code-check.mjs`) and `docs/walk-scripts.md`
@@ -957,8 +898,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** When a checker gives up, its message must carry the reason the tool itself gave, not a guess at which side failed; a misleading "could not compare" sends the reader to the wrong half of the problem.
 
 ### Observation 779: A reader's word for a thing reached the owner without being checked against the app
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §4 "What to do with what they hand back" step 1 (every app noun in a finding checked against the app's own list before it is repeated to him)
 **Date:** 2026-11-03
 **Session context:** Inputs batch [INPUTS-FIXES-1103] — relaying the security reader's finding; number 779 from this branch's reserved range 776–785.
 **Skill:** internal — the bug-check order's "What to do with what they hand back" (§4), and plain-language.md check 2
@@ -972,8 +912,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A reviewer's vocabulary is evidence about the reviewer, not about the product: check each name against the product before passing it on, or the error is multiplied by every reader downstream.
 
 ### Observation 788: A frame recorder that starts its clock at the click, or stamps frames with their start time, hides a freeze that begins at the press
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §5 new line "A response is timed from the press" (capture-phase pointerdown, performance.now in each frame; a whole animation cycle sampled)
 **Date:** 3 Nov 26
 **Session context:** [TALON-CLAW-PAGES] — timing how long every page of the menu stays blank when opened, before the loading claw's design
 **Skill:** New skill candidate: none — the walk-script guide (`raptor-port/docs/walk-scripts.md`) and `mockups-on-the-real-app.md` §Judging the Proposal
@@ -987,8 +926,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** Time a response from the moment the input happened, measured by the clock you control, and confirm a suspiciously good number by a second, independent instrument; when checking that a cyclic animation moves, sample a whole cycle.
 
 ### Observation 789: The design hook's suppress command writes its config under the folder it is run from
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): IMP §Known caveats new line "The design checker's settings are two copies here" (the fix built 8 Nov 26 — two byte-for-byte copies the document check keeps equal; hook-admin writes the copy of its folder)
 **Date:** 3 Nov 26
 **Session context:** [TALON-CLAW-BG] — a design-hook finding (the word "img" inside a CSS comment) suppressed with hook-admin.mjs ignore-value
 **Skill:** impeccable (reference/hooks.md; scripts/hook-admin.mjs)
@@ -1002,8 +940,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A tool that writes a setting and the tool that reads it must agree on where it lives; a write that lands beside an existing copy creates two truths, and the reader silently follows one.
 
 ### Observation 790: The critique's browser step writes state into the project, so a read-only reviewer injected the detector directly
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): IMP §Known caveats new line "A read-only critique injects the detector itself" (no live server; the banner is not the page's fault) and the offline-detector line (a degraded empty list is not a clean bill)
 **Date:** 3 Nov 26
 **Session context:** /impeccable critique of the loading claw — Assessment B (detector + browser evidence), run by a read-only helper
 **Skill:** impeccable (reference/critique.md — Assessment B)
@@ -1016,8 +953,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 
 **Principle:** A review step that must not change anything needs a path that writes nothing; and a checker must not report its own drawing as the page's fault.
 ### Observation 780: A new box on screen slipped in as "part of a fix" and reached the owner with no mock-up
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): BCO §5 "Before building any change, a fix included — does it add something he will see?" (D1625) and CL step 5; the note itself says so; no extra sizing line (one gate is enough)
 **Date:** 2026-11-03
 **Session context:** [INPUT-WIN-X-ASKS] — the owner saw the input window's "Close it and lose them?" box in the walk's pictures, said it was ugly, then "U didn't show me a mock up right before u built this"; number 780 from this branch's reserved range 776–785.
 **Skill:** internal — the bug-check order §5 (the build's first step), and `.claude/rules/ui-design.md` short form 1 (D541, D853)
@@ -1031,8 +967,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A rule keyed to the kind of work ("a design change") is skipped when the same output arrives under another kind ("a fix"); key the check to the output — something new on screen — not to the label of the task.
 
 ### Observation 796: A drawing helper handed to the page loses every function beside it in its file
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Traps new bullet "Code sent into the page runs without its module" (self-contained evaluate; a shared kit tried once at both sizes; a card placed within its control's own window)
 **Date:** 4 Nov 26
 **Session context:** [ASK-AT-THE-CONTROL] — a shared kit (`raptor-port/scripts/handpass/ask-at-lib.mjs`) that hangs any question as a card from its control, for five drawing helpers at once
 **Skill:** brainstorming (`mockups-on-the-real-app.md` §Traps) and the walk-script guide (`raptor-port/docs/walk-scripts.md`)
@@ -1046,8 +981,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** Code sent into a page runs without its module: make it self-contained, and try a shared kit once before several helpers rely on it; place anything anchored to a control relative to the control's own container.
 
 ### Observation 797: A part drawn into another window is still its owner's child to React — presses, focus and Escape go to the owner
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §6 new row "A part drawn inside another surface but owned by a different component" (the handlers of both pressed in the real browser); CL step 8 names it
 **Date:** 2026-11-04
 **Session context:** [ASK-AT-THE-CONTROL] build — a question card drawn (React portal) inside the opened day, owned by the input window behind it
 **Skill:** New skill candidate: walking floating surfaces (walk-scripts guide, raptor-port/docs/walk-scripts.md)
@@ -1061,8 +995,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** Where something is drawn and who owns it can differ; list the handlers of both, and press, not just look, on the real browser — the test harness's direct event dispatch hides every one of these.
 
 ### Observation 798: A fault "worked out from the code, not seen" was smaller on paper than on screen
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK step 1 (a fault filed from reading code is reproduced for its "today" picture and the proposal sized by it)
 **Date:** 4 Nov 26
 **Session context:** The Leave War small fixes — drawing the mock-up for [LAZY-PAGE-LOAD-FAIL], a failed download of a page's separate file
 **Skill:** brainstorming (`mockups-on-the-real-app.md` §The Method, step 1) / the bug-check order's sizing step
@@ -1076,8 +1009,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A fault worked out from reading code is sized by reading too; reproduce it before drawing its fix, because what the screen does at the failure is often larger than what the code seemed to say.
 
 ### Observation 799: A fixed output name in the shared temp folder returned another session's run
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): WS §5 "A script writes only under its own checkout … never a fixed name in the shell's $TEMP" and GD §Now "Six more" (1) (read only a results folder this run made, quote its start line)
 **Date:** 2026-11-04
 **Session context:** the re-walk of D1633 on `claude/leave-war-small-fixes` — a probe's output sent to `$TEMP/probe2.txt`
 **Skill:** New skill candidate: none — the working practice of every walk and probe (`raptor-port/docs/walk-scripts.md`)
@@ -1091,8 +1023,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A shared scratch location is a shared writer: a fixed file name there can hold another process's output, and reading it back proves nothing about your own run unless the file carries your run's own mark.
 
 ### Observation 800: His picture shows a layout the PC cannot reproduce — the fonts, not the code
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §The Method head paragraph (where his picture shows what the PC does not, find the differing input; his picture is "today", the proposal drawn as his device measures) — one change with 731
 **Date:** 2026-11-04
 **Session context:** mock-up of the page names beside TALON (D1641), drawn on the real app at six widths
 **Skill:** impeccable (the mock-up method, `.claude/skills/brainstorming/mockups-on-the-real-app.md`)
@@ -1106,8 +1037,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A user's own screenshot outranks a re-render on a different device; when the two disagree, find which input differs (fonts, zoom, text scaling) before trusting either picture.
 
 ### Observation 801: The here-document trap (Observation 601) met again — a script truncated silently, not refused
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): `.claude/hooks/script-guard.mjs`, built 8 Nov 26 after this note: refusal 1 covers the escaped apostrophe (a backslash); M4 measured the bare apostrophe working in bash 5.3
 **Date:** 2026-11-05
 **Session context:** building the member / guest batch ([ACCESS-WAIT-LOOK] and three more) on `claude/member-guest-checks`
 **Skill:** New skill candidate: none — the working practice behind every build (Observation 601, ACTIONED 2026-10-27 as a filed guard)
@@ -1121,8 +1051,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A lesson filed but not built recurs at the same rate; a silent partial write (a file truncated, no error) is the costlier form of the same trap, because the next step can run on half a script.
 
 ### Observation 820: A mark's own style moved the floating panel it marked
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK step 3 (a mark never sets position, display, size or overflow on its element; the box asserted unchanged) — one change with 848; the guard rides [DRAW-MARK-HELPER]
 **Date:** 2026-11-05
 **Session context:** drawing the posting-out bell line on the real app ([POSTOUT-RUN-NOTICE]); numbered in this chat's range 820–829 (a parallel chat holds 802–819)
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1136,8 +1065,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A mark drawn on an element must not change that element's layout; check the element's box before and after adding the mark, because a broken frame passes silently.
 
 ### Observation 821: A drawn mock-up of an event's result never asked whether the event happens in every case drawn
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Judging "This works like the existing X" (a drawn event result asserted to fire for every case drawn) and session-handoff SKILL.md Rules 2 (a build note on an existing mechanism names its ruling or test, or says unchecked)
 **Date:** 2026-11-05
 **Session context:** building the posting-out bell line ([POSTOUT-RUN-NOTICE]) from its approved drawing and the handoff's build notes
 **Skill:** mockups-on-the-real-app (brainstorming) and session-handoff
@@ -1150,8 +1078,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 
 **Principle:** A picture of a result is not evidence that its cause happens; and a claim about how an existing mechanism behaves is a guess until a ruling or a test is named for it.
 ### Observation 810: A CSS fix drawn by editing the app's own rule in place
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Traps "A script that toggles styles…" (a CSS-only fix drawn in the real rule in place, found once) and the n-th visible line (the front window, not the first in the page's order)
 **Date:** 2026-11-05
 **Session context:** [CSS-FONT-INHERIT] — drawing nine dropped `font:` lines today beside the fix (branch claude/css-font-inherit-look)
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1165,8 +1092,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** Draw a style fix where it will live: change the real rule in place, so the picture inherits the cascade the build will have.
 
 ### Observation 822: A drawing that removes a node the app draws blanks the app on its next redraw
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Traps first bullet (hide, never remove, a part the app drew; print the page's errors as they happen) and step 3's transform ("moves, hides or clones", was "removes")
 **Date:** 2026-11-05
 **Session context:** drawing [PO-SANS-PUCK-EDGE] on the real app (claude/postout-bell-look; numbers 820–829 held by this branch)
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1180,7 +1106,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** In a page a framework owns, a drawing may hide or add, never delete what the framework made; and a script's first move on a strange failure is to read the page's own error.
 
 ### Observation 823: A walk helper that reaches a control by one route blames the app when the state changes the route
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §4 new line "A control reported MISSING has had every door tried" (first whether the state draws it, then every route, each failed try pictured)
 **Date:** 5 Nov 26
 **Session context:** the take-back walk (claude/postout-bell-look); the posting sheet's Undo after the posting's date was moved
 **Skill:** New skill candidate: walk-script helpers (docs/walk-scripts.md)
@@ -1196,8 +1122,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 - Met again 5 Nov 26 ([PO-CHANGE-RETRACT], walk S22): the step tried every route and still found no Undo — because with "+ SANS" on the app draws a ran SANS posting with no posting day (D283), so no route exists in that state. A door check must first ask whether the STATE offers the door at all (read the app's drawing rule), not only try every route; proposed guard: a walker's brief names, for each door it presses, the states in which the app draws it.
 
 ### Observation 830: A finding about a drawn icon's colour was read from its button, not the icon
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Judging "An existing component shown inside a mock is measured" (a colour read on the drawn part itself, never its container)
 **Date:** 2026-11-05
 **Session context:** [UI-CONSISTENCY-LOOK] round 4 — picturing the settings gears (numbers 830–839 held by this branch; 820–829 by `claude/postout-bell-look`)
 **Skill:** brainstorming (mockups-on-the-real-app.md, "Judging the Proposal")
@@ -1211,8 +1136,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A colour finding is measured on the pixels' own element; a container's colour is a guess about its children.
 
 ### Observation 831: An opening line that switches branches in the main folder can land on another chat's unsaved work
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 1, opening line: the same clause as 787
 **Date:** 2026-11-05
 **Session context:** start of [UI-CONSISTENCY-LOOK] round 4; the opening line said `git switch --detach origin/main` in the main folder, which held another live chat's branch and ten uncommitted source files
 **Skill:** session-handoff (the opening line it writes)
@@ -1226,8 +1150,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** An instruction to switch branches must first check whose folder it is; the guard belongs in the instruction, not in the reader's memory.
 
 ### Observation 832: A design reader passed a new icon that the owner saw at once looked like its neighbour
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): DP §9 lesson 92 (D1700), the agent's reading: before a new mark is proposed it is set beside every mark already on its bar and page; §9 is read whole on every design job (ui-design.md, D941)
 **Date:** 2026-11-05
 **Session context:** [UI-CONSISTENCY-LOOK] round 4 — the drawn OIL Earn mark (a clock) beside the board's History button (a clock with an arrow)
 **Skill:** impeccable (critique, Assessment A's brief) and brainstorming (mockups-on-the-real-app.md)
@@ -1241,8 +1164,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Principle:** A borrowed icon carries its old meaning into a new neighbourhood; check it against its neighbours, not only against where it came from.
 
 ### Observation 833: A search for tests that read an old mark, filtered to "assertion-looking" lines, missed the browser tests
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): [CHECK-TOOLS-HARDEN] (q), added: a script listing every test that names a changed file, run before the first push (met twice); the drawing half in `raptor-port/docs/bug-check-order.md` §7, the drawing-check line
 **Date:** 2026-11-05
 **Session context:** Raptor, building round 4 of the consistency look (typed marks → drawn icons)
 **Skill:** New skill candidate: replacing a visible string/glyph across an app
@@ -1258,8 +1180,7 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 Met again 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, [TRK-KEPT-COPIES]): turning the Tracker's copied colours into links, the job ran the tests it wrote and the ones named for the Tracker, but not the date box's look test, which also reads the Tracker's stylesheet and pinned one copied value; GitHub's full run found it. The TDD skill already says "every test that reads the stylesheets, for a style change" — a rule broken, so a guard: before the first push of a change to a file, list every test file that names it (`grep -rl "<file's base name>" src e2e scripts`) and run them all, a step in the push checklist, not a judgement each time.
 
 ### Observation 834: A geometric "letters fit" check needs the letters' own pixels, and must know which letters are hidden on purpose
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): TOOLS addition (e) (one shared ink-based "letters fit" helper — the guide line was missed the day it was written); WS §5 ink line sharpened (letters hidden by design; box against box)
 **Date:** 2026-11-06
 **Session context:** Raptor, the walk of a Leave War cell redesign (boxes side by side, halves over wholes, corner tags)
 **Skill:** bug-check order (walk scripts — docs/walk-scripts.md §4)
@@ -1275,8 +1196,7 @@ Met again 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, [TRK-KEPT-COPI
 **Principle:** Judge "cut" by ink, not by the text's layout box; and before calling missing text a fault, ask whether the design hides it on purpose.
 
 ### Observation 835: A build of the live branch for a before/after measure needs a recipe that skips the picture folders
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §8 (the archive recipe for main beside a branch, vite build --outDir) and WS §5 "A close-up is made by its browser context" (pixel density set at creation)
 **Date:** 2026-11-06
 **Session context:** Raptor, measuring the branch against today's main for a "made worse?" count
 **Skill:** bug-check order (walk scripts) / gates-and-deploy
@@ -1290,8 +1210,7 @@ Met again 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, [TRK-KEPT-COPI
 **Principle:** A comparison build should copy only what the build reads; and set rendering density when the browser context is made, not after.
 
 ### Observation 802: A safety-net message no control reaches is pictured through its element's nearest real refusal
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK step 1 (a safety-net message reached through the nearest real refusal, only its words changed and named)
 **Date:** 2026-11-05
 **Session context:** [NOTSAVED-REFUSAL-LOOK] — picturing four "not saved" refusals as they look today before drawing one shared look
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1305,8 +1224,7 @@ Met again 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, [TRK-KEPT-COPI
 **Principle:** When the state you need is one the system actively corrects, picture the container from a reachable sibling state and change the minimum, rather than fighting the correction.
 
 ### Observation 803: The document check passed with a merge's clash markers still in a full-text rulings file
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md`, the settle step: the clashed files from `git diff --name-only --diff-filter=U`, never a printout cut by tail; the check filed as [CHECK-TOOLS-HARDEN] (m)
 **Date:** 2026-11-06
 **Session context:** [NOTSAVED-REFUSAL-LOOK] — bringing main (202 commits) into the branch before the build
 **Skill:** New skill candidate: none — the project's document check (`raptor-port/scripts/docsize.mjs`)
@@ -1320,8 +1238,7 @@ Met again 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, [TRK-KEPT-COPI
 **Principle:** A guard that reads files should refuse the one marker a half-finished merge always leaves; and a list that decides what to fix is taken whole from the tool that keeps it, never from a cut-short printout.
 
 ### Observation 804: A drawing laid over a live element inherits whatever the app had done to that element
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Traps new bullet "Restyling a live element in place keeps what the app set on it" (clear it or re-run the app's placing); the case itself was settled by D1670
 **Date:** 2026-11-06
 **Session context:** [NOTSAVED-REFUSAL-LOOK] — the drawing check after the build
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1335,8 +1252,7 @@ Met again 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, [TRK-KEPT-COPI
 **Principle:** A mock made by restyling a live element carries the app's adjustments for the old look; reset them, or the approved picture records an artefact the real build will never draw.
 
 ### Observation 836: Measure what a chat reads with the project's calibrated estimate, never a stock tokenizer
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/doc-budget.md` §3, new "Measuring what a chat reads": `docsize.mjs --reads` (the calibrated estimate), never a stock tokenizer; check one measured load first
 **Date:** 2026-11-07
 **Session context:** [RULES-DIET] — measuring what a chat reads before code, for the rules-diet plan
 **Skill:** New skill candidate: context-load audit (measure what a session must read, by rule, per job profile)
@@ -1358,8 +1274,7 @@ assumption beside its number.
 one known figure before trusting a tool's count, and prefer the project's measured fit over a generic counter.
 
 ### Observation 837: Compressing a rule set needs mechanical checks for the links the old format carried
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): `raptor-port/docs/doc-budget.md` §4 "The rulings": a converted area's every live ruling cited on a statement, each change mark travelling with it, none citing a replaced one — the gate checks each (read today)
 **Date:** 2026-11-07
 **Session context:** [RULES-DIET] — converting one-line rulings into "how it works now" pages; a fresh blind reader read plan v1
 **Skill:** New skill candidate: context-load audit / rules consolidation (with #836)
@@ -1381,8 +1296,7 @@ full record.
 otherwise the compression silently drops exactly the narrowings and clauses that mattered.
 
 ### Observation 838: A blind second read of an older version needs a copy of that commit, not the live branch
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/bug-check-order.md` §4 "Never show either model": a blind reader of a commit that is not the head runs in an exported copy of it, the recipe moved to `raptor-port/docs/codex-guide.md` "Reading a commit that is not the branch head" (the Opus reader's size cut); the ready script is (
 **Date:** 2026-11-07
 **Session context:** Astra's blind read of the rules-diet plan v1, run after v2 (which folds in the first reader's report) was already on the branch
 **Skill:** claudex-loop:codex-review (and the project's reader briefs)
@@ -1396,8 +1310,7 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Principle:** Blindness is a property of what the reviewer can reach, not of what the brief tells it not to open; give it a tree that contains only what it should see.
 
 ### Observation 839: A plan step sized at several chats should name where each chat stops
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/writing-plans/SKILL.md` Task Right-Sizing (each session's slice and clean stop) and `.claude/skills/session-handoff/SKILL.md` Step 4 "acts on" list (Pick up here names the next slice)
 **Date:** 7 Nov 26
 **Session context:** the rules diet, step 1 (the checks and scripts), started from a handoff that said "start step 1" for a step the plan sizes at three chats
 **Skill:** writing-plans; session-handoff
@@ -1413,8 +1326,7 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Met again 7 Nov 26 (`claude/rules-diet-step1`, part 3):** the handoff named "part 3" as one slice though it held three builds (`--merge` in both shapes, the seam files, `docsize --reads`); the chat started at 41% from what loads at the start and reached 76% from reading the plan and the scripts alone, so it built the smallest (the seam files) and handed off with the other two designed in the block. Proposed guard: the outgoing chat sizes the next slice against what a fresh chat has left after its start-up load (measured, not guessed) and names one build per slice where a build needs its scripts read whole.
 
 ### Observation 840: A helper that turns a failed command into empty output made a report read "nothing loads"
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): [CHECK-TOOLS-HARDEN] (n), added: the backlog script's git wrapper still swallows errors with no output buffer (docsize's two were fixed 7 Nov 26); the rule for new scripts in the item
 **Date:** 2026-11-07
 **Session context:** the rules diet, step 1 part 3c — `docsize --reads`, a report of what a chat reads
 **Skill:** New skill candidate: writing repo scripts (no skill covers it; the project guide's token-discipline rules are nearest)
@@ -1429,8 +1341,7 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 
 
 ### Observation 841: A reader's fix needs its own reader — and a red-first loop needs a way to run only the new cases
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/receiving-code-review/SKILL.md` Two of a Kind Is a Family: a "decided from one source" finding is a family, a case per sibling state; the self-test's name filter filed as [CHECK-TOOLS-HARDEN] (o)
 **Date:** 2026-11-07
 **Session context:** Rules diet step 1 — fixing a fresh reader's findings in the document-check scripts, red-first.
 **Skill:** receiving-code-review (and the project's self-test of its document checks)
@@ -1444,8 +1355,7 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Principle:** A finding names one instance of a decision made from too narrow a source; the fix is complete only when every reader of that decision and every sibling state of the data has a case — and a slow suite without a filter turns red-first into a scratch-copy chore.
 
 ### Observation 842: A text a start hook injects must stay under the host's size cap and free of control characters, or the session silently gets less or nothing
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/task-observer/references/environments.md` §Recommended activation setup: a hook printing a longer text — the host's cap, control characters, the fallback, four test cases; the project's hook already does it
 **Date:** 2026-11-07
 **Session context:** Switching on a project's short form of this skill through its session-start hook (the hook now prints a ~7,400-character file instead of a ~870-character instruction).
 **Skill:** task-observer
@@ -1459,8 +1369,7 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Principle:** A hook that feeds text to the agent fails silently at its edges — size caps and encoding — so it should fail open to a known-good minimal text, and its test cases must include those edges, not just the happy path.
 
 ### Observation 843: A few lines of a reference doc read with the Read tool loaded a whole rulings file
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/doc-budget.md` §3, "A peek costs an area's whole load": a shell read and an edit script load nothing, the Read and Edit tools load the area — the peek only for a reference document or note whose area the job does not touch, never for source, tests or what that area's rulings govern
 **Date:** 7 Nov 26
 **Session context:** the rules diet's step 3 — editing pointer lines in the ripple map, the design guide and the project guide's full text
 **Skill:** session-handoff (context budgeting); New skill candidate: none
@@ -1474,8 +1383,7 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple map's head note loaded the scheduler's rulings file again (~45,000 tokens) — the Edit tool needs the file read first and loads the same scoped rules; an edit script run from Bash would not have.
 
 ### Observation 844: A saving promised for reading by section was estimated from a typical job, not from what the routing text names
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/writing-plans/SKILL.md` Self-Review 4: a promised saving estimated from the parts one stated case must use under the plan's own safety condition
 **Date:** 7 Nov 26
 **Session context:** the rules diet's step 3 — the bug-check order, the design guide and the ripple map read by section, measured after drafting
 **Skill:** writing-plans
@@ -1487,8 +1395,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A saving estimated before the rule that bounds it is written tends to assume the lean case; estimate it from the parts the safety condition forces in, and state that case.
 
 ### Observation 845: A saved report's head described how its read was run from memory, and was wrong twice
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/bug-check-order.md` §4, after "What to do with what they hand back": a saved report's head copied from the brief, the run command and the run log
 **Date:** 7 Nov 26
 **Session context:** the rules diet's step 3 — moving four readers' reports into the repo, each with a head saying how it was read
 **Skill:** claudex-loop (codex-review); requesting-code-review
@@ -1502,8 +1409,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A provenance line is a record later comparisons rely on; take each of its facts from the brief and the run log, never from the memory of setting the run up.
 
 ### Observation 846: A Codex read-only run cannot open the app's shared notes folder
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/bug-check-order.md` §4 "Before a brief leaves", the sandbox bullet: every named file inside the reader's copy or the scratchpad, each path probed first
 **Date:** 7 Nov 26
 **Session context:** chat 1 — Astra's blind read of the plan for the M365 data package (D1743)
 **Skill:** claudex-loop
@@ -1515,8 +1421,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** Before a long run by another tool, check that its sandbox can read every file the brief names; a location your own tools can read is not proof that the other tool's sandbox can.
 
 ### Observation 847: A side chat's brief pointed at a handoff block that lives only on another branch
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/overnight/SKILL.md` Part 2 (a session per job: each brief names the branch with the night's block) and `.claude/skills/session-handoff/SKILL.md` Step 4 (briefs name branch and commit), with 913
 **Date:** 7 Nov 26
 **Session context:** Chat 3 of the overnight run of 7–8 Nov 26 (the pictures round), started by the coordinating chat; numbered past 846, which another open branch holds.
 **Skill:** overnight
@@ -1528,8 +1433,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A pointer handed to a fresh worker must resolve from where that worker starts; state written on one branch is invisible to a worker started from another.
 
 ### Observation 848: A tag on a ringed part was cut off by a panel that hides overflow, and the script ran clean
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): new item [DRAW-MARK-HELPER] in _docs/OUTSTANDING-items.md (a shared marking helper refusing a clipped tag — met twice in one night); MOCK step 3 carries the line — one change with 820
 **Date:** 8 Nov 26
 **Session context:** Chat 3's pictures round (D1747), the board helper's drawings; numbered past 846, which another open branch holds.
 **Skill:** brainstorming (the reference `mockups-on-the-real-app.md`)
@@ -1541,8 +1445,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A mark drawn inside a component inherits its clipping; a check that the mark is wholly visible belongs in the step that draws it, not in the eye afterwards.
 
 ### Observation 849: Two headless-browser traps when picturing a scroll frame by frame
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §5 "A close-up is made by its browser context" (a protocol screenshot's clip is in page coordinates: add the scroll offset); the headless scroll-gesture half is already WS §4 (synthesizeScrollGesture, headless CDP finger)
 **Date:** 8 Nov 26
 **Session context:** Chat 3's pictures round (D1747), the Leave War helper capturing a one-frame blink of a frozen header.
 **Skill:** New skill candidate: a "frame-by-frame capture" note in the walk-scripts guide (`raptor-port/docs/walk-scripts.md`)
@@ -1554,8 +1457,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A capture tool's defaults are tuned for a page at rest; a scroll under test needs the gesture and the coordinates checked against what the picture shows.
 
 ### Observation 851: A replacement must be written before the old text is moved out
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md`, new trap after the new-area-file trap: loaded text is replaced by writing the new text first, then `--move` of the old
 **Date:** 2026-11-08
 **Session context:** chat 2, the rules diet's step 4 part 2 (the five always-loaded rule files as checklists); numbered past 850, the highest on any branch
 **Skill:** New skill candidate: rewriting a loaded rules file (the move script `backlog-archive.mjs --move` and the briefs that use it)
@@ -1567,8 +1469,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** When a tool verifies the whole state after each step, order the steps so every intermediate state is valid: add the new thing before you remove the old one.
 
 ### Observation 852: A blind reader's findings leaked into a file the other reader could open
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §4 "Never show either model the other's conclusions" sharpened (no copy or summary anywhere a reader can open, the handoff note included); `.claude/skills/overnight/SKILL.md` Part 2 matched: a reader's report waits in a scratch folder outside the checkout while another reader of the same job sti
 **Date:** 2026-11-08
 **Session context:** chat 2, the rules diet's step 4 part 1 (two blind reads running at once, D1739)
 **Skill:** claudex-loop (blind cross-reads) and the bug-check order §4 (fresh, blind readers)
@@ -1580,8 +1481,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** Blindness covers every copy and summary of a report, not only the report file; anything the reader can open is visible.
 
 ### Observation 853: A handoff block's times were written from memory and were wrong twice in one night
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Rules 2 (a time read from the clock or its commit, or the commit named instead) and `.claude/skills/overnight/SKILL.md` step 8 and Part 2's compaction note; with 873, 892
 **Date:** 8 Nov 26
 **Session context:** Chat 3's pictures round (D1747), run unattended overnight; numbered past 852, which other open branches hold.
 **Skill:** session-handoff (and the overnight guide's "save the state at every step")
@@ -1593,8 +1493,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A time in a record is a measured fact; read it from the clock or the commit at the moment of writing, the same as any other number a later reader will rely on.
 
 ### Observation 854: A walk of a window that opens on a filtered view must press the view that shows everything
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/walk-scripts.md` §2 The walker's brief: a window that opens filtered names its opening view and the one showing the walk's own changes
 **Date:** 8 Nov 26
 **Session context:** the night of 7–8 Nov 26 (/overnight, 9 hours), reported by its job helpers
 **Skill:** overnight
@@ -1606,8 +1505,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A view that opens filtered can hide exactly what the test just did; name the unfiltered view in the walk's steps.
 
 ### Observation 855: Measure the step times before calling a CI job hung
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md`, the intermittent-stop bullet: step times of recent runs read before a check is called hung
 **Date:** 8 Nov 26
 **Session context:** the night of 7–8 Nov 26 (/overnight, 9 hours), reported by its job helpers
 **Skill:** overnight
@@ -1619,8 +1517,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A label from one failed run is a guess; the step times across many runs say where the time goes.
 
 ### Observation 857: The coordinator accepted a job's report without checking each reader the night's plan named
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/overnight/SKILL.md` Part 2, the report bullet: each reader the block names ticked against the report before it is accepted
 **Date:** 8 Nov 26
 **Session context:** the night of 7–8 Nov 26 (/overnight, 9 hours); found while writing the morning report
 **Skill:** overnight
@@ -1632,8 +1529,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A plan's named checks are verified against each result as it arrives, not at the end; a check the helper silently left out reads like a check done.
 
 ### Observation 856: A key held down was never pressed by a keyboard walk — the reader found it
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §7.4 (a press that moves the keys is walked with the key held as well as pressed once); the design guide's §2 keyboard half is left to group B
 **Renumbered:** written as 850 on the board-keys branch; renumbered 856 when main came in on 8 Nov 26 (851 and 852 were live, 853 to 855 held by other branches)
 **Date:** 8 Nov 26
 **Session context:** the board-keys job of the night of 7–8 Nov 26 (`claude/board-keys`); numbered past the 849 another open branch holds
@@ -1646,8 +1542,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** When a press moves the focus, the key that pressed is still down: a held key's repeat lands on the new focus. Walk the held key as an order of its own.
 
 ### Observation 858: A layout drawing made only at the owner's own screen width missed that the option breaks on smaller desktops
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): MOCK §Judging new bullet "A change that takes or gives width" (drawn at the narrowest desktop width and about 1280, its narrowest column measured, the cost in the recommendation)
 **Date:** 8 Nov 26
 **Session context:** the pictures round (chat 3); his follow-up on question 8, "how would 8 look like for a smaller screen if i choose A". Numbered past 855–857, which other branches hold.
 **Skill:** brainstorming (`mockups-on-the-real-app.md`) and the pictures-round brief
@@ -1659,8 +1554,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A layout option is judged at the edges of the range it will run in, not only at the size of the person reviewing it. A fixed-width table that fits one screen can collapse on the next size down, so draw and measure at the narrowest width each layout covers.
 
 ### Observation 859: A sweep for what a new ruling leaves behind missed the guides outside a hand-picked list
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): [RULE-FILE-LESSONS] (a), new: the D201 sweep searches every Markdown file by subject and names its search — record-decisions.md, not drafted here
 **Date:** 8 Nov 26
 **Session context:** chat 2 recording his answers D1760–D1762 (who reads a plan and a guide change) and bringing older text in step (D201); numbered past 857–858, which other open branches hold
 **Skill:** New skill candidate: ruling-sweep (the D201 step of recording a ruling)
@@ -1672,8 +1566,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** a search for stale statements of a rule must cover every place a rule can be written, chosen by the search itself, never by the writer's memory of where rules live.
 
 ### Observation 860: A ruling that changes the rule for one of two named parties dropped a safeguard for the other
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): [RULE-FILE-LESSONS] (b), new: a ruling changing one party's rule is rewritten clause by clause — DECISIONS.md's step 2, not drafted here
 **Date:** 8 Nov 26
 **Session context:** recording D1770 (one of two reviewers made standing again; the other left on call) across a rules page, two always-loaded rule files and a guide
 **Skill:** New skill candidate: recording a ruling (the steps at the head of DECISIONS.md)
@@ -1686,8 +1579,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
 
 ### Observation 861: Parallel build chats proposed to him on his phone could not be opened — the app starts no chat over Remote Control, even on his own message
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (memory): `_memory/additions.md`: new note side-chats-start-only-from-his-pc (the app opens a side chat only on a message he types at the PC; offer helpers in the same message)
 **Date:** 8 Nov 26
 **Session context:** chat 3, the pictures round's build: after his answers he agreed to five parallel build chats ("Yes, both": merge the plan, then start them), on his phone.
 **Skill:** New skill candidate: running a build as parallel chats (the day-time cousin of overnight's Part 2); cites the closed Observation 715
@@ -1699,8 +1591,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** Before promising a delegation step, check which surface the user is on and whether the host allows that step from it; offer the fallback in the same breath as the plan.
 
 ### Observation 862: A side session on the rules engine reaches three-quarters full before its first commit
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 4, the brief-for-another-chat bullet: rulings named by number and sections, the first area file loads its whole page, the side chat commits its block after its first change
 **Date:** 8 Nov 26
 **Session context:** chat 6, the pictures round's group 4 (D1786) — an engine change started as a side session (numbered past 861, the highest on any pushed branch)
 **Skill:** New skill candidate: side-session-briefing
@@ -1712,8 +1603,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** In a repository whose rules load by file path, the first file a delegated session opens can cost most of its context; a delegated session should save its state early and read by slice.
 
 ### Observation 863: A code reader's proof test, written into the shared checkout, swept into the builder's commit
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §4 "Before a brief leaves", new bullet (a code reader's proof tests go in its scratch folder; staging while helpers work pointed to the dispatching guide's "Stage by explicit path" — the Opus reader's size cut)
 **Date:** 8 Nov 26
 **Session context:** chat 6, D1786 (a day with nothing entered starts at the default rally): a fresh, blind Opus reader ran as a subagent in the same worktree while the builder fixed the other readers' findings
 **Skill:** New skill candidate: none — the bug-check order's reader brief (§4) and the one-checkout note; met again after Observation 648 (closed)
@@ -1725,8 +1615,7 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Principle:** A helper sharing the checkout writes files the builder did not make; a whole-folder stage turns them into the builder's commit. Give helpers' throwaway files a name the repository ignores, and stage by name while they work.
 
 ### Observation 866: A "nothing happened" check that reads a value which is never set passes whatever the app does
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §4 "A negative assertion first asserts that its subject exists" (the read calibrated on a state where it did happen; shown, never merely present; a press by position brings its target into view)
 **Date:** 2026-11-08
 **Session context:** chat 5, `claude/pr-oil-earn-ffbf07` — OIL Earn on the Scheduler Board (D1783: a tap on a puck that cannot earn picks nothing). Numbered past 865, the highest on the other branches.
 **Skill:** New skill candidate: none — the walk-script and drawing-check method (`raptor-port/docs/walk-scripts.md`, `raptor-port/scripts/drawcheck/`), and the bug-check order's §8 (tests find rather than confirm)
@@ -1740,8 +1629,7 @@ Met again 8 Nov 26 (chat 5, the host's re-walk): a press made by screen position
 Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked for the ALL AVAIL window's frame, which is always on the page and only hidden, so it read "open" whatever the app did. Guard: a check that something appeared reads whether it is shown (its size, or the property that hides it), never whether it exists.
 
 ### Observation 870: A blink counted "gone" by the page's own frame log was still there in the painted frames
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §5 new line "What is on screen is counted on PAINTED frames" (never only the page's own frame log; the deciding frame named and opened)
 **Date:** 8 Nov 26
 **Session context:** chat 8 — measuring D1789's fix (the Leave War's pinned dates row and Quals' heading drawn in the same frame as the scroll) before and after; numbered past 865, the highest on any branch at 10:00, 866–869 left for the sibling chats writing tonight
 **Skill:** walk-scripts (project guide, not a skill file) — measuring a visual change's frames; verification-before-completion
@@ -1754,8 +1642,7 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Principle:** A measurement taken by the code under test can only see what that code sees. When what matters is what the screen showed, measure the screen's own output, and treat a count of zero from inside the page as unproven.
 
 ### Observation 871: Code that runs only when a box has a size was never run by tests drawn without layout
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/test-driven-development/SKILL.md` RED, the device-specific paragraph: a change behind a guard the test environment trips gets the sizes and features, and fails on the framework's warnings; GREEN: a new flag's every caller listed
 **Date:** 8 Nov 26
 **Session context:** chat 8 — D1789's fix to the Leave War's pinned dates row and Quals' heading; Astra's code read found the setup path broken
 **Skill:** test-driven-development
@@ -1767,8 +1654,7 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Principle:** A test proves only the lines it runs. Code behind a guard that the test environment always trips needs the guard's conditions supplied, or the test passes without testing anything.
 
 ### Observation 872: A chat number given in a starting brief was already taken
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 1, opening line: a chat number is a hint, checked against main's handoff before use
 **Date:** 8 Nov 26
 **Session context:** the rules diet's step 5a (OIL as a page), a session started by another session with "this chat is number 5"
 **Skill:** session-handoff
@@ -1780,8 +1666,7 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Principle:** an identifier handed from one parallel worker to another is a hint, not a grant — the receiver checks it against the shared, newest record before acting on it.
 
 ### Observation 864: A side session's auto-loaded rulings filled most of its context before the build began
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 4: the same change as 862; its other asks are done (the scheduler page converted, docsize --reads counts a small job)
 **Date:** 8 Nov 26
 **Session context:** chat 7, a side session started from chat 3 to build one small Inputs-page group (D1787, D1792 b); numbered past 863, the highest on any branch
 **Skill:** New skill candidate: side-session-brief (or doc-budget §the every-chat layer)
@@ -1793,8 +1678,7 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Principle:** What loads by itself must be sized against the smallest job that triggers it, not the largest: a small job that pays the whole area's reading cost loses most of its room to it.
 
 ### Observation 865: A browser test on today's clock found an empty list and failed its own setup
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): [CHECK-TOOLS-HARDEN] (r), added: the Inputs list's browser tests open on every date (met twice); the TDD guide's premises line gains the date-windowed row
 **Date:** 8 Nov 26
 **Session context:** chat 7, the Inputs list's new browser test for a dragged input window (D1787)
 **Skill:** test-driven-development
@@ -1807,8 +1691,7 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 
 met again 8 Nov 26: chat 7's D1840 follow-up — a new check of the Type column's pills in the same "D1787 at <width>" test found no rows (today's clock, the demo fortnight in July) and failed its own setup; fixed by showing every date first. Guard proposed: a browser test that measures the list's rows asserts a row is visible before measuring, and the Inputs list's test helper opens on every date by default.
 ### Observation 873: Time stamps written into a handoff from the agent's sense of elapsed time ran up to two hours ahead of the clock
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Rules 2 and `.claude/skills/overnight/SKILL.md`: the same change as 853
 **Date:** 2026-11-08
 **Session context:** chat 5, `claude/pr-oil-earn-ffbf07` — the close of OIL Earn on the board, across five compactions
 **Skill:** session-handoff
@@ -1819,8 +1702,7 @@ met again 8 Nov 26: chat 7's D1840 follow-up — a new check of the Type column'
 **Suggested improvement:** In the handoff step (and wherever a record takes a time): read the clock (`date`) or the commit's own time before writing a time, never estimate; where a time cannot be read, write none.
 **Principle:** An agent has no reliable sense of elapsed time, least of all across a context reset; any time written into a record is read from a clock or left out.
 ### Observation 880: Red first for a style-only fix, in the same lock turn as the green run
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/test-driven-development/SKILL.md` RED, "Proving an existing fix red": a committed fix's own diff taken back by `git apply -R`, checked, restored in a trap, one lock turn
 **Date:** 8 Nov 26
 **Session context:** chat 7, the D1843 build (a line round the desktop Inputs list, "No document" inside its column) — a two-rule stylesheet change, its browser test to be shown failing on the old look first. Numbered past the open branches' 878.
 **Skill:** test-driven-development
@@ -1833,8 +1715,7 @@ met again 8 Nov 26: chat 7's D1840 follow-up — a new check of the Type column'
 
 
 ### Observation 875: A drawing with recorded figures but no part list — measure the build with the drawing script's own measure
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §10 new bullet "Reuse a drawing script's own measuring function, copied whole, for the measures it already covers" (the part list and every safeguard kept) and BCO §7.0's drawing-check line (saved figures help prepare the part list and record; they never replace the D1495 checks) — after the two 
 **Date:** 8 Nov 26
 **Session context:** chat 11, the board's layout (D1780, D1781) — the drawing check; numbered past 873, held on another branch (Numbered 875 at the rebase on 8 Nov 26: 874 is held by the open branch claude/lw-pin-last-frame.)
 **Skill:** New skill candidate: drawing-check-from-figures (or a section of `raptor-port/docs/walk-scripts.md` §10)
@@ -1853,8 +1734,7 @@ rewritten) against the saved figures, in place of building a part list first; ea
 the same ruler on both sides removes a whole class of false differences.
 
 ### Observation 876: A pin that goes red or green by the machine's pace was handed over as "unexplained" — slow the processor to reproduce it
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/systematic-debugging/SKILL.md` Phase 1 step 2: a press during an animation re-run at slowed processor speeds, then pinned by a pace-free check (squared with the existing "slowing reproduces nothing" line for two driver actions)
 **Date:** 8 Nov 26
 **Session context:** chat 10, the Tracker's group 7 — fixing the one red browser check chat 9 left (a double-click during the chart's slide); 872 is taken on another branch, so this one is 873 (was 873. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, and 874 is taken on `claude/lw-pin-last-frame`.)
 **Skill:** systematic-debugging
@@ -1866,8 +1746,7 @@ the same ruler on both sides removes a whole class of false differences.
 **Principle:** A timing fault that a test catches only on some machines is still a fault; slow the clock down to make it certain, then pin the cause with a check that does not depend on timing.
 
 ### Observation 877: A merge approval relayed in another session's brief is refused by the safety check — the merging chat needs his word typed there
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 4, "acts on" list: the app's safety check judges who typed his merge word, even where his standing word covers the chat (D1796); the chat he said it in merges, or the brief says it will need his word typed there and he is told now (the Opus reader's O5)
 **Date:** 8 Nov 26
 **Session context:** Chat 10, a side session started by chat 9 to fix the Tracker's last red check and carry chat 9's "merge live" through to the live app (was 874. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, and 874 is taken on `claude/lw-pin-last-frame`.)
 **Skill:** session-handoff
@@ -1879,8 +1758,7 @@ the same ruler on both sides removes a whole class of false differences.
 **Principle:** A permission given to one agent is not carried by that agent's message to another; automated guards judge the speaker, not the quoted words. Plan the step that needs the approval to run where the person gave it, or have the person repeat it where it will run.
 
 ### Observation 878: A helper's "the code is unchanged since commit X" must be checked before its build label is believed
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/bug-check-order.md` §4, "And the reader's half": a helper's check that builds is handed a commit, and its label checked before its result is quoted
 **Date:** 8 Nov 26
 **Session context:** chat 9, the Tracker's group 7 — the drawing check run by a background helper while the host fixed the readers' findings (numbered past 865, the highest on any branch) (was 866, then 875. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, 874 is taken on `claude/lw-pin-last-frame` and 875 on `claude/pr-board-layout-62eb71`; moved to the end.)
 **Skill:** subagent-driven-development
@@ -1892,8 +1770,7 @@ the same ruler on both sides removes a whole class of false differences.
 **Principle:** A measurement is only as good as the label on what was measured; a helper working beside an editing host must pin its input to a commit, and the host verifies the pin rather than the helper's word.
 
 ### Observation 879: A blind reader told to find related rules "by name" misses the ones that change the subject
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/bug-check-order.md` §4 "Before a brief leaves", a new bullet: a conformance read searches related sources by each claim's subject, not the document's name
 **Date:** 2026-11-08
 **Session context:** chat 15, the rules diet's step 5a on the IT flow guide — two blind readers checked that a rewritten rules page still carried every part of its rulings and pointed to every other area's ruling that bears on it (first written as 878 past 873–877 on other open branches; renumbered 879 when `main` was brought in, where chat 10 had taken 876–878)
 **Skill:** requesting-code-review
@@ -1905,8 +1782,7 @@ the same ruler on both sides removes a whole class of false differences.
 **Principle:** dependencies are found by topic, not by title — a check that searches only for references to the artefact misses the changes to what the artefact describes.
 
 ### Observation 881: A later ruling says "narrows Dx" in its own row, but Dx's row carries no mark — the change check cannot see it
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): [CHECK-TOOLS-HARDEN] (k), added in `_docs/OUTSTANDING-items.md`: the change-mark check reads every number after a change verb and runs once over every live row
 **Date:** 8 Nov 26
 **Session context:** chat 17, the rules diet's step 5a — People & accounts as a page (numbered past 880, held by two open branches)
 **Skill:** New skill candidate: rules-diet page conversion
@@ -1918,8 +1794,7 @@ the same ruler on both sides removes a whole class of false differences.
 **Principle:** a link recorded on one side only is invisible to a check that reads the other side — when a record can be changed from either end, check both ends agree.
 
 ### Observation 882: A new text-fit browser test was checked only in this PC's letters and went red on the CI's Linux machines — the trap of Observation 680 met again
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): TOOLS addition (f) (a unit check that flags a new text-width browser test with no pinned letters — the trap met twice); BCO §7.2 wider-letters line sharpened to say so
 **Date:** 8 Nov 26
 **Session context:** Chat 18 taking over chat 7's merge of the Inputs list's right-end line (D1843); GitHub's run of the pull request red on the new test. Numbered 882 because 881 is already taken on another branch.
 **Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md` §7.2) and `raptor-port/docs/gates-and-deploy.md` (§A geometry test red on GitHub's Linux machines only)
@@ -1930,8 +1805,7 @@ the same ruler on both sides removes a whole class of false differences.
 **Suggested improvement:** Make it a default rather than a judgement: in the bug-check order §8 (writing the tests) and the gates guide's trap, "a new browser test that asserts text fits a fixed width pins its letters from the first paint (Arial, Liberation Sans) unless the test is about the device's own letters; and before its first push it is run once with wide letters (Verdana) in that place, where it must fail only if the layout itself is too tight." A cheaper guard still: a unit check over `e2e/*.spec.ts` that flags a new `getBoundingClientRect` text-width assertion in a test with no pinned font — filed for the next review to weigh.
 **Principle:** When a system draws text in whatever font each machine has, every assertion about text width is an assertion about one machine's font. Pin the font the assertion is about, from the first paint, and prove the test both ways (fails on the old layout, passes on the new) in that font — otherwise the first other machine finds the gap.
 ### Observation 883: A change of what scrolls breaks every test that names the old scroller, not only its own spec
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §6 new selectors row (what scrolls among the moved selectors; a carried thing held just inside each new edge) — one change with 735
 **Renumbered:** 880 on `main` (chat 11, the board layout); renumbered 883 when chat 18 brought `main` into `claude/pr-inputs-add-right-5b2653`, which already held chat 7's 880 (881 is taken on another branch, 882 is chat 18's).
 **Date:** 8 Nov 26
 **Session context:** chat 11, the board layout (D1780: the sideways board scrolls as one page). Numbered past 878–879, held by other branches.
@@ -1944,8 +1818,7 @@ the same ruler on both sides removes a whole class of false differences.
 **Principle:** A layout change that moves the scroller invalidates every caller that measured the old one; find them by the selector, not by the files the change touched.
 
 ### Observation 889: A notes-only merge is overtaken again and again while many chats merge notes
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 1: one notes branch per chat, merged once
 **Date:** 2026-11-08
 **Session context:** chat 21, the coordinator, merging chat 3's notes-only pull request 695 while five other chats were merging their own (first numbered 887; renumbered 889 on 8 Nov 26 because chat 13's branch had taken 887 and 888 meanwhile — a collision)
 **Skill:** session-handoff
@@ -1957,8 +1830,7 @@ the same ruler on both sides removes a whole class of false differences.
 **Principle:** When many writers merge into one base, every separate pull request is another race against the level check; batch the small ones and shorten the gap between the last sync and the merge.
 
 ### Observation 890: A tidy of the shared handoff file makes every open branch clash at once
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 1, another chat's block: open pull requests that change the handoff listed first; leave blocks beside theirs or tell their chats
 **Date:** 2026-11-08
 **Session context:** chat 21, the coordinator, removed eight finished chats' blocks from the shared handoff file in one notes-only pull request while four chats still had open branches carrying their own blocks in it
 **Skill:** session-handoff
@@ -1970,8 +1842,7 @@ the same ruler on both sides removes a whole class of false differences.
 **Principle:** A clean-up of a file that every parallel branch edits is a change to all of them; schedule it for a quiet moment or tell each writer before it lands.
 
 ### Observation 891: A fresh worktree has no packages, and `npx tsc` then runs a stand-in that fails
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md`, the four by-hand traps' typecheck line: `npx tsc` with no packages runs an unrelated download; the overnight guide's step 9 already runs `npm ci`
 **Date:** 8 Nov 26
 **Session context:** chat 25, React Doctor's last findings (part 2), type-checking in a worktree just switched to the branch
 **Skill:** New skill candidate: worktree-setup (or the project guide's §Build & verify)
@@ -1983,8 +1854,7 @@ the same ruler on both sides removes a whole class of false differences.
 **Principle:** `npx` falls back to downloading whatever is published under a name; in a checkout without its dependencies, the tool that runs may not be the project's — install first, then trust the result.
 
 ### Observation 893: A FULL check's chat fills before its walk when the area files load into it
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §0a step 3 (a FULL check names its chats when its start plus what its area pages will load, measured by `docsize.mjs --reads`, leaves too little room for the walk; unattended, the night stays one chat and compacts at a clean point) and CL step 3 — after the two reads: no fixed 40% (the Opus read
 **Date:** 8 Nov 26
 **Session context:** chat 26, the FULL bug check of [RD-LEFT-1108] (a no-visible-change tidy-up of People & accounts)
 **Skill:** New skill candidate: bug-check sizing (the order's §7.0 and the session-handoff step)
@@ -1997,8 +1867,7 @@ the same ruler on both sides removes a whole class of false differences.
 ### Observation 892: Times written into a handoff after a compaction came from the summary, not the clock
 
 *Numbered 881 on `claude/lw-pin-last-frame`; renumbered 892 when `main` was brought in on 8 Nov 26 — `main` holds its own 881.*
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Rules 2 and `.claude/skills/overnight/SKILL.md`: the same change as 853; the guard it asks for is answered by naming the commit instead of a time
 **Date:** 2026-11-08
 **Session context:** chat 14, [LW-PIN-LAST-FRAME] — saving the state at 90% full, just after a compaction (numbered past 873, held on another branch; renumbered 874 → 881 when `main` was brought in, 8 Nov 26 — 874 is also used on another branch)
 **Skill:** session-handoff (writing the block's times)
@@ -2011,8 +1880,7 @@ the same ruler on both sides removes a whole class of false differences.
 Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" written from memory for what the clock and the files put at 03:45Z and 03:42Z — a guard is wanted (the block's writer reads `date -u` itself), not more care.
 
 ### Observation 884: A frame count at a threshold hid the change; the raw intervals and a switch-off run told it
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §5 new line "A frame measure keeps every raw interval" (the display's refresh interval established and buckets reported around its multiples, the boundaries stated — 20 / 34.5 / 50 ms the recorded 60 Hz case only; a repeat; the suspect switched off for one comparison — Astra's A9)
 **Date:** 8 Nov 26
 **Session context:** chat 16, [LW-PIN-LAST-FRAME] (D1870) — re-measuring a pinned row after a CSS scroll-timeline change (numbered past 883, held on another branch)
 **Skill:** New skill candidate: measuring-scroll-performance
@@ -2026,8 +1894,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** A threshold placed on a quantised value measures rounding; bucket around the quanta, repeat the run, and isolate a suspected cause by removing it alone.
 
 ### Observation 886: The cure a note recommended for a hang was itself a hang for one interpreter; and a new hook cannot be proved live in the chat that adds it
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md`, after the worktree-settings paragraph: a hook is not in force in the chat that adds it, how to prove it there, and a refusal's remedy measured per tool
 **Date:** 8 Nov 26
 **Session context:** chat 19 building [SHELL-SCRIPT-GUARD] (D811) — measuring the shell before writing the guard (numbered past 882, the highest on another open branch; renumbered 883 → 886 on bringing main in, where another chat's 883 had landed)
 **Skill:** New skill candidate: writing a command-refusing hook (the conditions of notes 270, 285, 598, 626)
@@ -2039,8 +1906,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** A workaround recorded once is a claim like any other; measure the cure as well as the fault, in each environment the advice will reach.
 
 ### Observation 885: A walk script kept in a scratch folder cannot import the project's browser library
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §2 (a script outside the project loads Playwright by createRequire, run from raptor-port/); its selector half is already WS §2 and §4 (controls from a passing run; press what the app routes)
 **Date:** 8 Nov 26
 **Session context:** chat 19, a one-off picture for a question to him ([DESIGN-CHECK-GOLD-DOT]); numbered past 884, held by another open branch
 **Skill:** New skill candidate: walk scripts (`raptor-port/docs/walk-scripts.md`)
@@ -2051,8 +1917,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Suggested improvement:** In the walk-scripts guide: a script kept outside the project loads the library with `createRequire(process.cwd() + '/package.json')('playwright')`, run from the project folder; and find a control's selector by reading the running page first (its id at the point pressed), never by a word that may also sit in a hidden control's title.
 **Principle:** Module lookup follows the file, not the shell; and a selector guessed from a word is checked against the live page before a script relies on it.
 ### Observation 887: A pull request that clashes with main starts no checks, and nothing says so
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md`, new "After a push" bullet (a clashing pull request starts no run); the guard filed as [CHECK-TOOLS-HARDEN] (j); memory stacked-pr-runs-no-checks holds it too
 **Date:** 2026-11-08
 **Session context:** Chat 13, the schedule's marks and words (pull request 691); numbered past 886, the highest on another open branch.
 **Skill:** New skill candidate: shipping-checks (the rule lives in `.claude/rules/shipping.md` §The checks)
@@ -2064,8 +1929,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** When a check is expected to start by itself, confirm it started; a missing run is a signal, and the most common silent cause is that the platform refused to build the merge.
 
 ### Observation 888: A blind reader that compacts gets the host's handoff pasted in by the start hook
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): new item [READER-COMPACT-HANDOFF] in _docs/OUTSTANDING-items.md (the start hook pastes the handoff into a reader that compacts — a hook change); BCO §4 carries the stop-gap in the readers' brief
 **Date:** 2026-11-08
 **Session context:** Chat 13 — the final code read, three readers blind to each other; the fresh Opus reader compacted mid-read.
 **Skill:** New skill candidate: blind-read (the bug-check order's §4 reads; the compaction start hook)
@@ -2077,8 +1941,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** Anything injected into a session automatically can break a reader's blindness; blindness must be guarded where the injection happens, not only in the brief.
 
 ### Observation 894: Two walkers fanned out in one folder overwrote each other's helper file
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §2 "Each helper gets its own scratch sub-folder…" sharpened (a file prefix of its own for every file it writes)
 **Date:** 8 Nov 26
 **Session context:** chat 31, the FULL check of [RD-LEFT-1108] — two Sonnet walkers at once on the same two builds
 **Skill:** New skill candidate: fanned-out walk brief (the bug-check order §4's fan-out paragraphs, `docs/walk-scripts.md`)
@@ -2089,8 +1952,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Suggested improvement:** In the fan-out brief, give each walker a file prefix of its own for EVERY file it writes (scripts, helpers, scratch output), not only its folder and ports — e.g. `<job>-a-*` and `<job>-b-*` — and say "write nothing outside your prefix and folder".
 **Principle:** Parallel workers in one working folder need disjoint names for everything they may create, not just for the outputs the coordinator expects; isolate by name or by folder for all writes.
 ### Observation 895: Two handoff blocks added at once share their closing line in git's conflict
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): the settle step `raptor-port/scripts/records-merge.mjs` settles HANDOFF.md block by block, its tests cover two new blocks and a closing line both sides added (gates-and-deploy, the settle step; shipping step 2)
 **Date:** 2026-11-08
 **Session context:** chat 24, the rules diet's design page; bringing `main` in while another chat had added its own `## Now` block at the top of the handoff file (numbered past 894, the highest on any branch).
 **Skill:** session-handoff
@@ -2102,8 +1964,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** When both sides of a conflict end in the same line, git keeps that line once, outside the conflict; "keep both" then needs that line added back to the first side — count paired markers after any such resolution.
 
 ### Observation 896: A walker's failed runs leave pictures mixed into the cited range
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §5 "One run, one folder" (each attempt a fresh sub-folder, no picture number reused in it; the final run and its count named, earlier attempts labelled apart, every picture behind a finding kept, failed attempts never mixed into the cited run — Astra's A8) — one change with 771
 **Date:** 2026-11-08
 **Session context:** chat 29, the Inputs and Medical walk (one Sonnet walker, several attempts at some scenarios)
 **Skill:** New skill candidate: walk-scripts (the walker's brief, `raptor-port/docs/walk-scripts.md`)
@@ -2115,8 +1976,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** Evidence produced by retries must be separable from the evidence that counts, by construction rather than by a list the reader has to apply.
 
 ### Observation 897: A walker's EXPECTED line written from the host's assumption produced two false FAILs
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §4 "Before a brief leaves", the EXPECTED-line bullet (each names its source — a ruling, a contract line, main's control run, or two surfaces of the app that must agree — or is RECORD) — one change with 768
 **Date:** 8 Nov 26
 **Session context:** chat 28's walk of the "Not kept" band (two Sonnet walkers, a host route check); numbered past 896, held by another branch
 **Skill:** New skill candidate: walk-brief-writing (the bug-check order's walkers' brief, §7)
@@ -2128,8 +1988,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** An expected result with no source is a guess; grade only against a cited rule or a measured baseline, and record everything else.
 
 ### Observation 898: A blind reader's clean copy of the whole repo fails or crawls on Windows
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): TOOLS addition (g) (a ready script for a blind reader's clean copy: named paths, core.longpaths, BASE tag)
 **Date:** 8 Nov 26
 **Session context:** chat 32, the four blind code reads of pull request 702 (numbered past 896–897 on other branches)
 **Skill:** claudex-loop (the blind-reader set-up), and the bug-check order §4's "a clean copy for the readers"
@@ -2141,8 +2000,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** A blind reader's copy should hold only what the read needs; copying the whole history-laden tree costs time and breaks on platform limits.
 
 ### Observation 899: A walker's "seen in passing" fault was carried to the backlog step before anyone checked the ruling
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §7 (a side note read against the rulings and reproduced before a handoff calls it "to file") — one change with 744
 **Date:** 8 Nov 26
 **Session context:** chat 35, closing the evidence sheet of pull request 702 (numbered past 898)
 **Skill:** the bug-check order §7 (the walk's side findings) and session-handoff (what a block hands on as "to file")
@@ -2154,8 +2012,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** A walker sees behaviour, not intent; a side note is a question until it is read against the rules that govern it.
 
 ### Observation 901: Two reviewers flag one clash and propose opposite fixes — the host decides by the project's conflict rule before the fixer starts
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/receiving-code-review/SKILL.md` A Finding, Its Diagnosis, and Its Fix: two reviewers' diverging fixes settled by the project's conflict rule before the fixer starts
 **Date:** 8 Nov 26
 **Session context:** chat 34, the rules diet's step 5a — the Tracker's rulings as a page, two blind reads (numbered past 900, the highest on any branch)
 **Skill:** receiving-code-review
@@ -2167,8 +2024,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** Agreement on a finding is not agreement on its fix; the coordinator resolves divergent fixes by an explicit rule before delegating, never by letting the implementer choose.
 
 ### Observation 900: Archiving a backlog item can strip a new ruling's only backlog mention
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (filed): [CHECK-TOOLS-HARDEN] (l), added: the backlog script warns before moving an item that is a ruling's last backlog mention
 **Date:** 8 Nov 26
 **Session context:** chat 16, closing [LW-PIN-LAST-FRAME] (D1870, D1871) — numbered past 899, the highest on another open branch
 **Skill:** New skill candidate: closing a job's records (the backlog-archive step)
@@ -2180,8 +2036,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** a check that one record is mentioned in another breaks when the mentioning record is moved; run the check, or the search it does, before the move rather than after.
 
 ### Observation 902: A test runner's output folder is emptied by its next run — never keep walk evidence or scripts there
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (reflected): WS §5 "Nothing a walk keeps goes under raptor-port/test-results/" (written 8 Nov 26 from this very loss; the note says so)
 **Date:** 2026-11-08
 **Session context:** A re-walk of a top-bar fix: two measuring scripts and a reviewer's evidence folder (pixel records, side-by-side pictures) sat in the browser-test runner's output folder; a test run started an hour later deleted all of it. (Numbered past 901, held by another open branch.)
 **Skill:** New skill candidate: walk-scripts (the project's walk-script guide)
@@ -2195,8 +2050,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 ### Observation 903: A fault seen only in the walker's own phone set-up is re-checked with its exact steps, not only with the test suite's phone
 
 *Numbered 891 on `claude/lw-pin-last-frame`; renumbered 903 when `main` was brought in on 8 Nov 26 — `main` holds its own 891.*
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): WS §6 new line "A case the red-first test never turned red is proved by the walker's own steps" (old build must show it, fixed build must not)
 **Date:** 2026-11-08
 **Session context:** Chat 16, [LW-PIN-LAST-FRAME] (D1870): walker L found the pinned dates row shown early after a resize or a phone turn (L22). Numbered past 890, the highest on any branch at the write.
 **Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md) / bug-check order §7 (re-walk after a fix)
@@ -2208,8 +2062,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** A test that never went red for a case is not evidence that the fix cures that case; reproduce with the finder's own set-up before and after.
 
 ### Observation 904: A browser test red only on the CI machine may be the CI machine's letters, not its speed
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/systematic-debugging/SKILL.md` Phase 1 step 3, the layout-shift bullet: measure across widths before slowing anything, and add the matching width to the test
 **Date:** 8 Nov 26
 **Session context:** chat 39, pull request 694 - a Leave War browser test failed on GitHub (a row 47px low) and passed on the PC, even with the browser's processor slowed three-fold.
 **Skill:** systematic-debugging
@@ -2221,8 +2074,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** A CI-only layout failure is often the fonts, not the clock: text metrics differ by operating system, so measure the layout across widths before reaching for throttling.
 
 ### Observation 906: A test that skips when its setup did not happen proves nothing on that run
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): BCO §8 item 4 (a test builds its own precondition and asserts it; a conditional skip is a finding; the break goes red at the assertion that matters)
 **Date:** 2026-11-09
 **Session context:** [E2E-BOARD-KEYS-SKIP] (D1936) — fixing a browser test that skipped itself when its chosen box already sat above the simulated keyboard. Numbered past 905, which another open branch holds.
 **Skill:** New skill candidate: browser-test fixtures (or the bug-check order, §8 and `docs/walk-scripts.md`)
@@ -2234,8 +2086,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** A test must create the situation it checks and fail if it cannot; a skip conditioned on the situation silently turns a check into a no-op, and only a break test proves the check bites.
 
 ### Observation 905: "Add-only" was a guess about a file — its edit history said otherwise
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/bug-check-order.md` §4 "Before a brief leaves", the plan's-brief bullet: every file-shape claim broken with a named commit from its history
 **Date:** 8 Nov 26
 **Session context:** Chat 33, [MERGE-ONCE-RECORDS] — the plan's red team and build (number checked past 903, the highest on any remote branch).
 **Skill:** claudex-loop
@@ -2247,8 +2098,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** A plan's assumptions about a file's shape are claims to test against the file's history, not facts; ask the red team to break them with real commits.
 
 ### Observation 907: A helper that "completed" while waiting on its own runs can wake and write later
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/overnight/SKILL.md` Part 2, the report bullet: a helper paused on its own background work is stopped or awaited before the checkout changes; its log read after
 **Date:** 9 Nov 26
 **Session context:** Chat 36's overnight run, job 2 (the Tracker trial), one helper at a time in one shared checkout (number past 905–906 held on other branches)
 **Skill:** overnight
@@ -2260,8 +2110,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** A subagent paused on its own background work is still live; stop it before the shared workspace changes under it.
 
 ### Observation 908: A change to a gate script runs that gate's own self-test before the push
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md`, the docs-only bullet: a change to the document check's scripts runs its self-test on the PC before the push; a new rule gets cases
 **Date:** 9 Nov 26
 **Session context:** Chat 36's overnight job 1: a new hard-limit rule added to the document check
 **Skill:** overnight
@@ -2273,8 +2122,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** A checker that has its own test harness must pass that harness, not only the real files, before its change ships.
 
 ### Observation 909: Converting a rulings area to a page is now a repeatable workflow
-
-**Status:** OPEN
+**Status:** DECLINED (2026-11-10) — closed on his word in the skill review of 10 Nov 26: recommend closing: every area's rulings are a page since 9 Nov 26, so the conversion skill has nothing left to serve; its general lesson lands with 912; question in `_review/questions.md`
 **Date:** 9 Nov 26
 **Session context:** chat 41, the rules diet's Inputs pages in the Tracker trial's shape (D1943)
 **Skill:** New skill candidate: rulings-page-conversion
@@ -2286,8 +2134,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** when a multi-helper documentation job has run twice with the same shape, its brief and its reader questions belong in one reusable place, with each run's surprise added as a check before the step it would have blocked.
 
 ### Observation 910: A time limit around the document self-test turns a pass into a fake crash
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md`, C1's self-test line: 10 to 20 minutes, in the background with no `timeout`; exit 124 is the limit, not the script
 **Date:** 9 Nov 26
 **Session context:** chat 43, the rules diet's scheduler page — re-running the document checks' self-test before the readers' fixes
 **Skill:** task-observer short form (the project's gate habits); note 908's "about 10 minutes" figure
@@ -2299,8 +2146,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** a time limit that kills a child process makes the parent report a failure that looks real; check for the limit's own exit code before reading the failure, and run long checks unbounded in the background instead.
 
 ### Observation 911: Commits landed off the branch, and the push said "Everything up-to-date"
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md`, new "After a push" bullet: "Everything up-to-date" after new commits means a detached checkout; push HEAD by its full name; and its preventive half in `.claude/skills/dispatching-parallel-agents/SKILL.md` "When Agents Share the Working Tree": a helper that sha
 **Date:** 9 Nov 26
 **Session context:** chat 43, the rules diet's scheduler page — three commits made while helpers worked in the same checkout
 **Skill:** session-handoff / the shipping loop (push step)
@@ -2312,8 +2158,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** a push reports on the branch name, not on the commits you just made; confirm the checkout is on the branch before trusting a push's "up to date".
 
 ### Observation 912: Find what a conversion will demand of other files by trial-running the gate on a marked copy
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/gates-and-deploy.md`, the same new trap as 851: a change that switches on checks reaching other files is tried on the file first, then the file put back
 **Date:** 9 Nov 26
 **Session context:** chat 45, the Leave War's rulings becoming one page (D1947)
 **Skill:** New skill candidate: rules-diet-area-conversion
@@ -2325,8 +2170,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** when a change switches on checks that reach other files, run the check once with the switch flipped before doing the work, so the cross-file debts and any owner questions surface first instead of at the end.
 
 ### Observation 913: A brief written for a later chat named the writer's own worktree folder
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `.claude/skills/session-handoff/SKILL.md` Step 4, "acts on" list: a brief for a later chat names branch and commit, never a worktree folder; with 847
 **Date:** 9 Nov 26
 **Session context:** chat 46, the Leave War page's two blind reads (D1947), run from a brief chat 45 wrote
 **Skill:** session-handoff
@@ -2338,8 +2182,7 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Principle:** a brief that outlives its writer's session should name what is stable (the branch, the commit), not where the writer happened to be working.
 
 ### Observation 914: Before narrowing what loads a rules file, list what the other jobs lose — by the file's lines, not its section names
-
-**Status:** OPEN
+**Status:** ACTIONED (2026-11-10) — the skill review of 10 Nov 26 (apply): `raptor-port/docs/doc-budget.md` §"Keeping the list whole", the paths bullet: narrowing a file's `paths:` checked by its lines first, pointers added on the losing side as new lines
 **Date:** 10 Nov 26
 **Session context:** the rules diet's follow-up (chat 48): two guides taken out of the scheduler rulings page's load paths so Leave War and Tracker jobs stop loading it.
 **Skill:** New skill candidate: narrowing a context file's load scope

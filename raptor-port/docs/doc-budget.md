@@ -76,6 +76,16 @@ Stale is worse than absent — the next session trusts it.
 **What a new chat costs, measured, and the three rulings of 17 Oct 26 (D969–D974; `[CONTEXT-START-SIZE]`, the page `docs/superpowers/specs/2026-10-17-context-start-size.html`).** An empty chat measured 14% of the app's 880,000-token room and a build chat about 31% before any work, most of the difference the rulings files its first app file pulls in. Capitals cost about 1.8 times ordinary letters, so **the rulings' one-line rules, and the bold sentences they come from, are written in ordinary letters — the same words, capitals only where a name or a short form has them (D970)**; **a ruling a later ruling restates in full leaves the loaded list for the archive, as a replaced one does, one fresh reader checking each (D971 — it widens D136)**; used-up one-off permissions leave as the standing rule already said; and the gate's token figures are calibrated on the measured loads, not on letters (D969, §4); the job's commits reached `main` by a push-setting slip and stay there on his "Keep them" (D974). **The other places written in capitals for emphasis follow, as
 a job of their own, by a cheaper model, checked by a fresh reader (D972 — `[CAPS-SWEEP]`; only the backlog, the screen rules and the engine rules, the archives left — D973).** Done 17 Oct 26: 551 lines, about 4,800 tokens, every changed line equal to the old in lower case; only runs of two or more capital words were turned (a lone capital word is left, as it may be a short form, a status or a label), and quoted words, code, backlog tags and the app's own capital phrases — those in `remarks-vocabulary.md` and in the app's text — were kept; a fresh Opus reader's five findings were fixed. **Measured again the same day, in the next chat:** an empty chat 13% (114,521), a build chat 22% (197,417) once its first app file is open — the scheduler's rulings about 35,000 tokens of it, at 91,777 bytes, under D611's mark for splitting them again (about 100,000) — so not split, his D976. **The job closed 7 Nov 26 (D1741):** its last point, E — his documents connector, about 0.3 points of a chat's room — stays his own setting; F was built as the skill-notes short form (D1740); cutting what a chat reads goes on as the rules diet (D1735).
 
+**Measuring what a chat reads** is `node raptor-port/scripts/docsize.mjs --reads` — the gate's calibrated estimate,
+fitted on the app's own measured loads, by layer and by job — never a stock tokenizer or a bytes-per-token guess, both
+of which read about a third low (7 Nov 26); check it against one fresh measured load before a plan rests on the figure.
+**A peek costs an area's whole load:** reading or editing a file on an area's `paths:` with the Read or Edit tool loads
+that area's rulings, while a shell read (`sed`, `grep`) and an edit script load nothing — so for a few lines of a
+reference document or note whose area the job does not touch, use those — never for a file under `raptor-port/src`,
+`e2e` or the handpass scripts, and never to edit what that area's rulings govern (doc-structure.md: before planning or
+editing in an area, open its file yourself; D68). Three lines of the ripple map cost about 45,000 tokens, twice
+(7 Nov 26).
+
 ## 4. The gate
 
 `npm run docsize` does two jobs ([DOCS-GUARD], 23 Sep 26 — Fable's attack on D29, owner D30):
@@ -163,7 +173,10 @@ to bloat the ai to context that doesn't matter."* So the rulings are **split by 
 accounts — D390; since 2 Oct 26, the IT flow guide; since 13 Oct 26, the Inputs pages — D802; since 1 Nov 26, Screen design — D1554) — every row keeping its date:
 - **How we work loads in every session** (no `paths:`); **each other area loads by itself** when a session READS a
   file matching its `paths:` — so work that strays into a second area picks that area up too. Choose paths
-  generously: a ruling missed costs more than one loaded (D68).
+  generously: a ruling missed costs more than one loaded (D68). **Narrowing** a file's `paths:` is checked first, by
+  its lines rather than its section names: list the jobs that lose it, find every line naming their areas or claiming
+  "every screen", and for each rule stated nowhere those jobs still load, add a pointer on their side as a new line;
+  then measure again (10 Nov 26: Leave War rulings stated only on the scheduler page).
 - **A ruling spanning two areas** sits in the one it mostly governs; the other file's "Also read" line names it.
 - **Filing is mechanical** (`DECISIONS.md`, steps 1–3): a row at the top of its area's table, the replaced or spent
   row marked, then `node raptor-port/scripts/backlog-archive.mjs --rulings` moves marked rows and rewrites the map.

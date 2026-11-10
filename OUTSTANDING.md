@@ -74,7 +74,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
   - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; People & accounts as a page merged 8 Nov 26 on his "merge live" (chat 17, pull request 700), accounted and read blind by both — it loads with files most jobs open, so the re-measure counts it and narrowing its `paths:` is a question for him then; the scheduler's D212 stale clause (a member may tick SCHEDULER, since D1651) goes with the scheduler's page in 5b; the screen-design rulings as a page merged 8 Nov 26 on his "merge live" (chat 24, pull request 708), accounted and read blind by both — it loads with every file of the app's code, so the re-measure counts it; for 5b, the Inputs pages' D1300 "cyan ring" (the mark is the one blue) and the scheduler's D1038 row's "Not built" (it is drawn); the Tracker as a page built (chat 34, pull request 714 — merged 8 Nov 26 on his "merge live"), accounted and read blind by both, D191 against D1005 filed for him as [TRK-TYPED-STUDENT-Q] and answered the same day, his D1931 (no student added by a typed name; the build filed as [TRK-NO-TYPED-STUDENT]); **STOPPED 8 Nov 26 (D1932): the five area pages came out about twice their old lists' size (82,706 → 160,224 characters; How we work alone shrank, 59,493 → 37,952) — five tripwire raises, none reported to him plainly. Next, before anything else of the diet: the fix, by Fable 5.1 on his call — each page back under its old list's size, no rule dropped, the tripwire a hard limit; the plan is chat 34's handoff block.** Only then the re-measure before 5b. **Since: the fix done (chat 36), the re-measure reported, and step 5b LIVE 9 Nov 26 — the Inputs pages (D1943), the scheduler (D1944, pull request 730) and the Leave War (D1947, pull request 732), each read blind by Astra and a fresh Opus reader; every area is now a page. Step 6, the final measure, done 9 Nov 26 (chat 47; the plan's §Step 6): a job's whole read down 13–25% (Leave War 359,657 → 303,218 tokens, scheduler, Inputs and Tracker about −25%, notes −13%), far short of the plan's forecast; the rulings files 168,117 → 116,389. Next, on his word: whether the diet ends here or takes one small follow-up (the scheduler page no longer loading with the performance guide and ripple map in Leave War and Tracker jobs, about 31,000 each; the handoff's merged blocks filed and removed).**
   - **Done (his D1949, 10 Nov 26):** the diet's one small follow-up LIVE 10 Nov 26 on his "merge live" (chat 48, pull request 735) — a Leave War job about 265,000 tokens, a Tracker job about 230,400 (the plan's §Step 6; archived). Left in `[RULES-DIET]`: stating once what both the general page and a checklist state (D1762).
-    Found by its step 3, low, the agent's: [BUGCHECK-LESSON-ORDER] — the bug-check order's list of missed faults has a second 23 outside it and 8 before 7.
+    Found by its step 3, low, the agent's: [BUGCHECK-LESSON-ORDER] — the bug-check order's lessons put in order, the second 23 inside them — done by the skill review of 10 Nov 26, archived.
     Found by its step 5a (People), medium, the agent's: [DOCSIZE-PATHS-OPEN] — a rules file whose `paths:` list is never closed passes the document check, its page checks skipped.
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
@@ -219,6 +219,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [PROMPT-AUDIT] — he runs the guide check in a terminal and brings its list back (D886).
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
 - [CHECK-TOOLS-HARDEN] — small hardening of the checking tools — his word.
+- [READER-COMPACT-HANDOFF] — a blind reader that compacts is pasted the host's handoff — a hook change, his word.
+- [DRAW-MARK-HELPER] — one shared helper for marking a part on a drawing, refusing a mark that moves or clips — low.
 - [WALK-COST] — make a walk cost fewer tokens — a proposal; his word starts it.
 - [CODE-TIDY-AUDIT] — tests that no longer apply and the skipped browser tests — his to confirm; one leftover for the database step, one put to him only if a later feature needs it.
 - [RULING-HOME-HOOK] — only if a chat is seen acting on a ruling's short line alone.
@@ -227,6 +229,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OPUS-SECOND-READ-GUIDE] — the checking guide's line on when a second, blind Opus read is run: decided (D595), not written — it waits for Astra's and Sol's reads (D70) when ChatGPT is back, then his approval; and whether it still earns its place then.
 
 **Documents and guides**
+- [RULE-FILE-LESSONS] — four lessons for the rule files and the steps for recording a ruling — his word.
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
 - [DOC-POINTERS-CODE] — four code comments still point at documents moved in the spring clean: in the rules engine and in pull request 664's files, each with its next change; one to read against D338.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
@@ -285,6 +288,50 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+
+### [READER-COMPACT-HANDOFF] A blind reader that compacts is handed the host's handoff block (skill note 888, 8 Nov 26)
+**What:** the compaction start hook (`.claude/hooks/compact-resume.mjs`, [COMPACT-WHEN-MOD]) pastes the branch's
+`HANDOFF.md` block into any chat on that branch that compacts — a fresh, blind reader running as a helper included. On
+8 Nov 26 (chat 13's final code read) the Opus reader compacted mid-read and was handed the host's own record of the
+walk's fault and its fix; it said so, and its read was noted as not fully blind. **To do:** the hook pastes the block
+only into the chat that owns the branch — tell a helper or reader session apart (its parent session, or a marker its
+brief sets) and print the re-read reminder alone there; a test in `compact-hooks.test.mjs` for each kind of session.
+Until then the readers' brief carries the stop-gap (`raptor-port/docs/bug-check-order.md` §4, "Never show either model
+the other's conclusions"). A hook change: on his word, read as a guide change is. **Place:** with the next change to the
+compaction hooks; low.
+
+### [DRAW-MARK-HELPER] One shared helper that marks a part on a drawing, and refuses a mark that moves or loses it (skill notes 820, 822, 848; 5–8 Nov 26)
+**What:** each drawing script writes its own ring-and-tag code, and the same three faults have passed scripts that ran
+clean: a mark's class set `position:relative` on a fixed list and took it out of the picture (820); a tag in its own
+`::before` was cut off by a parent that hides what overflows it, twice in one night (848); a part taken away with
+`remove()` blanked the whole app at its next redraw, and three runs chased the wrong cause before the page's own error
+was printed (822). **To do:** one helper under `raptor-port/scripts/handpass/` that every new drawing script imports:
+it rings a part with an outline and a tag (a child for a static element), asserts the part's box is the same before and
+after the mark, refuses the picture (or moves the tag) when a tag is not wholly inside every ancestor that clips, offers
+`hide()` and no `remove()`, and prints the page's errors to the run's log as they happen; with a self-test on one case of
+each fault. A part the drawing marks with an inline ring in the marker colour could then be left out by the drawing
+check's recorder by itself (742). The guide's lines stay (`.claude/skills/brainstorming/mockups-on-the-real-app.md`,
+step 3 and the Traps); this is the guard for the one met twice. **Place:** with the next drawing job; low.
+
+### [RULE-FILE-LESSONS] Four lessons whose only home is an always-loaded rule file or the steps for recording a ruling (skill notes 733, 734, 859, 860; 28 Oct – 8 Nov 26)
+**What:** the skill-notes review of 10 Nov 26 could not draft these, because they belong in files only the rules diet or
+his word may change (`.claude/rules/record-decisions.md`, `.claude/rules/plain-language.md`, `DECISIONS.md`'s steps).
+(a) **The sweep for what a new ruling leaves behind (D201) searches by the rule's subject across every Markdown file in
+the repo** (the archives and the full-text rulings left out), not a list chosen from memory — the plans under
+`raptor-port/docs/superpowers/plans/` among them, whose tables of open questions are homes of each answer — and the
+readers' brief names the search that was run, so they can widen it (859, 724: four guides and a backlog item still
+named the old readers on 8 Nov 26; a plan showed two answered questions as open for five days). (b) **A ruling that
+changes the rule for one of several parties is rewritten clause by clause:** before rewriting each line it touches, list
+every clause of the old line (each party, each safeguard, each window or date) and mark it changed or carried over; the
+rewritten line keeps every carried clause (860: D1770 dropped the "owed list" safeguard for the unchanged reader, in five
+files). (c) **A blanket approval ("all as recommended") is recorded from the page he answered:** each rule is written from
+that page's own recommended words, at the version he saw (`git show <commit>:<page>`); anything only in the plan behind
+it is the agent's reading, marked; and the fresh reader of such rulings checks every number and condition of the line
+against that page version (734, met twice on 28 Oct 26). (d) **The check before sending, a step that counts:** list every
+screen, tile, figure or control the message names; each has a picture in the same message, or it is not sent (733:
+D853 and D921 were loaded and missed, "rules, not screens").
+**To do:** draft each as the smallest change to its file; read by Astra and a fresh, blind Opus reader, each blind to the
+other (D1761, D1770); on his word, and his "merge live". **Place:** his to place — with the next change to those files.
 
 ### [TRK-TRIAL-TESTS] The Tracker trial's leftovers — each on his word (D1941, D1942; filed 9 Nov 26, chat 36)
 **What:** the rules diet's Tracker trial merged live 9 Nov 26 (pull request 725). Three things it left, none started without his word: (1) **the tests** that would let the 20 rulings on the Tracker page's "Built, stated here: their tests hold only part" leave for the "Built, held by tests" line — D64, D121 with D1014, D124 with D130, D372, D373, D374, D376, D922, D924, D980, D1003 with D1018, D1132, D1135, D1170, D1406, D1705 — each missing check named in the two readers' reports, `raptor-port/docs/superpowers/briefs/2026-11-09-tracker-trial-read-{astra,opus}.md`; (2) **D1405 is spent** (the stray scroll bars fixed first, done): archiving its full row waits for his word; (3) **the other areas** take the trial's shape one at a time, each on his word (D1942), How we work last — Inputs on his word, 9 Nov 26 (D1943), MERGED live the same day on his "merge live" (pull request 728; the plan's §Step 5b — the Inputs pages); the scheduler on his word (D1944), merged 9 Nov 26 (pull request 730); the Leave War on his word, 9 Nov 26 (D1947), started on `claude/rules-diet-leave-war-page`; the Inputs leftovers, each on his word: (a) 16 proposed archivals (the sorting table's end, `raptor-port/docs/superpowers/briefs/2026-11-09-inputs-trial-sorting.md`; D1386 and D961 noted for the D971 reader); (b) D701 against D723 — recommended: keep the app as it is (the SANS day "Grit · 12 Jul, 14:42", a card only "By Saber"); (c) the scheduler's D660 against D762 — recommended: D762 stands as built, D660 keeps only "the filer answers once"; (d) the tests that would let Inputs rulings leave for the "Built, held by tests" line (the two readers' reports, `…-inputs-trial-read-{astra,opus}.md`). The before-and-after page: https://claude.ai/artifact/DwTZaf44yRPMwhb5s4aLoN (its page 4 bytes under its limit). Before-and-after page shown to him: https://claude.ai/artifact/LKGs13C3NBJnSurmtcDwdg.
@@ -357,15 +404,6 @@ D1534). **8 Nov 26, chat 29 (`claude/chat29-inputs-medical`, pull request 707):*
 `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`). **Place:** the agent's, low — (1) with the next People and
 accounts change, (2) as listed.
 **LIVE 8 Nov 26 (pull request 702, his "merge live" typed in chat 35):** (1) the 13 cycles broken and (2)'s People & accounts six (`UsersPanel.tsx` 3, `AdminPage.tsx` 2, `AccessScreen.tsx` 1) cleared — evidence `raptor-port/docs/handpass/2026-11-08-rd-last-findings.md`. **Left: `SansCal.tsx` 1, `SansDay.tsx` 1, `interactions.ts` 2**, each with its area's batch.
-
-### [BUGCHECK-LESSON-ORDER] The bug-check order's list of missed faults is out of order (found 7 Nov 26, the rules diet's step 3)
-**What:** in `raptor-port/docs/bug-check-order.md` §7.11 the lessons run 1–6, 8, 7, 9–23, and a second lesson numbered 23
-(every screen a walk pictures checked for the standing layout lessons — each pair of side-by-side boxes one height and one
-line) stands after §8, outside §7.11. An agent going through §7.11 "for each lesson" (D1297) can miss that one; meanwhile
-the checklist (`raptor-port/docs/bug-check-checklist.md`) names it "the second 23". **To do:** move the second 23 into
-§7.11, whole (D138), and put 7's text before 8's; lessons are cited by number elsewhere (the backlog, evidence sheets,
-briefs), so search for each number first and keep a number that is cited; then match the checklist's list. **Place:**
-low, the agent's — with the rules diet's step 4 or the next change to the order.
 
 ### [DOCSIZE-PATHS-OPEN] A rules file whose `paths:` list is never closed passes the document check (found 8 Nov 26, the rules diet's step 5a, chat 17)
 **What:** the People & accounts page's first draft lost the `---` line that closes its `paths:` list. With it open, the
@@ -2005,6 +2043,70 @@ matching the code; docsize's comment says the gates skip `.impeccable/**`, untru
 -VV` refused; a quoted `<` mid-word in an option still read as a redirect for cat, tee and the interpreters (rare); once
 the repo is private, the two new jobs bill about 2 minutes a run.
 
+**Added 10 Nov 26 (the skill-notes review, group A-walks):** (d) **the code check's message** (`scripts/code-check.mjs`
+`read()`): when React Doctor marks the comparison degraded, the message blames `main`'s side whatever the cause — print
+its own skip reasons (`skippedCheckReasons`) first, since on 3 Nov 26 the cause was a walk script on the branch with one
+character not in UTF-8 (778); and a changed code file that is not valid UTF-8 is refused by name before React Doctor
+runs (778; [WALK-SCRIPT-UTF8] carries the guide's line). (e) **One shared "letters fit" helper** for walk scripts,
+measuring the letters' ink as `lw-cell-combos-measure.mjs` does, so a new script imports it instead of writing its own —
+the guide's line was missed the day it was written (834). (f) **A unit check over `e2e/*.spec.ts`** that flags a new
+text-width assertion (`getBoundingClientRect` against a fixed width) in a test that pins no letters — the Linux-letters
+trap met twice, 23 Oct and 8 Nov 26 (680, 882). (g) **A ready script for a blind reader's clean copy**: archive named
+paths only (the source, the docs without evidence sheets, pictures or the archive, the rulings, the backlog), set
+`core.longpaths`, two commits with `git rm -r` between them, the base tagged `BASE` and the reader told what it stands
+for — a whole-tree copy took over ten minutes and then failed on a long file name (898).
+
+**Added 10 Nov 26 (the skill-notes review, group B-design):** (h) **The "start fresh" address, refused where it hides
+the thing under test** — beside the walk helpers' refusal to save a world from it (237, 506): the walk and drawing
+helpers' start (`scripts/handpass/lib.mjs`, `scripts/drawcheck/lib.mjs`) refuse an address carrying both `fresh=1` and
+`savefail` (D1666 — the failed-save switch works only on the browser's store, so under `fresh=1` the band never shows),
+and a `reload()` in a page opened on `fresh=1`, whose every reload begins from the demo world again — met 29 Oct 26 (six
+"not kept after a reload" FAILs that were the script's) and 8 Nov 26 (a comparison of two identical screens) (745;
+`docs/walk-scripts.md` §3 carries the guide's line).
+
+**Added 10 Nov 26 (the skill-notes review, group C1-handoff):** (i) **The check lock's `exec`** (`scripts/gatelock.mjs`):
+one quoted string after `--` is handed to Windows' own shell, not bash, so a compound with `;` or `>` ran something else
+and the lock reported a clean exit (31 Oct 26) — refuse a one-string command holding `;`, `>`, `<` or `&&`, with the
+advice to write a script and pass `-- bash <script>`, and say so in the usage line (760; `docs/gates-and-deploy.md`
+carries the guide's line). (j) **The push guard** (`.claude/hooks/push-guard.mjs`, a hook — on his word, read as a guide
+change is): before a push to a branch with an open pull request, read its merge state and, when it is CONFLICTING, say
+that no check run will start until `main` is brought in — met three times on 8 Nov 26, each time after a wait for a run
+that never came (887; the guide's line in `docs/gates-and-deploy.md`, "After a push", and the memory note on stacked
+and clashing pull requests).
+
+**Added 10 Nov 26 (the skill-notes review, group C2-records):** (k) **The change-mark check** (`scripts/docsize-rulings.mjs`
+`backMarks`): it reads only the first number after a change verb, so "Narrows D1510 and D149" checked D1510 and never
+D149, and it runs only on new rows — read every number of the list after the verb, and run it once over every live
+row, listing what is owed (881: D149 and D218 unmarked, found only by a drafter reading row by row, 8 Nov 26). (l) **The
+backlog script** (`backlog-archive.mjs <ID>`): before it moves an item, warn when the item is the backlog's last mention of
+a ruling whose row names the backlog as a home, naming the item that could carry the number (900: D1871's home check
+failed only at the closing step, 8 Nov 26). (m) **The document check** (`scripts/docsize.mjs`): fail on any line
+beginning `<<<<<<< ` or `>>>>>>> ` in a file it reads, and on a `=======` line between two such lines (a heading's
+underline is not one) (803: a rulings file kept a merge's clash marks through a
+passing check, 6 Nov 26; only the commit refused; `docs/gates-and-deploy.md`, the settle step, carries the guide's line).
+
+**Added 10 Nov 26 (the skill-notes review, group D-reads-code):** (n) **The backlog script's git wrapper**
+(`scripts/backlog-archive.mjs`, its `git()`): it returns an empty text whenever git fails, and it sets no output buffer,
+so a listing past Node's 1 MB default — the untracked walk pictures alone can pass it — reads as "no files" with no
+error (840: the same wrapper made `docsize --reads` report every rules file as not loading, 300,000 tokens wrong, 7 Nov
+26; `docsize.mjs` and `docsize-reads.mjs` were fixed then, this one was not). Set `maxBuffer`, and let a listing whose
+empty result means "none" fail loudly; the rule for any new script: swallow an error only where "none" and "failed" lead
+to the same action. (o) **The document check's self-test takes a name filter** (`scripts/docsize-selftest.mjs`, an
+environment variable), so a red-first round can run only its new cases — without one, each round of fixes to the merge
+tool meant a scratch copy with every case-runner patched (841, 7 Nov 26; about 12 minutes a round). (p) **The inputs
+guard reads comments** (`src/engine/inputs-readers.test.ts`): its file list is chosen by `NAMES` over the raw text, so a
+comment heading with the word INPUTS in capitals put a file in the set and turned the unit run red (767, 2 Nov 26) —
+choose the list through the guard's own `code()` that strips comments, as its other checks do. (q) **The tests that
+name a changed file, listed and run before its first push:** a small script that takes the branch's changed files and
+lists every test file — unit, browser, smoke scripts — whose text names each one's base name (`grep -rl` over `src`,
+`e2e` and `scripts`), unfiltered, to be run before the first push; the test-driven-development guide's "Which other
+tests?" already says to find them, and it was missed twice — a filtered search missed five browser tests on 5 Nov 26,
+and the date box's look test on 8 Nov 26, each found only by GitHub's run (833). (r) **The Inputs list's browser
+tests open on every date by default:** the list shows a window of dates from today, so a new test on today's clock
+found no rows and failed its own setup, twice on 8 Nov 26 (865) — the list's test helper shows every date unless a test
+asks otherwise, and a test that measures the list's rows asserts a row is visible first; the guide's premises line
+carries the rest.
+
 **Place:** his to place. The agent's recommendation: one small tools job, any time, its own branch; the gates and a
 fresh Opus read of the scripts; no walk (nothing of the app changes).
 
@@ -2266,9 +2368,6 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 
 ### [COMPACT-WHEN-MOD] A small sign in the Claude app that says how full the chat is and when it is a good moment to compact (his question, 14 Oct 26 — D857) — WIDENED 15 Oct 26 BY D868; BUILT 15 Oct 26 on his go (D870, D871), branch `claude/overnight-skill-c02843`, read by one fresh reader and fixed (design and read: `raptor-port/docs/superpowers/specs/2026-10-15-compact-when-ready.md`); APPROVED (D872 — the guard off whenever he is away); LIVE 15 Oct 26 (pull request 509); OPEN until the next new chat's four checks in the app (the design's §"Still untested")
 **His question:** *"is there a mod u can create or install to be able to tell I when to start compacting smartly"*. **The answer given him:** one can be made — a line in the app showing how full the chat is, marked at a good moment to compact (a clean, committed point with the state in the repo); the agent already reads that figure itself, so nothing waited on it that night. **Why it is put to him first and not installed:** it changes his Claude settings (a status line or a small mod of the app), which is standing configuration — his go each time (D162's precedent), and a tool that runs automatically here stays in a form other models can read (D623). **To put to him:** what it would show (the percentage; a colour at "good moment"; whether the state is committed), with a picture, and whether it should only show or also remind. Not app work: nothing under `raptor-port/src`. **Asked again 15 Oct 26** (whether the agent can see the figure, and that it matters for compacting at night): the agent reads the figure itself at any time, so the sign is for HIM; what the agent cannot do is START a compaction — the app does it by itself near 97% full. **To try with this job, safely, and rely on only if it works:** whether a message the app sends this chat at a set time (a scheduled prompt) can start a compaction earlier, on purpose — that would let the overnight command (D867) compact at a mark it chooses. **Widened by D868 (15 Oct 26): the agent chooses the moment itself, from about 80% full, without asking him, for day work and the overnight command — so a big job does not compact twice.** The build the agent proposes, from Claude Code's documentation (read 15 Oct 26 — the pages: env-vars, model-config, settings-reference, hooks, hooks-guide, context-window, statusline, scheduled-tasks on code.claude.com): (1) the app's own compaction point set near 80% (the `autoCompactWindow` setting, a token count — about 800000 on a 1M chat); (2) a guard run before every compaction (a PreCompact hook) that holds back an automatic one until the agent has marked a clean point with the state written (a small file the agent writes after its checkpoint) — the app's last-moment compaction near full stays the backstop; (3) after a compaction, the chat's `HANDOFF.md` block printed back in front of it (a SessionStart hook on "compact" — documented); (4) the fullness shown to him on screen (the status line, which receives it); (5) the scheduled-prompt route above, tried as an alternative. **Untested in the desktop app:** whether a held-back compaction is tried again later, whether the setting applies to this chat, whether the status line shows there — each tested on a throwaway chat before anything is relied on. Changes his Claude settings and adds automatic scripts: built on a branch on his go, read by one fresh reader, approved by him (D162's precedent, D70). **Answered (15 Oct 26, D868's row):** a handoff to a fresh chat stays his usual way; this is for a big job that would otherwise reach the app's compaction at 97%, and for the overnight command.
-
-### [MAIN-CHECKOUT-STALE] Every desktop chat takes its Claude settings, hooks and skills from the main folder, which sat 208 commits behind `main` — so the compaction set-up and `/overnight` were in force in no chat (found 14 Oct 26, observation 600) — OPEN
-**Found running the compaction set-up's four checks, not fixed.** A new worktree chat on `main` still read "compacts at 97%". Its process is started with `--project-config-root C:\Users\User\projects\Raptor`, and Claude Code's worktree page says why: a worktree chat started from the desktop app reads settings, hooks, skills, agents, commands and `.mcp.json` from the MAIN checkout's root (`${CLAUDE_PROJECT_DIR}` points there); only `CLAUDE.md` and `.claude/rules/` come from the worktree. The main checkout was on `claude/after-oil-ask-notify` (13 Oct 26, nothing unmerged, no tracked changes, 828 untracked walk files), so every chat ran 13 Oct's hooks and skills: no `autoCompactWindow`, no compaction hooks, no status line, no `/overnight`, the older session-handoff guide. The compaction hooks themselves already read the worktree from the hook's `cwd`, so they need no change. **Fix:** (1) put the main checkout on `main` and bring it level (`git -C <main folder> checkout main && git -C <main folder> merge --ff-only origin/main`), then re-run the four checks in a NEW chat — **DONE 14 Oct 26 on his "yes, update the main folder"** (the main checkout on `main` at `62b649e29`, its untracked walk files kept); the re-run is owed by the next new chat; (2) add to the merge-live steps (`.claude/rules/shipping.md`) and the session-handoff guide: after a merge that touches `.claude/settings*.json`, `.claude/hooks/` or `.claude/skills/`, bring the main checkout level, and verify by the app's own reading in a new chat, never by running a script by hand. (2) is a working-guide change: one fresh reader, his approval (D70).
 
 ### [KBD-PUCK] A puck cannot be picked up, put down, swapped or taken off by keyboard — and the week's 440 pucks are Tab stops that do nothing (filed 13 Oct 26, the design look's K11) — OPEN, a job of its own, his to place
 **Found by `[DESIGN-LOOK-13OCT]`, not fixed — the question the design guide left open ("whether a keyboard can arm a puck is for the keyboard sweep to say", `raptor-port/docs/design-practices.md` §2): it cannot.** Every puck is drawn as a Tab stop (`raptor-port/src/ui/html.ts`) and wears the app's ring, but no key is heard on one: Enter, Space and Delete do nothing on the Scheduler Board or on Edit Schedule's week (`raptor-port/docs/mock/2026-10-13-design-look/keyboard.json`). So a scheduler at a desktop cannot move a man without the mouse, and Tab crosses hundreds of stops with nothing to do on any. **The shape to design (questions for him first — D541):** Enter or Space picks a puck up as a tap does on a phone (the app's own "armed" state), the seats that can take him are then the Tab stops, Enter puts him down, Escape lets go, Delete takes him off with Undo; the crew list reachable the same way. **Risk to weigh:** the dense week is swapped as text for speed (`raptor-port/docs/performance.md` Part 1) — the keys must ride the one listener the board already has, never one per puck. Tier WALK at least; a puck's drop is the schedule's main write.

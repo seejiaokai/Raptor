@@ -52,9 +52,28 @@ settings must MERGE into this file, not overwrite it, or the hook goes dark.
   (custom properties, selector matching and computed contrast are not
   evaluated). The full 59-rule path runs via `npx impeccable …`, which pulls
   those deps — that needs the network policy to allow npm, and the allow-listed
-  `Bash(npx impeccable *)` in the skill's frontmatter.
+  `Bash(npx impeccable *)` in the skill's frontmatter. A look that ran it
+  degraded says so in its report: an empty list from it is not a clean bill
+  (3 Nov 26).
 - **Node 22+ required for the hook.** Below that it prints a one-time
   "not running" system message and exits 0.
+- **The design checker's settings are two copies here** (8 Nov 26, chat 19):
+  the hook and `hook-admin.mjs` read and write the `.impeccable/config.json` of
+  the folder they are run from, so this repo keeps one at its root and a
+  byte-for-byte copy in `raptor-port/`, and the document check fails while they
+  differ (`raptor-port/docs/file-map.md`). An exception added by
+  `hook-admin.mjs` lands in the copy of the folder it was run from: copy that
+  file over the other in the same change (3 Nov 26: one run from `raptor-port/`
+  wrote a second, separate file).
+- **A read-only critique injects the detector itself.** `/impeccable
+  critique`'s Assessment B starts `scripts/live-server.mjs`, which writes
+  session and annotation folders and a server-info file into the project. A
+  helper that must change nothing loads the browser detector
+  (`scripts/detector/detect-antipatterns-browser.js`, what the live server
+  serves as `/detect.js`)
+  straight into the page with a script tag; it then switches off the
+  detector's own banner's pointer events, and does not report that banner's
+  gradient text or larger type as the page's faults (3 Nov 26).
 
 ## Updating
 

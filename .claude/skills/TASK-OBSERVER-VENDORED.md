@@ -64,7 +64,7 @@ where that procedure's defaults do not fit a git repo with vendored skills:
 - **Where lessons land:** in the skills — a few lines in the section they belong
   to, or a reference file inside the skill for longer material. **Not** in
   `raptor-port/CLAUDE.md` or `.claude/rules/`: those load every session and are
-  capped by the docsize ratchet (D14). A lesson already stated there is closed as
+  held by the document check's size tripwires (D14, D141). A lesson already stated there is closed as
   "already reflected", not copied into a skill.
 - **Vendored skills are forked on purpose.** Every local change is listed in that
   skill's `*-VENDORED.md` register, so an upstream refresh re-applies it instead
@@ -128,6 +128,13 @@ where that procedure's defaults do not fit a git repo with vendored skills:
   resolved notes are archived at each review's clean-up (§Reviews in this repo), not on every write as `SKILL.md`'s
   "Archival on Write" says. An upstream refresh leaves `SHORT-FORM.md` in place but may change what it summarises:
   read it again against the new `SKILL.md`.
+
+- **10 Nov 26 review (his approval to come; the drafts read by Astra and a fresh, blind Opus reader, each blind to
+  the other, D1761, D1770):** `references/weekly-review.md` Delivering gained "a draft is a diff against a moment" —
+  the install refuses a live file changed since the drafts' base, and a file a script keeps rewriting is staged as its
+  addition only; `references/environments.md` §Recommended activation setup gained the edges of a hook that prints a
+  longer text read from a file (a host's size cap, a control character, the fallback and the four test cases). The
+  short form, `SHORT-FORM.md`, is unchanged.
 
 ## Known caveats (not bugs)
 

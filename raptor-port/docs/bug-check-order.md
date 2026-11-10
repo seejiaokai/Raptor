@@ -52,7 +52,11 @@ is the agent's job, answered out of §5.
    is his call to make, not the agent's to assume. Name no check beyond the tier's own list unless its route is traced —
    which control, in which state, proves it — and quote a duration from the last recorded run (`HANDOFF.md` §Gate baseline,
    the walk ledger), or say it is not measured: a check withdrawn later, or an hour that turns out to be fourteen
-   minutes, costs trust.
+   minutes, costs trust. A FULL check also names its chats when where its chat starts, plus what will load by itself as
+   its files are opened (the area pages — `node raptor-port/scripts/docsize.mjs --reads`, by job), leaves too little
+   room for the walk and the reads (8 Nov 26: 49% to 76% before the walk) — chat A the tier, sheet, roll-call, break
+   tests and scenario brief, its report handed into the repo; chat B the walk, the reads and the fixes. Unattended, the
+   night stays one chat: name the clean point and compact there instead (D667, D867).
 4. **Execute it in the order §5 gives**, and finish with the `Walk:` line from §9.
 
 **If you are about to skip a step, say so and say why.** A skipped check he agreed to is a
@@ -208,7 +212,8 @@ deliberately. Ranked by value for the cost:
 | 4 | **Attacking the method itself, after a defect escapes** | One drafts, the other attacks | Outsiders change the checking system; the builder defends the process that missed it. After escapes, not routinely. |
 
 **How many, and which (owner, D353, 28 Sep 26):** scenario design (rank 1) and any side question — ONE reviewer, Astra
-first, because it runs on his ChatGPT/Codex account and not his Claude allowance (Fable if Astra is unavailable); the
+first, because it runs on his ChatGPT/Codex account and not his Claude allowance (a fresh Opus reader if Astra cannot
+run — D903, D1770; it was Fable); the
 red team of an important plan (rank 3) — BOTH; the code reads on high-consequence work (rank 2) — BOTH. Measured on
 28 Sep 26: three Fable runs cost ~1.4M Claude tokens and found the serious issues; the doubled scenario and side-question
 runs mostly repeated each other.
@@ -229,7 +234,7 @@ fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 ke
 Sol, the fresh, blind Opus reader holds the second seat; where Astra cannot run, a fresh Opus reader takes the one-reviewer
 jobs (D903, D1770 — the agent's reading).*
 
-**Who reads the finished code now (D790, D903, D1734, D1743, D1770):** Astra is the standing reviewer (D1770, 8 Nov 26 — "Yes Astra is the standing reviewer"). Sol 6.1 is called until Mon 9 Nov 26 19:00 where a second reader fits (D1743), and otherwise only when he calls for him (D1734). Beside Astra's read:
+**Who reads the finished code now (D790, D903, D1734, D1770):** Astra is the standing reviewer (D1770, 8 Nov 26 — "Yes Astra is the standing reviewer"). Sol 6.1 is called only when he calls for him (D1734; D1743's window, when Sol was called wherever a second reader fitted, closed Mon 9 Nov 26 19:00). Beside Astra's read:
 **every job that needs a code read gets a FRESH Opus read of its finished code — a reader that did not write it and has seen
 neither the walk's report nor another reader's, given the same brief** — on the riskiest changes too (rank 2's list above): **Fable
 reads nothing unless he calls for it (D903, 15 Oct 26 — "don't include fable in anything anymore unless I call for it";
@@ -281,25 +286,50 @@ Also: demand **exact, step-by-step fix instructions per finding**, not a directi
 **explicit negatives** ("I checked X and found nothing") — a confident all-clear from one model on
 an area the other found a defect in is the cheapest possible pointer to a real bug.
 
-**Never show either model the other's conclusions before both reports exist.**
+**Never show either model the other's conclusions before both reports exist** — nor any copy or summary of them
+anywhere a reader can open, the handoff note included: until every reader has reported, they stay in a scratch folder
+outside the checkout (8 Nov 26). A blind reader's brief also says that a handoff block pasted into it after its own
+compaction is not read, and is named in its report — the start hook pastes the branch's block into any chat that
+compacts (`[READER-COMPACT-HANDOFF]`); the host sizes a read to finish before the reader would compact. Blindness is
+what a reader can reach, not what its brief tells it not to open: when the version under review is not the branch head,
+or the branch already holds another reader's report or a revision built from it, the reader runs in an exported copy of
+that commit (the recipe: `docs/codex-guide.md`, "Reading a commit that is not the branch head"), and the saved report's
+head says so (7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (g)).
 
 **Before a brief leaves** — a brief is the one place a wrong sentence is multiplied by every reader of it:
 
 - Every sentence of its promise that states a behaviour touching OIL, the published record, roles or saved data is
   copied from the ruling's FULL row and cites it. A sentence with no row behind it is marked "the host's reading", so
   the reader treats it as a question, not a requirement.
-- A scenario's EXPECTED line gets the same check before it goes to a walker: one that names a COUNT, a REFUSAL or a
-  PUBLISHED-DAY state is read against the rulings and `main`, and rewritten "RECORD exactly what it says" where the
-  host cannot say what the right answer is. (13 Oct 26: four of one walk's five FAILs, and about twelve on the job
-  before, were the host's own expected line contradicting an older ruling.)
+- A scenario's EXPECTED line gets the same check before it goes to a walker: each names its source — a ruling, a
+  contract line, "as on `main` today" from a control run, or two surfaces of the app that must agree (the mark and the
+  changes list) — and one with none, or one the host cannot settle (a
+  COUNT, a REFUSAL or a PUBLISHED-DAY state above all), is rewritten "RECORD exactly what it says". An expectation that
+  differs by surface (a window that blocks or not, a role, a size) is read from its own roll-call column, set row by
+  row before the script is written. (13 Oct 26: four of one walk's five FAILs, and about twelve on the job before, were
+  the host's own expected line contradicting an older ruling; 2 and 8 Nov 26: three more, each an expectation with no
+  source.)
+- A code reader's brief says where its proof tests go — its own scratch folder, never a test name under the app's
+  source (staging while helpers work: the dispatching guide's "Stage by explicit path") (8 Nov 26: a reader's
+  deliberately failing test was swept into the builder's commit).
 - A recommended answer to a question parked for him is checked against his words in the full rows — not only that
   the question is still open.
 - A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
-  owner's to decide. Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
-  design are one round, with one brief — sent to as many readers as the plan's red team needs (D353: both for an
-  important plan when he calls them, otherwise the one fresh, blind Opus reader — D1734, D1760; one otherwise), never a second scenarios-only run.
+  owner's to decide — and every file the plan treats by its shape (add-only, one owner, never edited) as a claim the
+  red team breaks with a named commit from that file's own history (8 Nov 26: four "add-only" record files were
+  disproved in minutes). Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
+  design are one round, with one brief — sent to as many readers as the plan's red team needs (D353: two for an
+  important plan — Astra first, then Sol 6.1 on his call or otherwise a fresh, blind Opus reader, D1760, D1770; one
+  otherwise), never a second scenarios-only run.
 - Offer a reader only the checks its sandbox can perform. One that cannot run anything is told so, and asked to name
-  the exact input it would run; the host runs every such case before dispositioning the finding.
+  the exact input it would run; the host runs every such case before dispositioning the finding. Every file the brief
+  names sits inside the copy the reader is given or the session's scratchpad: Codex's read-only sandbox was refused the
+  shared notes folder under the roaming application-data folder, after a full run (7 Nov 26) — copy such a file in, and
+  probe each named path with a one-line read before the long run.
+- A conformance read's brief (a page, a summary or a port checked against its sources) has the reader search related
+  sources by the subject of each claim — the actions, screens and terms it names — never by the name of the document
+  under review: a later ruling that changes a subject rarely names every document that describes it (8 Nov 26: the
+  step's most serious gap was found only that way).
 
 **What to do with what they hand back** — this is the requesting agent's job, not theirs:
 
@@ -307,7 +337,10 @@ an area the other found a defect in is the cheapest possible pointer to a real b
    symptom: where a finding says something is "unchanged" or "invisible", probe every reader of that state (what
    draws it, what validates it, who is available because of it, what consumes it downstream). A finding that fails
    there is dispositioned a false positive (item 5), marked "checked", with the reader that disproves it, and the
-   right behaviour is pinned by a test.
+   right behaviour is pinned by a test. Every name of the app's a finding uses — a kind, a page, a control — is checked
+   against the app's own list (the code's table, the screen) before it is repeated to him, and a probe built on a value
+   no screen can make is run again with one it can (3 Nov 26: a reader's medical kind "MC", which the app does not
+   have, reached him and was then wrongly translated).
 2. Check it against the governing ruling. Then search the tests, the code comments and the records for a decision that
    pins as INTENDED either the behaviour the finding calls a defect, or any behaviour the fix would change beyond the
    rule the finding cites. If the finding's own behaviour is pinned, it goes to him as a question and is not fixed; if
@@ -321,6 +354,10 @@ an area the other found a defect in is the cheapest possible pointer to a real b
    unresolved.
 6. Settle disagreements with evidence, never by confidence or majority.
 7. Every confirmed defect gets a regression test and a row in the roll-call.
+
+A saved report's head — who read, blind to what, which commit, how long, why an earlier run stopped — is copied from
+the brief, the run command and the run log, opened at that moment; a claim not found there is left out (7 Nov 26: two
+heads written from memory were wrong on exactly the facts the reads were later compared by).
 
 **Opus sizes the coverage for this change (§7.0; owner, D607, 7 Oct 26). A short walk may be run by the host or
 by one helper; if the chosen pass is long, D16 requires parallel helpers, as below.**
@@ -339,7 +376,11 @@ and runs unit tests; the rebuild, the gates and the re-walk of the fixes wait fo
 later round makes a new one (6 Oct 26: a frozen folder "refreshed" for the next round, under a walker of the last).
 **And the reader's half: while a reader reads the folder, nothing rewrites the source it reads** — a break test, a
 mid-flight fix, the next step's build. Break in a separate worktree, or hand the reader a commit (10 Oct 26: a
-reader reported a line a break test had cut out for one minute).
+reader reported a line a break test had cut out for one minute). The same for a helper running a check that builds
+(the drawing check, a measure): it builds from a named commit the host hands it (`git archive`), never from the live
+folder while the host fixes; and before its result is quoted, the host checks its label (`git diff --stat <its commit>
+HEAD -- raptor-port/src`, and the build's time against the commits') and re-runs the cheap part on a fixed commit
+where the code moved under it (8 Nov 26: a helper's "unchanged since" was false by two commits).
 
 **What each part of a check holds still, on ONE checkout** (14 Oct 26 — written once, so the order is not worked out
 again under load; a wrong order costs a false finding or a mixed walk):
@@ -401,8 +442,9 @@ walker trial is run or offered. The host still opens the pictures, reproduces ev
 ## 4a. How this fits the Claudex loop
 
 They do not compete. **Claudex covers the plan and the code; this order covers the running app** (D11).
-Claudex's own rules stand unchanged — in particular *the provider that built never inspects* (one exception: D588's ONE Sonnet trial fix, whose diff and tests Opus reads), and
-*never disable or bypass the workflow's independent reviewer* (`.claude/rules/raptor-executor.md`).
+Claudex's independent reviewer is never bypassed (`.claude/rules/raptor-executor.md`). The chat that wrote the code
+never reviews it; the fresh, blind Opus read required by D790 remains beside Astra's, including when Opus wrote the
+code (D1770).
 This order adds checks; it never removes one of Claudex's.
 
 | Claudex stage | What it is | What this order says about it |
@@ -414,14 +456,17 @@ This order adds checks; it never removes one of Claudex's.
 
 **Three things this order changes about how Claudex is used:**
 
-1. **The WALK goes BEFORE the final inspection, not after.** Drive the app first, fix what it
-   finds, then hand the inspector the finished code *and the evidence sheet*. Reading for absence
+1. **The WALK goes BEFORE the final inspection, not after.** Walk first and fix what it finds, then
+   give the readers the finished code and the same brief. The fresh Opus reader sees neither the walk's
+   report nor another reader's report (D790); any evidence handed to a reader follows §4's blindness
+   rules. Reading for absence
    works when there is a roll-call in hand; reading cold does not. On the OIL build the inspection
    ran first, passed, and three unwired surfaces went out behind it.
 2. **On FULL-tier work, one inspector is not enough.** Claudex's default is a single fresh session
    of the other provider. Where money, entitlement, published records, permissions or persistence
    are touched, run **two** readers independently and blind to each other (§4 rank 2 — for work Opus wrote
-   they are Astra and Sol 6.1, D590; what Codex built, Opus reads beside Codex's own inspector). That is
+   they are Astra and, second, Sol 6.1 on his call or otherwise a fresh, blind Opus reader, D590, D1734, D1770; what
+   Codex built, Opus reads beside Codex's own inspector). That is
    what found five money defects here that driving the app would not have.
 3. **The inspection brief gets the finder wording from §4.** Claudex's inspector is asked whether
    the code is wrong. Add the sentence that asks what is MISSING, or it will answer only the first
@@ -441,12 +486,15 @@ line.
 
 They do not compete (D11): Claudex covers the PLAN and the CODE, this order covers the RUNNING APP, and
 Claudex has no step that runs it. Order of operations: harden the plan with Claudex → build →
-**WALK THE APP** → then Claudex's final inspection, given the finished code AND the evidence sheet
-→ report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
+**WALK THE APP** → then Claudex's final inspection → report. Walk first and fix what it finds, then
+give the readers the finished code and the same brief. The fresh Opus reader sees neither the walk's
+report nor another reader's report (D790); any evidence handed to a reader follows §4's blindness
+rules. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
 first, passed, and three unwired surfaces went out behind it. On money, published records,
-permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and Sol 6.1 — D590).
-Claudex's own rules stand: the provider that built never inspects (one exception — D588's ONE Sonnet trial fix, read by Opus), and its reviewer is never
-bypassed. Full detail: §4a of the order.
+permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and, second,
+Sol 6.1 on his call or otherwise a fresh, blind Opus reader — D590, D1734, D1770).
+Claudex's independent reviewer is never bypassed. The chat that wrote the code never reviews it; the fresh, blind
+Opus read required by D790 remains beside Astra's, including when Opus wrote the code (D1770). Full detail: §4a of the order.
 
 ## 5. Which checks for which change
 
@@ -488,7 +536,7 @@ lived in a shared drawer and a new mode. **A cosmetic change to a shared drawer 
 | **NONE** | Nothing. | 0 |
 | **LOOK** | The gates; one before/after picture at phone and desktop; a two-line evidence sheet. | 15–20 min |
 | **WALK** | The gates; the roll-call (if a shared drawer); the door check (if a gesture); a walk of the touched surfaces at both widths, sized by the sizing step (§7.0); the new gesture in both orders; a break test per surface; the sheet. | 1–1½ h |
-| **FULL** | Everything: the rules sweep; the other model designs the scenarios; the roll-call; the door check; a walk sized by the sizing step (§7.0); break tests; the case seeded into the demo data; **both** models read the code, given the sheet and asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
+| **FULL** | Everything: the rules sweep; the other model designs the scenarios; the roll-call; the door check; a walk sized by the sizing step (§7.0); break tests; the case seeded into the demo data; **both** models read the finished code and the same brief under §4's blindness rules, and are asked for absences; re-walk what the fixes touched; the sheet with its pictures; then the owner's look. | 3–5 h of agent time |
 
 The walk is the dearest part and the part whose cost varies most: what past walks of each type of change cost
 and found is in `docs/walk-ledger.md` §The figures (D607).
@@ -515,7 +563,7 @@ and the walk's build. Once the repo is private again, the gates run on his PC (`
 
 **Order of steps in FULL:** build → open the pull request into `main` (GitHub's run is the gates; it goes during the walk)
 → roll-call and door check → **the sizing step (§7.0)** → walk, and fix what it finds (the touched tests on his PC; the
-fixes pushed once the run in progress has finished, D151) → the two reads, *with the evidence sheet in their hands* → fix
+fixes pushed once the run in progress has finished, D151) → the two reads, given the finished code and the same brief under §4's blindness rules → fix
 → re-walk only what the fixes touched → GitHub's run green on the last pushed commit → finish the sheet → the owner's look
 → his "merge live". Once the repo is private again, each "gates" step is the full set on his PC (D1086).
 
@@ -524,7 +572,10 @@ roll-call for gaps — reading for absence works when there is a list in hand.
 
 **Between fix rounds, run the touched surface's own suite — not once at the end** (23 Sep 26). Two fixes that
 are each right can contradict each other: a hint that names a door, beside a fix that removed that door. And
-when a fix removes or gates a door, search every sentence on screen that names it.
+when a fix removes or gates a door, search every sentence on screen that names it. And run the type check —
+`npx tsc -b` in `raptor-port/` (it writes no `dist`; after `npm ci` in a fresh worktree) — beside the touched tests
+before each push: the unit runner does not type-check (29 Oct 26: a fix's new test
+passed its runner and turned GitHub's whole run red three pushes in a row, unseen until the next chat).
 
 **The re-walk** (23 Sep 26). Write walk scripts as assertions of the RIGHT behaviour (a PASS means correct), so
 re-running them on the fixed build IS the re-walk. Send it to a separate output folder — the first walk's
@@ -583,9 +634,12 @@ inside the puck, over exactly the strip the mark occupies (column 3).
 - **A wording ruling, or a fix to one writer of a record, gets its own small roll-call in the same commit** —
   every place that draws that text or writes that record. The fix is STRUCTURAL (one shared constant or one
   shared body), with a test that renders or drives each place. The "grep for the old wording" rule already
-  existed both times this failed. Search for each exact old phrase on its own and list FILES, with no cap — a capped or
-  cut-short list is no list (15 Oct 26: a common phrase searched beside it filled `head -40`, and two tests that read
-  the old words failed only in the full run, fifteen minutes later).
+  existed both times this failed. Search for each exact old phrase on its own, and each old WORD alone, ignoring case
+  and with no assertion's shape around it, across the app and every test folder, unit and browser — a test holds words
+  in a pattern or a list as well as in a string — and list FILES, with no cap: a capped or cut-short list is no list
+  (15 Oct 26: a common phrase searched beside it filled `head -40`, and two tests that read the old words failed only
+  in the full run, fifteen minutes later; 30 Oct 26: two browser tests, the words in a pattern and in a list, escaped a
+  search for the literal strings).
 
 **And more rows, each from a fault a roll-call missed (24 Sep – 12 Oct 26):**
 
@@ -607,6 +661,13 @@ inside the puck, over exactly the strip the mark occupies (column 3).
   down once the form above it was gone); what else ran on the event it removes — a deferred paint, a save, a
   tidy-up: still runs / now triggered here / no longer needed, because…; and, for a way out, the surface's own
   positioning rules, with a real-browser test that presses the new way out.
+- **A change that removes, renames or moves a selector — a class, a test id, the element that scrolls —** lists every
+  reader of the old one, found by searching each exact selector on its own across the whole app, every test folder
+  and the probes, uncapped — never only the area's own files. Each test that queried it is run before the first push
+  and checked not to have gone hollow (it must still find what it reads); and where the scroller moved, a carried
+  thing is held just inside each new edge of the visible area — under a pinned bar, above a pinned foot (28 Oct 26: a
+  test's list of cut names went empty, so it could never fail; 8 Nov 26: an older spec still scrolled the old pane,
+  and the drag's edge band still measured from it, hidden under the new pinned bar).
 - **A fix that changes when a writer reports "nothing happened"** — its return value, its no-change condition — lists
   every caller that reads the return or compares again after the call.
 - **A listener added above its own component** (the document or the window; a key, a press) lists every state in
@@ -636,6 +697,17 @@ inside the puck, over exactly the strip the mark occupies (column 3).
   free-crew strip, ALL AVAIL, the Leave War's count — not only the screens that draw the input (25 Oct 26: a course
   moved under Unavailable was drawn free on all four).
 
+**And from the walks and reads of 27 Oct – 9 Nov 26:**
+
+- **A part the app draws in more than one COPY** (a header, its pinned bar's sliding row, that bar's frozen corner) is
+  listed copy by copy, found on the running page by the element's own class, not from the component; a value that
+  changes as the view moves (a scroll, a turn of the year) is walked moving in each copy, judged on what is drawn on
+  top (`elementFromPoint`), never on the first match (2 Nov 26: the frozen corner, a third copy, kept the old year).
+- **A part drawn inside another surface but owned by a different component** (drawn there through a portal) lists the
+  handlers of BOTH — press to bring forward, Escape, a press outside, the focus trap — each pressed in the real browser
+  at a phone's size: its answer button pressed, not only seen, and Escape typed on the part and elsewhere. A unit test
+  dispatches events straight at the element and passes all four (4 Nov 26: four of six finds had this one cause).
+
 ---
 
 ## 7. The walk
@@ -656,8 +728,11 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
   and OPERATED on its own surface (§7.3) — the roll-call is not sized.
 - **A screen with an approved drawing gets the drawing check (his D1494, 29 Oct 26; made a standing step, D1495).** The
   sizing lines name each such surface's drawing and the check's part list for it (`scripts/drawcheck/specs/`); the
-  check is run as §7.10 says, and the walk does not stand in for it, nor it for the walk. A surface whose drawing has no
-  part list or no record yet gets both first (`docs/walk-scripts.md` §10). A screen drawn at one size only is said so
+  check is run as §7.10 says, and the walk does not stand in for it, nor it for the walk: a drawing proves appearance, never reachability — a
+  build faithful to it carries the drawing's own faults too, so every control the change moves is PRESSED in each state
+  the drawing shows (a window open over it) (5 Nov 26: a control the drawing showed covered). A surface whose drawing has no
+  part list or no record yet gets both first (`docs/walk-scripts.md` §10). Saved figures from the drawing script may
+  help prepare them; they do not replace the checks approved in D1495. A screen drawn at one size only is said so
   here, and its other size is carried by the walk. Where no drawing exists, nothing here applies.
 - **What a test may carry, and what it may not.** A named test may carry repeated cases of a calculation where the
   sizing step says why their route on screen and their behaviour there are the same as a route already walked. It
@@ -733,7 +808,10 @@ finding.
 - **A layout fix is walked once with wider letters too.** GitHub's Linux machines and his iPhone draw wider letters
   than this PC: force them from the first paint (the Leave War browser tests' `LW_WIDE_LETTERS=1`, an init script — a
   style added after the page loads misses what the app measures as it loads), in the test's own order of resizes
-  (23 Oct 26: three geometry tests red only on Linux, all reproduced here that way).
+  (23 Oct 26: three geometry tests red only on Linux, all reproduced here that way). And a NEW browser test that asserts
+  text fits a width pins its letters from the first paint (Arial, Liberation Sans) unless it is about the device's own
+  letters, and is run once with wide letters before its first push (8 Nov 26: the same trap met again, a merge stalled
+  — a check that does this by itself is filed, `[CHECK-TOOLS-HARDEN]`).
 - **How a walk script, a walker's brief and a break-test list are written — and what each trap in them has cost —
   is `docs/walk-scripts.md`.** Read it before writing one; every walker's brief names it.
 
@@ -757,7 +835,10 @@ smallest table: the same trigger again inside the lifetime; a second, different 
 hidden or re-made while it runs; and its end arriving while another is running. **The states include the one each
 role's DEFAULT controls produce** (an admin's "Approve what I enter" is ticked, so his bid lands approved, not pending),
 and the red test of a fix goes once through the real door that makes that state (24 Oct 26: a store-only fixture kept
-the bid pending and the fixed line drew nothing in the app).
+the bid pending and the fixed line drew nothing in the app). **A press that moves the keys** (a menu opening on its
+first item, a window taking the keys) is walked with the key HELD as well as pressed once — two `keyboard.down` in
+Playwright send a repeat, which lands on what the first press moved the keys onto (8 Nov 26: on the live app a held
+Enter on + Block added a block nobody chose; two keyboard walks had pressed once).
 
 **7.5 You have walked enough when** every roll-call row has a mark in every column, every order line
 has a result — from the walk, or from a test §7.0 allows to carry it — every MISSING has a disposition, the error list is empty or named, and the pictures
@@ -831,7 +912,12 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
   corners, where its words sit and what they say — and lists every difference over about 2px with the two side by side
   and laid over each other. Its part list carries a state at his iPhone's size and at his PC's for every screen drawn
   at both. It runs while the screen is built and after every fix. The check sees only the parts its list names; the
-  side-by-side look by eye stays, for everything the list does not name.
+  side-by-side look by eye stays, for everything the list does not name. **"Matches" is a verdict that needs its
+  evidence too:** every surface with an approved drawing gets its pair — differences ringed, a match shown unringed —
+  or its check's record, and a "matches" line cites it; a surface with neither is "not compared", never "matching"
+  (27 Oct 26: a phone bar listed as matching carried the three differences he then ruled on for the desktop). Before
+  a difference is built "back to the drawing", look at where the drawing meets the live page: a drawn panel can cover
+  a live part, and the difference is then the drawing's own (29 Oct 26).
   While the screen is built, a difference is put back to the drawing (D1424), or kept on purpose for a better design
   and named to him with its picture; once the build has gone for his look, each difference is shown to him side by
   side before any is put back, an outright fault (words breaking, something covered or off screen, a wrong behaviour)
@@ -883,6 +969,13 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** when a change hands anything to the phone itself (its scrolling, its keyboard, its bounce), the sizing step
    names what only the real phone draws and asks him for a look or a recording on his iPhone before merge; a walk that
    judges scroll bars launches with the test browser's `--hide-scrollbars` taken off.
+7. **A mechanism tuned to a model of the phone is proved only by the model (D1412, the keyboard's six rounds, 25–27 Oct 26).** Six
+   rounds moved, held and then glided a window against a model of his iPhone's keyboard slide; each passed the stand-in keyboard,
+   which played that very model, and each failed on his phone, where the real slide, its timing and what the phone draws between
+   the app's frames were never quite the model. **Lesson:** where a change steers something frame by frame against a motion the
+   phone itself makes, no stand-in can prove it — the sizing step says so, asks for his recording before anything is called
+   fixed, and the design question comes first: hand the motion to the phone (the board, D1081; the windows, D1412) rather than
+   model it, and keep a model only where he has seen it work on his own screen.
 8. **A fix that reshaped an approved drawing, and a reading of it nobody held beside the picture (D1424, the Leave War M4's
    Approvals, 27 Oct 26).** On a phone "New 1" broke onto two lines; the fix gave New two columns and Approve all a row of its
    own — four rows where his drawing has three — chosen without opening the drawing. On a desktop the build read "the list
@@ -891,13 +984,6 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** a screen with an approved drawing is compared with it while it is built and after every fix to it — the
    sizing step names the drawing for each surface and the walker's brief carries it; a fix for a fault keeps the drawn
    layout, and a departure chosen on purpose is named to him with its picture and reason.
-7. **A mechanism tuned to a model of the phone is proved only by the model (D1412, the keyboard's six rounds, 25–27 Oct 26).** Six
-   rounds moved, held and then glided a window against a model of his iPhone's keyboard slide; each passed the stand-in keyboard,
-   which played that very model, and each failed on his phone, where the real slide, its timing and what the phone draws between
-   the app's frames were never quite the model. **Lesson:** where a change steers something frame by frame against a motion the
-   phone itself makes, no stand-in can prove it — the sizing step says so, asks for his recording before anything is called
-   fixed, and the design question comes first: hand the motion to the phone (the board, D1081; the windows, D1412) rather than
-   model it, and keep a model only where he has seen it work on his own screen.
 9. **A list's alignment judged by eye, one kind of row at a time (D1437, D1438, the Leave War M4's Approvals, 27 Oct 26).** Three
    walkers and a drawing comparison passed the Approvals list's alignment; he found, from two pictures, its headings off
    their figures by 12 to 24px on a phone and 16px on a desktop, and a WSO's name at the right of its puck — the list's own
@@ -1010,6 +1096,13 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** before a walk asserts what a tap opens, search the rulings for what a tap on that kind of entry opens on an
    ordinary day, and walk the two side by side — the ruled window is the expected one, never the build's; and the sizing
    lines name, lesson by lesson, what covers this list (`scripts/handpass/lw-d1720-walk.mjs` step B, re-walked; his D1722).
+23. **A fault in the picture, looked past because it was not the thing under test (his iPhone picture, Admin → Users' "Add a
+   person", 5 Nov 26).** The posting-out bell walk pictured Admin → Users on a phone at every landing; in those very pictures
+   "PILOT, WSO OR PERSONNEL" broke onto two lines and its box stood lower than CAT's, a text box shorter than the pick-list
+   beside it — against his lesson 43 since 23 Oct 26. The walk checked the ringed row and nothing else on the screen.
+   **Lesson:** every screen a walk pictures is also checked for the standing layout lessons — each pair of side-by-side boxes
+   measured one height and one line (lesson 43), at a phone's width with an iPhone's letters as well as a desktop's — not only
+   the part the change made (`scripts/handpass/adm-pairs-measure.mjs` is the pattern).
 24. **A walk that never flicked to the page's foot on a phone (his iPhone recording, the Leave War, 8 Nov 26, 14:31).**
    Every walk of the pinned dates row scrolled to set places and flicked in the middle of the page. On his iPhone a hard
    flick to the page's foot bounced it, Safari folded its toolbar, and for a moment the bounce carried the top bar off
@@ -1040,7 +1133,10 @@ the reader's instructions or model change, it is run on every case and a change 
    `scripts/handpass/breaks-browser.mjs` (what only a browser can see): a job writes a LIST for them, never
    another copy of the loop. And before writing the missing test, rule out the other readings of a break that
    stayed green — it never met a test able to see it, the wire is invisible to that test world, or the line
-   decides nothing (`docs/walk-scripts.md` §Break tests).
+   decides nothing (`docs/walk-scripts.md` §Break tests). **A test builds its own precondition and asserts it:** a skip
+   when the precondition did not happen reads green and proves nothing on that run — it is a finding; and the break
+   turns the test red at the assertion that matters, not at the set-up (9 Nov 26: a test that "hoped" its box landed
+   low on the screen skipped whenever the demo data moved it).
 5. **The other model designs the scenarios.** The builder's tests encode the builder's picture of
    the feature and share its blind spots.
 6. **Reviewers are handed the roll-call and asked for absences**, not only for errors.
@@ -1056,14 +1152,6 @@ the reader's instructions or model change, it is run on every case and a change 
    that walk real records never meet it.
 
 ---
-
-23. **A fault in the picture, looked past because it was not the thing under test (his iPhone picture, Admin → Users' "Add a
-   person", 5 Nov 26).** The posting-out bell walk pictured Admin → Users on a phone at every landing; in those very pictures
-   "PILOT, WSO OR PERSONNEL" broke onto two lines and its box stood lower than CAT's, a text box shorter than the pick-list
-   beside it — against his lesson 43 since 23 Oct 26. The walk checked the ringed row and nothing else on the screen.
-   **Lesson:** every screen a walk pictures is also checked for the standing layout lessons — each pair of side-by-side boxes
-   measured one height and one line (lesson 43), at a phone's width with an iPhone's letters as well as a desktop's — not only
-   the part the change made (`scripts/handpass/adm-pairs-measure.mjs` is the pattern).
 
 ## 9. The evidence, and the owner's sixty-second check
 
