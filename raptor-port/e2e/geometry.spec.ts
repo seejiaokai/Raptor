@@ -7,7 +7,7 @@
    pass `npm test` all day. Here they run in a real browser on the real
    production build, so a CSS change that breaks one fails a gate. */
 import { expect, test } from '@playwright/test'
-import type { Page } from '@playwright/test'
+import type { Browser, CDPSession, Locator, Page } from '@playwright/test'
 import { clickHere, go, login, pan, puckSize, scrollTo, settle, settleBoth, settleWeek, expectPinned } from './app'
 
 const PHONE = { width: 390, height: 844 }
@@ -6166,4 +6166,291 @@ test('the pass sets a 14-letter callsign on one line, at a phone\'s width and a 
     expect(cs.size, `${size.width}: still large`).toBeGreaterThanOrEqual(16)
     await page.click('#accOut'); await page.waitForSelector('#luser')
   }
+})
+
+/* TWO SMALL QUALS FAULTS, IN A REAL BROWSER (11 Nov 26) — a desktop's size by mouse and a phone's by finger.
+
+   [QUALS-OUTLINE-RESCROLL] — after "Check his quals" or an Undo the page goes to the outlined row ONCE (D672: only when
+   it is out of view). The outline was re-applied after every repaint of the page together with its scroll, so a later
+   change with that row off the screen — a tick on another man's row, a sort — pulled the page back to it. Scrolling
+   needs a real layout: jsdom answers "not on screen" for every row, so only a browser can tell the two apart.
+
+   [QUALS-PINNED-HEAD-NO-DRAG] — in Edit quals, with the page scrolled down, a heading in the pinned row under the top
+   bar starts the same column drag as the table's own heading: the same frame down the column, the same landing mark,
+   the same new order, the same Undo. The press was listened for on the table alone. jsdom lays nothing out, so the
+   pinned row never shows there. */
+test.describe('Quals: the outline\'s one trip, and a column dragged by a pinned heading', () => {
+  /* the phone is his iPhone's width with the browser's own bars taking their share of its height: the men who hold a
+     sign-in stand mid-list, and on the full 874 one of them cannot be put wholly off the screen at either end of the page */
+  const SIZES = [['desktop', { width: 1000, height: 700 }, false], ['phone', { width: 402, height: 700 }, true]] as const
+  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
+
+  async function open(browser: Browser, baseURL: string | undefined, vp: { width: number; height: number }, phone: boolean) {
+    const context = await browser.newContext({ baseURL, viewport: vp, isMobile: phone, hasTouch: phone })
+    const page = await context.newPage()
+    const errs: string[] = []
+    page.on('pageerror', e => errs.push(String(e)))
+    page.on('console', m => { if (m.type() === 'error') errs.push(m.text()) })
+    await login(page)
+    /* a passing note must never be what a press lands on */
+    await page.addStyleTag({ content: '#toastEl{visibility:hidden!important}' })
+    const press = (l: Locator) => (phone ? l.tap() : l.click())
+    const cdp = await context.newCDPSession(page)
+    return { context, page, errs, press, cdp }
+  }
+  const touch = (cdp: CDPSession, type: string, pts: number[][]) =>
+    cdp.send('Input.dispatchTouchEvent', { type: type as any, touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x), y: Math.round(y), id: i + 1 })) })
+
+  /* where the outlined row stands: wholly on screen = between the top bar's foot (and the pinned heading, while it
+     shows) and the window's foot */
+  const outlined = (page: Page) => page.evaluate(() => {
+    const tr = document.querySelector('#qtbl tr.back-hl')
+    const r = tr?.getBoundingClientRect()
+    const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+    return {
+      y: Math.round(window.scrollY), who: (tr?.querySelector('td.qname') as HTMLElement | null)?.dataset.person ?? null,
+      onScreen: !!r && r.top >= bar - 0.5 && r.bottom <= window.innerHeight + 0.5,
+      off: !!r && (r.bottom <= bar || r.top >= window.innerHeight),
+    }
+  })
+  /* a tick box on another man's row that a press can reach: wholly on screen, clear of the bars and of the name column
+     (the table is first slid sideways so the qualification columns stand in view on a phone too) */
+  async function tickElsewhere(page: Page, press: (l: Locator) => Promise<void>) {
+    const q = await page.evaluate(() => {
+      const wrap = document.querySelector('#page-quals .qwrap') as HTMLElement
+      const name = document.querySelector('#qtbl td.qname')!.getBoundingClientRect()
+      const first = document.querySelector('#qtbl td.qcell[data-q]')!.getBoundingClientRect()
+      wrap.scrollLeft += Math.max(0, first.left - name.right - 4)
+      const pin = document.querySelector('[data-testid="qsticky-head"]')?.getBoundingClientRect().bottom ?? 0
+      const top = Math.max(document.querySelector('.topbar')!.getBoundingClientRect().bottom, pin) + 8
+      const nameR = document.querySelector('#qtbl td.qname')!.getBoundingClientRect().right
+      for (const td of document.querySelectorAll<HTMLElement>('#qtbl tr:not(.back-hl) > td.qcell[data-q]:not(.na):not(.qro)')) {
+        const r = td.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2
+        if (r.top < top || r.bottom > window.innerHeight - 8 || r.left < nameR + 2 || r.right > window.innerWidth - 8) continue
+        if (document.elementFromPoint(x, y)?.closest('td') === td) return td.dataset.q!
+      }
+      return null
+    })
+    expect(q, 'a tick box on another man\'s row stands in reach').not.toBeNull()
+    const held = () => page.evaluate(k => !!document.querySelector(`#qtbl td[data-q="${k}"] .qchk`), q!)
+    const was = await held()
+    await press(page.locator(`#qtbl td[data-q="${q}"]`))
+    await expect.poll(held, 'the tick was taken').toBe(!was)
+    /* the page is given time to move, if it is going to */
+    await sleep(500)
+  }
+
+  for (const [label, vp, phone] of SIZES) {
+    test(`[QUALS-OUTLINE-RESCROLL] ${label}: after "Check his quals" a tick on another man's row leaves the page where it is`, async ({ browser, baseURL }) => {
+      const { context, page, errs, press } = await open(browser, baseURL, vp, phone)
+      /* "he's back": his account suspended and enabled again on Admin → Users raises the prompt on Quals (D284, D307) */
+      await page.evaluate(() => (window as any).go('admin'))
+      await page.waitForFunction(() => (window as any).CURPAGE === 'admin'); await sleep(350)
+      if (phone) { await press(page.locator('.adm-cat', { hasText: 'Users' }).first()); await sleep(250) }
+      /* a pilot with a sign-in who is not the admin signed in (his own row cannot be opened) */
+      const MAN = 'bane'
+      for (const word of ['Suspend', 'Enable']) {
+        await press(page.locator(`#accList [data-person="${MAN}"] .acc-tap`))
+        await expect(page.locator('#accEdOnOff')).toHaveText(word)
+        await press(page.locator('#accEdOnOff'))
+        await expect(page.locator('#accEdOnOff')).toHaveCount(0)
+      }
+      await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+      await press(page.locator(`[data-back-check="${MAN}"]`)); await sleep(500)
+      const first = await outlined(page)
+      expect(first.who, 'his row is outlined').toBe(MAN)
+      expect(first.onScreen, 'and the page went to it — once').toBe(true)
+
+      /* editing on, and the page taken to whichever end leaves his row off the screen */
+      await press(page.locator('#qEdit')); await sleep(300)
+      await page.evaluate(() => window.scrollTo(0, 0)); await sleep(400)
+      if (!(await outlined(page)).off) { await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight)); await sleep(400) }
+      const away = await outlined(page)
+      expect(away.who, 'the outline is still his').toBe(MAN)
+      expect(away.off, 'his row stands off the screen').toBe(true)
+      expect(Math.abs(away.y - first.y), 'the page was moved away from where "Check his quals" left it').toBeGreaterThan(100)
+
+      await tickElsewhere(page, press)
+      const after = await outlined(page)
+      expect(after.y, 'a tick on another man\'s row never brings the page back to the outlined row').toBe(away.y)
+      expect(after.who, 'the outline keeps its life: still on his row').toBe(MAN)
+      expect(errs).toEqual([])
+      await context.close()
+    })
+
+    test(`[QUALS-OUTLINE-RESCROLL] ${label}: after an Undo outlines a row, a tick elsewhere and a sort leave the page where it is`, async ({ browser, baseURL }) => {
+      const { context, page, errs, press } = await open(browser, baseURL, vp, phone)
+      await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+      await press(page.locator('#qEdit')); await sleep(300)
+      /* a tick on the first man's row, taken back: Undo outlines his row, and — in view — leaves the page alone (D672) */
+      const who = await page.evaluate(() => {
+        const wrap = document.querySelector('#page-quals .qwrap') as HTMLElement
+        const name = document.querySelector('#qtbl td.qname')!.getBoundingClientRect()
+        const cell = document.querySelector<HTMLElement>('#qtbl td.qcell[data-q]:not(.na):not(.qro)')!
+        wrap.scrollLeft += Math.max(0, cell.getBoundingClientRect().left - name.right - 4)
+        return cell.dataset.q!
+      })
+      await sleep(200)
+      const id = who.split('|')[0]
+      await press(page.locator(`#qtbl td[data-q="${who}"]`)); await sleep(200)
+      await press(page.locator('#undoBtn')); await sleep(500)
+      const first = await outlined(page)
+      expect(first.who, 'Undo outlines the row it changed').toBe(id)
+      expect(first.y, 'in view already, so the page stays (D672)').toBe(0)
+
+      /* down to the page's foot: the outlined row is above the screen */
+      await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight)); await sleep(400)
+      const away = await outlined(page)
+      expect(away.off, 'the outlined row stands off the screen').toBe(true)
+      expect(away.y).toBeGreaterThan(100)
+
+      await tickElsewhere(page, press)
+      const ticked = await outlined(page)
+      expect(ticked.y, 'a tick on another man\'s row never brings the page back to the outlined row').toBe(away.y)
+
+      /* and a sort, pressed on the pinned heading row */
+      const sortKey = await page.evaluate(() => {
+        for (const th of document.querySelectorAll<HTMLElement>('[data-testid="qsticky-head"] .qfixed-scroll th[data-sort]')) {
+          const r = th.getBoundingClientRect()
+          if (r.right > window.innerWidth - 8) continue
+          if (document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest('th') === th) return th.dataset.sort!
+        }
+        return null
+      })
+      expect(sortKey, 'a pinned heading stands in reach').not.toBeNull()
+      await press(page.locator(`[data-testid="qsticky-head"] .qfixed-scroll th[data-sort="${sortKey}"]`))
+      await expect(page.locator(`#qtbl thead th[data-sort="${sortKey}"]`)).toHaveClass(/\bon\b/)
+      await sleep(500)
+      expect((await outlined(page)).y, 'nor does a sort').toBe(away.y)
+      expect(errs).toEqual([])
+      await context.close()
+    })
+  }
+
+  const colsOf = (page: Page) => page.evaluate(() => [...document.querySelectorAll<HTMLElement>('#qtbl thead th[data-col]')].map(t => t.dataset.col!))
+
+  test('[QUALS-PINNED-HEAD-NO-DRAG] desktop: a heading pressed in the pinned row drags its column as the table\'s own heading does', async ({ browser, baseURL }) => {
+    const { context, page, errs } = await open(browser, baseURL, { width: 1000, height: 700 }, false)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    await page.click('#qEdit'); await page.click('#qEditQuals')
+    await page.waitForSelector('#qtbl thead th[data-col]')
+    const before = await colsOf(page)
+    /* two headings a mouse can reach in either row: clear of the name column and of the right edge */
+    const pick = await page.evaluate(() => {
+      const wr = (document.querySelector('#page-quals .qwrap') as HTMLElement).getBoundingClientRect()
+      const nameR = document.querySelector('#qtbl thead th[data-sort="cs"]')!.getBoundingClientRect().right
+      const ok = [...document.querySelectorAll<HTMLElement>('#qtbl thead th[data-col]')].filter(t => {
+        const r = t.getBoundingClientRect()
+        return r.left > nameR + 4 && r.right < Math.min(wr.right, window.innerWidth) - 40
+      })
+      return { n: ok.length, from: ok[0]?.dataset.col, to: ok[Math.min(3, ok.length - 1)]?.dataset.col }
+    })
+    expect(pick.n, 'headings in reach').toBeGreaterThan(2)
+    const from = pick.from!, to = pick.to!
+    const centre = async (sel: string) => { const b = (await page.locator(sel).boundingBox())!; return { x: b.x + b.width / 2, y: b.y + b.height / 2 } }
+    const drag = async (row: string) => {
+      const a = await centre(`${row} th[data-col="${from}"] .qlbl`), b = await centre(`${row} th[data-col="${to}"]`)
+      await page.mouse.move(a.x, a.y); await page.mouse.down()
+      await page.mouse.move(b.x, b.y, { steps: 8 })
+    }
+
+    /* the table's own heading first: what the pinned one must match */
+    await drag('#qtbl thead')
+    await page.mouse.up(); await sleep(300)
+    const own = await colsOf(page)
+    expect(own, 'the table\'s own heading moves its column').not.toEqual(before)
+    await page.click('#undoBtn'); await sleep(300)
+    expect(await colsOf(page), 'and Undo puts it back').toEqual(before)
+
+    /* scrolled down: the heading row is the pinned one under the top bar */
+    await page.evaluate(() => window.scrollTo(0, 320)); await sleep(400)
+    await expectPinned(page, 'qsticky-head', true, 'scrolled down, the pinned heading row shows')
+    const PIN = '[data-testid="qsticky-head"] .qfixed-scroll'
+    const hit = await page.evaluate(([sel, k]) => {
+      const th = document.querySelector(`${sel} th[data-col="${k}"]`)!, r = th.querySelector('.qlbl')!.getBoundingClientRect()
+      return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest('th') === th
+    }, [PIN, from])
+    expect(hit, 'the press lands on the pinned heading itself').toBe(true)
+    await drag(PIN)
+    const mid = await page.evaluate(([sel, k]) => {
+      const frames = [...document.querySelectorAll<HTMLElement>('.lift-frame.lift')]
+      const fr = frames[0]?.getBoundingClientRect()
+      const real = document.querySelector(`#qtbl thead th[data-col="${k}"]`)!.getBoundingClientRect()
+      const tbl = document.getElementById('qtbl')!.getBoundingClientRect()
+      return {
+        frames: frames.length,
+        dLeft: fr ? Math.abs(fr.left - real.left) : -1, dW: fr ? Math.abs(fr.width - real.width) : -1,
+        dTop: fr ? Math.abs(fr.top - tbl.top) : -1, dH: fr ? Math.abs(fr.height - tbl.height) : -1,
+        landing: [...document.querySelectorAll<HTMLElement>(`${sel} th.qdrop`)].map(t => t.dataset.col),
+        lit: document.querySelectorAll('#page-quals th.qdrop').length,
+        held: document.querySelector(`${sel} th[data-col="${k}"]`)!.classList.contains('qdragging'),
+      }
+    }, [PIN, from])
+    expect(mid.frames, 'the pressed column wears the one lift frame').toBe(1)
+    expect(mid.dLeft, 'the frame stands over its column in the table').toBeLessThan(1.01)
+    expect(mid.dW).toBeLessThan(1.01)
+    expect(mid.dTop, 'and runs the whole height of the table').toBeLessThan(1.01)
+    expect(mid.dH).toBeLessThan(1.01)
+    expect(mid.held, 'the pressed heading wears its picked-up look').toBe(true)
+    expect(mid.landing, 'the heading under the pointer is lit as the landing').toEqual([to])
+    expect(mid.lit, 'one landing mark, in one place').toBe(1)
+    await page.mouse.up(); await sleep(300)
+    expect(await colsOf(page), 'the column lands where the table\'s own drag put it').toEqual(own)
+    expect(await page.locator('.lift-frame.lift').count(), 'the frame is let go').toBe(0)
+    expect(await page.locator('#page-quals th.qdrop, #page-quals th.qdragging').count(), 'no mark is left behind').toBe(0)
+    await page.click('#undoBtn'); await sleep(300)
+    expect(await colsOf(page), 'one Undo puts it back').toEqual(before)
+
+    /* a press that is not a drag does what it did: a tap on the heading moves nothing and leaves no frame; the ✕ inside
+       a pinned heading still starts no drag */
+    const a = await centre(`${PIN} th[data-col="${from}"] .qlbl`)
+    await page.mouse.move(a.x, a.y); await page.mouse.down(); await page.mouse.up(); await sleep(200)
+    expect(await colsOf(page), 'a tap moves nothing').toEqual(before)
+    expect(await page.locator('.lift-frame.lift').count()).toBe(0)
+    const x = await centre(`${PIN} th[data-col="${from}"] [data-del]`)
+    await page.mouse.move(x.x, x.y); await page.mouse.down()
+    expect(await page.locator('.lift-frame.lift').count(), 'a press on the ✕ lifts nothing').toBe(0)
+    await page.mouse.up(); await sleep(200)
+    expect(await colsOf(page)).toEqual(before)
+    expect(errs).toEqual([])
+    await context.close()
+  })
+
+  test('[QUALS-PINNED-HEAD-NO-DRAG] phone: a finger on a pinned heading, slid along the row, moves its column', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await open(browser, baseURL, { width: 402, height: 874 }, true)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    await page.locator('#qEdit').tap(); await page.locator('#qEditQuals').tap(); await sleep(300)
+    /* the second heading brought clear of the name column, as the table's own finger drag is driven (pinchzoom.spec.ts) */
+    await page.evaluate(() => {
+      const w = document.querySelector('#page-quals .qwrap') as HTMLElement, ths = [...document.querySelectorAll('#qtbl thead th[data-col]')]
+      const name = document.querySelector('#qtbl thead th[data-sort="cs"]')!.getBoundingClientRect()
+      w.scrollLeft += ths[1].getBoundingClientRect().left - name.right - 8
+      window.scrollTo(0, 320)
+    }); await sleep(400)
+    await expectPinned(page, 'qsticky-head', true, 'scrolled down, the pinned heading row shows')
+    const before = await colsOf(page)
+    const at = await page.evaluate(() => {
+      const ths = [...document.querySelectorAll('[data-testid="qsticky-head"] .qfixed-scroll th[data-col]')]
+      const l = ths[1].querySelector('.qlbl')!.getBoundingClientRect(), t = ths[2].getBoundingClientRect()
+      const x = l.left + l.width / 2, y = l.top + l.height / 2, hit = document.elementFromPoint(x, y)
+      return { x, y, tx: t.left + t.width / 2, onPinned: !!hit?.closest('[data-testid="qsticky-head"] .qlbl'), clear: t.left + t.width / 2 < innerWidth - 48 }
+    })
+    expect(at.onPinned, 'the finger lands on the pinned heading\'s words').toBe(true)
+    expect(at.clear, 'the heading it is slid onto stands clear of the edge scroll\'s band').toBe(true)
+    const y0 = await page.evaluate(() => Math.round(window.scrollY))
+    await touch(cdp, 'touchStart', [[at.x, at.y]]); await sleep(60)
+    for (let i = 1; i <= 12; i++) { await touch(cdp, 'touchMove', [[at.x + (at.tx - at.x) * i / 12, at.y]]); await sleep(24) }
+    await sleep(90)
+    expect(await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('[data-testid="qsticky-head"] .qfixed-scroll th.qdrop')].map(t => t.dataset.col)),
+      'mid-drag, the pinned heading under the finger is lit as the landing').toEqual([before[2]])
+    expect(await page.locator('.lift-frame.lift').count(), 'and the column wears the lift frame').toBe(1)
+    await touch(cdp, 'touchEnd', []); await sleep(500)
+    const after = await colsOf(page)
+    expect(after.slice(0, 4), 'the column moved under the finger').toEqual([before[0], before[2], before[1], before[3]])
+    expect(await page.evaluate(() => Math.round(window.scrollY)), 'the page did not move under the drag').toBe(y0)
+    await page.locator('#undoBtn').tap(); await sleep(300)
+    expect(await colsOf(page), 'one Undo puts it back').toEqual(before)
+    expect(errs).toEqual([])
+    await context.close()
+  })
 })

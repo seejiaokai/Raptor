@@ -1246,3 +1246,47 @@ describe('D935 — Quals: one row, no paragraph under it', () => {
     expect(host.textContent).not.toMatch(/Django|full build/i)
   })
 })
+
+/* [QUALS-OUTLINE-RESCROLL] (11 Nov 26 — found by the code read of 6 Nov 26): the outline after "Check his quals" or an Undo
+   is put back on every repaint, and the page used to be moved to its row every time with it — a tick on another man's
+   row with the outlined row off the screen pulled the page back. One ask, one trip. jsdom lays nothing out, so every row
+   reads "not on screen" here and each trip shows as a call; the page really jumping is a browser's to see
+   (e2e/geometry.spec.ts, "[QUALS-OUTLINE-RESCROLL]"). */
+describe('[QUALS-OUTLINE-RESCROLL] the outlined row: the page goes to it once for each ask', () => {
+  it('a later repaint, a tick elsewhere and a sort put the outline back and leave the page alone; a new ask goes again', async () => {
+    const { focusQualsRow } = await import('../state/view')
+    const proto = Element.prototype as any
+    const had = Object.prototype.hasOwnProperty.call(proto, 'scrollIntoView'), real = proto.scrollIntoView
+    const went: string[] = []
+    proto.scrollIntoView = function (this: Element) { went.push((this.querySelector('td.qname') as HTMLElement | null)?.dataset.person || '?') }
+    const outlinedIds = () => $$('#qtbl tr.back-hl td.qname').map(x => x.dataset.person)
+    try {
+      await act(async () => { focusQualsRow('bane'); notify() })
+      expect(outlinedIds(), 'his row is outlined').toEqual(['bane'])
+      expect(went, 'and the page went to it').toEqual(['bane'])
+      /* a repaint for another reason: the store changed */
+      await act(async () => { notify() })
+      expect(outlinedIds(), 'the outline is put back on the table drawn again').toEqual(['bane'])
+      expect(went, 'the page is not moved again').toEqual(['bane'])
+      /* a tick on another man's row */
+      if (!$('#qEdit').hidden) await click($('#qEdit'))
+      const other = $$('#qtbl td.qcell[data-q]:not(.na):not(.qro)').find(td => !td.dataset.q!.startsWith('bane|'))!
+      const q = other.dataset.q!
+      await click(other)
+      expect(outlinedIds()).toEqual(['bane'])
+      expect(went, 'nor by a tick elsewhere').toEqual(['bane'])
+      await click($(`#qtbl td[data-q="${q}"]`))   // the tick put back as it was
+      /* a sort */
+      await click($('#qtbl thead th[data-sort="flight"]'))
+      expect(outlinedIds()).toEqual(['bane'])
+      expect(went, 'nor by a sort').toEqual(['bane'])
+      await click($('#qtbl thead th[data-sort="cs"]'))
+      /* a new ask for the same man makes its own trip */
+      await act(async () => { focusQualsRow('bane'); notify() })
+      expect(went, 'a second ask goes to the row again').toEqual(['bane', 'bane'])
+      await click($('#qSave'))
+    } finally {
+      if (had) proto.scrollIntoView = real; else delete proto.scrollIntoView
+    }
+  })
+})
