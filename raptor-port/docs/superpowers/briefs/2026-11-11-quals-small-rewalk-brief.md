@@ -6,8 +6,8 @@ never build, never run a test file, never switch branch, commit, push or stash; 
 free port — 4391 if free — and stop it BY ITS PORT when you finish; a fresh browser context per scenario; watch console
 errors, page errors and failed requests). Your scripts are in the scratch folder's `job3/walk/` — reuse them.
 
-**What is new.** `raptor-port/dist` is now built from `c242ba658` (the fix round). Do not build. Three things changed
-on the Quals page:
+**What is new.** `raptor-port/dist` is now built from `8ed7b7688` (two fix rounds). Do not build. Three things changed
+on the Quals page (a fourth, small: a press by another kind of pointer during a drag cancels it — R3e):
 1. **The filter case.** If the filter box hides a man's row when the page is sent to him ("Check his quals", "Check my
    quals", an Undo or Redo of a change to him), nothing is outlined and the page stays. When his row is next drawn (the
    filter cleared), he is outlined and the page makes its ONE trip to him if he is out of view. After that, nothing
@@ -64,6 +64,15 @@ straight after.
 - c. As a, but begun on the table's OWN heading row (page at the top), second finger on another of its headings.
 - d. Two fingers put down together on the pinned row from rest and pinched apart, and the same on the table's own
   heading row and on the table's body: record what each does (does the table zoom?) — record only, no judgement.
+
+- e. If you can drive it (a CDP finger and the mouse in one phone-size page): a finger's drag live on a pinned
+  heading, then a mouse press on another pinned heading — the drag is cancelled, nothing is left on screen, no column
+  moves. If it cannot be driven, NOT RUN.
+
+**R4b — a wide desktop narrowed during a drag (pc).** At 2400×900, Edit quals, scrolled down (if the page does not
+scroll at that size, make the window 2400×500): mid-drag on a pinned heading, `page.setViewportSize({ width: 2100,
+height: <the same> })`, wait 500ms, move 1px: the pressed heading still wears its picked-up look, one landing mark, one
+lift frame (record where the lift frame stands against the mouse); drop — the order is written; Undo.
 
 **R4 — a redraw during a drag (pc).** Mid-drag on a pinned heading (mouse held down, the lift frame showing), change
 the window's size by a few px (`page.setViewportSize`), wait 300ms, move once more: the pressed pinned heading still
