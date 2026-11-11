@@ -59,18 +59,36 @@ describe('W14 — a standby line that actually flies is a real flight, every row
   })
 })
 
-describe('W14, as built — a flying standby row is graded as an SC MAIN shift, not as an ordinary flying line (UNCLEAR: D1042 "every warning an ordinary flying line gets")', () => {
-  it('as built: a lecture inside a flying SC AM shift is the amber SHIFT_SOFT, where the same lecture inside an ordinary sortie is the red clash; and no tight turn into a sortie after END', () => {
+describe('W14 — D1996 (Q3 answered, 11 Nov 26): a standby line that flies is checked like a sortie — a clash inside it is red, and the tight-turn and double-turn notes apply', () => {
+  it('D1996: a lecture inside a flying SC AM shift is the red clash, as inside an ordinary sortie; a sortie 30 min after the flying shift\'s END is a tight turn', () => {
     const w: any = makeStandalone('sc'); add(TUE, w)
     const am = w.formations[0]; am.rl = '06:30'; am.aircraft[2].p = 'split'
     ;(DAYS[TUE] as any).ground.push({ prog: 'LECTURE', str: '0900', end: '1000', who: 'split' })
-    expect(warns(TUE, 'split', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'the flying SPARE').toEqual([['SHIFT_SOFT', 'adv']])
+    expect(warns(TUE, 'split', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'the flying SPARE').toEqual([['DOUBLE_BOOK', 'hard']])
     ;(DAYS[TUE] as any).waves.splice(0)
     add(TUE, flyLine([], '08:00', '12:00', 'split'))
     expect(warns(TUE, 'split', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'an ordinary sortie').toEqual([['DOUBLE_BOOK', 'hard']])
     ;(DAYS[TUE] as any).ground.splice(0); (DAYS[TUE] as any).waves.splice(0)
     add(TUE, w); add(TUE, flyLine([], '13:30', '14:30', 'split'))  // 30 min after the flying shift's END
-    expect(warns(TUE, 'split', 'TURN'), 'as built: a shift is not a leg, so no tight turn').toEqual([])
+    expect(warns(TUE, 'split', 'TURN').map((x: any) => x.sev), 'END → the next take-off, as a landing → take-off').toEqual(['adv'])
+    expect(warns(TUE, 'split', /DOUBLE_BOOK|SHIFT_SOFT/), 'one after the other is a turn, not a clash').toEqual([])
+  })
+  it('D1996, the edges: the same shift standing by (nothing typed) keeps the amber SHIFT_SOFT and no turn; a Meeting input inside a flying shift is red; the SC MAIN that only stands by is untouched', () => {
+    const w: any = makeStandalone('sc'); add(TUE, w)
+    const am = w.formations[0]; am.aircraft[0].p = 'split'           // the MAIN row, nothing typed: stands by
+    ;(DAYS[TUE] as any).ground.push({ prog: 'LECTURE', str: '0900', end: '1000', who: 'split' })
+    expect(warns(TUE, 'split', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'standing by: as built').toEqual([['SHIFT_SOFT', 'adv']])
+    ;(DAYS[TUE] as any).ground.splice(0); add(TUE, flyLine([], '13:30', '14:30', 'split'))
+    expect(warns(TUE, 'split', 'TURN'), 'a shift that only stands by is not a leg').toEqual([])
+    ;(DAYS[TUE] as any).waves.splice(1)
+    INPUTS.push({ person: 'split', date: 'Jul 14', allday: false, s: h(9), e: h(10), type: 'Meeting', remarks: '', mod: '' } as any)
+    expect(warns(TUE, 'split', /SHIFT_SOFT|INPUT_FLY/).map((x: any) => [x.code, x.sev]), 'a Meeting against the MAIN standing by: amber, as built').toEqual([['SHIFT_SOFT', 'adv']])
+    am.rl = '06:30'
+    expect(warns(TUE, 'split', /SHIFT_SOFT|INPUT_FLY/).map((x: any) => [x.code, x.sev]), 'the same Meeting once the shift flies: red').toEqual([['INPUT_FLY', 'hard']])
+    // a row ticked "Flies" by hand flies alone — its shift's other rows still stand by (D1061)
+    am.rl = ''; INPUTS.splice(0); am.aircraft[0].p = ''; am.aircraft[2].p = 'split'; am.aircraft[2].fly = true
+    ;(DAYS[TUE] as any).ground.push({ prog: 'LECTURE', str: '0900', end: '1000', who: 'split' })
+    expect(warns(TUE, 'split', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'the hand-ticked SPARE').toEqual([['DOUBLE_BOOK', 'hard']])
   })
 })
 

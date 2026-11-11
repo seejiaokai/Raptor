@@ -917,12 +917,22 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (D1061). A cancelled shift or row never flies; a row of a typed shift that does not come in is cancelled with its own
   CX — there is no untick (D1046).
 - **What a flying row gets:** it is checked as an SC MAIN is — `saExempt` is false for it, so it is an event of kind
-  `shift` (crew rest, the long day, clashes graded the shift way, the in-time window advisory, availability with no
+  `shift` (crew rest, the long day, the in-time window advisory, availability with no
   standby carve-outs — local leave no longer passes on it), with SC currency asked by its formation (`forms.sc`, every
   standby kind). Its day runs from the earliest of R, B and START (`reporting.ts scReport`, on every standby kind now)
   to its END, with no step, dekit, brief or debrief added (D1045). An AVALON / BB row that flies leaves the standby
   collection (`sacrew`) so it is never looked at twice; the rows beside it that only stand by stay there. The crew
   list judges it the same way (`avail.ts`, `avJet` false for it).
+- **Checked like a sortie (owner D1996, 11 Nov 26 — "a standby line that fly is checked like a sortie", over the report's
+  recommended "keep it a shift"):** its event and its `day.fly` entry carry `flies: true` (`events.ts`, written only when
+  true). Its START→END is a leg: a clash inside it is the red `DOUBLE_BOOK` — a lecture, an SC MAIN that only stands by —
+  never the shift's amber `SHIFT_SOFT`; a Meeting input inside it is the red `INPUT_FLY` ("Meeting but tasked — SC AM …"),
+  as against a sortie; and the tight turn (END → the next take-off, needing `max(tightTurn, dekit + step)`) and the double
+  turn (`DT` / `DT_SUM`) read it as a sortie (`validate.ts byP`). A sortie that starts after its END is a turn, never a
+  clash (compared on the airborne windows, as two sorties are). So two flying shifts back to back on one man (SC AM then
+  SC PM, both flying) are a 0-minute tight turn and a double turn — the agent's reading, said to him. A shift that only
+  stands by keeps every shift rule above. Pins: `engine/rulesfirst-2-standby.test.ts` W14, `rulesfirst-3-crew-rest.test.ts`
+  W32.
 - **Counted:** the day's badge adds one "X n" term per standby wave with rows that fly, n its flying rows with somebody
   seated; those rows leave the standby figure after the slash (`waves.ts dayCount`). Insights counts each such row as
   a sortie and its shift as a formation; a standby sortie joins no blue / red count (it has no mission). A row with

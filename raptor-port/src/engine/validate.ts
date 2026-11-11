@@ -720,7 +720,9 @@ function validateCore(){
        as tasked and are still checked for clashes and qualification, but a
        handover is not a turn, a 12-hour watch is not a long flying day, and a
        shift start does not imply a brief at T/O − 2h20. */
-    const byP:any={}; day.fly.filter((e:any)=>!e.shift).forEach((e:any)=>{(byP[e.id]=byP[e.id]||[]).push(e);});
+    /* …EXCEPT A STANDBY ROW THAT FLIES (owner D1996, 11 Nov 26 — "a standby line that fly is checked like a sortie"):
+       its START→END is the leg, so the tight turn (END → the next take-off) and the double turn read it as a sortie. */
+    const byP:any={}; day.fly.filter((e:any)=>!e.shift||e.flies).forEach((e:any)=>{(byP[e.id]=byP[e.id]||[]).push(e);});
     /* A genuine double turn is two legs flown one AFTER the other. Legs whose
        AIRBORNE windows overlap are the same air time booked twice — the hard
        DOUBLE_BOOK clash below speaks for that man, and counting him "double
@@ -787,14 +789,17 @@ function validateCore(){
            26). The line between the two is the AIRBORNE window (to..ld), never
            the padded one — so compare those, and let a real overlap fall
            through to the hard clash below. */
-        if(A.kind==='fly'&&B.kind==='fly'
+        /* D1996 (11 Nov 26): a standby row that flies is a sortie here — compared on its airborne START→END, and a
+           clash with it is the red one, never the shift's amber grading */
+        const legA=A.kind==='fly'||(A.kind==='shift'&&A.flies), legB=B.kind==='fly'||(B.kind==='shift'&&B.flies);
+        if(legA&&legB
            &&!(A.to!=null&&B.to!=null&&overlap(A.to,A.ld,B.to,B.ld)))continue;
         if(!overlap(A.s,A.e,B.s,B.e))continue;
         /* every clash, not just the first: a man double-booked in the morning
            AND in the evening used to be told about the morning only. The red
            ring goes on too — a hard warning with a grey puck was a bug. */
-        if(A.kind==='shift'||B.kind==='shift'){
-          const sh=A.kind==='shift'?A:B, other=A.kind==='shift'?B:A;
+        if((A.kind==='shift'&&!A.flies)||(B.kind==='shift'&&!B.flies)){
+          const sh=A.kind==='shift'&&!A.flies?A:B, other=sh===A?B:A;
           if(shiftEvHard(other)){
             markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
             add('hard','DOUBLE_BOOK',[id],`${sh.label} & ${other.label} clash`,kOf(sh)||kOf(other));
@@ -936,7 +941,8 @@ function validateCore(){
       (blankShift?whole:day.input).forEach((inp:any)=>{ if(inp.id!==e.id)return;
         if(canWork(inp.type)&&e.kind!=='shift')return;
         const dn=isDownchit(inp.type), lv=isLeave(inp.type), hits=blankShift||overlap(e.s,e.e,inp.s,inp.e);
-        if(!isUnavail(inp.type)&&e.kind==='shift'&&!shiftHardInput(inp.type)&&inpMeta(inp.type)){
+        /* D1996: a standby row that flies is a sortie — a Meeting inside it is the red clash, as against a sortie */
+        if(!isUnavail(inp.type)&&e.kind==='shift'&&!e.flies&&!shiftHardInput(inp.type)&&inpMeta(inp.type)){
           /* Meeting — the one KNOWN soft type — is the shift's amber voice,
              worded byte-for-byte like the ground-row SHIFT_SOFT above. An
              UNRECOGNISED type fails closed to the hard branch below (owner,

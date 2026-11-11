@@ -138,15 +138,18 @@ describe('W32 — tight turn needs max(tightTurn, dekit + step); a double turn i
     expect(allOf('DT_SUM').filter((x: any) => x.di === TUE), 'airborne windows overlap: no double turn').toEqual([])
     expect(warns(TUE, 'bane', 'DOUBLE_BOOK').length, '…the hard clash speaks instead').toBeGreaterThan(0)
   })
-  // UNCLEAR: D1042 "every warning an ordinary flying line gets" and D1045 "every row is a jet that flies … in the day's
-  // flying count and Insights" against the turn rules, which read ordinary sorties only (byP filters out shifts).
-  it('as built: a sortie and a flying SC SPARE row the same day are two sorties in Insights, but raise no double turn', () => {
+  // D1996 (Q3 answered, 11 Nov 26): "a standby line that fly is checked like a sortie" — the turn rules read it too.
+  it('D1996: a sortie and a flying SC SPARE row the same day are two sorties in Insights, and a double turn', () => {
     add(TUE, wave([], [form({ to: '06:00', ld: '07:00' })]))
     const sc: any = makeStandalone('sc'); add(TUE, sc)
     const pm = sc.formations[1]; pm.rl = '12:00'; pm.aircraft[2].p = 'bane'
     validate()
     expect(dayEvents(TUE, 'bane').map((e: any) => e.kind).sort(), 'two flights').toEqual(['fly', 'shift'])
-    expect(allOf('DT_SUM').filter((x: any) => x.di === TUE), 'as built: no double turn').toEqual([])
+    const dt = allOf('DT_SUM').filter((x: any) => x.di === TUE)
+    expect(dt.map((x: any) => [x.sev, x.who]), 'one amber double-turn line naming him').toEqual([['adv', ['bane']]])
+    // the same SC PM standing by (nothing typed): no flight, no double turn — the SPARE is not even an event
+    pm.rl = ''
+    expect(allOf('DT_SUM').filter((x: any) => x.di === TUE), 'standing by: as built').toEqual([])
   })
 })
 
