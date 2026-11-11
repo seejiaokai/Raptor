@@ -5,7 +5,7 @@ import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
 import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
-import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, SAWAVE } from '../engine/waves'
+import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, saDeskFlies, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
 import { waveInTime } from '../engine/events'
@@ -618,6 +618,9 @@ export function plCols(){return `<div class="pl-cols"><span class="h-nm">Name</s
 export function exemptDeskOwn(di:any,key:any,id:any){
   const m=/^d:(\d+)\.(\d+)\.(\d+)/.exec(String(key||'')); if(!m)return undefined;
   const dw=((DAYS[+m[1]]||{}).dutywaves||[])[+m[2]]; if(!dw||!dw.noconf)return undefined;
+  /* D1997: once its wave flies the desk is fully checked, so its puck wears the man's rings as any desk's does (the bug
+     check of 12 Nov 26: the list named his clash while the desk's puck stayed plain) */
+  if(saDeskFlies(DAYS[+m[1]],dw))return undefined;
   if((PV&&!OFW)||!id)return null;   /* official face shows these flags too (§8, Codex CRPF-008) */
   const rk=`d:${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
   /* a hidden warning flags no puck (D469) — this row works its flag out from the list, so it skips one */

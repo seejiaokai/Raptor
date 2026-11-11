@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
 import { SCHED } from './publish'
-import { VCONF } from './rules'
+import { VCONF, SHIFT_HARD } from './rules'
 import { validate, dayEvents } from './validate'
 import { makeStandalone, saFlies, dayCount } from './waves'
 import { dayOilWork } from './oil'
@@ -16,7 +16,7 @@ import { dayEngaged, dayStandby, slotBar } from './avail'
 import { dayKeys } from './restore'
 import { blockFromTpl } from './dutytpl'
 import { addWaveTpl, setWaveTplLine, waveFromTpl, delWaveTpl } from './wavetpl'
-import { saFliesHTML } from '../ui/html'
+import { saFliesHTML, exemptDeskOwn } from '../ui/html'
 
 const saved = { d: JSON.stringify(DAYS), i: JSON.stringify(INPUTS), book: JSON.stringify(SCHED), v: { ...VCONF } }
 const h = (hh: number, mm = 0) => hh * 60 + mm
@@ -89,6 +89,24 @@ describe('W14 — D1996 (Q3 answered, 11 Nov 26): a standby line that flies is c
     am.rl = ''; INPUTS.splice(0); am.aircraft[0].p = ''; am.aircraft[2].p = 'split'; am.aircraft[2].fly = true
     ;(DAYS[TUE] as any).ground.push({ prog: 'LECTURE', str: '0900', end: '1000', who: 'split' })
     expect(warns(TUE, 'split', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'the hand-ticked SPARE').toEqual([['DOUBLE_BOOK', 'hard']])
+  })
+  /* The bug check of 12 Nov 26 (walker W2 S29.1, Astra 5): with Logic's "SC MAIN clashes → another shift" at Advisory, a
+     flying SC AM against the standing PM read amber. D1996: a standby line that flies is checked like a sortie, and a
+     clash inside it is red — the Advisory setting is about a shift that only stands by. */
+  it('D1996: a flying MAIN against a standing MAIN stays red under "another shift: Advisory", in both orders; two standing shifts still follow the setting', () => {
+    const was = SHIFT_HARD.shift
+    try {
+      SHIFT_HARD.shift = false
+      const w: any = makeStandalone('sc'); add(TUE, w)
+      const am = w.formations[0], pm = w.formations[1]
+      Object.assign(pm, { to: '09:00', ld: '15:00' }); am.aircraft[0].p = 'bane'; pm.aircraft[0].p = 'bane'
+      am.aircraft[0].fly = true
+      expect(warns(TUE, 'bane', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'AM flies, PM stands by').toEqual([['DOUBLE_BOOK', 'hard']])
+      am.aircraft[0].fly = false; pm.aircraft[0].fly = true
+      expect(warns(TUE, 'bane', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'PM flies, AM stands by').toEqual([['DOUBLE_BOOK', 'hard']])
+      pm.aircraft[0].fly = false
+      expect(warns(TUE, 'bane', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'both stand by: the setting, Advisory').toEqual([['SHIFT_SOFT', 'adv']])
+    } finally { SHIFT_HARD.shift = was }
   })
   /* THE CREW LIST AGREES WITH THE WARNING LIST (the roll-call's MISSING row for D1996, closed 12 Nov 26): a man on a
      flying standby shift with a lecture or a Meeting inside it reads in the crew list as he would on a sortie — the
@@ -299,6 +317,19 @@ describe('W25 — a desk minted from an SC / AVALON / BB template is that wave\'
     const sc: any = makeStandalone('sc'); add(TUE, sc); sc.formations[0].aircraft[2].p = 'stuff'
     ;(DAYS[TUE] as any).dutywaves.push({ ...blockFromTpl('sc'), rows: [{ role: 'SXO AM', id: 'stuff', str: '07:00', end: '13:00' }] })
     expect(warns(TUE, 'stuff', 'DOUBLE_BOOK').length).toBe(1)
+  })
+  /* The bug check of 12 Nov 26 (walker W1 S03, Astra 4, the Opus read 2): the warning list said the desk man clashed, but
+     his puck on the desk stayed plain — the desk's puck still read "exempt: only my own row's warnings", and the clash is
+     anchored to the sortie. D1997: once its wave flies the desk is fully checked, so its puck wears the man's rings as an
+     ordinary desk's does (undefined = the day-wide decoration, as for any desk). */
+  it('D1997: once its wave flies, the AVALON desk\'s puck rings as an ordinary desk\'s does; standing by it keeps its own rule', () => {
+    const av: any = makeStandalone('avalon'); add(TUE, av); av.formations[0].rl = '18:30'; av.formations[0].aircraft[0].p = 'split'
+    ;(DAYS[TUE] as any).dutywaves.push({ ...blockFromTpl('avalon'), rows: [{ role: 'SXO', id: 'bane', str: '19:00', end: '07:00' }] })
+    add(TUE, flyLine([], '20:00', '21:00', 'bane'))
+    validate()
+    expect(exemptDeskOwn(TUE, `d:${TUE}.0.0`, 'bane'), 'flying: no longer exempt, the day-wide rings apply').toBeUndefined()
+    av.formations[0].rl = ''; validate()
+    expect(exemptDeskOwn(TUE, `d:${TUE}.0.0`, 'bane'), 'standing by: its own rule, clean').toBeNull()
   })
 })
 

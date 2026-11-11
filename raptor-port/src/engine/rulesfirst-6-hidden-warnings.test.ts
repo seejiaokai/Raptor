@@ -140,6 +140,26 @@ describe('W62 — a hidden warning stays hidden for everyone until someone flags
     expect(find(TUE, 'DOUBLE_BOOK', 'bane').off || false, 'a different row worded the same: shows').toBe(false)
   })
 
+  /* The bug check of 12 Nov 26 (walker W2, Astra 1, the Opus read 1): the rules keep one warning for one man, code and
+     wording, so a SECOND clash worded the same as a hidden one — the same line against another BRIEFING row — was folded
+     into the hidden warning and arrived hidden. D2001: a different item shows. The kept warning now carries every item
+     folded into it, so its key changes and it shows; take the second row away and the old hide holds again. */
+  it('D2001: a second clash worded the same as a hidden one (the same line against a second BRIEFING row) shows, and Ranger flags; take the second row away and the first stays hidden', () => {
+    day(TUE).waves.push(wave([form()]))
+    ground(TUE, 'bane', '1200', '1230')
+    ensureRowIds(DAYS); validate()
+    tap(find(TUE, 'DOUBLE_BOOK', 'bane'))
+    expect(sevOf(TUE, 'bane') || null, 'the premise: hidden, no flag').toBe(null)
+    const g2 = ground(TUE, 'bane', '1230', '1300')
+    ensureRowIds(DAYS); validate()
+    const live = ws(TUE).filter((w: any) => w.code === 'DOUBLE_BOOK' && (w.who || []).includes('bane') && !w.off)
+    expect(live.length, 'a second BRIEFING row is a different item: its clash shows').toBeGreaterThan(0)
+    expect(sevOf(TUE, 'bane'), '…and Ranger\'s puck carries the red flag').toBe('hard')
+    day(TUE).ground.splice(g2, 1); validate()
+    expect(find(TUE, 'DOUBLE_BOOK', 'bane').off, 'the second row gone: the first clash is hidden again').toBe(true)
+    expect(sevOf(TUE, 'bane') || null).toBe(null)
+  })
+
   // RULES-FIRST FINDING 6.1 (11 Nov 26, [ENGINE-RULES-REVIEW]): two lines worded alike share one warning, and hiding it plained only the first line's amber time box — the second kept its flag. Fixed by [RULES-CHECK-FIXES] (F3): the box also asks for a hidden warning in its own words.
   it('6.1 — two flying lines worded the same (no callsign, both in "WAVE 1", both 15:00–15:00): the rules keep ONE warning (the original\'s dedupe); hide it and the amber time box must go from BOTH lines (D469 "the pucks shouldn\'t have flagging for that specific item")', () => {
     day(TUE).waves.push(wave([form({ cs: '', to: '15:00', ld: '15:00' }), form({ cs: '', to: '15:00', ld: '15:00', aircraft: [ac('stiff')] })]))

@@ -110,7 +110,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
           'An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is earlier than the start.',
         ] },
       /* the rules check's F7, free since D1988 and D1989: it shows with nothing typed too, so it names what clears */
-      { id: 'crewtight', sev: 'adv', code: 'CREW_TIGHT', line: () => `His rest would be short if he reported the usual ${T('reportLead')} before take-off (Default rally before take-off), but his in-time or rally, or his B where neither is typed, is later, so it clears.` },
+      { id: 'crewtight', sev: 'adv', code: 'CREW_TIGHT', line: () => `His rest would be short if he reported the usual ${T('reportLead')} before take-off (Default rally before take-off), but his in-time or rally, or his B where neither is typed, is later, so his rest clears.` },
       { id: 'daysrun', sev: 'hard', code: 'DAYS_RUN', line: () => `On the programme more than ${lgV(VCONF.maxRun)} days in a row.`,
         how: () => [
           'Any tasking counts: a flight, a duty, a sim, a ground or programme row.',
@@ -171,7 +171,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'kind-bb', sev: 'note', name: 'BB', line: () => esc(kindNote('bb')) },
       { id: 'shifthours', sev: 'note', name: 'A shift\'s hours', line: () => 'A standby shift takes exactly its written hours: no step, dekit, brief or debrief.' },
       /* [STANDBY-FLIES] (owner D1042–D1046, D1061, D1062, 19 Oct 26) */
-      { id: 'saflies', sev: 'note', name: 'A standby row that flies', line: () => 'A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies is checked as a sortie is, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one that does not come in is cancelled with CX.' },
+      { id: 'saflies', sev: 'note', name: 'A standby row that flies', line: () => 'A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies has its clashes and turns checked as a sortie\'s are, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one that does not come in is cancelled with CX.' },
       { id: 'saflynotime', sev: 'adv', code: 'SA_FLY_NO_TIME', line: () => 'A standby shift that flies has no START or END, so its crew rest and OIL cannot be worked out.' },
       { id: 'scintime', sev: 'adv', code: 'SC_INTIME', line: () => 'A standby row that flies has a typed B (the crew\'s in-time) or R (its rally), whichever is earlier, and something sits between it and the shift start. That time also starts his crew rest, his long day and his OIL.' },   // R since D1041; every row of a flying shift since [STANDBY-FLIES]
       { id: 'scarm', sev: 'note', name: 'Arming an SC seat', line: () => 'The crew list judges each man against that shift\'s hours only.' },

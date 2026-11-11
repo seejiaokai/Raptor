@@ -137,7 +137,9 @@ export function shiftHardGround(e:any){
   }
   return shiftHardLabel(e.label);
 }
-export function shiftEvHard(e:any){return !!SHIFT_HARD[e.kind]||shiftHardGround(e);}
+/* D1996: a standby row that flies is a sortie, so a standing shift meets it as it meets a flight — never the
+   "another shift" setting's grade (the bug check of 12 Nov 26) */
+export function shiftEvHard(e:any){return !!SHIFT_HARD[e.kind==='shift'&&e.flies?'fly':e.kind]||shiftHardGround(e);}
 /* DOES HE ALREADY HOLD ANOTHER SC SEAT IN THESE HOURS? (owner, 31 Aug 26 —
    "give a warning conflict if u are planned for MAIN and SPARE in the same
    time framing … the 1300 is not a conflict"; SPARE+SPARE ruled the same red

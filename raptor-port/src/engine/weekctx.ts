@@ -35,6 +35,7 @@ import { stashDays, stashSched, stashGet } from './weekstash'
 import { getWorld, filingActive, filingHas } from './world'
 import { dayCurVerIn, daySnapIn } from './publish'
 import { canonicalDiff } from './canonical'
+import { keepRulesOn, keptRulesDiffer } from './faceattrs'
 import { viewOfWeek, deletedOverlayDue, landingDue } from './overlay'
 
 /* weekBundle(v) is a pure function of v for the two authored weeks and a
@@ -69,7 +70,7 @@ function issuedDayIn(sc:any,di:number,v:any,working:any){
      signed, so returning snap.d raw would re-introduce that label and, at a New Year
      boundary, address the wrong year in inputCoversDate/fileAcc. Never mutate the
      stored snapshot — spread a fresh object. */
-  if(snap&&snap.d)return {...snap.d,dt:working.dt};
+  if(snap&&snap.d)return keepRulesOn({...snap.d,dt:working.dt},snap.rv);   // judged by the rules it went out with (D1991)
   return {...working,waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]};
 }
 /* A STASHED WEEK AS ITS READERS ARE SHOWN IT (owner D1010, 18 Oct 26): every published day at its issued version, the
@@ -336,6 +337,7 @@ export function windowDiverges(curWeek:any,maxRun:any){
       if(!(sc.dayOK||{})[di])continue;
       const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
       if(!snap||!snap.d)return true;                // unresolvable → compute official (protect), never alias
+      if(keptRulesDiffer(snap.rv))return true;      // a Logic value it went out with differs from today's (D1991)
       if(canonicalDiff(snap.d,days.days[di],di).length>0)return true;
       /* FILING divergence too (Codex CRPF-002): a signed input removed to 'r' (or a
          new one added) changes no DAYS content, so a content-only gate would alias and

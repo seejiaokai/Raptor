@@ -721,7 +721,7 @@ function validateCore(){
       });
   };
   ev.forEach((day:any,idx:any)=>{
-    const di=day.di, ws:any[]=[], seen=new Set();
+    const di=day.di, ws:any[]=[], seen=new Set(), seenW=new Map<string,any>();
     /* publish this day's events for the crew picker (see dayEvents) */
     const evd:any=EVD[di]={}; day.events.forEach((e:any)=>{(evd[e.id]=evd[e.id]||[]).push(e);});
     SIMW[di]=day.simwin||[];
@@ -732,8 +732,11 @@ function validateCore(){
        s:/d:/g:/a: rows). Optional — day-spanning warnings carry none. The dedup
        string k stays key-free: first add wins and keeps the first item's key. */
     const add=(s:any,code:any,who:any,msg:any,key?:any,extra?:any)=>{who=who.filter(Boolean);
-      const k=code+'|'+who.join(',')+'|'+msg; if(seen.has(k))return; seen.add(k);
-      const w={sev:s,code,who,day:day.dow,di,msg,key,...(extra||{})};ws.push(w);all.push(w);};
+      /* D2001: a second clash worded the same is folded into the first, so the kept warning takes its items too —
+         its hide key then names every item, and a hidden clash never swallows a different one. */
+      const k=code+'|'+who.join(',')+'|'+msg; if(seen.has(k)){const w0=seenW.get(k),its=extra&&extra.items;
+        if(w0&&Array.isArray(w0.items)&&Array.isArray(its))its.forEach((x:any)=>{if(x&&!w0.items.includes(x))w0.items.push(x);});return;} seen.add(k);
+      const w={sev:s,code,who,day:day.dow,di,msg,key,...(extra||{})};seenW.set(k,w);ws.push(w);all.push(w);};
     const kOf=(e:any)=>e&&(e.slot||e.key)||null;   // byE events carry slot (fly/shift) or key (the rest)
     /* D502: include uncrewed formations; no invented puck penalty.
        These ordinary issued warnings freeze normally. */

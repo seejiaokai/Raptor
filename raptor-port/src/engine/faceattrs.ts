@@ -69,7 +69,17 @@ export function keptRulesDiffer(rv: any): boolean {
 }
 /* the value of Logic setting `key` that day `d` is judged by: the one its issued version kept, while the official pass
    judges it; else today's */
+/* …AND A NEIGHBOUR WEEK'S PUBLISHED DAY. The official pass reads next week's Monday (and last week's days) as fresh
+   copies of their issued versions (weekctx.ts issuedDayIn), never installed in DAYS, so the pass's map never meets them:
+   this week's Sunday then asked a Monday built with today's brief lead and said "Breaks Monday" where Monday's own
+   published face did not (the bug check of 12 Nov 26, the Opus read 3, Astra 3). Each such copy carries the values its
+   version kept, for as long as the copy lives. */
+const COPY_RV = new WeakMap<object, any>()
+export function keepRulesOn<T>(d: T, rv: any): T {
+  if (d && rv && typeof d === 'object') COPY_RV.set(d as any, rv)
+  return d
+}
 export function ruleFor(d: any, key: string): number {
-  const rv = KEPT && d && typeof d === 'object' ? KEPT.get(d) : null
+  const rv = d && typeof d === 'object' ? ((KEPT && KEPT.get(d)) || COPY_RV.get(d)) : null
   return rv && rv[key] != null ? +rv[key] : (VCONF as any)[key]
 }

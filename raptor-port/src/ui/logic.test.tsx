@@ -596,7 +596,12 @@ describe('the Logic lines the nine rule fixes changed say what the app now does'
     expect(line('reportunres')).toBe('The app cannot read the clock on an In-time line.')
   })
   it('D1996: a standby shift that flies is checked as a sortie, every clash with it red', () => {
-    expect(line('saflies')).toContain('A row that flies is checked as a sortie is,')
+    /* the bug check of 12 Nov 26 (the Opus read, a): "checked as a sortie is" was untrue — a flying shift gets no brief or
+       debrief window; D1996 is its clashes and turns */
+    expect(line('saflies')).toContain('A row that flies has its clashes and turns checked as a sortie\'s are,')
+    /* …and the tight-turn line (F7, D1989): the amber note stays once a typed time clears the rest, so "it clears" is
+       said of his rest, never read as the note going (walker W3's lead) */
+    expect(line('crewtight')).toMatch(/ is later, so his rest clears\.$/)
     expect(line('shiftsoft')).toMatch(/ Once the shift flies, every clash with it is red\.$/)
     expect(setting('SC MAIN clashes')).toMatch(/ Once his shift flies, every clash is red\.$/)
   })

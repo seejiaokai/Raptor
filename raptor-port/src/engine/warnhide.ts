@@ -23,11 +23,13 @@ import { warnMsgKey } from './publish'
    back, and a clash of ANOTHER line worded the same arrived already hidden (the rules check's Q7). A clash warning carries
    its two items by their row ids (validate.ts clashItem); the order of the two does not matter. Taken off and put back on
    the same line, the same man meets the same two items, so the clash still returns struck (D479). A warning with no
-   items — every other rule, and a version stored before this — keeps the words. */
+   items — every other rule, and a version stored before this — keeps the words. Two clashes worded the same are one
+   warning (the original's dedupe), which then carries every item of both: keyed by them all, a second clash makes the
+   line show, and taking it away brings the hidden key back (the bug check of 12 Nov 26). */
 export function hideKey(w:any):string{
   const who=((w&&w.who)||[]) as any[], cs:any={};
   const its=w&&Array.isArray(w.items)?(w.items as any[]).filter(Boolean):[];
-  if(its.length===2)return `${w.di}|${w.code}|${who.join(',')}|@${its.map(String).sort().join('&')}`;
+  if(its.length>=2)return `${w.di}|${w.code}|${who.join(',')}|@${its.map(String).sort().join('&')}`;
   who.forEach((id:any)=>{ const p=(PEOPLE as any)[id]; if(p&&p.cs)cs[id]=p.cs; });
   return `${w.di}|${w.code}|${who.join(',')}|${warnMsgKey(w.msg,cs)}`;}
 
