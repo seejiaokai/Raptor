@@ -468,7 +468,12 @@ function validateCore(){
            severity downgrade by event kind; and the REST[] map the picker
            reads is built from the same set, so they cannot disagree. */
         const rests=true;
-        const rawEnd=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift/duty ends when it ends
+        /* D1990 (11 Nov 26, [RULES-CHECK-FIXES]): a landing that is not a clock time — "TBD", or any other words —
+           ends the day as a blank one does (events.ts reads a blank landing as its take-off): take-off plus the
+           debrief. It used to end nothing (its landing not-a-number), so a TBD sortie bore no crew rest at all.
+           Crew rest only: D1936's hours and long-day note still count such a sortie nowhere (its event's report). */
+        const flyLd=e.kind==='fly'&&!isFinite(e.ld)?e.to:e.ld;
+        const rawEnd=e.kind==='fly'?flyLd+VCONF.debrief:e.e;   // a shift/duty ends when it ends
         /* [REST-BLANK-LINE] (D602, 6 Oct 26): a crewed line with no times yet ("+ Line" mints it blank) carries
            not-a-number here, and it is NOT an end. Kept, it sat in prevEnd as the man's first event of the day and
            every later `end>prevEnd` was false — his real 22:30 landing never replaced it, the `isFinite(pe)` guard
@@ -477,7 +482,7 @@ function validateCore(){
         if(rawEnd==null||!isFinite(rawEnd))return;
         const end=rawEnd+offset;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld+offset:null; prevSource[e.id]=source;}
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevSource[e.id]=source;}
       });
       /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
          "everything in duty and commitments affects crew rest… do not

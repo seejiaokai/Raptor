@@ -312,6 +312,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   value-for-value the old arithmetic (the reference parity holds). Said on the Logic page (Crew rest, "no take-off
   yet"). Pins: `engine/restblank.test.ts`, `e2e/restblank.spec.ts`.
 
+- **A "TBD" landing ends the day as a blank one does for tomorrow's crew rest** (D1990, 11 Nov 26,
+  `[RULES-CHECK-FIXES]`). A blank landing is read as its take-off (`events.ts`, `f.ld||f.to`); a landing that is not a
+  clock time — "TBD", or any other words — used to end nothing, so a TBD sortie bore no crew rest at all. The rest
+  collection (`validate.ts`, the `rawEnd` line) now reads such a landing as its take-off too: take-off plus the
+  debrief, the same end, the same message, the same dotted mark on the day before as blank. With no take-off either
+  there is still nothing to borrow and no end. D1936 is unchanged: such a sortie still counts no hours and raises no
+  long-day note. The message's "landed" words where no landing is typed are a wording question for him, not changed
+  here. Pin: `engine/rulesfirst-3-crew-rest.test.ts` (W35, D1990).
+
 - **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26 — "4 yes as
   recommended"; `[BLANK-TIMES-ABSENCE]`, built the same day).** Every absence check asked whether the absence OVERLAPS
   the seat's hours, so a man on all-day leave or a downchit seated on a line or row with no times raised nothing in the

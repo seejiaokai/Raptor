@@ -206,12 +206,29 @@ describe('W35 — a sortie with its take-off typed and its landing blank or "TBD
       expect(workSpan(dayEvents(TUE, 'bane'))!.s, `landing "${ld}": the sortie counts no hours`).toBe(h(10))
     }
   })
-  it('as built (outside D1936\'s words, pair 13): a blank landing still ends the day for tomorrow\'s crew rest (take-off + debrief), a TBD landing ends nothing', () => {
+  // D1990 (11 Nov 26, [RULES-CHECK-FIXES]) over the as-built "a TBD landing ends nothing": a "TBD" landing ends the day
+  // as a blank one does for tomorrow's crew rest — take-off plus the debrief. D1936 (hours, the long-day note) unchanged.
+  it('D1990: a blank landing and a "TBD" landing both end the day for tomorrow\'s crew rest at take-off + debrief', () => {
     const vl: any = add(MON, wave([], [form({ to: '20:00', ld: '' })]))          // 20:00 + 2h → clear 10:00
     add(TUE, wave(['09:00 IN TIME']))
-    expect(warns(TUE, 'bane', 'CREW_REST').length, 'blank: the take-off is borrowed as the landing').toBe(1)
-    vl.formations[0].ld = 'TBD'
-    expect(warns(TUE, 'bane', 'CREW_REST'), 'TBD: no end at all').toEqual([])
+    const blank = warns(TUE, 'bane', 'CREW_REST')
+    expect(blank.length, 'blank: the take-off is borrowed as the landing').toBe(1)
+    for (const ld of ['TBD', 'tbd', ' TBD ']) {
+      vl.formations[0].ld = ld
+      const tbd = warns(TUE, 'bane', 'CREW_REST')
+      expect(tbd.length, `"${ld}": ends the day as blank does`).toBe(1)
+      expect(tbd[0].msg, `"${ld}": the same end, the same words as blank`).toBe(blank[0].msg)
+      validate()
+      expect(WARN.trace[MON]?.bane?.di, `"${ld}": the dotted mark on Monday points at Tuesday`).toBe(TUE)
+    }
+    Object.assign((DAYS[TUE] as any).waves[0].formations[0], { to: '13:00', ld: '14:00' })   // brief 10:40
+    ;(DAYS[TUE] as any).waves[0].intimes = ['10:00 IN TIME']             // exactly 12h after 22:00: legal
+    expect(warns(TUE, 'bane', 'CREW_REST'), 'TBD: the equal-time edge is legal, as for blank').toEqual([])
+    vl.formations[0].to = ''                                           // no take-off either: nothing to borrow
+    ;(DAYS[TUE] as any).waves[0].intimes = ['09:00 IN TIME']
+    expect(warns(TUE, 'bane', 'CREW_REST'), 'TBD with no take-off: no end, as blank with no take-off').toEqual([])
+    vl.formations[0].to = '20:00'; vl.formations[0].ld = 'TBD'
+    expect(workSpan(dayEvents(MON, 'bane')), 'D1936 unchanged: the TBD sortie still counts no hours').toBeNull()
   })
 })
 
