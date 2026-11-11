@@ -30,11 +30,14 @@ const byDay = (o: any) => Object.fromEntries(
    BOTH sides — every new field is deliberately named `key` so one excision
    covers them all — and pin the keys POSITIVELY in validate.test.ts
    ("warnings carry the causing line's slot-key"), so they are checked, not
-   merely tolerated. */
+   merely tolerated.
+   ONE MORE SINCE 12 Nov 26 (owner D2001): a clash warning carries `items`, its two items' row ids, which the hide key
+   reads in place of the words. The reference never emits it; excised from BOTH sides here and pinned positively in
+   rulesfirst-6-hidden-warnings.test.ts ("D2001 …" — a hide follows the two items, not the words). */
 const stripKeys = (o: any): any => {
   if (Array.isArray(o)) return o.map(stripKeys)
   if (o && typeof o === 'object')
-    return Object.fromEntries(Object.entries(o).filter(([k]) => k !== 'key').map(([k, v]) => [k, stripKeys(v)]))
+    return Object.fromEntries(Object.entries(o).filter(([k]) => k !== 'key' && k !== 'items').map(([k, v]) => [k, stripKeys(v)]))
   return o
 }
 
