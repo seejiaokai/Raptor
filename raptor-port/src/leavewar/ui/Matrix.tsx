@@ -1578,8 +1578,10 @@ export function Matrix() {
     /* the remembered press's age counts from its release (the fix round's F4): the same record, its time moved on — the
        guard tells one press from the next by the record itself */
     const up = (e: PointerEvent) => { const p = lastPressRef.current; if (p && p.id === e.pointerId) p.t = performance.now() }
-    /* a touch the browser took over for a scroll or a pinch was no press on anything: forget it, as a key is forgotten */
-    const cancel = () => { lastPressRef.current = null }
+    /* a touch the browser took over for a scroll or a pinch was no press on anything: forget it, as a key is forgotten —
+       but only THAT touch: a finger resting on the screen and taken over while another taps a ✕ must not forget the ✕
+       press, or the second tap on it reaches the grid (the narrow read of the fix round) */
+    const cancel = (e: PointerEvent) => { if (lastPressRef.current?.id === e.pointerId) lastPressRef.current = null }
     const key = () => { lastPressRef.current = null }
     document.addEventListener('pointerdown', down, true)
     document.addEventListener('pointerup', up, true)

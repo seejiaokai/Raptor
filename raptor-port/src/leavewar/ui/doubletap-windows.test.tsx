@@ -306,6 +306,19 @@ describe('a window that went without a press arms nothing (the fix round, F1 and
     opens('after a cancelled touch')
   })
 
+  /* …but only THAT touch is forgotten (the narrow read of the fix round): one finger rests on the screen and the browser
+     takes it over for a scroll while ANOTHER finger taps the ✕ — the ✕ press is still the press that closed the window */
+  it('another finger the browser took over (a pointercancel for another pointer) does not forget the ✕ press: the second tap is still swallowed', () => {
+    render(<Matrix />)
+    act(() => askLw({ kind: 'oil' }))
+    const x = screen.getByTestId('oil-close')
+    press(x, 'pointerdown')
+    x.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: 9, pointerType: 'touch' }))
+    fireEvent.click(x, { detail: 1, clientX: 10, clientY: 10 })
+    expect(screen.queryByTestId('oil-sheet')).toBeNull()
+    second('the ✕ pressed while another finger was taken over')
+  })
+
   /* F4: an OLD press inside a window, and the window then closed by something that is no press (here the top row's ask
      for the grid, which takes the OIL tracker down) */
   it('a press inside a window 1.2 s ago, the window then closed without a press: a tap at that place opens the day', () => {
