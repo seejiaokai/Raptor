@@ -9,6 +9,7 @@ import { isStandalone, saExempt, saExemptKind, saFlies, saAnyFlies, CURWEEK } fr
 import { whoArr, acceptedDay } from './slots'
 import { edgeDate } from './weeks-data'
 import { standsOn } from './overlay'
+import { ruleFor } from './faceattrs'
 /* THE ACCEPT DEFERRAL IS PER-DAY, NOT PER-INPUT (audit, 12 Aug 26).
    inputFlags defers a timed accepted input to the ground row the accept
    created — but that row lives on ONE day, while the input may cover
@@ -338,7 +339,8 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
            D503 broadens only ordinary flight IN/RALLY: a reporting clock
            later than its own take-off belongs to the immediately prior day.
            Keep both interpretations shared with the pure chronology check. */
-        const briefM=shiftLine?null:flightBrief(f,toM);
+        /* D1991: on a published day judged by the official pass, the brief lead its issued version printed (ruleFor) */
+        const briefM=shiftLine?null:flightBrief(f,toM,ruleFor(d,'briefLead'));
         const stepM=shiftLine?toM:toM-VCONF.step;               // sortie: step 1h pre-T/O
         const dekitM=shiftLine?ldM:ldM+VCONF.dekit;             // sortie: land + 30m dekit
         /* intime is the in-time the wave actually PUBLISHED (null when none is

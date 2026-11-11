@@ -136,7 +136,12 @@ describe('W73 — a man\'s CAT on his puck and a blank line\'s suggested brief s
       expect([dayDelta(TUE), daySigned(TUE)], '…and reads nothing pending').toEqual([[], true])
     } finally { p.bane.q = q0; p.bane.cs = cs0 }
   })
-  it('as built (7.U1, a question for him): the brief lead raised on the Logic page after publishing — the published face still PRINTS Ranger\'s brief at 09:40, while the LIVE crew-rest check on that same face measures him to 08:40 and rings him red', () => {
+  /* D1991 (11 Nov 26) over the as-built 7.U1 — "the published schedule should not be changed by the change of logic and
+     start flagging things. Same goes for F1" — and D2005 (12 Nov 26, its reach: every Logic setting, the wider build a
+     later job): a published day's crew rest is measured to the brief it PRINTED; the new setting reaches it from its next
+     amendment. The working copy (Edit Schedule) previews that amendment, so it reads today's setting — the agent's reading
+     of D2005 ("the working copy of a published day, once edited, is checked by today's settings"), pinned here. */
+  it('D1991 (7.U1 answered): the brief lead raised on the Logic page after publishing — the published face prints 09:40 and its live crew-rest check measures to that 09:40: no breach; the next amendment brings the 08:40 brief and its breach', () => {
     /* Monday (a draft): Ranger's LATE line 18:00–19:00 + 2h debrief ends 21:00, clear of crew rest at 09:00; Tuesday's VL
        12:00 with a blank brief — at the 140-minute lead the brief is 09:40, clear */
     day(MON).waves.push(wave([form({ cs: 'LATE', to: '18:00', ld: '19:00' })]))
@@ -147,11 +152,36 @@ describe('W73 — a man\'s CAT on his puck and a blank line\'s suggested brief s
     validate()
     expect(withFaceAttrs(snapOf(TUE), () => briefLeadShown()), 'the face prints the brief with the lead it went out with (D186)').toBe(140)
     expect(dayDelta(TUE).length, 'the changed printed value reads pending (D186)').toBeGreaterThan(0)
-    expect(has(officialWarn(), TUE, 'CREW_REST', 'bane'), 'AS BUILT: the live crew-rest breach (D184) is measured to TODAY\'S lead — red on the face that prints 09:40').toBe(true)
-    expect(ws(officialWarn(), TUE).find((w: any) => w.code === 'CREW_REST').msg, 'its words name a report time the face does not print').toContain('told to report 08:40')
+    expect(has(officialWarn(), TUE, 'CREW_REST', 'bane'), 'D1991: measured to the 09:40 it prints — no breach on the published face').toBe(false)
+    expect(has(officialRaw(), TUE, 'CREW_REST', 'bane'), '…nor in the official pass itself').toBe(false)
+    validate()
+    expect(officialWarn().trace?.[MON]?.bane, 'no dotted "breaks tomorrow\'s crew rest" mark on Monday from the published Tuesday').toBeUndefined()
+    expect(has(workingWarn(), TUE, 'CREW_REST', 'bane'), 'the working copy previews the next amendment: today\'s 08:40 (the agent\'s reading of D2005)').toBe(true)
+    sign(TUE); publishALDay(TUE); validate()
+    expect(withFaceAttrs(snapOf(TUE), () => briefLeadShown()), 'the amendment prints the new lead').toBe(200)
+    expect(ws(officialWarn(), TUE).find((w: any) => w.code === 'CREW_REST')?.msg, 'from the next amendment the new setting applies').toContain('told to report 08:40')
   })
-  // RULES-FIRST FINDING 7.1 (11 Nov 26, [ENGINE-RULES-REVIEW]): the Logic page's "Brief before take-off" line says crew rest counts to this B and a published day keeps its B — on a published day the crew-rest check counts to today's B instead; flip to it() when fixed.
-  it.fails('7.1 — the Logic line read as written (D932: every line correct for whatever the settings are): on a published day crew rest counts to the B it keeps, so raising the brief lead after publishing raises no crew-rest breach measured to a B the day does not print', () => {
+  it('D1991 / D2005 (the agent\'s reading, told to him): a Logic change does not clear a published day\'s crew-rest flag either — the brief lead lowered after publishing leaves the breach measured to the printed brief', () => {
+    /* Monday ends 21:00 → clear 09:00. Tuesday published with the lead at 200: B 08:40, a breach. */
+    VCONF.briefLead = 200
+    day(MON).waves.push(wave([form({ cs: 'LATE', to: '18:00', ld: '19:00' })]))
+    day(TUE).waves.push(wave([form()]))
+    publish(TUE)
+    expect(has(officialWarn(), TUE, 'CREW_REST', 'bane'), 'the premise: published with a breach to 08:40').toBe(true)
+    VCONF.briefLead = 140; validate()                      // today's suggested brief 09:40 would clear
+    expect(ws(officialWarn(), TUE).find((w: any) => w.code === 'CREW_REST')?.msg, 'still measured to the printed 08:40').toContain('told to report 08:40')
+    expect(has(workingWarn(), TUE, 'CREW_REST', 'bane'), 'the working copy reads today\'s 09:40: clear').toBe(false)
+  })
+  it('D1991: a typed B is the brief the day prints whatever the setting — the change of lead moves nothing on a published day whose B is typed', () => {
+    day(MON).waves.push(wave([form({ cs: 'LATE', to: '18:00', ld: '19:00' })]))
+    day(TUE).waves.push(wave([form({ br: '09:40' })]))
+    publish(TUE)
+    VCONF.briefLead = 200; validate()
+    expect(has(officialWarn(), TUE, 'CREW_REST', 'bane'), 'typed 09:40: clear').toBe(false)
+    expect([dayDelta(TUE), daySigned(TUE)], 'nothing printed changed: nothing waits').toEqual([[], true])
+  })
+  // RULES-FIRST FINDING 7.1 (11 Nov 26, [ENGINE-RULES-REVIEW]), fixed by D1991 (11 Nov 26, [RULES-CHECK-FIXES]): the Logic page's "Brief before take-off" line says crew rest counts to this B and a published day keeps its B — now true on a published day too.
+  it('7.1 — the Logic line read as written (D932: every line correct for whatever the settings are): on a published day crew rest counts to the B it keeps, so raising the brief lead after publishing raises no crew-rest breach measured to a B the day does not print', () => {
     const line = lgSettings().flatMap((g: any) => g.items).find((s: any) => s.name === 'Brief before take-off')!.line()
     expect(line, 'the premise: the line\'s two claims').toMatch(/crew rest counts to this B\. A published day keeps its B until it is published again\./)
     day(MON).waves.push(wave([form({ cs: 'LATE', to: '18:00', ld: '19:00' })]))

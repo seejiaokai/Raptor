@@ -135,9 +135,11 @@ export function reportingSortKeys(w:any):(number|null)[]{
     return p.clock>to&&(!w.standalone||to-VCONF.reportLead<0)?p.clock-1440:p.clock;
   });
 }
-export function flightBrief(f:any,to:number){
+/* `lead`: the brief lead the day is judged by — today's setting, or on a published day judged by the official pass the
+   one its issued version kept (D1991; events.ts buildDay passes faceattrs.ts ruleFor) */
+export function flightBrief(f:any,to:number,lead:number=VCONF.briefLead){
   const typed=parseHM(f.br);
-  return typed!=null?(to-VCONF.briefLead<0&&typed>to?typed-1440:typed):to-VCONF.briefLead;
+  return typed!=null?(to-lead<0&&typed>to?typed-1440:typed):to-lead;
 }
 export const stated=(t:number,short=false)=>hm24(t)+(t<0?short?' (prev day)':' (previous day)':t>=1440?' (next day)':'');
 export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{

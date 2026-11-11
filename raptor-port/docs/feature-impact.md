@@ -84,7 +84,10 @@ prior-created empty buckets stay empty, existing same-day ties are preserved.
 Storage/copies/templates retain plain strings and no schema migration. D478
 selects latest-issued content for published Insights, D482 keeps current Logic
 arithmetic, and D186 freezes printed blank B only. These are distinct drift seams:
-never feed frozen printed B into validation or working content into issued hours.
+never feed working content into issued hours. **Narrowed by D1991 (11 Nov 26):** the official pass judges a
+published day by the brief lead it printed (`faceattrs.ts withKeptRules` / `ruleFor`, from `snap.rv`), so its
+crew rest is measured to the B on its face; the WORKING pass (Edit Schedule, the picker) keeps today's lead —
+it previews the next amendment, which prints today's. D2005 widens this to every Logic setting (a later job).
 Coverage: `docs/superpowers/specs/2026-10-02-rally-behaviour-register.md`.
 
 D510/D511 mint flow: existing resolved report, else earliest uncancelled valid

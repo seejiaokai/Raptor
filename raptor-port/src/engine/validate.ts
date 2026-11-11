@@ -16,7 +16,7 @@ import { keyDay, seatRow } from './keys'
 import { rowPlaces } from './slots'
 import { SCHED, approvedDays, dayApproved, dayDelta, dayDeltaCore, dayCurVer, daySnapOf } from './publish'
 import { hideKey, shownWarns } from './warnhide'
-import { rosterIds } from './faceattrs'
+import { rosterIds, withKeptRules, keptRulesDiffer } from './faceattrs'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -1869,6 +1869,8 @@ function officialDiverges(){
     const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
     if(!snap||!snap.d)return true;
     if(dayDeltaCore(di).length>0)return true;
+    /* a Logic value the version kept that today's differs from (D1991): the issued day is judged by its own (withKeptRules) */
+    if(keptRulesDiffer(snap.rv))return true;
     return filingDivergesAt(snap.fil,(DAYS[di]||{}).dt);
   }))return true;
   return windowDiverges(CURWEEK,VCONF.maxRun);
@@ -1951,7 +1953,11 @@ function withIssuedWeek(fn:any){
       SCHED.changes=changes; SCHED.pending={};
     }
     setWorld('official'); setFiling(filing);
-    return withFrozenInputs(frozenInp,fn);
+    /* …and the LOGIC VALUES each issued day went out with (owner D1991, 11 Nov 26; faceattrs.ts withKeptRules): a
+       published day is judged by the rules it was published under — today the brief lead it printed, so its crew rest
+       is measured to the brief on its face; a changed setting reaches it from its next amendment (D2005) */
+    const kept=days.filter(({snap}:any)=>snap&&snap.rv).map(({snap}:any)=>({d:snap.d,rv:snap.rv}));
+    return withKeptRules(kept,()=>withFrozenInputs(frozenInp,fn));
   }
   finally{
     setWorld('working'); clearFiling();

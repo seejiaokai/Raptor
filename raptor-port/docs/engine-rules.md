@@ -260,7 +260,11 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   valid B names it as brief. Equality and all existing standalone exemptions stay.
   These list warnings do not invent person puck marks. They follow the existing
   frozen-warning policy, while validator B reads current Logic, not the printed
-  issued B suggestion (D186). Exact tests and the register:
+  issued B suggestion (D186) — **except, since D1991 (11 Nov 26), the official pass's judgement of a published
+  day:** its legs' brief (events.ts, `flightBrief` with `faceattrs.ts ruleFor`) is the lead the day printed, so its
+  live crew-rest check measures to the B on its face (§Publishing, "A published day keeps what it went out with").
+  This order check itself still reads today's lead (a frozen warning: the face shows the one it went out with).
+  Exact tests and the register:
   `docs/superpowers/specs/2026-10-02-rally-behaviour-register.md`.
 
 - **Signed header versus today's availability bands (D503).** `waveInTime`
@@ -3340,7 +3344,17 @@ stay LIVE (below), which the face draws from today and which never make the day 
   brief's lead) — kept as published until the next AL, owner D186 ("Q1 yes", 26 Sep 26): the face, the CSV and the print
   draw these (`engine/faceattrs.ts` — the ALL AVAIL window's columns and
   order too), and the pending comparison measures today's `pa` against them, and `rv` only where a FLYING line prints a
-  suggested brief (a standby line prints none on screen — Fable's second read #1); `snap.ros` — the aircrew roster at
+  suggested brief (a standby line prints none on screen — Fable's second read #1). **And the day is JUDGED by it
+  (owner D1991, 11 Nov 26 — "the published schedule should not be changed by the change of logic and start flagging
+  things"):** while the official pass judges the issued week (`validate.ts withIssuedWeek`), each installed issued day
+  is mapped to its `snap.rv` (`faceattrs.ts withKeptRules`), and its legs' brief is worked out with the lead it printed
+  (`events.ts buildDay` → `reporting.ts flightBrief(f,to,ruleFor(d,'briefLead'))`) — so the live crew-rest breach, the
+  tight-turn note and the dotted mark on the day before measure to the B on its face; a kept value that differs from
+  today's forces the official pass (`officialDiverges`, `keptRulesDiffer`). A lead changed on the Logic page reaches the
+  day from its next amendment, which prints and keeps the new one; lowered, it does not clear a published day's breach
+  either (D2005, the agent's reading). The working copy (Edit Schedule, the crew picker) reads today's lead — it previews
+  that next amendment. Today `rv` keeps the brief lead only; D2005 (12 Nov 26) widens it to every Logic setting, the
+  same door (a later job). Pins: `engine/rulesfirst-7-published-day.test.ts` (W73, D1991, 7.1). `snap.ros` — the aircrew roster at
   issue, which the day panel's "free all day" counts on the issued face; drawn, never compared (a man joining the squadron
   would otherwise make every published day pending — Astra's second read #3).
 - **The inputs on a date — ONE reader, `inputs.ts inputsOn(dt)`** (with `inputOn`, `inputOnAny`). While a frozen version is

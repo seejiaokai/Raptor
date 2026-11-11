@@ -47,3 +47,29 @@ export const byCrewShown = (a: any, b: any) => {
 export function briefLeadShown(): number {
   return FA && FA.rv && FA.rv.briefLead != null ? +FA.rv.briefLead : (VCONF as any).briefLead
 }
+/* THE LOGIC VALUES A PUBLISHED DAY IS JUDGED BY (owner D1991, 11 Nov 26 — "the published schedule should not be changed by
+   the change of logic and start flagging things"; widened by D2005, 12 Nov 26, to every Logic setting). While the official
+   pass judges the issued week (validate.ts withIssuedWeek), each published day installed at its issued version is mapped
+   here to the rule values that version kept (`snap.rv`); the day's own rules read them through ruleFor. Built now for the
+   brief lead only — the one value a version keeps today (publish.ts faceRuleVals) — so a published day's crew rest is
+   measured to the brief it PRINTED (events.ts buildDay → reporting.ts flightBrief). Everywhere else, and for a value the
+   version did not keep, today's setting. Scoped: set for the pass, cleared in its finally; nothing inside may write.
+   The one door for the wider D2005 build: keep every setting in `snap.rv`, read each day's own rules through ruleFor. */
+let KEPT: WeakMap<object, any> | null = null
+export function withKeptRules<T>(days: { d: any, rv: any }[], fn: () => T): T {
+  const outer = KEPT, m = new WeakMap<object, any>()
+  days.forEach(({ d, rv }) => { if (d && rv && typeof d === 'object') m.set(d, rv) })
+  KEPT = m
+  try { return fn() } finally { KEPT = outer }
+}
+/* whether a version's kept rule values differ from today's — the official pass must then judge that day apart from the
+   working copy, by its own (validate.ts officialDiverges) */
+export function keptRulesDiffer(rv: any): boolean {
+  return !!rv && Object.keys(rv).some(k => rv[k] != null && +rv[k] !== +(VCONF as any)[k])
+}
+/* the value of Logic setting `key` that day `d` is judged by: the one its issued version kept, while the official pass
+   judges it; else today's */
+export function ruleFor(d: any, key: string): number {
+  const rv = KEPT && d && typeof d === 'object' ? KEPT.get(d) : null
+  return rv && rv[key] != null ? +rv[key] : (VCONF as any)[key]
+}
