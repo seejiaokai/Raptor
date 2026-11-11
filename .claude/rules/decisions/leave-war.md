@@ -101,6 +101,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 
 ## Not built yet
 - Full editing of every entry on the war is not built — an overseas duty, a course, an Attach, an Other, a medical and leave filed on the Inputs page moved, deleted and their days and remarks changed there, a day of two or more entries opening the window that adds more, each entry with its own Move and Delete, drawn first, the Inputs page's own rules holding (its full row adds them); until it is, the war's windows say where each entry is changed — [LW-FULL-EDITING] [D1724].
+- The Approvals page is to scroll as the Balances page does — the agent's reading: the page filling the screen, its list scrolling inside it under headings that stay; drawn before and after first — [APPROVALS-SCROLL-INSIDE] [D1986].
 - Each man's flight label is kept, not dropped, because he intends an option to sort the Leave War by flight; until that option is designed nothing about the label changes on screen [D1001].
 
 ## Settled — leave as they are
