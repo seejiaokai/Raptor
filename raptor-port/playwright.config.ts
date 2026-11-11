@@ -5,8 +5,11 @@ import { defineConfig, devices } from '@playwright/test'
    Playwright looks for a build it does not have — so a bare launch there dies
    telling you to run `npx playwright install`, which would re-download for
    nothing (raptor-port/CLAUDE.md). A CI runner is the opposite case: it has
-   no such path and installs its own browser. Point at the container's build
-   only when it is actually there. */
+   no such path and brings its own browser (GitHub's browser jobs: Playwright's
+   own image since 12 Nov 26, the browser found by the image's
+   PLAYWRIGHT_BROWSERS_PATH — .github/workflows/deploy.yml; his PC's runner:
+   `npx playwright install chromium`). Point at the container's build only
+   when it is actually there. */
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const launchOptions = existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}
 

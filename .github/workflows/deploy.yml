@@ -410,29 +410,41 @@ jobs:
   # 11-12 Nov 26 main's run after pull request 760 failed four times in a row, all nine browser jobs stopping in that
   # step ("Temporary failure resolving" archive.ubuntu.com, security.ubuntu.com, azure.archive.ubuntu.com) before any
   # test ran. Now:
-  #   - the job's container is mcr.microsoft.com/playwright:v<version>-noble - Ubuntu 24.04, as ubuntu-latest is, with
-  #     the browser and every system package `playwright install-deps` names (the same font packages `--with-deps
-  #     chromium` installed: the "tools" list is shared by all three browsers) already inside. Pulled from Microsoft's
-  #     registry, not Ubuntu's servers; the runner retries a failed pull three times. Nothing is downloaded from
-  #     Ubuntu's servers by these jobs any more. Not a cache of the old step: a cache needs one good fetch first and
-  #     misses whenever GitHub refreshes its machine image, so it cannot cure an outage like 11-12 Nov 26.
+  #   - the job's container is mcr.microsoft.com/playwright:v<version>-resolute - Ubuntu 26.04 - with the browser and
+  #     every system package `playwright install-deps` names (the same font packages `--with-deps chromium`
+  #     installed: the "tools" list is shared by all three browsers) already inside. Pulled from Microsoft's registry,
+  #     not Ubuntu's servers (the runner makes three pull attempts in all, then fails the job). Nothing is downloaded
+  #     from Ubuntu's servers by these jobs any more. Not a cache of the old step: a cache needs one good fetch first
+  #     and misses whenever GitHub refreshes its machine image, so it cannot cure an outage like 11-12 Nov 26. Not a
+  #     fallback either: if Microsoft's registry cannot be reached, these nine jobs fail before checkout, as on 11-12
+  #     Nov 26 they failed at the install - one outside service in place of Ubuntu's servers and Playwright's own
+  #     download site.
+  #   - RUNS-ON IS PINNED TO ubuntu-26.04, THE IMAGE'S RELEASE, and the two move together. GitHub is moving
+  #     ubuntu-latest from 24.04 to 26.04 job by job (19 Oct - 19 Nov 26); pull request 760's green run of 11 Nov 26,
+  #     the last on the bare runner, ran every browser job on 26.04 - so the image is that release too, and the
+  #     runner's fonts lent to it (below) come from the same release as its font settings.
   #   - THE TAG MUST BE THE PLAYWRIGHT VERSION IN package-lock.json (Playwright's Docker page: a mismatched image
-  #     cannot find its browser). Both browser jobs carry it; "Browser and fonts" stops the job with the fix written
-  #     out when they differ. A Playwright bump changes the two image lines in the same pull request.
+  #     cannot find its browser). Both browser jobs carry it; their "Browser image" step compares the image's own
+  #     record of its version with the installed one and stops the job with the fix written out when they differ. A
+  #     Playwright bump changes the two image lines in the same pull request.
   #   - THE RUNNER'S OWN FONTS ARE LENT TO THE CONTAINER, read-only, at /usr/local/share/fonts/runner (a folder
-  #     fontconfig reads by default). The app loads no font, so every measuring test draws in whatever sans-serif and
-  #     monospace resolve to; on the bare runner that was DejaVu (gates-and-deploy.md: "Linux's DejaVu Sans"), which
-  #     came with GitHub's machine image, not with --with-deps - and the image may hold only Liberation and FreeFont
-  #     (apt takes fonts-liberation, already asked for, for fontconfig's "fonts-dejavu-core | fonts-liberation | ..."
-  #     dependency). With the runner's fonts beside the image's, the set is what the bare runner held after --with-deps
-  #     (plus anything the Firefox and WebKit packages pulled in), so the same families resolve. "Browser and fonts"
-  #     prints, for the log, which font Chromium itself draws each family the app names in.
+  #     fontconfig reads by default). The app loads no font, so every measuring test draws in the machine's own. On
+  #     the first run in the image (12 Nov 26, Noble) Chromium drew sans-serif and the stacks that fall to it in
+  #     Liberation Sans (in the image itself; the e2e notes' "GitHub's Linux machines (Liberation Sans)"), and
+  #     system-ui, monospace and the stacks that fall to those in DejaVu Sans / DejaVu Sans Mono - which came with
+  #     GitHub's machine image, not with --with-deps (gates-and-deploy.md: "Linux's DejaVu Sans"). The lent fonts keep
+  #     those; "Browser image" fails the job if none arrived (Docker makes a missing folder an empty one silently),
+  #     and "Fonts drawn" prints, for the log only, what Chromium draws each family the app names in. Not lent: the
+  #     runner's own font settings (/etc/fonts) - the image's, of the same release, stand in.
   #   - `--user 1001` is Playwright's own GitHub example (the runner's user, so the checkout and caches stay its own);
   #     `--ipc=host` and `--init` are its Docker page's advice for Chromium (without --ipc=host Chromium can run out of
   #     shared memory and crash). The Chromium sandbox is off by Playwright's default either way.
-  #   - TZ=UTC: the bare runner ran in UTC with no TZ set; the image sets no zone, so the container is told outright
-  #     (the language was C.UTF-8 on both, which the image sets itself). "Browser and fonts" prints both as Node and
-  #     Chromium see them.
+  #   - TZ=UTC: the bare runner's clock was UTC through its /etc/localtime, TZ unset; the image sets no zone, so the
+  #     container is told outright (the language is C.UTF-8 in the image, as on the runner). "Fonts drawn" prints
+  #     both as Node and Chromium see them.
+  #   - Inside the container `localhost` names both 127.0.0.1 and ::1, so a server and a client may each pick a
+  #     different one: the Tracker smoke's own wait for its preview server now asks every loopback address, as
+  #     Playwright's own wait (geometry's) always did - on 12 Nov 26 the smoke's wait alone never saw its server.
   #   - setup-node still puts Node 22 first (the image's own Node is 24) and `npm ci` still installs the packages, so
   #     the tests run the same Playwright, Vite and Node as before; only where the browser and its libraries come from
   #     changed. The old "Cache Playwright browser" step went with it (the browser is in the image).
@@ -445,11 +457,11 @@ jobs:
       || !github.event.repository.private
       || github.actor != github.repository_owner
       || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository))
-    runs-on: ubuntu-latest
-    # Playwright's own image for the version in package-lock.json, with the runner's fonts lent to it (the note above);
-    # tracker's container below is the same lines - change both together
+    # the image's release (the note above); tracker's runs-on and container below are the same lines - change both
+    runs-on: ubuntu-26.04
+    # Playwright's own image for the version in package-lock.json, with the runner's fonts lent to it (the note above)
     container:
-      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      image: mcr.microsoft.com/playwright:v1.62.1-resolute
       options: --user 1001 --ipc=host --init
       volumes:
         - /usr/share/fonts:/usr/local/share/fonts/runner:ro
@@ -498,11 +510,18 @@ jobs:
       - name: Install
         working-directory: raptor-port
         run: npm ci
-      # the image's browser must be this Playwright's (a mismatch stops here, with the fix); then, for the log only,
-      # the font Chromium draws each family the app names in (geometry's note) - a failure of that part only warns
-      - name: Browser and fonts
+      # a gate: the image is this Playwright's, its browser starts, the runner's fonts arrived (geometry's note);
+      # then, for the log only, the fonts Chromium draws, the zone and the language - that step only warns, and
+      # neither can hold the job past its time limit
+      - name: Browser image
         working-directory: raptor-port
-        run: node scripts/ci/browser-image-check.cjs
+        run: timeout --signal=KILL 120s node scripts/ci/browser-image-check.cjs --check
+      - name: Fonts drawn
+        working-directory: raptor-port
+        run: |
+          if timeout --signal=KILL 60s node scripts/ci/browser-image-check.cjs --fonts; then :; else
+            echo "::warning::The font read-out failed or ran out of time; the tests still run."
+          fi
       - name: Geometry
         working-directory: raptor-port
         run: npx playwright test --project=${{ matrix.project }} ${{ matrix.shard && format('--shard={0}', matrix.shard) || '' }}
@@ -521,11 +540,11 @@ jobs:
       || !github.event.repository.private
       || github.actor != github.repository_owner
       || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository))
-    runs-on: ubuntu-latest
-    # Playwright's own image, the runner's fonts lent to it - geometry's note says why; the same lines as geometry's
-    # container, changed together
+    # Playwright's own image on its own release, the runner's fonts lent to it - geometry's note says why; the same
+    # lines as geometry's runs-on and container, changed together
+    runs-on: ubuntu-26.04
     container:
-      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      image: mcr.microsoft.com/playwright:v1.62.1-resolute
       options: --user 1001 --ipc=host --init
       volumes:
         - /usr/share/fonts:/usr/local/share/fonts/runner:ro
@@ -561,10 +580,16 @@ jobs:
       - name: Install
         working-directory: raptor-port
         run: npm ci
-      # as in geometry: the image's browser must be this Playwright's; the fonts printed for the log
-      - name: Browser and fonts
+      # as in geometry: the gate, then the fonts printed for the log only
+      - name: Browser image
         working-directory: raptor-port
-        run: node scripts/ci/browser-image-check.cjs
+        run: timeout --signal=KILL 120s node scripts/ci/browser-image-check.cjs --check
+      - name: Fonts drawn
+        working-directory: raptor-port
+        run: |
+          if timeout --signal=KILL 60s node scripts/ci/browser-image-check.cjs --fonts; then :; else
+            echo "::warning::The font read-out failed or ran out of time; the tests still run."
+          fi
       - name: Tracker smoke
         working-directory: raptor-port
         # the smoke itself: 3.9 minutes at most on GitHub's machines (40 halves) - a hang here stops at 12, not at the job's 30
