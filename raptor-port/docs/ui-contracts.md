@@ -5526,10 +5526,15 @@ heading gains a grip, a `.qlbl` label element and a `✕`.
   of that column and the edge scroll runs `.qwrap`; see the corrected note in
   §What a drag LOOKS like. One finger, one drag, in either row: only the pointer
   that began the drag moves or drops it, a second finger put down cancels it and
-  writes nothing, and a `pointercancel` cancels it too. The mirror's markup is
-  set again only when it changes, as the table's is, so a redraw of the page
-  mid-drag leaves the picked-up look on the pressed heading. Pinned by
-  `e2e/geometry.spec.ts`, its last block.)*
+  writes nothing, and a `pointercancel` cancels it too; a press by another kind
+  of pointer during a live drag (a mouse while a finger holds a heading)
+  cancels it and starts none. The mirror's markup is set again only when it
+  changes, as the table's is, so a redraw of the page mid-drag leaves the
+  picked-up look on the pressed heading; where it does change mid-drag (a
+  window's width changed on a desktop wider than the table, whose columns
+  share out the extra) the drag puts its picked-up look and its landing mark
+  back on the new markup (`QualsPage.tsx reapplyDrag`). Pinned by
+  `e2e/geometry.spec.ts`, its last block, and `quals.test.tsx`.)*
 
 None of it is persisted, exactly like the ticks, initials and flights beside
 it: reload and the LoX is the default set again. `rules` is still the only
@@ -7834,8 +7839,10 @@ view. Unless it's outside the screen view then it's ok to snap into view."
   waits, and its one trip is made when the filter is cleared and his row is drawn (the fix round, 11 Nov 26 — a newer
   ask still takes an older one's place). That trip is made one frame after the keystroke that drew the row: a browser
   ends every edit of a text box by bringing its caret back into view, which undid a trip made inside the keystroke
-  (seen in Chromium: the page came back and left his row just under the screen's foot)
-  (`QualsPage.tsx backWent`; pins `e2e/geometry.spec.ts` (its last block), `quals.test.tsx`).
+  (seen in Chromium: the page came back and left his row just under the screen's foot). Inside that frame: a row
+  hidden again before it runs keeps its ask for the next repaint that draws it, a newer ask lets the older one's
+  waiting trip go, and leaving the page lets it go too
+  (`QualsPage.tsx backWent`, `backFrame`; pins `e2e/geometry.spec.ts` (its last block), `quals.test.tsx`).
 - **The Inputs list (D672).** The changed input is lifted to the top of the list only when its row is not on screen (a
   row the Undo has just brought back is lifted, so it is found). A save shows the saved input by the same rule (it is
   the same reveal). **And when the page does move, the row lands in view — just under the top bar** (`ui/onscreen.ts

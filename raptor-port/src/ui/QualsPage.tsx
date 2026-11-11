@@ -321,7 +321,14 @@ export function QualsPage() {
   // eslint-disable-next-line react-doctor/rerender-state-only-in-handlers -- its render is what lines the outline up with the seat view set beside it (above)
   const [backHl, setBackHl] = useState<{ id: string } | null>(null)
   const backWent = useRef<{ id: string } | null>(null)
-  const checkBack = (id: string) => {
+  /* a trip waiting for its frame (below), with the ask it is for: let go when a newer ask takes its place and when the
+     page is left, so a frame never moves a page it was not asked on (the second fix round, 11 Nov 26) */
+  const backFrame = useRef<{ n: number; ask: { id: string } } | null>(null)
+  useEffect(() => () => {
+    if (backFrame.current) cancelAnimationFrame(backFrame.current.n)
+    backFrame.current = null
+  }, [])
+  const checkBack =(id: string) => {
     const p = PEOPLE[id]
     clearBack(id)
     setSeat(p.pers || p.seat === 'GND' ? 'GND' : p.seat === 'RCP' ? 'RCP' : 'FCP')
@@ -340,6 +347,12 @@ export function QualsPage() {
     if (PEOPLE[id]) checkBack(id)
   })
   useEffect(() => {
+    /* A NEWER ASK TAKES THE OLDER ONE'S PLACE, ITS WAITING TRIP WITH IT (the second fix round, 11 Nov 26 — the narrow
+       read's first suspicion, seen as a test: quals.test.tsx "a newer ask arriving inside the waiting frame…"). The older
+       ask's trip was still waiting for its frame (below) when a newer ask made its own trip at once; the frame then ran
+       and took the page to the older man's row, which no longer wore the outline. */
+    const waiting = backFrame.current
+    if (waiting && waiting.ask !== backHl) { cancelAnimationFrame(waiting.n); backFrame.current = null }
     if (!backHl) return
     /* THE PAGE GOES TO HIS ROW ONCE FOR EACH ASK ([QUALS-OUTLINE-RESCROLL], 11 Nov 26). The table is drawn again on every
        change of the store, which wipes the outline's class, so this runs after every repaint to put the outline back —
@@ -361,10 +374,19 @@ export function QualsPage() {
     /* ONLY WHEN HIS ROW IS NOT ALREADY ON SCREEN (owner, D672, 8 Oct 26 — "if it's already in view, undo/redo don't need
        to snap to view"): this is where an Undo of a Quals change lands, and it used to put the row in the middle of the
        screen every time. The outline above still shows which row it was. */
-    const id = backHl.id
+    const ask = backHl
     const trip = () => {
-      const row = document.querySelector(`#qtbl td.qname[data-person="${id}"]`)?.closest('tr') as HTMLElement | null
-      if (row && !rowOnScreen(row, document.querySelector('#qtbl thead'))) row.scrollIntoView?.({ block: 'center' })
+      backFrame.current = null
+      /* only the ask still standing makes its trip (above) */
+      if (backWent.current !== ask) return
+      const row = document.querySelector(`#qtbl td.qname[data-person="${ask.id}"]`)?.closest('tr') as HTMLElement | null
+      /* HIDDEN AGAIN BEFORE THE WAITING FRAME RAN, THE ASK IS KEPT (the second fix round, 11 Nov 26 — the narrow read's
+         first suspicion, seen as a test: quals.test.tsx "drawn by an edit of the filter box, then hidden again…"): two
+         edits of the filter box inside one frame drew his row and hid it again, the trip found no row, and the ask —
+         already marked as made — was lost: drawn again, he was outlined and the page stayed where it stood. An ask
+         whose trip found no row is not spent. */
+      if (!row) { backWent.current = null; return }
+      if (!rowOnScreen(row, document.querySelector('#qtbl thead'))) row.scrollIntoView?.({ block: 'center' })
     }
     /* DRAWN BY AN EDIT OF THE FILTER BOX, THE TRIP IS MADE ONCE THE EDIT HAS ENDED (the fix round, 11 Nov 26 — seen in a
        real browser: with the filter cleared by typing, the page went to his row and came straight back, his row left
@@ -372,7 +394,7 @@ export function QualsPage() {
        edit of a text box by bringing its caret back into view — which undid the trip made here. So where the box being
        typed in is the filter box, the trip waits one frame, after the browser's own scroll; every other ask (the two
        "Check … quals" buttons, an Undo) makes it at once, as before. */
-    if ((document.activeElement as HTMLElement | null)?.id === 'qFilter' && typeof requestAnimationFrame === 'function') requestAnimationFrame(trip)
+    if ((document.activeElement as HTMLElement | null)?.id === 'qFilter' && typeof requestAnimationFrame === 'function') backFrame.current = { n: requestAnimationFrame(trip), ask }
     else trip()
   })
   const tblRef = useRef<HTMLTableElement>(null)
@@ -429,6 +451,9 @@ export function QualsPage() {
   /* the column drag's press and move, for the pinned heading row to hand its own to ([QUALS-PINNED-HEAD-NO-DRAG] — set
      where the drag is wired, below) */
   const pinnedDrag = useRef<{ down: (e: PointerEvent) => void; move: (e: PointerEvent) => void } | null>(null)
+  /* the live column drag's way of putting its look back on the pinned heading row, called whenever that row's markup has
+     been set again (set where the drag is wired; called beside `pinnedInner`, below) */
+  const reapplyDrag = useRef<(() => void) | null>(null)
   /* THE PINNED HEADER FOLLOWS BY THE BROWSER (owner D993, 18 Oct 26 — "Could u try to just fix the quals pinned header
      with the 120 frames fix"): where the browser can drive an animation from a scroll (CSS scroll-driven animations),
      the pinned row's table is moved sideways by the table's own scroll timeline, off the page's code — the Leave War's
@@ -483,6 +508,14 @@ export function QualsPage() {
     ? `<colgroup>${stuck.cols.map(w => `<col style="width:${w / qzEff}px">`).join('')}</colgroup>` + qualsHead(cols, qSeatView, qSort, canEdit, armDel)
     : ''
   const pinnedInner = useMemo(() => ({ __html: pinnedHtml }), [pinnedHtml])
+  /* SET AGAIN MID-DRAG, THE PINNED ROW GETS THE DRAG'S LOOK BACK (the second fix round, 11 Nov 26 — the narrow read's
+     finding 1, seen in a real browser: e2e/geometry.spec.ts "wide desktop: the window narrowed during a drag begun on a
+     pinned heading…"). Keeping the object above covers a redraw that leaves the markup as it read. On a desktop wider
+     than the table the columns share out the extra width, so a change of the window's width mid-drag measures them
+     again, the markup carries new widths and IS set again: the pressed heading lost its picked-up look and the landing
+     mark went until the next move. So the drag itself puts both back, after the commit that set the markup and before
+     the browser paints it. */
+  useLayoutEffect(() => { reapplyDrag.current?.() }, [pinnedInner])
 
   /* remove a column. WIRED ones arm first — see the note beside WIRED. */
   const delQual = (k: string) => {
@@ -644,13 +677,35 @@ export function QualsPage() {
       undrag()
       clear(); from = ''
     }
+    /* whether the live drag began on the pinned heading row: only then does that row wear the picked-up look */
+    let fromPinned = false
+    reapplyDrag.current = () => {
+      if (!from) return
+      const m = mirrorRef.current
+      if (fromPinned) m?.querySelector(`th[data-col="${from}"]`)?.classList.add('qdragging')
+      /* the heading marked for the landing went with the old markup: the same column's heading in the new markup takes
+         the mark, so what is marked is still where the drop lands */
+      if (over && !over.isConnected) {
+        const next = m?.querySelector<HTMLElement>(`th[data-col="${over.dataset.col}"]`) ?? null
+        over = next
+        next?.classList.add('qdrop')
+      }
+    }
     const onDown = (e: any) => {
       if (e.isPrimary === false) { cancel(); return }   // a second finger is a pinch, never a column drag
+      /* A PRESS DURING A LIVE DRAG ENDS IT, AND ANOTHER POINTER'S STARTS NOTHING (the second fix round, 11 Nov 26 — the
+         narrow read's third suspicion, seen in a real browser: e2e/geometry.spec.ts "a mouse pressed on another pinned
+         heading during a finger's drag…"). On a touch-screen laptop a mouse pressed while a finger holds a heading is
+         the first pointer of its own kind, so it was taken for the start of a drag: it took the live one over without
+         letting it go — the first heading left looking picked up, its landing mark standing, and the drop now the
+         mouse's. The live drag is cancelled whole, and a press by any pointer but its own starts none. */
+      if (from) { const other = stranger(e); cancel(); if (other) return }
       if (!live.current.canEditQuals()) return
       const th = (e.target as HTMLElement).closest('th[data-col]') as HTMLElement | null
       if (!th || (e.target as HTMLElement).closest('[data-del]')) return
       from = th.dataset.col!
       pid = e.pointerId
+      fromPinned = !th.closest('#qtbl')
       /* A FINGER'S HOLD IS ON THE ELEMENT IT LANDED ON ([QUALS-HEAD-FINGER-CAPTURE], the night of 6 Nov 26 — found 21 Oct
          26): a press on the heading's words is held by the words (`.qlbl`), not by the heading, so letting go of the
          heading's hold alone left every move reported on the words the press began on and the column never found a new
@@ -747,6 +802,7 @@ export function QualsPage() {
       tbl.removeEventListener('click', onClick); tbl.removeEventListener('change', onChange)
       tbl.removeEventListener('pointerdown', onDown); tbl.removeEventListener('pointermove', onMove)
       pinnedDrag.current = null
+      reapplyDrag.current = null
       auto?.stop()
       document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onCancel)
       wrap.removeEventListener('scroll', onXScroll)
