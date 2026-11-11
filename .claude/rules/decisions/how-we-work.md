@@ -18,7 +18,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 
 ## Records
 - Records state the decision, not the transcript: his words only where the exact words matter, otherwise one line, the date and a pointer; a condensed record never changes what the original meant [D14, D138, D141, D390, D1735].
-- Every rule written into the rulings list, the repo or anywhere is concise and clear, in few words [D1987].
+- Every rule written anywhere is concise and clear, in few words [D1987].
 - Where two of his rulings conflict, the later one wins: every clash is named — the ruling followed and the one set aside, both dates; a rule with no date loses to a dated one; what the old one left behind is fixed in the same change — the documents, the app (the build filed), the lists; where the newer one does not clearly cover the case, it goes to him as a question [D90, D201].
 - A ruling's rule is written in ordinary letters — capitals only where a name or a short form such as OIL has them — and no word is changed for it [D970].
 - No size targets: the test is whether each piece is needed where it sits, organised and written clearly; a size ceiling is a tripwire — move what does not belong, or raise it with its reason; for a loaded rulings file it counts bytes; the rules diet does not set this aside [D141, D390, D1735].
@@ -47,43 +47,18 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Astra is the standing reviewer, with no end date: called without asking him each time for each job's code read, beside the fresh, blind Opus read above, and wherever a read below names him, first of two where two are required; Sol 6.1 only when he calls for him, otherwise the fresh, blind Opus reader keeps the second seat (the agent's reading); a job that went without Astra's read, or without Sol 6.1's where two are required, goes on the reads-owed list, `[NO-ASTRA-LIST]` [D1770, D1734, D1738, D1739, D1761, D761].
 - The reads-owed list names each job, who did read it and which read it went without; the reads owed are put to him to call or drop, never called by the agent on its own [D761, D1734, D1738, D1739, D1761, D1770].
 - Scenarios are designed by a reader other than the builder, and Opus runs them in the app [D6]. Scenario design and side questions: one reader — Astra, or a fresh Opus reader when Astra cannot run [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1770].
-- The final code reads on risky work — earned leave, permissions, the published record, saved data: two readers, blind
-  to each other, Astra first, and Sol 6.1 in the second seat when he calls for him, otherwise the fresh, blind Opus
-  reader (the agent's reading), the job on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761,
-  D761, D1770].
-- An important plan's red team: two readers, blind to each other, Astra first, and Sol 6.1 second when he calls for him,
-  otherwise a fresh, blind Opus reader, as plans have been read since 13 Oct; a plan that went without Astra or Sol 6.1
-  goes on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1760, D1770].
-- A working-guide change is read before his approval, one round each, never by its writer: by Astra, his call for every
-  such change, and a second reader, each blind to the other — Sol 6.1 when he calls for him, otherwise a fresh, blind Opus
-  reader (the agent's reading); if Astra cannot run, he is told first and the change waits (the agent's reading); a read
-  it went without goes on the reads-owed list [D70, D590, D601, D790, D903, D811, D941, D1417, D1734, D1738, D1739,
-  D761, D1761, D1770].
-- His named exception: a line of his design lessons is read by one fresh reader and not put to him first [D941, D1417];
-  design red-team loops keep their cap of about three rounds [D70, D590, D601, D790, D903, D811, D941, D1761].
-- The read of a working-guide change has a narrow brief — does each change say what its note meant, does it contradict a
-  guide or a ruling, does it drop a safeguard or add bulk; it is a read of documents and never replaces walking the app
-  for code changes [D70, D590, D601, D790, D903, D811, D941, D1417, D1761].
-- Sonnet 5.5 walks the app, runs the checks and does document chores, the host checking the results — it never reads code
-  for bugs; a cheaper-model trial stays small and the agent decides and tells him [D588, D595]. The walkers stay Sonnet:
-  Opus never walks as a helper, not even one share for comparison; the host still opens their pictures, reproduces every
-  finding and may run a short look itself where the sizing step says a helper is not worth starting [D787].
-- What stays off Sonnet: plans, every other build or fix, anything touching earned leave, permissions, the published
-  record, saved data or the rules engine, reading code to find bugs, deciding whether a finding is real, and the
-  roll-call; Haiku is not opened [D588, D595].
-- Saving tokens never costs the quality of finding a fault or of checking one: the host opens every picture that decides
-  something — a fault's cause, a fix's check, a finding — cropped to the area that matters; walkers look at the bulk
-  [D1271, D1273].
-- A security read (an extra fresh reader looking only for holes) on any change to sign-in, permissions or what one person
-  sees of another; one full security review of the app before the database step [D1411].
-- Every fault he found that a check missed becomes a case in the code reader's test set; a changed reader is scored on
-  it and kept only if it catches as many [D1410].
-- A reviewer's open findings outrank the planned job list [D23]; a reviewer's claim is a finding only with a concrete
-  failure, its cause and its fix; the final code read carries a tidiness note — three questions of the changed lines, no
-  size number, never the rules engine, filed not fixed [D489].
-- Correctness beats context economy: never skip or shrink a read to save context — the bug-check order, the design guide
-  and the ripple map are read by section from the checklists that name when, every section that applies a required read
-  [D68, D1735].
+- The final code reads on risky work — earned leave, permissions, the published record, saved data: two readers, blind to each other, Astra first, and Sol 6.1 in the second seat when he calls for him, otherwise the fresh, blind Opus reader (the agent's reading), the job on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D761, D1770].
+- An important plan's red team: two readers, blind to each other, Astra first, and Sol 6.1 second when he calls for him, otherwise a fresh, blind Opus reader, as plans have been read since 13 Oct; a plan that went without Astra or Sol 6.1 goes on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1760, D1770].
+- A working-guide change is read before his approval, one round each, never by its writer: by Astra, his call for every such change, and a second reader, each blind to the other — Sol 6.1 when he calls for him, otherwise a fresh, blind Opus reader (the agent's reading); if Astra cannot run, he is told first and the change waits (the agent's reading); a read it went without goes on the reads-owed list [D70, D590, D601, D790, D903, D811, D941, D1417, D1734, D1738, D1739, D761, D1761, D1770].
+- His named exception: a line of his design lessons is read by one fresh reader and not put to him first [D941, D1417]; design red-team loops keep their cap of about three rounds [D70, D590, D601, D790, D903, D811, D941, D1761].
+- The read of a working-guide change has a narrow brief — does each change say what its note meant, does it contradict a guide or a ruling, does it drop a safeguard or add bulk; it is a read of documents and never replaces walking the app for code changes [D70, D590, D601, D790, D903, D811, D941, D1417, D1761].
+- Sonnet 5.5 walks the app, runs the checks and does document chores, the host checking the results — it never reads code for bugs; a cheaper-model trial stays small and the agent decides and tells him [D588, D595]. The walkers stay Sonnet: Opus never walks as a helper, not even one share for comparison; the host still opens their pictures, reproduces every finding and may run a short look itself where the sizing step says a helper is not worth starting [D787].
+- What stays off Sonnet: plans, every other build or fix, anything touching earned leave, permissions, the published record, saved data or the rules engine, reading code to find bugs, deciding whether a finding is real, and the roll-call; Haiku is not opened [D588, D595].
+- Saving tokens never costs the quality of finding a fault or of checking one: the host opens every picture that decides something — a fault's cause, a fix's check, a finding — cropped to the area that matters; walkers look at the bulk [D1271, D1273].
+- A security read (an extra fresh reader looking only for holes) on any change to sign-in, permissions or what one person sees of another; one full security review of the app before the database step [D1411].
+- Every fault he found that a check missed becomes a case in the code reader's test set; a changed reader is scored on it and kept only if it catches as many [D1410].
+- A reviewer's open findings outrank the planned job list [D23]; a reviewer's claim is a finding only with a concrete failure, its cause and its fix; the final code read carries a tidiness note — three questions of the changed lines, no size number, never the rules engine, filed not fixed [D489].
+- Correctness beats context economy: never skip or shrink a read to save context — the bug-check order, the design guide and the ripple map are read by section from the checklists that name when, every section that applies a required read [D68, D1735].
 - A review of a day's merged work starts with a handful of checks; Fable reads wider only on his word [D1934].
 
 ## Checking the running app (detail: `raptor-port/docs/bug-check-order.md`)
@@ -91,24 +66,13 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Driving the running app is the bug test; a code review plus green tests is not one [D5]. All three kinds of check — a code read, automated tests, a hand pass — scaled by what the change touches; before a walk the agent says what type of change it is, Opus sizes the walk, and a record is kept of every walk — its type, size, cost and what it found — so the figures show which types of change a walk is useful for [D7, D607, D608].
 - The bug-check order is the merged result of two independent proposals and replaced the three earlier methods — one method [D8, D10]; it adapts to any kind of work [D12]; it owns the running app, the readers the plan and the code, the walk before the final read [D11]. The old bug-testing list is retired: nothing adds to it, no handoff checks it [D72]. Its checklist is to route a walk to the order's §2a whole [D1937].
 - Every walk of a screen has a plain-user round: the area's everyday tasks end to end, every control that opens or closes pressed, every other place that should show the result looked at, with pictures — on top of the change's own scenarios, never instead of them [D1557]. On a phone, a picture right after each tap as well as the settled one; a standing test that a dense screen's controls never turn a pinned cell see-through [D1281].
-- A long hand pass is fanned out across Sonnet walkers, each in its own world, driving a scripted real browser; the host
-  opens their pictures and reproduces every finding before it enters the evidence sheet [D16, D17, D588, D595].
-- A slow-machine browser failure is fixed by waiting on what the test needs, never a fixed time [D87]; a Leave War desktop
-  timeout on GitHub gets one re-run of the failed group [D84].
-- A screen with an approved drawing is built to it and checked beside it as it is built and after every fix, not only at
-  the walk; a departure is made only on purpose, for a better design, and is named to him with its picture and its
-  reason — never left for him to find [D1424, D1426, D1478].
-- The drawing check — a script measuring each part's place, size, colour and text alignment against the approved drawing
-  at his iPhone's and a desktop's size, listing every difference over about 2px with marked pictures side by side — is a
-  standing step of every build with a drawing: run as the screen is built and after every fix, red until each
-  difference is fixed or he rules to keep it, beside the look by eye and the walk, never instead of them [D1494, D1495].
-- Differences found after the build go to him side by side, each marked, and he chooses which go back — an outright
-  fault is fixed without asking [D1426]. Any part he approved in a drawing is drawn again from that drawing — the sole
-  source — and checked beside it before a page goes to him, in a later mock-up round as in a build; only what a later
-  ruling requires is added, named and shown beside it [D1478].
+- A long hand pass is fanned out across Sonnet walkers, each in its own world, driving a scripted real browser; the host opens their pictures and reproduces every finding before it enters the evidence sheet [D16, D17, D588, D595].
+- A slow-machine browser failure is fixed by waiting on what the test needs, never a fixed time [D87]; a Leave War desktop timeout on GitHub gets one re-run of the failed group [D84].
+- A screen with an approved drawing is built to it and checked beside it as it is built and after every fix, not only at the walk; a departure is made only on purpose, for a better design, and is named to him with its picture and its reason — never left for him to find [D1424, D1426, D1478].
+- The drawing check — a script measuring each part's place, size, colour and text alignment against the approved drawing at his iPhone's and a desktop's size, listing every difference over about 2px with marked pictures side by side — is a standing step of every build with a drawing: run as the screen is built and after every fix, red until each difference is fixed or he rules to keep it, beside the look by eye and the walk, never instead of them [D1494, D1495].
+- Differences found after the build go to him side by side, each marked, and he chooses which go back — an outright fault is fixed without asking [D1426]. Any part he approved in a drawing is drawn again from that drawing — the sole source — and checked beside it before a page goes to him, in a later mock-up round as in a build; only what a later ruling requires is added, named and shown beside it [D1478].
 - Clearing the demo data is approved whenever it is the simpler path [D22].
-- Every two weeks a one-page scorecard: faults he found after a change went live, changes undone or redone within two
-  weeks, merges — each beside the two weeks before; speed counts only while the first two hold [D1409].
+- Every two weeks a one-page scorecard: faults he found after a change went live, changes undone or redone within two weeks, merges — each beside the two weeks before; speed counts only while the first two hold [D1409].
 
 ## Secrets and the repo
 - The project's secrets scan is a required check on `main` (he switches it on from the steps given) and GitHub's own scanning is on, with its push protection; the project's whole history is scanned once, and a key found in the history is changed, not only deleted [D1408, D1535, D1540].
@@ -171,14 +135,9 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - React Doctor's findings are fixed with each area's batch, new and changed code following its rules [D1534]; it runs on every pull request, where a new finding fails the check, and at each session's end, where it only reports the count and blocks nothing [D1539]; mock-up pages and the original app are not counted, and the tests' and scripts' notes of copying data the old way are left as they are [D1716].
 
 ## Long runs, compaction and handoff
-- `/overnight` sizes the night to his hours and recommends the jobs that fit, he selects, its questions come first, then
-  it runs unattended in one chat; its approval is its standing permission each night — his selection of the night's
-  jobs is not recorded as a ruling, only a new decision of his is [D867, D869].
-- When his overnight message names the work, the agent still lists the night's jobs before it starts — numbered, in
-  order, each with what he will have in the morning, its check and its rough time, how many fit in his hours, and what
-  waits for him — then starts without waiting for a reply [D1443].
-- An overnight run asks "Low or Medium?" first: Low, with plenty of time, runs the fewest helpers the checks need, one
-  after another, caches kept warm; Medium, with less time, uses helpers as needed, several at once; efficiency is judged
+- `/overnight` sizes the night to his hours and recommends the jobs that fit, he selects, its questions come first, then it runs unattended in one chat; its approval is its standing permission each night — his selection of the night's jobs is not recorded as a ruling, only a new decision of his is [D867, D869].
+- When his overnight message names the work, the agent still lists the night's jobs before it starts — numbered, in order, each with what he will have in the morning, its check and its rough time, how many fit in his hours, and what waits for him — then starts without waiting for a reply [D1443].
+- An overnight run asks "Low or Medium?" first: Low, with plenty of time, runs the fewest helpers the checks need, one after another, caches kept warm; Medium, with less time, uses helpers as needed, several at once; efficiency is judged
   by the weekly usage figure, not a token count [D1104].
 - Each overnight job goes to one fresh helper inside the night's chat, with its own walker and reader; the night's chat
   only coordinates, checks each result and keeps the records; a separate session per job is used only when he types the
