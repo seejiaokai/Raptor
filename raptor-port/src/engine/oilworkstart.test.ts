@@ -57,11 +57,16 @@ describe('OWS1 — the day starts at the earliest in-time / Rally that applies t
     expect(dayOilSpans(d).bane).toEqual([[h(8), h(15)]])
     expect(dayOilSpans(d).stiff).toEqual([[h(9), h(15)]])
   })
+  /* D1995 (11 Nov 26): a formation's own rally is its R box — every typed line is an in-time. The box never cancels the
+     wave's in-time, and the earlier of the two starts the day; a typed "VL RALLY 1000" is VL's own in-time now, replacing
+     the wave-wide one for VL (D505's scope — the agent's reading, put to him). */
   it('a formation\'s own Rally does not cancel the wave\'s in-time — each activity apart, then the earlier (D505)', () => {
-    const d = day([wave(['IN TIME 0830', 'VL RALLY 1000'], line('VL', '12:00', '13:00', [jet('bane')]))])
+    const d = day([wave(['IN TIME 0830'], line('VL', '12:00', '13:00', [jet('bane')], { rl: '10:00' }))])
     expect(dayOilSpans(d).bane).toEqual([[h(8, 30), h(15)]])
-    const e = day([wave(['RALLY 0830', 'VL IN TIME 1000'], line('VL', '12:00', '13:00', [jet('bane')]))])
+    const e = day([wave(['VL IN TIME 1000'], line('VL', '12:00', '13:00', [jet('bane')], { rl: '08:30' }))])
     expect(dayOilSpans(e).bane).toEqual([[h(8, 30), h(15)]])
+    const typed = day([wave(['IN TIME 0830', 'VL RALLY 1000'], line('VL', '12:00', '13:00', [jet('bane')]))])
+    expect(dayOilSpans(typed).bane, 'D1995: the typed VL line is VL\'s own in-time').toEqual([[h(10), h(15)]])
   })
   it('two lines for one formation and one activity: the earliest, in either order (D506)', () => {
     expect(dayOilSpans(sat(['IN TIME 0900', 'IN TIME 0830'])).bane).toEqual([[h(8, 30), h(15)]])

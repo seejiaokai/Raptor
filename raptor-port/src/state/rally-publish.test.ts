@@ -12,7 +12,9 @@ import { validate,workingWarn } from '../engine/validate'
 
 const saved=JSON.stringify(DAYS), savedBook=JSON.stringify(SCHED);
 const sign=(di=0)=>Object.assign(signOf(di),{cur:'ignite',sked:'bane',plan:'stiff',appr:'pump'});
-const bad=()=>DAYS[0].waves[0].intimes=['09:00 IN TIME','10:15 RALLY'];
+/* D1995 (11 Nov 26): every typed line is an in-time, so the wrong pair is now an in-time later than the brief —
+   still a red REPORT_ORDER warning, written through the same in-time text key */
+const bad=()=>DAYS[0].waves[0].intimes=['10:15 IN TIME'];
 let off:()=>void, envelopes:any[], toast:any;
 const snap=()=>JSON.stringify({days:DAYS,book:SCHED,hist:histSnap()});
 beforeEach(()=>{

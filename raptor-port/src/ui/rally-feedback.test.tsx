@@ -29,15 +29,21 @@ beforeEach(()=>{
 });
 afterEach(()=>{vi.restoreAllMocks();document.body.innerHTML='';DAYS.splice(0,DAYS.length,...JSON.parse(original));Object.keys(SCHED).forEach(k=>delete SCHED[k]);Object.assign(SCHED,JSON.parse(book));});
 
+/* D1995 (11 Nov 26): every typed line is an in-time, so beside the first line's 09:00 a typed "10:15 RALLY" is a second,
+   later in-time and no fault. The three tests that type a wrong pair start from a first line with no clock instead, so the
+   typed line is the wave's one in-time — and 10:15 against the 10:00 brief is the wrong pair, named as the in-time. */
+const lateFixture=()=>{w().intimes=['IN TIME TBD','10:00 RALLY'];draw();};
 describe('RT7 D502 live reporting feedback at the existing week/board doors',()=>{
   it('shows concrete wrong pair while typing without writing raw text, marks or history',()=>{
+    lateFixture();
     const before=JSON.stringify({d:DAYS,s:SCHED});type('10:15 RALLY');
-    expect(feedback().textContent).toContain('VL: rally 10:15 is later than brief 10:00.');
+    expect(feedback().textContent).toContain('VL: in-time 10:15 is later than brief 10:00.');
     expect(JSON.stringify({d:DAYS,s:SCHED})).toBe(before);
     expect(anchorEl(document,'it:0.0')).toBeTruthy();
     type('10:00 RALLY');expect(feedback().textContent).toBe('');
   });
   it('Shell delegates the actual reporting input event to live feedback before commit',async()=>{
+    w().intimes=['IN TIME TBD','10:00 RALLY'];   // D1995: see lateFixture
     document.body.innerHTML='<div id="rally-root"></div>';setPage('editsched');
     const root=createRoot(document.getElementById('rally-root')!);
     try{
@@ -45,11 +51,12 @@ describe('RT7 D502 live reporting feedback at the existing week/board doors',()=
       const editor=document.querySelector('#eWeek [data-itline="0|0|1"]') as HTMLElement;
       expect(editor).toBeTruthy();const before=JSON.stringify({d:DAYS,s:SCHED});
       await act(async()=>{editor.textContent='10:15 RALLY';editor.dispatchEvent(new Event('input',{bubbles:true}))});
-      expect(document.querySelector('#eWeek [data-reporting-feedback]')?.textContent).toContain('VL: rally 10:15 is later than brief 10:00.');
+      expect(document.querySelector('#eWeek [data-reporting-feedback]')?.textContent).toContain('VL: in-time 10:15 is later than brief 10:00.');
       expect(JSON.stringify({d:DAYS,s:SCHED})).toBe(before);
     }finally{await act(async()=>root.unmount())}
   });
   it('commits the invalid draft without silently changing it, then updates on correction',()=>{
+    lateFixture();
     type('10:15 RALLY');routeFocusOut({target:line()} as unknown as FocusEvent);
     expect(w().intimes[1]).toBe('10:15 RALLY');expect(feedback().textContent).toContain('later than brief');
     type('10:00 RALLY');routeFocusOut({target:line()} as unknown as FocusEvent);

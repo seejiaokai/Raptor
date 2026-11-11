@@ -34,16 +34,29 @@ afterEach(() => {
 })
 
 describe('W1 — in-time, rally, brief, take-off, landing, never the other way (D497, D502, D507, D509, D1026)', () => {
+  /* D1995 (11 Nov 26): the rally is the formation's R box alone, so every rally here is typed in the box; a typed line
+     saying RALLY is an in-time (its own test below). The order rule itself is unchanged. */
   it('rally only starts the report; in-time then rally is in order; a rally may share the brief time (D507); a rally after the brief is a wrong pair', () => {
-    expect(rep(wave(['08:30 RALLY']))).toMatchObject({ inTime: null, rally: h(8, 30), report: h(8, 30) })
-    expect(reportingIssuesForWave(wave(['08:00 IN TIME', '08:30 RALLY']))).toEqual([])
+    expect(rep(wave([], [form({ rl: '08:30' })]))).toMatchObject({ inTime: null, rally: h(8, 30), report: h(8, 30) })
+    expect(reportingIssuesForWave(wave(['08:00 IN TIME'], [form({ rl: '08:30' })]))).toEqual([])
     // the sharpest edge: equal is allowed, no new gap demanded — rally 09:40 with the suggested brief 09:40
-    expect(reportingIssuesForWave(wave(['09:40 RALLY']))).toEqual([])
+    expect(reportingIssuesForWave(wave([], [form({ rl: '09:40' })]))).toEqual([])
     expect(reportingIssuesForWave(wave([], [form({ rl: '10:00', br: '10:00' })]))).toEqual([])
     const late = reportingIssuesForWave(wave([], [form({ rl: '10:01', br: '10:00' })]))
     expect(late.map(i => i.msg)).toEqual(['VL: rally 10:01 is later than brief 10:00.'])
     // never the other way: an in-time after the rally is a wrong pair too
-    expect(reportingIssuesForWave(wave(['09:00 IN TIME', '08:30 RALLY'])).map(i => i.msg)).toEqual(['VL: in-time 09:00 is later than rally 08:30.'])
+    expect(reportingIssuesForWave(wave(['09:00 IN TIME'], [form({ rl: '08:30' })])).map(i => i.msg)).toEqual(['VL: in-time 09:00 is later than rally 08:30.'])
+  })
+  it('D1995: a typed line saying RALLY is an in-time — "08:30 RALLY" alone reports 08:30 as the in-time; "09:00 IN TIME" and "08:30 RALLY" are two in-times, the earlier counting, no wrong pair', () => {
+    expect(rep(wave(['08:30 RALLY']))).toMatchObject({ inTime: h(8, 30), rally: null, report: h(8, 30) })
+    expect(rep(wave(['09:00 IN TIME', '08:30 RALLY']))).toMatchObject({ inTime: h(8, 30), rally: null, report: h(8, 30) })
+    expect(reportingIssuesForWave(wave(['09:00 IN TIME', '08:30 RALLY']))).toEqual([])
+    // "RALLY AFTER IN TIME" with a clock is an in-time too; typed alone, with no clock, it says nothing and asks nothing
+    expect(rep(wave(['RALLY AFTER IN TIME 08:15']))).toMatchObject({ inTime: h(8, 15), rally: null, report: h(8, 15) })
+    expect(rep(wave(['RALLY AFTER IN TIME']))).toMatchObject({ inTime: null, rally: null, report: null })
+    expect(reportingIssuesForWave(wave(['RALLY AFTER IN TIME']))).toEqual([])
+    // a typed line later than the brief is now an in-time later than the brief: still red, named as the in-time
+    expect(reportingIssuesForWave(wave(['10:15 RALLY'], [form({ br: '10:00' })])).map(i => i.msg)).toEqual(['VL: in-time 10:15 is later than brief 10:00.'])
   })
 })
 
@@ -66,16 +79,19 @@ describe('W2 — the earliest applicable entered time is the report start, whate
 })
 
 describe('W3 — a formation\'s own instruction replaces the whole-wave one of the same activity only (D505)', () => {
-  it('whole-wave in-time 08:00 and VL\'s rally 08:30: VL reports 08:00; whole-wave rally 07:00 and VL\'s in-time 07:30: the rally still counts', () => {
-    expect(rep(wave(['08:00 IN TIME', 'VL RALLY 08:30']))).toMatchObject({ inTime: h(8), rally: h(8, 30), report: h(8) })
-    expect(rep(wave(['07:00 RALLY', 'VL IN TIME 07:30']))).toMatchObject({ inTime: h(7, 30), rally: h(7), report: h(7) })
+  /* D1995 (11 Nov 26): VL's rally is its R box — the typed lines are in-times. The box never cancels the whole-wave in-time.
+     A whole-wave rally no longer exists (the box is a formation's own); a line typed "07:00 RALLY" is a whole-wave in-time,
+     so VL's own in-time line replaces it (D505, D1034's kept part) — the agent's reading, put to him as a question. */
+  it('whole-wave in-time 08:00 and VL\'s rally 08:30: VL reports 08:00; D1995: a whole-wave "07:00 RALLY" line is an in-time, so VL\'s own in-time 07:30 replaces it', () => {
+    expect(rep(wave(['08:00 IN TIME'], [form({ rl: '08:30' })]))).toMatchObject({ inTime: h(8), rally: h(8, 30), report: h(8) })
+    expect(rep(wave(['07:00 RALLY', 'VL IN TIME 07:30']))).toMatchObject({ inTime: h(7, 30), rally: null, report: h(7, 30) })
     // …and within one activity the formation's own line does replace the whole-wave one, even when later
     expect(rep(wave(['06:00 IN TIME', 'VL IN TIME 07:00']))).toMatchObject({ inTime: h(7), report: h(7) })
   })
 })
 
 describe('W4 — a line applies to the formation it names (this wave\'s, any case, in remarks too) or the whole wave, never to a person (D500, D501, D504, D1034)', () => {
-  it('names read case-insensitively and inside remarks; a person\'s name or another wave\'s callsign leaves it whole-wave; a typed RALLY line stays a rally', () => {
+  it('names read case-insensitively and inside remarks; a person\'s name or another wave\'s callsign leaves it whole-wave; D1995: a typed RALLY line naming VL is VL\'s own in-time', () => {
     const two = (lines: string[]) => wave(lines, [form(), form({ cs: 'VK', aircraft: [{ p: 'stiff', w: '', rmks: '', opts: {} }] })])
     let w = two(['vl in time 0715'])
     expect(rep(w, w.formations[0]).inTime).toBe(h(7, 15))
@@ -86,9 +102,13 @@ describe('W4 — a line applies to the formation it names (this wave\'s, any cas
     expect([rep(w, w.formations[0]).inTime, rep(w, w.formations[1]).inTime]).toEqual([h(8), h(8)])
     w = two(['08:00 IN TIME VIPER'])                     // VIPER is not this wave's formation
     expect([rep(w, w.formations[0]).inTime, rep(w, w.formations[1]).inTime]).toEqual([h(8), h(8)])
-    // D1034: whole-wave in-time 06:00 and a typed "VL RALLY 07:00" — everyone, VL included, reports 06:00
+    /* D1034's own example — whole-wave in-time 06:00 and a typed "VL RALLY 07:00" — read under D1995 (11 Nov 26, over
+       D1034's "a typed line saying RALLY stays a rally"): the VL line is an in-time carrying VL's callsign, so it is VL's
+       own in-time and replaces the whole-wave one for VL (D505; D1034's kept part); VK still reports 06:00. D1034's answer
+       had everyone at 06:00, so this one case is put to him (the agent's reading). */
     w = two(['06:00 IN TIME', 'VL RALLY 07:00'])
-    expect(rep(w, w.formations[0])).toMatchObject({ inTime: h(6), rally: h(7), report: h(6) })
+    expect(rep(w, w.formations[0])).toMatchObject({ inTime: h(7), rally: null, report: h(7) })
+    expect(rep(w, w.formations[1])).toMatchObject({ inTime: h(6), rally: null, report: h(6) })
   })
 })
 
@@ -142,14 +162,17 @@ describe('W8 — a clock later than its take-off is the evening before, never mo
   })
 })
 
-describe('W9 — "+ In-time" fills the first line; the words it writes are free text (D510, D511, D600; D1026 vs D1034 UNCLEAR)', () => {
-  it('as built: a line minted with the Logic words "RALLY" is read as a whole-wave RALLY, so a formation\'s R box replaces it', () => {
+describe('W9 — "+ In-time" fills the first line; the words it writes are free text (D510, D511, D600; D1026, D1995)', () => {
+  it('D1995 (Q2 answered): a line minted with the Logic words "RALLY" is an in-time — VL\'s R box 10:00 is its rally, and VL reports at the earlier, 09:00', () => {
     // the button mints "09:00H: " + VCONF.reportText; with the text set to RALLY (D511's own example)
     const minted = '09:00H: RALLY'
     const w = wave([minted], [form({ rl: '10:00' })])
-    // read as a rally (D1034 "a typed line saying RALLY stays a rally"): the box replaces it, VL reports 10:00
-    // read as an in-time (D1026: "the word RALLY in this text no longer makes a rally"): VL would report 09:00
-    expect(rep(w)).toMatchObject({ inTime: null, rally: h(10), report: h(10) })
+    // his answer: "we should just recognise that time as an in time. Rally time will be in the rally box"
+    expect(rep(w)).toMatchObject({ inTime: h(9), rally: h(10), report: h(9) })
+    // the R box left empty: "Just use the earliest time which should be the in time box"
+    expect(rep(wave([minted]))).toMatchObject({ inTime: h(9), rally: null, report: h(9) })
+    // in-time 09:00 before the box's 10:00 is in order; the box later than the suggested brief 09:40 is the box's own fault
+    expect(reportingIssuesForWave(w).map(i => [i.msg, i.box, i.lines])).toEqual([['VL: rally 10:00 is later than suggested brief 09:40.', true, []]])
   })
 })
 

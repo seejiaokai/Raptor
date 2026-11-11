@@ -212,13 +212,24 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   applies to both. A clock-only legacy instruction remains IN; a clockless
   `RALLY AFTER IN TIME` (or `RALLY AFTER IN`) inherits its applicable IN, and the same
   words typed WITH a clock are that rally's own time — never a second in-time (W3, 5 Oct 26).
+  **Since D1995 (11 Nov 26 — over D1034's "a typed line that still says RALLY stays a rally"; the later wins, D90) every
+  typed line with a clock is an IN-TIME, whatever its words** — `09:00H: RALLY` (the "+ In-time" button's words set to
+  RALLY), `VL RALLY 08:30`, `RALLY AFTER IN TIME 07:00` alike; the rally is each formation's own R box alone (below); the
+  report is the earlier of the two, and of several in-time lines for one formation the earliest counts (D506). The scope is
+  unchanged: a line naming this wave's formation is that formation's own in-time and replaces the whole-wave in-time for it
+  (D505, D1034's kept part) — so `06:00 IN TIME` with `VL RALLY 07:00` now reports VL at 07:00 (the agent's reading, put
+  to him). A line with no clock is no instruction: a clockless `RALLY AFTER IN TIME` makes no rally and raises no "rally
+  after in-time has no applicable in-time clock" line any more. The order check between two typed lines is gone with it (two
+  in-times, the earlier counting); an in-time later than the brief, or than the box's rally, is still the red wrong pair.
+  `reporting.ts parseReportingLines`; pinned in `engine/rulesfirst-1-report-times.test.ts` (W1, W9), `rally-workspan.test.ts`,
+  `rallybox.test.ts`, `oilworkstart.test.ts`. The lines above about RALLY lines describe the reading before D1995.
   A wave's header time (`waveInTime`) reads a formation with no take-off yet as the day's
   checks do — the typed clock on its own day (W5, 5 Oct 26).
 - **Each formation's own rally box (owner D1026, D1032, D1034, 19 Oct 26 — `[RALLY-PER-FORMATION]`).** `f.rl` is the
   formation's rally, typed in its R box (the week's R over B, the board's R before B). `resolveReporting` reads it as one
-  more FORMATION-SPECIFIC rally: it replaces the whole-wave typed RALLY lines (D505) and stands beside a typed rally line
-  naming the formation, the earlier counting (D506), with the same evening-before rule (D503). It is never an in-time: a
-  whole-wave in-time 06:00 with a rally 07:00 still reports at 06:00 (D1034); the typed lines are read exactly as before.
+  more FORMATION-SPECIFIC rally — since D1995 the ONLY rally, no typed line making one (above) — with the same
+  evening-before rule (D503). It is never an in-time: a whole-wave in-time 06:00 with a rally 07:00 still reports at 06:00
+  (D1034); the typed lines are in-times, the earlier of in-time and box counting (D1995).
   So every reader of the report — crew rest, the long day and work hours, OIL (D592), the wave's header and window, the
   order check (a box after the brief is the red "rally … is later than brief", never blocking — D507, D509) — counts it as
   it counted a typed rally (D1032). An empty box is nothing entered: the nominal report, the take-off less `reportLead`
