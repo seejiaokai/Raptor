@@ -139,7 +139,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - A standby shift that flies, typed with the same START and END, earns like a flying line — [RULES-CHECK-FIXES] [D1999].
 - The duty-template note for an AVALON or BB desk reads "…and earns no OIL by default on a weekend or holiday. Switch it on in OIL Earn if activated." — [RULES-CHECK-FIXES] [D1994].
 - A hidden clash stays hidden while the same man is on the same two items, whatever their times, and comes back when the man or either item is a different one — [RULES-CHECK-FIXES] [D2001].
-- On a published day made a public holiday afterwards the amber line reads "Publish this day again so OIL is earned. The PH was set after the day was published." — [RULES-CHECK-FIXES] [D2003].
+- On a published day made a public holiday afterwards the amber line reads "Publish this day again so OIL is earned. The PH was set after the day was published.", and one whose public holiday is removed afterwards "Publish this day again to withdraw the OIL. The PH was removed after the day was published." — [RULES-CHECK-FIXES] [D2003, D2004].
 - A "?" where a row has no timing or no end time is a future job, scoped with him first — [ROW-NO-TIME-MARK]; the "~" was declined [D361, D360].
 - An Admin "Display" area of section fold defaults is not built: put it to him again only when Admin or the section folds are next touched — [ADMIN-DISPLAY] [D161].
 
