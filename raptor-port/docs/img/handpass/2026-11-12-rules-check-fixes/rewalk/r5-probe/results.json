@@ -1,0 +1,17 @@
+[
+ {
+  "id": "R5.0 navigation: the week of 20 Jul (Monday reads Jul 20)",
+  "ok": true,
+  "detail": "{\"week\":\"20/07/2026\",\"mon\":\"Jul 20\"}"
+ },
+ {
+  "id": "R5.1 Monday 20 Jul published (4 sign-offs, Publish day)",
+  "ok": true,
+  "detail": "{\"tag\":\"ORIG\",\"tagAlc\":\"\",\"selector\":\"Live working copy\\n▾\",\"pending\":\"11 changes\",\"nys\":false,\"beak\":null,\"alpub\":null,\"unpub\":{\"text\":\"Unpublish\",\"disabled\":false,\"title\":\"Unpublish Monday — pull Original back to a working copy to correct it; republishing reissues the same version\"},\"signState\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]}"
+ },
+ {
+  "id": "R5.3.0 navigation: back to the week of 13 Jul",
+  "ok": true,
+  "detail": "{\"week\":\"13/07/2026\",\"mon\":\"Jul 13\"}"
+ }
+]

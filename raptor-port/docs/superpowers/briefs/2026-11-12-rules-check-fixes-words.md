@@ -35,7 +35,7 @@ existing look; nothing new on screen.
 |---|---|---|---|
 | F5, crew-rest fold | "…his in-time, his B where no in-time is typed, or anything earlier, such as a meeting." | "…his in-time or rally, his B where neither is typed, or anything earlier, such as a meeting." | F5 |
 | F6, crew-rest fold | "An SC SPARE carries no crew rest either way, and a shift's start is its report." | "An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is earlier than the start." | F6; the second sentence D606, D1041 |
-| F7, tight turn | "…but his typed in-time is later, so it clears." | "…but his in-time or rally, or his B where neither is typed, is later, so it clears." | D1988, D1989 ("or rally" added, "his B" to match F5) |
+| F7, tight turn | "…but his typed in-time is later, so it clears." | "…but his in-time or rally, or his B where neither is typed, is later, so his rest clears." | D1988, D1989 ("or rally" added, "his B" to match F5; "so it clears" became "so his rest clears" after the walk — the amber reminder itself stays, D1989, so "it" read as the reminder) |
 | F8, OIL fold | "…from its B or R (the earlier) to its END." | "…from its B or R if earlier than its START, otherwise from its START, to its END." | F8 |
 | F9, OIL fold | "A row with no times, or no end time, earns nothing." | "A row the scheduler adds with no times, or no end time, earns nothing, but a request answered yes earns over its own times." | F9 |
 | F10, ground crew | "…checked only for clashes, the long day and days in a row." | "…checked for clashes, the long day, days in a row and their own absences, and a front seat is always a warning. None of the flying rules apply to them: crew rest, turns, pairing, AAR, SC currency or briefs." | D1992 |
@@ -51,7 +51,7 @@ existing look; nothing new on screen.
 | Warning list, an unreadable In-time line | A "RALLY AFTER IN TIME" line whose clock cannot be read: "…rally after in-time has no applicable in-time clock." | "…reporting line N has no recognised clock. Check the time." (the family's existing words) | D1995 |
 | Logic, the SC MAIN clash advisory | — | adds "Once the shift flies, every clash with it is red." | D1996 |
 | Logic, the "SC MAIN clashes" setting | — | adds "Once his shift flies, every clash is red." | D1996 |
-| Logic, a standby row that flies | "checked as an SC MAIN is" | "checked as a sortie is" | D1996 |
+| Logic, a standby row that flies | "checked as an SC MAIN is" | "A row that flies has its clashes and turns checked as a sortie's are" (the bug check's code read: "as a sortie is" left out the turns) | D1996 |
 | Logic, take-off = landing | "…; a standby shift with no length earns none, flying or not." | "…none if it has neither. A standby shift with no length earns none. One that flies with its R or B before its START earns from that time." | D1999 |
 | The amber same-time note, on a flying shift that earns | "…one of the two is wrong; the day still earns from the report and debrief" | "…one of the two is wrong; the shift still earns from its R or B" | D1999 |
 | Logic, crew-rest fold | "A flight ends at landing plus the debrief (2h); anything else at its written end." | "A flight ends at landing plus the debrief (2h), or at take-off plus the debrief where the landing is not a time. Anything else ends at its written end." | D1990 |
@@ -66,8 +66,10 @@ were reworded and are shown here as built.
 
 **1. "On leave + flying" on a row that is not a flight.** Case: Ratchet, ground crew, on local leave all Tuesday, put on
 a 09:00–10:00 BRIEFING row — and anyone on leave seated on a duty, sim or ground row. Today: the title "On leave +
-flying" (its message already says "On leave but tasked — BRIEFING"). Shows as the line's title in the day's warning list
-and the check's name on the Logic page. Its twin "Downchit + flying" has the same fault and would change with it.
+flying" (its message already says "On leave but tasked — BRIEFING"). Corrected by the walk: the day's warning list
+draws only the message — "Ratchet — On leave but tasked — BRIEFING — reason: rcfw3" — so the title shows only as the
+check's name on the Logic page (picture: `docs/img/handpass/2026-11-12-rules-check-fixes/w3/s35-r4/2-seated-warn.png`).
+Its twin "Downchit + flying" has the same fault and would change with it.
 - A, one title for every seat: "On leave + planned" (and "Downchit + planned").
 - B, the title follows the seat: "On leave + flying" on a flight, "On leave + on the programme" (and "Downchit + on the
   programme") anywhere else.
@@ -75,7 +77,9 @@ and the check's name on the Logic page. Its twin "Downchit + flying" has the sam
 **2. "landed" where no landing is typed.** Case: Monday's VL typed take-off 12:00, its landing blank or "TBD" — since
 D1990 that day ends at take-off plus the debrief, and Tuesday's crew rest is measured from it. Today: "Mon landed 12:00,
 +2h debrief assumed → ended 14:00 → crew rest clear at 02:00". Shows in the crew-rest warning's message and the same
-sentence on the "breaks tomorrow's crew rest" trace.
+sentence on the "breaks tomorrow's crew rest" trace. Corrected by the walk: the landing box refuses "TBD" ("TBD is not a
+time. Try 0900 or 09:00.") and empties, so on screen the case is a blank landing; "landed" shows then (picture:
+`docs/img/handpass/2026-11-12-rules-check-fixes/w3/s23-r4/sat-0929-warning-crop.png`).
 - A: "Mon took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00"
 - B: "Mon's landing is not typed, so its 12:00 take-off is used, +2h debrief assumed → ended 14:00 → crew rest clear at
   02:00"
@@ -86,3 +90,8 @@ sentence on the "breaks tomorrow's crew rest" trace.
   words, "until the AVALON / BB flies" put in front — what "activated" means is his to confirm.
 - His D2003/D2004 words: the cold reader found "so OIL is earned" does not say whose OIL, and "withdraw" stiff — ruled
   words, left.
+
+## Pictures for him
+
+Each fix's picture, the two amber OIL lines and the two not built, with a one-line caption: the evidence sheet,
+`docs/handpass/2026-11-12-rules-check-fixes.md` §Pictures for him.

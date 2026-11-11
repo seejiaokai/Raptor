@@ -1,0 +1,62 @@
+[
+ {
+  "id": "R3.0 fixture: AVALON wave, AVALON-template desk with Ranger (SXO 19:00-07:00), Ranger on a 20:00-21:00 sortie",
+  "ok": true,
+  "detail": "{\"av\":\"19:00-07:00 beams\",\"desk\":[\"SXO|19:00-07:00|bane\",\"OPS O|19:00-07:00|\",\"RUNNER|19:00-07:00|\",\"LOG CELL|19:00-07:00|\"],\"sortie\":\"20:00-21:00 bane\"}"
+ },
+ {
+  "id": "R3.1 standing by (no R): no clash line for Ranger, his desk puck plain",
+  "ok": true,
+  "detail": "clash lines []; desk pucks [\"#schedBoard/desk :: puck sm\"]"
+ },
+ {
+  "id": "R3.2 AVALON R 18:00 typed: the clash line shows red in the list",
+  "ok": true,
+  "detail": "[\"Ranger — VIPER & SXO duty clash ✕\"]"
+ },
+ {
+  "id": "R3.2 ...every Ranger clash line is red (read off the line class)",
+  "ok": true,
+  "detail": "[\"Ranger — VIPER & SXO duty clash => RED\",\"Ranger — No time for the VIPER flight brief — SXO  => AMBER\",\"Ranger — Not enough time to attend the VIPER debri => AMBER\",\"This day is not published yet, so nobody earns the => AMBER\",\"Comet — Comet has a long work day: 13h00, 18:00 →  => wln note\",\"Ranger — Ranger has a long work day: 14h00, 17:00  => wln note\"]"
+ },
+ {
+  "id": "R3.2 Ranger's puck ON THE DESK rings red on the board",
+  "ok": true,
+  "detail": "[\"#schedBoard/desk :: puck sm warn hard boxred oilbar oilbar-fo\"] | all [\"#schedBoard/seat 5.1.0.0.p :: puck sm warn hard boxred oilbar oilbar-fo\",\"#schedBoard/desk :: puck sm warn hard boxred oilbar oilbar-fo\"]"
+ },
+ {
+  "id": "R3.2 ...and on Edit Schedule's week",
+  "ok": true,
+  "detail": "[\"#eWeek/seat 5.1.0.0.p :: puck warn hard boxred oilbar oilbar-fo\",\"#eWeek/desk :: puck sm warn hard boxred oilbar oilbar-fo\"]"
+ },
+ {
+  "id": "R3.3 R cleared: back to plain — no clash line, desk puck plain",
+  "ok": true,
+  "detail": "[] [\"#schedBoard/desk :: puck sm\"]"
+ },
+ {
+  "id": "R3.4 the Flies button on the AVALON MAIN row",
+  "ok": null,
+  "detail": "present: FLIES"
+ },
+ {
+  "id": "R3.4 one row's Flies ticked: the clash shows in the list",
+  "ok": true,
+  "detail": "[\"Ranger — VIPER & SXO duty clash ✕\"]"
+ },
+ {
+  "id": "R3.4 ...the desk puck rings red on the board",
+  "ok": true,
+  "detail": "[\"#schedBoard/desk :: puck sm warn hard boxred oilbar oilbar-fo\"]"
+ },
+ {
+  "id": "R3.4 ...and on the week",
+  "ok": true,
+  "detail": "[\"#eWeek/seat 5.1.0.0.p :: puck warn hard boxred oilbar oilbar-fo\",\"#eWeek/desk :: puck sm warn hard boxred oilbar oilbar-fo\"]"
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]
