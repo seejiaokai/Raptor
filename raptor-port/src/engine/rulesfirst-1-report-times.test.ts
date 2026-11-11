@@ -57,6 +57,10 @@ describe('W1 — in-time, rally, brief, take-off, landing, never the other way (
     expect(reportingIssuesForWave(wave(['RALLY AFTER IN TIME']))).toEqual([])
     // a typed line later than the brief is now an in-time later than the brief: still red, named as the in-time
     expect(reportingIssuesForWave(wave(['10:15 RALLY'], [form({ br: '10:00' })])).map(i => i.msg)).toEqual(['VL: in-time 10:15 is later than brief 10:00.'])
+    /* the words job ([RULES-CHECK-FIXES] job 3): a "RALLY AFTER IN TIME" line whose clock cannot be read is told what is
+       wrong — the clock — never "rally after in-time has no applicable in-time clock", which D1995 made untrue (the line
+       makes no rally, and an in-time would not help) */
+    expect(reportingIssuesForWave(wave(['RALLY AFTER IN TIME 8h15'])).map(i => i.msg)).toEqual(['VL: reporting line 1 has no recognised clock. Check the time.'])
   })
 })
 

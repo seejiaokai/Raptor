@@ -61,7 +61,7 @@ export function lgSettings(): LgGroup<LgSet>[] {
     ] },
     { g: 'Standby (SC, AVALON, BB)', items: [
       { name: 'SC day window', keys: ['scDayFrom', 'scDayTo'], kind: 'window', line: () => 'A shift wholly inside it needs SC DAY; one reaching outside it needs SC NIGHT.' },
-      { name: 'SC MAIN clashes', keys: [], kind: 'kinds', line: () => 'What an SC MAIN man\'s clash with each shows: a red warning or an amber advisory.' },
+      { name: 'SC MAIN clashes', keys: [], kind: 'kinds', line: () => 'What an SC MAIN man\'s clash with each shows: a red warning or an amber advisory. Once his shift flies, every clash is red.' },   // D1996
     ] },
     { g: 'Inputs', items: [
       { name: 'Inputs late cut-off', keys: ['inputLead', 'inputCutMode', 'inputCutWd', 'inputCutWeeks'], kind: 'door', door: 'inputs', value: () => cutRuleText('inputs'), line: () => 'An input last changed after it wears LATE.' },
@@ -97,16 +97,20 @@ export function lgChecks(): LgGroup<LgChk>[] {
     { g: 'Crew rest and the working day', items: [
       { id: 'crewrest', sev: 'hard', code: 'CREW_REST', line: () => `For a flying member: at least ${T('crewRest')} (Crew rest) from the end of his day before to his earliest in-time, or to anything earlier that day.`,
         how: () => [
-          `Rest runs from the end of the day before to the first thing today: his in-time, his B where no in-time is typed, or anything earlier, such as a meeting.`,
-          `The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (${T('debrief')}); anything else at its written end.`,
+          /* the words job ([RULES-CHECK-FIXES] job 3): the rally counts (the rules check's F5); a landing that is not a time
+             ends the day at take-off plus the debrief (D1990); a flying SPARE bears crew rest, and a shift reports at its
+             B or R where one is typed earlier (F6; D606, D1041) */
+          `Rest runs from the end of the day before to the first thing today: his in-time or rally, his B where neither is typed, or anything earlier, such as a meeting.`,
+          `The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (${T('debrief')}), or at take-off plus the debrief where the landing is not a time. Anything else ends at its written end.`,
           'An input counts only if it is a duty or commitment, other than Personal or SANS Availability, with typed times.',
           `Exactly ${T('crewRest')} is legal. A day with no flying asks for no rest.`,
           'A LATE SHOW remark keeps the warning. The ring is dashed while rest still clears by step, solid after.',
           'Monday checks last Sunday. A Sunday that breaks Monday shows a "Breaks Monday" box.',
           'A flying line with no times yet is not measured, but a typed brief, in-time or landing on it still counts.',
-          'An SC SPARE carries no crew rest either way, and a shift\'s start is its report.',
+          'An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is typed earlier.',
         ] },
-      { id: 'crewtight', sev: 'adv', code: 'CREW_TIGHT', line: () => `His rest would be short if he reported the usual ${T('reportLead')} before take-off (Default rally before take-off), but his typed in-time is later, so it clears.` },
+      /* the rules check's F7, free since D1988 and D1989: it shows with nothing typed too, so it names what clears */
+      { id: 'crewtight', sev: 'adv', code: 'CREW_TIGHT', line: () => `His rest would be short if he reported the usual ${T('reportLead')} before take-off (Default rally before take-off), but his in-time or rally, or his B where neither is typed, is later, so it clears.` },
       { id: 'daysrun', sev: 'hard', code: 'DAYS_RUN', line: () => `On the programme more than ${lgV(VCONF.maxRun)} days in a row.`,
         how: () => [
           'Any tasking counts: a flight, a duty, a sim, a ground or programme row.',
@@ -117,7 +121,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
     ] },
     { g: 'Two things at once', items: [
       { id: 'doublebook', sev: 'hard', code: 'DOUBLE_BOOK', line: () => 'Two commitments overlap for one man. Touching end to end is not a clash.' },
-      { id: 'shiftsoft', sev: 'adv', code: 'SHIFT_SOFT', line: () => 'An SC MAIN man is also down for something set to Advisory under SC MAIN clashes. A commitment input across the shift is red; a meeting stays amber.' },
+      { id: 'shiftsoft', sev: 'adv', code: 'SHIFT_SOFT', line: () => 'An SC MAIN man is also down for something set to Advisory under SC MAIN clashes. A commitment input across the shift is red; a meeting stays amber. Once the shift flies, every clash with it is red.' },   // D1996
       { id: 'info', sev: 'note', name: 'ⓘ info only', line: () => 'A ground or programme item marked ⓘ is printed but never checked, and earns no OIL.' },
       { id: 'midnight', sev: 'note', name: 'Past midnight', line: () => 'A row whose end reads earlier than its start runs into the next day.' },
     ] },
@@ -128,17 +132,18 @@ export function lgChecks(): LgGroup<LgChk>[] {
           'The order is in-time, rally, brief, take-off, landing. Equal times are fine.',
           `The B on the line is what is checked. A blank B is checked as the suggested brief, take-off less ${T('briefLead')}.`,
           'Out of order is red, but it never stops a day being published.',
-          'A formation\'s rally is its R box. On an In-time line the first clock is used (09:00H or 0900); a line that says RALLY still counts as a rally.',
+          /* D1995: every typed line is an in-time, whatever its words; a line with no clock is no instruction */
+          'A formation\'s rally is its R box alone. An In-time line is an in-time whatever its words, even one that says RALLY, and its first clock is used (09:00H or 0900).',
           'A formation\'s name makes the line that formation\'s; otherwise it is the whole wave\'s.',
           'A clock later than take-off means the day before.',
-          'RALLY AFTER IN TIME, with no clock, means rally at that formation\'s in-time.',
+          'A line with no clock, RALLY AFTER IN TIME included, sets no time.',
         ] },
-      { id: 'reportunres', sev: 'adv', code: 'REPORT_UNRESOLVED', line: () => 'The app cannot read an In-time line, or RALLY AFTER IN TIME has no in-time.' },
+      { id: 'reportunres', sev: 'adv', code: 'REPORT_UNRESOLVED', line: () => 'The app cannot read the clock on an In-time line.' },
       { id: 'nobrief', sev: 'adv', code: 'NO_BRIEF', line: () => 'Something sits between the brief and take-off. A blank B counts as the suggested one (Brief before take-off).' },
       { id: 'debrief', sev: 'adv', code: 'DEBRIEF', line: () => `Something sits inside landing plus ${T('debrief')} (Debrief after landing).` },
       { id: 'turn', sev: 'adv', code: 'TURN', line: () => `Less than ${turn} from landing to the next take-off (Tight turn, or Dekit plus Step if longer).` },
       { id: 'dtsum', sev: 'adv', code: 'DT_SUM', line: () => 'Two or more sorties in one day. One line names everyone; it is routine, not an error.' },
-      { id: 'fltnolen', sev: 'adv', code: 'FLT_NO_LEN', line: () => 'A line\'s take-off and landing are the same time. A flying line still earns its OIL from the report before it and the debrief after it, and none if it has neither; a standby shift with no length earns none, flying or not.' },   // [OIL-ZERO-SPAN-SORTIE]: true for whatever the settings are (D932)
+      { id: 'fltnolen', sev: 'adv', code: 'FLT_NO_LEN', line: () => 'A line\'s take-off and landing are the same time. A flying line still earns its OIL from the report before it and the debrief after it, and none if it has neither. A standby shift with no length earns none. One that flies with its R or B before its START earns from that time.' },   // [OIL-ZERO-SPAN-SORTIE]: true for whatever the settings are (D932); the shift since D1999
     ] },
     { g: 'Sims', items: [
       { id: 'simbrief', sev: 'adv', code: 'SIM_BRIEF', line: () => `Something sits inside an EP sim's ${T('epBrief')} brief (EP sim brief), or an AMT's BRIEF row.` },
@@ -150,10 +155,11 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'crewsolo', sev: 'adv', code: 'CREW_SOLO', line: () => 'An OCU pilot with an OCU WSO. Allowed only on sorties the syllabus names.' },
       { id: 'coapproval', sev: 'adv', code: 'CO_APPROVAL', line: () => 'A CAT D pilot with a CAT C WSO, a CAT C pilot with a CAT D WSO, or two CAT Ds. The crew needs the CO\'s approval.' },
       { id: 'ocunoip', sev: 'adv', code: 'OCU_NO_IP', line: () => 'An OCU formation with no instructor (IW, IP, IR or FI).' },
-      { id: 'paxcrew', sev: 'adv', code: 'PAX_CREW', line: () => 'Ground crew in a rear seat. The ride needs approval. Ground crew are checked only for clashes, the long day and days in a row.' },
+      /* the rules check's F10, free since D1992: their own absences flag them, and a front seat is the red QUAL */
+      { id: 'paxcrew', sev: 'adv', code: 'PAX_CREW', line: () => 'Ground crew in a rear seat. The ride needs approval. Ground crew are checked for clashes, the long day, days in a row and their own absences, and a front seat is always a warning. None of the flying rules apply to them: crew rest, turns, pairing, AAR, SC currency or briefs.' },
       { id: 'noir', sev: 'hard', code: 'NO_IR', line: () => 'IRT in the mission needs an IR in the formation; IRT in an aircraft\'s remarks needs one in that aircraft.' },
       { id: 'aarqual', sev: 'hard', code: 'AAR_QUAL', line: () => 'AAR in the remarks needs the front seat\'s currency: night on a night wave, day otherwise. NAAR or DAAR says it outright.' },
-      { id: 'aarinstr', sev: 'hard', code: 'AAR_INSTR', line: () => 'A pilot not current may fly AAR as training only with an instructor in the back seat marked I for it on Quals (an I in place of the tick on DAAR or NAAR). That clears the front seat\'s currency warning; an instructor without the mark is flagged instead.' },
+      { id: 'aarinstr', sev: 'hard', code: 'AAR_INSTR', line: () => 'A pilot not current may fly AAR as training only with an instructor pilot (IP, IR or FI) in the back seat marked I for it on Quals (an I in place of the tick on DAAR or NAAR). That clears the front seat\'s currency warning, but an instructor pilot without the mark is flagged instead.' },   // the rules check's F11
       { id: 'scqual', sev: 'hard', code: 'SC_QUAL', line: () => `A standby shift wholly inside ${lgV(hhmm(VCONF.scDayFrom))} to ${lgV(hhmm(VCONF.scDayTo))} (SC day window) needs SC DAY; one reaching outside it needs SC NIGHT. A SPARE is checked the same as a MAIN.` },
       { id: 'nightafterday', sev: 'note', name: 'Night after day', line: () => 'NAAR needs DAAR, and SC NIGHT needs SC DAY. On Quals, removing the day one removes the night one.' },
     ] },
@@ -165,7 +171,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'kind-bb', sev: 'note', name: 'BB', line: () => esc(kindNote('bb')) },
       { id: 'shifthours', sev: 'note', name: 'A shift\'s hours', line: () => 'A standby shift takes exactly its written hours: no step, dekit, brief or debrief.' },
       /* [STANDBY-FLIES] (owner D1042–D1046, D1061, D1062, 19 Oct 26) */
-      { id: 'saflies', sev: 'note', name: 'A standby row that flies', line: () => 'A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies is checked as an SC MAIN is, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one that does not come in is cancelled with CX.' },
+      { id: 'saflies', sev: 'note', name: 'A standby row that flies', line: () => 'A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies is checked as a sortie is, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one that does not come in is cancelled with CX.' },
       { id: 'saflynotime', sev: 'adv', code: 'SA_FLY_NO_TIME', line: () => 'A standby shift that flies has no START or END, so its crew rest and OIL cannot be worked out.' },
       { id: 'scintime', sev: 'adv', code: 'SC_INTIME', line: () => 'A standby row that flies has a typed B (the crew\'s in-time) or R (its rally), whichever is earlier, and something sits between it and the shift start. That time also starts his crew rest, his long day and his OIL.' },   // R since D1041; every row of a flying shift since [STANDBY-FLIES]
       { id: 'scarm', sev: 'note', name: 'Arming an SC seat', line: () => 'The crew list judges each man against that shift\'s hours only.' },
@@ -186,9 +192,13 @@ export function lgChecks(): LgGroup<LgChk>[] {
         how: () => [
           'Weekend or holiday work earns OIL once the day is published.',
           `A man's day runs from his first report to his last end, gaps included: ${lgV(ruleFmt('oilFullMin', VCONF.oilFullMin))} or more is a full day (FO), less is a half (HO).`,
-          'A flight runs from its in-time (or Default rally before take-off, where neither an in-time nor a rally is entered) to landing plus the debrief.',
-          'A row with no times, or no end time, earns nothing. An Off day earns nothing.',
-          'SC SPARE, AVALON and BB rows that do not fly earn only if switched on in OIL Earn. A row that flies earns by default, from its B or R (the earlier) to its END.',
+          /* the words job ([RULES-CHECK-FIXES] job 3): a typed rally starts the day too (D592, D1995); a request's row earns
+             over its own times (the rules check's F9); a flying shift from its START unless its B or R is earlier (F8);
+             a template desk follows its wave (D1997) */
+          'A flight runs from its in-time or rally, whichever is earlier (Default rally before take-off where neither is entered), to landing plus the debrief.',
+          'A row the scheduler adds with no times, or no end time, earns nothing, but a request answered yes earns over its own times. An Off day earns nothing.',
+          'SC SPARE, AVALON and BB rows that do not fly earn only if switched on in OIL Earn. A row that flies earns by default, from its B or R if earlier than its START, otherwise from its START, to its END.',
+          'A desk made from an AVALON or BB template earns only if switched on in OIL Earn until its wave flies, and by default once it does.',
           'A Duty & commitments input earns once its OIL question is answered yes.',
           'A published day keeps its OIL until it is published again.',
         ] },

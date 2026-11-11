@@ -183,7 +183,8 @@ describe('W59 — AAR currency off the remarks (AAR_QUAL), an AAR instructor not
     expect(warns(TUE, 'SC_QUAL', 'vinci').length, 'a flying AVALON row asks SC NIGHT').toBe(1)
   })
   // RULES-FIRST FINDING 5.1 (11 Nov 26, [ENGINE-RULES-REVIEW]): the Logic line says "an instructor without the mark is flagged instead", but an IW (an instructor on the same page's own list) behind leaves the front seat's AAR_QUAL and flags nobody behind — untrue of a real case (D932); flip to it() when fixed.
-  it.fails('D932: the AAR_INSTR Logic line is true for an instructor WSO behind — either he is flagged instead, or the line says "instructor pilot"', () => {
+  // FIXED by the words job ([RULES-CHECK-FIXES] job 3, the report's F11 words): the line says "instructor pilot (IP, IR or FI)".
+  it('D932: the AAR_INSTR Logic line is true for an instructor WSO behind — either he is flagged instead, or the line says "instructor pilot"', () => {
     const got = aar('freak')                                                 // CAT IW behind a pilot who is not DAAR current
     const flaggedInstead = got.includes('AAR_INSTR') && !got.includes('AAR_QUAL')
     const lineNarrow = /instructor pilot/i.test(logicLine('aarinstr'))
@@ -239,7 +240,8 @@ describe('W61 — ground crew (Personnel): a rear seat (an incentive ride) and g
     expect(codes(TUE, 'torque')).toEqual(['LEAVE_FLY'])
   })
   // RULES-FIRST FINDING 5.2 (11 Nov 26, [ENGINE-RULES-REVIEW]): the Logic line says "Ground crew are checked only for clashes, the long day and days in a row", yet a front seat raises QUAL and an absence raises LEAVE_FLY on him — untrue of a real case (D932); flip to it() when fixed.
-  it.fails('D932: the Personnel Logic line is true — no check beyond the three it names fires on a ground crewman', () => {
+  // FIXED by the words job ([RULES-CHECK-FIXES] job 3, D1992; the report's F10 words): the line names their own absences and the front seat too.
+  it('D932: the Personnel Logic line is true — no check beyond the three it names fires on a ground crewman', () => {
     inp(TUE, 'torque', 'LL', { allday: true })
     ground(TUE, 'torque', '0900', '1000')
     const fired = codes(TUE, 'torque')

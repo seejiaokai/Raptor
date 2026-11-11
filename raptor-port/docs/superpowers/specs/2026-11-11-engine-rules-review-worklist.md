@@ -22,7 +22,7 @@ Written 11 Nov 26. A reading list only: nothing here is a finding, and no code w
 | Seats, crew pairing, qualifications and placeholders (W54–W61) | 8 | 6 | 4 |
 | Hidden warnings and the issue counts (W62–W67) | 6 | 9 | 1 |
 | The published day, amendments and what a frozen day reads (W68–W78) | 11 | 21 | 0 |
-| OIL hours: how a day is measured and which version pays (W79–W87) | 9 | 15 | 0 |
+| OIL hours: how a day is measured and which version earns (W79–W87) | 9 | 15 | 0 |
 | OIL: which seats and which people earn (W88–W96) | 9 | 18 | 0 |
 
 **How to read the columns**
@@ -161,7 +161,7 @@ Where to start: `raptor-port/docs/engine-rules.md` §Publishing / amendments (li
 | W77 | (People and accounts page) "An archived man stays in the ALL AVAIL crowd on every day before his archive — a published day's crowd stays as it went out, nothing pending for it; the working copy reads him by his stints …; a published day he is named on — a seat, a desk — reads "1 pending" until the next amendment" | D327, D321; beside it: D44, D45 | 28 Sep 26 (D327) | D321 (7) narrowed by D327 for the crowd | "nothing pending for it"; "named on" | code naming the number(s): `engine/publish.ts` (dayPeopleAttrs, blankB, attrsOf); `state/person-delete.ts` (accts); `leavewar/sync.ts` (keptOut) | engine/oildormantkey.test.ts, leavewar/deletednorow.test.ts, leavewar/deleteposting-restore.test.ts, leavewar/onedoor.test.ts | Edge of scope. A deleted man on a published day is read "by date" (D297) — the third variant of the same question. |
 | W78 | "No "Reissue AL1" button: after an Unpublish the withdrawn amendment's changes stay on the working copy as pending, and "Publish AL1" brings the day back"; "A day back to what was published shows nothing pending and is no amendment"; "On View-only Sched the next-week preview shows a published day's published version" | D101, D98, D1010 | 18 Oct 26 (D1010) | D98 re-confirms the register's AM20 (16 Aug 26: a mark means "differs from what was issued", not "was touched") | "differs from what was issued" | code naming the number(s): `engine/drafts.ts` (ROWSLEFT, plan); `engine/hooks.ts` (HOOKS); `engine/oilev.ts` (oilRuleShift); `engine/overlay.ts` (rest, stands); `engine/publish.ts` (decDrop, lone, filingRestorePlan); `engine/weekctx.ts` (officialDaysOf) +3 more files. No code names: D101 | engine/accept.test.ts, engine/inputs-frozenmatch.wire.test.ts, leavewar/oilworkstart-published.test.ts, state/grouprow-entry.test.ts, state/inputcount.test.ts, state/p6c-requestonread.test.ts +12 more | Edge of scope: these decide what each surface READS (working copy or issued version), which decides whose warnings it shows. |
 
-## OIL hours: how a day is measured and which version pays
+## OIL hours: how a day is measured and which version earns
 
 OIL is time off banked, never pay. Where to start: `raptor-port/docs/engine-rules.md` §Weekend/PH work earns OIL (line 2257), §Which published version pays, and the guards on a credit (2655); code `src/engine/oil.ts` (putWho, fltMeasuresNothing, openEndRows), `oilev.ts` (work, oilRuleShift, oilKeptVals), `publish.ts` (oilRuleDelta), `leavewar/sync.ts`. Registers: `raptor-port/docs/superpowers/specs/2026-10-06-oil-work-start-behaviour-register.md` (OWS1–OWS12), `2026-09-22-oil-seats-behaviour-register.md`.
 

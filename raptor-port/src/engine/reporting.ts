@@ -180,8 +180,10 @@ export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
       issues.push({gi,li,lines:box?(before.name==='in-time'?r.inTimeLines:[]):r.sourceLines,code:'REPORT_ORDER',blocking:true,...(box?{box:true}:{}),
         msg:`${name}: ${before.name} ${stated(before.time)} is later than ${after.name} ${stated(after.time)}.`});
     }
+    /* since D1995 only an unreadable clock is unresolved — a "RALLY AFTER IN TIME" line makes no rally, so its old
+       "has no applicable in-time clock" was untrue even when such a line's clock could not be read */
     r.unresolved.forEach(p=>issues.push({gi,li,lines:[p.index],code:'REPORT_UNRESOLVED',blocking:false,
-      msg:p.immediate?`${name}: rally after in-time has no applicable in-time clock.`:`${name}: reporting line ${p.index+1} has no recognised clock. Check the time.`}));
+      msg:`${name}: reporting line ${p.index+1} has no recognised clock. Check the time.`}));
   });
   return issues;
 }

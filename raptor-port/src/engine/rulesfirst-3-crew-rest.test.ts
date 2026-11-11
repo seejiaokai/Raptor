@@ -291,23 +291,23 @@ describe('W38 — every Logic line is correct for whatever the settings are; a c
     expect(logicCheck('longday').line()).toContain('>10h<')
     expect(logicCheck('crewrest').line()).toMatch(/For a flying member: at least .* to his earliest in-time/)
   })
-  // RULES-FIRST FINDING 3.2 (11 Nov 26, [ENGINE-RULES-REVIEW]): the Logic page's tight-turn line says it fires because "his typed in-time is later", but it fires with nothing typed at all; flip to it() when fixed.
-  it.fails('the tight-turn line is true of the case it fires on: nothing typed, the suggested brief clears', () => {
+  // RULES-FIRST FINDING 3.2 (11 Nov 26, [ENGINE-RULES-REVIEW]): the Logic page's tight-turn line said it fires because "his typed in-time is later", but it fires with nothing typed at all. FIXED by the words job (D1988, D1989: the report's F7 words).
+  it('the tight-turn line is true of the case it fires on: nothing typed, the suggested brief clears', () => {
     add(MON, wave([], [form({ to: '18:30', ld: '19:30' })]))
     add(TUE, wave())                                                   // nothing typed
     expect(warns(TUE, 'bane', 'CREW_TIGHT').length).toBe(1)
     expect(logicCheck('crewtight').line(), 'a line that names only a typed in-time is untrue here').not.toMatch(/his typed in-time is later/)
   })
-  // RULES-FIRST FINDING 3.3 (11 Nov 26, [ENGINE-RULES-REVIEW]): the crew-rest fold says "An SC SPARE carries no crew rest either way", untrue since a flying SPARE bears it (D1044, D1045); flip to it() when fixed.
-  it.fails('the crew-rest fold is true of a flying SC SPARE, which bears crew rest', () => {
+  // RULES-FIRST FINDING 3.3 (11 Nov 26, [ENGINE-RULES-REVIEW]): the crew-rest fold said "An SC SPARE carries no crew rest either way", untrue since a flying SPARE bears it (D1044, D1045). FIXED by the words job (the report's F6 words).
+  it('the crew-rest fold is true of a flying SC SPARE, which bears crew rest', () => {
     const sc: any = makeStandalone('sc'); add(MON, sc)
     const pm = sc.formations[1]; pm.rl = '12:00'; pm.aircraft[2].p = 'bane'
     add(TUE, wave(['06:30 IN TIME']))
     expect(warns(TUE, 'bane', 'CREW_REST').length, 'the engine: the flying SPARE ended 19:00, rest clears 07:00').toBe(1)
     expect(logicCheck('crewrest').how!().join(' ')).not.toMatch(/An SC SPARE carries no crew rest either way/)
   })
-  // RULES-FIRST FINDING 3.4 (11 Nov 26, [ENGINE-RULES-REVIEW]): the crew-rest fold names "his in-time, his B where no in-time is typed" and never the rally, which counts for crew rest since D1032; flip to it() when fixed.
-  it.fails('the crew-rest fold is true of a typed R box with no in-time: rest is measured to the rally, not to the B', () => {
+  // RULES-FIRST FINDING 3.4 (11 Nov 26, [ENGINE-RULES-REVIEW]): the crew-rest fold named "his in-time, his B where no in-time is typed" and never the rally, which counts for crew rest since D1032. FIXED by the words job (the report's F5 words).
+  it('the crew-rest fold is true of a typed R box with no in-time: rest is measured to the rally, not to the B', () => {
     add(MON, wave([], [form({ to: '18:30', ld: '19:30' })]))           // clear 09:30
     add(TUE, wave([], [form({ rl: '09:00' })]))                        // R 09:00, no in-time, suggested B 09:40
     expect(warns(TUE, 'bane', 'CREW_REST')[0].msg, 'the engine measures to the rally').toContain('told to report 09:00')

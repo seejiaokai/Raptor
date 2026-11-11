@@ -1,4 +1,4 @@
-# Family 8 — OIL hours: how a day is measured and which version pays (W79–W87) — results
+# Family 8 — OIL hours: how a day is measured and which version earns (W79–W87) — results
 
 Reviewer: fresh Opus helper, 11 Nov 26. Test file: `raptor-port/src/engine/rulesfirst-8-oil-hours.test.ts` — **10 passed, 1 `it.fails`** (finding 8.1, its red line seen as a plain `it`). `npx tsc -b` clean.
 The tests run against the app's real OIL wiring: both stores, `wireLeaveWarSync`, the publish door, `runOilPass`, `validate`/`officialWarn`, the board's `oilDayFigures`, and Insights' `workSpan`.
@@ -54,7 +54,7 @@ Counts: **MATCHES 9** (W80's engine included), **DRIFT 1** (8.1, on W80's Logic 
   - The behaviour is consistent with all three.
 - **What stays open (family 7's question i):**
   - Whether that red line, and the six OIL codes generally, belong among the warnings live on a published face. D179's list does not name them.
-  - Whether the red is right on a day that will pay until it is republished anyway.
+  - Whether the red is right on a day whose OIL is earned until it is republished anyway.
 - **Recommendation:** keep it as built. D2 and D81 ask the day to say so, and the red line names the one thing the admin must fix before republishing. Put it to him only as part of 7's question i.
 
 ## Outside this family — noticed, not reviewed

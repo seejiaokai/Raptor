@@ -10821,16 +10821,20 @@ day the mode is describing.
 
 ### A day that stopped being a holiday (fix 4, 22 Sep 26)
 
-Only the issued schedule pays, both directions. The forward half already spoke:
+Only the issued schedule earns OIL, both directions. The forward half already spoke:
 a day published as an ordinary working day that the war LATER calls a holiday
-keeps its frozen "earns nothing", and says *"This day started earning OIL after
-it was published — publish it again so the OIL lands."*
+keeps its frozen "earns nothing", and says *"Publish this day again so OIL is
+earned. The PH was set after the day was published."* (his words, D2003, 11 Nov 26;
+until then "This day started earning OIL after it was published — publish it again
+so the OIL lands").
 
 The reverse half said nothing at all. A day published as a holiday that later
-stops being one goes on paying off its frozen block — which is correct, money
+stops being one goes on crediting OIL off its frozen block — which is correct, OIL
 comes from the issued document and not from today's calendar — while the screen
-contradicted the money and offered no way to look. It now says *"This day stopped
-being a holiday after it was published — publish it again to withdraw the OIL."*
+contradicted the credit and offered no way to look. It now says *"Publish this day
+again to withdraw the OIL. The PH was removed after the day was published."* (his
+words, D2004, 11 Nov 26; until then "This day stopped being a holiday after it was
+published — publish it again to withdraw the OIL"). Both short headings are as they were.
 
 A weekday rule in practice: a Saturday cannot stop being a weekend, so the case
 this covers is a public holiday the war takes back off.

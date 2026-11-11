@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-/* RULES-FIRST REVIEW, family 8 — OIL hours: how a day is measured and which version pays (W79–W87)
+/* RULES-FIRST REVIEW, family 8 — OIL hours: how a day is measured and which version earns (W79–W87)
    ([ENGINE-RULES-REVIEW], D1983, 11 Nov 26). OIL is leave earned for working an off day — time off banked, never pay.
    One test per worklist item where no existing test already holds the ruling whole (those are named in the review's
    results, not repeated here), each led by the ruling's own words, on a small made-up week through the app's own doors
@@ -136,7 +136,8 @@ describe('W80 — an SC shift\'s typed B counts as work: its OIL and work hours 
     expect([ws2.s, ws2.e], 'the work hours agree').toEqual([h(7), h(13)])
   })
   // RULES-FIRST FINDING 8.1 (11 Nov 26, [ENGINE-RULES-REVIEW]): the Logic page's OIL "How it works" says a standby row that flies earns "from its B or R (the earlier) to its END"; with a B typed after the shift's START the app counts from the START (D1044's planned START and END); flip to it() when fixed.
-  it.fails('8.1 — the Logic line read as written (D932: every line correct for a real case): an SC AM shift 07:00–13:00 with its B typed 08:00 earns, as the line says, from 08:00 — or the line no longer says so', () => {
+  // FIXED by the words job ([RULES-CHECK-FIXES] job 3, the report's F8 words): "from its B or R if earlier than its START, otherwise from its START, to its END".
+  it('8.1 — the Logic line read as written (D932: every line correct for a real case): an SC AM shift 07:00–13:00 with its B typed 08:00 earns, as the line says, from 08:00 — or the line no longer says so', () => {
     const f = sc(); f.br = '08:00'; validate()
     const says = oilHow().some(s => /from its B or R \(the earlier\) to its END/.test(s))
     const start = dayOilSpans(day(SAT)).bane![0]![0]

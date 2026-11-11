@@ -16,7 +16,7 @@ import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, ruleFmt, rulesReset } from '../
 import { WCODE, validate, lgFired } from '../engine/validate'
 import { WAVE_BUILTIN, kindNote } from '../engine/wavetpl'
 import { setLgEdit } from '../state/auth'
-import { LG_HIDDEN } from './logic-html'
+import { LG_HIDDEN, lgChecks, lgSettings } from './logic-html'
 import { store, storeBackend } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -573,4 +573,39 @@ it('D561 observes the topbar size and releases its observer/listener on leaving 
     await click($$('.nav a[data-page]').find(a=>a.dataset.page==='viewsched')!)
     expect(disconnected).toBe(true);height=120;window.dispatchEvent(new Event('resize'));expect(bar.style.top).toBe('75px')
   } finally {globalThis.ResizeObserver=original;top.getBoundingClientRect=old}
+})
+
+/* THE WORDS JOB ([RULES-CHECK-FIXES] job 3, 12 Nov 26): the lines the rules check's nine fixes made untrue, each now said
+   as the app does it (D932 — every line correct for whatever the settings are). The rules check's own F5-F11 findings
+   are pinned in the engine's rulesfirst tests; these are the others the sweep found. New words, shown to him as built. */
+describe('the Logic lines the nine rule fixes changed say what the app now does', () => {
+  const strip = (s: string) => s.replace(/<[^>]+>/g, '')
+  const chk = (id: string) => {
+    for (const g of lgChecks()) for (const c of g.items) if (c.id === id) return c
+    throw new Error(id)
+  }
+  const line = (id: string) => strip(chk(id).line())
+  const how = (id: string) => (chk(id).how ? chk(id).how!() : []).map(strip)
+  const setting = (name: string) => {
+    for (const g of lgSettings()) for (const s of g.items) if (s.name === name) return s.line()
+    throw new Error(name)
+  }
+  it('D1995: a typed line is an in-time whatever its words; a line with no clock sets no time; only an unreadable clock is unresolved', () => {
+    expect(how('reportorder')).toContain('A formation\'s rally is its R box alone. An In-time line is an in-time whatever its words, even one that says RALLY, and its first clock is used (09:00H or 0900).')
+    expect(how('reportorder')).toContain('A line with no clock, RALLY AFTER IN TIME included, sets no time.')
+    expect(line('reportunres')).toBe('The app cannot read the clock on an In-time line.')
+  })
+  it('D1996: a standby shift that flies is checked as a sortie, every clash with it red', () => {
+    expect(line('saflies')).toContain('A row that flies is checked as a sortie is,')
+    expect(line('shiftsoft')).toMatch(/ Once the shift flies, every clash with it is red\.$/)
+    expect(setting('SC MAIN clashes')).toMatch(/ Once his shift flies, every clash is red\.$/)
+  })
+  it('D1990: a landing that is not a time ends the day at take-off plus the debrief; a shift reports at its B or R when typed earlier', () => {
+    expect(how('crewrest')[1]).toMatch(/ A flight ends at landing plus the debrief \(.+\), or at take-off plus the debrief where the landing is not a time\. Anything else ends at its written end\.$/)
+    expect(how('crewrest')).toContain('An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is typed earlier.')
+  })
+  it('D1997: a desk from an AVALON or BB template earns by default once its wave flies; a flight\'s OIL starts at its in-time or rally', () => {
+    expect(how('oil')).toContain('A desk made from an AVALON or BB template earns only if switched on in OIL Earn until its wave flies, and by default once it does.')
+    expect(how('oil')).toContain('A flight runs from its in-time or rally, whichever is earlier (Default rally before take-off where neither is entered), to landing plus the debrief.')
+  })
 })

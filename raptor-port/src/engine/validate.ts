@@ -296,14 +296,14 @@ export function fltNoLen(f:any):boolean{
    AND A SORTIE WITH NOTHING ROUND IT ([OIL-ZERO-SPAN-SORTIE], 20 Oct 26): its entered in-time the take-off and the
    Logic page's debrief zero (or both leads zero), the sortie has no report and no debrief either, so it earns nobody any
    OIL — said so, and named in the day's "no usable times" list (oil.ts fltMeasuresNothing). `none` is that fact. */
-export const FLT_NO_LEN_SAYS=(st:any,sa?:any,none?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${sa?'a shift with no length earns nobody any OIL until it is fixed':none?'with no report before it and no debrief after it, the line earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
+export const FLT_NO_LEN_SAYS=(st:any,sa?:any,none?:any,saFly?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${saFly?'the shift still earns from its R or B':sa?'a shift with no length earns nobody any OIL until it is fixed':none?'with no report before it and no debrief after it, the line earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
 /* the sentence's tail for one line, the facts read off the line and its wave — what every marked box's title and the
    warning both print, so no caller works out "is it a shift" or "does it measure anything" for itself */
 /* A FLYING STANDBY SHIFT THAT EARNS from its B or R though its START is its END (D1999: "earns like a flying line … with
-   the amber 'times look wrong' note") takes the flying line's sentence, never the shift's "earns nobody", which would now
-   be false. Its "and debrief" is not exact for a shift (no debrief) — the exact words are put to him ([RULES-CHECK-FIXES]
-   job 3), no new sentence built at night. */
-export const fltNoLenSays=(f:any,wv:any)=>FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv)&&!saZeroSpanWin(wv,f,VCONF.reportLead),fltMeasuresNothing(wv,f));
+   the amber 'times look wrong' note") says what it earns from — never the shift's "earns nobody", which would now be
+   false, nor the flying line's "report and debrief", since a shift has no debrief ([RULES-CHECK-FIXES] job 3: new words,
+   shown to him as built, his to change). */
+export const fltNoLenSays=(f:any,wv:any)=>{const fly=!!saZeroSpanWin(wv,f,VCONF.reportLead);return FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv)&&!fly,fltMeasuresNothing(wv,f),fly);};
 /* the 7-day run's sentence — one body for the warning and for the dotted mark that points at it from the days before
    (the mark carries the words its warning will have, so a hide of that warning is found — [WARN-HIDE-KEPT]) */
 const runSays=(id:any,n:any)=>`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`;
@@ -1565,7 +1565,7 @@ function validateCore(){
         const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
         const frozen=snap&&snap.d&&snap.d.oilev;
         if(frozen&&!frozen.earns){
-          add('adv','OIL_STALE_DAY',[],'This day started earning OIL after it was published — publish it again so the OIL lands');
+          add('adv','OIL_STALE_DAY',[],'Publish this day again so OIL is earned. The PH was set after the day was published.');
         }
         /* AND THE OTHER WAY A PUBLISHED DAY'S MONEY MOVES UNDER IT (owner,
            22 Sep 26 — "ok fix this first"). A day issued before the app counted
@@ -1598,7 +1598,7 @@ function validateCore(){
       const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
       const frozen=snap&&snap.d&&snap.d.oilev;
       if(frozen&&frozen.earns){
-        add('adv','OIL_STALE_HOLIDAY',[],'This day stopped being a holiday after it was published — publish it again to withdraw the OIL');
+        add('adv','OIL_STALE_HOLIDAY',[],'Publish this day again to withdraw the OIL. The PH was removed after the day was published.');
       }
     }
     const SORD:any={hard:0,adv:1,note:2};

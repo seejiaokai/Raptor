@@ -298,7 +298,7 @@ Each question is one decision, and none depends on another's answer. "As built" 
   08:00–15:00. The day is published as a working day, so no OIL words show. The admin then makes the day a PH on the
   Leave War's Event row.
 - **What the screen shows today.**
-  - The published day says it must be published again before it pays.
+  - The published day says it must be published again before OIL can be earned.
   - It also shows a red line: VL has no usable times, and nobody on it earns OIL.
   - The day reads pending, the four sign-offs fall, and nobody is credited until it is published again.
   - After the amendment, Stiff gets a full day. The red line stays, because it is still true.
@@ -366,7 +366,7 @@ What "sound" rests on — each family's count and a few of the sharpest edges te
   - A change reads pending and the four sign-offs fall; putting it back restores them.
   - Live warnings never make a day pending on their own.
   - Each day keeps its own amendment numbers, ORIG → AL1 → AL2; Unpublish then publish again reissues the same number.
-- **OIL hours — how a day is measured and which version pays:** 9 of 9 match (F8 is the page's words only).
+- **OIL hours — how a day is measured and which version earns:** 9 of 9 match (F8 is the page's words only).
   - On one made-up Saturday, all four places that work out OIL hours agree.
   - An amendment that takes Stiff off a past day takes his OIL away, and an Undo of the publish takes the day's OIL away.
   - A hand award on a working Monday stands, and the automatic pass gives that Monday nothing.

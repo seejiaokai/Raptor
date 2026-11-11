@@ -131,6 +131,9 @@ describe('W88 — one principle, no allow-list: every seat can earn, its default
     const note = all.filter((x: any) => x.code === 'FLT_NO_LEN')
     expect(note.map((x: any) => x.sev), 'the amber "times look wrong" note').toEqual(['adv'])
     expect(String(note[0].msg), 'the note no longer says the shift earns nobody').not.toMatch(/earns nobody/)
+    /* the words job ([RULES-CHECK-FIXES] job 3): a shift has no debrief, so the flying line's "the day still earns from
+       the report and debrief" was not exact — it says what the shift earns from, new words his to change */
+    expect(String(note[0].msg), 'its own tail').toMatch(/one of the two is wrong; the shift still earns from its R or B$/)
   })
   it('D1999 edges: the B counts as the R does, the earlier of the two; a shift whose R is its START, or one that does not fly, still measures nothing and is named', () => {
     const w: any = makeStandalone('sc'); const f = w.formations[0]
@@ -294,7 +297,8 @@ describe('W96 — the green OIL bar shows only on the events that counted toward
 
 describe('9.1 — the Logic page\'s OIL "How it works" against a real case (D932: every line correct for a real case; W88 and W93\'s rows)', () => {
   // RULES-FIRST FINDING 9.1 (11 Nov 26, [ENGINE-RULES-REVIEW]): the Logic line "A row with no times, or no end time, earns nothing." is untrue of a request's row: an all-day Training answered Yes lands a row with no times and its man earns a full day; flip to it() when fixed.
-  it.fails('Ranger files an all-day Training for Saturday, answers Yes, and it is accepted onto the Ground Programme: its row carries no times and he earns a full day — so the Logic page does not say that such a row earns nothing', () => {
+  // FIXED by the words job ([RULES-CHECK-FIXES] job 3, the report's F9 words): "A row the scheduler adds with no times …, but a request answered yes earns over its own times."
+  it('Ranger files an all-day Training for Saturday, answers Yes, and it is accepted onto the Ground Programme: its row carries no times and he earns a full day — so the Logic page does not say that such a row earns nothing', () => {
     INPUTS.unshift({ iid: 'rq1', type: 'Training', date: 'Jul 18', yr: 2026, acc: 'g', allday: true, s: 0, e: 1439, remarks: '',
       mod: '2026-07-01', by: 'bane', oil: { [SAT_ISO]: 1 }, people: [{ p: 'bane' }] } as any)
     day(SAT).ground = [{ ...requestRowFields(INPUTS[0]), src: 'rq1', srcv: srcvOf(INPUTS[0]) }]; ids()
@@ -306,8 +310,9 @@ describe('9.1 — the Logic page\'s OIL "How it works" against a real case (D932
 })
 
 describe('9.2 — the duty-template sheet\'s AVALON and BB desk notes against D24 / D35 (an AVALON or BB desk earns nothing by default, and the admin can switch it on)', () => {
-  // RULES-FIRST FINDING 9.2 (11 Nov 26, [ENGINE-RULES-REVIEW]): the template sheet says an AVALON (and a BB) desk "earns no OIL on a weekend or holiday", yet D24/D35 make it switchable and the app credits one switched on; flip to it() when fixed.
-  it.fails('the AVALON template\'s note does not say the desk "earns no OIL" while a desk minted from it, switched on in OIL Earn, earns a full day', async () => {
+  // RULES-FIRST FINDING 9.2 (11 Nov 26, [ENGINE-RULES-REVIEW]): the template sheet said an AVALON (and a BB) desk "earns no OIL on a weekend or holiday", yet D24/D35 make it switchable and the app credits one switched on.
+  // FIXED by his words, D1994 (11 Nov 26): "…and earns no OIL by default on a weekend or holiday. Switch it on in OIL Earn if activated." — the note now says the default and the way to credit it.
+  it('the AVALON template\'s note says the desk earns no OIL by default and how to switch it on, while a desk minted from it, switched on in OIL Earn, earns a full day (D1994)', async () => {
     desk('split', '19:00', '07:00', 'SXO', {}, blockFromTpl('avalon')); ids()
     toggleOilItem(SAT, deskItem(0))
     const earns = fig().split
@@ -318,7 +323,21 @@ describe('9.2 — the duty-template sheet\'s AVALON and BB desk notes against D2
     const tab = [...host.querySelectorAll('.tpl-tab')].find(b => b.textContent === 'AVALON') as HTMLElement
     await act(async () => { tab.dispatchEvent(new MouseEvent('click', { bubbles: true })) })
     const note = String(host.querySelector('.tpl-wave-note')?.textContent || '')
+    /* the seed has no BB template, so the note's twin is read by turning this one's "For wave" to BB, then back */
+    const wave = host.querySelector('.tpl-wave select') as HTMLSelectElement
+    const pick = async (v: string) => act(async () => {
+      Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value')!.set!.call(wave, v)
+      wave.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+    await pick('bb')
+    const bbNote = String(host.querySelector('.tpl-wave-note')?.textContent || '')
+    await pick('avalon')
     await act(async () => { setTplEdit(false); notify() }); await act(async () => { root.unmount() }); host.remove()
-    expect({ note: /AVALON desk/.test(note), earns, saysNever: /earns no OIL/.test(note) }).toEqual({ note: true, earns: 'FO', saysNever: false })
+    /* D1997 (11 Nov 26): once its wave flies the desk is fully checked and earns by default, so the note's "checked
+       only for…" and its default hold until then — said so, his D1994 words after it unchanged */
+    expect(note, 'the AVALON note says the narrow check lasts until its wave flies').toMatch(/^The AVALON desk — until the AVALON flies, checked only for overseas or medically down/)
+    expect(bbNote, 'and the BB note').toMatch(/^The BB desk — the same rules as the AVALON desk: until the BB flies, checked only for/)
+    expect(bbNote, 'the BB note, its twin, in the same words').toMatch(/^The BB desk .*and earns no OIL by default on a weekend or holiday\. Switch it on in OIL Earn if activated\.$/)
+    expect({ note: /AVALON desk/.test(note), earns, ruled: note.endsWith('and earns no OIL by default on a weekend or holiday. Switch it on in OIL Earn if activated.') }).toEqual({ note: true, earns: 'FO', ruled: true })
   })
 })

@@ -219,7 +219,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   unchanged: a line naming this wave's formation is that formation's own in-time and replaces the whole-wave in-time for it
   (D505, D1034's kept part) — so `06:00 IN TIME` with `VL RALLY 07:00` now reports VL at 07:00 (the agent's reading, put
   to him). A line with no clock is no instruction: a clockless `RALLY AFTER IN TIME` makes no rally and raises no "rally
-  after in-time has no applicable in-time clock" line any more. The order check between two typed lines is gone with it (two
+  after in-time has no applicable in-time clock" line any more — and since the words job ([RULES-CHECK-FIXES] job 3) nor
+  does one whose clock cannot be read: it is told "reporting line N has no recognised clock. Check the time." as any other
+  line is (`reportingIssuesForWave`). The order check between two typed lines is gone with it (two
   in-times, the earlier counting); an in-time later than the brief, or than the box's rally, is still the red wrong pair.
   `reporting.ts parseReportingLines`; pinned in `engine/rulesfirst-1-report-times.test.ts` (W1, W9), `rally-workspan.test.ts`,
   `rallybox.test.ts`, `oilworkstart.test.ts`. The lines above about RALLY lines describe the reading before D1995.
@@ -2382,9 +2384,10 @@ were `FS`/`HS` until the 28 Aug 26 rename.
       same measures nothing unless it flies from a B or R earlier than its START — then it earns from that B or R to
       its END, as a flying line does (owner D1999, 11 Nov 26: "earns like a flying line — from its R or B, with the
       amber 'times look wrong' note"; `oil.ts saZeroSpanWin`, which the credit, the day's "no usable times" list and the
-      same-time note all read; a row on it that only stands by still earns nothing). Its same-time note takes the flying
-      line's sentence ("the day still earns from the report and debrief") rather than the shift's "earns nobody", which
-      would be false; the exact words for a shift (it has no debrief) are put to him with the words job. The work-hours bar and the long-work-day note have counted an SC
+      same-time note all read; a row on it that only stands by still earns nothing). Its same-time note ends "the shift
+      still earns from its R or B" — never the shift's "earns nobody", which would be false, nor the flying line's "report
+      and debrief", since a shift has no debrief (the words job, [RULES-CHECK-FIXES] job 3: new words, his to change;
+      `validate.ts FLT_NO_LEN_SAYS`). The work-hours bar and the long-work-day note have counted an SC
       MAIN's B since 24 Aug 26 (`workSpan`). Pins: `engine/oilscintime.test.ts`, `engine/standbyflies.test.ts`;
     - with no line entered, the work-hours bar and the long-day note start at the
       nominal report too, as OIL does — one start since D1786 (8 Nov 26); until
