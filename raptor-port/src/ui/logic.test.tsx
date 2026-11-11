@@ -602,10 +602,10 @@ describe('the Logic lines the nine rule fixes changed say what the app now does'
   })
   it('D1990: a landing that is not a time ends the day at take-off plus the debrief; a shift reports at its B or R when typed earlier', () => {
     expect(how('crewrest')[1]).toMatch(/ A flight ends at landing plus the debrief \(.+\), or at take-off plus the debrief where the landing is not a time\. Anything else ends at its written end\.$/)
-    expect(how('crewrest')).toContain('An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is typed earlier.')
+    expect(how('crewrest')).toContain('An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is earlier than the start.')
   })
   it('D1997: a desk from an AVALON or BB template earns by default once its wave flies; a flight\'s OIL starts at its in-time or rally', () => {
-    expect(how('oil')).toContain('A desk made from an AVALON or BB template earns only if switched on in OIL Earn until its wave flies, and by default once it does.')
+    expect(how('oil')).toContain('Until its wave flies, a desk made from an AVALON or BB template earns only if switched on in OIL Earn. Once the wave flies, the desk earns by default.')
     expect(how('oil')).toContain('A flight runs from its in-time or rally, whichever is earlier (Default rally before take-off where neither is entered), to landing plus the debrief.')
   })
 })

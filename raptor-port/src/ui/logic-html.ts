@@ -107,7 +107,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
           'A LATE SHOW remark keeps the warning. The ring is dashed while rest still clears by step, solid after.',
           'Monday checks last Sunday. A Sunday that breaks Monday shows a "Breaks Monday" box.',
           'A flying line with no times yet is not measured, but a typed brief, in-time or landing on it still counts.',
-          'An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is typed earlier.',
+          'An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is earlier than the start.',
         ] },
       /* the rules check's F7, free since D1988 and D1989: it shows with nothing typed too, so it names what clears */
       { id: 'crewtight', sev: 'adv', code: 'CREW_TIGHT', line: () => `His rest would be short if he reported the usual ${T('reportLead')} before take-off (Default rally before take-off), but his in-time or rally, or his B where neither is typed, is later, so it clears.` },
@@ -198,7 +198,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
           'A flight runs from its in-time or rally, whichever is earlier (Default rally before take-off where neither is entered), to landing plus the debrief.',
           'A row the scheduler adds with no times, or no end time, earns nothing, but a request answered yes earns over its own times. An Off day earns nothing.',
           'SC SPARE, AVALON and BB rows that do not fly earn only if switched on in OIL Earn. A row that flies earns by default, from its B or R if earlier than its START, otherwise from its START, to its END.',
-          'A desk made from an AVALON or BB template earns only if switched on in OIL Earn until its wave flies, and by default once it does.',
+          'Until its wave flies, a desk made from an AVALON or BB template earns only if switched on in OIL Earn. Once the wave flies, the desk earns by default.',
           'A Duty & commitments input earns once its OIL question is answered yes.',
           'A published day keeps its OIL until it is published again.',
         ] },
