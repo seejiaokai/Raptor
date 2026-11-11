@@ -359,10 +359,12 @@ describe('Astra\'s code read (26 Sep 26): the face beyond the warnings freezes t
       expect(briefOf(), 'the published CSV keeps the brief it went out with').toBe(b0)
       expect(dayPendingItems(MON).some((x: any) => x.kind === 'warn'), 'Monday reads pending').toBe(true)
       expect(listText(MON)).toMatch(/suggested lead/)
-      /* the missed-brief advisories the new lead re-words read ONE line each, "changed" — not cleared and new (the Logic
-         walker's find) */
+      /* the missed-brief advisories the new lead would re-word: since D1991 (11 Nov 26 — a published day's crew rest is
+         measured to the brief it printed) with D2005 (all the Logic settings it was published under), the published day
+         is judged by the lead it kept, so they do not move at all — neither cleared nor "changed"; the one pending line
+         is the printed lead itself. (Before D1991 they read ONE line each, "changed" — the Logic walker's find.) */
       expect(listText(MON), 'no warning reads cleared merely because its time moved').not.toMatch(/cleared/)
-      expect(listText(MON)).toMatch(/No time for the .* flight brief.*changed/)
+      expect(listText(MON), 'D1991: judged by the kept lead, the advisory does not change').not.toMatch(/No time for the .* flight brief/)
     } finally { (VCONF as any).briefLead = was }
     validate()
     expect(dayDelta(MON)).toEqual([])
