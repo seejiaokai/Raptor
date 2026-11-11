@@ -15,6 +15,24 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## Now (24 Sep 26) — how the checks and the deploy run today
 
+- **The browser jobs run in Playwright's own image (12 Nov 26, [CI-BROWSER-DEPS-DOWNLOAD]):** the seven `geometry` and two
+  `tracker (smoke)` jobs on GitHub no longer run `npx playwright install --with-deps chromium`, which fetched the browser's
+  system libraries and fonts from Ubuntu's package servers on every run — 8 to 16 minutes in 9 of the 20 runs before
+  8 Nov 26, and on 11–12 Nov 26 `main`'s run after pull request 760 failed four times, all nine jobs stopped in that step
+  ("Temporary failure resolving" Ubuntu's servers) before a test ran. Each now runs in the container
+  `mcr.microsoft.com/playwright:v<version>-noble` (Ubuntu 24.04, the browser and every system package Playwright's
+  `install-deps` names already in it, pulled from Microsoft's registry); the runner's own fonts are lent to it read-only,
+  so the same font families resolve as on the bare runner (DejaVu Sans, the note under §How the gates lie, came with
+  GitHub's machine image, not with `--with-deps`); `TZ=UTC` as the bare runner had. A cache of the old step was weighed and
+  set aside: it needs one good fetch first and misses whenever GitHub refreshes its machine image.
+  - **Trap — a Playwright bump needs the image tag bumped with it.** The tag must be the Playwright version in
+    `package-lock.json` (both jobs' `container.image` in `deploy.yml`); the first step, "Browser and fonts"
+    (`scripts/ci/browser-image-check.cjs`), stops the job with the line to change. Never answer it with
+    `npx playwright install` — that is the download this replaced.
+  - **Reading a red browser job:** "Browser and fonts" prints which font Chromium draws each family the app names in, and
+    the time zone and language — compare them first when a measuring test is red on GitHub only. The workflow's note above
+    the `geometry` job has the rest (the user, `--ipc=host`, why the fonts are lent).
+
 - **The 31 errors left in old walk scripts were settled before the next full run (his D1572, 2 Nov 26 — spent, archived 10 Nov 26):** the app's own errors
   are 0 since the 31 Oct 26 clean-up; the 31 errors a full run still reported (2 Nov 26) were all one rule, `no-eval` —
   30 in the Leave War overhaul's mock-up scripts (`docs/mock/lw-overhaul/`, which load their approved drawing's own code,
@@ -294,7 +312,8 @@ machine draws its own: Linux's DejaVu Sans is much wider than this PC's Segoe UI
 the logs, run the test here with wider letters forced from the first paint — the Leave War browser tests'
 `LW_WIDE_LETTERS=1`, or the same init script (a style tag added after the page loads reproduced one failure of three: the
 app measures some text as it loads) — and in the test's own order of resizes (loading at the target width missed one).
-Prove each fix red-then-green both ways before pushing.
+Prove each fix red-then-green both ways before pushing. Since 12 Nov 26 the browser jobs run in Playwright's image with the
+runner's fonts lent to it, to keep these same letters (§Now, the browser jobs); their first step prints the fonts drawn.
 
 **The tests that scan source text read comments too (21 Oct 26).** `src/engine/inputs-readers.test.ts` lists every file
 whose text holds the store's name `INPUTS`, and `src/state/perms-scan.test.ts` scans for rules decided outside their one
