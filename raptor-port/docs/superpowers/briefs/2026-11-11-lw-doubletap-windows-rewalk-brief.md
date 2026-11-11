@@ -4,7 +4,7 @@ You WALK the running app as a person would and report what you SEE. You do not r
 anything, you do not decide whether a finding is real — you record it exactly, with its picture and how to repeat it.
 
 **The checkout:** `C:/Users/User/projects/Raptor/.claude/worktrees/next-jobs-recommendation-fixes-3756f8`, branch
-`claude/lw-doubletap-windows`, last code commit `be789fdc7`. `raptor-port/dist` is ALREADY BUILT from it — do not
+`claude/lw-doubletap-windows`, last code commit `0dc2e0dc8`. `raptor-port/dist` is ALREADY BUILT from it — do not
 build, do not run `npm test` or any Playwright test file (they rebuild `dist`). Never switch branch, commit, push or
 stash. The only files you may write inside the checkout are pictures under
 `raptor-port/docs/img/handpass/2026-11-11-lw-doubletap-windows/` in NEW sub-folders whose names start with `rw-`
