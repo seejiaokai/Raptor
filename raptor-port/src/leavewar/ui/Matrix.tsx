@@ -1537,7 +1537,7 @@ export function Matrix() {
     const from = second ? lastPressRef.current : null
     /* only a window closed by a press INSIDE it (a leave, its ✕, a Delete) is guarded: a tap on the grid that closed it is
        the grid's own, and the same day tapped again at once is a press he meant (the fix's narrow read, N1); a window closed
-       by a key leaves no press (N2) */
+       by a key leaves no press (N2). The same for every other window over the grid ([LW-DOUBLETAP-OTHER-WINDOWS], below). */
     if (second && !from?.inWin) return
     const swallow = (e: Event) => {
       if (!(e instanceof MouseEvent) || e.detail <= 0 || !(e.target instanceof Element) || !e.target.closest('.mx') || e.target.closest('.mstripe')) return
@@ -1558,7 +1558,9 @@ export function Matrix() {
   const lastPressRef = useRef<{ x: number; y: number; finger: boolean; inWin: boolean } | null>(null)
   useEffect(() => {
     const down = (e: PointerEvent) => {
-      const inWin = e.target instanceof Element && !!e.target.closest('.bidsheet')
+      /* inside a window: every Leave War window is a `.bidsheet` (Sheet.tsx); the event box alone is its own small box
+         (`.evpeek`), and its Edit is a press inside it that takes it away ([LW-DOUBLETAP-OTHER-WINDOWS]) */
+      const inWin = e.target instanceof Element && !!e.target.closest('.bidsheet, .evpeek')
       lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen', inWin }
     }
     const key = () => { lastPressRef.current = null }
@@ -1574,13 +1576,24 @@ export function Matrix() {
      had stood — a man's CAT pop-up, his figures, a day's window. Whenever the one-day window or the drag window closes (a
      leave placed, its ✕, a Delete, a Post out — every press that ends it) the grid is guarded for that moment
      (`doubletap.test.tsx`). */
-  const winUpRef = useRef(false)
+  /* …AND EVERY OTHER WINDOW OVER THE GRID ([LW-DOUBLETAP-OTHER-WINDOWS] — the code read's F1 of the night of 6 Nov 26): the
+     person window, ⚙ Settings, the event window, the Events list, the Manning sheet, the counter form, the OIL tracker and
+     the event box close the same way over the same grid, and a finger's second tap on their ✕, Cancel, Save or Delete fell
+     through just the same — on a phone onto the day under the button, or onto the pinned dates under a tall window's ✕ (the
+     day panel opened). The SAME guard, armed whenever ANY of them goes: each window is one bit, and a bit that was up and is
+     now down arms it — so a window closing while another stays up (the person window does not block the grid) is guarded
+     too, and one window handing over to the next (Settings to the counter form) costs nothing: the guard only ever
+     swallows a second tap on the grid, at the place of the press that closed the window. The one-day and drag windows
+     stay ONE bit, as they were (the one handing over to the other arms nothing). `doubletap-windows.test.tsx`,
+     `e2e/doubletap-leavewar.spec.ts`. */
+  const winsUp = (open || sel ? 1 : 0) | (who ? 2 : 0) | (settings ? 4 : 0) | (eventEdit ? 8 : 0) | (eventsOpen ? 16 : 0)
+    | (manningInfo ? 32 : 0) | (counterEdit !== false ? 64 : 0) | (oilTracker ? 128 : 0) | (evPeek ? 256 : 0)
+  const winUpRef = useRef(0)
   useEffect(() => {
-    const up = !!open || !!sel
-    if (winUpRef.current && !up) guardGrid(true)
-    winUpRef.current = up
+    if (winUpRef.current & ~winsUp) guardGrid(true)
+    winUpRef.current = winsUp
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, sel])
+  }, [winsUp])
   useEffect(() => {
     if (sheetUp) { if (!beforeRef.current) beforeRef.current = flaggedNow(); return }
     const before = beforeRef.current
