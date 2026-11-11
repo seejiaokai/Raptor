@@ -143,3 +143,7 @@ script already pictures re-runs that one step into a new folder (§5; `docs/walk
     follows the new day without a reload.
 30. On a phone every tap pictured within about 100ms of the lift, pointer left where it pressed, beside the settled
     picture; a dense screen's pinned cells stay opaque while pressed (§7.10).
+31. A page fitted to the screen that scrolls inside itself: measured in real browser windows started at 125%, no screen
+    size emulated, at neighbouring heights, some making the page's height a fraction; the window behind it scrolls by nothing; the list
+    keeps the wheel at its ends; what only a real wheel shows named
+    as a look for his PC.

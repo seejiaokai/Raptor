@@ -1166,6 +1166,18 @@ and a seventh kind left out as doubtful, in `docs/superpowers/briefs/2026-11-10-
    alone answers the sizing step. **Lesson:** on a phone every tap is pictured within about 100ms of the lift with the
    pointer left where it pressed, beside the settled picture, and each dense screen keeps a standing test that its pinned
    cells stay opaque while pressed (§7.10; `docs/handpass/2026-10-23-lw-m2-looks.md`, his look of 23 Oct midday).
+31. **A page fitted to the screen, in a real window at 125% (his report, the Leave War's Balances page, 11 Nov 26).**
+   On his PC's Chrome the whole page shifted up a little when the Balances list reached its end, and the wheel rolled up
+   at once from the list's foot did nothing until it had rested. A real window is a whole number of screen pixels tall,
+   so at 125% the page's own height is often a fraction (733.6) that the browser's rounded figure calls 734: the page,
+   fitted to the rounded figure, stood taller than the screen, the window behind it scrolled by one screen pixel
+   (measured) and, the sheet reasons, took the wheel. The M5a walk and the browser tests missed it because each ran at an emulated screen size, which is
+   always a whole number; and a test browser's wheel is not held by the window as a real one is, so the stuck list was
+   never reproduced. **Lesson:** a page fitted to the screen that scrolls inside itself is measured in real browser
+   windows started at 125% with no screen size emulated, at neighbouring heights so that some make the page's height a
+   fraction, and the window behind it must scroll by nothing; a list that scrolls inside it keeps the wheel at its ends on a
+   desktop as on a phone; what only a real wheel shows is named as a look for his PC
+   (`docs/handpass/2026-11-11-bal-scroll-stuck.md`).
 
 ## 8. Making the checks FIND rather than CONFIRM
 
