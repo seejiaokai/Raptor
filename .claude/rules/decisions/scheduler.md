@@ -132,7 +132,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - An Admin "Display" area of section fold defaults is not built: put it to him again only when Admin or the section folds are next touched — [ADMIN-DISPLAY] [D161].
 
 ## Settled — leave as they are
-- With nothing typed, crew rest is measured to the suggested brief, not the default rally, and the amber tight-turn note is a reminder, not a hard stop — as built, kept [D1988].
+- With nothing typed, crew rest is measured to the suggested brief, not the default rally; the amber tight-turn note is a reminder, not a hard stop, and stays once a typed time clears the rest — as built, kept [D1988, D1989].
 - A sortie with its take-off typed and its landing blank or "TBD" counts no hours in Insights and raises no long-day note, as built — kept [D1936].
 - The design checker skips the gold history dot in History mode's style file: one gold dot in a box's corner is not a dotted grid pattern, so it is not flagged [D1890].
 - Three stand as built: the no-times warning's tap outlines its line as every line-anchored warning does; a seatless row of a flying shift keeps its lit "✓ FLIES" though it counts nothing; the Flies chip keeps the badge's size on the board [D1067].
