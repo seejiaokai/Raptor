@@ -142,22 +142,40 @@ describe('W62 — a hidden warning stays hidden for everyone until someone flags
 
   /* The bug check of 12 Nov 26 (walker W2, Astra 1, the Opus read 1): the rules keep one warning for one man, code and
      wording, so a SECOND clash worded the same as a hidden one — the same line against another BRIEFING row — was folded
-     into the hidden warning and arrived hidden. D2001: a different item shows. The kept warning now carries every item
-     folded into it, so its key changes and it shows; take the second row away and the old hide holds again. */
+     into the hidden warning and arrived hidden. D2001: a different item shows. Each pair is now its own warning (the
+     dedupe keeps the pair), so each is hidden by its own two items. A first fix that folded the second pair's items into
+     the first warning was read again (the narrow read of the fix): a line hidden while it held both pairs came back
+     when one row went — so the pair stays the unit. And the drop's red message counts only what was SHOWN before. */
+  const dbl = () => ws(TUE).filter((w: any) => w.code === 'DOUBLE_BOOK' && (w.who || []).includes('bane'))
   it('D2001: a second clash worded the same as a hidden one (the same line against a second BRIEFING row) shows, and Ranger flags; take the second row away and the first stays hidden', () => {
     day(TUE).waves.push(wave([form()]))
     ground(TUE, 'bane', '1200', '1230')
     ensureRowIds(DAYS); validate()
     tap(find(TUE, 'DOUBLE_BOOK', 'bane'))
     expect(sevOf(TUE, 'bane') || null, 'the premise: hidden, no flag').toBe(null)
+    const before = workingWarn()
     const g2 = ground(TUE, 'bane', '1230', '1300')
     ensureRowIds(DAYS); validate()
-    const live = ws(TUE).filter((w: any) => w.code === 'DOUBLE_BOOK' && (w.who || []).includes('bane') && !w.off)
-    expect(live.length, 'a second BRIEFING row is a different item: its clash shows').toBeGreaterThan(0)
+    expect(dbl().map((w: any) => !!w.off), 'two clashes, each its own line: the hidden one stays hidden, the new one shows').toEqual([true, false])
     expect(sevOf(TUE, 'bane'), '…and Ranger\'s puck carries the red flag').toBe('hard')
+    expect(warnDelta(before, workingWarn()).filter((w: any) => w.code === 'DOUBLE_BOOK').length, 'the drop names the new clash in red, never the "already on" note of a hidden one (D479)').toBe(1)
     day(TUE).ground.splice(g2, 1); validate()
-    expect(find(TUE, 'DOUBLE_BOOK', 'bane').off, 'the second row gone: the first clash is hidden again').toBe(true)
+    expect(dbl().map((w: any) => !!w.off), 'the second row gone: the first clash is hidden as before').toEqual([true])
     expect(sevOf(TUE, 'bane') || null).toBe(null)
+  })
+  it('D2001: two clashes worded the same from the start — hide both; one row deleted or moved away, the clash left is one he hid and stays hidden', () => {
+    day(TUE).waves.push(wave([form()]))
+    ground(TUE, 'bane', '1200', '1230'); const g2 = ground(TUE, 'bane', '1230', '1300')
+    ensureRowIds(DAYS); validate()
+    expect(dbl().length, 'two lines, one a pair').toBe(2)
+    tap(dbl()[0]); tap(dbl()[1])
+    expect(sevOf(TUE, 'bane') || null, 'both hidden').toBe(null)
+    Object.assign(day(TUE).ground[g2], { str: '1500', end: '1530' }); validate()
+    expect(dbl().map((w: any) => !!w.off), 'the second row moved away: the first clash, hidden, stays hidden').toEqual([true])
+    Object.assign(day(TUE).ground[g2], { str: '1230', end: '1300' }); validate()
+    expect(dbl().map((w: any) => !!w.off), 'moved back: the same two items, still hidden (whatever their times)').toEqual([true, true])
+    day(TUE).ground.splice(g2, 1); validate()
+    expect(dbl().map((w: any) => !!w.off), 'deleted: the one left stays hidden').toEqual([true])
   })
 
   // RULES-FIRST FINDING 6.1 (11 Nov 26, [ENGINE-RULES-REVIEW]): two lines worded alike share one warning, and hiding it plained only the first line's amber time box — the second kept its flag. Fixed by [RULES-CHECK-FIXES] (F3): the box also asks for a hidden warning in its own words.

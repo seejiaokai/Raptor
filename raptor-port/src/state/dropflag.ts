@@ -55,7 +55,9 @@ export const warnKey = (w: any) => `${w.code}|${w.di}|${(w.who || []).join(',')}
 export function warnDelta(before: any, after: any): any[] {
   if (!before || !after || !Array.isArray(after.all)) return []
   if (!Array.isArray(before.byDay) || !before.byDay.length) return []
-  const seen = new Set((before.all || []).map(warnKey))
+  /* only what was SHOWN before counts as seen: a clash worded as a hidden one but on a different item shows, and is
+     new to the scheduler (D2001; the bug check of 12 Nov 26) — one that arrives hidden is still left out below (D479) */
+  const seen = new Set((before.all || []).filter((w: any) => w && !w.off).map(warnKey))
   /* …and never one that arrives already hidden (D469: the scheduler acknowledged that exact warning — it flags no puck,
      so it must not shout either) */
   return after.all.filter((w: any) => w && !w.off && w.sev !== 'note' && !seen.has(warnKey(w)))

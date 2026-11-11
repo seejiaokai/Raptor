@@ -94,7 +94,7 @@ describe('W14 — D1996 (Q3 answered, 11 Nov 26): a standby line that flies is c
      flying SC AM against the standing PM read amber. D1996: a standby line that flies is checked like a sortie, and a
      clash inside it is red — the Advisory setting is about a shift that only stands by. */
   it('D1996: a flying MAIN against a standing MAIN stays red under "another shift: Advisory", in both orders; two standing shifts still follow the setting', () => {
-    const was = SHIFT_HARD.shift
+    const was = SHIFT_HARD.shift, wasFly = SHIFT_HARD.fly
     try {
       SHIFT_HARD.shift = false
       const w: any = makeStandalone('sc'); add(TUE, w)
@@ -106,7 +106,11 @@ describe('W14 — D1996 (Q3 answered, 11 Nov 26): a standby line that flies is c
       expect(warns(TUE, 'bane', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'PM flies, AM stands by').toEqual([['DOUBLE_BOOK', 'hard']])
       pm.aircraft[0].fly = false
       expect(warns(TUE, 'bane', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'both stand by: the setting, Advisory').toEqual([['SHIFT_SOFT', 'adv']])
-    } finally { SHIFT_HARD.shift = was }
+      /* the narrow read of the fix: grading the flying row as "a flight" swapped one setting for another — with "a
+         flight" at Advisory and "another shift" at Warning it turned amber. A clash with it is red, whatever either says. */
+      SHIFT_HARD.shift = true; SHIFT_HARD.fly = false; am.aircraft[0].fly = true
+      expect(warns(TUE, 'bane', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), '"a flight" at Advisory: still red').toEqual([['DOUBLE_BOOK', 'hard']])
+    } finally { SHIFT_HARD.shift = was; SHIFT_HARD.fly = wasFly }
   })
   /* THE CREW LIST AGREES WITH THE WARNING LIST (the roll-call's MISSING row for D1996, closed 12 Nov 26): a man on a
      flying standby shift with a lecture or a Meeting inside it reads in the crew list as he would on a sortie — the

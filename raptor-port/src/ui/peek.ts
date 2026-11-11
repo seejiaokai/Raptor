@@ -34,7 +34,7 @@ import { isStandalone, saFlies, saAnyFlies, mColor, dayCount, CURWEEK } from '..
 import { groundOrder } from '../engine/order'
 import { whoArr } from '../engine/slots'
 import { minus, parseHM } from '../engine/time'
-import { VCONF } from '../engine/rules'
+import { ruleFor } from '../engine/faceattrs'
 import { weekBundle } from '../engine/weeks-data'
 import { stashDays, stashGenOf } from '../engine/weekstash'
 import { shiftWeek } from './weeknav'
@@ -96,7 +96,7 @@ function peekCrewCell(ids: any[], fillKind: string): string {
 function peekFormation(w: any, f: any): string {
   const sa = isStandalone(w)
   const rows = (f.aircraft || []).length
-  const brief = minus(f.to, VCONF.briefLead)
+  const brief = minus(f.to, ruleFor(PEEK_D, 'briefLead'))
   const brShown = parseHM(f.br) != null ? f.br : brief
   const spans = `--gs:${rows}`
   /* D49's MARK REACHES THE PEEK TOO (owner, 22 Sep 26; found by the roll-call
@@ -254,9 +254,11 @@ function peekGround(d: any): string {
    scrollWeekToDay, highlights.ts, interactions.ts) already excludes this node
    by construction, with no per-site change needed. */
 /* the day being drawn and the warnings hidden on it in ITS week — set per day here, read by peekFormation */
-let PEEK_WK: any = null, PEEK_DI = 0, PEEK_HID: Set<string> = new Set()
+/* PEEK_D: the day being drawn — a published day's copy carries the brief lead it went out with (faceattrs.ts
+   keepRulesOn, D1991), so a blank B prints as its face printed it, not at today's setting (the bug check of 12 Nov 26) */
+let PEEK_WK: any = null, PEEK_DI = 0, PEEK_HID: Set<string> = new Set(), PEEK_D: any = null
 export function peekDayHTML(d: any, i: number, first: boolean): string {
-  PEEK_DI = i; PEEK_HID = PEEK_WK != null ? dayHidesIn(PEEK_WK, i) : new Set()
+  PEEK_DI = i; PEEK_D = d; PEEK_HID =PEEK_WK != null ? dayHidesIn(PEEK_WK, i) : new Set()
   let h = `<section class="day peek" data-peek-day="${i}">`
   h += `<div class="day-head">${first ? `<span class="peek-nextwk">Next week: click a day to load it</span>` : ''}`
     + `<span class="dow">${esc(d.dow || '')}</span><span class="dt">${esc(shortYear(d.dt || ''))}</span>`
