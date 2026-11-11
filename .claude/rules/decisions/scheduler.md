@@ -106,6 +106,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 ## Publishing, amendments and signing
 - Everything on a published day freezes for now, and a change to what it shows reads pending for the admin, a medical downchit included, except what stays live on its face: the dotted "breaks tomorrow's crew rest" mark and its RUN twin, a crew-rest or 7-day breach on the day with the crew-rest tight-turn note, and the Qualification-flag warnings (an illegal seat, SC currency, AAR currency, an AAR instructor not cleared); the crew-pairing warnings stay frozen [D179, D183, D184, D185, D188].
 - The freeze is for now — provisional: put to him again when the build shows it, never re-decided without him; the live warnings are drawn from today's judgement and never make the day pending by themselves (the agent's reading, told to him) [D179, D183, D184, D185, D188].
+- The OIL warnings stay live on a published day's face too, as built: a day made a holiday after it was published shows at once the red line for a line with no usable times and the amber line to publish it again [D2002].
 - No "Reissue AL1" button: after an Unpublish the withdrawn amendment's changes stay on the working copy as pending, and "Publish AL1" brings the day back [D101].
 
 ## View-only Sched, print and export
