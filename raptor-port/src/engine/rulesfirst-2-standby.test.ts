@@ -12,7 +12,7 @@ import { validate, dayEvents } from './validate'
 import { makeStandalone, saFlies, dayCount } from './waves'
 import { dayOilWork } from './oil'
 import { computeInsights } from './insights'
-import { dayEngaged, dayStandby } from './avail'
+import { dayEngaged, dayStandby, slotBar } from './avail'
 import { dayKeys } from './restore'
 import { blockFromTpl } from './dutytpl'
 import { addWaveTpl, setWaveTplLine, waveFromTpl, delWaveTpl } from './wavetpl'
@@ -89,6 +89,31 @@ describe('W14 — D1996 (Q3 answered, 11 Nov 26): a standby line that flies is c
     am.rl = ''; INPUTS.splice(0); am.aircraft[0].p = ''; am.aircraft[2].p = 'split'; am.aircraft[2].fly = true
     ;(DAYS[TUE] as any).ground.push({ prog: 'LECTURE', str: '0900', end: '1000', who: 'split' })
     expect(warns(TUE, 'split', /DOUBLE_BOOK|SHIFT_SOFT/).map((x: any) => [x.code, x.sev]), 'the hand-ticked SPARE').toEqual([['DOUBLE_BOOK', 'hard']])
+  })
+  /* THE CREW LIST AGREES WITH THE WARNING LIST (the roll-call's MISSING row for D1996, closed 12 Nov 26): a man on a
+     flying standby shift with a lecture or a Meeting inside it reads in the crew list as he would on a sortie — the
+     same "already on …" reason — where it used to read nothing while the warning list rang red. */
+  it('D1996, the crew list: on a flying SC shift a lecture and a Meeting inside it give the sortie\'s reason; standing by, both stay silent, as built', () => {
+    const w: any = makeStandalone('sc'); const gi = add(TUE, w)
+    const am = w.formations[0]; am.aircraft[0].p = 'split'
+    const seat = `${TUE}.${gi}.0.0.p`
+    ;(DAYS[TUE] as any).ground.push({ prog: 'LECTURE', str: '0900', end: '1000', who: 'split' })
+    validate()
+    expect(slotBar('split', seat), 'standing by: a soft ground row does not bar him, as built').toBe('')
+    am.rl = '06:30'; validate()
+    const flying = slotBar('split', seat)
+    /* the same man, the same lecture, on an ordinary sortie over the same hours */
+    ;(DAYS[TUE] as any).waves.splice(0); const fg = add(TUE, flyLine([], '08:00', '12:00', 'split')); validate()
+    const sortie = slotBar('split', `${TUE}.${fg}.0.0.p`)
+    expect(sortie, 'the sortie\'s reason').toBe('already on LECTURE 09:00–10:00')
+    expect(flying, 'the flying shift reads the same').toBe(sortie)
+    /* a Meeting input, not on the programme */
+    ;(DAYS[TUE] as any).ground.splice(0); (DAYS[TUE] as any).waves.splice(0); add(TUE, w)
+    INPUTS.push({ person: 'split', date: 'Jul 14', allday: false, s: h(9), e: h(10), type: 'Meeting', remarks: '', mod: '' } as any)
+    am.rl = ''; validate()
+    expect(slotBar('split', seat), 'standing by: the Meeting is the shift\'s amber, never a bar — as built').toBe('')
+    am.rl = '06:30'; validate()
+    expect(slotBar('split', seat), 'flying: the sortie\'s reason').toMatch(/^already on Meeting 09:00–10:00/)
   })
 })
 

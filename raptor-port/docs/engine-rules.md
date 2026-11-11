@@ -930,8 +930,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   as against a sortie; and the tight turn (END → the next take-off, needing `max(tightTurn, dekit + step)`) and the double
   turn (`DT` / `DT_SUM`) read it as a sortie (`validate.ts byP`). A sortie that starts after its END is a turn, never a
   clash (compared on the airborne windows, as two sorties are). So two flying shifts back to back on one man (SC AM then
-  SC PM, both flying) are a 0-minute tight turn and a double turn — the agent's reading, said to him. A shift that only
-  stands by keeps every shift rule above. Pins: `engine/rulesfirst-2-standby.test.ts` W14, `rulesfirst-3-crew-rest.test.ts`
+  SC PM, both flying) are a 0-minute tight turn and a double turn — the agent's reading, said to him. The crew list says
+  the same (12 Nov 26): a flying row's slot carries `scFlies` (`avail.ts slotRules`), so the shift's soft carve-outs —
+  the hard-only "inside this shift" scan and the Meeting's `scSoft` pass — stand down and the sortie's "already on …"
+  scan reads it. A shift that only stands by keeps every shift rule above. Pins: `engine/rulesfirst-2-standby.test.ts` W14, `rulesfirst-3-crew-rest.test.ts`
   W32.
 - **Counted:** the day's badge adds one "X n" term per standby wave with rows that fly, n its flying rows with somebody
   seated; those rows leave the standby figure after the slash (`waves.ts dayCount`). Insights counts each such row as

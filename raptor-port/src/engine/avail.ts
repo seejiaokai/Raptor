@@ -302,6 +302,9 @@ export function slotRules(key:any){
       /* an SC line even with its times blank (the second narrow read's F1): `sc` names the shift only once both times are
          typed, and the SC currency check reads it, so the soft-kind rule (slotBarNow scSoft) reads this flag beside it */
       out.scLine=true;
+      /* a row that FLIES is a sortie for the crew list too (owner D1996, 11 Nov 26 — "checked like a sortie"): the
+         shift's soft carve-outs below stand down for it, so the picker says what the warning list says */
+      out.scFlies=flyRow;
       const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null&&en!=null){ if(en<st)en+=1440; out.sc=scShiftKind(st,en); out.scEnd=en; }
       /* a SPARE is standing by, not tasked: he may fly, sit a sim or stand a
@@ -472,7 +475,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
      not bar him — plan it and the engine says so in amber. A raw red-list
      INPUT deliberately stays warn-not-bar here, matching the flying-seat
      modality (inputs.ts:178-181): the validator reds him after planting. */
-  if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0&&!r.scSpare){
+  if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0&&!r.scSpare&&!r.scFlies){   // a flying row asks the sortie's scan below (D1996)
     /* not the seat being planted into, and — on a drag — not the one he is dragged FROM (selfKeys, as the walks above
        read it; W3's walk, 26 Sep 26: a MAIN man dragged to another MAIN seat of the same shift was captioned "inside
        this shift" about the shift he was leaving, while the drop said nothing) */
@@ -520,7 +523,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     /* ACROSS AN SC MAIN SHIFT A SOFT COMMITMENT IS AN ADVISORY, NOT A BAR (the narrow read of the Q2 fixes, R1): a
        commitment under Unavailable is away (inputs.ts isAway), but a Meeting is the warning list's amber across the shift
        (shiftHardInput, validate.ts's soft branch), so it must not cross him out here; a course and every hard kind still do */
-    const scSoft=(x:any)=>!((r.sc||r.scLine)&&!r.scSpare&&isPersonal(x.type)&&!shiftHardInput(x.type));
+    const scSoft=(x:any)=>!((r.sc||r.scLine)&&!r.scSpare&&!r.scFlies&&isPersonal(x.type)&&!shiftHardInput(x.type));   // not on a flying row (D1996)
     const flying=String(key).indexOf(':')<0;
     const kn=r.slotStart!=null&&r.slotEnd!=null;
     const off=inputLinesOn(DAYS[r.di].dt).filter((x:any)=>isAway(x)&&x.person===id)
@@ -638,7 +641,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
       &&!(canWork(x.type)&&!flying)&&whole(x)&&!(own&&own.src&&own.src===x.iid));
     if(x)return `already on ${inpLabel(x)}`;
   }
-  if(r.slotStart!=null&&r.slotEnd!=null&&r.di>=0&&!r.sc&&!spareLike0(r)){
+  if(r.slotStart!=null&&r.slotEnd!=null&&r.di>=0&&(!r.sc||r.scFlies)&&!spareLike0(r)){   // a flying shift row is a sortie here (D1996)
     const hit=dayEvents(r.di,id).find((e:any)=>e.s!=null&&e.e!=null
       &&selfKeys.indexOf(selfKey(e.slot||e.key))<0&&overlap(r.slotStart,r.slotEnd,e.s,e.e));
     if(hit)return `already on ${hit.label} ${hm24(hit.s)}–${hm24(hit.e)}`;
