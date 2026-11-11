@@ -46,8 +46,11 @@ const rankOf = (w: any) => (w.sev === 'hard' ? 100 : 0) + (RANK[CHIP_OF[w.code]]
 
 /* one warning's identity — the validator's own dedupe key plus the day, so
    the same breach re-raised on the same day is "unchanged" and the same man
-   flagged on a different day is "new" */
+   flagged on a different day is "new". A clash's key carries its two items, as
+   the validator's does (validate.ts add, D2001): a second clash worded the same
+   is a different clash, and new (the bug check of 12 Nov 26) */
 export const warnKey = (w: any) => `${w.code}|${w.di}|${(w.who || []).join(',')}|${w.msg}`
+  + (Array.isArray(w.items) ? '|@' + w.items.map(String).sort().join('&') : '')
 
 /* warnings in `after` that `before` did not carry — hard and advisory only.
    A `before` that was never validated (byDay empty) cannot say what is new,

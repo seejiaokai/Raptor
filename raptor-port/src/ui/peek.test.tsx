@@ -14,7 +14,8 @@ import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { weekBundle } from '../engine/weeks-data'
 import * as view from '../state/view'
-import { peekDayHTML } from './peek'
+import { peekDayHTML, peekWeekHTML } from './peek'
+import { HOOKS } from '../engine/hooks'
 import { VCONF } from '../engine/rules'
 import { keepRulesOn } from '../engine/faceattrs'
 
@@ -277,5 +278,17 @@ describe('the next-week preview: a published day\'s blank B at the brief lead it
       const work = peekDayHTML(mk(), 0, true)
       expect([work.includes('08:40'), work.includes('09:40')], 'a working copy: today\'s lead').toEqual([true, false])
     } finally { (VCONF as any).briefLead = lead }
+  })
+  /* the second narrow read's proof (P5, kept): the preview's cache key carried no Logic value, so Edit Schedule's preview
+     served its old drawing after the brief lead changed */
+  it('Edit Schedule\'s preview is drawn again when the brief lead changes', () => {
+    const em = (HOOKS as any).editMode, lead = VCONF.briefLead
+    try {
+      ;(HOOKS as any).editMode = () => true
+      const a = peekWeekHTML()
+      expect(a.length, 'the preview draws').toBeGreaterThan(0)
+      ;(VCONF as any).briefLead = lead + 60
+      expect(peekWeekHTML() === a, 'not the cached first drawing').toBe(false)
+    } finally { (HOOKS as any).editMode = em; (VCONF as any).briefLead = lead }
   })
 })

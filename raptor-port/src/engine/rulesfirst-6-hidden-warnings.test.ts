@@ -163,6 +163,17 @@ describe('W62 — a hidden warning stays hidden for everyone until someone flags
     expect(dbl().map((w: any) => !!w.off), 'the second row gone: the first clash is hidden as before').toEqual([true])
     expect(sevOf(TUE, 'bane') || null).toBe(null)
   })
+  /* the second narrow read: the drop's identity of a warning (dropflag.ts warnKey) was the validator's old dedupe key —
+     words, no pair — so a second clash worded the same as one SHOWING was taken for it and not announced */
+  it('D2001: a second clash worded the same as one already showing is announced in red at the drop', () => {
+    day(TUE).waves.push(wave([form()]))
+    ground(TUE, 'bane', '1200', '1230')
+    ensureRowIds(DAYS); validate()
+    const before = workingWarn()
+    ground(TUE, 'bane', '1230', '1300'); ensureRowIds(DAYS); validate()
+    expect(dbl().map((w: any) => !!w.off), 'two live lines').toEqual([false, false])
+    expect(warnDelta(before, workingWarn()).filter((w: any) => w.code === 'DOUBLE_BOOK').length, 'the new one is named').toBe(1)
+  })
   it('D2001: two clashes worded the same from the start — hide both; one row deleted or moved away, the clash left is one he hid and stays hidden', () => {
     day(TUE).waves.push(wave([form()]))
     ground(TUE, 'bane', '1200', '1230'); const g2 = ground(TUE, 'bane', '1230', '1300')
