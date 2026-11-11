@@ -512,7 +512,7 @@ export function boardWarnHTML(di: number, look = false) {
     const canMute = !look && canEditSched()
     const wtext = (w: any) => {
       const names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
-      return `${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || ''))}`
+      return `${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || '', di))}`
     }
     /* Iterate WARN's own array, unsorted: validate() has already ordered it by
        SORD (hard, adv, note), so the local hard-first sort this used to do was a

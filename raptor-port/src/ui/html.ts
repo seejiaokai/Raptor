@@ -1198,7 +1198,7 @@ export function dayWarnHTML(di:any){
       const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix, hid=!!w.off;
       return `<div class="witem ${w.sev}${on?' on':''}${hid?' hid':''}" data-wdi="${di}" data-wix="${ix}" title="${hid?'Hidden — it flags no puck and is not counted. ':''}Jump to the puck that caused this">`
-        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
+        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code,di))}</span>`
         +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}${hid?'':sigNew(w)}</span>`
         /* a hidden line's flag-again is the app's drawn Reset arrow, "put back" as on the Leave War's Reset order (owner D1792 (d),
            8 Nov 26); the ✕ that hides a line stays typed, the app's close-and-remove mark */
@@ -1218,7 +1218,7 @@ export function dayWarnHTML(di:any){
     const goneRow=(w:any)=>{
       const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
       return `<div class="witem ${w.sev} gone" title="On the signed version — publishing this day removes it">`
-        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><s><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span> `
+        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><s><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code,di))}</span> `
         +`<b>${esc(names)}</b></s> <span class="wsig gone">goes away once signed</span></span></div>`;
     };
     /* the cross-day row ranks below this day's warnings and above its
@@ -2603,7 +2603,7 @@ export function dayInfoHTML(di:any){
          cross-day row were the two that did not) */
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
       return `<div class="witem ${w.sev}${on?' on':''}${w.off?' hid':''}" data-adv="${di}.${ix}" title="${w.off?'Hidden — it flags no puck and is not counted. ':''}Jump to the puck that caused this">`
-        +`<span class="wbar"></span><span><span class="wcode">${SEVWORD[w.sev]} · ${esc(wlbl(WCODE[w.code]||w.code))}</span>`
+        +`<span class="wbar"></span><span><span class="wcode">${SEVWORD[w.sev]} · ${esc(wlbl(WCODE[w.code]||w.code,di))}</span>`
         +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span></div>`;}).join('')+`</div>`;
   }
   return h;

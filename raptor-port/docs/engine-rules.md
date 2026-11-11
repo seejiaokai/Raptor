@@ -3408,22 +3408,42 @@ stay LIVE (below), which the face draws from today and which never make the day 
   for that day only (`rules.ts withRuleVals`, restored after). A changed setting reaches the day from its next
   amendment, which keeps today's; it neither starts nor clears a flag there, raised or lowered; an unpublished day
   takes it at once. A rule that looks across days is decided by the day being judged: crew rest by the later day's
-  settings (its legs and the day before are built under their own), days in a row by each day's own limit
-  (`validate.ts limitOn`, next Monday's by `weekctx.ts nextMondayDay`). **The working pass** (Edit Schedule, the board,
-  the crew picker) judges a published day with NO change waiting — content, filings, inputs, placeholder roster and the
-  printed brief all as issued — by its kept values too (`validate.ts untouchedKept`, `weekctx.ts keepUntouchedRules` for
-  the neighbours), so it shows the same as View-only Sched; once the day is edited its working copy reads today's
-  settings — it previews the next amendment. **A changed setting never makes a published day pending** (only the printed
-  brief lead is compared, D186; `publish.ts warnDelta`): the frozen warnings, judged by the same kept values, stay as
-  issued. Two things stay on today's settings: **Insights' work hours** (D482, settled — `validate.ts hoursEvd` rebuilds
-  the official events with today's settings when a kept value differs) and **OIL** (`oil.ts` reads `ruleNow`, today's
-  value under any overlay — D2005 leaves OIL as it was; its pending axis `oilRuleDelta` is unchanged). A version issued
-  before D2005 kept the brief lead only, or nothing: the rest reads today's (demo data, D56). Known limits, D2005: a
-  neighbour day's own facts used by a cross-day check (a sim with no end, an open-ended row) are built with THAT day's
-  settings; the suggested-brief and rally ghosts on the screens read today's (the face's printed brief excepted); a
-  published day whose only waiting item is a hide is still judged by its kept values on the working pass. Pins:
-  `engine/published-day-logic.test.ts` (D2005), `state/kept-rules-neighbour.test.ts`,
-  `engine/rulesfirst-7-published-day.test.ts` (W73, D1991, 7.1). `snap.ros` — the aircrew roster at
+  settings (its legs and the day before are built under their own — except the day before's ASSUMED ends, a flight's
+  debrief, a sim with no end and an open-ended row, which the judged day's settings measure: `events.ts` tags such an
+  event `ae`, `validate.ts crewRestDay` re-measures it), days in a row by each day's own limit (`validate.ts limitOn`,
+  next Monday's by `weekctx.ts nextMondayDay`; the dotted run mark carries the breaking day's own words). **The working
+  pass** (Edit Schedule, the board, the crew picker) judges a published day with NO change waiting — content, filings,
+  inputs, both OIL entries, a hide, the placeholder roster and the printed brief all as issued — by its kept values too
+  (`validate.ts untouchedKept`, laid on the day between passes by `faceattrs.ts keepRulesOn`; `weekctx.ts
+  keepUntouchedRules` for the neighbours, with the people and the printed brief), so it shows the same as View-only
+  Sched; once the day has any change waiting its working copy reads today's settings — it previews the next amendment.
+  The crew picker asks each day by the settings the validator judges it by: the day dropped on by today's (the drop
+  edits it), every other day by its own (`runIfPlaced`, `restIfPlaced`'s forward probes). The ALL AVAIL window's
+  reasons read the world it shows by that world's settings (`ui/AvailWindow.tsx`), and a day's warning list names its
+  limits by them (`validate.ts wlbl(s, di)` through `faceattrs.ts withShownRules` — an issued face or a look at a
+  version by that version's own). A hide waiting is read from the hides and the last official pass straight
+  (`untouchedKept`), and on a day whose kept values differ from today's every warning of its issued judgement counts
+  for the hide comparison (`HOOKS.hideNow`), so a hide today's settings would clear never flips the day between passes. **A changed setting never makes a published day pending** (only the
+  printed brief lead is compared, D186; `publish.ts warnDelta`): the frozen warnings, judged by the same kept values,
+  stay as issued — the "same take-off and landing" advisory's words included (`oil.ts fltMeasuresNothing` takes the
+  day's values from the validator). Two things stay on today's settings: **Insights' work hours** (D482, settled —
+  `validate.ts hoursEvd` rebuilds the official events with today's settings when a kept value differs) and **OIL**
+  (`oil.ts` reads `ruleNow`, today's value under any overlay, and the validator's OIL block runs whole under
+  `rules.ts withLiveRules`, so its earning test's availability reads today's too — D2005 leaves OIL as it was; its
+  pending axis `oilRuleDelta` (D592) is unchanged and can still read a published earning day pending). A version issued
+  before D2005 kept the brief lead only, or nothing: the rest reads today's (demo data, D56). Known limits, D2005: the
+  suggested-brief and rally ghosts on the screens read today's (the face's printed brief excepted); a puck's chip
+  tooltip ("Crew rest breach (<12h)"), a same-time line's box title and the R box's own timing-fault title (its
+  "suggested brief", `reporting.ts reportingIssuesForWave`, read with today's brief lead — a title, no ring) read today's
+  settings; on a published OIL-earning
+  day whose "same take-off and landing" line measured OIL when it went out, a Logic change that leaves it measuring
+  nothing shows that advisory's kept words ("the day still earns from the report and debrief") beside the live "no
+  usable times" line (the issued credit is still the kept one, D48; by D592 the change should read pending there — not
+  checked; a question for him); the neighbour week's hides and OIL entries do not decide whether its day keeps its values; the window of
+  neighbour days the official pass reads is sized by today's days-in-a-row limit; the day before's assumed end copied
+  past midnight for a clash is measured by its own day's settings. Pins: `engine/published-day-logic.test.ts` (D2005), `published-day-logic-reads.test.ts` and
+  `published-day-logic-picker.test.ts` (the two blind reads' findings), `state/published-day-logic-neighbour.test.ts`,
+  `state/kept-rules-neighbour.test.ts`, `engine/rulesfirst-7-published-day.test.ts` (W73, D1991, 7.1). `snap.ros` — the aircrew roster at
   issue, which the day panel's "free all day" counts on the issued face; drawn, never compared (a man joining the squadron
   would otherwise make every published day pending — Astra's second read #3).
 - **The inputs on a date — ONE reader, `inputs.ts inputsOn(dt)`** (with `inputOn`, `inputOnAny`). While a frozen version is

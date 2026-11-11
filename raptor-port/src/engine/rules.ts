@@ -111,18 +111,28 @@ export const RULE_STD:any=Object.freeze({v:JSON.parse(JSON.stringify(VCONF)),
    Nothing inside may write. A value the version did not keep (a version issued before this build, D56) reads today's.
    `ruleNow` is for the readers that must never take a day's kept value — the OIL block (oil.ts), whose own kept values
    ride the OIL evidence, and whose following a changed setting on a published day is the owner's question. */
-let RULE_LIVE:any=null;
+let RULE_LIVE:any=null, RULE_LIVE_SH:any=null;
 export function withRuleVals<T>(rv:any,fn:()=>T):T{
   if(!rv||typeof rv!=='object')return fn();
   const keys=Object.keys(rv).filter((k:any)=>k!=='shiftHard'&&k in VCONF&&rv[k]!=null&&isFinite(+rv[k])&&VCONF[k]!==+rv[k]);
   const sh=rv.shiftHard&&typeof rv.shiftHard==='object'?rv.shiftHard:null;
   const shk=sh?Object.keys(SHIFT_HARD).filter((k:any)=>k in sh&&!!sh[k]!==!!SHIFT_HARD[k]):[];
   if(!keys.length&&!shk.length)return fn();
-  const outer=RULE_LIVE, v0:any={}, s0:any={};
-  if(!RULE_LIVE)RULE_LIVE={...VCONF};
+  const outer=RULE_LIVE, outerSh=RULE_LIVE_SH, v0:any={}, s0:any={};
+  if(!RULE_LIVE){RULE_LIVE={...VCONF}; RULE_LIVE_SH={...SHIFT_HARD};}
   keys.forEach((k:any)=>{v0[k]=VCONF[k];}); shk.forEach((k:any)=>{s0[k]=SHIFT_HARD[k];});
   try{ keys.forEach((k:any)=>{VCONF[k]=+rv[k];}); shk.forEach((k:any)=>{SHIFT_HARD[k]=!!sh[k];}); return fn(); }
-  finally{ Object.assign(VCONF,v0); Object.assign(SHIFT_HARD,s0); RULE_LIVE=outer; }
+  finally{ Object.assign(VCONF,v0); Object.assign(SHIFT_HARD,s0); RULE_LIVE=outer; RULE_LIVE_SH=outerSh; }
+}
+/* TODAY'S SETTINGS, WHOLE, INSIDE A DAY JUDGED BY ITS KEPT ONES (D2005 — Astra's read, finding 3). `ruleNow` covers the
+   readers that ask for it by name; a calculation that reaches ordinary VCONF readers further down — OIL's live earning
+   test runs through who is available (avail.ts: step, dekit, simLen, openEnd) — would still take the day's kept values.
+   This lifts the overlay for the length of `fn`: VCONF and SHIFT_HARD back to today's, put back over again after. */
+export function withLiveRules<T>(fn:()=>T):T{
+  if(!RULE_LIVE)return fn();
+  const live=RULE_LIVE, liveSh=RULE_LIVE_SH, v0:any={...VCONF}, s0:any={...SHIFT_HARD};
+  try{ Object.assign(VCONF,live); if(liveSh)Object.assign(SHIFT_HARD,liveSh); RULE_LIVE=null; RULE_LIVE_SH=null; return fn(); }
+  finally{ Object.assign(VCONF,v0); Object.assign(SHIFT_HARD,s0); RULE_LIVE=live; RULE_LIVE_SH=liveSh; }
 }
 export const ruleNow=(k:any)=>RULE_LIVE&&k in RULE_LIVE?RULE_LIVE[k]:VCONF[k];
 /* every setting the Logic tab may edit: label, unit, and the bounds outside

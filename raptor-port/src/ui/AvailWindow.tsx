@@ -28,7 +28,10 @@ import { useFloatWin, frontWin, raiseWin, BOARD_BAR } from './floatwin'
 import { placeToast } from './toast'
 import { notify } from '../state/store'
 import { PEOPLE } from '../engine/people'
-import { seatShown, byCrewShown } from '../engine/faceattrs'
+import { seatShown, byCrewShown, withDayRules } from '../engine/faceattrs'
+import { withRuleVals } from '../engine/rules'
+import { daySnapOf } from '../engine/publish'
+import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
@@ -149,15 +152,21 @@ export function AvailWindow() {
     /* …and the RECORD's own sim brief / debrief windows, from the same rebuild ([CROWD-SIM-BRIEF], phase 7): the issued
        face flags a man's sim brief as the day went out, never today's — one collected day, both halves */
     let simw: any[] | undefined
+    /* …and by the settings of the world it shows (D2005 — the walk and the two blind reads): the issued face by the
+       settings its version went out with, the working copy of a published day nothing waits on by the same (the
+       validator lays them on that day, faceattrs.ts keepRulesOn), any other day by today's — so a reason here says
+       what the day's own warning list says, never a Logic change the day has not taken yet */
+    const issuedRv = flagWorld === 'issued' ? ((daySnapOf(di, ver) as any) || {}).rv : null
+    const judged = <T,>(fn: () => T): T => flagWorld === 'issued' ? withRuleVals(issuedRv, fn) : withDayRules((DAYS as any[])[di], fn)
     if (flagWorld === 'issued') {
       evsById = {}
-      const rec: any = collectEvents()[di] || {}
+      const rec: any = judged(() => collectEvents())[di] || {}
       for (const x of (rec.events || [])) (evsById[x.id] = evsById[x.id] || []).push(x)
       simw = rec.simwin || []
     }
     const own = flagWorld !== 'none' && lbl.found
     const flagsFor = (id: string) => [
-      ...(own ? crowdClashes(di, id, lbl.s, lbl.e, lbl.name, evsById ? (evsById[id] || []) : undefined, simw) : []),
+      ...(own ? judged(() => crowdClashes(di, id, lbl.s, lbl.e, lbl.name, evsById ? (evsById[id] || []) : undefined, simw)) : []),
       ...personWarnMsgs(di, id),
     ]
     const worst: Record<string, { sev: string, msg: string } | undefined> = {}

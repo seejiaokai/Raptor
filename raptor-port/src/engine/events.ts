@@ -270,6 +270,11 @@ export const lateShowOf=(rmks:any)=>/\b(?:late\s*show|show\s*(?:at|@)\s*brief|br
    what lets collectEvents below hand the loaded week's Monday/Sunday the
    ADJACENT WEEK's edge dates instead of nothing. xweek marks a cross-week
    read for inpShow (see its own comment) — never set by collectEvents. */
+/* AN END ASSUMED, NOT TYPED (D2005 — the two blind reads, 12 Nov 26): a sim with no end ('sim', Logic's "Assumed sim
+   length") or a row with no end ('open', "Assumed length, no end time"). Crew rest the next day re-measures it by THAT
+   day's settings (validate.ts crewRestDay), since the day being judged decides. Not enumerable, so the event's shape —
+   what parity.test.ts compares with the original, what any copy or export writes — is unchanged. */
+const assumedEnd=(ev:any,how:any)=>{ if(how)Object.defineProperty(ev,'ae',{value:how,enumerable:false,configurable:true,writable:true}); return ev; };
 export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     const fly:any[]=[],forms:any[]=[],events:any[]=[],simcrew:any[]=[],sacrew:any[]=[];
     /* THE SEATS WITH NO HOURS OF THEIR OWN (owner, D605, 6 Oct 26 — "a man who is on leave or grounded for the whole
@@ -437,7 +442,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
       [s.p,s.w].concat(s.pax||[]).concat(s.more||[])   // sim who is free text (1C), not a person
         .forEach((id:any)=>{ if(!id||!PEOPLE[id]||isSpecial(id))return;
           if(!sw){blank.push({id,label:'Sim '+s.label,key:'s:'+di+'.'+k+'.'+ri,kind:'sim'});return;}   // a box with no start — D605, `blank` above
-          events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim',key:'s:'+di+'.'+k+'.'+ri}); }); }));
+          events.push(assumedEnd({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim',key:'s:'+di+'.'+k+'.'+ri},parseHM(s.end)==null?'sim':null)); }); }));   /* an assumed end, as push() below (D2005) */
     /* ---- sim brief / debrief windows -------------------------------------
        An EP profile on the OFT briefs 15 min before the box — unless its
        remarks name their own lead (briefLeadOf above), which wins for that
@@ -493,6 +498,9 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
          scheduler typed by hand reads differently. `reqRows` is this day's own note of which events a request made. */
       if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label&&((!src&&!reqRows.has(x))||x.key===key)))return;
       const ev:any={id,s:w2[0],e:w2[1],label,kind:kind||'other',key};
+      /* an end ASSUMED from the Logic page's "Assumed length" (no end typed): crew rest the next day re-reads it under
+         THAT day's settings (D2005 — the day being judged decides; validate.ts crewRestDay), never this day's */
+      if(en==null)assumedEnd(ev,'open');
       if(src)reqRows.add(ev);
       events.push(ev);
     };

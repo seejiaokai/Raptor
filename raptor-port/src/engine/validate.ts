@@ -1,6 +1,6 @@
 import { PEOPLE, isSpecial, realP, whoId, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
 import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta, withFrozenInputs, inputReadPass, frozenInputDiffs, stableJson } from './inputs'
-import { VCONF, SHIFT_HARD } from './rules'
+import { VCONF, SHIFT_HARD, withLiveRules } from './rules'
 import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { reportingIssuesForDay,stated } from './reporting'
@@ -17,7 +17,7 @@ import { rowPlaces } from './slots'
 import { canonicalDiff } from './canonical'
 import { SCHED, approvedDays, dayApproved, dayDelta, dayDeltaCore, dayCurVer, daySnapOf, peopleAttrsNow, faceRuleValsCompared } from './publish'
 import { hideKey, shownWarns } from './warnhide'
-import { rosterIds, withKeptRules, keptRulesDiffer, withDayRules } from './faceattrs'
+import { rosterIds, withKeptRules, keptRulesDiffer, withDayRules, keepRulesOn, withShownRules } from './faceattrs'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -114,7 +114,9 @@ export const LIVE_ON_FACE=new Set<string>(['OIL_NO_PERIOD','OIL_STALE_DAY','OIL_
 /* A label may quote a live threshold: {crewRest} prints whatever crew rest is
    set to right now. Without this an edited rule leaves stale numbers behind in
    tooltips and warning lists — the engine says 10h, the chip still says 12h. */
-export const wlbl=(s:any)=>String(s==null?'':s).replace(/\{(\w+)\}/g,(m:any,k:any)=>k in VCONF?lgT(VCONF[k]):m);
+/* `di` (D2005 — the walk: "Crew rest (<11h) … only 11h40 rest" on a day kept at 12h): a day's own warning list names its
+   limits as the day is judged — a published day nothing waits on by the settings it went out with */
+export const wlbl=(s:any,di?:any):string=>di!=null&&DAYS[di]?withShownRules(DAYS[di],():string=>wlbl(s)):String(s==null?'':s).replace(/\{(\w+)\}/g,(m:any,k:any)=>k in VCONF?lgT(VCONF[k]):m);
 export let WARN:any={all:[],byDay:[],sev:{},chip:{},dash:{},trace:{},fz:{sev:{},chip:{},dash:{}},lv:{sev:{},chip:{},dash:{}}};
 /* THE RUN TABLES, published like REST/EVD for the pre-drop query (5 Sep 26):
    RUNLEN[di][id] = consecutive days on the programme through day di (only
@@ -304,7 +306,7 @@ export const FLT_NO_LEN_SAYS=(st:any,sa?:any,none?:any,saFly?:any)=>`takes off a
    the amber 'times look wrong' note") says what it earns from — never the shift's "earns nobody", which would now be
    false, nor the flying line's "report and debrief", since a shift has no debrief ([RULES-CHECK-FIXES] job 3: new words,
    shown to him as built, his to change). */
-export const fltNoLenSays=(f:any,wv:any)=>{const fly=!!saZeroSpanWin(wv,f,VCONF.reportLead);return FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv)&&!fly,fltMeasuresNothing(wv,f),fly);};
+export const fltNoLenSays=(f:any,wv:any)=>{const fly=!!saZeroSpanWin(wv,f,VCONF.reportLead);return FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv)&&!fly,fltMeasuresNothing(wv,f,VCONF.reportLead,VCONF.debrief),fly);};   // the day's own settings, as the day loop overlays them (D2005)
 /* the 7-day run's sentence — one body for the warning and for the dotted mark that points at it from the days before
    (the mark carries the words its warning will have, so a hide of that warning is found — [WARN-HIDE-KEPT]) */
 const runSays=(id:any,n:any)=>`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`;
@@ -424,21 +426,23 @@ function validateCore(){
      Monday, one lookahead day, like the crew-rest trace. Trace only — never a
      warning — so parity.test.ts (which compares WARN.byDay) is untouched. */
   {
-    const traceRun=(from:any,id:any,t:any)=>{ for(let k=from;k>=0;k--){ if(!RUNLEN[k]||RUNLEN[k][id]==null)break; markTrace(k,id,{run:t},{di:t.di,code:'DAYS_RUN',who:[id],msg:runSays(id,t.n)}); } };
+    /* the trace's words are the breaking day's own warning, worded with ITS limit (D2005 — the two blind reads): a mark
+       worded with another day's limit points at a warning that is not there, and its hide key never matches */
+    const traceRun=(from:any,id:any,t:any,src:any)=>{ const msg=withDayRules(src,()=>runSays(id,t.n)); for(let k=from;k>=0;k--){ if(!RUNLEN[k]||RUNLEN[k][id]==null)break; markTrace(k,id,{run:t},{di:t.di,code:'DAYS_RUN',who:[id],msg}); } };
     /* the day a run breaks on is judged by its own limit (D2005): a published day's kept "Max days worked in a row", the
        day before it by its own — so the trace points at a breach only where that day's own check raises one */
     const limitOn=(i:any)=>withDayRules(DAYS[i],()=>VCONF.maxRun);
     ev.forEach((day:any,i:any)=>{
       Object.keys(RUNLEN[i]||{}).forEach((id:any)=>{
         const n=RUNLEN[i][id];
-        if(n>limitOn(i)&&!(i>0&&RUNLEN[i-1][id]>limitOn(i-1)))traceRun(i-1,id,{di:day.di,dow:day.dow,n});
+        if(n>limitOn(i)&&!(i>0&&RUNLEN[i-1][id]>limitOn(i-1)))traceRun(i-1,id,{di:day.di,dow:day.dow,n},DAYS[i]);
       });
     });
     NEXTON=nextMondayWorked(CURWEEK);
-    const nextLimit=withDayRules(nextMondayDay(CURWEEK),()=>VCONF.maxRun);
+    const nextDay=nextMondayDay(CURWEEK), nextLimit=withDayRules(nextDay,()=>VCONF.maxRun);
     Object.keys(RUNLEN[6]||{}).forEach((id:any)=>{
       const n=RUNLEN[6][id];
-      if(n>=nextLimit&&n<=limitOn(6)&&NEXTON.has(id))traceRun(6,id,{di:null,dow:'Monday',n:n+1});
+      if(n>=nextLimit&&n<=limitOn(6)&&NEXTON.has(id))traceRun(6,id,{di:null,dow:'Monday',n:n+1},nextDay);
     });
   }
   /* ONE DAY'S CREW-REST COMPUTATION, extracted verbatim from the day loop
@@ -506,7 +510,9 @@ function validateCore(){
            debrief. It used to end nothing (its landing not-a-number), so a TBD sortie bore no crew rest at all.
            Crew rest only: D1936's hours and long-day note still count such a sortie nowhere (its event's report). */
         const flyLd=e.kind==='fly'&&!isFinite(e.ld)?e.to:e.ld;
-        const rawEnd=e.kind==='fly'?flyLd+VCONF.debrief:e.e;   // a shift/duty ends when it ends
+        /* D2005: the day being judged decides — a sortie's debrief, and an end the day before only ASSUMED (no end typed:
+           events.ts `ae`), are worked out with the judged day's settings, never the day before's */
+        const rawEnd=e.kind==='fly'?flyLd+VCONF.debrief:e.ae==='sim'?e.s+VCONF.simLen:e.ae==='open'?e.s+VCONF.openEnd:e.e;   // a shift/duty ends when it ends
         /* [REST-BLANK-LINE] (D602, 6 Oct 26): a crewed line with no times yet ("+ Line" mints it blank) carries
            not-a-number here, and it is NOT an end. Kept, it sat in prevEnd as the man's first event of the day and
            every later `end>prevEnd` was false — his real 22:30 landing never replaced it, the `isFinite(pe)` guard
@@ -1520,7 +1526,10 @@ function validateCore(){
       });
     });
     const earnsOil=day.dow==='Saturday'||day.dow==='Sunday'||HOOKS.oilEarningDay(di);
-    if(earnsOil){
+    /* OIL on today's settings, whole (D2005 — Astra's read, finding 3): its earning test reaches who is available
+       (avail.ts), whose ordinary VCONF readers would otherwise take a published day's kept values — OIL keeps its own
+       rule (D48, D592), never the checks' */
+    if(earnsOil)withLiveRules(()=>{
       const blind=dayOilBlind(DAYS[di]||{});
       if(blind.length){
         const {list,verb}=blindDesks(blind);
@@ -1595,7 +1604,7 @@ function validateCore(){
           add('adv','OIL_OLD_BLOCK',[],'This day was published before the app counted who is behind an ALL AVAIL puck on a duty desk, a sim or an extras line — publish it again to credit them');
         }
       }
-    }
+    });
     /* THE MIRROR OF IT (fix 4, hand pass §6 row 4). R-1 runs BOTH directions, and
        only one of them was speaking. A day published as a holiday that the war
        later stops calling one goes on paying off its frozen block — correctly,
@@ -1860,7 +1869,11 @@ const HIDENOW=new WeakMap<any,Map<number,any[]>>();
 HOOKS.hideNow=(di:number)=>{ let m=HIDENOW.get(OFFICIAL); if(!m){m=new Map(); HIDENOW.set(OFFICIAL,m);}
   let v=m.get(+di); if(v)return v;
   const hs=hidden(), work=new Set<string>((((RAW_B.byDay||[])[+di]||{}).warns||[]).map((w:any)=>hideKey(w)));
-  v=((((OFFICIAL.byDay||[])[+di]||{}).warns||[]) as any[]).map((w:any)=>({k:hideKey(w),w})).filter((x:any)=>work.has(x.k))
+  /* …or, on a day that kept Logic settings other than today's (D2005 — the narrow read of the fixes), every warning of the
+     issued judgement: a hide sends that day's working copy to today's settings, which may no longer raise the warning,
+     and the hide must not stop counting then — or the day flips kept / today's on every pass */
+  const sv=dayCurVer(+di), ss:any=sv!=null?daySnapOf(+di,sv):null, keptDiff=!!(ss&&keptRulesDiffer(ss.rv));
+  v=((((OFFICIAL.byDay||[])[+di]||{}).warns||[]) as any[]).map((w:any)=>({k:hideKey(w),w})).filter((x:any)=>keptDiff||work.has(x.k))
     .map(({k,w}:any)=>({k,on:hs.has(k),code:w.code,who:w.who||[],msg:String(w.msg||''),sev:w.sev,key:w.key}));
   m.set(+di,v!); return v!; };
 /* one slice per day per official bundle, so publish.ts can key it once per validate */
@@ -1882,7 +1895,11 @@ export function validate(){
      date, not at every ask); the pass writes its own globals and never the inputs */
   /* a published day with nothing waiting is judged on the working pass as on its face — by the settings it went out under
      (owner D2005, 12 Nov 26), so Edit Schedule and the board show it as View-only Sched does (untouchedKept, below) */
-  const raw = withKeptRules(untouchedKept(), ()=>inputReadPass(validateCore));        // WORKING, as the rules raised it — writes the module globals
+  /* the loaded days nothing waits on keep their kept settings between passes too (faceattrs.ts keepRulesOn), so what
+     asks outside a pass — the crew picker's cross-day questions, the ALL AVAIL window — judges them as this pass did */
+  const keep=untouchedKept();
+  DAYS.forEach((d:any)=>keepRulesOn(d,null)); keep.forEach((x:any)=>keepRulesOn(x.d,x.rv));
+  const raw = withKeptRules(keep, ()=>inputReadPass(validateCore));        // WORKING, as the rules raised it — writes the module globals
   RAW_B = raw;
   if(HOOKS.validated)HOOKS.validated(raw);
   /* what every surface reads is the bundle AS SHOWN (D469, D472): a hidden warning carries `off`, flags no puck */
@@ -1936,8 +1953,19 @@ function untouchedKept(){
   approvedDays().forEach((di:any)=>{
     const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null, d:any=DAYS[di];
     if(!snap||!snap.d||!d||!keptRulesDiffer(snap.rv))return;
+    /* ANY change waiting on the day previews its next amendment by today's settings (the two blind reads, 12 Nov 26):
+       the content, the filing, the inputs and both OIL entries (dayDeltaCore — it reads no warnings, so it is safe
+       before this pass), a hide waiting (below), the men on it (pa) and the brief it prints */
+    if(dayDeltaCore(di).length>0)return;
     if(canonicalDiff(snap.d,d,di).length>0)return;
     if(filingDivergesAt(snap.fil,d.dt)||(snap.inp&&frozenInputDiffs(snap.inp,d.dt).length>0))return;
+    /* a hide waiting: the day's hidden keys now against the ones it went out with, both over what the issued judgement
+       raises — read straight from the hides and the last official pass (kept settings, so independent of this choice),
+       never through hidePending, whose cached, working-pass-filtered answer made the day flip between passes */
+    {const raised=new Set<string>((((OFFICIAL.byDay||[])[di]||{}).warns||[]).map((w:any)=>hideKey(w)));
+      const now=[...hidden()].filter((k:any)=>raised.has(k)).sort().join('\n');
+      const was=(((snap.w&&snap.w.wo)||[]) as any[]).map(String).filter((k:any)=>raised.has(k)).sort().join('\n');
+      if(now!==was)return;}
     if(snap.pa&&stableJson(peopleAttrsNow(snap.pa))!==stableJson(snap.pa))return;
     if(faceRuleValsCompared(snap.d)&&snap.rv.briefLead!=null&&+snap.rv.briefLead!==+VCONF.briefLead)return;   // the brief it prints reads pending (D186)
     out.push({d,rv:snap.rv});
@@ -2114,6 +2142,9 @@ export const ordinal=(n:any)=>n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?
    (`sole`), so the answer describes the week after the move. Counted from
    the on/off pattern alone: back through the days he is on (the seed walks in
    when the run reaches Monday), then forward, then into next Monday. */
+/* the limit day `x` is judged by when a man is placed on day `di` (null = next Monday) — one body for the question and
+   its words (crossDayIfPlaced), so the line never names a limit the check did not use */
+const runLimitIfPlaced=(di:any,x:any)=>x==null?withDayRules(nextMondayDay(CURWEEK),()=>VCONF.maxRun):x===di?VCONF.maxRun:withDayRules(DAYS[x],()=>VCONF.maxRun);
 export function runIfPlaced(id:any,di:any,from?:any){
   if(!id||!PEOPLE[id]||isSpecial(id)||di==null||di<0||di>6||!RUNLEN.length)return null;
   const on=(k:any)=>!!(RUNLEN[k]&&RUNLEN[k][id]!=null)&&!(from&&from.sole&&from.di===k);
@@ -2121,12 +2152,16 @@ export function runIfPlaced(id:any,di:any,from?:any){
   let n=1, k=di-1;
   while(k>=0&&on(k)){n++;k--;}
   if(k<0)n+=RUNSEED[id]||0;
-  if(n>VCONF.maxRun)return {di,dow:DAYS[di].dow,n};
+  /* each day by its own limit, as the validator judges it (D2005 — the two blind reads): the day he is placed on is
+     edited by the drop, so today's; every other day as the last pass judged it — a published day nothing waits on by
+     the limit it went out with (faceattrs.ts keepRulesOn, laid on by validate()); next Monday by its own */
+  const lim=(x:any)=>runLimitIfPlaced(di,x);
+  if(n>lim(di))return {di,dow:DAYS[di].dow,n};
   for(k=di+1;k<=6;k++){
     if(!on(k))return null;
-    n++; if(n>VCONF.maxRun)return {di:k,dow:DAYS[k].dow,n};
+    n++; if(n>lim(k))return {di:k,dow:DAYS[k].dow,n};
   }
-  if(NEXTON.has(id)){n++; if(n>VCONF.maxRun)return {di:null,dow:'Monday',n};}
+  if(NEXTON.has(id)){n++; if(n>lim(null))return {di:null,dow:'Monday',n};}
   return null;
 }
 /* crew rest, both directions: the candidate leg is a clone of a leg already
@@ -2191,7 +2226,8 @@ export function restIfPlaced(id:any,key:any,from?:any){
   /* forward — this leg's end against his first report tomorrow */
   for(let index=di+1;index<=di+4;index++){
     hit=null;const next=dayAt(index), targetDi=index<7?index:null;
-    if(next&&next.fly)CREWREST_BODY(dayAt(index-1),next,targetDi,true,null,probe);
+    /* the day judged decides (D2005): a published day nothing waits on is asked by the settings it went out with */
+    if(next&&next.fly)withDayRules(index<7?DAYS[index]:next.src,()=>CREWREST_BODY(dayAt(index-1),next,targetDi,true,null,probe));
     if(!hit)continue;
     const entries=restTraceEntries(RAW_B.trace?.[di]?.[id]);
     const dup=targetDi!=null?already(targetDi,hit):entries.some((t:any)=>t.targetDi===next.targetDi&&t.targetWeek===next.targetWeek&&t.msg===hit.msg);
@@ -2215,7 +2251,7 @@ export function crossDayIfPlaced(id:any,key:any,fromKey?:any){
   }
   let out='';
   const r=runIfPlaced(id,keyDay(key),from);
-  if(r)out=`${ordinal(r.n)} day in a row — breaks ${r.di==null?'next Monday':r.dow} (${VCONF.maxRun} is the limit)`;
+  if(r)out=`${ordinal(r.n)} day in a row — breaks ${r.di==null?'next Monday':r.dow} (${runLimitIfPlaced(keyDay(key),r.di)} is the limit)`;
   else{
     const c=restIfPlaced(id,key,from);
     if(c)out=c.dir==='back'?`crew rest — not clear until ${stated(c.earliest)}`:`crew rest — breaks ${c.di==null?'next '+c.dow:c.dow}: he must be gone by ${c.leaveBy}`;

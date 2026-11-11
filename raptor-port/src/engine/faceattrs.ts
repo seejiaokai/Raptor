@@ -112,3 +112,9 @@ export function ruleFor(d: any, key: string): number {
 export function withDayRules<T>(d: any, fn: () => T): T {
   return withRuleVals(keptOn(d), fn)
 }
+/* …and the words a SCREEN draws about a day (D2005 — the narrow read of the fixes): inside an issued face or a look at a
+   version (withFaceAttrs, installed by ui/html.ts withDaySnap) by that version's own settings, else by the day's as the
+   validator judged it — so View-only Sched's heading names the limit its warning was judged by */
+export function withShownRules<T>(d: any, fn: () => T): T {
+  return withRuleVals(FA && FA.rv ? FA.rv : keptOn(d), fn)
+}

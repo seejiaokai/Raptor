@@ -195,11 +195,15 @@ export function fltOilWin(wv:any,f:any,lead:number,deb:number,lines?:any):[numbe
    its crew earn nothing (D31: credit follows the times written). The day then says so: the advisory stops promising the
    report and debrief, and the "no usable times" list names the line. Today's Logic values, as every warning reads them.
    A standalone wave is not a sortie — its own rule is the zero shift (dayOilBlind). */
-export function fltMeasuresNothing(wv:any,f:any):boolean{
+/* `lead` / `deb` (D2005 — the two blind reads): the warning's words are judged by the day's own settings — a published
+   day nothing waits on by the values it went out with, so a Logic change never rewrites its frozen advisory and never
+   makes it pending; the validator passes VCONF as the day loop overlays it. The OIL credit and the "no usable times"
+   list leave them out and read today's, as OIL always has (D48, D592). */
+export function fltMeasuresNothing(wv:any,f:any,lead?:number,deb?:number):boolean{
   if(!f||f.cx||isStandalone(wv))return false;
   const st=parseHM(f.to),en=parseHM(f.ld);
   if(st==null||en==null)return false;
-  return fltOilWin(wv,f,ruleNow('reportLead'),ruleNow('debrief'))==null;
+  return fltOilWin(wv,f,lead??ruleNow('reportLead'),deb??ruleNow('debrief'))==null;
 }
 /* A FLYING STANDBY SHIFT TYPED WITH THE SAME START AND END (owner D1999, 11 Nov 26 — "A10 as recommended": it "earns like
    a flying line — from its R or B, with the amber 'times look wrong' note"). Its written window is nothing, but a shift

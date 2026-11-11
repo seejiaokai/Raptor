@@ -29,11 +29,12 @@
    not off the bundle.) */
 import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
-import { goesOnProg, INPUTS, inputLinesOn, frozenInputDiffs, inputCoversDate, isPersonal, inputDormant, inputSilent, baseYear, inpId } from './inputs'
+import { goesOnProg, INPUTS, inputLinesOn, frozenInputDiffs, inputCoversDate, isPersonal, inputDormant, inputSilent, baseYear, inpId, stableJson } from './inputs'
 import { PEOPLE, isSpecial } from './people'
 import { stashDays, stashSched, stashGet } from './weekstash'
 import { getWorld, filingActive, filingHas } from './world'
-import { dayCurVerIn, daySnapIn } from './publish'
+import { dayCurVerIn, daySnapIn, peopleAttrsNow, faceRuleValsCompared } from './publish'
+import { ruleNow } from './rules'
 import { canonicalDiff } from './canonical'
 import { keepRulesOn, keptRulesDiffer, withDayRules } from './faceattrs'
 import { viewOfWeek, deletedOverlayDue, landingDue } from './overlay'
@@ -96,6 +97,10 @@ function keepUntouchedRules(v:any,days:any[]){
     const dt=days[di].dt;
     if(canonicalDiff(snap.d,days[di],di).length>0)continue;
     if(dt!=null&&(filingDiffers(snap.fil,dt,true)||frozenInputDiffs(snap.inp,dt).length>0))continue;
+    /* …and the men on it and the brief it prints, as the loaded week's validate.ts untouchedKept asks (the two blind
+       reads, 12 Nov 26): a neighbour day with either waiting previews its next amendment, as its own week does */
+    if(snap.pa&&stableJson(peopleAttrsNow(snap.pa))!==stableJson(snap.pa))continue;
+    if(faceRuleValsCompared(snap.d)&&snap.rv.briefLead!=null&&+snap.rv.briefLead!==+ruleNow('briefLead'))continue;   // today's, even if a day's kept values are laid on
     keepRulesOn(days[di],snap.rv);
   }
 }
