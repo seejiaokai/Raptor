@@ -7,7 +7,7 @@ import { DAYS } from './data'
 import { WEEK2_DAYS } from './week2'
 import { readFileSync } from 'node:fs'
 
-const formation = (cs='VL', to='12:00') => ({cs,to,ld:'13:00',br:'10:00',aircraft:[{p:'ignite',w:'bane',rmks:'',opts:{}}]})
+const formation = (cs='VL', to='12:00'): any => ({cs,to,ld:'13:00',br:'10:00',aircraft:[{p:'ignite',w:'bane',rmks:'',opts:{}}]})
 const wave = (intimes:string[], formations=[formation(),formation('RU')]) => ({label:'FIRST WAVE',intimes,formations})
 
 describe('Rally reporting decisions D497–D507: RT1 scope, RT2 grammar, RT3 actual dates, RT4 consumers, RT5 stages', () => {
