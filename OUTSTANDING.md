@@ -130,7 +130,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CSS-WRAPPER-GUARD] — BUILT the night of 6 Nov 26 (`claude/lw-faults-1106`): the check, with the 202 rules after the bid sheet's wrapper listed — not deliberate after all; moving them is [LW-BIDPICKER-CSS-INSIDE].
 - [LW-PO-DAYS-DRAWING] — his D1720 (6 Nov 26): BUILT and walked on `claude/lw-faults-1106` (pull request 646); close once live.
 - [LW-FULL-EDITING] — his D1724: every entry on the Leave War moved, deleted, its days and remarks changed there; a day of several entries opens the window that adds more; drawn first, then a FULL check; brief `raptor-port/docs/superpowers/plans/2026-11-06-lw-full-editing.md`.
-- [BAL-SCROLL-STUCK] — his report of 11 Nov 26: BUILT on `claude/bal-scroll-stuck` (the Balances page fitted to the screen's true height, its list keeping the wheel); his own check on his PC, then close once live.
+- [BAL-SCROLL-STUCK] — his report of 11 Nov 26: BUILT on `claude/bal-scroll-stuck` (the Balances page fitted to the screen's true height, its list keeping the wheel); he tried the preview on his PC the same evening — fixed; close once live.
 - [LW-DOUBLETAP-OTHER-WINDOWS] — the double tap's second tap still falls through the person window, ⚙ Settings, the event window and five more over the grid; the guard of 6 Nov 26 covers them cheaply (low, the agent's).
 - [LW-ROLLBACK-FOCUS] — a refused war change still puts back the jump-to-a-day state, so the grid can jump back after one (low, needs its own look).
 - [LW-BIDPICKER-CSS-INSIDE] — the bid sheet's 202 style rules move inside the Leave War's wrapper, as a walked job (low, the agent's).

@@ -33,7 +33,7 @@ already at its foot is then handed to that window, and the browser keeps giving 
 way a real wheel is — driven in the test browser and in the real Chrome and Edge on his PC, at six emulated sizes and
 with the page forced 0.4 and 3 taller, the list came up at once every time. The cause above rests on his own
 observation (the page shifting) matching the measured one-pixel scroll; the cure is checked by that scroll being gone.
-**His look on his PC is the proof of the stuck list.**
+**His look on his PC is the proof of the stuck list — and he tried the preview there the same evening: "Yes, fixed".**
 
 **The fix** (`e1ec63dff`): the page takes the screen's unrounded height where it is within a pixel of the rounded one,
 never more than the rounded one (`BalancesPage.tsx`); and the desktop list keeps the wheel to itself, as the phone's
@@ -52,4 +52,4 @@ pull request is the full check.
 **The lesson added** (the order's §7.11, lesson 31): the M5a walk and the browser tests ran at emulated screen sizes,
 always whole numbers, so none could meet a screen a fraction tall.
 
-`Walk: docs/handpass/2026-11-11-bal-scroll-stuck.md · 3 pictures · 1 surface (a LOOK: the Balances page, desktop and phone) · 9 real window heights measured · MISSING: the stuck list itself, which no test browser shows — his look on his PC`
+`Walk: docs/handpass/2026-11-11-bal-scroll-stuck.md · 3 pictures · 1 surface (a LOOK: the Balances page, desktop and phone) · 9 real window heights measured · MISSING: none — the stuck list, which no test browser shows, he tried himself on the preview on his PC, 11 Nov 26: fixed`
