@@ -287,7 +287,22 @@ describe('Phase 4 — the OFFICIAL run honours the SIGNED filing state', () => {
     INPUTS.push({ person: 'waldo', date: labels[6], allday: true, type: 'Training', acc: 'g', remarks: '', mod: '', iid: 'iTR1' })
     expect(seedRunIn(WK, VCONF.maxRun), 'UNSIGNED seed: the input would auto-land → counts').toEqual({ waldo: 1 })
     setWorld('official'); setFiling({ [labels[6]]: { iTR1: 'g' } })       // this date is signed
-    try { expect(seedRunIn(WK, VCONF.maxRun), 'SIGNED date: events only, no landed row → not counted').toEqual({}) }
+    /* D1993 (11 Nov 26, [RULES-CHECK-FIXES]): a row with no times counts as a day on the programme. The read of this
+       never-saved week lands the all-day Training as a Ground Programme row with no times (overlay.ts viewOfWeek), so the
+       signed date now counts by that ROW — the input itself is still never counted there (the next test isolates it). */
+    try { expect(seedRunIn(WK, VCONF.maxRun), 'SIGNED date: counted by its landed row with no times (D1993), not by its input').toEqual({ waldo: 1 }) }
+    finally { setWorld('working'); clearFiling() }
+  })
+  it('…and with no row of it on the date, a SIGNED date never counts the input off its own record (the trap above, isolated)', () => {
+    const WK = wkFor(32)
+    const labels = weekDateLabels(shiftWeekKey(WK, -1))
+    setCurWeek(WK)
+    /* filed under Unavailable: the read of last week lands no row for it (overlay.ts landRequests skips 'u'), so only
+       the unsigned hypothesis (workedSet) can count him */
+    INPUTS.push({ person: 'waldo', date: labels[6], allday: true, type: 'Training', acc: 'u', remarks: '', mod: '', iid: 'iTR2' })
+    expect(seedRunIn(WK, VCONF.maxRun), 'UNSIGNED seed: the hypothesis counts the input').toEqual({ waldo: 1 })
+    setWorld('official'); setFiling({ [labels[6]]: { iTR2: 'u' } })
+    try { expect(seedRunIn(WK, VCONF.maxRun), 'SIGNED date: no row there, so not counted').toEqual({}) }
     finally { setWorld('working'); clearFiling() }
   })
 })

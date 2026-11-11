@@ -138,6 +138,8 @@ function workedSet(day:any,ix:any,approved?:any){
   const built=buildDay(day,ix,null,null,true);
   const ids=new Set<any>();
   (built.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))ids.add(e.id); });
+  /* …and a row with no times yet, as validateCore's RUNLEN does (D1993); an AVALON / BB place stands by (D1998) */
+  (built.blank||[]).forEach((b:any)=>{ if(!b.av&&b.id&&PEOPLE[b.id]&&!isSpecial(b.id))ids.add(b.id); });
   /* the hypothetical auto-landing of a personal ACTIVITY input models an UNSIGNED
      seed date: loadWeek would land it as a ground row, but a non-loaded week never
      does. An APPROVED date never auto-lands a working input at all (autoAcceptInput's

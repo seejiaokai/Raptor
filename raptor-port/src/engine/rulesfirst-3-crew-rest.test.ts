@@ -158,12 +158,40 @@ describe('W33 — a break day is due after maxRun consecutive days; any tasking 
     expect(hit.map((x: any) => [x.di, x.sev])).toEqual([[FRI, 'hard']])
     expect(chipOf(FRI, 'bane')).toBe('RUN')
   })
-  // RULES-FIRST FINDING 3.1 (11 Nov 26, [ENGINE-RULES-REVIEW]): a day whose only tasking is a row with no times yet is read as a break day; flip to it() when fixed.
-  it.fails('a man on a ground row with no times yet on the fourth day is still on the programme that day — the break-day warning lands', () => {
+  // RULES-FIRST FINDING 3.1 (11 Nov 26, [ENGINE-RULES-REVIEW]), fixed by D1993 (11 Nov 26, [RULES-CHECK-FIXES]): "F2 as recommended. The app should flag." — a row with no times counts as a day on the programme for days in a row.
+  it('a man on a ground row with no times yet on the fourth day is still on the programme that day — the break-day warning lands', () => {
     VCONF.maxRun = 3
     ;[TUE, WED, THU].forEach(di => ground(di, 'bane', '0900', '1000'))
     ground(FRI, 'bane', '', '')                                        // seated on a row whose times are not typed yet
     expect(allOf('DAYS_RUN').filter((x: any) => (x.who || []).includes('bane')).map((x: any) => x.di)).toEqual([FRI])
+  })
+  it('D1993, the edges: a duty desk, a sim box and a Common Programme row with no times count too, and the days before carry the dotted run mark; a cancelled one does not; a timeless row in the middle keeps the run going', () => {
+    VCONF.maxRun = 3
+    ;[TUE, WED, THU].forEach(di => ground(di, 'bane', '0900', '1000'))
+    const fri: any = DAYS[FRI]
+    fri.dutywaves.push({ label: 'DUTY', rows: [{ role: 'SDO', id: 'bane', str: '', end: '' }] })
+    const hits = () => allOf('DAYS_RUN').filter((x: any) => (x.who || []).includes('bane')).map((x: any) => x.di)
+    expect(hits(), 'a duty desk with no times').toEqual([FRI])
+    validate()
+    expect(WARN.trace[THU]?.bane?.run?.di, 'the day before carries the dotted run mark').toBe(FRI)
+    fri.dutywaves[0].rows[0].cx = true
+    expect(hits(), 'a cancelled desk is no day on the programme').toEqual([])
+    fri.dutywaves.splice(0)
+    fri.sims.oft.push({ label: 'EP-1', str: '', end: '', p: 'bane', w: '', rmks: '' })
+    expect(hits(), 'a sim box with no start').toEqual([FRI])
+    fri.sims.oft.splice(0)
+    fri.allhands.push({ prog: 'BRIEFING', str: '', end: '', who: ['bane'] })
+    expect(hits(), 'a Common Programme row with no times').toEqual([FRI])
+    fri.allhands.splice(0)
+    ;(DAYS[WED] as any).ground.splice(0); ground(WED, 'bane', '', '')    // the middle day timeless
+    ground(FRI, 'bane', '0900', '1000')
+    expect(hits(), 'a timeless day in the middle keeps the run: Tue, Wed (timeless), Thu, Fri').toEqual([FRI])
+  })
+  it('D1993 with D1998 (as built, kept): an AVALON desk with no times — standing by — is still no day on the programme', () => {
+    VCONF.maxRun = 3
+    ;[TUE, WED, THU].forEach(di => ground(di, 'bane', '0900', '1000'))
+    ;(DAYS[FRI] as any).dutywaves.push({ label: 'AVALON', sa: 'avalon', noconf: true, rows: [{ role: 'SXO', id: 'bane', str: '', end: '' }] })
+    expect(allOf('DAYS_RUN').filter((x: any) => (x.who || []).includes('bane')), 'standing by does not count').toEqual([])
   })
   it('as built (the control for 3.1): a flying line with no times yet DOES count, so the same day counts for a flyer and not for a ground row', () => {
     VCONF.maxRun = 3

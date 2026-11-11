@@ -1188,6 +1188,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   is. The flag lands on the day that BREAKS the limit — the day the scheduler
   has to clear — not on the whole run. Because a run is a property of the week
   rather than of a day, it is precomputed before the per-day loop.
+  **A row with no times yet counts too** (owner D1993, 11 Nov 26 — the rules check's F2, "the app should flag"): a
+  ground or Common Programme row, a desk or a sim box whose times are not typed never became an event, so a seventh
+  day whose only task was such a row read as a break day. The run now also reads `day.blank` (events.ts — the seats
+  with no hours of their own), less the AVALON / BB places, which stand by and stay outside the count (D1998, as
+  built); a flying line with no times was already counted. `weekctx.ts workedSet` (the walk in from last week and the
+  forward look at next Monday) counts the same, so a signed neighbour date's timeless row counts by its row, never
+  its input. Pins: `engine/rulesfirst-3-crew-rest.test.ts` (W33, D1993), `engine/official-flags.test.ts`.
   **The count now walks in from before the loaded week** (owner, 23 Aug 26 —
   the flagging engine reads continuously, not just within a week).
   `weekctx.ts:seedRunIn` seeds each person's Monday run with a pure walk back

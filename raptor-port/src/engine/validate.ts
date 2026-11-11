@@ -367,6 +367,10 @@ function validateCore(){
     ev.forEach((day:any,i:any)=>{
       const on=new Set<any>();
       (day.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))on.add(e.id); });
+      /* D1993 (11 Nov 26, [RULES-CHECK-FIXES], the rules check's F2): a row with no times yet — a ground or Common
+         Programme row, a desk, a sim box (events.ts `blank`) — is still a day on the programme. An AVALON / BB place
+         (`av`) is standing by, which does not count (D1998). weekctx.ts workedSet counts the same, across the week's edge. */
+      (day.blank||[]).forEach((b:any)=>{ if(!b.av&&b.id&&PEOPLE[b.id]&&!isSpecial(b.id))on.add(b.id); });
       Object.keys(run).forEach((id:any)=>{ if(!on.has(id))run[id]=0; });   // a clear day resets it
       const m:any={}; on.forEach((id:any)=>{ m[id]=run[id]=(run[id]||0)+1; });
       RUNLEN[i]=m;
