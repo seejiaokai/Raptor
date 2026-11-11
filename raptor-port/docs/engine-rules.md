@@ -1191,7 +1191,14 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   BB, mirroring `SAWAVE[kind].all`), so an AVALON or BB desk is exempt as its
   wave is (§AVALON above) and an SC desk counts as an SC seat for the spare rule
   (§the two SC SPARE rules); a template with no wave mints the PLAIN block
-  it always did. The seed week has no template desk, so reference parity is
+  it always did. **Once its wave flies, an AVALON or BB desk is fully checked and earns OIL by default** (owner D1997,
+  11 Nov 26 — "once the wave flies the desk is fully checked and earns OIL by default", over the report's recommended
+  "keep it exempt"): `waves.ts saDeskFlies(day, block)` — the day's standby wave of the block's `sa` kind has a row that
+  flies (its shift's B or R typed, or a hand-ticked row: the agent's reading) — and then the desk is an ordinary duty row
+  in `events.ts` (clashes, crew rest, the run of days, the long day), off the standby collection; `oil.ts` defaults it
+  on; the crew list (`avail.ts` dayStandby / dayEngaged / the slot's `avDuty`) reads it as a task, not a standby. A BB
+  desk follows the BB wave only. With the wave standing by, nothing changes. Pins: `engine/rulesfirst-2-standby.test.ts`
+  W25. The seed week has no template desk, so reference parity is
   untouched. Do not re-add the coupling (`.claude/rules/decisions/scheduler.md` §Settled before this list → Waves & duties; it was `CLAUDE.md` §Stable decisions until 24 Sep 26).
 
 ### Chip ranking, the break-day rule (DAYS_RUN) and where flags reach the screen
@@ -2385,7 +2392,8 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   - an SC **SPARE** — standing by at home, reachable but not at work (the
     same reading `scSpare` gives the conflict engine);
   - **AVALON and BB** — the whole wave AND the desk block it brings
-    (`dw.sa`);
+    (`dw.sa`) — by default, while they stand by: a row that flies earns (§A standby row that flies), and once the wave
+    flies its desk earns by default too (owner D1997, 11 Nov 26 — `oil.ts` reads `waves.ts saDeskFlies`);
   - a **cancelled** structure at any level (`cx`) — a duty that did not
     stand;
   - a row with **no readable times** (blank, half-blank, zero-length) — the

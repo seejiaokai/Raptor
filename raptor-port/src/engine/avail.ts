@@ -4,7 +4,7 @@ import { goesOnProg, inputLinesOn, inputReadPass, inputCoversDate, isAway, awayA
 import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
-import { isStandalone, scSpare, saExempt, saExemptKind, saFlies } from './waves'
+import { isStandalone, scSpare, saExempt, saExemptKind, saFlies, saDeskFlies } from './waves'
 import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
 import { whoArr, rowRef, rowPlaces, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
@@ -59,7 +59,8 @@ export function dayStandby(d:any){const s=new Map();
   (d.waves||[]).forEach((w:any)=>(w.formations||[]).forEach((f:any)=>{if(f.cx)return;
     (f.aircraft||[]).forEach((a:any)=>{if(a.cx||!standbyRow(w,f,a))return;
       [a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special&&!s.has(id))s.set(id,String(w.kind||'sc').toUpperCase());});});}));
-  (d.dutywaves||[]).forEach((dw:any)=>{if(!dw.noconf)return;(dw.rows||[]).forEach((r:any)=>{if(r.cx)return;
+  /* …a desk whose wave flies is a task, not a standby (D1997, waves.ts saDeskFlies) */
+  (d.dutywaves||[]).forEach((dw:any)=>{if(!dw.noconf||saDeskFlies(d,dw))return;(dw.rows||[]).forEach((r:any)=>{if(r.cx)return;
     [r.id,...((r&&r.more)||[])].forEach((id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special&&!s.has(id))s.set(id,String(dw.sa||'avalon').toUpperCase());});});});
   return s;}
 export function dayEngaged(d:any,standbyFree?:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special)s.add(id);};
@@ -71,7 +72,7 @@ export function dayEngaged(d:any,standbyFree?:any){const s=new Set(),add=(id:any
   /* the extras dropped under a row are tasked exactly as much as the person in
      its primary seat — they used to be counted as free all day */
   const more=(r:any)=>((r&&r.more)||[]).forEach(add);
-  (d.dutywaves||[]).forEach((dw:any)=>{if(standbyFree&&dw.noconf)return;dw.rows.forEach((r:any)=>{if(!r.cx){add(r.id);more(r);}});});
+  (d.dutywaves||[]).forEach((dw:any)=>{if(standbyFree&&dw.noconf&&!saDeskFlies(d,dw))return;dw.rows.forEach((r:any)=>{if(!r.cx){add(r.id);more(r);}});});
   /* crew on ONLY an ⓘ info-only row stay un-greyed in the palette — being
      listed for information is not being tasked (owner, 1 Sep 26) */
   (d.ground||[]).forEach((g:any)=>{if(!g.cx&&!g.info){add(whoId(g.who));more(g);}});
@@ -199,7 +200,8 @@ export function slotRules(key:any){
          the cross-day question at the foot of slotBar must stand down for it
          exactly as it does for the jet seat below — else the picker bars a
          run the validator never flags. */
-      if(dwx&&saExemptKind(dwx.sa)){out.avDuty=true; out.saExempt=true;}
+      /* …until its wave flies (D1997): then an ordinary duty row here too, as the validator now checks it (waves.ts saDeskFlies) */
+      if(dwx&&saExemptKind(dwx.sa)&&!saDeskFlies(DAYS[+parts[0]],dwx)){out.avDuty=true; out.saExempt=true;}
       /* an SC desk (7 Sep 26): checked like any duty row, AND one of the SC
          seats for the spare's same-hours rule — slotBar asks scSeatHit off this */
       if(dwx&&dwx.sa==='sc')out.scDesk=true;}

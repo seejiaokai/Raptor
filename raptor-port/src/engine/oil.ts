@@ -1,7 +1,7 @@
 import { VCONF } from './rules'
 import { oilAsks } from './inputs'
 import { parseHM } from './time'
-import { isStandalone, saExemptKind, saFlies, saAnyFlies } from './waves'
+import { isStandalone, saExemptKind, saFlies, saAnyFlies, saDeskFlies } from './waves'
 import { PEOPLE, realP, whoId, isSpecial } from './people'
 import { whoArr } from './slots'
 import { parseReportingLines, resolveReporting, scReport } from './reporting'
@@ -360,7 +360,8 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
        MINTED from an AVALON template too, because the mint stamps `sa` and this
        reads `dw.sa`). Same shape as the wave above: a default, not an absence;
        the skip is lifted at step 4. */
-    const exemptDuty=!!(dw&&saExemptKind(dw.sa));
+    /* …until its wave flies (D1997, 11 Nov 26): then the desk earns by default, as every duty desk does (waves.ts saDeskFlies) */
+    const exemptDuty=!!(dw&&saExemptKind(dw.sa))&&!saDeskFlies(day,dw);
     (dw.rows||[]).forEach((r:any)=>{
       if(r.cx)return;
       item=rowItemKey(r.rid); dflt=!exemptDuty;

@@ -254,13 +254,22 @@ describe('W24 — AVALON / BB keep noconf: nothing cross-checked against tasks o
   })
 })
 
-describe('W25 — a desk minted from an SC / AVALON / BB template is that wave\'s, "exempt as its wave is" (settled 13 Aug 26) — as built when the wave flies', () => {
-  it('as built: the AVALON desk stays exempt and off by default when its wave flies; the SC desk is an SC seat for the spare rule', () => {
+describe('W25 — a desk minted from an SC / AVALON / BB template is that wave\'s, "exempt as its wave is" (settled 13 Aug 26) — D1997 once the wave flies', () => {
+  it('D1997 (Q4 answered): once its wave flies the AVALON desk is fully checked and earns OIL by default; the SC desk is an SC seat for the spare rule', () => {
     const av: any = makeStandalone('avalon'); add(TUE, av); av.formations[0].rl = '18:30'; av.formations[0].aircraft[0].p = 'split'
     ;(DAYS[TUE] as any).dutywaves.push({ ...blockFromTpl('avalon'), rows: [{ role: 'SXO', id: 'bane', str: '19:00', end: '07:00' }] })
     add(TUE, flyLine([], '20:00', '21:00', 'bane'))                 // the desk man's own sortie, inside the desk's hours
-    expect(warns(TUE, 'bane', 'DOUBLE_BOOK'), 'as built: the desk is not cross-checked though its wave flies').toEqual([])
-    expect(oil(TUE).bane.filter((x: any) => x.src === 'Duty').map((x: any) => x.dflt), 'as built: the AVALON desk earns nothing by default').toEqual([false])
+    expect(warns(TUE, 'bane', 'DOUBLE_BOOK').map((x: any) => x.sev), 'his words: "once the wave flies the desk is fully checked"').toEqual(['hard'])
+    expect(oil(TUE).bane.filter((x: any) => x.src === 'Duty').map((x: any) => x.dflt), '"…and earns OIL by default"').toEqual([true])
+    // the same wave standing by (nothing typed): the desk stays exempt and off by default, as built
+    av.formations.forEach((f: any) => { f.rl = ''; f.br = '' })
+    expect(warns(TUE, 'bane', 'DOUBLE_BOOK'), 'standing by: not cross-checked').toEqual([])
+    expect(oil(TUE).bane.filter((x: any) => x.src === 'Duty').map((x: any) => x.dflt), 'standing by: earns nothing by default').toEqual([false])
+    // a BB desk does not follow the AVALON wave's flying — only its own wave's
+    av.formations[0].rl = '18:30'
+    ;(DAYS[TUE] as any).dutywaves.splice(0); (DAYS[TUE] as any).dutywaves.push({ label: 'BB', sa: 'bb', noconf: true, rows: [{ role: 'BB DUTY', id: 'bane', str: '19:00', end: '07:00' }] })
+    expect(warns(TUE, 'bane', 'DOUBLE_BOOK'), 'the BB desk, its BB wave not flying').toEqual([])
+    av.formations[0].rl = ''; (DAYS[TUE] as any).dutywaves.splice(0)
     // "an SC desk an SC seat for the spare rule"
     const sc: any = makeStandalone('sc'); add(TUE, sc); sc.formations[0].aircraft[2].p = 'stuff'
     ;(DAYS[TUE] as any).dutywaves.push({ ...blockFromTpl('sc'), rows: [{ role: 'SXO AM', id: 'stuff', str: '07:00', end: '13:00' }] })

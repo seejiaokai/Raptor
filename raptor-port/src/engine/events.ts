@@ -5,7 +5,7 @@ import { fileAcc, filingActive } from './world'
 import { PEOPLE, isSpecial, whoId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
 import { VCONF, SHIFT_HARD } from './rules'
-import { isStandalone, saExempt, saExemptKind, saFlies, saAnyFlies, CURWEEK } from './waves'
+import { isStandalone, saExempt, saExemptKind, saFlies, saAnyFlies, saDeskFlies, CURWEEK } from './waves'
 import { whoArr, acceptedDay } from './slots'
 import { edgeDate } from './weeks-data'
 import { standsOn } from './overlay'
@@ -496,7 +496,8 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     };
     const extras=(r:any)=>(r&&r.more)||[];
     (d.dutywaves||[]).forEach((dw:any,dwi:any)=>dw.rows.forEach((r:any,ri:any)=>{ if(r.cx)return;
-      if(dw.noconf||r.noconf){
+      /* D1997 (11 Nov 26): once its wave flies, an AVALON / BB desk is an ordinary duty row — fully checked (waves.ts saDeskFlies) */
+      if((dw.noconf&&!(saExemptKind(dw.sa)&&saDeskFlies(d,dw)))||r.noconf){
         /* AVALON's desk shares the wave's exemption, not its invisibility: the same
            one check applies, with ATT B carved out — he cannot fly but he can man a
            desk (owner, 11 Aug 26). work:true is that carve-out. BB's desk is the
