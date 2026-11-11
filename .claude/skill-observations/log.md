@@ -2355,3 +2355,29 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The document check and the commit were typed as one command with the check's output sent to a file, its exit code echoed, and the commit after a semicolon. The check failed (a rules file one line over its size tripwire); the commit ran anyway and the failure was read only afterwards. A trap met again: the memory note "a pipe hides a failed check" (3 Nov 26) covers the pipe, and this is the same fault through a semicolon. Nothing was pushed; a second commit fixed it, and the session then committed through a small script that stops when the check fails.
 **Suggested improvement:** A guard, not a reminder: one project script, "check then commit", that runs the document check, prints its last lines and refuses the commit on a non-zero exit — used for every records commit; or the commit hook runs the check itself.
 **Principle:** When a check gates an action, the gate is the check's own exit code joined to the action — never two statements that happen to sit on one line.
+
+### Observation 934: "This chat is full" told to him just before a compaction made room
+
+**Status:** OPEN
+**Date:** 11 Nov 26
+**Session context:** Chat 64, evening: his two points on the rules check arrived at 91% full; the state was saved, a notification and the next-step box said the chat was full and the points would wait for a fresh chat; the compaction then ran and the chat stood at 42%, with room to answer both at once. (Numbered past 933, the highest on any open branch.)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** When to hand off versus compact; what is told to the user before a compaction
+
+**Issue:** The agent told the user his questions were deferred because the chat was full, in a notification that cannot be taken back, while a compaction it had itself made ready was about to free the room. He was told to start a new chat for work that was then done in the old one ten minutes later.
+**Suggested improvement:** In the handoff guide's compaction part: when the state is saved and a compaction is about to run, defer nothing in words to the user yet — let it run, measure the fullness after it, and only then decide between answering here and handing off. A notification never says "this chat is full" before that measure.
+**Principle:** Decide what to defer after the event that changes the constraint, not before it; and never send an irreversible message on a figure that is about to change.
+
+### Observation 935: A time written into the record from memory again (see Observation 932, on another open branch)
+
+**Status:** OPEN
+**Date:** 11 Nov 26
+**Session context:** Chat 64: the handoff block's heading said "written 19:45" when the clock read about 19:10, and "typed at about 20:00" for a message of about 19:05.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** Writing the block — times
+
+**Issue:** The same trap as Observation 932: a clock time put into a record without reading the clock. A reminder did not stop it the second time.
+**Suggested improvement:** A guard inside the action: the script that puts the block into the handoff file stamps the time itself from the system clock (a placeholder in the draft), so no time is ever typed by the agent.
+**Principle:** A value the machine knows exactly is filled in by the machine, never recalled by the writer.
