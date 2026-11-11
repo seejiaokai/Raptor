@@ -18,6 +18,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 
 ## Records
 - Records state the decision, not the transcript: his words only where the exact words matter, otherwise one line, the date and a pointer; a condensed record never changes what the original meant [D14, D138, D141, D390, D1735].
+- Every rule written into the rulings list, the repo or anywhere is concise and clear, in few words [D1987].
 - Where two of his rulings conflict, the later one wins: every clash is named — the ruling followed and the one set aside, both dates; a rule with no date loses to a dated one; what the old one left behind is fixed in the same change — the documents, the app (the build filed), the lists; where the newer one does not clearly cover the case, it goes to him as a question [D90, D201].
 - A ruling's rule is written in ordinary letters — capitals only where a name or a short form such as OIL has them — and no word is changed for it [D970].
 - No size targets: the test is whether each piece is needed where it sits, organised and written clearly; a size ceiling is a tripwire — move what does not belong, or raise it with its reason; for a loaded rulings file it counts bytes; the rules diet does not set this aside [D141, D390, D1735].
