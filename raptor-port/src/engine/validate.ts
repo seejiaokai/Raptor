@@ -10,7 +10,7 @@ import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayHides
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone, saExempt, saAnyFlies } from './waves'
 import { DAYS } from './data'
-import { dayOilBlind, blindDesks, fltMeasuresNothing } from './oil'
+import { dayOilBlind, blindDesks, fltMeasuresNothing, saZeroSpanWin } from './oil'
 import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
 import { keyDay, seatRow } from './keys'
 import { rowPlaces } from './slots'
@@ -299,7 +299,11 @@ export function fltNoLen(f:any):boolean{
 export const FLT_NO_LEN_SAYS=(st:any,sa?:any,none?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${sa?'a shift with no length earns nobody any OIL until it is fixed':none?'with no report before it and no debrief after it, the line earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
 /* the sentence's tail for one line, the facts read off the line and its wave — what every marked box's title and the
    warning both print, so no caller works out "is it a shift" or "does it measure anything" for itself */
-export const fltNoLenSays=(f:any,wv:any)=>FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv),fltMeasuresNothing(wv,f));
+/* A FLYING STANDBY SHIFT THAT EARNS from its B or R though its START is its END (D1999: "earns like a flying line … with
+   the amber 'times look wrong' note") takes the flying line's sentence, never the shift's "earns nobody", which would now
+   be false. Its "and debrief" is not exact for a shift (no debrief) — the exact words are put to him ([RULES-CHECK-FIXES]
+   job 3), no new sentence built at night. */
+export const fltNoLenSays=(f:any,wv:any)=>FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv)&&!saZeroSpanWin(wv,f,VCONF.reportLead),fltMeasuresNothing(wv,f));
 /* the 7-day run's sentence — one body for the warning and for the dotted mark that points at it from the days before
    (the mark carries the words its warning will have, so a hide of that warning is found — [WARN-HIDE-KEPT]) */
 const runSays=(id:any,n:any)=>`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`;

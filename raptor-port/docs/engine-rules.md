@@ -2377,7 +2377,12 @@ were `FS`/`HS` until the 28 Aug 26 rename.
       AVALON and BB alike, and each earns by default; a row that only stands by —
       "a SPARE reports nowhere" (24 Aug 26) — earns, when an admin switches it on
       (D24), the shift's WRITTEN hours; a shift whose written start and end are the
-      same still measures nothing. The work-hours bar and the long-work-day note have counted an SC
+      same measures nothing unless it flies from a B or R earlier than its START — then it earns from that B or R to
+      its END, as a flying line does (owner D1999, 11 Nov 26: "earns like a flying line — from its R or B, with the
+      amber 'times look wrong' note"; `oil.ts saZeroSpanWin`, which the credit, the day's "no usable times" list and the
+      same-time note all read; a row on it that only stands by still earns nothing). Its same-time note takes the flying
+      line's sentence ("the day still earns from the report and debrief") rather than the shift's "earns nobody", which
+      would be false; the exact words for a shift (it has no debrief) are put to him with the words job. The work-hours bar and the long-work-day note have counted an SC
       MAIN's B since 24 Aug 26 (`workSpan`). Pins: `engine/oilscintime.test.ts`, `engine/standbyflies.test.ts`;
     - with no line entered, the work-hours bar and the long-day note start at the
       nominal report too, as OIL does — one start since D1786 (8 Nov 26); until

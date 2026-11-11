@@ -116,14 +116,37 @@ describe('W88 — one principle, no allow-list: every seat can earn, its default
      a month later D1042 made a standby line that flies "a real flight … with every warning an ordinary flying line gets".
      Whether a flying SC shift typed START = END, its R typed, is "a flying line with the same written take-off and
      landing" (earns) or "zero length" (earns nothing) is his to say. */
-  it('as built (9.U1): an SC AM shift flying on its R 06:00, START and END both typed 08:00 — nobody earns, and the day names the shift as having no usable times', () => {
+  /* ANSWERED 11 Nov 26 (D1999, "A10 as recommended"): a standby shift that flies, typed with the same START and END,
+     earns like a flying line — from its R or B, with the amber "times look wrong" note. The as-built test below is
+     flipped to that. */
+  it('D1999 (was 9.U1): an SC AM shift flying on its R 06:00, START and END both typed 08:00 — bane earns from the R to the END, credited by default; the day keeps the amber same-time note and no longer names the shift as having no usable times', () => {
     const w: any = makeStandalone('sc'); const f = w.formations[0]
     f.to = '08:00'; f.ld = '08:00'; f.rl = '06:00'; f.aircraft[0].p = 'bane'
     w.formations = [f]; day(SAT).waves.push(w); ids()
-    expect(dayOilWork(day(SAT)).bane, 'no span at all').toBeUndefined()
-    expect(fig(), 'nothing credited').toEqual({})
-    const m = validate().all.find((x: any) => x.di === SAT && x.code === 'OIL_NO_TIMES')
+    const spans = dayOilWork(day(SAT)).bane || []
+    expect(spans.map((s: any) => [s.s, s.e, s.dflt]), 'from the R 06:00 to the END 08:00, on by default').toEqual([[6 * 60, 8 * 60, true]])
+    expect(fig(), 'credited — two hours, a half day').toEqual({ bane: 'HO' })
+    const all = validate().all.filter((x: any) => x.di === SAT)
+    expect(all.find((x: any) => x.code === 'OIL_NO_TIMES'), 'not named as having no usable times').toBeUndefined()
+    const note = all.filter((x: any) => x.code === 'FLT_NO_LEN')
+    expect(note.map((x: any) => x.sev), 'the amber "times look wrong" note').toEqual(['adv'])
+    expect(String(note[0].msg), 'the note no longer says the shift earns nobody').not.toMatch(/earns nobody/)
+  })
+  it('D1999 edges: the B counts as the R does, the earlier of the two; a shift whose R is its START, or one that does not fly, still measures nothing and is named', () => {
+    const w: any = makeStandalone('sc'); const f = w.formations[0]
+    f.to = '08:00'; f.ld = '08:00'; f.br = '07:00'; f.rl = '06:30'; f.aircraft[0].p = 'bane'
+    w.formations = [f]; day(SAT).waves.push(w); ids()
+    expect((dayOilWork(day(SAT)).bane || []).map((s: any) => [s.s, s.e]), 'the earlier of B and R').toEqual([[6 * 60 + 30, 8 * 60]])
+    f.br = ''; f.rl = '08:00'
+    expect(dayOilWork(day(SAT)).bane, 'an R at the START measures nothing').toBeUndefined()
+    let m = validate().all.find((x: any) => x.di === SAT && x.code === 'OIL_NO_TIMES')
     expect(String(m?.msg || '')).toMatch(/SC shift has no usable times/)
+    f.rl = ''
+    expect(dayOilWork(day(SAT)).bane, 'a shift that does not fly measures nothing').toBeUndefined()
+    m = validate().all.find((x: any) => x.di === SAT && x.code === 'OIL_NO_TIMES')
+    expect(String(m?.msg || '')).toMatch(/SC shift has no usable times/)
+    const note = validate().all.find((x: any) => x.di === SAT && x.code === 'FLT_NO_LEN')
+    expect(String(note?.msg || ''), 'and its note still says it earns nobody').toMatch(/a shift with no length earns nobody any OIL/)
   })
 })
 

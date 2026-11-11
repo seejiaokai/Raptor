@@ -198,6 +198,19 @@ export function fltMeasuresNothing(wv:any,f:any):boolean{
   if(st==null||en==null)return false;
   return fltOilWin(wv,f,VCONF.reportLead,VCONF.debrief)==null;
 }
+/* A FLYING STANDBY SHIFT TYPED WITH THE SAME START AND END (owner D1999, 11 Nov 26 — "A10 as recommended": it "earns like
+   a flying line — from its R or B, with the amber 'times look wrong' note"). Its written window is nothing, but a shift
+   that flies reports at its B or R (the earlier — scReport, D1041, D1044, D1045), so it earns from there to its END, as a
+   sortie with the same take-off and landing earns from its report (D49). With no B or R earlier than the START it still
+   measures nothing — the zero shift below (dayOilBlind), and its note keeps saying so (validate.ts fltNoLenSays). The
+   credit and both of the screen's words read this one body. Null when it does not apply. */
+export function saZeroSpanWin(wv:any,f:any,lead:number):[number,number]|null{
+  if(!f||f.cx||!isStandalone(wv))return null;
+  const st=parseHM(f.to);
+  if(st==null||st!==parseHM(f.ld)||!saAnyFlies(wv,f))return null;
+  const rep=scReport(f,st,lead);
+  return rep!=null&&rep<st?[rep,st]:null;
+}
 
 /* every person's work for one day blob, each span tagged with its kind:
    id -> {s,e,src}[]. The envelope of a person's spans is the day's measure.
@@ -306,7 +319,8 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
       /* (on AVALON and BB too since [STANDBY-FLIES]: there a typed B or R makes the shift fly, so it is a report time like
          SC's — D1045; a non-flying row never reads it, `seatWin` below) */
       const scB=scWin?scReport(f,scWin[0],lead):null;
-      const win=sc?(scWin&&scB!=null&&scB<scWin[0]?[scB,scWin[1]] as [number,number]:scWin)
+      /* …or, typed with the same START and END and flying, from its B or R to its END (D1999) */
+      const win=sc?(scWin&&scB!=null&&scB<scWin[0]?[scB,scWin[1]] as [number,number]:scWin||saZeroSpanWin(wv,f,lead))
                   :(st==null||en==null?null
                     :fltOilWin(wv,f,lead,deb,lines));
       if(!win)return;
@@ -337,7 +351,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
            hours wider each side than availability: handing it to the expander
            would gather the men the squadron deliberately schedules around an ops
            brief (D36, plan §5a) and credit every one of them. */
-        const seatWin=scWin&&!flies&&(exemptWave||f.spare||ac.spare)?scWin:win;   // D606: a standing-by row reports nowhere — its written window
+        const seatWin=sc&&!flies&&(exemptWave||f.spare||ac.spare)?scWin:win;   // D606: a standing-by row reports nowhere — its written window (none on a zero shift, D1999)
         [ac.p,ac.w].forEach((v:any)=>put(v,seatWin));
       });
     });
@@ -485,7 +499,8 @@ export function dayOilBlind(day:any):string[]{
      actually works at weekends this is precisely the silent-nothing the owner
      asked to be warned about on 20 Sep 26. So it IS named. */
   const readable=(st:any,en:any)=>parseHM(st)!=null&&parseHM(en)!=null;
-  const zeroShift=(wv:any,f:any)=>isStandalone(wv)&&parseHM(f.to)!=null&&parseHM(f.to)===parseHM(f.ld);
+  /* …except a zero shift that flies from a B or R earlier than its START, which earns (D1999) and is not named */
+  const zeroShift=(wv:any,f:any)=>isStandalone(wv)&&parseHM(f.to)!=null&&parseHM(f.to)===parseHM(f.ld)&&!saZeroSpanWin(wv,f,VCONF.reportLead);
   (day.waves||[]).forEach((wv:any)=>{
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
