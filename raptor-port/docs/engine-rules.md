@@ -928,8 +928,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - **Checked like a sortie (owner D1996, 11 Nov 26 — "a standby line that fly is checked like a sortie", over the report's
   recommended "keep it a shift"):** its event and its `day.fly` entry carry `flies: true` (`events.ts`, written only when
   true). Its START→END is a leg: a clash inside it is the red `DOUBLE_BOOK` — a lecture, an SC MAIN that only stands by —
-  never the shift's amber `SHIFT_SOFT`, whatever Logic's "SC MAIN clashes → another shift" says, since a standing shift
-  meets a flying one as it meets a flight (`events.ts shiftEvHard`, the bug check of 12 Nov 26); a Meeting input inside it is the red `INPUT_FLY` ("Meeting but tasked — SC AM …"),
+  never the shift's amber `SHIFT_SOFT`, whatever Logic's "SC MAIN clashes" settings say — they grade a shift that only
+  stands by (`events.ts shiftEvHard`, the bug check of 12 Nov 26); a Meeting input inside it is the red `INPUT_FLY` ("Meeting but tasked — SC AM …"),
   as against a sortie; and the tight turn (END → the next take-off, needing `max(tightTurn, dekit + step)`) and the double
   turn (`DT` / `DT_SUM`) read it as a sortie (`validate.ts byP`). A sortie that starts after its END is a turn, never a
   clash (compared on the airborne windows, as two sorties are). So two flying shifts back to back on one man (SC AM then
@@ -3517,9 +3517,9 @@ stay LIVE (below), which the face draws from today and which never make the day 
   sign-offs are bound to it), `from` / `to` the plain `shown` / `hidden`. A clash's key reads its two items' row ids in
   place of its words (owner D2001, 11 Nov 26: "a hidden clash stays hidden while the same man is on the same two items,
   whatever their times" — `warnhide.ts hideKey`, `validate.ts clashItem`, each clash warning carrying `items`). Two clashes
-  of one man worded the same are one warning (the original's dedupe), which then carries every item of both, and its key
-  names them all: a second clash worded the same as a hidden one makes the line show, and taking it away brings the hide
-  back (the bug check of 12 Nov 26). Wired into BOTH authorities, as the warnings
+  of one man worded the same are two warnings — the original's dedupe (one man, code and words) keeps the clash's pair
+  too (`validate.ts add`) — each hidden by its own pair, so a hidden clash never covers another worded the same; the drop's
+  red message keys a clash by its pair as well (`state/dropflag.ts warnKey`) (the bug check of 12 Nov 26). Wired into BOTH authorities, as the warnings
   axis is: `dayDelta` and `dayPendingItemsIn`. It is never also the warnings axis — the stored slice and the official
   pass stay as the rules raised them. A hide of a warning only the working copy has goes out with the edit that raised
   it; a stale hide (its warning no longer raised) pends nothing. Unpublish falls back to the version before; "Load onto

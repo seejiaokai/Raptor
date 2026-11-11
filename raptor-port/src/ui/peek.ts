@@ -293,10 +293,11 @@ export function peekKey(): string {
      loaded week's own request rows, which a landing there reads ("its row stands on the week on screen") */
   /* …and which page draws it (D1010): HOOKS.editMode(), not CURPAGE — Edit Schedule's build ahead runs under View-only
      Sched with the edit mode stood in for it */
-  /* …and the Logic values it draws with (a blank B, the same-time line's words): changed on the Logic page, Edit
-     Schedule's preview served the old drawing until the week was reloaded (the bug check of 12 Nov 26) */
+  /* …and the Logic values it draws with (a blank B from the brief lead; the same-time line's words from the report lead
+     and the debrief): changed on the Logic page, Edit Schedule's preview served the old drawing until the week was
+     reloaded (the bug check of 12 Nov 26) */
   return (HOOKS.editMode() ? 'e|' : 'v|') + CURWEEK + '|' + stashGenOf(shiftWeek(CURWEEK, 1)) + '|' + deletedSig() + '|' + requestsSig() + '|' + loadedSrcSig()
-    + '|' + VCONF.briefLead + '|' + VCONF.reportLead
+    + '|' + VCONF.briefLead + '|' + VCONF.reportLead + '|' + VCONF.debrief
 }
 export function peekWeekHTML(): string {
   const key = peekKey()
