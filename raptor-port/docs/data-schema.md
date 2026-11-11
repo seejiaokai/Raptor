@@ -279,10 +279,13 @@ slice of the official warnings as it went out: `byDay`, `sev`, `chip`, `dash`, a
 worded with — only the warnings that freeze and the marks THEY raise; what stays live is not kept: the next-day crew-rest
 mark, a crew-rest breach, the 7-day run, a lapsed qualification and the OIL warnings, `validate.ts LIVE_ON_FACE`, D183–D185),
 `pa` (the men on the day as the roster drew them — CAT, seat, posting — every man in a person slot of its content, behind
-its placeholder pucks, or of its inputs), `rv` (the rule value it prints — a blank brief's lead) and `ros` (the aircrew
-roster at issue, for the day panel's "free all day"). The face, the CSV and the print draw `pa` and `rv`
-(`engine/faceattrs.ts`); the pending comparison measures today's `pa` against them, and `rv` where a flying line prints a
-suggested brief; `ros` is drawn, never compared. A retired issuance keeps all of them (`publish.ts retireIssued`). Size: a copy of
+its placeholder pucks, or of its inputs), `rv` (the Logic settings the day was published under — since D2005, 12 Nov 26,
+every setting its checks read, `engine/faceattrs.ts KEPT_RULE_KEYS`, plus `shiftHard`, the SC MAIN clash table; before
+it, only the rule value it prints, a blank brief's lead) and `ros` (the aircrew roster at issue, for the day panel's "free
+all day"). The face, the CSV and the print draw `pa` and `rv.briefLead` (`engine/faceattrs.ts`); the validator judges the
+published day by `rv` (`faceattrs.ts withDayRules`, D2005); the pending comparison measures today's `pa` against them, and
+only `rv.briefLead` where a flying line prints a suggested brief (D186) — a change of any other setting reads nothing
+pending; `ros` is drawn, never compared. A retired issuance keeps all of them (`publish.ts retireIssued`). Size: a copy of
 a day's few inputs and its warning list per version — measured in the evidence sheet. Declared in `src/engine/schema.ts`
 `DaySnapshot` / `WarnSlice`.
 **The hides a version went out with (`[WARN-HIDE-KEPT]`, D469 / D471, 1 Oct 26)** ride inside `w`: `w.wo` — the keys of

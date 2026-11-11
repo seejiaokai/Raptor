@@ -276,7 +276,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   issued B suggestion (D186) — **except, since D1991 (11 Nov 26), the official pass's judgement of a published
   day:** its legs' brief (events.ts, `flightBrief` with `faceattrs.ts ruleFor`) is the lead the day printed, so its
   live crew-rest check measures to the B on its face (§Publishing, "A published day keeps what it went out with").
-  This order check itself still reads today's lead (a frozen warning: the face shows the one it went out with).
+  Since D2005 (12 Nov 26) this order check reads the kept lead too, as every check of a published day reads the
+  settings it went out with (§Publishing); an edited published day's working copy, and an unpublished day, read today's.
   Exact tests and the register:
   `docs/superpowers/specs/2026-10-02-rally-behaviour-register.md`.
 
@@ -3398,11 +3399,31 @@ stay LIVE (below), which the face draws from today and which never make the day 
   is mapped to its `snap.rv` (`faceattrs.ts withKeptRules`), and its legs' brief is worked out with the lead it printed
   (`events.ts buildDay` → `reporting.ts flightBrief(f,to,ruleFor(d,'briefLead'))`) — so the live crew-rest breach, the
   tight-turn note and the dotted mark on the day before measure to the B on its face; a kept value that differs from
-  today's forces the official pass (`officialDiverges`, `keptRulesDiffer`). A lead changed on the Logic page reaches the
-  day from its next amendment, which prints and keeps the new one; lowered, it does not clear a published day's breach
-  either (D2005, the agent's reading). The working copy (Edit Schedule, the crew picker) reads today's lead — it previews
-  that next amendment. Today `rv` keeps the brief lead only; D2005 (12 Nov 26) widens it to every Logic setting, the
-  same door (a later job). Pins: `engine/rulesfirst-7-published-day.test.ts` (W73, D1991, 7.1). `snap.ros` — the aircrew roster at
+  today's forces the official pass (`officialDiverges`, `keptRulesDiffer`). **Since D2005 (owner, 12 Nov 26) `rv` keeps
+  EVERY Logic setting the day's checks read** — `faceattrs.ts KEPT_RULE_KEYS` (brief lead, step, dekit, tight turn, crew
+  rest, debrief, report lead, long day, EP brief, sim debrief, AMT debrief, open end, sim length, days in a row, the SC
+  day window) and `shiftHard`, the SC MAIN clash table (`dayRuleVals`, written by `publish.ts freezeWarn`) — and the
+  whole day is judged by them: its events are built (`events.ts collectEvents`, each day under `withDayRules`) and
+  checked (`validate.ts`'s day loop and its phantom next-week days) with its kept values laid over the Logic settings
+  for that day only (`rules.ts withRuleVals`, restored after). A changed setting reaches the day from its next
+  amendment, which keeps today's; it neither starts nor clears a flag there, raised or lowered; an unpublished day
+  takes it at once. A rule that looks across days is decided by the day being judged: crew rest by the later day's
+  settings (its legs and the day before are built under their own), days in a row by each day's own limit
+  (`validate.ts limitOn`, next Monday's by `weekctx.ts nextMondayDay`). **The working pass** (Edit Schedule, the board,
+  the crew picker) judges a published day with NO change waiting — content, filings, inputs, placeholder roster and the
+  printed brief all as issued — by its kept values too (`validate.ts untouchedKept`, `weekctx.ts keepUntouchedRules` for
+  the neighbours), so it shows the same as View-only Sched; once the day is edited its working copy reads today's
+  settings — it previews the next amendment. **A changed setting never makes a published day pending** (only the printed
+  brief lead is compared, D186; `publish.ts warnDelta`): the frozen warnings, judged by the same kept values, stay as
+  issued. Two things stay on today's settings: **Insights' work hours** (D482, settled — `validate.ts hoursEvd` rebuilds
+  the official events with today's settings when a kept value differs) and **OIL** (`oil.ts` reads `ruleNow`, today's
+  value under any overlay — D2005 leaves OIL as it was; its pending axis `oilRuleDelta` is unchanged). A version issued
+  before D2005 kept the brief lead only, or nothing: the rest reads today's (demo data, D56). Known limits, D2005: a
+  neighbour day's own facts used by a cross-day check (a sim with no end, an open-ended row) are built with THAT day's
+  settings; the suggested-brief and rally ghosts on the screens read today's (the face's printed brief excepted); a
+  published day whose only waiting item is a hide is still judged by its kept values on the working pass. Pins:
+  `engine/published-day-logic.test.ts` (D2005), `state/kept-rules-neighbour.test.ts`,
+  `engine/rulesfirst-7-published-day.test.ts` (W73, D1991, 7.1). `snap.ros` — the aircrew roster at
   issue, which the day panel's "free all day" counts on the issued face; drawn, never compared (a man joining the squadron
   would otherwise make every published day pending — Astra's second read #3).
 - **The inputs on a date — ONE reader, `inputs.ts inputsOn(dt)`** (with `inputOn`, `inputOnAny`). While a frozen version is
@@ -3503,7 +3524,9 @@ stay LIVE (below), which the face draws from today and which never make the day 
     reading R21).
   - Pins: `state/inputcount.test.ts` (replaces `grouprow-count.test.ts`), `ui/latepub.test.tsx`.
 - **The warnings axis** (`warnDelta`, kind `warn`): today's official judgement of the issued day against `snap.w` —
-  a quals, posting or rule change, or a neighbour day, that would change what the day flags. Kept OUT of the official
+  a quals, posting or neighbour-day change that would change what the day flags (a Logic change no longer: since D2005
+  the day is judged by the settings it went out with, so its frozen warnings stay; only the printed brief lead is
+  compared, D186). Kept OUT of the official
   pass's own gate (`dayDeltaCore`), so the validator never depends on its output. The official pass reads each published
   date's frozen inputs, so the axis never moves on the day's own input changes (those are the details axis's). A rename
   is a label: warnings compare with callsigns keyed out (`warnMsgKey`), and the face re-words a frozen warning with

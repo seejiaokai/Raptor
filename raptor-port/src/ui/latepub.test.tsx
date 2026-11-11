@@ -377,6 +377,10 @@ describe('Astra\'s code read (26 Sep 26): the face beyond the warnings freezes t
        version of this pin flipped his posting instead, which genuinely clears warnings — a ground-crewman carries no
        brief or turning rules — so its "cleared" rows were real, not the rename.) */
     publishDay(MON)
+    /* D2005 (12 Nov 26): a published day is judged by the Logic settings it went out under, so a lowered long-day limit
+       no longer reaches it — the version here kept none (as one issued before that build stands in the store, D56), so
+       it is judged by today's and the limit still raises the real change this pin needs beside the rename */
+    delete (SCHED.orig as any)[MON].rv
     const pilot = ((DAYS[MON] as any).waves[0].formations[0].aircraft[0].p) as string
     const cs0 = (PEOPLE as any)[pilot].cs, ld = (VCONF as any).longDay
     expect(((officialWarn().byDay[MON] || {}).warns || []).filter((w: any) => (w.who || []).includes(pilot)).length, 'his frozen warnings name him').toBeGreaterThan(1)
@@ -439,14 +443,23 @@ describe('D184 / D185 — a crew-rest breach, the 7-day run and a lapsed qualifi
     expect(daySigned(TUE)).toBe(true)
   })
 
-  it('the 7-day run: a lowered limit (the Logic page) shows the warning on a published day at once, 0 pending', () => {
+  /* D2005 (12 Nov 26) over this pin's first form (D184's live run warning drawn from TODAY's limit): a published day is
+     judged by the Logic settings it went out under, so a lowered limit no longer reaches it — the run stays live for what
+     the days around it do, never for a changed setting. A version that kept no settings (issued before that build, D56)
+     still reads today's, and there the warning is live exactly as D184 built it. */
+  it('the 7-day run: a lowered limit (the Logic page) does not reach a published day — no flag, 0 pending (D2005); a version that kept no settings still shows it at once, 0 pending (D184)', () => {
     publishDay(TUE); signBound(TUE)
     const was = (VCONF as any).maxRun
     ;(VCONF as any).maxRun = 1                                  // Monday and Tuesday in a row is now over the limit
     try {
       validate()
+      expect(((officialWarn().byDay[TUE] || {}).warns || []).some((w: any) => w.code === 'DAYS_RUN'), 'judged by the limit it went out under: no 7-day warning (D2005)').toBe(false)
+      expect(dayPendingItems(TUE).length, 'nothing pending').toBe(0)
+      expect(daySigned(TUE)).toBe(true)
+      delete (SCHED.orig as any)[TUE].rv                        // a version issued before D2005 kept none
+      validate()
       const run = ((officialWarn().byDay[TUE] || {}).warns || []).filter((w: any) => w.code === 'DAYS_RUN')
-      expect(run.length, 'Tuesday\'s face shows the 7-day warning at once (D184)').toBeGreaterThan(0)
+      expect(run.length, 'no kept limit: today\'s — the face shows the 7-day warning at once (D184)').toBeGreaterThan(0)
       const id = run[0].who[0]
       expect(officialWarn().chip[TUE]?.[id], 'with the RUN flag').toBe('RUN')
       expect(puckCls(TUE, id), 'and the red ring on View-only Sched').toMatch(/boxred/)
@@ -491,15 +504,17 @@ describe('D184 / D185 — a crew-rest breach, the 7-day run and a lapsed qualifi
       validate()
       expect(scq(), 'the lapsed SC currency is on the face at once (D185)').toBe(true)
       expect(dayShownPendCount(TUE), 'and nothing is pending for it').toBe(0)
-      /* a LONG DAY is not one of the live warnings: a rule change that raises one keeps the face as issued and reads
-         pending (D179 holds for it) */
+      /* a LONG DAY is not one of the live warnings, and since D2005 (12 Nov 26 — over this pin's first form, where the
+         rule change read pending, D179) a lowered long-day limit does not reach the published day at all: judged by the
+         limit it went out under, its long days are as issued, nothing reads pending and the four stand */
+      const faceLong0 = ((officialWarn().byDay[TUE] || {}).warns || []).filter((w: any) => w.code === 'LONGDAY').length
       ;(VCONF as any).longDay = 60
       validate()
       const faceLong = ((officialWarn().byDay[TUE] || {}).warns || []).filter((w: any) => w.code === 'LONGDAY').length
       const nowLong = ((officialRaw().byDay[TUE] || {}).warns || []).filter((w: any) => w.code === 'LONGDAY').length
-      expect(nowLong, 'today\'s judgement raises more long days').toBeGreaterThan(faceLong)
-      expect(dayPendingItems(TUE).some((x: any) => x.kind === 'warn'), 'which freeze — "what this day shows" reads pending').toBe(true)
-      expect(daySigned(TUE), 'and the four fall').toBe(false)
+      expect([nowLong, faceLong], 'the official pass judges by the kept limit: no new long day anywhere').toEqual([faceLong0, faceLong0])
+      expect(dayPendingItems(TUE).some((x: any) => x.kind === 'warn'), 'nothing reads pending for it').toBe(false)
+      expect(daySigned(TUE), 'and the four stand').toBe(true)
     } finally { q.scDay = was.d; q.scNight = was.n; (VCONF as any).longDay = ld }
   })
 
@@ -642,10 +657,12 @@ describe('Fable\'s code read: an input change reads pending only where the day\'
   })
 })
 
-/* THE NEXT AL TAKES A RULE CHANGE IN (the Logic walker's "not walked"): a warning that freezes, moved by a rule, reads
-   pending until the admin publishes an AL; then the face shows the new warnings and nothing is pending. */
+/* THE NEXT AL TAKES A RULE CHANGE IN (the Logic walker's "not walked"). Since D2005 (12 Nov 26 — over this pin's first
+   form, where the rule change itself read pending): a changed setting reads nothing pending on a published day, which is
+   judged by the settings it went out under; the day's next amendment — any change on it, published — goes out under
+   today's, and then the face shows the new warnings and nothing is pending. */
 describe('a rule change under a published day goes out with the next AL', () => {
-  it('a lowered long-day limit: pending; AL1 out → the face shows the new long days, 0 pending, the four signed for AL1', () => {
+  it('a lowered long-day limit: nothing pending, the face as issued; an edit and AL1 out → the face shows the new long days, 0 pending', () => {
     publishDay(MON)
     const face = () => ((officialWarn().byDay[MON] || {}).warns || []).filter((w: any) => w.code === 'LONGDAY').length
     const f0 = face()
@@ -654,7 +671,9 @@ describe('a rule change under a published day goes out with the next AL', () => 
     try {
       validate()
       expect(face(), 'the face keeps the long days it went out with').toBe(f0)
-      expect(dayShownPendCount(MON)).toBe(1)
+      expect(dayShownPendCount(MON), 'a changed setting reads nothing pending (D2005)').toBe(0)
+      expect(txtSet(`ff:${MON}.0.0.msn`, 'NEWMSN'), 'an edit on Monday — its first line\'s mission').not.toBe(false); validate()
+      expect(dayShownPendCount(MON), 'the edit reads pending').toBe(1)
       signBound(MON); publishALDay(MON); validate()
       expect(face(), 'AL1 takes the new long days in').toBeGreaterThan(f0)
       expect(dayDelta(MON), 'nothing pending').toEqual([])
@@ -697,7 +716,8 @@ describe('the second reads: the roster a face counts, a person slot, a brief a f
     ;(DAYS[TUE_] as any).waves.forEach((w: any) => (w.formations || []).forEach((f: any) => { if (!String(f.br || '').trim()) f.br = hm24(flightBrief(f,parseHM(f.to)!)) }))
     ;(DAYS[TUE_] as any).waves.push(makeStandalone('sc'))
     validate(); publishDay(TUE_)
-    expect((SCHED.orig as any)[TUE_].rv, 'its blank standby B still keeps the lead for the CSV').toEqual({ briefLead: (VCONF as any).briefLead })
+    /* (since D2005 the version keeps every Logic setting beside it — the lead is the one it prints) */
+    expect((SCHED.orig as any)[TUE_].rv.briefLead, 'its blank standby B still keeps the lead for the CSV').toBe((VCONF as any).briefLead)
     const was = (VCONF as any).briefLead
     ;(VCONF as any).briefLead = was + 30
     try { validate(); expect(dayDelta(TUE_), 'no flying line prints a suggested brief').toEqual([]) }

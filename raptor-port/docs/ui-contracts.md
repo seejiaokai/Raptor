@@ -6158,6 +6158,9 @@ published neighbours as published — the same judgement View-only Sched draws. 
 **A rule changed on the Logic page moves the work hours at once, published days included — as built, and ruled so (owner,
 D482, 1 Oct 26: "A rule change logic page should move the mentioned work hours").** A rule is not a change to a day: the
 app keeps no versions of its rules, and hours are worked out from the published day's content by today's rules.
+*(D2005, 12 Nov 26: a published day's CHECKS are now judged by the Logic settings it was published under — the
+warnings, not the hours; D482 stands for the hours, which `validate.ts hoursEvd` keeps on today's settings —
+`docs/engine-rules.md` §Publishing.)*
 **The Scheduler Board gets a way to open the window (owner, D481, 1 Oct 26 — "Yes, give me an insights button") — BUILT
 on `codex/insights-mission-mix`, `[INSIGHTS-BOARD-DOOR]`:** a button in the board's bar beside the bell on a desktop; inside
 the bar's ⋯ menu on a phone, whose bar stays one row. Both use the existing shared window and preserve the Board on close.

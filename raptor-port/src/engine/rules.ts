@@ -96,13 +96,35 @@ export const SHIFT_HARD:any={fly:true,sim:true,duty:true,shift:true,ground:false
    is the thing "Reset to standard" restores, and the thing a modified setting is
    measured against. Overrides are saved locally and reloaded on next open.
 
-   Deliberately NOT here: no rule versioning (a published day is not stamped with
-   the rules it was flown under) and no second-person approval. The squadron
-   asked for neither. What IS kept: only an admin can edit, a modified value is
+   Deliberately NOT here: no second-person approval. The squadron asked for
+   none. (No rule versioning stood here too, 7 Aug 26 — set aside by the owner's
+   D2005, 12 Nov 26: a published day is checked by the Logic settings it was
+   published under, which each issued version keeps — withRuleVals below.) What IS kept: only an admin can edit, a modified value is
    labelled wherever it appears, and the week banner says so.
    ===================================================================== */
 export const RULE_STD:any=Object.freeze({v:JSON.parse(JSON.stringify(VCONF)),
                               s:JSON.parse(JSON.stringify(SHIFT_HARD))});
+/* A DAY JUDGED BY THE SETTINGS IT WAS PUBLISHED UNDER (owner D2005, 12 Nov 26 — "Tuesday stays clean"; widening D1991).
+   Each issued version keeps the Logic settings its checks read (faceattrs.ts dayRuleVals → `snap.rv`). While one day is
+   judged — its events built, its own checks run — this lays those values over VCONF and SHIFT_HARD, so every reader in
+   the engine, present and future, reads the day's own without a second copy of any rule; restored in its finally.
+   Nothing inside may write. A value the version did not keep (a version issued before this build, D56) reads today's.
+   `ruleNow` is for the readers that must never take a day's kept value — the OIL block (oil.ts), whose own kept values
+   ride the OIL evidence, and whose following a changed setting on a published day is the owner's question. */
+let RULE_LIVE:any=null;
+export function withRuleVals<T>(rv:any,fn:()=>T):T{
+  if(!rv||typeof rv!=='object')return fn();
+  const keys=Object.keys(rv).filter((k:any)=>k!=='shiftHard'&&k in VCONF&&rv[k]!=null&&isFinite(+rv[k])&&VCONF[k]!==+rv[k]);
+  const sh=rv.shiftHard&&typeof rv.shiftHard==='object'?rv.shiftHard:null;
+  const shk=sh?Object.keys(SHIFT_HARD).filter((k:any)=>k in sh&&!!sh[k]!==!!SHIFT_HARD[k]):[];
+  if(!keys.length&&!shk.length)return fn();
+  const outer=RULE_LIVE, v0:any={}, s0:any={};
+  if(!RULE_LIVE)RULE_LIVE={...VCONF};
+  keys.forEach((k:any)=>{v0[k]=VCONF[k];}); shk.forEach((k:any)=>{s0[k]=SHIFT_HARD[k];});
+  try{ keys.forEach((k:any)=>{VCONF[k]=+rv[k];}); shk.forEach((k:any)=>{SHIFT_HARD[k]=!!sh[k];}); return fn(); }
+  finally{ Object.assign(VCONF,v0); Object.assign(SHIFT_HARD,s0); RULE_LIVE=outer; }
+}
+export const ruleNow=(k:any)=>RULE_LIVE&&k in RULE_LIVE?RULE_LIVE[k]:VCONF[k];
 /* every setting the Logic tab may edit: label, unit, and the bounds outside
    which a value is not a squadron rule but a typo */
 export const RULE_SPEC:any={

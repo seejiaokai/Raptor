@@ -87,7 +87,11 @@ arithmetic, and D186 freezes printed blank B only. These are distinct drift seam
 never feed working content into issued hours. **Narrowed by D1991 (11 Nov 26):** the official pass judges a
 published day by the brief lead it printed (`faceattrs.ts withKeptRules` / `ruleFor`, from `snap.rv`), so its
 crew rest is measured to the B on its face; the WORKING pass (Edit Schedule, the picker) keeps today's lead —
-it previews the next amendment, which prints today's. D2005 widens this to every Logic setting (a later job).
+it previews the next amendment, which prints today's. **Widened by D2005 (12 Nov 26):** a published day is judged by
+every Logic setting it was published under (`snap.rv`, `faceattrs.ts withDayRules`), on the official pass and on the
+working pass while nothing waits on it; an edited published day's working copy, and an unpublished day, read today's.
+A new Logic setting the checks read joins `faceattrs.ts KEPT_RULE_KEYS` in the same change, or a published day
+starts flagging from it (the drift seam). Hours (D482) and OIL stay on today's (`validate.ts hoursEvd`, `oil.ts ruleNow`).
 Coverage: `docs/superpowers/specs/2026-10-02-rally-behaviour-register.md`.
 
 D510/D511 mint flow: existing resolved report, else earliest uncancelled valid

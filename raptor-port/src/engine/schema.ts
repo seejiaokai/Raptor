@@ -570,10 +570,14 @@ export type DaySnapshot = {
    *  issued face draws each puck's CAT and seat from these (`engine/faceattrs.ts`, D179) and the pending comparison
    *  measures today's roster against them. */
   pa?: Record<string, { q: any; seat: any; pers: boolean; san: boolean; sxo: boolean; archived: boolean }>
-  /** The rule values the issued face prints (a blank brief's lead) at issue — engine (`freezeWarn`): the issued face,
-   *  CSV and print read it (`engine/faceattrs.ts`, D179), and the pending comparison measures today's rule against it —
-   *  only where a flying line prints a suggested brief (`faceRuleValsCompared`; a standby line prints none on screen). */
-  rv?: { briefLead: number }
+  /** The Logic settings the day was published under (owner D2005, 12 Nov 26) — engine (`freezeWarn`, `faceattrs.ts
+   *  dayRuleVals`): every setting the day's own checks read (`KEPT_RULE_KEYS`) and the SC MAIN clash table
+   *  (`shiftHard`). The validator judges the published day by them (`faceattrs.ts withDayRules`) until its next
+   *  amendment keeps today's. The brief lead is also the one value the face PRINTS (a blank brief's time — the face, CSV
+   *  and print read it, D179/D186), and the only one the pending comparison measures today's setting against — only
+   *  where a flying line prints a suggested brief (`faceRuleValsCompared`). A version issued before D1991/D2005 kept
+   *  only `briefLead`, or nothing: the rest read today's (demo data, D56). */
+  rv?: { briefLead: number; [setting: string]: any; shiftHard?: Record<string, boolean> }
   /** The aircrew roster at issue (ids, not posted out, not ground crew) — engine (`freezeWarn`): the issued day panel's
    *  "free all day" counts these (`engine/faceattrs.ts rosterShown`); drawn, never compared. */
   ros?: string[]

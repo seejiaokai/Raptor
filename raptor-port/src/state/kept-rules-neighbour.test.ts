@@ -69,7 +69,8 @@ const publish = (di: number) => { sign(di); expect((commitSetDayApproved(di, tru
 const crOn = (di: number, id: string) => ((officialWarn().byDay[di] || {}).warns || []).filter((w: any) => w.code === 'CREW_REST' && (w.who || []).includes(id))
 
 beforeEach(() => { vi.useFakeTimers(); resetWorld() })
-afterEach(() => { (VCONF as any).briefLead = BL; _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); storeBackend.impl = null })
+const CR = VCONF.crewRest
+afterEach(() => { (VCONF as any).briefLead = BL; (VCONF as any).crewRest = CR; _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); storeBackend.impl = null })
 
 describe('D1991 — next week\'s published Monday and this week\'s Sunday after a brief-lead change', () => {
   it('Sunday\'s "Breaks Monday" must agree with Monday\'s published face (D1991: judged by the brief it printed)', async () => {
@@ -83,7 +84,8 @@ describe('D1991 — next week\'s published Monday and this week\'s Sunday after 
     })
     publish(MON)
     const snap: any = daySnapOf(MON, dayCurVer(MON))
-    expect(snap && snap.rv, 'Monday went out with the brief lead of 140').toEqual({ briefLead: 140 })
+    /* (since D2005 the version keeps every Logic setting — the brief lead among them) */
+    expect(snap && snap.rv && snap.rv.briefLead, 'Monday went out with the brief lead of 140').toBe(140)
     expect(crOn(MON, 'bane'), 'no crew rest on Monday yet').toEqual([])
     loadWeek(W1)
     /* this week: clear bane's Sunday and give him a duty ending 21:30 — rest clear 09:30 Monday, the printed B 09:40 clears */
@@ -101,5 +103,38 @@ describe('D1991 — next week\'s published Monday and this week\'s Sunday after 
     loadWeek(W2); validate()
     const monCR = crOn(MON, 'bane')
     expect(!!sunMark, 'Sunday says "Breaks Monday" exactly when Monday\'s published face carries the breach').toBe(monCR.length > 0)
+  })
+})
+
+/* D2005 (12 Nov 26) across the week's edge: every setting, not only the brief — "Crew rest" raised after next week's
+   Monday went out. Monday is judged by the 12 hours it went out under when its own week is open; this week's Sunday asks
+   that Monday by the same, on View-only Sched (the official pass) AND on Edit Schedule (the working pass — a published
+   neighbour day with nothing waiting, weekctx.ts keepUntouchedRules). */
+describe('D2005 — next week\'s published Monday and this week\'s Sunday after "Crew rest" is raised', () => {
+  it('Sunday draws no "Breaks Monday" on either pass, and Monday\'s own face stays clean', async () => {
+    await boot(new MemoryBackend())
+    loadWeek(W2)
+    schedWrite(SCHED_TYPES.mutate, () => {
+      const d: any = DAYS[MON]
+      Object.assign(d, { waves: [{ label: 'WAVE 1', night: false, intimes: [], traffic: [], formations: [{ cs: 'VL', msn: 'BFM', to: '12:00', ld: '13:00', br: '09:40', rl: '', aircraft: [{ p: 'bane', w: '', rmks: '', area: '', opts: {} }] }] }], dutywaves: [], ground: [], allhands: [], sims: { amt: [], oft: [] } })
+      view.afterSchedMutate()
+    })
+    publish(MON)
+    expect((daySnapOf(MON, dayCurVer(MON)) as any).rv.crewRest, 'Monday went out under 12 hours').toBe(720)
+    loadWeek(W1)
+    /* bane's Sunday: a duty ending 21:30 — rest clear 09:30 Monday under 12 hours, before the 09:40 brief */
+    schedWrite(SCHED_TYPES.mutate, () => {
+      const d: any = DAYS[SUN]
+      Object.assign(d, { waves: [], ground: [], allhands: [], sims: { amt: [], oft: [] }, dutywaves: [{ label: 'DUTY', rows: [{ role: 'Duty', id: 'bane', str: '1300', end: '2130' }] }] })
+      view.afterSchedMutate()
+    })
+    validate()
+    expect(withOfficialWarn(() => traceOf(SUN, 'bane')), 'the premise: no Breaks Monday').toBeFalsy()
+    ;(VCONF as any).crewRest = 780                       // 13 hours: clear 10:30 — after the 09:40 brief
+    validate()
+    expect(withOfficialWarn(() => traceOf(SUN, 'bane')), 'View-only Sched: Sunday draws no Breaks Monday').toBeFalsy()
+    expect(traceOf(SUN, 'bane'), 'Edit Schedule: nor on the working pass').toBeFalsy()
+    loadWeek(W2); validate()
+    expect(crOn(MON, 'bane'), 'Monday\'s own published face: clean').toEqual([])
   })
 })

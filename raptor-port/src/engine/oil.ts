@@ -1,4 +1,7 @@
-import { VCONF } from './rules'
+/* the OIL block reads TODAY's settings, never a published day's kept ones (owner D2005 leaves OIL as it was — whether a
+   published day's OIL follows a changed setting is his question; the block keeps its own values with its evidence,
+   oilev.ts): rules.ts ruleNow, which is VCONF outside a day judged by its kept settings */
+import { ruleNow } from './rules'
 import { oilAsks } from './inputs'
 import { parseHM } from './time'
 import { isStandalone, saExemptKind, saFlies, saAnyFlies, saDeskFlies } from './waves'
@@ -27,7 +30,7 @@ import { parseReportingLines, resolveReporting, scReport } from './reporting'
    ENVELOPE of everything they did — FIRST start to LAST end, the gaps
    between events included (owner, 29 Aug 26: "the in between timing, even
    tho there's nothing, they are still in squadron") — then ONE threshold:
-   under VCONF.oilFullMin (361 — "6 hours 1 min or more is full", so exactly
+   under ruleNow('oilFullMin') (361 — "6 hours 1 min or more is full", so exactly
    six hours is still a half, re-confirmed by the owner 29 Aug 26 for the
    envelope reading) is HO, at or over it is FO. The first cut summed an
    interval union instead; do not bring the sum back — 7-8am plus 12-1pm is
@@ -39,14 +42,14 @@ import { parseReportingLines, resolveReporting, scReport } from './reporting'
    - An SC MAIN seat, by its shift's written times (to→ld) — from the shift's
      typed B, the crew's in-time, where that is filled and earlier (D606).
    - Any ORDINARY flying seat, by the working day the sortie costs: report
-     through landing plus VCONF.debrief — the owner's pick (28 Aug 26).
+     through landing plus ruleNow('debrief') — the owner's pick (28 Aug 26).
      THE REPORT IS THE ENTERED IN-TIME / RALLY ([OIL-WORK-START] — owner, D591,
      D592, 5 Oct 26: "it should take the actual intime/rally time right? not
      the nominal report timing"): the earliest stage that applies to the
      formation, read by the ONE shared reader (reporting.ts resolveReporting —
      the body the day's events, the work-hours bar and crew rest read; pure, so
      a frozen snapshot answers from its own lines). Only where no line gives a
-     clock is it the nominal time, T-O minus VCONF.reportLead. Until then the
+     clock is it the nominal time, T-O minus ruleNow('reportLead'). Until then the
      typed lines were never consulted ("a stated simplification").
    - A sim row (AMT and OFT), by its written str→end.
    - A duty row, by its written str→end — stretching the same envelope.
@@ -90,10 +93,10 @@ export function envMin(spans:[number,number][]){
    landing, and the full-day line. A published day keeps the three it went out with (oilev.ts — the evidence block's
    `rv`) and every reader of its OIL hands them back in here; with none handed in, today's are read. */
 export interface OilRuleVals{reportLead:number;debrief:number;oilFullMin:number}
-export const oilRuleValsNow=():OilRuleVals=>({reportLead:VCONF.reportLead,debrief:VCONF.debrief,oilFullMin:VCONF.oilFullMin});
+export const oilRuleValsNow=():OilRuleVals=>({reportLead:ruleNow('reportLead'),debrief:ruleNow('debrief'),oilFullMin:ruleNow('oilFullMin')});
 /* the one threshold: 0 for no measured work, HO under the line, FO at it */
 export function uniformOil(min:number,full?:number|null){
-  return min<=0?0:(min>=(full==null?VCONF.oilFullMin:full)?1:0.5);
+  return min<=0?0:(min>=(full==null?ruleNow('oilFullMin'):full)?1:0.5);
 }
 /* an INPUT's own standing under the same law (the ask-flow's suggestion):
    all-day is a full day (owner, 28 Aug 26 — "ask as FO"), a timed record by
@@ -103,7 +106,7 @@ export function inputOilAmt(allday:any,s:any,e:any){
   if(s==null||e==null)return null;
   let en=e; if(en<s)en+=1440;
   const d=en-s;
-  return d<=0?null:(d>=VCONF.oilFullMin?1:0.5);
+  return d<=0?null:(d>=ruleNow('oilFullMin')?1:0.5);
 }
 /* THE ANSWERS A CHANGE LEAVES STANDING — the voiding rule as ONE function (the Inputs / SANS redesign, plan §3.13).
    The rule is the owner's of 28 Aug 26 and lived inline in the editor's save: the answers belong to the commitment as
@@ -196,7 +199,7 @@ export function fltMeasuresNothing(wv:any,f:any):boolean{
   if(!f||f.cx||isStandalone(wv))return false;
   const st=parseHM(f.to),en=parseHM(f.ld);
   if(st==null||en==null)return false;
-  return fltOilWin(wv,f,VCONF.reportLead,VCONF.debrief)==null;
+  return fltOilWin(wv,f,ruleNow('reportLead'),ruleNow('debrief'))==null;
 }
 /* A FLYING STANDBY SHIFT TYPED WITH THE SAME START AND END (owner D1999, 11 Nov 26 — "A10 as recommended": it "earns like
    a flying line — from its R or B, with the amber 'times look wrong' note"). Its written window is nothing, but a shift
@@ -222,7 +225,7 @@ export function saZeroSpanWin(wv:any,f:any,lead:number):[number,number]|null{
 export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:string)=>string[];onItem?:(item:string,dflt:boolean)=>void;rv?:OilRuleVals|null}){
   const out:Record<string,OilWork[]>={};
   /* the two leads this walk reads: the day's own kept ones when the caller holds an issued block, else today's */
-  const lead=opts&&opts.rv?opts.rv.reportLead:VCONF.reportLead, deb=opts&&opts.rv?opts.rv.debrief:VCONF.debrief;
+  const lead=opts&&opts.rv?opts.rv.reportLead:ruleNow('reportLead'), deb=opts&&opts.rv?opts.rv.debrief:ruleNow('debrief');
   /* EVERY ROW THIS WALK REACHES WITH REAL TIMES, whether or not anybody is
      sitting on it (21 Sep 26). The mode needs to know which events CAN earn so
      it does not offer a switch on one that never could — an AVALON line, its
@@ -431,13 +434,13 @@ export function openEndRows(day:any):OpenEndRow[]{
     out.push({item,st,len,puck:sentOn(vals)});
   };
   ['amt','oft'].forEach((k:any)=>((day.sims||{})[k]||[]).forEach((r:any)=>{
-    if(r&&!r.cx)add(rowItemKey(r.rid),r.str,r.end,VCONF.simLen,[r.p,r.w,...(r.pax||[]),...(r.more||[])]);}));
+    if(r&&!r.cx)add(rowItemKey(r.rid),r.str,r.end,ruleNow('simLen'),[r.p,r.w,...(r.pax||[]),...(r.more||[])]);}));
   (day.dutywaves||[]).forEach((dw:any)=>((dw&&dw.rows)||[]).forEach((r:any)=>{
-    if(r&&!r.cx)add(rowItemKey(r.rid),r.str,r.end,VCONF.openEnd,[r.id,...(r.more||[])]);}));
+    if(r&&!r.cx)add(rowItemKey(r.rid),r.str,r.end,ruleNow('openEnd'),[r.id,...(r.more||[])]);}));
   (day.ground||[]).forEach((g:any)=>{
-    if(g&&!g.cx&&!g.src&&!g.info)add(groundItemKey(g),g.str,g.end,VCONF.openEnd,[g.who,...(g.more||[])]);});
+    if(g&&!g.cx&&!g.src&&!g.info)add(groundItemKey(g),g.str,g.end,ruleNow('openEnd'),[g.who,...(g.more||[])]);});
   (day.allhands||[]).forEach((x:any)=>{
-    if(x&&!x.cx&&!x.info)add(rowItemKey(x.rid),x.str,x.end,VCONF.openEnd,[...whoArr(x),...(x.more||[])]);});
+    if(x&&!x.cx&&!x.info)add(rowItemKey(x.rid),x.str,x.end,ruleNow('openEnd'),[...whoArr(x),...(x.more||[])]);});
   return out;
 }
 /* THE DESKS THAT MEASURE NOTHING (owner, 20 Sep 26 — "Yes i want a warning").
@@ -500,7 +503,7 @@ export function dayOilBlind(day:any):string[]{
      asked to be warned about on 20 Sep 26. So it IS named. */
   const readable=(st:any,en:any)=>parseHM(st)!=null&&parseHM(en)!=null;
   /* …except a zero shift that flies from a B or R earlier than its START, which earns (D1999) and is not named */
-  const zeroShift=(wv:any,f:any)=>isStandalone(wv)&&parseHM(f.to)!=null&&parseHM(f.to)===parseHM(f.ld)&&!saZeroSpanWin(wv,f,VCONF.reportLead);
+  const zeroShift=(wv:any,f:any)=>isStandalone(wv)&&parseHM(f.to)!=null&&parseHM(f.to)===parseHM(f.ld)&&!saZeroSpanWin(wv,f,ruleNow('reportLead'));
   (day.waves||[]).forEach((wv:any)=>{
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;

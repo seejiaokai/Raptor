@@ -9,7 +9,7 @@ import { isStandalone, saExempt, saExemptKind, saFlies, saAnyFlies, saDeskFlies,
 import { whoArr, acceptedDay } from './slots'
 import { edgeDate } from './weeks-data'
 import { standsOn } from './overlay'
-import { ruleFor } from './faceattrs'
+import { ruleFor, withDayRules } from './faceattrs'
 /* THE ACCEPT DEFERRAL IS PER-DAY, NOT PER-INPUT (audit, 12 Aug 26).
    inputFlags defers a timed accepted input to the ground row the accept
    created — but that row lives on ONE day, while the input may cover
@@ -597,7 +597,9 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
 export function collectEvents(){
   /* each date is asked three times across the week — its own day, the day before's tail and the day after's — and read
      once (inputs.ts inputReadPass); the build only reads */
-  return inputReadPass(()=>DAYS.map((d:any,di:any)=>buildDay(d,di, DAYS[di+1]?DAYS[di+1].dt:edgeDate(CURWEEK,1), DAYS[di-1]?DAYS[di-1].dt:edgeDate(CURWEEK,-1))));
+  /* each day built under the Logic settings it is judged by — a published day's own, as its version kept them (D2005,
+     faceattrs.ts withDayRules) — so its brief, step, dekit, sim windows and assumed lengths are its own */
+  return inputReadPass(()=>DAYS.map((d:any,di:any)=>withDayRules(d,()=>buildDay(d,di, DAYS[di+1]?DAYS[di+1].dt:edgeDate(CURWEEK,1), DAYS[di-1]?DAYS[di-1].dt:edgeDate(CURWEEK,-1)))));
 }
 /* earliest IN-TIME of a wave (from the wave's in-time lines; fallback = earliest TO) */
 export function waveInTime(w:any){

@@ -147,9 +147,15 @@ const WARNSLICE: Spec = { byDay: { $or: [{ di: 'number', dow: 'string', warns: [
 /* the men on the day as the roster drew them, and the rule values the face prints (drawn as issued and compared — D179,
    Astra's code read #2); the roster at issue (`ros` — drawn by the day panel's "free all day", never compared) */
 const PEOPLEATTRS: Spec = { $map: { q: { $or: ['string', 'object'] }, seat: { $or: ['string', 'object'] }, pers: 'boolean', san: 'boolean', sxo: 'boolean', archived: 'boolean' } }
+/* the Logic settings the day was published under (owner D2005, 12 Nov 26 — engine/faceattrs.ts KEPT_RULE_KEYS and
+   dayRuleVals): the printed brief lead always, every other setting its checks read, and the SC MAIN clash table. The
+   other keys are optional: a version issued before D2005 kept the brief lead only (demo data, D56). */
+const RULEVALS: Spec = { briefLead: 'number', step: 'number?', dekit: 'number?', tightTurn: 'number?', crewRest: 'number?',
+  debrief: 'number?', reportLead: 'number?', longDay: 'number?', epBrief: 'number?', simDebrief: 'number?', amtDebrief: 'number?',
+  openEnd: 'number?', simLen: 'number?', maxRun: 'number?', scDayFrom: 'number?', scDayTo: 'number?', shiftHard: { $opt: { $map: 'boolean' } } }
 const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'string' } }, id: 'string?', sign: { $opt: { $map: SIGNSET } },   // sign: the Original's four, kept since 25 Sep 26 (D95, D102)
   /* the day's inputs and warnings as issued ([LEAVE-LATE-PUBLISHED], D177–D179) */
-  inp: { $opt: { $map: inputSpec(true) } }, w: { $opt: WARNSLICE }, pa: { $opt: PEOPLEATTRS }, rv: { $opt: { briefLead: 'number' } }, ros: { $opt: ['string'] } }
+  inp: { $opt: { $map: inputSpec(true) } }, w: { $opt: WARNSLICE }, pa: { $opt: PEOPLEATTRS }, rv: { $opt: RULEVALS }, ros: { $opt: ['string'] } }
 /* Phase 2 AlRecord: SINGLE-DAY, keyed by its immutable verId; the canonical
    `diff` replaces the old `keys` list, and there is no n/days/n0/adds/structAdds. */
 const ANYV: Spec = { $or: ['string', 'number', 'boolean'] }

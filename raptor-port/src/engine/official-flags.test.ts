@@ -455,7 +455,12 @@ describe('§4 — quals and rules on a published day: the live warnings show at 
     } finally { (PEOPLE as any)[PILOT].pers = savedPers }
   })
 
-  it('a RULE (crew-rest threshold) change: the breach shows on the issued face at once, and is not pending (D184)', () => {
+  /* SINCE D2005 (owner, 12 Nov 26 — "a published day is checked by all the Logic settings it was published under"; the
+     ruling followed, over D184's reading pinned here that a rule change shows on the issued face at once, 26 Sep 26):
+     a raised crew rest reaches the published day only with its next amendment. The crew-rest breach itself stays LIVE
+     on the face (D184) — what it is measured BY is the day's kept settings. A version that kept no settings (issued
+     before D2005, demo data — D56) still falls back to today's, so D184's live breach shows there at once. */
+  it('a RULE (crew-rest threshold) change: the published day keeps the rule it went out with; the edited working copy reads today\'s (D2005)', () => {
     const WK = wkFor(71)
     MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '0800', '1520') })
     setCurWeek(WK)
@@ -466,9 +471,13 @@ describe('§4 — quals and rules on a published day: the live warnings show at 
     const savedRest = VCONF.crewRest
     VCONF.crewRest = 14 * 60                              // squadron raises crew rest 12h → 14h (clear now 05:20)
     try {
-      expect(cr(validate(), 'waldo'), 'WORKING now breaches under the new rule').toBeTruthy()
-      expect(cr(officialRaw(), 'waldo'), 'the detector re-checks the frozen day against the live rule').toBeTruthy()
-      expect(cr(officialWarn(), 'waldo'), 'a crew-rest breach on the published day is LIVE on its face (D184)').toBeTruthy()
+      expect(cr(validate(), 'waldo'), 'the edited WORKING copy breaches under the new rule').toBeTruthy()
+      expect(cr(officialRaw(), 'waldo'), 'the published day is judged by the 12h it went out with (D2005)').toBeFalsy()
+      expect(cr(officialWarn(), 'waldo'), 'its face stays clean (D2005)').toBeFalsy()
+      expect(dayDelta(0).some((e: any) => e.kind === 'warn'), 'not compared — no "warnings changed" item').toBe(false)
+      delete (SCHED.orig as any)[0].rv                    // a version that kept no settings: today's rule, at once (D184)
+      validate()
+      expect(cr(officialWarn(), 'waldo'), 'a crew-rest breach on such a day is LIVE on its face (D184)').toBeTruthy()
       expect(officialWarn().sev[0]?.waldo, 'with its red ring').toBe('hard')
       expect(officialWarn().chip[0]?.waldo, 'and its CR flag').toBe('CR')
       expect(dayDelta(0).some((e: any) => e.kind === 'warn'), 'not compared — no "warnings changed" item').toBe(false)
