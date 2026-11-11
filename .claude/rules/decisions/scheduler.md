@@ -137,6 +137,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - Once its wave flies, a desk from that wave's template is fully checked and earns OIL by default — [RULES-CHECK-FIXES] [D1997].
 - A standby shift that flies, typed with the same START and END, earns like a flying line — [RULES-CHECK-FIXES] [D1999].
 - The duty-template note for an AVALON or BB desk reads "…and earns no OIL by default on a weekend or holiday. Switch it on in OIL Earn if activated." — [RULES-CHECK-FIXES] [D1994].
+- A hidden clash stays hidden while the same man is on the same two items, whatever their times, and comes back when the man or either item is a different one — [RULES-CHECK-FIXES] [D2001].
 - A "?" where a row has no timing or no end time is a future job, scoped with him first — [ROW-NO-TIME-MARK]; the "~" was declined [D361, D360].
 - An Admin "Display" area of section fold defaults is not built: put it to him again only when Admin or the section folds are next touched — [ADMIN-DISPLAY] [D161].
 
