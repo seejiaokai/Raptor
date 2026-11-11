@@ -1197,6 +1197,46 @@ describe('Edit quals', () => {
     } finally { layDown() }
   })
 
+  /* ANOTHER KIND OF POINTER DURING A FINGER'S DRAG (the second fix round of 11 Nov 26 — the narrow read's third
+     suspicion; a touch-screen laptop). A mouse's press is the first of its own kind, so it is "primary" and was taken for
+     the start of a drag: it took the finger's live drag over without cancelling it — the first heading kept its
+     picked-up look, the landing mark stayed, and the mouse's release dropped a column. A press while a drag is live
+     cancels it and starts nothing. The pinned heading row is a browser's to show: e2e/geometry.spec.ts "a mouse pressed
+     on another pinned heading during a finger's drag…". */
+  it('a press by another kind of pointer during a finger\'s drag cancels it cleanly and starts none', async () => {
+    await on()
+    layOut()
+    const ptr = async (type: string, el: Element | Document, pointerId: number, pointerType: string) =>
+      act(async () => { el.dispatchEvent(Object.assign(new MouseEvent(type, { bubbles: true }), { pointerId, isPrimary: true, pointerType })) })
+    const head = (k: string) => $(`#qtbl thead th[data-col="${k}"]`)
+    const left = () => $$('#qtbl thead th.qdrop, #qtbl thead th.qdragging').map(t => t.dataset.col)
+    try {
+      const before = qualCols()
+      const a = before[0]!, b = before[1]!, c = before[2]!
+      await ptr('pointerdown', head(a), 7, 'touch')
+      await ptr('pointermove', head(b), 7, 'touch')
+      expect($$('.qwrap .lift-frame.lift').length, 'the finger\'s drag is live').toBe(1)
+      await ptr('pointerdown', head(c), 1, 'mouse')
+      expect(frame().className, 'the mouse pressed: the frame is let go').toBe('lift-frame')
+      expect(left(), 'no landing mark and no picked-up look is left').toEqual([])
+      await ptr('pointermove', head(b), 1, 'mouse')
+      expect(left(), 'the press started no drag: its move lights nothing').toEqual([])
+      await ptr('pointerup', document, 1, 'mouse')
+      await ptr('pointermove', head(b), 7, 'touch')
+      await ptr('pointerup', document, 7, 'touch')
+      expect(qualCols(), 'nothing is written by either release').toEqual(before)
+      expect(frame().className).toBe('lift-frame')
+      expect(left()).toEqual([])
+      /* and the next press, by itself, is an ordinary drag again */
+      await ptr('pointerdown', head(a), 1, 'mouse')
+      await ptr('pointermove', head(b), 1, 'mouse')
+      await ptr('pointerup', document, 1, 'mouse')
+      expect(qualCols().slice(0, 2), 'a press on its own drags as before').toEqual([b, a])
+      await dragCol(a, b)
+      expect(qualCols()).toEqual(before)
+    } finally { layDown() }
+  })
+
   /* `[CAL-CHECK-SEEN]` (walker D, in passing): the save's note read "Quals saved (prototype — writes to Dataverse in the
      full build)" — a prototype caveat on screen, against his standing rule that the app's words read production
      (25 Aug 26). `[SEEN-BATCH-2]` A9, 10 Oct 26. */
@@ -1431,6 +1471,90 @@ describe('[QUALS-OUTLINE-RESCROLL] the outlined row: the page goes to it once fo
       await click($('#qSave'))
     } finally {
       off()
+    }
+  })
+
+  /* THE ONE-FRAME WAIT (the second fix round of 11 Nov 26 — the narrow read's first suspicion). Where the row is drawn by
+     an edit of the filter box the trip waits a frame (a browser ends the keystroke by bringing the caret back into view).
+     Three things could go wrong inside that frame, each held here with the frames run by hand: the row hidden again
+     before the frame runs, a newer ask arriving first, and the page left. */
+  const holdFrames = () => {
+    const g = globalThis as any
+    const raf = g.requestAnimationFrame, caf = g.cancelAnimationFrame
+    let n = 0
+    const waiting = new Map<number, (t: number) => void>()
+    g.requestAnimationFrame = (cb: (t: number) => void) => { waiting.set(++n, cb); return n }
+    g.cancelAnimationFrame = (id: number) => { waiting.delete(id) }
+    const run = async () => { const cbs = [...waiting.values()]; waiting.clear(); await act(async () => { cbs.forEach(cb => cb(0)) }) }
+    return { run, off: () => { g.requestAnimationFrame = raf; g.cancelAnimationFrame = caf } }
+  }
+  const filterBox = () => $('#qFilter') as HTMLInputElement
+  /* his row hidden by the filter, the ask made, then the filter cleared from inside the box: his trip is waiting */
+  const askThenClearByTyping = async (id: string) => {
+    const { focusQualsRow } = await import('../state/view')
+    await typeFilter('ace')
+    await act(async () => { focusQualsRow(id); notify() })
+    filterBox().focus()
+    expect(document.activeElement, 'the filter box is the one being typed in').toBe(filterBox())
+    await typeFilter('')
+  }
+
+  it('drawn by an edit of the filter box, then hidden again before the waiting frame runs: the ask is kept and makes its one trip when the row is next drawn', async () => {
+    const { went, off } = spyTrips()
+    const fr = holdFrames()
+    try {
+      await askThenClearByTyping('bane')
+      expect(outlinedNow(), 'his row is drawn and outlined').toEqual(['bane'])
+      expect(went, 'the trip waits for its frame').toEqual([])
+      await typeFilter('ace')
+      await fr.run()
+      expect(went, 'hidden again before the frame: the waiting trip finds no row').toEqual([])
+      await typeFilter('')
+      await fr.run()
+      expect(outlinedNow()).toEqual(['bane'])
+      expect(went, 'drawn again: the ask was not spent — its one trip').toEqual(['bane'])
+      await act(async () => { notify() })
+      await fr.run()
+      expect(went, 'and only one').toEqual(['bane'])
+    } finally {
+      filterBox().blur(); fr.off(); off()
+    }
+  })
+
+  it('a newer ask arriving inside the waiting frame makes its own trip, and the older waiting trip then does nothing', async () => {
+    const { focusQualsRow } = await import('../state/view')
+    const { went, off } = spyTrips()
+    const fr = holdFrames()
+    try {
+      await askThenClearByTyping('bane')
+      expect(went, 'the older ask\'s trip waits for its frame').toEqual([])
+      filterBox().blur()
+      await act(async () => { focusQualsRow('stiff'); notify() })
+      expect(outlinedNow(), 'the newer ask is the one outlined').toEqual(['stiff'])
+      expect(went, 'and trips at once').toEqual(['stiff'])
+      await fr.run()
+      expect(went, 'the older waiting trip does nothing').toEqual(['stiff'])
+    } finally {
+      filterBox().blur(); fr.off(); off()
+    }
+  })
+
+  it('the page left and opened again inside the waiting frame: the waiting trip is cancelled with the page', async () => {
+    const { went, off } = spyTrips()
+    const fr = holdFrames()
+    const to = async (page: string) => click($$('.nav a[data-page]').find(a => a.dataset.page === page)!)
+    try {
+      await askThenClearByTyping('bane')
+      expect(went, 'the trip waits for its frame').toEqual([])
+      await to('logic')
+      expect($('#qtbl'), 'Quals is left').toBeFalsy()
+      await to('quals')
+      expect(drawn('bane'), 'opened again: his row is there, with no ask').toBe(true)
+      expect(outlinedNow()).toEqual([])
+      await fr.run()
+      expect(went, 'the frame of the page that was left moves nothing').toEqual([])
+    } finally {
+      fr.off(); off()
     }
   })
 })

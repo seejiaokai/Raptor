@@ -6661,8 +6661,8 @@ test.describe('Quals: the outline\'s one trip, and a column dragged by a pinned 
   })
 
   /* a desktop in Edit quals, and two headings a mouse can reach in either row: clear of the name column and the right edge */
-  async function deskEditQuals(browser: Browser, baseURL: string | undefined) {
-    const o = await open(browser, baseURL, { width: 1000, height: 700 }, false)
+  async function deskEditQuals(browser: Browser, baseURL: string | undefined, vp = { width: 1000, height: 700 }, y = 320) {
+    const o = await open(browser, baseURL, vp, false)
     const { page } = o
     await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
     await page.click('#qEdit'); await page.click('#qEditQuals')
@@ -6677,11 +6677,112 @@ test.describe('Quals: the outline\'s one trip, and a column dragged by a pinned 
       return { n: ok.length, from: ok[0]?.dataset.col, to: ok[Math.min(3, ok.length - 1)]?.dataset.col }
     })
     expect(pick.n, 'headings in reach').toBeGreaterThan(2)
-    await page.evaluate(() => window.scrollTo(0, 320)); await sleep(400)
-    await expectPinned(page, 'qsticky-head', true, 'scrolled down, the pinned heading row shows')
+    if (y) {
+      await page.evaluate(top => window.scrollTo(0, top), y); await sleep(400)
+      await expectPinned(page, 'qsticky-head', true, 'scrolled down, the pinned heading row shows')
+    }
     const centre = async (sel: string) => { const b = (await page.locator(sel).boundingBox())!; return { x: b.x + b.width / 2, y: b.y + b.height / 2 } }
     return { ...o, from: pick.from!, to: pick.to!, centre }
   }
+  /* the pinned copy's column widths, as its markup carries them: they change when the window's width does, wherever the
+     table is narrower than the window and its columns share out the extra */
+  const pinnedWidths = (page: Page) => page.evaluate(sel => [...document.querySelectorAll<HTMLElement>(`${sel} col`)].map(c => c.style.width).join(), PINNED)
+  const tableFits = (page: Page) => page.evaluate(() => { const w = document.querySelector('#page-quals .qwrap') as HTMLElement; return w.scrollWidth <= w.clientWidth + 1 })
+
+  /* A REDRAW THAT CHANGES THE COLUMN WIDTHS (the narrow read of the fix round, finding 1): on a desktop wider than the
+     table's least width the columns share out the extra, so a change of the window's width mid-drag measures them again,
+     the pinned copy's markup reads differently and is set again — the pressed pinned heading lost its picked-up look and
+     the landing mark went until the next move. The drag puts its look back whenever that markup is set again. */
+  test('[QUALS-PINNED-HEAD-NO-DRAG] wide desktop: the window narrowed during a drag begun on a pinned heading leaves its picked-up look, one landing mark and the frame', async ({ browser, baseURL }) => {
+    const { context, page, errs, from, to, centre } = await deskEditQuals(browser, baseURL, { width: 2400, height: 900 })
+    test.skip(!(await tableFits(page)), 'the table is wider than the window here: its columns share out no extra width')
+    const before = await colsOf(page)
+    const a = await centre(`${PINNED} th[data-col="${from}"] .qlbl`), b = await centre(`${PINNED} th[data-col="${to}"]`)
+    await page.mouse.move(a.x, a.y); await page.mouse.down()
+    await page.mouse.move(b.x, b.y, { steps: 8 })
+    const look = () => page.evaluate(([sel, k]) => ({
+      held: !!document.querySelector(`${sel} th[data-col="${k}"]`)?.classList.contains('qdragging'),
+      lit: document.querySelectorAll('#page-quals th.qdrop').length,
+      frames: document.querySelectorAll('.lift-frame.lift').length,
+    }), [PINNED, from])
+    expect(await look(), 'mid-drag: picked up, one landing mark, one frame').toEqual({ held: true, lit: 1, frames: 1 })
+    const w0 = await pinnedWidths(page)
+    await page.setViewportSize({ width: 2100, height: 900 }); await sleep(500)
+    expect(await pinnedWidths(page), 'the narrower window gave the pinned copy new column widths: its markup was set again').not.toBe(w0)
+    const afterRedraw = await look()
+    await page.mouse.move(b.x + 1, b.y)
+    const afterMove = await look()
+    console.log('[G1] ' + JSON.stringify({ afterRedraw, afterMove }))
+    expect(afterRedraw, 'the markup set again: the pressed heading keeps its picked-up look and the landing mark').toEqual({ held: true, lit: 1, frames: 1 })
+    expect(afterMove, 'and after the next move').toEqual({ held: true, lit: 1, frames: 1 })
+    await page.mouse.up(); await sleep(300)
+    expect((await colsOf(page)).indexOf(from), 'the drop still lands the column to the right of where it stood').toBeGreaterThan(before.indexOf(from))
+    expect(await marks(page), 'nothing is left behind, and Undo has its step').toEqual({ frames: 0, marks: 0, undo: true })
+    await page.click('#undoBtn'); await sleep(300)
+    expect(await colsOf(page), 'one Undo puts it back').toEqual(before)
+    expect(errs).toEqual([])
+    await context.close()
+  })
+
+  /* the same redraw during a drag begun on the table's OWN heading, the page then scrolled so the pinned row shows: the
+     drag's marks are on the table, which is not drawn again, and the pinned copy — which never wore the picked-up look —
+     gains none */
+  test('[QUALS-PINNED-HEAD-NO-DRAG] wide desktop: the window narrowed during a drag begun on the table\'s own heading, the pinned row showing, changes nothing of the drag', async ({ browser, baseURL }) => {
+    const { context, page, errs, from, to, centre } = await deskEditQuals(browser, baseURL, { width: 2400, height: 900 }, 0)
+    test.skip(!(await tableFits(page)), 'the table is wider than the window here: its columns share out no extra width')
+    const before = await colsOf(page)
+    const a = await centre(`${OWN} th[data-col="${from}"] .qlbl`), b = await centre(`${OWN} th[data-col="${to}"]`)
+    await page.mouse.move(a.x, a.y); await page.mouse.down()
+    await page.mouse.move(b.x, b.y, { steps: 8 })
+    /* the page scrolled under the held pointer: the heading row in reach is now the pinned one */
+    await page.mouse.wheel(0, 320); await sleep(500)
+    await expectPinned(page, 'qsticky-head', true, 'scrolled down, the pinned heading row shows')
+    const look = () => page.evaluate(([own, pin, k]) => ({
+      held: !!document.querySelector(`${own} th[data-col="${k}"]`)?.classList.contains('qdragging'),
+      lit: document.querySelectorAll('#page-quals th.qdrop').length,
+      frames: document.querySelectorAll('.lift-frame.lift').length,
+      pinnedLook: document.querySelectorAll(`${pin} th.qdragging, ${pin} th.qdrop`).length,
+    }), [OWN, PINNED, from])
+    const was = await look()
+    expect(was, 'mid-drag, scrolled: the table\'s heading picked up, its one landing mark, the frame; nothing on the pinned copy').toEqual({ held: true, lit: 1, frames: 1, pinnedLook: 0 })
+    const w0 = await pinnedWidths(page)
+    await page.setViewportSize({ width: 2100, height: 900 }); await sleep(500)
+    expect(await pinnedWidths(page), 'the narrower window gave the pinned copy new column widths').not.toBe(w0)
+    expect(await look(), 'the pinned copy set again: the drag\'s marks stand as they stood').toEqual(was)
+    await page.mouse.up(); await sleep(300)
+    expect((await colsOf(page)).indexOf(from), 'the drop lands the column where the pointer chose').toBe(before.indexOf(to))
+    expect(await marks(page), 'nothing is left behind, and Undo has its step').toEqual({ frames: 0, marks: 0, undo: true })
+    await page.click('#undoBtn'); await sleep(300)
+    expect(await colsOf(page), 'one Undo puts it back').toEqual(before)
+    expect(errs).toEqual([])
+    await context.close()
+  })
+
+  /* ANOTHER KIND OF POINTER DURING A FINGER'S DRAG (the narrow read's third suspicion — a touch-screen laptop): a finger
+     holds a pinned heading; a mouse presses another. The press is the first of its own kind, so it was taken for the
+     start of a drag and took the live one over without cancelling it. It cancels the finger's drag and starts nothing.
+     (The table's own heading row: src/ui/quals.test.tsx, "a press by another kind of pointer…".) */
+  test('[QUALS-PINNED-HEAD-NO-DRAG] phone: a mouse pressed on another pinned heading during a finger\'s drag cancels the drag and starts none', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phoneEditQuals(browser, baseURL, 320)
+    const h = await headsAt(page, PINNED)
+    expect(h.map(x => x.hit && x.clear), 'the headings stand in reach, clear of the edge').toEqual([true, true])
+    const before = await colsOf(page), was = await marks(page)
+    await touch(cdp, 'touchStart', [[h[0].x, h[0].y]]); await sleep(80)
+    expect((await marks(page)).frames, 'the finger picks its column up').toBe(1)
+    await page.mouse.move(h[1].cx, h[1].cy); await page.mouse.down(); await sleep(120)
+    const pressed = await marks(page)
+    await page.mouse.move(h[1].cx + 6, h[1].cy); await page.mouse.up(); await sleep(300)
+    const released = { ...(await marks(page)), cols: await colsOf(page) }
+    await touch(cdp, 'touchEnd', []); await sleep(450)
+    const end = { ...(await marks(page)), cols: await colsOf(page) }
+    console.log('[G3] ' + JSON.stringify({ pressed, released: { ...released, cols: released.cols.join() === before.join() ? 'unchanged' : released.cols.slice(0, 4) }, end: { ...end, cols: end.cols.join() === before.join() ? 'unchanged' : end.cols.slice(0, 4) } }))
+    expect(pressed, 'the mouse pressed: the finger\'s drag is let go — no frame, no mark').toEqual({ frames: 0, marks: 0, undo: was.undo })
+    expect(released.cols, 'the mouse released: nothing written').toEqual(before)
+    expect(end.cols, 'the finger lifted: nothing written').toEqual(before)
+    expect({ frames: end.frames, marks: end.marks, undo: end.undo }, 'and nothing left on the page').toEqual({ frames: 0, marks: 0, undo: was.undo })
+    expect(errs).toEqual([])
+    await context.close()
+  })
 
   /* A REDRAW OF THE PAGE MID-DRAG (the fresh Opus read, finding 2): the pinned copy's markup was set again on every
      render, so anything that drew the page again while a pinned heading was held — a resize, a phone's toolbar folding —
