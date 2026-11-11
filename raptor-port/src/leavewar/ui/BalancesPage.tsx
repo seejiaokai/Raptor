@@ -529,7 +529,20 @@ export function BalancesPage() {
   useLayoutEffect(() => {
     const el = rootRef.current
     if (!el) return
-    const fit = () => { const top = el.getBoundingClientRect().top + (window.scrollY || 0); el.style.height = `${Math.max(240, window.innerHeight - Math.max(0, top))}px` }
+    /* THE SCREEN'S TRUE HEIGHT, NOT THE BROWSER'S ROUNDED ONE (his fault, 11 Nov 26 — Chrome on his PC's 125% display):
+       a real window is a whole number of SCREEN pixels tall, so at 125% the page's own height is often a fraction — 733.6
+       — and `innerHeight` rounds it up to 734. Fitted to 734 the page stood 0.4 taller than the screen, the window behind
+       it could scroll by one screen pixel (he saw "the whole page shifts a bit up"), and the browser handed a wheel turned
+       at the list's foot to that window: rolled up at once, the list stayed stuck until the wheel had rested. The viewport
+       figure is the unrounded one (what is in view, times a trackpad pinch's zoom); it is taken only where it is the same
+       height to within a pixel — a keyboard or anything else that shortens what is in view never shrinks the page — and
+       the page is never made taller than the rounded figure. */
+    const screenH = () => {
+      const vv = window.visualViewport, inner = window.innerHeight
+      const real = vv ? vv.height * vv.scale : inner
+      return Math.abs(real - inner) < 1 ? Math.min(inner, Math.floor(real + 0.01)) : inner
+    }
+    const fit = () => { const top = el.getBoundingClientRect().top + (window.scrollY || 0); el.style.height = `${Math.max(240, screenH() - Math.max(0, top))}px` }
     fit()
     window.addEventListener('resize', fit)
     return () => window.removeEventListener('resize', fit)

@@ -576,6 +576,49 @@ describe('the M5a walk\'s faults', () => {
     }
   })
 
+  /* HIS FAULT OF 11 Nov 26 (Chrome, his PC's 125% display): a real window is a whole number of SCREEN pixels tall, so at
+     125% the page's own height is often a fraction — 733.6 — while the browser's rounded figure says 734. The page fitted
+     to 734 stood 0.4 taller than the screen, the window behind it could scroll by one screen pixel ("the whole page shifts
+     a bit up"), and a wheel turned at the list's foot was handed to that window: rolled up at once, the list stayed stuck
+     until the wheel had rested. Measured in real Chrome windows 733 and 901 tall at 125%: the window scrolled by 0.8. */
+  describe('the page is fitted to the screen\'s true height, not the browser\'s rounded one', () => {
+    const fitted = (inner: number, vv: { height: number; scale: number } | undefined) => {
+      const ih = Object.getOwnPropertyDescriptor(window, 'innerHeight')
+      const v = Object.getOwnPropertyDescriptor(window, 'visualViewport')
+      Object.defineProperty(window, 'innerHeight', { configurable: true, get: () => inner })
+      Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => vv })
+      const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+        return this.matches('[data-testid="balances-page"]') ? R(0, 80, 1024, 80 + 2000) : R(0, 0, 0, 0)
+      })
+      try {
+        render(<BalancesPage />)
+        return screen.getByTestId('balances-page').style.height
+      } finally {
+        spy.mockRestore()
+        if (ih) Object.defineProperty(window, 'innerHeight', ih); else delete (window as any).innerHeight
+        if (v) Object.defineProperty(window, 'visualViewport', v); else delete (window as any).visualViewport
+      }
+    }
+    it('a screen 733.6 tall that the browser calls 734: the page ends at 733, so the window behind it has nothing to scroll', () => {
+      expect(fitted(734, { height: 733.6, scale: 1 })).toBe(`${733 - 80}px`)
+    })
+    it('a screen 734.4 tall that the browser calls 734 keeps 734 — the page is never made taller than the rounded figure', () => {
+      expect(fitted(734, { height: 734.4, scale: 1 })).toBe(`${734 - 80}px`)
+    })
+    it('a whole-number screen is unchanged', () => {
+      expect(fitted(900, { height: 900, scale: 1 })).toBe(`${900 - 80}px`)
+    })
+    it('the page zoomed by a trackpad pinch: the true height is what is in view times the zoom', () => {
+      expect(fitted(734, { height: 366.8, scale: 2 })).toBe(`${733 - 80}px`)
+    })
+    it('what is in view made much shorter by something else (a keyboard) does not shrink the page', () => {
+      expect(fitted(734, { height: 400, scale: 1 })).toBe(`${734 - 80}px`)
+    })
+    it('a browser that reports no such figure keeps the rounded one', () => {
+      expect(fitted(734, undefined)).toBe(`${734 - 80}px`)
+    })
+  })
+
   it('B-F5: while the page is up the window keeps no bottom pad to scroll by — the app\'s 120px pad under every page goes, and comes back when it closes', () => {
     /* the M5a browser tests, 29 Oct 26: the page fitted the screen to the pixel and the document was still 120 taller — the
        body's own bottom pad (scheduler.css), which the Tracker drops the same way (body.tr-on) */

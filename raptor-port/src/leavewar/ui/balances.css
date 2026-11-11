@@ -45,7 +45,10 @@
 
   /* ---------------------------------------------------------------- the desktop table (round 14) */
   /* (built) the table scrolls inside the card, both ways, so its two heading rows stay at its top */
-  .bp-scroll { flex: 1; min-height: 0; overflow: auto; position: relative; }
+  /* …and it keeps the wheel to itself, as the phone's list does (.bp-hs): at its top or foot a wheel turn is never handed
+     on to the window behind the page, which then held it while the list stood stuck (his fault, 11 Nov 26 — the page's
+     height is the cure, BalancesPage.tsx screenH; this is the second lock). */
+  .bp-scroll { flex: 1; min-height: 0; overflow: auto; position: relative; overscroll-behavior: contain; }
   .bp-table { border-collapse: separate; border-spacing: 0; font-variant-numeric: tabular-nums; }
   .bp-table th { position: sticky; top: 0; background: #11161c; z-index: 2; font: 600 10px system-ui; letter-spacing: .12em; color: #8a96a3; text-align: right; padding: 0 10px; height: 26px; white-space: nowrap; }
   .bp-table th.l, .bp-table td.l { text-align: left; }
