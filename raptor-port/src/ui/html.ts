@@ -15,7 +15,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenSays, versionFaceWarn, withVersionWarn } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenSays, fltNoLenMsg, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo, pendingInputIds } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -104,11 +104,16 @@ const dsh=(di:any,id:any)=>(PV&&!OFW)?false:dashOf(di,id)
    (`ff:<di>.<gi>.<li>.ld`, the key the validator files it under). One body for the week and the board. Under a
    saved-plan preview the mark stays as it always was: a plan is drawn with no warnings to ask (a look at a published
    version wears its flags — OFW — and asks that version's own list). */
+/* TWO LINES WORDED ALIKE (rules check F3, 11 Nov 26): the rules keep ONE warning for two lines whose sentence is the
+   same — no callsign, one wave, the same time — filed under the FIRST line's key, so a hide asked by key alone plained
+   the first line's box and left the second flagging. A hide is tied to the warning's words (engine/warnhide.ts), so the
+   box also asks for a hidden warning carrying THIS line's own words, as the next-week preview already does (ui/peek.ts). */
 export function fltNoLenShown(di:any,fp:any,f:any,pv?:any){
   if(!fltNoLen(f))return false;
   if((pv||PV)&&!OFW)return true;
   const g=WARN.byDay&&WARN.byDay[+di];
-  return !(((g&&g.warns)||[]) as any[]).some((w:any)=>w.off&&w.code==='FLT_NO_LEN'&&w.key===`${fp}.ld`);}
+  const gi=+String(fp).split('.')[1], wv=((DAYS[+di]||{}).waves||[])[gi]||{}, msg=fltNoLenMsg(f,wv);
+  return !(((g&&g.warns)||[]) as any[]).some((w:any)=>w.off&&w.code==='FLT_NO_LEN'&&(w.key===`${fp}.ld`||w.msg===msg));}
 export function puckMarks(di:any,id:any,off?:any){
   /* …except where the face being drawn wears its flags (OFW — an issued face, or a look at a published version, D187) */
   if(off&&!OFW)return {sev:null,flag:null,dash:false,trace:null}

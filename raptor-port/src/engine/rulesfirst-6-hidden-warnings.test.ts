@@ -115,8 +115,8 @@ describe('W62 — a hidden warning stays hidden for everyone until someone flags
     expect(sevOf(TUE, 'bane') || null, '…and Ranger\'s puck on the new line carries no flag').toBe(null)
   })
 
-  // RULES-FIRST FINDING 6.1 (11 Nov 26, [ENGINE-RULES-REVIEW]): two lines worded alike share one warning, and hiding it plains only the first line's amber time box — the second keeps its flag; flip to it() when fixed.
-  it.fails('6.1 — two flying lines worded the same (no callsign, both in "WAVE 1", both 15:00–15:00): the rules keep ONE warning (the original\'s dedupe); hide it and the amber time box must go from BOTH lines (D469 "the pucks shouldn\'t have flagging for that specific item")', () => {
+  // RULES-FIRST FINDING 6.1 (11 Nov 26, [ENGINE-RULES-REVIEW]): two lines worded alike share one warning, and hiding it plained only the first line's amber time box — the second kept its flag. Fixed by [RULES-CHECK-FIXES] (F3): the box also asks for a hidden warning in its own words.
+  it('6.1 — two flying lines worded the same (no callsign, both in "WAVE 1", both 15:00–15:00): the rules keep ONE warning (the original\'s dedupe); hide it and the amber time box must go from BOTH lines (D469 "the pucks shouldn\'t have flagging for that specific item")', () => {
     day(TUE).waves.push(wave([form({ cs: '', to: '15:00', ld: '15:00' }), form({ cs: '', to: '15:00', ld: '15:00', aircraft: [ac('stiff')] })]))
     validate()
     const fl = ws(TUE).filter((w: any) => w.code === 'FLT_NO_LEN')

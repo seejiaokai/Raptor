@@ -5280,7 +5280,8 @@ header keeps its true count" — and the D469 / D471 / D472 / D475 note that sto
     conflicts flagged for <day> ✓" with the struck lines under it (D475).
   - **No flag on the pucks for that item (D469):** no ring, chip, dashed ring or dotted next-day mark — wherever the man is
     drawn (the seats, the crew list, the Available grid, the ALL AVAIL window) — and no amber time box on a nought-minute
-    line. A man with two warnings keeps the flag of the one still showing; a hidden crew-rest warning drops the dotted
+    line, nor on a second line worded the same, which shares the first line's one warning (rules check F3, 11 Nov 26 —
+    `ui/html.ts fltNoLenShown` matches the hidden warning by its key or by this line's own words). A man with two warnings keeps the flag of the one still showing; a hidden crew-rest warning drops the dotted
     "breaks tomorrow" mark on the day before, across the week's edge too. The engine decides it once: every surface
     reads the bundle "as shown" (`validate.ts shownOf`), and a renderer reads the warning's own `off`, never the set.
   - **Everyone who opens the list sees the struck line; only a scheduler gets the button (D475):** View-only Sched and a
