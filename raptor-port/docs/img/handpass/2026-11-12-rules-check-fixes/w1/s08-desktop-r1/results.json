@@ -1,0 +1,97 @@
+[
+ {
+  "id": "S08.0 Friday published",
+  "ok": true,
+  "detail": "tag \"ORIG\""
+ },
+ {
+  "id": "S08.1 door 1: the Inputs page gear",
+  "ok": null,
+  "detail": "present"
+ },
+ {
+  "id": "S08.1 the Calendar window draws its Holidays list",
+  "ok": null,
+  "detail": "yes"
+ },
+ {
+  "id": "S08.2 the form after Save",
+  "ok": null,
+  "detail": " | "
+ },
+ {
+  "id": "S08.2 the OIL list opened by the holiday",
+  "ok": null,
+  "detail": "⠿ OIL — Fri 17 Jul Public holiday ✕ Fri 17 Jul is now a public holiday. 1 TO ANSWER Yes to all No to all All day NomadOD Overseas duty — exercise, off island Yes · FO No What is left goes to the schedulers’ bells Later Save"
+ },
+ {
+  "id": "S08.2 the war after the Holidays list saved it",
+  "ok": null,
+  "detail": "{\"head\":\"day evoff | \",\"event\":\"\"} null"
+ },
+ {
+  "id": "S08.2 the PH reaches the war through this door",
+  "ok": true,
+  "detail": "{\"head\":\"day evoff | FRI 17\",\"event\":\"PH\"}"
+ },
+ {
+  "id": "S08.3 no credit before Publish AL1",
+  "ok": true,
+  "detail": "box \"\" -> \"\""
+ },
+ {
+  "id": "S08.4 week: the same amber words (D2003)",
+  "ok": true,
+  "detail": "week: [\"Became a holiday after publishing — republish for its OIL Publish this day again so OIL is earned. The PH was set after the day was published. ✕\"]"
+ },
+ {
+  "id": "S08.4 board: the same amber words (D2003)",
+  "ok": true,
+  "detail": "board: [\"Publish this day again so OIL is earned. The PH was set after the day was published. ✕\"]"
+ },
+ {
+  "id": "S08.4 view: the same amber words (D2003)",
+  "ok": true,
+  "detail": "view: [\"Became a holiday after publishing — republish for its OIL Publish this day again so OIL is earned. The PH was set after the day was published.\"]"
+ },
+ {
+  "id": "S08.5 Publish AL1 credits the desk man",
+  "ok": true,
+  "detail": "{\"pressed\":true,\"label\":\"Publish AL1\"} box \"FO*\""
+ },
+ {
+  "id": "S08.6 the holiday is listed in the Holidays list",
+  "ok": null,
+  "detail": "Fri 17 Jul PH PH"
+ },
+ {
+  "id": "S08.6 after Delete",
+  "ok": null,
+  "detail": " confirm buttons: 0"
+ },
+ {
+  "id": "S08.6 the PH comes off the war through the Holidays list",
+  "ok": true,
+  "detail": "{\"head\":\"day | \",\"event\":\"\"}"
+ },
+ {
+  "id": "S08.7 week: the withdraw words (D2004)",
+  "ok": true,
+  "detail": "week: [\"No longer a holiday — republish to withdraw its OIL Publish this day again to withdraw the OIL. The PH was removed after the day was published. ✕\"]"
+ },
+ {
+  "id": "S08.7 board: the withdraw words (D2004)",
+  "ok": true,
+  "detail": "board: [\"Publish this day again to withdraw the OIL. The PH was removed after the day was published. ✕\"]"
+ },
+ {
+  "id": "S08.7 view: the withdraw words (D2004)",
+  "ok": true,
+  "detail": "view: [\"No longer a holiday — republish to withdraw its OIL Publish this day again to withdraw the OIL. The PH was removed after the day was published.\"]"
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]

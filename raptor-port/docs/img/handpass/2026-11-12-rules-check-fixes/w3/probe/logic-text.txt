@@ -1,0 +1,324 @@
+Logic
+Filter
+Edit
+SETTINGS
+Crew rest and the working day
+Crew rest
+12h
+The rest a flyer needs before his day starts. The crew-rest warning and the tight crew-rest advisory move with it.
+Days in a row
+6 days
+A day on the programme beyond this many in a row raises the red break-day warning.
+Long work day
+12h
+A longer day, first commitment to last, shows the grey long-day note.
+Default rally before take-off
+3h
+An empty R box, a formation's rally, suggests a time this long before take-off, and "+ In-time" fills in that same time. When no in-time or rally is entered, a flyer's day starts at that time: his long day, OIL and Insights hours count from it. The tight crew-rest advisory also checks his rest as if he reported at that time.
+Flying lines
+Brief before take-off
+2h20
+Sets the suggested B on a line with no brief typed, and a blank B is checked against it. With no in-time typed, crew rest counts to this B. A published day keeps its B until it is published again.
+Step before take-off
+1h
+A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.
+Dekit after landing
+30 min
+A man counts as busy until dekit. It and step set the shortest tight turn.
+Debrief after landing
+2h
+Ends a flyer's day: tomorrow's crew rest, the long day, OIL and Insights hours count to here, and so does the flight debrief advisory.
+Tight turn
+2h
+A shorter gap from landing to the next take-off is a tight turn. It is never less than dekit plus step.
+In-time words
+IN TIME + WX/NOTAMS
+What "+ In-time" writes after the time.
+Sims
+EP sim brief
+15 min
+The brief before an EP sim, unless its remarks name one.
+Sim debrief
+30 min
+The debrief after a sim.
+AMT debrief
+30 min
+How long an AMT debrief runs when its DEBRIEF row has no end.
+Rows with no end time
+A sim
+1h30
+A sim with a start and no end is taken to run this long, for clashes and the crew list. It earns no OIL until its end is typed.
+Any other row
+1h
+The same for a ground, programme or duty row.
+Standby (SC, AVALON, BB)
+SC day window
+07:00
+to
+19:00
+A shift wholly inside it needs SC DAY; one reaching outside it needs SC NIGHT.
+SC MAIN clashes
+What an SC MAIN man's clash with each shows: a red warning or an amber advisory. Once his shift flies, every clash is red.
+a flight
+Warning
+a sim
+Warning
+a duty post
+Warning
+another shift
+Warning
+a ground event
+Advisory
+a programme item
+Advisory
+Inputs
+Inputs late cut-off
+14 days before the week starts
+›
+An input last changed after it wears LATE.
+SANS late cut-off
+the Wednesday two weeks before
+›
+The same for SANS availability.
+Members file for others
+On
+›
+A member may file a duty or commitment for someone else. Never leave, medical or SANS availability.
+OIL
+Full day of OIL
+6h01
+Weekend or holiday work this long or longer earns a full day; less earns a half.
+Insights
+Track Blue and Red sorties
+Off
+Splits Insights' flying bars into Blue and Red, and asks Blue or Red under a formation.
+THE CHECKS
+Crew rest and the working day
+Warning:
+Crew rest (<12h)
+For a flying member: at least 12h (Crew rest) from the end of his day before to his earliest in-time, or to anything earlier that day.
+How it works
+Rest runs from the end of the day before to the first thing today: his in-time or rally, his B where neither is typed, or anything earlier, such as a meeting.
+The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (2h), or at take-off plus the debrief where the landing is not a time. Anything else ends at its written end.
+An input counts only if it is a duty or commitment, other than Personal or SANS Availability, with typed times.
+Exactly 12h is legal. A day with no flying asks for no rest.
+A LATE SHOW remark keeps the warning. The ring is dashed while rest still clears by step, solid after.
+Monday checks last Sunday. A Sunday that breaks Monday shows a "Breaks Monday" box.
+A flying line with no times yet is not measured, but a typed brief, in-time or landing on it still counts.
+An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is earlier than the start.
+Advisory:
+Tight turning — crew rest
+His rest would be short if he reported the usual 3h before take-off (Default rally before take-off), but his in-time or rally, or his B where neither is typed, is later, so it clears.
+Warning:
+No break day — too many days in a row
+On the programme more than 6 days in a row.
+How it works
+Any tasking counts: a flight, a duty, a sim, a ground or programme row.
+Leave or a downchit resets the count.
+It counts last week's tail, and the warning lands on the day to clear.
+Note:
+Long work day
+More than 12h from first commitment to last.
+Two things at once
+Warning:
+Conflict — two events at once
+Two commitments overlap for one man. Touching end to end is not a clash.
+Advisory:
+On shift — also down for a ground event
+An SC MAIN man is also down for something set to Advisory under SC MAIN clashes. A commitment input across the shift is red; a meeting stays amber. Once the shift flies, every clash with it is red.
+Note:
+ⓘ info only
+A ground or programme item marked ⓘ is printed but never checked, and earns no OIL.
+Note:
+Past midnight
+A row whose end reads earlier than its start runs into the next day.
+Flying lines
+Note:
+Flying wave
+An ordinary flying wave — it counts toward the day’s flying tally, and every line is fully cross-checked.
+Warning:
+In-time / Rally — timings out of order
+In-time, rally, brief, take-off and landing are not in that order.
+How it works
+The order is in-time, rally, brief, take-off, landing. Equal times are fine.
+The B on the line is what is checked. A blank B is checked as the suggested brief, take-off less 2h20.
+Out of order is red, but it never stops a day being published.
+A formation's rally is its R box alone. An In-time line is an in-time whatever its words, even one that says RALLY, and its first clock is used (09:00H or 0900).
+A formation's name makes the line that formation's; otherwise it is the whole wave's.
+A clock later than take-off means the day before.
+A line with no clock, RALLY AFTER IN TIME included, sets no time.
+Advisory:
+In-time — check the reporting instruction
+The app cannot read the clock on an In-time line.
+Advisory:
+No time for the flight brief
+Something sits between the brief and take-off. A blank B counts as the suggested one (Brief before take-off).
+Advisory:
+No time for the flight debrief
+Something sits inside landing plus 2h (Debrief after landing).
+Advisory:
+Tight turn
+Less than 2h from landing to the next take-off (Tight turn, or Dekit plus Step if longer).
+Advisory:
+Double turning
+Two or more sorties in one day. One line names everyone; it is routine, not an error.
+Advisory:
+Flight times — take-off and landing are the same
+A line's take-off and landing are the same time. A flying line still earns its OIL from the report before it and the debrief after it, and none if it has neither. A standby shift with no length earns none. One that flies with its R or B before its START earns from that time.
+Sims
+Advisory:
+No time for the sim brief
+Something sits inside an EP sim's 15 min brief (EP sim brief), or an AMT's BRIEF row.
+Advisory:
+No time for the sim debrief
+Something sits inside a sim's 30 min debrief (Sim debrief), or an AMT's DEBRIEF row (AMT debrief, where that row has no end).
+Qualifications and currency
+Warning:
+Qualification — illegal seat
+A man in a seat he may not hold, such as a WSO in the front seat. Any pilot may fly the rear seat.
+Warning:
+Illegal aircrew combination
+An OCU pilot with a CAT A–D WSO, or the reverse. An instructor in either seat clears it.
+Advisory:
+Crew solo — only allowed under syllabus
+An OCU pilot with an OCU WSO. Allowed only on sorties the syllabus names.
+Advisory:
+Crew combination — CO approval required
+A CAT D pilot with a CAT C WSO, a CAT C pilot with a CAT D WSO, or two CAT Ds. The crew needs the CO's approval.
+Advisory:
+OCU without IP
+An OCU formation with no instructor (IW, IP, IR or FI).
+Advisory:
+Incentive passenger — crew pairing needs approval
+Ground crew in a rear seat. The ride needs approval. Ground crew are checked for clashes, the long day, days in a row and their own absences, and a front seat is always a warning. None of the flying rules apply to them: crew rest, turns, pairing, AAR, SC currency or briefs.
+Warning:
+IRT without an IR examiner
+IRT in the mission needs an IR in the formation; IRT in an aircraft's remarks needs one in that aircraft.
+Warning:
+AAR currency — not qualified
+AAR in the remarks needs the front seat's currency: night on a night wave, day otherwise. NAAR or DAAR says it outright.
+Warning:
+AAR — back seat not cleared to instruct
+A pilot not current may fly AAR as training only with an instructor pilot (IP, IR or FI) in the back seat marked I for it on Quals (an I in place of the tick on DAAR or NAAR). That clears the front seat's currency warning, but an instructor pilot without the mark is flagged instead.
+Warning:
+SC currency — wrong shift
+A standby shift wholly inside 07:00 to 19:00 (SC day window) needs SC DAY; one reaching outside it needs SC NIGHT. A SPARE is checked the same as a MAIN.
+Note:
+Night after day
+NAAR needs DAAR, and SC NIGHT needs SC DAY. On Quals, removing the day one removes the night one.
+Standby (SC, AVALON, BB)
+Note:
+SC
+A SPARE line is only checked for overseas / medically down, SC currency, a pilots-only front seat and not holding another SC seat or SC desk in the same hours — nothing else, unless it flies. A MAIN line is checked in full. Add as many of each as you need.
+Note:
+AVALON
+Overnight. Every line — MAIN or SPARE — is only checked for overseas / medically down, SC NIGHT currency, a pilots-only front seat and not holding another AVALON seat or the AVALON desk in the same hours. Nothing else, unless it flies. Add as many as you need.
+Note:
+BB
+Times are yours to set. The same checks as AVALON — overseas / medically down, SC currency for the hours typed, a pilots-only front seat and not holding another seat or the BB desk in the same hours. Nothing else, unless it flies. Add as many as you need.
+Note:
+A shift's hours
+A standby shift takes exactly its written hours: no step, dekit, brief or debrief.
+Note:
+A standby row that flies
+A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies is checked as a sortie is, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one that does not come in is cancelled with CX.
+Advisory:
+Standby line flies — no start or end
+A standby shift that flies has no START or END, so its crew rest and OIL cannot be worked out.
+Advisory:
+In-time window cut — busy between report and shift start
+A standby row that flies has a typed B (the crew's in-time) or R (its rally), whichever is earlier, and something sits between it and the shift start. That time also starts his crew rest, his long day and his OIL.
+Note:
+Arming an SC seat
+The crew list judges each man against that shift's hours only.
+Leave, downchits and inputs
+Note:
+An input closes its hours
+Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing.
+Warning:
+On leave + flying
+A man on leave is planned for a flight, sim, duty or ground slot.
+Warning:
+Downchit + flying
+A medically down man is planned. On ATT B he may still stand a duty, sim or ground slot, but not fly.
+Warning:
+Personal input clash
+Any other input clashes with a planned slot: a course, a meeting, an appointment, overseas duty.
+Note:
+A seat with no times
+Still checked against an absence covering the whole day; a part-day absence waits until the seat has times.
+Note:
+Half days
+Leave and medical can be AM (to 12:00), PM (from 12:01) or all day, and a half day closes only its own half. A sortie counts from its step (Step before take-off), so AM leave still clashes with a wave that steps before noon.
+Note:
+Standing SC SPARE
+A man on local leave may still stand SC SPARE. Overseas leave or duty (OL, OD) or a medical code (HL, OML, ATT C, ATT B) may not: that is a warning. A row that flies has no such allowance.
+Advisory:
+SANS availability — planned outside the availability filed
+A SANS man planned outside the event or the hours he filed. Filing nothing raises nothing.
+Note:
+LATE
+An input last changed after its cut-off (Inputs late cut-off) wears LATE: a mark, never a warning. Downchits never do.
+OIL
+Note:
+Weekend and holiday work earns OIL
+Work on a weekend or public holiday earns OIL once the day is published: a full day or a half, by Full day of OIL.
+How it works
+Weekend or holiday work earns OIL once the day is published.
+A man's day runs from his first report to his last end, gaps included: 6h01 or more is a full day (FO), less is a half (HO).
+A flight runs from its in-time or rally, whichever is earlier (Default rally before take-off where neither is entered), to landing plus the debrief.
+A row the scheduler adds with no times, or no end time, earns nothing, but a request answered yes earns over its own times. An Off day earns nothing.
+SC SPARE, AVALON and BB rows that do not fly earn only if switched on in OIL Earn. A row that flies earns by default, from its B or R if earlier than its START, otherwise from its START, to its END.
+Until its wave flies, a desk made from an AVALON or BB template earns only if switched on in OIL Earn. Once the wave flies, the desk earns by default.
+A Duty & commitments input earns once its OIL question is answered yes.
+A published day keeps its OIL until it is published again.
+Warning:
+No OIL earned — a row has no usable times
+On a weekend or holiday, a row with someone on it and no usable times earns nobody on it any OIL. The warning names the row.
+Advisory:
+OIL waiting — this day is not published
+A weekend or holiday with someone to earn is not published yet. Nobody earns until it is.
+Advisory:
+No OIL — no Leave War period covers this date
+No Leave War period covers this weekend or holiday, so its work earns nobody OIL. The day offers to create the period, before and after it is published.
+Advisory:
+Became a holiday after publishing — republish for its OIL
+A day published as a working day that the Leave War now calls a public holiday earns nothing until it is published again.
+Advisory:
+No longer a holiday — republish to withdraw its OIL
+A day published as a holiday that the Leave War no longer calls one keeps its OIL until it is published again, which withdraws it.
+Advisory:
+Published before these seats counted — republish to credit them
+A weekend or holiday published before the app counted an ALL AVAIL on a duty desk, sim or extra people line shows a pending change. Publish it again and the men behind that puck get their OIL.
+On the puck
+Note:
+Several problems on one puck
+It shows the most serious flag, in this order, and its ring the most serious colour. A red box round the whole puck marks a conflict, a crew-rest breach, a qualification problem or a missed brief.
+Q
+Qualification — illegal seat
+C
+Conflict (two events at once)
+CP
+Crew pairing — not an authorised pairing
+7
+No break day — too many days on the programme in a row
+R
+Crew rest breach (<12h)
+CP
+Crew pairing — this pairing needs approval
+B
+No time for the flight brief
+D
+No time for the flight debrief
+B
+No time for the sim brief
+D
+No time for the sim debrief
+A
+Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability
+TT
+Tight turn
+DT
+Double turn
+L
+Long work day (>12h)

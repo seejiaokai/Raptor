@@ -1,0 +1,6 @@
+folds 4
+0:How it works
+1:How it works
+2:How it works
+3:How it works
+INPUT lgSearch  val= | 

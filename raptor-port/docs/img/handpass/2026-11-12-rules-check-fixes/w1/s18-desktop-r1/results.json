@@ -1,0 +1,97 @@
+[
+ {
+  "id": "S18.0 fixture landed: Ridge on a timed desk, Ranger on a line with no times",
+  "ok": true,
+  "detail": "{\"duty\":[\"SDO|0730-1730|yeti\",\"SXO|08:00-16:00|razer\"],\"line\":\"bane||\"}"
+ },
+ {
+  "id": "S18.0 Friday published",
+  "ok": true,
+  "detail": "tag \"ORIG\" {\"pressed\":true,\"label\":\"Publish day\"}"
+ },
+ {
+  "id": "S18.0 Ridge on the war before the PH",
+  "ok": null,
+  "detail": "box \"\" ( act); OIL figure {\"oil\":\"0 ›\"}"
+ },
+ {
+  "id": "S18.1 the PH lands on the war",
+  "ok": true,
+  "detail": "{\"ok\":true,\"oilday\":\"⠿ OIL — Fri 17 Jul Public holiday ✕ Fri 17 Jul is now a public holiday. 1 TO ANSWER Yes to all No to all All day NomadOD Overseas duty — exercise, off island Yes · FO No What is left goes to the schedulers’ bells Later Save\"} event cell \"PH\" head \"day evoff | FRI 17\""
+ },
+ {
+  "id": "S18.2 no credit before Publish AL1 (D2, D142)",
+  "ok": true,
+  "detail": "box \"\" -> \"\"; OIL {\"oil\":\"0 ›\"} -> {\"oil\":\"0 ›\"}"
+ },
+ {
+  "id": "S18.3 week: the amber line reads exactly (D2003)",
+  "ok": true,
+  "detail": "week lines with \"Publish this day again\": [\"Became a holiday after publishing — republish for its OIL Publish this day again so OIL is earned. The PH was set after the day was published. ✕\"]"
+ },
+ {
+  "id": "S18.3 board: the amber line reads exactly (D2003)",
+  "ok": true,
+  "detail": "board lines with \"Publish this day again\": [\"Publish this day again so OIL is earned. The PH was set after the day was published. ✕\"]"
+ },
+ {
+  "id": "S18.3 view: the amber line reads exactly (D2003)",
+  "ok": true,
+  "detail": "view lines with \"Publish this day again\": [\"Became a holiday after publishing — republish for its OIL Publish this day again so OIL is earned. The PH was set after the day was published.\"]"
+ },
+ {
+  "id": "S18.3 the week strip, the other lines (the red line for the line with no usable times, D2002)",
+  "ok": null,
+  "detail": "[\"No OIL earned — a row has no usable times the VIPER line has no usable times — nobody on it earns OIL for this day ✕\"]"
+ },
+ {
+  "id": "S18.3 the board, the other lines",
+  "ok": null,
+  "detail": "[\"the VIPER line has no usable times — nobody on it earns OIL for this day ✕\"]"
+ },
+ {
+  "id": "S18.3 View-only Sched, the other lines",
+  "ok": null,
+  "detail": "[\"No OIL earned — a row has no usable times the VIPER line has no usable times — nobody on it earns OIL for this day\"]"
+ },
+ {
+  "id": "S18.4 Undo pressed (on the war page)",
+  "ok": null,
+  "detail": "{\"ok\":true}"
+ },
+ {
+  "id": "S18.4 Undo takes the PH off the war",
+  "ok": true,
+  "detail": "event cell \"＋\"; undo {\"ok\":true}"
+ },
+ {
+  "id": "S18.4 and the amber line is gone on every surface",
+  "ok": true,
+  "detail": "{\"week\":[],\"board\":[],\"view\":[]}"
+ },
+ {
+  "id": "S18.4 Redo puts the PH back and the amber line with it",
+  "ok": true,
+  "detail": "redo {\"ok\":true}; event cell \"PH\"; {\"week\":1,\"board\":1,\"view\":1}"
+ },
+ {
+  "id": "S18.5 Publish AL1 went out",
+  "ok": true,
+  "detail": "{\"pressed\":true,\"label\":\"Publish AL1\"} tag \"AL1\""
+ },
+ {
+  "id": "S18.5 after Publish AL1 the desk man is credited",
+  "ok": true,
+  "detail": "box \"\" -> \"FO*\" (c k-oil s-a whole bx-star raptor); OIL {\"oil\":\"0 ›\"} -> {\"oil\":\"1 ›\"}"
+ },
+ {
+  "id": "S18.5 amber after AL1",
+  "ok": null,
+  "detail": "{\"week\":[],\"board\":[],\"view\":[]}"
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]

@@ -1,0 +1,47 @@
+[
+ {
+  "id": "S09.1 Saturday published at the default setting",
+  "ok": true,
+  "detail": "{\"pressed\":true,\"label\":\"Publish day\"} tag ORIG"
+ },
+ {
+  "id": "S09.2 Logic \"Brief before take-off\" field",
+  "ok": null,
+  "detail": "was \"2h20\" -> set \"3h20\", read back \"3h20\""
+ },
+ {
+  "id": "S09.3 View-only Sched: no new crew-rest breach after the setting is raised (D1991)",
+  "ok": true,
+  "detail": "before [] after []"
+ },
+ {
+  "id": "S09.4 View-only Sched: Saturday still prints the B it went out with",
+  "ok": true,
+  "detail": "before \"09:40 12:00 13:00 Ranger IP\" after \"09:40 12:00 13:00 Ranger IP\""
+ },
+ {
+  "id": "S09.5 working copy after the raise — warnings for Ranger",
+  "ok": null,
+  "detail": "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 09:00, but told to report 08:40 — only 11h40 rest.new once signed ✕\"]"
+ },
+ {
+  "id": "S09.5 working copy row",
+  "ok": null,
+  "detail": "12:00 13:00 R Ranger IP + RCP C AREA"
+ },
+ {
+  "id": "S09.5 working copy judges by the new B (differs from the published face)",
+  "ok": true,
+  "detail": "working \"12:00 13:00 R Ranger IP + RCP C AREA\" vs view-only \"09:40 12:00 13:00 Ranger IP\""
+ },
+ {
+  "id": "S09.6 setting restored",
+  "ok": true,
+  "detail": "now \"2h20\" want \"2h20\""
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]
