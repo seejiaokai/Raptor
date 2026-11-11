@@ -5270,7 +5270,12 @@ header keeps its true count" — and the D469 / D471 / D472 / D475 note that sto
   - **Tied to that exact warning (Aug 26 — "if things change that warning will appear again"):** the key is the day, the
     rule, the men it names and its words (`engine/warnhide.ts hideKey`), callsigns folded to ids — the moment the
     situation changes the rules write a different warning and it shows again; a rename of a man it names is a label,
-    not a change.
+    not a change. **A clash is tied to its two items instead of its words (owner D2001, 11 Nov 26 — the rules check's
+    Q7):** it stays hidden while the same man is on the same two items — a line, a duty, sim, ground or programme row, an
+    input — whatever their times or names, and shows again when the man or either item is a different one (the key reads
+    the items' row ids, `engine/validate.ts clashItem`; the ✕ mints the week's row ids first, `state/view.ts
+    warnMuteKey`). Taken off and put back on the same line he returns struck (D479). Pinned:
+    `engine/rulesfirst-6-hidden-warnings.test.ts`.
   - **The line stays where it is, struck out and darker, one tap from being flagged again (D469, D475):** same place in
     the list, `.hid` (struck through, grey; a dashed outline and a greyed bar on Edit Schedule), its `✕` become `↺` at
     full strength. There is no "N hidden" fold. A tap on the struck line still jumps to and lights its crew.

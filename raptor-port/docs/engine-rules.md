@@ -3507,7 +3507,9 @@ stay LIVE (below), which the face draws from today and which never make the day 
   copy's. The comparison: for every warning of today's judgement of the issued day that the working copy ALSO raises
   (`validate.ts HOOKS.hideNow`), hidden-on-the-working-copy against hidden-as-issued — **one pending change per warning
   that differs**, addressed `hide:<di>.<fingerprint of the warning's key>` (never its place in the list or its words: the
-  sign-offs are bound to it), `from` / `to` the plain `shown` / `hidden`. Wired into BOTH authorities, as the warnings
+  sign-offs are bound to it), `from` / `to` the plain `shown` / `hidden`. A clash's key reads its two items' row ids in
+  place of its words (owner D2001, 11 Nov 26: "a hidden clash stays hidden while the same man is on the same two items,
+  whatever their times" — `warnhide.ts hideKey`, `validate.ts clashItem`, each clash warning carrying `items`). Wired into BOTH authorities, as the warnings
   axis is: `dayDelta` and `dayPendingItemsIn`. It is never also the warnings axis — the stored slice and the official
   pass stay as the rules raised them. A hide of a warning only the working copy has goes out with the edit that raised
   it; a stale hide (its warning no longer raised) pends nothing. Unpublish falls back to the version before; "Load onto

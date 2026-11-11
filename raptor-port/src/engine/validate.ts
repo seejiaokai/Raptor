@@ -310,6 +310,25 @@ const runSays=(id:any,n:any)=>`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programm
 /* a nought-minute line's sentence — one body for the warning and for the next-week preview, which draws the line's red
    time box without a warning list and asks whether THAT warning is hidden (ui/peek.ts) */
 export const fltNoLenMsg=(f:any,wv:any)=>`${f.cs||wv.label||'A flying line'} ${fltNoLenSays(f,wv)}`;
+/* A CLASH'S TWO ITEMS (owner D2001, 11 Nov 26 — "a hidden clash stays hidden while the same man is on the same two items,
+   whatever their times, and comes back when the man or either item is a different one"). An item is what a scheduler
+   taps: a flying or standby line (whichever of its seats), a duty row, a sim row, a ground or programme row — a ground
+   row that came from an input is that input, and an input not on the programme is itself. Named by its row id
+   (engine/rowids.ts), never its place or its words, so a time moved keeps the hide while another line worded the same
+   does not inherit it. A row with no id yet falls back to its address. A clash warning carries its two (`items`), and
+   the hide key reads them in place of the words (engine/warnhide.ts hideKey). */
+export function clashItem(k:any):string{
+  if(k==null||k==='')return '';
+  const s=String(k), c=s.indexOf(':'), pre=c<0?'':s.slice(0,c), p:any[]=(c<0?s:s.slice(c+1)).split('.'), d:any=DAYS[+p[0]]||{};
+  let row:any=null, at=s;
+  if(pre===''){ row=((((d.waves||[])[+p[1]]||{}).formations)||[])[+p[2]]; at=p.slice(0,3).join('.'); }
+  else if(pre==='d'){ row=(((d.dutywaves||[])[+p[1]]||{}).rows||[])[+p[2]]; }
+  else if(pre==='s'){ row=((d.sims||{})[p[1]]||[])[+p[2]]; }
+  else if(pre==='g'){ row=(d.ground||[])[+p[1]]; if(row&&row.src)return 'i:'+row.src; }
+  else if(pre==='a'){ row=(d.allhands||[])[+p[1]]; }
+  return row&&row.rid?'r:'+row.rid:at;
+}
+const clashItems=(a:any,b:any)=>({items:[a,b]});
 /* a ring is the worst of a man's warnings, a chip the highest — the two merges every mark goes through (the day loop and
    shownOf's replay share them) */
 const markWorse=(m:any,di:any,id:any,s:any)=>{m[di]=m[di]||{}; const c=m[di][id]; if(!c||SEVR[s]>SEVR[c])m[di][id]=s;};
@@ -806,13 +825,13 @@ function validateCore(){
           const sh=A.kind==='shift'&&!A.flies?A:B, other=sh===A?B:A;
           if(shiftEvHard(other)){
             markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
-            add('hard','DOUBLE_BOOK',[id],`${sh.label} & ${other.label} clash`,kOf(sh)||kOf(other));
+            add('hard','DOUBLE_BOOK',[id],`${sh.label} & ${other.label} clash`,kOf(sh)||kOf(other),clashItems(clashItem(kOf(sh)),clashItem(kOf(other))));
           } else {
             /* amber A, not the red conflict C — the puck has to say advisory at a
                glance, the way the note under it already does */
             markChip(di,id,'A','SHIFT_SOFT'); markRing(di,id,'adv','SHIFT_SOFT');
             add('adv','SHIFT_SOFT',[id],
-              `${PEOPLE[id]?PEOPLE[id].cs:id} is on ${sh.label} (${hm24(sh.s)}–${hm24(sh.e)}) and also down for ${other.label}`,kOf(sh)||kOf(other));
+              `${PEOPLE[id]?PEOPLE[id].cs:id} is on ${sh.label} (${hm24(sh.s)}–${hm24(sh.e)}) and also down for ${other.label}`,kOf(sh)||kOf(other),clashItems(clashItem(kOf(sh)),clashItem(kOf(other))));
           }
           continue;
         }
@@ -831,7 +850,7 @@ function validateCore(){
           ?(A.kind==='ground'&&B.kind==='ground'&&A.key!==B.key
             ?`${PEOPLE[id]?PEOPLE[id].cs:id} is on two items called ${A.label} at once`
             :`${PEOPLE[id]?PEOPLE[id].cs:id} is in two seats on ${nm(A)} at once`)
-          :`${nm(A)} & ${nm(B)} clash`,kOf(A)||kOf(B));} });
+          :`${nm(A)} & ${nm(B)} clash`,kOf(A)||kOf(B),clashItems(clashItem(kOf(A)),clashItem(kOf(B))));} });
     /* THE IN-TIME WINDOW (owner, 24 Aug 26 — "have a no brief advisory as well
        if anything cuts or ends between B and TO time for SC main"). An SC MAIN
        with a typed B earlier than the shift start is on duty from that B, so a
@@ -957,7 +976,7 @@ function validateCore(){
           if(!hits)return;
           markChip(di,e.id,'A','SHIFT_SOFT'); markRing(di,e.id,'adv','SHIFT_SOFT');
           add('adv','SHIFT_SOFT',[e.id],
-            `${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label}${blankShift?'':` (${hm24(e.s)}–${hm24(e.e)})`} and also down for ${inpLabel(inp)}`,kOf(e));
+            `${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label}${blankShift?'':` (${hm24(e.s)}–${hm24(e.e)})`} and also down for ${inpLabel(inp)}`,kOf(e),inp.iid?clashItems(clashItem(kOf(e)),'i:'+inp.iid):undefined);
           return;
         }
         if(!hits)return;
@@ -1069,7 +1088,7 @@ function validateCore(){
         /* `also` names the OTHER place, so that copy's puck can ring for the
            pair it is in (an exempt desk reads only its own rule — html.ts) */
         add('hard','DOUBLE_BOOK',[sa.id],
-          `${p.cs} is on ${mine} (${hm24(sa.s)}–${hm24(sa.e)}) and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,sa.key,{also:hit.key});
+          `${p.cs} is on ${mine} (${hm24(sa.s)}–${hm24(sa.e)}) and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,sa.key,{also:hit.key,...clashItems(clashItem(sa.key),clashItem(hit.key))});
       });
     });
     /* ---- BRIEF / DEBRIEF windows round each sortie -----------------------
@@ -1365,7 +1384,7 @@ function validateCore(){
               markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
               add('hard','DOUBLE_BOOK',[id],
                 `${PEOPLE[id].cs} is standing SC SPARE (${lineName(f.label)} ${hm24(f.s)}–${hm24(f.e)})`
-                +` and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,own); }); }); });
+                +` and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,own,clashItems(clashItem(own),clashItem(hit.key))); }); }); });
         /* THE SPARE FRONT SEAT IS PILOTS-ONLY (owner, 31 Aug 26 — "a wso
            can't be planned for FCP"; the pilot-in-rear-seat mirror was
            offered and DECLINED, so the rear spare seat stays unruled here).

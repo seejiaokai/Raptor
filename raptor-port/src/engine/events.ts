@@ -532,7 +532,8 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        window still comes through with null s/e and stays uncheckable. */
     const mapInp=(inp:any)=>{const w2=inpWin(inp);
       /* its own title rides along: a warning names an input as every screen does (inpLabel — [INPUT-OWN-TITLE]) */
-      return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks,...(inp.title?{title:inp.title}:{})};};
+      /* …and its id, so a clash with it names WHICH input (D2001 — validate.ts clashItem) */
+      return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks,...(inp.title?{title:inp.title}:{}),...(inp.iid?{iid:inp.iid}:{})};};
     /* LINES, not records ([ALL-AVAIL-AS-MEMBER] step 1 — inputs.ts inputLinesOn): one entry a NAMED person of each input
        on the date, from a published face's own copies where the date is frozen; ALL AVAIL / ALL name nobody here. */
     const input:any[]=inputLinesOn(d.dt).filter((inp:any)=>inpShow(inp,d.dt,xweek)).map(mapInp);

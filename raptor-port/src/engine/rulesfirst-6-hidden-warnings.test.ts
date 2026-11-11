@@ -18,6 +18,7 @@ import { validate, workingWarn, rawWarn, officialWarn, sevOf, chipOf } from './v
 import { computeInsights } from './insights'
 import { slotBar } from './avail'
 import { setSlotVal } from './slots'
+import { ensureRowIds } from './rowids'
 import * as view from '../state/view'
 import { setSession } from '../state/auth'
 import { flagDrop, warnDelta } from '../state/dropflag'
@@ -96,7 +97,10 @@ describe('W62 — a hidden warning stays hidden for everyone until someone flags
     expect(counts(TUE)).toEqual({ week: 2, board: 2, info: 2, insightsDay: 2, insightsWeek: 2 })
   })
 
-  it('as built (6.U1, a question for him): a hide is tied to the warning\'s WORDS, which for a clash name the two events but no time — the clash moved in time stays hidden; a different line of the same callsign and mission, clashing with a rebuilt brief at another hour, arrives already hidden', () => {
+  /* ANSWERED 11 Nov 26 (D2001, the rules check's Q7): a hidden clash stays hidden while the same man is on the same two
+     items, whatever their times, and comes back when the man or either item is a different one. Flipped from the as-built
+     reading, where a hide was tied to the clash's WORDS and a different line worded the same arrived already hidden. */
+  it('D2001 (was 6.U1): the clash moved in time stays hidden; a different line of the same callsign and mission, clashing with the brief at another hour, SHOWS', () => {
     day(TUE).waves.push(wave([form()]))
     const gi = ground(TUE, 'bane', '1200', '1230')
     validate()
@@ -111,8 +115,29 @@ describe('W62 — a hidden warning stays hidden for everyone until someone flags
     day(TUE).waves.push(wave([form({ to: '15:00', ld: '16:00' })], { label: 'WAVE 2' })); validate()
     const w2 = find(TUE, 'DOUBLE_BOOK', 'bane')
     expect(w2 && w2.msg, 'a clash of a different line at a different hour, worded the same').toBe('VL BFM & BRIEFING clash')
-    expect(w2.off, 'AS BUILT: it arrives already struck — the hide outlived the line it was made on').toBe(true)
-    expect(sevOf(TUE, 'bane') || null, '…and Ranger\'s puck on the new line carries no flag').toBe(null)
+    expect(w2.off || false, 'D2001: a different line — the clash shows').toBe(false)
+    expect(sevOf(TUE, 'bane'), '…and Ranger\'s puck on the new line carries its red flag').toBe('hard')
+  })
+  it('D2001 edges: the same two items keep the hide through a rename of the line and a re-timed brief; put back on the same line he returns struck (D479); a different man, or the brief replaced by another row, shows', () => {
+    day(TUE).waves.push(wave([form({ aircraft: [ac('bane', 'stiff')] })]))
+    const gi = ground(TUE, 'bane', '1200', '1230')
+    ensureRowIds(DAYS); validate()
+    tap(find(TUE, 'DOUBLE_BOOK', 'bane'))
+    /* the line renamed and the brief re-timed: the same line and the same row */
+    Object.assign(day(TUE).waves[0].formations[0], { cs: 'RAP', msn: 'ACM' }); Object.assign(day(TUE).ground[gi], { str: '1215', end: '1245' }); validate()
+    expect(find(TUE, 'DOUBLE_BOOK', 'bane').msg, 'the words changed').toBe('RAP ACM & BRIEFING clash')
+    expect(find(TUE, 'DOUBLE_BOOK', 'bane').off, 'the same two items: still hidden').toBe(true)
+    /* taken off and put back on the same seat: struck at once (D479) */
+    setSlotVal(`${TUE}.0.0.0.p`, ''); validate()
+    expect(find(TUE, 'DOUBLE_BOOK', 'bane'), 'off the line, no clash').toBeUndefined()
+    setSlotVal(`${TUE}.0.0.0.p`, 'bane'); validate()
+    expect(find(TUE, 'DOUBLE_BOOK', 'bane').off, 'put back on the same line: returns struck').toBe(true)
+    /* a different man on the same two items shows: his own hide was never made */
+    day(TUE).ground[gi].more = ['stiff']; validate()
+    expect(find(TUE, 'DOUBLE_BOOK', 'stiff').off || false, 'another man: shows').toBe(false)
+    /* the brief deleted and a new BRIEFING row at the same time: a different item — shows */
+    day(TUE).ground.splice(gi, 1); ground(TUE, 'bane', '1215', '1245'); ensureRowIds(DAYS); validate()
+    expect(find(TUE, 'DOUBLE_BOOK', 'bane').off || false, 'a different row worded the same: shows').toBe(false)
   })
 
   // RULES-FIRST FINDING 6.1 (11 Nov 26, [ENGINE-RULES-REVIEW]): two lines worded alike share one warning, and hiding it plained only the first line's amber time box — the second kept its flag. Fixed by [RULES-CHECK-FIXES] (F3): the box also asks for a hidden warning in its own words.

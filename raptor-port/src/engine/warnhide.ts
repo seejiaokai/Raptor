@@ -17,8 +17,17 @@
 import { PEOPLE } from './people'
 import { warnMsgKey } from './publish'
 
+/* A CLASH IS KEYED BY ITS TWO ITEMS, NOT ITS WORDS (owner D2001, 11 Nov 26 — "a hidden clash stays hidden while the same man
+   is on the same two items, whatever their times, and comes back when the man or either item is a different one"). The
+   words of a clash name the two events and, on a standby line, their times: keyed by words, a clash moved in time came
+   back, and a clash of ANOTHER line worded the same arrived already hidden (the rules check's Q7). A clash warning carries
+   its two items by their row ids (validate.ts clashItem); the order of the two does not matter. Taken off and put back on
+   the same line, the same man meets the same two items, so the clash still returns struck (D479). A warning with no
+   items — every other rule, and a version stored before this — keeps the words. */
 export function hideKey(w:any):string{
   const who=((w&&w.who)||[]) as any[], cs:any={};
+  const its=w&&Array.isArray(w.items)?(w.items as any[]).filter(Boolean):[];
+  if(its.length===2)return `${w.di}|${w.code}|${who.join(',')}|@${its.map(String).sort().join('&')}`;
   who.forEach((id:any)=>{ const p=(PEOPLE as any)[id]; if(p&&p.cs)cs[id]=p.cs; });
   return `${w.di}|${w.code}|${who.join(',')}|${warnMsgKey(w.msg,cs)}`;}
 

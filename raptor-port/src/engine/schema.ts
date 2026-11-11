@@ -593,7 +593,8 @@ export type WarnSlice = {
   /** person id → the callsign its warnings were worded with (a rename is a label, never a change) */
   cs?: Record<string, string>
   /** THE WARNINGS THIS VERSION WENT OUT WITH HIDDEN ([WARN-HIDE-KEPT], owner D469 / D471, 1 Oct 26) — their keys
-   *  (engine/warnhide.ts hideKey: day | rule | the men named | the words, callsigns folded to ids). Absent = nothing was
+   *  (engine/warnhide.ts hideKey: day | rule | the men named | the words, callsigns folded to ids — for a clash, its two
+   *  items' row ids in place of the words, D2001). Absent = nothing was
    *  hidden. The published face strikes these lines and drops their flags; a hide made since waits for the next
    *  amendment. Never compared as part of the warnings (the slice above stays as the rules raised it). */
   wo?: string[]
