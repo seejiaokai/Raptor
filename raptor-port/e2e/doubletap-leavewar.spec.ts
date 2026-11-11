@@ -16,8 +16,12 @@ import { elevenCounters, lwRole, openLeaveWar } from './app'
 
 const T = (id: string) => `[data-testid="${id}"]`
 const isPhone = () => test.info().project.name === 'lw-phone'
-/* every window a tap on the grid can open, and the windows of this file */
-const WINDOWS = ['bid-picker', 'person-window', 'sel-sheet', 'win-lwday', 'event-sheet', 'event-peek', 'manning-sheet', 'counter-form', 'settings-sheet', 'events-sheet', 'oil-sheet']
+/* every window a tap on the grid can open, and the windows of this file — each id read from the app's source (the fix
+   round's F2: `sel-sheet` named no window; the drag window is `select-sheet`). A day's tap opens, by what it holds: the bid
+   window, the day's list, a member's remarks or closed-day window, the credited-OIL / filed-on-Inputs window, his own
+   award, a posting's sheet. */
+const WINDOWS = ['bid-picker', 'select-sheet', 'daylist-sheet', 'remarks-sheet', 'closed-note', 'raptor-sheet', 'award-sheet', 'postout-sheet', 'postin-sheet',
+  'person-window', 'win-lwday', 'event-sheet', 'event-peek', 'manning-sheet', 'counter-form', 'settings-sheet', 'events-sheet', 'oil-sheet']
 
 const openNow = (page: Page) => page.evaluate(ids => ids.filter(t => {
   const e = document.querySelector(`[data-testid="${t}"]`)

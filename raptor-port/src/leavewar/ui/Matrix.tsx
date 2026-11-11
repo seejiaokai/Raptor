@@ -357,6 +357,13 @@ export function Matrix() {
      by a press outside it, Escape, a scroll or a resize. `tid` is the cell it hangs from, so a second tap on that cell
      closes it rather than closing and re-opening it. */
   const [evPeek, setEvPeek] = useState<{ line: number; date: string; tid: string; x: number; y: number } | null>(null)
+  /* THE BOX DISMISSED WITHOUT A CLOSING PRESS — Escape, a scroll, a resize, a pinch's start (the event box's own effect and
+     the pinch, below). It forgets the last press first: an earlier tap INSIDE the box (on the event's name) is not the
+     press that closed it, and the double-tap guard, armed whenever the box goes, would have swallowed the next tap on a
+     day near that old place (the fix round's F1 — the box's Escape is caught on `window`, so the key's own reset in the
+     guard's listener never ran). Edit, a press outside and the cell's own toggle keep the plain `setEvPeek(null)`: Edit
+     IS a closing press and must arm the guard. Stable, so the effects that use it never re-run for it. */
+  const dropEvPeek = useCallback(() => { lastPressRef.current = null; setEvPeek(null) }, [])
   // Which manning count row's explainer is open (owner, 19 Aug 26 — a tap on
   // the row's name says what it counts and where its colours turn on).
   const [manningInfo, setManningInfo] = useState<string | null>(null)
@@ -1275,7 +1282,7 @@ export function Matrix() {
         /* the small pop-ups placed on the screen over a cell close, as a press outside them would (the fresh code read,
            F4 — a desktop's Ctrl+scroll presses nothing): the event peek, a chip's quals, and the Required / Available
            rows' boxes (FlyRows, FlyEdit — they hear `lw-zoomstart`) */
-        setQualPop(null); setEvPeek(null)
+        setQualPop(null); dropEvPeek()
         window.dispatchEvent(new Event('lw-zoomstart'))
         const a = anim(); if (a) a.style.animationPlayState = 'paused'
         /* the pinned copy takes the pinch's rule from the pinch's first frame (`pinchShow`, D1870) */
@@ -1537,8 +1544,13 @@ export function Matrix() {
     const from = second ? lastPressRef.current : null
     /* only a window closed by a press INSIDE it (a leave, its ✕, a Delete) is guarded: a tap on the grid that closed it is
        the grid's own, and the same day tapped again at once is a press he meant (the fix's narrow read, N1); a window closed
-       by a key leaves no press (N2). The same for every other window over the grid ([LW-DOUBLETAP-OTHER-WINDOWS], below). */
-    if (second && !from?.inWin) return
+       by a key leaves no press (N2). The same for the other windows the guard covers ([LW-DOUBLETAP-OTHER-WINDOWS], below).
+       AND THE PRESS MUST BE FRESH (the fix round's F4): a window that went WITHOUT a press just before it — the period
+       changed, the top row asked for the grid, a scroll took the event box — leaves no place to guard, and an old press
+       inside a window armed the guard at a stale place, eating a tap he meant. A close follows its press within a frame;
+       1000 ms is slack for a slow phone. The time counts from the press's RELEASE (`pointerup`, below), so a ✕ held a
+       second and then let go still counts. */
+    if (second && !(from?.inWin && performance.now() - from.t < 1000)) return
     const swallow = (e: Event) => {
       if (!(e instanceof MouseEvent) || e.detail <= 0 || !(e.target instanceof Element) || !e.target.closest('.mx') || e.target.closest('.mstripe')) return
       if (from) {
@@ -1555,18 +1567,30 @@ export function Matrix() {
   }
   /* every press, where and by what — read by the guard above; always listening (the code read's F4: a listener added only
      once the guard was armed could miss a second press that came first) */
-  const lastPressRef = useRef<{ x: number; y: number; finger: boolean; inWin: boolean } | null>(null)
+  const lastPressRef = useRef<{ x: number; y: number; finger: boolean; inWin: boolean; t: number; id: number } | null>(null)
   useEffect(() => {
     const down = (e: PointerEvent) => {
       /* inside a window: every Leave War window is a `.bidsheet` (Sheet.tsx); the event box alone is its own small box
          (`.evpeek`), and its Edit is a press inside it that takes it away ([LW-DOUBLETAP-OTHER-WINDOWS]) */
       const inWin = e.target instanceof Element && !!e.target.closest('.bidsheet, .evpeek')
-      lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen', inWin }
+      lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen', inWin, t: performance.now(), id: e.pointerId }
     }
+    /* the remembered press's age counts from its release (the fix round's F4): the same record, its time moved on — the
+       guard tells one press from the next by the record itself */
+    const up = (e: PointerEvent) => { const p = lastPressRef.current; if (p && p.id === e.pointerId) p.t = performance.now() }
+    /* a touch the browser took over for a scroll or a pinch was no press on anything: forget it, as a key is forgotten */
+    const cancel = () => { lastPressRef.current = null }
     const key = () => { lastPressRef.current = null }
     document.addEventListener('pointerdown', down, true)
+    document.addEventListener('pointerup', up, true)
+    document.addEventListener('pointercancel', cancel, true)
     document.addEventListener('keydown', key, true)
-    return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true) }
+    return () => {
+      document.removeEventListener('pointerdown', down, true)
+      document.removeEventListener('pointerup', up, true)
+      document.removeEventListener('pointercancel', cancel, true)
+      document.removeEventListener('keydown', key, true)
+    }
   }, [])
   /* the guard ends with the grid, never outliving it */
   const unswallowRef = useRef<(() => void) | null>(null)
@@ -1576,15 +1600,17 @@ export function Matrix() {
      had stood — a man's CAT pop-up, his figures, a day's window. Whenever the one-day window or the drag window closes (a
      leave placed, its ✕, a Delete, a Post out — every press that ends it) the grid is guarded for that moment
      (`doubletap.test.tsx`). */
-  /* …AND EVERY OTHER WINDOW OVER THE GRID ([LW-DOUBLETAP-OTHER-WINDOWS] — the code read's F1 of the night of 6 Nov 26): the
-     person window, ⚙ Settings, the event window, the Events list, the Manning sheet, the counter form, the OIL tracker and
-     the event box close the same way over the same grid, and a finger's second tap on their ✕, Cancel, Save or Delete fell
-     through just the same — on a phone onto the day under the button, or onto the pinned dates under a tall window's ✕ (the
-     day panel opened). The SAME guard, armed whenever ANY of them goes: each window is one bit, and a bit that was up and is
-     now down arms it — so a window closing while another stays up (the person window does not block the grid) is guarded
-     too, and one window handing over to the next (Settings to the counter form) costs nothing: the guard only ever
-     swallows a second tap on the grid, at the place of the press that closed the window. The one-day and drag windows
-     stay ONE bit, as they were (the one handing over to the other arms nothing). `doubletap-windows.test.tsx`,
+  /* …AND EIGHT MORE WINDOWS ([LW-DOUBLETAP-OTHER-WINDOWS] — the code read's F1 of the night of 6 Nov 26), the ones whose
+     state lives here in `Matrix`: the person window, ⚙ Settings, the event window, the Events list, the Manning sheet, the
+     counter form, the OIL tracker and the event box. A finger's second tap on their ✕, Cancel, Save or Delete fell through
+     the same way — on a phone onto the day under the button, or onto the pinned dates under a tall window's ✕ (the day
+     panel opened). Each is one bit, and a bit that was up and is now down arms `guardGrid` (what it swallows and what it
+     lets through: its own comment, above) — so a window closing while another stays up (the person window does not block
+     the grid) is guarded too, and one window handing over to the next (Settings to the counter form) costs nothing. The
+     one-day and drag windows stay ONE bit, as they were (the one handing over to the other arms nothing).
+     NOT COVERED — windows whose state lives outside `Matrix`: the Required rows' panel, rename form and number pad, the
+     day-details panel, the under-manned days list, the move banners' Confirm and Cancel, New period, and Open for bidding
+     on a desktop ([LW-DOUBLETAP-MORE-WINDOWS] in the backlog). `doubletap-windows.test.tsx`,
      `e2e/doubletap-leavewar.spec.ts`. */
   const winsUp = (open || sel ? 1 : 0) | (who ? 2 : 0) | (settings ? 4 : 0) | (eventEdit ? 8 : 0) | (eventsOpen ? 16 : 0)
     | (manningInfo ? 32 : 0) | (counterEdit !== false ? 64 : 0) | (oilTracker ? 128 : 0) | (evPeek ? 256 : 0)
@@ -1839,7 +1865,9 @@ export function Matrix() {
      dismisses it, by a listener and never a scrim, so the next tap and the next drag reach the grid untouched. */
   useEffect(() => {
     if (!evPeek) return
-    const close = () => setEvPeek(null)
+    /* a scroll, a resize and Escape close it without a press: `dropEvPeek` (at the box's state, above) — the guard is not
+       armed by an older tap inside the box */
+    const close = dropEvPeek
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
       if (!t || t.closest('.evpeek')) return
@@ -1851,7 +1879,7 @@ export function Matrix() {
       const pg = document.getElementById('page-leavewar')
       if (pg && !pg.classList.contains('on')) return
       e.stopPropagation()
-      setEvPeek(null)
+      dropEvPeek()
     }
     window.addEventListener('scroll', close, true)
     window.addEventListener('resize', close)
@@ -1863,7 +1891,7 @@ export function Matrix() {
       document.removeEventListener('pointerdown', onDown, true)
       window.removeEventListener('keydown', onKey, true)
     }
-  }, [evPeek])
+  }, [evPeek, dropEvPeek])
   /* …and it never outlives what it was opened for: a sheet opening over the grid, either move mode starting. */
   // eslint-disable-next-line react-doctor/no-effect-chain -- a sheet or a move is started from many handlers and the drag machine; this one effect is the one place that closes the event box after any of them, and the grid's effect timing is kept as measured (performance.md §E)
   useEffect(() => { if (eventEdit || moveSel || eventMoveSel) setEvPeek(null) }, [eventEdit, moveSel, eventMoveSel])
