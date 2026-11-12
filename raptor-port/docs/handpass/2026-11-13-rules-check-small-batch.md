@@ -4,7 +4,7 @@ Four of his answers to the rules check, `[RULES-CHECK-FIXES]`'s small batch (D20
 `claude/rules-check-small-batch` (cut from pull request 762's branch; no pull request at night). Scenarios: Astra's,
 designed read only before the build, `docs/superpowers/briefs/2026-11-13-rules-check-small-batch-scenarios.md`.
 Pictures: `docs/img/handpass/2026-11-13-rules-check-small-batch/`. Laid down at the build's end, before the walk;
-the walk, the reads and the gates are filled in after it.
+the walk, the reads, the one fix and the gates filled in after it.
 
 ## 1. The eight answers and the tier
 
@@ -31,7 +31,7 @@ the walk, the reads and the gates are filled in after it.
 | D49 | a landing typed equal to the take-off is a real landing — it keeps "landed" | none | `rules-small-batch.test.ts` |
 | D1936 | an unlanded sortie counts no hours and raises no long-day note | none | `rules-small-batch.test.ts` |
 | D2014 | a published day's OIL follows the "Full day of OIL" it was published under; a change reaches it from its next amendment | **none, but its premise is wrong:** already built that way by [OIL-WORK-START] (D592 (4), 5 Oct 26) — pinned end to end, nothing in the engine changed | `oil-fullday-published.test.ts` (12, break-tested); the walk |
-| D592 (4) | a later Logic change reads pending until the day is published again | none — the one way a Logic change makes a published day pending is when it would move someone's OIL | `oil-fullday-published.test.ts` |
+| D592 (4) | a later Logic change reads pending until the day is published again | none — a Logic change makes a published day pending in two ways only: when it would move someone's OIL, and when it changes the brief lead a blank B printed (D186, `publish.ts warnDelta`); a change that only checks never does by itself (corrected after Astra's read, §6) | `oil-fullday-published.test.ts`; `rulesfirst-7-published-day.test.ts` |
 | D2005 | a Logic change never starts a flag on a published day; the day is checked by the settings it was published under | none | earlier tests; unchanged |
 | D2015 | the Logic page's note says a changed setting reaches a published day from its next amendment | none | `logic.test.tsx` W2; the walk |
 | D48, D142, D2 | an issued day keeps its OIL until republished; OIL comes from the latest published version | none | `oil-fullday-published.test.ts` (older versions, Unpublish) |
@@ -48,36 +48,37 @@ question reads today's line, but only when it is asked or edited — the working
 
 | Change | Surface | Mark | Seen in |
 |---|---|---|---|
-| The two names (D2009) | the Logic page's check rows | has it | |
-| | the Logic page's search and Warnings filter | has it | |
-| | Edit Schedule's warning list (bold name), desktop and phone | has it | |
-| | the same, a hidden line (struck) | has it | |
-| | View-only Sched's warning list | has it | |
-| | the day's ⓘ (Issues on this day) | has it | |
-| | Insights, Conflicts by type | has it | |
-| | the Scheduler Board's issues list | must not, because the board shows the message, not the name | |
-| | the crew list's struck reason | must not, because it shows the reason, not the check's name | |
+| The two names (D2009) | the Logic page's check rows | has it | W2 N1 (g), N2 (g), PC and phone — `w2/N1/d-07-g0-logic-list.png`, `w2/N1-phone/`; a member, N3 `w2/N1/d-N3-logic.png` |
+| | the Logic page's search and Warnings filter | has it | W2 N1 (g): "planned" and "leave" find it, "flying" finds no check name — `w2/N1/d-07-g-logic-filter-*.png` |
+| | Edit Schedule's warning list (bold name), desktop and phone | has it | W2 N1 (a), N2 (a) — `w2/N1/d-03-a-edit-strip.png` (a flying row and a BRIEFING row), `w2/N1-phone/`, `w2/N2-ATTC-*` |
+| | the same, a hidden line (struck) | has it | W2 N1 (b): hide, Undo, Redo, Reset, the name unchanged — `w2/N1/`; by touch N7 `w2/N7-phone/` |
+| | View-only Sched's warning list | has it | W2 N1 (e) admin and N3 member, after publish — `w2/N1/d-08-e-view-strip.png`, `d-N3-view-strip.png` |
+| | the day's ⓘ (Issues on this day) | has it | W2 N1 (d), N2 (d), PC and phone, closed by ✕, Escape and a tap outside — `w2/N1/d-04-d-dayinfo-*.png` |
+| | Insights, Conflicts by type | has it | W2 N1 (f), N2 (f), PC (no Insights button on the phone's Edit Schedule) — `w2/N1/d-06-f-insights.png` |
+| | the Scheduler Board's issues list | must not, because the board shows the message, not the name | W2 N1 (c), N2 (c): messages only, unchanged — `w2/N1/d-02-c-board-issues.png` |
+| | the crew list's struck reason | must not, because it shows the reason, not the check's name | W2 N6: no check name drawn there |
 | | the IT flow guide deck (two slides quote the old names) | MISSING — the deck is re-made only on his word (D403); filed for the coordinator | — |
 | | old walk scripts under `scripts/handpass/` | must not, because they are the record of past walks | — |
-| The crew-rest words (D2010) | the crew-rest warning on the next day, Edit Schedule, desktop and phone | has it | |
-| | the same on the Scheduler Board and View-only Sched | has it | |
-| | the amber tight-turn note | has it | |
-| | the day before's "breaks tomorrow's crew rest" line and dotted mark | has it | |
-| | across the week's edge: Sunday's sortie, next Monday's warning | has it | |
-| | the day's ⓘ | has it | |
-| | the ALL AVAIL window, a flagged man's reason | has it | |
-| | the crew list's reason before a man is placed | must not, because its short reason ("crew rest — not clear until …") names no landing | |
-| | Insights hours, the long-day note | must not, because D1936 keeps an unlanded sortie at no hours | |
-| | the next-week preview | must not, because it draws no crew-rest warnings | |
-| A published day's OIL (D2014) | OIL Earn's figures and green marks, the week and the board | has it | |
-| | the ALL AVAIL chip's earning half | has it | |
-| | a look at an issued version (👁) | has it | |
-| | the Leave War grid's credit cell and its day sheet | has it | |
-| | the OIL tracker, Balances, the person window's OIL figure | has it | |
-| | the day's pending count, To go out, the four sign-offs | has it | |
-| | the amber "Publish this day again…" lines | has it | |
-| | the change history | must not, because a Logic change writes no history line | |
-| The note (D2015) | the Logic page's strip, admin and member, one and several settings, desktop and phone | has it | |
+| The crew-rest words (D2010) | the crew-rest warning on the next day, Edit Schedule, desktop and phone | has it | W2 N4 — `w2/N4-blank-pc/d-03-tuesday-edit-strip.png`, `w2/N4-blank-phone/`; TBD, 13:00, 12:00/12:00, 1h30 debrief N5 `w2/N4-*-pc/` |
+| | the same on the Scheduler Board and View-only Sched | has it | W2 N4 — `w2/N4-blank-pc/d-02-tuesday-board-issues.png`, `d-06-tuesday-view-strip.png` |
+| | the amber tight-turn note | has it | W2 N6 (3), N5 (1h30), PC and phone — `w2/N6-pc/d-01-tight-0430-issues.png` |
+| | the day before's "breaks tomorrow's crew rest" line and dotted mark | has it | W2 N4: Monday's mark, "he had to leave by 13:40", agrees with the sentence — `w2/N4-blank-pc/d-04-monday-mark*.png` |
+| | across the week's edge: Sunday's sortie, next Monday's warning | has it | W2 N5 — `w2/N5e-pc/d-05-next-monday-edit-strip.png` |
+| | the day's ⓘ | has it | W2 N4, PC and phone — `w2/N4-blank-pc/d-05-tuesday-info.png` |
+| | the ALL AVAIL window, a flagged man's reason | has it | W2 N6 (2), PC and phone — `w2/N6-pc/d-05-allavail-vandal-reason.png` |
+| | the crew list's reason before a man is placed | must not, because its short reason ("crew rest — not clear until …") names no landing | W2 N6 (1): it draws no crew-rest reason at all for an already-seated man, typed landing too — older, recorded (§6 W2-1) |
+| | Insights hours, the long-day note | must not, because D1936 keeps an unlanded sortie at no hours | carried by test (`rules-small-batch.test.ts`) |
+| | the next-week preview | must not, because it draws no crew-rest warnings | not walked: the preview draws no warning list |
+| A published day's OIL (D2014) | OIL Earn's figures and green marks, the week and the board | has it — the working copy, as D2013 rules (§6 W1-4) | W1 S1, S2 — `w1/s1/s1a/s1b/s1c-board-oilearn.png`; host `host/pc/h1/h3/h4-*-oilearn.png`, `host/phone/` |
+| | the ALL AVAIL chip's earning half | has it | W1 S7: a row that earns nobody, before and after — `w1/s7/`; the frozen crowd by test |
+| | a look at an issued version (👁) | has it | W1 S1, S2 — `w1/s1/s1*-look-original.png` |
+| | the Leave War grid's credit cell and its day sheet | has it | W1 S1, S2 (+ phone, a picture at the tap) — `w1/s1/s1a/s1b/s1c-lw-grid.png`, `-lw-window.png`; reopened `s1b-lw-reopened.png`; RW1 `rw1/` |
+| | the OIL tracker, Balances, the person window's OIL figure | has it | W1 S1, S2 — `w1/s1/s1*-lw-tracker.png`, `-lw-balances.png`, `-lw-person.png` |
+| | the day's pending count, To go out, the four sign-offs | has it | W1 S1 (b), S2 (b), S5 — `w1/s1/s1b-edit-head.png`, `s1b-edit-pendinglist.png`, `s1b-edit-signoff.png`; the sign-off boxes read the next amendment's (§6 W1-1) |
+| | the amber "Publish this day again…" lines | has it | carried by test (`oil-fullday-published.test.ts`, a holiday made after publishing); not walked tonight |
+| | the change history | must not, because a Logic change writes no history line | host `host/s3/h3-lines.txt`: only the amendment's own lines |
+| | the red "no usable times" line on a published face (found by the read, §6 Opus 1) | has it, since the fix | RW1 — `rw1/b2-view.png`, `rw1/b3-edit-issues.png`, `rw1/c2-view.png` |
+| The note (D2015) | the Logic page's strip, admin and member, one and several settings, desktop and phone | has it | W1 S6, ten of ten, word for word — `w1/s6-pc/s6-admin-one.png`, `s6-member-two.png`, `w1/s6-phone/`; host `host/pc/h5-strip-one.png`, `h6-strip-two.png` |
 | | the other Logic lines that say "until it is published again" | must not change, because they say the same of one setting — consistent | — |
 
 ## 4. The five sizing lines
@@ -131,9 +132,118 @@ world is the real 125% window it asks for.
 
 ## 5. The orders walked
 
+Pictures under `docs/img/handpass/2026-11-13-rules-check-small-batch/`; the walkers' own reports, kept whole, in
+`docs/handpass/parts/2026-11-13-rcsb-w1.md` and `-w2.md`; scripts `scripts/handpass/rcsb/`. Every run: 0 console errors,
+0 page errors, 0 failed requests.
+
+| Order | Who | What | Sizes | Result |
+|---|---|---|---|---|
+| H1–H3 | the host | D2014 shown before the walk: a published Saturday's FO*, the line raised to 7h, the Leave War still FO* and 1, "1 pending", "Not yet signed", the board's OIL Earn reading the working copy, AL1 → HO* and 0.5 everywhere; H3 reproduced W1's 16-against-14 changes count (`host/`) | 1536 at 125%, 402 WebKit | as ruled |
+| W1 S1, S2 (+phone), S4, S5 | W1 | a published weekend's OIL before the change, right after it (both directions), after the next amendment; another day published under the new line; the line put back — every OIL surface (`w1/s1`, `s2`, `s2-phone`, `s5`) | 1536 at 125%; S2 also 402 WebKit | 12 PASS, 2 RECORD (S5's two steps set down), 0 FAIL |
+| W1 S3 | W1 | Undo and Redo of the amendment | 1536 | 2 PASS |
+| W1 S6 | W1 | the strip: admin and member, one and two settings, Reset (`w1/s6-pc`, `s6-phone`) | both | 10 PASS |
+| W1 S7 | W1 | Astra's side question — the open-ended row's assumed hour on a published day (`w1/s7`) | 1536 | RECORD — parked for him, §6 |
+| W1 S8 | W1 | the plain-user round: Logic ✎ Edit / Done, a bad value, Undo / Redo of a Logic change, OIL Earn, the person window, the OIL tracker, Balances, the FO*/HO* window as member and admin, View-only (`w1/s8-pc`, `s8-phone`) | both | 8 PASS, 1 brief-wording (§6 W1-3), 5 RECORD |
+| W2 N1, N2, N3 | W2 | "On leave + planned" on a flying row and a BRIEFING row; "Downchit + planned" for ATT C and ATT B; every surface that draws a check's name; hide, Undo, Redo, Reset; a member's View-only after publish (`w2/N1`, `N1-phone`, `N2-*`) | both (N3 PC) | PASS |
+| W2 N4, N5 | W2 | the crew-rest sentence with the landing blank, TBD, 13:00, equal to the take-off, a 1h30 debrief, Sunday to next Monday (`w2/N4-*`, `N5e-pc`) | N4 both, N5 PC | 6 PASS |
+| W2 N6 | W2 | where else the sentence appears: the crew list, the ALL AVAIL window, the tight-turn note (`w2/N6-*`, `N6b-*`) | both | RECORD — as ruled |
+| W2 N7 | W2 | the plain-user round, everything opened and closed (`w2/N7-*`) | both | PASS |
+| RW1 | the host | the re-walk of the one code fix: a Saturday typed 10:00–10:00 with the report lead 0, published (HO*); the debrief set to 0 — View-only shows no red "no usable times" line, the Leave War keeps HO*, Edit Schedule reads "1 pending" and shows the line marked "new once signed"; after AL1 the published face says it and the Leave War drops the half day (`rw1/`, `scripts/handpass/rcsb/rw1/rcsb-rw1.mjs`) | 1536 at 125% | 4 PASS |
+
+The reference window's fix (Astra's finding 1) changes only the comparison the tests make, nothing in the app: no walk.
+
 ## 6. Findings and what was done
 
+**From the walk — no fault in the four rulings.**
+- **W1-1, not a fault:** "the four sign-offs fall" could not be seen in the sign-off boxes — they read "— name —" and
+  "4 to sign" for the NEXT amendment at every moment, the SIGNED line shows the published version's names. What shows a
+  change waiting is "Not yet signed" and the greyed "Publish AL1"; the walker pictured both. My brief's expectation was
+  wrong, not the app.
+- **W1-2, not a fault:** after Undo and Redo of AL1 the head reads "16 changes" against 14 — the host reproduced it
+  (`host/s3`): the two extra lines are "Undo — publishing an amendment" and "Redo — publishing an amendment" in the change
+  history, which counts them.
+- **W1-3, not a fault:** an admin's tap on an FO*/HO* box opens the bid sheet with the "Where it came from" block, not
+  the member's "HO* · approved" window (D1524 is the member's window); older behaviour, untouched by this job — filed as
+  an older find for the coordinator to rule whether it should match.
+- **W1-4, known (D2013):** at the moment after the Logic change the board's OIL Earn shows the working copy's answer
+  (the next amendment's FO or HO) with nothing saying it is not issued yet; the To go out list says it plainly ("OIL as
+  published, under today's values"). D2013 rules the working copy shows the next amendment; a word on OIL Earn would be
+  something new a person sees — parked as a question for him, not built.
+- **W1-5, older:** the Leave War's person window and its OIL tracker do not close on a tap outside on a PC (the standing
+  rule of 4 Sep 26 says a click-open popup does); untouched by this job — filed for the coordinator.
+- **W1-6, older:** a bad value on the Logic page is refused with "Full-day OIL threshold (worked mins) must be between 1h
+  and 12h" — "(worked mins)" is a programmer's phrase; older wording — filed.
+- **W1-7 (S7), Astra's side question — parked for him, case first:** on a published Saturday a Common Programme row
+  "Briefing", 09:00 with no end, holds ALL AVAIL (45). Published, its window reads "09:00–10:00 · no end time, an hour
+  assumed". "Any other row" changed 1h → 2h on the Logic page: the published Saturday's window reads "09:00–11:00 · 2
+  hours assumed" at once; nothing reads pending, no AL1 is offered, and nobody earns OIL either way (`w1/s7`). The
+  scheduler page's line (D360, the agent's reading) says "a change of that setting on a published day reads pending";
+  D2005 says a published day is checked by the settings it was published under — the setting is one of the kept ones
+  (`faceattrs.ts KEPT_RULE_KEYS` has `openEnd`), but the ALL AVAIL window draws it with today's. **Recommended:** the
+  published day keeps its one hour until its next amendment, as every other kept setting does, and the D360 reading is
+  rewritten to say so (no pending mark, since nobody's OIL moves). What waits on it: the window's assumed hour on a
+  published face (a small engine change, red-first, and the scheduler page's line). Not changed tonight.
+- **W2-1, older:** the crew list draws no crew-rest reason for a man already seated, in any variant, a typed landing too —
+  not caused by this job (the list's reason names no landing, roll-call above); recorded.
+- **W2-2, older:** Insights cannot be reached from Edit Schedule on a phone (no button; the board has it under ⋯) —
+  recorded, filed.
+- **W2-3, not a fault:** the Inputs day panel does not close on a tap beside it — a docked panel (D1143), as ruled.
+
+**From the reads.**
+- **Opus 1 — FIXED, red-first:** the red "the <line> has no usable times — nobody on it earns OIL for this day" line, one
+  of the warnings live on a published face, was worked out with TODAY's "Nominal report before T/O" and "Flight debrief
+  after land", while the Leave War credited the day by the values it was published under. A published Saturday typed
+  10:00–10:00 (report lead 0, debrief 2h: a half day) showed the red line on View-only the moment the debrief was set to
+  0, while the Leave War still credited the half day — the face said nobody earns while somebody did; and the reverse.
+  Fixed: the line is judged by the report lead and debrief the day's checks read (the kept values on a published day),
+  as D2014 rules for its OIL; a Logic change now raises or clears it only with the next amendment. Tests: three cases in
+  `oil-fullday-published.test.ts` (lowered, raised, nothing credited and nothing pending), red before, green after,
+  break-tested by removing the fix (3 red). Re-walked: RW1.
+- **Opus 2 — recorded, not changed:** the IT flow guide's deck (`scripts/itflow/content.mjs`, two slides) still names
+  "On leave + flying" and "Downchit + flying"; the deck is re-made only on his word (D403) — for the coordinator.
+- **Opus 3 — FIXED:** two code comments said the opposite of D2014 (`faceattrs.ts`, `oil.ts`); reworded.
+- **Opus 4 — folded into a question:** the strip counts the Inputs and SANS late cut-offs as "settings changed", but the
+  LATE tag is drawn live everywhere, so the strip's "a published day keeps the settings it was published with" claims
+  more than holds for those two. Arguably covered ("for its checks and its OIL" — LATE is a mark, not a check); parked
+  beside S7 as one question for him.
+- **Opus 5 — recorded:** two old walk scripts (`bta-D-4.mjs`, `ins-a-11.mjs`) match the old name — records of past
+  walks, left.
+- **Astra 1 — FIXED, red-first (the comparison only):** the reference window — the read-only original app the port is
+  compared with — mirrored D2010's words but kept the original's own sum on a landing that is not a time, so it raised
+  no crew-rest warning for "TBD" and the comparison was blind to the case; it also kept the two old check names. Fixed
+  in `src/testing/refwin.ts`; a new comparison in `parity.test.ts` (blank, "TBD", words, the take-off's own minute, a
+  typed landing — the same warning in both, word for word — and the two names), red before, green after. Not a fault a
+  person could meet.
+- **Astra 2 — FIXED (documents):** `engine-rules.md` and the amendment register's AM7 said OIL is the only way a Logic
+  change makes a published day pending; the printed brief lead is the other (D186) — both corrected.
+- **The narrow read of the fixes (a fresh Opus):** sound in every path asked (official pass, working pass with and
+  without a change waiting, drafts, neighbour weeks, standalone shifts, the publish note, the hide comparison); two
+  points — **1 FIXED:** no test drove the case D2014 exists for most (nothing credited, so nothing pending) — the third
+  case above, break-tested; **2 FIXED:** a stale comment in `rules.ts` ("the owner's question") pointed at D2014.
+
+**The roll-call's MISSING cell:** the IT flow guide's deck — settled as recorded for the coordinator (D403), not
+changed.
+
+**Why the night before read D2014 the other way.** The earlier night (12 Nov 26) wrote, beside D2005, that "OIL stays on
+today's settings" (the file map's line for `oil.ts`, and D2005's row: OIL was left out of the day's kept checks
+"because it keeps its own values"). Both were about the validator's OIL CHECKS, which do run on today's settings — not
+about the credit. The credit has followed the three values kept in the day's OIL block since [OIL-WORK-START] (D592 (4),
+5 Oct 26). What a person sees agreed with the misreading in one place: the board's OIL Earn shows the working copy's
+answer at once (W1-4, D2013), so a quick look after a Logic change shows the new amount on the board while the Leave
+War, Balances, the OIL tracker and the published face keep the old one (`host/`, `w1/s1`, `w1/s2`). The walk's search for
+a place where a published day's OIL figure or its warning moves at once with the setting found the figure nowhere and
+the warning in one place — the "no usable times" line (Opus 1), now fixed.
+
 ## 7. The reads
+
+- **Scenarios:** Astra, designed read only before the build (`docs/superpowers/briefs/2026-11-13-rules-check-small-batch-scenarios.md`).
+- **The code reads, blind to each other and to the walk:** Astra (`docs/handpass/parts/2026-11-13-rcsb-read-astra.md`)
+  — 2 findings, both fixed; a fresh Opus reader (`…-read-opus.md`) — 5 points: 1 fault fixed, 1 comment fixed, 3
+  recorded or folded into a question. Sol 6.1 not called (his call only).
+- **The narrow read of the fixes:** a fresh, blind Opus reader (`…-read-fixes.md`) — sound; 1 missing test and 1 comment,
+  both fixed.
+- Reads owed: none for this job beyond the standing reads-owed list (Sol 6.1's second seat on the published record and
+  OIL, his call).
 
 ## 8. Cases carried by tests
 
@@ -148,7 +258,40 @@ world is the real 125% window it asks for.
   made to read today's line, 9 of its 11 OIL cases went red.
 - D2015: one and several settings, the old words gone — `src/ui/logic.test.tsx`.
 - The original's assertions run against the same messages: the reference window mirrors D2010 (`src/testing/refwin.ts`).
+- Added after the reads, each red before its fix and green after:
+  - the red "no usable times" line on a published day across a Logic change — lowered, raised, and nothing credited on
+    the day (so nothing pending): View-only and the working copy keep the published answer until the next amendment —
+    the last describe of `src/leavewar/oil-fullday-published.test.ts` (with the fix taken out, all three red);
+  - the two engines compared on a landing that is not a time — blank, "TBD", words, the take-off's own minute and a
+    typed landing give the same crew-rest warning word for word, and both carry the two new names —
+    `src/engine/parity.test.ts`, its last describe.
 
 ## 9. Gates
 
+The whole gate set once, after the last fix, on his PC through the checks lock (`gatelock.mjs run`, 13 Nov 26 06:32,
+commit `5ec8aec9f`), watched to its end:
+
+| Gate | Result |
+|---|---|
+| unit | PASS — 832 files, 14,306 passed, 20 skipped |
+| build | PASS |
+| the original's assertions | PASS — 728 passed, 0 failed |
+| browser (e2e) | FAIL — 1,207 passed, 117 skipped, 1 failed: the Leave War's "a month button scrolls the grid to that month" (desktop), September's first date 1.11px under the frozen balance column where the test allows 1px |
+| Tracker smoke | PASS — 472 passed, 0 failed |
+| rule check | PASS |
+| document check | PASS |
+
+**The one red, older and not this change's:** this branch changes no Leave War screen, style or grid code (the engine's
+words and OIL checks, the reference window, the Logic page's strip). Run alone five times on desktop and phone it
+failed 2 of 5 on desktop; run eight times on the branch's parent (the code before this job, put back afterwards) it
+failed 1 of 8, the same 1.1px. The test waits until the distance, rounded, is at least −1 (so −1.5 passes the wait)
+and then demands at least −1, so a landing between −1 and −1.5 px fails it now and then. Not changed here (never
+weaken a test; out of this job) — filed for the coordinator. GitHub's run of the pull request is the job's full check.
+
 ## 10. The Walk line
+
+`Walk: docs/handpass/2026-11-13-rules-check-small-batch.md · 572 pictures · 26 surfaces · 17 orders · MISSING: 0 fixed, 0 ruled, 1 filed (the IT flow guide's deck, D403)`
+
+The pictures: host 37, W1 283, W2 240, the re-walk 12. The orders: the host's route, W1's S1–S8, W2's N1–N7 and the
+re-walk. The surfaces: the roll-call's rows walked or pictured (§3), the IT flow guide's deck and the old walk scripts
+not counted.
