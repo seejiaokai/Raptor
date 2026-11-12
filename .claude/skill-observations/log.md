@@ -2433,3 +2433,29 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** Every desktop scenario of the first walk ran at the widest common window or wider. Two faults that exist only in a narrower desktop window (the list's lines showing past the pinned headings; a newly opened calendar and a new list opening out of sight after a sideways scroll) were found only by the code readers, not by the walk. The sizing step had named heights (neighbouring and fractional) carefully but took the width from the usual desktop size.
 **Suggested improvement:** In the sizing step for a page that fits the screen or scrolls inside itself, name at least one narrow desktop width just above the phone split and one mid width, beside the usual wide one, and walk the sideways scroll there; add it to the lesson on fitted pages.
 **Principle:** When a layout has a breakpoint, the walk covers both sides of it close up — the narrowest window that still gets the wide layout is where the wide layout is most likely to fail.
+
+### Observation 940: A warning drawn live on a published day reads the settings too — it belongs in the roll-call
+
+**Status:** OPEN
+**Date:** 2026-11-13
+**Session context:** the night of 13 Nov 26 (chat 67) — the rules check's small batch: a published day keeps the Logic settings it was published under (D2005, D2014)
+**Skill:** New skill candidate: bug-check roll-call (the project's bug-check order, its roll-call step)
+**Type:** open-source
+**Phase/Area:** the roll-call — listing every place the app draws the thing a change touches
+
+**Issue:** The change made a published day keep the settings it was published with. The roll-call listed the places that show the day's stored figures, and each kept them. A red warning line that is not stored but worked out each time the day is drawn (the "no usable times" line) still read today's settings, so it moved at once with a settings change on a published day. Only the blind code read found it; the roll-call had no row for it, because the line is not a "place that shows the figure" — it is a check that reads the same setting.
+**Suggested improvement:** In the roll-call step, add a second question beside "where is this thing drawn": "what else reads the same setting or input each time the screen is drawn" — warnings, counts, notes and marks worked out live — and give each its own row with has it / must not / MISSING.
+**Principle:** When a change freezes or redirects an input, list every reader of that input, not only every display of its result; a derived message is a reader even when it stores nothing.
+
+### Observation 941: Type-check a new test file before calling it done — the test runner does not
+
+**Status:** OPEN
+**Date:** 2026-11-13
+**Session context:** the night of 13 Nov 26 (chat 67) — the rules check's small batch, new test files written by a builder helper
+**Skill:** New skill candidate: build-step checks (the project's executor rule, its "tests first" step)
+**Type:** open-source
+**Phase/Area:** verifying a new test file before the full check
+
+**Issue:** A new test file ran green in the test runner while carrying type errors, because the runner strips types without checking them. The errors surfaced only later, at the build step of the full check, costing a second round. (In this project the plain no-output type check is also hollow, so the project's build-mode type check is the one to run.)
+**Suggested improvement:** In the builder's brief and the executor rule, add to "its own tests green": run the project's real type check (here `npx tsc -b`, or the build) on any new or changed test file before the job is called built.
+**Principle:** A test runner that transpiles without type-checking proves behaviour, not types; run the type check that the full gate will run before handing work on.
