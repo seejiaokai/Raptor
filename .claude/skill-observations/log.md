@@ -2394,3 +2394,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The host wrote a small wait script on the spot: it looped until no run of the merge commit was queued or in progress and the production deployment reported success, then printed "ready". Main's run had FAILED (nine browser jobs could not download the test browser — a network fault on the hosted machines, no test ran), and the script still printed "ready" because a failed run is also "not running". The host caught it only by reading the runs again by hand before reporting. Highest number on every branch read just before this append: 935.
 **Suggested improvement:** Keep one committed wait script for this step (beside the gate lock script) that exits 0 only when every run of the merge commit concluded `success` (or `skipped`) AND the production deployment is ready; any other conclusion exits non-zero and prints the failed jobs with the step each failed at, so an infrastructure failure (a download step) is told apart from a failing test at a glance. The shipping rules' line on "main's own run goes green" names the script.
 **Principle:** A wait condition is written as the success it waits for, never as the absence of activity; "nothing is running" is true of a failure too.
+
+### Observation 937: A night job that rides an already-checked pull request is built on its own branch and joined only when checked
+
+**Status:** OPEN
+**Date:** 2026-11-12
+**Session context:** the night of 12 Nov 26 (chat 66) — five jobs, three of them on one pull request
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2 — through the night (branches; a batch on one branch)
+
+**Issue:** Jobs 2 and 3 were built and fully checked on the pull request's branch; job 4 belonged on the same pull request but was the riskiest and the last. Built straight onto that branch, a job 4 that ran out of time would have left the checked work carrying a half-built change. It was built on its own branch cut from the checked one, pushed freely (no pull request, so no run), checked there on the PC, and only then brought onto the pull request's branch by fast-forward — the pull request stayed whole throughout. Two further things met on the way: GitHub started a push's runs about five minutes late, so "no run listed" right after a push is not "no run coming" (the push guard caught the second push); and a builder helper stops several times with a "waiting on its own background work" notice before its real report.
+**Suggested improvement:** In the overnight guide's "Branches" paragraph, add one sentence: a later job that joins a pull request whose earlier jobs are already checked is built on its own branch cut from that one and fast-forwarded in only once it is built and checked, so a short night leaves the pull request as its checked jobs. In Part 2's push bullet, add: after a push, read the runs again a few minutes later before concluding none started.
+**Principle:** Work that is already checked is never the staging ground for unchecked work; join the two only when the second has earned it.
