@@ -1,0 +1,17 @@
+initial: {"innerW":402,"innerH":874,"vvH":874,"scrollY":0,"room":1241,"docH":2115,"lines":19,"lastBottom":1891.8,"lastTop":1801.8,"scroller":false,"bodyClass":"","card":{"top":141.8,"bottom":1898.8}}
+  PASS F6-layout: phone 402x874: no inner scroller (geo.scroller null), lines 19, body ""
+at foot: {"innerW":402,"innerH":874,"vvH":874,"scrollY":1241,"room":1241,"docH":2115,"lines":19,"lastBottom":650.8,"lastTop":560.8,"scroller":false,"bodyClass":"","card":{"top":-1099.2,"bottom":657.8}}
+  PASS F6-foot: page scrolled as a whole to its foot: scrollY 1241 of 1241; last line 560.8-650.8 within the screen (874), card bottom 657.8
+  PASS F6-top: flicked back: scrollY 0
+decide: {"before":"Approve","after":"Approved","pressed":"true","scrollY":[0,0],"counts":{"tab":"Approvals 20","approveAll":"Approve all 18"}}
+  PASS F6-decide: tap Approve: "Approve" -> "Approved", page did not jump (scrollY 0 -> 0), counts {"tab":"Approvals 20","approveAll":"Approve all 18"}
+after Feb chip: {"lines":10,"chipOn":["Feb"],"scrollY":0,"room":539,"scroller":false}
+  PASS F6-month: Feb chip: 10 lines, chip on ["Feb"], still no inner scroller
+  PASS F6-month-foot: Feb list foot: last line 560.8-650.8 within 874, scrollY 539/539
+fresh decided line 4: {"idx":4,"id":"appr-line-slipway","text":"Drifter A OIL 10 Feb AM › Approved Refuse —","top":649.8,"bottom":727.8,"inView":null,"approve":"Approved","refuse":"Refuse","apPressed":"true","rfPressed":"false"}
+after dates tap: slim bar 1 ring ["cell-bane-2026-03-02"]
+back: Approvals up lines 18 scrollY 0 (was 0) scroller false decided line "Approved"
+  PASS F6-back: dates -> grid with slim bar (1), Back -> Approvals: 18 lines, no inner scroller, decided line "Approved", scrollY 0 -> 0
+errors []
+  PASS F6-err: page errors: none
+SUMMARY 8 PASS, 0 FAIL

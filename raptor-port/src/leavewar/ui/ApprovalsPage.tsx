@@ -173,6 +173,10 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
      dates", no chip lit, Approve all 0). The filter, the date picker and an armed Approve all go with the period. */
   const periodId = st.period.id
   useEffect(() => { setFilterRaw({ kind: 'all' }); setPicking(false); setArmed(null) }, [periodId])
+  /* …and the box back to the new list's first request before the frame is drawn, never one frame at the old place (the fix
+     read, 13 Nov 26). On the page's first showing this wipes nothing: the page is made anew for each visit (LeaveWarPage.tsx). */
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- runs only when the period changes: listTop reads the box and its place from refs and the PC/phone split as it stands then, so a re-run on those would throw away the list's place mid-visit
+  useLayoutEffect(() => { listTop() }, [periodId])
 
   /* ON A PC THE PAGE FILLS THE SCREEN UNDER THE TAB ROW AND ONLY ITS LIST SCROLLS, AS THE BALANCES PAGE DOES (his D2006,
      12 Nov 26 — the drawings docs/superpowers/specs/2026-11-12-approvals-scroll-drawings.md, pictures 1–4): the title, the
@@ -207,7 +211,16 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
      calendar's last weeks where nothing could scroll to them — on main the window scrolled to them. Inside the box the wheel
      reaches every day and the list under it, as on main the calendar pushed the list down the page; the box goes back to its
      top as the calendar opens, so the calendar is in view under the chip that opened it. */
-  useLayoutEffect(() => { if (picking && fits && scrollRef.current) scrollRef.current.scrollTop = 0 }, [picking, fits])
+  /* …and to its LEFT: on a narrow PC the box scrolls sideways too, and scrolled right to reach Approve and Refuse the calendar,
+     at the box's left, would open out of sight (the fix read's finding, 13 Nov 26) */
+  useLayoutEffect(() => { const sc = scrollRef.current; if (picking && fits && sc) { sc.scrollTop = 0; sc.scrollLeft = 0 } }, [picking, fits])
+  /* the list back to its first request, from the box's left, and that kept as his place — new dates or another period
+     (`setFilter`, the period's own reset above); on a phone there is no box of its own and the window is left as it was */
+  function listTop() {
+    listY.current = 0
+    const sc = scrollRef.current
+    if (fits && sc) { sc.scrollTop = 0; sc.scrollLeft = 0 }
+  }
   /* a decision the rules refused changes nothing in the war — this repaints the line's reason */
   const [tick, setTick] = useState(0)
   const rowsRef = useRef<{ period: string; rows: Row[] }>({ period: st.period.id, rows: [] })
@@ -308,10 +321,15 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   const total = pendingCount()
   const elsewhere = pendingElsewhere()
 
-  /* changing the dates starts the rows afresh: the lit lines and the gone ones leave (D1421) */
-  const setFilter = (f: Filter) => {
+  /* changing the dates starts the rows afresh: the lit lines and the gone ones leave (D1421) — and ON A PC the new list shows
+     from its first request (the fresh code read's F2, 13 Nov 26): the box that scrolls kept its old place, cut to the new
+     list's length, so pressing Feb at the list's foot hid February's first requests above the pinned headings, with nothing
+     saying more stood above (on main the chips scrolled away with the page, so a new list always showed from its top).
+     `keepPlace`: a range's first day pressed, the calendar still open — nothing moves under the finger (2 Sep 26). */
+  const setFilter = (f: Filter, keepPlace = false) => {
     rowsRef.current = { period: st.period.id, rows: rowsRef.current.rows.filter(r => !r.lit && r.msg?.kind !== 'stale') }
     setFilterRaw(f); setArmed(null); setTick(t => t + 1)
+    if (!keepPlace) listTop()
   }
 
   const apply = (targets: Row[], to: DecideTo) => {
@@ -485,7 +503,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     <div className="appr-pickpop" ref={pickRef}>
       <RangePicker testid="appr-range" min={st.period.start} max={st.period.end}
         value={filter.kind === 'range' ? { from: filter.from, to: filter.to } : null}
-        onChange={(v: Range | null) => { if (v) { setFilter({ kind: 'range', from: v.from, to: v.to }); if (v.to !== v.from) setPicking(false) } }} />
+        onChange={(v: Range | null) => { if (v) { setFilter({ kind: 'range', from: v.from, to: v.to }, v.to === v.from); if (v.to !== v.from) setPicking(false) } }} />
     </div>
   )
 
@@ -494,15 +512,17 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
       <div className="appr-card">
         {head}
         {filterRow}
-        {phone ? <>{pickPop}{body}</> : (
-          /* ON A PC ONLY THIS SCROLLS (his D2006): the request lines, their column headings pinned at its top, the "New"
-             filter's "Also since you last looked" and the empty words — inside the card, which fills the page. It keeps the
-             wheel to itself at its ends (approvals.css), and its own place while the page waits behind the grid (`listY`).
-             The date calendar, open, is its first part (the walk's W3 — see the effect above). */
-          <div className="appr-scroll" data-testid="appr-scroll" ref={scrollRef} onScroll={e => { if (shown) listY.current = e.currentTarget.scrollTop }}>
-            {pickPop}{body}
-          </div>
-        )}
+        {/* ON A PC ONLY THIS SCROLLS (his D2006): the request lines, their column headings pinned at its top, the "New"
+            filter's "Also since you last looked" and the empty words — inside the card, which fills the page. It keeps the
+            wheel to itself at its ends (approvals.css), and its own place while the page waits behind the grid (`listY`).
+            The date calendar, open, is its first part (the walk's W3 — see the effect above).
+            ON A PHONE THE SAME BOX DRAWS NOTHING OF ITS OWN (`.appr-flow`, display: contents): its parts stand in the card as
+            they always did. One box at both widths, so crossing 700 with the page up never makes the calendar or the lines
+            anew — the calendar keeps the month he browsed to (the code read's finding, Astra, 13 Nov 26). */}
+        <div className={phone ? 'appr-flow' : 'appr-scroll'} data-testid={phone ? undefined : 'appr-scroll'} ref={scrollRef}
+          onScroll={phone ? undefined : e => { if (shown) listY.current = e.currentTarget.scrollTop }}>
+          {pickPop}{body}
+        </div>
       </div>
     </section>
   )

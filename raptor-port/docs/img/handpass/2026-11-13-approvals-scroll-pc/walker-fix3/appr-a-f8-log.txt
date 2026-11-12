@@ -1,0 +1,7 @@
+  PASS F8-820-pick: scrolled sideways by 414.3999938964844 of 414; "Pick dates…" pressed: the box at 0 sideways, the calendar 350 of its 350px in sight
+  PASS F8-820-chip: scrolled sideways by 414.3999938964844; Feb pressed: the new list from the box's left (0)
+  PASS F8-1000-pick: scrolled sideways by 234.39999389648438 of 234; "Pick dates…" pressed: the box at 0 sideways, the calendar 350 of its 350px in sight
+  PASS F8-1000-chip: scrolled sideways by 234.39999389648438; Feb pressed: the new list from the box's left (0)
+errors []
+  PASS F8-err: page errors: none
+SUMMARY 5 PASS, 0 FAIL

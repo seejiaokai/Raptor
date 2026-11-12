@@ -22,7 +22,7 @@ import { installGlobalUndo } from '../../state/undo-wire'
 import { _resetTimeline } from '../../undo/timeline'
 import { NOTICES } from '../../state/notices'
 import { noticeSeenLoad } from '../../state/noticeseen'
-import { clearCells, initStore as lwInitStore, lwHistInit, setCell, setPeople } from '../state/store'
+import { clearCells, createWar, initStore as lwInitStore, lwHistInit, selectWar, setCell, setPeople } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { projectPeople } from '../state/raptorRoster'
 import { wireLeaveWarSync } from '../sync'
@@ -128,7 +128,9 @@ describe('on a phone the Approvals page stays as it is today — the whole page 
     threeLines()
     render(<ApprovalsPage shown={true} />)
     expect(page().querySelector('[data-testid="appr-scroll"]'), 'no list box scrolling inside the page').toBeNull()
-    const list = card().querySelector(':scope > .appr-list')
+    /* the list in the card itself — through the one box that, on a phone, draws nothing of its own (display: contents,
+       approvals.css `.appr-flow`), kept so crossing 700 never makes the lines anew */
+    const list = card().querySelector(':scope > .appr-flow > .appr-list')
     expect(list, 'the list a part of the card itself').not.toBeNull()
     expect(list!.firstElementChild!.classList.contains('appr-cols'), 'the phone\'s headings, at the list\'s top').toBe(true)
     expect(list!.querySelectorAll('[data-testid="appr-line-bane"]')).toHaveLength(3)
@@ -139,7 +141,7 @@ describe('on a phone the Approvals page stays as it is today — the whole page 
     render(<ApprovalsPage shown={true} />)
     act(() => { screen.getByTestId('appr-new').click() })
     const also = screen.getByTestId('appr-also')
-    expect(also.parentElement, 'a part of the card itself').toBe(card())
+    expect(also.parentElement!.classList.contains('appr-flow') && also.parentElement!.parentElement, 'a part of the card itself (the box that draws nothing)').toBe(card())
     expect(also.previousElementSibling?.classList.contains('appr-list'), 'right under the list').toBe(true)
   })
 
@@ -148,8 +150,8 @@ describe('on a phone the Approvals page stays as it is today — the whole page 
     render(<ApprovalsPage shown={true} />)
     act(() => { screen.getByTestId('appr-pick').click() })
     const pop = page().querySelector<HTMLElement>('.appr-pickpop')!
-    expect(pop.parentElement, 'a part of the card itself').toBe(card())
-    expect(pop.previousElementSibling?.classList.contains('appr-filters'), 'right under the chips').toBe(true)
+    expect(pop.parentElement!.classList.contains('appr-flow') && pop.parentElement!.parentElement, 'a part of the card itself (the box that draws nothing)').toBe(card())
+    expect(pop.parentElement!.previousElementSibling?.classList.contains('appr-filters'), 'right under the chips').toBe(true)
     expect(pop.nextElementSibling?.classList.contains('appr-list'), 'the list right under it').toBe(true)
   })
 })
@@ -282,5 +284,80 @@ describe('on a PC the page fits the screen and only its list scrolls, as Balance
       expect(page().style.height).toBe(`${733 - 120}px`)
       expect(document.body.classList.contains('lw-appr-on')).toBe(true)
     } finally { restore() }
+  })
+
+  /* THE CODE READ'S FINDING (Astra, 13 Nov 26): crossing the phone's width while the date calendar is open must not start
+     it again — on main the calendar stayed where he had browsed it (April stayed April); built with two parents, one per
+     width, the calendar and the lines were made anew at each crossing, the calendar back on January */
+  it('crossing the phone\'s width and back with the calendar open keeps the month he browsed to, and the lines themselves', () => {
+    threeLines()
+    const flip = flippable(false)
+    render(<ApprovalsPage shown={true} />)
+    act(() => { screen.getByTestId('appr-pick').click() })
+    const month = () => screen.getByTestId('appr-range-title').textContent
+    const start = month()
+    act(() => { screen.getByTestId('appr-range-next').click() })
+    act(() => { screen.getByTestId('appr-range-next').click() })
+    const browsed = month()
+    expect(browsed, 'browsed two months on (the precondition)').not.toBe(start)
+    const line0 = screen.getAllByTestId('appr-line-bane')[0]
+    flip(true)
+    expect(month(), 'on the phone, the same month').toBe(browsed)
+    flip(false)
+    expect(month(), 'wide again, the same month').toBe(browsed)
+    expect(screen.getAllByTestId('appr-line-bane')[0], 'the same line, never made anew').toBe(line0)
+  })
+
+  /* THE CODE READ'S FINDING (the fresh read's F2, 13 Nov 26): new dates are a new list, and it shows from its first request —
+     the box that scrolls kept its old place, cut to the new list's length, so pressing Feb at the list's foot hid February's
+     first requests above the pinned headings with nothing saying so (on main the chips scrolled away with the page, so a new
+     list always showed from its top). The calendar still open (a range's first day pressed) moves nothing under the finger. */
+  it('new dates — a chip, a month, a range — show the new list from its first request', () => {
+    threeLines()
+    render(<ApprovalsPage shown={true} />)
+    const sc = screen.getByTestId('appr-scroll')
+    for (const chip of ['appr-m-2026-02', 'appr-new', 'appr-all']) {
+      sc.scrollTop = 300
+      act(() => { sc.dispatchEvent(new Event('scroll')) })
+      act(() => { screen.getByTestId(chip).click() })
+      expect(sc.scrollTop, `${chip}: the new list from its top`).toBe(0)
+    }
+    /* a range's first day pressed, the calendar still open: nothing moves under the finger */
+    act(() => { screen.getByTestId('appr-pick').click() })
+    sc.scrollTop = 120
+    act(() => { sc.dispatchEvent(new Event('scroll')) })
+    const day = page().querySelector<HTMLElement>('[data-testid="appr-range-grid"] button:not([disabled])')!
+    act(() => { day.click() })
+    expect(page().querySelector('.appr-pickpop'), 'the calendar still open after the first day').not.toBeNull()
+    expect(sc.scrollTop, 'the first day of a range moves nothing').toBe(120)
+  })
+
+  /* THE FIX READ'S FINDING (13 Nov 26): on a narrow PC the box scrolls sideways too (the lines are wider than it). Scrolled
+     right to reach Approve and Refuse, "Pick dates…" set only the box's height back — the calendar, at the box's left, stayed
+     out of sight to the left, so the press seemed to open nothing; and a new list showed from its first request but still
+     shifted sideways. Both go back to the box's left as well as its top. */
+  it('on a narrow PC scrolled sideways, the calendar and a new list show from the box\'s left as well as its top', () => {
+    threeLines()
+    render(<ApprovalsPage shown={true} />)
+    const sc = screen.getByTestId('appr-scroll')
+    sc.scrollLeft = 300; sc.scrollTop = 200
+    act(() => { screen.getByTestId('appr-pick').click() })
+    expect(sc.scrollLeft, 'the calendar at the box\'s left, in view').toBe(0)
+    act(() => { screen.getByTestId('appr-pick').click() })             // closed again
+    sc.scrollLeft = 300
+    act(() => { screen.getByTestId('appr-m-2026-02').click() })
+    expect(sc.scrollLeft, 'the new list from its left').toBe(0)
+  })
+
+  /* the same fix read: another period is a new list too — from its first request (the period's own reset, D1444's F2) */
+  it('another period shows its list from its first request', () => {
+    threeLines()
+    render(<ApprovalsPage shown={true} />)
+    const sc = screen.getByTestId('appr-scroll')
+    sc.scrollTop = 300
+    act(() => { sc.dispatchEvent(new Event('scroll')) })
+    act(() => { expect(createWar('JAN - DEC 30', '2030-01-01', '2030-12-31')).toBe('created'); selectWar('war-2030-01-01-2030-12-31') })
+    expect(screen.getByTestId('appr-scroll'), 'the same box').toBe(sc)
+    expect(sc.scrollTop, 'the other period\'s list from its top').toBe(0)
   })
 })

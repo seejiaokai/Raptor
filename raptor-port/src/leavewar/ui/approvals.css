@@ -49,6 +49,12 @@
   .appr-page:not(.ph) .appr-card > .appr-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; max-width: none;
     margin-right: -18px; padding-right: 18px; padding-bottom: 28px; scroll-padding: 40px 0 28px; }
   .appr-scroll > * { max-width: 1240px; }
+  /* on a phone the same box draws nothing of its own: its parts stand in the card as they always did (ApprovalsPage.tsx) */
+  .appr-flow { display: contents; }
+  /* A NARROW PC — wider than 700, narrower than a line's columns (an iPad, half a 1920 screen; the code read's F1,
+     13 Nov 26): the lines run past the box, which then scrolls sideways too; the pinned headings, and the lists under them,
+     are as wide as the lines' columns, so no line shows past the headings' right end (D1518 — nothing pinned leaks) */
+  .appr-scroll > .appr-cols, .appr-scroll > .appr-list, .appr-scroll > .appr-also { min-width: max-content; }
   /* the date calendar, open, is the box's first part on a PC (ApprovalsPage.tsx — the walk's W3): its own width kept */
   .appr-scroll > .appr-pickpop { max-width: 360px; }
   /* the column headings pinned at the box's top, solid, so no line shows behind them (D1518) */

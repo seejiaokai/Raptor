@@ -9046,3 +9046,33 @@ test('on a PC the list keeps its own place across "Back to Approvals", the decid
   await expect(line.getByTestId('appr-approve'), 'still lit').toHaveText('Approved')
   expect((await apprGeo(page)).room, 'the window still has nothing to scroll').toBeLessThanOrEqual(0)
 })
+
+/* A NARROW PC (the fresh code read's F1, 13 Nov 26): wider than 700, narrower than a line's columns — an iPad, half a 1920
+   screen. The lines run past the box, which scrolls sideways too; the pinned headings must cover the whole width the lines
+   take, so no Approve or Refuse shows past their right end as the list scrolls under them (D1518 — nothing pinned leaks). */
+test('on a narrow PC no line shows past the pinned headings\' end as the list scrolls, down or sideways (D1518)', async ({ page }) => {
+  test.skip(isPhone(), 'a PC’s page')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 1000, height: 733 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.waitForTimeout(300)
+  for (const [y, x] of [[60, 0], [120, 0], [200, 0], [120, 200]] as const) {
+    await page.getByTestId('appr-scroll').evaluate((e: HTMLElement, [y, x]) => { e.scrollTop = y; e.scrollLeft = x }, [y, x])
+    await page.waitForTimeout(150)
+    const leak = await page.evaluate(() => {
+      const sc = document.querySelector<HTMLElement>('[data-testid="appr-scroll"]')!
+      const s = sc.getBoundingClientRect(), c = document.querySelector('[data-testid="approvals-page"] .appr-cols')!.getBoundingClientRect()
+      const out: string[] = []
+      for (const b of document.querySelectorAll<HTMLElement>('[data-testid="approvals-page"] [data-testid^="appr-line-"] button')) {
+        const r = b.getBoundingClientRect()
+        const inStrip = r.bottom > c.top && r.top < c.bottom
+        const seen = Math.max(r.left, s.left) < Math.min(r.right, s.left + sc.clientWidth)
+        if (inStrip && seen && (r.right > c.right + 0.5 || r.left < c.left - 0.5)) out.push(`${b.textContent} ${Math.round(r.left)}–${Math.round(r.right)}, the headings to ${Math.round(c.right)}`)
+      }
+      return out
+    })
+    expect(leak, `the list at ${y}, sideways ${x}: nothing shows past the headings`).toEqual([])
+  }
+  expect((await apprGeo(page)).room, 'the window still has nothing to scroll').toBeLessThanOrEqual(0)
+})

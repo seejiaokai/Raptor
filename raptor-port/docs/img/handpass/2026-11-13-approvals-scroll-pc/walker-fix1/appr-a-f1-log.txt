@@ -13,7 +13,8 @@ calendar foot after wheel: picker {"t":150,"b":520.5,"l":38.8,"r":388.8,"h":370.
 Tab x40 from Pick dates…: stops approve-all > range-title > range-today > range-prev > range-next > range-day-2026-01-01 > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates
   calendar stops 5; max cardScrollTop 0; max winY 0; invisible in-list stops []
 arrow walk from appr-range-day-2026-01-01: 01-08@364.8-408.8 sc0 card0 | 01-15@408.8-452.8 sc0 card0 | 01-22@452.8-496.8 sc0 card0 | 01-29@496.8-540.8 sc0 card0 | 01-30@496.8-540.8 sc0 card0 | 01-31@496.8-540.8 sc0 card0 | 02-07@364.8-408.8 sc0 card0 | 02-14@408.8-452.8 sc0 card0
-  PASS F1-680-tab: Tab through the calendar (5 stops: range-title, range-today, range-prev, range-next, range-day-2026-01-01) and on into the list; arrow keys walked 8 different days; card.scrollTop 0 at every stop (max 0), window scrollY 0, every focused thing in the list box wholly visible (offenders 0)
+  PASS F1-680-tab: Tab through the calendar (5 stops: range-title, range-today, range-prev, range-next, range-day-2026-01-01) and on into the list; card.scrollTop 0 at every Tab and arrow stop (max 0), window scrollY 0, every Tab stop in the list box wholly visible (offenders 0)
+INFO F1-680-arrows (seen besides, not a pass/fail of the fix): arrow keys walked 8 different days; 0 of 8 arrow stops left the focused day outside the visible list box (none); the box did not scroll to follow (list scrollTop stayed 0,0,0,0,0,0,0,0)
 real click on day 29 (hit day, 0 wheel ticks): picker foot " 22 23 24 25 26 27 28 29 30 31 29 Jan 26", list 0
 real click on day 31 (hit day, 0 more ticks): calendar open false, chip "29 Jan – 31 Jan", lines 1, winRoom 0, card.scrollTop 0, list 0
   PASS F1-680-click: two real mouse clicks (no script scroll) on day 29 then day 31 (hit-tested as the day buttons): calendar closed, chip "29 Jan – 31 Jan", window room 0, card.scrollTop 0
@@ -32,10 +33,11 @@ calendar foot after wheel: picker {"t":50,"b":420.5,"l":38.8,"r":388.8,"h":370.5
 Tab x40 from Pick dates…: stops approve-all > range-title > range-today > range-prev > range-next > range-day-2026-01-01 > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates
   calendar stops 5; max cardScrollTop 0; max winY 0; invisible in-list stops []
 arrow walk from appr-range-day-2026-01-01: 01-08@364.8-408.8 sc0 card0 | 01-15@408.8-452.8 sc0 card0 | 01-22@452.8-496.8 sc0 card0 | 01-29@496.8-540.8 sc0 card0 | 01-30@496.8-540.8 sc0 card0 | 01-31@496.8-540.8 sc0 card0 | 02-07@364.8-408.8 sc0 card0 | 02-14@408.8-452.8 sc0 card0
-  FAIL F1-560-tab: Tab through the calendar (5 stops: range-title, range-today, range-prev, range-next, range-day-2026-01-01) and on into the list; arrow keys walked 8 different days; card.scrollTop 0 at every stop (max 0), window scrollY 0, every focused thing in the list box wholly visible (offenders 6)
+  PASS F1-560-tab: Tab through the calendar (5 stops: range-title, range-today, range-prev, range-next, range-day-2026-01-01) and on into the list; card.scrollTop 0 at every Tab and arrow stop (max 0), window scrollY 0, every Tab stop in the list box wholly visible (offenders 0)
+INFO F1-560-arrows (seen besides, not a pass/fail of the fix): arrow keys walked 8 different days; 6 of 8 arrow stops left the focused day outside the visible list box (01-15@408.8-452.8, 01-22@452.8-496.8, 01-29@496.8-540.8, 01-30@496.8-540.8, 01-31@496.8-540.8, 02-14@408.8-452.8); the box did not scroll to follow (list scrollTop stayed 0,0,0,0,0,0,0,0)
 real click on day 29 (hit day, 2 wheel ticks): picker foot " 22 23 24 25 26 27 28 29 30 31 29 Jan 26", list 200
 real click on day 31 (hit day, 0 more ticks): calendar open false, chip "29 Jan – 31 Jan", lines 1, winRoom 0, card.scrollTop 0, list 0
   PASS F1-560-click: two real mouse clicks (no script scroll) on day 29 then day 31 (hit-tested as the day buttons): calendar closed, chip "29 Jan – 31 Jan", window room 0, card.scrollTop 0
 errors []
   PASS F1-err: page errors: none
-SUMMARY 12 PASS, 1 FAIL
+SUMMARY 13 PASS, 0 FAIL
