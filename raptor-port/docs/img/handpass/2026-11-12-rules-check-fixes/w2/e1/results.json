@@ -1,0 +1,35 @@
+{
+ "results": [
+  {
+   "id": "I9.1 (record) tap the warning line: jump to its man",
+   "verdict": "RECORD",
+   "saw": "focus-ish pucks: []",
+   "pic": "i9-1-jump.png"
+  },
+  {
+   "id": "I9.2 hide with ✕",
+   "verdict": "PASS",
+   "saw": "\"0:HID+struck:reset: Ranger — VL BFM & BRIEFING clash {wln hard on hid}\"",
+   "pic": "i9-2-hidden.png"
+  },
+  {
+   "id": "I9.3 Undo takes the hide back (clash live and red again)",
+   "verdict": "PASS",
+   "saw": "\"0:live:✕: Ranger — VL BFM & BRIEFING clash {wln hard on}\" | rings 5.0.0.0.p RED,g:5.0 RED",
+   "pic": "i9-3-undo.png"
+  },
+  {
+   "id": "I9.4 Redo hides it again",
+   "verdict": "PASS",
+   "saw": "\"0:HID+struck:reset: Ranger — VL BFM & BRIEFING clash {wln hard on hid}\" | rings 5.0.0.0.p plain,g:5.0 plain",
+   "pic": "i9-4-redo.png"
+  },
+  {
+   "id": "I9.5 ↺ Reset brings the warning back",
+   "verdict": "PASS",
+   "saw": "\"0:live:✕: Ranger — VL BFM & BRIEFING clash {wln hard on}\" | rings 5.0.0.0.p RED,g:5.0 RED",
+   "pic": "i9-5-reset.png"
+  }
+ ],
+ "errors": []
+}

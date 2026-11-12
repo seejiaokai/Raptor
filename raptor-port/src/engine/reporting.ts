@@ -46,7 +46,7 @@ export function intimeFold(s:any){
    the box's button and ✕, the wave header, the changes window, the pending list, the change record, the toasts, Undo.
    The rename reached four of them and left the old plural name on the other four; ui/intimesadd.test.tsx draws every place.
    "In-time" since D1026 (19 Oct 26): a rally is each formation's own R box now, so the typed lines are named for the
-   in-time alone — though a typed line that still says RALLY is still read as a rally, as before (D1034). */
+   in-time alone — and since D1995 (11 Nov 26) read as in-times alone too, whatever their words (over D1034). */
 export const REPORTING_LABEL='In-time';
 /* …but where the app states WHEN a wave or a formation reports — a time that may come from an in-time line, a typed rally
    or a formation's own R box (D1026) — it says both: the wave header's evening-before note (html.ts waveHeadTail). */
@@ -69,15 +69,17 @@ const immediateWord=bounded('RALLY[ \\t]+AFTER[ \\t]+IN(?:[ \\t-]+TIME|TIME)?');
 export function parseReportingLines(w:any):ReportingLine[]{
   const css=[...new Set<string>((w.formations||[]).map((f:any)=>String(f.cs??'').trim()).filter(Boolean))];
   return (w.intimes||[]).map((value:any,index:number)=>{
-    /* W3 (D505): "RALLY AFTER IN TIME" is a RALLY line whether or not a clock is typed with it — with a clock it
-       is that rally's own time, never a second in-time (which, on a formation's line, replaced the wave's in-time). */
+    /* EVERY TYPED LINE IS AN IN-TIME, WHATEVER ITS WORDS (owner D1995, 11 Nov 26 — "we should just recognise that time as
+       an in time. Rally time will be in the rally box … Just use the earliest time"; over D1034's "a typed line that still
+       says RALLY stays a rally", 19 Oct 26 — the later wins, D90). A line with a clock is an in-time — "09:00H: RALLY",
+       "VL RALLY 08:30" and "RALLY AFTER IN TIME 07:00" alike — for the formation it names or the whole wave (D500, D505
+       unchanged); the rally is each formation's own R box alone; the report is the earlier of the two (D506). A line with
+       no clock carries no time, so it is no instruction at all: "RALLY AFTER IN TIME" typed alone no longer makes a rally
+       to resolve. `immediate` stays on the line's record but never speaks. This replaces W3's (D505) reading of "RALLY
+       AFTER IN TIME" with a clock as that formation's rally: it is now that formation's own in-time, which replaces the
+       whole-wave in-time for it (D505's scope, kept — the agent's reading of D1995, put to him). */
     const text=String(value??''), clock=intimeTime(text), after=immediateWord.test(text), immediate=clock==null&&after;
-    const activities:Activity[]=after?['rally']:[];
-    if(!after){
-      if(inWord.test(text))activities.push('inTime');
-      if(rallyWord.test(text))activities.push('rally');
-      if(clock!=null&&!activities.length)activities.push('inTime'); // legacy unlabelled line
-    }
+    const activities:Activity[]=clock!=null?['inTime']:[];
     const targets=css.filter(cs=>bounded(cs.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).test(text));
     /* W19 (5 Oct 26): a clock ATTEMPTED in a spelling the reader does not take — 8h00, 8.00, 0800IN — gets the same
        "no recognised clock" line as 25:90; digits that are plainly not a clock (FL240, 2 SHIPS, 2.5 HRS) do not. */
@@ -97,10 +99,9 @@ export function resolveReporting(w:any,f:any,to:number,parsed=parseReportingLine
   const instant=(clock:number)=>clock>to&&(!w.standalone||to-VCONF.reportLead<0)?clock-1440:clock;
   const pick=(activity:Activity,inTime:number|null,own?:number|null)=>{
     /* THE FORMATION'S OWN RALLY BOX (owner D1026, D1032, 19 Oct 26): f.rl is that formation's rally, so it is one more
-       formation-specific rally — it replaces the wave-wide typed RALLY lines (D505: a formation's own instruction
-       replaces the general one of the same activity) and stands beside a typed line naming the formation, the earliest
-       counting (D506). Read with the same evening-before rule (D503). Never an in-time: the in-time stays the typed
-       lines' alone, so a whole-wave in-time 06:00 still starts everyone at 06:00 (D1034). */
+       formation-specific rally — since D1995 the only rally, no typed line making one (so `sc` is always empty here and
+       the box is the one choice). Read with the same evening-before rule (D503). Never an in-time: the in-time stays the
+       typed lines' alone, so a whole-wave in-time 06:00 still starts everyone at 06:00 (D1034). */
     let sc=scope(activity);
     if(own!=null&&!sc.some(p=>p.targets.some(t=>t.toLowerCase()===cs)))sc=[];
     const choices=sc.map(p=>({p:p as ReportingLine|null,time:p.clock!=null?instant(p.clock):inTime})).filter(c=>c.time!=null);
@@ -135,9 +136,11 @@ export function reportingSortKeys(w:any):(number|null)[]{
     return p.clock>to&&(!w.standalone||to-VCONF.reportLead<0)?p.clock-1440:p.clock;
   });
 }
-export function flightBrief(f:any,to:number){
+/* `lead`: the brief lead the day is judged by — today's setting, or on a published day judged by the official pass the
+   one its issued version kept (D1991; events.ts buildDay passes faceattrs.ts ruleFor) */
+export function flightBrief(f:any,to:number,lead:number=VCONF.briefLead){
   const typed=parseHM(f.br);
-  return typed!=null?(to-VCONF.briefLead<0&&typed>to?typed-1440:typed):to-VCONF.briefLead;
+  return typed!=null?(to-lead<0&&typed>to?typed-1440:typed):to-lead;
 }
 export const stated=(t:number,short=false)=>hm24(t)+(t<0?short?' (prev day)':' (previous day)':t>=1440?' (next day)':'');
 export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
@@ -177,8 +180,10 @@ export function reportingIssuesForWave(w:any,gi=0):ReportingIssue[]{
       issues.push({gi,li,lines:box?(before.name==='in-time'?r.inTimeLines:[]):r.sourceLines,code:'REPORT_ORDER',blocking:true,...(box?{box:true}:{}),
         msg:`${name}: ${before.name} ${stated(before.time)} is later than ${after.name} ${stated(after.time)}.`});
     }
+    /* since D1995 only an unreadable clock is unresolved — a "RALLY AFTER IN TIME" line makes no rally, so its old
+       "has no applicable in-time clock" was untrue even when such a line's clock could not be read */
     r.unresolved.forEach(p=>issues.push({gi,li,lines:[p.index],code:'REPORT_UNRESOLVED',blocking:false,
-      msg:p.immediate?`${name}: rally after in-time has no applicable in-time clock.`:`${name}: reporting line ${p.index+1} has no recognised clock. Check the time.`}));
+      msg:`${name}: reporting line ${p.index+1} has no recognised clock. Check the time.`}));
   });
   return issues;
 }

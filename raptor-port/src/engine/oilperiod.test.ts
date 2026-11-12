@@ -97,7 +97,7 @@ describe('a day that stopped being a holiday after it went out says so', () => {
     notAnyMore()
     validate()
     expect(codesOn(TUE)).toContain('OIL_STALE_HOLIDAY')
-    expect(msgOn(TUE, 'OIL_STALE_HOLIDAY')).toMatch(/publish it again/i)
+    expect(msgOn(TUE, 'OIL_STALE_HOLIDAY'), 'his words since D2004').toMatch(/^Publish this day again to withdraw the OIL/)
   })
 
   it('THE CONTROL — a day still a holiday says nothing of the kind', () => {
@@ -112,6 +112,24 @@ describe('a day that stopped being a holiday after it went out says so', () => {
     notAnyMore()
     validate()
     expect(codesOn(2)).not.toContain('OIL_STALE_HOLIDAY')
+  })
+
+  /* D2003, D2004 (11 Nov 26): his words for the two lines, the pair in one shape — what to do first, then
+     why. Their short headings stay as they were. */
+  it('D2004 — the holiday removed afterwards reads in his words', () => {
+    holiday()
+    publish(TUE)
+    notAnyMore()
+    validate()
+    expect(msgOn(TUE, 'OIL_STALE_HOLIDAY')).toBe('Publish this day again to withdraw the OIL. The PH was removed after the day was published.')
+  })
+
+  it('D2003 — the holiday set afterwards reads in his words', () => {
+    notAnyMore()
+    publish(TUE)
+    holiday()
+    validate()
+    expect(msgOn(TUE, 'OIL_STALE_DAY')).toBe('Publish this day again so OIL is earned. The PH was set after the day was published.')
   })
 
   it('and an UNPUBLISHED day that stopped being a holiday says nothing — nothing was ever frozen', () => {

@@ -15,7 +15,7 @@ import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './
 import { isPreservedWeek, rowElsewhere } from './weekstash'
 import { standsOn } from './overlay'   // functions only both ways
 import { inputProtected, weekLockReason, anyUnreadableWeek } from './quarantine'   // functions only both ways, so the import loop is safe
-import { rosterIds } from './faceattrs'
+import { rosterIds, dayRuleVals } from './faceattrs'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals } from './oilev'
 import { oilRuleValsNow } from './oil'
 
@@ -755,7 +755,9 @@ function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; con
      And the ROSTER the day went out with (`ros`, Astra's second read #3): the aircrew the day panel's "free all day"
      counts. Drawn as issued, NOT compared — a man joining the squadron would otherwise make every published day pending
      for a count on a panel; nothing on the published face moves either way. */
-  snap.pa=dayPeopleAttrs(snap.d,snap.inp); snap.rv=faceRuleVals(snap.d); snap.ros=rosterIds(); }
+  /* …and EVERY LOGIC SETTING its checks read (owner D2005, 12 Nov 26): the day is judged by them until its next amendment
+     (faceattrs.ts dayRuleVals / withDayRules). Only the brief lead it prints is compared (warnDelta, below — D186). */
+  snap.pa=dayPeopleAttrs(snap.d,snap.inp); snap.rv=dayRuleVals(); snap.ros=rosterIds(); }
 /* every man an issued face draws, with what his puck draws from the roster: a person id in a PERSON SLOT of its content —
    a flying seat (p, w), a sim seat or passenger (p, w, pax), a desk's holder (id), a ground or Common Programme name
    (who), the extras beside a row (more) — never free text that happens to spell an id (a programme called "bane" is not
@@ -849,7 +851,9 @@ function warnDelta(di:any):DeltaEntry[]{di=+di;
   /* the face beyond the warnings, where the version recorded it: the men on it as the roster draws them, the printed
      rule values */
   const cmpRv=!!snap.rv&&faceRuleValsCompared(snap.d);
-  const pa=snap.pa?stableJson(snap.pa):'', rv=cmpRv?stableJson(snap.rv):'';
+  /* the PRINTED value only (D186): the version keeps every setting since D2005, but a change of one it does not print
+     never reads pending by itself — the day is judged by the one it kept */
+  const pa=snap.pa?stableJson(snap.pa):'', rv=cmpRv?stableJson({briefLead:snap.rv.briefLead}):'';
   const paNow=snap.pa?stableJson(peopleAttrsNow(snap.pa)):'', rvNow=cmpRv?stableJson(faceRuleVals(snap.d)):'';
   const was=storedWarnKey(snap.w)+'\n'+pa+'\n'+rv, k=liveWarnKey(now)+'\n'+paNow+'\n'+rvNow;
   return k===was?[]:[{addr:`warn:${di}`,kind:'warn',from:fp(was),to:fp(k)}];}

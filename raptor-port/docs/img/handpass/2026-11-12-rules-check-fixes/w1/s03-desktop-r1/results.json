@@ -1,0 +1,77 @@
+[
+ {
+  "id": "S03.0 fixture: AVALON wave, AVALON-template desk with Ranger, Ranger on a 20:00-21:00 sortie in another wave",
+  "ok": true,
+  "detail": "{\"av\":\"19:00-07:00 beams\",\"desk\":[\"SXO|19:00-07:00|bane\",\"OPS O|19:00-07:00|\",\"RUNNER|19:00-07:00|\",\"LOG CELL|19:00-07:00|\"],\"sortie\":\"20:00-21:00 bane\"}"
+ },
+ {
+  "id": "S03.1 before the wave flies: no clash on the desk (exempt, D1060)",
+  "ok": true,
+  "detail": "clash lines []; desk puck [\"#schedBoard/desk :: puck sm\",\"#eWeek/desk :: puck sm\"]"
+ },
+ {
+  "id": "S03.1 before the wave flies: OIL Earn shows the desk man off by default, with a switch",
+  "ok": true,
+  "detail": "[\"SDO [item-on]\",\"Fable FO [on]\",\"SXO [ain oilitem dflt]\",\"Ranger — [off]\",\"OPS O [ain oilitem dflt]\",\"RUNNER [ain oilitem dflt]\",\"LOG CELL [ain oilitem dflt]\"]"
+ },
+ {
+  "id": "S13.0 tapping the desk man: first tap, second tap",
+  "ok": null,
+  "detail": "[\"Ranger FO [on]\"] -> [\"Ranger — [off]\"]"
+ },
+ {
+  "id": "S03.2 AVALON R typed: the desk is fully checked — the clash shows in the warning list (D1997)",
+  "ok": true,
+  "detail": "[\"Ranger — VIPER & SXO duty clash ✕\",\"Ranger — No time for the VIPER flight brief — SXO duty sits inside 17:40–20:00 (brief 17:40) ✕\",\"Ranger — Not enough time to attend the VIPER debrief — SXO duty sits inside 21:00–23:00 (land + 2h) ✕\",\"This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕\",\"Comet — Comet has a long work day: 13h00, 18:00 → 07:00 ✕\",\"Ranger — Ranger has a long work day: 14h00, 17:00 → 07:00 ✕\"]"
+ },
+ {
+  "id": "S03.2 the desk man's puck wears the red clash ring on the board (D1997)",
+  "ok": false,
+  "detail": "[\"#schedBoard/other :: puck sm warn hard boxred oilbar oilbar-fo\",\"#schedBoard/desk :: puck sm oilbar oilbar-fo\",\"#schedBoard/other :: puck sm warn hard boxred\"]"
+ },
+ {
+  "id": "S03.2 and on the week (D1997)",
+  "ok": false,
+  "detail": "[\"other :: puck warn hard boxred oilbar oilbar-fo\",\"desk :: puck sm oilbar oilbar-fo\"]"
+ },
+ {
+  "id": "S13.1 RECORD: the man switched off by hand before the wave flew — after it flies, in OIL Earn",
+  "ok": null,
+  "detail": "[\"Ranger FO [on]\"]"
+ },
+ {
+  "id": "S03.3 R cleared: the desk is exempt again — no clash, no red ring",
+  "ok": true,
+  "detail": "[] [\"#schedBoard/other :: puck sm oilbar oilbar-ho\",\"#schedBoard/desk :: puck sm\",\"#schedBoard/other :: puck sm\"]"
+ },
+ {
+  "id": "S03.4 the Flies button on the AVALON MAIN row",
+  "ok": null,
+  "detail": "present: FLIES"
+ },
+ {
+  "id": "S03.4 one row's Flies ticked (the wave flies by hand): desk fully checked — the clash shows (D1997)",
+  "ok": true,
+  "detail": "[\"Ranger — VIPER & SXO duty clash ✕\",\"Ranger — No time for the VIPER flight brief — SXO duty sits inside 17:40–20:00 (brief 17:40) ✕\",\"Ranger — Not enough time to attend the VIPER debrief — SXO duty sits inside 21:00–23:00 (land + 2h) ✕\",\"This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕\",\"Ranger — Ranger has a long work day: 14h00, 17:00 → 07:00 ✕\"]"
+ },
+ {
+  "id": "S03.4 the desk man's puck wears the red clash ring on the board",
+  "ok": false,
+  "detail": "[\"#schedBoard/other :: puck sm warn hard boxred oilbar oilbar-fo\",\"#schedBoard/desk :: puck sm oilbar oilbar-fo\",\"#schedBoard/other :: puck sm warn hard boxred\"]"
+ },
+ {
+  "id": "S03.4 and on the week",
+  "ok": false,
+  "detail": "[\"other :: puck warn hard boxred oilbar oilbar-fo\",\"desk :: puck sm oilbar oilbar-fo\"]"
+ },
+ {
+  "id": "S03.4 OIL Earn for the desk man once the tick flies it",
+  "ok": null,
+  "detail": "[\"Ranger FO [on]\"]"
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]

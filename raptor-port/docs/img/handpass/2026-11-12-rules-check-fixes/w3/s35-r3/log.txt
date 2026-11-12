@@ -1,0 +1,16 @@
+document question shown; answering "no document"
+filed leave: {"added":1} last input: {"type":"Duty"}
+PASS  S35 leave filed for Ratchet (set-up)  {"added":1}
+Ratchet inputs: []
+RECORD armed ground row g:4.2.+ — crew list entry for Ratchet: {"cls":"rpuck no haswhy","title":"Ratchet — local leave (LL) — rcfw3","text":"Ratchet local leave (LL) — rcfw3","vis":true}
+seat Ratchet on BRIEFING: torque
+Friday warnings:
+  ⚠ 1 issue
+  · 1 warning
+  Ratchet — On leave but tasked — BRIEFING — reason: rcfw3
+  ✕
+PASS  S35 his absence is flagged  Ratchet — On leave but tasked — BRIEFING — reason: rcfw3
+Ratchet puck(s): ["Ratchet · Personnel · ground crew · Conflict (two events at once) | puck pers sm warn hard boxred flagnew","Ratchet · Personnel · ground crew · Conflict (two events at once) | puck pers sm warn hard boxred flagnew"]
+warning rows: ["⚠ 1 issue · 1 warning Ratchet — On leave but tasked — BRIEFING — reason: rcfw3 ✕"]
+PASS  S35 no console/page errors  
+DONE 3 PASS 0 FAIL 0 OTHER of 3

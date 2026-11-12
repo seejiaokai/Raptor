@@ -136,58 +136,27 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 
 ## Long runs, compaction and handoff
 - `/overnight` sizes the night to his hours and recommends the jobs that fit, he selects, its questions come first, then it runs unattended in one chat; its approval is its standing permission each night — his selection of the night's jobs is not recorded as a ruling, only a new decision of his is [D867, D869].
+- His "go" for all jobs covered the night of 12 Nov 26 only [D2023].
 - When his overnight message names the work, the agent still lists the night's jobs before it starts — numbered, in order, each with what he will have in the morning, its check and its rough time, how many fit in his hours, and what waits for him — then starts without waiting for a reply [D1443].
-- An overnight run asks "Low or Medium?" first: Low, with plenty of time, runs the fewest helpers the checks need, one after another, caches kept warm; Medium, with less time, uses helpers as needed, several at once; efficiency is judged
-  by the weekly usage figure, not a token count [D1104].
-- Each overnight job goes to one fresh helper inside the night's chat, with its own walker and reader; the night's chat
-  only coordinates, checks each result and keeps the records; a separate session per job is used only when he types the
-  night's message in the desktop app, all started together [D1416]. It goes on past 90% of the weekly allowance, saving
-  at every step [D1415].
-- Using up his weekly allowance before it resets is his aim: work is not held back, cut down or stopped early to save it;
-  the agent still reads and reports the figure and saves the state before the limit can stop it [D1033, D1415].
-- Unattended: a question never stops the run — search the rulings, decide technical points, park his choices in one list;
-  one notification at the end; no merge, no `main`, notes included, unless he gave "auto merge live" [D596, D1980]; at a full chat, write the state and carry on [D667]. Before a
-  compaction the state is in the repo and the compaction is told exactly what to keep — the step in hand, the files it
-  touches, the open faults, the parked questions — and what to drop [D766].
-- Every chat compacts at about 400,000 tokens — the project's compaction window 400,000, not 880,000: the first note at
-  about 300,000, held until saved from about 360,000, the app's own compaction at about 384,000 [D1671, D878].
-- The compaction set-up stands: the fullness shown in the status line (which the desktop app does not draw, so it changes
-  nothing he sees), a guard that holds the app's compaction until the state is saved — never past about 408,000 tokens
-  (102% of the window) nor past 900,000; off when he is away, an `/overnight` run or his word that a job is left
-  unattended, the app then compacting at its own point, the state saved at every commit — and the saved note handed
-  back after [D870, D872, D878, D1671].
-- The app's idle compaction stays on at its default — a chat of 200,000 tokens or more left alone about an hour is
-  compacted by the app — and the guard lets it through; nothing in his settings is changed [D884].
-- In the day the agent suggests a handoff to a fresh chat whenever the work is at a suitable point — clean, committed,
-  little lost — mid-job included; the compaction set-up is for a big job that would fill the chat first [D874]. From
-  about 80% full it picks that clean point itself — the work committed, the state written into the repo as a handoff
-  would — so a big job compacts once; near a job's end while he is using the chat it offers a handoff instead [D868,
-  D871, D874, D884].
-- After any compaction the agent re-reads the saved state and the files in hand before the next change, and every
-  report gives him the context % [D868, D871, D874, D884].
-- A guide missing after compaction → ask him to type `/reload-skills`; the next `/overnight` run tries the
-  overloaded-retry setting for one night, checked the next morning and kept only on his word [D885, D886].
-- He runs the guide check himself; its list comes back to a chat as findings put to him, and no guide changes because of
-  it without his word and its read [D886]. A chat started from a handoff has Remote Control on [D1195].
-- Write the state into the repo as you go; when the work closes, condense it in its own docs-only commit, never inside a
-  fix — a saved context is a summary (decisions, state, next step), never the conversation [D69].
-- Every chat's title starts with its number — 1 the M365 package chat, 2 the rules diet's step 4, then counting on — and
-  each chat says its number when it reports to him; the handoff file keeps the next free number [D1744].
+- An overnight run asks "Low or Medium?" first: Low, with plenty of time, runs the fewest helpers the checks need, one after another, caches kept warm; Medium, with less time, uses helpers as needed, several at once; efficiency is judged by the weekly usage figure, not a token count [D1104].
+- Each overnight job goes to one fresh helper inside the night's chat, with its own walker and reader; the night's chat only coordinates, checks each result and keeps the records; a separate session per job is used only when he types the night's message in the desktop app, all started together [D1416]. It goes on past 90% of the weekly allowance, saving at every step [D1415].
+- Using up his weekly allowance before it resets is his aim: work is not held back, cut down or stopped early to save it; the agent still reads and reports the figure and saves the state before the limit can stop it [D1033, D1415].
+- Unattended: a question never stops the run — search the rulings, decide technical points, park his choices in one list; one notification at the end; no merge, no `main`, notes included, unless he gave "auto merge live" [D596, D1980]; at a full chat, write the state and carry on [D667]. Before a compaction the state is in the repo and the compaction is told exactly what to keep — the step in hand, the files it touches, the open faults, the parked questions — and what to drop [D766].
+- Every chat compacts at about 400,000 tokens — the project's compaction window 400,000, not 880,000: the first note at about 300,000, held until saved from about 360,000, the app's own compaction at about 384,000 [D1671, D878].
+- The compaction set-up stands: the fullness shown in the status line (which the desktop app does not draw, so it changes nothing he sees), a guard that holds the app's compaction until the state is saved — never past about 408,000 tokens (102% of the window) nor past 900,000; off when he is away, an `/overnight` run or his word that a job is left unattended, the app then compacting at its own point, the state saved at every commit — and the saved note handed back after [D870, D872, D878, D1671].
+- The app's idle compaction stays on at its default — a chat of 200,000 tokens or more left alone about an hour is compacted by the app — and the guard lets it through; nothing in his settings is changed [D884].
+- In the day the agent suggests a handoff to a fresh chat whenever the work is at a suitable point — clean, committed, little lost — mid-job included; the compaction set-up is for a big job that would fill the chat first [D874]. From about 80% full it picks that clean point itself — the work committed, the state written into the repo as a handoff would — so a big job compacts once; near a job's end while he is using the chat it offers a handoff instead [D868, D871, D874, D884].
+- After any compaction the agent re-reads the saved state and the files in hand before the next change, and every report gives him the context % [D868, D871, D874, D884].
+- A guide missing after compaction → ask him to type `/reload-skills`; the next `/overnight` run tries the overloaded-retry setting for one night, checked the next morning and kept only on his word [D885, D886].
+- He runs the guide check himself; its list comes back to a chat as findings put to him, and no guide changes because of it without his word and its read [D886]. A chat started from a handoff has Remote Control on [D1195].
+- Write the state into the repo as you go; when the work closes, condense it in its own docs-only commit, never inside a fix — a saved context is a summary (decisions, state, next step), never the conversation [D69].
+- Every chat's title starts with its number — 1 the M365 package chat, 2 the rules diet's step 4, then counting on — and each chat says its number when it reports to him; the handoff file keeps the next free number [D1744].
 
 ## Names and privacy
-- The bare squadron number only; never the squadron or service abbreviation [D58]; "a fighter squadron", the bare
-  "F-15", the Tracker's event-box hint reading the bare type [D63, D64]; the Tracker's syllabus data is outside every
-  privacy sweep [D62]; the commander briefing deck is his and stays — never propose wiping it [D57].
+- The bare squadron number only; never the squadron or service abbreviation [D58]; "a fighter squadron", the bare "F-15", the Tracker's event-box hint reading the bare type [D63, D64]; the Tracker's syllabus data is outside every privacy sweep [D62]; the commander briefing deck is his and stays — never propose wiping it [D57].
 
 ## App-wide product rules (to move to their area pages)
-- Undo steps back through the signed-in person's own changes only, and the list clears when they sign out; it never undoes
-  another person's change, and where someone has since changed the very same thing it refuses and says who [D148];
-  in this build it does not take back adding a person, archive, restore, delete or a posting, and the greyed button says
-  why [D350].
-- At the database step Admin → Data's "Clear edit history…" is removed, so nobody erases the app's change history by
-  hand; until then it stays as built; how long that history is kept is still set by the IT side's audit rule [D1752].
-- A scheduler is always an admin: nothing is built, tested or walked for a scheduler who is not one, no walker's or
-  reader's brief sets one up, and a finding of that shape is not a finding; a member, a guest and a person with no
-  sign-in stay in scope as people who are not schedulers [D785].
-- To the OIL page: an issued weekend carrying a placeholder on a duty desk, sim seat or extras line raises the pending
-  mark once `[OIL-SEATS-CAN-EARN]` ships — leave it; he republishes it once [D54].
+- Undo steps back through the signed-in person's own changes only, and the list clears when they sign out; it never undoes another person's change, and where someone has since changed the very same thing it refuses and says who [D148]; in this build it does not take back adding a person, archive, restore, delete or a posting, and the greyed button says why [D350].
+- At the database step Admin → Data's "Clear edit history…" is removed, so nobody erases the app's change history by hand; until then it stays as built; how long that history is kept is still set by the IT side's audit rule [D1752].
+- A scheduler is always an admin: nothing is built, tested or walked for a scheduler who is not one, no walker's or reader's brief sets one up, and a finding of that shape is not a finding; a member, a guest and a person with no sign-in stay in scope as people who are not schedulers [D785].
+- To the OIL page: an issued weekend carrying a placeholder on a duty desk, sim seat or extras line raises the pending mark once `[OIL-SEATS-CAN-EARN]` ships — leave it; he republishes it once [D54].

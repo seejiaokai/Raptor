@@ -570,10 +570,14 @@ export type DaySnapshot = {
    *  issued face draws each puck's CAT and seat from these (`engine/faceattrs.ts`, D179) and the pending comparison
    *  measures today's roster against them. */
   pa?: Record<string, { q: any; seat: any; pers: boolean; san: boolean; sxo: boolean; archived: boolean }>
-  /** The rule values the issued face prints (a blank brief's lead) at issue — engine (`freezeWarn`): the issued face,
-   *  CSV and print read it (`engine/faceattrs.ts`, D179), and the pending comparison measures today's rule against it —
-   *  only where a flying line prints a suggested brief (`faceRuleValsCompared`; a standby line prints none on screen). */
-  rv?: { briefLead: number }
+  /** The Logic settings the day was published under (owner D2005, 12 Nov 26) — engine (`freezeWarn`, `faceattrs.ts
+   *  dayRuleVals`): every setting the day's own checks read (`KEPT_RULE_KEYS`) and the SC MAIN clash table
+   *  (`shiftHard`). The validator judges the published day by them (`faceattrs.ts withDayRules`) until its next
+   *  amendment keeps today's. The brief lead is also the one value the face PRINTS (a blank brief's time — the face, CSV
+   *  and print read it, D179/D186), and the only one the pending comparison measures today's setting against — only
+   *  where a flying line prints a suggested brief (`faceRuleValsCompared`). A version issued before D1991/D2005 kept
+   *  only `briefLead`, or nothing: the rest read today's (demo data, D56). */
+  rv?: { briefLead: number; [setting: string]: any; shiftHard?: Record<string, boolean> }
   /** The aircrew roster at issue (ids, not posted out, not ground crew) — engine (`freezeWarn`): the issued day panel's
    *  "free all day" counts these (`engine/faceattrs.ts rosterShown`); drawn, never compared. */
   ros?: string[]
@@ -593,7 +597,8 @@ export type WarnSlice = {
   /** person id → the callsign its warnings were worded with (a rename is a label, never a change) */
   cs?: Record<string, string>
   /** THE WARNINGS THIS VERSION WENT OUT WITH HIDDEN ([WARN-HIDE-KEPT], owner D469 / D471, 1 Oct 26) — their keys
-   *  (engine/warnhide.ts hideKey: day | rule | the men named | the words, callsigns folded to ids). Absent = nothing was
+   *  (engine/warnhide.ts hideKey: day | rule | the men named | the words, callsigns folded to ids — for a clash, its two
+   *  items' row ids in place of the words, D2001). Absent = nothing was
    *  hidden. The published face strikes these lines and drops their flags; a hide made since waits for the next
    *  amendment. Never compared as part of the warnings (the slice above stays as the rules raised it). */
   wo?: string[]

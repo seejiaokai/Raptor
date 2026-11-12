@@ -1,0 +1,41 @@
+{
+ "results": [
+  {
+   "id": "R4.1 [d] the tight-turn line ends \"…is later, so his rest clears.\"",
+   "verdict": "PASS",
+   "saw": "His rest would be short if he reported the usual 3h before take-off (Default rally before take-off), but his in-time or rally, or his B where neither is typed, is later, so his rest clears.",
+   "pic": "r4-1-tight-turn-d.png"
+  },
+  {
+   "id": "R4.2 [d] the \"row that flies\" line reads \"A row that flies has its clashes and turns checked as a sortie's are, counts as a jet…\"",
+   "verdict": "PASS",
+   "saw": "A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies has its clashes and turns checked as a sortie's are, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one that does not come in is cancelled with CX.",
+   "pic": "r4-2-row-flies-d.png"
+  },
+  {
+   "id": "R4.3 [d] the old \"A standby row that flies\" wording",
+   "verdict": "FAIL",
+   "saw": "still on the page",
+   "pic": ""
+  },
+  {
+   "id": "R4.1 [p] the tight-turn line ends \"…is later, so his rest clears.\"",
+   "verdict": "PASS",
+   "saw": "His rest would be short if he reported the usual 3h before take-off (Default rally before take-off), but his in-time or rally, or his B where neither is typed, is later, so his rest clears.",
+   "pic": "r4-1-tight-turn-p.png"
+  },
+  {
+   "id": "R4.2 [p] the \"row that flies\" line reads \"A row that flies has its clashes and turns checked as a sortie's are, counts as a jet…\"",
+   "verdict": "PASS",
+   "saw": "A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies has its clashes and turns checked as a sortie's are, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one that does not come in is cancelled with CX.",
+   "pic": "r4-2-row-flies-p.png"
+  },
+  {
+   "id": "R4.3 [p] the old \"A standby row that flies\" wording",
+   "verdict": "FAIL",
+   "saw": "still on the page",
+   "pic": ""
+  }
+ ],
+ "errors": []
+}

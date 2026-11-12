@@ -1,0 +1,1 @@
+RECORDED  S5.D4b Escape on the changes window  opened from the "6 changes" count; focus after the press: BUTTON#.dpend dpendbtn dchg|6 changes; Escape straight after: still open = true; after a click inside the window (focus BUTTON#.dpend dpendbtn dchg|6 changes) then Escape: still open = true  [s5b-a-*.png, s5b-b-*.png]

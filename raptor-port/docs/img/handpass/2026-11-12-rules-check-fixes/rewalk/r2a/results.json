@@ -1,0 +1,53 @@
+{
+ "results": [
+  {
+   "id": "R2.1 Logic: SC MAIN clashes -> another shift reads Advisory",
+   "verdict": "PASS",
+   "saw": "lgk adv off | another shift Advisory",
+   "pic": "r2-1-logic-adv.png"
+  },
+  {
+   "id": "R2.2 AM flies, PM stands by (09:00-15:00), Advisory: ONE RED line for Ranger, his pucks red",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",\"Ranger — SC PM & SC AM clash\"]] | rings 5.0.0.0.p RED,5.0.1.0.p RED",
+   "pic": "r2-2-flying-red.png"
+  },
+  {
+   "id": "R2.3 AM R cleared: the amber line, pucks amber, no red",
+   "verdict": "PASS",
+   "saw": "[[\"AMBER\",\"live\",\"Ranger — Ranger is on SC AM (07:00–13:00) and also down for SC PM\"]] | rings 5.0.0.0.p AMBER,5.0.1.0.p AMBER",
+   "pic": "r2-3-standby-amber.png"
+  },
+  {
+   "id": "R2.4a AM R typed again: red again",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",\"Ranger — SC PM & SC AM clash\"]] | rings 5.0.0.0.p RED,5.0.1.0.p RED",
+   "pic": "r2-4a-R-again.png"
+  },
+  {
+   "id": "R2.4b PM times back, nothing flies (record)",
+   "verdict": "RECORD",
+   "saw": "[] | rings 5.0.0.0.p plain,5.0.1.0.p plain",
+   "pic": "r2-4b-times-back.png"
+  },
+  {
+   "id": "R2.4c PM row FLIES ticked, AM R cleared (PM times back): a RED line for Ranger, pucks red",
+   "verdict": "FAIL",
+   "saw": "[] | rings 5.0.0.0.p plain,5.0.1.0.p plain | PM defaults {\"shift\":\"PM\",\"to\":\"13:00\",\"ld\":\"19:00\"}",
+   "pic": "r2-4c-flies-ticked.png"
+  },
+  {
+   "id": "R2.4d PM FLIES ticked and PM 09:00-15:00 overlapping, AM R cleared: RED",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",\"Ranger — SC AM & SC PM clash\"]] | rings 5.0.0.0.p RED,5.0.1.0.p RED",
+   "pic": "r2-4d-flies-overlap.png"
+  },
+  {
+   "id": "R2.5 Logic restored: another shift ticked, reads Warning",
+   "verdict": "PASS",
+   "saw": "lgk hard | another shift Warning",
+   "pic": "r2-5-logic-restored.png"
+  }
+ ],
+ "errors": []
+}

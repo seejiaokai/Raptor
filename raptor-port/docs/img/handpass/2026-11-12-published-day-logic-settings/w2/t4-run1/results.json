@@ -1,0 +1,190 @@
+{
+ "results": [
+  {
+   "id": "T4.0 fixture: ground row 14:30-15:00 holds ALL AVAIL (dragged)",
+   "ok": true,
+   "detail": "[\"BRIEFING 14:30-15:00 allavail\"]"
+  },
+  {
+   "id": "T4.1 ALL AVAIL count, board (RECORD)",
+   "ok": null,
+   "detail": "before: chip 46 window [\"PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–15:00 (land + 2h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C\"] || after: chip 46 window [\"⠿ BRIEFING Jul 28 · 14:30–15:00 ✕\",\"Who’s available 46\",\"PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C\",\"who is free as things stand now\",\"Tap a puck for why. One man is flagged.\"]"
+  },
+  {
+   "id": "T4.2 board: count window and chip the same before and after debrief 3h (host's reading of D2005)",
+   "ok": false,
+   "detail": "chip 46 -> 46; same window text: false"
+  },
+  {
+   "id": "T4.1 ALL AVAIL count, edit (RECORD)",
+   "ok": null,
+   "detail": "before: chip 46 window [\"PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–15:00 (land + 2h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C\"] || after: chip 46 window [\"PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C\"]"
+  },
+  {
+   "id": "T4.2 edit: count window and chip the same before and after debrief 3h (host's reading of D2005)",
+   "ok": false,
+   "detail": "chip 46 -> 46; same window text: false"
+  },
+  {
+   "id": "T4.1 ALL AVAIL count, view (RECORD)",
+   "ok": null,
+   "detail": "before: chip 46 window [\"⠿ BRIEFING Jul 28 · 14:30–15:00 ✕\",\"Who’s available 46\",\"PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–15:00 (land + 2h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C\",\"who was free when this day was issued — Original\",\"Tap a puck for why. One man is flagged.\"] || after: chip 46 window [\"⠿ BRIEFING Jul 28 · 14:30–15:00 ✕\",\"Who’s available 46\",\"PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C\",\"who was free when this day was issued — Original\",\"Tap a puck for why. One man is flagged.\"]"
+  },
+  {
+   "id": "T4.2 view: count window and chip the same before and after debrief 3h (host's reading of D2005)",
+   "ok": false,
+   "detail": "chip 46 -> 46; same window text: false"
+  }
+ ],
+ "errors": [],
+ "first": {
+  "chip": "46",
+  "win": [
+   {
+    "cls": "win-bar",
+    "id": "",
+    "text": "⠿ BRIEFING Jul 28 · 14:30–15:00 ✕"
+   },
+   {
+    "cls": "win-one",
+    "id": "",
+    "text": "Who’s available 46"
+   },
+   {
+    "cls": "win-body",
+    "id": "",
+    "text": "PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–15:00 (land + 2h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C"
+   },
+   {
+    "cls": "win-from",
+    "id": "",
+    "text": "who is free as things stand now"
+   },
+   {
+    "cls": "win-foot",
+    "id": "",
+    "text": "Tap a puck for why. One man is flagged."
+   }
+  ]
+ },
+ "b1": {
+  "chip": "46",
+  "win": [
+   {
+    "cls": "rcols",
+    "id": "",
+    "text": "PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–15:00 (land + 2h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C"
+   }
+  ]
+ },
+ "e1": {
+  "chip": "46",
+  "win": [
+   {
+    "cls": "rcols",
+    "id": "",
+    "text": "PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–15:00 (land + 2h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C"
+   }
+  ]
+ },
+ "v1": {
+  "chip": "46",
+  "win": [
+   {
+    "cls": "win-bar",
+    "id": "",
+    "text": "⠿ BRIEFING Jul 28 · 14:30–15:00 ✕"
+   },
+   {
+    "cls": "win-one",
+    "id": "",
+    "text": "Who’s available 46"
+   },
+   {
+    "cls": "win-body",
+    "id": "",
+    "text": "PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–15:00 (land + 2h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C"
+   },
+   {
+    "cls": "win-from",
+    "id": "",
+    "text": "who was free when this day was issued — Original"
+   },
+   {
+    "cls": "win-foot",
+    "id": "",
+    "text": "Tap a puck for why. One man is flagged."
+   }
+  ]
+ },
+ "b2": {
+  "chip": "46",
+  "win": [
+   {
+    "cls": "win-bar",
+    "id": "",
+    "text": "⠿ BRIEFING Jul 28 · 14:30–15:00 ✕"
+   },
+   {
+    "cls": "win-one",
+    "id": "",
+    "text": "Who’s available 46"
+   },
+   {
+    "cls": "win-body",
+    "id": "",
+    "text": "PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C"
+   },
+   {
+    "cls": "win-from",
+    "id": "",
+    "text": "who is free as things stand now"
+   },
+   {
+    "cls": "win-foot",
+    "id": "",
+    "text": "Tap a puck for why. One man is flagged."
+   }
+  ]
+ },
+ "e2": {
+  "chip": "46",
+  "win": [
+   {
+    "cls": "rcols",
+    "id": "",
+    "text": "PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C"
+   }
+  ]
+ },
+ "v2": {
+  "chip": "46",
+  "win": [
+   {
+    "cls": "win-bar",
+    "id": "",
+    "text": "⠿ BRIEFING Jul 28 · 14:30–15:00 ✕"
+   },
+   {
+    "cls": "win-one",
+    "id": "",
+    "text": "Who’s available 46"
+   },
+   {
+    "cls": "win-body",
+    "id": "",
+    "text": "PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C"
+   },
+   {
+    "cls": "win-from",
+    "id": "",
+    "text": "who was free when this day was issued — Original"
+   },
+   {
+    "cls": "win-foot",
+    "id": "",
+    "text": "Tap a puck for why. One man is flagged."
+   }
+  ]
+ }
+}

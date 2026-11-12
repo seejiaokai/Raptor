@@ -1,0 +1,38 @@
+seat Ranger Friday: bane
+Friday formation: {"to":"19:30","ld":"","p":"Ranger"}
+seat Ranger Saturday: bane
+Saturday formation: {"to":"12:00","ld":"","br":"09:29","p":"Ranger"}
+Saturday warnings at B 09:29:
+  ⚠ 3 issues
+  · 2 warnings
+  Ranger — Crew rest breach — Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30, but told to report 09:29 — only 11h59 rest.
+  ✕
+  the WAVE 1 line has no usable times — nobody on it earns OIL for this day
+  ✕
+  This day is not published yet, so nobody earns their OIL for it — publish it before the day is out
+  ✕
+PASS  S23 09:29 breaches crew rest  ⚠ 3 issues / · 2 warnings / Ranger — Crew rest breach — Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30, but told to report 09:29 — only 11h59 rest. / ✕ / the WAVE 1 line has no usable times — nobody on it earns OIL for this day / ✕ / This day is not published yet, 
+Saturday warnings at B 09:30:
+  ⚠ 3 issues
+  · 1 warning
+  the WAVE 1 line has no usable times — nobody on it earns OIL for this day
+  ✕
+  Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30
+  ✕
+  This day is not published yet, so nobody earns their OIL for it — publish it before the day is out
+  ✕
+FAIL  S23 09:30 clears crew rest  ⚠ 3 issues / · 1 warning / the WAVE 1 line has no usable times — nobody on it earns OIL for this day / ✕ / Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30 / ✕ / This day is not published yet
+Friday landing box reads "" stored ""
+Saturday warnings, B 09:29, Friday landing TBD:
+  ⚠ 3 issues
+  · 2 warnings
+  Ranger — Crew rest breach — Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30, but told to report 09:29 — only 11h59 rest.
+  ✕
+  the WAVE 1 line has no usable times — nobody on it earns OIL for this day
+  ✕
+  This day is not published yet, so nobody earns their OIL for it — publish it before the day is out
+  ✕
+PASS  S23 TBD: 09:29 still breaches  landing stored "": ⚠ 3 issues / · 2 warnings / Ranger — Crew rest breach — Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30, but told to report 09:29 — only 11h59 rest. / ✕ / the WAVE 1 line has no usable times — nobody on it earns OIL for this day / ✕ / This day is not published yet, 
+FAIL  S23 TBD: 09:30 clears  ⚠ 3 issues / · 1 warning / the WAVE 1 line has no usable times — nobody on it earns OIL for this day / ✕ / Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30 / ✕ / This day is not published yet
+PASS  S23 no console/page errors  
+DONE 3 PASS 2 FAIL 0 OTHER of 5

@@ -5270,7 +5270,12 @@ header keeps its true count" — and the D469 / D471 / D472 / D475 note that sto
   - **Tied to that exact warning (Aug 26 — "if things change that warning will appear again"):** the key is the day, the
     rule, the men it names and its words (`engine/warnhide.ts hideKey`), callsigns folded to ids — the moment the
     situation changes the rules write a different warning and it shows again; a rename of a man it names is a label,
-    not a change.
+    not a change. **A clash is tied to its two items instead of its words (owner D2001, 11 Nov 26 — the rules check's
+    Q7):** it stays hidden while the same man is on the same two items — a line, a duty, sim, ground or programme row, an
+    input — whatever their times or names, and shows again when the man or either item is a different one (the key reads
+    the items' row ids, `engine/validate.ts clashItem`; the ✕ mints the week's row ids first, `state/view.ts
+    warnMuteKey`). Taken off and put back on the same line he returns struck (D479). Pinned:
+    `engine/rulesfirst-6-hidden-warnings.test.ts`.
   - **The line stays where it is, struck out and darker, one tap from being flagged again (D469, D475):** same place in
     the list, `.hid` (struck through, grey; a dashed outline and a greyed bar on Edit Schedule), its `✕` become `↺` at
     full strength. There is no "N hidden" fold. A tap on the struck line still jumps to and lights its crew.
@@ -5280,7 +5285,8 @@ header keeps its true count" — and the D469 / D471 / D472 / D475 note that sto
     conflicts flagged for <day> ✓" with the struck lines under it (D475).
   - **No flag on the pucks for that item (D469):** no ring, chip, dashed ring or dotted next-day mark — wherever the man is
     drawn (the seats, the crew list, the Available grid, the ALL AVAIL window) — and no amber time box on a nought-minute
-    line. A man with two warnings keeps the flag of the one still showing; a hidden crew-rest warning drops the dotted
+    line, nor on a second line worded the same, which shares the first line's one warning (rules check F3, 11 Nov 26 —
+    `ui/html.ts fltNoLenShown` matches the hidden warning by its key or by this line's own words). A man with two warnings keeps the flag of the one still showing; a hidden crew-rest warning drops the dotted
     "breaks tomorrow" mark on the day before, across the week's edge too. The engine decides it once: every surface
     reads the bundle "as shown" (`validate.ts shownOf`), and a renderer reads the warning's own `off`, never the set.
   - **Everyone who opens the list sees the struck line; only a scheduler gets the button (D475):** View-only Sched and a
@@ -6152,6 +6158,9 @@ published neighbours as published — the same judgement View-only Sched draws. 
 **A rule changed on the Logic page moves the work hours at once, published days included — as built, and ruled so (owner,
 D482, 1 Oct 26: "A rule change logic page should move the mentioned work hours").** A rule is not a change to a day: the
 app keeps no versions of its rules, and hours are worked out from the published day's content by today's rules.
+*(D2005, 12 Nov 26: a published day's CHECKS are now judged by the Logic settings it was published under — the
+warnings, not the hours; D482 stands for the hours, which `validate.ts hoursEvd` keeps on today's settings —
+`docs/engine-rules.md` §Publishing.)*
 **The Scheduler Board gets a way to open the window (owner, D481, 1 Oct 26 — "Yes, give me an insights button") — BUILT
 on `codex/insights-mission-mix`, `[INSIGHTS-BOARD-DOOR]`:** a button in the board's bar beside the bell on a desktop; inside
 the bar's ⋯ menu on a phone, whose bar stays one row. Both use the existing shared window and preserve the Board on close.
@@ -10815,16 +10824,20 @@ day the mode is describing.
 
 ### A day that stopped being a holiday (fix 4, 22 Sep 26)
 
-Only the issued schedule pays, both directions. The forward half already spoke:
+Only the issued schedule earns OIL, both directions. The forward half already spoke:
 a day published as an ordinary working day that the war LATER calls a holiday
-keeps its frozen "earns nothing", and says *"This day started earning OIL after
-it was published — publish it again so the OIL lands."*
+keeps its frozen "earns nothing", and says *"Publish this day again so OIL is
+earned. The PH was set after the day was published."* (his words, D2003, 11 Nov 26;
+until then "This day started earning OIL after it was published — publish it again
+so the OIL lands").
 
 The reverse half said nothing at all. A day published as a holiday that later
-stops being one goes on paying off its frozen block — which is correct, money
+stops being one goes on crediting OIL off its frozen block — which is correct, OIL
 comes from the issued document and not from today's calendar — while the screen
-contradicted the money and offered no way to look. It now says *"This day stopped
-being a holiday after it was published — publish it again to withdraw the OIL."*
+contradicted the credit and offered no way to look. It now says *"Publish this day
+again to withdraw the OIL. The PH was removed after the day was published."* (his
+words, D2004, 11 Nov 26; until then "This day stopped being a holiday after it was
+published — publish it again to withdraw the OIL"). Both short headings are as they were.
 
 A weekday rule in practice: a Saturday cannot stop being a weekend, so the case
 this covers is a public holiday the war takes back off.

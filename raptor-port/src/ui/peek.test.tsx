@@ -14,7 +14,10 @@ import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { weekBundle } from '../engine/weeks-data'
 import * as view from '../state/view'
-import { peekDayHTML } from './peek'
+import { peekDayHTML, peekWeekHTML } from './peek'
+import { HOOKS } from '../engine/hooks'
+import { VCONF } from '../engine/rules'
+import { keepRulesOn } from '../engine/faceattrs'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -257,5 +260,35 @@ describe('RB4 — the peek draws the R box as the week does', () => {
     expect(html).toMatch(/<div class="fcell bto[^"]*"[^>]*><span class="rl">10:10<\/span><b>[^<]*<\/b><\/div>/)
     expect(html).toMatch(/<div class="fcell ld[^"]*"[^>]*><span>12:40<\/span><span>14:05<\/span><\/div>/)
     expect(peekDayHTML(flyDay(''), 0, false), 'an empty R keeps its place').toContain('<span class="rl"></span>')
+  })
+})
+
+/* THE BRIEF A PUBLISHED DAY PRINTED (D1991, D186 — the bug check of 12 Nov 26, the narrow read of the fixes): View-only
+   Sched's next-week preview draws next week's published day from its issued copy, which carries the brief lead that
+   version went out with (faceattrs.ts keepRulesOn). A blank B prints as the published face printed it, never at a
+   brief lead raised since; a working copy (Edit Schedule's preview) keeps today's setting. */
+describe('the next-week preview: a published day\'s blank B at the brief lead it went out with', () => {
+  it('kept lead 140, today\'s 200: B 09:40 on the published copy; the working copy reads 08:40', () => {
+    const lead = VCONF.briefLead
+    const mk = (): any => ({ dow: 'Monday', dt: 'Jul 20', waves: [{ label: 'WAVE 1', night: false, intimes: [], traffic: [], formations: [{ cs: 'VL', msn: 'BFM', to: '12:00', ld: '13:00', br: '', rl: '', aircraft: [{ p: 'bane', w: '', rmks: '', area: '', opts: {} }] }] }], dutywaves: [], ground: [], allhands: [], sims: { amt: [], oft: [] } })
+    try {
+      ;(VCONF as any).briefLead = 200
+      const pub = peekDayHTML(keepRulesOn(mk(), { briefLead: 140 }), 0, true)
+      expect([pub.includes('09:40'), pub.includes('08:40')], 'published: 09:40, as its face printed it').toEqual([true, false])
+      const work = peekDayHTML(mk(), 0, true)
+      expect([work.includes('08:40'), work.includes('09:40')], 'a working copy: today\'s lead').toEqual([true, false])
+    } finally { (VCONF as any).briefLead = lead }
+  })
+  /* the second narrow read's proof (P5, kept): the preview's cache key carried no Logic value, so Edit Schedule's preview
+     served its old drawing after the brief lead changed */
+  it('Edit Schedule\'s preview is drawn again when the brief lead changes', () => {
+    const em = (HOOKS as any).editMode, lead = VCONF.briefLead
+    try {
+      ;(HOOKS as any).editMode = () => true
+      const a = peekWeekHTML()
+      expect(a.length, 'the preview draws').toBeGreaterThan(0)
+      ;(VCONF as any).briefLead = lead + 60
+      expect(peekWeekHTML() === a, 'not the cached first drawing').toBe(false)
+    } finally { (HOOKS as any).editMode = em; (VCONF as any).briefLead = lead }
   })
 })

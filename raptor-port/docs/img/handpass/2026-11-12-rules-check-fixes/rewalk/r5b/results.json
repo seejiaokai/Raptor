@@ -1,0 +1,67 @@
+[
+ {
+  "id": "R5.0a navigation: the week of 20 Jul",
+  "ok": true,
+  "detail": "{\"week\":\"20/07/2026\",\"mon\":\"Jul 20\"}"
+ },
+ {
+  "id": "R5.1a Monday 20 Jul line: VL BFM 12:00-13:00, B blank, Ranger",
+  "ok": false,
+  "detail": "VL BFM to 12:00 ld 13:00 B=undefined R=undefined p=bane"
+ },
+ {
+  "id": "R5.1b Monday 20 Jul published (View-only Sched shows its ORIG face)",
+  "ok": true,
+  "detail": "Monday Jul 20 ORIG 4 X 2 X 1 Original — as issued Working draft — not issued i | pressed {\"pressed\":true,\"label\":\"Publish day\"}"
+ },
+ {
+  "id": "R5.3a navigation: back to the week of 13 Jul",
+  "ok": true,
+  "detail": "{\"week\":\"13/07/2026\",\"mon\":\"Jul 13\"}"
+ },
+ {
+  "id": "R5.3b Sunday 19 Jul: Ranger on a duty desk 13:00-21:30",
+  "ok": true,
+  "detail": "{\"role\":\"SXO\",\"id\":\"bane\",\"str\":\"13:00\",\"end\":\"21:30\",\"rid\":\"rmwclcgvb3o9599\"}"
+ },
+ {
+  "id": "R5.4 View-only Sched, Sunday, default setting: no \"Breaks Monday\" mark for Ranger",
+  "ok": true,
+  "detail": "{\"strip\":[],\"allStrip\":1,\"d\":{\"breaks\":[\"OIL waiting — this day is not published\"],\"mentionsBreaks\":false,\"pk\":[\"puck sm oilbar oilbar-fo\"],\"tips\":[]}}"
+ },
+ {
+  "id": "R5.5 Logic \"Brief before take-off\" raised",
+  "ok": true,
+  "detail": "was \"2h20\" now \"3h20\""
+ },
+ {
+  "id": "R5.6a View-only Sched, Sunday, after the raise: still NO \"Breaks Monday\" mark on Ranger",
+  "ok": true,
+  "detail": "{\"strip\":[],\"allStrip\":1,\"d\":{\"breaks\":[\"OIL waiting — this day is not published\"],\"mentionsBreaks\":false,\"pk\":[\"puck sm oilbar oilbar-fo\"],\"tips\":[]}}"
+ },
+ {
+  "id": "R5.6b Edit Schedule (working copy) Sunday after the raise — RECORD",
+  "ok": null,
+  "detail": "{\"strip\":[\"Breaks Monday Ranger — had to leave by 20:40. Crew rest breach — Sunday ended 21:30 → crew rest clear at 09:30, but told to report 08:40 — only 11h10 rest.\"],\"allStrip\":2,\"d\":{\"breaks\":[\"Breaks Monday\",\"OIL waiting — this day is not published\"],\"mentionsBreaks\":true,\"pk\":[\"puck sm boxdot oilbar oilbar-fo\"],\"tips\":[]}}"
+ },
+ {
+  "id": "R5.6c Monday 20 Jul published face (View-only Sched) after the raise: no crew-rest line for Ranger",
+  "ok": false,
+  "detail": "{\"strip\":[\"Tight turning — crew rest Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Sunday ended 21:30 → crew rest clear at 09:30\"],\"allStrip\":10,\"d\":{\"breaks\":[\"Conflict — two events at once\",\"Conflict — two events at once\",\"Tight turn\",\"No time for the flight debrief\",\"No time for the sim brief\",\"No time for the sim debrief\",\"Double turning\",\"Crew solo — only allowed under syllabus\",\"Crew combination — CO approval required\",\"Tight turning — crew rest\"],\"mentionsBreaks\":false,\"pk\":[\"puck wfoc advf\"],\"tips\":[]}}"
+ },
+ {
+  "id": "R5.6d Edit Schedule (working copy) Monday 20 Jul after the raise — RECORD",
+  "ok": null,
+  "detail": "{\"strip\":[\"Crew rest (<12h) Ranger — Crew rest breach — Sunday ended 21:30 → crew rest clear at 09:30, but told to report 08:40 — only 11h10 rest.new once signed ✕\",\"Tight turning — crew rest Ranger goes away once signed\"],\"allStrip\":14,\"d\":{\"breaks\":[\"In-time / Rally — timings out of order\",\"In-time / Rally — timings out of order\",\"In-time / Rally — timings out of order\",\"Conflict — two events at once\",\"Conflict — two events at once\",\"Crew rest (<12h)\",\"Tight turn\",\"No time for the flight debrief\",\"No time for the sim brief\",\"No time for the sim debrief\",\"Double turning\",\"Crew solo — only allowed under syllabus\",\"Crew combination — CO approval required\",\"Tight turning — crew rest\"],\"mentionsBreaks\":false,\"pk\":[\"puck warn hard boxred wfoc\",\"puck sm warn hard boxred wfoc\"],\"tips\":[]}}"
+ },
+ {
+  "id": "R5.7 Logic value restored",
+  "ok": true,
+  "detail": "now \"2h20\" want \"2h20\""
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]

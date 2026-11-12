@@ -4,7 +4,7 @@ import { goesOnProg, inputLinesOn, inputReadPass, inputCoversDate, isAway, awayA
 import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
-import { isStandalone, scSpare, saExempt, saExemptKind, saFlies } from './waves'
+import { isStandalone, scSpare, saExempt, saExemptKind, saFlies, saDeskFlies } from './waves'
 import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
 import { whoArr, rowRef, rowPlaces, XKEY, sentinelSeatOK, SENTINEL_JET_BAR } from './slots'
@@ -59,7 +59,8 @@ export function dayStandby(d:any){const s=new Map();
   (d.waves||[]).forEach((w:any)=>(w.formations||[]).forEach((f:any)=>{if(f.cx)return;
     (f.aircraft||[]).forEach((a:any)=>{if(a.cx||!standbyRow(w,f,a))return;
       [a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special&&!s.has(id))s.set(id,String(w.kind||'sc').toUpperCase());});});}));
-  (d.dutywaves||[]).forEach((dw:any)=>{if(!dw.noconf)return;(dw.rows||[]).forEach((r:any)=>{if(r.cx)return;
+  /* …a desk whose wave flies is a task, not a standby (D1997, waves.ts saDeskFlies) */
+  (d.dutywaves||[]).forEach((dw:any)=>{if(!dw.noconf||saDeskFlies(d,dw))return;(dw.rows||[]).forEach((r:any)=>{if(r.cx)return;
     [r.id,...((r&&r.more)||[])].forEach((id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special&&!s.has(id))s.set(id,String(dw.sa||'avalon').toUpperCase());});});});
   return s;}
 export function dayEngaged(d:any,standbyFree?:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE[id]&&!PEOPLE[id].special)s.add(id);};
@@ -71,7 +72,7 @@ export function dayEngaged(d:any,standbyFree?:any){const s=new Set(),add=(id:any
   /* the extras dropped under a row are tasked exactly as much as the person in
      its primary seat — they used to be counted as free all day */
   const more=(r:any)=>((r&&r.more)||[]).forEach(add);
-  (d.dutywaves||[]).forEach((dw:any)=>{if(standbyFree&&dw.noconf)return;dw.rows.forEach((r:any)=>{if(!r.cx){add(r.id);more(r);}});});
+  (d.dutywaves||[]).forEach((dw:any)=>{if(standbyFree&&dw.noconf&&!saDeskFlies(d,dw))return;dw.rows.forEach((r:any)=>{if(!r.cx){add(r.id);more(r);}});});
   /* crew on ONLY an ⓘ info-only row stay un-greyed in the palette — being
      listed for information is not being tasked (owner, 1 Sep 26) */
   (d.ground||[]).forEach((g:any)=>{if(!g.cx&&!g.info){add(whoId(g.who));more(g);}});
@@ -199,7 +200,8 @@ export function slotRules(key:any){
          the cross-day question at the foot of slotBar must stand down for it
          exactly as it does for the jet seat below — else the picker bars a
          run the validator never flags. */
-      if(dwx&&saExemptKind(dwx.sa)){out.avDuty=true; out.saExempt=true;}
+      /* …until its wave flies (D1997): then an ordinary duty row here too, as the validator now checks it (waves.ts saDeskFlies) */
+      if(dwx&&saExemptKind(dwx.sa)&&!saDeskFlies(DAYS[+parts[0]],dwx)){out.avDuty=true; out.saExempt=true;}
       /* an SC desk (7 Sep 26): checked like any duty row, AND one of the SC
          seats for the spare's same-hours rule — slotBar asks scSeatHit off this */
       if(dwx&&dwx.sa==='sc')out.scDesk=true;}
@@ -300,6 +302,9 @@ export function slotRules(key:any){
       /* an SC line even with its times blank (the second narrow read's F1): `sc` names the shift only once both times are
          typed, and the SC currency check reads it, so the soft-kind rule (slotBarNow scSoft) reads this flag beside it */
       out.scLine=true;
+      /* a row that FLIES is a sortie for the crew list too (owner D1996, 11 Nov 26 — "checked like a sortie"): the
+         shift's soft carve-outs below stand down for it, so the picker says what the warning list says */
+      out.scFlies=flyRow;
       const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null&&en!=null){ if(en<st)en+=1440; out.sc=scShiftKind(st,en); out.scEnd=en; }
       /* a SPARE is standing by, not tasked: he may fly, sit a sim or stand a
@@ -470,7 +475,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
      not bar him — plan it and the engine says so in amber. A raw red-list
      INPUT deliberately stays warn-not-bar here, matching the flying-seat
      modality (inputs.ts:178-181): the validator reds him after planting. */
-  if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0&&!r.scSpare){
+  if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0&&!r.scSpare&&!r.scFlies){   // a flying row asks the sortie's scan below (D1996)
     /* not the seat being planted into, and — on a drag — not the one he is dragged FROM (selfKeys, as the walks above
        read it; W3's walk, 26 Sep 26: a MAIN man dragged to another MAIN seat of the same shift was captioned "inside
        this shift" about the shift he was leaving, while the drop said nothing) */
@@ -518,7 +523,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     /* ACROSS AN SC MAIN SHIFT A SOFT COMMITMENT IS AN ADVISORY, NOT A BAR (the narrow read of the Q2 fixes, R1): a
        commitment under Unavailable is away (inputs.ts isAway), but a Meeting is the warning list's amber across the shift
        (shiftHardInput, validate.ts's soft branch), so it must not cross him out here; a course and every hard kind still do */
-    const scSoft=(x:any)=>!((r.sc||r.scLine)&&!r.scSpare&&isPersonal(x.type)&&!shiftHardInput(x.type));
+    const scSoft=(x:any)=>!((r.sc||r.scLine)&&!r.scSpare&&!r.scFlies&&isPersonal(x.type)&&!shiftHardInput(x.type));   // not on a flying row (D1996)
     const flying=String(key).indexOf(':')<0;
     const kn=r.slotStart!=null&&r.slotEnd!=null;
     const off=inputLinesOn(DAYS[r.di].dt).filter((x:any)=>isAway(x)&&x.person===id)
@@ -636,7 +641,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
       &&!(canWork(x.type)&&!flying)&&whole(x)&&!(own&&own.src&&own.src===x.iid));
     if(x)return `already on ${inpLabel(x)}`;
   }
-  if(r.slotStart!=null&&r.slotEnd!=null&&r.di>=0&&!r.sc&&!spareLike0(r)){
+  if(r.slotStart!=null&&r.slotEnd!=null&&r.di>=0&&(!r.sc||r.scFlies)&&!spareLike0(r)){   // a flying shift row is a sortie here (D1996)
     const hit=dayEvents(r.di,id).find((e:any)=>e.s!=null&&e.e!=null
       &&selfKeys.indexOf(selfKey(e.slot||e.key))<0&&overlap(r.slotStart,r.slotEnd,e.s,e.e));
     if(hit)return `already on ${hit.label} ${hm24(hit.s)}–${hm24(hit.e)}`;

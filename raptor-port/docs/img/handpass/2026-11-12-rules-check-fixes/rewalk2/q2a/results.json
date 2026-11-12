@@ -1,0 +1,35 @@
+{
+ "results": [
+  {
+   "id": "Q2.1 \"a flight\" reads Advisory, \"another shift\" Warning",
+   "verdict": "PASS",
+   "saw": "lgk adv off | a flight Advisory || another shift: lgk hard | another shift Warning",
+   "pic": "q2-1-logic-flight-adv.png"
+  },
+  {
+   "id": "Q2.2 AM R 06:30, PM 09:00-15:00, Ranger on both MAIN seats, \"a flight\" Advisory: red line, red pucks",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",\"Ranger — SC PM & SC AM clash\"]] | rings 5.0.0.0.p RED,5.0.1.0.p RED",
+   "pic": "q2-2-flying-red.png"
+  },
+  {
+   "id": "Q2.3 AM R cleared: the line follows \"another shift\" (Warning -> red)",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",\"Ranger — SC AM & SC PM clash\"]] | rings 5.0.0.0.p RED,5.0.1.0.p RED",
+   "pic": "q2-3-standby-follows-shift.png"
+  },
+  {
+   "id": "Q2.4 \"a flight\" restored (ticked, Warning)",
+   "verdict": "PASS",
+   "saw": "lgk hard | a flight Warning",
+   "pic": "q2-4-logic-restored.png"
+  },
+  {
+   "id": "Q2.5 the Logic page's \"SC MAIN clashes\" setting line ends \"Once his shift flies, every clash is red.\"",
+   "verdict": "PASS",
+   "saw": "[\"What an SC MAIN man's clash with each shows: a red warning or an amber advisory. Once his shift flies, every clash is red.\"] | SC MAIN clashes What an SC MAIN man's clash with each shows: a red warning or an amber advisory. Once his shift flies, every clash is red. a flight Warning a sim Warning a duty post Warning another shift Warning a ground event Advisory a programme item Advisory",
+   "pic": "q2-5-setting-line.png"
+  }
+ ],
+ "errors": []
+}

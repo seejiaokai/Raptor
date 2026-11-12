@@ -5,10 +5,11 @@ import { fileAcc, filingActive } from './world'
 import { PEOPLE, isSpecial, whoId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
 import { VCONF, SHIFT_HARD } from './rules'
-import { isStandalone, saExempt, saExemptKind, saFlies, saAnyFlies, CURWEEK } from './waves'
+import { isStandalone, saExempt, saExemptKind, saFlies, saAnyFlies, saDeskFlies, CURWEEK } from './waves'
 import { whoArr, acceptedDay } from './slots'
 import { edgeDate } from './weeks-data'
 import { standsOn } from './overlay'
+import { ruleFor, withDayRules } from './faceattrs'
 /* THE ACCEPT DEFERRAL IS PER-DAY, NOT PER-INPUT (audit, 12 Aug 26).
    inputFlags defers a timed accepted input to the ground row the accept
    created — but that row lives on ONE day, while the input may cover
@@ -136,7 +137,9 @@ export function shiftHardGround(e:any){
   }
   return shiftHardLabel(e.label);
 }
-export function shiftEvHard(e:any){return !!SHIFT_HARD[e.kind]||shiftHardGround(e);}
+/* D1996: a clash with a standby row that flies is red, whatever the "SC MAIN clashes" settings say — they grade a
+   shift that only stands by (the bug check of 12 Nov 26) */
+export function shiftEvHard(e:any){if(e&&e.kind==='shift'&&e.flies)return true;return !!SHIFT_HARD[e.kind]||shiftHardGround(e);}
 /* DOES HE ALREADY HOLD ANOTHER SC SEAT IN THESE HOURS? (owner, 31 Aug 26 —
    "give a warning conflict if u are planned for MAIN and SPARE in the same
    time framing … the 1300 is not a conflict"; SPARE+SPARE ruled the same red
@@ -267,6 +270,11 @@ export const lateShowOf=(rmks:any)=>/\b(?:late\s*show|show\s*(?:at|@)\s*brief|br
    what lets collectEvents below hand the loaded week's Monday/Sunday the
    ADJACENT WEEK's edge dates instead of nothing. xweek marks a cross-week
    read for inpShow (see its own comment) — never set by collectEvents. */
+/* AN END ASSUMED, NOT TYPED (D2005 — the two blind reads, 12 Nov 26): a sim with no end ('sim', Logic's "Assumed sim
+   length") or a row with no end ('open', "Assumed length, no end time"). Crew rest the next day re-measures it by THAT
+   day's settings (validate.ts crewRestDay), since the day being judged decides. Not enumerable, so the event's shape —
+   what parity.test.ts compares with the original, what any copy or export writes — is unchanged. */
+const assumedEnd=(ev:any,how:any)=>{ if(how)Object.defineProperty(ev,'ae',{value:how,enumerable:false,configurable:true,writable:true}); return ev; };
 export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     const fly:any[]=[],forms:any[]=[],events:any[]=[],simcrew:any[]=[],sacrew:any[]=[];
     /* THE SEATS WITH NO HOURS OF THEIR OWN (owner, D605, 6 Oct 26 — "a man who is on leave or grounded for the whole
@@ -338,7 +346,8 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
            D503 broadens only ordinary flight IN/RALLY: a reporting clock
            later than its own take-off belongs to the immediately prior day.
            Keep both interpretations shared with the pure chronology check. */
-        const briefM=shiftLine?null:flightBrief(f,toM);
+        /* D1991: on a published day judged by the official pass, the brief lead its issued version printed (ruleFor) */
+        const briefM=shiftLine?null:flightBrief(f,toM,ruleFor(d,'briefLead'));
         const stepM=shiftLine?toM:toM-VCONF.step;               // sortie: step 1h pre-T/O
         const dekitM=shiftLine?ldM:ldM+VCONF.dekit;             // sortie: land + 30m dekit
         /* intime is the in-time the wave actually PUBLISHED (null when none is
@@ -394,9 +403,12 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
           acs.push({p:a.p,w:a.w,rmks:a.rmks,aar:aarNeed(a.rmks,!!w.night),key:`${di}.${gi}.${li}.${ai}`});
           [['FCP',a.p],['RCP',a.w]].forEach((pair:any)=>{ const seat=pair[0],id=pair[1]; if(!id||isSpecial(id))return;
             if(seat==='FCP')fcps.push(id);
+            /* D1996 (11 Nov 26): a standby row that FLIES is checked like a sortie — `flies` marks it, written only when
+               true so every other event is as it was; validate.ts reads it for the turns and the clash grading */
+            const fliesRow=shiftLine&&saFlies(w,f,a);
             fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,
               lateShow:!shiftLine&&lateShowOf(a.rmks),   // this crew shows at the brief, not at the in-time
-              shift:shiftLine,...(viaRally?{viaRally:true}:{}),label:lineLbl,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
+              shift:shiftLine,...(viaRally?{viaRally:true}:{}),...(fliesRow?{flies:true}:{}),label:lineLbl,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
             /* the slot key this event came off — so the crew picker can ask
                "is he busy at this hour" without counting the very slot it is
                about to plant him into (he occupies it in a swap or a re-test) */
@@ -407,7 +419,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
                A sortie with no take-off or no landing typed (ldM above borrows its take-off) is unfinished: NaN, so workSpan's own
                guard counts it nowhere, as OIL counts it nothing (fltOilWin) — Astra's and Sol 6.1's reads. */
             events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report:shiftLine?report:(parseHM(f.to)==null||parseHM(f.ld)==null?NaN:intime),brief:briefM,label:lineLbl,
-              kind:shiftLine?'shift':'fly',slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
+              kind:shiftLine?'shift':'fly',...(fliesRow?{flies:true}:{}),slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
           });
         });
         /* an SC formation carries its shift window so the SC DAY / SC NIGHT
@@ -430,7 +442,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
       [s.p,s.w].concat(s.pax||[]).concat(s.more||[])   // sim who is free text (1C), not a person
         .forEach((id:any)=>{ if(!id||!PEOPLE[id]||isSpecial(id))return;
           if(!sw){blank.push({id,label:'Sim '+s.label,key:'s:'+di+'.'+k+'.'+ri,kind:'sim'});return;}   // a box with no start — D605, `blank` above
-          events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim',key:'s:'+di+'.'+k+'.'+ri}); }); }));
+          events.push(assumedEnd({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim',key:'s:'+di+'.'+k+'.'+ri},parseHM(s.end)==null?'sim':null)); }); }));   /* an assumed end, as push() below (D2005) */
     /* ---- sim brief / debrief windows -------------------------------------
        An EP profile on the OFT briefs 15 min before the box — unless its
        remarks name their own lead (briefLeadOf above), which wins for that
@@ -486,12 +498,16 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
          scheduler typed by hand reads differently. `reqRows` is this day's own note of which events a request made. */
       if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label&&((!src&&!reqRows.has(x))||x.key===key)))return;
       const ev:any={id,s:w2[0],e:w2[1],label,kind:kind||'other',key};
+      /* an end ASSUMED from the Logic page's "Assumed length" (no end typed): crew rest the next day re-reads it under
+         THAT day's settings (D2005 — the day being judged decides; validate.ts crewRestDay), never this day's */
+      if(en==null)assumedEnd(ev,'open');
       if(src)reqRows.add(ev);
       events.push(ev);
     };
     const extras=(r:any)=>(r&&r.more)||[];
     (d.dutywaves||[]).forEach((dw:any,dwi:any)=>dw.rows.forEach((r:any,ri:any)=>{ if(r.cx)return;
-      if(dw.noconf||r.noconf){
+      /* D1997 (11 Nov 26): once its wave flies, an AVALON / BB desk is an ordinary duty row — fully checked (waves.ts saDeskFlies) */
+      if((dw.noconf&&!(saExemptKind(dw.sa)&&saDeskFlies(d,dw)))||r.noconf){
         /* AVALON's desk shares the wave's exemption, not its invisibility: the same
            one check applies, with ATT B carved out — he cannot fly but he can man a
            desk (owner, 11 Aug 26). work:true is that carve-out. BB's desk is the
@@ -526,7 +542,8 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        window still comes through with null s/e and stays uncheckable. */
     const mapInp=(inp:any)=>{const w2=inpWin(inp);
       /* its own title rides along: a warning names an input as every screen does (inpLabel — [INPUT-OWN-TITLE]) */
-      return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks,...(inp.title?{title:inp.title}:{})};};
+      /* …and its id, so a clash with it names WHICH input (D2001 — validate.ts clashItem) */
+      return {id:inp.person,s:w2?w2[0]:null,e:w2?w2[1]:null,type:inp.type,remarks:inp.remarks,...(inp.title?{title:inp.title}:{}),...(inp.iid?{iid:inp.iid}:{})};};
     /* LINES, not records ([ALL-AVAIL-AS-MEMBER] step 1 — inputs.ts inputLinesOn): one entry a NAMED person of each input
        on the date, from a published face's own copies where the date is frozen; ALL AVAIL / ALL name nobody here. */
     const input:any[]=inputLinesOn(d.dt).filter((inp:any)=>inpShow(inp,d.dt,xweek)).map(mapInp);
@@ -588,7 +605,9 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
 export function collectEvents(){
   /* each date is asked three times across the week — its own day, the day before's tail and the day after's — and read
      once (inputs.ts inputReadPass); the build only reads */
-  return inputReadPass(()=>DAYS.map((d:any,di:any)=>buildDay(d,di, DAYS[di+1]?DAYS[di+1].dt:edgeDate(CURWEEK,1), DAYS[di-1]?DAYS[di-1].dt:edgeDate(CURWEEK,-1))));
+  /* each day built under the Logic settings it is judged by — a published day's own, as its version kept them (D2005,
+     faceattrs.ts withDayRules) — so its brief, step, dekit, sim windows and assumed lengths are its own */
+  return inputReadPass(()=>DAYS.map((d:any,di:any)=>withDayRules(d,()=>buildDay(d,di, DAYS[di+1]?DAYS[di+1].dt:edgeDate(CURWEEK,1), DAYS[di-1]?DAYS[di-1].dt:edgeDate(CURWEEK,-1)))));
 }
 /* earliest IN-TIME of a wave (from the wave's in-time lines; fallback = earliest TO) */
 export function waveInTime(w:any){

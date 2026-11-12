@@ -1,0 +1,41 @@
+{
+ "results": [
+  {
+   "id": "S05.1 flying SC (R 06:30), MAIN seat armed: crew list crosses Ranger out \"already on LECTURE 09:00–10:00\"",
+   "verdict": "PASS",
+   "saw": "armed=5.0.0.0.p | {\"cls\":\"rpuck no haswhy\",\"why\":\"already on LECTURE 09:00–10:00\",\"title\":\"Ranger — already on LECTURE 09:00–10:00\"}",
+   "pic": "s05-1-crew-list-flying.png"
+  },
+  {
+   "id": "S05.2 seated anyway: a red clash in the list",
+   "verdict": "PASS",
+   "saw": "seat=bane | \"0:live:✕: Ranger — SC AM & LECTURE clash {wln hard}\" | ⚠ 2 issues · 1 warning | board 5.0.0.0.p RED,g:5.0 RED",
+   "pic": "s05-2-clash-flying.png"
+  },
+  {
+   "id": "S05.3 R cleared, Ranger already seated: the clash is not red (standby rule as before)",
+   "verdict": "PASS",
+   "saw": "clash line: \"0:live:✕: Ranger — Ranger is on SC AM (07:00–13:00) and also down for LECTURE {wln adv}\" | ⚠ 2 issues | board 5.0.0.0.p AMBER,g:5.0 AMBER",
+   "pic": "s05-3-standby.png"
+  },
+  {
+   "id": "S05.4 R cleared, MAIN seat armed: the crew list no longer crosses him out for the lecture",
+   "verdict": "PASS",
+   "saw": "unseat={\"ok\":true,\"toast\":\"Ranger removed []\"} | {\"cls\":\"rpuck \",\"why\":\"\",\"title\":\"Ranger\"}",
+   "pic": "s05-4-crew-list-standby.png"
+  },
+  {
+   "id": "S28.1 flying SC ending 13:00 + sortie 13:30: a tight-turn note",
+   "verdict": "PASS",
+   "saw": "[\"0:live:✕: Ranger — Tight turn SC AM→VL BFM: 30 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) {wln adv}\",\"1:live:✕: Ranger — No time for the VL BFM flight brief — SC AM sits inside 11:10–13:30 (brief 11:10) {wln adv}\",\"2:live:✕: Ranger — 1 person is double turning: Ranger {wln adv}\"] | board 5.0.0.0.p AMBER,5.1.0.0.p AMBER",
+   "pic": "s28-1-tight-turn.png"
+  },
+  {
+   "id": "S28.2 reversed order (sortie first, flying SC shift after): the tight-turn note",
+   "verdict": "PASS",
+   "saw": "[\"0:live:✕: Ranger — Tight turn VL BFM→SC PM: 40 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) {wln adv}\",\"1:live:✕: Ranger — Ranger reports 12:30 for SC PM — VL BFM (10:00–12:50) cuts into the in-time window before the 13:00 start {wln adv}\",\"2:live:✕: Ranger — Not enough time to attend the VL BFM debrief — SC PM sits inside 12:20–14:20 (land + 2h) {wln adv}\",\"3:live:✕: Ranger — 1 person is double turning: Ranger {wln adv}\"] | board 5.0.0.0.p AMBER,5.1.1.0.p AMBER",
+   "pic": "s28-2-reversed.png"
+  }
+ ],
+ "errors": []
+}

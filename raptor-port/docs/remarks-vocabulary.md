@@ -79,13 +79,17 @@ Each free-text line carries its **first valid clock** and its activity. These
 rules include the original in-time spellings and the approved Rally extension
 (D497–D507, narrowed for publication by D509). Words and remarks stay as typed.
 
+**Since D1995 (11 Nov 26), every line here with a clock is an in-time, whatever its words — the rally is each
+formation's own R box alone (`engine-rules.md` §In-time / Rally).** The rows below marked "before D1995" say how the app
+read those words until then; each now reads as an in-time at its clock, for the formation it names or the whole wave.
+
 | Typed | Means |
 |---|---|
 | `0900 IN TIME`, `09:00 IN-TIME`, `0900H INTIME` | in-time at 09:00; labels, callsigns and H/L suffix are case-insensitive |
-| `0900 RALLY` | rally at 09:00; rally supplies the report when no in-time applies |
-| `0900 IN TIME + RALLY` | both activities at the same first valid clock |
-| `RALLY AFTER IN TIME` or `RALLY AFTER IN`, with no clock | immediate rally at its applicable in-time; it never adds another minute |
-| `0830H: VL RALLY AFTER IN TIME` — the same words WITH a clock | VL's rally at 08:30 and nothing else: it is never a second in-time, so the whole-wave in-time still starts VL's day (D505; the Codex stack check's W3, 5 Oct 26) |
+| `0900 RALLY` | in-time at 09:00 (D1995); before D1995: rally at 09:00, supplying the report when no in-time applied |
+| `0900 IN TIME + RALLY` | in-time at 09:00 (D1995); before D1995: both activities at the same first valid clock |
+| `RALLY AFTER IN TIME` or `RALLY AFTER IN`, with no clock | nothing — no clock, no instruction, nothing to check (D1995); before D1995: immediate rally at its applicable in-time |
+| `0830H: VL RALLY AFTER IN TIME` — the same words WITH a clock | VL's own in-time at 08:30, replacing the whole-wave in-time for VL (D1995 with D505's scope — the agent's reading, put to him); before D1995: VL's rally at 08:30 and nothing else (the Codex stack check's W3, 5 Oct 26) |
 | `0900` `09:00` `0900H` `09:00H` `0900L` `09:00L` without a recognised activity | the legacy unlabelled in-time |
 | `0900 RALLYING` | also legacy unlabelled in-time: RALLYING is not the bounded word RALLY |
 | `0900H: RU RALLY`, or a formation name in remarks | that activity applies to this wave's named formation; only its own formation callsigns are recognised |

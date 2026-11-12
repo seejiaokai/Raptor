@@ -1,0 +1,75 @@
+[d] folds on the Logic page: 4
+PASS  S38d all folds open  4/4 open
+PASS  S38d F5 new words present  yes
+PASS  S38d F5 old words gone  gone
+PASS  S38d F6 new words present  yes
+PASS  S38d F6 old words gone  gone
+PASS  S38d F7 new words present  yes
+PASS  S38d F7 old words gone  gone
+PASS  S38d F8 new words present  yes
+PASS  S38d F8 old words gone  gone
+PASS  S38d F9 new words present  yes
+PASS  S38d F9 old words gone  gone
+PASS  S38d F10 new words present  yes
+PASS  S38d F10 old words gone  gone
+PASS  S38d F11 new words present  yes | yes
+PASS  S38d F11 old words gone  gone | gone
+PASS  S38d O1 In-time lines new words present  yes
+PASS  S38d O1 In-time lines old words gone  gone
+PASS  S38d O2 no clock new words present  yes
+PASS  S38d O2 no clock old words gone  gone
+PASS  S38d O3 unreadable new words present  yes
+PASS  S38d O3 unreadable old words gone  gone
+PASS  S38d O4 SC MAIN advisory new words present  yes
+PASS  S38d O5 SC MAIN setting new words present  yes
+PASS  S38d O6 standby row flies new words present  yes
+PASS  S38d O6 standby row flies old words gone  gone
+PASS  S38d O7 take-off = landing new words present  yes
+PASS  S38d O7 take-off = landing old words gone  gone
+PASS  S38d O9 flight ends new words present  yes | yes
+PASS  S38d O9 flight ends old words gone  gone
+PASS  S38d O10 OIL flight runs new words present  yes | yes
+PASS  S38d O10 OIL flight runs old words gone  gone
+PASS  S38d O11 desk line new words present  yes
+[d] RECORD debrief box shows "1h30"; fold reads "(1h30)" (before: "(2h)")
+PASS  S38d fold follows 90 min  fold "(1h30)" after the box read "1h30"
+PASS  S38d fold back at 2h  fold "(2h)", box "2h"
+PASS  S38d no console/page errors  
+[p] folds on the Logic page: 4
+PASS  S38p all folds open  4/4 open
+PASS  S38p F5 new words present  yes
+PASS  S38p F5 old words gone  gone
+PASS  S38p F6 new words present  yes
+PASS  S38p F6 old words gone  gone
+PASS  S38p F7 new words present  yes
+PASS  S38p F7 old words gone  gone
+PASS  S38p F8 new words present  yes
+PASS  S38p F8 old words gone  gone
+PASS  S38p F9 new words present  yes
+PASS  S38p F9 old words gone  gone
+PASS  S38p F10 new words present  yes
+PASS  S38p F10 old words gone  gone
+PASS  S38p F11 new words present  yes | yes
+PASS  S38p F11 old words gone  gone | gone
+PASS  S38p O1 In-time lines new words present  yes
+PASS  S38p O1 In-time lines old words gone  gone
+PASS  S38p O2 no clock new words present  yes
+PASS  S38p O2 no clock old words gone  gone
+PASS  S38p O3 unreadable new words present  yes
+PASS  S38p O3 unreadable old words gone  gone
+PASS  S38p O4 SC MAIN advisory new words present  yes
+PASS  S38p O5 SC MAIN setting new words present  yes
+PASS  S38p O6 standby row flies new words present  yes
+PASS  S38p O6 standby row flies old words gone  gone
+PASS  S38p O7 take-off = landing new words present  yes
+PASS  S38p O7 take-off = landing old words gone  gone
+PASS  S38p O9 flight ends new words present  yes | yes
+PASS  S38p O9 flight ends old words gone  gone
+PASS  S38p O10 OIL flight runs new words present  yes | yes
+PASS  S38p O10 OIL flight runs old words gone  gone
+PASS  S38p O11 desk line new words present  yes
+[p] RECORD debrief box shows "1h30"; fold reads "(1h30)" (before: "(2h)")
+PASS  S38p fold follows 90 min  fold "(1h30)" after the box read "1h30"
+PASS  S38p fold back at 2h  fold "(2h)", box "2h"
+PASS  S38p no console/page errors  
+DONE 70 PASS 0 FAIL 0 OTHER of 70

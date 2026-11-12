@@ -1,0 +1,41 @@
+{
+ "results": [
+  {
+   "id": "S05.M.1 flying SC (R 06:30), MAIN armed, Ranger has a Meeting 09:00-10:00 filed on Inputs: crew list crosses him out",
+   "verdict": "PASS",
+   "saw": "{\"cls\":\"rpuck no haswhy\",\"why\":\"already on MEETING 09:00–10:00\",\"title\":\"Ranger — already on MEETING 09:00–10:00\"}",
+   "pic": "s05m-1-crew-list-flying.png"
+  },
+  {
+   "id": "S05.M.2 seated anyway: a red clash in the list",
+   "verdict": "FAIL",
+   "saw": "[\"0:live:✕: Ranger — SC AM & MEETING clash\"] | rings 5.0.0.0.p RED,g:5.0 RED",
+   "pic": "s05m-2-flying.png"
+  },
+  {
+   "id": "S05.M.3 R cleared (standby): the clash is not red",
+   "verdict": "PASS",
+   "saw": "[\"0:live:✕: Ranger — Ranger is on SC AM (07:00–13:00) and also down for MEETING\"] | rings 5.0.0.0.p AMBER,g:5.0 AMBER",
+   "pic": "s05m-3-standby.png"
+  },
+  {
+   "id": "S05.M.4 R cleared, MAIN armed: the crew list no longer crosses him out for the Meeting",
+   "verdict": "PASS",
+   "saw": "unseat {\"ok\":true,\"toast\":\"Ranger removed []\"} | {\"cls\":\"rpuck \",\"why\":\"\",\"title\":\"Ranger\"}",
+   "pic": "s05m-4-crew-list-standby.png"
+  },
+  {
+   "id": "S01.1 (record) a Meeting filed over his sortie time",
+   "verdict": "RECORD",
+   "saw": "[\"0:live:✕: Ranger — VL BFM & MEETING clash {wln hard}\"] | rings 5.0.0.0.p RED,g:5.0 RED, RED | ⚠ 2 issues · 1 warning",
+   "pic": "s01-1-clash.png"
+  },
+  {
+   "id": "S01.2 (record) hide the personal-input clash with ✕",
+   "verdict": "RECORD",
+   "saw": "[\"0:HID+struck:reset: Ranger — VL BFM & MEETING clash {wln hard hid}\"] | rings 5.0.0.0.p plain,g:5.0 plain, plain",
+   "pic": "s01-2-hidden.png"
+  }
+ ],
+ "errors": []
+}

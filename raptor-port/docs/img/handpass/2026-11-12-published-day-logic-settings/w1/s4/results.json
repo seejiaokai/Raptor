@@ -1,0 +1,47 @@
+{
+ "rows": [
+  {
+   "id": "S4.1 premise: Tue and Thu (12:00, B blank, previous day ends 22:00) show a red crew-rest for Vandal at 12h",
+   "verdict": "PASS",
+   "saw": "edit: head=\"⚠ 5 issues · 3 warning ▼\" restMine=[\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 20:00, +2h debrief assumed → ended 22:00 → crew res\"] otherRest=[\"Crew rest (<12h) Outlaw — Crew\"] rings=[\"RED:puck warn hard boxred wfoc\"] pending=\"6 changes\" tag=DRAFT dayHead=\"Tuesday Jul 14 Templates Live working copy ▾ DRAFT 4 X 4 X 1 6 changes i Publish day\" || board: head=\"⚠ 5 issues · 3 warnings\" restMine=[\"Vandal — Crew rest breach — Monday landed 20:00, +2h debrief assumed → ended 22:00 → crew rest clear at 10:00,\"] otherRest=[\"Outlaw — Crew rest breach — Mo\"] rings=[\"RED:puck sm warn hard boxred\"] pending=\"6 changes\" tag=DRAFT || edit: head=\"⚠ 7 issues · 4 warning ▼\" restMine=[\"Crew rest (<12h) Vandal — Crew rest breach — Wednesday landed 20:00, +2h debrief assumed → ended 22:00 → crew \"] otherRest=[] rings=[\"RED:puck warn hard boxred wfoc\",\"RED:puck sm warn hard boxred wfoc\"] pending=\"6 changes\" tag=DRAFT dayHead=\"Thursday Jul 16 Templates Live working copy ▾ DRAFT 4 X 4 X 1 6 changes i Publish day\" || board: head=\"⚠ 7 issues · 4 warnings\" restMine=[\"Vandal — Crew rest breach — Wednesday landed 20:00, +2h debrief assumed → ended 22:00 → crew rest clear at 10:\"] otherRest=[] rings=[\"RED:puck sm warn hard boxred\",\"RED:puck sm warn hard boxred\"] pending=\"6 changes\" tag=DRAFT",
+   "pic": "s4-01-*.png"
+  },
+  {
+   "id": "S4.2 Tue published WITH the red warning (12h)",
+   "verdict": "PASS",
+   "saw": "published {\"pressed\":true,\"label\":\"Publish day\"} view: head=\"⚠ 5 issues · 3 warning ▲\" restMine=[\"Crew rest (<12h) Vandal — Crew rest breach — Monday landed 20:00, +2h debrief assumed → ended 22:00 → crew res\"] otherRest=[\"Crew rest (<12h) Outlaw — Crew\"] rings=[\"RED:puck warn hard boxred wfoc\"] dayHead=\"Tuesday Jul 14 ORIG 4 X 4 X 1 Original — as issued Working draft — not issued i\"",
+   "pic": "s4-02-tue-published-view-with-warning.png"
+  },
+  {
+   "id": "S4.3 Logic Crew rest set to 11h",
+   "verdict": "RECORDED",
+   "saw": "box \"12h\" -> \"11h\", VCONF 660",
+   "pic": "s4-03-logic-11h-editing.png"
+  },
+  {
+   "id": "S4.4 Tue published face after Crew rest 11h: RECORD (host reading: the breach stays until the next amendment)",
+   "verdict": "RECORDED",
+   "saw": "VIEW-ONLY: view: head=\"⚠ 5 issues · 3 warning ▲\" restMine=[\"Crew rest (<11h) Vandal — Crew rest breach — Monday landed 20:00, +2h debrief assumed → ended 22:00 → crew res\"] otherRest=[\"Crew rest (<11h) Outlaw — Crew\"] rings=[\"RED:puck warn hard boxred wfoc\"] dayHead=\"Tuesday Jul 14 ORIG 4 X 4 X 1 Original — as issued Working draft — not issued i\" || EDIT WEEK: edit: head=\"⚠ 5 issues · 3 warning ▲\" restMine=[\"Crew rest (<11h) Vandal — Crew rest breach — Monday landed 20:00, +2h debrief assumed → ended 22:00 → crew res\"] otherRest=[\"Crew rest (<11h) Outlaw — Crew\"] rings=[\"RED:puck warn hard boxred wfoc\"] pending=\"11 changes\" tag=ORIG dayHead=\"Tuesday Jul 14 Templates Live working copy ▾ ORIG 4 X 4 X 1 11 changes i Unpublish\" || BOARD: board: head=\"⚠ 5 issues · 3 warnings\" restMine=[\"Vandal — Crew rest breach — Monday landed 20:00, +2h debrief assumed → ended 22:00 → crew rest clear at 10:00,\"] otherRest=[\"Outlaw — Crew rest breach — Mo\"] rings=[\"RED:puck sm warn hard boxred\"] pending=\"11 changes\" tag=ORIG",
+   "pic": "s4-04-tue-*-after-11h.png"
+  },
+  {
+   "id": "S4.5 Thu unpublished clears at once after Crew rest 11h (Edit week, board)",
+   "verdict": "PASS",
+   "saw": "edit: head=\"⚠ 6 issues · 3 warning ▲\" restMine=[] otherRest=[] rings=[\"plain:puck dim\",\"plain:puck sm dim\"] pending=\"6 changes\" tag=DRAFT dayHead=\"Thursday Jul 16 Templates Live working copy ▾ DRAFT 4 X 4 X 1 6 changes i Publish day\" || board: head=\"⚠ 6 issues · 3 warnings\" restMine=[] otherRest=[] rings=[\"plain:puck sm\",\"plain:puck sm\"] pending=\"6 changes\" tag=DRAFT",
+   "pic": "s4-05-thu-*.png"
+  },
+  {
+   "id": "S4.6 Tue edited (BFM2) on the working copy: RECORD",
+   "verdict": "RECORDED",
+   "saw": "edit: head=\"⚠ 4 issues · 2 warning ▲\" restMine=[\"Crew rest (<11h) Vandal goes away once signed\"] otherRest=[\"Crew rest (<11h) Outlaw — Crew\"] rings=[\"plain:puck dim\"] pending=\"1 pending\" tag=ORIG dayHead=\"Tuesday Jul 14 Templates Live working copy ▾ ORIG Not yet signed 4 X 4 X 1 1 pending i Publish AL1 Unpublish\"",
+   "pic": "s4-06-tue-edit-after-edit.png"
+  },
+  {
+   "id": "S4.7 Tue amended and published AL1 under 11h: RECORD (expected: Vandal breach gone)",
+   "verdict": "RECORDED",
+   "saw": "published {\"pressed\":true,\"label\":\"Publish AL1\"} view: head=\"⚠ 4 issues · 2 warning ▲\" restMine=[] otherRest=[\"Crew rest (<11h) Outlaw — Crew\"] rings=[\"plain:puck dim\"] dayHead=\"Tuesday Jul 14 AL1 4 X 4 X 1 AL1 — as issued Working draft — not issued i\"",
+   "pic": "s4-07-tue-view-AL1.png"
+  }
+ ],
+ "errors": []
+}

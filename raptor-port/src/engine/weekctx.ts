@@ -29,12 +29,14 @@
    not off the bundle.) */
 import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
-import { goesOnProg, INPUTS, inputLinesOn, frozenInputDiffs, inputCoversDate, isPersonal, inputDormant, inputSilent, baseYear, inpId } from './inputs'
+import { goesOnProg, INPUTS, inputLinesOn, frozenInputDiffs, inputCoversDate, isPersonal, inputDormant, inputSilent, baseYear, inpId, stableJson } from './inputs'
 import { PEOPLE, isSpecial } from './people'
 import { stashDays, stashSched, stashGet } from './weekstash'
 import { getWorld, filingActive, filingHas } from './world'
-import { dayCurVerIn, daySnapIn } from './publish'
+import { dayCurVerIn, daySnapIn, peopleAttrsNow, faceRuleValsCompared } from './publish'
+import { ruleNow } from './rules'
 import { canonicalDiff } from './canonical'
+import { keepRulesOn, keptRulesDiffer, withDayRules } from './faceattrs'
 import { viewOfWeek, deletedOverlayDue, landingDue } from './overlay'
 
 /* weekBundle(v) is a pure function of v for the two authored weeks and a
@@ -69,7 +71,7 @@ function issuedDayIn(sc:any,di:number,v:any,working:any){
      signed, so returning snap.d raw would re-introduce that label and, at a New Year
      boundary, address the wrong year in inputCoversDate/fileAcc. Never mutate the
      stored snapshot — spread a fresh object. */
-  if(snap&&snap.d)return {...snap.d,dt:working.dt};
+  if(snap&&snap.d)return keepRulesOn({...snap.d,dt:working.dt},snap.rv);   // judged by the rules it went out with (D1991)
   return {...working,waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]};
 }
 /* A STASHED WEEK AS ITS READERS ARE SHOWN IT (owner D1010, 18 Oct 26): every published day at its issued version, the
@@ -78,6 +80,29 @@ function issuedDayIn(sc:any,di:number,v:any,working:any){
 export function officialDaysOf(v:any,days:any[]):any[]{
   const sc=stashSched(v);
   return sc?days.map((d:any,di:number)=>issuedDayIn(sc,di,v,d)):days;
+}
+/* …AND IN THE WORKING WORLD, a neighbour week's published day with nothing waiting is judged by the settings it went out
+   under too (owner D2005, 12 Nov 26), as the loaded week's are (validate.ts untouchedKept): its working copy IS its
+   published content, so the "Breaks Monday" mark Edit Schedule draws on Sunday matches Monday's own published face. One
+   with a change waiting reads today's — its next amendment goes out under them. Only where a kept value differs from
+   today's (otherwise nothing to lay over), so the ordinary week pays nothing. */
+function keepUntouchedRules(v:any,days:any[]){
+  const sc=stashSched(v); if(!sc)return;
+  for(let di=0;di<7;di++){
+    if(!days[di])continue;
+    keepRulesOn(days[di],null);                    // whatever an earlier read laid on this copy, judged afresh
+    if(!(sc.dayOK||{})[di])continue;
+    const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
+    if(!snap||!snap.d||!keptRulesDiffer(snap.rv))continue;
+    const dt=days[di].dt;
+    if(canonicalDiff(snap.d,days[di],di).length>0)continue;
+    if(dt!=null&&(filingDiffers(snap.fil,dt,true)||frozenInputDiffs(snap.inp,dt).length>0))continue;
+    /* …and the men on it and the brief it prints, as the loaded week's validate.ts untouchedKept asks (the two blind
+       reads, 12 Nov 26): a neighbour day with either waiting previews its next amendment, as its own week does */
+    if(snap.pa&&stableJson(peopleAttrsNow(snap.pa))!==stableJson(snap.pa))continue;
+    if(faceRuleValsCompared(snap.d)&&snap.rv.briefLead!=null&&+snap.rv.briefLead!==+ruleNow('briefLead'))continue;   // today's, even if a day's kept values are laid on
+    keepRulesOn(days[di],snap.rv);
+  }
 }
 function bundle(v:any){
   /* stashDays, not stashHas-then-trust: a persisted blob that fails to parse
@@ -94,6 +119,7 @@ function bundle(v:any){
       const sc=stashSched(v);
       if(sc)return {days:st.days.map((d:any,di:number)=>issuedDayIn(sc,di,v,d)),dates:st.dates};
     }
+    keepUntouchedRules(v,st.days);
     return st;
   }
   /* keyed by v AND the loaded year (24 Aug 26): a blank week's labels leave
@@ -135,9 +161,11 @@ function bundle(v:any){
    (events.ts) — irrelevant to workedSet, which never reads day.input, but
    passed for the one buildDay contract every caller here shares. */
 function workedSet(day:any,ix:any,approved?:any){
-  const built=buildDay(day,ix,null,null,true);
+  const built=withDayRules(day,()=>buildDay(day,ix,null,null,true));   // its own settings, as the loaded week's (D2005)
   const ids=new Set<any>();
   (built.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))ids.add(e.id); });
+  /* …and a row with no times yet, as validateCore's RUNLEN does (D1993); an AVALON / BB place stands by (D1998) */
+  (built.blank||[]).forEach((b:any)=>{ if(!b.av&&b.id&&PEOPLE[b.id]&&!isSpecial(b.id))ids.add(b.id); });
   /* the hypothetical auto-landing of a personal ACTIVITY input models an UNSIGNED
      seed date: loadWeek would land it as a ground row, but a non-loaded week never
      does. An APPROVED date never auto-lands a working input at all (autoAcceptInput's
@@ -214,7 +242,7 @@ export function seedRunIn(curWeek:any,maxRun:any){
 export function prevSundaySeed(curWeek:any){
   const prevBundle=bundle(shiftWeekKey(curWeek,-1));
   const day=prevBundle.days[6];
-  const built=buildDay(day,6,null,null,true);
+  const built=withDayRules(day,()=>buildDay(day,6,null,null,true));
   return {events:built.events,input:built.input,dow:built.dow,di:null};
 }
 
@@ -223,8 +251,10 @@ export function prevSundaySeed(curWeek:any){
 export function datedRestSeed(curWeek:any,index:number){
   const offset=Math.floor(index/7), targetDi=((index%7)+7)%7;
   const targetWeek=shiftWeekKey(curWeek,offset), b=bundle(targetWeek);
-  const built=buildDay(b.days[targetDi],targetDi,null,null,true);
-  return {...built,di:null,restIndex:index,targetDi,targetWeek};
+  const src=b.days[targetDi];
+  const built=withDayRules(src,()=>buildDay(src,targetDi,null,null,true));
+  /* `src` — the day itself, so the phantom crew-rest pass judges it by its own settings (validate.ts, D2005) */
+  return {...built,di:null,restIndex:index,targetDi,targetWeek,src};
 }
 
 /* NEXT WEEK'S MONDAY AS A PHANTOM "TODAY" for the forward crew-rest trace
@@ -244,6 +274,8 @@ export function datedRestSeed(curWeek:any,index:number){
    days are the ones a scheduler can still clear. Same bundle() as every
    seed, so an edited next week (the stash) is what Sunday is judged
    against. Bounded to Monday — one lookahead day, like the crew-rest trace. */
+/* next week's Monday as the world reads it — whose own "Max days worked in a row" decides a run breaking there (D2005) */
+export function nextMondayDay(curWeek:any){ return bundle(shiftWeekKey(curWeek,1)).days[0]; }
 export function nextMondayWorked(curWeek:any){
   const nextKey=shiftWeekKey(curWeek,1), nextBundle=bundle(nextKey), sc=stashSched(nextKey);
   return workedSet(nextBundle.days[0],0,!!((sc&&sc.dayOK)||{})[0]);
@@ -274,7 +306,7 @@ export function dayHidesIn(v:any,di:number):Set<string>{
 export function nextMondayHides(curWeek:any){ return dayHidesIn(shiftWeekKey(curWeek,1),0); }
 export function nextMondaySeed(curWeek:any){
   const nextBundle=bundle(shiftWeekKey(curWeek,1));
-  const built=buildDay(nextBundle.days[0],0,null,null,true);
+  const built=withDayRules(nextBundle.days[0],()=>buildDay(nextBundle.days[0],0,null,null,true));
   return {fly:built.fly,events:built.events,input:built.input,dow:built.dow,di:null};
 }
 /* THE ALIAS GATE'S CROSS-WEEK HALF (published-schedule flagging, §14.1/§14.2).
@@ -334,6 +366,7 @@ export function windowDiverges(curWeek:any,maxRun:any){
       if(!(sc.dayOK||{})[di])continue;
       const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
       if(!snap||!snap.d)return true;                // unresolvable → compute official (protect), never alias
+      if(keptRulesDiffer(snap.rv))return true;      // a Logic value it went out with differs from today's (D1991)
       if(canonicalDiff(snap.d,days.days[di],di).length>0)return true;
       /* FILING divergence too (Codex CRPF-002): a signed input removed to 'r' (or a
          new one added) changes no DAYS content, so a content-only gate would alias and

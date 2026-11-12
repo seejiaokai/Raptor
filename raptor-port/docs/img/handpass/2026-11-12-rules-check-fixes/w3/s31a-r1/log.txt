@@ -1,0 +1,1 @@
+in-time boxes: ["INPUT null val=","INPUT null val=","TEXTAREA null val=Medically down","INPUT null val=","INPUT null val=","TEXTAREA null val=Overseas duty — exercise, off island"] [["09:00H: IN TIME + WX/NOTAMS"]]

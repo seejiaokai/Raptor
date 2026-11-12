@@ -1,0 +1,8 @@
+[0-before] Insights: Ranger sorties 2, work hours 14h
+[1-landing-blank] Insights: Ranger sorties 3, work hours 14h
+[2-landing-2100] Insights: Ranger sorties 3, work hours 20h30
+RECORD Ranger work hours: before 14h | take-off 19:30 landing blank 14h | landing 21:00 20h30
+PASS  S24 blank landing adds no hours  before 14h, blank 14h, with a real landing 20h30; sorties 2 -> 3 -> 3
+PASS  S24 a real landing does add hours (the read can tell)  before 14h, real 20h30
+PASS  S24 no console/page errors  
+DONE 3 PASS 0 FAIL 0 OTHER of 3

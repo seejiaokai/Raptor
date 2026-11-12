@@ -1,0 +1,31 @@
+seat Ranger Friday: bane
+Friday formation: {"to":"19:30","ld":"","p":"Ranger"}
+seat Ranger Saturday: bane
+Saturday formation: {"to":"12:00","ld":"","br":"09:29","p":"Ranger"}
+Saturday warnings at B 09:29 (Friday landing blank):
+  ⚠ 3 issues
+  · 2 warnings
+  Ranger — Crew rest breach — Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30, but told to report 09:29 — only 11h59 rest.
+  ✕
+  the WAVE 1 line has no usable times — nobody on it earns OIL for this day
+  ✕
+  This day is not published yet, so nobody earns their OIL for it — publish it before the day is out
+  ✕
+PASS  S23 09:29 breaches crew rest  Ranger — Crew rest breach — Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30, but told to report 09:29 — only 11h59 rest.
+Saturday warnings at B 09:30:
+  ⚠ 3 issues
+  · 1 warning
+  the WAVE 1 line has no usable times — nobody on it earns OIL for this day
+  ✕
+  Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30
+  ✕
+  This day is not published yet, so nobody earns their OIL for it — publish it before the day is out
+  ✕
+PASS  S23 09:30 clears the crew-rest breach  ⚠ 3 issues / · 1 warning / the WAVE 1 line has no usable times — nobody on it earns OIL for this day / ✕ / Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30 / ✕ / This day is not published yet, so nobody earns their OIL for it — publish it before the day is out / ✕
+RECORD at 09:30 the list also shows: Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Friday landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30
+RECORD typing TBD in the board landing box: the app said ["TBD is not a time. Try 0900 or 09:00.","TBD is not a time. Try 0900 or 09:00."] ; box now "" ; stored ""
+NOT WALKED  S23 TBD typed into the landing box  the app refuses it: ["TBD is not a time. Try 0900 or 09:00.","TBD is not a time. Try 0900 or 09:00."] — landing stays ""; TBD cannot be set through the board's box, so the blank landing is the case walked
+edit week landing boxes for the Friday wave: 0
+RECORD Insights text near Ranger: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMIN ‹ › Week insights · Jul 13 – Jul 19 ✕ 34 SORTIES 18 FORMATIONS 38 AIRCREW FLYING 38 15 WARNING FLYING LOAD · SORTIES THIS WEEK Ranger 4 Relay 4 Echo 3 Hex 3 Static 3 Ace 2 Basher 2 Drifter 2 Gambit 2 Outlaw 2 Piston 2 Pixel 2 Show all 38 ↓ WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Bolt 29h25 Ridge 28h Static 25h55 Ace 25h35 Vector 24h30 Echo 21h25 Dash 21h05 Relay 20h55 Zenith 20h50 Basher 20h30 Hex 19h55 Scope 18h55 Fable 17h55 Saber 17h10 Wildcard 16h20 Anvil 15h Ranger 14h Torch 13h50 Forge 13h30 Gambit 13h30 Pixel 12h50 Wisp 12h50 Warden 12h45 Drifter 12h30 Outlaw 12
+PASS  S23 no console/page errors  
+DONE 3 PASS 0 FAIL 1 OTHER of 4

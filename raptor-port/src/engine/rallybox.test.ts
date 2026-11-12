@@ -1,10 +1,10 @@
 /* [RALLY-PER-FORMATION] — each formation's own rally box (owner D1026, D1032, D1034, 19 Oct 26), in the engine.
    The R box (f.rl) counts exactly as a typed rally did: the earliest applicable in-time or rally starts the formation's
    report — crew rest, the long day, OIL, work hours, the wave's report time — and an empty box counts as nothing entered
-   (the nominal report, D592). The box is a formation's OWN rally: it replaces the whole-wave typed RALLY lines (D505), it
-   stands beside a typed rally naming the formation (the earlier counts, D506), and it never becomes an in-time — a
-   whole-wave in-time 06:00 with a rally 07:00 still starts everyone at 06:00 (D1034). Same harness as
-   rally-consumers.test.ts. */
+   (the nominal report, D592). The box is a formation's OWN rally and never becomes an in-time — a whole-wave in-time
+   06:00 with a rally 07:00 still starts everyone at 06:00 (D1034). Since D1995 (11 Nov 26) it is the ONLY rally: every
+   typed line is an in-time whatever its words, so the box no longer replaces a typed RALLY line — it stands beside it,
+   the earlier counting. Same harness as rally-consumers.test.ts. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
@@ -41,13 +41,15 @@ describe('RB1 RB2 RB3 — the R box in the one reporting reader (D1032, D1034)',
   it('a whole-wave in-time stays everyone’s in-time: in-time 06:00 + box 07:00 reports at 06:00 (D1034)', () => {
     expect(rep(flight(['06:00 IN TIME'], f('12:00', '13:00', '10:00', '07:00')))).toMatchObject({ inTime: 360, rally: 420, report: 360 })
   })
-  it('a typed line that still says RALLY stays a rally (D1034): the box, the formation’s own, replaces a whole-wave one (D505)', () => {
-    expect(rep(flight(['06:30 RALLY'], f()))).toMatchObject({ rally: 390, report: 390 })
-    expect(rep(flight(['06:30 RALLY'], f('12:00', '13:00', '10:00', '07:00'))), 'the box wins over the wave-wide rally').toMatchObject({ rally: 420, report: 420 })
+  /* D1995 (11 Nov 26), over D1034's "a typed line that still says RALLY stays a rally": every typed line is an in-time,
+     whatever its words; the rally is the box alone; the report is the earlier of the two. */
+  it('D1995: a typed line saying RALLY is an in-time — the box beside it is the rally, and the earlier is the report', () => {
+    expect(rep(flight(['06:30 RALLY'], f()))).toMatchObject({ inTime: 390, rally: null, report: 390 })
+    expect(rep(flight(['06:30 RALLY'], f('12:00', '13:00', '10:00', '07:00'))), 'the box no longer replaces the typed line').toMatchObject({ inTime: 390, rally: 420, report: 390 })
   })
-  it('a typed rally naming the formation stands beside its box: the earlier counts (D506)', () => {
-    expect(rep(flight(['VL RALLY 06:45'], f('12:00', '13:00', '10:00', '07:00')))).toMatchObject({ rally: 405, report: 405 })
-    expect(rep(flight(['VL RALLY 07:45'], f('12:00', '13:00', '10:00', '07:00')))).toMatchObject({ rally: 420, report: 420 })
+  it('D1995: a typed RALLY line naming the formation is its own in-time and stands beside its box: the earlier counts (D506)', () => {
+    expect(rep(flight(['VL RALLY 06:45'], f('12:00', '13:00', '10:00', '07:00')))).toMatchObject({ inTime: 405, rally: 420, report: 405 })
+    expect(rep(flight(['VL RALLY 07:45'], f('12:00', '13:00', '10:00', '07:00')))).toMatchObject({ inTime: 465, rally: 420, report: 420 })
   })
   it('a box later than the take-off is the evening before (D503)', () => {
     expect(rep(flight([], f('01:30', '03:00', '23:10', '22:00')))).toMatchObject({ rally: -120, report: -120 })

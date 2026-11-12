@@ -1,0 +1,89 @@
+{
+ "results": [
+  {
+   "id": "R1A.0 fixture: one red clash line \"VL BFM & BRIEFING\", Ranger's pucks red",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",\"Ranger — VL BFM & BRIEFING clash\"]] | board 4.0.0.0.p RED,g:4.2 RED | week 4.0.0.0.p RED,g:4.2 RED",
+   "pic": "r1A-0-built.png"
+  },
+  {
+   "id": "R1A.1 hidden: line struck with Reset arrow, pucks plain",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"HID\",true,\"reset\",\"Ranger — VL BFM & BRIEFING clash\"]] | board 4.0.0.0.p plain,g:4.2 plain | week 4.0.0.0.p plain,g:4.2 plain",
+   "pic": "r1A-1-hidden.png"
+  },
+  {
+   "id": "R1A.2 second clash shows LIVE and RED while the first stays struck",
+   "verdict": "FAIL",
+   "saw": "[[\"RED\",\"live\",\"Ranger — VL BFM & BRIEFING clash\"]] | ⚠ 2 issues · 1 warning",
+   "pic": "r1A-2-list.png"
+  },
+  {
+   "id": "R1A.3 Ranger's pucks ring red on the board (second VL puck / the VL puck)",
+   "verdict": "PASS",
+   "saw": "board 4.0.0.0.p RED,4.1.0.0.p RED,g:4.2 RED,g:4.3 RED",
+   "pic": "r1A-3-board.png"
+  },
+  {
+   "id": "R1A.4 ...and on the week behind the board",
+   "verdict": "PASS",
+   "saw": "week 4.0.0.0.p RED,4.1.0.0.p RED,g:4.2 RED,g:4.3 RED",
+   "pic": "r1A-4-week.png"
+  },
+  {
+   "id": "R1A.5 second BRIEFING deleted: the line is struck (hidden) again and his pucks are plain",
+   "verdict": "FAIL",
+   "saw": "ground rows 3 | [[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"]] | board 4.0.0.0.p plain,4.1.0.0.p plain,g:4.2 plain | week 4.0.0.0.p plain,4.1.0.0.p plain,g:4.2 plain",
+   "pic": "r1A-5-deleted.png"
+  },
+  {
+   "id": "R1A.6 Reset arrow: the line is live and red again, pucks red",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",\"Ranger — VL BFM & BRIEFING clash\"]] | board 4.0.0.0.p RED,4.1.0.0.p RED,g:4.2 RED | week 4.0.0.0.p RED,4.1.0.0.p RED,g:4.2 RED",
+   "pic": "r1A-6-reset.png"
+  },
+  {
+   "id": "R1B.0 fixture: one red clash line \"VL BFM & BRIEFING\", Ranger's pucks red",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",\"Ranger — VL BFM & BRIEFING clash\"]] | board 4.0.0.0.p RED,g:4.2 RED | week 4.0.0.0.p RED,g:4.2 RED",
+   "pic": "r1B-0-built.png"
+  },
+  {
+   "id": "R1B.1 hidden: line struck with Reset arrow, pucks plain",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"HID\",true,\"reset\",\"Ranger — VL BFM & BRIEFING clash\"]] | board 4.0.0.0.p plain,g:4.2 plain | week 4.0.0.0.p plain,g:4.2 plain",
+   "pic": "r1B-1-hidden.png"
+  },
+  {
+   "id": "R1B.2 second clash shows LIVE and RED while the first stays struck",
+   "verdict": "FAIL",
+   "saw": "[[\"RED\",\"live\",\"Ranger — VL BFM & BRIEFING clash\"]] | ⚠ 2 issues · 2 warnings",
+   "pic": "r1B-2-list.png"
+  },
+  {
+   "id": "R1B.3 Ranger's pucks ring red on the board (second VL puck / the VL puck)",
+   "verdict": "PASS",
+   "saw": "board 4.0.0.0.p RED,g:4.2 RED,g:4.3 RED",
+   "pic": "r1B-3-board.png"
+  },
+  {
+   "id": "R1B.4 ...and on the week behind the board",
+   "verdict": "PASS",
+   "saw": "week 4.0.0.0.p RED,g:4.2 RED,g:4.3 RED",
+   "pic": "r1B-4-week.png"
+  },
+  {
+   "id": "R1B.5 second BRIEFING deleted: the line is struck (hidden) again and his pucks are plain",
+   "verdict": "FAIL",
+   "saw": "ground rows 3 | [[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"]] | board 4.0.0.0.p plain,g:4.2 plain | week 4.0.0.0.p plain,g:4.2 plain",
+   "pic": "r1B-5-deleted.png"
+  },
+  {
+   "id": "R1B.6 Reset arrow: the line is live and red again, pucks red",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",\"Ranger — VL BFM & BRIEFING clash\"]] | board 4.0.0.0.p RED,g:4.2 RED | week 4.0.0.0.p RED,g:4.2 RED",
+   "pic": "r1B-6-reset.png"
+  }
+ ],
+ "errors": []
+}
