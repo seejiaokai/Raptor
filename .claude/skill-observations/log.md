@@ -2420,3 +2420,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** Three refusals in one batch, each found only by running the gate: the general page had 11 bytes left of its hard limit and OIL's page under 230, so a new line did not fit; and a row whose text said it "answers" an older ruling made the gate ask for a mark in that ruling's row and a citation on every page line stating it (five lines).
 **Suggested improvement:** Before writing rows for a batch, read each target page's size against its limit (`wc -c` beside the PAGE_LIMITS in the document check) and choose the area by room as well as by subject; decide for each row whether it truly changes or answers an older ruling — if yes, plan the mark and the citations in the same script; if no, do not word it as one. The general page's wrapped bullets can be joined without changing a word (2 bytes a line).
 **Principle:** When a record system has hard size limits and cross-reference rules, measure the room and list the cross-references before writing, not after the check refuses.
+
+### Observation 939: A walk of a page fitted to the screen is sized at a narrow desktop width too, not only the wide one
+
+**Status:** OPEN
+**Date:** 2026-11-13
+**Session context:** the night of 13 Nov 26 (chat 67) — the Approvals page made to fit the screen on a PC, a WALK with both code reads
+**Skill:** New skill candidate: bug-check walk sizing (the project's bug-check order, its sizing step and lesson 11)
+**Type:** open-source
+**Phase/Area:** sizing the walk — which window widths a layout change is walked at
+
+**Issue:** Every desktop scenario of the first walk ran at the widest common window or wider. Two faults that exist only in a narrower desktop window (the list's lines showing past the pinned headings; a newly opened calendar and a new list opening out of sight after a sideways scroll) were found only by the code readers, not by the walk. The sizing step had named heights (neighbouring and fractional) carefully but took the width from the usual desktop size.
+**Suggested improvement:** In the sizing step for a page that fits the screen or scrolls inside itself, name at least one narrow desktop width just above the phone split and one mid width, beside the usual wide one, and walk the sideways scroll there; add it to the lesson on fitted pages.
+**Principle:** When a layout has a breakpoint, the walk covers both sides of it close up — the narrowest window that still gets the wide layout is where the wide layout is most likely to fail.
