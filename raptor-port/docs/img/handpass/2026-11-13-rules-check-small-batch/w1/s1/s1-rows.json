@@ -1,0 +1,35 @@
+{
+ "rows": [
+  {
+   "id": "S1 reopen",
+   "verdict": "PASS",
+   "saw": "Leave War closed and reopened at (b): Ranger 18 Jul box reads HO*",
+   "pic": "s1b-lw-reopened.png"
+  },
+  {
+   "id": "S4",
+   "verdict": "PASS",
+   "saw": "Sunday box FO*; Saturday box HO*; Sunday window: LL 12.5 OL 12.5 OIL 1.5 CCL 2 FCL 5 PL 1.5 EL 4 CL 0 CSE OD Grant OIL ⋯ WHERE IT CAME FROM Earned off the published schedule — change the schedule and the OIL follows. REASON FLT GIVEN BY Weekend/PH DAYS a day — worked 07:00–12:30; person OIL 1.5 ›; tracker 1.5",
+   "pic": "s4-lw-sunday.png, s4-sun-lw-window.png"
+  },
+  {
+   "id": "S1a",
+   "verdict": "PASS",
+   "saw": "a: box HO*; person 0.5 ›; tracker 0.5; balances 0.5 ›; board [\"Ranger HO\"]; head ORIG/9 changes/nys false",
+   "pic": "s1a-*"
+  },
+  {
+   "id": "S1b",
+   "verdict": "FAIL",
+   "saw": "b: box HO*; person 0.5 ›; tracker 0.5; balances 0.5 ›; board seat [\"Ranger FO\"]; head ORIG/1 pending/nys true",
+   "pic": "s1b-*"
+  },
+  {
+   "id": "S1c",
+   "verdict": "PASS",
+   "saw": "c: box FO*; person 2 ›; tracker 2; balances 2 ›; board [\"Ranger FO\"]; head AL1/14 changes/nys false",
+   "pic": "s1c-*"
+  }
+ ],
+ "errors": []
+}

@@ -1,0 +1,52 @@
+{
+ "kind": "phone",
+ "armed": "1.2.0.0.p",
+ "rosterPuck": {
+  "cls": "rpuck ",
+  "title": "Vandal",
+  "text": "Vandal IP",
+  "html": "<span class=\"rpuck \" data-drag=\"1\" data-person=\"split\" title=\"Vandal\"><span class=\"puck sm\" tabindex=\"0\" data-person=\"split\" title=\"Vandal · IP · instructor pilot\"><span class=\"nm\">Vandal</span><span class=\"role q-ins\">IP</span></span></span>",
+  "vis": true
+ },
+ "rosterPlaceholder": [
+  "ALL AVAIL cannot crew a jet; name the people flying it | ALL AVAIL — cannot crew a jet; name the people flying it",
+  "ALL cannot crew a jet; name the people flying it | ALL — cannot crew a jet; name the people flying it"
+ ],
+ "t0430": [
+  "Vandal — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Monday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00 ✕"
+ ],
+ "t0400": [
+  "Vandal — Crew rest breach — Monday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕"
+ ],
+ "ap": [
+  "ap:1.0.prog",
+  "ap:1.0.str",
+  "ap:1.0.end",
+  "a:1.0.+",
+  "ap:1.0.rmks",
+  "ap:1.1.prog",
+  "ap:1.1.str",
+  "ap:1.1.end",
+  "a:1.1.+",
+  "ap:1.1.rmks",
+  "ap:1.2.prog",
+  "ap:1.2.str",
+  "ap:1.2.end",
+  "a:1.2.+",
+  "ap:1.2.rmks"
+ ],
+ "rowAfterSeat": "{\"prog\":\"WINDOWTEST\",\"sub\":\"\",\"str\":\"01:00\",\"end\":\"02:00\",\"who\":\"allavail\",\"rmks\":\"\",\"rid\":\"rmwe328usohusm3\"}",
+ "chipHtml": "<div class=\"ppl\" data-fill=\"a:1.2.+\"><span class=\"seat\" data-slot=\"a:1.2.0\" data-drag=\"1\"><span class=\"puck allavail sm\" tabindex=\"0\" data-person=\"allavail\" title=\"ALL AVAIL\"><span class=\"nm\">ALL AVAIL</span></span><span class=\"oilcount\" data-oilsent=\"r:rmwe328usohusm3\" data-oilday=\"1\" data-oilver=\"\" data-oilofw=\"1\" title=\"47 with nothing else on at that time — tap to see them (who is free as things stand now)\">47</span></span><span class=\"addz\" aria-hidden=\"true\">+ add</span></div>",
+ "win": [
+  ".puck allavail sm | ",
+  ".puck allavail sm | ",
+  ".puck allavail sm | ",
+  ".puck allavail sm | ALL AVAIL"
+ ],
+ "winFull": {
+  "cls": "availwin front",
+  "vandal": "Vandal IP Crew rest breach — Monday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. Warden IP Ace A Drifter A Jester B Rebel B C Saint B VL SAT & APPOINTMENT clash Bolt C Gambit C Nomad C R Outlaw C Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:0",
+  "flagged": "4 men are flagged"
+ },
+ "errors": []
+}

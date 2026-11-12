@@ -1,0 +1,35 @@
+{
+ "rows": [
+  {
+   "id": "S2a",
+   "verdict": "PASS",
+   "saw": "a: box FO*; person 1 ›; tracker 1; balances 1 ›; board [\"Ranger FO\"]; head ORIG/9 changes/nys false",
+   "pic": "s2a-*"
+  },
+  {
+   "id": "S2b",
+   "verdict": "PASS",
+   "saw": "b: box FO*; person 1 ›; tracker 1; balances 1 ›; board [\"Ranger HO\"]; head ORIG/1 pending/nys true",
+   "pic": "s2b-*"
+  },
+  {
+   "id": "S2c",
+   "verdict": "PASS",
+   "saw": "c: box HO*; person 0.5 ›; tracker 0.5; balances 0.5 ›; board [\"Ranger HO\"]; head AL1/14 changes/nys false",
+   "pic": "s2c-*"
+  },
+  {
+   "id": "S3 undo",
+   "verdict": "RECORD",
+   "saw": "Undo title \"Undo — publishing an amendment\"; toast [\"Wave added\",\"Ranger planned\",\"Sunday published and approved\",\"OIL Earn: tap a puck to stop that man earning from that event, or an item to stop the whole item earning\",\"Back to editing the schedule\",\"Editing rules — the schedule rechecks as you type\",\"OIL Earn: tap a puck to stop that man earning from that event, or an item to stop the whole item earning\",\"Back to editing the schedule\",\"Published AL1 · 1 item on Sun only · approved by Anvil\",\"OIL Earn: tap a puck to stop that man earning from that event, or an item to stop the whole item earning\",\"Back to editing the schedule\",\"Undid: publishing an amendment\"]; after: box FO* person 1 › head ORIG/1 pending/nys true",
+   "pic": "s3u-*"
+  },
+  {
+   "id": "S3 redo",
+   "verdict": "RECORD",
+   "saw": "Redo title \"Redo — publishing an amendment\"; toast [\"Redid: publishing an amendment\"]; after: box HO* person 0.5 › head AL1/16 changes",
+   "pic": "s3r-*"
+  }
+ ],
+ "errors": []
+}

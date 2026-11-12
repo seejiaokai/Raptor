@@ -1,0 +1,30 @@
+{
+ "kind": "pc",
+ "seat": "ok",
+ "sunFormation": {
+  "to": "18:00",
+  "ld": "",
+  "p": "split"
+ },
+ "week": {
+  "dt0": "Jul 20",
+  "dow": "Monday",
+  "waves": [
+   2,
+   2,
+   2,
+   1,
+   0,
+   0,
+   0
+  ]
+ },
+ "seat2": "ok",
+ "board": [
+  "Vandal — Crew rest breach — Sunday took off 18:00 with no landing typed, +2h debrief assumed → ended 20:00 → crew rest clear at 08:00, but told to report 01:40 — only 5h40 rest. ✕"
+ ],
+ "edit": [
+  "Crew rest (<12h) Vandal — Crew rest breach — Sunday took off 18:00 with no landing typed, +2h debrief assumed → ended 20:00 → crew rest clear at 08:00, but told to report 01:40 — only 5h40 rest. ✕"
+ ],
+ "errors": []
+}

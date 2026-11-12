@@ -1,0 +1,297 @@
+{
+ "tag": "N2",
+ "kind": "pc",
+ "man": "Nomad",
+ "id": "pike",
+ "filed": {
+  "added": 1,
+  "nodoc": [
+   "doc question answered \"no document\""
+  ],
+  "types": "LL=LL OL=OL OIL=OIL CCL=CCL PL=PL FCL=FCL EL=EL CL=CL HL=HL OML=OML ATT C=ATT C ATT B=ATT B Upchit=Upchit Training=Training CSE=CSE Meeting=Meeting Attach=Attach Personal=Personal Appointment=Appointment Duty=Duty Event=Event OD=OD Other=Other"
+ },
+ "inputRow": "[{\"t\":\"ATT B\",\"d\":\"Jul 17\",\"ad\":true,\"ppl\":[{\"p\":\"pike\",\"by\":\"stiff\",\"at\":1794519522698}]}]",
+ "seatFly": "ok",
+ "seatGround": "ok",
+ "board": [
+  "Nomad — this line & BRIEFING clash ✕",
+  "Nomad — Downchit but planned to fly this line ✕",
+  "Nomad — OD clashes with this line — reason: Overseas duty — exercise, off island ✕",
+  "Nomad — OD but tasked — BRIEFING — reason: Overseas duty — exercise, off island ✕",
+  "Nomad — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) ✕"
+ ],
+ "boardLineAttrs": [
+  "title=Jump to the puck that caused this | Nomad — this line & BRIEFING clash ✕",
+  "title=Jump to the puck that caused this | Nomad — Downchit but planned to fly this line ✕",
+  "title=Jump to the puck that caused this | Nomad — OD clashes with this line — reason: Overseas duty — exercise, off island ✕",
+  "title=Jump to the puck that caused this | Nomad — OD but tasked — BRIEFING — reason: Overseas duty — exercise, off island ✕",
+  "title=Jump to the puck that caused this | Nomad — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) ✕"
+ ],
+ "edit": [
+  {
+   "cls": "witem hard",
+   "code": "Conflict — two events at once",
+   "text": "Conflict — two events at once Nomad — this line & BRIEFING clash ✕",
+   "struck": false
+  },
+  {
+   "cls": "witem hard",
+   "code": "Downchit + planned",
+   "text": "Downchit + planned Nomad — Downchit but planned to fly this line ✕",
+   "struck": false
+  },
+  {
+   "cls": "witem hard",
+   "code": "Personal input clash",
+   "text": "Personal input clash Nomad — OD clashes with this line — reason: Overseas duty — exercise, off island ✕",
+   "struck": false
+  },
+  {
+   "cls": "witem hard",
+   "code": "Personal input clash",
+   "text": "Personal input clash Nomad — OD but tasked — BRIEFING — reason: Overseas duty — exercise, off island ✕",
+   "struck": false
+  },
+  {
+   "cls": "witem adv",
+   "code": "No time for the flight brief",
+   "text": "No time for the flight brief Nomad — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) ✕",
+   "struck": false
+  }
+ ],
+ "info": "Friday · Jul 17 · 1 ✕ Draft — not yet published 10 changes AL VERSIONS COVERING FRIDAY No amendment has touched this day yet WHAT THIS DAY IS TASKING Waves 1 Formations 1 Aircraft lines 1 Sim rows 2 Duties 2 Ground items 3 Squadron-wide 3 Aircrew tasked 6 Leave / downchit 2 Free all day 51 ISSUES ON THIS DAY 4 WARNING 1 ADVISORY Warning · Conflict — two events at once Nomad — this line & BRIEFING clash Warning · Downchit + planned Nomad — Downchit but planned to fly this line Warning · Personal input clash Nomad — OD clashes with this line — reason: Overseas duty — exercise, off island Warning · Personal input clash Nomad — OD but tasked — BRIEFING — reason: Overseas duty — exercise, off island Advisory · No time for the flight brief Nomad — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) Close",
+ "infoClose": {
+  "x": "closed",
+  "esc2": "closed",
+  "outside": "closed"
+ },
+ "hideIx": "1",
+ "hidden": [
+  {
+   "cls": "witem hard",
+   "code": "Conflict — two events at once",
+   "text": "Conflict — two events at once Nomad — this line & BRIEFING clash ✕",
+   "struck": false
+  },
+  {
+   "cls": "witem hard hid",
+   "code": "Downchit + planned",
+   "text": "Downchit + planned Nomad — Downchit but planned to fly this line",
+   "struck": true
+  },
+  {
+   "cls": "witem hard",
+   "code": "Personal input clash",
+   "text": "Personal input clash Nomad — OD clashes with this line — reason: Overseas duty — exercise, off island ✕",
+   "struck": false
+  },
+  {
+   "cls": "witem hard",
+   "code": "Personal input clash",
+   "text": "Personal input clash Nomad — OD but tasked — BRIEFING — reason: Overseas duty — exercise, off island ✕",
+   "struck": false
+  },
+  {
+   "cls": "witem adv",
+   "code": "No time for the flight brief",
+   "text": "No time for the flight brief Nomad — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) ✕",
+   "struck": false
+  }
+ ],
+ "hiddenHead": "⚠ 4 issues · 3 warning ▲",
+ "afterUndo": {
+  "r": {
+   "ok": true
+  },
+  "lines": [
+   {
+    "cls": "witem hard",
+    "code": "Conflict — two events at once",
+    "text": "Conflict — two events at once Nomad — this line & BRIEFING clash ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem hard",
+    "code": "Downchit + planned",
+    "text": "Downchit + planned Nomad — Downchit but planned to fly this line ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem hard",
+    "code": "Personal input clash",
+    "text": "Personal input clash Nomad — OD clashes with this line — reason: Overseas duty — exercise, off island ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem hard",
+    "code": "Personal input clash",
+    "text": "Personal input clash Nomad — OD but tasked — BRIEFING — reason: Overseas duty — exercise, off island ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem adv",
+    "code": "No time for the flight brief",
+    "text": "No time for the flight brief Nomad — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) ✕",
+    "struck": false
+   }
+  ],
+  "head": "⚠ 5 issues · 4 warning ▲"
+ },
+ "afterRedo": {
+  "r": {
+   "ok": true
+  },
+  "lines": [
+   {
+    "cls": "witem hard",
+    "code": "Conflict — two events at once",
+    "text": "Conflict — two events at once Nomad — this line & BRIEFING clash ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem hard hid",
+    "code": "Downchit + planned",
+    "text": "Downchit + planned Nomad — Downchit but planned to fly this line",
+    "struck": true
+   },
+   {
+    "cls": "witem hard",
+    "code": "Personal input clash",
+    "text": "Personal input clash Nomad — OD clashes with this line — reason: Overseas duty — exercise, off island ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem hard",
+    "code": "Personal input clash",
+    "text": "Personal input clash Nomad — OD but tasked — BRIEFING — reason: Overseas duty — exercise, off island ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem adv",
+    "code": "No time for the flight brief",
+    "text": "No time for the flight brief Nomad — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) ✕",
+    "struck": false
+   }
+  ],
+  "head": "⚠ 4 issues · 3 warning ▲"
+ },
+ "resetBtn": "<button class=\"witem-mute\" data-woff=\"4.1\" title=\"Flag this again\"><svg class=\"wmuteico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round",
+ "afterReset": {
+  "lines": [
+   {
+    "cls": "witem hard",
+    "code": "Conflict — two events at once",
+    "text": "Conflict — two events at once Nomad — this line & BRIEFING clash ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem hard",
+    "code": "Downchit + planned",
+    "text": "Downchit + planned Nomad — Downchit but planned to fly this line ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem hard",
+    "code": "Personal input clash",
+    "text": "Personal input clash Nomad — OD clashes with this line — reason: Overseas duty — exercise, off island ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem hard",
+    "code": "Personal input clash",
+    "text": "Personal input clash Nomad — OD but tasked — BRIEFING — reason: Overseas duty — exercise, off island ✕",
+    "struck": false
+   },
+   {
+    "cls": "witem adv",
+    "code": "No time for the flight brief",
+    "text": "No time for the flight brief Nomad — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) ✕",
+    "struck": false
+   }
+  ],
+  "head": "⚠ 5 issues · 4 warning ▲"
+ },
+ "insights": {
+  "cls": "modal-box",
+  "text": "Week insights · Jul 13 – Jul 19 ✕ 33 SORTIES 17 FORMATIONS 38 AIRCREW FLYING 41 17 WARNING FLYING LOAD · SORTIES THIS WEEK Relay 4 Echo 3 Hex 3 Static 3 Ace 2 Basher 2 Drifter 2 Gambit 2 Nomad 2 Outla",
+  "conflicts": "CONFLICTS BY TYPE Conflict — two events at once 7 No time for the flight brief 6 Long work day 5 Personal input clash 4 Downchit + planned 3 Double turning 2 Tight turn 2 Crew combination — CO approval required 2 No time for the flight debrief 2 OIL waiting — this day is not published 2 No time for the sim brief 1 No time for the sim debrief 1 Crew solo — only allowed under syllabus 1 Crew rest (<12h) 1 On leave + planned 1 Illegal aircrew combination 1 BY DAY Monday 8 sorties · 4 formations · 17 issues Tuesday 8 sorties · 4 formations · 4 issues Wednesday 8 sorties · 4 formations · 7 issues Thursday 8 sorties · 4 formations · 6 issues Friday 1 sorties · 1 formations · 5 issues Saturday 0 sorties · 0 formations · 1 issue Sunday 0 sorties · 0 formations · 1 issue",
+  "hasFlyingName": false,
+  "hasPlanned": true
+ },
+ "insightsClose": "closed",
+ "insightsEsc": "closed",
+ "logic": {
+  "names": {
+   "onleave": [
+    "Warning: On leave + planned"
+   ],
+   "downchit": [
+    "Warning: Downchit + planned"
+   ],
+   "flyingNames": [],
+   "planned": [
+    "Warning: On leave + planned",
+    "Warning: Downchit + planned"
+   ]
+  },
+  "q:planned": {
+   "names": {
+    "onleave": [
+     "Warning: On leave + planned"
+    ],
+    "downchit": [
+     "Warning: Downchit + planned"
+    ],
+    "flyingNames": [],
+    "planned": [
+     "Warning: On leave + planned",
+     "Warning: Downchit + planned"
+    ]
+   },
+   "body": "THE CHECKS Leave, downchits and inputs Warning: On leave + planned A man on leave is planned for a flight, sim, duty or ground slot. Warning: Downchit + planned A medically down man is planned. On ATT B he may still stand a duty, sim or ground slot, but not fly. Warning: Personal input clash Any other input clashes with a planned slot: a course, a meeting, an appointment, overseas duty. Advisory: SANS availability — planned outside the availability filed A SANS man planned outside the event or the hours he filed. Filing nothing raises nothing. On the puck Note: Several problems on one puck It shows the most serious flag, in this order, and its ring the most serious colour. A red box round th"
+  },
+  "q:leave": {
+   "names": {
+    "onleave": [
+     "Warning: On leave + planned"
+    ],
+    "downchit": [
+     "Warning: Downchit + planned"
+    ],
+    "flyingNames": [],
+    "planned": [
+     "Warning: On leave + planned",
+     "Warning: Downchit + planned"
+    ]
+   },
+   "body": "SETTINGS Inputs Members file for others On › A member may file a duty or commitment for someone else. Never leave, medical or SANS availability. THE CHECKS Crew rest and the working day Warning: No break day — too many days in a row On the programme more than 6 days in a row. How it works Leave, downchits and inputs Note: An input closes its hours Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing. Warning: On leave + planned A man on leave is planned for a flight, sim, duty or ground slot. Warning: Downchit + planned A medically down man is planned. On ATT B he may still stand a duty, sim or ground slot"
+  },
+  "q:flying": {
+   "names": {
+    "onleave": [],
+    "downchit": [],
+    "flyingNames": [],
+    "planned": []
+   },
+   "body": "SETTINGS Flying lines Brief before take-off 2h20 Sets the suggested B on a line with no brief typed, and a blank B is checked against it. With no in-time typed, crew rest counts to this B. A published day keeps its B until it is published again. Step before take-off 1h A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid. Dekit after landing 30 min A man counts as busy until dekit. It and step set the shortest tight turn. Debrief after landing 2h Ends a flyer's day: tomorrow's crew rest, the long day, OIL and Insights hours count to here, and so does the flight"
+  },
+  "q:downchit": {
+   "names": {
+    "onleave": [
+     "Warning: On leave + planned"
+    ],
+    "downchit": [
+     "Warning: Downchit + planned"
+    ],
+    "flyingNames": [],
+    "planned": [
+     "Warning: On leave + planned",
+     "Warning: Downchit + planned"
+    ]
+   },
+   "body": "THE CHECKS Crew rest and the working day Warning: No break day — too many days in a row On the programme more than 6 days in a row. How it works Leave, downchits and inputs Note: An input closes its hours Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing. Warning: On leave + planned A man on leave is planned for a flight, sim, duty or ground slot. Warning: Downchit + planned A medically down man is planned. On ATT B he may still stand a duty, sim or ground slot, but not fly. Warning: Personal input clash Any other input clashes with a planned slot: a course, a meeting, an appointment, overseas duty. Not"
+  },
+  "cleared": true
+ },
+ "errors": []
+}

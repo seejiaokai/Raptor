@@ -1,0 +1,28 @@
+/* rcsb-w2-probe4 v1 — W2: why does Publish day not publish Thursday in N1? sign-off selects, toast, dialog. */
+const C = await import('./rcsb-w2-common.mjs')
+C.setShots('probe4')
+console.log('rcsb-w2-probe4 v1', process.env.HP_SHOTS)
+const Q = await C.load()
+const { R, X, L, sleep } = Q
+const w = await R.world('pc')
+const { page } = w
+const id = w.ID('Vandal'), THU = 3, ISO = '2026-07-16'
+await C.fileInput(w, Q, ISO, id, 'LL')
+await L.board(page, THU)
+const gi = await X.addWave(w, THU, '')
+await X.typeIn(w, `[data-bfld="ff:${THU}.${gi}.0.to"]`, '10:00'); await X.typeIn(w, `[data-bfld="ff:${THU}.${gi}.0.ld"]`, '11:30')
+await X.seatPhoneAware(w, `[data-slot="${THU}.${gi}.0.0.p"]`, id)
+console.log('sign selects', C.j(await page.evaluate(() => [...document.querySelectorAll('#schedBoard select[data-sign]')].map(s => ({ role: s.dataset.sign, day: s.dataset.signday, vis: !!s.offsetWidth, opts: [...s.options].map(o => o.value + ':' + o.text).slice(0, 5) })))))
+const sg = await L.signDay(page, THU, 0)
+console.log('signed', C.j(sg))
+const beak = await page.evaluate(() => [...document.querySelectorAll('#schedBoard [data-beak]')].map(b => ({ day: b.dataset.beak, vis: !!b.offsetWidth, dis: b.disabled, title: b.title, text: b.innerText.trim() })))
+console.log('beak', C.j(beak))
+const p = await L.publishDay(page, THU)
+console.log('pressed', C.j(p))
+await sleep(900)
+console.log('toast', C.j(await L.toastText(page)))
+console.log('dialogs', C.j(await page.evaluate(() => [...document.querySelectorAll('[role=dialog], .modal, .confirm')].filter(e => e.offsetWidth).map(e => e.innerText.replace(/\s+/g, ' ').slice(0, 400)))))
+await R.shot(page, 'p4-after-publish-press')
+console.log('head', C.j(await L.head(page, THU)))
+console.log('errors', C.j(w.errors))
+await w.browser.close()

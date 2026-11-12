@@ -1,0 +1,29 @@
+{
+ "rows": [
+  {
+   "id": "RW1a premise",
+   "verdict": "PASS",
+   "saw": "published: Leave War box HO*; View-only red line: false",
+   "pic": "a1-lw.png, a2-view.png"
+  },
+  {
+   "id": "RW1b face",
+   "verdict": "PASS",
+   "saw": "debrief 0: Leave War box HO*; View-only red line: false (must be false)",
+   "pic": "b1-lw.png, b2-view.png"
+  },
+  {
+   "id": "RW1b working copy",
+   "verdict": "PASS",
+   "saw": "Edit Schedule: red line true, head {\"tag\":\"ORIG\",\"tagAlc\":\"\",\"selector\":\"Live working copy\\n▾\",\"pending\":\"1 pending\",\"nys\":true,\"beak\":null,\"alpub\":{\"text\":\"Publish AL1\",\"disabled\":true,\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1\"},\"unpub\":{\"text\":\"Unpublish\",\"disabled\":false,\"title\":\"Unpublish Saturday — pull Original back to a working copy to correct it; republishing reissues the same version\"},\"signState\":\"4 to sign\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]}",
+   "pic": "b3-edit.png"
+  },
+  {
+   "id": "RW1c after AL1",
+   "verdict": "PASS",
+   "saw": "after AL1: Leave War box ; View-only red line: true",
+   "pic": "c1-lw.png, c2-view.png"
+  }
+ ],
+ "errors": []
+}

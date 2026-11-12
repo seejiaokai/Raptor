@@ -1,0 +1,26 @@
+/* rcsb-w2-probe1 v1 — W2: file LL for Ranger on Thu, flying row + briefing row on Thursday, read the board's warnings. */
+const C = await import('./rcsb-w2-common.mjs')
+C.setShots('probe1')
+console.log('rcsb-w2-probe1 v1', process.env.HP_SHOTS)
+const Q = await C.load()
+const { R, I, W, X, L, sleep } = Q
+const w = await R.world('pc')
+const { page } = w
+const id = w.ID('Ranger'), THU = 3, ISO = '2026-07-16'
+console.log('Ranger id', id)
+const f = await C.fileInput(w, Q, ISO, id, 'LL', 'p-leave-form')
+console.log('filed', C.j(f))
+await L.board(page, THU)
+const gi = await X.addWave(w, THU, '')
+await X.typeIn(w, `[data-bfld="ff:${THU}.${gi}.0.to"]`, '10:00'); await X.typeIn(w, `[data-bfld="ff:${THU}.${gi}.0.ld"]`, '11:30')
+console.log('seat', await X.seatPhoneAware(w, `[data-slot="${THU}.${gi}.0.0.p"]`, id))
+await R.shot(page, 'p-board-1')
+console.log('boardWarn1', C.j(await X.boardWarn(page, w)))
+console.log('warnList1', C.j(await W.warnList(page)))
+const g = await C.addGround(w, Q, THU, 'BRIEFING', '09:00', '10:00')
+console.log('ground idx', g)
+await R.shot(page, 'p-board-2')
+console.log('slots', C.j(await page.evaluate(() => [...document.querySelectorAll('#schedBoard [data-fill^="g:3"]')].filter(e => e.offsetWidth).map(e => e.dataset.fill))))
+console.log('warnList2', C.j(await W.warnList(page)))
+console.log('errors', C.j(w.errors))
+await w.browser.close()

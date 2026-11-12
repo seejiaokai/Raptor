@@ -21,7 +21,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, signOf, setSign, dayShownPendCount, daySigned, daySnapOf, dayCurVer, dayDelta } from '../engine/publish'
 import { VCONF } from '../engine/rules'
-import { validate, WARN } from '../engine/validate'
+import { validate, WARN, officialWarn, workingWarn } from '../engine/validate'
 import { ensureRowIds } from '../engine/rowids'
 import { stashClear } from '../engine/weekstash'
 import { initStore as raptorInitStore, loadWeek } from '../state/store'
@@ -277,5 +277,61 @@ describe('D2014 — the five gotcha families', () => {
     expect(cellOf('stiff', SAT)).toBe('HO')
     expect(face(SAT).stiff).toBe('HO')
     expect(dayShownPendCount(SAT)).toBe(1)
+  })
+})
+
+/* THE "NO USABLE TIMES" WARNING ON A PUBLISHED FACE (the blind Opus read of this job, finding 1 — D2014, D1991, D2013).
+   The warning says "nobody on it earns OIL for this day", and it is one of the few drawn LIVE on the published face
+   (validate.ts LIVE_ON_FACE, D2002). It was worked out with today's report lead and debrief while the credit read the
+   values the day was published under, so a Logic change raised it (or cleared it) on the published face at once while
+   the Leave War went on crediting the day as published: the face said nobody earns while somebody did. A published day
+   is now judged by the values its OIL block kept; the working copy, which reads pending, shows the next amendment (D2013). */
+describe('D2014 — the "no usable times" warning follows the values the day was published under', () => {
+  const blindOn = (b: any) => (((b.byDay || [])[SAT] || {}).warns || []).some((w: any) => w.code === 'OIL_NO_TIMES')
+  it('lowered: a line typed take-off = landing earns on its debrief; the debrief set to 0 does not raise the red line on the published face until the amendment', () => {
+    VCONF.reportLead = 0
+    build(SAT, '10:00', '10:00')
+    publish(SAT)
+    expect(cellOf('bane', SAT), 'the premise: 10:00 to the 2h debrief earns a half day (D49)').toBe('HO')
+    expect(blindOn(officialWarn()), 'the premise: no red line').toBe(false)
+    VCONF.debrief = 0; validate(); runOilPass()
+    expect(cellOf('bane', SAT), 'the credit holds').toBe('HO')
+    expect(blindOn(officialWarn()), 'the published face keeps saying what its OIL is: no red line').toBe(false)
+    expect(dayShownPendCount(SAT), 'the change waits').toBe(1)
+    expect(blindOn(workingWarn()), 'the working copy shows the next amendment (D2013)').toBe(true)
+    amend(SAT)
+    expect(cellOf('bane', SAT), 'the amendment takes the half day').toBeFalsy()
+    expect(blindOn(officialWarn()), 'and now the published face says so').toBe(true)
+  })
+  it('raised: published with the debrief at 0 (the red line, nothing credited), the debrief raised does not clear it from the published face until the amendment', () => {
+    VCONF.reportLead = 0; VCONF.debrief = 0
+    build(SAT, '10:00', '10:00')
+    publish(SAT)
+    expect(cellOf('bane', SAT), 'the premise: nothing credited').toBeFalsy()
+    expect(blindOn(officialWarn()), 'the premise: the red line').toBe(true)
+    VCONF.debrief = 120; validate(); runOilPass()
+    expect(cellOf('bane', SAT), 'still nothing credited').toBeFalsy()
+    expect(blindOn(officialWarn()), 'the red line stays on the published face').toBe(true)
+    amend(SAT)
+    expect(cellOf('bane', SAT)).toBe('HO')
+    expect(blindOn(officialWarn())).toBe(false)
+  })
+  /* the narrow read of the fix, finding 1: the case D2014 exists for most — nobody's OIL moves, so nothing reads
+     pending and the working copy too judges the day by its kept values (validate.ts untouchedKept) */
+  it('nothing credited on the day ("No OIL earned" on): the debrief set to 0 raises the red line on neither the published face nor the working copy, and nothing reads pending', () => {
+    VCONF.reportLead = 0
+    build(SAT, '10:00', '10:00')
+    ;(DAYS[SAT] as any).oild = { blanket: true }
+    publish(SAT)
+    expect(cellOf('bane', SAT), 'the premise: nothing credited').toBeFalsy()
+    expect(blindOn(officialWarn()), 'the premise: no red line').toBe(false)
+    VCONF.debrief = 0; validate(); runOilPass()
+    expect(dayShownPendCount(SAT), 'no OIL moves, so nothing waits').toBe(0)
+    expect(blindOn(officialWarn()), 'the published face: no red line').toBe(false)
+    expect(blindOn(workingWarn()), 'Edit Schedule, nothing waiting: no red line either').toBe(false)
+    /* the same day judged by the new values says it — so the two lines above are the kept values at work */
+    VCONF.debrief = 120; validate(); runOilPass()
+    ;(DAYS[SAT] as any).oild = { blanket: false }; VCONF.debrief = 0; validate()
+    expect(blindOn(workingWarn()), 'a change waiting: the working copy previews the next amendment').toBe(true)
   })
 })

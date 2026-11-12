@@ -1,0 +1,48 @@
+{
+ "case": "blank",
+ "kind": "phone",
+ "seatMon": "ok",
+ "monFormation": {
+  "to": "12:00",
+  "ld": "",
+  "p": "split"
+ },
+ "seatTue": "ok",
+ "tueTo": "04:00",
+ "tueFormation": {
+  "to": "04:00",
+  "ld": ""
+ },
+ "board": [
+  "Vandal — Crew rest breach — Monday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕"
+ ],
+ "edit": [
+  "Crew rest (<12h) Vandal — Crew rest breach — Monday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕"
+ ],
+ "restCount": 1,
+ "marks": [
+  "SPAN.puck.boxdot.dim title=Outlaw · C · ops wingman · Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R Outlaw C",
+  "SPAN.lchip.l-cr title=Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R",
+  "SPAN.puck.boxdot.wfoc.echo title=Vandal · IP · instructor pilot · Crew rest — Tuesday is broken by this day: he had to leave by 13:40 | R Vandal IP",
+  "SPAN.lchip.l-cr title=Crew rest — Tuesday is broken by this day: he had to leave by 13:40 | R",
+  "SPAN.puck.sm.boxdot.wfoc.echo title=Vandal · IP · instructor pilot · Crew rest — Tuesday is broken by this day: he had to leave by 13:40 | R Vandal IP",
+  "SPAN.lchip.l-cr title=Crew rest — Tuesday is broken by this day: he had to leave by 13:40 | R",
+  "SPAN.puck.sm.boxdot.dim title=Outlaw · C · ops wingman · Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R Outlaw C",
+  "SPAN.lchip.l-cr title=Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R",
+  "SPAN.puck.sm.boxdot.wfoc.echo title=Vandal · IP · instructor pilot · Crew rest — Tuesday is broken by this day: he had to leave by 13:40 | R Vandal IP",
+  "SPAN.lchip.l-cr title=Crew rest — Tuesday is broken by this day: he had to leave by 13:40 | R",
+  "SPAN.puck.sm.boxdot.dim title=Outlaw · C · ops wingman · Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R Outlaw C",
+  "SPAN.lchip.l-cr title=Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R",
+  "SPAN.puck.sm.boxdot.wfoc.echo title=Vandal · IP · instructor pilot · Crew rest — Tuesday is broken by this day: he had to leave by 13:40 | R Vandal IP",
+  "SPAN.lchip.l-cr title=Crew rest — Tuesday is broken by this day: he had to leave by 13:40 | R",
+  "SPAN.puck.warn.hard.boxred.dim title=Outlaw · C · ops wingman · Crew rest breach (<12h) | R Outlaw C"
+ ],
+ "mondayPucks": [
+  "puck boxdot wfoc echo | Vandal · IP · instructor pilot · Crew rest — Tuesday is broken by this day: he had to leave by 13:40",
+  "puck sm boxdot wfoc echo | Vandal · IP · instructor pilot · Crew rest — Tuesday is broken by this day: he had to leave by 13:40",
+  "puck sm boxdot wfoc echo | Vandal · IP · instructor pilot · Crew rest — Tuesday is broken by this day: he had to leave by 13:40",
+  "puck sm boxdot wfoc echo | Vandal · IP · instructor pilot · Crew rest — Tuesday is broken by this day: he had to leave by 13:40"
+ ],
+ "info": "Tuesday · Jul 14 · 4 X 4 X 1 ✕ Draft — not yet published 4 changes AL VERSIONS COVERING TUESDAY No amendment has touched this day yet WHAT THIS DAY IS TASKING Waves 3 Formations 5 Aircraft lines 9 Sim rows 5 Duties 6 Ground items 4 Squadron-wide 2 Aircrew tasked 27 Leave / downchit 3 Free all day 28 ISSUES ON THIS DAY 3 WARNING 1 ADVISORY 1 NOTE Warning · Conflict — two events at once Saint — VL SAT & APPOINTMENT clash Warning · Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 20:45, +2h debrief assumed → ended 22:45 → crew rest clear at 10:45, but told to report 06:00 — only 7h15 rest. Warning · Crew rest (<12h) Vandal — Crew rest breach — Monday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. Advisory · No time for the flight brief Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20) Note · Long work day Static — Static has a long work day: 13h05, 05:00 → 18:05 (last landing 16:05 + 2h debrief assumed) Close",
+ "errors": []
+}

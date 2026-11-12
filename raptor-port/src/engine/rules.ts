@@ -110,7 +110,9 @@ export const RULE_STD:any=Object.freeze({v:JSON.parse(JSON.stringify(VCONF)),
    the engine, present and future, reads the day's own without a second copy of any rule; restored in its finally.
    Nothing inside may write. A value the version did not keep (a version issued before this build, D56) reads today's.
    `ruleNow` is for the readers that must never take a day's kept value — the OIL block (oil.ts), whose own kept values
-   ride the OIL evidence, and whose following a changed setting on a published day is the owner's question. */
+   ride the OIL evidence (oilev.ts `rv`: a published day's OIL follows the values it went out with until its next
+   amendment — D592 (4), D2014, 13 Nov 26); where a check of the day needs one of them, it is handed the day's value
+   (oil.ts dayOilBlind, fltMeasuresNothing). */
 let RULE_LIVE:any=null, RULE_LIVE_SH:any=null;
 export function withRuleVals<T>(rv:any,fn:()=>T):T{
   if(!rv||typeof rv!=='object')return fn();

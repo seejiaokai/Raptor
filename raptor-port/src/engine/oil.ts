@@ -193,12 +193,14 @@ export function fltOilWin(wv:any,f:any,lead:number,deb:number,lines?:any):[numbe
    typed with the SAME take-off and landing still earns, from the report before it and the debrief after it. With neither —
    the entered in-time IS the take-off and the Logic page's debrief is zero, or both leads at zero — it measures nothing and
    its crew earn nothing (D31: credit follows the times written). The day then says so: the advisory stops promising the
-   report and debrief, and the "no usable times" list names the line. Today's Logic values, as every warning reads them.
+   report and debrief, and the "no usable times" list names the line. The day's own Logic values, as every check of the
+   day reads them (D2005, D2014 — below).
    A standalone wave is not a sortie — its own rule is the zero shift (dayOilBlind). */
 /* `lead` / `deb` (D2005 — the two blind reads): the warning's words are judged by the day's own settings — a published
    day nothing waits on by the values it went out with, so a Logic change never rewrites its frozen advisory and never
-   makes it pending; the validator passes VCONF as the day loop overlays it. The OIL credit and the "no usable times"
-   list leave them out and read today's, as OIL always has (D48, D592). */
+   makes it pending; the validator passes VCONF as the day loop overlays it. The "no usable times" list does the same
+   (dayOilBlind, D2014). The OIL credit is worked out from its OIL block's own kept values (oilev.ts `rv`, D592 (4),
+   D2014); left out here, today's — the values a day goes out with. */
 export function fltMeasuresNothing(wv:any,f:any,lead?:number,deb?:number):boolean{
   if(!f||f.cx||isStandalone(wv))return false;
   const st=parseHM(f.to),en=parseHM(f.ld);
@@ -478,7 +480,11 @@ export function blindDesks(names:readonly string[]):{list:string;verb:string;des
   };
 }
 
-export function dayOilBlind(day:any):string[]{
+/* `lead` / `deb` (D2014, 13 Nov 26 — the blind read of the rules check's small batch): the validator passes the day's own
+   settings, as its day loop overlays them (D2005), so a published day says "nobody on it earns OIL" by the values it was
+   published under — the values its OIL was credited by — and a Logic change raises or clears the line only with the
+   next amendment. Left out (the Leave War's publish note, read as the day goes out), today's. */
+export function dayOilBlind(day:any,lead?:number,deb?:number):string[]{
   const out:string[]=[];
   const seen=new Set<string>();
   const add=(name:string)=>{if(!seen.has(name)){seen.add(name);out.push(name);}};
@@ -507,11 +513,11 @@ export function dayOilBlind(day:any):string[]{
      asked to be warned about on 20 Sep 26. So it IS named. */
   const readable=(st:any,en:any)=>parseHM(st)!=null&&parseHM(en)!=null;
   /* …except a zero shift that flies from a B or R earlier than its START, which earns (D1999) and is not named */
-  const zeroShift=(wv:any,f:any)=>isStandalone(wv)&&parseHM(f.to)!=null&&parseHM(f.to)===parseHM(f.ld)&&!saZeroSpanWin(wv,f,ruleNow('reportLead'));
+  const zeroShift=(wv:any,f:any)=>isStandalone(wv)&&parseHM(f.to)!=null&&parseHM(f.to)===parseHM(f.ld)&&!saZeroSpanWin(wv,f,lead??ruleNow('reportLead'));
   (day.waves||[]).forEach((wv:any)=>{
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
-      if(readable(f.to,f.ld)&&!zeroShift(wv,f)&&!fltMeasuresNothing(wv,f))return;
+      if(readable(f.to,f.ld)&&!zeroShift(wv,f)&&!fltMeasuresNothing(wv,f,lead,deb))return;
       const crew:any[]=[];
       (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
       if(!named(crew))return;

@@ -1,0 +1,23 @@
+{
+ "rows": [
+  {
+   "id": "S2 phone a",
+   "verdict": "PASS",
+   "saw": "a: box FO*; person 1 ›; head ORIG/9 changes/nys false; window Grant OIL ⋯ WHERE IT CAME FROM Earned off the published schedule — change the schedule and the OIL follows. REASON FLT GIVEN BY Weekend/PH DAYS a day — worked 07:00–13:30",
+   "pic": "p2a-*"
+  },
+  {
+   "id": "S2 phone b",
+   "verdict": "PASS",
+   "saw": "b: box FO*; person 1 ›; head ORIG/1 pending/nys true; window Grant OIL ⋯ WHERE IT CAME FROM Earned off the published schedule — change the schedule and the OIL follows. REASON FLT GIVEN BY Weekend/PH DAYS a day — worked 07:00–13:30",
+   "pic": "p2b-*"
+  },
+  {
+   "id": "S2 phone c",
+   "verdict": "PASS",
+   "saw": "c: box HO*; person 0.5 ›; head AL1/14 changes/nys false; window  ⋯ WHERE IT CAME FROM Earned off the published schedule — change the schedule and the OIL follows. REASON FLT GIVEN BY Weekend/PH DAYS half a day, AM — worked 07:00–13:30",
+   "pic": "p2c-*"
+  }
+ ],
+ "errors": []
+}

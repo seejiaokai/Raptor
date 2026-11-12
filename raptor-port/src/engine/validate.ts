@@ -1536,8 +1536,12 @@ function validateCore(){
     /* OIL on today's settings, whole (D2005 — Astra's read, finding 3): its earning test reaches who is available
        (avail.ts), whose ordinary VCONF readers would otherwise take a published day's kept values — OIL keeps its own
        rule (D48, D592), never the checks' */
+    /* …save the "no usable times" list, which says who EARNS: judged by the day's own report lead and debrief, the values
+       its OIL was credited by (D2014, 13 Nov 26 — a Logic change reaches a published day's OIL, and its words, only from
+       its next amendment), read here before the live overlay as fltNoLenSays reads them */
+    const blindLead=VCONF.reportLead, blindDeb=VCONF.debrief;
     if(earnsOil)withLiveRules(()=>{
-      const blind=dayOilBlind(DAYS[di]||{});
+      const blind=dayOilBlind(DAYS[di]||{},blindLead,blindDeb);
       if(blind.length){
         const {list,verb}=blindDesks(blind);
         /* "no USABLE times" (the follow-up code read, G1). "No times" was true

@@ -1,0 +1,106 @@
+{
+ "kind": "phone",
+ "steps": {
+  "dayPanelEsc": "closed",
+  "dayPanelOutside": "STILL OPEN",
+  "dayPanelXbtn": "closed",
+  "winEsc": "closed",
+  "winX": "closed",
+  "winCancelBtn": "closed",
+  "board": "closed"
+ },
+ "popSel": "#icPopAdd",
+ "dayPanelClosers": [],
+ "winClosers": [
+  "#icAddPuck.abtn.sm \"+ Note\"",
+  ".win-x \"✕\"",
+  "#icPopAdd.abtn.primary.sd-add \"+ Input\"",
+  ".icard-open \"Gambit\"",
+  ".icard-doc \"View the document\"",
+  ".icard-open \"Grit\"",
+  ".icard-open \"Nomad\"",
+  ".icard-open \"Ranger\""
+ ],
+ "boardDoneCtl": [
+  "sbDone \"✓\""
+ ],
+ "seat": "ok",
+ "l0": [
+  {
+   "ix": "0",
+   "t": "Conflict — two events at once Ace — HQ ENGAGEMENT & RU AD clash ✕",
+   "struck": false
+  },
+  {
+   "ix": "1",
+   "t": "Conflict — two events at once Ranger — RU BFM & APPOINTMENT clash ✕",
+   "struck": false
+  },
+  {
+   "ix": "2",
+   "t": "On leave + planned Vandal — On leave but planned to fly this line ✕",
+   "struck": false
+  },
+  {
+   "ix": "3",
+   "t": "Illegal aircrew combination Wildcard, Pixel — OCU pilot Wildcard with CAT D WSO Pixel — not an authorised combination (RU AD) ✕",
+   "struck": false
+  },
+  {
+   "ix": "4",
+   "t": "No time for the flight brief Ace — No time for the RU AD flight brief — HQ ENGAGEMENT sits inside 10:25–12:45 (brief 10:25) ✕",
+   "struck": false
+  },
+  {
+   "ix": "5",
+   "t": "No time for the flight debrief Ace — Not enough time to attend the RU AD debrief — HQ ENGAGEMENT sits inside 14:10–16:10 (land + 2h) ✕",
+   "struck": false
+  },
+  {
+   "ix": "6",
+   "t": "No time for the flight debrief Ranger — Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h) ✕",
+   "struck": false
+  }
+ ],
+ "btnHtml": "<button class=\"witem-mute\" data-woff=\"3.2\" title=\"Hide this warning — it flags no puck and is not counted; it comes back if the situation changes\">✕</button>",
+ "hidden": [
+  {
+   "ix": "2",
+   "t": "On leave + planned Vandal — On leave but planned to fly this line",
+   "struck": true
+  }
+ ],
+ "afterUndo": {
+  "r": {
+   "ok": true
+  },
+  "l": [
+   {
+    "ix": "2",
+    "t": "On leave + planned Vandal — On leave but planned to fly this line ✕",
+    "struck": false
+   }
+  ]
+ },
+ "afterRedo": {
+  "r": {
+   "ok": true
+  },
+  "l": [
+   {
+    "ix": "2",
+    "t": "On leave + planned Vandal — On leave but planned to fly this line",
+    "struck": true
+   }
+  ]
+ },
+ "afterReset": [
+  {
+   "ix": "2",
+   "t": "On leave + planned Vandal — On leave but planned to fly this line ✕",
+   "struck": false
+  }
+ ],
+ "insightsOnPhone": 0,
+ "errors": []
+}

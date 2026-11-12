@@ -1,0 +1,102 @@
+{
+ "tag": "N1",
+ "kind": "phone",
+ "man": "Vandal",
+ "id": "split",
+ "filed": {
+  "added": 1,
+  "nodoc": [
+   "doc question answered \"no document\""
+  ],
+  "types": "LL=LL OL=OL OIL=OIL CCL=CCL PL=PL FCL=FCL EL=EL CL=CL HL=HL OML=OML ATT C=ATT C ATT B=ATT B Upchit=Upchit Training=Training CSE=CSE Meeting=Meeting Attach=Attach Personal=Personal Appointment=Appointment Duty=Duty Event=Event OD=OD Other=Other"
+ },
+ "inputRow": "[{\"t\":\"LL\",\"d\":\"Jul 16\",\"ad\":true,\"ppl\":[{\"p\":\"split\",\"by\":\"stiff\",\"at\":1794519478967}]}]",
+ "seatFly": "ok",
+ "seatGround": "ok",
+ "board": [
+  "Vandal — this line & BRIEFING clash ✕",
+  "Vandal — On leave but planned to fly this line ✕",
+  "Vandal — On leave but tasked — BRIEFING ✕",
+  "Vandal — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) ✕"
+ ],
+ "boardLineAttrs": [
+  "title=Jump to the puck that caused this | Vandal — this line & BRIEFING clash ✕",
+  "title=Jump to the puck that caused this | Vandal — On leave but planned to fly this line ✕",
+  "title=Jump to the puck that caused this | Vandal — On leave but tasked — BRIEFING ✕",
+  "title=Jump to the puck that caused this | Vandal — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) ✕"
+ ],
+ "edit": [
+  {
+   "cls": "witem hard",
+   "code": "Conflict — two events at once",
+   "text": "Conflict — two events at once Vandal — this line & BRIEFING clash ✕",
+   "struck": false
+  },
+  {
+   "cls": "witem hard",
+   "code": "On leave + planned",
+   "text": "On leave + planned Vandal — On leave but planned to fly this line ✕",
+   "struck": false
+  },
+  {
+   "cls": "witem hard",
+   "code": "On leave + planned",
+   "text": "On leave + planned Vandal — On leave but tasked — BRIEFING ✕",
+   "struck": false
+  },
+  {
+   "cls": "witem adv",
+   "code": "No time for the flight brief",
+   "text": "No time for the flight brief Vandal — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) ✕",
+   "struck": false
+  }
+ ],
+ "info": "Thursday · Jul 16 · 4 X 4 X 1 ✕ Draft — not yet published 10 changes AL VERSIONS COVERING THURSDAY No amendment has touched this day yet WHAT THIS DAY IS TASKING Waves 3 Formations 5 Aircraft lines 9 Sim rows 5 Duties 6 Ground items 4 Squadron-wide 2 Aircrew tasked 27 Leave / downchit 4 Free all day 28 ISSUES ON THIS DAY 6 WARNING 4 ADVISORY Warning · Conflict — two events at once Ace — HQ ENGAGEMENT & RU AD clash Warning · Conflict — two events at once Ranger — RU BFM & APPOINTMENT clash Warning · Conflict — two events at once Vandal — this line & BRIEFING clash Warning · On leave + planned Vandal — On leave but planned to fly this line Warning · On leave + planned Vandal — On leave but tasked — BRIEFING Warning · Illegal aircrew combination Wildcard, Pixel — OCU pilot Wildcard with CAT D WSO Pixel — not an authorised combination (RU AD) Advisory · No time for the flight brief Ace — No time for the RU AD flight brief — HQ ENGAGEMENT sits inside 10:25–12:45 (brief 10:25) Advisory · No time for the flight debrief Ace — Not enough time to attend the RU AD debrief — HQ ENGAGEMENT sits inside 14:10–16:10 (land + 2h) Advisory · No time for the flight debrief Ranger — Not enough time to attend the RU BFM debrief — APPOINTMENT sits inside 18:10–20:10 (land + 2h) Advisory · No time for the flight brief Vandal — No time for the flight brief — BRIEFING sits inside 07:40–10:00 (brief 07:40) Close",
+ "infoClose": {
+  "x": "closed",
+  "esc2": "closed",
+  "outside": "closed"
+ },
+ "logic": {
+  "names": {
+   "onleave": [
+    "Warning:On leave + planned"
+   ],
+   "downchit": [
+    "Warning:Downchit + planned"
+   ],
+   "flyingNames": [],
+   "planned": [
+    "Warning:On leave + planned",
+    "Warning:Downchit + planned"
+   ]
+  },
+  "q:planned": {
+   "names": {
+    "onleave": [
+     "Warning:On leave + planned"
+    ],
+    "downchit": [
+     "Warning:Downchit + planned"
+    ],
+    "flyingNames": [],
+    "planned": [
+     "Warning:On leave + planned",
+     "Warning:Downchit + planned"
+    ]
+   },
+   "body": "THE CHECKS Leave, downchits and inputs Warning:On leave + planned A man on leave is planned for a flight, sim, duty or ground slot. Warning:Downchit + planned A medically down man is planned. On ATT B he may still stand a duty, sim or ground slot, but not fly. Warning:Personal input clash Any other input clashes with a planned slot: a course, a meeting, an appointment, overseas duty. Advisory:SANS availability — planned outside the availability filed A SANS man planned outside the event or the hours he filed. Filing nothing raises nothing. On the puck Note:Several problems on one puck It shows the most serious flag, in this order, and its ring the most serious colour. A red box round the who"
+  },
+  "q:flying": {
+   "names": {
+    "onleave": [],
+    "downchit": [],
+    "flyingNames": [],
+    "planned": []
+   },
+   "body": "SETTINGS Flying lines Brief before take-off 2h20 Sets the suggested B on a line with no brief typed, and a blank B is checked against it. With no in-time typed, crew rest counts to this B. A published day keeps its B until it is published again. Step before take-off 1h A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid. Dekit after landing 30 min A man counts as busy until dekit. It and step set the shortest tight turn. Debrief after landing 2h Ends a flyer's day: tomorrow's crew rest, the long day, OIL and Insights hours count to here, and so does the flight"
+  },
+  "cleared": true
+ },
+ "errors": []
+}

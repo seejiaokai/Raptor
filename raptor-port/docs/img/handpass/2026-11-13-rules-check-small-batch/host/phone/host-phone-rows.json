@@ -1,0 +1,11 @@
+{
+ "rows": [
+  {
+   "id": "H1 route",
+   "verdict": "RECORD",
+   "saw": "{\"a\":{\"box\":\"FO*\",\"mark\":\"\",\"title\":\"\",\"cls\":\"c k-oil s-a whole bx-star raptor\"},\"b\":{\"box\":\"FO*\",\"mark\":\"\",\"title\":\"\",\"cls\":\"c k-oil s-a whole bx-star raptor\"},\"c\":{\"box\":\"HO*\",\"mark\":\"\",\"title\":\"\",\"cls\":\"c k-oil s-a top bx-star raptor\"},\"oa\":{\"oil\":\"1 ›\"},\"ob\":{\"oil\":\"1 ›\"},\"oc\":{\"oil\":\"0.5 ›\"},\"pend\":[\"9 changes\",\"1 pending\",\"14 changes\"]}",
+   "pic": ""
+  }
+ ],
+ "errors": []
+}

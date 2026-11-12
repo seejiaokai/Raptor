@@ -1,0 +1,35 @@
+{
+ "rows": [
+  {
+   "id": "S6 admin one",
+   "verdict": "PASS",
+   "saw": "strip: \"1 setting changed from the squadron standard. Days not yet published use it now. A published day keeps the settings it was published with, for its checks and its OIL, until its next amendment is published.\"; old words present: false",
+   "pic": "s6-admin-one.png"
+  },
+  {
+   "id": "S6 member one",
+   "verdict": "PASS",
+   "saw": "strip: \"1 setting changed from the squadron standard. Days not yet published use it now. A published day keeps the settings it was published with, for its checks and its OIL, until its next amendment is published. Only an admin can change them.\"; old words: false",
+   "pic": "s6-member-one.png"
+  },
+  {
+   "id": "S6 admin two",
+   "verdict": "PASS",
+   "saw": "strip: \"2 settings changed from the squadron standard. Days not yet published use them now. A published day keeps the settings it was published with, for its checks and its OIL, until its next amendment is published.\"; debrief box \"1h30\", app value 90; old words: false",
+   "pic": "s6-admin-two.png"
+  },
+  {
+   "id": "S6 member two",
+   "verdict": "PASS",
+   "saw": "strip: \"2 settings changed from the squadron standard. Days not yet published use them now. A published day keeps the settings it was published with, for its checks and its OIL, until its next amendment is published. Only an admin can change them.\"; old words: false",
+   "pic": "s6-member-two.png"
+  },
+  {
+   "id": "S6 reset",
+   "verdict": "PASS",
+   "saw": "after Reset to standard: strip \"(strip hidden)\"; app values {\"o\":361,\"d\":120}",
+   "pic": "s6-admin-after-reset.png"
+  }
+ ],
+ "errors": []
+}

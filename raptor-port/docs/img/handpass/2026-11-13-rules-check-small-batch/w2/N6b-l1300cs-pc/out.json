@@ -1,0 +1,53 @@
+{
+ "kind": "pc",
+ "case": "l1300cs",
+ "to01:00": {
+  "vandal": {
+   "cls": "rpuck ",
+   "why": "",
+   "title": "Vandal",
+   "text": "Vandal IP"
+  },
+  "others": [
+   "ALL AVAIL: cannot crew a jet; name the people flying it",
+   "ALL: cannot crew a jet; name the people flying it",
+   "Basher: WSO — cannot fly front seat",
+   "Cinder: WSO — cannot fly front seat",
+   "Cutter: WSO — cannot fly front seat",
+   "Dash: WSO — cannot fly front seat"
+  ]
+ },
+ "to03:00": {
+  "vandal": {
+   "cls": "rpuck ",
+   "why": "",
+   "title": "Vandal",
+   "text": "Vandal IP"
+  },
+  "others": [
+   "ALL AVAIL: cannot crew a jet; name the people flying it",
+   "ALL: cannot crew a jet; name the people flying it",
+   "Basher: WSO — cannot fly front seat",
+   "Cinder: WSO — cannot fly front seat",
+   "Cutter: WSO — cannot fly front seat",
+   "Dash: WSO — cannot fly front seat"
+  ]
+ },
+ "to04:00": {
+  "vandal": {
+   "cls": "rpuck ",
+   "why": "",
+   "title": "Vandal",
+   "text": "Vandal IP"
+  },
+  "others": [
+   "ALL AVAIL: cannot crew a jet; name the people flying it",
+   "ALL: cannot crew a jet; name the people flying it",
+   "Basher: WSO — cannot fly front seat",
+   "Cinder: WSO — cannot fly front seat",
+   "Cutter: WSO — cannot fly front seat",
+   "Dash: WSO — cannot fly front seat"
+  ]
+ },
+ "errors": []
+}

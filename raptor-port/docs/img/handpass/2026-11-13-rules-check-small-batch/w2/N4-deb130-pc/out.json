@@ -1,0 +1,69 @@
+{
+ "case": "deb130",
+ "kind": "pc",
+ "logic": {
+  "before": "2h",
+  "after": "1h30",
+  "vconf": 90,
+  "strip": "1 setting changed from the squadron standard. Days not yet published use it now. A published day keeps the settings it was published with, for its checks and its OIL, until its next amendment is published."
+ },
+ "seatMon": "ok",
+ "monFormation": {
+  "to": "12:00",
+  "ld": "",
+  "p": "split"
+ },
+ "seatTue": "ok",
+ "tueTo": "04:00",
+ "tueFormation": {
+  "to": "04:00",
+  "ld": ""
+ },
+ "board": [
+  "Vandal — Tight turning — T/O 04:00 puts the 3h report at 01:00, inside 12h. Monday took off 12:00 with no landing typed, +1h30 debrief assumed → ended 13:30 → crew rest clear at 01:30 ✕"
+ ],
+ "edit": [
+  "Tight turning — crew rest Vandal — Tight turning — T/O 04:00 puts the 3h report at 01:00, inside 12h. Monday took off 12:00 with no landing typed, +1h30 debrief assumed → ended 13:30 → crew rest clear at 01:30 ✕"
+ ],
+ "restCount": 1,
+ "marks": [
+  "SPAN.puck.boxdot.dim title=Outlaw · C · ops wingman · Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R Outlaw C",
+  "SPAN.lchip.l-cr title=Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R",
+  "SPAN.puck.sm.boxdot.dim title=Outlaw · C · ops wingman · Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R Outlaw C",
+  "SPAN.lchip.l-cr title=Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R",
+  "SPAN.puck.sm.boxdot.dim title=Outlaw · C · ops wingman · Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R Outlaw C",
+  "SPAN.lchip.l-cr title=Crew rest — Tuesday is broken by this day: he had to leave by 18:00 | R",
+  "SPAN.puck.warn.hard.boxred.dim title=Outlaw · C · ops wingman · Crew rest breach (<12h) | R Outlaw C",
+  "SPAN.lchip.l-cr title=Crew rest breach (<12h) | R",
+  "SPAN.puck.sm.warn.hard.boxred.dim title=Outlaw · C · ops wingman · Crew rest breach (<12h) | R Outlaw C",
+  "SPAN.lchip.l-cr title=Crew rest breach (<12h) | R",
+  "SPAN.puck.sm.warn.hard.boxred.dim title=Outlaw · C · ops wingman · Crew rest breach (<12h) | R Outlaw C",
+  "SPAN.lchip.l-cr title=Crew rest breach (<12h) | R"
+ ],
+ "mondayPucks": [
+  "puck wfoc echo advf | Vandal · IP · instructor pilot",
+  "puck sm wfoc echo advf | Vandal · IP · instructor pilot",
+  "puck sm wfoc echo advf | Vandal · IP · instructor pilot",
+  "puck sm wfoc echo advf | Vandal · IP · instructor pilot"
+ ],
+ "info": "Tuesday · Jul 14 · 4 X 4 X 1 ✕ Draft — not yet published 4 changes AL VERSIONS COVERING TUESDAY No amendment has touched this day yet WHAT THIS DAY IS TASKING Waves 3 Formations 5 Aircraft lines 9 Sim rows 5 Duties 6 Ground items 4 Squadron-wide 2 Aircrew tasked 27 Leave / downchit 3 Free all day 28 ISSUES ON THIS DAY 2 WARNING 2 ADVISORY 1 NOTE Warning · Conflict — two events at once Saint — VL SAT & APPOINTMENT clash Warning · Crew rest (<12h) Outlaw — Crew rest breach — Monday landed 20:45, +1h30 debrief assumed → ended 22:15 → crew rest clear at 10:15, but told to report 06:00 — only 7h45 rest. Advisory · No time for the flight brief Saint — No time for the VL SAT flight brief — APPOINTMENT sits inside 12:20–14:40 (brief 12:20) Advisory · Tight turning — crew rest Vandal — Tight turning — T/O 04:00 puts the 3h report at 01:00, inside 12h. Monday took off 12:00 with no landing typed, +1h30 debrief assumed → ended 13:30 → crew rest clear at 01:30 Note · Long work day Static — Static has a long work day: 12h35, 05:00 → 17:35 (last landing 16:05 + 1h30 debrief assumed) Close",
+ "publish": {
+  "mon": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "tue": {
+   "pressed": true,
+   "label": "Publish day"
+  },
+  "monHead": "ORIG/Unpublish",
+  "tueHead": "ORIG/Unpublish"
+ },
+ "view": [
+  "Tight turning — crew rest Vandal — Tight turning — T/O 04:00 puts the 3h report at 01:00, inside 12h. Monday took off 12:00 with no landing typed, +1h30 debrief assumed → ended 13:30 → crew rest clear at 01:30"
+ ],
+ "editAfterPublish": [
+  "Tight turning — crew rest Vandal — Tight turning — T/O 04:00 puts the 3h report at 01:00, inside 12h. Monday took off 12:00 with no landing typed, +1h30 debrief assumed → ended 13:30 → crew rest clear at 01:30 ✕"
+ ],
+ "errors": []
+}

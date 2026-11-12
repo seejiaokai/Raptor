@@ -1,0 +1,28 @@
+{
+ "kind": "pc",
+ "steps": {
+  "dayPanelEsc": "closed",
+  "dayPanelOutside": "STILL OPEN",
+  "dayPanelXbtn": "closed",
+  "winEsc": "closed",
+  "winX": "closed",
+  "winCancelBtn": "closed",
+  "board": "closed"
+ },
+ "popSel": "#icPopAdd",
+ "dayPanelClosers": [],
+ "winClosers": [
+  "#icAddPuck.abtn.sm \"+ Note\"",
+  ".win-x \"✕\"",
+  "#icPopAdd.abtn.primary.sd-add \"+ Input\"",
+  ".icard-open \"Gambit\"",
+  ".icard-doc \"View the document\"",
+  ".icard-open \"Grit\"",
+  ".icard-open \"Nomad\"",
+  ".icard-open \"Ranger\""
+ ],
+ "boardDoneCtl": [
+  "sbDone \"✓\nDone\""
+ ],
+ "errors": []
+}

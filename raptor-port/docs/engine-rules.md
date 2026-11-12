@@ -3435,15 +3435,24 @@ stay LIVE (below), which the face draws from today and which never make the day 
   stay as issued — the "same take-off and landing" advisory's words included (`oil.ts fltMeasuresNothing` takes the
   day's values from the validator). Two things stay on today's settings: **Insights' work hours** (D482, settled —
   `validate.ts hoursEvd` rebuilds the official events with today's settings when a kept value differs) and **the
-  validator's OIL checks** (its OIL block runs whole under `rules.ts withLiveRules`, so its earning test's availability
+  validator's other OIL checks** (its OIL block runs under `rules.ts withLiveRules`, so its earning test's availability
   reads today's too; `oil.ts` reads `ruleNow`, today's value under any overlay, wherever it is not handed a version's
-  own values). **A published day's OIL itself — each man's amount and worked times, on the Leave War, the OIL tracker,
+  own values). The one OIL check handed the day's own values is the **"no usable times" list** (`OIL_NO_TIMES`, one of
+  the warnings live on a published face): it says who EARNS, so it is judged by the report lead and debrief the day's
+  checks read — on a published day the values it went out with, the values its OIL was credited by — read before the
+  live overlay (`validate.ts blindLead`/`blindDeb` → `oil.ts dayOilBlind(day, lead, deb)`; D2014, 13 Nov 26 — the
+  blind read of the rules check's small batch found the line raised or cleared at once by a Logic change while the
+  credit stayed; pin: `leavewar/oil-fullday-published.test.ts`, "the no usable times warning follows the values the
+  day was published under"). The Leave War's publish note, read as the day goes out, hands it nothing: today's. **A published day's OIL itself — each man's amount and worked times, on the Leave War, the OIL tracker,
   Balances and the published face — follows the three values its own OIL block kept when it went out** (`oilev.ts` the
   block's `rv`: "Nominal report before T/O", "Flight debrief after land" and "Full day of OIL"; read by `oilKeptVals`,
   `oilAmount`, `dayOilWork(…, {rv})` — [OIL-WORK-START], D592 (4), 5 Oct 26; D2014, 13 Nov 26, confirmed it for "Full
   day of OIL", which the roll-call of that day found already so). A change to one of the three that would move
   somebody's OIL record on the day reads it ONE pending change (`publish.ts oilRuleDelta`, D592) and takes the four
-  sign-offs down (`oilRvBoundOk`) — the one way a Logic change makes a published day pending; it clears when the value is
+  sign-offs down (`oilRvBoundOk`) — one of the two ways a Logic change makes a published day pending, the other the
+  printed brief lead (D186, `publish.ts warnDelta`: a day published with a blank B reads pending when "Suggested brief
+  before T/O" changes, OIL or none; pin `engine/rulesfirst-7-published-day.test.ts`); any other Logic change, which only
+  checks, never makes the day pending by itself (Astra's read of the small batch, 13 Nov 26). The OIL one clears when the value is
   put back, and the next amendment keeps today's values and moves the OIL (pins: `leavewar/oilworkstart-published.test.ts`
   OWS6–OWS12, `leavewar/oil-fullday-published.test.ts` D2014). The other Logic settings reach a published day's OIL
   nowhere: its placeholder crowd is frozen at issue (`sent`), and the open-ended and sim-length values only draw. A version issued

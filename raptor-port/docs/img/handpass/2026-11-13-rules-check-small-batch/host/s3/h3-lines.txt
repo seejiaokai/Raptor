@@ -1,0 +1,179 @@
+== after AL1
+
+14 changes
+
+⠿
+Changes · Sunday 19/7
+Published · nothing waiting to go out
+✕
+New to you 0
+All changes 14
+To go out · AL2 0
+Week
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+GROUP BY
+Item
+Who
+▾
+The day · 11
+05:24
+Published — AL1
+Saber · 13/11 05:24
+Signed · APPROVED BY · Anvil
+Saber · 13/11 05:24
+Signed · PLANNED BY · Anvil
+Saber · 13/11 05:24
+Signed · SKED CK · Anvil
+Saber · 13/11 05:24
+Signed · CUR CK · Ace
+Saber · 13/11 05:24
+Published — the Original
+Saber · 13/11 05:23
+Signed · APPROVED BY · Anvil
+Saber · 13/11 05:23
+Signed · PLANNED BY · Anvil
+Saber · 13/11 05:23
+Signed · SKED CK · Anvil
+Saber · 13/11 05:23
+Signed · CUR CK · Ace
+Saber · 13/11 05:23
+Wave added
+Saber · 13/11 05:23
+▾
+Flying · Line · 3
+05:23
+FCPRanger put on
+Saber · 13/11 05:23
+Land— → 11:30
+Saber · 13/11 05:23
+Take-off— → 10:00
+Saber · 13/11 05:23
+Tap a change to go to it — the window stays open.
+
+== after undo
+
+1 pending
+
+⠿
+Changes · Sunday 19/7
+Published · 1 change waiting to go out as AL1
+✕
+New to you 0
+All changes 15
+To go out · AL1 1
+Week
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+GROUP BY
+Item
+Who
+▾
+The day · 12
+05:24
+Undo — publishing an amendment
+Saber · 13/11 05:24
+Published — AL1
+Saber · 13/11 05:24
+Signed · APPROVED BY · Anvil
+Saber · 13/11 05:24
+Signed · PLANNED BY · Anvil
+Saber · 13/11 05:24
+Signed · SKED CK · Anvil
+Saber · 13/11 05:24
+Signed · CUR CK · Ace
+Saber · 13/11 05:24
+Published — the Original
+Saber · 13/11 05:23
+Signed · APPROVED BY · Anvil
+Saber · 13/11 05:23
+Signed · PLANNED BY · Anvil
+Saber · 13/11 05:23
+Signed · SKED CK · Anvil
+Saber · 13/11 05:23
+Signed · CUR CK · Ace
+Saber · 13/11 05:23
+Wave added
+Saber · 13/11 05:23
+▾
+Flying · Line · 3
+05:23
+FCPRanger put on
+Saber · 13/11 05:23
+Land— → 11:30
+Saber · 13/11 05:23
+Take-off— → 10:00
+Saber · 13/11 05:23
+Tap a change to go to it — the window stays open.
+
+== after redo
+
+16 changes
+
+⠿
+Changes · Sunday 19/7
+Published · nothing waiting to go out
+✕
+New to you 0
+All changes 16
+To go out · AL2 0
+Week
+Mon
+Tue
+Wed
+Thu
+Fri
+Sat
+Sun
+GROUP BY
+Item
+Who
+▾
+The day · 13
+05:24
+Redo — publishing an amendment
+Saber · 13/11 05:24
+Undo — publishing an amendment
+Saber · 13/11 05:24
+Published — AL1
+Saber · 13/11 05:24
+Signed · APPROVED BY · Anvil
+Saber · 13/11 05:24
+Signed · PLANNED BY · Anvil
+Saber · 13/11 05:24
+Signed · SKED CK · Anvil
+Saber · 13/11 05:24
+Signed · CUR CK · Ace
+Saber · 13/11 05:24
+Published — the Original
+Saber · 13/11 05:23
+Signed · APPROVED BY · Anvil
+Saber · 13/11 05:23
+Signed · PLANNED BY · Anvil
+Saber · 13/11 05:23
+Signed · SKED CK · Anvil
+Saber · 13/11 05:23
+Signed · CUR CK · Ace
+Saber · 13/11 05:23
+Wave added
+Saber · 13/11 05:23
+▾
+Flying · Line · 3
+05:23
+FCPRanger put on
+Saber · 13/11 05:23
+Land— → 11:30
+Saber · 13/11 05:23
+Take-off— → 10:00
+Saber · 13/11 05:23
+Tap a change to go to it — the window stays open.

@@ -1,0 +1,23 @@
+{
+ "rows": [
+  {
+   "id": "S5a",
+   "verdict": "RECORD",
+   "saw": "a: {\"pending\":\"9 changes\",\"nys\":false,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"box\":\"HO*\",\"person\":\"0.5 ›\"}",
+   "pic": "s5a-*"
+  },
+  {
+   "id": "S5b",
+   "verdict": "RECORD",
+   "saw": "b (5h): {\"pending\":\"1 pending\",\"nys\":true,\"signed\":\"SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil\",\"soState\":\"4 to sign\",\"box\":\"HO*\",\"person\":\"0.5 ›\"}",
+   "pic": "s5b-*"
+  },
+  {
+   "id": "S5c",
+   "verdict": "PASS",
+   "saw": "after Reset to standard (vconf 361, strip \"(strip hidden)\"): head ORIG/9 changes/nys false; signed line SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil; sign-off state 4 to sign; box HO*; person 0.5 ›",
+   "pic": "s5c-*"
+  }
+ ],
+ "errors": []
+}

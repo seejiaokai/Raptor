@@ -369,6 +369,11 @@ function rejet(html: string): string {
    isInstrPilot has no reference equivalent, so it is inlined. */
 function rematrix(html: string): string {
   const swaps: Array<[string, string]> = [
+    /* the two checks' names (owner D2009, 13 Nov 26): "On leave + planned", "Downchit + planned" — one name, true on every
+       row; the reference's table carries the same so a day drawn with either compares byte for byte (pin: parity.test.ts,
+       "the two checks carry their new names in both engines' label tables") */
+    ["DNIF_FLY:'Downchit + flying',LEAVE_FLY:'On leave + flying',",
+     "DNIF_FLY:'Downchit + planned',LEAVE_FLY:'On leave + planned',"],
     ["TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',OCU_NO_IP:",
      "TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',CREW_SOLO:'Crew solo — only allowed under syllabus',CO_APPROVAL:'Crew combination — CO approval required',OCU_NO_IP:"],
     /* The crew-pairing chip (renamed from CC, owner ask 5 Aug 26). The
@@ -620,8 +625,15 @@ function rebrief(html: string): string {
        below, so the events still compare equal) and the tail reads it. */
     ["kind:shiftLine?'shift':'fly',slot:", "kind:shiftLine?'shift':'fly',...(!shiftLine&&parseHM(f.ld)==null?{nold:true}:{}),slot:"],
     ["const prevEnd={}, prevFlyEnd={};", "const prevEnd={}, prevFlyEnd={}, prevFlyLd={}, prevNoLd={};"],
+    /* …and the SUM, not only the words (D1990, 12 Nov 26 — Astra's read of the small batch, 13 Nov 26): a landing box
+       holding no clock time ("TBD", any words) leaves the event's landing not-a-number, and the port ends that sortie at
+       its take-off plus the debrief (validate.ts `flyLd`); the reference summed the unreadable landing, ended nothing and
+       raised no crew rest, so parity never saw the case. The same take-off is the tail's "took off" time below.
+       Pin: parity.test.ts "a landing that is not a time ends the day the same in both engines". */
+    ["const end=e.kind==='fly'?e.ld+VCONF.debrief:e.e;",
+     "const _fl=e.kind==='fly'&&!isFinite(e.ld)?e.to:e.ld;const end=e.kind==='fly'?_fl+VCONF.debrief:e.e;"],
     ["if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id]))prevFlyEnd[e.id]=end;",
-     "if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end;prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;prevNoLd[e.id]=e.kind==='fly'&&!!e.nold;}"],
+     "if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end;prevFlyLd[e.id]=e.kind==='fly'?_fl:null;prevNoLd[e.id]=e.kind==='fly'&&!!e.nold;}"],
     ["const tail=`${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;",
      "const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;"
      + "const tail=landed!=null"

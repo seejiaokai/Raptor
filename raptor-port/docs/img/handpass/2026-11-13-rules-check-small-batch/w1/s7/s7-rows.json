@@ -1,0 +1,23 @@
+{
+ "rows": [
+  {
+   "id": "S7 a",
+   "verdict": "RECORD",
+   "saw": "published row: ⠿ ALL AVAIL 45 + ADD CXⓘ■✕; window: [\"availwin front :: ⠿ Briefing Jul 18 · 09:00–10:00 · no end time, an hour assumed ✕ Who’s available 45 PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 17 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.\",\" :: Saturday 18 Jul published and approved. The Common Programme has no usable times, so nobody on it earns OIL.\"]; head ORIG/9 changes/nys false; Cinch  oil 0 ›; Piston  oil 0 ›",
+   "pic": "s7a-*"
+  },
+  {
+   "id": "S7 b",
+   "verdict": "RECORD",
+   "saw": "after Any other row 1h->2h (box 2h, app 120): head ORIG/9 changes/nys false; pending list: ⠿ Changes · Saturday 18/7 Published · nothing waiting to go out ✕ New to you 0 All changes 9 To go out · AL1 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ The day · 6 05:04 Published — the Original Saber · 13/11 05:04 Signed · APPROVED BY · Anvil Saber · 13/11 05:04 Signed · PLANNED BY · Anvil Saber · 13/11 05:04 Signed · SKED CK · Anvil Saber · 13/11 05:04 Signed · CUR CK · Ace Saber · 13/11 05:04 Programme item added Saber · 13/11 05:04 ▾ Programme · Briefing · 3 05:04 ALL AVAIL put on Saber · 13/11 05:04 Start— → 09:00 Saber · 13/11 05:04 Item— → Briefing Saber · 13/11 05:04 Tap a change to go to it — the window stays open.; row: ⠿ ALL AVAIL 45 + ADD CXⓘ■✕; window: [\"availwin front :: ⠿ Briefing Jul 18 · 09:00–11:00 · no end time, 2 hours assumed ✕ Who’s available 45 PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 17 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.\",\" :: Editing rules — the schedule rechecks as you type\"]; Cinch  oil 0 ›; Piston  oil 0 ›",
+   "pic": "s7b-*"
+  },
+  {
+   "id": "S7 c",
+   "verdict": "RECORD",
+   "saw": "after AL1: head ORIG/9 changes/nys false; row: ⠿ ALL AVAIL 45 + ADD CXⓘ■✕; window: [\"availwin front :: ⠿ Briefing Jul 18 · 09:00–11:00 · no end time, 2 hours assumed ✕ Who’s available 45 PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 17 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.\",\" :: Editing rules — the schedule rechecks as you type\"]; Cinch  oil 0 ›; Piston  oil 0 ›",
+   "pic": "s7c-*"
+  }
+ ],
+ "errors": []
+}

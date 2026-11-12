@@ -4,11 +4,12 @@
    assertions can — any drift in validate/collectEvents/REST/EVD shows up here. */
 import { beforeAll, describe, expect, it } from 'vitest'
 import { refWindow } from '../testing/refwin'
-import { validate, WARN, REST, EVD } from './validate'
+import { validate, WARN, REST, EVD, WCODE } from './validate'
 import { collectEvents } from './events'
 import { dayCount, makeStandalone } from './waves'
 import { DAYS } from './data'
 import { inputCoversDate, INPUTS } from './inputs'
+import { VCONF } from './rules'
 
 let w: any
 /* The port's week runs Mon..SUN (owner, Aug 26); the reference's stops at
@@ -187,5 +188,58 @@ describe('an unknown type vs SC MAIN fails closed in both engines', () => {
       w.eval('DAYS[1].waves.pop();INPUTS.pop();validate()')
       validate()
     }
+  })
+})
+
+/* A LANDING THAT IS NOT A TIME, IN BOTH ENGINES (D1990, D2010 — Astra's read of the rules check's small batch, 13 Nov
+   26). The port ends a sortie whose landing box holds no clock time ("TBD", any words) at its take-off plus the debrief
+   (validate.ts `flyLd`) and says "took off … with no landing typed"; the reference window mirrored the words but kept
+   the reference's own sum on the unreadable landing — not-a-number, so the reference raised NO crew-rest warning at all
+   and parity was blind to the case. Same-mutation-both-sides idiom as above: Monday's sortie for one seed pilot with
+   each kind of landing, Tuesday's take-off 04:00 (its suggested brief 01:40 is short of every clearance), and the two
+   engines' crew-rest warnings for him compared whole. Also the two checks' names (D2009): the reference's label table
+   carries the new ones. Restores both models in finally. */
+describe('a landing that is not a time ends the day the same in both engines (D1990, D2010)', () => {
+  it('blank, "TBD", other words, the take-off\'s own minute and a typed landing: the same crew-rest warning', () => {
+    const portSaved = { d: JSON.stringify(DAYS), i: JSON.stringify(INPUTS), v: JSON.stringify(VCONF) }
+    w.eval('window.__pv={d:JSON.stringify(DAYS),i:JSON.stringify(INPUTS),v:JSON.stringify(VCONF)}')
+    const vals = { briefLead: 140, debrief: 120, crewRest: 720, step: 60, dekit: 30 }
+    const sortie = (to: string, ld: string) => ({ label: 'WAVE 1', intimes: [],
+      formations: [{ cs: 'VL', msn: 'BFM', to, ld, br: '', aircraft: [{ p: 'split', w: '', rmks: '', opts: {} }] }] })
+    const clear = '[0,1].forEach(i=>{DAYS[i].waves=[];DAYS[i].ground=[];DAYS[i].allhands=[];'
+      + 'if(DAYS[i].sims)DAYS[i].sims={amt:[],oft:[]};if(DAYS[i].dutywaves)DAYS[i].dutywaves=[];});INPUTS.length=0;'
+    try {
+      Object.assign(VCONF, vals)
+      w.eval(`Object.assign(VCONF,${JSON.stringify(vals)})`)
+      const seen: string[] = []
+      for (const ld of ['', 'TBD', 'late', '12:00', '13:00']) {
+        ;[0, 1].forEach(i => Object.assign(DAYS[i] as any, { waves: [], ground: [], allhands: [], sims: { amt: [], oft: [] }, dutywaves: [] }))
+        INPUTS.splice(0)
+        ;(DAYS[0] as any).waves.push(sortie('12:00', ld)); (DAYS[1] as any).waves.push(sortie('04:00', '05:00'))
+        w.eval(clear + `DAYS[0].waves.push(${JSON.stringify(sortie('12:00', ld))});DAYS[1].waves.push(${JSON.stringify(sortie('04:00', '05:00'))});`)
+        const pick = (a: any[]) => a.filter((x: any) => x.code === 'CREW_REST' && x.di === 1 && (x.who || []).includes('split'))
+        const port = pick(structuredClone(validate().all))
+        const ref = pick(JSON.parse(w.eval('JSON.stringify(validate().all)')))
+        expect(port.length, `port, landing "${ld}"`).toBe(1)
+        expect(stripKeys(port).map((x: any) => x.msg), `landing "${ld}"`).toEqual(ref.map((x: any) => x.msg))
+        expect(stripKeys(port), `landing "${ld}"`).toEqual(ref)
+        seen.push(port[0].msg)
+      }
+      /* the positive half: each case says what D2010 says it says */
+      for (const i of [0, 1, 2]) expect(seen[i]).toContain('Monday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00')
+      expect(seen[3]).toContain('Monday landed 12:00, +2h debrief assumed → ended 14:00')
+      expect(seen[4]).toContain('Monday landed 13:00, +2h debrief assumed → ended 15:00')
+    } finally {
+      DAYS.splice(0, DAYS.length, ...JSON.parse(portSaved.d)); INPUTS.splice(0, INPUTS.length, ...JSON.parse(portSaved.i))
+      Object.keys(VCONF).forEach(k => delete (VCONF as any)[k]); Object.assign(VCONF, JSON.parse(portSaved.v))
+      w.eval('DAYS.splice(0,DAYS.length,...JSON.parse(__pv.d));INPUTS.splice(0,INPUTS.length,...JSON.parse(__pv.i));'
+        + 'Object.keys(VCONF).forEach(k=>delete VCONF[k]);Object.assign(VCONF,JSON.parse(__pv.v));validate()')
+      validate()
+    }
+  })
+  it('the two checks carry their new names in both engines\' label tables (D2009)', () => {
+    const port = { LEAVE_FLY: (WCODE as any).LEAVE_FLY, DNIF_FLY: (WCODE as any).DNIF_FLY }
+    expect(port).toEqual({ LEAVE_FLY: 'On leave + planned', DNIF_FLY: 'Downchit + planned' })
+    expect(JSON.parse(w.eval('JSON.stringify({LEAVE_FLY:WCODE.LEAVE_FLY,DNIF_FLY:WCODE.DNIF_FLY})'))).toEqual(port)
   })
 })

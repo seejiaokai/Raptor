@@ -82,7 +82,52 @@ question reads today's line, but only when it is asked or edited — the working
 
 ## 4. The five sizing lines
 
-To be written once the coordinator gives the go for the walk.
+- **Type of change:** A (the crew-rest sentence: one shared function, many readers), D (two names and one sentence drawn
+  in several places), F (the strip's words), G (D2014: the published record and OIL across a Logic change, an
+  amendment, Undo and Redo).
+- **What only a walk could find here:** a reader of the name or the sentence that draws its own copy (the board's issues,
+  the day's ⓘ, Insights, the ALL AVAIL window, the crew list's reason); for D2014 a place that draws a published day's
+  OIL from today's line — the tests read the engine's figures, not what the Leave War grid, its day sheet, the person
+  window, the OIL tracker, Balances, OIL Earn and the pending list each paint; the strip at both widths and for a member.
+  The host's own route (`scripts/handpass/rcsb/rcsb-host.mjs`, pictures `host/`) already showed, at his PC's size in a
+  window started at 125% and on WebKit at 402: published FO*, the line raised to 7h, the Leave War still FO* and 1, the
+  day "1 pending" and "Not yet signed", the board's OIL Earn reading the working copy's HO, and after Publish AL1 HO* and
+  0.5 everywhere.
+- **What the ledger says:** type A/D/G walks of 12 Nov 26 (D2005; the rules check's fixes) found 2–3 real faults each,
+  all in places that drew their own copy (the ALL AVAIL window's reason, a published heading, a desk's own ring); two to
+  three Sonnet walkers, 400–650 pictures.
+- **The walk chosen:** "Low" — TWO Sonnet 5.5 walkers, one after the other, on the frozen build of `300be6535` (the
+  strip's last words included) served on port 4193: **W1** D2014 both directions shown on every surface (before the
+  change, right after, after the next amendment), Undo and Redo, another day published under the new line, the setting
+  put back, the strip (admin, member, one and two settings, Reset), Astra's open-end side question, the plain-user round;
+  **W2** D2009's two names and D2010's sentence on every surface that draws them, a briefing row and a flying row, a
+  member's View-only. Sizes: his PC's 1536 × 864 in a Chromium window started at 125% (no size emulated) and his
+  iPhone's 402 × 874 in WebKit by touch, each scenario at the PC and the ones that draw on a phone at both. Carried by
+  tests (they call the engine and the commands, not the screen; the routes on screen are the walked ones): the D2010
+  word variants (TBD, "late", "?", a midnight landing, a later typed landing, a 1h30 debrief, both orders) —
+  `rules-small-batch.test.ts`, one walked variant each of blank and TBD; D2014's older versions and Unpublish, the
+  holiday made after publication and the five gotcha families — `oil-fullday-published.test.ts` (through the app's own
+  commands, the OIL pass and the ledger).
+- **Afterwards:** the ledger's row (§10 below).
+
+**The lessons of §7.11, each against this walk:** 1 (states × readings) — D2014's table is before / after / after the
+amendment × every OIL surface, W1; 2, 7, 13, 20, 21, 26 (gestures, pinches, motion) — no gesture changed, cannot apply;
+3 (after every press) — W1 pictures the pending mark and sign-offs after the Logic change; 4 (a window leaving the page
+working) — not touched; 5 (a box moved into sight) — not touched; 6 (handed to the phone) — no; 8 (an approved drawing) —
+no drawing; 9 (lists measured) — the warning list and Insights' rows are only renamed: W2 pictures each at both widths
+for a wrapped name; 10 (a page hidden and shown) — W1 changes the setting with the Leave War closed and reopens it; 11 (how
+much fits) — no; 12 (every page a window opens from) — the person window from the grid, the OIL tracker from it and
+from Balances, W1; 14 (keyboard boxes) — no; 15 (bars over scrolling) — no; 16 (after a refusal at a box) — the Logic box
+takes a bad value once, W1's plain round; 17 (show/hide controls) — the Logic page's ✎ Edit / Done and the strip shown
+and hidden by Reset, W1; 18 (print) — no print changed; 19 (window over window) — the OIL tracker over the person window,
+closed each of its ways, W1; 22 (what is drawn) — every claim read from the painted text and pictured; 23 (what a tap
+opens) — the pending count opens To go out, the war's FO* box opens its own window (D1524), W1; 23b (side-by-side
+boxes) — the strip's lines at both widths; 24 (against the top bar) — no; 25 (made through the app's own controls in every
+place) — the leave and the downchit made through the Inputs page, the line and the desk on the board, W2 on a flying
+and a briefing row; 27 (neighbours of a pressed control) — no control's neighbour changes; 28 (phone: what a press opens
+proved first) — W1's phone step opens the strip and the war by taps; 29 (reads today) — no; 30 (a tap pictured at once on a
+phone) — W1 and W2 phone taps use the tap-picture helper; 31 (a page fitted to the screen) — not touched, but the PC
+world is the real 125% window it asks for.
 
 ## 5. The orders walked
 
