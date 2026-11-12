@@ -102,6 +102,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 ## Not built yet
 - Full editing of every entry on the war is not built — an overseas duty, a course, an Attach, an Other, a medical and leave filed on the Inputs page moved, deleted and their days and remarks changed there, a day of two or more entries opening the window that adds more, each entry with its own Move and Delete, drawn first, the Inputs page's own rules holding (its full row adds them); until it is, the war's windows say where each entry is changed — [LW-FULL-EDITING] [D1724].
 - On a PC the Approvals page is to scroll as the Balances page does — the page filling the screen, only its list scrolling under a title, chips, Approve all and headings that stay; on a phone it stays as today, the whole page scrolling, so more requests are seen at once; drawn 12 Nov 26, not built — [APPROVALS-SCROLL-INSIDE] [D1986, D2006].
+- On a PC a short list's card on the Approvals page still reaches the foot of the screen, empty below the last request, as Balances does — [APPROVALS-SCROLL-INSIDE] [D2008].
 - On a phone the Balances page stays as it is: its list scrolls inside the page under headings and names that hold, and its pinch shrinks only the rows, never the top part — leave it [D2007].
 - Each man's flight label is kept, not dropped, because he intends an option to sort the Leave War by flight; until that option is designed nothing about the label changes on screen [D1001].
 
