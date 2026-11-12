@@ -435,12 +435,15 @@ export function LogicPage() {
               design guide §3, "A page's controls are one row" — D926; as the Inputs list's dates button, D910) */}
           <span className="lgrs-long">Reset to standard</span><span className="lgrs-short" aria-hidden="true">Reset all</span></button>
       </div>
-      {/* the strip, while a setting a check reads is changed (W2). Its old "not the published ones" was untrue: a
-          published day keeps its brief, report, debrief and OIL values until it is published again (D928, the
-          inventory's one misleading line) */}
+      {/* the strip, while a setting a check reads is changed (W2). Its old "not the published ones" was untrue (D928),
+          and so, since D2005, was "the schedule is checked against it now … a published day keeps its printed B and its
+          OIL": a published day keeps EVERY setting it was published with — its checks, its printed B and its OIL — and a
+          change reaches it once its next amendment is published, every unpublished day at once (D2015, 13 Nov 26). "use",
+          not "checked against", and "for its checks and its OIL", because a cold reader took "checked" for the warnings
+          alone; "is published", because he could not tell whether drafting an amendment already switched the day */}
       <div className="lgoff" id="lgOff" hidden={!checkedOff}>
         {checkedOff ? <><b>{checkedOff} setting{checkedOff > 1 ? 's' : ''} changed from the squadron standard.</b>{' '}
-          {` The schedule is checked against ${checkedOff > 1 ? 'them' : 'it'} now.`} A published day keeps its printed B and its OIL until it is published again.
+          {`Days not yet published use ${checkedOff > 1 ? 'them' : 'it'} now.`} A published day keeps the settings it was published with, for its checks and its OIL, until its next amendment is published.
           {admin ? '' : ' Only an admin can change them.'}</> : null}
       </div>
       <div className="lgwrap" id="lgBody" ref={bodyRef} dangerouslySetInnerHTML={bodyHTML} />

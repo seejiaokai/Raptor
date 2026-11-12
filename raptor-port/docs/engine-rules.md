@@ -336,8 +336,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   collection (`validate.ts`, the `rawEnd` line) now reads such a landing as its take-off too: take-off plus the
   debrief, the same end, the same message, the same dotted mark on the day before as blank. With no take-off either
   there is still nothing to borrow and no end. D1936 is unchanged: such a sortie still counts no hours and raises no
-  long-day note. The message's "landed" words where no landing is typed are a wording question for him, not changed
-  here. Pin: `engine/rulesfirst-3-crew-rest.test.ts` (W35, D1990).
+  long-day note. The message's words where no landing is typed are D2010's (13 Nov 26): "took off HH:MM with no
+  landing typed" in place of "landed" — the next point's tail. Pin: `engine/rulesfirst-3-crew-rest.test.ts` (W35, D1990).
 
 - **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26 — "4 yes as
   recommended"; `[BLANK-TIMES-ABSENCE]`, built the same day).** Every absence check asked whether the absence OVERLAPS
@@ -421,6 +421,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   plain `ended HH:MM`. The tail is a port-authored string parity compares, so
   `refwin.ts:rebrief()` tracks the same landing and prints the identical
   branch on the reference; pinned in `crewrest-ui.test.ts`.
+  **A sortie with no landing typed** — blank, "TBD" or any words (its end borrows the take-off, D1990) — says so in
+  place of "landed" (D2010, 13 Nov 26): `Mon took off HH:MM with no landing typed, +Nh debrief assumed → ended HH:MM
+  → crew rest clear at HH:MM` (the day's own name, as the tail always prints it). The event carries `nold`
+  (`events.ts`), because a landing typed at the take-off's own minute (D49) IS typed and keeps "landed"; `refwin.ts`
+  mirrors it on the reference. One sentence feeds every copy — the breach, the amber reminder, the day before's
+  "breaks tomorrow" trace, the ⓘ, the board and the crew list's question before a drop (`restIfPlaced`). Pin:
+  `engine/rules-small-batch.test.ts`.
   **The tight-turning advisory (`CREW_TIGHT`) reuses that same tail**, so it
   states the debrief assumption for free alongside the "3h report / inside 12h"
   it already named.
@@ -3423,14 +3430,23 @@ stay LIVE (below), which the face draws from today and which never make the day 
   limits by them (`validate.ts wlbl(s, di)` through `faceattrs.ts withShownRules` — an issued face or a look at a
   version by that version's own). A hide waiting is read from the hides and the last official pass straight
   (`untouchedKept`), and on a day whose kept values differ from today's every warning of its issued judgement counts
-  for the hide comparison (`HOOKS.hideNow`), so a hide today's settings would clear never flips the day between passes. **A changed setting never makes a published day pending** (only the
+  for the hide comparison (`HOOKS.hideNow`), so a hide today's settings would clear never flips the day between passes. **A changed setting never makes a published day pending through its checks** (only the
   printed brief lead is compared, D186; `publish.ts warnDelta`): the frozen warnings, judged by the same kept values,
   stay as issued — the "same take-off and landing" advisory's words included (`oil.ts fltMeasuresNothing` takes the
   day's values from the validator). Two things stay on today's settings: **Insights' work hours** (D482, settled —
-  `validate.ts hoursEvd` rebuilds the official events with today's settings when a kept value differs) and **OIL**
-  (`oil.ts` reads `ruleNow`, today's value under any overlay, and the validator's OIL block runs whole under
-  `rules.ts withLiveRules`, so its earning test's availability reads today's too — D2005 leaves OIL as it was; its
-  pending axis `oilRuleDelta` (D592) is unchanged and can still read a published earning day pending). A version issued
+  `validate.ts hoursEvd` rebuilds the official events with today's settings when a kept value differs) and **the
+  validator's OIL checks** (its OIL block runs whole under `rules.ts withLiveRules`, so its earning test's availability
+  reads today's too; `oil.ts` reads `ruleNow`, today's value under any overlay, wherever it is not handed a version's
+  own values). **A published day's OIL itself — each man's amount and worked times, on the Leave War, the OIL tracker,
+  Balances and the published face — follows the three values its own OIL block kept when it went out** (`oilev.ts` the
+  block's `rv`: "Nominal report before T/O", "Flight debrief after land" and "Full day of OIL"; read by `oilKeptVals`,
+  `oilAmount`, `dayOilWork(…, {rv})` — [OIL-WORK-START], D592 (4), 5 Oct 26; D2014, 13 Nov 26, confirmed it for "Full
+  day of OIL", which the roll-call of that day found already so). A change to one of the three that would move
+  somebody's OIL record on the day reads it ONE pending change (`publish.ts oilRuleDelta`, D592) and takes the four
+  sign-offs down (`oilRvBoundOk`) — the one way a Logic change makes a published day pending; it clears when the value is
+  put back, and the next amendment keeps today's values and moves the OIL (pins: `leavewar/oilworkstart-published.test.ts`
+  OWS6–OWS12, `leavewar/oil-fullday-published.test.ts` D2014). The other Logic settings reach a published day's OIL
+  nowhere: its placeholder crowd is frozen at issue (`sent`), and the open-ended and sim-length values only draw. A version issued
   before D2005 kept the brief lead only, or nothing: the rest reads today's (demo data, D56). Known limits, D2005: the
   suggested-brief and rally ghosts on the screens read today's (the face's printed brief excepted); a puck's chip
   tooltip ("Crew rest breach (<12h)"), a same-time line's box title and the R box's own timing-fault title (its

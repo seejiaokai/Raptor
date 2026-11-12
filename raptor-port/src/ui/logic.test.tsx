@@ -533,8 +533,14 @@ describe('W2 the words the + In-time / Rally button fills in are not a modified 
     await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
     expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
     expect($('#lgOff').textContent).toContain('1 setting changed')
-    /* the strip's old "not the published ones" was untrue (D928): a published day keeps its printed B and its OIL */
-    expect($('#lgOff').textContent).toContain('A published day keeps its printed B and its OIL until it is published again')
+    /* the strip's old "not the published ones" was untrue (D928); since D2005 a published day keeps EVERY setting it went
+       out with, so the note says when a change reaches it — once its next amendment is published — and that every day
+       not yet published uses it now (D2015, 13 Nov 26; reworded after a cold read) */
+    expect($('#lgOff').textContent).toContain('Days not yet published use it now.')
+    expect($('#lgOff').textContent).toContain('A published day keeps the settings it was published with, for its checks and its OIL, until its next amendment is published.')
+    expect($('#lgOff').textContent, 'the old claim that only the printed B and the OIL are kept').not.toContain('printed B and its OIL')
+    await act(async () => { VCONF.debrief = 90; notify() })
+    expect($('#lgOff').textContent, 'two settings: the same words, "them"').toContain('2 settings changed from the squadron standard. Days not yet published use them now. A published day keeps the settings it was published with, for its checks and its OIL, until its next amendment is published.')
     await act(async () => { rulesReset(); notify() })
     expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
   })

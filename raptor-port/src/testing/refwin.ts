@@ -615,13 +615,17 @@ function rebrief(html: string): string {
        track the winning rest-end's raw landing (null for a shift) and, when a
        sortie set it, print "landed HH:MM, +Nh debrief assumed → ended HH:MM".
        Parity compares the message, so the reference tracks and prints the same. */
-    ["const prevEnd={}, prevFlyEnd={};", "const prevEnd={}, prevFlyEnd={}, prevFlyLd={};"],
+    /* …and a sortie with NO landing typed (D2010, 13 Nov 26) says "took off HH:MM with no landing typed" in place of
+       "landed": its event carries `nold` (the port's events.ts; the same flag is put on the reference's event just
+       below, so the events still compare equal) and the tail reads it. */
+    ["kind:shiftLine?'shift':'fly',slot:", "kind:shiftLine?'shift':'fly',...(!shiftLine&&parseHM(f.ld)==null?{nold:true}:{}),slot:"],
+    ["const prevEnd={}, prevFlyEnd={};", "const prevEnd={}, prevFlyEnd={}, prevFlyLd={}, prevNoLd={};"],
     ["if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id]))prevFlyEnd[e.id]=end;",
-     "if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end;prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}"],
+     "if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end;prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;prevNoLd[e.id]=e.kind==='fly'&&!!e.nold;}"],
     ["const tail=`${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;",
      "const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;"
      + "const tail=landed!=null"
-     + "?`${ev[idx-1].dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`"
+     + "?`${ev[idx-1].dow} ${prevNoLd[id]?`took off ${hm24(landed)} with no landing typed`:`landed ${hm24(landed)}`}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`"
      + ":`${ev[idx-1].dow} ended ${hm24(pe)} → crew rest clear at ${hm24(earliest)}`;"],
     /* The crew-rest breach itself (owner, 6 Aug 26; reworded cause-first
        22 Aug 26 — tail leads, "but <commitment> — only Xh rest.", and the
@@ -732,8 +736,8 @@ function refirst(html: string): string {
    undefined flags read false and the emitted strings stay identical. */
 function reirest(html: string): string {
   const swaps: Array<[string, string]> = [
-    ["prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });",
-     "prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });"
+    ["prevNoLd[e.id]=e.kind==='fly'&&!!e.nold;}\n      });",
+     "prevNoLd[e.id]=e.kind==='fly'&&!!e.nold;}\n      });"
      + "const _rt=/^(training|cse|meeting|attach|appointment|duty|event|od|other)$/i;"
      + "const _tk=/^(training|cse|meeting|attach|personal|appointment|duty|event|od|other)$/i;"
      + "const _il=i=>{const ty=String(i.type||''),t=String(i.title==null?'':i.title).replace(/\\s+/g,' ').trim().slice(0,40).trim();"
@@ -743,7 +747,7 @@ function reirest(html: string): string {
      + "if(i.nx||i.pv||!_rt.test(String(i.type||'').trim()))return;"
      + "if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;"
      + "if(prevEnd[i.id]==null||i.e>prevEnd[i.id])prevEnd[i.id]=i.e;"
-     + "if(prevFlyEnd[i.id]==null||i.e>prevFlyEnd[i.id]){prevFlyEnd[i.id]=i.e;prevFlyLd[i.id]=null;}"
+     + "if(prevFlyEnd[i.id]==null||i.e>prevFlyEnd[i.id]){prevFlyEnd[i.id]=i.e;prevFlyLd[i.id]=null;prevNoLd[i.id]=false;}"
      + "});"],
     ["const fe=day.events.reduce((m,e)=>e.id===id&&e.kind!=='fly'&&e.kind!=='shift'&&e.s!=null&&isFinite(e.s)&&(m==null||e.s<m.s)?e:m,null);",
      "const fe0=day.events.reduce((m,e)=>e.id===id&&e.kind!=='fly'&&e.kind!=='shift'&&e.s!=null&&isFinite(e.s)&&(m==null||e.s<m.s)?e:m,null);"

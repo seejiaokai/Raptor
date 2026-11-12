@@ -417,9 +417,12 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
                starts that day at take-off less the default rally, VCONF.reportLead, as OIL does — never at the step.
                `fly` above keeps report-or-step for the SANS window, and crew rest reads `intime`; a shift is as before.
                A sortie with no take-off or no landing typed (ldM above borrows its take-off) is unfinished: NaN, so workSpan's own
-               guard counts it nowhere, as OIL counts it nothing (fltOilWin) — Astra's and Sol 6.1's reads. */
+               guard counts it nowhere, as OIL counts it nothing (fltOilWin) — Astra's and Sol 6.1's reads.
+               `nold` (D2010, 13 Nov 26): no landing typed — blank, "TBD" or any words. Crew rest still ends such a sortie at its
+               take-off plus the debrief (D1990), but must say "took off … with no landing typed", never "landed" at the take-off;
+               a landing typed at the take-off's own minute (D49) IS typed and keeps "landed", so `ld===to` cannot tell them apart. */
             events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report:shiftLine?report:(parseHM(f.to)==null||parseHM(f.ld)==null?NaN:intime),brief:briefM,label:lineLbl,
-              kind:shiftLine?'shift':'fly',...(fliesRow?{flies:true}:{}),slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
+              kind:shiftLine?'shift':'fly',...(fliesRow?{flies:true}:{}),...(!shiftLine&&parseHM(f.ld)==null?{nold:true}:{}),slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
           });
         });
         /* an SC formation carries its shift window so the SC DAY / SC NIGHT

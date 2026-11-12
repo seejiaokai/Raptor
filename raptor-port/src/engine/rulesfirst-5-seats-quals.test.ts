@@ -234,7 +234,7 @@ describe('W61 — ground crew (Personnel): a rear seat (an incentive ride) and g
     for (let di = 0; di < 7; di++) ground(di, 'spanner', '0900', '1000')
     expect(validate().all.filter((x: any) => x.code === 'DAYS_RUN' && (x.who || []).includes('spanner')).length).toBeGreaterThan(0)
   })
-  it('as built: an absence still reads against him — a ground crewman on leave, seated on a ground row, is "On leave + flying"', () => {
+  it('as built: an absence still reads against him — a ground crewman on leave, seated on a ground row, is "On leave + planned" (named so by D2009)', () => {
     inp(TUE, 'torque', 'LL', { allday: true })
     ground(TUE, 'torque', '0900', '1000')
     expect(codes(TUE, 'torque')).toEqual(['LEAVE_FLY'])

@@ -22,7 +22,11 @@ import { rosterIds, withKeptRules, keptRulesDiffer, withDayRules, keepRulesOn, w
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
 const $=(id:any)=>HOOKS.$(id);
-export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'Downchit + flying',LEAVE_FLY:'On leave + flying',INPUT_FLY:'Personal input clash',
+/* D2009 (13 Nov 26): the two input checks are named "On leave + planned" / "Downchit + planned" (they were "+ flying") —
+   one name, true on every row, since a briefing, a desk or a sim is not a flight. The Logic page names each check by
+   this label (logic-html.ts lgChkName), so both read the one word; the day's own message ("On leave but tasked — …")
+   is unchanged. Pin: rules-small-batch.test.ts. */
+export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'Downchit + planned',LEAVE_FLY:'On leave + planned',INPUT_FLY:'Personal input clash',
   TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',CREW_SOLO:'Crew solo — only allowed under syllabus',CO_APPROVAL:'Crew combination — CO approval required',OCU_NO_IP:'OCU without IP',CREW_REST:'Crew rest (<{crewRest})',QUAL:'Qualification — illegal seat',
   NO_BRIEF:'No time for the flight brief',DEBRIEF:'No time for the flight debrief',SIM_BRIEF:'No time for the sim brief',SIM_DEBRIEF:'No time for the sim debrief',
   CREW_TIGHT:'Tight turning — crew rest',LONGDAY:'Long work day',DT_SUM:'Double turning',
@@ -482,8 +486,10 @@ function validateCore(){
          know the assumption"): a sortie ends at land + debrief, and a
          scheduler who knows this crew walks off the jet fast can read that the
          2h is an assumption, not a fact. Null when the winning end is a SHIFT,
-         which ends at its written time with no debrief tail to assume. */
-      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={}, prevSource:any={};
+         which ends at its written time with no debrief tail to assume.
+         prevNoLd (D2010, 13 Nov 26): that sortie had NO landing typed (events.ts `nold`), so prevFlyLd holds its take-off
+         and the tail says "took off … with no landing typed", never "landed" at the take-off time. */
+      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={}, prevNoLd:any={}, prevSource:any={};
       const targetIndex=day.restIndex??day.di??di;
       for(let distance=1;distance<=4;distance++){
       const origin=targetIndex-distance;
@@ -521,7 +527,7 @@ function validateCore(){
         if(rawEnd==null||!isFinite(rawEnd))return;
         const end=rawEnd+offset;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevSource[e.id]=source;}
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevNoLd[e.id]=e.kind==='fly'&&(!!e.nold||!isFinite(e.ld)); prevSource[e.id]=source;}
       });
       /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
          "everything in duty and commitments affects crew rest… do not
@@ -542,7 +548,7 @@ function validateCore(){
         if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;
         const end=i.e+offset;
         if(prevEnd[i.id]==null||end>prevEnd[i.id])prevEnd[i.id]=end;
-        if(prevFlyEnd[i.id]==null||end>prevFlyEnd[i.id]){prevFlyEnd[i.id]=end; prevFlyKey[i.id]=null; prevFlyLd[i.id]=null; prevSource[i.id]=source;}
+        if(prevFlyEnd[i.id]==null||end>prevFlyEnd[i.id]){prevFlyEnd[i.id]=end; prevFlyKey[i.id]=null; prevFlyLd[i.id]=null; prevNoLd[i.id]=false; prevSource[i.id]=source;}
       });
       }
       /* when rest expires today, for everyone who had ANY commitment
@@ -648,11 +654,12 @@ function validateCore(){
            real landing, name the debrief pad as an assumption, then the
            derived end and the 12h clearance — so the reader can override it in
            their head for a crew that leaves quickly. A shift (prevFlyLd null)
-           has no debrief to assume, so it keeps the plain "ended". */
+           has no debrief to assume, so it keeps the plain "ended". A sortie with no landing typed names its TAKE-OFF as what
+           it is (D2010, 13 Nov 26): "Mon took off 12:00 with no landing typed, +2h debrief assumed → …". */
         const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;
         const source=prevSource[id]||prevSeed;
         const tail=landed!=null
-          ? `${source.dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`
+          ? `${source.dow} ${prevNoLd[id]?`took off ${hm24(landed)} with no landing typed`:`landed ${hm24(landed)}`}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`
           : `${source.dow} ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`;
         if(pfly[id]&&first<earliest){
           /* [REST-BLANK-LINE]: when no leg tells him anything the breach is the earlier commitment's (evBound);

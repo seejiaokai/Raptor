@@ -32,7 +32,13 @@ the count where it is needed, on the filter.
 W2): **"N settings changed from the squadron standard. The schedule is checked against them now; a published day keeps
 its brief, report, debrief and OIL values until it is published again."** For a member it adds **"Only an admin can
 change them."** (Corrects today's "checked against these values, not the published ones" — the inventory's one
-misleading line, D928.)
+misleading line, D928.) **Since D2015 (13 Nov 26)** — every setting now reaches a published day from its next
+amendment (D2005, D2014) — the strip reads **"N settings changed from the squadron standard. Days not yet published
+use them now. A published day keeps the settings it was published with, for its checks and its OIL, until its next
+amendment is published."** ("it" for one setting), the member's line unchanged; reworded after a cold read, which took
+"checked against" for the warnings alone and could not tell whether drafting an amendment already switched the day. The
+built words before it were "… The schedule is checked against them now. A published day keeps its printed B and its OIL
+until it is published again."
 
 **Nothing matches:** "Nothing matches “{search}”." (as today).
 
@@ -164,8 +170,8 @@ A row with no warning code is a grey note: something the app does that a reader 
 | Tier | Name | Line |
 |---|---|---|
 | Note | An input closes its hours | From the moment it is filed. One taken off the programme closes nothing. |
-| Warning | LEAVE_FLY — "On leave + flying" | A man on leave is planned for a flight, sim, duty or ground slot. |
-| Warning | DNIF_FLY — "Downchit + flying" | A medically down man is planned. On ATT B he may still stand a duty, sim or ground slot, but not fly. |
+| Warning | LEAVE_FLY — "On leave + planned" (D2009, 13 Nov 26; was "On leave + flying") | A man on leave is planned for a flight, sim, duty or ground slot. |
+| Warning | DNIF_FLY — "Downchit + planned" (D2009; was "Downchit + flying") | A medically down man is planned. On ATT B he may still stand a duty, sim or ground slot, but not fly. |
 | Warning | INPUT_FLY — "Personal input clash" | Any other input clashes with a planned slot: a course, a meeting, an appointment, overseas duty. |
 | Note | A seat with no times | Still checked against an absence covering the whole day; a part-day absence waits until the seat has times. |
 | Note | Half days | Leave and medical can be AM (to 12:00), PM (from 12:01) or all day. A sortie's hours start at step. |
