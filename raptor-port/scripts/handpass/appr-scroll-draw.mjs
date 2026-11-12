@@ -14,7 +14,9 @@ import path from 'node:path'
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const launchOptions = existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}
 const here = path.dirname(fileURLToPath(import.meta.url))
-const OUT = path.resolve(here, '../../docs/img/mock/2026-11-12-approvals-scroll')
+/* APPR_DRAW_OUT sends the pictures elsewhere — the drawing check's replay (scripts/drawcheck/specs/appr-scroll.mjs) must
+   never write over the approved pictures it compares against (walk-scripts.md §10) */
+const OUT = process.env.APPR_DRAW_OUT ? path.resolve(process.env.APPR_DRAW_OUT) : path.resolve(here, '../../docs/img/mock/2026-11-12-approvals-scroll')
 const RAW = path.join(OUT, 'raw')
 mkdirSync(RAW, { recursive: true })
 const PORT = process.env.PORT || 4261

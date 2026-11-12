@@ -106,6 +106,10 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     const down = (e: Event) => {
       const t = e.target as Node | null
       if (t && (pickRef.current?.contains(t) || pickBtn.current?.contains(t))) return
+      /* on a PC the calendar opens inside the box that scrolls (the walk's W3, below): a press on that box's own scroll bar,
+         dragged to reach the calendar's last weeks on a short window, is not a press outside it */
+      const sc = scrollRef.current
+      if (sc && t === sc && (e as PointerEvent).offsetX >= sc.clientWidth) return
       setPicking(false)
       /* …AND THAT PRESS ONLY CLOSES IT (the fixes' M4 — the re-walk's B-F3): on a phone the calendar stands inline above the
          list, so closing it on the press moved the list up under the finger, and the click that ends the press landed on
@@ -198,6 +202,12 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     window.addEventListener('resize', fit)
     return () => { window.removeEventListener('resize', fit); el.style.height = ''; document.body.classList.remove('lw-appr-on') }
   }, [fits])
+  /* ON A PC "Pick dates…" OPENS ITS CALENDAR AT THE TOP OF THE BOX THAT SCROLLS (the walk's W3, 13 Nov 26): between the chips
+     and that box, in a card fixed to the screen's height, a short window squeezed the list to nothing and cut off the
+     calendar's last weeks where nothing could scroll to them — on main the window scrolled to them. Inside the box the wheel
+     reaches every day and the list under it, as on main the calendar pushed the list down the page; the box goes back to its
+     top as the calendar opens, so the calendar is in view under the chip that opened it. */
+  useLayoutEffect(() => { if (picking && fits && scrollRef.current) scrollRef.current.scrollTop = 0 }, [picking, fits])
   /* a decision the rules refused changes nothing in the war — this repaints the line's reason */
   const [tick, setTick] = useState(0)
   const rowsRef = useRef<{ period: string; rows: Row[] }>({ period: st.period.id, rows: [] })
@@ -471,24 +481,26 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     </>
   )
 
+  const pickPop = picking && (
+    <div className="appr-pickpop" ref={pickRef}>
+      <RangePicker testid="appr-range" min={st.period.start} max={st.period.end}
+        value={filter.kind === 'range' ? { from: filter.from, to: filter.to } : null}
+        onChange={(v: Range | null) => { if (v) { setFilter({ kind: 'range', from: v.from, to: v.to }); if (v.to !== v.from) setPicking(false) } }} />
+    </div>
+  )
+
   return (
     <section ref={pageRef} className={`appr-page${phone ? ' ph' : ''}`} hidden={!shown} data-testid="approvals-page" aria-label="Approvals">
       <div className="appr-card">
         {head}
         {filterRow}
-        {picking && (
-          <div className="appr-pickpop" ref={pickRef}>
-            <RangePicker testid="appr-range" min={st.period.start} max={st.period.end}
-              value={filter.kind === 'range' ? { from: filter.from, to: filter.to } : null}
-              onChange={(v: Range | null) => { if (v) { setFilter({ kind: 'range', from: v.from, to: v.to }); if (v.to !== v.from) setPicking(false) } }} />
-          </div>
-        )}
-        {phone ? <>{body}</> : (
+        {phone ? <>{pickPop}{body}</> : (
           /* ON A PC ONLY THIS SCROLLS (his D2006): the request lines, their column headings pinned at its top, the "New"
              filter's "Also since you last looked" and the empty words — inside the card, which fills the page. It keeps the
-             wheel to itself at its ends (approvals.css), and its own place while the page waits behind the grid (`listY`). */
+             wheel to itself at its ends (approvals.css), and its own place while the page waits behind the grid (`listY`).
+             The date calendar, open, is its first part (the walk's W3 — see the effect above). */
           <div className="appr-scroll" data-testid="appr-scroll" ref={scrollRef} onScroll={e => { if (shown) listY.current = e.currentTarget.scrollTop }}>
-            {body}
+            {pickPop}{body}
           </div>
         )}
       </div>

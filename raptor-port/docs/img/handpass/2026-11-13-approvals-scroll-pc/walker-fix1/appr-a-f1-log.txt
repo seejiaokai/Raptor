@@ -1,0 +1,41 @@
+=== F1 window 1550x680
+list wheeled to 300 before Pick dates…
+opened: {"inner":586,"winRoom":0,"winY":0,"cardScrollTop":0,"pageScrollTop":0,"scTop":0,"scRoom":1143,"picker":{"t":250,"b":620.5,"l":38.8,"r":388.8,"h":370.5},"pickerInScroll":true,"scroller":{"t":240,"b":577.2,"l":38.8,"r":1515.2,"h":337.2},"cols":{"t":630.5,"b":665.7,"l":38.8,"r":1278.8,"h":35.2},"card":{"t":136,"b":578,"l":20,"r":1516,"h":442},"d31":{"t":496.8,"b":540.8,"l":285,"r":332.5,"h":44},"hit31":"day31","fadeTop":550,"lines":19,"firstLine":{"t":665.7,"b":719.7,"l":38.8,"r":1278.8,"h":54}}
+  PASS F1-680-open: list 300 -> 0 at open (box back at its top), calendar inside the list box, top 250 right under the chips (chips foot 240.0), card.scrollTop 0, window room 0
+wheel ticks of 100: 0, scTop trail ; day31 {"t":496.8,"b":540.8,"l":285,"r":332.5,"h":44} scroller {"t":240,"b":577.2,"l":38.8,"r":1515.2,"h":337.2} fadeTop 550 hit day31 winY 0 room 0 cardScrollTop 0
+days 25-31 boxes: 25:453-497 26:497-541 27:497-541 28:497-541 29:497-541 30:497-541 31:497-541
+  PASS F1-680-lastweek: real wheel (0 ticks) brings day 31 wholly on screen: box 496.8-540.8 inside the list box (240-577.2) and above the foot fade (550) and the screen (586); a hit test at its centre lands on it (day31); window room 0, card.scrollTop 0
+further wheel: 100:cols530.5 200:cols430.5 300:cols330.5 400:cols240 | {"cols":{"t":240,"b":275.2,"l":38.8,"r":1278.8,"h":35.2},"scroller":{"t":240,"b":577.2,"l":38.8,"r":1515.2,"h":337.2},"firstLine":{"t":265.7,"b":319.7,"l":38.8,"r":1278.8,"h":54}}
+  PASS F1-680-pin: headings top 240 = list box top 240 (pinned: true), first line top 265.7 is under the headings' foot 275.2 (lines scroll under: true), list scrollTop 400 of 1143, window room 0, card.scrollTop 0
+wheeled back up: scTop 0
+calendar foot after wheel: picker {"t":150,"b":520.5,"l":38.8,"r":388.8,"h":370.5} fadeTop 550 scTop 100
+  PASS F1-680-calfoot: calendar's own foot reached by the wheel: picker bottom 520.5 within list box foot 577.2 and fade 550; window room 0
+Tab x40 from Pick dates…: stops approve-all > range-title > range-today > range-prev > range-next > range-day-2026-01-01 > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates
+  calendar stops 5; max cardScrollTop 0; max winY 0; invisible in-list stops []
+arrow walk from appr-range-day-2026-01-01: 01-08@364.8-408.8 sc0 card0 | 01-15@408.8-452.8 sc0 card0 | 01-22@452.8-496.8 sc0 card0 | 01-29@496.8-540.8 sc0 card0 | 01-30@496.8-540.8 sc0 card0 | 01-31@496.8-540.8 sc0 card0 | 02-07@364.8-408.8 sc0 card0 | 02-14@408.8-452.8 sc0 card0
+  PASS F1-680-tab: Tab through the calendar (5 stops: range-title, range-today, range-prev, range-next, range-day-2026-01-01) and on into the list; arrow keys walked 8 different days; card.scrollTop 0 at every stop (max 0), window scrollY 0, every focused thing in the list box wholly visible (offenders 0)
+real click on day 29 (hit day, 0 wheel ticks): picker foot " 22 23 24 25 26 27 28 29 30 31 29 Jan 26", list 0
+real click on day 31 (hit day, 0 more ticks): calendar open false, chip "29 Jan – 31 Jan", lines 1, winRoom 0, card.scrollTop 0, list 0
+  PASS F1-680-click: two real mouse clicks (no script scroll) on day 29 then day 31 (hit-tested as the day buttons): calendar closed, chip "29 Jan – 31 Jan", window room 0, card.scrollTop 0
+=== F1 window 1550x560
+list wheeled to 300 before Pick dates…
+opened: {"inner":466,"winRoom":0,"winY":0,"cardScrollTop":0,"pageScrollTop":0,"scTop":0,"scRoom":1263,"picker":{"t":250,"b":620.5,"l":38.8,"r":388.8,"h":370.5},"pickerInScroll":true,"scroller":{"t":240,"b":457.2,"l":38.8,"r":1515.2,"h":217.2},"cols":{"t":630.5,"b":665.7,"l":38.8,"r":1278.8,"h":35.2},"card":{"t":136,"b":458,"l":20,"r":1516,"h":322},"d31":{"t":496.8,"b":540.8,"l":285,"r":332.5,"h":44},"hit31":null,"fadeTop":430,"lines":19,"firstLine":{"t":665.7,"b":719.7,"l":38.8,"r":1278.8,"h":54}}
+  PASS F1-560-open: list 300 -> 0 at open (box back at its top), calendar inside the list box, top 250 right under the chips (chips foot 240.0), card.scrollTop 0, window room 0
+wheel ticks of 100: 2, scTop trail 100,200; day31 {"t":296.8,"b":340.8,"l":285,"r":332.5,"h":44} scroller {"t":240,"b":457.2,"l":38.8,"r":1515.2,"h":217.2} fadeTop 430 hit day31 winY 0 room 0 cardScrollTop 0
+days 25-31 boxes: 25:253-297 26:297-341 27:297-341 28:297-341 29:297-341 30:297-341 31:297-341
+  PASS F1-560-lastweek: real wheel (2 ticks) brings day 31 wholly on screen: box 296.8-340.8 inside the list box (240-457.2) and above the foot fade (430) and the screen (466); a hit test at its centre lands on it (day31); window room 0, card.scrollTop 0
+further wheel: 300:cols330.5 400:cols240 | {"cols":{"t":240,"b":275.2,"l":38.8,"r":1278.8,"h":35.2},"scroller":{"t":240,"b":457.2,"l":38.8,"r":1515.2,"h":217.2},"firstLine":{"t":265.7,"b":319.7,"l":38.8,"r":1278.8,"h":54}}
+  PASS F1-560-pin: headings top 240 = list box top 240 (pinned: true), first line top 265.7 is under the headings' foot 275.2 (lines scroll under: true), list scrollTop 400 of 1263, window room 0, card.scrollTop 0
+wheeled back up: scTop 0
+calendar foot after wheel: picker {"t":50,"b":420.5,"l":38.8,"r":388.8,"h":370.5} fadeTop 430 scTop 200
+  PASS F1-560-calfoot: calendar's own foot reached by the wheel: picker bottom 420.5 within list box foot 457.2 and fade 430; window room 0
+Tab x40 from Pick dates…: stops approve-all > range-title > range-today > range-prev > range-next > range-day-2026-01-01 > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates
+  calendar stops 5; max cardScrollTop 0; max winY 0; invisible in-list stops []
+arrow walk from appr-range-day-2026-01-01: 01-08@364.8-408.8 sc0 card0 | 01-15@408.8-452.8 sc0 card0 | 01-22@452.8-496.8 sc0 card0 | 01-29@496.8-540.8 sc0 card0 | 01-30@496.8-540.8 sc0 card0 | 01-31@496.8-540.8 sc0 card0 | 02-07@364.8-408.8 sc0 card0 | 02-14@408.8-452.8 sc0 card0
+  FAIL F1-560-tab: Tab through the calendar (5 stops: range-title, range-today, range-prev, range-next, range-day-2026-01-01) and on into the list; arrow keys walked 8 different days; card.scrollTop 0 at every stop (max 0), window scrollY 0, every focused thing in the list box wholly visible (offenders 6)
+real click on day 29 (hit day, 2 wheel ticks): picker foot " 22 23 24 25 26 27 28 29 30 31 29 Jan 26", list 200
+real click on day 31 (hit day, 0 more ticks): calendar open false, chip "29 Jan – 31 Jan", lines 1, winRoom 0, card.scrollTop 0, list 0
+  PASS F1-560-click: two real mouse clicks (no script scroll) on day 29 then day 31 (hit-tested as the day buttons): calendar closed, chip "29 Jan – 31 Jan", window room 0, card.scrollTop 0
+errors []
+  PASS F1-err: page errors: none
+SUMMARY 12 PASS, 1 FAIL

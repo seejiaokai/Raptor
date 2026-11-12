@@ -142,6 +142,16 @@ describe('on a phone the Approvals page stays as it is today — the whole page 
     expect(also.parentElement, 'a part of the card itself').toBe(card())
     expect(also.previousElementSibling?.classList.contains('appr-list'), 'right under the list').toBe(true)
   })
+
+  it('Pick dates… opens its calendar in the card between the chips and the list, as today', () => {
+    threeLines()
+    render(<ApprovalsPage shown={true} />)
+    act(() => { screen.getByTestId('appr-pick').click() })
+    const pop = page().querySelector<HTMLElement>('.appr-pickpop')!
+    expect(pop.parentElement, 'a part of the card itself').toBe(card())
+    expect(pop.previousElementSibling?.classList.contains('appr-filters'), 'right under the chips').toBe(true)
+    expect(pop.nextElementSibling?.classList.contains('appr-list'), 'the list right under it').toBe(true)
+  })
 })
 
 /* ---------------------------------------------------------------------------------------------- a PC */
@@ -225,6 +235,23 @@ describe('on a PC the page fits the screen and only its list scrolls, as Balance
     act(() => { screen.getByTestId('appr-m-2026-03').click() })
     const sc = screen.getByTestId('appr-scroll')
     expect(sc.textContent).toContain('Nothing here for these dates.')
+  })
+
+  /* THE WALK'S FINDING (W3, 13 Nov 26): the date calendar stood between the chips and the box that scrolls, in a card now
+     fixed to the screen's height — on a short PC window it squeezed the list to 28px and the card cut off its last weeks,
+     which nothing could scroll to (on main the window scrolled to them). It opens at the top of the box that scrolls
+     instead, as on main it pushed the list down the page: on any height the wheel reaches its last day and the list under it. */
+  it('Pick dates… opens its calendar at the top of the box that scrolls, brought into view, so a short window reaches all of it', () => {
+    threeLines()
+    render(<ApprovalsPage shown={true} />)
+    const sc = screen.getByTestId('appr-scroll')
+    sc.scrollTop = 200                                                  // he had wheeled down the list
+    act(() => { screen.getByTestId('appr-pick').click() })
+    const pop = page().querySelector<HTMLElement>('.appr-pickpop')!
+    expect(pop, 'the calendar is open').not.toBeNull()
+    expect(pop.parentElement, 'inside the box that scrolls').toBe(sc)
+    expect(sc.firstElementChild, 'its first part, above the column headings').toBe(pop)
+    expect(sc.scrollTop, 'brought into view: the box back at its top').toBe(0)
   })
 
   it('the list keeps its own place across "Back to Approvals", even where the browser forgot it while hidden', () => {
