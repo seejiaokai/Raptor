@@ -2407,3 +2407,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** Jobs 2 and 3 were built and fully checked on the pull request's branch; job 4 belonged on the same pull request but was the riskiest and the last. Built straight onto that branch, a job 4 that ran out of time would have left the checked work carrying a half-built change. It was built on its own branch cut from the checked one, pushed freely (no pull request, so no run), checked there on the PC, and only then brought onto the pull request's branch by fast-forward — the pull request stayed whole throughout. Two further things met on the way: GitHub started a push's runs about five minutes late, so "no run listed" right after a push is not "no run coming" (the push guard caught the second push); and a builder helper stops several times with a "waiting on its own background work" notice before its real report.
 **Suggested improvement:** In the overnight guide's "Branches" paragraph, add one sentence: a later job that joins a pull request whose earlier jobs are already checked is built on its own branch cut from that one and fast-forwarded in only once it is built and checked, so a short night leaves the pull request as its checked jobs. In Part 2's push bullet, add: after a push, read the runs again a few minutes later before concluding none started.
 **Principle:** Work that is already checked is never the staging ground for unchecked work; join the two only when the second has earned it.
+
+### Observation 938: Recording a batch of answers — check each page's free room and the "changes" trigger before writing the rows
+
+**Status:** OPEN
+**Date:** 13 Nov 26
+**Session context:** chat 66 recording eighteen answers "as recommended" as seventeen rulings (D2008–D2024)
+**Skill:** New skill candidate: recording-rulings (the steps at the head of DECISIONS.md)
+**Type:** internal
+**Phase/Area:** step 2, stating a ruling on a converted page
+
+**Issue:** Three refusals in one batch, each found only by running the gate: the general page had 11 bytes left of its hard limit and OIL's page under 230, so a new line did not fit; and a row whose text said it "answers" an older ruling made the gate ask for a mark in that ruling's row and a citation on every page line stating it (five lines).
+**Suggested improvement:** Before writing rows for a batch, read each target page's size against its limit (`wc -c` beside the PAGE_LIMITS in the document check) and choose the area by room as well as by subject; decide for each row whether it truly changes or answers an older ruling — if yes, plan the mark and the citations in the same script; if no, do not word it as one. The general page's wrapped bullets can be joined without changing a word (2 bytes a line).
+**Principle:** When a record system has hard size limits and cross-reference rules, measure the room and list the cross-references before writing, not after the check refuses.
