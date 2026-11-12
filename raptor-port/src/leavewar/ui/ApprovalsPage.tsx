@@ -36,6 +36,7 @@ import { askLw, apprMode, apprRingAsked, lwNavVersion, setApprMode, subscribeLwN
 import { ringCell } from './cellring'
 import { RangePicker, type Range } from './RangePicker'
 import { usePhone } from './phone'
+import { fitToScreen } from './screenfit'
 import { useVersion } from './useStore'
 import { datesWords, dm, dow, MON, rangeWords } from './approvaldates'
 import './approvals.css'
@@ -168,6 +169,35 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
      dates", no chip lit, Approve all 0). The filter, the date picker and an armed Approve all go with the period. */
   const periodId = st.period.id
   useEffect(() => { setFilterRaw({ kind: 'all' }); setPicking(false); setArmed(null) }, [periodId])
+
+  /* ON A PC THE PAGE FILLS THE SCREEN UNDER THE TAB ROW AND ONLY ITS LIST SCROLLS, AS THE BALANCES PAGE DOES (his D2006,
+     12 Nov 26 — the drawings docs/superpowers/specs/2026-11-12-approvals-scroll-drawings.md, pictures 1–4): the title, the
+     chips, Approve all and the column headings stay; the card reaches the foot of the screen however short the list, empty
+     below its last request, so its edge stays put when a month is picked (his D2008, 13 Nov 26). Fitted by the Balances
+     page's own rule — the screen's TRUE height (screenfit.ts; lesson 31) — and, while it is up, the window keeps no bottom
+     pad to scroll by (`body.lw-appr-on`, approvals.css), as `body.lw-bal-on` does for Balances.
+     ON A PHONE IT STAYS AS IT IS TODAY — the whole page scrolls, so more requests are seen at once (D2006's phone half, his
+     choice B): no height, no pad dropped, no box of its own. "A phone" is the Leave War's own `(max-width: 700px)`
+     (phone.ts) — the split the two pages already draw by; a tablet held either way, or any window wider than 700, is a PC.
+     WHILE THE PAGE WAITS BEHIND THE GRID (the slim bar up — a request's dates tapped) it is hidden: its height and the
+     dropped pad go, so the grid's own page keeps its pad, and come back with Back ▴. THE LIST KEEPS ITS OWN PLACE across
+     that: the window's scroll, which LeaveWarPage.tsx `Body` gives back, is nothing on a PC now, and a box hidden from the
+     screen may forget its place (or report a scroll to the top while hidden) — so its place is kept here, read only while
+     the page is up, and handed back as it comes up (the drawings' finding, 12 Nov 26). */
+  const pageRef = useRef<HTMLElement | null>(null)
+  const scrollRef = useRef<HTMLDivElement | null>(null)
+  const listY = useRef(0)
+  const fits = shown && !phone
+  useLayoutEffect(() => {
+    const el = pageRef.current
+    if (!el || !fits) return
+    document.body.classList.add('lw-appr-on')
+    const fit = () => fitToScreen(el)
+    fit()
+    if (scrollRef.current) scrollRef.current.scrollTop = listY.current
+    window.addEventListener('resize', fit)
+    return () => { window.removeEventListener('resize', fit); el.style.height = ''; document.body.classList.remove('lw-appr-on') }
+  }, [fits])
   /* a decision the rules refused changes nothing in the war — this repaints the line's reason */
   const [tick, setTick] = useState(0)
   const rowsRef = useRef<{ period: string; rows: Row[] }>({ period: st.period.id, rows: [] })
@@ -409,8 +439,40 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     </div>
   )
 
+  /* the column headings: on a phone the list's own first part, as today (D2006's phone half — the whole page scrolls); on a
+     PC the first part of the box that scrolls, pinned at its top (approvals.css), so they stay over the lines AND over the
+     "Also since you last looked" lines under them, which use the same columns */
+  const cols = shownRows.length > 0 && (phone
+    ? <div className="appr-cols ph" aria-hidden="true"><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span className="appr-end">Placed</span></div>
+    : (
+      <div className="appr-cols" aria-hidden="true">
+        <span>Name</span><span>Kind</span><span>Dates</span><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span>Placed</span>
+      </div>
+    ))
+  const body = (
+    <>
+      {total === 0 && rows.length === 0 && <div className="appr-empty" data-testid="appr-empty">Nothing waiting for a decision.</div>}
+      {rows.length > 0 && shownRows.length === 0 && !(filter.kind === 'new' && also.length) && <div className="appr-empty">Nothing here for these dates.</div>}
+      {!phone && cols}
+      {shownRows.length > 0 && (
+        // eslint-disable-next-line react-doctor/prefer-tag-over-role -- on a phone the list holds its column-heading row, which is no request: a <ul> may hold only list items, and the browser's list margins and markers would change its look
+        <div className="appr-list" role="list">
+          {phone && cols}
+          {shownRows.map(r => <Line key={r.key} r={r} phone={phone} fresh={isNew(r)} ringed={r.key === ringKey} onPress={press} onDates={openDates} />)}
+        </div>
+      )}
+      {filter.kind === 'new' && also.length > 0 && (
+        // eslint-disable-next-line react-doctor/prefer-tag-over-role -- the list holds its own heading line, which is no list item: a <ul> may hold only list items, and the browser's list margins and markers would change its look
+        <div className="appr-also" role="list" aria-label="Also since you last looked" data-testid="appr-also">
+          <div className="appr-alsohead"><span className="appr-lab">Also since you last looked</span> · nothing to decide</div>
+          {also.map(a => <AlsoRow key={a.key} a={a} phone={phone} onDates={openAt} />)}
+        </div>
+      )}
+    </>
+  )
+
   return (
-    <section className={`appr-page${phone ? ' ph' : ''}`} hidden={!shown} data-testid="approvals-page" aria-label="Approvals">
+    <section ref={pageRef} className={`appr-page${phone ? ' ph' : ''}`} hidden={!shown} data-testid="approvals-page" aria-label="Approvals">
       <div className="appr-card">
         {head}
         {filterRow}
@@ -421,27 +483,12 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
               onChange={(v: Range | null) => { if (v) { setFilter({ kind: 'range', from: v.from, to: v.to }); if (v.to !== v.from) setPicking(false) } }} />
           </div>
         )}
-        {total === 0 && rows.length === 0 && <div className="appr-empty" data-testid="appr-empty">Nothing waiting for a decision.</div>}
-        {rows.length > 0 && shownRows.length === 0 && !(filter.kind === 'new' && also.length) && <div className="appr-empty">Nothing here for these dates.</div>}
-        {shownRows.length > 0 && (
-          // eslint-disable-next-line react-doctor/prefer-tag-over-role -- the list holds its column-heading row, which is no request: a <ul> may hold only list items, and the browser's list margins and markers would change its look
-          <div className="appr-list" role="list">
-            {!phone && (
-              <div className="appr-cols" aria-hidden="true">
-                <span>Name</span><span>Kind</span><span>Dates</span><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span>Placed</span>
-              </div>
-            )}
-            {phone && (
-              <div className="appr-cols ph" aria-hidden="true"><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span className="appr-end">Placed</span></div>
-            )}
-            {shownRows.map(r => <Line key={r.key} r={r} phone={phone} fresh={isNew(r)} ringed={r.key === ringKey} onPress={press} onDates={openDates} />)}
-          </div>
-        )}
-        {filter.kind === 'new' && also.length > 0 && (
-          // eslint-disable-next-line react-doctor/prefer-tag-over-role -- the list holds its own heading line, which is no list item: a <ul> may hold only list items, and the browser's list margins and markers would change its look
-          <div className="appr-also" role="list" aria-label="Also since you last looked" data-testid="appr-also">
-            <div className="appr-alsohead"><span className="appr-lab">Also since you last looked</span> · nothing to decide</div>
-            {also.map(a => <AlsoRow key={a.key} a={a} phone={phone} onDates={openAt} />)}
+        {phone ? <>{body}</> : (
+          /* ON A PC ONLY THIS SCROLLS (his D2006): the request lines, their column headings pinned at its top, the "New"
+             filter's "Also since you last looked" and the empty words — inside the card, which fills the page. It keeps the
+             wheel to itself at its ends (approvals.css), and its own place while the page waits behind the grid (`listY`). */
+          <div className="appr-scroll" data-testid="appr-scroll" ref={scrollRef} onScroll={e => { if (shown) listY.current = e.currentTarget.scrollTop }}>
+            {body}
           </div>
         )}
       </div>
