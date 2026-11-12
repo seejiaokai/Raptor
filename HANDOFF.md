@@ -20,6 +20,18 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/rules-check-small-batch -->
+### CHAT 67 — THE NIGHT OF 13 Nov 26: three jobs from his answers (the Approvals page on a PC; the rules check's small batch; the project guide's correction drafted) — nothing merges — written 13 Nov 26, 01:40, before the first job — verify before use
+- **After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time, read from the clock (`date`).** Compactions: none yet.
+- **Where it started:** his `/overnight 12` on chat 66's opening line, 13 Nov 26, 01:25; the work named by his message, no question open, so started without waiting (D1443); **Low** taken as recommended (D1104) — one helper after another. His 12 hours end about 13:35; the last hour is the report's. Coordinated here on Fable 5.2 (D1972); builders Opus on high, walkers Sonnet, readers Astra and a fresh, blind Opus. The week's allowance at the start: 57% (Fable 66%); this chat 46% full.
+- **The night's block lives on this branch** (`claude/rules-check-small-batch`, cut from pull request 762's branch at `cd60d1dba`), so 762 is not pushed to at night. Chat 66's block below stays true and is not touched.
+- **Job 1 — [APPROVALS-SCROLL-INSIDE], the PC build (D2006, D2008):** branch `claude/approvals-scroll-pc`, cut from `origin/claude/approvals-scroll-drawings` with `main` brought in; its own pull request into `main`, to be opened once built. Check: WALK — real windows at 125%, lesson 31, the drawing check beside the approved drawings, the phone pictured unchanged; reads Astra and a fresh, blind Opus. About 3 h. **State: not started.**
+- **Job 2 — [RULES-CHECK-FIXES]'s small batch (D2009, D2010, D2014, D2015):** this branch; no pull request at night (it is cut from an unmerged branch); never pushed into 762 (skill note 937). Check: FULL (OIL earned, the published record, what a warning says) — scenarios by a reader who did not build it, a sized walk, both readers, the re-walk; the gates on his PC through the checks lock, GitHub's run coming with its pull request in the morning. About 5 h. **State: not started.**
+- **Job 3 — the project guide's correction (D2024):** drafted and read by Astra and a fresh, blind Opus reader, NOT applied — a working-guide change is made while he is awake. The draft: `raptor-port/docs/superpowers/briefs/2026-11-13-guide-correction-d2024.md`, on this branch. About 40 min. **State: not started.**
+- **Questions waiting for him:** none yet.
+- **Running when written:** nothing yet. The compaction guard goes off for the night (`--away`) and back on at the report.
+- **Rulings:** none this session. **Next chat number:** 68 (D1744).
+<!-- /now -->
 <!-- now:claude/rules-check-fixes -->
 ### CHAT 66 — the night of 12 Nov 26 (five jobs built and checked, nothing merged) and his answers to its twenty questions (D2005–D2026); handed on at his word, nothing of the answers built — written 13 Nov 26, 01:25 — verify before use
 - **Early context lost:** this chat compacted once (13 Nov 26, about 00:05). The night's own block, job by job as it ran — each job's state, what its walk and reads found, the checks' counts — is this file at commit `ea98ad3a1` (`git show ea98ad3a1:HANDOFF.md`); the lines below keep its results, not its story.
