@@ -116,6 +116,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - A typed line naming a formation still replaces the whole-wave in-time for it: a whole-wave 06:00 and a typed "VL RALLY 07:00" has VL report at 07:00 [D2017].
 - The hidden clash's "same man, same two items" rule is for clashes between two schedule items only; a personal input against flying is still told apart by its words — leave it [D2018].
 - The AVALON or BB desk's note keeps "until the AVALON / BB flies" in front of his words, as built; OIL Earn switched off by hand for a desk holds when its wave flies — the hand switch wins [D2019, D2020].
+- In the AVALON or BB desk's note "activated" means a man on standby recalled to work [D2026].
 - Kept from the night of 12 Nov 26: a landing that is not a time borrows the take-off; a published day's working copy uses today's brief setting; a row ticked "Flies" by hand counts its desk as flying; the "rally after in-time" note with no clock no longer shows [D2022].
 
 ## Publishing, amendments and signing
