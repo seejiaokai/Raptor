@@ -461,9 +461,13 @@ export function SelectSheet({
           <div className="bidsheet-row" role="group" aria-label="Which leave">
             {/* the one-day window's buttons (M3 5.2–5.6): his figures where the drag holds one man, none across several
                 (the below-zero ask still names each — the agent's reading, M3 §7.2) */}
+            {/* THE LINE STANDS ABOVE THE LEAVE BUTTONS, NOT UNDER THEM (his D2030, 13 Nov 26 — "can u make the buttons i
+                clicked to not move?"). The window stands on the foot of the screen and grows upward (bidpicker.css), so
+                whatever appears lifts all that is above it and nothing below it: under the buttons, the below-zero ask
+                raised them by its own height and the second tap it asks for missed (e2e/leavewar.spec.ts, "stays put"). */}
+            {note && noteAt === 'leave' && <span className="note warn" data-testid="sel-note">{note}</span>}
             <LeaveButtons portion={portion} onPick={fill} filled={approving} testPrefix="sel"
               figure={wouldLeave && nPeople === 1 ? code => wouldLeave(sel.people[0]!, sel.cells.map(c => c.date), code)?.after ?? null : undefined} />
-            {note && noteAt === 'leave' && <span className="note warn" data-testid="sel-note">{note}</span>}
           </div>
 
           {/* No Medical row: medical is member-filed only (owner, 13 Sep 26) —

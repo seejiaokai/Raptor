@@ -1714,6 +1714,49 @@ test('a drag that would go below zero asks once, then writes on the same leave a
     await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toHaveText('FCL')
 })
 
+/* THE LEAVE BUTTONS STAY WHERE THEY ARE WHEN THE BELOW-ZERO LINE APPEARS (his D2030, 13 Nov 26 — "can u make the buttons
+   i clicked to not move?"; [LW-BELOW-ZERO-JUMP]). The war's windows stand on the foot of the screen and grow UPWARD, so
+   the line, drawn UNDER the leave buttons, lifted them by its own height: the second tap it asks for ("Tap the same leave
+   again to go ahead") fell on the row below. Measured as he meets it: the button's place before and after the line, then
+   a second press at the very same point of the screen, which must be the one that goes ahead. */
+async function staysPut(page: Page, btn: string, note: string) {
+  const b0 = (await page.getByTestId(btn).boundingBox())!
+  const g0 = (await page.getByTestId('bid-leave-grid').boundingBox())!
+  const at = { x: b0.x + b0.width / 2, y: b0.y + b0.height / 2 }
+  await page.mouse.click(at.x, at.y)
+  await expect(page.getByTestId(note)).toHaveText(/Tap the same leave again to go ahead\.$/)
+  const b1 = (await page.getByTestId(btn).boundingBox())!
+  const g1 = (await page.getByTestId('bid-leave-grid').boundingBox())!
+  expect(Math.abs(b1.y - b0.y), `the tapped leave moved ${b1.y - b0.y}px up or down when the line appeared`).toBeLessThanOrEqual(0.5)
+  expect(Math.abs(b1.x - b0.x), 'the tapped leave moved sideways').toBeLessThanOrEqual(0.5)
+  expect(Math.abs(g1.y - g0.y), 'the block of leave buttons moved').toBeLessThanOrEqual(0.5)
+  expect(Math.abs(g1.height - g0.height), 'the block of leave buttons changed height').toBeLessThanOrEqual(0.5)
+  return at
+}
+
+test('the drag window: the leave tapped stays put when the below-zero line appears, and the same spot tapped again goes ahead (D2030)', async ({ page }) => {
+  desktopOnly()
+  await lwView(page, 'slipway')
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  const at = await staysPut(page, 'sel-FCL', 'sel-note')
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toHaveCount(0)   // nothing written yet
+  await page.mouse.click(at.x, at.y)                                                          // the same spot, not the button looked up again
+  await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
+  for (const d of ['2026-01-06', '2026-01-07', '2026-01-08'])
+    await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toHaveText('FCL')
+})
+
+test('the one-day window: the leave tapped stays put when the below-zero line appears, and the same spot tapped again goes ahead (D2030)', async ({ page }) => {
+  await lwView(page, 'slipway')
+  await page.locator('[data-testid="cell-slipway-2026-02-11"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
+  const at = await staysPut(page, 'bid-FCL', 'span-note')
+  await expect(page.locator('[data-testid="cell-slipway-2026-02-11"] .c')).toHaveCount(0)
+  await page.mouse.click(at.x, at.y)
+  await expect(page.locator('[data-testid="cell-slipway-2026-02-11"] .c')).toHaveText('FCL')
+})
+
 // A member edits ONLY their own row — the person they are viewing as (owner,
 // 27 Aug 26 — "if I am viewing as a member and I view as ranger, I shouldn't be
 // able to input on other people's row except mine"). Here the member is scoped
