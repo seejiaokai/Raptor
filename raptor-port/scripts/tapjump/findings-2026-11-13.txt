@@ -1,0 +1,282 @@
+SUM member-inputs-pc 224 22 left 163
+SUM member-inputs-phone 211 16 left 25
+SUM member-leavewar-pc 207 21 left 164
+SUM member-leavewar-phone 225 9 left 133
+SUM member-tracker-pc 227 22 left 176
+SUM member-tracker-phone 213 16 left 44
+SUM member-viewsched-pc 230 23 left 182
+SUM member-viewsched-phone 235 28 left 220
+SUM sched-editsched-pc 212 29 left 159
+SUM sched-editsched-phone 215 15 left 172
+SUM sched-inputs-pc 211 33 left 160
+SUM sched-inputs-phone 194 12 left 34
+SUM sched-leavewar-pc 185 21 left 152
+SUM sched-leavewar-phone 216 50 left 146
+SUM sched-logic-pc 205 33 left 158
+SUM sched-logic-phone 185 18 left 15
+SUM sched-quals-pc 215 30 left 161
+SUM sched-quals-phone 233 9 left 53
+SUM sched-tracker-pc 211 34 left 158
+SUM sched-tracker-phone 195 14 left 50
+SUM sched-viewsched-pc 224 24 left 170
+SUM sched-viewsched-phone 221 30 left 206
+measured 4694 groups 248
+covered d=(0,0) dwh=(0,0) [BUTTON.abtn|medCalBtn] "as of 13 Jul" path=BUTTON.intab|inMedBtn under=BUTTON.med-cal-scrim#: @ member-inputs-phone/002, sched-inputs-phone/002
+covered d=(0,0) dwh=(0,0) [BUTTON.abtn|sset-days] "Calendar…" path=BUTTON.lgdoor.lgval|the Wednesday two weeks  under=BUTTON.days-tab lit#days-tab-month:Month @ sched-logic-phone/002
+covered d=(0,0) dwh=(0,0) [BUTTON.bp-name|bal-name-dice] "ReaperIR" path=BUTTON.intab|lw-tab-balances under=INPUT.mth-in bp-bx r17-box#pw-LVE: @ sched-leavewar-phone/030
+covered d=(0,0) dwh=(0,0) [BUTTON.bp-name|bal-name-snap] "CinchIP" path=BUTTON.intab|lw-tab-balances under=INPUT.mth-in bp-bx r17-box#pw-CCL: @ sched-leavewar-phone/031
+covered d=(0,0) dwh=(0,0) [BUTTON.datebox.is-notyet.trpopdate|popDoneDate] "Fri 13 Nov 26▾" path=g.|ST-# under=B.#:21 @ member-tracker-phone/007, sched-tracker-phone/007
+covered d=(0,0) dwh=(0,0) [BUTTON.datebox|accAddPostIn] "Fri 13 Nov 26▾" path=BUTTON.abtn|qAddToggle under=B.#:21 @ sched-quals-phone/002
+covered d=(0,0) dwh=(0,0) [BUTTON.fchip.open-on.openchip|open-chip] "Open 1 Jan – 31 Mar" path= under=BUTTON.od-line-go#:1 Jan – 31 Mar90 days @ sched-leavewar-phone/001
+covered d=(0,0) dwh=(0,0) [BUTTON.flyname|fly-name-avail-w] "Available WAvail W" path=BUTTON.fchip.mn-l|counts-toggle under=BUTTON.tchip#cf-noqual-imc:IMC @ sched-leavewar-phone/032
+covered d=(0,0) dwh=(0,0) [BUTTON.inpedit.ntx|OML] "OML" path= under=INPUT.#inpEditRmk: @ sched-editsched-phone/002
+covered d=(0,0) dwh=(0,0) [BUTTON.inpedit.ntx|OML] "OML" path=BUTTON.burger|burger > A.|Edit Schedule under=INPUT.#inpEditRmk: @ sched-inputs-phone/004, sched-logic-phone/004, sched-quals-phone/004 +1
+covered d=(0,0) dwh=(0,0) [BUTTON.lgdoor.lgval|On ›] "On ›" path= under=INPUT.sset-num#iset-lead: @ sched-logic-phone/001
+covered d=(0,0) dwh=(0,0) [BUTTON.sanscard|CPTallyOFPM] "CPTallyOFPM" path= under=BUTTON.spanbtn#:All day @ sched-editsched-phone/001
+covered d=(0,0) dwh=(0,0) [BUTTON.sanscard|CPTallyOFPM] "CPTallyOFPM" path=BUTTON.burger|burger > A.|Edit Schedule under=BUTTON.spanbtn#:All day @ sched-inputs-phone/003, sched-logic-phone/003, sched-quals-phone/003 +1
+covered d=(0,0) dwh=(0,0) [BUTTON.sanscard|ZuluOF/O/Aall day] "ZuluOF/O/Aall day" path=BUTTON.burger|burger > A.|Edit Schedule under=INPUT.#inpEditRmk: @ sched-inputs-phone/006, sched-logic-phone/005, sched-quals-phone/006
+covered d=(0,0) dwh=(0,0) [BUTTON.sb-addinp|+ Add] "+ Add" path=SPAN.dt.sb-open|Jul # · Today under=BUTTON.spanbtn#:Custom @ sched-editsched-phone/013
+covered d=(0,0) dwh=(0,0) [BUTTON.sb-addinp|+ Inputs] "+ Inputs" path=SPAN.dt.sb-open|Jul # · Today under=INPUT.#inpEditEnd: @ sched-editsched-phone/012
+covered d=(0,0) dwh=(0,0) [BUTTON.whoedit|person-snap] "CinchIP" path= under=INPUT.mth-in bp-bx r17-box#pw-CCL: @ sched-leavewar-phone/003
+covered d=(0,0) dwh=(0,0) [DIV.is-we.sc-day|sc-day-#-#-#] "1–F00O00A00" path=BUTTON.intab|inSansMode under=BUTTON.abtn primary sd-add#sd-add:+ Commitment @ member-inputs-phone/001, sched-inputs-phone/001
+moved d=(-15.2,-0.5) dwh=(15.2,0) [BUTTON.abtn.admin.rolechip.tgl|roleBadge] "Saber · Member" path= under=BUTTON.abtn rolechip tgl#roleBadge:Saber · Member @ sched-editsched-pc/001, sched-inputs-pc/001, sched-leavewar-pc/001 +4
+moved d=(4,0) dwh=(0,0) [BUTTON.airbtn|Traffic] "Traffic" path=A.|Edit Schedule under=DIV.airpop air-below#airpop:Traffic · WAVE 1✕
+     @ sched-quals-pc/006
+moved d=(-65.7,0) dwh=(65.8,0) [BUTTON.appr-all|appr-approve-all] "Approve 11 — tap again" path=BUTTON.intab|lw-tab-approvals under=BUTTON.appr-all armed#appr-approve-all:Approve 11  @ sched-leavewar-phone/029
+moved d=(0,-327) dwh=(0,0) [BUTTON.bp-range.pchip|span-range] "Pick a range" path=TD.act.evoff|cell-bane-#-#-# under=SPAN.dcal-d is-blank#: @ member-leavewar-phone/007
+moved d=(0,-327) dwh=(0,0) [BUTTON.bp-range.pchip|span-range] "Pick a range" path=TD.act|cell-bane-#-#-# under=SPAN.dcal-d is-blank#: @ member-leavewar-phone/008
+moved d=(0,-327) dwh=(0,0) [BUTTON.bp-range.pchip|span-range] "Pick a range" path=TD.act.weekend|cell-bane-#-#-# under=SPAN.dcal-d is-blank#: @ member-leavewar-phone/009
+moved d=(9.6,0) dwh=(-9.6,0) [BUTTON.fastsync|fastSync] "Sync · 1 s" path= under=SPAN.synclbl#syncLbl:Sync · 1 s @ member-viewsched-pc/001, member-viewsched-phone/001, sched-viewsched-pc/001 +1
+moved d=(0,9.5) dwh=(0,0) [BUTTON.go|Sign in] "Sign in" path=BUTTON.abtn.ghost|logout under=BUTTON.go#:Sign in @ member-inputs-pc/021
+moved d=(4,3) dwh=(0,0) [BUTTON.hl-gtab|CAT] "CAT" path=A.|View-only Sched under=BUTTON.hl-gtab open#:CAT @ member-inputs-pc/005, member-leavewar-pc/004, member-tracker-pc/008 +5
+moved d=(4,3) dwh=(0,0) [BUTTON.hl-gtab|CAT] "CAT" path= under=BUTTON.hl-gtab open#:CAT @ member-viewsched-pc/003, sched-editsched-pc/003, sched-viewsched-pc/004
+moved d=(4,5) dwh=(0,0) [BUTTON.hl-gtab|CAT] "CAT" path=BUTTON.hl-tog| under=BUTTON.hl-gtab open#:CAT @ member-viewsched-phone/013, sched-editsched-phone/009, sched-viewsched-phone/014
+moved d=(4,3) dwh=(0,0) [BUTTON.hl-gtab|CAT] "CAT" path=A.|Edit Schedule under=BUTTON.hl-gtab open#:CAT @ sched-inputs-pc/006, sched-leavewar-pc/004, sched-logic-pc/003 +2
+moved d=(4,3) dwh=(0,0) [BUTTON.hl-gtab|Quals] "Quals" path=A.|View-only Sched under=BUTTON.hl-gtab open#:Quals @ member-inputs-pc/007, member-leavewar-pc/006, member-tracker-pc/010 +5
+moved d=(4,3) dwh=(0,0) [BUTTON.hl-gtab|Quals] "Quals" path= under=BUTTON.hl-gtab open#:Quals @ member-viewsched-pc/005, sched-editsched-pc/005, sched-viewsched-pc/006
+moved d=(4,5) dwh=(0,0) [BUTTON.hl-gtab|Quals] "Quals" path=BUTTON.hl-tog| under=BUTTON.hl-gtab open#:Quals @ member-viewsched-phone/015, sched-editsched-phone/011, sched-viewsched-phone/016
+moved d=(4,3) dwh=(0,0) [BUTTON.hl-gtab|Quals] "Quals" path=A.|Edit Schedule under=BUTTON.hl-gtab open#:Quals @ sched-inputs-pc/008, sched-leavewar-pc/006, sched-logic-pc/005 +2
+moved d=(4,3) dwh=(0,0) [BUTTON.hl-gtab|Type] "Type" path=A.|View-only Sched under=BUTTON.hl-gtab open#:Type @ member-inputs-pc/006, member-leavewar-pc/005, member-tracker-pc/009 +5
+moved d=(4,3) dwh=(0,0) [BUTTON.hl-gtab|Type] "Type" path= under=BUTTON.hl-gtab open#:Type @ member-viewsched-pc/004, sched-editsched-pc/004, sched-viewsched-pc/005
+moved d=(4,5) dwh=(0,0) [BUTTON.hl-gtab|Type] "Type" path=BUTTON.hl-tog| under=BUTTON.hl-gtab open#:Type @ member-viewsched-phone/014, sched-editsched-phone/010, sched-viewsched-phone/015
+moved d=(4,3) dwh=(0,0) [BUTTON.hl-gtab|Type] "Type" path=A.|Edit Schedule under=BUTTON.hl-gtab open#:Type @ sched-inputs-pc/007, sched-leavewar-pc/005, sched-logic-pc/004 +2
+moved d=(4,0) dwh=(0,0) [BUTTON.inpedit.ntx|ATT C] "ATT C" path=A.|Edit Schedule under=DIV.airpop#inpEditPop:Grit · 13 Jul → 17 Jul✕Perso @ sched-logic-pc/011
+moved d=(-26,0) dwh=(0,0) [BUTTON.inpedit.ntx|LL] "LL" path= under=BUTTON.spanbtn on#:All day @ sched-editsched-pc/020
+moved d=(-11,0) dwh=(0,0) [BUTTON.inpedit.ntx|LL] "LL" path=A.|Edit Schedule under=BUTTON.spanbtn on#:All day @ sched-inputs-pc/022, sched-leavewar-pc/016, sched-logic-pc/018 +3
+moved d=(-26,0) dwh=(0,0) [BUTTON.inpedit.ntx|LL] "LL" path=BUTTON.burger|burger > A.|Edit Schedule under=DIV.inped-f#:Remarkstill 14 Jul @ sched-inputs-phone/007, sched-logic-phone/006, sched-quals-phone/007
+moved d=(-11,0) dwh=(0,0) [BUTTON.inpedit.ntx|OIL] "OIL" path= under=BUTTON.spanbtn on#:All day @ sched-editsched-pc/021, sched-editsched-phone/006
+moved d=(-11,0) dwh=(0,0) [BUTTON.inpedit.ntx|OIL] "OIL" path=A.|Edit Schedule under=BUTTON.spanbtn on#:All day @ sched-inputs-pc/023, sched-leavewar-pc/017, sched-logic-pc/019 +3
+moved d=(-65,0) dwh=(0,0) [BUTTON.inpedit.ntx|OL] "OL" path= under=LABEL.inped-k#:Remarks @ sched-editsched-phone/008
+moved d=(-17,0) dwh=(0,0) [BUTTON.inpedit.ntx|OL] "OL" path=BUTTON.burger|burger > A.|Edit Schedule under=LABEL.inped-k#:Remarks @ sched-inputs-phone/009, sched-logic-phone/008, sched-quals-phone/009 +1
+moved d=(4,0) dwh=(0,0) [BUTTON.inpedit.ntx|OML] "OML" path=A.|Edit Schedule under=DIV.airpop#inpEditPop:Vector · 13 Jul✕PersonAceAnv @ sched-tracker-pc/017, sched-viewsched-pc/014
+moved d=(4,0) dwh=(0,0) [BUTTON.sanscard|CPTallyOFPM] "CPTallyOFPM" path=A.|Edit Schedule under=DIV.airpop#inpEditPop:Tally · 13 Jul✕PersonAceAnvi @ sched-tracker-pc/016
+moved d=(-168,0) dwh=(0,0) [BUTTON.sanscard|RebelBFall day] "RebelBFall day" path= under=DIV.inped-f#:DurationAll dayAMPMCustom @ sched-editsched-pc/019
+moved d=(-201,0) dwh=(0,0) [BUTTON.sanscard|RebelBFall day] "RebelBFall day" path=A.|Edit Schedule under=DIV.inped-f#:DurationAll dayAMPMCustom @ sched-inputs-pc/021, sched-leavewar-pc/015, sched-logic-pc/017 +3
+moved d=(-2,0) dwh=(0,0) [BUTTON.sanscard|RebelBFall day] "RebelBFall day" path=BUTTON.burger|burger > A.|Edit Schedule under=DIV.inped-f#:DurationAll dayAMPMCustom @ sched-tracker-phone/012
+moved d=(-41,0) dwh=(0,0) [BUTTON.sanscard|ScribeDOAM] "ScribeDOAM" path= under=BUTTON.spanbtn on#:AM @ sched-editsched-phone/007
+moved d=(-15,0) dwh=(0,0) [BUTTON.sanscard|ScribeDOAM] "ScribeDOAM" path=BUTTON.burger|burger > A.|Edit Schedule under=BUTTON.spanbtn on#:AM @ sched-inputs-phone/008, sched-logic-phone/007, sched-quals-phone/008 +1
+moved d=(-8,0) dwh=(0,0) [BUTTON.sanscard|ZuluOF/O/Aall day] "ZuluOF/O/Aall day" path= under=DIV.inped-f#:DurationAll dayAMPMCustom @ sched-editsched-pc/018, sched-editsched-phone/005
+moved d=(-8,0) dwh=(0,0) [BUTTON.sanscard|ZuluOF/O/Aall day] "ZuluOF/O/Aall day" path=A.|Edit Schedule under=DIV.inped-f#:DurationAll dayAMPMCustom @ sched-inputs-pc/020, sched-leavewar-pc/014, sched-logic-pc/016 +3
+moved d=(4,0) dwh=(0,0) [BUTTON.stcfg|C] "C" path=A.|Edit Schedule under=BUTTON.stcfg#:C @ sched-inputs-pc/010
+moved d=(80,0) dwh=(0,0) [BUTTON.wk|Jul #] "Jul 06" path=A.|View-only Sched under=BUTTON.wk#:Jun 29 @ member-inputs-pc/004, member-leavewar-pc/003, member-tracker-pc/007 +5
+moved d=(80,0) dwh=(0,0) [BUTTON.wk|Jul #] "Jul 06" path= under=BUTTON.wk#:Jun 29 @ member-viewsched-pc/002, sched-editsched-pc/002, sched-viewsched-pc/003
+moved d=(80,0) dwh=(0,0) [BUTTON.wk|Jul #] "Jul 06" path=A.|Edit Schedule under=BUTTON.wk#:Jun 29 @ sched-inputs-pc/005, sched-leavewar-pc/003, sched-logic-pc/002 +2
+moved d=(-257.1,44) dwh=(-64.3,0) [DIV.ib-day.is-today|] "" path= under=DIV.ib-day is-we#: @ member-inputs-pc/003, sched-inputs-pc/004
+moved d=(-257.1,44) dwh=(-64.3,0) [DIV.ib-day.is-today|] "" path=A.|Inputs under=DIV.ib-day is-we#: @ member-leavewar-pc/017, member-tracker-pc/022, member-viewsched-pc/016 +4
+moved d=(-385.7,44) dwh=(-64.3,0) [DIV.ib-day.is-we|] "" path= under=DIV.inputs-workspace tab-inputs#:Inputs13 Nov → 27 @ member-inputs-pc/001, sched-inputs-pc/002
+moved d=(-385.7,44) dwh=(-64.3,0) [DIV.ib-day.is-we|] "" path=A.|Inputs under=DIV.inputs-workspace tab-inputs#:Inputs13 Nov → 27 @ member-leavewar-pc/015, member-tracker-pc/020, member-viewsched-pc/014 +4
+moved d=(0,44) dwh=(-64.3,0) [DIV.ib-day|] "" path= under=DIV.ib-day is-open#: @ member-inputs-pc/002, sched-inputs-pc/003
+moved d=(0,44) dwh=(-64.3,0) [DIV.ib-day|] "" path=A.|Inputs under=DIV.ib-day is-open#: @ member-leavewar-pc/016, member-tracker-pc/021, member-viewsched-pc/015 +4
+moved d=(-257,-74.4) dwh=(0,223.8) [DIV.ros-tab|AIRCREW] "AIRCREW" path=SPAN.dt.sb-open|Jul # · Today under=DIV.sb-roster#sbRoster:PlaceholdersALL AVAILALLPil @ sched-editsched-phone/014
+moved d=(0,-39) dwh=(0,0) [g.|ACG-#] "ACG-01" path= under=DIV.t#popTitle:ACG-01  ·  STUDENT A @ member-tracker-phone/001, sched-tracker-phone/001
+moved d=(0,-311) dwh=(0,0) [g.|AVI-#] "AVI-01" path=A.|Tracker under=DIV.pop#pop:AVI-01  ·  STUDENT ANot doneDC @ member-inputs-pc/017, member-viewsched-pc/020
+moved d=(0,-311) dwh=(0,0) [g.|AVI-#] "AVI-01" path= under=DIV.pop#pop:AVI-01  ·  STUDENT ANot doneDC @ member-tracker-pc/003, member-tracker-phone/004, sched-tracker-pc/004 +1
+moved d=(0,-311) dwh=(0,0) [g.|AVI-#A/B] "AVI-12A/B" path=A.|Tracker under=DIV.pop#pop:AVI-12  ·  STUDENT ANot doneDC @ member-inputs-pc/019, member-viewsched-pc/022
+moved d=(0,-311) dwh=(0,0) [g.|AVI-#A/B] "AVI-12A/B" path= under=DIV.pop#pop:AVI-12  ·  STUDENT ANot doneDC @ member-tracker-pc/005, member-tracker-phone/006, sched-tracker-pc/006 +1
+moved d=(0,-665) dwh=(0,0) [g.|CFT-#] "CFT-01" path=A.|Tracker under=svg.#flowSvg:ST-01
+  
+  ST-02
+  
+  ACG-01
+  @ member-inputs-pc/015, member-leavewar-pc/020, member-viewsched-pc/018 +1
+moved d=(0,-665) dwh=(0,0) [g.|CFT-#] "CFT-01" path= under=svg.#flowSvg:ST-01
+  
+  ST-02
+  
+  ACG-01
+  @ member-tracker-pc/001, member-tracker-phone/002, sched-tracker-pc/002 +1
+moved d=(0,-311) dwh=(0,0) [g.|IAT-#] "IAT-01" path=A.|Tracker under=DIV.pop#pop:IAT-01  ·  STUDENT ANot doneDC @ member-inputs-pc/018, member-viewsched-pc/021
+moved d=(0,-311) dwh=(0,0) [g.|IAT-#] "IAT-01" path= under=DIV.pop#pop:IAT-01  ·  STUDENT ANot doneDC @ member-tracker-pc/004, member-tracker-phone/005, sched-tracker-pc/005 +1
+moved d=(0,-311) dwh=(0,0) [g.|OPS-#] "OPS-01" path=A.|Tracker under=DIV.pop#pop:OPS-01  ·  STUDENT ANot doneDC @ member-inputs-pc/020, member-viewsched-pc/023
+moved d=(0,-311) dwh=(0,0) [g.|OPS-#] "OPS-01" path= under=DIV.pop#pop:OPS-01  ·  STUDENT ANot doneDC @ member-tracker-pc/006, sched-tracker-pc/007
+moved d=(0,-311) dwh=(0,0) [g.|T-#] "T-01" path=A.|Tracker under=DIV.pop#pop:T-01  ·  STUDENT ANot doneDCOD @ member-inputs-pc/016, member-leavewar-pc/021, member-viewsched-pc/019
+moved d=(0,-311) dwh=(0,0) [g.|T-#] "T-01" path= under=DIV.pop#pop:T-01  ·  STUDENT ANot doneDCOD @ member-tracker-pc/002, member-tracker-phone/003, sched-tracker-pc/003 +1
+moved d=(3,-0.5) dwh=(0,0) [SPAN.boxdot.puck.sm|ROutlawC] "ROutlawC" path= under=SPAN.nm#:Outlaw @ sched-editsched-pc/013
+moved d=(-2,0.2) dwh=(0,0) [SPAN.boxred.dim.hard.puck.sm.warn|CSaintB] "CSaintB" path=SPAN.puck.sm|WardenIP under=SPAN.nm#:Saint @ sched-editsched-phone/015
+moved d=(-26,0.2) dwh=(0,0) [SPAN.boxred.dim.hard.puck.warn|CSaintB] "CSaintB" path=DIV.daywarn.hard|⚠ # issues · # warning▼ under=SPAN.role q-b#:B @ sched-viewsched-phone/018
+moved d=(-26,0.2) dwh=(0,0) [SPAN.boxred.dim.hard.puck.warn|CSaintB] "CSaintB" path=SPAN.puck.sm|WardenIP under=SPAN.role q-b#:B @ sched-viewsched-phone/024
+moved d=(-8,-0.5) dwh=(0,0) [SPAN.boxred.dim.hard.puck.warn|ROutlawC] "ROutlawC" path=DIV.daywarn.hard|⚠ # issues · # warning▼ under=SPAN.nm#:Outlaw @ member-viewsched-phone/016, sched-viewsched-phone/017
+moved d=(-36,-0.5) dwh=(0,0) [SPAN.boxred.dim.hard.puck.warn|ROutlawC] "ROutlawC" path=SPAN.puck.sm|WardenIP under=SPAN.puck warn hard boxred sel#:ROutlawC @ member-viewsched-phone/020, sched-viewsched-phone/023
+moved d=(3,-0.3) dwh=(0,0) [SPAN.boxred.hard.puck.r.sm.warn|CGritC] "CGritC" path=A.|View-only Sched under=SPAN.nm#:Grit @ member-inputs-pc/008
+moved d=(3,0.7) dwh=(0,0) [SPAN.boxred.hard.puck.r.sm.warn|CGritC] "CGritC" path=A.|Edit Schedule under=SPAN.nm#:Grit @ sched-leavewar-pc/009
+moved d=(3,-0.2) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|CGambitC] "CGambitC" path=A.|Edit Schedule under=SPAN.nm#:Gambit @ sched-inputs-pc/015
+moved d=(3,-0.2) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|CGambitC] "CGambitC" path=A.|View-only Sched under=SPAN.nm#:Gambit @ sched-logic-pc/025
+moved d=(-52,0) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|CNomadC] "CNomadC" path= under=SPAN.ntx#:Overseas duty — exercise, off  @ member-viewsched-phone/011
+moved d=(-12,0) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|CNomadC] "CNomadC" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Nomad @ sched-logic-phone/017
+moved d=(-12,-0.7) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|CSaintB] "CSaintB" path=A.|View-only Sched under=SPAN.nm#:Saint @ member-inputs-pc/014, member-leavewar-pc/014, member-tracker-pc/019 +4
+moved d=(-12,0.2) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|CSaintB] "CSaintB" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Saint @ member-inputs-phone/008
+moved d=(-17,-0.7) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|CSaintB] "CSaintB" path= under=SPAN.nm#:Saint @ member-viewsched-pc/013, member-viewsched-phone/007, sched-editsched-pc/016 +2
+moved d=(-92,0.2) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|CSaintB] "CSaintB" path=A.|Edit Schedule under=DIV.ppl one#:CSaintB+ add @ sched-inputs-pc/018, sched-leavewar-pc/012, sched-logic-pc/014 +2
+moved d=(-58,-0.3) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|ROutlawC] "ROutlawC" path= under=SPAN.nm#:Talisman @ sched-editsched-pc/017, sched-editsched-phone/004
+moved d=(-276,0) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|ROutlawC] "ROutlawC" path=A.|Edit Schedule under=DIV.pl-row#:ATT CGritCMedically downtill 1 @ sched-inputs-pc/019, sched-leavewar-pc/013, sched-logic-pc/015 +3
+moved d=(-5,0.5) dwh=(0,0) [SPAN.boxred.hard.puck.sm.warn|ROutlawC] "ROutlawC" path=BUTTON.burger|burger > A.|Edit Schedule under=SPAN.nm#:Outlaw @ sched-tracker-phone/011
+moved d=(-52,-0.3) dwh=(0,0) [SPAN.boxred.hard.puck.warn|CAceA] "CAceA" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Static @ member-inputs-phone/012, sched-logic-phone/018
+moved d=(-62,-0.3) dwh=(0,0) [SPAN.boxred.hard.puck.warn|CAceA] "CAceA" path= under=SPAN.nm#:Static @ member-viewsched-phone/012
+moved d=(-13,-0.2) dwh=(0,0) [SPAN.boxred.hard.puck.warn|CGambitC] "CGambitC" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Gambit @ member-tracker-phone/013, sched-logic-phone/014
+moved d=(-24,-0.2) dwh=(0,0) [SPAN.boxred.hard.puck.warn|CGambitC] "CGambitC" path= under=SPAN.role q-c#:C @ member-viewsched-phone/008, sched-viewsched-phone/008
+moved d=(-17,0) dwh=(0,0) [SPAN.boxred.hard.puck.warn|CNomadC] "CNomadC" path= under=SPAN.nm#:Nomad @ member-viewsched-phone/010
+moved d=(-31,0) dwh=(0,0) [SPAN.boxred.hard.puck.warn|CNomadC] "CNomadC" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.role q-c#:C @ sched-logic-phone/016
+moved d=(-5,0.2) dwh=(0,0) [SPAN.boxred.hard.puck.warn|CSaintB] "CSaintB" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Saint @ member-inputs-phone/005, sched-logic-phone/010
+moved d=(-2,0.2) dwh=(0,0) [SPAN.boxred.hard.puck.warn|CSaintB] "CSaintB" path= under=SPAN.nm#:Saint @ member-viewsched-phone/004, sched-viewsched-phone/005
+moved d=(-18,-0.5) dwh=(0,0) [SPAN.boxred.hard.puck.warn|ROutlawC] "ROutlawC" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Outlaw @ member-tracker-phone/009
+moved d=(-36,0) dwh=(0,0) [SPAN.di-open.dt|Jul #] "Jul 14" path=BUTTON.burger|burger > A.|View-only Sched under=DIV.airpop-head#:Tuesday · Jul 14 · 4 X 4✕ @ member-tracker-phone/008, sched-inputs-phone/010
+moved d=(-18,0) dwh=(0,0) [SPAN.di-open.dt|Jul #] "Jul 14" path= under=DIV.airpop-head#:Tuesday · Jul 14 · 4 X 4✕ @ sched-viewsched-phone/002
+moved d=(-8,-0.5) dwh=(0,0) [SPAN.dim.note.puck.r.sm.warn|LStaticIW] "LStaticIW" path=DIV.daywarn.hard|⚠ # issues · # warning▼ under=SPAN.nm#:Static @ sched-viewsched-phone/021
+moved d=(-18,-0.5) dwh=(0,0) [SPAN.dim.note.puck.r.sm.warn|LStaticIW] "LStaticIW" path=SPAN.puck.sm|WardenIP under=SPAN.nm#:Static @ sched-viewsched-phone/027
+moved d=(-2,0.5) dwh=(0,0) [SPAN.dim.note.puck.r.warn|LStaticIW] "LStaticIW" path=SPAN.puck.sm|WardenIP under=SPAN.nm#:Static @ member-viewsched-phone/021
+moved d=(-8,-0.3) dwh=(0,0) [SPAN.dim.puck.r.san.warn|CPPixelD] "CPPixelD" path=SPAN.puck.sm|WardenIP under=SPAN.nm#:Pixel @ member-viewsched-phone/027, sched-viewsched-phone/030
+moved d=(-8,0) dwh=(0,0) [SPAN.dim.puck.r.san|MarlinA] "MarlinA" path=DIV.daywarn.hard|⚠ # issues · # warning▼ under=SPAN.nm#:Marlin @ member-viewsched-phone/018
+moved d=(-5,0) dwh=(0,0) [SPAN.dim.puck.r.san|MarlinA] "MarlinA" path=SPAN.puck.sm|WardenIP under=SPAN.nm#:Marlin @ member-viewsched-phone/023
+moved d=(-5,0) dwh=(0,0) [SPAN.dim.puck.san.sm|JesterB] "JesterB" path=SPAN.puck.sm|WardenIP under=SPAN.nm#:Jester @ member-viewsched-phone/024, sched-viewsched-phone/028
+moved d=(-41,0) dwh=(0,0) [SPAN.dim.puck.san|BoltC] "BoltC" path=SPAN.puck.sm|WardenIP under=SPAN.nm#:Wisp @ member-viewsched-phone/026
+moved d=(-12,0) dwh=(0,0) [SPAN.dim.puck.san|RebelB] "RebelB" path=DIV.daywarn.hard|⚠ # issues · # warning▼ under=SPAN.nm#:Rebel @ member-viewsched-phone/017, sched-viewsched-phone/019
+moved d=(-2,0) dwh=(0,0) [SPAN.dim.puck.san|RebelB] "RebelB" path=SPAN.puck.sm|WardenIP under=SPAN.nm#:Rebel @ member-viewsched-phone/022, sched-viewsched-phone/025
+moved d=(-5,0) dwh=(0,0) [SPAN.dim.puck|GambitC] "GambitC" path=SPAN.boxred.hard.me.puck.sm.warn|CRangerIP under=SPAN.nm#:Gambit @ member-viewsched-phone/028
+moved d=(-7,0) dwh=(0,0) [SPAN.dim.puck|TorchC] "TorchC" path=DIV.daywarn.hard|⚠ # issues · # warning▼ under=SPAN.nm#:Torch @ member-viewsched-phone/019, sched-viewsched-phone/022
+moved d=(-31,0) dwh=(0,0) [SPAN.dim.puck|TorchC] "TorchC" path=SPAN.puck.sm|WardenIP under=SPAN.role q-c#:C @ member-viewsched-phone/025, sched-viewsched-phone/029
+moved d=(-18,0) dwh=(0,0) [SPAN.dim.puck|VaporD] "VaporD" path=DIV.daywarn.hard|⚠ # issues · # warning▼ under=SPAN.nm#:Vapor @ sched-viewsched-phone/020
+moved d=(-36,0) dwh=(0,0) [SPAN.dim.puck|VaporD] "VaporD" path=SPAN.puck.sm|WardenIP under=SPAN.puck sel#:VaporD @ sched-viewsched-phone/026
+moved d=(-31,-0.3) dwh=(0,0) [SPAN.hard.puck.r.san.warn|CPPixelD] "CPPixelD" path= under=SPAN.role q-d#:D @ sched-viewsched-phone/013
+moved d=(-12,0.7) dwh=(0,0) [SPAN.note.puck.r.sm.warn|LStaticIW] "LStaticIW" path=A.|View-only Sched under=SPAN.nm#:Static @ member-inputs-pc/012, member-leavewar-pc/011, member-tracker-pc/017 +4
+moved d=(-2,-0.5) dwh=(0,0) [SPAN.note.puck.r.sm.warn|LStaticIW] "LStaticIW" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Static @ member-inputs-phone/007, sched-logic-phone/013
+moved d=(-17,0.7) dwh=(0,0) [SPAN.note.puck.r.sm.warn|LStaticIW] "LStaticIW" path= under=SPAN.nm#:Static @ member-viewsched-pc/010, member-viewsched-phone/006, sched-editsched-pc/014 +1
+moved d=(-58,-0.5) dwh=(0,0) [SPAN.note.puck.r.sm.warn|LStaticIW] "LStaticIW" path=A.|Edit Schedule under=DIV.ppl one#:LStaticIW+ add @ sched-inputs-pc/016, sched-leavewar-pc/010, sched-logic-pc/012 +2
+moved d=(-5,0.5) dwh=(0,0) [SPAN.note.puck.r.warn|LStaticIW] "LStaticIW" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Static @ member-tracker-phone/010, sched-inputs-phone/011
+moved d=(-17,0) dwh=(0,0) [SPAN.puck.r.san.sm|ScribeD] "ScribeD" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Scribe @ member-inputs-phone/011
+moved d=(-4,0) dwh=(0,0) [SPAN.puck.r.san.sm|ScribeD] "ScribeD" path= under=SPAN.nm#:Scribe @ sched-viewsched-phone/011
+moved d=(-24,-0.5) dwh=(0,0) [SPAN.puck.r.san.warn|CPOtterD] "CPOtterD" path= under=SPAN.role q-d#:D @ member-viewsched-phone/009, sched-viewsched-phone/009
+moved d=(-4,-0.5) dwh=(0,0) [SPAN.puck.r.san.warn|CPOtterD] "CPOtterD" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Otter @ sched-logic-phone/015
+moved d=(-24,-0.3) dwh=(0,0) [SPAN.puck.r.san.warn|CPPixelD] "CPPixelD" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.role q-d#:D @ member-tracker-phone/015
+moved d=(-24,0) dwh=(0,0) [SPAN.puck.r.san|MarlinA] "MarlinA" path=A.|View-only Sched under=SPAN.role q-a#:A @ member-inputs-pc/011, member-leavewar-pc/010, member-tracker-pc/016 +5
+moved d=(-60,0) dwh=(0,0) [SPAN.puck.r.san|MarlinA] "MarlinA" path= under=SPAN.ntx#:2A: ACM-2 @ member-viewsched-pc/009, sched-viewsched-pc/010, sched-viewsched-phone/006
+moved d=(4,0) dwh=(0,0) [SPAN.puck.r.sm|BasherIW] "BasherIW" path=A.|Edit Schedule under=SPAN.nm#:Basher @ sched-quals-pc/008
+moved d=(4,0) dwh=(0,0) [SPAN.puck.r.sm|CutterC] "CutterC" path=A.|View-only Sched under=SPAN.nm#:Cutter @ member-tracker-pc/013
+moved d=(4,0) dwh=(0,0) [SPAN.puck.r.sm|CutterC] "CutterC" path= under=SPAN.nm#:Cutter @ sched-editsched-pc/011
+moved d=(14,0) dwh=(0,0) [SPAN.puck.r.sm|CutterC] "CutterC" path=A.|Edit Schedule under=SPAN.nm#:Cutter @ sched-quals-pc/009
+moved d=(-94,0) dwh=(0,0) [SPAN.puck.r.sm|EchoIW] "EchoIW" path=A.|View-only Sched under=DIV.pl-row#:EP-509:3011:00TalismanOEchoIW @ member-leavewar-pc/012
+moved d=(-117,0) dwh=(0,0) [SPAN.puck.r.sm|EchoIW] "EchoIW" path= under=DIV.pl-row#:EP-509:3011:00TalismanOEchoIW @ member-viewsched-pc/011
+moved d=(4,0) dwh=(0,0) [SPAN.puck.r.sm|LedgerIW] "LedgerIW" path= under=SPAN.nm#:Ledger @ sched-editsched-pc/010
+moved d=(4,0) dwh=(0,0) [SPAN.puck.r.sm|LedgerIW] "LedgerIW" path=A.|Edit Schedule under=SPAN.nm#:Ledger @ sched-leavewar-pc/008
+moved d=(4,0) dwh=(0,0) [SPAN.puck.r.sm|QuillIW] "QuillIW" path=A.|View-only Sched under=SPAN.nm#:Quill @ member-tracker-pc/011
+moved d=(14,0) dwh=(0,0) [SPAN.puck.r.sm|QuillIW] "QuillIW" path=A.|Edit Schedule under=SPAN.nm#:Quill @ sched-tracker-pc/014
+moved d=(-18,0) dwh=(0,0) [SPAN.puck.r|BasherIW] "BasherIW" path= under=SPAN.nm#:Basher @ sched-viewsched-phone/003
+moved d=(-24,0) dwh=(0,0) [SPAN.puck.r|CinderB] "CinderB" path=A.|View-only Sched under=SPAN.role q-b#:B @ member-inputs-pc/009, member-leavewar-pc/008, member-tracker-pc/015 +5
+moved d=(-12,0) dwh=(0,0) [SPAN.puck.r|CinderB] "CinderB" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Cinder @ member-inputs-phone/006
+moved d=(-60,0) dwh=(0,0) [SPAN.puck.r|CinderB] "CinderB" path= under=SPAN.ntx#:RED AIR @ member-viewsched-pc/007, member-viewsched-phone/005, sched-viewsched-pc/008
+moved d=(-2,0) dwh=(0,0) [SPAN.puck.r|DashC] "DashC" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Dash @ member-inputs-phone/004
+moved d=(-5,0) dwh=(0,0) [SPAN.puck.r|DashC] "DashC" path= under=SPAN.nm#:Dash @ member-viewsched-phone/003
+moved d=(-26,0) dwh=(0,0) [SPAN.puck.r|HexC] "HexC" path= under=SPAN.role q-c#:C @ sched-viewsched-phone/004
+moved d=(4,0) dwh=(0,0) [SPAN.puck.r|WispC] "WispC" path=A.|View-only Sched under=SPAN.nm#:Wisp @ sched-editsched-pc/022
+moved d=(14,0) dwh=(0,0) [SPAN.puck.san.sm|BoltC] "BoltC" path= under=SPAN.nm#:Bolt @ sched-editsched-pc/008
+moved d=(4,0) dwh=(0,0) [SPAN.puck.san.sm|BoltC] "BoltC" path=A.|Edit Schedule under=SPAN.nm#:Bolt @ sched-inputs-pc/013
+moved d=(-12,0) dwh=(0,0) [SPAN.puck.san.sm|JesterB] "JesterB" path=A.|View-only Sched under=SPAN.nm#:Jester @ member-inputs-pc/013, member-leavewar-pc/013, member-tracker-pc/018 +4
+moved d=(-38,0) dwh=(0,0) [SPAN.puck.san.sm|JesterB] "JesterB" path= under=DIV.ppl one#:JesterB @ member-viewsched-pc/012, sched-editsched-pc/015, sched-editsched-phone/003 +1
+moved d=(-164,0) dwh=(0,0) [SPAN.puck.san.sm|JesterB] "JesterB" path=A.|Edit Schedule under=SPAN.ntx txed#: @ sched-inputs-pc/017, sched-leavewar-pc/011, sched-logic-pc/013 +2
+moved d=(-18,0) dwh=(0,0) [SPAN.puck.san.sm|JesterB] "JesterB" path=BUTTON.burger|burger > A.|Edit Schedule under=SPAN.nm#:Jester @ sched-inputs-phone/005, sched-quals-phone/005, sched-tracker-phone/010
+moved d=(4,0) dwh=(0,0) [SPAN.puck.san.sm|RebelB] "RebelB" path=A.|Edit Schedule under=SPAN.nm#:Rebel @ sched-inputs-pc/009
+moved d=(4,0) dwh=(0,0) [SPAN.puck.san.sm|ZenithC] "ZenithC" path= under=SPAN.nm#:Zenith @ sched-editsched-pc/012
+moved d=(4,0) dwh=(0,0) [SPAN.puck.san.sm|ZenithC] "ZenithC" path=A.|Edit Schedule under=SPAN.nm#:Zenith @ sched-tracker-pc/015
+moved d=(-52,0) dwh=(0,0) [SPAN.puck.san|BoltC] "BoltC" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Wisp @ member-inputs-phone/010, member-tracker-phone/014
+moved d=(-2,0) dwh=(0,0) [SPAN.puck.san|RebelB] "RebelB" path=A.|View-only Sched under=SPAN.nm#:Rebel @ member-tracker-pc/014, sched-inputs-pc/028
+moved d=(-5,0) dwh=(0,0) [SPAN.puck.san|RebelB] "RebelB" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Rebel @ member-tracker-phone/011, sched-logic-phone/011
+moved d=(-3,0) dwh=(0,0) [SPAN.puck.san|RebelB] "RebelB" path= under=SPAN.nm#:Rebel @ member-viewsched-pc/006, sched-viewsched-pc/007
+moved d=(-41,0) dwh=(0,0) [SPAN.puck.san|ZenithC] "ZenithC" path= under=SPAN.nm#:Fable @ sched-viewsched-phone/010
+moved d=(4,0) dwh=(0,0) [SPAN.puck.sm|CobraIP] "CobraIP" path=A.|Edit Schedule under=SPAN.nm#:Cobra @ sched-inputs-pc/014
+moved d=(4,0) dwh=(0,0) [SPAN.puck.sm|ForgeIP] "ForgeIP" path=A.|View-only Sched under=SPAN.nm#:Forge @ member-leavewar-pc/007
+moved d=(4,0) dwh=(0,0) [SPAN.puck.sm|ForgeIP] "ForgeIP" path=A.|Edit Schedule under=SPAN.nm#:Forge @ sched-inputs-pc/012, sched-tracker-pc/013
+moved d=(4,0) dwh=(0,0) [SPAN.puck.sm|HunterIP] "HunterIP" path= under=SPAN.nm#:Hunter @ sched-editsched-pc/009
+moved d=(14,0) dwh=(0,0) [SPAN.puck.sm|SidewinderIP] "SidewinderIP" path= under=SPAN.nm#:Sidewinder @ sched-editsched-pc/007
+moved d=(4,0) dwh=(0,0) [SPAN.puck.sm|SidewinderIP] "SidewinderIP" path=A.|Edit Schedule under=SPAN.nm#:Sidewinder @ sched-logic-pc/010
+moved d=(4,0) dwh=(0,0) [SPAN.puck.sm|SidewinderIP] "SidewinderIP" path=A.|View-only Sched under=SPAN.nm#:Sidewinder @ sched-quals-pc/022
+moved d=(4,0) dwh=(0,0) [SPAN.puck.sm|TorchC] "TorchC" path=A.|View-only Sched under=SPAN.nm#:Torch @ member-tracker-pc/012, sched-logic-pc/024
+moved d=(-35,0) dwh=(0,0) [SPAN.puck|BladeIP] "BladeIP" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.role q-ins#:IP @ member-tracker-phone/016
+moved d=(-13,0) dwh=(0,0) [SPAN.puck|BladeIP] "BladeIP" path= under=SPAN.nm#:Blade @ sched-viewsched-phone/012
+moved d=(-17,0) dwh=(0,0) [SPAN.puck|TorchC] "TorchC" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Torch @ member-inputs-phone/009
+moved d=(-2,0) dwh=(0,0) [SPAN.puck|VaporD] "VaporD" path=A.|View-only Sched under=SPAN.nm#:Vapor @ member-inputs-pc/010, member-leavewar-pc/009, sched-editsched-pc/024
+moved d=(-36,0) dwh=(0,0) [SPAN.puck|VaporD] "VaporD" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.puck sel#:VaporD @ member-tracker-phone/012, sched-inputs-phone/012, sched-logic-phone/012
+moved d=(-8,0) dwh=(0,0) [SPAN.puck|VaporD] "VaporD" path= under=SPAN.nm#:Vapor @ member-viewsched-pc/008, sched-viewsched-pc/009
+moved d=(-12,0) dwh=(0,0) [SPAN.puck|WardenIP] "WardenIP" path=BUTTON.burger|burger > A.|View-only Sched under=SPAN.nm#:Warden @ member-inputs-phone/003, sched-logic-phone/009
+moved d=(-18,0) dwh=(0,0) [SPAN.puck|WardenIP] "WardenIP" path= under=SPAN.nm#:Warden @ member-viewsched-phone/002
+moved d=(4,-0.7) dwh=(0,0) [SPAN.seat|CPistonIP] "CPistonIP" path=A.|Edit Schedule under=SPAN.nm#:Piston @ sched-logic-pc/009, sched-quals-pc/007
+moved d=(4,-0.2) dwh=(0,0) [SPAN.seat|CRangerIP] "CRangerIP" path=A.|Edit Schedule under=SPAN.nm#:Ranger @ sched-leavewar-pc/007, sched-logic-pc/007
+moved d=(3,-0.3) dwh=(0,0) [SPAN.seat|CVectorC] "CVectorC" path=A.|Edit Schedule under=SPAN.nm#:Vector @ sched-inputs-pc/011, sched-logic-pc/008, sched-tracker-pc/012
+moved d=(4,0) dwh=(0,0) [SPAN.seat|DrifterA] "DrifterA" path= under=SPAN.nm#:Drifter @ sched-editsched-pc/006
+moved d=(3,0.2) dwh=(0,0) [SPAN.seat|DTEchoIW] "DTEchoIW" path=A.|Edit Schedule under=SPAN.nm#:Echo @ sched-logic-pc/006
+moved d=(0,-49) dwh=(0,0) [SUMMARY.|build #JUL·B#] "build 29JUL·B55" path=BUTTON.abtn.ghost|logout under=DIV.bt#:React port. The single-file re @ member-inputs-pc/022
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.evoff.hasc|cell-prowler-#-#-#] "FO" path= under=TEXTAREA.#bid-remarks: @ sched-leavewar-phone/025
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-ammo-#-#-#] "FO" path=BUTTON.mjump|month-MAY under=INPUT.#bid-till: @ sched-leavewar-phone/039
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-ammo-#-#-#] "FO" path=BUTTON.mjump|month-JUN under=INPUT.#bid-till: @ sched-leavewar-phone/044
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-ammo-#-#-#] "FO" path=BUTTON.mjump|month-JUL under=INPUT.#bid-till: @ sched-leavewar-phone/047
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-bruise-#-#-#] "FO" path=BUTTON.mjump|month-MAR under=INPUT.#bid-till: @ sched-leavewar-phone/035
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-bruise-#-#-#] "FO" path=BUTTON.mjump|month-MAY under=INPUT.#bid-till: @ sched-leavewar-phone/038
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-bruise-#-#-#] "FO" path=BUTTON.mjump|month-JUN under=INPUT.#bid-till: @ sched-leavewar-phone/043
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-bruise-#-#-#] "FO" path=BUTTON.mjump|month-JUL under=INPUT.#bid-till: @ sched-leavewar-phone/046
+moved d=(0,-147) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-pike-#-#-#] "FO" path= under=LABEL.inped-ad inped-tl#bid-tl:till 10 Jan @ sched-leavewar-phone/028
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-prowler-#-#-#] "FO" path= under=SPAN.inped-rmk bp-rmk dark#:till 4 Jan @ sched-leavewar-phone/026
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-slash-#-#-#] "FO" path=BUTTON.mjump|month-FEB under=LABEL.inped-ad inped-tl#bid-tl:till 9 May @ sched-leavewar-phone/033
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-slash-#-#-#] "FO" path=BUTTON.mjump|month-MAR under=LABEL.inped-ad inped-tl#bid-tl:till 9 May @ sched-leavewar-phone/034
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-slash-#-#-#] "FO" path=BUTTON.mjump|month-APR under=LABEL.inped-ad inped-tl#bid-tl:till 9 May @ sched-leavewar-phone/036
+moved d=(0,-398) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-slash-#-#-#] "FO" path=BUTTON.mjump|month-MAY under=DIV.bidsheet-row postout#:Entered bySQNCDR @ sched-leavewar-phone/037
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-slash-#-#-#] "FO" path=BUTTON.mjump|month-JUN under=LABEL.inped-ad inped-tl#bid-tl:till 9 May @ sched-leavewar-phone/042
+moved d=(0,-301) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-slipway-#-#-#] "FO" path= under=BUTTON.tchip lv k-od s-a#bid-file-OD:OD @ sched-leavewar-phone/023
+moved d=(0,-99) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-spaceman-#-#-#] "FO" path=BUTTON.mjump|month-MAY under=SPAN.inped-till#bid-tilldate:till 15 Aug @ sched-leavewar-phone/040
+moved d=(0,-99) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-spaceman-#-#-#] "FO" path=BUTTON.mjump|month-JUN under=SPAN.inped-till#bid-tilldate:till 15 Aug @ sched-leavewar-phone/045
+moved d=(0,-99) dwh=(0,0) [TD.act.duty.hasc.weekend|cell-spaceman-#-#-#] "FO" path=BUTTON.mjump|month-JUL under=SPAN.inped-till#bid-tilldate:till 15 Aug @ sched-leavewar-phone/048
+moved d=(0,-148) dwh=(0,0) [TD.act.duty.hasc|cell-bruise-#-#-#] "FO" path= under=INPUT.#bid-till: @ sched-leavewar-phone/027
+moved d=(-4.9,-17.8) dwh=(0,0) [TD.act.duty.hasc|cell-spaceman-#-#-#] "FOOL" path=BUTTON.burger|burger > A.|Leave War under=TD.#cell-plasma-2026-02-23: @ member-inputs-phone/016
+moved d=(-4.9,-17.8) dwh=(0,0) [TD.act.duty.hasc|cell-spaceman-#-#-#] "FOOL" path= under=TD.#cell-plasma-2026-02-23: @ member-leavewar-phone/006
+moved d=(-20.8,-22) dwh=(0,0) [TD.act.duty.hasc|cell-spaceman-#-#-#] "FOOL" path=A.|Leave War under=DIV.sheetscrim#sheet-scrim: @ member-viewsched-pc/017
+moved d=(0,-156) dwh=(0,0) [TD.act.evoff.hasc|cell-slipway-#-#-#] "OL" path= under=TEXTAREA.#bid-remarks: @ sched-leavewar-phone/022
+moved d=(-25.1,0) dwh=(-2,0) [TD.act.evoff.locked.weekend|cell-bane-#-#-#] "" path=A.|Leave War under=DIV.sheetscrim#sheet-scrim: @ member-leavewar-pc/018
+moved d=(0,-28) dwh=(0,0) [TD.act.evoff.weekend|cell-pump-#-#-#] "" path=BUTTON.mjump|month-AUG under=DIV.bidsheet-hd#:PistonSun 9 AugAuto-approve✕ @ sched-leavewar-phone/050
+moved d=(0,-10) dwh=(0,0) [TD.act.evoff.weekend|cell-snap-#-#-#] "" path=BUTTON.mjump|month-AUG under=TD.weekend evoff act#cell-pump-2026-08-09: @ sched-leavewar-phone/049
+moved d=(0,-49) dwh=(0,0) [TD.act.evoff|cell-bane-#-#-#] "" path=BUTTON.burger|burger > A.|Leave War under=SPAN.dt when#:Thu 1 Jan @ member-inputs-phone/013
+moved d=(0,-49) dwh=(0,0) [TD.act.evoff|cell-bane-#-#-#] "" path= under=SPAN.dt when#:Thu 1 Jan @ member-leavewar-phone/001, sched-leavewar-phone/010
+moved d=(0,-82) dwh=(0,0) [TD.act.evoff|cell-mamba-#-#-#] "" path= under=SPAN.dl-row dl-calm#bid-dayline-calm:No manning ro @ sched-leavewar-phone/016
+moved d=(0,-100) dwh=(0,0) [TD.act.evoff|cell-nact-#-#-#] "" path= under=TEXTAREA.#bid-remarks: @ sched-leavewar-phone/019
+moved d=(0,-28) dwh=(0,0) [TD.act.evoff|cell-pump-#-#-#] "" path= under=DIV.bidsheet-hd#:PistonThu 1 JanAuto-approve✕ @ sched-leavewar-phone/007
+moved d=(0,-10) dwh=(0,0) [TD.act.evoff|cell-snap-#-#-#] "" path= under=TD.evoff act#cell-pump-2026-01-01: @ sched-leavewar-phone/004
+moved d=(0,-64) dwh=(0,0) [TD.act.evoff|cell-stiff-#-#-#] "" path= under=DIV.bidsheet-hd#:SaberThu 1 JanAuto-approve✕ @ sched-leavewar-phone/013
+moved d=(-23.2,0) dwh=(0,0) [TD.act.hasc.locked|cell-taipan-#-#-#] "OL" path=A.|Leave War under=DIV.sheetscrim#sheet-scrim: @ member-leavewar-pc/019
+moved d=(0,-156) dwh=(0,0) [TD.act.hasc.weekend|cell-slipway-#-#-#] "OIL" path=BUTTON.mjump|month-JUN under=BUTTON.abtn docbtn#:Document @ sched-leavewar-phone/041
+moved d=(-2,0) dwh=(0,0) [TD.act.hasc|cell-slipway-#-#-#] "OIL" path= under=TD.act hasc selcell#cell-slipway-2026-02-10:OIL @ sched-leavewar-phone/024
+moved d=(-25.8,0) dwh=(-2,0) [TD.act.locked.weekend|cell-bane-#-#-#] "" path= under=DIV.sheetscrim#sheet-scrim: @ member-leavewar-pc/002, member-leavewar-phone/005
+moved d=(-25.6,0) dwh=(-0.2,0) [TD.act.locked|cell-bane-#-#-#] "" path= under=DIV.sheetscrim#sheet-scrim: @ member-leavewar-pc/001, member-leavewar-phone/004
+moved d=(0,-49) dwh=(0,0) [TD.act.weekend|cell-bane-#-#-#] "" path=BUTTON.burger|burger > A.|Leave War under=SPAN.dt when#:Sat 3 Jan @ member-inputs-phone/015
+moved d=(0,-49) dwh=(0,0) [TD.act.weekend|cell-bane-#-#-#] "" path= under=SPAN.dt when#:Sat 3 Jan @ member-leavewar-phone/003, sched-leavewar-phone/012
+moved d=(0,-82) dwh=(0,0) [TD.act.weekend|cell-mamba-#-#-#] "" path= under=SPAN.dl-row dl-calm#bid-dayline-calm:No manning ro @ sched-leavewar-phone/018
+moved d=(0,-100) dwh=(0,0) [TD.act.weekend|cell-nact-#-#-#] "" path= under=TEXTAREA.#bid-remarks: @ sched-leavewar-phone/021
+moved d=(0,-28) dwh=(0,0) [TD.act.weekend|cell-pump-#-#-#] "" path= under=DIV.bidsheet-hd#:PistonSat 3 JanAuto-approve✕ @ sched-leavewar-phone/009
+moved d=(0,-10) dwh=(0,0) [TD.act.weekend|cell-snap-#-#-#] "" path= under=TD.weekend act#cell-pump-2026-01-03: @ sched-leavewar-phone/006
+moved d=(0,-64) dwh=(0,0) [TD.act.weekend|cell-stiff-#-#-#] "" path= under=DIV.bidsheet-hd#:SaberSat 3 JanAuto-approve✕ @ sched-leavewar-phone/015
+moved d=(0,-49) dwh=(0,0) [TD.act|cell-bane-#-#-#] "" path=BUTTON.burger|burger > A.|Leave War under=SPAN.dt when#:Fri 2 Jan @ member-inputs-phone/014
+moved d=(0,-49) dwh=(0,0) [TD.act|cell-bane-#-#-#] "" path= under=SPAN.dt when#:Fri 2 Jan @ member-leavewar-phone/002, sched-leavewar-phone/011
+moved d=(0,-82) dwh=(0,0) [TD.act|cell-mamba-#-#-#] "" path= under=SPAN.dl-row dl-calm#bid-dayline-calm:No manning ro @ sched-leavewar-phone/017
+moved d=(0,-100) dwh=(0,0) [TD.act|cell-nact-#-#-#] "" path= under=TEXTAREA.#bid-remarks: @ sched-leavewar-phone/020
+moved d=(0,-28) dwh=(0,0) [TD.act|cell-pump-#-#-#] "" path= under=DIV.bidsheet-hd#:PistonFri 2 JanAuto-approve✕ @ sched-leavewar-phone/008
+moved d=(0,-10) dwh=(0,0) [TD.act|cell-snap-#-#-#] "" path= under=TD. act#cell-pump-2026-01-02: @ sched-leavewar-phone/005
+moved d=(0,-64) dwh=(0,0) [TD.act|cell-stiff-#-#-#] "" path= under=DIV.bidsheet-hd#:SaberFri 2 JanAuto-approve✕ @ sched-leavewar-phone/014
+moved d=(-25.7,0) dwh=(-5,0) [TD.band.blk.editable.ev|event-blocked-#-#-#] "Exercise week" path=A.|Leave War under=DIV.sheetscrim#sheet-scrim: @ sched-editsched-pc/029, sched-viewsched-pc/023
+moved d=(-25.7,0) dwh=(-5,0) [TD.band.blk.editable.ev|event-blocked-#-#-#] "Exercise week" path= under=DIV.sheetscrim#sheet-scrim: @ sched-leavewar-pc/002
+resized d=(0,0) dwh=(13.1,0) [BUTTON.abtn|qEditQuals] "✕ Edit quals" path=BUTTON.abtn|qEdit under=BUTTON.abtn#qEditQuals:✕ Edit quals @ sched-quals-phone/001
+resized d=(-1.5,0) dwh=(-3.6,0) [TD.band.blk.editable.ev|event-blocked-#-#-#] "Exercise week" path= under=TD.ev band blk editable#event-blocked-2026-03-09:E @ sched-leavewar-phone/002
