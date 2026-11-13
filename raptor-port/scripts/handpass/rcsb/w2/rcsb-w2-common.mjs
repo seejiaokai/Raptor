@@ -38,6 +38,7 @@ export async function fileInput(w, { I, sleep }, iso, id, typeVal, pic = null) {
     if (await nd.count() && await nd.first().isVisible()) { nodoc.push('doc question answered "no document"'); await nd.first().click(); await sleep(700) } else break
   }
   const n1 = await page.evaluate(() => window.INPUTS.length)
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- a walk script's read of one saved input out of the page: only what JSON carries can cross from the browser anyway
   const last = await page.evaluate(() => { const r = window.INPUTS[window.INPUTS.length - 1]; return r && JSON.parse(JSON.stringify(r)) })
   return { added: n1 - n0, opts, nodoc, last }
 }

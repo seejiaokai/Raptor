@@ -80,6 +80,12 @@ describe('D2028 on a Saturday that earns — a named man on the open-ended row, 
     VCONF.openEnd = 120; validate()
     day().allhands[1].prog = 'Tasking B'; validate(); runOilPass()
     expect(dayPendingItems(SAT).length, 'premise: it waits').toBeGreaterThan(0)
+    /* …AND THE LIST NAMES WHAT THE AMENDMENT WILL DO TO HIS OIL (the fresh Opus read, 13 Nov 26 — D44, D45, D99): the
+       rename alone was listed, the four signed on it, and the amendment took Bane's day with no line saying so. Once
+       anything else waits the comparison is made under the settings the amendment will go out with — the ones the
+       working copy is drawn by (D2013) */
+    expect(dayPendingItems(SAT).map((i: any) => i.axis), 'the crowd change is listed beside the rename').toContain('oil')
+    expect(dayDelta(SAT).some((e: any) => String(e.addr) === `oil:${SAT}`)).toBe(true)
     expect(crowd(day().allhands[1]), 'the next amendment, today\'s setting').not.toContain('bane')
     expect(issuedCrowd(day().allhands[1])).toContain('bane')
     expect(cellOf('bane'), 'only the published schedule earns').toBe('FO')

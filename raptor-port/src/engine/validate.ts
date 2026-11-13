@@ -1969,20 +1969,33 @@ function untouchedKept(){
        before this pass), a hide waiting (below), the men on it (pa) and the brief it prints */
     if(dayDeltaCore(di).length>0)return;
     if(canonicalDiff(snap.d,d,di).length>0)return;
-    if(filingDivergesAt(snap.fil,d.dt)||(snap.inp&&frozenInputDiffs(snap.inp,d.dt).length>0))return;
-    /* a hide waiting: the day's hidden keys now against the ones it went out with, both over what the issued judgement
-       raises — read straight from the hides and the last official pass (kept settings, so independent of this choice),
-       never through hidePending, whose cached, working-pass-filtered answer made the day flip between passes */
-    {const raised=new Set<string>((((OFFICIAL.byDay||[])[di]||{}).warns||[]).map((w:any)=>hideKey(w)));
-      const now=[...hidden()].filter((k:any)=>raised.has(k)).sort().join('\n');
-      const was=(((snap.w&&snap.w.wo)||[]) as any[]).map(String).filter((k:any)=>raised.has(k)).sort().join('\n');
-      if(now!==was)return;}
-    if(snap.pa&&stableJson(peopleAttrsNow(snap.pa))!==stableJson(snap.pa))return;
-    if(faceRuleValsCompared(snap.d)&&snap.rv.briefLead!=null&&+snap.rv.briefLead!==+VCONF.briefLead)return;   // the brief it prints reads pending (D186)
+    if(faceWaits(di,snap))return;
     out.push({d,rv:snap.rv});
   });
   return out;
 }
+/* WHAT ELSE WAITS ON A PUBLISHED DAY, BEYOND THE COMPARISON'S OWN ENTRIES — the filing and the frozen inputs read whole,
+   a hide, the men on it, the brief it prints. ONE body, asked twice (the fresh Opus read of D2028, 13 Nov 26): by
+   untouchedKept above, which decides whether the working copy is DRAWN under the settings the day went out with, and
+   by publish.ts crowdSide (HOOKS.faceWaits), which decides which settings the pending comparison COUNTS the crowds
+   under — two answers that drifted apart once already: the list compared under the old length while the screen and the
+   amendment used the new, so an amendment could move a man's OIL with no line naming it. It reads no comparison
+   (dayDelta) and no warnings of this pass, so neither caller can loop through it. */
+function faceWaits(di:any,snap:any):boolean{di=+di;
+  const d:any=DAYS[di]; if(!snap||!d)return false;
+  if(filingDivergesAt(snap.fil,d.dt)||(snap.inp&&frozenInputDiffs(snap.inp,d.dt).length>0))return true;
+  /* a hide waiting: the day's hidden keys now against the ones it went out with, both over what the issued judgement
+     raises — read straight from the hides and the last official pass (kept settings, so independent of this choice),
+     never through hidePending, whose cached, working-pass-filtered answer made the day flip between passes */
+  {const raised=new Set<string>((((OFFICIAL.byDay||[])[di]||{}).warns||[]).map((w:any)=>hideKey(w)));
+    const now=[...hidden()].filter((k:any)=>raised.has(k)).sort().join('\n');
+    const was=(((snap.w&&snap.w.wo)||[]) as any[]).map(String).filter((k:any)=>raised.has(k)).sort().join('\n');
+    if(now!==was)return true;}
+  if(snap.pa&&stableJson(peopleAttrsNow(snap.pa))!==stableJson(snap.pa))return true;
+  if(faceRuleValsCompared(snap.d)&&snap.rv&&snap.rv.briefLead!=null&&+snap.rv.briefLead!==+VCONF.briefLead)return true;   // the brief it prints reads pending (D186)
+  return false;
+}
+HOOKS.faceWaits=faceWaits;
 function officialFor(working:any){
   if(!officialDiverges()){ ISS_DAYS=null; ISS_EVD=null; return working; }   // ALIAS — the exact same object, cannot drift
   /* …and the week this pass judged, kept for the readers that COUNT the issued week (issuedWorld, below): the days as

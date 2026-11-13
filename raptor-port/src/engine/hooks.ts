@@ -82,6 +82,11 @@ export const HOOKS = {
      validator imports publishing). Null → nothing is frozen and the face reads the official pass, as before. */
   issuedWarn: null as null | ((di: number) => any),
   warnNow: null as null | ((di: number) => any),
+  /* …and whether anything ELSE waits on a published day beyond the comparison's own entries — the filing and frozen
+     inputs read whole, a hide, the men on it, the brief it prints (validate.ts faceWaits; D2028's read, 13 Nov 26):
+     publish.ts asks it to choose the settings the working copy's crowds are compared under, the same answer the
+     validator draws the working copy by. Null (an engine-only test) → nothing else waits. */
+  faceWaits: null as null | ((di: number, snap: any) => boolean),
   /* THE HIDDEN WARNINGS ([WARN-HIDE-KEPT], owner D469 / D471, 1 Oct 26). `hiddenKeys` — the working copy's hides, as the
      validator reads them (state/view.ts lends its set; the engine cannot import state). `hideNow` — for a published
      day, each warning of today's judgement of the issued day that the working copy also raises, with whether it is

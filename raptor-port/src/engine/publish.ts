@@ -15,7 +15,7 @@ import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './
 import { isPreservedWeek, rowElsewhere } from './weekstash'
 import { standsOn } from './overlay'   // functions only both ways
 import { inputProtected, weekLockReason, anyUnreadableWeek } from './quarantine'   // functions only both ways, so the import loop is safe
-import { rosterIds, dayRuleVals } from './faceattrs'
+import { rosterIds, dayRuleVals, keptRulesDiffer } from './faceattrs'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals } from './oilev'
 import { oilRuleValsNow } from './oil'
 
@@ -353,9 +353,9 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
     }); }
   /* the OIL line folds into the inputs that moved it, when they are all that moved it (oilev.ts oilMovedInputsOnly) */
   /* (the Logic-values entry — `oilrv:` — is never folded: it is nobody's input, and its own act; it is pushed below) */
-  const oilAll=oilDelta(di,snap.d,snap.rv), oil=oilAll.filter((e:any)=>!String(e.addr).startsWith('oilrv:'));
+  const side=crowdSide(sc,di,snap,canonicalDiff(snap.d,DAYS[di],di),ax), oilAll=side.oil, oil=oilAll.filter((e:any)=>!String(e.addr).startsWith('oilrv:'));
   if(oil.length){const w=(snap.d||{}).oilev, mem=!!(w&&(w.mem||w.earns));
-    const moved=oilMovedInputsOnly(oilNowAs(di,snap.rv),DAYS[di],w,snap.d,mem);
+    const moved=oilMovedInputsOnly(oilNowAs(di,side.rv),DAYS[di],w,snap.d,mem);
     /* (the named people of BOTH copies' lists — Fable F6 (a): read off one `person`, a man added to an input that also
        carries ALL AVAIL, who thereby leaves its crowd, read as a second change, "what this day earns") */
     const who=new Set<string>(); ax.changed.forEach((x:any)=>{for(const r of [x.was,x.now])if(r)namedOf(r).forEach((e:any)=>who.add(String(e.p)));});
@@ -372,7 +372,7 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
        it, brings membership to an item that had none: the men behind it are nobody's changed input either, and the one
        act read TWO — the placeholder added, and "what this day earns" — on a weekday too. Membership that came to an
        item which had none, whose request's own filing or details moved, is that request's — the mirror of the above. */
-    const wasSent:any=(w&&w.sent)||{}, nowSent:any=((oilNowAs(di,snap.rv)||{}) as any).sent||{};
+    const wasSent:any=(w&&w.sent)||{}, nowSent:any=((oilNowAs(di,side.rv)||{}) as any).sent||{};
     let via:string='';
     const crowdOK=!moved||!mem||[...new Set([...Object.keys(wasSent),...Object.keys(nowSent)])].every((k:any)=>{
       const x=new Set<string>((wasSent[k]||[]).map(String)), y=new Set<string>((nowSent[k]||[]).map(String));
@@ -699,8 +699,27 @@ export function dayDeltaIn(sc:any,di:any,weekKey?:any):DeltaEntry[]{di=+di;
   if(!((sc&&sc.dayOK)||{})[di])return [];
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
   if(!snap||!snap.d)return [];
-  const ax=inputAxes(di,snap);
-  return canonicalDiff(snap.d,DAYS[di],di).concat(ax.fil).concat(ax.val).concat(oilDelta(di,snap.d,snap.rv));}
+  const ax=inputAxes(di,snap), cd=canonicalDiff(snap.d,DAYS[di],di);
+  return cd.concat(ax.fil).concat(ax.val).concat(crowdSide(sc,di,snap,cd,ax).oil);}
+/* WHICH SETTINGS THE WORKING COPY'S CROWDS ARE COMPARED UNDER — AND SO WHAT THE OIL ENTRIES ARE (owner D2028 with D2013;
+   the fresh Opus read, 13 Nov 26). A Logic change ALONE is never the difference (D2028): with nothing else waiting the
+   crowds are counted under the settings the version kept (`rv`). But once ANYTHING else waits, the working copy is the
+   next amendment — drawn under today's settings (validate.ts untouchedKept) and frozen under them when it goes out
+   (daySnap) — so the comparison is counted under today's too: the list then names exactly what the amendment will do
+   to who stands behind each puck. Compared under the old settings always, it listed a crowd change the screen did not
+   show and the amendment did not make, and missed the one it did make — a man's OIL taken with only "renamed" listed.
+   "Anything else": the content, the filing and the inputs, the OIL Logic values (`oilrv:`), what validate.ts faceWaits
+   reads (the live book only) — or the crowd itself moved under the kept settings, a real change behind a puck with
+   nothing else to show for it (a man gone from the roster). That last one falls back to the kept comparison where
+   today's settings happen to give the issued crowds back, so a real change never reads clean (D45). */
+const isCrowdEntry=(e:any)=>!String(e.addr).startsWith('oilrv:');
+function crowdSide(sc:any,di:any,snap:any,cd:DeltaEntry[],ax:any):{rv:any,oil:DeltaEntry[]}{
+  const k={rv:snap.rv,oil:oilDelta(di,snap.d,snap.rv)};
+  if(!snap.rv||!keptRulesDiffer(snap.rv))return k;
+  const other=cd.length>0||ax.fil.length>0||ax.val.length>0||k.oil.some((e:any)=>!isCrowdEntry(e))||(sc===SCHED&&!!HOOKS.faceWaits&&HOOKS.faceWaits(di,snap));
+  if(!other&&!k.oil.some(isCrowdEntry))return k;
+  const t={rv:null as any,oil:oilDelta(di,snap.d,null)};
+  return other||t.oil.some(isCrowdEntry)?t:k;}
 /* THE TWO INPUT AXES, ONE BODY: the filing (by id — D174, D176) and the details (inputDelta), with the records a move
    or a cascade merely replaced by an identical one taken out of BOTH (inputs.ts frozenInputMatch) — so the count, the
    signature and eligibility read the same answer. A version issued before the freeze has no `inp` and keeps the plain

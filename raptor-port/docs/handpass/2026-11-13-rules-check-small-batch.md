@@ -352,7 +352,32 @@ SHOWS = the kept length / crowd while nothing waits. Rows 14 to 23 are Astra's a
 | 24 | the IT flow deck, the Logic page's lines for "A sim" / "Any other row" | words only — to read once the records are written | — | |
 
 ## 11.4 The five sizing lines
-*(to write before the walker starts — `docs/walk-ledger.md` §Before any walk)*
+Written 13 Nov 26, 10:15, by the host (Fable 5.2 in Opus's place this week, D1972) before the walker started.
+
+1. **The type of change — A, G, D.** A: one rule inside shared calculations (which settings a published day's
+   placeholder crowd and its assumed length are read under). G: it changes what a published day shows, what reads
+   pending and what a sign-off is checked against, across publish, an amendment, Undo, a reload. D: the title and the
+   crowd are drawn in several places by separate code (View-only Sched, Edit Schedule, the board, a look at an older
+   version, a member's view, the Leave War's credit).
+2. **What only a walk could find.** Whether each PLACE that draws the window and its count shows the kept hour (the
+   tests ask the engine and the window's builder, not the three pages); the pending count, the sign-off ticks and the
+   publish button as drawn; a real reload and a week change, which hand the app new day objects (the kept settings
+   ride outside the saved day — a test pins it with copied objects, a browser proves the real path); Undo / Redo from
+   the top bar; a placeholder put on an extras line and as a sim passenger through the app's own controls; a real
+   leave filed through the Inputs window; the Leave War grid, the OIL tracker and Balances after a real publish; the
+   window left open while the day changes behind it; the phone. What the tests and the reads already carry: §11.8,
+   and the nine questions of the read brief.
+3. **What the ledger says.** Four earlier walks carry both A and G. Last night's walk of this very branch (two
+   Sonnet walkers, 572 pictures) found no fault; its one fault came from a read, in a place the roll-call had not
+   listed — so this roll-call was redrawn from Astra's scenario design first (24 rows), and the walk is aimed at the
+   rows whose "Walked" cell is blank, not at repeating what the tests prove.
+4. **The walk chosen.** ONE Sonnet walker (D787), eleven scenarios (D0–D10 of
+   `docs/superpowers/briefs/2026-11-13-d2028-walk-brief.md`), desktop 1536 × 864 throughout and his iPhone's 402 × 874
+   on his case, the preview, the member's view and the plain-user round; no size beyond those. Carried by tests and
+   not repeated on screen: the three-version chain 1h / 2h / 3h, the dekit and step times, the length made shorter,
+   a real end typed and cleared, Unpublish and publish again, the missing-period warning — each named in §11.8 with
+   what it proves. The host then opens every deciding picture and repeats every difference itself.
+5. **After the walk:** its row goes into `docs/walk-ledger.md` before the closing report.
 
 ## 11.5 The orders walked
 

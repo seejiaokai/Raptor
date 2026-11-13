@@ -294,6 +294,7 @@ describe('D2028 — the original at 1h, the amendment at 2h, today at 3h (scenar
   })
   it('the day read back as new objects — a reload, a week change — is still clean at its 2h after the next check', () => {
     const { r } = threeVersions()
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the day as a reload hands it back: read from its saved JSON, so nothing that rides outside the saved day (the kept settings) can come along
     DAYS.forEach((d: any, i: number) => { DAYS[i] = JSON.parse(JSON.stringify(d)) })
     validate()
     const r1 = day(TUE).allhands[0]
@@ -312,6 +313,58 @@ describe('D2028 — the original at 1h, the amendment at 2h, today at 3h (scenar
     r.end = ''; validate()
     expect(dayPendingItems(TUE)).toEqual([])
     expect(title(TUE, r)).toContain(T2); expect(crowd(TUE, r)).toEqual(H2)
+  })
+})
+
+/* THE FRESH OPUS READ, 13 Nov 26 — once something else waits, the list and the screen are one comparison. The pending
+   comparison counted the working copy's crowds under the settings the day went out with ALWAYS; the screen (D2013)
+   and the amendment itself use today's once anything waits. So the list could carry an OIL line for a change the
+   screen did not show and the amendment would not make, and miss the one it would (leavewar/published-open-end-oil). */
+describe('D2028 + D2013 — with something else waiting, the pending list is counted under the settings the amendment will go out with', () => {
+  const oilItems = (di: number) => dayPendingItems(di).filter((i: any) => i.axis === 'oil')
+  it('a row moved so the crowd is the same under today\'s 2h as it went out: no "what this day earns" line, and the amendment freezes the same crowd', () => {
+    day(TUE).allhands.push({ prog: 'Briefing', str: '09:00', end: '', who: ['allavail'] })
+    day(TUE).ground.push({ prog: 'DENTAL', str: '09:30', end: '09:45', who: 'bane' })
+    ensureRowIds(DAYS)
+    const r = day(TUE).allhands[0]
+    publish(TUE)
+    const orig = dayCurVer(TUE)
+    expect(issuedCrowd(TUE, r), 'premise: bane out at publication').toEqual(['ignite', 'pump', 'stiff'])
+    VCONF.openEnd = 120; validate()
+    day(TUE).ground[0].str = '10:15'; day(TUE).ground[0].end = '10:45'; validate()
+    expect(crowd(TUE, r), 'premise: the working copy, today\'s 2h, shows the crowd as it went out').toEqual(['ignite', 'pump', 'stiff'])
+    expect(dayPendingItems(TUE).length, 'premise: the moved row waits').toBeGreaterThan(0)
+    expect(oilItems(TUE), 'no line for a crowd change nobody can see').toEqual([])
+    expect(dayDelta(TUE).some((e: any) => String(e.addr).startsWith('oil:'))).toBe(false)
+    sign(TUE); publishALDay(TUE); validate()
+    expect(issuedCrowd(TUE, r), 'the amendment froze the crowd the original had').toEqual(issuedCrowd(TUE, r, orig))
+    expect(dayDelta(TUE)).toEqual([])
+  })
+  it('an unrelated change waiting: the crowd the new length moves IS listed, and put back the day is clean at its hour', () => {
+    const r = hisCase(TUE); publish(TUE)
+    VCONF.openEnd = 120; validate()
+    expect(dayPendingItems(TUE), 'premise: the Logic change alone').toEqual([])
+    day(TUE).allhands.push({ prog: 'Lunch', str: '12:00', end: '13:00', who: ['stiff'] }); ensureRowIds(DAYS); validate()
+    expect(crowd(TUE, r), 'the preview, 2h: bane out').toEqual(['ignite', 'pump', 'stiff'])
+    expect(oilItems(TUE).length, 'listed: who the puck stands for changes with this amendment').toBe(1)
+    day(TUE).allhands.pop(); validate()
+    expect(dayPendingItems(TUE), 'put back (D98)').toEqual([]); expect(daySigned(TUE)).toBe(true)
+    expect(crowd(TUE, r)).toEqual(MEN.slice().sort())
+  })
+  it('a change that shows ONLY in who is free (a man gone from the roster) after the Logic change: it waits, and the list is counted as the screen shows it', () => {
+    const r = hisCase(TUE); publish(TUE)
+    VCONF.openEnd = 120; validate()
+    expect(dayDelta(TUE), 'premise: clean').toEqual([])
+    const all = HOOKS.oilSentinel
+    HOOKS.oilSentinel = (iso: string, win: [number, number], d: any) => (all as any)(iso, win, d).filter((id: string) => id !== 'pump')
+    validate()
+    expect(daySigned(TUE), 'a real change behind the puck (D44, D103)').toBe(false)
+    expect(oilItems(TUE).length).toBe(1)
+    expect(crowd(TUE, r), 'the preview: today\'s 2h, without him and without bane').toEqual(['ignite', 'stiff'])
+    HOOKS.oilSentinel = all; validate()
+    expect(dayDelta(TUE), 'back').toEqual([]); expect(daySigned(TUE)).toBe(true)
+    expect(crowd(TUE, r)).toEqual(MEN.slice().sort())
+    expect(title(TUE, r)).toContain('09:00–10:00 · no end time, an hour assumed')
   })
 })
 
