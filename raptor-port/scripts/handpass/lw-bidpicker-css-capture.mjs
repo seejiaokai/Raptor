@@ -280,6 +280,23 @@ const STATES = [
     }
     await drag(w, ['glass', D.range0], ['glass', D.range1]) } },
   { name: 'req-panel-weekend', go: async w => { await openManning(w); await dragReq(w, '2026-11-20', '2026-11-23') } },
+  /* THE FIX ROUND (the fresh Opus read of 14 Nov 26, finding 1): the bid window on a day holding ONE OIL credit draws the
+     credit's rows (`.bidsheet-oil-detail` > `.bidsheet-row.postout`) — no state above reached them. An award given through
+     the window's own Grant OIL, then the day tapped again; and a credit the schedule earned, wherever the grid shows one. */
+  { name: 'oil-detail-award', go: async w => {
+    await cell(w, 'razer', D.grant); await press(w, T('bid-oil')); await press(w, T('oil-pick-fo')); await press(w, T('oil-give'))
+    await closeAll(w); await cell(w, 'razer', D.grant)
+    if (!(await w.page.locator(T('oil-detail')).first().isVisible().catch(() => false))) throw new Error('the OIL detail rows did not show')
+  } },
+  { name: 'oil-detail-sched', go: async w => {
+    // the demo's one schedule-earned day (leavewar/state/demoworld.ts): DUSK, Sat 4 Jul 2026 — his SDO duty input's credit,
+    // with a 3-day award behind it
+    await press(w, '[data-testid^="month-JUL"], [data-testid^="month-Jul"]')
+    await w.page.waitForTimeout(500)
+    await cell(w, 'ammo', '2026-07-04')   // DUSK's id in the demo (DEMO_MAP)
+    const open = await w.page.evaluate(() => [...document.querySelectorAll('[data-testid]')].filter(e => e.offsetParent).map(e => e.getAttribute('data-testid')).filter(t => /^(oil-|daylist|bid-picker|closed|remarks)/.test(t)).slice(0, 12).join(','))
+    if (!(await w.page.locator(T('oil-detail')).first().isVisible().catch(() => false))) throw new Error('the OIL detail rows did not show; open: ' + open)
+  } },
 ]
 /* the Required rows are not people's cells: their own drag */
 async function dragReq(w, from = D.range0, to = D.range1) {

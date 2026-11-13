@@ -48,10 +48,29 @@ I opened these pictures: both sizes of the form at rest, Sets / teams, the slot 
 
 Observation 3: the counter form's Name box is a lighter grey than the dark boxes beside it (Amber, Red). The same box shows in the Required-row rename window of Part 1 (`d-33`, first run). The change moved no rule for it (`.namein` only sets its width), and the capture script's computed-style comparison is what shows whether it differs from before; I did not compare it myself.
 
+## Fix round — the fresh Opus read's finding 1 (14 Nov 26)
+
+**The finding** (`docs/superpowers/briefs/2026-11-14-bidpicker-css-read-opus.md`; Astra found nothing, `…-read-astra.md`): in the one-day window over a day holding one OIL credit — an award given by hand, or a credit the published schedule earned — the credit's detail rows (Reason, Given by, Entered by, Days) lost 8px of space above each. The moved rule that sets those rows' 2px top padding now carries the wrapper's weight, ties the window's own 10px rule for those rows and, coming later, wins. None of the 78 captures at the build (39 states, both sizes) reached those rows; Part 2 step 2 above pictured the window over an award (`d2-01-award-day`) but had no before picture to set it against.
+
+**Red first:** two states added to the capture script — `oil-detail-award` (Ridge's day, Grant OIL → Give FO, the day tapped again) and `oil-detail-sched` (Cinder's Sat 4 Jul 2026, the demo's one day the schedule earned, with a 3-day award behind it). Captured on the build before the change (main's stylesheet) and on the unfixed build: `docs/img/handpass/2026-11-14-bidpicker-css/diff-old2-vs-red.txt` is not empty — at both sizes and in both states, each of the four detail rows' top padding 10px → 2px (each row 29.7 → 21.7px tall), the detail block 139.7 → 107.7px, the window 32px shorter (448.7 → 416.7px).
+
+**The fix:** the rule keeps its bottom padding (2px) at full weight; its top padding moves to a rule of its own lowered with `:where()`, so the window's 10px wins again, as it always did. A one-line MOVED INSIDE note above it names the winning rule. The day's list rows that rule also covers have no other top padding and keep their 2px.
+
+**Green:** all 82 captures (41 states, desktop and phone) on the fixed build against the build before the change — 10,342 elements, none failed: `diff-old2-vs-green.txt` reads "EMPTY — no computed style differs". The cascade simulation run again over the two new states found only this pairing and the `.tchip` border one already handled at the build; no other OIL-detail or posted-out row pairing can be reached. The raw captures and dumps are kept outside the repo, at `C:/Users/User/raptor-night-1114/bidpicker-css/fix-round/`.
+
+| Picture | Before the change | Unfixed (the finding) | After the fix |
+|---|---|---|---|
+| Desktop, award | `walk/fix-desk-oil-award-before.png` | `…-unfixed.png` | `…-after.png` |
+| Phone, award | `walk/fix-phone-oil-award-before.png` | `…-unfixed.png` | `…-after.png` |
+| Desktop, schedule credit | `walk/fix-desk-oil-sched-before.png` | `…-unfixed.png` | `…-after.png` |
+| Phone, schedule credit | `walk/fix-phone-oil-sched-before.png` | `…-unfixed.png` | `…-after.png` |
+
+I opened the desktop award (before, unfixed) and the phone schedule-credit (unfixed, after) pictures: unfixed, the four rows sit tight and the window stands 32px lower; after the fix the window matches the before picture.
+
 ## Not reached
 
 - A day's list showing an armed Delete. A list's Delete took a plain bid at once (one press, the entry gone), so the armed words appear only where an OIL award is involved. The armed state is pictured in the one-day window (`d2-02-delete-armed.png`, `p2-03-delete-armed.png`) and in the Events list (`d-40-events-armed.png`). The list over a day holding an award AND a bid was not tried.
 - A Tab ring on the phone (a touch screen has none).
 - Not compared picture by picture with the build before the change; the computed-style comparison is the capture script's job (`lw-bidpicker-css-capture.mjs`).
 
-Walk: docs/handpass/2026-11-14-bidpicker-css.md · 211 pictures · 15 surfaces (one-day bid window, ⋯ menu, range calendar, Grant OIL, armed Delete over an award, decision rows, day's list, drag window, Settings, Rearrange and counter window, counter form incl. + Counter, Events list, Open for bidding, Balances/Grades/person window, Approvals, member's windows) · MISSING: the day's list's armed Delete (a list over a day holding an award and a bid)
+Walk: docs/handpass/2026-11-14-bidpicker-css.md · 223 pictures · 16 surfaces (one-day bid window, ⋯ menu, range calendar, Grant OIL, armed Delete over an award, decision rows, day's list, drag window, Settings, Rearrange and counter window, counter form incl. + Counter, Events list, Open for bidding, Balances/Grades/person window, Approvals, member's windows, the bid window's OIL detail rows — award and schedule credit, fix round) · MISSING: the day's list's armed Delete (a list over a day holding an award and a bid)

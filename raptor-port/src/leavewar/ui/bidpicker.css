@@ -1396,8 +1396,11 @@
 
 .bidsheet .bidsheet-oil-detail .bidsheet-row,
 .bidsheet .daylist-oil .bidsheet-row {
-  padding-top: 2px;
   padding-bottom: 2px;
+}
+/* MOVED INSIDE: padding-top lowered, so `.bidsheet .bidsheet-row.postout`'s 10px still wins on the bid window's OIL rows */
+:where(.bidsheet .bidsheet-oil-detail .bidsheet-row, .bidsheet .daylist-oil .bidsheet-row) {
+  padding-top: 2px;
 }
 
 /* THE REQUIRED PANEL (ReqPanel.tsx; the Inputs / SANS redesign, plan §3.3 "Picking several"; owner D636, D637) — drawn
