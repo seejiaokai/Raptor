@@ -356,6 +356,9 @@ describe('D2028 + D2013 — with something else waiting, the pending list is cou
      ui/pendlist.ts crowdChange under the settings the working copy is drawn by. Before the fix the comparison counted
      Pump alone (old length) while the words named Pump and Bane (new length); now both count and name what the
      amendment will do — the two men the window no longer lists. */
+  /* A GUARD, NOT A PIN (the narrow read of the fix, 13 Nov 26): green on the code before the fix too — it asserts the
+     line's words, which ui/pendlist.ts crowdChange writes and the fix did not change. The pins for the comparison are
+     the two tests above, each red before the fix. */
   it('a real departure beside the one the new length makes: the line\'s words name the same men the window dropped', () => {
     const r = hisCase(TUE); publish(TUE)
     VCONF.openEnd = 120; validate()
@@ -367,6 +370,7 @@ describe('D2028 + D2013 — with something else waiting, the pending list is cou
     expect(words.where).toBe('Briefing · who it stands for'); expect(words.to).toBe('no longer free')
     expect(String(words.from).split(', ').sort(), 'bane is Ranger, pump is Piston — those two and nobody else').toEqual(['Piston', 'Ranger'])
   })
+  /* a guard, not a pin: green before the fix too (the narrow read of the fix, 13 Nov 26) */
   it('a change that shows ONLY in who is free (a man gone from the roster) after the Logic change: it waits, and the list is counted as the screen shows it', () => {
     const r = hisCase(TUE); publish(TUE)
     VCONF.openEnd = 120; validate()

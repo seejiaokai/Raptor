@@ -1,0 +1,75 @@
+// @vitest-environment jsdom
+/* Fresh read of the D2028 fix, Q1 + Q6: crowdSide's last branch (kept comparison kept because today's settings give the
+   issued crowd back). The list then counts under the KEPT settings, while the screen (untouchedKept left the day out,
+   since dayDeltaCore is non-empty) and the amendment (daySnap) count under TODAY's. */
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { DAYS } from './engine/data'
+import { INPUTS } from './engine/inputs'
+import { SCHED, setSign, setDayApproved, publishALDay, dayDelta, daySigned, dayCurVer, daySnapOf, dayPendingItems } from './engine/publish'
+import { VCONF, SHIFT_HARD } from './engine/rules'
+import { HOOKS } from './engine/hooks'
+import { validate } from './engine/validate'
+import { personBusy } from './engine/avail'
+import { ensureRowIds } from './engine/rowids'
+import { rowItemKey } from './engine/oil'
+import { oilEvidenceOf, oilSentOf } from './engine/oilev'
+import { pendItemWords } from './ui/pendlist'
+import { setSession } from './state/auth'
+
+const saved = { d: JSON.stringify(DAYS), i: JSON.stringify(INPUTS), book: JSON.stringify(SCHED), v: { ...VCONF }, s: { ...SHIFT_HARD },
+  earn: HOOKS.oilEarningDay, iso: HOOKS.oilDayISO, sent: HOOKS.oilSentinel, hk: HOOKS.hiddenKeys }
+const TUE = 1
+const MEN = ['bane', 'ignite', 'stiff', 'pump']
+const day = (di: number): any => DAYS[di]
+const sign = (di: number) => { setSign(di, 'cur', 'ignite'); setSign(di, 'sked', 'bane'); setSign(di, 'plan', 'stiff'); setSign(di, 'appr', 'pump') }
+const publish = (di: number) => { validate(); sign(di); setDayApproved(di, true); validate(); sign(di) }
+const item = (r: any) => rowItemKey(r.rid)
+const crowd = (di: number, r: any) => [...oilSentOf(oilEvidenceOf(di), item(r)).people].sort()
+const issuedCrowd = (di: number, r: any) => [...(((daySnapOf(di, dayCurVer(di)) as any).d.oilev.sent || {})[item(r)] || [])].sort()
+
+beforeEach(() => {
+  Object.assign(VCONF, saved.v, { openEnd: 60, simLen: 90, step: 60, dekit: 30 })
+  Object.assign(SHIFT_HARD, saved.s)
+  DAYS.forEach((d: any) => Object.assign(d, { waves: [], sims: { amt: [], oft: [] }, ground: [], allhands: [], dutywaves: [], oild: undefined }))
+  INPUTS.splice(0); Object.assign(SCHED, { orig: {}, cur: {}, als: [], pending: {}, changes: {}, added: {}, dayOK: {}, sign: {}, signBind: {}, retired: {}, correcting: {}, drafts: {}, curDraft: {} })
+  setSession({ user: 'ad', role: 'admin' } as any)
+  HOOKS.hiddenKeys = null
+  HOOKS.oilEarningDay = () => false
+  HOOKS.oilDayISO = (di: number) => `2026-07-${14 + di}`
+  HOOKS.oilSentinel = (_iso: string, win: [number, number], d: any) =>
+    MEN.filter(id => !personBusy(d, id).some((w: [number, number]) => w[0] < win[1] && win[0] < w[1]))
+})
+afterEach(() => {
+  HOOKS.oilEarningDay = saved.earn; HOOKS.oilDayISO = saved.iso; HOOKS.oilSentinel = saved.sent; HOOKS.hiddenKeys = saved.hk
+  DAYS.splice(0, DAYS.length, ...JSON.parse(saved.d)); INPUTS.splice(0, INPUTS.length, ...JSON.parse(saved.i))
+  Object.keys(SCHED).forEach(k => delete (SCHED as any)[k]); Object.assign(SCHED, JSON.parse(saved.book)); Object.assign(VCONF, saved.v)
+  Object.assign(SHIFT_HARD, saved.s)
+  validate(); setSession(null)
+})
+
+describe('fresh read — crowdSide fallback branch: list counts under kept, screen and amendment under today', () => {
+  it('a man who joins the crowd only under the kept hour: the list, the window and the amendment agree', () => {
+    day(TUE).allhands.push({ prog: 'Briefing', str: '09:00', end: '', who: ['allavail'] }); ensureRowIds(DAYS)
+    const r = day(TUE).allhands[0]
+    publish(TUE)
+    expect(issuedCrowd(TUE, r), 'premise').toEqual([...MEN].sort())
+    VCONF.openEnd = 120; validate()
+    expect(dayDelta(TUE), 'premise: the Logic change alone').toEqual([])
+    /* a man who comes onto the roster (stand-in, as the fix's own "gone from the roster" test does) and who is busy
+       10:30–10:45 by something that is not on this day's schedule or filing: free over the kept hour, busy over 2h */
+    const all = HOOKS.oilSentinel as any
+    HOOKS.oilSentinel = (iso: string, win: [number, number], d: any) => {
+      const base = all(iso, win, d); return (win[0] < 645 && 630 < win[1]) ? base : [...base, 'nova'] }
+    validate()
+    const oil = dayPendingItems(TUE).filter((i: any) => i.axis === 'oil')
+    expect(oil.length, 'premise: the fallback branch raised a pending OIL line').toBe(1)
+    expect(daySigned(TUE), 'premise: the four fell').toBe(false)
+    const words: any = pendItemWords(TUE, oil[0] as any)
+    console.log('WORDS', JSON.stringify(words), 'WINDOW', crowd(TUE, r), 'ISSUED', issuedCrowd(TUE, r))
+    /* the line must name the change the screen shows and the amendment will make */
+    expect(crowd(TUE, r), 'the window (Edit Schedule) shows the change the list names').toContain('nova')
+    expect(words.where, 'the line names the row, as every other crowd line does').toBe('Briefing · who it stands for')
+    sign(TUE); publishALDay(TUE); validate()
+    expect(issuedCrowd(TUE, r), 'the amendment makes the change the list named').toContain('nova')
+  })
+})

@@ -381,6 +381,27 @@ Written 13 Nov 26, 10:15, by the host (Fable 5.2 in Opus's place this week, D197
 
 ## 11.5 The orders walked
 
+One Sonnet walker on the build BEFORE the reads' fix (`index-DPKf-mls.js`), then the host on the build AFTER it
+(`index-DfSavxWy.js`, built 10:27). A desktop (1536×864) and a phone (402×874, the WebKit test browser). Scripts:
+`scripts/handpass/d2028/` (the walker's `d-00` … `d-14`; the host's `d-20-fixwalk`, `d-21-probe-phonechip2`). Pictures:
+`docs/img/handpass/2026-11-13-rules-check-small-batch/d2028/`.
+
+| Order | What was done | Desktop | Phone |
+|---|---|---|---|
+| D0 | the fixture tells the lengths apart on an UNPUBLISHED day: 1h → 42 with Ranger, 2h → 41 without | as expected | — |
+| D1 | his case: Saturday published and signed again; "Any other row" 1h → 2h; then straight back, Undo, Redo, a week change, a true reload | View-only, Edit Schedule, the board: "09:00–10:00 · no end time, an hour assumed", 45, Ranger listed, every time; ORIG, nothing pending, the four signed | the board: the same. The week's two pages: the window read by a plain click (the finger tap is W2) — an hour, Ranger listed (host, `d-21 logic`) |
+| D2 | a remark typed on the SDO desk with the window open | the window turns to "09:00–11:00 · no end time, 2 hours assumed", 44, no Ranger; View-only keeps 45 and an hour; "Not yet signed", the four blank; remark deleted → back to 45, an hour, signed | the board: the same |
+| D3 | the amendment published | all three: 2 hours, 44; a look at the Original: an hour, 45, Ranger | the board: the same |
+| D4 | the sim twin: "A sim" 1h30 → 3h, ALL AVAIL on an OFT seat | View-only and Edit Schedule: "09:00–10:30 · no end time, 90 minutes assumed", unchanged, nothing pending. The board's front-seat count could not be pressed (W1); the board's sim seat is read in D5 | — |
+| D5 | ALL AVAIL on a ground row, a duty desk, the Common Programme extras and a sim rear seat; Logic 2h and 3h | every count and title unchanged on all three pages | — |
+| D6 | OIL through another row, on the Leave War: Ranger named on the open-ended row, ALL AVAIL on 10:15–17:15 | Logic change alone: his FO, OIL 1, tracker 1, Balances 1 all stay; a real change + AL1: his box empty, 0, 0, 0; another man's stays | — |
+| D7 | a member on View-only | 45, an hour, Ranger, no OIL controls | by plain click only (W2) |
+| D8 | a real leave filed | NOT DONE by the walker (it stopped at the "No document" question) — carried by the Leave War test "a real leave still reads pending" and by D2 / D6's real changes | — |
+| D9 | print and CSV | neither draws a Common Programme row at all: both list the flying lines only (roll-call row 22: must not, because there is nothing of the row in either) | — |
+| D10 | the plain-user round: the count opens the window, ✕ closes it, a press behind it leaves it up | as written; Escape does not close it — as the contract says (a window, not a pop-up) | the board: the same |
+| F0–F4 (host, the fix) | Logic change alone → an unrelated remark → a second man really busy → Undo and the remark cleared → the remark again and AL1 | nothing waiting → "2 pending", the list reads "Briefing · who it stands for: Ranger → no longer free" → "3 pending", "Ranger, Piston → no longer free" → nothing waiting, signed, an hour, Ranger back → AL1 out, nothing waiting, 2 hours, no Ranger | the same, step for step |
+| M0–M1 (host, the fix) | Ranger's row published at 09:30–09:45, Logic 2h, the row moved to 10:15–10:45 | the list shows the row's start and end only — no line about who the puck stands for | — |
+
 ## 11.6 Findings and what was done
 *(from the reads so far, 11:05; the walk's are added when its report is in)*
 
@@ -389,6 +410,13 @@ Written 13 Nov 26, 10:15, by the host (Fable 5.2 in Opus's place this week, D197
 | R1 | the fresh Opus read, findings 1 and 2 | With the Logic length changed AND something else waiting on a published day, the pending comparison counted the crowds under the old settings while the screen and the amendment used today's: an amendment could take a man's OIL with only "renamed" listed; or the list carried "What this day earns: changed" for nothing | REAL — both reproduced red by the host (3 tests) | Fixed red-first, `f4d7e8195`: `publish.ts crowdSide`, `validate.ts faceWaits` (one body with `untouchedKept`), `HOOKS.faceWaits`; 120 related files, 2,028 tests green. To walk on the fixed build. |
 | R2 | Astra's read, finding 1 (P2) | The pending line's WORDS were read under today's settings while the comparison used the old: a real departure was worded with a Logic-only one beside it; "No OIL earned" switched on was worded as a man "no longer free" | The mismatch: REAL, the same cause as R1, closed by R1's fix the other way round (both now today's once anything waits — Astra's own fix, the words under the old settings, would have re-opened R1). Pinned: "a real departure beside the one the new length makes…" | Its first case leaves an OLDER gap, not D2028's: an OIL Earn decision made beside any crowd change is not said in the list — filed for his ruling with a picture, [OIL-LINE-DECISION-HIDDEN]; the facts pinned ("No OIL earned switched on after the Logic change…"), the words not. |
 | R3 | the Opus read, tidiness | `oilEvidence`'s third argument has three meanings; `keptRulesOf` doubles `keptOn`; the `oil.ts` header misleads | Filed, not fixed (D489) | The foot of `…-d2028-read-opus.md` |
+| R4 | the narrow fresh Opus read of the fix (`docs/superpowers/briefs/2026-11-13-d2028-read-fix.md`), finding 1 (P2) | A man free over the length the day went out with and busy over today's longer one joins the crowd after the Logic change, nothing else waiting: the day reads pending, the four fall, the line is the vague "What this day earns: changed", the window shows no change and the amendment changes nobody | REAL — the reader's proof run red by the host. Two of his rulings pull apart here (D45: acknowledge a crowd change; D2013: the preview is today's) | Kept as built — it over-asks, it never hides; nobody's OIL and no record is wrong. FILED for his word: `[CROWD-TIE-KEPT-LENGTH]`. No route through the app's own controls found |
+| R5 | the same read, finding 2 (P3) | two of the new tests pass on the code before the fix | REAL | their comments now say "a guard, not a pin"; the pins are the block's first two tests and the Leave War pair |
+| W1 | the walk, difference 1 | On the board (desktop), ALL AVAIL in an OFT row's FRONT seat: its count is drawn inside the empty rear seat's "+", so a press arms that seat and the window does not open | REAL — the host opened the picture (`d2028/probe-simchip-pc/p-1-after-press.png`). Older: this job changed no layout | FILED: `[SIM-COUNT-OVER-SEAT]` |
+| W2 | the walk, differences 2 and 3 | On a phone, a finger tap on the count on View-only Sched opens nothing; on Edit Schedule it arms the row | The open item `[COUNT-CHIP-PHONE-TAP]` (fixed for Chromium 1 Oct 26, his iPhone look owed), met again: in the WebKit test browser the touch lands on the count and the click on the puck's name beside it; a plain click opens the window (host, `d-21`) | A dated line added to that item — his iPhone look is still the proof |
+| W3 | the walk, difference 4 | Escape does not close the ALL AVAIL window | NOT a fault — `ui-contracts.md`: it closes on ✕, a page or week change, a sign-in; never on Escape | — |
+| W4 | the walk, difference 5 | print and CSV carry no Saturday Briefing row | NOT a fault — both list flying lines only; the walker's print capture was also cut short at Monday | roll-call row 22 answered |
+| W5 | the host, on the fix walk's picture | the changes window prints "Tap a change to go to it." twice, under the list and at its foot | older, words only | added to `[RULES-BATCH-OLDER-1113]` |
 
 ## 11.7 The reads
 The brief, word for word to both: `docs/superpowers/briefs/2026-11-13-d2028-read-brief.md`. Started 10:05, before the
