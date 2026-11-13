@@ -1,0 +1,224 @@
+<title>Tap-Jump Look-Over</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; each place is a block with its question first, then before/after pictures side by side (stacked on a phone). */
+:root {
+  --bg: #f4f6f8; --panel: #ffffff; --fg: #15202b; --muted: #5a6876; --line: #d6dde4;
+  --fix: #b4232f; --fixbg: #fde9eb; --leave: #1d6b46; --leavebg: #e3f4ea; --other: #8a5a00; --otherbg: #fbf0d9;
+  --accent: #0d7fa3;
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --head: "Space Grotesk", "Inter", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e141a; --panel: #161f28; --fg: #e6edf3; --muted: #9aa8b5; --line: #2a3642;
+  --fix: #ff7b86; --fixbg: #3a1a1f; --leave: #6fd3a0; --leavebg: #13302a; --other: #f2c46b; --otherbg: #33290f; --accent: #4cc3e6; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e141a; --panel: #161f28; --fg: #e6edf3; --muted: #9aa8b5; --line: #2a3642;
+  --fix: #ff7b86; --fixbg: #3a1a1f; --leave: #6fd3a0; --leavebg: #13302a; --other: #f2c46b; --otherbg: #33290f; --accent: #4cc3e6; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 24px 48px }
+.wrap { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px }
+h1, h2, h3 { font-family: var(--head); text-wrap: balance; margin: 0 }
+h1 { font-size: 1.9rem } h2 { font-size: 1.35rem; padding-top: 8px } h3 { font-size: 1.12rem }
+p { margin: 0; max-width: 70ch } .muted { color: var(--muted) }
+.top { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px }
+.top ol { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px }
+.top a { color: var(--accent) }
+.tag { display: inline-block; font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; vertical-align: 2px }
+.t-fix { color: var(--fix); background: var(--fixbg) } .t-leave { color: var(--leave); background: var(--leavebg) } .t-other { color: var(--other); background: var(--otherbg) }
+.key { display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: .92rem; color: var(--muted) }
+.ring { display: inline-block; width: 14px; height: 14px; border: 3px solid #e0102a; border-radius: 50%; vertical-align: -2px }
+.dash { display: inline-block; width: 18px; height: 12px; border: 3px dashed #1060ff; vertical-align: -1px }
+.item { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 12px; scroll-margin-top: 12px }
+.item .where { font-size: .9rem; color: var(--muted) }
+.rec { border-left: 4px solid var(--line); padding: 4px 0 4px 12px; display: flex; flex-direction: column; gap: 6px }
+.rec.fix { border-color: var(--fix) } .rec.leave { border-color: var(--leave) } .rec.other { border-color: var(--other) }
+.pics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px }
+.pics.tall { grid-template-columns: repeat(2, minmax(0, 340px)) }
+figure { margin: 0; display: flex; flex-direction: column; gap: 4px; min-width: 0 }
+figure img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; cursor: zoom-in; background: #000 }
+figcaption { font-size: .85rem; color: var(--muted) }
+.list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px }
+.zoom { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: flex; align-items: center; justify-content: center; z-index: 50; overflow: auto;
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)) }
+.zoom img { max-width: none; width: auto; max-height: none }
+@media (max-width: 640px) { .pics, .pics.tall { grid-template-columns: 1fr } h1 { font-size: 1.5rem } }
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>Where a tap makes the button move — checked by hand</h1>
+    <p class="muted">Chat 70 · 13 Nov 26 · every finding of the first look-over pressed again in a real browser: a PC started at 125% (your screen), and an iPhone-sized screen. Nothing in the app has been changed.</p>
+  </header>
+
+  <section class="top" aria-labelledby="q">
+    <h2 id="q" style="padding:0">Your four questions — answer each Fix or Leave</h2>
+    <ol>
+      <li><a href="#f1">Inputs calendar: pressing a day squeezes the calendar</a> — <span class="tag t-fix">I recommend fix</span></li>
+      <li><a href="#f2">Leave War window: "Pick a range" jumps to the top</a> — <span class="tag t-fix">I recommend fix</span></li>
+      <li><a href="#f3">Schedule: the CAT / TYPE / QUALS tabs slide, and the finger lands on a filter</a> — <span class="tag t-fix">I recommend fix</span></li>
+      <li><a href="#f4">Leave War window for several people: "Delete" rises when it asks "sure?"</a> — <span class="tag t-fix">I recommend fix</span></li>
+    </ol>
+    <p>The other places moved for a good reason or did not really move; they are further down with my reason, so you can overrule any of them.</p>
+    <div class="key"><span><span class="ring"></span> where the finger pressed (the same spot in both pictures)</span><span><span class="dash"></span> where the pressed control went</span><span>Tap any picture to see it larger.</span></div>
+  </section>
+
+  <h2>Recommend fixing</h2>
+
+  <article class="item" id="f1">
+    <h3>1 · Inputs → Calendar: pressing a day</h3>
+    <div class="where">PC (your 125% screen). On a phone the day opens over the calendar and nothing moves.</div>
+    <div class="rec fix">
+      <p><span class="tag t-fix">Fix</span> When you press a day, its panel opens at the right and the whole calendar gets narrower; the filter boxes also drop to a new line, so the calendar falls about 55px. The day you pressed (Fri 13) slides 257px left, and your pointer is now over Sun 15. A second click opens the wrong day.</p>
+      <p><b>The fix I recommend:</b> the calendar keeps its size and place; the day's panel opens over the side of the calendar away from the day you pressed. It already has a grip, so you can still drag it aside. Only the Inputs calendar on a PC changes.</p>
+    </div>
+    <div class="pics">
+      <figure><img src="img/f1-a.jpg" alt="Inputs calendar before pressing Friday 13"><figcaption>Before: pressing Fri 13</figcaption></figure>
+      <figure><img src="img/f1-b.jpg" alt="Calendar narrowed, pointer now over Sunday 15"><figcaption>After: the calendar narrowed and dropped; the same spot is now Sun 15</figcaption></figure>
+    </div>
+  </article>
+
+  <article class="item" id="f2">
+    <h3>2 · Leave War day window: "Pick a range"</h3>
+    <div class="where">Phone and PC, the same on both: it rose 377px.</div>
+    <div class="rec fix">
+      <p><span class="tag t-fix">Fix</span> Pressing "Pick a range" opens a month calendar under that row. The window grows upward from the foot of the screen, so the button shoots to the top. To close the calendar you have to find the button again. This is the same cause as the below-zero line you have already approved the fix for.</p>
+      <p><b>The fix I recommend:</b> the same cure as that fix. The calendar opens above the "Whole day · AM · PM · Pick a range" row, so the row and the leave buttons stay under your finger.</p>
+    </div>
+    <div class="pics tall">
+      <figure><img src="img/f2-a.jpg" alt="Leave War day window, Pick a range at the lower right"><figcaption>Before: pressing "Pick a range"</figcaption></figure>
+      <figure><img src="img/f2-b.jpg" alt="The button has moved to the top of the window"><figcaption>After: the button is now near the top; the finger is on empty calendar space</figcaption></figure>
+    </div>
+  </article>
+
+  <article class="item" id="f3">
+    <h3>3 · Schedule: the CAT / TYPE / QUALS tabs</h3>
+    <div class="where">View-only Sched, Edit Schedule and Inputs; PC and phone.</div>
+    <div class="rec fix">
+      <p><span class="tag t-fix">Fix</span> With CAT open, its letters (A, B, C, D, OCU) sit between CAT and TYPE. Press TYPE and the CAT letters close, so TYPE slides 217px left and the TYPE choices open where it was. Your finger is now on "SUP". A second tap would highlight every SUP on the schedule. Each tab also shifts about 4px when it opens.</p>
+      <p><b>The fix I recommend:</b> the three tabs always stay where they are, and the open tab's choices appear after QUALS, in one place for all three. One tab is open at a time, as now.</p>
+    </div>
+    <div class="pics">
+      <figure><img src="img/f3-a.jpg" alt="Tabs with CAT open, pressing TYPE"><figcaption>Before: CAT open, pressing TYPE</figcaption></figure>
+      <figure><img src="img/f3-b.jpg" alt="TYPE moved left; finger now on SUP"><figcaption>After: TYPE has moved left; the finger is on SUP</figcaption></figure>
+    </div>
+  </article>
+
+  <article class="item" id="f4">
+    <h3>4 · Leave War window for several people: "Delete"</h3>
+    <div class="where">PC (a drag across people). On a phone the test browser cannot do that drag, but the window is the same, so it will behave the same.</div>
+    <div class="rec fix">
+      <p><span class="tag t-fix">Fix</span> Pressing Delete adds the line "Delete 3 days for Reaper, Anvil, Cinch? Tap Delete again." under the buttons, and the button rows rise 35px. The second tap that the line asks for lands on the line, not on Delete. This is the same fault as the below-zero line.</p>
+      <p><b>The fix I recommend:</b> the same cure: the question line stands above the buttons. The day window does not need it: there one Delete acts at once.</p>
+    </div>
+    <div class="pics">
+      <figure><img src="img/f4-a.jpg" alt="Several-people window, pressing Delete"><figcaption>Before: pressing Delete</figcaption></figure>
+      <figure><img src="img/f4-b.jpg" alt="Delete moved up, the question line under the finger"><figcaption>After: Delete has risen; the finger is on the question line</figcaption></figure>
+    </div>
+  </article>
+
+  <h2>Recommend leaving — they move on purpose</h2>
+
+  <article class="item" id="l1">
+    <h3>5 · Schedule: the week buttons</h3>
+    <div class="rec leave">
+      <p><span class="tag t-leave">Leave</span> Pressing Jul 06 moves it into the second place, and Jun 29 appears under your finger. You ruled this "rolling window of four week buttons". A second tap on the same spot goes back one more week, which is what someone stepping through weeks wants.</p>
+    </div>
+    <div class="pics">
+      <figure><img src="img/l1-a.jpg" alt="Week buttons, pressing Jul 06"><figcaption>Before: pressing Jul 06</figcaption></figure>
+      <figure><img src="img/l1-b.jpg" alt="Jul 06 now second; Jun 29 under the finger"><figcaption>After: Jul 06 is chosen; Jun 29 is under the finger</figcaption></figure>
+    </div>
+  </article>
+
+  <article class="item" id="l2">
+    <h3>6 · Tracker: pressing an event</h3>
+    <div class="rec leave">
+      <p><span class="tag t-leave">Leave</span> When the marking window would not fit under the event, the chart slides the event up first (297px on the PC, 389px on a phone). You chose this on 8 Nov (question 11 of that round). Taps are blocked while it slides, so a quick second tap does nothing.</p>
+    </div>
+    <div class="pics">
+      <figure><img src="img/l2-a.jpg" alt="Tracker, pressing ACG-04"><figcaption>Before: pressing ACG-04</figcaption></figure>
+      <figure><img src="img/l2-b.jpg" alt="Chart slid up; window open under ACG-04"><figcaption>After: the chart slid up and the window opened under it</figcaption></figure>
+    </div>
+  </article>
+
+  <article class="item" id="l3">
+    <h3>7 · Leave War on a phone: pressing a day low on the screen</h3>
+    <div class="rec leave">
+      <p><span class="tag t-leave">Leave</span> The page scrolls up 77px so the day you pressed stays in sight, just above its window. Your finger then rests on the window's line of plain text, so a second tap does nothing. A day already high on the screen does not move.</p>
+    </div>
+    <div class="pics tall">
+      <figure><img src="img/l3-a.jpg" alt="Leave War grid on a phone, pressing a day low down"><figcaption>Before: pressing Havoc, Tue 6 Jan</figcaption></figure>
+      <figure><img src="img/l3-b.jpg" alt="Day lifted above the window"><figcaption>After: the day is above the window; the finger is on plain text</figcaption></figure>
+    </div>
+  </article>
+
+  <article class="item" id="l4">
+    <h3>8 · Edit Schedule on a phone: the AIRCREW tab</h3>
+    <div class="rec leave">
+      <p><span class="tag t-leave">Leave</span> The tab is the handle of a drawer and travels with it to its new edge, as a drawer's handle should. Under your finger is the drawer's empty space, so a second tap does nothing. Press the tab again to close the drawer.</p>
+    </div>
+    <div class="pics tall">
+      <figure><img src="img/l4-a.jpg" alt="Edit Schedule on a phone, pressing the AIRCREW tab"><figcaption>Before: pressing AIRCREW</figcaption></figure>
+      <figure><img src="img/l4-b.jpg" alt="Drawer open with the tab at its edge"><figcaption>After: the drawer is open with its tab at the edge</figcaption></figure>
+    </div>
+  </article>
+
+  <h2>Recommend leaving — the button changes its words but stays under the finger</h2>
+  <p>Each of these grows or shrinks because its words change. The second tap still lands on it, and the change is the cue that a second tap is wanted.</p>
+
+  <article class="item" id="g">
+    <div class="rec leave"><p><span class="tag t-leave">Leave all five</span> Approvals "Approve all 11" → "Approve 11 — tap again" (grows to the left) · the "Saber · Admin" chip (15px) · "Sync" (10px) · Quals "Edit quals" → "✕ Edit quals" · Admin → Users "Delete" → "Tap again to delete Cinch".</p></div>
+    <div class="pics">
+      <figure><img src="img/g1-a.jpg" alt="Approve all 11 before"><figcaption>Approvals, phone: before</figcaption></figure>
+      <figure><img src="img/g1-b.jpg" alt="Approve 11 — tap again"><figcaption>After: still under the finger</figcaption></figure>
+      <figure><img src="img/g5-a.jpg" alt="Users Delete before"><figcaption>Admin → Users: before</figcaption></figure>
+      <figure><img src="img/g5-b.jpg" alt="Tap again to delete Cinch"><figcaption>After: still under the finger</figcaption></figure>
+      <figure><img src="img/g2-a.jpg" alt="Role chip before"><figcaption>Top bar role chip: before</figcaption></figure>
+      <figure><img src="img/g2-b.jpg" alt="Role chip after"><figcaption>After</figcaption></figure>
+      <figure><img src="img/g3-a.jpg" alt="Sync before"><figcaption>Sync: before</figcaption></figure>
+      <figure><img src="img/g3-b.jpg" alt="Sync after"><figcaption>After</figcaption></figure>
+      <figure><img src="img/g4-a.jpg" alt="Edit quals before"><figcaption>Quals, phone: before</figcaption></figure>
+      <figure><img src="img/g4-b.jpg" alt="Edit quals after"><figcaption>After</figcaption></figure>
+    </div>
+  </article>
+
+  <h2>Did not move when pressed by hand</h2>
+  <article class="item" id="n">
+    <div class="rec leave">
+      <p><span class="tag t-leave">Nothing to fix</span> The script's list had these, but pressed by hand they stayed put. The script had first scrolled each one in from the screen's edge, and it counted that scroll as a jump.</p>
+      <ul class="list">
+        <li><b>A person on the schedule</b>: 6 presses, PC and phone; each person stayed exactly under the finger.</li>
+        <li><b>Leave War grid, a locked day or an event band</b>: did not move; a window opens over it.</li>
+        <li><b>Leave War day window, Delete, Approve or Refuse</b>: each acts at once and the window closes.</li>
+        <li><b>Leave War Events list ✕</b>: stays under the finger for its "press again".</li>
+        <li><b>Edit Schedule side list, a SANS card</b>: its edit window opens over it; nothing slides.</li>
+        <li><b>A day's name on the schedule</b>: its information panel opens at the side; the name stays.</li>
+      </ul>
+    </div>
+    <div class="pics">
+      <figure><img src="img/n1-a.jpg" alt="Pressing Outlaw on the schedule"><figcaption>A person: before</figcaption></figure>
+      <figure><img src="img/n1-b.jpg" alt="Outlaw highlighted in the same place"><figcaption>After: same place</figcaption></figure>
+      <figure><img src="img/n2-a.jpg" alt="Pressing Rebel's SANS card"><figcaption>A SANS card: before</figcaption></figure>
+      <figure><img src="img/n2-b.jpg" alt="Edit window opened over it"><figcaption>After: its window opens over it</figcaption></figure>
+    </div>
+  </article>
+
+  <h2>Not checked</h2>
+  <article class="item">
+    <ul class="list">
+      <li><b>Your iPhone itself.</b> These are a phone-sized screen in Chrome on this PC. Your phone draws Apple's font, which is a little wider, so a phone fix gets one look on your iPhone.</li>
+      <li><b>The several-people window on a phone</b> (point 4): a finger drag cannot be driven by the test browser.</li>
+      <li><b>The Scheduler Board's "Reset to standard" → "Tap again to reset"</b>: not reached in this round. Admin's "Tap again to clear" was checked by reading only: it fills the width of its box, so it cannot slide sideways.</li>
+    </ul>
+  </article>
+</div>
+
+<script>
+document.addEventListener('click', e => {
+  const z = document.querySelector('.zoom'); if (z) { z.remove(); return }
+  const img = e.target.closest('figure img'); if (!img) return
+  const d = document.createElement('div'); d.className = 'zoom'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-label', 'Picture, larger — tap to close')
+  const i = new Image(); i.src = img.src; i.alt = img.alt; d.appendChild(i); document.body.appendChild(d)
+})
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelector('.zoom')?.remove() })
+</script>
