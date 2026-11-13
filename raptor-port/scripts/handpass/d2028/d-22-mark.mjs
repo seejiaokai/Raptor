@@ -40,6 +40,10 @@ const JOBS = [
   { src: '../simcount/after-phone/m-0-whole.png', out: '10-sim-count-phone-AFTER', w: 1206, crop: [0, 1200, 1206, 420],
     cap: 'AFTER, phone: no room beside the pair, so the count sits under its puck, as on the phone\'s week.',
     boxes: [[84, 1437, 60, 36]] },
+  // the hint printed twice ([RULES-BATCH-OLDER-1113], the eighth)
+  { src: 'explain-q1-phone/e3-pending-list-today.png', out: '11-hint-printed-twice', w: 1206, crop: [0, 1440, 1206, 1182],
+    cap: 'The same hint twice. I recommend keeping the one under the list and removing the one at the foot.',
+    boxes: [[63, 1630, 380, 56], [55, 2515, 380, 56]] },
 ]
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 for (const jb of JOBS) {
