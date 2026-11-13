@@ -2459,3 +2459,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** A new test file ran green in the test runner while carrying type errors, because the runner strips types without checking them. The errors surfaced only later, at the build step of the full check, costing a second round. (In this project the plain no-output type check is also hollow, so the project's build-mode type check is the one to run.)
 **Suggested improvement:** In the builder's brief and the executor rule, add to "its own tests green": run the project's real type check (here `npx tsc -b`, or the build) on any new or changed test file before the job is called built.
 **Principle:** A test runner that transpiles without type-checking proves behaviour, not types; run the type check that the full gate will run before handing work on.
+
+### Observation 942: A build chat was three-quarters full before its first edit — the area pages load whole on the first source file opened
+
+**Status:** OPEN
+**Date:** 13 Nov 26
+**Session context:** Chat 68, D2028's build on `claude/rules-check-small-batch` (a small engine change at the FULL tier)
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** The opening line a handoff writes; what a continuing chat loads at its start
+
+**Issue:** The chat followed its opening line (the block, the backlog item, two briefs, three full rows) and then opened engine and screen files to read the code. Opening them loaded the project guide, the scheduler page, the screen-design page, the OIL page, the builder's rules and the design short form, each whole. The chat read 76% full after the reading alone, 90% by the time the fix and its tests were committed, with the walk, the reads and the gates all still ahead — so the job's long half starts on a compaction. No other open note was checked for the same cause (the log was not read beyond its highest number, 941, the same on every pushed branch).
+**Suggested improvement:** In the session-handoff skill's step that writes the opening line: when the next step is a build with a FULL check, have the opening line say to write the reading of the code into a plan file and commit it BEFORE any fix, and name which checks a fresh helper should carry (the walk, the reads) so the host keeps room. Separately, a job for the rules diet's follow-up (D1960): measure what a scheduler-engine job loads on its first source file, as was done for the Leave War.
+**Principle:** A chat's room is spent by what loads, not only by what it reads on purpose; when the pages a job loads are large, save the reading before the first edit and plan the checks around a compaction.
