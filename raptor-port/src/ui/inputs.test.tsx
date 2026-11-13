@@ -110,7 +110,7 @@ describe('the Inputs page (tfin)', () => {
 
   /* the form is gone, and one button stands in its place (D729 — V1) — on a desktop at the RIGHT END of its row, after the
      dates button, where its window opens (owner D1787, 8 Nov 26, as "+ Medical" stands — D1300); and while the window is
-     open the list makes room for it (`in-room`; the widths it needs are the stylesheet's, 06-inputs.css — checked in a
+     open the list makes room for it (`in-room`; the widths it needs are the stylesheet's, 25-inputs-calendar.css — checked in a
      real browser by the "D1787" tests of e2e/inputs-calendar.spec.ts). A phone keeps it first (D910): that layout is the browser test's. */
   it('the list has no add form of its own: one "+ Input" button, at the right end of its row of tools', async () => {
     for (const gone of ['.inbar', '.ingrid', '#inAdd', '#inType', '#inRemarks', '#inCal', '#inStartT', '#inEndT', '#inSpan', '#inAllday', '#inPerson', '#inPersonFixed', '#inTitle', '#inDates'])

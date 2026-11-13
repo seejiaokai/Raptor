@@ -337,7 +337,17 @@ test.describe('the medical view renders and fits', () => {
       await page.click('#medNew')
       const win = page.locator('[data-testid="win-inputedit"]')
       await expect(win).toBeVisible()
-      expect(await pad(), 'at its own place the room is made').toBe(`${Math.min(430, vp.width - 24) + 16}px`)
+      /* the room is the window's own size, `--inpwin-room` (25-inputs-calendar.css), read here as the browser works it
+         out — not its 430 and 16 written again, which would drift from the stylesheet ([INP-ROOM-TIDY-2]) */
+      const room = await page.evaluate(() => {
+        const probe = document.body.appendChild(document.createElement('div'))
+        probe.style.paddingRight = 'var(--inpwin-room)'
+        const px = getComputedStyle(probe).paddingRight
+        probe.remove()
+        return px
+      })
+      expect(parseFloat(room), 'the room variable resolves to a length').toBeGreaterThan(100)
+      expect(await pad(), 'at its own place the room is made').toBe(room)
       const t = (await win.locator('.win-ttl').boundingBox())!
       await page.mouse.move(t.x + 10, t.y + t.height / 2); await page.mouse.down()
       await page.mouse.move(t.x - 800, t.y + 150, { steps: 10 }); await page.mouse.up()

@@ -92,7 +92,20 @@ export function noteOpener(el: HTMLElement | null): void {
 }
 /* how to find a control again once a string redraw may have replaced it — the same node while it is still on the page,
    else by its id, else by its first data attribute (the one shown on screen where there are two); shared with the
-   Scheduler Board's own way back (ui/boardescape.ts) */
+   Scheduler Board's own way back (ui/boardescape.ts)
+   NO LIST OF "ITEM MARKS" ([LOCATE-ITEM-MARKS], closed 14 Nov 26 with this reason). It is asked to find again: the control
+   the keys were on when a sheet or window opened (useSheetFocus, useEscWindow, barfree.ts, the board's way out in
+   SchedBoard.tsx) — in practice the control pressed to open it; and the button a small menu hangs from (menuEscape,
+   menuKeys, board.ts popMenu, noteOpener: + Block, Templates, the plans selector, + Wave, a jet's stores, the duty role).
+   React keeps its own nodes, so only the string-drawn week, board and crew panel ever reach the search. Of every
+   control those draw (html.ts, board.ts, board-html.ts, palette-html.ts, oilmode.ts, pendlist.ts, mission-role-offer.ts…),
+   the first mark names its day, its slot or its item — a day index, a slot key, an input's or a template's id — or the
+   control is one of its kind where it stands (a menu's own items, the crew panel's day arrows, Manage, Show all), or it
+   opens nothing and so is never looked for (the blue / red question's buttons). The one exception, the input's
+   "→ Ground" / "→ Unavail" / "Reject", carries its input's mark (`data-acck`, html.ts accCtl draws every shape of it, and
+   its own press reads it) and is matched on it below; oilkeysback.test.tsx proves it on the week's real buttons.
+   A NEW CONTROL drawn into a day whose first mark names only a kind shared by several items carries the item's own mark
+   too, and is added here beside `data-acck` — or, better, its first mark names the item. */
 export function locate(el: HTMLElement): () => HTMLElement | null {
   const q = (v: string) => v.replace(/["\\]/g, '\\$&')
   const da = [...el.attributes].find(x => x.name.startsWith('data-'))
