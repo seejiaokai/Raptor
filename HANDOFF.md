@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/tap-jump-sweep -->
+### CHAT 69 — the Leave War's leave buttons no longer rise under the below-zero line ([LW-BELOW-ZERO-JUMP], built) and the app looked over for the same jump ([TAP-JUMP-SWEEP], the list going to him) — written 13 Nov 26, 10:40 — nothing merged — verify before use
+- **Where it started:** his opening line of 13 Nov 26 (chat 67 wrote it): copy the two items, D2030's row and his two pictures from `claude/rules-check-small-batch`; fix the jumping leave buttons, tests first; look the whole app over for the same annoyance and give him ONE list with pictures before anything else changes; "Merge nothing until I say 'merge live'". Hosted on Fable 5.2 (D1972).
+- **Branch and folder:** `claude/tap-jump-sweep`, cut from `main` at pull request 760's merge, in its own folder `C:/Users/User/projects/Raptor-tj` (the usual folder was held by chat 68 on `claude/rules-check-small-batch`); `raptor-port/node_modules` there is a link to the usual folder's.
+- **Done:** D2030's row, its page line, the map and the two backlog items copied here with his pictures (the same row and items are on chat 67's branch: whichever merges second brings `main` in and keeps one copy of each). **The fix:** the cause was that every Leave War window stands on the foot of the screen and grows upward, so a line that appears lifts everything above it; the below-zero line now stands ABOVE the leave buttons in both windows (the several-people window and the one-day window), so the buttons stay. Two browser tests, red first (the button moved 22.7px before; 0 after; the same spot pressed again goes ahead) — PC and phone size. After-pictures: `raptor-port/docs/img/handpass/2026-11-13-lw-below-zero-jump/after/`.
+- **Not done when written:** the look-over's list for him (a tap-and-measure sweep of every main page, as scheduler and member, PC and phone size, was running; its temporary script is `raptor-port/e2e/tmp-sweep.spec.ts` with `raptor-port/tmp-pics.config.ts`, neither committed); the evidence sheet; the pull request's run read; his look.
+- **His call owed:** the line moved from under the leave buttons to above them — a small change of layout he has not seen; before and after pictures go to him with the list.
+- **Pick up here:** finish the list ([TAP-JUMP-SWEEP]) and send it with the fix's pictures; change nothing else until he has seen it.
+<!-- /now -->
 <!-- now:claude/bal-scroll-stuck -->
 ### CHAT 64 — the Balances list stuck at its foot ([BAL-SCROLL-STUCK]) — written 11 Nov 26, 19:45 — BUILT, tried by him on his PC (fixed), waits for his "merge live" — verify before use
 - **His report (11 Nov 26, evening, Chrome on his PC at 125%, a mouse wheel):** on the Leave War's Balances page the whole page shifts up a little when the list reaches its end; rolled to the foot and up at once, the list is stuck sometimes and scrolls only after a pause.
