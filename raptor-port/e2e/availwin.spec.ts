@@ -405,3 +405,63 @@ test.describe('phone, by finger', () => {
     expect(await page.evaluate(() => ((window as any).ARM && (window as any).ARM.key) || null), 'the row was not armed instead').toBeNull()
   })
 })
+
+/* [SIM-COUNT-OVER-SEAT] (found 13 Nov 26, D2028's walk). A sim row's seats sit on a fixed two-column grid, each column
+   one puck wide — so the count beside ALL AVAIL in the FRONT seat had no room of its own: it was drawn inside the rear
+   seat's box, and the rear seat (later in the row) took every press. The window never opened; the empty seat armed
+   instead, and a man seated there covered the count. These measure what a person meets: the element under the
+   count's centre is the count, its box clears the rear seat's, and a press opens the window and arms nothing. */
+async function boardWithSimCount(page: Page, rear: string) {
+  await login(page, 'a')
+  await go(page, 'editsched')
+  await page.evaluate(r => {
+    const w = window as any
+    if (r && !w.PEOPLE[r]) throw new Error('no such person in the demo roster: ' + r)
+    w.DAYS[0].sims.oft = [{ label: 'OFT BRIEF', str: '09:00', end: '10:00', p: 'allavail', w: r }]
+    w.afterSchedMutate()
+    w.openScheduler(0)
+  }, rear)
+  const chip = page.locator('#schedBoard .ppl.fcprcp .oilcount').first()
+  await chip.waitFor({ state: 'visible' })
+  await chip.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' }))
+  return chip
+}
+const simCountFacts = (page: Page) => page.evaluate(() => {
+  const chip = document.querySelector('#schedBoard .ppl.fcprcp .oilcount') as HTMLElement
+  const c = chip.getBoundingClientRect()
+  const at = document.elementFromPoint(c.x + c.width / 2, c.y + c.height / 2)
+  const rear = document.querySelector('#schedBoard [data-slot="s:0.oft.0.w"]') as HTMLElement
+  const r = rear.getBoundingClientRect()
+  const overlap = Math.max(0, Math.min(c.right, r.right) - Math.max(c.left, r.left)) * Math.max(0, Math.min(c.bottom, r.bottom) - Math.max(c.top, r.top))
+  return { underCentreIsTheCount: at === chip || chip.contains(at), overlap: Math.round(overlap) }
+})
+for (const [label, viewport] of [['desktop', DESK], ['phone', PHONE]] as const) {
+  test(`${label}: on the board, the count beside a sim row's FRONT seat is its own target — a press opens the window and arms no seat`, async ({ page }) => {
+    await page.setViewportSize(viewport)
+    const chip = await boardWithSimCount(page, '')
+    expect(await simCountFacts(page), 'the count is not drawn inside the empty rear seat').toEqual({ underCentreIsTheCount: true, overlap: 0 })
+    const b = (await chip.boundingBox())!
+    await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2)
+    await expect(page.locator('.availwin:not([hidden])'), 'the window of who is behind the puck').toBeVisible()
+    expect(await page.evaluate(() => ((window as any).ARM && (window as any).ARM.key) || null), 'the rear seat was not armed instead').toBeNull()
+  })
+  test(`${label}: on the board, a man in a sim row's REAR seat does not cover the front seat's count`, async ({ page }) => {
+    await page.setViewportSize(viewport)
+    await boardWithSimCount(page, 'bane')
+    expect(await simCountFacts(page), 'the count is not under the rear seat').toEqual({ underCentreIsTheCount: true, overlap: 0 })
+  })
+}
+
+test.describe('phone, by finger — the board', () => {
+  test.use({ viewport: PHONE, hasTouch: true })
+  /* On the phone's stacked board the count sits UNDER its puck ([SIM-COUNT-OVER-SEAT]) — the same place, and the same
+     small target, as on the phone's week ([COUNT-CHIP-PHONE-TAP]). A real touch, in Chromium's phone emulation; what
+     his iPhone does with it is his look, named on the backlog item. */
+  test("a finger tap on a sim row's count opens the window — and arms no seat", async ({ page }) => {
+    const chip = await boardWithSimCount(page, '')
+    const b = (await chip.boundingBox())!
+    await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2)
+    await expect(page.locator('.availwin:not([hidden])'), 'the window of who is behind the puck').toBeVisible()
+    expect(await page.evaluate(() => ((window as any).ARM && (window as any).ARM.key) || null), 'no seat was armed instead').toBeNull()
+  })
+})

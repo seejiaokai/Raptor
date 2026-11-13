@@ -17,6 +17,29 @@ const JOBS = [
   { src: 'probe-simchip-pc/p-1-after-press.png', out: '3-sim-count-older-fault', w: 1920, crop: [0, 420, 1920, 260],
     cap: 'Older fault, filed, not this job: the count "42" sits inside the empty seat\'s box, so a press arms the seat and the window does not open.',
     boxes: [[738, 590, 104, 30]] },
+  // his questions of 13 Nov 26 (d-24-explain.mjs made the sources)
+  { src: 'explain-q1-phone/e3-pending-list-today.png', out: '4-oil-line-today', w: 1206, crop: [0, 1040, 1206, 700],
+    cap: 'TODAY: "No OIL earned" was also switched on for this Saturday. The list names Ranger and does not say it.',
+    boxes: [[63, 1485, 1080, 129]] },
+  { src: 'explain-q1-phone/e4-recommended-DRAWING.png', out: '5-oil-line-recommended-DRAWING', w: 1206, crop: [0, 1040, 1206, 740],
+    cap: 'A DRAWING of my recommendation: the one line says both, the decision first.',
+    boxes: [[63, 1485, 1080, 171]] },
+  { src: 'explain-vague-phone/e3-pending-list-today.png', out: '6-the-vague-line', w: 1206, crop: [0, 1040, 1206, 700],
+    cap: 'The line the rare tie would show: "changed", with no name. (Real app; here it comes from "No OIL earned" alone.)',
+    boxes: [[63, 1485, 1080, 129]] },
+  // [SIM-COUNT-OVER-SEAT], before and after the fix (d-23-simchip-measure.mjs made the sources)
+  { src: '../simcount/before-pc/m-0-whole.png', out: '7-sim-count-desktop-BEFORE', w: 1920, crop: [0, 500, 1920, 190],
+    cap: 'BEFORE, desktop: the count "42" sits inside the empty rear seat. A press arms the seat; the window never opens.',
+    boxes: [[737, 592, 105, 28]] },
+  { src: '../simcount/after-pc/m-0-whole.png', out: '8-sim-count-desktop-AFTER', w: 1920, crop: [0, 500, 1920, 190],
+    cap: 'AFTER, desktop: the count has its own place beside ALL AVAIL; the rear seat starts after it. A press opens the window.',
+    boxes: [[736, 590, 36, 32]] },
+  { src: '../simcount/before-phone/m-0-whole.png', out: '9-sim-count-phone-BEFORE', w: 1206, crop: [0, 1200, 1206, 420],
+    cap: 'BEFORE, phone: the same fault. The count is inside the rear seat.',
+    boxes: [[315, 1395, 60, 54]] },
+  { src: '../simcount/after-phone/m-0-whole.png', out: '10-sim-count-phone-AFTER', w: 1206, crop: [0, 1200, 1206, 420],
+    cap: 'AFTER, phone: no room beside the pair, so the count sits under its puck, as on the phone\'s week.',
+    boxes: [[84, 1437, 60, 36]] },
 ]
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 for (const jb of JOBS) {

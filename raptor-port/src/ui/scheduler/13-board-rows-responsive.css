@@ -214,6 +214,16 @@
    people cell — the alignment the owner asked to match). */
 .ppl.fcprcp{display:grid;grid-template-columns:var(--puck-w) var(--puck-w);gap:3px 6px;
   align-content:start;justify-content:start}
+/* THE COUNT BESIDE A PLACEHOLDER GETS ROOM OF ITS OWN ([SIM-COUNT-OVER-SEAT], found on D2028's walk, 13 Nov 26). The
+   columns above are exactly one puck wide, and the count beside ALL / ALL AVAIL (.oilcount) is drawn AFTER the puck
+   inside its seat — so in a FRONT seat it spilled into the rear seat's column: over an empty seat's "+" the seat took
+   every press (it armed; the who-is-available window never opened), and under a seated man the count was covered.
+   Only a grid that holds a count changes: its columns grow to fit the widest seat in them (puck + count), never below
+   a puck, so the pairs still line up down the grid and every other sim row is laid out exactly as before. The
+   phone's stacked board has no room beside the pair (two pucks fill the people cell, the remark box beside it), so
+   there the count drops UNDER its puck instead, as it does on the phone's week — the phone block below. Pinned by
+   e2e/availwin.spec.ts "sim row" (desktop and phone): the element under the count's centre, the two boxes, the press. */
+.ppl.fcprcp:has(> .seat > .oilcount){grid-template-columns:repeat(2,minmax(var(--puck-w),max-content))}
 .ppl.fcprcp .sb-slot.empty{width:var(--puck-w);height:var(--puck-h);border:1px dashed var(--edge-2);
   border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:11px}
 /* a duty-block / AMT / OFT sub-head inside a panel body */
@@ -803,6 +813,15 @@
      pairs). Two pucks plus their 4px gap; rows with one or two people are
      pixel-unchanged. Phone stack only — .sb-wide restates none below. */
   .sb-arow .ppl{max-width:calc(var(--puck-w)*2 + 4px)}
+  /* ...and a sim pair that holds a count keeps its two one-puck columns here ([SIM-COUNT-OVER-SEAT], 13 Nov 26): the
+     people cell is two pucks wide with the remark box right beside it, so the count cannot sit alongside its puck
+     without spilling into the rear seat (where it was, and could not be pressed). It wraps under its own puck — the
+     phone week's answer to the same squeeze (09-week-responsive.css, ".plist .pl-row .ppl .seat") — one short line
+     of height, only on a row that carries a count. The desktop layout on a phone (.sb-wide) has the room and keeps
+     the count alongside. Pinned by e2e/availwin.spec.ts "sim row", phone. */
+  .schedboard:not(.sb-wide) .ppl.fcprcp:has(> .seat > .oilcount){grid-template-columns:var(--puck-w) var(--puck-w)}
+  .schedboard:not(.sb-wide) .ppl.fcprcp>.seat:has(> .oilcount){flex-wrap:wrap;row-gap:2px}
+  .schedboard:not(.sb-wide) .ppl.fcprcp>.seat>.oilcount{margin-left:0}
   /* c6r's column 2 is Start (keep it), 4 is People (its header goes, the cell
      spans); the rmks input drops to its own full-width strip like .nts */
   /* ...and c6r needs the phone TEMPLATE restated, not just its cells adjusted

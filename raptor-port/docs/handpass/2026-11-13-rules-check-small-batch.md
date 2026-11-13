@@ -434,3 +434,25 @@ On his PC under the checks lock, 10:43–11:05, 13 Nov 26, on `69df33885` (the c
 
 ## 11.10 The Walk line
 Walk: `docs/handpass/2026-11-13-rules-check-small-batch.md` §11 · 369 pictures · 24 surfaces · 18 orders (D0–D7, D9, D10, F0–F4, M0–M1; D8 not done, carried by a test) · MISSING: 0 fixed, 0 ruled, 0 filed
+
+## 12. [SIM-COUNT-OVER-SEAT] — the board's sim row count, fixed on his word (13 Nov 26, chat 68)
+
+**Tier: LOOK by the eight questions** (one layout rule on the board's sim rows; no OIL, published record, saved data, role, warning, new control or new surface) **— walked all the same by the host**, because the fault was a press that did nothing (lessons 25, 27). His rule of 27 Sep 26 (a layout change to a daily surface is shown before it is built) against his word of 13 Nov 26 ("ok fix the older fault"): the later one followed (D90), the before-and-after pictures sent with the report, nothing merged.
+
+**The cause, measured before any change** (`scripts/handpass/d2028/d-23-simchip-measure.mjs`, desktop 1536 and phone 402 WebKit): the pair grid's columns "74px 74px"; the front seat 74 wide, its count at 77–97, the rear seat's box from 80 — the element under the count's centre was the rear seat; a press armed it, no window.
+
+**Roll-call — every place a count can stand on a pair grid** (`d-25-simcount-walk.mjs`; seeded as `e2e/availwin.spec.ts` seeds, the route through the app's own controls is `d-23`'s): front ALL AVAIL with the rear empty · with a man in the rear · rear ALL AVAIL with the front empty · with a man in front · both seats · the extra (instructor / observer) seat · ALL (everyone) · the AMT box's seats. Each: SHOWS — own box, 0 px over any other seat of the grid or any other cell of the row; USABLE — a press opens the window and arms nothing.
+
+| | Desktop (Chromium, 1536 × 864) | Phone (WebKit, 402 × 874) |
+|---|---|---|
+| Shows clear of every seat and cell, all 8 | YES, all 8 (columns grow to 97 where a count stands) | YES, all 8 (the count under its puck, 20 × 12; the row 5 px taller) |
+| A press opens the window, arms nothing | YES, all 8, every count | a mouse click: YES (`d-23`). A finger tap in WebKit: front seats ARM THE SEAT, rear seats open — the open `[COUNT-CHIP-PHONE-TAP]`, the same split as the phone week's count; Chromium's finger: YES (the pinned test). His iPhone try settles it |
+| The row's other boxes | unchanged (the people cell 309 wide before and after) | the row's foot controls 5 px lower on a row that holds a count; rows without one unchanged |
+
+Not walked: a read-only board (a member's, a preview) — no empty seat is drawn there, and the same rule and the "man in the rear" test cover the overlap.
+
+**Checks:** red first — 4 new browser tests failed before the fix (overlap 310 and 259 px², the wrong element under the count); after: `e2e/availwin.spec.ts`, `geometry`, `board-layout`, `grouprow` 233 passed; unit `board`, `simspare`, `oilcount` 181 passed; `npm run lint:changed` no new finding. The full set was not run again on his PC (D1086); GitHub's run comes with the branch's pull request.
+
+Pictures: `docs/img/handpass/2026-11-13-rules-check-small-batch/simcount/` (before, after, walk — 40); for him, marked: `…/d2028/for-him/7` to `10`.
+
+Walk: docs/handpass/2026-11-13-rules-check-small-batch.md §12 · 40 pictures · 8 surfaces × 2 devices · 16 orders · MISSING: 0 fixed, 0 ruled, 1 filed (the phone finger tap, on [COUNT-CHIP-PHONE-TAP])
