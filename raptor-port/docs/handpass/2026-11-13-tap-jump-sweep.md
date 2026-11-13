@@ -86,3 +86,6 @@ opened every deciding picture.
 
 Not checked: his iPhone itself; the several-people window on a phone; the Scheduler Board's "Tap again to reset" (not
 reached); Admin's "Tap again to clear" read only (full width, cannot slide).
+
+**His answer (14 Nov 26, D2037):** *"Leave all out. Seems ok in terms of design"* — none of the four is fixed and the
+rest stay as they are; the look-over closes with only the below-zero line's fix (D2030, D2031).
