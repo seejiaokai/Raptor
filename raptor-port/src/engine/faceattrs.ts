@@ -100,6 +100,9 @@ export function keepRulesOn<T>(d: T, rv: any): T {
   return d
 }
 const keptOn = (d: any): any => d && typeof d === 'object' ? ((KEPT && KEPT.get(d)) || COPY_RV.get(d) || null) : null
+/* the settings laid on a day, whole, or null — for a reader that must lay them itself (oilev.ts: the crowd behind a
+   placeholder on a published day nothing waits on is counted under the settings it went out with, D2028) */
+export const keptRulesOf = (d: any): any => keptOn(d)
 export function ruleFor(d: any, key: string): number {
   const rv = keptOn(d)
   return rv && rv[key] != null ? +rv[key] : (VCONF as any)[key]

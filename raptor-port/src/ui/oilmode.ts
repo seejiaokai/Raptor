@@ -54,6 +54,7 @@ import { landedExtras, claimPeople, claimPh, legacyClaim, oilEvidence, oilEviden
 import { OILDAY, setOilDay, afterSchedMutate, esc } from '../state/view'
 import { parseHM, win, hm24 } from '../engine/time'
 import { VCONF } from '../engine/rules'
+import { withShownRules } from '../engine/faceattrs'
 import { whoArr } from '../engine/slots'
 import { isDraftVer } from '../engine/drafts'
 import { undoMark } from '../undo'
@@ -1024,6 +1025,12 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
      confident "0 available" under the old title. */
   const lost = (name: string) => out(name, '', '', null, null, false)
   if (!item) return lost('This event')
+  /* THE ASSUMED LENGTH IS THE ONE THE FACE BEING DRAWN GOES BY (owner D2028, 13 Nov 26 — "the published day keeps its 1h
+     until its next amendment"): an issued face or a look at a version by that version's own settings, a published day
+     nothing waits on by the ones it went out with, any other day by today's (faceattrs.ts withShownRules) — the window
+     its frozen crowd was counted over. It read today's, so a published "09:00–10:00 · an hour assumed" turned into
+     "09:00–11:00 · 2 hours assumed" the moment the Logic page changed. */
+  const len = withShownRules(d, () => ({ open: VCONF.openEnd, sim: VCONF.simLen }))
   /* A LANDED REQUEST IS READ FROM ITS LANDED ROW ON THE INSTALLED DAY — never
      from the live Inputs page (Astra 1 + Fable F2, 23 Sep 26, found by both).
      The row is part of the day, so an issued snapshot keeps the name and the
@@ -1047,14 +1054,14 @@ export function oilItemLabel(di: any, item: string): { name: string, when: strin
       true, flags(g, [g.who, ...(g.more || [])]))
   }
   for (const r of (d.ground || [])) if (r && groundItemKey(r) === item)
-    return out(r.prog, r.str, r.end, null, null, true, flags(r, [r.who, ...(r.more || [])]), VCONF.openEnd)
+    return out(r.prog, r.str, r.end, null, null, true, flags(r, [r.who, ...(r.more || [])]), len.open)
   for (const r of (d.allhands || [])) if (r && rowItemKey(r.rid) === item)
-    return out(r.prog, r.str, r.end, null, null, true, flags(r, [...whoArr(r), ...(r.more || [])]), VCONF.openEnd)
+    return out(r.prog, r.str, r.end, null, null, true, flags(r, [...whoArr(r), ...(r.more || [])]), len.open)
   for (const b of (d.dutywaves || [])) for (const r of ((b && b.rows) || []))
-    if (r && rowItemKey(r.rid) === item) return out(r.role, r.str, r.end, null, null, true, flags(r, [r.id, ...(r.more || [])]), VCONF.openEnd)
+    if (r && rowItemKey(r.rid) === item) return out(r.role, r.str, r.end, null, null, true, flags(r, [r.id, ...(r.more || [])]), len.open)
   for (const k of Object.keys(d.sims || {})) for (const r of ((d.sims[k]) || []))
     if (r && rowItemKey(r.rid) === item) return out(`${String(k).toUpperCase()} · ${r.label || ''}`.trim(), r.str, r.end,
-      null, null, true, flags(r, [r.p, r.w, ...(r.pax || []), ...(r.more || [])]), VCONF.simLen)
+      null, null, true, flags(r, [r.p, r.w, ...(r.pax || []), ...(r.more || [])]), len.sim)
   for (const w of (d.waves || [])) for (const f of ((w && w.formations) || []))
     if (f && rowItemKey(f.rid) === item) return out([f.cs, f.msn].filter(Boolean).join(' · '), f.to, f.ld)
   return lost('This event')

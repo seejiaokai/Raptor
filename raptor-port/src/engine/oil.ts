@@ -1,7 +1,7 @@
 /* the OIL block reads TODAY's settings, never a published day's kept ones (owner D2005 leaves OIL as it was — whether a
    published day's OIL follows a changed setting is his question; the block keeps its own values with its evidence,
    oilev.ts): rules.ts ruleNow, which is VCONF outside a day judged by its kept settings */
-import { ruleNow } from './rules'
+import { VCONF, ruleNow } from './rules'
 import { oilAsks } from './inputs'
 import { parseHM } from './time'
 import { isStandalone, saExemptKind, saFlies, saAnyFlies, saDeskFlies } from './waves'
@@ -428,7 +428,11 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
    other row `openEnd` — for the evidence block to record the crowd behind a placeholder over it (oilev.ts). DISPLAY
    ONLY: nothing here is reached by the credit, no `reach` (no switch), no span. The same skips as the walk above, so a
    row the walk would not stand on (cancelled, ⓘ, a request's own row — its crowd has its own window) is never
-   listed. A flying line is never listed: a placeholder is refused in a cockpit (D33). */
+   listed. A flying line is never listed: a placeholder is refused in a cockpit (D33).
+   THE LENGTH IS THE SETTING IN FORCE WHERE THIS IS ASKED (owner D2028, 13 Nov 26 — "the published day keeps its 1h until
+   its next amendment, with no pending mark"), never `ruleNow`: the evidence block lays the settings its crowds are
+   counted under before it asks (oilev.ts oilEvidence) — a published day's own while nothing waits on it, and whenever
+   it is compared with what went out. The callers that only ask WHICH rows are open-ended (ui/oilmode.ts) read no length. */
 export interface OpenEndRow{item:string;st:number;len:number;puck:boolean}
 export function openEndRows(day:any):OpenEndRow[]{
   const out:OpenEndRow[]=[];
@@ -440,13 +444,13 @@ export function openEndRows(day:any):OpenEndRow[]{
     out.push({item,st,len,puck:sentOn(vals)});
   };
   ['amt','oft'].forEach((k:any)=>((day.sims||{})[k]||[]).forEach((r:any)=>{
-    if(r&&!r.cx)add(rowItemKey(r.rid),r.str,r.end,ruleNow('simLen'),[r.p,r.w,...(r.pax||[]),...(r.more||[])]);}));
+    if(r&&!r.cx)add(rowItemKey(r.rid),r.str,r.end,VCONF.simLen,[r.p,r.w,...(r.pax||[]),...(r.more||[])]);}));
   (day.dutywaves||[]).forEach((dw:any)=>((dw&&dw.rows)||[]).forEach((r:any)=>{
-    if(r&&!r.cx)add(rowItemKey(r.rid),r.str,r.end,ruleNow('openEnd'),[r.id,...(r.more||[])]);}));
+    if(r&&!r.cx)add(rowItemKey(r.rid),r.str,r.end,VCONF.openEnd,[r.id,...(r.more||[])]);}));
   (day.ground||[]).forEach((g:any)=>{
-    if(g&&!g.cx&&!g.src&&!g.info)add(groundItemKey(g),g.str,g.end,ruleNow('openEnd'),[g.who,...(g.more||[])]);});
+    if(g&&!g.cx&&!g.src&&!g.info)add(groundItemKey(g),g.str,g.end,VCONF.openEnd,[g.who,...(g.more||[])]);});
   (day.allhands||[]).forEach((x:any)=>{
-    if(x&&!x.cx&&!x.info)add(rowItemKey(x.rid),x.str,x.end,ruleNow('openEnd'),[...whoArr(x),...(x.more||[])]);});
+    if(x&&!x.cx&&!x.info)add(rowItemKey(x.rid),x.str,x.end,VCONF.openEnd,[...whoArr(x),...(x.more||[])]);});
   return out;
 }
 /* THE DESKS THAT MEASURE NOTHING (owner, 20 Sep 26 — "Yes i want a warning").

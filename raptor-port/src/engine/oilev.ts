@@ -48,6 +48,8 @@ import { stashHas, standingRowIn } from './weekstash'
 import { standsOn } from './overlay'
 import { PEOPLE, whoId, isSpecial } from './people'
 import { HOOKS } from './hooks'
+import { withLiveRules, withRuleVals } from './rules'
+import { keptRulesOf } from './faceattrs'
 import { dayOilWork, oilItemDefaults, envMin, uniformOil, inputItemKey, rowItemKey, groundItemKey, openEndRows, oilRuleValsNow, type OilWork, type OilRuleVals } from './oil'
 
 /* the item-address grammar lives in engine/oil.ts, beside the walk that tags
@@ -522,10 +524,30 @@ function pruneHandedOverDecisions(dec: OilDecisions, day: any): void {
   if (dec.pa && !Object.keys(dec.pa).length) delete dec.pa
 }
 
-export function oilEvidence(di: any, day?: any): OilEvidence {
+/* THE SETTINGS A BLOCK'S CROWDS ARE COUNTED UNDER (owner D2028, 13 Nov 26 — a published day's row with no end "keeps its
+   1h until its next amendment, with no pending mark"; D2005 — a changed setting reaches a published day from its next
+   amendment). Who stands behind a placeholder is who is not busy over its row's window (leavewar/sync.ts availableFor →
+   avail.ts personBusy), and both the window of a row with no end and every busy window are read from the Logic
+   settings: the assumed lengths, the step and the dekit. Counted under today's, a Logic change alone moved the working
+   copy's crowd on a published day, and the day read "1 pending" with its four sign-offs down.
+   `crowdRv` — given (publish.ts): the settings the issued version kept, wherever the working copy is COMPARED with what
+   went out, so a setting can never be the difference; `null` is today's, said outright (a version being frozen keeps
+   today's settings, so its crowd is today's). Not given: the settings laid on the day object — the validator lays a
+   version's own on a published day nothing waits on (validate.ts untouchedKept), so Edit Schedule and the board show
+   the crowd View-only Sched does — else today's; a day with a change waiting previews its next amendment (D2013).
+   The caller's own overlay is lifted first, so the answer never depends on who asked. OIL's own three values are not
+   in it: the report lead and the debrief ride the block's `rv` and have their own pending entry (D592 (4)), and every
+   OIL reader takes them through `ruleNow`. */
+const crowdRules = (rv: any): any => {
+  if (!rv || typeof rv !== 'object') return null
+  const o: any = { ...rv }; delete o.reportLead; delete o.debrief
+  return o
+}
+export function oilEvidence(di: any, day?: any, crowdRv?: any): OilEvidence {
+  const rv = crowdRules(crowdRv !== undefined ? crowdRv : keptRulesOf(day || DAYS[+di]))
   /* one read of the inputs' per-person lines for the whole block (inputs.ts inputReadPass): the ALL AVAIL crowd is
      worked out once a placeholder on the day (leavewar/sync.ts availableFor), and nothing in here writes the inputs */
-  return inputReadPass(() => oilEvidenceNow(di, day))
+  return inputReadPass(() => withLiveRules(() => withRuleVals(rv, () => oilEvidenceNow(di, day))))
 }
 function oilEvidenceNow(di: any, day?: any): OilEvidence {
   di = +di

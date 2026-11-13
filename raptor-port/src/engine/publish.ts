@@ -353,9 +353,9 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
     }); }
   /* the OIL line folds into the inputs that moved it, when they are all that moved it (oilev.ts oilMovedInputsOnly) */
   /* (the Logic-values entry — `oilrv:` — is never folded: it is nobody's input, and its own act; it is pushed below) */
-  const oilAll=oilDelta(di,snap.d), oil=oilAll.filter((e:any)=>!String(e.addr).startsWith('oilrv:'));
+  const oilAll=oilDelta(di,snap.d,snap.rv), oil=oilAll.filter((e:any)=>!String(e.addr).startsWith('oilrv:'));
   if(oil.length){const w=(snap.d||{}).oilev, mem=!!(w&&(w.mem||w.earns));
-    const moved=oilMovedInputsOnly(oilEvidence(di),DAYS[di],w,snap.d,mem);
+    const moved=oilMovedInputsOnly(oilNowAs(di,snap.rv),DAYS[di],w,snap.d,mem);
     /* (the named people of BOTH copies' lists — Fable F6 (a): read off one `person`, a man added to an input that also
        carries ALL AVAIL, who thereby leaves its crowd, read as a second change, "what this day earns") */
     const who=new Set<string>(); ax.changed.forEach((x:any)=>{for(const r of [x.was,x.now])if(r)namedOf(r).forEach((e:any)=>who.add(String(e.p)));});
@@ -372,7 +372,7 @@ export function dayPendingItemsIn(sc:any,di:any,weekKey?:any):PendItem[]{di=+di;
        it, brings membership to an item that had none: the men behind it are nobody's changed input either, and the one
        act read TWO — the placeholder added, and "what this day earns" — on a weekday too. Membership that came to an
        item which had none, whose request's own filing or details moved, is that request's — the mirror of the above. */
-    const wasSent:any=(w&&w.sent)||{}, nowSent:any=((oilEvidence(di)||{}) as any).sent||{};
+    const wasSent:any=(w&&w.sent)||{}, nowSent:any=((oilNowAs(di,snap.rv)||{}) as any).sent||{};
     let via:string='';
     const crowdOK=!moved||!mem||[...new Set([...Object.keys(wasSent),...Object.keys(nowSent)])].every((k:any)=>{
       const x=new Set<string>((wasSent[k]||[]).map(String)), y=new Set<string>((nowSent[k]||[]).map(String));
@@ -562,7 +562,9 @@ export function daySnap(di:any){di=+di;
      which is the one the signature was validated against: publishALDay checks
      the signatures and takes this snapshot in one synchronous step, and nothing
      between them writes DAYS or INPUTS (alIssue moves SCHED marks only). */
-  d.oilev=oilEvidence(di);
+  /* …its crowds counted under TODAY's settings, said outright (D2028): the version being frozen keeps today's (`rv`,
+     freezeWarn), whatever is still laid on the working copy from the version before */
+  d.oilev=oilEvidence(di,undefined,null);
   return {d,c,fil:dayFilingFingerprint(di),inp:dayInputsFrozen(di)};}
 /* THE DAY'S INPUTS AS ISSUED ([LEAVE-LATE-PUBLISHED], owner D177–D179, 25 Sep 26 — "freeze everything for now"). A copy
    of every input covering this day's date at the moment of issue, keyed by id — every field, its filing state
@@ -657,7 +659,11 @@ function filingDelta(di:any,issuedFil:any):DeltaEntry[]{
    not merely its block. Guessing it from `acc` made a cancelled row key
    `active` on the issued side and `cx` live, which offered an amendment on a
    day the money already agreed was unchanged. */
-function oilDelta(di:any,issuedDay:any):DeltaEntry[]{
+/* …AND UNDER THE SETTINGS THE ISSUED VERSION KEPT (owner D2028, 13 Nov 26; D2005): the working copy's crowds are counted
+   under `rv` — the version's own Logic settings — so a changed "Any other row", "A sim", step or dekit can never be the
+   difference, and a real change behind a puck still is (oilev.ts oilEvidence). A version that kept none: today's. */
+const oilNowAs=(di:any,rv:any)=>oilEvidence(di,undefined,rv||null);
+function oilDelta(di:any,issuedDay:any,rv?:any):DeltaEntry[]{
   const w=(issuedDay||{}).oilev;
   /* CAN THE TWO SIDES BE COMPARED ON MEMBERSHIP AT ALL ([OIL-SEATS-CAN-EARN]
      step 9b)? Only where the issued side actually recorded it. A block frozen
@@ -669,7 +675,7 @@ function oilDelta(di:any,issuedDay:any):DeltaEntry[]{
      An older EARNING block did record membership, so it is still compared on
      it — that signal is real and predates this step. */
   const mem=!!(w&&(w.mem||w.earns));
-  const now=oilEvidenceKey(oilEvidence(di),DAYS[+di],mem), was=oilEvidenceKey(w,issuedDay,mem);
+  const now=oilEvidenceKey(oilNowAs(di,rv),DAYS[+di],mem), was=oilEvidenceKey(w,issuedDay,mem);
   return (now===was?[]:[{addr:`oil:${+di}`,kind:'oil',from:was,to:now} as DeltaEntry]).concat(oilRuleDelta(di,issuedDay));}
 /* …AND THE LOGIC VALUES THE VERSION'S OIL WAS WORKED OUT FROM ([OIL-WORK-START] — owner, D592 (4), 5 Oct 26: "a published
    day keeps the OIL it went out with"). The version keeps them (oilev.ts — the block's `rv`) and its OIL goes on being
@@ -694,7 +700,7 @@ export function dayDeltaIn(sc:any,di:any,weekKey?:any):DeltaEntry[]{di=+di;
   const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
   if(!snap||!snap.d)return [];
   const ax=inputAxes(di,snap);
-  return canonicalDiff(snap.d,DAYS[di],di).concat(ax.fil).concat(ax.val).concat(oilDelta(di,snap.d));}
+  return canonicalDiff(snap.d,DAYS[di],di).concat(ax.fil).concat(ax.val).concat(oilDelta(di,snap.d,snap.rv));}
 /* THE TWO INPUT AXES, ONE BODY: the filing (by id — D174, D176) and the details (inputDelta), with the records a move
    or a cascade merely replaced by an identical one taken out of BOTH (inputs.ts frozenInputMatch) — so the count, the
    signature and eligibility read the same answer. A version issued before the freeze has no `inp` and keeps the plain
