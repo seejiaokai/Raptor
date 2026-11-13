@@ -62,3 +62,27 @@ hand before it is fixed.
 Known but not measured: the Leave War windows' Delete question and a decision's result line (they appear under or at the
 foot of a window that grows upward — the same cause as the fix); Admin's "Tap again to clear", the Users panel's "Tap
 again to delete", the Scheduler Board's "Tap again to reset", the Events list's "Press again to delete".
+
+## The hand check (chat 70, 13 Nov 26)
+Each finding pressed again, one at a time, in a browser started at 125% (1536 × 740, his PC) and at his iPhone 17
+Pro's size (402 × 874, Chrome's engine, touch taps): `scripts/tapjump/repro.spec.ts` with `repro.config.ts` (against
+a build served by hand; the port passed as `REPRO_PORT`, since the lock refuses an `E2E_PORT` already answering),
+results `scripts/tapjump/repro-results-2026-11-13.jsonl`; the pictures and the page put to him
+(https://claude.ai/artifact/XETGVUMWStGcy1Fa8dcV6i) in `docs/img/handpass/2026-11-13-tap-jump-sweep/hand/`. The host
+opened every deciding picture.
+
+| # | Place | Measured by hand | Recommended to him |
+|---|---|---|---|
+| 1 | Inputs → Calendar, pressing a day (PC) | the day panel narrows the calendar and wraps the filters: the day went 257px left, 44px down, the pointer then on another date. Phone: none | FIX — the calendar keeps its size; the panel opens over the side away from the day |
+| 2 | Leave War day window, "Pick a range" | up 377px, PC and phone (the window grows upward) | FIX — the calendar opens above the button row (the D2030 cure) |
+| 3 | Schedule, CAT / TYPE / QUALS | TYPE pressed with CAT open: 217px left, the finger on the "SUP" chip; each tab 4px when opened | FIX — the tabs stay; the open tab's choices after QUALS |
+| 4 | Leave War several-people window, Delete | up 35px when its "sure?" line appears under the buttons; the finger on the line (PC; the phone drag not drivable) | FIX — the line above the buttons (the D2030 cure) |
+| 5 | Schedule week buttons | the pressed week moves to the second place | LEAVE — the ruled rolling window of four (scheduler page, week navigation) |
+| 6 | Tracker, pressing an event | the chart slides up 297px (PC) / 389px (phone) to fit the window | LEAVE — D1790; taps held while it slides |
+| 7 | Leave War on a phone, a day low on screen | the page scrolls 77px to keep the day above its window | LEAVE — on purpose; the finger rests on plain text |
+| 8 | Edit Schedule phone, AIRCREW tab | the tab rides the drawer's edge | LEAVE — a drawer's handle |
+| 9 | Approve all, the role chip, Sync, Edit quals, Users' Delete | grow or shrink with their words; each still under the finger | LEAVE |
+| — | a person on the schedule (6 presses), a locked day and an event band, the day window's Delete / Approve / Refuse, the Events list ✕, a SANS card on Edit Schedule, a day's name | did not move by hand (the script's moves came from its own scroll into view) | nothing |
+
+Not checked: his iPhone itself; the several-people window on a phone; the Scheduler Board's "Tap again to reset" (not
+reached); Admin's "Tap again to clear" read only (full width, cannot slide).
