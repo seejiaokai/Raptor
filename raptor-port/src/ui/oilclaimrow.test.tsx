@@ -210,7 +210,7 @@ describe('a claim row and the puck beside it agree about OIL', () => {
     ['a No', { [SAT_ISO]: 0 }, /whoever filed this Training answered No to OIL; tap to credit him anyway/],
     ['no answer', undefined, /the OIL question for this Training has not been answered yet; tap to credit him/],
   ] as const) {
-    it(`D762 — on ${what} the second man is OFF, a real switch, in the words for an input of several; a tap credits HIM alone`, async () => {
+    it(`D762 — on ${what} the second man is OFF, a real switch, in the words for an input of several; a tap credits HIM alone (OR17)`, async () => {
       claim({ oil })
       addRow(SAT, { prog: 'TRAINING', str: '0900', end: '1700', who: 'bane', src: 'cl1' })
       await putOnRow('stiff', what === 'no answer')

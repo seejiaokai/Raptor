@@ -133,7 +133,7 @@ afterEach(() => {
   _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); setMe(DEFAULT_ME); storeBackend.impl = null; document.body.innerHTML = ''
 })
 
-describe('who is told, and in what words (D755 (3), D760, D769 — the plan §4.10)', () => {
+describe('who is told, and in what words (D755 (3), D760, D769 — the plan §4.10) (OR43) (OR44)', () => {
   it('an input a scheduler files for two people: each is told he was added; the scheduler who filed it is told nothing', async () => {
     await boot()
     file([RANGER, HEX])
@@ -271,7 +271,7 @@ describe('who is told, and in what words (D755 (3), D760, D769 — the plan §4.
     expect(told(HEX)).toHaveLength(1)
     expect(told(PIKE)).toHaveLength(1)
   })
-  it('several things changed in one save are ONE notice a person — what touches HIM first', async () => {
+  it('several things changed in one save are ONE notice a person — what touches HIM first (OR45)', async () => {
     await boot()
     file([RANGER, HEX]); clear()
     expect(commitInput(rec(), { ...draftOf(rec()), sTime: '10:00', eTime: '11:00' }, [RANGER, PIKE])).toBe(true)   // Hex out, Pike in, re-timed
@@ -305,7 +305,7 @@ describe('the age at the line\'s right (D769)', () => {
   })
 })
 
-describe('T18 — the notice and Undo (Fable F9; D148): reading is each person\'s own record, never a write to the notice', () => {
+describe('T18 — the notice and Undo (Fable F9; D148): reading is each person\'s own record, never a write to the notice (OR48)', () => {
   it('Saber adds Pike; Ranger reads the notice; Saber\'s Undo still goes through and the notice is gone', async () => {
     await boot()
     file([RANGER, HEX]); clear(); tick()
@@ -357,7 +357,7 @@ describe('T18 — the notice and Undo (Fable F9; D148): reading is each person\'
   })
 })
 
-describe('who may write a notice (the plan §4.10 — state/perms.ts ownershipViolation; docs/data-model.md §11)', () => {
+describe('who may write a notice (the plan §4.10 — state/perms.ts ownershipViolation; docs/data-model.md §11) (OR50)', () => {
   const env = (changes: any[], type = 'inputs.write', origin = 'user') => ({ seq: 1, at: '', actor: { id: 'us', role: 'member', personId: RANGER, session: null }, origin, scope: {}, type, changes } as any)
   const inp = { iid: 'i1', people: [{ p: RANGER, by: RANGER }, { p: HEX, by: RANGER }], type: 'Training', date: 'Jul 15', yr: 2026, by: RANGER }
   const note = (over: any = {}) => ({ id: 'n1', to: HEX, by: RANGER, at: 1, iid: 'i1', name: 'Training', day: '2026-07-15', what: [{ k: 'in' }], ...over })
@@ -401,7 +401,7 @@ describe('the bell and its list (D769 — the pictures docs/mock/2026-10-12-one-
   const tap = async (el: Element | null) => { expect(el, 'tap target').toBeTruthy(); await act(async () => { (el as HTMLElement).click() }) }
   afterEach(async () => { if (root) await act(async () => { root.unmount() }) })
 
-  it('an unread notice lights the bell; nothing unread, it is dark', async () => {
+  it('an unread notice lights the bell; nothing unread, it is dark (OR46)', async () => {
     await boot()
     member(RANGER)
     expect(bellOn()).toBe(false)
@@ -410,7 +410,7 @@ describe('the bell and its list (D769 — the pictures docs/mock/2026-10-12-one-
     markAllNoticesRead()
     expect(bellOn()).toBe(false)
   })
-  it('a tap opens the list: the input in bold with its date, what happened and who under it, its age at the right — newest first', async () => {
+  it('a tap opens the list: the input in bold with its date, what happened and who under it, its age at the right — newest first (OR46)', async () => {
     await boot()
     file([RANGER, HEX]); tick(60 * 60_000)
     cx(WED, 'WX'); tick(2 * 60_000)
@@ -433,7 +433,7 @@ describe('the bell and its list (D769 — the pictures docs/mock/2026-10-12-one-
     expect(lines.every(l => l.classList.contains('unread')), 'both unread: bright, with a dot').toBe(true)
     expect($('[data-testid="bell-markall"]')!.textContent).toBe('Mark all read')
   })
-  it('a tap on a line opens the input and marks that line read; the other stays unread', async () => {
+  it('a tap on a line opens the input and marks that line read; the other stays unread (OR47)', async () => {
     await boot()
     file([RANGER, HEX]); tick(60_000)
     cx(WED, 'WX')
@@ -481,7 +481,7 @@ describe('the bell and its list (D769 — the pictures docs/mock/2026-10-12-one-
     expect($$('[data-testid^="bell-line-"]')).toHaveLength(0)
     expect($('[data-testid="bell-markall"]')).toBeNull()
   })
-  it('the list closes on a press outside it, on Escape, and on a second tap of the bell (the standing rule for a click-open popup)', async () => {
+  it('the list closes on a press outside it, on Escape, and on a second tap of the bell (the standing rule for a click-open popup) (OR53)', async () => {
     await boot()
     member(RANGER)
     await draw()
@@ -494,7 +494,7 @@ describe('the bell and its list (D769 — the pictures docs/mock/2026-10-12-one-
     await tap($('#bell')); await tap($('#bell'))
     expect(bellListOpen()).toBe(false)
   })
-  it('D769: an OIL question still comes FIRST — the tap goes straight to it and opens no list, though a notice waits too', async () => {
+  it('D769: an OIL question still comes FIRST — the tap goes straight to it and opens no list, though a notice waits too (OR46)', async () => {
     await boot()
     HOOKS.oilEarningDay = ((di: number) => di === SAT) as any
     member(RANGER)

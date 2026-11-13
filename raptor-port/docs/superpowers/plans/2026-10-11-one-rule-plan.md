@@ -1263,5 +1263,6 @@ does.
 `oilSummaryOf` in `ui/inputedit.tsx`'s comments; about fifteen comments pointing at the four deleted files) — a tidy
 of words, no behaviour; `docs/ui-contracts.md` §A member edits only their own personal inputs and §Editing an input
 from the schedule, not read in depth by the sweep; the new behaviours have no behaviour-register ids of their own yet
-(an id needs its line in `scripts/rulecheck.mjs`); the cancelled input's look and the bell, once built. **And then the
+(an id needs its line in `scripts/rulecheck.mjs`) *[done 14 Nov 26: OR1–OR55,
+`../specs/2026-10-12-one-rule-behaviour-register.md`, wired into the rule check — `[ONE-RULE-LEFTOVERS]` (1)]*; the cancelled input's look and the bell, once built. **And then the
 FULL check** (§7) and Fable's read of the finished code (D764).
