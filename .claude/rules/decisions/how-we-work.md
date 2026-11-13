@@ -79,7 +79,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - The repo is public until he says otherwise; his PC's runner stays stopped meanwhile; private again, it restarts and the checks return to his PC — he installs and registers the runner himself, its token never given to the agent, and the agent keeps a way back to GitHub's machines [D106, D89, D1530]. No public GitHub web address [D343]; the app is viewed on Vercel [D59].
 - Three points of the SWiFT build-and-deploy kit are set aside on his order: all its red flags (whether the flying schedule or the Tracker count as operational information among them), its rule against hosting on Vercel and its rule that the project be private; Vercel and the public project stay until he says otherwise, and none is put back to him unasked [D1530].
 - The kit's own files, marked for use inside the service only, are not put into the public project — the agent's reading of keeping the project public, not checked with him [D1530].
-- Vercel is on its Pro plan from 8 Nov 26, and he spends no more on it than the plan he subscribed to, US$20 a month, its included usage with it: the Basic build machine, a US$1 budget that only warns (its pause off), and back to the free plan if the warning comes [D1794].
+- Vercel is on Pro from 8 Nov 26; he spends no more than the plan, US$20 a month, its usage included: the Basic build machine, a US$1 budget that only warns (its pause off), the free plan again if it warns [D1794]; a notes-only push is to skip its build, [VERCEL-SKIP-NOTES] [D2032].
 - Two guards stand: a backgrounded npm command must move into `raptor-port` [D162]; the push-and-lock guard [D976].
 
 ## Showing him, asking him
