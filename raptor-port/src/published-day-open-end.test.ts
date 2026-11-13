@@ -10,7 +10,9 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './engine/data'
 import { INPUTS } from './engine/inputs'
-import { SCHED, setSign, setDayApproved, publishALDay, dayDelta, daySigned, dayCurVer, daySnapOf } from './engine/publish'
+import { SCHED, setSign, setDayApproved, publishALDay, dayDelta, daySigned, dayCurVer, daySnapOf, dayPendingItems, dayShownPendCount, unpublishDay } from './engine/publish'
+import { loadVersionToWorkingCopy } from './engine/drafts'
+import { groundItemKey } from './engine/oil'
 import { VCONF, SHIFT_HARD } from './engine/rules'
 import { HOOKS } from './engine/hooks'
 import { validate } from './engine/validate'
@@ -182,5 +184,145 @@ describe('kept as it is — a real change behind the puck still reads pending', 
     expect(dayDelta(TUE).some((e: any) => String(e.addr).startsWith('oil:')), 'the crowd is part of what waits').toBe(true)
     expect(daySigned(TUE)).toBe(false)
     expect(crowd(TUE, r), 'the next amendment\'s crowd, over today\'s two hours').toEqual(['ignite', 'stiff'])
+  })
+})
+
+/* ── Astra's scenario design (docs/superpowers/briefs/2026-11-13-d2028-scenarios.md): what the first eleven left out ── */
+
+describe('D2028 — the same on every kind of row a placeholder can stand on (scenario 1)', () => {
+  const plus20 = (t: string) => { const [h, m] = t.split(':').map(Number); return `${String(h).padStart(2, '0')}:${String(m + 20).padStart(2, '0')}` }
+  const KINDS: [string, (d: any) => string, string][] = [
+    ['a ground row', d => { d.ground.push({ prog: 'DINNER', str: '09:00', end: '', who: 'allavail' }); ensureRowIds(DAYS); return groundItemKey(d.ground[0]) }, '10:15'],
+    ['a duty desk', d => { d.dutywaves.push({ label: 'DUTIES', rows: [{ role: 'SDO', id: 'allavail', str: '09:00', end: '' }] }); ensureRowIds(DAYS); return rowItemKey(d.dutywaves[0].rows[0].rid) }, '10:15'],
+    ['a sim seat', d => { d.sims.amt.push({ str: '09:00', end: '', p: 'allavail', w: '' }); ensureRowIds(DAYS); return rowItemKey(d.sims.amt[0].rid) }, '10:35'],
+    ['a Common Programme row', d => { d.allhands.push({ prog: 'OPS BRIEF', str: '09:00', end: '', who: ['allavail'] }); ensureRowIds(DAYS); return rowItemKey(d.allhands[0].rid) }, '10:15'],
+  ]
+  for (const [name, make, busyAt] of KINDS) it(`${name}: both assumed lengths doubled, the day checked twice — nothing waits, the four stay, the crowd is the one it went out with`, () => {
+    const key = make(day(TUE))
+    day(TUE).ground.push({ prog: 'DENTAL', str: busyAt, end: plus20(busyAt), who: 'bane' }); ensureRowIds(DAYS)
+    publish(TUE)
+    const people = () => [...oilSentOf(oilEvidenceOf(TUE), key).people].sort()
+    expect(people(), 'premise: published with the man busy just past the assumed end').toEqual([...MEN].sort())
+    VCONF.openEnd = 120; VCONF.simLen = 180
+    for (const pass of ['first', 'second']) {
+      validate()
+      expect(dayDelta(TUE), `${pass} check`).toEqual([])
+      expect(dayPendingItems(TUE), `${pass} check: the pending list`).toEqual([])
+      expect(dayShownPendCount(TUE), `${pass} check: the day's count`).toBe(0)
+      expect(daySigned(TUE), `${pass} check`).toBe(true)
+      expect(people(), `${pass} check`).toEqual([...MEN].sort())
+    }
+  })
+})
+
+describe('D2005 — the dekit time, as the step time (scenario 6)', () => {
+  it('bane lands 09:00 (dekit 30 → busy until 09:30); ALL AVAIL 09:45–10:30; dekit 30 → 90 leaves the published day alone', () => {
+    day(TUE).waves.push({ label: 'WAVE 1', night: false, intimes: [], traffic: [], formations: [
+      { cs: 'VL', msn: 'BFM', to: '08:00', ld: '09:00', br: '', rl: '', aircraft: [{ p: 'bane', w: '', rmks: '', area: '', opts: {} }] }] })
+    day(TUE).allhands.push({ prog: 'Tasking', str: '09:45', end: '10:30', who: ['allavail'] })
+    ensureRowIds(DAYS)
+    const r = day(TUE).allhands[0]; publish(TUE)
+    expect(crowd(TUE, r), 'premise: bane free from 09:30').toEqual([...MEN].sort())
+    VCONF.dekit = 90; validate(); validate()
+    expect(dayDelta(TUE), 'the Logic change alone').toEqual([])
+    expect(daySigned(TUE)).toBe(true)
+    expect(crowd(TUE, r)).toEqual([...MEN].sort())
+  })
+})
+
+/* three answers that can be told apart: bane busy 10:15, ignite busy 11:15 — the one-hour crowd holds all four, the
+   two-hour crowd loses bane, the three-hour crowd loses ignite too */
+describe('D2028 — the original at 1h, the amendment at 2h, today at 3h (scenarios 7–9, 11, 12)', () => {
+  const H1 = [...MEN].sort(), H2 = ['ignite', 'pump', 'stiff'], H3 = ['pump', 'stiff']
+  const T1 = '09:00–10:00 · no end time, an hour assumed', T2 = '09:00–11:00 · no end time, 2 hours assumed', T3 = '09:00–12:00 · no end time, 3 hours assumed'
+  const realChange = () => { day(TUE).ground.push({ prog: 'ADMIN', str: '14:00', end: '15:00', who: 'pump' }); ensureRowIds(DAYS); validate() }
+  function threeVersions() {
+    const r = hisCase(TUE)
+    day(TUE).ground.push({ prog: 'MEDICAL', str: '11:15', end: '11:45', who: 'ignite' }); ensureRowIds(DAYS)
+    publish(TUE); const orig = dayCurVer(TUE)
+    VCONF.openEnd = 120; validate(); realChange()
+    sign(TUE); publishALDay(TUE); validate(); sign(TUE)
+    const al1 = dayCurVer(TUE)
+    VCONF.openEnd = 180; validate()
+    return { r, orig, al1 }
+  }
+  it('the amendment, clean, keeps its 2h on the working copy and its face; the original keeps 1h; looking at either changes nothing', () => {
+    const { r, orig, al1 } = threeVersions()
+    expect(al1, 'premise: an amendment went out').not.toBe(orig)
+    for (const pass of ['first', 'second']) {
+      expect(dayDelta(TUE), pass).toEqual([]); expect(daySigned(TUE), pass).toBe(true)
+      expect(title(TUE, r), pass).toContain(T2); expect(crowd(TUE, r), pass).toEqual(H2)
+      expect(issuedTitle(TUE, r, al1), pass).toContain(T2); expect(issuedCrowd(TUE, r, al1), pass).toEqual(H2)
+      expect(withChipWorld(TUE, orig, false, () => oilItemLabel(TUE, item(r)).when), pass).toContain(T1); expect(issuedCrowd(TUE, r, orig), pass).toEqual(H1)
+      validate()
+    }
+  })
+  it('a real change waiting previews today\'s 3h; put back, the day is its amendment\'s 2h again — not the original\'s hour', () => {
+    const { r } = threeVersions()
+    day(TUE).ground.push({ prog: 'ADMIN 2', str: '15:00', end: '16:00', who: 'pump' }); ensureRowIds(DAYS); validate()
+    expect(dayPendingItems(TUE).length, 'premise: it waits').toBeGreaterThan(0)
+    expect(title(TUE, r)).toContain(T3); expect(crowd(TUE, r)).toEqual(H3)
+    expect(issuedTitle(TUE, r), 'View-only Sched').toContain(T2)
+    day(TUE).ground.pop(); validate()
+    expect(dayPendingItems(TUE)).toEqual([])
+    expect(title(TUE, r)).toContain(T2); expect(crowd(TUE, r)).toEqual(H2)
+  })
+  it('the amendment unpublished: the original is current at 1h, the withdrawn change waits and previews 3h; published again it freezes 3h (D101)', () => {
+    const { r, orig } = threeVersions()
+    expect(unpublishDay(TUE), 'premise: the amendment came off').toBeTruthy(); validate()
+    expect(dayCurVer(TUE)).toBe(orig)
+    expect(issuedTitle(TUE, r)).toContain(T1); expect(issuedCrowd(TUE, r)).toEqual(H1)
+    expect(dayPendingItems(TUE).length, 'the withdrawn amendment\'s change waits').toBeGreaterThan(0)
+    expect(title(TUE, r)).toContain(T3); expect(crowd(TUE, r)).toEqual(H3)
+    sign(TUE); publishALDay(TUE); validate()
+    expect(dayDelta(TUE)).toEqual([])
+    expect(issuedTitle(TUE, r)).toContain(T3); expect(issuedCrowd(TUE, r)).toEqual(H3)
+    expect(title(TUE, r)).toContain(T3); expect(crowd(TUE, r)).toEqual(H3)
+  })
+  it('the original loaded onto the working copy waits and previews 3h; the amendment loaded back is clean at its 2h (D98)', () => {
+    const { r, orig, al1 } = threeVersions()
+    expect(loadVersionToWorkingCopy(TUE, orig)).not.toBe(false); validate()
+    const r0 = day(TUE).allhands[0]
+    expect(dayCurVer(TUE), 'what went out is untouched').toBe(al1)
+    expect(dayPendingItems(TUE).length).toBeGreaterThan(0)
+    expect(title(TUE, r0)).toContain(T3); expect(crowd(TUE, r0)).toEqual(H3)
+    expect(loadVersionToWorkingCopy(TUE, al1)).not.toBe(false); validate()
+    const r1 = day(TUE).allhands[0]
+    expect(item(r1), 'the same row').toBe(item(r))
+    expect(dayPendingItems(TUE)).toEqual([])
+    expect(title(TUE, r1)).toContain(T2); expect(crowd(TUE, r1)).toEqual(H2)
+  })
+  it('the day read back as new objects — a reload, a week change — is still clean at its 2h after the next check', () => {
+    const { r } = threeVersions()
+    DAYS.forEach((d: any, i: number) => { DAYS[i] = JSON.parse(JSON.stringify(d)) })
+    validate()
+    const r1 = day(TUE).allhands[0]
+    expect(item(r1)).toBe(item(r))
+    for (const pass of ['first', 'second']) {
+      expect(dayDelta(TUE), pass).toEqual([]); expect(daySigned(TUE), pass).toBe(true)
+      expect(title(TUE, r1), pass).toContain(T2); expect(crowd(TUE, r1), pass).toEqual(H2)
+      validate()
+    }
+  })
+  it('a real end typed is a real change (its written time, today\'s settings); cleared again the day is clean at its 2h (scenario 12)', () => {
+    const { r } = threeVersions()
+    r.end = '09:30'; validate()
+    expect(dayPendingItems(TUE).length).toBeGreaterThan(0)
+    expect(title(TUE, r)).toContain('09:00–09:30'); expect(title(TUE, r)).not.toContain('assumed')
+    r.end = ''; validate()
+    expect(dayPendingItems(TUE)).toEqual([])
+    expect(title(TUE, r)).toContain(T2); expect(crowd(TUE, r)).toEqual(H2)
+  })
+})
+
+describe('D2028 — the assumed length made shorter', () => {
+  it('published under 2h with bane busy 10:15 (out of the crowd); 2h → 1h leaves him out and the day alone', () => {
+    VCONF.openEnd = 120
+    const r = hisCase(TUE); publish(TUE)
+    expect(crowd(TUE, r), 'premise').toEqual(['ignite', 'pump', 'stiff'])
+    VCONF.openEnd = 60; validate(); validate()
+    expect(dayDelta(TUE)).toEqual([]); expect(daySigned(TUE)).toBe(true)
+    expect(crowd(TUE, r)).toEqual(['ignite', 'pump', 'stiff'])
+    expect(title(TUE, r)).toContain('09:00–11:00 · no end time, 2 hours assumed')
   })
 })
