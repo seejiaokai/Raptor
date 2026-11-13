@@ -295,3 +295,81 @@ weaken a test; out of this job) — filed for the coordinator. GitHub's run of t
 The pictures: host 37, W1 283, W2 240, the re-walk 12. The orders: the host's route, W1's S1–S8, W2's N1–N7 and the
 re-walk. The surfaces: the roll-call's rows walked or pictured (§3), the IT flow guide's deck and the old walk scripts
 not counted.
+
+---
+
+# Part 2 — D2028: a published day's row with no end keeps the assumed length it was published under (chat 68, 13 Nov 26)
+
+Laid down at 10:10 on 13 Nov 26, BEFORE the walk: the roll-call's "walked" cells and §11.5 to §11.10 are empty on
+purpose until each is done — a blank is a blank, not a pass. The plan: `docs/superpowers/plans/2026-11-13-d2028-open-end-published-plan.md`.
+The scenarios (Astra, not the builder): `docs/superpowers/briefs/2026-11-13-d2028-scenarios.md`.
+
+## 11.1 The eight answers and the tier
+1 money (OIL, who counts as present): YES — the crowd behind a placeholder decides who earns on a Saturday or holiday.
+2 the published record: YES — what a published day shows and whether it reads pending. 3 saved data: YES — the crowd is
+frozen onto the issued version at publication. 4 a shared drawer: YES — the OIL block's one reader feeds every surface.
+5 a new gesture or mode: NO — no control added or changed. 6 a new surface: NO. 7 roles: NO — nothing about who may do
+what. 8 the warning list: YES — the "would earn" and missing-period lines read the same crowd. **Tier: FULL.**
+
+## 11.2 The rulings swept
+D2028 (the change). D2005, D2014 (a published day is checked, and its OIL counted, by the settings it went out under).
+D2013 (a day with something waiting previews its next amendment under today's settings). D2029 (OIL Earn shows the
+working figure only — nothing built). D360, D361 (the assumed hour; such a row earns nobody). D44, D45, D103 (the crowd
+frozen at publication; a real change reads pending and the four fall). D98 (back to what was published is no
+amendment). D101 (after an Unpublish the withdrawn change waits). D592 (OIL's own values still read pending). D186 (the
+printed brief). D482 (Insights' hours stay live). D142, D48 (the credit follows the latest published version). D36 (the
+narrow availability window, step to dekit). D56, D785 (what is not a finding). No two of them clash: D2013 and D2028
+meet at "does anything wait on the day", and the build takes that line from the validator's own test of it.
+
+## 11.3 The roll-call — every place a published day's assumed length, or the crowd behind a placeholder, is drawn or used
+SHOWS = the kept length / crowd while nothing waits. Rows 14 to 23 are Astra's additions to the plan's draft.
+
+| # | Place | SHOWS it | Proved by (test) | Walked |
+|---|---|---|---|---|
+| 1 | ALL AVAIL window's title — View-only Sched | YES since this build | `published-day-open-end.test.ts` "the window keeps…" | |
+| 2 | the same — a look at an older version | YES | the same file, "the next amendment…", "the amendment, clean…" | |
+| 3 | the same — Edit Schedule and the board, nothing waiting | YES since this build | "the window keeps…" | |
+| 4 | the same — a change waiting | MUST NOT, because the working copy previews the next amendment (D2013) | "once something else waits…", "a real change waiting previews today's 3h" | |
+| 5 | the window's flags and list | follows the title's interval (one label) | — (the walk) | |
+| 6 | the count chip and list — issued face | YES (frozen at publication) | "premise", "the next amendment…" | |
+| 7 | the count chip and list — working copy, nothing waiting | YES since this build | "the Logic change alone…", every row kind | |
+| 8 | the day's pending count and list, "Not yet signed", the four sign-offs | YES since this build | every row kind (the list and the count, checked twice) | |
+| 9 | another placeholder's crowd on the day (a named man on the open-ended row; the step and dekit times) | YES since this build | "another row's crowd", the step and dekit tests | |
+| 10 | the day's clash warnings and crew-rest end | YES (D2005's build) | `published-day-logic.test.ts` | |
+| 11 | the crew list and seat picker | to see in the walk: nothing waiting reads the kept settings; a placement previewed is the next amendment | — | |
+| 12 | OIL Earn's "No OIL worked out — this row has no end time" | MUST NOT change, because it does not depend on the length | `oilopenrow.test.ts` | |
+| 13 | Insights work hours | MUST NOT, because D482 keeps them live | — | |
+| 14 | the Leave War's credit, the OIL tracker, Balances — through ANOTHER timed row whose crowd the open-ended row moves | YES since this build (the draft's "must not, such a row earns nobody" was too narrow) | `leavewar/published-open-end-oil.test.ts` (the credit) | the tracker and Balances: the walk |
+| 15 | the "would earn", missing-period and "publish again" lines | YES — the untouched day reads the crowd it went out with | the same file, the sole-earner tests | |
+| 16 | the pending list, publish eligibility, the discard question | agree with the day's count; no setting-only item | every row kind | |
+| 17 | working sign-off boxes as against the issued "Signed" line | the boxes stay valid; the line is the version's own | "the four stay" tests | |
+| 18 | the window open while an edit is made behind it | title, flags, people and chip move together | — (the walk) | |
+| 19 | a saved plan's preview; a version loaded onto the working copy | the loaded-version test; a saved plan: the walk | "the original loaded…" | |
+| 20 | the next-week preview (View-only: the issued version; Edit Schedule: the working copy) | `weekctx.ts` builds under the day's own settings (D2005) | `state/kept-rules-neighbour.test.ts` | |
+| 21 | a member's count window | the same issued interval and people, no earning controls | — (the walk) | |
+| 22 | print and CSV | the title is not printed; the count is the frozen one — to confirm in the walk by what each emits | — | |
+| 23 | after a reload, a week change and back, Undo and Redo | the settings are laid again by each check | "the day read back as new objects" | a true reload, Undo / Redo: the walk |
+| 24 | the IT flow deck, the Logic page's lines for "A sim" / "Any other row" | words only — to read once the records are written | — | |
+
+## 11.4 The five sizing lines
+*(to write before the walker starts — `docs/walk-ledger.md` §Before any walk)*
+
+## 11.5 The orders walked
+
+## 11.6 Findings and what was done
+
+## 11.7 The reads
+The brief, word for word to both: `docs/superpowers/briefs/2026-11-13-d2028-read-brief.md`. Started 10:05, before the
+walk, because the walk waited on the checks lock; the walk is done before the reads are closed, and a fix is re-read.
+
+## 11.8 Cases carried by tests
+`src/published-day-open-end.test.ts` (23) and `src/leavewar/published-open-end-oil.test.ts` (8). Run against the code
+before the fix (the five source files at `f80b5804b`): 19 of 23 and 4 of 8 red there; the 8 that stay green are the
+premises and the "kept as it is" halves (a real change still reads pending), which is what they are for. Not carried by
+a test, so the walk's: extras and passengers, a real leave filed through the Inputs window, Undo / Redo from the top
+bar, a true reload, a saved plan switched in, a weekday made a holiday.
+
+## 11.9 Gates
+
+## 11.10 The Walk line
+Walk: NOT DONE — the build waits on the checks lock (10:10, 13 Nov 26).
