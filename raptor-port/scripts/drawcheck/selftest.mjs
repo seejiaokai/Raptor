@@ -33,6 +33,15 @@ const cases = [
   { name: 'an edge of no width in two colours', want: [], p: { check: ['edge'] }, D: part({}, { look: { edge: Array(4).fill('0px solid rgb(1, 2, 3)') } }), B: part({}) },
   { name: 'a whole row moved down the page, its parts judged inside it', want: [], p: { check: ['place'], rel: 'row' },
     D: part({ x: 20, y: 456 }), B: part({ x: 20, y: 462 }), Drel: part({ x: 0, y: 436 }), Brel: part({ x: 0, y: 442 }) },
+  // the drawing's own marker ring (#ff2d95) is its pointer, not its design (skill note 742, [DRAW-MARK-HELPER])
+  { name: 'M5b\'s heading: an inline pink ring on the drawing only', want: [], p: { check: ['shadow', 'edge'] },
+    D: part({}, { look: { shadow: 'rgb(255, 45, 149) 0px 0px 0px 2px inset' } }), B: part({}) },
+  { name: 'a pink marker edge drawn round a part, the build with none', want: [], p: { check: ['edge'] },
+    D: part({}, { look: { edge: Array(4).fill('2px solid rgb(255, 45, 149)') } }), B: part({}) },
+  { name: 'a real dark shadow under the marker ring, the build with none — the shadow still counts', want: ['shadow'], p: { check: ['shadow'] },
+    D: part({}, { look: { shadow: 'rgb(255, 45, 149) 0px 0px 0px 2px inset, rgba(0, 0, 0, 0.4) 0px 4px 12px 0px' } }), B: part({}) },
+  { name: 'a pink ring the BUILD wears is a difference (only the drawing\'s marker is excused)', want: ['shadow', 'edge'], p: { check: ['shadow', 'edge'] },
+    D: part({}), B: part({}, { look: { shadow: 'rgb(255, 45, 149) 0px 0px 0px 2px', edge: ['2px solid rgb(255, 45, 149)', '0px none rgb(0, 0, 0)', '0px none rgb(0, 0, 0)', '0px none rgb(0, 0, 0)'] } }) },
 ]
 let bad = 0
 for (const c of cases) {

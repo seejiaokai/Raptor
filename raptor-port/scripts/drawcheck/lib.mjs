@@ -71,6 +71,8 @@ export function measureParts(parts) {
     while ((t = tw.nextNode())) {
       if (!t.textContent.trim()) continue
       const pe = t.parentElement; if (!pe || !vis(pe)) continue
+      // a drawing's own tag (scripts/handpass/drawmark.mjs) is the drawing's pointer, never the part's words (742)
+      if (pe.closest('[data-drawmark-tag]')) continue
       const pr = pe.getBoundingClientRect(); if (pr.width <= 1) continue
       const rg = document.createRange(); rg.selectNodeContents(t)
       for (const r of rg.getClientRects()) {
