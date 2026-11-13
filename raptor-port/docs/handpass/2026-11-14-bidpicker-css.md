@@ -10,7 +10,7 @@ Walked on the built bundle of `claude/lw-bidpicker-css-1114b`, served on port 42
 | 1 | Free day: window opens; Whole day / AM / PM; remark typed; Auto-approve off and on; the ⋯ menu open and closed; Pick a range (calendar); ✕ | d-01…d-12 / p-01…p-17 | PASS |
 | 1 | Grant OIL (HO · 0.5, FO · 1, "other" box typed 1.5); CSE; OD; LL with auto-approve off (pending) | d-13…d-17 / p-18…p-26 | PASS |
 | 2 | Pending leave window: Refuse (window closes), reopened with "Refused" lit, Refuse pressed again (back to pending), Move, Approve, approved window, Document row, Delete | d-18…d-28 / p-27…p-42 | PASS |
-| 2 | "Delete — sure?" in the one-day window (armed only over a day holding an OIL award) | d-29 / p-43 | NOT WALKED: the delete on a plain war leave goes at once (as built); the award-day route did not open a Delete (see MISSING) |
+| 2 | "Delete — sure?" in the one-day window | d-29 / p-43 | not reached in Part 1; walked in Part 2 over an award day (PASS) |
 | 3 | Two entries on a day: the day's list, Refuse on a row, Delete chip | d-30…d-32 / p-44…p-47 | PASS (the armed words were not read from the chip; not seen) |
 | 4 | Drag across 4 days: the drag window, its leave button | d-33, d-34 / p-48…p-50 | PASS |
 | 5 | Settings (groups, Rearrange the grid, Reset order); Rearrange mode; a counter row opens the counter's window (name, amber/red boxes, Save, Edit counter…); Events list; its ✕ armed "Delete — sure?"; Calendar… | d-35…d-41 / p-51…p-60 | PASS |
@@ -34,11 +34,24 @@ None.
 
 None: no page errors, no console errors, no 4xx/5xx responses, across all four worlds (desktop and phone, admin and member).
 
+## Part 2 — the counter's full form and the armed Delete (script `scripts/handpass/lw-bidpicker-css-walk2.mjs`; pictures `walk/d2-*` desktop, `walk/p2-*` phone; log `walk2-log.json`)
+
+| # | Step | Pictures (desktop / phone) | Result |
+|---|---|---|---|
+| 1 | Rearrange, a counter (IWSO), "Edit counter…": the form at rest (Name, Count People / Sets-teams, Crew, Cat with the is / is-not toggle, Holding, Without, Amber / Red below, Save counter, Cancel, Delete counter) | d2-01 / p2-01 | PASS |
+| 1 | Sets / teams mode (slots, "of…", ✕), back to People, Amber and Red boxes typed, an amber below red, amber put back, Save counter, reopened, Delete counter (reads "Really delete?"), Cancel | d2-02…d2-14 / p2-02…p2-18 | PASS |
+| 1b | "+ Counter" from Settings: a new counter's form, name typed, Sets / teams, a second slot added (the slot list stands full height), People, Save with nothing chosen | d2-01…d2-06 (`newcounter`) / p2-01…p2-11 | PASS |
+| 2 | One-day window over a day holding an OIL award (Grant OIL, Give FO, day reopened): Delete pressed once, armed: "Delete — / sure?" on two lines inside its dashed edge, with the amber line "Delete also takes Ridge's OIL award (1 day) — tap Delete again to go ahead." | d2-01-award-day, d2-02-delete-armed / p2-01-award-day, p2-02, p2-03-delete-armed | PASS |
+| 2 | Day with two entries (AM LL, PM OL), Delete once | d2-03 / p2-04 | the window that opened was the one-day window (the second placement replaced the first); Delete took the entry at once, no armed state: see Not reached |
+
+I opened these pictures: both sizes of the form at rest, Sets / teams, the slot list, the Really-delete state, the armed Delete, the new counter's form. Every button, chip, box and row carries the app's look; nothing cut off or overlapping; the long Sets / teams form stands full height on the phone, as built. The script's unstyled-control check found nothing. No finding; no console or page errors (none in either part).
+
+Observation 3: the counter form's Name box is a lighter grey than the dark boxes beside it (Amber, Red). The same box shows in the Required-row rename window of Part 1 (`d-33`, first run). The change moved no rule for it (`.namein` only sets its width), and the capture script's computed-style comparison is what shows whether it differs from before; I did not compare it myself.
+
 ## Not reached
 
-- The one-day window's own "Delete — sure?" (day holding an OIL award: the Delete did not open by the route I used) and the day's list's armed Delete wording.
-- The counter's full form behind "Edit counter…" (the is/is-not row, count box, Save counter, Delete counter); the counter window itself (name, thresholds, Save) was pictured.
+- A day's list showing an armed Delete. A list's Delete took a plain bid at once (one press, the entry gone), so the armed words appear only where an OIL award is involved. The armed state is pictured in the one-day window (`d2-02-delete-armed.png`, `p2-03-delete-armed.png`) and in the Events list (`d-40-events-armed.png`). The list over a day holding an award AND a bid was not tried.
 - A Tab ring on the phone (a touch screen has none).
-- Not compared picture by picture with the build before the change; the computed-style comparison of that is the capture script's job (`lw-bidpicker-css-capture.mjs`).
+- Not compared picture by picture with the build before the change; the computed-style comparison is the capture script's job (`lw-bidpicker-css-capture.mjs`).
 
-Walk: docs/handpass/2026-11-14-bidpicker-css.md · 155 pictures · 14 surfaces (one-day bid window, ⋯ menu, range calendar, Grant OIL, decision rows, day's list, drag window, Settings, Rearrange and counter window, Events list, Open for bidding, Balances/Grades/person window, Approvals, member's windows) · MISSING: the one-day window's armed "Delete — sure?", the counter's full "Edit counter…" form
+Walk: docs/handpass/2026-11-14-bidpicker-css.md · 211 pictures · 15 surfaces (one-day bid window, ⋯ menu, range calendar, Grant OIL, armed Delete over an award, decision rows, day's list, drag window, Settings, Rearrange and counter window, counter form incl. + Counter, Events list, Open for bidding, Balances/Grades/person window, Approvals, member's windows) · MISSING: the day's list's armed Delete (a list over a day holding an award and a bid)
