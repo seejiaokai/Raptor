@@ -2472,3 +2472,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The chat followed its opening line (the block, the backlog item, two briefs, three full rows) and then opened engine and screen files to read the code. Opening them loaded the project guide, the scheduler page, the screen-design page, the OIL page, the builder's rules and the design short form, each whole. The chat read 76% full after the reading alone, 90% by the time the fix and its tests were committed, with the walk, the reads and the gates all still ahead — so the job's long half starts on a compaction. No other open note was checked for the same cause (the log was not read beyond its highest number, 941, the same on every pushed branch).
 **Suggested improvement:** In the session-handoff skill's step that writes the opening line: when the next step is a build with a FULL check, have the opening line say to write the reading of the code into a plan file and commit it BEFORE any fix, and name which checks a fresh helper should carry (the walk, the reads) so the host keeps room. Separately, a job for the rules diet's follow-up (D1960): measure what a scheduler-engine job loads on its first source file, as was done for the Leave War.
 **Principle:** A chat's room is spent by what loads, not only by what it reads on purpose; when the pages a job loads are large, save the reading before the first edit and plan the checks around a compaction.
+
+### Observation 943: A walk script's own checks must be proven on a known-clean and a known-changed screen before its result is believed
+
+**Status:** OPEN
+**Date:** 2026-11-13
+**Session context:** The host's own walk of a fix (D2028, chat 68) — a new script that changed a setting, made a change, took it back and published.
+**Skill:** New skill candidate: walk-script writing (the project's `raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** Writing a new walk script — the step that takes a change back, and the script's own pass/fail lines
+
+**Issue:** Two faults in a freshly written walk script, both in the script and neither in the app, each caught only because the host opened the pictures: (1) the put-back step pressed the keyboard's undo keys, which did nothing in the driven browser, so the "put back" picture still showed the change; the helper that presses the app's own Undo button worked. (2) The script's pass/fail line searched the page's whole text for the word that marks a waiting change, and matched the change history's count label instead, so it printed a failure on a clean screen.
+**Suggested improvement:** In the walk-scripts guide: take a change back by the app's own button through the shared helper, never by a key press; and a script's pass/fail line reads one named element's text (the list's own empty line), never the page's whole text — and is run once against a screen known to be clean and once against one known to be changed before the walk's results are read.
+**Principle:** A check written inside a test script is itself untested code: prove it can say both yes and no on known cases, and read the narrowest element that carries the answer, before trusting what it prints.
