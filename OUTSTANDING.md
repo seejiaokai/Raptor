@@ -2347,7 +2347,9 @@ that merged with PR #481 (`[STACK-MERGED-TIDY]`).
 `.claude/rules/` files, the skills — written for older models. **How:** in a terminal at the repo root, `claude`, then
 `/doctor prompt-audit` (or `/checkup prompt-audit`); paste or save its list into a chat. **Then:** that chat sorts the
 points by file, recommends each, and puts them to him in rounds of at most four; a guide changes only on his word and
-its read (D70). Nothing changes because the report says so.
+its read (D70). Nothing changes because the report says so. **14 Nov 26 (D2038):** he updated the terminal's Claude
+Code (2.1.273 → 2.1.323; the check needs 2.1.283 or later) and let the agent run it once, the night of 14 Nov 26 (chat
+72); its list goes to him in the morning report, sorted by file — this item closes once that list has been put to him.
 
 ### [OVERNIGHT-RETRY-TRIAL] One /overnight run tries the setting that keeps retrying when the service is overloaded (his D885, 15 Oct 26) — OPEN, for the next night he runs /overnight
 **His yes (D885).** For that one night: before the run starts, add `"CLAUDE_CODE_RETRY_WATCHDOG": "1"` to the `env` block

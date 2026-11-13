@@ -20,6 +20,21 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/lw-bidpicker-css-1114 -->
+### CHAT 72 — THE NIGHT OF 14 NOV 26 (/overnight 12, Low, on Opus) — written 14 Nov 26, 03:35 — verify before use
+- After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time, read from the clock (`date`).
+- **Why 72:** main's block said 65 next, but 65–71 were used on branches by then.
+- **His selection ("go low", 14 Nov 26, about 03:25):** jobs 1 to 3, in this order, each its own branch cut from `main` at `6f47f69db`, each the bug-check order in full, Opus building (Fable not used: its weekly figure stood at 81% — his "go" took that recommendation, a one-night choice beside D1972), a Sonnet walker, Astra's read and a fresh, blind Opus read each:
+  1. [LW-BIDPICKER-CSS-INSIDE] — the bid sheet's ~200 rules after the `#page-leavewar` wrapper moved inside it, the wrapper guard's allowed count lowered; nothing on screen may change (the drawing check, before and after, PC and his iPhone's size). Branch `claude/lw-bidpicker-css-1114` (this block's branch). About 3½ h.
+  2. Code tidy, no screen change — [INP-ROOM-TIDY-2], [LOCATE-ITEM-MARKS], and [DOC-POINTERS-CODE]'s three non-engine pointers (weekglide, SchedBoard, pendlist — pendlist read against D338 first; the engine's canonical.ts left alone, D1537). Branch `claude/code-tidy-1114`. About 2½ h.
+  3. The checking tools, nothing in the app changes — [ONE-RULE-LEFTOVERS] part 1 (the register's 55 ids into the rule check) and [DRAW-MARK-HELPER]. Branch `claude/check-tools-1114`. About 3 h.
+- **His answers:** Q1 (the guide check, /doctor prompt-audit) — "a": the agent runs it tonight, read only (D2038, recorded here). He updated the terminal's Claude Code to 2.1.323 first. **Blocked at 03:33:** the terminal copy answers "OAuth session expired" — it needs his sign-in (`claude`, then `/login`), which the agent cannot do; parked below.
+- **Low:** the fewest helpers the checks need, one after another.
+- **Allowance at the start:** weekly 75% (resets 16 Nov 26, 19:00 his time); Fable 81%; this chat about 62% full.
+- **Questions waiting for him:** (1) the guide check needs the terminal's Claude Code signed in — once he signs in, any chat can run it (`claude -p "/doctor prompt-audit" --permission-mode plan`), D2038's one run still owed.
+- **Not tonight, for the morning report:** the overloaded-retry trial (D885) cannot take effect in a chat already running; stale lines seen — chat 64's block (pull request 760 merged 11 Nov 26) and [LW-READS-OWED-1024] "to archive".
+- **Running when written:** none yet. **Next:** job 1's helper. **Rulings:** D2038. **Next chat number:** 73 (D1744).
+<!-- /now -->
 <!-- now:claude/bal-scroll-stuck -->
 ### CHAT 64 — the Balances list stuck at its foot ([BAL-SCROLL-STUCK]) — written 11 Nov 26, 19:45 — BUILT, tried by him on his PC (fixed), waits for his "merge live" — verify before use
 - **His report (11 Nov 26, evening, Chrome on his PC at 125%, a mouse wheel):** on the Leave War's Balances page the whole page shifts up a little when the list reaches its end; rolled to the foot and up at once, the list is stuck sometimes and scrolls only after a pause.
