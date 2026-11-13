@@ -233,7 +233,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Documents and guides**
 - [RULE-FILE-LESSONS] — four lessons for the rule files and the steps for recording a ruling — his word.
-- [DOC-POINTERS-CODE] — two code comments in the rules engine still point at the project guide's old headings, each with the engine's next behaviour change (D1537); the rest re-pointed 14 Nov 26 on claude/code-tidy-1114, awaiting merge.
+- [DOC-POINTERS-CODE] — three code comments in the rules engine are out of date (two point at the project guide's old headings; one says the change history clears on reload), each with the engine's next behaviour change (D1537); the rest re-pointed 14 Nov 26 on claude/code-tidy-1114, awaiting merge.
 - [WORD-LIST] — the app's word list LIVE 10 Nov 26 (pull request 739); left open only while the general rules name it with [SKILL-FUSION].
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
 - [CAL-OLD-LOOKS] — three small leftovers of the calendar job: an old mock-ups page's note, a drop at the screen's bottom edge, his looks nobody recorded — none a fault.
@@ -1712,12 +1712,14 @@ boot, outliving a reload and a sign-out; it now says so, and says why a change c
 browser's lines until the database, and only the newest 2,000). The 8 Nov list was rechecked: every entry already names its
 home (`e2e/leavewar.spec.ts`, `ui/html.ts`, `ui/latemark.test.tsx`, `ui/AdminPage.tsx`, and in the engine
 `audit-d-keyspace.test.ts`, `overnight.test.ts`, `hooks.ts`); `testing/refwin.ts` names `HANDOFF-ARCHIVE.md`, which is
-where the CHIP_LABEL trap is written, so it stays. **Two are left, both in the rules engine** — changed only for a behaviour
+where the CHIP_LABEL trap is written, so it stays. **Three are left, all in the rules engine** — changed only for a behaviour
 change (D1537), so each with the next one there: `raptor-port/src/engine/canonical.ts:35` ("CLAUDE.md §Drag-reordering" →
 `.claude/rules/decisions/scheduler.md` §Settled before this list, its "Drag-reordering" lines) and
 `raptor-port/src/engine/validate.ts:273` ("CLAUDE.md §the robustness doctrine" — it still lands, on the project guide's
-one-line rule; it could name `raptor-port/docs/guide-full.md` §The rules-engine robustness doctrine). The earlier lists are
-in git history.
+one-line rule; it could name `raptor-port/docs/guide-full.md` §The rules-engine robustness doctrine); and, found by the fresh
+Opus reader of b04870339 (filed, not fixed), `raptor-port/src/engine/editlog.ts`'s head comment, which still says the log
+"clears on reload" — it is the change history now, kept across a reload and a sign-out (D338; its own "THE CHANGE HISTORY"
+comment says so). The earlier lists are in git history.
 **Place:** with the rules engine's next behaviour change. Found by `git grep` on 24 Sep 26 (the spring clean's red team,
 Fable finding 10, Astra finding 11).
 
@@ -2390,10 +2392,13 @@ item (a day index, a slot key, an input's or template's id), or the control is o
 own items, the crew panel's day arrows, Manage, Show all), or it opens nothing and is never looked for (the blue / red
 question). The one exception — the input's "→ Ground" / "→ Unavail" / "Reject" — already carries its input's mark
 (`data-acck`; `ui/html.ts accCtl` draws every shape of it, and its own press reads it) and `locate()` matches on it. A list
-of one would add nothing. The reason and the rule for a new control are written above `locate()` in `ui/sheetfocus.ts`;
+of one would add nothing. The "To go out" list's lines (`ui/pendlist.ts` `data-plix` / `data-pltarget`) are list positions,
+but nothing opens a sheet with the keys on one, so `locate()` never searches them (the fix round's correction, from the
+readers of b04870339). The reason and the rule for a new control are written above `locate()` in `ui/sheetfocus.ts`;
 the proof is a new test in `ui/oilkeysback.test.tsx` on the week's REAL buttons, with a second input filed on the same day
 as the first: each names its input and is found again as itself after its day is redrawn — red when `locate()` stops
 using `data-acck` (checked on a temporary mutant, then restored).
+**Filed, not fixed (readers of b04870339; low, the agent's):** a week or board PUCK takes the keys and carries only its man (`data-person`), so after a sheet opened from one (the OIL question) the keys may come back to the same man's other puck that day; Enter and Space do nothing on a puck, so only the ring moves (written above `locate()`). And the new `oilkeysback` test largely repeats the H1 test (kept: it runs on the week's real buttons).
 **What:** `raptor-port/src/ui/sheetfocus.ts locate()` finds a control again after a string redraw by its id, else by its FIRST
 `data-` attribute. Where a button's first mark names an action shared by many items (an input's "→ Ground"), the search can
 land on another item's button — the read's H1, where the keys' "twin" could have been another input's "→ Ground", one Enter
@@ -2493,15 +2498,19 @@ one (a measured layout — a picture first). **Place:** his look; then close, or
 
 ### [INP-ROOM-TIDY-2] Tidy-ups chat 29's code reads filed (8 Nov 26)
 **DONE 14 Nov 26 on claude/code-tidy-1114, awaiting merge** (chat 72's overnight job 2; nothing a person sees changes):
-(1) the test is written once — the Inputs list's four rules and the Medical tab's one nested under one
-`body:has(.floatwin.inpedwin:not([data-placed]))` in `25-inputs-calendar.css`, beside the window's size; `06-inputs.css` and
-`16-medical.css` keep their reasons and point there; the build writes the same flat selectors as before. Proved in a real
+(1) every rule carrying the test stands in one place — the Inputs list's four rules and the Medical tab's one, each
+`body:has(.floatwin.inpedwin:not([data-placed]))`, together under one comment in `25-inputs-calendar.css`, beside the window's
+size, written flat (the fix round: nested under one test, the test-only stylesheet readers lost the parent); `06-inputs.css`
+and `16-medical.css` keep their reasons and point there. Proved in a real
 browser (`raptor-port/scripts/handpass/inp-room-css-capture.mjs`): 20 states — the list and the Medical tab with no window,
 the window where it opens, dragged, reopened where he left it — at 1536 × 864, 1229 × 600 and 402 × 874, 11,760 elements,
 every computed property and ::before / ::after: no difference before and after (and none between two before runs).
-(2) the sentence lives in `ui/cutdraft.ts`; `ui/CutFields.tsx` points to it. (3) `e2e/medical.spec.ts` reads the room from
-`--inpwin-room` as the browser works it out. (4) the comment above `dragging()` in `ui/floatwin.ts` now says nothing reads
+(2) the sentence lives in `ui/cutdraft.ts`; `ui/CutFields.tsx` points to it. (3) `e2e/medical.spec.ts` measures the room against the
+input window's own box on screen (its left edge to the page's right edge), not `--inpwin-room`, which the room rule itself
+reads — red on a temporary mutant of the room's size (the fix round). (4) the comment above `dragging()` in `ui/floatwin.ts` now says nothing reads
 it: no window's bar ever called it (git history, since it came with the move out of the ALL AVAIL window, 28 Sep 26).
+The capture was run again after the fix round: no difference (`raptor-port/docs/handpass/2026-11-14-code-tidy.md` §Fix round).
+**Filed, not fixed (D489), Astra's read of b04870339** (`raptor-port/docs/superpowers/briefs/2026-11-14-code-tidy-read-*.md`): the new comments repeat the reason for gathering the room rules in several places, and the comment above the unused `dragging()` could be shorter. **Place:** low, the agent's — with the next Inputs or Medical batch.
 **Filed, not fixed (D489), by the fresh Opus readers of `claude/chat29-inputs-medical`:** (1) the test "the input window stands
 where it opens", `body:has(.floatwin.inpedwin:not([data-placed]))`, is written five times across `06-inputs.css` and
 `16-medical.css` — one class set on the page would keep them together; (2) the sentence on how a cut-off's draft is read is in

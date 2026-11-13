@@ -94,34 +94,37 @@ describe('the Tab route and the OIL question put before a change', () => {
     expect(src, 'its input').toBeTruthy()
     const twin = { ...structuredClone(src), iid: 'i-locate-twin' }
     INPUTS.push(twin)
-    await act(async () => { notify() })
-    const btns = [...document.querySelectorAll<HTMLElement>('#eWeek .day button[data-acc]')]
-    expect(btns.length, 'the demo week draws accept / reject buttons').toBeGreaterThan(1)
-    const seen = new Set<string>()
-    for (const b of btns) {
-      expect(b.dataset.acck, 'each names its input').toBeTruthy()
-      const day = b.closest('.day')!.getAttribute('data-day')
-      const id = `${day}|${b.dataset.acc}|${b.dataset.acck}`
-      expect(seen.has(id), `two buttons of one day share a kind and an input: ${id}`).toBe(false)
-      seen.add(id)
+    /* taken out again whatever happens, so a failing check here never leaves the twin for the tests after it */
+    try {
+      await act(async () => { notify() })
+      const btns = [...document.querySelectorAll<HTMLElement>('#eWeek .day button[data-acc]')]
+      expect(btns.length, 'the demo week draws accept / reject buttons').toBeGreaterThan(1)
+      const seen = new Set<string>()
+      for (const b of btns) {
+        expect(b.dataset.acck, 'each names its input').toBeTruthy()
+        const day = b.closest('.day')!.getAttribute('data-day')
+        const id = `${day}|${b.dataset.acc}|${b.dataset.acck}`
+        expect(seen.has(id), `two buttons of one day share a kind and an input: ${id}`).toBe(false)
+        seen.add(id)
+      }
+      const byDayKind = new Map<string, number>()
+      for (const b of btns) { const k = `${b.closest('.day')!.getAttribute('data-day')}|${b.dataset.acc}`; byDayKind.set(k, (byDayKind.get(k) || 0) + 1) }
+      expect([...byDayKind.values()].some(n => n > 1), 'some day holds two buttons of one kind, for two inputs').toBe(true)
+      for (let i = 0; i < btns.length; i++) {
+        const b = document.querySelectorAll<HTMLElement>('#eWeek .day button[data-acc]')[i]!   // afresh: the last redraw replaced it
+        const back = locate(b)
+        const dayEl = b.closest('.day') as HTMLElement
+        dayEl.innerHTML = dayEl.innerHTML   // the string redraw: every node of the day replaced by a new one
+        const found = back()
+        expect(found, 'found again').toBeTruthy()
+        expect(found).not.toBe(b)
+        expect(found!.closest('.day')?.getAttribute('data-day'), 'on its own day').toBe(dayEl.getAttribute('data-day'))
+        expect(`${found!.dataset.acc}|${found!.dataset.acck}`, 'as itself, never another input\'s button of its kind').toBe(`${b.dataset.acc}|${b.dataset.acck}`)
+      }
+    } finally {
+      INPUTS.splice(INPUTS.indexOf(twin), 1)
+      await act(async () => { notify() })
     }
-    /* two inputs on one day offering the same kind of button — the case the read's H1 was about — is in the demo week */
-    const byDayKind = new Map<string, number>()
-    for (const b of btns) { const k = `${b.closest('.day')!.getAttribute('data-day')}|${b.dataset.acc}`; byDayKind.set(k, (byDayKind.get(k) || 0) + 1) }
-    expect([...byDayKind.values()].some(n => n > 1), 'some day holds two buttons of one kind, for two inputs').toBe(true)
-    for (let i = 0; i < btns.length; i++) {
-      const b = document.querySelectorAll<HTMLElement>('#eWeek .day button[data-acc]')[i]!   // afresh: the last redraw replaced it
-      const back = locate(b)
-      const dayEl = b.closest('.day') as HTMLElement
-      dayEl.innerHTML = dayEl.innerHTML   // the string redraw: every node of the day replaced by a new one
-      const found = back()
-      expect(found, 'found again').toBeTruthy()
-      expect(found).not.toBe(b)
-      expect(found!.closest('.day')?.getAttribute('data-day'), 'on its own day').toBe(dayEl.getAttribute('data-day'))
-      expect(`${found!.dataset.acc}|${found!.dataset.acck}`, 'as itself, never another input\'s button of its kind').toBe(`${b.dataset.acc}|${b.dataset.acck}`)
-    }
-    INPUTS.splice(INPUTS.indexOf(twin), 1)
-    await act(async () => { notify() })
   })
 })
 

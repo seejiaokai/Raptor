@@ -77,9 +77,9 @@
   .intbl thead th:nth-child(3){width:90px}
   .intbl thead th:nth-child(4){width:124px}
 }
-/* (THE ROOM ITSELF, 1340 wide and up — the four rules — is written beside the window's size, with the Medical tab's, so the
-   test "the window stands where it opens" is written once: 25-inputs-calendar.css, "ITS SIZE AND THE ROOM IT ASKS FOR,
-   ONCE" — [INP-ROOM-TIDY-2], 14 Nov 26) */
+/* (THE ROOM ITSELF, 1340 wide and up — the four rules — is written beside the window's size, with the Medical tab's, so
+   every rule carrying the test "the window stands where it opens" stands in one place: 25-inputs-calendar.css, "ITS SIZE
+   AND THE ROOM IT ASKS FOR, ONCE" — [INP-ROOM-TIDY-2], 14 Nov 26) */
 .intbl tbody tr:hover{background:rgba(255,255,255,.02)}
 /* the row stripe, coloured from inputTone (ui/inputedit.tsx) — one source
    feeding this table and the month calendar's chips alike. Same precedent
