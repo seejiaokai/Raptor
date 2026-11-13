@@ -1,0 +1,23 @@
+[drawmark selftest v1]
+      log: [drawmark] marking #bell moved or resized it (580,40 200×56 → -20,40 200×56) — the mark is taken back
+PASS  a mark that would move a fixed list is refused — drawmark mark: marking #bell moved or resized it (580,40 200×56 → -20,40 200×56) — the mark is taken back
+PASS  … and taken back: the list is where it was, no ring, no tag
+      log: [drawmark] the tag on #panel .cell is not wholly visible anywhere it was tried — above: cut off by div#panel
+PASS  a tag cut off by an overflow-hidden parent is refused — drawmark mark: the tag on #panel .cell is not wholly visible anywhere it was tried — above: cut off by div#panel
+PASS  … or moved inside, where it is wholly visible — placed inside
+      log: [23:53:19.865] [page error] drawmark selftest boom
+PASS  a page error is printed to the run's log as it happens — [23:53:19.865] [page error] drawmark selftest boom
+PASS  … and written to the log file at once
+PASS  a good mark passes, its part's box unchanged — placed above
+PASS  … a ring drawn as an outline in the marker colour, the part's position untouched — {"outline":"solid rgb(255, 45, 149)","pos":"static","tag":"rgb(255, 45, 149)"}
+PASS  the drawing check measures the part's own words, not its tag — measured "two"
+PASS  hide() takes a part out of the picture and leaves it in the page
+PASS  the helper offers no remove()
+PASS  the picture is taken while every mark holds
+      log: [drawmark] picture refused: mark "Ranger" on #two: its part moved or changed size since it was marked (580,68 200×28 → 580,118 200×28)
+PASS  the picture is refused when a marked part moved after it was marked — drawmark: picture refused — mark "Ranger" on #two: its part moved or changed size since it was marked (580,68 200×28 → 580,118 200×28)
+      log: [drawmark] picture refused: mark "Ranger" on #two: its tag was wiped by a redraw — mark it again just before the picture
+PASS  … and when a redraw wiped a tag — drawmark: picture refused — mark "Ranger" on #two: its tag was wiped by a redraw — mark it again just before the picture
+PASS  clear() takes away only the helper's own marks
+PASS  a ring colour of its own: the marker the drawing check leaves out
+all 16 PASS
