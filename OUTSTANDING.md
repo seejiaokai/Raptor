@@ -136,7 +136,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BAL-SCROLL-STUCK] — his report of 11 Nov 26: BUILT on `claude/bal-scroll-stuck` (the Balances page fitted to the screen's true height, its list keeping the wheel); he tried the preview on his PC the same evening — fixed; close once live.
 - [LW-DOUBLETAP-OTHER-WINDOWS] — the double tap's second tap still falls through the person window, ⚙ Settings, the event window and five more over the grid; the guard of 6 Nov 26 covers them cheaply (low, the agent's).
 - [LW-ROLLBACK-FOCUS] — a refused war change still puts back the jump-to-a-day state, so the grid can jump back after one (low, needs its own look).
-- [LW-BIDPICKER-CSS-INSIDE] — the bid sheet's 202 style rules move inside the Leave War's wrapper, as a walked job (low, the agent's).
+- [LW-BIDPICKER-CSS-INSIDE] — BUILT 14 Nov 26 on `claude/lw-bidpicker-css-1114`; awaiting its walk and the two reads.
 - [LW-BID-BUBBLE] — the bubble after a bid: his question, waiting (the pick-look page's Q3); redrawn with D1313, D1314 in place before it is put to him again.
 - [INP-HEAD-SORT-READER] — the Inputs List's column headings sort from the keys since 6 Nov 26, but a screen reader is not told a heading can be pressed; the fix, a button in each heading, changes its look — a picture first (low, with the keyboard sweep D807).
 - [QUALS-HEAD-SORT-KEYS] — the Quals table's headings sort by a click only; the keys cannot reach them (low, with the keyboard sweep D807).
@@ -447,6 +447,7 @@ A refused change restores the war's records, and since 6 Nov 26 keeps the role a
 
 ### [LW-BIDPICKER-CSS-INSIDE] The bid sheet's style rules after its wrapper (the night of 6 Nov 26)
 The 202 rules after the wrapper's close in the bid sheet's stylesheet (the counter form onward, since 19 Aug 26) are not deliberate — every war window draws inside the Leave War's page — and work only because their names are unique. **To do:** move them inside the wrapper as a walked job (their weight changes), lowering the guard's allowed count as they leave. **Place:** the next Leave War batch.
+**BUILT 14 Nov 26** (chat 72's night, job 1) on `claude/lw-bidpicker-css-1114`: all 202 inside, the guard's allowance 202 → 0. Where the move would have changed which rule wins, the look was kept — a dead declaration deleted, or the rule lowered with `:where()` — each marked "MOVED INSIDE" in the stylesheet; the proof is a before-and-after capture of every element's computed style, `raptor-port/docs/img/handpass/2026-11-14-bidpicker-css/`. **Awaiting:** the walk, Astra's read and the fresh Opus read; then his "merge live". **Found, for him later (not faults — each a look the stylesheet meant but never showed, removed to keep the look he walked):** the counter form's dashed "is / is not" and dimmed "Without" row, its 64px count box and a bad point box's red edge; Reset counters "quiet at rest" and Reset order's dim hover; the non-blocking window's brighter edge; Grant OIL's dashed 118px "other" box and 8px row gap; the leave buttons' clear edge; the Required note's width rule.
 
 ### [PAGE-FOOT-FLASH] On his iPhone the top bar and the pinned dates vanish for a few frames at a page's foot (his D1961, 10 Nov 26)
 
