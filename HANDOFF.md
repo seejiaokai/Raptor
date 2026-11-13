@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/vercel-skip-notes -->
+### CHAT 71 — Vercel skips the build on a notes-only push ([VERCEL-SKIP-NOTES], his D2032) — written 13 Nov 26 — BUILT, pull request 765, waits for his "merge live" — verify before use
+- **Branch `claude/vercel-skip-notes`**, cut from `main` at `b476db83a`, worktree `../Raptor-vs`. D2032's full row, its page line (the Vercel line as chat 69 tightened it — that rewording's read is owed, chat 69's) and the backlog item copied word for word from `claude/tap-jump-sweep` (chat 69, not yet on `main`): the same text on both, so the later merge takes it once.
+- **Built:** `vercel.json` → `ignoreCommand`: `raptor-port/scripts/vercel-ignore.mjs` (skip only when every file changed since the branch's last real build is a note — the rulings files, `HANDOFF*.md`, `OUTSTANDING*.md`, `raptor-port/docs/`; build on anything else or anything it cannot tell); its tests `vercel-ignore.test.mjs` (five, green), also run by the Docs guard; `docs/gates-and-deploy.md` and `docs/file-map.md` carry it.
+- **Checks:** tier NONE for the app (nothing he sees changes; no walk); the live trial on this branch — the first push built, then a notes-only push must show Canceled with "skipping the build" in its log, the preview link still opening, and a non-note push must build; the fresh, blind Opus read: no finding; Astra's read: the brief `raptor-port/docs/superpowers/briefs/2026-11-13-vercel-skip-notes-read.md`.
+- **Last week, counted from GitHub's deployment records (6–13 Nov 26):** 706 Vercel deployments; 268 would have been skipped (226 of 603 previews, 42 of 107 live-app builds).
+- **Pick up here:** on his "merge live", merge under the merge lock; then check the live app's Production deployment for that commit — this merge changes `vercel.json`, so it builds; the next notes-only merge to `main` should show Canceled while the live app stays up.
+<!-- /now -->
 <!-- now:claude/bal-scroll-stuck -->
 ### CHAT 64 — the Balances list stuck at its foot ([BAL-SCROLL-STUCK]) — written 11 Nov 26, 19:45 — BUILT, tried by him on his PC (fixed), waits for his "merge live" — verify before use
 - **His report (11 Nov 26, evening, Chrome on his PC at 125%, a mouse wheel):** on the Leave War's Balances page the whole page shifts up a little when the list reaches its end; rolled to the foot and up at once, the list is stuck sometimes and scrolls only after a pause.
