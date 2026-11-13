@@ -18,6 +18,9 @@
  * and their pictures; the working guides there too — the app's build reads nothing under docs/). Everything else builds:
  * the app, its build files, vercel.json, the scripts (this one included), .github, the agent's own guides and hooks.
  *
+ * Tried live on its own branch, 13 Nov 26 (pull request 765): the first push built; a notes-only push showed "Canceled by
+ * Ignored Build Step" with the branch's preview link still serving; a push changing this file built again.
+ *
  * Tests: node --test raptor-port/scripts/vercel-ignore.test.mjs */
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
