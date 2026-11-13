@@ -670,6 +670,14 @@ and ride along with the next real change or the merge; the merge itself earns on
   is live only when the Production deployment for its own commit is Ready: check it, never assume.
 - **A build the Ignored Build Step cancels still counts toward that limit,** so skipping notes-only pushes that way does
   not lower the count; a branch with automatic deployments turned off (`git.deploymentEnabled`) makes no build at all.
+- **A notes-only push skips its build (13 Nov 26, D2032, [VERCEL-SKIP-NOTES]):** `vercel.json`'s `ignoreCommand` runs
+  `raptor-port/scripts/vercel-ignore.mjs`, which compares the push with `VERCEL_GIT_PREVIOUS_SHA` — the branch's last
+  SUCCESSFUL deployment, so a run of skipped pushes is still measured from the last real build — and skips only when
+  every changed file is a note; anything else, a branch's first push, or a base outside Vercel's 10-commit clone that a
+  deeper fetch cannot reach, builds. A skipped push shows as Canceled on Vercel and on the pull request; the branch's
+  preview link keeps serving the last build, which holds the same app. It saves build minutes (Pro bills those), not
+  deployments (the count above is unchanged). To force a build of a notes-only commit: Redeploy on Vercel, unticking
+  "Use project's Ignore Build Step".
 - **Pro (from 8 Nov 26) allows 6,000 a day but bills build minutes** past its US$20 monthly usage credit: US$0.0035 per
   CPU minute, the duration rounded up to whole minutes, 2 CPUs on the Basic machine and at least 4 on Elastic, the default
   after upgrading. He spends no more than US$20 a month on it (D1794), so builds are kept inside that credit: the Basic machine, a US$1
