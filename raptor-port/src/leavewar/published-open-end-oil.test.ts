@@ -94,6 +94,21 @@ describe('D2028 on a Saturday that earns — a named man on the open-ended row, 
     expect(crowd(day().allhands[1])).toContain('bane')
     expect(cellOf('bane')).toBe('FO')
   })
+  /* Astra's read, 13 Nov 26 (its first proof): "No OIL earned" switched on after the Logic change. The decision is ONE
+     waiting change, the four fall and what went out still earns. (What the line SAYS then is the crowd the amendment
+     moves — Bane — and not the decision: the list's older rule that a crowd change words the OIL line, true of any
+     decision made beside a crowd change. Filed for his ruling with its picture, [OIL-LINE-DECISION-HIDDEN]; not pinned.) */
+  it('"No OIL earned" switched on after the Logic change: one change waits, the four fall, the published credit stays', () => {
+    publish()
+    VCONF.openEnd = 120; validate()
+    expect(dayPendingItems(SAT), 'premise').toEqual([])
+    day().oild = { blanket: 1 }; validate(); runOilPass()
+    expect(dayPendingItems(SAT).map((i: any) => i.axis)).toEqual(['oil'])
+    expect(daySigned(SAT)).toBe(false)
+    expect(cellOf('bane'), 'only the published schedule earns').toBe('FO')
+    day().oild = undefined; validate()
+    expect(dayPendingItems(SAT), 'switched back (D98)').toEqual([]); expect(daySigned(SAT)).toBe(true)
+  })
   it('the amendment published: it goes out under two hours, and his credit goes with it; the others keep theirs', () => {
     publish()
     VCONF.openEnd = 120; validate()

@@ -382,6 +382,13 @@ Written 13 Nov 26, 10:15, by the host (Fable 5.2 in Opus's place this week, D197
 ## 11.5 The orders walked
 
 ## 11.6 Findings and what was done
+*(from the reads so far, 11:05; the walk's are added when its report is in)*
+
+| # | From | The finding | Real? | What was done |
+|---|---|---|---|---|
+| R1 | the fresh Opus read, findings 1 and 2 | With the Logic length changed AND something else waiting on a published day, the pending comparison counted the crowds under the old settings while the screen and the amendment used today's: an amendment could take a man's OIL with only "renamed" listed; or the list carried "What this day earns: changed" for nothing | REAL — both reproduced red by the host (3 tests) | Fixed red-first, `f4d7e8195`: `publish.ts crowdSide`, `validate.ts faceWaits` (one body with `untouchedKept`), `HOOKS.faceWaits`; 120 related files, 2,028 tests green. To walk on the fixed build. |
+| R2 | Astra's read, finding 1 (P2) | The pending line's WORDS were read under today's settings while the comparison used the old: a real departure was worded with a Logic-only one beside it; "No OIL earned" switched on was worded as a man "no longer free" | The mismatch: REAL, the same cause as R1, closed by R1's fix the other way round (both now today's once anything waits — Astra's own fix, the words under the old settings, would have re-opened R1). Pinned: "a real departure beside the one the new length makes…" | Its first case leaves an OLDER gap, not D2028's: an OIL Earn decision made beside any crowd change is not said in the list — filed for his ruling with a picture, [OIL-LINE-DECISION-HIDDEN]; the facts pinned ("No OIL earned switched on after the Logic change…"), the words not. |
+| R3 | the Opus read, tidiness | `oilEvidence`'s third argument has three meanings; `keptRulesOf` doubles `keptOn`; the `oil.ts` header misleads | Filed, not fixed (D489) | The foot of `…-d2028-read-opus.md` |
 
 ## 11.7 The reads
 The brief, word for word to both: `docs/superpowers/briefs/2026-11-13-d2028-read-brief.md`. Started 10:05, before the

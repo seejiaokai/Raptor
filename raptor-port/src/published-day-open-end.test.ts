@@ -22,6 +22,7 @@ import { rowItemKey } from './engine/oil'
 import { oilEvidenceOf, oilSentOf } from './engine/oilev'
 import { oilItemLabel } from './ui/oilmode'
 import { withChipWorld } from './ui/html'
+import { pendItemWords } from './ui/pendlist'
 import { setSession } from './state/auth'
 
 const saved = { d: JSON.stringify(DAYS), i: JSON.stringify(INPUTS), book: JSON.stringify(SCHED), v: { ...VCONF }, s: { ...SHIFT_HARD },
@@ -350,6 +351,21 @@ describe('D2028 + D2013 — with something else waiting, the pending list is cou
     day(TUE).allhands.pop(); validate()
     expect(dayPendingItems(TUE), 'put back (D98)').toEqual([]); expect(daySigned(TUE)).toBe(true)
     expect(crowd(TUE, r)).toEqual(MEN.slice().sort())
+  })
+  /* Astra's read, 13 Nov 26 (its second proof, re-aimed at the fixed comparison): the line's WORDS are read by
+     ui/pendlist.ts crowdChange under the settings the working copy is drawn by. Before the fix the comparison counted
+     Pump alone (old length) while the words named Pump and Bane (new length); now both count and name what the
+     amendment will do — the two men the window no longer lists. */
+  it('a real departure beside the one the new length makes: the line\'s words name the same men the window dropped', () => {
+    const r = hisCase(TUE); publish(TUE)
+    VCONF.openEnd = 120; validate()
+    day(TUE).ground.push({ prog: 'MEDICAL', str: '09:15', end: '09:45', who: 'pump' }); ensureRowIds(DAYS); validate()
+    expect(crowd(TUE, r), 'the window: today\'s 2h, without pump and without bane').toEqual(['ignite', 'stiff'])
+    const oil = oilItems(TUE)
+    expect(oil.length).toBe(1)
+    const words: any = pendItemWords(TUE, oil[0] as any)
+    expect(words.where).toBe('Briefing · who it stands for'); expect(words.to).toBe('no longer free')
+    expect(String(words.from).split(', ').sort(), 'bane is Ranger, pump is Piston — those two and nobody else').toEqual(['Piston', 'Ranger'])
   })
   it('a change that shows ONLY in who is free (a man gone from the roster) after the Logic change: it waits, and the list is counted as the screen shows it', () => {
     const r = hisCase(TUE); publish(TUE)
