@@ -1,0 +1,38 @@
+MEASURE main s1-d1536-1-list {"inputs-workspace tab-inputs":"1536x1939@0,69","inBody":"1472x1757@32,211"}
+MEASURE main s1-d1536-2-new-at-rest {"inputs-workspace tab-inputs in-room":"1536x1956@0,69","inBody":"1046x1773@32,211","WINDOW":"430x744@1090,96"}
+MEASURE main s1-d1536-3-dragged {"inputs-workspace tab-inputs in-room":"1536x1939@0,69","inBody":"1472x1757@32,211","WINDOW":"430x649@480,208"}
+MEASURE main s1-d1536-5-reopened {"inputs-workspace tab-inputs in-room":"1536x1939@0,69","inBody":"1472x1757@32,211","WINDOW":"430x649@480,208"}
+MEASURE main s1-d1340-1-list {"inputs-workspace tab-inputs":"1340x1983@0,69","inBody":"1276x1757@32,255"}
+MEASURE main s1-d1340-2-new-at-rest {"inputs-workspace tab-inputs in-room":"1340x2201@0,69","inBody":"850x1974@32,255","WINDOW":"430x680@894,96"}
+MEASURE main s1-d1340-3-dragged {"inputs-workspace tab-inputs in-room":"1340x1983@0,69","inBody":"1276x1757@32,255","WINDOW":"430x585@284,208"}
+MEASURE main s1-d1340-5-reopened {"inputs-workspace tab-inputs in-room":"1340x1983@0,69","inBody":"1276x1757@32,255","WINDOW":"430x585@284,208"}
+MEASURE main s1-d1280-1-list {"inputs-workspace tab-inputs":"1280x1983@0,115","inBody":"1216x1757@32,301"}
+MEASURE main s1-d1280-2-new-at-rest {"inputs-workspace tab-inputs in-room":"1280x1983@0,115","inBody":"1216x1757@32,301","WINDOW":"430x677@834,111"}
+MEASURE main s1-d1280-3-dragged {"inputs-workspace tab-inputs in-room":"1280x1983@0,115","inBody":"1216x1757@32,301","WINDOW":"430x570@224,223"}
+MEASURE main s1-d1280-5-reopened {"inputs-workspace tab-inputs in-room":"1280x1983@0,115","inBody":"1216x1757@32,301","WINDOW":"430x570@224,223"}
+MEASURE main s2-d1536-1-cards {"medView":"1512x415@12,121","medcard":"120x45@37,470"}
+MEASURE main s2-d1536-2-new-at-rest {"medView":"1512x415@12,121","medcard":"120x45@37,470","WINDOW":"430x744@1090,96"}
+MEASURE main s2-d1536-3-dragged {"medView":"1512x415@12,121","medcard":"120x45@37,470","WINDOW":"430x649@480,208"}
+MEASURE main s2-d1536-4-edit-opened {"medView":"1512x415@12,121","medcard":"120x45@37,470","WINDOW":"430x649@480,208"}
+MEASURE main s2-d1229-1-cards {"medView":"1205x415@12,167","medcard":"120x45@37,516"}
+MEASURE main s2-d1229-2-new-at-rest {"medView":"1205x415@12,167","medcard":"120x45@37,516","WINDOW":"430x477@783,111"}
+MEASURE main s2-d1229-3-dragged {"medView":"1205x415@12,167","medcard":"120x45@37,516","WINDOW":"430x370@173,223"}
+MEASURE main s2-d1229-4-edit-opened {"medView":"1205x415@12,167","medcard":"120x45@37,516","WINDOW":"430x370@173,223"}
+MEASURE main s3-phone-1-input-new {"inputs-workspace tab-inputs":"402x3456@0,53","WINDOW":"378x850@12,12"}
+MEASURE main s3-phone-2-medical-new {"medView":"386x413@8,103","medcard":"119x45@17,452","WINDOW":"378x849@12,13"}
+KEYS main: 2 "→ Ground" buttons in the week
+KEYS main: first button input differs from second
+KEYS main: one Tab from the first Ground lands on: button.accb "→ Unavail" day=1 acc=u acck=imw1etnebvm2370 out
+KEYS main: before Enter ring on: button.accb "→ Ground" day=1 acc=g acck=imw1etke6b7d6gl outline=auto/rgb(16, 16, 16)
+KEYS main: after Enter, OIL question elements: oil-tracker,my-leave-oil; ring on: BODY (nothing focused)
+KEYS main: ring afterwards: BODY (nothing focused)
+KEYS main: "→ Ground" buttons left in the week: 1 (was 2)
+KEYS main: after info Escape, ring on: button.dinfobtn "i" day=0 acc=undefined acck=undefined outline=auto/rgb(16, 16, 16)
+KEYS main: board + Block: after Escape ring on: button.mbtn add "+ Block" day=undefined acc=undefined acck=undefined outline=solid/rgb(59, 198, 232)
+KEYS main: board Templates: after Escape ring on: button.abtn sb-daybtn "Templates" day=undefined acc=undefined acck=undefined outline=solid/rgb(59, 198, 232)
+KEYS main: board + Wave: after Escape ring on: button.mbtn add "+ Wave" day=undefined acc=undefined acck=undefined outline=solid/rgb(59, 198, 232)
+ROUND main: saved input row present: 1
+ROUND main: medical window fields: SELECT#inpEditPerson=stiff SELECT#inpEditType=ATT C INPUT#inpEditStart=06:00 INPUT#inpEditEnd=18:00 INPUT#= INPUT#inpEditRmk=
+ROUND main: medical cards 4 -> 5
+ROUND main: inputs gear: example line "For the week of Mon 23 Nov, inputs are due by the end of Fri 20 Nov."
+ROUND main: sans gear: example line "For the week of Mon 23 Nov, commitments are due by the end of Fri 20 Nov."
