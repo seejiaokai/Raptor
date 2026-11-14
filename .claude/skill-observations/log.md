@@ -2511,3 +2511,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The owner approved four guide edits as one change; one of them (retiring a permission "on 16 Nov when it runs out") could only truthfully go live on a later date. Built in the same branch, it holds every other edit back until that date, or forces the merge to drop a commit. The agent kept it as its own commit and told the owner the merge must wait or the commit be left out.
 **Suggested improvement:** in the handoff block's "Pick up here", name any commit that may not go live before a date, with the date and the choice it gives (wait, or merge without it and redo it on the day).
 **Principle:** A step that is only true after a future date goes in its own commit, and the date travels with the branch's record, so the earliest safe merge is never a judgement made from memory.
+
+### Observation 947: a "nothing waiting" line went stale while seven finished pull requests sat unmerged
+
+**Status:** OPEN
+**Date:** 14 Nov 26
+**Session context:** chat 74, asked for the next three jobs from the handoff and the backlog's priority list
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** removing merged blocks and filing residue at a handoff; the opening read of a new chat
+
+**Issue:** The backlog's priority list said "Waiting on his look only: none — no pull request is open (checked 10 Nov 26)". By 14 Nov seven green pull requests from two overnight runs sat unmerged, six clashing with `main`, and 25 of the owner's answers lived only on one of their branches. Later handoffs removed the overnight chats' blocks from `main`'s handoff as if their work had merged, so a chat reading only `main` saw nothing waiting. Found only because the recommending chat ran `gh pr list` before recommending.
+**Suggested improvement:** in the session-handoff skill's step that removes another chat's block, check with `gh pr list --state open` that the block's pull request is merged, never only that the block is old; and in the opening read of a new chat (the "tell me the next jobs" path), list open pull requests and name each in the recommendation before any new job.
+**Principle:** A "nothing is waiting" record is a claim about the outside world and goes stale silently; re-derive it from the source of truth (the open pull requests) every time it is read, and never retire a status record on its age alone.
