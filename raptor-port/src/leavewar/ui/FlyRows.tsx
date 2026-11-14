@@ -138,6 +138,12 @@ const FlyCells = memo(function FlyCells({ row, cells, onTap }: {
   )
 }, (a, b) => a.sig === b.sig && a.row === b.row && a.onTap === b.onTap)
 
+/* the Required rows' three windows as the guard's bits — out of FlyRows itself, whose body is already at the code
+   check's limit of branches: the number pad 1, the selection panel 2, the rename form (an admin's alone) 4 */
+function useFlyWindowsGuard(pad: boolean, panel: boolean, naming: boolean, admin: boolean) {
+  useGuardOnClose((pad ? 1 : 0) | (panel ? 2 : 0) | (naming && admin ? 4 : 0))
+}
+
 export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR, onWiden, pickApi, onEditAvail, runs, arranging, dragOver, dragAfter }: {
   /** The squadron's counter rows, in five runs: `runs[0]` is drawn above Required P and `runs[k]` just under the k-th
    *  of the four (D674). Absent = the four alone. They are new elements at every paint of the grid, so this component
@@ -243,7 +249,7 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
      fell through to the day where the button had stood. One bit each, handed to the grid's one guard (gridguard.ts) —
      which arms only for a press inside the window, so a press on the grid that saves and closes the box stays the grid's.
      The Available rows' working box is not here: it closes only by a press outside it, a key, a scroll or a resize. */
-  useGuardOnClose((edit ? 1 : 0) | (pick ? 2 : 0) | (naming && admin ? 4 : 0))
+  useFlyWindowsGuard(!!edit, !!pick, !!naming, admin)
 
   const tapRef = useRef((row: RowId, iso: string, el: HTMLElement) => {
     if (row === 'req-p' || row === 'req-w') {
