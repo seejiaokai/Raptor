@@ -1,4 +1,4 @@
-[drawmark] the tag on #schedBoard button is not wholly visible anywhere it was tried — above: cut off by div#schedBoard.schedboard
+[drawmark] the tag on #schedBoard button is not wholly where its part shows anywhere it was tried — above: div#schedBoard.schedboard cuts its part off there
 [drawmark] picture refused: mark "OIL" on #sbOil: its part was redrawn and the mark is gone — mark it again just before the picture
-[23:52:13.327] [page error] walk-probe
-[23:52:13.328] [page error] walk-probe
+[00:16:18.747] [page error] walk-probe
+[00:16:18.749] [page error] walk-probe

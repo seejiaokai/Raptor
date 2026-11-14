@@ -205,7 +205,7 @@ describe('a member files for another man — a duty or a commitment, and nothing
      scheduler's". The retype is refused as ever. A HAND-OVER through the one-field save is still a scheduler's. But WHO
      IS IN what he filed is now his to change, through the input's one writer, each entry in his own name — and never
      in anybody else's. */
-  it('he cannot retype what he filed to a leave; who is in it is his to change — in his own name, never by the hand-over door (D763) (OR26)', () => {
+  it('he cannot retype what he filed to a leave; who is in it is his to change — in his own name, never by the hand-over door (D763)', () => {
     ranger()
     const t1 = T(9)
     add('rocky', 'Meeting', TUE)

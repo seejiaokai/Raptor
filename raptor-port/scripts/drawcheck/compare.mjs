@@ -18,8 +18,10 @@ const SIDE = ['top', 'right', 'bottom', 'left'], CORNER = ['top left', 'top righ
 const plainEdge = e => { const x = edgeOf(e); return seen(x) ? `${fmt(x.w)}px ${x.c}` : 'none' }
 // The drawings' marker colour (#ff2d95, scripts/handpass/drawmark.mjs): a ring a drawing script drew in it to point at
 // a change is the drawing's annotation, not its design (skill note 742 — an inline pink ring was reported as "its
-// shadow — drawing pink, built none"). On the DRAWING side only, a shadow layer or an edge in that colour is read as
-// none; the build's side is never excused, so a pink the build wears is still a difference.
+// shadow — drawing pink, built none"). On the DRAWING side only, and only on a part the drawing actually marked — the
+// measure's `marked` (the helper's ring on it), or `marked: true` on the spec's part for a drawing made before the
+// helper — a shadow layer or an edge in that colour is read as none; an ordinary pink in a drawing is design and still
+// checked (the fix round of 14 Nov 26: a pink border and shadow once passed unnoticed), and the build is never excused.
 const MARKER = 'rgb(255, 45, 149)'
 const isMarker = c => { const A = rgba(c); return !!A && A[3] > 0.04 && sameColour(`rgb(${A[0]}, ${A[1]}, ${A[2]})`, MARKER) }
 const layers = s => { const out = []; let d = 0, cur = ''; for (const ch of String(s)) { if (ch === '(') d++; if (ch === ')') d--; if (ch === ',' && !d) { out.push(cur.trim()); cur = '' } else cur += ch } if (cur.trim()) out.push(cur.trim()); return out }
@@ -30,6 +32,7 @@ const unmarkEdge = e => { const x = edgeOf(e); return seen(x) && isMarker(x.c) ?
 // or — with `rel` — measured from another part's box, so a part is judged inside what holds it.
 export function compare(part, D, B, Drel, Brel, TOL = 2) {
   const out = [], tol = part.tol ?? TOL
+  const marked = !!(D.marked || part.marked)
   const at = (m, rel) => rel ? { x: m.box.x - rel.box.x, y: m.box.y - rel.box.y } : { x: m.box.x, y: m.box.y }
   for (const c of part.check) {
     if (c === 'place') {
@@ -76,11 +79,11 @@ export function compare(part, D, B, Drel, Brel, TOL = 2) {
       if (!sameColour(D.look.fill, B.look.fill)) out.push({ check: c, what: 'its fill colour', drawing: D.look.fill, build: B.look.fill, by: '' })
       if (D.look.image !== B.look.image) out.push({ check: c, what: 'its shading', drawing: D.look.image || 'none', build: B.look.image || 'none', by: '' })
     } else if (c === 'edge') {
-      D.look.edge.map(unmarkEdge).forEach((e, i) => { if (!sameEdge(e, B.look.edge[i])) out.push({ check: c, what: `its ${SIDE[i]} edge`, drawing: plainEdge(e), build: plainEdge(B.look.edge[i]), by: '' }) })
+      D.look.edge.map(e => marked ? unmarkEdge(e) : e).forEach((e, i) => { if (!sameEdge(e, B.look.edge[i])) out.push({ check: c, what: `its ${SIDE[i]} edge`, drawing: plainEdge(e), build: plainEdge(B.look.edge[i]), by: '' }) })
     } else if (c === 'corners') {
       D.look.corners.forEach((e, i) => { if (Math.abs(px(e) - px(B.look.corners[i])) > 1) out.push({ check: c, what: `its ${CORNER[i]} corner's rounding`, drawing: e, build: B.look.corners[i], by: '' }) })
     } else if (c === 'shadow') {
-      const ds = unmarkShadow(D.look.shadow)
+      const ds = marked ? unmarkShadow(D.look.shadow) : D.look.shadow
       if ((ds === 'none') !== (B.look.shadow === 'none')) out.push({ check: c, what: 'its shadow', drawing: ds, build: B.look.shadow, by: '' })
     } else if (c === 'colour') {
       if (!sameColour(D.look.color, B.look.color)) out.push({ check: c, what: "its words' colour", drawing: D.look.color, build: B.look.color, by: '' })
