@@ -5,8 +5,7 @@
 
    The SANS calendar's window drew these first (ui/SansSettings.tsx, step 4); the Inputs calendar's window
    (ui/InputsSettings.tsx) needs the same two shapes, the same ranges and the same worked date, so they are drawn once
-   here and each window keeps only its own draft and its own Save. What is typed is a DRAFT — a string for the day
-   count, so "" and "x" stay what he typed and are refused in words, never read as 0. The ranges and the sum are the
+   here and each window keeps only its own draft and its own Save (how a draft is read: ./cutdraft.ts). The ranges and the sum are the
    engine's own (state/cutoff.ts → engine/rules.ts RULE_SPEC, engine/inputs.ts cutBackOf).
 
    A WORKED DATE sits under the fields — "For the week of Mon 19 Oct, inputs are due by the end of Mon 5 Oct." — from
