@@ -194,3 +194,6 @@ are left as they are, so the document check's pairing still holds.
   fresh Opus, as above.
 
 Rulings: none this session.
+
+## Outcome (chat 73, 14 Nov 26) — [PROMPT-AUDIT]
+Every point put to him in three rounds; his answers are in D2038's full row (`DECISIONS-ARCHIVE.md`). Built on pull request 774: F1, hunks 1–7 (hunk 6 in his recorded wording), F3, F4, and a fix the first read found in `guide-full.md`. Left on his word: hunks 8–10 (D1982 stands) and F2. Hunk 11 done in his global file as "the latest Fable, high".
