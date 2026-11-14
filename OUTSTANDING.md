@@ -221,6 +221,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
 - [CHECK-TOOLS-HARDEN] — small hardening of the checking tools — his word.
 - [READER-COMPACT-HANDOFF] — a blind reader that compacts is pasted the host's handoff — a hook change, his word.
+- [READERS-RECHECK-APP] — once 30 more app-code jobs have both reads, compare again whether one reader is enough there (D2042).
 - [WALK-COST] — make a walk cost fewer tokens — a proposal; his word starts it.
 - [CODE-TIDY-AUDIT] — tests that no longer apply and the skipped browser tests — his to confirm; one leftover for the database step, one put to him only if a later feature needs it.
 - [RULING-HOME-HOOK] — only if a chat is seen acting on a ruling's short line alone.
@@ -287,6 +288,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+
+### [READERS-RECHECK-APP] Compare the two readers again on app-code jobs (his D2042, 14 Nov 26) — OPEN, waits for 30 more app-code jobs
+**What it is:** the 7–14 Nov 26 comparison (`raptor-port/docs/superpowers/briefs/2026-11-14-readers-compared.md`) found both readers worth keeping, but only 8 of its 42 jobs were app code — too few to say whether one reader is enough for a small app change. **When:** once 30 more app-code jobs since 14 Nov 26 have both Astra's and the fresh Opus reader's reports saved in that folder. **How:** the same count — per job, what both found, what only one found, what was confirmed (red-first) and fixed — split by the size of the change; then put to him with a recommendation. Nothing about the readers changes before his answer.
 
 ### [READER-COMPACT-HANDOFF] A blind reader that compacts is handed the host's handoff block (skill note 888, 8 Nov 26)
 **What:** the compaction start hook (`.claude/hooks/compact-resume.mjs`, [COMPACT-WHEN-MOD]) pastes the branch's
@@ -1136,13 +1140,9 @@ bar "sticky". A job of its own, small; walk a scrolled desktop page with `?savef
 stays PRIVATE** and the checks move to his own PC (`[CI-TWO-CORES]`). Why it mattered: 146 old branches
 on GitHub still carry the D58 unit designation in their files, and `main`'s history in 14 commits.
 
-**DONE, by him, 23 Sep 26 (D59): the repo is private**, reversing his own *"nvm disregard this
-first"* the same day after a check found the unit named in the app. Pages is GONE (API 404), so the
-publish job in `.github/workflows/deploy.yml` is OFF — it would fail every push and still bill —
-with the gates left running. `README.md` corrected. **The app is viewed on VERCEL now.**
+**DONE, by him, 23 Sep 26 (D59): the repo is private**, reversing his own *"nvm disregard this first"* the same day after a check found the unit named in the app. Pages is GONE (API 404), so the publish job in `.github/workflows/deploy.yml` is OFF — it would fail every push and still bill — with the gates left running. `README.md` corrected. **The app is viewed on VERCEL now.**
 
-**Still open — the sharing half** (*"i would like to make my repo private, and share with developers
-on my app"*). Route: Settings → Collaborators, by username, Write; they run it locally and do not
+**Still open — the sharing half** (*"i would like to make my repo private, and share with developers on my app"*). Route: Settings → Collaborators, by username, Write; they run it locally and do not
 need Vercel. **Unmade question:** a collaborator here sees the uploaded original, the whole history
 and every agent-facing doc. If that matters, the fresh single-commit repo below is the answer.
 **Before the first collaborator is added (Astra SEC-101, 23 Sep 26): take the self-hosted runner off
