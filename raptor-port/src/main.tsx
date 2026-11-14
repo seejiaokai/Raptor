@@ -16,6 +16,7 @@ import { bootPolicyFrom } from './bootpolicy'
 import { installDotRing } from './ui/dotring'
 import { installKbScroll } from './ui/kbscroll'
 import { installNoPageZoom } from './ui/nopagezoom'
+import { installBarProbe } from './ui/barprobe'
 import { dismissBootClaw } from './ui/bootclaw'
 
 /* the loading claw (index.html, D1605) goes once the app's first screen has painted under it — an effect runs after
@@ -63,6 +64,8 @@ async function boot(): Promise<void> {
   installKbScroll()
   /* on a phone the page itself never zooms, only the grids that pinch by themselves ([NO-PAGE-ZOOM], D1567) */
   installNoPageZoom()
+  /* the trial switch ?barprobe (D2025): the top bar's readings on screen in that one tab; without it nothing at all */
+  installBarProbe()
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />
