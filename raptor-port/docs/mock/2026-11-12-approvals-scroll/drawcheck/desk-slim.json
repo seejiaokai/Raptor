@@ -1,0 +1,107 @@
+{
+ "state": "desk-slim",
+ "drawing": {
+  "script": "scripts/handpass/appr-scroll-draw.mjs",
+  "shot": "desk-after-grid-slimbar"
+ },
+ "recorded": "2026-11-12T18:50:45.381Z",
+ "drawnOn": "origin/main at b476db83a",
+ "checkout": "d8201fcbd",
+ "viewport": {
+  "w": 1536,
+  "h": 733
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 575
+ },
+ "parts": {
+  "slim": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 572.9,
+    "y": 667,
+    "w": 390.3,
+    "h": 44
+   },
+   "ink": {
+    "x": 611.9,
+    "y": 678.5,
+    "w": 327.8,
+    "h": 21
+   },
+   "text": "Approvals 18 pending · 3 new Back ▴ ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(22, 27, 34)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "12px",
+     "12px",
+     "12px",
+     "12px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.6) 0px 10px 30px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.appr-slim"
+  },
+  "slim-back": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 843.2,
+    "y": 672,
+    "w": 58.9,
+    "h": 34
+   },
+   "ink": {
+    "x": 849.2,
+    "y": 679.5,
+    "w": 46.9,
+    "h": 19
+   },
+   "text": "Back ▴",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "button.appr-back"
+  }
+ },
+ "approved": {
+  "picture": "desk-after-grid-slimbar.png",
+  "identical": true
+ }
+}

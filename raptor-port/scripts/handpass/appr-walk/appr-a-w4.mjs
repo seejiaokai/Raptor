@@ -1,0 +1,38 @@
+import * as C from './appr-a-common.mjs'
+console.log('[appr-a-w4 v1]')
+C.initLog('appr-a-w4-log.txt')
+const { browser, page } = await C.launchReal125({ w: 1550, h: 917 })
+const errs = []; C.watchErrors(page, errs)
+await C.stageWorld(page)
+const P = page, T = C.T
+const aa = () => P.evaluate(() => { const e = document.querySelector('[data-testid="appr-approve-all"]'); const r = e.getBoundingClientRect(); const cs = getComputedStyle(e); return { words: e.innerText.replace(/\s+/g, ' '), bg: cs.backgroundColor, color: cs.color, l: +r.left.toFixed(2), r: +r.right.toFixed(2), t: +r.top.toFixed(2), b: +r.bottom.toFixed(2) } })
+const a0 = await aa(); const g0 = await C.geo(P); await C.shot(P, 'w4-0-before')
+C.note('before: ' + JSON.stringify(a0))
+await P.locator(T('appr-approve-all')).click(); await C.sleep(700)
+const a1 = await aa(); const g1 = await C.geo(P); await C.shot(P, 'w4-1-armed')
+C.note('armed: ' + JSON.stringify(a1) + ' winRoom ' + g1.winRoom + ' counts ' + JSON.stringify(await C.counts(P)))
+const rgb = a1.bg.match(/\d+/g).map(Number)
+const amber = rgb[0] > 180 && rgb[1] > 110 && rgb[2] < 120
+C.check('W4-armed', amber && Math.abs(a1.r - a0.r) <= 1 && Math.abs(a1.t - a0.t) <= 1 && Math.abs(a1.b - a0.b) <= 1, `armed: background ${a1.bg} (amber ${amber}), words "${a1.words}", right edge ${a0.r}->${a1.r}, top ${a0.t}->${a1.t}, left ${a0.l}->${a1.l} (width follows the words)`)
+C.check('W4-armed-fit', g1.winRoom <= 0 && Math.abs(g1.card.bottom - g0.card.bottom) <= 1, `armed: winRoom ${g1.winRoom}, card foot ${g0.card.bottom}->${g1.card.bottom}`)
+await P.locator(T('appr-approve-all')).click(); await C.sleep(900)
+const g2 = await C.geo(P); await C.shot(P, 'w4-2-after-second')
+const states = await P.evaluate(sel => [...document.querySelectorAll(`${sel} [data-testid^="appr-line-"]`)].map(l => ({ ap: l.querySelector('[data-testid="appr-approve"]')?.getAttribute('aria-pressed'), t: l.querySelector('[data-testid="appr-approve"]')?.innerText.trim() })), C.PAGE)
+const lit = states.filter(s => s.ap === 'true').length
+C.note(`after second press: lines ${states.length}, lit Approved ${lit}, winRoom ${g2.winRoom}, card foot ${g2.card.bottom}, counts ${JSON.stringify(await C.counts(P))}, approveAll ${JSON.stringify(await aa())}`)
+C.check('W4-all-lit', states.length === 19 && lit === 19 && g2.winRoom <= 0, `every line lit: ${lit} of ${states.length}; winRoom ${g2.winRoom}; card foot ${g2.card.bottom}`)
+// wheel through the whole list, picture of each line group; check each line lit as seen
+const m = await C.scMid(P); await P.mouse.move(m.x, m.y)
+for (let i = 0; i < 12; i++) { await P.mouse.wheel(0, 300); await C.sleep(60) }
+await C.sleep(500)
+const g3 = await C.geo(P)
+await C.shot(P, 'w4-3-list-foot')
+C.check('W4-foot', g3.sc && g3.sc.top >= g3.sc.room - 1 && g3.winRoom <= 0 && (await C.winRoom(P)) <= 0, `wheeled to the list's foot: ${g3.sc?.top} of ${g3.sc?.room}, winRoom ${g3.winRoom}`)
+const last = await C.lineInfo(P, 18)
+C.note('last line: ' + JSON.stringify(last)); C.check('W4-last', last.inView && last.approve === 'Approved', `last line wholly in view and lit: ${JSON.stringify(last)}`)
+await P.mouse.wheel(0, -200); await C.sleep(300)
+C.check('W4-up', (await C.listY(P)) < g3.sc.top && (await C.winRoom(P)) <= 0, `wheel up at once from foot: ${g3.sc.top} -> ${await C.listY(P)}`)
+C.note('errors ' + JSON.stringify(errs)); C.check('W4-err', errs.length === 0, 'page errors: ' + (errs.join('|') || 'none'))
+C.summary()
+await Promise.race([browser.close(), C.sleep(8000)])
+process.exit(0)

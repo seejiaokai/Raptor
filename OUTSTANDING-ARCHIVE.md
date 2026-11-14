@@ -8676,3 +8676,41 @@ Code (2.1.273 → 2.1.323; the check needs 2.1.283 or later) and let the agent r
 72); its list goes to him in the morning report, sorted by file — this item closes once that list has been put to him.
 **Round 1 answered 14 Nov 26 ("all as recommended", D2038's row): a–d yes** — to build as one guide-change job (Astra + fresh Opus read, his "merge live") — BUILT 14 Nov 26 on `claude/guide-check-r1-1114` (chat 73; the readers' brief `raptor-port/docs/superpowers/briefs/2026-11-14-guide-check-r1-read-brief.md`), point d to go live on or after 16 Nov 26. **Round 2 (e–h) answered 14 Nov 26 (D2038's row):** e, f, g yes, h leave (the points: `raptor-port/docs/superpowers/briefs/2026-11-14-prompt-audit.md` — e–g hunks 5–7, h hunks 8–10, i hunk 11, j F2, k F4). **Round 3 (i–k) answered 14 Nov 26:** i "the latest Fable" (his wording, his global file — done at once), j leave, k yes. Every point now put to him; e, f, g, k and the readers' one finding built on the same branch; the item closes, and D2038 is marked spent, when that branch merges.
 
+
+*Moved here 2026-11-14 by backlog-archive.mjs ([QUALS-OUTLINE-RESCROLL]). Forward facts: `raptor-port/docs/handpass/2026-11-11-quals-small.md`.*
+
+### [QUALS-OUTLINE-RESCROLL] Quals' outline can pull the page back to its row (the night of 6 Nov 26, the code read)
+Quals' outline after "Check his quals" or an Undo is never cleared, and runs after every repaint: a later change (ticking another man's box) with that row off screen may scroll the page back to it. Found by reading (`raptor-port/docs/handpass/parts/pq1106/read-opus.md`), not walked — one walk step would confirm it. **Place:** small, with the next Quals job. **BUILT the night of 11 Nov 26** (`claude/quals-small-1111`, pull request 758; chat 64): confirmed in a real browser (a tick on another man's row threw the page 486px on a desktop), fixed — each sending of the page to a man makes one trip, on the first repaint that draws his row; with the filter box hiding him the trip waits until the filter is cleared (the host's choice, told to him, his to change); walked and read (`raptor-port/docs/handpass/2026-11-11-quals-small.md`). Waits for his look and "merge live".
+
+
+*Moved here 2026-11-14 by backlog-archive.mjs ([QUALS-PINNED-HEAD-NO-DRAG]). Forward facts: `raptor-port/docs/handpass/2026-11-11-quals-small.md`.*
+
+### [QUALS-PINNED-HEAD-NO-DRAG] A heading in Quals' pinned row cannot start a column drag (the night of 6 Nov 26)
+In Edit quals with the page scrolled down, a heading in the pinned row under the top bar cannot be pressed to start a column drag: the press listener is on the table alone. Scrolling up to the table's own heading row works. Older than the night's job (`raptor-port/docs/handpass/2026-11-06-people-quals.md`). **Place:** small, with the next Quals job. **BUILT the night of 11 Nov 26** (`claude/quals-small-1111`, pull request 758; chat 64): the pinned copy hands its press and move to the table's own drag; the drag belongs to the pointer that began it, and a second finger, or a press by another pointer, cancels it on both heading rows; walked and read (`raptor-port/docs/handpass/2026-11-11-quals-small.md`). Waits for his look and "merge live".
+
+
+*Moved here 2026-11-14 by backlog-archive.mjs ([LW-DOUBLETAP-OTHER-WINDOWS]). Forward facts: `raptor-port/docs/handpass/2026-11-11-lw-doubletap-windows.md`.*
+
+### [LW-DOUBLETAP-OTHER-WINDOWS] The double tap falls through the Leave War's other windows (the night of 6 Nov 26, read F1)
+The guard built for the one-day and drag windows (`claude/lw-faults-1106`) does not cover the person window, ⚙ Settings, the event window, the counter form, the Events list, the Manning sheet, the OIL tracker and the event peek: a fast second tap after one closes still reaches the grid behind. **To do:** extend the same place-checked guard, tests first, walked on a phone. **Place:** the next Leave War batch.
+**BUILT the night of 11 Nov 26** (`claude/lw-doubletap-windows`, pull request 759, chat 64): the guard is armed when any of the eight goes — each window one bit, a bit that drops arms it — and, since the fix round, only by a press inside a window less than a second old, so a window that went without a tap (the event box closed by Escape, a scroll, a swipe or a pinch) arms nothing. Walked on a phone by touch, in WebKit, on a desktop and as a member; read by Astra and a fresh Opus reader. The evidence sheet: `raptor-port/docs/handpass/2026-11-11-lw-doubletap-windows.md`. Two questions put to him (the Events list's ✕ over the bell; a window closed by a tap beside it) — this chat's block. What it does not cover: `[LW-DOUBLETAP-MORE-WINDOWS]`. Close once live. Its block and sheet still list that night's two questions as waiting — answered as recommended, D1984 and D1985 (noted 14 Nov 26 when it was brought into the batch).
+
+
+*Moved here 2026-11-14 by backlog-archive.mjs ([BOARD-UNDO-SAME-DAY]). Forward facts: `raptor-port/docs/handpass/2026-11-10-sched-board-small.md`.*
+
+### [BOARD-UNDO-SAME-DAY] An Undo on the Scheduler Board does not bring a change out of view into view (found 8 Nov 26 by chat 11's walk; older)
+Walker B of the board-layout walk (`raptor-port/docs/handpass/2026-11-08-board-layout.md` row B7 and §14 W-B3) changed a
+line, scrolled it out of view and pressed Undo: the change was taken back and the board stayed where it was. The same at 1100
+on a desktop, where nothing of pull request 689 applies — so older. D672: undo and redo leave the screen where it is when the
+change is in view, and move to it only when it is out of view; its full row told him the board "changes day only when the
+change is on another day", so a change on the same day has never been scrolled to. To do: reproduce on `main`, then bring the
+changed row just under the board's bar when it is not wholly in view (the Inputs list's way, `raptor-port/src/ui/onscreen.ts`
+`bringRowOnScreen`), a test first. Where: the board's undo landing (`raptor-port/src/ui/` — search `D672`). Low.
+**11 Nov 26, chat 64: built on `claude/next-jobs-recommendation-c110df` (pull request 756), waiting for his look and "merge live"; archive at merge.** All of it is done: the landing (`raptor-port/src/ui/boardland.ts`), the two blind reads' eight findings and two cases fixed in three rounds, each round read by a fresh narrow reader, the re-walk and its one finding (W1) fixed; evidence `raptor-port/docs/handpass/2026-11-10-sched-board-small.md`. What the reads and the walk left is filed as `[BOARD-UNDO-LAND-ODDS]`.
+
+
+*Moved here 2026-11-14 by backlog-archive.mjs ([APPROVALS-SCROLL-INSIDE]). Forward facts: `raptor-port/docs/handpass/2026-11-13-approvals-scroll-pc.md`.*
+
+### [APPROVALS-SCROLL-INSIDE] The Approvals page scrolls as the Balances page does (his D1986, 11 Nov 26, chat 64)
+His ask, with his picture of the desktop Approvals page, right after the Balances scroll fix: "can u make the approvals scroll similar to the balances as well". Today the Approvals page is as tall as its list and the whole window scrolls. **To do:** first draw the whole screen before and after, at a desktop's size and his iPhone's, and put it to him — the agent's reading is the page filling the screen under the tab row, its list scrolling inside it, the title, chips and column headings staying, the window behind not scrolling; what the phone does is his to say from the drawing. Then build it tests first: fit the page by the Balances page's rule (the screen's true height, not the browser's rounded one — `BalancesPage.tsx`, lesson 31 of the bug-check order), the list keeping the wheel to itself; the slim "Back to Approvals" bar, the lit lines, the dots and the place in the list kept (D1421, D1506). A WALK at least (a daily page's layout). **Place:** next, in a fresh chat.
+

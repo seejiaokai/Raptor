@@ -35,6 +35,34 @@
   .appr-pickpop { margin: 10px 0; max-width: 360px; }
   .appr-empty { padding: 28px 4px; color: var(--ink-3); }
 
+  /* ON A PC THE PAGE FILLS THE SCREEN AND ONLY THE LIST SCROLLS, AS THE BALANCES PAGE DOES (his D2006, D2008 — the drawings
+     docs/superpowers/specs/2026-11-12-approvals-scroll-drawings.md, pictures 1–4, whose laid-over rules these are; the page's
+     height set by ApprovalsPage.tsx from the screen's true height). The page: its foot 8px off the screen's, as Balances'.
+     The card: the page's whole height, a short list's card too, nothing of it scrolling but the box below. The phone keeps
+     today's page (`.ph` — the whole page scrolls). */
+  .appr-page:not(.ph) { display: flex; flex-direction: column; box-sizing: border-box; padding-bottom: 8px; }
+  .appr-page:not(.ph) .appr-card { flex: 1; min-height: 0; display: flex; flex-direction: column; overflow: hidden; position: relative; padding-bottom: 0; }
+  .appr-page:not(.ph) .appr-card > * { flex: none; }
+  /* the box that scrolls: it keeps the wheel to itself at its top and foot (never handed to the window — lesson 31's second
+     lock, as .bp-scroll); it reaches the card's right edge, so its scroll bar stands at the card's edge and not across the
+     lines' eye-span; its foot clear of the card's fade; the keyboard's focus never left under the pinned headings or the fade */
+  .appr-page:not(.ph) .appr-card > .appr-scroll { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; max-width: none;
+    margin-right: -18px; padding-right: 18px; padding-bottom: 28px; scroll-padding: 40px 0 28px; }
+  .appr-scroll > * { max-width: 1240px; }
+  /* on a phone the same box draws nothing of its own: its parts stand in the card as they always did (ApprovalsPage.tsx) */
+  .appr-flow { display: contents; }
+  /* A NARROW PC — wider than 700, narrower than a line's columns (an iPad, half a 1920 screen; the code read's F1,
+     13 Nov 26): the lines run past the box, which then scrolls sideways too; the pinned headings, and the lists under them,
+     are as wide as the lines' columns, so no line shows past the headings' right end (D1518 — nothing pinned leaks) */
+  .appr-scroll > .appr-cols, .appr-scroll > .appr-list, .appr-scroll > .appr-also { min-width: max-content; }
+  /* the date calendar, open, is the box's first part on a PC (ApprovalsPage.tsx — the walk's W3): its own width kept */
+  .appr-scroll > .appr-pickpop { max-width: 360px; }
+  /* the column headings pinned at the box's top, solid, so no line shows behind them (D1518) */
+  .appr-scroll > .appr-cols { position: sticky; top: 0; z-index: 2; background: var(--panel); }
+  /* the card's soft foot — the Balances card's own fade (.bp-cutf), so a cut last line reads as "more below" */
+  .appr-page:not(.ph) .appr-card::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 28px;
+    background: linear-gradient(rgba(20, 24, 29, 0), var(--panel)); pointer-events: none; z-index: 3; }
+
   /* the list — one eye-span: Approve and Refuse stand near the figures (D1420) */
   /* the columns packed after a narrower DATES as drawn (r22-1-desk), the room left before the buttons — with LOWEST AVAIL and
      PLACED a step further right, so the LVE BAL figures are never read with the Available beside them (his D1429) */
@@ -202,6 +230,10 @@
   /* (on a phone the bar is 10 above the foot and 46 tall — M13 — so a window stands 8 above it the same way) */
   &:has([data-testid="appr-slim"].ph) .bidsheet:not(.full):not(.fullpage) { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); max-height: calc(100vh - 122px); max-height: calc(100dvh - 122px); }
 }
+/* …AND WHILE THE PC'S PAGE IS UP THE WINDOW KEEPS NO PAD BELOW IT (as body.lw-bal-on, balances.css): Raptor's body keeps a
+   120px bottom pad under every page (scheduler.css), and the window would scroll by that much behind a page fitted to the
+   screen. Set by ApprovalsPage.tsx only while the PC's page is up — never on a phone, never while it waits behind the grid. */
+body.lw-appr-on { padding-bottom: 0; }
 /* (a keyframes rule cannot sit inside the scoped block) */
 @keyframes lwring { 0%, 90.83% { box-shadow: inset 0 0 0 2px #3BC6E8; } 100% { box-shadow: inset 0 0 0 2px rgba(59, 198, 232, 0); } }
 /* the Approvals tab's count — the app's cyan, as drawn (r19-nav-*, r22-1-desk); the Inputs tab's red count is a warning */

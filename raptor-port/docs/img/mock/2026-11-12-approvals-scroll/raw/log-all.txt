@@ -1,0 +1,44 @@
+== desk
+  member's own row: bane
+  admin's extra bids placed: 6
+  lines on Approvals: 19; 19 pending · 3 new since you last looked, Thu 12 Nov 08:19
+  before, top: {"docH":1528,"inner":733,"winScroll":0,"windowCanScroll":795,"list":{"h":1062,"sh":1062,"top":0}}
+  before, scrolled: {"docH":1528,"inner":733,"winScroll":330,"windowCanScroll":795,"list":{"h":1062,"sh":1062,"top":0}}
+  pinned top bar's foot: 57
+  after, top: {"docH":733,"inner":733,"winScroll":0,"windowCanScroll":0,"list":{"h":483,"sh":1090,"top":0}}
+  after, list scrolled: {"docH":733,"inner":733,"winScroll":0,"windowCanScroll":0,"list":{"h":483,"sh":1090,"top":230}}
+  line to approve: appr-line-bruise
+  list place before Approve: 230
+  pressing appr-approve at 1101,398 — under the pointer: SPAN. Approve
+  list place before the dates tap: 230
+  pressing appr-dates at 287,398 — under the pointer: BUTTON.appr-dlink Tue 24 Feb ›
+  list place after Back, as the page now is: 230
+  the picked line after Back: appr-line lit-approved · Gambit C OIL Tue 24 Feb › — Approved Refuse
+  dots in view after Back: 2
+  after, short list (4 lines): {"docH":733,"inner":733,"winScroll":0,"windowCanScroll":0,"list":{"h":483,"sh":483,"top":0}}
+  errors: none
+  desk browser closed
+== phone
+  member's own row: bane
+  admin's extra bids placed: 6
+  lines on Approvals: 19; 19 pending · 3 new
+  before, top: {"docH":2115,"inner":874,"winScroll":0,"windowCanScroll":1241,"list":{"h":1587,"sh":1587,"top":0}}
+  before, scrolled: {"docH":2115,"inner":874,"winScroll":520,"windowCanScroll":1241,"list":{"h":1587,"sh":1587,"top":0}}
+  pinned top bar's foot: 49
+  after, top: {"docH":874,"inner":874,"winScroll":0,"windowCanScroll":0,"list":{"h":562,"sh":1615,"top":0}}
+  after, list scrolled: {"docH":874,"inner":874,"winScroll":0,"windowCanScroll":0,"list":{"h":562,"sh":1615,"top":300}}
+  line to approve: appr-line-slipway
+  list place before Approve: 300
+  list place before the dates tap: 300
+  list place after Back, as the page now is: 300
+  the picked line after Back: appr-line ph lit-approved · Drifter A OIL 10 Feb AM › Approved Refuse —
+  dots in view after Back: 0
+  after, short list (4 lines): {"docH":874,"inner":874,"winScroll":0,"windowCanScroll":0,"list":{"h":562,"sh":562,"top":0}}
+  errors: none
+  phone browser closed
+wrote 1-desktop-scrolled-before-after.png
+wrote 2-desktop-top-before-after.png
+wrote 3-desktop-back-to-approvals.png
+wrote 4-desktop-short-list.png
+wrote 5-phone-choice-A-or-B.png
+wrote 6-phone-A-back-and-short.png

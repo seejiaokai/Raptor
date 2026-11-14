@@ -1,0 +1,640 @@
+{
+ "R": [
+  {
+   "step": "W4 pc the next-week preview draws no issues bar (it has no warning list); the live week's days do",
+   "res": "PASS",
+   "said": "{\"peek\":7,\"peekBars\":0,\"liveBars\":6,\"peekHead\":\"Next week: click a day to load itMondayJul 204 X 2Common ProgrammeDEMO — SECOND \"}",
+   "pics": ""
+  },
+  {
+   "step": "W4 pc no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W5 pc Monday published through the board's sign-off and Publish",
+   "res": "RECORD",
+   "said": "published",
+   "pics": ""
+  },
+  {
+   "step": "W5 pc Monday's count reads a change waiting",
+   "res": "PASS",
+   "said": "1 pending",
+   "pics": ""
+  },
+  {
+   "step": "W5 pc \"To go out\": no foot under the list (the list's own words say where a tap goes)",
+   "res": "PASS",
+   "said": "{\"foot\":null,\"taps\":0,\"still\":0,\"tab\":\"To go out · AL1 1\",\"tabs\":[\"New to you 0@1141,144\",\"All changes 6@1267,144\",\"To go out · AL@1393,144\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1✕New to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunWaiting to go out as AL1 · 1 changeVL · #1 remarksSaber13/7 09:001B: BFM-6 → 1B: BFM-6 w5Tap a change to go to it.\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 pc \"All changes\": \"Tap a change to go to it — the window stays open.\" under lines that can be tapped",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":5,\"tab\":\"All changes 6\",\"tabs\":[\"New to you 0@1141,144\",\"All changes 6@1267,144\",\"To go out · AL@1393,144\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1✕New to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-6 → 1B: BFM-6 w5▾The day · 509:00Published — the OriginalSaber · 13/7 09:00Signed · APPROVED BY · C\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 pc the tabs did not move when the foot came and went",
+   "res": "PASS",
+   "said": "[[\"New to you 0@1141,144\",\"All changes 6@1267,144\",\"To go out · AL@1393,144\"],[\"New to you 0@1141,144\",\"All changes 6@1267,144\",\"To go out · AL@1393,144\"]]",
+   "pics": ""
+  },
+  {
+   "step": "W5 pc grouped by Who: the foot follows what can be tapped",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":5,\"tab\":\"All changes 6\",\"tabs\":[\"New to you 0@1141,144\",\"All changes 6@1267,144\",\"To go out · AL@1393,144\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1✕New to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWho▾Saber · 6 changes13/7 09:00–09:00Flying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-6 → 1B: BFM-6 w5The daySaber · 13/7 09:00Published — the Original\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 pc every Who group folded: nothing to tap, so no foot",
+   "res": "PASS",
+   "said": "{\"foot\":null,\"taps\":0,\"still\":0,\"tab\":\"All changes 6\",\"tabs\":[\"New to you 0@1141,144\",\"All changes 6@1267,144\",\"To go out · AL@1393,144\"],\"says\":false,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1✕New to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWho▸Saber · 6 changes13/7 09:00–09:00\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 pc \"New to you\": its own foot, \"Mark all as seen\", unchanged",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":0,\"still\":0,\"tab\":\"New to you 0\",\"tabs\":[\"New to you 0@1141,144\",\"All changes 6@1267,144\",\"To go out · AL@1393,144\"],\"says\":false,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1✕New to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you on Monday.✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W6 pc admin, View-only Sched, a day's count (\"1 change\"): the foot follows what can be tapped",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":0,\"tab\":\"All changes 1\",\"tabs\":[\"New to you 0@1141,144\",\"All changes 1@1330,144\"],\"says\":true,\"text\":\"⠿Changes · Tuesday 14/7Not yet published✕New to you 0All changes 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-3 → 1B: BFM-3 w6Tap a change to go to it — the window stays open.\"}",
+   "pics": ""
+  },
+  {
+   "step": "W7 pc member, \"All changes\" (opened from \"1 new\"): \"Read only — …\", never \"Tap a change\"",
+   "res": "PASS",
+   "said": "{\"foot\":\"Read only — every change and who made it, for everyone to see.\",\"taps\":1,\"still\":0,\"tab\":\"All changes 1\",\"tabs\":[\"New to you 1@1141,144\",\"All changes 1@1330,144\"],\"says\":false,\"text\":\"⠿Changes · Tuesday 14/7Not yet published✕New to you 1All changes 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-3 → 1B: BFM-3 w6Read only — every change and who made it, for everyone to see.\"}",
+   "pics": ""
+  },
+  {
+   "step": "W7 pc member, \"New to you\" (opened from \"1 new\"): \"Mark all as seen\", never \"Tap a change\"",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":1,\"still\":0,\"tab\":\"New to you 1\",\"tabs\":[\"New to you 1@1141,144\",\"All changes 1@1330,144\"],\"says\":false,\"text\":\"⠿Changes · Tuesday 14/7Not yet published✕New to you 1All changes 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-3 → 1B: BFM-3 w6✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5–W7 pc no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W8 pc remark: Undo of a change below the screen brings it up clear of the foot, on top, words back",
+   "res": "PASS",
+   "said": "before: box 1595–1619, list 106–730 (scrolls: sb-boardwrap); after: box 698–722, list 106–730, on top: true (nts); words \"2A: NIGHT BFM\"",
+   "pics": ""
+  },
+  {
+   "step": "W8 pc remark no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W8 pc input: Undo of a change below the screen brings it up clear of the foot, on top, words back",
+   "res": "PASS",
+   "said": "before: box 3692–3716, list 106–730 (scrolls: sb-boardwrap); after: box 693–717, list 106–730, on top: true (ain rmkin); words \"Medically down\"",
+   "pics": ""
+  },
+  {
+   "step": "W8 pc input no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W9 pc Undo with the changes window open: the remark is brought on screen and is not under the window",
+   "res": "PASS",
+   "said": "window 114–674 × 1140–1520; box before -1989–-1965, after 114–138 × 855–1090, on top: true (what is there: nts); words \"1B: BFM-6\"",
+   "pics": ""
+  },
+  {
+   "step": "W9 pc the window is still open after the Undo",
+   "res": "PASS",
+   "said": "window drawn",
+   "pics": ""
+  },
+  {
+   "step": "W9 pc no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W9b pc Undo with the changes window open, the change below the screen: brought on screen and not under the window",
+   "res": "PASS",
+   "said": "window 114–674 × 1140–1520; box before 1595–1619, after 698–722 × 855–1090, on top: true (what is there: nts); words \"2A: NIGHT BFM\"",
+   "pics": ""
+  },
+  {
+   "step": "W9b pc no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W10 pc Undo pressed on Tuesday's board (reached by the › arrow): Monday comes back with the remark in view, words back",
+   "res": "PASS",
+   "said": "day Tuesday → Monday; box 114–138, list 106–730; words \"1B: BFM-6\"",
+   "pics": ""
+  },
+  {
+   "step": "W10 pc no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W11 pc Ctrl+Z on the board: not a way to Undo here (only the buttons are)",
+   "res": "RECORD",
+   "said": "nothing taken back — words still \"1B: BFM-6 w11\"",
+   "pics": ""
+  },
+  {
+   "step": "W11 pc no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc change, Undo, Redo in view: words go and come back, the board does not move",
+   "res": "PASS",
+   "said": "\"1B: BFM-6\" → \"1B: BFM-6 p12\", scrolled 631 then 631",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc History opens the changes window (All changes after a tab press) with the foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":0,\"still\":0,\"tab\":\"New to you 0\",\"tabs\":[\"New to you 0@1141,162\",\"All changes 3@1330,162\"],\"says\":false,\"text\":\"⠿Changes · Monday 13/7Not yet published✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you on Monday.✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc …All changes: foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":2,\"tab\":\"All changes 3\",\"tabs\":[\"New to you 0@1141,162\",\"All changes 3@1330,162\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Not yet published✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾The day · 209:00Redo — a remark on a flying lineSaber · 13/7 09:00Undo — a remark on a flying lineSaber · 13/7 09:00Flying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-6 → 1B: BFM-6 p12Tap a chan\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc ✕ closes the window",
+   "res": "PASS",
+   "said": "after ✕",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc History pressed again closes it",
+   "res": "PASS",
+   "said": "open: true",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc Escape with the window open (an open question to him, [CHGWIN-ESCAPE])",
+   "res": "RECORD",
+   "said": "the window stays open",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc ✓ Done: the week shows the remark as left (with \"p12\")",
+   "res": "PASS",
+   "said": "places on Monday showing it: 2",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc Edit Schedule's changes clock opens the window, foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":0,\"still\":0,\"tab\":\"New to you 0\",\"tabs\":[\"New to you 0@1141,144\",\"All changes 3@1330,144\"],\"says\":false,\"text\":\"⠿Changes · week of 13/73 changes this week✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you this week.✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc …All changes, foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":2,\"tab\":\"All changes 3\",\"tabs\":[\"New to you 0@1141,144\",\"All changes 3@1330,144\"],\"says\":true,\"text\":\"⠿Changes · week of 13/73 changes this week✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾Mon · The day · 209:00Redo — a remark on a flying lineSaber · 13/7 09:00Undo — a remark on a flying lineSaber · 13/7 09:00Mon · Flying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-6 → 1B: BFM-\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc the clock pressed again closes it",
+   "res": "PASS",
+   "said": "after the second press",
+   "pics": ""
+  },
+  {
+   "step": "W12 pc no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W5 phone Monday published through the board's sign-off and Publish",
+   "res": "RECORD",
+   "said": "published",
+   "pics": ""
+  },
+  {
+   "step": "W5 phone Monday's count reads a change waiting",
+   "res": "PASS",
+   "said": "1 pending",
+   "pics": ""
+  },
+  {
+   "step": "W5 phone \"To go out\": no foot under the list (the list's own words say where a tap goes)",
+   "res": "PASS",
+   "said": "{\"foot\":null,\"taps\":0,\"still\":0,\"tab\":\"To go out · AL1 1\",\"tabs\":[\"New to you 0@13,398\",\"All changes 6@138,398\",\"To go out · AL@264,398\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1Hide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunWaiting to go out as AL1 · 1 changeVL · #1 remarksSaber13/7 09:001B: BFM-6 → 1B: BFM-6 w5Tap a change to go to it.\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 phone \"All changes\": \"Tap a change to go to it — the window stays open.\" under lines that can be tapped",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":5,\"tab\":\"All changes 6\",\"tabs\":[\"New to you 0@13,398\",\"All changes 6@138,398\",\"To go out · AL@264,398\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1Hide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-6 → 1B: BFM-6 w5▾The day · 509:00Published — the Or\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 phone the tabs did not move when the foot came and went",
+   "res": "PASS",
+   "said": "[[\"New to you 0@13,398\",\"All changes 6@138,398\",\"To go out · AL@264,398\"],[\"New to you 0@13,398\",\"All changes 6@138,398\",\"To go out · AL@264,398\"]]",
+   "pics": ""
+  },
+  {
+   "step": "W5 phone grouped by Who: the foot follows what can be tapped",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":5,\"tab\":\"All changes 6\",\"tabs\":[\"New to you 0@13,398\",\"All changes 6@138,398\",\"To go out · AL@264,398\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1Hide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWho▾Saber · 6 changes13/7 09:00–09:00Flying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-6 → 1B: BFM-6 w5T\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 phone every Who group folded: nothing to tap, so no foot",
+   "res": "PASS",
+   "said": "{\"foot\":null,\"taps\":0,\"still\":0,\"tab\":\"All changes 6\",\"tabs\":[\"New to you 0@13,398\",\"All changes 6@138,398\",\"To go out · AL@264,398\"],\"says\":false,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1Hide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWho▸Saber · 6 changes13/7 09:00–09:00\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 phone \"New to you\": its own foot, \"Mark all as seen\", unchanged",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":0,\"still\":0,\"tab\":\"New to you 0\",\"tabs\":[\"New to you 0@13,398\",\"All changes 6@138,398\",\"To go out · AL@264,398\"],\"says\":false,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1Hide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you on Monday.✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W6 phone admin, View-only Sched, a day's count (\"1 change\"): the foot follows what can be tapped",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":0,\"tab\":\"All changes 1\",\"tabs\":[\"New to you 0@13,364\",\"All changes 1@201,364\"],\"says\":true,\"text\":\"⠿Changes · Tuesday 14/7Not yet publishedHide ▾✕New to you 0All changes 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-3 → 1B: BFM-3 w6Tap a change to go to it — the window stays open.\"}",
+   "pics": ""
+  },
+  {
+   "step": "W7 phone member, \"All changes\" (opened from \"1 new\"): \"Read only — …\", never \"Tap a change\"",
+   "res": "PASS",
+   "said": "{\"foot\":\"Read only — every change and who made it, for everyone to see.\",\"taps\":1,\"still\":0,\"tab\":\"All changes 1\",\"tabs\":[\"New to you 1@13,364\",\"All changes 1@201,364\"],\"says\":false,\"text\":\"⠿Changes · Tuesday 14/7Not yet publishedHide ▾✕New to you 1All changes 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-3 → 1B: BFM-3 w6Read only — every change and who made it, for everyone to see.\"}",
+   "pics": ""
+  },
+  {
+   "step": "W7 phone member, \"New to you\" (opened from \"1 new\"): \"Mark all as seen\", never \"Tap a change\"",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":1,\"still\":0,\"tab\":\"New to you 1\",\"tabs\":[\"New to you 1@13,364\",\"All changes 1@201,364\"],\"says\":false,\"text\":\"⠿Changes · Tuesday 14/7Not yet publishedHide ▾✕New to you 1All changes 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-3 → 1B: BFM-3 w6✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5–W7 phone no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W8 phone remark: Undo of a change below the screen brings it up clear of the foot, on top, words back",
+   "res": "PASS",
+   "said": "before: box 3023–3047, list 75–874 (scrolls: sb-main); after: box 842–866, list 75–874, on top: true (nts); words \"2A: NIGHT BFM\"",
+   "pics": ""
+  },
+  {
+   "step": "W8 phone remark no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W8 phone input: Undo of a change below the screen brings it up clear of the foot, on top, words back",
+   "res": "PASS",
+   "said": "before: box 6654–6678, list 75–874 (scrolls: sb-main); after: box 832–856, list 75–874, on top: true (ain rmkin); words \"Medically down\"",
+   "pics": ""
+  },
+  {
+   "step": "W8 phone input no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W9 phone Undo with the changes window open: the remark is brought on screen and is not under the window",
+   "res": "PASS",
+   "said": "window 320–862 × 12–390; box before -4041–-4017, after 83–107 × 206–360, on top: true (what is there: nts); words \"1B: BFM-6\"",
+   "pics": ""
+  },
+  {
+   "step": "W9 phone the window is still open after the Undo",
+   "res": "PASS",
+   "said": "window drawn",
+   "pics": ""
+  },
+  {
+   "step": "W9 phone no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W9b phone Undo with the changes window open, the change below the screen: brought on screen and not under the window",
+   "res": "PASS",
+   "said": "window 320–862 × 12–390; box before 3023–3047, after 288–312 × 206–360, on top: true (what is there: nts); words \"2A: NIGHT BFM\"",
+   "pics": ""
+  },
+  {
+   "step": "W9b phone no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W10 phone Undo pressed on Tuesday's board (reached by the › arrow): Monday comes back with the remark in view, words back",
+   "res": "PASS",
+   "said": "day Tue → Mon; box 83–107, list 75–874; words \"1B: BFM-6\"",
+   "pics": ""
+  },
+  {
+   "step": "W10 phone no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone change, Undo, Redo in view: words go and come back, the board does not move",
+   "res": "PASS",
+   "said": "\"1B: BFM-6\" → \"1B: BFM-6 p12\", scrolled 1345 then 1345",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone History opens the changes window (All changes after a tab press) with the foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":0,\"still\":0,\"tab\":\"New to you 0\",\"tabs\":[\"New to you 0@13,398\",\"All changes 3@201,398\"],\"says\":false,\"text\":\"⠿Changes · Monday 13/7Not yet publishedHide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you on Monday.✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone …All changes: foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":2,\"tab\":\"All changes 3\",\"tabs\":[\"New to you 0@13,398\",\"All changes 3@201,398\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Not yet publishedHide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾The day · 209:00Redo — a remark on a flying lineSaber · 13/7 09:00Undo — a remark on a flying lineSaber · 13/7 09:00Flying · VL BFMSaber · 13/7 09\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone ✕ closes the window",
+   "res": "PASS",
+   "said": "after ✕",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone History pressed again closes it",
+   "res": "PASS",
+   "said": "open: true",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone Escape with the window open (an open question to him, [CHGWIN-ESCAPE])",
+   "res": "RECORD",
+   "said": "the window stays open",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone ✓ Done: the week shows the remark as left (with \"p12\")",
+   "res": "PASS",
+   "said": "places on Monday showing it: 2",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone Edit Schedule's changes clock opens the window, foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":0,\"still\":0,\"tab\":\"New to you 0\",\"tabs\":[\"New to you 0@13,398\",\"All changes 3@201,398\"],\"says\":false,\"text\":\"⠿Changes · week of 13/73 changes this weekHide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you this week.✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone …All changes, foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":2,\"tab\":\"All changes 3\",\"tabs\":[\"New to you 0@13,398\",\"All changes 3@201,398\"],\"says\":true,\"text\":\"⠿Changes · week of 13/73 changes this weekHide ▾✕History on: Tap a gold dot on the scheduleNew to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾Mon · The day · 209:00Redo — a remark on a flying lineSaber · 13/7 09:00Undo — a remark on a flying lineSaber · 13/7 09:00Mon · Flying · VL BFM\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone the clock pressed again closes it",
+   "res": "PASS",
+   "said": "after the second press",
+   "pics": ""
+  },
+  {
+   "step": "W12 phone no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W5 side Monday published through the board's sign-off and Publish",
+   "res": "RECORD",
+   "said": "published",
+   "pics": ""
+  },
+  {
+   "step": "W5 side Monday's count reads a change waiting",
+   "res": "PASS",
+   "said": "1 pending",
+   "pics": ""
+  },
+  {
+   "step": "W5 side \"To go out\": no foot under the list (the list's own words say where a tap goes)",
+   "res": "PASS",
+   "said": "{\"foot\":null,\"taps\":0,\"still\":0,\"tab\":\"To go out · AL1 1\",\"tabs\":[\"New to you 0@479,140\",\"All changes 6@605,140\",\"To go out · AL@731,140\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1✕New to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunWaiting to go out as AL1 · 1 changeVL · #1 remarksSaber13/7 09:001B: BFM-6 → 1B: BFM-6 w5Tap a change to go to it.\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 side \"All changes\": \"Tap a change to go to it — the window stays open.\" under lines that can be tapped",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":5,\"tab\":\"All changes 6\",\"tabs\":[\"New to you 0@479,140\",\"All changes 6@605,140\",\"To go out · AL@731,140\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1✕New to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-6 → 1B: BFM-6 w5▾The day · 509:00Published — the OriginalSaber · 13/7 09:00Signed · APPROVED BY · C\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 side the tabs did not move when the foot came and went",
+   "res": "PASS",
+   "said": "[[\"New to you 0@479,140\",\"All changes 6@605,140\",\"To go out · AL@731,140\"],[\"New to you 0@479,140\",\"All changes 6@605,140\",\"To go out · AL@731,140\"]]",
+   "pics": ""
+  },
+  {
+   "step": "W5 side grouped by Who: the foot follows what can be tapped",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":5,\"tab\":\"All changes 6\",\"tabs\":[\"New to you 0@479,140\",\"All changes 6@605,140\",\"To go out · AL@731,140\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1✕New to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWho▾Saber · 6 changes13/7 09:00–09:00Flying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-6 → 1B: BFM-6 w5The daySaber · 13/7 09:00Published — the Original\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 side every Who group folded: nothing to tap, so no foot",
+   "res": "PASS",
+   "said": "{\"foot\":null,\"taps\":0,\"still\":0,\"tab\":\"All changes 6\",\"tabs\":[\"New to you 0@479,140\",\"All changes 6@605,140\",\"To go out · AL@731,140\"],\"says\":false,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1✕New to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWho▸Saber · 6 changes13/7 09:00–09:00\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5 side \"New to you\": its own foot, \"Mark all as seen\", unchanged",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":0,\"still\":0,\"tab\":\"New to you 0\",\"tabs\":[\"New to you 0@479,140\",\"All changes 6@605,140\",\"To go out · AL@731,140\"],\"says\":false,\"text\":\"⠿Changes · Monday 13/7Published · 1 change waiting to go out as AL1✕New to you 0All changes 6To go out · AL1 1WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you on Monday.✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W6 side admin, View-only Sched, a day's count (\"1 change\"): the foot follows what can be tapped",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":0,\"tab\":\"All changes 1\",\"tabs\":[\"New to you 0@479,140\",\"All changes 1@668,140\"],\"says\":true,\"text\":\"⠿Changes · Tuesday 14/7Not yet published✕New to you 0All changes 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-3 → 1B: BFM-3 w6Tap a change to go to it — the window stays open.\"}",
+   "pics": ""
+  },
+  {
+   "step": "W7 side member, \"All changes\" (opened from \"1 new\"): \"Read only — …\", never \"Tap a change\"",
+   "res": "PASS",
+   "said": "{\"foot\":\"Read only — every change and who made it, for everyone to see.\",\"taps\":1,\"still\":0,\"tab\":\"All changes 1\",\"tabs\":[\"New to you 1@479,140\",\"All changes 1@668,140\"],\"says\":false,\"text\":\"⠿Changes · Tuesday 14/7Not yet published✕New to you 1All changes 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-3 → 1B: BFM-3 w6Read only — every change and who made it, for everyone to see.\"}",
+   "pics": ""
+  },
+  {
+   "step": "W7 side member, \"New to you\" (opened from \"1 new\"): \"Mark all as seen\", never \"Tap a change\"",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":1,\"still\":0,\"tab\":\"New to you 1\",\"tabs\":[\"New to you 1@479,140\",\"All changes 1@668,140\"],\"says\":false,\"text\":\"⠿Changes · Tuesday 14/7Not yet published✕New to you 1All changes 1WeekMonTueWedThuFriSatSunGroup byItemWhoFlying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-3 → 1B: BFM-3 w6✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W5–W7 side no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W8 side remark: Undo of a change below the screen brings it up clear of the foot, on top, words back",
+   "res": "PASS",
+   "said": "before: box 2428–2452, list 144–402 (scrolls: schedBoard); after: box 370–394, list 51–402, on top: true (nts); words \"2A: NIGHT BFM\"",
+   "pics": ""
+  },
+  {
+   "step": "W8 side remark no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W8 side input: Undo of a change below the screen brings it up clear of the foot, on top, words back",
+   "res": "PASS",
+   "said": "before: box 5160–5376, list 144–402 (scrolls: schedBoard); after: box 210–390, list 51–402, on top: true (ain rmkin); words \"Medically down\"",
+   "pics": ""
+  },
+  {
+   "step": "W8 side input no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W9 side Undo with the changes window open: the remark is brought on screen and is not under the window",
+   "res": "PASS",
+   "said": "window 96–378 × 478–858; box before -3355–-3331, after 59–83 × 52–407, on top: true (what is there: nts); words \"1B: BFM-6\"",
+   "pics": ""
+  },
+  {
+   "step": "W9 side the window is still open after the Undo",
+   "res": "PASS",
+   "said": "window drawn",
+   "pics": ""
+  },
+  {
+   "step": "W9 side no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W9b side Undo with the changes window open, the change below the screen: brought on screen and not under the window",
+   "res": "PASS",
+   "said": "window 152–392 × 478–858; box before 2428–2452, after 370–394 × 52–407, on top: true (what is there: nts); words \"2A: NIGHT BFM\"",
+   "pics": ""
+  },
+  {
+   "step": "W9b side no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W10 side Undo pressed on Tuesday's board (reached by the › arrow): Monday comes back with the remark in view, words back",
+   "res": "PASS",
+   "said": "day Tuesday → Monday; box 59–83, list 51–402; words \"1B: BFM-6\"",
+   "pics": ""
+  },
+  {
+   "step": "W10 side no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W12 side change, Undo, Redo in view: words go and come back, the board does not move",
+   "res": "PASS",
+   "said": "\"1B: BFM-6\" → \"1B: BFM-6 p12\", scrolled 1051 then 1051",
+   "pics": ""
+  },
+  {
+   "step": "W12 side History opens the changes window (All changes after a tab press) with the foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":0,\"still\":0,\"tab\":\"New to you 0\",\"tabs\":[\"New to you 0@479,140\",\"All changes 3@668,140\"],\"says\":false,\"text\":\"⠿Changes · Monday 13/7Not yet published✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you on Monday.✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 side …All changes: foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":2,\"tab\":\"All changes 3\",\"tabs\":[\"New to you 0@479,140\",\"All changes 3@668,140\"],\"says\":true,\"text\":\"⠿Changes · Monday 13/7Not yet published✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾The day · 209:00Redo — a remark on a flying lineSaber · 13/7 09:00Undo — a remark on a flying lineSaber · 13/7 09:00Flying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-6 → 1B: BFM-6 p12Tap a chan\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 side ✕ closes the window",
+   "res": "PASS",
+   "said": "after ✕",
+   "pics": ""
+  },
+  {
+   "step": "W12 side History pressed again closes it",
+   "res": "PASS",
+   "said": "open: true",
+   "pics": ""
+  },
+  {
+   "step": "W12 side Escape with the window open (an open question to him, [CHGWIN-ESCAPE])",
+   "res": "RECORD",
+   "said": "the window stays open",
+   "pics": ""
+  },
+  {
+   "step": "W12 side ✓ Done: the week shows the remark as left (with \"p12\")",
+   "res": "PASS",
+   "said": "places on Monday showing it: 2",
+   "pics": ""
+  },
+  {
+   "step": "W12 side Edit Schedule's changes clock opens the window, foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"✓ Mark all as seen\",\"taps\":0,\"still\":0,\"tab\":\"New to you 0\",\"tabs\":[\"New to you 0@479,140\",\"All changes 3@668,140\"],\"says\":false,\"text\":\"⠿Changes · week of 13/73 changes this week✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWhoNothing new to you this week.✓ Mark all as seen\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 side …All changes, foot right",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"still\":2,\"tab\":\"All changes 3\",\"tabs\":[\"New to you 0@479,140\",\"All changes 3@668,140\"],\"says\":true,\"text\":\"⠿Changes · week of 13/73 changes this week✕New to you 0All changes 3WeekMonTueWedThuFriSatSunGroup byItemWho▾Mon · The day · 209:00Redo — a remark on a flying lineSaber · 13/7 09:00Undo — a remark on a flying lineSaber · 13/7 09:00Mon · Flying · VL BFMSaber · 13/7 09:00#1 remarks1B: BFM-6 → 1B: BFM-\"}",
+   "pics": ""
+  },
+  {
+   "step": "W12 side the clock pressed again closes it",
+   "res": "PASS",
+   "said": "after the second press",
+   "pics": ""
+  },
+  {
+   "step": "W12 side no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  }
+ ]
+}

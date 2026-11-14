@@ -15,6 +15,7 @@ paths:
   - raptor-port/e2e/availwin.spec.ts
   - raptor-port/e2e/blankabsence.spec.ts
   - raptor-port/e2e/board-escape-traffic.spec.ts
+  - raptor-port/e2e/board-undo-land.spec.ts
   - raptor-port/e2e/board-layout.spec.ts
   - raptor-port/e2e/boardside.spec.ts
   - raptor-port/e2e/changeswin.spec.ts
@@ -100,6 +101,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - The ten pictures of the schedule's one row for a shared input are its design of record — one row of every puck with one title, time, remark and set of buttons, a man on leave flagged on it, a published day counting it once, a big group shown whole and the row growing downward [D743].
 
 ## Warnings and the rules engine
+- The whole rules engine gets a rules-first review — every ruling about what the warnings flag checked against the engine, a test each, the gaps and clashes between the rules built on the original reported to him; a report, nothing changed by it, run the night of 11 Nov 26 on Fable 5.2 — [ENGINE-RULES-REVIEW] [D1983, D1972, D1537].
 - The Logic page is designed for the scheduler or admin reading it, and written so a member or an admin understands how each rule applies to them and how the rules affect one another — a guide for a user who wants to know how the app's rules work in depth [D925, D929, D928].
 - The Logic page reads intuitive and less cluttered: without jargon, without what is not essential and never the app's inside detail, every line written and checked by reading it as that user would; the editable settings together at the top (D809), each with what changing it affects (the brief time moves the automatic B), a short "How it works" only where needed [D925, D928, D929, D931].
 

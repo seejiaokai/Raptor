@@ -1,0 +1,21 @@
+after wheel 300: winRoom 0 scrollTop 300 cardBottom 816 counts {"tab":"Approvals 21","approveAll":"Approve all 19"}
+in view: 6:Gambit C OIL Tue 24 Fe | 7:Ranger IP CCL Mon 2 Ma | 8:Ranger IP PL Mon 16 Ma | 9:Ranger IP CL Tue 17 Ma | 10:Ranger IP LL Wed 7 Jan | 11:Ranger IP LL Wed 11 –  | 12:Ranger IP LL Wed 4 Mar | 13:Reaper IR LL Mon 16 Fe | 14:Anvil IP CCL Tue 17 Fe
+  PASS W1-0: window room 0 after wheel
+after Approve on line 7: winRoom 0 scrollTop 300 cardBottom 816 counts {"tab":"Approvals 20","approveAll":"Approve all 18"}
+{"idx":7,"id":"appr-line-bane","text":"Ranger IP CCL Mon 2 Mar › — Approved Refuse","top":353.2,"bottom":407.2,"inView":true,"approve":"Approved","refuse":"Refuse","apPressed":"true","rfPressed":"false"}
+  PASS W1-a: Approve: line stays (top 353.2->353.2), lit "Approved", scrollTop 300->300
+  PASS W1-a-count: counts Approvals 21 / Approve all 19 -> Approvals 20 / Approve all 18
+  PASS W1-a-foot: card foot 816->816, winRoom 0
+after Refuse on line 9: winRoom 0 scrollTop 300 cardBottom 816 counts {"tab":"Approvals 19","approveAll":"Approve all 17"}
+{"idx":9,"id":"appr-line-bane","text":"Ranger IP CL Tue 17 Mar › — Approve Refused","top":461.2,"bottom":515.2,"inView":true,"approve":"Approve","refuse":"Refused","apPressed":"false","rfPressed":"true"}
+  PASS W1-r: Refuse: line stays (top 461.2->461.2), lit "Refused", scrollTop ->300
+  PASS W1-r-count: counts Approvals 20 / Approve all 18 -> Approvals 19 / Approve all 17
+  PASS W1-r-foot: card foot 816, winRoom 0
+after pressing lit Approved again: winRoom 0 scrollTop 300 cardBottom 816 counts {"tab":"Approvals 20","approveAll":"Approve all 18"}
+{"idx":7,"id":"appr-line-bane","text":"Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse","top":353.2,"bottom":407.2,"inView":true,"approve":"Approve","refuse":"Refuse","apPressed":"false","rfPressed":"false"}
+  PASS W1-b: lit Approve pressed again: back to "Approve", line top 353.2, scrollTop 300
+  PASS W1-b-count: counts Approvals 19 / Approve all 17 -> Approvals 20 / Approve all 18
+  PASS W1-b-foot: card foot 816, winRoom 0
+errors []
+  PASS W1-err: page errors: none
+SUMMARY 11 PASS, 0 FAIL

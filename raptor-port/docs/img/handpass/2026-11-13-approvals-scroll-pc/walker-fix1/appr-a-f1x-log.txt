@@ -1,0 +1,52 @@
+list before pick: 300
+{
+ "inner": 466,
+ "picker": {
+  "t": 250,
+  "b": 620.5,
+  "l": 38.8,
+  "r": 388.8,
+  "h": 370.5
+ },
+ "pickerInScroll": true,
+ "anc": [
+  "DIV.dcal-inline lw-cal",
+  "DIV.appr-pickpop",
+  "DIV.appr-scroll",
+  "DIV.appr-card",
+  "SECTION.appr-page",
+  "SECTION.page on"
+ ],
+ "scroller": {
+  "t": 240,
+  "b": 457.2,
+  "l": 38.8,
+  "r": 1515.2,
+  "h": 217.2
+ },
+ "scTop": 0,
+ "scRoom": 1263,
+ "cols": {
+  "t": 630.5,
+  "b": 665.7,
+  "l": 38.8,
+  "r": 1278.8,
+  "h": 35.2
+ },
+ "card": {
+  "t": 136,
+  "b": 458,
+  "l": 20,
+  "r": 1516,
+  "h": 322
+ },
+ "cardScrollTop": 0,
+ "d31": {
+  "t": 496.8,
+  "b": 540.8,
+  "l": 285,
+  "r": 332.5,
+  "h": 44
+ }
+}
+errors []

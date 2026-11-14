@@ -1156,7 +1156,7 @@ export function dayWarnHTML(di:any){
   if(!items.length&&!goneW.length)return soloTrace(di,pf);
   /* A HIDDEN WARNING IS NOT COUNTED (owner D472, 1 Oct 26 — "if there are 3 issues initially and a scheduler clicks 1 to
      hide it should just show 2 issues"; it replaces the Aug 26 "the header keeps its true count and colour"). The count,
-     the "N warning" and the bar's colour read the SHOWN warnings; the count line says nothing about a hidden one — it
+     the "N warnings" (its s by count, as the board's bar — [SCHED-MARKS-WALK-ODDS] 1) and the bar's colour read the SHOWN warnings; the count line says nothing about a hidden one — it
      is noticed only by opening the list, where its line stays in place, struck out and darker (D469). With every issue
      hidden the bar stays, quiet, so that line can still be reached and flagged again (D475). `off` is the warning's own
      mark from the bundle being drawn — the working copy's hides on Edit Schedule, the issued ones on a published face. */
@@ -1170,7 +1170,7 @@ export function dayWarnHTML(di:any){
    +`<div class="daywarn ${worst}" data-daywarn="${di}">`
    +`${pf?`<span class="dwwho">${esc(cs)}</span>`:''}`
    +(dw.length
-      ? `<b>⚠ ${dw.length} issue${dw.length>1?'s':''}</b>${nh?` · ${nh} warning`:''}`
+      ? `<b>⚠ ${dw.length} issue${dw.length>1?'s':''}</b>${nh?` · ${nh} warning${nh>1?'s':''}`:''}`
       : goneW.length?`<b>⚠ ${goneW.length} to clear once signed</b>`:`<b>✓ No issues</b>`)
    +`<span class="dwcar">${open?'▲':'▼'}</span></div>`;
   if(open){

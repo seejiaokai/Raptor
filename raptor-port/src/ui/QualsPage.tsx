@@ -315,13 +315,24 @@ export function QualsPage() {
      set with the seat view, in the same render, so the outline below first runs on the man's own view. As a ref it was seen
      at once by the outline effect after an Undo (focusQualsRow → the effect above), on the old All table: the page jumped
      to his row there, then again once the view changed. */
+  /* ONE ASK, ONE TRIP ([QUALS-OUTLINE-RESCROLL], 11 Nov 26 — found by the code read of 6 Nov 26): each "Check his quals"
+     and each Undo is an ask of its own (a new object, though it may name the same man), and `backWent` is the ask whose
+     trip to the row has been made — see the outline below. */
   // eslint-disable-next-line react-doctor/rerender-state-only-in-handlers -- its render is what lines the outline up with the seat view set beside it (above)
-  const [backHl, setBackHl] = useState<string | null>(null)
-  const checkBack = (id: string) => {
+  const [backHl, setBackHl] = useState<{ id: string } | null>(null)
+  const backWent = useRef<{ id: string } | null>(null)
+  /* a trip waiting for its frame (below), with the ask it is for: let go when a newer ask takes its place and when the
+     page is left, so a frame never moves a page it was not asked on (the second fix round, 11 Nov 26) */
+  const backFrame = useRef<{ n: number; ask: { id: string } } | null>(null)
+  useEffect(() => () => {
+    if (backFrame.current) cancelAnimationFrame(backFrame.current.n)
+    backFrame.current = null
+  }, [])
+  const checkBack =(id: string) => {
     const p = PEOPLE[id]
     clearBack(id)
     setSeat(p.pers || p.seat === 'GND' ? 'GND' : p.seat === 'RCP' ? 'RCP' : 'FCP')
-    setBackHl(id); notify()
+    setBackHl({ id }); notify()
   }
   /* [ONE-DOOR] (D305): the man's own "Check my quals" — his row, opened and outlined, once */
   /* QUALS OPENS AT ITS TOP (owner D937, 16 Oct 26), as the Inputs page does (InputsPage.tsx): the app keeps the window's
@@ -336,14 +347,55 @@ export function QualsPage() {
     if (PEOPLE[id]) checkBack(id)
   })
   useEffect(() => {
+    /* A NEWER ASK TAKES THE OLDER ONE'S PLACE, ITS WAITING TRIP WITH IT (the second fix round, 11 Nov 26 — the narrow
+       read's first suspicion, seen as a test: quals.test.tsx "a newer ask arriving inside the waiting frame…"). The older
+       ask's trip was still waiting for its frame (below) when a newer ask made its own trip at once; the frame then ran
+       and took the page to the older man's row, which no longer wore the outline. */
+    const waiting = backFrame.current
+    if (waiting && waiting.ask !== backHl) { cancelAnimationFrame(waiting.n); backFrame.current = null }
     if (!backHl) return
-    const el = document.querySelector(`#qtbl td.qname[data-person="${backHl}"]`)?.closest('tr') as HTMLElement | null
+    /* THE PAGE GOES TO HIS ROW ONCE FOR EACH ASK ([QUALS-OUTLINE-RESCROLL], 11 Nov 26). The table is drawn again on every
+       change of the store, which wipes the outline's class, so this runs after every repaint to put the outline back —
+       and it used to move the page with it each time: he pressed "Check his quals" (or Undo), scrolled away to another
+       man's row, ticked a box there, and the page jumped back to the outlined row (seen in a real browser:
+       e2e/geometry.spec.ts "[QUALS-OUTLINE-RESCROLL]"). The outline is still put back on every repaint, as it was; the trip is made
+       only on the first repaint that DRAWS his row — the one that carries the ask and his seat view (above), unless the
+       filter box hides him then. */
+    /* HIDDEN BY THE FILTER, THE ASK WAITS (the fix round, 11 Nov 26 — the walk's A8 and both code reads): his row is
+       looked up BEFORE the ask is marked as made. Spent on a repaint that drew no row, the ask was lost — clearing the
+       filter outlined him and left the page where it stood, where before this job the page went to him then. So an ask
+       whose row is not drawn is left unspent, and its one trip is made on the first repaint that draws the row; a newer
+       ask still takes the older one's place. */
+    const el = document.querySelector(`#qtbl td.qname[data-person="${backHl.id}"]`)?.closest('tr') as HTMLElement | null
     if (!el) return
     el.classList.add('back-hl')
+    if (backWent.current === backHl) return
+    backWent.current = backHl
     /* ONLY WHEN HIS ROW IS NOT ALREADY ON SCREEN (owner, D672, 8 Oct 26 — "if it's already in view, undo/redo don't need
        to snap to view"): this is where an Undo of a Quals change lands, and it used to put the row in the middle of the
        screen every time. The outline above still shows which row it was. */
-    if (!rowOnScreen(el, document.querySelector('#qtbl thead'))) el.scrollIntoView?.({ block: 'center' })
+    const ask = backHl
+    const trip = () => {
+      backFrame.current = null
+      /* only the ask still standing makes its trip (above) */
+      if (backWent.current !== ask) return
+      const row = document.querySelector(`#qtbl td.qname[data-person="${ask.id}"]`)?.closest('tr') as HTMLElement | null
+      /* HIDDEN AGAIN BEFORE THE WAITING FRAME RAN, THE ASK IS KEPT (the second fix round, 11 Nov 26 — the narrow read's
+         first suspicion, seen as a test: quals.test.tsx "drawn by an edit of the filter box, then hidden again…"): two
+         edits of the filter box inside one frame drew his row and hid it again, the trip found no row, and the ask —
+         already marked as made — was lost: drawn again, he was outlined and the page stayed where it stood. An ask
+         whose trip found no row is not spent. */
+      if (!row) { backWent.current = null; return }
+      if (!rowOnScreen(row, document.querySelector('#qtbl thead'))) row.scrollIntoView?.({ block: 'center' })
+    }
+    /* DRAWN BY AN EDIT OF THE FILTER BOX, THE TRIP IS MADE ONCE THE EDIT HAS ENDED (the fix round, 11 Nov 26 — seen in a
+       real browser: with the filter cleared by typing, the page went to his row and came straight back, his row left
+       just under the screen's foot). This runs inside the keystroke that cleared the filter, and a browser ends every
+       edit of a text box by bringing its caret back into view — which undid the trip made here. So where the box being
+       typed in is the filter box, the trip waits one frame, after the browser's own scroll; every other ask (the two
+       "Check … quals" buttons, an Undo) makes it at once, as before. */
+    if ((document.activeElement as HTMLElement | null)?.id === 'qFilter' && typeof requestAnimationFrame === 'function') backFrame.current = { n: requestAnimationFrame(trip), ask }
+    else trip()
   })
   const tblRef = useRef<HTMLTableElement>(null)
   /* the frozen-header mirror (see the effect below): the scroll wrap it pins
@@ -396,6 +448,12 @@ export function QualsPage() {
   const qRepinRef = useRef<() => void>(() => {})
   /* a heading drag pressed by a pinch's first finger is let go when the pinch starts (the code read's finding 3) */
   const cancelColDrag = useRef<(() => void) | null>(null)
+  /* the column drag's press and move, for the pinned heading row to hand its own to ([QUALS-PINNED-HEAD-NO-DRAG] — set
+     where the drag is wired, below) */
+  const pinnedDrag = useRef<{ down: (e: PointerEvent) => void; move: (e: PointerEvent) => void } | null>(null)
+  /* the live column drag's way of putting its look back on the pinned heading row, called whenever that row's markup has
+     been set again (set where the drag is wired; called beside `pinnedInner`, below) */
+  const reapplyDrag = useRef<(() => void) | null>(null)
   /* THE PINNED HEADER FOLLOWS BY THE BROWSER (owner D993, 18 Oct 26 — "Could u try to just fix the quals pinned header
      with the 120 frames fix"): where the browser can drive an animation from a scroll (CSS scroll-driven animations),
      the pinned row's table is moved sideways by the table's own scroll timeline, off the page's code — the Leave War's
@@ -436,6 +494,28 @@ export function QualsPage() {
   const tableInner = useMemo(() => ({ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEdit, armDel) }),
     // eslint-disable-next-line react-hooks/exhaustive-deps -- cols is the store's list, read afresh: `ver` moves with it
     [ver, qSeatView, qSort, qEditing, qSearch, canEdit, armDel])
+  /* THE PINNED HEADING ROW'S MARKUP IS SET AGAIN ONLY WHEN IT CHANGES TOO (the fix round, 11 Nov 26 — the fresh Opus
+     read's finding 2, seen in a real browser: e2e/geometry.spec.ts "the page drawn again during a drag begun on a pinned
+     heading…"). It was a new object on every render, so anything that drew the page again while a pinned heading was
+     held — a resize, a phone's toolbar folding, a change of the store — set the row's markup afresh and wiped the
+     picked-up look the drag had written on the pressed heading (the table's own heading never lost it: above). The
+     markup is cheap to make, so it is made every render and the OBJECT kept while the markup reads the same; both pinned
+     tables (the moving row and the still name copy) carry it.
+     Only the COLUMN HEADERS freeze — NOT the "Assigned pilots · N" group row (owner, 30 Aug 26 — "there isn't a need to
+     freeze this bar. Applicable to the rest as well", covering every seat view's roster label). The group row stays in
+     the live table below, so it scrolls away with its rows and the mirror is header-only. */
+  const pinnedHtml = stuck
+    ? `<colgroup>${stuck.cols.map(w => `<col style="width:${w / qzEff}px">`).join('')}</colgroup>` + qualsHead(cols, qSeatView, qSort, canEdit, armDel)
+    : ''
+  const pinnedInner = useMemo(() => ({ __html: pinnedHtml }), [pinnedHtml])
+  /* SET AGAIN MID-DRAG, THE PINNED ROW GETS THE DRAG'S LOOK BACK (the second fix round, 11 Nov 26 — the narrow read's
+     finding 1, seen in a real browser: e2e/geometry.spec.ts "wide desktop: the window narrowed during a drag begun on a
+     pinned heading…"). Keeping the object above covers a redraw that leaves the markup as it read. On a desktop wider
+     than the table the columns share out the extra width, so a change of the window's width mid-drag measures them
+     again, the markup carries new widths and IS set again: the pressed heading lost its picked-up look and the landing
+     mark went until the next move. So the drag itself puts both back, after the commit that set the markup and before
+     the browser paints it. */
+  useLayoutEffect(() => { reapplyDrag.current?.() }, [pinnedInner])
 
   /* remove a column. WIRED ones arm first — see the note beside WIRED. */
   const delQual = (k: string) => {
@@ -565,6 +645,11 @@ export function QualsPage() {
        itself changes state. */
     let from = '', over: HTMLElement | null = null
     const clear = () => { if (over) over.classList.remove('qdrop'); over = null }
+    /* the picked-up look comes off the heading pressed, in the table or in the pinned row under the top bar */
+    const undrag = () => {
+      tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
+      mirrorRef.current?.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
+    }
     /* CARRIED TO THE EDGE, THE VIEW FOLLOWS (owner D893, 15 Oct 26 — "Yes", after D892): a heading held near the
        left or right edge of the table's sideways scroll runs it that way at the app's one edge feel (`./edgescroll`),
        and the heading under the still pointer is read again, so a column can be carried to one off the screen. */
@@ -576,12 +661,51 @@ export function QualsPage() {
       if (!th || th.dataset.col === from) return
       if (th !== over) { clear(); over = th; th.classList.add('qdrop') }
     }
+    /* ONE FINGER, ONE DRAG (the fix round, 11 Nov 26 — Astra's read, seen in a real browser: e2e/geometry.spec.ts "a second
+       finger put down, moved and lifted alone…"). The drag belongs to the pointer that began it (`pid`). In the table a
+       second finger starts the pinch, which cancels the drag — but the pinned heading row stands outside the pinch's
+       surface, so there a second finger's moves chose the landing and its lift dropped the column while the first finger
+       was still down: a column order written by a finger that never held it. So, in either row: a second finger put
+       down cancels the drag, only the pointer that began it moves or drops it, and a pointer the browser takes away
+       (`pointercancel`) cancels it rather than dropping it. */
+    let pid: number | undefined
+    const stranger = (e: any) => typeof pid === 'number' && typeof e?.pointerId === 'number' && e.pointerId !== pid
+    const cancel = () => {
+      if (!from) return
+      auto?.stop(); auto = null
+      frameLift(qLiftRef.current, null)
+      undrag()
+      clear(); from = ''
+    }
+    /* whether the live drag began on the pinned heading row: only then does that row wear the picked-up look */
+    let fromPinned = false
+    reapplyDrag.current = () => {
+      if (!from) return
+      const m = mirrorRef.current
+      if (fromPinned) m?.querySelector(`th[data-col="${from}"]`)?.classList.add('qdragging')
+      /* the heading marked for the landing went with the old markup: the same column's heading in the new markup takes
+         the mark, so what is marked is still where the drop lands */
+      if (over && !over.isConnected) {
+        const next = m?.querySelector<HTMLElement>(`th[data-col="${over.dataset.col}"]`) ?? null
+        over = next
+        next?.classList.add('qdrop')
+      }
+    }
     const onDown = (e: any) => {
-      if (e.isPrimary === false) return   // a second finger is a pinch, never a column drag
+      if (e.isPrimary === false) { cancel(); return }   // a second finger is a pinch, never a column drag
+      /* A PRESS DURING A LIVE DRAG ENDS IT, AND ANOTHER POINTER'S STARTS NOTHING (the second fix round, 11 Nov 26 — the
+         narrow read's third suspicion, seen in a real browser: e2e/geometry.spec.ts "a mouse pressed on another pinned
+         heading during a finger's drag…"). On a touch-screen laptop a mouse pressed while a finger holds a heading is
+         the first pointer of its own kind, so it was taken for the start of a drag: it took the live one over without
+         letting it go — the first heading left looking picked up, its landing mark standing, and the drop now the
+         mouse's. The live drag is cancelled whole, and a press by any pointer but its own starts none. */
+      if (from) { const other = stranger(e); cancel(); if (other) return }
       if (!live.current.canEditQuals()) return
       const th = (e.target as HTMLElement).closest('th[data-col]') as HTMLElement | null
       if (!th || (e.target as HTMLElement).closest('[data-del]')) return
       from = th.dataset.col!
+      pid = e.pointerId
+      fromPinned = !th.closest('#qtbl')
       /* A FINGER'S HOLD IS ON THE ELEMENT IT LANDED ON ([QUALS-HEAD-FINGER-CAPTURE], the night of 6 Nov 26 — found 21 Oct
          26): a press on the heading's words is held by the words (`.qlbl`), not by the heading, so letting go of the
          heading's hold alone left every move reported on the words the press began on and the column never found a new
@@ -592,6 +716,11 @@ export function QualsPage() {
       const pressed = e.target as Element
       if (pressed !== th) try { pressed.releasePointerCapture?.(e.pointerId) } catch { /* nothing held there */ }
       th.classList.add('qdragging')
+      /* PRESSED IN THE PINNED ROW, THE COLUMN IS STILL THE TABLE'S ([QUALS-PINNED-HEAD-NO-DRAG], 11 Nov 26): the pinned
+         heading is a picture of the table's own, so the frame is measured round the table's heading of the same column
+         and the edge scroll runs the table's own sideways scroll — the pinned row's strip scrolls nothing itself. Pressed
+         in the table, `col` is the heading pressed. */
+      const col = th.closest('#qtbl') ? th : (tbl.querySelector<HTMLElement>(`thead th[data-col="${from}"]`) ?? th)
       /* the frame goes up in the same tick as the pointerdown — ONE measurement
          here and one at the landing, nothing per pointermove. It is placed in
          the wrap's CONTENT coordinates (the heading's x, the table's y, plus
@@ -601,13 +730,13 @@ export function QualsPage() {
       /* 'rect': the heading's OWN border box, so the frame is the column's full
          width — its clientWidth is the padding box rounded, a border and a
          fraction short of it (lift.ts boxOf) */
-      if (w) frameLift(qLiftRef.current, boxOf(w, tbl, th, w.scrollLeft, 'rect'))
+      if (w) frameLift(qLiftRef.current, boxOf(w, tbl, col, w.scrollLeft, 'rect'))
       lx = e.clientX; ly = e.clientY
       auto?.stop()
-      auto = edgeAutoScroll({ from: th, axis: 'x', touch: e.pointerType === 'touch', x: lx, y: ly, onScroll: () => { if (from) overAt(lx, ly) } })
+      auto = edgeAutoScroll({ from: col, axis: 'x', touch: e.pointerType === 'touch', x: lx, y: ly, onScroll: () => { if (from) overAt(lx, ly) } })
     }
     const onMove = (e: any) => {
-      if (!from) return
+      if (!from || stranger(e)) return
       lx = e.clientX; ly = e.clientY
       auto?.point(lx, ly)
       /* the heading under the pointer, read from where it is — never from the event's target alone, which a hold kept on
@@ -618,7 +747,9 @@ export function QualsPage() {
       if (!th || th.dataset.col === from) return
       if (th !== over) { clear(); over = th; th.classList.add('qdrop') }
     }
-    const onUp = () => {
+    const onUp = (e?: any) => {
+      /* another finger lifting is not the drop (above) */
+      if (from && stranger(e)) return
       /* a real move hides the lift frame at the landing below (it is the SAME
          frame that flashes, so hiding it here would take the answer away before
          it was given); a cancel, a release over no heading, or a drop moveQual
@@ -631,16 +762,17 @@ export function QualsPage() {
       auto?.stop(); auto = null
       if (from && over && live.current.moveQual(from, over.dataset.col!)) qLandRef.current = from
       else if (from) frameLift(qLiftRef.current, null)
-      tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
+      undrag()
       clear(); from = ''
     }
-    cancelColDrag.current = () => {
-      if (!from) return
-      auto?.stop(); auto = null
-      frameLift(qLiftRef.current, null)
-      tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
-      clear(); from = ''
-    }
+    const onCancel = (e?: any) => { if (!stranger(e)) cancel() }
+    cancelColDrag.current = cancel
+    /* THE PINNED HEADING ROW STARTS THE SAME DRAG ([QUALS-PINNED-HEAD-NO-DRAG], 11 Nov 26): with the page scrolled down
+       the heading row a person can reach is the pinned copy under the top bar, which is outside the table — and the press
+       was listened for on the table alone, so a heading there wore the grab cursor and moved nothing. The copy comes and
+       goes with the page, so it hands its presses and moves to these same two handlers through this ref (its own
+       onPointerDown / onPointerMove, below); the lift, the landing mark, the drop and its Undo are the ones above. */
+    pinnedDrag.current = { down: onDown, move: onMove }
     tbl.addEventListener('click', onClick)
     tbl.addEventListener('change', onChange)
     tbl.addEventListener('pointerdown', onDown)
@@ -648,7 +780,7 @@ export function QualsPage() {
     /* on the document, not the table: a finger that lifts off the edge of the
        table must still end the drag rather than leave it armed */
     document.addEventListener('pointerup', onUp)
-    document.addEventListener('pointercancel', onUp)
+    document.addEventListener('pointercancel', onCancel)
     /* mark the scroll wrap once the table is scrolled sideways, so the frozen
        callsign column's edge-seal (scheduler.css .qwrap.xscroll …::after) only
        shows then — unscrolled it must not dim the next column's leading edge
@@ -669,8 +801,10 @@ export function QualsPage() {
     return () => {
       tbl.removeEventListener('click', onClick); tbl.removeEventListener('change', onChange)
       tbl.removeEventListener('pointerdown', onDown); tbl.removeEventListener('pointermove', onMove)
+      pinnedDrag.current = null
+      reapplyDrag.current = null
       auto?.stop()
-      document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onUp)
+      document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onCancel)
       wrap.removeEventListener('scroll', onXScroll)
     }
   }, [sdaActive])   // fixed for the page's life (asked of the browser once) — named so the listener's reading of it is plain
@@ -1100,11 +1234,15 @@ export function QualsPage() {
           heading markup; a colgroup of the live-measured widths (table-layout:fixed)
           lands each column exactly over the grid's. aria-hidden — the real table
           under it stays the single accessible/interactive copy — except that a
-          click on a heading still sorts, so the frozen bar is usable while scrolled. */}
+          click on a heading still sorts, so the frozen bar is usable while scrolled,
+          and in Edit quals a heading pressed here drags its column as the table's own
+          does ([QUALS-PINNED-HEAD-NO-DRAG], 11 Nov 26 — `pinnedDrag`, above). */}
       {stuck && (
         // eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- a picture of the heading row, hidden from a screen reader (aria-hidden on its tables): the keyboard sorts from the table's own headings under it, which stay the one interactive copy; a press here is the finger's shortcut while the table is scrolled
         <div className={'qfixed' + (pinSda ? ' q-psda' : '')} data-testid="qsticky-head"
           style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
+          onPointerDown={e => pinnedDrag.current?.down(e.nativeEvent)}
+          onPointerMove={e => pinnedDrag.current?.move(e.nativeEvent)}
           onClick={e => {
             const th = (e.target as HTMLElement).closest?.('th[data-sort]') as HTMLElement | null
             if (th) { const key = th.dataset.sort!; setSort(s => ({ key, dir: s.key === key ? -s.dir : 1 })) }
@@ -1113,14 +1251,7 @@ export function QualsPage() {
             <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '') + (sdaActive ? ' qfixed-anim' : '')}
               style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0) / qzEff, minWidth: 0, ['--qz' as any]: qz }}
               aria-hidden="true"
-              dangerouslySetInnerHTML={{ __html:
-                `<colgroup>${stuck.cols.map(w => `<col style="width:${w / qzEff}px">`).join('')}</colgroup>`
-                /* Only the COLUMN HEADERS freeze — NOT the "Assigned pilots · N"
-                   group row (owner, 30 Aug 26 — "there isn't a need to freeze this
-                   bar. Applicable to the rest as well", covering every seat view's
-                   roster label). The group row stays in the live table below, so
-                   it scrolls away with its rows and the mirror is header-only. */
-                + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
+              dangerouslySetInnerHTML={pinnedInner} />
           </div>
           {/* THE CALLSIGN HEADING, PINNED OVER THE LEFT. With the browser's follow (D993) a table moved by a transform
               cannot keep its heading's sticky-left, so a copy of the row, clipped to the callsign column's width, stands
@@ -1138,9 +1269,7 @@ export function QualsPage() {
           <div className="qfixed-frozen" aria-hidden="true" style={{ width: stuck.cols[0] + 1 }}>
             <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')}
               style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0) / qzEff, minWidth: 0, ['--qz' as any]: qz }}
-              dangerouslySetInnerHTML={{ __html:
-                `<colgroup>${stuck.cols.map(w => `<col style="width:${w / qzEff}px">`).join('')}</colgroup>`
-                + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
+              dangerouslySetInnerHTML={pinnedInner} />
           </div>
         </div>
       )}

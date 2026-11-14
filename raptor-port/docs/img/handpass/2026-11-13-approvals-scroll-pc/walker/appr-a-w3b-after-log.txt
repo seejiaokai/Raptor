@@ -1,0 +1,5 @@
+picker open at 560: {"winY":0,"winRoom":0,"cardScrollTop":0,"pageScrollTop":0,"scTop":0,"inner":466,"d30":{"t":497,"b":541},"hitAtD30":"approvals-page"}
+after 4 wheel ticks over the picker: {"winY":0,"winRoom":0,"cardScrollTop":0,"pageScrollTop":0,"scTop":0,"inner":466,"d30":{"t":497,"b":541},"hitAtD30":"approvals-page"}
+after 4 wheel ticks beside the picker (700,400): {"winY":0,"winRoom":0,"cardScrollTop":0,"pageScrollTop":0,"scTop":0,"inner":466,"d30":{"t":497,"b":541},"hitAtD30":"approvals-page"}
+after 12 Tab: {"winY":0,"winRoom":0,"cardScrollTop":200.8000030517578,"pageScrollTop":0,"scTop":184,"inner":466,"d30":{"t":296,"b":340},"hitAtD30":"B"} focus=appr-refuse
+errors []
