@@ -36,6 +36,8 @@ amendment republished with nothing else changed, `publishALDay`'s `correcting`) 
 the design below is rebuilt from both reports' findings 2–6 first (one `oilNextVals` read by every reader). The earlier
 question under "A question for him" is folded into this one.
 
+**HE CHOSE A, 14 Nov 26 (D2044):** nothing of part 4 is built; it is records only — D2014's row answered, the comments that call the threshold an open question (`oil.ts` head, `rules.ts` ~100, `faceattrs.ts` `KEPT_RULE_KEYS`, `oilev.ts` `rv` doc) corrected to say the OIL block keeps its three values and a change reads pending (D592, D2044), `engine-rules.md` checked. Part 3's note must stay true for that: a changed setting reaches a published day from its next amendment, and an OIL setting's change reads pending at once. The design below is kept as a record, not to build.
+
 **What goes on meanwhile:** parts 1 and 2 BUILT (commit `8c3afe200`, red-first, `src/engine/rulescheck-batch2.test.ts`).
 Part 5 can be written either way (the OIL block has kept its three values since D592 — say so, not "since part 4"). Part 3's
 words wait on his answer. The FULL check runs once part 4 is settled (built, or records only).
