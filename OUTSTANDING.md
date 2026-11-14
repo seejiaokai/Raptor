@@ -136,7 +136,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BAL-SCROLL-STUCK] — his report of 11 Nov 26: BUILT on `claude/bal-scroll-stuck` (the Balances page fitted to the screen's true height, its list keeping the wheel); he tried the preview on his PC the same evening — fixed; close once live.
 - [LW-DOUBLETAP-OTHER-WINDOWS] — the double tap's second tap still falls through the person window, ⚙ Settings, the event window and five more over the grid; the guard of 6 Nov 26 covers them cheaply (low, the agent's).
 - [LW-ROLLBACK-FOCUS] — a refused war change still puts back the jump-to-a-day state, so the grid can jump back after one (low, needs its own look).
-- [LW-BIDPICKER-CSS-INSIDE] — the bid sheet's 202 style rules move inside the Leave War's wrapper, as a walked job (low, the agent's).
+- [LW-BIDPICKER-CSS-INSIDE] — BUILT 14 Nov 26 on `claude/lw-bidpicker-css-1114b`; walked and read, the read's one finding fixed; awaiting his "merge live".
 - [LW-BID-BUBBLE] — the bubble after a bid: his question, waiting (the pick-look page's Q3); redrawn with D1313, D1314 in place before it is put to him again.
 - [INP-HEAD-SORT-READER] — the Inputs List's column headings sort from the keys since 6 Nov 26, but a screen reader is not told a heading can be pressed; the fix, a button in each heading, changes its look — a picture first (low, with the keyboard sweep D807).
 - [QUALS-HEAD-SORT-KEYS] — the Quals table's headings sort by a click only; the keys cannot reach them (low, with the keyboard sweep D807).
@@ -448,6 +448,16 @@ A refused change restores the war's records, and since 6 Nov 26 keeps the role a
 
 ### [LW-BIDPICKER-CSS-INSIDE] The bid sheet's style rules after its wrapper (the night of 6 Nov 26)
 The 202 rules after the wrapper's close in the bid sheet's stylesheet (the counter form onward, since 19 Aug 26) are not deliberate — every war window draws inside the Leave War's page — and work only because their names are unique. **To do:** move them inside the wrapper as a walked job (their weight changes), lowering the guard's allowed count as they leave. **Place:** the next Leave War batch.
+**BUILT 14 Nov 26** (chat 72's night, job 1) on `claude/lw-bidpicker-css-1114`: all 202 inside, the guard's allowance 202 → 0. Where the move would have changed which rule wins, the look was kept — a dead declaration deleted, or the rule lowered with `:where()` — each marked "MOVED INSIDE" in the stylesheet; the proof is a before-and-after capture of every element's computed style, `raptor-port/docs/img/handpass/2026-11-14-bidpicker-css/`. **Awaiting:** the walk, Astra's read and the fresh Opus read; then his "merge live". **Found, for him later (not faults — each a look the stylesheet meant but never showed, removed to keep the look he walked):** the counter form's dashed "is / is not" and dimmed "Without" row, its 64px count box and a bad point box's red edge; Reset counters "quiet at rest" and Reset order's dim hover; the non-blocking window's brighter edge; Grant OIL's dashed 118px "other" box and 8px row gap; the leave buttons' clear edge; the Required note's width rule.
+**Walked and read 14 Nov 26** (evidence `raptor-port/docs/handpass/2026-11-14-bidpicker-css.md`; reads `raptor-port/docs/superpowers/briefs/2026-11-14-bidpicker-css-read-{astra,opus}.md`). **Fix round (14 Nov 26):** the fresh Opus read found one change the 78 captured states missed: in the bid window opened on a day holding one OIL credit (an award, or the schedule's own), each row of "where it came from / reason / given by / days" lost 8px above it (10px → 2px; the window 32px shorter), because the moved OIL-rows rule now tied `.bidsheet .bidsheet-row.postout` and came later. Fixed: the rule's top padding lowered with `:where()`, its bottom padding kept at full weight; two capture states added (an award given through Grant OIL; Cinder's schedule credit on 4 Jul 26); red then green — all 82 captures (41 states, desktop and phone) identical to the old build. **For him, when he next looks at the Leave War:** the old comment suggests 2px may have been meant; it stays at 10px, as it has always shown, unless he says otherwise.
+**Filed, not fixed (the readers' tidiness notes):**
+- Each "MOVED INSIDE" comment quotes the deleted rule in full and repeats one reason, the head comment a third time: one line naming the winning rule would do (Opus; Astra the same).
+- The guard test's long rule-5 text and its list-shrinking code now guard an empty list held at 0 (Opus).
+- The delete-sure test's name still says the Delete's words "wrap, in every window" (Opus).
+- The history notes on the Events undo note, `.lwday-more` and the full-page window ("named with the page before") no longer explain anything (Opus).
+- The armed Delete split into a weighted rule and a `:where()` rule, and `.dl-acts .dchip` relying on `:where()` weighing one id: one shared note on the pattern would read easier (Opus).
+- The stylesheet's opening claim of proof for "every window" should name the states actually captured (Astra).
+**Nothing to build for the OIL detail spacing:** his D2039 ("2 tighter") was replaced the same day by D2041 ("keep the roomier version") — the roomy spacing as built on this branch stays.
 
 ### [PAGE-FOOT-FLASH] On his iPhone the top bar and the pinned dates vanish for a few frames at a page's foot (his D1961, 10 Nov 26)
 
@@ -2340,7 +2350,10 @@ that merged with PR #481 (`[STACK-MERGED-TIDY]`).
 `.claude/rules/` files, the skills — written for older models. **How:** in a terminal at the repo root, `claude`, then
 `/doctor prompt-audit` (or `/checkup prompt-audit`); paste or save its list into a chat. **Then:** that chat sorts the
 points by file, recommends each, and puts them to him in rounds of at most four; a guide changes only on his word and
-its read (D70). Nothing changes because the report says so.
+its read (D70). Nothing changes because the report says so. **14 Nov 26 (D2038):** he updated the terminal's Claude
+Code (2.1.273 → 2.1.323; the check needs 2.1.283 or later) and let the agent run it once, the night of 14 Nov 26 (chat
+72); its list goes to him in the morning report, sorted by file — this item closes once that list has been put to him.
+**Round 1 answered 14 Nov 26 ("all as recommended", D2038's row): a–d yes** — to build as one guide-change job (Astra + fresh Opus read, his "merge live"); the other 7 points (`raptor-port/docs/superpowers/briefs/2026-11-14-prompt-audit.md` hunks 5–11, F2, F4) wait for rounds 2–3.
 
 ### [OVERNIGHT-RETRY-TRIAL] One /overnight run tries the setting that keeps retrying when the service is overloaded (his D885, 15 Oct 26) — OPEN, for the next night he runs /overnight
 **His yes (D885).** For that one night: before the run starts, add `"CLAUDE_CODE_RETRY_WATCHDOG": "1"` to the `env` block
