@@ -23,7 +23,7 @@ the later merge keeps both (D78).
 <!-- now:claude/guide-check-r1-1114 -->
 ### CHAT 73 — the guide check's round 1 (points a–d, D2038) as one working-guide change; rounds 2–3 to put to him — written 14 Nov 26, 17:25 — IN PROGRESS, verify before use
 - **Retired here (notes only, branch `claude/retire-blocks-1114`):** chat 72's block (pull requests 768–770 and 772 merged 14 Nov 26; its residue in [PROMPT-AUDIT] and [CHAT72-LEFTOVERS]) and chat 64's (pull request 760 merged 11 Nov 26; its residue in [APPROVALS-SCROLL-INSIDE], [RULES-CHECK-FIXES], the small round on pull request 756's block, and a line for pull request 759 in [LW-DOUBLETAP-OTHER-WINDOWS]); the stale "[LW-READS-OWED-1024] to archive" line dropped (archived already).
-- **In hand:** branch `claude/guide-check-r1-1114`, cut from `main` once this merges: points a–d of the report `raptor-port/docs/superpowers/briefs/2026-11-14-prompt-audit.md` (a = F1, b = hunks 1–3, c = hunk 4, d = F3), read by Astra and a fresh, blind Opus reader, merged only on his "merge live". Then rounds 2–3: hunks 5–11, F2, F4.
+- **In hand:** branch `claude/guide-check-r1-1114` (built 14 Nov 26: a–c in one commit, d in its own, so d can wait for 16 Nov 26 — D1972 runs out then): points a–d of the report `raptor-port/docs/superpowers/briefs/2026-11-14-prompt-audit.md` (a = F1, b = hunks 1–3, c = hunk 4, d = F3), read by Astra and a fresh, blind Opus reader, merged only on his "merge live". Then rounds 2–3: hunks 5–11, F2, F4.
 - **Next chat number:** 74 (D1744).
 <!-- /now -->
 <!-- now:claude/skills-tighten-close -->
