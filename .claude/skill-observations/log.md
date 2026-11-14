@@ -2356,6 +2356,19 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Suggested improvement:** A guard, not a reminder: one project script, "check then commit", that runs the document check, prints its last lines and refuses the commit on a non-zero exit — used for every records commit; or the commit hook runs the check itself.
 **Principle:** When a check gates an action, the gate is the check's own exit code joined to the action — never two statements that happen to sit on one line.
 
+### Observation 933: A helper's report pulled from the transcript by a marker the coordinator's own brief also contains
+
+**Status:** OPEN
+**Date:** 11 Nov 26
+**Session context:** Chat 64, the night of 11 Nov 26, job 4 (the Leave War's double tap on its other windows) — numbered past 927–932, which are on the night's other branches (pull requests 756 and 758), not yet on `main`.
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2 — "A helper's report" (saving a background helper's report the moment it arrives)
+
+**Issue:** A walker's report was recovered from the chat's transcript by searching for a marker phrase. The phrase chosen was the report's title, which the coordinator's own brief to the walker also contained, so the search matched the brief first and the saved report was an empty file. It was noticed only because the file's size was read (0 bytes); a second search with a phrase that occurs only in the helper's own words gave the report.
+**Suggested improvement:** In the overnight guide's "A helper's report": when a report is recovered from the transcript, the marker is a phrase the helper was not given — and the saved file's size is read before it is cited. Better, the brief asks the helper to open its report with a one-off token the coordinator makes up at the time, so the marker cannot occur anywhere else.
+**Principle:** A search key used to recover someone's output must be something only that output contains; whatever the requester wrote into the request will be found first.
+
 ### Observation 934: "This chat is full" told to him just before a compaction made room
 
 **Status:** OPEN
