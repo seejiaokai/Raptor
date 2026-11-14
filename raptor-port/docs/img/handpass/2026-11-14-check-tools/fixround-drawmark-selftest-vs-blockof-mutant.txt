@@ -1,0 +1,52 @@
+[drawmark selftest v2] against C:/Users/User/AppData/Local/Temp/claude/37df10f156419f1e/48dc544b-338d-4874-b4c1-bfa848db38d3/scratchpad/mutant-blockof.mjs
+      log: [drawmark] marking #bell moved or resized it (580,40 200×56 → -20,40 200×56) — the mark is taken back
+PASS  a mark that would move a fixed list is refused — drawmark mark: marking #bell moved or resized it (580,40 200×56 → -20,40 200×56) — the mark is taken back
+PASS  … and taken back: the list is where it was, no ring, no tag
+      log: [drawmark] the tag on #panel .cell is not wholly where its part shows anywhere it was tried — above: div#panel cuts its part off there
+PASS  a tag cut off by an overflow-hidden parent is refused — drawmark mark: the tag on #panel .cell is not wholly where its part shows anywhere it was tried — above: div#panel cuts its part off there
+PASS  … or moved inside, where it is wholly visible — placed inside
+      log: [00:15:26.294] [page error] drawmark selftest boom
+PASS  a page error is printed to the run's log as it happens — [00:15:26.294] [page error] drawmark selftest boom
+PASS  … and written to the log file at once
+PASS  a good mark passes, its part's box unchanged — placed above
+PASS  … a ring drawn as an outline in the marker colour, the part's position untouched — {"outline":"solid rgb(255, 45, 149)","pos":"static","tag":"rgb(255, 45, 149)"}
+PASS  the drawing check measures the part's own words, not its tag — measured "two"
+PASS  … and records which part the drawing marked (the marker colour is excused only there) — two true, one false
+PASS  hide() takes a part out of the picture and leaves it in the page
+PASS  the helper offers no remove()
+PASS  marking a list leaves its last row as the app draws it (`:last-child`) — rgb(0, 128, 0) → rgb(0, 128, 0)
+PASS  marking an empty cell leaves its dash (`:empty`) — "–" → "–"
+PASS  … the tags stand outside the app's tree, none inside a part
+      log: [drawmark] the tag on #fixedin is not wholly where its part shows anywhere it was tried — above: div#clipbox cuts its part off there
+FAIL  a fixed part inside a clipping panel: a tag pinned above it is not refused (the panel does not cut it) — drawmark mark: the tag on #fixedin is not wholly where its part shows anywhere it was tried — above: div#clipbox cuts its part off there
+      log: [drawmark] the tag on #scaled .far is not wholly where its part shows anywhere it was tried — inside: div#scaled cuts its part off there
+PASS  a panel drawn at half size cuts off a tag past its drawn edge: refused — drawmark mark: the tag on #scaled .far is not wholly where its part shows anywhere it was tried — inside: div#scaled cuts its part off there
+      log: [drawmark] the tag on #zoomed .far is not wholly where its part shows anywhere it was tried — inside: div#zoomed cuts its part off there
+PASS  … and a zoomed panel the same — drawmark mark: the tag on #zoomed .far is not wholly where its part shows anywhere it was tried — inside: div#zoomed cuts its part off there
+      log: [drawmark] picture refused: mark "b" on #sitem: its part moved or changed size since it was marked (524,338 152×30 → 524,318 152×30)
+      log: [drawmark] picture refused: mark "b" on #sitem: its tag is no longer on its part (0,20px) — the page or a panel scrolled since?
+PASS  a panel scrolled after the mark: the picture is refused — drawmark: picture refused — mark "b" on #sitem: its part moved or changed size since it was marked (524,338 152×30 → 524,318 152×30) | mark "b" on #sitem: its t
+      log: [drawmark] mark "para" on #para: its part is no longer shown (hidden, see-through or of no size)
+      log: [drawmark] picture refused: mark "para" on #para: its part is no longer shown (hidden, see-through or of no size)
+PASS  a part made see-through by its parent: check reports it, the picture is refused — drawmark check: mark "para" on #para: its part is no longer shown (hidden, see-through or of no size)
+      log: [drawmark] mark "para" on #para: its part is no longer shown (hidden, see-through or of no size)
+PASS  … and a part made hidden — drawmark check: mark "para" on #para: its part is no longer shown (hidden, see-through or of no size)
+      log: [drawmark] #para is already marked (mark 11) — one mark a part; clear() first to mark it again
+PASS  a second mark on a marked part is refused, and says it is already marked — drawmark mark: #para is already marked (mark 11) — one mark a part; clear() first to mark it again
+PASS  … the first mark stays whole: no fault after it
+      log: [drawmark] marking #pre moved or resized it (20,560 120×16 → 60,560 120×16) — the mark is taken back
+PASS  a refused mark takes off only the classes it added (the part's own "hl" stays) — class now "hl"
+PASS  clear() takes off the classes the marks added, and only those — {"toast":"","pre":"hl"}
+      log: [drawmark] no shown #no-such-panel to look inside — nothing hidden
+PASS  hide() inside a missing surface is refused and hides nothing — drawmark hide: no shown #no-such-panel to look inside — nothing hidden; toast block
+PASS  the picture is taken while every mark holds
+      log: [drawmark] picture refused: mark "Ranger" on #two: its part moved or changed size since it was marked (580,68 200×28 → 580,118 200×28)
+      log: [drawmark] picture refused: mark "Ranger" on #two: its tag is no longer on its part (0,-50px) — the page or a panel scrolled since?
+PASS  the picture is refused when a marked part moved after it was marked — drawmark: picture refused — mark "Ranger" on #two: its part moved or changed size since it was marked (580,68 200×28 → 580,118 200×28) | mark "Ranger" on #two: 
+      log: [drawmark] picture refused: mark "Ranger" on #two: its part was redrawn and the mark is gone — mark it again just before the picture
+PASS  … and when the app redrew the marked part — drawmark: picture refused — mark "Ranger" on #two: its part was redrawn and the mark is gone — mark it again just before the picture
+      log: [drawmark] picture refused: mark "Ranger" on #two: its tag was wiped — mark it again just before the picture
+PASS  … and when its tag was wiped — drawmark: picture refused — mark "Ranger" on #two: its tag was wiped — mark it again just before the picture
+PASS  clear() takes away only the helper's own marks
+PASS  a ring colour of its own: the marker the drawing check leaves out on a marked part
+1 FAILED

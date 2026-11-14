@@ -17,11 +17,11 @@ load in every chat. Map: §Where things live, at the end.
 
 ## How to work here
 
-**WRITE HIS RULINGS DOWN AT THE MOMENT HE SAYS THEM** (owner, 21 Sep 26): file each in its area's rulings file BEFORE the work it implies — where it belongs, not where you are working — and make its named home carry it; sweep for misses before any handoff or closing report, which carries a `Rulings:` line (`../.claude/rules/record-decisions.md`) · full text: docs/guide-full.md §Write his rulings down at the moment
+**Write his rulings down at the moment he says them** (owner, 21 Sep 26): file each in its area's rulings file BEFORE the work it implies — where it belongs, not where you are working — and make its named home carry it; sweep for misses before any handoff or closing report, which carries a `Rulings:` line (`../.claude/rules/record-decisions.md`) · full text: docs/guide-full.md §Write his rulings down at the moment
 
-**THE NEWEST OWNER INSTRUCTION WINS** (owner, 17 Sep 26; D90): where two rules conflict, follow the LATER-dated one and say which you followed and which you set aside; an undated rule loses to a dated one; if the newer one does not clearly cover the case, ask; fix the stale text in the same change · full text: docs/guide-full.md §The newest owner instruction wins
+**The newest owner instruction wins** (owner, 17 Sep 26; D90): where two rules conflict, follow the LATER-dated one and say which you followed and which you set aside; an undated rule loses to a dated one; if the newer one does not clearly cover the case, ask; fix the stale text in the same change · full text: docs/guide-full.md §The newest owner instruction wins
 
-**FLAG WHAT THE NEW PLATFORM CANNOT DO** (owner, 31 Oct 26 — D1551): when he asks for a feature, or one is designed, say at once if it cannot be done — or only differently, or with a paid licence or the IT side — in a Power Apps code app on Dataverse (D1532, D1536), so he can skip it; unsure, say so and how you will find out. The running list: `docs/superpowers/plans/2026-10-31-m365-move-plan.md` §Platform flags.
+**Flag what the new platform cannot do** (owner, 31 Oct 26 — D1551): when he asks for a feature, or one is designed, say at once if it cannot be done — or only differently, or with a paid licence or the IT side — in a Power Apps code app on Dataverse (D1532, D1536), so he can skip it; unsure, say so and how you will find out. The running list: `docs/superpowers/plans/2026-10-31-m365-move-plan.md` §Platform flags.
 
 **Reach 95% confidence before building.** If the request could reasonably
 mean two different things, or a choice would materially change the result,
@@ -29,11 +29,11 @@ ask follow-up questions until it wouldn't. Small, unambiguous asks clear
 that bar on their own — don't manufacture questions for them. During an unattended run (D596): leave only the work
 that needs his choice undone, park the choice in the run's one list, carry on with the rest — never guess his answer.
 
-**STANDING ORDER — weigh the whole ecosystem** (owner, 28 Aug 26): on every feature change, before building and before done, reason how it lands across the app (`docs/feature-impact.md`); tell him the ripples, risks and assumptions, ask where a question is genuinely his — the technical how stays yours; in doubt, a one-line heads-up with your call · full text: docs/guide-full.md §Weigh the whole ecosystem
+**Standing order — weigh the whole ecosystem** (owner, 28 Aug 26): on every feature change, before building and before done, reason how it lands across the app (`docs/feature-impact.md`); tell him the ripples, risks and assumptions, ask where a question is genuinely his — the technical how stays yours; in doubt, a one-line heads-up with your call · full text: docs/guide-full.md §Weigh the whole ecosystem
 
-**STANDING ORDER — sweep the rules, then hand-test against them** (owner, 20 Sep 26; now inside the bug-check order): on every build, find EVERY ruling that applies, list them for him, check the running build against each (§7.0), pass or fail, and flag at once a new ruling that contradicts or narrows an existing one — name both, say which is newer · full text: docs/guide-full.md §Sweep the rules, then hand-test against them
+**Standing order — sweep the rules, then hand-test against them** (owner, 20 Sep 26; now inside the bug-check order): on every build, find EVERY ruling that applies, list them for him, check the running build against each (§7.0), pass or fail, and flag at once a new ruling that contradicts or narrows an existing one — name both, say which is newer · full text: docs/guide-full.md §Sweep the rules, then hand-test against them
 
-**THE BUG-CHECK STANDING ORDER IS `docs/bug-check-order.md`** (21 Sep 26): read it before any bug check, checklist first; follow its tier rule. A code review plus green tests is NOT a bug check — it needs a ROLL-CALL, a WALK of the running app and an evidence sheet with pictures; without the report's `Walk:` line nothing is ready for "merge live" · full text: docs/guide-full.md §The bug-check standing order
+**The bug-check standing order is `docs/bug-check-order.md`** (21 Sep 26): read it before any bug check, checklist first; follow its tier rule. A code review plus green tests is not a bug check — it needs a roll-call, a walk of the running app and an evidence sheet with pictures; without the report's `Walk:` line nothing is ready for "merge live" · full text: docs/guide-full.md §The bug-check standing order
 
 **The two instruments, both standing:** a per-feature BEHAVIOUR REGISTER (one plain line per ruling, with its id) and `npm run rulecheck` (fails on a ruling no test names, outside the baseline) — run both; the rules-first sweep (`docs/superpowers/briefs/rules-first-red-team.md`) is the third standing review · full text: docs/guide-full.md §The two instruments
 
@@ -88,7 +88,7 @@ in what this repo actually has rather than a generic checklist:
 
 ## Build & verify
 
-Run from `raptor-port/`, not the repo root. All FIVE, after any change:
+Run from `raptor-port/`, not the repo root. The five gates are below; which run on his PC and which on GitHub, and when, is `../.claude/rules/shipping.md` §The checks (D1086):
 
 > **The WINDOWS DESKTOP is the only place work happens** (owner, 17 Sep 26): the phone is a remote control of the same session; the container paths below are legacy, kept for their traps — not instructions · full text: docs/guide-full.md §The Windows desktop is the only environment
 
@@ -115,13 +115,13 @@ the reference-vs-port timings printed alongside) — all against that same
 preview.
 A fresh checkout needs `npm ci` first.
 **Stop a stray preview server by its PORT, never by a command-line pattern:** on Windows `Get-NetTCPConnection -LocalPort 4173` → `Stop-Process` (`:4179` for the smoke suite's); a `pkill -f` / `pgrep -f … | xargs kill` inside a compound command matches and kills the caller's own shell · full text: docs/guide-full.md §Stop a stray preview server by its port
-**A NEW Playwright script uses the repo's own browser fallback, never a hard-coded path:** copy `existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}` from `playwright.config.ts`; in the container only, never run `npx playwright install` · full text: docs/guide-full.md §A new Playwright script uses the repo's browser fallback
+**A new Playwright script uses the repo's own browser fallback, never a hard-coded path:** copy `existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}` from `playwright.config.ts`; in the container only, never run `npx playwright install` · full text: docs/guide-full.md §A new Playwright script uses the repo's browser fallback
 Sign in as `ad`/`a` (admin, Saber) or `us`/`us` (member, Ranger — NOT view-only: edits their own Inputs and Quals row); both are seeded accounts on Admin → Users (D166), and an admin-added account takes any password; the username is lowercased, the passwords compared exactly; never print them on the sign-in card · full text: docs/guide-full.md §Signing in for a walk
 Login is `#luser` / `#lpass` / `#loginForm button[type=submit]`, same
 as `e2e/app.ts`, and `#vWeek .day` is the "week is up" signal. Watch console
 errors, page errors and 4xx responses on the way through; screenshot the
 element in question and LOOK at it. *(Copied 24 Sep 26 from the container-era
-paragraph archived below, which carried them.)*
+paragraph, now in `docs/archive/raptor-claude-md-2026-09-24.md`, which carried them.)*
 
 **The deployed-site check, the container-only launch recipe, Pages publishing and the two deploy channels** (7 Aug – 17 Sep 26) — overtaken by D59 (Pages gone), D89 (checks on his PC) and D143 ("done" = live on Vercel); moved 24 Sep 26, whole, to `docs/archive/raptor-claude-md-2026-09-24.md`. What is live now: `../.claude/rules/shipping.md` (loaded in every chat) and `docs/gates-and-deploy.md`.
 
@@ -160,11 +160,9 @@ reassign across modules. `WARN`/`REST`/`EVD` are reassigned by every
 writes go through `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet` →
 `noteChange(key)` → `afterSchedMutate()`. A write that skips it is
 never re-validated, never persisted, wears no amendment mark and leaves no
-edit-log entry. **CORRECTED 17 Sep 26:** it is NOT "absent from the next AL" —
-since the amendment core, `publish.ts` derives eligibility, the panel counts and
-the stored diff from the canonical `dayDelta`, "never from the accumulated
-pending marks", so a funnel-bypassing write DOES surface in the next AL as an
-unmarked, unexplained change. That is worse than being absent, not better. Deletes renumber the live key space first, then
+edit-log entry — yet it still shows in the next AL, as an unmarked, unexplained
+change, because `publish.ts` derives eligibility, the panel counts and the stored
+diff from the canonical `dayDelta`, never from the pending marks (17 Sep 26). Deletes renumber the live key space first, then
 call `markDeletion(di, kind)`: its inert `del:di.seq.kind` tombstone reaches
 the AL without re-marking the address now occupied by a shifted row. On an
 already-published day, compare the removed structure with the current issued
@@ -177,14 +175,14 @@ before the AL is a net no-op, not a removal. The bare
 Storage row, where nobody scanning for rules would find it). Every mutation of
 `DAYS`/`SCHED`/`INPUTS`/`PEOPLE`/`PLAN` must end in **`HOOKS.histPush`** (never
 the raw `histPush`), undo/redo, `loadWeek`, or an explicit `persistPeople()`.
-**Since 30 Sep 26 a change to a WEEK, a REQUEST, a PERSON, the PLANNING CALENDAR or the
-LEAVE WAR is saved only by the command it runs in** — its rows are written from that command's
+**A change to a week, a request, a person, the planning calendar or the
+Leave War is saved only by the command it runs in** (30 Sep 26) — its rows are written from that command's
 changes (`[DB-READINESS]` group A, phases 1–3; `docs/undo-contract.md` §0): an in-place
 mutation outside every command is not saved, whatever `histPush` it ends in. Anything else is silently
 unsaved after a reload — no error, no clue, the edit just isn't there next time. Leave War: whatever it owns about a person beyond
 the projection goes in a persisted record laid back on by `setPeople`.
 
-**WHAT ACTUALLY PERSISTS** (verified 17 Sep 26): on a built site nearly everything survives a reload; memory-only is the dev server, tests, `?fresh=1` or storage that cannot be touched; session-only by design: undo/redo and the view state (the change history is kept — D338). An older "session-only" sentence is stale — fix it · full text: docs/guide-full.md §What actually persists
+**What actually persists** (verified 17 Sep 26): on a built site nearly everything survives a reload; memory-only is the dev server, tests, `?fresh=1` or storage that cannot be touched; session-only by design: undo/redo and the view state (the change history is kept — D338). An older "session-only" sentence is stale — fix it · full text: docs/guide-full.md §What actually persists
 
 **React owns chrome, strings own density.** The dense surfaces (week,
 board, palette) are built by verbatim HTML-string builders and swapped via
@@ -265,7 +263,7 @@ opening its code? Open its area file first — `../.claude/rules/doc-structure.m
 |---|---|
 | **The implementation-role policy** (approved-spec discipline, verification without self-approval, review integrity, the closing report) — auto-loads via `paths:` whenever `raptor-port/src`, `e2e`, `probes` or `scripts` are touched, so it is live during any build | `../.claude/rules/raptor-executor.md` |
 | **The plain-language rules, in force EVERY session** (unscoped, so they load before any project file is read — this file's §How to work here, with its full text in `docs/guide-full.md`, stays the source of truth and the why) | `../.claude/rules/plain-language.md` |
-| **EVERY RULING THE OWNER HAS MADE, and the file that carries each one** — one file per area, filed the moment he rules, before the work it implies; How we work loads every session, each other area when its files are read (D137) — and each area file carries that area's settled decisions and architecture too (D140; the Leave War's and the Tracker's architecture since 7 Nov 26 in `../.claude/rules/seams/`) | `../DECISIONS.md` (the map) → `../.claude/rules/decisions/` (one short line per ruling since D390 — or, once an area converts, a page of how it works now: How we work since 7 Nov 26, OIL, the IT flow guide, People & accounts, Screen design and the Tracker since 8 Nov 26, D1735; the Inputs pages since 9 Nov 26, D1943; the scheduler since 9 Nov 26, D1944; the Leave War since 9 Nov 26, D1947) and their full rows `../.claude/decisions-full/` (searched, never loaded — open one before acting on a ruling's detail), replaced ones `../DECISIONS-ARCHIVE.md`; the rule `../.claude/rules/record-decisions.md` |
+| **EVERY RULING THE OWNER HAS MADE, and the file that carries each one** — one file per area, filed the moment he rules, before the work it implies; How we work loads every session, each other area when its files are read (D137) — and each area file carries that area's settled decisions and architecture too (D140; the Leave War's and the Tracker's architecture since 7 Nov 26 in `../.claude/rules/seams/`) | `../DECISIONS.md` (the map) → `../.claude/rules/decisions/` (one short line per ruling since D390 — or, once an area converts, a page of how it works now, its file marked `<!-- shape: page -->` — D1735, D1943, D1944, D1947) and their full rows `../.claude/decisions-full/` (searched, never loaded — open one before acting on a ruling's detail), replaced ones `../DECISIONS-ARCHIVE.md`; the rule `../.claude/rules/record-decisions.md` |
 | **The full text of this guide's one-line rules** (D391) — searched, never loaded; each short form here names its heading there, and the document check pairs the two | `docs/guide-full.md` |
 | **What kind of WALK a change needs, and what past walks found** (D607) — the sizing step Opus writes before any walker starts, the types of change, one row per walk; read before starting a walk, add a row after one | `docs/walk-ledger.md` |
 | **How a walk script, a walker's brief and a break-test list are written, and what each trap has cost** — read before writing one; every walker's brief names it | `docs/walk-scripts.md` |

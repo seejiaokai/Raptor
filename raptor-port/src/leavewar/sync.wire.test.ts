@@ -50,7 +50,7 @@ const plant = (people: string[], over: any = {}) => INPUTS.unshift({ people: peo
    inputSilent — owner D760: "a CX the scheduler puts on a row that came from an input cancels the input itself"; the
    code's words: "its people are free for whoever else needs them"). With that one line taken out, 23 test files stayed
    green: the marks' tests ask the rules, the seven-day run and OIL, never who stands behind ALL AVAIL. */
-describe('a CANCELLED or information-only input keeps nobody out of the ALL AVAIL crowd (D760 reading 1)', () => {
+describe('a CANCELLED or information-only input keeps nobody out of the ALL AVAIL crowd (D760 reading 1) (OR33)', () => {
   it('his own all-day Meeting keeps him out; cancelled — he is free for whoever else needs him; brought back — kept out again', () => {
     plant(['bane'])
     expect(availableFor(SAT, WIN, DAYS[5]), 'the control').not.toContain('bane')

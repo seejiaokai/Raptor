@@ -231,7 +231,7 @@ describe('the List: a shared input is one line', () => {
     expect(rows, 'one row for the one filing').toHaveLength(1)
     expect(rows[0].querySelector('[data-label="Name"]')!.textContent, 'every name, A to Z — his first').toBe(az([z, x, y]).map(cs).join(', '))
   })
-  it('its row has no ✕ and no OIL chip of one man’s: deleting it, and its OIL answer, are in its window — for everyone', async () => {
+  it('its row has no ✕ and no OIL chip of one man’s: deleting it, and its OIL answer, are in its window — for everyone (OR16)', async () => {
     const g = await shared(others().slice(0, 3), { type: 'Duty', date: 'Oct 17', allday: true, s: 0, e: 1439, oil: { '2026-10-17': 1 } })
     await listUp()
     const row = rowsOf(g.iid)[0]

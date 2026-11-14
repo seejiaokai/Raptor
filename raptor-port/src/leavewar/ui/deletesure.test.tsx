@@ -21,7 +21,9 @@ describe('the asking Delete (D1395 C)', () => {
   })
   it('the sheet draws each half a block and lets the words wrap, in every window', () => {
     const css = readFileSync('src/leavewar/ui/bidpicker.css', 'utf8').replace(/\r\n/g, '\n')
-    expect(css).toMatch(/\.bidsheet \.dchip\.del\.armed \{[^}]*white-space: normal/)
+    // Inside #page-leavewar's wrapper since [LW-BIDPICKER-CSS-INSIDE] (14 Nov 26): the wrap is lowered with :where() so
+    // the nowrap of `.bp-acts > .dchip` still wins where it did before the move — the same look, the same rule.
+    expect(css).toMatch(/:where\(\.bidsheet \.dchip\.del\.armed\) \{[^}]*white-space: normal/)
     expect(css).toMatch(/\.bidsheet \.dchip\.del\.armed \.del-l \{ display: block; \}/)
   })
 })

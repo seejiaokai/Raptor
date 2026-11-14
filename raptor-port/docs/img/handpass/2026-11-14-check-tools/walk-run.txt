@@ -1,0 +1,33 @@
+check-tools-walk v1
+1 pc bell list position => fixed
+1 pc mark result => {"ok":true,"id":"1","place":"above","box":{"x":878,"y":50,"w":348,"h":62}}
+1 pc box before/after => {"before":"878,50,348,62","after":"878,50,348,62","same":true}
+1 pc picture => docs\img\handpass\2026-11-14-check-tools\s1-pc-bell-list.png
+2 pc clipping ancestors of #sbOil => ["DIV#schedBoard.schedboard clip/clip"]
+2 pc unpinned mark result => {"ok":true,"id":"2","place":"above","box":{"x":971.5,"y":66,"w":95.796875,"h":28}}
+2 pc box before/after => {"before":"971.5,66,95.8,28","after":"971.5,66,95.8,28"}
+2 pc unpinned picture => docs\img\handpass\2026-11-14-check-tools\s2-pc-oil-unpinned.png
+2 pc pinned above, strict:false result => {"ok":true,"id":"3","place":"above","box":{"x":971.5,"y":66,"w":95.796875,"h":28}}
+[drawmark] the tag on #schedBoard button is not wholly where its part shows anywhere it was tried — above: div#schedBoard.schedboard cuts its part off there
+2 pc pinned above on the board first buttons, strict:false => [{"nth":0,"ok":false,"faults":["the tag on #schedBoard button is not wholly where its part shows anywhere it was tried — above: div#schedBoard.schedboard cuts its part off there"],"tagsLeft":0},{"nth":1,"ok":true,"place":"above","tagsLeft":1},{"nth":2,"ok":true,"place":"above","tagsLeft":1},{"nth":3,"ok":true,"place":"above","tagsLeft":1},{"nth":4,"ok":true,"place":"above","tagsLeft":1},{"nth":5,"ok":true,"place":"above","tagsLeft":1}]
+2 pc tags left after refusal => 1
+2 pc pinned picture (plain screenshot, no mark) => docs\img\handpass\2026-11-14-check-tools\s2-pc-oil-pinned-refused.png
+3 pc picture after redraw => NO REFUSAL
+3 pc picture file exists (must be false) => true
+3 pc [data-drawmark-tag] count after clear => 0
+3 pc [data-drawmark-ring] count after clear => 0
+3 pc app still works: OIL Earn pressed again, bar oilon => false
+[drawmark] picture refused: mark "OIL" on #sbOil: its part was redrawn and the mark is gone — mark it again just before the picture
+3 pc picture after reopen => drawmark: picture refused — mark "OIL" on #sbOil: its part was redrawn and the mark is gone — mark it again just before the picture
+3 pc count after second clear => 0
+[00:16:18.747] [page error] walk-probe
+[00:16:18.749] [page error] walk-probe
+4 pc helper errors => ["[00:16:18.747] [page error] walk-probe"]
+4 pc log file has probe => true
+7 pc signed out (login form shown) => true
+page errors pc => []
+1 ph bell list position => fixed
+1 ph mark result => {"ok":true,"id":"1","place":"above","box":{"x":8,"y":46,"w":386,"h":62}}
+1 ph box before/after => {"before":"8,46,386,62","after":"8,46,386,62","same":true}
+1 ph picture => docs\img\handpass\2026-11-14-check-tools\s1-ph-bell-list.png
+page errors ph => []

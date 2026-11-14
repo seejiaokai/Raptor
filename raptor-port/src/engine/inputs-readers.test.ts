@@ -64,6 +64,7 @@ const RECORDS: Record<string, string> = {
   'state/view.ts': 'UI state that names a request',
   'ui/board-html.ts': 'draws the day\'s inputs on the board',
   'ui/board.ts': 'the board\'s hands on a request\'s row',
+  'ui/boardland.ts': 'the board\'s Undo and Redo landing: the input a step changed, found again by its id (inpById), for where the board draws it — its programme row, its line under Personal Inputs, whether its day\'s panel is opened; it asks about the INPUT, never one man\'s day, and writes nothing (D672)',
   'ui/caldrag.ts': 'a bar dragged on the Inputs calendar',
   'ui/OilDayList.tsx': 'the one list — each input of a holiday that still needs an OIL answer, drawn on its own card ([OIL-ASK-NOTIFY])',
   'ui/oilday.ts': 'the save of the one list: each picked input found again by its id',

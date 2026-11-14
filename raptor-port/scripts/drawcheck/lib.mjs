@@ -71,6 +71,8 @@ export function measureParts(parts) {
     while ((t = tw.nextNode())) {
       if (!t.textContent.trim()) continue
       const pe = t.parentElement; if (!pe || !vis(pe)) continue
+      // a drawing's own tag (scripts/handpass/drawmark.mjs) is the drawing's pointer, never the part's words (742)
+      if (pe.closest('[data-drawmark-tag]')) continue
       const pr = pe.getBoundingClientRect(); if (pr.width <= 1) continue
       const rg = document.createRange(); rg.selectNodeContents(t)
       for (const r of rg.getClientRects()) {
@@ -100,6 +102,10 @@ export function measureParts(parts) {
       // a typed box's words stand in its value, which no text node holds (walk-scripts.md §4)
       text: (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) ? (el.tagName === 'SELECT' ? el.selectedOptions[0]?.textContent || '' : el.value) + ' ' : '') + words.join(' ').replace(/\s+/g, ' ').trim(),
       typed: /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName),
+      // whether the drawing marked this part with the helper's ring (scripts/handpass/drawmark.mjs): only then is a
+      // shadow or edge in the marker colour the drawing's pointer, not its design (compare.mjs, the fix round of 14 Nov
+      // 26). The part's own ring only — a ring on what holds it puts no pink on this part's edge or shadow
+      marked: el.hasAttribute('data-drawmark-ring'),
       look: {
         fill: s.backgroundColor, image: s.backgroundImage === 'none' ? '' : s.backgroundImage.slice(0, 120),
         edge: sides.map(k => `${parseFloat(s['border' + k + 'Width']) || 0}px ${s['border' + k + 'Style']} ${s['border' + k + 'Color']}`),

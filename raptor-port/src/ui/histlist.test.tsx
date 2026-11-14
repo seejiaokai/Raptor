@@ -233,6 +233,34 @@ describe('clicking a change jumps to it', () => {
     const rows = $$('.chgwin .cw-l')
     expect(rows.length).toBe(1)
     expect(rows[0]!.tagName, 'a plain row, not a button').not.toBe('BUTTON')
+    /* …and with no line to tap, the window's foot does not say "Tap a change to go to it" ([SCHED-MARKS-WALK-ODDS] 3) */
+    expect($('.chgwin')!.textContent).not.toContain('Tap a change')
+    expect($('.chgwin .cw-foot'), 'no empty foot is left under the list').toBeNull()
+  })
+
+  /* THE FOOT'S HINT ONLY WHERE A LINE CAN BE TAPPED ([SCHED-MARKS-WALK-ODDS] 3 — chat 61's reproduction, 10 Nov 26: it
+     read "Tap a change to go to it — the window stays open." over "No changes this week yet.") */
+  it('an empty list has no "Tap a change" under it; a list with a line that can be tapped has it', async () => {
+    await openList()
+    expect($('.chgwin .cw-none'), 'nothing is listed').toBeTruthy()
+    expect($('.chgwin')!.textContent).not.toContain('Tap a change')
+    expect($('.chgwin .cw-foot')).toBeNull()
+    await seed()
+    expect($$('.chgwin button.cw-l').length, 'lines that can be tapped').toBeGreaterThan(0)
+    expect($('.chgwin .cw-foot .hint')?.textContent).toBe('Tap a change to go to it — the window stays open.')
+  })
+
+  it('the hint goes when the only group holding a line that can be tapped is folded', async () => {
+    /* one seat changed twice: one group, two lines under it, nothing else listed */
+    await seedN(2)
+    await openList()
+    expect($$('.chgwin .cw-gh').length, 'one group to fold').toBe(1)
+    expect($('.chgwin .cw-foot .hint')?.textContent).toMatch(/^Tap a change/)
+    await click($('.chgwin .cw-gh'))
+    expect($$('.chgwin button.cw-l').length, 'folded: no line is drawn').toBe(0)
+    expect($('.chgwin')!.textContent).not.toContain('Tap a change')
+    for (const h of $$('.chgwin .cw-gh')) if (h.getAttribute('aria-expanded') === 'false') await click(h)
+    expect($('.chgwin .cw-foot .hint')?.textContent).toMatch(/^Tap a change/)
   })
 
   /* [WARN-HIDE-KEPT] — the walk (walker C, 1 Oct 26): a line with its own words AND a from → to ran the two together,

@@ -1714,6 +1714,49 @@ test('a drag that would go below zero asks once, then writes on the same leave a
     await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toHaveText('FCL')
 })
 
+/* THE LEAVE BUTTONS STAY WHERE THEY ARE WHEN THE BELOW-ZERO LINE APPEARS (his D2030, 13 Nov 26 — "can u make the buttons
+   i clicked to not move?"; [LW-BELOW-ZERO-JUMP]). The war's windows stand on the foot of the screen and grow UPWARD, so
+   the line, drawn UNDER the leave buttons, lifted them by its own height: the second tap it asks for ("Tap the same leave
+   again to go ahead") fell on the row below. Measured as he meets it: the button's place before and after the line, then
+   a second press at the very same point of the screen, which must be the one that goes ahead. */
+async function staysPut(page: Page, btn: string, note: string) {
+  const b0 = (await page.getByTestId(btn).boundingBox())!
+  const g0 = (await page.getByTestId('bid-leave-grid').boundingBox())!
+  const at = { x: b0.x + b0.width / 2, y: b0.y + b0.height / 2 }
+  await page.mouse.click(at.x, at.y)
+  await expect(page.getByTestId(note)).toHaveText(/Tap the same leave again to go ahead\.$/)
+  const b1 = (await page.getByTestId(btn).boundingBox())!
+  const g1 = (await page.getByTestId('bid-leave-grid').boundingBox())!
+  expect(Math.abs(b1.y - b0.y), `the tapped leave moved ${b1.y - b0.y}px up or down when the line appeared`).toBeLessThanOrEqual(0.5)
+  expect(Math.abs(b1.x - b0.x), 'the tapped leave moved sideways').toBeLessThanOrEqual(0.5)
+  expect(Math.abs(g1.y - g0.y), 'the block of leave buttons moved').toBeLessThanOrEqual(0.5)
+  expect(Math.abs(g1.height - g0.height), 'the block of leave buttons changed height').toBeLessThanOrEqual(0.5)
+  return at
+}
+
+test('the drag window: the leave tapped stays put when the below-zero line appears, and the same spot tapped again goes ahead (D2030)', async ({ page }) => {
+  desktopOnly()
+  await lwView(page, 'slipway')
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  const at = await staysPut(page, 'sel-FCL', 'sel-note')
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toHaveCount(0)   // nothing written yet
+  await page.mouse.click(at.x, at.y)                                                          // the same spot, not the button looked up again
+  await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
+  for (const d of ['2026-01-06', '2026-01-07', '2026-01-08'])
+    await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toHaveText('FCL')
+})
+
+test('the one-day window: the leave tapped stays put when the below-zero line appears, and the same spot tapped again goes ahead (D2030)', async ({ page }) => {
+  await lwView(page, 'slipway')
+  await page.locator('[data-testid="cell-slipway-2026-02-11"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
+  const at = await staysPut(page, 'bid-FCL', 'span-note')
+  await expect(page.locator('[data-testid="cell-slipway-2026-02-11"] .c')).toHaveCount(0)
+  await page.mouse.click(at.x, at.y)
+  await expect(page.locator('[data-testid="cell-slipway-2026-02-11"] .c')).toHaveText('FCL')
+})
+
 // A member edits ONLY their own row — the person they are viewing as (owner,
 // 27 Aug 26 — "if I am viewing as a member and I view as ranger, I shouldn't be
 // able to input on other people's row except mine"). Here the member is scoped
@@ -8921,4 +8964,158 @@ test('with reduce motion on, the pinned dates row is hidden at rest and shown on
   await expectPinned(page, 'sticky-head', true, 'pinned once the dates are under the top bar')
   await page.evaluate(() => window.scrollTo(0, 0))
   await expectPinned(page, 'sticky-head', false, 'hidden again back at the top')
+})
+
+/* [APPROVALS-SCROLL-INSIDE] — his D2006 (12 Nov 26) and D2008 (13 Nov 26), on the drawings of
+   docs/superpowers/specs/2026-11-12-approvals-scroll-drawings.md. On a PC the Approvals page fits the screen and only its list
+   scrolls — the title, the chips, Approve all and the column headings staying, as Balances does — a short list's card still
+   reaching the foot of the screen; on a phone the page stays as it is today, the whole page scrolling. "A phone" is the Leave
+   War's own 700 wide (ui/phone.ts). The PC's fit is measured at his PC's size here; the real windows at 125% and their
+   fractions are the walk's (lesson 31 — a test browser's viewport is a whole number). */
+const apprGeo = (page: Page) => page.evaluate(() => {
+  const r = (s: string) => { const e = document.querySelector<HTMLElement>(s); if (!e) return null; const b = e.getBoundingClientRect(); return { top: b.top, bottom: b.bottom } }
+  const sc = document.querySelector<HTMLElement>('[data-testid="appr-scroll"]')
+  const list = document.querySelector<HTMLElement>('[data-testid="approvals-page"] .appr-list')
+  return {
+    ih: window.innerHeight, y: window.scrollY, room: document.documentElement.scrollHeight - window.innerHeight,
+    pageH: document.querySelector<HTMLElement>('[data-testid="approvals-page"]')!.style.height,
+    title: r('[data-testid="approvals-page"] .appr-title'), chips: r('[data-testid="approvals-page"] .appr-filters'),
+    cols: r('[data-testid="approvals-page"] .appr-cols'), card: r('[data-testid="approvals-page"] .appr-card'),
+    sc: sc ? { top: sc.scrollTop, room: sc.scrollHeight - sc.clientHeight } : null,
+    listOverflow: list ? getComputedStyle(list).overflowY : null,
+  }
+})
+
+test('on a phone the Approvals page stays as today: the whole page scrolls, the list has no scroller of its own (D2006)', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s page')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.waitForTimeout(300)
+  const g = await apprGeo(page)
+  expect(g.room, 'the demo’s list makes the page taller than the screen (the precondition)').toBeGreaterThan(100)
+  expect(g.pageH, 'no height fitted to the screen').toBe('')
+  expect(g.sc, 'no list box scrolling inside the page').toBeNull()
+  expect(g.listOverflow, 'the list does not scroll by itself').toBe('visible')
+  await page.evaluate(() => window.scrollTo(0, 300))
+  await page.waitForTimeout(200)
+  const h = await apprGeo(page)
+  expect(h.y, 'the window scrolls').toBe(300)
+  expect(h.title!.top, 'the title goes up with the page').toBeLessThan(g.title!.top - 250)
+})
+
+test('on a PC the Approvals page fits the screen; only its list scrolls, by the wheel, the window behind it never (D2006)', async ({ page }) => {
+  test.skip(isPhone(), 'a PC’s page')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 1536, height: 733 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.waitForTimeout(300)
+  const g = await apprGeo(page)
+  expect(g.sc, 'the list scrolls inside the page').not.toBeNull()
+  expect(g.sc!.room, 'the demo’s list is longer than the room (the precondition)').toBeGreaterThan(40)
+  expect(g.room, 'the window behind the page has nothing to scroll').toBeLessThanOrEqual(0)
+  expect(Math.abs(g.card!.bottom - (g.ih - 8)), `the card ends 8 above the screen’s foot (${g.card!.bottom} of ${g.ih})`).toBeLessThanOrEqual(1)
+  const box = await page.getByTestId('appr-scroll').boundingBox()
+  await page.mouse.move(box!.x + 300, box!.y + box!.height / 2)
+  await page.mouse.wheel(0, 200)
+  await page.waitForTimeout(300)
+  const h = await apprGeo(page)
+  expect(h.sc!.top, 'the wheel scrolls the list').toBeGreaterThan(0)
+  expect(h.y, 'the window behind it does not move').toBe(0)
+  for (const k of ['title', 'chips', 'cols', 'card'] as const) expect(Math.abs(h[k]!.top - g[k]!.top), `${k} stays`).toBeLessThanOrEqual(0.5)
+  /* to the list's foot, then at once back up: the wheel is the list's at its end (lesson 31 — never handed to the window) */
+  await page.mouse.wheel(0, 3000)
+  await page.waitForTimeout(300)
+  const end = await apprGeo(page)
+  expect(end.sc!.top, 'at the list’s foot').toBeGreaterThanOrEqual(end.sc!.room - 1)
+  expect(end.y, 'the window still at its top').toBe(0)
+  await page.mouse.wheel(0, -120)
+  await page.waitForTimeout(300)
+  expect((await apprGeo(page)).sc!.top, 'rolled up at once, the list moves').toBeLessThan(end.sc!.top - 20)
+})
+
+test('on a PC a short list keeps the card at the foot of the screen, so its edge stays put when a month is picked (D2008)', async ({ page }) => {
+  test.skip(isPhone(), 'a PC’s page')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 1536, height: 733 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.waitForTimeout(300)
+  const all = await apprGeo(page)
+  const lines = () => page.locator('[data-testid="approvals-page"] [data-testid^="appr-line-"]').count()
+  const n = await lines()
+  /* each month chip in turn, the card's edge measured after each — one of them a list that does not fill the card */
+  let shortSeen = false
+  for (const chip of await page.locator('[data-testid="approvals-page"] [data-testid^="appr-m-"]').all()) {
+    await chip.click()
+    await page.waitForTimeout(150)
+    const g = await apprGeo(page)
+    expect(Math.abs(g.card!.bottom - all.card!.bottom), `${await chip.textContent()}: the card’s edge stays put`).toBeLessThanOrEqual(0.5)
+    expect(g.room, 'the window still has nothing to scroll').toBeLessThanOrEqual(0)
+    if ((await lines()) < n && g.sc && g.sc.room <= 0) shortSeen = true
+  }
+  expect(shortSeen, 'a month whose list does not fill the card (the precondition)').toBe(true)
+})
+
+test('on a PC the list keeps its own place across "Back to Approvals", the decided line still lit (D2006, D1421)', async ({ page }) => {
+  test.skip(isPhone(), 'a PC’s page')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 1536, height: 733 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.getByTestId('appr-scroll').evaluate((e: HTMLElement) => { e.scrollTop = 150 })
+  await page.waitForTimeout(200)
+  /* a line in sight: decide it, then open its place in the grid */
+  const pick = await page.evaluate(() => {
+    const sc = document.querySelector<HTMLElement>('[data-testid="appr-scroll"]')!.getBoundingClientRect()
+    const ls = [...document.querySelectorAll<HTMLElement>('[data-testid="approvals-page"] [data-testid^="appr-line-"]')]
+    return ls.findIndex(l => { const b = l.getBoundingClientRect(); return b.top > sc.top + 60 && b.bottom < sc.bottom - 30 })
+  })
+  expect(pick, 'a line wholly in sight').toBeGreaterThanOrEqual(0)
+  const line = page.locator('[data-testid="approvals-page"] [data-testid^="appr-line-"]').nth(pick)
+  await line.getByTestId('appr-approve').click()
+  await expect(line.getByTestId('appr-approve')).toHaveText('Approved')
+  const before = await line.evaluate((e: HTMLElement) => e.getBoundingClientRect().top)
+  await line.getByTestId('appr-dates').click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  await expect(page.getByTestId('approvals-page')).toBeHidden()
+  await page.getByTestId('appr-back').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.waitForTimeout(200)
+  expect(await page.getByTestId('appr-scroll').evaluate((e: HTMLElement) => e.scrollTop), 'the list where he left it').toBe(150)
+  expect(Math.abs(await line.evaluate((e: HTMLElement) => e.getBoundingClientRect().top) - before), 'the line in its place').toBeLessThanOrEqual(0.5)
+  await expect(line.getByTestId('appr-approve'), 'still lit').toHaveText('Approved')
+  expect((await apprGeo(page)).room, 'the window still has nothing to scroll').toBeLessThanOrEqual(0)
+})
+
+/* A NARROW PC (the fresh code read's F1, 13 Nov 26): wider than 700, narrower than a line's columns — an iPad, half a 1920
+   screen. The lines run past the box, which scrolls sideways too; the pinned headings must cover the whole width the lines
+   take, so no Approve or Refuse shows past their right end as the list scrolls under them (D1518 — nothing pinned leaks). */
+test('on a narrow PC no line shows past the pinned headings\' end as the list scrolls, down or sideways (D1518)', async ({ page }) => {
+  test.skip(isPhone(), 'a PC’s page')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 1000, height: 733 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.waitForTimeout(300)
+  for (const [y, x] of [[60, 0], [120, 0], [200, 0], [120, 200]] as const) {
+    await page.getByTestId('appr-scroll').evaluate((e: HTMLElement, [y, x]) => { e.scrollTop = y; e.scrollLeft = x }, [y, x])
+    await page.waitForTimeout(150)
+    const leak = await page.evaluate(() => {
+      const sc = document.querySelector<HTMLElement>('[data-testid="appr-scroll"]')!
+      const s = sc.getBoundingClientRect(), c = document.querySelector('[data-testid="approvals-page"] .appr-cols')!.getBoundingClientRect()
+      const out: string[] = []
+      for (const b of document.querySelectorAll<HTMLElement>('[data-testid="approvals-page"] [data-testid^="appr-line-"] button')) {
+        const r = b.getBoundingClientRect()
+        const inStrip = r.bottom > c.top && r.top < c.bottom
+        const seen = Math.max(r.left, s.left) < Math.min(r.right, s.left + sc.clientWidth)
+        if (inStrip && seen && (r.right > c.right + 0.5 || r.left < c.left - 0.5)) out.push(`${b.textContent} ${Math.round(r.left)}–${Math.round(r.right)}, the headings to ${Math.round(c.right)}`)
+      }
+      return out
+    })
+    expect(leak, `the list at ${y}, sideways ${x}: nothing shows past the headings`).toEqual([])
+  }
+  expect((await apprGeo(page)).room, 'the window still has nothing to scroll').toBeLessThanOrEqual(0)
 })

@@ -294,7 +294,10 @@ export function useFloatWin(opts: {
     drag.current = null
     if (d && !d.moved) { place(); requestAnimationFrame(refit) }   // a tap, not a drag: back above the keys (kbscroll.ts)
   }
-  /* true while a drag started on the bar has moved — a tap on the bar is not a drag (the phone bar's own tap reads it) */
+  /* true while a drag started on the bar has moved — a tap on the bar is not a drag. NOTHING READS IT TODAY
+     ([INP-ROOM-TIDY-2], 14 Nov 26): it came with the move of the drag out of the ALL AVAIL window (28 Sep 26), and no
+     window's bar — ALL AVAIL, the changes window, FloatWindow — has ever called it; the "phone bar's own tap" this line
+     once named is not a caller. Kept beside the drag it reports on, for a bar that does something of its own on a tap. */
   const dragging = () => !!(drag.current && drag.current.moved)
   return { el, place, onBarDown, onBarMove, onBarUp, dragging }
 }

@@ -15,6 +15,7 @@ paths:
   - raptor-port/e2e/availwin.spec.ts
   - raptor-port/e2e/blankabsence.spec.ts
   - raptor-port/e2e/board-escape-traffic.spec.ts
+  - raptor-port/e2e/board-undo-land.spec.ts
   - raptor-port/e2e/board-layout.spec.ts
   - raptor-port/e2e/boardside.spec.ts
   - raptor-port/e2e/changeswin.spec.ts

@@ -54,7 +54,7 @@ beforeEach(() => {
 })
 afterEach(async () => { await act(async () => { root.unmount() }); host.remove() })
 
-describe('"Several people" offers ALL AVAIL and ALL — one of them (D750, D753)', () => {
+describe('"Several people" offers ALL AVAIL and ALL — one of them (D750, D753) (OR11)', () => {
   it('the two stand as pucks of their own, above the groups, under the heading that says what both mean', async () => {
     await mount({ people: ['bane', 'pike'] })
     const g = phGroup()!
@@ -115,7 +115,7 @@ describe('"Several people" offers ALL AVAIL and ALL — one of them (D750, D753)
   })
 })
 
-describe('where the input cannot take one, the two are greyed and the reason is under them (D753 reading 2)', () => {
+describe('where the input cannot take one, the two are greyed and the reason is under them (D753 reading 2) (OR11)', () => {
   it('an input longer than a day', async () => {
     await mount({ people: ['bane', 'pike'], endDate: 'Jul 17' })
     expect(ph('allavail').disabled).toBe(true)

@@ -1,0 +1,22 @@
+=== F3 (917)
+F3 a-list-top: list before open 0, after open 0; calendar {"t":250,"b":620.5}; counts {"tab":"Approvals 21","approveAll":"Approve all 19"}; decided 0; target Approve {"idx":0,"x":1120.800048828125,"y":692.2750244140625,"t":674.3,"b":710.3,"text":"Approve"}
+  after the first press: calendar open false; counts {"tab":"Approvals 21","approveAll":"Approve all 19"}; decided 0
+  PASS F3-a-list-top-first: first press on an Approve at y 674.3-710.3 (calendar 250-620.5): calendar open false, decided lines 0 -> 0, counts {"tab":"Approvals 21","approveAll":"Approve all 19"} -> {"tab":"Approvals 21","approveAll":"Approve all 19"}
+  second press on line 0 Approve: counts {"tab":"Approvals 20","approveAll":"Approve all 18"}; decided 1
+  PASS F3-a-list-top-second: second press (line 0): decided 0 -> 1, Approve all "Approve all 19" -> "Approve all 18"
+F3 b-wheeled-after-open: list before open 0, after open 300; calendar {"t":-50,"b":320.5}; counts {"tab":"Approvals 21","approveAll":"Approve all 19"}; decided 0; target Approve {"idx":0,"x":1120.800048828125,"y":392.2749938964844,"t":374.3,"b":410.3,"text":"Approve"}
+  after the first press: calendar open false; counts {"tab":"Approvals 21","approveAll":"Approve all 19"}; decided 0
+  PASS F3-b-wheeled-after-open-first: first press on an Approve at y 374.3-410.3 (calendar -50-320.5): calendar open false, decided lines 0 -> 0, counts {"tab":"Approvals 21","approveAll":"Approve all 19"} -> {"tab":"Approvals 21","approveAll":"Approve all 19"}
+  second press on line 0 Approve: counts {"tab":"Approvals 20","approveAll":"Approve all 18"}; decided 1
+  PASS F3-b-wheeled-after-open-second: second press (line 0): decided 0 -> 1, Approve all "Approve all 19" -> "Approve all 18"
+=== F4 (917): range by two day presses
+F4: clicks hit day/day; calendar open false; chip "5 Jan – 9 Jan"; lines 2; card foot 816 (screen 824); winRoom 0; neighbours moved on open: none; after: none; Pick chip right edge 912.84 -> 917.03; Approve all right edge 1278.8 -> 1278.8
+  PASS F4-range: two real presses (5 then 9 Jan): calendar closed, chip "5 Jan – 9 Jan", 2 lines; title/chips/card unmoved on open (none) and after (none); card foot 816 = screen 824 - 8; window room 0; list at 0
+=== F5 (917): keyboard with the calendar open
+Tab x45: approve-all > range-title > range-today > range-prev > range-next > range-day-2026-01-01 > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse > dates > approve > refuse
+Shift+Tab x45: approve > dates > refuse > approve > dates > refuse > approve > dates > refuse > approve > dates > refuse > approve > dates > refuse > approve > dates > refuse > approve > dates > refuse > approve > dates > refuse > approve > dates > refuse > approve > dates > refuse > approve > dates > refuse > approve > dates > refuse > approve > dates > range-day-2026-01-01 > range-next > range-prev > range-today > range-title > approve-all > pick
+ring per stop (outline / shadow): [["appr-approve-all","solid 1.6px rgb(59, 198, 232) / none"],["appr-range-title","none 2.4px rgb(241, 244, 247) / none"],["appr-range-today","solid 1.6px rgb(59, 198, 232) / none"],["appr-range-prev","solid 1.6px rgb(59, 198, 232) / none"],["appr-range-next","solid 1.6px rgb(59, 198, 232) / none"],["appr-range-day-2026-01-01","none 2.4px rgb(241, 244, 247) / none"],["appr-dates","solid 1.6px rgb(59, 198, 232) / none"],["appr-approve","solid 1.6px rgb(59, 198, 232) / none"],["appr-refuse","solid 1.6px rgb(59, 198, 232) / none"],["appr-pick","solid 1.6px rgb(59, 198, 232) / none"]]
+  PASS F5-keys: calendar open, Tab through its 5 stops and on into the list (45 forward, 45 back): every focused thing wholly visible (hidden 0), focus ring on each (the calendar's title and day draw their own ring on an inner element, seen in appr-a-f5x-fix1-title.png and -day-2026-01-01.png and identical on main; every other stop has the 1.6px cyan outline; stops without an outline or shadow of their own: 4, all of them the title or the day), card.scrollTop max 0, window scrollY max 0, calendar stayed open at each stop true
+errors []
+  PASS F345-err: page errors: none
+SUMMARY 7 PASS, 0 FAIL

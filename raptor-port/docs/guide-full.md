@@ -464,7 +464,8 @@ of the log and of the OPEN notes stands.
 ### Future development and DevOps
 
 - **Future development & DevOps.** Ship through the gated pipeline only —
-  five gates in CI on every PR and push (the Tracker smoke is one of them),
+  five gates in CI (the Tracker smoke is one of them; which run when, and which changes skip them, is
+  `../.claude/rules/shipping.md` §The checks — D1086),
   plus the two local-only gates for UI work; nothing deploys red. Write for the next session: comments say
   WHY, each fact goes to its one home in the same PR (`../.claude/rules/doc-structure.md`) —
   a decision that must not be relitigated to its area's rulings file (`../.claude/rules/decisions/`),

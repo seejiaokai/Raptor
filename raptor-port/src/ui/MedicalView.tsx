@@ -251,7 +251,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
         <span style={{ flex: 1 }}></span>
         {/* ON A DESKTOP AT THE ROW'S RIGHT END (owner D1300, 24 Oct 26 — "perhaps the medical input button can be put on the
             right so that when i click on that the window that pops up doesnt block the main bulk of the data behind"): over
-            the place its window opens, the sections making room for it (16-medical.css `.med-room`). A phone keeps it first. */}
+            the place its window opens, the sections making room for it (`.med-room`: why, 16-medical.css; the rule, 25-inputs-calendar.css). A phone keeps it first. */}
         {!phone && <button type="button" className="abtn primary" id="medNew" onClick={openNew}>+ Medical</button>}
         {/* no cross where Medical is a TAB of the Inputs page (D626): a tab is left by choosing another */}
         {onClose && <button type="button" className="abtn" id="medClose" aria-label="Back to list"

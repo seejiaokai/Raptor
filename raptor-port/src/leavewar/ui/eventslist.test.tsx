@@ -423,8 +423,9 @@ describe('the Events list split (D1512–D1516)', () => {
      the note is one line, so its words end in "…" and its Undo always stands whole (measured on the phone by the walk) */
   it('F2: a long name in the note ends in …, its Undo never pushed off the screen', () => {
     const css = readFileSync('src/leavewar/ui/bidpicker.css', 'utf8').replace(/\r\n/g, '\n')
-    expect(css).toMatch(/#page-leavewar \.secdef-snack\.ev-undo \.secdef-msg \{[^}]*min-width: 0;[^}]*text-overflow: ellipsis/)
-    expect(css).toMatch(/#page-leavewar \.secdef-snack\.ev-undo \.secdef-btn \{ flex: none; \}/)
+    // Named inside #page-leavewar's wrapper since [LW-BIDPICKER-CSS-INSIDE] (14 Nov 26), not with the page's name: the same weight
+    expect(css).toMatch(/\n\.secdef-snack\.ev-undo \.secdef-msg \{[^}]*min-width: 0;[^}]*text-overflow: ellipsis/)
+    expect(css).toMatch(/\n\.secdef-snack\.ev-undo \.secdef-btn \{ flex: none; \}/)
   })
 
   /* THE FRESH CODE READ'S FINDINGS (29 Oct 26) */
@@ -491,7 +492,8 @@ describe('the Events list split (D1512–D1516)', () => {
     const block = css.slice(css.indexOf('@media (max-width: 1100px) {'))
     expect(block.length, 'a 1100px block').toBeGreaterThan(30)
     expect(block.slice(0, block.indexOf('\n}'))).toContain('.bidsheet .ev-split { flex-direction: column; align-items: stretch; gap: 6px; }')
-    expect(block.slice(0, block.indexOf('\n}'))).toContain('#page-leavewar .bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(560px, calc(100vw - 24px)); }')
+    // inside #page-leavewar's wrapper since [LW-BIDPICKER-CSS-INSIDE] (14 Nov 26), so no longer named with the page: the same weight
+    expect(block.slice(0, block.indexOf('\n}'))).toContain('  .bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(560px, calc(100vw - 24px)); }')
     has(".bidsheet .ev-pen::before { right: -7px; }")
     has(".bidsheet .ev-x::before { left: -7px; }")
   })

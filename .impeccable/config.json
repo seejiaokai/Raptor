@@ -59,6 +59,21 @@
         ],
         "createdAt": "2026-11-08T15:00:00.000Z",
         "reason": "owner D1890 (8 Nov 26, 'As recommended to all'): the gold history dot is one no-repeat dot in a box's corner while History is on (D339, D345), not a dotted grid background"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "raptor-port/src/ui/scheduler/06-inputs.css"
+        ],
+        "createdAt": "2026-11-14T04:49:09.633Z",
+        "reason": "owner D2040 (14 Nov 26, user confirmed): the just-added input's blue box, not a side stripe"
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-11-14T04:49:09.754Z",
+        "reason": "owner D2040 (14 Nov 26, user confirmed): the font is never downloaded; devices show their own"
       }
     ]
   },

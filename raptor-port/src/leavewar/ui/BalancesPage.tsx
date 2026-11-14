@@ -38,6 +38,7 @@ import { rowInWindow } from './rowinwindow'
 import { groupColorOf } from './groupColor'
 import { GradesSheet } from './GradesSheet'
 import { usePhone } from './phone'
+import { fitToScreen } from './screenfit'
 import { useVersion } from './useStore'
 import './balances.css'
 
@@ -522,27 +523,13 @@ export function BalancesPage() {
 
   /* THE PAGE FILLS THE SCREEN UNDER THE TAB ROW and scrolls inside itself (the drawing's page: its foot 8px off the screen's
      on a desktop, at the screen's foot on a phone), so its headings stay in sight and, on a phone, its names stay put */
-  /* Its top is read in the PAGE's measure (the screen's plus how far the window is scrolled): the page opens at the
-     window's top (LeaveWarPage.tsx Body scrolls there, after this has run), and opened from a grid scrolled down, a top
-     read off the screen was short by that scroll — the page came out 120 taller than the phone's screen and the whole
-     window scrolled, the tab row going under the top bar (the M5a walk's B-F5, 29 Oct 26). */
+  /* Fitted by the one rule the Approvals page shares (screenfit.ts — moved there whole, 13 Nov 26): its top read in the
+     PAGE's measure (the M5a walk's B-F5), and the screen's TRUE height, not the browser's rounded one (his fault, 11 Nov
+     26 — lesson 31). */
   useLayoutEffect(() => {
     const el = rootRef.current
     if (!el) return
-    /* THE SCREEN'S TRUE HEIGHT, NOT THE BROWSER'S ROUNDED ONE (his fault, 11 Nov 26 — Chrome on his PC's 125% display):
-       a real window is a whole number of SCREEN pixels tall, so at 125% the page's own height is often a fraction — 733.6
-       — and `innerHeight` rounds it up to 734. Fitted to 734 the page stood 0.4 taller than the screen, the window behind
-       it could scroll by one screen pixel (he saw "the whole page shifts a bit up"), and the browser handed a wheel turned
-       at the list's foot to that window: rolled up at once, the list stayed stuck until the wheel had rested. The viewport
-       figure is the unrounded one (what is in view, times a trackpad pinch's zoom); it is taken only where it is the same
-       height to within a pixel — a keyboard or anything else that shortens what is in view never shrinks the page — and
-       the page is never made taller than the rounded figure. */
-    const screenH = () => {
-      const vv = window.visualViewport, inner = window.innerHeight
-      const real = vv ? vv.height * vv.scale : inner
-      return Math.abs(real - inner) < 1 ? Math.min(inner, Math.floor(real + 0.01)) : inner
-    }
-    const fit = () => { const top = el.getBoundingClientRect().top + (window.scrollY || 0); el.style.height = `${Math.max(240, screenH() - Math.max(0, top))}px` }
+    const fit = () => fitToScreen(el)
     fit()
     window.addEventListener('resize', fit)
     return () => window.removeEventListener('resize', fit)

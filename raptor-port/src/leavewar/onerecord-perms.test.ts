@@ -125,7 +125,7 @@ describe('its filer changes it for everyone while every entry of its list is his
   })
 })
 
-describe('once a scheduler has put someone in, changing it for everyone is the scheduler\'s (D755 (3))', () => {
+describe('once a scheduler has put someone in, changing it for everyone is the scheduler\'s (D755 (3)) (OR22)', () => {
   it('Ranger files for himself; Saber adds Tally: Ranger may no longer change it for everyone — he may still take himself out', () => {
     ranger()
     expect(commitInput(null, D(), ['bane'])).toBe(true)
@@ -154,7 +154,7 @@ describe('once a scheduler has put someone in, changing it for everyone is the s
   })
 })
 
-describe('"by" passes on when the filer leaves, so the OIL question still reaches someone who can answer (Fable F13; T19)', () => {
+describe('"by" passes on when the filer leaves, so the OIL question still reaches someone who can answer (Fable F13; T19) (OR18)', () => {
   it('the filer takes HIMSELF out of an input a scheduler has put someone in: "by" passes to whoever put in the newest entry that is not his', () => {
     ranger()
     expect(commitInput(null, D({ start: SAT, type: 'Duty' }), ['bane'])).toBe(true)
@@ -187,7 +187,7 @@ describe('"by" passes on when the filer leaves, so the OIL question still reache
 })
 
 describe('the man himself — the only person of an input someone else filed (Fable F4; T13)', () => {
-  it('an input an admin filed for Ranger alone: Ranger re-times it, re-words it, answers its OIL and deletes it', () => {
+  it('an input an admin filed for Ranger alone: Ranger re-times it, re-words it, answers its OIL and deletes it (OR21)', () => {
     expect(commitInput(null, D({ start: SAT, type: 'Duty' }), ['bane'])).toBe(true)
     ranger()
     const r = the('Duty')
@@ -198,7 +198,7 @@ describe('the man himself — the only person of an input someone else filed (Fa
   })
 })
 
-describe('what a member\'s command really changed — nobody\'s entry is forged (the plan §4.9, the commit gate)', () => {
+describe('what a member\'s command really changed — nobody\'s entry is forged (the plan §4.9, the commit gate) (OR28)', () => {
   const rec = (people: Array<{ p: string; by?: string }>, over: any = {}) => ({ iid: 'zz1', type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: '', mod: '2026-01-15',
     by: 'bane', at: 1, people: people.map(e => ({ at: 1, ...e })), ...over })
   it('a member files a shared input only in his own name, every entry put in by him', () => {
@@ -218,7 +218,7 @@ describe('what a member\'s command really changed — nobody\'s entry is forged 
     expect(copy(the())).toEqual(was)
     expect(writeInputs(() => { the().people.push({ p: 'harpoon', by: 'bane', at: 5 }) }), 'in his own name: his to add').toBe(true)
   })
-  it('a person in it who did not file it adds nobody (D763), by the door or past it', () => {
+  it('a person in it who did not file it adds nobody (D763), by the door or past it (OR24)', () => {
     expect(commitInput(null, D(), ['bane', 'rocky'])).toBe(true)
     hex()
     const was = copy(the())

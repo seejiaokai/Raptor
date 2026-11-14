@@ -342,6 +342,64 @@ const RULES = {
   SF8: 'a faint dash in the empty R and B of a standby line on the board (D1065)',
   SF9: 'a standby shift that flies with no START or END says so, as an advisory',
   SF10: 'a hand tick on a published day waits for the next amendment',
+  /* [ALL-AVAIL-AS-MEMBER], the one-rule build (D753, D755, D756, D760, D762, D763, D767–D771, 12 Oct 26) —
+     docs/superpowers/specs/2026-10-12-one-rule-behaviour-register.md, OR1–OR55 (wired 14 Nov 26, [ONE-RULE-LEFTOVERS] (1)).
+     Where a line is held only IN PART the register says which half, and what holds the rest. */
+  OR1: 'an input is ONE record listing its people in the order they joined — one step, one Undo (D756)',
+  OR2: 'an old-shaped record reads as a one-person input and is rewritten when who is in it changes (D759)',
+  OR3: 'what one input may hold is held at the save — someone, nobody twice, one placeholder, a medical one person\'s',
+  OR4: 'the rules about one man\'s day read one frozen line a named person, none for a placeholder (D756)',
+  OR5: 'two routes to the same people end the same — input, row, card, bar, OIL claim, crowd and count (D755 (a))',
+  OR6: 'a row made before the build is re-made once, whole: what stood on the ROW alone comes off (R6, R23)',
+  OR7: 'a person put on the ONLY person\'s puck replaces him; from a seat the two swap; on several he joins (D755 (2))',
+  OR8: 'a drop or a save that cannot apply is refused with its reason, and nothing changes (D755 (4), D753)',
+  OR9: 'one man\'s Unavailable row of an input of several is his own address — landed on, and dropped on (D737, D759 (4))',
+  OR10: 'ALL AVAIL / ALL is one of the input\'s people: joins, never replaces, stays, alone it is the last (D750, D753)',
+  OR11: '"Several people" offers ALL AVAIL and ALL — one of them, greyed with the reason where it cannot (D753 (2))',
+  OR12: 'the men behind ALL AVAIL follow the one OIL answer; a man named in it is not in its crowd (D753, D762)',
+  OR13: 'ALL AVAIL taken off ends the switch-offs made behind it; a named man leaving does not (R13, R20)',
+  OR14: 'an input\'s size in words counts the people and says ALL AVAIL beside them (D702)',
+  OR15: 'an input has ONE OIL answer for everyone in it — one claim an input (D762, D755 (1))',
+  OR16: 'the filer or an admin answers OIL; nobody in it has his own — no "Your OIL", no chip of one man\'s (D762)',
+  OR17: 'only the scheduler leaves one person out, in OIL Earn — each puck its own switch (D762)',
+  OR18: 'an unanswered OIL question goes to the filer\'s bell alone, and "by" passes on when he leaves (D762, D759 (7))',
+  OR19: 'the OIL question opened from the schedule closes its dialog with the sheet, answered or not (R18)',
+  OR20: 'a day that went out before the build keeps the OIL it went out with (D48, D142)',
+  OR21: 'the input\'s ONLY person changes it in full, whoever filed it (D655, D763 (2))',
+  OR22: 'its filer changes it for everyone until a scheduler puts someone in — then it is the scheduler\'s (D755 (3))',
+  OR23: 'anyone in an input may always take himself out, and his own Undo puts him back (D755 (3), D763)',
+  OR24: 'a person in an input he did not file adds nobody — by any hand or past them at the save (D763)',
+  OR25: 'the one person of an input who adds people to it is its filer from then on (R15, D763 (2))',
+  OR26: 'a member never hands an input filed for him to another person — a scheduler\'s (R16)',
+  OR27: 'a person the window adds after the cut-off reads late alone; one taken off marks nobody late (R17)',
+  OR28: 'nobody\'s place in an input is forged — a member\'s save names HIM and leaves the others as they were',
+  OR29: 'the only named person beside ALL AVAIL / ALL reads it and may take himself out, never changes it (D770)',
+  OR30: 'a CX, the red box and "information only" on an input\'s row are the INPUT\'s — one step, one Undo (D760)',
+  OR31: 'the marks go where the input goes, and nothing stays behind (D760, changing D468)',
+  OR32: 'only a scheduler sets or clears a mark; a member\'s Undo never takes a scheduler\'s CX off (D760 (2))',
+  OR33: 'a cancelled or information-only input is silent — no OIL, no clash, no day worked, its people free (D760 (1))',
+  OR34: 'on a published day a CX on or off is ONE change waiting; on and off again is nothing (D760 (3))',
+  OR35: 'what waits to go out says the mark in a row\'s own words (D760 (3), D99)',
+  OR36: 'the change history has the input\'s own line for each mark; no reason reads "cancelled"',
+  OR37: 'a cancelled input\'s card and List row: the CX tag, the struck title, the red reason (D767)',
+  OR38: 'on the month\'s bar a cancelled input is struck and faded — no tag, no reason (D767)',
+  OR39: 'a cancelled input keeps its place in the day\'s order (D768)',
+  OR40: 'on the schedule\'s own line: the red tag with its reason, the name struck, the line not struck (D767 (3))',
+  OR41: 'a cancelled input stays listed and counted (D760, R8)',
+  OR42: 'its own window says it is cancelled, and nothing in the window cancels it or brings it back (D771)',
+  OR43: 'who the bell tells: the people in it and its filer — never the maker, the crowd, the archived (D755 (3), D757)',
+  OR44: 'what tells, in its words; the red box, info only, an OIL answer and a no-change save tell nobody (D760)',
+  OR45: 'one save tells a person ONCE, what touches him first (R32)',
+  OR46: 'an unread notice lights the bell; a tap goes first to an OIL question, an access request or a bug report (D769)',
+  OR47: 'a tap on a line opens the input and reads it; "Mark all read"; his newest thirty; "Nothing new" (D769)',
+  OR48: 'reading is his own record, never an Undo step; the maker\'s Undo takes the notices away (R11, T18)',
+  OR49: 'the app\'s own taking out — a delete, a posting — tells the others with no name, and him nothing (R12)',
+  OR50: 'a member\'s notice rides his own change, names him, goes to another — only his Undo removes it (D200)',
+  OR51: 'what is nobody\'s act tells nobody — a week loaded, a publish, a load, a template (R36)',
+  OR52: 'a man given an input of his own out of a shared one is told what changed for HIM, once',
+  OR53: 'the bell\'s list closes on a press outside, Escape, a second tap, a sign-out; the board\'s is the same list (D769)',
+  OR54: 'a person or ALL AVAIL dragged from one input\'s row to another\'s is ONE change waiting, said as a move (D109)',
+  OR55: 'the men behind ALL AVAIL ride on the input\'s own change — never a second "what this day earns" line (D736)',
 }
 
 /* Rules with no test naming them on 20 Sep 26. The check fails if this set
@@ -356,7 +414,12 @@ const RULES = {
 const BASELINE = new Set(['Q9', 'Q11', 'Q12', 'Q15', 'OIL19', 'OIL26',
   'AM7', 'AM8', 'AM15', 'AM17', 'AM25', 'AM26', 'AM27', 'AM30', 'AM36', 'AM37', 'AM39', 'AM44', 'AM45', 'AM48', 'AM48a', 'AM49', 'AM49b', 'AM50', 'AM51b', 'AM51c', 'AM51d', 'AM51e', 'AM51f', 'AM51g',
   /* AM55: a long bubble scrolling is layout, which the test browser does not have: the walk proves it (25 Sep 26) */
-  'AM55'])
+  'AM55',
+  /* OR20: pinned only by the engine's own tests — src/engine/oilev.test.ts "a day issued before the one-rule build keeps
+     the OIL it went out with (D48, D142)" and src/engine/oilplaceholderclaim.test.ts. The job that wired the one-rule
+     register (14 Nov 26) was kept out of src/engine/ by its brief, so the id is not yet written there: write "(OR20)"
+     into that describe's title the next time the engine's tests are opened, and take OR20 out of this list. */
+  'OR20'])
 
 const TEST_DIRS = TEST_DIR_NAMES.map((d) => join(ROOT, d))
 const files = testFiles(ROOT)

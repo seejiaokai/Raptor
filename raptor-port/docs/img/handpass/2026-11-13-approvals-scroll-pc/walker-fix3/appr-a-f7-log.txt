@@ -1,0 +1,8 @@
+  PASS F7a-Feb: the list wheeled to 260, then Feb pressed: the list at 0 (its first request: Mon 2 Feb ›), window room 0
+  PASS F7a-New: the list wheeled to 260, then New pressed: the list at 0 (its first request: Wed 7 Jan ›), window room 0
+  PASS F7a-All: the list wheeled to 240, then All pressed: the list at 0 (its first request: Thu 8 Jan ›), window room 0
+  PASS F7b: the list wheeled to 200, then JAN - DEC 27 picked in View: the list at 0; back to JAN - DEC 26: the list at 0 (its first request: Thu 8 Jan ›)
+  PASS F7c: the calendar opened on January 2026›, browsed to March 2026›; at the phone's width (phone layout true) it shows March 2026›; wide again March 2026›
+errors []
+  PASS F7-err: page errors: none
+SUMMARY 6 PASS, 0 FAIL

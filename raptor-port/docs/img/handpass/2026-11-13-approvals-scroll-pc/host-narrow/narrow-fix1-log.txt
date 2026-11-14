@@ -1,0 +1,17 @@
+fix1 1000×733 list at 0, sideways 0: clear — headings to 961, box to 979, a line 1128 wide, the box scrolls sideways by 188, the window by 0
+fix1 1000×733 list at 60, sideways 0: LEAK — headings to 961, box to 979, a line 1128 wide, the box scrolls sideways by 188, the window by 0 — Approve 959–1059 (headings to 961)
+fix1 1000×733 list at 120, sideways 0: LEAK — headings to 961, box to 979, a line 1128 wide, the box scrolls sideways by 188, the window by 0 — Approve 959–1059 (headings to 961); Approve 959–1059 (headings to 961)
+fix1 1000×733 list at 200, sideways 0: LEAK — headings to 961, box to 979, a line 1128 wide, the box scrolls sideways by 188, the window by 0 — Approve 959–1059 (headings to 961)
+fix1 1000×733 list at 120, sideways 200: LEAK — headings to 773, box to 979, a line 1128 wide, the box scrolls sideways by 188, the window by 0 — Approve 771–871 (headings to 773); Refuse 879–979 (headings to 773); Approve 771–871 (headings to 773)
+fix1 820×1180 list at 0, sideways 0: clear — headings to 781, box to 799, a line 1128 wide, the box scrolls sideways by 368, the window by 0
+fix1 820×1180 list at 60, sideways 0: clear — headings to 781, box to 799, a line 1128 wide, the box scrolls sideways by 368, the window by 0
+fix1 820×1180 list at 120, sideways 0: clear — headings to 781, box to 799, a line 1128 wide, the box scrolls sideways by 368, the window by 0
+fix1 820×1180 list at 200, sideways 0: clear — headings to 781, box to 799, a line 1128 wide, the box scrolls sideways by 368, the window by 0
+fix1 820×1180 list at 120, sideways 200: LEAK — headings to 581, box to 799, a line 1128 wide, the box scrolls sideways by 368, the window by 0 — Approve 759–859 (headings to 581); Approve 759–859 (headings to 581)
+fix1 1280×733 list at 0, sideways 0: clear — headings to 1241, box to 1259, a line 1202 wide, the box scrolls sideways by 0, the window by 0
+fix1 1280×733 list at 60, sideways 0: clear — headings to 1241, box to 1259, a line 1202 wide, the box scrolls sideways by 0, the window by 0
+fix1 1280×733 list at 120, sideways 0: clear — headings to 1241, box to 1259, a line 1202 wide, the box scrolls sideways by 0, the window by 0
+fix1 1280×733 list at 200, sideways 0: clear — headings to 1241, box to 1259, a line 1202 wide, the box scrolls sideways by 0, the window by 0
+fix1 1280×733 list at 120, sideways 200: clear — headings to 1241, box to 1259, a line 1202 wide, the box scrolls sideways by 0, the window by 0
+errors: none
+LEAKS at 5 places

@@ -1,0 +1,13 @@
+start: {"open":true,"scTop":0,"scRoom":1263,"clientH":217,"scrollH":1480,"sbw":15,"right":1515.2,"top":240,"bottom":457.2,"cardScrollTop":0,"winY":0,"win":0}
+thumb guess x 1507.7 y 268.7 len 27.4 bar width 15
+drag: list 0 -> 65.6,130.4,196.8,261.6,326.4,392.8,457.6,523.2 -> after lift 523.2; calendar open during true / after true
+  PASS F2-drag: press on the list box's scroll bar thumb (x 1508, y 269), move down 64px, lift: list scrollTop 0 -> 523.2, calendar stayed open (during true, after true), card.scrollTop 0, window room 0
+track click below thumb at y 430: list 523.2 -> 713.6, calendar open true
+  PASS F2-track: press in the bar's track below the thumb: list 523.2 -> 713.6, calendar open true
+bottom arrow of the bar: list 713.6 -> 753.6, calendar open true
+  PASS F2-arrow: press on the bar's bottom arrow: list 713.6 -> 753.6, calendar open true
+press outside the card (right margin) : calendar open false
+  PASS F2-outside: a press outside the list box still closes the calendar: open false
+errors []
+  PASS F2-err: page errors: none
+SUMMARY 5 PASS, 0 FAIL

@@ -431,7 +431,7 @@ describe('on a day that EARNS, an input of four counts what an input of one coun
    On a weekday and on a Saturday that earns. `bane` is one of the men ALL AVAIL would stand for, on purpose: put in the
    input by name he LEAVES its crowd, taken out he JOINS it — the one act must still count one (Fable F6 (a) and its
    mirror). Every reader of the count agrees, by `waiting`. ==== */
-describe('ALL AVAIL / ALL as one of an input\'s people — what a published day counts (D736, D755; the plan §4.8)', () => {
+describe('ALL AVAIL / ALL as one of an input\'s people — what a published day counts (D736, D755; the plan §4.8) (OR55)', () => {
   const A = 'allavail'
   const CROWD = ['bane', 'stiff', 'plasma']
   /* the seed Saturday carries flying, duty and sim work of its own, which would earn by itself: stripped BEFORE the

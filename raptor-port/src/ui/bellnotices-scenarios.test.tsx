@@ -185,7 +185,7 @@ describe('someone leaves, or is swapped (D755 (3), D763; the plan §4.10 "who is
     expect(ppl()).toEqual([HEX])
     expect(since(m).map(n => n.to).sort(), 'a Redo tells them again').toEqual([HEX, SABER].sort())
   }
-  it('…and his own Undo passes the commit gate and takes both notices back; his Redo tells them again (R11) — an input on a week that is not on screen', async () => {
+  it('…and his own Undo passes the commit gate and takes both notices back; his Redo tells them again (R11) — an input on a week that is not on screen (OR23)', async () => {
     await undoRedo({ start: '2026-08-05', end: '2026-08-05' })
   })
   /* A PRODUCT FAULT WHEN THIS WAS WRITTEN — FIXED 12 Oct 26, the case kept as its pin — not the notices' (they pass the gate, above): the member's Undo is refused with "That
@@ -275,7 +275,7 @@ describe('someone leaves, or is swapped (D755 (3), D763; the plan §4.10 "who is
     expect(NOTICES.map(line)).toEqual([`${TITLE} · Wed 15 Jul — Cancelled — WX · ${cs(SABER)}`])
     expect(NOTICES.map(n => n.to)).toEqual([RANGER])
   })
-  it('D760: the red box and "information only" are shown on the schedule only — they tell nobody', async () => {
+  it('D760: the red box and "information only" are shown on the schedule only — they tell nobody (OR44)', async () => {
     await boot()
     file([RANGER, HEX]); tick()
     const m = mark()
@@ -299,7 +299,7 @@ describe('one man\'s part of a shared input on the Unavailable list (D737; the p
     expect(lrec().map(r => idsOf(r).map(String)).sort((a, b) => b.length - a.length), 'the two, and his own').toEqual([[RANGER, PIKE], [HEX]])
     return m
   }
-  it('a time typed on HIS row of a leave for three: he is told what changed for him — once, never "taken off" and "added"', async () => {
+  it('a time typed on HIS row of a leave for three: he is told what changed for him — once, never "taken off" and "added" (OR52)', async () => {
     const m = await split()
     expect(sinceTo(m, HEX)).toEqual([`LL · Wed 15 Jul — Now 10:00–23:59 · ${cs(SABER)}`])
   })
@@ -315,7 +315,7 @@ describe('one man\'s part of a shared input on the Unavailable list (D737; the p
     expect(sinceTo(m, PIKE)).toEqual([`LL · Wed 15 Jul — ${cs(HEX)} taken off · ${cs(SABER)}`])
     expect(since(m)).toHaveLength(3)
   })
-  it('another man dropped on HIS row of that leave (the swap of one of several): the man out and the man in are each told; the others are told who went and who came', async () => {
+  it('another man dropped on HIS row of that leave (the swap of one of several): the man out and the man in are each told; the others are told who went and who came (OR9)', async () => {
     await boot()
     expect(commitInput(null, draftOf({ person: RANGER, type: 'LL', date: LBL[WED], yr: 2026, allday: true, remarks: LEAVE }), [RANGER, HEX, PIKE])).toBe(true)
     tick()
@@ -330,7 +330,7 @@ describe('one man\'s part of a shared input on the Unavailable list (D737; the p
 })
 
 describe('the app\'s own act (R12; the plan §4.10 "two consequences", §10 step 7 item 6)', () => {
-  it('a man DELETED from the roster: the others in his input are told he was taken off, with NO name after it — and he is told nothing', async () => {
+  it('a man DELETED from the roster: the others in his input are told he was taken off, with NO name after it — and he is told nothing (OR49)', async () => {
     await boot()
     accountsLoad()
     file([RANGER, HEX, PIKE]); tick()
@@ -345,7 +345,7 @@ describe('the app\'s own act (R12; the plan §4.10 "two consequences", §10 step
   })
 })
 
-describe('what is nobody\'s act tells nobody, and never takes a notice away', () => {
+describe('what is nobody\'s act tells nobody, and never takes a notice away (OR51)', () => {
   const ids = () => NOTICES.map(n => n.id).sort()
   it('loading another week and coming back', async () => {
     await boot()
@@ -399,7 +399,7 @@ describe('what is nobody\'s act tells nobody, and never takes a notice away', ()
     expect(ids()).toEqual(before)
     expect(ppl()).toEqual([RANGER, HEX])
   })
-  it('R37: an OIL answer given, and changed, by whoever may', async () => {
+  it('R37: an OIL answer given, and changed, by whoever may (OR44)', async () => {
     await boot()
     HOOKS.oilEarningDay = ((di: number) => di === SAT) as any
     file([RANGER, HEX], SAT, { type: 'Duty' })
@@ -472,7 +472,7 @@ describe('the list (D769; the plan §4.10 "the bell", §10 step 7 item 8)', () =
     for (let i = 1; i < n; i++) { expect(commitInput(rec(), { ...draftOf(rec()), sTime: i % 2 ? '10:00' : '09:00', eTime: i % 2 ? '11:00' : '10:00' }, [RANGER])).toBe(true); tick() }
   }
 
-  it('more than thirty: the list shows his newest thirty, the count of unread counts them all, and "Mark all read" reads them all', async () => {
+  it('more than thirty: the list shows his newest thirty, the count of unread counts them all, and "Mark all read" reads them all (OR47)', async () => {
     await boot()
     many(32)
     member(RANGER)
@@ -539,7 +539,7 @@ describe('the list (D769; the plan §4.10 "the bell", §10 step 7 item 8)', () =
     expect($('[data-testid="bell-empty"]')!.textContent).toBe('Nothing new')
     expect(lines()).toHaveLength(0)
   })
-  it('the Scheduler Board\'s bell and the top bar\'s are one list: it says "open" on the bell that was tapped, and only on that one', async () => {
+  it('the Scheduler Board\'s bell and the top bar\'s are one list: it says "open" on the bell that was tapped, and only on that one (OR53)', async () => {
     await boot()
     file([RANGER, HEX])
     member(RANGER)
@@ -594,7 +594,7 @@ describe('the list (D769; the plan §4.10 "the bell", §10 step 7 item 8)', () =
     expect(pops.OILASK, 'no question left').toBeNull()
     expect(bellListOpen()).toBe(true)
   })
-  it('(found a fault, fixed 12 Oct 26) a sign-out closes the list — the next person to sign in does not find it standing open', async () => {
+  it('(found a fault, fixed 12 Oct 26) a sign-out closes the list — the next person to sign in does not find it standing open (OR53)', async () => {
     await boot()
     file([RANGER, HEX])
     member(RANGER)
@@ -617,7 +617,7 @@ describe('the list (D769; the plan §4.10 "the bell", §10 step 7 item 8)', () =
   })
 })
 
-describe('Undo, Redo and reading (D148; Fable F9; R11)', () => {
+describe('Undo, Redo and reading (D148; Fable F9; R11) (OR48)', () => {
   it('the maker\'s Undo after TWO readers have read — one by a tap, one by "Mark all read" — still goes through, and both notices go', async () => {
     await boot()
     file([RANGER, HEX]); tick()
@@ -660,7 +660,7 @@ describe('Undo, Redo and reading (D148; Fable F9; R11)', () => {
     expect(since(m).map(n => n.id).sort(), 'nothing taken back').toEqual(all)
     expect(ppl()).toEqual([RANGER, HEX, PIKE])
   })
-  it('a member cannot forge a notice, nor take one out of his own list, by a hand-made write: refused whole at the commit gate', async () => {
+  it('a member cannot forge a notice, nor take one out of his own list, by a hand-made write: refused whole at the commit gate (OR50)', async () => {
     await boot()
     file([RANGER, HEX]); tick()
     member(RANGER)
@@ -713,7 +713,7 @@ describe('with the Leave War wired: a posting, an archive, a leave the war appro
      (state/sched-commit.ts APP_ACTS: 'person.delete', 'lw.postoutRun'). The posting's pass (leavewar/sync.ts
      runPoOutcomes) is committed as a PROJECTION — and tellPass tells only for origin 'user' — so run on its date, by
      itself, it tells NOBODY; `APP_ACTS.has('lw.postoutRun')` can never be reached. */
-  it('(found a fault, fixed 12 Oct 26) a posting out that DELETES a man, run by the calendar reaching its date: the others in his input are told he was taken off, with no name (the plan §4.10; R12)', async () => {
+  it('(found a fault, fixed 12 Oct 26) a posting out that DELETES a man, run by the calendar reaching its date: the others in his input are told he was taken off, with no name (the plan §4.10; R12) (OR49)', async () => {
     await bootLW()
     file([RANGER, HEX, PIKE]); tick()
     const m = mark()
@@ -742,7 +742,7 @@ describe('with the Leave War wired: a posting, an archive, a leave the war appro
     expect(sinceTo(m, PIKE)).toEqual([`${TITLE} · Wed 15 Jul — ${cs(HEX)} taken off`])
     expect(sinceTo(m, HEX)).toEqual([])
   })
-  it('an ARCHIVED man is never told: a change to an input he is still in tells the others only', async () => {
+  it('an ARCHIVED man is never told: a change to an input he is still in tells the others only (OR43)', async () => {
     await bootLW()
     file([RANGER, HEX, PIKE]); tick()
     archivePerson(PIKE)
@@ -756,7 +756,7 @@ describe('with the Leave War wired: a posting, an archive, a leave the war appro
   })
   /* (changed by the Leave War overhaul's M4, 9.1 — owner D1142: the war's decision now tells him in ONE line of its own;
      the Inputs page's copy of the leave still tells nothing beside it — never told twice, the red team's B1) */
-  it('R36: a leave the war approves is ONE line, the war’s own — and a later change to that leave by someone else does tell him', async () => {
+  it('R36: a leave the war approves is ONE line, the war’s own — and a later change to that leave by someone else does tell him (OR51)', async () => {
     await bootLW()
     const day = String(getState().period.open[0]?.from ?? getState().period.start)
     const m = mark()
@@ -771,7 +771,7 @@ describe('with the Leave War wired: a posting, an archive, a leave the war appro
     expect(setLeaveRemarks(leave, 'Bali')).toBe(true)
     expect(sinceTo(m2, RANGER).map(l => l.split(' — ')[1])).toEqual([`Remark changed · ${cs(SABER)}`])
   })
-  it('sick leave a man files himself cuts HIS part out of a leave for three: the other two and the filer are told he was taken off — he is told nothing, and nobody is told "added"', async () => {
+  it('sick leave a man files himself cuts HIS part out of a leave for three: the other two and the filer are told he was taken off — he is told nothing, and nobody is told "added" (OR52)', async () => {
     await bootLW()
     const LEAVE = 'SCN shared'
     expect(commitInput(null, { ...draftOf({ person: RANGER, type: 'LL', date: 'Jul 14', yr: 2026, allday: true, remarks: LEAVE }), end: '2026-07-16' }, [RANGER, HEX, PIKE])).toBe(true)

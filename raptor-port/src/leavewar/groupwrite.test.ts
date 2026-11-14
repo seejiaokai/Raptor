@@ -271,7 +271,7 @@ describe('a man added, a man taken off, the hours changed — one command each (
     expect(cmds()).toBe(n)
     expect(copy(the()), 'not even who changed it last').toEqual(was)
   })
-  it('a man added after the cut-off: he alone is late — the input\'s late date and the others\' entries untouched, through Undo and Redo', () => {
+  it('a man added after the cut-off: he alone is late — the input\'s late date and the others\' entries untouched, through Undo and Redo (OR27)', () => {
     file()
     const was = copy(the())
     expect(was.mod, 'the input\'s late date is the day it was filed').toBe(nowStamp())
@@ -287,7 +287,7 @@ describe('a man added, a man taken off, the hours changed — one command each (
     expect(globalRedo().ok).toBe(true)
     expect(late(the()), 'redone').toEqual({ bane: false, rocky: false, casper: false, harpoon: true })
   })
-  it('a man taken off after the cut-off marks nobody late', () => {
+  it('a man taken off after the cut-off marks nobody late (OR27)', () => {
     file()
     const mod = the().mod
     T(9, 36)
@@ -302,7 +302,7 @@ describe('whose input it is (§3.13 "Who the entry\'s filer is" — one filing, 
      scheduler's"). This case ended with the member who filed it still changing and DELETING the whole of it after an
      admin had added a man; he no longer may. (His change refused, and what he is told: onerecord-perms.test.ts. Kept
      here: the delete, by its own door, and the admin's entry staying the admin's.) */
-  it('an admin adds a man to a member\'s input — the member who filed it no longer deletes the whole of it (D755 (3)); the admin\'s entry is the admin\'s', () => {
+  it('an admin adds a man to a member\'s input — the member who filed it no longer deletes the whole of it (D755 (3)); the admin\'s entry is the admin\'s (OR22)', () => {
     ranger()
     expect(commitInput(null, D(), ['bane', 'rocky'])).toBe(true)
     saber()
@@ -387,7 +387,7 @@ describe('whose input it is (§3.13 "Who the entry\'s filer is" — one filing, 
      the one-rule plan §4.1), and nothing invents one: the record is rewritten with its list, the man who was there
      keeps an entry with no name to it, the man added is put in by the admin — and the input has no filer, so it is an
      admin's alone to change for everyone. Stored data only (D56): every record filed since carries who filed it. */
-  it('…and one with no filer recorded (stored before the build) is rewritten with its list — the man added is the admin\'s, and no filer is invented', () => {
+  it('…and one with no filer recorded (stored before the build) is rewritten with its list — the man added is the admin\'s, and no filer is invented (OR2)', () => {
     raw(() => { INPUTS.unshift({ iid: 'zzold', person: 'rocky', type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: 'brief', mod: nowStamp() }) })
     expect(idsOf(the()), 'it reads as a one-person input').toEqual(['rocky'])
     const t2 = T(10)
@@ -440,7 +440,7 @@ describe('the OIL question — ONE answer for everyone in the input, given by wh
      everyone in it: whoever filed it, or an admin, gives it; no man in it gives an answer of his own"). The answer was
      written on each man's record (D660), and an unanswered one lit each man's OWN bell; it is one answer on the one
      record now, and an unanswered one waits on the FILER's bell alone. */
-  it('a weekend duty filed for six: answered at the save, the one answer is on the record and no bell is lit — the filer\'s or any man\'s (D762)', () => {
+  it('a weekend duty filed for six: answered at the save, the one answer is on the record and no bell is lit — the filer\'s or any man\'s (D762) (OR15)', () => {
     expect(commitInput(null, sat(), SIX, { oil: { [SAT]: 0.5 } })).toBe(true)
     expect(the().oil).toEqual({ [SAT]: 0.5 })
     for (const e of peopleOf(the())) expect('oil' in e, `${e.p}: no answer of his own`).toBe(false)

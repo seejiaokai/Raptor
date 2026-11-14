@@ -1,0 +1,52 @@
+import * as C from './appr-a-common.mjs'
+console.log('[appr-a-w5 v1]')
+C.initLog('appr-a-w5-log.txt')
+const { browser, page } = await C.launchReal125({ w: 1550, h: 917 })
+const errs = []; C.watchErrors(page, errs)
+await C.stageWorld(page)
+const P = page, T = C.T
+await C.wheelList(P, 400)
+const y0 = await C.listY(P)
+const inview = []
+for (let i = 0; i < 19; i++) { const li = await C.lineInfo(P, i); if (li.inView) inview.push(li) }
+C.note('scrollTop ' + y0 + ' in view: ' + inview.map(l => l.idx + ':' + l.text.slice(0, 24)).join(' | '))
+const A = inview[1].idx, B = inview[3].idx, Cc = inview[2].idx
+await C.nthLine(P, A).locator(T('appr-approve')).click(); await C.sleep(500)
+const la = await C.lineInfo(P, A); C.note('decided line ' + A + ': ' + JSON.stringify(la))
+await C.shot(P, 'w5-0-decided')
+const wanted = await C.nthLine(P, B).locator(T('appr-dates')).innerText()
+await C.nthLine(P, B).locator(T('appr-dates')).click(); await C.sleep(1200)
+await C.shot(P, 'w5-1-grid-opened')
+const grid = await P.evaluate(() => ({ slim: !!document.querySelector('[data-testid="appr-slim"]'), slimText: document.querySelector('[data-testid="appr-slim"]')?.innerText.replace(/\s+/g, ' '), ringed: [...document.querySelectorAll('.lw-ring')].map(e => (e.dataset.testid || e.className)).slice(0, 4), apprPageVisible: (() => { const p = document.querySelector('[data-testid="approvals-page"]'); return !!p && !p.hidden && p.getBoundingClientRect().height > 0 })() }))
+C.note(`dates pressed "${wanted}": ${JSON.stringify(grid)}`)
+C.check('W5-grid', grid.slim && /Back/i.test(grid.slimText || '') && grid.ringed.length > 0 && !grid.apprPageVisible, `grid opened at that day: slim bar "${grid.slimText}", ringed ${JSON.stringify(grid.ringed)}, Approvals hidden ${!grid.apprPageVisible}`)
+await P.locator(T('appr-back')).click(); await C.sleep(1000)
+const g1 = await C.geo(P); const lb = await C.lineInfo(P, A); const lm = await C.lineInfo(P, B)
+await C.shot(P, 'w5-2-back')
+C.note(`back: scrollTop ${g1.sc?.top} (was ${y0}), winRoom ${g1.winRoom}, decided line ${JSON.stringify(lb)}`)
+C.check('W5-back', g1.sc && Math.abs(g1.sc.top - y0) <= 2 && lb.approve === 'Approved' && g1.winRoom <= 0, `Back: list ${y0} -> ${g1.sc?.top}, decided line "${lb.approve}", winRoom ${g1.winRoom}`)
+C.check('W5-back-foot', Math.abs(g1.card.bottom - (g1.inner - 8)) <= 1.01, `card foot ${g1.card.bottom} vs ${g1.inner - 8}`)
+// again, with the slim bar's X
+await C.wheelList(P, 100)
+const y2 = await C.listY(P)
+const info2 = await C.wheelToLine(P, Cc)
+await C.nthLine(P, Cc).locator(T('appr-dates')).click(); await C.sleep(1200)
+const hasSlim = await P.locator(T('appr-slim')).count()
+C.note('second trip: slim bar present ' + hasSlim)
+await P.locator(T('appr-slim-x')).click(); await C.sleep(900)
+const after = await P.evaluate(() => ({ slim: !!document.querySelector('[data-testid="appr-slim"]'), apprVisible: (() => { const p = document.querySelector('[data-testid="approvals-page"]'); return !!p && !p.hidden && p.getBoundingClientRect().height > 0 })(), gridTab: !!document.querySelector('[data-testid="lw-tab-grid"][aria-selected="true"], [data-testid="lw-tab-grid"].on, [data-testid="lw-tab-grid"][aria-current]') }))
+await C.shot(P, 'w5-3-after-x')
+C.note('after ✕: ' + JSON.stringify(after))
+C.check('W5-x', !after.slim && !after.apprVisible, `after ✕: slim bar gone (${!after.slim}), Approvals not shown (${!after.apprVisible}) — the grid`)
+await P.locator(T('lw-tab-approvals')).first().click(); await C.sleep(1000)
+const g3 = await C.geo(P)
+const states = []
+for (let i = 0; i < g3.lines; i++) { const li = await C.lineInfo(P, i); states.push(li.approve + '/' + li.refuse) }
+await C.shot(P, 'w5-4-approvals-tab-again')
+const litAfter = states.filter(s => /Approved|Refused/.test(s)).length
+C.note(`Approvals tab pressed again: lines ${g3.lines}, lit lines ${litAfter}, list scrollTop ${g3.sc?.top}, winRoom ${g3.winRoom}; counts ${JSON.stringify(await C.counts(P))}`)
+C.check('W5-new-visit', g3.winRoom <= 0 && Math.abs(g3.card.bottom - (g3.inner - 8)) <= 1.01, `report only: after leaving through ✕ then the tab, lit lines ${litAfter} (decided line was lit before), list ${g3.sc?.top}, winRoom ${g3.winRoom}`)
+C.note('errors ' + JSON.stringify(errs)); C.check('W5-err', errs.length === 0, 'page errors: ' + (errs.join('|') || 'none'))
+C.summary()
+await Promise.race([browser.close(), C.sleep(8000)])
+process.exit(0)

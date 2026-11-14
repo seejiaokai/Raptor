@@ -19,9 +19,7 @@ or change anything.**
    at the top of each says which source files it governs. Before any build: `.claude/rules/raptor-executor.md`. Before any interface work — anything
    a person sees: `.claude/rules/ui-design.md` and `raptor-port/docs/design-practices.md` (D812), and the screen-design
    rulings, `.claude/rules/decisions/design.md` (D1554).
-5. A ruling there is ONE line — or, in a file converted to a page (marked `<!-- shape: page -->`; the general rulings,
-   `how-we-work.md`, since 7 Nov 26, OIL's, `oil.md`, the IT flow guide's, `it-flow-guide.md`, People & accounts',
-   `people-accounts.md`, the screen-design rulings, `design.md`, and the Tracker's, `tracker.md`, since 8 Nov 26 — D1735; the Inputs pages', `inputs.md`, since 9 Nov 26 — D1943; the scheduler's, `scheduler.md`, since 9 Nov 26 — D1944; the Leave War's, `leave-war.md`, since 9 Nov 26 — D1947), a statement with its rulings cited after it. Before acting on its detail
+5. A ruling there is ONE line — or, in a file converted to a page (marked `<!-- shape: page -->`; D1735, D1943, D1944, D1947), a statement with its rulings cited after it. Before acting on its detail
    or asking him about it, open its full row:
    `grep -h '^| D149 |' .claude/decisions-full/*.md`.
 6. `OUTSTANDING.md` — the one backlog — before telling him anything is undecided, missing or unbuilt (D53).

@@ -1,0 +1,9 @@
+{"tid":"appr-approve-all","x":1142.25,"y":191.1999969482422,"w":136.5500030517578,"h":36,"outline":"solid 1.6px rgb(59, 198, 232)","shadow":"none","bg":"rgb(59, 198, 232)","focusVisible":true}
+{"tid":"appr-range-title","x":47.60000228881836,"y":257.6000061035156,"w":170,"h":38.400001525878906,"outline":"none 2.4px rgb(241, 244, 247)","shadow":"none","bg":"rgba(0, 0, 0, 0)","focusVisible":true}
+{"tid":"appr-range-today","x":221.60000610351562,"y":260.8000183105469,"w":38,"h":32,"outline":"solid 1.6px rgb(59, 198, 232)","shadow":"none","bg":"rgb(26, 31, 38)","focusVisible":true}
+{"tid":"appr-range-prev","x":296,"y":256.8000183105469,"w":40,"h":40,"outline":"solid 1.6px rgb(59, 198, 232)","shadow":"none","bg":"rgb(26, 31, 38)","focusVisible":true}
+{"tid":"appr-range-next","x":340,"y":256.8000183105469,"w":40,"h":40,"outline":"solid 1.6px rgb(59, 198, 232)","shadow":"none","bg":"rgb(26, 31, 38)","focusVisible":true}
+{"tid":"appr-range-day-2026-01-01","x":190.0500030517578,"y":320.8000183105469,"w":47.48749923706055,"h":44,"outline":"none 2.4px rgb(241, 244, 247)","shadow":"none","bg":"rgba(0, 0, 0, 0)","focusVisible":true}
+{"tid":"appr-dates","x":256.8000183105469,"y":683.4750366210938,"w":66.36250305175781,"h":17.600000381469727,"outline":"solid 1.6px rgb(59, 198, 232)","shadow":"none","bg":"rgba(0, 0, 0, 0)","focusVisible":true}
+{"tid":"appr-approve","x":1070.800048828125,"y":674.2750244140625,"w":100,"h":36,"outline":"solid 1.6px rgb(59, 198, 232)","shadow":"none","bg":"rgb(18, 22, 27)","focusVisible":true}
+errors []

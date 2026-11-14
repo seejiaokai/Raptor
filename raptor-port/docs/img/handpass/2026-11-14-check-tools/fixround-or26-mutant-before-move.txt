@@ -1,0 +1,48 @@
+
+ RUN  v4.1.10 C:/Users/User/projects/Raptor/raptor-port
+
+ ❯ |raptor| src/ui/inputedit.wire.test.tsx (2 tests | 1 failed) 123ms
+     × his own input, filed for him by an admin, saved in its window with himself out and another man in: refused, and the words say who can 74ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 35 passed (36)
+   Start at  08:04:51
+   Duration  8.10s (transform 7.03s, setup 3.72s, import 4.03s, tests 3.15s, environment 1.60s)
+
+[33m(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (src/testing/timed-sequencer.ts:10:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (src/testing/shard-plan.ts:12:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (src/testing/unit-times.ts:4:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.[39m
+[33m(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (src/testing/timed-sequencer.ts:10:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (src/testing/shard-plan.ts:12:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (src/testing/unit-times.ts:4:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.[39m
+[33m(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vite.config.ts:2:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (src/testing/timed-sequencer.ts:10:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (src/testing/shard-plan.ts:12:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+  - ESM syntax in a file loaded as CommonJS (src/testing/unit-times.ts:4:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.[39m
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |raptor| src/ui/inputedit.wire.test.tsx > a member never hands an input to another person (D763; the plan §4.9) > his own input, filed for him by an admin, saved in its window with himself out and another man in: refused, and the words say who can
+AssertionError: said as the one-field save says it: expected 'Blocked: that change is not yours to …' to contain 'Only a scheduler can move an input to…'
+
+Expected: "Only a scheduler can move an input to another person"
+Received: "Blocked: that change is not yours to make"
+
+ ❯ src/ui/inputedit.wire.test.tsx:63:68
+     61|     said.length = 0
+     62|     expect(commitInput(live(r.iid), draftOf(live(r.iid)), [other]), 't…
+     63|     expect(said.join(' | '), 'said as the one-field save says it').toC…
+       |                                                                    ^
+     64|     expect(said.join(' | '), 'never the catch-all').not.toContain('not…
+     65|     expect(idsOf(live(r.iid)).map(String), 'still his').toEqual([membe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

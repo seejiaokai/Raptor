@@ -928,7 +928,14 @@
   opacity: .45;
   cursor: default;
 }
-}
+/* THE WRAPPER NO LONGER CLOSES HERE ([LW-BIDPICKER-CSS-INSIDE], 14 Nov 26). From the counter form (19 Aug 26) to the
+   Grant OIL amount, the rules below were written after this point and stood OUTSIDE `#page-leavewar` — not on purpose:
+   every war window is drawn inside the page (Sheet, FloatWin and the day panel in place; the top row's windows portalled
+   onto it). Moved inside, in their order, so each now weighs as every other rule of this file (one id more). Where that
+   would have changed which rule wins, the rule is written to keep the look as it was walked — each such place carries
+   a "MOVED INSIDE" note. The proof (every window's computed styles at a desktop and his iPhone, before and after, equal)
+   is `scripts/handpass/lw-bidpicker-css-capture.mjs`; the guard, `src/ui/css-wrapper-css.test.ts`. The wrapper now
+   closes before the pop-up rules at the foot, which must stay outside (a pop-up lives on <body>). */
 
 /* The body-scroll lock (`body.lw-sheet-lock { overflow:hidden }`) is GONE
    (owner, 28 Aug 26 — "enable me to still scroll up and down when this window
@@ -940,10 +947,9 @@
    team reads as a list of parts; the delete button arms like the Quals page's
    wired columns — first tap asks, second removes. */
 
-.bidsheet .namein.namein {
-  flex: 1;
-  min-width: 0;
-}
+/* MOVED INSIDE ([LW-BIDPICKER-CSS-INSIDE]): `.bidsheet .namein.namein { flex: 1; min-width: 0 }` stood here and never
+   took effect — outside the wrapper it lost to the wrapped `.bidsheet .namein` (flex 1 1 200px, min-width 140px) on every
+   name box. Inside, it would have won and changed the boxes, so it is taken out: the boxes keep the look walked. */
 
 .bidsheet .cf-hint {
   font-size: 11px;
@@ -971,23 +977,18 @@
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
-.bidsheet .mth-in.cf-ptin.bad { border-color: var(--hard, #F0555F); }
+/* MOVED INSIDE: `.bidsheet .mth-in.cf-ptin.bad { border-color: var(--hard, #F0555F) }` (a point box with no number
+   edged red) stood here and never took effect — the wrapped `.bidsheet .mth-in` edge won; taken out, as walked */
 
 .bidsheet .cf-row .cf-hint:not(:first-child) {
   flex-basis: auto;
 }
 
-/* The is/is-not toggle reads as a small mode word, not a pick. */
-.bidsheet .cf-not {
-  border-style: dashed;
-  color: var(--ink-3);
-  padding: 6px 8px;
-}
-
-/* The "Without" row is the rarer ask, so it steps back a little. */
-.bidsheet .cf-sub .tchip:not(.on) {
-  color: var(--ink-3);
-}
+/* MOVED INSIDE: two rules stood here and never took effect, each losing to the wrapped `.bidsheet .tchip` (its border,
+   colour and padding) on every button they name — "The is/is-not toggle reads as a small mode word" (`.bidsheet .cf-not
+   { border-style: dashed; color: var(--ink-3); padding: 6px 8px }`) and "The Without row steps back a little"
+   (`.bidsheet .cf-sub .tchip:not(.on) { color: var(--ink-3) }`). Inside they would have won, so they are taken out: the
+   buttons keep the look walked. */
 
 .bidsheet .cf-slot {
   border: 1px solid var(--edge);
@@ -996,19 +997,18 @@
   margin-top: 8px;
 }
 
-.bidsheet .cf-count.cf-count {
-  width: 64px;
-  min-height: 32px;
-}
+/* MOVED INSIDE: `.bidsheet .cf-count.cf-count { width: 64px; min-height: 32px }` stood here and never took effect — the
+   count box is a `.mth-in`, whose wrapped rule (width 100%, min-height 40px) won; taken out, the box as walked. */
 
+/* MOVED INSIDE: its `color: var(--ink-3)` taken out — it lost to the wrapped `.bidsheet .tchip`'s colour on this button
+   and would have won once inside */
 .bidsheet .cf-slotdel {
   margin-left: auto;
-  color: var(--ink-3);
 }
 
+/* MOVED INSIDE: its `cursor: default` taken out — the wrapped `.bidsheet .tchip` pointer always won over it */
 .bidsheet .tchip:disabled {
   opacity: .45;
-  cursor: default;
 }
 
 /* (the counter window's Delete, armed, is solid red since D673 — `.creset.cf-del.arm` above; the older red-outline rule
@@ -1029,7 +1029,7 @@
 .bidsheet .set-rows { padding: 8px 2px 4px; display: flex; flex-direction: column; gap: 2px; }
 /* (scoped to the page as the drawing's own rule was: a plainer selector lost to a later 6px margin on the window's rows —
    the drawing check's run of 29 Oct 26 measured each row 2px lower than drawn) */
-#page-leavewar .bidsheet .set-rows .bidsheet-row { margin-top: 4px; }
+.bidsheet .set-rows .bidsheet-row { margin-top: 4px; }
 .bidsheet .set-rows .bidsheet-row .lab { min-width: 78px; }
 
 /* THE EVENTS LIST (owner D1500; the drawing m5b-d2-events-*, its EV_CSS in full-m5b-draw.mjs): "＋ Event" at the left
@@ -1041,7 +1041,7 @@
    whose comment block names each value below). On a desktop the window twice as wide (560 → 1120) and the two lists side
    by side, 16px apart; on the Leave War's phone (ui/phone.ts, 700 — where the window is a full page) one under the
    other, 6px apart, and each line's date stands over its name. */
-#page-leavewar .bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(1120px, calc(100vw - 24px)); }
+.bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(1120px, calc(100vw - 24px)); }
 /* (each list keeps the one list's old 2px sides and 4px foot, as the drawing's lists do; an empty one's line the Holidays
    list's own `.hol-empty`) */
 .bidsheet .ev-split { display: flex; gap: 16px; align-items: flex-start; }
@@ -1094,7 +1094,7 @@
    iPad, a narrow window) two lists left the name nothing and cut the ✕ off at the list's edge (the fresh code read's R1) —
    there the window keeps its one-list width and the lists stand one under the other, as on a phone */
 @media (max-width: 1100px) {
-  #page-leavewar .bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(560px, calc(100vw - 24px)); }
+  .bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(560px, calc(100vw - 24px)); }
   .bidsheet .ev-split { flex-direction: column; align-items: stretch; gap: 6px; }
 }
 @media (max-width: 700px) {
@@ -1106,19 +1106,18 @@
 }
 /* the note after a delete (fix 2): the app's bar with a button (`.secdef-snack`, as "Set as default"), one line on a
    phone too — as wide as its words, never wider than the screen less its margins; drawn over the full-page window */
-#page-leavewar .secdef-snack.ev-undo { flex-wrap: nowrap; gap: 14px; white-space: nowrap; width: max-content; max-width: calc(100vw - 32px); }
+.secdef-snack.ev-undo { flex-wrap: nowrap; gap: 14px; white-space: nowrap; width: max-content; max-width: calc(100vw - 32px); }
 /* a name too long for the note ends in "…", its Undo always whole (the Events walk's F2: it ran both off a phone's screen) */
-#page-leavewar .secdef-snack.ev-undo .secdef-msg { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-#page-leavewar .secdef-snack.ev-undo .secdef-btn { flex: none; }
-/* Reset counters is destructive — quiet at rest, and matrix.css `.rtbtn.arm`
-   turns it red once armed. */
-.bidsheet .rtbtn.set-danger { color: var(--ink-3); }
+.secdef-snack.ev-undo .secdef-msg { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.secdef-snack.ev-undo .secdef-btn { flex: none; }
+/* MOVED INSIDE: "Reset counters is destructive — quiet at rest" (`.bidsheet .rtbtn.set-danger { color: var(--ink-3) }`)
+   stood here and never took effect — matrix.css's wrapped `.rtbtn` colour won. Inside it would have won, and over the red
+   of `.rtbtn.arm` too, so it is taken out: Reset order keeps the look walked. */
 /* Reset order (D160) is greyed while the roster already follows the default — dimmed so a greyed button reads as
-   "nothing to do", with its hint line saying so (the old zoom pair's dead end dimmed the same way). */
-.bidsheet .rtbtn.set-order:disabled { opacity: .45; cursor: default; }
-@media (hover: hover) {
-  .bidsheet .rtbtn.set-order:disabled:hover { border-color: var(--edge-2); }
-}
+   "nothing to do", with its hint line saying so (the old zoom pair's dead end dimmed the same way). MOVED INSIDE: its
+   `cursor: default` and, for a mouse, `border-color: var(--edge-2)` on hover were taken out — matrix.css's wrapped
+   `.rtbtn` (cursor) and `.rtbtn:hover` (the cyan edge) won over them outside the wrapper and would have lost inside. */
+.bidsheet .rtbtn.set-order:disabled { opacity: .45; }
 
 /* The groups, squeezed into tight single-line rows (owner: "squeeze the data").
    No display-order grip here — reordering is on the grid; this list is add /
@@ -1341,8 +1340,10 @@
   flex-wrap: wrap;
 }
 
-.bidsheet .dl-acts .dchip {
-  padding: 6px 12px;
+/* MOVED INSIDE: weighed with `:where()` — the page's one id and nothing more — so it still loses to every coloured chip
+   rule of the file (`.bidsheet .dchip.approve`, `.refuse`, `.move`, … whose border it would otherwise have taken), as it
+   did outside the wrapper; its `padding: 6px 12px` taken out, since the wrapped `.bidsheet .dchip` padding always won. */
+:where(.bidsheet .dl-acts .dchip) {
   background: var(--panel-2);
   color: var(--ink-2);
   border: 1px solid var(--edge);
@@ -1368,7 +1369,12 @@
 
 /* "DELETE — SURE?" ON TWO LINES INSIDE ITS BUTTON (his D1387, D1395 C): each half a line of its own, the button a little
    taller, never wider — every Delete that asks, in every window (SheetActions.tsx DeleteChip) */
-.bidsheet .dchip.del.armed { white-space: normal; line-height: 1.15; padding-top: 4px; padding-bottom: 4px; }
+/* MOVED INSIDE: its `padding-top / -bottom: 4px` taken out — the wrapped `.bidsheet .dchip` padding (7px) always won
+   over them, so the armed Delete keeps the height walked; and its `white-space: normal` weighed with `:where()`, so it
+   still loses to the window rows' `nowrap` (`.bp-acts > .dchip`, `.dl-acts.bp-acts .dchip`) as it did outside the
+   wrapper, the two halves still breaking at their own block spans */
+.bidsheet .dchip.del.armed { line-height: 1.15; }
+:where(.bidsheet .dchip.del.armed) { white-space: normal; }
 .bidsheet .dchip.del.armed .del-l { display: block; }
 
 /* the list's Delete keeps the one dashed Delete look (D332) — the grey list chip above would otherwise draw it solid */
@@ -1390,17 +1396,19 @@
 
 .bidsheet .bidsheet-oil-detail .bidsheet-row,
 .bidsheet .daylist-oil .bidsheet-row {
-  padding-top: 2px;
   padding-bottom: 2px;
+}
+/* MOVED INSIDE: padding-top lowered, so `.bidsheet .bidsheet-row.postout`'s 10px still wins on the bid window's OIL rows */
+:where(.bidsheet .bidsheet-oil-detail .bidsheet-row, .bidsheet .daylist-oil .bidsheet-row) {
+  padding-top: 2px;
 }
 
 /* THE REQUIRED PANEL (ReqPanel.tsx; the Inputs / SANS redesign, plan §3.3 "Picking several"; owner D636, D637) — drawn
    as the fifth mock-ups show it: a large number box, "one number for the 10 picked cells" beside it, the two "Apply
    to" chips, and Apply at the right. It is one of the two NON-BLOCKING windows (D641 — `.bidsheet.nonmodal`, no veil
-   behind it), so it wears a slightly brighter edge than a blocking sheet: nothing else says "this one floats". */
-.bidsheet.nonmodal {
-  border-color: var(--edge-2, var(--edge));
-}
+   behind it), so it wears a slightly brighter edge than a blocking sheet: nothing else says "this one floats".
+   MOVED INSIDE: that edge, `.bidsheet.nonmodal { border-color: var(--edge-2, var(--edge)) }`, never took effect — the
+   wrapped `.bidsheet` edge won over it — and inside it would have, so it is taken out: the window keeps the edge walked. */
 
 /* 22px, never under 16: an input smaller than that makes iOS zoom the page when it takes the focus */
 .bidsheet .reqnum {
@@ -1422,8 +1430,9 @@
 
 .bidsheet .reqp-num .note {
   margin-left: 8px;
-  /* beside the box, never wrapped under it: a note's own 220px basis would push it to the next line on a phone */
-  flex: 1 1 0;
+  /* MOVED INSIDE: its `flex: 1 1 0` ("beside the box, never wrapped under it: a note's own 220px basis would push it
+     to the next line on a phone") taken out — the wrapped `.bidsheet .note` (flex 1 1 220px) always won over it, so the
+     note keeps the place walked */
   min-width: 0;
 }
 
@@ -1448,10 +1457,14 @@
   cursor: pointer;
 }
 
-.bidsheet .reqapply:disabled,
-.bidsheet .tchip.clear:disabled {
+.bidsheet .reqapply:disabled {
   opacity: .4;
   cursor: default;
+}
+/* MOVED INSIDE: split from the rule above, without its `cursor: default` — on a `.tchip` the wrapped `.bidsheet .tchip`
+   pointer always won over it */
+.bidsheet .tchip.clear:disabled {
+  opacity: .4;
 }
 
 /* "Include" / "Leave out" — a word in the sentence that is also the press */
@@ -1481,8 +1494,8 @@
    upward, so the "Open for bidding" window's month buttons rose each time a stretch line was added. Here it fills the
    screen from the top, as the OIL tracker's sheet does on a phone, and grows down: the title and the months stay put. It
    still scrolls itself (a long list of stretches), its header stuck to the top; no drag offset — it has nowhere to go. */
-#page-leavewar .bidsheet.fullpage {
-  /* (the four edges written out, and the page id named: outside the file's #page-leavewar wrapper, a bare class loses to the wrapper's own .bidsheet; `.page` is the app's own hidden page, so the class is `fullpage`) */
+.bidsheet.fullpage {
+  /* (the four edges written out; the page id it once named itself with went when this block moved inside the file's wrapper, [LW-BIDPICKER-CSS-INSIDE] — the weight is the same; `.page` is the app's own hidden page, so the class is `fullpage`) */
   top: 0;
   right: 0;
   bottom: 0;
@@ -1496,8 +1509,8 @@
   padding: max(10px, env(safe-area-inset-top, 0px)) 12px max(16px, env(safe-area-inset-bottom, 0px));
 }
 /* not movable: no grip, no move cursor, and a finger on the title may scroll the page's own list */
-#page-leavewar .bidsheet.fullpage .bidsheet-hd { cursor: default; touch-action: auto; }
-#page-leavewar .bidsheet.fullpage .bidsheet-hd::before { content: none; }
+.bidsheet.fullpage .bidsheet-hd { cursor: default; touch-action: auto; }
+.bidsheet.fullpage .bidsheet-hd::before { content: none; }
 /* ITS ✕ TAKES A FINGER'S TAP WITHOUT LOOKING BIGGER ([LW-OPENDATES-X-SIZE], seen on M3's follow-up walk, 24 Oct 26 — drawn
    18 × 17 on his iPhone, a finger's size being 44). His D487: a button keeps the size it is drawn; where one is hard to hit, a
    larger invisible area round it, never over a neighbour. Here the ✕ stands alone at the head's right end, the title well to
@@ -1508,8 +1521,8 @@
    it, so the rows pass right at its foot, and a 44px area hung about 4px below it, over the top edge of the Events list's
    edit and ✕ icons. So the area runs from 20px above the ✕ (into the page's own top edge, where nothing is) to 8px below it,
    inside the head's 8px foot padding and 1px line: about 45 tall, 44 wide, never below the head. */
-#page-leavewar .bidsheet.fullpage .bidsheet-hd .x { position: relative; }
-#page-leavewar .bidsheet.fullpage .bidsheet-hd .x::after { content: ''; position: absolute; left: 50%; width: 44px; top: -20px; bottom: -8px; transform: translateX(-50%); }
+.bidsheet.fullpage .bidsheet-hd .x { position: relative; }
+.bidsheet.fullpage .bidsheet-hd .x::after { content: ''; position: absolute; left: 50%; width: 44px; top: -20px; bottom: -8px; transform: translateX(-50%); }
 
 
 /* ---- THE "OPEN FOR BIDDING" WINDOW (D1177, D1168, D1169, D1172; drawn r7-17, r7-17b, r7-18) ----------------------
@@ -1706,9 +1719,9 @@
 }
 /* THE AVAILABLE ROW'S TWO POINTS ON ONE LINE, as drawn (r7-26: "AMBER ● when under Required [+ 2]") — walker 2 found the
    boxes full width on a line of their own: the window is not always a .bidsheet, so the rules are scoped to the row */
-#page-leavewar .cf-row.cf-pt { flex-wrap: nowrap; align-items: center; }
-#page-leavewar .cf-row.cf-pt .lab { flex: 0 0 auto; }
-#page-leavewar .cf-row.cf-pt .mth-in.cf-ptin { width: 72px; min-width: 72px; max-width: 72px; flex: none; }
+.cf-row.cf-pt { flex-wrap: nowrap; align-items: center; }
+.cf-row.cf-pt .lab { flex: 0 0 auto; }
+.cf-row.cf-pt .mth-in.cf-ptin { width: 72px; min-width: 72px; max-width: 72px; flex: none; }
 
 
 /* THE DAY LINE (owner D1144, D1213; M3 — DayLine.tsx): what the bid does to manning, at the window's top, under its
@@ -1740,13 +1753,14 @@
   flex: 1 1 100%;
   min-width: 0;
 }
+/* MOVED INSIDE: its `border-color: transparent` taken out — the wrapped `.bidsheet .tchip` edge (and its hover edge)
+   always won over it, and inside it would have taken every leave button's edge away */
 .bidsheet .tchip.lv {
   display: flex;
   align-items: baseline;
   justify-content: center;
   gap: 5px;
   min-width: 0;
-  border-color: transparent;
 }
 .bidsheet .tchip.lv .lv-fig { font-weight: 500; font-variant-numeric: tabular-nums; opacity: .9; }
 .bidsheet .tchip.lv .lv-neg { color: var(--hard); opacity: 1; }
@@ -1811,9 +1825,9 @@
 .ll-row .ll-state { color: var(--ink-3); }
 .ll-row .ll-state.pend { color: var(--adv); }
 /* "↓ N more" (D1788): the bell's own foot (02-shell.css .bl-foot / .bl-more), under the window's scrolling body and
-   outside it, so it covers no line; inset as the body's words are; the words are the bell's `.bl-more`; named with the page, as the stylesheet check
-   asks of a rule after the page wrapper's close ([CSS-WRAPPER-GUARD]) */
-#page-leavewar .lwday-more { flex: none; display: flex; align-items: center; margin: 0 12px; padding: 6px 7px; border-top: 1px solid var(--edge); background: var(--panel); }
+   outside it, so it covers no line; inset as the body's words are; the words are the bell's `.bl-more`; inside the page's wrapper since
+   [LW-BIDPICKER-CSS-INSIDE] (it was named with the page before, the same weight) */
+.lwday-more { flex: none; display: flex; align-items: center; margin: 0 12px; padding: 6px 7px; border-top: 1px solid var(--edge); background: var(--panel); }
 .lwday .win-step { min-width: 36px; min-height: 32px; padding: 0 8px; font-size: 16px; line-height: 1; }
 .ll-row .ll-cs { display: inline-block; min-width: 56px; padding: 2px 6px; border-radius: 4px; background: var(--panel-2); color: var(--ink); font-weight: 700; font-size: 11.5px; }
 
@@ -1825,7 +1839,7 @@
    here lost to the wrapped `.bidsheet-row` (flex, wrapping) and `.dchip` rules — the actions row stayed a wrapping line,
    the ⋯ sat at the window's left edge 36 wide with its menu off the window, unpressable (its FULL check, 24 Oct 26 —
    GitHub's run of pull request 569). Pinned by `e2e/round3-leavewar.spec.ts`. */
-#page-leavewar {
+/* (the second wrapper that opened here — round 3, 24 Oct 26 — is now part of the one wrapper above) */
 
 /* the day line out of its box (change 2), its pairs side by side (D1313), each whole on its line */
 .bidsheet-dayline { display: block; border: 0; padding: 0 2px; background: none; margin: 0 0 4px; }
@@ -1969,13 +1983,14 @@
 .bidsheet button.docchip { font: inherit; font-size: 11px; cursor: pointer; padding: 2px 8px; min-height: 28px; }
 .bidsheet button.docchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-}
 
 /* THE HELD HALF'S ONE LINE (his D1371): an Other's box, its half, its remarks, where it is changed — one wrapping line */
 .bidsheet .bp-heldline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .bidsheet .bp-heldline .bp-heldwords { color: var(--ink); }
 /* THE DRAG WINDOW'S REMARK LINES (his D1347, D1362): one grey line an entry, its dates after, above the empty box */
-.bidsheet .sel-rmks { flex-direction: column; align-items: flex-start; gap: 2px; }
+/* MOVED INSIDE: its `align-items: flex-start; gap: 2px` taken out — the wrapped `.bidsheet-row` (centred, 6px) always
+   won over them on this row */
+.bidsheet .sel-rmks { flex-direction: column; }
 .bidsheet .sel-rmk-line { color: var(--ink-3); font-size: 12.5px; }
 /* GRANT OIL IN THE ROW'S THIRD PLACE (his D1349) keeps one line, as tall as the leave buttons above it: on a phone its two
    words wrapped and the row stood 42 tall under 28 (GitHub's browser run, 25 Oct 26) */
@@ -1984,9 +1999,14 @@
 
 /* GRANT OIL'S ONE AMOUNT CONTROL (his D1392, D1395 H — OilAmount.tsx, D1397): HO · 0.5 and FO · 1 to pick, then a dashed box for any
    other amount, then the button naming what it gives; the row wraps rather than squeeze on a phone (drawn: lw-m3n-draw-ho.mjs) */
-.bidsheet .oil-amount { flex-wrap: wrap; row-gap: 8px; }
+/* MOVED INSIDE: `row-gap: 8px` here and the box's `border-style: dashed; width: 118px` taken out — the wrapped
+   `.bidsheet-row` gap (6px) and oiltracker.css's `.oil-num` (a solid 84px box) always won over them, so the row and the
+   box keep the look walked */
+.bidsheet .oil-amount { flex-wrap: wrap; }
 .bidsheet .oil-picks { display: inline-flex; gap: 6px; }
-.bidsheet .oil-amount .oil-other { border-style: dashed; min-width: 0; width: 118px; }
+.bidsheet .oil-amount .oil-other { min-width: 0; }
+
+}
 
 /* THE APP'S POP-UPS STAND ABOVE A RAISED WINDOW (the fresh read of his find of 2 Nov 26 — the document viewer's Close). A
    blocking window opened while the person window or the Inputs "Calendar" is up is raised (480 / 481, above); the pop-ups a

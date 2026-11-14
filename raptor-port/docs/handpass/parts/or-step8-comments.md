@@ -112,7 +112,7 @@ Not asked for; each was met while checking a row above. None is live code doing 
 - **`src/ui/placeholderdoors.test.tsx:727–732` and `958–973`** — "FAULT C … reported and left red … these cases pass
   either way". The fault was settled in step 3 and ruled as D770; the comments still describe it as open, and the
   cases still pass whichever way the window answers. This one is more than words: see the register's gap list
-  (`or-step8-register.md`, OR29).
+  (`or-step8-register.md`, OR29 — since 14 Nov 26 `../../superpowers/specs/2026-10-12-one-rule-behaviour-register.md`).
 - **`engine/publish.ts PendItem.mates` and `ui/pendlist.ts`'s reads of `it.mates`** — nothing sets `mates` any more
   (searched every non-test file under `src`), so the two reads (`pendlist.ts:299`, `:320`) can only see it empty. Dead
   leftovers of the removed fold; harmless.

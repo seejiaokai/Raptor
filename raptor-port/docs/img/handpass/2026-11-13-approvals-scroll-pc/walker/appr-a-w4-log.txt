@@ -1,0 +1,13 @@
+before: {"words":"Approve all 19","bg":"rgb(59, 198, 232)","color":"rgb(5, 42, 52)","l":1142.25,"r":1278.8,"t":191.2,"b":227.2}
+armed: {"words":"Approve 19 — tap again","bg":"rgb(229, 168, 59)","color":"rgb(29, 20, 5)","l":1076.5,"r":1278.8,"t":191.2,"b":227.2} winRoom 0 counts {"tab":"Approvals 21","approveAll":"Approve 19 — tap again"}
+  PASS W4-armed: armed: background rgb(229, 168, 59) (amber true), words "Approve 19 — tap again", right edge 1278.8->1278.8, top 191.2->191.2, left 1142.25->1076.5 (width follows the words)
+  PASS W4-armed-fit: armed: winRoom 0, card foot 816->816
+after second press: lines 19, lit Approved 19, winRoom 0, card foot 816, counts {"tab":"Approvals 2","approveAll":"Approve all 0"}, approveAll {"words":"Approve all 0","bg":"rgb(59, 198, 232)","color":"rgb(5, 42, 52)","l":1149.01,"r":1278.8,"t":191.2,"b":227.2}
+  PASS W4-all-lit: every line lit: 19 of 19; winRoom 0; card foot 816
+  PASS W4-foot: wheeled to the list's foot: 514.4000244140625 of 514, winRoom 0
+last line: {"idx":18,"id":"appr-line-nact","text":"Warden IP CCL Sat 21 Feb › 13 Nov 02:18 · by Saber Approved ","top":732.8,"bottom":786.8,"inView":true,"approve":"Approved","refuse":"Refuse","apPressed":"true","rfPressed":"false"}
+  PASS W4-last: last line wholly in view and lit: {"idx":18,"id":"appr-line-nact","text":"Warden IP CCL Sat 21 Feb › 13 Nov 02:18 · by Saber Approved ","top":732.8,"bottom":786.8,"inView":true,"approve":"Approved","refuse":"Refuse","apPressed":"true","rfPressed":"false"}
+  PASS W4-up: wheel up at once from foot: 514.4000244140625 -> 314.3999938964844
+errors []
+  PASS W4-err: page errors: none
+SUMMARY 7 PASS, 0 FAIL

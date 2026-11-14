@@ -1,0 +1,214 @@
+desk-bid-empty: state only in old2
+desk-bid-grant-oil: state only in old2
+desk-bid-half: state only in old2
+desk-bid-held-half: state only in old2
+desk-bid-more: state only in old2
+desk-bid-pending-decide: state only in old2
+desk-bid-whole: state only in old2
+desk-counter-avail: state only in old2
+desk-counter-new-team: state only in old2
+desk-day-panel: state only in old2
+desk-day-panel-events-red: state only in old2
+desk-dayline-amber-red: state only in old2
+desk-daylist-decided-armed: state only in old2
+desk-daylist-oil: state only in old2
+desk-daylist-two: state only in old2
+desk-drag-remarks: state only in old2
+desk-drag-window: state only in old2
+desk-drag-window-two: state only in old2
+desk-events: state only in old2
+desk-events-arm: state only in old2
+desk-grades: state only in old2
+desk-member-bid: state only in old2
+desk-member-closed-day: state only in old2
+desk-member-closed-empty: state only in old2
+desk-member-open-dates: state only in old2
+desk-member-own-approved: state only in old2
+desk-new-period: state only in old2
+desk-oil-award: state only in old2
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | block-size: "448.688px" -> "416.688px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | height: "448.688px" -> "416.688px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | inset-block-start: "401.312px" -> "433.312px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | perspective-origin: "280px 224.344px" -> "280px 208.344px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | top: "401.312px" -> "433.312px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | transform-origin: "280px 224.344px" -> "280px 208.344px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8 | el | block-size: "139.688px" -> "107.688px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8 | el | height: "139.688px" -> "107.688px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8 | el | perspective-origin: "267px 69.8438px" -> "267px 53.8438px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8 | el | transform-origin: "267px 69.8438px" -> "267px 53.8438px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | block-size: "29.6719px" -> "21.6719px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | height: "29.6719px" -> "21.6719px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | padding-block-start: "10px" -> "2px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | padding-top: "10px" -> "2px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | perspective-origin: "267px 14.8281px" -> "267px 10.8281px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | transform-origin: "267px 14.8359px" -> "267px 10.8359px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | block-size: "29.6719px" -> "21.6719px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | height: "29.6719px" -> "21.6719px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | padding-block-start: "10px" -> "2px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | padding-top: "10px" -> "2px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | perspective-origin: "267px 14.8281px" -> "267px 10.8281px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | transform-origin: "267px 14.8359px" -> "267px 10.8359px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | block-size: "29.6719px" -> "21.6719px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | height: "29.6719px" -> "21.6719px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | padding-block-start: "10px" -> "2px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | padding-top: "10px" -> "2px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | perspective-origin: "267px 14.8281px" -> "267px 10.8281px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | transform-origin: "267px 14.8359px" -> "267px 10.8359px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | block-size: "29.6719px" -> "21.6719px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | height: "29.6719px" -> "21.6719px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | padding-block-start: "10px" -> "2px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | padding-top: "10px" -> "2px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | perspective-origin: "267px 14.8281px" -> "267px 10.8281px"
+desk-oil-detail-award | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | transform-origin: "267px 14.8359px" -> "267px 10.8359px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | block-size: "448.688px" -> "416.688px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | height: "448.688px" -> "416.688px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | inset-block-start: "401.312px" -> "433.312px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | perspective-origin: "280px 224.344px" -> "280px 208.344px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | top: "401.312px" -> "433.312px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4 | el | transform-origin: "280px 224.344px" -> "280px 208.344px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8 | el | block-size: "139.688px" -> "107.688px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8 | el | height: "139.688px" -> "107.688px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8 | el | perspective-origin: "267px 69.8438px" -> "267px 53.8438px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8 | el | transform-origin: "267px 69.8438px" -> "267px 53.8438px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | block-size: "29.6719px" -> "21.6719px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | height: "29.6719px" -> "21.6719px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | padding-block-start: "10px" -> "2px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | padding-top: "10px" -> "2px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | perspective-origin: "267px 14.8281px" -> "267px 10.8281px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:1 | el | transform-origin: "267px 14.8359px" -> "267px 10.8359px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | block-size: "29.6719px" -> "21.6719px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | height: "29.6719px" -> "21.6719px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | padding-block-start: "10px" -> "2px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | padding-top: "10px" -> "2px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | perspective-origin: "267px 14.8281px" -> "267px 10.8281px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:2 | el | transform-origin: "267px 14.8359px" -> "267px 10.8359px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | block-size: "29.6719px" -> "21.6719px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | height: "29.6719px" -> "21.6719px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | padding-block-start: "10px" -> "2px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | padding-top: "10px" -> "2px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | perspective-origin: "267px 14.8281px" -> "267px 10.8281px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:3 | el | transform-origin: "267px 14.8359px" -> "267px 10.8359px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | block-size: "29.6719px" -> "21.6719px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | height: "29.6719px" -> "21.6719px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | padding-block-start: "10px" -> "2px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | padding-top: "10px" -> "2px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | perspective-origin: "267px 14.8281px" -> "267px 10.8281px"
+desk-oil-detail-sched | body:2>div:1>div:1>section:7>div:2>div:1>div[bid-picker]:4>div[oil-detail]:8>div:4 | el | transform-origin: "267px 14.8359px" -> "267px 10.8359px"
+desk-open-dates: state only in old2
+desk-open-dates-last: state only in old2
+desk-open-dates-none: state only in old2
+desk-person-window: state only in old2
+desk-req-panel: state only in old2
+desk-req-panel-weekend: state only in old2
+desk-settings: state only in old2
+desk-settings-palette: state only in old2
+desk-settings-qual-palette: state only in old2
+desk-settings-sans-palette: state only in old2
+desk-settings-whowins: state only in old2
+phone-bid-empty: state only in old2
+phone-bid-grant-oil: state only in old2
+phone-bid-half: state only in old2
+phone-bid-held-half: state only in old2
+phone-bid-more: state only in old2
+phone-bid-pending-decide: state only in old2
+phone-bid-whole: state only in old2
+phone-counter-avail: state only in old2
+phone-counter-new-team: state only in old2
+phone-day-panel: state only in old2
+phone-day-panel-events-red: state only in old2
+phone-dayline-amber-red: state only in old2
+phone-daylist-decided-armed: state only in old2
+phone-daylist-oil: state only in old2
+phone-daylist-two: state only in old2
+phone-drag-remarks: state only in old2
+phone-drag-window: state only in old2
+phone-drag-window-two: state only in old2
+phone-events: state only in old2
+phone-events-arm: state only in old2
+phone-grades: state only in old2
+phone-member-bid: state only in old2
+phone-member-closed-day: state only in old2
+phone-member-closed-empty: state only in old2
+phone-member-open-dates: state only in old2
+phone-member-own-approved: state only in old2
+phone-new-period: state only in old2
+phone-oil-award: state only in old2
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | block-size: "448.688px" -> "416.688px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | height: "448.688px" -> "416.688px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | inset-block-start: "411.312px" -> "443.312px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | perspective-origin: "189px 224.344px" -> "189px 208.344px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | top: "411.312px" -> "443.312px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | transform-origin: "189px 224.344px" -> "189px 208.344px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8 | el | block-size: "139.688px" -> "107.688px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8 | el | height: "139.688px" -> "107.688px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8 | el | perspective-origin: "176px 69.8438px" -> "176px 53.8438px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8 | el | transform-origin: "176px 69.8438px" -> "176px 53.8438px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | block-size: "29.6719px" -> "21.6719px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | height: "29.6719px" -> "21.6719px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | padding-block-start: "10px" -> "2px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | padding-top: "10px" -> "2px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | perspective-origin: "176px 14.8281px" -> "176px 10.8281px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | transform-origin: "176px 14.8359px" -> "176px 10.8359px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | block-size: "29.6719px" -> "21.6719px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | height: "29.6719px" -> "21.6719px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | padding-block-start: "10px" -> "2px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | padding-top: "10px" -> "2px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | perspective-origin: "176px 14.8281px" -> "176px 10.8281px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | transform-origin: "176px 14.8359px" -> "176px 10.8359px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | block-size: "29.6719px" -> "21.6719px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | height: "29.6719px" -> "21.6719px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | padding-block-start: "10px" -> "2px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | padding-top: "10px" -> "2px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | perspective-origin: "176px 14.8281px" -> "176px 10.8281px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | transform-origin: "176px 14.8359px" -> "176px 10.8359px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | block-size: "29.6719px" -> "21.6719px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | height: "29.6719px" -> "21.6719px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | padding-block-start: "10px" -> "2px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | padding-top: "10px" -> "2px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | perspective-origin: "176px 14.8281px" -> "176px 10.8281px"
+phone-oil-detail-award | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | transform-origin: "176px 14.8359px" -> "176px 10.8359px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | block-size: "448.688px" -> "416.688px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | height: "448.688px" -> "416.688px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | inset-block-start: "411.312px" -> "443.312px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | perspective-origin: "189px 224.344px" -> "189px 208.344px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | top: "411.312px" -> "443.312px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3 | el | transform-origin: "189px 224.344px" -> "189px 208.344px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8 | el | block-size: "139.688px" -> "107.688px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8 | el | height: "139.688px" -> "107.688px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8 | el | perspective-origin: "176px 69.8438px" -> "176px 53.8438px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8 | el | transform-origin: "176px 69.8438px" -> "176px 53.8438px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | block-size: "29.6719px" -> "21.6719px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | height: "29.6719px" -> "21.6719px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | padding-block-start: "10px" -> "2px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | padding-top: "10px" -> "2px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | perspective-origin: "176px 14.8281px" -> "176px 10.8281px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:1 | el | transform-origin: "176px 14.8359px" -> "176px 10.8359px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | block-size: "29.6719px" -> "21.6719px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | height: "29.6719px" -> "21.6719px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | padding-block-start: "10px" -> "2px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | padding-top: "10px" -> "2px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | perspective-origin: "176px 14.8281px" -> "176px 10.8281px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:2 | el | transform-origin: "176px 14.8359px" -> "176px 10.8359px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | block-size: "29.6719px" -> "21.6719px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | height: "29.6719px" -> "21.6719px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | padding-block-start: "10px" -> "2px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | padding-top: "10px" -> "2px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | perspective-origin: "176px 14.8281px" -> "176px 10.8281px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:3 | el | transform-origin: "176px 14.8359px" -> "176px 10.8359px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | block-size: "29.6719px" -> "21.6719px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | height: "29.6719px" -> "21.6719px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | padding-block-start: "10px" -> "2px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | padding-top: "10px" -> "2px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | perspective-origin: "176px 14.8281px" -> "176px 10.8281px"
+phone-oil-detail-sched | body:2>div:1>div:1>section:7>div:3>div:1>div[bid-picker]:3>div[oil-detail]:8>div:4 | el | transform-origin: "176px 14.8359px" -> "176px 10.8359px"
+phone-open-dates: state only in old2
+phone-open-dates-last: state only in old2
+phone-open-dates-none: state only in old2
+phone-person-window: state only in old2
+phone-req-panel: state only in old2
+phone-req-panel-weekend: state only in old2
+phone-settings: state only in old2
+phone-settings-palette: state only in old2
+phone-settings-qual-palette: state only in old2
+phone-settings-sans-palette: state only in old2
+phone-settings-whowins: state only in old2

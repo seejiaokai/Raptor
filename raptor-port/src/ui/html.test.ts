@@ -243,7 +243,12 @@ const noVerTag = (s: string) => {
 /* Divergence (owner D940, 16 Oct 26 — the whole-app words pass, round 1): the day's issues bar no longer says "tap to
    review" / "tap to collapse" — its ▼ / ▲ and the bar's own look say it opens. The reference keeps the cue, so lift it
    off both sides (a no-op on the port). */
+/* …and its "N warnings" takes an s by count ([SCHED-MARKS-WALK-ODDS] 1, 11 Nov 26 — the week's bar read "6 warning"
+   beside the board's "6 warnings"; the board's has had it since his 16 Aug 26 find). The reference keeps "N warning"
+   whatever the count, so the s is lifted off on the bar alone (a no-op on the reference). Pinned positively in
+   warnmute-week.test.ts. */
 const noDwCue = (s: string) => s.replace(/ · <span class="dwcue">tap to (?:review|collapse)<\/span>/g, '')
+  .replace(/(<\/b> · \d+ warning)s(?=<span class="dwcar">)/g, '$1')
 /* Divergence (owner D950 R1, 17 Oct 26 — the words pass, round 2): View-only Sched's unpublished day no longer carries the
    boxed "Draft" stamp — its DRAFT title tag says it once. The reference keeps the stamp, so lift it off both sides (a
    no-op on the port). */

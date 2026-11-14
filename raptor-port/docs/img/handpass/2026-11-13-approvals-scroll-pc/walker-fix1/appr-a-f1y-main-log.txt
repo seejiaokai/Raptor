@@ -1,0 +1,6 @@
+on day: {"tid":"01-01","t":320.8,"b":364.8,"onScreen":true,"inCard":true,"inBox":true,"scTop":0,"cardScrollTop":0,"winY":0,"winRoom":1451}
+ArrowDown -> {"tid":"01-08","t":364.8,"b":408.8,"onScreen":true,"inCard":true,"inBox":true,"scTop":0,"cardScrollTop":0,"winY":0,"winRoom":1451}
+ArrowDown -> {"tid":"01-15","t":408.8,"b":452.8,"onScreen":true,"inCard":true,"inBox":true,"scTop":0,"cardScrollTop":0,"winY":0,"winRoom":1451}
+ArrowDown -> {"tid":"01-22","t":452.8,"b":496.8,"onScreen":false,"inCard":true,"inBox":true,"scTop":0,"cardScrollTop":0,"winY":0,"winRoom":1451}
+ArrowDown -> {"tid":"01-29","t":496.8,"b":540.8,"onScreen":false,"inCard":true,"inBox":true,"scTop":0,"cardScrollTop":0,"winY":0,"winRoom":1451}
+errors []

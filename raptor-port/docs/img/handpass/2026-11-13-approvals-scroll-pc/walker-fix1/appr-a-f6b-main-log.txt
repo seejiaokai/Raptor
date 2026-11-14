@@ -1,0 +1,6 @@
+closed: {"innerW":402,"innerH":874,"room":1241,"scrollY":0,"innerScroller":false,"bodyClass":"","chips":{"t":213.8,"b":304.8,"l":21,"r":381,"h":91},"pick":{"t":255.8,"b":291.8,"l":21,"r":124.3,"h":36},"picker":null,"pickerParent":null,"cols":{"t":304.8,"b":337.8,"l":21,"r":381,"h":33},"firstLine":{"t":337.8,"b":415.8,"l":21,"r":381,"h":78},"card":{"t":141.8,"b":1898.8,"l":8,"r":394,"h":1757},"lines":19}
+open: {"innerW":402,"innerH":874,"room":1632,"scrollY":0,"innerScroller":false,"bodyClass":"","chips":{"t":213.8,"b":304.8,"l":21,"r":381,"h":91},"pick":{"t":255.8,"b":291.8,"l":21,"r":124.3,"h":36},"picker":{"t":314.8,"b":685.7,"l":21,"r":371,"h":370.9},"pickerParent":"appr-pickpop","cols":{"t":695.7,"b":728.7,"l":21,"r":381,"h":33},"firstLine":{"t":728.7,"b":806.7,"l":21,"r":381,"h":78},"card":{"t":141.8,"b":2289.7,"l":8,"r":394,"h":2147.9},"lines":19}
+  PASS F6b-main-between: main: calendar 314.8-685.7 between the chips (foot 304.8) and the column headings (top 695.7); no inner scroller true; calendar's parent "appr-pickpop"
+main summary: chips foot 304.8, calendar 314.8-685.7 (h 370.9), headings top 695.7, first line top 728.7, card 141.8-2289.7
+errors []
+SUMMARY 1 PASS, 0 FAIL

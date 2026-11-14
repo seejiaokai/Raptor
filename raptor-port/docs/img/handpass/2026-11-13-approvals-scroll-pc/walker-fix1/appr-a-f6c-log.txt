@@ -1,0 +1,4 @@
+{"open":false,"lines":2,"scroller":false,"chip":"5 Jan – 9 Jan","scrollY":0,"room":0}
+  PASS F6c-range: phone: two taps (5, 9 Jan): calendar closed true, 2 lines, chip "5 Jan – 9 Jan", no inner scroller true
+errors []
+SUMMARY 1 PASS, 0 FAIL

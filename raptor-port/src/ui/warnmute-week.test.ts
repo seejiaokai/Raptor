@@ -80,8 +80,14 @@ describe("Edit Schedule's list", () => {
 
   it('the bar\'s colour and the "N warning" follow what is shown: hide the two red ones and the bar turns amber', () => {
     HOOKS.editMode = () => true
-    expect(dayWarnHTML(TUE)).toMatch(/class="daywarn hard"[^>]*><b>⚠ 4 issues<\/b> · 2 warning/)
-    warns(TUE).map((w: any, i: number) => w.sev === 'hard' ? i : -1).filter((i: number) => i >= 0).forEach((i: number) => hideAt(TUE, i))
+    /* "N warnings" takes its s by count, as the board's bar does and as "N issues" always did ([SCHED-MARKS-WALK-ODDS] 1 —
+       the week's bar read "17 issues · 6 warning" beside the board's "6 warnings"; chat 61's reproduction, 10 Nov 26) */
+    expect(dayWarnHTML(TUE)).toMatch(/class="daywarn hard"[^>]*><b>⚠ 4 issues<\/b> · 2 warnings<span class="dwcar">/)
+    const reds = warns(TUE).map((w: any, i: number) => w.sev === 'hard' ? i : -1).filter((i: number) => i >= 0)
+    /* one red one left: "1 warning", no s */
+    hideAt(TUE, reds[0]!)
+    expect(dayWarnHTML(TUE)).toMatch(/class="daywarn hard"[^>]*><b>⚠ 3 issues<\/b> · 1 warning<span class="dwcar">/)
+    hideAt(TUE, reds[1]!)
     const h = dayWarnHTML(TUE)
     /* the count is followed straight by the caret — no "N warning" (none is red), and no "tap to review" since D940 */
     expect(h).toMatch(/class="daywarn adv"[^>]*><b>⚠ 2 issues<\/b><span class="dwcar">/)

@@ -672,7 +672,7 @@ export function SchedBoard() {
               control bar instead (ui/oilmode.ts dayBarHTML), merged into one row
               at the position they already had — his ask, and it keeps this bar
               untouched, which is the August rule outright rather than measured
-              around (CLAUDE.md §the phone board is ONE window).
+              around (raptor-port/docs/ui-contracts.md §The board on a phone is ONE window).
               The accent TINT is his too: "since settings usually have some blue
               to it. Make the buttons slightly stand out." Never the solid fill —
               that is Done and Publish day, meaning "this finishes the job".

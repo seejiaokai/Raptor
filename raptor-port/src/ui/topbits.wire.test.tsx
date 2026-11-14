@@ -99,7 +99,7 @@ afterEach(() => {
   _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); setMe(DEFAULT_ME); storeBackend.impl = null; document.body.innerHTML = ''
 })
 
-describe('D769 — what waits on him comes before the list', () => {
+describe('D769 — what waits on him comes before the list (OR46)', () => {
   it('an access request AND an unread notice: the tap goes straight to Admin → Users and opens no list; the notice stays unread', async () => {
     await boot()
     saber(); setPage('editsched'); setBoardDay(2)

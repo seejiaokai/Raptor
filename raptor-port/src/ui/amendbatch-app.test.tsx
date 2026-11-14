@@ -87,6 +87,22 @@ describe('"N pending" opens the changes window on what will go out (D99, D100, D
     expect(t).toContain(PEOPLE.mamba.cs)
     expect(t).toContain('SDO'); expect(t).toContain('OPS-O')
     expect(rows[0]!.querySelector('.pl-who')?.textContent, 'made in this sitting: who and when, not "earlier"').not.toMatch(/earlier/)
+    /* ON "TO GO OUT" THE HINT IS SAID ONCE ([SCHED-MARKS-WALK-ODDS] 3 — chat 61's reproduction, 10 Nov 26): the list's
+       own foot says "Tap a change to go to it." where a line can be tapped, and the window's foot said it again right
+       under it, whatever was listed */
+    expect(win!.querySelector('.pl-foot')?.textContent, "the list's own foot says it").toBe('Tap a change to go to it.')
+    expect(win!.querySelector('.cw-foot'), 'the window draws no second foot under it').toBeNull()
+    expect((win!.textContent || '').split('Tap a change').length - 1, 'said once').toBe(1)
+    await click(win!.querySelector('.win-x'))
+  })
+
+  it('"To go out" on the whole week lists days, not changes: no "Tap a change" under them', async () => {
+    await click(monHead()!.querySelector('[data-pendlist]'))
+    await click($$('.chgwin .cw-day').find(b => b.textContent === 'Week')!)
+    const win = $('.chgwin:not([hidden])')
+    expect(win!.querySelector('.win-tab.on')?.textContent).toMatch(/To go out/)
+    expect(win!.querySelector('.cw-outday'), 'the days are listed').toBeTruthy()
+    expect(win!.textContent).not.toContain('Tap a change')
     await click(win!.querySelector('.win-x'))
   })
 

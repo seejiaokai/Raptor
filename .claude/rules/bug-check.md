@@ -51,7 +51,7 @@ Then, before you execute anything:
   missing, not whether the code is wrong; Sol 6.1's second read of the code only on money, published records,
   permissions or persistence, and only on his call; and never another static review when what is missing is someone running the app — that one is called
   review pile-on.
-- **Who they are now:** Astra is the standing reviewer again, with no end date (D1770): for work Opus wrote Astra
+- **Who they are now:** Astra is the standing reviewer, with no end date (D1770): for work Opus wrote Astra
   reviews, called without asking him each time — the rules diet's reworded steps among them, which never go on without his
   read (D1738, D1739), and every working-guide change (D1761). Sol 6.1 is called only when he calls for him; otherwise, where
   two readers are required, the fresh, blind Opus reader keeps the second seat (the agent's reading). Fable is on call

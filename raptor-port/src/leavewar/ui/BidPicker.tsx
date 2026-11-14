@@ -947,9 +947,12 @@ export function BidPicker({
         {/* each button's "left" is his War bal AFTER this leave is placed on the days the window acts on, in the half picked
             (the M5a spec §1.6 — the engine's what-if; walker D's FAILs 1–4: it read the figure as it stood, whatever the day
             or the half) — the very days and code a press writes and the below-zero ask reads */}
+        {/* the line stands ABOVE the buttons (his D2030): this window stands on the screen's foot and grows upward, so a
+            line under them lifted the leave just tapped out from under the second tap it asks for (SelectSheet.tsx has the
+            same line in the same place) */}
+        {note && noteAt === 'leave' && <span className="note warn" data-testid="span-note">{note}</span>}
         <LeaveButtons portion={portion} onPick={write} filled={approving} lit={lit}
           figure={wouldLeave ? (() => { const ds = selCells().map(c => c.date); return (code: string) => wouldLeave(code, ds)?.after ?? null })() : undefined} />
-        {note && noteAt === 'leave' && <span className="note warn" data-testid="span-note">{note}</span>}
       </div>}
 
       {/* Medical is MEMBER-FILED ONLY (owner, 13 Sep 26, reversing the 17 Aug

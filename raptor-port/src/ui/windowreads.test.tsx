@@ -211,7 +211,7 @@ describe('R3 — an OIL answer given alone in the window does not move the input
      · "once he has answered, the line is 'Your OIL: …' with 'Change…'" — RETIRED: in its place, once the input is
        answered he reads its ONE answer, with no button and no line of his own.
      · THE CONTROL — a reader who is not in it gets neither: unchanged, on the one record. */
-describe('R4 — the OIL question of a shared input is the INPUT’s: a man in it who did not file it has none of his own (D762)', () => {
+describe('R4 — the OIL question of a shared input is the INPUT’s: a man in it who did not file it has none of his own (D762) (OR16)', () => {
   it('unanswered: he reads "Not answered yet — 17 Oct" with nothing to press — no "Your OIL", no "Answer…" of his own; whoever may change the input answers it from its window, once, for everyone', async () => {
     const [a] = others()
     const rec = await shared([a, member])

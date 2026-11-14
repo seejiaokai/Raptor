@@ -3651,7 +3651,9 @@ Leave War fling lesson — and placed before its first paint by a layout effect,
 23 Sep 26, pinned by "phone: the frozen header is in step with the table the
 moment it appears") so the frozen callsign column's own sticky-left works
 inside it. `z-index:55` sits under the top bar's 60. A click on a heading in the
-bar still sorts. Browser-only — jsdom has no layout, so the mirror never mounts
+bar still sorts, and in Edit quals a heading pressed in the bar drags its column
+as the table's own does ([QUALS-PINNED-HEAD-NO-DRAG], 11 Nov 26 — pinned by
+`e2e/geometry.spec.ts`, its last block). Browser-only — jsdom has no layout, so the mirror never mounts
 there (`quals.test.tsx` pins its absence); the freeze is verified on the live
 view at desktop and phone widths.
 
@@ -5522,8 +5524,23 @@ heading gains a grip, a `.qlbl` label element and a `✕`.
   Since 7 Sep 26 the picked-up column wears one measured overlay frame down the
   whole table and the column flashes where it lands (§What a drag LOOKS like —
   one recipe, every surface, and the quals z-index set there); the frozen header
-  mirror `.qfixed` still carries no drag handlers, so a heading is dragged on the
-  real table.
+  mirror `.qfixed` carried no drag handlers until 11 Nov 26, so a heading was
+  dragged on the real table alone. *(CORRECTED 11 Nov 26 —
+  [QUALS-PINNED-HEAD-NO-DRAG]: a heading pressed in the mirror starts the same
+  drag — the mirror hands its press and move to the table's own two handlers
+  (`QualsPage.tsx pinnedDrag`), the frame is measured round the TABLE's heading
+  of that column and the edge scroll runs `.qwrap`; see the corrected note in
+  §What a drag LOOKS like. One finger, one drag, in either row: only the pointer
+  that began the drag moves or drops it, a second finger put down cancels it and
+  writes nothing, and a `pointercancel` cancels it too; a press by another kind
+  of pointer during a live drag (a mouse while a finger holds a heading)
+  cancels it and starts none. The mirror's markup is set again only when it
+  changes, as the table's is, so a redraw of the page mid-drag leaves the
+  picked-up look on the pressed heading; where it does change mid-drag (a
+  window's width changed on a desktop wider than the table, whose columns
+  share out the extra) the drag puts its picked-up look and its landing mark
+  back on the new markup (`QualsPage.tsx reapplyDrag`). Pinned by
+  `e2e/geometry.spec.ts`, its last block, and `quals.test.tsx`.)*
 
 None of it is persisted, exactly like the ticks, initials and flights beside
 it: reload and the LoX is the default set again. `rules` is still the only
@@ -7824,7 +7841,17 @@ view. Unless it's outside the screen view then it's ok to snap into view."
   under-manned list, a period opened, switched or made.
 - **Quals (D672).** The man's row is outlined as before; the page moves to it — the row to the middle of the window —
   only when the row is not wholly on screen, clear of the top bar and the table's stuck heading (`ui/onscreen.ts
-  rowOnScreen`).
+  rowOnScreen`). **Once for each ask ([QUALS-OUTLINE-RESCROLL], 11 Nov 26):** the outline is put back on every repaint
+  of the table, the page is moved only on the first repaint after "Check his quals", "Check my quals" or the Undo that
+  DRAWS his row — a later tick on another man's row, a sort or any other repaint never moves the page to the outlined
+  row again. Where the filter box hides his row when the ask arrives, nothing is outlined and the page stays; the ask
+  waits, and its one trip is made when the filter is cleared and his row is drawn (the fix round, 11 Nov 26 — a newer
+  ask still takes an older one's place). That trip is made one frame after the keystroke that drew the row: a browser
+  ends every edit of a text box by bringing its caret back into view, which undid a trip made inside the keystroke
+  (seen in Chromium: the page came back and left his row just under the screen's foot). Inside that frame: a row
+  hidden again before it runs keeps its ask for the next repaint that draws it, a newer ask lets the older one's
+  waiting trip go, and leaving the page lets it go too
+  (`QualsPage.tsx backWent`, `backFrame`; pins `e2e/geometry.spec.ts` (its last block), `quals.test.tsx`).
 - **The Inputs list (D672).** The changed input is lifted to the top of the list only when its row is not on screen (a
   row the Undo has just brought back is lifted, so it is found). A save shows the saved input by the same rule (it is
   the same reveal). **And when the page does move, the row lands in view — just under the top bar** (`ui/onscreen.ts
@@ -8355,7 +8382,12 @@ Four asks from the same sitting, all on the Leave War grid:
     Pinned as a SET in `lift-css.test.ts`, read out of the file and compared to
     each other. **`.qfixed`, the frozen header mirror, carries no drag handlers at
     all** — pre-existing, recorded, not fixed here: a heading is dragged on the
-    real table.
+    real table. *(CORRECTED 11 Nov 26 — [QUALS-PINNED-HEAD-NO-DRAG]: a heading
+    pressed in the mirror now starts the same column drag. The mirror hands its
+    press and move to the table's own two handlers (`QualsPage.tsx pinnedDrag`);
+    the frame is still measured round the TABLE's heading of that column and the
+    edge scroll still runs `.qwrap`. Pinned by `e2e/geometry.spec.ts` (its last block),
+    by mouse and by finger.)*
   - **The per-cell drag paint is DELETED** (`matrix.css`: the `.who`/`.bal` ring +
     halo, the day-cell lines, the heading twin). With it gone, **a manning row's
     shortfall ring paints on the picked-up row exactly as it does at rest** — the
@@ -12148,7 +12180,7 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **A quick sideways swipe picks months (D1294) — BUILT 24 Oct 26:** in the "Open for bidding" window on a phone a mostly sideways move across the month buttons arms the drag at once, from the month first touched, with no hold; up and down still scrolls; a slow drag and a tap as before (`leavewar/ui/OpenDatesSheet.tsx onMove`; the buttons' `touch-action: pan-y` leaves the sideways move to the page). Pins: `leavewar/ui/window.test.tsx`, `e2e/leavewar.spec.ts` (a real finger at a swipe's speed).
 - **The day line on a day already holding the bid (D1296) — BUILT 24 Oct 26:** it shows the day's manning as it now stands, the bid counted ("Available P 27 · red" — one figure, no arrow — and each Manning row now amber or red), never the calm line while a row is amber or red; where none is, "No manning row is amber or red". A day "holds him away" when the bid changes nothing there and taking his day off the war raises his seat's Available row (`engine/whatif.ts dayWhatIf`, its `standing`; drawn by `ui/DayLine.tsx`), so a SANS man or ground crew still get the plain answer. Pins: `leavewar/state/whatif.test.ts`, `leavewar/ui/bidwindow-dayline.test.tsx`.
 - **A date clicked behind a new input's window (D1298):** on the Inputs calendar it never lights as picked while the window keeps its old date; what it does is his to choose.
-- **The Medical tab's "+ Medical" and its window on the right (D1300) — BUILT 24 Oct 26:** on a desktop (over 820) "+ Medical" is the row's last button, at its right end; while an input's window is open the sections make room at their right for it (`.medview.med-room`, `16-medical.css`), so every card stands clear of it; a phone keeps "+ Medical" first and its window in the middle (D1137, D997). A save from the Medical tab asks the tab to show the input (`state/view.ts MEDREVEAL` — its own, turning no calendar), and its card wears the app's one just-added mark for six seconds (`.innew`, with `data-fresh`), brought on screen by the least movement; where it is seen, "Input added" is left unsaid (`ui/seen.ts`). A place he dragged the window to stays his (the window shell's memory). Pins: `ui/medicalview.test.tsx`, `e2e/medical.spec.ts` (at 1500 × 950 and his PC's 1229 × 600).
+- **The Medical tab's "+ Medical" and its window on the right (D1300) — BUILT 24 Oct 26:** on a desktop (over 820) "+ Medical" is the row's last button, at its right end; while an input's window is open the sections make room at their right for it (`.medview.med-room` — its why in `16-medical.css`, its rule since 14 Nov 26 in `25-inputs-calendar.css` beside the window's size, [INP-ROOM-TIDY-2]), so every card stands clear of it; a phone keeps "+ Medical" first and its window in the middle (D1137, D997). A save from the Medical tab asks the tab to show the input (`state/view.ts MEDREVEAL` — its own, turning no calendar), and its card wears the app's one just-added mark for six seconds (`.innew`, with `data-fresh`), brought on screen by the least movement; where it is seen, "Input added" is left unsaid (`ui/seen.ts`). A place he dragged the window to stays his (the window shell's memory). Pins: `ui/medicalview.test.tsx`, `e2e/medical.spec.ts` (at 1500 × 950 and his PC's 1229 × 600).
 - **The admin's "Approve what I enter" remembered, a toggle (D1302):** *BUILT 24 Oct 26 — §The bid windows after M3, round 3.* left off it stays off in every bid window until he turns it on; a small toggle in the title bar.
 *[REPLACED 6 Nov 26 by D1721: the cards stay as they are, each mark just before what follows it; the columns are not built.]* - **The Inputs list's cards line up their right-hand marks (D1305; his pick A, D1310 — three columns sized to the letters, no card taller):** on a card's top line LATE, "No document" and the hours (or "till <date>") each stand in the same place on every card, so the list reads as columns; drawn for him first, not yet built (filed as [INP-CARD-COLUMNS]).
 - **The Inputs calendar's bars take the Leave War's kind colours (D1304):** one colour per kind on both pages; duties a colour of their own; decided with [INPUT-COLOURS]. **His D1317:** the duty and commitment bars' words must read clearly against them — the grey slate with white words drawn for Q3 does not — and stay apart from the overseas duty's slate; redrawn with the design skill first. **His D1321: outlined** — a dark bar, a light edge, light words; every absence filled. *BUILT 24 Oct 26:* `inputscal-model.ts colourOf` (an upchit with medical, as drawn), the bar's `kd k-<kind>` or `duty` class, `scheduler/25-inputs-calendar.css` — a timed bar a tint with its left edge (D729).
@@ -12524,7 +12556,7 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing. *Built 8 Nov 26 (chat 7,
   `claude/pr-inputs-add-right-5b2653`):* the button after the dates button and a spring (`ui/InputsPage.tsx` `listTools`);
   `in-room` on the page while any input's window is open on the desktop list, the room and the narrowing at 1340 and up
-  (`scheduler/06-inputs.css`); the same three widths (Name 110, Start 140, End 90) with no window from 821 to 1099 wide —
+  (why: `scheduler/06-inputs.css`; the rules since 14 Nov 26: `scheduler/25-inputs-calendar.css`, [INP-ROOM-TIDY-2]); the same three widths (Name 110, Start 140, End 90) with no window from 821 to 1099 wide —
   from 1100 the full widths leave Remarks 160 or more. Pins: `ui/inputs.test.tsx`, `e2e/inputs-calendar.spec.ts` "D1787".
   **D1840** (8 Nov 26, his "all as recommended" to chat 7's look): from 821 to 1099 wide with no window Type narrows
   to 124 as well, so Remarks keeps about 93 at 821 with every word whole; from 1100 Type keeps 160. **D1841**: the

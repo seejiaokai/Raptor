@@ -48,6 +48,10 @@ jobs:
       # change to it skips the gates and only this job would see it break.
       - name: The records' settle step's tests
         run: node --test raptor-port/scripts/records-merge.test.mjs
+      # Vercel's skip-the-build check's own tests (chat 71, 13 Nov 26 — his D2032, [VERCEL-SKIP-NOTES]): a few seconds.
+      # Here so every pull request runs them — a wrong skip would leave the live app stale.
+      - name: Vercel's skip-the-build check's tests
+        run: node --test raptor-port/scripts/vercel-ignore.test.mjs
       - name: Inventory and ceilings against the base
         env:
           DOCSGUARD_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}

@@ -1,0 +1,153 @@
+main:
+lines 19
+window room 1241
+page style height ""
+body ""
+box that scrolls: none
+appr-card 8,141.8,386,1757
+appr-head 21,156.8,360,45
+appr-filters 21,213.8,360,91
+appr-new 21,213.8,47.1,36
+appr-all 74.1,213.8,46.1,36
+appr-m-2026-01 126.2,213.8,46.2,36
+appr-m-2026-02 178.4,213.8,46.1,36
+appr-m-2026-03 230.5,213.8,46.2,36
+appr-pick 21,255.8,103.3,36
+appr-spring 0,0,0,0
+appr-approve-all 233.7,255.8,147.3,36
+appr-list 21,304.8,360,1587
+appr-cols ph 21,304.8,360,33
+appr-line-wolf 21,337.8,360,78
+appr-line-bruise 21,415.8,360,78
+appr-line-bane 21,493.8,360,78
+appr-line-slash 21,571.8,360,78
+appr-line-slash 21,649.8,360,78
+appr-line-slipway 21,727.8,360,78
+appr-line-bruise 21,805.8,360,78
+appr-line-bane 21,883.8,360,78
+appr-line-bane 21,961.8,360,78
+appr-line-bane 21,1039.8,360,78
+appr-line-bane 21,1117.8,360,78
+appr-line-bane 21,1195.8,360,78
+appr-line-bane 21,1273.8,360,78
+appr-line-dice 21,1351.8,360,90
+appr-line-shaft 21,1441.8,360,90
+appr-line-snap 21,1531.8,360,90
+appr-line-pump 21,1621.8,360,90
+appr-line-mamba 21,1711.8,360,90
+appr-line-nact 21,1801.8,360,90
+— Pick dates… open —
+window room 1632
+page style height ""
+body ""
+box that scrolls: none
+appr-card 8,141.8,386,2147.9
+appr-head 21,156.8,360,45
+appr-filters 21,213.8,360,91
+appr-new 21,213.8,47.1,36
+appr-all 74.1,213.8,46.1,36
+appr-m-2026-01 126.2,213.8,46.2,36
+appr-m-2026-02 178.4,213.8,46.1,36
+appr-m-2026-03 230.5,213.8,46.2,36
+appr-pick 21,255.8,103.3,36
+appr-spring 0,0,0,0
+appr-approve-all 233.7,255.8,147.3,36
+appr-pickpop 21,314.8,360,370.9
+appr-list 21,695.7,360,1587
+appr-cols ph 21,695.7,360,33
+appr-line-wolf 21,728.7,360,78
+appr-line-bruise 21,806.7,360,78
+appr-line-bane 21,884.7,360,78
+appr-line-slash 21,962.7,360,78
+appr-line-slash 21,1040.7,360,78
+appr-line-slipway 21,1118.7,360,78
+appr-line-bruise 21,1196.7,360,78
+appr-line-bane 21,1274.7,360,78
+appr-line-bane 21,1352.7,360,78
+appr-line-bane 21,1430.7,360,78
+appr-line-bane 21,1508.7,360,78
+appr-line-bane 21,1586.7,360,78
+appr-line-bane 21,1664.7,360,78
+appr-line-dice 21,1742.7,360,90
+appr-line-shaft 21,1832.7,360,90
+appr-line-snap 21,1922.7,360,90
+appr-line-pump 21,2012.7,360,90
+appr-line-mamba 21,2102.7,360,90
+appr-line-nact 21,2192.7,360,90
+
+branch:
+lines 19
+window room 1241
+page style height ""
+body ""
+box that scrolls: none
+appr-card 8,141.8,386,1757
+appr-head 21,156.8,360,45
+appr-filters 21,213.8,360,91
+appr-new 21,213.8,47.1,36
+appr-all 74.1,213.8,46.1,36
+appr-m-2026-01 126.2,213.8,46.2,36
+appr-m-2026-02 178.4,213.8,46.1,36
+appr-m-2026-03 230.5,213.8,46.2,36
+appr-pick 21,255.8,103.3,36
+appr-spring 0,0,0,0
+appr-approve-all 233.7,255.8,147.3,36
+appr-list 21,304.8,360,1587
+appr-cols ph 21,304.8,360,33
+appr-line-wolf 21,337.8,360,78
+appr-line-bruise 21,415.8,360,78
+appr-line-bane 21,493.8,360,78
+appr-line-slash 21,571.8,360,78
+appr-line-slash 21,649.8,360,78
+appr-line-slipway 21,727.8,360,78
+appr-line-bruise 21,805.8,360,78
+appr-line-bane 21,883.8,360,78
+appr-line-bane 21,961.8,360,78
+appr-line-bane 21,1039.8,360,78
+appr-line-bane 21,1117.8,360,78
+appr-line-bane 21,1195.8,360,78
+appr-line-bane 21,1273.8,360,78
+appr-line-dice 21,1351.8,360,90
+appr-line-shaft 21,1441.8,360,90
+appr-line-snap 21,1531.8,360,90
+appr-line-pump 21,1621.8,360,90
+appr-line-mamba 21,1711.8,360,90
+appr-line-nact 21,1801.8,360,90
+— Pick dates… open —
+window room 1632
+page style height ""
+body ""
+box that scrolls: none
+appr-card 8,141.8,386,2147.9
+appr-head 21,156.8,360,45
+appr-filters 21,213.8,360,91
+appr-new 21,213.8,47.1,36
+appr-all 74.1,213.8,46.1,36
+appr-m-2026-01 126.2,213.8,46.2,36
+appr-m-2026-02 178.4,213.8,46.1,36
+appr-m-2026-03 230.5,213.8,46.2,36
+appr-pick 21,255.8,103.3,36
+appr-spring 0,0,0,0
+appr-approve-all 233.7,255.8,147.3,36
+appr-pickpop 21,314.8,360,370.9
+appr-list 21,695.7,360,1587
+appr-cols ph 21,695.7,360,33
+appr-line-wolf 21,728.7,360,78
+appr-line-bruise 21,806.7,360,78
+appr-line-bane 21,884.7,360,78
+appr-line-slash 21,962.7,360,78
+appr-line-slash 21,1040.7,360,78
+appr-line-slipway 21,1118.7,360,78
+appr-line-bruise 21,1196.7,360,78
+appr-line-bane 21,1274.7,360,78
+appr-line-bane 21,1352.7,360,78
+appr-line-bane 21,1430.7,360,78
+appr-line-bane 21,1508.7,360,78
+appr-line-bane 21,1586.7,360,78
+appr-line-bane 21,1664.7,360,78
+appr-line-dice 21,1742.7,360,90
+appr-line-shaft 21,1832.7,360,90
+appr-line-snap 21,1922.7,360,90
+appr-line-pump 21,2012.7,360,90
+appr-line-mamba 21,2102.7,360,90
+appr-line-nact 21,2192.7,360,90

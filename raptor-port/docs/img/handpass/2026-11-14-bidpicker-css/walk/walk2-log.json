@@ -1,0 +1,429 @@
+{
+ "log": [
+  {
+   "size": "desk",
+   "step": "1 counter form via Rearrange > counter > Edit counter…",
+   "result": "PASS",
+   "note": "ids: cform-close,cform-name,cform-mode-people,cform-mode-team,cf-seat-any,cf-seat-pilot,cf-seat-wso,cf-catmode,cf-cat-FI,cf-cat-IR,cf-cat-IP,cf-cat-IW,cf-cat-A,cf-cat-B,cf-cat-C,cf-cat-D,cf-cat-OCU,cf-qual-san,cf-qual-sxo,cf-qual-mgmt,cf-qual-sched,cf-qual-scDay,cf-qual-scNight,cf-qual-daar,cf-qual-naar,cf-qual-nvg,cf-qual-imc,cf-qual-tf,cf-noqual-san,cf-noqual-sxo,cf-noqual-mgmt,cf-noqual-sched,cf-noqual-scDay,cf-noqual-scNight,cf-noqual-daar,cf-noqual-naar,cf-noqual-nvg,cf-noqual-imc,cf-noqual-tf,cform-amber,cform-red,cform-preview,cform-save,cform-cancel,cform-delete [488,364 560x487]",
+   "pics": [
+    "d2-01-form-rest.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 mode: Teams",
+   "result": "PASS",
+   "note": " [488,58 560x792]",
+   "pics": [
+    "d2-02-mode-team.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 mode: People",
+   "result": "PASS",
+   "note": " [488,364 560x487]",
+   "pics": [
+    "d2-03-mode-people.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 add a slot",
+   "result": "NOT WALKED",
+   "note": "no cform-slot-add",
+   "pics": [
+    "d2-04-slot-add.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 show teams",
+   "result": "NOT WALKED",
+   "note": "no cform-show-teams",
+   "pics": [
+    "d2-05-show-teams.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 show people",
+   "result": "NOT WALKED",
+   "note": "no cform-show-people",
+   "pics": [
+    "d2-06-show-people.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 amber box typed",
+   "result": "PASS",
+   "note": "amber=4 [488,364 560x487]",
+   "pics": [
+    "d2-07-amber.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 red box typed",
+   "result": "PASS",
+   "note": "red=2 [488,364 560x487]",
+   "pics": [
+    "d2-08-red.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 an impossible amber (below red) shows its note",
+   "result": "PASS",
+   "note": "amber=1 red=2; notes shown:  [488,364 560x487]",
+   "pics": [
+    "d2-09-amber-bad.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 amber put back to 4",
+   "result": "PASS",
+   "note": "amber=4 [488,364 560x487]",
+   "pics": [
+    "d2-10-amber-fixed.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 preview / full / sans lines (read, no press)",
+   "result": "PASS",
+   "note": "present: 5 read; cform-preview:true cform-full:false cform-avail-note:false cform-avail-sans:false [488,364 560x487]",
+   "pics": [
+    "d2-11-form-lines.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 Save counter",
+   "result": "PASS",
+   "note": "~form still open: false",
+   "pics": [
+    "d2-12-save.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 reopen; Delete counter asks",
+   "result": "PASS",
+   "note": "delete label/ask: Really delete? / no ask element [488,364 560x487]",
+   "pics": [
+    "d2-13-delete-ask.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1 Cancel the ask (Cancel button)",
+   "result": "PASS",
+   "note": "~form open after Cancel: false",
+   "pics": [
+    "d2-14-delete-cancel.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1b + Counter from Settings: a new counter form",
+   "result": "PASS",
+   "note": "opened [488,392 560x458]",
+   "pics": [
+    "d2-01-newcounter.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1b name typed",
+   "result": "PASS",
+   "note": "name=Walk counter [488,364 560x487]",
+   "pics": [
+    "d2-02-newcounter-name.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1b mode: Teams",
+   "result": "PASS",
+   "note": " [488,58 560x792]",
+   "pics": [
+    "d2-03-newcounter-team.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1b add a slot",
+   "result": "PASS",
+   "note": " [488,58 560x792]",
+   "pics": [
+    "d2-04-newcounter-slot.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1b mode: People",
+   "result": "PASS",
+   "note": " [488,364 560x487]",
+   "pics": [
+    "d2-05-newcounter-people.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "1b Save a new counter with nothing chosen",
+   "result": "PASS",
+   "note": "~form open after: false",
+   "pics": [
+    "d2-06-newcounter-save.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "2 Grant OIL on a free day (FO), reopen the day",
+   "result": "PASS",
+   "note": "window shown: true; ids: bid-clear,bid-doc-row,bid-oil,oil-detail,oil-detail-why,oil-detail-given,oil-detail-entered,oil-detail-days [488,433 560x417]",
+   "pics": [
+    "d2-01-award-day.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "2 Delete pressed once: armed",
+   "result": "PASS",
+   "note": "label: Delete — / sure? [488,398 560x452]",
+   "pics": [
+    "d2-02-delete-armed.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "step": "2 day with two entries: the list, Delete once",
+   "result": "PASS",
+   "note": "chip text after one press: (gone); list still open: false",
+   "pics": [
+    "d2-03-daylist-delete.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 counter form via Rearrange > counter > Edit counter…",
+   "result": "PASS",
+   "note": "ids: cform-close,cform-name,cform-mode-people,cform-mode-team,cf-seat-any,cf-seat-pilot,cf-seat-wso,cf-catmode,cf-cat-FI,cf-cat-IR,cf-cat-IP,cf-cat-IW,cf-cat-A,cf-cat-B,cf-cat-C,cf-cat-D,cf-cat-OCU,cf-qual-san,cf-qual-sxo,cf-qual-mgmt,cf-qual-sched,cf-qual-scDay,cf-qual-scNight,cf-qual-daar,cf-qual-naar,cf-qual-nvg,cf-qual-imc,cf-qual-tf,cf-noqual-san,cf-noqual-sxo,cf-noqual-mgmt,cf-noqual-sched,cf-noqual-scDay,cf-noqual-scNight,cf-noqual-daar,cf-noqual-naar,cf-noqual-nvg,cf-noqual-imc,cf-noqual-tf,cform-amber,cform-red,cform-preview,cform-save,cform-cancel,cform-delete [12,245 378x616]",
+   "pics": [
+    "p2-01-form-rest.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 mode: Teams",
+   "result": "PASS",
+   "note": " [12,58 378x802]",
+   "pics": [
+    "p2-02-mode-team-justtapped.png",
+    "p2-03-mode-team.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 mode: People",
+   "result": "PASS",
+   "note": " [12,245 378x616]",
+   "pics": [
+    "p2-04-mode-people-justtapped.png",
+    "p2-05-mode-people.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 add a slot",
+   "result": "NOT WALKED",
+   "note": "no cform-slot-add",
+   "pics": [
+    "p2-06-slot-add.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 show teams",
+   "result": "NOT WALKED",
+   "note": "no cform-show-teams",
+   "pics": [
+    "p2-07-show-teams.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 show people",
+   "result": "NOT WALKED",
+   "note": "no cform-show-people",
+   "pics": [
+    "p2-08-show-people.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 amber box typed",
+   "result": "PASS",
+   "note": "amber=4 [12,245 378x616]",
+   "pics": [
+    "p2-09-amber.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 red box typed",
+   "result": "PASS",
+   "note": "red=2 [12,245 378x616]",
+   "pics": [
+    "p2-10-red.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 an impossible amber (below red) shows its note",
+   "result": "PASS",
+   "note": "amber=1 red=2; notes shown:  [12,245 378x616]",
+   "pics": [
+    "p2-11-amber-bad.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 amber put back to 4",
+   "result": "PASS",
+   "note": "amber=4 [12,245 378x616]",
+   "pics": [
+    "p2-12-amber-fixed.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 preview / full / sans lines (read, no press)",
+   "result": "PASS",
+   "note": "present: 5 read; cform-preview:true cform-full:false cform-avail-note:false cform-avail-sans:false [12,245 378x616]",
+   "pics": [
+    "p2-13-form-lines.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 Save counter",
+   "result": "PASS",
+   "note": "~form still open: false",
+   "pics": [
+    "p2-14-save-justtapped.png",
+    "p2-15-save.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 reopen; Delete counter asks",
+   "result": "PASS",
+   "note": "delete label/ask: Really delete? / no ask element [12,245 378x616]",
+   "pics": [
+    "p2-16-delete-justtapped.png",
+    "p2-17-delete-ask.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1 Cancel the ask (Cancel button)",
+   "result": "PASS",
+   "note": "~form open after Cancel: false",
+   "pics": [
+    "p2-18-delete-cancel.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1b + Counter from Settings: a new counter form",
+   "result": "PASS",
+   "note": "opened [12,273 378x587]",
+   "pics": [
+    "p2-01-add-justtapped.png",
+    "p2-02-newcounter.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1b name typed",
+   "result": "PASS",
+   "note": "name=Walk counter [12,245 378x616]",
+   "pics": [
+    "p2-03-newcounter-name.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1b mode: Teams",
+   "result": "PASS",
+   "note": " [12,58 378x802]",
+   "pics": [
+    "p2-04-newcounter-team-justtapped.png",
+    "p2-05-newcounter-team.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1b add a slot",
+   "result": "PASS",
+   "note": " [12,58 378x802]",
+   "pics": [
+    "p2-06-newcounter-slot-justtapped.png",
+    "p2-07-newcounter-slot.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1b mode: People",
+   "result": "PASS",
+   "note": " [12,245 378x616]",
+   "pics": [
+    "p2-08-newcounter-people-justtapped.png",
+    "p2-09-newcounter-people.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "1b Save a new counter with nothing chosen",
+   "result": "PASS",
+   "note": "~form open after: false",
+   "pics": [
+    "p2-10-save-justtapped.png",
+    "p2-11-newcounter-save.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "2 Grant OIL on a free day (FO), reopen the day",
+   "result": "PASS",
+   "note": "window shown: true; ids: bid-clear,bid-doc-row,bid-oil,oil-detail,oil-detail-why,oil-detail-given,oil-detail-entered,oil-detail-days [12,443 378x417]",
+   "pics": [
+    "p2-01-award-day.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "2 Delete pressed once: armed",
+   "result": "PASS",
+   "note": "label: Delete — / sure? [12,391 378x469]",
+   "pics": [
+    "p2-02-delete-justtapped.png",
+    "p2-03-delete-armed.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "step": "2 day with two entries: the list, Delete once",
+   "result": "PASS",
+   "note": "chip text after one press: (gone); list still open: false",
+   "pics": [
+    "p2-04-daylist-delete.png"
+   ]
+  }
+ ],
+ "errors": []
+}

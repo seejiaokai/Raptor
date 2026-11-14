@@ -27,6 +27,9 @@
         them in changes which rule wins and is a walked job of its own. The list may only SHRINK: a rule moved inside (or
         named with its page) is taken off it — a stale line fails too — and its size is pinned (`KEPT_MAX`, lowered as lines
         leave). (A declaration added INSIDE one of those blocks is not seen: the list keys a block by its selector.)
+        EMPTY since [LW-BIDPICKER-CSS-INSIDE] (14 Nov 26): all 202 moved inside bidpicker.css's wrapper, each place where the
+        move would have changed which rule wins written to keep the walked look ("MOVED INSIDE" there; the proof,
+        `scripts/handpass/lw-bidpicker-css-capture.mjs`). The list stays, empty, so a rule can never be added back to it.
    Rules BEFORE a file's first wrapper are its own head, written there on purpose (tracker.css's page state and pop-up), and
    are not judged.
    A new rule after a close fails here with its file, line and selector; move it inside the wrapper (the file's head asks
@@ -126,7 +129,7 @@ const SRC = fileURLToPath(new URL('..', import.meta.url))
 /* rule 5's list, read off disk (the project reads no JSON as a module) */
 const OUTSIDE: Record<string, string[]> = JSON.parse(readFileSync(join(SRC, 'ui', 'css-wrapper-outside.json'), 'utf8'))
 /* rule 5's list may only shrink: lower this as its lines leave, never raise it (the code read, F8) */
-const KEPT_MAX = 202
+const KEPT_MAX = 0
 const cssFiles = (dir: string): string[] => readdirSync(dir).flatMap(n => {
   const p = join(dir, n)
   return statSync(p).isDirectory() ? cssFiles(p) : n.endsWith('.css') ? [p] : []

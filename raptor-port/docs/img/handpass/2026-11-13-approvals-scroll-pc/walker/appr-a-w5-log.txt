@@ -1,0 +1,15 @@
+scrollTop 400 in view: 8:Ranger IP PL Mon 16 Mar, | 9:Ranger IP CL Tue 17 Mar  | 10:Ranger IP LL Wed 7 Jan › | 11:Ranger IP LL Wed 11 – Fr | 12:Ranger IP LL Wed 4 Mar › | 13:Reaper IR LL Mon 16 Feb  | 14:Anvil IP CCL Tue 17 Feb  | 15:Cinch IP LL Wed 18 Feb › | 16:Piston IP CCL Thu 19 Feb
+decided line 9: {"idx":9,"id":"appr-line-bane","text":"Ranger IP CL Tue 17 Mar › — Approved Refuse","top":361.2,"bottom":415.2,"inView":true,"approve":"Approved","refuse":"Refuse","apPressed":"true","rfPressed":"false"}
+dates pressed "Wed 11 – Fri 13 Feb ›": {"slim":true,"slimText":"Approvals 18 pending · 3 new Back ▴ ✕","ringed":["cell-bane-2026-02-11"],"apprPageVisible":false}
+  PASS W5-grid: grid opened at that day: slim bar "Approvals 18 pending · 3 new Back ▴ ✕", ringed ["cell-bane-2026-02-11"], Approvals hidden true
+back: scrollTop 400 (was 400), winRoom 0, decided line {"idx":9,"id":"appr-line-bane","text":"Ranger IP CL Tue 17 Mar › — Approved Refuse","top":361.2,"bottom":415.2,"inView":true,"approve":"Approved","refuse":"Refuse","apPressed":"true","rfPressed":"false"}
+  PASS W5-back: Back: list 400 -> 400, decided line "Approved", winRoom 0
+  PASS W5-back-foot: card foot 816 vs 816
+second trip: slim bar present 1
+after ✕: {"slim":false,"apprVisible":false,"gridTab":true}
+  PASS W5-x: after ✕: slim bar gone (true), Approvals not shown (true) — the grid
+Approvals tab pressed again: lines 18, lit lines 0, list scrollTop 0, winRoom 0; counts {"tab":"Approvals 20","approveAll":"Approve all 18"}
+  PASS W5-new-visit: report only: after leaving through ✕ then the tab, lit lines 0 (decided line was lit before), list 0, winRoom 0
+errors []
+  PASS W5-err: page errors: none
+SUMMARY 6 PASS, 0 FAIL

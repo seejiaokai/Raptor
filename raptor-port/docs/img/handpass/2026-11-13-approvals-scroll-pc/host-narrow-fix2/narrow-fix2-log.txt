@@ -1,0 +1,17 @@
+fix2 1000×733 list at 0, sideways 0: clear — headings to 1167, box to 979, a line 1128 wide, the box scrolls sideways by 206, the window by 0
+fix2 1000×733 list at 60, sideways 0: clear — headings to 1167, box to 979, a line 1128 wide, the box scrolls sideways by 206, the window by 0
+fix2 1000×733 list at 120, sideways 0: clear — headings to 1167, box to 979, a line 1128 wide, the box scrolls sideways by 206, the window by 0
+fix2 1000×733 list at 200, sideways 0: clear — headings to 1167, box to 979, a line 1128 wide, the box scrolls sideways by 206, the window by 0
+fix2 1000×733 list at 120, sideways 200: clear — headings to 967, box to 979, a line 1128 wide, the box scrolls sideways by 206, the window by 0
+fix2 820×1180 list at 0, sideways 0: clear — headings to 1167, box to 799, a line 1128 wide, the box scrolls sideways by 386, the window by 0
+fix2 820×1180 list at 60, sideways 0: clear — headings to 1167, box to 799, a line 1128 wide, the box scrolls sideways by 386, the window by 0
+fix2 820×1180 list at 120, sideways 0: clear — headings to 1167, box to 799, a line 1128 wide, the box scrolls sideways by 386, the window by 0
+fix2 820×1180 list at 200, sideways 0: clear — headings to 1167, box to 799, a line 1128 wide, the box scrolls sideways by 386, the window by 0
+fix2 820×1180 list at 120, sideways 200: clear — headings to 967, box to 799, a line 1128 wide, the box scrolls sideways by 386, the window by 0
+fix2 1280×733 list at 0, sideways 0: clear — headings to 1241, box to 1259, a line 1202 wide, the box scrolls sideways by 0, the window by 0
+fix2 1280×733 list at 60, sideways 0: clear — headings to 1241, box to 1259, a line 1202 wide, the box scrolls sideways by 0, the window by 0
+fix2 1280×733 list at 120, sideways 0: clear — headings to 1241, box to 1259, a line 1202 wide, the box scrolls sideways by 0, the window by 0
+fix2 1280×733 list at 200, sideways 0: clear — headings to 1241, box to 1259, a line 1202 wide, the box scrolls sideways by 0, the window by 0
+fix2 1280×733 list at 120, sideways 200: clear — headings to 1241, box to 1259, a line 1202 wide, the box scrolls sideways by 0, the window by 0
+errors: none
+no leak at any place

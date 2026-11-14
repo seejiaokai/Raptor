@@ -181,7 +181,7 @@ afterEach(() => {
 })
 
 describe('the three marks on a row holding several people and ALL AVAIL (D760, D755)', () => {
-  it('each is the INPUT\'s, each press one line of the change history and one Undo step — and nobody on the row moves', async () => {
+  it('each is the INPUT\'s, each press one line of the change history and one Undo step — and nobody on the row moves (OR30)', async () => {
     await boot()
     file(['bane', 'allavail', 'pike'])
     const steps = ELOG.rows.length
@@ -282,7 +282,7 @@ describe('a published day: cancelled, republished, brought back — the count ea
     expect(marks(issued(WED))).toEqual(NONE)
   })
 
-  it('back to what was published is nothing waiting (D98): cancelled again with the SAME reason — 0; with ANOTHER reason — 1', async () => {
+  it('back to what was published is nothing waiting (D98): cancelled again with the SAME reason — 0; with ANOTHER reason — 1 (OR34)', async () => {
     await boot()
     file(['bane'])
     cx(WED, 'WX')
@@ -509,7 +509,7 @@ describe('whose Undo may touch a mark (D148; D760 reading 2)', () => {
     expect([marks(rec()).flag, marks(rowOf()).flag]).toEqual([true, true])
   })
 
-  it('a MEMBER\'s Undo of his own change never takes a scheduler\'s CX off: the scheduler cancelled it since, so his Undo is refused and the input stays cancelled', async () => {
+  it('a MEMBER\'s Undo of his own change never takes a scheduler\'s CX off: the scheduler cancelled it since, so his Undo is refused and the input stays cancelled (OR32)', async () => {
     await boot()
     member('bane'); file(['bane'])
     expect(commitInput(rec(), { ...draftOf(rec()), remarks: 'I will bring the card' }, ['bane'])).toBe(true)
@@ -533,7 +533,7 @@ describe('whose Undo may touch a mark (D148; D760 reading 2)', () => {
   })
 })
 
-describe('the change history\'s line for each mark (the plan §4.4 — one line of the change history per thing that changed)', () => {
+describe('the change history\'s line for each mark (the plan §4.4 — one line of the change history per thing that changed) (OR36)', () => {
   it('CX on, its reason changed, CX off; the red box; information only — one line each, the input\'s own, in plain words', async () => {
     await boot()
     file(['bane', 'allavail', 'pike'])
@@ -629,7 +629,7 @@ describe('the mark is made on the schedule, so nobody reads LATE for it (D741, D
   })
 })
 
-describe('a cancelled input is not checked against the rules — an ALL-DAY one too, which speaks for itself, not through its row (D760 reading 1)', () => {
+describe('a cancelled input is not checked against the rules — an ALL-DAY one too, which speaks for itself, not through its row (D760 reading 1) (OR33)', () => {
   it('an all-day Training for a person who flies that day is flagged; cancelled — silent; brought back — flagged; information only — silent', async () => {
     await boot()
     const flyer = String((DAYS[WED] as any).waves[0].formations[0].aircraft[0].p)
@@ -647,7 +647,7 @@ describe('a cancelled input is not checked against the rules — an ALL-DAY one 
   })
 })
 
-describe('…nor on the PUBLISHED face, nor from another week (D760 reading 1 — "not checked against the rules, as a cancelled row today")', () => {
+describe('…nor on the PUBLISHED face, nor from another week (D760 reading 1 — "not checked against the rules, as a cancelled row today") (OR33)', () => {
   const flyerOf = (di: number) => String((DAYS[di] as any).waves[0].formations[0].aircraft[0].p)
   it('published CANCELLED: the published day\'s own warnings do not flag it either; published and cancelled since: the published face keeps the flag it went out with (D179)', async () => {
     await boot()
@@ -718,7 +718,7 @@ describe('…nor on the PUBLISHED face, nor from another week (D760 reading 1 �
   })
 })
 
-describe('the marks are saved with the input and follow it across weeks (D760 — "it goes with the input if it moves")', () => {
+describe('the marks are saved with the input and follow it across weeks (D760 — "it goes with the input if it moves") (OR31)', () => {
   const W2 = '20/07/2026'
   it('another week opened and this one opened again: the row is back cancelled, red-boxed — one row', async () => {
     await boot()
@@ -768,7 +768,7 @@ describe('OIL Earn on a cancelled input\'s row: no switch that earns, and the re
    Personal Inputs wears the same red CX tag and struck-through name". Until this step that line showed nothing of the
    CX while the input's own row on the Ground Programme, two sections up, read "CX DUE WX" (the plan §10, step 4, "Not
    settled"). The week and the board each have a builder for it (ui/html.ts inGrp, ui/board-html.ts sbInpRow). */
-describe('the schedule\'s own Personal Inputs line of a cancelled input (D767 reading 3; D760)', () => {
+describe('the schedule\'s own Personal Inputs line of a cancelled input (D767 reading 3; D760) (OR40)', () => {
   const dom = (html: string) => { const d = document.createElement('div'); d.innerHTML = html; return d }
   const weekLine = (di = WED) => { view.PIOPEN.add(di); return [...dom(dayHTML(di, true)).querySelectorAll('.sec-inp .pl-row')].find(r => (r.textContent || '').includes(TITLE)) as HTMLElement }
   const boardLine = (di = WED) => { view.PIOPEN.add(di); setBoardDay(di); return [...dom(boardHTML(di)).querySelectorAll('.sb-panel.pinp .sb-arow')].find(r => r.outerHTML.includes(TITLE)) as HTMLElement }
@@ -822,7 +822,7 @@ describe('the schedule\'s own Personal Inputs line of a cancelled input (D767 re
 /* STEP 5 (12 Oct 26) — he asked whether a cancelled input still counts toward the seven-day run. Step 4 pinned the
    count walking INTO a week (the case "a cancelled input on the Sunday before…", above); this is the count INSIDE the
    week, from the day's own events (engine/validate.ts RUNLEN). D760 reading 1; the plan's R24. */
-describe('a cancelled input is not a day worked INSIDE the week either (D760 reading 1 — the seven-day run)', () => {
+describe('a cancelled input is not a day worked INSIDE the week either (D760 reading 1 — the seven-day run) (OR33)', () => {
   it('his only event of the day is the input: filed it is a day worked, cancelled it is not, brought back it is again', async () => {
     await boot()
     const idle = Object.keys(PEOPLE).find(id => PEOPLE[id] && !PEOPLE[id].special && !JSON.stringify(DAYS[WED]).includes(`"${id}"`) && !JSON.stringify(DAYS[WED - 1]).includes(`"${id}"`)

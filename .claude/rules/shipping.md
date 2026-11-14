@@ -91,12 +91,9 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
 - If his look brings a change, the fix and its records are pushed together and his look is asked again — so too when
   bringing `main` in to settle a clash changed this branch's own app code (D1742, D1746).
 - His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
-- Tell him when you are done, with `PushNotification` — when the work is genuinely finished, and when you are blocked
-  waiting on his answer. One line, plainly. Not for progress, not for a quick reply he is clearly watching, never twice
-  for the same work.
-- Since D1097, over the line above: every stop that waits on him — the work done and his next step due, a question, an answer, a look or any other input
-  — gets its one notification, whether or not he seems to be watching; an unattended run keeps its one at the end
-  (D1097, D596).
+- Every stop that waits on him — the work done and his next step due, a question, an answer, a look or any other
+  input — gets one `PushNotification`, whether or not he seems to be watching: one line, plainly, never for progress,
+  never twice for the same work; an unattended run keeps its one at the end (D1097, D596).
 - A green check is not done, and a merged pull request is not done. Once he has said "merge live" — never before —
   carry it the whole way without checking in: merge when the pull request's checks are green → `main`'s own run goes
   green (on GitHub's machines while the repo is public, on his PC once it is private) → Vercel reports the live app

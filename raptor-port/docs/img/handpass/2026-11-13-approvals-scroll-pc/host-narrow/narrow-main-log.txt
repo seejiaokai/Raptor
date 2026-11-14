@@ -1,0 +1,17 @@
+main 1000×733 list at 0, sideways 0: clear — headings to 961, box to null, a line 1128 wide, the box scrolls sideways by null, the window by 167
+main 1000×733 list at 60, sideways 0: clear — headings to 961, box to null, a line 1128 wide, the box scrolls sideways by null, the window by 167
+main 1000×733 list at 120, sideways 0: clear — headings to 961, box to null, a line 1128 wide, the box scrolls sideways by null, the window by 167
+main 1000×733 list at 200, sideways 0: clear — headings to 961, box to null, a line 1128 wide, the box scrolls sideways by null, the window by 167
+main 1000×733 list at 120, sideways 200: clear — headings to 794, box to null, a line 1128 wide, the box scrolls sideways by null, the window by 167
+main 820×1180 list at 0, sideways 0: clear — headings to 781, box to null, a line 1128 wide, the box scrolls sideways by null, the window by 347
+main 820×1180 list at 60, sideways 0: clear — headings to 781, box to null, a line 1128 wide, the box scrolls sideways by null, the window by 347
+main 820×1180 list at 120, sideways 0: clear — headings to 781, box to null, a line 1128 wide, the box scrolls sideways by null, the window by 347
+main 820×1180 list at 200, sideways 0: clear — headings to 781, box to null, a line 1128 wide, the box scrolls sideways by null, the window by 347
+main 820×1180 list at 120, sideways 200: clear — headings to 581, box to null, a line 1128 wide, the box scrolls sideways by null, the window by 347
+main 1280×733 list at 0, sideways 0: clear — headings to 1241, box to null, a line 1202 wide, the box scrolls sideways by null, the window by 0
+main 1280×733 list at 60, sideways 0: clear — headings to 1241, box to null, a line 1202 wide, the box scrolls sideways by null, the window by 0
+main 1280×733 list at 120, sideways 0: clear — headings to 1241, box to null, a line 1202 wide, the box scrolls sideways by null, the window by 0
+main 1280×733 list at 200, sideways 0: clear — headings to 1241, box to null, a line 1202 wide, the box scrolls sideways by null, the window by 0
+main 1280×733 list at 120, sideways 200: clear — headings to 1241, box to null, a line 1202 wide, the box scrolls sideways by null, the window by 0
+errors: none
+no leak at any place

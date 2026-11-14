@@ -1,0 +1,53 @@
+  [initial] winRoom 0 lines 19 approveAll left 1142.25 right 1278.8 w 136.55 card bottom 816 (screen 824) scroller 240-815.2 room 514 counts {"tab":"Approvals 21","approveAll":"Approve all 19"}
+  [before new] winRoom 0 lines 19 approveAll left 1142.25 right 1278.8 w 136.55 card bottom 816 (screen 824) scroller 240-815.2 room 514 counts {"tab":"Approvals 21","approveAll":"Approve all 19"}
+  [after new] winRoom 0 lines 3 approveAll left 1149.01 right 1278.8 w 129.79 card bottom 816 (screen 824) scroller 240-815.2 room 0 counts {"tab":"Approvals 21","approveAll":"Approve all 3"}
+  moved: nothing; approveAll {"dl":6.76,"dr":0,"wBefore":136.55,"wAfter":129.79}
+  PASS W2-new-still: press new: title, chips, Pick dates, card unmoved (all within 1px)
+  FAIL W2-new-aa: Approve all left edge moved 6.76 (right edge moved 0; width 136.55 -> 129.79)
+  PASS W2-new-foot: card foot 816 vs 816, window room 0, lines 3
+  [before all] winRoom 0 lines 3 approveAll left 1149.01 right 1278.8 w 129.79 card bottom 816 (screen 824) scroller 240-815.2 room 0 counts {"tab":"Approvals 21","approveAll":"Approve all 3"}
+  [after all] winRoom 0 lines 19 approveAll left 1142.25 right 1278.8 w 136.55 card bottom 816 (screen 824) scroller 240-815.2 room 514 counts {"tab":"Approvals 21","approveAll":"Approve all 19"}
+  moved: nothing; approveAll {"dl":-6.76,"dr":0,"wBefore":129.79,"wAfter":136.55}
+  PASS W2-all-still: press all: title, chips, Pick dates, card unmoved (all within 1px)
+  FAIL W2-all-aa: Approve all left edge moved -6.76 (right edge moved 0; width 129.79 -> 136.55)
+  PASS W2-all-foot: card foot 816 vs 816, window room 0, lines 19
+  [before jan] winRoom 0 lines 19 approveAll left 1142.25 right 1278.8 w 136.55 card bottom 816 (screen 824) scroller 240-815.2 room 514 counts {"tab":"Approvals 21","approveAll":"Approve all 19"}
+  [after jan] winRoom 0 lines 4 approveAll left 1148.71 right 1278.8 w 130.09 card bottom 816 (screen 824) scroller 240-815.2 room 0 counts {"tab":"Approvals 21","approveAll":"Approve all 4"}
+  moved: nothing; approveAll {"dl":6.46,"dr":0,"wBefore":136.55,"wAfter":130.09}
+  PASS W2-jan-still: press jan: title, chips, Pick dates, card unmoved (all within 1px)
+  FAIL W2-jan-aa: Approve all left edge moved 6.46 (right edge moved 0; width 136.55 -> 130.09)
+  PASS W2-jan-foot: card foot 816 vs 816, window room 0, lines 4
+  [before feb] winRoom 0 lines 4 approveAll left 1148.71 right 1278.8 w 130.09 card bottom 816 (screen 824) scroller 240-815.2 room 0 counts {"tab":"Approvals 21","approveAll":"Approve all 4"}
+  [after feb] winRoom 0 lines 11 approveAll left 1143.88 right 1278.8 w 134.93 card bottom 816 (screen 824) scroller 240-815.2 room 82 counts {"tab":"Approvals 21","approveAll":"Approve all 11"}
+  moved: nothing; approveAll {"dl":-4.83,"dr":0,"wBefore":130.09,"wAfter":134.93}
+  PASS W2-feb-still: press feb: title, chips, Pick dates, card unmoved (all within 1px)
+  FAIL W2-feb-aa: Approve all left edge moved -4.83 (right edge moved 0; width 130.09 -> 134.93)
+  PASS W2-feb-foot: card foot 816 vs 816, window room 0, lines 11
+  [before mar] winRoom 0 lines 11 approveAll left 1143.88 right 1278.8 w 134.93 card bottom 816 (screen 824) scroller 240-815.2 room 82 counts {"tab":"Approvals 21","approveAll":"Approve all 11"}
+  [after mar] winRoom 0 lines 4 approveAll left 1148.71 right 1278.8 w 130.09 card bottom 816 (screen 824) scroller 240-815.2 room 0 counts {"tab":"Approvals 21","approveAll":"Approve all 4"}
+  moved: nothing; approveAll {"dl":4.83,"dr":0,"wBefore":134.93,"wAfter":130.09}
+  PASS W2-mar-still: press mar: title, chips, Pick dates, card unmoved (all within 1px)
+  FAIL W2-mar-aa: Approve all left edge moved 4.83 (right edge moved 0; width 134.93 -> 130.09)
+  PASS W2-mar-foot: card foot 816 vs 816, window room 0, lines 4
+  [before all-again] winRoom 0 lines 4 approveAll left 1148.71 right 1278.8 w 130.09 card bottom 816 (screen 824) scroller 240-815.2 room 0 counts {"tab":"Approvals 21","approveAll":"Approve all 4"}
+  [after all-again] winRoom 0 lines 19 approveAll left 1142.25 right 1278.8 w 136.55 card bottom 816 (screen 824) scroller 240-815.2 room 514 counts {"tab":"Approvals 21","approveAll":"Approve all 19"}
+  moved: nothing; approveAll {"dl":-6.46,"dr":0,"wBefore":130.09,"wAfter":136.55}
+  PASS W2-all-again-still: press all-again: title, chips, Pick dates, card unmoved (all within 1px)
+  FAIL W2-all-again-aa: Approve all left edge moved -6.46 (right edge moved 0; width 130.09 -> 136.55)
+  PASS W2-all-again-foot: card foot 816 vs 816, window room 0, lines 19
+  [before pick-open] winRoom 0 lines 19 approveAll left 1142.25 right 1278.8 w 136.55 card bottom 816 (screen 824) scroller 240-815.2 room 514 counts {"tab":"Approvals 21","approveAll":"Approve all 19"}
+  [after pick-open] winRoom 0 lines 19 approveAll left 1142.25 right 1278.8 w 136.55 card bottom 816 (screen 824) scroller 630.48-815.2 room 904 counts {"tab":"Approvals 21","approveAll":"Approve all 19"}
+  moved: nothing; approveAll {"dl":0,"dr":0,"wBefore":136.55,"wAfter":136.55}
+  PASS W2-pick-open-still: press pick-open: title, chips, Pick dates, card unmoved (all within 1px)
+  PASS W2-pick-open-aa: Approve all left edge moved 0 (right edge moved 0; width 136.55 -> 136.55)
+  PASS W2-pick-open-foot: card foot 816 vs 816, window room 0, lines 19
+picker buttons: ["appr-range-title|January 2026\n›|January 2026 — choose the month and year","appr-range-today|13|Go to today","appr-range-prev|‹|Previous month","appr-range-next|›|Next month","appr-range-day-2026-01-01|1|Thu 1 Jan 2026","appr-range-day-2026-01-02|2|Fri 2 Jan 2026","appr-range-day-2026-01-03|3|Sat 3 Jan 2026","appr-range-day-2026-01-04|4|Sun 4 Jan 2026","appr-range-day-2026-01-05|5|Mon 5 Jan 2026","appr-range-day-2026-01-06|6|Tue 6 Jan 2026","appr-range-day-2026-01-07|7|Wed 7 Jan 2026","appr-range-day-2026-01-08|8|Thu 8 Jan 2026","appr-range-day-2026-01-09|9|Fri 9 Jan 2026","appr-range-day-2026-01-10|10|Sat 10 Jan 2026","appr-range-day-2026-01-11|11|Sun 11 Jan 2026","appr-range-day-2026-01-12|12|Mon 12 Jan 2026","appr-range-day-2026-01-13|13|Tue 13 Jan 2026","appr-range-day-2026-01-14|14|Wed 14 Jan 2026","appr-range-day-2026-01-15|15|Thu 15 Jan 2026","appr-range-day-2026-01-16|16|Fri 16 Jan 2026","appr-range-day-2026-01-17|17|Sat 17 Jan 2026","appr-range-day-2026-01-18|18|Sun 18 Jan 2026","appr-range-day-2026-01-19|19|Mon 19 Jan 2026","appr-range-day-2026-01-20|20|Tue 20 Jan 2026","appr-range-day-2026-01-21|21|Wed 21 Jan 2026","appr-range-day-2026-01-22|22|Thu 22 Jan 2026","appr-range-day-2026-01-23|23|Fri 23 Jan 2026","appr-range-day-2026-01-24|24|Sat 24 Jan 2026","appr-range-day-2026-01-25|25|Sun 25 Jan 2026","appr-range-day-2026-01-26|26|Mon 26 Jan 2026","appr-range-day-2026-01-27|27|Tue 27 Jan 2026","appr-range-day-2026-01-28|28|Wed 28 Jan 2026","appr-range-day-2026-01-29|29|Thu 29 Jan 2026","appr-range-day-2026-01-30|30|Fri 30 Jan 2026","appr-range-day-2026-01-31|31|Sat 31 Jan 2026"]
+after start pick: {"winRoom":0,"scroller":{"top":630.48,"bottom":815.2,"h":184.73,"left":38.8,"w":1476.4}}
+  [after range picked] winRoom 0 lines 0 approveAll left 1149.01 right 1278.8 w 129.79 card bottom 816 (screen 824) scroller 240-815.2 room 0 counts {"tab":"Approvals 21","approveAll":"Approve all 0"}
+picker still open after range: false
+  [after picker closed] winRoom 0 lines 0 approveAll left 1149.01 right 1278.8 w 129.79 card bottom 816 (screen 824) scroller 240-815.2 room 0 counts {"tab":"Approvals 21","approveAll":"Approve all 0"}
+  FAIL W2-pick-after-close: after the picker closed (range 12-16 Jan): neighbours vs before opening pick: l 821.4->821.4 t 193.2->193.2 r 912.84->927.48 b 225.2->225.2, winRoom 0, card foot 816, lines 0
+  FAIL W2-pick-lines: lines after range 0
+errors []
+  PASS W2-err: page errors: none
+SUMMARY 16 PASS, 8 FAIL

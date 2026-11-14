@@ -1,0 +1,16 @@
+base (range picked, line 7 decided): approvalsUp true personWindow false tracker false scrollTop 300 winRoom 0 lines 19 chipsOn ["5 Jan – 31 Mar"] lit ["7:Ranger IP CCL Mon 2 Mar › — Approved Ref"] counts {"tab":"Approvals 20","approveAll":"Approve all 18"}
+  PASS W8-0: baseline: 19 lines in range, scrollTop 300, lit 1
+(a) tracker open: true
+(a) after close: approvalsUp true personWindow false tracker false scrollTop 300 winRoom 0 lines 19 chipsOn ["5 Jan – 31 Mar"] lit ["7:Ranger IP CCL Mon 2 Mar › — Approved Ref"] counts {"tab":"Approvals 20","approveAll":"Approve all 18"}
+  PASS W8-a: (a) OIL tab then close: Approvals up true, lit ["7:Ranger IP CCL Mon 2 Mar › — Approved Ref"], dates chip ["5 Jan – 31 Mar"] (was ["5 Jan – 31 Mar"]), list 300 -> 300, winRoom 0
+(b) person window up: true
+(b) tracker up: true person window up: false
+(b) after tracker closed: approvalsUp true personWindow false tracker false scrollTop 300 winRoom 0 lines 19 chipsOn ["5 Jan – 31 Mar"] lit ["7:Ranger IP CCL Mon 2 Mar › — Approved Ref"] counts {"tab":"Approvals 20","approveAll":"Approve all 18"}
+  PASS W8-b: (b) person window OIL line then close: Approvals up true, lit ["7:Ranger IP CCL Mon 2 Mar › — Approved Ref"], chip ["5 Jan – 31 Mar"], list 300 -> 300, winRoom 0, person window still up false
+(b) after the person window also closed: approvalsUp true personWindow false tracker false scrollTop 300 winRoom 0 lines 19 chipsOn ["5 Jan – 31 Mar"] lit ["7:Ranger IP CCL Mon 2 Mar › — Approved Ref"] counts {"tab":"Approvals 20","approveAll":"Approve all 18"}
+(c) on Balances: winRoom 0
+(c) Balances then Approvals: approvalsUp true personWindow false tracker false scrollTop 0 winRoom 0 lines 18 chipsOn ["All"] lit [] counts {"tab":"Approvals 20","approveAll":"Approve all 18"}
+  PASS W8-c: (c) new visit — report: Approvals up true, lit [], chips ["All"], list 0, lines 18, winRoom 0
+errors []
+  PASS W8-err: page errors: none
+SUMMARY 5 PASS, 0 FAIL

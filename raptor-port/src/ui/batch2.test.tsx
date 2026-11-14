@@ -400,7 +400,7 @@ describe('A7 — a reader’s OIL line carries no "Change…"', () => {
      more"; the one-rule plan §4.5). This case ended "…HIS OWN line keeps its 'Change…'": a man in an input of several
      gives no OIL answer of his own any more, so "Your OIL" and its two buttons are gone. What stands in their place:
      he READS the input's one answer, nothing in the window lets him change it, and what is his is "Take me out". */
-  it('a man in a shared input he did not file: the input’s line has no button — and there is no "Your OIL" line of his own (D762)', async () => {
+  it('a man in a shared input he did not file: the input’s line has no button — and there is no "Your OIL" line of his own (D762) (OR16)', async () => {
     const rec = await sharedRec([member, others()[0]], { ...SAT, oil: { '2026-10-17': 1 } })
     await as('member'); await openOn(rec)
     expect(tid('inped-ro'), 'the input is not his to change').toBeTruthy()

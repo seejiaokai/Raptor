@@ -1,0 +1,108 @@
+[appr-pc-fit v2]
+window: a real headed window at --force-device-scale-factor=1.25, no viewport emulated
+lines on Approvals: 19
+h905: window 1550×905 → page 1536×812, the screen's true height 812, dpr 1.25
+  window room to scroll 0; page h 690 (style 690px); card bottom 804; scroller 240–803.2 (room 526); body "lw-appr-on"
+  PASS h905: the window behind the page cannot scroll (room 0)
+  PASS h905: the card's foot 8px off the screen's foot (804 against 804)
+  PASS h905: wheeled to the list's foot — list 526.4000244140625 of 526, window 0
+  PASS h905: wheeled up AT ONCE from the foot — the list 526.4000244140625 → 326.3999938964844, the window 0
+  PASS h905: a wheel over the title moves the window by nothing (0)
+h906: window 1550×906 → page 1536×814, the screen's true height 813.6 (a FRACTION), dpr 1.25
+  window room to scroll 0; page h 691 (style 691px); card bottom 805; scroller 240–804.2 (room 525); body "lw-appr-on"
+  PASS h906: the window behind the page cannot scroll (room 0)
+  PASS h906: the card's foot 8px off the screen's foot (805 against 805)
+  PASS h906: wheeled to the list's foot — list 525.5999755859375 of 525, window 0
+  PASS h906: wheeled up AT ONCE from the foot — the list 525.5999755859375 → 325.6000061035156, the window 0
+  PASS h906: a wheel over the title moves the window by nothing (0)
+h907: window 1550×907 → page 1536×814, the screen's true height 813.6 (a FRACTION), dpr 1.25
+  window room to scroll 0; page h 691 (style 691px); card bottom 805; scroller 240–804.2 (room 525); body "lw-appr-on"
+  PASS h907: the window behind the page cannot scroll (room 0)
+  PASS h907: the card's foot 8px off the screen's foot (805 against 805)
+  PASS h907: wheeled to the list's foot — list 525.5999755859375 of 525, window 0
+  PASS h907: wheeled up AT ONCE from the foot — the list 525.5999755859375 → 325.6000061035156, the window 0
+  PASS h907: a wheel over the title moves the window by nothing (0)
+h908: window 1550×908 → page 1536×814, the screen's true height 814.4 (a FRACTION), dpr 1.25
+  window room to scroll 0; page h 692 (style 692px); card bottom 806; scroller 240–805.2 (room 524); body "lw-appr-on"
+  PASS h908: the window behind the page cannot scroll (room 0)
+  PASS h908: the card's foot 8px off the screen's foot (806 against 806)
+  PASS h908: wheeled to the list's foot — list 524 of 524, window 0
+  PASS h908: wheeled up AT ONCE from the foot — the list 524 → 324, the window 0
+  PASS h908: a wheel over the title moves the window by nothing (0)
+h909: window 1550×909 → page 1536×816, the screen's true height 816, dpr 1.25
+  window room to scroll 0; page h 694 (style 694px); card bottom 808; scroller 240–807.2 (room 522); body "lw-appr-on"
+  PASS h909: the window behind the page cannot scroll (room 0)
+  PASS h909: the card's foot 8px off the screen's foot (808 against 808)
+  PASS h909: wheeled to the list's foot — list 522.4000244140625 of 522, window 0
+  PASS h909: wheeled up AT ONCE from the foot — the list 522.4000244140625 → 322.3999938964844, the window 0
+  PASS h909: a wheel over the title moves the window by nothing (0)
+h910: window 1550×910 → page 1536×818, the screen's true height 817.6 (a FRACTION), dpr 1.25
+  window room to scroll 0; page h 695 (style 695px); card bottom 809; scroller 240–808.2 (room 521); body "lw-appr-on"
+  PASS h910: the window behind the page cannot scroll (room 0)
+  PASS h910: the card's foot 8px off the screen's foot (809 against 809)
+  PASS h910: wheeled to the list's foot — list 521.5999755859375 of 521, window 0
+  PASS h910: wheeled up AT ONCE from the foot — the list 521.5999755859375 → 321.6000061035156, the window 0
+  PASS h910: a wheel over the title moves the window by nothing (0)
+h911: window 1550×911 → page 1536×818, the screen's true height 817.6 (a FRACTION), dpr 1.25
+  window room to scroll 0; page h 695 (style 695px); card bottom 809; scroller 240–808.2 (room 521); body "lw-appr-on"
+  PASS h911: the window behind the page cannot scroll (room 0)
+  PASS h911: the card's foot 8px off the screen's foot (809 against 809)
+  PASS h911: wheeled to the list's foot — list 521.5999755859375 of 521, window 0
+  PASS h911: wheeled up AT ONCE from the foot — the list 521.5999755859375 → 321.6000061035156, the window 0
+  PASS h911: a wheel over the title moves the window by nothing (0)
+h1072: window 1550×1072 → page 1536×978, the screen's true height 978.4 (a FRACTION), dpr 1.25
+  window room to scroll 0; page h 856 (style 856px); card bottom 970; scroller 240–969.2 (room 360); body "lw-appr-on"
+  PASS h1072: the window behind the page cannot scroll (room 0)
+  PASS h1072: the card's foot 8px off the screen's foot (970 against 970)
+  PASS h1072: wheeled to the list's foot — list 360 of 360, window 0
+  PASS h1072: wheeled up AT ONCE from the foot — the list 360 → 160, the window 0
+  PASS h1072: a wheel over the title moves the window by nothing (0)
+h1073: window 1550×1073 → page 1536×980, the screen's true height 980, dpr 1.25
+  window room to scroll 0; page h 858 (style 858px); card bottom 972; scroller 240–971.2 (room 358); body "lw-appr-on"
+  PASS h1073: the window behind the page cannot scroll (room 0)
+  PASS h1073: the card's foot 8px off the screen's foot (972 against 972)
+  PASS h1073: wheeled to the list's foot — list 358.3999938964844 of 358, window 0
+  PASS h1073: wheeled up AT ONCE from the foot — the list 358.3999938964844 → 158.39999389648438, the window 0
+  PASS h1073: a wheel over the title moves the window by nothing (0)
+h1074: window 1550×1074 → page 1536×982, the screen's true height 981.6 (a FRACTION), dpr 1.25
+  window room to scroll 0; page h 859 (style 859px); card bottom 973; scroller 240–972.2 (room 357); body "lw-appr-on"
+  PASS h1074: the window behind the page cannot scroll (room 0)
+  PASS h1074: the card's foot 8px off the screen's foot (973 against 973)
+  PASS h1074: wheeled to the list's foot — list 357.6000061035156 of 357, window 0
+  PASS h1074: wheeled up AT ONCE from the foot — the list 357.6000061035156 → 157.60000610351562, the window 0
+  PASS h1074: a wheel over the title moves the window by nothing (0)
+h1075: window 1550×1075 → page 1536×982, the screen's true height 981.6 (a FRACTION), dpr 1.25
+  window room to scroll 0; page h 859 (style 859px); card bottom 973; scroller 240–972.2 (room 357); body "lw-appr-on"
+  PASS h1075: the window behind the page cannot scroll (room 0)
+  PASS h1075: the card's foot 8px off the screen's foot (973 against 973)
+  PASS h1075: wheeled to the list's foot — list 357.6000061035156 of 357, window 0
+  PASS h1075: wheeled up AT ONCE from the foot — the list 357.6000061035156 → 157.60000610351562, the window 0
+  PASS h1075: a wheel over the title moves the window by nothing (0)
+short-680: window 1550×680 → page 1536×586, the screen's true height 586.4 (a FRACTION), dpr 1.25
+  window room to scroll 0; page h 464 (style 464px); card bottom 578; scroller 240–577.2 (room 752); body "lw-appr-on"
+  PASS short-680: the window behind the page cannot scroll (room 0)
+  PASS short-680: the card's foot 8px off the screen's foot (578 against 578)
+  PASS short-680: wheeled to the list's foot — list 752 of 752, window 0
+  PASS short-680: wheeled up AT ONCE from the foot — the list 752 → 552, the window 0
+  PASS short-680: a wheel over the title moves the window by nothing (0)
+short-560: window 1550×560 → page 1536×466, the screen's true height 466.4 (a FRACTION), dpr 1.25
+  window room to scroll 0; page h 344 (style 344px); card bottom 458; scroller 240–457.2 (room 872); body "lw-appr-on"
+  PASS short-560: the window behind the page cannot scroll (room 0)
+  PASS short-560: the card's foot 8px off the screen's foot (458 against 458)
+  PASS short-560: wheeled to the list's foot — list 872 of 872, window 0
+  PASS short-560: wheeled up AT ONCE from the foot — the list 872 → 672, the window 0
+  PASS short-560: a wheel over the title moves the window by nothing (0)
+wide-2560: window 3200×1500 → page 2756×1076, the screen's true height 1076, dpr 1.25
+  window room to scroll 0; page h 954 (style 954px); card bottom 1068; scroller 240–1067.2 (room 262); body "lw-appr-on"
+  PASS wide-2560: the window behind the page cannot scroll (room 0)
+  PASS wide-2560: the card's foot 8px off the screen's foot (1068 against 1068)
+  PASS wide-2560: wheeled to the list's foot — list 262.3999938964844 of 262, window 0
+  PASS wide-2560: wheeled up AT ONCE from the foot — the list 262.3999938964844 → 62.400001525878906, the window 0
+  PASS wide-2560: a wheel over the title moves the window by nothing (0)
+narrowed: page 626 wide — scroller gone, page style height "", window room 1260, body ""
+  PASS narrowed to 626: the phone's page, no inner scroller, no fitted height, the body's pad back
+widened again: scroller at 200 (was 200), window room 0
+  PASS widened again: fitted, the window cannot scroll
+  PASS widened again: the list at the place it had (200 against 200)
+errors on the page: none
+ALL PASS (73 checks)

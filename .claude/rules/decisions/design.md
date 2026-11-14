@@ -85,6 +85,7 @@ Loads by itself with any file of screen work (the `paths:` above). Each line is 
 - Nothing pinned leaks: a bar, or any part that stays put while what is under it scrolls, shows none of that content behind it or through a gap at its edges, at every zoom and scroll position; the desktop week's ‹ › arrows are its one exception (the scheduler's D1522) [D1518, D1522, D1526, D1527].
 
 ## Settled — leave as they are
+- The just-added box and the input boxes' font stay; the design checker no longer raises either [D2040].
 - Tab and Shift+Tab out of a board menu stay as built, each case in the row [D1772]; the keys batch's three details the mock-up did not draw, as built: the cyan ring on the board menus' small buttons; Enter on the calendar button with "Jump to a date" open closing and reopening it in place (a mouse click only closes it); after "Don't add" on the OIL question, the keys on "Answer OIL" in the bar [D1652].
 - The app's four legends: Edit Schedule's "Legend" fold, alone on its row, the Leave War's and the Tracker's Legend buttons opening the same panel, the Inputs and SANS calendars' colour key always in view [D1701, D926].
 - The claw's round (three claws drawn, held, faded, drawn again from nothing, a dark moment between; the overlapping round not built) and the start-up claw's plain 0.2 s fade where it stands, both logos briefly on screen, the glide onto the logo not built [D1617, D1618].

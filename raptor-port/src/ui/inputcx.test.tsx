@@ -128,7 +128,7 @@ describe('what a cancelled input\'s card is told (D760, D767) — ui/inputcard-m
   })
 })
 
-describe('the card — the opened day and the phone\'s list (D767: look B with his two changes)', () => {
+describe('the card — the opened day and the phone\'s list (D767: look B with his two changes) (OR37)', () => {
   const draw = async (facts: any) => {
     host = document.createElement('div'); document.body.append(host); root = createRoot(host)
     await act(async () => { root.render(<InputCard id="k1" facts={facts} when="09:00–10:00" late="Filed after the cut-off" tid="idy" onOpen={() => {}} />) })
@@ -192,7 +192,7 @@ describe('the card — the opened day and the phone\'s list (D767: look B with h
   })
 })
 
-describe('the Inputs list (D767)', () => {
+describe('the Inputs list (D767) (OR37)', () => {
   it('on a phone the list\'s card is the same card: tag, struck title, reason', async () => {
     await mount(true)
     const r = await file(CX)
@@ -243,7 +243,7 @@ describe('the Inputs list (D767)', () => {
       expect(cell.querySelector('.is-cx')).toBeNull()
     }
   })
-  it('D760: a cancelled input stays LISTED — the list counts it as it did', async () => {
+  it('D760: a cancelled input stays LISTED — the list counts it as it did (OR41)', async () => {
     await mount(true)
     await file()
     await file(CX)
@@ -251,7 +251,7 @@ describe('the Inputs list (D767)', () => {
   })
 })
 
-describe('the month\'s bar (D767: look A — struck through and faded, no tag, no reason)', () => {
+describe('the month\'s bar (D767: look A — struck through and faded, no tag, no reason) (OR38)', () => {
   const F = { fType: 'all', fPerson: 'all', fSearch: '' } as any
   it('the bar\'s item says it is cancelled; its words are what they were — no "CX", no reason', () => {
     const p = others()[0]
@@ -262,7 +262,7 @@ describe('the month\'s bar (D767: look A — struck through and faded, no tag, n
     for (const narrow of [false, true]) expect(barText(now, narrow)).toBe(barText(was, narrow))
     expect(monthItems([rec({ cx: false })], F)[0].cx, 'brought back').toBe(false)
   })
-  it('D768: it keeps its place in the day\'s order — cancelling an input moves nothing', () => {
+  it('D768: it keeps its place in the day\'s order — cancelling an input moves nothing (OR39)', () => {
     const [a, b, c, d] = others()
     const day = (cxOn: string) => [
       { iid: 'o1', people: [{ p: a }], type: 'LL', date: 'Oct 20', yr: 2026, allday: true },
@@ -288,7 +288,7 @@ describe('the month\'s bar (D767: look A — struck through and faded, no tag, n
   })
 })
 
-describe('the schedule\'s own line of a cancelled input (D767 reading 3) — ui/html.ts inpCxHTML', () => {
+describe('the schedule\'s own line of a cancelled input (D767 reading 3) — ui/html.ts inpCxHTML (OR40)', () => {
   it('the schedule\'s red CX tag, with the reason riding in it as on its Ground Programme row', () => {
     const h = inpCxHTML({ cx: true, cxr: 'WX' })
     host = document.createElement('div'); host.innerHTML = h; document.body.append(host)
@@ -319,7 +319,7 @@ describe('a window that carries a mark and tools: grip, title, mark, tools, ✕'
   })
 })
 
-describe('the input\'s own window says it is cancelled (D771)', () => {
+describe('the input\'s own window says it is cancelled (D771) (OR42)', () => {
   const openIt = async (r: any) => { await act(async () => { setInpEdit(live(r.iid)); notify() }) }
   it('the red CX tag and the reason, beside the window\'s title — and nothing in the window cancels or brings back', async () => {
     await mount(false)
