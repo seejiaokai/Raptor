@@ -2360,6 +2360,7 @@ points by file, recommends each, and puts them to him in rounds of at most four;
 its read (D70). Nothing changes because the report says so. **14 Nov 26 (D2038):** he updated the terminal's Claude
 Code (2.1.273 → 2.1.323; the check needs 2.1.283 or later) and let the agent run it once, the night of 14 Nov 26 (chat
 72); its list goes to him in the morning report, sorted by file — this item closes once that list has been put to him.
+**Round 1 answered 14 Nov 26 ("all as recommended", D2038's row): a–d yes** — to build as one guide-change job (Astra + fresh Opus read, his "merge live"); the other 7 points (`raptor-port/docs/superpowers/briefs/2026-11-14-prompt-audit.md` hunks 5–11, F2, F4) wait for rounds 2–3.
 
 ### [OVERNIGHT-RETRY-TRIAL] One /overnight run tries the setting that keeps retrying when the service is overloaded (his D885, 15 Oct 26) — OPEN, for the next night he runs /overnight
 **His yes (D885).** For that one night: before the run starts, add `"CLAUDE_CODE_RETRY_WATCHDOG": "1"` to the `env` block
