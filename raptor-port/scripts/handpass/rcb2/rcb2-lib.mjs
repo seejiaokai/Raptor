@@ -15,7 +15,8 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(HERE, '../../..')
 export const DIST = process.env.RCB2_DIST ||
   'C:/Users/User/AppData/Local/Temp/claude/37df10f156419f1e/6e376de7-ce28-4b0e-ad14-7848f71c5f9a/scratchpad/frozen-cc2eefa50'
-export const BUNDLE = 'index-XazXTgw6.js'
+/* the re-walk after the fixes (15 Nov 26) sets RCB2_BUNDLE to its own frozen build's bundle */
+export const BUNDLE = process.env.RCB2_BUNDLE || 'index-XazXTgw6.js'
 process.env.HP_URL ||= 'http://localhost:4291'
 export const WHO = process.env.RCB2_WHO || 'host'
 export const RUN = process.env.RCB2_RUN || 'run'
