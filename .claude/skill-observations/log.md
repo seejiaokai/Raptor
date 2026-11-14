@@ -2563,3 +2563,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** Three refusals in one batch, each found only by running the gate: the general page had 11 bytes left of its hard limit and OIL's page under 230, so a new line did not fit; and a row whose text said it "answers" an older ruling made the gate ask for a mark in that ruling's row and a citation on every page line stating it (five lines).
 **Suggested improvement:** Before writing rows for a batch, read each target page's size against its limit (`wc -c` beside the PAGE_LIMITS in the document check) and choose the area by room as well as by subject; decide for each row whether it truly changes or answers an older ruling — if yes, plan the mark and the citations in the same script; if no, do not word it as one. The general page's wrapped bullets can be joined without changing a word (2 bytes a line).
 **Principle:** When a record system has hard size limits and cross-reference rules, measure the room and list the cross-references before writing, not after the check refuses.
+
+### Observation 948: Mid-merge, the document check measures against the old merge base and reports moves that are not
+
+**Status:** OPEN
+**Date:** 14 Nov 26
+**Session context:** chat 75 — bringing `main` into pull request 762's branch after main had archived items the branch still held in older words
+**Skill:** New skill candidate: records-merge (the bring-main-in step of shipping.md, step 2)
+**Type:** open-source
+**Phase/Area:** settling the records before the merge commit
+
+**Issue:** after `records-merge.mjs` and `backlog-archive.mjs --rulings --merge`, the rulings check (and `docsize`) failed five ways: four items archived on `main` "did not all arrive" (the branch's older copy of a line against main's newer, longer one) and a ruling added and spent on `main` "named a home that never mentions it". All five were measured against the OLD merge base, because the merge was not yet committed; one commit later the base was `main` and `docsize` passed. One of the five was real all the same: the branch had added the owner's answers to an item main archived without them — that text would have been dropped silently.
+**Suggested improvement:** in the bring-in step, say: before committing, read each "did not arrive" by comparing the branch's item with main's archived block — carry over any line only the branch has (a note in the archived block), treat main's longer line as newer — then run the check with `DOCSGUARD_ALLOW` naming those items only to confirm nothing else fails, commit, and re-run plain.
+**Principle:** a check that measures against a merge base gives a different answer before and after the merge commit; read each failure for the one real loss among the false ones, rather than silencing the lot or chasing them all.
