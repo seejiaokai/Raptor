@@ -92,8 +92,8 @@ rather than applying it blindly or silently rejecting it. Do not mark the review
 ## Communication
 
 Plain, concise English — the owner is non-technical (CLAUDE.md's plain-language rules apply in
-full). Edit files with tools; never print proposed code and call the task done. Brief progress
-updates only at real milestones or blockers.
+full). Edit files with tools; never print proposed code and call the task done. Give a one-line
+progress note at each milestone, at a blocker, and whenever a long stretch of work has passed without one.
 
 Finish an implementation task with:
 
