@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/topbar-chrome-trial -->
+### CHAT 81 — THE NIGHT OF 15 Nov 26, job 2: `[TOPBAR-LOOSE-APPROVALS-QUALS]` — the TRIAL LINK his D2025 orders first, IN PROGRESS — written 15 Nov 26 ~03:20 — verify before use
+- **After a compaction:** re-read this block, the night's main block (on `claude/rules-check-batch2`, `HANDOFF.md` chat 81), the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction with its time, read from the clock (`date`).
+- **The night:** his `/overnight 12`, "Low go" for jobs 1–3 (01:41). Job 1 (the rules check's small batch, `claude/rules-check-batch2`, pull request 779) DONE — its FULL check closed. Job 3 (`[LW-DOUBLETAP-MORE-WINDOWS]`) after this one.
+- **What this job is, and is not:** his D2025 (13 Nov 26) — the Chrome top bar "next time", starting with a trial link: a copy of the app that shows readings on screen while he scrolls in Chrome on his iPhone, NOTHING in the app changing — so tonight builds that trial link and a written cause report, NOT a cure; a cure is chosen and put to him after his try. The trial readings show only with a switch on the app's address (as `?savefail` does, D1666), nobody else touched. Told in the morning report: the Part 1 line said "the bar kept fixed"; D2025 holds that until his try.
+- **Branch:** `claude/topbar-chrome-trial`, from `main` at `9cc49fcca`. Pull request: to be opened once built. **Helper:** one fresh Opus builder, in the background; then its LOOK-sized check (the switch on and off, 402 WebKit and 1536), reads Astra + a fresh, blind Opus reader.
+- **Questions waiting for him:** see the night's main block (Q1–Q4, job 1); this job's question comes with its trial link — his try in Chrome on his iPhone, what the readings show.
+- **Rulings:** none this chat · **Next chat number:** 82 (D1744)
+<!-- /now -->
 <!-- now:claude/rules-check-fixes -->
 ### CHAT 75 — pull request 762 (the rules check's fixes, D2005) brought level with `main` after the batch of four, then MERGED AND LIVE 14 Nov 26 on his "merge live" — written 14 Nov 26 — verify before use
 - **Where it started:** chat 74's opening line: bring `main` in, settle the records, push, and when GitHub's run is green tell him what 762 changes and send the link; merge nothing without his "merge live". Chat 74's block (the batch of four, pull request 776, merged and live) is replaced by this one; its one open step was this.
