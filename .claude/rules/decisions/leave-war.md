@@ -56,7 +56,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 ## The bid windows and the day's list
 - A leave placed over several days at once, by a drag or a picked range, is one entry with one remark for all its days: a tap on any of its days shows that remark and a change there changes it for all; words typed in the drag window apply to every day dragged, whatever is pressed, replacing the remarks the dragged days held, so they end with one [D1339, D1341, D1347, D1362].
 - Entries on the Leave War never join by themselves: next-door bids of one leave with one remark already act as one and become one leave when approved; two approved leaves are joined by extending one and deleting the other, which keeps the kept leave's document and approval; there is no Join button [D1346, D1341, D1347, D1362].
-- The bid window's OIL detail lines (Reason, Given by, Entered by, Days) sit tight, 2px apart, not the roomier spacing they long showed [D2039].
+- The bid window's OIL detail lines (Reason, Given by, Entered by, Days) keep the roomier spacing they have always shown, desktop and phone alike [D2041].
 
 ## Manning
 - The Leave War's manning is lowered only by leave, a medical downchit (not ATT B), a course or an overseas duty a scheduler has not rejected, any commitment under the schedule's Unavailable list — an Other its filer put there or one a scheduler moved there — and a leave bid not refused; a commitment on the Ground Programme does not [D998, D1356, D1357, D1381, D1388, D1365, D1390, D1372, D1374, D1389, D1398, D1393].
