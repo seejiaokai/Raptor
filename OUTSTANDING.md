@@ -456,6 +456,7 @@ The 202 rules after the wrapper's close in the bid sheet's stylesheet (the count
 - The history notes on the Events undo note, `.lwday-more` and the full-page window ("named with the page before") no longer explain anything (Opus).
 - The armed Delete split into a weighted rule and a `:where()` rule, and `.dl-acts .dchip` relying on `:where()` weighing one id: one shared note on the pattern would read easier (Opus).
 - The stylesheet's opening claim of proof for "every window" should name the states actually captured (Astra).
+**To build, his D2039 (14 Nov 26, "2 tighter"):** the bid window's OIL detail lines take the tighter 2px spacing — drop the fix round's `:where()` lowering of their padding-top in `bidpicker.css`, pin it with a test, picture before/after on desktop and iPhone (capture states `oil-detail-award`, `oil-detail-sched`); the only intended difference from `main`.
 
 ### [PAGE-FOOT-FLASH] On his iPhone the top bar and the pinned dates vanish for a few frames at a page's foot (his D1961, 10 Nov 26)
 
