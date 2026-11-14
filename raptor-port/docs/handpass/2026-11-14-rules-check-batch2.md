@@ -125,10 +125,40 @@ or working week), or the phantom pass over next week's Monday.
    654 pictures, 17 surfaces, 3 MISSING fixed; the published day's settings, 409 pictures, 2 MISSING fixed, 2 filed) found
    their faults on the surfaces drawn by their own builders — a heading reading today's limit, a title — not in the shared
    calculation; one Sonnet walker per world was enough for a change of this size.
-4. **The walk chosen:**
+4. **The walk chosen (chat 80's sizing; chat B may resize on evidence, §7.0):** ONE Sonnet 5.5 walker on the frozen
+   build of app commit `cc2eefa50` (served from its own folder, never rebuilt under it), desktop 1536 Chromium and iPhone
+   402 × 874 WebKit by touch; Astra's 14 scenarios in his order (1–5 and 7–10 at both sizes; 6, 11, 12, 14 desktop with one
+   phone look each at the deciding screen) and the plain-user round at both sizes; a picture after each step and within
+   ~100ms of each phone tap. Sizes beyond the required: none — the note and the longer names are judged at 402 (the
+   narrowest he uses). Carried by a test, not walked again: the words for each landing kind in the calculation
+   (`rulescheck-batch2.test.ts` — it calls the validator directly, so the screens are walked); the note's two grammars
+   (`logic.test.tsx` — renders the page; both sizes walked once). Every lesson of the checklist's list gone through in the
+   walker's brief (chat B), each with its scenario or why it cannot apply.
 5. **After the walk:** _(its row in `docs/walk-ledger.md`)_
 
 ## 5. The scenarios (designed by Astra)
+
+Astra's report, whole: `docs/superpowers/briefs/2026-11-15-rules-check-batch2-scenarios.md` — 14 ranked scenarios, the
+plain-user round (8 steps, each opened window closed every way it offers), explicit negatives, no new question for him.
+**His roll-call gaps, added to §3 as rows (a)–(d) below, each to be walked:**
+- **(a) the name:** the day-details window from the day's `?` (`html.ts` ~2544/2606, `Modals.tsx`) — its own row; the
+  sheet's "~2606" row is that window, not the ordinary View-only list; the ~1221 row is the struck "goes away once signed"
+  line, NOT the hidden line (a hidden warning is the ordinary row, subdued) — both walked; the current and older published
+  version's eye (👁), week and board; the Logic page's search ("planned") and its fired / severity filters.
+- **(b) the crew-rest line:** the amber "Tight turning" (`validate.ts` ~720/733 — the same tail; a red breach does not
+  exercise it); the ALL / ALL AVAIL window's per-person reason and its title (`html.ts` ~891, `AvailWindow.tsx`); the
+  previous day's full "Breaks Tuesday" explanation apart from the puck's short title (`html.ts` ~1048/1118 vs ~476 —
+  the title need not repeat the sentence, only never say "landed" for a borrowed take-off); the peek row split in three —
+  Sunday's forward explanation, the desktop next-week preview (plain tasking by design, D1010), loaded Monday's warning.
+- **(c)** the pending list's lines and the hide / restore notes use the warning's own message — read, no heading required.
+- **(d) OIL outside the board:** the published puck's OIL mark and title, the current version's eye, the Leave War's
+  credited entry and the OIL balance — all must agree on what was credited.
+**His corrections to the expectations, taken:** the board prints the warning's own message first, so "On leave but tasked —
+BRIEFING" there is right, no heading added (D2009's reading); the next-week preview, a picker's short reason and the
+puck's short title need not carry the full sentence — only agree with it.
+**One wording question for his look (Astra's §5):** a change of the default rally or the debrief that moves a man's worked
+times but leaves his OIL the same (FO → FO) still reads pending (D592 reading (8)) — does the note's "If a changed OIL
+setting would change that OIL" explain that? The walk's picture of that case (scenario 12 B) goes on his look card.
 
 ## 6. The orders walked — what the screen said
 
