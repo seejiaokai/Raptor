@@ -417,7 +417,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   +Nh debrief assumed → ended HH:MM → crew rest clear at HH:MM` — the real
   landing, the pad named as an assumption, then the derived end and the 12h
   clearance, so a scheduler who knows this crew walks off fast can discount it.
-  A **shift** ends at its written time with no debrief tail, so it keeps the
+  Where that sortie has **no landing typed** (blank or "TBD" — its end borrows
+  the take-off, D1990) the message reads `took off HH:MM with no landing typed,
+  +Nh debrief assumed → …`, never "landed" at the take-off time (D2010, 14 Nov
+  26; pin: `rulescheck-batch2.test.ts`). A **shift** ends at its written time with no debrief tail, so it keeps the
   plain `ended HH:MM`. The tail is a port-authored string parity compares, so
   `refwin.ts:rebrief()` tracks the same landing and prints the identical
   branch on the reference; pinned in `crewrest-ui.test.ts`.

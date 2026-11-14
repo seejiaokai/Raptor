@@ -22,7 +22,7 @@ import { rosterIds, withKeptRules, keptRulesDiffer, withDayRules, keepRulesOn, w
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
 const $=(id:any)=>HOOKS.$(id);
-export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'Downchit + flying',LEAVE_FLY:'On leave + flying',INPUT_FLY:'Personal input clash',
+export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'Downchit + planned',LEAVE_FLY:'On leave + planned',INPUT_FLY:'Personal input clash',
   TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',CREW_SOLO:'Crew solo — only allowed under syllabus',CO_APPROVAL:'Crew combination — CO approval required',OCU_NO_IP:'OCU without IP',CREW_REST:'Crew rest (<{crewRest})',QUAL:'Qualification — illegal seat',
   NO_BRIEF:'No time for the flight brief',DEBRIEF:'No time for the flight debrief',SIM_BRIEF:'No time for the sim brief',SIM_DEBRIEF:'No time for the sim debrief',
   CREW_TIGHT:'Tight turning — crew rest',LONGDAY:'Long work day',DT_SUM:'Double turning',
@@ -483,7 +483,11 @@ function validateCore(){
          scheduler who knows this crew walks off the jet fast can read that the
          2h is an assumption, not a fact. Null when the winning end is a SHIFT,
          which ends at its written time with no debrief tail to assume. */
-      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={}, prevSource:any={};
+      /* D2010 (13 Nov 26): prevFlyNoLd says the winning sortie had NO landing typed (blank or "TBD") — its landing is its
+         borrowed take-off — so the tail says "took off … with no landing typed", never "landed" at the take-off time. A
+         sortie's report is NaN exactly when its take-off or its landing is not a clock (events.ts, D1786); with the take-off
+         a clock, it is the landing that is missing. */
+      const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={}, prevFlyNoLd:any={}, prevSource:any={};
       const targetIndex=day.restIndex??day.di??di;
       for(let distance=1;distance<=4;distance++){
       const origin=targetIndex-distance;
@@ -521,7 +525,7 @@ function validateCore(){
         if(rawEnd==null||!isFinite(rawEnd))return;
         const end=rawEnd+offset;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevSource[e.id]=source;}
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevFlyNoLd[e.id]=e.kind==='fly'&&Number.isNaN(e.report)&&isFinite(e.to); prevSource[e.id]=source;}
       });
       /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
          "everything in duty and commitments affects crew rest… do not
@@ -542,7 +546,7 @@ function validateCore(){
         if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;
         const end=i.e+offset;
         if(prevEnd[i.id]==null||end>prevEnd[i.id])prevEnd[i.id]=end;
-        if(prevFlyEnd[i.id]==null||end>prevFlyEnd[i.id]){prevFlyEnd[i.id]=end; prevFlyKey[i.id]=null; prevFlyLd[i.id]=null; prevSource[i.id]=source;}
+        if(prevFlyEnd[i.id]==null||end>prevFlyEnd[i.id]){prevFlyEnd[i.id]=end; prevFlyKey[i.id]=null; prevFlyLd[i.id]=null; prevFlyNoLd[i.id]=false; prevSource[i.id]=source;}
       });
       }
       /* when rest expires today, for everyone who had ANY commitment
@@ -652,7 +656,7 @@ function validateCore(){
         const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;
         const source=prevSource[id]||prevSeed;
         const tail=landed!=null
-          ? `${source.dow} landed ${hm24(landed)}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`
+          ? `${source.dow} ${prevFlyNoLd[id]?`took off ${hm24(landed)} with no landing typed`:`landed ${hm24(landed)}`}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`
           : `${source.dow} ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`;
         if(pfly[id]&&first<earliest){
           /* [REST-BLANK-LINE]: when no leg tells him anything the breach is the earlier commitment's (evBound);
