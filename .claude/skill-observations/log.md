@@ -2407,3 +2407,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** [DRAW-MARK-HELPER] cited "(742)" for a skill note; the coordinator's brief told the builder to read ruling D742, which is the unrelated late-mark ruling. The builder noticed and worked from skill note 742.
 **Suggested improvement:** wherever a backlog item, block or brief cites a skill note, it writes "skill note 742", never a bare number; rulings always carry their D.
 **Principle:** Two numbering schemes in one project need a word on every reference, or a reader picks the louder one.
+
+### Observation 946: A dated archive step bundled into a guide change holds the whole merge
+
+**Status:** OPEN
+**Date:** 14 Nov 26
+**Session context:** chat 73 — the guide check's round 1 (points a–d) as one working-guide change; point d archives a one-week permission that runs out two days after the build
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** filing what is open at a handoff; how a job with a future-dated step is split into commits
+
+**Issue:** The owner approved four guide edits as one change; one of them (retiring a permission "on 16 Nov when it runs out") could only truthfully go live on a later date. Built in the same branch, it holds every other edit back until that date, or forces the merge to drop a commit. The agent kept it as its own commit and told the owner the merge must wait or the commit be left out.
+**Suggested improvement:** in the handoff block's "Pick up here", name any commit that may not go live before a date, with the date and the choice it gives (wait, or merge without it and redo it on the day).
+**Principle:** A step that is only true after a future date goes in its own commit, and the date travels with the branch's record, so the earliest safe merge is never a judgement made from memory.

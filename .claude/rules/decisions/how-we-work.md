@@ -42,7 +42,6 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 
 ## Models and readers
 - Opus 5.5 plans and builds; what Codex plans or builds, Opus reads; the chat that wrote a piece never reads it — a fresh, blind Opus reader may read code Opus wrote [D67, D353, D590, D601, D790, D903, D1761].
-- For the week to 16 Nov 26 Fable 5.2 mainly hosts his chats — it plans, coordinates and builds (the agent's reading of "orchestrator") — in Opus's place, his call; the reads do not change: Astra and a fresh, blind Opus reader, never the chat that wrote the piece, and Sonnet walks; a permission spent on 16 Nov 26 [D1972].
 - Every job that needs a code read gets a fresh, blind Opus read of its finished code — an Opus that did not write it and has seen neither the walk's nor any other reader's report, given the same brief; every claim is written as a failing test before it is believed, and the host reproduces every finding before it counts; Fable reads nothing unless he calls for it [D590, D601, D790, D903, D1761].
 - Astra is the standing reviewer, with no end date: called without asking him each time for each job's code read, beside the fresh, blind Opus read above, and wherever a read below names him, first of two where two are required; Sol 6.1 only when he calls for him, otherwise the fresh, blind Opus reader keeps the second seat (the agent's reading); a job that went without Astra's read, or without Sol 6.1's where two are required, goes on the reads-owed list, `[NO-ASTRA-LIST]` [D1770, D1734, D1738, D1739, D1761, D761, D2042].
 - The reads-owed list names each job, who did read it and which read it went without; the reads owed are put to him to call or drop, never called by the agent on its own [D761, D1734, D1738, D1739, D1761, D1770].
@@ -162,9 +161,9 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - After any compaction the agent re-reads the saved state and the files in hand before the next change, and every
   report gives him the context % [D868, D871, D874, D884].
 - A guide missing after compaction → ask him to type `/reload-skills`; the next `/overnight` run tries the
-  overloaded-retry setting one night, kept only on his word after a morning check [D885, D886, D2038].
-- He runs the guide check (the agent once, 14 Nov); its list comes back as findings put to him, no guide
-  changing for it without his word and its read [D886, D2038]. A chat started from a handoff has Remote Control on [D1195].
+  overloaded-retry setting one night, kept only on his word after a morning check [D885, D886].
+- He runs the guide check; its list comes back as findings put to him, no guide
+  changing for it without his word and its read [D886]. A chat started from a handoff has Remote Control on [D1195].
 - Write the state into the repo as you go; when the work closes, condense it in its own docs-only commit, never inside a
   fix — a saved context is a summary (decisions, state, next step), never the conversation [D69].
 - Every chat's title starts with its number — 1 the M365 package chat, 2 the rules diet's step 4, then counting on — and
