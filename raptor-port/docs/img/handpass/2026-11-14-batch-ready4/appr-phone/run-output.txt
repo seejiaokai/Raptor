@@ -1,0 +1,3 @@
+[appr-phone-same v1]
+webkit: 75 lines measured on main, 75 on the branch — IDENTICAL; errors main 0, branch 0
+chromium: 75 lines measured on main, 75 on the branch — IDENTICAL; errors main 0, branch 0
