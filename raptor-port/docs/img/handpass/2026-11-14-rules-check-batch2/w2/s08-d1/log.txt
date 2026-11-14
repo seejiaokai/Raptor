@@ -1,0 +1,28 @@
+flight d5 w0 {"to":"04:30","ld":"05:30","p":"Ranger"}
+SC seat ok
+SC formation {"to":"08:00","ld":"14:00","shift":"AM","p":"Ranger"}
+SAT a-sc {"week":["Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"],"board":["Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]}
+ROW PASS | S08 a flying SC line ends 14:00 | 1536 | SC line last [week] | saw: ["Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]
+ROW PASS | S08 a flying SC line ends 14:00 | 1536 | SC line last [board] | saw: ["Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]
+waves left Fri 0
+filed input ["{\"type\":\"Duty\",\"s\":720,\"e\":840,\"acc\":\"g\",\"date\":\"Jul 17\"}"]
+ROW PASS | S08 b setup | 1536 | duty input 12:00-14:00 for Ranger filed through the Inputs page | saw: ["{\"type\":\"Duty\",\"s\":720,\"e\":840,\"acc\":\"g\",\"date\":\"Jul 17\"}"]
+SAT b-duty {"week":["Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"],"board":["Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]}
+ROW PASS | S08 b an accepted duty input ends 14:00 | 1536 | duty input last [week] | saw: ["Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]
+ROW PASS | S08 b an accepted duty input ends 14:00 | 1536 | duty input last [board] | saw: ["Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]
+flight d4 w0 {"to":"09:00","ld":"","p":"Ranger"}
+SAT c-flight-earlier {"week":["Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"],"board":["Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]}
+ROW PASS | S08 c flight earlier than the duty | 1536 | duty still last [week] | saw: ["Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]
+ROW PASS | S08 c flight earlier than the duty | 1536 | duty still last [board] | saw: ["Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]
+list rows for the duty 1
+ROW PASS | S08 d setup | 1536 | delete the duty input from its own window | saw: inputs named rcb2 duty left: 0
+SAT d-duty-removed {"week":[],"board":[]}
+ROW FAIL | S08 d the duty removed | 1536 | flight last again [week] | saw: []
+ROW FAIL | S08 d the duty removed | 1536 | flight last again [board] | saw: []
+undo button count 1 disabled false
+ROW PASS | S08 e Undo | 1536 | Undo after the delete | saw: inputs named rcb2 duty: 1
+SAT e-undo {"week":["Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"],"board":["Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]}
+ROW PASS | S08 e after Undo | 1536 | duty last again [week] | saw: ["Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]
+ROW PASS | S08 e after Undo | 1536 | duty last again [board] | saw: ["Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday ended 14:00 → crew rest clear at 02:00 ✕"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

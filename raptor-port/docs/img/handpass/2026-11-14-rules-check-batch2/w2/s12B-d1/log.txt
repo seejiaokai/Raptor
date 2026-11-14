@@ -1,0 +1,11 @@
+flight d5 w0 {"to":"08:00","ld":"16:00","p":"Ranger"}
+publish {"published":true,"version":"ORIG","signSelects":4}
+LW0 {"Ranger":{"text":"FO*","cls":"duty weekend act hasc"}}
+ROW PASS | S12 B | 1536 | Saturday 08:00-16:00 published | saw: {"pr":{"published":true,"version":"ORIG","signSelects":4},"st0":{"pend":["","9 changes"],"ver":"ORIG","sign":4,"toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","publishBtn":[]},"lw0":{"Ranger":{"text":"FO*","cls":"duty weekend act hasc"}}}
+set {"ok":true,"before":"3h","after":"2h50","note":""}
+ROW PASS | S12 B | 1536 | default rally 3h -> 2h50 (day stays FO, worked times change) | saw: {"ok":true,"before":"3h","after":"2h50","note":""}
+state {"pend":["","1 pending"],"ver":"ORIG","sign":4,"toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","publishBtn":["Publish AL1"]}
+list null
+ROW PASS | S12 B | 1536 | open the published Saturday after the change | saw: {"st0":{"sign":4,"toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY"},"st1":{"pend":["","1 pending"],"ver":"ORIG","sign":4,"toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","publishBtn":["Publish AL1"]},"lt":null,"lw1":{"Ranger":{"text":"FO*","cls":"duty weekend act hasc"}}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

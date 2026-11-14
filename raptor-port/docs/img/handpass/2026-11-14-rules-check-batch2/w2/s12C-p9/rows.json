@@ -1,0 +1,20 @@
+[
+ [
+  "S12 C",
+  "402",
+  "setting changed (default rally 2h50) before first publication, then sign + publish",
+  "published ORIG; no pending / \"setting changed\" item",
+  "{\"pr\":{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4},\"st\":{\"pend\":[],\"ver\":\"ORIG\",\"sign\":4,\"toSign\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"publishBtn\":[]}}",
+  "PASS",
+  "s12C-after-publish-board-p.png"
+ ],
+ [
+  "S12 C",
+  "402",
+  "Leave War cell after the first publication",
+  "FO",
+  "{\"Ranger\":{\"text\":\"FO*\",\"cls\":\"duty weekend act hasc\"}}",
+  "RECORDED",
+  "s12C-c-leavewar-p.png"
+ ]
+]

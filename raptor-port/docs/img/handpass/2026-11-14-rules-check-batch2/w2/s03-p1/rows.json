@@ -1,0 +1,119 @@
+[
+ [
+  "S03 a-blank (amber)",
+  "402",
+  "week",
+  "/Tight turn.*took off 12:00 with no landing typed.*14:00.*02:00/i",
+  "[\"Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00 ✕\"]",
+  "PASS",
+  "s03-a-blank-*-p.png"
+ ],
+ [
+  "S03 a-blank (amber)",
+  "402",
+  "details",
+  "/Tight turn.*took off 12:00 with no landing typed.*14:00.*02:00/i",
+  "[\"Advisory · Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00\"]",
+  "PASS",
+  "s03-a-blank-*-p.png"
+ ],
+ [
+  "S03 a-blank (amber)",
+  "402",
+  "board",
+  "/Tight turn.*took off 12:00 with no landing typed.*14:00.*02:00/i",
+  "[\"Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00 ✕\"]",
+  "PASS",
+  "s03-a-blank-*-p.png"
+ ],
+ [
+  "S03 a-blank (amber)",
+  "402",
+  "forward trace on the earlier day",
+  "RECORD",
+  "[]",
+  "RECORDED",
+  "s03-a-blank-*-p.png"
+ ],
+ [
+  "S03 a-blank",
+  "402",
+  "it is amber, not a red breach",
+  "no red breach line",
+  "[\"Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00 ✕\",\"Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00 ✕\"]",
+  "PASS",
+  "s03-a-blank-week-p.png"
+ ],
+ [
+  "S03 b-tbd planted (typing refuses TBD)",
+  "402",
+  "week",
+  "/Tight turn.*took off 12:00 with no landing typed.*14:00.*02:00/i",
+  "[\"Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00 ✕\"]",
+  "PASS",
+  "s03-b-tbd-*-p.png"
+ ],
+ [
+  "S03 b-tbd planted (typing refuses TBD)",
+  "402",
+  "details",
+  "/Tight turn.*took off 12:00 with no landing typed.*14:00.*02:00/i",
+  "[\"Advisory · Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00\"]",
+  "PASS",
+  "s03-b-tbd-*-p.png"
+ ],
+ [
+  "S03 b-tbd planted (typing refuses TBD)",
+  "402",
+  "board",
+  "/Tight turn.*took off 12:00 with no landing typed.*14:00.*02:00/i",
+  "[\"Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00 ✕\"]",
+  "PASS",
+  "s03-b-tbd-*-p.png"
+ ],
+ [
+  "S03 b-tbd planted (typing refuses TBD)",
+  "402",
+  "forward trace on the earlier day",
+  "RECORD",
+  "[]",
+  "RECORDED",
+  "s03-b-tbd-*-p.png"
+ ],
+ [
+  "S03 c-1230 typed",
+  "402",
+  "week",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 02:10 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s03-c-1230-*-p.png"
+ ],
+ [
+  "S03 c-1230 typed",
+  "402",
+  "details",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 02:10 — only 11h40 rest.\"]",
+  "PASS",
+  "s03-c-1230-*-p.png"
+ ],
+ [
+  "S03 c-1230 typed",
+  "402",
+  "board",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 02:10 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s03-c-1230-*-p.png"
+ ],
+ [
+  "S03 c-1230 typed",
+  "402",
+  "forward trace on the earlier day",
+  "RECORD",
+  "[\"Breaks Saturday Ranger — had to leave by 14:10. Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 02:10 — only 11h40 rest.\"]",
+  "RECORDED",
+  "s03-c-1230-*-p.png"
+ ]
+]

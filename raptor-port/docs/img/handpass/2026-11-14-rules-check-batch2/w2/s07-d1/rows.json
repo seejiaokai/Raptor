@@ -1,0 +1,128 @@
+[
+ [
+  "S07",
+  "1536",
+  "Fri 12:00 landing blank; Sat 04:00-05:00 (Ranger both); Sat board list",
+  "\"took off 12:00 with no landing typed ... ended 14:00 ... clear at 02:00\", no \"landed\"",
+  "[\"Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-1-sat-board-d.png"
+ ],
+ [
+  "S07 a-blank",
+  "1536",
+  "Sat week",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-a-blank-*-d.png"
+ ],
+ [
+  "S07 a-blank",
+  "1536",
+  "Sat details",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "PASS",
+  "s07-a-blank-*-d.png"
+ ],
+ [
+  "S07 a-blank",
+  "1536",
+  "Fri forward explanation (week strip + details)",
+  "figures agree with Sat warning",
+  "[\"Breaks Saturday Ranger — had to leave by 13:40. Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "RECORDED",
+  "s07-a-blank-week-fri-d.png"
+ ],
+ [
+  "S07 b-1230",
+  "1536",
+  "Sat week",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s07-b-1230-*-d.png"
+ ],
+ [
+  "S07 b-1230",
+  "1536",
+  "Sat details",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\"]",
+  "PASS",
+  "s07-b-1230-*-d.png"
+ ],
+ [
+  "S07 b-1230",
+  "1536",
+  "Fri forward explanation (week strip + details)",
+  "figures agree with Sat warning",
+  "[]",
+  "FAIL",
+  "s07-b-1230-week-fri-d.png"
+ ],
+ [
+  "S07 c-tbd",
+  "1536",
+  "type TBD into the week landing box",
+  "ld = TBD",
+  "stored \"12:30\"",
+  "NOT WALKED",
+  ""
+ ],
+ [
+  "S07 d-leave",
+  "1536",
+  "Sat week",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest. ✕\"]",
+  "FAIL",
+  "s07-d-leave-*-d.png"
+ ],
+ [
+  "S07 d-leave",
+  "1536",
+  "Sat details",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\"]",
+  "FAIL",
+  "s07-d-leave-*-d.png"
+ ],
+ [
+  "S07 d-leave",
+  "1536",
+  "Fri forward explanation (week strip + details)",
+  "figures agree with Sat warning",
+  "[\"Breaks Saturday Ranger — had to leave by 13:40. Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\"]",
+  "RECORDED",
+  "s07-d-leave-week-fri-d.png"
+ ],
+ [
+  "S07 e-reload",
+  "1536",
+  "Sat week",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest. ✕\"]",
+  "FAIL",
+  "s07-e-reload-*-d.png"
+ ],
+ [
+  "S07 e-reload",
+  "1536",
+  "Sat details",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\"]",
+  "FAIL",
+  "s07-e-reload-*-d.png"
+ ],
+ [
+  "S07 e-reload",
+  "1536",
+  "Fri forward explanation (week strip + details)",
+  "figures agree with Sat warning",
+  "[\"Breaks Saturday Ranger — had to leave by 13:40. Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\"]",
+  "RECORDED",
+  "s07-e-reload-week-fri-d.png"
+ ]
+]

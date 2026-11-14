@@ -1,0 +1,6 @@
+filed [{"type":"Duty","s":600,"e":660,"acc":"g","date":"Jul 18"}]
+ROW FAIL | S02 Escape a-direct | 1536 | open the ALL AVAIL window, press Escape | saw: focus was BODY.#; window STILL OPEN
+ROW FAIL | S02 Escape b-titlebar | 1536 | open the ALL AVAIL window, click .availwin .win-ttl, press Escape | saw: focus was BODY.#; window STILL OPEN
+ROW FAIL | S02 Escape c-puck | 1536 | open the ALL AVAIL window, click .availwin .rpuck .puck, press Escape | saw: focus was BODY.#; window STILL OPEN
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

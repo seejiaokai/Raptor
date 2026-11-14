@@ -1,0 +1,200 @@
+[
+ [
+  "S04 a-blank order A",
+  "1536",
+  "Sunday's forward trace (puck tapped) 'Breaks Monday'",
+  "sentence with /took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Breaks Monday Ranger — had to leave by 13:40. Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "PASS",
+  "s04-a-blank-sun-week-d.png"
+ ],
+ [
+  "S04 a-blank order A",
+  "1536",
+  "Sunday's day details / strip",
+  "RECORD (no Monday breach lives on Sunday)",
+  "[[],[]]",
+  "RECORDED",
+  "s04-a-blank-sun-daydet-d.png"
+ ],
+ [
+  "S04 a-blank order A",
+  "1536",
+  "Sunday's puck short title",
+  "short leave-by explanation, never \"landed\" for a borrowed take-off",
+  "[\"Ranger · IP · instructor pilot · SXO · Crew rest — Monday is broken by this day: he had to leave by 13:40\",\"Ranger · IP · instructor pilot · SXO · Crew rest — Monday is broken by this day: he had to leave by 13:40\"]",
+  "RECORDED",
+  "s04-a-blank-sun-week-d.png"
+ ],
+ [
+  "S04 a-blank order A",
+  "1536",
+  "next-week preview (desktop)",
+  "plain tasking, no full sentence required",
+  "[\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday Jul 20 4 X 2 X 1 COMMON PROGRAMME DEMO — SECOND SCHEDULE WEEK ORDERS: FLYING ORDERS SECTION 2 NAME START END PEOPLE RMKS SODB 07:45 08:00 MASS BRIEF 08:00 08:3\",\"Tuesday Jul 21 4 X 1 COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 3 NAME START END PEOPLE RMKS SODB 05:45 06:00 MASS BRIEF 06:00 06:30 WAVE 1 CS MSN R B TO LD FCP / RCP RMKS VL SAT 06:40 09:00 10:25\",\"Wednesday Jul 22 2 X 2 COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 2 NAME START END PEOPLE RMKS SODB 07:45 08:00 SPORTS AFTERNOON EVENT 15:00 17:00 ALL PT kit WAVE 1 CS MSN R B TO LD FCP / RCP RMKS\",\"Thursday Jul 23 2 COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 4 NAME START END PEOPLE RMKS SODB 07:00 07:15 WAVE 1 CS MSN R B TO LD FCP / RCP RMKS VL BFM 05:10 07:30 08:55 Saint B Rune B 1B: EARLY \",\"Friday Jul 24 0 X 0 X 0 COMMON PROGRAMME NO FLYING - GROUND TRAINING DAY ORDERS: FLYING ORDERS SECTION 5 NAME START END PEOPLE RMKS SODB 07:45 08:00 SQN PT 15:00 16:30 MASS DEBRIEF + BEER CALL 17:00 N\",\"Saturday Jul 25 0 X 0 X 0 COMMON PROGRAMME WEEKEND - NO FLYING DUTY CREW ON CALL NAME START END PEOPLE RMKS DUTY 09:00 12:00 ALL AVAIL Hangar clean-up No flying — ground day. DUTIES NAME START END PEO\",\"Sunday Jul 26 0 X 0 X 0 COMMON PROGRAMME WEEKEND - NO FLYING DUTY CREW ON CALL No flying — ground day. DUTIES NAME START END PEOPLE RMKS DUTY SDO 08:00 18:00 Dash C\"]",
+  "RECORDED",
+  "s04-a-blank-peek-d.png"
+ ],
+ [
+  "S04 a-blank order A",
+  "1536",
+  "Monday's own warning: week",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\",\"Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\"]",
+  "PASS",
+  "s04-a-blank-mon-*-d.png"
+ ],
+ [
+  "S04 a-blank order A",
+  "1536",
+  "Monday's own warning: dd",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\",\"Advisory · Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Advisory · Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\"]",
+  "PASS",
+  "s04-a-blank-mon-*-d.png"
+ ],
+ [
+  "S04 a-blank order A",
+  "1536",
+  "Monday's own warning: board",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\",\"Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\"]",
+  "PASS",
+  "s04-a-blank-mon-*-d.png"
+ ],
+ [
+  "S04 b-reload order A",
+  "1536",
+  "reload, enter through Monday week: warning present",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\",\"Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\"]",
+  "PASS",
+  "s04-b-reload-mon-week-d.png"
+ ],
+ [
+  "S04 c-tbd order A",
+  "1536",
+  "Sunday's forward trace (puck tapped) 'Breaks Monday'",
+  "sentence with /took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Breaks Monday Ranger — had to leave by 13:40. Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "PASS",
+  "s04-c-tbd-sun-week-d.png"
+ ],
+ [
+  "S04 c-tbd order A",
+  "1536",
+  "Sunday's day details / strip",
+  "RECORD (no Monday breach lives on Sunday)",
+  "[[],[]]",
+  "RECORDED",
+  "s04-c-tbd-sun-daydet-d.png"
+ ],
+ [
+  "S04 c-tbd order A",
+  "1536",
+  "Sunday's puck short title",
+  "short leave-by explanation, never \"landed\" for a borrowed take-off",
+  "[\"Ranger · IP · instructor pilot · SXO · Crew rest — Monday is broken by this day: he had to leave by 13:40\",\"Ranger · IP · instructor pilot · SXO · Crew rest — Monday is broken by this day: he had to leave by 13:40\"]",
+  "RECORDED",
+  "s04-c-tbd-sun-week-d.png"
+ ],
+ [
+  "S04 c-tbd order A",
+  "1536",
+  "next-week preview (desktop)",
+  "plain tasking, no full sentence required",
+  "[\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday Jul 20 4 X 2 X 1 COMMON PROGRAMME DEMO — SECOND SCHEDULE WEEK ORDERS: FLYING ORDERS SECTION 2 NAME START END PEOPLE RMKS SODB 07:45 08:00 MASS BRIEF 08:00 08:3\",\"Tuesday Jul 21 4 X 1 COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 3 NAME START END PEOPLE RMKS SODB 05:45 06:00 MASS BRIEF 06:00 06:30 WAVE 1 CS MSN R B TO LD FCP / RCP RMKS VL SAT 06:40 09:00 10:25\",\"Wednesday Jul 22 2 X 2 COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 2 NAME START END PEOPLE RMKS SODB 07:45 08:00 SPORTS AFTERNOON EVENT 15:00 17:00 ALL PT kit WAVE 1 CS MSN R B TO LD FCP / RCP RMKS\",\"Thursday Jul 23 2 COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 4 NAME START END PEOPLE RMKS SODB 07:00 07:15 WAVE 1 CS MSN R B TO LD FCP / RCP RMKS VL BFM 05:10 07:30 08:55 Saint B Rune B 1B: EARLY \",\"Friday Jul 24 0 X 0 X 0 COMMON PROGRAMME NO FLYING - GROUND TRAINING DAY ORDERS: FLYING ORDERS SECTION 5 NAME START END PEOPLE RMKS SODB 07:45 08:00 SQN PT 15:00 16:30 MASS DEBRIEF + BEER CALL 17:00 N\",\"Saturday Jul 25 0 X 0 X 0 COMMON PROGRAMME WEEKEND - NO FLYING DUTY CREW ON CALL NAME START END PEOPLE RMKS DUTY 09:00 12:00 ALL AVAIL Hangar clean-up No flying — ground day. DUTIES NAME START END PEO\",\"Sunday Jul 26 0 X 0 X 0 COMMON PROGRAMME WEEKEND - NO FLYING DUTY CREW ON CALL No flying — ground day. DUTIES NAME START END PEOPLE RMKS DUTY SDO 08:00 18:00 Dash C\"]",
+  "RECORDED",
+  "s04-c-tbd-peek-d.png"
+ ],
+ [
+  "S04 c-tbd order A",
+  "1536",
+  "Monday's own warning: week",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\",\"Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\"]",
+  "PASS",
+  "s04-c-tbd-mon-*-d.png"
+ ],
+ [
+  "S04 c-tbd order A",
+  "1536",
+  "Monday's own warning: dd",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\",\"Advisory · Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Advisory · Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\"]",
+  "PASS",
+  "s04-c-tbd-mon-*-d.png"
+ ],
+ [
+  "S04 c-tbd order A",
+  "1536",
+  "Monday's own warning: board",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\",\"Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\"]",
+  "PASS",
+  "s04-c-tbd-mon-*-d.png"
+ ],
+ [
+  "S04 d-1230 order A",
+  "1536",
+  "Sunday's forward trace (puck tapped) 'Breaks Monday'",
+  "sentence with /landed 12:30.*14:30.*02:30/",
+  "[\"Breaks Monday Ranger — had to leave by 13:40. Crew rest breach — Sunday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\"]",
+  "PASS",
+  "s04-d-1230-sun-week-d.png"
+ ],
+ [
+  "S04 d-1230 order A",
+  "1536",
+  "Sunday's day details / strip",
+  "RECORD (no Monday breach lives on Sunday)",
+  "[[],[]]",
+  "RECORDED",
+  "s04-d-1230-sun-daydet-d.png"
+ ],
+ [
+  "S04 d-1230 order A",
+  "1536",
+  "Sunday's puck short title",
+  "short leave-by explanation, never \"landed\" for a borrowed take-off",
+  "[\"Ranger · IP · instructor pilot · SXO · Crew rest — Monday is broken by this day: he had to leave by 13:40 · earns half a day of OIL\"]",
+  "RECORDED",
+  "s04-d-1230-sun-week-d.png"
+ ],
+ [
+  "S04 d-1230 order A",
+  "1536",
+  "next-week preview (desktop)",
+  "plain tasking, no full sentence required",
+  "[\"NEXT WEEK: CLICK A DAY TO LOAD IT Monday Jul 20 4 X 2 X 1 COMMON PROGRAMME DEMO — SECOND SCHEDULE WEEK ORDERS: FLYING ORDERS SECTION 2 NAME START END PEOPLE RMKS SODB 07:45 08:00 MASS BRIEF 08:00 08:3\",\"Tuesday Jul 21 4 X 1 COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 3 NAME START END PEOPLE RMKS SODB 05:45 06:00 MASS BRIEF 06:00 06:30 WAVE 1 CS MSN R B TO LD FCP / RCP RMKS VL SAT 06:40 09:00 10:25\",\"Wednesday Jul 22 2 X 2 COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 2 NAME START END PEOPLE RMKS SODB 07:45 08:00 SPORTS AFTERNOON EVENT 15:00 17:00 ALL PT kit WAVE 1 CS MSN R B TO LD FCP / RCP RMKS\",\"Thursday Jul 23 2 COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 4 NAME START END PEOPLE RMKS SODB 07:00 07:15 WAVE 1 CS MSN R B TO LD FCP / RCP RMKS VL BFM 05:10 07:30 08:55 Saint B Rune B 1B: EARLY \",\"Friday Jul 24 0 X 0 X 0 COMMON PROGRAMME NO FLYING - GROUND TRAINING DAY ORDERS: FLYING ORDERS SECTION 5 NAME START END PEOPLE RMKS SODB 07:45 08:00 SQN PT 15:00 16:30 MASS DEBRIEF + BEER CALL 17:00 N\",\"Saturday Jul 25 0 X 0 X 0 COMMON PROGRAMME WEEKEND - NO FLYING DUTY CREW ON CALL NAME START END PEOPLE RMKS DUTY 09:00 12:00 ALL AVAIL Hangar clean-up No flying — ground day. DUTIES NAME START END PEO\",\"Sunday Jul 26 0 X 0 X 0 COMMON PROGRAMME WEEKEND - NO FLYING DUTY CREW ON CALL No flying — ground day. DUTIES NAME START END PEOPLE RMKS DUTY SDO 08:00 18:00 Dash C\"]",
+  "RECORDED",
+  "s04-d-1230-peek-d.png"
+ ],
+ [
+  "S04 d-1230 order A",
+  "1536",
+  "Monday's own warning: week",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Sunday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest. ✕\",\"Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\"]",
+  "PASS",
+  "s04-d-1230-mon-*-d.png"
+ ],
+ [
+  "S04 d-1230 order A",
+  "1536",
+  "Monday's own warning: dd",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Sunday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\",\"Advisory · Tight turn Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Advisory · Tight turn Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\"]",
+  "PASS",
+  "s04-d-1230-mon-*-d.png"
+ ],
+ [
+  "S04 d-1230 order A",
+  "1536",
+  "Monday's own warning: board",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Ranger — Crew rest breach — Sunday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest. ✕\",\"Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\"]",
+  "PASS",
+  "s04-d-1230-mon-*-d.png"
+ ]
+]

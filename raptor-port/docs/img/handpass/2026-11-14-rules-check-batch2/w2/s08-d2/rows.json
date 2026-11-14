@@ -1,0 +1,119 @@
+[
+ [
+  "S08 a flying SC line ends 15:00",
+  "1536",
+  "SC line last [week]",
+  "\"ended 15:00 ... clear at 03:00\", no took off / landed",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s08-a-sc-*-d.png"
+ ],
+ [
+  "S08 a flying SC line ends 15:00",
+  "1536",
+  "SC line last [board]",
+  "\"ended 15:00 ... clear at 03:00\", no took off / landed",
+  "[\"Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s08-a-sc-*-d.png"
+ ],
+ [
+  "S08 b setup",
+  "1536",
+  "duty input 12:00-14:00 for Ranger filed through the Inputs page",
+  "one input stored",
+  "[\"{\\\"type\\\":\\\"Duty\\\",\\\"s\\\":720,\\\"e\\\":900,\\\"acc\\\":\\\"g\\\",\\\"date\\\":\\\"Jul 17\\\"}\"]",
+  "PASS",
+  "s08-b-input-window-d.png"
+ ],
+ [
+  "S08 b an accepted duty input ends 15:00",
+  "1536",
+  "duty input last [week]",
+  "\"ended 15:00 ... clear at 03:00\", no took off / landed",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s08-b-duty-*-d.png"
+ ],
+ [
+  "S08 b an accepted duty input ends 15:00",
+  "1536",
+  "duty input last [board]",
+  "\"ended 15:00 ... clear at 03:00\", no took off / landed",
+  "[\"Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s08-b-duty-*-d.png"
+ ],
+ [
+  "S08 c flight earlier than the duty",
+  "1536",
+  "duty still last [week]",
+  "still \"ended 14:00\" (duty), no took off / landed",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s08-c-flight-earlier-*-d.png"
+ ],
+ [
+  "S08 c flight earlier than the duty",
+  "1536",
+  "duty still last [board]",
+  "still \"ended 14:00\" (duty), no took off / landed",
+  "[\"Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s08-c-flight-earlier-*-d.png"
+ ],
+ [
+  "S08 d setup",
+  "1536",
+  "delete the duty input from its own window",
+  "input gone",
+  "inputs named rcb2 duty left: 0",
+  "PASS",
+  "s08-d-after-delete-d.png"
+ ],
+ [
+  "S08 d the duty removed",
+  "1536",
+  "flight last again [week]",
+  "\"Friday took off 12:00 with no landing typed ... ended 14:00 ... clear at 02:00\"",
+  "[\"Tight turning — crew rest Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00 ✕\"]",
+  "PASS",
+  "s08-d-duty-removed-*-d.png"
+ ],
+ [
+  "S08 d the duty removed",
+  "1536",
+  "flight last again [board]",
+  "\"Friday took off 12:00 with no landing typed ... ended 14:00 ... clear at 02:00\"",
+  "[\"Ranger — Tight turning — T/O 04:30 puts the 3h report at 01:30, inside 12h. Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00 ✕\"]",
+  "PASS",
+  "s08-d-duty-removed-*-d.png"
+ ],
+ [
+  "S08 e Undo",
+  "1536",
+  "Undo after the delete",
+  "input back",
+  "inputs named rcb2 duty: 1",
+  "PASS",
+  "s08-e-undo-d.png"
+ ],
+ [
+  "S08 e after Undo",
+  "1536",
+  "duty last again [week]",
+  "\"ended 14:00\"",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s08-e-undo-*-d.png"
+ ],
+ [
+  "S08 e after Undo",
+  "1536",
+  "duty last again [board]",
+  "\"ended 14:00\"",
+  "[\"Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s08-e-undo-*-d.png"
+ ]
+]
