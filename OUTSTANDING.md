@@ -141,7 +141,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INP-HEAD-SORT-READER] — the Inputs List's column headings sort from the keys since 6 Nov 26, but a screen reader is not told a heading can be pressed; the fix, a button in each heading, changes its look — a picture first (low, with the keyboard sweep D807).
 - [QUALS-HEAD-SORT-KEYS] — the Quals table's headings sort by a click only; the keys cannot reach them (low, with the keyboard sweep D807).
 - [WALK-SCRIPT-UTF8] — a walk script saved partly in another letter coding made the code check fail (6 Nov 26); a line in the walkers' brief guide that scripts are saved as UTF-8 — a guide change, on his word.
-- [INP-ROOM-TIDY-2] — four tidy-ups chat 29's code reads filed: the window-at-rest test written five times, a sentence in two files, a test's fixed sizes, a stale comment (low, the agent's).
+- [INP-ROOM-TIDY-2] — four tidy-ups chat 29's code reads filed: the window-at-rest test written five times, a sentence in two files, a test's fixed sizes, a stale comment (low, the agent's). DONE 14 Nov 26 on claude/code-tidy-1114, awaiting merge.
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295) — built as the bell's grey foot (D1788) on `claude/pr-leave-war-4988a8`, pull request 680; walk, reads and his look to come.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
@@ -192,7 +192,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
 - [CHGWIN-ESCAPE] — Escape does not close the changes window (its ✕ and a tap outside do); older, found by chat 28's walk.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
-- [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
+- [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's). DONE 14 Nov 26 on claude/code-tidy-1114, awaiting merge — closed with its reason, no list needed.
 - [BOARD-OTHER-RINGS] — most other Scheduler Board buttons and its time boxes still wear the browser's own ring under the keys, not the app's cyan one: a question for him with pictures, not built (D1625).
 - [BOARD-TAB-MENU-BUTTONS] — a walker found Tab never stops on the board's + Block, + Wave or a jet's stores, which D1646 says the keys reach: to reproduce, then fix or put to him.
 - [BOARD-UNDO-SAME-DAY] — on the Scheduler Board an Undo of a change out of view, on the same day, leaves the screen where it was; D672 says it moves to the change: to reproduce, then fix (older; found 8 Nov 26).
@@ -233,7 +233,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Documents and guides**
 - [RULE-FILE-LESSONS] — four lessons for the rule files and the steps for recording a ruling — his word.
-- [DOC-POINTERS-CODE] — four code comments still point at documents moved in the spring clean: in the rules engine and in pull request 664's files, each with its next change; one to read against D338.
+- [DOC-POINTERS-CODE] — three code comments in the rules engine are out of date (two point at the project guide's old headings; one says the change history clears on reload), each with the engine's next behaviour change (D1537); the rest re-pointed 14 Nov 26 on claude/code-tidy-1114, awaiting merge.
 - [WORD-LIST] — the app's word list LIVE 10 Nov 26 (pull request 739); left open only while the general rules name it with [SKILL-FUSION].
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
 - [CAL-OLD-LOOKS] — three small leftovers of the calendar job: an old mock-ups page's note, a drop at the screen's bottom edge, his looks nobody recorded — none a fault.
@@ -1704,33 +1704,25 @@ deliberately slow storage.
 
 
 ### [DOC-POINTERS-CODE] Code comments that point at documentation moved in the spring clean (filed 24 Sep 26)
-**Narrowed 8 Nov 26** (`claude/rd-shell-state`, evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md`): every pointer listed below now
-names its new home, and `raptor-port/src/ui/board.ts` and `inputedit.tsx` were re-pointed in that job. **Four are left**, in
-files that job could not touch: `raptor-port/src/engine/canonical.ts:35` ("CLAUDE.md §Drag-reordering" →
-`.claude/rules/decisions/scheduler.md` §Drag-reordering) — the engine changes only for a behaviour change (D1537), so with
-the next one; `raptor-port/src/ui/weekglide.ts:45` ("CLAUDE.md §Week navigation" → `scheduler.md` §Week navigation &
-cross-week continuity) and `raptor-port/src/ui/SchedBoard.tsx:607` ("CLAUDE.md §the phone board is ONE window" →
-`raptor-port/docs/ui-contracts.md` §The board on a phone is ONE window) — both files of pull request 664, with their next
-change; and `raptor-port/src/ui/pendlist.ts:16`, whose pointer still lands (`raptor-port/CLAUDE.md` §What actually persists)
-but which says the edit log is kept only while the page is open — read it against D338 (the change history outlives a
-reload) before changing a word.
-**Place:** ride the next change that touches `raptor-port/src` anyway — a pointer-only edit there starts the full
-check run on his PC (D89, D151), which a docs pass must not do. Every one of these still LANDS today, through a
-signpost or an index left at the old place, so none is urgent; each should name the new home directly:
-- `raptor-port/e2e/leavewar.spec.ts:2387` — "BUG-TESTING.md #371" → `raptor-port/docs/archive/BUG-TESTING.md`.
-- `raptor-port/src/engine/audit-d-keyspace.test.ts:279` — "HANDOFF §Known issues" → `HANDOFF-ARCHIVE.md` (the frozen
-  4 Sep snapshot; `HANDOFF.md` §Moved says so).
-- `raptor-port/src/engine/overnight.test.ts:2` — "docs/session-state.md" → `raptor-port/docs/archive/session-state.md`.
-- `raptor-port/src/ui/html.ts:1180` and `raptor-port/src/ui/latemark.test.tsx:13` — "§Stable decisions" (the late-input
-  mark) → `.claude/rules/decisions/scheduler.md` §Settled before this list.
-- `raptor-port/src/ui/AdminPage.tsx:240, 283` — "HANDOFF" (the caveat; the parked Power Apps end state) →
-  `raptor-port/docs/architecture-direction.md` §Parked direction.
-- `raptor-port/src/engine/hooks.ts:72` — "the file map" → `raptor-port/docs/file-map.md`.
-- `raptor-port/src/testing/refwin.ts:578` — "HANDOFF.md records the same trap" → `raptor-port/docs/gates-and-deploy.md`.
-- Comments citing a §Stable decisions sub-heading by name (e.g. §Drag-reordering in `canonical.ts`, §Week navigation
-  in `weekglide.ts`) land through `raptor-port/CLAUDE.md` §Stable decisions → "Moved to the area files", which
-  keeps every old name; point them at the area file when their file is next touched.
-Found by `git grep` on 24 Sep 26 (the spring clean's red team, Fable finding 10, Astra finding 11).
+**Narrowed again 14 Nov 26** (`claude/code-tidy-1114`, chat 72's overnight job 2 — awaiting merge): `raptor-port/src/ui/weekglide.ts`
+now names `.claude/rules/decisions/scheduler.md` §Settled before this list, its "Week navigation" lines (the area page has
+no heading of that name since it converted, D1944), and `raptor-port/src/ui/SchedBoard.tsx` names `raptor-port/docs/ui-contracts.md`
+§The board on a phone is ONE window. `raptor-port/src/ui/pendlist.ts` was read against D338 and `raptor-port/src/engine/editlog.ts`
+("THE CHANGE HISTORY"): its comment WAS wrong — the edit log is the change history now, saved row by row and loaded at
+boot, outliving a reload and a sign-out; it now says so, and says why a change can still read "earlier" (only this
+browser's lines until the database, and only the newest 2,000). The 8 Nov list was rechecked: every entry already names its
+home (`e2e/leavewar.spec.ts`, `ui/html.ts`, `ui/latemark.test.tsx`, `ui/AdminPage.tsx`, and in the engine
+`audit-d-keyspace.test.ts`, `overnight.test.ts`, `hooks.ts`); `testing/refwin.ts` names `HANDOFF-ARCHIVE.md`, which is
+where the CHIP_LABEL trap is written, so it stays. **Three are left, all in the rules engine** — changed only for a behaviour
+change (D1537), so each with the next one there: `raptor-port/src/engine/canonical.ts:35` ("CLAUDE.md §Drag-reordering" →
+`.claude/rules/decisions/scheduler.md` §Settled before this list, its "Drag-reordering" lines) and
+`raptor-port/src/engine/validate.ts:273` ("CLAUDE.md §the robustness doctrine" — it still lands, on the project guide's
+one-line rule; it could name `raptor-port/docs/guide-full.md` §The rules-engine robustness doctrine); and, found by the fresh
+Opus reader of b04870339 (filed, not fixed), `raptor-port/src/engine/editlog.ts`'s head comment, which still says the log
+"clears on reload" — it is the change history now, kept across a reload and a sign-out (D338; its own "THE CHANGE HISTORY"
+comment says so). The earlier lists are in git history.
+**Place:** with the rules engine's next behaviour change. Found by `git grep` on 24 Sep 26 (the spring clean's red team,
+Fable finding 10, Astra finding 11).
 
 ### [PERF-RESIDUALS] Speed wins measured and deferred — two are his call (filed 24 Sep 26)
 From `HANDOFF.md` §In flight (archived 24 Sep 26): several speed wins are measured and deferred — the seven
@@ -2392,6 +2384,22 @@ armFreshTime). **Place:** low — with the next iPhone look at the board.
 **A question for him, not put until he says (D994).** Opened from the plans selector on a published day with changes waiting, the week's 👁 look at an issued version shows the day's "N pending" (since 2 Nov 26 the working copy's own count — `[LOOK-PENDING-COUNT]`, `html.ts` PVPC), while the Scheduler Board's look shows none: its strip under a look carries only who signed the version and the plans selector (`board.ts boardSignBody`, its `pv` branch). View-only Sched's issued face shows none either (AM24). Pictures: `raptor-port/docs/img/handpass/2026-11-02-schedule-leftovers/walk/D8-2-look-at-original-count.png` (the week) beside `D8-4-board-look-count.png` (the board). **To ask:** should a look at an issued version show the day's waiting count — on both, on neither? Recommended when put: on both, since the look's bar offers "Load onto working copy", and what it would throw away is the point. **Place:** with the next change to the version look or the board's sign strip.
 
 ### [LOCATE-ITEM-MARKS] Finding a redrawn button again by its first mark (filed 5 Nov 26 — the keyboard and windows batch's second narrow read)
+**DONE 14 Nov 26 on claude/code-tidy-1114, awaiting merge — closed with its reason; `locate()` unchanged** (chat 72's
+overnight job 2). Its callers: the control the keys were on when a sheet or window opened (the sheets, the Traffic and
+day-details windows, the bar-free windows, the board's way out) and the button a small menu hangs from (+ Block,
+Templates, the plans selector, + Wave, a jet's stores, the duty role). React keeps its own nodes, so only the string-drawn
+week, board and crew panel reach the search. A survey of every control those draw: the first mark names its day, slot or
+item (a day index, a slot key, an input's or template's id), or the control is one of its kind where it stands (a menu's
+own items, the crew panel's day arrows, Manage, Show all), or it opens nothing and is never looked for (the blue / red
+question). The one exception — the input's "→ Ground" / "→ Unavail" / "Reject" — already carries its input's mark
+(`data-acck`; `ui/html.ts accCtl` draws every shape of it, and its own press reads it) and `locate()` matches on it. A list
+of one would add nothing. The "To go out" list's lines (`ui/pendlist.ts` `data-plix` / `data-pltarget`) are list positions,
+but nothing opens a sheet with the keys on one, so `locate()` never searches them (the fix round's correction, from the
+readers of b04870339). The reason and the rule for a new control are written above `locate()` in `ui/sheetfocus.ts`;
+the proof is a new test in `ui/oilkeysback.test.tsx` on the week's REAL buttons, with a second input filed on the same day
+as the first: each names its input and is found again as itself after its day is redrawn — red when `locate()` stops
+using `data-acck` (checked on a temporary mutant, then restored).
+**Filed, not fixed (readers of b04870339; low, the agent's):** a week or board PUCK takes the keys and carries only its man (`data-person`), so after a sheet opened from one (the OIL question) the keys may come back to the same man's other puck that day; Enter and Space do nothing on a puck, so only the ring moves (written above `locate()`). And the new `oilkeysback` test largely repeats the H1 test (kept: it runs on the week's real buttons).
 **What:** `raptor-port/src/ui/sheetfocus.ts locate()` finds a control again after a string redraw by its id, else by its FIRST
 `data-` attribute. Where a button's first mark names an action shared by many items (an input's "→ Ground"), the search can
 land on another item's button — the read's H1, where the keys' "twin" could have been another input's "→ Ground", one Enter
@@ -2490,6 +2498,20 @@ one (a measured layout — a picture first). **Place:** his look; then close, or
 **Delivered D566 combined branch preview,5Oct26:** https://raptor-q27mo3zqg-kai-e2f5.vercel.app (source7f0b78bf; completed VercelSUCCESS/Preview9ZKYvXmsMPbWpc3RkwppHcWKzqqN). All3interface fixes checked/fresh independent R1PASS; owner look/Claude reads/authorized merge remain outstanding. Shipping method/limits in current accepted-batch evidence; no live authority.
 
 ### [INP-ROOM-TIDY-2] Tidy-ups chat 29's code reads filed (8 Nov 26)
+**DONE 14 Nov 26 on claude/code-tidy-1114, awaiting merge** (chat 72's overnight job 2; nothing a person sees changes):
+(1) every rule carrying the test stands in one place — the Inputs list's four rules and the Medical tab's one, each
+`body:has(.floatwin.inpedwin:not([data-placed]))`, together under one comment in `25-inputs-calendar.css`, beside the window's
+size, written flat (the fix round: nested under one test, the test-only stylesheet readers lost the parent); `06-inputs.css`
+and `16-medical.css` keep their reasons and point there. Proved in a real
+browser (`raptor-port/scripts/handpass/inp-room-css-capture.mjs`): 20 states — the list and the Medical tab with no window,
+the window where it opens, dragged, reopened where he left it — at 1536 × 864, 1229 × 600 and 402 × 874, 11,760 elements,
+every computed property and ::before / ::after: no difference before and after (and none between two before runs).
+(2) the sentence lives in `ui/cutdraft.ts`; `ui/CutFields.tsx` points to it. (3) `e2e/medical.spec.ts` measures the room against the
+input window's own box on screen (its left edge to the page's right edge), not `--inpwin-room`, which the room rule itself
+reads — red on a temporary mutant of the room's size (the fix round). (4) the comment above `dragging()` in `ui/floatwin.ts` now says nothing reads
+it: no window's bar ever called it (git history, since it came with the move out of the ALL AVAIL window, 28 Sep 26).
+The capture was run again after the fix round: no difference (`raptor-port/docs/handpass/2026-11-14-code-tidy.md` §Fix round).
+**Filed, not fixed (D489), Astra's read of b04870339** (`raptor-port/docs/superpowers/briefs/2026-11-14-code-tidy-read-*.md`): the new comments repeat the reason for gathering the room rules in several places, and the comment above the unused `dragging()` could be shorter. **Place:** low, the agent's — with the next Inputs or Medical batch.
 **Filed, not fixed (D489), by the fresh Opus readers of `claude/chat29-inputs-medical`:** (1) the test "the input window stands
 where it opens", `body:has(.floatwin.inpedwin:not([data-placed]))`, is written five times across `06-inputs.css` and
 `16-medical.css` — one class set on the page would keep them together; (2) the sentence on how a cut-off's draft is read is in

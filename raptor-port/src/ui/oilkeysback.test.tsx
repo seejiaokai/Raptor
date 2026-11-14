@@ -16,7 +16,8 @@ import { App } from './App'
 import { initStore, notify, setSession } from '../state/store'
 import { histInit } from '../state/history'
 import { setPage, setOilWait, OILWAIT } from '../state/view'
-import { useSheetFocus } from './sheetfocus'
+import { INPUTS, inpId } from '../engine/inputs'
+import { useSheetFocus, locate } from './sheetfocus'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 let root: Root, host: HTMLDivElement
@@ -75,6 +76,55 @@ describe('the Tab route and the OIL question put before a change', () => {
     expect(OILWAIT).toBe(null)
     const a = document.activeElement as HTMLElement
     expect(a.dataset.txt, 'the keys are back in the box he was typing in').toBe('ff:0.0.0.cs')
+  })
+
+  /* [LOCATE-ITEM-MARKS] (14 Nov 26) — CLOSED WITH ITS REASON, AND THIS IS THE PROOF. The read's question: should locate()
+     learn a list of the marks that name the item a button belongs to? The survey of every control a string redraw replaces
+     (sheetfocus.ts, above locate) found ONE whose first mark names only a kind shared by several items of one day — the
+     input's "→ Ground" / "→ Unavail" / "Reject" (`data-acc` = g, u or x) — and it already carries the input's own mark,
+     `data-acck`, which locate() adds to its search. Here the REAL buttons the week draws (html.ts accCtl, every one of its
+     shapes the demo week shows): each carries the input's mark, no two buttons of one day share a kind AND an input, and
+     each, after its day is drawn afresh, is found again as itself — never another input's button of the same kind. */
+  it('every accept / reject button the week draws names its input, and is found again as itself after a redraw', async () => {
+    /* the case the read's H1 was about — two inputs on one day offering the same kind of button: a twin of the first input
+       the week draws such a button for, filed under its own id */
+    const first = $('#eWeek .day button[data-acc]')
+    expect(first, 'the demo week draws an accept / reject button').toBeTruthy()
+    const src = INPUTS.find((x: any) => inpId(x) === first.dataset.acck)
+    expect(src, 'its input').toBeTruthy()
+    const twin = { ...structuredClone(src), iid: 'i-locate-twin' }
+    INPUTS.push(twin)
+    /* taken out again whatever happens, so a failing check here never leaves the twin for the tests after it */
+    try {
+      await act(async () => { notify() })
+      const btns = [...document.querySelectorAll<HTMLElement>('#eWeek .day button[data-acc]')]
+      expect(btns.length, 'the demo week draws accept / reject buttons').toBeGreaterThan(1)
+      const seen = new Set<string>()
+      for (const b of btns) {
+        expect(b.dataset.acck, 'each names its input').toBeTruthy()
+        const day = b.closest('.day')!.getAttribute('data-day')
+        const id = `${day}|${b.dataset.acc}|${b.dataset.acck}`
+        expect(seen.has(id), `two buttons of one day share a kind and an input: ${id}`).toBe(false)
+        seen.add(id)
+      }
+      const byDayKind = new Map<string, number>()
+      for (const b of btns) { const k = `${b.closest('.day')!.getAttribute('data-day')}|${b.dataset.acc}`; byDayKind.set(k, (byDayKind.get(k) || 0) + 1) }
+      expect([...byDayKind.values()].some(n => n > 1), 'some day holds two buttons of one kind, for two inputs').toBe(true)
+      for (let i = 0; i < btns.length; i++) {
+        const b = document.querySelectorAll<HTMLElement>('#eWeek .day button[data-acc]')[i]!   // afresh: the last redraw replaced it
+        const back = locate(b)
+        const dayEl = b.closest('.day') as HTMLElement
+        dayEl.innerHTML = dayEl.innerHTML   // the string redraw: every node of the day replaced by a new one
+        const found = back()
+        expect(found, 'found again').toBeTruthy()
+        expect(found).not.toBe(b)
+        expect(found!.closest('.day')?.getAttribute('data-day'), 'on its own day').toBe(dayEl.getAttribute('data-day'))
+        expect(`${found!.dataset.acc}|${found!.dataset.acck}`, 'as itself, never another input\'s button of its kind').toBe(`${b.dataset.acc}|${b.dataset.acck}`)
+      }
+    } finally {
+      INPUTS.splice(INPUTS.indexOf(twin), 1)
+      await act(async () => { notify() })
+    }
   })
 })
 

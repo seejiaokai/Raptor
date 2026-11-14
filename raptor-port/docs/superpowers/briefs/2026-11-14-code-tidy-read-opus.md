@@ -1,0 +1,14 @@
+# Job 2 (the night of 14 Nov 26) — the fresh, blind Opus read of commit b04870339
+
+Brief: `2026-11-14-code-tidy-read-brief.md` (beside this file). Saved by the coordinator (chat 72) as the reader returned it, condensed only in layout.
+
+## Findings: none
+1. The room rules' move — no look changes. The built bundle holds exactly the five old selectors, flattened (no `&`, each once); the 1340 and 821 conditions are word for word the same; `scheduler.css` imports 00→28, and every competing rule on `.inwrap`, `.intbl thead th`, `.med-body` is far lower in weight or sets other properties; no inline style; Leave War and Tracker sheets do not touch these classes. 18 CSS-reading and affected unit files pass (244 tests).
+2. The reason above `locate()` is true for every control that can take the keys (html.ts, board.ts, board-html.ts, palette-html.ts, oilmode.ts, pendlist.ts, mission-role-offer.ts scanned). Two loose spots, not findings: (a) week/board pucks take the keys and carry only `data-person` — a pilot on two waves of a day has two pucks; after an OIL question the keys return to his first visible puck, perhaps the other copy (Enter/Space do nothing on a puck; cost: the ring on the other copy, the next Tab from there); (b) the "To go out" lines' `data-plix`/`data-pltarget` are list positions, but nothing opens a sheet with the keys on one, so `locate()` never searches them — the comment lumps pendlist.ts in with "names its item".
+3. The new test is real: a mutant `sheetfocus.ts` without the `[data-acck=…]` match turns it red (and the existing H1 test). `e2e/medical.spec.ts` now compares the room to `--inpwin-room` itself — circular on its own (a wrong +16 would not fail), but the D1300 test still checks every card clears the window's real box, and the Inputs D1787 test the list.
+4. The corrected comments are true (pendlist against D338 and `engine/editlog.ts`; `dragging()` has no reader; cutdraft carries the sentence; the SchedBoard and weekglide pointers name real sections).
+
+## Tidiness note (filed, not fixed)
+- Written twice: the new `oilkeysback` test largely repeats the H1 test; its "case the read's H1 was about" comment twice; the twin input removed only at the end, not in a `finally`.
+- Left over: `ui-contracts.md` (D1300 "BUILT 24 Oct 26") still names `16-medical.css` as `.medview.med-room`'s home; `16-medical.css` and `e2e/medical.spec.ts:326` still say "as the Inputs list's room does (06-inputs.css)"; outside the changed lines, `engine/editlog.ts`'s head comment still says the log "clears on reload".
+- Harder to read: the only nested rule in the scheduler sheet — the test-only CSS readers (split by `([^{}]+)\{([^{}]*)\}`) see `.in-room .inwrap` with its `body:has(...)` parent lost (harmless today); the 25 header's "No other rule as specific sets these widths…" can go stale silently.

@@ -42,7 +42,8 @@
 
    PHONE ONLY, and only on a real week CROSS. Desktop lands instant — its arrows
    step weeks and the wide free-scroll week (multiple days visible) never showed
-   the single-screen flash (CLAUDE.md §Week navigation). Within-week day-to-day
+   the single-screen flash (.claude/rules/decisions/scheduler.md §Settled before this list, its "Week navigation"
+   lines). Within-week day-to-day
    swipes are untouched: this fires only on a Monday/Sunday landing, never on an
    ordinary scroll-hold repaint.
 

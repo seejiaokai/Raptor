@@ -481,10 +481,26 @@ body.in-cal{padding-bottom:0}
    runs up to a thin strip at the top of the screen (owner D537 — no large gap above a tall window) and scrolls inside.
    The two questions it can put — unsaved changes, and a field changed both ways — sit at the head of the form.
    ============================================================================================================ */
-/* ITS SIZE, ONCE ([INP-ROOM-TIDY], the fresh code read of 8 Nov 26): the window's width, and the room the Inputs list
-   (06-inputs.css) and the Medical tab (16-medical.css) make for it on a desktop — that width and its 16px from the
-   screen's edge — read from here, so the window and the two rooms cannot drift apart. */
+/* ITS SIZE AND THE ROOM IT ASKS FOR, ONCE ([INP-ROOM-TIDY], the fresh code read of 8 Nov 26; [INP-ROOM-TIDY-2], 14 Nov 26):
+   the window's width, and the room the Inputs list (06-inputs.css, why 1340 and why those three columns) and the Medical
+   tab (16-medical.css, why 821) make for it on a desktop — that width and its 16px from the screen's edge — read from
+   here, so the window and the two rooms cannot drift apart. The room is made only while the window stands where it
+   opens — not yet dragged, so no `data-placed` (floatwin.ts) — and the five rules that make it stand together here, under
+   this one comment; the window is drawn outside the page, so the test is on `body`. They are written flat, not nested
+   under one test: the test-only stylesheet readers split rules by their braces and would lose a nested parent. Moving
+   them here from 06-inputs.css and 16-medical.css changed no computed style on either page — checked 14 Nov 26 by the
+   before/after capture of every element (scripts/handpass/inp-room-css-capture.mjs); a later rule that sets these widths
+   or paddings is checked by running it again. */
 :root{--inpwin-w:min(430px,calc(100vw - 24px));--inpwin-room:calc(var(--inpwin-w) + 16px)}
+@media (min-width:1340px){
+  body:has(.floatwin.inpedwin:not([data-placed])) .in-room .inwrap{padding-right:var(--inpwin-room)}
+  body:has(.floatwin.inpedwin:not([data-placed])) .in-room .intbl thead th:nth-child(1){width:110px}
+  body:has(.floatwin.inpedwin:not([data-placed])) .in-room .intbl thead th:nth-child(2){width:140px}
+  body:has(.floatwin.inpedwin:not([data-placed])) .in-room .intbl thead th:nth-child(3){width:90px}
+}
+@media (min-width:821px){
+  body:has(.floatwin.inpedwin:not([data-placed])) .medview.med-room .med-body{padding-right:var(--inpwin-room)}
+}
 .floatwin.inpedwin{width:var(--inpwin-w)}
 .floatwin.inpedwin .win-body{padding:0}
 .inped-win{display:flex;flex-direction:column;min-height:0}
