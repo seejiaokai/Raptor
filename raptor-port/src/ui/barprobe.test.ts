@@ -241,6 +241,30 @@ describe('the ?barprobe trial switch (D2025)', () => {
     off()
   })
 
+  it('RANGE’s spring line: the window’s height only over the frames the page is sprung, and the frame before; cleared on a page change', () => {
+    const off = installBarProbe('?barprobe')
+    const step = (f: () => void) => { f(); window.dispatchEvent(new Event('scroll')); flush() }
+    const spring = () => panel()!.textContent!.split('\n').map(l => l.trim()).find(l => l.startsWith('spring')) ?? ''
+    flush()
+    /* an ordinary flick: Chrome folds and unfolds its toolbars, the page never sprung — the whole range moves, the spring's does not */
+    step(() => { winH = 845; scrollY = 200 })
+    step(() => { winH = 874; scrollY = 300 })
+    expect(line('RANGE')).toMatch(/win 845-874\b/)
+    expect(spring()).toMatch(/^spring —$/)
+    /* sprung past the foot (page 1341, window 874: the foot at 467) while the window changes: read */
+    step(() => { scrollY = 467 })                       // the frame before the spring, window 874
+    step(() => { winH = 845; scrollY = 500 })           // sprung: foot now 1341 − 845 = 496, past 4
+    step(() => { winH = 860; scrollY = 490 })           // still sprung: foot 481, past 9
+    step(() => { winH = 874; scrollY = 300 })           // back inside
+    expect(spring()).toMatch(/^spring win 845-874$/)
+    /* another page: cleared */
+    document.querySelector('#page-quals')!.classList.remove('on')
+    document.querySelector('#shell')!.insertAdjacentHTML('beforeend', '<section class="page on" id="page-inputs"></section>')
+    step(() => {})
+    expect(spring()).toMatch(/^spring —$/)
+    off()
+  })
+
   it('stands above Approvals’ slim bar while it shows, back in the corner when it goes', () => {
     const off = installBarProbe('?barprobe')
     flush()

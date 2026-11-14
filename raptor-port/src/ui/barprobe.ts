@@ -22,7 +22,10 @@
      RANGE  the extremes since this page opened: the window's lowest and highest height, the visible screen's lowest
             height and its largest pan (@), the furthest sprung past the top, and the furthest past the foot with that
             frame's scroll, page and window — the readings that tell a toolbar's move and a spring apart even when the
-            bar never moved. WORST and RANGE clear when the page changes.
+            bar never moved. Its last line, `spring win lo-hi` (or `spring —`), is the window's lowest and highest height
+            over only the frames sprung past the top or foot and the frame just before each spring: cause (iii), the
+            window resized mid-spring, is read from it, since the whole-page `win` range also moves whenever Chrome folds
+            its toolbars on an ordinary flick. WORST and RANGE clear when the page changes.
    The panel sits in the bottom right corner, above Approvals' slim bar while that shows, so its Back and Close stay clear.
    Nothing here changes what the app does; it only reads. Without the switch nothing is drawn and nothing listens. The
    same pattern as `?swdebug` (ui/swdebug.ts), `?kbdebug` (ui/kbscroll.ts) and `?savefail` (storage/boot.ts, D1666). */
@@ -32,7 +35,7 @@ export const barProbeOn = (search: string): boolean => /[?&]barprobe(=[^&]*)?(&|
 
 type Frame = { t: number, win: number, visH: number, visTop: number, scroll: number, page: number, past: number, foot: number,
   bar: number, barRaw: number, mark: number, row: number | null, where: string }
-type Range = { winLo: number, winHi: number, visLo: number, pan: number, top: number, foot: Frame }
+type Range = { winLo: number, winHi: number, visLo: number, pan: number, top: number, foot: Frame, springLo: number | null, springHi: number | null }
 
 const r = (n: number) => Math.round(n)
 /* the page on screen: its section, and on the Leave War which of its own pages (grid, Approvals, Balances, OIL) */
@@ -93,15 +96,15 @@ export function installBarProbe(search: string = typeof location !== 'undefined'
   Object.assign(el.style, { position: 'fixed', right: '0', bottom: '0px', zIndex: '2147483647', pointerEvents: 'none', font: '10px/1.3 monospace', color: '#7CFC7C', background: 'rgba(0,0,0,.8)', padding: '2px 4px', whiteSpace: 'pre', maxWidth: '75vw', overflow: 'hidden' })
   document.body.appendChild(el)
 
-  let where = '', t0 = 0, worst: Frame | null = null, range: Range | null = null, loose = 0, raf = 0, until = 0, text = ''
+  let where = '', t0 = 0, worst: Frame | null = null, range: Range | null = null, prev: Frame | null = null, loose = 0, raf = 0, until = 0, text = ''
   const frame = () => {
     raf = 0
     const now = performance.now()
     const f = read(now)
-    if (f.where !== where) { where = f.where; t0 = now; worst = null; range = null; loose = 0 }
+    if (f.where !== where) { where = f.where; t0 = now; worst = null; range = null; prev = null; loose = 0 }
     if (Math.abs(f.bar) >= 0.5) loose++
     if (!worst || Math.abs(f.bar) > Math.abs(worst.bar)) worst = f
-    if (!range) range = { winLo: f.win, winHi: f.win, visLo: f.visH, pan: f.visTop, top: Math.min(0, f.scroll), foot: f }
+    if (!range) range = { winLo: f.win, winHi: f.win, visLo: f.visH, pan: f.visTop, top: Math.min(0, f.scroll), foot: f, springLo: null, springHi: null }
     else {
       range.winLo = Math.min(range.winLo, f.win); range.winHi = Math.max(range.winHi, f.win)
       range.visLo = Math.min(range.visLo, f.visH)
@@ -109,6 +112,17 @@ export function installBarProbe(search: string = typeof location !== 'undefined'
       range.top = Math.min(range.top, f.scroll)
       if (f.foot > range.foot.foot) range.foot = f
     }
+    /* the window's height over the spring alone — the frames sprung past the top or foot, and the frame just before each
+       spring began — since Chrome folds its toolbars on any flick, so the whole-page range moves without any spring */
+    if (f.past !== 0) {
+      const add = (w: number) => {
+        range!.springLo = range!.springLo === null ? w : Math.min(range!.springLo, w)
+        range!.springHi = range!.springHi === null ? w : Math.max(range!.springHi, w)
+      }
+      if (prev && prev.past === 0) add(prev.win)
+      add(f.win)
+    }
+    prev = f
     const g = range.foot
     const next = `${f.where}  ${((now - t0) / 1000).toFixed(1)}s\n` +
       `win ${r(f.win)}  vis ${r(f.visH)} @${r(f.visTop)}\n` +
@@ -117,7 +131,8 @@ export function installBarProbe(search: string = typeof location !== 'undefined'
       `WORST ${r(worst.bar)} at ${((worst.t - t0) / 1000).toFixed(1)}s  loose ${loose}f\n` +
       ` ${nums(worst)}\n` +
       `RANGE win ${r(range.winLo)}-${r(range.winHi)}  vis ${r(range.visLo)}+  @${r(range.pan)}\n` +
-      ` top ${r(range.top)}  foot ${r(g.foot)} s${r(g.scroll)} p${r(g.page)} w${r(g.win)}`
+      ` top ${r(range.top)}  foot ${r(g.foot)} s${r(g.scroll)} p${r(g.page)} w${r(g.win)}\n` +
+      (range.springLo === null ? ' spring —' : ` spring win ${r(range.springLo)}-${r(range.springHi!)}`)
     if (next !== text) { text = next; el.textContent = next }
     const bottom = footClear()
     if (el.style.bottom !== bottom) el.style.bottom = bottom

@@ -77,6 +77,7 @@ WORST 0 at 0.0s  loose 0f               the largest bar gap since the page opene
  win 874 vis 874@0 scroll 0 past 0      that worst frame's own numbers
 RANGE win 874-874  vis 874+  @0         since the page opened: the window's lowest-highest, the visible screen's lowest
  top 0  foot -467 s0 p1341 w874          and its largest pan · furthest past the top · furthest towards/past the foot
+ spring —                               the window's lowest-highest over the sprung frames only ("spring win 845-874")
 ```
 
 **The signs.** `bar +N` = the bar drawn N below the visible top, the page showing above it — his fault's look; `bar −N` =
@@ -102,8 +103,8 @@ and the same pages without the switch, `noprobe-*.png`.
 flicks hard to the very foot, three times each, on Approvals, Quals, Edit Schedule, the Leave War grid and Balances, in
 Chrome; then the same on Approvals in Safari for comparison. One recording per page is enough. WORST holds the frame of the
 largest bar gap, which is cause (i)'s mark; causes (ii) and (iii) may never move `bar`, so RANGE holds what tells them
-apart — the window's lowest and highest height, the visible screen's pan and how far past the foot it sprang — even if the
-recording misses the frame.
+apart — the window's height over the spring alone (`spring win`), the visible screen's pan and how far past the foot it
+sprang — even if the recording misses the frame.
 
 ## 4. What the code suggests, and the candidate cures
 
@@ -119,8 +120,10 @@ page makes the two moments meet; a long page keeps them apart. The readings deci
   Edge.
 - **(ii) the page is not told:** `bar` stays 0 (`WORST` 0) while the recording shows it 29 low — WebKit's own drawing of
   fixed things lags Chrome's bar; nothing the page can measure sees it.
-- **(iii) the window is resized mid-spring:** `RANGE win` spreads by about 29 (say 845-874) — Chrome changes the page's
-  height as its bar unfolds, and the fixed bar is re-placed a frame late.
+- **(iii) the window is resized mid-spring:** the spring range, `spring win`, spreads by about 29 (say `spring win
+  845-874`) — Chrome changes the page's height as its bar unfolds while the page is sprung, and the fixed bar is re-placed
+  a frame late. Read from the spring range only: the whole-page `RANGE win` also moves whenever Chrome folds its toolbars
+  on an ordinary flick, spring or none.
 
 ### The candidate cures
 
@@ -141,7 +144,7 @@ whether Edit Schedule at its very foot and the Leave War grid fail too — the t
 |---|---|
 | Approvals or Quals: `WORST` about +29, its frame's `vis @` about −29 (or the bar's own `top` 29), `past` above 0 | (i), Edge's cause exactly: B cures it; D was tried; A would, at the cost he refused |
 | `WORST` 0 while the recording shows the bar low | (ii): the page cannot see it — only B or C, which stop relying on Chrome to place fixed things |
-| `RANGE win` (and `vis`) spread by about 29 | (iii): Chrome resizing the page mid-spring — B or C |
+| `spring win` spread by about 29 (the whole-page `RANGE win` alone does not count — it moves on any flick as Chrome folds its toolbars) | (iii): Chrome resizing the page mid-spring — B or C |
 | `past` 0 in the worst frame, or `RANGE foot` at or below 0 | the spring is not the trigger, Chrome's bar alone is — A would not cure it |
 | Edit Schedule flicked to its very foot: `WORST` 0 | the short page is the trigger — C is a real option |
 | Edit Schedule or the Leave War grid: `WORST` about 29 | every window-scrolled page has it — B, one job with [PAGE-FOOT-FLASH] |
