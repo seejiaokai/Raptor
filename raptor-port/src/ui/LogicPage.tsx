@@ -18,6 +18,22 @@ import { useVersion } from './useStore'
 import { lgSettings, lgChecks, lgChkName, lgKinds, LG_TIER, type LgSet, type LgChk } from './logic-html'
 import { setInpSet, setSansSet } from './pops'
 import { missionTracking, setMissionTracking } from '../engine/insights-config'
+import { KEPT_RULE_KEYS } from '../engine/faceattrs'
+
+/* The strip's two kinds of changed setting (the blind code reads of 15 Nov 26, the Opus read's F1): a published day keeps
+   every setting its own checks read (KEPT_RULE_KEYS, the SC MAIN clash table) and its OIL's "Full day of OIL" (D2005,
+   D2044); the Inputs and SANS late cut-offs grade an INPUT, not a day, so a published day never keeps them and its LATE
+   marks move at once (faceattrs.ts, D742). The note says only what is true of the settings actually changed. */
+const LATE_CUT_KEYS = ['inputLead', 'inputCutMode', 'inputCutWd', 'inputCutWeeks', 'sansLead', 'sansCutMode', 'sansCutWd', 'sansCutWeeks']
+const keptOffCount = () => KEPT_RULE_KEYS.filter(k => ruleOff(k)).length + Object.keys(KIND_LABEL).filter(kindOff).length
+  + (ruleOff('oilFullMin') ? 1 : 0)
+const lateCutOff = () => LATE_CUT_KEYS.some(k => ruleOff(k))
+/* the strip's words after its count — each sentence only where it is true of what is changed */
+const offNote = (keptOff: number, cutOff: boolean, admin: boolean) =>
+  (keptOff ? ` The schedule is checked against ${keptOff > 1 ? 'them' : 'it'} now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again.`
+    + ' If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending.' : '')
+  + (cutOff ? ' A changed late cut-off moves the LATE marks at once, on published days too.' : '')
+  + (admin ? '' : ' Only an admin can change them.')
 
 /* the reference's ruleApply: write, persist, re-run the engine, repaint */
 function ruleApply() {
@@ -194,6 +210,7 @@ export function LogicPage() {
   const off = rulesOffCount()
   /* W2: the strip speaks of RULES — the settings a check reads; Reset speaks of every setting */
   const checkedOff = rulesCheckedOffCount()
+  const keptOff = keptOffCount(), cutOff = lateCutOff()
 
   /* the RULES MODIFIED stamp on the schedule pages is gone (D1098, 21 Oct 26): a changed setting is
      said here, by the strip below, and nowhere on the schedule */
@@ -444,9 +461,7 @@ export function LogicPage() {
           lost — so the first sentence names the OIL with the settings, and the second refers back to it */}
       <div className="lgoff" id="lgOff" hidden={!checkedOff}>
         {checkedOff ? <><b>{checkedOff} setting{checkedOff > 1 ? 's' : ''} changed from the squadron standard.</b>{' '}
-          {` The schedule is checked against ${checkedOff > 1 ? 'them' : 'it'} now.`} A published day keeps the settings it was published under, and the OIL they gave it, until it is published again.
-          {' If a changed OIL setting would change that OIL, the day reads pending.'}
-          {admin ? '' : ' Only an admin can change them.'}</> : null}
+          {offNote(keptOff, cutOff, admin)}</> : null}
       </div>
       <div className="lgwrap" id="lgBody" ref={bodyRef} dangerouslySetInnerHTML={bodyHTML} />
     </>

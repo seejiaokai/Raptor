@@ -420,7 +420,12 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Where that sortie has **no landing typed** (blank or "TBD" — its end borrows
   the take-off, D1990) the message reads `took off HH:MM with no landing typed,
   +Nh debrief assumed → …`, never "landed" at the take-off time (D2010, 14 Nov
-  26; pin: `rulescheck-batch2.test.ts`). A **shift** ends at its written time with no debrief tail, so it keeps the
+  26; pin: `rulescheck-batch2.test.ts`). The same reading reaches the two other
+  sentences that would call that take-off a landing (the blind code reads, 15 Nov
+  26): the debrief advisory, which the ALL AVAIL window's reason shares, reads
+  `(take-off + 2h, no landing typed)` and the tight turn `N min take-off→next T/O,
+  no landing typed`; one source, the event's `noLd` (events.ts), written only when
+  true (pin: `rulescheck-batch2.test.ts` part 2b). A **shift** ends at its written time with no debrief tail, so it keeps the
   plain `ended HH:MM`. The tail is a port-authored string parity compares, so
   `refwin.ts:rebrief()` tracks the same landing and prints the identical
   branch on the reference; pinned in `crewrest-ui.test.ts`.
@@ -3419,7 +3424,8 @@ stay LIVE (below), which the face draws from today and which never make the day 
   pass** (Edit Schedule, the board, the crew picker) judges a published day with NO change waiting — content, filings,
   inputs, both OIL entries, a hide, the placeholder roster and the printed brief all as issued — by its kept values too
   (`validate.ts untouchedKept`, laid on the day between passes by `faceattrs.ts keepRulesOn`; `weekctx.ts
-  keepUntouchedRules` for the neighbours, with the people and the printed brief), so it shows the same as View-only
+  keepUntouchedRules` for the neighbours, with the people, the printed brief and — Astra's blind read, 15 Nov 26 — an
+  OIL setting change that would change the day's OIL, `oilev.ts oilRuleShift`), so it shows the same as View-only
   Sched; once the day has any change waiting its working copy reads today's settings — it previews the next amendment.
   The crew picker asks each day by the settings the validator judges it by: the day dropped on by today's (the drop
   edits it), every other day by its own (`runIfPlaced`, `restIfPlaced`'s forward probes). The ALL AVAIL window's

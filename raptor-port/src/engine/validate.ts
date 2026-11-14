@@ -206,7 +206,8 @@ const lineWord=(label:any)=>{const t=String(label==null?'':label).trim(); return
 export const noBriefSays=(lg:any,what:string)=>{const [bs,bt]=legBriefWin(lg)
   return `No time for the ${lineWord(lg.label)}flight brief — ${what} sits inside ${hm24(bs)}–${hm24(bt)} (brief ${hm24(bs)})`}
 export const debriefSays=(lg:any,what:string)=>{const [ls,de]=legDebriefWin(lg)
-  return `Not enough time to attend the ${lineWord(lg.label)}debrief — ${what} sits inside ${hm24(ls)}–${hm24(de)} (land + ${lgT(VCONF.debrief)})`}
+  /* D2010's reading: with no landing typed the window starts at the take-off (events.ts `noLd`) and says so */
+  return `Not enough time to attend the ${lineWord(lg.label)}debrief — ${what} sits inside ${hm24(ls)}–${hm24(de)} (${lg.noLd?'take-off':'land'} + ${lgT(VCONF.debrief)}${lg.noLd?', no landing typed':''})`}
 
 /* THE SAME FOR A SIM ([CROWD-SIM-BRIEF], phase 7): the two sentences the pass below used to build inline, lifted so the
    ALL AVAIL window says them in the list's own words. `sw` is one of the day's sim windows (events.ts simwin). The
@@ -525,7 +526,7 @@ function validateCore(){
         if(rawEnd==null||!isFinite(rawEnd))return;
         const end=rawEnd+offset;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevFlyNoLd[e.id]=e.kind==='fly'&&Number.isNaN(e.report)&&isFinite(e.to); prevSource[e.id]=source;}
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevFlyNoLd[e.id]=e.kind==='fly'&&!!e.noLd; prevSource[e.id]=source;}
       });
       /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
          "everything in duty and commitments affects crew rest… do not
@@ -803,7 +804,7 @@ function validateCore(){
            which is not a turn at all. It was reported as one, carrying a
            negative minute count ("Tight turn VL→VL: -85 min"), and the hard
            clash below now speaks for that case instead (owner, 11 Aug 26). */
-        if(turn>=0&&turn<need){markChip(di,id,'TT','TURN');add('adv','TURN',[id],`Tight turn ${lineName(es[i].label)}→${lineName(es[i+1].label)}: ${turn} min land→next T/O (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`,es[i].key);} }
+        if(turn>=0&&turn<need){markChip(di,id,'TT','TURN');add('adv','TURN',[id],`Tight turn ${lineName(es[i].label)}→${lineName(es[i+1].label)}: ${turn} min ${es[i].noLd?'take-off→next T/O, no landing typed':'land→next T/O'} (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`,es[i].key);} }
     });
     /* C — two commitments at the same time for one person.
        Sortie-vs-sortie is the tight-turn rule's business, not this one.

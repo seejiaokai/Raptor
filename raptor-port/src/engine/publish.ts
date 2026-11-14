@@ -750,7 +750,8 @@ function freezeWarn(snap:any,di:number){ if(!HOOKS.issuedWarn||!snap)return; con
   /* …and what else of the day's face is NOT the day's own data (Astra's plan read #3): the qualifications, seat and
      posting of every man on it (the puck's CAT letter and colour) and the rule value it prints (a blank brief's time).
      The face, the CSV and the print DRAW these as issued (engine/faceattrs.ts — Astra's code read #2; the brief time
-     is kept with the day, D186, and every setting its checks read since D2005 — "no rule versioning" set aside, D2005; the guide corrected by D2024) and they are
+     is kept with the day, D186, and every setting its checks read since D2005, though of those only the printed brief is
+     compared, below — "no rule versioning" set aside, D2005; the guide corrected by D2024) and they are
      COMPARED, so a change reads pending instead of moving the published face silently.
      And the ROSTER the day went out with (`ros`, Astra's second read #3): the aircrew the day panel's "free all day"
      counts. Drawn as issued, NOT compared — a man joining the squadron would otherwise make every published day pending

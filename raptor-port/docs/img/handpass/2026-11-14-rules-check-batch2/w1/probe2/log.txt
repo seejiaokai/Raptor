@@ -1,0 +1,11 @@
+adders data-wvadd=4 | + Wave
+data-dradd=4.0 | + Row
+data-sradd=4.amt | + Row
+data-sradd=4.oft | + Row
+data-gradd=4 | + Item
+wave menu undefined= | =Flying wave | sc=SC | avalon=AVALON | bb=BB
+friday warns {"head":"No conflicts flagged for Friday ✓","lines":[{"cls":"wln ok","ix":null,"hid":false,"struck":false,"text":"No conflicts flagged for this day ✓","btn":""}]}
+week warn {"head":"NO STRIP","items":[]}
+free on Friday bane:Ranger: slipway:Drifter: dj:Ace: nact:Warden: prowler:Hunter: pump:Piston: slash:Blade: harpoon:Trident: snap:Cinch: taipan:Cobra: mamba:Sidewinder: chaps:Forge: boosh:Havoc: beams:Comet: dice:Reaper: split:Vandal: ignite:Torch: bruise:Gambit: casper:Outlaw: vinci:Zenith: pike:Nomad: romeo:Rebel: salsa:Saint: ipman:Jester: fantom:Diesel: vegas:Vapor: krait:Kraken: haowen:Talisman: prism:Recon: freak:Echo: wolf:Static: dirty:Relay: stuff:Scope: glass:Basher: drill:Ledger: nasty:Quill: pain:Rune: ammo:Cinder: rocky:Hex: divot:Vector: spaceman:Dash: riddler:Ghost: shrek:Wisp: xray:Ryder: psy:Cutter: plasma:Fable: sufa:Grit: cards:Marlin: wrangler:Otter: badger:Pixel: waldo:Scribe: nick:Tally: bullet:Zulu: torque:Ratchet: spanner:Cotter: gizmo:Widget: allavail:ALL AVAIL: all:ALL:
+Friday day keys dow,dt,wc,notes,allhands,waves,sims,dutywaves,ground
+errors: []

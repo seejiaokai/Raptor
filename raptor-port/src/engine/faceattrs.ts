@@ -66,7 +66,8 @@ export function withKeptRules<T>(days: { d: any, rv: any }[], fn: () => T): T {
 /* EVERY LOGIC SETTING A DAY'S OWN CHECKS READ (owner D2005, 12 Nov 26 — "a published day is checked by all the Logic
    settings it was published under"): the values an issued version keeps (publish.ts freezeWarn → `snap.rv`), the SC MAIN
    clash table with them. Not kept, so read live: "Full-day OIL threshold" — the OIL block keeps its own three values (oilev.ts), so a
-   published day's OIL keeps it and a change reads pending until the day is published again (D592 (4), D2044); the words
+   published day's OIL keeps it and a change reads pending where it would write anyone's OIL record differently, until
+   the day is published again (D592 (4), D2044); the words
    "+ In-time" fills in (a text, no check); the Inputs and SANS cut-offs (they grade an input, not a day); and the two
    unused settings. */
 export const KEPT_RULE_KEYS = ['briefLead', 'step', 'dekit', 'tightTurn', 'crewRest', 'debrief', 'reportLead', 'longDay',

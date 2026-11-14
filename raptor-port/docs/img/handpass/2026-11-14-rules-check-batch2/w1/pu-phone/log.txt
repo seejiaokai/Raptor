@@ -1,0 +1,20 @@
+Ranger filed {"added":1,"asked":["document"],"hasPerson":0}
+PASS  PU1a Ranger files leave on the Inputs page: it is added  {"added":1,"rec":true}
+PASS  PU1b the leave shows on the Inputs page  true
+RECORDED  PU1c Leave War page opens for Ranger (RECORDED, no error)  142 TALON ↶ ↷ Grid Balances OIL VIEW MY LEAVE LVE 11.5 · OIL 0 · 5 pending › ▸ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE SEP TUE 01 WED 02 THU 03 FRI 04 SAT 05 SUN 06 MON 07 TUE 08 WED 09 THU 10 FRI 11 SAT 12 SUN 13 MON 14 TUE 15 
+board warnings: ["Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 plain user"]
+PASS  PU2a admin puts Ranger on BRIEFING: board warns "On leave + planned"/"On leave but tasked — BRIEFING"  ["Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 plain user"]
+PASS  PU2b board name "planned" not "flying"  
+board day details: {"error":"no door: #schedBoard .day[data-day=\"4\"] [data-dayinfo=\"4\"]"}
+PASS  PU3a hiding the warning: it is marked hidden / struck on the board  [[true,true]]
+PASS  PU3b Undo brings the warning back live  [[false,false]]
+publish {"pressed":true,"which":"data-beak","signs":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"}}
+Ranger View-only Friday strip: ["On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 pla"]
+PASS  PU6a Ranger sees the published warning with the "planned" name  ["On leave + planned Ranger — On leave but tasked — BRIEFING —"]
+PASS  PU6b Ranger day details names the check "planned"  ✓ Published — APPROVED AL VERSIONS COVERING FRIDAY No amendment has touched this day yet WHAT THIS DAY IS TASKING Waves 0 Formations 0 Aircraft lines 0 Sim rows 2 Duties 2 Ground items 3 Squadron-wide
+window closes: [["ranger dd","Close","closed"],["ranger dd","x","closed"],["ranger dd","Escape","closed"],["ranger dd","outside","closed"]]
+PASS  PU every window closed each way  []
+errors []
+PASS  PU no console/page errors  
+errors: []
+DONE 10 PASS 0 FAIL 1 OTHER of 11

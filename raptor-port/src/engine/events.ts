@@ -406,9 +406,15 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
             /* D1996 (11 Nov 26): a standby row that FLIES is checked like a sortie — `flies` marks it, written only when
                true so every other event is as it was; validate.ts reads it for the turns and the clash grading */
             const fliesRow=shiftLine&&saFlies(w,f,a);
+            /* D2010's reading (the blind code reads of 15 Nov 26): a sortie whose landing is blank or not a time
+               ("TBD") stands its landing on the take-off — ldM above, and crew rest's own borrow in validate.ts — so
+               every sentence that would call that time a landing (the debrief window, the tight turn, the crew-rest
+               tail) says "take-off … no landing typed" instead. One source: the same test the borrow makes, written
+               only when true so every other event is as it was. */
+            const noLd=!shiftLine&&isFinite(toM)&&!isFinite(toMin(f.ld||''));
             fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,
               lateShow:!shiftLine&&lateShowOf(a.rmks),   // this crew shows at the brief, not at the in-time
-              shift:shiftLine,...(viaRally?{viaRally:true}:{}),...(fliesRow?{flies:true}:{}),label:lineLbl,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
+              shift:shiftLine,...(viaRally?{viaRally:true}:{}),...(fliesRow?{flies:true}:{}),...(noLd?{noLd:true}:{}),label:lineLbl,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
             /* the slot key this event came off — so the crew picker can ask
                "is he busy at this hour" without counting the very slot it is
                about to plant him into (he occupies it in a swap or a re-test) */
@@ -419,7 +425,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
                A sortie with no take-off or no landing typed (ldM above borrows its take-off) is unfinished: NaN, so workSpan's own
                guard counts it nowhere, as OIL counts it nothing (fltOilWin) — Astra's and Sol 6.1's reads. */
             events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report:shiftLine?report:(parseHM(f.to)==null||parseHM(f.ld)==null?NaN:intime),brief:briefM,label:lineLbl,
-              kind:shiftLine?'shift':'fly',...(fliesRow?{flies:true}:{}),slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
+              kind:shiftLine?'shift':'fly',...(fliesRow?{flies:true}:{}),...(noLd?{noLd:true}:{}),slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
           });
         });
         /* an SC formation carries its shift window so the SC DAY / SC NIGHT

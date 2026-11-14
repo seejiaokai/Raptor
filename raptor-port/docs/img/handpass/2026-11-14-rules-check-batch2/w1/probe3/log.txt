@@ -1,0 +1,13 @@
+filed 1 [["Appointment","Jul 16","Medical / PHA"],["LL","Jan 19",""],["LL","Jan 26",""]]
+editor still open? inpEditPop:false inpEditTitle:false inpEditClose:false inpEditDel:false inpEditCancel:false inpEditSave:false
+logic leafs DIV.lgwrap :: The checksLeave, downchits and inputsWarning: On l
+SPAN.lgnm :: Warning: On leave + planned
+SPAN.lgwhy :: A man on leave is planned for a flight, sim, duty 
+SPAN.lgnm :: Warning: Downchit + planned
+SPAN.lgwhy :: A medically down man is planned. On ATT B he may s
+SPAN.lgwhy :: Any other input clashes with a planned slot: a cou
+SPAN.lgnm :: Advisory: SANS availability — planned outside the 
+SPAN.lgwhy :: A SANS man planned outside the event or the hours 
+SPAN.lgwhy :: It shows the most serious flag, in this order, and
+SPAN.lgc :: AAdvisory — on shift and also down for a ground ev
+errors: []

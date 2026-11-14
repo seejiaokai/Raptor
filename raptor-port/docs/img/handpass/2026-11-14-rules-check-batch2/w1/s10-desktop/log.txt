@@ -1,0 +1,50 @@
+fixture rows {"ri":2,"put":"ok"} {"ri":3,"put":"ok"}
+baseline board {"head":"⚠ 2 issues · 2 warnings","lines":[{"ix":0,"hid":false,"struck":false,"btn":"✕","text":"Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave"},{"ix":1,"hid":false,"struck":false,"btn":"✕","text":"Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit"}],"rings":{"bane":["RED","RED"],"dice":["RED","RED"]}}
+PASS  S10.1 baseline: two live warnings, both pucks ringed red  {"bane":["RED","RED"],"dice":["RED","RED"]} ⚠ 2 issues · 2 warnings
+week before hide {"head":"⚠ 2 issues · 2 warnings ▼","items":[{"hid":false,"gone":false,"text":"On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave ✕"},{"hid":false,"gone":false,"text":"Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit ✕"}]}
+week after hide {"head":"⚠ 1 issue · 1 warning ▲","items":[{"hid":true,"gone":false,"text":"On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave"},{"hid":false,"gone":false,"text":"Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit ✕"}]}
+PASS  S10.2a week: Ranger's line stays, struck/subdued (hid), name "planned"  [[true,"On leave + planned Ranger — On leave but"],[false,"Downchit + planned Reaper — Downchit but"]]
+PASS  S10.2b week head counts one warning (hidden excluded)  ⚠ 1 issue · 1 warning ▲
+PASS  S10.2c board: the same line struck with the Reset arrow; his puck plain, Reaper still red  {"ix":0,"hid":true,"struck":true,"btn":"reset","text":"Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave"} {"bane":["plain","plain"],"dice":["RED","RED"]}
+day details with one hidden: ["Warning · On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave","Warning · Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit"] | Draft — not yet published 13 changes AL VERSIONS COVERING FRIDAY No amendment has touched this day yet WHAT THIS DAY IS TASKING Waves 0 Formations 0 Aircraft lines 0 Sim rows 2 Duties 2 Ground items 4 Squadron-wide 3 Aircrew tasked 7 Leave / downchit 4 Free all day 49 ISSUES ON THIS DAY 1 WARNING Wa
+PASS  S10.2d day details: lists with the new names; the hidden one reads as hidden or is excluded (RECORDED)  Warning · On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave / Warning · Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit
+close day details Escape: closed
+fixture rows {"ri":2,"put":"ok"} {"ri":3,"put":"ok"}
+baseline board {"head":"⚠ 2 issues · 2 warnings","lines":[{"ix":0,"hid":false,"struck":false,"btn":"✕","text":"Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave"},{"ix":1,"hid":false,"struck":false,"btn":"✕","text":"Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit"}],"rings":{"bane":["RED","RED"],"dice":["RED","RED"]}}
+PASS  S10.1 baseline: two live warnings, both pucks ringed red  {"bane":["RED","RED"],"dice":["RED","RED"]} ⚠ 2 issues · 2 warnings
+week before hide {"head":"⚠ 2 issues · 2 warnings ▼","items":[{"hid":false,"gone":false,"text":"On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave ✕"},{"hid":false,"gone":false,"text":"Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit ✕"}]}
+week after hide {"head":"⚠ 1 issue · 1 warning ▲","items":[{"hid":true,"gone":false,"text":"On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave"},{"hid":false,"gone":false,"text":"Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit ✕"}]}
+PASS  S10.2a week: Ranger's line stays, struck/subdued (hid), name "planned"  [[true,"On leave + planned Ranger — On leave but"],[false,"Downchit + planned Reaper — Downchit but"]]
+PASS  S10.2b week head counts one warning (hidden excluded)  ⚠ 1 issue · 1 warning ▲
+PASS  S10.2c board: the same line struck with the Reset arrow; his puck plain, Reaper still red  {"ix":0,"hid":true,"struck":true,"btn":"reset","text":"Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave"} {"bane":["plain","plain"],"dice":["RED","RED"]}
+day details with one hidden: ["Warning · On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave","Warning · Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit"] | Draft — not yet published 13 changes AL VERSIONS COVERING FRIDAY No amendment has touched this day yet WHAT THIS DAY IS TASKING Waves 0 Formations 0 Aircraft lines 0 Sim rows 2 Duties 2 Ground items 4 Squadron-wide 3 Aircrew tasked 7 Leave / downchit 4 Free all day 49 ISSUES ON THIS DAY 1 WARNING Wa
+PASS  S10.2d day details: lists with the new names; the hidden one reads as hidden or is excluded (RECORDED)  Warning · On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave / Warning · Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit
+close day details Escape: closed
+PASS  S10.3 Undo puts the warning back live  {"ok":true} {"bane":["RED","RED"],"dice":["RED","RED"]} live 2
+PASS  S10.4a hidden from the board: struck with Reset  [[true,"reset"],[false,"✕"]]
+PASS  S10.4b restored through the Reset arrow: live again, puck red  {"bane":["RED","RED"],"dice":["RED","RED"]}
+PASS  S10.5a both hidden: no puck ringed, both lines still reachable (struck, Reset)  [[true,"reset"],[true,"reset"]] No conflicts flagged for Friday ✓
+week with both hidden {"head":"✓ No issues ▲","items":[{"hid":true,"gone":false,"text":"On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave"},{"hid":true,"gone":false,"text":"Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit"}]}
+PASS  S10.5b week: list still reachable, both rows there, struck  ✓ No issues ▲ | [[true,"On leave + planned Ranger — On"],[true,"Downchit + planned Reaper — Do"]]
+PASS  S10.5c after a reload both still hidden (saved)  [[true,"On leave + planned Ranger — On"],[true,"Downchit + planned Reaper — Do"]]
+before publishing: live 2
+publish {"pressed":true,"which":"data-beak","signs":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"}}
+PASS  S10.6 the day is published with both warnings live  {"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"} {"tag":"ORIG","pending":"25 changes","beak":null,"alpub":null,"signState":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","signs":["— name —","— name —","— name —","— name —"]}
+head after hiding in the working copy {"tag":"ORIG","pending":"1 pending","beak":null,"alpub":{"text":"Publish AL1","disabled":true},"signState":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","signs":["— name —","— name —","— name —","— name —"]}
+PASS  S10.7a hiding a published day's warning is pending (head shows a pending count)  {"tag":"ORIG","pending":"1 pending","beak":null,"alpub":{"text":"Publish AL1","disabled":true},"signState":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","signs":["— name —","— name —","— name —","— name —"]}
+View-only before the amendment is published: ⚠ 2 issues · 2 warnings ▲ [{"cls":"witem hard","text":"On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave"},{"cls":"witem hard","text":"Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit"}]
+PASS  S10.7b View-only still shows the issued warning (live)  witem hard On leave + planned Ranger — On / witem hard Downchit + planned Reaper — Do
+Insights before amendment: {"leave":2,"down":3,"fri":2,"flying":false}
+amendment publish {"pressed":true,"which":"data-alpub","signs":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"}}
+View-only after the amendment: ⚠ 1 issue · 1 warning ▲ [{"cls":"witem hard hid","text":"On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave"},{"cls":"witem hard","text":"Downchit + planned Reaper — Downchit but tasked — BRIEFING — reason: rcb2 w1 s10 downchit"}]
+PASS  S10.7c after publishing the amendment View-only shows Ranger's warning hidden  [["witem hard hid","On leave + planned Ranger — On"],["witem hard","Downchit + planned Reaper — Do"]]
+Insights after amendment: {"leave":1,"down":3,"fri":1,"flying":false}
+PASS  S10.7d Insights count of "On leave + planned" falls by one after the amendment (RECORDED before/after)  before {"leave":2,"down":3,"fri":2,"flying":false} after {"leave":1,"down":3,"fri":1,"flying":false}
+Reaper's BRIEFING row index [3]
+week after removing the cause: {"head":"⚠ 1 to clear once signed ▲","items":[{"hid":true,"gone":false,"text":"On leave + planned Ranger — On leave but tasked — BRIEFING — reason: rcb2 w1 s10 leave"},{"hid":false,"gone":true,"text":"Downchit + planned Reaper goes away once signed"}]}
+PASS  S10.8 the removed warning reads "goes away once signed" with the new name, no restore control  Downchit + planned Reaper goes away once signed
+PASS  S10.8b the "gone" row carries no hide/restore button  buttons 0
+errors []
+PASS  S10 no console/page errors  
+errors: []
+DONE 19 PASS 0 FAIL 0 OTHER of 19

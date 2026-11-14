@@ -1,0 +1,74 @@
+leave filed for flying Piston 1 true
+leave filed for scmain Blade 1 true
+leave filed for scspare Trident 1 true
+leave filed for sim Cinch 1 true
+leave filed for duty Cobra 1 true
+leave filed for prog Sidewinder 1 true
+leave filed for input Forge 1 true
+Duty input for Forge 1 {"people":[{"p":"chaps","by":"stiff","at":1794677440176}],"type":"Duty","allday":false,"s":360,"e":1080,"date":"Jul 17","yr":2026,"remarks":"rcb2 w1 duty input","mod":"2026-11-15","iid":"imwgolzg0vllj4w","by":"stiff","modBy":"stiff","at":1794677440176,"modAt":
+flying seat {"gi":0,"put":"ok"}
+flying seat: board lines for Piston: ["Piston — On leave but planned to fly this line — reason: rcb2 w1 flying"]
+PASS  S09b.1 flying seat on leave: warning present, board prints its own message  Piston — On leave but planned to fly this line — reason: rcb2 w1 flying
+SC wave 1 main ok spare ok
+SC MAIN: board lines for Blade: ["Blade — On leave but tasked — SC AM — reason: rcb2 w1 scmain"]
+PASS  S09b.2a SC MAIN on leave: a warning for him  Blade — On leave but tasked — SC AM — reason: rcb2 w1 scmain
+SC SPARE: board lines for Trident: []
+FAIL  S09b.2b SC SPARE on leave: a warning for him  none
+sim seat ok
+sim seat: board lines for Cinch: ["Cinch — On leave but tasked — Sim SIMS (EXT SQN) — reason: rcb2 w1 sim"]
+PASS  S09b.3 sim seat on leave: a warning for him  Cinch — On leave but tasked — Sim SIMS (EXT SQN) — reason: rcb2 w1 sim
+duty desk ok
+duty desk: board lines for Cobra: ["Cobra — On leave but tasked — SDO duty — reason: rcb2 w1 duty"]
+PASS  S09b.4 duty desk on leave: a warning for him  Cobra — On leave but tasked — SDO duty — reason: rcb2 w1 duty
+programme ok
+Common Programme: board lines for Sidewinder: ["Sidewinder — On leave but tasked — SODB — reason: rcb2 w1 prog"]
+PASS  S09b.5 Common Programme person on leave: a warning for him  Sidewinder — On leave but tasked — SODB — reason: rcb2 w1 prog
+input picker New input · Jul 17 ✕ PERSON ALL AVAIL ALL Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryder Saber Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Vector Warden Widget Wildcard Wisp Zenith Zulu TYPE Training CSE Meeting Attach Personal Appointment Duty Event
+picker candidates 
+errors []
+leave filed for flying Piston 1 true
+leave filed for scmain Blade 1 true
+leave filed for scspare Trident 1 true
+leave filed for sim Cinch 1 true
+leave filed for duty Cobra 1 true
+leave filed for prog Sidewinder 1 true
+leave filed for input Forge 1 true
+Duty input for Forge 1 {"people":[{"p":"chaps","by":"stiff","at":1794677570786}],"type":"Duty","allday":false,"s":360,"e":1080,"date":"Jul 17","yr":2026,"remarks":"rcb2 w1 duty input","mod":"2026-11-15","iid":"imwgoos82mtg839","by":"stiff","modBy":"stiff","at":1794677570786,"modAt":
+flying seat {"gi":0,"put":"ok"}
+flying seat: board lines for Piston: ["Piston — On leave but planned to fly this line — reason: rcb2 w1 flying"]
+PASS  S09b.1 flying seat on leave: warning present, board prints its own message  Piston — On leave but planned to fly this line — reason: rcb2 w1 flying
+SC wave 1 main ok spare ok
+SC MAIN: board lines for Blade: ["Blade — On leave but tasked — SC AM — reason: rcb2 w1 scmain"]
+PASS  S09b.2a SC MAIN on leave: a warning for him  Blade — On leave but tasked — SC AM — reason: rcb2 w1 scmain
+SC SPARE: board lines for Trident: []
+SC SPARE with LL only: RECORD — the validator exempts a SPARE from leave (canSpare), so none is expected: []
+PASS  S09b.2b SC SPARE on plain LL: no warning (a spare may be on leave — negative control)  none
+ATT C for the SPARE man 0 true
+SC SPARE with ATT C: board lines for Trident: ["Trident — ATT C but standing SC SPARE — medically down, SC AM — reason: rcb2 w1 spare downchit"]
+PASS  S09b.2c SC SPARE with ATT C: a "Downchit" warning for him  Trident — ATT C but standing SC SPARE — medically down, SC AM — reason: rcb2 w1 spare downchit
+sim seat ok
+sim seat: board lines for Cinch: ["Cinch — On leave but tasked — Sim SIMS (EXT SQN) — reason: rcb2 w1 sim"]
+PASS  S09b.3 sim seat on leave: a warning for him  Cinch — On leave but tasked — Sim SIMS (EXT SQN) — reason: rcb2 w1 sim
+duty desk ok
+duty desk: board lines for Cobra: ["Cobra — On leave but tasked — SDO duty — reason: rcb2 w1 duty"]
+PASS  S09b.4 duty desk on leave: a warning for him  Cobra — On leave but tasked — SDO duty — reason: rcb2 w1 duty
+programme ok
+Common Programme: board lines for Sidewinder: ["Sidewinder — On leave but tasked — SODB — reason: rcb2 w1 prog"]
+PASS  S09b.5 Common Programme person on leave: a warning for him  Sidewinder — On leave but tasked — SODB — reason: rcb2 w1 prog
+ground rows now ["GROUND SCHOOL - EW|0900-1100|\"stiff\"","AIRCREW ADMIN|1100-1200|undefined","DUTY|06:00-18:00|\"chaps\"","DUTY|06:00-18:00|\"chaps\""]
+accepted duty input: board lines for Forge: ["Forge — Forge is on two items called DUTY at once","Forge — On leave but tasked — DUTY — reason: rcb2 w1 input"]
+PASS  S09b.6 accepted duty input for a man on leave: a warning for him  Forge — Forge is on two items called DUTY at once / Forge — On leave but tasked — DUTY — reason: rcb2 w1 input
+errors []
+EDIT WEEK strip:
+  Conflict — two events at once Forge — Forge is on two items called DUTY at once ✕
+  On leave + planned Piston — On leave but planned to fly this line — reason: rcb2 w1 flying ✕
+  On leave + planned Blade — On leave but tasked — SC AM — reason: rcb2 w1 scmain ✕
+  On leave + planned Cinch — On leave but tasked — Sim SIMS (EXT SQN) — reason: rcb2 w1 sim ✕
+  On leave + planned Cobra — On leave but tasked — SDO duty — reason: rcb2 w1 duty ✕
+  On leave + planned Forge — On leave but tasked — DUTY — reason: rcb2 w1 input ✕
+  On leave + planned Sidewinder — On leave but tasked — SODB — reason: rcb2 w1 prog ✕
+  Downchit + planned Trident — ATT C but standing SC SPARE — medically down, SC AM — reason: rcb2 w1 spare downchit ✕
+PASS  S09b.7 week strip: every row kind names its check "planned", none "flying"  8 items
+PASS  S09b no console/page errors  
+errors: []
+DONE 10 PASS 0 FAIL 0 OTHER of 10

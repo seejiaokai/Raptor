@@ -85,3 +85,29 @@ describe('part 2 — D2010: a crew-rest warning never says "landed" at a take-of
     expect(msg).toContain('Monday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30')
   })
 })
+
+describe('part 2b — D2010\'s reading carried to the debrief and the tight turn: a take-off is never called a landing', () => {
+  /* the blind code reads of 15 Nov 26 (the Opus read's F2, Astra's (2)): with no landing typed the line's debrief window
+     and its turn are measured from the take-off, so they say so — the check itself is kept */
+  it('a blank landing: the debrief line says take-off, not land', () => {
+    add(MON, wave([form({ to: '12:00', ld: '' })]))
+    ground(MON, 'bane', '12:40', '13:00')
+    const w = warns(MON, 'DEBRIEF', 'bane')
+    expect(w.length).toBe(1)
+    expect(String(w[0].msg)).toContain('BRIEFING sits inside 12:00–14:00 (take-off + 2h, no landing typed)')
+    expect(String(w[0].msg)).not.toMatch(/\bland\b/)
+  })
+  it('a blank landing: the tight turn says take-off, not land', () => {
+    add(MON, wave([form({ cs: 'VL', to: '09:00', ld: '' }), form({ cs: 'RU', to: '10:00', ld: '11:00' })]))
+    const w = warns(MON, 'TURN', 'bane')
+    expect(w.length).toBe(1)
+    expect(String(w[0].msg)).toContain('60 min take-off→next T/O, no landing typed')
+    expect(String(w[0].msg)).not.toMatch(/\bland\b/)
+  })
+  it('left as it is: a typed landing still says land, in both', () => {
+    add(MON, wave([form({ cs: 'VL', to: '09:00', ld: '09:30' }), form({ cs: 'RU', to: '10:00', ld: '11:00' })]))
+    ground(MON, 'bane', '09:40', '10:00')
+    expect(String(warns(MON, 'DEBRIEF', 'bane')[0].msg)).toContain('(land + 2h)')
+    expect(String(warns(MON, 'TURN', 'bane')[0].msg)).toContain('30 min land→next T/O')
+  })
+})
