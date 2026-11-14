@@ -1,0 +1,9 @@
+board: while typing, the box reads "TBD"
+board: after Enter, box "" stored ""
+notes on screen: ["","","","",""]
+typed TBC: box "" stored ""
+typed N/A: box "" stored ""
+typed xx: box "" stored ""
+typed -: box "" stored ""
+week landing box present: 0
+errors []

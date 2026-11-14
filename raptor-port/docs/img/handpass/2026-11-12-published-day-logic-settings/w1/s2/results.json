@@ -1,0 +1,41 @@
+{
+ "rows": [
+  {
+   "id": "S2.1 Tue clean for Vandal (phone)",
+   "verdict": "PASS",
+   "saw": "board: head=\"▾ ⚠ 4 issues · 2 warnings Saint — VL SAT & APPOINTMENT clash\" restMine=[] otherRest=[\"Outlaw — Crew rest breach — Monday lande\"] rings=[\"plain:puck sm\"] pending=\"6 changes\" tag=DRAFT || edit: head=\"⚠ 4 issues · 2 warning ▼\" restMine=[] otherRest=[\"Crew rest (<12h) Outlaw — Crew rest brea\"] rings=[\"plain:puck dim\"] dayHead=\"Tuesday Jul 14 Templates Live working copy ▾ DRAFT 4 X 4 X 1 6 changes i Publish day\" || view: head=\"⚠ 4 issues · 2 warning ▲\" restMine=[] otherRest=[\"Crew rest (<12h) Outlaw — Crew rest brea\"] rings=[\"plain:puck dim\"] dayHead=\"Tuesday Jul 14 DRAFT 4 X 4 X 1 6 changes i\"",
+   "pic": "s2-01-*.png"
+  },
+  {
+   "id": "S2.2 Thu clean for Vandal (phone)",
+   "verdict": "PASS",
+   "saw": "board: head=\"▾ ⚠ 6 issues · 3 warnings Ace — HQ ENGAGEMENT & RU AD clash \" restMine=[] otherRest=[] rings=[\"plain:puck sm\",\"plain:puck sm\"] pending=\"6 changes\" tag=DRAFT || edit: head=\"⚠ 6 issues · 3 warning ▼\" restMine=[] otherRest=[] rings=[\"plain:puck dim\",\"plain:puck sm dim\"] dayHead=\"Thursday Jul 16 Templates Live working copy ▾ DRAFT 4 X 4 X 1 6 changes i Publish day\"",
+   "pic": "s2-02-*.png"
+  },
+  {
+   "id": "S2.3 Tue published (phone), clean on View-only",
+   "verdict": "PASS",
+   "saw": "tag ORIG view: head=\"⚠ 4 issues · 2 warning ▲\" restMine=[] otherRest=[\"Crew rest (<12h) Outlaw — Crew rest brea\"] rings=[\"plain:puck dim\"] dayHead=\"Tuesday Jul 14 ORIG 4 X 4 X 1 Original — as issued Working draft — not issued i\"",
+   "pic": "s2-03-*.png"
+  },
+  {
+   "id": "S2.4 Logic crew rest set to 13h (phone)",
+   "verdict": "RECORDED",
+   "saw": "box \"12h\" -> \"13h\", VCONF 780",
+   "pic": "s2-04-*.png"
+  },
+  {
+   "id": "S2.5 Tue published: no crew-rest warning / red ring for Vandal after 13h (phone: View-only, edit week, board); nothing pending",
+   "verdict": "PASS",
+   "saw": "view: head=\"⚠ 4 issues · 2 warning ▲\" restMine=[] otherRest=[\"Crew rest (<13h) Outlaw — Crew rest brea\"] rings=[\"plain:puck dim\"] dayHead=\"Tuesday Jul 14 ORIG 4 X 4 X 1 Original — as issued Working draft — not issued i\" || edit: head=\"⚠ 4 issues · 2 warning ▲\" restMine=[] otherRest=[\"Crew rest (<13h) Outlaw — Crew rest brea\"] rings=[\"plain:puck dim\"] dayHead=\"Tuesday Jul 14 Templates Live working copy ▾ ORIG 4 X 4 X 1 11 changes i Unpublish\" || board: head=\"▾ ⚠ 4 issues · 2 warnings Saint — VL SAT & APPOINTMENT clash\" restMine=[] otherRest=[\"Outlaw — Crew rest breach — Monday lande\"] rings=[\"plain:puck sm\"] pending=\"11 changes\" tag=ORIG || pending 11 changes -> 11 changes",
+   "pic": "s2-05-*.png"
+  },
+  {
+   "id": "S2.6 Thu unpublished red crew-rest for Vandal at once (phone: edit week, board)",
+   "verdict": "PASS",
+   "saw": "edit: head=\"⚠ 7 issues · 4 warning ▲\" restMine=[\"Crew rest (<13h) Vandal — Crew rest breach — Wednesday lande\"] otherRest=[] rings=[\"RED:puck warn hard boxred wfoc\",\"RED:puck sm warn hard boxred wfoc\"] dayHead=\"Thursday Jul 16 Templates Live working copy ▾ DRAFT 4 X 4 X 1 6 changes i Publish day\" || board: head=\"▾ ⚠ 7 issues · 4 warnings Ace — HQ ENGAGEMENT & RU AD clash \" restMine=[\"Vandal — Crew rest breach — Wednesday landed 19:00, +2h debr\"] otherRest=[] rings=[\"RED:puck sm warn hard boxred\",\"RED:puck sm warn hard boxred\"] pending=\"6 changes\" tag=DRAFT || view: head=\"⚠ 7 issues · 4 warning ▲\" restMine=[\"Crew rest (<13h) Vandal — Crew rest breach — Wednesday lande\"] otherRest=[] rings=[\"RED:puck warn hard boxred wfoc\"] dayHead=\"Thursday Jul 16 DRAFT 4 X 4 X 1 6 changes i\"",
+   "pic": "s2-06-*.png"
+  }
+ ],
+ "errors": []
+}

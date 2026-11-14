@@ -288,8 +288,10 @@ jobs:
     runs-on: ubuntu-latest
     # A TIME LIMIT ON EVERY TEST JOB ([CI-SMOKE-TIMEOUT], 8 Nov 26): with none, a job that hangs waits GitHub's default of
     # six hours. Each limit is set from the job's length over the 20 green runs before 8 Nov 26, with room to spare - most
-    # of a browser job's slow tail is "Install Chromium" (the system packages it fetches took 8 to 16 minutes in 9 of those
-    # 20 runs, the browser tests themselves 6.2 at most), so the browser jobs get 30 minutes, the smoke's own step a closer one.
+    # of a browser job's slow tail was then "Install Chromium" (the system packages it fetched took 8 to 16 minutes in 9 of
+    # those 20 runs, the browser tests themselves 6.2 at most), so the browser jobs got 30 minutes, the smoke's own step a
+    # closer one. That step is gone since 12 Nov 26 (the browser jobs run in Playwright's own image - see geometry's note);
+    # the limits stay as they were until runs in the image have been measured.
     # build: under a minute (0.9 at most).
     timeout-minutes: 10
     steps:
@@ -399,14 +401,53 @@ jobs:
   # One runner per Playwright project. jsdom has no layout engine, so the
   # measured geometry contracts (puck 74x15, free text wraps instead of
   # overflowing, one day box per pan click) can only be checked in a real
-  # browser. The runner has no browser of its own; the dev container's
-  # Chromium is not here. Cache the downloaded browser between runs, keyed on
-  # the lockfile so a Playwright bump busts it. On a hit the ~20s Chromium
-  # download is skipped; `--with-deps` still runs (usually seconds, but its
-  # download from Ubuntu's mirror is the browser jobs' slow tail - see build's
-  # time-limit note) so the OS libraries are present on every fresh runner. Each leg builds and
-  # serves the port itself (playwright.config.ts webServer) and keeps the
-  # 3-worker / one-retry CI settings from 15 Aug 26.
+  # browser. Each leg builds and serves the port itself (playwright.config.ts
+  # webServer) and keeps the 3-worker / one-retry CI settings from 15 Aug 26.
+  #
+  # THE BROWSER JOBS RUN IN PLAYWRIGHT'S OWN IMAGE (12 Nov 26, [CI-BROWSER-DEPS-DOWNLOAD]). Until then each job ran
+  # `npx playwright install --with-deps chromium` on the bare runner, which fetched the browser's system libraries and
+  # fonts from Ubuntu's package servers on EVERY run: 8 to 16 minutes in 9 of the 20 runs before 8 Nov 26, and on
+  # 11-12 Nov 26 main's run after pull request 760 failed four times in a row, all nine browser jobs stopping in that
+  # step ("Temporary failure resolving" archive.ubuntu.com, security.ubuntu.com, azure.archive.ubuntu.com) before any
+  # test ran. Now:
+  #   - the job's container is mcr.microsoft.com/playwright:v<version>-resolute - Ubuntu 26.04 - with the browser and
+  #     every system package `playwright install-deps` names (the same font packages `--with-deps chromium`
+  #     installed: the "tools" list is shared by all three browsers) already inside. Pulled from Microsoft's registry,
+  #     not Ubuntu's servers (the runner makes three pull attempts in all, then fails the job). Nothing is downloaded
+  #     from Ubuntu's servers by these jobs any more. Not a cache of the old step: a cache needs one good fetch first
+  #     and misses whenever GitHub refreshes its machine image, so it cannot cure an outage like 11-12 Nov 26. Not a
+  #     fallback either: if Microsoft's registry cannot be reached, these nine jobs fail before checkout, as on 11-12
+  #     Nov 26 they failed at the install - one outside service in place of Ubuntu's servers and Playwright's own
+  #     download site.
+  #   - RUNS-ON IS PINNED TO ubuntu-26.04, THE IMAGE'S RELEASE, and the two move together. GitHub is moving
+  #     ubuntu-latest from 24.04 to 26.04 job by job (19 Oct - 19 Nov 26); pull request 760's green run of 11 Nov 26,
+  #     the last on the bare runner, ran every browser job on 26.04 - so the image is that release too, and the
+  #     runner's fonts lent to it (below) come from the same release as its font settings.
+  #   - THE TAG MUST BE THE PLAYWRIGHT VERSION IN package-lock.json (Playwright's Docker page: a mismatched image
+  #     cannot find its browser). Both browser jobs carry it; their "Browser image" step compares the image's own
+  #     record of its version with the installed one and stops the job with the fix written out when they differ. A
+  #     Playwright bump changes the two image lines in the same pull request.
+  #   - THE RUNNER'S OWN FONTS ARE LENT TO THE CONTAINER, read-only, at /usr/local/share/fonts/runner (a folder
+  #     fontconfig reads by default). The app loads no font, so every measuring test draws in the machine's own. On
+  #     the first run in the image (12 Nov 26, Noble) Chromium drew sans-serif and the stacks that fall to it in
+  #     Liberation Sans (in the image itself; the e2e notes' "GitHub's Linux machines (Liberation Sans)"), and
+  #     system-ui, monospace and the stacks that fall to those in DejaVu Sans / DejaVu Sans Mono - which came with
+  #     GitHub's machine image, not with --with-deps (gates-and-deploy.md: "Linux's DejaVu Sans"). The lent fonts keep
+  #     those; "Browser image" fails the job if none arrived (Docker makes a missing folder an empty one silently),
+  #     and "Fonts drawn" prints, for the log only, what Chromium draws each family the app names in. Not lent: the
+  #     runner's own font settings (/etc/fonts) - the image's, of the same release, stand in.
+  #   - `--user 1001` is Playwright's own GitHub example (the runner's user, so the checkout and caches stay its own);
+  #     `--ipc=host` and `--init` are its Docker page's advice for Chromium (without --ipc=host Chromium can run out of
+  #     shared memory and crash). The Chromium sandbox is off by Playwright's default either way.
+  #   - TZ=UTC: the bare runner's clock was UTC through its /etc/localtime, TZ unset; the image sets no zone, so the
+  #     container is told outright (the language is C.UTF-8 in the image, as on the runner). "Fonts drawn" prints
+  #     both as Node and Chromium see them.
+  #   - Inside the container `localhost` names both 127.0.0.1 and ::1, so a server and a client may each pick a
+  #     different one: the Tracker smoke's own wait for its preview server now asks every loopback address, as
+  #     Playwright's own wait (geometry's) always did - on 12 Nov 26 the smoke's wait alone never saw its server.
+  #   - setup-node still puts Node 22 first (the image's own Node is 24) and `npm ci` still installs the packages, so
+  #     the tests run the same Playwright, Vite and Node as before; only where the browser and its libraries come from
+  #     changed. The old "Cache Playwright browser" step went with it (the browser is in the image).
   geometry:
     name: geometry (${{ matrix.project }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
     needs: changes
@@ -416,8 +457,19 @@ jobs:
       || !github.event.repository.private
       || github.actor != github.repository_owner
       || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository))
-    runs-on: ubuntu-latest
-    # a time limit (see build's note): each part 3.5 to 6 minutes, 16.4 at most - the slow ones in "Install Chromium"
+    # the image's release (the note above); tracker's runs-on and container below are the same lines - change both
+    runs-on: ubuntu-26.04
+    # Playwright's own image for the version in package-lock.json, with the runner's fonts lent to it (the note above)
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-resolute
+      options: --user 1001 --ipc=host --init
+      volumes:
+        - /usr/share/fonts:/usr/local/share/fonts/runner:ro
+      # the bare runner's clock was UTC with no TZ set; the image sets no zone of its own - so UTC is said outright
+      env:
+        TZ: UTC
+    # a time limit (see build's note): each part 3.5 to 6 minutes, 16.4 at most - the slow ones in the old "Install
+    # Chromium" step, gone since 12 Nov 26
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -458,14 +510,18 @@ jobs:
       - name: Install
         working-directory: raptor-port
         run: npm ci
-      - name: Cache Playwright browser
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('raptor-port/package-lock.json') }}
-      - name: Install Chromium
+      # a gate: the image is this Playwright's, its browser starts, the runner's fonts arrived (geometry's note);
+      # then, for the log only, the fonts Chromium draws, the zone and the language - that step only warns, and
+      # neither can hold the job past its time limit
+      - name: Browser image
         working-directory: raptor-port
-        run: npx playwright install --with-deps chromium
+        run: timeout --signal=KILL 120s node scripts/ci/browser-image-check.cjs --check
+      - name: Fonts drawn
+        working-directory: raptor-port
+        run: |
+          if timeout --signal=KILL 60s node scripts/ci/browser-image-check.cjs --fonts; then :; else
+            echo "::warning::The font read-out failed or ran out of time; the tests still run."
+          fi
       - name: Geometry
         working-directory: raptor-port
         run: npx playwright test --project=${{ matrix.project }} ${{ matrix.shard && format('--shard={0}', matrix.shard) || '' }}
@@ -484,9 +540,19 @@ jobs:
       || !github.event.repository.private
       || github.actor != github.repository_owner
       || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository))
-    runs-on: ubuntu-latest
+    # Playwright's own image on its own release, the runner's fonts lent to it - geometry's note says why; the same
+    # lines as geometry's runs-on and container, changed together
+    runs-on: ubuntu-26.04
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-resolute
+      options: --user 1001 --ipc=host --init
+      volumes:
+        - /usr/share/fonts:/usr/local/share/fonts/runner:ro
+      env:
+        TZ: UTC
     # a time limit (see build's note): each half 2 to 4.5 minutes, 17.7 at most. The half that ran 16 minutes on 5 Nov 26
-    # (pull request 643, cancelled) had not hung in the smoke: its "Install Chromium" took 12 of them, the smoke 3.8.
+    # (pull request 643, cancelled) had not hung in the smoke: its "Install Chromium" took 12 of them, the smoke 3.8 (that
+    # step is gone since 12 Nov 26).
     timeout-minutes: 30
     # two machines since the night of 20 Oct 26 (D1089, D1092): the suite's own clean slate cuts it in two — part 1 310
     # checks, part 2 143, the same 453 by name as the whole run (unset SMOKE_PART: the whole, as on his PC's runner)
@@ -514,14 +580,16 @@ jobs:
       - name: Install
         working-directory: raptor-port
         run: npm ci
-      - name: Cache Playwright browser
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('raptor-port/package-lock.json') }}
-      - name: Install Chromium
+      # as in geometry: the gate, then the fonts printed for the log only
+      - name: Browser image
         working-directory: raptor-port
-        run: npx playwright install --with-deps chromium
+        run: timeout --signal=KILL 120s node scripts/ci/browser-image-check.cjs --check
+      - name: Fonts drawn
+        working-directory: raptor-port
+        run: |
+          if timeout --signal=KILL 60s node scripts/ci/browser-image-check.cjs --fonts; then :; else
+            echo "::warning::The font read-out failed or ran out of time; the tests still run."
+          fi
       - name: Tracker smoke
         working-directory: raptor-port
         # the smoke itself: 3.9 minutes at most on GitHub's machines (40 halves) - a hang here stops at 12, not at the job's 30

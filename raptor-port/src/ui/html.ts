@@ -5,7 +5,7 @@ import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
 import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
-import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, SAWAVE } from '../engine/waves'
+import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, saDeskFlies, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
 import { waveInTime } from '../engine/events'
@@ -15,7 +15,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenSays, versionFaceWarn, withVersionWarn } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenSays, fltNoLenMsg, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo, pendingInputIds } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -104,11 +104,16 @@ const dsh=(di:any,id:any)=>(PV&&!OFW)?false:dashOf(di,id)
    (`ff:<di>.<gi>.<li>.ld`, the key the validator files it under). One body for the week and the board. Under a
    saved-plan preview the mark stays as it always was: a plan is drawn with no warnings to ask (a look at a published
    version wears its flags — OFW — and asks that version's own list). */
+/* TWO LINES WORDED ALIKE (rules check F3, 11 Nov 26): the rules keep ONE warning for two lines whose sentence is the
+   same — no callsign, one wave, the same time — filed under the FIRST line's key, so a hide asked by key alone plained
+   the first line's box and left the second flagging. A hide is tied to the warning's words (engine/warnhide.ts), so the
+   box also asks for a hidden warning carrying THIS line's own words, as the next-week preview already does (ui/peek.ts). */
 export function fltNoLenShown(di:any,fp:any,f:any,pv?:any){
   if(!fltNoLen(f))return false;
   if((pv||PV)&&!OFW)return true;
   const g=WARN.byDay&&WARN.byDay[+di];
-  return !(((g&&g.warns)||[]) as any[]).some((w:any)=>w.off&&w.code==='FLT_NO_LEN'&&w.key===`${fp}.ld`);}
+  const gi=+String(fp).split('.')[1], wv=((DAYS[+di]||{}).waves||[])[gi]||{}, msg=fltNoLenMsg(f,wv);
+  return !(((g&&g.warns)||[]) as any[]).some((w:any)=>w.off&&w.code==='FLT_NO_LEN'&&(w.key===`${fp}.ld`||w.msg===msg));}
 export function puckMarks(di:any,id:any,off?:any){
   /* …except where the face being drawn wears its flags (OFW — an issued face, or a look at a published version, D187) */
   if(off&&!OFW)return {sev:null,flag:null,dash:false,trace:null}
@@ -613,6 +618,9 @@ export function plCols(){return `<div class="pl-cols"><span class="h-nm">Name</s
 export function exemptDeskOwn(di:any,key:any,id:any){
   const m=/^d:(\d+)\.(\d+)\.(\d+)/.exec(String(key||'')); if(!m)return undefined;
   const dw=((DAYS[+m[1]]||{}).dutywaves||[])[+m[2]]; if(!dw||!dw.noconf)return undefined;
+  /* D1997: once its wave flies the desk is fully checked, so its puck wears the man's rings as any desk's does (the bug
+     check of 12 Nov 26: the list named his clash while the desk's puck stayed plain) */
+  if(saDeskFlies(DAYS[+m[1]],dw))return undefined;
   if((PV&&!OFW)||!id)return null;   /* official face shows these flags too (§8, Codex CRPF-008) */
   const rk=`d:${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
   /* a hidden warning flags no puck (D469) — this row works its flag out from the list, so it skips one */
@@ -1190,7 +1198,7 @@ export function dayWarnHTML(di:any){
       const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix, hid=!!w.off;
       return `<div class="witem ${w.sev}${on?' on':''}${hid?' hid':''}" data-wdi="${di}" data-wix="${ix}" title="${hid?'Hidden — it flags no puck and is not counted. ':''}Jump to the puck that caused this">`
-        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
+        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code,di))}</span>`
         +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}${hid?'':sigNew(w)}</span>`
         /* a hidden line's flag-again is the app's drawn Reset arrow, "put back" as on the Leave War's Reset order (owner D1792 (d),
            8 Nov 26); the ✕ that hides a line stays typed, the app's close-and-remove mark */
@@ -1210,7 +1218,7 @@ export function dayWarnHTML(di:any){
     const goneRow=(w:any)=>{
       const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
       return `<div class="witem ${w.sev} gone" title="On the signed version — publishing this day removes it">`
-        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><s><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span> `
+        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><s><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code,di))}</span> `
         +`<b>${esc(names)}</b></s> <span class="wsig gone">goes away once signed</span></span></div>`;
     };
     /* the cross-day row ranks below this day's warnings and above its
@@ -2595,7 +2603,7 @@ export function dayInfoHTML(di:any){
          cross-day row were the two that did not) */
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
       return `<div class="witem ${w.sev}${on?' on':''}${w.off?' hid':''}" data-adv="${di}.${ix}" title="${w.off?'Hidden — it flags no puck and is not counted. ':''}Jump to the puck that caused this">`
-        +`<span class="wbar"></span><span><span class="wcode">${SEVWORD[w.sev]} · ${esc(wlbl(WCODE[w.code]||w.code))}</span>`
+        +`<span class="wbar"></span><span><span class="wcode">${SEVWORD[w.sev]} · ${esc(wlbl(WCODE[w.code]||w.code,di))}</span>`
         +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span></div>`;}).join('')+`</div>`;
   }
   return h;

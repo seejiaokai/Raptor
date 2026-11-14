@@ -212,13 +212,26 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   applies to both. A clock-only legacy instruction remains IN; a clockless
   `RALLY AFTER IN TIME` (or `RALLY AFTER IN`) inherits its applicable IN, and the same
   words typed WITH a clock are that rally's own time — never a second in-time (W3, 5 Oct 26).
+  **Since D1995 (11 Nov 26 — over D1034's "a typed line that still says RALLY stays a rally"; the later wins, D90) every
+  typed line with a clock is an IN-TIME, whatever its words** — `09:00H: RALLY` (the "+ In-time" button's words set to
+  RALLY), `VL RALLY 08:30`, `RALLY AFTER IN TIME 07:00` alike; the rally is each formation's own R box alone (below); the
+  report is the earlier of the two, and of several in-time lines for one formation the earliest counts (D506). The scope is
+  unchanged: a line naming this wave's formation is that formation's own in-time and replaces the whole-wave in-time for it
+  (D505, D1034's kept part) — so `06:00 IN TIME` with `VL RALLY 07:00` now reports VL at 07:00 (the agent's reading, put
+  to him). A line with no clock is no instruction: a clockless `RALLY AFTER IN TIME` makes no rally and raises no "rally
+  after in-time has no applicable in-time clock" line any more — and since the words job ([RULES-CHECK-FIXES] job 3) nor
+  does one whose clock cannot be read: it is told "reporting line N has no recognised clock. Check the time." as any other
+  line is (`reportingIssuesForWave`). The order check between two typed lines is gone with it (two
+  in-times, the earlier counting); an in-time later than the brief, or than the box's rally, is still the red wrong pair.
+  `reporting.ts parseReportingLines`; pinned in `engine/rulesfirst-1-report-times.test.ts` (W1, W9), `rally-workspan.test.ts`,
+  `rallybox.test.ts`, `oilworkstart.test.ts`. The lines above about RALLY lines describe the reading before D1995.
   A wave's header time (`waveInTime`) reads a formation with no take-off yet as the day's
   checks do — the typed clock on its own day (W5, 5 Oct 26).
 - **Each formation's own rally box (owner D1026, D1032, D1034, 19 Oct 26 — `[RALLY-PER-FORMATION]`).** `f.rl` is the
   formation's rally, typed in its R box (the week's R over B, the board's R before B). `resolveReporting` reads it as one
-  more FORMATION-SPECIFIC rally: it replaces the whole-wave typed RALLY lines (D505) and stands beside a typed rally line
-  naming the formation, the earlier counting (D506), with the same evening-before rule (D503). It is never an in-time: a
-  whole-wave in-time 06:00 with a rally 07:00 still reports at 06:00 (D1034); the typed lines are read exactly as before.
+  more FORMATION-SPECIFIC rally — since D1995 the ONLY rally, no typed line making one (above) — with the same
+  evening-before rule (D503). It is never an in-time: a whole-wave in-time 06:00 with a rally 07:00 still reports at 06:00
+  (D1034); the typed lines are in-times, the earlier of in-time and box counting (D1995).
   So every reader of the report — crew rest, the long day and work hours, OIL (D592), the wave's header and window, the
   order check (a box after the brief is the red "rally … is later than brief", never blocking — D507, D509) — counts it as
   it counted a typed rally (D1032). An empty box is nothing entered: the nominal report, the take-off less `reportLead`
@@ -260,7 +273,12 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   valid B names it as brief. Equality and all existing standalone exemptions stay.
   These list warnings do not invent person puck marks. They follow the existing
   frozen-warning policy, while validator B reads current Logic, not the printed
-  issued B suggestion (D186). Exact tests and the register:
+  issued B suggestion (D186) — **except, since D1991 (11 Nov 26), the official pass's judgement of a published
+  day:** its legs' brief (events.ts, `flightBrief` with `faceattrs.ts ruleFor`) is the lead the day printed, so its
+  live crew-rest check measures to the B on its face (§Publishing, "A published day keeps what it went out with").
+  Since D2005 (12 Nov 26) this order check reads the kept lead too, as every check of a published day reads the
+  settings it went out with (§Publishing); an edited published day's working copy, and an unpublished day, read today's.
+  Exact tests and the register:
   `docs/superpowers/specs/2026-10-02-rally-behaviour-register.md`.
 
 - **Signed header versus today's availability bands (D503).** `waveInTime`
@@ -311,6 +329,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   times; the DT chip still counts a timeless leg on purpose (`dturns`). With every time present all three are
   value-for-value the old arithmetic (the reference parity holds). Said on the Logic page (Crew rest, "no take-off
   yet"). Pins: `engine/restblank.test.ts`, `e2e/restblank.spec.ts`.
+
+- **A "TBD" landing ends the day as a blank one does for tomorrow's crew rest** (D1990, 11 Nov 26,
+  `[RULES-CHECK-FIXES]`). A blank landing is read as its take-off (`events.ts`, `f.ld||f.to`); a landing that is not a
+  clock time — "TBD", or any other words — used to end nothing, so a TBD sortie bore no crew rest at all. The rest
+  collection (`validate.ts`, the `rawEnd` line) now reads such a landing as its take-off too: take-off plus the
+  debrief, the same end, the same message, the same dotted mark on the day before as blank. With no take-off either
+  there is still nothing to borrow and no end. D1936 is unchanged: such a sortie still counts no hours and raises no
+  long-day note. The message's "landed" words where no landing is typed are a wording question for him, not changed
+  here. Pin: `engine/rulesfirst-3-crew-rest.test.ts` (W35, D1990).
 
 - **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26 — "4 yes as
   recommended"; `[BLANK-TIMES-ABSENCE]`, built the same day).** Every absence check asked whether the absence OVERLAPS
@@ -893,12 +920,25 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (D1061). A cancelled shift or row never flies; a row of a typed shift that does not come in is cancelled with its own
   CX — there is no untick (D1046).
 - **What a flying row gets:** it is checked as an SC MAIN is — `saExempt` is false for it, so it is an event of kind
-  `shift` (crew rest, the long day, clashes graded the shift way, the in-time window advisory, availability with no
+  `shift` (crew rest, the long day, the in-time window advisory, availability with no
   standby carve-outs — local leave no longer passes on it), with SC currency asked by its formation (`forms.sc`, every
   standby kind). Its day runs from the earliest of R, B and START (`reporting.ts scReport`, on every standby kind now)
   to its END, with no step, dekit, brief or debrief added (D1045). An AVALON / BB row that flies leaves the standby
   collection (`sacrew`) so it is never looked at twice; the rows beside it that only stand by stay there. The crew
   list judges it the same way (`avail.ts`, `avJet` false for it).
+- **Checked like a sortie (owner D1996, 11 Nov 26 — "a standby line that fly is checked like a sortie", over the report's
+  recommended "keep it a shift"):** its event and its `day.fly` entry carry `flies: true` (`events.ts`, written only when
+  true). Its START→END is a leg: a clash inside it is the red `DOUBLE_BOOK` — a lecture, an SC MAIN that only stands by —
+  never the shift's amber `SHIFT_SOFT`, whatever Logic's "SC MAIN clashes" settings say — they grade a shift that only
+  stands by (`events.ts shiftEvHard`, the bug check of 12 Nov 26); a Meeting input inside it is the red `INPUT_FLY` ("Meeting but tasked — SC AM …"),
+  as against a sortie; and the tight turn (END → the next take-off, needing `max(tightTurn, dekit + step)`) and the double
+  turn (`DT` / `DT_SUM`) read it as a sortie (`validate.ts byP`). A sortie that starts after its END is a turn, never a
+  clash (compared on the airborne windows, as two sorties are). So two flying shifts back to back on one man (SC AM then
+  SC PM, both flying) are a 0-minute tight turn and a double turn — the agent's reading, said to him. The crew list says
+  the same (12 Nov 26): a flying row's slot carries `scFlies` (`avail.ts slotRules`), so the shift's soft carve-outs —
+  the hard-only "inside this shift" scan and the Meeting's `scSoft` pass — stand down and the sortie's "already on …"
+  scan reads it. A shift that only stands by keeps every shift rule above. Pins: `engine/rulesfirst-2-standby.test.ts` W14, `rulesfirst-3-crew-rest.test.ts`
+  W32.
 - **Counted:** the day's badge adds one "X n" term per standby wave with rows that fly, n its flying rows with somebody
   seated; those rows leave the standby figure after the slash (`waves.ts dayCount`). Insights counts each such row as
   a sortie and its shift as a formation; a standby sortie joins no blue / red count (it has no mission). A row with
@@ -1157,7 +1197,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   BB, mirroring `SAWAVE[kind].all`), so an AVALON or BB desk is exempt as its
   wave is (§AVALON above) and an SC desk counts as an SC seat for the spare rule
   (§the two SC SPARE rules); a template with no wave mints the PLAIN block
-  it always did. The seed week has no template desk, so reference parity is
+  it always did. **Once its wave flies, an AVALON or BB desk is fully checked and earns OIL by default** (owner D1997,
+  11 Nov 26 — "once the wave flies the desk is fully checked and earns OIL by default", over the report's recommended
+  "keep it exempt"): `waves.ts saDeskFlies(day, block)` — the day's standby wave of the block's `sa` kind has a row that
+  flies (its shift's B or R typed, or a hand-ticked row: the agent's reading) — and then the desk is an ordinary duty row
+  in `events.ts` (clashes, crew rest, the run of days, the long day), off the standby collection; `oil.ts` defaults it
+  on; the crew list (`avail.ts` dayStandby / dayEngaged / the slot's `avDuty`) reads it as a task, not a standby; its
+  puck wears the man's rings as any desk's does (`ui/html.ts exemptDeskOwn`, the bug check of 12 Nov 26). A BB
+  desk follows the BB wave only. With the wave standing by, nothing changes. Pins: `engine/rulesfirst-2-standby.test.ts`
+  W25. The seed week has no template desk, so reference parity is
   untouched. Do not re-add the coupling (`.claude/rules/decisions/scheduler.md` §Settled before this list → Waves & duties; it was `CLAUDE.md` §Stable decisions until 24 Sep 26).
 
 ### Chip ranking, the break-day rule (DAYS_RUN) and where flags reach the screen
@@ -1175,6 +1223,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   is. The flag lands on the day that BREAKS the limit — the day the scheduler
   has to clear — not on the whole run. Because a run is a property of the week
   rather than of a day, it is precomputed before the per-day loop.
+  **A row with no times yet counts too** (owner D1993, 11 Nov 26 — the rules check's F2, "the app should flag"): a
+  ground or Common Programme row, a desk or a sim box whose times are not typed never became an event, so a seventh
+  day whose only task was such a row read as a break day. The run now also reads `day.blank` (events.ts — the seats
+  with no hours of their own), less the AVALON / BB places, which stand by and stay outside the count (D1998, as
+  built); a flying line with no times was already counted. `weekctx.ts workedSet` (the walk in from last week and the
+  forward look at next Monday) counts the same, so a signed neighbour date's timeless row counts by its row, never
+  its input. Pins: `engine/rulesfirst-3-crew-rest.test.ts` (W33, D1993), `engine/official-flags.test.ts`.
   **The count now walks in from before the loaded week** (owner, 23 Aug 26 —
   the flagging engine reads continuously, not just within a week).
   `weekctx.ts:seedRunIn` seeds each person's Monday run with a pure walk back
@@ -2329,7 +2384,13 @@ were `FS`/`HS` until the 28 Aug 26 rename.
       AVALON and BB alike, and each earns by default; a row that only stands by —
       "a SPARE reports nowhere" (24 Aug 26) — earns, when an admin switches it on
       (D24), the shift's WRITTEN hours; a shift whose written start and end are the
-      same still measures nothing. The work-hours bar and the long-work-day note have counted an SC
+      same measures nothing unless it flies from a B or R earlier than its START — then it earns from that B or R to
+      its END, as a flying line does (owner D1999, 11 Nov 26: "earns like a flying line — from its R or B, with the
+      amber 'times look wrong' note"; `oil.ts saZeroSpanWin`, which the credit, the day's "no usable times" list and the
+      same-time note all read; a row on it that only stands by still earns nothing). Its same-time note ends "the shift
+      still earns from its R or B" — never the shift's "earns nobody", which would be false, nor the flying line's "report
+      and debrief", since a shift has no debrief (the words job, [RULES-CHECK-FIXES] job 3: new words, his to change;
+      `validate.ts FLT_NO_LEN_SAYS`). The work-hours bar and the long-work-day note have counted an SC
       MAIN's B since 24 Aug 26 (`workSpan`). Pins: `engine/oilscintime.test.ts`, `engine/standbyflies.test.ts`;
     - with no line entered, the work-hours bar and the long-day note start at the
       nominal report too, as OIL does — one start since D1786 (8 Nov 26); until
@@ -2344,7 +2405,8 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   - an SC **SPARE** — standing by at home, reachable but not at work (the
     same reading `scSpare` gives the conflict engine);
   - **AVALON and BB** — the whole wave AND the desk block it brings
-    (`dw.sa`);
+    (`dw.sa`) — by default, while they stand by: a row that flies earns (§A standby row that flies), and once the wave
+    flies its desk earns by default too (owner D1997, 11 Nov 26 — `oil.ts` reads `waves.ts saDeskFlies`);
   - a **cancelled** structure at any level (`cx`) — a duty that did not
     stand;
   - a row with **no readable times** (blank, half-blank, zero-length) — the
@@ -3331,7 +3393,57 @@ stay LIVE (below), which the face draws from today and which never make the day 
   brief's lead) — kept as published until the next AL, owner D186 ("Q1 yes", 26 Sep 26): the face, the CSV and the print
   draw these (`engine/faceattrs.ts` — the ALL AVAIL window's columns and
   order too), and the pending comparison measures today's `pa` against them, and `rv` only where a FLYING line prints a
-  suggested brief (a standby line prints none on screen — Fable's second read #1); `snap.ros` — the aircrew roster at
+  suggested brief (a standby line prints none on screen — Fable's second read #1). **And the day is JUDGED by it
+  (owner D1991, 11 Nov 26 — "the published schedule should not be changed by the change of logic and start flagging
+  things"):** while the official pass judges the issued week (`validate.ts withIssuedWeek`), each installed issued day
+  is mapped to its `snap.rv` (`faceattrs.ts withKeptRules`), and its legs' brief is worked out with the lead it printed
+  (`events.ts buildDay` → `reporting.ts flightBrief(f,to,ruleFor(d,'briefLead'))`) — so the live crew-rest breach, the
+  tight-turn note and the dotted mark on the day before measure to the B on its face; a kept value that differs from
+  today's forces the official pass (`officialDiverges`, `keptRulesDiffer`). **Since D2005 (owner, 12 Nov 26) `rv` keeps
+  EVERY Logic setting the day's checks read** — `faceattrs.ts KEPT_RULE_KEYS` (brief lead, step, dekit, tight turn, crew
+  rest, debrief, report lead, long day, EP brief, sim debrief, AMT debrief, open end, sim length, days in a row, the SC
+  day window) and `shiftHard`, the SC MAIN clash table (`dayRuleVals`, written by `publish.ts freezeWarn`) — and the
+  whole day is judged by them: its events are built (`events.ts collectEvents`, each day under `withDayRules`) and
+  checked (`validate.ts`'s day loop and its phantom next-week days) with its kept values laid over the Logic settings
+  for that day only (`rules.ts withRuleVals`, restored after). A changed setting reaches the day from its next
+  amendment, which keeps today's; it neither starts nor clears a flag there, raised or lowered; an unpublished day
+  takes it at once. A rule that looks across days is decided by the day being judged: crew rest by the later day's
+  settings (its legs and the day before are built under their own — except the day before's ASSUMED ends, a flight's
+  debrief, a sim with no end and an open-ended row, which the judged day's settings measure: `events.ts` tags such an
+  event `ae`, `validate.ts crewRestDay` re-measures it), days in a row by each day's own limit (`validate.ts limitOn`,
+  next Monday's by `weekctx.ts nextMondayDay`; the dotted run mark carries the breaking day's own words). **The working
+  pass** (Edit Schedule, the board, the crew picker) judges a published day with NO change waiting — content, filings,
+  inputs, both OIL entries, a hide, the placeholder roster and the printed brief all as issued — by its kept values too
+  (`validate.ts untouchedKept`, laid on the day between passes by `faceattrs.ts keepRulesOn`; `weekctx.ts
+  keepUntouchedRules` for the neighbours, with the people and the printed brief), so it shows the same as View-only
+  Sched; once the day has any change waiting its working copy reads today's settings — it previews the next amendment.
+  The crew picker asks each day by the settings the validator judges it by: the day dropped on by today's (the drop
+  edits it), every other day by its own (`runIfPlaced`, `restIfPlaced`'s forward probes). The ALL AVAIL window's
+  reasons read the world it shows by that world's settings (`ui/AvailWindow.tsx`), and a day's warning list names its
+  limits by them (`validate.ts wlbl(s, di)` through `faceattrs.ts withShownRules` — an issued face or a look at a
+  version by that version's own). A hide waiting is read from the hides and the last official pass straight
+  (`untouchedKept`), and on a day whose kept values differ from today's every warning of its issued judgement counts
+  for the hide comparison (`HOOKS.hideNow`), so a hide today's settings would clear never flips the day between passes. **A changed setting never makes a published day pending** (only the
+  printed brief lead is compared, D186; `publish.ts warnDelta`): the frozen warnings, judged by the same kept values,
+  stay as issued — the "same take-off and landing" advisory's words included (`oil.ts fltMeasuresNothing` takes the
+  day's values from the validator). Two things stay on today's settings: **Insights' work hours** (D482, settled —
+  `validate.ts hoursEvd` rebuilds the official events with today's settings when a kept value differs) and **OIL**
+  (`oil.ts` reads `ruleNow`, today's value under any overlay, and the validator's OIL block runs whole under
+  `rules.ts withLiveRules`, so its earning test's availability reads today's too — D2005 leaves OIL as it was; its
+  pending axis `oilRuleDelta` (D592) is unchanged and can still read a published earning day pending). A version issued
+  before D2005 kept the brief lead only, or nothing: the rest reads today's (demo data, D56). Known limits, D2005: the
+  suggested-brief and rally ghosts on the screens read today's (the face's printed brief excepted); a puck's chip
+  tooltip ("Crew rest breach (<12h)"), a same-time line's box title and the R box's own timing-fault title (its
+  "suggested brief", `reporting.ts reportingIssuesForWave`, read with today's brief lead — a title, no ring) read today's
+  settings; on a published OIL-earning
+  day whose "same take-off and landing" line measured OIL when it went out, a Logic change that leaves it measuring
+  nothing shows that advisory's kept words ("the day still earns from the report and debrief") beside the live "no
+  usable times" line (the issued credit is still the kept one, D48; by D592 the change should read pending there — not
+  checked; a question for him); the neighbour week's hides and OIL entries do not decide whether its day keeps its values; the window of
+  neighbour days the official pass reads is sized by today's days-in-a-row limit; the day before's assumed end copied
+  past midnight for a clash is measured by its own day's settings. Pins: `engine/published-day-logic.test.ts` (D2005), `published-day-logic-reads.test.ts` and
+  `published-day-logic-picker.test.ts` (the two blind reads' findings), `state/published-day-logic-neighbour.test.ts`,
+  `state/kept-rules-neighbour.test.ts`, `engine/rulesfirst-7-published-day.test.ts` (W73, D1991, 7.1). `snap.ros` — the aircrew roster at
   issue, which the day panel's "free all day" counts on the issued face; drawn, never compared (a man joining the squadron
   would otherwise make every published day pending — Astra's second read #3).
 - **The inputs on a date — ONE reader, `inputs.ts inputsOn(dt)`** (with `inputOn`, `inputOnAny`). While a frozen version is
@@ -3432,7 +3544,9 @@ stay LIVE (below), which the face draws from today and which never make the day 
     reading R21).
   - Pins: `state/inputcount.test.ts` (replaces `grouprow-count.test.ts`), `ui/latepub.test.tsx`.
 - **The warnings axis** (`warnDelta`, kind `warn`): today's official judgement of the issued day against `snap.w` —
-  a quals, posting or rule change, or a neighbour day, that would change what the day flags. Kept OUT of the official
+  a quals, posting or neighbour-day change that would change what the day flags (a Logic change no longer: since D2005
+  the day is judged by the settings it went out with, so its frozen warnings stay; only the printed brief lead is
+  compared, D186). Kept OUT of the official
   pass's own gate (`dayDeltaCore`), so the validator never depends on its output. The official pass reads each published
   date's frozen inputs, so the axis never moves on the day's own input changes (those are the details axis's). A rename
   is a label: warnings compare with callsigns keyed out (`warnMsgKey`), and the face re-words a frozen warning with
@@ -3443,7 +3557,12 @@ stay LIVE (below), which the face draws from today and which never make the day 
   copy's. The comparison: for every warning of today's judgement of the issued day that the working copy ALSO raises
   (`validate.ts HOOKS.hideNow`), hidden-on-the-working-copy against hidden-as-issued — **one pending change per warning
   that differs**, addressed `hide:<di>.<fingerprint of the warning's key>` (never its place in the list or its words: the
-  sign-offs are bound to it), `from` / `to` the plain `shown` / `hidden`. Wired into BOTH authorities, as the warnings
+  sign-offs are bound to it), `from` / `to` the plain `shown` / `hidden`. A clash's key reads its two items' row ids in
+  place of its words (owner D2001, 11 Nov 26: "a hidden clash stays hidden while the same man is on the same two items,
+  whatever their times" — `warnhide.ts hideKey`, `validate.ts clashItem`, each clash warning carrying `items`). Two clashes
+  of one man worded the same are two warnings — the original's dedupe (one man, code and words) keeps the clash's pair
+  too (`validate.ts add`) — each hidden by its own pair, so a hidden clash never covers another worded the same; the drop's
+  red message keys a clash by its pair as well (`state/dropflag.ts warnKey`) (the bug check of 12 Nov 26). Wired into BOTH authorities, as the warnings
   axis is: `dayDelta` and `dayPendingItemsIn`. It is never also the warnings axis — the stored slice and the official
   pass stay as the rules raised them. A hide of a warning only the working copy has goes out with the edit that raised
   it; a stale hide (its warning no longer raised) pends nothing. Unpublish falls back to the version before; "Load onto

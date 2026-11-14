@@ -1,0 +1,52 @@
+Thursday late row, seat Ranger: bane
+seat Ranger: bane
+line as minted: ["09:00H: IN TIME + WX/NOTAMS"] feedback: []
+S31 line stored: ["09:00 RALLY"]
+S31 feedback: [] 
+S31 warnings:
+  ⚠ 2 issues
+  · 2 warnings
+  VL: rally 10:00 is later than suggested brief 09:40.
+  ✕
+  Ranger — Crew rest breach — Thursday ended 21:30 → crew rest clear at 09:30, but told to report 09:00 — only 11h30 rest.
+  ✕
+PASS  S31 "09:00 RALLY" line + R 10:00: VL reports at 09:00 (rest breach says so)  Ranger — Crew rest breach — Thursday ended 21:30 → crew rest clear at 09:30, but told to report 09:00 — only 11h30 rest.
+Ranger puck title: ["Ranger · IP · instructor pilot · SXO · Crew rest breach (<12h)","","Ranger · IP · instructor pilot · SXO · Crew rest breach (<12h)"]
+week header In-time / Rally text: "09:00 RALLY ✕"
+week reporting feedback: []
+formation: {"rl":"10:00","to":"12:00"}
+S32a stored: ["RALLY AFTER IN TIME"]
+S32a feedback: [] 
+S32a warnings:
+  ⚠ 2 issues
+  · 1 warning
+  VL: rally 10:00 is later than suggested brief 09:40.
+  ✕
+  Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Thursday ended 21:30 → crew rest clear at 09:30
+  ✕
+PASS  S32a clockless line raises nothing about its clock  no clock-related line; all lines: ⚠ 2 issues / · 1 warning / VL: rally 10:00 is later than suggested brief 09:40. / ✕ / Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Thursday ended 21:30 → crew rest clear at 09:30 / ✕
+PASS  S32a clockless line sets no time (report falls back to the R box 10:00: no breach)  no crew-rest breach; lines: ⚠ 2 issues / · 1 warning / VL: rally 10:00 is later than suggested brief 09:40. / ✕ / Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Thursday ended 21:30 → crew rest clear at 09:30 / ✕
+S32b stored: ["RALLY 9h15"]
+S32b feedback: ["VL: reporting line 1 has no recognised clock. Check the time."] 
+S32b warnings:
+  ⚠ 3 issues
+  · 1 warning
+  VL: rally 10:00 is later than suggested brief 09:40.
+  ✕
+  VL: reporting line 1 has no recognised clock. Check the time.
+  ✕
+  Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Thursday ended 21:30 → crew rest clear at 09:30
+  ✕
+RECORD the warning the unreadable line raises: ["VL: reporting line 1 has no recognised clock. Check the time."]
+PASS  S32b unreadable clock sets no time (no breach)  no crew-rest breach
+PASS  S32b unreadable line: words  VL: reporting line 1 has no recognised clock. Check the time.
+restored 09:00 RALLY; warnings:
+  ⚠ 2 issues
+  · 2 warnings
+  VL: rally 10:00 is later than suggested brief 09:40.
+  ✕
+  Ranger — Crew rest breach — Thursday ended 21:30 → crew rest clear at 09:30, but told to report 09:00 — only 11h30 rest.
+  ✕ 
+feedback: []
+PASS  S31/S32 no console/page errors  
+DONE 6 PASS 0 FAIL 0 OTHER of 6

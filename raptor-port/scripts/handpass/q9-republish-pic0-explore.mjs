@@ -1,0 +1,23 @@
+import { existsSync } from 'node:fs'
+import { createRequire } from 'node:module'
+const { chromium } = createRequire(process.cwd() + '/package.json')('playwright')
+console.log('q9-explore v3')
+const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
+const b = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
+const page = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage()
+await page.goto('http://localhost:4180/')
+await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a')
+await page.click('#loginForm button[type=submit]')
+await page.waitForSelector('#vWeek .day', { state: 'attached' })
+await page.waitForTimeout(800)
+await page.evaluate(() => window.go('editsched'))
+await page.waitForFunction(() => window.CURPAGE === 'editsched')
+await page.waitForTimeout(500)
+await page.click('#eWeek [data-sbday="2"]:visible')
+await page.waitForSelector('#schedBoard')
+await page.waitForTimeout(800)
+await page.screenshot({ path: 'docs/img/handpass/2026-11-11-rules-check-q9/_explore.png' })
+const r = await page.evaluate(() => [...document.querySelectorAll('#schedBoard input, #schedBoard select')].filter(e => e.offsetWidth).map(e => e.tagName + ' bfld=' + (e.dataset.bfld || '') + ' slot=' + (e.dataset.slot || '') + ' id=' + e.id + ' v=' + e.value).slice(0, 90))
+console.log(r.join('\n'))
+console.log(await page.evaluate(() => [...document.querySelectorAll('#schedBoard [data-slot]')].filter(e => e.offsetWidth).map(e => e.dataset.slot + ' ' + (e.innerText || '').replace(/\s+/g, ' ').slice(0, 30)).slice(0, 60).join('\n')))
+await b.close()

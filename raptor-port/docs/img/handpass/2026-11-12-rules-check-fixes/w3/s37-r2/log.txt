@@ -1,0 +1,12 @@
+buttons beside the menu heading: 5 title: Edit the duty templates
+PASS  S37b window opens from the + Block pencil  tplClose visible: 1
+PASS  S37b board-pencil avalon note  read: "The AVALON desk — until the AVALON flies, checked only for overseas or medically down (ATT B may still man it), and earns no OIL by default on a weekend or holiday. Switch it on in OIL Earn if activated."
+PASS  S37b board-pencil bb note  read: "The BB desk — the same rules as the AVALON desk: until the BB flies, checked only for overseas or medically down (ATT B may still man it), and earns no OIL by default on a weekend or holiday. Switch it on in OIL Earn if activated."
+For wave options: =None,sc=SC,avalon=AVALON,bb=BB
+buttons beside the menu heading: 5 title: Edit the duty templates
+buttons beside the menu heading: 5 title: Edit the duty templates
+buttons beside the menu heading: 5 title: Edit the duty templates
+RECORD which closes close the board-pencil duty-template window: {"✕":true,"Done":true,"Escape":true,"outside press":true}
+RECORD  S37b close routes recorded  {"✕":true,"Done":true,"Escape":true,"outside press":true}
+PASS  S37b no console/page errors  
+DONE 4 PASS 0 FAIL 1 OTHER of 5

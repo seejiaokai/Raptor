@@ -1,0 +1,57 @@
+[
+ {
+  "id": "Q3.0a navigation: the week of 20 Jul",
+  "ok": true,
+  "detail": "{\"week\":\"20/07/2026\",\"mon\":\"Jul 20\"}"
+ },
+ {
+  "id": "Q3.1a Monday 20 Jul line: VL BFM 12:00-13:00, B blank, Ranger",
+  "ok": true,
+  "detail": "VL BFM to 12:00 ld 13:00 B=undefined R=undefined p=bane"
+ },
+ {
+  "id": "Q3.1b Monday 20 Jul published (ORIG face)",
+  "ok": true,
+  "detail": "Monday Jul 20 ORIG 4 X 2 X 1 Original — as issued Working draft — not issued i | pressed {\"pressed\":true,\"label\":\"Publish day\"}"
+ },
+ {
+  "id": "Q3.2a navigation: back to the week of 13 Jul",
+  "ok": true,
+  "detail": "{\"week\":\"13/07/2026\",\"mon\":\"Jul 13\"}"
+ },
+ {
+  "id": "Q3.2b View-only Sched, preview Monday shows B 09:40 (2h20)",
+  "ok": true,
+  "detail": "VL BFM B=[06:20] T/O-LD=08:40 10:05 ; RU BFM B=[06:20] T/O-LD=08:40 10:05 ; VL ACM B=[08:10] T/O-LD=10:30 11:55 ; VL BFM B=[09:40] T/O-LD=12:00 13:00"
+ },
+ {
+  "id": "Q3.3 Logic \"Brief before take-off\" set to 3h20",
+  "ok": true,
+  "detail": "was 2h20 now 3h20"
+ },
+ {
+  "id": "Q3.4a View-only Sched, preview Monday after the raise: still B 09:40",
+  "ok": true,
+  "detail": "VL BFM B=[06:20] T/O-LD=08:40 10:05 ; RU BFM B=[06:20] T/O-LD=08:40 10:05 ; VL ACM B=[08:10] T/O-LD=10:30 11:55 ; VL BFM B=[09:40] T/O-LD=12:00 13:00"
+ },
+ {
+  "id": "Q3.4b Edit Schedule preview (working copy) Monday after the raise — RECORD (expected 08:40)",
+  "ok": null,
+  "detail": "VL BFM B=[06:20] T/O-LD=08:40 10:05 ; RU BFM B=[06:20] T/O-LD=08:40 10:05 ; VL ACM B=[08:10] T/O-LD=10:30 11:55 ; VL BFM B=[09:40] T/O-LD=12:00 13:00 [q3-4-editschedule-preview-after.png]"
+ },
+ {
+  "id": "Q3.4c phone 402: does View-only Sched show the preview",
+  "ok": true,
+  "detail": "no preview section on the phone width in the same context (peek is desktop only)"
+ },
+ {
+  "id": "Q3.5 Logic value restored",
+  "ok": true,
+  "detail": "now 2h20 want 2h20"
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]

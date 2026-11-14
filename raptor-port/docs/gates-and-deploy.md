@@ -15,6 +15,30 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## Now (24 Sep 26) — how the checks and the deploy run today
 
+- **The browser jobs run in Playwright's own image (12 Nov 26, [CI-BROWSER-DEPS-DOWNLOAD]):** the seven `geometry` and two
+  `tracker (smoke)` jobs on GitHub no longer run `npx playwright install --with-deps chromium`, which fetched the browser's
+  system libraries and fonts from Ubuntu's package servers on every run — 8 to 16 minutes in 9 of the 20 runs before
+  8 Nov 26, and on 11–12 Nov 26 `main`'s run after pull request 760 failed four times, all nine jobs stopped in that step
+  ("Temporary failure resolving" Ubuntu's servers) before a test ran. Each now runs on `ubuntu-26.04` in the container
+  `mcr.microsoft.com/playwright:v<version>-resolute` (the same Ubuntu release — pull request 760's last green run on the
+  bare runner had every browser job on 26.04 — with the browser and every system package Playwright's `install-deps`
+  names already in it, pulled from Microsoft's registry). The runner's own fonts are lent to it read-only: Chromium draws
+  sans-serif in Liberation Sans (in the image itself) but system-ui and monospace in DejaVu Sans / DejaVu Sans Mono
+  (the note under §How the gates lie), which came with GitHub's machine image, not with `--with-deps`. The container is
+  told `TZ=UTC` (the bare runner's clock was UTC, TZ unset). A cache of the old step was weighed and set aside: it needs
+  one good fetch first and misses whenever GitHub refreshes its machine image. Not covered: if Microsoft's registry
+  cannot be reached, the nine jobs fail before checkout (three pull attempts in all).
+  - **Trap — a Playwright bump needs the image tag bumped with it.** The tag must be the Playwright version in
+    `package-lock.json` (both jobs' `container.image` in `deploy.yml`, with `runs-on` naming the image's Ubuntu release);
+    their "Browser image" step (`scripts/ci/browser-image-check.cjs --check`, after `npm ci`) compares the image's own
+    record of its version with the installed one and stops the job with the line to change. Never answer it with
+    `npx playwright install` — that is the download this replaced. The same step fails the job if the browser the tests
+    launch does not start, or if the runner's fonts did not arrive.
+  - **Reading a red browser job:** the "Fonts drawn" step prints, for the log only, which font Chromium draws each family
+    the app names in, the time zone and the language — compare them with the last green run first when a measuring test
+    is red on GitHub only. The workflow's note above the `geometry` job has the rest (the user, `--ipc=host`, why the fonts
+    are lent, the Tracker smoke's wait for its server on every loopback address).
+
 - **The 31 errors left in old walk scripts were settled before the next full run (his D1572, 2 Nov 26 — spent, archived 10 Nov 26):** the app's own errors
   are 0 since the 31 Oct 26 clean-up; the 31 errors a full run still reported (2 Nov 26) were all one rule, `no-eval` —
   30 in the Leave War overhaul's mock-up scripts (`docs/mock/lw-overhaul/`, which load their approved drawing's own code,
@@ -294,7 +318,8 @@ machine draws its own: Linux's DejaVu Sans is much wider than this PC's Segoe UI
 the logs, run the test here with wider letters forced from the first paint — the Leave War browser tests'
 `LW_WIDE_LETTERS=1`, or the same init script (a style tag added after the page loads reproduced one failure of three: the
 app measures some text as it loads) — and in the test's own order of resizes (loading at the target width missed one).
-Prove each fix red-then-green both ways before pushing.
+Prove each fix red-then-green both ways before pushing. Since 12 Nov 26 the browser jobs run in Playwright's image with the
+runner's fonts lent to it, to keep these same letters (§Now, the browser jobs); their "Fonts drawn" step prints them.
 
 **The tests that scan source text read comments too (21 Oct 26).** `src/engine/inputs-readers.test.ts` lists every file
 whose text holds the store's name `INPUTS`, and `src/state/perms-scan.test.ts` scans for rules decided outside their one

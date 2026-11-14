@@ -1,0 +1,41 @@
+{
+ "results": [
+  {
+   "id": "S17.D.1 hide the same-time warning: list shows it struck",
+   "verdict": "PASS",
+   "saw": "[\"0:HID+struck:reset: VL takes off and lands at the same time (15:00) — one of the two is wrong; the day still earns from the report and debrief {wln adv hid}\",\"1:live:✕: AX takes off and lands at the same time (15:00) — one of the two is wrong; the day still earns from the report and debrief {wln adv}\",\"2:live:✕: This day is not published yet, so nobody earns their OIL for it — publish it before the day is out {wln adv}\"]",
+   "pic": "s17-D-0-list.png"
+  },
+  {
+   "id": "S17.D.2 (record) time-box classes before / after the hide",
+   "verdict": "RECORD",
+   "saw": "before: 0.to:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 0.ld:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 1.to:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 1.ld:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 2.to:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) || 2.ld:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) ## after: 0.to:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) || 0.ld:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) || 1.to:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 1.ld:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 2.to:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) || 2.ld:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16)",
+   "pic": "s17-D-1-board.png"
+  },
+  {
+   "id": "S17.D.3 ↺ Reset: warning live again",
+   "verdict": "PASS",
+   "saw": "[\"0:live:✕: VL takes off and lands at the same time (15:00) — one of the two is wrong; the day still earns from the report and debrief {wln adv}\",\"1:live:✕: AX takes off and lands at the same time (15:00) — one of the two is wrong; the day still earns from the report and debrief {wln adv}\",\"2:live:✕: This day is not published yet, so nobody earns their OIL for it — publish it before the day is out {wln adv}\"] ## boxes: 0.to:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 0.ld:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 1.to:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 1.ld:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 2.to:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) || 2.ld:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16)",
+   "pic": "s17-D-3-reset-board.png"
+  },
+  {
+   "id": "S17.P.1 hide the same-time warning: list shows it struck",
+   "verdict": "PASS",
+   "saw": "[\"0:HID+struck:reset: VL takes off and lands at the same time (15:00) — one of the two is wrong; the day still earns from the report and debrief {wln adv hid}\",\"1:live:✕: AX takes off and lands at the same time (15:00) — one of the two is wrong; the day still earns from the report and debrief {wln adv}\",\"2:live:✕: This day is not published yet, so nobody earns their OIL for it — publish it before the day is out {wln adv}\"]",
+   "pic": "s17-P-0-list.png"
+  },
+  {
+   "id": "S17.P.2 (record) time-box classes before / after the hide",
+   "verdict": "RECORD",
+   "saw": "before: 0.to:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 0.ld:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 1.to:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 1.ld:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 2.to:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) || 2.ld:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) ## after: 0.to:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) || 0.ld:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) || 1.to:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 1.ld:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 2.to:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) || 2.ld:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16)",
+   "pic": "s17-P-1-board.png"
+  },
+  {
+   "id": "S17.P.3 ↺ Reset: warning live again",
+   "verdict": "PASS",
+   "saw": "[\"0:live:✕: VL takes off and lands at the same time (15:00) — one of the two is wrong; the day still earns from the report and debrief {wln adv}\",\"1:live:✕: AX takes off and lands at the same time (15:00) — one of the two is wrong; the day still earns from the report and debrief {wln adv}\",\"2:live:✕: This day is not published yet, so nobody earns their OIL for it — publish it before the day is out {wln adv}\"] ## boxes: 0.to:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 0.ld:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 1.to:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 1.ld:\"15:00\" cls=[tm badtm] border=rgb(229, 168, 59) bg=rgb(11, 13, 16) || 2.to:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16) || 2.ld:\"15:00\" cls=[tm] border=rgb(42, 49, 58) bg=rgb(11, 13, 16)",
+   "pic": "s17-P-3-reset-board.png"
+  }
+ ],
+ "errors": []
+}

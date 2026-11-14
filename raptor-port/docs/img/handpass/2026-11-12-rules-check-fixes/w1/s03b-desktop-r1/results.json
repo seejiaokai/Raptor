@@ -1,0 +1,47 @@
+[
+ {
+  "id": "S03.ctl RECORD control: ordinary desk man + overlapping sortie — pucks",
+  "ok": null,
+  "detail": "[\"board/other :: puck sm warn hard boxred oilbar oilbar-fo flagnew\",\"board/desk :: puck sm warn hard boxred oilbar oilbar-fo flagnew\",\"board/other :: puck sm warn hard boxred\",\"week/other :: puck warn hard boxred oilbar oilbar-fo flagnew\",\"week/desk :: puck sm warn hard boxred oilbar oilbar-fo flagnew\"]"
+ },
+ {
+  "id": "S13.2 desk man once the wave flies by R (default)",
+  "ok": null,
+  "detail": "[\"Ranger FO [on]\"]"
+ },
+ {
+  "id": "S13.2 then switched OFF by hand in OIL Earn",
+  "ok": null,
+  "detail": "[\"Ranger — [off]\"]"
+ },
+ {
+  "id": "S13.3 RECORD: after switching off by hand, un-flying and re-flying — does he stay off",
+  "ok": null,
+  "detail": "[\"Ranger — [off]\"]"
+ },
+ {
+  "id": "S13.3 explicit off survives the wave flying again (D1997: activation changes the default, not an explicit refusal)",
+  "ok": true,
+  "detail": "[\"Ranger — [off]\"]"
+ },
+ {
+  "id": "S03.p Saturday published with the flying AVALON wave",
+  "ok": true,
+  "detail": "{\"pressed\":true,\"label\":\"Publish day\"} tag ORIG"
+ },
+ {
+  "id": "S03.p Leave War credit — Ranger (desk man, state as left at publish)",
+  "ok": null,
+  "detail": "box \"\" OIL {\"oil\":\"0 ›\"}"
+ },
+ {
+  "id": "S03.p Leave War credit — Comet (AVALON MAIN)",
+  "ok": null,
+  "detail": "box \"FO*\" OIL {\"oil\":\"1 ›\"}"
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]

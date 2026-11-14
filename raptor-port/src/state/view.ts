@@ -3,11 +3,11 @@ import { INPUTS, inpId, dateOrd, isSansAvail, leadOf } from '../engine/inputs'
 import { onCommon } from '../engine/grouprows'
 import { PEOPLE } from '../engine/people'
 import { keyDay, iuParts } from '../engine/keys'
-import { ridKey } from '../engine/rowids'
+import { ridKey, ensureRowIds } from '../engine/rowids'
 import { slotVal, setSlotVal, fillSlot, lastFilled, armTargetExists, sentinelSeatOK } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, rowTwice } from '../engine/avail'
-import { validate, WARN, officialWarn, versionFaceWarn, workingWarn } from '../engine/validate'
+import { validate, WARN, officialWarn, versionFaceWarn, workingWarn, clashItem } from '../engine/validate'
 import { markEdit, daySnapOf, dayApproved, dayCurVer } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks, isDraftVer } from '../engine/drafts'
 import { isLead, isInstr, isOcu, isSpecial } from '../engine/people'
@@ -914,7 +914,17 @@ export function clearBell(){ BELLLIT.delete(bellKeyOf(CURPAGE,me())) }
      hides it WENT OUT with (D471), not the working copy's.
    · Only a scheduler hides and flags again (the write path here and the command's permission, state/perms.ts). */
 export const WARNOFF=new Set<string>()
-export const warnMuteKey=(w:any)=>hideKey(w)
+/* A CLASH IS HIDDEN BY ITS TWO ITEMS' ROW IDS (D2001 — engine/warnhide.ts hideKey). An item whose row had no id yet when
+   the warning was written is named by its address; the first edit mints the week's ids (rowids.ts ridWriteKey), and the
+   hide would then name an address the clash no longer carries — gone at the next edit. So the hide mints the ids first
+   and names each such item by its id, as the next validate() will. Every painted row is minted already in the app; this
+   is the belt for one that is not. */
+export const warnMuteKey=(w:any)=>{
+  const its=w&&Array.isArray(w.items)?w.items as any[]:null
+  if(!its||its.every((x:any)=>/^[ri]:/.test(String(x||''))))return hideKey(w)
+  ensureRowIds(DAYS)
+  return hideKey({...w,items:its.map((x:any)=>/^[ri]:/.test(String(x||''))?x:clashItem(x))})
+}
 /* is this warning hidden ON THE WORKING COPY — for the state tests and the ✕ / ↺'s own toast; the renderers read `w.off` */
 export function warnShown(w:any){ return !WARNOFF.has(warnMuteKey(w)) }
 /* the ✕ / ↺: returns whether the warning is SHOWN afterwards. Re-validates — the bundle every surface reads is the one

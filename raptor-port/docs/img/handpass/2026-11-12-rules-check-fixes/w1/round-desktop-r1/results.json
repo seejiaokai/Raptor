@@ -1,0 +1,62 @@
+[
+ {
+  "id": "R1 OIL Earn opens from the board",
+  "ok": true,
+  "detail": "OILDAY set: true"
+ },
+ {
+  "id": "R1 Ranger in OIL Earn",
+  "ok": null,
+  "detail": "[\"Ranger FO\"]"
+ },
+ {
+  "id": "R2 OIL Earn closes with the same button",
+  "ok": true,
+  "detail": "OILDAY set: false"
+ },
+ {
+  "id": "R3 after tapping Ranger's switch",
+  "ok": null,
+  "detail": "[\"Ranger FO\"] -> [\"Ranger —\"]"
+ },
+ {
+  "id": "R3 after Undo",
+  "ok": null,
+  "detail": "{\"ok\":true,\"title\":\"Undo — a change to the schedule\"} [\"Ranger FO\"]"
+ },
+ {
+  "id": "R3 after Redo",
+  "ok": null,
+  "detail": "{\"ok\":true,\"title\":\"Redo\"} [\"Ranger —\"]"
+ },
+ {
+  "id": "R3 Undo steps the switch back and Redo forward",
+  "ok": true,
+  "detail": "s0 [\"Ranger FO\"] s1 [\"Ranger —\"] s2 [\"Ranger FO\"] s3 [\"Ranger —\"] undo {\"ok\":true,\"title\":\"Undo — a change to the schedule\"} redo {\"ok\":true,\"title\":\"Redo\"}"
+ },
+ {
+  "id": "R4 ✓ Done closes the board",
+  "ok": true,
+  "detail": "board visible: 0"
+ },
+ {
+  "id": "R5 View-only Sched Saturday",
+  "ok": null,
+  "detail": "Saturday Jul 18 DRAFT 1 7 changes i ⚠ 1 issue ▼ COMMON PROGRAMME WEEKEND - NO FLYING DUTY CREW ON CALL WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS 07:40 10:0"
+ },
+ {
+  "id": "R6 Leave War: Ranger on Saturday",
+  "ok": null,
+  "detail": "box \"\" OIL {\"oil\":\"0 ›\"} published {\"pressed\":true,\"label\":\"Publish day\"}"
+ },
+ {
+  "id": "R6 Leave War shows an OIL figure for the man",
+  "ok": true,
+  "detail": "{\"oil\":\"0 ›\"}"
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]

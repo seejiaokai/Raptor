@@ -1,0 +1,29 @@
+{
+ "results": [
+  {
+   "id": "T1.1 one red line \"VL BFM & BRIEFING clash\"",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",false,\"Ranger — VL BFM & BRIEFING clash\"]] | ⚠ 1 issue · 1 warning | board 4.0.0.0.p RED,g:4.2 RED | week 4.0.0.0.p RED,g:4.2 RED",
+   "pic": "t1-1-one-line.png"
+  },
+  {
+   "id": "T1.3a two red lines worded the same, both live",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",false,\"Ranger — VL BFM & BRIEFING clash\"],[\"RED\",\"live\",false,\"Ranger — VL BFM & BRIEFING clash\"]] | ⚠ 2 issues · 2 warnings | board 4.0.0.0.p RED,g:4.2 RED,g:4.3 RED | week 4.0.0.0.p RED,g:4.2 RED,g:4.3 RED",
+   "pic": "t1-3-two-lines.png"
+  },
+  {
+   "id": "T1.3b Ranger pucks red",
+   "verdict": "PASS",
+   "saw": "board 4.0.0.0.p RED,g:4.2 RED,g:4.3 RED | week 4.0.0.0.p RED,g:4.2 RED,g:4.3 RED",
+   "pic": "t1-3-board.png"
+  },
+  {
+   "id": "T1.3c a RED passing message naming the clash right after the press",
+   "verdict": "PASS",
+   "saw": "[{\"t\":\"— name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden\",\"cls\":\"\",\"color\":\"rgb(255, 255, 255)\",\"bg\":\"rgb(59, 59, 59)\",\"at\":13106},{\"t\":\"Ranger — VL BFM & BRIEFING clash\",\"cls\":\"\",\"color\":\"rgb(240, 85, 95)\",\"bg\":\"rgb(26, 31, 38)\",\"at\":13117}]",
+   "pic": "t1-3-right-after-press.png"
+  }
+ ],
+ "errors": []
+}

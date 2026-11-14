@@ -179,10 +179,13 @@ describe('D1786 on the week: the long-day note and Insights move together', () =
 })
 
 /* A PUBLISHED DAY (D179, D103, D482 — Astra's and Sol 6.1's reads, which corrected the build's first account): the
-   long-day note is frozen on the issued face, but a changed note on the working copy is compared like every frozen
-   warning — the day reads one change waiting, and the sign-offs given before it fall; Insights moves at once. Putting
-   the Logic value back clears it. */
-describe('D1786 on a published day: a long-day note the default rally changes reads as one change waiting', () => {
+   long-day note is frozen on the issued face. SINCE D2005 (owner, 12 Nov 26 — "a published day is checked by all the
+   Logic settings it was published under"; the ruling followed, over this test's earlier pin of D179's "a changed note on
+   the working copy reads one change waiting", 8 Nov 26): a changed default rally no longer reaches the published day
+   at all — not its face, not its untouched working copy, nothing waits and the sign-offs stand — until its next
+   amendment; once the day is edited, its working copy reads today's (the agent's reading of D2005). Insights' hours
+   still move at once (D482, settled, which D2005 does not touch: hours are not checks). */
+describe('D1786 on a published day: a default-rally change waits for the next amendment (D2005)', () => {
   const resetSched = () => {
     SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
     ;(SCHED as any).al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
@@ -194,7 +197,7 @@ describe('D1786 on a published day: a long-day note the default rally changes re
   const longDay = (w: any) => (w.byDay[4]?.warns || []).some((x: any) => x.code === 'LONGDAY' && x.who.includes('salsa'))
   const hrs = (id: string) => (computeInsights().hours.find((h: any) => h.id === id) || { mins: 0 }).mins
 
-  it('published at a 1h default rally (10h30, no note), then 3h: the issued face keeps no note, the day reads 1 waiting, its sign-offs fall; back to 1h, nothing waits', () => {
+  it('published at a 1h default rally (10h30, no note), then 3h: no note anywhere, nothing waits, the sign-offs stand, Insights moves; an edit brings the note to the working copy only', () => {
     const was = VCONF.reportLead
     try {
       VCONF.reportLead = 60
@@ -207,14 +210,18 @@ describe('D1786 on a published day: a long-day note the default rally changes re
       const h0 = hrs('salsa')
       sign(4)                                                           // the working copy signed again after publishing
       VCONF.reportLead = 180; validate()
-      expect(longDay(WARN), 'the working copy now has his 12h30 note').toBe(true)
-      expect(longDay(officialWarn()), 'the issued face keeps what it went out with (D179)').toBe(false)
-      expect(dayDelta(4).some((e: any) => e.kind === 'warn'), 'the changed warnings are one change waiting').toBe(true)
-      expect(dayShownPendCount(4), 'the day reads 1 waiting').toBe(1)
-      expect(Object.values(signShown(4)).every((v) => !v), 'the sign-offs given before it fall (D103)').toBe(true)
+      expect(longDay(WARN), 'the untouched working copy is judged by the settings it went out with (D2005)').toBe(false)
+      expect(longDay(officialWarn()), 'the issued face keeps what it went out with (D179, D2005)').toBe(false)
+      expect(dayDelta(4).some((e: any) => e.kind === 'warn'), 'a Logic change is no change waiting (D2005)').toBe(false)
+      expect(dayShownPendCount(4), 'nothing waits').toBe(0)
+      expect(Object.values(signShown(4)).every((v) => !!v), 'the sign-offs stand').toBe(true)
       expect(hrs('salsa') - h0, 'Insights moves at once (D482): two hours more').toBe(120)
+      ;(DAYS[4].waves[DAYS[4].waves.length - 1] as any).formations[0].msn = 'XREF'   // an edit: the working copy now previews the next amendment
+      validate()
+      expect(longDay(WARN), 'the edited working copy reads today\'s default rally: his 12h30 note').toBe(true)
+      expect(longDay(officialWarn()), 'the issued face still keeps no note').toBe(false)
       VCONF.reportLead = 60; validate()
-      expect(dayHasChanges(4), 'the Logic value put back: nothing waits').toBe(false)
+      expect(longDay(WARN), 'the Logic value put back: no note').toBe(false)
       expect(hrs('salsa')).toBe(h0)
     } finally { VCONF.reportLead = was }
   })

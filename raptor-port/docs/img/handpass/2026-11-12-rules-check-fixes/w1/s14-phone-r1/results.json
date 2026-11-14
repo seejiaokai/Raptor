@@ -1,0 +1,62 @@
+[
+ {
+  "id": "S14.0 fixture: SC shift 08:00-08:00, Ranger MAIN, Comet SPARE",
+  "ok": true,
+  "detail": "08:00|08:00|MAIN:bane,MAIN:,SPARE:beams,SPARE:"
+ },
+ {
+  "id": "S15.c RECORD: the same-time note with nothing typed (not flying)",
+  "ok": null,
+  "detail": "[\"SC takes off and lands at the same time (08:00) — one of the two is wrong; a shift with no length earns nobody any OIL until it is fixed\"]"
+ },
+ {
+  "id": "S15.c RECORD: the shift box title",
+  "ok": null,
+  "detail": "tm badtm | SC takes off and lands at the same time (08:00) — one of the two is wrong; a shift with no length earns nobody any OIL until it is fixed"
+ },
+ {
+  "id": "S15.c nothing typed: the two earn nothing (inert in OIL Earn)",
+  "ok": true,
+  "detail": "[\"Ranger IP [inert]\",\"Comet IP [inert]\",\"Fable FO [on]\"]"
+ },
+ {
+  "id": "S14.a R 06:00: the same-time note ends with the new words (D1999)",
+  "ok": true,
+  "detail": "[\"SC takes off and lands at the same time (08:00) — one of the two is wrong; the shift still earns from its R or B\"]"
+ },
+ {
+  "id": "S14.a each man (MAIN and SPARE) earns: on, two hours an HO",
+  "ok": true,
+  "detail": "[\"Ranger HO [on]\",\"Comet HO [on]\",\"Fable FO [on]\"]"
+ },
+ {
+  "id": "S14.a the shift box title",
+  "ok": null,
+  "detail": "tm badtm | SC takes off and lands at the same time (08:00) — one of the two is wrong; the shift still earns from its R or B"
+ },
+ {
+  "id": "S14.b B 06:00 alone (R cleared: rl= br=06:00): the note ends with the new words",
+  "ok": true,
+  "detail": "[\"SC takes off and lands at the same time (08:00) — one of the two is wrong; the shift still earns from its R or B\"]"
+ },
+ {
+  "id": "S14.b each man earns: on, two hours an HO",
+  "ok": true,
+  "detail": "[\"Ranger HO [on]\",\"Comet HO [on]\",\"Fable FO [on]\"]"
+ },
+ {
+  "id": "S14.p Saturday published with R 06:00",
+  "ok": true,
+  "detail": "tag \"ORIG\" {\"pressed\":true,\"label\":\"Publish day\"}"
+ },
+ {
+  "id": "S14.p the published shift credits Ranger (MAIN) and Comet (SPARE)",
+  "ok": true,
+  "detail": "Ranger box \"HO*\" OIL {\"oil\":\"0.5 ›\"}; Comet box \"HO*\" OIL {\"oil\":\"0.5 ›\"}"
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]

@@ -7,7 +7,7 @@ import { DAYS } from './data'
 import { WEEK2_DAYS } from './week2'
 import { readFileSync } from 'node:fs'
 
-const formation = (cs='VL', to='12:00') => ({cs,to,ld:'13:00',br:'10:00',aircraft:[{p:'ignite',w:'bane',rmks:'',opts:{}}]})
+const formation = (cs='VL', to='12:00'): any => ({cs,to,ld:'13:00',br:'10:00',aircraft:[{p:'ignite',w:'bane',rmks:'',opts:{}}]})
 const wave = (intimes:string[], formations=[formation(),formation('RU')]) => ({label:'FIRST WAVE',intimes,formations})
 
 describe('Rally reporting decisions D497–D507: RT1 scope, RT2 grammar, RT3 actual dates, RT4 consumers, RT5 stages', () => {
@@ -47,10 +47,16 @@ describe('Rally reporting decisions D497–D507: RT1 scope, RT2 grammar, RT3 act
     ] as const;
     for(const [days,di,gi,lines] of expected)expect(days[di].waves[gi].intimes).toEqual(lines);
   })
+  /* D1995 (11 Nov 26): the rally is the formation's R box alone — a typed line saying RALLY is an in-time. So the
+     formation-specific rally here is VL's box; the typed "08:30 VL RALLY" is VL's own in-time, replacing the wide one
+     for VL (D505's scope, unchanged — the agent's reading, put to him). */
   it('D505 scopes IN and RALLY separately, preserving a wide IN under specific RALLY', () => {
-    const w=wave(['08:00 IN TIME','08:30 VL RALLY'])
+    const w=wave(['08:00 IN TIME'],[{...formation(),rl:'08:30'},formation('RU')])
     expect(seatIntime(w,w.formations[0],720)).toBe(480)
     expect(seatIntime(w,w.formations[1],720)).toBe(480)
+    const typed=wave(['08:00 IN TIME','08:30 VL RALLY'])
+    expect(seatIntime(typed,typed.formations[0],720)).toBe(510)
+    expect(seatIntime(typed,typed.formations[1],720)).toBe(480)
   })
   it('D505 a specific IN replaces wide IN without losing the wide RALLY', () => {
     const w=wave(['08:00 IN TIME','09:00 RALLY','08:30 VL IN TIME'])
@@ -105,34 +111,44 @@ describe('Rally reporting decisions D497–D507: RT1 scope, RT2 grammar, RT3 act
     expect(seatIntime(w,w.formations[0],720)).toBe(480)
     expect(seatIntime(wave([]),w.formations[0],720)).toBe(null)
   })
-  it('D497 immediate rally derives only its applicable IN; D505 specific immediate overrides wide rally', () => {
+  /* D1995 (11 Nov 26) over D497's "rally after in-time" line and D1034: a typed line makes no rally. "RALLY AFTER IN TIME"
+     with no clock carries no time, so it is no instruction; "09:00 RALLY" is a whole-wave in-time, the earlier wide line
+     counting; a line with both words is one in-time. */
+  it('D497 immediate rally derives only its applicable IN; D505 specific immediate overrides wide rally — D1995: no typed line makes a rally', () => {
     const w=wave(['08:00 IN TIME','09:00 RALLY','VL RALLY AFTER IN TIME'])
-    expect(resolveReporting(w,w.formations[0],720).rally).toBe(480)
-    expect(resolveReporting(w,w.formations[1],720).rally).toBe(540)
+    expect(resolveReporting(w,w.formations[0],720)).toMatchObject({inTime:480,rally:null,report:480})
+    expect(resolveReporting(w,w.formations[1],720)).toMatchObject({inTime:480,rally:null,report:480})
+    expect(reportingIssuesForWave(w)).toEqual([])
     const both=wave(['08:00 IN-TIME + RALLY'])
-    expect(resolveReporting(both,both.formations[0],720)).toMatchObject({inTime:480,rally:480,report:480})
+    expect(resolveReporting(both,both.formations[0],720)).toMatchObject({inTime:480,rally:null,report:480})
   })
-  it('W3 D505 a formation RALLY AFTER IN TIME typed WITH a clock is its rally only — the whole-wave in-time still starts its day, in either order', () => {
+  /* D1995 (11 Nov 26) over W3's "its rally only" (D1034): a formation's "RALLY AFTER IN TIME" typed with a clock is that
+     formation's own in-time, so it replaces the whole-wave in-time for VL (D505's scope); RU keeps the whole-wave one.
+     In either order. The agent's reading, put to him with the rules-first W4 case. */
+  it('W3 D505 a formation RALLY AFTER IN TIME typed WITH a clock — D1995: it is that formation\'s own in-time, in either order', () => {
     for(const lines of [['08:00H: IN TIME + WX/NOTAMS','08:30H: VL RALLY AFTER IN TIME'],['08:30H: VL RALLY AFTER IN TIME','08:00H: IN TIME + WX/NOTAMS']]){
       const w=wave(lines,[formation('VL','11:00'),formation('RU','11:00')])
-      expect(resolveReporting(w,w.formations[0],660)).toMatchObject({inTime:480,rally:510,report:480})
+      expect(resolveReporting(w,w.formations[0],660)).toMatchObject({inTime:510,rally:null,report:510})
       expect(resolveReporting(w,w.formations[1],660)).toMatchObject({inTime:480,rally:null,report:480})
-      expect(seatIntime(w,w.formations[0],660)).toBe(480)
+      expect(seatIntime(w,w.formations[0],660)).toBe(510)
     }
   })
+  /* D1995: the "RALLY" line is VL's own in-time now, so the targeting is read off the in-time — unchanged otherwise */
   it('D500/D504 matching includes remarks, bounded own-wave tokens, and no person targeting', () => {
     const w=wave(['08:00 IN TIME | TRUE','09:00 RALLY (vl + IGNITE)'])
-    expect(resolveReporting(w,w.formations[0],720).rally).toBe(540)
-    expect(resolveReporting(w,w.formations[1],720).rally).toBe(null)
-    expect(resolveReporting(w,w.formations[1],720).inTime).toBe(480)
+    expect(resolveReporting(w,w.formations[0],720)).toMatchObject({inTime:540,rally:null})
+    expect(resolveReporting(w,w.formations[1],720)).toMatchObject({inTime:480,rally:null})
   })
+  /* D1995: the rally is the R box, so the wrong pairs are made with VL's box */
   it('D502/D507 names the actual wrong pair and accepts rally equal to brief', () => {
-    const w=wave(['09:00 IN TIME','08:00 RALLY'])
+    const w=wave(['09:00 IN TIME'],[{...formation(),rl:'08:00'},formation('RU')])
     expect(reportingIssuesForWave(w)[0]).toMatchObject({blocking:true,code:'REPORT_ORDER',msg:'VL: in-time 09:00 is later than rally 08:00.'})
-    w.intimes=['09:00 IN TIME','10:00 RALLY']
+    w.formations[0].rl='10:00'
     expect(reportingIssuesForWave(w)).toEqual([])
-    w.intimes=['09:00 IN TIME','10:15 RALLY']
+    w.formations[0].rl='10:15'
     expect(reportingIssuesForWave(w)[0].msg).toBe('VL: rally 10:15 is later than brief 10:00.')
+    // the typed lines alone are two in-times now: the earlier counts and no pair is wrong
+    expect(reportingIssuesForWave(wave(['09:00 IN TIME','08:00 RALLY']))).toEqual([])
   })
   it('D502 includes uncrewed active formations, skips cancellation and standalone exceptions', () => {
     const f={...formation(),aircraft:[]}; const w=wave(['10:15 RALLY'],[f])
@@ -140,11 +156,18 @@ describe('Rally reporting decisions D497–D507: RT1 scope, RT2 grammar, RT3 act
     expect(reportingIssuesForDay({waves:[{...w,formations:[{...f,cx:'weather'}]}]})).toEqual([])
     expect(reportingIssuesForDay({waves:[{...w,standalone:true,kind:'sc'}]})).toEqual([])
   })
+  /* D1995: "VL RALLY AFTER IN" with no clock makes no rally, so it has nothing to resolve — a clockless note like
+     "RALLY TBD"; the "no recognised clock" line for an unreadable clock is unchanged */
   it('D502 unresolved prose remains nonblocking; D501 first valid token and clockless notes preserved', () => {
-    for(const text of ['25:90 IN TIME','VL RALLY AFTER IN']){
+    for(const text of ['25:90 IN TIME']){
       const w=wave([text],[formation()]); const issues=reportingIssuesForWave(w)
       expect(issues).toHaveLength(1)
       expect(issues[0]).toMatchObject({blocking:false,code:'REPORT_UNRESOLVED'})
+      expect(resolveReporting(w,w.formations[0],720).report).toBe(null)
+    }
+    {
+      const w=wave(['VL RALLY AFTER IN'],[formation()])
+      expect(reportingIssuesForWave(w)).toEqual([])
       expect(resolveReporting(w,w.formations[0],720).report).toBe(null)
     }
     for(const text of ['RALLY TBD','IN TIME TBD','NO RALLY','IN TIME + WX/NOTAMS'])

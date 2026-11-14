@@ -77,8 +77,12 @@ describe('OWS12 — an SC shift with its B (in-time) filled earns OIL from that 
   it('an overnight shift with an earlier B: from the B, through midnight', () => {
     expect(spans(sc('19:00', '07:00', '18:00')).bane).toEqual([[h(18), h(31)]])
   })
-  it('a shift whose written start and end are the same still measures nothing, whatever its B', () => {
-    expect(spans(sc('07:00', '07:00', '06:00')).bane).toBeUndefined()
+  /* CHANGED 11 Nov 26 (owner D1999): a typed B flies the shift (D1044, D1045), and a flying shift typed with the same START
+     and END "earns like a flying line — from its R or B". It used to measure nothing whatever its B. A B that is not
+     earlier than the START still measures nothing. */
+  it('a shift whose written start and end are the same earns from an earlier B, as a flying line does (D1999) — and measures nothing from a B at its START', () => {
+    expect(spans(sc('07:00', '07:00', '06:00')).bane).toEqual([[h(6), h(7)]])
+    expect(spans(sc('07:00', '07:00', '07:00')).bane).toBeUndefined()
   })
   it('a shift with no readable start or end earns nothing from a B alone', () => {
     expect(spans(sc('', '13:00', '06:00')).bane).toBeUndefined()

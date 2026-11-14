@@ -1,0 +1,29 @@
+Ace baseline: [{"i":0,"flying":false,"ground":["HQ ENGAGEMENT 0845-1630","TRAINING CMD VISIT 1630-1800"],"duty":[]},{"i":1,"flying":true,"ground":[],"duty":[]},{"i":2,"flying":false,"ground":["MAINT CONF @ ENG WING 1400-1630"],"duty":[]},{"i":3,"flying":true,"ground":[],"duty":[]},{"i":4,"flying":false,"ground":[],"duty":[]},{"i":5,"flying":false,"ground":[],"duty":[]},{"i":6,"flying":false,"ground":[],"duty":[]}]
+ground row day 4 #2 "RCFW3 TIMED FRI" 09:00..10:00: seat dj
+ground row day 5 #0 "RCFW3 TIMED SAT" 09:00..10:00: seat dj
+ground row day 6 #0 "RCFW3 UNTIMED SUN" -..-: seat dj
+Sunday warnings (untimed ground row):
+  ⚠ 3 issues
+  · 2 warnings
+  Ace — Ace is on the programme 7 days in a row — 6 is the limit, so a break day is due
+  ✕
+  the ground programme has no usable times — nobody on it earns OIL for this day
+  ✕
+  This day is not published yet, so nobody earns their OIL for it — publish it before the day is out
+  ✕
+PASS  S25 untimed Sunday ground row raises the days-in-a-row warning  Ace — Ace is on the programme 7 days in a row — 6 is the limit, so a break day is due
+Ace pucks on Saturday, classes: ["puck sm boxdot oilbar oilbar-ho"]
+Ace pucks on Friday, classes: ["puck sm boxdot"]
+Ace pucks on the week, day:classes ["0:puck sm boxdot","0:puck sm boxdot","1:puck boxdot","1:seat","1:puck sm boxdot","2:puck sm boxdot","2:seat","2:puck sm boxdot","3:puck sm warn hard boxred boxdot","3:puck warn hard boxred boxdot","4:puck sm boxdot","5:puck sm boxdot oilbar oilbar-ho","6:puck sm warn hard boxred"]
+Sunday ground rows after delete: 0
+PASS  S25 deleting the Sunday row clears the warning  Sunday line for Ace: null
+new duty row index 1 row {"role":"","id":"","str":"","end":"","rid":"rmwcji16o5jx2ja"}
+seat on the duty row: dj
+PASS  S25 untimed Sunday duty row raises the days-in-a-row warning  Ace — Ace is on the programme 7 days in a row — 6 is the limit, so a break day is due
+new OFT row index 0 {"label":"","str":"","end":"","rid":"rmwcji48oxzdr3c"}
+seat on the sim row: dj
+PASS  S25 untimed Sunday sim seat raises the days-in-a-row warning  Ace — Ace is on the programme 7 days in a row — 6 is the limit, so a break day is due
+Wednesday Ace ground row index 0
+PASS  S26 removing Wednesday's work clears the Sunday warning  before: raised; after: null
+PASS  S25 no console/page errors  
+DONE 6 PASS 0 FAIL 0 OTHER of 6

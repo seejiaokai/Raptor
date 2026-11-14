@@ -1,0 +1,186 @@
+{
+ "results": [
+  {
+   "id": "T3.1 View-only Sched: the published face still prints B 09:40 after the change (D186)",
+   "ok": true,
+   "detail": "before [\"VL BFM 09:40 12:00 13:00 Ranger IP\"] | after [\"VL BFM 09:40 12:00 13:00 Ranger IP\"]"
+  },
+  {
+   "id": "T3.2 Tuesday reads 1 pending after the change",
+   "ok": true,
+   "detail": "Edit head pending \"1 pending\" | alPanel \"AMENDMENTS 1 day with changes to publish Tue · 1 change · what the published day shows changed Publish AL1 No amendments published yet.\" | view dpend \"\" | before: pending \"11 changes\" alPanel \"AMENDMENTS No pending changes No amendments published yet.\""
+  },
+  {
+   "id": "T3.3 Edit Schedule: the empty B box after the change (RECORD)",
+   "ok": null,
+   "detail": "week B controls: [\"DIV.fcell bto value=null ph=null text=\\\"\\\"\",\"SPAN.rl sugbox txed value=null ph=null text=\\\"\\\"\",\"B.sugbox txed value=null ph=null text=\\\"\\\"\"] | week form: [\"VL BFM 12:00 13:00 Ranger IP + RCP C AREA\"] | before change: [\"DIV.fcell bto value=null ph=null text=\\\"\\\"\",\"SPAN.rl sugbox txed value=null ph=null text=\\\"\\\"\",\"B.sugbox txed value=null ph=null text=\\\"\\\"\"]"
+  },
+  {
+   "id": "T3.4 sign-offs after the change (RECORD): the four signed names",
+   "ok": null,
+   "detail": "Edit head signs [\"— name —\",\"— name —\",\"— name —\",\"— name —\"] signState \"4 to sign\" | edit day text \"Tuesday Jul 28 Templates Live working copy ▾ ORIG Not yet signed 1 1 pending i Publish AL1 Unpublish SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryder Saber Saint Scope Scribe Sidewinder Static Talisman Tally Tor\" | view day text \"Tuesday Jul 28 ORIG 1 Original — as issued Working draft — not issued i SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS VL BFM 09:40 12:00 13:00 Ranger IP UNAVAILABLE Nil\" | BEFORE change: edit \"Tuesday Jul 28 Templates Live working copy ▾ ORIG 1 11 changes i Unpublish SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryder Saber Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Ve\" | view \"Tuesday Jul 28 ORIG 1 Original — as issued Working draft — not issued i SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS VL BFM 09:40 12:00 13:00 Ranger IP UNAVAILABLE Nil\""
+  },
+  {
+   "id": "T3.5a phone world carries the desktop fixture (Tue 28 Jul VL 12:00, published, brief lead 3h = 180)",
+   "ok": true,
+   "detail": "{\"week\":\"27/07/2026\",\"pub\":\"\\\"2026-07-28#0\\\"\",\"f\":\"12:00\",\"briefLead\":180}"
+  },
+  {
+   "id": "T3.5 phone View-only Sched: the published face prints B 09:40",
+   "ok": true,
+   "detail": "[\"VL BFM 09:40 12:00 13:00 Ranger IP\"]"
+  },
+  {
+   "id": "T3.6 phone board (RECORD): B box on the working copy",
+   "ok": null,
+   "detail": "{\"br\":[\"value=\\\"\\\" ph=09:00\"],\"sign\":\"Tue Jul 28 ‹ ⋯ › ↶ ↷ ✓ SIGNED ORIG Ace Anvil Anvil Anvil SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Rang\"}"
+  }
+ ],
+ "errors": [],
+ "r0": {
+  "head": {
+   "tag": "DRAFT",
+   "tagAlc": "",
+   "selector": "Live working copy\n▾",
+   "pending": "6 changes",
+   "nys": false,
+   "beak": {
+    "text": "Publish day",
+    "disabled": true,
+    "title": "Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Tuesday"
+   },
+   "alpub": null,
+   "unpub": null,
+   "signState": "4 to sign",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ]
+  },
+  "alPanel": "AMENDMENTS Changes are on unpublished days — publish the day first No amendments published yet.",
+  "eForm": [
+   "VL BFM 12:00 13:00 Ranger IP + RCP C AREA"
+  ],
+  "eB": [
+   "DIV.fcell bto value=null ph=null text=\"\"",
+   "SPAN.rl sugbox txed value=null ph=null text=\"\"",
+   "B.sugbox txed value=null ph=null text=\"\""
+  ],
+  "eSec": "Tuesday Jul 28 Templates Live working copy ▾ DRAFT 1 6 changes i Publish day SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryder Saber Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Vector Warden Widget Wildcard Wisp Zenith Zulu SKED CK — name ",
+  "vForm": [
+   "VL BFM 09:40 12:00 13:00 Ranger IP"
+  ],
+  "vSec": "Tuesday Jul 28 DRAFT 1 6 changes i WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS VL BFM 09:40 12:00 13:00 Ranger IP UNAVAILABLE Nil",
+  "vPend": {
+   "dpend": "6 changes",
+   "verchip": "DRAFT",
+   "signedStrip": []
+  }
+ },
+ "r1": {
+  "head": {
+   "tag": "ORIG",
+   "tagAlc": "",
+   "selector": "Live working copy\n▾",
+   "pending": "11 changes",
+   "nys": false,
+   "beak": null,
+   "alpub": null,
+   "unpub": {
+    "text": "Unpublish",
+    "disabled": false,
+    "title": "Unpublish Tuesday — pull Original back to a working copy to correct it; republishing reissues the same version"
+   },
+   "signState": "4 to sign",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ]
+  },
+  "alPanel": "AMENDMENTS No pending changes No amendments published yet.",
+  "eForm": [
+   "VL BFM 12:00 13:00 Ranger IP + RCP C AREA"
+  ],
+  "eB": [
+   "DIV.fcell bto value=null ph=null text=\"\"",
+   "SPAN.rl sugbox txed value=null ph=null text=\"\"",
+   "B.sugbox txed value=null ph=null text=\"\""
+  ],
+  "eSec": "Tuesday Jul 28 Templates Live working copy ▾ ORIG 1 11 changes i Unpublish SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryder Saber Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Ve",
+  "vForm": [
+   "VL BFM 09:40 12:00 13:00 Ranger IP"
+  ],
+  "vSec": "Tuesday Jul 28 ORIG 1 Original — as issued Working draft — not issued i SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS VL BFM 09:40 12:00 13:00 Ranger IP UNAVAILABLE Nil",
+  "vPend": {
+   "dpend": "",
+   "verchip": "ORIG",
+   "signedStrip": [
+    "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil"
+   ]
+  }
+ },
+ "r2": {
+  "head": {
+   "tag": "ORIG",
+   "tagAlc": "",
+   "selector": "Live working copy\n▾",
+   "pending": "1 pending",
+   "nys": true,
+   "beak": null,
+   "alpub": {
+    "text": "Publish AL1",
+    "disabled": true,
+    "title": "Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing AL1"
+   },
+   "unpub": {
+    "text": "Unpublish",
+    "disabled": false,
+    "title": "Unpublish Tuesday — pull Original back to a working copy to correct it; republishing reissues the same version"
+   },
+   "signState": "4 to sign",
+   "signs": [
+    "— name —",
+    "— name —",
+    "— name —",
+    "— name —"
+   ]
+  },
+  "alPanel": "AMENDMENTS 1 day with changes to publish Tue · 1 change · what the published day shows changed Publish AL1 No amendments published yet.",
+  "eForm": [
+   "VL BFM 12:00 13:00 Ranger IP + RCP C AREA"
+  ],
+  "eB": [
+   "DIV.fcell bto value=null ph=null text=\"\"",
+   "SPAN.rl sugbox txed value=null ph=null text=\"\"",
+   "B.sugbox txed value=null ph=null text=\"\""
+  ],
+  "eSec": "Tuesday Jul 28 Templates Live working copy ▾ ORIG Not yet signed 1 1 pending i Publish AL1 Unpublish SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryder Saber Saint Scope Scribe Sidewinder Static Talisman Tally Tor",
+  "vForm": [
+   "VL BFM 09:40 12:00 13:00 Ranger IP"
+  ],
+  "vSec": "Tuesday Jul 28 ORIG 1 Original — as issued Working draft — not issued i SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS VL BFM 09:40 12:00 13:00 Ranger IP UNAVAILABLE Nil",
+  "vPend": {
+   "dpend": "",
+   "verchip": "ORIG",
+   "signedStrip": [
+    "SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil"
+   ]
+  }
+ },
+ "pv": {
+  "forms": [
+   "VL BFM 09:40 12:00 13:00 Ranger IP"
+  ],
+  "text": "Tuesday Jul 28 ORIG 1 Original — as issued Working draft — not issued i SIGNED ORIG Ace Anvil Anvil Anvil WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS VL BFM 09:40 12:00 13:00 Ranger IP UNAVAILABLE Nil"
+ },
+ "pb": {
+  "br": [
+   "value=\"\" ph=09:00"
+  ],
+  "sign": "Tue Jul 28 ‹ ⋯ › ↶ ↷ ✓ SIGNED ORIG Ace Anvil Anvil Anvil SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Rang"
+ }
+}

@@ -1,0 +1,10 @@
+in-time boxes: [] [["09:00H: IN TIME + WX/NOTAMS"]]
+key 
+intimes: [["09:00H: IN TIME + WX/NOTAMS"]]
+warnings:
+ ⚠ 1 issue
+ · 1 warning
+ VL: rally 10:00 is later than suggested brief 09:40.
+ ✕
+Ranger puck: ["puck sm | title=Ranger · IP · instructor pilot · SXO","seat | title=","puck sm | title=Ranger · IP · instructor pilot · SXO"]
+week Friday text: 

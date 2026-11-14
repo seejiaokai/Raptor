@@ -1,0 +1,30 @@
+crew: bane freak
+ground row crew: dice
+input filed: 1
+Friday warnings before publishing:
+  No conflicts flagged for Friday ✓
+  No conflicts flagged for this day ✓
+version chip before: "DRAFT"
+publish 1: {"published":true,"version":"ORIG","signSelects":4}
+PASS  S44 first publish  {"published":true,"version":"ORIG","signSelects":4}
+version chip after: "ORIG"
+after changing take-off 12:00 -> 12:30: pending chip ""
+publish AL1: {"published":true,"version":"AL1","signSelects":4} chip: "AL1"
+PASS  S44 amendment publish (AL1)  {"published":true,"version":"AL1","signSelects":4} AL1
+undo/redo buttons found: 1 1 undo disabled? false
+after Undo: chip "ORIG" take-off 12:30
+RECORD  S44 Undo changes the day  chip "AL1" -> "ORIG"
+after Redo: chip "AL1" take-off 12:30
+PASS  S44 Redo returns to the AL1 state  chip before Undo "AL1", after Redo "AL1"
+after reload, the wave: {"to":"12:30","ld":"13:25","cs":"Ranger"} chip "AL1"
+PASS  S44 survives a reload  {"to":"12:30","ld":"13:25","cs":"Ranger"}
+FAIL  S44 ✓ Done closes the board  board elements: 1
+PASS  S44 Logic and back to Edit Schedule  CURPAGE editsched
+member sees pages: ["editsched:Edit Schedule","viewsched:View-only Sched","inputs:Inputs","quals:Quals","logic:Logic","leavewar:Leave War","tracker:Tracker","help:Help","admin:Admin"]
+view-only link: viewsched:View-only Sched
+member View-only Sched shows (published face): RCFW3 BRIEFING:true 12:30:true Ranger:true
+member Friday card: Friday Jul 17 AL1 1 AL1 — as issued Working draft — not issued i SIGNED AL1 CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch COMMON PROGRAMME NO FLYING - GROUND TRAINING DAY ORDERS: FLYING ORDERS SECTION 5 NAME START END PEOPLE RMKS SODB 07:45 08:00 SQN PT 15:00 16:30 MASS DEBRIEF + BEER CALL 17:00 WAVE 1 Traffic CS MSN R B TO LD FCP / RCP RMKS VL 10:10 12:30 13:25 Ranger IP Echo IW DUTIES NAME START END PEOPLE RMKS DUTY SDO 07:30 17:30 Bolt C SXO 07:30 17:30 Ridge C SIMS NAME START END PEOPLE RMKS OFT SIMS (EXT SQN) 09:00 10:30 EXT SQN EP-6 14:00 15:30 Wildcard O Anvil IP GROUND PROGRAMME NA
+PASS  S44 member View-only Sched shows the published Friday  Friday Jul 17 AL1 1 AL1 — as issued Working draft — not issued i SIGNED AL1 CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch COMMON PROGRAMME NO FLYING - GROUND TRAINING DAY ORDERS: FLYING ORDERS SECTION 5 NAME START END PEOPLE RMKS SODB 07:45 08:00 SQN PT 15:00 16:30 MASS DEBRIEF + BEER CALL 17:00
+PASS  S44 member sees no edit controls on the published face  editable elements: 0
+PASS  S44 no console/page errors  
+DONE 8 PASS 1 FAIL 1 OTHER of 10

@@ -27,8 +27,12 @@ import { useSheetFocus, useEscClose } from './sheetfocus'
 const WAVE_NOTE: Record<DutyWave, string> = {
   '': 'An ordinary desk — every row is checked like any duty.',
   sc: 'The SC desk — checked like any duty, and a man on it cannot also stand SC MAIN or SPARE in the same hours.',
-  avalon: 'The AVALON desk — checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.',
-  bb: 'The BB desk — the same rules as the AVALON desk: checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.',
+  /* the OIL half in his words, D1994 (11 Nov 26): off by default, and the switch in OIL Earn credits one that was
+     activated (D24, D35) — a note that said only "earns no OIL" told an admin never to look for the switch. "Until the
+     AVALON flies": once its wave flies the desk is fully checked and earns by default (D1997), so the narrow check and
+     the default hold until then (the words job, new words his to change) */
+  avalon: 'The AVALON desk — until the AVALON flies, checked only for overseas or medically down (ATT B may still man it), and earns no OIL by default on a weekend or holiday. Switch it on in OIL Earn if activated.',
+  bb: 'The BB desk — the same rules as the AVALON desk: until the BB flies, checked only for overseas or medically down (ATT B may still man it), and earns no OIL by default on a weekend or holiday. Switch it on in OIL Earn if activated.',
 }
 
 export function DutyTplModal() {

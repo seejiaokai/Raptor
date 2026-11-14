@@ -1,22 +1,23 @@
 import { PEOPLE, isSpecial, realP, whoId, isOcu, isInstr, isInstrPilot, aarOK, aarInstrOK, scShiftKind, scQualOK } from './people'
-import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta, withFrozenInputs, inputReadPass } from './inputs'
-import { VCONF, SHIFT_HARD } from './rules'
+import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta, withFrozenInputs, inputReadPass, frozenInputDiffs, stableJson } from './inputs'
+import { VCONF, SHIFT_HARD, withLiveRules } from './rules'
 import { overlap, hm24, lgT, parseHM } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { reportingIssuesForDay,stated } from './reporting'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
-import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
+import { seedRunIn, datedRestSeed, dayHidesIn, nextMondayWorked, nextMondayDay, nextMondayHides, windowDiverges, windowFiling, windowInputs, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK, isStandalone, saExempt, saAnyFlies } from './waves'
 import { DAYS } from './data'
-import { dayOilBlind, blindDesks, fltMeasuresNothing } from './oil'
+import { dayOilBlind, blindDesks, fltMeasuresNothing, saZeroSpanWin } from './oil'
 import { oilWouldEarn, oilOldBlockCrowd, oilEvidenceOf } from './oilev'
 import { keyDay, seatRow } from './keys'
 import { rowPlaces } from './slots'
-import { SCHED, approvedDays, dayApproved, dayDelta, dayDeltaCore, dayCurVer, daySnapOf } from './publish'
+import { canonicalDiff } from './canonical'
+import { SCHED, approvedDays, dayApproved, dayDelta, dayDeltaCore, dayCurVer, daySnapOf, peopleAttrsNow, faceRuleValsCompared } from './publish'
 import { hideKey, shownWarns } from './warnhide'
-import { rosterIds } from './faceattrs'
+import { rosterIds, withKeptRules, keptRulesDiffer, withDayRules, keepRulesOn, withShownRules } from './faceattrs'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -113,7 +114,9 @@ export const LIVE_ON_FACE=new Set<string>(['OIL_NO_PERIOD','OIL_STALE_DAY','OIL_
 /* A label may quote a live threshold: {crewRest} prints whatever crew rest is
    set to right now. Without this an edited rule leaves stale numbers behind in
    tooltips and warning lists — the engine says 10h, the chip still says 12h. */
-export const wlbl=(s:any)=>String(s==null?'':s).replace(/\{(\w+)\}/g,(m:any,k:any)=>k in VCONF?lgT(VCONF[k]):m);
+/* `di` (D2005 — the walk: "Crew rest (<11h) … only 11h40 rest" on a day kept at 12h): a day's own warning list names its
+   limits as the day is judged — a published day nothing waits on by the settings it went out with */
+export const wlbl=(s:any,di?:any):string=>di!=null&&DAYS[di]?withShownRules(DAYS[di],():string=>wlbl(s)):String(s==null?'':s).replace(/\{(\w+)\}/g,(m:any,k:any)=>k in VCONF?lgT(VCONF[k]):m);
 export let WARN:any={all:[],byDay:[],sev:{},chip:{},dash:{},trace:{},fz:{sev:{},chip:{},dash:{}},lv:{sev:{},chip:{},dash:{}}};
 /* THE RUN TABLES, published like REST/EVD for the pre-drop query (5 Sep 26):
    RUNLEN[di][id] = consecutive days on the programme through day di (only
@@ -296,16 +299,39 @@ export function fltNoLen(f:any):boolean{
    AND A SORTIE WITH NOTHING ROUND IT ([OIL-ZERO-SPAN-SORTIE], 20 Oct 26): its entered in-time the take-off and the
    Logic page's debrief zero (or both leads zero), the sortie has no report and no debrief either, so it earns nobody any
    OIL — said so, and named in the day's "no usable times" list (oil.ts fltMeasuresNothing). `none` is that fact. */
-export const FLT_NO_LEN_SAYS=(st:any,sa?:any,none?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${sa?'a shift with no length earns nobody any OIL until it is fixed':none?'with no report before it and no debrief after it, the line earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
+export const FLT_NO_LEN_SAYS=(st:any,sa?:any,none?:any,saFly?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${saFly?'the shift still earns from its R or B':sa?'a shift with no length earns nobody any OIL until it is fixed':none?'with no report before it and no debrief after it, the line earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
 /* the sentence's tail for one line, the facts read off the line and its wave — what every marked box's title and the
    warning both print, so no caller works out "is it a shift" or "does it measure anything" for itself */
-export const fltNoLenSays=(f:any,wv:any)=>FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv),fltMeasuresNothing(wv,f));
+/* A FLYING STANDBY SHIFT THAT EARNS from its B or R though its START is its END (D1999: "earns like a flying line … with
+   the amber 'times look wrong' note") says what it earns from — never the shift's "earns nobody", which would now be
+   false, nor the flying line's "report and debrief", since a shift has no debrief ([RULES-CHECK-FIXES] job 3: new words,
+   shown to him as built, his to change). */
+export const fltNoLenSays=(f:any,wv:any)=>{const fly=!!saZeroSpanWin(wv,f,VCONF.reportLead);return FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv)&&!fly,fltMeasuresNothing(wv,f,VCONF.reportLead,VCONF.debrief),fly);};   // the day's own settings, as the day loop overlays them (D2005)
 /* the 7-day run's sentence — one body for the warning and for the dotted mark that points at it from the days before
    (the mark carries the words its warning will have, so a hide of that warning is found — [WARN-HIDE-KEPT]) */
 const runSays=(id:any,n:any)=>`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`;
 /* a nought-minute line's sentence — one body for the warning and for the next-week preview, which draws the line's red
    time box without a warning list and asks whether THAT warning is hidden (ui/peek.ts) */
 export const fltNoLenMsg=(f:any,wv:any)=>`${f.cs||wv.label||'A flying line'} ${fltNoLenSays(f,wv)}`;
+/* A CLASH'S TWO ITEMS (owner D2001, 11 Nov 26 — "a hidden clash stays hidden while the same man is on the same two items,
+   whatever their times, and comes back when the man or either item is a different one"). An item is what a scheduler
+   taps: a flying or standby line (whichever of its seats), a duty row, a sim row, a ground or programme row — a ground
+   row that came from an input is that input, and an input not on the programme is itself. Named by its row id
+   (engine/rowids.ts), never its place or its words, so a time moved keeps the hide while another line worded the same
+   does not inherit it. A row with no id yet falls back to its address. A clash warning carries its two (`items`), and
+   the hide key reads them in place of the words (engine/warnhide.ts hideKey). */
+export function clashItem(k:any):string{
+  if(k==null||k==='')return '';
+  const s=String(k), c=s.indexOf(':'), pre=c<0?'':s.slice(0,c), p:any[]=(c<0?s:s.slice(c+1)).split('.'), d:any=DAYS[+p[0]]||{};
+  let row:any=null, at=s;
+  if(pre===''){ row=((((d.waves||[])[+p[1]]||{}).formations)||[])[+p[2]]; at=p.slice(0,3).join('.'); }
+  else if(pre==='d'){ row=(((d.dutywaves||[])[+p[1]]||{}).rows||[])[+p[2]]; }
+  else if(pre==='s'){ row=((d.sims||{})[p[1]]||[])[+p[2]]; }
+  else if(pre==='g'){ row=(d.ground||[])[+p[1]]; if(row&&row.src)return 'i:'+row.src; }
+  else if(pre==='a'){ row=(d.allhands||[])[+p[1]]; }
+  return row&&row.rid?'r:'+row.rid:at;
+}
+const clashItems=(a:any,b:any)=>({items:[a,b]});
 /* a ring is the worst of a man's warnings, a chip the highest — the two merges every mark goes through (the day loop and
    shownOf's replay share them) */
 const markWorse=(m:any,di:any,id:any,s:any)=>{m[di]=m[di]||{}; const c=m[di][id]; if(!c||SEVR[s]>SEVR[c])m[di][id]=s;};
@@ -362,11 +388,16 @@ function validateCore(){
      through weekBundle data, at most maxRun days; an unauthored previous
      week seeds nothing, which is byte-identical to the old fresh start. */
   RUNLEN=[]; EVDAYS=ev; {
-    const run:any=seedRunIn(CURWEEK,VCONF.maxRun);
+    /* walked back as far as the longest limit any day of the week is judged by (D2005: a published day keeps its own) */
+    const run:any=seedRunIn(CURWEEK,Math.max(VCONF.maxRun,...DAYS.map((d:any)=>withDayRules(d,()=>VCONF.maxRun))));
     RUNSEED={...run};
     ev.forEach((day:any,i:any)=>{
       const on=new Set<any>();
       (day.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))on.add(e.id); });
+      /* D1993 (11 Nov 26, [RULES-CHECK-FIXES], the rules check's F2): a row with no times yet — a ground or Common
+         Programme row, a desk, a sim box (events.ts `blank`) — is still a day on the programme. An AVALON / BB place
+         (`av`) is standing by, which does not count (D1998). weekctx.ts workedSet counts the same, across the week's edge. */
+      (day.blank||[]).forEach((b:any)=>{ if(!b.av&&b.id&&PEOPLE[b.id]&&!isSpecial(b.id))on.add(b.id); });
       Object.keys(run).forEach((id:any)=>{ if(!on.has(id))run[id]=0; });   // a clear day resets it
       const m:any={}; on.forEach((id:any)=>{ m[id]=run[id]=(run[id]||0)+1; });
       RUNLEN[i]=m;
@@ -395,17 +426,23 @@ function validateCore(){
      Monday, one lookahead day, like the crew-rest trace. Trace only — never a
      warning — so parity.test.ts (which compares WARN.byDay) is untouched. */
   {
-    const traceRun=(from:any,id:any,t:any)=>{ for(let k=from;k>=0;k--){ if(!RUNLEN[k]||RUNLEN[k][id]==null)break; markTrace(k,id,{run:t},{di:t.di,code:'DAYS_RUN',who:[id],msg:runSays(id,t.n)}); } };
+    /* the trace's words are the breaking day's own warning, worded with ITS limit (D2005 — the two blind reads): a mark
+       worded with another day's limit points at a warning that is not there, and its hide key never matches */
+    const traceRun=(from:any,id:any,t:any,src:any)=>{ const msg=withDayRules(src,()=>runSays(id,t.n)); for(let k=from;k>=0;k--){ if(!RUNLEN[k]||RUNLEN[k][id]==null)break; markTrace(k,id,{run:t},{di:t.di,code:'DAYS_RUN',who:[id],msg}); } };
+    /* the day a run breaks on is judged by its own limit (D2005): a published day's kept "Max days worked in a row", the
+       day before it by its own — so the trace points at a breach only where that day's own check raises one */
+    const limitOn=(i:any)=>withDayRules(DAYS[i],()=>VCONF.maxRun);
     ev.forEach((day:any,i:any)=>{
       Object.keys(RUNLEN[i]||{}).forEach((id:any)=>{
         const n=RUNLEN[i][id];
-        if(n>VCONF.maxRun&&!(i>0&&RUNLEN[i-1][id]>VCONF.maxRun))traceRun(i-1,id,{di:day.di,dow:day.dow,n});
+        if(n>limitOn(i)&&!(i>0&&RUNLEN[i-1][id]>limitOn(i-1)))traceRun(i-1,id,{di:day.di,dow:day.dow,n},DAYS[i]);
       });
     });
     NEXTON=nextMondayWorked(CURWEEK);
+    const nextDay=nextMondayDay(CURWEEK), nextLimit=withDayRules(nextDay,()=>VCONF.maxRun);
     Object.keys(RUNLEN[6]||{}).forEach((id:any)=>{
       const n=RUNLEN[6][id];
-      if(n===VCONF.maxRun&&NEXTON.has(id))traceRun(6,id,{di:null,dow:'Monday',n:n+1});
+      if(n>=nextLimit&&n<=limitOn(6)&&NEXTON.has(id))traceRun(6,id,{di:null,dow:'Monday',n:n+1},nextDay);
     });
   }
   /* ONE DAY'S CREW-REST COMPUTATION, extracted verbatim from the day loop
@@ -468,7 +505,14 @@ function validateCore(){
            severity downgrade by event kind; and the REST[] map the picker
            reads is built from the same set, so they cannot disagree. */
         const rests=true;
-        const rawEnd=e.kind==='fly'?e.ld+VCONF.debrief:e.e;   // a shift/duty ends when it ends
+        /* D1990 (11 Nov 26, [RULES-CHECK-FIXES]): a landing that is not a clock time — "TBD", or any other words —
+           ends the day as a blank one does (events.ts reads a blank landing as its take-off): take-off plus the
+           debrief. It used to end nothing (its landing not-a-number), so a TBD sortie bore no crew rest at all.
+           Crew rest only: D1936's hours and long-day note still count such a sortie nowhere (its event's report). */
+        const flyLd=e.kind==='fly'&&!isFinite(e.ld)?e.to:e.ld;
+        /* D2005: the day being judged decides — a sortie's debrief, and an end the day before only ASSUMED (no end typed:
+           events.ts `ae`), are worked out with the judged day's settings, never the day before's */
+        const rawEnd=e.kind==='fly'?flyLd+VCONF.debrief:e.ae==='sim'?e.s+VCONF.simLen:e.ae==='open'?e.s+VCONF.openEnd:e.e;   // a shift/duty ends when it ends
         /* [REST-BLANK-LINE] (D602, 6 Oct 26): a crewed line with no times yet ("+ Line" mints it blank) carries
            not-a-number here, and it is NOT an end. Kept, it sat in prevEnd as the man's first event of the day and
            every later `end>prevEnd` was false — his real 22:30 landing never replaced it, the `isFinite(pe)` guard
@@ -477,7 +521,7 @@ function validateCore(){
         if(rawEnd==null||!isFinite(rawEnd))return;
         const end=rawEnd+offset;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?e.ld+offset:null; prevSource[e.id]=source;}
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevSource[e.id]=source;}
       });
       /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
          "everything in duty and commitments affects crew rest… do not
@@ -688,7 +732,10 @@ function validateCore(){
         }
       });
   };
-  ev.forEach((day:any,idx:any)=>{
+  /* EACH DAY'S OWN CHECKS UNDER THE LOGIC SETTINGS IT IS JUDGED BY (owner D2005, 12 Nov 26): a published day's, as its
+     version kept them (faceattrs.ts withDayRules) — a rule looking across days decided by the day being judged, so a
+     published Tuesday's crew rest is measured with Tuesday's crew rest and debrief, whatever Monday is */
+  ev.forEach((day:any,idx:any)=>withDayRules(DAYS[idx],()=>{
     const di=day.di, ws:any[]=[], seen=new Set();
     /* publish this day's events for the crew picker (see dayEvents) */
     const evd:any=EVD[di]={}; day.events.forEach((e:any)=>{(evd[e.id]=evd[e.id]||[]).push(e);});
@@ -700,7 +747,10 @@ function validateCore(){
        s:/d:/g:/a: rows). Optional — day-spanning warnings carry none. The dedup
        string k stays key-free: first add wins and keeps the first item's key. */
     const add=(s:any,code:any,who:any,msg:any,key?:any,extra?:any)=>{who=who.filter(Boolean);
-      const k=code+'|'+who.join(',')+'|'+msg; if(seen.has(k))return; seen.add(k);
+      /* D2001: a clash is its two items, so two clashes worded the same are two warnings — each hidden by its own pair;
+         the same pair met again (two legs of one sortie pair) still collapses */
+      const its=extra&&Array.isArray(extra.items)?'|@'+extra.items.map(String).sort().join('&'):'';
+      const k=code+'|'+who.join(',')+'|'+msg+its; if(seen.has(k))return; seen.add(k);
       const w={sev:s,code,who,day:day.dow,di,msg,key,...(extra||{})};ws.push(w);all.push(w);};
     const kOf=(e:any)=>e&&(e.slot||e.key)||null;   // byE events carry slot (fly/shift) or key (the rest)
     /* D502: include uncrewed formations; no invented puck penalty.
@@ -711,7 +761,9 @@ function validateCore(){
        as tasked and are still checked for clashes and qualification, but a
        handover is not a turn, a 12-hour watch is not a long flying day, and a
        shift start does not imply a brief at T/O − 2h20. */
-    const byP:any={}; day.fly.filter((e:any)=>!e.shift).forEach((e:any)=>{(byP[e.id]=byP[e.id]||[]).push(e);});
+    /* …EXCEPT A STANDBY ROW THAT FLIES (owner D1996, 11 Nov 26 — "a standby line that fly is checked like a sortie"):
+       its START→END is the leg, so the tight turn (END → the next take-off) and the double turn read it as a sortie. */
+    const byP:any={}; day.fly.filter((e:any)=>!e.shift||e.flies).forEach((e:any)=>{(byP[e.id]=byP[e.id]||[]).push(e);});
     /* A genuine double turn is two legs flown one AFTER the other. Legs whose
        AIRBORNE windows overlap are the same air time booked twice — the hard
        DOUBLE_BOOK clash below speaks for that man, and counting him "double
@@ -778,23 +830,26 @@ function validateCore(){
            26). The line between the two is the AIRBORNE window (to..ld), never
            the padded one — so compare those, and let a real overlap fall
            through to the hard clash below. */
-        if(A.kind==='fly'&&B.kind==='fly'
+        /* D1996 (11 Nov 26): a standby row that flies is a sortie here — compared on its airborne START→END, and a
+           clash with it is the red one, never the shift's amber grading */
+        const legA=A.kind==='fly'||(A.kind==='shift'&&A.flies), legB=B.kind==='fly'||(B.kind==='shift'&&B.flies);
+        if(legA&&legB
            &&!(A.to!=null&&B.to!=null&&overlap(A.to,A.ld,B.to,B.ld)))continue;
         if(!overlap(A.s,A.e,B.s,B.e))continue;
         /* every clash, not just the first: a man double-booked in the morning
            AND in the evening used to be told about the morning only. The red
            ring goes on too — a hard warning with a grey puck was a bug. */
-        if(A.kind==='shift'||B.kind==='shift'){
-          const sh=A.kind==='shift'?A:B, other=A.kind==='shift'?B:A;
+        if((A.kind==='shift'&&!A.flies)||(B.kind==='shift'&&!B.flies)){
+          const sh=A.kind==='shift'&&!A.flies?A:B, other=sh===A?B:A;
           if(shiftEvHard(other)){
             markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
-            add('hard','DOUBLE_BOOK',[id],`${sh.label} & ${other.label} clash`,kOf(sh)||kOf(other));
+            add('hard','DOUBLE_BOOK',[id],`${sh.label} & ${other.label} clash`,kOf(sh)||kOf(other),clashItems(clashItem(kOf(sh)),clashItem(kOf(other))));
           } else {
             /* amber A, not the red conflict C — the puck has to say advisory at a
                glance, the way the note under it already does */
             markChip(di,id,'A','SHIFT_SOFT'); markRing(di,id,'adv','SHIFT_SOFT');
             add('adv','SHIFT_SOFT',[id],
-              `${PEOPLE[id]?PEOPLE[id].cs:id} is on ${sh.label} (${hm24(sh.s)}–${hm24(sh.e)}) and also down for ${other.label}`,kOf(sh)||kOf(other));
+              `${PEOPLE[id]?PEOPLE[id].cs:id} is on ${sh.label} (${hm24(sh.s)}–${hm24(sh.e)}) and also down for ${other.label}`,kOf(sh)||kOf(other),clashItems(clashItem(kOf(sh)),clashItem(kOf(other))));
           }
           continue;
         }
@@ -813,7 +868,7 @@ function validateCore(){
           ?(A.kind==='ground'&&B.kind==='ground'&&A.key!==B.key
             ?`${PEOPLE[id]?PEOPLE[id].cs:id} is on two items called ${A.label} at once`
             :`${PEOPLE[id]?PEOPLE[id].cs:id} is in two seats on ${nm(A)} at once`)
-          :`${nm(A)} & ${nm(B)} clash`,kOf(A)||kOf(B));} });
+          :`${nm(A)} & ${nm(B)} clash`,kOf(A)||kOf(B),clashItems(clashItem(kOf(A)),clashItem(kOf(B))));} });
     /* THE IN-TIME WINDOW (owner, 24 Aug 26 — "have a no brief advisory as well
        if anything cuts or ends between B and TO time for SC main"). An SC MAIN
        with a typed B earlier than the shift start is on duty from that B, so a
@@ -927,7 +982,8 @@ function validateCore(){
       (blankShift?whole:day.input).forEach((inp:any)=>{ if(inp.id!==e.id)return;
         if(canWork(inp.type)&&e.kind!=='shift')return;
         const dn=isDownchit(inp.type), lv=isLeave(inp.type), hits=blankShift||overlap(e.s,e.e,inp.s,inp.e);
-        if(!isUnavail(inp.type)&&e.kind==='shift'&&!shiftHardInput(inp.type)&&inpMeta(inp.type)){
+        /* D1996: a standby row that flies is a sortie — a Meeting inside it is the red clash, as against a sortie */
+        if(!isUnavail(inp.type)&&e.kind==='shift'&&!e.flies&&!shiftHardInput(inp.type)&&inpMeta(inp.type)){
           /* Meeting — the one KNOWN soft type — is the shift's amber voice,
              worded byte-for-byte like the ground-row SHIFT_SOFT above. An
              UNRECOGNISED type fails closed to the hard branch below (owner,
@@ -938,7 +994,7 @@ function validateCore(){
           if(!hits)return;
           markChip(di,e.id,'A','SHIFT_SOFT'); markRing(di,e.id,'adv','SHIFT_SOFT');
           add('adv','SHIFT_SOFT',[e.id],
-            `${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label}${blankShift?'':` (${hm24(e.s)}–${hm24(e.e)})`} and also down for ${inpLabel(inp)}`,kOf(e));
+            `${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label}${blankShift?'':` (${hm24(e.s)}–${hm24(e.e)})`} and also down for ${inpLabel(inp)}`,kOf(e),inp.iid?clashItems(clashItem(kOf(e)),'i:'+inp.iid):undefined);
           return;
         }
         if(!hits)return;
@@ -1050,7 +1106,7 @@ function validateCore(){
         /* `also` names the OTHER place, so that copy's puck can ring for the
            pair it is in (an exempt desk reads only its own rule — html.ts) */
         add('hard','DOUBLE_BOOK',[sa.id],
-          `${p.cs} is on ${mine} (${hm24(sa.s)}–${hm24(sa.e)}) and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,sa.key,{also:hit.key});
+          `${p.cs} is on ${mine} (${hm24(sa.s)}–${hm24(sa.e)}) and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,sa.key,{also:hit.key,...clashItems(clashItem(sa.key),clashItem(hit.key))});
       });
     });
     /* ---- BRIEF / DEBRIEF windows round each sortie -----------------------
@@ -1166,7 +1222,7 @@ function validateCore(){
        unauthored previous week seeds empty maps and the guards below skip
        every man, byte-identical to the old REST[di]={} branch. */
     const prevSeed:any=idx>0?ev[idx-1]:(PREVSUN=restDayAt(-1));
-    crewRestDay(prevSeed,day,di,false,add);
+    crewRestDay(prevSeed,day,di,false,add);   // under this day's own settings (the day loop's withDayRules, D2005)
     // crew combination matrix + OCU without IP — shown as puck rings
     /* a SPARE+SPARE overlap is seen from both formations' loops below, so the
        pair is remembered and printed once — day-scoped, like the day loop */
@@ -1346,7 +1402,7 @@ function validateCore(){
               markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
               add('hard','DOUBLE_BOOK',[id],
                 `${PEOPLE[id].cs} is standing SC SPARE (${lineName(f.label)} ${hm24(f.s)}–${hm24(f.e)})`
-                +` and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,own); }); }); });
+                +` and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,own,clashItems(clashItem(own),clashItem(hit.key))); }); }); });
         /* THE SPARE FRONT SEAT IS PILOTS-ONLY (owner, 31 Aug 26 — "a wso
            can't be planned for FCP"; the pilot-in-rear-seat mirror was
            offered and DECLINED, so the rear spare seat stays unruled here).
@@ -1470,7 +1526,10 @@ function validateCore(){
       });
     });
     const earnsOil=day.dow==='Saturday'||day.dow==='Sunday'||HOOKS.oilEarningDay(di);
-    if(earnsOil){
+    /* OIL on today's settings, whole (D2005 — Astra's read, finding 3): its earning test reaches who is available
+       (avail.ts), whose ordinary VCONF readers would otherwise take a published day's kept values — OIL keeps its own
+       rule (D48, D592), never the checks' */
+    if(earnsOil)withLiveRules(()=>{
       const blind=dayOilBlind(DAYS[di]||{});
       if(blind.length){
         const {list,verb}=blindDesks(blind);
@@ -1527,7 +1586,7 @@ function validateCore(){
         const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
         const frozen=snap&&snap.d&&snap.d.oilev;
         if(frozen&&!frozen.earns){
-          add('adv','OIL_STALE_DAY',[],'This day started earning OIL after it was published — publish it again so the OIL lands');
+          add('adv','OIL_STALE_DAY',[],'Publish this day again so OIL is earned. The PH was set after the day was published.');
         }
         /* AND THE OTHER WAY A PUBLISHED DAY'S MONEY MOVES UNDER IT (owner,
            22 Sep 26 — "ok fix this first"). A day issued before the app counted
@@ -1545,7 +1604,7 @@ function validateCore(){
           add('adv','OIL_OLD_BLOCK',[],'This day was published before the app counted who is behind an ALL AVAIL puck on a duty desk, a sim or an extras line — publish it again to credit them');
         }
       }
-    }
+    });
     /* THE MIRROR OF IT (fix 4, hand pass §6 row 4). R-1 runs BOTH directions, and
        only one of them was speaking. A day published as a holiday that the war
        later stops calling one goes on paying off its frozen block — correctly,
@@ -1560,13 +1619,13 @@ function validateCore(){
       const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null;
       const frozen=snap&&snap.d&&snap.d.oilev;
       if(frozen&&frozen.earns){
-        add('adv','OIL_STALE_HOLIDAY',[],'This day stopped being a holiday after it was published — publish it again to withdraw the OIL');
+        add('adv','OIL_STALE_HOLIDAY',[],'Publish this day again to withdraw the OIL. The PH was removed after the day was published.');
       }
     }
     const SORD:any={hard:0,adv:1,note:2};
     ws.sort((a:any,b:any)=>(SORD[a.sev]??3)-(SORD[b.sev]??3));
     byDay[di]={di,dow:day.dow,warns:ws};
-  });
+  }));
   /* THE FORWARD TRACE ACROSS THE WEEK EDGE (owner, 23 Aug 26): within a week
      a late day draws its "Breaks <tomorrow>" box on the day that CAUSED
      the breach; the Sunday-to-next-Monday edge was the one gap left. Run the
@@ -1578,7 +1637,8 @@ function validateCore(){
      day to jump to): dayTraceHTML renders it as an informational row, and an
      unauthored, unedited next week seeds empty arrays and writes nothing. */
   NEXTMON=restDayAt(7);
-  for(let index=7;index<=10;index++)crewRestDay(restDayAt(index-1),restDayAt(index),null,true,null);
+  /* each phantom day judged by its own settings (D2005): next week's published Monday by the ones it went out under */
+  for(let index=7;index<=10;index++){ const t=restDayAt(index); withDayRules(t&&t.src,()=>crewRestDay(restDayAt(index-1),t,null,true,null)); }
   /* the crew-rest body, kept for the pre-drop query below (restIfPlaced) —
      the same closure the day loop ran, one body, now three callers */
   CREWREST_BODY=crewRestDay;
@@ -1809,7 +1869,11 @@ const HIDENOW=new WeakMap<any,Map<number,any[]>>();
 HOOKS.hideNow=(di:number)=>{ let m=HIDENOW.get(OFFICIAL); if(!m){m=new Map(); HIDENOW.set(OFFICIAL,m);}
   let v=m.get(+di); if(v)return v;
   const hs=hidden(), work=new Set<string>((((RAW_B.byDay||[])[+di]||{}).warns||[]).map((w:any)=>hideKey(w)));
-  v=((((OFFICIAL.byDay||[])[+di]||{}).warns||[]) as any[]).map((w:any)=>({k:hideKey(w),w})).filter((x:any)=>work.has(x.k))
+  /* …or, on a day that kept Logic settings other than today's (D2005 — the narrow read of the fixes), every warning of the
+     issued judgement: a hide sends that day's working copy to today's settings, which may no longer raise the warning,
+     and the hide must not stop counting then — or the day flips kept / today's on every pass */
+  const sv=dayCurVer(+di), ss:any=sv!=null?daySnapOf(+di,sv):null, keptDiff=!!(ss&&keptRulesDiffer(ss.rv));
+  v=((((OFFICIAL.byDay||[])[+di]||{}).warns||[]) as any[]).map((w:any)=>({k:hideKey(w),w})).filter((x:any)=>keptDiff||work.has(x.k))
     .map(({k,w}:any)=>({k,on:hs.has(k),code:w.code,who:w.who||[],msg:String(w.msg||''),sev:w.sev,key:w.key}));
   m.set(+di,v!); return v!; };
 /* one slice per day per official bundle, so publish.ts can key it once per validate */
@@ -1829,7 +1893,13 @@ export function rawWarn(){ return RAW_B; }
 export function validate(){
   /* each rules pass reads a day's inputs once (inputs.ts inputReadPass — the per-person lines are worked out once a
      date, not at every ask); the pass writes its own globals and never the inputs */
-  const raw = inputReadPass(validateCore);        // WORKING, as the rules raised it — writes the module globals
+  /* a published day with nothing waiting is judged on the working pass as on its face — by the settings it went out under
+     (owner D2005, 12 Nov 26), so Edit Schedule and the board show it as View-only Sched does (untouchedKept, below) */
+  /* the loaded days nothing waits on keep their kept settings between passes too (faceattrs.ts keepRulesOn), so what
+     asks outside a pass — the crew picker's cross-day questions, the ALL AVAIL window — judges them as this pass did */
+  const keep=untouchedKept();
+  DAYS.forEach((d:any)=>keepRulesOn(d,null)); keep.forEach((x:any)=>keepRulesOn(x.d,x.rv));
+  const raw = withKeptRules(keep, ()=>inputReadPass(validateCore));        // WORKING, as the rules raised it — writes the module globals
   RAW_B = raw;
   if(HOOKS.validated)HOOKS.validated(raw);
   /* what every surface reads is the bundle AS SHOWN (D469, D472): a hidden warning carries `off`, flags no puck */
@@ -1864,16 +1934,61 @@ function officialDiverges(){
     const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
     if(!snap||!snap.d)return true;
     if(dayDeltaCore(di).length>0)return true;
+    /* a Logic value the version kept that today's differs from (D1991): the issued day is judged by its own (withKeptRules) */
+    if(keptRulesDiffer(snap.rv))return true;
     return filingDivergesAt(snap.fil,(DAYS[di]||{}).dt);
   }))return true;
   return windowDiverges(CURWEEK,VCONF.maxRun);
+}
+/* THE PUBLISHED DAYS THE WORKING PASS JUDGES BY THEIR KEPT SETTINGS (owner D2005, 12 Nov 26 — "Tuesday stays clean"):
+   every published day of the loaded week whose working copy is still exactly what went out — its content, its filing,
+   its inputs, the men on it as the roster draws them and the brief it prints — mapped to the Logic settings its version
+   kept. Such a day reads the same on Edit Schedule and the board as on View-only Sched. A day with a change waiting is
+   left out: its working copy previews its next amendment, which goes out under today's settings (the agent's reading,
+   told to him with the ruling). Asked only of a day whose kept settings differ from today's — otherwise there is nothing
+   to lay over, and the ordinary week pays nothing. Read before the working pass, from the day's own data only (never
+   the warnings, which that pass is about to write). */
+function untouchedKept(){
+  const out:any[]=[];
+  approvedDays().forEach((di:any)=>{
+    const ver=dayCurVer(di), snap:any=ver!=null?daySnapOf(di,ver):null, d:any=DAYS[di];
+    if(!snap||!snap.d||!d||!keptRulesDiffer(snap.rv))return;
+    /* ANY change waiting on the day previews its next amendment by today's settings (the two blind reads, 12 Nov 26):
+       the content, the filing, the inputs and both OIL entries (dayDeltaCore — it reads no warnings, so it is safe
+       before this pass), a hide waiting (below), the men on it (pa) and the brief it prints */
+    if(dayDeltaCore(di).length>0)return;
+    if(canonicalDiff(snap.d,d,di).length>0)return;
+    if(filingDivergesAt(snap.fil,d.dt)||(snap.inp&&frozenInputDiffs(snap.inp,d.dt).length>0))return;
+    /* a hide waiting: the day's hidden keys now against the ones it went out with, both over what the issued judgement
+       raises — read straight from the hides and the last official pass (kept settings, so independent of this choice),
+       never through hidePending, whose cached, working-pass-filtered answer made the day flip between passes */
+    {const raised=new Set<string>((((OFFICIAL.byDay||[])[di]||{}).warns||[]).map((w:any)=>hideKey(w)));
+      const now=[...hidden()].filter((k:any)=>raised.has(k)).sort().join('\n');
+      const was=(((snap.w&&snap.w.wo)||[]) as any[]).map(String).filter((k:any)=>raised.has(k)).sort().join('\n');
+      if(now!==was)return;}
+    if(snap.pa&&stableJson(peopleAttrsNow(snap.pa))!==stableJson(snap.pa))return;
+    if(faceRuleValsCompared(snap.d)&&snap.rv.briefLead!=null&&+snap.rv.briefLead!==+VCONF.briefLead)return;   // the brief it prints reads pending (D186)
+    out.push({d,rv:snap.rv});
+  });
+  return out;
 }
 function officialFor(working:any){
   if(!officialDiverges()){ ISS_DAYS=null; ISS_EVD=null; return working; }   // ALIAS — the exact same object, cannot drift
   /* …and the week this pass judged, kept for the readers that COUNT the issued week (issuedWorld, below): the days as
      installed — every published day its issued snapshot — and the per-person events built from them. Captured inside the
      swap; the finally restores the working globals as before. */
-  return withIssuedWeek(()=>{ const b=inputReadPass(validateCore); ISS_DAYS=DAYS.slice(); ISS_EVD=EVD; return b; });
+  return withIssuedWeek(()=>{ const b=inputReadPass(validateCore); ISS_DAYS=DAYS.slice(); ISS_EVD=hoursEvd(); return b; });
+}
+/* THE EVENTS INSIGHTS COUNTS HOURS FROM, BY TODAY'S SETTINGS (owner D482, 1 Oct 26, settled — "A rule change logic page
+   should move the mentioned work hours"): the official pass builds each published day under the settings it went out
+   under (D2005 — its CHECKS), but its work hours follow today's, published days included. Where no day keeps a value
+   that differs from today's they are the same events; otherwise the issued week's events are built once more with
+   nothing laid over (withKeptRules of none), inside the same installed week and frozen inputs. */
+function hoursEvd(){
+  if(!approvedDays().some((di:any)=>{ const v=dayCurVer(di), s:any=v!=null?daySnapOf(di,v):null; return !!s&&keptRulesDiffer(s.rv); }))return EVD;
+  const out:any={};
+  withKeptRules([],()=>collectEvents()).forEach((day:any,i:any)=>{ const o:any=out[day.di??i]={}; (day.events||[]).forEach((e:any)=>{(o[e.id]=o[e.id]||[]).push(e);}); });
+  return out;
 }
 /* THE WEEK AS EVERYONE READS IT ([INSIGHTS-WHICH-COPY], owner D477 / D478, 1 Oct 26 — "It should show the latest copy, so
    if working copy is the only copy then it will use that, unless its published then use Original, if theres an AL1 then
@@ -1946,7 +2061,11 @@ function withIssuedWeek(fn:any){
       SCHED.changes=changes; SCHED.pending={};
     }
     setWorld('official'); setFiling(filing);
-    return withFrozenInputs(frozenInp,fn);
+    /* …and the LOGIC VALUES each issued day went out with (owner D1991, 11 Nov 26; faceattrs.ts withKeptRules): a
+       published day is judged by the rules it was published under — today the brief lead it printed, so its crew rest
+       is measured to the brief on its face; a changed setting reaches it from its next amendment (D2005) */
+    const kept=days.filter(({snap}:any)=>snap&&snap.rv).map(({snap}:any)=>({d:snap.d,rv:snap.rv}));
+    return withKeptRules(kept,()=>withFrozenInputs(frozenInp,fn));
   }
   finally{
     setWorld('working'); clearFiling();
@@ -2023,6 +2142,9 @@ export const ordinal=(n:any)=>n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?
    (`sole`), so the answer describes the week after the move. Counted from
    the on/off pattern alone: back through the days he is on (the seed walks in
    when the run reaches Monday), then forward, then into next Monday. */
+/* the limit day `x` is judged by when a man is placed on day `di` (null = next Monday) — one body for the question and
+   its words (crossDayIfPlaced), so the line never names a limit the check did not use */
+const runLimitIfPlaced=(di:any,x:any)=>x==null?withDayRules(nextMondayDay(CURWEEK),()=>VCONF.maxRun):x===di?VCONF.maxRun:withDayRules(DAYS[x],()=>VCONF.maxRun);
 export function runIfPlaced(id:any,di:any,from?:any){
   if(!id||!PEOPLE[id]||isSpecial(id)||di==null||di<0||di>6||!RUNLEN.length)return null;
   const on=(k:any)=>!!(RUNLEN[k]&&RUNLEN[k][id]!=null)&&!(from&&from.sole&&from.di===k);
@@ -2030,12 +2152,16 @@ export function runIfPlaced(id:any,di:any,from?:any){
   let n=1, k=di-1;
   while(k>=0&&on(k)){n++;k--;}
   if(k<0)n+=RUNSEED[id]||0;
-  if(n>VCONF.maxRun)return {di,dow:DAYS[di].dow,n};
+  /* each day by its own limit, as the validator judges it (D2005 — the two blind reads): the day he is placed on is
+     edited by the drop, so today's; every other day as the last pass judged it — a published day nothing waits on by
+     the limit it went out with (faceattrs.ts keepRulesOn, laid on by validate()); next Monday by its own */
+  const lim=(x:any)=>runLimitIfPlaced(di,x);
+  if(n>lim(di))return {di,dow:DAYS[di].dow,n};
   for(k=di+1;k<=6;k++){
     if(!on(k))return null;
-    n++; if(n>VCONF.maxRun)return {di:k,dow:DAYS[k].dow,n};
+    n++; if(n>lim(k))return {di:k,dow:DAYS[k].dow,n};
   }
-  if(NEXTON.has(id)){n++; if(n>VCONF.maxRun)return {di:null,dow:'Monday',n};}
+  if(NEXTON.has(id)){n++; if(n>lim(null))return {di:null,dow:'Monday',n};}
   return null;
 }
 /* crew rest, both directions: the candidate leg is a clone of a leg already
@@ -2100,7 +2226,8 @@ export function restIfPlaced(id:any,key:any,from?:any){
   /* forward — this leg's end against his first report tomorrow */
   for(let index=di+1;index<=di+4;index++){
     hit=null;const next=dayAt(index), targetDi=index<7?index:null;
-    if(next&&next.fly)CREWREST_BODY(dayAt(index-1),next,targetDi,true,null,probe);
+    /* the day judged decides (D2005): a published day nothing waits on is asked by the settings it went out with */
+    if(next&&next.fly)withDayRules(index<7?DAYS[index]:next.src,()=>CREWREST_BODY(dayAt(index-1),next,targetDi,true,null,probe));
     if(!hit)continue;
     const entries=restTraceEntries(RAW_B.trace?.[di]?.[id]);
     const dup=targetDi!=null?already(targetDi,hit):entries.some((t:any)=>t.targetDi===next.targetDi&&t.targetWeek===next.targetWeek&&t.msg===hit.msg);
@@ -2124,7 +2251,7 @@ export function crossDayIfPlaced(id:any,key:any,fromKey?:any){
   }
   let out='';
   const r=runIfPlaced(id,keyDay(key),from);
-  if(r)out=`${ordinal(r.n)} day in a row — breaks ${r.di==null?'next Monday':r.dow} (${VCONF.maxRun} is the limit)`;
+  if(r)out=`${ordinal(r.n)} day in a row — breaks ${r.di==null?'next Monday':r.dow} (${runLimitIfPlaced(keyDay(key),r.di)} is the limit)`;
   else{
     const c=restIfPlaced(id,key,from);
     if(c)out=c.dir==='back'?`crew rest — not clear until ${stated(c.earliest)}`:`crew rest — breaks ${c.di==null?'next '+c.dow:c.dow}: he must be gone by ${c.leaveBy}`;

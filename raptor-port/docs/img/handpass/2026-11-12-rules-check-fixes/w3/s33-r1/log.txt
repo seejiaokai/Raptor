@@ -1,0 +1,26 @@
+Thursday late row, seat Ranger: bane
+seat Ranger: bane
+formation {"to":"12:00"}
+[1 nothing typed] Ranger lines:
+  Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Thursday ended 21:30 → crew rest clear at 09:30 
+  ring: ["Tight turn | puck sm flagnew"," | seat","Tight turn | puck sm flagnew"]
+PASS  S33 nothing typed: amber Tight turning reminder  Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Thursday ended 21:30 → crew rest clear at 09:30
+faint R box: {"ph":"09:00","v":""}
+after one press, R box reads "09:00" stored {"to":"12:00"}
+[2 faint R taken] formation {"rl":"09:00","to":"12:00"} 
+  Ranger lines:
+  Ranger — Crew rest breach — Thursday ended 21:30 → crew rest clear at 09:30, but told to report 09:00 — only 11h30 rest. 
+  ring: ["Crew rest breach (<12h) | puck sm warn hard boxred flagnew"," | seat","Crew rest breach (<12h) | puck sm warn hard boxred flagnew"]
+PASS  S33 faint R tapped: crew-rest breach (red)  R stored "09:00": Ranger — Crew rest breach — Thursday ended 21:30 → crew rest clear at 09:30, but told to report 09:00 — only 11h30 rest.
+R cleared: {"rl":"","to":"12:00"}
+[3 clearing B 10:00] formation {"rl":"","br":"10:00","to":"12:00"} 
+  Ranger lines:
+  Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Thursday ended 21:30 → crew rest clear at 09:30 
+  ring: ["Tight turn | puck sm flagnew"," | seat","Tight turn | puck sm flagnew"]
+PASS  S33 clearing B typed: the amber reminder stays (D1989), no breach  Ranger — Tight turning — T/O 12:00 puts the 3h report at 09:00, inside 12h. Thursday ended 21:30 → crew rest clear at 09:30
+[boundary] take-off 11:49, nothing typed: Ranger — Crew rest breach — Thursday end
+[boundary] take-off 11:50, nothing typed: Ranger — Tight turning — T/O 11:50 puts 
+[boundary] take-off 12:29, nothing typed: Ranger — Tight turning — T/O 12:29 puts 
+[boundary] take-off 12:30, nothing typed: (no Ranger line)
+PASS  S33 no console/page errors  
+DONE 4 PASS 0 FAIL 0 OTHER of 4

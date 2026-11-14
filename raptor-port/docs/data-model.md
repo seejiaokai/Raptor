@@ -626,7 +626,7 @@ an Unpublish writes an `AmendmentRetraction` row beside it (below) — the issue
 | `sequence` | int | yes | `seq` — 0 is the Original, 1 is AL1 … (the day's own track) |
 | `versionId` | string | yes | `id` = `verId(iso, seq)` — the immutable name the app keys everything on |
 | `reissue` | int | yes | 0 for the first issuance under this `versionId`; 1, 2 … for a same-label reissue after an Unpublish (today's `SCHED.retired` keys `<verId>~<n>`), so a reissue never overwrites the one before |
-| `snapshot` | JSON | yes | `snap` — the day as issued (`d`, its book slice `c`, the filing `fil`). **Required** — it is the document the squadron signed |
+| `snapshot` | JSON | yes | `snap` — the day as issued (`d`, its book slice `c`, the filing `fil`). **Required** — it is the document the squadron signed. Inside it, `rv` — **the Logic settings the day was published under** (owner D2005, 12 Nov 26): every setting its checks read and the SC MAIN clash table (`engine/faceattrs.ts KEPT_RULE_KEYS`, `dayRuleVals`); the day is judged by them until its next amendment keeps today's. Written once with the version, never updated (append-only, as the row) — never a table of rule versions of its own; a version issued before the build kept only the brief lead, or nothing, and reads today's for the rest (demo data, D56) |
 | `diff` | JSON | yes | the canonical change against the version before, frozen at issue (replaces the old `keys` list) |
 | `issuedBy`, `issuedAt` | ref User / datetime | yes | who pressed Publish, and when |
 

@@ -1,0 +1,71 @@
+{
+ "results": [
+  {
+   "id": "Q1.1 one red line \"VL BFM & BRIEFING clash\"",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",false,\"Ranger — VL BFM & BRIEFING clash\"]] | ⚠ 1 issue · 1 warning | board 4.0.0.0.p RED,g:4.2 RED | week 4.0.0.0.p RED,g:4.2 RED",
+   "pic": "q1-1-one-line.png"
+  },
+  {
+   "id": "Q1.2 hidden: struck, pucks plain",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"]] | No conflicts flagged for Friday ✓ | board 4.0.0.0.p plain,g:4.2 plain | week 4.0.0.0.p plain,g:4.2 plain",
+   "pic": "q1-2-hidden.png"
+  },
+  {
+   "id": "Q1.3a two lines worded the same: first struck, second live and red",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"],[\"RED\",\"live\",false,\"Ranger — VL BFM & BRIEFING clash\"]] | ⚠ 1 issue · 1 warning | board 4.0.0.0.p RED,g:4.2 RED,g:4.3 RED | week 4.0.0.0.p RED,g:4.2 RED,g:4.3 RED",
+   "pic": "q1-3-two-lines.png"
+  },
+  {
+   "id": "Q1.3b Ranger pucks red",
+   "verdict": "PASS",
+   "saw": "board 4.0.0.0.p RED,g:4.2 RED,g:4.3 RED | week 4.0.0.0.p RED,g:4.2 RED,g:4.3 RED",
+   "pic": "q1-3-board.png"
+  },
+  {
+   "id": "Q1.3c a RED passing message at the drop naming the clash (not only the amber \"already on\")",
+   "verdict": "PASS",
+   "saw": "[{\"t\":\"— name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden\",\"cls\":\"\",\"color\":\"rgb(255, 255, 255)\",\"bg\":\"rgb(59, 59, 59)\",\"at\":13971},{\"t\":\"Ranger — VL BFM & BRIEFING clash\",\"cls\":\"\",\"color\":\"rgb(240, 85, 95)\",\"bg\":\"rgb(26, 31, 38)\",\"at\":14817}]",
+   "pic": "q1-3-right-after-press.png"
+  },
+  {
+   "id": "Q1.4 both struck, pucks plain",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"],[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"]] | No conflicts flagged for Friday ✓ | board 4.0.0.0.p plain,g:4.2 plain,g:4.3 plain | week 4.0.0.0.p plain,g:4.2 plain,g:4.3 plain",
+   "pic": "q1-4-both-hidden.png"
+  },
+  {
+   "id": "Q1.5 moved to 15:00-15:30: one line left, struck; pucks plain",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"]] | No conflicts flagged for Friday ✓ | board 4.0.0.0.p plain,g:4.2 plain,g:4.3 plain | week 4.0.0.0.p plain,g:4.2 plain,g:4.3 plain",
+   "pic": "q1-5-moved-away.png"
+  },
+  {
+   "id": "Q1.6 moved back to 12:30-13:00: two lines, both struck",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"],[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"]] | No conflicts flagged for Friday ✓ | board 4.0.0.0.p plain,g:4.2 plain,g:4.3 plain | week 4.0.0.0.p plain,g:4.2 plain,g:4.3 plain",
+   "pic": "q1-6-moved-back.png"
+  },
+  {
+   "id": "Q1.7 second row deleted: one line, struck",
+   "verdict": "PASS",
+   "saw": "rows 4->3 | [[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"]] | No conflicts flagged for Friday ✓ | board 4.0.0.0.p plain,g:4.2 plain | week 4.0.0.0.p plain,g:4.2 plain",
+   "pic": "q1-7-deleted.png"
+  },
+  {
+   "id": "Q1.8 Reset arrow: live and red",
+   "verdict": "PASS",
+   "saw": "[[\"RED\",\"live\",false,\"Ranger — VL BFM & BRIEFING clash\"]] | ⚠ 1 issue · 1 warning | board 4.0.0.0.p RED,g:4.2 RED | week 4.0.0.0.p RED,g:4.2 RED",
+   "pic": "q1-8-reset.png"
+  },
+  {
+   "id": "Q1.9 Undo: struck; Redo: live and red",
+   "verdict": "PASS",
+   "saw": "UNDO: [[\"RED\",\"HID\",true,\"Ranger — VL BFM & BRIEFING clash\"]] | No conflicts flagged for Friday ✓ | board 4.0.0.0.p plain,g:4.2 plain | week 4.0.0.0.p plain,g:4.2 plain || REDO: [[\"RED\",\"live\",false,\"Ranger — VL BFM & BRIEFING clash\"]] | ⚠ 1 issue · 1 warning | board 4.0.0.0.p RED,g:4.2 RED | week 4.0.0.0.p RED,g:4.2 RED",
+   "pic": "q1-9-redo.png"
+  }
+ ],
+ "errors": []
+}

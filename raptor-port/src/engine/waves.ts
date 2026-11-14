@@ -46,6 +46,15 @@ export function saFlies(w:any,f:any,a:any){
 }
 /* does any row of this shift fly — the shift-level question (a whole shift by its typed times, or one row by hand) */
 export function saAnyFlies(w:any,f:any){return !!(w&&w.standalone&&f&&!f.cx&&(saTyped(f)||(f.aircraft||[]).some((a:any)=>!a.cx&&a.fly)));}
+/* A DESK FROM A WAVE'S TEMPLATE, ONCE ITS WAVE FLIES (owner D1997, 11 Nov 26 — "once the wave flies the desk is fully
+   checked and earns OIL by default", over the report's recommended "keep it exempt"). A duty block minted from an AVALON
+   or BB template carries the wave's kind as `sa` (dutytpl.ts); its wave is that day's standby wave of the same kind (the
+   pairing waves.ts waveDutyBlock already reads). It flies when any of that wave's shifts has a row that flies (saAnyFlies
+   — the shift's typed B or R, or a hand-ticked row: the agent's reading). The ONE body the events, the crew list and OIL
+   ask, so a desk is never exempt in one and checked in another. */
+export function saDeskFlies(d:any,dw:any){
+  return !!(d&&dw&&dw.sa&&(d.waves||[]).some((w:any)=>w&&w.standalone&&w.kind===dw.sa&&(w.formations||[]).some((f:any)=>saAnyFlies(w,f))));
+}
 /* a row with somebody on it — a row with nobody seated is no jet and no sortie even when its shift flies (D1062) */
 export function saSeated(a:any){return !!(a&&(a.p||a.w));}
 /* a line the conflict engine must leave alone — never a row that flies, which is checked as an SC MAIN is ([STANDBY-FLIES]) */

@@ -1,0 +1,53 @@
+{
+ "results": [
+  {
+   "id": "R1P.0 fixture: ground row holds ALL AVAIL",
+   "ok": true,
+   "detail": "[\"BRIEFING 14:30-15:00 allavail\"]"
+  },
+  {
+   "id": "R1P.1 phone world holds the fixture (ground row ALL AVAIL on Tuesday 28 Jul)",
+   "ok": false,
+   "detail": "{\"week\":\"27/07/2026\",\"d1\":\"Jul 28\",\"lines\":\"BRIEFING allavail\",\"debrief\":180}"
+  },
+  {
+   "id": "R1P.2 the ALL AVAIL chip is on the phone board",
+   "ok": true,
+   "detail": "1"
+  },
+  {
+   "id": "R1P phone reason (RECORD)",
+   "ok": null,
+   "detail": "Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–15:00 (land + 2h)"
+  },
+  {
+   "id": "R1P.3 phone published Tuesday: Ranger reason reads (land + 2h)",
+   "ok": true,
+   "detail": "Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–15:00 (land + 2h)"
+  }
+ ],
+ "desktopErrors": [],
+ "errors": [],
+ "win": [
+  {
+   "cls": "win-bar",
+   "text": "⠿ BRIEFING Jul 28 · 14:30–15:00 ✕"
+  },
+  {
+   "cls": "win-one",
+   "text": "Who’s available 46"
+  },
+  {
+   "cls": "win-body",
+   "text": "PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–15:00 (land + 2h) Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C"
+  },
+  {
+   "cls": "win-from",
+   "text": "who is free as things stand now"
+  },
+  {
+   "cls": "win-foot",
+   "text": "Tap a puck for why. One man is flagged."
+  }
+ ]
+}

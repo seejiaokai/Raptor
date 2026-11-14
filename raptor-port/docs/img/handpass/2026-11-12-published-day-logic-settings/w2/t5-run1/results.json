@@ -1,0 +1,126 @@
+{
+ "results": [
+  {
+   "id": "T5.0a navigation: the week of 3 Aug",
+   "ok": true,
+   "detail": "{\"week\":\"03/08/2026\",\"mon\":\"Aug 3\"}"
+  },
+  {
+   "id": "T5.0b fixture: Monday 3 Aug VL 12:00-13:00, B blank, Ranger",
+   "ok": true,
+   "detail": "VL BFM 12:00-13:00 B=undefined R=undefined p=bane"
+  },
+  {
+   "id": "T5.0c Monday 3 Aug published (ORIG)",
+   "ok": true,
+   "detail": "Monday Aug 3 ORIG 1 Original — as issued Working draft — not issued i | pressed {\"pressed\":true,\"label\":\"Publish day\"}"
+  },
+  {
+   "id": "T5.1 next-week preview, before the change (RECORD the printed B)",
+   "ok": null,
+   "detail": "View-only: VL BFM 09:40 12:00 13:00 Ranger IP [t5-1-before-viewonly.png] || Edit Schedule: VL BFM 09:40 12:00 13:00 Ranger IP [t5-1-before-edit.png]"
+  },
+  {
+   "id": "T5.2 after the change, preview as it stands (no week bounce) (RECORD)",
+   "ok": null,
+   "detail": "View-only: VL BFM 09:40 12:00 13:00 Ranger IP [t5-3-viewonly-after-nobounce.png] || Edit Schedule: VL BFM 09:00 12:00 13:00 Ranger IP [t5-3-edit-after-nobounce.png]"
+  },
+  {
+   "id": "T5.3 View-only Sched: the preview of the published Monday keeps B 09:40 after the change (D186)",
+   "ok": true,
+   "detail": "rebuilt: VL BFM 09:40 12:00 13:00 Ranger IP | not rebuilt: VL BFM 09:40 12:00 13:00 Ranger IP"
+  },
+  {
+   "id": "T5.4 Edit Schedule preview after the change, rebuilt (RECORD)",
+   "ok": null,
+   "detail": "VL BFM 09:00 12:00 13:00 Ranger IP [t5-4-after-rebuilt-edit.png]"
+  }
+ ],
+ "errors": [],
+ "s1": {
+  "v": {
+   "head": "NEXT WEEK: CLICK A DAY TO LOAD IT Monday Aug 3 1",
+   "forms": [
+    {
+     "cs": "VL BFM",
+     "b": [
+      "09:40"
+     ],
+     "tl": "12:00 13:00",
+     "all": "VL BFM 09:40 12:00 13:00 Ranger IP"
+    }
+   ]
+  },
+  "e": {
+   "head": "NEXT WEEK: CLICK A DAY TO LOAD IT Monday Aug 3 1",
+   "forms": [
+    {
+     "cs": "VL BFM",
+     "b": [
+      "09:40"
+     ],
+     "tl": "12:00 13:00",
+     "all": "VL BFM 09:40 12:00 13:00 Ranger IP"
+    }
+   ]
+  },
+  "vp": "t5-1-before-viewonly.png",
+  "ep": "t5-1-before-edit.png"
+ },
+ "s2": {
+  "v": {
+   "head": "NEXT WEEK: CLICK A DAY TO LOAD IT Monday Aug 3 1",
+   "forms": [
+    {
+     "cs": "VL BFM",
+     "b": [
+      "09:40"
+     ],
+     "tl": "12:00 13:00",
+     "all": "VL BFM 09:40 12:00 13:00 Ranger IP"
+    }
+   ]
+  },
+  "e": {
+   "head": "NEXT WEEK: CLICK A DAY TO LOAD IT Monday Aug 3 1",
+   "forms": [
+    {
+     "cs": "VL BFM",
+     "b": [
+      "09:00"
+     ],
+     "tl": "12:00 13:00",
+     "all": "VL BFM 09:00 12:00 13:00 Ranger IP"
+    }
+   ]
+  },
+  "vp": "t5-4-after-rebuilt-viewonly.png",
+  "ep": "t5-4-after-rebuilt-edit.png"
+ },
+ "v2c": {
+  "head": "NEXT WEEK: CLICK A DAY TO LOAD IT Monday Aug 3 1",
+  "forms": [
+   {
+    "cs": "VL BFM",
+    "b": [
+     "09:40"
+    ],
+    "tl": "12:00 13:00",
+    "all": "VL BFM 09:40 12:00 13:00 Ranger IP"
+   }
+  ]
+ },
+ "e2c": {
+  "head": "NEXT WEEK: CLICK A DAY TO LOAD IT Monday Aug 3 1",
+  "forms": [
+   {
+    "cs": "VL BFM",
+    "b": [
+     "09:00"
+    ],
+    "tl": "12:00 13:00",
+    "all": "VL BFM 09:00 12:00 13:00 Ranger IP"
+   }
+  ]
+ }
+}

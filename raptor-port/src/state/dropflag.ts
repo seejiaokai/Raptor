@@ -46,8 +46,11 @@ const rankOf = (w: any) => (w.sev === 'hard' ? 100 : 0) + (RANK[CHIP_OF[w.code]]
 
 /* one warning's identity — the validator's own dedupe key plus the day, so
    the same breach re-raised on the same day is "unchanged" and the same man
-   flagged on a different day is "new" */
+   flagged on a different day is "new". A clash's key carries its two items, as
+   the validator's does (validate.ts add, D2001): a second clash worded the same
+   is a different clash, and new (the bug check of 12 Nov 26) */
 export const warnKey = (w: any) => `${w.code}|${w.di}|${(w.who || []).join(',')}|${w.msg}`
+  + (Array.isArray(w.items) ? '|@' + w.items.map(String).sort().join('&') : '')
 
 /* warnings in `after` that `before` did not carry — hard and advisory only.
    A `before` that was never validated (byDay empty) cannot say what is new,
@@ -55,7 +58,9 @@ export const warnKey = (w: any) => `${w.code}|${w.di}|${(w.who || []).join(',')}
 export function warnDelta(before: any, after: any): any[] {
   if (!before || !after || !Array.isArray(after.all)) return []
   if (!Array.isArray(before.byDay) || !before.byDay.length) return []
-  const seen = new Set((before.all || []).map(warnKey))
+  /* only what was SHOWN before counts as seen: a clash worded as a hidden one but on a different item shows, and is
+     new to the scheduler (D2001; the bug check of 12 Nov 26) — one that arrives hidden is still left out below (D479) */
+  const seen = new Set((before.all || []).filter((w: any) => w && !w.off).map(warnKey))
   /* …and never one that arrives already hidden (D469: the scheduler acknowledged that exact warning — it flags no puck,
      so it must not shout either) */
   return after.all.filter((w: any) => w && !w.off && w.sev !== 'note' && !seen.has(warnKey(w)))

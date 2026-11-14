@@ -1,0 +1,97 @@
+[
+ {
+  "id": "S19.0 a weekday PH set on Friday before publishing",
+  "ok": true,
+  "detail": "{\"ok\":true,\"oilday\":\"⠿ OIL — Fri 17 Jul Public holiday ✕ Fri 17 Jul is now a public holiday. 1 TO ANSWER Yes to all No to all All day NomadOD Overseas duty — exercise, off island Yes · FO No What is left goes to the schedulers’ bells Later Save\"}"
+ },
+ {
+  "id": "S19.0 Friday published",
+  "ok": true,
+  "detail": "tag \"ORIG\" {\"pressed\":true,\"label\":\"Publish day\"}"
+ },
+ {
+  "id": "S19.1 the desk man is credited on the published PH day",
+  "ok": true,
+  "detail": "box \"FO*\" (c k-oil s-a whole bx-star raptor); OIL figure {\"oil\":\"1 ›\"}"
+ },
+ {
+  "id": "S19.2 the PH comes off the war",
+  "ok": true,
+  "detail": "{\"ok\":true,\"oilday\":null}; event cell \"＋\"; head \"day | FRI 17\""
+ },
+ {
+  "id": "S19.3 the credit stays until the day is published again (D2004, D2)",
+  "ok": true,
+  "detail": "box \"FO*\" -> \"FO*\"; OIL {\"oil\":\"1 ›\"} -> {\"oil\":\"1 ›\"}"
+ },
+ {
+  "id": "S19.4 week: the amber line reads exactly (D2004)",
+  "ok": true,
+  "detail": "week: [\"No longer a holiday — republish to withdraw its OIL Publish this day again to withdraw the OIL. The PH was removed after the day was published. ✕\"]"
+ },
+ {
+  "id": "S19.4 board: the amber line reads exactly (D2004)",
+  "ok": true,
+  "detail": "board: [\"Publish this day again to withdraw the OIL. The PH was removed after the day was published. ✕\"]"
+ },
+ {
+  "id": "S19.4 view: the amber line reads exactly (D2004)",
+  "ok": true,
+  "detail": "view: [\"No longer a holiday — republish to withdraw its OIL Publish this day again to withdraw the OIL. The PH was removed after the day was published.\"]"
+ },
+ {
+  "id": "S19.4 the other lines",
+  "ok": null,
+  "detail": "{\"week\":[],\"board\":[],\"view\":[]}"
+ },
+ {
+  "id": "S19.5 Publish AL1 went out",
+  "ok": true,
+  "detail": "{\"pressed\":true,\"label\":\"Publish AL1\"} tag \"AL1\""
+ },
+ {
+  "id": "S19.5 after Publish AL1 the credit is withdrawn",
+  "ok": true,
+  "detail": "box \"FO*\" -> \"\"; OIL {\"oil\":\"1 ›\"} -> {\"oil\":\"0 ›\"}"
+ },
+ {
+  "id": "S19.5 amber after AL1",
+  "ok": null,
+  "detail": "{\"week\":[],\"board\":[],\"view\":[]}"
+ },
+ {
+  "id": "S19.6 a PH set on Saturday",
+  "ok": null,
+  "detail": "{\"ok\":true,\"oilday\":null} {\"head\":\"day weekend evoff | SAT 18\",\"event\":\"PH\"}"
+ },
+ {
+  "id": "S19.6 Saturday fixture: Ridge on a timed desk row",
+  "ok": true,
+  "detail": "[[\"SDO\",\"0800\",\"16:00\",\"plasma\",\"razer\"]]"
+ },
+ {
+  "id": "S19.6 Saturday published",
+  "ok": null,
+  "detail": "{\"p\":{\"pressed\":true,\"label\":\"Publish day\"},\"tag\":\"ORIG\"}"
+ },
+ {
+  "id": "S19.7 Saturday PH removed",
+  "ok": null,
+  "detail": "{\"ok\":true,\"oilday\":null}; event cell \"＋\"; Ridge's box \"FO*\" -> \"FO*\""
+ },
+ {
+  "id": "S19.7 RECORD: what Saturday (still a weekend) shows when its PH is removed after publishing",
+  "ok": null,
+  "detail": "{\"week\":[],\"board\":[\"No conflicts flagged for this day ✓\"],\"view\":[]}"
+ },
+ {
+  "id": "S19.7 no withdraw line on a day that still qualifies as a weekend (D2004)",
+  "ok": true,
+  "detail": "{\"week\":[],\"board\":[],\"view\":[]}"
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]

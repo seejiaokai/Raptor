@@ -287,10 +287,14 @@ describe('what does NOT change', () => {
     inp('Training', { allday: true, s: undefined, e: undefined })
     expect(mine().length).toBe(0)
   })
+  /* CHANGED 11 Nov 26 (owner D1996): a typed B flies the shift (D1044, D1045), and a standby line that flies is checked
+     like a sortie — a Meeting inside it is the red personal-input clash, no longer the shift's amber SHIFT_SOFT. The
+     point of this test stands: the in-time cut is already reported, so no SC_INTIME on top. */
   it('an input overlapping the shift speaks through the clash voice only — never also SC_INTIME', () => {
     addSC(P, false, '06:00')
     inp('Meeting', { s: 390, e: 800 })     // 06:30–13:20: cuts the in-time window AND the shift
-    expect(mine('SHIFT_SOFT').length).toBe(1)
+    expect(mine('SHIFT_SOFT').length, 'the B flies the shift: no amber shift voice (D1996)').toBe(0)
+    expect(mine('INPUT_FLY').map((x: any) => x.sev), 'the red clash, as against a sortie (D1996)').toEqual(['hard'])
     expect(mine('SC_INTIME').length, 'already reported — the in-time cut must not double it').toBe(0)
   })
 })

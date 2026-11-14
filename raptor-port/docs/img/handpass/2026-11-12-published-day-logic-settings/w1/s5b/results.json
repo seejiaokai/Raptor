@@ -1,0 +1,11 @@
+{
+ "rows": [
+  {
+   "id": "S5.D4b Escape on the changes window",
+   "verdict": "RECORDED",
+   "saw": "opened from the \"6 changes\" count; focus after the press: BUTTON#.dpend dpendbtn dchg|6 changes; Escape straight after: still open = true; after a click inside the window (focus BUTTON#.dpend dpendbtn dchg|6 changes) then Escape: still open = true",
+   "pic": "s5b-a-*.png, s5b-b-*.png"
+  }
+ ],
+ "errors": []
+}

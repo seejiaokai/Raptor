@@ -1,0 +1,182 @@
+{
+ "results": [
+  {
+   "id": "T1.0 fixture: no long-day note on either day before the change (threshold 12h)",
+   "ok": true,
+   "detail": "Tue [\"In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40. ✕\"] | Thu [\"In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40. ✕\"]"
+  },
+  {
+   "id": "T1.1 Tuesday (published) shows NO long-day note anywhere after the change (D2005)",
+   "ok": true,
+   "detail": "edit [\"In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40. ✕\"] | view [\"In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40.\"] | board [\"VL: in-time 06:00 is later than suggested brief 05:40. ✕\"] | rings [[\"1.0.0.0.p:plain\"],[\":plain\"],[\"1.0.0.0.p:plain\"]] | tags Tuesday Jul 28 Templates Live working copy ▾ ORIG 1 13 changes i Unpublish / Tuesday Jul 28 ORIG 1 Original — as issued Working draft — not issued i"
+  },
+  {
+   "id": "T1.2 Thursday (unpublished) shows the long-day note at once on Edit Schedule, View-only and the board",
+   "ok": true,
+   "detail": "edit [\"In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40. ✕\",\"Long work day Saber — Saber has a long work day: 11h00, 06:00 → 17:00 (last landing 15:00 + 2h debrief assumed) ✕\"] | view [\"In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40.\",\"Long work day Saber — Saber has a long work day: 11h00, 06:00 → 17:00 (last landing 15:00 + 2h debrief assumed)\"] | board [\"VL: in-time 06:00 is later than suggested brief 05:40. ✕\",\"Saber — Saber has a long work day: 11h00, 06:00 → 17:00 (last landing 15:00 + 2h debrief assumed) ✕\"] | rings [[\"3.0.0.0.p:note\"],[\"3.0.0.0.p:note\"],[\"3.0.0.0.p:note\"]]"
+  }
+ ],
+ "errors": [],
+ "t0": {
+  "edit": {
+   "head": "⚠ 1 issue · 1 warning ▼",
+   "items": [
+    "In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40. ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain"
+   ],
+   "tag": "Tuesday Jul 28 Templates Live working copy ▾ DRAFT 1 8 changes i Publish day"
+  },
+  "view": {
+   "head": "⚠ 1 issue · 1 warning ▲",
+   "items": [
+    "In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40."
+   ],
+   "rings": [
+    "1.0.0.0.p:plain"
+   ],
+   "tag": "Tuesday Jul 28 DRAFT 1 8 changes i"
+  },
+  "board": {
+   "head": "⚠ 1 issue · 1 warning VL: in-time 06:00 is later than suggested brief 05:40. ✕",
+   "items": [
+    "VL: in-time 06:00 is later than suggested brief 05:40. ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain"
+   ]
+  }
+ },
+ "u0": {
+  "edit": {
+   "head": "⚠ 1 issue · 1 warning ▼",
+   "items": [
+    "In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40. ✕"
+   ],
+   "rings": [
+    "3.0.0.0.p:plain"
+   ],
+   "tag": "Thursday Jul 30 Templates Live working copy ▾ DRAFT 1 8 changes i Publish day"
+  },
+  "view": {
+   "head": "⚠ 1 issue · 1 warning ▲",
+   "items": [
+    "In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40."
+   ],
+   "rings": [
+    "3.0.0.0.p:plain"
+   ],
+   "tag": "Thursday Jul 30 DRAFT 1 8 changes i"
+  },
+  "board": {
+   "head": "⚠ 1 issue · 1 warning VL: in-time 06:00 is later than suggested brief 05:40. ✕",
+   "items": [
+    "VL: in-time 06:00 is later than suggested brief 05:40. ✕"
+   ],
+   "rings": [
+    "3.0.0.0.p:plain"
+   ]
+  }
+ },
+ "t1": {
+  "edit": {
+   "head": "⚠ 1 issue · 1 warning ▲",
+   "items": [
+    "In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40. ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain"
+   ],
+   "tag": "Tuesday Jul 28 Templates Live working copy ▾ ORIG 1 13 changes i Unpublish"
+  },
+  "view": {
+   "head": "⚠ 1 issue · 1 warning ▲",
+   "items": [
+    "In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40."
+   ],
+   "rings": [
+    ":plain"
+   ],
+   "tag": "Tuesday Jul 28 ORIG 1 Original — as issued Working draft — not issued i"
+  },
+  "board": {
+   "head": "⚠ 1 issue · 1 warning VL: in-time 06:00 is later than suggested brief 05:40. ✕",
+   "items": [
+    "VL: in-time 06:00 is later than suggested brief 05:40. ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain"
+   ]
+  }
+ },
+ "t2": {
+  "edit": {
+   "head": "⚠ 1 issue · 1 warning ▲",
+   "items": [
+    "In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40. ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain"
+   ],
+   "tag": "Tuesday Jul 28 Templates Live working copy ▾ ORIG 1 13 changes i Unpublish"
+  },
+  "view": {
+   "head": "⚠ 1 issue · 1 warning ▲",
+   "items": [
+    "In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40."
+   ],
+   "rings": [
+    ":plain"
+   ],
+   "tag": "Tuesday Jul 28 ORIG 1 Original — as issued Working draft — not issued i"
+  },
+  "board": {
+   "head": "⚠ 1 issue · 1 warning VL: in-time 06:00 is later than suggested brief 05:40. ✕",
+   "items": [
+    "VL: in-time 06:00 is later than suggested brief 05:40. ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain"
+   ]
+  }
+ },
+ "u2": {
+  "edit": {
+   "head": "⚠ 2 issues · 1 warning ▲",
+   "items": [
+    "In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40. ✕",
+    "Long work day Saber — Saber has a long work day: 11h00, 06:00 → 17:00 (last landing 15:00 + 2h debrief assumed) ✕"
+   ],
+   "rings": [
+    "3.0.0.0.p:note"
+   ],
+   "tag": "Thursday Jul 30 Templates Live working copy ▾ DRAFT 1 8 changes i Publish day"
+  },
+  "view": {
+   "head": "⚠ 2 issues · 1 warning ▲",
+   "items": [
+    "In-time / Rally — timings out of order VL: in-time 06:00 is later than suggested brief 05:40.",
+    "Long work day Saber — Saber has a long work day: 11h00, 06:00 → 17:00 (last landing 15:00 + 2h debrief assumed)"
+   ],
+   "rings": [
+    "3.0.0.0.p:note"
+   ],
+   "tag": "Thursday Jul 30 DRAFT 1 8 changes i"
+  },
+  "board": {
+   "head": "⚠ 2 issues · 1 warning VL: in-time 06:00 is later than suggested brief 05:40. ✕ Saber — Saber has a long work day: 11h00, 06:00 → 17:00 (last landing 15:00 + 2h debrief assumed) ✕",
+   "items": [
+    "VL: in-time 06:00 is later than suggested brief 05:40. ✕",
+    "Saber — Saber has a long work day: 11h00, 06:00 → 17:00 (last landing 15:00 + 2h debrief assumed) ✕"
+   ],
+   "rings": [
+    "3.0.0.0.p:note"
+   ]
+  }
+ },
+ "lg": {
+  "before": "12h",
+  "after": "10h"
+ }
+}

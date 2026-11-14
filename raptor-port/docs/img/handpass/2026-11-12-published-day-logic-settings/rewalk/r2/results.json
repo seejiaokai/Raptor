@@ -1,0 +1,280 @@
+{
+ "results": [
+  {
+   "id": "T7.0 fixture: an amber advisory for Ranger is on the published Tuesday",
+   "ok": true,
+   "detail": "0: Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)"
+  },
+  {
+   "id": "T7.1 published @12h, before the change (RECORD)",
+   "ok": null,
+   "detail": "edit [\"Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Double turning Ranger — 1 person is double turning: Ranger ✕\"] rings [\"1.0.0.0.p:plain\",\"1.1.0.0.p:plain\"] | view [\"Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Double turning Ranger — 1 person is double turning: Ranger\"] | board [\"Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]"
+  },
+  {
+   "id": "T7.2 crew rest 13h, before hiding (RECORD)",
+   "ok": null,
+   "detail": "edit [\"Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Double turning Ranger — 1 person is double turning: Ranger ✕\"] rings [\"1.0.0.0.p:plain\",\"1.1.0.0.p:plain\"] | view [\"Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Double turning Ranger — 1 person is double turning: Ranger\"] | board [\"Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]"
+  },
+  {
+   "id": "T7.3 after hiding the amber advisory (RECORD): Edit Schedule, board, View-only, crew rest line",
+   "ok": null,
+   "detail": "edit [\"Crew rest (<13h) Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest.new once signed ✕\",\"Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Double turning Ranger — 1 person is double turning: Ranger ✕\"] rings [\"1.0.0.0.p:RED\",\"1.1.0.0.p:RED\"] | view [\"Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Double turning Ranger — 1 person is double turning: Ranger\"] | board [\"Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest. ✕\",\"Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Ranger — 1 person is double turning: Ranger ✕\"]"
+  },
+  {
+   "id": "T7.4 after Publish AL1 (RECORD the face)",
+   "ok": null,
+   "detail": "edit [\"Crew rest (<13h) Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest. ✕\",\"Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Double turning Ranger — 1 person is double turning: Ranger ✕\"] rings [\"1.0.0.0.p:RED\",\"1.1.0.0.p:RED\"] | view [\"Crew rest (<13h) Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest.\",\"Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Double turning Ranger — 1 person is double turning: Ranger\"] | board [\"Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest. ✕\",\"Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Ranger — 1 person is double turning: Ranger ✕\"] | tags: [\"Tuesday Jul 28 Templates Live working copy ▾ AL1 1 X 1 23 changes i Unpublish\",\"Tuesday Jul 28 AL1 1 X 1 AL1 — as issued Working draft — not issued i\"]"
+  },
+  {
+   "id": "T7.5 Edit Schedule head after AL1 (RECORD)",
+   "ok": null,
+   "detail": "{\"pending\":\"23 changes\",\"alpub\":null,\"tag\":\"AL1\",\"nys\":false,\"ap\":\"AMENDMENTS Changes are on unpublished days — publish the day first AL1 Tue · 1 item · appr Anvil\"}"
+  },
+  {
+   "id": "T7.6 Edit Schedule head / Amendments panel right after the hide, before AL1 (RECORD the pending count)",
+   "ok": null,
+   "detail": "{\"pending\":\"1 pending\",\"alpub\":\"Publish AL1\",\"tag\":\"ORIG\",\"nys\":true,\"ap\":\"AMENDMENTS 1 day with changes to publish Tue · 1 change Publish AL1 No amendments published yet.\"}"
+  }
+ ],
+ "errors": [],
+ "s0": {
+  "edit": {
+   "head": "⚠ 2 issues ▼",
+   "items": [
+    "Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+    "Double turning Ranger — 1 person is double turning: Ranger ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "1.1.0.0.p:plain"
+   ],
+   "tag": "Tuesday Jul 28 Templates Live working copy ▾ DRAFT 1 X 1 12 changes i Publish day"
+  },
+  "view": {
+   "head": "⚠ 2 issues ▲",
+   "items": [
+    "Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Double turning Ranger — 1 person is double turning: Ranger"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "1.1.0.0.p:plain"
+   ],
+   "tag": "Tuesday Jul 28 DRAFT 1 X 1 12 changes i"
+  },
+  "board": {
+   "head": "⚠ 2 issues Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕ Ranger — 1 person is double turning: Ranger ✕",
+   "items": [
+    "Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+    "Ranger — 1 person is double turning: Ranger ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "1.1.0.0.p:plain"
+   ]
+  }
+ },
+ "s1": {
+  "edit": {
+   "head": "⚠ 2 issues ▲",
+   "items": [
+    "Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+    "Double turning Ranger — 1 person is double turning: Ranger ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "1.1.0.0.p:plain"
+   ],
+   "tag": "Tuesday Jul 28 Templates Live working copy ▾ ORIG 1 X 1 17 changes i Unpublish"
+  },
+  "view": {
+   "head": "⚠ 2 issues ▲",
+   "items": [
+    "Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Double turning Ranger — 1 person is double turning: Ranger"
+   ],
+   "rings": [
+    ":plain",
+    ":plain"
+   ],
+   "tag": "Tuesday Jul 28 ORIG 1 X 1 Original — as issued Working draft — not issued i"
+  },
+  "board": {
+   "head": "⚠ 2 issues Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕ Ranger — 1 person is double turning: Ranger ✕",
+   "items": [
+    "Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+    "Ranger — 1 person is double turning: Ranger ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "1.1.0.0.p:plain"
+   ]
+  }
+ },
+ "s2": {
+  "edit": {
+   "head": "⚠ 2 issues ▲",
+   "items": [
+    "Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+    "Double turning Ranger — 1 person is double turning: Ranger ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "1.1.0.0.p:plain"
+   ],
+   "tag": "Tuesday Jul 28 Templates Live working copy ▾ ORIG 1 X 1 17 changes i Unpublish"
+  },
+  "view": {
+   "head": "⚠ 2 issues ▲",
+   "items": [
+    "Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Double turning Ranger — 1 person is double turning: Ranger"
+   ],
+   "rings": [
+    ":plain",
+    ":plain"
+   ],
+   "tag": "Tuesday Jul 28 ORIG 1 X 1 Original — as issued Working draft — not issued i"
+  },
+  "board": {
+   "head": "⚠ 2 issues Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕ Ranger — 1 person is double turning: Ranger ✕",
+   "items": [
+    "Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕",
+    "Ranger — 1 person is double turning: Ranger ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "1.1.0.0.p:plain"
+   ]
+  }
+ },
+ "s3": {
+  "edit": {
+   "head": "⚠ 2 issues · 1 warning ▲",
+   "items": [
+    "Crew rest (<13h) Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest.new once signed ✕",
+    "Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Double turning Ranger — 1 person is double turning: Ranger ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:RED",
+    "1.1.0.0.p:RED"
+   ],
+   "tag": "Tuesday Jul 28 Templates Live working copy ▾ ORIG Not yet signed 1 X 1 1 pending i Publish AL1 Unpublish"
+  },
+  "view": {
+   "head": "⚠ 2 issues ▲",
+   "items": [
+    "Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Double turning Ranger — 1 person is double turning: Ranger"
+   ],
+   "rings": [
+    ":plain",
+    ":plain"
+   ],
+   "tag": "Tuesday Jul 28 ORIG 1 X 1 Original — as issued Working draft — not issued i"
+  },
+  "board": {
+   "head": "⚠ 2 issues · 1 warning Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest. ✕ Ranger — Tight turn ",
+   "items": [
+    "Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest. ✕",
+    "Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Ranger — 1 person is double turning: Ranger ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:RED",
+    "1.1.0.0.p:RED"
+   ]
+  }
+ },
+ "s4": {
+  "edit": {
+   "head": "⚠ 2 issues · 1 warning ▲",
+   "items": [
+    "Crew rest (<13h) Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest. ✕",
+    "Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Double turning Ranger — 1 person is double turning: Ranger ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:RED",
+    "1.1.0.0.p:RED"
+   ],
+   "tag": "Tuesday Jul 28 Templates Live working copy ▾ AL1 1 X 1 23 changes i Unpublish"
+  },
+  "view": {
+   "head": "⚠ 2 issues · 1 warning ▲",
+   "items": [
+    "Crew rest (<13h) Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest.",
+    "Tight turn Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Double turning Ranger — 1 person is double turning: Ranger"
+   ],
+   "rings": [
+    ":RED",
+    ":RED"
+   ],
+   "tag": "Tuesday Jul 28 AL1 1 X 1 AL1 — as issued Working draft — not issued i"
+  },
+  "board": {
+   "head": "⚠ 2 issues · 1 warning Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest. ✕ Ranger — Tight turn ",
+   "items": [
+    "Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest. ✕",
+    "Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Ranger — 1 person is double turning: Ranger ✕"
+   ],
+   "rings": [
+    "1.0.0.0.p:RED",
+    "1.1.0.0.p:RED"
+   ]
+  }
+ },
+ "hideInfo": {
+  "head": "⚠ 2 issues · 1 warning",
+  "lines": [
+   {
+    "cls": "wln hard",
+    "ix": 0,
+    "hid": false,
+    "struck": false,
+    "text": "Ranger — Crew rest breach — Monday landed 19:00, +2h debrief assumed → ended 21:00 → crew rest clear at 10:00, but told to report 09:40 — only 12h40 rest.",
+    "btn": "✕"
+   },
+   {
+    "cls": "wln adv hid",
+    "ix": 1,
+    "hid": true,
+    "struck": true,
+    "text": "Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "btn": "reset"
+   },
+   {
+    "cls": "wln adv",
+    "ix": 2,
+    "hid": false,
+    "struck": false,
+    "text": "Ranger — 1 person is double turning: Ranger",
+    "btn": "✕"
+   }
+  ]
+ },
+ "wl": {
+  "head": "⚠ 2 issues",
+  "lines": [
+   {
+    "cls": "wln adv",
+    "ix": 0,
+    "hid": false,
+    "struck": false,
+    "text": "Ranger — Tight turn VL BFM→RU BFM: 90 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "btn": "✕"
+   },
+   {
+    "cls": "wln adv",
+    "ix": 1,
+    "hid": false,
+    "struck": false,
+    "text": "Ranger — 1 person is double turning: Ranger",
+    "btn": "✕"
+   }
+  ]
+ }
+}

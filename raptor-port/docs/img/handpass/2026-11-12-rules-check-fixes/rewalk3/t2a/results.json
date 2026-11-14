@@ -1,0 +1,72 @@
+[
+ {
+  "id": "T2.0a navigation: the week of 20 Jul",
+  "ok": true,
+  "detail": "{\"week\":\"20/07/2026\",\"mon\":\"Jul 20\"}"
+ },
+ {
+  "id": "T2.1 Monday 20 Jul line VL BFM 12:00-13:00, B blank, Ranger (unpublished)",
+  "ok": true,
+  "detail": "VL BFM to 12:00 ld 13:00 B=undefined R=undefined p=bane"
+ },
+ {
+  "id": "T2.2a navigation: back to the week of 13 Jul",
+  "ok": true,
+  "detail": "{\"week\":\"13/07/2026\",\"mon\":\"Jul 13\"}"
+ },
+ {
+  "id": "T2.2b Edit Schedule preview Monday shows the blank-B line with B 09:40 (2h20)",
+  "ok": true,
+  "detail": "VL BFM B=[06:20] T/O-LD=08:40 10:05 ; RU BFM B=[06:20] T/O-LD=08:40 10:05 ; VL ACM B=[08:10] T/O-LD=10:30 11:55 ; VL BFM B=[09:40] T/O-LD=12:00 13:00"
+ },
+ {
+  "id": "T2.3a Logic \"Brief before take-off\" 3h20",
+  "ok": true,
+  "detail": "was 2h20 now 3h20"
+ },
+ {
+  "id": "T2.3b Edit Schedule preview after the raise (week not reloaded: 13/07/2026): B an hour earlier, 08:40",
+  "ok": true,
+  "detail": "VL BFM B=[05:20] T/O-LD=08:40 10:05 ; RU BFM B=[05:20] T/O-LD=08:40 10:05 ; VL ACM B=[07:10] T/O-LD=10:30 11:55 ; VL BFM B=[08:40] T/O-LD=12:00 13:00"
+ },
+ {
+  "id": "T2.4a Logic restored",
+  "ok": true,
+  "detail": "now 2h20 want 2h20"
+ },
+ {
+  "id": "T2.4b Edit Schedule preview after the restore: B back to 09:40",
+  "ok": true,
+  "detail": "VL BFM B=[06:20] T/O-LD=08:40 10:05 ; RU BFM B=[06:20] T/O-LD=08:40 10:05 ; VL ACM B=[08:10] T/O-LD=10:30 11:55 ; VL BFM B=[09:40] T/O-LD=12:00 13:00"
+ },
+ {
+  "id": "T2.5a Monday 20 Jul published (ORIG face)",
+  "ok": true,
+  "detail": "Monday Jul 20 ORIG 4 X 2 X 1 Original — as issued Working draft — not issued i | pressed {\"pressed\":true,\"label\":\"Publish day\"}"
+ },
+ {
+  "id": "T2.5b View-only Sched preview of published Monday shows B 09:40",
+  "ok": true,
+  "detail": "VL BFM B=[06:20] T/O-LD=08:40 10:05 ; RU BFM B=[06:20] T/O-LD=08:40 10:05 ; VL ACM B=[08:10] T/O-LD=10:30 11:55 ; VL BFM B=[09:40] T/O-LD=12:00 13:00"
+ },
+ {
+  "id": "T2.5c View-only Sched preview of published Monday after the raise (3h20): still 09:40",
+  "ok": true,
+  "detail": "VL BFM B=[06:20] T/O-LD=08:40 10:05 ; RU BFM B=[06:20] T/O-LD=08:40 10:05 ; VL ACM B=[08:10] T/O-LD=10:30 11:55 ; VL BFM B=[09:40] T/O-LD=12:00 13:00"
+ },
+ {
+  "id": "T2.5d Edit Schedule preview of the PUBLISHED Monday after the raise — RECORD",
+  "ok": null,
+  "detail": "VL BFM B=[05:20] T/O-LD=08:40 10:05 ; RU BFM B=[05:20] T/O-LD=08:40 10:05 ; VL ACM B=[07:10] T/O-LD=10:30 11:55 ; VL BFM B=[08:40] T/O-LD=12:00 13:00 [t2-5-editschedule-preview-published-day.png]"
+ },
+ {
+  "id": "T2.5e Logic restored again",
+  "ok": true,
+  "detail": "now 2h20 want 2h20"
+ },
+ {
+  "id": "console errors",
+  "ok": null,
+  "detail": "[]"
+ }
+]

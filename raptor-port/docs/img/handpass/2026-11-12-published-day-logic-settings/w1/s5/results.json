@@ -1,0 +1,101 @@
+{
+ "rows": [
+  {
+   "id": "S5.A0 Logic page opened",
+   "verdict": "RECORDED",
+   "saw": "{\"page\":\"logic\",\"crewRest\":720,\"longDay\":720,\"board\":false,\"banner\":\"\",\"btns\":[\"Edit\"],\"wins\":[]}",
+   "pic": "s5-a0-logic-open.png"
+  },
+  {
+   "id": "S5.A1 pressed ✎ Edit",
+   "verdict": "RECORDED",
+   "saw": "{\"page\":\"logic\",\"crewRest\":720,\"longDay\":720,\"board\":false,\"banner\":\"\",\"btns\":[\"Done\"],\"wins\":[]}",
+   "pic": "s5-a1-edit-pressed.png"
+  },
+  {
+   "id": "S5.A2 changed \"Long work day\" (typed 13h)",
+   "verdict": "RECORDED",
+   "saw": "box was \"12h\" now \"13h\"; {\"page\":\"logic\",\"crewRest\":720,\"longDay\":780,\"board\":false,\"banner\":\"1 setting changed from the squadron standard.\",\"btns\":[\"Done\",\"Reset to standardReset all\",\"Reset\"],\"wins\":[]}",
+   "pic": "s5-a2-longday-13h.png"
+  },
+  {
+   "id": "S5.A3 pressed Done",
+   "verdict": "RECORDED",
+   "saw": "{\"page\":\"logic\",\"crewRest\":720,\"longDay\":780,\"board\":false,\"banner\":\"1 setting changed from the squadron standard.\",\"btns\":[\"Edit\",\"Reset to standardReset all\"],\"wins\":[]}",
+   "pic": "s5-a3-done-pressed.png"
+  },
+  {
+   "id": "S5.B \"Reset to standard\" pressed",
+   "verdict": "RECORDED",
+   "saw": " after: {\"page\":\"logic\",\"crewRest\":720,\"longDay\":720,\"board\":false,\"banner\":\"\",\"btns\":[\"Edit\"],\"wins\":[]} (longDay was set to 13h before)",
+   "pic": "s5-b1-reset-pressed.png, s5-b2-after-reset.png"
+  },
+  {
+   "id": "S5.C1 Scheduler Board opened for Tue (door on the week)",
+   "verdict": "RECORDED",
+   "saw": "{\"page\":\"editsched\",\"crewRest\":720,\"longDay\":720,\"board\":true,\"banner\":\"\",\"btns\":[\"✓ Done\"],\"wins\":[]}",
+   "pic": "s5-c1-board-open.png"
+  },
+  {
+   "id": "S5.C2 pressed ✓ Done on the board",
+   "verdict": "RECORDED",
+   "saw": "{\"page\":\"editsched\",\"crewRest\":720,\"longDay\":720,\"board\":false,\"banner\":\"\",\"btns\":[],\"wins\":[]}",
+   "pic": "s5-c2-board-done.png"
+  },
+  {
+   "id": "S5.D0 Tue published then its mission edited (VL BFM -> BFM2)",
+   "verdict": "RECORDED",
+   "saw": "before: ORIG \"11 changes\"; after: ORIG \"1 pending\"",
+   "pic": "s5-d0-tue-pending.png"
+  },
+  {
+   "id": "S5.D1 pressed the day's \"1 pending\" count: window opens",
+   "verdict": "RECORDED",
+   "saw": "[]",
+   "pic": "s5-d1-changes-window-open.png"
+  },
+  {
+   "id": "S5.D2 closed the changes window with its ✕",
+   "verdict": "RECORDED",
+   "saw": "window still showing: 0; page editsched; {\"undo\":false,\"hist\":\"btn\",\"topWin\":[]}",
+   "pic": "s5-d2-closed-by-x.png"
+  },
+  {
+   "id": "S5.D3 reopened it from the count, then pressed Escape",
+   "verdict": "RECORDED",
+   "saw": "reopened: true; after Escape still showing: true",
+   "pic": "s5-d3-reopened.png, s5-d4-after-escape.png"
+  },
+  {
+   "id": "S5.E1 pressed Undo after the Tuesday edit",
+   "verdict": "RECORDED",
+   "saw": "mission BFM2 -> BFM; Undo button before: {\"disabled\":false,\"title\":\"Undo — a mission\"}; Tue head now: ORIG \"13 changes\"",
+   "pic": "s5-e1-after-undo.png"
+  },
+  {
+   "id": "S5.E2 pressed Redo",
+   "verdict": "RECORDED",
+   "saw": "mission BFM -> BFM2; Redo button before: {\"disabled\":false,\"title\":\"Redo — a mission\"}; Tue head now: ORIG \"1 pending\"",
+   "pic": "s5-e2-after-redo.png"
+  },
+  {
+   "id": "S5.E3 after Undo/Redo, Tuesday on View-only still the issued face",
+   "verdict": "RECORDED",
+   "saw": "view head \"Tuesday Jul 14 ORIG 4 X 4 X 1 Original — as issued Working draft — not issued i\", rest lines for Vandal: []",
+   "pic": ""
+  },
+  {
+   "id": "S5.F View-only week arrows: start / › / › / ‹",
+   "verdict": "RECORDED",
+   "saw": "front day index 0; scrollLeft 20 | after › : front day index 1; scrollLeft 564 | after › : front day index 2; scrollLeft 1128 | after ‹ : front day index 1; scrollLeft 564",
+   "pic": "s5-f0-..f3.png"
+  },
+  {
+   "id": "S5.F2 View-only week chips Jul 20 then Jul 13",
+   "verdict": "RECORDED",
+   "saw": "after Jul 20: 20/07/2026 / Monday Jul 20; back: 13/07/2026 / Monday Jul 13; Tuesday head: Tuesday Jul 14 ORIG 4 X 4 X 1 Original — as issued Working draft — not issued i",
+   "pic": "s5-f4-next-week.png, s5-f5-back-to-week.png"
+  }
+ ],
+ "errors": []
+}

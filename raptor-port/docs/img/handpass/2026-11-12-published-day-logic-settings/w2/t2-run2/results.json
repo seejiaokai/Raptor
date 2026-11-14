@@ -1,0 +1,167 @@
+{
+ "results": [
+  {
+   "id": "T2.1 Tuesday (published): no new warning line and no new ring on Ranger after debrief 3h (D2005)",
+   "ok": true,
+   "detail": "[{\"k\":\"edit\",\"added\":[],\"ringsBefore\":[\"1.0.0.0.p:plain\",\"g:1.0:plain\"],\"ringsAfter\":[\"1.0.0.0.p:plain\",\"g:1.0:plain\"]},{\"k\":\"view\",\"added\":[],\"ringsBefore\":[\":plain\",\":plain\"],\"ringsAfter\":[\":plain\",\":plain\"]},{\"k\":\"board\",\"added\":[],\"ringsBefore\":[\"1.0.0.0.p:plain\",\"g:1.0:plain\"],\"ringsAfter\":[\"1.0.0.0.p:plain\",\"g:1.0:plain\"]}]"
+  },
+  {
+   "id": "T2.2 Thursday (unpublished): a clash/advisory for Saber appears at once on Edit Schedule, View-only and the board",
+   "ok": true,
+   "detail": "[{\"k\":\"edit\",\"added\":[\"No time for the flight debrief Saber — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) ✕\"],\"ringsBefore\":[\"3.0.0.0.p:plain\",\"g:3.0:plain\"],\"ringsAfter\":[\"3.0.0.0.p:AMBER\",\"g:3.0:AMBER\"]},{\"k\":\"view\",\"added\":[\"No time for the flight debrief Saber — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h)\"],\"ringsBefore\":[\"3.0.0.0.p:plain\",\"g:3.0:plain\"],\"ringsAfter\":[\"3.0.0.0.p:AMBER\",\"g:3.0:AMBER\"]},{\"k\":\"board\",\"added\":[\"Saber — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) ✕\"],\"ringsBefore\":[\"3.0.0.0.p:plain\",\"g:3.0:plain\"],\"ringsAfter\":[\"3.0.0.0.p:AMBER\",\"g:3.0:AMBER\"]}]"
+  },
+  {
+   "id": "T2.3 Insights work hours (RECORD, D482: Ranger up by 1h) — report to debrief this week",
+   "ok": null,
+   "detail": "before publish: WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Ranger 7h Saber 7h Cobra 6h Piston 6h | published before change: WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Ranger 7h Saber 7h Cobra 6h Piston 6h | after change: WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Cobra 7h Piston 7h Ranger 7h Saber 7h"
+  },
+  {
+   "id": "T2.4 Insights: Ranger (Tuesday only) hours after the change are 1h more than before it (D482)",
+   "ok": false,
+   "detail": "before 7h after 7h"
+  },
+  {
+   "id": "T2.5 Insights, men with a flight and no ground row (RECORD)",
+   "ok": null,
+   "detail": "Piston (Tue, published): before 6h after 7h | Cobra (Thu, unpublished): before 6h after 7h | full after: WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Cobra 7h Piston 7h Ranger 7h Saber 7h | full before: WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Ranger 7h Saber 7h Cobra 6h Piston 6h"
+  },
+  {
+   "id": "T2.6 Insights: Piston (flight only, Tuesday, published) up by 1h after debrief 3h (D482)",
+   "ok": true,
+   "detail": "before 6h after 7h"
+  },
+  {
+   "id": "T2.7 Insights: Cobra (flight only, Thursday, unpublished control) up by 1h after debrief 3h",
+   "ok": true,
+   "detail": "before 6h after 7h"
+  }
+ ],
+ "errors": [],
+ "i0": "4 SORTIES 4 FORMATIONS 4 AIRCREW FLYING 0 0 WARNING FLYING LOAD · SORTIES THIS WEEK Cobra 1 Piston 1 Ranger 1 Saber 1 WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Ranger 7h Saber 7h Cobra 6h Piston 6h NOT ON THE FLYING PROGRAMME · 54 AVAILABLE Ace Anvil Basher Blade Bolt Cinch Cinder Comet Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Pixel Quill Reaper Rebel Recon Relay Ridge Rune Ryder Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Vector Warden Wildcard Wisp Zenith Zulu CONFLICTS BY TYPE No conflicts flagged. ✓ BY DAY Monday 0 sorties · 0 formations · clear Tuesday 2 sorties · 2 formations · clear Wednesday 0 sorties · 0 formations · clear Thursday 2 sorties · 2 formations · clear Friday 0 sorties · 0 formations · clear Saturday 0 sorties · 0 formations · clear Sunday 0 sorties · 0 formations · clear",
+ "i1": "4 SORTIES 4 FORMATIONS 4 AIRCREW FLYING 0 0 WARNING FLYING LOAD · SORTIES THIS WEEK Cobra 1 Piston 1 Ranger 1 Saber 1 WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Ranger 7h Saber 7h Cobra 6h Piston 6h NOT ON THE FLYING PROGRAMME · 54 AVAILABLE Ace Anvil Basher Blade Bolt Cinch Cinder Comet Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Pixel Quill Reaper Rebel Recon Relay Ridge Rune Ryder Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Vector Warden Wildcard Wisp Zenith Zulu CONFLICTS BY TYPE No conflicts flagged. ✓ BY DAY Monday 0 sorties · 0 formations · clear Tuesday 2 sorties · 2 formations · clear Wednesday 0 sorties · 0 formations · clear Thursday 2 sorties · 2 formations · clear Friday 0 sorties · 0 formations · clear Saturday 0 sorties · 0 formations · clear Sunday 0 sorties · 0 formations · clear",
+ "i2": "4 SORTIES 4 FORMATIONS 4 AIRCREW FLYING 1 0 WARNING FLYING LOAD · SORTIES THIS WEEK Cobra 1 Piston 1 Ranger 1 Saber 1 WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Cobra 7h Piston 7h Ranger 7h Saber 7h NOT ON THE FLYING PROGRAMME · 54 AVAILABLE Ace Anvil Basher Blade Bolt Cinch Cinder Comet Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Pixel Quill Reaper Rebel Recon Relay Ridge Rune Ryder Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Vector Warden Wildcard Wisp Zenith Zulu CONFLICTS BY TYPE No time for the flight debrief 1 BY DAY Monday 0 sorties · 0 formations · clear Tuesday 2 sorties · 2 formations · clear Wednesday 0 sorties · 0 formations · clear Thursday 2 sorties · 2 formations · 1 issue Friday 0 sorties · 0 formations · clear Saturday 0 sorties · 0 formations · clear Sunday 0 sorties · 0 formations · clear",
+ "t1": {
+  "edit": {
+   "head": "NO STRIP",
+   "items": [],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "g:1.0:plain"
+   ],
+   "tag": "Tuesday Jul 28 Templates Live working copy ▾ ORIG 1 X 1 22 changes i Unpublish"
+  },
+  "view": {
+   "head": "NO STRIP",
+   "items": [],
+   "rings": [
+    ":plain",
+    ":plain"
+   ],
+   "tag": "Tuesday Jul 28 ORIG 1 X 1 Original — as issued Working draft — not issued i"
+  },
+  "board": {
+   "head": "No conflicts flagged for Tuesday ✓ No conflicts flagged for this day ✓",
+   "items": [
+    "No conflicts flagged for this day ✓"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "g:1.0:plain"
+   ]
+  }
+ },
+ "t2": {
+  "edit": {
+   "head": "NO STRIP",
+   "items": [],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "g:1.0:plain"
+   ],
+   "tag": "Tuesday Jul 28 Templates Live working copy ▾ ORIG 1 X 1 22 changes i Unpublish"
+  },
+  "view": {
+   "head": "NO STRIP",
+   "items": [],
+   "rings": [
+    ":plain",
+    ":plain"
+   ],
+   "tag": "Tuesday Jul 28 ORIG 1 X 1 Original — as issued Working draft — not issued i"
+  },
+  "board": {
+   "head": "No conflicts flagged for Tuesday ✓ No conflicts flagged for this day ✓",
+   "items": [
+    "No conflicts flagged for this day ✓"
+   ],
+   "rings": [
+    "1.0.0.0.p:plain",
+    "g:1.0:plain"
+   ]
+  }
+ },
+ "u0": {
+  "edit": {
+   "head": "NO STRIP",
+   "items": [],
+   "rings": [
+    "3.0.0.0.p:plain",
+    "g:3.0:plain"
+   ],
+   "tag": "Thursday Jul 30 Templates Live working copy ▾ DRAFT 1 X 1 17 changes i Publish day"
+  },
+  "view": {
+   "head": "NO STRIP",
+   "items": [],
+   "rings": [
+    "3.0.0.0.p:plain",
+    "g:3.0:plain"
+   ],
+   "tag": "Thursday Jul 30 DRAFT 1 X 1 17 changes i"
+  },
+  "board": {
+   "head": "No conflicts flagged for Thursday ✓ No conflicts flagged for this day ✓",
+   "items": [
+    "No conflicts flagged for this day ✓"
+   ],
+   "rings": [
+    "3.0.0.0.p:plain",
+    "g:3.0:plain"
+   ]
+  }
+ },
+ "u2": {
+  "edit": {
+   "head": "⚠ 1 issue ▼",
+   "items": [
+    "No time for the flight debrief Saber — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) ✕"
+   ],
+   "rings": [
+    "3.0.0.0.p:AMBER",
+    "g:3.0:AMBER"
+   ],
+   "tag": "Thursday Jul 30 Templates Live working copy ▾ DRAFT 1 X 1 17 changes i Publish day"
+  },
+  "view": {
+   "head": "⚠ 1 issue ▲",
+   "items": [
+    "No time for the flight debrief Saber — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h)"
+   ],
+   "rings": [
+    "3.0.0.0.p:AMBER",
+    "g:3.0:AMBER"
+   ],
+   "tag": "Thursday Jul 30 DRAFT 1 X 1 17 changes i"
+  },
+  "board": {
+   "head": "⚠ 1 issue Saber — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) ✕",
+   "items": [
+    "Saber — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 13:00–16:00 (land + 3h) ✕"
+   ],
+   "rings": [
+    "3.0.0.0.p:AMBER",
+    "g:3.0:AMBER"
+   ]
+  }
+ }
+}

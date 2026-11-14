@@ -41,9 +41,22 @@ const run = (cmd, args, opts = {}) => new Promise((res, rej) => {
   const p = spawn(cmd, args, { stdio: 'inherit', shell: process.platform === 'win32', ...opts });
   p.on('exit', c => (c === 0 ? res() : rej(new Error(`${cmd} exited ${c}`))));
 });
+/* Ready when the server answers on ANY loopback address. Where `localhost` names
+   both 127.0.0.1 and ::1 (GitHub's browser jobs run in Playwright's image since
+   12 Nov 26, whose hosts file lists both), `vite preview` may listen on one while
+   Node's fetch tries the other: the run of 12 Nov 26 waited out its 10 s with the
+   server up. Playwright's own wait (the geometry jobs' webServer) asks every
+   address the same way. The browser still opens `URL` itself — Chromium reaches
+   whichever loopback the server took. (`URL` is a const in this file, so no
+   `new URL(...)` here.) */
 const waitForServer = async url => {
+  const tries = url.includes('//localhost:')
+    ? [url, url.replace('//localhost:', '//127.0.0.1:'), url.replace('//localhost:', '//[::1]:')]
+    : [url];
   for (let i = 0; i < 40; i++) {
-    try { if ((await fetch(url)).ok) return true; } catch (_) {}
+    for (const u of tries) {
+      try { if ((await fetch(u)).ok) return true; } catch (_) {}
+    }
     await new Promise(r => setTimeout(r, 250));
   }
   return false;
@@ -53,9 +66,18 @@ let server = null;
 if (OWN_SERVER) {
   console.log('building dist/ …');
   await run('npm', ['run', 'build']);
+  /* the server's error output is kept (its last 4000 characters) so a server that
+     never comes up says why — before 12 Nov 26 it was thrown away. Not with --keep:
+     a server left running must not write into a pipe whose reader has exited. */
+  let serverErr = '';
   server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'],
-    { stdio: 'ignore', shell: process.platform === 'win32' });
-  if (!await waitForServer(URL)) { console.error(`preview server never came up at ${URL}`); killServer(); process.exit(1); }
+    { stdio: KEEP ? 'ignore' : ['ignore', 'ignore', 'pipe'], shell: process.platform === 'win32' });
+  if (server.stderr) server.stderr.on('data', d => { serverErr = (serverErr + d).slice(-4000); });
+  if (!await waitForServer(URL)) {
+    console.error(`preview server never came up at ${URL}${server.exitCode !== null ? ` (it exited ${server.exitCode})` : ' (still running)'}`);
+    if (serverErr.trim()) console.error(serverErr);
+    killServer(); process.exit(1);
+  }
 }
 /* Kill the WHOLE server tree, not just the immediate child. On Windows the
    preview runs under a shell (shell:true), so server.kill() ends only the shell

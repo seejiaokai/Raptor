@@ -34,9 +34,12 @@ describe('no sentence a person reads calls OIL pay or money (D25)', () => {
   it('the OIL rule still says what it said, in the words D25 asks for', () => {
     const all = texts([lgSettings(), lgChecks()]).map(plain).join(' ')
     expect(all).toContain('A published day keeps its OIL until it is published again')
-    expect(all).toContain('A row with no times, or no end time, earns nothing')
-    /* [OIL-ZERO-SPAN-SORTIE] (20 Oct 26): the line says when a nought-minute sortie earns nothing too (D932) */
-    expect(all).toContain('A flying line still earns its OIL from the report before it and the debrief after it, and none if it has neither; a standby shift with no length earns none')
+    /* the rules check's F9 (the words job, [RULES-CHECK-FIXES] job 3): a request answered yes earns over its own times,
+       though its row on the programme carries none (D932) */
+    expect(all).toContain('A row the scheduler adds with no times, or no end time, earns nothing, but a request answered yes earns over its own times.')
+    /* [OIL-ZERO-SPAN-SORTIE] (20 Oct 26): the line says when a nought-minute sortie earns nothing too (D932); since D1999
+       a standby shift with no length that flies from an R or B before its START earns from it (the words job) */
+    expect(all).toContain('A flying line still earns its OIL from the report before it and the debrief after it, and none if it has neither. A standby shift with no length earns none. One that flies with its R or B before its START earns from that time.')
   })
 
   it('the mode\'s own messages', () => {

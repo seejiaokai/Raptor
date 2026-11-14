@@ -1,0 +1,60 @@
+{
+ "results": [
+  {
+   "id": "T8.0 phone world carries the fixture (Tue 28 Jul published, brief lead 3h)",
+   "ok": true,
+   "detail": "{\"f\":\"12:00\",\"pub\":\"\\\"2026-07-28#0\\\"\",\"briefLead\":180,\"crewRest\":720}"
+  },
+  {
+   "id": "T8.1 Logic ✎ Edit: the setting boxes appear",
+   "ok": true,
+   "detail": "boxes before false after true; button \"Edit\""
+  },
+  {
+   "id": "T8.2 Logic: crew rest changed to 12h30",
+   "ok": true,
+   "detail": "was 12h now 12h30"
+  },
+  {
+   "id": "T8.3 Logic Reset: crew rest back to its normal value",
+   "ok": true,
+   "detail": "before reset 12h30 after 12h (was 12h)"
+  },
+  {
+   "id": "T8.4 Logic Done: the setting boxes close",
+   "ok": true,
+   "detail": "button was \"lgDone|abtn primary|Done\"; boxes after Done: false; crewRest now 720min"
+  },
+  {
+   "id": "T8.5 the board opens on a tap of the day",
+   "ok": true,
+   "detail": "board visible"
+  },
+  {
+   "id": "T8.6 board ✓ Done closes the board",
+   "ok": true,
+   "detail": "board visible after: 0"
+  },
+  {
+   "id": "T8.7 the changes window opened from the pending count (RECORD)",
+   "ok": null,
+   "detail": "chip \"1 pending\"; window: [\"⠿ Changes · Tuesday 28/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕\",\"History on: Tap a gold dot on the schedule\",\"New to you 0 All changes 16 To go out · AL1 1\",\"Week Mon Tue Wed Thu Fri Sat Sun\",\"Waiting to go out as AL1 · 1 change A blank brief — its suggested lead 140 min → 180 min\",\"Tap a change to go to it.\"]"
+  },
+  {
+   "id": "T8.8 the changes window closes by its ✕",
+   "ok": true,
+   "detail": "fresh surfaces left after ✕: []"
+  },
+  {
+   "id": "T8.9 the ALL AVAIL window opens on a tap of its count",
+   "ok": true,
+   "detail": "[\"win-bar: ⠿ BRIEFING Jul 28 · 14:30–15:00 ✕\",\"win-one: Who’s available 46\",\"win-body: PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havo\",\"win-from: who is free as things stand now\",\"win-foot: Tap a puck for why. One man is flagged.\"]"
+  },
+  {
+   "id": "T8.10 the ALL AVAIL window closes by its ✕",
+   "ok": true,
+   "detail": "fresh surfaces left: []"
+  }
+ ],
+ "errors": []
+}

@@ -1,0 +1,83 @@
+{
+ "results": [
+  {
+   "id": "S20.0 fixture: Ranger clash between VL BFM sortie and BRIEFING shows red",
+   "verdict": "PASS",
+   "saw": "\"0:live:✕: Ranger — VL BFM & BRIEFING clash\" | ⚠ 2 issues · 1 warning | board 5.0.0.0.p RED,g:5.0 RED | week 5.0.0.0.p RED,g:5.0 RED | wk ",
+   "pic": "s20-0-built.png"
+  },
+  {
+   "id": "S20.1 hide with ✕: struck line kept, no ring on board or week, count drops",
+   "verdict": "PASS",
+   "saw": "\"0:HID+struck:reset: Ranger — VL BFM & BRIEFING clash\" | ⚠ 1 issue | board 5.0.0.0.p plain,g:5.0 plain | week 5.0.0.0.p plain,g:5.0 plain | wk ",
+   "pic": "s20-1-hidden.png"
+  },
+  {
+   "id": "S20.2 both items retimed (overlap kept): clash still hidden",
+   "verdict": "PASS",
+   "saw": "\"0:HID+struck:reset: Ranger — VL BFM & BRIEFING clash\" | board 5.0.0.0.p plain,g:5.0 plain | wk ",
+   "pic": "s20-2-retimed.png"
+  },
+  {
+   "id": "S20.3 ground row renamed DEBRIEF: still hidden",
+   "verdict": "PASS",
+   "saw": "\"0:HID+struck:reset: Ranger — VL BFM & DEBRIEF clash\" | board 5.0.0.0.p plain,g:5.0 plain | week 5.0.0.0.p plain,g:5.0 plain | wk ",
+   "pic": "s20-3-renamed.png"
+  },
+  {
+   "id": "S21.1 ground row deleted and re-made with the same words: the new clash SHOWS red",
+   "verdict": "PASS",
+   "saw": "\"0:live:✕: Ranger — VL BFM & DEBRIEF clash\" | ⚠ 2 issues · 1 warning | board 5.0.0.0.p RED,g:5.0 RED | week 5.0.0.0.p RED,g:5.0 RED | wk ",
+   "pic": "s21-1-remade.png"
+  },
+  {
+   "id": "S21.2 the re-made clash can be hidden too",
+   "verdict": "PASS",
+   "saw": "\"0:HID+struck:reset: Ranger — VL BFM & DEBRIEF clash\"",
+   "pic": ""
+  },
+  {
+   "id": "S21.3 a different man on the same two items: the new clash SHOWS red with a ring",
+   "verdict": "FAIL",
+   "saw": "seats=bane,bane | \"0:HID+struck:reset: Ranger — VL BFM & DEBRIEF clash\" | Saber board  plain | week  plain | ⚠ 1 issue",
+   "pic": "s21-3-man-replaced.png"
+  },
+  {
+   "id": "S22.0 fixture: hidden",
+   "verdict": "PASS",
+   "saw": "\"0:HID+struck:reset: Ranger — VL BFM & BRIEFING clash\"",
+   "pic": ""
+  },
+  {
+   "id": "S22.1 put back: the clash returns struck (still hidden), no lasting red ring",
+   "verdict": "PASS",
+   "saw": "\"0:HID+struck:reset: Ranger — VL BFM & BRIEFING clash\" | board 5.0.0.0.p plain,g:5.0 plain | week 5.0.0.0.p plain,g:5.0 plain | wk ",
+   "pic": "s22-1-after.png"
+  },
+  {
+   "id": "S22.2 the amber \"already on …\" note at the drop",
+   "verdict": "FAIL",
+   "saw": "toast at ~60ms: \"Warning hidden: no flag, not counted. It returns if the warning changes. []\" | at ~320ms: \"Warning hidden: no flag, not counted. It returns if the warning changes. []\" | at ~2.8s: \"Warning hidden: no flag, not counted. It returns if the warning changes. []\"",
+   "pic": "s22-1-after-drop-immediate.png"
+  },
+  {
+   "id": "S3.0 first clash hidden",
+   "verdict": "PASS",
+   "saw": "\"0:HID+struck:reset: Ranger — VL BFM & BRIEFING clash\"",
+   "pic": ""
+  },
+  {
+   "id": "S3.1 second clash (same words) shows red while the first stays struck",
+   "verdict": "FAIL",
+   "saw": "clash lines: [\"0:HID+struck:reset: Ranger — VL BFM & BRIEFING clash\"] | ⚠ 2 issues",
+   "pic": "s3-1-list.png"
+  },
+  {
+   "id": "S3.2 Ranger's second VL BFM puck wears the red ring (and the first does not)",
+   "verdict": "FAIL",
+   "saw": "board rings 5.0.0.0.p plain,5.1.0.0.p plain,g:5.0 plain,g:5.1 plain | week 5.0.0.0.p plain,5.1.0.0.p plain,g:5.0 plain,g:5.1 plain | wk ",
+   "pic": "s3-2-board.png"
+  }
+ ],
+ "errors": []
+}

@@ -1,0 +1,23 @@
+{
+ "rows": [
+  {
+   "id": "S1.1 Tue (12:00 VL, B blank) no crew-rest warning for Vandal",
+   "verdict": "PASS",
+   "saw": "board: head=\"⚠ 4 issues · 2 warnings\" restMine=[] otherRest=[\"Outlaw — Crew rest breach — Monday lande\"] rings=[\"plain:puck sm\"] pending=\"6 changes\" tag=DRAFT sign=\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\" || edit: head=\"⚠ 4 issues · 2 warning ▼\" restMine=[] otherRest=[\"Crew rest (<12h) Outlaw — Crew rest brea\"] rings=[\"plain:puck dim\"] pending=\"6 changes\" tag=DRAFT sign=\"4 to sign\" || view: head=\"⚠ 4 issues · 2 warning ▲\" restMine=[] otherRest=[\"Crew rest (<12h) Outlaw — Crew rest brea\"] rings=[\"plain:puck dim\"] dayHead=\"Tuesday Jul 14 DRAFT 4 X 4 X 1 6 changes i\"",
+   "pic": "s1-01-tue-*.png"
+  },
+  {
+   "id": "S1.2 Thu (12:00 VL, B blank) clean for Vandal",
+   "verdict": "PASS",
+   "saw": "board: head=\"⚠ 6 issues · 3 warnings\" restMine=[] otherRest=[] rings=[\"plain:puck sm\",\"plain:puck sm\"] pending=\"6 changes\" tag=DRAFT sign=\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\" || edit: head=\"⚠ 6 issues · 3 warning ▼\" restMine=[] otherRest=[] rings=[\"plain:puck dim\",\"plain:puck sm dim\"] pending=\"6 changes\" tag=DRAFT sign=\"4 to sign\"",
+   "pic": "s1-02-thu-*.png"
+  },
+  {
+   "id": "S1.3 Tue published, clean on View-only Sched",
+   "verdict": "PASS",
+   "saw": "view: head=\"⚠ 4 issues · 2 warning ▲\" restMine=[] otherRest=[\"Crew rest (<12h) Outlaw — Crew rest brea\"] rings=[\"plain:puck dim\"] dayHead=\"Tuesday Jul 14 ORIG 4 X 4 X 1 Original — as issued Working draft — not issued i\" || edit: head=\"⚠ 4 issues · 2 warning ▲\" restMine=[] otherRest=[\"Crew rest (<12h) Outlaw — Crew rest brea\"] rings=[\"plain:puck dim\"] pending=\"11 changes\" tag=ORIG sign=\"4 to sign\"",
+   "pic": "s1-03-tue-published-view.png"
+  }
+ ],
+ "errors": []
+}
