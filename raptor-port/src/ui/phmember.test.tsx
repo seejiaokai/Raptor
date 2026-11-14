@@ -139,7 +139,7 @@ afterEach(() => {
   _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); setMe(DEFAULT_ME); storeBackend.impl = null; document.body.innerHTML = ''; setDrag(null)
 })
 
-describe('ALL AVAIL put on an input\'s row JOINS the input (D755, D757 step 3 — the plan §4.4)', () => {
+describe('ALL AVAIL put on an input\'s row JOINS the input (D755, D757 step 3 — the plan §4.4) (OR10)', () => {
   it('dropped on the row\'s "+ add": one record holding it, one row, drawn after the named people — and one Undo takes it back', async () => {
     await boot()
     file(['pike', 'bane'])
@@ -182,7 +182,7 @@ describe('ALL AVAIL put on an input\'s row JOINS the input (D755, D757 step 3 �
   })
 })
 
-describe('where it cannot apply the drop is refused with its reason, and nothing changes (D753, D755 (4))', () => {
+describe('where it cannot apply the drop is refused with its reason, and nothing changes (D753, D755 (4)) (OR8)', () => {
   const refused = (key: string, id: string, why: RegExp | string) => {
     const was = JSON.stringify(INPUTS), days = JSON.stringify(DAYS)
     SAID = []
@@ -227,7 +227,7 @@ describe('where it cannot apply the drop is refused with its reason, and nothing
   })
 })
 
-describe('ALL AVAIL stays when anyone leaves; taken off itself, it leaves (D757 step 4)', () => {
+describe('ALL AVAIL stays when anyone leaves; taken off itself, it leaves (D757 step 4) (OR10)', () => {
   it('a named person taken off: ALL AVAIL stays, with everyone else', async () => {
     await boot()
     file(['bane', 'pike', 'allavail'])
@@ -297,7 +297,7 @@ describe('the input\'s own save takes it too (the plan §4.5 — what its window
     expect(commitInput(rec(), draftOf(rec()), ['bane', 'allavail'])).toBe(true)
     expect(people()).toEqual(['bane', 'allavail'])
   })
-  it('a person in a shared input he did not file adds nobody — ALL AVAIL neither (D763)', async () => {
+  it('a person in a shared input he did not file adds nobody — ALL AVAIL neither (D763) (OR24)', async () => {
     await boot()
     file(['bane', 'pike'])
     member('pike')
@@ -308,7 +308,7 @@ describe('the input\'s own save takes it too (the plan §4.5 — what its window
 })
 
 describe('OIL: one answer for everyone in it, the men behind ALL AVAIL with them (D753, D762 — the plan §4.7)', () => {
-  it('T3 — nobody earns twice: a man named in the input is not in its crowd, and switching him off switches him off', async () => {
+  it('T3 — nobody earns twice: a man named in the input is not in its crowd, and switching him off switches him off (OR12)', async () => {
     oilOn(); await boot(); setBoardDay(SAT)
     file(['bane'], SAT, YES)
     expect(rowPut(`${rowKey(SAT)}.+`, 'allavail')).toBe('done')
@@ -327,7 +327,7 @@ describe('OIL: one answer for everyone in it, the men behind ALL AVAIL with them
     expect(SAID).toEqual([`ALL AVAIL added to ${TITLE} — not counted for OIL`])
     expect(paid()).toEqual([])
   })
-  it('a named person put beside ALL AVAIL follows the input\'s one answer, and leaves its crowd', async () => {
+  it('a named person put beside ALL AVAIL follows the input\'s one answer, and leaves its crowd (OR12)', async () => {
     oilOn(); await boot(); setBoardDay(SAT)
     file(['allavail'], SAT, YES)
     expect(oilEvidence(SAT).sent[item()]).toEqual(['bane', 'stiff', 'plasma'])
@@ -336,7 +336,7 @@ describe('OIL: one answer for everyone in it, the men behind ALL AVAIL with them
     expect(paid()).toEqual(['bane', 'plasma', 'stiff'])
     expect(pops.OILASK, 'the input is answered: no question is asked').toBeFalsy()
   })
-  it('T17 — a crowd man switched off, ALL AVAIL taken off and dropped back: he is on again (a new holding)', async () => {
+  it('T17 — a crowd man switched off, ALL AVAIL taken off and dropped back: he is on again (a new holding) (OR13)', async () => {
     oilOn(); await boot(); setBoardDay(SAT)
     file(['bane', 'allavail'], SAT, YES)
     toggleOilPerson(SAT, 'plasma', item())
@@ -346,7 +346,7 @@ describe('OIL: one answer for everyone in it, the men behind ALL AVAIL with them
     expect(rowPut(`${rowKey(SAT)}.+`, 'allavail')).toBe('done')
     expect(paid(), 'the switch made under the old holding does not come back').toEqual(['bane', 'plasma', 'stiff'])
   })
-  it('…and a NAMED person leaving does not touch the crowd\'s switches (D750, D757 step 4)', async () => {
+  it('…and a NAMED person leaving does not touch the crowd\'s switches (D750, D757 step 4) (OR13)', async () => {
     oilOn(); await boot(); setBoardDay(SAT)
     file(['bane', 'pike', 'allavail'], SAT, YES)
     toggleOilPerson(SAT, 'plasma', item())
@@ -355,7 +355,7 @@ describe('OIL: one answer for everyone in it, the men behind ALL AVAIL with them
   })
 })
 
-describe('HOW MANY an input holds, in words — ALL AVAIL is nobody to count (D702; found by the look at step 3, 12 Oct 26)', () => {
+describe('HOW MANY an input holds, in words — ALL AVAIL is nobody to count (D702; found by the look at step 3, 12 Oct 26) (OR14)', () => {
   /* the note after a filing read "Input added for 3 people" for two people and ALL AVAIL. The window's sentences — added,
      deleted, "delete for all…?", "it stays for the other…", "date changes apply to…" — count the PEOPLE and say the
      placeholder beside them, as the month's bar and the calendar's own delete question do (inputscal-model everyoneIn) */
@@ -376,7 +376,7 @@ describe('HOW MANY an input holds, in words — ALL AVAIL is nobody to count (D7
   })
 })
 
-describe('on a published day ALL AVAIL put in or taken out is ONE change waiting — the men behind it ride on it (D736, D109; the plan §4.8, T16)', () => {
+describe('on a published day ALL AVAIL put in or taken out is ONE change waiting — the men behind it ride on it (D736, D109; the plan §4.8, T16) (OR55)', () => {
   const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
   const publish = (di: number) => { sign(di); commitSetDayApproved(di, true) }
   /* THE count — and every reader of it agrees */
@@ -439,7 +439,7 @@ describe('on a published day ALL AVAIL put in or taken out is ONE change waiting
      was not. Two inputs change, and it is still one act: one line, naming where he came from and where he went. */
   for (const di of [WED, SAT]) for (const who of ['split', 'allavail']) {
     const day = di === SAT ? 'a Saturday that earns' : 'a weekday'
-    it(`${day}: ${who === 'allavail' ? 'ALL AVAIL' : 'a person'} dragged from one input's row to another's is ONE change waiting, said as a move; Undo — nothing (D109)`, async () => {
+    it(`${day}: ${who === 'allavail' ? 'ALL AVAIL' : 'a person'} dragged from one input's row to another's is ONE change waiting, said as a move; Undo — nothing (D109) (OR54)`, async () => {
       oilOn(); await boot(); setBoardDay(di)
       file(['pike', who], di, di === SAT ? YES : undefined)
       expect(commitInput(null, DRAFT(di, { title: 'Second brief' }), ['rocky'], di === SAT ? { oil: YES } : undefined)).toBe(true)
@@ -453,7 +453,7 @@ describe('on a published day ALL AVAIL put in or taken out is ONE change waiting
       expect(waiting(di)).toBe(0)
     })
   }
-  it('…but one person taken out of one input and ANOTHER put into a second is two acts — 2', async () => {
+  it('…but one person taken out of one input and ANOTHER put into a second is two acts — 2 (OR54)', async () => {
     oilOn(); await boot(); setBoardDay(WED)
     file(['pike', 'split'], WED)
     expect(commitInput(null, DRAFT(WED, { title: 'Second brief' }), ['rocky'])).toBe(true)
@@ -513,7 +513,7 @@ describe('T1 — HIS TWO ROUTES END THE SAME (owner, 11 Oct 26; D755 reading (a)
     route()
     return snapshot(SAT)
   }
-  it('filed for ALL AVAIL — and filed for Ranger, ALL AVAIL dropped on its row, Ranger dragged off: the same input, row, card, bar, OIL claim and crowd', async () => {
+  it('filed for ALL AVAIL — and filed for Ranger, ALL AVAIL dropped on its row, Ranger dragged off: the same input, row, card, bar, OIL claim and crowd (OR5)', async () => {
     const a = await run(route1, false), b = await run(route2, false)
     expect(a.input.people).toEqual(['allavail'])
     expect(b).toEqual(a)

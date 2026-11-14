@@ -52,7 +52,7 @@ afterEach(() => { HOOKS.toast = toast; INPUTS.splice(0, INPUTS.length, ...JSON.p
 /* (the subject is gone — step 6: these four asked `entriesOf`, `entryRowsOf`, `entryLines`. Said now of the live readers.) */
 describe('every record is its own input (D756; the plan §5 step 2 (g))', () => {
   /* was: "a list of inputs is the list of entries, one a record, in the order the list holds them" */
-  it('a list of inputs is the list of inputs — three records are three inputs, in the order the list holds them, each with its own people', () => {
+  it('a list of inputs is the list of inputs — three records are three inputs, in the order the list holds them, each with its own people (OR4)', () => {
     const a = rec(['bane']), b = rec(['stiff', 'rocky', 'casper']), c = old('rocky')
     expect([a, b, c].map(idsOf)).toEqual([['bane'], ['stiff', 'rocky', 'casper'], ['rocky']])
     expect(inputLines([a, b, c]).map((l: any) => [l.iid, l.person]), 'one line a named person — each still naming ITS record, in the list\'s order')
@@ -83,7 +83,7 @@ describe('every record is its own input (D756; the plan §5 step 2 (g))', () => 
 
 describe('a record stored before the build with a group id reads as a one-person input (D759 reading 10; D56)', () => {
   /* OLD DATA, kept as a legacy case (was asked of `entriesOf`: "four entries … es.map(e => e.grp) all null") */
-  it('four records of one old group: four inputs, each one man\'s own — the group id joins nothing', () => {
+  it('four records of one old group: four inputs, each one man\'s own — the group id joins nothing (OR2)', () => {
     const rows = [old('stiff', G), old('bane', G), old('casper', G), old('rocky', G)]
     expect(rows.map(idsOf), 'was ONE entry of four until the build').toEqual([['stiff'], ['bane'], ['casper'], ['rocky']])
     expect(rows.map(r => facesOf(r).map((f: any) => [f.person, f.several])), 'each draws its one man, and none says it holds several').toEqual([[['stiff', false]], [['bane', false]], [['casper', false]], [['rocky', false]]])
@@ -108,7 +108,7 @@ describe('a record stored before the build with a group id reads as a one-person
 
 describe('what one record may hold is refused at the save boundary (shapeProblem; the plan §4.1 — D655 reading 4)', () => {
   const live = (iid: string) => INPUTS.find((r: any) => r.iid === iid) as any
-  it('a person twice, nobody, two people on a medical entry or an upchit: refused whole, each with its sentence', () => {
+  it('a person twice, nobody, two people on a medical entry or an upchit: refused whole, each with its sentence (OR3)', () => {
     for (const [bad, sentence] of [
       [rec(['bane', 'rocky', 'bane']), /Ranger is already on this input/],
       [rec([]), /An input needs at least one person/],

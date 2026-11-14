@@ -135,7 +135,7 @@ afterEach(() => {
   _resetTimeline(); vi.useRealTimers(); resetWorld(); setSession(null); setMe(DEFAULT_ME); storeBackend.impl = null; document.body.innerHTML = ''
 })
 
-describe('a CX on a row that came from an input cancels THE INPUT (D760)', () => {
+describe('a CX on a row that came from an input cancels THE INPUT (D760) (OR30)', () => {
   it('the board\'s CX: the input carries it with its reason, the row is the copy of it, and one Undo takes both back', async () => {
     await boot()
     file(['bane', 'pike'])
@@ -192,7 +192,7 @@ describe('a CX on a row that came from an input cancels THE INPUT (D760)', () =>
   })
 })
 
-describe('the marks go where the input goes, and stay with it (D760 — D468 as changed)', () => {
+describe('the marks go where the input goes, and stay with it (D760 — D468 as changed) (OR31)', () => {
   it('a cancelled, red-boxed input moved to another day arrives there cancelled, with its reason — nothing stays behind', async () => {
     await boot()
     file(['bane', 'pike'])
@@ -211,7 +211,7 @@ describe('the marks go where the input goes, and stay with it (D760 — D468 as 
     schedWrite(SCHED_TYPES.mutate, () => { expect(acceptInput(WED, rec(), 'g')).toBe(true); view.afterSchedMutate() })
     expect(marks(rowOf())).toEqual({ cx: true, cxr: 'WX', flag: false, info: true })
   })
-  it('a row made before the build is re-made once: a mark a scheduler had put on the ROW alone comes off, the input never carried it (R6\'s twin)', async () => {
+  it('a row made before the build is re-made once: a mark a scheduler had put on the ROW alone comes off, the input never carried it (R6\'s twin) (OR6)', async () => {
     await boot()
     file(['bane'])
     const r = rowOf()
@@ -230,7 +230,7 @@ describe('the marks go where the input goes, and stay with it (D760 — D468 as 
   })
 })
 
-describe('only a scheduler sets them (D760 reading 2)', () => {
+describe('only a scheduler sets them (D760 reading 2) (OR32)', () => {
   it('a member\'s press does nothing, and a member\'s command that changes a mark on his own input is refused at the save', async () => {
     await boot()
     member('bane'); file(['bane'])
@@ -256,7 +256,7 @@ describe('only a scheduler sets them (D760 reading 2)', () => {
   })
 })
 
-describe('a cancelled or information-only input earns nobody OIL and is not checked against the rules (D760 reading 1)', () => {
+describe('a cancelled or information-only input earns nobody OIL and is not checked against the rules (D760 reading 1) (OR33)', () => {
   it('OIL: nobody in it earns while it is cancelled — the men behind ALL AVAIL neither — and all earn again when it is brought back', async () => {
     oilOn([SAT], ['stiff', 'plasma']); await boot()
     file(['bane', 'allavail'], SAT, { [ISO[SAT] as string]: 0.5 })
@@ -293,7 +293,7 @@ describe('a cancelled or information-only input earns nobody OIL and is not chec
   })
 })
 
-describe('on a published day a CX on an input is ONE change waiting — and none once it is taken off again (D736, D98; T20, Fable F14)', () => {
+describe('on a published day a CX on an input is ONE change waiting — and none once it is taken off again (D736, D98; T20, Fable F14) (OR34)', () => {
   for (const di of [WED, SAT]) {
     const day = di === SAT ? 'a Saturday that earns' : 'a weekday'
     it(`${day}: cancel — 1; bring back — nothing waiting, though the record now says cx:false where it said nothing`, async () => {
@@ -328,7 +328,7 @@ describe('on a published day a CX on an input is ONE change waiting — and none
       expect(waiting(di)).toBe(0)
     })
   }
-  it('a CX on a two-day input reads as a change waiting on EVERY published day it covers (the plan\'s R10)', async () => {
+  it('a CX on a two-day input reads as a change waiting on EVERY published day it covers (the plan\'s R10) (OR34)', async () => {
     await boot()
     file(['bane'], WED, undefined, { end: ISO[THU] })
     publish(WED); publish(THU)

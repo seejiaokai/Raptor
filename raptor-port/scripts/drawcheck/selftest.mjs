@@ -4,11 +4,11 @@
 // A check that stops catching one of these would pass every build in silence — this is what proves it still sees.
 import { compare } from './compare.mjs'
 
-console.log('[drawcheck selftest v1]')
+console.log('[drawcheck selftest v2]')
 const look = (o = {}) => ({ fill: 'rgba(0, 0, 0, 0)', image: '', edge: Array(4).fill('0px none rgb(0, 0, 0)'), corners: ['0px', '0px', '0px', '0px'], shadow: 'none',
   color: 'rgb(241, 244, 247)', align: 'start', justify: 'normal', font: '400 13px', spacing: 'normal', ...o })
 const part = (box, o = {}) => ({ found: true, box: { x: 0, y: 0, w: 100, h: 20, ...box }, ink: o.ink === undefined ? { x: (box.x ?? 0) + 4, y: (box.y ?? 0) + 3, w: 40, h: 14 } : o.ink,
-  text: o.text ?? 'Ranger', typed: !!o.typed, look: look(o.look) })
+  text: o.text ?? 'Ranger', typed: !!o.typed, marked: !!o.marked, look: look(o.look) })
 const cases = [
   // must differ — M5a's seven, by kind
   { name: 'A: the window 136px lower', want: ['place'], p: { check: ['place', 'width'] }, D: part({ x: 948, y: 64, w: 560 }), B: part({ x: 948, y: 200, w: 560 }) },
@@ -33,6 +33,21 @@ const cases = [
   { name: 'an edge of no width in two colours', want: [], p: { check: ['edge'] }, D: part({}, { look: { edge: Array(4).fill('0px solid rgb(1, 2, 3)') } }), B: part({}) },
   { name: 'a whole row moved down the page, its parts judged inside it', want: [], p: { check: ['place'], rel: 'row' },
     D: part({ x: 20, y: 456 }), B: part({ x: 20, y: 462 }), Drel: part({ x: 0, y: 436 }), Brel: part({ x: 0, y: 442 }) },
+  // the drawing's own marker ring (#ff2d95) is its pointer, not its design — on a part the drawing MARKED (skill note
+  // 742, [DRAW-MARK-HELPER]; the measure's `marked`, or the spec part's `marked: true` for a drawing made before it)
+  { name: 'M5b\'s heading: an inline pink ring on a part the drawing marked', want: [], p: { check: ['shadow', 'edge'] },
+    D: part({}, { marked: true, look: { shadow: 'rgb(255, 45, 149) 0px 0px 0px 2px inset' } }), B: part({}) },
+  { name: 'a pink marker edge drawn round a marked part, the build with none', want: [], p: { check: ['edge'] },
+    D: part({}, { marked: true, look: { edge: Array(4).fill('2px solid rgb(255, 45, 149)') } }), B: part({}) },
+  { name: 'an older drawing\'s inline ring, its part flagged `marked` in the spec', want: [], p: { check: ['shadow'], marked: true },
+    D: part({}, { look: { shadow: 'rgb(255, 45, 149) 0px 0px 0px 2px inset' } }), B: part({}) },
+  { name: 'a real dark shadow under the marker ring, the build with none — the shadow still counts', want: ['shadow'], p: { check: ['shadow'] },
+    D: part({}, { marked: true, look: { shadow: 'rgb(255, 45, 149) 0px 0px 0px 2px inset, rgba(0, 0, 0, 0.4) 0px 4px 12px 0px' } }), B: part({}) },
+  // the fix round (14 Nov 26): an ordinary pink in a drawing is design — a part nobody marked is checked as any other
+  { name: 'an ordinary pink border and shadow on a part NOT marked, the build with neither — both count', want: ['shadow', 'edge'], p: { check: ['shadow', 'edge'] },
+    D: part({}, { look: { shadow: 'rgb(255, 45, 149) 0px 0px 0px 2px', edge: Array(4).fill('2px solid rgb(250, 50, 150)') } }), B: part({}) },
+  { name: 'a pink ring the BUILD wears is a difference (only the drawing\'s marker is excused)', want: ['shadow', 'edge'], p: { check: ['shadow', 'edge'] },
+    D: part({}), B: part({}, { look: { shadow: 'rgb(255, 45, 149) 0px 0px 0px 2px', edge: ['2px solid rgb(255, 45, 149)', '0px none rgb(0, 0, 0)', '0px none rgb(0, 0, 0)', '0px none rgb(0, 0, 0)'] } }) },
 ]
 let bad = 0
 for (const c of cases) {

@@ -80,7 +80,7 @@ beforeEach(() => {
 afterEach(() => { HOOKS.toast = toast; _resetTimeline(); resetSession(null) })
 
 describe('one input, one record — filed in one command (D756; the plan §4.1, §4.4)', () => {
-  it('six people: ONE record holding the six in the order picked, each put in by the filer — one command, one Undo, Redo', () => {
+  it('six people: ONE record holding the six in the order picked, each put in by the filer — one command, one Undo, Redo (OR1) (OR4)', () => {
     const n = cmds(), t = T(9)
     expect(commitInput(null, D(), SIX)).toBe(true)
     expect(cmds() - n, 'ONE command').toBe(1)
@@ -97,7 +97,7 @@ describe('one input, one record — filed in one command (D756; the plan §4.1, 
     expect(globalRedo().ok).toBe(true)
     expect(copy(the()), 'and Redo puts it back as recorded').toEqual(was)
   })
-  it('one person is an input of one — a name given twice is one person, nobody is nothing', () => {
+  it('one person is an input of one — a name given twice is one person, nobody is nothing (OR1)', () => {
     expect(commitInput(null, D(), ['rocky', 'rocky'])).toBe(true)
     const r = the()
     expect(idsOf(r)).toEqual(['rocky'])
@@ -138,7 +138,7 @@ describe('one input, one record — filed in one command (D756; the plan §4.1, 
     expect(idsOf(the())).toEqual(['bane', 'rocky', 'casper'])
     expect(feb()).toHaveLength(1)
   })
-  it('ONE OIL answer on the record, for everyone in it (D762)', () => {
+  it('ONE OIL answer on the record, for everyone in it (D762) (OR15)', () => {
     expect(commitInput(null, D({ start: SAT }), ['bane', 'rocky'], { oil: { [SAT]: 0.5 } })).toBe(true)
     const r = the()
     expect(r.oil).toEqual({ [SAT]: 0.5 })
@@ -150,7 +150,7 @@ describe('what one record may hold is held at the inputs door (the plan §4.1)',
   const rec = (people: string[], over: any = {}) => ({ iid: 'zz1', type: 'Meeting', date: 'Feb 10', yr: 2026, allday: false, s: 540, e: 600, remarks: '', mod: '2026-01-15',
     by: 'stiff', at: 1, people: people.map(p => ({ p, by: 'stiff', at: 1 })), ...over })
   /* (two people on a Personal input were refused here too until D776, 12 Oct 26 — it is the last line's control now) */
-  it('a person twice, nobody, two people on a medical entry: refused whole, with the sentence', () => {
+  it('a person twice, nobody, two people on a medical entry: refused whole, with the sentence (OR3)', () => {
     for (const bad of [rec(['bane', 'bane']), rec([]), rec(['bane', 'rocky'], { type: 'OML', allday: true })]) {
       said = []
       expect(writeInputs(() => { INPUTS.unshift(bad) }), JSON.stringify(idsOf(bad)) + bad.type).toBe(false)
@@ -192,7 +192,7 @@ describe('who may change the one record (the plan §4.9 — Fable F4, F5; D655, 
     expect(globalUndo().ok, 'his own step').toBe(true)
     expect(feb()).toHaveLength(0)
   })
-  it('the man himself — the ONLY person of an input an admin filed for him — may change and delete it (F4)', () => {
+  it('the man himself — the ONLY person of an input an admin filed for him — may change and delete it (F4) (OR21)', () => {
     expect(commitInput(null, D(), ['bane'])).toBe(true)
     ranger()
     const r = the()
@@ -205,7 +205,7 @@ describe('who may change the one record (the plan §4.9 — Fable F4, F5; D655, 
      it, or a scheduler, does." NO TEST HELD THIS until the job's check (the records helper's register pass, 12 Oct 26:
      the four cases of ui/placeholderdoors.test.tsx on "a member beside ALL AVAIL" were written before he ruled and pass
      EITHER way). Broken on purpose — `onlyNamed` made to ignore the placeholder — this case goes red. */
-  it('the only NAMED person beside ALL AVAIL does not change it for everyone — he reads it and may take himself out (D770)', () => {
+  it('the only NAMED person beside ALL AVAIL does not change it for everyone — he reads it and may take himself out (D770) (OR29)', () => {
     expect(commitInput(null, D({ type: 'Duty', start: SAT }), ['bane', 'allavail'], { oil: { [SAT]: 0.5 } })).toBe(true)
     ranger()
     const r = the('Duty'), was = copy(r)
@@ -226,7 +226,7 @@ describe('who may change the one record (the plan §4.9 — Fable F4, F5; D655, 
      Undo of an input that has a row on the loaded week is REFUSED (the gate reads the row's landing mark as a change —
      state/perms.ts saysSame). Shown, left failing, in ui/bellnotices-scenarios.test.tsx "FAULT: …the same Undo where the
      input has a row on the week ON SCREEN". */
-  it('a man IN a shared input he did not file takes himself out — and his own Undo puts him back (F5, T14); the others are told, and untold, with it (D755 (3), R11)', () => {
+  it('a man IN a shared input he did not file takes himself out — and his own Undo puts him back (F5, T14); the others are told, and untold, with it (D755 (3), R11) (OR23)', () => {
     expect(commitInput(null, D(), ['bane', 'rocky', 'casper'])).toBe(true)
     hex()
     const r = the(), was = copy(r)
@@ -267,7 +267,7 @@ describe('the bell\'s OIL question goes to whoever answers for the input (D762, 
     expect(oilPendingFor('bane').map(x => x.iid)).toEqual([r.iid])
     expect(oilPendingFor('stiff').map(x => x.iid)).toEqual([])
   })
-  it('an input of several asks its FILER, and none of the people in it', () => {
+  it('an input of several asks its FILER, and none of the people in it (OR18)', () => {
     ranger()
     expect(commitInput(null, D({ start: SAT, type: 'Duty' }), ['rocky', 'casper'])).toBe(true)
     const r = the('Duty')

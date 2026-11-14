@@ -295,7 +295,7 @@ describe('an input already filed, read by a member', () => {
      input changes it in full — "its fields, its people, its OIL answer" — whoever filed it; D763 reading 2: "the one
      person of a one-person input may always change it … that is his own request"). The input of several he makes of
      it is HIS filing — who filed it passes to him in the same save — so he can go on changing who is in it. */
-  it('the only person of an input an admin filed for him adds a man: saved, the same record holds both, and it is his to go on changing (D763)', async () => {
+  it('the only person of an input an admin filed for him adds a man: saved, the same record holds both, and it is his to go on changing (D763) (OR25)', async () => {
     const r = await single({ person: member, by: admin, at: T0 })
     const b = others()[0]
     await as('member')
@@ -315,7 +315,7 @@ describe('an input already filed, read by a member', () => {
 })
 
 describe('who may change it', () => {
-  it('a man in it who did not file it: read only, with "Take me out" — which takes HIM out alone, the input staying (D755 (3))', async () => {
+  it('a man in it who did not file it: read only, with "Take me out" — which takes HIM out alone, the input staying (D755 (3)) (OR23)', async () => {
     const [a, b] = others()
     const g = await shared([a, member, b])
     await as('member')
@@ -370,7 +370,7 @@ describe('who may change it', () => {
   })
   /* D763: "a person who is in a shared input he did not file does not add anyone to it". His form is inert and has no
      Save; the write path refuses a hand-made call too, and says who can. */
-  it('a man in it who did not file it adds nobody — the save itself refuses, in words, and nothing changes (D763)', async () => {
+  it('a man in it who did not file it adds nobody — the save itself refuses, in words, and nothing changes (D763) (OR24)', async () => {
     const [a, b, c] = others()
     const g = await shared([a, member, b])
     await as('member')
@@ -1208,7 +1208,7 @@ describe('the schedule’s dialog on a shared input holds the ENTRY — as its w
 describe('the OIL question opened from the schedule is the INPUT’s, asked where it has no answer (D755 (1), D762 — it was "for one man alone", D744)', () => {
   const SAT = { type: 'Duty', date: 'Oct 17', yr: 2026, allday: false, s: 600, e: 660 }
   const ask = async (g: any) => { let asked = false; await act(async () => { setPage('editsched'); notify() }); await act(async () => { asked = askOilIfPending(live(g.iid), true); notify() }); return asked }
-  it('nobody has answered: the question is up at once, headed for everyone in it; Yes is the input’s one answer; the dialog has closed', async () => {
+  it('nobody has answered: the question is up at once, headed for everyone in it; Yes is the input’s one answer; the dialog has closed (OR19)', async () => {
     const g = await shared(others().slice(0, 3), SAT)
     expect(await ask(g)).toBe(true)
     expect(tid('oilconf'), 'the question is up at once').toBeTruthy()
@@ -1220,7 +1220,7 @@ describe('the OIL question opened from the schedule is the INPUT’s, asked wher
     expect(inIt(g.iid)).toEqual(g.people)
     expect($('#inpEditPop')!.hidden, 'the dialog closed with the answer').toBe(true)
   })
-  it('the question closed without an answer: the input is left unanswered, for its filer’s bell — and the dialog closes too', async () => {
+  it('the question closed without an answer: the input is left unanswered, for its filer’s bell — and the dialog closes too (OR19)', async () => {
     const g = await shared(others().slice(0, 3), SAT)
     expect(await ask(g)).toBe(true)
     await click($('[data-testid="oilconf"] .airpop-head .x'))
