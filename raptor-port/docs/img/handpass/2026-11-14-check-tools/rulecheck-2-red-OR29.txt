@@ -1,0 +1,13 @@
+
+> raptor-port@0.0.0 rulecheck
+> node scripts/rulecheck.mjs
+
+rulecheck: 863 test files, 333 rulings
+  named by a test : 300
+  named by nothing: 33 (Q9, Q11, Q12, Q15, OIL19, OIL26, AM7, AM8, AM15, AM17, AM25, AM26, AM27, AM30, AM36, AM37, AM39, AM44, AM45, AM48, AM48a, AM49, AM49b, AM50, AM51b, AM51c, AM51d, AM51e, AM51f, AM51g, AM55, OR20, OR29)
+
+FAIL — 1 ruling(s) no test names, and not in the baseline:
+
+  OR29 — the only named person beside ALL AVAIL / ALL reads it and may take himself out, never changes it (D770)
+
+Name the rule in a test ("... (OR29)"), or add it to BASELINE with a reason.
