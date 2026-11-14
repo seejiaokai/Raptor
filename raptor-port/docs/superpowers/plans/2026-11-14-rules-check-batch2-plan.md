@@ -15,6 +15,31 @@ step 3, chats A and B). **Merge nothing until his "merge live".**
 | 4 | D2014 | A published day's OIL keeps the "Full day of OIL" it was published under: changing it on the Logic page no longer makes a published earning day read "1 pending" or drop its four sign-offs by itself; the new value reaches the day from its next amendment | below |
 | 5 | D2024 | The project guide's "no rule versioning" line corrected | `raptor-port/CLAUDE.md` §Product invariants (~line 233) and its full text in `raptor-port/docs/guide-full.md` (search "rule versioning"). Since D2005 each published version keeps every Logic setting its checks read; since part 4, its OIL's full-day line too. A working-guide change: read by Astra and a fresh, blind Opus reader, each blind to the other, while he is awake, before his "merge live" (D2024, D1761, D1770). Also the comment in `src/engine/rules.ts` ~100 and `faceattrs.ts` `KEPT_RULE_KEYS`' comment, which call the OIL threshold "a question waiting for the owner". |
 
+## Status after the red team (chat 77, 14 Nov 26) — part 4 BLOCKED on a question for him
+
+Both readers, blind to each other, said BLOCKED (`../briefs/2026-11-14-rules-check-batch2-part4-redteam-log.md`): the
+design below drops the pending mark and keeps the sign-offs for a "Full day of OIL"-only change, but D2014's own row
+sends "whether the day then reads pending" back to D592, and D592 (4), reading (8), says it does read pending. D2014's
+premise ("today that day's OIL changes at once") was untrue: the published OIL has kept its full-day line since 6 Oct
+(`oilworkstart-published.test.ts`); only the pending mark, the fall of the four sign-offs and the working copy's OIL Earn
+figure come at once. So the plan's "D2014 overrides D592" is not a clash settled by date (D90) but a new choice, his.
+
+**The corrected question, one for all three OIL values (report lead / default rally, debrief, full day), with a worked
+Saturday and pictures of the real app (D853, D921):** A — as built (D592): a change of any of the three makes a
+published earning weekend read "1 pending" and drops its four sign-offs; the OIL already credited stays until the day is
+published again; part 4 becomes records only (D2014's row's premise corrected, the comments that call the threshold an open
+question). B — none of the three reads pending by itself; the new value reaches the day with its next amendment, as the
+checks' settings do (D2005). **Recommended A:** the published OIL is already right; the pending mark tells the admin a
+change is due and lets him choose when; it is how the printed brief lead behaves (D186); B is a risky build in the
+publishing code — each reader found two more blocking holes in it (the pending count's second path; a withdrawn
+amendment republished with nothing else changed, `publishALDay`'s `correcting`) — for a quieter screen. If he picks B,
+the design below is rebuilt from both reports' findings 2–6 first (one `oilNextVals` read by every reader). The earlier
+question under "A question for him" is folded into this one.
+
+**What goes on meanwhile:** parts 1 and 2 BUILT (commit `8c3afe200`, red-first, `src/engine/rulescheck-batch2.test.ts`).
+Part 5 can be written either way (the OIL block has kept its three values since D592 — say so, not "since part 4"). Part 3's
+words wait on his answer. The FULL check runs once part 4 is settled (built, or records only).
+
 ## Part 4, how it works today and the design (the agent's technical call)
 
 **Today (read 14 Nov 26):** each published earning day's frozen OIL block keeps three Logic values, `rv` = report lead,
