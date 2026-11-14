@@ -40,7 +40,7 @@ import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
-import { setDaysWin, setDocView, setInpEdit, setOilAsk, setOilList } from '../ui/pops'
+import { DAYSWIN, setDaysWin, setDocView, setInpEdit, setOilAsk, setOilList } from '../ui/pops'
 import { puck } from '../ui/html'
 import type { DayWhatIf } from './engine/whatif'
 import { lwSyncTurn } from './state/store'
@@ -3300,6 +3300,13 @@ export function openDays(iso: string): void {
   setDaysWin(iso)
   raptorNotify()
 }
+
+/* …AND WHETHER IT IS UP, read back the same way ([LW-DOUBLETAP-MORE-WINDOWS], the fix brief of 15 Nov 26, item 3): on a
+   phone with the page scrolled, its ✕ stands over the war's pinned dates, so its going is handed to the grid's double-tap
+   guard (LeaveWarPage.tsx). The open-flag only — still no scheduler screen. */
+const daysWinUp = () => DAYSWIN !== null
+/** whether the scheduler's Calendar window (the "Calendar…" line in the war's ⚙) is up */
+export function useDaysWinUp(): boolean { return useSyncExternalStore(raptorSubscribe, daysWinUp, daysWinUp) }
 
 /** THE WAR'S DOOR TO AN INPUT'S OWN WINDOW — the clash note's "Change the leave on Inputs" ([LW-CLASH-NOTE-PHONE], owner
  *  D827, 13 Oct 26: a tap opens "the leave's own window on the Inputs page"). The day's sheet has no control for leave

@@ -11,8 +11,20 @@ import { useEffect, useRef } from 'react'
    by a press inside it (a tap beside it, on the grid, is the grid's own — the built guard's N1): every Leave War window
    is a `.bidsheet` (Sheet.tsx — the Required panel and rename form, New period and Open for bidding among them); the
    event box is its own small box (`.evpeek`); the day panel the app's movable window (`.lwday`); the Required number pad
-   (`.flypad`); the under-manned days list (`.umlist`); the move banners (`.mv-banner`). */
-export const WINDOW_PRESS = '.bidsheet, .evpeek, .lwday, .flypad, .umlist, .mv-banner'
+   (`.flypad`); the under-manned days list (`.umlist`); the move banners (`.mv-banner`); the slim "Back to Approvals" bar
+   (`.appr-slim`) and the scheduler's Calendar window, opened from ⚙ (`.dayswin`) — the two blind reads of 15 Nov 26. */
+export const WINDOW_PRESS = '.bidsheet, .evpeek, .lwday, .flypad, .umlist, .mv-banner, .appr-slim, .dayswin'
+
+/* THE LAST KEY PRESSED, heard on the WINDOW's capture from the moment this file loads (Astra's F1, 15 Nov 26). A window
+   closed by a key leaves no press to guard (the built guard's N2), and `Matrix` forgot the press on a key — but its
+   listener was on the document, and the number pad's Escape (FlyEdit.tsx, the window's capture) stops the key before the
+   document hears it: the pad's going then armed the guard at the digit a finger had pressed, and a deliberate tap there
+   was eaten. Every Leave War window's own key listener is added later than this one (when it opens), so none can stop it
+   first. */
+let keyAt = -Infinity
+if (typeof window !== 'undefined') window.addEventListener('keydown', () => { keyAt = performance.now() }, true)
+/** a key went down at or after `t` (the `performance.now()` of a press's release): that press closed nothing since */
+export function keySince(t: number): boolean { return keyAt >= t }
 
 let arm: (() => void) | null = null
 /** `Matrix` only: the guard to arm, or null once the grid is gone (nothing then to guard) */

@@ -53,7 +53,7 @@ import { DayListSheet } from './DayList'
 import { PersonRow, type RowApi } from './MatrixRows'
 import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, type QualPill, type RowDragCfg, freeHalfBeside, inputsFilledDay, nameLines, ownAwardAlone, setPhWidth } from './matrixrowparts'
 import { rowInWindow } from './rowinwindow'
-import { setGridGuard, useGuardOnClose, WINDOW_PRESS } from './gridguard'
+import { keySince, setGridGuard, useGuardOnClose, WINDOW_PRESS } from './gridguard'
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
 import { warInputs, type WarInput } from '../absences'
 import { ReorderIcon } from '../../ui/icons'
@@ -1551,7 +1551,9 @@ export function Matrix() {
        inside a window armed the guard at a stale place, eating a tap he meant. A close follows its press within a frame;
        1000 ms is slack for a slow phone. The time counts from the press's RELEASE (`pointerup`, below), so a ✕ held a
        second and then let go still counts. */
-    if (second && !(from?.inWin && performance.now() - from.t < 1000)) return
+    /* …AND NO KEY SINCE IT: a key that closed the window, even one a window's own listener stopped before this file's
+       listener heard it (gridguard.ts `keySince` — Astra's F1 of 15 Nov 26) */
+    if (second && !(from?.inWin && performance.now() - from.t < 1000 && !keySince(from.t))) return
     const swallow = (e: Event) => {
       if (!(e instanceof MouseEvent) || e.detail <= 0 || !(e.target instanceof Element) || !e.target.closest('.mx') || e.target.closest('.mstripe')) return
       if (from) {

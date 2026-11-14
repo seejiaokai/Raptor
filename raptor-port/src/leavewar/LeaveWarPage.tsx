@@ -39,6 +39,8 @@ import { ApprovalsPage, SlimBar } from './ui/ApprovalsPage'
 import { apprMode, lwNavVersion, lwPage, setApprMode, setBalancesUp, subscribeLwNav, takeRingAsk } from './ui/lwnav'
 import { BalancesPage } from './ui/BalancesPage'
 import { ringCell } from './ui/cellring'
+import { useGuardOnClose } from './ui/gridguard'
+import { useDaysWinUp } from './sync'
 
 /* The RENDER FIREWALL that makes staying mounted affordable. Every Raptor
    notify re-renders the Shell, and a plain child here would make React
@@ -78,6 +80,12 @@ function Body() {
   const mode = useSyncExternalStore(subscribeLwNav, apprMode, apprMode)
   const page = useSyncExternalStore(subscribeLwNav, lwPage, lwPage)
   useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
+  /* TWO MORE WINDOWS OVER THE GRID, handed to its double-tap guard (gridguard.ts — the two blind reads of 15 Nov 26):
+     the slim "Back to Approvals" bar at the screen's foot (its ✕; "Back ▴" arms it too, harmlessly — the grid is then
+     hidden behind Approvals) and the scheduler's Calendar window from ⚙ (its ✕, over the pinned dates once the page is
+     scrolled). Here, not in `SlimBar` or the window: a window that unmounts never reports its going. */
+  const daysUp = useDaysWinUp()
+  useGuardOnClose((mode === 'bar' ? 1 : 0) | (daysUp ? 2 : 0))
   const apprY = useRef(0), was = useRef(page)
   useEffect(() => {
     const from = was.current
