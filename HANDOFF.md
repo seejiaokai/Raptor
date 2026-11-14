@@ -20,6 +20,17 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/lw-doubletap-more -->
+### CHAT 81 — THE NIGHT OF 15 Nov 26, job 3: `[LW-DOUBLETAP-MORE-WINDOWS]` — IN PROGRESS — written 15 Nov 26 ~04:05 — verify before use
+- **After a compaction:** re-read this block, the night's main block (on `claude/rules-check-batch2`, `HANDOFF.md` chat 81), job 2's block (on `claude/topbar-chrome-trial`), the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction with its time, read from the clock (`date`).
+- **The night:** his `/overnight 12`, "Low go" for jobs 1–3 (01:41). Job 1 (pull request 779) DONE — its FULL check closed. Job 2 (the Chrome top-bar trial link, pull request 780) built, read and fixed; GitHub's run of its last push to be read before the morning report. This is job 3, the last.
+- **What it is:** the Leave War's double-tap guard (built 11 Nov 26 for the one-day and drag windows, widened the same night to eight more) does not see six more windows go, because their open state lives outside the grid's own file: the Required rows' selection panel, rename form, figure editor and phone number pad; the day-details panel; the under-manned days list; the move banners' Confirm and Cancel; New period (where a grid lies beneath); Open for bidding on a desktop or tablet. A fast second tap after their closing press can reach the grid. **To build:** one small shared door those windows call to arm the same guard, their presses counted as inside a window; tests first. Nothing a person sees changes. The item's "also found" (1) — a double tap on the event box's Edit, a window just opened closing at once — stays filed; (2) and (3) stay filed.
+- **Branch:** `claude/lw-doubletap-more`, from `main` at `9cc49fcca`. Pull request: to be opened once built. **Helper:** one fresh Opus builder, in the background, brief `raptor-port/docs/superpowers/briefs/2026-11-15-lw-doubletap-more-builder-brief.md`.
+- **Check:** WALK (a change in how a tap on the Leave War is taken, on a phone): a Sonnet walker on a phone by touch, each window × each way of closing, then a plain-user round of the Leave War; reads Astra + a fresh, blind Opus reader (blind to each other and the walk); fixes red first by the same builder; re-walk of what the fixes touch; evidence sheet; the walk-ledger row.
+- **Parked for him:** none yet.
+- **Questions waiting for him:** see the night's main block (Q1–Q4, job 1); job 2's try with `?barprobe`.
+- **Rulings:** none this chat · **Next chat number:** 82 (D1744)
+<!-- /now -->
 <!-- now:claude/rules-check-fixes -->
 ### CHAT 75 — pull request 762 (the rules check's fixes, D2005) brought level with `main` after the batch of four, then MERGED AND LIVE 14 Nov 26 on his "merge live" — written 14 Nov 26 — verify before use
 - **Where it started:** chat 74's opening line: bring `main` in, settle the records, push, and when GitHub's run is green tell him what 762 changes and send the link; merge nothing without his "merge live". Chat 74's block (the batch of four, pull request 776, merged and live) is replaced by this one; its one open step was this.
