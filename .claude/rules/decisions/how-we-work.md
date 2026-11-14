@@ -116,6 +116,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - One tidiness audit of the code before the database step, delivered as a report for him to rule on [D486].
 - His go for the jobs the 13 Oct skill-notes review filed stands — the script guard (`[SHELL-SCRIPT-GUARD]`) among them, built with its fresh read [D811].
 - An outside skill or guide he sends is read at its source and its good practices fused into our own guides, never installed whole without his word — the article's five, the mattpocock and jakubkrehel collections, the Apple design skill and the humanizer tool so far, the fusion still with open jobs (`[SKILL-FUSION]`, `[WORD-LIST]`) [D486, D491, D812, D835]. Codex alone uses the proportional framework [D499].
+- Vercel's agent-browser is trialled later, a job of its own: read at its source, one short walk timed with it against the usual way, the difference reported to him; nothing installed or adopted without his word [D2043, D486].
 - Guides and the tools that run by themselves stay readable by any model: what runs by itself here is text in the repo, a version that is not is never taken without his word, and an update never runs the tool's own updater [D623, D625]. Impeccable stays on v4.1.1 until it moves to v4.1.3 by its vendoring note's steps, on its own branch, read as a guide change is — by Astra and a second reader — and merged on his "merge live" [D625, D1734, D1738, D1739, D1761, D1770].
 
 ## The platform and the database
