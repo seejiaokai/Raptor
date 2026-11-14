@@ -1,0 +1,22 @@
+{
+ "R": [
+  {
+   "step": "R3 the scroller",
+   "res": "RECORD",
+   "said": "DIV#.sb-boardwrap 3650/624",
+   "pics": ""
+  },
+  {
+   "step": "R3 the first line's remark now",
+   "res": "RECORD",
+   "said": "1B: BFM-6 u1",
+   "pics": ""
+  },
+  {
+   "step": "R3 undo with the row out of view",
+   "res": "RECORD",
+   "said": "scrolled to 3026; scrollTop before 3026 after 3026; the box at [-1989,-1965] then [-1989,-1965]; screen height 730; remark now \"1B: BFM-6\"",
+   "pics": ""
+  }
+ ]
+}

@@ -201,6 +201,14 @@ export function ChangesWindow() {
   const fold = (key: string, open: boolean) => { CHGFOLD.set(key, !open); notify() }
   const may = (e: Entry) => canGo(lineOf(e), jumpOf(lineOf(e), days, one ? w.day : null))
   const hm = (t: number) => elogWhen(t).split(' ')[1]
+  /* THE FOOT SAYS "TAP A CHANGE" ONLY WHERE A LINE DRAWN ON THIS TAB CAN BE TAPPED ([SCHED-MARKS-WALK-ODDS] 3 — chat 61's
+     reproduction, 10 Nov 26: it stood under "No changes this week yet.", and on "To go out" under the list's own foot,
+     which says the same — ui/pendlist.ts — or under a list of days). A line is drawn when its item was changed once, or
+     its group is open; it can be tapped when it has somewhere to go on this page (may). On "To go out" the window says
+     nothing: there the list speaks for itself. With nothing to say there is no foot at all, never an empty band. */
+  const anyGo = tab === 'out' ? false : byItems
+    ? items.some(g => (g.one || isOpen(g.key)) && g.entries.some(may))
+    : whos.some(g => isOpen(g.key) && g.lines.some((l: CLine) => may(whoEntry(l, !one, pick))))
 
   return (
     <div
@@ -299,17 +307,17 @@ export function ChangesWindow() {
         })}
       </div>
 
-      <div className="win-foot cw-foot">
-        {tab === 'new' ? (
+      {tab === 'new' ? (
+        <div className="win-foot cw-foot">
           <button className="cw-seen" disabled={!fresh.length} onClick={() => { markSeen(fresh.flatMap(l => l.rows)); notify() }}>
             ✓ Mark all as seen
           </button>
-        ) : member ? (
-          <span className="hint">Read only — every change and who made it, for everyone to see.</span>
-        ) : (
-          <span className="hint">{tab === 'out' ? 'Tap a change to go to it.' : 'Tap a change to go to it — the window stays open.'}</span>
-        )}
-      </div>
+        </div>
+      ) : member ? (
+        <div className="win-foot cw-foot"><span className="hint">Read only — every change and who made it, for everyone to see.</span></div>
+      ) : anyGo ? (
+        <div className="win-foot cw-foot"><span className="hint">Tap a change to go to it — the window stays open.</span></div>
+      ) : null}
     </div>
   )
 }

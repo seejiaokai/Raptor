@@ -2356,6 +2356,84 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Suggested improvement:** A guard, not a reminder: one project script, "check then commit", that runs the document check, prints its last lines and refuses the commit on a non-zero exit — used for every records commit; or the commit hook runs the check itself.
 **Principle:** When a check gates an action, the gate is the check's own exit code joined to the action — never two statements that happen to sit on one line.
 
+### Observation 927: A "needs no answer from him" batch was recommended from the backlog's one-line list, and most of it needed his answer
+
+**Status:** OPEN
+**Date:** 10 Nov 26
+**Session context:** chat 61 — recommending the next three jobs from the handoff and the backlog's priority list, then starting the first
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the next chat's first task — "recommend the next jobs"; the opening line a handoff writes
+
+**Issue:** The recommendation named five small faults as a batch needing no answer from the owner, read from the priority list's one line each. Opening the items after he chose it showed that two were filed as questions for him, most parts of two more must be drawn for him first, and one rested on two rulings that disagree; three small fixes were left. He had already chosen on the wrong description, and the chat was three-quarters full before the build began.
+**Suggested improvement:** In the handoff skill's opening line for a "recommend the next jobs" chat, and in the list's own "how to read it" note: before a job is recommended as needing nothing from the owner, open each item's full text and read its "to do" and "put to him" lines; say in the recommendation which parts can be built at once and which wait on him.
+**Principle:** An index line says what an item is, not what it needs; a claim about what a job requires is made from the item itself, read before the recommendation, not after the choice.
+
+### Observation 928: A new file is not read by the changed-files code check until it is staged; a wording fix on the week must be run against the word-for-word test
+
+**Status:** OPEN
+**Date:** 11 Nov 26
+**Session context:** Chat 62 — three small schedule-and-board fixes; GitHub's run of the first push came back red on two things the local checks had passed.
+**Skill:** New skill candidate: pre-push checks for a small fix (or the bug-check checklist's step 7)
+**Type:** internal
+**Phase/Area:** Before the first push of a job
+
+**Issue:** (1) `npm run lint:changed` was run while a new test file was still untracked: it read 15 changed files, not the new one, and reported no finding; GitHub's run, reading the committed file, found one. (2) A change to words the week draws (the issues bar's plural) was checked with the tests that name the bar, but not with `src/ui/html.test.ts`, which compares the whole week with the original app word for word and failed on GitHub. A search for the old words could not find that test: it holds no words, it compares everything.
+**Suggested improvement:** In the pre-push step, stage new files (`git add -A`) before `lint:changed`, and check its "N changed files" count against `git status`. For any change to markup or words drawn by the week's builder (`src/ui/html.ts`), always run `src/ui/html.test.ts` with the touched tests, and add the deliberate difference to its list in the same change. A guard would be better than a rule: `code-check.mjs` could read untracked files too.
+**Principle:** A check that reads "what changed" must be asked what it counted; a test that compares everything is found by knowing which builder it covers, never by searching for the words changed.
+
+### Observation 929: A walker's "on top" check looks through a cover that takes no presses
+
+**Status:** OPEN
+**Date:** 11 Nov 26
+**Session context:** Chat 64's night, job 1 — the re-walk of the board's Undo landing
+**Skill:** walk scripts (the project's `raptor-port/docs/walk-scripts.md`; a guide change needs the owner's word)
+**Type:** open-source
+**Phase/Area:** A walker's assertions — "the changed box is in view and nothing stands over it"
+
+**Issue:** The walker asserted "on top" by asking the page what element is at the box's middle (`elementFromPoint`). A passing note drawn over the box ignores presses (`pointer-events: none`), so the page answers with the box beneath it and the check passes while the box is hidden. 95 scenarios passed; the host found the fault only by opening the pictures.
+**Suggested improvement:** In the walk-scripts guide's list of traps: an "is it covered" check compares the box's rectangle with the rectangle of every passing note, banner or overlay that is showing at that moment, as well as asking the page what is at the point; and the settled picture is taken while the note still shows.
+**Principle:** A hit-test answers "what would take a press here", not "what does a person see here"; anything that ignores presses is invisible to it, so visual cover is checked by geometry.
+
+### Observation 930: A builder's "related tests" run missed a registry test; the remote run went red
+
+**Status:** OPEN
+**Date:** 11 Nov 26
+**Session context:** Chat 64's night, job 1 — the first fix round's push
+**Skill:** overnight (Part 2, the builder helper's brief) / shipping practice
+**Type:** open-source
+**Phase/Area:** What a builder runs before its first hand-back
+
+**Issue:** The builder ran the unit files it judged related to its change and handed back green. A guard test elsewhere (one that lists every file allowed to read a kind of record) failed on the remote run, because the new file read that record and was on no list. One remote run and a fix commit were spent on it.
+**Suggested improvement:** The builder's brief says: before the FIRST hand-back of a job, and after any change that adds a file or a new import of shared state, run the whole unit suite under the checks lock, not a hand-picked set; hand-picked sets are for iterating only.
+**Principle:** Guard tests that enumerate the codebase are by nature "unrelated" to any one change, so a related-files run can never catch them; only the whole suite does.
+
+### Observation 931: A fix brief that prescribed the mechanism carried the host's own mistake into the code
+
+**Status:** OPEN
+**Date:** 11 Nov 26
+**Session context:** Chat 64's night, job 1 — the fix brief for the readers' findings
+**Skill:** overnight / briefing a builder helper (new-skill candidate: writing a fix brief)
+**Type:** open-source
+**Phase/Area:** How a finding is handed to the builder
+
+**Issue:** For "Undo of a re-ordered row lands nowhere" the host's brief said how to fix it ("land on the first row whose place differs"). The builder built exactly that; the next reader showed it was the wrong row (a neighbour that merely shifted, not the row that moved). A fix round was spent undoing the host's wording.
+**Suggested improvement:** A fix brief states each finding as the case, the wrong result and the RIGHT RESULT in the user's terms (which row should come into view, and why), plus the test that must go red first — and leaves the mechanism to the builder, marking any suggested mechanism as a suggestion to be checked against the right result.
+**Principle:** State outcomes, not mechanisms, when delegating a fix: a prescribed mechanism is obeyed even when it is wrong, an outcome is checked.
+
+### Observation 932: Times written into a record from memory were wrong; the clock must be read
+
+**Status:** OPEN
+**Date:** 11 Nov 26
+**Session context:** Chat 64's night — writing the night's block
+**Skill:** overnight / session-handoff
+**Type:** open-source
+**Phase/Area:** Any record that carries a time
+
+**Issue:** The host wrote "01:00" and "00:55" into the night's block when the clock said 00:40; an unattended run's sense of elapsed time drifts quickly. The overnight guide already says "read from the clock" for a compaction note only.
+**Suggested improvement:** The overnight guide's step 8 and "At every commit": every time written into the block comes from `date` run in that same step, never from the agent's sense of the hour.
+**Principle:** An agent has no clock; any timestamp in a record is read, never estimated.
+
 ### Observation 933: A helper's report pulled from the transcript by a marker the coordinator's own brief also contains
 
 **Status:** OPEN

@@ -1,0 +1,136 @@
+{
+ "R": [
+  {
+   "step": "W1 pc Edit Schedule: every issues bar's \"warnings\" agrees with its count",
+   "res": "PASS",
+   "said": "[\"⚠ 17 issues · 6 warnings\",\"⚠ 4 issues · 2 warnings\",\"⚠ 7 issues · 2 warnings\",\"⚠ 6 issues · 3 warnings\",\"⚠ 1 issue\",\"⚠ 1 issue\"]",
+   "pics": ""
+  },
+  {
+   "step": "W1 pc View-only Sched: the same",
+   "res": "PASS",
+   "said": "[\"⚠ 17 issues · 6 warnings\",\"⚠ 4 issues · 2 warnings\",\"⚠ 7 issues · 2 warnings\",\"⚠ 6 issues · 3 warnings\",\"⚠ 1 issue\",\"⚠ 1 issue\"]",
+   "pics": ""
+  },
+  {
+   "step": "W1 pc no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W2 pc an untouched week: \"No changes this week yet.\" with no \"Tap a change\" under it, and no empty band",
+   "res": "PASS",
+   "said": "{\"foot\":null,\"taps\":0,\"none\":\"No changes this week yet.\",\"says\":false}",
+   "pics": ""
+  },
+  {
+   "step": "W2 pc a change that can be tapped: the foot says \"Tap a change to go to it — the window stays open.\"",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"none\":\"\",\"says\":true}",
+   "pics": ""
+  },
+  {
+   "step": "W2 pc a tap on the line: the window stays open",
+   "res": "PASS",
+   "said": "window drawn after the tap",
+   "pics": ""
+  },
+  {
+   "step": "W2 pc no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W3 pc Undo of a remark scrolled out of view: it is brought just under the board's bar",
+   "res": "PASS",
+   "said": "before: box -1989–-1965, list 106–730, scrolled 3026; after: box 114–138, scrolled 923, remark \"1B: BFM-6\"",
+   "pics": ""
+  },
+  {
+   "step": "W3 pc Redo with the remark in view: the words are back and the board has not moved",
+   "res": "PASS",
+   "said": "scrolled 923 then 923; remark \"1B: BFM-6 u1\"",
+   "pics": ""
+  },
+  {
+   "step": "W3 pc Undo from Tuesday's board: Monday comes up with the changed remark in view",
+   "res": "PASS",
+   "said": "box 114–138, list 106–730, remark \"1B: BFM-6\"",
+   "pics": ""
+  },
+  {
+   "step": "W3 pc no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W1 phone Edit Schedule: every issues bar's \"warnings\" agrees with its count",
+   "res": "PASS",
+   "said": "[\"⚠ 17 issues · 6 warnings\",\"⚠ 4 issues · 2 warnings\",\"⚠ 7 issues · 2 warnings\",\"⚠ 6 issues · 3 warnings\",\"⚠ 1 issue\",\"⚠ 1 issue\"]",
+   "pics": ""
+  },
+  {
+   "step": "W1 phone View-only Sched: the same",
+   "res": "PASS",
+   "said": "[\"⚠ 17 issues · 6 warnings\",\"⚠ 4 issues · 2 warnings\",\"⚠ 7 issues · 2 warnings\",\"⚠ 6 issues · 3 warnings\",\"⚠ 1 issue\",\"⚠ 1 issue\"]",
+   "pics": ""
+  },
+  {
+   "step": "W1 phone no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W2 phone an untouched week: \"No changes this week yet.\" with no \"Tap a change\" under it, and no empty band",
+   "res": "PASS",
+   "said": "{\"foot\":null,\"taps\":0,\"none\":\"No changes this week yet.\",\"says\":false}",
+   "pics": ""
+  },
+  {
+   "step": "W2 phone a change that can be tapped: the foot says \"Tap a change to go to it — the window stays open.\"",
+   "res": "PASS",
+   "said": "{\"foot\":\"Tap a change to go to it — the window stays open.\",\"taps\":1,\"none\":\"\",\"says\":true}",
+   "pics": ""
+  },
+  {
+   "step": "W2 phone a tap on the line: the window stays open",
+   "res": "PASS",
+   "said": "window drawn after the tap",
+   "pics": ""
+  },
+  {
+   "step": "W2 phone no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  },
+  {
+   "step": "W3 phone Undo of a remark scrolled out of view: it is brought just under the board's bar",
+   "res": "PASS",
+   "said": "before: box -4113–-4089, list 75–874, scrolled 5945; after: box 83–107, scrolled 1749, remark \"1B: BFM-6\"",
+   "pics": ""
+  },
+  {
+   "step": "W3 phone Redo with the remark in view: the words are back and the board has not moved",
+   "res": "PASS",
+   "said": "scrolled 1749 then 1749; remark \"1B: BFM-6 u1\"",
+   "pics": ""
+  },
+  {
+   "step": "W3 phone Undo from another day's board",
+   "res": "NOTRUN",
+   "said": "no day tab found to press",
+   "pics": ""
+  },
+  {
+   "step": "W3 phone no page errors",
+   "res": "PASS",
+   "said": "none",
+   "pics": ""
+  }
+ ]
+}
