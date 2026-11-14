@@ -20,11 +20,12 @@ export const WINDOW_PRESS = '.bidsheet, .evpeek, .lwday, .flypad, .umlist, .mv-b
    listener was on the document, and the number pad's Escape (FlyEdit.tsx, the window's capture) stops the key before the
    document hears it: the pad's going then armed the guard at the digit a finger had pressed, and a deliberate tap there
    was eaten. Every Leave War window's own key listener is added later than this one (when it opens), so none can stop it
-   first. */
-let keyAt = -Infinity
-if (typeof window !== 'undefined') window.addEventListener('keydown', () => { keyAt = performance.now() }, true)
-/** a key went down at or after `t` (the `performance.now()` of a press's release): that press closed nothing since */
-export function keySince(t: number): boolean { return keyAt >= t }
+   first. A count, not a time: a press keeps the count it saw, and any key since moves it on. */
+let keys = 0
+if (typeof window !== 'undefined') window.addEventListener('keydown', () => { keys++ }, true)
+/** how many keys have gone down since the file loaded — `Matrix` keeps it with each press, and a press whose count has
+ *  moved on closed nothing since */
+export function keyCount(): number { return keys }
 
 let arm: (() => void) | null = null
 /** `Matrix` only: the guard to arm, or null once the grid is gone (nothing then to guard) */

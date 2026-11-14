@@ -53,7 +53,7 @@ import { DayListSheet } from './DayList'
 import { PersonRow, type RowApi } from './MatrixRows'
 import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, type QualPill, type RowDragCfg, freeHalfBeside, inputsFilledDay, nameLines, ownAwardAlone, setPhWidth } from './matrixrowparts'
 import { rowInWindow } from './rowinwindow'
-import { keySince, setGridGuard, useGuardOnClose, WINDOW_PRESS } from './gridguard'
+import { keyCount, setGridGuard, useGuardOnClose, WINDOW_PRESS } from './gridguard'
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
 import { warInputs, type WarInput } from '../absences'
 import { ReorderIcon } from '../../ui/icons'
@@ -1552,8 +1552,8 @@ export function Matrix() {
        1000 ms is slack for a slow phone. The time counts from the press's RELEASE (`pointerup`, below), so a ✕ held a
        second and then let go still counts. */
     /* …AND NO KEY SINCE IT: a key that closed the window, even one a window's own listener stopped before this file's
-       listener heard it (gridguard.ts `keySince` — Astra's F1 of 15 Nov 26) */
-    if (second && !(from?.inWin && performance.now() - from.t < 1000 && !keySince(from.t))) return
+       listener heard it (gridguard.ts `keyCount` — Astra's F1 of 15 Nov 26) */
+    if (second && !(from?.inWin && performance.now() - from.t < 1000 && keyCount() === from.k)) return
     const swallow = (e: Event) => {
       if (!(e instanceof MouseEvent) || e.detail <= 0 || !(e.target instanceof Element) || !e.target.closest('.mx') || e.target.closest('.mstripe')) return
       if (from) {
@@ -1570,7 +1570,7 @@ export function Matrix() {
   }
   /* every press, where and by what — read by the guard above; always listening (the code read's F4: a listener added only
      once the guard was armed could miss a second press that came first) */
-  const lastPressRef = useRef<{ x: number; y: number; finger: boolean; inWin: boolean; t: number; id: number } | null>(null)
+  const lastPressRef = useRef<{ x: number; y: number; finger: boolean; inWin: boolean; t: number; k: number; id: number } | null>(null)
   useEffect(() => {
     const down = (e: PointerEvent) => {
       /* inside a window: every Leave War window is a `.bidsheet` (Sheet.tsx); the event box is its own small box
@@ -1578,11 +1578,11 @@ export function Matrix() {
          the number pad, the under-manned list and the move banners are their own boxes too ([LW-DOUBLETAP-MORE-WINDOWS]) —
          the list, `WINDOW_PRESS`, in gridguard.ts */
       const inWin = e.target instanceof Element && !!e.target.closest(WINDOW_PRESS)
-      lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen', inWin, t: performance.now(), id: e.pointerId }
+      lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen', inWin, t: performance.now(), k: keyCount(), id: e.pointerId }
     }
     /* the remembered press's age counts from its release (the fix round's F4): the same record, its time moved on — the
        guard tells one press from the next by the record itself */
-    const up = (e: PointerEvent) => { const p = lastPressRef.current; if (p && p.id === e.pointerId) p.t = performance.now() }
+    const up = (e: PointerEvent) => { const p = lastPressRef.current; if (p && p.id === e.pointerId) { p.t = performance.now(); p.k = keyCount() } }
     /* a touch the browser took over for a scroll or a pinch was no press on anything: forget it, as a key is forgotten —
        but only THAT touch: a finger resting on the screen and taken over while another taps a ✕ must not forget the ✕
        press, or the second tap on it reaches the grid (the narrow read of the fix round) */
