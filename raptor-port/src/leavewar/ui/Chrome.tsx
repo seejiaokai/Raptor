@@ -12,6 +12,7 @@ import { OpenDatesSheet } from './OpenDatesSheet'
 import { dayLabel, shortDate } from './dates'
 import { usePhone } from './phone'
 import { WarSheet } from './WarSheet'
+import { useGuardOnClose } from './gridguard'
 import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
 import { useVersion } from './useStore'
 import { askApprRing, askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, setApprMode, lwPage, setBalancesUp } from './lwnav'
@@ -135,6 +136,9 @@ export function Topbar() {
   /* however the sheet closes — Create, its ✕, Escape, a press outside — the asked dates go with it, so the next
      "+ New period" opens as it always has: no dates picked, at its own layer */
   const closeSheet = () => { setMaking(false); setAsked(null) }
+  /* its ✕ or its Create, a finger's quick second tap fell through to the grid behind — after Create, the new period's
+     ([LW-DOUBLETAP-MORE-WINDOWS]): its going is handed to the grid's one guard (gridguard.ts) */
+  useGuardOnClose(making ? 1 : 0)
   /* MY LEAVE (D1141): the person signed in, when he has a row on the war — an admin with none has no "my" to show */
   const me = viewer && people.some(p => p.id === viewer) ? viewer : null
   const mine = me ? myLeaveOf(wars, me, memberToday()) : null
@@ -357,6 +361,12 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
   const redDays = red.length
   const [listOpen, setListOpen] = useState(false)
   const showList = listOpen && redDays > 0
+  /* A DOUBLE TAP ([LW-DOUBLETAP-MORE-WINDOWS]): a row of the under-manned list takes the grid to its day and closes the
+     list, and a finger's second tap a moment later landed on whatever day now stood there; Open for bidding's ✕ the same
+     where the grid lies under it (a desktop's or a tablet's — a phone's fills the screen, its ✕ over the top bar, where
+     the guard never acts). Each a bit handed to the grid's one guard (gridguard.ts); the list's shade, a press outside
+     it, arms nothing. */
+  useGuardOnClose((showList ? 1 : 0) | (picking ? 2 : 0))
 
   /* ON A PHONE THIS STRIP IS ONE LINE — the open dates, under-manned, Legend ([LW-PHONE-HEADER-SPACE]; owner, D678,
      8 Oct 26: idea A of the page he was shown; the stage chip and its menu went with the stages, D1177). The words
