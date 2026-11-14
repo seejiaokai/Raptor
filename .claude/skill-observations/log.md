@@ -2589,3 +2589,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** Both readers, given only the two sentences, named as "read two ways" the app's own terms (OIL, pending) and a noun the strip's first line settles ("the settings"). The real lost fact (the OIL stays as published) was found in round 1, but the writer had to sort genuine second readings from context-only ones by hand each round, and no rule says which kind sends the wording back.
 **Suggested improvement:** In the cold-read brief, give the reader the app's word list entries for the terms the note uses (one line each) and say "the line above it reads …" when the note sits under a heading; in §1a test 9, say a "two readings" that the screen around the note settles is recorded, not a reason to send the wording back.
 **Principle:** A test that strips all context will report the stripped context as ambiguity; give the reader the vocabulary any real user has, so only genuine second readings come back.
+
+### Observation 950: A wording roll-call's search missed the guide sources under scripts/
+
+**Status:** OPEN
+**Date:** 15 Nov 26
+**Session context:** chat 80, the rules check's small batch — the FULL check's roll-call for two renamed check names (D2009)
+**Skill:** New skill candidate: bug-check order (the roll-call, §6 "A wording ruling ... gets its own small roll-call")
+**Type:** open-source
+**Phase/Area:** §6's wording row — where the old words are searched
+
+**Issue:** The rule says to search each old phrase "across the app and every test folder, unit and browser". The build's own search (chat 76–78) covered `src/` and the tests; the old names still sat in the IT flow guide's captions, `raptor-port/scripts/itflow/content.mjs`, a generator of a document handed to the IT side — neither app nor test. Found only because the roll-call search here ran over `scripts/` too.
+**Suggested improvement:** §6's wording row: search the app, every test folder, the probes AND every script that writes words for a person (guides, decks, exports — `scripts/`), listing files uncapped.
+**Principle:** A rename's search covers every place that turns the words into something a person reads, not only the running app and its tests: document generators hold the same words.
