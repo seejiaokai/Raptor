@@ -20,7 +20,12 @@ import { initStore, lwHistInit, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
+import { setDaysWin } from '../../ui/pops'
+import { DaysWindow } from '../../ui/DaysWindow'
+import { LeaveWarPage } from '../LeaveWarPage'
+import { openDays } from '../sync'
 import { openDayPanel } from './daypanelopen'
+import { setApprMode } from './lwnav'
 import { Topbar } from './Chrome'
 import { Matrix } from './Matrix'
 
@@ -44,6 +49,17 @@ const opens = (what: string) => {
   expect(picker(), `${what}: the tap on the day is his — it opens`).toBeTruthy()
 }
 const wait = (ms: number) => act(async () => { await new Promise(r => setTimeout(r, ms)) })
+/* a finger's tap with its lift: its press, its release and then its click (the guard counts a press's age from its lift) */
+const tapUp = (el: Element, x = 10, y = 10) => {
+  el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 3, pointerType: 'touch', button: 0, clientX: x, clientY: y }))
+  el.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 3, pointerType: 'touch', button: 0, clientX: x, clientY: y }))
+  fireEvent.click(el, { detail: 1, clientX: x, clientY: y })
+}
+/* a mouse's click: its press and then its click, `detail` the browser's count */
+const mouse = (el: Element, detail: number, x = 10, y = 10) => {
+  el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', button: 0, clientX: x, clientY: y }))
+  fireEvent.click(el, { detail, clientX: x, clientY: y })
+}
 
 const mem = new Map<string, string>()
 const origEFP = document.elementFromPoint
@@ -61,7 +77,8 @@ beforeEach(() => {
   document.elementFromPoint = () => null
 })
 afterEach(() => {
-  cleanup(); setSession(null); storeBackend.impl = null; _resetTimeline(); document.elementFromPoint = origEFP
+  cleanup(); setApprMode('off'); setDaysWin(null)
+  setSession(null); storeBackend.impl = null; _resetTimeline(); document.elementFromPoint = origEFP
   INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
 })
 
@@ -286,13 +303,160 @@ describe('what still goes through', () => {
     opens('after the shade')
   })
 
-  it('a move landed by a tap on a day (a desktop click) arms nothing: the next day tapped at once is his', async () => {
+  it('a move landed by a mouse\'s click on a day (a desktop\'s landing) arms nothing: the next day tapped at once is his', async () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
     fireEvent.click(screen.getByTestId('decide-shift'))
     await wait(450)
-    tap(screen.getByTestId('cell-asics-2026-01-30'))
+    mouse(screen.getByTestId('cell-asics-2026-01-30'), 1)
     expect(screen.queryByTestId('move-banner'), 'landed').toBeNull()
     opens('after a move landed on the grid')
+  })
+})
+
+/* THE TWO BLIND READS OF 15 NOV 26 (`docs/superpowers/briefs/2026-11-15-lw-doubletap-more-coderead-{astra,opus}.md`) */
+describe('the reads\' faults: Escape from the pad, the slim Approvals bar, the Calendar window', () => {
+  /* Astra's F1: the pad's own Escape listener (window, capture) stopped the key before the grid's (document, capture)
+     could forget the finger's press on the digit — so the pad's going armed the guard at the digit's place, and a
+     deliberate tap there a moment later was eaten */
+  it('Escape from the number pad after a finger pressed a digit: the day that stood under the digit opens at once', () => {
+    render(<Matrix />)
+    tap(screen.getByTestId(`req-p-${WED}`))
+    expect(screen.getByTestId('fly-pad')).toBeTruthy()
+    const before = screen.getByTestId(`req-p-${WED}`).textContent
+    const five = screen.getByTestId('fly-pad-5')
+    tapUp(five)
+    fireEvent.keyDown(five, { key: 'Escape' })
+    expect(screen.queryByTestId('fly-pad'), 'Escape closes the pad').toBeNull()
+    expect(screen.getByTestId(`req-p-${WED}`).textContent, 'the figure as it was').toBe(before)
+    opens('a tap after the pad was closed by Escape')
+  })
+
+  /* the Opus read's F1 (older, the same kind): the slim "Back to Approvals" bar stands at the screen's foot over the grid */
+  it('the slim "Back to Approvals" bar\'s ✕: the second tap opens nothing behind it, a tap after the moment opens', async () => {
+    render(<LeaveWarPage />)
+    act(() => setApprMode('bar'))
+    expect(screen.getByTestId('appr-slim')).toBeTruthy()
+    tap(screen.getByTestId('appr-slim-x'))
+    expect(screen.queryByTestId('appr-slim')).toBeNull()
+    second('the slim bar\'s ✕')
+    await wait(650)
+    opens('after the moment')
+  })
+
+  /* the fix brief's item 3, measured on a phone: scrolled, the Calendar window's ✕ stands over the pinned dates */
+  it('the Calendar window\'s ✕ (⚙ → Calendar…): the second tap opens nothing behind it', async () => {
+    render(<><LeaveWarPage /><DaysWindow /></>)
+    act(() => openDays('2026-01-12'))
+    expect(screen.getByTestId('win-days')).toBeTruthy()
+    tap(screen.getByTestId('win-days-x'))
+    expect(screen.queryByTestId('win-days')).toBeNull()
+    second('the Calendar window\'s ✕')
+    await wait(650)
+    opens('after the moment')
+  })
+})
+
+describe('the cases the reads found untested', () => {
+  it('a mouse: a click on the day panel\'s ✕, then the double click\'s second click on the day is held; a single click is his', async () => {
+    render(<Matrix />)
+    act(() => openDayPanel('2026-01-12'))
+    mouse(screen.getByTestId('win-lwday-x'), 1)
+    expect(screen.queryByTestId('win-lwday')).toBeNull()
+    mouse(screen.getByTestId(CELL), 2)
+    expect(picker(), 'the double click\'s second click opens nothing').toBeNull()
+    await wait(650)
+    act(() => openDayPanel('2026-01-12'))
+    mouse(screen.getByTestId('win-lwday-x'), 1)
+    mouse(screen.getByTestId(CELL), 1)
+    expect(picker(), 'a mouse\'s single click at once opens the day').toBeTruthy()
+  })
+
+  it('hand-over: the pad up, a drag picks Required cells — the pad gives way to the panel, and a finger\'s tap on a day at the press point opens', async () => {
+    render(<Matrix />)
+    tapUp(screen.getByTestId(`req-p-${WED}`), 5, 5)
+    expect(screen.getByTestId('fly-pad')).toBeTruthy()
+    await pickReq(MON, TUE)
+    expect(screen.queryByTestId('fly-pad'), 'the pad gave way').toBeNull()
+    tap(screen.getByTestId(CELL), 5, 5)
+    expect(picker(), 'the day tapped at the press point opens').toBeTruthy()
+  })
+
+  it('hand-over: the panel up, a finger\'s tap on a Required cell opens its pad, and the pad stays', async () => {
+    render(<Matrix />)
+    await pickReq(MON, TUE)
+    tap(screen.getByTestId(`req-p-${WED}`))
+    expect(screen.getByTestId('fly-pad'), 'the pad opened and stayed').toBeTruthy()
+    tap(screen.getByTestId('fly-pad-7'))
+    expect(screen.getByTestId('fly-pad-fig').textContent).toContain('7')
+  })
+
+  it('hand-over: the one-day window\'s Move hands over to the move banner — a landing tap more than 32 px away lands', async () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    tap(screen.getByTestId('decide-shift'))
+    expect(screen.getByTestId('move-banner')).toBeTruthy()
+    await wait(450)   // past the move's own guard on the spot Move was pressed (D262); the window's 600 ms not yet out
+    tap(screen.getByTestId('cell-asics-2026-01-30'), 200, 300)
+    expect(screen.queryByTestId('move-banner'), 'landed').toBeNull()
+  })
+
+  it('the selection panel up: a finger\'s tap on a day opens that day\'s window — the grid behind it works', async () => {
+    render(<Matrix />)
+    await pickReq(MON, TUE)
+    tap(screen.getByTestId(CELL))
+    expect(picker()).toBeTruthy()
+  })
+
+  it('the day panel\'s ✕, then at once the war\'s ⚙ at the same point: Settings opens', () => {
+    render(<><Topbar /><Matrix /></>)
+    act(() => openDayPanel('2026-01-12'))
+    tap(screen.getByTestId('win-lwday-x'))
+    tap(screen.getAllByTestId('settings-open')[0]!)
+    expect(screen.getByTestId('settings-sheet')).toBeTruthy()
+  })
+
+  it('the pad on the last flying date: Next closes it — a tap there at once is held, after the moment it opens', async () => {
+    render(<Matrix />)
+    const cells = [...document.querySelectorAll<HTMLElement>('[data-testid^="req-p-"]')]
+    const last = cells[cells.length - 1]!
+    tap(last)
+    expect(screen.getByTestId('fly-pad')).toBeTruthy()
+    tap(screen.getByTestId('fly-pad-next'))
+    expect(screen.queryByTestId('fly-pad'), `Next on ${last.dataset.testid} closes the pad: no flying day after it`).toBeNull()
+    second('the pad\'s Next on the last flying date')
+    await wait(650)
+    opens('after the moment')
+  })
+
+  it('a refused Apply, Clear and Done keep their window and arm nothing (the rename form\'s Save is refused only to a non-admin, who never has the form)', async () => {
+    render(<Matrix />)
+    await pickReq(MON, TUE)
+    fireEvent.change(screen.getByTestId('req-panel-num'), { target: { value: '14' } })
+    setSession({ user: 'member-test', role: 'member' })
+    tap(screen.getByTestId('req-panel-apply'))
+    expect(screen.getByTestId('req-panel'), 'a refused Apply keeps the panel').toBeTruthy()
+    setSession({ user: 'admin-test', role: 'admin' })
+    tap(screen.getByTestId('req-panel-x'))
+    await wait(650)
+
+    setFlyDays([{ iso: MON, p: 12, w: 8 }])
+    await pickReq(MON, TUE)
+    setSession({ user: 'member-test', role: 'member' })
+    tap(screen.getByTestId('req-panel-clear'))
+    expect(screen.getByTestId('req-panel'), 'a refused Clear keeps the panel').toBeTruthy()
+    setSession({ user: 'admin-test', role: 'admin' })
+    tap(screen.getByTestId('req-panel-x'))
+    await wait(650)
+
+    tap(screen.getByTestId(`req-p-${WED}`))
+    tap(screen.getByTestId('fly-pad-5'))
+    setSession({ user: 'member-test', role: 'member' })
+    tap(screen.getByTestId('fly-pad-done'))
+    expect(screen.getByTestId('fly-pad'), 'a refused Done keeps the pad').toBeTruthy()
+    expect(screen.getByTestId('fly-edit-err').textContent).not.toBe('')
+    setSession({ user: 'admin-test', role: 'admin' })
+    /* nothing armed by the refusals: a press on the grid saves and closes the pad, and the day tapped there opens */
+    opens('after three refusals')
   })
 })

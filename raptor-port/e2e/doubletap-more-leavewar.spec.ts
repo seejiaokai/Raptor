@@ -21,7 +21,7 @@ const isPhone = () => test.info().project.name === 'lw-phone'
 /* every window a tap on the grid can open (the built test's list), and the windows of this file */
 const WINDOWS = ['bid-picker', 'select-sheet', 'daylist-sheet', 'remarks-sheet', 'closed-note', 'raptor-sheet', 'award-sheet', 'postout-sheet', 'postin-sheet',
   'person-window', 'win-lwday', 'event-sheet', 'event-peek', 'manning-sheet', 'counter-form', 'settings-sheet', 'events-sheet', 'oil-sheet',
-  'req-panel', 'req-name-form', 'fly-pad', 'undermanned-list', 'war-sheet', 'open-dates', 'move-banner', 'event-move-banner']
+  'req-panel', 'req-name-form', 'fly-pad', 'undermanned-list', 'war-sheet', 'open-dates', 'move-banner', 'event-move-banner', 'win-days']
 const openNow = (page: Page) => page.evaluate(ids => ids.filter(t => {
   const e = document.querySelector(`[data-testid="${t}"]`)
   return !!e && e.getBoundingClientRect().height > 0
@@ -29,7 +29,7 @@ const openNow = (page: Page) => page.evaluate(ids => ids.filter(t => {
 
 /** what the GRID holds at a point, read through whatever window lies over it: a day's cell, a name, or null */
 const behind = (page: Page, x: number, y: number) => page.evaluate(({ x, y }) => {
-  const el = document.elementsFromPoint(x, y).find(e => e.closest('.mx') && !e.closest('.bidsheet, .evpeek, .floatwin, .flypad, .flyedit, .umlist, .mv-banner'))
+  const el = document.elementsFromPoint(x, y).find(e => e.closest('.mx') && !e.closest('.bidsheet, .evpeek, .floatwin, .flypad, .flyedit, .umlist, .mv-banner, .appr-slim'))
   return el ? (el.closest('[data-testid]')?.getAttribute('data-testid') ?? String(el.className)) : null
 }, { x, y })
 /* a point in the button — its middle, or `fx` of the way across (a button over the frozen names, whose category chip at
@@ -214,7 +214,9 @@ test.describe('the move banners', () => {
     await page.locator(T(LEAVE)).tap()
     await page.locator(T('decide-shift')).tap()
     await expect(page.locator(T('move-banner'))).toBeVisible()
-    await page.waitForTimeout(450)          // past the move's own guard on the spot Move was pressed (D262)
+    /* past the move's own guard on the spot Move was pressed (D262, 400 ms) AND the closing window's (600 ms), so neither
+       can stand in for the banner's own bit (Astra's read of 15 Nov 26) */
+    await page.waitForTimeout(650)
   }
 
   test('the move banner\'s Cancel, double-tapped: nothing opens behind it', async ({ page }) => {
@@ -237,7 +239,7 @@ test.describe('the move banners', () => {
     await page.locator(T('event-peek-edit')).tap()
     await page.locator(T('event-move')).tap()
     await expect(page.locator(T('event-move-banner'))).toBeVisible()
-    await page.waitForTimeout(450)
+    await page.waitForTimeout(650)          // past the event box's closing guard too (600 ms), as the record's banner
   }
 
   test('the event move banner\'s Cancel, double-tapped: nothing opens behind it', async ({ page }) => {
@@ -333,4 +335,49 @@ test('after the day panel\'s ✕ a quick tap on another day opens it, and the pl
   expect(await behind(page, x.x, x.y)).toMatch(OPENS)
   await page.touchscreen.tap(x.x, x.y)
   await expect.poll(() => openNow(page), { message: 'the same place, after the moment' }).not.toEqual([])
+})
+
+/* ---- THE TWO BLIND READS OF 15 NOV 26 ---- */
+/* Astra's F1: on a touch tablet with a keyboard, a digit of the pad pressed by a finger, then Escape — the pad's own Escape
+   stopped the key before the grid could forget the finger's press, so the pad's going armed the guard at the digit and a
+   deliberate tap on the day that stood under it was eaten */
+test('at a tablet\'s size, Escape from the number pad after a finger pressed a digit: the day under the digit opens at once', async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 })
+  await openManning(page)
+  await page.locator(T('req-p-2026-01-08')).tap()
+  await expect(page.locator(T('fly-pad'))).toBeVisible()
+  let key = ''
+  for (const k of ['5', '2', '8', '6', '4', '1', '3', '9', '7']) {
+    const b = await dayUnder(page, T(`fly-pad-${k}`))
+    if (OPENS.test(b) && !b.startsWith('req-')) { key = k; break }
+  }
+  expect(key, 'a digit with a day under it').not.toBe('')
+  const p = await centre(page, T(`fly-pad-${key}`))
+  const under = await behind(page, p.x, p.y)
+  await page.touchscreen.tap(p.x, p.y)
+  await page.keyboard.press('Escape')
+  await expect(page.locator(T('fly-pad'))).toHaveCount(0)
+  await page.touchscreen.tap(p.x, p.y)
+  await expect.poll(() => openNow(page), { message: `the tap on ${under} after the pad was closed by Escape opens it` }).not.toEqual([])
+})
+
+/* the Opus read's F1 (older, the same kind): the slim "Back to Approvals" bar at the screen's foot, over the grid */
+test('the slim "Back to Approvals" bar\'s ✕, double-tapped: nothing opens behind it', async ({ page }) => {
+  await page.locator(T('lw-tab-approvals')).tap()
+  await expect(page.locator(T('approvals-page'))).toBeVisible()
+  await page.locator(`${T('approvals-page')} ${T('appr-dates')}`).first().tap()
+  await expect(page.locator(T('appr-slim'))).toBeVisible()
+  await page.waitForTimeout(650)          // past the Approvals page's own going, so only the bar's bit is tested
+  await guarded(page, T('appr-slim-x'), 'the slim bar\'s ✕')
+})
+
+/* the fix brief's item 3, measured: with the page scrolled, the Calendar window's ✕ (⚙ → Calendar…) stands over the pinned
+   dates, and the second tap opened that day's panel */
+test('the Calendar window\'s ✕ (⚙ → Calendar…), double-tapped with the page scrolled: nothing opens behind it', async ({ page }) => {
+  await page.locator(T('settings-open')).first().tap()
+  await expect(page.locator(T('settings-sheet'))).toBeVisible()
+  await page.locator(T('settings-days')).tap()
+  await expect(page.locator(T('win-days'))).toBeVisible()
+  await page.waitForTimeout(650)          // past the Settings window's own going
+  await guarded(page, T('win-days-x'), 'the Calendar window\'s ✕')
 })
