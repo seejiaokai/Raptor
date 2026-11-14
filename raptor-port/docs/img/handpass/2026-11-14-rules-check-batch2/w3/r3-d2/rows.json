@@ -1,0 +1,119 @@
+[
+ [
+  "R3 0 standard",
+  "1536",
+  "Logic page at standard settings",
+  "strip hidden",
+  "{\"shown\":false,\"text\":\"\",\"w\":0,\"h\":0,\"sw\":0,\"cw\":0,\"sh\":0,\"ch\":0,\"vw\":1536,\"right\":0,\"left\":0}",
+  "PASS",
+  ""
+ ],
+ [
+  "R3 1-crew",
+  "1536",
+  "Crew rest 12h -> 13h; strip read",
+  "1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending. (and not the late cut-off sentence)",
+  "{\"shown\":true,\"text\":\"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending.\",\"w\":1180,\"h\":55,\"scroll\":\"1178x53\",\"client\":\"1178x53\",\"right\":1200,\"vw\":1536}",
+  "PASS",
+  "r3-1-crew-d.png"
+ ],
+ [
+  "R3 1b-crew-whole",
+  "1536",
+  "strip measured: nothing cut",
+  "no overflow, inside the screen",
+  "{\"shown\":true,\"text\":\"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending.\",\"w\":1180,\"h\":55,\"scroll\":\"1178x53\",\"client\":\"1178x53\",\"right\":1200,\"vw\":1536}",
+  "PASS",
+  "r3-1b-crew-whole-d.png"
+ ],
+ [
+  "R3 2 reset",
+  "1536",
+  "Reset to standard",
+  "strip hidden",
+  "{\"shown\":false,\"text\":\"\",\"w\":0,\"h\":0,\"sw\":0,\"cw\":0,\"sh\":0,\"ch\":0,\"vw\":1536,\"right\":0,\"left\":0}",
+  "PASS",
+  "r3-2-reset-d.png"
+ ],
+ [
+  "R3 3-cutonly",
+  "1536",
+  "late cut-off only (Inputs days before 14 -> 10); strip read {\"before\":\"14\",\"after\":\"10\",\"closed\":\"closed\"}",
+  "strip shown; has the late cut-off sentence; does NOT say \"keeps the settings\"",
+  "{\"shown\":false,\"text\":\"\",\"w\":0,\"h\":0,\"scroll\":\"0x0\",\"client\":\"0x0\",\"right\":0,\"vw\":1536}",
+  "FAIL",
+  "r3-3-cutonly-d.png"
+ ],
+ [
+  "R3 3b-cutonly-whole",
+  "1536",
+  "strip measured",
+  "nothing cut",
+  "{\"shown\":false,\"text\":\"\",\"w\":0,\"h\":0,\"scroll\":\"0x0\",\"client\":\"0x0\",\"right\":0,\"vw\":1536}",
+  "PASS",
+  "r3-3b-cutonly-whole-d.png"
+ ],
+ [
+  "R3 4-both",
+  "1536",
+  "late cut-off and crew rest both changed",
+  "both sentences: \"keeps the settings…\" and the late cut-off sentence",
+  "{\"shown\":true,\"text\":\"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending.\",\"w\":1180,\"h\":55,\"scroll\":\"1178x53\",\"client\":\"1178x53\",\"right\":1200,\"vw\":1536}",
+  "FAIL",
+  "r3-4-both-d.png"
+ ],
+ [
+  "R3 4b-both-whole",
+  "1536",
+  "strip measured",
+  "nothing cut",
+  "{\"shown\":true,\"text\":\"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending.\",\"w\":1180,\"h\":55,\"scroll\":\"1178x53\",\"client\":\"1178x53\",\"right\":1200,\"vw\":1536}",
+  "PASS",
+  "r3-4b-both-whole-d.png"
+ ],
+ [
+  "R3 5-ranger",
+  "1536",
+  "as Ranger (crew rest + late cut-off still changed); edit controls visible: 0",
+  "both sentences, then \"Only an admin can change them.\" at the end; no edit controls",
+  "{\"shown\":true,\"text\":\"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending. Only an admin can change them.\",\"w\":1180,\"h\":55,\"scroll\":\"1178x53\",\"client\":\"1178x53\",\"right\":1200,\"vw\":1536}",
+  "FAIL",
+  "r3-5-ranger-d.png"
+ ],
+ [
+  "R3 5b-ranger-whole",
+  "1536",
+  "strip measured as Ranger",
+  "nothing cut",
+  "{\"shown\":true,\"text\":\"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending. Only an admin can change them.\",\"w\":1180,\"h\":55,\"scroll\":\"1178x53\",\"client\":\"1178x53\",\"right\":1200,\"vw\":1536}",
+  "PASS",
+  "r3-5b-ranger-whole-d.png"
+ ],
+ [
+  "R3 6 reset again",
+  "1536",
+  "Reset to standard (both set back)",
+  "strip hidden; page not wider than the screen",
+  "{\"s\":{\"shown\":false,\"text\":\"\",\"w\":0,\"h\":0,\"sw\":0,\"cw\":0,\"sh\":0,\"ch\":0,\"vw\":1536,\"right\":0,\"left\":0},\"pg0\":{\"sw\":1536,\"vw\":1536}}",
+  "PASS",
+  "r3-6-reset-again-d.png"
+ ],
+ [
+  "R3 7 shown again",
+  "1536",
+  "a setting changed again",
+  "strip shown again, whole, page not wider",
+  "{\"shown\":true,\"text\":\"1 setting changed from the squadron standard. The \",\"pg1\":{\"sw\":1536,\"vw\":1536}}",
+  "PASS",
+  "r3-7-shown-again-d.png"
+ ],
+ [
+  "R3 window ways",
+  "1536",
+  "Inputs calendar settings window: x (earlier) and Escape",
+  "RECORD",
+  "x: closed; Escape: closed",
+  "RECORDED",
+  "r3-8-cutwin-open-d.png"
+ ]
+]

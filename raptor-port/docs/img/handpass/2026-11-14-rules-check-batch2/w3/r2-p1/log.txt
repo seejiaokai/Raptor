@@ -1,0 +1,17 @@
+rcb2-w3-r2 v1
+flight d4 w0 {"to":"12:00","ld":"","p":"Ranger"}
+seat allavail ok
+ground row {"prog":"ALL AVAIL TEST","str":"12:30","end":"13:30","who":"allavail","rid":"rmwgqhc858i4x2z"}
+ROW PASS | R2 setup | 402 | VL 12:00 landing blank (Ranger), ground row 12:30-13:30 with an ALL AVAIL puck | saw: ok "allavail"
+chips #schedBoard ["<span class=\"oilcount\" data-oilsent=\"r:rmwgqhc858i4x2z\" data-oilday=\"4\" data-oilver=\"\" data-oilofw=\"1\" title=\"43 with nothing else on at that time — tap to see "]
+window open 1
+REASON board {"found":true,"why":"Not enough time to attend the VL BFM debrief — ALL AVAIL TEST sits inside 12:00–14:00 (take-off + 2h, no landing typed)","whyVisible":true,"title":"Ranger · IP · instructor pilot · SXO","full":"Ranger IP Not enough time to attend the VL BFM debrief — ALL AVAIL TEST sits inside 12:00–14:00 (take-off + 2h, no landing typed)"}
+ROW PASS | R2 board | 402 | open the ALL AVAIL count window from the board; Ranger row reason | saw: {"found":true,"why":"Not enough time to attend the VL BFM debrief — ALL AVAIL TEST sits inside 12:00–14:00 (take-off + 2h, no landing typed)","whyVisible":true,"title":"Ranger · IP · instructor pilot · SXO","full":"Ranger IP Not enough time to attend the VL BFM debrief — ALL AVAIL TEST sits inside 1
+ROW RECORDED | R2 board title | 402 | Ranger's puck title in the window | saw: "Ranger · IP · instructor pilot · SXO"
+chips #eWeek .day[data-day="4"] ["<span class=\"oilcount\" data-oilsent=\"r:rmwgqhc858i4x2z\" data-oilday=\"4\" data-oilver=\"\" data-oilofw=\"1\" title=\"43 with nothing else on at that time — tap to see "]
+REASON week {"found":false,"names":[],"text":""}
+ROW NOT WALKED | R2 week | 402 | open the window from the week day card; Ranger row reason | saw: {"found":false,"names":[],"text":""}
+ROW RECORDED | R2 lesson 4 | 402 | press the page behind the open window (puck of bane) | saw: window open: 0; his puck classes ["puck sm warn hard boxred","puck warn hard boxred","puck sm warn hard boxred","puck sm warn hard boxred","puck sm"]; lit pucks 0 -> 0; tasking same false
+ROW FAIL | R2 close | 402 | window closed by its x | saw: {}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

@@ -1,0 +1,65 @@
+[
+ [
+  "R5 setup",
+  "1536",
+  "Mon 12:00-13:00 published; Tue 05:30-06:30 B 03:10 published; Ranger both (rest = 12h10 at 12h)",
+  "both published",
+  "{\"rm\":{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4},\"rt\":{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4},\"signs\":[\"SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade B\",\"— name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit \",\"— name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden\",\"— name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden\",\"— name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden\"]}",
+  "PASS",
+  "r5-0-tue-published-d.png"
+ ],
+ [
+  "R5 1 baseline",
+  "1536",
+  "before any setting change: Tue published, 12h crew rest",
+  "nothing pending; Tue carries only the amber Tight turning advisory at 12h (the set-up sits close to the threshold); no breach",
+  "{\"tuePend\":[],\"monPend\":[],\"editTueCR\":[\"Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00 ✕\"],\"editTueDD\":[\"Advisory · Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"monTrace\":[],\"editMonCR\":[],\"viewTueCR\":[\"Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"viewTueDD\":[\"Advisory · Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"viewHead\":\"⚠ 1 issue ▼\"}",
+  "PASS",
+  "r5-1-baseline-edit-d.png"
+ ],
+ [
+  "R5 2 crew rest 13h, nothing pending",
+  "1536",
+  "Crew rest 12h -> 13h ({\"key\":\"crewRest\",\"before\":\"12h\",\"val\":\"13h\",\"strip\":\"1 setting changed from the squadron standard. The schedule is checked against it now. A pu\"})",
+  "published Tue keeps 12h: its warnings unchanged from the baseline in Edit and View-only (the amber at 12h, clear at 03:00, no \"<13h\"); no pending; Mon forward trace empty",
+  "{\"tuePend\":[],\"monPend\":[],\"editTueCR\":[\"Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00 ✕\"],\"editTueDD\":[\"Advisory · Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"monTrace\":[],\"editMonCR\":[],\"viewTueCR\":[\"Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"viewTueDD\":[\"Advisory · Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"viewHead\":\"⚠ 1 issue ▼\"}",
+  "PASS",
+  "r5-2-crew13-edit-d.png"
+ ],
+ [
+  "R5 3 pending change on Tue",
+  "1536",
+  "Tue landing 06:30 -> 06:45 with crew rest at 13h",
+  "Tue reads 1 pending; Edit's working copy checks by today's 13h (red <13h breach, clear at 04:00; the issued amber goes away once signed); View-only keeps its issued amber at 12h",
+  "{\"tuePend\":[\"1 pending\"],\"monPend\":[],\"editTueCR\":[\"Crew rest (<13h) Ranger — Crew rest breach — Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 04:00, but told to report 03:10 — only 12h10 rest.new once signed ✕\",\"Tight turning — crew rest Ranger goes away once signed\"],\"editTueDD\":[\"Warning · Crew rest (<13h) Ranger — Crew rest breach — Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 04:00, but told to report 03:10 — only 12h10 rest.\"],\"monTrace\":[\"Breaks Tuesday Ranger — had to leave by 14:10. Crew rest breach — Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 04:00, but told to report 03:10 — only 12h10 rest.\"],\"editMonCR\":[],\"viewTueCR\":[\"Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"viewTueDD\":[\"Advisory · Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"viewHead\":\"⚠ 1 issue ▼\"}",
+  "PASS",
+  "r5-3-pending-edit-d.png"
+ ],
+ [
+  "R5 3 Monday neighbour",
+  "1536",
+  "Monday's forward explanation while Tue has a pending change",
+  "RECORD (live neighbour info assessed under which rules)",
+  "{\"trace\":[\"Breaks Tuesday Ranger — had to leave by 14:10. Crew rest breach — Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 04:00, but told to report 03:10 — only 12h10 rest.\"],\"monPend\":[]}",
+  "RECORDED",
+  "r5-3-pending-edit-d.png"
+ ],
+ [
+  "R5 4 crew rest back to 12h",
+  "1536",
+  "with the pending change still waiting",
+  "Edit's working copy back to the amber at 12h; pending stays (the landing edit)",
+  "{\"tuePend\":[\"1 pending\"],\"monPend\":[],\"editTueCR\":[\"Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00 ✕\"],\"editTueDD\":[\"Advisory · Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"monTrace\":[],\"editMonCR\":[],\"viewTueCR\":[\"Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"viewTueDD\":[\"Advisory · Tight turning — crew rest Ranger — Tight turning — T/O 05:30 puts the 3h report at 02:30, inside 12h. Monday landed 13:00, +2h debrief assumed → ended 15:00 → crew rest clear at 03:00\"],\"viewHead\":\"⚠ 1 issue ▼\"}",
+  "PASS",
+  "r5-4-crew12-pend-edit-d.png"
+ ],
+ [
+  "R5 5 default briefing change (D186)",
+  "1536",
+  "Default briefing 2h20 -> 3h20 ({\"key\":\"briefLead\",\"before\":\"2h20\",\"val\":\"3h20\",\"strip\":\"1 setting changed from the squadron standard. The schedule is checked against it now. A pu\"})",
+  "RECORD: Monday (published, brief printed by default lead) reads pending; Tue (typed B) not newly affected",
+  "{\"monPend\":[\"1 pending\"],\"tuePend\":[\"1 pending\"],\"viewHead\":\"⚠ 1 issue ▼\"}",
+  "RECORDED",
+  "r5-5-brief-edit-d.png"
+ ]
+]
