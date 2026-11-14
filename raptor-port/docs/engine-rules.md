@@ -2725,7 +2725,8 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   (confirmed by him), and an issued EOD is the final word on the day. It superseded the 11 Sep "lock earned
   OIL on an already-worked day" lean (backlog item `[OIL]`, archived 24 Sep 26); there is no lock to build.
 - **A published day keeps the Logic values its OIL was worked out from** (owner, D592 (4), 5 Oct 26 —
-  `[OIL-WORK-START]`; D48, D142). Three Logic values enter the arithmetic: the nominal report lead (read only where a
+  `[OIL-WORK-START]`; D48, D142; confirmed for all three, as built, by D2044, 14 Nov 26 — D2014 had asked whether the
+  full-day line should wait for the next amendment on the untrue premise that it moved published OIL at once). Three Logic values enter the arithmetic: the nominal report lead (read only where a
   line has no in-time or Rally entered), the flight debrief after landing, and the full-day line (`VCONF.reportLead`,
   `debrief`, `oilFullMin`). Until 6 Oct 26 all three were read LIVE on the path from an issued day to its credit, so
   changing "Nominal report before T/O" from 3h to 2h30 took a published full day to a half at once — nothing pending,

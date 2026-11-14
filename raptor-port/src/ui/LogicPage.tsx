@@ -435,12 +435,14 @@ export function LogicPage() {
               design guide §3, "A page's controls are one row" — D926; as the Inputs list's dates button, D910) */}
           <span className="lgrs-long">Reset to standard</span><span className="lgrs-short" aria-hidden="true">Reset all</span></button>
       </div>
-      {/* the strip, while a setting a check reads is changed (W2). Its old "not the published ones" was untrue: a
-          published day keeps its brief, report, debrief and OIL values until it is published again (D928, the
-          inventory's one misleading line) */}
+      {/* the strip, while a setting a check reads is changed (W2). Its old "not the published ones" was untrue (D928).
+          Since D2005 a published day is checked by every setting it was published under, so the note says that, not only
+          "its printed B and its OIL" (D2015); and its OIL keeps the three OIL values it went out with, a change of one
+          making that day read pending at once where it would change its OIL (D592 (4), D2044 — publish.ts oilRuleDelta) */}
       <div className="lgoff" id="lgOff" hidden={!checkedOff}>
         {checkedOff ? <><b>{checkedOff} setting{checkedOff > 1 ? 's' : ''} changed from the squadron standard.</b>{' '}
-          {` The schedule is checked against ${checkedOff > 1 ? 'them' : 'it'} now.`} A published day keeps its printed B and its OIL until it is published again.
+          {` The schedule is checked against ${checkedOff > 1 ? 'them' : 'it'} now.`} A published day keeps the settings it was published under until it is published again.
+          {" If a changed OIL setting would change a published day's OIL, that day reads pending."}
           {admin ? '' : ' Only an admin can change them.'}</> : null}
       </div>
       <div className="lgwrap" id="lgBody" ref={bodyRef} dangerouslySetInnerHTML={bodyHTML} />

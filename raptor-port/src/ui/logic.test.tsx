@@ -533,8 +533,12 @@ describe('W2 the words the + In-time / Rally button fills in are not a modified 
     await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
     expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
     expect($('#lgOff').textContent).toContain('1 setting changed')
-    /* the strip's old "not the published ones" was untrue (D928): a published day keeps its printed B and its OIL */
-    expect($('#lgOff').textContent).toContain('A published day keeps its printed B and its OIL until it is published again')
+    /* the strip's old "not the published ones" was untrue (D928); since D2005 a published day keeps every setting it was
+       published under, not only its printed B and its OIL — the note says so (D2015), and that an OIL setting's change
+       makes a day whose OIL it would change read pending at once (D592 (4), D2044) */
+    expect($('#lgOff').textContent).toContain('A published day keeps the settings it was published under until it is published again.')
+    expect($('#lgOff').textContent).toContain("If a changed OIL setting would change a published day's OIL, that day reads pending.")
+    expect($('#lgOff').textContent).not.toContain('printed B')
     await act(async () => { rulesReset(); notify() })
     expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
   })
