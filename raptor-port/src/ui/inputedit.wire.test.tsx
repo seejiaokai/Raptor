@@ -52,7 +52,7 @@ beforeEach(() => {
 })
 afterEach(() => { HOOKS.toast = realToast; storeBackend.impl = null })
 
-describe('a member never hands an input to another person (D763; the plan §4.9)', () => {
+describe('a member never hands an input to another person (D763; the plan §4.9) (OR26)', () => {
   it('his own input, filed for him by an admin, saved in its window with himself out and another man in: refused, and the words say who can', () => {
     const [other] = others()
     const r = filedFor(member)

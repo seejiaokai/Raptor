@@ -384,7 +384,7 @@ describe('PART ONE — the Inputs pages', () => {
     })
   })
 
-  describe('D760 — it stays listed: the person filter, the kind filter and the search still pass it', () => {
+  describe('D760 — it stays listed: the person filter, the kind filter and the search still pass it (OR41)', () => {
     it('by any of its people, by its placeholder, by its kind, by its title, a callsign or a word of its remark — exactly as its not-cancelled twin', () => {
       const [a, b, c] = others()
       const rec = (over: any = {}) => ({ iid: 'f1', people: [{ p: a }, { p: b }, { p: 'allavail' }], type: 'Meeting', title: 'Range brief', date: 'Oct 20', yr: 2026, allday: false, s: 540, e: 600, remarks: 'Bring your kit', ...over })
@@ -425,7 +425,7 @@ describe('PART ONE — the Inputs pages', () => {
     })
   })
 
-  describe('D768 — it keeps its place: nothing on these pages orders by the mark', () => {
+  describe('D768 — it keeps its place: nothing on these pages orders by the mark (OR39)', () => {
     const DAY = () => {
       const [a, b, c, d, e] = others()
       return [
@@ -827,7 +827,7 @@ describe('PART TWO — the schedule\'s own lines, by the board\'s real CX button
      nor why. The red box and "information only" read "changed" the same way. The cause: ui/pendlist.ts inputWords
      pairs the people, the kind, the title, the hours and the remark of the issued record and the live one — and none
      of the three marks. */
-  describe('the "To go out" line of an input cancelled on a published day says it is cancelled, and why (D760 reading 3; D99, D100)', () => {
+  describe('the "To go out" line of an input cancelled on a published day says it is cancelled, and why (D760 reading 3; D99, D100) (OR35)', () => {
     const lineOf = (text: string) => [...dom(pendListHTML(WED)).querySelectorAll('.pl-item')].find(x => (x.textContent || '').includes(text)) as HTMLElement
     it('THE CONTROL — a row of the scheduler\'s own, cancelled on a published day: "… → … · CX (OWNWX)"', async () => {
       await boot()

@@ -162,9 +162,9 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - After any compaction the agent re-reads the saved state and the files in hand before the next change, and every
   report gives him the context % [D868, D871, D874, D884].
 - A guide missing after compaction → ask him to type `/reload-skills`; the next `/overnight` run tries the
-  overloaded-retry setting for one night, checked the next morning and kept only on his word [D885, D886].
-- He runs the guide check himself; its list comes back to a chat as findings put to him, and no guide changes because of
-  it without his word and its read [D886]. A chat started from a handoff has Remote Control on [D1195].
+  overloaded-retry setting one night, kept only on his word after a morning check [D885, D886, D2038].
+- He runs the guide check (the agent once, 14 Nov); its list comes back as findings put to him, no guide
+  changing for it without his word and its read [D886, D2038]. A chat started from a handoff has Remote Control on [D1195].
 - Write the state into the repo as you go; when the work closes, condense it in its own docs-only commit, never inside a
   fix — a saved context is a summary (decisions, state, next step), never the conversation [D69].
 - Every chat's title starts with its number — 1 the M365 package chat, 2 the rules diet's step 4, then counting on — and

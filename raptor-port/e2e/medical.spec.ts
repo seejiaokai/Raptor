@@ -323,7 +323,7 @@ test.describe('the medical view renders and fits', () => {
 
   /* A WINDOW HE HAS MOVED TAKES ITS ROOM WITH IT ([MED-ROOM-DRAGGED] — both code reads of 8 Nov 26, Astra's and the fresh
      Opus reader's): a window keeps the place it was dragged to for the session (winorder.ts), so sections that kept their
-     room at the right for it were squeezed AND covered. As the Inputs list's (D1787, 06-inputs.css): the room is made only
+     room at the right for it were squeezed AND covered. As the Inputs list's (D1787; both rooms' rules: 25-inputs-calendar.css): the room is made only
      while the window stands where it opens, at 1536, at his PC's page (1229 × 600, 1536 at 125%) and at the D1300 test's 1500. */
   for (const vp of [{ width: 1536, height: 864 }, { width: 1229, height: 600 }, DESK])
     test(`[MED-ROOM-DRAGGED] the window of "+ Medical" dragged away gives the cards their room back, and reopened where he left it, makes none — ${vp.width}×${vp.height}`, async ({ page }) => {
@@ -337,7 +337,16 @@ test.describe('the medical view renders and fits', () => {
       await page.click('#medNew')
       const win = page.locator('[data-testid="win-inputedit"]')
       await expect(win).toBeVisible()
-      expect(await pad(), 'at its own place the room is made').toBe(`${Math.min(430, vp.width - 24) + 16}px`)
+      /* the room is measured against the window as it really stands — its box on screen, from its left edge to the
+         page's right edge (its width and its 16px from the edge) — never against `--inpwin-room`, which the room rule
+         itself reads, so a wrong room size would pass a test that compared the two ([INP-ROOM-TIDY-2], the readers of
+         14 Nov 26); nor its 430 and 16 written again, which would drift from the stylesheet */
+      const box = (await win.boundingBox())!
+      const room = await page.evaluate(x => document.documentElement.clientWidth - x, box.x)
+      expect(room, 'the window stands at the right, a little from the edge').toBeGreaterThan(box.width)
+      expect(Math.abs(parseFloat(await pad()) - room), `at its own place the room is the window's own (${room}px)`).toBeLessThanOrEqual(1)
+      const cardsRight = await page.evaluate(() => Math.max(...[...document.querySelectorAll('#medView .medcard')].map(c => c.getBoundingClientRect().right)))
+      expect(cardsRight, 'every card stands clear of the window').toBeLessThanOrEqual(box.x + 0.5)
       const t = (await win.locator('.win-ttl').boundingBox())!
       await page.mouse.move(t.x + 10, t.y + t.height / 2); await page.mouse.down()
       await page.mouse.move(t.x - 800, t.y + 150, { steps: 10 }); await page.mouse.up()

@@ -1,0 +1,1204 @@
+{
+ "log": [
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 open bid window on a free day",
+   "result": "PASS",
+   "note": "ids: 36 controls [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-01-bidwin-open.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 AM",
+   "result": "PASS",
+   "note": " [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-02-portion-am.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 PM",
+   "result": "PASS",
+   "note": " [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-03-portion-pm.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 Whole day",
+   "result": "PASS",
+   "note": " [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-04-portion-full.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 remark typed",
+   "result": "PASS",
+   "note": "value=Walk remark text [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-05-remark.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 auto-approve switch off",
+   "result": "PASS",
+   "note": "aria false [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-06-autoapprove-off.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 auto-approve switch on",
+   "result": "PASS",
+   "note": "aria true [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-07-autoapprove-on.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 more menu open",
+   "result": "PASS",
+   "note": "menu ids: bid-file-ATCH,bid-file-OTH,bid-postout,bid-postin [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-08-more-menu.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 more menu closed again",
+   "result": "PASS",
+   "note": "menu shown: false [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-09-more-closed.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 pick a range",
+   "result": "PASS",
+   "note": "calendar ids: bid-dayline,bid-dayline-calm,span-range,span-today,span-day-2026-11-01,span-day-2026-11-02,span-day-2026-11-03,span-day-2026-11-04 [488,208 560x642 in 1536x864]",
+   "pics": [
+    "d-10-pick-range.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 range reached the 4 Dec?",
+   "result": "PASS",
+   "note": " range-calendar cells: 0",
+   "pics": [
+    "d-11-pick-range-2.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 close with X",
+   "result": "PASS",
+   "note": "picker shown: false",
+   "pics": [
+    "d-12-closed-x.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 Grant OIL",
+   "result": "PASS",
+   "note": "ids: bid-approve-tick,bid-cancel,bid-dayline,bid-dayline-calm,bid-rmk-row,bid-remarks,bid-tl,bid-till,bid-tilldate,bid-doc-row,portion-full,portion-am,portion-pm,span-range,bid-leave-grid,oil-why,oil-given-by,oil-pick-ho,oil-pick-fo,oil-days,oil-give [488,529 560x321 in 1536x864]",
+   "pics": [
+    "d-13-grant-oil.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 OIL other box",
+   "result": "PASS",
+   "note": "typed 1.5 [488,529 560x321 in 1536x864]",
+   "pics": [
+    "d-14-oil-other.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 CSE",
+   "result": "PASS",
+   "note": "pressed CSE; picker false",
+   "pics": [
+    "d-15-cse.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 OD",
+   "result": "PASS",
+   "note": "pressed OD; picker false",
+   "pics": [
+    "d-16-od.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "1 LL leave button (auto-approve off -> pending)",
+   "result": "PASS",
+   "note": "LL pressed; picker false",
+   "pics": [
+    "d-17-ll-pending.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 pending leave window",
+   "result": "PASS",
+   "note": "acts: decide-approve,decide-refuse,decide-shift,bid-clear,bid-doc-row [488,527 560x323 in 1536x864]",
+   "pics": [
+    "d-18-held-pending.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 Refuse (window closes on a decision)",
+   "result": "PASS",
+   "note": "picker open after: false",
+   "pics": [
+    "d-19-refuse.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 reopen the refused bid: Refused is lit",
+   "result": "PASS",
+   "note": "acts: decide-approve,decide-refuse,decide-shift,bid-clear [488,527 560x323 in 1536x864]",
+   "pics": [
+    "d-20-refused-reopened.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 Refuse pressed again (undo)",
+   "result": "PASS",
+   "note": "picker open after: false",
+   "pics": [
+    "d-21-refuse-undo.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 reopen: back to pending",
+   "result": "PASS",
+   "note": "acts: decide-approve,decide-refuse,decide-shift,bid-clear [488,527 560x323 in 1536x864]",
+   "pics": [
+    "d-22-pending-reopened.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 Move",
+   "result": "PASS",
+   "note": "picker open after: false",
+   "pics": [
+    "d-23-move.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 Move cancelled (Escape)",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-24-move-cancel.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 Approve",
+   "result": "PASS",
+   "note": "picker open after: false",
+   "pics": [
+    "d-25-approve.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 approved leave window",
+   "result": "PASS",
+   "note": "acts: decide-approve,decide-refuse,decide-shift,bid-clear,bid-doc-row [488,527 560x323 in 1536x864]",
+   "pics": [
+    "d-26-approved-window.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 Document button (the upload row)",
+   "result": "PASS",
+   "note": "doc row shown: true [488,527 560x323 in 1536x864]",
+   "pics": [
+    "d-27-doc-row.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 Delete over a plain leave (no award on the day: deletes at once, as built)",
+   "result": "PASS",
+   "note": "picker open after: false",
+   "pics": [
+    "d-28-delete-plain.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "2 Delete armed over a day holding an OIL award",
+   "result": "NOT WALKED",
+   "note": "no Delete over an award",
+   "pics": [
+    "d-29-delete-armed.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "3 day list (two entries)",
+   "result": "PASS",
+   "note": "daylist true ids: daylist-close,daylist,dl-r-rmw1eww9c2phah,dl-placed-r-rmw1eww9c2phah,dl-approve-rmw1eww9c2phah,dl-refuse-rmw1eww9c2phah,dl-move-rmw1eww9c2phah,dl-clear-rmw1eww9c2phah,dl-rmw1eww9c2phah-rmk-row,dl-rmw1eww9c2phah-remarks,dl-rmw1eww9c2phah-tl,dl-rmw1eww9c2phah-till,dl-rmw1eww9c2phah-tilldate,dl-rmw1eww9c2phah-doc-row,dl-r-rmw1ewyei3h7gn,dl-placed-r-rmw1ewyei3h7gn,dl-approve-rmw1ewyei3h7gn,dl-refuse-rmw1ewyei3h7gn,dl-move-rmw1ewyei3h7gn,dl-clear-rmw1ewyei3h7gn,dl-rmw1ewyei3h7gn-rmk-row,dl-rmw1ewyei3h7gn-remarks,dl-rmw1ewyei3h7gn-tl,dl-rmw1ewyei3h7gn-till,dl-rmw1ewyei3h7gn-tilldate,dl-rmw1ewyei3h7gn-doc-row [488,518 560x332 in 1536x864]",
+   "pics": [
+    "d-30-daylist.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "3 day list Refuse",
+   "result": "PASS",
+   "note": " [488,518 560x332 in 1536x864]",
+   "pics": [
+    "d-31-daylist-refuse.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "3 day list Delete armed",
+   "result": "PASS",
+   "note": "text ?",
+   "pics": [
+    "d-32-daylist-delete.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "4 drag window",
+   "result": "PASS",
+   "note": "ids: sel-who,sel-span,sel-approve-tick,sel-cancel,bid-dayline,bid-dayline-calm,sel-rmk-row,sel-remarks,sel-tl,sel-till,sel-tilldate,sel-doc-row,sel-portion-full,sel-portion-am,sel-portion-pm,bid-leave-grid,sel-LL,sel-LL-left,sel-OL,sel-OL-left,sel-OIL,sel-OIL-left,sel-CCL,sel-CCL-left,sel-FCL,sel-FCL-left,sel-PL,sel-PL-left,sel-EL,sel-EL-left,sel-CL,sel-CL-left,sel-extra-row,sel-file-CSE,sel-file-OD,sel-oil,sel-more [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-33-drag-window.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "4 drag window: LL",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-34-drag-ll.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "5 Settings open",
+   "result": "PASS",
+   "note": "ids: settings-sheet [488,162 560x688 in 1536x864]",
+   "pics": [
+    "d-35-settings.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "5 Rearrange the grid",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-36-rearrange.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "5 counter row -> counter window",
+   "result": "PASS",
+   "note": " ids: counter-head,counter-name,counter-count-sets,counter-count-ip,counter-count-iwso,counter-count-opsp,counter-count-opsw,counter-count-sxo,counter-edit-open",
+   "pics": [
+    "d-37-counter-window.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "5 counter window: is/is-not and count",
+   "result": "PASS",
+   "note": " counter controls counter-head,counter-name,counter-count-sets,counter-count-ip,counter-count-iwso,counter-count-opsp,counter-count-opsw,counter-count-sxo,counter-edit-open",
+   "pics": [
+    "d-38-counter-form.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "5 Events list",
+   "result": "PASS",
+   "note": "ids: event-row-0,event-0-2026-01-01,event-0-2026-01-02,event-0-2026-01-03,event-0-2026-01-04,event-0-2026-01-05,event-0-2026-01-06,event-0-2026-01-07,event-0-2026-01-08,event-0-2026-01-09,event-0-2026-01-10,event-0-2026-01-11,event-0-2026-01-12,event-0-2026-01-13,event-0-2026-01-14,event-0-2026-01-15,event-0-2026-01-16,event-0-2026-01-17,event-0-2026-01-18,event-0-2026-01-19,event-0-2026-01-20,event-0-2026-01-21,event-0-2026-01-22,event-0-2026-01-23,event-0-2026-01-24,event-0-2026-01-25,event-0-2026-01-26,event-0-2026-01-27,event-0-2026-01-28,event-0-2026-01-29,event-0-2026-01-30,event-0-2026-01-31,event-0-2026-02-01,event-0-2026-02-02,event-0-2026-02-03,event-0-2026-02-04,event-0-2026-02-05,event-0-2026-02-06,event-0-2026-02-07,event-0-2026-02-08,event-0-2026-02-09,event-0-2026-02-10,event-0-2026-02-11,event-0-2026-02-12,event-0-2026-02-13,event-0-2026-02-14,event-0-2026-02-15,event-0-2026-02-16,event-0-2026-02-17,event-0-2026-02-18,event-0-2026-02-19,event-0-2026-02-20,event-0-2026-02-21,event-0-2026-02-22,event-0-2026-02-23,event-0-2026-02-24,event-0-2026-02-25,event-0-2026-02-26,event-0-2026-02-27,event-0-2026-02-28,event-0-2026-03-01,event-0-2026-03-02,event-0-2026-03-03,event-0-2026-03-04,event-0-2026-03-05,event-0-2026-03-06,event-0-2026-03-07,event-0-2026-03-08,event-blocked-2026-03-09,event-0-2026-03-15,event-0-2026-03-16,event-0-2026-03-17,event-0-2026-03-18,event-0-2026-03-19,event-0-2026-03-20,event-0-2026-03-21,event-0-2026-03-22,event-0-2026-03-23,event-0-2026-03-24,event-0-2026-03-25,event-0-2026-03-26,event-0-2026-03-27,event-0-2026-03-28,event-0-2026-03-29,event-0-2026-03-30,event-0-2026-03-31,event-0-2026-04-01,event-0-2026-04-02,event-0-2026-04-03,event-0-2026-04-04,event-0-2026-04-05,event-0-2026-04-06,event-0-2026-04-07,event-0-2026-04-08,event-0-2026-04-09,event-0-2026-04-10,event-0-2026-04-11,event-0-2026-04-12,event-0-2026-04-13,event-0-2026-04-14,event-0-2026-04-15,event-0-2026-04-16,event-0-2026-04-17,event-0-2026-04-18,event-0-2026-04-19,event-0-2026-04-20,event-0-2026-04-21,event-0-2026-04-22,event-0-2026-04-23,event-0-2026-04-24,event-0-2026-04-25,event-0-2026-04-26,event-0-2026-04-27,event-0-2026-04-28,event-0-2026-04-29,event-0-2026-04-30,event-0-2026-05-01,event-0-2026-05-02,event-0-2026-05-03,event-0-2026-05-04,event-0-2026-05-05,event-0-2026-05-06,event-0-2026-05-07,event-0-2026-05-08,event-0-2026-05-09,event-0-2026-05-10,event-0-2026-05-11,event-0-2026-05-12,event-0-2026-05-13,event-0-2026-05-14,event-0-2026-05-15,event-0-2026-05-16,event-0-2026-05-17,event-0-2026-05-18,event-0-2026-05-19,event-0-2026-05-20,event-0-2026-05-21,event-0-2026-05-22,event-0-2026-05-23,event-0-2026-05-24,event-0-2026-05-25,event-0-2026-05-26,event-0-2026-05-27,event-0-2026-05-28,event-0-2026-05-29,event-0-2026-05-30,event-0-2026-05-31,event-0-2026-06-01,event-0-2026-06-02,event-0-2026-06-03,event-0-2026-06-04,event-0-2026-06-05,event-0-2026-06-06,event-0-2026-06-07,event-0-2026-06-08,event-0-2026-06-09,event-0-2026-06-10,event-0-2026-06-11,event-0-2026-06-12,event-0-2026-06-13,event-0-2026-06-14,event-0-2026-06-15,event-0-2026-06-16,event-0-2026-06-17,event-0-2026-06-18,event-0-2026-06-19,event-0-2026-06-20,event-0-2026-06-21,event-0-2026-06-22,event-0-2026-06-23,event-0-2026-06-24,event-0-2026-06-25,event-0-2026-06-26,event-0-2026-06-27,event-0-2026-06-28,event-0-2026-06-29,event-0-2026-06-30,event-0-2026-07-01,event-0-2026-07-02,event-0-2026-07-03,event-0-2026-07-04,event-0-2026-07-05,event-0-2026-07-06,event-0-2026-07-07,event-0-2026-07-08,event-0-2026-07-09,event-0-2026-07-10,event-0-2026-07-11,event-0-2026-07-12,event-0-2026-07-13,event-0-2026-07-14,event-0-2026-07-15,event-0-2026-07-16,event-0-2026-07-17,event-0-2026-07-18,event-0-2026-07-19,event-0-2026-07-20,event-0-2026-07-21,event-0-2026-07-22,event-0-2026-07-23,event-0-2026-07-24,event-0-2026-07-25,event-0-2026-07-26,event-0-2026-07-27,event-0-2026-07-28,event-0-2026-07-29,event-0-2026-07-30,event-0-2026-07-31,event-0-2026-08-01,event-0-2026-08-02,event-0-2026-08-03,event-0-2026-08-04,event-0-2026-08-05,event-0-2026-08-06,event-0-2026-08-07,event-0-2026-08-08,event-0-2026-08-09,event-0-2026-08-10,event-0-2026-08-11,event-0-2026-08-12,event-0-2026-08-13,event-0-2026-08-14,event-0-2026-08-15,event-0-2026-08-16,event-0-2026-08-17,event-0-2026-08-18,event-0-2026-08-19,event-0-2026-08-20,event-0-2026-08-21,event-0-2026-08-22,event-0-2026-08-23,event-0-2026-08-24,event-0-2026-08-25,event-0-2026-08-26,event-0-2026-08-27,event-0-2026-08-28,event-0-2026-08-29,event-0-2026-08-30,event-0-2026-08-31,event-0-2026-09-01,event-0-2026-09-02,event-0-2026-09-03,event-0-2026-09-04,event-0-2026-09-05,event-0-2026-09-06,event-0-2026-09-07,event-0-2026-09-08,event-0-2026-09-09,event-0-2026-09-10,event-0-2026-09-11,event-0-2026-09-12,event-0-2026-09-13,event-blocked-2026-09-14,event-0-2026-09-20,event-0-2026-09-21,event-0-2026-09-22,event-0-2026-09-23,event-0-2026-09-24,event-0-2026-09-25,event-0-2026-09-26,event-0-2026-09-27,event-0-2026-09-28,event-0-2026-09-29,event-0-2026-09-30,event-0-2026-10-01,event-0-2026-10-02,event-0-2026-10-03,event-0-2026-10-04,event-0-2026-10-05,event-0-2026-10-06,event-0-2026-10-07,event-0-2026-10-08,event-0-2026-10-09,event-0-2026-10-10,event-0-2026-10-11,event-0-2026-10-12,event-0-2026-10-13,event-0-2026-10-14,event-0-2026-10-15,event-0-2026-10-16,event-0-2026-10-17,event-0-2026-10-18,event-0-2026-10-19,event-0-2026-10-20,event-0-2026-10-21,event-0-2026-10-22,event-0-2026-10-23,event-0-2026-10-24,event-0-2026-10-25,event-0-2026-10-26,event-0-2026-10-27,event-0-2026-10-28,event-0-2026-10-29,event-0-2026-10-30,event-0-2026-10-31,event-0-2026-11-01,event-0-2026-11-02,event-0-2026-11-03,event-0-2026-11-04,event-0-2026-11-05,event-0-2026-11-06,event-0-2026-11-07,event-0-2026-11-08,event-0-2026-11-09,event-0-2026-11-10,event-0-2026-11-11,event-0-2026-11-12,event-0-2026-11-13,event-0-2026-11-14,event-0-2026-11-15,event-0-2026-11-16,event-0-2026-11-17,event-0-2026-11-18,event-0-2026-11-19,event-0-2026-11-20,event-0-2026-11-21,event-0-2026-11-22,event-0-2026-11-23,event-0-2026-11-24,event-0-2026-11-25,event-0-2026-11-26,event-0-2026-11-27,event-0-2026-11-28,event-0-2026-11-29,event-0-2026-11-30,event-0-2026-12-01,event-0-2026-12-02,event-0-2026-12-03,event-0-2026-12-04,event-0-2026-12-05,event-0-2026-12-06,event-0-2026-12-07,event-0-2026-12-08,event-0-2026-12-09,event-0-2026-12-10,event-0-2026-12-11,event-0-2026-12-12,event-0-2026-12-13,event-0-2026-12-14,event-0-2026-12-15,event-0-2026-12-16,event-0-2026-12-17,event-0-2026-12-18,event-0-2026-12-19,event-0-2026-12-20,event-0-2026-12-21,event-0-2026-12-22,event-0-2026-12-23,event-0-2026-12-24,event-0-2026-12-25,event-0-2026-12-26,event-0-2026-12-27,event-0-2026-12-28,event-0-2026-12-29,event-0-2026-12-30,event-0-2026-12-31,event-row-1,event-1-2026-01-01,event-1-2026-01-02,event-1-2026-01-03,event-1-2026-01-04,event-1-2026-01-05,event-1-2026-01-06,event-1-2026-01-07,event-1-2026-01-08,event-1-2026-01-09,event-1-2026-01-10,event-1-2026-01-11,event-1-2026-01-12,event-1-2026-01-13,event-1-2026-01-14,event-1-2026-01-15,event-1-2026-01-16,event-1-2026-01-17,event-1-2026-01-18,event-1-2026-01-19,event-1-2026-01-20,event-1-2026-01-21,event-1-2026-01-22,event-1-2026-01-23,event-1-2026-01-24,event-1-2026-01-25,event-1-2026-01-26,event-1-2026-01-27,event-1-2026-01-28,event-1-2026-01-29,event-1-2026-01-30,event-1-2026-01-31,event-1-2026-02-01,event-1-2026-02-02,event-1-2026-02-03,event-1-2026-02-04,event-1-2026-02-05,event-1-2026-02-06,event-1-2026-02-07,event-1-2026-02-08,event-1-2026-02-09,event-1-2026-02-10,event-1-2026-02-11,event-1-2026-02-12,event-1-2026-02-13,event-1-2026-02-14,event-1-2026-02-15,event-1-2026-02-16,event-1-2026-02-17,event-1-2026-02-18,event-1-2026-02-19,event-1-2026-02-20,event-1-2026-02-21,event-1-2026-02-22,event-1-2026-02-23,event-1-2026-02-24,event-1-2026-02-25,event-1-2026-02-26,event-1-2026-02-27,event-1-2026-02-28,event-1-2026-03-01,event-1-2026-03-02,event-1-2026-03-03,event-1-2026-03-04,event-1-2026-03-05,event-1-2026-03-06,event-1-2026-03-07,event-1-2026-03-08,event-1-2026-03-09,event-1-2026-03-10,event-1-2026-03-11,event-1-2026-03-12,event-1-2026-03-13,event-1-2026-03-14,event-1-2026-03-15,event-1-2026-03-16,event-1-2026-03-17,event-1-2026-03-18,event-1-2026-03-19,event-1-2026-03-20,event-1-2026-03-21,event-1-2026-03-22,event-1-2026-03-23,event-1-2026-03-24,event-1-2026-03-25,event-1-2026-03-26,event-1-2026-03-27,event-1-2026-03-28,event-1-2026-03-29,event-1-2026-03-30,event-1-2026-03-31,event-1-2026-04-01,event-1-2026-04-02,event-1-2026-04-03,event-1-2026-04-04,event-1-2026-04-05,event-1-2026-04-06,event-1-2026-04-07,event-1-2026-04-08,event-1-2026-04-09,event-1-2026-04-10,event-1-2026-04-11,event-1-2026-04-12,event-1-2026-04-13,event-1-2026-04-14,event-1-2026-04-15,event-1-2026-04-16,event-1-2026-04-17,event-1-2026-04-18,event-1-2026-04-19,event-1-2026-04-20,event-1-2026-04-21,event-1-2026-04-22,event-1-2026-04-23,event-1-2026-04-24,event-1-2026-04-25,event-1-2026-04-26,event-1-2026-04-27,event-1-2026-04-28,event-1-2026-04-29,event-1-2026-04-30,event-1-2026-05-01,event-1-2026-05-02,event-1-2026-05-03,event-1-2026-05-04,event-1-2026-05-05,event-1-2026-05-06,event-1-2026-05-07,event-1-2026-05-08,event-1-2026-05-09,event-1-2026-05-10,event-1-2026-05-11,event-1-2026-05-12,event-1-2026-05-13,event-1-2026-05-14,event-1-2026-05-15,event-1-2026-05-16,event-1-2026-05-17,event-1-2026-05-18,event-1-2026-05-19,event-1-2026-05-20,event-1-2026-05-21,event-1-2026-05-22,event-1-2026-05-23,event-1-2026-05-24,event-1-2026-05-25,event-1-2026-05-26,event-1-2026-05-27,event-1-2026-05-28,event-1-2026-05-29,event-1-2026-05-30,event-1-2026-05-31,event-1-2026-06-01,event-1-2026-06-02,event-1-2026-06-03,event-1-2026-06-04,event-1-2026-06-05,event-1-2026-06-06,event-1-2026-06-07,event-1-2026-06-08,event-1-2026-06-09,event-1-2026-06-10,event-1-2026-06-11,event-1-2026-06-12,event-1-2026-06-13,event-1-2026-06-14,event-1-2026-06-15,event-1-2026-06-16,event-1-2026-06-17,event-1-2026-06-18,event-1-2026-06-19,event-1-2026-06-20,event-1-2026-06-21,event-1-2026-06-22,event-1-2026-06-23,event-1-2026-06-24,event-1-2026-06-25,event-1-2026-06-26,event-1-2026-06-27,event-1-2026-06-28,event-1-2026-06-29,event-1-2026-06-30,event-1-2026-07-01,event-1-2026-07-02,event-1-2026-07-03,event-1-2026-07-04,event-1-2026-07-05,event-1-2026-07-06,event-1-2026-07-07,event-1-2026-07-08,event-1-2026-07-09,event-1-2026-07-10,event-1-2026-07-11,event-1-2026-07-12,event-1-2026-07-13,event-1-2026-07-14,event-1-2026-07-15,event-1-2026-07-16,event-1-2026-07-17,event-1-2026-07-18,event-1-2026-07-19,event-1-2026-07-20,event-1-2026-07-21,event-1-2026-07-22,event-1-2026-07-23,event-1-2026-07-24,event-1-2026-07-25,event-1-2026-07-26,event-1-2026-07-27,event-1-2026-07-28,event-1-2026-07-29,event-1-2026-07-30,event-1-2026-07-31,event-1-2026-08-01,event-1-2026-08-02,event-1-2026-08-03,event-1-2026-08-04,event-1-2026-08-05,event-1-2026-08-06,event-1-2026-08-07,event-1-2026-08-08,event-1-2026-08-09,event-1-2026-08-10,event-1-2026-08-11,event-1-2026-08-12,event-1-2026-08-13,event-1-2026-08-14,event-1-2026-08-15,event-1-2026-08-16,event-1-2026-08-17,event-1-2026-08-18,event-1-2026-08-19,event-1-2026-08-20,event-1-2026-08-21,event-1-2026-08-22,event-1-2026-08-23,event-1-2026-08-24,event-1-2026-08-25,event-1-2026-08-26,event-1-2026-08-27,event-1-2026-08-28,event-1-2026-08-29,event-1-2026-08-30,event-1-2026-08-31,event-1-2026-09-01,event-1-2026-09-02,event-1-2026-09-03,event-1-2026-09-04,event-1-2026-09-05,event-1-2026-09-06,event-1-2026-09-07,event-1-2026-09-08,event-1-2026-09-09,event-1-2026-09-10,event-1-2026-09-11,event-1-2026-09-12,event-1-2026-09-13,event-1-2026-09-14,event-1-2026-09-15,event-1-2026-09-16,event-1-2026-09-17,event-1-2026-09-18,event-1-2026-09-19,event-1-2026-09-20,event-1-2026-09-21,event-1-2026-09-22,event-1-2026-09-23,event-1-2026-09-24,event-1-2026-09-25,event-1-2026-09-26,event-1-2026-09-27,event-1-2026-09-28,event-1-2026-09-29,event-1-2026-09-30,event-1-2026-10-01,event-1-2026-10-02,event-1-2026-10-03,event-1-2026-10-04,event-1-2026-10-05,event-1-2026-10-06,event-1-2026-10-07,event-1-2026-10-08,event-1-2026-10-09,event-1-2026-10-10,event-1-2026-10-11,event-1-2026-10-12,event-1-2026-10-13,event-1-2026-10-14,event-1-2026-10-15,event-1-2026-10-16,event-1-2026-10-17,event-1-2026-10-18,event-1-2026-10-19,event-1-2026-10-20,event-1-2026-10-21,event-1-2026-10-22,event-1-2026-10-23,event-1-2026-10-24,event-1-2026-10-25,event-1-2026-10-26,event-1-2026-10-27,event-1-2026-10-28,event-1-2026-10-29,event-1-2026-10-30,event-1-2026-10-31,event-1-2026-11-01,event-1-2026-11-02,event-1-2026-11-03,event-1-2026-11-04,event-1-2026-11-05,event-1-2026-11-06,event-1-2026-11-07,event-1-2026-11-08,event-1-2026-11-09,event-1-2026-11-10,event-1-2026-11-11,event-1-2026-11-12,event-1-2026-11-13,event-1-2026-11-14,event-1-2026-11-15,event-1-2026-11-16,event-1-2026-11-17,event-1-2026-11-18,event-1-2026-11-19,event-1-2026-11-20,event-1-2026-11-21,event-1-2026-11-22,event-1-2026-11-23,event-1-2026-11-24,event-1-2026-11-25,event-1-2026-11-26,event-1-2026-11-27,event-1-2026-11-28,event-1-2026-11-29,event-1-2026-11-30,event-1-2026-12-01,event-1-2026-12-02,event-1-2026-12-03,event-1-2026-12-04,event-1-2026-12-05,event-1-2026-12-06,event-1-2026-12-07,event-1-2026-12-08,event-1-2026-12-09,event-1-2026-12-10,event-1-2026-12-11,event-1-2026-12-12,event-1-2026-12-13,event-1-2026-12-14,event-1-2026-12-15,event-1-2026-12-16,event-1-2026-12-17,event-1-2026-12-18,event-1-2026-12-19,event-1-2026-12-20,event-1-2026-12-21,event-1-2026-12-22,event-1-2026-12-23,event-1-2026-12-24,event-1-2026-12-25,event-1-2026-12-26,event-1-2026-12-27,event-1-2026-12-28,event-1-2026-12-29,event-1-2026-12-30,event-1-2026-12-31,events-sheet,events-period,events-close,events-add,events-presets,events-said,events-list,events-sec-squadron,events-head-squadron,evline-0-2026-11-10,evkind-0-2026-11-10,evedit-0-2026-11-10,evdel-0-2026-11-10,events-sec-holidays,events-head-holidays,evline-0-2026-01-01,evkind-0-2026-01-01,evedit-0-2026-01-01,evdel-0-2026-01-01,evline-0-2026-02-17,evkind-0-2026-02-17,evedit-0-2026-02-17,evdel-0-2026-02-17,evline-0-2026-08-09,evkind-0-2026-08-09,evedit-0-2026-08-09,evdel-0-2026-08-09,evline-0-2026-12-25,evkind-0-2026-12-25,evedit-0-2026-12-25,evdel-0-2026-12-25",
+   "pics": [
+    "d-39-events.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "5 Events delete armed",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-40-events-armed.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "5 Calendar…",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-41-calendar.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "6 Open for bidding window",
+   "result": "PASS",
+   "note": "ids: od-months,od-month-2026-01,od-month-2026-02,od-month-2026-03,od-month-2026-04,od-month-2026-05,od-month-2026-06,od-month-2026-07,od-month-2026-08,od-month-2026-09,od-month-2026-10,od-month-2026-11,od-month-2026-12,od-lines [488,658 560x192 in 1536x864]",
+   "pics": [
+    "d-42-open-dates.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "6 a month button (Dec)",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-43-open-dates-dec.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "6 a stretch calendar icon",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-44-open-dates-stretch.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "7 Balances tab",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-45-balances.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "7 Grades window",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-46-grades.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "7 a name -> person window",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-47-person-window.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "7 Approvals tab",
+   "result": "PASS",
+   "note": " tab lw-tab-approvals",
+   "pics": [
+    "d-48-approvals.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "7 Approvals: a line Approve/Refuse",
+   "result": "PASS",
+   "note": "refuse pressed",
+   "pics": [
+    "d-49-approvals-line.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "7 Approve all armed",
+   "result": "PASS",
+   "note": " label ?",
+   "pics": [
+    "d-50-approve-all.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "8 hover bid buttons",
+   "result": "PASS",
+   "note": "hover pictures taken: 5 [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-51-hover-portion-am.png",
+    "d-52-hover-bid-LL.png",
+    "d-53-hover-bid-OL.png",
+    "d-54-hover-bid-oil.png",
+    "d-55-hover-bid-more.png",
+    "d-56-hover.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "step": "8 Tab through the bid window",
+   "result": "PASS",
+   "note": "bid-remarks: outline none 3px rgb(241, 244, 247); shadow none | bid-till: outline auto 1px rgb(16, 16, 16); shadow none | BUTTON: outline solid 2px rgb(59, 198, 232); shadow none | portion-full: outline auto 1px rgb(16, 16, 16); shadow none | portion-am: outline auto 1px rgb(16, 16, 16); shadow none | portion-pm: outline auto 1px rgb(16, 16, 16); shadow none [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-57-tab-1-bidremarks.png",
+    "d-58-tab-2-bidtill.png",
+    "d-59-tab-3-BUTTON.png",
+    "d-60-tab-4-portionfull.png",
+    "d-61-tab-5-portionam.png",
+    "d-62-tab-6-portionpm.png",
+    "d-63-tab-1.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "member",
+   "step": "M open bid window (member, own row)",
+   "result": "PASS",
+   "note": "ids: 34 [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-01-mem-member-bid.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "member",
+   "step": "M AM",
+   "result": "PASS",
+   "note": " [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-02-mem-member-am.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "member",
+   "step": "M remark",
+   "result": "PASS",
+   "note": "value=Member remark [488,585 560x265 in 1536x864]",
+   "pics": [
+    "d-03-mem-member-remark.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "member",
+   "step": "M more menu",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-04-mem-member-more.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "member",
+   "step": "M closed day window",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-05-mem-member-closed.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "member",
+   "step": "M own approved leave",
+   "result": "PASS",
+   "note": "ids: decide-shift,bid-clear,bid-doc-row",
+   "pics": [
+    "d-06-mem-member-approved.png"
+   ]
+  },
+  {
+   "size": "desk",
+   "who": "member",
+   "step": "M Open for bidding window",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "d-07-mem-member-open.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 open bid window on a free day",
+   "result": "PASS",
+   "note": "ids: 36 controls [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-01-bidwin-open.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 AM",
+   "result": "PASS",
+   "note": " [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-02-am-justtapped.png",
+    "p-03-portion-am.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 PM",
+   "result": "PASS",
+   "note": " [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-04-pm-justtapped.png",
+    "p-05-portion-pm.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 Whole day",
+   "result": "PASS",
+   "note": " [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-06-full-justtapped.png",
+    "p-07-portion-full.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 remark typed",
+   "result": "PASS",
+   "note": "value=Walk remark text [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-08-remark.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 auto-approve switch off",
+   "result": "PASS",
+   "note": "aria false [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-09-autoapprove-off.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 auto-approve switch on",
+   "result": "PASS",
+   "note": "aria true [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-10-autoapprove-on.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 more menu open",
+   "result": "PASS",
+   "note": "menu ids: bid-file-ATCH,bid-file-OTH,bid-postout,bid-postin [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-11-more-justtapped.png",
+    "p-12-more-menu.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 more menu closed again",
+   "result": "PASS",
+   "note": "menu shown: false [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-13-more-closed.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 pick a range",
+   "result": "PASS",
+   "note": "calendar ids: bid-dayline,bid-dayline-calm,span-range,span-today,span-day-2026-11-01,span-day-2026-11-02,span-day-2026-11-03,span-day-2026-11-04 [12,218 378x642 in 402x874]",
+   "pics": [
+    "p-14-range-justtapped.png",
+    "p-15-pick-range.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 range reached the 4 Dec?",
+   "result": "PASS",
+   "note": " range-calendar cells: 0",
+   "pics": [
+    "p-16-pick-range-2.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 close with X",
+   "result": "PASS",
+   "note": "picker shown: false",
+   "pics": [
+    "p-17-closed-x.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 Grant OIL",
+   "result": "PASS",
+   "note": "ids: bid-approve-tick,bid-cancel,bid-dayline,bid-dayline-calm,bid-rmk-row,bid-remarks,bid-tl,bid-till,bid-tilldate,bid-doc-row,portion-full,portion-am,portion-pm,span-range,bid-leave-grid,oil-why,oil-given-by,oil-pick-ho,oil-pick-fo,oil-days,oil-give [12,467 378x393 in 402x874]",
+   "pics": [
+    "p-18-oil-justtapped.png",
+    "p-19-grant-oil.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 OIL other box",
+   "result": "PASS",
+   "note": "typed 1.5 [12,467 378x393 in 402x874]",
+   "pics": [
+    "p-20-oil-other.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 CSE",
+   "result": "PASS",
+   "note": "pressed CSE; picker false",
+   "pics": [
+    "p-21-cse-justtapped.png",
+    "p-22-cse.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 OD",
+   "result": "PASS",
+   "note": "pressed OD; picker false",
+   "pics": [
+    "p-23-od-justtapped.png",
+    "p-24-od.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "1 LL leave button (auto-approve off -> pending)",
+   "result": "PASS",
+   "note": "LL pressed; picker false",
+   "pics": [
+    "p-25-ll-justtapped.png",
+    "p-26-ll-pending.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 pending leave window",
+   "result": "PASS",
+   "note": "acts: decide-approve,decide-refuse,decide-shift,bid-clear,bid-doc-row [12,537 378x323 in 402x874]",
+   "pics": [
+    "p-27-held-pending.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 Refuse (window closes on a decision)",
+   "result": "PASS",
+   "note": "picker open after: false",
+   "pics": [
+    "p-28-refuse-justtapped.png",
+    "p-29-refuse.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 reopen the refused bid: Refused is lit",
+   "result": "PASS",
+   "note": "acts: decide-approve,decide-refuse,decide-shift,bid-clear [12,521 378x339 in 402x874]",
+   "pics": [
+    "p-30-refused-reopened.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 Refuse pressed again (undo)",
+   "result": "PASS",
+   "note": "picker open after: false",
+   "pics": [
+    "p-31-refuseundo-justtapped.png",
+    "p-32-refuse-undo.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 reopen: back to pending",
+   "result": "PASS",
+   "note": "acts: decide-approve,decide-refuse,decide-shift,bid-clear [12,537 378x323 in 402x874]",
+   "pics": [
+    "p-33-pending-reopened.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 Move",
+   "result": "PASS",
+   "note": "picker open after: false",
+   "pics": [
+    "p-34-move-justtapped.png",
+    "p-35-move.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 Move cancelled (Escape)",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-36-move-cancel.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 Approve",
+   "result": "PASS",
+   "note": "picker open after: false",
+   "pics": [
+    "p-37-approve-justtapped.png",
+    "p-38-approve.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 approved leave window",
+   "result": "PASS",
+   "note": "acts: decide-approve,decide-refuse,decide-shift,bid-clear,bid-doc-row [12,521 378x339 in 402x874]",
+   "pics": [
+    "p-39-approved-window.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 Document button (the upload row)",
+   "result": "PASS",
+   "note": "doc row shown: true [12,521 378x339 in 402x874]",
+   "pics": [
+    "p-40-doc-row.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 Delete over a plain leave (no award on the day: deletes at once, as built)",
+   "result": "PASS",
+   "note": "picker open after: false",
+   "pics": [
+    "p-41-delete-justtapped.png",
+    "p-42-delete-plain.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "2 Delete armed over a day holding an OIL award",
+   "result": "NOT WALKED",
+   "note": "no Delete over an award",
+   "pics": [
+    "p-43-delete-armed.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "3 day list (two entries)",
+   "result": "PASS",
+   "note": "daylist true ids: daylist-close,daylist,dl-r-rmw1ewv9d2h62w,dl-placed-r-rmw1ewv9d2h62w,dl-approve-rmw1ewv9d2h62w,dl-refuse-rmw1ewv9d2h62w,dl-move-rmw1ewv9d2h62w,dl-clear-rmw1ewv9d2h62w,dl-rmw1ewv9d2h62w-rmk-row,dl-rmw1ewv9d2h62w-remarks,dl-rmw1ewv9d2h62w-tl,dl-rmw1ewv9d2h62w-till,dl-rmw1ewv9d2h62w-tilldate,dl-rmw1ewv9d2h62w-doc-row,dl-r-rmw1ewxa030kv4,dl-placed-r-rmw1ewxa030kv4,dl-approve-rmw1ewxa030kv4,dl-refuse-rmw1ewxa030kv4,dl-move-rmw1ewxa030kv4,dl-clear-rmw1ewxa030kv4,dl-rmw1ewxa030kv4-rmk-row,dl-rmw1ewxa030kv4-remarks,dl-rmw1ewxa030kv4-tl,dl-rmw1ewxa030kv4-till,dl-rmw1ewxa030kv4-tilldate,dl-rmw1ewxa030kv4-doc-row [12,528 378x332 in 402x874]",
+   "pics": [
+    "p-44-daylist.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "3 day list Refuse",
+   "result": "PASS",
+   "note": " [12,512 378x348 in 402x874]",
+   "pics": [
+    "p-45-dlrefuse-justtapped.png",
+    "p-46-daylist-refuse.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "3 day list Delete armed",
+   "result": "PASS",
+   "note": "text ?",
+   "pics": [
+    "p-47-daylist-delete.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "4 drag window",
+   "result": "PASS",
+   "note": "ids: sel-who,sel-span,sel-approve-tick,sel-cancel,bid-dayline,bid-dayline-calm,sel-rmk-row,sel-remarks,sel-tl,sel-till,sel-tilldate,sel-doc-row,sel-portion-full,sel-portion-am,sel-portion-pm,bid-leave-grid,sel-LL,sel-LL-left,sel-OL,sel-OL-left,sel-OIL,sel-OIL-left,sel-CCL,sel-CCL-left,sel-FCL,sel-FCL-left,sel-PL,sel-PL-left,sel-EL,sel-EL-left,sel-CL,sel-CL-left,sel-extra-row,sel-file-CSE,sel-file-OD,sel-oil,sel-more [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-48-drag-window.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "4 drag window: LL",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-49-dragll-justtapped.png",
+    "p-50-drag-ll.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "5 Settings open",
+   "result": "PASS",
+   "note": "ids: settings-sheet [12,137 378x723 in 402x874]",
+   "pics": [
+    "p-51-settings-justtapped.png",
+    "p-52-settings.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "5 Rearrange the grid",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-53-rearrange.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "5 counter row -> counter window",
+   "result": "PASS",
+   "note": " ids: counter-head,counter-name,counter-count-sets,counter-count-ip,counter-count-iwso,counter-count-opsp,counter-count-opsw,counter-count-sxo,counter-edit-open",
+   "pics": [
+    "p-54-counter-window.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "5 counter window: is/is-not and count",
+   "result": "PASS",
+   "note": " counter controls counter-head,counter-name,counter-count-sets,counter-count-ip,counter-count-iwso,counter-count-opsp,counter-count-opsw,counter-count-sxo,counter-edit-open",
+   "pics": [
+    "p-55-counter-form.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "5 Events list",
+   "result": "PASS",
+   "note": "ids: event-row-0,event-0-2026-07-01,event-0-2026-07-02,event-0-2026-07-03,event-0-2026-07-04,event-0-2026-07-05,event-0-2026-07-06,event-0-2026-07-07,event-0-2026-07-08,event-0-2026-07-09,event-0-2026-07-10,event-0-2026-07-11,event-0-2026-07-12,event-0-2026-07-13,event-0-2026-07-14,event-0-2026-07-15,event-0-2026-07-16,event-0-2026-07-17,event-0-2026-07-18,event-0-2026-07-19,event-0-2026-07-20,event-0-2026-07-21,event-0-2026-07-22,event-0-2026-07-23,event-0-2026-07-24,event-0-2026-07-25,event-0-2026-07-26,event-0-2026-07-27,event-0-2026-07-28,event-0-2026-07-29,event-0-2026-07-30,event-0-2026-07-31,event-0-2026-08-01,event-0-2026-08-02,event-0-2026-08-03,event-0-2026-08-04,event-0-2026-08-05,event-0-2026-08-06,event-0-2026-08-07,event-0-2026-08-08,event-0-2026-08-09,event-0-2026-08-10,event-0-2026-08-11,event-0-2026-08-12,event-0-2026-08-13,event-0-2026-08-14,event-0-2026-08-15,event-0-2026-08-16,event-0-2026-08-17,event-0-2026-08-18,event-0-2026-08-19,event-0-2026-08-20,event-0-2026-08-21,event-0-2026-08-22,event-0-2026-08-23,event-0-2026-08-24,event-0-2026-08-25,event-0-2026-08-26,event-0-2026-08-27,event-0-2026-08-28,event-0-2026-08-29,event-0-2026-08-30,event-0-2026-08-31,event-0-2026-09-01,event-0-2026-09-02,event-0-2026-09-03,event-0-2026-09-04,event-0-2026-09-05,event-0-2026-09-06,event-0-2026-09-07,event-0-2026-09-08,event-0-2026-09-09,event-0-2026-09-10,event-0-2026-09-11,event-0-2026-09-12,event-0-2026-09-13,event-blocked-2026-09-14,event-0-2026-09-20,event-0-2026-09-21,event-0-2026-09-22,event-0-2026-09-23,event-0-2026-09-24,event-0-2026-09-25,event-0-2026-09-26,event-0-2026-09-27,event-0-2026-09-28,event-0-2026-09-29,event-0-2026-09-30,event-0-2026-10-01,event-0-2026-10-02,event-0-2026-10-03,event-0-2026-10-04,event-0-2026-10-05,event-0-2026-10-06,event-0-2026-10-07,event-0-2026-10-08,event-0-2026-10-09,event-0-2026-10-10,event-0-2026-10-11,event-0-2026-10-12,event-0-2026-10-13,event-0-2026-10-14,event-0-2026-10-15,event-0-2026-10-16,event-0-2026-10-17,event-0-2026-10-18,event-0-2026-10-19,event-0-2026-10-20,event-0-2026-10-21,event-0-2026-10-22,event-0-2026-10-23,event-0-2026-10-24,event-0-2026-10-25,event-0-2026-10-26,event-0-2026-10-27,event-0-2026-10-28,event-0-2026-10-29,event-0-2026-10-30,event-0-2026-10-31,event-0-2026-11-01,event-0-2026-11-02,event-0-2026-11-03,event-0-2026-11-04,event-0-2026-11-05,event-0-2026-11-06,event-0-2026-11-07,event-0-2026-11-08,event-0-2026-11-09,event-0-2026-11-10,event-0-2026-11-11,event-0-2026-11-12,event-0-2026-11-13,event-0-2026-11-14,event-0-2026-11-15,event-0-2026-11-16,event-0-2026-11-17,event-0-2026-11-18,event-0-2026-11-19,event-0-2026-11-20,event-0-2026-11-21,event-0-2026-11-22,event-0-2026-11-23,event-0-2026-11-24,event-0-2026-11-25,event-0-2026-11-26,event-0-2026-11-27,event-0-2026-11-28,event-0-2026-11-29,event-0-2026-11-30,event-0-2026-12-01,event-0-2026-12-02,event-0-2026-12-03,event-0-2026-12-04,event-0-2026-12-05,event-0-2026-12-06,event-0-2026-12-07,event-0-2026-12-08,event-0-2026-12-09,event-0-2026-12-10,event-0-2026-12-11,event-0-2026-12-12,event-0-2026-12-13,event-0-2026-12-14,event-0-2026-12-15,event-0-2026-12-16,event-0-2026-12-17,event-0-2026-12-18,event-0-2026-12-19,event-0-2026-12-20,event-0-2026-12-21,event-0-2026-12-22,event-0-2026-12-23,event-0-2026-12-24,event-0-2026-12-25,event-0-2026-12-26,event-0-2026-12-27,event-0-2026-12-28,event-0-2026-12-29,event-0-2026-12-30,event-0-2026-12-31,event-row-1,event-1-2026-07-01,event-1-2026-07-02,event-1-2026-07-03,event-1-2026-07-04,event-1-2026-07-05,event-1-2026-07-06,event-1-2026-07-07,event-1-2026-07-08,event-1-2026-07-09,event-1-2026-07-10,event-1-2026-07-11,event-1-2026-07-12,event-1-2026-07-13,event-1-2026-07-14,event-1-2026-07-15,event-1-2026-07-16,event-1-2026-07-17,event-1-2026-07-18,event-1-2026-07-19,event-1-2026-07-20,event-1-2026-07-21,event-1-2026-07-22,event-1-2026-07-23,event-1-2026-07-24,event-1-2026-07-25,event-1-2026-07-26,event-1-2026-07-27,event-1-2026-07-28,event-1-2026-07-29,event-1-2026-07-30,event-1-2026-07-31,event-1-2026-08-01,event-1-2026-08-02,event-1-2026-08-03,event-1-2026-08-04,event-1-2026-08-05,event-1-2026-08-06,event-1-2026-08-07,event-1-2026-08-08,event-1-2026-08-09,event-1-2026-08-10,event-1-2026-08-11,event-1-2026-08-12,event-1-2026-08-13,event-1-2026-08-14,event-1-2026-08-15,event-1-2026-08-16,event-1-2026-08-17,event-1-2026-08-18,event-1-2026-08-19,event-1-2026-08-20,event-1-2026-08-21,event-1-2026-08-22,event-1-2026-08-23,event-1-2026-08-24,event-1-2026-08-25,event-1-2026-08-26,event-1-2026-08-27,event-1-2026-08-28,event-1-2026-08-29,event-1-2026-08-30,event-1-2026-08-31,event-1-2026-09-01,event-1-2026-09-02,event-1-2026-09-03,event-1-2026-09-04,event-1-2026-09-05,event-1-2026-09-06,event-1-2026-09-07,event-1-2026-09-08,event-1-2026-09-09,event-1-2026-09-10,event-1-2026-09-11,event-1-2026-09-12,event-1-2026-09-13,event-1-2026-09-14,event-1-2026-09-15,event-1-2026-09-16,event-1-2026-09-17,event-1-2026-09-18,event-1-2026-09-19,event-1-2026-09-20,event-1-2026-09-21,event-1-2026-09-22,event-1-2026-09-23,event-1-2026-09-24,event-1-2026-09-25,event-1-2026-09-26,event-1-2026-09-27,event-1-2026-09-28,event-1-2026-09-29,event-1-2026-09-30,event-1-2026-10-01,event-1-2026-10-02,event-1-2026-10-03,event-1-2026-10-04,event-1-2026-10-05,event-1-2026-10-06,event-1-2026-10-07,event-1-2026-10-08,event-1-2026-10-09,event-1-2026-10-10,event-1-2026-10-11,event-1-2026-10-12,event-1-2026-10-13,event-1-2026-10-14,event-1-2026-10-15,event-1-2026-10-16,event-1-2026-10-17,event-1-2026-10-18,event-1-2026-10-19,event-1-2026-10-20,event-1-2026-10-21,event-1-2026-10-22,event-1-2026-10-23,event-1-2026-10-24,event-1-2026-10-25,event-1-2026-10-26,event-1-2026-10-27,event-1-2026-10-28,event-1-2026-10-29,event-1-2026-10-30,event-1-2026-10-31,event-1-2026-11-01,event-1-2026-11-02,event-1-2026-11-03,event-1-2026-11-04,event-1-2026-11-05,event-1-2026-11-06,event-1-2026-11-07,event-1-2026-11-08,event-1-2026-11-09,event-1-2026-11-10,event-1-2026-11-11,event-1-2026-11-12,event-1-2026-11-13,event-1-2026-11-14,event-1-2026-11-15,event-1-2026-11-16,event-1-2026-11-17,event-1-2026-11-18,event-1-2026-11-19,event-1-2026-11-20,event-1-2026-11-21,event-1-2026-11-22,event-1-2026-11-23,event-1-2026-11-24,event-1-2026-11-25,event-1-2026-11-26,event-1-2026-11-27,event-1-2026-11-28,event-1-2026-11-29,event-1-2026-11-30,event-1-2026-12-01,event-1-2026-12-02,event-1-2026-12-03,event-1-2026-12-04,event-1-2026-12-05,event-1-2026-12-06,event-1-2026-12-07,event-1-2026-12-08,event-1-2026-12-09,event-1-2026-12-10,event-1-2026-12-11,event-1-2026-12-12,event-1-2026-12-13,event-1-2026-12-14,event-1-2026-12-15,event-1-2026-12-16,event-1-2026-12-17,event-1-2026-12-18,event-1-2026-12-19,event-1-2026-12-20,event-1-2026-12-21,event-1-2026-12-22,event-1-2026-12-23,event-1-2026-12-24,event-1-2026-12-25,event-1-2026-12-26,event-1-2026-12-27,event-1-2026-12-28,event-1-2026-12-29,event-1-2026-12-30,event-1-2026-12-31,events-sheet,events-period,events-close,events-add,events-presets,events-said,events-list,events-sec-squadron,events-head-squadron,evline-0-2026-11-10,evkind-0-2026-11-10,evedit-0-2026-11-10,evdel-0-2026-11-10,events-sec-holidays,events-head-holidays,evline-0-2026-01-01,evkind-0-2026-01-01,evedit-0-2026-01-01,evdel-0-2026-01-01,evline-0-2026-02-17,evkind-0-2026-02-17,evedit-0-2026-02-17,evdel-0-2026-02-17,evline-0-2026-08-09,evkind-0-2026-08-09,evedit-0-2026-08-09,evdel-0-2026-08-09,evline-0-2026-12-25,evkind-0-2026-12-25,evedit-0-2026-12-25,evdel-0-2026-12-25",
+   "pics": [
+    "p-56-events-justtapped.png",
+    "p-57-events.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "5 Events delete armed",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-58-evdel-justtapped.png",
+    "p-59-events-armed.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "5 Calendar…",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-60-calendar.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "6 Open for bidding window",
+   "result": "PASS",
+   "note": "ids: od-months,od-month-2026-01,od-month-2026-02,od-month-2026-03,od-month-2026-04,od-month-2026-05,od-month-2026-06,od-month-2026-07,od-month-2026-08,od-month-2026-09,od-month-2026-10,od-month-2026-11,od-month-2026-12,od-lines [0,0 402x874 in 402x874]",
+   "pics": [
+    "p-61-open-justtapped.png",
+    "p-62-open-dates.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "6 a month button (Dec)",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-63-open-dates-dec.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "6 a stretch calendar icon",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-64-open-dates-stretch.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "7 Balances tab",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-65-bal-justtapped.png",
+    "p-66-balances.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "7 Grades window",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-67-grades-justtapped.png",
+    "p-68-grades.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "7 a name -> person window",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-69-person-justtapped.png",
+    "p-70-person-window.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "7 Approvals tab",
+   "result": "PASS",
+   "note": " tab lw-tab-approvals",
+   "pics": [
+    "p-71-appr-justtapped.png",
+    "p-72-approvals.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "7 Approvals: a line Approve/Refuse",
+   "result": "PASS",
+   "note": "refuse pressed",
+   "pics": [
+    "p-73-aprefuse-justtapped.png",
+    "p-74-approvals-line.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "admin",
+   "step": "7 Approve all armed",
+   "result": "PASS",
+   "note": " label ?",
+   "pics": [
+    "p-75-approve-all.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "member",
+   "step": "M open bid window (member, own row)",
+   "result": "PASS",
+   "note": "ids: 34 [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-01-mem-member-bid.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "member",
+   "step": "M AM",
+   "result": "PASS",
+   "note": " [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-02-mem-mam-justtapped.png",
+    "p-03-mem-member-am.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "member",
+   "step": "M remark",
+   "result": "PASS",
+   "note": "value=Member remark [12,595 378x265 in 402x874]",
+   "pics": [
+    "p-04-mem-member-remark.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "member",
+   "step": "M more menu",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-05-mem-mmore-justtapped.png",
+    "p-06-mem-member-more.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "member",
+   "step": "M closed day window",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-07-mem-member-closed.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "member",
+   "step": "M own approved leave",
+   "result": "PASS",
+   "note": "ids: decide-shift,bid-clear,bid-doc-row",
+   "pics": [
+    "p-08-mem-member-approved.png"
+   ]
+  },
+  {
+   "size": "phone",
+   "who": "member",
+   "step": "M Open for bidding window",
+   "result": "PASS",
+   "note": "",
+   "pics": [
+    "p-09-mem-mopen-justtapped.png",
+    "p-10-mem-member-open.png"
+   ]
+  }
+ ],
+ "errors": []
+}

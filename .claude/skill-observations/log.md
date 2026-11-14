@@ -2381,3 +2381,29 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The same trap as Observation 932: a clock time put into a record without reading the clock. A reminder did not stop it the second time.
 **Suggested improvement:** A guard inside the action: the script that puts the block into the handoff file stamps the time itself from the system clock (a placeholder in the draft), so no time is ever typed by the agent.
 **Principle:** A value the machine knows exactly is filled in by the machine, never recalled by the writer.
+
+### Observation 944: A builder's proof capture landed 33 MB of raw dumps in its commit
+
+**Status:** OPEN
+**Date:** 14 Nov 26
+**Session context:** /overnight, chat 72, job 1 (numbered past 943, the highest on any branch)
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2 — the builder's brief
+
+**Issue:** The job-1 builder proved "nothing on screen changes" with a computed-style capture and committed the raw dumps (two 13.5 MB JSON files). A force push to take them out was refused, so the job was re-made on a second branch and the first left on GitHub for the owner to delete. Jobs 2 and 3, whose briefs said "keep big dumps outside the repo, commit only a short summary", had no such trouble.
+**Suggested improvement:** Part 2's brief list gains: "raw captures and dumps stay outside the repo (a folder under the user's home); the commit holds only a short diff summary and the pictures"; and the coordinator runs `git show --stat` on a builder's commit before the first push.
+**Principle:** A proof's raw data is evidence for the run, not for the history; brief where it goes before the run, because a pushed blob cannot be taken back without a destructive push.
+
+### Observation 945: A bare number in a backlog item was read as a ruling when it meant a skill note
+
+**Status:** OPEN
+**Date:** 14 Nov 26
+**Session context:** /overnight, chat 72, job 3 ([DRAW-MARK-HELPER])
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** filing a backlog item
+
+**Issue:** [DRAW-MARK-HELPER] cited "(742)" for a skill note; the coordinator's brief told the builder to read ruling D742, which is the unrelated late-mark ruling. The builder noticed and worked from skill note 742.
+**Suggested improvement:** wherever a backlog item, block or brief cites a skill note, it writes "skill note 742", never a bare number; rulings always carry their D.
+**Principle:** Two numbering schemes in one project need a word on every reference, or a reader picks the louder one.

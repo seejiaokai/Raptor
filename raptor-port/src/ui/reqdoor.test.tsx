@@ -150,7 +150,7 @@ describe('an input is ONE row, a whole copy of the input (D755, D756 — the pla
     expect(isRowMan(k)).toBe(true); expect(isRowMan(`${k}.+`)).toBe(false)
     expect(onInputRow('2.0.0.0.p'), 'a flying seat is not').toBe(false)
   })
-  it('a row made before the build is re-made once, whole: whoever stood on it without being in the input comes off (R6)', async () => {
+  it('a row made before the build is re-made once, whole: whoever stood on it without being in the input comes off (R6) (OR6)', async () => {
     await boot(new MemoryBackend())
     expect(commitNewInput(DRAFT())).toBe(true)
     const r = rowOf()
@@ -191,7 +191,7 @@ describe('a person put on the row JOINS the input (D755) (GI6)', () => {
     expect(people()).toEqual(['bane', 'pike'])
     expect(onRow()).toEqual(['bane', 'pike'])
   })
-  it('already in it: refused, in words (D271) — and nothing changes', async () => {
+  it('already in it: refused, in words (D271) — and nothing changes (OR8)', async () => {
     await boot(new MemoryBackend())
     file(['bane', 'pike'])
     const was = JSON.stringify(INPUTS)
@@ -222,7 +222,7 @@ describe('a person put on the row JOINS the input (D755) (GI6)', () => {
   })
 })
 
-describe('a person put on the ONLY person\'s puck replaces him (D755 (2); the plan\'s T15 — Fable F7, F8)', () => {
+describe('a person put on the ONLY person\'s puck replaces him (D755 (2); the plan\'s T15 — Fable F7, F8) (OR7)', () => {
   /* A NAMED RULING CHANGED THIS CASE (owner D783): it pinned the replacement made at once, "the OIL answer is void and
      asked again" over the input's window. Now the question is put FIRST and the replacement is made with its answer —
      the first man's own answer still does not pass to the new man. */

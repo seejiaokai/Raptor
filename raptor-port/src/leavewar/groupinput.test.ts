@@ -249,7 +249,7 @@ describe('a member files for another man — a duty or a commitment, and nothing
   })
 })
 
-describe('who placed it is never forged — on his own records too, with the switch on or off (the plan\'s finding G2)', () => {
+describe('who placed it is never forged — on his own records too, with the switch on or off (the plan\'s finding G2) (OR28)', () => {
   for (const on of [true, false]) {
     it(`a record he creates names him as its filer, or nobody — switch ${on ? 'on' : 'off'}`, () => {
       if (!on) switchOff()
@@ -312,7 +312,7 @@ describe('who placed it is never forged — on his own records too, with the swi
      his to do (the one-rule plan §4.9: he changes it "in full … its fields, its people"; D763 reading 2: "the one
      person of a one-person input may always change it, whoever filed it"), the man he adds put in under HIS name and
      nobody else's. The door half: groupwrite.test.ts, "a member makes his admin-filed input an input of several". */
-  it('an input of one becomes an input of several in the hand of the man whose own request it is — his admin-filed own input included — never in another man\'s name', () => {
+  it('an input of one becomes an input of several in the hand of the man whose own request it is — his admin-filed own input included — never in another man\'s name (OR25)', () => {
     add('bane', 'Meeting', TUE)                          // Saber files it for Ranger
     ranger()
     const id = one('bane').iid, was = copy(one('bane'))

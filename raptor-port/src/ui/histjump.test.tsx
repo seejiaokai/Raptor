@@ -555,7 +555,7 @@ describe.each(SURFS)('an input of several — a tap on its line in the changes w
       expect(onIt(lit)).toEqual(AZ.slice().sort())
     } finally { await drop(inp) }
   })
-  it('UNDER UNAVAILABLE, a row a man (D737): the tap lands on the row of the man the line is filed under', async () => {
+  it('UNDER UNAVAILABLE, a row a man (D737): the tap lands on the row of the man the line is filed under (OR9)', async () => {
     await goto(s)
     const inp = make({ type: 'OD', title: undefined, allday: true, s: undefined, e: undefined, remarks: 'det' })
     await act(async () => { INPUTS.push(inp); notify() })
@@ -594,7 +594,7 @@ describe.each(SURFS)('an input of several — a tap on its line in the changes w
      the man a change is about is on the line's ROW (state/changelines.ts files "Nomad · OD … · added" under him). So in
      the running app the tap was sent to the bare `iu:<iid>`, which no row of an input of several answers to, and fell
      back to the FIRST row — a line about the man put in landed on another man's row. */
-  it('UNDER UNAVAILABLE: a line about ONE man put in — his name on the line’s ROW, as the window builds it — lands on HIS row', async () => {
+  it('UNDER UNAVAILABLE: a line about ONE man put in — his name on the line’s ROW, as the window builds it — lands on HIS row (OR9)', async () => {
     await goto(s)
     const inp = make({ type: 'OD', title: undefined, allday: true, s: undefined, e: undefined, remarks: 'det' })
     await act(async () => { INPUTS.push(inp); notify() })
