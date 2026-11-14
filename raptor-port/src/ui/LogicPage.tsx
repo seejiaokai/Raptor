@@ -438,11 +438,14 @@ export function LogicPage() {
       {/* the strip, while a setting a check reads is changed (W2). Its old "not the published ones" was untrue (D928).
           Since D2005 a published day is checked by every setting it was published under, so the note says that, not only
           "its printed B and its OIL" (D2015); and its OIL keeps the three OIL values it went out with, a change of one
-          making that day read pending at once where it would change its OIL (D592 (4), D2044 — publish.ts oilRuleDelta) */}
+          making that day read pending at once where it would change its OIL (D592 (4), D2044 — publish.ts oilRuleDelta).
+          Reworded after the cold read (design guide §1a test 9, 15 Nov 26): read alone, "that day reads pending" lost the
+          fact that the day's OIL stays as published until it goes out again — a reader took the OIL for unsettled or
+          lost — so the first sentence names the OIL with the settings, and the second refers back to it */}
       <div className="lgoff" id="lgOff" hidden={!checkedOff}>
         {checkedOff ? <><b>{checkedOff} setting{checkedOff > 1 ? 's' : ''} changed from the squadron standard.</b>{' '}
-          {` The schedule is checked against ${checkedOff > 1 ? 'them' : 'it'} now.`} A published day keeps the settings it was published under until it is published again.
-          {" If a changed OIL setting would change a published day's OIL, that day reads pending."}
+          {` The schedule is checked against ${checkedOff > 1 ? 'them' : 'it'} now.`} A published day keeps the settings it was published under, and the OIL they gave it, until it is published again.
+          {' If a changed OIL setting would change that OIL, the day reads pending.'}
           {admin ? '' : ' Only an admin can change them.'}</> : null}
       </div>
       <div className="lgwrap" id="lgBody" ref={bodyRef} dangerouslySetInnerHTML={bodyHTML} />

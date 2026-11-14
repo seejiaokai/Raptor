@@ -536,8 +536,9 @@ describe('W2 the words the + In-time / Rally button fills in are not a modified 
     /* the strip's old "not the published ones" was untrue (D928); since D2005 a published day keeps every setting it was
        published under, not only its printed B and its OIL — the note says so (D2015), and that an OIL setting's change
        makes a day whose OIL it would change read pending at once (D592 (4), D2044) */
-    expect($('#lgOff').textContent).toContain('A published day keeps the settings it was published under until it is published again.')
-    expect($('#lgOff').textContent).toContain("If a changed OIL setting would change a published day's OIL, that day reads pending.")
+    expect($('#lgOff').textContent).toContain('A published day keeps the settings it was published under, and the OIL they gave it, until it is published again.')
+    /* the cold read (15 Nov 26): the day's OIL stays as published while the day reads pending — said, not left implied */
+    expect($('#lgOff').textContent).toContain('If a changed OIL setting would change that OIL, the day reads pending.')
     expect($('#lgOff').textContent).not.toContain('printed B')
     await act(async () => { rulesReset(); notify() })
     expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
