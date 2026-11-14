@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/rules-check-batch2 -->
+### CHAT 76 — the rules check's small batch ([RULES-CHECK-FIXES]: D2009, D2010, D2014, D2015, D2024) PLANNED, nothing built — written 14 Nov 26 — verify before use
+- **Where it started:** his opening line: read chat 75's block, the backlog item and the five full rows, tell him the build and its checks in one block, build on a new branch from `main` with its own pull request, merge nothing without his "merge live".
+- **What was done:** the code behind all five parts read and the design worked out — the plan, `raptor-port/docs/superpowers/plans/2026-11-14-rules-check-batch2-plan.md` (what each part changes, where it is in the code, the D2014 design with its traps, the checks). The tier: FULL. Stopped before building: the reading took the chat to 72% of its window, and a FULL check needs a chat of its own (the checklist's step 3).
+- **Branch:** `claude/rules-check-batch2`, cut from `main` at the merge of 778 (`claude/rules-check-small-batch` is an OLDER, merged branch — not this one). No upstream to `main`. Notes only so far; no pull request yet (open it into `main` once the first code is pushed, so GitHub's run goes during the walk).
+- **Next:** a fresh chat, Opus on high: build the five parts red-first from the plan, then the FULL check as the plan's last section says; part 5 read by Astra and a fresh, blind Opus reader while he is awake. **A question for him** (in the plan): should the default rally and the debrief also wait for the next amendment on a published weekend, as "Full day of OIL" now will? Recommended yes; put with pictures; not built until he rules.
+- **Rulings:** none this chat. **Walk:** none — nothing built. **Reads owed:** none. **Next chat number:** 77 (D1744).
+<!-- /now -->
 <!-- now:claude/rules-check-fixes -->
 ### CHAT 75 — pull request 762 (the rules check's fixes, D2005) brought level with `main` after the batch of four, then MERGED AND LIVE 14 Nov 26 on his "merge live" — written 14 Nov 26 — verify before use
 - **Where it started:** chat 74's opening line: bring `main` in, settle the records, push, and when GitHub's run is green tell him what 762 changes and send the link; merge nothing without his "merge live". Chat 74's block (the batch of four, pull request 776, merged and live) is replaced by this one; its one open step was this.
