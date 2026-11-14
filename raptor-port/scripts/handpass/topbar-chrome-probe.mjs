@@ -7,7 +7,8 @@
 // Run from raptor-port/:  TB_DIST=<dist> TB_OUT=<folder> node scripts/handpass/topbar-chrome-probe.mjs
 // It writes rollcall-<engine>.json (how each page holds its top bar and what is pinned under it, at 402 × 874), flick-<engine>.json
 // (every frame of a flick to the very foot of Approvals, Quals and Edit Schedule: the bar's top against the visible top,
-// the window's and the visible screen's heights, the scroll) and two pictures of the ?barprobe readings panel.
+// the window's and the visible screen's heights, the scroll) and pictures of Quals, Edit Schedule and Approvals' slim bar
+// with and without ?barprobe (barprobe-* and noprobe-*); TB_PICS_ONLY=1 takes only the pictures (log-pics-<engine>.txt).
 import { createRequire } from 'node:module'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
@@ -127,6 +128,9 @@ function summary(name, fr) {
 }
 
 const log = []
+/* TB_PICS_ONLY=1 skips the roll-call and the flicks: only the panel's pictures, with and without the switch */
+const PICS_ONLY = !!process.env.TB_PICS_ONLY
+if (!PICS_ONLY) {
 const { browser, page } = await open()
 const roll = {}
 for (const p of PAGES) {
@@ -158,19 +162,33 @@ writeFileSync(path.join(OUT, `flick-${ENGINE}.json`), JSON.stringify(flicks, nul
 const noPanel = await page.evaluate(() => !document.querySelector('[data-testid="barprobe"]'))
 log.push('without ?barprobe, no panel in the page: ' + noPanel)
 await browser.close()
-
-/* the trial switch: the same flick on Quals and Approvals with ?barprobe, a picture of the panel after each */
-const t = await open('?barprobe')
-for (const p of PAGES.filter(x => ['Quals', 'Approvals'].includes(x[0]))) {
-  await goTo(t.page, p)
-  await flickToFoot(t.page)
-  await sleep(800)
-  const text = await t.page.evaluate(() => document.querySelector('[data-testid="barprobe"]')?.textContent ?? null)
-  const box = await t.page.evaluate(() => { const r = document.querySelector('[data-testid="barprobe"]')?.getBoundingClientRect(); return r && [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)] })
-  log.push(`?barprobe on ${p[0]}: box ${JSON.stringify(box)}\n${text}`)
-  await t.page.screenshot({ path: path.join(OUT, `barprobe-${ENGINE}-${p[0].toLowerCase().replace(/\s+/g, '-')}.png`) })
 }
-await t.browser.close()
+
+/* the trial switch, with and without it: Quals and Edit Schedule flicked to their foot, and the Leave War grid with
+   Approvals' slim bar showing (a request's dates tapped) — the panel must stand clear of the slim bar's Back and Close */
+const SHOTS = [['quals', 'Quals'], ['schedule', 'Edit Schedule'], ['approvals-slim', 'Approvals']]
+const boxOf = (page, sel) => page.evaluate(s => { const r = document.querySelector(s)?.getBoundingClientRect(); return r ? [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)] : null }, sel)
+for (const query of ['?barprobe', '']) {
+  const t = await open(query)
+  for (const [file, name] of SHOTS) {
+    await goTo(t.page, PAGES.find(x => x[0] === name))
+    if (file === 'approvals-slim') {
+      await t.page.locator('[data-testid="appr-dates"]').first().click()
+      await t.page.waitForSelector('[data-testid="appr-slim"]')
+      await sleep(1200)
+    } else {
+      await flickToFoot(t.page)
+      await sleep(1200)
+    }
+    const text = await t.page.evaluate(() => document.querySelector('[data-testid="barprobe"]')?.textContent ?? null)
+    const box = await boxOf(t.page, '[data-testid="barprobe"]')
+    const slim = await boxOf(t.page, '[data-testid="appr-slim"]')
+    const clear = box && slim ? box[1] + box[3] <= slim[1] : null
+    log.push(`${query || 'without the switch'} on ${file}: panel ${JSON.stringify(box)} slim bar ${JSON.stringify(slim)}` + (clear === null ? '' : ` panel clear above it: ${clear}`) + (text ? '\n' + text : ''))
+    await t.page.screenshot({ path: path.join(OUT, `${query ? 'barprobe' : 'noprobe'}-${ENGINE}-${file}.png`) })
+  }
+  await t.browser.close()
+}
 log.push('errors: ' + (errors.length ? errors.join(' | ') : 'none'))
-writeFileSync(path.join(OUT, `log-${ENGINE}.txt`), log.join('\n') + '\n')
+writeFileSync(path.join(OUT, `log-${PICS_ONLY ? 'pics-' : ''}${ENGINE}.txt`), log.join('\n') + '\n')
 console.log(log.join('\n'))

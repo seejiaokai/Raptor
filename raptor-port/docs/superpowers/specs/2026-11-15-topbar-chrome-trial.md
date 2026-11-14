@@ -65,27 +65,45 @@ moved nothing on these pages; raw touches did.)
 
 Built as `?savefail` (D1666), `?swdebug` and `?kbdebug` are: only the one tab opened with it, nobody else touched.
 `src/ui/barprobe.ts`, installed from `main.tsx`. With the switch a small green-on-black panel sits in the screen's bottom
-right corner (about 200 × 80, clear of the top bar, taking no presses), read every frame for two seconds after any touch,
-scroll or screen-size change:
+right corner (about 220 × 105, clear of the top bar, taking no presses), read every frame for two seconds after any
+touch, key press, scroll or screen-size change:
 
 ```
 page-quals  1.3s                        the page, and seconds since it opened
 win 874  vis 874 @0                     the window's height · the visible screen's height @ its top in the window
 scroll 467  page 1341  past 0           the scroll · the page's height · how far it is sprung past its top or foot
-bar 0  row 0                            the bar's top against the visible top · the pinned row against the bar's foot
-WORST 0 at 0.0s  loose 0f               the worst bar gap since the page opened, when, and frames the bar was out
+bar 0 (top 0 mark 0)  row 0             the bar against the visible top (its own top, the fixed mark's) · the pinned row
+WORST 0 at 0.0s  loose 0f               the largest bar gap since the page opened, when, and frames the bar was out
  win 874 vis 874@0 scroll 0 past 0      that worst frame's own numbers
+RANGE win 874-874  vis 874+  @0         since the page opened: the window's lowest-highest, the visible screen's lowest
+ top 0  foot -467 s0 p1341 w874          and its largest pan · furthest past the top · furthest towards/past the foot
 ```
 
-The worst is cleared when the page changes (another page, or another Leave War tab). Without the switch nothing is
-drawn, nothing listens and no frame is asked for (the unit test proves it). Pictures of the panel in WebKit and Chromium:
-`barprobe-*-quals.png`, `barprobe-*-approvals.png`. On Approvals the panel sits over empty page below the last request; it
-can sit over the slim bar's right end once a request's dates are tapped, but takes no presses there.
+**The signs.** `bar +N` = the bar drawn N below the visible top, the page showing above it — his fault's look; `bar −N` =
+drawn N above it, partly hidden; 0 in place. `vis @+N` = the visible screen starts N below the window's top. `past −N` =
+sprung N past the page's top, `past +N` = N past its foot. `RANGE … foot` is the scroll less the furthest the page can
+scroll (`page − win`): below 0 the foot was never reached, above 0 it sprang that far past it, with that frame's scroll,
+page and window beside it.
+
+**Why `bar` reads through the app's fixed mark.** A phone may give every box's place from the window's top or, with the
+screen panned, from the visible top (his `?kbdebug` recordings, 29 Oct 26). The bar's top less the pan alone is right only
+the first way; the bar's top less the bar's own top would read 0 whatever happened. So `bar` is the bar's top less the
+visible top measured in the same way as the bar — the app's own fixed mark at the window's top (the one the keyboard lift
+and the Leave War's sheets read), plus the pan — and is right either way; the raw `top` and `mark` stand beside it so a
+strange reading can be checked by hand.
+
+WORST and RANGE are cleared when the page changes (another page, another Leave War tab, by a tap or the keys). Without the
+switch nothing is drawn, nothing listens and no frame is asked for (the unit test proves it). The panel sits above
+Approvals' slim bar while that shows, so its Back and Close stay clear, and returns to the corner when it goes. Pictures
+of the panel in WebKit and Chromium: `barprobe-*-quals.png`, `barprobe-*-approvals-slim.png`, `barprobe-*-schedule.png`,
+and the same pages without the switch, `noprobe-*.png`.
 
 **What he does with it:** open the branch's preview link with `?barprobe` on the end, sign in, and screen-record while he
 flicks hard to the very foot, three times each, on Approvals, Quals, Edit Schedule, the Leave War grid and Balances, in
-Chrome; then the same on Approvals in Safari for comparison. One recording per page is enough; the panel's WORST line
-holds the frame that matters even if the recording misses it.
+Chrome; then the same on Approvals in Safari for comparison. One recording per page is enough. WORST holds the frame of the
+largest bar gap, which is cause (i)'s mark; causes (ii) and (iii) may never move `bar`, so RANGE holds what tells them
+apart — the window's lowest and highest height, the visible screen's pan and how far past the foot it sprang — even if the
+recording misses the frame.
 
 ## 4. What the code suggests, and the candidate cures
 
@@ -96,12 +114,13 @@ full and folded address bar. The likeliest reading — not proved — is the sam
 unfolds its bar during the spring, what is fixed to the screen is placed against a frame that has not caught up. A short
 page makes the two moments meet; a long page keeps them apart. The readings decide between three versions of that:
 
-- **(i) the page is told:** `bar` reads about 29 (the visible screen's top moves away from the window's top) — the
-  browser itself reports the frame mismatch, as in Edge.
-- **(ii) the page is not told:** `bar` stays 0 while the recording shows it 29 low — WebKit's own drawing of fixed things
-  lags Chrome's bar; nothing the page can measure sees it.
-- **(iii) the window is resized mid-spring:** `win` jumps by about 29 on those frames — Chrome changes the page's height
-  as its bar unfolds, and the fixed bar is re-placed a frame late.
+- **(i) the page is told:** `WORST` reads about +29 — `vis @` about −29 (the visible screen 29 above the window's top,
+  the bar left at the window's top), or the bar's own `top` 29 low — the browser itself reports the frame mismatch, as in
+  Edge.
+- **(ii) the page is not told:** `bar` stays 0 (`WORST` 0) while the recording shows it 29 low — WebKit's own drawing of
+  fixed things lags Chrome's bar; nothing the page can measure sees it.
+- **(iii) the window is resized mid-spring:** `RANGE win` spreads by about 29 (say 845-874) — Chrome changes the page's
+  height as its bar unfolds, and the fixed bar is re-placed a frame late.
 
 ### The candidate cures
 
@@ -120,14 +139,22 @@ whether Edit Schedule at its very foot and the Leave War grid fail too — the t
 
 | On his iPhone, in Chrome | Reads as |
 |---|---|
-| Approvals or Quals: `WORST` about 29, `vis @` the same 29, `past` above 0 | (i), Edge's cause exactly: B cures it; D was tried; A would, at the cost he refused |
+| Approvals or Quals: `WORST` about +29, its frame's `vis @` about −29 (or the bar's own `top` 29), `past` above 0 | (i), Edge's cause exactly: B cures it; D was tried; A would, at the cost he refused |
 | `WORST` 0 while the recording shows the bar low | (ii): the page cannot see it — only B or C, which stop relying on Chrome to place fixed things |
-| `win` (and `vis`) jump by about 29 in the worst frame | (iii): Chrome resizing the page mid-spring — B or C |
-| `past` 0 in the worst frame | the spring is not the trigger, Chrome's bar alone is — A would not cure it |
+| `RANGE win` (and `vis`) spread by about 29 | (iii): Chrome resizing the page mid-spring — B or C |
+| `past` 0 in the worst frame, or `RANGE foot` at or below 0 | the spring is not the trigger, Chrome's bar alone is — A would not cure it |
 | Edit Schedule flicked to its very foot: `WORST` 0 | the short page is the trigger — C is a real option |
 | Edit Schedule or the Leave War grid: `WORST` about 29 | every window-scrolled page has it — B, one job with [PAGE-FOOT-FLASH] |
 | Balances: `WORST` 0 and `win` steady | a page scrolling inside a box is safe, as predicted — supports B and C |
 | The same on Approvals in Safari: `WORST` 0 | Safari places fixed things through the spring; the fault is Chrome's handling |
+
+## 5. The two blind reads' fixes (phase 2, 15 Nov 26)
+
+Each with a unit test that failed against the phase-1 switch first, and each checked by breaking the switch on purpose
+(twelve ways — every one caught): `bar`, `past` and `row` pinned to their expected values; `bar` read through the app's
+fixed mark (above); RANGE added; a pinned-row copy on a sleeping page, not drawn or not visible never read as the row; the
+panel above Approvals' slim bar; a page changed from the keys after the panel went quiet clears WORST and RANGE. The
+reads: `docs/superpowers/briefs/2026-11-15-topbar-chrome-trial-coderead-{astra,opus}.md`.
 
 ## What is not done here
 
