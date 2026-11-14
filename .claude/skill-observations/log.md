@@ -2576,3 +2576,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** after `records-merge.mjs` and `backlog-archive.mjs --rulings --merge`, the rulings check (and `docsize`) failed five ways: four items archived on `main` "did not all arrive" (the branch's older copy of a line against main's newer, longer one) and a ruling added and spent on `main` "named a home that never mentions it". All five were measured against the OLD merge base, because the merge was not yet committed; one commit later the base was `main` and `docsize` passed. One of the five was real all the same: the branch had added the owner's answers to an item main archived without them — that text would have been dropped silently.
 **Suggested improvement:** in the bring-in step, say: before committing, read each "did not arrive" by comparing the branch's item with main's archived block — carry over any line only the branch has (a note in the archived block), treat main's longer line as newer — then run the check with `DOCSGUARD_ALLOW` naming those items only to confirm nothing else fails, commit, and re-run plain.
 **Principle:** a check that measures against a merge base gives a different answer before and after the merge commit; read each failure for the one real loss among the false ones, rather than silencing the lot or chasing them all.
+
+### Observation 949: A cold read given the words alone flags the app's own words as unclear
+
+**Status:** OPEN
+**Date:** 15 Nov 26
+**Session context:** chat 79 — the Logic page's note (D2015), design guide §1a test 9, two rounds by fresh helpers
+**Skill:** New skill candidate: cold-read (the design guide's §1a test 9 as a repeatable helper brief)
+**Type:** open-source
+**Phase/Area:** the reader's brief; comparing its answers with the writer's facts
+
+**Issue:** Both readers, given only the two sentences, named as "read two ways" the app's own terms (OIL, pending) and a noun the strip's first line settles ("the settings"). The real lost fact (the OIL stays as published) was found in round 1, but the writer had to sort genuine second readings from context-only ones by hand each round, and no rule says which kind sends the wording back.
+**Suggested improvement:** In the cold-read brief, give the reader the app's word list entries for the terms the note uses (one line each) and say "the line above it reads …" when the note sits under a heading; in §1a test 9, say a "two readings" that the screen around the note settles is recorded, not a reason to send the wording back.
+**Principle:** A test that strips all context will report the stripped context as ambiguity; give the reader the vocabulary any real user has, so only genuine second readings come back.
