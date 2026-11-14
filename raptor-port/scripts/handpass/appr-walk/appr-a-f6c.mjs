@@ -1,0 +1,17 @@
+import * as C from './appr-a-common.mjs'
+console.log('[appr-a-f6c v1]')
+C.initLog('appr-a-f6c-log.txt')
+const { browser, page } = await C.launchPhone('webkit')
+const errs = []; C.watchErrors(page, errs)
+await C.stageWorld(page)
+const P = page, T = C.T
+await P.locator(T('appr-pick')).tap(); await C.sleep(900)
+await P.locator(T('appr-range-day-2026-01-05')).tap(); await C.sleep(500)
+await P.locator(T('appr-range-day-2026-01-09')).tap(); await C.sleep(900)
+const r = await P.evaluate(sel => ({ open: !!document.querySelector('[data-testid="appr-range-picker"]'), lines: document.querySelectorAll(`${sel} [data-testid^="appr-line-"]`).length, scroller: !!document.querySelector(`${sel} .appr-scroll`), chip: document.querySelector('[data-testid="appr-pick"]').innerText.replace(/\s+/g, ' '), scrollY, room: document.scrollingElement.scrollHeight - document.scrollingElement.clientHeight }), C.PAGE)
+await C.shot(P, 'f6c-range-done')
+C.note(JSON.stringify(r))
+C.check('F6c-range', !r.open && r.lines === 2 && !r.scroller && /5 Jan/.test(r.chip), `phone: two taps (5, 9 Jan): calendar closed ${!r.open}, ${r.lines} lines, chip "${r.chip}", no inner scroller ${!r.scroller}`)
+C.note('errors ' + JSON.stringify(errs)); C.summary()
+await Promise.race([browser.close(), C.sleep(8000)])
+process.exit(0)

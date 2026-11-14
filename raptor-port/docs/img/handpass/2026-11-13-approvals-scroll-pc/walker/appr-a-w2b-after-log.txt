@@ -1,0 +1,11 @@
+  appr-all: Approve all left 1142.25 right 1278.8 width 136.55 words "Approve all 19"
+  appr-new: Approve all left 1149.01 right 1278.8 width 129.79 words "Approve all 3"
+  appr-all: Approve all left 1142.25 right 1278.8 width 136.55 words "Approve all 19"
+  appr-m-2026-01: Approve all left 1148.71 right 1278.8 width 130.09 words "Approve all 4"
+  appr-m-2026-02: Approve all left 1143.88 right 1278.8 width 134.93 words "Approve all 11"
+  appr-m-2026-03: Approve all left 1148.71 right 1278.8 width 130.09 words "Approve all 4"
+  after 5-9 Jan: lines 2 winRoom 0 card bottom 816 (screen 824) scroller 240-815.2 room 0 words Approve all 2
+  PASS W2-pick-5to9: range 5-9 Jan: 2 lines, neighbours unmoved, winRoom 0, card foot 816 vs 816
+  last line bottom 383.20001220703125, card bottom 816: empty 432.8px below the last line
+errors []
+SUMMARY 1 PASS, 0 FAIL

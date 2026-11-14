@@ -1,0 +1,13 @@
+scrollTop 200 target {"idx":6,"id":"appr-line-bruise","text":"Gambit C OIL Tue 24 Feb › 1 day OIL 3.5 P 27 — Approve Refus","top":399.2,"bottom":453.2,"inView":true,"approve":"Approve","refuse":"Refuse","apPressed":"false","rfPressed":"false"}
+ringed ["cell-bruise-2026-02-24"]
+window buttons: ["bid-approve-tick|Auto-approve|","bid-cancel|✕|","decide-approve|Approve|false","decide-refuse|Refuse|false","decide-shift|⇄Move|","bid-clear|Delete|","|Document|","portion-full|Whole day|true","portion-am|AM|false","portion-pm|PM|false","span-range|Pick a range|false","bid-LL|LL 16.5|","bid-OL|OL 16.5|","bid-OIL|OIL 3.5|","bid-CCL|CCL −1|","bid-FCL|FCL −1|","bid-PL|PL −1|","bid-EL|EL −1|","bid-CL|CL −1|","bid-file-CSE|CSE|","bid-file-OD|OD|","bid-oil|Grant OIL|","bid-more|⋯|"]
+window after deciding: []
+slim bar after Escape 1
+target line top before 399.2 ; line now {"idx":6,"id":"appr-line-bruise","text":"Gambit C OIL Tue 24 Feb › Already approved by Saber 1 day OI","top":399.2,"bottom":453.2,"inView":true,"approve":"Approve","refuse":"Refuse","apPressed":"false","rfPressed":"false"}
+back: scrollTop 200 (was 200), winRoom 0, lines 19, lit/decided: ["6:Gambit C OIL Tue 24 Feb › Already approved by Saber 1 day OIL 3.5 P 27 top 399.2"]; counts {"tab":"Approvals 20","approveAll":"Approve all 18"}
+  PASS W6-state: request shows its new state (["6:Gambit C OIL Tue 24 Feb › Already approved by Saber 1 day OIL 3.5 P 27 top 399.2"]), list 200 -> 200, winRoom 0
+after 6 s: wheel 150: list 200 -> 350.3999938964844, window scrollY 0, winRoom 0
+  PASS W6-wheel: after the 6 s wait the wheel moves the list at once (200 -> 350.3999938964844), the window not at all (scrollY 0, room 0)
+errors []
+  PASS W6-err: page errors: none
+SUMMARY 3 PASS, 0 FAIL

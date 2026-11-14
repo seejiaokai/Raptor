@@ -1,0 +1,436 @@
+{
+ "state": "desk-back",
+ "drawing": {
+  "script": "scripts/handpass/appr-scroll-draw.mjs",
+  "shot": "desk-after-back"
+ },
+ "recorded": "2026-11-12T18:50:47.386Z",
+ "drawnOn": "origin/main at b476db83a",
+ "checkout": "d8201fcbd",
+ "viewport": {
+  "w": 1536,
+  "h": 733
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "card": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 20,
+    "y": 136,
+    "w": 1496,
+    "h": 589
+   },
+   "ink": {
+    "x": 39,
+    "y": 64,
+    "w": 1221,
+    "h": 999.5
+   },
+   "text": "Approvals 18 pending · 3 new since you last looked, Fri 13 Nov 02:50 + 2 pending in JAN - DEC 27 › New 3 Dates All Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Pick dates… Approve all 18 Name Kind Dates Days LVE Bal Lowest Avail Placed Static IW LL Thu 8 Jan › 1 day 19 W 17 — Approve Refuse Gambit C LL Fri 23 Jan, AM › 0.5 day 17.5 P 27.5 — Approve Refuse Ranger IP LL Thu 29 Jan, AM › 0.5 day 9.5 P 27.5 — Approve Refuse Blade IP LL Mon 2 Feb › 1 day 31.5 P 27 — Approve Refuse Blade IP LL Tue 3 Feb, PM › 0.5 day 31.5 P 27.5 — Approve Refuse Drifter A OIL Tue 10 Feb, AM › 0.5 day OIL 4 P 27.5 — Approve Refuse Gambit C OIL Tue 24 Feb › — Approved Refuse Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse Ranger IP PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse Ranger IP CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse Ranger IP LL Wed 7 Jan › 1 day 9.5 P 28 13 Nov 02:50 Approve Refuse Ranger IP LL Wed 11 – Fri 13 Feb › 3 days 9.5 P 27 13 Nov 02:50 Approve Refuse Ranger IP LL Wed 4 Mar › 1 day 9.5 P 27 13 Nov 02:50 Approve Refuse Reaper IR LL Mon 16 Feb › 1 day 21 P 27 13 Nov 02:50 · by Saber Approve Refuse Anvil IP CCL Tue 17 Feb › 0 days CCL 2 P 27 13 Nov 02:50 · by Saber Approve Refuse Cinch IP LL Wed 18 Feb › 0 days 23.5 P 27 13 Nov 02:50 · by Saber Approve Refuse Piston IP CCL Thu 19 Feb › 1 day CCL −1 P 27 13 Nov 02:50 · by Saber Approve Refuse Sidewinder IP LL Fri 20 Feb › 1 day 11 P 27 13 Nov 02:50 · by Saber Approve Refuse Warden IP CCL Sat 21 Feb › 0 days CCL 0 P 27 13 Nov 02:50 · by Saber Approve Refuse",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "16px",
+     "16px",
+     "16px",
+     "16px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.appr-card"
+  },
+  "title": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 39,
+    "y": 153,
+    "w": 1240,
+    "h": 27
+   },
+   "ink": {
+    "x": 39,
+    "y": 153,
+    "w": 625.1,
+    "h": 27
+   },
+   "text": "Approvals 18 pending · 3 new since you last looked, Fri 13 Nov 02:50 + 2 pending in JAN - DEC 27 ›",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.appr-head"
+  },
+  "chips": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 39,
+    "y": 192,
+    "w": 1240,
+    "h": 49
+   },
+   "ink": {
+    "x": 64,
+    "y": 200.5,
+    "w": 1196,
+    "h": 19
+   },
+   "text": "New 3 Dates All Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Pick dates… Approve all 18",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.appr-filters"
+  },
+  "approve-all": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1142,
+    "y": 192,
+    "w": 137,
+    "h": 36
+   },
+   "ink": {
+    "x": 1161,
+    "y": 200.5,
+    "w": 99,
+    "h": 19
+   },
+   "text": "Approve all 18",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(5, 42, 52)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 14px",
+    "spacing": "normal"
+   },
+   "tag": "button.appr-all"
+  },
+  "box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 39,
+    "y": 241,
+    "w": 1476,
+    "h": 483
+   },
+   "ink": {
+    "x": 53,
+    "y": 64,
+    "w": 1199.4,
+    "h": 999.5
+   },
+   "text": "Name Kind Dates Days LVE Bal Lowest Avail Placed Static IW LL Thu 8 Jan › 1 day 19 W 17 — Approve Refuse Gambit C LL Fri 23 Jan, AM › 0.5 day 17.5 P 27.5 — Approve Refuse Ranger IP LL Thu 29 Jan, AM › 0.5 day 9.5 P 27.5 — Approve Refuse Blade IP LL Mon 2 Feb › 1 day 31.5 P 27 — Approve Refuse Blade IP LL Tue 3 Feb, PM › 0.5 day 31.5 P 27.5 — Approve Refuse Drifter A OIL Tue 10 Feb, AM › 0.5 day OIL 4 P 27.5 — Approve Refuse Gambit C OIL Tue 24 Feb › — Approved Refuse Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse Ranger IP PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse Ranger IP CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse Ranger IP LL Wed 7 Jan › 1 day 9.5 P 28 13 Nov 02:50 Approve Refuse Ranger IP LL Wed 11 – Fri 13 Feb › 3 days 9.5 P 27 13 Nov 02:50 Approve Refuse Ranger IP LL Wed 4 Mar › 1 day 9.5 P 27 13 Nov 02:50 Approve Refuse Reaper IR LL Mon 16 Feb › 1 day 21 P 27 13 Nov 02:50 · by Saber Approve Refuse Anvil IP CCL Tue 17 Feb › 0 days CCL 2 P 27 13 Nov 02:50 · by Saber Approve Refuse Cinch IP LL Wed 18 Feb › 0 days 23.5 P 27 13 Nov 02:50 · by Saber Approve Refuse Piston IP CCL Thu 19 Feb › 1 day CCL −1 P 27 13 Nov 02:50 · by Saber Approve Refuse Sidewinder IP LL Fri 20 Feb › 1 day 11 P 27 13 Nov 02:50 · by Saber Approve Refuse Warden IP CCL Sat 21 Feb › 0 days CCL 0 P 27 13 Nov 02:50 · by Saber Approve Refuse",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.appr-list"
+  },
+  "headings": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 39,
+    "y": 241,
+    "w": 1240,
+    "h": 36
+   },
+   "ink": {
+    "x": 53,
+    "y": 253,
+    "w": 763.9,
+    "h": 15
+   },
+   "text": "Name Kind Dates Days LVE Bal Lowest Avail Placed",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "0.88px"
+   },
+   "tag": "div.appr-cols"
+  },
+  "heading-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 39,
+    "y": 253,
+    "w": 150,
+    "h": 15
+   },
+   "ink": {
+    "x": 53,
+    "y": 253,
+    "w": 34.3,
+    "h": 15
+   },
+   "text": "Name",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "0.88px"
+   },
+   "tag": "span"
+  },
+  "heading-avail": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 581,
+    "y": 253,
+    "w": 180,
+    "h": 15
+   },
+   "ink": {
+    "x": 651,
+    "y": 253,
+    "w": 81.6,
+    "h": 15
+   },
+   "text": "Lowest Avail",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "0.88px"
+   },
+   "tag": "span"
+  },
+  "lit": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 39,
+    "y": 371,
+    "w": 1240,
+    "h": 54
+   },
+   "ink": {
+    "x": 58,
+    "y": 388,
+    "w": 1194.4,
+    "h": 19
+   },
+   "text": "Gambit C OIL Tue 24 Feb › — Approved Refuse",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.appr-line.lit-approved"
+  },
+  "lit-button": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1071,
+    "y": 379.5,
+    "w": 100,
+    "h": 36
+   },
+   "ink": {
+    "x": 1086.7,
+    "y": 388,
+    "w": 68.5,
+    "h": 19
+   },
+   "text": "Approved",
+   "typed": false,
+   "look": {
+    "fill": "rgb(63, 191, 111)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(63, 191, 111)",
+     "1px solid rgb(63, 191, 111)",
+     "1px solid rgb(63, 191, 111)",
+     "1px solid rgb(63, 191, 111)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(6, 33, 15)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 14px",
+    "spacing": "normal"
+   },
+   "tag": "button.appr-ok.lit"
+  }
+ },
+ "approved": {
+  "picture": "desk-after-back.png",
+  "identical": false,
+  "differs": "5870 pixels in [779,331,1700,1439]"
+ }
+}

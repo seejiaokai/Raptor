@@ -1,0 +1,5 @@
+click .appr-puck: dialogs []
+click .appr-puck .puck: dialogs []
+click .appr-puck .nm: dialogs []
+click .appr-who: dialogs []
+my leave: ["lw-approvals-count|21","oil-tracker|OIL","period-label|VIEW","war-picker|JAN - DEC 26 JAN - DEC 27 + New period","my-leave|MY LEAVE LVE 17.5 · OIL 0 · 0 pending ›","my-leave-lve|LVE 17.5","my-leave-oil|OIL 0","my-leave-pending|0 pending","settings-open|","approvals-page|Approvals 19 pending · 3 new since you l","person-window|Saber ✕ BALANCES LVE 0 taken App bal Pen","pw-name|Saber","pw-close|✕","pw-tile-LVE|LVE 0 taken App bal Pending War bal – 17","pw-taken|0 taken","pw-LVE|","pw-LVE-pend|–","pw-LVE-war|17.5","pw-LVE-cf|","pw-tile-OIL|OIL 0 ›","pw-oil|0 ›","pw-tile-MED|MED 0 days","pw-med|0","pw-tile-CCL|CCL","pw-CCL|","pw-tile-FCL|FCL","pw-FCL|","pw-tile-PL|PL","pw-PL|","pw-tile-EL|EL","pw-EL|","pw-tile-CL|CL","pw-CL|","pw-year|2026 and ahead","pw-list|No leave in 2026 and ahead."]
