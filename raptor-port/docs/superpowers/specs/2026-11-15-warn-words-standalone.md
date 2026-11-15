@@ -392,3 +392,14 @@ a published day showing as pending when an OIL setting would change its OIL — 
 pending list says what moved (D2054). If he wants the OIL fact kept, it goes under a "How it works" fold, not in the
 strip. The picture's two changed settings were its own example (Default rally 3h → 2h50, Debrief after landing 2h → 1h30),
 changed only so the strip would show. Pictures: `c-logic-proposed-phone.png`, `-desktop.png`.
+
+## 3g. His answers to the page's questions (16 Nov 26)
+
+- **Question 1:** answered by D2058 (§3c).
+- **Question 2 — no (D2068):** "Tight turning" keeps its name. Wherever this proposal writes "Tight crew rest" — the
+  family's lines in §3 and §3a, the short-names table in §3b — read "Tight turning"; the build uses "Tight turning".
+- **Question 3 — open:** he asked back "should we use conflict or clash?". Recommended to him: "Clash", his own word
+  (D2045), so the list's line and the check's short name match; Insights' heading "Conflicts by type" covers every kind
+  of flag and stays.
+- **Question 4 — yes (D2069):** the crew-rest line keeps his 22 Aug 26 order with "needs 12h" added.
+- **Also open:** the one-sentence Logic note (§3f), and his approval of the words as a whole.
