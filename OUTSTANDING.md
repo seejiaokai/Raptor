@@ -138,7 +138,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-PO-DAYS-DRAWING] — his D1720 (6 Nov 26): BUILT and walked on `claude/lw-faults-1106` (pull request 646); close once live.
 - [LW-FULL-EDITING] — his D1724: every entry on the Leave War moved, deleted, its days and remarks changed there; a day of several entries opens the window that adds more; drawn first, then a FULL check; brief `raptor-port/docs/superpowers/plans/2026-11-06-lw-full-editing.md`.
 - [VERCEL-SHIPPING-LINES] — since the Vercel skip went live (D2032), two always-loaded shipping lines say every push builds and gives him a link; to correct, on his "merge live" (a reader's note, 14 Nov 26).
-- [LW-DOUBLETAP-MORE-WINDOWS] — the same guard does not see six more Leave War windows go (the Required rows' panel, rename form and number pad, the day-details panel, the under-manned days list, the move banners, New period, Open for bidding on a desktop), and a double tap on the event box's Edit opens the event window and closes it at once (older; found by the reads and the walk of 11 Nov 26; low, the next Leave War batch).
+- [LW-DOUBLETAP-MORE-WINDOWS] — the same guard does not see six more Leave War windows go (the Required rows' panel, rename form and number pad, the day-details panel, the under-manned days list, the move banners, New period, Open for bidding on a desktop), and a double tap on the event box's Edit opens the event window and closes it at once (older; found by the reads and the walk of 11 Nov 26; low, the next Leave War batch) — BUILT 15 Nov 26 on `claude/lw-doubletap-more` (pull request 781), its WALK check closed; his look and his "merge live" to come.
+- [LW-DOUBLETAP-LEFTOVERS] — what the double-tap job's reads filed, all low: tidiness, an older list that hides but stays open, the first period's Create, a slow close, a load-sensitive test, a test case, two document notes (15 Nov 26; the next Leave War batch).
 - [APPR-OLDER-ODDS] — four small older things the Approvals job's walk and reads saw, each the same on `main` (low, the agent's): pressing the chip already lit jumps the list to its top; Approve all's left edge moves up to 6.8px with its count; a name's puck tap does nothing on a PC; an empty range hides the column headings.
 - [LW-ROLLBACK-FOCUS] — a refused war change still puts back the jump-to-a-day state, so the grid can jump back after one (low, needs its own look).
 - [CHAT72-LEFTOVERS] — small notes the three jobs of 14 Nov 26 left (all merged that day): about a dozen Leave War looks never shown, for him later; three guide wordings for the drawing helper; the readers' tidiness notes (low).
@@ -482,6 +483,26 @@ Since [VERCEL-SKIP-NOTES] went live (pull request 765), a push that changes only
 ### [LW-DOUBLETAP-MORE-WINDOWS] The double tap falls through six more Leave War windows (the night of 11 Nov 26, the two reads and the walk)
 Older than `[LW-DOUBLETAP-OTHER-WINDOWS]`'s build and not made worse by it. The guard sees a window go only when its open state lives in the grid's own file; these do not, so a fast second tap after their closing press can still reach the grid: the Required rows' selection panel (✕, Apply, Clear), their rename form (✕, Save, Cancel) and their figure editor and phone number pad (Done); the day-details panel (✕ and ‹ ›); the under-manned days list (a row tapped twice — the first tap takes the grid to that day and closes the list, the second lands on a day); the move banners' Confirm and Cancel; New period (✕, Create) where a grid lies beneath; Open for bidding on a desktop or tablet (a phone's fills the screen). Not walked — found by reading. **To do:** one small shared door those windows call to arm the same guard, and their presses counted as inside a window, tests first, then walked on a phone by touch (the Opus read's steps: `raptor-port/docs/superpowers/briefs/2026-11-11-lw-doubletap-windows-read-opus.md` F1; Astra's table of every window: `…-read-astra.md` §1).
 Also found, the same night: (1) on a phone a double tap on the event box's Edit opens the event window and the second tap, landing beside it, closes it at once, so nothing seems to happen (every Leave War window closes on a tap beside it; the same on `main`; a desktop keeps it open; the walk's pictures `raptor-port/docs/img/handpass/2026-11-11-lw-doubletap-windows/run3-w1-peek-save/005`–`008`) — the cure is the mirror of the guard: a window just opened by a tap ignores a second tap beside it for a moment; (2) a window's bit can be up while the window is not drawn (a member for whom Settings was asked, a person since gone) — no harm found, since the fix round's "a fresh press only" rule covers it; (3) tidiness, the changed lines only: the bits are bare numbers and `winsUp` / `winUpRef` are named for one flag. **Place:** the next Leave War batch.
+
+### [LW-DOUBLETAP-LEFTOVERS] What the double-tap job's reads filed (15 Nov 26, chat 81, job 3 — all low)
+Not faults a person meets now. From the reads of `[LW-DOUBLETAP-MORE-WINDOWS]` (`raptor-port/docs/superpowers/briefs/2026-11-15-lw-doubletap-more-coderead-{astra,opus,narrow}.md`; the sheet `raptor-port/docs/handpass/2026-11-15-lw-doubletap-more.md` §15):
+1. **Tidiness:**
+   - the comment repeated in `Matrix.tsx` and at `gridguard.ts`'s head;
+   - `useFlyWindowsGuard` is named for its job, not for the code check it satisfies;
+   - the helper's `pad` argument covers the desktop editor too;
+   - Matrix's own document key listener now duplicates the key counter;
+   - the browser test's `behind` list is a hand-kept copy of the window presses;
+   - the guard's freshness comment has two stacked layers.
+2. **Older:** if the red days drop to zero while the under-manned list is open, the list hides but stays open, then catches the first Escape.
+3. **Older:** the first-ever period's Create has no guard.
+4. **Low:** a Required close delayed past a second would not arm the guard.
+5. **A load-sensitive test:** the event window's Save then Delete (its one-second limit, on `main`) failed once under the full suite.
+6. **A test case:** a finger landing a move then a tap near it. The landing test became a mouse case; keep both versions.
+7. **Two document notes:**
+   - `.claude/rules/seams/leave-war.md`'s list of who reads the war through `sync.ts` should name `useDaysWinUp` (the Calendar window's open state, a rider beside `openDays`);
+   - `raptor-port/docs/performance.md` §E should say the page's Body now listens to the scheduler's store for it.
+
+**Place:** the next Leave War batch; (7) with the next change to those files.
 
 ### [LW-ROLLBACK-FOCUS] A refused war change puts back the jump-to-a-day state (the night of 6 Nov 26, read F5)
 A refused change restores the war's records, and since 6 Nov 26 keeps the role and viewer; it still restores the fields that make the grid jump to a day, so the grid can jump back after one. Keeping them live could part them from the person in view, so it needs its own look. **Place:** the next Leave War batch.
