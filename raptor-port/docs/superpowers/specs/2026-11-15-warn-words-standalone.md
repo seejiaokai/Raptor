@@ -340,11 +340,16 @@ a clash between two flights (T/O and landing of both, as drawn), and the same sh
 **Not drawn yet:** the page's clash rows and Ranger's Friday row 2 still show T/O and landing — redraw
 (`b-families.mjs`, `a-friday.mjs` in the mock folder) and republish the page before the build.
 
-## 3d. Step to dekit is the man's busy time (D2059, 15 Nov 26) — what is built, and two points open with him
+## 3d. Step to dekit is the man's busy time (D2059, 15 Nov 26) — what is built, and two points answered (D2060, D2061)
 
 His rule: from step to dekit a man on a flight can have nothing else, and a clash shows. Built so for a ground or
 programme item, a sim, a duty post and a request (the red clash, compared with take-off less the Logic step to landing
-plus the Logic dekit). Told to him as different, awaiting his word:
+plus the Logic dekit). Told to him as different; both stay as built on his word (below):
 1. Two flights whose step and dekit overlap, air times apart: the amber tight turn, not a red clash.
 2. A standby line that flies: compared on its START to END, no step or dekit added.
 (A blank landing counting as the take-off is D2046's fix, already in this item.)
+
+**Answered 15 Nov 26.** Point 1 stays the amber tight turn: a hot-pit refuel is flown on purpose — the crew lands,
+refuels fast and takes off again (D2060). Point 2 stays as built: a standby line is not affected, no step or dekit added;
+its crew may do other things on standby and has an hour from activation to fly, which the app does not need to know
+(D2061). Nothing to build for either.
