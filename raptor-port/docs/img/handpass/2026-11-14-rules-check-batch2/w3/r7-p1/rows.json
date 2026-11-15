@@ -1,0 +1,101 @@
+[
+ [
+  "R7 day details",
+  "402",
+  "opened from the day card, closed by done",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-done-p.png"
+ ],
+ [
+  "R7 day details",
+  "402",
+  "opened from the day card, closed by x",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-x-p.png"
+ ],
+ [
+  "R7 day details",
+  "402",
+  "opened from the day card, closed by esc",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-esc-p.png"
+ ],
+ [
+  "R7 day details",
+  "402",
+  "opened from the day card, closed by outside",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-outside-p.png"
+ ],
+ [
+  "R7 Inputs calendar settings window",
+  "402",
+  "opened from the Logic page late cut-off, closed by x",
+  "closes; value unchanged",
+  "still open: 0; value same: false",
+  "FAIL",
+  "r7-inset-after-x-p.png"
+ ],
+ [
+  "R7 Inputs calendar settings window",
+  "402",
+  "opened from the Logic page late cut-off, closed by esc",
+  "closes; value unchanged",
+  "still open: 0; value same: false",
+  "FAIL",
+  "r7-inset-after-esc-p.png"
+ ],
+ [
+  "R7 Inputs calendar settings window",
+  "402",
+  "opened from the Logic page late cut-off, closed by outside",
+  "RECORD",
+  "still open: 1; value same: false",
+  "RECORDED",
+  "r7-inset-after-outside-p.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "402",
+  "opened from the week day card, closed by x",
+  "closes",
+  "window did not open from the week card (phone: the tap armed the row for planning)",
+  "NOT WALKED",
+  "r7-aw-noopen-x-p.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "402",
+  "opened from the week day card, closed by esc",
+  "closes",
+  "window did not open from the week card (phone: the tap armed the row for planning)",
+  "NOT WALKED",
+  "r7-aw-noopen-esc-p.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "402",
+  "opened from the week day card, closed by outside",
+  "closes",
+  "window did not open from the week card (phone: the tap armed the row for planning)",
+  "NOT WALKED",
+  "r7-aw-noopen-outside-p.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "402",
+  "opened from the week day card, closed by pagechange",
+  "closes",
+  "window did not open from the week card (phone: the tap armed the row for planning)",
+  "NOT WALKED",
+  "r7-aw-noopen-pagechange-p.png"
+ ]
+]

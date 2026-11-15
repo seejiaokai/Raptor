@@ -1,0 +1,29 @@
+[
+ [
+  "S12 A",
+  "402",
+  "Saturday 08:00-16:00 published",
+  "published ORIG, four signatures, credit FO",
+  "{\"pr\":{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4},\"st0\":{\"pend\":[],\"ver\":\"ORIG\",\"sign\":4,\"toSign\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"publishBtn\":[]},\"lw0\":{\"Ranger\":{\"text\":\"FO*\",\"cls\":\"duty weekend act hasc\"}}}",
+  "PASS",
+  "s12A-published-board-p.png"
+ ],
+ [
+  "S12 A",
+  "402",
+  "Full day of OIL 6h01 -> 5h30 (Ranger day is 9h: still FO)",
+  "Logic accepts",
+  "{\"ok\":true,\"before\":\"6h01\",\"after\":\"5h30\",\"note\":\"\"}",
+  "PASS",
+  "s12A-logic-oilFullMin-p.png"
+ ],
+ [
+  "S12 A",
+  "402",
+  "open the published Saturday after the change",
+  "no pending; signatures kept",
+  "{\"st0\":{\"sign\":4,\"toSign\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\"},\"st1\":{\"pend\":[],\"ver\":\"ORIG\",\"sign\":4,\"toSign\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"publishBtn\":[]},\"lt\":null,\"lw1\":{\"Ranger\":{\"text\":\"FO*\",\"cls\":\"duty weekend act hasc\"}}}",
+  "PASS",
+  "s12A-after-change-board-p.png"
+ ]
+]

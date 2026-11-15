@@ -1,0 +1,12 @@
+filed [{"type":"Duty","s":600,"e":660,"acc":"g","date":"Jul 18"}]
+board open? 1 CURPAGE editsched
+hit at chip centre: SPAN.oilcount CHIP {"x":207,"y":430.5,"width":19.890625,"height":12}
+ROW NOT WALKED | S02esc a-direct | 402 | open | saw: not open
+board open? 1 CURPAGE editsched
+hit at chip centre: SPAN.nm not the chip {"x":207,"y":430.5,"width":19.890625,"height":12}
+ROW NOT WALKED | S02esc b-titlebar | 402 | open | saw: not open
+board open? 1 CURPAGE editsched
+hit at chip centre: SPAN.oilcount CHIP {"x":207,"y":430.5,"width":19.890625,"height":12}
+ROW NOT WALKED | S02esc c-puck | 402 | open | saw: not open
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

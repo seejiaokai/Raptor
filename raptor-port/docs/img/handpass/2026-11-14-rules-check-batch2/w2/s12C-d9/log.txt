@@ -1,0 +1,8 @@
+set {"ok":true,"before":"3h","after":"2h50","note":""}
+flight d5 w0 {"to":"08:00","ld":"16:00","p":"Ranger"}
+publish {"published":true,"version":"ORIG","signSelects":4}
+state {"pend":[],"ver":"ORIG","sign":4,"toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","publishBtn":[]}
+ROW PASS | S12 C | 1536 | setting changed (default rally 2h50) before first publication, then sign + publish | saw: {"pr":{"published":true,"version":"ORIG","signSelects":4},"st":{"pend":[],"ver":"ORIG","sign":4,"toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","publishBtn":[]}}
+ROW RECORDED | S12 C | 1536 | Leave War cell after the first publication | saw: {"Ranger":{"text":"FO*","cls":"duty weekend act hasc"}}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

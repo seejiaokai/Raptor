@@ -1,0 +1,8 @@
+rcb2-w3-r3 v1
+ROW PASS | R3 0 standard | 1536 | Logic page at standard settings | saw: {"shown":false,"text":"","w":0,"h":0,"sw":0,"cw":0,"sh":0,"ch":0,"vw":1536,"right":0,"left":0}
+crew key crewRest
+setCrew {"key":"crewRest","before":"12h","after":"13h"}
+S1 {"shown":true,"text":"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending.","w":1180,"h":55,"sw":1178,"cw":1178,"sh":53,"ch":53,"vw":1536,"right":1200,"left":20}
+ROW PASS | R3 1-crew | 1536 | Crew rest 12h -> 13h; strip read | saw: {"shown":true,"text":"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would c
+ROW PASS | R3 1b-crew-whole | 1536 | strip measured: nothing cut | saw: {"shown":true,"text":"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would c
+ROW PASS | R3 2 reset | 1536 | Reset to standard | saw: {"shown":false,"text":"","w":0,"h":0,"sw":0,"cw":0,"sh":0,"ch":0,"vw":1536,"right":0,"left":0}

@@ -796,7 +796,7 @@ export const JOURNEYS = [
         action: { shot: 'r1-act', lines: [c(1, 'A member picks the day'), c(2, 'LL'), c(3, 'Add input')] },
         places: [
           { shot: 'r1-unav', page: 'Schedule', t: 'the day\'s Unavailable block' },
-          { shot: 'r1-warn', page: 'Issues', t: '"On leave + flying" for each seat he held' },
+          { shot: 'r1-warn', page: 'Issues', t: '"On leave + planned" for each seat he held' },
           { shot: 'r1-lw', page: 'Leave War', t: 'LL, approved, with the blue "from Inputs" edge' },
           { shot: 'r1-palette', page: 'Crew list', t: 'struck through, the reason on hover' },
           { shot: 'r1-chip', page: 'Admin', t: '"1 new" on the day; the clock counts it' },
@@ -826,7 +826,7 @@ export const JOURNEYS = [
         checks: [
           'An activity with times lands as a Ground Programme row on the week, the board and View-only.',
           'An activity never reaches the Leave War; a downchit does.',
-          'A downchit never wears LATE; each seat he holds raises "Downchit + flying".',
+          'A downchit never wears LATE; each seat he holds raises "Downchit + planned".',
           'A weekend Duty asks the OIL question before it is saved.',
         ],
         tests: [

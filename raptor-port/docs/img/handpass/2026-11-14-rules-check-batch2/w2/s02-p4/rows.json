@@ -1,0 +1,128 @@
+[
+ [
+  "S02 setup",
+  "402",
+  "ALL AVAIL duty input Sat 10:00-11:00 filed on the Inputs page",
+  "one input",
+  "[{\"type\":\"Duty\",\"s\":600,\"e\":660,\"acc\":\"g\",\"date\":\"Jul 18\"}]",
+  "PASS",
+  ""
+ ],
+ [
+  "S02 a-blank",
+  "402",
+  "week: Ranger row reason",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "{\"found\":true,\"why\":\"Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\",\"whyVisible\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · Crew rest breach (<12h)\",\"cls\":\"rpuck clash\"}",
+  "PASS",
+  "s02-a-blank-week-window-p.png"
+ ],
+ [
+  "S02 a-blank",
+  "402",
+  "week: Ranger puck title (desktop hover title)",
+  "RECORD",
+  "\"Ranger · IP · instructor pilot · SXO · Crew rest breach (<12h)\"",
+  "RECORDED",
+  ""
+ ],
+ [
+  "S02 a-blank",
+  "402",
+  "tap his puck in the window (OIL Earn off)",
+  "highlights him; tasking unchanged",
+  "tasking same: true; window still open: 1",
+  "PASS",
+  "s02-a-blank-puck-tapped-p.png"
+ ],
+ [
+  "S02 a-blank",
+  "402",
+  "press the page behind the open window (a puck of plasma on Sat)",
+  "page works: his pucks light; window state recorded",
+  "window open: 1; his puck classes [\"puck r sm dim\",\"puck r sm dim\",\"puck r dim\",\"puck r sm dim\"]",
+  "RECORDED",
+  "s02-a-blank-page-behind-p.png"
+ ],
+ [
+  "S02 a-blank",
+  "402",
+  "the window closed each way",
+  "x/Escape close; outside tap leaves it open; page change dismisses",
+  "{\"x\":\"closed\",\"escape\":\"STILL OPEN\",\"outsideTap\":\"stays open\",\"pageChange\":\"closed\"}",
+  "RECORDED",
+  ""
+ ],
+ [
+  "S02 a-blank",
+  "402",
+  "board: Ranger row reason",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "{\"found\":true,\"why\":\"Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\",\"whyVisible\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · Crew rest breach (<12h)\",\"cls\":\"rpuck clash\"}",
+  "PASS",
+  "s02-a-blank-board-window-p.png"
+ ],
+ [
+  "S02 b-tbd",
+  "402",
+  "week: Ranger row reason",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "{\"found\":true,\"why\":\"Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\",\"whyVisible\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · Crew rest breach (<12h)\",\"cls\":\"rpuck clash\"}",
+  "PASS",
+  "s02-b-tbd-week-window-p.png"
+ ],
+ [
+  "S02 b-tbd",
+  "402",
+  "week: Ranger puck title (desktop hover title)",
+  "RECORD",
+  "\"Ranger · IP · instructor pilot · SXO · Crew rest breach (<12h)\"",
+  "RECORDED",
+  ""
+ ],
+ [
+  "S02 b-tbd",
+  "402",
+  "tap his puck in the window (OIL Earn off)",
+  "highlights him; tasking unchanged",
+  "tasking same: true; window still open: 1",
+  "PASS",
+  "s02-b-tbd-puck-tapped-p.png"
+ ],
+ [
+  "S02 b-tbd",
+  "402",
+  "press the page behind the open window (a puck of plasma on Sat)",
+  "page works: his pucks light; window state recorded",
+  "window open: 1; his puck classes [\"puck r sm dim\",\"puck r sm dim\",\"puck r dim\",\"puck r sm dim\"]",
+  "RECORDED",
+  "s02-b-tbd-page-behind-p.png"
+ ],
+ [
+  "S02 b-tbd",
+  "402",
+  "the window closed each way",
+  "x/Escape close; outside tap leaves it open; page change dismisses",
+  "{\"x\":\"closed\",\"escape\":\"STILL OPEN\",\"outsideTap\":\"stays open\",\"pageChange\":\"closed\"}",
+  "RECORDED",
+  ""
+ ],
+ [
+  "S02 b-tbd",
+  "402",
+  "board: Ranger row reason",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "{\"found\":true,\"why\":\"Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\",\"whyVisible\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · Crew rest breach (<12h)\",\"cls\":\"rpuck clash\"}",
+  "PASS",
+  "s02-b-tbd-board-window-p.png"
+ ],
+ [
+  "S02 c-viewonly",
+  "402",
+  "View-only: Ranger row reason",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "{\"found\":true,\"why\":\"Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\",\"whyVisible\":true,\"title\":\"Ranger · IP · instructor pilot · SXO · Crew rest breach (<12h)\",\"cls\":\"rpuck clash\"}",
+  "PASS",
+  "s02-c-viewonly-window-p.png"
+ ]
+]

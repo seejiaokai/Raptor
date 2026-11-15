@@ -533,8 +533,37 @@ describe('W2 the words the + In-time / Rally button fills in are not a modified 
     await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
     expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
     expect($('#lgOff').textContent).toContain('1 setting changed')
-    /* the strip's old "not the published ones" was untrue (D928): a published day keeps its printed B and its OIL */
-    expect($('#lgOff').textContent).toContain('A published day keeps its printed B and its OIL until it is published again')
+    /* the strip's old "not the published ones" was untrue (D928); since D2005 a published day keeps every setting it was
+       published under, not only its printed B and its OIL — the note says so (D2015), and that an OIL setting's change
+       makes a day whose OIL it would change read pending at once (D592 (4), D2044) */
+    expect($('#lgOff').textContent).toContain('A published day keeps the settings it was published under, and the OIL they gave it, until it is published again.')
+    /* the cold read (15 Nov 26): the day's OIL stays as published while the day reads pending — said, not left implied */
+    /* the blind code reads of 15 Nov 26 (the Opus read's F4): "a changed OIL setting" named only the page's OIL group
+       ("Full day of OIL"), but Default rally and Debrief after landing make an earning day's OIL pending too (D2044) */
+    expect($('#lgOff').textContent).toContain('If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending.')
+    expect($('#lgOff').textContent).not.toContain('printed B')
+    expect($('#lgOff').textContent, 'no cut-off changed, no cut-off sentence').not.toContain('late cut-off')
+    await act(async () => { rulesReset(); notify() })
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
+  })
+  /* the blind code reads of 15 Nov 26 (the Opus read's F1): the Inputs and SANS late cut-offs are counted by the strip
+     but a published day does NOT keep them — they grade an input, not a day (faceattrs.ts KEPT_RULE_KEYS), so its LATE
+     marks move at once. With only a cut-off changed the strip must not say the day keeps its settings; it says what the
+     change does instead */
+  it('a late cut-off alone: the strip shows, never "keeps the settings", and says the LATE marks move at once', async () => {
+    const { VCONF, rulesReset } = await import('../engine/rules')
+    await click($$('.nav a[data-page]').find(a=>a.dataset.page==='logic')!)
+    await act(async () => { rulesReset(); VCONF.inputLead = 60; notify() })
+    expect(($('#lgOff') as HTMLElement).hidden).toBe(false)
+    expect($('#lgOff').textContent).toContain('1 setting changed')
+    expect($('#lgOff').textContent).not.toContain('keeps the settings')
+    expect($('#lgOff').textContent).not.toContain('reads pending')
+    expect($('#lgOff').textContent).toContain('A changed late cut-off moves the LATE marks at once, on published days too.')
+    /* with a kept setting changed as well, both are said */
+    await act(async () => { VCONF.crewRest = 600; notify() })
+    expect($('#lgOff').textContent).toContain('2 settings changed')
+    expect($('#lgOff').textContent).toContain('A published day keeps the settings it was published under')
+    expect($('#lgOff').textContent).toContain('A changed late cut-off moves the LATE marks at once')
     await act(async () => { rulesReset(); notify() })
     expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
   })

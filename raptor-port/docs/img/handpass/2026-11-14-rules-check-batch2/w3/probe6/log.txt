@@ -1,0 +1,4 @@
+before ["Inputs late cut-off: 14 days before the week starts, opens the Inputs calendar settings","Members file for others: On, opens the Inputs calendar settings"] [0,""]
+after Enter in window ["Inputs late cut-off: 10 days before the week starts, opens the Inputs calendar settings","Members file for others: On, opens the Inputs calendar settings"] [1180,"1 setting changed from the squadron standard. A changed late cut-off moves the L"]
+before ["Inputs late cut-off: 14 days before the week starts, opens the Inputs calendar settings","Members file for others: On, opens the Inputs calendar settings"] [0,""]
+after Enter in window ["Inputs late cut-off: 10 days before the week starts, opens the Inputs calendar settings","Members file for others: On, opens the Inputs calendar settings"] [1180,"1 setting changed from the squadron standard. A changed late cut-off moves the L"]

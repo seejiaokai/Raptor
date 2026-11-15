@@ -1,0 +1,101 @@
+[
+ [
+  "R7 day details",
+  "402",
+  "opened from the day card, closed by done",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-done-p.png"
+ ],
+ [
+  "R7 day details",
+  "402",
+  "opened from the day card, closed by x",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-x-p.png"
+ ],
+ [
+  "R7 day details",
+  "402",
+  "opened from the day card, closed by esc",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-esc-p.png"
+ ],
+ [
+  "R7 day details",
+  "402",
+  "opened from the day card, closed by outside",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-outside-p.png"
+ ],
+ [
+  "R7 Inputs calendar settings window",
+  "402",
+  "opened from the Logic page late cut-off, closed by x",
+  "closes; value unchanged",
+  "still open: 0; value same: true",
+  "PASS",
+  "r7-inset-after-x-p.png"
+ ],
+ [
+  "R7 Inputs calendar settings window",
+  "402",
+  "opened from the Logic page late cut-off, closed by esc",
+  "closes; value unchanged",
+  "still open: 0; value same: true",
+  "PASS",
+  "r7-inset-after-esc-p.png"
+ ],
+ [
+  "R7 Inputs calendar settings window",
+  "402",
+  "opened from the Logic page late cut-off, closed by outside",
+  "RECORD",
+  "still open: 1; value same: true",
+  "RECORDED",
+  "r7-inset-after-outside-p.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "402",
+  "opened from the board (the week card tap arms the row on the phone), closed by x",
+  "closes",
+  "still open: 0",
+  "PASS",
+  "r7-aw-after-x-p.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "402",
+  "opened from the board (the week card tap arms the row on the phone), closed by esc",
+  "closes (known filed fault [ALLAVAIL-ESCAPE] if not)",
+  "still open: 1 ([ALLAVAIL-ESCAPE], already filed)",
+  "RECORDED",
+  "r7-aw-after-esc-p.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "402",
+  "opened from the board (the week card tap arms the row on the phone), closed by outside",
+  "stays open (contract)",
+  "still open: 1",
+  "PASS",
+  "r7-aw-after-outside-p.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "402",
+  "opened from the board (the week card tap arms the row on the phone), closed by pagechange",
+  "closes",
+  "still open: 0",
+  "PASS",
+  "r7-aw-after-pagechange-p.png"
+ ]
+]

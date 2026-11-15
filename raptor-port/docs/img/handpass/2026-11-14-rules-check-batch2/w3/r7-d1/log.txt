@@ -1,0 +1,32 @@
+rcb2-w3-r7 v1
+flight d4 w0 {"to":"12:00","ld":"","p":"Ranger"}
+seat ok
+ROW PASS | R7 day details | 1536 | opened from the day card, closed by done | saw: open: true; after: closed; day unchanged: true
+ROW PASS | R7 day details | 1536 | opened from the day card, closed by x | saw: open: true; after: closed; day unchanged: true
+ROW PASS | R7 day details | 1536 | opened from the day card, closed by esc | saw: open: true; after: closed; day unchanged: true
+ROW PASS | R7 day details | 1536 | opened from the day card, closed by outside | saw: open: true; after: closed; day unchanged: true
+ROW FAIL | R7 Inputs calendar settings window | 1536 | opened from the Logic page late cut-off, closed by x | saw: still open: 0; value same: false
+ROW FAIL | R7 Inputs calendar settings window | 1536 | opened from the Logic page late cut-off, closed by esc | saw: still open: 0; value same: false
+ROW RECORDED | R7 Inputs calendar settings window | 1536 | opened from the Logic page late cut-off, closed by outside | saw: still open: 1; value same: false
+ROW PASS | R7 ALL AVAIL window | 1536 | opened from the week day card, closed by x | saw: still open: 0
+ROW RECORDED | R7 ALL AVAIL window | 1536 | opened from the week day card, closed by esc | saw: still open: 1 ([ALLAVAIL-ESCAPE], already filed)
+ROW PASS | R7 ALL AVAIL window | 1536 | opened from the week day card, closed by outside | saw: still open: 1
+ROW PASS | R7 ALL AVAIL window | 1536 | opened from the week day card, closed by pagechange | saw: still open: 0
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+rcb2-w3-r7 v1
+flight d4 w0 {"to":"12:00","ld":"","p":"Ranger"}
+seat ok
+ROW PASS | R7 day details | 1536 | opened from the day card, closed by done | saw: open: true; after: closed; day unchanged: true
+ROW PASS | R7 day details | 1536 | opened from the day card, closed by x | saw: open: true; after: closed; day unchanged: true
+ROW PASS | R7 day details | 1536 | opened from the day card, closed by esc | saw: open: true; after: closed; day unchanged: true
+ROW PASS | R7 day details | 1536 | opened from the day card, closed by outside | saw: open: true; after: closed; day unchanged: true
+ROW PASS | R7 Inputs calendar settings window | 1536 | opened from the Logic page late cut-off, closed by x | saw: still open: 0; value same: true
+ROW PASS | R7 Inputs calendar settings window | 1536 | opened from the Logic page late cut-off, closed by esc | saw: still open: 0; value same: true
+ROW RECORDED | R7 Inputs calendar settings window | 1536 | opened from the Logic page late cut-off, closed by outside | saw: still open: 1; value same: true
+ROW PASS | R7 ALL AVAIL window | 1536 | opened from the week day card, closed by x | saw: still open: 0
+ROW RECORDED | R7 ALL AVAIL window | 1536 | opened from the week day card, closed by esc | saw: still open: 1 ([ALLAVAIL-ESCAPE], already filed)
+ROW PASS | R7 ALL AVAIL window | 1536 | opened from the week day card, closed by outside | saw: still open: 1
+ROW PASS | R7 ALL AVAIL window | 1536 | opened from the week day card, closed by pagechange | saw: still open: 0
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

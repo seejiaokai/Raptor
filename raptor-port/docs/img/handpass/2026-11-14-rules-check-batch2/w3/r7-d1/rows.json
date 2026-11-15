@@ -1,0 +1,101 @@
+[
+ [
+  "R7 day details",
+  "1536",
+  "opened from the day card, closed by done",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-done-d.png"
+ ],
+ [
+  "R7 day details",
+  "1536",
+  "opened from the day card, closed by x",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-x-d.png"
+ ],
+ [
+  "R7 day details",
+  "1536",
+  "opened from the day card, closed by esc",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-esc-d.png"
+ ],
+ [
+  "R7 day details",
+  "1536",
+  "opened from the day card, closed by outside",
+  "closes; the day unchanged",
+  "open: true; after: closed; day unchanged: true",
+  "PASS",
+  "r7-daydet-after-outside-d.png"
+ ],
+ [
+  "R7 Inputs calendar settings window",
+  "1536",
+  "opened from the Logic page late cut-off, closed by x",
+  "closes; value unchanged",
+  "still open: 0; value same: true",
+  "PASS",
+  "r7-inset-after-x-d.png"
+ ],
+ [
+  "R7 Inputs calendar settings window",
+  "1536",
+  "opened from the Logic page late cut-off, closed by esc",
+  "closes; value unchanged",
+  "still open: 0; value same: true",
+  "PASS",
+  "r7-inset-after-esc-d.png"
+ ],
+ [
+  "R7 Inputs calendar settings window",
+  "1536",
+  "opened from the Logic page late cut-off, closed by outside",
+  "RECORD",
+  "still open: 1; value same: true",
+  "RECORDED",
+  "r7-inset-after-outside-d.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "1536",
+  "opened from the week day card, closed by x",
+  "closes",
+  "still open: 0",
+  "PASS",
+  "r7-aw-after-x-d.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "1536",
+  "opened from the week day card, closed by esc",
+  "closes (known filed fault [ALLAVAIL-ESCAPE] if not)",
+  "still open: 1 ([ALLAVAIL-ESCAPE], already filed)",
+  "RECORDED",
+  "r7-aw-after-esc-d.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "1536",
+  "opened from the week day card, closed by outside",
+  "stays open (contract)",
+  "still open: 1",
+  "PASS",
+  "r7-aw-after-outside-d.png"
+ ],
+ [
+  "R7 ALL AVAIL window",
+  "1536",
+  "opened from the week day card, closed by pagechange",
+  "closes",
+  "still open: 0",
+  "PASS",
+  "r7-aw-after-pagechange-d.png"
+ ]
+]

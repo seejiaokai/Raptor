@@ -1,0 +1,56 @@
+[
+ [
+  "R2 setup",
+  "402",
+  "VL 12:00 landing blank (Ranger), ground row 12:30-13:30 with an ALL AVAIL puck",
+  "both in place",
+  "ok \"allavail\"",
+  "PASS",
+  "r2-0-board-p.png"
+ ],
+ [
+  "R2 board",
+  "402",
+  "open the ALL AVAIL count window from the board; Ranger row reason",
+  "reason holds \"take-off + 2h, no landing typed\"",
+  "{\"found\":true,\"why\":\"Not enough time to attend the VL BFM debrief — ALL AVAIL TEST sits inside 12:00–14:00 (take-off + 2h, no landing typed)\",\"whyVisible\":true,\"title\":\"Ranger · IP · instructor pilot · SXO\",\"full\":\"Ranger IP Not enough time to attend the VL BFM debrief — ALL AVAIL TEST sits inside 12:00–14:00 (take-off + 2h, no landing typed)\"}",
+  "PASS",
+  "r2-1-board-window-p.png"
+ ],
+ [
+  "R2 board title",
+  "402",
+  "Ranger's puck title in the window",
+  "RECORD",
+  "\"Ranger · IP · instructor pilot · SXO\"",
+  "RECORDED",
+  ""
+ ],
+ [
+  "R2 week",
+  "402",
+  "open the window from the week day card; Ranger row reason",
+  "reason holds \"take-off + 2h, no landing typed\"",
+  "{\"found\":false,\"names\":[],\"text\":\"\"}",
+  "NOT WALKED",
+  "r2-2-week-window-p.png"
+ ],
+ [
+  "R2 lesson 4",
+  "402",
+  "press the page behind the open window (puck of bane)",
+  "page works: his pucks light; tasking unchanged; RECORD window state",
+  "window open: 0; his puck classes [\"puck sm warn hard boxred\",\"puck warn hard boxred\",\"puck sm warn hard boxred\",\"puck sm warn hard boxred\",\"puck sm\"]; lit pucks 0 -> 0; tasking same false",
+  "RECORDED",
+  "r2-3-page-behind-p.png"
+ ],
+ [
+  "R2 close",
+  "402",
+  "window closed by its x",
+  "closed",
+  "{}",
+  "FAIL",
+  ""
+ ]
+]

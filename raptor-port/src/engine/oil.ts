@@ -1,6 +1,7 @@
-/* the OIL block reads TODAY's settings, never a published day's kept ones (owner D2005 leaves OIL as it was — whether a
-   published day's OIL follows a changed setting is his question; the block keeps its own values with its evidence,
-   oilev.ts): rules.ts ruleNow, which is VCONF outside a day judged by its kept settings */
+/* the OIL block reads TODAY's settings, never a published day's kept ones (owner D2005 leaves OIL as it was; a
+   published day's OIL keeps the three values its block kept — the block's own, with its evidence, oilev.ts — and a change
+   of one reads pending where it would write anyone's OIL record (amount or worked times) differently, until the day is
+   published again: D592 (4), D2044, oilev.ts oilRuleShift): rules.ts ruleNow, which is VCONF outside a day judged by its kept settings */
 import { ruleNow } from './rules'
 import { oilAsks } from './inputs'
 import { parseHM } from './time'

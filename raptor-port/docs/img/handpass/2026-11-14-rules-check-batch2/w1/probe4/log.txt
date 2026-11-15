@@ -1,0 +1,25 @@
+sc wave idx 0 {"label":"SC","kind":"sc","standalone":true,"noconf":false,"night":false,"intimes":[],"traffic":[],"formations":[{"cs":"SC","msn":"AM","shift":"AM","to":"07:00","ld":"13:00","aircraft":[{"p":"","w":"","area":"","rmks":"","opts":{},"spare":false,"role":"MAIN","rid":"rmwgokmrdttfjl9"},{"p":"","w":"","area":"","rmks":"","opts":{},"spare":false,"role":"MAIN","rid":"rmwgokmrd5aoy47"},{"p":"","w":"","area":"","rmks":"","opts":{},"spare":true,"role":"SPARE","rid":"rmwgokmrdfyk3ja"},{"p":"","w":"","area":"","rmks":"","opts":{},"spare":true,"role":"SPARE","rid":"rmwgokmrdeyo5jf"}],"rid":"rmwgokmrdbabcex"},{"cs":"SC","msn":"PM","shift":"PM","to":"13:00","ld":"19:00","aircraft":[{"p":"","w":"","area":"
+sc slots a:4.0.+ a:4.1.+ a:4.2.+ 4.0.0.0.p 4.0.0.0.w 4.0.0.1.p 4.0.0.1.w 4.0.0.2.p 4.0.0.2.w 4.0.0.3.p 4.0.0.3.w 4.0.1.0.p 4.0.1.0.w 4.0.1.1.p 4.0.1.1.w 4.0.1.2.p 4.0.1.2.w 4.0.1.3.p 4.0.1.3.w d:4.0.0.+ d:4.0.0 d:4.0.1.+ d:4.0.1 s:4.oft.0.+ s:4.oft.1.+ s:4.oft.1.p s:4.oft.1.w s:4.oft.1.x0 s:4.oft.1.x1 g:4.0.+ g:4.0 g:4.1.+
+all add-ish buttons data-nadd=4 | + Note
+data-padd=4 | + Item
+data-wvadd=4 | + Wave
+data-gline=4.0 | + Line
+data-lac=4.0.0 | +
+data-lac=4.0.0 | +
+data-lac=4.0.0 | +
+data-lac=4.0.0 | +
+data-lac=4.0.1 | +
+data-lac=4.0.1 | +
+data-lac=4.0.1 | +
+data-lac=4.0.1 | +
+data-dwadd=4 | + Block
+data-dradd=4.0 | + Row
+data-sblkadd=4 | + Block
+data-sradd=4.amt | + Row
+data-sradd=4.oft | + Row
+data-inpadd=4.g | + INPUTS
+data-gradd=4 | + Item
+data-inpadd=4.s | + ADD
+data-inpadd=4.u | + ADD
+allhands [{"prog":"SODB","str":"0745","end":"0800","rid":"rs130720264x0"},{"prog":"SQN PT","str":"1500","end":"1630","rid":"rs130720264x1"},{"prog":"MASS DEBRIEF + BEER CALL","str":"1700","end":"","rid":"rs130720264x2"}]
+errors: []

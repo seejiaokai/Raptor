@@ -35,6 +35,7 @@ import { stashDays, stashSched, stashGet } from './weekstash'
 import { getWorld, filingActive, filingHas } from './world'
 import { dayCurVerIn, daySnapIn, peopleAttrsNow, faceRuleValsCompared } from './publish'
 import { ruleNow } from './rules'
+import { oilRuleShift } from './oilev'
 import { canonicalDiff } from './canonical'
 import { keepRulesOn, keptRulesDiffer, withDayRules } from './faceattrs'
 import { viewOfWeek, deletedOverlayDue, landingDue } from './overlay'
@@ -101,6 +102,10 @@ function keepUntouchedRules(v:any,days:any[]){
        reads, 12 Nov 26): a neighbour day with either waiting previews its next amendment, as its own week does */
     if(snap.pa&&stableJson(peopleAttrsNow(snap.pa))!==stableJson(snap.pa))continue;
     if(faceRuleValsCompared(snap.d)&&snap.rv.briefLead!=null&&+snap.rv.briefLead!==+ruleNow('briefLead'))continue;   // today's, even if a day's kept values are laid on
+    /* …and its OIL: an OIL setting changed so that the day's OIL would change waits on it as one pending entry (publish.ts
+       oilRuleDelta, D2044), so it too previews its next amendment by today's settings (D2013) — Astra's blind read,
+       15 Nov 26. Read from the issued day and its own stored evidence, never the loaded week's hooks. */
+    if(oilRuleShift(snap.d,snap.d.oilev).length>0)continue;
     keepRulesOn(days[di],snap.rv);
   }
 }

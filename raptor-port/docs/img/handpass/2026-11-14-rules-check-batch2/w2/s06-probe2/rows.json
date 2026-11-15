@@ -1,0 +1,20 @@
+[
+ [
+  "S06",
+  "1536",
+  "Sat 12:00-13:00 Bane; sign four; Publish day",
+  "published",
+  "{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+  "PASS",
+  "s06-1-after-publish-d.png"
+ ],
+ [
+  "S06",
+  "1536",
+  "Leave War cell for Bane on Sat 18 Jul after publishing (6h01 -> 6h on the day)",
+  "credited HO",
+  "{\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty weekend act hasc\"}}",
+  "PASS",
+  "s06-a-published-leavewar-d.png"
+ ]
+]

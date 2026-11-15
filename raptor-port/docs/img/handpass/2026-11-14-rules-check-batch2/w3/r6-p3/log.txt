@@ -1,0 +1,7 @@
+rcb2-w3-r6 v1
+flight d6 w0 {"to":"12:00","ld":"","p":"Ranger"}
+publish Sun {"published":true,"version":"ORIG","signSelects":4}
+flight d0 w0 {"to":"04:00","ld":"05:00","p":"Ranger"}
+Mon board warn ["Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕"]
+publish Mon {"published":true,"version":"ORIG","signSelects":4}
+ROW PASS | R6 setup | 402 | Sun 2 Aug 12:00 (landing blank) published; Mon 3 Aug 04:00-05:00 published; Ranger both | saw: {"rs":{"published":true,"version":"ORIG","signSelects":4},"rm":{"published":true,"version":"ORIG","signSelects":4}}

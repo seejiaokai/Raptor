@@ -1,0 +1,11 @@
+flight d5 w0 {"to":"08:00","ld":"16:00","p":"Ranger"}
+publish {"published":true,"version":"ORIG","signSelects":4}
+LW0 {"Ranger":{"text":"FO*","cls":"duty weekend act hasc"}}
+ROW PASS | S12 A | 1536 | Saturday 08:00-16:00 published | saw: {"pr":{"published":true,"version":"ORIG","signSelects":4},"st0":{"pend":["","9 changes"],"ver":"ORIG","sign":4,"toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","publishBtn":[]},"lw0":{"Ranger":{"text":"FO*","cls":"duty weekend act hasc"}}}
+set {"ok":true,"before":"6h01","after":"5h30","note":""}
+ROW PASS | S12 A | 1536 | Full day of OIL 6h01 -> 5h30 (Ranger day is 9h: still FO) | saw: {"ok":true,"before":"6h01","after":"5h30","note":""}
+state {"pend":["","9 changes"],"ver":"ORIG","sign":4,"toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","publishBtn":[]}
+list null
+ROW FAIL | S12 A | 1536 | open the published Saturday after the change | saw: {"st0":{"sign":4,"toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY"},"st1":{"pend":["","9 changes"],"ver":"ORIG","sign":4,"toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","publishBtn":[]},"lt":null,"lw1":{"Ranger":{"text":"FO*","cls":"duty weekend act hasc"}}}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

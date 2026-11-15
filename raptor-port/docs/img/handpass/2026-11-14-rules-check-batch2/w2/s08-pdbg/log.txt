@@ -1,0 +1,18 @@
+flight d5 w0 {"to":"04:30","ld":"05:30","p":"Ranger"}
+SC seat ok
+SC formation {"to":"08:00","ld":"15:00","shift":"AM","p":"Ranger"}
+SAT a-sc {"week":["Crew rest (<12h) Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"],"board":["Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"]}
+ROW PASS | S08 a flying SC line ends 15:00 | 402 | SC line last [week] | saw: ["Crew rest (<12h) Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"]
+ROW PASS | S08 a flying SC line ends 15:00 | 402 | SC line last [board] | saw: ["Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"]
+waves left Fri 0
+filed input ["{\"type\":\"Duty\",\"s\":720,\"e\":900,\"acc\":\"g\",\"date\":\"Jul 17\"}"]
+ROW PASS | S08 b setup | 402 | duty input 12:00-14:00 for Ranger filed through the Inputs page | saw: ["{\"type\":\"Duty\",\"s\":720,\"e\":900,\"acc\":\"g\",\"date\":\"Jul 17\"}"]
+SAT b-duty {"week":["Crew rest (<12h) Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"],"board":["Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"]}
+ROW PASS | S08 b an accepted duty input ends 15:00 | 402 | duty input last [week] | saw: ["Crew rest (<12h) Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"]
+ROW PASS | S08 b an accepted duty input ends 15:00 | 402 | duty input last [board] | saw: ["Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"]
+flight d4 w0 {"to":"12:00","ld":"","p":"Ranger"}
+SAT c-flight-earlier {"week":["Crew rest (<12h) Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"],"board":["Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"]}
+ROW PASS | S08 c flight earlier than the duty | 402 | duty still last [week] | saw: ["Crew rest (<12h) Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"]
+ROW PASS | S08 c flight earlier than the duty | 402 | duty still last [board] | saw: ["Ranger — Crew rest breach — Friday ended 15:00 → crew rest clear at 03:00, but told to report 02:10 — only 11h10 rest. ✕"]
+list rows 0 visible 0 btns #inListBtn,true,34,#inRangeBtn,true,87,#inRangeAll,false,
+list rows for the duty 0

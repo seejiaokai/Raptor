@@ -1,0 +1,24 @@
+board lines: ["No conflicts flagged for this day ✓"]
+Insights via edit-btn: 32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Relay 4 Echo 3 Hex 3 Static 3 Ace 2 Basher 2 Drifter 2 Gambit 2 Outlaw 2 Piston 2 Pixel 2 Ranger 2 Show all 38 ↓ WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Bolt 29h25 Ridge 28h Static 25h55 Ace 25h35 Vector 24h30 Echo 21h25 Dash 21h05 Relay 20h55 Zenith 20h50 Basher 20h30 Hex 19h55 Scope 18h55 Fable 17h55 Saber 17h10 Wildcard 16h20 Anvil 15h Ranger 14h Torch 13h50 Forge 13h30 Gambit 13h30 Pixel 12h50 Wisp 12h50 Warden 12h45 Drifter 12h30 Outlaw 12h30 Saint 12h30 Piston 12h05 Sidewinder 12h Comet 10h Kraken 
+PASS  S14 door edit-btn opens Insights  32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES T
+PASS  S14 edit-btn: names use "planned", never "flying"  Downchit + planned 2 Personal input cl | On leave + planned 1 Illegal aircrew c
+PASS  S14 edit-btn: closed by x  closed
+PASS  S14 edit-btn: closed by Escape  closed
+PASS  S14 edit-btn: closed by outside  closed
+Insights via view-btn: 32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES THIS WEEK Relay 4 Echo 3 Hex 3 Static 3 Ace 2 Basher 2 Drifter 2 Gambit 2 Outlaw 2 Piston 2 Pixel 2 Ranger 2 Show all 38 ↓ WORK HOURS · REPORT TO DEBRIEF, THIS WEEK Bolt 29h25 Ridge 28h Static 25h55 Ace 25h35 Vector 24h30 Echo 21h25 Dash 21h05 Relay 20h55 Zenith 20h50 Basher 20h30 Hex 19h55 Scope 18h55 Fable 17h55 Saber 17h10 Wildcard 16h20 Anvil 15h Ranger 14h Torch 13h50 Forge 13h30 Gambit 13h30 Pixel 12h50 Wisp 12h50 Warden 12h45 Drifter 12h30 Outlaw 12h30 Saint 12h30 Piston 12h05 Sidewinder 12h Comet 10h Kraken 
+PASS  S14 door view-btn opens Insights  32 SORTIES 16 FORMATIONS 38 AIRCREW FLYING 36 13 WARNING FLYING LOAD · SORTIES T
+PASS  S14 view-btn: names use "planned", never "flying"  Downchit + planned 2 Personal input cl | On leave + planned 1 Illegal aircrew c
+PASS  S14 view-btn: closed by x  closed
+PASS  S14 view-btn: closed by Escape  closed
+PASS  S14 view-btn: closed by outside  closed
+Insights drawn words and figures: ["32","Sorties","16","Formations","38","Aircrew flying","36","13 warning","Flying load · sorties this week","Relay","4","Echo","3","Hex","3","Static","3","Ace","2","Basher","2","Drifter","2","Gambit","2","Outlaw","2","Piston","2","Pixel","2","Ranger","2","Show all 38 ↓","Work hours · report to debrief, this week","Bolt","29h25","Ridge","28h","Static","25h55","Ace","25h35","Vector","24h30","Echo","21h25","Dash","21h05","Relay","20h55","Zenith","20h50","Basher","20h30","Hex","19h55","Scope","18h55","Fable","17h55","Saber","17h10","Wildcard","16h20","Anvil","15h","Ranger","14h","Torch","13h50","Forge","13h30","Gambit","13h30","Pixel","12h50","Wisp","12h50","Warden","12h45","Drifter","12h30","Outlaw","12h30","Saint","12h30","Piston","12h05","Sidewinder","12h","Comet","10h","Kraken","9h25","Trident","9h20","Quill","8h55","Vapor","8h55","Cinch","8h30","Havoc","8h","Blade","7h55","Cutter","7h25","Ledger","7h25","Rebel","6h45","Cinder","6h25","Marlin","6h25","Nomad","6h25","Otter","6h25","Tally","6h25","Rune","6h05","Talisman","4h30","Diesel","4h","Recon","3h","Ghost","1h30","Grit","1h30","Ryder","1h30","Scribe","1h30","Cobra"]
+RECORDED  S14 figures: RECORDED the drawn words and figures (by type vs by day)  ["32","Sorties","16","Formations","38","Aircrew flying","36","13 warning","Flying load · sorties this week","Relay","4","Echo","3","Hex","3","Static","3","Ace","2","Basher","2","Drifter","2","Gambit","2","Outlaw","2","Piston","2","Pixel","2","Ranger","2","Show all 38 ↓","Work hours · report to debrief, this week","Bolt","29h25","Ridge","28h","Static","25h55","Ace","25h35","Vector","24h30","Echo","21h25","Dash","21h05","Relay","20h55","Zenith","20h50","Basher","20h30","Hex","19h55","Scope","18h55","Fable","17h55","Saber","17h10","Wildcard","16h20","Anvil","15h","Ranger","14h","Torch","13h50","Forge","13h30","Gambit","13h30","Pixel","12h50","Wisp","12h50","Warden"]
+Insights buttons: ["Show all 38 ↓"]
+NOT WALKED  S14 CSV door  no CSV/export button in Insights; buttons ["Show all 38 ↓"]
+RECORDED  S14 print door: RECORDED whether Insights offers one  no Print button inside Insights
+PASS  S14 figures window closed by Escape  closed
+window closes: [["edit-btn","x","closed"],["edit-btn","Escape","closed"],["edit-btn","outside","closed"],["view-btn","x","closed"],["view-btn","Escape","closed"],["view-btn","outside","closed"],["figures","Escape","closed"]]
+errors []
+PASS  S14 no console/page errors  
+errors: []
+DONE 12 PASS 0 FAIL 3 OTHER of 15
