@@ -133,6 +133,23 @@ whole `superpowers/briefs/2026-11-16-warn-words-scenarios-astra.md`: 15 roll-cal
 
 ## The orders walked
 
+- **The host (Opus), before the walkers:** his Ranger's Friday through the controls — VL BFM T/O 12:00 landing blank, RU
+  step 12:00 T/O 13:00, a BRIEFING 12:40–13:00 — then 12:30 typed as the landing (`www-host-friday.mjs`, 12/12 at 1536
+  and 402); the route probe (`www-host-probe.mjs`); the phone fit of every demo conflict line in three sets of letters
+  (`www-host-fit.mjs`).
+- **W1 (Sonnet 5.5), two rounds, about 50 minutes:** scenario 11 the Logic row (find, change, bounds, reload, Reset, as
+  Ranger); 1 the published OIL Saturday (OIL Earn → sign → publish → "A flight" 90 → pending → put back → 90 → AL1 → FO
+  once); 8 the pending OIL line's shapes; 2 the 👁 looks, a saved plan, day details; 3 Sunday 23:30 → Monday, the next
+  week cold then via Sunday, TBD, typed; 6 an SC wave line with no END, then flying, then END typed and cleared (and a
+  Duties-block desk); 13 equal times, print and CSV; the plain-user round's Logic row, the pending list, the Leave War
+  sheet and Insights closed every way, OIL Earn on the phone.
+- **W2 (Sonnet 5.5), about 45 minutes, after W1:** scenario 4 the crew list, ALL and ALL AVAIL against the conflict list,
+  the item moved out and the landing typed; 5 blank → TBD → typed → blank through every reader, the long day on a second
+  man; 9 the conflict shapes, Step and Dekit changed and Reset, two flights; 7 hide, Undo, reload, re-time, replace; 10
+  the phone fit at 402 WebKit and 390 Chromium in the board, week strip and day details, tap and ✕; 12 the short names,
+  the flag title, Insights, the Logic names; extras: an AVALON control, day details from 👁, a flying SC with no END,
+  the Sunday "Breaks Monday" row; the plain-user round's ALL AVAIL window, Insights and View-only as admin and Ranger.
+
 ## The cases carried by a test
 
 | Case | Test | What it proves |
@@ -151,11 +168,29 @@ whole `superpowers/briefs/2026-11-16-warn-words-scenarios-astra.md`: 15 roll-cal
 
 ## The pictures
 
+`docs/img/handpass/2026-11-16-warn-words-standalone/` — `host/` (the Friday, the probe, the fit record), `w1/<run>/` and
+`w2/<run>/`, each run with its `rows.json` and `log.txt`. Opened by the host, each cropped by eye to what decides it: his
+Friday at 402 beside the approved page's rows; W1's pending list on Saturday 18/7 (`w1/s1-d/1-7-pendinglist-d.png`), the
+Leave War sheet after AL1 (`w1/s1-d/1-13after-lwsheet-d.png`), the Logic row at 402 (`w1/s11-p/11-4-90-p.png`), Monday
+cold at 402 (`w1/s3b-p/3-1cold-mondetails-p.png`), the SC line's END typed (`w1/s6b-d/6-3end-satweek-d.png`); W2's
+three-row line (`w2/s10-p/10-3-day-details-p.png`) and its extra (c) (`w2/s13-d/13-c2-sc-sat-d.png`).
+
 ## The break tests
+
+Astra's order reversals, walked: the landing typed then cleared (W2 s5), END typed then cleared (W1 s6b), a setting
+changed then Reset (W1 s11, W2 s9), a hide then Undo then reload (W2 s7), Monday opened before Sunday's week (W1 s3b).
 
 ## Errors seen
 
+None — no console or page error in any run of the host, W1 or W2.
+
 ## What was NOT walked, and why
+
+W2 ran short of its 75 minutes: the request-conflict hide (keyed on words — `warnwords.test.ts` "hide" carries it); a
+published day's hide waiting for the amendment; the pending list's warning lines, the 👁 and the peek at a phone's fit
+(the same message, measured in the week strip, board and day details); the drop note; the 402 plain-user round; Escape
+and a tap outside on day details and the version selector. The peek itself was not opened (Monday was reached cold and
+via Sunday instead).
 
 ## The gate counts
 
