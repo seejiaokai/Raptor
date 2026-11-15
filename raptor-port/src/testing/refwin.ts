@@ -313,6 +313,14 @@ function remap(html: string): string {
     ["LEVELNAME[p.q]+(p.ip?' · IP':'')+", "LEVELNAME[p.q]+"],
     [`<span><span class="qk" style="background:var(--q-ins)">I</span>IP / instr</span>`,
      `<span><span class="qk" style="background:var(--q-ins)">IW</span>IWSO</span>\n    <span><span class="qk" style="background:var(--q-ins)">IP</span>IP</span>\n    <span><span class="qk" style="background:var(--q-ins)">IR</span>IR exmr</span>\n    <span><span class="qk" style="background:var(--q-ins)">FI</span>FWI</span>`],
+    /* D2075, D2078 — the legend names each flag as its check is now named; the reference's debrief and
+       brief, debrief and long-day rows take the port's words, colours untouched, so the item-set
+       comparison still holds (the 7 row is port-only) */
+    [">B</span>no flight brief</span>", ">B</span>misses flight brief</span>", 1],
+    [">B</span>no sim brief</span>", ">B</span>misses sim brief</span>", 1],
+    [">D</span>no flight debrief</span>", ">D</span>misses flight debrief</span>", 1],
+    [">D</span>no sim debrief</span>", ">D</span>misses sim debrief</span>", 1],
+    [">L</span>long work day</span>", ">L</span>long day</span>", 1],
     ["seat:'FCP',q:'I',ip:true", "seat:'FCP',q:'IP',ip:true", 8],
     ["seat:'FCP',q:'CI',ip:true", "seat:'FCP',q:'IP',ip:true", 6],
     ["seat:'RCP',q:'I',ip:true", "seat:'RCP',q:'IW',ip:true", 7],
