@@ -403,4 +403,5 @@ changed only so the strip would show. Pictures: `c-logic-proposed-phone.png`, `-
   told to him); Insights' heading "Conflicts by type" and "No conflicts flagged for this day" stay. The build checks
   that each "Conflict:" line still fits two rows on a phone. The pictures on the page still say "Clash:".
 - **Question 4 — yes (D2069):** the crew-rest line keeps his 22 Aug 26 order with "needs 12h" added.
-- **Also open:** the one-sentence Logic note (§3f), and his approval of the words as a whole.
+- **Approved (D2071, 16 Nov 26):** the one-sentence Logic note (§3f) and the words as a whole, with the answers above
+  applied. The build starts with the words, then the item's engine changes.
