@@ -30,6 +30,9 @@ export function personBusy(d:any,id:any){
          behind — the reading slotRules and events.ts already give it. This strip
          was the one place still padding it, greying an SC man ~90 min wider
          than the engine reserves him. */
+      /* D2046 (15 Nov 26): a sortie with its take-off and no landing typed is busy to its ASSUMED landing (take-off
+         plus Logic's flight length), so the crew list agrees with the conflict list; a shift keeps START to END */
+      if(to!=null&&ld==null&&!shift)ld=to+VCONF.fltLen;
       if(to!=null&&ld!=null){if(ld<to)ld+=1440; out.push(shift?[to,ld]:[to-VCONF.step,ld+VCONF.dekit]);}}});});});
   /* both sim devices count, and a row's pax list counts as much as its p/w seats —
      an AMT box session with 8 aircrew makes all 8 of them busy for that window. */
@@ -275,7 +278,9 @@ export function slotRules(key:any){
     /* a flying AVALON / BB row still asks the AVALON places walk (the read's F2): its other AVALON seat or desk is no event */
     if(f&&wv&&isStandalone(wv)&&wv.noconf&&flyRow)out.avFly=true;
     if(f){ const st=parseHM(f.to); let en=parseHM(f.ld);
-      if(st!=null){ if(en==null)en=st; if(en<st)en+=1440;
+      /* D2046: a sortie with no landing typed lands at its ASSUMED landing (take-off + Logic's flight length); a shift
+         with no END keeps its START */
+      if(st!=null){ if(en==null)en=(wv&&isStandalone(wv))?st:st+(VCONF.fltLen as number); if(en<st)en+=1440;
         const sh=wv&&isStandalone(wv);
         if(sh&&wv.noconf&&!flyRow){out.avJet=true;    // AVALON or BB, MAIN or SPARE — all jet seats (owner, 11 Aug 26; BB 7 Sep 26)
           /* every jet seat asks for SC currency by the shift's kind (7 Sep 26,

@@ -71,7 +71,10 @@ export function withKeptRules<T>(days: { d: any, rv: any }[], fn: () => T): T {
    "+ In-time" fills in (a text, no check); the Inputs and SANS cut-offs (they grade an input, not a day); and the two
    unused settings. */
 export const KEPT_RULE_KEYS = ['briefLead', 'step', 'dekit', 'tightTurn', 'crewRest', 'debrief', 'reportLead', 'longDay',
-  'epBrief', 'simDebrief', 'amtDebrief', 'openEnd', 'simLen', 'maxRun', 'scDayFrom', 'scDayTo']
+  'epBrief', 'simDebrief', 'amtDebrief', 'openEnd', 'simLen', 'maxRun', 'scDayFrom', 'scDayTo',
+  /* the assumed flight length (D2046) — every check that reads a landing reads it, so a published day keeps it (D2005);
+     its OIL keeps it too (oil.ts OilRuleVals — D2044) */
+  'fltLen']
 export function dayRuleVals(): any {
   const o: any = {}
   KEPT_RULE_KEYS.forEach(k => { o[k] = (VCONF as any)[k] })

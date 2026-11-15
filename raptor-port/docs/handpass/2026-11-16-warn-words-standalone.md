@@ -38,10 +38,10 @@ build in the walk, pass or fail.
 | D2067, D2071 | The Logic note is one sentence | logic.test.tsx | |
 | D2054 | The pending list says what moved and whether OIL changed, inside the man's row | oilworkstart.test.tsx "D2054" (OWS13; seen red: the empty line list with the note taken out) | |
 | D2001, D2018 | A conflict's hide follows its two items; a request against flying still told apart by its words | warnwords.test.ts "hide" | |
-| D2005, D2044, D2013 | A published day keeps the settings it went out under | (piece B) | |
-| D2046, D2047, D1990, D2010, D2022 | A flight with no landing typed is assumed to land the Logic flight length after take-off | (piece B) | |
-| D1936, D2053 | Insights' hours and the long day count to the assumed landing | (piece B) | |
-| D2055 | A standby shift with START and no END is left out of crew rest until END is typed | (piece C) | |
+| D2005, D2044, D2013 | A published day keeps the settings it went out under — the flight length among them, its OIL too | leavewar/assumedlanding-published.test.ts; assumedlanding.test.ts "the setting" | |
+| D2046, D2047, D1990, D2010, D2022 | A flight with no landing typed is assumed to land the Logic flight length after take-off | assumedlanding.test.ts (seen red: 14 of 17); rulescheck-batch2.test.ts part 2 / 2b and logic.test.tsx D1990 (changed on purpose) | |
+| D1936, D2053 | Insights' hours and the long day count to the assumed landing | assumedlanding.test.ts "the long day"; rulesfirst-3-crew-rest.test.ts W35 and daystart-default-rally.test.ts (changed on purpose) | |
+| D2055 | A standby shift with START and no END is left out of crew rest until END is typed | assumedlanding.test.ts "D2055" (seen red: 2 of 3, the control passing) | |
 | D56 | Demo data is not a finding | — | |
 
 ## The roll-call — every place a warning's words show
@@ -63,6 +63,21 @@ YES / NO-because / MISSING, filled in the walk.
 | The Logic page — the checks' names, the note under the changed-settings strip, the new setting's row | | | | |
 | Print and export | | | | |
 | The pending list (a Logic change on a published day's OIL) | | | | |
+| The new Logic row "A flight" (Rows with no end time, before "A sim") — its value, Reset, its out-of-bounds note | | | | |
+| The crew list and ALL AVAIL's busy windows for a flight with no landing (the picker agrees with the conflict list) | | | | |
+| OIL Earn and the Leave War's credited FO / HO for a weekend flight with no landing | | | | |
+
+## For the walk — piece B and C scenarios, from the build
+
+- A weekday flight with its take-off typed and no landing (blank, then "TBD"): the tight turn, the debrief, a briefing
+  inside its dekit, the next day's crew rest and the long day each name the assumed landing; type a landing and each
+  goes back to "landing HH:MM".
+- The Logic page: the "A flight" row; change it to 90 and watch the same lines move; Reset.
+- A published weekend day with such a flight: change "A flight" — one pending OIL line, "Logic · A flight with no
+  landing typed", the sign-offs down; publish AL1 and the Leave War's FO / HO follows.
+- The crew list and ALL AVAIL on a seat clashing with that flight's assumed window.
+- An SC (and a flying SC) with START typed and END blank on Monday: no crew rest on Tuesday, "flies but has no END"
+  still shown; type END and the rest comes back.
 
 ## The five sizing lines (§7.0)
 
@@ -81,6 +96,10 @@ YES / NO-because / MISSING, filled in the walk.
 | Every "Conflict:" line on a phone | `e2e/warnhide.spec.ts` (its last block) | 8 conflict lines and 24 time ranges measured at 390 wide on Edit Schedule: each conflict two rows at most, each range one line |
 | The pending list's OIL line (D2054) | `ui/oilworkstart.test.tsx` "D2054" ×2 | the line inside the man's row, each case's words |
 | The Logic note (D2067) | `ui/logic.test.tsx` | the pending sentence is gone |
+| The assumed landing, reader by reader (D2046, D2047, D2053) | `engine/assumedlanding.test.ts` | the tight turn, the debrief, a conflict's dekit, crew rest, the long day and its span, OIL, the crew list's busy window and the seat's own window, each with a typed landing as the control; seen red 14 of 17 before the build |
+| A published day keeps the flight length; its OIL reads pending on a change (D2005, D2044) | `leavewar/assumedlanding-published.test.ts` | through the real publish path to the Leave War's cell; written after the engine change, so not seen red on its own |
+| A standby shift with START and no END (D2055) | `engine/assumedlanding.test.ts` "D2055" | no crew rest, flying or not, its own warning kept, END typed as the control; seen red 2 of 3 |
+| Every Logic number follows its setting, the flight length included (D932) | `ui/logic.test.tsx` D932 | caught the new crew-rest sentence's "1h" until the key was added |
 
 ## The pictures
 

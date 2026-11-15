@@ -657,7 +657,16 @@ function oilEvidenceNow(di: any, day?: any): OilEvidence {
 export function oilKeptVals(ev: OilEvidence | null | undefined): OilRuleVals | null {
   const r: any = ev && ev.rv
   const n = (v: any) => typeof v === 'number' && isFinite(v) && v >= 0
-  return r && n(r.reportLead) && n(r.debrief) && n(r.oilFullMin) ? { reportLead: r.reportLead, debrief: r.debrief, oilFullMin: r.oilFullMin } : null
+  if (!(r && n(r.reportLead) && n(r.debrief) && n(r.oilFullMin))) return null
+  /* the assumed flight length (D2046, D2044) — kept since it existed; a block kept before has none, read as today's (D56) */
+  return n(r.fltLen) ? { reportLead: r.reportLead, debrief: r.debrief, oilFullMin: r.oilFullMin, fltLen: r.fltLen }
+    : { reportLead: r.reportLead, debrief: r.debrief, oilFullMin: r.oilFullMin }
+}
+/** whether a block's kept values are today's — the cheap first test before any record is worked out; a kept set
+ *  without the flight length reads today's for it (oil.ts dayOilWork) */
+export function oilValsSame(kept: OilRuleVals, now: OilRuleVals): boolean {
+  return kept.reportLead === now.reportLead && kept.debrief === now.debrief && kept.oilFullMin === now.oilFullMin
+    && (kept.fltLen == null || kept.fltLen === now.fltLen)
 }
 
 /** WHAT ONE MAN'S DAY IS WORTH under a block — nothing, a half (0.5) or a full day (1): the envelope of his earning
@@ -723,7 +732,7 @@ export function oilRuleShift(day: any, ev: OilEvidence | null | undefined): Arra
   const kept = oilKeptVals(ev)
   if (!day || !ev || !ev.earns || !kept) return []
   const now = oilRuleValsNow()
-  if (kept.reportLead === now.reportLead && kept.debrief === now.debrief && kept.oilFullMin === now.oilFullMin) return []
+  if (oilValsSame(kept, now)) return []
   const a = oilRecordsOf(day, ev), b = oilRecordsOf(day, { ...ev, rv: now })
   return [...new Set([...Object.keys(a), ...Object.keys(b)])].sort()
     .filter(p => recKey(a[p] || null) !== recKey(b[p] || null)).map(p => ({ person: p, was: a[p] || null, now: b[p] || null }))

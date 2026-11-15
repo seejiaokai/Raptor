@@ -152,7 +152,9 @@ const PEOPLEATTRS: Spec = { $map: { q: { $or: ['string', 'object'] }, seat: { $o
    other keys are optional: a version issued before D2005 kept the brief lead only (demo data, D56). */
 const RULEVALS: Spec = { briefLead: 'number', step: 'number?', dekit: 'number?', tightTurn: 'number?', crewRest: 'number?',
   debrief: 'number?', reportLead: 'number?', longDay: 'number?', epBrief: 'number?', simDebrief: 'number?', amtDebrief: 'number?',
-  openEnd: 'number?', simLen: 'number?', maxRun: 'number?', scDayFrom: 'number?', scDayTo: 'number?', shiftHard: { $opt: { $map: 'boolean' } } }
+  openEnd: 'number?', simLen: 'number?', maxRun: 'number?', scDayFrom: 'number?', scDayTo: 'number?',
+  /* the assumed flight length (D2046) — a version issued before it kept none */
+  fltLen: 'number?', shiftHard: { $opt: { $map: 'boolean' } } }
 const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'string' } }, id: 'string?', sign: { $opt: { $map: SIGNSET } },   // sign: the Original's four, kept since 25 Sep 26 (D95, D102)
   /* the day's inputs and warnings as issued ([LEAVE-LATE-PUBLISHED], D177–D179) */
   inp: { $opt: { $map: inputSpec(true) } }, w: { $opt: WARNSLICE }, pa: { $opt: PEOPLEATTRS }, rv: { $opt: RULEVALS }, ros: { $opt: ['string'] } }

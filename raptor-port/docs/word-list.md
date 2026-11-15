@@ -72,6 +72,7 @@ This page translates between the app’s words, their everyday meaning and the n
 | Long day | A work day longer than the Logic limit; the line states the limit. | `LONGDAY`, `VCONF` |
 | On leave + planned / Overseas + planned / Downchit + planned | A man away or medically down who is also planned (D2009). | `LEAVE_FLY`, `DNIF_FLY` |
 | assumed | Said of a time the app supplies because none was typed — a debrief after landing, a landing (D2045). | `validate.ts` |
+| landing assumed / A flight | A flight with a take-off and no landing typed (blank or "TBD") is taken to land the Logic page's "A flight" length after take-off (60 min to start); every check reads that landing and its words say "landing assumed 13:00 (T/O + 1h)" (D2046, D2047, D2053). | `VCONF.fltLen`, `events.ts` ldM, `noLd` |
 | + In-time | Adds a reporting instruction above the wave’s formations. | `REPORTING_LABEL`, `Wave.intimes` |
 | R / Rally | The formation’s rally time, which can supply its reporting time. | `Formation.rl`, `resolveReporting` |
 | B | The brief time on a flying formation, suggested when blank. On SC it is the crew’s in-time. Standby lines have no suggested brief. | `Formation.br`, `flightBrief`, `scReport` |

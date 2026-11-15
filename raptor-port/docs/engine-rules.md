@@ -338,10 +338,21 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   clock time — "TBD", or any other words — used to end nothing, so a TBD sortie bore no crew rest at all. The rest
   collection (`validate.ts`, the `rawEnd` line) now reads such a landing as its take-off too: take-off plus the
   debrief, the same end, the same message, the same dotted mark on the day before as blank. With no take-off either
-  there is still nothing to borrow and no end. D1936 is unchanged: such a sortie still counts no hours and raises no
-  long-day note (NARROWED 15 Nov 26 by D2053, not built: it is to count to its assumed landing, take-off plus the Logic
-  flight length — `[WARN-WORDS-STANDALONE]`). The message's "landed" words where no landing is typed are a wording question for him, not changed
-  here. Pin: `engine/rulesfirst-3-crew-rest.test.ts` (W35, D1990).
+  there is still nothing to borrow and no end. **CHANGED 16 Nov 26 by D2046 and D2053, built (`[WARN-WORDS-STANDALONE]`
+  piece B):** a blank or "TBD" landing is no longer read as the take-off — it is the ASSUMED landing, the take-off plus
+  the Logic page's flight length (`VCONF.fltLen`, "A flight", standard 60 min; `events.ts` ldM), so the day ends there
+  plus the debrief, and the sortie counts in Insights' hours and the long-day note to that landing (D1936 narrowed).
+  The `rawEnd` borrow in `validate.ts` is left in place but now meets only a sortie with no take-off, whose end stays
+  not-a-number. Pins: `engine/rulesfirst-3-crew-rest.test.ts` (W35, changed on purpose), `engine/assumedlanding.test.ts`.
+
+- **A standby shift with its START typed and its END blank bears no crew rest until its END is typed** (owner D2055,
+  15 Nov 26; built 16 Nov 26, `[WARN-WORDS-STANDALONE]` piece C). A shift's END is never assumed — D2046 is a sortie's
+  landing. Before, a blank END read as the START (`events.ts` `f.ld||f.to`), so a Monday SC from 20:00 "ended" 20:00 and
+  cleared Tuesday 08:00 from a time nobody typed. Now its event carries `noEnd` and the rest collection (`validate.ts`)
+  skips it: no breach, no dotted mark, no tight-turning note from it. The same for a shift that flies (the agent's
+  reading). Its own warning stays — `SA_FLY_NO_TIME`, "…flies but has no END. Type it so its crew rest and OIL can be
+  worked out." Only crew rest changes: the shift's other readers (its clash window, the crew list) still read START to
+  START, as before. Pin: `engine/assumedlanding.test.ts` (D2055).
 
 - **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26 — "4 yes as
   recommended"; `[BLANK-TIMES-ABSENCE]`, built the same day).** Every absence check asked whether the absence OVERLAPS
@@ -471,10 +482,17 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   plain `ended HH:MM`. The tail is a port-authored string parity compares, so
   `refwin.ts:rebrief()` tracks the same landing and prints the identical
   branch on the reference; pinned in `crewrest-ui.test.ts`.
-  **NARROWED 15 Nov 26 by D2046 (not built — `[WARN-WORDS-STANDALONE]`):** a blank or "TBD" landing is to be
-  assumed at the take-off plus a new Logic flight length (starting at 60 minutes, D2047), not at the take-off itself, and every
-  check that reads the landing is to use it, its words "assumed it landed 13:00 (take-off + 1h)"; until built, the
-  paragraph above describes the app as it is.
+  **CHANGED 16 Nov 26 by D2046, D2047, built (`[WARN-WORDS-STANDALONE]` piece B) — the paragraph above is the history:**
+  a blank or "TBD" landing is assumed at the take-off plus the Logic flight length (`VCONF.fltLen`, "A flight", starting
+  at 60 minutes), not at the take-off itself, and every check that reads the landing uses it — the clashes and the
+  busy window from step to dekit, the tight turn, the debrief, crew rest, the long day, OIL and Insights' hours, and the
+  crew list's and ALL AVAIL's busy windows (`avail.ts` personBusy, slotRules). Its words, in the approved short form
+  (the shape of D2046's "assumed it landed 13:00 (take-off + 1h)"): crew rest `Monday landing assumed 13:00 (T/O + 1h)
+  + 2h debrief (assumed) → ended 15:00 → clear 03:00`; tight turn `VL BFM landing assumed 13:00 (T/O + 1h), RU BFM T/O
+  13:00`; debrief `Misses VL BFM debrief 13:00–15:00 (landing assumed): …`; a conflict `VL BFM (landing assumed 13:00,
+  dekit to 13:30) & …`; the long day `(last landing assumed 19:00 (T/O + 1h) + 2h debrief assumed)`. Still from the
+  event's `noLd`. A shift's blank END is not assumed — D2055, below. Pins: `engine/assumedlanding.test.ts`,
+  `rulescheck-batch2.test.ts` part 2 and 2b (changed on purpose).
   **The tight-turning advisory (`CREW_TIGHT`) reuses that same tail**, so it
   states the debrief assumption for free alongside the "3h report / inside 12h"
   it already named.
@@ -2797,6 +2815,11 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     the value (old → new) and each man (old → new) under it; the sign-offs fall with it (D103) and it clears when the
     value is put back (D98). A Logic change that would write every record on that day exactly as it stands raises
     nothing — the rule D186's printed brief lead follows. The next publication applies today's values and keeps them;
+  - **since D2046 (16 Nov 26, `[WARN-WORDS-STANDALONE]` piece B) a FOURTH kept value, the assumed flight length
+    (`fltLen`):** a sortie with its take-off and no landing earns to take-off + it, so a change to it reads pending on a
+    published day where it would move somebody's OIL, named "Logic · A flight with no landing typed" in the pending list;
+    a block kept before it carries none and reads today's, raising nothing (`oilev.ts oilKeptVals`, `oilValsSame`; pin
+    `leavewar/assumedlanding-published.test.ts`). "Three values" below reads "the kept values".
   - **signed:** each sign-off's binding keeps the three values as they stood at signing (`orv`, earning days only) and
     falls when the day as it now stands would be written differently under those values than under today's
     (`publish.ts oilRvBoundOk`) — so a day not yet published, or an amendment waiting, cannot go out as a half day on
@@ -3457,7 +3480,7 @@ stay LIVE (below), which the face draws from today and which never make the day 
   today's forces the official pass (`officialDiverges`, `keptRulesDiffer`). **Since D2005 (owner, 12 Nov 26) `rv` keeps
   EVERY Logic setting the day's checks read** — `faceattrs.ts KEPT_RULE_KEYS` (brief lead, step, dekit, tight turn, crew
   rest, debrief, report lead, long day, EP brief, sim debrief, AMT debrief, open end, sim length, days in a row, the SC
-  day window) and `shiftHard`, the SC MAIN clash table (`dayRuleVals`, written by `publish.ts freezeWarn`) — and the
+  day window, and since D2046 the assumed flight length `fltLen` — a version issued before it reads today's) and `shiftHard`, the SC MAIN clash table (`dayRuleVals`, written by `publish.ts freezeWarn`) — and the
   whole day is judged by them: its events are built (`events.ts collectEvents`, each day under `withDayRules`) and
   checked (`validate.ts`'s day loop and its phantom next-week days) with its kept values laid over the Logic settings
   for that day only (`rules.ts withRuleVals`, restored after). A changed setting reaches the day from its next
@@ -4801,11 +4824,11 @@ long-day note).
   null when none is, so `validate.ts workSpan`, the one definition both the long-day note and Insights read, falls to its
   own `to − VCONF.reportLead`: the same start as OIL's `oil.ts fltOilWin`, case for case (an unreadable clock or words with
   no clock are nothing entered; a default rally before midnight is the evening before). An entered time later than the
-  default still starts the day where it says — never a min() of the two. A sortie with no take-off or no landing typed
-  is unfinished — its event's report is NaN, so `workSpan`'s own guard counts it nowhere, as OIL counts it nothing (until
-  then a blank landing borrowed the take-off and stretched the day; D2046, 15 Nov 26, not built, assumes such a landing
-  at the take-off plus a Logic flight length — and D2053 has the long day and Insights count it to that assumed landing, D1936 narrowed — both in
-  `[WARN-WORDS-STANDALONE]`); and `workSpan` skips a sortie that measures nothing
+  default still starts the day where it says — never a min() of the two. A sortie with no take-off typed is unfinished —
+  its event's report is NaN, so `workSpan`'s own guard counts it nowhere, as OIL counts it nothing. A sortie with its
+  take-off and no landing typed counts to its ASSUMED landing, take-off plus the Logic flight length (D2046, D2053 —
+  D1936 narrowed; built 16 Nov 26, `[WARN-WORDS-STANDALONE]` piece B: the event's report is real again and its landing
+  the assumed one, `events.ts`; OIL's `fltOilWin` takes the same length, handed in by `dayOilWork`); and `workSpan` skips a sortie that measures nothing
   (both leads zero, take-off equal to landing), as OIL does (Astra's and Sol 6.1's reads, 8 Nov 26).
 - **What does not move:** `day.fly` keeps report-or-step, so the SANS checks' window (`min(report, step)`) and the
   availability window (step to dekit, D36) are as before; crew rest reads `intime` and the brief (the tight advisory

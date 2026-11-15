@@ -16,7 +16,7 @@ import { isPreservedWeek, rowElsewhere } from './weekstash'
 import { standsOn } from './overlay'   // functions only both ways
 import { inputProtected, weekLockReason, anyUnreadableWeek } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds, dayRuleVals } from './faceattrs'
-import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals } from './oilev'
+import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals, oilValsSame } from './oilev'
 import { oilRuleValsNow } from './oil'
 
 /* the reference calls straight into the UI here; the engine routes those four
@@ -1644,7 +1644,7 @@ function oilRvBoundOk(di:any,was:any){
   /* the common case first — nothing changed since he signed — before any evidence is built: this runs for every signed
      role on every repaint (docs/performance.md Part 1) */
   const n=oilRuleValsNow();
-  if(was.reportLead===n.reportLead&&was.debrief===n.debrief&&was.oilFullMin===n.oilFullMin)return true;
+  if(oilValsSame(was,n))return true;   // the four kept values (D2044; the flight length since D2046)
   return oilRuleShift(DAYS[+di],{...oilEvidence(di),rv:was}).length===0;}
 /* A BINDING WRITTEN BEFORE `stand` EXISTED stores the OIL key in the old
    six-part form, which can never equal today's seven-part one — so every

@@ -151,9 +151,13 @@ describe('a flying line with NO readable times earns nothing, and no longer in s
     expect(w[0].msg).toContain('nobody on it earns OIL for this day')
   })
 
-  it('a line with a take-off and no landing is the same answer', () => {
+  /* CHANGED ON PURPOSE by D2046 (15 Nov 26 — every check reads the assumed landing; OIL among them is the agent's
+     reading, flagged to him): a line with a take-off and no landing now earns to its assumed landing, so it is no longer
+     a line with no usable times — and is not named */
+  it('a line with a take-off and no landing earns to its assumed landing and is NOT named (D2046)', () => {
     onlyLine(SAT, '09:00', '')
-    expect(dayOilBlind(DAYS[SAT]).join(' ')).toContain('RAP 1')
+    expect(dayOilBlind(DAYS[SAT]).join(' ')).not.toContain('RAP 1')
+    expect(advOn(SAT, 'OIL_NO_TIMES')).toHaveLength(0)
   })
 
   it('THE CONTROLS: an empty line, a cancelled line and a properly timed one are all silent', () => {

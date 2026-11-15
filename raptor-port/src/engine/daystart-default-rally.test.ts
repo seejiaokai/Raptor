@@ -93,12 +93,17 @@ describe('D1786 a sortie with nothing entered starts the work span at take-off l
      stretched the day by 3h (05:00 take-off + a 14:00–15:00 ground row read 13h and a long-day note); OIL counts it nothing */
   const ground = (str: string, end: string) => ({ prog: 'HANGAR', str, end, who: 'ignite' })
   const spanWith = (waves: any[], g: any[]) => workSpan(evsOf(buildDay({ ...dayOf(waves), ground: g }, 4, 'Jul 18', 'Jul 16')))
-  it('a sortie with no landing typed counts nowhere — alone, or beside another commitment — as for OIL', () => {
+  /* CHANGED ON PURPOSE by D2046 / D2053 (15 Nov 26 — "a flight with its take-off typed and no landing counts in Insights'
+     hours and the long-day note up to its assumed landing, no longer nothing"; over D1936): it now counts from its report
+     to its ASSUMED landing (take-off + Logic's flight length, 60 min) plus the debrief, as OIL does with the length
+     handed in; fltOilWin with no length handed in (the screen's words) still measures nothing */
+  it('a sortie with no landing typed counts to its assumed landing — alone, or beside another commitment — as for OIL (D2053)', () => {
     for (const f of [line({ to: '05:00', ld: '' }), line({ to: '05:00', ld: undefined }), line({ to: '05:00', ld: 'TBD' })]) {
-      expect(span([flyWave([], [f])])).toBe(null)
-      expect(span([flyWave(['04:00 IN TIME'], [f])])).toBe(null)
-      expect(spanWith([flyWave([], [f])], [ground('1400', '1500')])!.span).toBe(60)
+      expect(span([flyWave([], [f])])!.span).toBe(VCONF.reportLead + VCONF.fltLen + VCONF.debrief)   // 02:00 → 08:00
+      expect(span([flyWave(['04:00 IN TIME'], [f])])!.span).toBe(60 + VCONF.fltLen + VCONF.debrief)   // 04:00 → 08:00
+      expect(spanWith([flyWave([], [f])], [ground('1400', '1500')])!.span).toBe(13 * 60)              // 02:00 → 15:00
       expect(fltOilWin(flyWave([], [f]), f, VCONF.reportLead, VCONF.debrief)).toBe(null)
+      expect(fltOilWin(flyWave([], [f]), f, VCONF.reportLead, VCONF.debrief, undefined, VCONF.fltLen)).toEqual([120, 480])
     }
     expect(span([flyWave([], [line({ to: '05:00', ld: '05:00' })])])!.span).toBe(VCONF.reportLead + VCONF.debrief)   // D49: typed equal still counts
   })

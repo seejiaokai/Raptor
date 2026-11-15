@@ -104,7 +104,8 @@ describe('OWS6 — a published day\'s OIL does not move when a Logic value chang
     build(5, '10:00', '11:15')
     VCONF.reportLead = 170; VCONF.debrief = 130; VCONF.oilFullMin = 370
     publish(5)
-    expect(keptOn(5)).toEqual({ reportLead: 170, debrief: 130, oilFullMin: 370 })
+    /* …and, since D2046, the assumed flight length beside them (src/leavewar/assumedlanding-published.test.ts) */
+    expect(keptOn(5)).toEqual({ reportLead: 170, debrief: 130, oilFullMin: 370, fltLen: 60 })
     expect((DAYS[5] as any).oilev).toBeUndefined()
   })
   /* Sol's read, case 1 (6 Oct 26) — the roll-call's "by construction" row, now run: the Leave War sets a credit's WORKED
@@ -256,7 +257,7 @@ describe('OWS8 — publishing again applies today\'s values, and keeps them', ()
     runOilPass()
     expect(cellOf('bane', SAT)).toBe('HO')                   // 07:30–13:15, five and three-quarter hours
     expect(worked('bane', SAT)).toEqual([[[450, 795]]])
-    expect(keptOn(5)).toEqual({ reportLead: 150, debrief: 120, oilFullMin: 361 })
+    expect(keptOn(5)).toEqual({ reportLead: 150, debrief: 120, oilFullMin: 361, fltLen: 60 })
     expect(oilPending(5)).toEqual([])
     VCONF.reportLead = 180                                   // and it is now THIS version that holds still
     runOilPass()

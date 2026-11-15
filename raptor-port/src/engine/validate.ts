@@ -542,10 +542,13 @@ function validateCore(){
            severity downgrade by event kind; and the REST[] map the picker
            reads is built from the same set, so they cannot disagree. */
         const rests=true;
+        /* D2055 (15 Nov 26): a standby shift with its START typed and its END blank ends nothing until its END is typed —
+           never "ended" at its START (events.ts `noEnd`); its own "cannot be worked out" warning stays */
+        if(e.noEnd)return;
         /* D1990 (11 Nov 26, [RULES-CHECK-FIXES]): a landing that is not a clock time — "TBD", or any other words —
-           ends the day as a blank one does (events.ts reads a blank landing as its take-off): take-off plus the
-           debrief. It used to end nothing (its landing not-a-number), so a TBD sortie bore no crew rest at all.
-           Crew rest only: D1936's hours and long-day note still count such a sortie nowhere (its event's report). */
+           ends the day as a blank one does. Since D2046 (15 Nov 26) both land at the ASSUMED landing, the take-off plus
+           the Logic flight length (events.ts ldM), so the day ends there plus the debrief; the borrow below now only
+           ever meets a sortie with no take-off, whose end stays not-a-number. */
         const flyLd=e.kind==='fly'&&!isFinite(e.ld)?e.to:e.ld;
         /* D2005: the day being judged decides — a sortie's debrief, and an end the day before only ASSUMED (no end typed:
            events.ts `ae`), are worked out with the judged day's settings, never the day before's */
@@ -558,7 +561,7 @@ function validateCore(){
         if(rawEnd==null||!isFinite(rawEnd))return;
         const end=rawEnd+offset;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevFlyNoLd[e.id]=e.kind==='fly'&&!!e.noLd; prevSource[e.id]=source;}
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevFlyNoLd[e.id]=e.kind==='fly'&&!!e.noLd?e.ld-e.to:0; prevSource[e.id]=source;}
       });
       /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
          "everything in duty and commitments affects crew rest… do not
@@ -691,7 +694,7 @@ function validateCore(){
         /* [WARN-WORDS-STANDALONE] (D2069 keeps his 22 Aug 26 order): "Monday landed 21:30 + 2h debrief (assumed) → ended
            23:30 → clear 11:30"; a day not ended by a flight says what ended, "Monday duty ended 20:00 → clear 08:00" */
         const tail=landed!=null
-          ? `${source.dow} ${prevFlyNoLd[id]?`took off ${hm24(landed)} with no landing typed`:`landed ${hm24(landed)}`} + ${lgT(VCONF.debrief)} debrief (assumed) → ended ${hm24(pe)} → clear ${stated(earliest)}`
+          ? `${source.dow} ${prevFlyNoLd[id]?`landing assumed ${hm24(landed)} (T/O + ${lgT(prevFlyNoLd[id])})`:`landed ${hm24(landed)}`} + ${lgT(VCONF.debrief)} debrief (assumed) → ended ${hm24(pe)} → clear ${stated(earliest)}`
           : `${source.dow} duty ended ${hm24(pe)} → clear ${stated(earliest)}`;
         if(pfly[id]&&first<earliest){
           /* [REST-BLANK-LINE]: when no leg tells him anything the breach is the earlier commitment's (evBound);
@@ -1254,7 +1257,8 @@ function validateCore(){
            real landing and flags the pad — a scheduler who knows this crew
            leaves fast can discount it. A non-flying finish is a fixed clock
            time with nothing to assume, so it stays bare. */
-        const back=ef?`${hm24(e)} (last landing ${hm24(ef.ld)} + ${lgT(VCONF.debrief)} debrief assumed)`:`${hm24(e)}`;
+        /* D2046, D2053: a last sortie with no landing typed closes the day at its ASSUMED landing, and says so */
+        const back=ef?`${hm24(e)} (last landing ${ef.noLd?`assumed ${hm24(ef.ld)} (T/O + ${lgT(ef.ld-ef.to)})`:hm24(ef.ld)} + ${lgT(VCONF.debrief)} debrief assumed)`:`${hm24(e)}`;
         add('note','LONGDAY',[id],`Long day: ${dur(span)} (limit ${lgT(VCONF.longDay)}), ${stated(s)} → ${back}`);}   // [WARN-WORDS-STANDALONE]
     });
     /* the run breaks its limit ON this day, which is the day the scheduler has

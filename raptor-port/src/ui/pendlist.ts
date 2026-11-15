@@ -523,7 +523,8 @@ export function pendItemWords(di: number, it: PendItem): Words {
    published day worked out with today's values. With another change also waiting — his flight switched off, an in-time
    typed — "Ranger · OIL  full day → full day …15:30" read as what the amendment would give him, which it is not: the
    other change has its own line, and what the day WILL earn is the working copy's own figure in OIL Earn. */
-const OIL_VALS = ['reportLead', 'debrief', 'oilFullMin'] as const
+/* …and the assumed flight length since D2046 — a block kept before it has none, so it reads today's and names nothing */
+const OIL_VALS = ['reportLead', 'debrief', 'oilFullMin', 'fltLen'] as const
 const oilRecWords = (r: { amt: number, spans: Array<[number, number]> } | null) => !r ? 'nothing'
   : `${r.amt === 1 ? 'full day' : 'half day'}${r.spans.length ? ` · ${r.spans.map(([a, b]) => `${hm(a)}–${hm(b)}`).join(', ')}` : ''}`
 /* THE LINE UNDER HIS TIMES (owner D2054, 15 Nov 26; the proposal's §4 as its §3b moved it inside the man's own row): the
@@ -544,7 +545,7 @@ function oilRuleWords(di: number): Words & { rows: CrowdRow[] } {
   const snap: any = daySnapOf(di, dayCurVer(di)), d: any = snap && snap.d, ev: any = d && d.oilev
   const kept = oilKeptVals(ev), now = oilRuleValsNow()
   const rows: CrowdRow[] = []
-  if (kept) OIL_VALS.forEach(k => { if (kept[k] !== now[k])
+  if (kept) OIL_VALS.forEach(k => { if (kept[k] != null && kept[k] !== now[k])
     rows.push({ where: `Logic · ${String(RULE_SPEC[k].t).replace(/\s*\(.*\)\s*$/, '')}`, from: String(ruleFmt(k, kept[k])), to: String(ruleFmt(k, now[k])), keys: [] }) })
   oilRuleShift(d, ev).forEach(r => rows.push({ where: `${cs(r.person)} · OIL as published, under today's values`, from: oilRecWords(r.was), to: oilRecWords(r.now), keys: [], note: oilShiftNote(r.was, r.now) }))
   return { where: 'OIL on this day · Logic values changed since it was published', from: '', to: '', who: '', when: '', jump: false, rows }
