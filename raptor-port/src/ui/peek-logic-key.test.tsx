@@ -40,7 +40,7 @@ it('P: the preview redraws its same-time line words when the Logic debrief chang
     ;(VCONF as any).reportLead = 0
     const a = titles(peekWeekHTML())
     expect(a.length, 'the line is marked').toBeGreaterThan(0)
-    expect(a[0]).toMatch(/still earns from the report and debrief/)
+    expect(a[0]).toMatch(/The day still earns OIL from the report and debrief\./)
     ;(VCONF as any).debrief = 0
     const b = titles(peekWeekHTML())
     /* the control: a key value that does not touch these words (the brief lead) forces a fresh drawing */

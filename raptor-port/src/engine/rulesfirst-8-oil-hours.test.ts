@@ -240,7 +240,7 @@ describe('W86 — a worked weekend that earns nobody any OIL says so, on the day
     desk(SUN, 'stiff', '', '')
     day(SUN).dutywaves.push({ label: 'Duty 2', rows: [{ role: 'RUNNER', id: 'allavail', str: '1830', end: '', rid: 'r-open' }] })
     const w = warnOf(validate(), SUN, 'OIL_NO_TIMES')
-    expect(w?.msg, 'on the day, with the reason').toMatch(/SDO and RUNNER have no usable times — nobody on them earns OIL/)
+    expect(w?.msg, 'on the day, with the reason').toBe('SDO and RUNNER have no usable times, so nobody on them earns OIL for this day')
     sign(SUN); commitSetDayApproved(SUN, true); runOilPass()
     expect(said.join(' | '), 'at publish, with the reason').toMatch(/earned nobody any OIL — the SDO and RUNNER desks have no usable times/)
     expect(Object.keys(dayOilSpans(day(SUN))), 'D360: nobody is credited from a guessed hour').toEqual([])

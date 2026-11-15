@@ -105,16 +105,16 @@ describe('W62 — a hidden warning stays hidden for everyone until someone flags
     const gi = ground(TUE, 'bane', '1200', '1230')
     validate()
     const w0 = find(TUE, 'DOUBLE_BOOK', 'bane')
-    expect(w0.msg, 'the clash\'s words carry no time').toBe('VL BFM & BRIEFING clash')
+    expect(w0.msg, 'the clash\'s words carry its times since [WARN-WORDS-STANDALONE] (D2045), its hide its two items (D2001)').toBe('Conflict: VL BFM (T/O 12:00, landing 13:00) & BRIEFING 12:00–12:30')
     tap(w0)
-    /* the brief slid to 12:30–13:00: still a clash, the same words — still hidden */
+    /* the brief slid to 12:30–13:00: still a clash, of the same two items — still hidden */
     Object.assign(day(TUE).ground[gi], { str: '1230', end: '1300' }); validate()
-    expect(find(TUE, 'DOUBLE_BOOK', 'bane').off, 'moved in time, still the same words, still hidden').toBe(true)
+    expect(find(TUE, 'DOUBLE_BOOK', 'bane').off, 'moved in time, the same two items, still hidden').toBe(true)
     /* Ranger taken off, the brief moved to 15:00, a second VL BFM in a new wave at 15:00 with Ranger on it */
     setSlotVal(`${TUE}.0.0.0.p`, ''); Object.assign(day(TUE).ground[gi], { str: '1500', end: '1530' })
     day(TUE).waves.push(wave([form({ to: '15:00', ld: '16:00' })], { label: 'WAVE 2' })); validate()
     const w2 = find(TUE, 'DOUBLE_BOOK', 'bane')
-    expect(w2 && w2.msg, 'a clash of a different line at a different hour, worded the same').toBe('VL BFM & BRIEFING clash')
+    expect(w2 && w2.msg, 'a clash of a different line at a different hour, the same callsign and mission').toBe('Conflict: VL BFM (T/O 15:00, landing 16:00) & BRIEFING 15:00–15:30')
     expect(w2.off || false, 'D2001: a different line — the clash shows').toBe(false)
     expect(sevOf(TUE, 'bane'), '…and Ranger\'s puck on the new line carries its red flag').toBe('hard')
   })
@@ -125,7 +125,7 @@ describe('W62 — a hidden warning stays hidden for everyone until someone flags
     tap(find(TUE, 'DOUBLE_BOOK', 'bane'))
     /* the line renamed and the brief re-timed: the same line and the same row */
     Object.assign(day(TUE).waves[0].formations[0], { cs: 'RAP', msn: 'ACM' }); Object.assign(day(TUE).ground[gi], { str: '1215', end: '1245' }); validate()
-    expect(find(TUE, 'DOUBLE_BOOK', 'bane').msg, 'the words changed').toBe('RAP ACM & BRIEFING clash')
+    expect(find(TUE, 'DOUBLE_BOOK', 'bane').msg, 'the words changed').toBe('Conflict: RAP ACM (T/O 12:00, landing 13:00) & BRIEFING 12:15–12:45')
     expect(find(TUE, 'DOUBLE_BOOK', 'bane').off, 'the same two items: still hidden').toBe(true)
     /* taken off and put back on the same seat: struck at once (D479) */
     setSlotVal(`${TUE}.0.0.0.p`, ''); validate()

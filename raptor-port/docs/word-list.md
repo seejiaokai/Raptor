@@ -66,7 +66,12 @@ This page translates between the app’s words, their everyday meaning and the n
 | Hide this warning / Flag this again | Stops or restores a particular warning’s visible flags while retaining its line in the list. | `warnhide.ts` |
 | Crew rest | The rest a flyer needs between the previous day’s finish and the next day’s reporting point. | `VCONF.crewRest`, `REST`, `validate.ts` |
 | [The crew-rest ring around a puck] | Shows the crew-rest condition applying to that person at that place. | `puckMarks`, `REST`, `html.ts` |
-| Tight turn | A short gap between landing and the next take-off. | `VCONF.tightTurn`, `validate.ts` |
+| Tight turn | A short gap between landing and the next take-off. A warning line starts "Tight turn:"; the check keeps the name "Tight turning" (D2068). | `VCONF.tightTurn`, `validate.ts` |
+| Conflict | A man booked on two things at once — every such warning line starts "Conflict:" (D2070; once "Clash"). | `DOUBLE_BOOK`, `INPUT_FLY`, `validate.ts` |
+| Misses … brief / debrief | A man has another item inside a flight's or sim's brief or debrief, both with their times. | `NO_BRIEF`, `DEBRIEF`, `SIM_BRIEF`, `SIM_DEBRIEF` |
+| Long day | A work day longer than the Logic limit; the line states the limit. | `LONGDAY`, `VCONF` |
+| On leave + planned / Overseas + planned / Downchit + planned | A man away or medically down who is also planned (D2009). | `LEAVE_FLY`, `DNIF_FLY` |
+| assumed | Said of a time the app supplies because none was typed — a debrief after landing, a landing (D2045). | `validate.ts` |
 | + In-time | Adds a reporting instruction above the wave’s formations. | `REPORTING_LABEL`, `Wave.intimes` |
 | R / Rally | The formation’s rally time, which can supply its reporting time. | `Formation.rl`, `resolveReporting` |
 | B | The brief time on a flying formation, suggested when blank. On SC it is the crew’s in-time. Standby lines have no suggested brief. | `Formation.br`, `flightBrief`, `scReport` |

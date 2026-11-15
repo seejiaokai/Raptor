@@ -88,7 +88,7 @@ describe('D714 — an Event clashes red across a standby shift, not Meeting\'s a
     const w = mine('INPUT_FLY')
     expect(w.length).toBe(1)
     expect(w[0].sev).toBe('hard')
-    expect(w[0].msg).toContain('Event but tasked — SC AM')
+    expect(w[0].msg).toBe('Conflict: SC AM 07:00–13:00 & Event 10:00–11:00')
     expect(mine('SHIFT_SOFT').length, 'never the amber advisory a Meeting gets').toBe(0)
   })
 

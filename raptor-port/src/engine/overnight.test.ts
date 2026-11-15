@@ -42,7 +42,7 @@ describe('the general midnight tail (day.input, every consumer)', () => {
     const h = hits('LEAVE_FLY', 'split')
     expect(h.length, JSON.stringify(h)).toBeGreaterThan(0)
     expect(h.some((x: any) => x.di === 0)).toBe(true)
-    expect(h.some((x: any) => /On leave but tasked/.test(x.msg))).toBe(true)
+    expect(h.some((x: any) => /^On leave \+ planned: /.test(x.msg))).toBe(true)
   })
 
   it('a window that dies exactly at midnight has no tail to check (half-open)', () => {
@@ -72,7 +72,7 @@ describe('the general midnight tail (day.input, every consumer)', () => {
     INPUTS.push({ person: 'split', date: 'Jul 14', allday: true, type: 'OL', remarks: '' })
     const h = hits('LEAVE_FLY', 'split')
     expect(h.length, JSON.stringify(h)).toBeGreaterThan(0)
-    expect(h.some((x: any) => /planned to fly/.test(x.msg))).toBe(true)
+    expect(h.some((x: any) => /^On leave \+ planned: .*\(T\/O /.test(x.msg))).toBe(true)
   })
 
   it('TODAY input still clashes unchanged — the evening half against today', () => {
@@ -101,7 +101,7 @@ describe('the AVALON rule — jet seats', () => {
     INPUTS.push({ person: 'badger', date: 'Jul 13', allday: true, type: 'OL', remarks: '' })
     const h = hits('LEAVE_FLY', 'badger')
     expect(h.length, JSON.stringify(h)).toBeGreaterThan(0)
-    expect(h.some((x: any) => /but on AVALON/.test(x.msg) && /overseas/.test(x.msg))).toBe(true)
+    expect(h.some((x: any) => /^Overseas \+ planned: AVALON /.test(x.msg))).toBe(true)
   })
 
   it('jet SPARE with ATT B today — hard DNIF_FLY (spare is still a jet seat)', () => {

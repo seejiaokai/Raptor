@@ -281,7 +281,7 @@ describe('the publish reminder (§2.3)', () => {
     await act(async () => { validate(); notify() })
     await open(SAT)
     const said = $$('#sbWarn .wln .wln-t').map(e => e.textContent || '').join(' | ')
-    expect(said, 'the day says nobody earns until it is published').toContain('not published yet')
+    expect(said, 'the day says nobody earns until it is published').toContain('Not published yet, so nobody earns OIL for this day.')
   })
 })
 

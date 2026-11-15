@@ -22,15 +22,17 @@ import { rosterIds, withKeptRules, keptRulesDiffer, withDayRules, keepRulesOn, w
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
 const $=(id:any)=>HOOKS.$(id);
-export const WCODE:any={DOUBLE_BOOK:'Conflict — two events at once',DNIF_FLY:'Downchit + planned',LEAVE_FLY:'On leave + planned',INPUT_FLY:'Personal input clash',
-  TURN:'Tight turn',ILLEGAL_CREW:'Illegal aircrew combination',CREW_SOLO:'Crew solo — only allowed under syllabus',CO_APPROVAL:'Crew combination — CO approval required',OCU_NO_IP:'OCU without IP',CREW_REST:'Crew rest (<{crewRest})',QUAL:'Qualification — illegal seat',
-  NO_BRIEF:'No time for the flight brief',DEBRIEF:'No time for the flight debrief',SIM_BRIEF:'No time for the sim brief',SIM_DEBRIEF:'No time for the sim debrief',
-  CREW_TIGHT:'Tight turning — crew rest',LONGDAY:'Long work day',DT_SUM:'Double turning',
-  DAYS_RUN:'No break day — too many days in a row',
-  SC_QUAL:'SC currency — wrong shift',AAR_QUAL:'AAR currency — not qualified',AAR_INSTR:'AAR — back seat not cleared to instruct',NO_IR:'IRT without an IR examiner',
+/* [WARN-WORDS-STANDALONE] (owner D2070, D2068, 16 Nov 26): the short names follow the lines' new labels — "Conflict"
+   kept for the clash, "Tight turning" kept (never "Tight crew rest"); the proposal's §3b table as §3g reads it */
+export const WCODE:any={DOUBLE_BOOK:'Conflict',DNIF_FLY:'Downchit + planned',LEAVE_FLY:'On leave + planned',INPUT_FLY:'Conflict with a request',
+  TURN:'Tight turn',ILLEGAL_CREW:'Crew not authorised',CREW_SOLO:'Crew solo — only allowed under syllabus',CO_APPROVAL:'CO approval needed',OCU_NO_IP:'OCU with no IP',CREW_REST:'Crew rest (<{crewRest})',QUAL:'Wrong seat',
+  NO_BRIEF:'Misses flight brief',DEBRIEF:'Misses flight debrief',SIM_BRIEF:'Misses sim brief',SIM_DEBRIEF:'Misses sim debrief',
+  CREW_TIGHT:'Tight turning',LONGDAY:'Long day',DT_SUM:'Double turning',
+  DAYS_RUN:'Days in a row',
+  SC_QUAL:'SC currency — wrong shift',AAR_QUAL:'AAR currency — not qualified',AAR_INSTR:'AAR — back seat not cleared to instruct',NO_IR:'IRT with no IR examiner',
   PAX_CREW:'Incentive passenger — crew pairing needs approval',
-  SHIFT_SOFT:'On shift — also down for a ground event',
-  SC_INTIME:'In-time window cut — busy between report and shift start',
+  SHIFT_SOFT:'Overlaps standby',
+  SC_INTIME:'Busy before a standby shift',
   SANS_AVAIL:'SANS availability — planned outside the availability filed',
   OIL_NO_TIMES:'No OIL earned — a row has no usable times',
   FLT_NO_LEN:'Flight times — take-off and landing are the same',
@@ -203,17 +205,42 @@ export const legDebriefWin=(lg:any):[number,number]=>[lg.ld,lg.ld+VCONF.debrief]
    sentences ("cannot fly FCP ( )", "OCU in   with no IP"); it is "this line" there, as the absence sentences already say. */
 export const lineName=(label:any)=>String(label==null?'':label).trim()?label:'this line'
 const lineWord=(label:any)=>{const t=String(label==null?'':label).trim(); return t?t+' ':''}
+/* EVERY WARNING READS ON ITS OWN ([WARN-WORDS-STANDALONE] — owner D2045, D2048, D2058, D2070, D2071, 15–16 Nov 26):
+   who, which items, their times and why, so a line is understood without looking at the schedule. The approved words
+   are the proposal's (docs/superpowers/specs/2026-11-15-warn-words-standalone.md, as its §3a–§3g overrule it). `rng` is
+   the one way an item's hours are printed; `whatAt` an item with its hours (a hit in a brief or debrief window, an
+   item on a conflict line). A range never breaks across lines where the list is drawn (ui/html.ts keepRanges). */
+export const rng=(s:any,e:any)=>`${hm24(s)}–${hm24(e)}`
+export const whatAt=(label:any,s:any,e:any)=>s!=null&&e!=null&&isFinite(s)&&isFinite(e)?`${label} ${rng(s,e)}`:`${label}`
 export const noBriefSays=(lg:any,what:string)=>{const [bs,bt]=legBriefWin(lg)
-  return `No time for the ${lineWord(lg.label)}flight brief — ${what} sits inside ${hm24(bs)}–${hm24(bt)} (brief ${hm24(bs)})`}
+  return `Misses ${lineWord(lg.label)?lineWord(lg.label)+'brief':'the flight brief'} ${rng(bs,bt)}: ${what}`}
 export const debriefSays=(lg:any,what:string)=>{const [ls,de]=legDebriefWin(lg)
-  /* D2010's reading: with no landing typed the window starts at the take-off (events.ts `noLd`) and says so */
-  return `Not enough time to attend the ${lineWord(lg.label)}debrief — ${what} sits inside ${hm24(ls)}–${hm24(de)} (${lg.noLd?'take-off':'land'} + ${lgT(VCONF.debrief)}${lg.noLd?', no landing typed':''})`}
+  /* D2046: with no landing typed the window starts at the ASSUMED landing (events.ts `noLd`) and says so */
+  return `Misses ${lineWord(lg.label)?lineWord(lg.label)+'debrief':'the flight debrief'} ${rng(ls,de)}${lg.noLd?' (landing assumed)':''}: ${what}`}
 
 /* THE SAME FOR A SIM ([CROWD-SIM-BRIEF], phase 7): the two sentences the pass below used to build inline, lifted so the
-   ALL AVAIL window says them in the list's own words. `sw` is one of the day's sim windows (events.ts simwin). The
-   warning list is byte-identical — the reference comparison (tfin.js 728/0) is the proof. */
-export const simBriefSays=(sw:any,what:string)=>`No time for the ${sw.label} brief — ${what} sits inside ${hm24(sw.bs)}–${hm24(sw.be)}`
-export const simDebriefSays=(sw:any,what:string)=>`No time for the ${sw.label} debrief — ${what} sits inside ${hm24(sw.ds)}–${hm24(sw.de)}`
+   ALL AVAIL window says them in the list's own words. `sw` is one of the day's sim windows (events.ts simwin). */
+export const simBriefSays=(sw:any,what:string)=>`Misses ${sw.label} brief ${rng(sw.bs,sw.be)}: ${what}`
+export const simDebriefSays=(sw:any,what:string)=>`Misses ${sw.label} debrief ${rng(sw.ds,sw.de)}: ${what}`
+/* A FLIGHT ON A CONFLICT LINE shows the end of it that causes the conflict (owner D2058, 15 Nov 26): its step where the
+   other item starts before take-off and reaches into the step (an item spanning the step and the flight too — shown
+   with the step, where it starts: the build's call, §3c); its take-off and landing where the item is in the air time; its
+   landing and dekit where the item falls after landing. Against another flight, both flights' take-off and landing (the
+   air times are what clash). The step and dekit are the event's own (events.ts, from the day's Logic settings). */
+export const flightAt=(lg:any,os:any,oe:any,both?:boolean)=>{
+  const land=`landing${lg.noLd?' assumed':''} ${hm24(lg.ld)}`, nm=lineName(lg.label);
+  /* a busy-window event carries its step and dekit as s / e, a day.fly entry as step / dekit — one reading of both */
+  const st=lg.step!=null?lg.step:lg.s, dk=lg.dekit!=null?lg.dekit:lg.e;
+  if(!isFinite(lg.to))return `${nm} (no times yet)`;
+  /* an item that covers the whole of it, step to dekit (an all-day request), is against the flight itself */
+  if(!both&&os<=st&&oe>=dk)return `${nm} (T/O ${hm24(lg.to)}, ${land})`;
+  if(!both&&os<lg.to&&st<lg.to&&overlap(os,oe,st,lg.to))return `${nm} (step ${hm24(st)}, T/O ${hm24(lg.to)})`;
+  if(both||!(os>=lg.ld))return `${nm} (T/O ${hm24(lg.to)}, ${land})`;
+  return `${nm} (${land}, dekit to ${hm24(dk)})`;}
+/* a flight named on its own (not against an item): its take-off, the time a squadron knows a line by */
+/* a request by its own hours, or "(all day)" where it covers the day */
+export const inpAt=(inp:any)=>inp.s==null||inp.e==null||!isFinite(inp.s)||!isFinite(inp.e)||inp.e-inp.s>=1439?`${inpLabel(inp)} (all day)`:`${inpLabel(inp)} ${rng(inp.s,inp.e)}`
+export const flightTag=(label:any,to:any)=>`${lineName(label)}${isFinite(to)&&to!=null?` (T/O ${hm24(to)})`:' (no times yet)'}`
 /* does this sim window carry a brief / a debrief that measures anything — the pass's own two tests, one body */
 export const simHasBrief=(sw:any)=>sw.bs!=null&&sw.be!=null&&sw.be>sw.bs
 export const simHasDebrief=(sw:any)=>sw.ds!=null&&sw.de!=null&&sw.de>sw.ds
@@ -260,12 +287,13 @@ export function crowdClashes(di:any,id:any,s:number|null,e:number|null,label:str
   const out:{sev:string,msg:string}[]=[];
   (evs||dayEvents(di,id)).filter((x:any)=>x&&x.kind==='fly').forEach((lg:any)=>{
     const [bs,bt]=legBriefWin(lg), [ls,de]=legDebriefWin(lg);
-    if(bs!=null&&bt!=null&&overlap(s,e,bs,bt))out.push({sev:'adv',msg:noBriefSays(lg,label)});
-    if(ls!=null&&overlap(s,e,ls,de))out.push({sev:'adv',msg:debriefSays(lg,label)});
+    /* the event with its own hours, as the list names a hit ([WARN-WORDS-STANDALONE]) */
+    if(bs!=null&&bt!=null&&overlap(s,e,bs,bt))out.push({sev:'adv',msg:noBriefSays(lg,whatAt(label,s,e))});
+    if(ls!=null&&overlap(s,e,ls,de))out.push({sev:'adv',msg:debriefSays(lg,whatAt(label,s,e))});
   });
   (simw||SIMW[di]||[]).forEach((sw:any)=>{ if(!sw||(sw.ids||[]).indexOf(id)<0)return;
-    if(simHasBrief(sw)&&overlap(s,e,sw.bs,sw.be))out.push({sev:'adv',msg:simBriefSays(sw,label)});
-    if(simHasDebrief(sw)&&overlap(s,e,sw.ds,sw.de))out.push({sev:'adv',msg:simDebriefSays(sw,label)});
+    if(simHasBrief(sw)&&overlap(s,e,sw.bs,sw.be))out.push({sev:'adv',msg:simBriefSays(sw,whatAt(label,s,e))});
+    if(simHasDebrief(sw)&&overlap(s,e,sw.ds,sw.de))out.push({sev:'adv',msg:simDebriefSays(sw,whatAt(label,s,e))});
   });
   return out;
 }
@@ -300,7 +328,11 @@ export function fltNoLen(f:any):boolean{
    AND A SORTIE WITH NOTHING ROUND IT ([OIL-ZERO-SPAN-SORTIE], 20 Oct 26): its entered in-time the take-off and the
    Logic page's debrief zero (or both leads zero), the sortie has no report and no debrief either, so it earns nobody any
    OIL — said so, and named in the day's "no usable times" list (oil.ts fltMeasuresNothing). `none` is that fact. */
-export const FLT_NO_LEN_SAYS=(st:any,sa?:any,none?:any,saFly?:any)=>`takes off and lands at the same time (${hm24(st)}) — one of the two is wrong; ${saFly?'the shift still earns from its R or B':sa?'a shift with no length earns nobody any OIL until it is fixed':none?'with no report before it and no debrief after it, the line earns nobody any OIL until it is fixed':'the day still earns from the report and debrief'}`;
+/* [WARN-WORDS-STANDALONE]: "Times look wrong: VL T/O and landing are both 12:00. The day still earns OIL from the report and
+   debrief." — the name sits INSIDE the sentence now, so this body is the words after it; fltNoLenMsg is the whole line,
+   and every marked box's title prints that one line; a standby shift's two boxes are named as the screen heads them,
+   START and END (D1083), a flying line's T/O and landing */
+export const FLT_NO_LEN_SAYS=(st:any,sa?:any,none?:any,saFly?:any)=>`${sa||saFly?'START and END':'T/O and landing'} are both ${hm24(st)}. ${saFly?'The shift still earns OIL from its R or B.':sa?'A shift with no length earns nobody any OIL until it is fixed.':none?'With no report before it and no debrief after it, the line earns nobody any OIL until it is fixed.':'The day still earns OIL from the report and debrief.'}`;
 /* the sentence's tail for one line, the facts read off the line and its wave — what every marked box's title and the
    warning both print, so no caller works out "is it a shift" or "does it measure anything" for itself */
 /* A FLYING STANDBY SHIFT THAT EARNS from its B or R though its START is its END (D1999: "earns like a flying line … with
@@ -310,10 +342,10 @@ export const FLT_NO_LEN_SAYS=(st:any,sa?:any,none?:any,saFly?:any)=>`takes off a
 export const fltNoLenSays=(f:any,wv:any)=>{const fly=!!saZeroSpanWin(wv,f,VCONF.reportLead);return FLT_NO_LEN_SAYS(parseHM(f.to),isStandalone(wv)&&!fly,fltMeasuresNothing(wv,f,VCONF.reportLead,VCONF.debrief),fly);};   // the day's own settings, as the day loop overlays them (D2005)
 /* the 7-day run's sentence — one body for the warning and for the dotted mark that points at it from the days before
    (the mark carries the words its warning will have, so a hide of that warning is found — [WARN-HIDE-KEPT]) */
-const runSays=(id:any,n:any)=>`${PEOPLE[id]?PEOPLE[id].cs:id} is on the programme ${n} days in a row — ${VCONF.maxRun} is the limit, so a break day is due`;
+const runSays=(id:any,n:any)=>`Days in a row: ${n} (limit ${VCONF.maxRun}). A break day is due.`;
 /* a nought-minute line's sentence — one body for the warning and for the next-week preview, which draws the line's red
    time box without a warning list and asks whether THAT warning is hidden (ui/peek.ts) */
-export const fltNoLenMsg=(f:any,wv:any)=>`${f.cs||wv.label||'A flying line'} ${fltNoLenSays(f,wv)}`;
+export const fltNoLenMsg=(f:any,wv:any)=>`Times look wrong: ${f.cs||wv.label||'A flying line'} ${fltNoLenSays(f,wv)}`;
 /* A CLASH'S TWO ITEMS (owner D2001, 11 Nov 26 — "a hidden clash stays hidden while the same man is on the same two items,
    whatever their times, and comes back when the man or either item is a different one"). An item is what a scheduler
    taps: a flying or standby line (whichever of its seats), a duty row, a sim row, a ground or programme row — a ground
@@ -596,7 +628,7 @@ function validateCore(){
       const shiftReport=(legs:any[],instructed:number)=>{const sl=legs.filter((e:any)=>e.shift)[0];
         const viaB=sl.intime!=null&&isFinite(sl.intime)&&!(sl.to<=sl.intime)&&insOf(sl)===instructed;
         /* …and "'s rally is" where that report is its rally box (D1041) */
-        return `${sl.label}${viaB?(sl.viaRally?`'s rally is`:`'s in-time is`):' starts'} ${stated(instructed)}`;};
+        return `${sl.label}${viaB?(sl.viaRally?` rally`:` in-time`):' starts'} ${stated(instructed)}`;};   // [WARN-WORDS-STANDALONE]: "SC AM in-time 06:00"
       Object.keys(byR).forEach((id:any)=>{
         if(probe&&id!==probe.id)return;
         /* Personnel (ground crew) hold no crew-rest rule — an incentive ride
@@ -656,9 +688,11 @@ function validateCore(){
            has no debrief to assume, so it keeps the plain "ended". */
         const landed=prevFlyEnd[id]!=null?prevFlyLd[id]:null;
         const source=prevSource[id]||prevSeed;
+        /* [WARN-WORDS-STANDALONE] (D2069 keeps his 22 Aug 26 order): "Monday landed 21:30 + 2h debrief (assumed) → ended
+           23:30 → clear 11:30"; a day not ended by a flight says what ended, "Monday duty ended 20:00 → clear 08:00" */
         const tail=landed!=null
-          ? `${source.dow} ${prevFlyNoLd[id]?`took off ${hm24(landed)} with no landing typed`:`landed ${hm24(landed)}`}, +${lgT(VCONF.debrief)} debrief assumed → ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`
-          : `${source.dow} ended ${hm24(pe)} → crew rest clear at ${stated(earliest)}`;
+          ? `${source.dow} ${prevFlyNoLd[id]?`took off ${hm24(landed)} with no landing typed`:`landed ${hm24(landed)}`} + ${lgT(VCONF.debrief)} debrief (assumed) → ended ${hm24(pe)} → clear ${stated(earliest)}`
+          : `${source.dow} duty ended ${hm24(pe)} → clear ${stated(earliest)}`;
         if(pfly[id]&&first<earliest){
           /* [REST-BLANK-LINE]: when no leg tells him anything the breach is the earlier commitment's (evBound);
              the blank line only lends its key as the fallback anchor, and can sanction nothing */
@@ -696,15 +730,17 @@ function validateCore(){
              stated the report first, re-derived it through the tail, then
              re-stated the leave-by the trace row's own lead already carries. */
           const rest=first+1440-pe, endDow=DAYS[((targetIndex+Math.floor(pe/1440)-1)%7+7)%7].dow;
-          const restWords=rest<0?`${dur(-rest)} before his ${endDow} duty ends`:`only ${dur(rest)} rest`;
-          const crMsg=`Crew rest breach — ${tail}, but `
-            +(evBound?(legs.length?`his day starts ${stated(first)} (${fe.label}) before the ${stated(instructed)} report — ${restWords}.`
-                                  :`his day starts ${stated(first)} (${fe.label}), and he is on a line with no take-off yet — ${restWords}.`)
-             :onShift?`${shiftReport(legs,instructed)} — ${restWords}.`
-             :`told to report ${stated(instructed)} — ${restWords}.`)
-            +(dashed?` Late show — he still makes the ${hm24(bl.to-VCONF.step)} step.`
+          /* [WARN-WORDS-STANDALONE] (owner D2069, 16 Nov 26): his order kept — yesterday's end → when rest clears → what
+             breaks it → the shortfall — with what the rest needs added, the Logic page's own figure ("needs 12h") */
+          const restWords=rest<0?`${lgT(-rest)} before his ${endDow} duty ends`:`${lgT(rest)} rest, needs ${lgT(VCONF.crewRest)}`;
+          const crMsg=`Crew rest: ${tail}. `
+            +(evBound?(legs.length?`Day starts ${stated(first)} (${fe.label}), before report ${stated(instructed)}: ${restWords}.`
+                                  :`Day starts ${stated(first)} (${fe.label}): ${restWords}. His flight has no T/O yet.`)
+             :onShift?`${shiftReport(legs,instructed)}: ${restWords}.`
+             :`Report ${stated(instructed)}: ${restWords}.`)
+            +(dashed?` Late show: still makes the ${hm24(bl.to-VCONF.step)} step.`
                     /* no take-off, no step to name ([REST-BLANK-LINE]) — the breach is said without the tail */
-                    :(!evBound&&bl.lateShow&&isFinite(bl.to)?` Late show cannot save it — the ${hm24(bl.to-VCONF.step)} step is still before rest clears.`:''));
+                    :(!evBound&&bl.lateShow&&isFinite(bl.to)?` Late show doesn't help: the ${hm24(bl.to-VCONF.step)} step is before rest clears.`:''));
           /* the warning anchors on what binds it: the early event's own slot
              key when a meeting caused the breach, the leg otherwise — the
              jump then pans to the row the scheduler has to move */
@@ -731,7 +767,9 @@ function validateCore(){
              and neither side can emit it */
           /* `noms`, not `legs` ([REST-BLANK-LINE]): this branch is reached only through a real nominal report,
              so the take-off it prints and the leg it anchors on are the ones that have one */
-          if(!phantom)add('adv','CREW_TIGHT',[id],`Tight turning — T/O ${hm24(Math.min.apply(null,noms.map((e:any)=>e.to)))} puts the ${lgT(VCONF.reportLead)} report at ${hm24(nominal)}, inside ${lgT(VCONF.crewRest)}. ${tail}`
+          /* [WARN-WORDS-STANDALONE]: "Tight turning: the usual report (T/O 12:00 − 3h = 09:00) is before clear 09:30. <tail>."
+             — "Tight turning" kept (D2068) */
+          if(!phantom)add('adv','CREW_TIGHT',[id],`Tight turning: the usual report (T/O ${hm24(Math.min.apply(null,noms.map((e:any)=>e.to)))} − ${lgT(VCONF.reportLead)} = ${hm24(nominal)}) is before clear ${stated(earliest)}. ${tail}.`
             +(pfly[id]?'':' (prior day ended on a sim or ground event, so crew rest itself does not apply)'),
             noms.reduce((m:any,e:any)=>nomOf(e)<nomOf(m)?e:m).key);
         }
@@ -758,6 +796,13 @@ function validateCore(){
       const k=code+'|'+who.join(',')+'|'+msg+its; if(seen.has(k))return; seen.add(k);
       const w={sev:s,code,who,day:day.dow,di,msg,key,...(extra||{})};ws.push(w);all.push(w);};
     const kOf=(e:any)=>e&&(e.slot||e.key)||null;   // byE events carry slot (fly/shift) or key (the rest)
+    /* one side of a conflict line ([WARN-WORDS-STANDALONE]): a sortie by the end of it the other item `o` falls in
+       (flightAt — against another leg its take-off and landing), anything else by its own hours; a standby line, flying
+       or not, by its START–END (D2061–D2063: no step or dekit added) */
+    const side=(x:any,o:any)=>x.kind==='fly'?flightAt(x,o.s,o.e,o.kind==='fly'||(o.kind==='shift'&&o.flies))
+      :whatAt(x.kind==='shift'?lineName(x.label):x.label,x.s,x.e);
+    /* a formation named on its own: a sortie by its take-off, a standby line by its START–END */
+    const fTag=(f:any)=>f.sc?whatAt(lineName(f.label),f.s,f.e):flightTag(f.label,f.s);
     /* D502: include uncrewed formations; no invented puck penalty.
        These ordinary issued warnings freeze normally. */
     reportingIssuesForDay(DAYS[di]).forEach(issue=>add(issue.blocking?'hard':'adv',issue.code,[],issue.msg,
@@ -804,7 +849,9 @@ function validateCore(){
            which is not a turn at all. It was reported as one, carrying a
            negative minute count ("Tight turn VL→VL: -85 min"), and the hard
            clash below now speaks for that case instead (owner, 11 Aug 26). */
-        if(turn>=0&&turn<need){markChip(di,id,'TT','TURN');add('adv','TURN',[id],`Tight turn ${lineName(es[i].label)}→${lineName(es[i+1].label)}: ${turn} min ${es[i].noLd?'take-off→next T/O, no landing typed':'land→next T/O'} (needs ${need} min — threshold ${VCONF.tightTurn}, dekit+step ${VCONF.dekit}+${VCONF.step})`,es[i].key);} }
+        /* [WARN-WORDS-STANDALONE]: "Tight turn: VL BFM → RU AD, 45 min (needs 120). VL BFM landing 14:15, RU AD T/O 15:00";
+           an assumed landing says so with its length (D2046), "VL BFM landing assumed 13:00 (T/O + 1h)" */
+        if(turn>=0&&turn<need){markChip(di,id,'TT','TURN');add('adv','TURN',[id],`Tight turn: ${lineName(es[i].label)} → ${lineName(es[i+1].label)}, ${turn} min (needs ${need}). ${lineName(es[i].label)} landing ${es[i].noLd?`assumed ${hm24(es[i].ld)} (T/O + ${lgT(es[i].ld-es[i].to)})`:hm24(es[i].ld)}, ${lineName(es[i+1].label)} T/O ${hm24(es[i+1].to)}`,es[i].key);} }
     });
     /* C — two commitments at the same time for one person.
        Sortie-vs-sortie is the tight-turn rule's business, not this one.
@@ -848,13 +895,15 @@ function validateCore(){
           const sh=A.kind==='shift'&&!A.flies?A:B, other=sh===A?B:A;
           if(shiftEvHard(other)){
             markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
-            add('hard','DOUBLE_BOOK',[id],`${sh.label} & ${other.label} clash`,kOf(sh)||kOf(other),clashItems(clashItem(kOf(sh)),clashItem(kOf(other))));
+            add('hard','DOUBLE_BOOK',[id],`Conflict: ${whatAt(sh.label,sh.s,sh.e)} & ${side(other,sh)}`,kOf(sh)||kOf(other),clashItems(clashItem(kOf(sh)),clashItem(kOf(other))));
           } else {
             /* amber A, not the red conflict C — the puck has to say advisory at a
                glance, the way the note under it already does */
             markChip(di,id,'A','SHIFT_SOFT'); markRing(di,id,'adv','SHIFT_SOFT');
+            /* [WARN-WORDS-STANDALONE] §3a: the other item first, the standby after — "Overlaps standby: LECTURE 09:00–10:00
+               & SC AM 07:00–13:00" */
             add('adv','SHIFT_SOFT',[id],
-              `${PEOPLE[id]?PEOPLE[id].cs:id} is on ${sh.label} (${hm24(sh.s)}–${hm24(sh.e)}) and also down for ${other.label}`,kOf(sh)||kOf(other),clashItems(clashItem(kOf(sh)),clashItem(kOf(other))));
+              `Overlaps standby: ${side(other,sh)} & ${whatAt(sh.label,sh.s,sh.e)}`,kOf(sh)||kOf(other),clashItems(clashItem(kOf(sh)),clashItem(kOf(other))));
           }
           continue;
         }
@@ -869,11 +918,14 @@ function validateCore(){
            same line only when the two seats share its line address ([BLANK-LINE-SANS-WORDS]) */
         const nm=(x:any)=>x.kind==='fly'||x.kind==='shift'?lineName(x.label):x.label;
         const lineOf=(x:any)=>String(kOf(x)||'').split('.').slice(0,3).join('.');
+        /* [WARN-WORDS-STANDALONE]: "Conflict: in two seats on VL BFM (T/O 12:00) at once", "Conflict: two items both called
+           SODB, 07:45–08:00 & 07:50–08:10", and between two items each with its times (D2058 — a flight shows the end of it
+           that causes the conflict, flightAt) */
         add('hard','DOUBLE_BOOK',[id],A.label===B.label&&(String(A.label==null?'':A.label).trim()||lineOf(A)===lineOf(B))
           ?(A.kind==='ground'&&B.kind==='ground'&&A.key!==B.key
-            ?`${PEOPLE[id]?PEOPLE[id].cs:id} is on two items called ${A.label} at once`
-            :`${PEOPLE[id]?PEOPLE[id].cs:id} is in two seats on ${nm(A)} at once`)
-          :`${nm(A)} & ${nm(B)} clash`,kOf(A)||kOf(B),clashItems(clashItem(kOf(A)),clashItem(kOf(B))));} });
+            ?`Conflict: two items both called ${A.label}, ${rng(A.s,A.e)} & ${rng(B.s,B.e)}`
+            :`Conflict: in two seats on ${A.kind==='fly'?flightTag(A.label,A.to):whatAt(nm(A),A.s,A.e)} at once`)
+          :`Conflict: ${side(A,B)} & ${side(B,A)}`,kOf(A)||kOf(B),clashItems(clashItem(kOf(A)),clashItem(kOf(B))));} });
     /* THE IN-TIME WINDOW (owner, 24 Aug 26 — "have a no brief advisory as well
        if anything cuts or ends between B and TO time for SC main"). An SC MAIN
        with a typed B earlier than the shift start is on duty from that B, so a
@@ -894,7 +946,7 @@ function validateCore(){
       const cut=(s:any,e:any,label:any)=>{
         markChip(di,id,'A','SC_INTIME'); markRing(di,id,'adv','SC_INTIME');
         add('adv','SC_INTIME',[id],
-          `${cs} reports ${hm24(sh.report)} for ${sh.label} — ${label} (${hm24(s)}–${hm24(e)}) cuts into the in-time window before the ${hm24(sh.s)} start`,kOf(sh));};
+          `Busy before ${sh.label}: ${label} ${rng(s,e)} is between his ${hm24(sh.report)} in-time and the ${hm24(sh.s)} start`,kOf(sh));};   // [WARN-WORDS-STANDALONE] §3a
       byE[id].forEach((o:any)=>{ if(o===sh)return;
         if(!overlap(sh.report,sh.s,o.s,o.e))return;
         if(overlap(sh.s,sh.e,o.s,o.e))return;
@@ -947,11 +999,14 @@ function validateCore(){
         markChip(di,e.id,'C',wc); markRing(di,e.id,'hard',wc);
         /* the REASON is the whole point of the flag — a downchit body planned to
            fly has to say what grounded them, not merely that something clashes. */
-        const why=inp.remarks?` — reason: ${inp.remarks}`:'';
+        /* [WARN-WORDS-STANDALONE]: "Downchit + planned: VL BFM (T/O 12:00). Reason: flu"; a request is a conflict line,
+           "Conflict: VL BFM (T/O 12:00, landing 13:30) & Appointment 12:30–13:30. Reason: dental" — the flight by the end
+           of it the request falls in (D2058, flightAt), the request by its own hours */
+        const why=inp.remarks?`. Reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
-          dn?`Downchit but planned to fly ${named(e.label,'this line')}${why}`
-            :lv?`On leave but planned to fly ${named(e.label,'this line')}${why}`
-              :`${inpLabel(inp)} clashes with ${named(e.label,'this line')}${why}`,e.key);} }));
+          dn?`Downchit + planned: ${flightTag(e.label,e.to)}${why}`
+            :lv?`On leave + planned: ${flightTag(e.label,e.to)}${why}`
+              :`Conflict: ${flightAt(e,inp.s,inp.e)} & ${inpAt(inp)}${why}`,e.key);} }));
     /* being unavailable does not only bar flying — a duty, a sim seat or a
        ground slot on the same day is just as wrong, and used to pass. This
        covered leave and downchits only (owner, 4 Aug 26): a Detachment, or a
@@ -999,14 +1054,17 @@ function validateCore(){
           if(!hits)return;
           markChip(di,e.id,'A','SHIFT_SOFT'); markRing(di,e.id,'adv','SHIFT_SOFT');
           add('adv','SHIFT_SOFT',[e.id],
-            `${PEOPLE[e.id]?PEOPLE[e.id].cs:e.id} is on ${e.label}${blankShift?'':` (${hm24(e.s)}–${hm24(e.e)})`} and also down for ${inpLabel(inp)}`,kOf(e),inp.iid?clashItems(clashItem(kOf(e)),'i:'+inp.iid):undefined);
+            `Overlaps standby: ${inpAt(inp)} & ${whatAt(e.label,e.s,e.e)}`,kOf(e),inp.iid?clashItems(clashItem(kOf(e)),'i:'+inp.iid):undefined);   // [WARN-WORDS-STANDALONE] §3a
           return;
         }
         if(!hits)return;
         { const wc=dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY'; markChip(di,e.id,'C',wc); markRing(di,e.id,'hard',wc); }
-        const why=inp.remarks?` — reason: ${inp.remarks}`:'';
+        /* [WARN-WORDS-STANDALONE]: "Downchit + planned: LECTURE 09:00–10:00. Reason: flu"; a request, "Conflict: OFT 1
+           10:00–11:30 & Appointment 10:30–11:30. Reason: dental"; a row with no times, "… (no times yet)" */
+        const why=inp.remarks?`. Reason: ${inp.remarks}`:'';
+        const row=blankShift?`${rowName(e)} (no times yet)`:whatAt(rowName(e),e.s,e.e);
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
-          (dn?'Downchit but tasked':lv?'On leave but tasked':`${inpLabel(inp)} but tasked`)+` — ${rowName(e)}${why}`,kOf(e)); }); });
+          (dn?`Downchit + planned: ${row}`:lv?`On leave + planned: ${row}`:`Conflict: ${row} & ${inpAt(inp)}`)+why,kOf(e)); }); });
     /* …AND THE ROWS THAT NEVER BECAME AN EVENT, because they have no start to make a window from (D605, above;
        events.ts `blank`): a duty desk, a sim seat, a ground or Common Programme row, an AVALON / BB seat or desk
        with no shift times. `abs` is that man's whole-day inputs for THIS day, already cleared of the request the row
@@ -1014,19 +1072,21 @@ function validateCore(){
        below are the loop above and the AVALON / BB look below it, minus the overlap that has nothing to compare:
        ATT B may work a desk, a sim or a ground row; a standby place bars only what cannot spare. */
     (day.blank||[]).forEach((b:any)=>(b.abs||[]).forEach((inp:any)=>{
-      const dn=isDownchit(inp.type), lv=isLeave(inp.type), why=inp.remarks?` — reason: ${inp.remarks}`:'';
+      /* [WARN-WORDS-STANDALONE]: the rows with no times say so, "On leave + planned: this duty row (no times yet)"; a
+         standing-by place names the medical kind, "Downchit + planned: AVALON NIGHT MAIN (no times yet, ATT C)" */
+      const dn=isDownchit(inp.type), lv=isLeave(inp.type), why=inp.remarks?`. Reason: ${inp.remarks}`:'';
       if(b.av){
         if(canSpare(inp.type))return;
         if(b.work&&canWork(inp.type))return;
         const wc=dn?'DNIF_FLY':'LEAVE_FLY';
         markChip(di,b.id,'C',wc); markRing(di,b.id,'hard',wc);
-        add('hard',wc,[b.id],`${inpLabel(inp)} but on ${rowName(b)} — ${dn?'medically down':'overseas'}${why}`,b.key);
+        add('hard',wc,[b.id],`${dn?'Downchit':'Overseas'} + planned: ${rowName(b)} (no times yet${dn?`, ${inpLabel(inp)}`:''})${why}`,b.key);
         return;
       }
       if(canWork(inp.type))return;
       { const wc=dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY'; markChip(di,b.id,'C',wc); markRing(di,b.id,'hard',wc); }
       add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[b.id],
-        (dn?'Downchit but tasked':lv?'On leave but tasked':`${inpLabel(inp)} but tasked`)+` — ${rowName(b)}${why}`,b.key); }));
+        (dn?`Downchit + planned: ${rowName(b)} (no times yet)`:lv?`On leave + planned: ${rowName(b)} (no times yet)`:`Conflict: ${rowName(b)} (no times yet) & ${inpAt(inp)}`)+why,b.key); }));
     /* AVALON'S ONE CHECK (owner, 11 Aug 26; three more joined it on 7 Sep 26,
        right below, and BB became AVALON's twin the same day). The wave and its desk keep their
        noconf exemption — nothing on them is cross-checked against tasks, rest or
@@ -1046,9 +1106,11 @@ function validateCore(){
         if(!overlap(sa.s,sa.e,inp.s,inp.e))return;
         const dn=isDownchit(inp.type), wc=dn?'DNIF_FLY':'LEAVE_FLY';
         markChip(di,sa.id,'C',wc); markRing(di,sa.id,'hard',wc);
-        const why=inp.remarks?` — reason: ${inp.remarks}`:'';
+        /* [WARN-WORDS-STANDALONE] §3e: "Downchit + planned: AVALON DUTY 19:00–07:00 (ATT C). Reason: flu", "Overseas +
+           planned: AVALON DUTY 19:00–07:00" */
+        const why=inp.remarks?`. Reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[sa.id],
-          `${inpLabel(inp)} but on ${sa.role==='DUTY'?rowName({label:sa.label,kind:'duty'}):sa.label} — ${dn?'medically down':'overseas'}${why}`,sa.key);   /* a desk with no role yet (D605's note, the sortie loop) */
+          `${dn?'Downchit':'Overseas'} + planned: ${whatAt(sa.role==='DUTY'?rowName({label:sa.label,kind:'duty'}):`${sa.label} ${sa.role}`,sa.s,sa.e)}${dn?` (${inpLabel(inp)})`:''}${why}`,sa.key);   /* a desk with no role yet (D605's note, the sortie loop) */
       });
     });
     /* THE THREE AVALON CHECKS OF 7 SEP 26 (owner — "Avalon main will also be
@@ -1082,7 +1144,7 @@ function validateCore(){
         if(kind&&!scQualOK(sa.id,kind)){
           markChip(di,sa.id,'Q','SC_QUAL');markRing(di,sa.id,'hard','SC_QUAL');
           add('hard','SC_QUAL',[sa.id],
-            `${kind==='day'?'SC DAY':'SC NIGHT'} currency needed for ${sa.label} ${sa.role} (${hm24(sa.s)}–${hm24(sa.e)}) — ${p.cs} is not current`,sa.key);
+            `Not ${kind==='day'?'SC DAY':'SC NIGHT'} current: ${sa.label} ${sa.role} ${rng(sa.s,sa.e)}`,sa.key);   // [WARN-WORDS-STANDALONE]
         }
       }
       /* THE FRONT SEAT IS PILOTS-ONLY, MAIN AND SPARE ALIKE — the three
@@ -1090,10 +1152,10 @@ function validateCore(){
          (whose seat rules carry no exemption) and the warning list agree on a
          drag-drop. The rear seat stays unruled, as it is on the SC spare. */
       if(sa.seat==='p'){
-        const tag=`(${sa.label} ${sa.role})`;
-        if(p.pers){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`${p.cs} is ground crew — cannot fly a front seat ${tag}`,sa.key);}
-        else if(p.seat==='RCP'){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`${p.cs} is a WSO — cannot fly FCP ${tag}`,sa.key);}
-        else if(p.q==='IW'&&p.seat==='FCP'){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`${p.cs} is CAT IW — a WSO category, cannot fly FCP ${tag}`,sa.key);}
+        const tag=`${sa.label} ${sa.role} ${rng(sa.s,sa.e)}`;   // [WARN-WORDS-STANDALONE]: "Wrong seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00"
+        if(p.pers){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`Wrong seat: ground crew in the front seat of ${tag}`,sa.key);}
+        else if(p.seat==='RCP'){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`Wrong seat: a WSO in the front seat of ${tag}`,sa.key);}
+        else if(p.q==='IW'&&p.seat==='FCP'){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`Wrong seat: CAT IW (a WSO category) in the front seat of ${tag}`,sa.key);}
       }
       /* ONE MAN IN TWO AVALON / BB PLACES IN THE SAME HOURS — MAIN + SPARE, a
          seat + the desk. NOT two desk roles (owner, 7 Sep 26 — "two avalon desk
@@ -1111,7 +1173,7 @@ function validateCore(){
         /* `also` names the OTHER place, so that copy's puck can ring for the
            pair it is in (an exempt desk reads only its own rule — html.ts) */
         add('hard','DOUBLE_BOOK',[sa.id],
-          `${p.cs} is on ${mine} (${hm24(sa.s)}–${hm24(sa.e)}) and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,sa.key,{also:hit.key,...clashItems(clashItem(sa.key),clashItem(hit.key))});
+          `Conflict: ${mine} ${rng(sa.s,sa.e)} & ${hit.what} ${rng(hit.s,hit.e)}`,sa.key,{also:hit.key,...clashItems(clashItem(sa.key),clashItem(hit.key))});
       });
     });
     /* ---- BRIEF / DEBRIEF windows round each sortie -----------------------
@@ -1135,8 +1197,10 @@ function validateCore(){
       const legs=byE[id].filter((e:any)=>e.kind==='fly'), others=byE[id].filter((e:any)=>e.kind!=='fly');
       legs.forEach((lg:any)=>{
         const [bs,bt]=legBriefWin(lg), [ls,de]=legDebriefWin(lg);   // brief time is the hardline, not T/O − 3h
-        const hits=(s:any,e:any)=>others.filter((o:any)=>overlap(s,e,o.s,o.e)).map((o:any)=>o.label)
-          .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>i.type));
+        /* each hit with its own hours ([WARN-WORDS-STANDALONE] — "Misses RU AD brief 10:40–13:00: BRIEFING 12:40–13:00");
+           a request by its own title where it has one, as every other line names it */
+        const hits=(s:any,e:any)=>others.filter((o:any)=>overlap(s,e,o.s,o.e)).map((o:any)=>whatAt(o.label,o.s,o.e))
+          .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>inpAt(i)));
         const hb=hits(bs,bt);
         if(hb.length){markChip(di,id,'NB','NO_BRIEF');markRing(di,id,'adv','NO_BRIEF');
           add('adv','NO_BRIEF',[id],noBriefSays(lg,hb.join(', ')),lg.slot);}
@@ -1152,8 +1216,10 @@ function validateCore(){
     (day.simwin||[]).forEach((sw:any)=>sw.ids.forEach((id:any)=>{
       if(PEOPLE[id]&&PEOPLE[id].pers)return;       // ground crew — no sim brief of their own to lose
       const mine=(byE[id]||[]);
-      const hits=(s:any,e:any)=>mine.filter((o:any)=>overlap(s,e,o.s,o.e)).map((o:any)=>o.label)
-        .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>i.type));
+      /* each hit with its own hours, as the flight's pass above ([WARN-WORDS-STANDALONE]); a sortie by its take-off and
+         landing — "Misses OFT EP-4 brief 11:30–12:00: VL BFM (T/O 12:00, landing 13:00)" */
+      const hits=(s:any,e:any)=>mine.filter((o:any)=>overlap(s,e,o.s,o.e)).map((o:any)=>o.kind==='fly'?flightAt(o,s,e):whatAt(o.label,o.s,o.e))
+        .concat(timedInput.filter((i:any)=>i.id===id&&overlap(s,e,i.s,i.e)).map((i:any)=>inpAt(i)));
       if(simHasBrief(sw)){ const h=hits(sw.bs,sw.be);
         /* amber like NO_BRIEF (owner, 4 Aug 26) — same rule, sim flavour */
         if(h.length){markChip(di,id,'SB','SIM_BRIEF');markRing(di,id,'adv','SIM_BRIEF');
@@ -1189,7 +1255,7 @@ function validateCore(){
            leaves fast can discount it. A non-flying finish is a fixed clock
            time with nothing to assume, so it stays bare. */
         const back=ef?`${hm24(e)} (last landing ${hm24(ef.ld)} + ${lgT(VCONF.debrief)} debrief assumed)`:`${hm24(e)}`;
-        add('note','LONGDAY',[id],`${PEOPLE[id]?PEOPLE[id].cs:id} has a long work day: ${dur(span)}, ${stated(s)} → ${back}`);}
+        add('note','LONGDAY',[id],`Long day: ${dur(span)} (limit ${lgT(VCONF.longDay)}), ${stated(s)} → ${back}`);}   // [WARN-WORDS-STANDALONE]
     });
     /* the run breaks its limit ON this day, which is the day the scheduler has
        to clear — so that is where the flag lands */
@@ -1251,9 +1317,9 @@ function validateCore(){
            pairing as the crew-solo advisory. Ring only, no chip — the
            ILLEGAL_CREW shape. */
         if(p&&w&&p.seat==='FCP'&&w.seat==='RCP'&&!isInstrPilot(p.q)&&!isInstr(w.q)){
-          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv','CREW_SOLO');markRing(di,ac.w,'adv','CREW_SOLO');markChip(di,ac.p,'CP','CREW_SOLO');markChip(di,ac.w,'CP','CREW_SOLO');add('adv','CREW_SOLO',[ac.p,ac.w],`${p.cs} (OCU pilot) with ${w.cs} (OCU WSO) in ${lineName(f.label)} — a crew solo, only allowed under the Basic Course Syllabus`,ac.key);}
-          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard','ILLEGAL_CREW');markRing(di,ac.w,'hard','ILLEGAL_CREW');markChip(di,ac.p,'CPH','ILLEGAL_CREW');markChip(di,ac.w,'CPH','ILLEGAL_CREW');add('hard','ILLEGAL_CREW',[ac.p,ac.w],isOcu(p.q)?`OCU pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} — not an authorised combination (${lineName(f.label)})`:`OCU WSO ${w.cs} with CAT ${p.q} pilot ${p.cs} — not an authorised combination (${lineName(f.label)})`,ac.key);}
-          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv','CO_APPROVAL');markRing(di,ac.w,'adv','CO_APPROVAL');markChip(di,ac.p,'CP','CO_APPROVAL');markChip(di,ac.w,'CP','CO_APPROVAL');add('adv','CO_APPROVAL',[ac.p,ac.w],`CAT ${p.q} pilot ${p.cs} with CAT ${w.q} WSO ${w.cs} in ${lineName(f.label)} — CO approval required`,ac.key);}
+          if(isOcu(p.q)&&isOcu(w.q)){markRing(di,ac.p,'adv','CREW_SOLO');markRing(di,ac.w,'adv','CREW_SOLO');markChip(di,ac.p,'CP','CREW_SOLO');markChip(di,ac.w,'CP','CREW_SOLO');add('adv','CREW_SOLO',[ac.p,ac.w],`Crew solo: OCU pilot ${p.cs} & OCU WSO ${w.cs} on ${fTag(f)}. Only allowed under the Basic Course Syllabus.`,ac.key);}
+          else if(isOcu(p.q)||isOcu(w.q)){markRing(di,ac.p,'hard','ILLEGAL_CREW');markRing(di,ac.w,'hard','ILLEGAL_CREW');markChip(di,ac.p,'CPH','ILLEGAL_CREW');markChip(di,ac.w,'CPH','ILLEGAL_CREW');add('hard','ILLEGAL_CREW',[ac.p,ac.w],`Crew not authorised: ${isOcu(p.q)?'OCU':`CAT ${p.q}`} pilot ${p.cs} & ${isOcu(w.q)?'OCU':`CAT ${w.q}`} WSO ${w.cs} on ${fTag(f)}. An OCU needs an instructor in the other seat.`,ac.key);}
+          else if((p.q==='D'&&(w.q==='C'||w.q==='D'))||(p.q==='C'&&w.q==='D')){markRing(di,ac.p,'adv','CO_APPROVAL');markRing(di,ac.w,'adv','CO_APPROVAL');markChip(di,ac.p,'CP','CO_APPROVAL');markChip(di,ac.w,'CP','CO_APPROVAL');add('adv','CO_APPROVAL',[ac.p,ac.w],`CO approval needed: CAT ${p.q} pilot ${p.cs} & CAT ${w.q} WSO ${w.cs} on ${fTag(f)}`,ac.key);}
         }
         /* Personnel (ground crew) in a FRONT seat is illegal — they hold no
            flying qualification and may ride a rear seat only. In the REAR seat
@@ -1261,17 +1327,17 @@ function validateCore(){
            a non-standard pairing that needs approval (owner, Aug 26). The seat
            and combination checks below key on FCP/RCP and never catch a 'GND'
            seat, so these two lines are the whole story for personnel. */
-        if(p&&p.pers){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is ground crew — cannot fly a front seat (${lineName(f.label)})`,ac.key+'.p');}
-        if(w&&w.pers){markChip(di,ac.w,'CP','PAX_CREW');markRing(di,ac.w,'adv','PAX_CREW');add('adv','PAX_CREW',[ac.w],`${w.cs} is riding the rear seat of ${lineName(f.label)} as an incentive passenger — this crew pairing needs approval`,ac.key+'.w');}
+        if(p&&p.pers){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`Wrong seat: ground crew in the front seat of ${fTag(f)}`,ac.key+'.p');}
+        if(w&&w.pers){markChip(di,ac.w,'CP','PAX_CREW');markRing(di,ac.w,'adv','PAX_CREW');add('adv','PAX_CREW',[ac.w],`Approval needed: incentive passenger in the rear seat of ${fTag(f)}`,ac.key+'.w');}
         // Q — seat qualification: a WSO can't fly FCP. The rear seat carries no
         // instructor rule: any pilot may ride the back (owner, 7 Sep 26 — "don't
         // flag out that they are in an illegal seat"; the AAR supervision rule
         // below, currency and the combination matrix are separate and still apply)
-        if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${lineName(f.label)})`,ac.key+'.p');}
+        if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`Wrong seat: a WSO in the front seat of ${fTag(f)}`,ac.key+'.p');}
         /* belt and braces: CAT IW is a WSO-only category, so an IW record whose
            seat says FCP is inconsistent data — the Quals-page dropdowns never
            offer IW to a pilot, but a hand-edit could. Flag it, don't hide it. */
-        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`${p.cs} is CAT IW — a WSO category, cannot fly FCP (${lineName(f.label)})`,ac.key+'.p');}
+        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`Wrong seat: CAT IW (a WSO category) in the front seat of ${fTag(f)}`,ac.key+'.p');}
         /* AAR — the remarks call for it and the FRONT seat is not current.
            A man who is not current may still fly it as TRAINING, but only with
            someone cleared to teach that AAR sitting behind him (owner,
@@ -1300,11 +1366,11 @@ function validateCore(){
             markChip(di,ac.w,'Q','AAR_INSTR');markRing(di,ac.w,'hard','AAR_INSTR');
             markChip(di,ac.p,'Q','AAR_INSTR');markRing(di,ac.p,'hard','AAR_INSTR');
             add('hard','AAR_INSTR',[ac.w,ac.p],
-              `${w.cs} is not cleared to instruct ${ac.aar} — ${p.cs} is not ${ac.aar} current and ${lineName(f.label)} remarks call for ${day} AAR`,ac.key+'.w');}
+              `${w.cs} is not cleared to instruct ${ac.aar}. ${p.cs} is not ${ac.aar} current and ${fTag(f)} remarks call for it.`,ac.key+'.w');}
           else{
             markChip(di,ac.p,'Q','AAR_QUAL');markRing(di,ac.p,'hard','AAR_QUAL');
             add('hard','AAR_QUAL',[ac.p],
-              `${p.cs} is not ${ac.aar} current — ${lineName(f.label)} remarks call for ${day} AAR`,ac.key+'.p');}} });
+              `Not ${ac.aar} current: ${fTag(f)} remarks call for it`,ac.key+'.p');}} });
       const ocus=f.fcps.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
       const hasIP=f.fcps.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
       /* an IP in the BACK seat supervises just as well as one in the front —
@@ -1322,7 +1388,7 @@ function validateCore(){
       const crewAll=[...new Set(f.acs.reduce((a:any,x:any)=>a.concat([x.p,x.w]),[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id)))];
       const ocuAll=crewAll.filter((id:any)=>PEOPLE[id]&&isOcu(PEOPLE[id].q));
       const anyIP=crewAll.some((id:any)=>PEOPLE[id]&&isInstr(PEOPLE[id].q));
-      if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv','OCU_NO_IP');markChip(di,id,'CP','OCU_NO_IP');});add('adv','OCU_NO_IP',ocuAll,`OCU in ${lineName(f.label)} with no IP`,f.key);}
+      if(ocuAll.length&&!anyIP){ocuAll.forEach((id:any)=>{markRing(di,id,'adv','OCU_NO_IP');markChip(di,id,'CP','OCU_NO_IP');});add('adv','OCU_NO_IP',ocuAll,`OCU with no IP: ${fTag(f)}`,f.key);}
       /* NO_IR — an instrument rating test needs an IR examiner aboard (owner,
          Aug 5 '26). The mission lives in f.shift (collectEvents folds f.msn
          into it); a per-aircraft IRT lives in that aircraft's remarks. IRT in
@@ -1332,11 +1398,11 @@ function validateCore(){
       const isIR=(id:any)=>{const q=realP(id);return !!(q&&q.q==='IR');};
       if(/\bIRT\b/i.test(String(f.shift||''))&&crewAll.length&&!crewAll.some(isIR)){
         crewAll.forEach((id:any)=>{markRing(di,id,'hard','NO_IR');markChip(di,id,'CPH','NO_IR');});
-        add('hard','NO_IR',crewAll,`IRT in ${lineName(f.label)} with no IR examiner`,f.key);}
+        add('hard','NO_IR',crewAll,`IRT with no IR examiner: ${fTag(f)}`,f.key);}
       f.acs.forEach((ac:any)=>{ if(!/\bIRT\b/i.test(String(ac.rmks||'')))return;
         const crew=[ac.p,ac.w].filter((id:any)=>id&&realP(id));
         if(crew.length&&!crew.some(isIR)){crew.forEach((id:any)=>{markRing(di,id,'hard','NO_IR');markChip(di,id,'CPH','NO_IR');});
-          add('hard','NO_IR',crew,`IRT remarks on ${lineName(f.label)} with no IR examiner`,ac.key);}});
+          add('hard','NO_IR',crew,`IRT with no IR examiner: ${fTag(f)}, IRT in an aircraft's remarks`,ac.key);}});
       /* SC currency — read off the shift as scheduled, both MAIN and SPARE.
          This is about the person's own qualification, not a clash with another
          commitment, so the spare exemption does not cover it. */
@@ -1348,8 +1414,7 @@ function validateCore(){
             const win=`${hm24(f.s)}–${hm24(f.e)}`;
             wrong.forEach((id:any)=>{markChip(di,id,'Q','SC_QUAL');markRing(di,id,'hard','SC_QUAL');});
             add('hard','SC_QUAL',wrong,
-              `${kind==='day'?'SC DAY':'SC NIGHT'} currency needed for ${lineName(f.label)} (${win})`
-              +` — ${wrong.map((id:any)=>PEOPLE[id].cs).join(', ')} ${wrong.length===1?'is':'are'} not current`,f.key);
+              `Not ${kind==='day'?'SC DAY':'SC NIGHT'} current: ${lineName(f.label)} ${win}`,f.key);   // [WARN-WORDS-STANDALONE]: the list's own prefix names who
           }
         }
         /* WHO MAY NOT STAND AN SC SPARE. Standing by means being on the island
@@ -1370,13 +1435,14 @@ function validateCore(){
             if(!noWin(f.s,f.e)&&!overlap(f.s,f.e,inp.s,inp.e))return;
             const dn=isDownchit(inp.type), wc=dn?'DNIF_FLY':'LEAVE_FLY';
             markChip(di,id,'C',wc); markRing(di,id,'hard',wc);
-            const why=inp.remarks?` — reason: ${inp.remarks}`:'';
+            const why=inp.remarks?`. Reason: ${inp.remarks}`:'';
             /* say WHICH of the two disqualifies him — "overseas" and "medically
                down" are different problems and the scheduler fixes them
-               differently */
+               differently. [WARN-WORDS-STANDALONE]: "Downchit + planned: SC AM SPARE 07:00–13:00 (ATT C). Reason:
+               flu" / "Overseas + planned: SC AM SPARE 07:00–13:00" — the seat named as the conflict line names it (§3e) */
+            const on=noWin(f.s,f.e)?`${lineName(f.label)} SPARE (no times yet${dn?`, ${inpLabel(inp)}`:''})`:`${lineName(f.label)} SPARE ${hm24(f.s)}–${hm24(f.e)}${dn?` (${inpLabel(inp)})`:''}`;
             add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[id],
-              `${inpLabel(inp)} but standing SC SPARE — ${dn?'medically down':'overseas'}`
-              +`, ${lineName(f.label)}${why}`,f.key); }); });
+              `${dn?'Downchit':'Overseas'} + planned: ${on}${why}`,f.key); }); });
         /* TWO SC SEATS IN THE SAME HOURS (owner, 31 Aug 26 — "give a warning
            conflict if u are planned for MAIN and SPARE in the same time
            framing … the 1300 is not a conflict"; SPARE+SPARE ruled the same
@@ -1406,8 +1472,7 @@ function validateCore(){
               if(scPairSeen.has(pk))return; scPairSeen.add(pk);
               markChip(di,id,'C','DOUBLE_BOOK'); markRing(di,id,'hard','DOUBLE_BOOK');
               add('hard','DOUBLE_BOOK',[id],
-                `${PEOPLE[id].cs} is standing SC SPARE (${lineName(f.label)} ${hm24(f.s)}–${hm24(f.e)})`
-                +` and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,own,clashItems(clashItem(own),clashItem(hit.key))); }); }); });
+                `Conflict: ${lineName(f.label)} SPARE ${rng(f.s,f.e)} & ${hit.what} ${rng(hit.s,hit.e)}`,own,   /* §3e: both places named the same way */clashItems(clashItem(own),clashItem(hit.key))); }); }); });
         /* THE SPARE FRONT SEAT IS PILOTS-ONLY (owner, 31 Aug 26 — "a wso
            can't be planned for FCP"; the pilot-in-rear-seat mirror was
            offered and DECLINED, so the rear spare seat stays unruled here).
@@ -1420,9 +1485,9 @@ function validateCore(){
            whole rule closes (ground crew hold no flying qualification at all,
            the stricter case of "not a pilot"). */
         (f.spareAcs||[]).forEach((sa:any)=>{ const sp=realP(sa.p); if(!sp)return;
-          if(sp.pers){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is ground crew — cannot fly a front seat (${lineName(f.label)} SPARE)`,sa.key+'.p');}
-          else if(sp.seat==='RCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is a WSO — cannot fly FCP (${lineName(f.label)} SPARE)`,sa.key+'.p');}
-          else if(sp.q==='IW'&&sp.seat==='FCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`${sp.cs} is CAT IW — a WSO category, cannot fly FCP (${lineName(f.label)} SPARE)`,sa.key+'.p');}});
+          if(sp.pers){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`Wrong seat: ground crew in the front seat of ${lineName(f.label)} SPARE ${rng(f.s,f.e)}`,sa.key+'.p');}
+          else if(sp.seat==='RCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`Wrong seat: a WSO in the front seat of ${lineName(f.label)} SPARE ${rng(f.s,f.e)}`,sa.key+'.p');}
+          else if(sp.q==='IW'&&sp.seat==='FCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`Wrong seat: CAT IW (a WSO category) in the front seat of ${lineName(f.label)} SPARE ${rng(f.s,f.e)}`,sa.key+'.p');}});
       }
     });
     /* SANS AVAILABILITY (owner, 14 Aug 26) — a SANS body planted into a
@@ -1462,7 +1527,7 @@ function validateCore(){
        planting says the same — it simply never becomes a persistent
        Advisory. 'ok' and 'na' are not a problem and need no comment. */
     const sansChecks:any[]=[];
-    day.fly.forEach((e:any)=>sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,label:e.label,key:e.key}));
+    day.fly.forEach((e:any)=>sansChecks.push({id:e.id,domain:'fly',s:Math.min(e.report,e.step),en:e.dekit,to:e.to,label:e.label,key:e.key}));   // `to` names the line ([WARN-WORDS-STANDALONE])
     day.events.forEach((e:any)=>{ const m=/^s:\d+\.(amt|oft)\./.exec(String(e.key||'')); if(!m)return;
       sansChecks.push({id:e.id,domain:m[1],s:e.s,en:e.e,label:e.label,key:e.key}); });
     sansChecks.forEach((c:any)=>{ const p=PEOPLE[c.id]; if(!p||!p.san)return;
@@ -1474,7 +1539,8 @@ function validateCore(){
       markRing(di,c.id,'adv','SANS_AVAIL');markChip(di,c.id,'A','SANS_AVAIL');
       const reason=g.status==='not-offered'?`not offering ${SANS_LABEL[c.domain]} today`
         :`available ${hm24(g.off.s)}–${hm24(g.off.e)} only`;
-      add('adv','SANS_AVAIL',[c.id],`${p.cs} planned for ${c.domain==='fly'?lineName(c.label):rowName({label:c.label,kind:'sim'})} — ${reason}`,c.key);
+      /* [WARN-WORDS-STANDALONE]: "SANS: available 08:00–12:00 only. Planned on VL BFM (T/O 13:00)" */
+      add('adv','SANS_AVAIL',[c.id],`SANS: ${reason}. Planned on ${c.domain==='fly'?flightTag(c.label,c.to):whatAt(rowName({label:c.label,kind:'sim'}),c.s,c.en)}`,c.key);
     });
     /* Q (sims) — the sim box guards its FRONT seat like the jet (ground crew,
        a WSO, an IW-in-FCP record — none may occupy it). The REAR seat has no
@@ -1482,9 +1548,12 @@ function validateCore(){
        the back (owner, 14 Aug 26 — the jet's IP/IR/FI rear-seat rule used to
        be copied here, and only the jet keeps it). */
     (day.simcrew||[]).forEach((s:any)=>{ const p=realP(s.p);
-      if(p&&p.pers){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`${p.cs} is ground crew — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
-      if(p&&p.seat==='RCP'){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`${p.cs} is a WSO — cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
-      if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`${p.cs} is CAT IW — a WSO category, cannot take the front seat (${s.label})`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      /* the sim row's own typed hours name it ([WARN-WORDS-STANDALONE]: "Wrong seat: a WSO in the front seat of OFT 1
+         10:00–11:30") — the collection carries none, so they are read off the row, and left out where none is typed */
+      const sr:any=((((DAYS[di]||{}) as any).sims||{})[s.kind]||[])[s.ri]||{}, sat=whatAt(s.label,parseHM(sr.str),parseHM(sr.end));
+      if(p&&p.pers){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`Wrong seat: ground crew in the front seat of ${sat}`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      if(p&&p.seat==='RCP'){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`Wrong seat: a WSO in the front seat of ${sat}`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`Wrong seat: CAT IW (a WSO category) in the front seat of ${sat}`,`s:${di}.${s.kind}.${s.ri}.p`);}
     });
     /* A DESK WITH A MAN ON IT AND NO TIMES EARNS HIM NOTHING, AND SAYS SO
        (owner, 20 Sep 26 — "I would also like u to give the warning On the day
@@ -1527,7 +1596,7 @@ function validateCore(){
         if(!saAnyFlies(wv,f)||(parseHM(f.to)!=null&&parseHM(f.ld)!=null))return;
         const nm=[wv.label||'A standby line',String(f.msn||f.shift||'').trim()].filter(Boolean).join(' ');
         const gone=parseHM(f.to)==null&&parseHM(f.ld)==null?'START or END':parseHM(f.to)==null?'START':'END';
-        add('adv','SA_FLY_NO_TIME',[],`${nm} flies but has no ${gone} — type ${gone==='START or END'?'them':'it'} so its crew rest and OIL can be worked out`,`ff:${di}.${gi}.${li}.to`);
+        add('adv','SA_FLY_NO_TIME',[],`${nm} flies but has no ${gone}. Type ${gone==='START or END'?'them':'it'} so its crew rest and OIL can be worked out.`,`ff:${di}.${gi}.${li}.to`);
       });
     });
     const earnsOil=day.dow==='Saturday'||day.dow==='Sunday'||HOOKS.oilEarningDay(di);
@@ -1543,7 +1612,7 @@ function validateCore(){
            the list: that shift HAS two times typed on it, and being told it has
            none is a sentence a scheduler can see is false while he is looking at
            them. Unusable covers both — a blank pair and an equal one. */
-        add('hard','OIL_NO_TIMES',[],`${list} ${verb} no usable times — nobody on ${blind.length>1?'them':'it'} earns OIL for this day`);
+        add('hard','OIL_NO_TIMES',[],`${list} ${verb} no usable times, so nobody on ${blind.length>1?'them':'it'} earns OIL for this day`);
       }
       /* NOBODY EARNS UNTIL THE DAY IS PUBLISHED ([OIL-AUTO-REMOVE] §2.3, owner
          21 Sep 26). All OIL now lands on publication — the schedule's and a
@@ -1570,12 +1639,12 @@ function validateCore(){
          clean is the lie. The way out is offered beside it, on screen. */
       const noPeriod=oilWouldEarn(di)?HOOKS.oilNoPeriod(di):'';
       if(noPeriod){
-        add('adv','OIL_NO_PERIOD',[],`There is no leave war period for ${noPeriod}, so no OIL can be earned for this day — create the period on the Leave War`);
+        add('adv','OIL_NO_PERIOD',[],`No Leave War period for ${noPeriod}, so no OIL can be earned for this day. Create the period on the Leave War.`);
       }
       /* silent where the period is missing: telling him to publish would be
          telling him to do the one thing that cannot help */
       if(!noPeriod&&!dayApproved(di)&&oilWouldEarn(di)){
-        add('adv','OIL_UNPUBLISHED',[],'This day is not published yet, so nobody earns their OIL for it — publish it before the day is out');
+        add('adv','OIL_UNPUBLISHED',[],'Not published yet, so nobody earns OIL for this day. Publish it before the day is out.');
       }
       /* THE DAY STARTED EARNING AFTER IT WENT OUT (owner, 21 Sep 26 — R-1:
          "only the issued schedule pays", both directions). A day published as an
@@ -1606,7 +1675,7 @@ function validateCore(){
            still the owner's question — it stops the day asking for an amendment
            it cannot explain. */
         if(frozen&&oilOldBlockCrowd(frozen,oilEvidenceOf(di))){
-          add('adv','OIL_OLD_BLOCK',[],'This day was published before the app counted who is behind an ALL AVAIL puck on a duty desk, a sim or an extras line — publish it again to credit them');
+          add('adv','OIL_OLD_BLOCK',[],'This day was published before the app counted who is behind an ALL AVAIL puck on a duty desk, a sim or an extras line. Publish it again to credit them.');
         }
       }
     });

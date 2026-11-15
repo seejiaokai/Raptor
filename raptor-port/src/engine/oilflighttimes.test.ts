@@ -231,7 +231,7 @@ describe('a nought-minute SHIFT says the opposite of a nought-minute sortie', ()
     const w = advOn(SAT, 'FLT_NO_LEN')
     expect(w, 'the times are still plainly wrong, so it is still flagged').toHaveLength(1)
     expect(w[0].msg, 'a shift earns nothing from padding it does not have')
-      .not.toContain('still earns from the report and debrief')
+      .not.toContain('The day still earns OIL from the report and debrief.')
     expect(w[0].msg, 'it says what is true of a shift instead').toMatch(/earns nobody/i)
   })
 
@@ -240,7 +240,7 @@ describe('a nought-minute SHIFT says the opposite of a nought-minute sortie', ()
     expect(credits(SAT).bane, 'he reported and debriefed — the ruling').toBe(0.5)
     expect(blindNames(SAT).join(' '), 'and it is NOT in the nobody-earns list').not.toContain('RAP 1')
     expect(advOn(SAT, 'FLT_NO_LEN')[0].msg, 'and keeps the sortie sentence')
-      .toContain('still earns from the report and debrief')
+      .toContain('The day still earns OIL from the report and debrief.')
   })
 
   it('THE CONTROL: a shift with real times credits and is named nowhere', () => {
@@ -366,9 +366,9 @@ describe('a nought-minute sortie with no report and no debrief says it earns not
     const f = zeroSortie()
     const w = advOn(SAT, 'FLT_NO_LEN')
     expect(w, 'the times are still plainly wrong, so it is still flagged').toHaveLength(1)
-    expect(w[0].msg).not.toContain('still earns from the report and debrief')
+    expect(w[0].msg).not.toContain('The day still earns OIL from the report and debrief.')
     expect(w[0].msg).toMatch(/earns nobody any OIL/)
-    expect(fltNoLenSays(f, (DAYS[SAT] as any).waves[0]), 'the marked box\'s own words are the warning\'s').toBe(w[0].msg.replace(/^RAP 1 /, ''))
+    expect(fltNoLenSays(f, (DAYS[SAT] as any).waves[0]), 'the marked box\'s own words are the warning\'s').toBe(w[0].msg.replace(/^Times look wrong: RAP 1 /, ''))
   })
 
   it('and the day names the line in its "no usable times" list', () => {
@@ -388,11 +388,11 @@ describe('a nought-minute sortie with no report and no debrief says it earns not
   it('THE CONTROLS: any report before it, or any debrief after it, keeps D49 whole', () => {
     zeroSortie(); VCONF.debrief = 1                             // one minute of debrief
     expect(credits(SAT).bane).toBe(0.5)
-    expect(advOn(SAT, 'FLT_NO_LEN')[0].msg).toContain('still earns from the report and debrief')
+    expect(advOn(SAT, 'FLT_NO_LEN')[0].msg).toContain('The day still earns OIL from the report and debrief.')
     expect(dayOilBlind(DAYS[SAT])).toEqual([])
     ;(DAYS[SAT] as any).waves[0].intimes = ['IN TIME 0859']; VCONF.debrief = 0   // one minute of report
     expect(credits(SAT).bane).toBe(0.5)
-    expect(advOn(SAT, 'FLT_NO_LEN')[0].msg).toContain('still earns from the report and debrief')
+    expect(advOn(SAT, 'FLT_NO_LEN')[0].msg).toContain('The day still earns OIL from the report and debrief.')
     expect(dayOilBlind(DAYS[SAT])).toEqual([])
   })
 })

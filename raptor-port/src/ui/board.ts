@@ -9,7 +9,7 @@ import { onCommon } from '../engine/grouprows'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { REPORTING_LABEL, reportingIssuesForWave } from '../engine/reporting'
-import { WARN, validate, WCODE, wlbl, fltNoLenSays } from '../engine/validate'
+import { WARN, validate, WCODE, wlbl, fltNoLenMsg } from '../engine/validate'
 import { shownWarns } from '../engine/warnhide'
 import { hhmm, hm24, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
@@ -45,7 +45,7 @@ import { penSvg } from './pen'
 import { glyphSvg, GEAR_INNER, TEMPLATES_INNER, RESET_INNER } from './glyphs'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
-import { esc } from '../state/view'
+import { esc, escMsg } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
@@ -248,7 +248,7 @@ function boardHTMLBody(di: number, pv?: boolean) {
         /* the ADDRESS only on live paper, like the week's (ui/html.ts): a
            frozen version preview keeps the MARK — the line went out that way —
            but answers to no live warning. */
-        ? `${pv ? '' : ` data-warnkey="${fp}.ld"`} title="${esc((f.cs || w.label || 'A flying line') + ' ' + fltNoLenSays(f, w))}"`
+        ? `${pv ? '' : ` data-warnkey="${fp}.ld"`} title="${esc(fltNoLenMsg(f, w))}"`
         : ''
       /* stoRO, not !pv (reviewer-found residual, 9 Aug 26): the ghost is a
          SEPARATE clickable element from the .tm brief input right next to
@@ -512,7 +512,7 @@ export function boardWarnHTML(di: number, look = false) {
     const canMute = !look && canEditSched()
     const wtext = (w: any) => {
       const names = (w.who || []).map((id: any) => PEOPLE[id] ? PEOPLE[id].cs : id).join(', ')
-      return `${esc(names)}${names ? ' — ' : ''}${esc(wlbl(w.msg || WCODE[w.code] || w.code || '', di))}`
+      return `${esc(names)}${names ? ' — ' : ''}${escMsg(wlbl(w.msg || WCODE[w.code] || w.code || '', di))}`
     }
     /* Iterate WARN's own array, unsorted: validate() has already ordered it by
        SORD (hard, adv, note), so the local hard-first sort this used to do was a

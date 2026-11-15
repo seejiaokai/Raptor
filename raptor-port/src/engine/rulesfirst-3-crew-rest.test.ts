@@ -54,7 +54,7 @@ describe('W27 — crew rest runs off the last commitment of ANY kind the day bef
     ground(TUE, 'bane', '0700', '0800', 'MTG')
     const cr = warns(TUE, 'bane', 'CREW_REST')
     expect(cr.length, 'the first event of the day binds, though the in-time is clear').toBe(1)
-    expect(cr[0].msg).toContain('his day starts 07:00 (MTG) before the 09:00 report')
+    expect(cr[0].msg).toContain('Day starts 07:00 (MTG), before report 09:00: 11h rest, needs 12h.')
     ;(DAYS[TUE] as any).waves.splice(0)
     expect(warns(TUE, 'bane', 'CREW_REST'), '"the rule only exists when he FLIES that day"').toEqual([])
   })
@@ -107,13 +107,13 @@ describe('W31 — a sortie-caused breach spells out the debrief assumption; anyt
   it('a sortie: "landed 19:30, +2h debrief assumed"; a flying SC line: "ended 19:00", no debrief; the long-day note likewise', () => {
     add(MON, wave([], [form({ to: '18:30', ld: '19:30' })]))
     add(TUE, wave(['09:00 IN TIME']))
-    expect(warns(TUE, 'bane', 'CREW_REST')[0].msg).toContain('landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30')
+    expect(warns(TUE, 'bane', 'CREW_REST')[0].msg).toContain('Crew rest: Monday landed 19:30 + 2h debrief (assumed) → ended 21:30 → clear 09:30. ')
     ;(DAYS[MON] as any).waves.splice(0)
     const sc: any = makeStandalone('sc'); add(MON, sc)
     const pm = sc.formations[1]; pm.rl = '12:00'; pm.aircraft[2].p = 'bane'          // SC PM 13:00–19:00 flies, SPARE seated
     ;(DAYS[TUE] as any).waves[0].intimes = ['06:30 IN TIME']
     const msg = warns(TUE, 'bane', 'CREW_REST')[0].msg
-    expect(msg, 'a flying standby line ends at END').toContain('ended 19:00 → crew rest clear at 07:00')
+    expect(msg, 'a flying standby line ends at END').toContain('Crew rest: Monday duty ended 19:00 → clear 07:00. ')
     expect(msg).not.toContain('debrief assumed')
     ground(MON, 'bane', '0500', '1100')                                // 05:00 → 19:00 = 14h, ended by the shift
     const ld = warns(MON, 'bane', 'LONGDAY')
@@ -310,7 +310,7 @@ describe('W38 — every Logic line is correct for whatever the settings are; a c
   it('the crew-rest fold is true of a typed R box with no in-time: rest is measured to the rally, not to the B', () => {
     add(MON, wave([], [form({ to: '18:30', ld: '19:30' })]))           // clear 09:30
     add(TUE, wave([], [form({ rl: '09:00' })]))                        // R 09:00, no in-time, suggested B 09:40
-    expect(warns(TUE, 'bane', 'CREW_REST')[0].msg, 'the engine measures to the rally').toContain('told to report 09:00')
+    expect(warns(TUE, 'bane', 'CREW_REST')[0].msg, 'the engine measures to the rally').toContain('Report 09:00: ')
     expect(logicCheck('crewrest').how!()[0], 'the fold\'s first line').toMatch(/rally/i)
   })
 })

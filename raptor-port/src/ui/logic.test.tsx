@@ -536,11 +536,13 @@ describe('W2 the words the + In-time / Rally button fills in are not a modified 
     /* the strip's old "not the published ones" was untrue (D928); since D2005 a published day keeps every setting it was
        published under, not only its printed B and its OIL — the note says so (D2015), and that an OIL setting's change
        makes a day whose OIL it would change read pending at once (D592 (4), D2044) */
-    expect($('#lgOff').textContent).toContain('A published day keeps the settings it was published under, and the OIL they gave it, until it is published again.')
+    expect($('#lgOff').textContent).toContain('Published days keep their old settings until published again.')
     /* the cold read (15 Nov 26): the day's OIL stays as published while the day reads pending — said, not left implied */
     /* the blind code reads of 15 Nov 26 (the Opus read's F4): "a changed OIL setting" named only the page's OIL group
        ("Full day of OIL"), but Default rally and Debrief after landing make an earning day's OIL pending too (D2044) */
-    expect($('#lgOff').textContent).toContain('If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending.')
+    /* D2067, D2071 (16 Nov 26): one sentence after the count — the sentence on a day reading pending is gone from it; the
+       day shows pending itself, and its pending list says what moved (D2054) */
+    expect($('#lgOff').textContent).not.toContain('Default rally')
     expect($('#lgOff').textContent).not.toContain('printed B')
     expect($('#lgOff').textContent, 'no cut-off changed, no cut-off sentence').not.toContain('late cut-off')
     await act(async () => { rulesReset(); notify() })
@@ -562,7 +564,7 @@ describe('W2 the words the + In-time / Rally button fills in are not a modified 
     /* with a kept setting changed as well, both are said */
     await act(async () => { VCONF.crewRest = 600; notify() })
     expect($('#lgOff').textContent).toContain('2 settings changed')
-    expect($('#lgOff').textContent).toContain('A published day keeps the settings it was published under')
+    expect($('#lgOff').textContent).toContain('Published days keep their old settings until published again.')
     expect($('#lgOff').textContent).toContain('A changed late cut-off moves the LATE marks at once')
     await act(async () => { rulesReset(); notify() })
     expect(($('#lgOff') as HTMLElement).hidden).toBe(true)

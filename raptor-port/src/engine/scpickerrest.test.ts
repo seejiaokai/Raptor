@@ -68,7 +68,7 @@ describe('an SC MAIN seat with a typed in-time: said before the drop, in the pla
     sc.seatMain(); validate()
     const placed = breach(TUE)
     expect(placed, 'placing him raises the breach').toBeTruthy()
-    expect(placed.msg).toContain(`crew rest clear at ${hm24(clear())}`)
+    expect(placed.msg).toContain(`→ clear ${hm24(clear())}. `)
     expect(q.msg, 'the same sentence before and after').toBe(placed.msg)
   })
 

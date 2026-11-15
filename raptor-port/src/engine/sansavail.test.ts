@@ -418,14 +418,14 @@ describe('a flying line with no times and no name yet', () => {
     const hits = sansOf('ipman')
     expect(hits.length).toBe(1)
     expect(hits[0].msg).toContain('available 14:00–16:00 only')
-    expect(hits[0].msg, 'a blank name reads "this line"').toContain('planned for this line —')
+    expect(hits[0].msg, 'a blank name reads "this line"').toBe('SANS: available 14:00–16:00 only. Planned on this line (T/O 17:00)')
   })
   it('the formation sentences say "this line", never a blank name', () => {
     const { f } = blankLine()
     const wso = Object.keys(PEOPLE).find(id => PEOPLE[id] && PEOPLE[id].seat === 'RCP' && !PEOPLE[id].pers && !PEOPLE[id].san)!
     f.aircraft[0].p = wso
     const msgs = validate().all.filter((w: any) => (w.who || []).includes(wso)).map((w: any) => w.msg)
-    expect(msgs.join(' | ')).toContain('cannot fly FCP (this line)')
+    expect(msgs.join(' | ')).toContain('Wrong seat: a WSO in the front seat of this line (no times yet)')
     expect(msgs.join(' | '), 'no empty brackets').not.toMatch(/\(\s*\)/)
     expect(msgs.join(' | '), 'no doubled space where a name was').not.toMatch(/ {2,}/)
   })

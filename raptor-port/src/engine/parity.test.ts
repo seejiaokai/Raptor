@@ -64,6 +64,13 @@ const noPortOnly = (days: any) => days.map(({ sacrew, blank, whole, ...d }: any)
    checks their presence instead of silently tolerating the difference. */
 const oldWarns = (a:any[]) => a.filter(x=>!['REPORT_ORDER','REPORT_UNRESOLVED'].includes(x.code))
 
+/* EVERY WARNING READS ON ITS OWN ([WARN-WORDS-STANDALONE], owner D2045, D2071, 16 Nov 26): the port's sentences are
+   reworded — who, which items, their times and why — and the reference keeps its own. The same idiom once more: the
+   warning's words (`msg`) are excised from BOTH sides, so this comparison still holds every warning's code, severity,
+   people, day and count, and every ring and chip, to the reference; the words are pinned POSITIVELY in
+   warnwords.test.ts — each family staged and asserted whole, and the seed week's own lines listed there in full. */
+const noMsg = (a:any[]) => a.map(({ msg, ...x }: any) => x)
+
 describe('engine parity with the reference', () => {
   it('the reference is the 5-day week this comparison is bounded to', () => {
     expect(REFN).toBe(5)
@@ -80,9 +87,9 @@ describe('engine parity with the reference', () => {
     const port = validate()
     /* `all` is a flat list, so it is filtered by the day each warning names
        rather than sliced; every warning carries its di. */
-    const allTo = (a: any) => stripKeys(oldWarns(JSON.parse(JSON.stringify(a))).filter((x: any) => x.di == null || x.di < REFN))
+    const allTo = (a: any) => stripKeys(noMsg(oldWarns(JSON.parse(JSON.stringify(a))).filter((x: any) => x.di == null || x.di < REFN)))
     expect(allTo(port.all)).toEqual(allTo(ref.all))
-    const dayWarns=(a:any[])=>stripKeys(JSON.parse(JSON.stringify(a)).map((d:any)=>({...d,warns:oldWarns(d.warns)})))
+    const dayWarns=(a:any[])=>stripKeys(JSON.parse(JSON.stringify(a)).map((d:any)=>({...d,warns:noMsg(oldWarns(d.warns))})))
     expect(dayWarns(port.byDay.slice(0, REFN))).toEqual(dayWarns(ref.byDay))
     expect(byDay(port.sev)).toEqual(byDay(ref.sev))
     expect(byDay(port.chip)).toEqual(byDay(ref.chip))
@@ -180,8 +187,10 @@ describe('an unknown type vs SC MAIN fails closed in both engines', () => {
       expect(port.length).toBe(1)
       expect(port[0].code).toBe('INPUT_FLY')
       expect(port[0].sev).toBe('hard')
-      expect(port[0].msg).toContain('Trainng but tasked — SC AM')
-      expect(stripKeys(port)).toEqual(ref)
+      /* the port's own words ([WARN-WORDS-STANDALONE]); the reference keeps its "Trainng but tasked — SC AM" */
+      expect(port[0].msg).toBe('Conflict: SC AM 07:00–13:00 & Trainng 10:00–11:00')
+      expect(ref[0].msg).toContain('Trainng but tasked — SC AM')
+      expect(stripKeys(noMsg(port))).toEqual(noMsg(ref))
     } finally {
       ;(DAYS[1] as any).waves.pop(); INPUTS.pop()
       w.eval('DAYS[1].waves.pop();INPUTS.pop();validate()')

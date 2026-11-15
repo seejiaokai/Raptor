@@ -34,7 +34,7 @@ describe('RT4/RT8 independent Rally consumer arithmetic',()=>{
     DAYS[2].waves=[flight(['11:00 IN TIME'],f('10:00','11:00','07:40'))]
     const warning=validate().all.find((w:any)=>w.di===2&&w.code==='CREW_REST'&&w.who.includes('bane'))
     expect(warning,'Monday duty ends Tuesday02:00; Tuesday11:00 report gives nine hours').toBeTruthy()
-    expect(warning.msg).toContain('only 9h00 rest');expect(warning.prevDi).toBe(0)
+    expect(warning.msg).toContain('9h rest, needs 12h');expect(warning.prevDi).toBe(0)
     expect(REST[2].bane).toBe(-600)
     DAYS[2].waves[0].intimes=['14:00 IN TIME']
     expect(validate().all.some((w:any)=>w.di===2&&w.code==='CREW_REST'&&w.who.includes('bane'))).toBe(false)
@@ -49,11 +49,11 @@ describe('RT4/RT8 independent Rally consumer arithmetic',()=>{
     DAYS[0].waves=[flight([],f('22:00','00:00','20:00'))]
     DAYS[2].waves=[flight(['11:00 IN TIME'],f('10:00','11:00','07:40'))]
     let warning=validate().all.find((w:any)=>w.di===2&&w.code==='CREW_REST'&&w.who.includes('bane'))
-    expect(warning.msg).toContain('Monday landed 00:00');expect(warning.msg).toContain('only 9h00 rest')
+    expect(warning.msg).toContain('Monday landed 00:00');expect(warning.msg).toContain('9h rest, needs 12h')
     DAYS[0].waves=[]
     INPUTS.push({person:'bane',date:DAYS[0].dt,type:'Meeting',allday:false,s:1320,e:1560,remarks:'overnight',mod:''})
     warning=validate().all.find((w:any)=>w.di===2&&w.code==='CREW_REST'&&w.who.includes('bane'))
-    expect(warning.msg).toContain('only 9h00 rest');expect(warning.prevDi).toBe(0)
+    expect(warning.msg).toContain('9h rest, needs 12h');expect(warning.prevDi).toBe(0)
     INPUTS[0].type='Personal'
     expect(validate().all.some((w:any)=>w.di===2&&w.code==='CREW_REST'&&w.who.includes('bane'))).toBe(false)
   })
@@ -62,7 +62,7 @@ describe('RT4/RT8 independent Rally consumer arithmetic',()=>{
     DAYS[0].waves=[flight([],f('23:30','23:00','21:00'))]
     DAYS[4].waves=[flight(['00:30 IN TIME'],f('00:15','01:00','00:10'))]
     const warning=validate().all.find((w:any)=>w.di===4&&w.code==='CREW_REST'&&w.who.includes('bane'))
-    expect(warning.msg).toContain('only 17h30 rest');expect(warning.prevDi).toBe(0)
+    expect(warning.msg).toContain('17h30 rest, needs 24h');expect(warning.prevDi).toBe(0)
     expect(traceOf(0,'bane').di).toBe(4)
     DAYS[0].waves[0].formations[0].aircraft[0].p='stiff';validate()
     expect(restIfPlaced('bane','0.0.0.0.w')).toMatchObject({dir:'fwd',di:4})
@@ -124,24 +124,24 @@ describe('RT4/RT8 independent Rally consumer arithmetic',()=>{
     d.ground=[{prog:'MTG',str:'0800',end:'0830',who:'bane'}]
     expect(workSpan(eventDay(d))?.span).toBe(420)
     let warning=validate().all.find((w:any)=>w.di===1&&w.code==='CREW_REST'&&w.who.includes('bane'))
-    expect(warning.msg).toContain('only 10h30 rest')
+    expect(warning.msg).toContain('10h30 rest, needs 12h')
     d.ground=[];INPUTS.push({person:'bane',date:d.dt,type:'Meeting',allday:false,s:480,e:510,remarks:'early',mod:''})
     expect(workSpan(eventDay(d))?.span).toBe(360)
     warning=validate().all.find((w:any)=>w.di===1&&w.code==='CREW_REST'&&w.who.includes('bane'))
-    expect(warning.msg).toContain('only 10h30 rest')
+    expect(warning.msg).toContain('10h30 rest, needs 12h')
   })
   it('D503 broad daytime prior report assesses only 2h20 rest against yesterday17:00',()=>{
     DAYS[0].dutywaves=[{label:'Duty',rows:[{role:'Duty',id:'bane',str:'1200',end:'1700'}]}]
     DAYS[1].waves=[flight(['19:20 IN TIME'],f('10:00','11:25','07:40'))]
     const warning=validate().all.find((w:any)=>w.di===1&&w.code==='CREW_REST'&&w.who.includes('bane'))
-    expect(warning.msg).toContain('only 2h20 rest');expect(REST[1].bane).toBe(300)
+    expect(warning.msg).toContain('2h20 rest, needs 12h');expect(REST[1].bane).toBe(300)
     expect(workSpan(eventDay(DAYS[1]))?.span).toBe(1085)
   })
   it('D503 prior-day reporting before the previous duty ends stays a breach with a readable signed gap',()=>{
     DAYS[0].dutywaves=[{label:'Duty',rows:[{role:'Duty',id:'bane',str:'1200',end:'2330'}]}]
     DAYS[1].waves=[flight(['23:00 IN TIME'],f('01:30','03:00','23:10'))]
     const warning=validate().all.find((w:any)=>w.di===1&&w.code==='CREW_REST'&&w.who.includes('bane'))
-    expect(warning.msg).toContain('told to report 23:00 (previous day) — 0h30 before his Monday duty ends.')
+    expect(warning.msg).toContain('Report 23:00 (previous day): 30 min before his Monday duty ends.')
     expect(warning.msg).not.toContain('-0h30')
     expect(warning.msg).not.toContain('-1h-30')
   })
@@ -150,7 +150,7 @@ describe('RT4/RT8 independent Rally consumer arithmetic',()=>{
     DAYS[1].waves=[flight(['23:00 IN TIME'],f('01:30','03:00','23:10'))]
     const warning=validate().all.find((w:any)=>w.di===1&&w.code==='CREW_REST'&&w.who.includes('bane'))
     expect(warning,'11h from yesterday12:00 to yesterday23:00 is one hour short').toBeTruthy()
-    expect(warning.msg).toContain('only 11h00 rest')
+    expect(warning.msg).toContain('11h rest, needs 12h')
     expect(REST[1].bane).toBe(0)
   })
   it('SC early and late typed B preserve existing clamped work rules rather than broad D503',()=>{

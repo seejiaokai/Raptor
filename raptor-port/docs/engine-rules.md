@@ -124,13 +124,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   exists when he FLIES that day — a meeting-only
   day needs no rest. **The message reasons cause-first, said once** (owner,
   22 Aug 26 — "refine the way u reason the crew rest warning. Clear and
-  concise"): `Crew rest breach — <tail>, but told to report HH:MM — only
-  XhMM rest.` — yesterday's end, when rest clears, then the commitment that
+  concise"): since [WARN-WORDS-STANDALONE] (D2069, 16 Nov 26) `Crew rest: <Day> landed HH:MM + Nh debrief (assumed)
+  → ended HH:MM → clear HH:MM. Report HH:MM: XhMM rest, needs 12h.` (his order kept, what the rest needs added; the
+  older `Crew rest breach — <tail>, but told to report HH:MM — only XhMM rest.`) — yesterday's end, when rest clears, then the commitment that
   breaks it with the shortfall in the same breath; no trailing "so he had
   to leave by" (the cross-day trace row's bold lead already prints the
   leave-by, so the message saying it too read as repetition).
   When an earlier event binds, the message names it
-  ("his day starts 08:00 (MTG) before the 10:00 report"), the warning
+  ("Day starts 08:00 (MTG), before report 10:00:" since [WARN-WORDS-STANDALONE]; once "his day starts 08:00 (MTG)
+  before the 10:00 report"), the warning
   anchors on that row, the leave-by is measured from it, and a late-show
   remark on
   the jet cannot dash the ring — a sanctioned late join to the sortie does
@@ -322,7 +324,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (a typed Brief, the wave's In-time / Rally, an SC line's typed B or shift start); a leg with none is left out of
   `legs`, and only legs with a take-off (`noms`) bear the nominal report and the tight-turning advisory. A man whose
   every line is blank still FLIES that day: an earlier commitment inside his rest (a meeting, a sim, a duty post, a
-  typed input) binds the breach, worded "his day starts HH:MM (…), and he is on a line with no take-off yet" — no
+  typed input) binds the breach, worded "Day starts HH:MM (…): … His flight has no T/O yet." since
+  [WARN-WORDS-STANDALONE] (once "his day starts HH:MM (…), and he is on a line with no take-off yet") — no
   report is invented (Astra's scenario read, S10); with nothing else to measure he is left alone, and `REST[di]`
   still carries when he is clear. The late-show tail is
   dropped when the binding leg has no take-off to name a step for. (3) the same-day turn pairs only legs with both
@@ -408,6 +411,44 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (`saExempt`: an SC SPARE, anything on AVALON / BB), as `slotBar` already did before asking. An empty SC formation
   still has no sibling and answers nothing (`[REST-FIRST-CREW-HINT]`). Pins: `engine/scpickerrest.test.ts`.
 
+### Every warning reads on its own ([WARN-WORDS-STANDALONE], owner D2045, D2048, D2058, D2067–D2071, 15–16 Nov 26)
+
+- **The rule:** each line says who, which items, their times and why it is a problem, so it is understood without
+  looking at the schedule; a time the app supplies because none was typed is called "assumed". The approved words are
+  the proposal's (`docs/superpowers/specs/2026-11-15-warn-words-standalone.md`), its §3a–§3g overruling its earlier
+  sections. The list still prints `<names> — <sentence>`; the sentence no longer repeats a name.
+- **The families, as built** (each pinned whole in `engine/warnwords.test.ts`, the seed week's 33 lines too):
+  `Conflict: A & B` for every clash (D2070) — a flight shown by the end that causes the clash, `VL BFM (step 11:40, T/O
+  12:40)` when the other item falls in the step, `(landing 13:00, dekit to 13:30)` in the dekit, `(T/O 12:00, landing
+  13:00)` across the flight itself (D2058; the step and dekit from the Logic settings); a ground or programme row, sim,
+  duty desk or request by its own range `OFT 1 10:00–11:30`, an all-day request `Training (all day)`, a request's own
+  reason after it (`. Reason: …`); an SC spare seat `SC AM SPARE 07:00–13:00` (§3e). `On leave + planned: …`,
+  `Overseas + planned: …`, `Downchit + planned: …` (D2009's names, the item with its times). `Misses VL BFM brief
+  17:25–19:45: <item>` and `Misses … debrief …` (each hit's own times — the sim's brief and debrief the same way).
+  `Tight turn: A → B, 60 min (needs 120). A landing 12:00, B T/O 13:00` ("Tight turning" keeps its name as the check,
+  D2068). `Crew rest: …` (above, D2069). `Long day: 13h30 (limit 12h), …` (the limit from the Logic setting). `Days in a
+  row: …`. `Crew solo: …`, `Crew not authorised: …`, `CO approval needed: …` (who and which line). `Times look wrong:
+  …` for a line whose T/O and landing (a standby shift: START and END, as its boxes are headed) are the same. The
+  double-turn line is left exactly as it was (D2050).
+- **The checks' short names** (`WCODE`, the grey label over each line) follow the new labels; "Conflict" kept (§3b).
+- **The words' own helpers** sit in `validate.ts` beside `add` (`rng`, `whatAt`, `flightAt`, `inpAt`, `flightTag`,
+  `noBriefSays`, `debriefSays`, `simBriefSays`, `simDebriefSays`, `fltNoLenMsg`, `runSays`); every rule's numbers, and what
+  raises a warning, are unchanged by this piece.
+- **Hides:** a clash between two schedule items keys on its two items (D2001, above in §the hides axis), so a hide made
+  before the change still holds. Every other warning's hide keys on its words, an input against flying included
+  (D2018): such a hide stored before the change meets new words and its warning shows again once, to be hidden again —
+  demo data only (D56). A published day's frozen warning list reads "changed" once for the same reason (D56).
+- **A time range never breaks across lines:** `state/view.ts escMsg` wraps every `HH:MM–HH:MM` in a no-wrap span; every
+  place that prints a warning's sentence goes through it (pin: `warnwords.test.ts`; on a phone `e2e/warnhide.spec.ts`'s last block,
+  which also measures that every "Conflict:" line fits two rows at 390 wide).
+- **The Logic page's note** under the changed-settings strip is one sentence after the count, "Published days keep
+  their old settings until published again." (D2067, D2071; `LogicPage.tsx`); the sentence on a day reading pending is
+  gone from it — the day shows pending itself, and its pending list says what moved for each man (D2054,
+  `ui-contracts.md` §The pending list).
+- **The parity test** (`parity.test.ts`) compares the port's warnings with the reference's with the sentence taken out
+  on both sides (`noMsg`) — the codes, people, keys and order still match; the words' positive half is
+  `warnwords.test.ts`'s seed-week block. The original's 728 read only `reference/`, untouched.
+
 ### How crew-rest, long-day and turn warnings are worded and marked
 
 - **A sortie-caused breach spells out the debrief assumption** (owner, 15 Aug
@@ -439,8 +480,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   it already named.
 - **The long-work-day note names the debrief pad on its END the same way**
   (owner, 15 Aug 26 — "every timing warning"). When a sortie closes the day
-  its end is `land + VCONF.debrief`, so the note reads `has a long work day:
-  Nh, HH:MM → HH:MM (last landing HH:MM + Nh debrief assumed)` — the flagged
+  its end is `land + VCONF.debrief`, so the note reads `Long day: NhMM (limit Nh), HH:MM → HH:MM (last landing HH:MM +
+  Nh debrief assumed)` since [WARN-WORDS-STANDALONE] (once `has a long work day: Nh, …`) — the flagged
   hours, then the real landing and the pad flagged as an assumption. A
   non-flying finish (a duty, a ground event) is a fixed clock time with
   nothing to assume, so the end stays bare. The START is left plain: for a
@@ -624,8 +665,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   26 Aug 26 — the shift may launch the man):
   - **Red-list commitments — Training, CSE, Attach, Personal, Appointment,
     Duty, Event (owner D714, 9 Oct 26: "a clash like that, not the meeting softer amber"), Other — hard-flag the
-    shift** (`INPUT_FLY` "Training but tasked —
-    SC AM"). The list is the `shiftHard` flag on `INPUT_META`, read through
+    shift** (`INPUT_FLY` "Conflict: SC AM 07:00–13:00 & Training 10:00–11:00" since [WARN-WORDS-STANDALONE];
+    once "Training but tasked — SC AM"). The list is the `shiftHard` flag on `INPUT_META`, read through
     `shiftHardInput()` — one body for the validator, the ground-row upgrade
     and the crew picker. All-day and timed alike.
   - **Meeting is the amber `SHIFT_SOFT` advisory** — you can still give a

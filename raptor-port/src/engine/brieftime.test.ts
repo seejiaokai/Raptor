@@ -204,7 +204,7 @@ describe('the crew-rest anchor (owner worked examples)', () => {
       const r = run(left, '2A: LATE SHOW')
       expect(r.flagged, `left ${left}`).toBe(true)
       expect(r.dashed, `left ${left} is past 14:20, so solid`).toBe(false)
-      expect(r.msg).toContain('Late show cannot save it')
+      expect(r.msg).toContain("Late show doesn't help: the 14:20 step is before rest clears.")
       /* and without the remark it is solid for the ordinary reason */
       expect(run(left, '2A: BFM-5').dashed).toBe(false)
     }
@@ -230,7 +230,7 @@ describe('the crew-rest anchor (owner worked examples)', () => {
       VCONF.step = 75
       const r75 = run('02:21', '2A: LATE SHOW')
       expect(r75.dashed).toBe(false)
-      expect(r75.msg).toContain('the 14:05 step is still before rest clears')
+      expect(r75.msg).toContain("Late show doesn't help: the 14:05 step is before rest clears.")
     } finally { VCONF.step = orig }
   })
 

@@ -526,18 +526,32 @@ export function pendItemWords(di: number, it: PendItem): Words {
 const OIL_VALS = ['reportLead', 'debrief', 'oilFullMin'] as const
 const oilRecWords = (r: { amt: number, spans: Array<[number, number]> } | null) => !r ? 'nothing'
   : `${r.amt === 1 ? 'full day' : 'half day'}${r.spans.length ? ` · ${r.spans.map(([a, b]) => `${hm(a)}–${hm(b)}`).join(', ')}` : ''}`
+/* THE LINE UNDER HIS TIMES (owner D2054, 15 Nov 26; the proposal's §4 as its §3b moved it inside the man's own row): the
+   answer first — whether his OIL changes — then when it now counts from. "Still a full day of OIL. It counts from 05:10,
+   not 05:00." / "OIL changes: full day → half day. It counts from 13:30, not 10:00." Where only the end moved, "It counts
+   until …" (the build's wording, the same shape); where either side earns nothing there are no times to compare. */
+const oilAmtWord = (r: { amt: number } | null) => !r ? 'nothing' : r.amt === 1 ? 'full day' : 'half day'
+export function oilShiftNote(was: { amt: number, spans: Array<[number, number]> } | null, now: { amt: number, spans: Array<[number, number]> } | null): string {
+  const head = was && now && was.amt === now.amt ? `Still a ${oilAmtWord(now)} of OIL.` : `OIL changes: ${oilAmtWord(was)} → ${oilAmtWord(now)}.`
+  const a = was && was.spans.length ? was.spans : null, b = now && now.spans.length ? now.spans : null
+  if (!a || !b) return head
+  const s0 = a[0]![0], s1 = b[0]![0], e0 = a[a.length - 1]![1], e1 = b[b.length - 1]![1]
+  if (s0 !== s1) return `${head} It counts from ${hm(s1)}, not ${hm(s0)}.`
+  if (e0 !== e1) return `${head} It counts until ${hm(e1)}, not ${hm(e0)}.`
+  return head
+}
 function oilRuleWords(di: number): Words & { rows: CrowdRow[] } {
   const snap: any = daySnapOf(di, dayCurVer(di)), d: any = snap && snap.d, ev: any = d && d.oilev
   const kept = oilKeptVals(ev), now = oilRuleValsNow()
   const rows: CrowdRow[] = []
   if (kept) OIL_VALS.forEach(k => { if (kept[k] !== now[k])
     rows.push({ where: `Logic · ${String(RULE_SPEC[k].t).replace(/\s*\(.*\)\s*$/, '')}`, from: String(ruleFmt(k, kept[k])), to: String(ruleFmt(k, now[k])), keys: [] }) })
-  oilRuleShift(d, ev).forEach(r => rows.push({ where: `${cs(r.person)} · OIL as published, under today's values`, from: oilRecWords(r.was), to: oilRecWords(r.now), keys: [] }))
+  oilRuleShift(d, ev).forEach(r => rows.push({ where: `${cs(r.person)} · OIL as published, under today's values`, from: oilRecWords(r.was), to: oilRecWords(r.now), keys: [], note: oilShiftNote(r.was, r.now) }))
   return { where: 'OIL on this day · Logic values changed since it was published', from: '', to: '', who: '', when: '', jump: false, rows }
 }
 /* the rows whose placeholder crowd differs from what the day went out with: its name, who left, who joined, and the
    row's cells to jump to */
-type CrowdRow = { where: string, from: string, to: string, keys: string[] }
+type CrowdRow = { where: string, from: string, to: string, keys: string[], note?: string }
 function crowdChange(di: number): CrowdRow[] | null {
   const snap: any = daySnapOf(di, dayCurVer(di)); if (!snap || !snap.d) return null
   const was: any = (snap.d.oilev && snap.d.oilev.sent) || {}, now: any = oilEvidence(di).sent || {}
@@ -640,7 +654,8 @@ export function pendListHTML(di: number): string {
       rows.forEach((r, j) => { targets[`${i}.${j}`] = r.keys })
       return `<div class="pl-item still pl-multi"><span class="pl-where">${esc(w.where)}</span>${who}`
         + rows.map((r, j) => `<button class="pl-sub" data-pltarget="${i}.${j}"${r.keys.length ? '' : ' disabled'} title="Go to this row">`
-          + `<span class="pl-where">${esc(r.where)}</span><span class="pl-chg">${r.from ? `<s>${esc(r.from)}</s>` : ''}${r.from && r.to ? ' → ' : ''}${r.to ? `<b>${esc(r.to)}</b>` : ''}</span></button>`).join('')
+          + `<span class="pl-where">${esc(r.where)}</span><span class="pl-chg">${r.from ? `<s>${esc(r.from)}</s>` : ''}${r.from && r.to ? ' → ' : ''}${r.to ? `<b>${esc(r.to)}</b>` : ''}</span>`
+          + `${r.note ? `<span class="pl-note">${esc(r.note)}</span>` : ''}</button>`).join('')
         + `</div>`
     }
     return w.jump

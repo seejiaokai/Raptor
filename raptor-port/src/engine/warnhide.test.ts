@@ -179,7 +179,9 @@ describe('WH10 — the key: tied to the situation, not to a label', () => {
     try {
       PEOPLE.wolf.cs = 'Statik'; validate()
       const now = find(TUE, 'LONGDAY', 'wolf')
-      expect(now.msg, 'the words now carry the new callsign').toContain('Statik')
+      /* since [WARN-WORDS-STANDALONE] the line no longer names him (the list's prefix does), so a rename cannot
+         move its words at all — the hide holds either way */
+      expect(now.msg, 'the words carry neither callsign').not.toMatch(new RegExp(`Statik|${was}`))
       expect(view.warnShown(now), 'still hidden').toBe(false)
       expect(sevOf(TUE, 'wolf')).toBeFalsy()
     } finally { PEOPLE.wolf.cs = was }

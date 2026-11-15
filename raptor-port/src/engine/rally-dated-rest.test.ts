@@ -31,14 +31,14 @@ describe('RT8 dated-rest week/world/trace boundaries',()=>{
   it('review E labels prior-day report and long-day start, and describes overlap against the actual duty-end date',()=>{
     DAYS[0].dutywaves=duty('2300');DAYS[1].waves=[wave('22:00')];
     const warnings=validate();const warning=cr(warnings,1);
-    expect(warning.msg).toContain('told to report 22:00 (previous day) — 1h00 before his Monday duty ends.');
+    expect(warning.msg).toContain('Report 22:00 (previous day): 1h before his Monday duty ends.');
     expect(warning.msg).not.toContain('-1h00');expect(warning.leaveBy).toBe('10:00');
     expect(warnings.all.find((w:any)=>w.di===1&&w.code==='LONGDAY'&&w.who.includes('bane')).msg)
-      .toContain('15h00, 22:00 (previous day) → 13:00');
+      .toContain('Long day: 15h00 (limit 12h), 22:00 (previous day) → 13:00');
     expect(restTraceEntries(traceOf(0,'bane'))[0]).toMatchObject({leaveBy:'10:00',msg:warning.msg});
     VCONF.crewRest=1440;expect(cr(validate(),1).leaveBy).toBe('22:00 (previous day)');VCONF.crewRest=720;
     DAYS[0].dutywaves=duty('0100');
-    expect(cr(validate(),1).msg).toContain('3h00 before his Tuesday duty ends.');
+    expect(cr(validate(),1).msg).toContain('Report 22:00 (previous day): 3h before his Tuesday duty ends.');
   })
   it('review E pre-drop backward clearance and placed warning use the same signed clock wording',()=>{
     DAYS[0].dutywaves=[{label:'Duty',rows:[{role:'Duty',id:'bane',str:'0600',end:'0800'}]}];
@@ -47,22 +47,22 @@ describe('RT8 dated-rest week/world/trace boundaries',()=>{
     expect(hint).toMatchObject({dir:'back',earliest:-240,leaveBy:'07:00'});
     expect(crossDayIfPlaced('bane',key)).toBe('crew rest — not clear until 20:00 (previous day)');
     w.intimes=['19:00 IN TIME'];validate();const before=restIfPlaced('bane',key)!;
-    expect(before.msg).toContain('told to report 19:00 (previous day)');
+    expect(before.msg).toContain('Report 19:00 (previous day): ');
     w.formations[0].aircraft[0].p='bane';expect(cr(validate(),1).msg).toBe(before.msg);
   })
   it('Sunday overnight source governs Tuesday previous-day report across empty Monday',()=>{
     const prev:any[]=emptyWeek(PREV).days;prev[6].dutywaves=duty();stashPut(PREV,JSON.stringify({d:prev}))
     DAYS[1].waves=[wave()]
     const warning=cr(validate(),1)
-    expect(warning.msg).toContain('Sunday ended 02:00');expect(warning.msg).toContain('only 9h00 rest')
-    expect(warning.msg).toContain('told to report 11:00 (previous day)');expect(warning.leaveBy).toBe('23:00')
+    expect(warning.msg).toContain('Sunday duty ended 02:00');expect(warning.msg).toContain('9h rest, needs 12h')
+    expect(warning.msg).toContain('Report 11:00 (previous day): ');expect(warning.leaveBy).toBe('23:00')
     expect(warning.prevDi).toBeNull();expect(REST[1].bane).toBe(-600)
   })
   it('review E an older Thursday trace dates its leave-by on Thursday for Saturday previous-day reporting',()=>{
     DAYS[3].dutywaves=duty();DAYS[5].waves=[wave()]
     const warning=cr(validate(),5)
-    expect(warning.msg).toContain('Thursday ended 02:00');expect(warning.msg).toContain('only 9h00 rest')
-    expect(warning.msg).toContain('told to report 11:00 (previous day)');expect(warning.prevDi).toBe(3)
+    expect(warning.msg).toContain('Thursday duty ended 02:00');expect(warning.msg).toContain('9h rest, needs 12h')
+    expect(warning.msg).toContain('Report 11:00 (previous day): ');expect(warning.prevDi).toBe(3)
     expect(warning.leaveBy).toBe('23:00');expect(REST[5].bane).toBe(-600)
     expect(restTraceEntries(traceOf(3,'bane'))[0]).toMatchObject({di:5,leaveBy:'23:00',msg:warning.msg})
   })
@@ -72,7 +72,7 @@ describe('RT8 dated-rest week/world/trace boundaries',()=>{
     stashPut(PREV,JSON.stringify({d:prev,ok:{6:1},cv:{6:id},o:{6:{id,d:issued,c:{},fil:{}}},a:[]}))
     DAYS[1].waves=[wave()]
     expect(cr(validate(),1)).toBeUndefined()
-    expect(cr(officialRaw(),1).msg).toContain('only 9h00 rest')
+    expect(cr(officialRaw(),1).msg).toContain('9h rest, needs 12h')
     expect(REST[1].bane).toBe(-780)
   })
   function externalTargets(){

@@ -53,7 +53,7 @@ describe('raw inputs are graded by type against SC MAIN', () => {
       const w = mine('INPUT_FLY')
       expect(w.length, t).toBe(1)
       expect(w[0].sev, t).toBe('hard')
-      expect(w[0].msg, t).toContain(`${t} but tasked — SC AM`)
+      expect(w[0].msg, t).toBe(`Conflict: SC AM 07:00–13:00 & ${t} 10:00–11:00`)
     }
   })
   it('a titled input is named by its title in that sentence — and graded by its kind, whatever the title says (D716)', () => {
@@ -61,20 +61,20 @@ describe('raw inputs are graded by type against SC MAIN', () => {
     const w = mine('INPUT_FLY')
     expect(w.length).toBe(1)
     expect(w[0].sev).toBe('hard')
-    expect(w[0].msg).toContain('Meeting but tasked — SC AM')
+    expect(w[0].msg).toBe('Conflict: SC AM 07:00–13:00 & Meeting 10:00–11:00')
   })
   it('an ALL-DAY red-list input counts too', () => {
     addSC(P); inp('Training', { allday: true, s: undefined, e: undefined })
     const w = mine('INPUT_FLY')
     expect(w.length).toBe(1)
-    expect(w[0].msg).toContain('Training but tasked — SC AM')
+    expect(w[0].msg).toBe('Conflict: SC AM 07:00–13:00 & Training (all day)')
   })
   it('a Meeting is the amber SHIFT_SOFT, timed and all-day alike', () => {
     addSC(P); inp('Meeting')
     let w = mine('SHIFT_SOFT')
     expect(w.length).toBe(1)
     expect(w[0].sev).toBe('adv')
-    expect(w[0].msg).toContain('also down for Meeting')
+    expect(w[0].msg).toContain('Overlaps standby: Meeting ')
     expect(mine('INPUT_FLY').length).toBe(0)
     INPUTS.pop(); inp('Meeting', { allday: true, s: undefined, e: undefined })
     w = mine('SHIFT_SOFT')
@@ -84,7 +84,7 @@ describe('raw inputs are graded by type against SC MAIN', () => {
     addSC(P); inp('ATT B', { allday: true, s: undefined, e: undefined, remarks: 'grounded' })
     const w = mine('DNIF_FLY')
     expect(w.length).toBe(1)
-    expect(w[0].msg).toContain('Downchit but tasked — SC AM')
+    expect(w[0].msg).toBe('Downchit + planned: SC AM 07:00–13:00. Reason: grounded')
     /* the desk carve-out survives: a duty post the same day raises nothing new */
     ;(DAYS[TUE] as any).dutywaves[0].rows.push({ role: 'TEST', id: P, str: '1400', end: '1500' })
     expect(mine('DNIF_FLY').length, 'the duty post adds no second flag').toBe(1)
@@ -103,14 +103,14 @@ describe('an unrecognised type fails closed against SC MAIN', () => {
     const w = mine('INPUT_FLY')
     expect(w.length).toBe(1)
     expect(w[0].sev).toBe('hard')
-    expect(w[0].msg).toContain('Trainng but tasked — SC AM')
+    expect(w[0].msg).toBe('Conflict: SC AM 07:00–13:00 & Trainng 10:00–11:00')
     expect(mine('SHIFT_SOFT').length, 'no amber voice for an unknown type').toBe(0)
   })
   it('an ALL-DAY typo\'d type hard-flags too', () => {
     addSC(P); inp('Appointmnt', { allday: true, s: undefined, e: undefined })
     const w = mine('INPUT_FLY')
     expect(w.length).toBe(1)
-    expect(w[0].msg).toContain('Appointmnt but tasked — SC AM')
+    expect(w[0].msg).toBe('Conflict: SC AM 07:00–13:00 & Appointmnt (all day)')
     expect(mine('SHIFT_SOFT').length).toBe(0)
   })
   it('the same typo is hard against a real sortie — the two representations agree', () => {
@@ -120,7 +120,7 @@ describe('an unrecognised type fails closed against SC MAIN', () => {
     const w = mine('INPUT_FLY')
     expect(w.length).toBe(1)
     expect(w[0].sev).toBe('hard')
-    expect(w[0].msg).toContain('Trainng clashes with')
+    expect(w[0].msg).toMatch(/^Conflict: VL BFM \(.*\) & Trainng 08:40–10:00$/)
   })
 })
 
@@ -130,14 +130,14 @@ describe('accepted ground rows are graded by their source type', () => {
     const i = INPUTS[inp('Training') - 1]
     expect(acceptInput(TUE, i, 'g')).toBe(true)
     const all = mine()
-    expect(all.filter((x: any) => x.code === 'DOUBLE_BOOK' && /SC AM & TRAINING clash/.test(x.msg)).length).toBe(1)
+    expect(all.filter((x: any) => x.code === 'DOUBLE_BOOK' && /^Conflict: SC AM( \S+)? & TRAINING( |$)/.test(x.msg)).length).toBe(1)
     expect(all.filter((x: any) => x.code === 'INPUT_FLY').length, 'the raw copy stays deferred to its row').toBe(0)
   })
   it("an accepted 'Other' stays hard via its source type, though its label is its own title (D716)", () => {
     addSC(P)
     const i = INPUTS[inp('Other', { title: 'Escort visit' }) - 1]
     expect(acceptInput(TUE, i, 'g')).toBe(true)
-    expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & ESCORT VISIT clash/.test(x.msg)).length).toBe(1)
+    expect(mine('DOUBLE_BOOK').filter((x: any) => /^Conflict: SC AM( \S+)? & ESCORT VISIT( |$)/.test(x.msg)).length).toBe(1)
   })
   /* A TITLE'S WORDS NEVER DECIDE A RULE ([INPUT-OWN-TITLE], the plan §3.6): the row of a titled input is graded by the
      input's KIND, whatever its title happens to say — a Meeting titled with a red-list word stays the amber advisory,
@@ -154,7 +154,7 @@ describe('accepted ground rows are graded by their source type', () => {
     addSC(P)
     const i = INPUTS[inp('Training', { title: 'Meeting' }) - 1]
     expect(acceptInput(TUE, i, 'g')).toBe(true)
-    expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & MEETING clash/.test(x.msg)).length).toBe(1)
+    expect(mine('DOUBLE_BOOK').filter((x: any) => /^Conflict: SC AM( \S+)? & MEETING( |$)/.test(x.msg)).length).toBe(1)
     expect(mine('SHIFT_SOFT').length).toBe(0)
   })
   it('…and each keeps its grade after the input is deleted: the row remembers its kind, not its words', () => {
@@ -176,10 +176,10 @@ describe('accepted ground rows are graded by their source type', () => {
       const pair = order === 'the Meeting first' ? [mk('Meeting'), mk('Training', { title: 'Meeting' })] : [mk('Training', { title: 'Meeting' }), mk('Meeting')]
       for (const i of pair) expect(acceptInput(TUE, i, 'g')).toBe(true)
       expect((DAYS[TUE] as any).ground.filter((g: any) => g.prog === 'MEETING' && g.src).length).toBe(2)
-      expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & MEETING clash/.test(x.msg)).length, 'the Training’s hard clash against the shift').toBe(1)
+      expect(mine('DOUBLE_BOOK').filter((x: any) => /^Conflict: SC AM( \S+)? & MEETING( |$)/.test(x.msg)).length, 'the Training’s hard clash against the shift').toBe(1)
       expect(mine('SHIFT_SOFT').length, 'the Meeting’s advisory').toBe(1)
       /* …and the two against each other: one man, two items, the same hour — said as two items, not "two seats" */
-      const each = mine('DOUBLE_BOOK').filter((x: any) => /two items called MEETING/.test(x.msg))
+      const each = mine('DOUBLE_BOOK').filter((x: any) => /two items both called MEETING/.test(x.msg))
       expect(each.length).toBe(1)
       expect(each[0].msg).not.toMatch(/two seats/)
     })
@@ -189,7 +189,7 @@ describe('accepted ground rows are graded by their source type', () => {
     const m = INPUTS[inp('Meeting') - 1], t = INPUTS[inp('Training', { title: 'Meeting' }) - 1]
     expect(acceptInput(TUE, m, 'g')).toBe(true); expect(acceptInput(TUE, t, 'g')).toBe(true)
     INPUTS.splice(INPUTS.indexOf(t), 1)
-    expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & MEETING clash/.test(x.msg)).length).toBe(1)
+    expect(mine('DOUBLE_BOOK').filter((x: any) => /^Conflict: SC AM( \S+)? & MEETING( |$)/.test(x.msg)).length).toBe(1)
   })
   it('two rows the scheduler typed by hand with one name and one hour are still read as one commitment, as before', () => {
     const cs = PEOPLE[P].cs
@@ -202,7 +202,7 @@ describe('accepted ground rows are graded by their source type', () => {
     const i = INPUTS[inp('Other', { title: 'Escort visit' }) - 1]
     expect(acceptInput(TUE, i, 'g')).toBe(true)
     INPUTS.splice(INPUTS.indexOf(i), 1)   // the input goes; the landed row stays
-    expect(mine('DOUBLE_BOOK').filter((x: any) => /SC AM & ESCORT VISIT clash/.test(x.msg)).length).toBe(1)
+    expect(mine('DOUBLE_BOOK').filter((x: any) => /^Conflict: SC AM( \S+)? & ESCORT VISIT( |$)/.test(x.msg)).length).toBe(1)
   })
   it('an accepted Meeting row stays the amber SHIFT_SOFT, spoken once', () => {
     addSC(P)
