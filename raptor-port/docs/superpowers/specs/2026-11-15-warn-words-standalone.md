@@ -315,3 +315,27 @@ names proposed, to follow the new labels:
   (`manifest.json` says for each picture whether it is real or drawn, and its rows). The family pictures are example
   rows set onto Monday's real list; the colours the drawer chose where the proposal named none: the late-show crew-rest
   lines red (the engine raises every crew-rest line red), "flies but has no END" amber, the two reporting-time lines red.
+
+## 3c. His answer on the clash lines (D2058, 15 Nov 26) — REPLACES question 1 and every clash line between a flight and another item
+
+He asked what causes a clash between flights and what causes a tight turn. What the app does today (read in the
+engine): two flights clash only where their take-off-to-landing times overlap; a gap from one landing to the next
+take-off shorter than the larger of the Logic "Tight turn threshold" and "Dekit after landing" + "Step before
+take-off" is the amber tight turn; a flight against anything else clashes where the item falls inside the hours the
+flight keeps the man busy — take-off less the step, to landing plus the dekit.
+
+So "Clash: RU (T/O 13:00, landing 14:00) & BRIEFING 12:40–13:00" did not say why: the reason is the step at 12:00.
+His ruling: the line shows the end of the flight that causes the clash, the times following the Logic page's step and
+dekit settings.
+
+| Where the other item falls | The line |
+|---|---|
+| only in the step before take-off | Clash: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00 |
+| only in the dekit after landing | Clash: VL BFM (landing 13:00, dekit to 13:30) & MEETING 13:10–14:00 |
+| during the flight itself | Clash: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00 *(as drawn)* |
+
+Open for the build, the agent's to settle and show him: an item that spans both the step and the flight (shown with
+the step, since that is where it starts), an assumed landing with a dekit ("landing assumed 13:00, dekit to 13:30"),
+a clash between two flights (T/O and landing of both, as drawn), and the same shape for a request against a flight.
+**Not drawn yet:** the page's clash rows and Ranger's Friday row 2 still show T/O and landing — redraw
+(`b-families.mjs`, `a-friday.mjs` in the mock folder) and republish the page before the build.
