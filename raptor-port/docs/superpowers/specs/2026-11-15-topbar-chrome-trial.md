@@ -164,3 +164,25 @@ reads: `docs/superpowers/briefs/2026-11-15-topbar-chrome-trial-coderead-{astra,o
 No cure is built or chosen; nothing a person sees changes without the switch. The phone walk (lesson 24), the reads and
 his look come after this phase. Whether `?barprobe` stays in the live app afterwards, as `?savefail` does, or leaves with
 the trial, is a question for after his readings.
+
+## 5. His try — Chrome on his iPhone, 15 Nov 26 14:55 (a 13-second screen recording, read with ffmpeg by chat 81)
+
+He flicked Quals, opened the menu, went to the Leave War grid, Approvals, Balances, the grid and the OIL tracker. The
+fault showed on Quals and on Approvals; the picture (`docs/img/handpass/2026-11-15-topbar-chrome-trial/his-try-quals-loose.png`)
+is Quals at the moment Chrome's address bar grows back: a strip of the page (its headings row) shows ABOVE the "142 TALON"
+bar. The readings, as the panel held them:
+
+| Page | WORST | That frame | RANGE | Reads as |
+|---|---|---|---|---|
+| Quals | −106 at 8.3s, loose 127 frames | win 792, vis 792 @106, scroll 617 of 1303, past 106 (sprung 106 past its foot) | win 684–792, vis @106, foot 106, spring win 684–792 | the spring at the foot, and Chrome resizing the window during it — (i) and (iii) together |
+| Approvals | −65 at 0.9s, loose 65 frames | win 792, vis 792 @65, scroll 695 of 1422, past 65 | win 684–792, vis @65, foot 65, spring win 684–792 | the same, smaller spring |
+| Balances (scrolls inside its own box) | 0, loose 0 frames | — | win steady while it scrolled | safe, as predicted — supports B and C |
+| Leave War grid | 0 | — | foot −811: the foot was never reached | not tested at its foot |
+
+So: the trigger is the page springing past its end (`past` 65–106, equal to the visible screen's offset `@`) while
+Chrome changes the window's height (684 ↔ 792, the spread of `spring win`). Cure A would stop it (the spring) — refused
+for Edge (D1962); D was worse (trial 21). B or C remain; a page that scrolls in its own box (Balances) held. The sign: the
+panel reads −N (drawn above the visible top) at the deepest spring, while the recording shows the page above the bar a
+moment later as the address bar grows — the two moments differ; the build of the cure is checked on his phone either way.
+Not yet read: Edit Schedule flicked to its very foot, and the Leave War grid to its foot — the two that choose between B
+(every page) and C (Approvals and Quals only).
