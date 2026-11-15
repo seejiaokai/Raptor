@@ -358,6 +358,9 @@ its crew may do other things on standby and has an hour from activation to fly, 
 SC MAIN line that flies block the step before its START and the dekit after its END? Today it is compared on START to
 END only; put to him, nothing changed.
 
+**Answered (D2063):** left as built. SC MAIN is a standby duty on the ground, not a flying line until a B time is typed;
+an activation is managed by the squadron itself. Nothing to build.
+
 ## 3e. Six example rows corrected (15 Nov 26) — he asked "why would this clash?"
 
 Three rows of the clash picture and three of the leave picture showed cases the app never raises, or raises only once
