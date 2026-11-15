@@ -29,7 +29,7 @@ await X.shotList(w, `a2-real-after-landing-${P}.png`)
 man({ file: `a2-real-after-landing-${P}.png`, family: "A — Ranger's Friday, VL BFM landing typed 13:00 (reference, not for him)", state: 'real after landing', kind: 'real', size, header: r.head, rows: r.rows.map(x => x.text), sev: r.rows.map(x => x.sev), lines: r.rows.map(x => x.lines) })
 const ruLd = st.ru.ld
 const map = [
-  [/^RU & BRIEFING clash$/, `Clash: RU (T/O 13:00, landing ${ruLd || 'assumed 14:00'}) & BRIEFING 12:40–13:00`],
+  [/^RU & BRIEFING clash$/, 'Clash: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00'],
   [/^VL BFM & BRIEFING clash$/, 'Clash: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00'],
   [/^Tight turn VL BFM/, 'Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00'],
   [/^No time for the RU flight brief/, 'Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00'],
@@ -46,7 +46,7 @@ const texts = plan.map(p => (p.pre ? p.pre + ' — ' : '') + (p.now ?? p.words))
 await page.evaluate(texts => {
   const rows = [...document.querySelectorAll('#schedBoard #sbWarn .wln[data-wix]')].filter(e => e.offsetWidth)
   const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  rows.forEach((e, i) => { e.querySelector('.wln-t').innerHTML = esc(texts[i]).replace(/(\d\d:\d\d–\d\d:\d\d)/g, '<span style="white-space:nowrap">$1</span>') })
+  rows.forEach((e, i) => { e.querySelector('.wln-t').innerHTML = esc(texts[i]).replace(/(\d\d:\d\d–\d\d:\d\d|step \d\d:\d\d, T\/O \d\d:\d\d|landing \d\d:\d\d, dekit to \d\d:\d\d)/g, '<span style="white-space:nowrap">$1</span>') })
 }, texts)
 const drawn = await X.readWarn(w)
 if (JSON.stringify(drawn.rows.map(x => x.text)) !== JSON.stringify(texts)) throw new Error('A2 drawn rows differ ' + JSON.stringify(drawn.rows))

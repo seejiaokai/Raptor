@@ -12,13 +12,13 @@ const size = w.phone ? '402x874 WebKit @3x' : '1536x864 Chromium @2x'
 const R = 'Ranger', VJ = 'Viper, Jinx'
 const F = {
   clashes: ['Clashes', [
-    ['hard', R, 'RU & BRIEFING clash', 'Clash: RU (T/O 13:00, landing 14:30) & BRIEFING 12:40–13:00'],
+    ['hard', R, 'RU & BRIEFING clash', 'Clash: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00'],
     ['hard', R, 'SC AM & OFT 1 clash', 'Clash: SC AM 07:00–13:00 & OFT 1 10:00–11:30'],
     ['hard', R, 'Ranger is in two seats on VL BFM at once', 'Clash: in two seats on VL BFM (T/O 12:00) at once'],
     ['hard', R, 'Ranger is on two items called SODB at once', 'Clash: two items both called SODB, 07:45–08:00 & 07:50–08:10'],
     ['hard', R, 'Ranger is on AVALON DUTY (07:00–15:00) and also on OFT 1 (10:00–11:30)', 'Clash: AVALON DUTY 07:00–15:00 & OFT 1 10:00–11:30'],
     ['hard', R, 'Ranger is standing SC SPARE (SC AM 07:00–13:00) and also on OFT 1 (10:00–11:30)', 'Clash: SC SPARE (SC AM 07:00–13:00) & OFT 1 10:00–11:30'],
-    ['hard', R, 'Appointment clashes with VL BFM — reason: dental', 'Clash: VL BFM (T/O 12:00, landing 13:30) & Appointment 12:30–13:30. Reason: dental'],
+    ['hard', R, 'Appointment clashes with VL BFM — reason: dental', 'Clash: VL BFM (landing 13:30, dekit to 14:00) & Appointment 13:40–14:30. Reason: dental'],
     ['hard', R, 'Appointment but tasked — AVALON duty — reason: dental', 'Clash: AVALON DUTY 07:00–15:00 & Appointment 12:30–13:30. Reason: dental'],
   ]],
   standby: ['On standby and also on something else', [

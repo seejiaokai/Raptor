@@ -72,7 +72,7 @@
    "header": "⚠ 5 issues · 2 warnings",
    "rows": [
     "Ranger — Clash: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00",
-    "Ranger — Clash: RU (T/O 13:00, landing 14:00) & BRIEFING 12:40–13:00",
+    "Ranger — Clash: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00",
     "Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00",
     "Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00",
     "Ranger — 1 person is double turning: Ranger"
@@ -103,7 +103,7 @@
    "header": "▾ ⚠ 5 issues · 2 warnings",
    "rows": [
     "Ranger — Clash: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00",
-    "Ranger — Clash: RU (T/O 13:00, landing 14:00) & BRIEFING 12:40–13:00",
+    "Ranger — Clash: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00",
     "Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00",
     "Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00",
     "Ranger — 1 person is double turning: Ranger"
@@ -191,13 +191,13 @@
    "size": "402x874 WebKit @3x",
    "header": "▾ ⚠ 8 issues · 8 warnings",
    "rows": [
-    "Ranger — Clash: RU (T/O 13:00, landing 14:30) & BRIEFING 12:40–13:00",
+    "Ranger — Clash: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00",
     "Ranger — Clash: SC AM 07:00–13:00 & OFT 1 10:00–11:30",
     "Ranger — Clash: in two seats on VL BFM (T/O 12:00) at once",
     "Ranger — Clash: two items both called SODB, 07:45–08:00 & 07:50–08:10",
     "Ranger — Clash: AVALON DUTY 07:00–15:00 & OFT 1 10:00–11:30",
     "Ranger — Clash: SC SPARE (SC AM 07:00–13:00) & OFT 1 10:00–11:30",
-    "Ranger — Clash: VL BFM (T/O 12:00, landing 13:30) & Appointment 12:30–13:30. Reason: dental",
+    "Ranger — Clash: VL BFM (landing 13:30, dekit to 14:00) & Appointment 13:40–14:30. Reason: dental",
     "Ranger — Clash: AVALON DUTY 07:00–15:00 & Appointment 12:30–13:30. Reason: dental"
    ],
    "sev": [

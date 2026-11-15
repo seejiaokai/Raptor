@@ -111,10 +111,10 @@ const html = `<title>Warning Words</title>
 </header>
 
 <div class="first" id="look">
-<h2>Look at this first: four questions</h2>
-<p class="note">Each has my recommendation. Tap a question to jump to its pictures. Answer "as recommended" or by number.</p>
+<h2>Look at this first: three questions left</h2>
+<p class="note">The first is answered. The other three each have my recommendation. Tap one to jump to its pictures. Answer "as recommended" or by number.</p>
 <ol class="qs">
-${q(1, 'friday', 'A flight in a clash: T/O only, or T/O and landing?', 'both, as in "Clash: RU (T/O 13:00, landing 14:00) &amp; BRIEFING 12:40–13:00".', 'The line you liked showed T/O only. With the landing, a clash at the landing end of a flight reads on its own too. It adds about three words, on clash lines only.')}
+<li><a href="#friday"><b>Answered: a clash line shows the end of the flight that causes the clash.</b></a><span class="rec">Your ruling of 15 Nov: the step time or the dekit time, as set on the Logic page.</span><span class="why">"Clash: RU (step 12:00, T/O 13:00) &amp; BRIEFING 12:40–13:00" · "Clash: VL BFM (landing 13:30, dekit to 14:00) &amp; Appointment 13:40–14:30". Where the item falls during the flight itself, the T/O and the landing. The clash pictures below are redrawn this way.</span></li>
 ${q(2, 'turns', '"Tight turning" renamed "Tight crew rest"?', 'yes.', 'It is the amber line about tomorrow\'s crew rest being short at the usual report time. Today its name reads like the same-day "Tight turn".')}
 ${q(3, 'names', 'Should the short names of the checks follow the new labels?', 'yes, in the same build.', 'The app has a short name for each kind of warning, shown where warnings are counted by kind. Today a clash is called "Conflict — two events at once" there. One thing, one name.')}
 ${q(4, 'turns', 'The crew-rest line keeps your order of 22 Aug, with "needs 12h" added?', 'yes.', 'Yesterday\'s end, then when rest clears, then what breaks it, then the shortfall. Only the wording is shorter and the 12h is said.')}
@@ -149,7 +149,7 @@ ${q(4, 'turns', 'The crew-rest line keeps your order of 22 Aug, with "needs 12h"
 <div class="box">
 <p><b>Where these differ from the five lines you liked:</b></p>
 <ul class="plain">
-<li><b>The clash lines</b> add the landing after the T/O (question 1).</li>
+<li><b>The clash lines</b> show why it is a clash: RU's step at 12:00 (one hour before T/O, the Logic page's step setting), and VL BFM's assumed landing.</li>
 <li><b>The tight turn</b> ends with ", RU T/O 13:00", so both times of the turn are in the line. "0 min" explains itself; "45 min" would not.</li>
 <li><b>"Misses VL BFM debrief … : RU T/O 13:00" cannot happen.</b> The app never raises a missed debrief against another flight (that is the tight turn's job), and on this day the line goes away. Where one is raised, it names what is in the way: <span class="ex">Misses VL BFM debrief 13:00–15:00 (landing assumed): MEETING 13:30–14:00</span>.</li>
 </ul>
@@ -157,7 +157,7 @@ ${q(4, 'turns', 'The crew-rest line keeps your order of 22 Aug, with "needs 12h"
 <details class="desk"><summary>The same list on a desktop</summary><div class="pair desktop">${fig('a1-today-desktop.png', 'Today', 'the real app', 791)}${fig('a2-after-desktop.png', 'Proposed', 'drawn on the real list', 791)}</div></details>
 </section>
 
-${fam('clashes', 'Clashes (red)', 'Every clash starts "Clash:" and gives both items with their times. Today most give neither.', ['b1-clashes'])}
+${fam('clashes', 'Clashes (red)', 'Every clash starts "Clash:" and gives both items with their times. A flight shows the end that causes the clash: its step (first row), its dekit (seventh row), or its T/O and landing. Today most lines give no times at all.', ['b1-clashes'])}
 ${fam('standby', 'On standby and also on something else (amber)', 'The label says what is wrong: the item overlaps a standby shift, or sits between his in-time and the shift\'s start.', ['b2-standby'])}
 ${fam('leave', 'On leave, downchit, away (red)', 'The labels are the names you gave these checks: "Downchit + planned", "On leave + planned". What he is planned on now carries its times.', ['b3-leave'])}
 ${fam('brief', 'Brief and debrief (amber)', '"Misses", whose brief or debrief, its window, then what is in the way. New: each thing in the way carries its own times (today only its name).', ['b4-brief'])}
