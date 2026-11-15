@@ -1,0 +1,8 @@
+chosen man Ace dj
+flight d6 w0 {"to":"23:30","ld":"","msn":"LATE FLT","p":"Ace"}
+ROW PASS | 3b Sunday to Monday | 402 | built: Sunday 19 Jul Ace T/O 23:30 landing blank; Monday 20 Jul BRIEFING 14:00–15:00 with Ace (the brief says 13:30; 14:00 used so a typed landing can clear it) | saw: seat: ok; ground rows Monday: 4
+ROW FAIL | 3b Sunday to Monday | 402 | next week opened COLD (before Sunday's week); Monday week | saw: []
+ROW FAIL | 3b Sunday to Monday | 402 | next week opened COLD (before Sunday's week); Monday details | saw: []
+ROW FAIL | 3b Sunday to Monday | 402 | next week opened COLD (before Sunday's week); Monday board | saw: []
+ROW RECORDED | 3b Sunday to Monday | 402 | Monday crew-rest line, whole (cold) | saw: []
+ROW FAIL | 3b Sunday to Monday | 402 | current week: tapped Ranger's Sunday puck; the forward "Breaks Monday" rows | saw: []

@@ -1,0 +1,56 @@
+[
+ [
+  "13 equal times, print, CSV",
+  "1536",
+  "flight with T/O 12:00 and landing 12:00 typed; board warnings",
+  "its own warning (times look wrong / same take-off and landing), not \"assumed\"",
+  "[\"Times look wrong: WAVE 1 T/O and landing are both 12:00. The day still earns OIL from the report and debrief. ✕\"]",
+  "PASS",
+  "13-1-board-d.png"
+ ],
+ [
+  "13 equal times, print, CSV",
+  "1536",
+  "the equal-times row's own title (hover text)",
+  "RECORD",
+  "[\"Times look wrong: WAVE 1 T/O and landing are both 12:00. The day still earns OIL from the report and debrief.\",\"Times look wrong: WAVE 1 T/O and landing are both 12:00. The day still earns OIL from the report and debrief.\"]",
+  "RECORDED",
+  "13-1-board-d.png"
+ ],
+ [
+  "13 equal times, print, CSV",
+  "1536",
+  "week strip of Friday",
+  "no \"assumed\" on the equal-times line",
+  "[]",
+  "PASS",
+  "13-2-week-d.png"
+ ],
+ [
+  "13 equal times, print, CSV",
+  "1536",
+  "pressed the CSV export",
+  "RECORD what it carries: the typed landing 12:00 for EQ FLT; BLANK FLT landing empty (never a typed assumed landing)",
+  "file 142-schedule.csv; lines: [\"\\\"Friday\\\",\\\"Jul 17\\\",\\\"WAVE 1\\\",\\\"\\\",\\\"EQ FLT\\\",\\\"\\\",\\\"09:40\\\",\\\"12:00\\\",\\\"12:00\\\",\\\"Ranger\\\",\\\"IP\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\"\",\"\\\"Friday\\\",\\\"Jul 17\\\",\\\"WAVE 2\\\",\\\"\\\",\\\"BLANK FLT\\\",\\\"\\\",\\\"12:40\\\",\\\"15:00\\\",\\\"\\\",\\\"Ranger\\\",\\\"IP\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\"\"]; assumed word present: false",
+  "RECORDED",
+  ""
+ ],
+ [
+  "13 equal times, print, CSV",
+  "1536",
+  "CSV: no fabricated landing",
+  "BLANK FLT line carries no 16:00 landing",
+  "[\"\\\"Friday\\\",\\\"Jul 17\\\",\\\"WAVE 2\\\",\\\"\\\",\\\"BLANK FLT\\\",\\\"\\\",\\\"12:40\\\",\\\"15:00\\\",\\\"\\\",\\\"Ranger\\\",\\\"IP\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\",\\\"\\\"\"]",
+  "PASS",
+  ""
+ ],
+ [
+  "13 equal times, print, CSV",
+  "1536",
+  "pressed print / PDF",
+  "RECORD what is generated (a print view with the published/draft rows; no warning column demanded)",
+  "print called 0x; popups 0; text hits: [\"EQ FLT 12:00 12:00 \",\"BLANK FLT 15:00 \"]; assumed word: false; length 26101",
+  "RECORDED",
+  "13-3-print-d.png"
+ ]
+]

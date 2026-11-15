@@ -1,0 +1,110 @@
+[
+ [
+  "friday blank",
+  "1536",
+  "bw",
+  "/Conflict: RU \\(step 12:00, T\\/O 13:00\\) & BRIEFING 12:40–13:00/",
+  "[\"Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00 ✕\",\"Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00 ✕\",\"Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00 ✕\",\"Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00 ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "fri-a-blank-bw-d.png"
+ ],
+ [
+  "friday blank",
+  "1536",
+  "bw",
+  "/Conflict: VL BFM \\(T\\/O 12:00, landing assumed 13:00\\) & BRIEFING 12:40–13:00/",
+  "[\"Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00 ✕\",\"Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00 ✕\",\"Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00 ✕\",\"Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00 ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "fri-a-blank-bw-d.png"
+ ],
+ [
+  "friday blank",
+  "1536",
+  "bw",
+  "/Tight turn: VL BFM → RU, 0 min \\(needs \\d+\\)\\. VL BFM landing assumed 13:00 \\(T\\/O \\+ 1h\\), RU T\\/O 13:00/",
+  "[\"Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00 ✕\",\"Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00 ✕\",\"Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00 ✕\",\"Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00 ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "fri-a-blank-bw-d.png"
+ ],
+ [
+  "friday blank",
+  "1536",
+  "ww",
+  "/Conflict: RU \\(step 12:00, T\\/O 13:00\\) & BRIEFING 12:40–13:00/",
+  "[\"Conflict Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00 ✕\",\"Conflict Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00 ✕\",\"Tight turn Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00 ✕\",\"Misses flight brief Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00 ✕\",\"Double turning Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "fri-a-blank-ww-d.png"
+ ],
+ [
+  "friday blank",
+  "1536",
+  "ww",
+  "/Conflict: VL BFM \\(T\\/O 12:00, landing assumed 13:00\\) & BRIEFING 12:40–13:00/",
+  "[\"Conflict Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00 ✕\",\"Conflict Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00 ✕\",\"Tight turn Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00 ✕\",\"Misses flight brief Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00 ✕\",\"Double turning Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "fri-a-blank-ww-d.png"
+ ],
+ [
+  "friday blank",
+  "1536",
+  "ww",
+  "/Tight turn: VL BFM → RU, 0 min \\(needs \\d+\\)\\. VL BFM landing assumed 13:00 \\(T\\/O \\+ 1h\\), RU T\\/O 13:00/",
+  "[\"Conflict Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00 ✕\",\"Conflict Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00 ✕\",\"Tight turn Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00 ✕\",\"Misses flight brief Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00 ✕\",\"Double turning Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "fri-a-blank-ww-d.png"
+ ],
+ [
+  "friday blank",
+  "1536",
+  "dd",
+  "/Conflict: RU \\(step 12:00, T\\/O 13:00\\) & BRIEFING 12:40–13:00/",
+  "[\"Warning · Conflict Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00\",\"Warning · Conflict Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00\",\"Advisory · Tight turn Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00\",\"Advisory · Misses flight brief Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00\",\"Advisory · Double turning Ranger — 1 person is double turning: Ranger\"]",
+  "PASS",
+  "fri-a-blank-dd-d.png"
+ ],
+ [
+  "friday blank",
+  "1536",
+  "dd",
+  "/Conflict: VL BFM \\(T\\/O 12:00, landing assumed 13:00\\) & BRIEFING 12:40–13:00/",
+  "[\"Warning · Conflict Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00\",\"Warning · Conflict Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00\",\"Advisory · Tight turn Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00\",\"Advisory · Misses flight brief Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00\",\"Advisory · Double turning Ranger — 1 person is double turning: Ranger\"]",
+  "PASS",
+  "fri-a-blank-dd-d.png"
+ ],
+ [
+  "friday blank",
+  "1536",
+  "dd",
+  "/Tight turn: VL BFM → RU, 0 min \\(needs \\d+\\)\\. VL BFM landing assumed 13:00 \\(T\\/O \\+ 1h\\), RU T\\/O 13:00/",
+  "[\"Warning · Conflict Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00\",\"Warning · Conflict Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00\",\"Advisory · Tight turn Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00\",\"Advisory · Misses flight brief Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00\",\"Advisory · Double turning Ranger — 1 person is double turning: Ranger\"]",
+  "PASS",
+  "fri-a-blank-dd-d.png"
+ ],
+ [
+  "friday typed 12:30",
+  "1536",
+  "bw",
+  "no \"assumed\" on any line",
+  "[\"Ranger — Conflict: VL BFM (landing 12:30, dekit to 13:00) & BRIEFING 12:40–13:00 ✕\",\"Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00 ✕\",\"Ranger — Tight turn: VL BFM → RU, 30 min (needs 120). VL BFM landing 12:30, RU T/O 13:00 ✕\",\"Ranger — Misses VL BFM debrief 12:30–14:30: BRIEFING 12:40–13:00 ✕\",\"Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00 ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "fri-b-typed-bw-d.png"
+ ],
+ [
+  "friday typed 12:30",
+  "1536",
+  "ww",
+  "no \"assumed\" on any line",
+  "[\"Conflict Ranger — Conflict: VL BFM (landing 12:30, dekit to 13:00) & BRIEFING 12:40–13:00 ✕\",\"Conflict Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00 ✕\",\"Tight turn Ranger — Tight turn: VL BFM → RU, 30 min (needs 120). VL BFM landing 12:30, RU T/O 13:00 ✕\",\"Misses flight debrief Ranger — Misses VL BFM debrief 12:30–14:30: BRIEFING 12:40–13:00 ✕\",\"Misses flight brief Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00 ✕\",\"Double turning Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "fri-b-typed-ww-d.png"
+ ],
+ [
+  "friday typed 12:30",
+  "1536",
+  "dd",
+  "no \"assumed\" on any line",
+  "[\"Warning · Conflict Ranger — Conflict: VL BFM (landing 12:30, dekit to 13:00) & BRIEFING 12:40–13:00\",\"Warning · Conflict Ranger — Conflict: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00\",\"Advisory · Tight turn Ranger — Tight turn: VL BFM → RU, 30 min (needs 120). VL BFM landing 12:30, RU T/O 13:00\",\"Advisory · Misses flight debrief Ranger — Misses VL BFM debrief 12:30–14:30: BRIEFING 12:40–13:00\",\"Advisory · Misses flight brief Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00\",\"Advisory · Double turning Ranger — 1 person is double turning: Ranger\"]",
+  "PASS",
+  "fri-b-typed-dd-d.png"
+ ]
+]

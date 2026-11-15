@@ -179,8 +179,27 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
 
    "Two rows" is the line's own words — the names and the sentence — not the small grey kind label above them, which is a
    row of its own on every line (`.wcode{display:block}`). Counted as the distinct line boxes the browser lays the words
-   out in (a Range's client rects), cross-checked by their height in line-heights; a font a little wider on his iPhone is
-   the one thing this cannot measure (his iPhone draws Apple's font; the app loads none). */
+   out in (a Range's client rects), cross-checked by their height in line-heights.
+
+   THE LETTERS ARE PINNED, AND A TYPED REASON IS NOT COUNTED (16 Nov 26, the FULL check). The first version measured
+   whatever font the machine had: it passed on his PC and failed on GitHub's Linux machines, whose letters are wider
+   (three demo lines ran to three rows in Verdana, the Linux stand-in). His iPhone draws Apple's own letters, of the
+   Helvetica family's width; so the letters are pinned here from the first paint to Arial (Helvetica's metrics), the
+   order's §7.2 rule for a new fit test. And a line that names a request ends with the reason the person typed
+   (". Reason: exercise, off island"), free text of any length that no wording can keep to two rows: its rows are
+   counted up to that reason. Measured at 390 with Arial the demo week's eight lines fit; the Nomad line's typed reason
+   takes a third row (scripts/handpass/www/www-host-fit.mjs, the walk's record). */
+async function wwPinLetters(page: Page) {
+  await page.addInitScript(() => {
+    const add = () => {
+      const s = document.createElement('style')
+      s.textContent = '*, *::before, *::after { font-family: Arial, "Liberation Sans", "Helvetica Neue", Helvetica, sans-serif !important }'
+      document.head.appendChild(s)
+    }
+    if (document.head) add()
+    else document.addEventListener('DOMContentLoaded', add)
+  })
+}
 async function wwShowDay(page: Page, di: number) {
   await page.evaluate(i => {
     const d = document.querySelector(`#eWeek .day[data-day="${i}"]`) as HTMLElement
@@ -208,11 +227,19 @@ const wwMeasure = (page: Page, di: number) => page.locator(`#eWeek .day[data-day
   const code = tx.querySelector('.wcode') as HTMLElement
   const r = document.createRange()
   r.setStartAfter(code); r.setEndAfter(tx.lastChild as Node)
+  /* end the measure before a typed reason (". Reason: …"), the person's own free text */
+  const full = (r.toString() || '').replace(/\s+/g, ' ').trim()
+  const tw = document.createTreeWalker(tx, NodeFilter.SHOW_TEXT)
+  for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+    const at = (n.textContent || '').indexOf('. Reason: ')
+    if (at >= 0 && r.isPointInRange(n, at)) { r.setEnd(n, at + 1); break }
+  }
   const tops = new Set([...r.getClientRects()].filter(c => c.width > 0.5).map(c => Math.round(c.top)))
   const lh = parseFloat(getComputedStyle(tx).lineHeight) || 16
   const b = r.getBoundingClientRect()
   return {
-    text: (r.toString() || '').replace(/\s+/g, ' ').trim(),
+    text: full,
+    measured: (r.toString() || '').replace(/\s+/g, ' ').trim(),
     rows: tops.size,
     byHeight: Math.round(b.height / lh),
     ranges: [...tx.querySelectorAll('.tr-nw')].map(s => ({ t: s.textContent, rows: new Set([...(s as HTMLElement).getClientRects()].map(c => Math.round(c.top))).size })),
@@ -223,7 +250,9 @@ test.describe('the warning list on a phone: every "Conflict:" line fits two rows
   test.use({ viewport: PHONE })
 
   test('Edit Schedule at 390 wide, every day of the demo week', async ({ page }) => {
+    await wwPinLetters(page)
     await login(page)
+    expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily), 'the letters are pinned').toMatch(/^Arial/)
     await go(page, 'editsched')
     const days = await page.locator('#eWeek .day[data-day]').evaluateAll(es => es.map(e => Number((e as HTMLElement).dataset.day)))
     let conflicts = 0, ranges = 0

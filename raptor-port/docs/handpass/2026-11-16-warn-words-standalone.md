@@ -66,6 +66,21 @@ YES / NO-because / MISSING, filled in the walk.
 | The new Logic row "A flight" (Rows with no end time, before "A sim") — its value, Reset, its out-of-bounds note | | | | |
 | The crew list and ALL AVAIL's busy windows for a flight with no landing (the picker agrees with the conflict list) | | | | |
 | OIL Earn and the Leave War's credited FO / HO for a weekend flight with no landing | | | | |
+| *Added from Astra's scenario design (16 Nov 26, `superpowers/briefs/2026-11-16-warn-words-scenarios-astra.md`):* | | | | |
+| The day-details window (the day's `?`) — its warning rows, its "free all day" figure, a tap on a row | | | | |
+| The 👁 look at a published version (current and an older one made in the walk), from the week and the board; a saved plan's preview flag-free | | | | |
+| The pending list's warning lines (added, changed, cleared, hidden — "new once signed", "goes away once signed") | | | | |
+| The passing note right after a drop that raises a warning (`state/dropflag.ts`), the next day's included | | | | |
+| Publication's OIL notices (an earning day published: no "unusable times" for a take-off with a blank landing) | | | | |
+| The Leave War's day sheet, day list and the OIL tracker's worked times and balance (beyond the cell) | | | | |
+| Insights' work hours (today's settings, D482) beside "Conflicts by type" | | | | |
+| The crew list with a seat picked and with none; the availability strips; ALL against ALL AVAIL | | | | |
+| The short names: issues heading, flag title, a puck's hover / tap words, the Logic check name and its search, Insights' category | | | | |
+| The next-week peek's ordinary warnings and crew-rest trace; Monday opened before Sunday's week | | | | |
+| A row's own title warnings (the same take-off and landing; the reporting order) on the week, board and peek | | | | |
+| Print / PDF and the CSV export (they carry no warning list; a blank landing never printed as a typed one) | | | | |
+| Each read route as the member Ranger (`us`/`us`), and at a phone's width | | | | |
+| The change history's "warning hidden" line (`state/changelines.ts`) — the host's addition | | | | |
 
 ## For the walk — piece B and C scenarios, from the build
 
@@ -79,9 +94,42 @@ YES / NO-because / MISSING, filled in the walk.
 - An SC (and a flying SC) with START typed and END blank on Monday: no crew rest on Tuesday, "flies but has no END"
   still shown; type END and the rest comes back.
 
+## The scenarios and who designed them
+
+Astra (`codex exec -m gpt-6-astra`, reasoning high, read-only), one round, 16 Nov 26 02:15, blind to the build's own
+reasoning beyond the builder's report — brief `superpowers/briefs/2026-11-16-warn-words-scenarios-brief.md`, his report
+whole `superpowers/briefs/2026-11-16-warn-words-scenarios-astra.md`: 15 roll-call gaps (added above), 13 ranked scenarios
+(about two hours), a state × reading table, eight order reversals, a ledger of the qualifying branches.
+
 ## The five sizing lines (§7.0)
 
-(written at the walk's sizing step)
+1. **Type of change:** A (the assumed landing — one shared time, `events.ts` `ldM` — read by the checks, OIL, the
+   availability windows) · D (the warning words drawn by eleven separate drawers: the issues lists, the board, day
+   details, ALL AVAIL, the pending list, the peek, the drop note, Insights, the Logic page, the flag titles, the Leave War) ·
+   G (a new saved Logic setting kept by a published day and its OIL; hides keyed on words) · F (the words themselves).
+2. **What only a walk could find here:** a drawer that prints its own copy of a sentence or short name and was never
+   rewired; a reader of availability or OIL computing the landing by itself (the crew list, ALL AVAIL, the Leave War's
+   cell and tracker); the published / amended / 👁 / plan copies each choosing the right document; the phone fit of the
+   longest lines with real letters; the Logic row's Reset and bounds; the cross-week Monday read cold. The words are
+   pinned family by family in `warnwords.test.ts`, the arithmetic reader by reader in `assumedlanding.test.ts`, the
+   published keep in `leavewar/assumedlanding-published.test.ts`.
+3. **What the ledger says:** the rules check's small batch (15 Nov 26, A/D/F, two Sonnet walkers then a re-walk) found 0
+   faults in the change; its blind reads found four; `[WARN-HIDE-KEPT]` (D/G, three walkers, 44 scenarios) found 3 faults
+   by walking. Walks of a shared calculation (A) find little; walks of a drawer family (D) find the unwired copy.
+4. **The walk chosen:** two Sonnet 5.5 walkers, ONE AFTER THE OTHER (LOW), each its own world, on the frozen build of
+   `43af4f51e` (bundle `index-CCJFVavM.js`, served inside the test browser — no port), desktop 1536 Chromium and iPhone
+   402 × 874 WebKit by touch; the host's own route first (`www-host-probe.mjs`, 2 runs, 0 errors) and his Ranger's Friday
+   (`www-host-friday.mjs`, 12/12 both sizes). **W1** — Astra's 1, 2, 8, 11, 3, 6, 13 (the published day, OIL, Logic,
+   the week's edge, the SC with no END, print and CSV) and the plain-user round's Logic, pending list and print. **W2** —
+   Astra's 4, 5, 9, 7, 10, 12 (availability against conflicts, landing blank / TBD / typed, conflict shapes, hides, the
+   phone fit in each drawer, the specialised writers) and the plain-user round's warning list: a warning tapped lights
+   its crew, hidden and shown again, the ALL AVAIL window, Insights, View-only Sched. Carried by a test, not driven: the
+   ledger's every family permutation of words (`warnwords.test.ts`, the engine called directly — the same words reach
+   every drawer through one message, so the walk drives each DRAWER once, not each family); the reader-by-reader
+   arithmetic (`assumedlanding.test.ts`, direct); the fit of every demo "Conflict:" line at 390 with pinned letters
+   (`e2e/warnhide.spec.ts`, the real page). No drawing check: no screen here has an approved drawing (the words page is
+   a words page; his Friday is pictured beside it).
+5. **After the walk:** its row in `docs/walk-ledger.md` (below, at the close).
 
 ## The orders walked
 
@@ -112,6 +160,29 @@ YES / NO-because / MISSING, filled in the walk.
 ## The gate counts
 
 ## What the walk found, and each disposition
+
+- **G1 (GitHub's run on `0e0a5f105`, before the walk) — the phone-fit browser test was red on Linux.** "Saber — Conflict:
+  OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)" took three rows at 390: the test measured
+  whatever letters the machine had (his PC's passed; Linux's are wider), against the order §7.2's rule that a new fit
+  test pins its letters. Reproduced by the host (`www-host-fit.mjs`, record `docs/img/handpass/2026-11-16-warn-words-standalone/host/fit/log.txt`):
+  in Verdana (the Linux stand-in) 3 of the demo week's 8 lines run to three rows at 390 Chromium, 2 at 402 WebKit; in
+  Arial (Helvetica's width, as his iPhone's letters) only the Nomad line does, and only by its typed reason ("Reason:
+  Overseas duty — exercise, off island"); at the page's own letters all 8 fit. **Disposition:** the test corrected — the
+  letters pinned to Arial from the first paint, a typed reason not counted (free text no wording can bound) — passes
+  locally (1/1); the red was GitHub's own run. **For his look:** on his iPhone a conflict line with a long typed item name
+  or a request's reason can take a third row; the approved words are unchanged.
+- **W1-1 (W1, scenario 8, `w1/s8-d/8-c-pendinglist-d.png`, opened by the host) — the pending list's OIL note named one
+  end when both had moved.** The default rally and "A flight" changed together: the times line read "full day ·
+  09:00–15:30 → full day · 09:15–16:00", the note "Still a full day of OIL. It counts from 09:15, not 09:00." — the end's
+  move said nowhere in words. The proposal drew only one end moving (§3b). **Fixed red first** (`ui/oilworkstart.test.tsx`
+  "D2054: both ends moved", red on the old words): "Still a full day of OIL. It counts 09:15–16:00, not 09:00–15:30." A
+  new shape of his approved line — for his look card.
+- **W1 leads judged not faults:** "4 to sign" reads the same before and after the change — it counts the NEXT
+  amendment's empty boxes, as built; the amber "Not yet signed" chip is the sign (D97). The equal take-off and landing
+  keep their own "Times look wrong…" warning, no "assumed" (D49); the CSV leaves a blank landing empty — as it should.
+- **W1 lead, put to him as a words question (not changed):** the Logic page's prose says "clash" in about nine places —
+  the new "A flight" row ("Clashes, the tight turn, …") among them, and the setting "SC MAIN clashes"; his D2070 named
+  the warnings' label "Conflict". Changing the page's own word is a words pass he has not seen.
 
 ## Notes for the walk, from the build
 

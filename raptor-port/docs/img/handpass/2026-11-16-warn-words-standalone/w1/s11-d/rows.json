@@ -1,0 +1,155 @@
+[
+ [
+  "11 Logic A flight",
+  "1536",
+  "opened Logic; read the group and order of \"A flight\" and \"A sim\"",
+  "A flight in \"Rows with no end time\", before \"A sim\"",
+  "{\"i\":13,\"j\":14,\"grpFlight\":\"Rows with no end time\",\"grpSim\":\"Rows with no end time\",\"near\":[\"Sim debrief\",\"AMT debrief\",\"A flight\",\"A sim\",\"Any other row\"]}",
+  "PASS",
+  "11-1-page-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "typed \"A flight\" in the Logic search",
+  "the row \"A flight\" is found",
+  "[\"A flight\"]",
+  "PASS",
+  "11-2-search-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "typed \"landing\" in the Logic search",
+  "RECORD which rows",
+  "[\"Dekit after landing\",\"Debrief after landing\",\"Tight turn\",\"A flight\"]",
+  "RECORDED",
+  "11-2b-search2-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "Edit; typed 90 in \"A flight\"; left the box",
+  "box reads 1h30; the strip appears",
+  "box: 1h30; strip: [{\"cls\":\"lgoff\",\"id\":\"lgOff\",\"text\":\"1 setting changed from the squadron standard. Published days keep their old settings until published again.\",\"h\":37,\"w\":1180}]",
+  "PASS",
+  "11-4-90-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "read the strip note",
+  "the strip's note is one sentence \"Published days keep their old settings until published again.\"",
+  "[\"1 setting changed from the squadron standard. Published days keep their old settings until published again.\"]",
+  "PASS",
+  "11-4-90-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "typed 45 and pressed the row Reset at once (no leaving the box)",
+  "box back to 1h; no later save overwrites it",
+  "box: 1h; strip: []",
+  "PASS",
+  "11-6-reset-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "waited 1.5s after Reset",
+  "still 1h",
+  "1h",
+  "PASS",
+  "11-6-reset-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "typed 10 (outside 15-480 min); left the box",
+  "refused: the box does not keep it; the bounds are explained",
+  "box: 1h; toast: A flight with no landing typed must be between 15 min and 8h; row text: [\"A flight\",\"A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.\"]",
+  "PASS",
+  "11-7-bound-10-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "after the refusal of 10: tapped away, tapped the box afresh, typed the figure it showed (1h)",
+  "accepted, box reads the same as it showed",
+  "box: 1h",
+  "PASS",
+  "11-8-afresh-10-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "typed 500 (outside 15-480 min); left the box",
+  "refused: the box does not keep it; the bounds are explained",
+  "box: 1h; toast: A flight with no landing typed must be between 15 min and 8h; row text: [\"A flight\",\"A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.\"]",
+  "PASS",
+  "11-7-bound-500-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "after the refusal of 500: tapped away, tapped the box afresh, typed the figure it showed (1h)",
+  "accepted, box reads the same as it showed",
+  "box: 1h",
+  "PASS",
+  "11-8-afresh-500-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "set 90, Done, reloaded the page, opened Logic",
+  "A flight still 1h30; the strip shown",
+  "box: 1h30; strip: [\"1 setting changed from the squadron standard. Published days keep their old settings until published again.\"]",
+  "PASS",
+  "11-9-reload-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "pressed \"Reset to standard\"",
+  "strip gone, A flight back to 1h",
+  "strip: []; box: 1h; page {\"sw\":1536,\"cw\":1536,\"sh\":4462} -> {\"sw\":1536,\"cw\":1536,\"sh\":4401}",
+  "PASS",
+  "11-10-resetall-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "typed 75 after the Reset; strip shown again",
+  "strip back, page not wider than the screen",
+  "strip: [\"1 setting changed from the squadron standard. Published days keep their old settings until published again.\"]; page {\"sw\":1536,\"cw\":1536,\"sh\":4470}",
+  "PASS",
+  "11-11-again-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "measured the row boxes \"A flight\" and the next row",
+  "RECORD",
+  "[{\"k\":\"fltLen\",\"h\":92,\"vh\":24},{\"k\":\"simLen\",\"h\":75,\"vh\":24}]",
+  "RECORDED",
+  "11-11-again-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "signed in as Ranger; opened Logic; looked for Edit and boxes; A flight row",
+  "readable, no Edit, no editable box",
+  "Edit buttons: 0; boxes: 0; A flight reads: 1h",
+  "PASS",
+  "11-12-member-d.png"
+ ],
+ [
+  "11 Logic A flight",
+  "1536",
+  "Ranger: the strip",
+  "RECORD",
+  "[]",
+  "RECORDED",
+  "11-12-member-d.png"
+ ]
+]

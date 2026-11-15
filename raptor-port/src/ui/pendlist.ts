@@ -537,6 +537,9 @@ export function oilShiftNote(was: { amt: number, spans: Array<[number, number]> 
   const a = was && was.spans.length ? was.spans : null, b = now && now.spans.length ? now.spans : null
   if (!a || !b) return head
   const s0 = a[0]![0], s1 = b[0]![0], e0 = a[a.length - 1]![1], e1 = b[b.length - 1]![1]
+  /* both ends moved (the default rally and "A flight" changed together): one end named alone left the other's move
+     unsaid in words — the walk's W1, 16 Nov 26 */
+  if (s0 !== s1 && e0 !== e1) return `${head} It counts ${hm(s1)}–${hm(e1)}, not ${hm(s0)}–${hm(e0)}.`
   if (s0 !== s1) return `${head} It counts from ${hm(s1)}, not ${hm(s0)}.`
   if (e0 !== e1) return `${head} It counts until ${hm(e1)}, not ${hm(e0)}.`
   return head

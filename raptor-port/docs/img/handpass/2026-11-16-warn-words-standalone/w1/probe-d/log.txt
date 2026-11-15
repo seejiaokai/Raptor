@@ -1,0 +1,376 @@
+[
+ {
+  "tag": "SPAN",
+  "cls": "lgnm",
+  "txt": "A flight",
+  "html": "<div class=\"lgset\" data-lgkey=\"fltLen\" data-lgname=\"A flight\"><span class=\"lgnm\">A flight</span><span class=\"lgv\"><span class=\"val\">1h</span></span><span class=\"lgwhy\">A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.</span></div>"
+ },
+ {
+  "tag": "SPAN",
+  "cls": "lgwhy",
+  "txt": "A flight with a take-off and no landing is taken to land this long after take-of",
+  "html": "<div class=\"lgset\" data-lgkey=\"fltLen\" data-lgname=\"A flight\"><span class=\"lgnm\">A flight</span><span class=\"lgv\"><span class=\"val\">1h</span></span><span class=\"lgwhy\">A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.</span></div>"
+ },
+ {
+  "tag": "LI",
+  "cls": "",
+  "txt": "A flight runs from its in-time or rally, whichever is earlier (Default rally bef",
+  "html": "<div class=\"lgchk note\" data-chk=\"oil\"><span class=\"lgdot note\" aria-hidden=\"true\"></span><span class=\"lgnm\"><span class=\"lgsr\">Note: </span>Weekend and holiday work earns OIL</span><span class=\"lgwhy\">Work on a weekend or public holiday earns OIL once the day is published: a full day or a half, by Full day of OIL.</span><details class=\"lghow\" data-how=\"oil\"><summary>How it works</summary><ul><li>Weekend or holiday work earns OIL once the day is published.</li><li>A man's day runs from his first report to his last end, gaps included: <span class=\"val\">6h01</span> or more is a full day (FO), less is a half (HO).</li><li>A flight runs from its in-time or rally, whichever is earlier (Default rally before take-off where neither is entered), to landing plus the debrief. With no landing typed, it lands at its assumed landing (A flight).</li><li>Any other row the scheduler adds with no times, o"
+ }
+]
+{
+ "search": [
+  "searchE|name / callsign|text",
+  "lgSearch|Search|text"
+ ],
+ "head": "142\nTALON\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nLogic\nFilter\nEdit\nSETTINGS\nCrew rest and the working day\nCrew rest\n12h\nThe rest a flyer needs before his day starts. The crew-rest warning and the tight crew-rest advisory move with it.\nDays in a row\n6 days\nA day on the programme beyond this many in a row raises the red break-day warning.\nLong work day\n12h\nA longer day, first commitment to last, shows the grey long-day note.\nDefault rally before take-off\n3h\nAn empty R box, a formation's rally, suggests a time this long before take-off, and \"+ In-time\" fills in that same time. When no in-time or rally is entered, a flyer's day starts at that time: his long day, OIL and Insights hours count from it. The tight crew-rest advisory also checks his rest as if he reported at that time.\nFlying lines\nBrief before take-off\n2h20\nSets the suggested B on a line with no brief typed, and a blank B is checked against it. With no in-time typed, crew rest counts to this B. A published day keeps its B until it is published again.\nStep before take-off\n1h\nA man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.\nDekit after landing\n30 min\nA man counts as busy until dekit. It and step set the shortest tight turn.\nDebrief after landing\n2h\nEnds a flyer's day: tomorrow's crew rest, the long day, OIL and I"
+}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+<div class="lgset" data-lgkey="fltLen" data-lgname="A flight"><span class="lgnm">A flight</span><span class="lgv"><span class="val">1h</span></span><span class="lgwhy">A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.</span></div>
+<body>
+    
+    <div id="root"><div id="shell"><div class="topbar has-undo"><button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button><div class="mark"><svg class="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 
+undoBtn|{}|↶
+redoBtn|{}|↷
+fastSync|{}|
+notifyBell|{}|
+insightBtn|{}|Insights
+logout|{}|Logout
+roleBadge|{}|SABER · ADMIN
+|{}|
+|{"wk":"06/07/2026"}|
+|{"wk":"13/07/2026"}|
+|{"wk":"20/07/2026"}|
+|{"wk":"27/07/2026"}|
+exportSched|{}|
+exportPdf|{}|
+|{"hlgrpBtn":"cat"}|
+|{"hlgrpBtn":"type"}|
+|{"hlgrpBtn":"quals"}|
+|{"daytplopen":"0"}|
+|{"planmenu":"0"}|
+|{"dayinfo":"0"}|
+|{"beak":"0"}|
+|{"notepub":"pn:0"}|
+|{"air":"0|0"}|
+|{"itadd":"0|0"}|
+|{"itdel":"0|0|0"}|
+|{"itdel":"0|0|1"}|
+|{"stcfg":"0.0.0.0"}|
+|{"stcfg":"0.0.0.1"}|
+|{"stcfg":"0.0.1.0"}|
+|{"stcfg":"0.0.1.1"}|
+|{"air":"0|1"}|
+|{"itadd":"0|1"}|
+|{"itdel":"0|1|0"}|
+|{"itdel":"0|1|1"}|
+|{"stcfg":"0.1.0.0"}|
+|{"stcfg":"0.1.0.1"}|
+|{"stcfg":"0.1.1.0"}|
+|{"stcfg":"0.1.1.1"}|
+|{"notepub":"dtn:0"}|
+|{"notepub":"sn:0"}|
+|{"notepub":"gn:0"}|
+|{"inpedit":"imwi5rupa1bn93o"}|
+|{"inpedit":"imwi5rupabi5k4a"}|
+|{"inpedit":"imwi5rupas9lkyw"}|
+|{"daytplopen":"1"}|
+|{"planmenu":"1"}|
+|{"dayinfo":"1"}|
+|{"beak":"1"}|
+|{"notepub":"pn:1"}|
+|{"air":"1|0"}|
+|{"itadd":"1|0"}|
+|{"itdel":"1|0|0"}|
+|{"itdel":"1|0|1"}|
+|{"stcfg":"1.0.0.0"}|
+|{"stcfg":"1.0.0.1"}|
+|{"stcfg":"1.0.1.0"}|
+|{"stcfg":"1.0.1.1"}|
+|{"air":"1|1"}|
+|{"itadd":"1|1"}|
+|{"itdel":"1|1|0"}|
+|{"itdel":"1|1|1"}|
+|{"stcfg":"1.1.0.0"}|
+|{"stcfg":"1.1.0.1"}|
+|{"stcfg":"1.1.1.0"}|
+|{"stcfg":"1.1.1.1"}|
+|{"notepub":"dtn:1"}|
+|{"notepub":"sn:1"}|
+|{"notepub":"gn:1"}|
+|{"inpedit":"imwi5rupagk0yy9"}|
+|{"inpedit":"imwi5rupasg37z1"}|
+|{"inpedit":"imwi5rupaiur2sm"}|
+|{"inpedit":"imwi5rupa2xm09k"}|
+|{"inpedit":"imwi5rupas9lkyw"}|
+|{"daytplopen":"2"}|
+|{"planmenu":"2"}|
+|{"dayinfo":"2"}|
+|{"beak":"2"}|
+|{"notepub":"pn:2"}|
+|{"air":"2|0"}|
+|{"itadd":"2|0"}|
+|{"itdel":"2|0|0"}|
+|{"itdel":"2|0|1"}|
+|{"stcfg":"2.0.0.0"}|
+|{"stcfg":"2.0.0.1"}|
+|{"stcfg":"2.0.1.0"}|
+|{"stcfg":"2.0.1.1"}|
+|{"air":"2|1"}|
+|{"itadd":"2|1"}|
+|{"itdel":"2|1|0"}|
+|{"itdel":"2|1|1"}|
+|{"stcfg":"2.1.0.0"}|
+|{"stcfg":"2.1.0.1"}|
+|{"stcfg":"2.1.1.0"}|
+|{"stcfg":"2.1.1.1"}|
+|{"notepub":"dtn:2"}|
+|{"notepub":"sn:2"}|
+|{"notepub":"gn:2"}|
+|{"inpedit":"imwi5rupa5obbnk"}|
+|{"inpedit":"imwi5rupa1bv9o1"}|
+|{"inpedit":"imwi5rupamx0yq4"}|
+|{"inpedit":"imwi5rupa8fbh4l"}|
+|{"inpedit":"imwi5rupas9lkyw"}|
+|{"inpedit":"imwi5rupagcqb58"}|
+|{"acc":"x","accd":"2","acck":"imwi5rupagcqb58"}|
+|{"inpedit":"imwi5ruq3ixle2v"}|
+|{"daytplopen":"3"}|
+|{"planmenu":"3"}|
+|{"dayinfo":"3"}|
+|{"beak":"3"}|
+|{"notepub":"pn:3"}|
+|{"air":"3|0"}|
+|{"itadd":"3|0"}|
+|{"itdel":"3|0|0"}|
+|{"itdel":"3|0|1"}|
+|{"stcfg":"3.0.0.0"}|
+|{"stcfg":"3.0.0.1"}|
+|{"stcfg":"3.0.1.0"}|
+|{"stcfg":"3.0.1.1"}|
+|{"air":"3|1"}|
+|{"itadd":"3|1"}|
+|{"itdel":"3|1|0"}|
+|{"itdel":"3|1|1"}|
+|{"stcfg":"3.1.0.0"}|
+|{"stcfg":"3.1.0.1"}|
+|{"stcfg":"3.1.1.0"}|
+|{"stcfg":"3.1.1.1"}|
+|{"notepub":"dtn:3"}|
+|{"notepub":"sn:3"}|
+|{"notepub":"gn:3"}|
+|{"inpedit":"imwi5rupa1bv9o1"}|
+|{"inpedit":"imwi5rupas9lkyw"}|
+|{"inpedit":"imwi5rupagcqb58"}|
+|{"acc":"x","accd":"3","acck":"imwi5rupagcqb58"}|
+|{"inpedit":"imwi5ruq35y10nu"}|
+|{"daytplopen":"4"}|
+|{"planmenu":"4"}|
+|{"dayinfo":"4"}|
+|{"beak":"4"}|
+|{"notepub":"pn:4"}|
+|{"notepub":"dtn:4"}|
+|{"notepub":"sn:4"}|
+|{"notepub":"gn:4"}|
+|{"inpedit":"imwi5rupas9lkyw"}|
+|{"inpedit":"imwi5rupagcqb58"}|
+|{"acc":"x","accd":"4","acck":"imwi5rupagcqb58"}|
+|{"daytplopen":"5"}|
+|{"planmenu":"5"}|
+|{"dayinfo":"5"}|
+|{"beak":"5"}|
+|{"notepub":"pn:5"}|
+|{"notepub":"dtn:5"}|
+|{"notepub":"sn:5"}|
+|{"notepub":"gn:5"}|
+|{"daytplopen":"6"}|
+|{"planmenu":"6"}|
+|{"dayinfo":"6"}|
+|{"beak":"6"}|
+|{"notepub":"pn:6"}|
+|{"notepub":"dtn:6"}|
+|{"notepub":"sn:6"}|
+|{"notepub":"gn:6"}|
+|{"crewstep":"-1"}|
+|{"crewstep":"1"}|
+|{"roshide":"true"}|
+lgFilterBtn|{}|Filter
+lgEdit|{}|Edit
+|{"lgopen":"inputs"}|14 days before the week starts
+|{"lgopen":"sans"}|the Wednesday two weeks before
+|{"lgopen":"inputs"}|On
+›
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+lgFilterBtn|abtn|{}|Filter
+lgEdit|abtn|{}|Edit
+<div class="lgset" data-lgkey="fltLen" data-lgname="A flight"><span class="lgnm">A flight</span><span class="lgv"><input class="lgin" data-lgset="fltLen" data-lgi="13" value="1h" aria-label="A flight" style=""></span><span class="lgwhy">A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.</span></div>
+142
+TALON
+Edit Schedule
+View-only Sched
+Inputs
+Quals
+Logic
+Leave War
+Tracker
+Help
+Admin
+↶
+↷
+Insights
+Logout
+SABER · ADMIN
+Logic
+Filter
+Done
+SETTINGS
+Crew rest and the working day
+Crew rest
+The rest a flyer needs before his day starts. The crew-rest warning and the tight crew-rest advisory move with it.
+Days in a row
+A day on the programme beyond this many in a row raises the red break-day warning.
+Long work day
+A longer day, first commitment to last, shows the grey long-day note.
+Default rally before take-off
+An empty R box, a formation's rally, suggests a time this long before take-off, and "
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+VAL 1h30
+|hl-gtab|{"hlgrpBtn":"cat"}|
+|hl-gtab|{"hlgrpBtn":"type"}|
+|hl-gtab|{"hlgrpBtn":"quals"}|
+lgFilterBtn|abtn|{}|Filter
+lgDone|abtn primary|{}|Done
+lgReset|abtn ghost|{}|Reset to standard
+|lgreset1|{"lgreset":"fltLen"}|Reset
+|lgval lgdoor|{"lgopen":"inputs"}|14 days before the week starts
+›
+|lgval lgdoor|{"lgopen":"sans"}|the Wednesday two weeks before
+›
+|lgval lgdoor|{"lgopen":"inputs"}|On
+›
+lgreset1||Reset
+lgchk note||Note: Long day More than 12h from first commitment to last.
+lgdot note||
+lgchk note||Note: ⓘ info only A ground or programme item marked ⓘ is printed but never checked, and earns no OIL.
+lgdot note||
+lgchk note||Note: Past midnight A row whose end reads earlier than its start runs into the next day.
+lgdot note||
+lgchk note||Note: Flying wave An ordinary flying wave — it counts toward the day’s flying tally, and every line is fully cross-checked.
+lgdot note||
+lgchk note||Note: Night after day NAAR needs DAAR, and SC NIGHT needs SC DAY. On Quals, removing the day one removes the night one.
+lgdot note||
+lgchk note||Note: SC A SPARE line is only checked for overseas / medically down, SC currency, a pilots-only front seat and not holding another SC seat or SC desk in the same hours — nothing else, unless it flies. A MAIN line is checked in full. Add as many of each as you need.
+lgdot note||
+lgchk note||Note: AVALON Overnight. Every line — MAIN or SPARE — is only checked for overseas / medically down, SC NIGHT currency, a pilots-only front seat and not holding another AVALON seat or the AVALON desk in the same hours. Nothing else, unless it flies. Add as many as you need.
+lgdot note||
+lgchk note||Note: BB Times are yours to set. The same checks as AVALON — overseas / medically down, SC currency for the hours typed, a pilots-only front seat and not holding another seat or the BB desk in the same hours. Nothing else, unless it flies. Add as many as you need.
+lgdot note||
+lgchk note||Note: A shift's hours A standby shift takes exactly its written hours: no step, dekit, brief or debrief.
+lgdot note||
+lgchk note||Note: A standby row that flies A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies has its clashes and turns checked as a sortie's are, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it count
+lgdot note||
+lgchk note||Note: Arming an SC seat The crew list judges each man against that shift's hours only.
+lgdot note||
+lgchk note||Note: An input closes its hours Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing.
+lgdot note||
+lgchk note||Note: A seat with no times Still checked against an absence covering the whole day; a part-day absence waits until the seat has times.
+lgdot note||
+lgchk note||Note: Half days Leave and medical can be AM (to 12:00), PM (from 12:01) or all day, and a half day closes only its own half. A sortie counts from its step (Step before take-off), so AM leave still clashes with a wave that steps before noon.
+lgdot note||
+lgchk note||Note: Standing SC SPARE A man on local leave may still stand SC SPARE. Overseas leave or duty (OL, OD) or a medical code (HL, OML, ATT C, ATT B) may not: that is a warning. A row that flies has no such allowance.
+lgdot note||
+lgchk note||Note: LATE An input last changed after its cut-off (Inputs late cut-off) wears LATE: a mark, never a warning. Downchits never do.
+lgdot note||
+lgchk note||Note: Weekend and holiday work earns OIL Work on a weekend or public holiday earns OIL once the day is published: a full day or a half, by Full day of OIL. How it works
+lgdot note||
+lgchk note||Note: Several problems on one puck It shows the most serious flag, in this order, and its ring the most serious colour. A red box round the whole puck marks a conflict, a crew-rest breach, a qualification problem or a missed brief. Q Qualification — illegal seat C Conflict (two events at once) CP Cr
+lgdot note||
+Logic Filter Done Reset to standard 1 setting changed from the squadron standard. Published days keep their old settings until published again. SETTINGS Crew rest and the working day Crew rest The rest a flyer needs before his day starts. The crew-rest warning and the tight crew-rest advisory move with it. Days in a row A day on the programme beyond this many in a row raises the red break-day warning. Long work day A longer day, first commitment to last, shows the grey long-day note. Default ral
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+Saturday before {"waves":0,"duties":[1],"ground":0,"ah":0,"sims":[0,0]}
+flight d5 w0 {"to":"12:00","ld":"","msn":"OIL FLT","p":"Ranger"}
+BOARDWARN ["Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"]
+sbCal|{}|Calendar
+sbTpl|{}|Templates
+sbOil|{}|OIL Earn
+sbSortAll|{}|Sort all
+sbUndo|{}|↶
+sbRedo|{}|↷
+sbHist|{}|
+sbSync|{}|
+sbBell|{}|
+sbInsights|{}|Insights
+sbDone|{}|✓
+Done
+|{"hlgrpBtn":"cat"}|CAT
+|{"hlgrpBtn":"type"}|TYPE
+|{"hlgrpBtn":"quals"}|QUALS
+|{"planmenu":"5"}|Live working copy
+▾
+|{"chgday":"5","chgtab":"all"}|4 changes
+|{"dayinfo":"5"}|i
+|{"beak":"5"}|Publish day
+|{"nadd":"5"}|+ Note
+|{"ndel":"5.0"}|✕
+|{"ndel":"5.1"}|✕
+|{"sortsec":"p.5"}|Auto sort
+|{"padd":"5"}|+ Item
+|{"sortsec":"w.5.0"}|Auto sort
+|{"gline":"5.0"}|+ Line
+|{"gdel":"5.0"}|✕ Wave
+|{"lcx":"5.0.0.0"}|CX
+|{"lflag":"5.0.0.0"}|■
+|{"lac":"5.0.0"}|+
+|{"ldel":"5.0.0.0"}|✕
+|{"dwadd":"5"}|+ Block
+|{"sortsec":"d.5.0"}|Auto sort
+|{"dradd":"5.0"}|+ Row
+|{"dwdel":"5.0"}|✕ Block
+|{"drcx":"5.0.0"}|CX
+|{"drflag":"5.0.0"}|■
+|{"drdel":"5.0.0"}|✕
+|{"sortsec":"s.5.amt"}|Auto sort
+|{"sblkadd":"5"}|+ Block
+|{"sradd":"5.amt"}|+ Row
+|{"sortsec":"s.5.oft"}|Auto sort
+|{"sradd":"5.oft"}|+ Row
+|{"inpadd":"5.g"}|+ INPUTS
+|{"sortsec":"g.5"}|Auto sort
+|{"gradd":"5"}|+ Item
+|{"inpadd":"5.s"}|+ ADD
+|{"inpadd":"5.u"}|+ ADD
+|{"woff":"5.0"}|✕
+Calendar | Saturday Jul 18 · scheduler board | ‹ | Mon 13 | Tue 14 | Wed 15 | Thu 16 | Fri 17 | Sat 18 | Sun 19 | › | OIL Earn | Sort all | ↶ | ↷ | Insights | ✓ | Done | CAT | TYPE | QUALS
+oil items 4 2
+
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+flight d5 w0 {"to":"12:00","ld":"","msn":"OIL FLT","p":"Ranger"}
+head {"tag":"DRAFT","pending":"4 changes","beak":{"text":"Publish day","disabled":true},"alpub":null,"signState":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","signs":["— name —","— name —","— name —","— name —"]}
+publish {"pressed":true,"which":"data-beak","signs":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"}}
+head2 {"tag":"ORIG","pending":"9 changes","beak":null,"alpub":null,"signState":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","signs":["— name —","— name —","— name —","— name —"]}
+CELL {"text":"HO*","cls":"duty weekend act hasc","w":26}
+bid-picker :: Ranger Sat 18 Jul Auto-approve ✕ No manning row turns amber or red till 18 Jul Document Whole day AM PM Pick a range LL 12.5 OL 12.5 OIL 0.5 CCL 2 FCL 5 PL 1.5 EL 4 CL 0 CSE OD Grant OIL ⋯ WHERE IT CAME FROM Earned off the published schedule — change the schedule and the OIL follows. REASON FLT GIVEN BY Weekend/PH DAYS half a day, AM — worked 09:00–15:00
+lw-tab-grid, lw-tab-approvals, lw-tab-balances, oil-tracker, my-leave-oil, bid-OIL, bid-OIL-left, bid-oil, oil-detail, oil-detail-why, oil-detail-given, oil-detail-days
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+flight d5 w0 {"to":"12:00","ld":"","msn":"OIL FLT","p":"Ranger"}
+tabs ["lw-tab-grid|76.21875","lw-tab-approvals|143.515625","lw-tab-balances|102.890625"]
+no oil tab locator.waitFor: Timeout 8000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-testid="lw-tab-oil"]:visible').first() to be visible[22m
+
+oil-tracker, my-leave-oil
+OIL
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+flight d5 w0 {"to":"12:00","ld":"","msn":"OIL FLT","p":"Ranger"}
+tabs ["lw-tab-grid|76.21875","lw-tab-approvals|143.515625","lw-tab-balances|102.890625"]
+oil-tracker, my-leave-oil, oil-sheet, oil-close, oil-range-first, oil-range-pick, oil-legend, oil-settings, oil-window, oil-list, oil-archive, oil-year-2026, oil-year-2027, oil-grp-SXO, oil-row-dice, oil-name-dice, oil-bal-dice, oil-arch-dice, oil-row-shaft, oil-name-shaft, oil-bal-shaft, oil-arch-shaft, oil-row-snap, oil-name-snap, oil-bal-snap, oil-arch-snap, oil-row-pump, oil-name-pump, oil-bal-pump, oil-arch-pump, oil-row-bane, oil-name-bane, oil-bal-bane, oil-pm-bane, oil-arch-bane, oil-entry-bane-auto:0:2026-07-18, oil-status-bane-auto:0:2026-07-18, oil-row-stiff, oil-name-stiff, oil-bal-stiff, oil-arch-stiff, oil-row-mamba, oil-name-mamba, oil-bal-mamba, oil-arch-mamba, oil-row-nact, oil-name-nact, oil-bal-nact, oil-arch-nact, oil-row-slipway, oil-name-slipway, oil-bal-slipway, oil-pm-slipway, oil-arch-slipway, oil-entry-slipway-open:slipway, oil-status-slipway-open:slipway, oil-entry-l7, oil-status-l7, oil-entry-dol-1, oil-status-dol-1
+OIL
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

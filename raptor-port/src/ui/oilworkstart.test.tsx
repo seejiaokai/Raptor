@@ -150,6 +150,12 @@ describe('OWS7 — a Logic change that would move a published day\'s OIL is one 
     expect(oilShiftNote({ amt: 0.5, spans: [[600, 780]] }, { amt: 0.5, spans: [[600, 780]] })).toBe('Still a half day of OIL.')
     expect(oilShiftNote({ amt: 0.5, spans: [[600, 780]] }, null)).toBe('OIL changes: half day → nothing.')
   })
+  /* the walk's W1, scenario 8 (16 Nov 26): the default rally AND "A flight" changed together moved both ends — the times
+     line read 09:00–15:30 → 09:15–16:00 and the note named only the start, so the end's move was said nowhere in words */
+  it('D2054: both ends moved — the note names both', () => {
+    expect(oilShiftNote({ amt: 1, spans: [[540, 930]] }, { amt: 1, spans: [[555, 960]] })).toBe('Still a full day of OIL. It counts 09:15–16:00, not 09:00–15:30.')
+    expect(oilShiftNote({ amt: 0.5, spans: [[540, 900]] }, { amt: 1, spans: [[540, 960]] })).toBe('OIL changes: half day → full day. It counts until 16:00, not 15:00.')
+  })
   it('the debrief and the full-day line are named the same way', () => {
     build('10:00', '11:00')
     publishDay(SAT)
