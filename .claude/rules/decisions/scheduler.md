@@ -164,6 +164,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - An Admin "Display" area of section fold defaults is not built: put it to him again only when Admin or the section folds are next touched — [ADMIN-DISPLAY] [D161].
 
 ## Settled — leave as they are
+- An SC MAIN's crew rest is measured to its typed B or rally, and to its START where both are blank: correct as built, no default SC in-time added [D2064].
 - A ground crewman's own absence flags him, as built [D1992].
 - Days only standing by do not count toward days in a row, as built [D1998].
 - With nothing typed, crew rest is measured to the suggested brief, not the default rally; the amber tight-turn note is a reminder, not a hard stop, and stays once a typed time clears the rest — as built, kept [D1988, D1989].
