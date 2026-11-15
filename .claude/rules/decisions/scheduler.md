@@ -107,6 +107,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - Every warning reads on its own — who, which items, their times and why it is a problem, in plain words — so he understands what happened without looking at the schedule, a time the app supplies because none was typed called "assumed"; short and concise, in the squadron's own words — "clash", not "booked for two things at once"; the double-turn line keeps its old one-line count of everyone double turning, a day having several — [WARN-WORDS-STANDALONE] [D2045, D2048, D2050].
 - The rewording is Fable's, his call, in chat 82, the new words drawn and put to him first: chat 81's first proposals are not approved, its shortened five ("Clash: RU (T/O 13:00) & BRIEFING 12:40–13:00" and the like) are his liked suggestions — [WARN-WORDS-STANDALONE] [D2049, D2051].
 - A flight with no landing typed is assumed to land a set flight length after take-off — a Logic setting, starting at 60 minutes — and every check that reads the landing uses it, the warning saying "assumed it landed 13:00 (take-off + 1h)"; not built — [WARN-WORDS-STANDALONE] [D2046, D2047].
+- A flight with its take-off typed and no landing counts in Insights' hours and the long-day note up to its assumed landing, no longer nothing; not built — [WARN-WORDS-STANDALONE] [D1936, D2053].
 - A "TBD" landing ends the day as a blank one does for tomorrow's crew rest: the assumed landing — take-off plus the Logic flight length — plus the debrief — [RULES-CHECK-FIXES] [D1990, D2046].
 - A row with no times counts as a day on the programme for days in a row — [RULES-CHECK-FIXES] [D1993].
 - Every typed line above a wave is an in-time, whatever its words; the rally is the R box's; the earliest time counts — over "a typed line saying RALLY stays a rally" — [RULES-CHECK-FIXES] [D1995].
@@ -161,7 +162,6 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - A ground crewman's own absence flags him, as built [D1992].
 - Days only standing by do not count toward days in a row, as built [D1998].
 - With nothing typed, crew rest is measured to the suggested brief, not the default rally; the amber tight-turn note is a reminder, not a hard stop, and stays once a typed time clears the rest — as built, kept [D1988, D1989].
-- A sortie with its take-off typed and its landing blank or "TBD" counts no hours in Insights and raises no long-day note, as built — kept [D1936].
 - The design checker skips the gold history dot in History mode's style file: one gold dot in a box's corner is not a dotted grid pattern, so it is not flagged [D1890].
 - Three stand as built: the no-times warning's tap outlines its line as every line-anchored warning does; a seatless row of a flying shift keeps its lit "✓ FLIES" though it counts nothing; the Flies chip keeps the badge's size on the board [D1067].
 - Insights counts a flying line with nobody on it as a sortie and its formation as a formation — the same count as the day's own heading [D1009].

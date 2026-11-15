@@ -336,7 +336,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   collection (`validate.ts`, the `rawEnd` line) now reads such a landing as its take-off too: take-off plus the
   debrief, the same end, the same message, the same dotted mark on the day before as blank. With no take-off either
   there is still nothing to borrow and no end. D1936 is unchanged: such a sortie still counts no hours and raises no
-  long-day note. The message's "landed" words where no landing is typed are a wording question for him, not changed
+  long-day note (NARROWED 15 Nov 26 by D2053, not built: it is to count to its assumed landing, take-off plus the Logic
+  flight length — `[WARN-WORDS-STANDALONE]`). The message's "landed" words where no landing is typed are a wording question for him, not changed
   here. Pin: `engine/rulesfirst-3-crew-rest.test.ts` (W35, D1990).
 
 - **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26 — "4 yes as
@@ -4762,8 +4763,8 @@ long-day note).
   default still starts the day where it says — never a min() of the two. A sortie with no take-off or no landing typed
   is unfinished — its event's report is NaN, so `workSpan`'s own guard counts it nowhere, as OIL counts it nothing (until
   then a blank landing borrowed the take-off and stretched the day; D2046, 15 Nov 26, not built, assumes such a landing
-  at the take-off plus a Logic flight length — whether the long day and Insights then count it, against D1936's
-  "counts no hours … kept", is a question for him in `[WARN-WORDS-STANDALONE]`); and `workSpan` skips a sortie that measures nothing
+  at the take-off plus a Logic flight length — and D2053 has the long day and Insights count it to that assumed landing, D1936 narrowed — both in
+  `[WARN-WORDS-STANDALONE]`); and `workSpan` skips a sortie that measures nothing
   (both leads zero, take-off equal to landing), as OIL does (Astra's and Sol 6.1's reads, 8 Nov 26).
 - **What does not move:** `day.fly` keeps report-or-step, so the SANS checks' window (`min(report, step)`) and the
   availability window (step to dekit, D36) are as before; crew rest reads `intime` and the brief (the tight advisory
