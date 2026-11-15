@@ -4,12 +4,13 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..')
 const IMG = resolve(ROOT, 'docs/img/handpass/2026-11-16-warn-words-standalone/w1')
-const runs = ['s11-d', 's11-p', 's1-d', 's1-p', 's8-d', 's8-p', 's3-d', 's3-p', 's13-d']
+const runs = ['s11-d', 's11-p', 's1-d', 's1-p', 's8-d', 's8-p', 's3-d', 's3-p', 's13-d', 'ROUND2', 's3b-d', 's3b-p', 's6b-d', 's6b-p', 's6-d', 's6-p', 's2c-d', 's2c-p', 's5c-d', 's5c-p']
 const esc = s => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ')
 let out = '# W1 walk report — [WARN-WORDS-STANDALONE] (16 Nov 26)\n\nWalker W1 (Sonnet 5.5), frozen build, one fresh world per run. Pictures under `docs/img/handpass/2026-11-16-warn-words-standalone/w1/<run>/`.\n\n'
 let total = 0
 const counts = {}
 for (const r of runs) {
+  if (r === 'ROUND2') { out += '# Second round\n\nCarried on with what round 1 did not walk. s6-d / s6-p are the duty-block shape (see the notes); s6b is the standalone SC wave D2055 names.\n\n'; continue }
   const rowsF = resolve(IMG, r, 'rows.json')
   if (!existsSync(rowsF)) { out += `## ${r}: NO rows.json\n\n`; continue }
   const rows = JSON.parse(readFileSync(rowsF, 'utf8'))

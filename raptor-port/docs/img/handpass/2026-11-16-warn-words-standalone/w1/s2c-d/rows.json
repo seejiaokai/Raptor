@@ -1,0 +1,65 @@
+[
+ [
+  "2 the looks and day details",
+  "1536",
+  "published Saturday (ORIG); opened the plans menu; + Alt Plan copied the clean day",
+  "RECORD",
+  "menu: Live working copy ●live now — differences from Original go out as AL1 | Originalread-only — look, don't change | + Alt Plan; selector after: ",
+  "RECORDED",
+  "2-0dup-d.png"
+ ],
+ [
+  "2 the looks and day details",
+  "1536",
+  "live copy: a second Ranger flight 12:30-13:30 overlapping the first",
+  "the live board shows a Conflict line",
+  "[\"Ranger — Conflict: V1 FLT (T/O 12:00, landing 13:00) & CLASH FLT (T/O 12:30, landing 13:30) ✕\"]",
+  "PASS",
+  "2-1live-d.png"
+ ],
+ [
+  "2 the looks and day details",
+  "1536",
+  "looked at the published version (Originalread-only — look, don't change) through the plans menu",
+  "the look shows that version only: no live Conflict line; the eye-marked selector/banner",
+  "{\"sel\":\"\",\"svg\":false,\"banner\":null}; warnings: [\"No conflicts flagged for this day ✓\"]",
+  "PASS",
+  "2-2pv-d.png"
+ ],
+ [
+  "2 the looks and day details",
+  "1536",
+  "the same look, 7 seconds later: does anything of the live conflict remain (the toast, the red Ranger chip)?",
+  "nothing of the live conflict on the old version's look",
+  "{\"toast\":[],\"redchips\":[]}",
+  "PASS",
+  "2-2pv-later-d.png"
+ ],
+ [
+  "2 the looks and day details",
+  "1536",
+  "opened the saved plan (Plan Atap to make it the live day) copied while the day was clean",
+  "flag-free: no warning line of any kind on the plan",
+  "{\"sel\":\"\",\"svg\":false,\"banner\":null}; warnings: [\"No conflicts flagged for this day ✓\"]",
+  "PASS",
+  "2-3plan-d.png"
+ ],
+ [
+  "2 the looks and day details",
+  "1536",
+  "Edit Schedule: Saturday day details",
+  "RECORD its warning lines (live: the Conflict)",
+  "[]",
+  "RECORDED",
+  "2-4details-edit-d.png"
+ ],
+ [
+  "2 the looks and day details",
+  "1536",
+  "View-only Sched: Saturday day details",
+  "RECORD its warning lines",
+  "[]",
+  "RECORDED",
+  "2-5details-view-d.png"
+ ]
+]

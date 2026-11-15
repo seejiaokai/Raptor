@@ -1,0 +1,65 @@
+[
+ [
+  "6 SC with no END",
+  "402",
+  "Friday: SC Shift row SXO AM START 20:00, END blank, Ace on it; Friday's own warnings",
+  "RECORD its own END warning",
+  "seat ok; row SC|20:00-|Ace; []",
+  "RECORDED",
+  "6-1-scrow-p.png"
+ ],
+ [
+  "6 SC with no END",
+  "402",
+  "Saturday 06:00 item for Ace (seat ok); START 20:00 / END blank",
+  "NO crew-rest line on Saturday (week, details, board); no invented end in Friday's trace",
+  "{\"week\":[],\"details\":[],\"board\":[],\"trace\":[]}",
+  "PASS",
+  "6-2noend-satweek-p.png"
+ ],
+ [
+  "6 SC with no END",
+  "402",
+  "END 23:00 typed",
+  "the crew-rest line returns on Saturday (ended 23:00 → clear 11:00, item 06:00)",
+  "{\"week\":[\"Crew rest (<12h) Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h. ✕\"],\"details\":[\"Warning · Crew rest (<12h) Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h.\"],\"board\":[\"Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h. ✕\"],\"trace\":[\"Breaks Saturday Ace — had to leave by 18:40. Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h.\"]}",
+  "PASS",
+  "6-3end-satweek-p.png"
+ ],
+ [
+  "6 SC with no END",
+  "402",
+  "END cleared again",
+  "the crew-rest line is gone again",
+  "{\"week\":[],\"details\":[],\"board\":[],\"trace\":[]}",
+  "PASS",
+  "6-4cleared-satweek-p.png"
+ ],
+ [
+  "6 SC with no END",
+  "402",
+  "pressed the row's flag control (\"B (brief) 19:00 typed on the shift = it flies\"); the row, with END blank",
+  "RECORD what it does and says (a shift that flies, no END)",
+  "row {\"cs\":\"SC\",\"msn\":\"AM\",\"shift\":\"AM\",\"to\":\"20:00\",\"ld\":\"\",\"aircraft\":[{\"p\":\"dj\",\"w\":\"\",\"area\":\"\",\"rmks\":\"\",\"opts\":{},\"spare\":false,\"role\":\"MAIN\",\"rid\":\"rmwi77nu5hr9z1t\"},{\"p\":\"\",\"w\":\"\",\"area\":\"\",\"rmks\":; board lines: []",
+  "RECORDED",
+  "6-5flag-p.png"
+ ],
+ [
+  "6 SC with no END",
+  "402",
+  "the flagged row with END blank: Saturday crew rest",
+  "no crew-rest line (builder's reading: flying shift is left out too)",
+  "{\"week\":[],\"details\":[],\"board\":[],\"trace\":[]}",
+  "PASS",
+  "6-6fly-satweek-p.png"
+ ],
+ [
+  "6 SC with no END",
+  "402",
+  "flagged row, END 23:00 typed",
+  "the crew-rest line returns",
+  "{\"week\":[\"Crew rest (<12h) Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h. ✕\"],\"details\":[\"Warning · Crew rest (<12h) Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h.\"],\"board\":[\"Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h. ✕\"],\"trace\":[\"Breaks Saturday Ace — had to leave by 18:40. Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h.\"]}",
+  "PASS",
+  "6-7flyend-satweek-p.png"
+ ]
+]

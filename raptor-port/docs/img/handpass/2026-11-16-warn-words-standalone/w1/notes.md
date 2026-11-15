@@ -25,3 +25,28 @@
 - Insights: closed by Escape.
 - Logic: Edit mode closed by Done.
 - Scheduler board: closed by its Done button.
+
+## Second round — walker's notes (W1)
+
+### Script mistakes found and corrected (walk-scripts §7), so these are NOT app findings
+- Scenario 6, first run (runs s6-d / s6-p): I built the "SC shift" as a duty-block row (Duties, "SC Shift" template, row SXO AM). D2055 governs the STANDALONE SC wave (the + Wave menu's SC: take-off box = START, landing box = END). The duty-block row with END blank still "ends" at START + 1h (Friday duty ended 21:00 → clear 09:00 on Saturday; the line comes and goes the same on END typed 23:00). Kept in the report as a different shape (see the lead below). The real D2055 shape was walked in runs s6b-d / s6b-p (PASS both sizes).
+- Scenario 2, runs s2-d / s2b-d (and the phone twins): the "same look 7 seconds later" FAIL was my check reading a toast that stays in the page but invisible; the later picture (s2b-p/2-2pv-later-p.png) shows no toast and no red chip. The "saved plan" FAIL was my filter counting the green line "No conflicts flagged for this day ✓". Both fixed in run s2c (PASS). Use s2c only.
+- Scenario 5, first runs (s5, s5b): pending list "did not open" (my finder looked for one text leaf but the line holds a nested chip), then the Escape/outside rows; s5c is the corrected run (opens the day's "1 pending" chip, the Changes window).
+
+### Rows marked FAIL in the second round that are NOT app findings
+- s3b-d / s3b-p, "tapped Ranger's Sunday puck; the forward Breaks Monday rows" (a RECORD row, shown FAIL because the trace came back empty): the person is Ace, not Ranger (label is a typo of mine), and the helper's tap on his Sunday puck returned no trace rows twice; I did not confirm by picture that the puck was pressed. Treat as NOT WALKED for the "assumed" wording in the Sunday trace. The typed-landing Sunday trace in the same run did come back (and round 1's trace rows carry the "landed 23:40 + 2h debrief" wording).
+- s6-d / s6-p FAIL rows: the duty-block shape, see above (a lead, not the D2055 shape).
+
+### Leads for the host (not filed)
+- A duty-block shift row (SC Shift template under Duties) with START typed and END blank still counts as ended at START + 1h for crew rest. If D2055 is meant to cover it too, it does not (the standalone SC wave does). Pictures: s6-d/6-2noend-satweek-d.png, s6-d/6-2noend-fritrace-d.png (Friday trace reads "Breaks Saturday Ace — ... Friday duty ended 21:00 → clear 09:00").
+- The Changes window opened by a day's "1 pending" chip (title "Changes · Saturday 18/7", tabs New to you / All changes / To go out): its ✕ closes it; Escape does NOT close it (still open, page unchanged); a press on the page outside it does not close it either (the board stays live under it — a floating window). Round 1's "1 pending ▾" menu in the sign-off row is a different control and did close on Escape. Pictures: s5c-d/5-pendinglist-after-Escape-d.png, s5c-p/5-pendinglist-after-Escape-p.png. Whether Escape should close it is the host's call (rows are FAIL on Escape only because the brief's expectation was "closes").
+- OIL Earn on the phone: it is not in the board's top bar (that bar holds calendar, ‹ ›, highlighter, ⋯, Undo, Redo, History, sync, bell, ✓) — it is a button in the "This day" row, beside Templates, reached by scrolling to it; its aria-label is empty, found by its words "OIL Earn". Worked at 402 by tap (4 OIL items appear). The id #sbOil is the desktop bar's button; there it worked at 1536.
+- The pending line with the standalone SC, flying with B typed: the Friday shift's own "flies but has no END" line did not show among the board lines filtered by the callsign Ace (the line may not name him); not looked at without the filter.
+- Day details of Saturday were read while Plan A was the live day (tapping a saved plan in the menu makes it the live day: toast "Saturday is now "Plan A". Nothing is pending: it matches the Original."), so they read clean ("Nothing flagged — this day is clean ✓"); the details of the conflicted live copy were read in round 1 (scenario 1). I did not get back to the live copy before opening them.
+
+### Windows closed every way (round 2, run s5c-d / s5c-p, both sizes)
+- Day's "1 pending" chip window (Changes · Saturday): ✕ closes (page under unchanged); Escape does not; a press outside does not (RECORDED).
+- Leave War day sheet (bid-picker): ✕ closes; Escape closes; a press outside closes (RECORDED); page under unchanged each time.
+- Insights: ✕ closes; Escape closes; a press outside closes; page under unchanged each time.
+- Logic: A flight 75 then the row's Reset: box 1h15 with the pending strip, then 1h and the strip gone (PASS both sizes).
+- All browsers I started were closed by the script's end (each run's final step closes its browser).
