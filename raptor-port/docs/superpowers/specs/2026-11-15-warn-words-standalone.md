@@ -398,8 +398,9 @@ changed only so the strip would show. Pictures: `c-logic-proposed-phone.png`, `-
 - **Question 1:** answered by D2058 (§3c).
 - **Question 2 — no (D2068):** "Tight turning" keeps its name. Wherever this proposal writes "Tight crew rest" — the
   family's lines in §3 and §3a, the short-names table in §3b — read "Tight turning"; the build uses "Tight turning".
-- **Question 3 — open:** he asked back "should we use conflict or clash?". Recommended to him: "Clash", his own word
-  (D2045), so the list's line and the check's short name match; Insights' heading "Conflicts by type" covers every kind
-  of flag and stays.
+- **Question 3 — "Conflict" (D2070):** every line this proposal begins "Clash:" begins "Conflict:" in the build, and the
+  check keeps "Conflict" in its short name; the other checks' short names follow the new labels (the agent's reading,
+  told to him); Insights' heading "Conflicts by type" and "No conflicts flagged for this day" stay. The build checks
+  that each "Conflict:" line still fits two rows on a phone. The pictures on the page still say "Clash:".
 - **Question 4 — yes (D2069):** the crew-rest line keeps his 22 Aug 26 order with "needs 12h" added.
 - **Also open:** the one-sentence Logic note (§3f), and his approval of the words as a whole.
