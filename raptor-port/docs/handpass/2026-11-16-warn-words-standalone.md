@@ -51,36 +51,36 @@ YES / NO-because / MISSING, filled in the walk.
 
 | Surface | SHOW | USABLE | PAINTED | Proved by |
 |---|---|---|---|---|
-| The warning list (Edit Schedule's issues list, desktop and phone) | | | | |
-| The Scheduler Board's issues list | | | | |
-| The ALL AVAIL window's reason under a puck | | | | |
-| The previous day's crew-rest mark ("Breaks Tuesday" row) | | | | |
-| The next-week preview (peek) — the same-time line's box title and its hide | | | | |
-| The foot-of-screen note (a tapped warning) | | | | |
-| The pucks' own notes (the flag's hover / tap words) | | | | |
-| Insights' "Conflicts by type" (the short names) | | | | |
-| View-only Sched's list (and a published day's frozen face) | | | | |
-| The Logic page — the checks' names, the note under the changed-settings strip, the new setting's row | | | | |
-| Print and export | | | | |
-| The pending list (a Logic change on a published day's OIL) | | | | |
-| The new Logic row "A flight" (Rows with no end time, before "A sim") — its value, Reset, its out-of-bounds note | | | | |
-| The crew list and ALL AVAIL's busy windows for a flight with no landing (the picker agrees with the conflict list) | | | | |
-| OIL Earn and the Leave War's credited FO / HO for a weekend flight with no landing | | | | |
+| The warning list (Edit Schedule's issues list, desktop and phone) | YES | YES — tap lights the crew in warning colours, ✕ hides, Undo | the issue rings on the pucks | host Friday 12/12; W2 s7, s10 |
+| The Scheduler Board's issues list | YES | YES | the rings; the side column 256px wide on a desktop (3 rows there — a phone rule) | host Friday; W2 s4, s9, s10 |
+| The ALL AVAIL window's reason under a puck | YES — reasons as the list words them | YES — ✕ closes; the page behind stays pressable; Escape and a tap outside do not (older, `[ALLAVAIL-ESCAPE]`) | the count moves with the landing (42 / 42 / 43 / 42) | W2 s4, s5, plain-user round |
+| The previous day's crew-rest mark ("Breaks Tuesday" row) | YES — "Breaks Monday Havoc — had to leave by 01:40 (next day). Crew rest: …" | YES — the man's puck tapped | the dotted ring | W2 extra (d) both sizes; W1 s3b |
+| The next-week preview (peek) — the same-time line's box title and its hide | NOT WALKED at the peek itself — the same message function draws it (`warnwords.test.ts`); Monday opened cold and via Sunday walked | — | — | W1 s3b |
+| The foot-of-screen note (a tapped warning) | YES — repeats the tapped line whole | YES | — | W2 s10 (host's look 4: as built, the note is the line) |
+| The pucks' own notes (the flag's hover / tap words) | YES — "Ranger · IP · … · Conflict (two events at once)" | YES | — | W2 s12 |
+| Insights' "Conflicts by type" (the short names) | YES — Conflict 8, Misses flight brief 6, Long day 5, Double turning 3, Tight turn 3 … | YES — ✕, Escape, a tap outside | the hours beside it | W2 s12, s5; W1 s1 |
+| View-only Sched's list (and a published day's frozen face) | YES — same lines as admin and as Ranger | YES — read only | the issues strip | W2 s15 |
+| The Logic page — the checks' names, the note under the changed-settings strip, the new setting's row | YES — "Tight turn", "Tight turning", "Conflict", "Conflict with a request" | YES — search, change, Reset | the strip "1" → "0" | W1 s11; W2 s9, s12 |
+| Print and export | YES — no warning list in either; the CSV leaves a blank landing empty | YES | — | W1 s13 (desktop) |
+| The pending list (a Logic change on a published day's OIL) | YES — the setting line and the man's OIL line | YES — opens from "1 pending"; Escape / tap outside do not close it (older, recorded in `[RULES-CHECK-FIXES]`) | the sign-offs fall | W1 s1, s8 |
+| The new Logic row "A flight" (Rows with no end time, before "A sim") — its value, Reset, its out-of-bounds note | YES — 1h standard, 1h30, 1h15; "between 15 min and 8h" | YES — Reset, reload, Ranger read only | its row the same height as "A sim" | W1 s11 both sizes; W2 plain-user |
+| The crew list and ALL AVAIL's busy windows for a flight with no landing (the picker agrees with the conflict list) | YES — busy step to the assumed dekit, the same as a typed landing | YES | the struck puck | W2 s4, s5 |
+| OIL Earn and the Leave War's credited FO / HO for a weekend flight with no landing | YES — HO 09:00–15:00; FO once after AL1 | YES — OIL Earn found at both sizes | the cell, sheet and tracker | W1 s1, s3b, round 2 |
 | *Added from Astra's scenario design (16 Nov 26, `superpowers/briefs/2026-11-16-warn-words-scenarios-astra.md`):* | | | | |
-| The day-details window (the day's `?`) — its warning rows, its "free all day" figure, a tap on a row | | | | |
-| The 👁 look at a published version (current and an older one made in the walk), from the week and the board; a saved plan's preview flag-free | | | | |
-| The pending list's warning lines (added, changed, cleared, hidden — "new once signed", "goes away once signed") | | | | |
-| The passing note right after a drop that raises a warning (`state/dropflag.ts`), the next day's included | | | | |
-| Publication's OIL notices (an earning day published: no "unusable times" for a take-off with a blank landing) | | | | |
-| The Leave War's day sheet, day list and the OIL tracker's worked times and balance (beyond the cell) | | | | |
-| Insights' work hours (today's settings, D482) beside "Conflicts by type" | | | | |
-| The crew list with a seat picked and with none; the availability strips; ALL against ALL AVAIL | | | | |
-| The short names: issues heading, flag title, a puck's hover / tap words, the Logic check name and its search, Insights' category | | | | |
-| The next-week peek's ordinary warnings and crew-rest trace; Monday opened before Sunday's week | | | | |
-| A row's own title warnings (the same take-off and landing; the reporting order) on the week, board and peek | | | | |
-| Print / PDF and the CSV export (they carry no warning list; a blank landing never printed as a typed one) | | | | |
-| Each read route as the member Ranger (`us`/`us`), and at a phone's width | | | | |
-| The change history's "warning hidden" line (`state/changelines.ts`) — the host's addition | | | | |
+| The day-details window (the day's `?`) — its warning rows, its "free all day" figure, a tap on a row | YES | YES — a row tapped closes it and lights the crew; Close | the counts | W2 s10, s14; W1 s3b |
+| The 👁 look at a published version (current and an older one made in the walk), from the week and the board; a saved plan's preview flag-free | YES — its day details show the published words | YES | — | W2 extra (b) both sizes; W1 s2 |
+| The pending list's warning lines (added, changed, cleared, hidden — "new once signed", "goes away once signed") | YES for the OIL line; the warning lines NOT WALKED | — | — | W1 s1, s8 |
+| The passing note right after a drop that raises a warning (`state/dropflag.ts`), the next day's included | NOT WALKED (W2 ran short) — the same message function | — | — | — |
+| Publication's OIL notices (an earning day published: no "unusable times" for a take-off with a blank landing) | YES — none raised | YES | — | W1 s1 |
+| The Leave War's day sheet, day list and the OIL tracker's worked times and balance (beyond the cell) | YES — "a day — worked 09:00–15:30"; tracker +0.5 / FO | YES — the sheet closes by ✕, Escape, a tap outside | — | W1 s1, s3b, round 2 |
+| Insights' work hours (today's settings, D482) beside "Conflicts by type" | YES — 20h → 20h30; 40h35 → 41h05 typed | YES | — | W1 s1; W2 s5 |
+| The crew list with a seat picked and with none; the availability strips; ALL against ALL AVAIL | YES — a duty desk marks him busy, a sim seat and a programme row do not, as before | YES | — | W2 s4 (the 402 chip arming NOT WALKED) |
+| The short names: issues heading, flag title, a puck's hover / tap words, the Logic check name and its search, Insights' category | YES | YES | — | W2 s12; W1 s11 |
+| The next-week peek's ordinary warnings and crew-rest trace; Monday opened before Sunday's week | YES — Monday's "Tight turning … Sunday landing assumed 00:30" cold and via Sunday | YES | — | W1 s3b both sizes |
+| A row's own title warnings (the same take-off and landing; the reporting order) on the week, board and peek | YES — "Times look wrong…", no "assumed" | — | — | W1 s13 |
+| Print / PDF and the CSV export (they carry no warning list; a blank landing never printed as a typed one) | YES | YES | — | W1 s13 |
+| Each read route as the member Ranger (`us`/`us`), and at a phone's width | YES — View-only and Logic read only | YES | — | W1 s11; W2 s15 (the 402 plain-user round NOT WALKED) |
+| The change history's "warning hidden" line (`state/changelines.ts`) — the host's addition | YES — Undo names "hiding a warning" | YES | — | W2 s7 |
 
 ## For the walk — piece B and C scenarios, from the build
 
@@ -181,8 +181,31 @@ whole `superpowers/briefs/2026-11-16-warn-words-scenarios-astra.md`: 15 roll-cal
   amendment's empty boxes, as built; the amber "Not yet signed" chip is the sign (D97). The equal take-off and landing
   keep their own "Times look wrong…" warning, no "assumed" (D49); the CSV leaves a blank landing empty — as it should.
 - **W1 lead, put to him as a words question (not changed):** the Logic page's prose says "clash" in about nine places —
-  the new "A flight" row ("Clashes, the tight turn, …") among them, and the setting "SC MAIN clashes"; his D2070 named
-  the warnings' label "Conflict". Changing the page's own word is a words pass he has not seen.
+  the setting "SC MAIN clashes" among them; his D2070 named the warnings' label "Conflict". Changing the page's older
+  words is a words pass he has not seen.
+- **W2 F3 (W2, scenario 12, `w2/s12-d/12-5-logic-d.png`, opened by the host) — the NEW row "A flight" said "Clashes, the
+  tight turn, …".** This job wrote that row, so its own word follows D2070. **Fixed red first** (`ui/logic.test.tsx` "D2046",
+  red on the old word): "Conflicts, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to
+  that landing, and its warnings say it was assumed." The older prose stays the words question above.
+- **W2 F1, F2 (scenario 10, `w2/s10-p/10-3-day-details-p.png`, `w2/s10-c390/10-2-week-strip-c.png`, opened by the host) —
+  the longest conflict line takes three rows on a phone.** "Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to
+  13:30) & MASS DEBRIEF + BEER CALL 13:10–13:20": three rows in day details at 402 and in the week strip at 390; the board
+  list two. No time range breaks. Its length is the approved words (D2071) plus a long item name the scheduler typed; no
+  wording can bound a typed name. **Disposition: for his look**, with the pictures — not changed (the same point as G1).
+- **W2 leads judged not faults:** the ALL and ALL AVAIL windows drop Ranger while his flight's step-to-dekit covers the
+  window (43 → 42) — the same with a typed landing (scenario 5's 42 / 42 / 43 / 42), the availability window D36 rules;
+  "Tight turning" not produced in W2's set-up — W1 produced it (`w1/s3b-p/3-1cold-mondetails-p.png`); extra (c)'s SC line
+  still had the shift's END 13:00 in its box (the long day reads "19:00 → 13:00"), so it was not END-blank — W1's s6b
+  walked the true blank on a real SC wave line, PASS both sizes; extra (a)'s AVALON NIGHT line carries its default END
+  07:00, as built; the debrief stays "(assumed)" with a typed landing — no debrief is ever typed, as built; the tapped
+  warning's foot note repeats the line, as built; a spanning item reads item first ("Conflict: BRIEFING 10:30–14:00 &
+  VL BFM (T/O 12:00, landing assumed 13:00)") — the item started first, a shape §3c left to the build: for his look.
+- **W1 round 2 lead (a), a question for him:** a Duties-block desk from an SC-shift template with START 20:00 and END
+  blank ends at START + the Logic one-hour default (`w1/s6-d/6-2noend-satweek-d.png`: "Friday duty ended 21:00 → clear
+  09:00") — the older duty-row rule, not D2055's standby wave line. Should such a desk be left out of crew rest too?
+- **Older, known (not this job's):** the changes window opened from "1 pending" does not close by Escape or a press
+  outside — already in `OUTSTANDING.md` `[RULES-CHECK-FIXES]`'s "older, found on the way"; the ALL AVAIL window the same —
+  `[ALLAVAIL-ESCAPE]`.
 
 ## Notes for the walk, from the build
 
