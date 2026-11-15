@@ -430,7 +430,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   `refwin.ts:rebrief()` tracks the same landing and prints the identical
   branch on the reference; pinned in `crewrest-ui.test.ts`.
   **NARROWED 15 Nov 26 by D2046 (not built — `[WARN-WORDS-STANDALONE]`):** a blank or "TBD" landing is to be
-  assumed at the take-off plus a new Logic flight length (starting at 1 hour), not at the take-off itself, and every
+  assumed at the take-off plus a new Logic flight length (starting at 60 minutes, D2047), not at the take-off itself, and every
   check that reads the landing is to use it, its words "assumed it landed 13:00 (take-off + 1h)"; until built, the
   paragraph above describes the app as it is.
   **The tight-turning advisory (`CREW_TIGHT`) reuses that same tail**, so it
