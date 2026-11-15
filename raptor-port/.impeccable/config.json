@@ -74,6 +74,15 @@
         "value": "inter",
         "createdAt": "2026-11-14T04:49:09.754Z",
         "reason": "owner D2040 (14 Nov 26, user confirmed): the font is never downloaded; devices show their own"
+      },
+      {
+        "rule": "overused-font",
+        "value": "*",
+        "files": [
+          "raptor-port/e2e/warnhide.spec.ts"
+        ],
+        "createdAt": "2026-11-15T18:53:37.448Z",
+        "reason": "agent: a test fixture pins Arial only to measure line fit; nothing a person sees"
       }
     ]
   },

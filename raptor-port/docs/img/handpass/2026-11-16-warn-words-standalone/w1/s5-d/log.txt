@@ -1,0 +1,15 @@
+flight d5 w0 {"to":"12:00","ld":"","msn":"OIL FLT","p":"Ranger"}
+ROW RECORDED | R2-5 windows closed every way / OIL Earn route | 1536 | read the board day bar's buttons by words and aria-label | saw: [{"id":"sbCal","aria":"Jump to a date","title":"Jump to a date","txt":"Calendar","x":16,"y":10},{"id":"","aria":"Previous week","title":"Previous week","txt":"‹","x":452,"y":13},{"id":"","aria":"","title":"","txt":"Mon 13","x":483,"y":12},{"id":"","aria":"","title":"","txt":"Tue 14","x":554,"y":12},{"id":"","aria":"","title":"","txt":"Wed 15","x":618,"y":12},{"id":"","aria":"","title":"","txt":"Th
+ROW RECORDED | R2-5 windows closed every way / OIL Earn route | 1536 | tried every route to OIL Earn on the board | saw: ["#sbOil: 4 OIL items"]; worked: #sbOil
+ROW NOT WALKED | R2-5 windows closed every way / OIL Earn route | 1536 | pending list: opened, then closed by its close control | saw: did not open
+ROW NOT WALKED | R2-5 windows closed every way / OIL Earn route | 1536 | pending list: opened, then closed by Escape | saw: did not open
+ROW NOT WALKED | R2-5 windows closed every way / OIL Earn route | 1536 | pending list: opened, then closed by tap outside | saw: did not open
+ROW PASS | R2-5 windows closed every way / OIL Earn route | 1536 | Leave War day sheet: opened, closed by its ✕ | saw: still open: false; page under unchanged: true
+ROW PASS | R2-5 windows closed every way / OIL Earn route | 1536 | Leave War day sheet: opened, closed by Escape | saw: still open: false; page under unchanged: true
+ROW RECORDED | R2-5 windows closed every way / OIL Earn route | 1536 | Leave War day sheet: opened, closed by tap outside | saw: still open: false; page under unchanged: true
+ROW PASS | R2-5 windows closed every way / OIL Earn route | 1536 | Insights: opened, closed by its ✕ | saw: still open: false; page under unchanged: true
+ROW PASS | R2-5 windows closed every way / OIL Earn route | 1536 | Insights: opened, closed by Escape | saw: still open: false; page under unchanged: true
+ROW RECORDED | R2-5 windows closed every way / OIL Earn route | 1536 | Insights: opened, closed by tap outside | saw: still open: false; page under unchanged: true
+ROW PASS | R2-5 windows closed every way / OIL Earn route | 1536 | Logic: A flight 75, then the row Reset | saw: 1h15 strip 1; after reset 1h strip 0
+errors []
+DONE 5 PASS 0 FAIL 7 OTHER of 12

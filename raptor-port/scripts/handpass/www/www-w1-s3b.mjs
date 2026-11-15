@@ -37,14 +37,11 @@ await X.closeBoard(w)
 // Monday item next week
 await gotoWeek(...NXT)
 await X.board(w, MON)
-const g0 = await page.evaluate(d => window.DAYS[d].ground.length, MON)
-await X.press(w, `[data-gradd="${MON}"]`, { scope: 'board' }); await sleep(400)
-await X.typeIn(w, `[data-bfld="gr:${MON}.${g0}.prog"]`, 'BRIEFING')
-await X.typeIn(w, `[data-bfld="gr:${MON}.${g0}.str"]`, '14:00')
-await X.typeIn(w, `[data-bfld="gr:${MON}.${g0}.end"]`, '15:00')
-const sres = await X.seat(w, `[data-fill="g:${MON}.${g0}.+"]`, MAN)
+const wm = await X.flight(w, MON, '17:00', '18:00', MAN, { msn: 'MON FLT' })
+const who = await page.evaluate(([d, g]) => window.PEOPLE[window.DAYS[d].waves[g].formations[0].aircraft[0].p]?.cs, [MON, wm])
+const sres = who === CS ? 'ok' : 'FAILED'
 await X.closeBoard(w)
-R('built: Sunday 19 Jul ' + CS + ' T/O 23:30 landing blank; Monday 20 Jul BRIEFING 14:00–15:00 with ' + CS + ' (the brief says 13:30; 14:00 used so a typed landing can clear it)', 'both rows made', `seat: ${sres}; ground rows Monday: ${g0 + 1}`, sres === 'ok' ? 'PASS' : 'NOT WALKED', '')
+R('built: Sunday 19 Jul ' + CS + ' T/O 23:30 landing blank; Monday 20 Jul ' + CS + ' flight T/O 17:00 landing 18:00 (report 14:00; chosen so the blank landing breaks his rest and the typed 23:40 does not; a ground item starts no flying day)', 'both rows made', `Monday front seat: ${who}`, sres === 'ok' ? 'PASS' : 'NOT WALKED', '')
 async function readMon(tag) {
   await L.go(page, 'editsched'); await sleep(400)
   const wk = await page.evaluate(() => window.CURWEEK)

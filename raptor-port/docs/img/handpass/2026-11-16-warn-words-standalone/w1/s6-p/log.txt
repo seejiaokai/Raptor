@@ -1,0 +1,21 @@
+man Ace dj
+ROW RECORDED | 6 SC with no END | 402 | Friday: SC Shift row SXO AM START 20:00, END blank, Ace on it; Friday's own warnings | saw: seat ok; row SXO AM|20:00-|Ace; []
+ROW PASS | 6 SC with no END | 402 | Saturday 06:00 item for Ace (seat ok); START 20:00 / END blank | saw: {"week":[],"details":[],"board":[],"trace":[]}
+ROW FAIL | 6 SC with no END | 402 | END 23:00 typed | saw: {"week":[],"details":[],"board":[],"trace":[]}
+ROW PASS | 6 SC with no END | 402 | END cleared again | saw: {"week":[],"details":[],"board":[],"trace":[]}
+ROW RECORDED | 6 SC with no END | 402 | pressed the row's flag control ({"title":"Red box — flag for the next scheduler","txt":"■","cls":"mbtn red"}); the row, with END blank | saw: row {"role":"SXO AM","id":"dj","str":"20:00","end":"","rid":"rmwi6spmhzt9zlz","flag":true}; board lines: []
+ROW PASS | 6 SC with no END | 402 | the flagged row with END blank: Saturday crew rest | saw: {"week":[],"details":[],"board":[],"trace":[]}
+ROW FAIL | 6 SC with no END | 402 | flagged row, END 23:00 typed | saw: {"week":[],"details":[],"board":[],"trace":[]}
+errors []
+DONE 3 PASS 2 FAIL 2 OTHER of 7
+man Ace dj
+ROW RECORDED | 6 SC with no END | 402 | Friday: SC Shift row SXO AM START 20:00, END blank, Ace on it; Friday's own warnings | saw: seat ok; row SXO AM|20:00-|Ace; []
+flight d5 w0 {"to":"09:00","ld":"10:00","msn":"EARLY FLT","p":"Ace"}
+ROW FAIL | 6 SC with no END | 402 | Saturday 06:00 item for Ace (seat ok); START 20:00 / END blank | saw: {"week":["Crew rest (<12h) Ace — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 06:40: 9h40 rest, needs 12h. ✕"],"details":["Warning · Crew rest (<12h) Ace — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 06:40: 9h40 rest, needs 12h."],"board":["Ace — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 06:40: 9h40 rest, needs 12h. ✕"],"trace":["Breaks Saturday Ace — had to
+ROW PASS | 6 SC with no END | 402 | END 23:00 typed | saw: {"week":["Crew rest (<12h) Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h. ✕"],"details":["Warning · Crew rest (<12h) Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h."],"board":["Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h. ✕"],"trace":["Breaks Saturday Ace — had to
+ROW FAIL | 6 SC with no END | 402 | END cleared again | saw: {"week":["Crew rest (<12h) Ace — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 06:40: 9h40 rest, needs 12h. ✕"],"details":["Warning · Crew rest (<12h) Ace — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 06:40: 9h40 rest, needs 12h."],"board":["Ace — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 06:40: 9h40 rest, needs 12h. ✕"],"trace":["Breaks Saturday Ace — had to
+ROW RECORDED | 6 SC with no END | 402 | pressed the row's flag control ({"title":"Red box — flag for the next scheduler","txt":"■","cls":"mbtn red"}); the row, with END blank | saw: row {"role":"SXO AM","id":"dj","str":"20:00","end":"","rid":"rmwi6v6a5mwytjk","flag":true}; board lines: []
+ROW FAIL | 6 SC with no END | 402 | the flagged row with END blank: Saturday crew rest | saw: {"week":["Crew rest (<12h) Ace — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 06:40: 9h40 rest, needs 12h. ✕"],"details":["Warning · Crew rest (<12h) Ace — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 06:40: 9h40 rest, needs 12h."],"board":["Ace — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 06:40: 9h40 rest, needs 12h. ✕"],"trace":["Breaks Saturday Ace — had to
+ROW PASS | 6 SC with no END | 402 | flagged row, END 23:00 typed | saw: {"week":["Crew rest (<12h) Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h. ✕"],"details":["Warning · Crew rest (<12h) Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h."],"board":["Ace — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h. ✕"],"trace":["Breaks Saturday Ace — had to
+errors []
+DONE 2 PASS 3 FAIL 2 OTHER of 7

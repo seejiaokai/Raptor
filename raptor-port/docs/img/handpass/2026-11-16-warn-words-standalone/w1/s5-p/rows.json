@@ -1,0 +1,110 @@
+[
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "read the board day bar's buttons by words and aria-label",
+  "RECORD",
+  "[{\"id\":\"sbCal\",\"aria\":\"Jump to a date\",\"title\":\"Jump to a date\",\"txt\":\"\",\"x\":8,\"y\":6},{\"id\":\"sbPrevDay\",\"aria\":\"\",\"title\":\"Previous day\",\"txt\":\"‹\",\"x\":8,\"y\":42},{\"id\":\"sbHl\",\"aria\":\"Highlight filters\",\"title\":\"Highlight by category / quals\",\"txt\":\"\",\"x\":54,\"y\":42},{\"id\":\"sbMore\",\"aria\":\"More — Sort all and the layout\",\"title\":\"Sort all · Phone / Desktop layout\",\"txt\":\"⋯\",\"x\":90,\"y\":42},{\"id\":\"sbNextDay\",\"aria\":\"\",\"title\":\"Next day\",\"txt\":\"›\",\"x\":354,\"y\":42},{\"id\":\"sbUndo\",\"aria\":\"Undo\",\"title\":\"Undo — a change to the schedule\",\"txt\":\"↶\",\"x\":199,\"y\":6},{\"id\":\"sbRedo\",\"aria\":\"Redo\",\"title\":\"Redo\",\"txt\":\"↷\",\"x\":232,\"y\":6},{\"id\":\"sbHist\",\"aria\":\"\",\"title\":\"Show the changes, and who changed each detail — hover it, or tap it on a phone\",\"txt\":\"\",\"x\":265,\"y\":6},{\"id\":\"sbSync\",\"aria\":\"\",\"title\":\"Toggle 1-second sync (for publishing / meetings)\",\"txt\":\"\",\"x\":298,\"y\":6},{\"id\":\"sbBell\",\"aria\":\"Notifications\",\"title\":\"Notifications\",\"txt\":\"\",\"x\":331,\"y\":6},{\"id\":\"sbDone\",\"aria\":\"\",\"title\":\"\",\"txt\":\"✓\",\"x\":364,\"y\":6},{\"id\":\"\",\"aria\":\"\",\"title\":\"Switch between your plans, or look back at an issued version\",\"txt\":\"Live working copy ▾\",\"x\":24,\"y\":-237},{\"id\":\"\",\"aria\":\"\",\"title\":\"Every change on Saturday and who made it\",\"txt\":\"4 changes\",\"x\":211,\"y\":-234},{\"id\":\"\",\"aria\":\"\",\"title\":\"Saturday — approval, AL versions, advisories\",\"txt\":\"i\",\"x\":292,\"y\":-235},{\"id\":\"\",\"aria\":\"\",\"title\":\"Sign off CUR CK, SKED CK, PLANNED BY, APPROVED BY before publishing Saturday\",\"txt\":\"Publish day\",\"x\":24,\"y\":-211},{\"id\":\"\",\"aria\":\"\",\"title\":\"Save this day, or apply a saved one\",\"txt\":\"Templates\",\"x\":158,\"y\":-106},{\"id\":\"\",\"aria\":\"\",\"title\":\"Show who earns OIL on this day, and change it\",\"txt\":\"OIL Earn\",\"x\":267,\"y\":-106},{\"id\":\"\",\"aria\":\"\",\"title\":\"Add a note line\",\"txt\":\"+ Note\",\"x\":311,\"y\":-54},{\"id\":\"\",\"aria\":\"\",\"title\":\"Remove this note\",\"txt\":\"✕\",\"x\":340,\"y\":-18},{\"id\":\"\",\"aria\":\"\",\"title\":\"Remove this note\",\"txt\":\"✕\",\"x\":340,\"y\":11},{\"id\":\"\",\"aria\":\"\",\"title\":\"Sort this section\",\"txt\":\"Auto sort\",\"x\":225,\"y\":68},{\"id\":\"\",\"aria\":\"\",\"title\":\"Add a squadron-wide item\",\"txt\":\"+ Item\",\"x\":312,\"y\":68},{\"id\":\"\",\"aria\":\"\",\"title\":\"Show this note on the view-only schedule\",\"txt\":\"MAKE PUBLIC\",\"x\":278,\"y\":150}]",
+  "RECORDED",
+  "5-1-bar-p.png"
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "tried every route to OIL Earn on the board",
+  "RECORD which worked",
+  "[\"#sbOil: locator.waitFor: Timeout 8000ms exceeded.\\nCall log:\\n\\u001b[2m  - waiting fo\",\"button by words \\\"OIL Earn\\\": 4 OIL items\"]; worked: button by words \"OIL Earn\"",
+  "RECORDED",
+  "5-4-oil-p.png"
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "pending list: opened, then closed by its close control",
+  "window opens",
+  "did not open",
+  "NOT WALKED",
+  ""
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "pending list: opened, then closed by Escape",
+  "window opens",
+  "did not open",
+  "NOT WALKED",
+  ""
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "pending list: opened, then closed by tap outside",
+  "window opens",
+  "did not open",
+  "NOT WALKED",
+  ""
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "Leave War day sheet: opened, closed by its ✕",
+  "closes; the page under it as it was",
+  "still open: false; page under unchanged: true",
+  "PASS",
+  "5-LeaveWardaysheet-after-its ✕-p.png"
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "Leave War day sheet: opened, closed by Escape",
+  "closes; the page under it as it was",
+  "still open: false; page under unchanged: true",
+  "PASS",
+  "5-LeaveWardaysheet-after-Escape-p.png"
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "Leave War day sheet: opened, closed by tap outside",
+  "RECORD (closes or stays)",
+  "still open: false; page under unchanged: true",
+  "RECORDED",
+  "5-LeaveWardaysheet-after-tap outside-p.png"
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "Insights: opened, closed by its ✕",
+  "closes; the page under it as it was",
+  "still open: false; page under unchanged: true",
+  "PASS",
+  "5-Insights-after-its ✕-p.png"
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "Insights: opened, closed by Escape",
+  "closes; the page under it as it was",
+  "still open: false; page under unchanged: true",
+  "PASS",
+  "5-Insights-after-Escape-p.png"
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "Insights: opened, closed by tap outside",
+  "RECORD (closes or stays)",
+  "still open: false; page under unchanged: true",
+  "RECORDED",
+  "5-Insights-after-tap outside-p.png"
+ ],
+ [
+  "R2-5 windows closed every way / OIL Earn route",
+  "402",
+  "Logic: A flight 75, then the row Reset",
+  "box 1h15 with the strip; then 1h and the strip gone",
+  "1h15 strip 1; after reset 1h strip 0",
+  "PASS",
+  "5-logic-reset-p.png"
+ ]
+]
