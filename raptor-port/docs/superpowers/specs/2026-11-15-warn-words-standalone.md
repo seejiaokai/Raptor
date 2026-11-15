@@ -354,6 +354,10 @@ refuels fast and takes off again (D2060). Point 2 stays as built: a standby line
 its crew may do other things on standby and has an hour from activation to fly, which the app does not need to know
 (D2061). Nothing to build for either.
 
+**Narrowed the same evening (D2062):** by "the standby line" he meant SC SPARE, AVALON and BB. SC MAIN is open: does an
+SC MAIN line that flies block the step before its START and the dekit after its END? Today it is compared on START to
+END only; put to him, nothing changed.
+
 ## 3e. Six example rows corrected (15 Nov 26) — he asked "why would this clash?"
 
 Three rows of the clash picture and three of the leave picture showed cases the app never raises, or raises only once
