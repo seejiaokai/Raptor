@@ -56,7 +56,26 @@ filled in the walk.
 
 ## The five sizing lines (§7.0)
 
-(to fill)
+1. **Type:** A (one rule inside the crew-rest calculation — which desks bear rest, D2073) + F (words: D2074, D2077,
+   D2078) + D in part (the one seat sentence drawn by the issues list, the Board, the chip, the day-details window, the
+   foot note, the history; the Legend drawn on two pages).
+2. **What only a walk could find:** the SC template's mark reaching a desk through each real writer (+ Block → SC
+   Shift, a template with "For wave", a day template, + Alt Plan, a published day loaded back, Undo / Redo, a reload)
+   and NOT through a name typed on a plain block; the crew-rest readers agreeing after each END change (the list, the
+   forward trace, the picker); the seat words on every drawer after a real placement; the Legend's two homes at both
+   sizes; the Logic page as drawn. The unit tests cover the calculation and the strings; the drawing check covered
+   Edit Schedule's Legend (0 pixels different at both sizes — host, `docs/mock/2026-11-16-legend-words/drawcheck.mjs`).
+3. **The ledger:** the last walk of this family ([WARN-WORDS-STANDALONE], 16 Nov 26) — FULL, two Sonnet walkers then a
+   re-walk, 753 pictures; the walk found 3 faults, the blind reads 6 more; W3 cost about 289k and 22 min.
+4. **The walk chosen:** ONE Sonnet walker, Astra's ten scenarios in her order (`docs/superpowers/briefs/
+   2026-11-16-warn-words-followups-scenarios-astra.md`), about 75 minutes, on the frozen build of `7eade5b52`. Desktop
+   1536 Chromium for all ten; the phone (402 × 874 WebKit, touch) for 1, 8, 9 and 10 and one row of 7. Carried by
+   tests, not walked: the seat warning for a pilot record carrying CAT IW, which no control can make
+   (`engine/validate.test.ts`, `engine/avalon-rules.test.ts` — the new words, calling the check directly); the
+   Legend's drawing (the drawing check above). The host proved the opening route first:
+   `scripts/handpass/wwf/wwf-host-probe.mjs` (desktop) — SC desk END blank: no crew-rest line; END 23:00: "Ranger —
+   Crew rest: Saturday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h."; END cleared: none.
+5. **After the walk:** its row in `docs/walk-ledger.md`.
 
 ## The lessons of §7.11, each against a scenario or a test
 
