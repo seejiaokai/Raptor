@@ -1,0 +1,31 @@
+rcb2-w3-r4 v1
+lwEvent {"ok":true,"oilday":null}
+ROW PASS | R4 setup PH | 1536 | Leave War event sheet: PH on Mon 27 Jul | saw: {"ok":true,"oilday":null}
+flight d0 w0 {"to":"12:00","ld":"13:00","p":"Ranger"}
+Mon formation {"to":"12:00","ld":"13:00","br":"09:40","waves":1}
+Mon warn ["This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"]
+Mon head 
+publish {"published":true,"version":"ORIG","signSelects":4}
+ROW PASS | R4 setup publish | 1536 | Mon: VL 12:00-13:00, B 09:40, Ranger; four sign-offs, Publish day | saw: {"published":true,"version":"ORIG","signSelects":4}
+flight d6 w0 {"to":"18:00","ld":"19:00","p":"Ranger"}
+SUN before {"trace":[],"strip":[],"puck":[{"cls":"puck oilbar oilbar-ho","title":"Ranger · IP · instructor pilot · SXO · earns half a day of OIL"}],"marks":[]}
+ROW PASS | R4 3 before | 1536 | Sunday 18:00-19:00 Ranger; debrief 2h (standard) | saw: {"trace":[],"strip":[],"puck":[{"cls":"puck oilbar oilbar-ho","title":"Ranger · IP · instructor pilot · SXO · earns half a day of OIL"}],"marks":[]}
+MON before {"pend":[],"week":[],"dd":[]}
+ROW PASS | R4 3 before Monday | 1536 | next week's Monday (week view, Edit Schedule) | saw: {"pend":[],"week":[],"dd":[]}
+debrief 3h {"key":"debrief","before":"2h","after":"?","strip":"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings"}
+ROW PASS | R4 4 set | 1536 | Logic: Debrief after landing 2h -> 3h | saw: {"key":"debrief","before":"2h","after":"?","strip":"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings"}
+SUN after {"trace":["Breaks Monday Ranger — had to leave by 21:40. Crew rest breach — Sunday landed 19:00, +3h debrief assumed → ended 22:00 → crew rest clear at 10:00, but told to report 09:40 — only 11h40 rest."],"strip":[],"puck":[{"cls":"puck boxdot oilbar oilbar-fo sel","title":"Ranger · IP · instructor pilot · SXO · Crew rest — Monday is broken by this day: he had to leave by 21:40 · earns a full day of OIL"}],"marks":["witem hard wtr: Breaks Monday Ranger — had to leave by 21:40. Crew rest breach — Sunday landed 19:00, +3h debrief assumed → ended 22:00 → crew rest clear at 10:00, but told to "]}
+ROW PASS | R4 4 after Sunday | 1536 | Sunday after debrief 3h | saw: {"trace":["Breaks Monday Ranger — had to leave by 21:40. Crew rest breach — Sunday landed 19:00, +3h debrief assumed → ended 22:00 → crew rest clear at 10:00, but told to report 09:40 — only 11h40 rest."],"strip":[],"puck":[{"cls":"puck boxdot oilbar oilbar-fo sel","title":"Ranger · IP · instructor 
+MON after {"pend":["dpend dpendbtn: 1 pending"],"week":["Crew rest (<12h) Ranger — Crew rest breach — Sunday landed 19:00, +3h debrief assumed → ended 22:00 → crew rest clear at 10:00, but told to report 09:40 — only 11h40 rest.new once signed ✕"],"dd":["Warning · Crew rest (<12h) Ranger — Crew rest breach — Sunday landed 19:00, +3h debrief assumed → ended 22:00 → crew rest clear at 10:00, but told to report 09:40 — only 11h40 rest."]}
+ROW PASS | R4 4 after Monday pending | 1536 | next week's Monday reads '1 pending' | saw: ["dpend dpendbtn: 1 pending"]
+ROW PASS | R4 4 after Monday working copy | 1536 | Monday's working copy carries Ranger's crew-rest breach | saw: {"week":["Crew rest (<12h) Ranger — Crew rest breach — Sunday landed 19:00, +3h debrief assumed → ended 22:00 → crew rest clear at 10:00, but told to report 09:40 — only 11h40 rest.new once signed ✕"],"dd":["Warning · Crew rest (<12h) Ranger — Crew rest breach — Sunday landed 19:00, +3h debrief assu
+view CURWEEK 27/07/2026
+VIEW after {"cur":"27/07/2026","items":[],"head":"NO STRIP"}
+ROW PASS | R4 4 after View-only Monday | 1536 | View-only's Monday (published face) | saw: {"cur":"27/07/2026","items":[],"head":"NO STRIP"}
+debrief 2h {"key":"debrief","before":"3h","after":"?","strip":""}
+SUN back {"trace":[],"strip":[],"puck":[{"cls":"puck oilbar oilbar-ho","title":"Ranger · IP · instructor pilot · SXO · earns half a day of OIL"}],"marks":[]}
+ROW PASS | R4 5 back Sunday | 1536 | debrief back to 2h | saw: {"trace":[],"strip":[],"puck":[{"cls":"puck oilbar oilbar-ho","title":"Ranger · IP · instructor pilot · SXO · earns half a day of OIL"}],"marks":[]}
+MON back {"pend":[],"week":[],"dd":[]}
+ROW PASS | R4 5 back Monday | 1536 | Monday after 2h again | saw: {"pend":[],"week":[],"dd":[]}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

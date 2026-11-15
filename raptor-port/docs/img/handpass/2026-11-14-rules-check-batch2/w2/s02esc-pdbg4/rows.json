@@ -1,0 +1,29 @@
+[
+ [
+  "S02 Escape a-direct",
+  "402",
+  "open the ALL AVAIL window, press Escape",
+  "Escape closes the front window (ALL AVAIL contract, D641)",
+  "focus was BODY.#; window STILL OPEN",
+  "FAIL",
+  "s02esc-a-direct-p.png"
+ ],
+ [
+  "S02 Escape b-titlebar",
+  "402",
+  "open the ALL AVAIL window, click .availwin .win-ttl, press Escape",
+  "Escape closes the front window (ALL AVAIL contract, D641)",
+  "focus was BODY.#; window STILL OPEN",
+  "FAIL",
+  "s02esc-b-titlebar-p.png"
+ ],
+ [
+  "S02 Escape c-puck",
+  "402",
+  "open the ALL AVAIL window, click .availwin .rpuck .puck, press Escape",
+  "Escape closes the front window (ALL AVAIL contract, D641)",
+  "focus was BODY.#; window STILL OPEN",
+  "FAIL",
+  "s02esc-c-puck-p.png"
+ ]
+]

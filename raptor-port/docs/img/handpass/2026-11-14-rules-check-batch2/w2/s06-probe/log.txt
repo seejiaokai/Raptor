@@ -1,0 +1,10 @@
+flight d5 w0 {"to":"12:00","ld":"13:00","p":"Ranger"}
+Sat formation {"to":"12:00","ld":"13:00"}
+publish {"published":true,"version":"ORIG","signSelects":4}
+ROW PASS | S06 | 1536 | Sat 12:00-13:00 Bane; sign four; Publish day | saw: {"published":true,"version":"ORIG","signSelects":4}
+chips {"ver":"ORIG","pend":[],"sign":["","","",""],"head":""}
+Bane puck [{"cls":"puck sm oilbar oilbar-ho","title":"Ranger · IP · instructor pilot · SXO · earns half a day of OIL"}]
+LW cell {"Ranger":{"text":"HO*","cls":"duty weekend act hasc"}}
+ROW PASS | S06 | 1536 | Leave War cell for Bane on Sat 18 Jul after publishing (6h01 -> 6h on the day) | saw: {"Ranger":{"text":"HO*","cls":"duty weekend act hasc"}}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

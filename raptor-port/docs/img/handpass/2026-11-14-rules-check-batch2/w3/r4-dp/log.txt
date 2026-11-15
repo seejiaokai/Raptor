@@ -1,0 +1,11 @@
+rcb2-w3-r4 v1
+lwEvent {"ok":true,"oilday":"⠿ OIL — Mon 20 Jul Public holiday ✕ Mon 20 Jul is now a public holiday. 1 TO ANSWER Yes to all No to all 10:00–12:00 VaporAPPOINTMENT Medical / PHA Yes · HO No What is left goes to the schedulers’ bells Later Save"}
+ROW PASS | R4 setup PH | 1536 | Leave War event sheet: PH on Mon 20 Jul | saw: {"ok":true,"oilday":"⠿ OIL — Mon 20 Jul Public holiday ✕ Mon 20 Jul is now a public holiday. 1 TO ANSWER Yes to all No to all 10:00–12:00 VaporAPPOINTMENT Medical / PHA Yes · HO No What is left goes to the schedulers’ bells Later Save"}
+flight d0 w2 {"to":"12:00","ld":"13:00","p":"Ranger"}
+Mon formation {"to":"12:00","ld":"13:00","br":"09:40","waves":3}
+Mon warn ["Outlaw — RU BFM & Sim EP-4 clash ✕","Vapor — APPOINTMENT & MEDICAL APPT clash ✕","Ranger — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕","Ranger — Tight turn VL ACM→this line: 5 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕","Echo — Tight turn VL BFM→VL ACM: 25 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕","Outlaw — Not enough time to attend the RU BFM debrief — Sim EP-4 sits inside 10:05–12:05 (land + 2h) ✕","Outlaw — No time for the OFT EP-4 brief — RU BFM sits inside 08:30–09:00 ✕","Outlaw — No time for the OFT EP-4 debrief — RU BFM sits inside 10:30–11:00 ✕","Ranger, Echo — 2 people are double turning: Ranger, Echo ✕","Wildcard, Tally — Wildcard (OCU pilot) with Tally (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus ✕","Diesel, Hex — CAT D pilot Diesel with CAT C WSO Hex in RU BFM — CO approval required ✕","This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"]
+Mon head 
+publish {"published":true,"version":"ORIG","signSelects":4}
+ROW PASS | R4 setup publish | 1536 | Mon: VL 12:00-13:00, B 09:40, Ranger; four sign-offs, Publish day | saw: {"published":true,"version":"ORIG","signSelects":4}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

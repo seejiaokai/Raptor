@@ -152,7 +152,7 @@ export interface OilEvidence {
    *  `stand` on a claim. */
   mem?: 1
   /** THE LOGIC VALUES THIS DAY'S OIL IS WORKED OUT FROM ([OIL-WORK-START] — owner, D592 (4), 5 Oct 26: "a published day
-   *  keeps the OIL it went out with"; D48, D142). The nominal report lead, the debrief after landing and the full-day
+   *  keeps the OIL it went out with"; D48, D142; all three, D2044). The nominal report lead, the debrief after landing and the full-day
    *  line, as they stood when the block was built — so on an ISSUED day, as they stood at publication. Every reader of
    *  the block's OIL uses THESE (oilDayWork, oilAmount below), which is what stops a Logic change moving published OIL
    *  with nothing pending: "Nominal report before T/O" 3h → 2h30 took a published full day to a half, the four

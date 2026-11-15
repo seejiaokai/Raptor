@@ -1,0 +1,47 @@
+[
+ [
+  "R6 setup",
+  "402",
+  "Sun 2 Aug 12:00 (landing blank) published; Mon 3 Aug 04:00-05:00 published; Ranger both",
+  "both published",
+  "{\"rs\":{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4},\"rm\":{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}}",
+  "PASS",
+  "r6-0-mon-published-p.png"
+ ],
+ [
+  "R6 1 both published, nothing pending",
+  "402",
+  "Monday's crew rest line in Edit and View-only; Sunday's forward trace",
+  "both read take-off 12:00, no landing typed, ended 14:00, clear 02:00; Monday not pending",
+  "{\"editMon\":[\"Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"],\"editMonPend\":[],\"editMonDD\":[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"],\"editSunTrace\":[\"Breaks Monday Ranger — had to leave by 13:40. Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"],\"editSunPend\":[],\"viewMon\":[\"Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"],\"viewMonHead\":\"⚠ 1 issue · 1 warning ▼\",\"viewCur2\":\"03/08/2026\",\"viewMonDD\":[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"],\"viewSunTrace\":[\"Breaks Monday Ranger — had to leave by 13:40. Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"],\"viewCur1\":\"27/07/2026\"}",
+  "PASS",
+  "r6-1-edit-mon-p.png"
+ ],
+ [
+  "R6 1b Sunday trace",
+  "402",
+  "Edit and View-only Sunday forward trace (puck tapped)",
+  "RECORD",
+  "{\"edit\":[\"Breaks Monday Ranger — had to leave by 13:40. Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"],\"view\":[\"Breaks Monday Ranger — had to leave by 13:40. Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]}",
+  "RECORDED",
+  "r6-1-view-sun-p.png"
+ ],
+ [
+  "R6 2 Edit uses the working Sunday",
+  "402",
+  "Monday (Edit) after an unissued Sunday landing 12:30",
+  "Edit reads the working neighbour: landed 12:30, ended 14:30, clear 02:30; Monday itself not pending",
+  "{\"editMon\":[\"Crew rest (<12h) Ranger — Crew rest breach — Sunday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest. ✕\"],\"editMonDD\":[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Sunday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\"],\"pend\":[],\"sunPend\":[\"1 pending\"],\"trace\":[\"Breaks Monday Ranger — had to leave by 13:40. Crew rest breach — Sunday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\"]}",
+  "PASS",
+  "r6-2-edit-mon-p.png"
+ ],
+ [
+  "R6 2 View-only uses the issued Sunday",
+  "402",
+  "Monday (View-only) while Sunday's change is unissued",
+  "View-only reads the ISSUED neighbour: no landing typed, ended 14:00, clear 02:00 (never the unissued 12:30)",
+  "{\"viewMon\":[\"Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"],\"viewMonDD\":[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"],\"viewSunTrace\":[\"Breaks Monday Ranger — had to leave by 13:40. Crew rest breach — Sunday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]}",
+  "PASS",
+  "r6-2-view-mon-p.png"
+ ]
+]

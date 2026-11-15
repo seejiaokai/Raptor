@@ -1,0 +1,8 @@
+before ["Inputs late cut-off: 14 days before the week starts, opens the Inputs calendar settings","Members file for others: On, opens the Inputs calendar settings"] [0,""]
+after Enter in window ["Inputs late cut-off: 14 days before the week starts, opens the Inputs calendar settings","Members file for others: On, opens the Inputs calendar settings"] [0,""]
+win open 1
+after close ["Inputs late cut-off: 14 days before the week starts, opens the Inputs calendar settings","Members file for others: On, opens the Inputs calendar settings"] [0,""]
+after revisit ["Inputs late cut-off: 14 days before the week starts, opens the Inputs calendar settings","Members file for others: On, opens the Inputs calendar settings"] [0,""]
+INPUTSET ["VCONF","setFlyRule","lwSaveManningRule","RULE_STD","RULE_SPEC","ruleParse","rulesOffCount","isLead","traceLeads","slotRules","rulesReset","rulesLoad","rulesSave","ruleFmt","ruleOff","ruleApply"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

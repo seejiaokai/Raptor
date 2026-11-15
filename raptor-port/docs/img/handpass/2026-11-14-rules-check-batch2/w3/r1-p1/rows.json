@@ -1,0 +1,92 @@
+[
+ [
+  "R1 a-debrief-blank",
+  "402",
+  "board warning line",
+  "debrief line ends \"(take-off + 2h, no landing typed)\"",
+  "[\"Ranger — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 12:00–14:00 (take-off + 2h, no landing typed) ✕\"]",
+  "PASS",
+  "r1-a-debrief-blank-board-p.png"
+ ],
+ [
+  "R1 a-debrief-blank",
+  "402",
+  "details warning line",
+  "debrief line ends \"(take-off + 2h, no landing typed)\"",
+  "[\"Advisory · No time for the flight debrief Ranger — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 12:00–14:00 (take-off + 2h, no landing typed)\"]",
+  "PASS",
+  "r1-a-debrief-blank-daydet-p.png"
+ ],
+ [
+  "R1 b-turn-blank",
+  "402",
+  "board warning line",
+  "tight turn \"60 min take-off→next T/O, no landing typed (needs …)\"",
+  "[\"Ranger — Tight turn VL BFM→ RU: 60 min take-off→next T/O, no landing typed (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Ranger — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 12:00–14:00 (take-off + 2h, no landing typed) ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "r1-b-turn-blank-board-p.png"
+ ],
+ [
+  "R1 b-turn-blank",
+  "402",
+  "details warning line",
+  "tight turn \"60 min take-off→next T/O, no landing typed (needs …)\"",
+  "[\"Advisory · Tight turn Ranger — Tight turn VL BFM→ RU: 60 min take-off→next T/O, no landing typed (needs 120 min — threshold 120, dekit+step 30+60)\",\"Advisory · No time for the flight debrief Ranger — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 12:00–14:00 (take-off + 2h, no landing typed)\",\"Advisory · Double turning Ranger — 1 person is double turning: Ranger\"]",
+  "PASS",
+  "r1-b-turn-blank-daydet-p.png"
+ ],
+ [
+  "R1 b-debrief-blank-still",
+  "402",
+  "board warning line",
+  "debrief still \"take-off + 2h, no landing typed\"",
+  "[\"Ranger — Tight turn VL BFM→ RU: 60 min take-off→next T/O, no landing typed (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Ranger — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 12:00–14:00 (take-off + 2h, no landing typed) ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "r1-b-debrief-blank-still-board-p.png"
+ ],
+ [
+  "R1 b-debrief-blank-still",
+  "402",
+  "details warning line",
+  "debrief still \"take-off + 2h, no landing typed\"",
+  "[\"Advisory · Tight turn Ranger — Tight turn VL BFM→ RU: 60 min take-off→next T/O, no landing typed (needs 120 min — threshold 120, dekit+step 30+60)\",\"Advisory · No time for the flight debrief Ranger — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 12:00–14:00 (take-off + 2h, no landing typed)\",\"Advisory · Double turning Ranger — 1 person is double turning: Ranger\"]",
+  "PASS",
+  "r1-b-debrief-blank-still-daydet-p.png"
+ ],
+ [
+  "R1 c-typed-debrief",
+  "402",
+  "board warning line",
+  "debrief ends \"(land + 2h)\"",
+  "[\"Ranger — Tight turn VL BFM→ RU: 30 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Ranger — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 12:30–14:30 (land + 2h) ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "r1-c-typed-debrief-board-p.png"
+ ],
+ [
+  "R1 c-typed-debrief",
+  "402",
+  "details warning line",
+  "debrief ends \"(land + 2h)\"",
+  "[\"Advisory · Tight turn Ranger — Tight turn VL BFM→ RU: 30 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Advisory · No time for the flight debrief Ranger — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 12:30–14:30 (land + 2h)\",\"Advisory · Double turning Ranger — 1 person is double turning: Ranger\"]",
+  "PASS",
+  "r1-c-typed-debrief-daydet-p.png"
+ ],
+ [
+  "R1 c-typed-turn",
+  "402",
+  "board tight turn",
+  "\"… min land→next T/O (needs …)\", no \"no landing typed\"",
+  "[\"Ranger — Tight turn VL BFM→ RU: 30 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60) ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "r1-c-typed-board-p.png"
+ ],
+ [
+  "R1 c-typed-turn",
+  "402",
+  "details tight turn",
+  "\"… min land→next T/O (needs …)\", no \"no landing typed\"",
+  "[\"Advisory · Tight turn Ranger — Tight turn VL BFM→ RU: 30 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)\",\"Advisory · Double turning Ranger — 1 person is double turning: Ranger\"]",
+  "PASS",
+  "r1-c-typed-daydet-p.png"
+ ]
+]

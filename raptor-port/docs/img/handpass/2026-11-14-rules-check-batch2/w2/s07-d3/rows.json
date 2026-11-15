@@ -1,0 +1,236 @@
+[
+ [
+  "S07",
+  "1536",
+  "Fri 12:00 landing blank; Sat 04:00-05:00 (Ranger both); Sat board list",
+  "\"took off 12:00 with no landing typed ... ended 14:00 ... clear at 02:00\", no \"landed\"",
+  "[\"Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-1-sat-board-d.png"
+ ],
+ [
+  "S07 a-blank",
+  "1536",
+  "Sat week",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-a-blank-*-d.png"
+ ],
+ [
+  "S07 a-blank",
+  "1536",
+  "Sat details",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "PASS",
+  "s07-a-blank-*-d.png"
+ ],
+ [
+  "S07 a-blank",
+  "1536",
+  "Sat board",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-a-blank-*-d.png"
+ ],
+ [
+  "S07 a-blank",
+  "1536",
+  "Fri forward explanation (week strip + details)",
+  "figures agree with Sat warning",
+  "[\"Breaks Saturday Ranger — had to leave by 13:40. Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "RECORDED",
+  "s07-a-blank-week-fri-d.png"
+ ],
+ [
+  "S07 b-1230",
+  "1536",
+  "Sat week",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s07-b-1230-*-d.png"
+ ],
+ [
+  "S07 b-1230",
+  "1536",
+  "Sat details",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\"]",
+  "PASS",
+  "s07-b-1230-*-d.png"
+ ],
+ [
+  "S07 b-1230",
+  "1536",
+  "Sat board",
+  "/landed 12:30.*14:30.*02:30/",
+  "[\"Ranger — Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest. ✕\"]",
+  "PASS",
+  "s07-b-1230-*-d.png"
+ ],
+ [
+  "S07 b-1230",
+  "1536",
+  "Fri forward explanation (week strip + details)",
+  "figures agree with Sat warning",
+  "[\"Breaks Saturday Ranger — had to leave by 13:40. Crew rest breach — Friday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30, but told to report 01:40 — only 11h10 rest.\"]",
+  "RECORDED",
+  "s07-b-1230-week-fri-d.png"
+ ],
+ [
+  "S07 c-tbd door",
+  "1536",
+  "type TBD into the week landing box",
+  "RECORD",
+  "app said [\"TBD is not a time. Try 0900 or 09:00.\",\"TBD is not a time. Try 0900 or 09:00.\"]; stored \"12:30\"",
+  "RECORDED",
+  "s07-c0-tbd-refused-d.png"
+ ],
+ [
+  "S07 c-tbd (TBD planted in data; the typing door refuses it)",
+  "1536",
+  "Sat week",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-c-tbd (TBD planted in data; the typing door refuses it)-*-d.png"
+ ],
+ [
+  "S07 c-tbd (TBD planted in data; the typing door refuses it)",
+  "1536",
+  "Sat details",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "PASS",
+  "s07-c-tbd (TBD planted in data; the typing door refuses it)-*-d.png"
+ ],
+ [
+  "S07 c-tbd (TBD planted in data; the typing door refuses it)",
+  "1536",
+  "Sat board",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-c-tbd (TBD planted in data; the typing door refuses it)-*-d.png"
+ ],
+ [
+  "S07 c-tbd (TBD planted in data; the typing door refuses it)",
+  "1536",
+  "Fri forward explanation (week strip + details)",
+  "figures agree with Sat warning",
+  "[\"Breaks Saturday Ranger — had to leave by 13:40. Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "RECORDED",
+  "s07-c-tbd (TBD planted in data; the typing door refuses it)-week-fri-d.png"
+ ],
+ [
+  "S07 d-leave (TBD)",
+  "1536",
+  "Sat week",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-d-leave (TBD)-*-d.png"
+ ],
+ [
+  "S07 d-leave (TBD)",
+  "1536",
+  "Sat details",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "PASS",
+  "s07-d-leave (TBD)-*-d.png"
+ ],
+ [
+  "S07 d-leave (TBD)",
+  "1536",
+  "Sat board",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-d-leave (TBD)-*-d.png"
+ ],
+ [
+  "S07 d-leave (TBD)",
+  "1536",
+  "Fri forward explanation (week strip + details)",
+  "figures agree with Sat warning",
+  "[\"Breaks Saturday Ranger — had to leave by 13:40. Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "RECORDED",
+  "s07-d-leave (TBD)-week-fri-d.png"
+ ],
+ [
+  "S07 e-reload (stored \"TBD\")",
+  "1536",
+  "Sat week",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-e-reload (stored \"TBD\")-*-d.png"
+ ],
+ [
+  "S07 e-reload (stored \"TBD\")",
+  "1536",
+  "Sat details",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "PASS",
+  "s07-e-reload (stored \"TBD\")-*-d.png"
+ ],
+ [
+  "S07 e-reload (stored \"TBD\")",
+  "1536",
+  "Sat board",
+  "/took off 12:00 with no landing typed.*14:00.*02:00/",
+  "[\"Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-e-reload (stored \"TBD\")-*-d.png"
+ ],
+ [
+  "S07 e-reload (stored \"TBD\")",
+  "1536",
+  "Fri forward explanation (week strip + details)",
+  "figures agree with Sat warning",
+  "[\"Breaks Saturday Ranger — had to leave by 13:40. Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "RECORDED",
+  "s07-e-reload (stored \"TBD\")-week-fri-d.png"
+ ],
+ [
+  "S07 f-typedB (B 10:30 typed on Fri, landing blank)",
+  "1536",
+  "Sat week",
+  "/took off 12:00 with no landing typed/",
+  "[\"Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-f-typedB (B 10:30 typed on Fri, landing blank)-*-d.png"
+ ],
+ [
+  "S07 f-typedB (B 10:30 typed on Fri, landing blank)",
+  "1536",
+  "Sat details",
+  "/took off 12:00 with no landing typed/",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "PASS",
+  "s07-f-typedB (B 10:30 typed on Fri, landing blank)-*-d.png"
+ ],
+ [
+  "S07 f-typedB (B 10:30 typed on Fri, landing blank)",
+  "1536",
+  "Sat board",
+  "/took off 12:00 with no landing typed/",
+  "[\"Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest. ✕\"]",
+  "PASS",
+  "s07-f-typedB (B 10:30 typed on Fri, landing blank)-*-d.png"
+ ],
+ [
+  "S07 f-typedB (B 10:30 typed on Fri, landing blank)",
+  "1536",
+  "Fri forward explanation (week strip + details)",
+  "figures agree with Sat warning",
+  "[\"Breaks Saturday Ranger — had to leave by 13:40. Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.\"]",
+  "RECORDED",
+  "s07-f-typedB (B 10:30 typed on Fri, landing blank)-week-fri-d.png"
+ ]
+]

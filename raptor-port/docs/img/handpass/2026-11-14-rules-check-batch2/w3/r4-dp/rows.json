@@ -1,0 +1,20 @@
+[
+ [
+  "R4 setup PH",
+  "1536",
+  "Leave War event sheet: PH on Mon 20 Jul",
+  "event applied",
+  "{\"ok\":true,\"oilday\":\"⠿ OIL — Mon 20 Jul Public holiday ✕ Mon 20 Jul is now a public holiday. 1 TO ANSWER Yes to all No to all 10:00–12:00 VaporAPPOINTMENT Medical / PHA Yes · HO No What is left goes to the schedulers’ bells Later Save\"}",
+  "PASS",
+  "r4-0-lw-after-ph-d.png"
+ ],
+ [
+  "R4 setup publish",
+  "1536",
+  "Mon: VL 12:00-13:00, B 09:40, Ranger; four sign-offs, Publish day",
+  "published",
+  "{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+  "PASS",
+  "r4-2-monday-published-d.png"
+ ]
+]

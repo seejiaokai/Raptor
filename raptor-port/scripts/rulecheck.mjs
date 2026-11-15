@@ -112,7 +112,7 @@ const RULES = {
   AM4: 'an issued version is never edited in place and never erased',
   AM5: 'viewers see the issued version; the working copy is labelled when they look',
   AM6: 'an older version comes back only by loading it and publishing the NEXT amendment; the load puts back what it had filed too (D98)',
-  AM7: 'no publish-all-days, no two-person approval, no rule versioning',
+  AM7: 'no publish-all-days, no two-person approval; rule versioning narrowed (D186, D2005)',
   AM8: 'first publish is "Publish day": the Original carries no amendment marks',
   AM9: 'after that, "Publish AL<n>" for that day only, only when it really differs',
   AM10: 'all four sign every publish, bound to the content they signed',

@@ -1,0 +1,9 @@
+filed [{"type":"Duty","s":600,"e":660,"acc":"g","date":"Jul 18"}]
+chip box {"x":207,"y":430.5,"width":19.890625,"height":12} <span class="oilcount" data-oilsent="i:imwgpicxnepmr0b" data-oilday="5" data-oilver="" data-oilofw="1" title="None of these 45 earn OIL today — tap to see each one (who is free as things stand now)">4
+ROW NOT WALKED | S02esc a-direct | 402 | open | saw: not open
+chip box {"x":207,"y":430.5,"width":19.890625,"height":12} <span class="oilcount" data-oilsent="i:imwgpicxnepmr0b" data-oilday="5" data-oilver="" data-oilofw="1" title="None of these 45 earn OIL today — tap to see each one (who is free as things stand now)">4
+ROW NOT WALKED | S02esc b-titlebar | 402 | open | saw: not open
+chip box {"x":207,"y":430.5,"width":19.890625,"height":12} <span class="oilcount" data-oilsent="i:imwgpicxnepmr0b" data-oilday="5" data-oilver="" data-oilofw="1" title="None of these 44 earn OIL today — tap to see each one (who is free as things stand now)">4
+ROW NOT WALKED | S02esc c-puck | 402 | open | saw: not open
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

@@ -1,0 +1,6 @@
+filed [{"type":"Duty","s":600,"e":660,"acc":"g","date":"Jul 18"}]
+ROW NOT WALKED | S02esc a-direct | 402 | open | saw: not open
+ROW NOT WALKED | S02esc b-titlebar | 402 | open | saw: not open
+ROW NOT WALKED | S02esc c-puck | 402 | open | saw: not open
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

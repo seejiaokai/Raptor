@@ -1,0 +1,38 @@
+[
+ [
+  "S02 setup",
+  "402",
+  "ALL AVAIL duty input Sat 10:00-11:00 filed on the Inputs page",
+  "one input",
+  "[{\"type\":\"Duty\",\"s\":600,\"e\":660,\"acc\":\"g\",\"date\":\"Jul 18\"}]",
+  "PASS",
+  ""
+ ],
+ [
+  "S02 a-blank",
+  "402",
+  "tap the ALL AVAIL count chip on the week/day card",
+  "window opens",
+  "no window; ARM key after the tap: \"g:5.0\" (the row was armed for planning instead)",
+  "FAIL?",
+  "s02-a-blank-chip-tap-no-window-p.png"
+ ],
+ [
+  "S02 b-tbd",
+  "402",
+  "tap the ALL AVAIL count chip on the week/day card",
+  "window opens",
+  "no window; ARM key after the tap: null (the row was armed for planning instead)",
+  "FAIL?",
+  "s02-b-tbd-chip-tap-no-window-p.png"
+ ],
+ [
+  "S02 c-viewonly",
+  "402",
+  "open the chip on View-only Sched",
+  "window",
+  "none (Sat not published: the chip may not draw)",
+  "RECORDED",
+  ""
+ ]
+]

@@ -230,8 +230,12 @@ decision + a pointer. Owner + date establish authority; keep them.
   recreate or rerun it — the engine is ordinary source now; regenerating clobbers
   real work.
 - Keep `src/probe-bridge.ts` in sync when adding engine API.
-- **Product invariants** (owner, 7 Aug 26 unless noted): no rule versioning (narrowed 26 Sep 26 by D186: a
-  published day keeps the brief lead it printed, with it — one printed value, not a versioned rulebook) · no
+- **Product invariants** (owner, 7 Aug 26 unless noted): a published day keeps the Logic settings it went out
+  with — the brief lead it printed (D186), every setting its checks read (D2005) and its OIL's three values (D592,
+  D2044); a changed setting reaches it from its next amendment, reading pending at once only where it would change
+  the brief the day printed or that day's OIL or its worked times; once anything waits on the day, its working copy
+  is checked by today's settings (D2013), and Insights' work hours follow today's (D482); the old "no rule
+  versioning" is set aside (D2005; this line corrected by D2024) · no
   two-person approval · no "publish all days" · OIL is LL-equivalent · sim notes
   single-line · pucks never wrap · login page stays simple · the talon logo stays
   · a clicked warning lights its crew in the warning colours, never selection blue

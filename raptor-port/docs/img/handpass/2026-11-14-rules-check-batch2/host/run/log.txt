@@ -1,0 +1,35 @@
+rcb2-host v1 C:\Users\User\projects\Raptor\raptor-port\docs\img\handpass\2026-11-14-rules-check-batch2\host\run
+PASS  H0 frozen bundle served  index-XazXTgw6.js
+PASS  H1 wave added Friday  0 -> 1
+seat Friday: bane
+seat Saturday: bane
+Saturday crew-rest lines:
+  Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.
+PASS  H2 the line reads "took off 12:00 with no landing typed"  Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.
+PASS  H2b no "landed 12:00"  
+rcb2-host v2 C:\Users\User\projects\Raptor\raptor-port\docs\img\handpass\2026-11-14-rules-check-batch2\host\run
+PASS  H0 frozen bundle served  index-XazXTgw6.js
+PASS  H1 wave added Friday  0 -> 1
+seat Friday: bane
+seat Saturday: bane
+Saturday crew-rest lines:
+  Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.
+PASS  H2 the line reads "took off 12:00 with no landing typed"  Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.
+PASS  H2b no "landed 12:00"  
+rcb2-host v3 C:\Users\User\projects\Raptor\raptor-port\docs\img\handpass\2026-11-14-rules-check-batch2\host\run
+PASS  H0 frozen bundle served  index-XazXTgw6.js
+PASS  H1 wave added Friday  0 -> 1
+seat Friday: bane
+seat Saturday: bane
+Saturday crew-rest lines:
+  Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.
+PASS  H2 the line reads "took off 12:00 with no landing typed"  Ranger — Crew rest breach — Friday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00, but told to report 01:40 — only 11h40 rest.
+PASS  H2b no "landed 12:00"  
+Insights mentions planned: true | old flying: false
+PASS  H3 Insights opens  1868 chars
+PASS  H4 Logic page names "On leave + planned"  
+PASS  H4b Logic page names "Downchit + planned"  
+Logic boxes found: 0
+errors []
+PASS  H5 no console or page errors  
+DONE 8 PASS 0 FAIL 0 OTHER of 8

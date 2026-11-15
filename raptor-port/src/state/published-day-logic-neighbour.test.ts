@@ -7,9 +7,10 @@ import { INPUTS } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
-import { storeBackend } from '../engine/hooks'
+import { storeBackend, HOOKS } from '../engine/hooks'
+import { labelToISO } from '../leavewar/absences'
 import { stashClear } from '../engine/weekstash'
-import { SCHED, setSign } from '../engine/publish'
+import { SCHED, setSign, dayDelta } from '../engine/publish'
 import { validate, traceOf, workingWarn } from '../engine/validate'
 import { VCONF } from '../engine/rules'
 import { ELOG } from '../engine/editlog'
@@ -92,5 +93,43 @@ describe('F5 — the working pass across the edge: a neighbour Monday with a cha
     loadWeek(W2); validate()
     const monWork = crWork(MON, 'bane').length > 0
     expect({ sunMark, monWork }, 'Sunday\'s mark and Monday\'s working copy agree').toEqual({ sunMark: monWork, monWork })
+  })
+})
+
+/* ASTRA'S BLIND READ, 15 Nov 26, finding (1): the neighbour Monday's only waiting change is its OIL (a changed debrief
+   would change the OIL it earned — publish.ts oilRuleDelta, D2044). Something waits on the day, so its working copy is
+   checked by today's settings (D2013) — and Edit Schedule's Sunday, reading that Monday as its neighbour (weekctx.ts
+   keepUntouchedRules), must agree, not lay the published day's kept settings on it as if nothing waited. */
+describe('Astra (1) — an OIL rule pending on a published neighbour makes its working crew-rest preview use today\'s settings', () => {
+  const hk = { day: HOOKS.oilEarningDay, iso: HOOKS.oilDayISO }
+  const DB = VCONF.debrief
+  afterEach(() => { HOOKS.oilEarningDay = hk.day; HOOKS.oilDayISO = hk.iso; (VCONF as any).debrief = DB })
+  it('Sunday\'s "Breaks Monday" and Monday\'s working breach agree once only the OIL waits', async () => {
+    await boot(new MemoryBackend())
+    HOOKS.oilEarningDay = (di: number) => CURWEEK === W2 && di === MON
+    HOOKS.oilDayISO = (di: number) => labelToISO((DAYS[di] || {}).dt, 2026) || ''
+    loadWeek(W2)
+    schedWrite(SCHED_TYPES.mutate, () => {
+      const d: any = DAYS[MON]
+      Object.assign(d, { waves: [{ label: 'WAVE 1', night: false, intimes: [], traffic: [], formations: [{ cs: 'VL', msn: 'BFM', to: '12:00', ld: '13:00', br: '09:40', rl: '', aircraft: [{ p: 'bane', w: '', rmks: '', area: '', opts: {} }] }] }], dutywaves: [], ground: [], allhands: [], sims: { amt: [], oft: [] } })
+      view.afterSchedMutate()
+    })
+    publish(MON)
+    loadWeek(W1)
+    schedWrite(SCHED_TYPES.mutate, () => {
+      const d: any = DAYS[SUN]
+      Object.assign(d, { waves: [{ label: 'WAVE 1', night: false, intimes: [], traffic: [], formations: [{ cs: 'RU', msn: 'BFM', to: '18:00', ld: '19:00', br: '', rl: '', aircraft: [{ p: 'bane', w: '', rmks: '', area: '', opts: {} }] }] }], ground: [], allhands: [], sims: { amt: [], oft: [] }, dutywaves: [] })
+      view.afterSchedMutate()
+    })
+    validate()
+    expect(traceOf(SUN, 'bane'), 'premise: 21:00 end, clear 09:00, before the 09:40 brief').toBeFalsy()
+    ;(VCONF as any).debrief = 180           // Sunday ends 22:00, clear 10:00; Monday's OIL span grows past "Full day of OIL"
+    validate()
+    const sunMark = !!traceOf(SUN, 'bane')
+    loadWeek(W2); validate()
+    expect(dayDelta(MON).map((e: any) => e.addr), 'premise: only the OIL waits on Monday').toEqual([`oilrv:${MON}`])
+    const monWork = crWork(MON, 'bane').length > 0
+    expect(monWork, 'Monday\'s working copy breaches by today\'s debrief').toBe(true)
+    expect(sunMark, 'Sunday drew "Breaks Monday" as Monday\'s working copy has it').toBe(true)
   })
 })

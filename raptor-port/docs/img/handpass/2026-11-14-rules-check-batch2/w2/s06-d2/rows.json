@@ -1,0 +1,74 @@
+[
+ [
+  "S06",
+  "1536",
+  "Sat 12:00-13:00 Bane; sign four; Publish day",
+  "published",
+  "{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}",
+  "PASS",
+  "s06-1-after-publish-d.png"
+ ],
+ [
+  "S06",
+  "1536",
+  "Leave War cell for Bane on Sat 18 Jul after publishing (6h01 -> 6h on the day)",
+  "credited HO",
+  "{\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty weekend act hasc\"}}",
+  "PASS",
+  "s06-a-published-leavewar-d.png"
+ ],
+ [
+  "S06",
+  "1536",
+  "Full day of OIL 6h01 -> 5h; open the published Saturday",
+  "day reads \"1 pending\"; sign-off strip gone",
+  "{\"pend\":\"1 pending\",\"sign\":[\"\",\"\",\"\",\"\"],\"ver\":\"ORIG\"}",
+  "PASS",
+  "s06-b-board-pending-d.png"
+ ],
+ [
+  "S06",
+  "1536",
+  "press \"1 pending\": RECORD the list wording",
+  "RECORD",
+  "[]",
+  "RECORDED",
+  "s06-c-pending-list-d.png"
+ ],
+ [
+  "S06",
+  "1536",
+  "Leave War cell while the Saturday reads pending",
+  "still credited HO (published keeps its OIL)",
+  "{\"Ranger\":{\"text\":\"HO*\",\"cls\":\"duty weekend act hasc\"}}",
+  "PASS",
+  "s06-b-pending-leavewar-d.png"
+ ],
+ [
+  "S06",
+  "1536",
+  "View-only week, Saturday",
+  "no sign-off / pending trouble on the viewer; RECORD",
+  "[]",
+  "RECORDED",
+  "s06-d-viewonly-d.png"
+ ],
+ [
+  "S06",
+  "1536",
+  "put \"Full day of OIL\" back to 6h01",
+  "pending clears",
+  "pending buttons: 1; chips {\"ver\":\"ORIG\",\"pend\":[],\"sign\":[\"\",\"\",\"\",\"\"],\"head\":\"\"}",
+  "FAIL",
+  "s06-e-putback-d.png"
+ ],
+ [
+  "S06",
+  "1536",
+  "5h again, sign, Publish AL1",
+  "Leave War FO once (5h < full day)",
+  "{\"pr2\":{\"published\":true,\"version\":\"AL1\",\"signSelects\":4},\"ch3\":{\"ver\":\"AL1\",\"pend\":[],\"sign\":[\"\",\"\",\"\",\"\"],\"head\":\"\"},\"lw3\":{\"Ranger\":{\"text\":\"FO*\",\"cls\":\"duty weekend act hasc\"}}}",
+  "PASS",
+  "s06-f-republished-d.png"
+ ]
+]

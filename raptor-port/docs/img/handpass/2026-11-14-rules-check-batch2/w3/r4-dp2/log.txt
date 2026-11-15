@@ -1,0 +1,11 @@
+rcb2-w3-r4 v1
+lwEvent {"ok":true,"oilday":null}
+ROW PASS | R4 setup PH | 1536 | Leave War event sheet: PH on Mon 27 Jul | saw: {"ok":true,"oilday":null}
+flight d0 w0 {"to":"12:00","ld":"13:00","p":"Ranger"}
+Mon formation {"to":"12:00","ld":"13:00","br":"09:40","waves":1}
+Mon warn ["This day is not published yet, so nobody earns their OIL for it — publish it before the day is out ✕"]
+Mon head 
+publish {"published":true,"version":"ORIG","signSelects":4}
+ROW PASS | R4 setup publish | 1536 | Mon: VL 12:00-13:00, B 09:40, Ranger; four sign-offs, Publish day | saw: {"published":true,"version":"ORIG","signSelects":4}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

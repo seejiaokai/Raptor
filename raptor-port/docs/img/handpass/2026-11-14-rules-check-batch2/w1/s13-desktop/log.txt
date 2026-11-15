@@ -1,0 +1,72 @@
+settings boxes (before Edit): []
+PASS  S13.0 standard settings: the strip is hidden  {"shown":false,"text":"","w":0,"h":0,"sw":0,"cw":0,"sh":0,"ch":0,"ov":"visible","vw":1536,"right":0}
+editable boxes: [["crewRest","12h","Crew rest"],["maxRun","6 days","Days in a row"],["longDay","12h","Long work day"],["reportLead","3h","Default rally before take-off"],["briefLead","2h20","Brief before take-off"],["step","1h","Step before take-off"],["dekit","30 min","Dekit after landing"],["debrief","2h","Debrief after landing"],["tightTurn","2h","Tight turn"],["reportText","IN TIME + WX/NOTAMS","In-time words"],["epBrief","15 min","EP sim brief"],["simDebrief","30 min","Sim debrief"],["amtDebrief","30 min","AMT debrief"],["simLen","1h30","A sim"],["openEnd","1h","Any other row"],["scDayFrom","07:00","SC day window"],["scDayTo","19:00","SC day window"],["oilFullMin","6h01","Full day of OIL"]]
+second setting chosen: ["crewRest","12h","Crew rest"]
+ONE setting strip: {"shown":true,"text":"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a changed OIL setting would change that OIL, the day reads pending.","w":1180,"h":55,"sw":1178,"cw":1178,"sh":53,"ch":53,"ov":"visible","vw":1536,"right":1200}
+PASS  S13.1 one setting: "1 setting changed… checked against it now" + the note, word for word  1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a changed OIL setting would change that OIL, the day reads pending.
+PASS  S13.1b the strip reads whole (nothing cut: no overflow, inside the screen)  w 1180 h 55 scroll 1178x53 client 1178x53 right 1200 of 1536
+TWO settings strip: {"shown":true,"text":"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a changed OIL setting would change that OIL, the day reads pending.","w":1180,"h":55,"sw":1178,"cw":1178,"sh":53,"ch":53,"ov":"visible","vw":1536,"right":1200}  second box now 12h
+FAIL  S13.2 two settings: "2 settings changed … checked against them now" + the note  1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a changed OIL setting would change that OIL, the day reads pending.
+PASS  S13.2b two settings: reads whole  scroll 1178x53 client 1178x53
+top row boxes [id, top, height, left, right]: [["lgttl",71,24,16,62],["searchbox",65,36,70,490],["lgfilt",65,36,498,553],["lgFilterBtn",65,36,498,553],["lgDone",65,36,561,617],["lgReset",65,36,625,753]]
+RECORDED  S13.2c the page's top row: side-by-side boxes one height (lesson 23b) — RECORDED heights  [["lgttl",71,24,16,62],["searchbox",65,36,70,490],["lgfilt",65,36,498,553],["lgFilterBtn",65,36,498,553],["lgDone",65,36,561,617],["lgReset",65,36,625,753]]
+focused box before Reset: crewRest
+after Reset (box was focused): strip {"shown":false,"text":"","w":0,"h":0,"sw":0,"cw":0,"sh":0,"ch":0,"ov":"visible","vw":1536,"right":0} values ["crewRest=12h","maxRun=6 days","longDay=12h","reportLead=3h","briefLead=2h20","step=1h","dekit=30 min","debrief=2h","tightTurn=2h","reportText=IN TIME + WX/NOTAMS","epBrief=15 min","simDebrief=30 min","amtDebrief=30 min","simLen=1h30","openEnd=1h","scDayFrom=07:00","scDayTo=19:00","oilFullMin=6h01"] toasts ["Editing rules — the schedule rechecks as you type","Crew rest must be between 4h and 24h","1 rule back to squadron standard"]
+FAIL  S13.3 Reset to standard (box still focused): the strip goes, values back to standard  strip shown false; values equal the standard list: false
+PASS  S13.3b Reset button gone once nothing is changed  visible 0
+PASS  S13.4 changing a setting again shows the strip again  1 setting changed from the squadron standard. The schedule i
+PASS  S13.5 Reset to standard (no box focused): strip gone  false
+Reset button after reset width 0
+PASS  S13.6 search "planned" finds both renamed checks, none named "flying"  ["Warning: On leave + planned","Warning: Downchit + planned","Warning: Personal input clash","Advisory: SANS availability — planned outside the availability filed","Note: Several problems on one puck"]
+PASS  S13.6b search for the old name finds neither renamed check  []
+filter hard: button "Warnings"; check names drawn (14): ["Warning: On leave + planned","Warning: Downchit + planned"]
+PASS  S13.7a severity filter "Warnings": both renamed checks listed (they are warnings), "planned" names  ["Warning: Crew rest (<12h)","Warning: No break day — too many days in a row","Warning: Conflict — two events at once","Warning: In-time / Rally — timings out of order","Warning: Qualification — illegal seat","Warning: Illegal aircrew combination"]
+filter fired: button "Fired this week"; check names drawn (16): ["Warning: On leave + planned","Warning: Downchit + planned"]
+RECORDED  S13.7c "Fired this week" filter: RECORDED which renamed checks fired (demo week)  button "Fired this week" names ["Warning: On leave + planned","Warning: Downchit + planned"] (16 checks)
+filter adv: button "Advisories"; check names drawn (22): ["Advisory: SANS availability — planned outside the availability filed","Advisory: No OIL — no Leave War period covers this date"]
+PASS  S13.7b severity filter "Advisories": neither renamed check listed  ["Advisory: Tight turning — crew rest","Advisory: On shift — also down for a ground event","Advisory: In-time — check the reporting instruction","Advisory: No time for the flight brief","Advisory: No time for the flight debrief","Advisory: Tight turn"]
+filter all: button "Filter"; check names drawn (76): ["Warning: On leave + planned","Warning: Downchit + planned","Advisory: SANS availability — planned outside the availability filed","Advisory: No OIL — no Leave War period covers this date"]
+PASS  S13.7d filter back to All clears it  button "Filter", 76 names
+AS RANGER strip: {"shown":true,"text":"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a changed OIL setting would change that OIL, the day reads pending. Only an admin can change them.","w":1180,"h":55,"sw":1178,"cw":1178,"sh":53,"ch":53,"ov":"visible","vw":1536,"right":1200}
+PASS  S13.8 as Ranger: the note reads, followed by "Only an admin can change them."; no edit controls  d OIL setting would change that OIL, the day reads pending. Only an admin can change them. | controls {"editBtn":0,"boxes":0}
+PASS  S13.8b member: strip reads whole  scroll 1178x53 client 1178x53
+errors []
+PASS  S13 no console/page errors  
+errors: []
+DONE 15 PASS 2 FAIL 2 OTHER of 19
+settings boxes (before Edit): []
+PASS  S13.0 standard settings: the strip is hidden  {"shown":false,"text":"","w":0,"h":0,"sw":0,"cw":0,"sh":0,"ch":0,"ov":"visible","vw":1536,"right":0}
+editable boxes: [["crewRest","12h","Crew rest"],["maxRun","6 days","Days in a row"],["longDay","12h","Long work day"],["reportLead","3h","Default rally before take-off"],["briefLead","2h20","Brief before take-off"],["step","1h","Step before take-off"],["dekit","30 min","Dekit after landing"],["debrief","2h","Debrief after landing"],["tightTurn","2h","Tight turn"],["reportText","IN TIME + WX/NOTAMS","In-time words"],["epBrief","15 min","EP sim brief"],["simDebrief","30 min","Sim debrief"],["amtDebrief","30 min","AMT debrief"],["simLen","1h30","A sim"],["openEnd","1h","Any other row"],["scDayFrom","07:00","SC day window"],["scDayTo","19:00","SC day window"],["oilFullMin","6h01","Full day of OIL"]]
+second setting chosen: ["crewRest","12h","Crew rest"]
+ONE setting strip: {"shown":true,"text":"1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a changed OIL setting would change that OIL, the day reads pending.","w":1180,"h":55,"sw":1178,"cw":1178,"sh":53,"ch":53,"ov":"visible","vw":1536,"right":1200}
+PASS  S13.1 one setting: "1 setting changed… checked against it now" + the note, word for word  1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a changed OIL setting would change that OIL, the day reads pending.
+PASS  S13.1b the strip reads whole (nothing cut: no overflow, inside the screen)  w 1180 h 55 scroll 1178x53 client 1178x53 right 1200 of 1536
+TWO settings strip: {"shown":true,"text":"2 settings changed from the squadron standard. The schedule is checked against them now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a changed OIL setting would change that OIL, the day reads pending.","w":1180,"h":55,"sw":1178,"cw":1178,"sh":53,"ch":53,"ov":"visible","vw":1536,"right":1200}  second box now 11h
+PASS  S13.2 two settings: "2 settings changed … checked against them now" + the note  2 settings changed from the squadron standard. The schedule is checked against them now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a changed OIL setting would change that OIL, the day reads pending.
+PASS  S13.2b two settings: reads whole  scroll 1178x53 client 1178x53
+top row boxes [id, top, height, left, right]: [["lgttl",71,24,16,62],["searchbox",65,36,70,490],["lgfilt",65,36,498,553],["lgFilterBtn",65,36,498,553],["lgDone",65,36,561,617],["lgReset",65,36,625,753]]
+RECORDED  S13.2c the page's top row: side-by-side boxes one height (lesson 23b) — RECORDED heights  [["lgttl",71,24,16,62],["searchbox",65,36,70,490],["lgfilt",65,36,498,553],["lgFilterBtn",65,36,498,553],["lgDone",65,36,561,617],["lgReset",65,36,625,753]]
+focused box before Reset: crewRest
+after Reset (box was focused): strip {"shown":false,"text":"","w":0,"h":0,"sw":0,"cw":0,"sh":0,"ch":0,"ov":"visible","vw":1536,"right":0} values ["crewRest=12h","maxRun=6 days","longDay=12h","reportLead=3h","briefLead=2h20","step=1h","dekit=30 min","debrief=2h","tightTurn=2h","reportText=IN TIME + WX/NOTAMS","epBrief=15 min","simDebrief=30 min","amtDebrief=30 min","simLen=1h30","openEnd=1h","scDayFrom=07:00","scDayTo=19:00","oilFullMin=6h01"] toasts ["Editing rules — the schedule rechecks as you type","2 rules back to squadron standard"]
+PASS  S13.3 Reset to standard (box still focused): the strip goes, values back to standard  strip shown false; values equal the standard list: true
+PASS  S13.3b Reset button gone once nothing is changed  visible 0
+PASS  S13.4 changing a setting again shows the strip again  1 setting changed from the squadron standard. The schedule i
+PASS  S13.5 Reset to standard (no box focused): strip gone  false
+Reset button after reset width 0
+PASS  S13.6 search "planned" finds both renamed checks, none named "flying"  ["Warning: On leave + planned","Warning: Downchit + planned","Warning: Personal input clash","Advisory: SANS availability — planned outside the availability filed","Note: Several problems on one puck"]
+PASS  S13.6b search for the old name finds neither renamed check  []
+filter hard: button "Warnings"; check names drawn (14): ["Warning: On leave + planned","Warning: Downchit + planned"]
+PASS  S13.7a severity filter "Warnings": both renamed checks listed (they are warnings), "planned" names  ["Warning: Crew rest (<12h)","Warning: No break day — too many days in a row","Warning: Conflict — two events at once","Warning: In-time / Rally — timings out of order","Warning: Qualification — illegal seat","Warning: Illegal aircrew combination"]
+filter fired: button "Fired this week"; check names drawn (16): ["Warning: On leave + planned","Warning: Downchit + planned"]
+RECORDED  S13.7c "Fired this week" filter: RECORDED which renamed checks fired (demo week)  button "Fired this week" names ["Warning: On leave + planned","Warning: Downchit + planned"] (16 checks)
+filter adv: button "Advisories"; check names drawn (22): ["Advisory: SANS availability — planned outside the availability filed","Advisory: No OIL — no Leave War period covers this date"]
+PASS  S13.7b severity filter "Advisories": neither renamed check listed  ["Advisory: Tight turning — crew rest","Advisory: On shift — also down for a ground event","Advisory: In-time — check the reporting instruction","Advisory: No time for the flight brief","Advisory: No time for the flight debrief","Advisory: Tight turn"]
+filter all: button "Filter"; check names drawn (76): ["Warning: On leave + planned","Warning: Downchit + planned","Advisory: SANS availability — planned outside the availability filed","Advisory: No OIL — no Leave War period covers this date"]
+PASS  S13.7d filter back to All clears it  button "Filter", 76 names
+AS RANGER strip: {"shown":true,"text":"2 settings changed from the squadron standard. The schedule is checked against them now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a changed OIL setting would change that OIL, the day reads pending. Only an admin can change them.","w":1180,"h":55,"sw":1178,"cw":1178,"sh":53,"ch":53,"ov":"visible","vw":1536,"right":1200}
+PASS  S13.8 as Ranger: the note reads, followed by "Only an admin can change them."; no edit controls  d OIL setting would change that OIL, the day reads pending. Only an admin can change them. | controls {"editBtn":0,"boxes":0}
+PASS  S13.8b member: strip reads whole  scroll 1178x53 client 1178x53
+errors []
+PASS  S13 no console/page errors  
+errors: []
+DONE 17 PASS 0 FAIL 2 OTHER of 19

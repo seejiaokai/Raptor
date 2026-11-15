@@ -1,0 +1,29 @@
+[
+ [
+  "S02esc a-direct",
+  "402",
+  "open",
+  "window",
+  "not open",
+  "NOT WALKED",
+  ""
+ ],
+ [
+  "S02esc b-titlebar",
+  "402",
+  "open",
+  "window",
+  "not open",
+  "NOT WALKED",
+  ""
+ ],
+ [
+  "S02esc c-puck",
+  "402",
+  "open",
+  "window",
+  "not open",
+  "NOT WALKED",
+  ""
+ ]
+]

@@ -1,0 +1,7 @@
+flight d4 w0 {"to":"12:00","ld":"","p":"Ranger"}
+flight d5 w0 {"to":"04:00","ld":"05:00","p":"Ranger"}
+filed [{"type":"Duty","s":600,"e":660,"acc":"g","date":"Jul 18"}]
+ROW PASS | S02 setup | 402 | ALL AVAIL duty input Sat 10:00-11:00 filed on the Inputs page | saw: [{"type":"Duty","s":600,"e":660,"acc":"g","date":"Jul 18"}]
+chips on Sat #eWeek 1
+ROW NOT WALKED | S02 a-blank | 402 | open the ALL AVAIL chip on the week | saw: no window
+chips on Sat #eWeek 1

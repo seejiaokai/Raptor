@@ -1,0 +1,23 @@
+flight d5 w0 {"to":"12:00","ld":"13:00","p":"Ranger"}
+Sat formation {"to":"12:00","ld":"13:00"}
+publish {"published":true,"version":"ORIG","signSelects":4}
+ROW PASS | S06 | 1536 | Sat 12:00-13:00 Bane; sign four; Publish day | saw: {"published":true,"version":"ORIG","signSelects":4}
+chips {"ver":"ORIG","pend":[],"sign":["","","",""],"head":""}
+Bane puck [{"cls":"puck sm oilbar oilbar-ho","title":"Ranger · IP · instructor pilot · SXO · earns half a day of OIL"}]
+LW cell {"Ranger":{"text":"HO*","cls":"duty weekend act hasc"}}
+ROW PASS | S06 | 1536 | Leave War cell for Bane on Sat 18 Jul after publishing (6h01 -> 6h on the day) | saw: {"Ranger":{"text":"HO*","cls":"duty weekend act hasc"}}
+setFull 5h {"ok":true,"before":"6h01","after":"5h"}
+dpendbtn count 1 1 pending
+chips after 5h {"ver":"ORIG","pend":[],"sign":["","","",""],"head":""}
+ROW PASS | S06 | 1536 | Full day of OIL 6h01 -> 5h; open the published Saturday | saw: {"pend":"1 pending","sign":["","","",""],"ver":"ORIG"}
+pending list []
+added Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMIN ‹ › Calendar Saturday Jul 18 · scheduler board ‹ Mon 13 Tue 14 Wed 15 Thu 16 Fri 17 Sat 18 Sun 19 › Templates OIL Earn Sort all ↶ ↷ Insights ✓ Done CAT TYPE QUALS SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryder Saber Saint Scope Scribe Sidewinder Static Talisman Tally Torch Trident Vandal Vapor Vector Warden Widget Wildcard Wisp Zenith Zulu SKED CK — name — — name — Anvil Basher Bolt Cinch Drifter Echo Forge Piston Ranger Reaper Ridge Saber Sidewinder Static Trident Warden PLANNED BY — name — — name — A
+ROW RECORDED | S06 | 1536 | press "1 pending": RECORD the list wording | saw: []
+ROW PASS | S06 | 1536 | Leave War cell while the Saturday reads pending | saw: {"Ranger":{"text":"HO*","cls":"duty weekend act hasc"}}
+ROW RECORDED | S06 | 1536 | View-only week, Saturday | saw: []
+setFull back {"ok":true,"before":"5h","after":"6h01"}
+ROW FAIL | S06 | 1536 | put "Full day of OIL" back to 6h01 | saw: pending buttons: 1; chips {"ver":"ORIG","pend":[],"sign":["","","",""],"head":""}
+republish {"published":true,"version":"AL1","signSelects":4}
+ROW PASS | S06 | 1536 | 5h again, sign, Publish AL1 | saw: {"pr2":{"published":true,"version":"AL1","signSelects":4},"ch3":{"ver":"AL1","pend":[],"sign":["","","",""],"head":""},"lw3":{"Ranger":{"text":"FO*","cls":"duty weekend act hasc"}}}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

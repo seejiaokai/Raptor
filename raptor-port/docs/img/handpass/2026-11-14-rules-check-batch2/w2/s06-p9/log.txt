@@ -1,0 +1,23 @@
+flight d5 w0 {"to":"12:00","ld":"13:00","p":"Ranger"}
+Sat formation {"to":"12:00","ld":"13:00"}
+publish {"published":true,"version":"ORIG","signSelects":4}
+ROW PASS | S06 | 402 | Sat 12:00-13:00 Bane; sign four; Publish day | saw: {"published":true,"version":"ORIG","signSelects":4}
+chips {"ver":"ORIG","pend":[],"sign":["","","",""],"head":""}
+Bane puck [{"cls":"puck sm oilbar oilbar-ho","title":"Ranger · IP · instructor pilot · SXO · earns half a day of OIL"}]
+LW cell {"Ranger":{"text":"HO*","cls":"duty weekend act hasc"}}
+ROW PASS | S06 | 402 | Leave War cell for Bane on Sat 18 Jul after publishing (6h01 -> 6h on the day) | saw: {"Ranger":{"text":"HO*","cls":"duty weekend act hasc"}}
+setFull 5h {"ok":true,"before":"6h01","after":"5h"}
+dpendbtn count 1 1 pending
+chips after 5h {"ver":"ORIG","pend":[],"sign":["","","",""],"head":""}
+ROW PASS | S06 | 402 | Full day of OIL 6h01 -> 5h; open the published Saturday | saw: {"pend":"1 pending","sign":["","","",""],"ver":"ORIG"}
+pending list []
+added NED ORIG Ace Basher Bolt Cinch SIGN-OFF CUR CK — name — SKED CK — name — PLANNED BY — name — APPROVED BY — name — 4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY Live working copy ▾ ORIG Not yet signed 1 pending i Publish AL1 Unpublish THIS DAY Templates OIL Earn ⠿ OVERALL NOTES + Note ⠿ 1. ✕ ⠿ 2. ✕ ⠿ COMMON PROGRAMME Auto sort + Item Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like. SCHEDULER NOTES MAKE PUBLIC ⠿ FLYING WAVES + Wave ⠿ Go 1 Traffic Auto sort + In-time + Line ✕ Wave CS MSN R B TO LD ⠿ Ranger IP + RCP C CX ■ + ✕ AREA ⠿ DUTIES + Block Auto sort + Row ✕ Block ROLE START END ⠿ Fable C + ADD CX■✕ SCHEDULER NOTES MAKE PUBLIC ⠿ SIMS AMT Auto sort + Block + Row No AMT rows. OFT Auto sort + Row No OFT rows. SCHEDULER NOTES MAKE PUBLIC ⠿ GROUND PROGRAMME + INPUTS Auto sort + Item No ground items yet — “+ Item” adds one. SCHEDULER NOTES 
+ROW RECORDED | S06 | 402 | press "1 pending": RECORD the list wording | saw: []
+ROW PASS | S06 | 402 | Leave War cell while the Saturday reads pending | saw: {"Ranger":{"text":"HO*","cls":"duty weekend act hasc"}}
+ROW RECORDED | S06 | 402 | View-only week, Saturday | saw: []
+setFull back {"ok":true,"before":"5h","after":"6h01"}
+ROW FAIL | S06 | 402 | put "Full day of OIL" back to 6h01 | saw: pending buttons: 1; chips {"ver":"ORIG","pend":[],"sign":["","","",""],"head":""}
+republish {"published":true,"version":"AL1","signSelects":4}
+ROW PASS | S06 | 402 | 5h again, sign, Publish AL1 | saw: {"pr2":{"published":true,"version":"AL1","signSelects":4},"ch3":{"ver":"AL1","pend":[],"sign":["","","",""],"head":""},"lw3":{"Ranger":{"text":"FO*","cls":"duty weekend act hasc"}}}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
