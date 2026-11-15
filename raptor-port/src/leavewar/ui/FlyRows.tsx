@@ -61,6 +61,7 @@ import {
 import { dayLabel } from './dates'
 import { popAt } from './popat'
 import { FlyEditor, type FlyEditAt } from './FlyEdit'
+import { useGuardOnClose } from './gridguard'
 import type { ReqRow } from './flyeditparts'
 import { ReqNameForm } from './ReqNameForm'
 import { ReqPanel } from './ReqPanel'
@@ -136,6 +137,12 @@ const FlyCells = memo(function FlyCells({ row, cells, onTap }: {
     </>
   )
 }, (a, b) => a.sig === b.sig && a.row === b.row && a.onTap === b.onTap)
+
+/* the Required rows' three windows as the guard's bits — out of FlyRows itself, whose body is already at the code
+   check's limit of branches: the number pad 1, the selection panel 2, the rename form (an admin's alone) 4 */
+function useFlyWindowsGuard(pad: boolean, panel: boolean, naming: boolean, admin: boolean) {
+  useGuardOnClose((pad ? 1 : 0) | (panel ? 2 : 0) | (naming && admin ? 4 : 0))
+}
 
 export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR, onWiden, pickApi, onEditAvail, runs, arranging, dragOver, dragAfter }: {
   /** The squadron's counter rows, in five runs: `runs[0]` is drawn above Required P and `runs[k]` just under the k-th
@@ -237,6 +244,12 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
   }, [pickApi, admin])
   const closePick = useRef(() => setPick(null))
   const setInclude = useRef((v: boolean) => setPick(cur => (cur ? { ...cur, include: v } : cur)))
+  /* A DOUBLE TAP ON THEIR CLOSING BUTTONS ([LW-DOUBLETAP-MORE-WINDOWS]): the number pad's Done, the panel's ✕, Apply and
+     Clear, the rename form's ✕, Save and Cancel close a window over the grid, and a finger's second tap a moment later
+     fell through to the day where the button had stood. One bit each, handed to the grid's one guard (gridguard.ts) —
+     which arms only for a press inside the window, so a press on the grid that saves and closes the box stays the grid's.
+     The Available rows' working box is not here: it closes only by a press outside it, a key, a scroll or a resize. */
+  useFlyWindowsGuard(!!edit, !!pick, !!naming, admin)
 
   const tapRef = useRef((row: RowId, iso: string, el: HTMLElement) => {
     if (row === 'req-p' || row === 'req-w') {

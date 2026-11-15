@@ -23,6 +23,7 @@ import { FloatWin } from '../../ui/FloatWindow'
 import { useMoreBelow } from '../../ui/morebelow'
 import { dayLabel } from './dates'
 import { LeaveLine } from './LeaveLine'
+import { useGuardOnClose } from './gridguard'
 /* the open day: one listener set (ui/daypanelopen.ts) */
 import { closeDayPanel, dayPanelDate, openDayPanel, subscribeDayPanel as subscribe } from './daypanelopen'
 
@@ -31,6 +32,9 @@ const fig = (n: number | null) => (n === null ? '–' : String(Math.round(n * 2)
 /** Drawn once beside the grid; renders the panel only while a day is open */
 export function DayPanelHost() {
   const iso = useSyncExternalStore(subscribe, dayPanelDate, dayPanelDate)
+  /* its ✕ pressed by a finger, a quick second tap fell through to the grid behind ([LW-DOUBLETAP-MORE-WINDOWS]): the
+     panel's going is handed to the grid's one guard (gridguard.ts). Its ‹ › keep it up, so they arm nothing. */
+  useGuardOnClose(iso ? 1 : 0)
   return iso ? <DayPanel iso={iso} /> : null
 }
 
