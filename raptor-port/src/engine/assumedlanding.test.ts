@@ -13,7 +13,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { INPUTS } from './inputs'
-import { SCHED } from './publish'
+import { SCHED, signOf, setDayApproved } from './publish'
 import { VCONF, RULE_SPEC, RULE_STD } from './rules'
 import { PEOPLE } from './people'
 import { validate, workSpan, dayEvents } from './validate'
@@ -93,9 +93,21 @@ describe('crew rest — the day ends at the assumed landing plus the debrief (D1
       add(TUE, wave([form({ to: '04:00', ld: '05:00' })]))
       const m = msgs(TUE, 'CREW_REST')
       expect(m.length).toBe(1)
-      expect(m[0]).toContain('Crew rest: Monday landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. ')
+      expect(m[0]).toContain('Crew rest: Monday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. ')
     })
   }
+  /* Astra's blind read (16 Nov 26, finding 1): the day being judged decides (D2005) — its own flight length, as its own
+     debrief already does. A published Monday kept 60 minutes; the setting is now 120; Tuesday, not published, is judged by
+     120, so Monday's 20:00 sortie with no landing lands 22:00 for Tuesday's crew rest, never Monday's kept 21:00. */
+  it('the day being judged decides: Monday published under 60 min, the setting now 120 — Tuesday reads landing 22:00', () => {
+    add(MON, wave([form({ to: '20:00', ld: '' })]))
+    add(TUE, wave([form({ to: '14:00', ld: '15:00', br: '11:00' })]))
+    const g = signOf(MON); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; setDayApproved(MON, true)
+    VCONF.fltLen = 120
+    const m = msgs(TUE, 'CREW_REST')
+    expect(m.length, 'clear 12:00 — the 11:00 brief breaks it').toBe(1)
+    expect(m[0]).toContain('Monday T/O 20:00, landing assumed 22:00 (T/O + 2h) + 2h debrief (assumed) → ended 00:00')
+  })
   it('at 03:00 exactly the rest is legal (the edge moves with the assumed landing)', () => {
     add(MON, wave([form({ to: '12:00', ld: '' })]))
     add(TUE, wave([form({ to: '05:20', ld: '06:20' })]))                    // brief 03:00
@@ -112,7 +124,7 @@ describe('the long day and Insights\' hours count to the assumed landing (D2053,
       expect(workSpan(dayEvents(TUE, 'bane')), 'Insights reads this span (insights.ts)').toMatchObject({ s: h(6), e: h(21) })
       const m = msgs(TUE, 'LONGDAY')
       expect(m.length).toBe(1)
-      expect(m[0]).toMatch(/^Long day: 15h(00)? \(limit 12h\), 06:00 → 21:00 \(last landing assumed 19:00 \(T\/O \+ 1h\) \+ 2h debrief assumed\)$/)
+      expect(m[0]).toMatch(/^Long day: 15h(00)? \(limit 12h\), 06:00 → 21:00 \(VL BFM landing assumed 19:00 \+ 2h debrief assumed\)$/)   // the approved words, spec §3 (D2053)
     })
   }
   it('left as it is: a line with no take-off counts nowhere', () => {

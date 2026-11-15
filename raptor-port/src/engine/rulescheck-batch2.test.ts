@@ -72,14 +72,14 @@ describe('part 2 — D2010: a crew-rest warning never says "landed" at a take-of
   }
   /* CHANGED ON PURPOSE by D2046 (15 Nov 26 — "assumed it landed 13:00 (take-off + 1h)"): the day ends at the ASSUMED
      landing, take-off plus Logic's flight length, plus the debrief — 15:00, clear 03:00 — and says so */
-  it('a blank landing: "Monday landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00"', () => {
+  it('a blank landing: "Monday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00"', () => {
     const msg = breach('')
-    expect(msg).toContain('Crew rest: Monday landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. ')
+    expect(msg).toContain('Crew rest: Monday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. ')
     expect(msg).not.toMatch(/landed/)
   })
   it('a "TBD" landing reads the same (D1990, D2046)', () => {
     const msg = breach('TBD')
-    expect(msg).toContain('Crew rest: Monday landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. ')
+    expect(msg).toContain('Crew rest: Monday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. ')
     expect(msg).not.toMatch(/landed/)
   })
   it('left as it is: a typed landing still says "landed" (D2010 changes only the borrowed take-off)', () => {

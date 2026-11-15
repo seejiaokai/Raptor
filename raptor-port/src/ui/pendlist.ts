@@ -330,12 +330,20 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
      in today's words */
   const who = (x: any) => `${x.code}|${[...(x.who || [])].map(String).sort().join(',')}`
   const added = now.filter((x: any) => !a.has(k(x, namesNow))), gone = was.filter((x: any) => !b.has(k(x, namesWas)))
+  /* each line led by the people it is about, today's callsigns (the blind Opus read, 16 Nov 26, F1): the reworded lines
+     leave the people to the list that draws them, as the warning list and the drop note do — never twice where a line
+     already opens with them */
+  const named = (x: any, m: string) => {
+    const nm = [...new Set<string>((x.who || []).map(String))].map((id) => cs(id) || (namesWas || {})[id] || id).filter(Boolean).join(', ')
+    return nm && m.indexOf(nm) !== 0 ? `${nm} — ${m}` : m
+  }
   added.forEach((x: any) => {
     const j = gone.findIndex((y: any) => who(y) === who(x))
-    if (j >= 0) { gone.splice(j, 1); rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'changed', keys: [] }) }
-    else rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'new', keys: [] })
+    const m = named(x, String(x.msg || x.code || 'A warning'))
+    if (j >= 0) { gone.splice(j, 1); rows.push({ where: m, from: '', to: 'changed', keys: [] }) }
+    else rows.push({ where: m, from: '', to: 'new', keys: [] })
   })
-  gone.forEach((x: any) => rows.push({ where: reword(x.msg || x.code || 'A warning'), from: '', to: 'cleared', keys: [] }))
+  gone.forEach((x: any) => rows.push({ where: named(x, reword(x.msg || x.code || 'A warning')), from: '', to: 'cleared', keys: [] }))
   /* the men as their pucks draw them */
   if (snap && snap.pa) {
     const nowPa: any = peopleAttrsNow(snap.pa)

@@ -242,6 +242,49 @@ via Sunday instead).
   outside — already in `OUTSTANDING.md` `[RULES-CHECK-FIXES]`'s "older, found on the way"; the ALL AVAIL window the same —
   `[ALLAVAIL-ESCAPE]`.
 
+## What the reads found, and each disposition
+
+Two blind reads of the finished code at `9d05fb9e3`, on the brief `docs/superpowers/briefs/2026-11-16-warn-words-coderead-brief.md`,
+each on a copy without the walk's reports, pictures or the other's report: Astra (Codex) and a fresh Opus reader. Their
+reports, saved as they came: `docs/superpowers/briefs/2026-11-16-warn-words-coderead-astra.md` and `…-opus.md`. The two
+ran one after the other; they overlapped by about a minute (Astra finishing as the Opus reader started), neither seeing
+the other's words. Every finding below was reproduced as a failing test before it was fixed.
+
+- **Astra 1 (P1) — crew rest across days used the day before's flight length.** A Monday published under 60 minutes, the
+  setting then 120: Tuesday's crew rest still ended Monday at 21:00 + debrief, not 22:00 — the day being judged must re-work
+  the day before's assumed landing with its own settings, as it already did the debrief (D2005). **Fixed red first**
+  (`engine/assumedlanding.test.ts` "the day being judged decides…", red: no warning at all): Tuesday now reads "Monday T/O
+  20:00, landing assumed 22:00 (T/O + 2h) + 2h debrief (assumed) → ended 00:00".
+- **Astra 3 — the drop note named only the first person** of a line about two. **Fixed red first**
+  (`state/dropflag.test.ts` "names everyone…"): "Ranger, Echo — Not SC DAY current: …".
+- **Astra 6 / Opus F3 — the chips' titles and the Logic page's chip legend kept the old names** ("No time for the flight
+  brief", "Qualification — illegal seat", "Long work day", "No break day…") while the warning list says the new ones.
+  **Fixed red first** (`engine/validate.test.ts` "a one-check chip…"): "Misses flight brief", "Misses flight debrief",
+  "Misses sim brief", "Misses sim debrief", "Wrong seat", "Long day (>12h)", "Days in a row"; the comparison with the
+  original app takes the same names (`testing/refwin.ts`), the original itself untouched (728 pass). The combined chips
+  (Conflict, Crew rest breach, Advisory, the turns, crew pairing) keep their longer titles.
+- **Opus F1 — the pending list's warning rows printed the line with no name** — the new words leave the people to the list
+  that draws them. **Fixed red first** (`ui/latepub.test.tsx` "a rename beside…", red on 19 rows): each row now leads with
+  today's callsigns, "Stiff — Long day: …".
+- **Opus F4a, F4b — two lines departed from the approved words (spec §3).** The crew-rest tail read "landing assumed 13:00
+  (T/O + 1h)" without the take-off; the long day's span named no flight. **Fixed red first**: "Monday T/O 12:00, landing
+  assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00"; "(VL BFM landing assumed 19:00 + 2h debrief
+  assumed)"; `engine-rules.md` corrected with them.
+- **Opus F5 — a stale code comment** on the day before's assumed flight length: rewritten with the fix above.
+- **The OIL test written after its code** (`leavewar/assumedlanding-published.test.ts`, "not seen red on its own"): each of
+  the four places that carry the flight length for a published day's OIL — today's values, the kept values, the
+  comparison and the day's own working — removed in turn: each went red (2, 1, 1 and 1 failing), and was put back.
+- **For his look (a question, not changed) — Opus F2:** an SC MAIN that does not fly, its START typed and END blank, now
+  shows no warning at all: D2055 left it out of crew rest and assumed "its own warning stays", but that warning
+  (`SA_FLY_NO_TIME`) fires only for a line that flies. A new warning would be something he sees — a mock-up first (D1625).
+- **Older, not this job's (for filing):** Astra 2 — the availability count on a published version's look reads today's
+  settings (the old wrapper missing; the flight length is one more of them); Astra 4 — a "goes away once signed" row in
+  the issues list lacks its sentence; Astra 5 — two separate flights with the same name are read as one man "in two seats
+  on VL BFM"; Opus — the crew picker's hover reason "CAT IW — a WSO category, cannot fly FCP" against the list's "Wrong
+  seat: …"; both reads — the comparison's crew-rest tail in the original app's copy is never reached by the parity seed.
+- **Judged not faults:** a hide keyed on words comes back when its times or limits change (D2018, consistent); plain-text
+  drawers do not escape, as built.
+
 ## Notes for the walk, from the build
 
 - Hides stored before this change: a hide of a conflict between two schedule items keyed on its two items (D2001) since

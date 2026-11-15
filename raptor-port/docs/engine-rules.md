@@ -487,10 +487,11 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   at 60 minutes), not at the take-off itself, and every check that reads the landing uses it — the clashes and the
   busy window from step to dekit, the tight turn, the debrief, crew rest, the long day, OIL and Insights' hours, and the
   crew list's and ALL AVAIL's busy windows (`avail.ts` personBusy, slotRules). Its words, in the approved short form
-  (the shape of D2046's "assumed it landed 13:00 (take-off + 1h)"): crew rest `Monday landing assumed 13:00 (T/O + 1h)
-  + 2h debrief (assumed) → ended 15:00 → clear 03:00`; tight turn `VL BFM landing assumed 13:00 (T/O + 1h), RU BFM T/O
+  (the shape of D2046's "assumed it landed 13:00 (take-off + 1h)"): crew rest `Monday T/O 12:00, landing assumed 13:00 (T/O
+  + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00` (the landing re-worked with the JUDGED day's flight length,
+  D2005, as its debrief is); tight turn `VL BFM landing assumed 13:00 (T/O + 1h), RU BFM T/O
   13:00`; debrief `Misses VL BFM debrief 13:00–15:00 (landing assumed): …`; a conflict `VL BFM (landing assumed 13:00,
-  dekit to 13:30) & …`; the long day `(last landing assumed 19:00 (T/O + 1h) + 2h debrief assumed)`. Still from the
+  dekit to 13:30) & …`; the long day `(VL BFM landing assumed 19:00 + 2h debrief assumed)`. Still from the
   event's `noLd`. A shift's blank END is not assumed — D2055, below. Pins: `engine/assumedlanding.test.ts`,
   `rulescheck-batch2.test.ts` part 2 and 2b (changed on purpose).
   **The tight-turning advisory (`CREW_TIGHT`) reuses that same tail**, so it

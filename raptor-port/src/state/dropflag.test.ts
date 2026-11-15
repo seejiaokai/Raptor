@@ -46,6 +46,12 @@ describe('flagLine — the validator’s words, the day in front when it is not 
   it('puts the callsign in front of a message that names events, not the man', () => {
     expect(flagLine(W({ msg: 'VL BFM & SC AM clash' }), 3)).toBe(`${cs} — VL BFM & SC AM clash`)
   })
+  /* Astra's blind read (16 Nov 26, finding 3): the new words leave the people to the drawer, as the warning list draws
+     them — every man the line is about, never only the first, so the man just dropped is named */
+  it('names everyone the line is about, as the warning list does', () => {
+    const two = W({ who: ['bane', 'freak'], msg: 'Not SC DAY current: SC AM 07:00–13:00' })
+    expect(flagLine(two, 3)).toBe(`${PEOPLE.bane.cs}, ${PEOPLE.freak.cs} — Not SC DAY current: SC AM 07:00–13:00`)
+  })
   it('prefixes the day when the breach landed on a day other than the one dropped on', () => {
     expect(flagLine(W({ msg: `${cs} is on the programme 7 days in a row`, di: 6, day: 'Sunday' }), 2))
       .toBe(`Sun · ${cs} is on the programme 7 days in a row`)

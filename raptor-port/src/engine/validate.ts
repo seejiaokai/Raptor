@@ -72,9 +72,9 @@ export const chipText=(c:any)=>CHIP_TEXT[c]||c;
    silently freezing the flag. */
 export const RANK:any={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CP:8,CR:9,RUN:10,CPH:11,C:12,Q:13};
 export const CHIP_LABEL:any={DT:'Double turn',TT:'Tight turn',C:'Conflict (two events at once)',
-  A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',CR:'Crew rest breach (<{crewRest})',Q:'Qualification — illegal seat',
-  NB:'No time for the flight brief',DB:'No time for the flight debrief',SB:'No time for the sim brief',SD:'No time for the sim debrief',LD:'Long work day (>{longDay})',
-  RUN:'No break day — too many days on the programme in a row',
+  A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',CR:'Crew rest breach (<{crewRest})',Q:'Wrong seat',
+  NB:'Misses flight brief',DB:'Misses flight debrief',SB:'Misses sim brief',SD:'Misses sim debrief',LD:'Long day (>{longDay})',
+  RUN:'Days in a row',
   CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};
 export const SEVWORD:any={hard:'Warning',adv:'Advisory',note:'Note'};
 /* ring precedence: red beats orange beats grey, so a person carrying both a
@@ -516,10 +516,10 @@ function validateCore(){
          scheduler who knows this crew walks off the jet fast can read that the
          2h is an assumption, not a fact. Null when the winning end is a SHIFT,
          which ends at its written time with no debrief tail to assume. */
-      /* D2010 (13 Nov 26): prevFlyNoLd says the winning sortie had NO landing typed (blank or "TBD") — its landing is its
-         borrowed take-off — so the tail says "took off … with no landing typed", never "landed" at the take-off time. A
-         sortie's report is NaN exactly when its take-off or its landing is not a clock (events.ts, D1786); with the take-off
-         a clock, it is the landing that is missing. */
+      /* D2010 (13 Nov 26) as D2046 (15 Nov 26) changes it: prevFlyNoLd is the assumed flight length, in minutes, of a
+         winning sortie with NO landing typed (blank or "TBD"; events.ts `noLd`) — 0 when a landing was typed — so the tail
+         says "landing assumed HH:MM (T/O + 1h)", never "landed" at a time nobody typed. Its landing is the take-off plus
+         the JUDGED day's flight length (below). A standby shift with no END is skipped (D2055, `noEnd`). */
       const prevEnd:any={}, prevFlyEnd:any={}, prevFlyKey:any={}, prevFlyLd:any={}, prevFlyNoLd:any={}, prevSource:any={};
       const targetIndex=day.restIndex??day.di??di;
       for(let distance=1;distance<=4;distance++){
@@ -549,7 +549,9 @@ function validateCore(){
            ends the day as a blank one does. Since D2046 (15 Nov 26) both land at the ASSUMED landing, the take-off plus
            the Logic flight length (events.ts ldM), so the day ends there plus the debrief; the borrow below now only
            ever meets a sortie with no take-off, whose end stays not-a-number. */
-        const flyLd=e.kind==='fly'&&!isFinite(e.ld)?e.to:e.ld;
+        /* D2005 again (Astra's blind read, 16 Nov 26): the day before built its assumed landing with ITS own flight length;
+           the day being judged re-works it with its own, as it does the debrief below — never the day before's kept 60 */
+        const flyLd=e.kind==='fly'&&e.noLd&&isFinite(e.to)?e.to+VCONF.fltLen:e.kind==='fly'&&!isFinite(e.ld)?e.to:e.ld;
         /* D2005: the day being judged decides — a sortie's debrief, and an end the day before only ASSUMED (no end typed:
            events.ts `ae`), are worked out with the judged day's settings, never the day before's */
         const rawEnd=e.kind==='fly'?flyLd+VCONF.debrief:e.ae==='sim'?e.s+VCONF.simLen:e.ae==='open'?e.s+VCONF.openEnd:e.e;   // a shift/duty ends when it ends
@@ -561,7 +563,7 @@ function validateCore(){
         if(rawEnd==null||!isFinite(rawEnd))return;
         const end=rawEnd+offset;
         if(prevEnd[e.id]==null||end>prevEnd[e.id])prevEnd[e.id]=end;
-        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevFlyNoLd[e.id]=e.kind==='fly'&&!!e.noLd?e.ld-e.to:0; prevSource[e.id]=source;}
+        if(rests&&(prevFlyEnd[e.id]==null||end>prevFlyEnd[e.id])){prevFlyEnd[e.id]=end; prevFlyKey[e.id]=e.slot||e.key; prevFlyLd[e.id]=e.kind==='fly'?flyLd+offset:null; prevFlyNoLd[e.id]=e.kind==='fly'&&!!e.noLd?flyLd-e.to:0; prevSource[e.id]=source;}
       });
       /* DUTY & COMMITMENT INPUTS BEAR CREW REST TOO (owner, 21 Aug 26 —
          "everything in duty and commitments affects crew rest… do not
@@ -694,7 +696,7 @@ function validateCore(){
         /* [WARN-WORDS-STANDALONE] (D2069 keeps his 22 Aug 26 order): "Monday landed 21:30 + 2h debrief (assumed) → ended
            23:30 → clear 11:30"; a day not ended by a flight says what ended, "Monday duty ended 20:00 → clear 08:00" */
         const tail=landed!=null
-          ? `${source.dow} ${prevFlyNoLd[id]?`landing assumed ${hm24(landed)} (T/O + ${lgT(prevFlyNoLd[id])})`:`landed ${hm24(landed)}`} + ${lgT(VCONF.debrief)} debrief (assumed) → ended ${hm24(pe)} → clear ${stated(earliest)}`
+          ? `${source.dow} ${prevFlyNoLd[id]?`T/O ${hm24(landed-prevFlyNoLd[id])}, landing assumed ${hm24(landed)} (T/O + ${lgT(prevFlyNoLd[id])})`:`landed ${hm24(landed)}`} + ${lgT(VCONF.debrief)} debrief (assumed) → ended ${hm24(pe)} → clear ${stated(earliest)}`
           : `${source.dow} duty ended ${hm24(pe)} → clear ${stated(earliest)}`;
         if(pfly[id]&&first<earliest){
           /* [REST-BLANK-LINE]: when no leg tells him anything the breach is the earlier commitment's (evBound);
@@ -1258,7 +1260,8 @@ function validateCore(){
            leaves fast can discount it. A non-flying finish is a fixed clock
            time with nothing to assume, so it stays bare. */
         /* D2046, D2053: a last sortie with no landing typed closes the day at its ASSUMED landing, and says so */
-        const back=ef?`${hm24(e)} (last landing ${ef.noLd?`assumed ${hm24(ef.ld)} (T/O + ${lgT(ef.ld-ef.to)})`:hm24(ef.ld)} + ${lgT(VCONF.debrief)} debrief assumed)`:`${hm24(e)}`;
+        /* the approved words (spec §3, D2053): "(VL BFM landing assumed 17:20 + 2h debrief assumed)" */
+        const back=ef?`${hm24(e)} (${ef.noLd?`${lineName(ef.label)} landing assumed ${hm24(ef.ld)}`:`last landing ${hm24(ef.ld)}`} + ${lgT(VCONF.debrief)} debrief assumed)`:`${hm24(e)}`;
         add('note','LONGDAY',[id],`Long day: ${dur(span)} (limit ${lgT(VCONF.longDay)}), ${stated(s)} → ${back}`);}   // [WARN-WORDS-STANDALONE]
     });
     /* the run breaks its limit ON this day, which is the day the scheduler has

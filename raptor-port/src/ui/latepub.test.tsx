@@ -397,7 +397,10 @@ describe('Astra\'s code read (26 Sep 26): the face beyond the warnings freezes t
          rename (no line names him any more) */
       const rows = t.replace(/^What this day shows/, '').split(/(?<=changed|new)/)
       expect(rows.filter(r => r.endsWith('new')).length, 'new long days').toBeGreaterThan(0)
-      expect(rows.filter(r => !r.startsWith('Long day: ')), 'every row is a long day').toEqual([])
+      /* the blind Opus read (16 Nov 26, F1): the reworded lines leave the people to the list that draws them, so each row
+         leads with the callsigns it is about, as the warning list does — "Stiff — Long day: …", today's names */
+      expect(rows.filter(r => !/^[^—]+ — Long day: /.test(r)), 'every row is a long day, led by its people').toEqual([])
+      expect(t, 'the names are today\'s, never the old callsign alone').not.toMatch(new RegExp(`(^|new|changed|, )${cs0} — `))
     } finally { (VCONF as any).longDay = ld; renameCallsign(pilot, cs0); validate() }
   })
 })

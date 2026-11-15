@@ -64,6 +64,15 @@ describe('validation engine (tfin F)', () => {
     expect(chips.filter(c => !CHIP_LABEL[c])).toEqual([])
   })
 
+  /* the blind reads of 16 Nov 26 (Astra's 6, the Opus read's F3): a chip's title and the Logic page's chip legend say the
+     same short name as the warning list's line it opens (D2070, spec §3g: "the other checks' short names follow the new
+     labels") — the chips that stand for one check only take that check's name */
+  it('a one-check chip carries the warning list\'s short name', () => {
+    const one: any = { NB: 'NO_BRIEF', DB: 'DEBRIEF', SB: 'SIM_BRIEF', SD: 'SIM_DEBRIEF', Q: 'QUAL', RUN: 'DAYS_RUN' }
+    expect(Object.keys(one).filter(c => CHIP_LABEL[c] !== WCODE[one[c]])).toEqual([])
+    expect(CHIP_LABEL.LD).toBe('Long day (>{longDay})')
+  })
+
   it('chip glyphs print short (CHIP_TEXT)', () => {
     expect(chipText('CR')).toBe('R')
     expect(chipText('NB')).toBe('B'); expect(chipText('SB')).toBe('B')
