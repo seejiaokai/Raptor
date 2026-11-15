@@ -405,3 +405,4 @@ changed only so the strip would show. Pictures: `c-logic-proposed-phone.png`, `-
 - **Question 4 — yes (D2069):** the crew-rest line keeps his 22 Aug 26 order with "needs 12h" added.
 - **Approved (D2071, 16 Nov 26):** the one-sentence Logic note (§3f) and the words as a whole, with the answers above
   applied. The build starts with the words, then the item's engine changes.
+- **"Illegal seat", not "Wrong seat" (D2074, 16 Nov 26):** every line this proposal begins "Wrong seat:" begins "Illegal seat:" in the build; the check's short name is "Illegal seat"; the Legend keeps "qual / illegal seat".
