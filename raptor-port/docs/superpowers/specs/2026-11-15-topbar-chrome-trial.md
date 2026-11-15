@@ -186,3 +186,10 @@ panel reads −N (drawn above the visible top) at the deepest spring, while the 
 moment later as the address bar grows — the two moments differ; the build of the cure is checked on his phone either way.
 Not yet read: Edit Schedule flicked to its very foot, and the Leave War grid to its foot — the two that choose between B
 (every page) and C (Approvals and Quals only).
+
+**His second try, 17:01 (12 seconds): Edit Schedule and the Leave War grid flicked to their foot.** Both fail too.
+Edit Schedule: WORST −309 at 7.3s, loose 129 frames, sprung 309 past its foot, RANGE win 684–792, spring win 684–792;
+one frame shows the "142 TALON" bar gone from the top while Chrome's address bar grows back. The grid: WORST −239 at
+1.5s, loose 100 frames, sprung 239 past its foot, RANGE win 555–792; one frame shows a strip of the page above the bar.
+So every page that scrolls as a whole has it, and the page in its own box (Balances) does not: cure B, one job with
+[PAGE-FOOT-FLASH] — his to choose, its costs told him (Chrome's bars stop folding as he scrolls; pull-down-to-reload goes).
