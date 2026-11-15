@@ -2602,3 +2602,29 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The rule says to search each old phrase "across the app and every test folder, unit and browser". The build's own search (chat 76–78) covered `src/` and the tests; the old names still sat in the IT flow guide's captions, `raptor-port/scripts/itflow/content.mjs`, a generator of a document handed to the IT side — neither app nor test. Found only because the roll-call search here ran over `scripts/` too.
 **Suggested improvement:** §6's wording row: search the app, every test folder, the probes AND every script that writes words for a person (guides, decks, exports — `scripts/`), listing files uncapped.
 **Principle:** A rename's search covers every place that turns the words into something a person reads, not only the running app and its tests: document generators hold the same words.
+
+### Observation 951: Two chats in one checkout took the same ruling number
+
+**Status:** OPEN
+**Date:** 2026-11-15
+**Session context:** Chat 82, [WARN-WORDS-STANDALONE] — recording the owner's opening message as a ruling while chat 81 worked in the same folder
+**Skill:** record-decisions (the rule file) / DECISIONS.md's steps for taking a number
+**Type:** internal
+**Phase/Area:** taking the next free ruling number; parallel chats sharing one checkout
+
+**Issue:** Chat 82 read the highest ruling number and wrote D2056 as uncommitted edits. Chat 81, in the same checkout, switched the folder's branch (carrying those uncommitted edits with it) and took D2056 for another area at the same moment. Neither search could see the other's number: both were uncommitted. It was caught only because the folder's branch changed under chat 82. Settled by a message between the chats and a renumber to D2057.
+**Suggested improvement:** In DECISIONS.md's number step: before taking a number, look for other open chats (ListAgents) and for uncommitted rows in the working tree (`git status` on the rulings files); a chat that shares the checkout messages the other before it writes a row, and never switches the folder's branch while another chat's edits sit uncommitted in it.
+**Principle:** A "next free number" read from committed history is not safe when two writers share one working tree: the claim has to be visible to the other writer before it is used.
+
+### Observation 952: A blind read fed table fragments reported them as unclear wordings
+
+**Status:** OPEN
+**Date:** 2026-11-15
+**Session context:** Chat 82, [WARN-WORDS-STANDALONE] — the writing guide's cold read (design-practices §1a test 9) of 69 proposed warning lines
+**Skill:** design-practices §1a test 9 (the cold read) / briefs for a fresh reader
+**Type:** open-source
+**Phase/Area:** preparing the cold reader's input
+
+**Issue:** The reader's input was cut from the proposal's tables by a script. Cells that held a variant ("… / …"), a continuation ("…Day starts 07:00") or a placeholder ("landing …") went in as if they were whole lines. Most of the 11 "unclear" verdicts were about those fragments, not about a wording, and each had to be sorted by hand from the real findings.
+**Suggested improvement:** In the cold read's step: every line given to the reader is a whole line exactly as a person would see it, with a real example in each slot; the host reads the input list itself once before sending it and removes or completes any fragment.
+**Principle:** A blind reader judges what it is given: an input that is not what the end reader will see produces findings about the input, and costs a sorting pass.
