@@ -57,7 +57,7 @@ describe('an SC line reads its B box as the in-time', () => {
     const cr = scBreach()
     expect(cr, 'the earlier in-time deepens the breach').toBeTruthy()
     expect(cr.sev).toBe('hard')
-    expect(cr.msg).toContain("SC AM's in-time is 05:00")   // [SC-INTIME-REST-WORDS]: the typed B is the in-time, not the shift's start
+    expect(cr.msg).toContain('SC AM in-time 05:00: 7h30 rest, needs 12h.')   // [SC-INTIME-REST-WORDS]: the typed B is the in-time, not the shift's start
     expect(cr.msg).toContain('7h30 rest')
   })
 

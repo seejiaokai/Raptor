@@ -1,0 +1,5 @@
+flight d5 w0 {"to":"12:00","ld":"13:00","msn":"V1 FLT","p":"Ranger"}
+ROW RECORDED | 2 the looks and day details | 1536 | published Saturday (ORIG); opened the plans menu; + Alt Plan copied the clean day | saw: menu: Live working copy ●live now — differences from Original go out as AL1 | Originalread-only — look, don't change | + Alt Plan; selector after: 
+flight d5 w1 {"to":"12:30","ld":"13:30","msn":"CLASH FLT","p":"Ranger"}
+ROW PASS | 2 the looks and day details | 1536 | live copy: a second Ranger flight 12:30-13:30 overlapping the first | saw: ["Ranger — Conflict: V1 FLT (T/O 12:00, landing 13:00) & CLASH FLT (T/O 12:30, landing 13:30) ✕"]
+ROW PASS | 2 the looks and day details | 1536 | looked at the published version (Originalread-only — look, don't change) through the plans menu | saw: {"sel":"","svg":false,"banner":null}; warnings: ["No conflicts flagged for this day ✓"]

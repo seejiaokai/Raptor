@@ -1,0 +1,83 @@
+[
+ [
+  "1 crew rest names the take-off",
+  "1536",
+  "built Ranger: Friday flight T/O 12:00 landing blank; Saturday flight T/O 04:00",
+  "both seated",
+  "[\"Ranger\",\"Ranger\"]",
+  "PASS",
+  ""
+ ],
+ [
+  "1 crew rest names the take-off",
+  "1536",
+  "Saturday crew-rest line in the week",
+  "contains \"Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00\"",
+  "[\"Crew rest (<12h) Ranger — Crew rest: Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. Report 01:40: 10h40 rest, needs 12h. ✕\"]",
+  "PASS",
+  "1-a-week-d.png"
+ ],
+ [
+  "1 crew rest names the take-off",
+  "1536",
+  "Saturday crew-rest line in the details",
+  "contains \"Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00\"",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest: Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. Report 01:40: 10h40 rest, needs 12h.\"]",
+  "PASS",
+  "1-a-details-d.png"
+ ],
+ [
+  "1 crew rest names the take-off",
+  "1536",
+  "Saturday crew-rest line in the board",
+  "contains \"Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00\"",
+  "[\"Ranger — Crew rest: Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. Report 01:40: 10h40 rest, needs 12h. ✕\"]",
+  "PASS",
+  "1-a-board-d.png"
+ ],
+ [
+  "1 crew rest names the take-off",
+  "1536",
+  "RECORD Saturday crew-rest line whole (assumed landing)",
+  "RECORD",
+  "[\"Crew rest (<12h) Ranger — Crew rest: Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. Report 01:40: 10h40 rest, needs 12h. ✕\"]",
+  "RECORDED",
+  "1-a-week-d.png"
+ ],
+ [
+  "1 crew rest names the take-off",
+  "1536",
+  "Friday landing typed 12:30; Saturday crew-rest line in the week",
+  "contains \"Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30\", no \"assumed\" landing",
+  "[\"Crew rest (<12h) Ranger — Crew rest: Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30. Report 01:40: 11h10 rest, needs 12h. ✕\"]",
+  "PASS",
+  "1-b-week-d.png"
+ ],
+ [
+  "1 crew rest names the take-off",
+  "1536",
+  "Friday landing typed 12:30; Saturday crew-rest line in the details",
+  "contains \"Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30\", no \"assumed\" landing",
+  "[\"Warning · Crew rest (<12h) Ranger — Crew rest: Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30. Report 01:40: 11h10 rest, needs 12h.\"]",
+  "PASS",
+  "1-b-details-d.png"
+ ],
+ [
+  "1 crew rest names the take-off",
+  "1536",
+  "Friday landing typed 12:30; Saturday crew-rest line in the board",
+  "contains \"Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30\", no \"assumed\" landing",
+  "[\"Ranger — Crew rest: Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30. Report 01:40: 11h10 rest, needs 12h. ✕\"]",
+  "PASS",
+  "1-b-board-d.png"
+ ],
+ [
+  "1 crew rest names the take-off",
+  "1536",
+  "RECORD Saturday crew-rest line whole (typed landing)",
+  "RECORD",
+  "[\"Crew rest (<12h) Ranger — Crew rest: Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30. Report 01:40: 11h10 rest, needs 12h. ✕\"]",
+  "RECORDED",
+  "1-b-week-d.png"
+ ]
+]

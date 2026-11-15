@@ -1,0 +1,45 @@
+www-w2-p2 v1
+ROSTER-HEADS no seat []
+RANGER no seat <span class="rpuck " data-drag="1" data-person="bane" title="Ranger"><span class="puck sm" tabindex="0" data-person="bane" title="Ranger · IP · instructor pilot · SXO"><span class="nm">Ranger</span><span class="role q-ins">IP</span></span></span>
+ARMED g:4.2.+
+ROSTER-HEADS seat armed []
+RANGER armed <span class="rpuck " data-drag="1" data-person="bane" title="Ranger"><span class="puck sm" tabindex="0" data-person="bane" title="Ranger · IP · instructor pilot · SXO"><span class="nm">Ranger</span><span class="role q-ins">IP</span></span></span>
+seat ALL AVAIL ok
+ALLAVAIL puck on board 1
+BOARD PUCKS ["Bolt C|d:4.0.0","Ridge C|d:4.0.1","Wildcard O|s:4.oft.1.p","Anvil IP|s:4.oft.1.w","Saber IP|g:4.0","Reaper IR|undefined","Blade IP|undefined","Cinch IP|undefined","Cobra IP|undefined","Comet IP|undefined"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+www-w2-p2 v1
+ROSTER-HEADS no seat []
+RANGER no seat <span class="rpuck " data-drag="1" data-person="bane" title="Ranger"><span class="puck sm" tabindex="0" data-person="bane" title="Ranger · IP · instructor pilot · SXO"><span class="nm">Ranger</span><span class="role q-ins">IP</span></span></span>
+ARMED g:4.2.+
+ROSTER-HEADS seat armed []
+RANGER armed <span class="rpuck " data-drag="1" data-person="bane" title="Ranger"><span class="puck sm" tabindex="0" data-person="bane" title="Ranger · IP · instructor pilot · SXO"><span class="nm">Ranger</span><span class="role q-ins">IP</span></span></span>
+seat ALL AVAIL ok
+WIN ["DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ⠿ AVAILABLE CREW ⌃ 1ST WAVE AM–END · 41 CAN FLY all of them are under Available all day ↓ AVAILABLE ALL DAY · 41 Reaper IR Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Outlaw C Torch "]
+BOARD PUCKS ["Bolt C|d:4.0.0","Ridge C|d:4.0.1","Wildcard O|s:4.oft.1.p","Anvil IP|s:4.oft.1.w","Saber IP|g:4.0","Reaper IR|undefined","Blade IP|undefined","Cinch IP|undefined","Cobra IP|undefined","Comet IP|undefined"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+www-w2-p2 v1
+ROSTER-HEADS no seat []
+RANGER no seat <span class="rpuck " data-drag="1" data-person="bane" title="Ranger"><span class="puck sm" tabindex="0" data-person="bane" title="Ranger · IP · instructor pilot · SXO"><span class="nm">Ranger</span><span class="role q-ins">IP</span></span></span>
+ARMED g:4.2.+
+ROSTER-HEADS seat armed []
+RANGER armed <span class="rpuck " data-drag="1" data-person="bane" title="Ranger"><span class="puck sm" tabindex="0" data-person="bane" title="Ranger · IP · instructor pilot · SXO"><span class="nm">Ranger</span><span class="role q-ins">IP</span></span></span>
+seat ALL AVAIL ok
+WIN ["DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ⠿ AVAILABLE CREW ⌃ 1ST WAVE AM–END · 41 CAN FLY all of them are under Available all day ↓ AVAILABLE ALL DAY · 41 Reaper IR Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Outlaw C Torch "]
+BOARD PUCKS ["Bolt C|d:4.0.0","Ridge C|d:4.0.1","Wildcard O|s:4.oft.1.p","Anvil IP|s:4.oft.1.w","Saber IP|g:4.0","ALL AVAIL|g:4.2","Reaper IR|undefined","Blade IP|undefined","Cinch IP|undefined","Cobra IP|undefined"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+www-w2-p2 v1
+ROSTER-HEADS no seat []
+RANGER no seat <span class="rpuck " data-drag="1" data-person="bane" title="Ranger"><span class="puck sm" tabindex="0" data-person="bane" title="Ranger · IP · instructor pilot · SXO"><span class="nm">Ranger</span><span class="role q-ins">IP</span></span></span>
+ARMED g:4.2.+
+ROSTER-HEADS seat armed []
+RANGER armed <span class="rpuck " data-drag="1" data-person="bane" title="Ranger"><span class="puck sm" tabindex="0" data-person="bane" title="Ranger · IP · instructor pilot · SXO"><span class="nm">Ranger</span><span class="role q-ins">IP</span></span></span>
+seat ALL AVAIL ok
+WIN ["DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ","DIV#.availpuck sec sec-avail :: ⠿ AVAILABLE CREW ⌃ 1ST WAVE AM–END · 41 CAN FLY all of them are under Available all day ↓ AVAILABLE ALL DAY · 41 Reaper IR Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Outlaw C Torch "]
+PUCKHTML <span class="seat armed" data-slot="g:4.2" data-drag="1"><span class="puck allavail sm" tabindex="0" data-person="allavail" title="ALL AVAIL"><span class="nm">ALL AVAIL</span></span><span class="oilcount" data-oilsent="r:rmwi7lbpci2pww7" data-oilday="4" data-oilver="" data-oilofw="1" title="43 with nothing else on at that time — tap to see them (who is free as things stand now)">43</span></span>
+BOARD PUCKS ["Bolt C|d:4.0.0","Ridge C|d:4.0.1","Wildcard O|s:4.oft.1.p","Anvil IP|s:4.oft.1.w","Saber IP|g:4.0","ALL AVAIL|g:4.2","Reaper IR|undefined","Blade IP|undefined","Cinch IP|undefined","Cobra IP|undefined"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

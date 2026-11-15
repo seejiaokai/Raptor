@@ -1,0 +1,74 @@
+[
+ [
+  "12 writers and short names",
+  "1536",
+  "a flagged Ranger puck on the board: its title (tooltip/whole-puck description)",
+  "RECORD; the short check names (Conflict, Tight turn, Misses ... debrief), no \"Clash\"",
+  "[\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\",\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\",\"Ranger · IP · instructor pilot · SXO · Conflict (two events at once)\"]",
+  "RECORDED",
+  "12-1-puck-title-d.png"
+ ],
+ [
+  "12 writers and short names",
+  "1536",
+  "the issues heading",
+  "RECORD",
+  "⚠ 6 issues · 2 warnings Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕ Ranger — Conflict: RU (step 13:00, ",
+  "RECORDED",
+  "12-1-puck-title-d.png"
+ ],
+ [
+  "12 writers and short names",
+  "1536",
+  "double-turn line",
+  "\"1 person is double turning: Ranger\" unchanged",
+  "[\"Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "12-1-puck-title-d.png"
+ ],
+ [
+  "12 writers and short names",
+  "1536",
+  "Saturday flight 06:00 for Ranger (Friday ends late), no report typed",
+  "a \"Tight turning\" advisory (not \"Tight turn\"); RECORD whole",
+  "[\"Ranger — Crew rest: Friday landing assumed 15:00 (T/O + 1h) + 2h debrief (assumed) → ended 17:00 → clear 05:00. Report 03:40: 10h40 rest, needs 12h. ✕\"]",
+  "RECORDED",
+  "12-2-tight-turning-d.png"
+ ],
+ [
+  "12 writers and short names",
+  "1536",
+  "Saturday flight T/O 07:00 with a rally typed 06:00 (usual report 04:00 would be short, typed 06:00 clears)",
+  "a \"Tight turning\" advisory, RECORD whole; no Crew rest warning",
+  "[\"Ranger — Crew rest: Friday landing assumed 15:00 (T/O + 1h) + 2h debrief (assumed) → ended 17:00 → clear 05:00. Report 04:40: 11h40 rest, needs 12h. ✕\"]",
+  "RECORDED",
+  "12-2b-tight-turning-rally-d.png"
+ ],
+ [
+  "12 writers and short names",
+  "1536",
+  "Friday week strip: heads and lines (Tight turn same day; the Saturday trace is on Friday as \"Breaks Saturday\")",
+  "RECORD both names",
+  "[\"Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕\",\"Conflict Ranger — Conflict: RU (step 13:00, T/O 14:00) & BRIEFING 13:10–13:20 ✕\",\"Breaks Saturday Ranger — had to leave by 16:40. Crew rest: Friday landing assumed 15:00 (T/O + 1h) + 2h debrief (assumed) → ended 17:00 → clear 05:00. Report 04:40: 11h40 rest, needs 12h.\",\"Tight turn Ranger — Tight turn: VL BFM → RU, 60 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 14:00 ✕\",\"Misses flight debrief Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕\",\"Misses flight brief Ranger — Misses RU brief 11:40–14:00: BRIEFING 13:10–13:20 ✕\",\"Double turning Ranger — 1 person is double turning: Ranger ✕\"] head: ⚠ 6 issues · 2 warnings ▼",
+  "PASS",
+  "12-3-week-friday-d.png"
+ ],
+ [
+  "12 writers and short names",
+  "1536",
+  "Insights: \"Conflicts by type\" heading with its figures",
+  "heading against its figures (lesson 9): the categories use the short names",
+  "[\"CONFLICTS BY TYPE\",\"Conflict\",\"8\",\"Misses flight brief\",\"6\",\"Long day\",\"5\",\"Double turning\",\"3\",\"Tight turn\",\"3\",\"Misses flight debrief\",\"3\",\"Downchit + planned\"]",
+  "RECORDED",
+  "12-4-insights-d.png"
+ ],
+ [
+  "12 writers and short names",
+  "1536",
+  "Logic page: the check names and lines naming conflicts, tight turns, crew rest",
+  "RECORD; \"Tight turning\" and \"Tight turn\" are two checks; no \"Clash\"",
+  "[\"Crew rest and the working day\",\"Crew rest\",\"Sets the suggested B on a line with no brief typed, and a blank B is checked against it. With no in-time typed, crew rest counts to this B. A published day keeps its B until it is published again.\",\"Ends a flyer's day: tomorrow's crew rest, the long day, OIL and Insights hours count to here, and so does the flight debrief advisory.\",\"Tight turn\",\"A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.\",\"Crew rest and the working day\",\"Crew rest (<12h)\",\"For a flying member: at least 12h (Crew rest) from the end of his day before to his earliest in-time, or to anything earlier that day.\",\"Tight turning\",\"Conflict\",\"Overlaps standby\",\"Misses flight brief\",\"Misses flight debrief\",\"Tight turn\",\"Less than 2h from landing to the next take-off (Tight turn, or Dekit plus Step if longer).\",\"Double turning\",\"Misses sim brief\",\"Misses sim debrief\",\"Ground crew in a rear seat. The ride needs approval. Ground crew are checked for clashes, the long day, days in a row and their own absences, and a front seat is always a warning. None of the flying rules apply to them: crew rest, turns, pairing, AAR, SC currency or briefs.\",\"A standby shift that flies has no START or END, so its crew rest and OIL cannot be worked out.\",\"A standby row that flies has a typed B (the crew's in-time) or R (its rally), whichever is earlier, and something sits between it and the shift start. That time also starts his crew rest, his long day and his OIL.\",\"Conflict with a request\",\"Conflict (two events at once)\",\"Crew rest breach (<12h)\",\"Tight turn\",\"Double turn\",\"Ranger — Crew rest: Friday landing assumed 15:00 (T/O + 1h) + 2h debrief (assumed) → ended 17:00 → clear 05:00. Report 03:40: 10h40 rest, needs 12h.\",\"Ranger — Crew rest: Friday landing assumed 15:00 (T/O + 1h) + 2h debrief (assumed) → ended 17:00 → clear 05:00. Report 03:40: 10h40 rest, needs 12h.\"]",
+  "FAIL",
+  "12-5-logic-d.png"
+ ]
+]

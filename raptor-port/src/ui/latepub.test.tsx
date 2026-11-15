@@ -364,7 +364,7 @@ describe('Astra\'s code read (26 Sep 26): the face beyond the warnings freezes t
          is judged by the lead it kept, so they do not move at all — neither cleared nor "changed"; the one pending line
          is the printed lead itself. (Before D1991 they read ONE line each, "changed" — the Logic walker's find.) */
       expect(listText(MON), 'no warning reads cleared merely because its time moved').not.toMatch(/cleared/)
-      expect(listText(MON), 'D1991: judged by the kept lead, the advisory does not change').not.toMatch(/No time for the .* flight brief/)
+      expect(listText(MON), 'D1991: judged by the kept lead, the advisory does not change').not.toMatch(/Misses .* brief \d/)
     } finally { (VCONF as any).briefLead = was }
     validate()
     expect(dayDelta(MON)).toEqual([])
@@ -391,8 +391,16 @@ describe('Astra\'s code read (26 Sep 26): the face beyond the warnings freezes t
       expect(dayPendingItems(MON).filter((x: any) => x.kind === 'warn').length, 'one item').toBe(1)
       const t = listText(MON)
       expect(t, 'no warning reads cleared merely because a callsign changed').not.toMatch(/cleared/)
-      expect(t, 'something new is named').toMatch(/long work day/)
-      expect(t.split('new').length - 1, 'every new row is a long day').toBe((t.match(/long work day/g) || []).length)
+      expect(t, 'something new is named').toMatch(/Long day: /)
+      /* since [WARN-WORDS-STANDALONE] a long day's line states its limit ("Long day: 13h30 (limit 12h), …"), so the long days
+         already there read "changed" under the lowered limit; every row, new or changed, is still a long day, never the
+         rename (no line names him any more) */
+      const rows = t.replace(/^What this day shows/, '').split(/(?<=changed|new)/)
+      expect(rows.filter(r => r.endsWith('new')).length, 'new long days').toBeGreaterThan(0)
+      /* the blind Opus read (16 Nov 26, F1): the reworded lines leave the people to the list that draws them, so each row
+         leads with the callsigns it is about, as the warning list does — "Stiff — Long day: …", today's names */
+      expect(rows.filter(r => !/^[^—]+ — Long day: /.test(r)), 'every row is a long day, led by its people').toEqual([])
+      expect(t, 'the names are today\'s, never the old callsign alone').not.toMatch(new RegExp(`(^|new|changed|, )${cs0} — `))
     } finally { (VCONF as any).longDay = ld; renameCallsign(pilot, cs0); validate() }
   })
 })
@@ -963,7 +971,7 @@ describe('D605 on a published day — the warning on a seat with no times freeze
 
   it('seated on a blank line while already on leave, then published: the day goes out WITH the warning, nothing pending', () => {
     blankLine('taipan'); validate()          // the seed's own whole-day OL, Wed 15 Jul
-    expect(flagged(WARN, 'taipan').map((w: any) => w.msg), 'flagged before any time is typed').toEqual(['On leave but planned to fly this line — reason: Overseas leave — off island'])
+    expect(flagged(WARN, 'taipan').map((w: any) => w.msg), 'flagged before any time is typed').toEqual(['On leave + planned: this line (no times yet). Reason: Overseas leave — off island'])
     publishDay(WED); signBound(WED)
     expect(flagged(officialWarn(), 'taipan').length, 'the issued face carries it').toBe(1)
     expect(dayShownPendCount(WED), 'nothing waits').toBe(0)
@@ -1010,7 +1018,7 @@ describe('D605 on a published day — the warning on a seat with no times freeze
     INPUTS.push(inp); inpId(inp)
     expect(acceptInput(WED, inp, 'g'), 'the request lands').toBe(true)
     blankLine(X); validate()
-    const said = (b: any) => ((b.byDay[WED] && b.byDay[WED].warns) || []).filter((w: any) => w.code === 'INPUT_FLY' && (w.who || []).includes(X) && /Training clashes with this line/.test(w.msg))
+    const said = (b: any) => ((b.byDay[WED] && b.byDay[WED].warns) || []).filter((w: any) => w.code === 'INPUT_FLY' && (w.who || []).includes(X) && /^Conflict: this line \(no times yet\) & Training /.test(w.msg))
     expect(said(WARN).length, 'flagged on the blank line although its row speaks for it elsewhere').toBe(1)
     publishDay(WED); signBound(WED)
     expect(said(officialWarn()).length, 'the day goes out with it').toBe(1)

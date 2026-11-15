@@ -150,7 +150,7 @@ describe('Plan F — the maxRun>7 walk into a SECOND prior week', () => {
     const r = validate()
     const hit = r.all.find((w: any) => w.code === 'DAYS_RUN' && (w.who || []).includes('waldo') && w.di === 0)
     expect(hit, 'DAYS_RUN fires on the 9th consecutive day').toBeTruthy()
-    expect(hit.msg).toContain('9 days in a row')
+    expect(hit.msg).toBe('Days in a row: 9 (limit 8). A break day is due.')
   })
 
   it('a BLANK week-before Sunday caps the count at 7 — the second bundle\'s DATA matters, not just the call', () => {

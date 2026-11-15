@@ -60,7 +60,7 @@ describe('SC SPARE — stood by, not cross-checked', () => {
     /* since the per-type grading (owner, 26 Aug 26) a shift has ONE voice —
        the graded events loop — so this reads "but tasked", no longer the
        sortie loop's "but planned to fly" beside it */
-    expect(w.msg).toContain('On leave but tasked — SC AM')
+    expect(w.msg).toBe('On leave + planned: SC AM 07:00–13:00. Reason: Local leave')
     expect(tueWarns('nasty').filter((x: any) => x.code === 'LEAVE_FLY').length, 'and only one voice').toBe(1)
   })
 
@@ -70,7 +70,7 @@ describe('SC SPARE — stood by, not cross-checked', () => {
     const w = tueWarns('split').find((x: any) => x.code === 'LEAVE_FLY')
     expect(w, 'OL vs SC SPARE must flag').toBeTruthy()
     expect(w.sev).toBe('hard')
-    expect(w.msg).toContain('standing SC SPARE — overseas')
+    expect(w.msg).toBe('Overseas + planned: SC AM SPARE 07:00–13:00')
   })
 
   it('medically down (ATT C) bars the SPARE too', () => {
@@ -79,7 +79,7 @@ describe('SC SPARE — stood by, not cross-checked', () => {
     const w = tueWarns('split').find((x: any) => x.code === 'DNIF_FLY')
     expect(w, 'a downchit cannot stand by').toBeTruthy()
     expect(w.sev).toBe('hard')
-    expect(w.msg).toContain('medically down')
+    expect(w.msg).toBe('Downchit + planned: SC AM SPARE 07:00–13:00 (ATT C)')
   })
 
   it('a local commitment overlapping the shift leaves the SPARE clean', () => {
@@ -109,7 +109,7 @@ describe('SC SPARE — stood by, not cross-checked', () => {
       const w = tueWarns('split').find((x: any) => x.code === 'SC_QUAL')
       expect(w, 'the spare exemption does not cover currency').toBeTruthy()
       expect(w.sev).toBe('hard')
-      expect(w.msg).toContain('SC DAY currency needed')
+      expect(w.msg).toBe('Not SC DAY current: SC AM 07:00–13:00')
     } finally { PEOPLE.split.quals.scDay = q }
   })
 
@@ -132,6 +132,6 @@ describe('the typed B (the SC in-time) follows the toggle', () => {
     const w = tueWarns('stuff').find((x: any) => x.code === 'CREW_REST')
     expect(w, 'flipped MAIN, the 05:00 in-time is his report time').toBeTruthy()
     expect(w.sev).toBe('hard')
-    expect(w.msg).toContain("SC AM's in-time is 05:00")
+    expect(w.msg).toContain('SC AM in-time 05:00: 7h30 rest, needs 12h.')
   })
 })

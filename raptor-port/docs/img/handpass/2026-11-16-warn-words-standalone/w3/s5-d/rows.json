@@ -1,0 +1,65 @@
+[
+ [
+  "5 pending list names / plain user",
+  "1536",
+  "built Ranger flight T/O 12:00 on Friday; signed and published",
+  "ORIG",
+  "{\"tag\":\"ORIG\",\"pending\":\"9 changes\"}",
+  "PASS",
+  ""
+ ],
+ [
+  "5 pending list names / plain user",
+  "1536",
+  "added BRIEFING 11:00-11:30 for Ranger inside the flight's step window; the board lines and the head",
+  "RECORD",
+  "{\"head\":{\"tag\":\"ORIG\",\"pending\":\"1 pending\"},\"lines\":[\"Ranger — Conflict: FRI FLT (step 11:00, T/O 12:00) & BRIEFING 11:00–11:30 ✕\",\"Ranger — Misses FRI FLT brief 09:40–12:00: BRIEFING 11:00–11:30 ✕\"]}",
+  "RECORDED",
+  "5-a-changed-d.png"
+ ],
+ [
+  "5 pending list names / plain user",
+  "1536",
+  "opened the day's pending list (To go out)",
+  "the new warning row starts with his callsign: \"Ranger — Conflict: …\" then \"new\"",
+  "{\"shown\":true,\"items\":[\"Ground · BRIEFING · item added\"],\"head\":\"Waiting to go out as\\nAL1\\n· 1 change\"}",
+  "FAIL",
+  "5-b-pending-d.png"
+ ],
+ [
+  "5 pending list names / plain user",
+  "1536",
+  "RECORD the pending list whole",
+  "RECORD",
+  "{\"shown\":true,\"items\":[\"Ground · BRIEFING · item added\"],\"head\":\"Waiting to go out as\\nAL1\\n· 1 change\"}",
+  "RECORDED",
+  "5-b-pending-d.png"
+ ],
+ [
+  "5 pending list names / plain user",
+  "1536",
+  "read the other tabs of the window for warning rows",
+  "RECORD",
+  "{\"All changes\":[\"Ranger put on\"],\"New to you\":[],\"To go out\":[]}",
+  "RECORDED",
+  "5-b2-tab-Allchanges-d.png"
+ ],
+ [
+  "5 pending list names / plain user",
+  "1536",
+  "closing the pending list by each way",
+  "RECORD each; Escape / tap outside not closing is the known [RULES-CHECK-FIXES]",
+  "[[\"the ✕ (Close)\",\"closed\"],[\"Escape\",\"STILL OPEN\"],[\"a tap outside (page edge)\",\"STILL OPEN\"]]",
+  "RECORDED",
+  "5-c-x-after-tap-d.png"
+ ],
+ [
+  "5 pending list names / plain user",
+  "1536",
+  "undid the change (Undo pressed 4 times)",
+  "nothing pending; the new warning gone",
+  "{\"head\":{\"tag\":\"ORIG\",\"pending\":\"19 changes\"},\"ranger\":[]}",
+  "PASS",
+  "5-f-undone-d.png"
+ ]
+]

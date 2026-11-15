@@ -1,0 +1,3 @@
+ROW RECORDED | 9 day details closes | 402 | opened the day details (Monday) and closed it by Done, ✕, Escape, a tap outside | saw: [["done","closed"],["x","closed"],["esc","closed"],["outside","closed"]]
+errors []
+DONE 0 PASS 0 FAIL 1 OTHER of 1

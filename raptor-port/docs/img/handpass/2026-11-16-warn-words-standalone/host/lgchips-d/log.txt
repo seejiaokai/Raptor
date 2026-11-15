@@ -1,0 +1,5 @@
+chip rows found 1
+DRAWN ["Q Wrong seat","C Conflict (two events at once)","CP Crew pairing — not an authorised pairing","7 Days in a row","R Crew rest breach (<12h)","CP Crew pairing — this pairing needs approval","B Misses flight brief","D Misses flight debrief","B Misses sim brief","D Misses sim debrief","A Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability","TT Tight turn","DT Double turn","L Long day (>12h)"]
+PASS: every one-check chip carries its new name
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

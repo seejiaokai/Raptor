@@ -1,0 +1,12 @@
+flight d5 w0 {"to":"12:00","ld":"","msn":"OIL FLT","p":"Ranger"}
+READ1 {"cell":{"text":"HO*","cls":"duty weekend act hasc","w":26},"sheet":{"days":"half a day, AM — worked 09:00–15:00","why":"FLT","given":"Weekend/PH"},"bal":"0.5","entries":["+0.5 18 Jul AM AUTO Weekend/PH FLT · 09:00–15:00 0.5 left"],"status":["0.5 left"]}
+set 90 1h30
+head {"tag":"ORIG","pending":"1 pending","beak":null,"alpub":{"text":"Publish AL1","disabled":true},"signState":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","signs":["— name —","— name —","— name —","— name —"]}
+flight d5 w0 {"to":"12:00","ld":"","msn":"OIL FLT","p":"Ranger"}
+READ1 {"cell":{"text":"HO*","cls":"duty weekend act hasc","w":26},"sheet":{"days":"half a day, AM — worked 09:00–15:00","why":"FLT","given":"Weekend/PH"},"bal":"0.5","entries":["+0.5 18 Jul AM AUTO Weekend/PH FLT · 09:00–15:00 0.5 left"],"status":["0.5 left"]}
+set 90 1h30
+head {"tag":"ORIG","pending":"1 pending","beak":null,"alpub":{"text":"Publish AL1","disabled":true},"signState":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY","signs":["— name —","— name —","— name —","— name —"]}
+PENDING ["Changes · Saturday 18/7","Published · 1 change waiting to go out as AL1","New to you 0","All changes 9","To go out · AL1 1","Week","Mon","Tue","Wed","Thu","Fri","Sat","Sun","Waiting to go out as","AL1","· 1 change","OIL on this day · Logic values changed since it was published","Logic · A flight with no landing typed","1h → 1h30","Ranger · OIL as published, under today's values","half day · 09:00–15:00 → full day · 09:00–15:30","OIL changes: half day → full day. It counts until 15:30, not 15:00."]
+READ2 {"cell":{"text":"HO*","cls":"duty weekend act hasc","w":26},"sheet":{"days":"half a day, AM — worked 09:00–15:00","why":"FLT","given":"Weekend/PH"},"bal":"0.5","entries":["+0.5 18 Jul AM AUTO Weekend/PH FLT · 09:00–15:00 0.5 left"],"status":["0.5 left"]}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

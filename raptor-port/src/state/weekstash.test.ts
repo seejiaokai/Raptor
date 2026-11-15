@@ -177,6 +177,6 @@ describe("DAYS_RUN reads a run built entirely from a stashed previous week", () 
     /* seedRunIn only ever walks back VCONF.maxRun days (the standard 6), so
        the 7th of the stashed week's filled days never enters the count —
        6 seeded + Monday itself = 7, one past the limit. */
-    expect(hit.msg).toContain('7 days in a row')
+    expect(hit.msg).toBe('Days in a row: 7 (limit 6). A break day is due.')
   })
 })

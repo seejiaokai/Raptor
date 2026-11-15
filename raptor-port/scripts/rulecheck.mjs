@@ -291,6 +291,7 @@ const RULES = {
   OWS10: 'a version with no kept values still reads, and raises nothing',
   OWS11: 'sign-offs fall when a later Logic change would alter the OIL of the day they signed',
   OWS12: 'an SC shift with its B (in-time) filled earns OIL from that in-time (D606)',
+  OWS13: 'the pending list says whether a man’s OIL changes, and from or until when it counts (D2054)',
   /* [GROUP-INPUT-ONE-ROW] — docs/superpowers/specs/2026-10-11-group-input-one-row-behaviour-register.md (11 Oct 26). */
   GI1: 'a box typed on a request\'s row changes the request (D739, D740)',
   GI2: 'no change made from the schedule makes an on-time input read late (D741, D742)',

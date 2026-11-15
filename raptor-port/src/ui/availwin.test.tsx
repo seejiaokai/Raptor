@@ -306,7 +306,7 @@ describe("the owner's case — an ops brief inside a man's own debrief is FLAGGE
     /* the warning list's OWN sentence for a debrief (one body, validate.ts
        debriefSays) — so the window and the list can never word it differently */
     expect($('.availwin .win-foot').textContent || '', 'a tap gives the full sentence')
-      .toContain('Not enough time to attend the VL BFM debrief — OPS BRIEF sits inside 15:00–17:00')
+      .toContain('Misses VL BFM debrief 15:00–17:00: OPS BRIEF 15:30–16:30')
   })
 
   it('a man with nothing else on is listed CLEAN — the flag is about HIS debrief, not the day', async () => {
@@ -334,7 +334,7 @@ describe("the owner's case — an ops brief inside a man's own debrief is FLAGGE
     await openWin(TUE)
     await click(rowOf(FLYER)!.querySelector('.puck'))
     const foot = () => $('.availwin .win-foot').textContent || ''
-    expect(foot()).toContain('Not enough time to attend the VL BFM debrief')
+    expect(foot()).toContain('Misses VL BFM debrief 15:00–17:00: ')
     await act(async () => {
       const g = (DAYS[TUE] as any).ground[0]; g.str = '17:00'; g.end = '18:00'
       validate(); notify()
@@ -346,7 +346,7 @@ describe("the owner's case — an ops brief inside a man's own debrief is FLAGGE
       const g = (DAYS[TUE] as any).ground[0]; g.str = '15:30'; g.end = '16:30'
       validate(); notify()
     })
-    expect(foot(), 'and back again when the clash is back').toContain('Not enough time to attend the VL BFM debrief')
+    expect(foot(), 'and back again when the clash is back').toContain('Misses VL BFM debrief 15:00–17:00: ')
   })
 
   it('and the hint under the list COUNTS him — the rows and the count are one reading', async () => {
@@ -385,7 +385,7 @@ describe("a crowd man's SIM brief or debrief is flagged too (D36 + D38)", () => 
     expect(his!.className, 'amber, not red').toContain('flagged')
     await click(his!.querySelector('.puck'))
     expect($('.availwin .win-foot').textContent || '', 'the warning list\'s own sentence')
-      .toContain('No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00')
+      .toContain('Misses OFT EP-1 brief 09:45–10:00: OPS BRIEF 09:45–09:58')
   })
 
   it('an ops brief inside his sim DEBRIEF (11:00–11:30) is flagged the same way', async () => {
@@ -394,7 +394,7 @@ describe("a crowd man's SIM brief or debrief is flagged too (D36 + D38)", () => 
     const his = rowOf(SIMMER)
     expect(his, 'listed').toBeTruthy()
     expect(his!.className).toContain('flagged')
-    expect(his!.textContent || '').toContain('No time for the OFT EP-1 debrief')
+    expect(his!.textContent || '').toContain('Misses OFT EP-1 debrief 11:00–11:30: OPS BRIEF 11:05–11:25')
   })
 
   it('a man not on the sim is clean, and the count under the list is the rows\'', async () => {
@@ -669,7 +669,7 @@ describe('a published day: the window reads the record, not today (Fable S3, S5)
     await click(viewChip())
     const onRecord = rows().find(r => r.dataset.awp === 'plasma')!
     expect(onRecord.className, 'the issued day had him on the sim: flagged, from the record').toContain('flagged')
-    expect(onRecord.textContent || '').toContain('No time for the OFT EP-1 brief')
+    expect(onRecord.textContent || '').toContain('Misses OFT EP-1 brief 09:45–10:00: OPS BRIEF 09:45–09:58')
     await act(async () => { view.setPage('editsched'); notify() })
     await openWin(SAT)
     expect(rows().find(r => r.dataset.awp === 'plasma')!.className,

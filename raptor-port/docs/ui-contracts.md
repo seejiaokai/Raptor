@@ -1266,6 +1266,10 @@ against the same day under today's values, because another change waiting beside
 typed) has its own line and the two must not be read as one. It is counted as ONE change on every surface (the week's and the
 board's chip, the ⓘ panel, the Amendments panel), never folded into an edited request's line, and has no place on the
 schedule to go to — its sub-lines are not tappable. Pinned by `ui/oilworkstart.test.tsx`.
+**Inside the man's own row, under his times, one line says whether his OIL changes (owner D2054, [WARN-WORDS-STANDALONE],
+16 Nov 26):** "OIL changes: full day → half day. It counts from 07:30, not 07:00." where the amount moves; "Still a
+full day of OIL. It counts until 13:45, not 13:15." where only the hours do (`pendlist.ts oilShiftNote`, `.pl-note`,
+small and in the list's second ink). Pinned by `ui/oilworkstart.test.tsx` (OWS13).
 **One request, one row — across WEEKS too (`[REQ-ORPHAN-ROW]` + `[REQ-DOOR-WORDS]` 2, 28 Sep 26).** "One request, one
 row" (D175) was kept inside the loaded week only, so a request accepted onto a day of one week could be accepted again
 onto a day of another, and deleting it left the other week's row behind with nothing to answer to. A row standing on a
@@ -11019,8 +11023,9 @@ debrief) is computed from the working copy's flights live, from the RECORD's
 flights on the issued face, and not at all on a plain preview.
 **His SIM brief and debrief are flagged the same way (`[CROWD-SIM-BRIEF]`, `[DB-READINESS]` group A phase 7, 1 Oct 26):**
 a man on the OFT at 10:00 is busy for the box and free for the quarter-hour before it (D36), so he stands behind a
-09:50 event — listed, amber, with the warning list's own sentence ("No time for the OFT EP-1 brief — OPS BRIEF sits
-inside 09:45–10:00"; the AMT block by its own BRIEF and DEBRIEF rows). One body for the two sentences
+09:50 event — listed, amber, with the warning list's own sentence ("Misses OFT EP-1 brief 09:45–10:00: OPS BRIEF
+<its own times>" since [WARN-WORDS-STANDALONE], 16 Nov 26; once "No time for the OFT EP-1 brief — OPS BRIEF sits inside
+09:45–10:00"; the AMT block by its own BRIEF and DEBRIEF rows). One body for the two sentences
 (`engine/validate.ts simBriefSays` / `simDebriefSays`, which the warning pass itself calls); the day's sim windows are
 published beside its events (`SIMW`), and the issued face hands the window the RECORD's own (`AvailWindow.tsx`, from the
 same rebuild as its flights). Ground crew are exempt, as in the warning list. Pins: `engine/crowdsim.test.ts`,

@@ -1,0 +1,5 @@
+flight d5 w0 {"to":"12:00","ld":"","msn":"OIL FLT","p":"Ranger"}
+LINES 218 ["Week insights · Jul 13 – Jul 19","✕","33","SORTIES","17","FORMATIONS","38","AIRCREW FLYING","35","13 WARNING","FLYING LOAD · SORTIES THIS WEEK","Relay","4","Echo","3","Hex","3","Ranger","3","Static","3","Ace","2","Basher","2","Drifter","2","Gambit","2","Outlaw","2","Piston","2","Pixel","2","Show all 38 ↓","WORK HOURS · REPORT TO DEBRIEF, THIS WEEK","Bolt","29h25","Ridge","28h","Static","25h55","Ace","25h35","Vector","24h30","Echo","21h25","Dash","21h05","Relay","20h55","Zenith","20h50","Basher","20h30","Ranger","20h","Hex","19h55","Scope","18h55","Fable","17h55","Saber","17h10","Wildcard","16h20","Anvil","15h","Torch","13h50","Forge","13h30","Gambit","13h30","Pixel","12h50","Wisp"]
+["Ranger","WORK HOURS · REPORT TO DEBRIEF, THIS WEEK","Ranger"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

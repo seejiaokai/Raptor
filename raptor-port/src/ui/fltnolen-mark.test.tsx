@@ -85,7 +85,7 @@ describe('the line itself says the times cannot be right — not only the list o
     for (const html of [dayHTML(SAT, true), dayHTML(SAT, false), boardHTML(SAT)])
       for (const x of marked(html))
         expect(x.getAttribute('title') || '', 'the mark explains itself where it sits')
-          .toMatch(/same time|one of the two/i)
+          .toMatch(/^Times look wrong: RAP 1 T\/O and landing are both 10:00\. /)
   })
 
   it('THE CONTROL: an ordinary line, an overnight line and a line with no times are untouched', () => {
@@ -211,7 +211,7 @@ describe('a nought-minute SHIFT is marked, and says what is true of a shift', ()
       expect(t.length, 'both boxes are marked').toBe(2)
       for (const s of t) {
         expect(s, 'it earns nobody, so it must not promise a report and debrief')
-          .not.toContain('still earns from the report and debrief')
+          .not.toContain('The day still earns OIL from the report and debrief.')
         expect(s).toMatch(/earns nobody/i)
       }
     }
@@ -221,7 +221,7 @@ describe('a nought-minute SHIFT is marked, and says what is true of a shift', ()
     onlyLine(SAT, '10:00', '10:00')
     for (const html of [dayHTML(SAT, true), dayHTML(SAT, false), boardHTML(SAT), peekDayHTML(DAYS[SAT], 0, false)])
       for (const s of says(html))
-        expect(s, 'D49 — he reported and debriefed').toContain('still earns from the report and debrief')
+        expect(s, 'D49 — he reported and debriefed').toContain('The day still earns OIL from the report and debrief.')
   })
 })
 

@@ -335,7 +335,7 @@ describe('an SC desk is one of the SC seats for the same-hours rule', () => {
     sdesk.rows[0].id = 'split'
     const h = scWarns('split', 'DOUBLE_BOOK')
     expect(h.length, JSON.stringify(h)).toBe(1)
-    expect(h[0].msg).toMatch(/standing SC SPARE/)
+    expect(h[0].msg).toBe('Conflict: SC AM SPARE 07:00–13:00 & SXO AM duty 07:00–13:00')
     expect(h[0].msg).toMatch(/SXO AM duty/)
   })
   it('SC SPARE AM + SXO PM desk touch only at 13:00 — no conflict', () => {

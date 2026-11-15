@@ -73,7 +73,7 @@ Loads with any OIL, Leave War, placeholder-puck or publishing file (the `paths:`
 - Every member may see every man's OIL tracker entries, figures and grants, with their reasons, as the app shows today; the database's access table says so [D1008]. A member cannot type his own OIL figure in his person window — a tap on OIL opens the tracker (the Leave War's file) [D1209].
 - An award does not flag a leave day — it says he is owed a day, not where he was; whether it counts him on duty for manning is not ruled: ask him before changing it [D80].
 - A dragged block's delete removes everything in it, awards included — its confirm names each award first, one Undo brings them back; the bid sheet's Clear does the same, naming an award and asking once; a move or a drag leaves awards where they are [D260].
-- At the database step earned OIL is a table of its own, one row a person and a date, not tied to a Leave War period, which the Leave War, the OIL tracker and every other screen read; until then the Inputs file's D1578 stands [D1579].
+- At the database step, not sooner, earned OIL is its own table, a row a person and date, not tied to a Leave War period, read by the Leave War, the OIL tracker and every other screen; until then the Inputs file's D1578 stands [D1579, D2066].
 
 ## How it shows, and OIL Earn
 - The green OIL bar shows only on the events that counted towards a man's day, not on every puck he wears; the ALL AVAIL count chip agrees with it [D1].

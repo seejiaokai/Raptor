@@ -49,13 +49,13 @@ describe('an event inside a crowd man\'s OWN sim brief or debrief is flagged (D3
   it('inside the OFT brief — the quarter-hour before the box', () => {
     oftDay()
     const got = crowdClashes(TUE, SIMMER, hm(9, 50), hm(9, 58), 'OPS BRIEF')
-    expect(got.map(w => w.msg)).toEqual(['No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00'])
+    expect(got.map(w => w.msg)).toEqual(['Misses OFT EP-1 brief 09:45–10:00: OPS BRIEF 09:50–09:58'])
     expect(got[0].sev, 'amber, as the warning list has it').toBe('adv')
   })
 
   it('inside the OFT debrief — the half hour after it', () => {
     oftDay()
-    expect(says(SIMMER, hm(11, 5), hm(11, 25))).toEqual(['No time for the OFT EP-1 debrief — OPS BRIEF sits inside 11:00–11:30'])
+    expect(says(SIMMER, hm(11, 5), hm(11, 25))).toEqual(['Misses OFT EP-1 debrief 11:00–11:30: OPS BRIEF 11:05–11:25'])
   })
 
   it('an event that only TOUCHES the window flags nothing — 09:30–09:45 ends as the brief begins', () => {
@@ -71,8 +71,8 @@ describe('an event inside a crowd man\'s OWN sim brief or debrief is flagged (D3
 
   it('the AMT block: its BRIEF row is the hard line, its DEBRIEF row the debrief', () => {
     amtDay()
-    expect(says(SIMMER, hm(11, 10), hm(11, 20))).toEqual(['No time for the AMT brief — OPS BRIEF sits inside 11:00–11:30'])
-    expect(says(SIMMER, hm(12, 40), hm(12, 50))).toEqual(['No time for the AMT debrief — OPS BRIEF sits inside 12:30–13:00'])
+    expect(says(SIMMER, hm(11, 10), hm(11, 20))).toEqual(['Misses AMT brief 11:00–11:30: OPS BRIEF 11:10–11:20'])
+    expect(says(SIMMER, hm(12, 40), hm(12, 50))).toEqual(['Misses AMT debrief 12:30–13:00: OPS BRIEF 12:40–12:50'])
     expect(says('drill', hm(11, 10), hm(11, 20)).length, 'everyone on the box, not only the first').toBe(1)
   })
 
@@ -95,7 +95,7 @@ describe('an event inside a crowd man\'s OWN sim brief or debrief is flagged (D3
     oftDay()
     const got = says(SIMMER, hm(15, 30), hm(16, 30))
     expect(got.length).toBe(1)
-    expect(got[0]).toContain('Not enough time to attend the VL BFM debrief')
+    expect(got[0]).toBe('Misses VL BFM debrief 15:00–17:00: OPS BRIEF 15:30–16:30')
   })
 })
 
@@ -107,7 +107,7 @@ describe('WHICH WORLD\'S sim windows — the record\'s own, when the caller hand
     validate()
     expect(says(SIMMER, hm(9, 50), hm(9, 58)), 'the working copy: no sim, no flag').toEqual([])
     expect(crowdClashes(TUE, SIMMER, hm(9, 50), hm(9, 58), 'OPS BRIEF', [], record).map(w => w.msg), 'the record: flagged')
-      .toEqual(['No time for the OFT EP-1 brief — OPS BRIEF sits inside 09:45–10:00'])
+      .toEqual(['Misses OFT EP-1 brief 09:45–10:00: OPS BRIEF 09:50–09:58'])
     expect(crowdClashes(TUE, SIMMER, hm(9, 50), hm(9, 58), 'OPS BRIEF', [], []).length, 'an EMPTY record is an answer too').toBe(0)
   })
 })
@@ -119,8 +119,8 @@ describe('ONE BODY for the words — the warning list still says exactly what it
     const w = validate().all.filter((x: any) => x.di === TUE && x.code === 'SIM_BRIEF')
     expect(w.length).toBe(1)
     const sw = (collectEvents()[TUE] as any).simwin[0]
-    expect(w[0].msg).toBe(simBriefSays(sw, 'HQ VISIT'))
-    expect(w[0].msg).toBe('No time for the OFT EP-1 brief — HQ VISIT sits inside 09:45–10:00')
+    expect(w[0].msg).toBe(simBriefSays(sw, 'HQ VISIT 09:50–09:58'))
+    expect(w[0].msg).toBe('Misses OFT EP-1 brief 09:45–10:00: HQ VISIT 09:50–09:58')
   })
 
   it('…and his debrief', () => {
@@ -128,6 +128,6 @@ describe('ONE BODY for the words — the warning list still says exactly what it
     oftDay()
     const w = validate().all.filter((x: any) => x.di === TUE && x.code === 'SIM_DEBRIEF')
     expect(w.length).toBe(1)
-    expect(w[0].msg).toBe(simDebriefSays((collectEvents()[TUE] as any).simwin[0], 'HQ VISIT'))
+    expect(w[0].msg).toBe(simDebriefSays((collectEvents()[TUE] as any).simwin[0], 'HQ VISIT 11:05–11:25'))
   })
 })

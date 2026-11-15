@@ -1,0 +1,56 @@
+www-host-fit v1
+chromium 390 page ("Inter Tight", system-ui, sans-serif): 8 conflict lines, 0 over two rows, the text box 273px
+   longest 2 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 2 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+chromium 390 verdana ("Inter Tight", system-ui, sans-serif): 8 conflict lines, 0 over two rows, the text box 273px
+   longest 2 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 2 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+chromium 390 arial ("Inter Tight", system-ui, sans-serif): 8 conflict lines, 0 over two rows, the text box 273px
+   longest 2 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 2 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+webkit 402 page (Inter Tight, system-ui, sans-serif): 8 conflict lines, 0 over two rows, the text box 285px
+   longest 2 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 2 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+webkit 402 verdana (Inter Tight, system-ui, sans-serif): 8 conflict lines, 0 over two rows, the text box 285px
+   longest 2 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 2 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+webkit 402 arial (Inter Tight, system-ui, sans-serif): 8 conflict lines, 0 over two rows, the text box 285px
+   longest 2 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 2 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+www-host-fit v2 (the font set on DOMContentLoaded, as the Leave War tests do)
+chromium 390 page ("Inter Tight", system-ui, sans-serif): 8 conflict lines, 0 over two rows, the text box 273px
+   longest 2 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 2 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+chromium 390 verdana (Verdana, "DejaVu Sans", sans-serif): 8 conflict lines, 3 over two rows, the text box 273px
+   OVER 3 rows, day 0 "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   OVER 3 rows, day 0 "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+   OVER 3 rows, day 2 "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 3 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 3 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 3 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+chromium 390 arial (Arial, "Helvetica Neue", Helvetica, sans-serif): 8 conflict lines, 1 over two rows, the text box 273px
+   OVER 3 rows, day 2 "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 3 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 2 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+webkit 402 page (Inter Tight, system-ui, sans-serif): 8 conflict lines, 0 over two rows, the text box 285px
+   longest 2 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 2 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+webkit 402 verdana (Verdana, DejaVu Sans, sans-serif): 8 conflict lines, 2 over two rows, the text box 285px
+   OVER 3 rows, day 0 "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+   OVER 3 rows, day 2 "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 3 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 3 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"
+webkit 402 arial (Arial, Helvetica Neue, Helvetica, sans-serif): 8 conflict lines, 0 over two rows, the text box 285px
+   longest 2 rows, 112 chars "Nomad — Conflict: RU BFM (T/O 13:00, landing 14:25) & OD (all day). Reason: Overseas duty — exercise, off island"
+   longest 2 rows, 90 chars "Saber — Conflict: OPS SHARING + NAV SYS BRIEF 17:55–18:55 & VL BFM (step 18:45, T/O 19:45)"
+   longest 2 rows, 87 chars "Piston — Conflict: RU BFM (step 12:40, T/O 13:40) & STANDARDISATION MEETING 13:30–14:30"

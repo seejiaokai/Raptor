@@ -93,8 +93,10 @@ export function envMin(spans:[number,number][]){
    out with"): the nominal report lead (read only where a line has no in-time or Rally entered), the debrief after
    landing, and the full-day line. A published day keeps the three it went out with (oilev.ts — the evidence block's
    `rv`) and every reader of its OIL hands them back in here; with none handed in, today's are read. */
-export interface OilRuleVals{reportLead:number;debrief:number;oilFullMin:number}
-export const oilRuleValsNow=():OilRuleVals=>({reportLead:ruleNow('reportLead'),debrief:ruleNow('debrief'),oilFullMin:ruleNow('oilFullMin')});
+/* …and, since D2046 (15 Nov 26), the assumed flight length — a sortie with no landing typed earns to its take-off plus it,
+   so a published day keeps it with the other three (D2044). A block kept before it existed has none: today's is read. */
+export interface OilRuleVals{reportLead:number;debrief:number;oilFullMin:number;fltLen?:number}
+export const oilRuleValsNow=():OilRuleVals=>({reportLead:ruleNow('reportLead'),debrief:ruleNow('debrief'),oilFullMin:ruleNow('oilFullMin'),fltLen:ruleNow('fltLen')});
 /* the one threshold: 0 for no measured work, HO under the line, FO at it */
 export function uniformOil(min:number,full?:number|null){
   return min<=0?0:(min>=(full==null?ruleNow('oilFullMin'):full)?1:0.5);
@@ -182,8 +184,12 @@ export const groundItemKey=(g:any)=>(g&&g.src)?inputItemKey(g.src):rowItemKey(g&
    take-off (D591, D592) — to its landing plus the debrief. Null when that measures nothing. The credit (dayOilWork below)
    and the screen's words about a line whose take-off is its landing (fltMeasuresNothing, validate.ts FLT_NO_LEN_SAYS) both
    read this, so a line the screen says earns can never be one the credit pays nothing for, nor the other way round. */
-export function fltOilWin(wv:any,f:any,lead:number,deb:number,lines?:any):[number,number]|null{
-  const st=parseHM(f.to),en=parseHM(f.ld);
+/* `flt` (D2046, 15 Nov 26): a sortie with its take-off typed and no landing earns to its ASSUMED landing, the take-off
+   plus the Logic flight length, as every other check reads it; left out (the screen's words), no landing measures nothing
+   here, as before */
+export function fltOilWin(wv:any,f:any,lead:number,deb:number,lines?:any,flt?:number):[number,number]|null{
+  const st=parseHM(f.to);let en=parseHM(f.ld);
+  if(st!=null&&en==null&&flt!=null)en=st+flt;
   if(st==null||en==null)return null;
   const rep=resolveReporting(wv,f,st,lines||parseReportingLines({...wv,intimes:Array.isArray(wv.intimes)?wv.intimes:[]})).report;
   const s=rep!=null?rep:st-lead;let e=(en<st?en+1440:en)+deb;
@@ -231,6 +237,8 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
   const out:Record<string,OilWork[]>={};
   /* the two leads this walk reads: the day's own kept ones when the caller holds an issued block, else today's */
   const lead=opts&&opts.rv?opts.rv.reportLead:ruleNow('reportLead'), deb=opts&&opts.rv?opts.rv.debrief:ruleNow('debrief');
+  /* the assumed flight length (D2046): the kept one, else today's — a block kept before it existed has none (D56) */
+  const flt=opts&&opts.rv&&opts.rv.fltLen!=null?opts.rv.fltLen:ruleNow('fltLen');
   /* EVERY ROW THIS WALK REACHES WITH REAL TIMES, whether or not anybody is
      sitting on it (21 Sep 26). The mode needs to know which events CAN earn so
      it does not offer a switch on one that never could — an AVALON line, its
@@ -329,8 +337,8 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number],item:s
       const scB=scWin?scReport(f,scWin[0],lead):null;
       /* …or, typed with the same START and END and flying, from its B or R to its END (D1999) */
       const win=sc?(scWin&&scB!=null&&scB<scWin[0]?[scB,scWin[1]] as [number,number]:scWin||saZeroSpanWin(wv,f,lead))
-                  :(st==null||en==null?null
-                    :fltOilWin(wv,f,lead,deb,lines));
+                  :(st==null?null
+                    :fltOilWin(wv,f,lead,deb,lines,flt));   // D2046: no landing typed → the assumed one
       if(!win)return;
       /* A SPARE LINE IS CAPABLE NOW, so the switch is drawn on it (D24/D32:
          wherever a puck may land the switch must be offered). It used to be
@@ -512,7 +520,8 @@ export function dayOilBlind(day:any):string[]{
   (day.waves||[]).forEach((wv:any)=>{
     (wv.formations||[]).forEach((f:any)=>{
       if(f.cx)return;
-      if(readable(f.to,f.ld)&&!zeroShift(wv,f)&&!fltMeasuresNothing(wv,f))return;
+      /* D2046: a sortie with its take-off typed and no landing earns to its assumed landing, so it is not named */
+      if((readable(f.to,f.ld)||(!isStandalone(wv)&&parseHM(f.to)!=null))&&!zeroShift(wv,f)&&!fltMeasuresNothing(wv,f))return;
       const crew:any[]=[];
       (f.aircraft||[]).forEach((ac:any)=>{if(!ac.cx){crew.push(ac.p);crew.push(ac.w);}});
       if(!named(crew))return;

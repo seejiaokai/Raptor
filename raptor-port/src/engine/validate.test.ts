@@ -64,6 +64,15 @@ describe('validation engine (tfin F)', () => {
     expect(chips.filter(c => !CHIP_LABEL[c])).toEqual([])
   })
 
+  /* the blind reads of 16 Nov 26 (Astra's 6, the Opus read's F3): a chip's title and the Logic page's chip legend say the
+     same short name as the warning list's line it opens (D2070, spec §3g: "the other checks' short names follow the new
+     labels") — the chips that stand for one check only take that check's name */
+  it('a one-check chip carries the warning list\'s short name', () => {
+    const one: any = { NB: 'NO_BRIEF', DB: 'DEBRIEF', SB: 'SIM_BRIEF', SD: 'SIM_DEBRIEF', Q: 'QUAL', RUN: 'DAYS_RUN' }
+    expect(Object.keys(one).filter(c => CHIP_LABEL[c] !== WCODE[one[c]])).toEqual([])
+    expect(CHIP_LABEL.LD).toBe('Long day (>{longDay})')
+  })
+
   it('chip glyphs print short (CHIP_TEXT)', () => {
     expect(chipText('CR')).toBe('R')
     expect(chipText('NB')).toBe('B'); expect(chipText('SB')).toBe('B')
@@ -328,11 +337,11 @@ describe('the crew combination matrix (Table 1.5-2)', () => {
     // Wednesday krait+wrangler (D+D) and pike+badger (C front, D WSO): CO approval
     expect(at(W, 'CO_APPROVAL', 'krait', 'wrangler').length).toBe(1)
     const co = at(W, 'CO_APPROVAL', 'pike', 'badger')
-    expect(co.length).toBe(1); expect(co[0].sev).toBe('adv'); expect(co[0].msg).toMatch(/CO approval required/)
+    expect(co.length).toBe(1); expect(co[0].sev).toBe('adv'); expect(co[0].msg).toBe('CO approval needed: CAT C pilot Nomad & CAT D WSO Pixel on RU BFM (T/O 13:00)')
     // Thursday bapster+badger (OCU pilot, D WSO): not an authorised combination
     const ill = at(W, 'ILLEGAL_CREW', 'bapster', 'badger')
     expect(ill.length).toBe(1); expect(ill[0].sev).toBe('hard'); expect(ill[0].di).toBe(3)
-    expect(ill[0].msg).toMatch(/not an authorised combination/)
+    expect(ill[0].msg).toBe('Crew not authorised: OCU pilot Wildcard & CAT D WSO Pixel on RU AD (T/O 12:45). An OCU needs an instructor in the other seat.')
   })
 
   it('an OCU pilot with a CAT A–D WSO is a Warning', () => {
@@ -357,7 +366,7 @@ describe('the crew combination matrix (Table 1.5-2)', () => {
     const W = crew('prism', 'bullet')
     const hits = at(W, 'CREW_SOLO', 'prism', 'bullet')
     expect(hits.length).toBe(1); expect(hits[0].sev).toBe('adv')
-    expect(hits[0].msg).toMatch(/a crew solo, only allowed under the Basic Course Syllabus/)
+    expect(hits[0].msg).toMatch(/^Crew solo: OCU pilot \S+ & OCU WSO \S+ on .*\. Only allowed under the Basic Course Syllabus\.$/)
     expect(at(W, 'ILLEGAL_CREW', 'prism', 'bullet')).toEqual([])
   })
 
@@ -426,7 +435,7 @@ describe('a rear seat takes any pilot — jet and sim alike', () => {
     DAYS[0].sims.oft[0].p = 'rocky'
     const hits = validate().all.filter((x: any) => x.code === 'QUAL' && (x.who || []).includes('rocky'))
     expect(hits.length).toBeGreaterThan(0)
-    expect(hits[0].msg).toContain('cannot take the front seat')
+    expect(hits[0].msg).toBe('Wrong seat: a WSO in the front seat of OFT EP-4 08:00–09:30')
   })
 })
 
@@ -566,8 +575,8 @@ describe('warnings carry the causing line\'s slot-key (the anchor)', () => {
       const es = (EVD[w.di] && EVD[w.di][w.who[0]]) || []
       const e = es.find((x: any) => (x.slot || x.key) === w.key)
       expect(e, `${w.key} is one of ${w.who[0]}'s events that day`).toBeTruthy()
-      /* the msg reads "<A> & <B> clash" — the anchor must be A, the first named */
-      expect(w.msg.indexOf(e.label), `${w.msg} starts with the anchored item`).toBe(0)
+      /* the msg reads "Conflict: <A> & <B>" — the anchor must be A, the first named */
+      expect(w.msg.indexOf(e.label), `${w.msg} starts with the anchored item`).toBe('Conflict: '.length)
     })
   })
 
@@ -608,7 +617,7 @@ describe('the same man in two sorties at once', () => {
     expect(dbl.every((x: any) => x.sev === 'hard')).toBe(true)
     /* two seats on one line share a label, so the general "X & Y clash" wording
        came out as "VL BFM & VL BFM clash" — say what happened instead */
-    expect(dbl.some((x: any) => /is in two seats on VL BFM at once/.test(x.msg)),
+    expect(dbl.some((x: any) => /^Conflict: in two seats on VL BFM \(T\/O \d\d:\d\d\) at once$/.test(x.msg)),
       JSON.stringify(dbl)).toBe(true)
   })
 
@@ -690,7 +699,7 @@ describe('a weekend duty desk with no times warns on the day itself', () => {
     /* "no USABLE times" since 22 Sep 26 (the follow-up code read, G1): a
        nought-minute standalone shift joined this list and HAS two times typed
        on it, so "no times" would be false in front of the scheduler. */
-    expect(w[0].msg).toBe('SDO has no usable times — nobody on it earns OIL for this day')
+    expect(w[0].msg).toBe('SDO has no usable times, so nobody on it earns OIL for this day')
     expect(w[0].sev).toBe('hard')
   })
 
@@ -714,6 +723,6 @@ describe('a weekend duty desk with no times warns on the day itself', () => {
     blank(5)
     const w = warnsOn(5)
     expect(w).toHaveLength(1)
-    expect(w[0].msg).toBe('SDO and SXO have no usable times — nobody on them earns OIL for this day')
+    expect(w[0].msg).toBe('SDO and SXO have no usable times, so nobody on them earns OIL for this day')
   })
 })

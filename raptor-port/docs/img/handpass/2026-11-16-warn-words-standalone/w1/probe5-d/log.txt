@@ -1,0 +1,42 @@
+duty before [{"label":"Duty","rows":["SDO|0730-1730|yeti","SXO|0730-1730|razer"]}]
+{"blktpl":"std"}|Standard3 roles
+{"blktpl":"sc"}|SC Shift4 roles · SC desk
+{"blktpl":"avalon"}|AVALON4 roles · AVALON desk
+{"blktpl":""}|Empty block
+sel [data-blktpl="sc"]
+duty after [{"label":"Duty","rows":["role,id,str,end,rid :: SDO|0730-1730|yeti","role,id,str,end,rid :: SXO|0730-1730|razer"]},{"label":"SC Shift","sa":"sc","rows":["role,id,str,end,rid :: SXO AM|07:00-13:00|","role,id,str,end,rid :: OPS O AM|07:00-13:00|","role,id,str,end,rid :: SXO PM|13:00-19:00|","role,id,str,end,rid :: OPS O PM|13:00-19:00|"]}]
+dl:4.1|SC Shift
+dr:4.1.0.role|SXO AM
+dr:4.1.0.str|07:00
+dr:4.1.0.end|13:00
+dr:4.1.0.rmks|
+dr:4.1.1.role|OPS O AM
+dr:4.1.1.str|07:00
+dr:4.1.1.end|13:00
+dr:4.1.1.rmks|
+dr:4.1.2.role|SXO PM
+dr:4.1.2.str|13:00
+dr:4.1.2.end|19:00
+dr:4.1.2.rmks|
+dr:4.1.3.role|OPS O PM
+dr:4.1.3.str|13:00
+dr:4.1.3.end|19:00
+dr:4.1.3.rmks|
+{"drcx":"4.0.0"}
+{"drflag":"4.0.0"}
+{"drcx":"4.0.1"}
+{"drflag":"4.0.1"}
+{"fill":"d:4.1.0.+"}
+{"drcx":"4.1.0"}
+{"drflag":"4.1.0"}
+{"fill":"d:4.1.1.+"}
+{"drcx":"4.1.1"}
+{"drflag":"4.1.1"}
+{"fill":"d:4.1.2.+"}
+{"drcx":"4.1.2"}
+{"drflag":"4.1.2"}
+{"fill":"d:4.1.3.+"}
+{"drcx":"4.1.3"}
+{"drflag":"4.1.3"}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

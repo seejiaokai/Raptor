@@ -1,0 +1,8 @@
+OCU people [{"k":"bapster","cs":"Wildcard","q":"OCU","r":"FCP"},{"k":"haowen","cs":"Talisman","q":"OCU","r":"FCP"},{"k":"prism","cs":"Recon","q":"OCU","r":"FCP"},{"k":"nick","cs":"Tally","q":"OCU","r":"RCP"},{"k":"bullet","cs":"Zulu","q":"OCU","r":"RCP"}]
+pilot candidate {"k":"bapster","cs":"Wildcard","q":"OCU","r":"FCP"}
+ROW RECORDED | 4 drop note names two | 402 | dropped the OCU pilot Wildcard in the front seat | saw: {"ok":true,"note":"Wildcard — OCU with no IP:  OCU FLT (T/O 12:00) (+1 more)"}
+try wso Tally {"ok":true,"note":"Wildcard, Tally — Crew solo: OCU pilot Wildcard & OCU WSO Tally on  OCU FLT (T/O 12:00). Only allowed under the Basic Course Syllabus. (+1 more)"}
+ROW PASS | 4 drop note names two | 402 | dropped the OCU WSO Tally behind Wildcard on the same jet (crew pairing) | saw: {"ok":true,"note":"Wildcard, Tally — Crew solo: OCU pilot Wildcard & OCU WSO Tally on  OCU FLT (T/O 12:00). Only allowed under the Basic Course Syllabus. (+1 more)"}
+ROW RECORDED | 4 drop note names two | 402 | the warning list for the same pair | saw: ["Wildcard — Misses OCU FLT debrief 13:00–15:00: Sim EP-6 14:00–15:30 ✕","Wildcard, Tally — Crew solo: OCU pilot Wildcard & OCU WSO Tally on OCU FLT (T/O 12:00). Only allowed under the Basic Course Syllabus. ✕","Wildcard, Tally — OCU with no IP: OCU FLT (T/O 12:00) ✕"]
+errors []
+DONE 1 PASS 0 FAIL 2 OTHER of 3

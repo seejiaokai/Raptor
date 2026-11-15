@@ -1,0 +1,128 @@
+[
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "crew list, no seat picked, nobody yet on the flight",
+  "RECORD",
+  "{\"heads\":[],\"rpuck\":\"rpuck \",\"puck\":\"puck sm\",\"cs\":\"Ranger · IP · instructor pilot · SXO\",\"note\":\"\",\"struck\":\"none/1\"}",
+  "RECORDED",
+  "4-1-nosel-d.png"
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "briefing seat 13:10-13:20 armed, Ranger not yet on the flight",
+  "Ranger offered free",
+  "{\"heads\":[],\"rpuck\":\"rpuck \",\"puck\":\"puck sm\",\"cs\":\"Ranger · IP · instructor pilot · SXO\",\"note\":\"\",\"struck\":\"none/1\"}",
+  "PASS",
+  "4-2-armed-free-d.png"
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "Ranger now flies 12:00 (landing assumed 13:00, dekit to 13:30); briefing 13:10-13:20 seat armed: crew list",
+  "Ranger shown unavailable for 13:10-13:20 (busy to 13:30)",
+  "{\"heads\":[],\"rpuck\":\"rpuck no haswhy\",\"puck\":\"puck sm\",\"cs\":\"Ranger · IP · instructor pilot · SXO\",\"note\":\"\",\"struck\":\"none/1\"}",
+  "RECORDED",
+  "4-3-armed-busy-d.png"
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "ALL AVAIL on briefing 13:10-13:20: chip count and its window",
+  "RECORD; Ranger excluded",
+  "chip 42; {\"ok\":true,\"wins\":[{\"id\":\"\",\"cls\":\"availwin front\",\"text\":\"⠿ BRIEFING Jul 17 · 13:10–13:20 ✕ Who’s available 42 PILOTS · 25 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Outlaw C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 17 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.\"}]}",
+  "RECORDED",
+  "4-4-allavail-win-d.png"
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "ALL AVAIL window open: pressed Saber's puck on the ground row behind it",
+  "page still works (puck selected), window stays",
+  "window open before 1, after 1; lit: [\"Saber IP:puck sm sel\",\"Saber IP:puck sm sel\"]",
+  "PASS",
+  "4-5-page-behind-d.png"
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "ALL AVAIL window closed by ✕",
+  "closes",
+  "still open: 0",
+  "PASS",
+  ""
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "ALL placeholder, same window 13:10-13:20: its window",
+  "RECORD; may keep Ranger and say why",
+  "{\"ok\":true,\"wins\":[{\"id\":\"\",\"cls\":\"availwin front\",\"text\":\"⠿ BRIEFING B Jul 17 · 13:10–13:20 ✕ Who’s available 42 PILOTS · 25 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Outlaw C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 17 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.\"}]}",
+  "RECORDED",
+  "4-6-all-win-d.png"
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "Ranger put on BRIEFING 13:10-13:20 (flight 12:00, assumed landing 13:00, dekit to 13:30)",
+  "Conflict: VL BFM (landing assumed? 13:00, dekit to 13:30) & BRIEFING 13:10-13:20",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕\"]",
+  "RECORDED",
+  "4-8-conflict-d.png"
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "ALL AVAIL window (briefing 13:10-13:20) after Ranger is on it",
+  "Ranger not in ALL AVAIL",
+  "Ranger listed: false; {\"ok\":true,\"wins\":[{\"id\":\"\",\"cls\":\"availwin front\",\"text\":\"⠿ BRIEFING Jul 17 · 13:10–13:20 ✕ Who’s available 42 PILOTS · 25 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hun",
+  "PASS",
+  ""
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "BRIEFING moved to 13:40-13:50 (after dekit 13:30)",
+  "conflict gone",
+  "[\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:40–13:50 ✕\"]",
+  "PASS",
+  "4-9-moved-out-d.png"
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "BRIEFING back to 13:10-13:20",
+  "conflict returns",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕\"]",
+  "PASS",
+  ""
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "landing typed 12:30 (dekit to 13:00)",
+  "conflict gone (13:10 is after dekit)",
+  "[\"Ranger — Misses VL BFM debrief 12:30–14:30: BRIEFING 13:10–13:20 ✕\"]",
+  "PASS",
+  "4-10-landing-typed-d.png"
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "ALL AVAIL window after landing typed and Ranger on the row",
+  "RECORD (Ranger is on the row, so not in the free list)",
+  "Ranger listed: false",
+  "RECORDED",
+  ""
+ ],
+ [
+  "4 crew list / ALL AVAIL / ALL vs conflicts",
+  "1536",
+  "Ranger (flies 12:00-12:30 landing typed) in the crew list for other destinations",
+  "RECORD",
+  "{\"duty desk d:4.0.0.+\":{\"armed\":\"d:4.0.0.+\",\"rpuck\":\"rpuck no haswhy\"},\"sim seat s:4.oft.0.+\":{\"armed\":\"s:4.oft.0.+\",\"rpuck\":\"rpuck \"},\"programme row a:4.0.+\":{\"armed\":\"a:4.0.+\",\"rpuck\":\"rpuck \"},\"ground seat BRIEFING B\":{\"armed\":\"g:4.3.+\",\"rpuck\":\"rpuck no haswhy\"}}",
+  "RECORDED",
+  ""
+ ]
+]

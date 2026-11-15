@@ -1,0 +1,101 @@
+[
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "built: Sunday 19 Jul Ace T/O 23:30 landing blank; Monday 20 Jul Ace flight T/O 17:00 landing 18:00 (report 14:00; chosen so the blank landing breaks his rest and the typed 23:40 does not; a ground item starts no flying day)",
+  "both rows made",
+  "Monday front seat: Ace",
+  "PASS",
+  ""
+ ],
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "next week opened COLD (before Sunday's week); Monday week",
+  "a crew-rest line: landing assumed 00:30 (T/O + 1h) … clear 14:30 … needs 12h",
+  "[\"Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕\"]",
+  "FAIL",
+  "3-1cold-monweek-d.png"
+ ],
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "next week opened COLD (before Sunday's week); Monday details",
+  "a crew-rest line: landing assumed 00:30 (T/O + 1h) … clear 14:30 … needs 12h",
+  "[\"Advisory · Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30.\"]",
+  "FAIL",
+  "3-1cold-mondetails-d.png"
+ ],
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "next week opened COLD (before Sunday's week); Monday board",
+  "a crew-rest line: landing assumed 00:30 (T/O + 1h) … clear 14:30 … needs 12h",
+  "[\"Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕\"]",
+  "FAIL",
+  "3-1cold-monboard-d.png"
+ ],
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "Monday crew-rest line, whole (cold)",
+  "RECORD",
+  "[\"Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕\"]",
+  "RECORDED",
+  "3-1cold-monweek-d.png"
+ ],
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "current week: tapped Ranger's Sunday puck; the forward \"Breaks Monday\" rows",
+  "RECORD: Breaks Monday, landing assumed",
+  "[]",
+  "FAIL",
+  "3-2sunday-trace-d.png"
+ ],
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "next week reached from Sunday's week; Monday week/details/board",
+  "the same crew-rest line as cold",
+  "{\"wk\":\"20/07/2026\",\"week\":[\"Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕\"],\"details\":[\"Advisory · Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30.\"],\"board\":[\"Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕\"]}",
+  "PASS",
+  "3-3via-monweek-d.png"
+ ],
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "landing TBD: Monday crew-rest (week)",
+  "same assumed line as blank",
+  "[\"Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕\"]",
+  "PASS",
+  "3-4tbd-monweek-d.png"
+ ],
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "typed landing 23:40: Monday crew-rest lines (week/details/board)",
+  "the breach is gone (rest clears 13:40 before 14:00); no \"assumed\" anywhere",
+  "{\"wk\":\"20/07/2026\",\"week\":[],\"details\":[],\"board\":[]}",
+  "PASS",
+  "3-5typed-monweek-d.png"
+ ],
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "typed landing: Sunday forward trace",
+  "no \"assumed\" and no Breaks Monday",
+  "[]",
+  "PASS",
+  "3-6typed-trace-d.png"
+ ],
+ [
+  "3b Sunday to Monday",
+  "1536",
+  "published Sunday (typed landing 23:40); Leave War: Sunday cell, tracker; Monday cell",
+  "RECORD: Sunday earns once; Monday no credit (no duplicate)",
+  "publish true; sunday {\"cell\":{\"text\":\"HO*\",\"cls\":\"duty weekend act hasc\",\"w\":26},\"sheet\":{\"days\":\"half a day, PM — worked 20:30–23:59\",\"why\":\"FLT\",\"given\":\"Weekend/PH\"},\"bal\":\"4.5\",\"entries\":[\"+2 carried in opening figure 2 left\",\"+0.5 19 Jul PM AUTO Weekend/PH FLT · 20:30–23:59 0.5 left\"],\"status\":[\"2 left\",\"0.5 left\"]}; monday cell {\"text\":\"\",\"cls\":\" act\",\"w\":27}",
+  "FAIL",
+  "3-7sunoil-oiltracker-d.png"
+ ]
+]

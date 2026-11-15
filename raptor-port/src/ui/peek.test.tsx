@@ -220,7 +220,7 @@ describe('a nought-minute flying line is marked in the peek too (D49)', () => {
   it('both time cells wear the mark, and say why where they sit', () => {
     const m = marks(peekDayHTML(flyDay('10:00', '10:00'), 0, false))
     expect(m.length, 'the take-off cell and the landing cell').toBe(2)
-    for (const x of m) expect(x.getAttribute('title') || '').toMatch(/same time|one of the two/i)
+    for (const x of m) expect(x.getAttribute('title') || '').toMatch(/^Times look wrong: RAP 1 T\/O and landing are both 10:00\. /)
   })
 
   it('THE CONTROL: an ordinary line, an overnight line and a line with no times are untouched', () => {

@@ -328,13 +328,18 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
           if(!saAnyFlies(w,f))return;
         }
         const toM=toMin(f.to);
-        let ldM=toMin(f.ld||f.to); if(ldM<toM)ldM+=1440;      // landed after midnight
         /* A STANDALONE line is a SHIFT, not a sortie: 0700–1300 means 0700–1300.
            It used to be padded like a jet — an hour of step in front, half an
            hour of dekit behind, a brief before that and a two-hour debrief tail —
            which made SC AM (07–13) and SC PM (13–19) overlap by 50 minutes and
            reported two clean abutting shifts as one fifteen-hour day. */
         const shiftLine=isStandalone(w);
+        /* THE ASSUMED LANDING (owner D2046, D2047, 15 Nov 26 — over D1990 and D2022's "the landing borrows the
+           take-off"): a sortie with its take-off typed and no landing that is a time (blank, "TBD", any words) lands the
+           Logic page's flight length after take-off, and every reader of this event — the step-to-dekit busy window, the
+           tight turn, the debrief, crew rest, the long day, Insights' hours — reads that landing; `noLd` below tells the
+           words to say it was assumed. A shift is as it was (its blank END: D2055, validate.ts). */
+        let ldM=!shiftLine&&isFinite(toM)&&!isFinite(toMin(f.ld||''))?toM+VCONF.fltLen:toMin(f.ld||f.to); if(ldM<toM)ldM+=1440;      // landed after midnight
         /* The brief time the scheduler INDICATED on the line (f.br) governs
            every brief-driven rule (owner, 6 Aug 26). VCONF.briefLead is only
            the default the board offers as a suggestion to accept — a blank B
@@ -406,12 +411,15 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
             /* D1996 (11 Nov 26): a standby row that FLIES is checked like a sortie — `flies` marks it, written only when
                true so every other event is as it was; validate.ts reads it for the turns and the clash grading */
             const fliesRow=shiftLine&&saFlies(w,f,a);
-            /* D2010's reading (the blind code reads of 15 Nov 26): a sortie whose landing is blank or not a time
-               ("TBD") stands its landing on the take-off — ldM above, and crew rest's own borrow in validate.ts — so
-               every sentence that would call that time a landing (the debrief window, the tight turn, the crew-rest
-               tail) says "take-off … no landing typed" instead. One source: the same test the borrow makes, written
-               only when true so every other event is as it was. */
+            /* D2010's reading (the blind code reads of 15 Nov 26), as D2046 changes it: a sortie whose landing is blank or
+               not a time ("TBD") lands at the assumed landing — ldM above — so every sentence that names that landing (the
+               debrief window, the tight turn, the crew-rest tail, the long day, a conflict line) says it was assumed. One
+               source: the same test ldM makes, written only when true so every other event is as it was. */
             const noLd=!shiftLine&&isFinite(toM)&&!isFinite(toMin(f.ld||''));
+            /* D2055 (15 Nov 26): a standby SHIFT with its START typed and its END blank is never assumed — it bears no crew
+               rest until its END is typed (validate.ts reads `noEnd`); flying or not (the agent's reading). Written only
+               when true. Its own SA_FLY_NO_TIME warning stays. */
+            const noEnd=shiftLine&&isFinite(toM)&&!isFinite(toMin(f.ld||''));
             fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,
               lateShow:!shiftLine&&lateShowOf(a.rmks),   // this crew shows at the brief, not at the in-time
               shift:shiftLine,...(viaRally?{viaRally:true}:{}),...(fliesRow?{flies:true}:{}),...(noLd?{noLd:true}:{}),label:lineLbl,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
@@ -422,10 +430,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
                nothing (null) when none is, so the work span (validate.ts workSpan: the long day and Insights' hours)
                starts that day at take-off less the default rally, VCONF.reportLead, as OIL does — never at the step.
                `fly` above keeps report-or-step for the SANS window, and crew rest reads `intime`; a shift is as before.
-               A sortie with no take-off or no landing typed (ldM above borrows its take-off) is unfinished: NaN, so workSpan's own
-               guard counts it nowhere, as OIL counts it nothing (fltOilWin) — Astra's and Sol 6.1's reads. */
-            events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report:shiftLine?report:(parseHM(f.to)==null||parseHM(f.ld)==null?NaN:intime),brief:briefM,label:lineLbl,
-              kind:shiftLine?'shift':'fly',...(fliesRow?{flies:true}:{}),...(noLd?{noLd:true}:{}),slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
+               A sortie with no take-off typed is unfinished: NaN, so workSpan's own guard counts it nowhere, as OIL counts it
+               nothing (fltOilWin) — Astra's and Sol 6.1's reads. One with its take-off typed and no landing counts to its
+               assumed landing (ldM above), in Insights' hours and the long-day note as in OIL (owner D2053, over D1936). */
+            events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report:shiftLine?report:(parseHM(f.to)==null?NaN:intime),brief:briefM,label:lineLbl,
+              kind:shiftLine?'shift':'fly',...(fliesRow?{flies:true}:{}),...(noLd?{noLd:true}:{}),...(noEnd?{noEnd:true}:{}),slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
           });
         });
         /* an SC formation carries its shift window so the SC DAY / SC NIGHT

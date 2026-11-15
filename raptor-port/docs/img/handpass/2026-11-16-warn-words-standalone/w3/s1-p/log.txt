@@ -1,0 +1,12 @@
+using Ranger bane
+ROW PASS | 1 crew rest names the take-off | 402 | built Ranger: Friday flight T/O 12:00 landing blank; Saturday flight T/O 04:00 | saw: ["Ranger","Ranger"]
+ROW PASS | 1 crew rest names the take-off | 402 | Saturday crew-rest line in the week | saw: ["Crew rest (<12h) Ranger — Crew rest: Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. Report 01:40: 10h40 rest, needs 12h. ✕"]
+ROW PASS | 1 crew rest names the take-off | 402 | Saturday crew-rest line in the details | saw: ["Warning · Crew rest (<12h) Ranger — Crew rest: Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. Report 01:40: 10h40 rest, needs 12h."]
+ROW PASS | 1 crew rest names the take-off | 402 | Saturday crew-rest line in the board | saw: ["Ranger — Crew rest: Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. Report 01:40: 10h40 rest, needs 12h. ✕"]
+ROW RECORDED | 1 crew rest names the take-off | 402 | RECORD Saturday crew-rest line whole (assumed landing) | saw: ["Crew rest (<12h) Ranger — Crew rest: Friday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. Report 01:40: 10h40 rest, needs 12h. ✕"]
+ROW PASS | 1 crew rest names the take-off | 402 | Friday landing typed 12:30; Saturday crew-rest line in the week | saw: ["Crew rest (<12h) Ranger — Crew rest: Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30. Report 01:40: 11h10 rest, needs 12h. ✕"]
+ROW PASS | 1 crew rest names the take-off | 402 | Friday landing typed 12:30; Saturday crew-rest line in the details | saw: ["Warning · Crew rest (<12h) Ranger — Crew rest: Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30. Report 01:40: 11h10 rest, needs 12h."]
+ROW PASS | 1 crew rest names the take-off | 402 | Friday landing typed 12:30; Saturday crew-rest line in the board | saw: ["Ranger — Crew rest: Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30. Report 01:40: 11h10 rest, needs 12h. ✕"]
+ROW RECORDED | 1 crew rest names the take-off | 402 | RECORD Saturday crew-rest line whole (typed landing) | saw: ["Crew rest (<12h) Ranger — Crew rest: Friday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30. Report 01:40: 11h10 rest, needs 12h. ✕"]
+errors []
+DONE 7 PASS 0 FAIL 2 OTHER of 9

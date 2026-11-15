@@ -75,7 +75,7 @@ describe("Edit Schedule's list", () => {
     expect(h, 'its button is the flag-again, the drawn arrow, its hover words unchanged').toContain(`data-woff="1.3" title="Flag this again">${ARROW}</button>`)
     expect(h, 'no typed arrow is left').not.toContain('↺')
     expect(h, 'the others keep their ✕').toMatch(/data-woff="1\.0"[^>]*>✕</)
-    expect(h).toContain('has a long work day')
+    expect(h).toContain('Long day: 13h05 (limit 12h)')
   })
 
   it('the bar\'s colour and the "N warning" follow what is shown: hide the two red ones and the bar turns amber', () => {

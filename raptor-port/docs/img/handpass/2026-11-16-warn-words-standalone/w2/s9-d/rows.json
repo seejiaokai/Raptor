@@ -1,0 +1,137 @@
+[
+ [
+  "9 conflict shapes",
+  "1536",
+  "shape: step only 11:20-11:40",
+  "Conflict line naming /step 11:00, T\\/O 12:00/",
+  "[\"Ranger — Conflict: VL BFM (step 11:00, T/O 12:00) & BRIEFING 11:20–11:40 ✕\",\"Ranger — Misses VL BFM brief 09:40–12:00: BRIEFING 11:20–11:40 ✕\"]",
+  "PASS",
+  "9-1-step-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "shape: airborne 12:20-12:40",
+  "Conflict line naming /T\\/O 12:00, landing assumed 13:00/",
+  "[\"Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:20–12:40 ✕\"]",
+  "PASS",
+  "9-2-airborne-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "shape: dekit only 13:10-13:20",
+  "Conflict line naming /landing assumed 13:00, dekit to 13:30/",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕\"]",
+  "PASS",
+  "9-3-dekit-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "shape: step + airborne 11:30-12:30",
+  "RECORD the words",
+  "[\"Ranger — Conflict: VL BFM (step 11:00, T/O 12:00) & BRIEFING 11:30–12:30 ✕\",\"Ranger — Misses VL BFM brief 09:40–12:00: BRIEFING 11:30–12:30 ✕\"]",
+  "RECORDED",
+  "9-4-step-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "shape: across the whole flight 10:30-14:00",
+  "RECORD the words",
+  "[\"Ranger — Conflict: BRIEFING 10:30–14:00 & VL BFM (T/O 12:00, landing assumed 13:00) ✕\",\"Ranger — Misses VL BFM brief 09:40–12:00: BRIEFING 10:30–14:00 ✕\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 10:30–14:00 ✕\"]",
+  "RECORDED",
+  "9-5-across-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "shape: ends at the step start 10:50-11:00",
+  "RECORD the words",
+  "[\"Ranger — Misses VL BFM brief 09:40–12:00: BRIEFING 10:50–11:00 ✕\"]",
+  "RECORDED",
+  "9-6-ends-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "shape: starts at the dekit end 13:30-13:40",
+  "RECORD the words",
+  "[\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:30–13:40 ✕\"]",
+  "RECORDED",
+  "9-7-starts-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "Logic Step 1h30, Dekit 45 min: item 10:40-10:50 (inside the longer step only)",
+  "Conflict shows step 10:30",
+  "[\"Ranger — Conflict: VL BFM (step 10:30, T/O 12:00) & BRIEFING 10:40–10:50 ✕\",\"Ranger — Misses VL BFM brief 09:40–12:00: BRIEFING 10:40–10:50 ✕\"]",
+  "PASS",
+  "9-9-step90-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "Logic Dekit 45 min: item 13:35-13:50 (inside the longer dekit only)",
+  "Conflict shows dekit to 13:45",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:45) & BRIEFING 13:35–13:50 ✕\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:35–13:50 ✕\"]",
+  "PASS",
+  "9-10-dekit45-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "Logic Step and Dekit put back by their Reset",
+  "step 1h, dekit 30 min",
+  "[\"1h\",\"30 min\"]",
+  "PASS",
+  ""
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "after Step/Dekit put back: item 13:10-13:20",
+  "dekit to 13:30 again",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕\"]",
+  "PASS",
+  ""
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "two flights, airborne separate (12:00-12:30, 13:00-13:30), step/dekit overlap",
+  "amber Tight turn, no Conflict",
+  "[\"Ranger — Tight turn: VL BFM → RU, 30 min (needs 120). VL BFM landing 12:30, RU T/O 13:00 ✕\",\"Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "9-11-twoflights-sep-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "second flight moved to T/O 12:20 (airborne overlaps the first)",
+  "RECORD: a conflict between two flights",
+  "[\"Ranger — Conflict: VL BFM (T/O 12:00, landing 12:30) & RU (T/O 12:20, landing 14:00) ✕\"]",
+  "RECORDED",
+  "9-12-twoflights-overlap-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "SC SPARE line (08:00-16:00, not flying) with Torch, a ground item 07:30-08:30 overlapping its START",
+  "no step/dekit conflict from the standby line; RECORD what the screen says",
+  "[\"Torch — Crew rest: Thursday landed 18:10 + 2h debrief (assumed) → ended 20:10 → clear 08:10. Day starts 07:30 (TORCH ITEM), before report 08:00: 11h20 rest, needs 12h. ✕\",\"Torch — Overlaps standby: TORCH ITEM 07:30–08:30 & SC PM 08:00–16:00 ✕\"]",
+  "RECORDED",
+  "9-13-sc-spare-d.png"
+ ],
+ [
+  "9 conflict shapes",
+  "1536",
+  "Cobra on the SC PM line's second (SPARE) row, seat result ok; ground item 07:30-08:30",
+  "RECORD",
+  "[\"Cobra — Overlaps standby: COBRA ITEM 07:30–08:30 & SC PM 08:00–16:00 ✕\"] | badges [\"BUTTON.sarole:MAIN\",\"BUTTON.sarole:MAIN\",\"BUTTON.sarole sp:SPARE\",\"BUTTON.sarole sp:SPARE\",\"BUTTON.sarole:MAIN\",\"BUTTO",
+  "RECORDED",
+  "9-14-sc-spare-row-d.png"
+ ]
+]

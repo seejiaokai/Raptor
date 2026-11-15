@@ -474,6 +474,10 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 /* the people of a shared input's one line, under its name (owner D736 — the changes window's .cw-names is its twin) */
 .cw-out .pl-names{grid-column:1/2;font-size:11px;color:var(--ink-3);overflow-wrap:anywhere}
 .cw-out .pl-chg{grid-column:1/2;color:var(--ink-2)}
+/* a warning's time range never breaks across lines (state/view.ts escMsg — [WARN-WORDS-STANDALONE]) */
+.tr-nw{white-space:nowrap}
+/* a man's OIL line under today's values says, under its times, what changed for him (owner D2054, [WARN-WORDS-STANDALONE]) */
+.cw-out .pl-note{grid-column:1/2;font-size:11px;color:var(--ink-2)}
 .cw-out .pl-chg s{color:var(--ink-3)}
 .cw-out .pl-chg b{color:#F2D699;font-weight:600}
 .cw-out .pl-who{grid-column:2/3;grid-row:1/3;align-self:center;text-align:right;font-size:11px;color:var(--ink-3);white-space:nowrap}

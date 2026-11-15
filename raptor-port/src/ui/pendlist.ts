@@ -330,12 +330,20 @@ function faceWords(di: number): Words & { rows?: CrowdRow[] } {
      in today's words */
   const who = (x: any) => `${x.code}|${[...(x.who || [])].map(String).sort().join(',')}`
   const added = now.filter((x: any) => !a.has(k(x, namesNow))), gone = was.filter((x: any) => !b.has(k(x, namesWas)))
+  /* each line led by the people it is about, today's callsigns (the blind Opus read, 16 Nov 26, F1): the reworded lines
+     leave the people to the list that draws them, as the warning list and the drop note do — never twice where a line
+     already opens with them */
+  const named = (x: any, m: string) => {
+    const nm = [...new Set<string>((x.who || []).map(String))].map((id) => cs(id) || (namesWas || {})[id] || id).filter(Boolean).join(', ')
+    return nm && m.indexOf(nm) !== 0 ? `${nm} — ${m}` : m
+  }
   added.forEach((x: any) => {
     const j = gone.findIndex((y: any) => who(y) === who(x))
-    if (j >= 0) { gone.splice(j, 1); rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'changed', keys: [] }) }
-    else rows.push({ where: String(x.msg || x.code || 'A warning'), from: '', to: 'new', keys: [] })
+    const m = named(x, String(x.msg || x.code || 'A warning'))
+    if (j >= 0) { gone.splice(j, 1); rows.push({ where: m, from: '', to: 'changed', keys: [] }) }
+    else rows.push({ where: m, from: '', to: 'new', keys: [] })
   })
-  gone.forEach((x: any) => rows.push({ where: reword(x.msg || x.code || 'A warning'), from: '', to: 'cleared', keys: [] }))
+  gone.forEach((x: any) => rows.push({ where: named(x, reword(x.msg || x.code || 'A warning')), from: '', to: 'cleared', keys: [] }))
   /* the men as their pucks draw them */
   if (snap && snap.pa) {
     const nowPa: any = peopleAttrsNow(snap.pa)
@@ -523,21 +531,39 @@ export function pendItemWords(di: number, it: PendItem): Words {
    published day worked out with today's values. With another change also waiting — his flight switched off, an in-time
    typed — "Ranger · OIL  full day → full day …15:30" read as what the amendment would give him, which it is not: the
    other change has its own line, and what the day WILL earn is the working copy's own figure in OIL Earn. */
-const OIL_VALS = ['reportLead', 'debrief', 'oilFullMin'] as const
+/* …and the assumed flight length since D2046 — a block kept before it has none, so it reads today's and names nothing */
+const OIL_VALS = ['reportLead', 'debrief', 'oilFullMin', 'fltLen'] as const
 const oilRecWords = (r: { amt: number, spans: Array<[number, number]> } | null) => !r ? 'nothing'
   : `${r.amt === 1 ? 'full day' : 'half day'}${r.spans.length ? ` · ${r.spans.map(([a, b]) => `${hm(a)}–${hm(b)}`).join(', ')}` : ''}`
+/* THE LINE UNDER HIS TIMES (owner D2054, 15 Nov 26; the proposal's §4 as its §3b moved it inside the man's own row): the
+   answer first — whether his OIL changes — then when it now counts from. "Still a full day of OIL. It counts from 05:10,
+   not 05:00." / "OIL changes: full day → half day. It counts from 13:30, not 10:00." Where only the end moved, "It counts
+   until …" (the build's wording, the same shape); where either side earns nothing there are no times to compare. */
+const oilAmtWord = (r: { amt: number } | null) => !r ? 'nothing' : r.amt === 1 ? 'full day' : 'half day'
+export function oilShiftNote(was: { amt: number, spans: Array<[number, number]> } | null, now: { amt: number, spans: Array<[number, number]> } | null): string {
+  const head = was && now && was.amt === now.amt ? `Still a ${oilAmtWord(now)} of OIL.` : `OIL changes: ${oilAmtWord(was)} → ${oilAmtWord(now)}.`
+  const a = was && was.spans.length ? was.spans : null, b = now && now.spans.length ? now.spans : null
+  if (!a || !b) return head
+  const s0 = a[0]![0], s1 = b[0]![0], e0 = a[a.length - 1]![1], e1 = b[b.length - 1]![1]
+  /* both ends moved (the default rally and "A flight" changed together): one end named alone left the other's move
+     unsaid in words — the walk's W1, 16 Nov 26 */
+  if (s0 !== s1 && e0 !== e1) return `${head} It counts ${hm(s1)}–${hm(e1)}, not ${hm(s0)}–${hm(e0)}.`
+  if (s0 !== s1) return `${head} It counts from ${hm(s1)}, not ${hm(s0)}.`
+  if (e0 !== e1) return `${head} It counts until ${hm(e1)}, not ${hm(e0)}.`
+  return head
+}
 function oilRuleWords(di: number): Words & { rows: CrowdRow[] } {
   const snap: any = daySnapOf(di, dayCurVer(di)), d: any = snap && snap.d, ev: any = d && d.oilev
   const kept = oilKeptVals(ev), now = oilRuleValsNow()
   const rows: CrowdRow[] = []
-  if (kept) OIL_VALS.forEach(k => { if (kept[k] !== now[k])
+  if (kept) OIL_VALS.forEach(k => { if (kept[k] != null && kept[k] !== now[k])
     rows.push({ where: `Logic · ${String(RULE_SPEC[k].t).replace(/\s*\(.*\)\s*$/, '')}`, from: String(ruleFmt(k, kept[k])), to: String(ruleFmt(k, now[k])), keys: [] }) })
-  oilRuleShift(d, ev).forEach(r => rows.push({ where: `${cs(r.person)} · OIL as published, under today's values`, from: oilRecWords(r.was), to: oilRecWords(r.now), keys: [] }))
+  oilRuleShift(d, ev).forEach(r => rows.push({ where: `${cs(r.person)} · OIL as published, under today's values`, from: oilRecWords(r.was), to: oilRecWords(r.now), keys: [], note: oilShiftNote(r.was, r.now) }))
   return { where: 'OIL on this day · Logic values changed since it was published', from: '', to: '', who: '', when: '', jump: false, rows }
 }
 /* the rows whose placeholder crowd differs from what the day went out with: its name, who left, who joined, and the
    row's cells to jump to */
-type CrowdRow = { where: string, from: string, to: string, keys: string[] }
+type CrowdRow = { where: string, from: string, to: string, keys: string[], note?: string }
 function crowdChange(di: number): CrowdRow[] | null {
   const snap: any = daySnapOf(di, dayCurVer(di)); if (!snap || !snap.d) return null
   const was: any = (snap.d.oilev && snap.d.oilev.sent) || {}, now: any = oilEvidence(di).sent || {}
@@ -640,7 +666,8 @@ export function pendListHTML(di: number): string {
       rows.forEach((r, j) => { targets[`${i}.${j}`] = r.keys })
       return `<div class="pl-item still pl-multi"><span class="pl-where">${esc(w.where)}</span>${who}`
         + rows.map((r, j) => `<button class="pl-sub" data-pltarget="${i}.${j}"${r.keys.length ? '' : ' disabled'} title="Go to this row">`
-          + `<span class="pl-where">${esc(r.where)}</span><span class="pl-chg">${r.from ? `<s>${esc(r.from)}</s>` : ''}${r.from && r.to ? ' → ' : ''}${r.to ? `<b>${esc(r.to)}</b>` : ''}</span></button>`).join('')
+          + `<span class="pl-where">${esc(r.where)}</span><span class="pl-chg">${r.from ? `<s>${esc(r.from)}</s>` : ''}${r.from && r.to ? ' → ' : ''}${r.to ? `<b>${esc(r.to)}</b>` : ''}</span>`
+          + `${r.note ? `<span class="pl-note">${esc(r.note)}</span>` : ''}</button>`).join('')
         + `</div>`
     }
     return w.jump

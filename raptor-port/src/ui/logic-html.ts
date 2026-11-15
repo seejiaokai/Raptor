@@ -56,6 +56,8 @@ export function lgSettings(): LgGroup<LgSet>[] {
       { name: 'AMT debrief', keys: ['amtDebrief'], line: () => 'How long an AMT debrief runs when its DEBRIEF row has no end.' },
     ] },
     { g: 'Rows with no end time', items: [
+      /* the assumed landing (D2046, D2047, D2053 — [WARN-WORDS-STANDALONE] piece B): its row, beside its neighbours */
+      { name: 'A flight', keys: ['fltLen'], line: () => 'A flight with a take-off and no landing is taken to land this long after take-off. Conflicts, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.' },
       { name: 'A sim', keys: ['simLen'], line: () => 'A sim with a start and no end is taken to run this long, for clashes and the crew list. It earns no OIL until its end is typed.' },
       { name: 'Any other row', keys: ['openEnd'], line: () => 'The same for a ground, programme or duty row.' },
     ] },
@@ -101,7 +103,8 @@ export function lgChecks(): LgGroup<LgChk>[] {
              ends the day at take-off plus the debrief (D1990); a flying SPARE bears crew rest, and a shift reports at its
              B or R where one is typed earlier (F6; D606, D1041) */
           `Rest runs from the end of the day before to the first thing today: his in-time or rally, his B where neither is typed, or anything earlier, such as a meeting.`,
-          `The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (${T('debrief')}), or at take-off plus the debrief where the landing is not a time. Anything else ends at its written end.`,
+          /* D2046: a landing not typed is the assumed one, take-off plus the flight length (A flight) */
+          `The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (${T('debrief')}), or, where no landing is typed, at the assumed landing (A flight, ${T('fltLen')} after take-off) plus the debrief. Anything else ends at its written end.`,
           'An input counts only if it is a duty or commitment, other than Personal or SANS Availability, with typed times.',
           `Exactly ${T('crewRest')} is legal. A day with no flying asks for no rest.`,
           'A LATE SHOW remark keeps the warning. The ring is dashed while rest still clears by step, solid after.',
@@ -195,8 +198,9 @@ export function lgChecks(): LgGroup<LgChk>[] {
           /* the words job ([RULES-CHECK-FIXES] job 3): a typed rally starts the day too (D592, D1995); a request's row earns
              over its own times (the rules check's F9); a flying shift from its START unless its B or R is earlier (F8);
              a template desk follows its wave (D1997) */
-          'A flight runs from its in-time or rally, whichever is earlier (Default rally before take-off where neither is entered), to landing plus the debrief.',
-          'A row the scheduler adds with no times, or no end time, earns nothing, but a request answered yes earns over its own times. An Off day earns nothing.',
+          'A flight runs from its in-time or rally, whichever is earlier (Default rally before take-off where neither is entered), to landing plus the debrief. With no landing typed, it lands at its assumed landing (A flight).',
+          /* D2046: a flight with no landing is the one row with no end time that earns — to its assumed landing */
+          'Any other row the scheduler adds with no times, or no end time, earns nothing, but a request answered yes earns over its own times. An Off day earns nothing.',
           'SC SPARE, AVALON and BB rows that do not fly earn only if switched on in OIL Earn. A row that flies earns by default, from its B or R if earlier than its START, otherwise from its START, to its END.',
           'Until its wave flies, a desk made from an AVALON or BB template earns only if switched on in OIL Earn. Once the wave flies, the desk earns by default.',
           'A Duty & commitments input earns once its OIL question is answered yes.',

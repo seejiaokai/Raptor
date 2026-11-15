@@ -10,6 +10,7 @@ import { INPUTS } from './inputs'
 import { validate, WARN } from './validate'
 import { isStandalone } from './waves'
 import { VCONF } from './rules'
+import { PEOPLE } from './people'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -20,13 +21,18 @@ beforeEach(() => {
 
 const longdays = () =>
   (WARN.byDay || []).flatMap((d: any) => (d?.warns || []).filter((w: any) => w.code === 'LONGDAY'))
+/* since [WARN-WORDS-STANDALONE] the line no longer opens with his name ("Long day: …", the list's own prefix names
+   him), so Static's line is found by who it is about */
+const staticDay = () => longdays().filter((w: any) => (w.who || []).some((id: string) => (PEOPLE as any)[id]?.cs === 'Static'))
+  .map((w: any) => w.msg)[0]
 
 describe('the long-work-day note names the debrief assumption on a flying end', () => {
   it('the seed cases print the landing and flag the 2h debrief pad', () => {
     validate()
     const msgs = longdays().map((w: any) => w.msg)
     /* Static and Saber both finish on a sortie, so both spell the end out */
-    const wolf = msgs.find((m: string) => /^Static /.test(m))!
+    const wolf = staticDay()
+    expect(msgs).toContain(wolf)
     expect(wolf, 'Wolf files a long day').toBeTruthy()
     expect(wolf, 'the real landing is named').toContain('last landing 16:05')
     expect(wolf, 'and the pad is flagged as an assumption').toContain('+ 2h debrief assumed')
@@ -55,7 +61,7 @@ describe('the long-work-day note names the debrief assumption on a flying end', 
     try {
       VCONF.debrief = 90                                  // 1h30 instead of the default 2h
       validate()
-      const wolf = longdays().map((w: any) => w.msg).find((m: string) => /^Static /.test(m))!
+      const wolf = staticDay()
       expect(wolf, 'Wolf still files a long day at the smaller pad').toBeTruthy()
       expect(wolf, 'the real landing is still named').toContain('last landing 16:05')
       expect(wolf, 'the smaller pad is named as the assumption').toContain('+ 1h30 debrief assumed')

@@ -1,0 +1,16 @@
+www-w2-s13 v1 1536
+AVALON lines [{"k":0,"cs":"AV","shift":"NIGHT"}]
+seat ok
+ROW RECORDED | extras a-d | 1536 | (a) AVALON line START 20:00, END blank, Torch: Friday warnings | saw: ["Torch — Not SC NIGHT current: AVALON NIGHT MAIN 20:00–07:00 ✕"]
+ROW RECORDED | extras a-d | 1536 | (a) Saturday ground item 06:00 for Torch | saw: []
+seat ok
+ROW RECORDED | extras a-d | 1536 | (c) Friday SC line START 20:00 with B 19:00 typed (made to fly), END blank, Comet | saw: ["Comet — Long day: 18h00 (limit 12h), 19:00 → 13:00 ✕"]
+ROW RECORDED | extras a-d | 1536 | (c) Saturday flight 04:00 for Comet after the END-less flying SC line | saw: ["Comet — Crew rest: Friday duty ended 13:00 → clear 01:00 (next day). Report 01:40: 11h20 before his Saturday duty ends. ✕"]
+ROW RECORDED | extras a-d | 1536 | (d) Monday flight T/O 16:00 for Havoc after a Sunday 23:30 flight, landing blank | saw: ["Saber, Echo, Piston, Relay — 4 people are double turning: Saber, Echo, Piston, Relay ✕"]
+ROW RECORDED | extras a-d | 1536 | (d) Sunday: tapped Havoc's puck | saw: {"items":[]}
+ROW RECORDED | extras a-d | 1536 | (d) Sunday week strip | saw: [] head ⚠ 1 issue ▼
+PUBLISH {"pressed":true,"which":"data-beak","signs":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"}}
+EYES ["BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu","BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu","BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu","BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu","BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu","BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu","BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu"]
+ROW RECORDED | extras a-d | 1536 | (b) published Friday: the 👁 controls on the week | saw: {"pressed":true,"which":"data-beak","signs":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"}} | ["BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu","BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu","BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu","BUTTON|planselbtn|planmenu|Switch between your plans
+errors []
+DONE 0 PASS 0 FAIL 8 OTHER of 8

@@ -1,0 +1,9 @@
+ROW PASS | 7/8 A flight row, pending OIL both ends | 402 | opened Logic; read the row "A flight" | saw: A flight 1h A flight with a take-off and no landing is taken to land this long after take-off. Conflicts, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.
+rally key reportLead
+ROW PASS | 7/8 A flight row, pending OIL both ends | 402 | typed 75 in "A flight", then pressed the row Reset | saw: typed -> 1h15; after Reset 1h
+ROW PASS | 7/8 A flight row, pending OIL both ends | 402 | A flight 90; built Ranger T/O 12:00 no landing on Saturday; signed and published | saw: {"tag":"ORIG","pending":"9 changes"}
+ROW RECORDED | 7/8 A flight row, pending OIL both ends | 402 | A flight 2h and the default rally 2h45 together on the published OIL Saturday; opened the pending list | saw: {"head":"1 pending","items":["OIL on this day · Logic values changed since it was published Logic · Default rally before T/O 3h → 2h45 Logic · A flight with no landing typed 1h30 → 2h Ranger · OIL as published, under today's values full day · 09:00–15:30 → full day · 09:15–16:00 Still a full day of OIL. It counts 09:15–16:00, not 09:00–15:30."]}
+ROW PASS | 7/8 A flight row, pending OIL both ends | 402 | the OIL note for Ranger | saw: ["OIL on this day · Logic values changed since it was published Logic · Default rally before T/O 3h → 2h45 Logic · A flight with no landing typed 1h30 → 2h Ranger · OIL as published, under today's values full day · 09:00–15:30 → full day · 09:15–16:00 Still a full day of OIL. It counts 09:15–16:00, not 09:00–15:30."]
+ROW RECORDED | 7/8 A flight row, pending OIL both ends | 402 | put both settings back (A flight 1h, rally 3h) | saw: rally box 3h
+errors []
+DONE 4 PASS 0 FAIL 2 OTHER of 6

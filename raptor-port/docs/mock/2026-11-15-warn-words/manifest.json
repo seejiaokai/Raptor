@@ -1,0 +1,1270 @@
+{
+ "made": "2026-11-15",
+ "server": "local preview of the build, port 4391",
+ "note": "Only a1-today-* is a real state as it stands; a2-real-after-landing-* is the real list after typing a landing (reference). Every \"proposed\" picture and every b* family picture is DRAWN on the real warning list: b* clone real rows of Monday 13 Jul (red/amber/grey) and set the proposal's example words; the header count is recounted for the drawn rows. Proposed words include the cold-read corrections of 15 Nov 26.",
+ "pictures": [
+  {
+   "file": "a1-today-desktop.png",
+   "family": "A — Ranger's Friday",
+   "state": "today",
+   "kind": "real",
+   "size": "1536x864 Chromium @2x",
+   "header": "⚠ 5 issues · 1 warning",
+   "rows": [
+    "Ranger — RU & BRIEFING clash",
+    "Ranger — Tight turn VL BFM→ RU: 60 min take-off→next T/O, no landing typed (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Ranger — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 12:00–14:00 (take-off + 2h, no landing typed)",
+    "Ranger — No time for the RU flight brief — BRIEFING sits inside 10:40–13:00 (brief 10:40)",
+    "Ranger — 1 person is double turning: Ranger"
+   ],
+   "sev": [
+    "hard",
+    "adv",
+    "adv",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    1,
+    3,
+    3,
+    2,
+    1
+   ],
+   "notes": ""
+  },
+  {
+   "file": "a1-today-phone.png",
+   "family": "A — Ranger's Friday",
+   "state": "today",
+   "kind": "real",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 5 issues · 1 warning",
+   "rows": [
+    "Ranger — RU & BRIEFING clash",
+    "Ranger — Tight turn VL BFM→ RU: 60 min take-off→next T/O, no landing typed (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Ranger — Not enough time to attend the VL BFM debrief — BRIEFING sits inside 12:00–14:00 (take-off + 2h, no landing typed)",
+    "Ranger — No time for the RU flight brief — BRIEFING sits inside 10:40–13:00 (brief 10:40)",
+    "Ranger — 1 person is double turning: Ranger"
+   ],
+   "sev": [
+    "hard",
+    "adv",
+    "adv",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    1,
+    3,
+    3,
+    2,
+    1
+   ],
+   "notes": ""
+  },
+  {
+   "file": "a2-after-desktop.png",
+   "family": "A — Ranger's Friday",
+   "state": "proposed",
+   "kind": "drawn on the real list (the real rows after typing VL BFM landing 13:00, words changed only)",
+   "size": "1536x864 Chromium @2x",
+   "header": "⚠ 5 issues · 2 warnings",
+   "rows": [
+    "Ranger — Clash: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00",
+    "Ranger — Clash: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00",
+    "Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00",
+    "Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00",
+    "Ranger — 1 person is double turning: Ranger"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "adv",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    2,
+    2,
+    3,
+    2,
+    1
+   ],
+   "ruLanding": "14:00",
+   "unmatched": []
+  },
+  {
+   "file": "a2-after-phone.png",
+   "family": "A — Ranger's Friday",
+   "state": "proposed",
+   "kind": "drawn on the real list (the real rows after typing VL BFM landing 13:00, words changed only)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 5 issues · 2 warnings",
+   "rows": [
+    "Ranger — Clash: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00",
+    "Ranger — Clash: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00",
+    "Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00",
+    "Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00",
+    "Ranger — 1 person is double turning: Ranger"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "adv",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    2,
+    2,
+    2,
+    2,
+    1
+   ],
+   "ruLanding": "14:00",
+   "unmatched": []
+  },
+  {
+   "file": "a2-real-after-landing-desktop.png",
+   "family": "A — Ranger's Friday, VL BFM landing typed 13:00 (reference, not for him)",
+   "state": "real after landing",
+   "kind": "real",
+   "size": "1536x864 Chromium @2x",
+   "header": "⚠ 5 issues · 2 warnings",
+   "rows": [
+    "Ranger — VL BFM & BRIEFING clash",
+    "Ranger — RU & BRIEFING clash",
+    "Ranger — Tight turn VL BFM→ RU: 0 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Ranger — No time for the RU flight brief — BRIEFING sits inside 10:40–13:00 (brief 10:40)",
+    "Ranger — 1 person is double turning: Ranger"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "adv",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    1,
+    1,
+    3,
+    2,
+    1
+   ]
+  },
+  {
+   "file": "a2-real-after-landing-phone.png",
+   "family": "A — Ranger's Friday, VL BFM landing typed 13:00 (reference, not for him)",
+   "state": "real after landing",
+   "kind": "real",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 5 issues · 2 warnings",
+   "rows": [
+    "Ranger — VL BFM & BRIEFING clash",
+    "Ranger — RU & BRIEFING clash",
+    "Ranger — Tight turn VL BFM→ RU: 0 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Ranger — No time for the RU flight brief — BRIEFING sits inside 10:40–13:00 (brief 10:40)",
+    "Ranger — 1 person is double turning: Ranger"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "adv",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    1,
+    1,
+    2,
+    2,
+    1
+   ]
+  },
+  {
+   "file": "b1-clashes-proposed-phone.png",
+   "family": "Clashes",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 8 issues · 8 warnings",
+   "rows": [
+    "Ranger — Clash: RU (step 12:00, T/O 13:00) & BRIEFING 12:40–13:00",
+    "Ranger — Clash: SC AM 07:00–13:00 & OFT 1 10:00–11:30",
+    "Ranger — Clash: in two seats on VL BFM (T/O 12:00) at once",
+    "Ranger — Clash: two items both called SODB, 07:45–08:00 & 07:50–08:10",
+    "Ranger — Clash: AVALON NIGHT MAIN 19:00–07:00 & AVALON NIGHT SPARE 19:00–07:00",
+    "Ranger — Clash: SC AM SPARE 07:00–13:00 & SC AM MAIN 07:00–13:00",
+    "Ranger — Clash: VL BFM (landing 13:30, dekit to 14:00) & Appointment 13:40–14:30. Reason: dental",
+    "Ranger — Clash: OFT 1 10:00–11:30 & Appointment 10:30–11:30. Reason: dental"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b1-clashes-today-phone.png",
+   "family": "Clashes",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 8 issues · 8 warnings",
+   "rows": [
+    "Ranger — RU & BRIEFING clash",
+    "Ranger — SC AM & OFT 1 clash",
+    "Ranger — Ranger is in two seats on VL BFM at once",
+    "Ranger — Ranger is on two items called SODB at once",
+    "Ranger — Ranger is on AVALON NIGHT MAIN (19:00–07:00) and also on AVALON NIGHT SPARE (19:00–07:00)",
+    "Ranger — Ranger is standing SC SPARE (SC AM 07:00–13:00) and also on SC AM MAIN (07:00–13:00)",
+    "Ranger — Appointment clashes with VL BFM — reason: dental",
+    "Ranger — Appointment but tasked — OFT 1 — reason: dental"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b2-standby-proposed-phone.png",
+   "family": "On standby and also on something else",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 3 issues",
+   "rows": [
+    "Ranger — Overlaps standby: LECTURE 09:00–10:00 & SC AM 07:00–13:00",
+    "Ranger — Overlaps standby: Meeting 09:00–10:00 & SC AM 07:00–13:00",
+    "Ranger — Busy before SC AM: MEETING 06:30–07:00 is between his 06:00 in-time and the 07:00 start"
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    2,
+    2,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b2-standby-today-phone.png",
+   "family": "On standby and also on something else",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 3 issues",
+   "rows": [
+    "Ranger — Ranger is on SC AM (07:00–13:00) and also down for LECTURE",
+    "Ranger — Ranger is on SC AM (07:00–13:00) and also down for Meeting",
+    "Ranger — Ranger reports 06:00 for SC AM — MEETING (06:30–07:00) cuts into the in-time window before the 07:00 start"
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    2,
+    2,
+    3
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b3-leave-proposed-phone.png",
+   "family": "On leave, downchit, away",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 8 issues · 8 warnings",
+   "rows": [
+    "Ranger — Downchit + planned: VL BFM (T/O 12:00). Reason: flu",
+    "Ranger — On leave + planned: VL BFM (T/O 12:00). Reason: family",
+    "Ranger — Downchit + planned: LECTURE 09:00–10:00. Reason: flu",
+    "Ranger — On leave + planned: OFT 1 10:00–11:30",
+    "Ranger — Downchit + planned: AVALON DUTY 19:00–07:00 (ATT C). Reason: flu",
+    "Ranger — Overseas + planned: AVALON DUTY 19:00–07:00",
+    "Ranger — Downchit + planned: SC SPARE on SC AM 07:00–13:00 (ATT C). Reason: flu",
+    "Ranger — On leave + planned: this duty row (no times yet)"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    2,
+    2,
+    2,
+    1,
+    2,
+    2,
+    2,
+    1
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b3-leave-today-phone.png",
+   "family": "On leave, downchit, away",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 8 issues · 8 warnings",
+   "rows": [
+    "Ranger — Downchit but planned to fly VL BFM — reason: flu",
+    "Ranger — On leave but planned to fly VL BFM — reason: family",
+    "Ranger — Downchit but tasked — LECTURE — reason: flu",
+    "Ranger — On leave but tasked — OFT 1",
+    "Ranger — ATT C but on AVALON DUTY — medically down — reason: flu",
+    "Ranger — Overseas Duty but on AVALON DUTY — overseas",
+    "Ranger — ATT C but standing SC SPARE — medically down, SC AM — reason: flu",
+    "Ranger — On leave but tasked — this duty row"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    2,
+    2,
+    1,
+    1,
+    2,
+    2,
+    2,
+    1
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b4-brief-proposed-phone.png",
+   "family": "Brief and debrief",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 6 issues",
+   "rows": [
+    "Ranger — Misses RU brief 10:40–13:00: BRIEFING 12:40–13:00",
+    "Ranger — Misses VL BFM debrief 14:30–16:30: MEETING 15:00–16:00",
+    "Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): MEETING 13:30–14:00",
+    "Ranger — Misses OFT 1 brief 09:45–10:00: SODB 09:30–09:50",
+    "Ranger — Misses OFT 1 debrief 11:30–12:00: MEETING 11:45–12:30",
+    "Ranger — Misses VL BFM brief 09:40–12:00: BRIEFING 10:00–10:30, Meeting 11:00–11:30"
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b4-brief-today-phone.png",
+   "family": "Brief and debrief",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 6 issues",
+   "rows": [
+    "Ranger — No time for the RU flight brief — BRIEFING sits inside 10:40–13:00 (brief 10:40)",
+    "Ranger — Not enough time to attend the VL BFM debrief — MEETING sits inside 14:30–16:30 (land + 2h)",
+    "Ranger — Not enough time to attend the VL BFM debrief — MEETING sits inside 12:00–14:00 (take-off + 2h, no landing typed)",
+    "Ranger — No time for the OFT 1 brief — SODB sits inside 09:45–10:00",
+    "Ranger — No time for the OFT 1 debrief — MEETING sits inside 11:30–12:00",
+    "Ranger — No time for the VL BFM flight brief — BRIEFING, Meeting sits inside 09:40–12:00 (brief 09:40)"
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    2,
+    2,
+    3,
+    2,
+    2,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b5-turns1-proposed-desktop.png",
+   "family": "Turns and rest (1 of 2)",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "1536x864 Chromium @2x",
+   "header": "⚠ 8 issues · 6 warnings",
+   "rows": [
+    "Ranger — Tight turn: VL BFM → RU, 45 min (needs 120). VL BFM landing 14:15, RU T/O 15:00",
+    "Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00",
+    "Ranger — Crew rest: Thu landed 21:30 + 2h debrief (assumed) → ended 23:30 → clear 11:30. Report 08:40: 9h10 rest, needs 12h.",
+    "Ranger — Crew rest: Thu T/O 20:30, landing assumed 21:30 (T/O + 1h) + 2h debrief (assumed) → ended 23:30 → clear 11:30. Report 08:40: 9h10 rest, needs 12h.",
+    "Ranger — Crew rest: Thu duty ended 20:00 → clear 08:00. SC AM starts 07:00: 11h rest, needs 12h.",
+    "Ranger — Crew rest: Thu duty ended 20:00 → clear 08:00. SC AM in-time 06:00: 10h rest, needs 12h.",
+    "Ranger — Crew rest: Thu duty ended 23:30 → clear 11:30. Day starts 07:00 (MEETING), before report 08:40: 7h30 rest, needs 12h.",
+    "Ranger — Crew rest: Thu duty ended 23:30 → clear 11:30. Day starts 07:00 (MEETING): 7h30 rest, needs 12h. His flight has no T/O yet."
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    2,
+    3,
+    3,
+    4,
+    2,
+    2,
+    3,
+    3
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b5-turns1-proposed-phone.png",
+   "family": "Turns and rest (1 of 2)",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 8 issues · 6 warnings",
+   "rows": [
+    "Ranger — Tight turn: VL BFM → RU, 45 min (needs 120). VL BFM landing 14:15, RU T/O 15:00",
+    "Ranger — Tight turn: VL BFM → RU, 0 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 13:00",
+    "Ranger — Crew rest: Thu landed 21:30 + 2h debrief (assumed) → ended 23:30 → clear 11:30. Report 08:40: 9h10 rest, needs 12h.",
+    "Ranger — Crew rest: Thu T/O 20:30, landing assumed 21:30 (T/O + 1h) + 2h debrief (assumed) → ended 23:30 → clear 11:30. Report 08:40: 9h10 rest, needs 12h.",
+    "Ranger — Crew rest: Thu duty ended 20:00 → clear 08:00. SC AM starts 07:00: 11h rest, needs 12h.",
+    "Ranger — Crew rest: Thu duty ended 20:00 → clear 08:00. SC AM in-time 06:00: 10h rest, needs 12h.",
+    "Ranger — Crew rest: Thu duty ended 23:30 → clear 11:30. Day starts 07:00 (MEETING), before report 08:40: 7h30 rest, needs 12h.",
+    "Ranger — Crew rest: Thu duty ended 23:30 → clear 11:30. Day starts 07:00 (MEETING): 7h30 rest, needs 12h. His flight has no T/O yet."
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    2,
+    2,
+    3,
+    3,
+    2,
+    2,
+    3,
+    3
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b5-turns1-today-desktop.png",
+   "family": "Turns and rest (1 of 2)",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "1536x864 Chromium @2x",
+   "header": "⚠ 8 issues · 6 warnings",
+   "rows": [
+    "Ranger — Tight turn VL BFM→RU: 45 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Ranger — Tight turn VL BFM→RU: 60 min take-off→next T/O, no landing typed (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Ranger — Crew rest breach — Thu landed 21:30, +2h debrief assumed → ended 23:30 → crew rest clear at 11:30, but told to report 08:40 — only 9h10 rest.",
+    "Ranger — Crew rest breach — Thu took off 20:30 with no landing typed, +2h debrief assumed → ended 22:30 → crew rest clear at 10:30, but told to report 08:40 — only 10h10 rest.",
+    "Ranger — Crew rest breach — Thu ended 20:00 → crew rest clear at 08:00, but SC AM starts 07:00 — only 11h rest.",
+    "Ranger — Crew rest breach — Thu ended 20:00 → crew rest clear at 08:00, but SC AM's in-time is 06:00 — only 10h rest.",
+    "Ranger — Crew rest breach — Thu ended 23:30 → crew rest clear at 11:30, but his day starts 07:00 (MEETING) before the 08:40 report — only 7h30 rest.",
+    "Ranger — Crew rest breach — Thu ended 23:30 → crew rest clear at 11:30, but his day starts 07:00 (MEETING), and he is on a line with no take-off yet — only 7h30 rest."
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    3,
+    3,
+    4,
+    4,
+    3,
+    3,
+    4,
+    4
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b5-turns1-today-phone.png",
+   "family": "Turns and rest (1 of 2)",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 8 issues · 6 warnings",
+   "rows": [
+    "Ranger — Tight turn VL BFM→RU: 45 min land→next T/O (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Ranger — Tight turn VL BFM→RU: 60 min take-off→next T/O, no landing typed (needs 120 min — threshold 120, dekit+step 30+60)",
+    "Ranger — Crew rest breach — Thu landed 21:30, +2h debrief assumed → ended 23:30 → crew rest clear at 11:30, but told to report 08:40 — only 9h10 rest.",
+    "Ranger — Crew rest breach — Thu took off 20:30 with no landing typed, +2h debrief assumed → ended 22:30 → crew rest clear at 10:30, but told to report 08:40 — only 10h10 rest.",
+    "Ranger — Crew rest breach — Thu ended 20:00 → crew rest clear at 08:00, but SC AM starts 07:00 — only 11h rest.",
+    "Ranger — Crew rest breach — Thu ended 20:00 → crew rest clear at 08:00, but SC AM's in-time is 06:00 — only 10h rest.",
+    "Ranger — Crew rest breach — Thu ended 23:30 → crew rest clear at 11:30, but his day starts 07:00 (MEETING) before the 08:40 report — only 7h30 rest.",
+    "Ranger — Crew rest breach — Thu ended 23:30 → crew rest clear at 11:30, but his day starts 07:00 (MEETING), and he is on a line with no take-off yet — only 7h30 rest."
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    2,
+    3,
+    3,
+    4,
+    2,
+    3,
+    3,
+    3
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b5-turns2-proposed-desktop.png",
+   "family": "Turns and rest (2 of 2)",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "1536x864 Chromium @2x",
+   "header": "⚠ 8 issues · 4 warnings",
+   "rows": [
+    "Ranger — Crew rest: Thu duty ended 02:00 → clear 14:00. Report 00:30: 1h30 before his Thu duty ends.",
+    "Ranger — Crew rest: Thu duty ended 23:30 → clear 11:30. Report 10:00: 10h30 rest, needs 12h. Late show: still makes the 12:00 step.",
+    "Ranger — Crew rest: Thu duty ended 01:30 → clear 13:30. Report 10:00: 8h30 rest, needs 12h. Late show doesn't help: the 12:00 step is before rest clears.",
+    "Ranger — Tight crew rest: the usual report (T/O 09:00 − 3h = 06:00) is before clear 09:30. Thu landed 19:30 + 2h debrief (assumed) → ended 21:30 → clear 09:30.",
+    "Ranger — Long day: 13h20 (limit 12h), 06:00 → 19:20 (last landing 17:20 + 2h debrief assumed)",
+    "Ranger — Long day: 13h20 (limit 12h), 06:00 → 19:20 (VL BFM landing assumed 17:20 + 2h debrief assumed)",
+    "Ranger — Days in a row: 8 (limit 7). A break day is due.",
+    "Ranger — 1 person is double turning: Ranger"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "adv",
+    "note",
+    "note",
+    "hard",
+    "adv"
+   ],
+   "lines": [
+    3,
+    3,
+    4,
+    4,
+    2,
+    3,
+    2,
+    1
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b5-turns2-proposed-phone.png",
+   "family": "Turns and rest (2 of 2)",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 8 issues · 4 warnings",
+   "rows": [
+    "Ranger — Crew rest: Thu duty ended 02:00 → clear 14:00. Report 00:30: 1h30 before his Thu duty ends.",
+    "Ranger — Crew rest: Thu duty ended 23:30 → clear 11:30. Report 10:00: 10h30 rest, needs 12h. Late show: still makes the 12:00 step.",
+    "Ranger — Crew rest: Thu duty ended 01:30 → clear 13:30. Report 10:00: 8h30 rest, needs 12h. Late show doesn't help: the 12:00 step is before rest clears.",
+    "Ranger — Tight crew rest: the usual report (T/O 09:00 − 3h = 06:00) is before clear 09:30. Thu landed 19:30 + 2h debrief (assumed) → ended 21:30 → clear 09:30.",
+    "Ranger — Long day: 13h20 (limit 12h), 06:00 → 19:20 (last landing 17:20 + 2h debrief assumed)",
+    "Ranger — Long day: 13h20 (limit 12h), 06:00 → 19:20 (VL BFM landing assumed 17:20 + 2h debrief assumed)",
+    "Ranger — Days in a row: 8 (limit 7). A break day is due.",
+    "Ranger — 1 person is double turning: Ranger"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "adv",
+    "note",
+    "note",
+    "hard",
+    "adv"
+   ],
+   "lines": [
+    2,
+    3,
+    3,
+    3,
+    2,
+    2,
+    1,
+    1
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b5-turns2-today-desktop.png",
+   "family": "Turns and rest (2 of 2)",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "1536x864 Chromium @2x",
+   "header": "⚠ 7 issues · 4 warnings",
+   "rows": [
+    "Ranger — Crew rest breach — Thu ended 02:00 → crew rest clear at 14:00, but told to report 00:30 — 1h30 before his Thu duty ends.",
+    "Ranger — Crew rest breach — Thu ended 23:30 → crew rest clear at 11:30, but told to report 10:00 — only 10h30 rest. Late show — he still makes the 12:00 step.",
+    "Ranger — Crew rest breach — Thu ended 01:30 → crew rest clear at 13:30, but told to report 10:00 — only 8h30 rest. Late show cannot save it — the 12:00 step is still before rest clears.",
+    "Ranger — Tight turning — T/O 09:00 puts the 3h report at 06:00, inside 12h. Thu landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30",
+    "Ranger — Ranger has a long work day: 13h20, 06:00 → 19:20 (last landing 17:20 + 2h debrief assumed)",
+    "Ranger — Ranger is on the programme 8 days in a row — 7 is the limit, so a break day is due",
+    "Ranger — 1 person is double turning: Ranger"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "adv",
+    "note",
+    "hard",
+    "adv"
+   ],
+   "lines": [
+    3,
+    4,
+    4,
+    4,
+    3,
+    2,
+    1
+   ],
+   "tooTall": false,
+   "notes": "no line today for: Long day: 13h20 (limit 12h), 06:00 → 19:20 (VL BFM landing assumed 17:20 + 2h debrief assumed)"
+  },
+  {
+   "file": "b5-turns2-today-phone.png",
+   "family": "Turns and rest (2 of 2)",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 7 issues · 4 warnings",
+   "rows": [
+    "Ranger — Crew rest breach — Thu ended 02:00 → crew rest clear at 14:00, but told to report 00:30 — 1h30 before his Thu duty ends.",
+    "Ranger — Crew rest breach — Thu ended 23:30 → crew rest clear at 11:30, but told to report 10:00 — only 10h30 rest. Late show — he still makes the 12:00 step.",
+    "Ranger — Crew rest breach — Thu ended 01:30 → crew rest clear at 13:30, but told to report 10:00 — only 8h30 rest. Late show cannot save it — the 12:00 step is still before rest clears.",
+    "Ranger — Tight turning — T/O 09:00 puts the 3h report at 06:00, inside 12h. Thu landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30",
+    "Ranger — Ranger has a long work day: 13h20, 06:00 → 19:20 (last landing 17:20 + 2h debrief assumed)",
+    "Ranger — Ranger is on the programme 8 days in a row — 7 is the limit, so a break day is due",
+    "Ranger — 1 person is double turning: Ranger"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "adv",
+    "note",
+    "hard",
+    "adv"
+   ],
+   "lines": [
+    3,
+    3,
+    4,
+    3,
+    2,
+    2,
+    1
+   ],
+   "tooTall": false,
+   "notes": "no line today for: Long day: 13h20 (limit 12h), 06:00 → 19:20 (VL BFM landing assumed 17:20 + 2h debrief assumed)"
+  },
+  {
+   "file": "b6-crew1-proposed-phone.png",
+   "family": "Who may fly with whom, and in which seat (1 of 3)",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 7 issues · 3 warnings",
+   "rows": [
+    "Viper, Jinx — Crew solo: OCU pilot Viper & OCU WSO Jinx on VL BFM (T/O 12:00). Only allowed under the Basic Course Syllabus.",
+    "Viper, Jinx — Crew not authorised: OCU pilot Viper & CAT C WSO Jinx on VL BFM (T/O 12:00). An OCU needs an instructor in the other seat.",
+    "Viper, Jinx — CO approval needed: CAT D pilot Viper & CAT C WSO Jinx on VL BFM (T/O 12:00)",
+    "Tan — Approval needed: incentive passenger in the rear seat of VL BFM (T/O 12:00)",
+    "Viper — OCU with no IP: VL BFM (T/O 12:00)",
+    "Viper — IRT with no IR examiner: VL BFM (T/O 12:00)",
+    "Viper — IRT with no IR examiner: VL BFM (T/O 12:00), IRT in an aircraft's remarks"
+   ],
+   "sev": [
+    "adv",
+    "hard",
+    "adv",
+    "adv",
+    "adv",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    3,
+    3,
+    2,
+    2,
+    1,
+    1,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b6-crew1-today-phone.png",
+   "family": "Who may fly with whom, and in which seat (1 of 3)",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 7 issues · 3 warnings",
+   "rows": [
+    "Viper, Jinx — Viper (OCU pilot) with Jinx (OCU WSO) in VL BFM — a crew solo, only allowed under the Basic Course Syllabus",
+    "Viper, Jinx — OCU pilot Viper with CAT C WSO Jinx — not an authorised combination (VL BFM)",
+    "Viper, Jinx — CAT D pilot Viper with CAT C WSO Jinx in VL BFM — CO approval required",
+    "Tan — Tan is riding the rear seat of VL BFM as an incentive passenger — this crew pairing needs approval",
+    "Viper — OCU in VL BFM with no IP",
+    "Viper — IRT in VL BFM with no IR examiner",
+    "Viper — IRT remarks on VL BFM with no IR examiner"
+   ],
+   "sev": [
+    "adv",
+    "hard",
+    "adv",
+    "adv",
+    "adv",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    3,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b6-crew2-proposed-phone.png",
+   "family": "Who may fly with whom, and in which seat (2 of 3)",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 5 issues · 5 warnings",
+   "rows": [
+    "Tan — Wrong seat: ground crew in the front seat of VL BFM (T/O 12:00)",
+    "Jinx — Wrong seat: a WSO in the front seat of VL BFM (T/O 12:00)",
+    "Jinx — Wrong seat: CAT IW (a WSO category) in the front seat of VL BFM (T/O 12:00)",
+    "Jinx — Wrong seat: a WSO in the front seat of SC AM MAIN 07:00–13:00",
+    "Jinx — Wrong seat: a WSO in the front seat of OFT 1 10:00–11:30"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b6-crew2-today-phone.png",
+   "family": "Who may fly with whom, and in which seat (2 of 3)",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 5 issues · 5 warnings",
+   "rows": [
+    "Tan — Tan is ground crew — cannot fly a front seat (VL BFM)",
+    "Jinx — Jinx is a WSO — cannot fly FCP (VL BFM)",
+    "Jinx — Jinx is CAT IW — a WSO category, cannot fly FCP (VL BFM)",
+    "Jinx — Jinx is a WSO — cannot fly FCP (SC AM MAIN)",
+    "Jinx — Jinx is a WSO — cannot take the front seat (OFT 1)"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    2,
+    1,
+    2,
+    1,
+    1
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b6-crew3-proposed-phone.png",
+   "family": "Who may fly with whom, and in which seat (3 of 3)",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 6 issues · 4 warnings",
+   "rows": [
+    "Ranger — Not SC DAY current: SC AM MAIN 07:00–13:00",
+    "Viper, Jinx — Not SC NIGHT current: SC PM 19:00–01:00",
+    "Viper — Not DAAR current: VL BFM (T/O 12:00) remarks call for it",
+    "Jinx, Viper — Jinx is not cleared to instruct DAAR. Viper is not DAAR current and VL BFM (T/O 12:00) remarks call for it.",
+    "Ranger — SANS: not offering flying today. Planned on VL BFM (T/O 12:00)",
+    "Ranger — SANS: available 08:00–12:00 only. Planned on VL BFM (T/O 13:00)"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    1,
+    1,
+    2,
+    3,
+    2,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b6-crew3-today-phone.png",
+   "family": "Who may fly with whom, and in which seat (3 of 3)",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 6 issues · 4 warnings",
+   "rows": [
+    "Ranger — SC DAY currency needed for SC AM MAIN (07:00–13:00) — Ranger is not current",
+    "Viper, Jinx — SC NIGHT currency needed for SC PM (19:00–01:00) — Viper, Jinx are not current",
+    "Viper — Viper is not DAAR current — VL BFM remarks call for day AAR",
+    "Jinx, Viper — Jinx is not cleared to instruct DAAR — Viper is not DAAR current and VL BFM remarks call for day AAR",
+    "Ranger — Ranger planned for VL BFM — not offering flying today",
+    "Ranger — Ranger planned for VL BFM — available 08:00–12:00 only"
+   ],
+   "sev": [
+    "hard",
+    "hard",
+    "hard",
+    "hard",
+    "adv",
+    "adv"
+   ],
+   "lines": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b7-oil1-proposed-phone.png",
+   "family": "A line's own times, and OIL (1 of 2)",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 6 issues · 1 warning",
+   "rows": [
+    "Times look wrong: VL BFM T/O and landing are both 12:00. The day still earns OIL from the report and debrief.",
+    "Times look wrong: SC AM MAIN T/O and landing are both 09:00. The shift still earns OIL from its R or B.",
+    "Times look wrong: SC PM MAIN T/O and landing are both 19:00. A shift with no length earns nobody any OIL until it is fixed.",
+    "Times look wrong: RU T/O and landing are both 13:00. With no report before it and no debrief after it, the line earns nobody any OIL until it is fixed.",
+    "SC AM MAIN flies but has no END. Type it so its crew rest and OIL can be worked out.",
+    "SC AM has no usable times, so nobody on it earns OIL for this day"
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "hard"
+   ],
+   "lines": [
+    2,
+    2,
+    3,
+    3,
+    2,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b7-oil1-today-phone.png",
+   "family": "A line's own times, and OIL (1 of 2)",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 6 issues · 1 warning",
+   "rows": [
+    "VL BFM takes off and lands at the same time (12:00) — one of the two is wrong; the day still earns from the report and debrief",
+    "SC AM MAIN takes off and lands at the same time (09:00) — one of the two is wrong; the shift still earns from its R or B",
+    "SC PM MAIN takes off and lands at the same time (19:00) — one of the two is wrong; a shift with no length earns nobody any OIL until it is fixed",
+    "RU takes off and lands at the same time (13:00) — one of the two is wrong; with no report before it and no debrief after it, the line earns nobody any OIL until it is fixed",
+    "SC AM MAIN flies but has no END — type it so its crew rest and OIL can be worked out",
+    "SC AM has no usable times — nobody on it earns OIL for this day"
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "hard"
+   ],
+   "lines": [
+    3,
+    3,
+    3,
+    3,
+    2,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b7-oil2-proposed-phone.png",
+   "family": "A line's own times, and OIL (2 of 2)",
+   "state": "proposed",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 7 issues · 2 warnings",
+   "rows": [
+    "No Leave War period for Jul 26, so no OIL can be earned for this day. Create the period on the Leave War.",
+    "Not published yet, so nobody earns OIL for this day. Publish it before the day is out.",
+    "This day was published before the app counted who is behind an ALL AVAIL puck on a duty desk, a sim or an extras line. Publish it again to credit them.",
+    "Publish this day again so OIL is earned. The PH was set after the day was published.",
+    "Publish this day again to withdraw the OIL. The PH was removed after the day was published.",
+    "RU: RALLY 09:00 is later than BRIEF 08:40.",
+    "RU: reporting line 2 has no recognised clock. Check the time."
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    2,
+    2,
+    3,
+    2,
+    2,
+    1,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "b7-oil2-today-phone.png",
+   "family": "A line's own times, and OIL (2 of 2)",
+   "state": "today",
+   "kind": "drawn (cloned real rows of Monday's list; words = the proposal's example values)",
+   "size": "402x874 WebKit @3x",
+   "header": "▾ ⚠ 7 issues · 2 warnings",
+   "rows": [
+    "There is no leave war period for Jul 26, so no OIL can be earned for this day — create the period on the Leave War",
+    "This day is not published yet, so nobody earns their OIL for it — publish it before the day is out",
+    "This day was published before the app counted who is behind an ALL AVAIL puck on a duty desk, a sim or an extras line — publish it again to credit them",
+    "Publish this day again so OIL is earned. The PH was set after the day was published.",
+    "Publish this day again to withdraw the OIL. The PH was removed after the day was published.",
+    "RU: RALLY 09:00 is later than BRIEF 08:40.",
+    "RU: reporting line 2 has no recognised clock. Check the time."
+   ],
+   "sev": [
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "adv",
+    "hard",
+    "hard"
+   ],
+   "lines": [
+    2,
+    2,
+    3,
+    2,
+    2,
+    1,
+    2
+   ],
+   "tooTall": false,
+   "notes": ""
+  },
+  {
+   "file": "c-logic-proposed-desktop.png",
+   "family": "The Logic page's note under the changed-settings strip",
+   "state": "proposed",
+   "kind": "drawn on the real strip (only the sentence after the bold count changed; cold-read correction \"shows as pending\" applied)",
+   "size": "1536x864 Chromium @2x",
+   "rows": [
+    "2 settings changed from the squadron standard. Published days keep their old settings until published again."
+   ]
+  },
+  {
+   "file": "c-logic-proposed-phone.png",
+   "family": "The Logic page's note under the changed-settings strip",
+   "state": "proposed",
+   "kind": "drawn on the real strip (only the sentence after the bold count changed; cold-read correction \"shows as pending\" applied)",
+   "size": "402x874 WebKit @3x",
+   "rows": [
+    "2 settings changed from the squadron standard. Published days keep their old settings until published again."
+   ]
+  },
+  {
+   "file": "c-logic-today-desktop.png",
+   "family": "The Logic page's note under the changed-settings strip",
+   "state": "today",
+   "kind": "real (Default rally 3h→2h50 and Debrief after landing changed on the Logic page)",
+   "size": "1536x864 Chromium @2x",
+   "rows": [
+    "2 settings changed from the squadron standard. The schedule is checked against them now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending."
+   ]
+  },
+  {
+   "file": "c-logic-today-phone.png",
+   "family": "The Logic page's note under the changed-settings strip",
+   "state": "today",
+   "kind": "real (Default rally 3h→2h50 and Debrief after landing changed on the Logic page)",
+   "size": "402x874 WebKit @3x",
+   "rows": [
+    "2 settings changed from the squadron standard. The schedule is checked against them now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending."
+   ]
+  },
+  {
+   "file": "d-pending-proposed-desktop.png",
+   "family": "The pending list (a Logic change makes a published day pending through its OIL)",
+   "state": "proposed",
+   "kind": "drawn: one plain line added inside the real \"Ranger · OIL as published…\" row, under its change line, in the row title's colour",
+   "size": "1536x864 Chromium @2x",
+   "rows": [
+    "Waiting to go out as AL1 · 1 change",
+    "OIL on this day · Logic values changed since it was published",
+    "Logic · Default rally before T/O 3h → 2h50",
+    "Ranger · OIL as published, under today's values full day · 05:00–18:00 → full day · 05:10–18:00 Still a full day of OIL. It counts from 05:10, not 05:00."
+   ],
+   "notes": "redraw 2: the added third row removed; the line is \"Still a full day of OIL. It counts from 05:10, not 05:00.\" (the staged day: Ranger's 08:00–16:00 flight, its real figures 05:00→05:10)"
+  },
+  {
+   "file": "d-pending-proposed-phone.png",
+   "family": "The pending list (a Logic change makes a published day pending through its OIL)",
+   "state": "proposed",
+   "kind": "drawn: one plain line added inside the real \"Ranger · OIL as published…\" row, under its change line, in the row title's colour",
+   "size": "402x874 WebKit @3x",
+   "rows": [
+    "Waiting to go out as AL1 · 1 change",
+    "OIL on this day · Logic values changed since it was published",
+    "Logic · Default rally before T/O 3h → 2h50",
+    "Ranger · OIL as published, under today's values full day · 05:00–18:00 → full day · 05:10–18:00 Still a full day of OIL. It counts from 05:10, not 05:00."
+   ],
+   "notes": "redraw 2: the added third row removed; the line is \"Still a full day of OIL. It counts from 05:10, not 05:00.\" (the staged day: Ranger's 08:00–16:00 flight, its real figures 05:00→05:10)"
+  },
+  {
+   "file": "d-pending-today-desktop.png",
+   "family": "The pending list (a Logic change makes a published day pending through its OIL)",
+   "state": "today",
+   "kind": "real (Saturday published, then Default rally 3h→2h50)",
+   "size": "1536x864 Chromium @2x",
+   "rows": [
+    "Waiting to go out as AL1 · 1 change",
+    "OIL on this day · Logic values changed since it was published",
+    "Logic · Default rally before T/O 3h → 2h50",
+    "Ranger · OIL as published, under today's values full day · 05:00–18:00 → full day · 05:10–18:00"
+   ]
+  },
+  {
+   "file": "d-pending-today-phone.png",
+   "family": "The pending list (a Logic change makes a published day pending through its OIL)",
+   "state": "today",
+   "kind": "real (Saturday published, then Default rally 3h→2h50)",
+   "size": "402x874 WebKit @3x",
+   "rows": [
+    "Waiting to go out as AL1 · 1 change",
+    "OIL on this day · Logic values changed since it was published",
+    "Logic · Default rally before T/O 3h → 2h50",
+    "Ranger · OIL as published, under today's values full day · 05:00–18:00 → full day · 05:10–18:00"
+   ]
+  },
+  {
+   "file": "e-names-proposed-phone.png",
+   "family": "E — the checks' short names",
+   "state": "proposed",
+   "kind": "drawn on the same real list: only the names in the redraw-3 table changed; counts and order untouched",
+   "size": "402x874 WebKit @3x",
+   "rows": [
+    "Clash · 6",
+    "Misses flight brief · 5",
+    "Long day · 5",
+    "Downchit + planned · 2",
+    "Clash with a request · 2",
+    "Double turning · 2",
+    "Tight turn · 2",
+    "CO approval needed · 2",
+    "Misses flight debrief · 2",
+    "OIL waiting — this day is not published · 2",
+    "Misses sim brief · 1",
+    "Misses sim debrief · 1",
+    "Crew solo — only allowed under syllabus · 1",
+    "Crew rest (<12h) · 1",
+    "On leave + planned · 1",
+    "Crew not authorised · 1"
+   ],
+   "notes": "changed: Conflict — two events at once | No time for the flight brief | Long work day | Personal input clash | Crew combination — CO approval required | No time for the flight debrief | No time for the sim brief | No time for the sim debrief | Illegal aircrew combination; not in the table, left as they are: Downchit + planned | Double turning | Tight turn | OIL waiting — this day is not published | Crew solo — only allowed under syllabus | Crew rest (<12h) | On leave + planned"
+  },
+  {
+   "file": "e-names-today-phone.png",
+   "family": "E — the checks' short names",
+   "state": "today",
+   "kind": "real: Insights → Conflicts by type, the seeded week",
+   "size": "402x874 WebKit @3x",
+   "rows": [
+    "Conflict — two events at once · 6",
+    "No time for the flight brief · 5",
+    "Long work day · 5",
+    "Downchit + planned · 2",
+    "Personal input clash · 2",
+    "Double turning · 2",
+    "Tight turn · 2",
+    "Crew combination — CO approval required · 2",
+    "No time for the flight debrief · 2",
+    "OIL waiting — this day is not published · 2",
+    "No time for the sim brief · 1",
+    "No time for the sim debrief · 1",
+    "Crew solo — only allowed under syllabus · 1",
+    "Crew rest (<12h) · 1",
+    "On leave + planned · 1",
+    "Illegal aircrew combination · 1"
+   ]
+  }
+ ]
+}

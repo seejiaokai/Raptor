@@ -54,6 +54,11 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
      owner's next ruling: night AAR is the wave's nightness (or an explicit
      NAAR), never a landing-time line — don't reintroduce a clock for it. */
   simLen:90,        // a sim row with no end time is assumed to run this long
+  /* A FLIGHT WITH NO LANDING TYPED (blank or "TBD") IS ASSUMED TO LAND THIS LONG AFTER TAKE-OFF (owner D2046, D2047,
+     15 Nov 26 — "Default u can put 60 minutes"). Every check that reads a flying line's landing reads this assumed one
+     (events.ts ldM, avail.ts, oil.ts fltOilWin) and says so in its words. Not the reference's `dur` (85, "unused"): a
+     setting of its own, so the reference's value and parity are untouched. */
+  fltLen:60,
   /* WEEKEND / PUBLIC-HOLIDAY WORK EARNS OIL (owner, 16-17 Aug 26; the ONE
      uniform rule since 28 Aug 26 — Leave War sync wire 4). Work stood on a
      non-working day credits OIL in Leave War by hours alone, measured
@@ -154,6 +159,7 @@ export const RULE_SPEC:any={
   scDayFrom: {t:'SC day window opens',       u:'time',lo:0,  hi:1439},
   scDayTo:   {t:'SC day window closes',      u:'time',lo:0,  hi:1439},
   simLen:    {t:'Assumed sim length, no end time',u:'min',lo:15,hi:480},
+  fltLen:    {t:'A flight with no landing typed',u:'min',lo:15,hi:480},   // D2046, D2047
   oilFullMin:{t:'Full-day OIL threshold (worked mins)',u:'min',lo:60, hi:720},
   maxRun:    {t:'Max days worked in a row',  u:'days',lo:1,  hi:14},
   inputLead: {t:'Member input deadline before the week',u:'days',lo:0,hi:60},

@@ -372,8 +372,10 @@ describe('the validator gate on personal inputs', () => {
    SC shift, where the accepted row's soft SHIFT_SOFT advisory is the designed
    voice — leave, downchits and detachments still hard-flag a shift. */
 describe('inputs clash with every kind of tasking', () => {
+  /* a clash with a row that is not a flight: since [WARN-WORDS-STANDALONE] every input clash reads "Conflict: …", and
+     only a flight is named by its T/O ("VL BFM (T/O 12:00)") — the old words said "but tasked" for these */
   const tasked = (id: string, code: string) => validate().all
-    .filter((x: any) => x.code === code && / but tasked /.test(x.msg) && (x.who || []).indexOf(id) >= 0)
+    .filter((x: any) => x.code === code && /^Conflict: /.test(x.msg) && !/T\/O/.test(x.msg) && (x.who || []).indexOf(id) >= 0)
 
   it('a Detachment bars a duty post and a ground row, not only flying', () => {
     /* pike is on detachment Jul 15–17 and flies only on Monday */
@@ -404,13 +406,13 @@ describe('inputs clash with every kind of tasking', () => {
     DAYS[0].waves.push(sc0)
     acceptInput(0, findInp('Meeting')!, 'u')
     expect(validate().all.filter((x: any) =>
-      /Meeting but tasked — SC AM/.test(x.msg)).length).toBe(0)
+      /^Conflict: SC AM \S+ & Meeting /.test(x.msg)).length).toBe(0)
     /* pike's overseas duty closes the day outright — an SC shift included */
     const sc2: any = makeStandalone('sc')!
     sc2.formations[0].aircraft[0].p = 'pike'
     DAYS[2].waves.push(sc2)
     expect(validate().all.filter((x: any) =>
-      /OD but tasked — SC AM/.test(x.msg)).length).toBe(1)
+      /^Conflict: SC AM \S+ & OD \(all day\)/.test(x.msg)).length).toBe(1)
   })
 
   /* ATT B is the one type that comes apart along this axis (owner, 10 Aug 26):
@@ -427,12 +429,12 @@ describe('inputs clash with every kind of tasking', () => {
     /* in a jet: still a hard warning, and it names the reason */
     const fly = mine('DNIF_FLY')
     expect(fly.length).toBeGreaterThan(0)
-    expect(fly.some((x: any) => /planned to fly/.test(x.msg))).toBe(true)
+    expect(fly.some((x: any) => /^Downchit \+ planned: .*\(T\/O /.test(x.msg))).toBe(true)
     /* at a desk: silent. Put him on a duty post, a ground row and a sim seat
        and none of the three may raise an input clash against him. */
     d.dutywaves[0].rows[0].id = id
     d.ground.push({ prog: 'ADMIN', who: id, str: '0900', end: '1000' })
-    expect(mine('DNIF_FLY').filter((x: any) => /but tasked/.test(x.msg)).length).toBe(0)
+    expect(mine('DNIF_FLY').filter((x: any) => /^Downchit \+ planned: /.test(x.msg) && !/T\/O/.test(x.msg)).length).toBe(0)
     expect(mine('LEAVE_FLY').length + mine('INPUT_FLY').length).toBe(0)
   })
 
@@ -444,7 +446,7 @@ describe('inputs clash with every kind of tasking', () => {
     INPUTS.push({ person: id, date: d.dt, allday: true, type: 'ATT C', remarks: 'down', mod: '' })
     d.dutywaves[0].rows[0].id = id
     expect(validate().all.filter((x: any) => x.code === 'DNIF_FLY'
-      && (x.who || []).indexOf(id) >= 0 && /but tasked/.test(x.msg)).length).toBeGreaterThan(0)
+      && (x.who || []).indexOf(id) >= 0 && /^Downchit \+ planned: /.test(x.msg) && !/T\/O/.test(x.msg)).length).toBeGreaterThan(0)
   })
 })
 
