@@ -1128,7 +1128,7 @@
    "kind": "drawn on the real strip (only the sentence after the bold count changed; cold-read correction \"shows as pending\" applied)",
    "size": "1536x864 Chromium @2x",
    "rows": [
-    "2 settings changed from the squadron standard. They are in use now. A published day does not change until you publish it again: it keeps its old settings and its OIL. If the new Default rally, Debrief after landing or Full day of OIL would change a published day's OIL, that day shows as pending."
+    "2 settings changed from the squadron standard. Published days keep their old settings until published again."
    ]
   },
   {
@@ -1138,7 +1138,7 @@
    "kind": "drawn on the real strip (only the sentence after the bold count changed; cold-read correction \"shows as pending\" applied)",
    "size": "402x874 WebKit @3x",
    "rows": [
-    "2 settings changed from the squadron standard. They are in use now. A published day does not change until you publish it again: it keeps its old settings and its OIL. If the new Default rally, Debrief after landing or Full day of OIL would change a published day's OIL, that day shows as pending."
+    "2 settings changed from the squadron standard. Published days keep their old settings until published again."
    ]
   },
   {

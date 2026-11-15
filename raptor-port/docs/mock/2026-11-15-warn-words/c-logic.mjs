@@ -12,7 +12,8 @@ X.say(P, 'set', await X.setKey(w, 'debrief', '1h30'))
 if (w.phone) { await X.reload(w) }
 await X.go(page, 'logic'); await X.sleep(500)
 const TODAY = "2 settings changed from the squadron standard. The schedule is checked against them now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again. If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending."
-const PROPOSED_TAIL = " They are in use now. A published day does not change until you publish it again: it keeps its old settings and its OIL. If the new Default rally, Debrief after landing or Full day of OIL would change a published day's OIL, that day shows as pending."
+/* D2067 (15 Nov 26): "why are there so many text explaning" — cut to one sentence; the four-sentence version it replaced is in git */
+const PROPOSED_TAIL = " Published days keep their old settings until published again."
 const read = () => page.evaluate(() => (document.querySelector('#lgOff')?.innerText || '').replace(/\s+/g, ' ').trim())
 async function shot(file) {
   await X.neutral(w)

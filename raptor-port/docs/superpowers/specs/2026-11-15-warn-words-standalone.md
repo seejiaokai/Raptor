@@ -383,3 +383,12 @@ does, in place of "SC SPARE (SC AM …)". The SC SPARE clash is raised only agai
 SC desk in the same hours (his rule of 31 Aug and 7 Sep 26); the AVALON and BB one only against another AVALON or BB
 place. Build note: an "<input> + planned: AVALON / BB desk" line with "but tasked" words arises only once that wave
 flies (D1997); the standing-by case uses the "but on … — medically down / overseas" words.
+
+## 3f. The Logic note cut to one sentence (D2067, 15 Nov 26) — "why are there so many text explaning"
+
+§5's four-sentence note is withdrawn. Proposed now, after the bold count: **"Published days keep their old settings
+until published again."** Dropped, put to him: "They are in use now" (the page shows the new values) and the sentence on
+a published day showing as pending when an OIL setting would change its OIL — the day itself shows pending and its
+pending list says what moved (D2054). If he wants the OIL fact kept, it goes under a "How it works" fold, not in the
+strip. The picture's two changed settings were its own example (Default rally 3h → 2h50, Debrief after landing 2h → 1h30),
+changed only so the strip would show. Pictures: `c-logic-proposed-phone.png`, `-desktop.png`.
