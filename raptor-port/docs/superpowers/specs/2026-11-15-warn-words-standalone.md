@@ -222,3 +222,41 @@ first.)
 - Ranger's Friday is staged by `raptor-port/scripts/handpass/rcb2/rcb2-w3-r1.mjs` (chat 81's walk); the picture of
   today is `raptor-port/docs/img/handpass/2026-11-14-rules-check-batch2/w3/r1-p1/r1-b-turn-blank-board-p.png`.
 - The writing guide's cold read (§1a test 9) of every new wording by a fresh reader: NOT YET DONE.
+
+## 3a. Changed after the cold read (15 Nov 26) — each line here REPLACES the proposed line it names in sections 2–5
+
+A fresh reader read the 69 proposed lines alone (26 clear, 35 clear with a small point, 11 unclear — most of the 11
+were table fragments, not wordings). What changed, old proposed → new proposed:
+
+| Was proposed | Now proposed | Why |
+|---|---|---|
+| On standby: SC AM 07:00–13:00 & LECTURE 09:00–10:00 | Overlaps standby: LECTURE 09:00–10:00 & SC AM 07:00–13:00 | the label did not say what was wrong |
+| On standby: SC AM 07:00–13:00 & Meeting 09:00–10:00 | Overlaps standby: Meeting 09:00–10:00 & SC AM 07:00–13:00 | the same |
+| Misses SC AM in-time 06:00–07:00: MEETING 06:30–07:00 | Busy before SC AM: MEETING 06:30–07:00 is between his 06:00 in-time and the 07:00 start | "in-time" is a time, not a window |
+| Clash: two seats on VL BFM (T/O 12:00) | Clash: in two seats on VL BFM (T/O 12:00) at once | "two seats" could be read two ways |
+| Clash: two items called SODB, 07:45–08:00 & 07:50–08:10 | Clash: two items both called SODB, 07:45–08:00 & 07:50–08:10 | the name is not the problem, the overlap is |
+| Clash: AVALON duty 07:00–15:00 & Appointment 12:30–13:30. Reason: dental | Clash: AVALON DUTY 07:00–15:00 & Appointment 12:30–13:30. Reason: dental | one spelling of the desk |
+| Downchit + planned: AVALON duty 07:00–15:00. Reason: flu | Downchit + planned: AVALON DUTY 07:00–15:00. Reason: flu | the same |
+| Downchit + planned: AVALON DUTY 07:00–15:00 (ATT C, medically down). Reason: flu | Downchit + planned: AVALON DUTY 07:00–15:00 (ATT C). Reason: flu | "medically down" repeated "Downchit" |
+| Overseas + planned: AVALON DUTY 07:00–15:00 (Overseas Duty) | Overseas + planned: AVALON DUTY 07:00–15:00 | the bracket repeated the label |
+| Downchit + planned: SC SPARE on SC AM 07:00–13:00 (ATT C, medically down). Reason: flu | Downchit + planned: SC SPARE on SC AM 07:00–13:00 (ATT C). Reason: flu | as above |
+| Misses VL BFM debrief 14:30–16:30 (landing + 2h): MEETING 15:00–16:00 | Misses VL BFM debrief 14:30–16:30: MEETING 15:00–16:00 | the bracket is kept for "(landing assumed)" only |
+| Crew rest: Thu ended 20:00 → clear 08:00. SC AM starts 07:00: 11h rest, needs 12h. | Crew rest: Thu duty ended 20:00 → clear 08:00. SC AM starts 07:00: 11h rest, needs 12h. | "ended" did not say what ended |
+| …Day starts 07:00 (MEETING); his line has no T/O yet: 7h30 rest, needs 12h. | …Day starts 07:00 (MEETING): 7h30 rest, needs 12h. His flight has no T/O yet. | the colon tied the rest to the missing T/O |
+| …: starts 1h30 before his Thu duty ends. | …Report 22:30: 1h30 before his Thu duty ends. | no subject |
+| … Late show can't fix it: the 12:00 step is before rest clears. | … Late show doesn't help: the 12:00 step is before rest clears. | "it" was unnamed |
+| IRT with no IR examiner: VL BFM (T/O 12:00), from the aircraft's remarks | IRT with no IR examiner: VL BFM (T/O 12:00), IRT in an aircraft's remarks | unclear what came from the remarks |
+| Wrong seat: a WSO in FCP on VL BFM (T/O 12:00) | Wrong seat: a WSO in the front seat of VL BFM (T/O 12:00) | one name for the seat |
+| Wrong seat: CAT IW (a WSO category) in FCP on VL BFM (T/O 12:00) | Wrong seat: CAT IW (a WSO category) in the front seat of VL BFM (T/O 12:00) | the same |
+| …in FCP on SC AM MAIN 07:00–13:00 / SC AM SPARE 07:00–13:00 | …in the front seat of SC AM MAIN 07:00–13:00 / SC AM SPARE 07:00–13:00 | the same |
+| Not DAAR current: VL BFM (T/O 12:00) remarks call for day AAR | Not DAAR current: VL BFM (T/O 12:00) remarks call for it | DAAR and "day AAR" side by side |
+| Jinx can't instruct DAAR: Viper is not DAAR current, and VL BFM (T/O 12:00) remarks call for day AAR | Jinx is not cleared to instruct DAAR. Viper is not DAAR current and VL BFM (T/O 12:00) remarks call for it. | the colon made Viper's currency the reason Jinx can't instruct |
+| *(pending list)* RU crew: start 10:00 → 10:30 (Default rally changed). Still a full day of OIL. | RU crew: OIL counts from 10:30, not 10:00 (Default rally changed). Still a full day of OIL. | "start" of what? |
+| *(pending list)* RU crew: start 10:00 → 13:30 (Default rally changed). OIL: full day → half day. | RU crew: OIL counts from 13:30, not 10:00 (Default rally changed). OIL: full day → half day. | the same |
+| *(Logic note)* …that day reads pending. | …that day shows as pending. | "reads pending" read oddly |
+
+**Considered and left, with the reader's point:** "needs 120" with no unit (his liked line); the crew-rest line's
+arrows and its order, answer last (his own order of 22 Aug 26 — question 4); "Crew solo", "Late show", "END", "R or
+B", "ATT C" (the squadron's and the app's own words); the same case showing as both "Clash" and "Misses … brief"
+(two checks raise it today, as on Ranger's Friday); "Approval needed" naming nobody (today's line names nobody
+either); "assumed" twice in the long-day bracket (two assumed times); the OIL lines with no action (today's have none).
