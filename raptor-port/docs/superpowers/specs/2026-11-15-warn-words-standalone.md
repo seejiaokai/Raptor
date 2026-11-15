@@ -339,3 +339,12 @@ the step, since that is where it starts), an assumed landing with a dekit ("land
 a clash between two flights (T/O and landing of both, as drawn), and the same shape for a request against a flight.
 **Not drawn yet:** the page's clash rows and Ranger's Friday row 2 still show T/O and landing — redraw
 (`b-families.mjs`, `a-friday.mjs` in the mock folder) and republish the page before the build.
+
+## 3d. Step to dekit is the man's busy time (D2059, 15 Nov 26) — what is built, and two points open with him
+
+His rule: from step to dekit a man on a flight can have nothing else, and a clash shows. Built so for a ground or
+programme item, a sim, a duty post and a request (the red clash, compared with take-off less the Logic step to landing
+plus the Logic dekit). Told to him as different, awaiting his word:
+1. Two flights whose step and dekit overlap, air times apart: the amber tight turn, not a red clash.
+2. A standby line that flies: compared on its START to END, no step or dekit added.
+(A blank landing counting as the take-off is D2046's fix, already in this item.)
