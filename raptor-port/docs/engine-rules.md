@@ -429,6 +429,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   plain `ended HH:MM`. The tail is a port-authored string parity compares, so
   `refwin.ts:rebrief()` tracks the same landing and prints the identical
   branch on the reference; pinned in `crewrest-ui.test.ts`.
+  **NARROWED 15 Nov 26 by D2046 (not built — `[WARN-WORDS-STANDALONE]`):** a blank or "TBD" landing is to be
+  assumed at the take-off plus a new Logic flight length (starting at 1 hour), not at the take-off itself, and every
+  check that reads the landing is to use it, its words "assumed it landed 13:00 (take-off + 1h)"; until built, the
+  paragraph above describes the app as it is.
   **The tight-turning advisory (`CREW_TIGHT`) reuses that same tail**, so it
   states the debrief assumption for free alongside the "3h report / inside 12h"
   it already named.
@@ -4757,7 +4761,9 @@ long-day note).
   no clock are nothing entered; a default rally before midnight is the evening before). An entered time later than the
   default still starts the day where it says — never a min() of the two. A sortie with no take-off or no landing typed
   is unfinished — its event's report is NaN, so `workSpan`'s own guard counts it nowhere, as OIL counts it nothing (until
-  then a blank landing borrowed the take-off and stretched the day); and `workSpan` skips a sortie that measures nothing
+  then a blank landing borrowed the take-off and stretched the day; D2046, 15 Nov 26, not built, assumes such a landing
+  at the take-off plus a Logic flight length — whether the long day and Insights then count it, against D1936's
+  "counts no hours … kept", is a question for him in `[WARN-WORDS-STANDALONE]`); and `workSpan` skips a sortie that measures nothing
   (both leads zero, take-off equal to landing), as OIL does (Astra's and Sol 6.1's reads, 8 Nov 26).
 - **What does not move:** `day.fly` keeps report-or-step, so the SANS checks' window (`min(report, step)`) and the
   availability window (step to dekit, D36) are as before; crew rest reads `intime` and the brief (the tight advisory
