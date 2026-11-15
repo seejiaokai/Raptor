@@ -353,3 +353,26 @@ plus the Logic dekit). Told to him as different; both stay as built on his word 
 refuels fast and takes off again (D2060). Point 2 stays as built: a standby line is not affected, no step or dekit added;
 its crew may do other things on standby and has an hour from activation to fly, which the app does not need to know
 (D2061). Nothing to build for either.
+
+## 3e. Six example rows corrected (15 Nov 26) — he asked "why would this clash?"
+
+Three rows of the clash picture and three of the leave picture showed cases the app never raises, or raises only once
+an AVALON flies: an SC SPARE, an AVALON or a BB crew that only stands by is compared with nothing else on the day,
+except another place of its own kind in the same hours, and a man who is overseas or medically down. The words of the
+proposal are unchanged but one; only the examples are. Where a row above (§3, §3a) still shows the old example, this
+table wins.
+
+| Was (cannot happen as shown) | Today, a real case | Proposed |
+|---|---|---|
+| Clash: AVALON DUTY 07:00–15:00 & OFT 1 10:00–11:30 | Ranger is on AVALON NIGHT MAIN (19:00–07:00) and also on AVALON NIGHT SPARE (19:00–07:00) | Clash: AVALON NIGHT MAIN 19:00–07:00 & AVALON NIGHT SPARE 19:00–07:00 |
+| Clash: SC SPARE (SC AM 07:00–13:00) & OFT 1 10:00–11:30 | Ranger is standing SC SPARE (SC AM 07:00–13:00) and also on SC AM MAIN (07:00–13:00) | Clash: SC AM SPARE 07:00–13:00 & SC AM MAIN 07:00–13:00 |
+| Clash: AVALON DUTY 07:00–15:00 & Appointment 12:30–13:30. Reason: dental | Appointment but tasked — OFT 1 — reason: dental | Clash: OFT 1 10:00–11:30 & Appointment 10:30–11:30. Reason: dental |
+| Downchit + planned: AVALON DUTY 07:00–15:00. Reason: flu | Downchit but tasked — LECTURE — reason: flu | Downchit + planned: LECTURE 09:00–10:00. Reason: flu |
+| Downchit + planned: AVALON DUTY 07:00–15:00 (ATT C). Reason: flu | ATT C but on AVALON DUTY — medically down — reason: flu | Downchit + planned: AVALON DUTY 19:00–07:00 (ATT C). Reason: flu |
+| Overseas + planned: AVALON DUTY 07:00–15:00 | Overseas Duty but on AVALON DUTY — overseas | Overseas + planned: AVALON DUTY 19:00–07:00 |
+
+The one word change: the SC line names both places the same way, "SC AM SPARE … & SC AM MAIN …", as the AVALON line
+does, in place of "SC SPARE (SC AM …)". The SC SPARE clash is raised only against another SC seat (MAIN or SPARE) or the
+SC desk in the same hours (his rule of 31 Aug and 7 Sep 26); the AVALON and BB one only against another AVALON or BB
+place. Build note: an "<input> + planned: AVALON / BB desk" line with "but tasked" words arises only once that wave
+flies (D1997); the standing-by case uses the "but on … — medically down / overseas" words.

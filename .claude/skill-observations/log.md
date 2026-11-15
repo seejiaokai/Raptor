@@ -2628,3 +2628,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The reader's input was cut from the proposal's tables by a script. Cells that held a variant ("… / …"), a continuation ("…Day starts 07:00") or a placeholder ("landing …") went in as if they were whole lines. Most of the 11 "unclear" verdicts were about those fragments, not about a wording, and each had to be sorted by hand from the real findings.
 **Suggested improvement:** In the cold read's step: every line given to the reader is a whole line exactly as a person would see it, with a real example in each slot; the host reads the input list itself once before sending it and removes or completes any fragment.
 **Principle:** A blind reader judges what it is given: an input that is not what the end reader will see produces findings about the input, and costs a sorting pass.
+
+### Observation 953: Example rows for a reworded warning showed cases the app never raises
+
+**Status:** OPEN
+**Date:** 15 Nov 26
+**Session context:** rewording every warning, shown to the owner as before-and-after pictures on the real warning list
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** choosing the example values drawn into a mock-up row
+
+**Issue:** The "today" rows were the app's sentence templates filled with example values. Three clash rows and three absence rows paired a standby place with an item the check never compares it with, so the owner asked "why would this clash?" of a case that cannot happen. A cold read of the words passed them, because it judged clarity, not whether the case exists.
+**Suggested improvement:** In the mock-up guide, a row that stands for a rule's output is either staged in the running app and read back, or its example is checked against the condition of the check that writes it (what the two sides may be), before it is drawn; the brief to a cold reader says the examples were checked that way.
+**Principle:** An example in a design proposal is a claim about behaviour; fill a template only with values the rule can actually produce.
