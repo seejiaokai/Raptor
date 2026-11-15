@@ -696,7 +696,7 @@ Enable, then Push protection: Enable; it refuses a push carrying a known provide
 the check above cannot (it sees the key only once pushed). Recommended: both.
 
 ### [WARN-WORDS-STANDALONE] Every warning reads on its own (D2045, 15 Nov 26, chat 81)
-His words, at the morning page's Q2 picture (Ranger's Friday, five warnings): "So I look at it without looking at my schedule I understand what happened." Each warning names who, which items, their times and why it is a problem, in plain words.
+His words, at the morning page's Q2 picture (Ranger's Friday, five warnings): "So I look at it without looking at my schedule I understand what happened." Each warning names who, which items, their times and why it is a problem, in plain words; a time the app supplies because none was typed is called "assumed" (his word: "Sorry using the word assumed").
 1. **First:** the new words for each warning on the list drawn — before and after, on a picture of the real warning list — and put to him (D1625). The first proposal, for the five on Ranger's Friday, is in chat 81's closing message and its block (`HANDOFF.md`, the night's main block on `claude/rules-check-batch2`).
 2. **Then:** built where the engine writes them (`raptor-port/src/engine/validate.ts`, the warning lines; its message tests), the rules unchanged; check first whether the original app's 728 tests read any of these words.
 3. **Check:** a WALK of the warning list on a phone and a desktop, each warning read beside the day it is about.
