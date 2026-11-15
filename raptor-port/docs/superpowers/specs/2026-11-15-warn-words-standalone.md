@@ -3,6 +3,7 @@
 **Status (15 Nov 26, chat 82): a DRAFT for his look. Nothing is built. No wording here is approved until he says so.**
 Written by Fable on his call (D2049). To go to him as a page of before-and-after pictures of the real warning list
 (D1625, D2057); the engine changes of the item (D2046, D2053, D2055) wait for his approval of the words (D2057).
+**Read sections 3a and 3b with it: each replaces the lines it names** (the cold read's changes; what the pictures showed).
 
 ## 1. What the list already gives, and the shape every line takes
 
@@ -221,7 +222,8 @@ first.)
 - The brief / debrief lines need each hit's own times (today only its name is gathered).
 - Ranger's Friday is staged by `raptor-port/scripts/handpass/rcb2/rcb2-w3-r1.mjs` (chat 81's walk); the picture of
   today is `raptor-port/docs/img/handpass/2026-11-14-rules-check-batch2/w3/r1-p1/r1-b-turn-blank-board-p.png`.
-- The writing guide's cold read (§1a test 9) of every new wording by a fresh reader: NOT YET DONE.
+- The writing guide's cold read (§1a test 9) of every new wording by a fresh reader: done 15 Nov 26 — section 3a,
+  the reader's result in `raptor-port/docs/superpowers/briefs/2026-11-15-warn-words-cold-read.md`.
 
 ## 3a. Changed after the cold read (15 Nov 26) — each line here REPLACES the proposed line it names in sections 2–5
 
@@ -260,3 +262,56 @@ arrows and its order, answer last (his own order of 22 Aug 26 — question 4); "
 B", "ATT C" (the squadron's and the app's own words); the same case showing as both "Clash" and "Misses … brief"
 (two checks raise it today, as on Ranger's Friday); "Approval needed" naming nobody (today's line names nobody
 either); "assumed" twice in the long-day bracket (two assumed times); the OIL lines with no action (today's have none).
+
+## 3b. Changed when the pictures were made (15 Nov 26) — each point here REPLACES what sections 2–7 say of it
+
+**Ranger's Friday, confirmed in the app.** With a 13:00 landing typed on VL BFM the real list gives exactly section 2's
+rows, in this order: the VL BFM clash, the RU clash, the tight turn (0 min), the missed RU brief, the double-turn line —
+"5 issues · 2 warnings"; the missed-debrief line goes away. RU has a landing typed in the staging (14:00), so line 1
+reads `Clash: RU (T/O 13:00, landing 14:00) & BRIEFING 12:40–13:00`.
+
+**Every row on a picture is a whole line.** The table cells of section 3 that start with "…" or hold " / " were
+written out as whole lines for the pictures (the list of them, today and proposed:
+`raptor-port/docs/mock/2026-11-15-warn-words/redraw-2.md`). One pair shows the engine change, not only the words: a
+flight with no landing typed, the night before — today "Thu took off 20:30 with no landing typed, +2h debrief assumed →
+ended 22:30 → crew rest clear at 10:30 … only 10h10 rest", after "Thu T/O 20:30, landing assumed 21:30 (T/O + 1h) + 2h
+debrief (assumed) → ended 23:30 → clear 11:30. Report 08:40: 9h10 rest, needs 12h."
+
+**The pending list's line (section 4) — inside the man's own row, the answer first.** The real list already shows the
+two worked times ("Ranger · OIL as published, under today's values: full day · 05:00–18:00 → full day · 05:10–18:00"),
+so a separate "RU crew: …" row would say the times twice. Now proposed: one line added under that row's times —
+- OIL unchanged: `Still a full day of OIL. It counts from 05:10, not 05:00.`
+- OIL changed: `OIL changes: full day → half day. It counts from 13:30, not 10:00.`
+"(Default rally changed)" is dropped: the list's own first row names the Logic value that changed.
+
+**Question 3 is about the checks' short names** (the engine's table of names, shown where warnings are counted by
+kind — Insights' warnings by type, the view-only schedule's list — and on the Logic page where it prints them). The
+names proposed, to follow the new labels:
+
+| Today's name | Proposed name |
+|---|---|
+| Conflict — two events at once | Clash |
+| Personal input clash | Clash with a request |
+| No time for the flight brief | Misses flight brief |
+| No time for the flight debrief | Misses flight debrief |
+| No time for the sim brief | Misses sim brief |
+| No time for the sim debrief | Misses sim debrief |
+| Tight turning — crew rest | Tight crew rest |
+| Long work day | Long day |
+| No break day — too many days in a row | Days in a row |
+| Qualification — illegal seat | Wrong seat |
+| Illegal aircrew combination | Crew not authorised |
+| Crew combination — CO approval required | CO approval needed |
+| OCU without IP | OCU with no IP |
+| IRT without an IR examiner | IRT with no IR examiner |
+| On shift — also down for a ground event | Overlaps standby |
+| In-time window cut — busy between report and shift start | Busy before a standby shift |
+
+**For the build (adds to section 7):**
+- A time range never breaks across lines: at phone width "BRIEFING 12:40–" / "13:00" broke after the dash. Each
+  `HH:MM–HH:MM` is kept on one line where the list is drawn (the proposed pictures are drawn so).
+- No proposed line reaches four lines on a phone (402 wide); the longest are three, as today's are.
+- The pictures, their manifest and the scripts that made them: `raptor-port/docs/mock/2026-11-15-warn-words/`
+  (`manifest.json` says for each picture whether it is real or drawn, and its rows). The family pictures are example
+  rows set onto Monday's real list; the colours the drawer chose where the proposal named none: the late-show crew-rest
+  lines red (the engine raises every crew-rest line red), "flies but has no END" amber, the two reporting-time lines red.
