@@ -1,0 +1,38 @@
+[
+ [
+  "6 chips names",
+  "402",
+  "Cinch: flight 10:00-11:00 + BRIEFING 11:45-12:05 (in the debrief window); Basher (a WSO) in a front seat",
+  "Cinch chip \"Misses flight debrief\"; Basher chip \"Wrong seat\"",
+  "[\"D Cinch IP :: D=Misses flight debrief :: puck title Cinch · IP · instructor pilot · SXO · Misses flight debrief\",\"Q Basher IW :: Q=Wrong seat :: puck title Basher · IW · instructor WSO · SXO · Wrong seat\",\"D Cinch IP :: D=Misses flight debrief :: puck title Cinch · IP · instructor pilot · SXO · Misses flight debrief\",\"D Cinch IP :: D=Misses flight debrief :: puck title Cinch · IP · instructor pilot · SXO · Misses flight debrief\",\"D Cinch IP :: D=Misses flight debrief :: puck title Cinch · IP · instructor pilot · SXO · Misses flight debrief\",\"Q Basher IW :: Q=Wrong seat :: puck title Basher · IW · instructor WSO · SXO · Wrong seat\",\"D Cinch IP :: D=Misses flight debrief :: puck title Cinch · IP · instructor pilot · SXO · Misses flight debrief\",\"Q Basher IW :: Q=Wrong seat :: puck title Basher · IW · instructor WSO · SXO · Wrong seat\"]",
+  "PASS",
+  "6-a-chips-p.png"
+ ],
+ [
+  "6 chips names",
+  "402",
+  "Comet: flight T/O 17:00 + BRIEFING 15:00-15:30 (inside the brief window); Blade: ground 06:00-07:00 + flight T/O 16:00; the pucks, their chips and titles",
+  "Comet's chip title \"Misses flight brief\"; Blade's grey chip \"Long day (>12h)\"",
+  "{\"pucks\":[\"B Comet IP :: B=Misses flight brief :: puck title Comet · IP · instructor pilot · Misses flight brief\",\"L Blade IP :: L=Long day (>12h) :: puck title Blade · IP · instructor pilot · Long day (>12h)\",\"L Blade IP :: L=Long day (>12h) :: puck title Blade · IP · instructor pilot · Long day (>12h)\",\"B Comet IP :: B=Misses flight brief :: puck title Comet · IP · instructor pilot · Misses flight brief\",\"B Comet IP :: B=Misses flight brief :: puck title Comet · IP · instructor pilot · Misses flight brief\"],\"lines\":[\"Comet — Misses BRF FLT brief 14:40–17:00: BRIEFING 15:00–15:30 ✕\",\"Blade — Long day: 13h00 (limit 12h), 06:00 → 19:00 ( LD FLT landing assumed 17:00 + 2h debrief assumed) ✕\"]}",
+  "PASS",
+  "6-a-chips-p.png"
+ ],
+ [
+  "6 chips names",
+  "402",
+  "Edit Schedule: opened the Legend fold; its flags",
+  "RECORD (this fold names flags by their long names)",
+  "LEGEND — COLOURS & FLAGS FCP (pilot) RCP (WSO) Personnel (ground crew) Level: OOCU DD CC BB AA IWIWSO IPIP IRIR exmr FIFWI ▮you ▮selected Flags: Cconflict CPcrew pairing — not authorised Rcrew rest 7no break day Qqual / illegal seat DTdouble turn TTtight turn Aadvisory — shift + ground CPcrew pairing — needs approval Bno flight brief Bno sim brief Dno flight debrief Dno sim debrief Llong work day",
+  "RECORDED",
+  "6-c-editsched-legend-p.png"
+ ],
+ [
+  "6 chips names",
+  "402",
+  "the Logic page: every name drawn as an element's own title or text",
+  "Misses flight brief | Misses flight debrief | Misses sim brief | Misses sim debrief | Wrong seat | Long day (>12h) | Days in a row",
+  "{\"Misses flight brief\":[\"SPAN.lchip l-nb[title]\",\"SPAN.lchip l-nb[title]\",\"SPAN.lchip l-nb[title]\"],\"Misses flight debrief\":[\"SPAN.lchip l-db[title]\",\"SPAN.lchip l-db[title]\",\"SPAN.lchip l-db[title]\"],\"Misses sim brief\":[],\"Misses sim debrief\":[],\"Wrong seat\":[\"SPAN.lchip l-q[title]\",\"SPAN.lchip l-q[title]\",\"SPAN.lchip l-q[title]\"],\"Long day (>12h)\":[\"SPAN.lchip l-ld[title]\",\"SPAN.lchip l-ld[title]\",\"SPAN.lchip l-ld[title]\"],\"Days in a row\":[\"SPAN.lgnm[text]\"]}",
+  "RECORDED",
+  "6-d-logic-p.png"
+ ]
+]

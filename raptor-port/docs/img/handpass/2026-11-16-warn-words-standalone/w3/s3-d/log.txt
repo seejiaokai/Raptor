@@ -1,0 +1,6 @@
+ROW PASS | 3 long day names its flight | 1536 | Ranger: ground item 06:00-07:00 and flight LATE FLT T/O 17:00 landing blank (no callsign typed); the board long-day line | saw: ["Ranger — Long day: 14h00 (limit 12h), 06:00 → 20:00 ( LATE FLT landing assumed 18:00 + 2h debrief assumed) ✕"]
+ROW RECORDED | 3 long day names its flight | 1536 | RECORD the long-day line whole (no flight callsign) | saw: ["Ranger — Long day: 14h00 (limit 12h), 06:00 → 20:00 ( LATE FLT landing assumed 18:00 + 2h debrief assumed) ✕"]
+ROW PASS | 3 long day names its flight | 1536 | typed the flight callsign VIPER1; the long-day line | saw: ["Ranger — Long day: 14h00 (limit 12h), 06:00 → 20:00 (VIPER1 LATE FLT landing assumed 18:00 + 2h debrief assumed) ✕"]
+ROW RECORDED | 3 long day names its flight | 1536 | Friday week strip and day details: long-day line | saw: {"week":["Long day Ranger — Long day: 14h00 (limit 12h), 06:00 → 20:00 (VIPER1 LATE FLT landing assumed 18:00 + 2h debrief assumed) ✕"],"details":["Note · Long day Ranger — Long day: 14h00 (limit 12h), 06:00 → 20:00 (VIPER1 LATE FLT landing assumed 18:00 + 2h debrief assumed)"]}
+errors []
+DONE 2 PASS 0 FAIL 2 OTHER of 4

@@ -1261,7 +1261,7 @@ function validateCore(){
            time with nothing to assume, so it stays bare. */
         /* D2046, D2053: a last sortie with no landing typed closes the day at its ASSUMED landing, and says so */
         /* the approved words (spec §3, D2053): "(VL BFM landing assumed 17:20 + 2h debrief assumed)" */
-        const back=ef?`${hm24(e)} (${ef.noLd?`${lineName(ef.label)} landing assumed ${hm24(ef.ld)}`:`last landing ${hm24(ef.ld)}`} + ${lgT(VCONF.debrief)} debrief assumed)`:`${hm24(e)}`;
+        const back=ef?`${hm24(e)} (${ef.noLd?`${String(lineName(ef.label)).trim()} landing assumed ${hm24(ef.ld)}`:`last landing ${hm24(ef.ld)}`} + ${lgT(VCONF.debrief)} debrief assumed)`:`${hm24(e)}`;
         add('note','LONGDAY',[id],`Long day: ${dur(span)} (limit ${lgT(VCONF.longDay)}), ${stated(s)} → ${back}`);}   // [WARN-WORDS-STANDALONE]
     });
     /* the run breaks its limit ON this day, which is the day the scheduler has

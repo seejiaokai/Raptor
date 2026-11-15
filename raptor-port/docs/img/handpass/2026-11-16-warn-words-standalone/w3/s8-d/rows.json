@@ -1,0 +1,65 @@
+[
+ [
+  "7/8 A flight row, pending OIL both ends",
+  "1536",
+  "opened Logic; read the row \"A flight\"",
+  "contains \"Conflicts, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.\"",
+  "A flight 1h A flight with a take-off and no landing is taken to land this long after take-off. Conflicts, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.",
+  "PASS",
+  "7-a-row-d.png"
+ ],
+ [
+  "7/8 A flight row, pending OIL both ends",
+  "1536",
+  "typed 75 in \"A flight\", then pressed the row Reset",
+  "box 1h30... back to 1h",
+  "typed -> 1h15; after Reset 1h",
+  "PASS",
+  "7-c-reset-d.png"
+ ],
+ [
+  "7/8 A flight row, pending OIL both ends",
+  "1536",
+  "A flight 90; built Ranger T/O 12:00 no landing on Saturday; signed and published",
+  "ORIG",
+  "{\"tag\":\"ORIG\",\"pending\":\"9 changes\"}",
+  "PASS",
+  ""
+ ],
+ [
+  "7/8 A flight row, pending OIL both ends",
+  "1536",
+  "A flight 2h and the default rally 2h45 together on the published OIL Saturday; opened the pending list",
+  "RECORD whole; Ranger line: \"Still a full day of OIL. It counts 09:15–16:00, not 09:00–15:30.\" (or \"OIL changes: …\")",
+  "{\"head\":\"1 pending\",\"items\":[\"OIL on this day · Logic values changed since it was published Logic · Default rally before T/O 3h → 2h45 Logic · A flight with no landing typed 1h30 → 2h Ranger · OIL as published, under today's values full day · 09:00–15:30 → full day · 09:15–16:00 Still a full day of OIL. It counts 09:15–16:00, not 09:00–15:30.\"]}",
+  "RECORDED",
+  "8-b-pending-d.png"
+ ],
+ [
+  "7/8 A flight row, pending OIL both ends",
+  "1536",
+  "the OIL note for Ranger",
+  "contains \"Still a full day of OIL. It counts <new start>–<new end>, not <old start>–<old end>.\" or \"OIL changes\"",
+  "[\"OIL on this day · Logic values changed since it was published Logic · Default rally before T/O 3h → 2h45 Logic · A flight with no landing typed 1h30 → 2h Ranger · OIL as published, under today's values full day · 09:00–15:30 → full day · 09:15–16:00 Still a full day of OIL. It counts 09:15–16:00, not 09:00–15:30.\"]",
+  "PASS",
+  "8-b-pending-d.png"
+ ],
+ [
+  "7/8 A flight row, pending OIL both ends",
+  "1536",
+  "put both settings back (A flight 1h, rally 3h)",
+  "both back",
+  "rally box 3h",
+  "RECORDED",
+  ""
+ ],
+ [
+  "7/8 A flight row, pending OIL both ends",
+  "1536",
+  "tapped the Conflict warning line on the board",
+  "its crew lit in the warning colours, never selection blue",
+  "{\"litClasses\":[],\"selectedPucks\":0}",
+  "RECORDED",
+  "9-warn-tap-d.png"
+ ]
+]

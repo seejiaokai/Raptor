@@ -1,0 +1,29 @@
+[
+ [
+  "4 drop note names two",
+  "1536",
+  "dropped the OCU pilot Wildcard in the front seat",
+  "RECORD the note (if any)",
+  "{\"ok\":true,\"note\":\"Wildcard — OCU with no IP:  OCU FLT (T/O 12:00) (+1 more)\"}",
+  "RECORDED",
+  "4-a-pilot-drop-d.png"
+ ],
+ [
+  "4 drop note names two",
+  "1536",
+  "dropped the OCU WSO Tally behind Wildcard on the same jet (crew pairing)",
+  "the note reads \"<callsign>, <callsign> — <the line>\"; pictured at once",
+  "{\"ok\":true,\"note\":\"Wildcard, Tally — Crew solo: OCU pilot Wildcard & OCU WSO Tally on  OCU FLT (T/O 12:00). Only allowed under the Basic Course Syllabus. (+1 more)\"}",
+  "PASS",
+  "4-b-wso-drop-d.png"
+ ],
+ [
+  "4 drop note names two",
+  "1536",
+  "the warning list for the same pair",
+  "RECORD",
+  "[\"Wildcard — Misses OCU FLT debrief 13:00–15:00: Sim EP-6 14:00–15:30 ✕\",\"Wildcard, Tally — Crew solo: OCU pilot Wildcard & OCU WSO Tally on OCU FLT (T/O 12:00). Only allowed under the Basic Course Syllabus. ✕\",\"Wildcard, Tally — OCU with no IP: OCU FLT (T/O 12:00) ✕\"]",
+  "RECORDED",
+  "4-b-wso-drop-d.png"
+ ]
+]

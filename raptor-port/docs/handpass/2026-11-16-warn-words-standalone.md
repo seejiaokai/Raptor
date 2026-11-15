@@ -69,13 +69,13 @@ YES / NO-because / MISSING, filled in the walk.
 | *Added from Astra's scenario design (16 Nov 26, `superpowers/briefs/2026-11-16-warn-words-scenarios-astra.md`):* | | | | |
 | The day-details window (the day's `?`) — its warning rows, its "free all day" figure, a tap on a row | YES | YES — a row tapped closes it and lights the crew; Close | the counts | W2 s10, s14; W1 s3b |
 | The 👁 look at a published version (current and an older one made in the walk), from the week and the board; a saved plan's preview flag-free | YES — its day details show the published words | YES | — | W2 extra (b) both sizes; W1 s2 |
-| The pending list's warning lines (added, changed, cleared, hidden — "new once signed", "goes away once signed") | YES for the OIL line; the warning lines NOT WALKED | — | — | W1 s1, s8 |
-| The passing note right after a drop that raises a warning (`state/dropflag.ts`), the next day's included | NOT WALKED (W2 ran short) — the same message function | — | — | — |
+| The pending list's warning lines (added, changed, cleared, hidden — "new once signed", "goes away once signed") | YES — the OIL line; a new warning row led by its people, "Ranger — OCU with no IP: FRI FLT (T/O 12:00)" new, beside "Ranger · CAT IP → OCU" (after the reads' fix) | YES — opened from "1 pending", ✕ closes it; Escape and a tap outside do not (older, filed) | "1 pending", the four down | W1 s1, s8; W3 s5, s8; host `pendnames-d`, `-p` |
+| The passing note right after a drop that raises a warning (`state/dropflag.ts`), the next day's included | YES (the re-walk) — "Wildcard, Tally — Crew solo: …", both men named (after the reads' fix) | YES — a drop on the board (desktop), a roster tap (phone) | the pucks pulse | W3 s4 |
 | Publication's OIL notices (an earning day published: no "unusable times" for a take-off with a blank landing) | YES — none raised | YES | — | W1 s1 |
 | The Leave War's day sheet, day list and the OIL tracker's worked times and balance (beyond the cell) | YES — "a day — worked 09:00–15:30"; tracker +0.5 / FO | YES — the sheet closes by ✕, Escape, a tap outside | — | W1 s1, s3b, round 2 |
 | Insights' work hours (today's settings, D482) beside "Conflicts by type" | YES — 20h → 20h30; 40h35 → 41h05 typed | YES | — | W1 s1; W2 s5 |
 | The crew list with a seat picked and with none; the availability strips; ALL against ALL AVAIL | YES — a duty desk marks him busy, a sim seat and a programme row do not, as before | YES | — | W2 s4 (the 402 chip arming NOT WALKED) |
-| The short names: issues heading, flag title, a puck's hover / tap words, the Logic check name and its search, Insights' category | YES | YES | — | W2 s12; W1 s11 |
+| The short names: issues heading, flag title, a puck's hover / tap words, the Logic check name and its search, Insights' category | YES — and the chips' titles and the Logic page's flag order: "Misses flight brief", "Wrong seat", "Long day (>12h)", "Days in a row" (after the reads' fix) | YES | — | W2 s12; W1 s11; W3 s6; host `lgchips-d`, `-p` |
 | The next-week peek's ordinary warnings and crew-rest trace; Monday opened before Sunday's week | YES — Monday's "Tight turning … Sunday landing assumed 00:30" cold and via Sunday | YES | — | W1 s3b both sizes |
 | A row's own title warnings (the same take-off and landing; the reporting order) on the week, board and peek | YES — "Times look wrong…", no "assumed" | — | — | W1 s13 |
 | Print / PDF and the CSV export (they carry no warning list; a blank landing never printed as a typed one) | YES | YES | — | W1 s13 |
@@ -149,6 +149,15 @@ whole `superpowers/briefs/2026-11-16-warn-words-scenarios-astra.md`: 15 roll-cal
   the phone fit at 402 WebKit and 390 Chromium in the board, week strip and day details, tap and ✕; 12 the short names,
   the flag title, Insights, the Logic names; extras: an AVALON control, day details from 👁, a flying SC with no END,
   the Sunday "Breaks Monday" row; the plain-user round's ALL AVAIL window, Insights and View-only as admin and Ranger.
+- **W3 (Sonnet 5.5), the re-walk, about 22 minutes, on a new frozen build of `47715d5bf`** (the reads' fixes;
+  `docs/superpowers/briefs/2026-11-16-warn-words-rewalk-brief.md`, report `parts/2026-11-16-www-w3.md`), both sizes: the
+  crew-rest line with the take-off (Friday → Saturday — no man is free on both Monday and Tuesday); the judged day's
+  flight length (Friday published, "A flight" 120 then 60); the long day naming its flight; the drop note naming two; the
+  pending list after a ground item on a published day; the chips' titles; the "A flight" row; the both-ends OIL note; the
+  plain-user round — the pending list and day details closed every way, a warning tapped.
+- **The host, after W3:** the pending list's warning row by the route W3's brief missed — Friday published, Ranger's CAT
+  changed on Quals (`www-host-pendnames.mjs`, both sizes); the Logic page's flag order read where it is drawn
+  (`www-host-lgchips.mjs`, both sizes).
 
 ## The cases carried by a test
 
@@ -190,9 +199,20 @@ W2 ran short of its 75 minutes: the request-conflict hide (keyed on words — `w
 published day's hide waiting for the amendment; the pending list's warning lines, the 👁 and the peek at a phone's fit
 (the same message, measured in the week strip, board and day details); the drop note; the 402 plain-user round; Escape
 and a tap outside on day details and the version selector. The peek itself was not opened (Monday was reached cold and
-via Sunday instead).
+via Sunday instead). Of these, the re-walk and the host then walked the drop note, the pending list's warning lines and
+day details closed every way (all four ways close it).
+
+Not re-walked after the last fix: the long day's flight name with no callsign typed (W3 found "( LATE FLT landing
+assumed …" with a stray space; fixed red first, `engine/assumedlanding.test.ts` "a line with no callsign typed") — a
+one-character change of a line W3 walked, carried by its test; the frozen build W3 drove predates it.
 
 ## The gate counts
+
+On his PC, after the reads' fixes (`47715d5bf`): the full unit suite under the lock 14,511 pass, 20 skipped (838 files);
+the original's 728 pass, 0 fail; build clean; rulecheck OK; lint:changed no new finding; docsize OK (the backlog's 11
+lines over, `main`'s own, deferred — D29). After the stray-space fix: the engine's tests, the parity, the pending list
+and the drop note, 2,863 pass. GitHub's runs on `47715d5bf`: Deploy (the full check), Docs guard and Secrets scan, all
+green; on the last pushed commit: see the closing lines below.
 
 ## What the walk found, and each disposition
 
@@ -284,6 +304,65 @@ the other's words. Every finding below was reproduced as a failing test before i
   seat: …"; both reads — the comparison's crew-rest tail in the original app's copy is never reached by the parity seed.
 - **Judged not faults:** a hide keyed on words comes back when its times or limits change (D2018, consistent); plain-text
   drawers do not escape, as built.
+
+## What the re-walk found, and each disposition
+
+- **W3 — the long day's flight with no callsign typed read "( LATE FLT landing assumed 18:00 …)"**, a stray space (the
+  reads' fix named the flight by its line name, which carries the blank callsign's space). Opened by the host in W3's
+  record. **Fixed red first** (`engine/assumedlanding.test.ts` "a line with no callsign typed"): "(LATE FLT landing
+  assumed 19:00 + 2h debrief assumed)". Not re-walked (above).
+- **W3 FAIL on scenario 5 — the brief's route, not the app.** A ground item added on a published day changes the working
+  copy; the pending list's "What this day shows" rows compare the published face, which that change does not move, so
+  no warning row was due. The host walked the right route (the face moved by Ranger's CAT on Quals): "Ranger — OCU with
+  no IP: FRI FLT (T/O 12:00)" new, at 1536 and 402 (`host/pendnames-d/h5-d-pending-d.png`, `-p`), opened by the host.
+- **W3 NOT WALKED on scenario 6's Logic legend — found by the host:** the flag order sits inside the check "Several
+  problems on one puck"; read there at both sizes, every one-check chip carries its new name (`host/lgchips-p/lg-chips-p.png`).
+- **W3 scenario 2 — the brief's literal shape could not breach** (Saturday's report 11:00 against clear 04:00); W3's
+  adapted shape raised Tuesday's amber "Tight turning" line instead, naming "landing assumed 14:00 (T/O + 2h)" at 120 and
+  gone at 60 — the judged day's flight length, as the fix meant.
+- **For his look, a words question (not changed):** Edit Schedule's Legend fold keeps its own short words — "no flight
+  brief", "no sim brief", "qual / illegal seat", "no break day", "long work day" — while the chips and the warning list
+  now say "Misses flight brief", "Wrong seat", "Days in a row", "Long day". The Legend is not named in D2070 or the
+  spec's §3g; bringing it in line is a words change he has not seen.
+- **Older, for filing (W3):** where a flight has no callsign typed, other lines carry a double space — the drop note's
+  "Crew solo" line and "OCU with no IP" — the older label building, not this job's words.
+
+## The closing lines
+
+`Walk: docs/handpass/2026-11-16-warn-words-standalone.md · 753 pictures · 28 surfaces (27 walked, the peek carried by a
+test) · 26 orders (13 of Astra's scenarios, the re-walk's 8, the host's 5) · MISSING: fixed 9 (G1, W1-1, W2 F3,
+Astra 1, 3, 6, Opus F1, F4, W3's space), ruled none, put to him on the look card, the older ones for filing`
+
+The look card — for his look, in the app's words, each with its picture:
+1. His Friday: "Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00" — then 12:30 typed
+   and the line says the landing (`host/friday-p/`, `host/friday-d/`).
+2. The published OIL Saturday: "A flight" 90 → "1 pending", the four down, the half day kept until AL1 gives the full
+   day once; the pending note "Still a full day of OIL. It counts 09:15–16:00, not 09:00–15:30." when both ends move
+   (`w1/s1-d/1-7-pendinglist-d.png`, `w3/s8-d/8-b-pending-d.png`).
+3. The new Logic row "A flight" (60 min to start) and its words (`w1/s11-p/11-4-90-p.png`).
+4. A "Conflict:" line with a long typed item name takes three rows on his iPhone (`w2/s10-p/10-3-day-details-p.png`).
+5. Questions: an SC MAIN with START and no END now shows no warning at all; a duty desk from an SC template with no END
+   still ends at START + 1h; Edit Schedule's Legend keeps the old short words; a spanning item reads item first; the
+   Logic page's older "clash" prose.
+
+The §12 boxes:
+- [x] The eight questions answered and the tier chosen (FULL), in writing.
+- [x] Applicable rulings listed; no clash.
+- [x] Roll-call complete — the peek carried by a test, said so.
+- [x] The exact production build driven, at both widths (three frozen builds, each named).
+- [x] The fixtures made through the app's own controls.
+- [x] Every required surface seen and operated (the peek: the same message function, carried by a test).
+- [x] The walk sized in writing before it started; every order has a result.
+- [x] The real downstream result observed — the Leave War's FO / HO cell and the OIL tracker (W1).
+- [x] Tests use production routes, or say what they prove.
+- [x] One red break test per wired surface (the order reversals above).
+- [x] The gates pass (GitHub's runs, his PC's unit suite and the original's 728).
+- [x] Required model reads done — Astra and a fresh Opus reader, blind — reconciled, every finding dispositioned.
+- [x] The sheet exists with its pictures and names what was NOT walked.
+- [ ] His look — not done; the look card above.
+
+`Docs: OUTSTANDING 176 items (+0 −0) · DECISIONS D1–D2071 (new: D2058, D2059, D2060, D2061, D2062, D2063, D2064, D2065, D2066, D2067, D2068, D2069, D2070, D2071) · homes OK`
+`docsize: OVER by 11, deferred (D29)` — the backlog's 11 lines are `main`'s own since pull request 781, not this branch's.
 
 ## Notes for the walk, from the build
 

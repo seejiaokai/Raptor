@@ -127,6 +127,13 @@ describe('the long day and Insights\' hours count to the assumed landing (D2053,
       expect(m[0]).toMatch(/^Long day: 15h(00)? \(limit 12h\), 06:00 → 21:00 \(VL BFM landing assumed 19:00 \+ 2h debrief assumed\)$/)   // the approved words, spec §3 (D2053)
     })
   }
+  /* the re-walk (W3, 16 Nov 26): a line with no callsign typed read "( LATE FLT landing assumed …)" — the name trimmed */
+  it('a line with no callsign typed: the flight is named by its mission, no stray space', () => {
+    ground(TUE, 'bane', '06:00', '07:00')
+    add(TUE, wave([form({ cs: '', msn: 'LATE FLT', to: '18:00', ld: '' })]))
+    validate()
+    expect(msgs(TUE, 'LONGDAY')[0]).toMatch(/ \(LATE FLT landing assumed 19:00 \+ 2h debrief assumed\)$/)
+  })
   it('left as it is: a line with no take-off counts nowhere', () => {
     ground(TUE, 'bane', '06:00', '07:00')
     add(TUE, wave([form({ to: '', ld: '' })]))
