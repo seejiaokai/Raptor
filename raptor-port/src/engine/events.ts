@@ -500,7 +500,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     /* kind matters now: a shift clashing with a duty post is a Warning, with a
        ground event or a programme item only an Advisory. */
     const reqRows=new Set<any>();
-    const push=(id:any,st:any,en:any,label:any,kind:any,key?:any,src?:any)=>{
+    const push=(id:any,st:any,en:any,label:any,kind:any,key?:any,src?:any,scDesk?:any)=>{
       if(!id||!PEOPLE[id]||isSpecial(id))return;
       const w2=win(st,en); if(!w2){blank.push({id,label,key,src,kind});return;}   // a row with no start — D605, `blank` above
       /* the same man in the row's seat AND in its more[] is one commitment, not
@@ -516,6 +516,10 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
       /* an end ASSUMED from the Logic page's "Assumed length" (no end typed): crew rest the next day re-reads it under
          THAT day's settings (D2005 — the day being judged decides; validate.ts crewRestDay), never this day's */
       if(en==null)assumedEnd(ev,'open');
+      /* D2073 (16 Nov 26): a desk from an SC shift template, its START typed and its END blank, bears no crew rest until its
+         END is typed, as an SC wave line does (D2055 — validate.ts reads `noEnd`); its assumed hour still stands for every
+         other check. Only an SC template's desk (the agent's reading): a plain desk keeps the assumed end for crew rest too. */
+      if(en==null&&scDesk)ev.noEnd=true;
       if(src)reqRows.add(ev);
       events.push(ev);
     };
@@ -535,8 +539,9 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
         return;
       }
       const st=parseHM(r.str),en=parseHM(r.end);
-      push(r.id,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`);
-      extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`)); }));
+      const scDesk=dw.sa==='sc';   // D2073
+      push(r.id,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`,undefined,scDesk);
+      extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`,undefined,scDesk)); }));
     /* a row flagged ⓘ info-only (owner, 1 Sep 26) is shown but never checked:
        it must not enter the event stream — that one skip keeps it out of every
        validator rule, the palette's clash checks and the Insights hours, which

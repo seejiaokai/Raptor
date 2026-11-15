@@ -629,12 +629,26 @@ describe('the Logic lines the nine rule fixes changed say what the app now does'
   it('D1996: a standby shift that flies is checked as a sortie, every clash with it red', () => {
     /* the bug check of 12 Nov 26 (the Opus read, a): "checked as a sortie is" was untrue — a flying shift gets no brief or
        debrief window; D1996 is its clashes and turns */
-    expect(line('saflies')).toContain('A row that flies has its clashes and turns checked as a sortie\'s are,')
+    expect(line('saflies')).toContain('A row that flies has its conflicts and turns checked as a sortie\'s are,')
     /* …and the tight-turn line (F7, D1989): the amber note stays once a typed time clears the rest, so "it clears" is
        said of his rest, never read as the note going (walker W3's lead) */
     expect(line('crewtight')).toMatch(/ is later, so his rest clears\.$/)
-    expect(line('shiftsoft')).toMatch(/ Once the shift flies, every clash with it is red\.$/)
-    expect(setting('SC MAIN clashes')).toMatch(/ Once his shift flies, every clash is red\.$/)
+    expect(line('shiftsoft')).toMatch(/ Once the shift flies, every conflict with it is red\.$/)
+    expect(setting('SC MAIN conflicts')).toMatch(/ Once his shift flies, every conflict is red\.$/)
+  })
+  /* D2077 (16 Nov 26): the Logic page's explanations say "conflict", never "clash", in every place they name the check —
+     one thing, one name, as the warnings say it (D2070). Every word the page's two parts can print, read whole. */
+  it('D2077: no setting or check on the Logic page says "clash"', () => {
+    const words: string[] = []
+    const walk = (v: any): void => {
+      if (typeof v === 'string') words.push(v)
+      else if (typeof v === 'function') { try { walk(v()) } catch { /* a reader that needs its argument prints nothing alone */ } }
+      else if (Array.isArray(v)) v.forEach(walk)
+      else if (v && typeof v === 'object') Object.values(v).forEach(walk)
+    }
+    walk(lgSettings()); walk(lgChecks())
+    expect(words.length).toBeGreaterThan(50)
+    expect(words.filter(w => /clash/i.test(w))).toEqual([])
   })
   /* CHANGED ON PURPOSE by D2046 (15 Nov 26): a landing not typed is the assumed one, take-off plus the flight length */
   it('D1990, D2046: a landing not typed ends the day at the assumed landing plus the debrief; a shift reports at its B or R when typed earlier', () => {

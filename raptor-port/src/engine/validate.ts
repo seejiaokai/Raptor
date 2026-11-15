@@ -25,7 +25,7 @@ const $=(id:any)=>HOOKS.$(id);
 /* [WARN-WORDS-STANDALONE] (owner D2070, D2068, 16 Nov 26): the short names follow the lines' new labels — "Conflict"
    kept for the clash, "Tight turning" kept (never "Tight crew rest"); the proposal's §3b table as §3g reads it */
 export const WCODE:any={DOUBLE_BOOK:'Conflict',DNIF_FLY:'Downchit + planned',LEAVE_FLY:'On leave + planned',INPUT_FLY:'Conflict with a request',
-  TURN:'Tight turn',ILLEGAL_CREW:'Crew not authorised',CREW_SOLO:'Crew solo — only allowed under syllabus',CO_APPROVAL:'CO approval needed',OCU_NO_IP:'OCU with no IP',CREW_REST:'Crew rest (<{crewRest})',QUAL:'Wrong seat',
+  TURN:'Tight turn',ILLEGAL_CREW:'Crew not authorised',CREW_SOLO:'Crew solo — only allowed under syllabus',CO_APPROVAL:'CO approval needed',OCU_NO_IP:'OCU with no IP',CREW_REST:'Crew rest (<{crewRest})',QUAL:'Illegal seat',
   NO_BRIEF:'Misses flight brief',DEBRIEF:'Misses flight debrief',SIM_BRIEF:'Misses sim brief',SIM_DEBRIEF:'Misses sim debrief',
   CREW_TIGHT:'Tight turning',LONGDAY:'Long day',DT_SUM:'Double turning',
   DAYS_RUN:'Days in a row',
@@ -72,7 +72,7 @@ export const chipText=(c:any)=>CHIP_TEXT[c]||c;
    silently freezing the flag. */
 export const RANK:any={LD:0,DT:1,TT:2,A:3,SD:4,SB:5,DB:6,NB:7,CP:8,CR:9,RUN:10,CPH:11,C:12,Q:13};
 export const CHIP_LABEL:any={DT:'Double turn',TT:'Tight turn',C:'Conflict (two events at once)',
-  A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',CR:'Crew rest breach (<{crewRest})',Q:'Wrong seat',
+  A:'Advisory — on shift and also down for a ground event or programme item, or planned outside SANS availability',CR:'Crew rest breach (<{crewRest})',Q:'Illegal seat',
   NB:'Misses flight brief',DB:'Misses flight debrief',SB:'Misses sim brief',SD:'Misses sim debrief',LD:'Long day (>{longDay})',
   RUN:'Days in a row',
   CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};
@@ -1157,10 +1157,10 @@ function validateCore(){
          (whose seat rules carry no exemption) and the warning list agree on a
          drag-drop. The rear seat stays unruled, as it is on the SC spare. */
       if(sa.seat==='p'){
-        const tag=`${sa.label} ${sa.role} ${rng(sa.s,sa.e)}`;   // [WARN-WORDS-STANDALONE]: "Wrong seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00"
-        if(p.pers){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`Wrong seat: ground crew in the front seat of ${tag}`,sa.key);}
-        else if(p.seat==='RCP'){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`Wrong seat: a WSO in the front seat of ${tag}`,sa.key);}
-        else if(p.q==='IW'&&p.seat==='FCP'){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`Wrong seat: CAT IW (a WSO category) in the front seat of ${tag}`,sa.key);}
+        const tag=`${sa.label} ${sa.role} ${rng(sa.s,sa.e)}`;   // [WARN-WORDS-STANDALONE]: "Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00"
+        if(p.pers){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`Illegal seat: ground crew in the front seat of ${tag}`,sa.key);}
+        else if(p.seat==='RCP'){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`Illegal seat: a WSO in the front seat of ${tag}`,sa.key);}
+        else if(p.q==='IW'&&p.seat==='FCP'){markChip(di,sa.id,'Q','QUAL');markRing(di,sa.id,'hard','QUAL');add('hard','QUAL',[sa.id],`Illegal seat: CAT IW (a WSO category) in the front seat of ${tag}`,sa.key);}
       }
       /* ONE MAN IN TWO AVALON / BB PLACES IN THE SAME HOURS — MAIN + SPARE, a
          seat + the desk. NOT two desk roles (owner, 7 Sep 26 — "two avalon desk
@@ -1334,17 +1334,17 @@ function validateCore(){
            a non-standard pairing that needs approval (owner, Aug 26). The seat
            and combination checks below key on FCP/RCP and never catch a 'GND'
            seat, so these two lines are the whole story for personnel. */
-        if(p&&p.pers){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`Wrong seat: ground crew in the front seat of ${fTag(f)}`,ac.key+'.p');}
+        if(p&&p.pers){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`Illegal seat: ground crew in the front seat of ${fTag(f)}`,ac.key+'.p');}
         if(w&&w.pers){markChip(di,ac.w,'CP','PAX_CREW');markRing(di,ac.w,'adv','PAX_CREW');add('adv','PAX_CREW',[ac.w],`Approval needed: incentive passenger in the rear seat of ${fTag(f)}`,ac.key+'.w');}
         // Q — seat qualification: a WSO can't fly FCP. The rear seat carries no
         // instructor rule: any pilot may ride the back (owner, 7 Sep 26 — "don't
         // flag out that they are in an illegal seat"; the AAR supervision rule
         // below, currency and the combination matrix are separate and still apply)
-        if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`Wrong seat: a WSO in the front seat of ${fTag(f)}`,ac.key+'.p');}
+        if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`Illegal seat: a WSO in the front seat of ${fTag(f)}`,ac.key+'.p');}
         /* belt and braces: CAT IW is a WSO-only category, so an IW record whose
            seat says FCP is inconsistent data — the Quals-page dropdowns never
            offer IW to a pilot, but a hand-edit could. Flag it, don't hide it. */
-        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`Wrong seat: CAT IW (a WSO category) in the front seat of ${fTag(f)}`,ac.key+'.p');}
+        if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q','QUAL');markRing(di,ac.p,'hard','QUAL');add('hard','QUAL',[ac.p],`Illegal seat: CAT IW (a WSO category) in the front seat of ${fTag(f)}`,ac.key+'.p');}
         /* AAR — the remarks call for it and the FRONT seat is not current.
            A man who is not current may still fly it as TRAINING, but only with
            someone cleared to teach that AAR sitting behind him (owner,
@@ -1492,9 +1492,9 @@ function validateCore(){
            whole rule closes (ground crew hold no flying qualification at all,
            the stricter case of "not a pilot"). */
         (f.spareAcs||[]).forEach((sa:any)=>{ const sp=realP(sa.p); if(!sp)return;
-          if(sp.pers){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`Wrong seat: ground crew in the front seat of ${lineName(f.label)} SPARE ${rng(f.s,f.e)}`,sa.key+'.p');}
-          else if(sp.seat==='RCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`Wrong seat: a WSO in the front seat of ${lineName(f.label)} SPARE ${rng(f.s,f.e)}`,sa.key+'.p');}
-          else if(sp.q==='IW'&&sp.seat==='FCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`Wrong seat: CAT IW (a WSO category) in the front seat of ${lineName(f.label)} SPARE ${rng(f.s,f.e)}`,sa.key+'.p');}});
+          if(sp.pers){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`Illegal seat: ground crew in the front seat of ${lineName(f.label)} SPARE ${rng(f.s,f.e)}`,sa.key+'.p');}
+          else if(sp.seat==='RCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`Illegal seat: a WSO in the front seat of ${lineName(f.label)} SPARE ${rng(f.s,f.e)}`,sa.key+'.p');}
+          else if(sp.q==='IW'&&sp.seat==='FCP'){markChip(di,sa.p,'Q','QUAL');markRing(di,sa.p,'hard','QUAL');add('hard','QUAL',[sa.p],`Illegal seat: CAT IW (a WSO category) in the front seat of ${lineName(f.label)} SPARE ${rng(f.s,f.e)}`,sa.key+'.p');}});
       }
     });
     /* SANS AVAILABILITY (owner, 14 Aug 26) — a SANS body planted into a
@@ -1555,12 +1555,12 @@ function validateCore(){
        the back (owner, 14 Aug 26 — the jet's IP/IR/FI rear-seat rule used to
        be copied here, and only the jet keeps it). */
     (day.simcrew||[]).forEach((s:any)=>{ const p=realP(s.p);
-      /* the sim row's own typed hours name it ([WARN-WORDS-STANDALONE]: "Wrong seat: a WSO in the front seat of OFT 1
+      /* the sim row's own typed hours name it ([WARN-WORDS-STANDALONE]: "Illegal seat: a WSO in the front seat of OFT 1
          10:00–11:30") — the collection carries none, so they are read off the row, and left out where none is typed */
       const sr:any=((((DAYS[di]||{}) as any).sims||{})[s.kind]||[])[s.ri]||{}, sat=whatAt(s.label,parseHM(sr.str),parseHM(sr.end));
-      if(p&&p.pers){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`Wrong seat: ground crew in the front seat of ${sat}`,`s:${di}.${s.kind}.${s.ri}.p`);}
-      if(p&&p.seat==='RCP'){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`Wrong seat: a WSO in the front seat of ${sat}`,`s:${di}.${s.kind}.${s.ri}.p`);}
-      if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`Wrong seat: CAT IW (a WSO category) in the front seat of ${sat}`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      if(p&&p.pers){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`Illegal seat: ground crew in the front seat of ${sat}`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      if(p&&p.seat==='RCP'){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`Illegal seat: a WSO in the front seat of ${sat}`,`s:${di}.${s.kind}.${s.ri}.p`);}
+      if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,s.p,'Q','QUAL');markRing(di,s.p,'hard','QUAL');add('hard','QUAL',[s.p],`Illegal seat: CAT IW (a WSO category) in the front seat of ${sat}`,`s:${di}.${s.kind}.${s.ri}.p`);}
     });
     /* A DESK WITH A MAN ON IT AND NO TIMES EARNS HIM NOTHING, AND SAYS SO
        (owner, 20 Sep 26 — "I would also like u to give the warning On the day

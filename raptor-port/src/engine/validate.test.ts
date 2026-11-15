@@ -435,7 +435,7 @@ describe('a rear seat takes any pilot — jet and sim alike', () => {
     DAYS[0].sims.oft[0].p = 'rocky'
     const hits = validate().all.filter((x: any) => x.code === 'QUAL' && (x.who || []).includes('rocky'))
     expect(hits.length).toBeGreaterThan(0)
-    expect(hits[0].msg).toBe('Wrong seat: a WSO in the front seat of OFT EP-4 08:00–09:30')
+    expect(hits[0].msg).toBe('Illegal seat: a WSO in the front seat of OFT EP-4 08:00–09:30')
   })
 })
 

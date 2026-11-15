@@ -1002,7 +1002,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - **Checked like a sortie (owner D1996, 11 Nov 26 — "a standby line that fly is checked like a sortie", over the report's
   recommended "keep it a shift"):** its event and its `day.fly` entry carry `flies: true` (`events.ts`, written only when
   true). Its START→END is a leg: a clash inside it is the red `DOUBLE_BOOK` — a lecture, an SC MAIN that only stands by —
-  never the shift's amber `SHIFT_SOFT`, whatever Logic's "SC MAIN clashes" settings say — they grade a shift that only
+  never the shift's amber `SHIFT_SOFT`, whatever Logic's "SC MAIN conflicts" settings say — they grade a shift that only
   stands by (`events.ts shiftEvHard`, the bug check of 12 Nov 26); a Meeting input inside it is the red `INPUT_FLY` ("Meeting but tasked — SC AM …"),
   as against a sortie; and the tight turn (END → the next take-off, needing `max(tightTurn, dekit + step)`) and the double
   turn (`DT` / `DT_SUM`) read it as a sortie (`validate.ts byP`). A sortie that starts after its END is a turn, never a

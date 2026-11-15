@@ -158,7 +158,7 @@ describe('the drop delta (5 Sep 26) — a drop says what it just broke, in the v
     toasts = []; kinds = []
     await dnd($(`#eRoster .rpuck[data-person="${wso}"]`), $(`#eWeek .seat[data-slot="${key}"]`))
     expect(slotVal(key)).toBe(wso)
-    const i = toasts.findIndex(t => /Wrong seat: a WSO in the front seat of /.test(t))
+    const i = toasts.findIndex(t => /Illegal seat: a WSO in the front seat of /.test(t))
     expect(i, `the validator's QUAL breach was toasted: ${toasts.join(' | ')}`).toBeGreaterThanOrEqual(0)
     expect(kinds[i]).toBe('hard')
     /* the puck the drop flagged is marked to pulse on its own day */

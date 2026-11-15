@@ -194,3 +194,29 @@ describe('D2055 — a standby shift with START and no END bears no crew rest unt
     expect(msgs(TUE, 'CREW_REST')).toHaveLength(1)
   })
 })
+
+/* [WARN-WORDS-STANDALONE] — A DUTY DESK MADE FROM AN SC SHIFT TEMPLATE, ITS START TYPED AND ITS END BLANK, IS LEFT OUT OF CREW
+   REST UNTIL ITS END IS TYPED, as an SC wave line is (owner D2073, 16 Nov 26 — "2 as recommended", over the walk's finding:
+   a Friday desk from 20:00 with no END "ended 21:00 → clear 09:00", START plus the Logic page's one-hour default for any
+   other row). The agent's reading, told to him: only a desk from an SC shift template, never every duty row with no END —
+   a plain desk keeps the assumed hour (the control below). */
+describe('D2073 — an SC-template duty desk with START and no END bears no crew rest until its END is typed', () => {
+  const desk = (di: number, str: string, end: string, sa?: string) => {
+    const blk: any = { label: sa ? 'SC Shift' : 'Standard', rows: [{ role: 'SXO PM', id: 'bane', str, end, more: [] }] }
+    if (sa) blk.sa = sa
+    day(di).dutywaves.push(blk)
+  }
+  const sat = () => add(SAT, wave([form({ to: '09:00', ld: '10:00' })], { intimes: ['07:00 IN TIME'] }))
+  it('Friday SC desk 20:00 with END blank: no crew rest on Saturday (it used to "end" 21:00 and clear 09:00)', () => {
+    desk(FRI, '20:00', '', 'sc'); sat()
+    expect(msgs(SAT, 'CREW_REST')).toEqual([])
+  })
+  it('the control: its END typed 23:00 clears at 11:00, so Saturday\'s 07:00 in-time breaks it', () => {
+    desk(FRI, '20:00', '23:00', 'sc'); sat()
+    expect(msgs(SAT, 'CREW_REST')).toHaveLength(1)
+  })
+  it('a plain desk (no SC template) with END blank keeps the assumed hour: ended 21:00, Saturday 07:00 breaks it', () => {
+    desk(FRI, '20:00', ''); sat()
+    expect(msgs(SAT, 'CREW_REST')).toHaveLength(1)
+  })
+})
