@@ -57,7 +57,7 @@ export function lgSettings(): LgGroup<LgSet>[] {
     ] },
     { g: 'Rows with no end time', items: [
       /* the assumed landing (D2046, D2047, D2053 — [WARN-WORDS-STANDALONE] piece B): its row, beside its neighbours */
-      { name: 'A flight', keys: ['fltLen'], line: () => 'A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.' },
+      { name: 'A flight', keys: ['fltLen'], line: () => 'A flight with a take-off and no landing is taken to land this long after take-off. Conflicts, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.' },
       { name: 'A sim', keys: ['simLen'], line: () => 'A sim with a start and no end is taken to run this long, for clashes and the crew list. It earns no OIL until its end is typed.' },
       { name: 'Any other row', keys: ['openEnd'], line: () => 'The same for a ground, programme or duty row.' },
     ] },

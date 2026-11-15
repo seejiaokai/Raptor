@@ -1,0 +1,12 @@
+www-w2-p3 v1
+KINDS ["=Flying wave","sc=SC","avalon=AVALON","bb=BB"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+LGSET ["crewRest=12h","maxRun=6 days","longDay=12h","reportLead=3h","briefLead=2h20","step=1h","dekit=30 min","debrief=2h","tightTurn=2h","reportText=IN TIME + WX/NOTAMS","epBrief=15 min","simDebrief=30 min","amtDebrief=30 min","fltLen=1h","simLen=1h30","openEnd=1h","scDayFrom=07:00","scDayTo=19:00","oilFullMin=6h01"]
+www-w2-p3 v1
+KINDS ["=Flying wave","sc=SC","avalon=AVALON","bb=BB"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+SC bfld keys ["ff:4.0.0.cs","ff:4.0.0.msn","ff:4.0.0.rl","ff:4.0.0.br","ff:4.0.0.to","ff:4.0.0.ld","ff:4.0.0.cs","ff:4.0.0.msn","ff:4.0.0.rl","ff:4.0.0.br","ff:4.0.0.to","ff:4.0.0.ld","ff:4.0.0.cs","ff:4.0.0.msn","ff:4.0.0.rl","ff:4.0.0.br","ff:4.0.0.to","ff:4.0.0.ld","ff:4.0.0.cs","ff:4.0.0.msn","ff:4.0.0.rl","ff:4.0.0.br","ff:4.0.0.to","ff:4.0.0.ld","ff:4.0.1.cs","ff:4.0.1.msn","ff:4.0.1.rl","ff:4.0.1.br","ff:4.0.1.to","ff:4.0.1.ld","ff:4.0.1.cs","ff:4.0.1.msn","ff:4.0.1.rl","ff:4.0.1.br","ff:4.0.1.to","ff:4.0.1.ld","ff:4.0.1.cs","ff:4.0.1.msn","ff:4.0.1.rl","ff:4.0.1.br","ff:4.0.1.to","ff:4.0.1.ld","ff:4.0.1.cs","ff:4.0.1.msn","ff:4.0.1.rl","ff:4.0.1.br","ff:4.0.1.to","ff:4.0.1.ld"]
+SC wave {"kind":"sc","keys":["label","kind","standalone","noconf","night","intimes","traffic","formations","rid"],"f":["cs","msn","shift","to","ld","aircraft","rid"]}
+LGSET ["crewRest=12h","maxRun=6 days","longDay=12h","reportLead=3h","briefLead=2h20","step=1h","dekit=30 min","debrief=2h","tightTurn=2h","reportText=IN TIME + WX/NOTAMS","epBrief=15 min","simDebrief=30 min","amtDebrief=30 min","fltLen=1h","simLen=1h30","openEnd=1h","scDayFrom=07:00","scDayTo=19:00","oilFullMin=6h01"]

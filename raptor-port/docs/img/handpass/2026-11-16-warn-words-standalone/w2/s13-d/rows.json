@@ -1,0 +1,74 @@
+[
+ [
+  "extras a-d",
+  "1536",
+  "(a) AVALON line START 20:00, END blank, Torch: Friday warnings",
+  "its own missing-END warning (RECORD)",
+  "[\"Torch — Not SC NIGHT current: AVALON NIGHT MAIN 20:00–07:00 ✕\"]",
+  "RECORDED",
+  "13-a1-avalon-fri-d.png"
+ ],
+ [
+  "extras a-d",
+  "1536",
+  "(a) Saturday ground item 06:00 for Torch",
+  "no crew-rest line from the END-less AVALON; RECORD",
+  "[]",
+  "RECORDED",
+  "13-a2-avalon-sat-d.png"
+ ],
+ [
+  "extras a-d",
+  "1536",
+  "(c) Friday SC line START 20:00 with B 19:00 typed (made to fly), END blank, Comet",
+  "its own warning that the END is missing (RECORD)",
+  "[\"Comet — Long day: 18h00 (limit 12h), 19:00 → 13:00 ✕\"]",
+  "RECORDED",
+  "13-c-sc-flying-d.png"
+ ],
+ [
+  "extras a-d",
+  "1536",
+  "(c) Saturday flight 04:00 for Comet after the END-less flying SC line",
+  "no crew-rest line caused by the SC line (RECORD)",
+  "[\"Comet — Crew rest: Friday duty ended 13:00 → clear 01:00 (next day). Report 01:40: 11h20 before his Saturday duty ends. ✕\"]",
+  "RECORDED",
+  "13-c2-sc-sat-d.png"
+ ],
+ [
+  "extras a-d",
+  "1536",
+  "(d) Monday flight T/O 16:00 for Havoc after a Sunday 23:30 flight, landing blank",
+  "a crew-rest line saying \"landing assumed 00:30 (T/O + 1h)\"",
+  "[\"Saber, Echo, Piston, Relay — 4 people are double turning: Saber, Echo, Piston, Relay ✕\"]",
+  "RECORDED",
+  "13-d1-monday-d.png"
+ ],
+ [
+  "extras a-d",
+  "1536",
+  "(d) Sunday: tapped Havoc's puck",
+  "the forward \"Breaks Monday\" trace row (RECORD whole)",
+  "{\"items\":[]}",
+  "RECORDED",
+  "13-d2-sunday-trace-d.png"
+ ],
+ [
+  "extras a-d",
+  "1536",
+  "(d) Sunday week strip",
+  "RECORD the \"Breaks Monday\" row",
+  "[] head ⚠ 1 issue ▼",
+  "RECORDED",
+  ""
+ ],
+ [
+  "extras a-d",
+  "1536",
+  "(b) published Friday: the 👁 controls on the week",
+  "RECORD the controls found",
+  "{\"pressed\":true,\"which\":\"data-beak\",\"signs\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}} | [\"BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu\",\"BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu\",\"BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu\",\"BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu\",\"BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu\",\"BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu\",\"BUTTON|planselbtn|planmenu|Switch between your plans, or look back at an issu\"]",
+  "RECORDED",
+  "13-b1-after-publish-d.png"
+ ]
+]

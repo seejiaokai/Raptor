@@ -650,6 +650,6 @@ describe('the Logic lines the nine rule fixes changed say what the app now does'
   /* D2046, D2047 ([WARN-WORDS-STANDALONE] piece B): the new setting's row, in "Rows with no end time" before the sim */
   it('D2046: the assumed flight length has its row, "A flight", before "A sim", with its words', () => {
     expect(lgSettings().find(g => g.g === 'Rows with no end time')!.items.map(s => s.name)).toEqual(['A flight', 'A sim', 'Any other row'])
-    expect(setting('A flight')).toBe('A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.')
+    expect(setting('A flight')).toBe('A flight with a take-off and no landing is taken to land this long after take-off. Conflicts, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.')
   })
 })

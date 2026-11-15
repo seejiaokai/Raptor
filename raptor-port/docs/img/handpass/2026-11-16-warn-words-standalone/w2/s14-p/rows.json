@@ -1,0 +1,47 @@
+[
+ [
+  "extras d,b",
+  "402",
+  "(d) next week Monday: flight T/O 16:00 for Havoc after the Sunday 23:30 flight (landing blank)",
+  "a crew-rest line saying landing assumed 00:30 ... needs 12h",
+  "[\"Havoc — Crew rest: Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. Report 13:40: 11h10 rest, needs 12h. ✕\",\"Ranger, Echo — 2 people are double turning: Ranger, Echo ✕\"]",
+  "PASS",
+  "14-d1-monday-p.png"
+ ],
+ [
+  "extras d,b",
+  "402",
+  "(d) back on the current week: tapped Havoc's Sunday puck",
+  "the forward \"Breaks Monday\" trace row (RECORD whole)",
+  "{\"items\":[\"Breaks Monday Havoc — had to leave by 01:40 (next day). Crew rest: Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. Report 13:40: 11h10 rest, needs 12h.\"]}",
+  "PASS",
+  "14-d2-sunday-trace-p.png"
+ ],
+ [
+  "extras d,b",
+  "402",
+  "(d) Sunday week strip",
+  "RECORD the \"Breaks Monday\" row",
+  "[] | head NO STRIP",
+  "RECORDED",
+  "14-d3-sunday-strip-p.png"
+ ],
+ [
+  "extras d,b",
+  "402",
+  "(b) published Friday: the version selector opened",
+  "RECORD its rows",
+  "[\"BUTTON|planselbtn|planmenu=0|Live working copy ▾\",\"BUTTON|dinfobtn|dayinfo=0|i\",\"BUTTON|dbeak locked|beak=0|Publish day\",\"BUTTON|planselbtn|planmenu=1|Live working copy ▾\",\"BUTTON|dinfobtn|dayinfo=1|i\",\"BUTTON|dbeak locked|beak=1|Publish day\",\"BUTTON|planselbtn|planmenu=2|Live working copy ▾\",\"BUTTON|dinfobtn|dayinfo=2|i\",\"BUTTON|dbeak locked|beak=2|Publish day\",\"BUTTON|planselbtn|planmenu=3|Live working copy ▾\",\"BUTTON|dinfobtn|dayinfo=3|i\",\"BUTTON|dbeak locked|beak=3|Publish day\",\"BUTTON|planselbtn|planmenu=4|Live working copy ▾\",\"BUTTON|dinfobtn|dayinfo=4|i\",\"BUTTON|dbeak dunpub|unpub=4|Unpublish\",\"BUTTON|planselbtn|planmenu=5|Live working copy ▾\",\"BUTTON|dinfobtn|dayinfo=5|i\",\"BUTTON|dbeak locked|beak=5|Publish day\",\"BUTTON|planselbtn|planmenu=6|Live working copy ▾\",\"BUTTON|dinfobtn|dayinfo=6|i\",\"BUTTON|dbeak locked|beak=6|Publish day\",\"BUTTON|wm sa|plangolive=4|Live working copy ●live now — differences from Ori\",\"BUTTON|wm|planpv=2026-07-17#0|Originalread-only — look, don't change\",\"BUTTON|wm|plandup=1|+ Alt Plan\"]",
+  "RECORDED",
+  "14-b1-plan-menu-p.png"
+ ],
+ [
+  "extras d,b",
+  "402",
+  "(b) the 👁 look at the published version, day details opened from it",
+  "day details lines of the PUBLISHED version incl. the Conflict line, version named",
+  "[\"Warning · Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20\",\"Advisory · Misses flight debrief Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20\"] ",
+  "PASS",
+  "14-b3-look-daydetails-p.png"
+ ]
+]

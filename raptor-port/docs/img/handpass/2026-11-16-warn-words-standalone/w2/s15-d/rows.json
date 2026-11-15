@@ -1,0 +1,74 @@
+[
+ [
+  "plain-user round",
+  "1536",
+  "ALL AVAIL window opened, closed by Escape",
+  "RECORD (Escape known not to close it: [ALLAVAIL-ESCAPE])",
+  "open before 1, after 1; page unchanged true",
+  "RECORDED",
+  "15-all-Escape-d.png"
+ ],
+ [
+  "plain-user round",
+  "1536",
+  "ALL AVAIL window opened, closed by a tap outside",
+  "closes or RECORD",
+  "open before 1, after 1; page unchanged true",
+  "RECORDED",
+  "15-all-atapoutside-d.png"
+ ],
+ [
+  "plain-user round",
+  "1536",
+  "ALL AVAIL window opened, closed by its ✕",
+  "closes or RECORD",
+  "open before 1, after 0; page unchanged true",
+  "PASS",
+  "15-all-its-d.png"
+ ],
+ [
+  "plain-user round",
+  "1536",
+  "Insights opened, closed by its ✕",
+  "closes",
+  "opened true, still open false",
+  "PASS",
+  "15-ins-after-its-d.png"
+ ],
+ [
+  "plain-user round",
+  "1536",
+  "Insights opened, closed by Escape",
+  "RECORD",
+  "opened true, still open false",
+  "RECORDED",
+  "15-ins-after-Escape-d.png"
+ ],
+ [
+  "plain-user round",
+  "1536",
+  "Insights opened, closed by a tap outside",
+  "RECORD",
+  "opened true, still open false",
+  "RECORDED",
+  "15-ins-after-atapoutside-d.png"
+ ],
+ [
+  "plain-user round",
+  "1536",
+  "View-only Sched (page viewsched) as the admin: Friday strip and day details",
+  "the published day's warnings, same words as Edit Schedule",
+  "{\"head\":\"⚠ 2 issues · 1 warning ▼\",\"items\":[\"Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20\",\"Misses flight debrief Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20\"],\"dd\":[\"Warning · Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20\",\"Advisory · Misses flight debrief Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20\"],\"ddWhy\":\"\"}",
+  "PASS",
+  "15-view-admin-d.png"
+ ],
+ [
+  "plain-user round",
+  "1536",
+  "View-only Sched as Ranger (member): Friday strip and day details",
+  "the published day's warnings, same words (members read them too)",
+  "{\"head\":\"⚠ 2 issues · 1 warning ▼\",\"items\":[\"Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20\",\"Misses flight debrief Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20\"],\"dd\":[\"Warning · Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20\",\"Advisory · Misses flight debrief Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20\"],\"ddWhy\":\"\"}",
+  "PASS",
+  "15-view-ranger-d.png"
+ ]
+]
