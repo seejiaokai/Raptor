@@ -12,6 +12,8 @@
 // Demo data only. The squadrons are the bare numbers 142 and 149; the detachment is the invented "Exercise North".
 import { chromium } from '@playwright/test'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { unlinkSync } from 'node:fs'
 
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const URL_ = process.env.MQ_URL || 'http://localhost:4180/'
@@ -625,8 +627,194 @@ async function pic5b(sz) {
   }
 }
 
+// ---------- 10, 11: B3 — who signs a wave both squadrons fly in (his questions of 17 Nov 26) ----------
+// The recommendation: the squadron whose wave it is publishes and signs it. Two orders, each seen from both squadrons:
+//   10 — 149 signs first, 142 not yet;  11 — 142 signs first, 149 not yet.
+// 149's view: Monday as it stands, RU wearing B1's look 2 (the grey "142" badge, the formation a shade lighter).
+// 142's view: only 142's own lines of 149's wave (B2) — VL and VL's in-time line hidden, "+ In-time" hidden (the wave's
+// in-times are 149's to set) — and the wave's head tagged "149" (B1's badge) plus 149's own version chip, cloned from
+// the day head's real chip with its measured look (that look is set only inside the day head). Each frame is two clips —
+// the day head and wave 1 — stacked into one picture with a thin gap.
+
+const PUBLISH = () => { const w = window; const g = w.signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; w.setDayApproved(0, true) }
+
+function stitch(top, bottom, outFile) {
+  const a = `${OUT}/${top}`, b = `${OUT}/${bottom}`
+  const w = execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'stream=width', '-of', 'csv=p=0', a]).toString().trim()
+  const w2 = execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'stream=width', '-of', 'csv=p=0', b]).toString().trim()
+  const W = Math.max(+w, +w2)
+  execFileSync('ffmpeg', ['-loglevel', 'error', '-y', '-i', a, '-i', b, '-filter_complex',
+    `[0]pad=${W}:ih:0:0:color=0x0B0D10[x];[1]pad=${W}:ih+24:0:24:color=0x0B0D10[y];[x][y]vstack`, `${OUT}/${outFile}`])
+  unlinkSync(a); unlinkSync(b)
+  console.log('  stitched', outFile)
+}
+
+async function weekFrame(sz, { pub, view, tag, verPub }) {
+  const { ctx, page } = await world(sz)
+  if (pub) await page.evaluate(PUBLISH)
+  await toEdit(page)
+  const m = await page.evaluate(({ view, tag, verPub }) => {
+    const mq = window.__mq, mon = mq.monday()
+    const head = mon.querySelector('.day-head'), g = mon.querySelector('.go')
+    const forms = [...g.querySelectorAll('.form')]
+    const ru = forms.find(x => x.querySelector('.csmsn .ntx').textContent.trim() === 'RU')
+    const vl = forms.find(x => x.querySelector('.csmsn .ntx').textContent.trim() === 'VL')
+    if (!ru || !vl) return { err: 'RU/VL' }
+    const badge = (txt, small) => {
+      const c = document.createElement('span'); c.className = 'sarole ro'; c.textContent = txt; c.setAttribute('data-mine', '1')
+      c.style.background = 'rgba(255,255,255,.08)'; c.style.borderColor = 'rgba(255,255,255,.22)'; c.style.color = 'var(--ink-2)'
+      c.style.verticalAlign = 'middle'
+      if (small) { c.style.fontSize = '7px'; c.style.padding = '0 4px' }
+      return c
+    }
+    const out = { dayChip: head.querySelector('.dhver').innerText.trim() }
+    if (view === '149') {
+      // B1 look 2 on RU
+      const leaves = [...ru.querySelector('.csmsn').querySelectorAll('*')].filter(e => !e.children.length && e.textContent.trim())
+      const msn = leaves.find(e => e.textContent.trim() === 'BFM')
+      const phone = innerWidth < 600, c = badge('142', phone)
+      if (phone) { c.style.display = 'block'; c.style.width = 'fit-content'; c.style.marginTop = '2px'; msn.after(c) }
+      else { c.style.marginLeft = '5px'; c.style.position = 'relative'; c.style.top = '-1px'; msn.appendChild(c) }
+      ru.style.background = 'rgba(255,255,255,.055)'
+      const dv = head.querySelector('.dhver'); dv.style.position = 'relative'; mq.mark(dv, tag, 'below')
+    } else {
+      // 142's view of 149's wave: its own line only
+      mq.hide(vl)
+      // the wave's typed in-time lines are the wave's (149's), kept as they stand: hiding one line left its ✕ behind
+      const itb = g.querySelector('[data-itadd]'); if (itb) mq.hide(itb)
+      // 149's version chip: a real one measured inside the day head, its look copied onto the clone
+      const probe = document.createElement('span'); probe.className = 'dhver'
+      probe.innerHTML = verPub
+        ? '<span class="verchip orig"><svg class="vtick" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><circle cx="6" cy="6" r="6"></circle><path d="M3.3 6.2l1.8 1.8 3.6-3.8"></path></svg>ORIG</span>'
+        : '<span class="verchip draft">DRAFT</span>'
+      head.appendChild(probe)
+      const src = probe.firstElementChild, cs = getComputedStyle(src)
+      const chip = src.cloneNode(true); chip.setAttribute('data-mine', '1')
+      for (const p of ['font-family', 'font-size', 'font-weight', 'letter-spacing', 'line-height', 'color', 'background-color', 'box-shadow', 'border-top-width', 'border-top-style', 'border-top-color', 'border-radius', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'display', 'align-items', 'gap', 'column-gap'])
+        chip.style.setProperty(p, cs.getPropertyValue(p))
+      chip.style.borderWidth = cs.borderTopWidth; chip.style.borderStyle = cs.borderTopStyle; chip.style.borderColor = cs.borderTopColor
+      if (verPub) { const t = chip.querySelector('.vtick'); const ts = getComputedStyle(src.querySelector('.vtick')); t.style.display = 'block'; t.style.flex = '0 0 auto'; t.querySelector('circle').style.fill = '#F1F4F7'; const pth = t.querySelector('path'); pth.style.fill = 'none'; pth.style.stroke = '#0B0D10'; pth.style.strokeWidth = '1.7'; pth.style.strokeLinecap = 'round'; pth.style.strokeLinejoin = 'round'; void ts }
+      probe.remove()
+      const grp = document.createElement('span'); grp.setAttribute('data-mine', '1')
+      grp.style.display = 'inline-flex'; grp.style.alignItems = 'center'; grp.style.gap = '5px'; grp.style.marginLeft = '8px'; grp.style.marginRight = '6px'; grp.style.verticalAlign = 'middle'
+      grp.appendChild(badge('149')); grp.appendChild(chip)
+      const tab = g.querySelector('.go-tab'); tab.querySelector('.asd').after(grp)
+      grp.style.position = 'relative'; mq.mark(grp, tag, 'below')
+      out.waveTab = tab.innerText.replace(/\s+/g, ' ').trim()
+    }
+    return out
+  }, { view, tag, verPub })
+  if (m.err) throw new Error('weekFrame ' + JSON.stringify(m))
+  await page.waitForTimeout(250)
+  const headClip = await page.evaluate(() => {
+    const mq = window.__mq, mon = mq.monday(), h = mon.querySelector('.day-head'); mq.scrollUnder(mon, 4)
+    const r = h.getBoundingClientRect(); return { x: Math.max(0, r.left - 4), y: Math.max(mq.topH(), r.top - 4), width: Math.min(innerWidth - Math.max(0, r.left - 4), r.width + 8), height: r.height + 26 }
+  })
+  const fa = `_t-${tag}-${sz}-a.png`, fb = `_t-${tag}-${sz}-b.png`
+  await shot(page, fa, headClip)
+  const waveClip = await page.evaluate(() => {
+    const mq = window.__mq, g = mq.monday().querySelector('.go'); mq.scrollUnder(g, 8)
+    const r = g.getBoundingClientRect(), x = Math.max(0, r.left - 4), y = Math.max(mq.topH(), r.top - 4)
+    return { x, y, width: Math.min(innerWidth - x, r.width + 8), height: Math.min(innerHeight - y, r.height + 8) }
+  })
+  await page.waitForTimeout(150)
+  await shot(page, fb, waveClip)
+  await ctx.close()
+  return { fa, fb, m }
+}
+
+async function pic10(sz) {
+  const cases = [
+    { file: '10-b3-149first-149', pub: true, view: '149', tag: '10a', verPub: true,
+      cap: m => `149 signed first, seen on 149's schedule. Monday is published, its day head "${m.dayChip}" (mark 10a, the app's own seal): 149's four signed the whole day, 142's RU in wave 1 included — RU wears B1's look 2, the grey "142" badge and the lighter block. 142 signs nothing here.` },
+    { file: '10-b3-149first-142', pub: false, view: '142', tag: '10b', verPub: true,
+      cap: m => `149 signed first, seen on 142's schedule at the same moment. 142's own Monday is still "${m.dayChip}" (real). In 149's wave 1 it shows only its own RU; the wave's head reads "149" and 149's seal "ORIG" (mark 10b, drawn in), so 142 sees the line is issued and final. 142's four never sign this wave. VL is 149's and not shown; the wave's in-time lines stay, since they are the wave's; "+ In-time" is 149's to use, so it is not offered.` },
+    { file: '11-b3-142first-142', pub: true, view: '142', tag: '11a', verPub: false,
+      cap: m => `142 signed first, seen on 142's schedule. 142's Monday is published, "${m.dayChip}" (real) — its four signed 142's own day. 149's wave 1 still reads "149" and "DRAFT" (mark 11a, drawn in): RU is in 149's working copy and may still change. When 149 publishes, the tag turns to 149's "ORIG" by itself and 142's day reads nothing pending — the wave was never in 142's signature.` },
+    { file: '11-b3-142first-149', pub: false, view: '149', tag: '11b', verPub: false,
+      cap: m => `142 signed first, seen on 149's schedule. 149's Monday is still "${m.dayChip}" (mark 11b, real): RU with its grey "142" badge waits in 149's working copy until 149's four sign and publish it.` },
+  ]
+  for (const c of cases) {
+    const { fa, fb, m } = await weekFrame(sz, c)
+    const f = `${c.file}-${sz}-proposed.png`
+    stitch(fa, fb, f)
+    rec(f, 'B3', sz, 'proposed', c.cap(m) + ' (No 149 in the app yet: 142\'s Monday stands in for each schedule; the day head above, wave 1 below.)')
+    notes.push(`pic10 ${c.file} ${sz}: ${JSON.stringify(m)}`)
+  }
+}
+
+// ---------- 12: B3 follow-up — how a 142 line gets into 149's wave ----------
+// Recommended: each squadron adds its own lines. 142's scheduler, on 142's board, opens "+ Wave": under the kinds a new
+// group lists 149's waves that day; picking one adds a blank 142 line in it, and that wave then shows on 142's schedule
+// (10b's look), its "+ Line" adding 142 lines. The group is the menu's own Templates group, cloned (h5 + a column of .wm
+// buttons with their .wm-sub line). Other choice: 149's own "+ Line" asks whose line — a small card at the button
+// (lesson 77), the menu's own look.
+async function pic12(sz) {
+  for (const which of ['join', 'ask']) {
+    const { ctx, page } = await world(sz)
+    await toEdit(page)
+    // a wave's first line reads R, B, T/O, LD; the typed in-time lines above it end in "H" and are skipped
+    const waves = await page.evaluate(() => [...window.__mq.monday().querySelectorAll('.go')].map(g => { const t = [...g.innerText.matchAll(/\b(\d\d:\d\d)(?!H)/g)].map(x => x[1]); return { to: t[2], cs: g.querySelector('.form .csmsn .ntx').textContent.trim() } }))
+    if (!waves.length || waves.some(w => !w.cs)) throw new Error('pic12 premise: waves ' + JSON.stringify(waves))
+    await page.evaluate(() => document.querySelector('#eWeek .day:not(.peek) [data-sbday="0"]').click())
+    await page.waitForTimeout(1200)
+    let info
+    if (which === 'join') {
+      await page.evaluate(() => [...document.querySelectorAll('[data-wvadd]')].find(b => b.offsetParent).click())
+      await page.waitForTimeout(600)
+      info = await page.evaluate((waves) => {
+        const mq = window.__mq, menu = [...document.querySelectorAll('.wavemenu')].find(e => mq.vis(e))
+        if (!menu) return { err: 'no wave menu' }
+        const rows = menu.querySelectorAll('.wm-row'), kinds = rows[0]
+        const box = document.createElement('div'); box.setAttribute('data-mine', '1')
+        box.innerHTML = `<h5>Join a 149 wave</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">` +
+          waves.map((w, i) => `<button class="wm">Wave ${i + 1}<span class="wm-sub">149's ${w.cs} in it</span></button>`).join('') + `</div>`
+        kinds.after(box); box.style.position = 'relative'; box.style.paddingTop = '6px'; box.style.paddingLeft = '4px'; mq.mark(box, '12a')
+        // the longer menu runs past the screen's foot: lift it so the whole group is in the picture
+        const mr = menu.getBoundingClientRect(), over = mr.bottom - innerHeight + 12
+        if (over > 0 && getComputedStyle(menu).position !== 'static') menu.style.top = Math.max(mq.topH() + 6, mr.top - over) + 'px'
+        window.__mqClipEl = menu
+        return { h: [...menu.querySelectorAll('h5')].map(h => h.textContent.trim()) }
+      }, waves)
+    } else {
+      info = await page.evaluate(() => {
+        const mq = window.__mq, btn = [...document.querySelectorAll('[data-gline]')].find(b => b.offsetParent)
+        if (!btn) return { err: 'no + Line' }
+        btn.scrollIntoView({ block: 'center' })
+        // the menu's own look: open the real + Wave menu, clone its box, then close the real one
+        const r = btn.getBoundingClientRect()
+        const card = document.createElement('div'); card.className = 'wavemenu'; card.setAttribute('data-mine', '1')
+        card.innerHTML = `<h5>Add a line for</h5><div class="wm-row"><button class="wm on">149</button><button class="wm">142</button></div>`
+        card.style.position = 'fixed'; card.style.zIndex = '9999'; card.style.top = (r.bottom + 6) + 'px'
+        document.body.appendChild(card)
+        const w = card.getBoundingClientRect().width
+        card.style.left = Math.max(8, Math.min(innerWidth - w - 8, r.right - w)) + 'px'
+        btn.style.outline = '2px solid var(--accent)'; btn.style.outlineOffset = '1px'
+        card.style.overflow = 'visible'; card.style.paddingRight = '34px'; mq.mark(card, '12b')
+        const wrap = document.createElement('div'); wrap.style.position = 'fixed'; wrap.setAttribute('data-mine', '1')
+        const cr = card.getBoundingClientRect(), go = btn.closest('.sb-go').getBoundingClientRect()
+        window.__mqClip = { x: Math.max(0, Math.min(go.left, cr.left - 40) - 6), y: Math.max(mq.topH(), go.top - 6), w: 0, b: Math.min(innerHeight, Math.max(cr.bottom, go.top + 220) + 10) }
+        window.__mqClip.w = Math.min(innerWidth - window.__mqClip.x, Math.max(go.right, cr.right) + 6 - window.__mqClip.x)
+        return { cs: getComputedStyle(card).backgroundColor, wmOn: !!card.querySelector('.wm.on') }
+      })
+    }
+    if (info.err) throw new Error('pic12 ' + which + ': ' + info.err)
+    await page.waitForTimeout(300)
+    let clip
+    if (which === 'join') clip = await clipOf(page, null, 10)
+    else clip = await page.evaluate(() => { const c = window.__mqClip; return { x: c.x, y: c.y, width: c.w, height: c.b - c.y } })
+    const f = `12-b3-${which}-${sz}-proposed.png`
+    await shot(page, f, clip)
+    rec(f, 'B3', sz, 'proposed', which === 'join'
+      ? `Recommended (mark 12a, drawn in): on 142's Scheduler Board, the real "+ Wave" menu gains a group "Join a 149 wave", listing 149's waves that day, each with the first of 149's lines in it. Picking one adds a blank 142 line inside 149's wave; that wave then shows on 142's schedule as in 10b, and its "+ Line" adds more 142 lines. 149's own "+ Line" stays as it is today. (142's waves stand in for 149's here.)`
+      : `Other choice (mark 12b, drawn in): on 149's board the wave's "+ Line" asks whose line, a small card at the button in the menu's own look — "149" picked by default, "142" for a line of theirs. One more tap on every line 149 adds.`)
+    notes.push(`pic12 ${which} ${sz}: ${JSON.stringify(info)}`)
+    await ctx.close()
+  }
+}
+
 browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
-const ALL = { pic1, pic2, pic3, pic4, pic5, pic5b, pic7, pic8, pic9 }
+const ALL = { pic1, pic2, pic3, pic4, pic5, pic5b, pic7, pic8, pic9, pic10, pic12 }
 try {
   for (const sz of ['d', 'p']) {
     console.log('== ' + SIZES[sz].name)

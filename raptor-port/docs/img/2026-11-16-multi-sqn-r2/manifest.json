@@ -23,6 +23,78 @@
     "kind": "today",
     "caption": "Real. An overseas duty input (Anvil, 13–31 Jul, filed through the Inputs door) opened from Monday's Unavailable row on Edit Schedule: Person, Type \"OD\", Title, Duration, Document, Remarks."
   },
+  "10-b3-149first-142-d-proposed.png": {
+    "question": "B3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149 signed first, seen on 142's schedule at the same moment. 142's own Monday is still \"DRAFT\" (real). In 149's wave 1 it shows only its own RU; the wave's head reads \"149\" and 149's seal \"ORIG\" (mark 10b, drawn in), so 142 sees the line is issued and final. 142's four never sign this wave. VL is 149's and not shown; the wave's in-time lines stay, since they are the wave's; \"+ In-time\" is 149's to use, so it is not offered. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "10-b3-149first-142-p-proposed.png": {
+    "question": "B3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "149 signed first, seen on 142's schedule at the same moment. 142's own Monday is still \"DRAFT\" (real). In 149's wave 1 it shows only its own RU; the wave's head reads \"149\" and 149's seal \"ORIG\" (mark 10b, drawn in), so 142 sees the line is issued and final. 142's four never sign this wave. VL is 149's and not shown; the wave's in-time lines stay, since they are the wave's; \"+ In-time\" is 149's to use, so it is not offered. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "10-b3-149first-149-d-proposed.png": {
+    "question": "B3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149 signed first, seen on 149's schedule. Monday is published, its day head \"ORIG\" (mark 10a, the app's own seal): 149's four signed the whole day, 142's RU in wave 1 included — RU wears B1's look 2, the grey \"142\" badge and the lighter block. 142 signs nothing here. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "10-b3-149first-149-p-proposed.png": {
+    "question": "B3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "149 signed first, seen on 149's schedule. Monday is published, its day head \"ORIG\" (mark 10a, the app's own seal): 149's four signed the whole day, 142's RU in wave 1 included — RU wears B1's look 2, the grey \"142\" badge and the lighter block. 142 signs nothing here. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-b3-142first-142-d-proposed.png": {
+    "question": "B3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142 signed first, seen on 142's schedule. 142's Monday is published, \"ORIG\" (real) — its four signed 142's own day. 149's wave 1 still reads \"149\" and \"DRAFT\" (mark 11a, drawn in): RU is in 149's working copy and may still change. When 149 publishes, the tag turns to 149's \"ORIG\" by itself and 142's day reads nothing pending — the wave was never in 142's signature. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-b3-142first-142-p-proposed.png": {
+    "question": "B3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142 signed first, seen on 142's schedule. 142's Monday is published, \"ORIG\" (real) — its four signed 142's own day. 149's wave 1 still reads \"149\" and \"DRAFT\" (mark 11a, drawn in): RU is in 149's working copy and may still change. When 149 publishes, the tag turns to 149's \"ORIG\" by itself and 142's day reads nothing pending — the wave was never in 142's signature. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-b3-142first-149-d-proposed.png": {
+    "question": "B3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142 signed first, seen on 149's schedule. 149's Monday is still \"DRAFT\" (mark 11b, real): RU with its grey \"142\" badge waits in 149's working copy until 149's four sign and publish it. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-b3-142first-149-p-proposed.png": {
+    "question": "B3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142 signed first, seen on 149's schedule. 149's Monday is still \"DRAFT\" (mark 11b, real): RU with its grey \"142\" badge waits in 149's working copy until 149's four sign and publish it. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "12-b3-ask-d-proposed.png": {
+    "question": "B3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Other choice (mark 12b, drawn in): on 149's board the wave's \"+ Line\" asks whose line, a small card at the button in the menu's own look — \"149\" picked by default, \"142\" for a line of theirs. One more tap on every line 149 adds."
+  },
+  "12-b3-ask-p-proposed.png": {
+    "question": "B3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Other choice (mark 12b, drawn in): on 149's board the wave's \"+ Line\" asks whose line, a small card at the button in the menu's own look — \"149\" picked by default, \"142\" for a line of theirs. One more tap on every line 149 adds."
+  },
+  "12-b3-join-d-proposed.png": {
+    "question": "B3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Recommended (mark 12a, drawn in): on 142's Scheduler Board, the real \"+ Wave\" menu gains a group \"Join a 149 wave\", listing 149's waves that day, each with the first of 149's lines in it. Picking one adds a blank 142 line inside 149's wave; that wave then shows on 142's schedule as in 10b, and its \"+ Line\" adds more 142 lines. 149's own \"+ Line\" stays as it is today. (142's waves stand in for 149's here.)"
+  },
+  "12-b3-join-p-proposed.png": {
+    "question": "B3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Recommended (mark 12a, drawn in): on 142's Scheduler Board, the real \"+ Wave\" menu gains a group \"Join a 149 wave\", listing 149's waves that day, each with the first of 149's lines in it. Picking one adds a blank 142 line inside 149's wave; that wave then shows on 142's schedule as in 10b, and its \"+ Line\" adds more 142 lines. 149's own \"+ Line\" stays as it is today. (142's waves stand in for 149's here.)"
+  },
   "2-a2-odrow-d-proposed.png": {
     "question": "A2",
     "size": "desktop",
