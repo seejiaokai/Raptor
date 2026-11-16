@@ -157,6 +157,8 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - A changed day rewrites only its changed blocks, compared by their freshly drawn markup, falling back to the whole day when the shapes differ, and a drop finds its target before the ghost comes down; the measured dead ends are not retried; detail: `performance.md` §A, `ui-contracts.md` §Rendering.
 
 ## Not built yet
+- A detachment is a temporary unit under a name of its own (149's could be "249"), with its own manpower and schedule; an option moves people between the two; no conflicts are flagged across a squadron and its detachment, and no man is planned in two locations — design only, [MULTI-SQN-DESIGN] [D2088].
+- His lean for two squadrons flying together at home: one wave may hold formations of both; a 142 formation shows on 142's own schedule too and may be planned by either squadron's scheduler, 142 still planning the rest of its day; whether conflicts are flagged across the two is open — design only [D2089].
 - Caps and ops limits is a weekly form: each person fills it in at the start of the week, cleared by itself every week; one button shows who has completed it, those flying above all; a click switches the check off; its detail asked in rounds when its batch is planned — [CAPS-OPS-LIMITS] [D2084].
 - The "+ Block" menu calling the built-in Standard block "BB desk" is a small fix for later, its right name put to him — [BLOCK-MENU-BB-DESK] [D2021].
 - The day lock is a simple mark, not a hard lock: a day shows who is editing it, set when he starts and cleared once his work is saved, so two people never edit it at once by accident; the database itself refuses nobody, since the app is used within the unit — at the database step, [DB-SYNC-MODEL] [D1751].
