@@ -90,7 +90,7 @@ IT side's answers of 8 and 10 Nov 26 (`[IT-QUESTIONS]`) and `raptor-port/docs/da
 - **Stale records to correct when the design is agreed (D201):** data-model §11's intro ("one business unit … no
   cross-squadron rows") and §Squadrons' first paragraph; the 10 Nov answers not yet folded into the handover documents.
 
-## His answers to the review's four questions, and what he added, 16 Nov 26 (chat 91 — D2091–D2097)
+## His answers to the review's four questions, and what he added, 16 Nov 26 (chat 91 — D2091–D2098)
 
 *"All four as recommended."* The four questions as chat 90 put them, each now a ruling:
 - **Borrowing a man (D2091):** a scheduler picks the other squadron's man freely, with no request, where both squadrons
@@ -126,7 +126,7 @@ IT side's answers of 8 and 10 Nov 26 (`[IT-QUESTIONS]`) and `raptor-port/docs/da
   the user?"* No conflict, the app decides nothing. Recommended with it, to confirm: each squadron's ALL AVAIL counts its
   own people only (so he stands in 142's, and never earns OIL twice); its window shows his morning with 149; a squadron
   that wants him names him — a pick (D2091).
-- **What the home schedule shows for a borrowed man — his offered option, 16 Nov 26, not ruled:** *"149 just plans this
+- **What the home schedule shows for a borrowed man — his offered option, 16 Nov 26, RULED the same day, "as recommended" (D2098):** *"149 just plans this
   person on their schedule. but on 142 schedule it just says attach 149. just like our current input. or should it show
   the event on 142, but have a 149 label?"* **Recommended: his first — by whose line it is.** (a) A 142 man in a seat or
   an event of 149's own: the line is 149's alone; 142's schedule shows one row for him, "Attach · 149" with the times,
