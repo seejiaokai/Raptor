@@ -1,0 +1,29 @@
+[
+ [
+  "R2a",
+  "desktop",
+  "Nomad (not SC NIGHT current) in AVALON MAIN front seat; read Q chip title, list; hover the chip",
+  "chip title \"Qual / illegal seat\"; list \"Not SC NIGHT current: ...\"; no \"Illegal seat\" line for him",
+  "chips [{\"puckTitle\":\"Nomad · C · ops wingman · Qual / illegal seat\",\"chip\":\"Q\",\"chipTitle\":\"Qual / illegal seat\"},{\"puckTitle\":\"Nomad · C · ops wingman · Qual / illegal seat\",\"chip\":\"Q\",\"chipTitle\":\"Qual / illegal seat\"}] | Nomad lines [\"Nomad — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 ✕\"] | after hover: Nomad — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00",
+  "PASS",
+  "w2/r2-d/01-a-board.png"
+ ],
+ [
+  "R2b",
+  "desktop",
+  "Hex (WSO) in an ordinary flight front seat; Q chip title and list; hover the chip",
+  "chip \"Qual / illegal seat\"; list \"Hex — Illegal seat: a WSO in the front seat of …\"",
+  "chips [{\"puckTitle\":\"Hex · C · ops wingman · Qual / illegal seat\",\"chip\":\"Q\",\"chipTitle\":\"Qual / illegal seat\"},{\"puckTitle\":\"Hex · C · ops wingman · Qual / illegal seat\",\"chip\":\"Q\",\"chipTitle\":\"Qual / illegal seat\"},{\"puckTitle\":\"Hex · C · ops wingman · Qual / illegal seat\",\"chip\":\"Q\",\"chipTitle\":\"Qual / illegal seat\"}] | Hex lines [\"Hex — Illegal seat: a WSO in the front seat of this line (T/O 09:00) ✕\"] | after: Hex — Illegal seat: a WSO in the front seat of this line (T/O 09:00)",
+  "PASS",
+  "w2/r2-d/03-b-board.png"
+ ],
+ [
+  "R2 week",
+  "desktop",
+  "week page, same day: pucks and list",
+  "RECORD",
+  "chips [\"pike:Qual / illegal seat\",\"rocky:Qual / illegal seat\",\"pike:Qual / illegal seat\",\"rocky:Qual / illegal seat\",\"dice:-\",\"shaft:-\",\"slash:-\",\"snap:-\",\"taipan:-\",\"beams:-\",\"chaps:-\",\"boosh:-\",\"prowler:-\",\"pump:-\",\"bane:-\",\"stiff:-\",\"mamba:-\",\"harpoon:-\",\"split:-\",\"nact:-\",\"dj:-\",\"slipway:-\",\"salsa:-\",\"bruise:-\",\"casper:-\",\"razer:-\",\"ignite:-\",\"fantom:-\",\"vegas:-\",\"prism:-\",\"haowen:-\",\"bapster:-\",\"glass:-\",\"freak:-\",\"drill:-\",\"nasty:-\",\"dirty:-\",\"stuff:-\",\"wolf:-\",\"ammo:-\",\"pain:-\",\"psy:-\",\"spaceman:-\",\"plasma:-\",\"riddler:-\",\"sufa:-\",\"xray:-\",\"divot:-\",\"shrek:-\"] | lines [\"SC currency — wrong shift Nomad — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Illegal seat Hex — Illegal seat: a WSO in the front seat of this line (T/O 09:00) ✕\"]",
+  "RECORDED",
+  "w2/r2-d/05-week-strip.png"
+ ]
+]

@@ -1,0 +1,20 @@
+[
+ [
+  "S6",
+  "desktop",
+  "Tue: SC desk START 20:00 END blank (Ranger + Echo); ground MEETING 20:30-20:45 with Ranger",
+  "the desk still occupies its assumed 20:00-21:00: a conflict line for Ranger with the meeting",
+  "⚠ 1 issue · 1 warning ▼ [\"Conflict Ranger — Conflict: SXO AM duty 20:00–21:00 & MEETING 20:30–20:45 ✕\"]",
+  "PASS",
+  "w1/s06/03-v1-week-strip.png"
+ ],
+ [
+  "S6",
+  "desktop",
+  "Wed: Otter alone on an SC desk START 20:00 END blank, plus an 08:00-08:30 task",
+  "long-day warning: span 08:00 to 21:00 = 13h against 12h",
+  "⚠ 1 issue ▼ [\"Long day Otter — Long day: 13h00 (limit 12h), 08:00 → 21:00 ✕\"]",
+  "PASS",
+  "w1/s06/04-v2-week-strip.png"
+ ]
+]

@@ -458,7 +458,7 @@ describe('view-week markup parity with the reference', () => {
      does not have, so its legend swatch is excised from both sides — a no-op
      on the reference — and pinned positively just below. */
   const noRunKey = (s: string) => s.replace(
-    /\n\s*<span><span class="qk"[^>]*>7<\/span>no break day<\/span>/, '')
+    /\n\s*<span><span class="qk"[^>]*>7<\/span>days in a row<\/span>/, '')
 
   /* Same treatment for the crew-pairing key (owner, 7 Aug 26). CP is a
      port-only flag, so both of its swatches come out of the comparison — a
@@ -477,7 +477,7 @@ describe('view-week markup parity with the reference', () => {
      noBrief for the brief-time CELL (line ~117), and shadowing it here made
      the day-parity tests fail on an unrelated `class=""` difference. */
   const noBriefKey = (s: string) => s.replace(
-    /\n\s*<span><span class="qk"[^>]*>B<\/span>no (?:flight|sim) brief<\/span>/g, '')
+    /\n\s*<span><span class="qk"[^>]*>B<\/span>misses (?:flight|sim) brief<\/span>/g, '')
 
   /* Personnel (ground crew, owner Aug 26): a category the reference does not
      have, so its seat swatch is port-only — excised from both sides (a no-op on
@@ -501,13 +501,13 @@ describe('view-week markup parity with the reference', () => {
 
   it('the flags read by severity — red hard, then amber advisory, then grey', () => {
     const l = legendHTML()
-    const reds = ['conflict', 'crew pairing — not authorised', 'crew rest', 'no break day', 'qual / illegal seat']
-    const ambers = ['double turn', 'tight turn', 'advisory — shift + ground', 'crew pairing — needs approval', 'no flight debrief', 'no sim debrief']
+    const reds = ['conflict', 'crew pairing — not authorised', 'crew rest', 'days in a row', 'qual / illegal seat']
+    const ambers = ['double turn', 'tight turn', 'advisory — shift + ground', 'crew pairing — needs approval', 'misses flight debrief', 'misses sim debrief']
     const lastRed = Math.max(...reds.map(x => l.indexOf(x)))
     const firstAmber = Math.min(...ambers.map(x => l.indexOf(x)))
     expect(reds.every(x => l.indexOf(x) > -1) && ambers.every(x => l.indexOf(x) > -1)).toBe(true)
     expect(lastRed, 'every red flag precedes every amber flag').toBeLessThan(firstAmber)
-    expect(firstAmber, 'and the amber flags precede the grey long-work-day note').toBeLessThan(l.indexOf('long work day'))
+    expect(firstAmber, 'and the amber flags precede the grey long-day note').toBeLessThan(l.indexOf('long day'))
   })
 
   it('the legend names the Personnel category', () => {
@@ -545,15 +545,15 @@ describe('view-week markup parity with the reference', () => {
       expect(i, 'legend has a row for ' + label).toBeGreaterThan(-1)
       return l.slice(Math.max(0, i - 90), i).includes(RED) ? 'hard' : 'adv'
     }
-    expect(swatch('no break day'), 'a break day is due — a Warning').toBe('hard')
+    expect(swatch('days in a row'), 'a break day is due — a Warning').toBe('hard')
     expect(swatch('crew rest'), 'crew rest is a Warning').toBe('hard')
     expect(swatch('conflict'), 'two places at once is a Warning').toBe('hard')
-    expect(swatch('no flight brief'), 'an eaten brief is an Advisory').toBe('adv')
-    expect(swatch('no sim brief'), 'and so is an eaten sim brief').toBe('adv')
-    expect(swatch('no flight debrief')).toBe('adv')
+    expect(swatch('misses flight brief'), 'an eaten brief is an Advisory').toBe('adv')
+    expect(swatch('misses sim brief'), 'and so is an eaten sim brief').toBe('adv')
+    expect(swatch('misses flight debrief')).toBe('adv')
     expect(swatch('tight turn')).toBe('adv')
     expect(l, 'and the amber ones carry the dark text that goes with amber')
-      .toContain(AMBER + ';color:#12100a">B</span>no flight brief')
+      .toContain(AMBER + ';color:#12100a">B</span>misses flight brief')
   })
 
   /* Every chip the engine can put on a puck should be findable in the legend.
@@ -565,8 +565,20 @@ describe('view-week markup parity with the reference', () => {
   })
 
   it('the legend explains the break-day flag', () => {
-    expect(legendHTML()).toContain('no break day')
-    expect(legendHTML()).toContain('>7</span>no break day')
+    expect(legendHTML()).toContain('days in a row')
+    expect(legendHTML()).toContain('>7</span>days in a row')
+  })
+
+  /* D2075, D2078 — the Legend names each flag as its check is now named (the approved picture,
+     raptor-port/docs/mock/2026-11-16-legend-words/): only the words change, the letters and colours stay. */
+  it('D2078: the Legend reads the checks\' new names, and none of the old ones', () => {
+    const l = legendHTML()
+    for (const row of ['>7</span>days in a row', '>Q</span>qual / illegal seat',
+      '>B</span>misses flight brief', '>B</span>misses sim brief',
+      '>D</span>misses flight debrief', '>D</span>misses sim debrief', '>L</span>long day</span>'])
+      expect(l, 'the Legend has the row ' + row).toContain(row)
+    for (const old of ['no break day', 'no flight brief', 'no sim brief', 'no flight debrief', 'no sim debrief', 'long work day'])
+      expect(l, 'the Legend no longer says ' + old).not.toContain(old)
   })
 
   it('the legend names the four instructor CATs and the bare I swatch is gone', () => {

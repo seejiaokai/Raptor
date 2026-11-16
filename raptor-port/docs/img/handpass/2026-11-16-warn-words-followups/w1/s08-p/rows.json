@@ -1,0 +1,56 @@
+[
+ [
+  "S8",
+  "phone",
+  "Board warning list after a WSO (Hex) is put in AVALON MAIN front seat",
+  "\"Illegal seat: ...\" line",
+  "[\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\"]",
+  "PASS",
+  "w1/s08-p/01-board-list.png"
+ ],
+ [
+  "S8",
+  "phone",
+  "week list for Tue 28 Jul",
+  "\"Illegal seat: ...\" line",
+  "[\"Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\"]",
+  "PASS",
+  "w1/s08-p/06-week-strip.png"
+ ],
+ [
+  "S8",
+  "phone",
+  "day details window for Tue 28 Jul",
+  "\"Illegal seat: ...\" line",
+  "[\"Warning · Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00\"]",
+  "PASS",
+  "w1/s08-p/07-day-details.png"
+ ],
+ [
+  "S8",
+  "phone",
+  "publish Tue 28 Jul with the warning standing",
+  "the issued face keeps the \"Illegal seat:\" line",
+  "[\"Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\"]",
+  "PASS",
+  "w1/s08-p/09-week-published.png"
+ ],
+ [
+  "S8",
+  "phone",
+  "amendment adds Cotter (ground crew) in AVALON SPARE front seat, published",
+  "both \"Illegal seat:\" lines on the issued face",
+  "[\"Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Illegal seat Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕\"]",
+  "PASS",
+  "w1/s08-p/10-week-amended.png"
+ ],
+ [
+  "S8",
+  "phone",
+  "View-only Sched, same day",
+  "Illegal seat lines, no \"Wrong seat\"",
+  "[\"Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00\",\"Illegal seat Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT SPARE 19:00–07:00\"]",
+  "PASS",
+  "w1/s08-p/11-viewonly.png"
+ ]
+]

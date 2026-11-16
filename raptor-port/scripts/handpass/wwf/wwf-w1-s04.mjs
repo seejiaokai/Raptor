@@ -1,0 +1,136 @@
+/* wwf w1 scenario 4 — SC identity versus an SC-looking name; template association; a row added inside an SC block. */
+import * as H from './wwf-w1-lib.mjs'
+const X = await H.init(process.env.RUN || 's04')
+const { say, sleep, row, pic } = X
+const w = await X.open({})
+const { page } = w
+const S = 'S4', SZ = 'desktop'
+const crewOf = ls => ls.filter(l => H.crew(l))
+const step = async (n, f) => { try { return await f() } catch (e) { say('STEP ERROR', n, String(e.message).split('\n')[0]); return null } }
+const blocks = d => page.evaluate(d => JSON.stringify(window.DAYS[d].dutywaves.map(b => b.label + '/' + (b.sa || '-') + ':' + b.rows.map(r => r.role + ' ' + r.str + '-' + r.end + ' ' + (r.id || '') + (r.more ? '+' + JSON.stringify(r.more) : '')).join(' | '))), d)
+const readNext = async (d, tag, pics) => {
+  await H.gotoWeek(X, w, H.MONDAY_WK, null)
+  const ww = await X.weekWarn(w, '#eWeek', d)
+  say(tag, ww.head, JSON.stringify(ww.items))
+  if (pics) await pic(w, pics)
+  return ww
+}
+await H.gotoWeek(X, w, H.MONDAY_WK, 'editsched')
+// ---- fixture 1 (Wed 29 Jul = day 2): SC Shift (Ranger) + Empty block with SC-looking role typed (Havoc), both 20:00 / END blank
+const sc = await H.makeDesk(X, w, 2, { tpl: 'sc', str: '20:00', end: '', people: ['bane'] })
+const pl = await H.makeDesk(X, w, 2, { tpl: '', str: '20:00', end: '', people: ['boosh'], role: 'SXO AM' })
+await X.typeIn(w, `[data-bfld="dl:2.${pl.wi}"]`, 'SC Shift')
+say('Wed blocks (plain block titled SC Shift, role SXO AM)', await blocks(2))
+await pic(w, '01-wed-board')
+await X.closeBoard(w)
+await X.board(w, 3)
+const f1 = await H.flight2(X, w, 3, { to: '09:00', ld: '10:00', br: '08:00', front: 'bane', rear: null })
+const f2 = await H.flight2(X, w, 3, { to: '09:00', ld: '10:00', br: '08:00', front: 'boosh', rear: null })
+await X.closeBoard(w)
+let ww = await readNext(3, 'F1 Thursday strip (SC block + plain block titled/roled like SC)', '02-thu-strip')
+let rg = crewOf(ww.items).filter(l => /Ranger/.test(l)), hv = crewOf(ww.items).filter(l => /Havoc/.test(l))
+row(S, SZ, 'Wed: real SC Shift desk (Ranger) and an Empty block typed SXO AM and titled SC Shift (Havoc), both 20:00 END blank; Thu both B 08:00', 'Ranger (real SC) no crew-rest line; Havoc (plain block that only looks SC) a crew-rest line from assumed 21:00', 'Ranger ' + JSON.stringify(rg) + ' Havoc ' + JSON.stringify(hv), !rg.length && hv.length ? 'PASS' : 'FAIL', 'w1/s04/02-thu-strip.png')
+// rename placed SC block to Duty, rename plain to SC Shift again (a different name)
+await X.board(w, 2)
+await X.typeIn(w, `[data-bfld="dl:2.${sc.wi}"]`, 'Evening duty')
+await X.typeIn(w, `[data-bfld="dl:2.${pl.wi}"]`, 'SC Shift SC DESK')
+say('Wed blocks after renames', await blocks(2))
+await pic(w, '03-wed-renamed')
+await X.closeBoard(w)
+ww = await readNext(3, 'F1 after rename Thursday strip', '04-thu-strip-renamed')
+rg = crewOf(ww.items).filter(l => /Ranger/.test(l)); hv = crewOf(ww.items).filter(l => /Havoc/.test(l))
+row(S, SZ, 'rename the real SC block to "Evening duty" and the plain block to "SC Shift SC DESK"', 'behaviour unchanged by name: Ranger none, Havoc a line', 'Ranger ' + JSON.stringify(rg) + ' Havoc ' + JSON.stringify(hv), !rg.length && hv.length ? 'PASS' : 'FAIL', 'w1/s04/04-thu-strip-renamed.png')
+// ---- hand-typed row inside the SC block (+ Row): RECORD
+await H.gotoWeek(X, w, H.MONDAY_WK, 'editsched')
+await X.board(w, 2)
+const nR = await page.evaluate(([d, i]) => window.DAYS[d].dutywaves[i].rows.length, [2, sc.wi])
+await X.press(w, `[data-dradd="2.${sc.wi}"]`, { scope: 'board' }); await sleep(500)
+const base = `2.${sc.wi}.${nR}`
+await X.typeIn(w, `[data-bfld="dr:${base}.role"]`, 'HAND ROW')
+await X.typeIn(w, `[data-bfld="dr:${base}.str"]`, '20:00')
+await X.typeIn(w, `[data-bfld="dr:${base}.end"]`, '')
+const sr = await X.seat(w, `[data-fill="d:${base}.+"]`, 'snap')
+say('hand row seat', sr, await blocks(2))
+await pic(w, '05-hand-row')
+await X.closeBoard(w)
+await X.board(w, 3)
+await H.flight2(X, w, 3, { to: '09:00', ld: '10:00', br: '08:00', front: 'snap', rear: null })
+await X.closeBoard(w)
+ww = await readNext(3, 'F1 hand row Thursday strip', '06-thu-strip-handrow')
+const cn = crewOf(ww.items).filter(l => /Cinch/.test(l))
+row(S, SZ, 'a hand-typed row (+ Row) inside the SC block: role HAND ROW, 20:00, END blank, Cinch; Thu flight B 08:00', 'RECORD', 'Cinch crew-rest lines: ' + JSON.stringify(cn) + ' | all strip: ' + ww.head, 'RECORDED', 'w1/s04/06-thu-strip-handrow.png')
+// ---- template editor: custom SC-linked and None-linked templates
+await H.gotoWeek(X, w, H.MONDAY_WK, 'editsched')
+await X.board(w, 4)
+await X.press(w, '[data-dwadd="4"]', { scope: 'board' }); await sleep(400)
+await X.press(w, '[data-blkedit]'); await sleep(600)
+await pic(w, '07-tpl-editor')
+const mk = async (name, wave) => step('make tpl ' + name, async () => {
+  await X.press(w, '.tpl-tab.new'); await sleep(500)
+  const nm = page.locator('.tpl-name:visible').first(); await nm.fill(name); await nm.blur(); await sleep(300)
+  await page.locator('.modal-body select:visible').first().selectOption({ label: wave }); await sleep(300)
+  const rolesIn = page.locator('.modal-body input[aria-label=Role]:visible')
+  const n = await rolesIn.count(); say('tpl', name, 'role rows', n)
+  if (!n) { await X.press(w, '.addrow'); await sleep(300) }
+  await page.locator('.modal-body input[aria-label=Role]:visible').first().fill('DSK')
+  await page.locator('.modal-body input[aria-label=Start]:visible').first().fill('20:00')
+  await page.locator('.modal-body input[aria-label=Start]:visible').first().blur()
+  await sleep(400)
+  await pic(w, `08-tpl-${name.replace(/\W/g, '')}`)
+})
+await mk('Custom SC', 'SC')
+await mk('Custom Plain', 'None')
+say('tabs', await page.evaluate(() => [...document.querySelectorAll('.tpl-tab')].map(e => e.innerText).join(',')))
+await X.press(w, '.modal-foot .primary'); await sleep(500)
+if (!(await page.locator('[data-blktpl]:visible').count())) { await X.press(w, '[data-dwadd="4"]', { scope: 'board' }); await sleep(400) }
+say('block menu now', await page.evaluate(() => [...document.querySelectorAll('[data-blktpl]')].filter(e => e.offsetWidth).map(e => e.dataset.blktpl + '|' + e.innerText.replace(/\s+/g, ' ')).join(' ;; ')))
+await pic(w, '09-block-menu-custom')
+const ids = await page.evaluate(() => [...document.querySelectorAll('[data-blktpl]')].filter(e => e.offsetWidth).map(e => [e.dataset.blktpl, e.innerText.replace(/\s+/g, ' ')]))
+const idSC = (ids.find(x => /Custom SC/.test(x[1])) || [])[0], idPl = (ids.find(x => /Custom Plain/.test(x[1])) || [])[0]
+say('custom ids', idSC, idPl)
+let a, b
+if (idSC != null) { await X.press(w, `[data-blktpl="${idSC}"]`); await sleep(500) }
+a = await page.evaluate(d => window.DAYS[d].dutywaves.length - 1, 4)
+await step('fill custom SC', async () => {
+  const base = `4.${a}.0`
+  await X.typeIn(w, `[data-bfld="dr:${base}.str"]`, '20:00'); await X.typeIn(w, `[data-bfld="dr:${base}.end"]`, '')
+  say('custom SC seat', await X.seat(w, `[data-fill="d:${base}.+"]`, 'prowler'))
+})
+await X.press(w, '[data-dwadd="4"]', { scope: 'board' }); await sleep(400)
+if (idPl != null) { await X.press(w, `[data-blktpl="${idPl}"]`); await sleep(500) }
+b = await page.evaluate(d => window.DAYS[d].dutywaves.length - 1, 4)
+await step('fill custom plain', async () => {
+  const base = `4.${b}.0`
+  await X.typeIn(w, `[data-bfld="dr:${base}.str"]`, '20:00'); await X.typeIn(w, `[data-bfld="dr:${base}.end"]`, '')
+  say('custom plain seat', await X.seat(w, `[data-fill="d:${base}.+"]`, 'pump'))
+})
+say('Fri blocks', await blocks(4))
+await pic(w, '10-fri-board')
+await X.closeBoard(w)
+await X.board(w, 5)
+await H.flight2(X, w, 5, { to: '09:00', ld: '10:00', br: '08:00', front: 'prowler', rear: null })
+await H.flight2(X, w, 5, { to: '09:00', ld: '10:00', br: '08:00', front: 'pump', rear: null })
+await X.closeBoard(w)
+ww = await readNext(5, 'F2 Saturday strip (custom SC-linked vs custom None)', '11-sat-strip')
+const hu = crewOf(ww.items).filter(l => /Hunter/.test(l)), pi = crewOf(ww.items).filter(l => /Piston/.test(l))
+row(S, SZ, 'template editor: "Custom SC" (For wave SC) and "Custom Plain" (For wave None), each placed Fri with START 20:00 END blank (Hunter on SC-linked, Piston on None-linked); Sat both B 08:00', 'SC-linked: Hunter none; None-linked: Piston a line', 'Hunter ' + JSON.stringify(hu) + ' Piston ' + JSON.stringify(pi) + ' | Fri blocks ' + await blocks(4), !hu.length && pi.length ? 'PASS' : 'FAIL', 'w1/s04/11-sat-strip.png')
+// change the library association after placing
+await H.gotoWeek(X, w, H.MONDAY_WK, 'editsched')
+await X.board(w, 4)
+await X.press(w, '[data-dwadd="4"]', { scope: 'board' }); await sleep(400)
+await X.press(w, '[data-blkedit]'); await sleep(600)
+await step('flip assoc', async () => {
+  await page.locator('.tpl-tab:visible', { hasText: /Custom SC/i }).first().click(); await sleep(400)
+  await page.locator('.modal-body select:visible').first().selectOption({ label: 'None' }); await sleep(400)
+  await page.locator('.tpl-tab:visible', { hasText: /Custom Plain/i }).first().click(); await sleep(400)
+  await page.locator('.modal-body select:visible').first().selectOption({ label: 'SC' }); await sleep(400)
+  await pic(w, '12-tpl-flipped')
+})
+await X.press(w, '.modal-foot .primary'); await sleep(500)
+await page.keyboard.press('Escape'); await sleep(300)
+say('Fri blocks after flip', await blocks(4))
+await X.closeBoard(w)
+ww = await readNext(5, 'F2 after flipping the library Saturday strip', '13-sat-strip-flipped')
+const hu2 = crewOf(ww.items).filter(l => /Hunter/.test(l)), pi2 = crewOf(ww.items).filter(l => /Piston/.test(l))
+row(S, SZ, 'swap the two templates\' For wave settings in the library AFTER placing copies; re-read Sat', 'placed copies unchanged: Hunter none, Piston a line', 'Hunter ' + JSON.stringify(hu2) + ' Piston ' + JSON.stringify(pi2), !hu2.length && pi2.length ? 'PASS' : 'FAIL', 'w1/s04/13-sat-strip-flipped.png')
+await X.fin(w)

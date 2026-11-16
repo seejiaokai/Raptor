@@ -500,7 +500,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     /* kind matters now: a shift clashing with a duty post is a Warning, with a
        ground event or a programme item only an Advisory. */
     const reqRows=new Set<any>();
-    const push=(id:any,st:any,en:any,label:any,kind:any,key?:any,src?:any)=>{
+    const push=(id:any,st:any,en:any,label:any,kind:any,key?:any,src?:any,scDesk?:any)=>{
       if(!id||!PEOPLE[id]||isSpecial(id))return;
       const w2=win(st,en); if(!w2){blank.push({id,label,key,src,kind});return;}   // a row with no start — D605, `blank` above
       /* the same man in the row's seat AND in its more[] is one commitment, not
@@ -511,11 +511,19 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
          it the Event's clash — its kind's own grade against a standby shift included. Two rows are the same commitment
          only when they are the same row (its key); rows nobody filed keep the old test exactly, so nothing the
          scheduler typed by hand reads differently. `reqRows` is this day's own note of which events a request made. */
-      if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label&&((!src&&!reqRows.has(x))||x.key===key)))return;
+      /* D2073 (Astra's read, 16 Nov 26): one commitment found twice keeps the PLAINER reading of its end — an SC desk with no
+         END met first must not swallow a plain desk's assumed end for crew rest, so the kept event loses its `noEnd` when
+         the one folded into it would bear rest; either block order then reads alike, and still no conflict with himself. */
+      const dup=events.find((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label&&((!src&&!reqRows.has(x))||x.key===key));
+      if(dup){ if(dup.noEnd&&!(en==null&&scDesk))delete dup.noEnd; return; }
       const ev:any={id,s:w2[0],e:w2[1],label,kind:kind||'other',key};
       /* an end ASSUMED from the Logic page's "Assumed length" (no end typed): crew rest the next day re-reads it under
          THAT day's settings (D2005 — the day being judged decides; validate.ts crewRestDay), never this day's */
       if(en==null)assumedEnd(ev,'open');
+      /* D2073 (16 Nov 26): a desk from an SC shift template, its START typed and its END blank, bears no crew rest until its
+         END is typed, as an SC wave line does (D2055 — validate.ts reads `noEnd`); its assumed hour still stands for every
+         other check. Only an SC template's desk (the agent's reading): a plain desk keeps the assumed end for crew rest too. */
+      if(en==null&&scDesk)ev.noEnd=true;
       if(src)reqRows.add(ev);
       events.push(ev);
     };
@@ -535,8 +543,10 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
         return;
       }
       const st=parseHM(r.str),en=parseHM(r.end);
-      push(r.id,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`);
-      extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`)); }));
+      /* D2073, D2080: an SC template's desk, or an AVALON / BB one (reached here only once its wave flies — D1997, above) */
+      const scDesk=dw.sa==='sc'||saExemptKind(dw.sa);
+      push(r.id,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`,undefined,scDesk);
+      extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`,undefined,scDesk)); }));
     /* a row flagged ⓘ info-only (owner, 1 Sep 26) is shown but never checked:
        it must not enter the event stream — that one skip keeps it out of every
        validator rule, the palette's clash checks and the Insights hours, which

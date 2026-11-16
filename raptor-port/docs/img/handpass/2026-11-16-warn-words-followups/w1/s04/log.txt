@@ -1,0 +1,31 @@
+desk {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"bane\"/null"} seat results ok
+desk {"label":"DUTY","role":"SXO AM","str":"20:00","end":"","who":"\"boosh\"/null"} seat results ok
+Wed blocks (plain block titled SC Shift, role SXO AM) ["SC Shift/sc:SXO AM 20:00- bane | OPS O AM 07:00-13:00  | SXO PM 13:00-19:00  | OPS O PM 13:00-19:00 ","SC Shift/-:SXO AM 20:00- boosh"]
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Ranger"} ok
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Havoc"} ok
+F1 Thursday strip (SC block + plain block titled/roled like SC) ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Havoc — Crew rest: Wednesday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕"]
+ROW PASS | S4 | desktop | Wed: real SC Shift desk (Ranger) and an Empty block typed SXO AM and titled SC Shift (Havoc), both 20:00 END blank; Thu both B 08:00 | saw: Ranger [] Havoc ["Crew rest (<12h) Havoc — Crew rest: Wednesday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕"]
+Wed blocks after renames ["Evening duty/sc:SXO AM 20:00- bane | OPS O AM 07:00-13:00  | SXO PM 13:00-19:00  | OPS O PM 13:00-19:00 ","SC Shift SC DESK/-:SXO AM 20:00- boosh"]
+F1 after rename Thursday strip ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Havoc — Crew rest: Wednesday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕"]
+ROW PASS | S4 | desktop | rename the real SC block to "Evening duty" and the plain block to "SC Shift SC DESK" | saw: Ranger [] Havoc ["Crew rest (<12h) Havoc — Crew rest: Wednesday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕"]
+hand row seat ok ["Evening duty/sc:SXO AM 20:00- bane | OPS O AM 07:00-13:00  | SXO PM 13:00-19:00  | OPS O PM 13:00-19:00  | HAND ROW 20:00- snap","SC Shift SC DESK/-:SXO AM 20:00- boosh"]
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Cinch"} ok
+F1 hand row Thursday strip ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Havoc — Crew rest: Wednesday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕"]
+ROW RECORDED | S4 | desktop | a hand-typed row (+ Row) inside the SC block: role HAND ROW, 20:00, END blank, Cinch; Thu flight B 08:00 | saw: Cinch crew-rest lines: [] | all strip: ⚠ 1 issue · 1 warning ▼
+tpl Custom SC role rows 1
+tpl Custom Plain role rows 1
+tabs STANDARD,SC SHIFT,AVALON,CUSTOM SC,CUSTOM PLAIN,+ NEW
+block menu now std|Standard3 roles ;; sc|SC Shift4 roles · SC desk ;; avalon|AVALON4 roles · AVALON desk ;; u1|Custom SC1 role · SC desk ;; u2|Custom Plain1 role ;; |Empty block
+custom ids u1 u2
+custom SC seat ok
+custom plain seat ok
+Fri blocks ["Custom SC/sc:DSK 20:00- prowler","Custom Plain/-:DSK 20:00- pump"]
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Hunter"} ok
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Piston"} ok
+F2 Saturday strip (custom SC-linked vs custom None) ⚠ 2 issues · 1 warning ▼ ["Crew rest (<12h) Piston — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕","OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"]
+ROW PASS | S4 | desktop | template editor: "Custom SC" (For wave SC) and "Custom Plain" (For wave None), each placed Fri with START 20:00 END blank (Hunter on SC-linked, Piston on None-linked); Sat both B 08:00 | saw: Hunter [] Piston ["Crew rest (<12h) Piston — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕"] | Fri blocks ["Custom SC/sc:DSK 20:00- prowler","Custom Plain/-:DSK 20:00- pump"]
+Fri blocks after flip ["Custom SC/sc:DSK 20:00- prowler","Custom Plain/-:DSK 20:00- pump"]
+F2 after flipping the library Saturday strip ⚠ 2 issues · 1 warning ▼ ["Crew rest (<12h) Piston — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕","OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"]
+ROW PASS | S4 | desktop | swap the two templates' For wave settings in the library AFTER placing copies; re-read Sat | saw: Hunter [] Piston ["Crew rest (<12h) Piston — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕"]
+errors []
+DONE 4 PASS 0 FAIL 1 OTHER of 5

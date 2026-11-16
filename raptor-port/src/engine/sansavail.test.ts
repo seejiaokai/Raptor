@@ -425,7 +425,7 @@ describe('a flying line with no times and no name yet', () => {
     const wso = Object.keys(PEOPLE).find(id => PEOPLE[id] && PEOPLE[id].seat === 'RCP' && !PEOPLE[id].pers && !PEOPLE[id].san)!
     f.aircraft[0].p = wso
     const msgs = validate().all.filter((w: any) => (w.who || []).includes(wso)).map((w: any) => w.msg)
-    expect(msgs.join(' | ')).toContain('Wrong seat: a WSO in the front seat of this line (no times yet)')
+    expect(msgs.join(' | ')).toContain('Illegal seat: a WSO in the front seat of this line (no times yet)')
     expect(msgs.join(' | '), 'no empty brackets').not.toMatch(/\(\s*\)/)
     expect(msgs.join(' | '), 'no doubled space where a name was').not.toMatch(/ {2,}/)
   })

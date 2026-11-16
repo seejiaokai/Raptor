@@ -1,0 +1,28 @@
+desk {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"bane\"/null"} seat results ok,FAILED seat not armed
+desk made {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"bane\"/null"}
+flight2 {"to":"10:20","ld":"11:20","br":"08:00","p":"Ranger","w":"Echo"} ok,ok
+flight2 {"to":"06:00","ld":"07:00","br":"06:00"} 
+after reload week 13/07/2026
+Monday after reload Ranger/Echo br=08:00 to=10:20
+COLD Monday strip NO STRIP []
+COLD Monday day details {"ok":true,"items":[]}
+ROW PASS | S1 | phone | Sunday desk START 20:00, END blank, Ranger + Echo; Monday flight B 08:00 TO 10:20; reload; open Monday cold | saw: strip: NO STRIP | crew lines: [] | details crew lines: [] | fixture Ranger/Echo br=08:00 to=10:20
+COLD picker rear [{"id":"freak","cls":"rpuck ","title":"Echo","txt":"Echo IW"},{"id":"rocky","cls":"rpuck ","title":"Hex","txt":"Hex C"}]
+COLD picker [{"id":"bane","cls":"rpuck ","title":"Ranger","txt":"Ranger IP"},{"id":"rocky","cls":"rpuck no","title":"Hex — WSO — cannot fly front seat","txt":"Hex C"}]
+Sunday forward trace blank END {"items":[]}
+peek null
+WARM Monday strip NO STRIP []
+ROW PASS | S1 | phone | visit Sunday week, return to Monday (warm) | saw: crew lines: []
+Sunday forward trace END 23:00 (Ranger) {"items":["Breaks Monday Ranger — had to leave by 20:00. Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h."]}
+Sunday forward trace END 23:00 (Echo) {"items":[]}
+ROW PASS | S1 | phone | type Sunday END 23:00; tap Ranger puck on Sunday | saw: Ranger trace ["Breaks Monday Ranger — had to leave by 20:00. Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h."] | Echo trace []
+END2300 Monday strip ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"]
+END2300 Monday details {"ok":true,"items":["Warning · Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h."]}
+ROW FAIL | S1 | phone | load Monday after typing END 23:00 | saw: Ranger ["Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"] Echo [] details ["Warning · Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h."]
+END2300 picker rear [{"id":"freak","cls":"rpuck ","title":"Echo","txt":"Echo IW"},{"id":"rocky","cls":"rpuck ","title":"Hex","txt":"Hex C"}]
+END2300 picker [{"id":"bane","cls":"rpuck ","title":"Ranger","txt":"R Ranger IP"},{"id":"rocky","cls":"rpuck no","title":"Hex — WSO — cannot fly front seat","txt":"Hex C"}]
+Sunday trace after clearing {"items":[]}
+CLEARED Monday strip NO STRIP []
+ROW PASS | S1 | phone | clear Sunday END again; load Monday | saw: Monday crew lines [] trace []
+errors []
+DONE 4 PASS 1 FAIL 0 OTHER of 5

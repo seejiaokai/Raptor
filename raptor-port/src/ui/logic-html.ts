@@ -29,7 +29,7 @@ const T = (k: string) => lgV(lgT(VCONF[k]))
 export const LG_HIDDEN: Record<string, string> = { minTurn: 'nothing reads it', dur: 'nothing reads it' }
 
 /* one setting row. kind: 'num' (one box, the default), 'text' (the + In-time words), 'window' (two clock
-   boxes, the SC day window), 'kinds' (the six SC MAIN clash switches), 'door' (set in a calendar's own settings window
+   boxes, the SC day window), 'kinds' (the six SC MAIN conflict switches), 'door' (set in a calendar's own settings window
    — D639; an admin's value opens it), 'mix' (the Insights switch). `keys` names every engine setting the row shows. */
 export type LgSet = { name: string, keys: string[], kind?: 'num' | 'text' | 'window' | 'kinds' | 'door' | 'mix', door?: 'inputs' | 'sans', value?: () => string, line: () => string }
 export type LgGroup<T> = { g: string, items: T[] }
@@ -44,7 +44,7 @@ export function lgSettings(): LgGroup<LgSet>[] {
     ] },
     { g: 'Flying lines', items: [
       { name: 'Brief before take-off', keys: ['briefLead'], line: () => 'Sets the suggested B on a line with no brief typed, and a blank B is checked against it. With no in-time typed, crew rest counts to this B. A published day keeps its B until it is published again.' },
-      { name: 'Step before take-off', keys: ['step'], line: () => 'A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.' },
+      { name: 'Step before take-off', keys: ['step'], line: () => 'A man counts as busy from step: conflicts and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.' },
       { name: 'Dekit after landing', keys: ['dekit'], line: () => 'A man counts as busy until dekit. It and step set the shortest tight turn.' },
       { name: 'Debrief after landing', keys: ['debrief'], line: () => 'Ends a flyer\'s day: tomorrow\'s crew rest, the long day, OIL and Insights hours count to here, and so does the flight debrief advisory.' },
       { name: 'Tight turn', keys: ['tightTurn'], line: () => 'A shorter gap from landing to the next take-off is a tight turn. It is never less than dekit plus step.' },
@@ -58,12 +58,12 @@ export function lgSettings(): LgGroup<LgSet>[] {
     { g: 'Rows with no end time', items: [
       /* the assumed landing (D2046, D2047, D2053 — [WARN-WORDS-STANDALONE] piece B): its row, beside its neighbours */
       { name: 'A flight', keys: ['fltLen'], line: () => 'A flight with a take-off and no landing is taken to land this long after take-off. Conflicts, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.' },
-      { name: 'A sim', keys: ['simLen'], line: () => 'A sim with a start and no end is taken to run this long, for clashes and the crew list. It earns no OIL until its end is typed.' },
+      { name: 'A sim', keys: ['simLen'], line: () => 'A sim with a start and no end is taken to run this long, for conflicts and the crew list. It earns no OIL until its end is typed.' },
       { name: 'Any other row', keys: ['openEnd'], line: () => 'The same for a ground, programme or duty row.' },
     ] },
     { g: 'Standby (SC, AVALON, BB)', items: [
       { name: 'SC day window', keys: ['scDayFrom', 'scDayTo'], kind: 'window', line: () => 'A shift wholly inside it needs SC DAY; one reaching outside it needs SC NIGHT.' },
-      { name: 'SC MAIN clashes', keys: [], kind: 'kinds', line: () => 'What an SC MAIN man\'s clash with each shows: a red warning or an amber advisory. Once his shift flies, every clash is red.' },   // D1996
+      { name: 'SC MAIN conflicts', keys: [], kind: 'kinds', line: () => 'What an SC MAIN man\'s conflict with each shows: a red warning or an amber advisory. Once his shift flies, every conflict is red.' },   // D1996
     ] },
     { g: 'Inputs', items: [
       { name: 'Inputs late cut-off', keys: ['inputLead', 'inputCutMode', 'inputCutWd', 'inputCutWeeks'], kind: 'door', door: 'inputs', value: () => cutRuleText('inputs'), line: () => 'An input last changed after it wears LATE.' },
@@ -103,8 +103,9 @@ export function lgChecks(): LgGroup<LgChk>[] {
              ends the day at take-off plus the debrief (D1990); a flying SPARE bears crew rest, and a shift reports at its
              B or R where one is typed earlier (F6; D606, D1041) */
           `Rest runs from the end of the day before to the first thing today: his in-time or rally, his B where neither is typed, or anything earlier, such as a meeting.`,
-          /* D2046: a landing not typed is the assumed one, take-off plus the flight length (A flight) */
-          `The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (${T('debrief')}), or, where no landing is typed, at the assumed landing (A flight, ${T('fltLen')} after take-off) plus the debrief. Anything else ends at its written end.`,
+          /* D2046: a landing not typed is the assumed one, take-off plus the flight length (A flight); D2079: a standby shift
+             (D2055) or a standby template's desk (D2073, D2080) with no END ends nothing until its END is typed */
+          `The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (${T('debrief')}), or, where no landing is typed, at the assumed landing (A flight, ${T('fltLen')} after take-off) plus the debrief. Anything else ends at its written end. A standby shift, or a desk made from an SC, AVALON or BB template, with START typed and END blank is left out until its END is typed.`,
           'An input counts only if it is a duty or commitment, other than Personal or SANS Availability, with typed times.',
           `Exactly ${T('crewRest')} is legal. A day with no flying asks for no rest.`,
           'A LATE SHOW remark keeps the warning. The ring is dashed while rest still clears by step, solid after.',
@@ -123,8 +124,8 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'longday', sev: 'note', code: 'LONGDAY', line: () => `More than ${T('longDay')} from first commitment to last.` },
     ] },
     { g: 'Two things at once', items: [
-      { id: 'doublebook', sev: 'hard', code: 'DOUBLE_BOOK', line: () => 'Two commitments overlap for one man. Touching end to end is not a clash.' },
-      { id: 'shiftsoft', sev: 'adv', code: 'SHIFT_SOFT', line: () => 'An SC MAIN man is also down for something set to Advisory under SC MAIN clashes. A commitment input across the shift is red; a meeting stays amber. Once the shift flies, every clash with it is red.' },   // D1996
+      { id: 'doublebook', sev: 'hard', code: 'DOUBLE_BOOK', line: () => 'Two commitments overlap for one man. Touching end to end is not a conflict.' },
+      { id: 'shiftsoft', sev: 'adv', code: 'SHIFT_SOFT', line: () => 'An SC MAIN man is also down for something set to Advisory under SC MAIN conflicts. A commitment input across the shift is red; a meeting stays amber. Once the shift flies, every conflict with it is red.' },   // D1996
       { id: 'info', sev: 'note', name: 'ⓘ info only', line: () => 'A ground or programme item marked ⓘ is printed but never checked, and earns no OIL.' },
       { id: 'midnight', sev: 'note', name: 'Past midnight', line: () => 'A row whose end reads earlier than its start runs into the next day.' },
     ] },
@@ -159,7 +160,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'coapproval', sev: 'adv', code: 'CO_APPROVAL', line: () => 'A CAT D pilot with a CAT C WSO, a CAT C pilot with a CAT D WSO, or two CAT Ds. The crew needs the CO\'s approval.' },
       { id: 'ocunoip', sev: 'adv', code: 'OCU_NO_IP', line: () => 'An OCU formation with no instructor (IW, IP, IR or FI).' },
       /* the rules check's F10, free since D1992: their own absences flag them, and a front seat is the red QUAL */
-      { id: 'paxcrew', sev: 'adv', code: 'PAX_CREW', line: () => 'Ground crew in a rear seat. The ride needs approval. Ground crew are checked for clashes, the long day, days in a row and their own absences, and a front seat is always a warning. None of the flying rules apply to them: crew rest, turns, pairing, AAR, SC currency or briefs.' },
+      { id: 'paxcrew', sev: 'adv', code: 'PAX_CREW', line: () => 'Ground crew in a rear seat. The ride needs approval. Ground crew are checked for conflicts, the long day, days in a row and their own absences, and a front seat is always a warning. None of the flying rules apply to them: crew rest, turns, pairing, AAR, SC currency or briefs.' },
       { id: 'noir', sev: 'hard', code: 'NO_IR', line: () => 'IRT in the mission needs an IR in the formation; IRT in an aircraft\'s remarks needs one in that aircraft.' },
       { id: 'aarqual', sev: 'hard', code: 'AAR_QUAL', line: () => 'AAR in the remarks needs the front seat\'s currency: night on a night wave, day otherwise. NAAR or DAAR says it outright.' },
       { id: 'aarinstr', sev: 'hard', code: 'AAR_INSTR', line: () => 'A pilot not current may fly AAR as training only with an instructor pilot (IP, IR or FI) in the back seat marked I for it on Quals (an I in place of the tick on DAAR or NAAR). That clears the front seat\'s currency warning, but an instructor pilot without the mark is flagged instead.' },   // the rules check's F11
@@ -174,7 +175,7 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'kind-bb', sev: 'note', name: 'BB', line: () => esc(kindNote('bb')) },
       { id: 'shifthours', sev: 'note', name: 'A shift\'s hours', line: () => 'A standby shift takes exactly its written hours: no step, dekit, brief or debrief.' },
       /* [STANDBY-FLIES] (owner D1042–D1046, D1061, D1062, 19 Oct 26) */
-      { id: 'saflies', sev: 'note', name: 'A standby row that flies', line: () => 'A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies has its clashes and turns checked as a sortie\'s are, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one that does not come in is cancelled with CX.' },
+      { id: 'saflies', sev: 'note', name: 'A standby row that flies', line: () => 'A shift with its B or R typed flies, every row on it; a row ticked FLIES on the Scheduler Board flies on its own. A row that flies has its conflicts and turns checked as a sortie\'s are, counts as a jet and a sortie, and earns OIL by default. A row with nobody on it counts nothing; one that does not come in is cancelled with CX.' },
       { id: 'saflynotime', sev: 'adv', code: 'SA_FLY_NO_TIME', line: () => 'A standby shift that flies has no START or END, so its crew rest and OIL cannot be worked out.' },
       { id: 'scintime', sev: 'adv', code: 'SC_INTIME', line: () => 'A standby row that flies has a typed B (the crew\'s in-time) or R (its rally), whichever is earlier, and something sits between it and the shift start. That time also starts his crew rest, his long day and his OIL.' },   // R since D1041; every row of a flying shift since [STANDBY-FLIES]
       { id: 'scarm', sev: 'note', name: 'Arming an SC seat', line: () => 'The crew list judges each man against that shift\'s hours only.' },
@@ -183,9 +184,9 @@ export function lgChecks(): LgGroup<LgChk>[] {
       { id: 'inputcloses', sev: 'note', name: 'An input closes its hours', line: () => 'Every input closes the man for the hours it covers, from the moment it is filed. One a scheduler has taken off the programme closes nothing.' },
       { id: 'leavefly', sev: 'hard', code: 'LEAVE_FLY', line: () => 'A man on leave is planned for a flight, sim, duty or ground slot.' },
       { id: 'dnif', sev: 'hard', code: 'DNIF_FLY', line: () => 'A medically down man is planned. On ATT B he may still stand a duty, sim or ground slot, but not fly.' },
-      { id: 'inputfly', sev: 'hard', code: 'INPUT_FLY', line: () => 'Any other input clashes with a planned slot: a course, a meeting, an appointment, overseas duty.' },
+      { id: 'inputfly', sev: 'hard', code: 'INPUT_FLY', line: () => 'Any other input conflicts with a planned slot: a course, a meeting, an appointment, overseas duty.' },
       { id: 'notimes', sev: 'note', name: 'A seat with no times', line: () => 'Still checked against an absence covering the whole day; a part-day absence waits until the seat has times.' },
-      { id: 'halfdays', sev: 'note', name: 'Half days', line: () => 'Leave and medical can be AM (to 12:00), PM (from 12:01) or all day, and a half day closes only its own half. A sortie counts from its step (Step before take-off), so AM leave still clashes with a wave that steps before noon.' },
+      { id: 'halfdays', sev: 'note', name: 'Half days', line: () => 'Leave and medical can be AM (to 12:00), PM (from 12:01) or all day, and a half day closes only its own half. A sortie counts from its step (Step before take-off), so AM leave still conflicts with a wave that steps before noon.' },
       { id: 'spare', sev: 'note', name: 'Standing SC SPARE', line: () => 'A man on local leave may still stand SC SPARE. Overseas leave or duty (OL, OD) or a medical code (HL, OML, ATT C, ATT B) may not: that is a warning. A row that flies has no such allowance.' },
       { id: 'sansavail', sev: 'adv', code: 'SANS_AVAIL', line: () => 'A SANS man planned outside the event or the hours he filed. Filing nothing raises nothing.' },
       { id: 'late', sev: 'note', name: 'LATE', line: () => 'An input last changed after its cut-off (Inputs late cut-off) wears LATE: a mark, never a warning. Downchits never do.' },
@@ -219,5 +220,5 @@ export function lgChecks(): LgGroup<LgChk>[] {
   ]
 }
 
-/* the six SC MAIN clash kinds, as the "SC MAIN clashes" setting draws them */
+/* the six SC MAIN conflict kinds, as the "SC MAIN conflicts" setting draws them */
 export const lgKinds = () => Object.keys(KIND_LABEL).map(k => ({ k, label: KIND_LABEL[k], hard: !!SHIFT_HARD[k] }))

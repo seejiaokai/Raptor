@@ -88,7 +88,7 @@ describe('the checks\' short names follow the new labels (proposal §3b, D2070: 
     expect(WCODE.SIM_DEBRIEF).toBe('Misses sim debrief')
     expect(WCODE.LONGDAY).toBe('Long day')
     expect(WCODE.DAYS_RUN).toBe('Days in a row')
-    expect(WCODE.QUAL).toBe('Wrong seat')
+    expect(WCODE.QUAL).toBe('Illegal seat')
     expect(WCODE.ILLEGAL_CREW).toBe('Crew not authorised')
     expect(WCODE.CO_APPROVAL).toBe('CO approval needed')
     expect(WCODE.OCU_NO_IP).toBe('OCU with no IP')
@@ -272,11 +272,11 @@ describe('who may fly with whom, and in which seat (proposal §3, §3a)', () => 
   it('an incentive passenger, and ground crew in the front seat', () => {
     add(TUE, wave([form({ aircraft: [ac('bane', 'torque')] }), form({ cs: 'RU', msn: 'AD', to: '15:00', ld: '16:00', aircraft: [ac('spanner')] })]))
     expect(msgs(TUE, 'PAX_CREW')).toEqual(['Approval needed: incentive passenger in the rear seat of VL BFM (T/O 12:00)'])
-    expect(msgs(TUE, 'QUAL', 'spanner')).toEqual(['Wrong seat: ground crew in the front seat of RU AD (T/O 15:00)'])
+    expect(msgs(TUE, 'QUAL', 'spanner')).toEqual(['Illegal seat: ground crew in the front seat of RU AD (T/O 15:00)'])
   })
   it('a WSO in the front seat', () => {
     add(TUE, wave([form({ aircraft: [ac('rocky')] })]))
-    expect(msgs(TUE, 'QUAL', 'rocky')).toEqual(['Wrong seat: a WSO in the front seat of VL BFM (T/O 12:00)'])
+    expect(msgs(TUE, 'QUAL', 'rocky')).toEqual(['Illegal seat: a WSO in the front seat of VL BFM (T/O 12:00)'])
   })
   it('an IRT with no IR examiner', () => {
     add(TUE, wave([form({ msn: 'IRT', aircraft: [ac('bane', 'rocky')] })]))

@@ -22,6 +22,7 @@ import { personBusy, slotRules } from './avail'
 import { KEPT_RULE_KEYS } from './faceattrs'
 import { hydrateRoles } from '../state/mission-roles'
 import { makeStandalone } from './waves'
+import { blockFromTpl } from './dutytpl'
 
 const saved = { d: JSON.stringify(DAYS), i: JSON.stringify(INPUTS), book: JSON.stringify(SCHED), v: { ...VCONF }, p: JSON.stringify(PEOPLE) }
 const h = (hh: number, mm = 0) => hh * 60 + mm
@@ -192,5 +193,70 @@ describe('D2055 — a standby shift with START and no END bears no crew rest unt
   it('the control: END typed 23:00 clears at 11:00 — Tuesday\'s 07:00 in-time breaks it', () => {
     scMon('20:00', '23:00'); tue()
     expect(msgs(TUE, 'CREW_REST')).toHaveLength(1)
+  })
+})
+
+/* [WARN-WORDS-STANDALONE] — A DUTY DESK MADE FROM AN SC SHIFT TEMPLATE, ITS START TYPED AND ITS END BLANK, IS LEFT OUT OF CREW
+   REST UNTIL ITS END IS TYPED, as an SC wave line is (owner D2073, 16 Nov 26 — "2 as recommended", over the walk's finding:
+   a Friday desk from 20:00 with no END "ended 21:00 → clear 09:00", START plus the Logic page's one-hour default for any
+   other row). The agent's reading, told to him: only a desk from an SC shift template, never every duty row with no END —
+   a plain desk keeps the assumed hour (the control below). */
+describe('D2073 — an SC-template duty desk with START and no END bears no crew rest until its END is typed', () => {
+  const desk = (di: number, str: string, end: string, sa?: string) => {
+    const blk: any = { label: sa ? 'SC Shift' : 'Standard', rows: [{ role: 'SXO PM', id: 'bane', str, end, more: [] }] }
+    if (sa) blk.sa = sa
+    day(di).dutywaves.push(blk)
+  }
+  const sat = () => add(SAT, wave([form({ to: '09:00', ld: '10:00' })], { intimes: ['07:00 IN TIME'] }))
+  it('Friday SC desk 20:00 with END blank: no crew rest on Saturday (it used to "end" 21:00 and clear 09:00)', () => {
+    desk(FRI, '20:00', '', 'sc'); sat()
+    expect(msgs(SAT, 'CREW_REST')).toEqual([])
+  })
+  it('the control: its END typed 23:00 clears at 11:00, so Saturday\'s 07:00 in-time breaks it', () => {
+    desk(FRI, '20:00', '23:00', 'sc'); sat()
+    expect(msgs(SAT, 'CREW_REST')).toHaveLength(1)
+  })
+  it('a plain desk (no SC template) with END blank keeps the assumed hour: ended 21:00, Saturday 07:00 breaks it', () => {
+    desk(FRI, '20:00', ''); sat()
+    expect(msgs(SAT, 'CREW_REST')).toHaveLength(1)
+  })
+  /* Astra's code read of the follow-ups (16 Nov 26, chat 87): the day's events take the same man at the same hours under
+     the same name as ONE commitment (the seat-and-extras rule in events.ts), so an SC desk placed BEFORE a plain desk of the
+     same role and hours swallowed the plain one — and its "no END" with it: the breach the plain desk makes vanished, by
+     block order alone. Both orders must read alike: one commitment, ending at the plain desk's assumed 21:00. */
+  it('an SC desk BEFORE a plain desk of the same role and hours: the plain desk still ends 21:00, Saturday 07:00 breaks it', () => {
+    desk(FRI, '20:00', '', 'sc'); desk(FRI, '20:00', ''); sat()
+    expect(msgs(SAT, 'CREW_REST')).toHaveLength(1)
+    expect(msgs(SAT, 'CREW_REST')[0]).toMatch(/21:00/)
+  })
+  it('the same two desks the other way round read the same, and neither order raises a conflict of the man with himself', () => {
+    desk(FRI, '20:00', ''); desk(FRI, '20:00', '', 'sc'); sat()
+    expect(msgs(SAT, 'CREW_REST')).toHaveLength(1)
+    expect(msgs(SAT, 'CREW_REST')[0]).toMatch(/21:00/)
+    expect(msgs(FRI, 'DOUBLE_BOOK')).toEqual([])
+  })
+  it('the SC-first order raises no conflict of the man with himself either', () => {
+    desk(FRI, '20:00', '', 'sc'); desk(FRI, '20:00', ''); sat()
+    expect(msgs(FRI, 'DOUBLE_BOOK')).toEqual([])
+  })
+  /* D2080 (16 Nov 26, "Q1 & 2 as recommended" — the fresh Opus read's F3): an AVALON or BB template's desk, once its wave
+     flies (D1997: then an ordinary duty row), with START typed and END blank, is left out of crew rest as the SC desk is —
+     one rule for every standby desk. Standing by, the desk is exempt with its wave and bears no rest already. */
+  for (const k of ['avalon', 'bb']) {
+    it(`D2080: a ${k.toUpperCase()} desk, its wave flying, START 20:00 and END blank: no crew rest on Saturday; END 23:00 breaks it`, () => {
+      const sw: any = makeStandalone(k); add(FRI, sw); sw.formations[0].rl = '19:30'
+      // AVALON from its seeded template; BB has no seeded template, so its desk is made as the standby tests make it
+      const base: any = k === 'avalon' ? blockFromTpl('avalon') : { label: 'BB', sa: 'bb', noconf: true }
+      expect(base.sa).toBe(k)
+      const blk: any = { ...base, rows: [{ role: 'SXO', id: 'bane', str: '20:00', end: '', more: [] }] }
+      day(FRI).dutywaves.push(blk); sat()
+      expect(msgs(SAT, 'CREW_REST'), 'END blank: left out').toEqual([])
+      blk.rows[0].end = '23:00'
+      expect(msgs(SAT, 'CREW_REST'), 'END typed: counted (the control)').toHaveLength(1)
+    })
+  }
+  it('the same man in an SC desk\'s seat AND its extras is still one commitment with no END: no crew rest', () => {
+    desk(FRI, '20:00', '', 'sc'); day(FRI).dutywaves.at(-1).rows[0].more = ['bane']; sat()
+    expect(msgs(SAT, 'CREW_REST')).toEqual([])
   })
 })

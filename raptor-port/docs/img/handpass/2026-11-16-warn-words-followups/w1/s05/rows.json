@@ -1,0 +1,47 @@
+[
+ [
+  "S5",
+  "desktop",
+  "Plan A END blank; + Alt Plan creates Plan B; type END 23:00 there; read Wed (Ranger B 08:00)",
+  "Plan A none; Plan B crew-rest line (clear 11:00)",
+  "A: [] blank-ok=true | B: [\"Crew rest (<12h) Ranger — Crew rest: Tuesday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕\"] | selector Plan B ▾",
+  "PASS",
+  "w1/s05/04-planB-wed.png"
+ ],
+ [
+  "S5",
+  "desktop",
+  "switch A -> B -> A through the plans menu (selector label seen in the menu dump)",
+  "next-day result follows the selected plan",
+  "A again crew lines=0 ; B again crew lines=1 ; blocks [\"SC Shift/sc:SXO AM 20:00-23:00 bane\"]",
+  "SEE-LOG",
+  "w1/s05/06-B-again-wed.png"
+ ],
+ [
+  "S5",
+  "desktop",
+  "switch to Plan A, then Undo, then Redo",
+  "restored behaviour matches the restored END (Undo -> B 22:00 line; Redo -> A no line)",
+  "selector: Plan B ▾ -> Plan A ▾ -> Undo Plan B ▾ -> Redo Plan A ▾; Wed after Undo [\"Crew rest (<12h) Ranger — Crew rest: Tuesday duty ended 22:00 → clear 10:00. Report 08:00: 10h rest, needs 12h. ✕\"] after Redo []",
+  "SEE-LOG",
+  "w1/s05/07b-undo-plan-switch.png"
+ ],
+ [
+  "S5",
+  "desktop",
+  "day saved as a template then applied to Thu; re-seat Ranger; Fri flight B 08:00; END as copied / cleared / pasted 23:00 / cleared",
+  "identity kept: cleared -> none; pasted 23:00 -> a line; cleared again -> none",
+  "copied(END as saved): [] | cleared: [] | pasted: [\"Crew rest (<12h) Ranger — Crew rest: Thursday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕\"] | cleared again: []",
+  "PASS",
+  "w1/s05/18-fri-strip-pasted.png"
+ ],
+ [
+  "S5",
+  "desktop",
+  "View-only Sched: preview an inactive saved plan of Tue 28 Jul (never published)",
+  "RECORD (flag-free preview; day details text recorded)",
+  "strip: NO STRIP items [] | details []",
+  "RECORDED",
+  "w1/s05/21-viewonly-plan-preview.png"
+ ]
+]

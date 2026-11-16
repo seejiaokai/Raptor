@@ -68,9 +68,19 @@ describe('validation engine (tfin F)', () => {
      same short name as the warning list's line it opens (D2070, spec §3g: "the other checks' short names follow the new
      labels") — the chips that stand for one check only take that check's name */
   it('a one-check chip carries the warning list\'s short name', () => {
-    const one: any = { NB: 'NO_BRIEF', DB: 'DEBRIEF', SB: 'SIM_BRIEF', SD: 'SIM_DEBRIEF', Q: 'QUAL', RUN: 'DAYS_RUN' }
+    const one: any = { NB: 'NO_BRIEF', DB: 'DEBRIEF', SB: 'SIM_BRIEF', SD: 'SIM_DEBRIEF', RUN: 'DAYS_RUN' }
     expect(Object.keys(one).filter(c => CHIP_LABEL[c] !== WCODE[one[c]])).toEqual([])
     expect(CHIP_LABEL.LD).toBe('Long day (>{longDay})')
+  })
+
+  /* The fresh Opus read of the follow-ups (16 Nov 26, chat 87): Q is NOT a one-check chip — the seat check (QUAL) marks it,
+     and so do SC currency (SC_QUAL), AAR currency (AAR_QUAL) and an AAR instructor not cleared (AAR_INSTR). Titled with the
+     seat check's name, a man in a perfectly legal seat who is only out of date read "Illegal seat" on his puck. The chip
+     carries the Legend's own approved name for it, "qual / illegal seat" (D2074, D2075, D2078), as the reference's
+     "Qualification — illegal seat" covered both halves before; the seat check's own short name stays "Illegal seat". */
+  it('the Q chip stands for four checks, so its title is the Legend\'s "Qual / illegal seat", never the seat check\'s alone', () => {
+    expect(CHIP_LABEL.Q).toBe('Qual / illegal seat')
+    expect(WCODE.QUAL).toBe('Illegal seat')
   })
 
   it('chip glyphs print short (CHIP_TEXT)', () => {
@@ -435,7 +445,7 @@ describe('a rear seat takes any pilot — jet and sim alike', () => {
     DAYS[0].sims.oft[0].p = 'rocky'
     const hits = validate().all.filter((x: any) => x.code === 'QUAL' && (x.who || []).includes('rocky'))
     expect(hits.length).toBeGreaterThan(0)
-    expect(hits[0].msg).toBe('Wrong seat: a WSO in the front seat of OFT EP-4 08:00–09:30')
+    expect(hits[0].msg).toBe('Illegal seat: a WSO in the front seat of OFT EP-4 08:00–09:30')
   })
 })
 

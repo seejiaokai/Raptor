@@ -445,17 +445,17 @@ export function legendHTML(){
     <span><span class="qk" style="background:#F0555F">C</span>conflict</span>
     <span><span class="qk" style="background:#F0555F">CP</span>crew pairing — not authorised</span>
     <span><span class="qk" style="background:#F0555F">R</span>crew rest</span>
-    <span><span class="qk" style="background:#F0555F">7</span>no break day</span>
+    <span><span class="qk" style="background:#F0555F">7</span>days in a row</span>
     <span><span class="qk" style="background:#F0555F">Q</span>qual / illegal seat</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">DT</span>double turn</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">TT</span>tight turn</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">A</span>advisory — shift + ground</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">CP</span>crew pairing — needs approval</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>no flight brief</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>no sim brief</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>no flight debrief</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>no sim debrief</span>
-    <span><span class="qk" style="background:#8A96A3;color:#0B0D10">L</span>long work day</span>`;
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>misses flight brief</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>misses sim brief</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>misses flight debrief</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>misses sim debrief</span>
+    <span><span class="qk" style="background:#8A96A3;color:#0B0D10">L</span>long day</span>`;
     /* (the "Sections:" colour key used to sit here — removed on request; each section
        still carries its own coloured left bar, which is self-explanatory in place.) */
 }

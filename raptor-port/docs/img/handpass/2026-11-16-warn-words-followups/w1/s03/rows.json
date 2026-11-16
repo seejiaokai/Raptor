@@ -1,0 +1,29 @@
+[
+ [
+  "S3",
+  "desktop",
+  "Sunday published (ORIG) with SC desk START 20:00 END blank; read Monday surfaces BEFORE any edit",
+  "RECORD",
+  "Edit Schedule Monday: NO STRIP crew=[] details crew=[]; View-only Monday: NO STRIP crew=[]",
+  "RECORDED",
+  "w1/s03/02-before-edit-monday.png"
+ ],
+ [
+  "S3",
+  "desktop",
+  "Sunday END 23:00 typed on the working copy (amendment pending); read Monday in Edit Schedule and View-only",
+  "RECORD; pending edit must not rewrite the issued END",
+  "Edit Schedule Monday: ⚠ 1 issue · 1 warning ▼ crew=[\"Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕\"] details crew=[\"Warning · Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h.\"]; View-only Monday: NO STRIP crew=[]",
+  "RECORDED",
+  "w1/s03/07-pending-edit-monday.png"
+ ],
+ [
+  "S3",
+  "desktop",
+  "amendment AL1 published (END 23:00 now issued); read Monday",
+  "newly issued typed END contributes to Monday rest: crew-rest line for Ranger (clear 11:00, report 08:00)",
+  "Edit: ⚠ 1 issue · 1 warning ▼ crew=[\"Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕\"] details=[\"Warning · Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h.\"]; View-only: ⚠ 1 issue · 1 warning ▼ crew=[\"Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h.\"]",
+  "PASS",
+  "w1/s03/11-after-al-monday.png"
+ ]
+]
