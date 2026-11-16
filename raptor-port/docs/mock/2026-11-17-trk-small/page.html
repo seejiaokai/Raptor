@@ -1,0 +1,145 @@
+<title>Tracker Small Fixes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* layout: one column; the open questions on top; then one card a question, its pictures under it; then what is not drawn */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--warn:#a35a00;--tint:rgba(14,127,166,.07);
+--f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:26px}h2{font-size:19px;margin-top:34px;padding-top:14px;border-top:1px solid var(--line)}h3{font-size:16px}
+.sub{color:var(--mute);margin:4px 0 0}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.top ol{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:7px}
+.top li{display:grid;grid-template-columns:44px 1fr;gap:8px}
+.top b.n{font-family:var(--f-head);color:var(--acc)}
+.rec{color:var(--rec);font-weight:600}
+.weak{color:var(--warn);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px}
+.q p,.q li{max-width:78ch}.q p{margin:8px 0}
+.q ul{margin:6px 0;padding-left:20px}.q li{margin:4px 0}
+.ex{background:var(--tint);border-radius:8px;padding:8px 12px;color:var(--mute)}
+.ex b{color:var(--fg)}
+.pics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.pics.one{grid-template-columns:1fr}
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
+figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
+figcaption b{color:var(--fg)}
+details{margin-top:10px}summary{cursor:pointer;color:var(--acc);font-weight:600}
+.phone{display:grid;grid-template-columns:repeat(2,minmax(0,260px));gap:10px;margin-top:8px}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--mute)}
+.tag.p{color:var(--mark);border-color:var(--mark)}
+.keys{font-size:14px}
+.keys kbd{font:600 12px/1 var(--f-body);border:1px solid var(--line);border-radius:4px;padding:2px 5px;background:var(--tint)}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#zoom img{max-width:none;width:auto;max-height:none}
+@media (max-width:640px){.pics{grid-template-columns:1fr}.top li{grid-template-columns:36px 1fr}.phone{grid-template-columns:1fr 1fr}}
+</style>
+<div class="wrap">
+<h1>The Tracker's three small fixes</h1>
+<p class="sub">Night of 17 Nov 26 · three items waiting for the Tracker's next batch, each made ready for your answer. Nothing in the app has changed. Every picture is the real app (demo data). <span class="tag">Today</span> is the app as it is; <span class="tag p">Proposed</span> has the change drawn in, marked in pink with a number; each number is named in the words beside it. Tap a picture to see it bigger.</p>
+
+<div class="top">
+<h3>Open now: answer by number, or "all as recommended"</h3>
+<ol>
+<li><b class="n">Q1</b><span><a href="#Q1">A medical input can be cancelled today, by one route. Should it still count as a down day?</a> <span class="rec">Recommended: changing an input to a medical one takes its cancel off, so it is a plain medical everywhere and counts.</span></span></li>
+<li><b class="n">Q2</b><span><a href="#Q2">Should the Tracker's File, Course and Syllabus menus work under the keys as the board's menus do?</a> <span class="rec">Recommended: yes, the board's keys and its cyan ring.</span></span></li>
+<li><b class="n">Q3</b><span><a href="#Q3">Is this the + Add window you want now that a typed name cannot be added?</a> <span class="rec">Recommended: as drawn: no typed box, no OK, Cancel alone; the two lines' words as drawn.</span></span></li>
+</ol>
+</div>
+
+<h2 id="Q1">Q1 · A cancelled medical input</h2>
+<div class="q">
+<h3>Can one exist today? Yes, by one route</h3>
+<p>A medical input cannot be cancelled directly: a medical never goes on the Ground Programme, and the cancel (CX) button is only on Ground Programme rows. But an input keeps its cancel when its type is changed, and a cancelled activity can be changed into a medical one. I made one tonight through the app's own buttons, signed in as an admin:</p>
+<ul>
+<li><b>Step 1 (1a, 1b):</b> on the Scheduler Board, Thursday 16 Jul, Ranger's Appointment on the Ground Programme: CX, reason WX, Cancel line.</li>
+<li><b>Step 2 (1c, 1d):</b> on the Inputs calendar, Ranger's input opened: its title still shows the red CX WX tag. Type changed to OML, Save, "No document".</li>
+</ul>
+<p>The result is an OML for Ranger on 16 Jul, still marked cancelled for WX. Afterwards no button takes the cancel off. Only Undo does, or changing the type back.</p>
+<div class="pics"><figure><img src="../../img/2026-11-17-trk-small/1-route-d-cx.png" alt="The board's Cancel this item window, reason WX"><figcaption><b>Step 1.</b> The board's CX on Ranger's Appointment: reason WX (1a), Cancel line (1b).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/1-route-d-retype.png" alt="The input's window, CX WX in its title, Type OML"><figcaption><b>Step 2.</b> The same input's window: still cancelled (1c), its type changed to OML (1d).</figcaption></figure></div>
+
+<h3 style="margin-top:14px">What it does: three places disagree</h3>
+<ul>
+<li><b>The Inputs calendar</b> strikes "Ranger · OML" through, as cancelled (1e).</li>
+<li><b>The Medical tab</b> (as of 16 Jul) lists Ranger under Medically down, with no sign of the cancel (1g).</li>
+<li><b>The Tracker</b> counts it: Ranger, added as a student with his course starting 1 Jul 26, reads No. of Down Days "1 day" (1i), and its window lists "OML 16 Jul, 1 day" (1h).</li>
+</ul>
+<p class="ex"><b>Example.</b> Ranger's appointment on 16 Jul is called off for weather. The same morning he goes to the doctor instead, and the scheduler changes that input to OML rather than filing a new one. The calendar now says the OML is cancelled, the Medical tab says Ranger is down, and the Tracker gives him a down day. A scheduler reading the calendar would plan Ranger to fly; the Tracker and the Medical tab would not.</p>
+<div class="pics one"><figure><img src="../../img/2026-11-17-trk-small/1-cal-d-today.png" alt="The Inputs calendar, Ranger OML struck through"><figcaption><b>Today.</b> The Inputs calendar, 16 Jul: "Ranger · OML" struck through as cancelled (1e).</figcaption></figure></div>
+<div class="pics"><figure><img src="../../img/2026-11-17-trk-small/1-medical-d-today.png" alt="The Medical tab, Ranger medically down"><figcaption><b>Today.</b> The Medical tab, as of 16 Jul: Ranger medically down (1g).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/1-downlog-d-today.png" alt="The Tracker's down days window, 1 day"><figcaption><b>Today.</b> The Tracker: "1 day" (1i), and the window lists the cancelled OML (1h).</figcaption></figure></div>
+
+<h3 style="margin-top:14px">The choice</h3>
+<ul>
+<li><span class="rec">A (recommended):</span> changing an input into a medical one takes its cancel off. A cancel belongs to a planned activity that did not happen; a medical is a different thing, and the app already treats a change of type as a fresh start (an input taken off the programme comes back when its type changes). Then all three places agree: Ranger is down, and the Tracker counts the day. A medical can then never be cancelled, which matches there being no button to cancel one.</li>
+<li><b>B:</b> keep the cancel, and have the Medical tab and the Tracker leave a cancelled medical out, as the calendar already does. All three agree too, but a cancel nobody can take off stays on a medical, and he is shown fit while the doctor's input says he is not.</li>
+</ul>
+<div class="pics one"><figure><img src="../../img/2026-11-17-trk-small/1-cal-d-proposed.png" alt="The Inputs calendar, Ranger OML plain"><figcaption><b>Proposed (A).</b> The change of type took the cancel off: "Ranger · OML" is a plain medical (1f). The Medical tab and the Tracker stay as they are today.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="../../img/2026-11-17-trk-small/1-downlog-p-today.png" alt="The Tracker's down days window on a phone"><figcaption><b>Today.</b> The same route made on a phone; the Tracker counts the cancelled OML (1h).</figcaption></figure></div></details>
+</div>
+
+<h2 id="Q2">Q2 · The Tracker's menus under the keys</h2>
+<div class="q">
+<p>On a desktop, the Tracker's three menus (File, Course's pencil, Syllabus's pencil) do not work under the keys the way the board's menus do. You ruled the board's way on 5 and 8 Nov (D1646, D1771), and gave the Tracker's menus the board's look (D1706), but nothing was said about their keys.</p>
+<ul>
+<li><span class="weak">Today:</span> Enter opens the menu but the keys stay on the button, and ↓ does nothing (2a). Only Tab reaches the first item, and it wears the browser's white ring (2b), not the app's cyan one. Escape closes the menu and the keys go back to the page, not to the button.</li>
+<li><span class="rec">Proposed:</span> Enter or ↓ opens the menu with the keys on its first item, in the app's cyan ring (2c); ↓ and ↑ move through it (2d); Enter presses the item; Escape closes it and puts the keys back on the button. These are the board's own keys and ring.</li>
+</ul>
+<p class="keys">Keys: <kbd>Enter</kbd> or <kbd>↓</kbd> open · <kbd>↓</kbd> <kbd>↑</kbd> move · <kbd>Enter</kbd> press · <kbd>Esc</kbd> close, back on the button · <kbd>Tab</kbd> leaves as on the board.</p>
+<p>On a phone nothing changes: there are no keys, and a tap shows no ring.</p>
+<p class="rec">Recommended: yes, as drawn. Other choice: leave them; the Tracker is mostly used by tapping, but its menus would be the only ones in the app that behave differently under the keys.</p>
+<div class="pics"><figure><img src="../../img/2026-11-17-trk-small/2-file-d-today-enter.png" alt="File menu open, the keys still on the button"><figcaption><b>Today.</b> Enter opens File (2a); the keys stay on the button and ↓ does nothing.</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/2-file-d-today.png" alt="File menu, Import with a white ring"><figcaption><b>Today.</b> Tab reaches Import… in the browser's white ring (2b).</figcaption></figure></div>
+<div class="pics"><figure><img src="../../img/2026-11-17-trk-small/2-file-d-proposed.png" alt="File menu, Import with the cyan ring"><figcaption><b>Proposed.</b> Enter opens on Import…, cyan ring (2c).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/2-file-d-proposed-down.png" alt="File menu, Export with the cyan ring"><figcaption><b>Proposed.</b> ↓ moves to Export… (2d).</figcaption></figure></div>
+<div class="pics"><figure><img src="../../img/2026-11-17-trk-small/2-course-d-today.png" alt="Course menu, white ring"><figcaption><b>Today.</b> The Course menu, white ring (2b).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/2-course-d-proposed.png" alt="Course menu, cyan ring"><figcaption><b>Proposed.</b> Cyan ring (2c).</figcaption></figure></div>
+<div class="pics"><figure><img src="../../img/2026-11-17-trk-small/2-syl-d-today.png" alt="Syllabus menu, white ring"><figcaption><b>Today.</b> The Syllabus menu, white ring (2b).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/2-syl-d-proposed.png" alt="Syllabus menu, cyan ring"><figcaption><b>Proposed.</b> Cyan ring (2c).</figcaption></figure></div>
+<div class="pics"><figure><img src="../../img/handpass/2026-11-08-board-keys/walk/003-narrow-q1-proposed.png" alt="The board's menu under the keys, as you approved it"><figcaption><b>For comparison.</b> The board's ⋯ menu under the keys, as you approved it on 8 Nov (D1771).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/2-file-p-same.png" alt="File menu on a phone, opened by a tap"><figcaption><b>On a phone, today and proposed alike.</b> File opened by a tap: no ring.</figcaption></figure></div>
+</div>
+
+<h2 id="Q3">Q3 · + Add without a typed name</h2>
+<div class="q">
+<p>You ruled on 8 Nov that no student is added by a typed name (D1931): every student is picked from the roster. Before it is built, here is the window, since its words and buttons change (your rule that anything new a person sees is drawn first, D1625).</p>
+<ul>
+<li><b>The typed box goes</b> (3a), and so does <b>OK</b> (3b): a tap on a name already adds him at once, so OK would only ever add a typed name. <b>Cancel</b> is left alone (3c). Enter in the search still adds the one man it matches, as it does today.</li>
+<li><b>A search that matches nobody</b> says only "Nobody on the roster matches “Zzyx”." (3e). Today it goes on "OK adds them as a new crew member." (3d), and OK would add ZZYX as a student linked to nobody, with "—" for his down days.</li>
+<li><b>With nobody on the roster at all,</b> the window says "Nobody is on the squadron roster yet." and adds nobody (3f). Today it shows a plain "Student callsign:" box instead.</li>
+</ul>
+<p class="ex"><b>Example.</b> A scheduler adds a new student, types "Recon" in the search and taps him: he is added with his course start, as today. He types "Zzyx" by mistake: today OK adds a student nobody can match to the roster, whose down days never count; with the change, the line says nobody matches and nothing is added.</p>
+<p class="rec">Recommended: as drawn. Other choice: keep OK as a second way to add the one name the search has narrowed to. It adds nothing a tap or Enter does not already do.</p>
+<div class="pics"><figure><img src="../../img/2026-11-17-trk-small/3-add-d-today.png" alt="The + Add window today with the typed box and OK"><figcaption><b>Today.</b> "Or type a callsign" (3a) and OK (3b).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/3-add-d-proposed.png" alt="The + Add window with Cancel alone"><figcaption><b>Proposed.</b> No typed box and no OK; Cancel (3c).</figcaption></figure></div>
+<div class="pics"><figure><img src="../../img/2026-11-17-trk-small/3-nomatch-d-today.png" alt="A search matching nobody, today"><figcaption><b>Today.</b> A search matching nobody (3d); OK or Enter adds "ZZYX".</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/3-nomatch-d-proposed.png" alt="A search matching nobody, proposed"><figcaption><b>Proposed.</b> "Nobody on the roster matches “Zzyx”." and nothing to add (3e).</figcaption></figure></div>
+<div class="pics one"><figure><img src="../../img/2026-11-17-trk-small/3-empty-d-proposed.png" alt="Nobody on the roster, proposed"><figcaption><b>Proposed.</b> Nobody on the roster yet (3f): nothing can be added.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone">
+<figure><img src="../../img/2026-11-17-trk-small/3-add-p-today.png" alt=""><figcaption>Today</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/3-add-p-proposed.png" alt=""><figcaption>Proposed</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/3-nomatch-p-today.png" alt=""><figcaption>Matching nobody, today</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/3-nomatch-p-proposed.png" alt=""><figcaption>Matching nobody, proposed</figcaption></figure>
+<figure><img src="../../img/2026-11-17-trk-small/3-empty-p-proposed.png" alt=""><figcaption>Nobody on the roster, proposed</figcaption></figure>
+</div></details>
+</div>
+
+<h2>What is not drawn, and why</h2>
+<div class="q"><ul>
+<li><b>Q1's choice B.</b> It changes only what the Medical tab and the Tracker count, so it would look like the Medical tab without Ranger and the Tracker reading "—". It is described, not drawn.</li>
+<li><b>Q1 on a phone, beyond the Tracker.</b> The route was made on a phone too; only the Tracker's window is pictured, since the calendar and the Medical tab look the same as on a desktop, only smaller.</li>
+<li><b>Q2's proposed keys in motion.</b> The proposed pictures were taken with the keys moved by Tab (the app's own move today), with the board's cyan ring put on the Tracker's menu items. ↑ and Escape back on the button are described, not drawn.</li>
+<li><b>Q3's "nobody on the roster" today.</b> The demo always has people on the roster, so the plain "Student callsign:" box cannot be reached to picture. The proposed picture is drawn from the nearest real state (a search that matches nobody), with its words changed and the search box hidden.</li>
+</ul></div>
+</div>
+<div id="zoom" hidden></div>
+<script>
+const z=document.getElementById('zoom')
+document.addEventListener('click',e=>{const i=e.target.closest('figure img');if(i){z.innerHTML='';const c=i.cloneNode();c.style.cursor='zoom-out';z.appendChild(c);z.hidden=false;return}if(!z.hidden&&z.contains(e.target))z.hidden=true})
+document.addEventListener('keydown',e=>{if(e.key==='Escape')z.hidden=true})
+</script>

@@ -2721,3 +2721,17 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The round-1 drawing script was saved under raptor-port/scripts/mock/, a folder the notes-only merge rule (D1407) does not list, while every earlier mock-up script lives under raptor-port/docs/mock/<date>-<name>/. The pull request was described as notes only and would have merged by itself; the file list was checked before the merge and the script moved.
 **Suggested improvement:** The mock-up guide names the one home for a drawing script — raptor-port/docs/mock/<date>-<name>/draw.mjs — and the notes-only check before a merge lists any file outside the rule's folders by name.
 **Principle:** A rule that keys on file locations needs the tools that create files to name the location; check the list itself, never the description.
+
+### Observation 960: A mark's tag appended inside the marked element vanishes on a text box and is cut by a clipping panel
+
+**Status:** OPEN
+**Date:** 2026-11-17
+**Session context:** The night's job 4, the Tracker's small fixes drawn on the real app (numbered past 958 and 959, held by other open branches)
+**Skill:** brainstorming (mockups-on-the-real-app.md, the mark kit)
+**Type:** open-source
+**Phase/Area:** marking a part of the real app with an outline and a numbered tag
+
+**Issue:** The kit's mark() appended its numbered tag as a child of the marked element. On a text box (an input) a child is never drawn, so the tag check failed "not drawn"; on a menu panel with overflow set, the tag beside it was clipped. A tag placed "above" also landed on the neighbouring bar. Fixed in the job's script by laying each tag on the page itself (position fixed, placed from the element's box, highest stacking) and widening the crop to take every tag in; an outline set outside the element was then cut by a clipping list, so an inside tag keeps its outline inside.
+**Suggested improvement:** In mockups-on-the-real-app.md's mark kit, lay tags on the page (fixed, from getBoundingClientRect) rather than inside the app's element, offer inside-bottom and middle positions, make the crop include every tag, and keep the outline inside whenever the tag is inside.
+**Principle:** An annotation drawn over a live page belongs to an overlay layer of its own, never inside the elements it annotates, whose own rules (text boxes, clipping, stacking) decide whether it shows.
+**Reference file:** raptor-port/docs/mock/2026-11-17-trk-small/draw.mjs

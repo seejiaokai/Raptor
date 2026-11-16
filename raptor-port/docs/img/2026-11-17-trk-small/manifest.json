@@ -1,0 +1,158 @@
+{
+  "1-cal-d-proposed.png": {
+    "question": "q1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed (A): changing its kind to a medical one took the cancel off, so \"Ranger · OML\" is a plain medical (1f). Drawn: the struck look taken off this one bar."
+  },
+  "1-cal-d-today.png": {
+    "question": "q1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "The Inputs calendar, 16 Jul: \"Ranger · OML\" struck through, as cancelled (1e)."
+  },
+  "1-downlog-d-today.png": {
+    "question": "q1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "The Tracker, Ranger added from the roster with course start 1 Jul 26: No. of Down Days \"1 day\" (1i), and its window lists the cancelled OML of 16 Jul as 1 day (1h)."
+  },
+  "1-downlog-p-today.png": {
+    "question": "q1",
+    "size": "phone",
+    "kind": "today",
+    "caption": "The same on a phone: the cancelled OML counted, 1 day (1h)."
+  },
+  "1-medical-d-today.png": {
+    "question": "q1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "The Medical tab as of 16 Jul: Ranger under Medically down (1g), the cancel not shown."
+  },
+  "1-route-d-cx.png": {
+    "question": "q1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Step 1, a real press: the board's CX on Ranger's Appointment, reason WX (1a), then Cancel line (1b)."
+  },
+  "1-route-d-retype.png": {
+    "question": "q1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Step 2, a real change: the cancelled input's own window (its CX WX tag, 1c), its kind changed to OML (1d), then Save and \"No document\"."
+  },
+  "2-course-d-proposed.png": {
+    "question": "q2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed: Enter opens the Course menu with the keys on its first item, in the app's cyan ring (2c). Drawn: the board's ring on the menu's items; the keys put there by Tab."
+  },
+  "2-course-d-today.png": {
+    "question": "q2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today: the Course menu's first item reached by Tab wears the browser's white ring (2b) — measured rgb(16, 16, 16) auto."
+  },
+  "2-file-d-proposed-down.png": {
+    "question": "q2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed: ↓ moves the keys to Export… (2d). Drawn: the next item reached by Tab."
+  },
+  "2-file-d-proposed.png": {
+    "question": "q2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed: Enter opens the File menu with the keys on its first item, in the app's cyan ring (2c). Drawn: the board's ring on the menu's items; the keys put there by Tab."
+  },
+  "2-file-d-today-enter.png": {
+    "question": "q2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today: Enter on File ▾ opens the menu (2a) and the ↓ key does nothing: the keys stay on File ▾."
+  },
+  "2-file-d-today.png": {
+    "question": "q2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today: the File menu's first item reached by Tab wears the browser's white ring (2b) — measured rgb(16, 16, 16) auto."
+  },
+  "2-file-p-same.png": {
+    "question": "q2",
+    "size": "phone",
+    "kind": "today",
+    "caption": "On a phone the File menu opened by a tap: no ring, today and after the change alike."
+  },
+  "2-syl-d-proposed.png": {
+    "question": "q2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed: Enter opens the Syllabus menu with the keys on its first item, in the app's cyan ring (2c). Drawn: the board's ring on the menu's items; the keys put there by Tab."
+  },
+  "2-syl-d-today.png": {
+    "question": "q2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today: the Syllabus menu's first item reached by Tab wears the browser's white ring (2b) — measured rgb(16, 16, 16) auto."
+  },
+  "3-add-d-proposed.png": {
+    "question": "q3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed: no typed box and no OK; a tap on a name adds him, Cancel closes (3c). Drawn: the box and OK hidden."
+  },
+  "3-add-d-today.png": {
+    "question": "q3",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today: + Add, with \"Or type a callsign\" (3a) and OK (3b), which adds what was typed as a student linked to nobody."
+  },
+  "3-add-p-proposed.png": {
+    "question": "q3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed: no typed box and no OK; a tap on a name adds him, Cancel closes (3c). Drawn: the box and OK hidden."
+  },
+  "3-add-p-today.png": {
+    "question": "q3",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today: + Add, with \"Or type a callsign\" (3a) and OK (3b), which adds what was typed as a student linked to nobody."
+  },
+  "3-empty-d-proposed.png": {
+    "question": "q3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, nobody on the roster: \"Nobody is on the squadron roster yet.\" (3f); nothing can be added. Drawn from the nearest real state, a search matching nobody, its words changed and the search box hidden."
+  },
+  "3-empty-p-proposed.png": {
+    "question": "q3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed, nobody on the roster: \"Nobody is on the squadron roster yet.\" (3f); nothing can be added. Drawn from the nearest real state, a search matching nobody, its words changed and the search box hidden."
+  },
+  "3-nomatch-d-proposed.png": {
+    "question": "q3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed: \"Nobody on the roster matches “Zzyx”.\" (3e) and nothing to add; Enter does nothing. Drawn: the line's second sentence, the box and OK taken away."
+  },
+  "3-nomatch-d-today.png": {
+    "question": "q3",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today: a search that matches nobody — \"Nobody on the roster matches “Zzyx”. OK adds them as a new crew member.\" (3d); OK or Enter adds \"ZZYX\" as a student linked to nobody."
+  },
+  "3-nomatch-p-proposed.png": {
+    "question": "q3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed: \"Nobody on the roster matches “Zzyx”.\" (3e) and nothing to add; Enter does nothing. Drawn: the line's second sentence, the box and OK taken away."
+  },
+  "3-nomatch-p-today.png": {
+    "question": "q3",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today: a search that matches nobody — \"Nobody on the roster matches “Zzyx”. OK adds them as a new crew member.\" (3d); OK or Enter adds \"ZZYX\" as a student linked to nobody."
+  }
+}
