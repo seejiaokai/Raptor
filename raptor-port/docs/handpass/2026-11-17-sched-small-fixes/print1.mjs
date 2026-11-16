@@ -14,6 +14,7 @@ await page.reload(); await page.waitForTimeout(800)
 if (await page.locator('#luser').count()) { await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a'); await page.click('#loginForm button[type=submit]'); await page.waitForTimeout(800) }
 await go(page, 'editsched')
 const D = '#eWeek .day[data-day="0"]'
+// eslint-disable-next-line react-doctor/async-await-in-loop -- one step after another in one browser: each waits for the page to answer the last
 for (let i = 0; i < 4; i++) { const sel = page.locator(`${D} select[data-sign]`).nth(i); await sel.scrollIntoViewIfNeeded(); await sel.selectOption({ index: 1 }); await page.waitForTimeout(250) }
 await press(page, page.locator(`${D} .dbeak`).first(), false); await page.waitForTimeout(900)
 rec('P0 Monday published', /Unpublish/.test(await page.locator(`${D} .dbeak`).first().innerText()), 'Publish pressed after four sign-offs')

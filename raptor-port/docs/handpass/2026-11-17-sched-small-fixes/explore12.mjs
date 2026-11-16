@@ -6,6 +6,7 @@ const DI = process.env.DI || '0'
 const D = `#eWeek .day[data-day="${DI}"]`
 for (const [k, v] of [['cur', 'dj'], ['sked', 'shaft'], ['plan', 'slash'], ['appr', 'snap']]) {
   const sel = page.locator(`${D} select[data-sign]`).nth(['cur', 'sked', 'plan', 'appr'].indexOf(k))
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- one step after another in one browser: each waits for the page to answer the last
   await sel.scrollIntoViewIfNeeded(); await sel.selectOption({ index: 1 }); await page.waitForTimeout(300)
 }
 say('signs', await page.evaluate(d => JSON.stringify([...document.querySelectorAll(`#eWeek .day[data-day="${d}"] select[data-sign]`)].map(s => s.dataset.sign + '=' + s.value)), DI))

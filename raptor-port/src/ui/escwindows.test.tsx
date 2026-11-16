@@ -20,7 +20,8 @@ import * as view from '../state/view'
 import { DAYS } from '../engine/data'
 import { ensureRowIds } from '../engine/rowids'
 import { HOOKS } from '../engine/hooks'
-import { AVAILWIN, setAvailWin, setBellList, BELLLIST } from './pops'
+import { AVAILWIN, setAvailWin, setBellList, BELLLIST, DRAWER, setDrawer, OILLIST, setOilList } from './pops'
+import { frontWin } from './floatwin'
 import { openScheduler } from './board'
 import { forward, gone, _resetFloatWins } from './winorder'
 
@@ -45,12 +46,13 @@ const key = async (k: string) => {
     at.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }))
   })
 }
-const TUE = 1
+const TUE = 1, WED = 2
 const DSNAP = JSON.stringify(DAYS)
 /* a ground row carrying ALL AVAIL on Tuesday, so the week and the board draw its count */
 const seedRow = async () => {
   DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
   ;(DAYS[TUE] as any).ground = [...((DAYS[TUE] as any).ground || []), { prog: 'ALL AVAIL TEST', str: '12:30', end: '13:30', who: 'allavail' }]
+  ;(DAYS[WED] as any).ground = [...((DAYS[WED] as any).ground || []), { prog: 'ALL AVAIL WED', str: '12:30', end: '13:30', who: 'allavail' }]
   ensureRowIds(DAYS)
   await act(async () => { view.afterSchedMutate(); notify() })
 }
@@ -82,7 +84,7 @@ afterAll(async () => {
 beforeEach(async () => {
   ;(document.activeElement as HTMLElement | null)?.blur?.()
   await act(async () => {
-    setAvailWin(null); view.setChgWin(null); setBellList(false)
+    setAvailWin(null); view.setChgWin(null); setBellList(false); setDrawer(false); setOilList(null)
     if (view.ARM) view.disarmSlot()
     _resetFloatWins()
     notify()
@@ -233,6 +235,136 @@ describe('two windows up: the one opened or pressed last answers first', () => {
     await act(async () => { gone('inputedit') })      // what it does as it closes
     await key('Escape')
     expect(availUp()).toBe(false)
+  })
+})
+
+/* THE TWO CODE READS OF 17 NOV 26 (Astra's and the fresh Opus reader's — docs/handpass/2026-11-17-sched-small-fixes/),
+   each finding written here first and seen to fail before its fix */
+const phoneWidth = async (w: number) => {
+  await act(async () => {
+    Object.defineProperty(window, 'innerWidth', { value: w, configurable: true, writable: true })
+    window.dispatchEvent(new Event('resize'))
+  })
+}
+describe('the reads, A: a menu opened over the window answers Escape first, and only it', () => {
+  it('the ☰ side menu over ALL AVAIL: one Escape closes the menu only; the next the window', async () => {
+    await click(weekChip())
+    await act(async () => { setDrawer(true); notify() })
+    await key('Escape')
+    expect(DRAWER, 'the side menu closed').toBe(false)
+    expect(availUp(), 'the window under it stays').toBe(true)
+    await key('Escape')
+    expect(availUp()).toBe(false)
+  })
+
+  it('the ☰ side menu over the changes window: the same', async () => {
+    await act(async () => { openScheduler(TUE); notify() })
+    await click($('#sbHist'))
+    await click($('#sbDone'))   // the board closed, the changes window stays up over the week
+    expect(chgUp()).toBe(true)
+    await act(async () => { setDrawer(true); notify() })
+    await key('Escape')
+    expect(DRAWER).toBe(false)
+    expect(chgUp(), 'the window under it stays').toBe(true)
+  })
+
+  it('Edit Schedule\'s phone ⋯ menu over ALL AVAIL: one Escape closes the menu only', async () => {
+    await phoneWidth(400)
+    try {
+      await click(weekChip())
+      await click($('#editSchedMore'))
+      expect($('#editSchedMoreMenu'), 'the ⋯ menu is open').toBeTruthy()
+      await key('Escape')
+      expect($('#editSchedMoreMenu'), 'the ⋯ menu closed').toBeFalsy()
+      expect(availUp(), 'the window under it stays').toBe(true)
+    } finally { await phoneWidth(1024) }
+  })
+
+  it('the board\'s ⋯ menu over ALL AVAIL: one Escape closes the menu only; the board stays', async () => {
+    await act(async () => { openScheduler(TUE); notify() })
+    await click(boardChip())
+    await click($('#sbMore'))
+    expect($('#sbMoreMenu'), 'the board\'s ⋯ menu is open').toBeTruthy()
+    await key('Escape')
+    expect($('#sbMoreMenu'), 'the ⋯ menu closed').toBeFalsy()
+    expect(availUp(), 'the window under it stays').toBe(true)
+    expect(boardOpen()).toBe(true)
+  })
+})
+
+describe('the reads, B: opened again or pressed, the window answers before a seat armed earlier', () => {
+  it('pressed after a seat was armed: Escape closes the window, the seat stays armed', async () => {
+    await click(weekChip())
+    await act(async () => { view.armSlot(`d:${TUE}.0.0`); notify() })
+    await down($('.availwin .win-body'))
+    await key('Escape')
+    expect(availUp(), 'the window, pressed last, closed').toBe(false)
+    expect(view.ARM, 'the seat armed before the press is still armed').toBeTruthy()
+  })
+
+  it('opened again from another count after a seat was armed: the same', async () => {
+    await click(weekChip())
+    await act(async () => { view.armSlot(`d:${TUE}.0.0`); notify() })
+    await click($(`#eWeek .day[data-day="${WED}"] [data-oilsent]`))
+    expect(AVAILWIN && AVAILWIN.di, 'the window shows Wednesday\'s row').toBe(WED)
+    await key('Escape')
+    expect(availUp()).toBe(false)
+    expect(view.ARM).toBeTruthy()
+  })
+})
+
+describe('the reads, C: the window order holds both windows', () => {
+  it('the holiday OIL list, then ALL AVAIL, then the changes window: Escape closes them newest first', async () => {
+    await act(async () => { openScheduler(TUE); notify() })
+    await act(async () => { setOilList({ from: '2026-07-14', to: '2026-07-14', name: 'Test Day' }); notify() })
+    expect(OILLIST && $('[data-testid="win-oilday"]'), 'the OIL list is up').toBeTruthy()
+    await click(boardChip())
+    await click($('#sbHist'))
+    expect(availUp() && chgUp()).toBe(true)
+    await key('Escape')
+    expect(chgUp(), 'the changes window closed first').toBe(false)
+    expect(frontWin(), 'ALL AVAIL is in front now, not the OIL list').toBe('avail')
+    await key('Escape')
+    expect(availUp(), 'ALL AVAIL closed second').toBe(false)
+    expect(OILLIST, 'the OIL list is still up').toBeTruthy()
+    await key('Escape')
+    expect(OILLIST, 'the OIL list closed last').toBe(null)
+  })
+})
+
+describe('the reads, D: opened again from another count, the keys go back to that count', () => {
+  it('count A, then count B, a redraw, then Escape: the keys are on B', async () => {
+    const a = weekChip()
+    a.focus(); await click(a)
+    const b = $(`#eWeek .day[data-day="${WED}"] [data-oilsent]`)
+    b.focus(); await click(b)
+    await act(async () => { view.afterSchedMutate(); notify() })   // a redraw between
+    ;($('.availwin .win-x') as HTMLElement).focus()
+    await key('Escape')
+    expect(availUp()).toBe(false)
+    const at = document.activeElement as HTMLElement | null
+    expect(at && at.dataset && at.dataset.oilday, 'the keys are back on the count that opened it last').toBe(String(WED))
+  })
+})
+
+describe('the reads, E: closed by its ✕, a window gives "in front" back', () => {
+  it('ALL AVAIL opened over a window of the input kind, closed by ✕: that window is in front again', async () => {
+    await act(async () => { forward('inputedit') })
+    await click(weekChip())
+    expect(frontWin()).toBe('avail')
+    await click($('.availwin .win-x'))
+    expect(availUp()).toBe(false)
+    expect(frontWin(), 'the window behind is in front again').toBe('inputedit')
+  })
+
+  it('the changes window closed by ✕: the same', async () => {
+    await act(async () => { forward('inputedit') })
+    await act(async () => { openScheduler(TUE); notify() })
+    await click($('#sbHist'))
+    expect(frontWin()).toBe('chg')
+    await click($('.chgwin .win-x'))
+    expect(chgUp()).toBe(false)
+    expect(frontWin()).toBe('inputedit')
   })
 })
 

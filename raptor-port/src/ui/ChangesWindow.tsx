@@ -20,9 +20,10 @@
    — one group per item, the latest-changed on top, every line item-first; every group open until folded. On a phone
    "Hide ▾" beside ✕ sends the panel to the slim bar ("History on · N changes" · "Show ▴"), and where History draws its
    dots the panel says so in his words: "History on: Tap a gold dot on the schedule". */
-import { useFloatWin, phoneLayout, frontWin, raiseWin, escWaits, BOARD_BAR } from './floatwin'
+import { useFloatWin, phoneLayout, frontWin, makeEscWaits, openKey, BOARD_BAR } from './floatwin'
 import { useEscWindow } from './sheetfocus'
-import { gone } from './winorder'
+import { forward, gone } from './winorder'
+import { closeChanges } from './changesopen'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { notify } from '../state/store'
@@ -128,7 +129,10 @@ export function ChangesWindow() {
   /* ESCAPE CLOSES IT WHEN IT WAS THE LAST THING OPENED OR PRESSED (his D2112, 17 Nov 26, [CHGWIN-ESCAPE]): as the ALL AVAIL
      window does (AvailWindow.tsx) — the phone's slim bar too, which is the same window hidden; History goes with it, as by
      its ✕. Over the board the board waits for it (boardescape.ts overBoard). */
-  useEscWindow(el, !!w && isMember(), () => { setChgWin(null); gone('chg'); notify() }, { id: 'chg', waits: escWaits })
+  const chgUp = !!w && isMember()
+  useEscWindow(el, chgUp ? openKey('chg') : false, closeChanges, { id: 'chg', makeWaits: makeEscWaits })
+  /* every way out hands "in front" back (the code reads of 17 Nov 26, C and E — AvailWindow.tsx) */
+  useEffect(() => { if (!chgUp) return; return () => { if (gone('chg')) notify() } }, [chgUp])
   if (!w || !isMember()) return <div className="chgwin" hidden />
 
   const days = weekDates(CURWEEK)
@@ -154,7 +158,7 @@ export function ChangesWindow() {
   const anyDots = histHere && weekRows().some((r: any) => r.key || r.iid)
 
   const set = (patch: Partial<ChgWin>) => { setChgWin({ ...w, ...patch }); notify() }
-  const close = () => { setChgWin(null); notify() }
+  const close = closeChanges
   const go = (e: Entry) => {
     const l = lineOf(e)
     const j = jumpOf(l, days, one ? w.day : null)
@@ -182,7 +186,7 @@ export function ChangesWindow() {
     return (
       // eslint-disable-next-line react-doctor/prefer-html-dialog -- the slim bar of the window below: a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop, focus and Escape rules; this window floats beside the schedule without blocking it (D167), and raised over or under the ALL AVAIL window by a press (frontWin) — layered on purpose
       <div className={'chgwin bar' + (frontWin() === 'chg' ? ' front' : '')} ref={el} role="dialog" aria-label="Changes"
-        onPointerDownCapture={() => { if (raiseWin('chg')) notify() }}>
+        onPointerDownCapture={() => { if (forward('chg')) notify() }}>
         <button className="cw-barbtn" onClick={() => set({ bar: false })} aria-label={`Show the changes — ${n} change${n === 1 ? '' : 's'}`}>
           <span className="cw-barl">{histHere ? 'History on' : 'Changes'}</span><span className="cw-barn">{' · '}{n} change{n === 1 ? '' : 's'}</span>
           <span className="cw-show">Show ▴</span>
@@ -223,7 +227,7 @@ export function ChangesWindow() {
       /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop, focus and Escape rules; this window floats beside the schedule without blocking it (D167), and raised over or under the ALL AVAIL window by a press (frontWin) — layered on purpose */
       role="dialog"
       aria-label={title}
-      onPointerDownCapture={() => { if (raiseWin('chg')) notify() }}
+      onPointerDownCapture={() => { if (forward('chg')) notify() }}
     >
       <div className="win-bar" onPointerDown={onBarDown} onPointerMove={onBarMove} onPointerUp={onBarUp} onPointerCancel={onBarUp}>
         {/* D40 — the app's own six-dot grip, "drag me" */}

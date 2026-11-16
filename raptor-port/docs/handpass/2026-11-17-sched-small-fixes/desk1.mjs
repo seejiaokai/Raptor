@@ -17,6 +17,7 @@ async function openThenEsc(id, loc, pictag, { focusTab = false } = {}) {
   await press(page, loc, false)
   await page.waitForTimeout(500)
   const s1 = await state(page)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const sent = await loc.getAttribute('data-oilsent')
   await pic(page, `w1-${pictag}-open`)
   if (focusTab) { const tab = page.locator('.availwin:not([hidden]) button').first(); await tab.focus(); }
@@ -93,6 +94,7 @@ await scenario('W7 Tab', async () => {
   await page.evaluate(() => { const e = document.querySelector('#eWeek .day[data-day="0"] .sb-open'); window.scrollTo(0, 0); e.focus() })
   const seen = []
   for (let i = 0; i < 120; i++) {
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- one step after another in one browser: each waits for the page to answer the last
     await page.keyboard.press('Tab')
     const a = await page.evaluate(() => { const a = document.activeElement; return a ? { oc: a.classList.contains('oilcount'), d: a.closest && a.closest('.day') ? a.closest('.day').dataset.day : null, t: a.tagName + '.' + String(a.className).slice(0, 20), fill: a.dataset && a.dataset.fill ? a.dataset.fill : (a.closest && a.closest('[data-fill]') ? a.closest('[data-fill]').dataset.fill : null) } : null })
     seen.push(a)

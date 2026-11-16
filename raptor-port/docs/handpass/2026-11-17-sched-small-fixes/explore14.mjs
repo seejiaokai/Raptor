@@ -2,6 +2,7 @@ import { launch, go, pic, say } from './wlib.mjs'
 say('explore14 v1')
 const { browser, page } = await launch('chromium', false, true)
 for (const p of ['viewsched', 'editsched']) {
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- one step after another in one browser: each waits for the page to answer the last
   await go(page, p)
   say(p, 'exportSched total', await page.locator('#exportSched').count(), 'visible', await page.locator('#exportSched:visible').count(), 'exportPdf visible', await page.locator('#exportPdf:visible').count())
 }

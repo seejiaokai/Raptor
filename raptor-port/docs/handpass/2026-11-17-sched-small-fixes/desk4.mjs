@@ -8,6 +8,7 @@ const blur = () => page.evaluate(() => { if (document.activeElement && document.
 const esc = async () => { await page.keyboard.press('Escape'); await page.waitForTimeout(400) }
 const D0 = '#eWeek .day[data-day="0"]'
 // publish Monday through the real sign-offs
+// eslint-disable-next-line react-doctor/async-await-in-loop -- one step after another in one browser: each waits for the page to answer the last
 for (let i = 0; i < 4; i++) { const sel = page.locator(`${D0} select[data-sign]`).nth(i); await sel.scrollIntoViewIfNeeded(); await sel.selectOption({ index: 1 }); await page.waitForTimeout(250) }
 await press(page, page.locator(`${D0} .dbeak`).first(), false); await page.waitForTimeout(900)
 
@@ -22,6 +23,7 @@ await scenario('W1 the look at a published version (Original)', async () => {
   await pic(page, 'w1-eye-look-open')
   await blur(); await esc()
   const s2 = await state(page)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const keysBack = await page.evaluate(() => { const a = document.activeElement; return !!(a && a.classList.contains('oilcount')) })
   rec('W1 the look at a published version (Original)', s1.ava && !s2.ava && keysBack, `frozen-face counts=${n}; open=${s1.ava}; afterEsc open=${s2.ava}; keysOnCount=${keysBack} (${s2.active})`)
 })
@@ -44,6 +46,7 @@ await scenario('W1 OIL Earn on the board', async () => {
   const nChips = await page.locator('#schedBoard .oilcount').count()
   await blur(); await press(page, chip, false); await page.waitForTimeout(600)
   const s1 = await state(page)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const tab = await page.evaluate(() => { const t = document.querySelector('.availwin:not([hidden]) .win-tab.on, .availwin:not([hidden]) [aria-selected="true"]'); return t ? t.innerText : '?' })
   await pic(page, 'w1-oilearn-open')
   await blur(); await esc()

@@ -24,9 +24,10 @@
    narrow precisely because the app's job here is to SURFACE the clash, not to
    remove him from the list. Do not let this drift into filtering him out. */
 import { useEffect } from 'react'
-import { useFloatWin, frontWin, raiseWin, escWaits, BOARD_BAR } from './floatwin'
+import { useFloatWin, frontWin, makeEscWaits, openKey, BOARD_BAR } from './floatwin'
 import { useEscWindow } from './sheetfocus'
-import { gone } from './winorder'
+import { forward, gone } from './winorder'
+import { closeAvailWin } from './availopen'
 import { placeToast } from './toast'
 import { notify } from '../state/store'
 import { PEOPLE } from '../engine/people'
@@ -46,7 +47,7 @@ import { logAction } from '../engine/editlog'
 import { crowdClashes } from '../engine/validate'
 import { collectEvents } from '../engine/events'
 import {
-  AVAILWIN, setAvailWin, setAvailTab, AVAILWIN_FOOT, AVAILWIN_FOOTID, setAvailFoot,
+  AVAILWIN, setAvailTab, AVAILWIN_FOOT, AVAILWIN_FOOTID, setAvailFoot,
   AVAILWIN_BOX, setAvailWinBox,
 } from './pops'
 
@@ -79,9 +80,11 @@ export function AvailWindow() {
   /* ESCAPE CLOSES IT WHEN IT WAS THE LAST THING OPENED OR PRESSED ([ALLAVAIL-ESCAPE], 17 Nov 26 — the design guide §2): it
      floats beside the schedule without holding the keys (D38, D41), so Escape did nothing with it up. It joins the one
      Escape list as it opens, and the keys go back to the count that opened it; what was opened over it since answers
-     first (floatwin.ts escWaits). Closed this way it hands "in front" back to a window of FloatWindow.tsx's still up, so
-     the next Escape reaches that one (winorder.ts gone). */
-  useEscWindow(el, isOpen, () => { setAvailWin(null); gone('avail'); notify() }, { id: 'avail', waits: escWaits })
+     first (floatwin.ts makeEscWaits). Opened again from another count, the keys go back to that one (its open key —
+     floatwin.ts openKey). Closed by any way, it hands "in front" back to the window brought forward before it, so the
+     next Escape reaches that one (winorder.ts gone — the code reads of 17 Nov 26, C and E). */
+  useEscWindow(el, isOpen ? openKey('avail') : false, closeAvailWin, { id: 'avail', makeWaits: makeEscWaits })
+  useEffect(() => { if (!isOpen) return; return () => { if (gone('avail')) notify() } }, [isOpen])
 
   if (!open) return <div className="availwin" hidden />
 
@@ -246,7 +249,7 @@ export function AvailWindow() {
     }
   }))
 
-  const close = () => { setAvailWin(null); notify() }
+  const close = closeAvailWin
 
   const onBody = (e: React.MouseEvent) => {
     const t = e.target as HTMLElement
@@ -356,7 +359,7 @@ export function AvailWindow() {
       className={'availwin' + (frontWin() === 'avail' ? ' front' : '')}
       ref={el}
       /* the one pressed last is in front of the changes window (Astra DP-10 — ui/floatwin.ts) */
-      onPointerDownCapture={() => { if (raiseWin('avail')) notify() }}
+      onPointerDownCapture={() => { if (forward('avail')) notify() }}
       /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop, focus and Escape rules; this window floats over the schedule without blocking it (D38, D41), and is raised over or under the changes window by a press (frontWin) — layered on purpose */
       role="dialog"
       aria-label={`${m && m.lbl.found ? m.lbl.name : name} — who is available`}

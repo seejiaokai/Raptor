@@ -15,6 +15,7 @@ import { logOut } from './logout'
 import { DRAWER, setDrawer } from './pops'
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
+import { escCloses } from './sheetfocus'
 
 export function Drawer() {
   useVersion()
@@ -62,7 +63,10 @@ export function Drawer() {
   /* THE MENU BY KEYBOARD (D1641–D1643): ☰ now shows on a desktop too, wherever the page names do not fit beside TALON,
      so the menu answers the keyboard as every window does — opened from ☰ by the keyboard, the keyboard goes to the
      page you are on; Escape closes it, newest first (capture, so nothing under it closes too), and the keyboard goes back
-     to ☰. A tap on a phone moves no focus, as before. */
+     to ☰. A tap on a phone moves no focus, as before.
+     IN THE ONE ESCAPE LIST (the code reads of 17 Nov 26, A): with its own listener beside the list's, one Escape closed it
+     AND the ALL AVAIL or changes window under it — both listened on the document, and a press stopped there still
+     reaches every listener on it. Joined, the newest answers alone (sheetfocus.ts escCloses). */
   useEffect(() => {
     if (!drawerOpen) return
     const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null
@@ -72,14 +76,10 @@ export function Drawer() {
       const nav = document.getElementById('drawerNav')
       ;(nav?.querySelector<HTMLElement>('a.on') || nav?.querySelector<HTMLElement>('a'))?.focus({ preventScroll: true })
     }
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
-      e.preventDefault(); e.stopPropagation()
+    return escCloses(() => document.querySelector<HTMLElement>('#drawer .drawer-panel'), () => {
       setDrawer(false); notify()
       if (opener && opener.isConnected) opener.focus({ preventScroll: true })
-    }
-    document.addEventListener('keydown', onKey, true)
-    return () => document.removeEventListener('keydown', onKey, true)
+    })
   }, [drawerOpen])
   return (
     /* role="presentation": the shade beside the panel is nothing a screen reader should name; Escape closes the drawer */

@@ -148,6 +148,24 @@ Red first, 17 Nov 26: the 13 cases of `src/ui/escwindows.test.tsx` written befor
 "expected null to be '-1'" — and all 13 passed after it. A 14th (an input's window in front) was added after the change;
 on `main` its second Escape fails (the window stays). (The walk's break tests: to fill at the walk.)
 
+**The code reads' findings, red first (17 Nov 26, after the reads):** ten cases added to `src/ui/escwindows.test.tsx`,
+each through a real keydown on the mounted App and the real controls (the count chips, ☰, the ⋯ buttons, History, the
+window's ✕), run on commit 8bb07e571's code before any fix — **10 failed, 14 passed** — then **24 of 24 passed** after:
+
+| Finding | Case | Red on 8bb07e571, for the right reason | Green after |
+|---|---|---|---|
+| A | the ☰ side menu over ALL AVAIL: one Escape closes the menu only; the next the window | "the window under it stays: expected false to be true" | yes |
+| A | the ☰ side menu over the changes window | the same | yes |
+| A | Edit Schedule's phone ⋯ menu (400 wide) over ALL AVAIL | the same | yes |
+| A | the board's ⋯ menu over ALL AVAIL; the board stays | the same | yes |
+| B | pressed after a seat was armed: Escape closes the window, the seat stays armed | "expected true to be false" (the window stayed) | yes |
+| B | opened again from another count after a seat was armed | the same | yes |
+| C | the holiday OIL list, then ALL AVAIL, then the changes window: Escape closes them newest first | "expected 'oilday' to be 'avail'" (the OIL list came in front) | yes |
+| D | count A, then count B, a redraw, then Escape: the keys are on B | "expected '1' to be '2'" (the keys went to A) | yes |
+| E | ALL AVAIL opened over a window of the input kind, closed by ✕: that window is in front again | "expected 'avail' to be 'inputedit'" | yes |
+| E | the changes window closed by ✕: the same | "expected 'chg' to be 'inputedit'" | yes |
+
+
 ## 7. Errors seen
 
 (to fill at the walk)
@@ -158,7 +176,15 @@ on `main` its second Escape fails (the window stays). (The walk's break tests: t
 
 ## 9. Gate counts
 
-(to fill: GitHub's run on the last pushed commit)
+On his PC, after the code reads' fixes (17 Nov 26), under the checks lock: every unit test file of `src/ui` that
+presses Escape or opens ☰, a ⋯ menu, ALL AVAIL, the changes window or the window order — **86 files, 2,407 passed, 0
+failed**; `npm run build` passed (its type check with it); `npm run lint:changed` — no new finding; `npm run docsize`
+OK; `npm run rulecheck` OK.
+
+GitHub's run on commit 8bb07e571 was **red on one check, the code check**: 18 notes in the walk's own scripts
+(`docs/handpass/2026-11-17-sched-small-fixes/*.mjs` — a walk drives one browser step after step, which the check reads
+as awaits that could run together); each kept with its reason on the line above, as earlier walks' scripts are. App
+code had none. GitHub's run on the commit pushed with these fixes: (to fill when it finishes)
 
 ## 10. What the walk and the reads found, and each disposition
 
@@ -182,6 +208,24 @@ the Leave War's `doubletap-windows.test.tsx` "the event window's Save, and then 
 waits that touches nothing changed here; it passed alone twice after — a load flake of a ten-minute run, noted, not
 fixed. Five browser test files on this branch's build (oilworkstart with the new D2044 case, availwin, changeswin,
 board-escape-traffic, keys-windows): 63 passed.
+
+**The two final code reads (17 Nov 26) — Astra's (`read-astra.md`) and the fresh, blind Opus reader's (`read-opus.md`),
+each blind to the other — and what became of each:**
+
+| # | Finding | Readers | Disposition |
+|---|---|---|---|
+| A | Escape over a newer menu — the ☰ side menu, Edit Schedule's and View-only Sched's phone ⋯, the board's ⋯ — also closed the ALL AVAIL or changes window under it: each menu kept its own Escape listener on the document beside the one list's, and a press stopped there still reaches every listener on it | Astra 1 (MUST), Opus 1 (MUST) | **Real, fixed red-first** (§6): the three menus' Escape joins the one list (`sheetfocus.ts escCloses` — `Drawer.tsx`, `ScheduleInsightsMenu.tsx`, `SchedBoard.tsx`), so the newest answers alone; each keeps its own close and gives the keys back as before. The other Escape listeners in `src/ui` checked: the question sheets (DocConfirm, DocViewer, MedClashConfirm, OilConfirm, UpchitConfirm, the input's pop-up) stand over the list by `topSheet`; the date box, its calendar and the type legend listen on the window and stop the key before the list hears it; the bell's list and the windows of FloatWindow.tsx are in `makeEscWaits`; the Inputs, Logic, Medical and SANS pages' menus live where neither window can be up (both close on a page change); the Leave War's question cards likewise |
+| B | Opened again from another count, or pressed, the window did not take Escape back from a seat armed earlier | Astra 3 (MUST), Opus 2 (SHOULD) | **Real, fixed red-first**: the stand-aside is made again each time the window comes forward (`escToTop` rebuilds it from the entry's `makeWaits`) |
+| C | Closing History could bring the bell's holiday OIL list in front of ALL AVAIL, and the next Escape go to the OIL list — which can throw away its choices | Astra 2 (MUST) | **Real, fixed red-first**: both windows stand in the window order from the moment a door opens them and whenever pressed (`winorder.ts forward`), and leave it however they close (`gone` — ✕, Escape, the toggle, and a page, week or version change through the window's own clean-up) |
+| D | ALL AVAIL opened again from count B while up from count A: Escape gave the keys back to A | Astra 4 (MUST) | **Real, fixed red-first**: each explicit opening is counted (`floatwin.ts countOpen`) and the count is the window's open key for the list (`useEscWindow`), so the entry joins afresh with the new opener; a redraw changes nothing |
+| E | ✕ on either window left "in front" naming it, so the window under it took no Escape until pressed | Opus 3 (SHOULD, older beside it); Astra's tidiness note | **Real, fixed red-first**: one close per window (`availopen.ts closeAvailWin`, `changesopen.ts closeChanges`) for ✕, Escape and the toggle |
+| F | Stale words: `boardescape.ts`'s head said the two windows do not close on Escape; `ui-contracts.md` §[ALL-AVAIL-WINDOW]'s "How it dismisses" lacked Escape; `escWaits` read as a test but made one | Opus tidiness | **Fixed**: both texts corrected (the contract also states A–E); `escWaits` renamed `makeEscWaits`, the hook's and the entry's option `makeWaits`; `feature-impact.md` and `file-map.md` follow |
+| — | `seen` mirrors `strays` in `interactions.ts` | Opus tidiness | Filed, not fixed (D489's tidiness note) |
+
+**The walk's lead — the schedule's input pop-up closes on Escape or ✕ without "Close it and lose them?":** reproduced
+on this branch's build and on a build of `main`'s code (5632936d5), from Edit Schedule and from the Inputs page — the
+same on both: **old behaviour, not this change's.** The Inputs page's window asks; the schedule's pop-up never does
+(typing in Remarks counts as unsaved there too). A question for him, to be filed — not changed here.
 
 ## The closing lines
 

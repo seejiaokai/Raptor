@@ -30,6 +30,7 @@ async function fingerOnCount(id, loc, tag) {
   const before = await state(page)
   await bringIn(loc)
   const hit = await loc.evaluate(e => { const b = e.getBoundingClientRect(); const h = document.elementFromPoint(b.x + b.width / 2, b.y + b.height / 2); return h === e || e.contains(h) ? 'count' : (h ? h.tagName + '.' + h.className : 'none') })
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const { x, y } = await tapBox(loc)
   await pic(page, `w6-${T}-${tag}-tap-instant`)
   await page.waitForTimeout(600)

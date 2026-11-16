@@ -97,6 +97,7 @@ await scenario('W3 press the older window\'s bar', async () => {
   // the changes window stands exactly over the ALL AVAIL one: drag it aside by its bar first, as a person would
   const cb = await page.locator('.chgwin:not([hidden]) .win-bar').boundingBox()
   await page.mouse.move(cb.x + 100, cb.y + 20); await page.mouse.down()
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- one step after another in one browser: each waits for the page to answer the last
   for (let i = 1; i <= 10; i++) { await page.mouse.move(cb.x + 100 - 60 * i, cb.y + 20 + 10 * i); await page.waitForTimeout(20) }
   await page.mouse.up(); await page.waitForTimeout(300)
   await pic(page, 'w3-bar-windows-apart')
@@ -150,6 +151,7 @@ await scenario('W4 bell list', async () => {
   const s1 = await state(page)
   await blur(); await esc()
   const s2 = await state(page)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const bellAfter = await page.evaluate(() => { const l = document.querySelector('.belllist, #bellList, [class*="bell"][class*="list"], [class*="bell-pop"]'); return l ? (l.offsetWidth > 0) : 'no-selector' })
   await pic(page, 'w4-bell-after-esc1')
   await blur(); await esc()

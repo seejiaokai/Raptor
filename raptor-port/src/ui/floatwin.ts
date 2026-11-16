@@ -45,11 +45,19 @@ export function raiseWin(id: string): boolean { escToTop(id); if (FRONT === id) 
    · the bell's list (topbits.tsx);
    · an input's own window or another of FloatWindow.tsx's windows in front of it — they take Escape front-first by this
      module's FRONT, and the window steps aside while one of them is.
-   Made as the window opens: `arm` is the seat armed then. */
-export function escWaits(): () => boolean {
+   Made as the window opens and again each time it comes forward (sheetfocus.ts escToTop): `arm` is the seat armed then. */
+export function makeEscWaits(): () => boolean {
   const arm = ARM
   return () => (!!ARM && ARM !== arm) || BELLLIST || (!!FRONT && FRONT !== 'avail' && FRONT !== 'chg')
 }
+
+/* EACH EXPLICIT OPENING OF THE ALL AVAIL OR CHANGES WINDOW IS COUNTED (the code reads of 17 Nov 26, D): opened again from
+   another count while up, the window is the same window, so nothing re-ran its Escape entry and Escape gave the keys back
+   to the FIRST count. The count is the window's open key for the one Escape list (sheetfocus.ts useEscWindow): a door
+   that opens it bumps it (availopen.ts, changesopen.ts), a redraw never does. */
+const OPENS = new Map<string, number>()
+export function countOpen(id: string): void { OPENS.set(id, (OPENS.get(id) || 0) + 1) }
+export const openKey = (id: string): string => 'open' + (OPENS.get(id) || 0)
 
 export const phoneLayout = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(max-width:620px)').matches
 

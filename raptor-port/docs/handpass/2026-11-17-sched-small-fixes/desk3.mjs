@@ -32,6 +32,7 @@ await scenario('W5 question sheet', async () => {
   await pic(page, 'w5-question-up')
   await blur(); await esc()
   const qAfter = await page.locator('[data-testid="inped-escask"]').count()
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const s2 = await state(page), io2 = await inpOpen()
   await pic(page, 'w5-question-after-esc')
   rec('W5 question sheet', io && sOpen.ava && q > 0 && qAfter === 0 && io2 && s2.ava, `inputWinOpen=${io} avail=${sOpen.ava}; question shown=${q > 0}; after Escape question=${qAfter} inputWin=${io2} avail=${s2.ava}`)

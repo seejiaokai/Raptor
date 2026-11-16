@@ -2,7 +2,9 @@
    only-export-components: the window's file hands out its parts alone, so it can be swapped in place while the app is
    being built), the way the changes window's opener has its own small module (ui/changesopen.ts). The board's and the
    week's count chips call it. */
-import { raiseWin } from './floatwin'
+import { notify } from '../state/store'
+import { countOpen } from './floatwin'
+import { forward, gone } from './winorder'
 import { withChipWorld } from './html'
 import { oilModeOn, oilItemLabel } from './oilmode'
 import { AVAILWIN, setAvailWin, AVAILWIN_BOX, setAvailWinBox } from './pops'
@@ -29,5 +31,16 @@ export function openAvailWinFrom(osn: HTMLElement) {
   const keep = AVAILWIN ? AVAILWIN_BOX : null
   setAvailWin({ di, item, ver, ofw, name: lbl.name, when: lbl.when, tab: oilModeOn(di) && !ver ? 'oil' : 'who' })
   if (keep) setAvailWinBox(keep)
-  raiseWin('avail')
+  countOpen('avail')
+  /* in the window order as well as in front (the code reads of 17 Nov 26, C): a window of FloatWindow.tsx closing over it
+     hands "in front" back to it, not to one opened before it */
+  forward('avail')
+}
+/* CLOSING IT — ONE BODY for its ✕ and its Escape (the code reads of 17 Nov 26, E): the ✕ used to leave "in front" naming a
+   window no longer up. Every other way out (another page, a week's reset, its version gone — state/view.ts) is answered
+   by the window itself as it goes (AvailWindow.tsx). */
+export function closeAvailWin(): void {
+  setAvailWin(null)
+  gone('avail')
+  notify()
 }

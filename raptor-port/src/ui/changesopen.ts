@@ -5,17 +5,25 @@
 import { notify } from '../state/store'
 import { CHGWIN, setChgWin, type ChgWin } from '../state/view'
 import { isMember } from '../state/perms'
-import { raiseWin } from './floatwin'
+import { countOpen } from './floatwin'
+import { forward, gone } from './winorder'
 
 export function openChanges(day: string, tab: ChgWin['tab']) {
   if (!isMember()) return
   const was = CHGWIN
   setChgWin({ day, tab, group: was ? was.group : 'item' })   // Item first and the default (D345)
-  raiseWin('chg')
+  countOpen('chg')
+  forward('chg')   // in the window order as well as in front (the code reads of 17 Nov 26, C — availopen.ts)
+  notify()
+}
+/* CLOSING IT — ONE BODY for its ✕, its Escape and the toggle (the code reads of 17 Nov 26, E — availopen.ts closeAvailWin) */
+export function closeChanges(): void {
+  setChgWin(null)
+  gone('chg')
   notify()
 }
 /* the board's History button and the admin's icon toggle it */
 export function toggleChanges(day: string, tab: ChgWin['tab']) {
-  if (CHGWIN) { setChgWin(null); notify(); return }
+  if (CHGWIN) { closeChanges(); return }
   openChanges(day, tab)
 }

@@ -169,8 +169,12 @@ export function locate(el: HTMLElement): () => HTMLElement | null {
    a Traffic line under a menu) does nothing with Escape, and stepping aside there left every Escape dead until the keys
    moved. */
 /* `id` names a window that comes forward by a press (escToTop); `waits` says something opened over it after it answers
-   this Escape first, outside this list — a seat armed, the bell's list ([ALLAVAIL-ESCAPE], useEscWindow below) */
-type EscEntry = { box: () => HTMLElement | null; close: () => void; from: HTMLElement | null; id?: string; waits?: () => boolean }
+   this Escape first, outside this list — a seat armed, the bell's list ([ALLAVAIL-ESCAPE], useEscWindow below). `waits` is
+   made by `makeWaits` as the entry joins, and made AGAIN each time it comes forward (escToTop): what was opened before it
+   came forward is older than it, and waits (the code reads of 17 Nov 26, B — a seat armed, then the window pressed,
+   still took the Escape the window should have). */
+type EscEntry = { box: () => HTMLElement | null; close: () => void; from: HTMLElement | null; id?: string
+  makeWaits?: () => () => boolean; waits?: () => boolean }
 const OWN_ESC = '[data-txt],[data-inp],[data-ifld],textarea[data-bfld],[data-itline],[data-bombs],[data-area],[data-atime]'
 function ownEscape(at: HTMLElement): boolean {
   if (at.closest(OWN_ESC)) return true
@@ -198,8 +202,8 @@ function escTop(e: KeyboardEvent): void {
 /** Escape closes this until the returned function is called (or `box` is off the page). `close` does the closing and
     gives the keys back. */
 export function escCloses(box: () => HTMLElement | null, close: () => void, from: HTMLElement | null = null,
-  more: { id?: string; waits?: () => boolean } = {}): () => void {
-  const entry: EscEntry = { box, close, from, ...more }
+  more: { id?: string; makeWaits?: () => () => boolean } = {}): () => void {
+  const entry: EscEntry = { box, close, from, ...more, waits: more.makeWaits ? more.makeWaits() : undefined }
   if (!escs.length) document.addEventListener('keydown', escTop, true)
   escs.push(entry)
   return () => {
@@ -213,7 +217,10 @@ export function escCloses(box: () => HTMLElement | null, close: () => void, from
     by the press (ui/floatwin.ts raiseWin, which calls this) */
 export function escToTop(id: string): void {
   const i = escs.findIndex(x => x.id === id)
-  if (i >= 0 && i < escs.length - 1) escs.push(escs.splice(i, 1)[0]!)
+  if (i < 0) return
+  const e = escs[i]!
+  if (e.makeWaits) e.waits = e.makeWaits()
+  if (i < escs.length - 1) escs.push(escs.splice(i, 1)[0]!)
 }
 /** The keys back on `to`, if they are nowhere or inside what just closed — never taken from where they went meanwhile. */
 export function keysBack(to: (() => HTMLElement | null) | null, from?: HTMLElement | null): void {
@@ -228,10 +235,14 @@ export function keysBack(to: (() => HTMLElement | null) | null, from?: HTMLEleme
    a press on its ✕ saves it; and when it closes, by any way out, the keys go back to where they were when it opened — its
    Traffic button or ⓘ — if they are nowhere or were inside it. `box` is the window's own element while it is up.
    The ALL AVAIL window and the changes window join the same way ([ALLAVAIL-ESCAPE], his D2112, 17 Nov 26): `opts.id` lets
-   a press bring one forward in the list (escToTop), and `opts.waits`, made as it opens, says what was opened over it
-   since — a seat armed, the bell's list — whose own Escape answers first (ui/floatwin.ts escWaits). */
-export function useEscWindow(box: RefObject<HTMLElement | null>, open: boolean, close: () => void,
-  opts: { id?: string; waits?: () => () => boolean } = {}): void {
+   a press bring one forward in the list (escToTop), and `opts.makeWaits`, run as it opens and as it comes forward, says
+   what was opened over it since — a seat armed, the bell's list — whose own Escape answers first (ui/floatwin.ts
+   makeEscWaits).
+   OPENED AGAIN, IT REMEMBERS THE NEW OPENER (the code reads of 17 Nov 26, D): `open` may be a value that changes with
+   each explicit opening — the ALL AVAIL window opened from count B while up from count A — and never on a redraw; a new
+   value joins the list afresh, the newest, and Escape gives the keys back to B. */
+export function useEscWindow(box: RefObject<HTMLElement | null>, open: boolean | string, close: () => void,
+  opts: { id?: string; makeWaits?: () => () => boolean } = {}): void {
   useEffect(() => {
     if (!open) return
     const el = box.current
@@ -241,7 +252,7 @@ export function useEscWindow(box: RefObject<HTMLElement | null>, open: boolean, 
       const a = document.activeElement as HTMLElement | null
       if (a && el && el.contains(a)) a.blur()
       close()
-    }, was && was !== document.body ? was : null, { id: opts.id, waits: opts.waits ? opts.waits() : undefined })
+    }, was && was !== document.body ? was : null, { id: opts.id, makeWaits: opts.makeWaits })
     return () => { off(); keysBack(back, el) }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- on opening and closing only: re-joining the list on a repaint would make this window the newest over a menu opened after it; `close` and `box` are the window's own, fixed for its life
   }, [open])

@@ -6,6 +6,7 @@ const { browser, ctx, page } = await launch('chromium', false)
 await go(page, 'editsched')
 for (const k of ['a:0.0.+', 's:0.amt.0.+']) {
   const seat = page.locator(`#eWeek .day[data-day="0"] [data-fill="${k}"]`).first()
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- one step after another in one browser: each waits for the page to answer the last
   await seat.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' }))
   await page.waitForTimeout(400)
   const b = await seat.boundingBox()

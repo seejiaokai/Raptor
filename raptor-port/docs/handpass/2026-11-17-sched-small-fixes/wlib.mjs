@@ -79,6 +79,7 @@ export async function dragAA(page, di, key) {
   const cb = await chip.boundingBox(), b = await seat.boundingBox()
   await page.mouse.move(cb.x + cb.width / 2, cb.y + cb.height / 2)
   await page.mouse.down()
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- one step after another in one browser: each waits for the page to answer the last
   for (let i = 1; i <= 12; i++) { await page.mouse.move(cb.x + (b.x + 40 - cb.x) * i / 12, cb.y + (b.y + b.height / 2 - cb.y) * i / 12); await page.waitForTimeout(30) }
   await page.mouse.up()
   await page.waitForTimeout(700)

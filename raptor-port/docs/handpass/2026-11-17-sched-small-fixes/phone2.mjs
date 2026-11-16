@@ -24,6 +24,7 @@ await scenario(`W2 ${ENGINE} phone Hide then slim bar then Escape`, async () => 
   await tap(page.locator('.chgwin:not([hidden]) .win-hide')); await page.waitForTimeout(600)
   const s1 = await state(page); await pic(page, `w2-${T}-ph-slim`)
   const slim = await page.evaluate(() => { const w = document.querySelector('.chgwin:not([hidden])'); if (!w) return 'gone'; const r = w.getBoundingClientRect(); return Math.round(r.height) + 'px tall at y=' + Math.round(r.y) })
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const hOn1 = await histOn()
   await page.evaluate(() => { if (document.activeElement) document.activeElement.blur() })
   await page.keyboard.press('Escape'); await page.waitForTimeout(400)
