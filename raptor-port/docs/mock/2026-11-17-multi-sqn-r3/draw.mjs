@@ -33,6 +33,7 @@ const ANVIL = 'shaft'
 const MARK_CSS = `
 .mkq { outline: 2px solid #ff2d95 !important; outline-offset: -2px !important; }
 .mkq.mkq-o { outline-offset: 2px !important; }
+.mkq.mkq-p { outline-offset: 5px !important; }
 .mkq-tag { position: absolute; z-index: 60; background: #ff2d95; color: #fff; font: 700 10px/14px system-ui, 'Segoe UI', sans-serif;
   padding: 0 4px; border-radius: 7px; pointer-events: none; white-space: nowrap; letter-spacing: 0; text-transform: none; }
 `
@@ -56,9 +57,12 @@ function kit() {
     const b = el.getBoundingClientRect()
     if (el.getAttribute('data-mine') === '1' && getComputedStyle(el).position === 'static') el.style.position = 'relative'
     el.classList.add('mkq'); if (where === 'below' || where === 'right' || where === 'left') el.classList.add('mkq-o')
+    // 'pad': the outline stands clear of the part (its label untouched), the tag over the outline's top right corner
+    if (where === 'pad') el.classList.add('mkq-p')
     const t = document.createElement('span')
     t.className = 'mkq-tag'; t.textContent = label; t.setAttribute('data-mine', '1')
-    if (where === 'below') { t.style.top = 'calc(100% + 4px)'; t.style.right = '0'; el.appendChild(t) }
+    if (where === 'pad') { if (getComputedStyle(el).position === 'static') el.style.position = 'relative'; t.style.top = '-12px'; t.style.right = '-10px'; el.appendChild(t) }
+    else if (where === 'below'){ t.style.top = 'calc(100% + 4px)'; t.style.right = '0'; el.appendChild(t) }
     else if (where === 'right') { t.style.top = '50%'; t.style.transform = 'translateY(-50%)'; t.style.left = 'calc(100% + 5px)'; el.appendChild(t) }
     else if (where === 'left') { t.style.top = '50%'; t.style.transform = 'translateY(-50%)'; t.style.right = 'calc(100% + 5px)'; el.appendChild(t) }
     else if (getComputedStyle(el).position !== 'static') { t.style.top = '1px'; t.style.right = '1px'; el.appendChild(t) }
@@ -266,21 +270,23 @@ async function squadrons(page, opts) {
       return { ed, cols, noteEl }
     }
     const out = {}
+    // whose view: 'master' (a master admin, every squadron — D2093) or '149' (149's own admin, his detachments)
+    const v149 = opts.viewer === '149'
     H('Squadrons · 2')
     const l1 = list()
-    R(l1, '142', 'Home base · 61 people · yours')
-    const r149 = R(l1, '149', (opts.p149 || 'Northern base') + ' · 48 people')
+    R(l1, '142', 'Home base · 61 people')
+    const r149 = R(l1, '149', (opts.p149 || 'Northern base') + ' · 48 people' + (v149 ? ' · yours' : ''))
     if (opts.edit149) {
-      const e = editor(r149, [['Place', 'sel', '', ['Home base · 142', 'Northern base', '+ New place…']], ['From', 'in', '1 Dec 26']],
-        'From 1 Dec, 142 and 149 can plan each other\'s people, and clashes between the two are checked.')
+      const e = editor(r149, [['Place', 'sel', '', ['Home base · 142', 'Northern base', 'Exercise base', '+ New place…']], ['From', 'in', '1 Dec 26']],
+        'From 1 Dec, 142 and 149 can plan each other\'s people, and clashes between the two are checked. Both squadrons\' schedulers are told.')
       out.edit = e
     }
-    H('Detachments of 142 · ' + (opts.det ? 1 : 0))
+    H((v149 ? 'Detachments of 149 · ' : 'Detachments · ') + (opts.det ? 1 : 0))
     const l2 = list()
     let rd = null
     if (opts.det) rd = R(l2, `${SHORT} · ${DET}`, 'Exercise base · 13 Jul – 31 Jul · 6 people', 'Close detachment')
     if (opts.newdet) {
-      const rn = R(l2, 'New detachment', 'Of 142')
+      const rn = R(l2, 'New detachment', 'Of 149')
       out.newdet = editor(rn, [['Name', 'in', DET], ['Short name', 'in', SHORT], ['Place', 'sel', '', ['Exercise base', 'Home base', 'Northern base', '+ New place…']], ['People', 'in', 'Through their overseas duty input'], ['From', 'in', '13 Jul 26'], ['To', 'in', '31 Jul 26']])
       out.newdetRow = rn
     } else {
@@ -317,23 +323,52 @@ async function adminClip(page, sz, extra = 0) {
 // ---------- 1: 149 moves to 142's home — its place set on Admin → Squadrons ----------
 async function pic1(sz) {
   const { ctx, page } = await world(sz)
+  // the app's own menu of choices (the plans selector's), taken whole, to draw the Place list open
+  await toEdit(page)
+  await page.locator('#page-editsched .day .planselbtn').first().click()
+  await page.waitForSelector('.wavemenu')
+  await page.waitForTimeout(300)
+  await page.evaluate(() => { window.__mqMenu = document.querySelector('.wavemenu').cloneNode(true) })
+  await page.keyboard.press('Escape')
+  await page.waitForTimeout(200)
+  if (await page.locator('.wavemenu').count()) { await page.mouse.click(sz === 'd' ? 900 : 200, sz === 'd' ? 150 : 210); await page.waitForTimeout(250) }
   await toAdmin(page)
-  const m0 = await squadrons(page, {})
+  const m0 = await squadrons(page, { viewer: 'master' })
   await page.evaluate(() => { const mq = window.__mq, r = window.__mqSq.r149; mq.mark(r, '1a') })
   let clip = await adminClip(page, sz)
   const f0 = `1-place-${sz}-ruled.png`
   await shot(page, f0, clip)
-  rec(f0, 'Q1', sz, 'ruled', `As ruled (round 2's C1, D2110), drawn again: Admin → Squadrons before the move — 142 at "Home base", 149 at "Northern base" (mark 1a: 149's row, a tap opens it). Rows cloned from Admin → Users' own list${sz === 'd' ? ', the "Squadrons" area on the left cloned from Users' : ''}; their left inset now matches the real list's (round 2's drawing had them flush).`)
+  rec(f0, 'Q1', sz, 'ruled', `As ruled (round 2's C1, D2110), drawn again as a master admin sees it — only a master admin looks after squadrons (D2093), so no row reads "yours": Admin → Squadrons before the move, 142 at "Home base", 149 at "Northern base" (mark 1a: 149's row, a tap opens it). Rows cloned from Admin → Users' own list${sz === 'd' ? ', the "Squadrons" area on the left cloned from Users' : ''}.`)
   await page.evaluate(() => window.__mq.unclone())
-  const m = await squadrons(page, { edit149: true })
+  const m = await squadrons(page, { viewer: 'master', edit149: true })
   await page.evaluate(() => {
     const mq = window.__mq, e = window.__mqSq.edit
-    mq.mark(e.cols[0].querySelector('.mfield'), '1b'); mq.mark(e.cols[0].querySelectorAll('.mfield')[1], '1c'); mq.mark(e.noteEl, '1d')
+    mq.mark(e.cols[0].querySelector('.mfield'), '1b', 'pad'); mq.mark(e.cols[0].querySelectorAll('.mfield')[1], '1c', 'pad'); mq.mark(e.noteEl, '1d', 'pad')
   })
   clip = await adminClip(page, sz)
   const f1 = `1-place-${sz}-proposed.png`
   await shot(page, f1, clip)
-  rec(f1, 'Q1', sz, 'proposed', `Drawn in. 149's row opened, as a Users row opens: mark 1b "Place", a choice from the places the app already knows — "Home base · with 142", "Northern base", "+ New place…" — never typed, so two squadrons are at one place only when they picked the same one; mark 1c "From 1 Dec 26", the day the move takes effect; mark 1d the one line that says what Save will do: "From 1 Dec, 142 and 149 can plan each other's people, and clashes between the two are checked." Save and Cancel are the Users editor's own buttons; its fields are its "Sign-in" and "Role" boxes re-lettered.`)
+  rec(f1, 'Q1', sz, 'proposed', `Drawn in, a master admin's view. 149's row opened, as a Users row opens: mark 1b "Place", picked from the places list (drawn open in the next picture), never typed; mark 1c "From 1 Dec 26", the day the move takes effect — the one decision Q1 asks; mark 1d the line saying what Save will do: "From 1 Dec, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told." Save and Cancel are the Users editor's own buttons; its fields are its own boxes re-lettered.`)
+  // the same, its Place list open: the app's own menu of choices, re-lettered
+  await page.evaluate(() => {
+    const mq = window.__mq, e = window.__mqSq.edit, sel = e.cols[0].querySelector('select')
+    const menu = mq.strip(window.__mqMenu.cloneNode(true))
+    const rows = [...menu.querySelectorAll('.wm-row')]
+    const selRow = rows.find(r => r.querySelector('.wm.sa')), plainRow = rows.find(r => r.querySelector('.wm:not(.sa)'))
+    const h = menu.querySelector('h5'); if (h) h.textContent = 'Place'
+    const mk = (tpl, text) => { const r = tpl.cloneNode(true); const b = r.querySelector('.wm'); b.textContent = text; b.style.textAlign = 'left'; return r }
+    const add = [mk(selRow, 'Home base · 142'), mk(plainRow, 'Northern base'), mk(plainRow, 'Exercise base'), mk(plainRow, '+ New place…')]
+    rows.forEach(r => r.remove()); menu.append(...add)
+    const r = sel.getBoundingClientRect()
+    menu.style.position = 'fixed'; menu.style.left = Math.round(r.left) + 'px'; menu.style.top = Math.round(r.bottom + 4) + 'px'
+    menu.style.minWidth = Math.round(r.width) + 'px'; menu.style.zIndex = '70'
+    document.body.appendChild(menu)
+    mq.mark(menu, '1e')
+  })
+  const f2 = `1-place-${sz}-list.png`
+  const clip2 = await page.evaluate(({ clip }) => { const m = document.querySelector('.wavemenu[data-mine]').getBoundingClientRect(); return { ...clip, height: Math.min(innerHeight, Math.max(clip.height, Math.round(m.bottom + 16))) } }, { clip })
+  await shot(page, f2, clip2)
+  rec(f2, 'Q1', sz, 'proposed', `Drawn in: 149's Place list open (mark 1e), the app's own menu of choices re-lettered — "Home base · 142", "Northern base", "Exercise base", "+ New place…". A place is picked, never typed, so two squadrons are at one place only when they picked the same one.`)
   notes.push(`pic1 ${sz}: inset ${JSON.stringify(m0.inset)} / ${JSON.stringify(m.inset)}`)
   await ctx.close()
 }
@@ -347,16 +382,22 @@ async function pic2(sz) {
     const seats = [...av.querySelectorAll('.seat[data-person]')].filter(mq.vis)
     const grps = [...av.querySelectorAll('.ap-grp:not([data-mine])')]
     const g = grps[grps.length - 1], grid = g.nextElementSibling
-    const g2 = mq.strip(g.cloneNode(true)); g2.textContent = '149 · 3 free'
-    const grid2 = mq.strip(grid.cloneNode(false))
-    const names = ['Mako', 'Jolt', 'Brick']
-    seats.slice(-3).forEach((s, i) => { const s2 = mq.strip(s.cloneNode(true)); const p = s2.querySelector('.puck'); mq.cleanPuck(p); p.querySelector('.nm').textContent = names[i]; p.removeAttribute('title'); grid2.appendChild(s2) })
+    // 149's free men grouped by WHEN they are free, as the list above groups 142's — so nobody is dragged into a wave
+    // he is not free for: Jolt flies with 149 in the morning, free for the night wave only
     const wrap = document.createElement('div'); wrap.setAttribute('data-mine', '1'); wrap.className = 'mq-grp149'
-    wrap.append(g2, grid2)
+    const src = seats.slice(-3)
+    const group = (head, names) => {
+      const g2 = mq.strip(g.cloneNode(true)); g2.textContent = head
+      const grid2 = mq.strip(grid.cloneNode(false))
+      names.forEach((n, i) => { const s2 = mq.strip(src[i].cloneNode(true)); const p = s2.querySelector('.puck'); mq.cleanPuck(p); p.querySelector('.nm').textContent = n; p.removeAttribute('title'); grid2.appendChild(s2) })
+      wrap.append(g2, grid2)
+    }
+    group('149 · 2nd wave · night 16:20–end · 1 can fly', ['Jolt'])
+    group('149 · available all day · 2', ['Mako', 'Brick'])
     let last = av.lastElementChild; while (last && !last.classList.contains('ap-grid')) last = last.previousElementSibling
     ;(last || grid).after(wrap)
-    mq.mark(wrap, '2')
-    return names
+    mq.mark(wrap, '2a')
+    return 1
   })
   await inject()
   await page.evaluate(() => {
@@ -378,7 +419,82 @@ async function pic2(sz) {
   await page.waitForTimeout(150)
   if (!(await page.locator('.mq-grp149').count())) throw new Error('pic2 premise lost')
   await shot(page, f1, clip)
-  rec(f1, 'Q1 · Q3', sz, 'proposed', `Drawn in (mark 2). From the day 149 shares 142's place, 142's Available crew list ends with a group of 149's people free at that time, "149 · 3 free", headed like the groups above it — the invented Mako, Jolt and Brick (142's own pucks re-lettered and cleared of their flags). Tapping or dragging one onto a seat is a pick (D2091): his home schedule then shows "Attach · 142" for him. Nothing else in the list changes.`)
+  rec(f1, 'Q3', sz, 'proposed', `Drawn in (mark 2a). From the day 149 shares 142's place, 142's Available crew list ends with 149's free people, grouped by when they are free as the groups above are: "149 · 2nd wave · night 16:20–end · 1 can fly" (Jolt, who flies with 149 in the morning) and "149 · available all day · 2" (Mako, Brick) — invented callsigns on 142's own pucks, re-lettered and cleared of their flags. Dragging one onto a seat is a pick (D2091): his home schedule then shows "Attach · 142" for him. 142's own groups above are unchanged.`)
+  await ctx.close()
+}
+
+// ---------- 2b: the same on the Scheduler Board's own crew list (Pilots · N free / WSOs · N free) ----------
+async function pic2b(sz) {
+  const { ctx, page } = await world(sz)
+  await toBoard(page)
+  if (sz === 'p') {
+    // on a phone the board's crew list is the parked AIRCREW tab: opened by a real tap
+    const at = await page.evaluate(() => {
+      const mq = window.__mq
+      const el = [...document.querySelectorAll('body *')].find(e => mq.vis(e) && e.children.length === 0 && e.textContent.trim() === 'AIRCREW')
+      if (!el) return null
+      const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+    })
+    if (!at) throw new Error('pic2b: no AIRCREW tab')
+    await page.mouse.click(at.x, at.y)
+    await page.waitForTimeout(700)
+  }
+  // the board's own list: the one on top (Edit Schedule's list lies under the board, the same size, unseen)
+  const ok = await page.evaluate(() => {
+    const top = c => { const r = c.getBoundingClientRect(); const y = Math.min(innerHeight - 5, Math.max(5, r.top + 20)); const e = document.elementFromPoint(r.left + r.width / 2, y); return e && c.contains(e) }
+    const c = [...document.querySelectorAll('.rcols')].find(c => window.__mq.vis(c) && top(c)); window.__mqRc = c || null; return !!c
+  })
+  if (!ok) throw new Error('pic2b: the board crew list is not open')
+  await page.evaluate(() => { const c = window.__mqRc; const sc = (e => { while (e && !(e.scrollHeight > e.clientHeight + 4 && /auto|scroll/.test(getComputedStyle(e).overflowY))) e = e.parentElement; return e })(c); window.__mqSc = sc })
+  const inject = () => page.evaluate(() => {
+    const mq = window.__mq, cols = [...window.__mqRc.querySelectorAll('.rcol')].filter(mq.vis)
+    const plan = [[['Mako', ''], ['Jolt', 'free from 11:30']], [['Brick', '']]]
+    const heads = ['149 · 1 free', '149 · 1 free']
+    cols.slice(0, 2).forEach((col, ci) => {
+      const rh = col.querySelector('.rh'), pucks = [...col.querySelectorAll('.rpuck')]
+      const tpl = pucks.find(p => !p.classList.contains('no') && !p.classList.contains('haswhy')) || pucks[0]
+      const box = document.createElement('div'); box.setAttribute('data-mine', '1'); box.className = 'mq-b149'; box.style.marginTop = '10px'
+      const h = mq.strip(rh.cloneNode(true)); h.textContent = heads[ci]; box.appendChild(h)
+      for (const [n, why] of plan[ci]) {
+        const p = mq.strip(tpl.cloneNode(true)); p.removeAttribute('title'); p.removeAttribute('data-why')
+        const pk = p.querySelector('.puck'); if (pk) mq.cleanPuck(pk)
+        const nm = p.querySelector('.nm'); if (nm) nm.textContent = n
+        if (why) { p.classList.add('haswhy'); const w = document.createElement('span'); w.className = 'rwhy'; w.textContent = why; if (innerWidth < 600) { p.style.flexWrap = 'wrap'; w.style.flexBasis = '100%'; w.style.whiteSpace = 'nowrap' } p.appendChild(w) }
+        box.appendChild(p)
+      }
+      col.appendChild(box)
+    })
+    const boxes = [...document.querySelectorAll('.mq-b149')]
+    boxes.forEach((b, i) => mq.mark(b, i ? '' : '2b', 'pad'))
+    document.querySelectorAll('.mq-b149 > .mkq-tag').forEach(t => { if (!t.textContent) t.remove() })
+    return boxes.length
+  })
+  const n = await inject()
+  if (n < 2) throw new Error('pic2b: columns ' + n)
+  // bring 149's groups into view, the columns' headings kept where they fit
+  const clipFor = () => page.evaluate(() => {
+    // the two columns end at different heights: the picture runs from the higher group's top to the lower one's foot
+    const mq = window.__mq, sc = window.__mqSc, bs = () => [...document.querySelectorAll('.mq-b149')].map(b => b.getBoundingClientRect())
+    const lo = Math.max(...bs().map(r => r.bottom))
+    if (sc) sc.scrollTop += Math.round(lo - innerHeight + 40); else window.scrollBy(0, Math.round(lo - innerHeight + 40))
+    const rs = bs(), rc = window.__mqRc.getBoundingClientRect()
+    const top = Math.max(mq.topH(), Math.round(Math.min(...rs.map(r => r.top)) - 90)), bot = Math.round(Math.max(...rs.map(r => r.bottom)) + 16)
+    const x = Math.max(0, rc.left - 8)
+    return { x, y: top, width: Math.min(innerWidth - x, rc.width + 16), height: Math.min(innerHeight - top, bot - top) }
+  })
+  const clip = await clipFor()
+  const sTop = await page.evaluate(() => window.__mqSc ? window.__mqSc.scrollTop : 0)
+  await page.evaluate(() => window.__mq.unclone())
+  await page.evaluate(s => { if (window.__mqSc) window.__mqSc.scrollTop = s }, sTop)
+  await page.waitForTimeout(200)
+  const f0 = `2-board-${sz}-today.png`, f1 = `2-board-${sz}-proposed.png`
+  await shot(page, f0, clip)
+  rec(f0, 'Q3', sz, 'today', `Real. 142's Scheduler Board${sz === 'p' ? ', its AIRCREW tab opened' : ''}: its own crew list, "Pilots · N free" and "WSOs · N free" — where a scheduler picks crew while building a wave, joining 149's included.`)
+  await inject()
+  await page.evaluate(s => { if (window.__mqSc) window.__mqSc.scrollTop = s }, sTop)
+  await page.waitForTimeout(150)
+  await shot(page, f1, clip)
+  rec(f1, 'Q3', sz, 'proposed', `Drawn in (mark 2b). The board's own list ends each column with 149's men, "149 · 1 free", in the same pucks; one free only part of the day says when, in the list's own small reason line — Jolt "free from 11:30" — and is drawn after the free men, as a tasked man is today, so he is not dragged into a wave he cannot fly.`)
   await ctx.close()
 }
 
@@ -405,20 +521,24 @@ async function pic3(sz) {
   rec(f0, 'Q2', sz, 'today', 'Real. The top bar today: "142 TALON" is a plain title, not a control.')
   const m = await page.evaluate(({ DET, SHORT }) => {
     const mq = window.__mq
+    // 149's scheduler at home (his own example, D2088: 149 opens 249); 142's top bar stands in for 149's
     const k = document.querySelector('.topbar .mark .k')
-    const k2 = mq.strip(k.cloneNode(true)); k2.textContent = '142 ▾'
-    mq.hide(k); k.after(k2); mq.mark(k2, '3a', 'right')
+    const k2 = mq.strip(k.cloneNode(true)); k2.textContent = '149 ▾'
+    mq.hide(k); k.after(k2)
+    const markEl = document.querySelector('.topbar .mark')
+    if (getComputedStyle(markEl).position === 'static') markEl.style.position = 'relative'
+    mq.mark(markEl, '3a', innerWidth < 600 ? 'in' : 'pad')
     const menu = mq.strip(window.__mqMenu)
     const rows = [...menu.querySelectorAll('.wm-row')]
     const selRow = rows.find(r => r.querySelector('.wm.sa')), plainRow = rows.find(r => r.querySelector('.wm:not(.sa)'))
     menu.querySelector('h5').textContent = 'Schedules'
     const mk = (tpl, text) => { const r = tpl.cloneNode(true); const b = r.querySelector('.wm'); b.textContent = text; b.style.textAlign = 'left'; return r }
-    const r1 = mk(selRow, '142 ●'), r2 = mk(plainRow, `${SHORT} · ${DET}`), r3 = mk(plainRow, '149')
+    const r1 = mk(selRow, '149 ●'), r2 = mk(plainRow, `${SHORT} · ${DET}`), r3 = mk(plainRow, '142')
     rows.forEach(r => r.remove())
     menu.append(r1, r2, r3)
     const mark = document.querySelector('.topbar .mark').getBoundingClientRect()
     menu.style.left = Math.round(mark.left) + 'px'
-    menu.style.top = Math.round(mq.topH() + 4) + 'px'
+    menu.style.top = Math.round(mq.topH() + 12) + 'px'
     document.body.appendChild(menu)
     mq.mark(menu, '3b')
     const r = menu.getBoundingClientRect()
@@ -426,7 +546,7 @@ async function pic3(sz) {
   }, { DET, SHORT })
   if (m.bottom > clip.height - 8) throw new Error('pic3: menu runs out of the clip ' + JSON.stringify(m))
   await shot(page, f1, clip)
-  rec(f1, 'Q2', sz, 'proposed', `Drawn in. Mark 3a: "142 TALON" becomes "142 ▾" (a clone of the real title). Mark 3b: its menu, the plans selector's own menu re-lettered "Schedules": "142" (picked, its ●), "${SHORT} · ${DET}" (142's detachment), "149". Only the schedules he may see are listed, and someone who may see one sees no ▾, as today. Picking one keeps him on the page he is on; on 149's schedule a scheduler of 142 may plan only 142's own lines (D2106) and a member reads it only.`)
+  rec(f1, 'Q2', sz, 'proposed', `Drawn in, as 149's scheduler at home would see it (142's top bar stands in). Mark 3a: the whole TALON mark is the button, its small squadron number now "149 ▾" — a change to the built "142 TALON" title (D1606). Mark 3b: its menu, the plans selector's own menu re-lettered "Schedules": "149" (picked, its ●), "${SHORT} · ${DET}" (149's detachment, his own example, D2088), "142". Only the schedules he may see are listed; someone who may see one sees no ▾, as today. Picking one changes the schedule pages — Edit Schedule, View-only Sched, the Scheduler Board — and Logic; Inputs, Quals, the Leave War and the Tracker stay on his own squadron's people.`)
   await ctx.close()
 }
 
@@ -434,10 +554,10 @@ async function pic3(sz) {
 async function pic4(sz) {
   const { ctx, page } = await world(sz)
   await toAdmin(page)
-  await squadrons(page, { p149: 'Home base', newdet: true })
+  await squadrons(page, { p149: 'Home base', newdet: true, viewer: '149' })
   await page.evaluate(() => {
     const mq = window.__mq, e = window.__mqSq.newdet
-    mq.mark(e.cols[0].querySelectorAll('.mfield')[1], '4a'); mq.mark(e.cols[1].querySelector('.mfield'), '4b'); mq.mark(e.cols[1].querySelectorAll('.mfield')[1], '4c')
+    mq.mark(e.cols[0].querySelectorAll('.mfield')[1], '4a', 'pad'); mq.mark(e.cols[1].querySelector('.mfield'), '4b', 'pad'); mq.mark(e.cols[1].querySelectorAll('.mfield')[1], '4c', 'pad'); mq.mark(e.cols[2].querySelectorAll('.mfield')[1], '4d', 'pad')
     // the People box is no box: it says how people join; drawn as the editor's own small grey words
     const pf = e.cols[1].querySelectorAll('.mfield')[1], inp = pf.querySelector('input'), s = document.createElement('div')
     s.setAttribute('data-mine', '1'); s.className = 'acc-sub'; s.textContent = 'Through their overseas duty input'; s.style.cssText = 'display:block;padding:10px 0'
@@ -446,7 +566,7 @@ async function pic4(sz) {
   const clip = await adminClip(page, sz)
   const f = `4-newdet-${sz}-proposed.png`
   await shot(page, f, clip)
-  rec(f, 'Q6', sz, 'proposed', `Drawn in. "+ New detachment" pressed: a new row opens as a Users row opens, its fields cloned from the Users editor's own boxes — Name "${DET}", mark 4a "Short name" "${SHORT}", the name the top bar shows (your own example of a detachment's name, D2088; it keeps the top bar to one line on a phone), mark 4b Place, picked from the places list like a squadron's, mark 4c "People: through their overseas duty input" (D2101), then From and To. 149 here already shares Home base with 142.`)
+  rec(f, 'R1', sz, 'proposed', `Drawn in, as 149's own admin sees it (a squadron's own admins make its detachments, D2093). "+ New detachment" pressed: a new row opens as a Users row opens, its fields cloned from the Users editor's own boxes — Name "${DET}", mark 4a "Short name" "${SHORT}", the name the top bar and the Schedules menu show (your own example: 149 opens 249, D2088), mark 4b Place, picked from the places list, mark 4c "People: through their overseas duty input" (D2101), From, and mark 4d "To", the planned last day — recommended: it does not close the detachment by itself; that day the bell reminds 149's admins to close it or move the date. 149 here already shares Home base with 142.`)
   await ctx.close()
 }
 
@@ -489,7 +609,7 @@ async function pic5(sz) {
   rec(f0, 'walk', sz, 'today', 'Real. An overseas duty input (Anvil, 13–31 Jul) opened from Monday\'s Unavailable row: Person, Type "OD", Title, Duration, Document, Remarks.')
   await inject()
   await shot(page, f1, clip)
-  rec(f1, 'walk', sz, 'proposed', `As ruled (D2101), drawn in. Mark 5a: the "Detachment" choice under Type, cloned from the real Type choice, reading "${SHORT} · ${DET}" (its other choice "None" keeps an ordinary overseas duty, a staff trip). Mark 5b: the Title box, a clone of the real one, filled in by itself with "${DET}".`)
+  rec(f1, 'walk', sz, 'proposed', `As ruled (D2101), drawn in. Mark 5a: the "Detachment" choice under Type, cloned from the real Type choice, reading "${SHORT} · ${DET}" (its other choice "None" keeps an ordinary overseas duty, a staff trip). Mark 5b: the Title box, a clone of the real one, filled in by itself with "${DET}". (142's Anvil stands in for a 149 man joining 149's detachment.)`)
   await ctx.close()
 }
 
@@ -497,16 +617,16 @@ async function pic5(sz) {
 async function pic7(sz) {
   const { ctx, page } = await world(sz)
   await toAdmin(page)
-  await squadrons(page, { p149: 'Home base', det: true })
+  await squadrons(page, { p149: 'Home base', det: true, viewer: '149' })
   await page.evaluate(({ DET }) => {
     const mq = window.__mq, b = window.__mqSq.rd.querySelector('.od-rc button')
-    const c = mq.ask(b, `Close ${DET}?`, 'Its schedules stay, read only, under Past detachments. Its 6 people are back on 142\'s schedule from today, and their overseas duty ends today.', [['Close it', ''], ['Keep open', 'primary']])
+    const c = mq.ask(b, `Close ${DET}?`, 'Its schedules stay, read only, under Past detachments. Its 6 people are back on 149\'s schedule from today, and their overseas duty ends today.', [['Close it', ''], ['Keep open', 'primary']])
     mq.mark(c, '7')
   }, { DET })
   const clip = await adminClip(page, sz)
   const f = `7-close-${sz}-proposed.png`
   await shot(page, f, clip)
-  rec(f, 'walk', sz, 'proposed', `As ruled (one "Close detachment", D2103), with what pressing it should ask, drawn in (mark 7): the app's own question card hanging from the button, as your lesson 77 asks — "Close ${DET}? Its schedules stay, read only, under Past detachments. Its 6 people are back on 142's schedule from today, and their overseas duty ends today." Keep open is the safe answer, as on the app's other cards. The button keeps "Close detachment" on one line (round 2's drawing broke it in two).`)
+  rec(f, 'R3', sz, 'proposed', `As ruled (one "Close detachment", D2103), seen by 149's admin, with what pressing it should ask, drawn in (mark 7): the app's own question card hanging from the button, as your lesson 77 asks — "Close ${DET}? Its schedules stay, read only, under Past detachments. Its 6 people are back on 149's schedule from today, and their overseas duty ends today." The last clause is my reading, not yet ruled: closing early cuts their overseas duty inputs short. Keep open is the safe answer, as on the app's other cards. The button keeps "Close detachment" on one line (round 2's drawing broke it in two).`)
   await ctx.close()
 }
 
@@ -556,7 +676,7 @@ async function pic9(sz) {
   const clip = await page.evaluate(() => { const mq = window.__mq, g = window.__mqClipEl, r = g.getBoundingClientRect(); const top = Math.max(document.querySelector('.sb-bar, .sb-top, .topbar') ? 0 : 0, r.top - 6); const x = Math.max(0, r.left - 6); return { x, y: Math.max(0, top), width: Math.min(innerWidth - x, r.width + 12), height: Math.min(innerHeight - Math.max(0, top), r.height + 12) } })
   const f = `9-joined-${sz}-proposed.png`
   await shot(page, f, clip)
-  rec(f, 'walk', sz, 'proposed', `As ruled (D2106), drawn on 142's Scheduler Board after "Join a 149 wave". Mark 9a: the wave's head carries 149's grey badge and 149's own status, "DRAFT" (round 2's 10b). Mark 9b: 142's new line, blank, wearing the board's own just-added blue ring — made by a real press of "+ Line", which is how 142 adds more lines to that wave. 149's VL and RU are hidden here (142 sees only its own lines, D2105), and so are "+ In-time", "Auto sort" and "✕ Wave", which are 149's to use. (142's 1st wave stands in for 149's.)`)
+  rec(f, 'walk', sz, 'proposed', `As ruled (D2106), drawn on 142's Scheduler Board after "Join a 149 wave". Mark 9a: the wave's head carries 149's grey badge and 149's own status, "DRAFT" (round 2's 10b). Mark 9b: 142's new line, blank, wearing the board's own just-added blue ring — made by a real press of "+ Line", which is how 142 adds more lines to that wave. 149's VL and RU are hidden here (142 sees only its own lines, D2105), and so are "+ In-time", "Auto sort" and "✕ Wave", which are 149's to use. "+ Line" is drawn in the wave's head, as today; if you take Q5 it moves to the wave's foot here too. (142's 1st wave stands in for 149's.)`)
   await ctx.close()
 }
 // 149's view: RU in look 2 on the board — the badge sits inside the mission box's right end (the board's boxes leave no
@@ -572,15 +692,20 @@ async function look2Board(page, sz) {
     for (const x of [...ruLines, area]) x.style.background = 'rgba(255,255,255,.055)'
     const l = ruLines[0], msn = l.querySelector('textarea.msn')
     l.style.position = 'relative'
-    const b = mq.badge('142', innerWidth < 600)
+    const phone = innerWidth < 600
+    const b = mq.badge('142', phone)
     const lr = l.getBoundingClientRect(), mr = msn.getBoundingClientRect()
     b.style.position = 'absolute'; b.style.zIndex = '2'
     l.appendChild(b)
     const br = b.getBoundingClientRect()
+    // D2104 puts the badge after the mission (under it on a phone). The board has no room for either: on a desktop its R
+    // box follows the mission box a few pixels on, and on a phone the crew pucks start just under it (tried: the badge
+    // covered Vector's puck). So it sits inside the mission box, at its right end — a change from the ruling, put to him (R2)
     b.style.left = Math.round(mr.right - lr.left - br.width - 5) + 'px'
     b.style.top = Math.round(mr.top - lr.top + (mr.height - br.height) / 2) + 'px'
-    window.__mqClipEl = g
-    return { ru: l, badgeW: Math.round(br.width), msnW: Math.round(mr.width) }
+    const nb = msn.nextElementSibling ? msn.nextElementSibling.getBoundingClientRect() : null
+    window.__mqClipEl = g; window.__mqBadge = b
+    return { ru: l, badgeW: Math.round(br.width), msnW: Math.round(mr.width), gapAfter: nb ? Math.round(nb.left - mr.right) : null }
   })
 }
 async function pic10(sz) {
@@ -595,7 +720,7 @@ async function pic10(sz) {
     await page.evaluate((which) => {
       const mq = window.__mq, g = window.__mqClipEl
       const ru = [...g.querySelectorAll('.sb-line')].find(l => (l.querySelector('textarea.lin') || {}).value === 'RU')
-      if (which === 'look') mq.tag(ru, '10')
+      if (which === 'look') mq.mark(window.__mqBadge, '16', 'pad')
       else {
         const del = g.querySelector('.sb-go-h [data-gdel]')
         const c = mq.ask(del, 'Remove 1st wave? It holds 142\'s RU.', '142\'s schedulers are told. Undo puts it back.', [['Remove wave', 'danger'], ['Keep', 'primary']])
@@ -611,7 +736,7 @@ async function pic10(sz) {
     const f = which === 'look' ? `10-shared-${sz}-proposed.png` : `13-delwave-${sz}-proposed.png`
     await shot(page, f, clip)
     rec(f, which === 'look' ? 'walk' : 'Q4', sz, 'proposed', which === 'look'
-      ? `As ruled (look 2, D2104), drawn for the first time on the Scheduler Board (round 2 drew it on the week): on 149's board, 142's RU in 149's wave — both jets and its area line one shade lighter, the grey "142" badge (mark 10) inside the mission box's right end, since the board's boxes leave no room after it. 149's scheduler sees 142's line at a glance and may still plan it (D2089). (142's RU stands in.)`
+      ? `Changed from what you ruled, on the Scheduler Board only (R2). Look 2 (D2104) puts the grey "142" badge after the mission, and under it on a phone. On the board the mission is a typing box with ${sz === 'p' ? 'the crew pucks just under it (tried there, the badge covered a puck)' : 'its R box a few pixels after it'}, so there is no room: the badge (mark 16) sits inside the box, at its right end, a size smaller on a phone. Both jets and the area line are one shade lighter, as ruled. Round 2's week drawing, as ruled, is beside it. (142's RU stands in.)`
       : `Drawn in (mark 13). On 149's board, "✕ Wave" pressed on a wave that holds 142's RU: today it removes the wave at once with every line in it. Proposed, only where the wave holds the other squadron's lines, the app's own question card hangs from the button (lesson 77): "Remove 1st wave? It holds 142's RU. 142's schedulers are told. Undo puts it back." — Remove wave, or Keep (the safe answer). A wave of 149's lines alone is removed as today, with no question.`)
     notes.push(`pic10 ${which} ${sz}: ${JSON.stringify({ badgeW: m.badgeW, msnW: m.msnW })}`)
     await ctx.close()
@@ -641,8 +766,8 @@ async function pic12(sz) {
         out.toast = chain.join(' < ')
         const br = btn.getBoundingClientRect(), gr = g.getBoundingClientRect()
         out.btn = [Math.round(br.top), Math.round(br.bottom)]; out.go = [Math.round(gr.top), Math.round(gr.bottom)]
-        btn.style.position = 'relative'; mq.mark(btn, '12a', 'below')
-        if (t) { if (getComputedStyle(t).position === 'static') t.style.position = 'relative'; mq.mark(t, '12b') }
+        btn.style.position = 'relative'; mq.mark(btn, '17a', 'below')
+        if (t) { if (getComputedStyle(t).position === 'static') t.style.position = 'relative'; mq.mark(t, '17b') }
       } else if (which === 'foot') {
         // "+ Line" moved to the wave's foot, under its last line (the same button, the same size); the board scrolled so it
         // stands where the finger pressed — each new line then lands just above the finger, in view, ringed
@@ -655,12 +780,12 @@ async function pic12(sz) {
         const fr = b2.getBoundingClientRect()
         if (sc) sc.scrollTop += Math.round(fr.top + fr.height / 2 - at.y)
         else window.scrollBy(0, Math.round(fr.top + fr.height / 2 - at.y))
-        mq.mark(b2, '12c', 'right')
+        mq.mark(b2, '17c', 'right')
         out.footY = Math.round(b2.getBoundingClientRect().top + b2.getBoundingClientRect().height / 2); out.atY = Math.round(at.y)
         void hl
       } else if (which === 'card') {
         const c = mq.ask(btn, '3 lines added to Go 1', 'At the foot of the wave, below the screen.', [['Show them', ''], ['+ Line', 'primary']])
-        mq.mark(c, '12d')
+        mq.mark(c, '17d')
       } else {
         const c = mq.ask(btn, 'How many lines?', null, [['Cancel', ''], ['Add 3 lines', 'primary']])
         const row = document.createElement('span'); row.setAttribute('data-mine', '1'); row.style.cssText = 'display:flex;align-items:center;gap:10px'
@@ -670,7 +795,7 @@ async function pic12(sz) {
         for (const b of [minus, plus]) { b.style.minHeight = '36px'; b.style.minWidth = '40px' }
         row.append(minus, n, plus)
         c.querySelector('.askcard-btns').before(row)
-        mq.mark(c, '12e')
+        mq.mark(c, '17e')
       }
       out.inView = inView()
       return out
@@ -679,10 +804,10 @@ async function pic12(sz) {
     const f = `12-line-${which}-${sz}-${which === 'today' ? 'today' : 'proposed'}.png`
     await shot(page, f)
     const words = {
-      today: `Real. 142's Scheduler Board, "+ Line" (mark 12a, in the wave's head) pressed three times where it stood. Three blank lines were added at the wave's foot — ${info.inView} of 3 wholly in view on this ${SIZES[sz].name} screen; the screen does not move to them. The passing note "Line added" (mark 12b) says it each time, the same words, with no count.`,
-      foot: `Recommended, drawn in. The same "+ Line" button, its size kept, moved from the wave's head to its foot, under the last line (mark 12c); the board keeps it under the finger, so each press adds a line right above it, in view, wearing the just-added blue ring (real: the three lines here were added by real presses). Nothing out of view, so the passing note is no longer needed. ${info.inView} of 3 new lines wholly in view.`,
-      card: `Your idea, drawn in. "+ Line" opens a card that stays open (mark 12d): each press of its "+ Line" adds a line, its count rising — "3 lines added to Go 1" — until a click outside closes it. The lines still land at the wave's foot, below the screen here, so the card has to say where they went and offer "Show them". Two more presses than today: one to open, one to close.`,
-      step: `Another way, drawn in. "+ Line" opens a card asking how many (mark 12e): − 3 +, then "Add 3 lines". One deliberate number in place of repeated presses, so no line is made by an extra press; but every add, even of one line, now takes two presses, and the lines still land at the foot.`,
+      today: `Real. 142's Scheduler Board, "+ Line" (mark 17a, in the wave's head) pressed three times where it stood. Three blank lines were added at the wave's foot — ${info.inView} of 3 wholly in view on this ${SIZES[sz].name} screen; the screen does not move to them. The passing note "Line added" (mark 17b) says it each time, the same words, with no count.`,
+      foot: `Recommended, drawn in. The same "+ Line" button, its size kept, moved from the wave's head to its foot, under the last line (mark 17c); the board keeps it under the finger, so each press adds a line right above it, in view, wearing the just-added blue ring (real: the three lines here were added by real presses). Nothing out of view, so the passing note is no longer needed. The board's other add buttons ("+ Row", "+ Item", "+ Note", "+ Block") would follow the same rule where their list runs below the screen. ${info.inView} of 3 new lines wholly in view.`,
+      card: `Your idea, drawn in. "+ Line" opens a card that stays open (mark 17d): each press of its "+ Line" adds a line, its count rising — "3 lines added to Go 1" — until a click outside closes it. Counted fairly, it costs no extra press: the first press opens it and adds a line, and the next click anywhere else closes it. But the lines still land at the wave's foot, below the screen here, so the card has to say where they went and offer "Show them".`,
+      step: `Another way, drawn in. "+ Line" opens a card asking how many (mark 17e): − 3 +, then "Add 3 lines". One deliberate number in place of repeated presses, so no line is made by an extra press; but every add, even of one line, now takes two presses, and the lines still land at the foot.`,
     }
     rec(f, 'Q5', sz, which === 'today' ? 'today' : 'proposed', words[which] + ' (142\'s 1st wave; the full screen, so what is out of view shows.)')
     notes.push(`pic12 ${which} ${sz}: ${JSON.stringify(info)}`)
@@ -695,6 +820,7 @@ function copyR2() {
   const map = {
     '2-a2-odrow-d-proposed.png': '6-home-d-proposed.png', '2-a2-odrow-p-proposed.png': '6-home-p-proposed.png',
     '12-b3-join-d-proposed.png': '8-join-d-proposed.png', '12-b3-join-p-proposed.png': '8-join-p-proposed.png',
+    '5-b1-look2-d-proposed.png': '10-week-d-ruled.png',
     '10-b3-149first-149-d-proposed.png': '11-sign-149first-149-d-proposed.png', '10-b3-149first-142-d-proposed.png': '11-sign-149first-142-d-proposed.png',
     '11-b3-142first-142-d-proposed.png': '11-sign-142first-142-d-proposed.png', '11-b3-142first-149-d-proposed.png': '11-sign-142first-149-d-proposed.png',
     '10-b3-149first-149-p-proposed.png': '11-sign-149first-149-p-proposed.png', '10-b3-149first-142-p-proposed.png': '11-sign-149first-142-p-proposed.png',
@@ -709,7 +835,7 @@ function copyR2() {
 }
 
 browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
-const ALL = { pic1, pic2, pic3, pic4, pic5, pic7, pic9, pic10, pic12 }
+const ALL = { pic1, pic2, pic2b, pic3, pic4, pic5, pic7, pic9, pic10, pic12 }
 try {
   if (!ONLY || ONLY.includes('copy')) copyR2()
   for (const sz of ['d', 'p']) {

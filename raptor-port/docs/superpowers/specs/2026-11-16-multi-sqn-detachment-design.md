@@ -182,24 +182,38 @@ plan and round 2 and are not asked again.
 His job for the night: is the design good, by the design guide; does it touch other parts of the app; is it easy to
 use; how 149 is put in 142's home; and whether "+ Line" should open a card that stays open for repeated presses. The
 page: `raptor-port/docs/mock/2026-11-17-multi-sqn-r3/page.html` (pictures `raptor-port/docs/img/2026-11-17-multi-sqn-r3/`).
-Its six questions, each with its recommendation:
+Its seven questions, one decision each, with its recommendation (revised the same night after a fresh reader's look):
 
-- **Q1** — 149's place picked from the places list on Admin → Squadrons, with a "From" date and one line saying what
-  changes (not typed, so the two can only match exactly).
-- **Q2** — the "142" above TALON becomes "142 ▾", a menu of the schedules the person may see; the whole mark the tap area.
-  *Round 1's Q4, recommendation (A), redrawn.*
-- **Q3** — the other squadron's free people in a group of their own, "149 · 3 free", at the foot of Available crew.
+- **Q1** — moving 149's place takes a "From" date. A master admin does it (D2093), the place picked from the places list
+  on Admin → Squadrons (D2110), with one line saying what changes; both squadrons' admins and schedulers told by the bell.
+- **Q2** — the whole TALON mark becomes a button, its number "149 ▾", opening "Schedules" — the ones the person may see
+  (round 1's Q4 (A), redrawn). Changes the built "142 TALON" title (D1590, D1606). The schedule pages (Edit Schedule,
+  View-only Sched, the Scheduler Board) and Logic follow the choice; Inputs, Quals, the Leave War and the Tracker stay on
+  his own squadron.
+- **Q3** — the other squadron's free people in a group of their own at the foot of both crew lists (Edit Schedule's
+  Available crew and the Scheduler Board's), each showing when he is free.
 - **Q4** — "✕ Wave" on a wave holding the other squadron's lines asks at the button (lesson 77); otherwise as today.
-- **Q5** — "+ Line" moved to the wave's foot, the board keeping it under the finger, so each new line lands in view in
-  the just-added ring; his stay-open card and a "How many lines?" stepper drawn beside it. Measured on the real app:
-  today three presses leave none of the three new lines wholly on screen, desktop or phone. Changes D2106's "149's '+
-  Line' stays as today" if taken.
-- **Q6** — the New detachment window as drawn, with a short name ("249") for the top bar and the Schedules menu.
+- **Q5** — his "click twice" was about round 2's card on "+ Line", which D2106 turned down (149's "+ Line" one press, 142
+  joins through "+ Wave"). For adding several lines quickly: "+ Line" moved to the wave's foot, the board keeping it under
+  the finger, so each new line lands in view in the just-added ring; his stay-open card and a "How many lines?" stepper
+  drawn beside it. Measured on the real app: today three presses leave none of the three new lines wholly on screen,
+  desktop or phone. The board's other add buttons ("+ Row", "+ Item", "+ Note", "+ Block") follow the same rule (D754),
+  drawn if A is taken.
+- **Q6** — D2089 (either squadron's scheduler may plan a 142 line in 149's wave) against D2105 (a shown line of the other
+  squadron is read only): recommended, in a wave 149 owns and signs (D2106) 149 may change 142's line and 142 is told;
+  read only for a line shown only for reference.
+- **Q7** — crew rest between lines on two schedules whose settings differ: recommended, the later line's schedule's
+  settings (following D2109); other choice the stricter of the two.
 
-Its ripple list (OIL, Insights, the Leave War, Inputs, warnings, publishing, Undo, the bell, Admin, print, the database
-step) is on the page, §6. Two points are the agent's reading, told to him there: OIL earned on the other squadron's
-schedule counts on the man's own OIL when that squadron publishes; crew rest between lines on two schedules whose
-settings differ is judged by the later line's settings.
+Three for him to answer only if he disagrees: **R1** a detachment's "To" is its planned end, never a close by itself, the
+bell reminding its admins that day; **R2** on the Scheduler Board the grey badge sits inside the mission box, since no
+room is after or under it there (a change from D2104, the board only); **R3** closing a detachment early ends its men's
+overseas duty that day and tells each by the bell (the agent's reading).
+
+Its ripple list (the day's count D2096, ALL AVAIL D2097, OIL, the Leave War and the Attach row D2098, the Tracker,
+Insights, Inputs, warnings, publishing, Undo, the bell, Admin, print, the database step) is on the page, §6. The agent's
+readings told to him there: OIL earned on the other squadron's schedule counts on the man's own OIL when that squadron
+publishes; a sortie flown on the other squadron's schedule counts on the student's own Tracker.
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
