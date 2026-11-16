@@ -1,0 +1,4 @@
+line 2 today: The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (2h), or, where no landing is typed, at the assumed landing (A flight, 1h after take-off) plus the debrief. Anything else ends at its written end.
+errors []
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
