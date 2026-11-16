@@ -39,6 +39,24 @@ He described his plan and asked for it to be reviewed and improved. Recorded as 
   their own scheduler grants them; whether the checks read across squadrons or follow the man; how the interface looks;
   and what a Power Apps code app on Dataverse allows of all this (security, roles, permissions).
 
+## His real example — two schedules of one day (D2090, 16 Nov 26)
+
+He sent pictures of both squadrons' issued schedules for the same day (real names — never put in this public project).
+What they show, the agent's reading, to confirm with him:
+- **The same lines are typed on both schedules by hand today** — 142's two lines in each of 149's waves, and on 142's own
+  schedule. Small differences between the two copies are already there (an area written two ways) — the case for one
+  record shown in both places.
+- **Each marks the other's lines only in the remark** ("142 LINE", "149 LINE"). His ruling D2090: 149's schedule must show
+  which lines are 142's — a proper mark, drawn for him first.
+- **The other squadron's lines carry none of the schedule's own line numbers and are left out of its jet count** (149's
+  day reads 6 × 6, 142's 2 × 2).
+- **142's schedule shows more than its own lines:** the one 149 line its men fly against stands there too, marked
+  "149 LINE" — so "which of the other squadron's lines show on mine" is a choice, not only "my own". Recommended for round
+  2: a squadron's schedule shows its own lines wherever they are planned, plus any line of the shared wave a scheduler
+  marks to show there.
+- **The wave's deconfliction notes stand on one schedule** (149's, in charge of the wave); 142's says to refer to it.
+- **Not understood, to ask:** what the purple names mean on both schedules (not the squadron — both squadrons' men wear it).
+
 ## What the platform allows (read 16 Nov 26 — the project's own records; Microsoft's pages being read by a helper)
 
 From the move plan (written from the SWiFT kit v0.6, 31 Oct 26 — the kit itself stays out of this project, D1530), the
