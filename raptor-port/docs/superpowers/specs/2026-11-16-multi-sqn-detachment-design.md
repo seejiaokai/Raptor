@@ -39,6 +39,75 @@ He described his plan and asked for it to be reviewed and improved. Recorded as 
   their own scheduler grants them; whether the checks read across squadrons or follow the man; how the interface looks;
   and what a Power Apps code app on Dataverse allows of all this (security, roles, permissions).
 
+## What the platform allows (read 16 Nov 26 — the project's own records; Microsoft's pages being read by a helper)
+
+From the move plan (written from the SWiFT kit v0.6, 31 Oct 26 — the kit itself stays out of this project, D1530), the
+IT side's answers of 8 and 10 Nov 26 (`[IT-QUESTIONS]`) and `raptor-port/docs/data-model.md` §11:
+- **Sign-in is Microsoft's**, by itself; no password box. Who may open the app at all is one group the IT side keeps.
+  Inside the app a person is matched to his row by his work mail (D165); someone on no list lands on "Request access".
+- **Rights are the app's own.** The IT side keeps the database's rights and will not split squadrons there (no business
+  units offered; roles handed out by them only). Their advice, both people: a squadron column on every record and the
+  app's own rules. Consequence, to say plainly: the database itself refuses nothing — anyone with access to the app could,
+  with other tools, read or change another squadron's rows. The app enforces the limits; the audit log (kept a year,
+  readable by the environment's admins) records who did what.
+- **So a squadron or a detachment made in Admin is a row in a table** — no IT request, which fits his plan. Anything that
+  needed a database team, role or business unit per squadron would need the IT side each time — avoided.
+- **Nothing runs on the server but scheduled flows** (no plug-ins, no custom APIs), owned by the unit's role-based account
+  (its licence still to ask). A dated move — a posting, a detachment's start and end — is worked out when the app is opened
+  or by such a flow.
+- **One production environment** for code apps: a database per aircraft type (D1101) is not possible today — not settled,
+  recommended "when a second type joins". **Reading across squadrons** for the checks has no barrier; the costs are the
+  2,000-row page and each person's 40,000 requests a day, so the app fetches a day's rows for a place, not for a squadron.
+- **Stale records to correct when the design is agreed (D201):** data-model §11's intro ("one business unit … no
+  cross-squadron rows") and §Squadrons' first paragraph; the 10 Nov answers not yet folded into the handover documents.
+
+## The review of his plan (chat 90, 16 Nov 26 — put to him; none of it ruled until he answers)
+
+**Kept as he said it:** squadrons made in Admin; one primary squadron each; access to others given by an admin; only Post
+out moves the primary; a detachment is a unit of its own with its own name, people and schedule; no man in two places.
+
+**Five improvements recommended:**
+1. **Think in places.** Every unit — a squadron or a detachment — has a place; 142 and 149 share "home", "249" is
+   elsewhere. A man is at one place on any day. Units at the same place may share people and are cross-checked; units at
+   different places never are, and the app refuses to plan a man where he is not. One rule covers his three cases (two
+   squadrons at home; a squadron and its detachment; two detachments on the same exercise).
+2. **A detachment is a unit like a squadron** — the same schedule, picker, crew lists and access, nothing built twice —
+   with two differences: its people are there for dates (they come back by themselves), and leave, quals, OIL and the
+   Tracker stay with the primary squadron.
+3. **One line, one record, shown wherever it belongs.** A line belongs to one squadron and sits in one wave; it shows on
+   the schedule of the wave's squadron and on its own squadron's schedule — the same record, never a copy, so the two can
+   never disagree. This carries both of his cases: a 142 formation inside 149's wave (D2089), and a 142 man in a seat of
+   149's own line (lending).
+4. **The checks follow the man.** Crew rest, double booking, days in a row, leave and medical read everything he is on,
+   on every schedule at his place, and both schedulers see the warning. Checks about the schedule itself (a missing brief,
+   an illegal seat) stay with the schedule the line sits in.
+5. **Inputs and leave belong to the person, not a schedule:** filed once, in his primary squadron (as he said), and shown
+   on every schedule that plans him — the borrowing squadron's and the detachment's too.
+
+**His dilemma — pick or grant:** recommended, the other squadron's scheduler picks freely (as D282), limited to schedulers
+at the same place, and every pick shows at once on the home squadron's schedule ("With 149 · …") and rings its schedulers'
+bell. Why: granting first fails quietly — the borrower is stuck until someone answers — while a free pick fails loudly, on
+a screen the home scheduler already watches. A per-squadron switch "ask us first" can be added later if a squadron wants it.
+
+**Enrolment, recommended:** first opening of the app (signed in by Microsoft) → "Request access" as today, with one more
+choice, his squadron; the request goes to that squadron's admins only. An admin adding a person picks the primary squadron
+(his own by default). Access to another squadron is never asked at sign-up — its admin, or an admin of both, gives it on
+Admin → Users, as view or as scheduler. Who may make a new squadron: recommended the master admins only (D1971), a
+squadron's own admins making its detachments.
+
+**Open, for round 2 (each with pictures):** who publishes and signs a line shared by two squadrons (recommended: the
+squadron in charge of the wave; the other's schedule shows it as issued by them); a lend onto a day the home squadron has
+already published (recommended: it reads pending there, as a late input does); whether shared areas, sims or jets are
+cross-checked at home as well as people; whose Logic settings judge a borrowed man's line (recommended: the schedule the
+line sits in); how people are moved to a detachment (a dated list on the detachment, shown on the Leave War); the Admin →
+Squadrons page and the sign-up choice, not yet drawn.
+
+**What the round-1 pictures showed that the notes had not named** (the helper's list, 16 Nov 26): the wave counts in
+Available crew and the desktop AIRCREW panel must count only the people at the place; a detachment's own SANS Avail and
+Unavailable sections are undefined; "DET" would be a new kind beside LL and OIL in Unavailable — six men, six rows a day;
+a lend's row on the home schedule is owned by the other squadron; a long detachment name collides with the top bar's
+buttons on a phone (8px spare with "142 DET · Exercise North") — names need a short form.
+
 ## Round 1 — the foundations (written 16 Nov 26; overtaken in part by his plan above before it was put)
 
 Four questions, one decision each. The pictures: `raptor-port/docs/img/2026-11-16-multi-sqn-r1/`, drawn by

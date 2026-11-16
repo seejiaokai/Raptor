@@ -1,0 +1,164 @@
+{
+  "1-q1-det-home-d-proposed.png": {
+    "question": "Q1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 1): one Unavailable row cloned from the real \"ATT C\" row above it (its puck swapped for Anvil's own, cloned from the day's Available crew), for Anvil (one of the six sent away), reading \"DET · Exercise North · till 31 Jul\" — DET in the kind column, the detachment's name in the remarks, its end in the app's own \"till\" words. Everything else is real."
+  },
+  "1-q1-det-home-d-today.png": {
+    "question": "Q1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Edit Schedule, Monday 13 Jul, the day's Unavailable list as the app draws it today: OML · Vector · Medical leave 13 Jul · till 13 Jul / ATT C · Grit · Medically down · till 17 Jul."
+  },
+  "1-q1-det-home-p-proposed.png": {
+    "question": "Q1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 1): one Unavailable row cloned from the real \"ATT C\" row above it (its puck swapped for Anvil's own, cloned from the day's Available crew), for Anvil (one of the six sent away), reading \"DET · Exercise North · till 31 Jul\" — DET in the kind column, the detachment's name in the remarks, its end in the app's own \"till\" words. Everything else is real."
+  },
+  "1-q1-det-home-p-today.png": {
+    "question": "Q1",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Edit Schedule, Monday 13 Jul, the day's Unavailable list as the app draws it today: OML · Vector · Medical leave 13 Jul · till 13 Jul / ATT C · Grit · Medically down · till 17 Jul."
+  },
+  "2-q1-det-own-d-proposed.png": {
+    "question": "Q1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in. Mark 2a: the bar's small squadron line (a clone of the real \"142\" line) reads \"142 DET · Exercise North\" — 20px clear of the next control on the bar. Mark 2b: the day's Available crew list with everyone but the detachment's six hidden (Anvil, Outlaw, Blade, Ghost, Wisp, Basher), each group's \"can fly\" count re-lettered to the people left; mark 2c: the AIRCREW panel likewise, its counts re-lettered (Pilots · 3 free / WSOs · 3 free) and its SANS Avail and Personnel sections hidden (home people). The rest of the day (waves, programme, the day's own SANS Avail and Unavailable) is still 142's home plan — not drawn."
+  },
+  "2-q1-det-own-d-today.png": {
+    "question": "Q1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Edit Schedule, Monday 13 Jul: the top bar reads \"142 TALON\"; the day's Available crew list shows 35 people in 3 groups (1st wave AM–16:20 · 15 can fly / 2nd wave · night 16:20–end · 31 can fly / Available all day · 11), and the AIRCREW panel on the right lists the whole squadron."
+  },
+  "2-q1-det-own-p-proposed.png": {
+    "question": "Q1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in. Mark 2a: the bar's small squadron line (a clone of the real \"142\" line) reads \"142 DET · Exercise North\" — 8px clear of the next control on the bar. Mark 2b: the day's Available crew list with everyone but the detachment's six hidden (Anvil, Outlaw, Blade, Ghost, Wisp, Basher), each group's \"can fly\" count re-lettered to the people left. The rest of the day (waves, programme, the day's own SANS Avail and Unavailable) is still 142's home plan — not drawn."
+  },
+  "2-q1-det-own-p-today.png": {
+    "question": "Q1",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Edit Schedule, Monday 13 Jul: the top bar reads \"142 TALON\"; the day's Available crew list shows 35 people in 3 groups (1st wave AM–16:20 · 15 can fly / 2nd wave · night 16:20–end · 31 can fly / Available all day · 11)."
+  },
+  "3a-q2-lend-142-d-proposed.png": {
+    "question": "Q2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 3a): a Ground Programme row cloned from the real \"HQ ENGAGEMENT\" row, put in time order, reading \"WITH 149 · ACADEMICS\" (capitals, as the Ground Programme's names are typed), 14:00–16:00, with Echo's own puck — what 142 would see once 149 borrows him for the afternoon. Cloned from a ground row (not an Unavailable row), since he is still 142's for the rest of the day."
+  },
+  "3a-q2-lend-142-d-today.png": {
+    "question": "Q2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. 142's Edit Schedule, Monday 13 Jul, the Ground Programme as drawn today. Echo flies Monday's first wave (his seat is on wave 1 — not in this crop)."
+  },
+  "3a-q2-lend-142-p-proposed.png": {
+    "question": "Q2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 3a): a Ground Programme row cloned from the real \"HQ ENGAGEMENT\" row, put in time order, reading \"WITH 149 · ACADEMICS\" (capitals, as the Ground Programme's names are typed), 14:00–16:00, with Echo's own puck — what 142 would see once 149 borrows him for the afternoon. Cloned from a ground row (not an Unavailable row), since he is still 142's for the rest of the day."
+  },
+  "3a-q2-lend-142-p-today.png": {
+    "question": "Q2",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. 142's Edit Schedule, Monday 13 Jul, the Ground Programme as drawn today. Echo flies Monday's first wave (his seat is on wave 1 — not in this crop)."
+  },
+  "3b-q2-lend-149-d-proposed.png": {
+    "question": "Q2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in. Mark 3b: the bar's squadron line (a clone of the real one) reads \"149\" — this stands for 149's own Edit Schedule. Mark 3c: a group added at the foot of the Available crew list, its heading cloned from the real wave heading above it and re-lettered \"142 · 3 free\", holding Echo, Ryder, Fable (cloned pucks; Echo flies 142's first wave and the other two were in the groups above, which stand for 149's own crew — hidden there, that group's count re-lettered). The AIRCREW panel on the desktop is not drawn: it still lists them as before."
+  },
+  "3b-q2-lend-149-d-today.png": {
+    "question": "Q2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Edit Schedule, Monday 13 Jul, the day's Available crew list as drawn today, the top bar reading \"142 TALON\". (There is no 149 in the app yet: in the proposed frame this screen stands in for 149's.)"
+  },
+  "3b-q2-lend-149-p-proposed.png": {
+    "question": "Q2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in. Mark 3b: the bar's squadron line (a clone of the real one) reads \"149\" — this stands for 149's own Edit Schedule. Mark 3c: a group added at the foot of the Available crew list, its heading cloned from the real wave heading above it and re-lettered \"142 · 3 free\", holding Echo, Ryder, Fable (cloned pucks; Echo flies 142's first wave and the other two were in the groups above, which stand for 149's own crew — hidden there, that group's count re-lettered). The AIRCREW panel on the desktop is not drawn: it still lists them as before."
+  },
+  "3b-q2-lend-149-p-today.png": {
+    "question": "Q2",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Edit Schedule, Monday 13 Jul, the day's Available crew list as drawn today, the top bar reading \"142 TALON\". (There is no 149 in the app yet: in the proposed frame this screen stands in for 149's.)"
+  },
+  "4-q3-src-real-switch-desktop.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. The switch the added tick row is cloned from: Admin → Users' own \"Let people waiting for access view the schedule (read only)\" switch, at the foot of the Users list."
+  },
+  "4-q3-view-rights-d-proposed.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 4): one tick row, ticked, \"May view 149's schedule (read only)\", above the editor's buttons — cloned from the Users page's own switch (the waiting-for-access one, pictured separately). The member editor has no tick of its own today, so where it sits is a design choice."
+  },
+  "4-q3-view-rights-d-today.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Admin → Users, the member Hex's editor open as the app draws it: sign-in, role, then Save / Suspend / Archive / Delete / Cancel — no tick rows today."
+  },
+  "4-q3-view-rights-p-proposed.png": {
+    "question": "Q3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 4): one tick row, ticked, \"May view 149's schedule (read only)\", above the editor's buttons — cloned from the Users page's own switch (the waiting-for-access one, pictured separately). The member editor has no tick of its own today, so where it sits is a design choice."
+  },
+  "4-q3-view-rights-p-today.png": {
+    "question": "Q3",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Admin → Users, the member Hex's editor open as the app draws it: sign-in, role, then Save / Suspend / Archive / Delete / Cancel — no tick rows today."
+  },
+  "5-q4-picker-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in. Mark 5a: the bar's squadron line (a clone of the real \"142\") reads \"142 ▾\". Mark 5b: its menu open under it, a clone of the plans selector's menu (heading re-lettered \"Schedules\"; the current row in that menu's own picked look with its ●): \"142\" (current), \"142 DET · Exercise North\", \"149 · view only\"."
+  },
+  "5-q4-picker-d-today.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. The top bar today: the squadron name \"142 TALON\" is a plain title, not a control."
+  },
+  "5-q4-picker-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in. Mark 5a: the bar's squadron line (a clone of the real \"142\") reads \"142 ▾\". Mark 5b: its menu open under it, a clone of the plans selector's menu (heading re-lettered \"Schedules\"; the current row in that menu's own picked look with its ●): \"142\" (current), \"142 DET · Exercise North\", \"149 · view only\"."
+  },
+  "5-q4-picker-p-today.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. The top bar today: the squadron name \"142 TALON\" is a plain title, not a control."
+  },
+  "5-q4-src-real-plans-menu-d.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. The menu the picker is cloned from: the plans selector (\"Live working copy ▾\") on a day's top bar, opened by a real tap."
+  },
+  "5-q4-src-real-plans-menu-p.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. The menu the picker is cloned from: the plans selector (\"Live working copy ▾\") on a day's top bar, opened by a real tap."
+  }
+}
