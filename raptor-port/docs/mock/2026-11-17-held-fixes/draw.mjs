@@ -154,9 +154,27 @@ async function publishMonday(page, { al } = {}) {
   await page.waitForTimeout(600)
 }
 function rec(file, question, sz, kind, caption) { manifest[file] = { question, size: SIZES[sz].name, kind, caption } }
+// on a desktop, a picture is cut to what its question is about (D1222) — the same cut for its today and proposed
+const DCLIPS = {
+  '3-plural-insights-': { x: 460, y: 60, width: 620, height: 150 },
+  '3-plural-panel-': { x: 500, y: 135, width: 536, height: 645 },
+  '4-banner-': { x: 1210, y: 95, width: 326, height: 310 },
+  '5-changes-': { x: 0, y: 80, width: 1120, height: 230 },
+  '6-damaged-delete-': { x: 300, y: 620, width: 940, height: 244 },
+  '7-original-': { x: 0, y: 0, width: 1120, height: 290 },
+  '8-cutoff-': { x: 590, y: 60, width: 946, height: 545 },
+}
 async function shot(page, file, clip) {
   const bad = await page.evaluate(() => window.__mq.checkTags())
   if (bad.length) throw new Error(file + ': ' + bad.join('; '))
+  if (!clip && page.viewportSize().width > 700) { const k = Object.keys(DCLIPS).find(p => file.startsWith(p)); if (k) clip = DCLIPS[k] }
+  if (clip) {
+    // every mark and tag must sit wholly inside the cut
+    const out = await page.evaluate(c => [...document.querySelectorAll('.mkq, .mkq-tag')].map(e => e.getBoundingClientRect())
+      .filter(r => r.width && (r.left < c.x - 1 || r.top < c.y - 1 || r.right > c.x + c.width + 1 || r.bottom > c.y + c.height + 1))
+      .map(r => `${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)}`), clip)
+    if (out.length) throw new Error(file + ': a mark outside the cut: ' + out.join('; '))
+  }
   await page.mouse.move(Math.round(page.viewportSize().width / 2), 1)
   await page.waitForTimeout(120)
   await page.screenshot({ path: `${OUT}/${file}`, ...(clip ? { clip } : {}) })
@@ -569,7 +587,7 @@ async function pic8(sz) {
       if (which === 'b') {
         const x = [...w.querySelectorAll('button')].find(b => /✕|×|Close/.test(b.textContent + (b.getAttribute('aria-label') || '') + (b.title || '')))
         const card = mq.ask(x, 'This window has unsaved changes. Close it and lose them?', [['Discard and close', 'danger'], ['Keep editing', 'primary']])
-        mq.mark(card, '8d', 'floatl')
+        mq.mark(card, '8d', 'floatin')
       }
       if (which === 'typed') { mq.mark(box, '8a', 'float'); if (innerWidth >= 700) mq.mark(row, '8b', 'floatl') }
       if (which === 'closed') mq.mark(row, '8b', 'floatl')
@@ -595,7 +613,7 @@ async function pic8(sz) {
 browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 const ALL = { pic1, pic2, pic3, pic4, pic5, pic6, pic7, pic8 }
 try {
-  for (const sz of ['d', 'p']) {
+  for (const sz of (process.env.MQ_SIZES || 'd,p').split(',')) {
     console.log('== ' + SIZES[sz].name)
     for (const [k, f] of Object.entries(ALL)) {
       if (ONLY && !ONLY.includes(k)) continue
