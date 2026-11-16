@@ -33,6 +33,7 @@ the later merge keeps both (D78).
   6. A door in the detachment's People part putting several men on its overseas duty at once, picked as the Inputs page picks several people; each man's own input stays the backup (D2120). The agent's reading: recommend yes — the app already keeps one input for several people.
   7. Crew rest kept the same for every squadron (D2118): recommend how, e.g. crew rest set once, app-wide, by a master admin and shown read only in each schedule's Logic.
   8. Q1 taken as his lean (D2119): the place saved takes effect at once, no "From"; drawn so.
+  9. Whose schedule each picture is: he asked whether round 3's picture 9 showed 149's or 142's (it is 142's board; the "149 · DRAFT" badge names only the wave). Every round-4 picture says plainly whose schedule it is — on screen through Q2's "142 ▾" / "149 ▾" mark if he takes it, and in each caption.
   Then one fresh Opus reader of the page against his words, fix, publish as a new Artifact, give him the link. Still open from round 3 for the same page's top: Q2, Q3, R1 ("To"), R3. Lessons 94 and 95 still need their one fresh reader (D941) — the same reader may do it.
 - **Branch:** `claude/multi-sqn-design-r4`, cut from `main` 17 Nov 26; pushed; no pull request; released here (`git switch --detach`). Round 3's block (`claude/multi-sqn-design-r3`, merged) is replaced by this one; its open residue is in `[MULTI-SQN-DESIGN]`.
 - **Gates:** docsize OK. No app code.
