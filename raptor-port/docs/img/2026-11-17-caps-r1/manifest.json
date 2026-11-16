@@ -3,67 +3,79 @@
     "question": "Q1",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Proposed, drawn in. After \"Check answers\": a wrong box is edged red (1f), right ones green, and the foot says how many are left to fix (1g); nothing gives away the right answer. Submit lights once all are right. (Signed in as Ranger, a member; the window is Week insights' own, re-lettered.)"
+    "caption": "Proposed, drawn in. After \"Check answers\": a wrong box is edged red (1f), right ones green, and the foot says how many are left to fix (1g); nothing gives away the right answer. Submit can be pressed once all are right. (Signed in as Ranger, a member.)"
   },
   "1-test-checked-p-proposed.png": {
     "question": "Q1",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Proposed, drawn in. After \"Check answers\": a wrong box is edged red (1f), right ones green, and the foot says how many are left to fix (1g); nothing gives away the right answer. Submit lights once all are right. (Signed in as Ranger, a member; the window is Week insights' own, re-lettered.)"
+    "caption": "Proposed, drawn in. After \"Check answers\": a wrong box is edged red (1f), right ones green, and the foot says how many are left to fix (1g); nothing gives away the right answer. Submit can be pressed once all are right. (Signed in as Ranger, a member.)"
   },
   "1-test-fill-d-proposed.png": {
     "question": "Q1",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Proposed, drawn in. The CAPS test as a window, the way his squadron's current page lays it out: CAPS and Ops limits as two tests side by side (1a), each heading of the procedures (1b), each step written from memory as a pair of boxes (1c), then \"Check answers\" (1d) and \"Submit\" (1e), which stays grey until every box is right. Signed in, so nobody types his callsign. The words in the boxes are made up for the picture. (Signed in as Ranger, a member; the window is Week insights' own, re-lettered.)"
+    "caption": "Proposed, drawn in. The CAPS test as a window, laid out as his squadron's current page is: two tabs, CAPS and Ops limits (1a), each procedure's heading (1b), each step a pair of boxes typed from memory (1c), then \"Check answers\" (1d) and \"Submit\" (1e), dimmed and not pressable until every box is right. Three headings are drawn; the real test has more, further down the same window. The words in the boxes are made up for the picture. (Signed in as Ranger, a member.)"
   },
   "1-test-fill-p-proposed.png": {
     "question": "Q1",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Proposed, drawn in. The CAPS test as a window, the way his squadron's current page lays it out: CAPS and Ops limits as two tests side by side (1a), each heading of the procedures (1b), each step written from memory as a pair of boxes (1c), then \"Check answers\" (1d) and \"Submit\" (1e), which stays grey until every box is right. Signed in, so nobody types his callsign. The words in the boxes are made up for the picture. (Signed in as Ranger, a member; the window is Week insights' own, re-lettered.)"
+    "caption": "Proposed, drawn in. The CAPS test as a window, laid out as his squadron's current page is: two tabs, CAPS and Ops limits (1a), each procedure's heading (1b), each step a pair of boxes typed from memory (1c), then \"Check answers\" (1d) and \"Submit\" (1e), dimmed and not pressable until every box is right. Three headings are drawn; the real test has more, further down the same window. The words in the boxes are made up for the picture. (Signed in as Ranger, a member.)"
   },
-  "2-door-d-proposed.png": {
-    "question": "Q6",
-    "size": "desktop",
-    "kind": "proposed",
-    "caption": "Proposed, drawn in. A \"CAPS\" button beside Insights (2a), in its look, for everyone. A member opens his own tests with it; a scheduler sees, under his own, who has done them (Q2). The page names are left as they are. (Signed in as Ranger, a member.)"
-  },
-  "2-door-d-today.png": {
-    "question": "Q6",
-    "size": "desktop",
-    "kind": "today",
-    "caption": "Real. A member's top bar on a desktop: Insights (the week's figures) stands beside the bell. (Signed in as Ranger, a member.)"
-  },
-  "2-door-p-proposed.png": {
-    "question": "Q6",
-    "size": "phone",
-    "kind": "proposed",
-    "caption": "Proposed, drawn in. \"CAPS and Ops limits\" joins Insights in the same menu (2b). On a phone the bell is the main door: a line when the week's test opens, tapping it opens the test (not drawn: the demo has no bell lines to copy). (Signed in as Ranger, a member.)"
-  },
-  "2-door-p-today.png": {
-    "question": "Q6",
-    "size": "phone",
-    "kind": "today",
-    "caption": "Real. A member's phone: the schedule's ⋯ menu holds Insights. (Signed in as Ranger, a member.)"
-  },
-  "3-who-d-proposed.png": {
+  "2-who-d-proposed.png": {
     "question": "Q2",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Proposed, drawn in. What a scheduler sees on pressing \"CAPS\": the week's figures (3a); the people who fly this week first (3b), those not done at the top of them in amber, \"Not done\" (3c); then everyone else on the aircrew list, under \"Not flying this week\" (3d). Each man's tests and the check's switch (Q5) on his row. Insights' own window with the Quals page's own table, re-lettered; the flyers are the real ones of this demo week (38 flying, 58 pilots and WSOs on the Quals page). Who is \"not done\" is made up for the picture."
+    "caption": "Proposed, drawn in. What a scheduler sees on pressing \"CAPS\": the week's figures (2a); the people who fly this week first (2b), those not done at the top in amber, \"Not done\" (2c); then everyone else on the Quals page, under \"Not flying this week\" (2d). Each man's two tests and the check's switch (Q5) on his row; the four whose Ops limits have run out (the third figure) sit further down, out of this picture. The flyers are the real ones of this demo week (38 flying, 58 pilots and WSOs on the Quals page); who has not done it is made up for the picture."
   },
-  "3-who-p-proposed.png": {
+  "2-who-p-proposed.png": {
     "question": "Q2",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Proposed, drawn in. What a scheduler sees on pressing \"CAPS\": the week's figures (3a); the people who fly this week first (3b), those not done at the top of them in amber, \"Not done\" (3c); then everyone else on the aircrew list, under \"Not flying this week\" (3d). Each man's tests and the check's switch (Q5) on his row. Insights' own window with the Quals page's own table, re-lettered; the flyers are the real ones of this demo week (38 flying, 58 pilots and WSOs on the Quals page). Who is \"not done\" is made up for the picture."
+    "caption": "Proposed, drawn in. What a scheduler sees on pressing \"CAPS\": the week's figures (2a); the people who fly this week first (2b), those not done at the top in amber, \"Not done\" (2c); then everyone else on the Quals page, under \"Not flying this week\" (2d). Each man's two tests and the check's switch (Q5) on his row; the four whose Ops limits have run out (the third figure) sit further down, out of this picture. The flyers are the real ones of this demo week (38 flying, 58 pilots and WSOs on the Quals page); who has not done it is made up for the picture. On a phone the CAT column is left out so the table fits."
+  },
+  "3-logic-d-proposed.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. A \"CAPS and Ops limits\" card: how often CAPS clears (3a, every week, as you ruled), how often Ops limits runs out (3b, the question; every month drawn), and the schedule check's switch (3c), which turns the check off for the whole squadron. Values change with Logic's own Edit, as every setting does."
+  },
+  "3-logic-d-today.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. The end of the Logic page's settings, a scheduler's view."
+  },
+  "3-logic-p-proposed.png": {
+    "question": "Q3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. A \"CAPS and Ops limits\" card: how often CAPS clears (3a, every week, as you ruled), how often Ops limits runs out (3b, the question; every month drawn), and the schedule check's switch (3c), which turns the check off for the whole squadron. Values change with Logic's own Edit, as every setting does."
+  },
+  "3-logic-p-today.png": {
+    "question": "Q3",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. The end of the Logic page's settings, a scheduler's view."
+  },
+  "4-check-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The check, listed in amber after Logic's other checks, in a group of its own (4d), naming both things it looks for in their own words, so a scheduler can read what it does, as he can for every other check."
+  },
+  "4-check-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The check, listed in amber after Logic's other checks, in a group of its own (4d), naming both things it looks for in their own words, so a scheduler can read what it does, as he can for every other check."
   },
   "4-sched-d-proposed.png": {
     "question": "Q4",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Recommended, drawn in. Blade has not done this week's CAPS: his puck wears the app's amber advisory ring (4a), the warning list gains an amber line, \"CAPS not done\" (4b), and the day's count rises by one (4c). Amber is the app's \"look\" colour: it never stops a publish. Scheduler only: a member sees no such line."
+    "caption": "Recommended, drawn in. Blade has not done this week's CAPS: his puck wears the app's amber advisory ring (4a), the warning list gains an amber line, \"CAPS not done\" (4b), and the day's issues count goes from 6 to 7 (4c); the red warnings stay at 3. Amber is the app's \"have a look\" colour: it never stops a publish."
   },
   "4-sched-d-today.png": {
     "question": "Q4",
@@ -75,7 +87,7 @@
     "question": "Q4",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Recommended, drawn in. Blade has not done this week's CAPS: his puck wears the app's amber advisory ring (4a), the warning list gains an amber line, \"CAPS not done\" (4b), and the day's count rises by one (4c). Amber is the app's \"look\" colour: it never stops a publish. Scheduler only: a member sees no such line."
+    "caption": "Recommended, drawn in. Blade has not done this week's CAPS: his puck wears the app's amber advisory ring (4a), the warning list gains an amber line, \"CAPS not done\" (4b), and the day's issues count goes from 6 to 7 (4c); the red warnings stay at 3. Amber is the app's \"have a look\" colour: it never stops a publish."
   },
   "4-sched-p-today.png": {
     "question": "Q4",
@@ -87,60 +99,60 @@
     "question": "Q5",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Recommended, drawn in. The switch on one man's row (5a), here Relay, set off for this week: his row reads \"Not checked\" (5b), his name raises nothing on the schedule, and next week it is on again by itself."
+    "caption": "Recommended, drawn in. The switch on one man's row (5a), here Relay, who did this week's CAPS on paper, set off for this week: his row reads \"Not checked\" (5b), he raises nothing on the schedule, the \"Flying, not done\" figure drops by one, and next week his check is on again by itself."
   },
   "5-switch-person-p-proposed.png": {
     "question": "Q5",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Recommended, drawn in. The switch on one man's row (5a), here Relay, set off for this week: his row reads \"Not checked\" (5b), his name raises nothing on the schedule, and next week it is on again by itself."
+    "caption": "Recommended, drawn in. The switch on one man's row (5a), here Relay, who did this week's CAPS on paper, set off for this week: his row reads \"Not checked\" (5b), he raises nothing on the schedule, the \"Flying, not done\" figure drops by one, and next week his check is on again by itself. On a phone the CAT column is left out so the table fits."
   },
   "5-switch-week-d-proposed.png": {
     "question": "Q5",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "The other way, drawn in. One switch for the whole week at the top of the window (5c), \"Check this week: Off\": nobody is checked that week (a stand-down, a holiday week), and the rows lose their own switch."
+    "caption": "The other way, drawn in. One switch for the whole week at the top of the window (5c), \"Check this week: Off\": nobody is checked that week (a stand-down, a holiday week); the rows lose their own switch and nothing is amber."
   },
   "5-switch-week-p-proposed.png": {
     "question": "Q5",
     "size": "phone",
     "kind": "proposed",
-    "caption": "The other way, drawn in. One switch for the whole week at the top of the window (5c), \"Check this week: Off\": nobody is checked that week (a stand-down, a holiday week), and the rows lose their own switch."
+    "caption": "The other way, drawn in. One switch for the whole week at the top of the window (5c), \"Check this week: Off\": nobody is checked that week (a stand-down, a holiday week); the rows lose their own switch and nothing is amber."
   },
-  "6-check-d-proposed.png": {
-    "question": "Q4",
+  "6-door-d-proposed.png": {
+    "question": "Q6",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Proposed, drawn in. The check, listed with Logic's other checks in amber (6d), so a scheduler can read what it does, as he can for every other check."
+    "caption": "Proposed, drawn in. A \"CAPS\" button after Insights (6a), in its look, so Insights keeps its place beside the bell. A member opens his own tests with it; a scheduler also sees who has done them (Q2)."
   },
-  "6-check-p-proposed.png": {
-    "question": "Q4",
-    "size": "phone",
-    "kind": "proposed",
-    "caption": "Proposed, drawn in. The check, listed with Logic's other checks in amber (6d), so a scheduler can read what it does, as he can for every other check."
-  },
-  "6-logic-d-proposed.png": {
-    "question": "Q3",
-    "size": "desktop",
-    "kind": "proposed",
-    "caption": "Proposed, drawn in. A \"CAPS and Ops limits\" card: how often CAPS clears (6a, his ruling: every week), how often Ops limits clears (6b, the question: every month drawn), and the schedule check's switch (6c). Values change with Logic's own Edit, as every setting does."
-  },
-  "6-logic-d-today.png": {
-    "question": "Q3",
+  "6-door-d-today.png": {
+    "question": "Q6",
     "size": "desktop",
     "kind": "today",
-    "caption": "Real. The end of the Logic page's settings, a scheduler's view."
+    "caption": "Real. A member's top bar on a desktop (View-only Sched): Insights stands beside the bell."
   },
-  "6-logic-p-proposed.png": {
-    "question": "Q3",
+  "6-door-p-proposed.png": {
+    "question": "Q6",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Proposed, drawn in. A \"CAPS and Ops limits\" card: how often CAPS clears (6a, his ruling: every week), how often Ops limits clears (6b, the question: every month drawn), and the schedule check's switch (6c). Values change with Logic's own Edit, as every setting does."
+    "caption": "Proposed, drawn in. \"CAPS and Ops limits\" joins Insights in the same menu (6b). The bell line that opens the test is not drawn: the demo has no bell lines to copy."
   },
-  "6-logic-p-today.png": {
-    "question": "Q3",
+  "6-door-p-today.png": {
+    "question": "Q6",
     "size": "phone",
     "kind": "today",
-    "caption": "Real. The end of the Logic page's settings, a scheduler's view."
+    "caption": "Real. A member's phone: the schedule's ⋯ menu holds Insights."
+  },
+  "6-door-sched-d-proposed.png": {
+    "question": "Q6",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The same bar with \"CAPS\" after Insights (6a): it still fits on one row at 1536 wide."
+  },
+  "6-door-sched-d-today.png": {
+    "question": "Q6",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. A scheduler's top bar on Edit Schedule at 1536 wide, the most crowded bar: the page names, Undo, Redo, the changes clock, the sync dot, the bell and Insights."
   }
 }

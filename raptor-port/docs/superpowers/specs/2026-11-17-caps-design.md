@@ -4,7 +4,9 @@
 overnight run, unattended, so nothing here is ruled by this round; every choice below is a recommendation put to him.
 The old design start (`2026-10-05-caps-ops-limits.md`, D567) is cancelled history (D568) and is not built on.
 
-- **Questions page:** `raptor-port/docs/mock/2026-11-17-caps-r1/page.html` (published by the coordinator).
+- **Questions page:** `raptor-port/docs/mock/2026-11-17-caps-r1/page.html` (published by the coordinator); revised the
+  same night after a fresh reader's look (Q4's Ops limits, Q7 and Q8 added, the marks renumbered to match each
+  question, the platform flag rewritten).
 - **Pictures:** `raptor-port/docs/img/2026-11-17-caps-r1/`, captions in its `manifest.json`; drawn by
   `raptor-port/docs/mock/2026-11-17-caps-r1/draw.mjs` on the real app (demo week Jul 13 – Jul 19), today beside
   proposed, desktop and phone.
@@ -35,16 +37,18 @@ holds real callsigns, which are kept out too.
   correct as at, and a count of each (17 and 38 when seen). The CAPS dates all fell in the week of 13–16 Nov; the
   LIMITS dates ran from 30 Oct to 15 Nov — Ops limits looks like a longer cycle, so Q3 asks.
 
-## The four open points and the questions put to him
+## The open points and the questions put to him
 
 | # | Question | Recommendation | Other choice |
 |---|---|---|---|
-| Q1 | What does the form hold? (D2084's open point 1) | His squadron's two tests kept in the app with their right answers, laid out as today: headings, paired boxes, Check answers (wrong boxes red, a count left to fix, the answer never shown), Submit grey until all are right; an admin keeps the questions and answers | A plain "Done" tick, no test in the app |
+| Q1 | What does the form hold? (D2084's open point 1) | His squadron's two tests kept in the app with their right answers, laid out as today: two tabs, headings, paired boxes, Check answers (wrong boxes red, a count left to fix, the answer never shown), Submit dimmed and not pressable until all are right; an admin keeps the questions and answers | A plain "Done" tick, no test in the app |
 | Q2 | Who must fill it in? (open point 2) | Every pilot and WSO on the Quals page, students included; not ground crew or guests; the list shows those flying this week first | Only those flying this week |
 | Q3 | Does Ops limits clear every week too? | Each test its own period on the Logic page: CAPS every week (his ruling), Ops limits every month; he is asked what it is today | Both every week |
-| Q4 | Does a flyer not done raise anything on the schedule? (open point 3) | Yes: the amber advisory — the ring on his puck, a "CAPS not done" line in the day's warning list that reads on its own, the day's count; never stops a publish; switched on or off on Logic, listed with the checks | Nothing on the schedule; the list only |
-| Q5 | What does "toggle off the check" switch off? (open point 4) | One man for this week (a switch on his row; "Not checked"; on again next week) | One switch for the whole week |
-| Q6 | Where does a person open it? | "CAPS" beside Insights on a desktop's top bar; "CAPS and Ops limits" in the ⋯ menu on a phone; a bell line when the week opens and before he flies if not done | A page of its own among the page names |
+| Q4 | Does a flyer not done raise anything on the schedule, and does Ops limits count too? (open point 3) | Yes, for either test: the amber advisory — the ring on his puck, a line in the day's warning list that reads on its own (D2045), "CAPS not done" or "Ops limits out of date", the day's issues count up by one (the red "warnings" figure unchanged: an amber line is not one); never stops a publish; switched on or off on Logic, listed with the checks | CAPS only; or nothing on the schedule, the list only |
+| Q5 | What does "toggle off the check" switch off? (open point 4) | One man for this week (a switch on his row; "Not checked"; on again next week), with Logic's switch for the whole squadron as every check has | One switch for the whole week; the third meaning, Logic's switch alone |
+| Q6 | Where does a person open it? | "CAPS" just after Insights on a desktop's top bar, so Insights keeps its place beside the bell (D481, D854); still one row on a scheduler's Edit Schedule bar at 1536 wide; "CAPS and Ops limits" after Insights in the ⋯ menu on a phone; a bell line when the week opens and before he flies if not done | A page of its own among the page names |
+| Q7 | On a day already published, does the amber line show? (the test opens on the Saturday, often after the coming days are published) | Live, as the qualification warnings are today (D179 as narrowed by D183–D185): shown on the published face, judged by today, never making the day pending, the sign-offs kept (D45, D103); on a Saturday morning most of Monday's flyers show amber until they submit | Frozen until the next amendment |
+| Q8 | Can members see who has done it? (his current page lets anyone with the link see) | Yes, to read only: the Q2 list without its switches | Schedulers only |
 
 Answer only if he disagrees: R1 the not-done flyers first, in amber; R2 the week's test opens the Saturday before, as
 today; R3 no callsign typed, since he is signed in; R4 (the agent's reading, not ruled) a man on leave or an overseas
@@ -52,25 +56,27 @@ duty the whole week is not checked that week, by itself.
 
 ## Platform flag (D1551)
 
-Checking the answers in the app sends the right answers to each person's browser, where they can be read by someone
-who knows how. A check out of sight on the IT side's server needs something beyond the app, and the IT side allows no
-plug-ins (D1749); whether another tool they allow could do it is unknown — asked of the IT side at the database step.
-Otherwise the in-app check stands, as his current page works today. Clearing every week needs no deletion: each
-submission carries its week. The bell lines are in-app.
+Checking the answers in the app sends the right answers to each person's phone: anyone who knows how can read every
+right answer, so passing proves less. The likely way to check out of sight is an automatic flow inside the IT side's
+own Power Platform using Dataverse's own connector (not an outside connector), comparing his answers with ones members
+cannot read and recording the result; the IT side allows no add-on code on their server (D1749), so whether that flow
+is allowed is asked of them at the database step. How his current page checks answers is not known. The bell shows
+only inside the app; reaching his phone when the app is closed needs the IT side. Clearing every week needs no
+deletion: each submission carries its week.
 
 ## Where it would touch the app
 
 The top bar and the ⋯ menus (Edit Schedule, View-only Sched, the board's bar); the warnings (a new amber check, its
 line, the puck ring, the day's count, the Legend's flags); the Logic page (a settings card and a check); Quals (who must
 do it); Insights (its neighbour, its window reused); the bell (new lines, `notifications-register.md` when built);
-publishing (nothing — whether the line shows live or frozen on a published day's face is for the build round); Undo (a
-switch is undoable, a submission is not); the Leave War and Inputs (R4); Admin (the tests' editor); two squadrons (each
+publishing (never stops one; live or not shown on a published day's face, never pending — Q7); Undo (a
+switch is undoable, a submission is not); the Leave War and Inputs (R4); Admin (the tests' editor); two squadrons (the multi-squadron design, already under way: each
 keeps its own tests); the database step (two tables: the tests with their answers, the submissions with their week).
 
 ## Not drawn
 
 The bell's lines (the demo's bell is empty, nothing real to draw from); Ops limits' table layout and the admin's editor
-(drawn once Q1 is answered); his squadron's current page (holds real names; described in words above).
+(drawn once Q1 is answered); a member's view of the list (once Q8 is answered); his squadron's current page (holds real names; described in words above).
 
 ## Shape brief (impeccable `shape`, no human present — every assumption marked as one)
 

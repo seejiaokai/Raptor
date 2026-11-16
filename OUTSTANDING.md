@@ -78,7 +78,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     Found by its step 5a (People), medium, the agent's: [DOCSIZE-PATHS-OPEN] — a rules file whose `paths:` list is never closed passes the document check, its page checks skipped — BUILT 10 Nov 26 on `claude/docsize-paths-open`, live on his "merge live".
   - **Waiting on his look and "merge live" (checked 14 Nov 26, chat 74):** (a) the batch of four on `claude/batch-ready4-1114` — the small schedule-and-board fixes (pull request 756), two Quals faults (758), the Leave War double tap on its other windows (759), the Approvals page on a PC (763) — each built, walked and read on its own branch, brought level with `main` in one branch (D822); the four job pull requests are closed with a pointer once it is green; (b) the rules check — its fixes, words and D2005 (pull request 762, chat 66, FULL-checked), carrying the report (757) and the browser checks in Playwright's own image (761); his answers D2002–D2026 reach `main` with it.
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
-  ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
+  ([CAPS-OPS-LIMITS] — no longer waiting on his word: D2086 puts it second, after the multi-squadron design; its design
+  round 1 was drawn 17 Nov 26), then one whole-app check.
 - **At the end (D473):** the database step — the "Database step" group below.
 - **ChatGPT is back on a Pro plan (D1734, 7 Nov 26) — Astra the standing reviewer again (D1770, 8 Nov 26), Sol 6.1 on his word:** the reads owed in [NO-ASTRA-LIST], each his to call (D761).
 - **Before any collaborator is added:** the checks runner comes off this repo ([REPO-PRIVATE]).

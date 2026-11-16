@@ -68,6 +68,15 @@ function kit() {
     if (!['x', 'y', 'width', 'height'].every(k => Math.abs(a[k] - b[k]) < 0.5)) throw new Error('mark moved its element: ' + label)
     return true
   }
+  // a tag placed by hand inside a container (made a place of its own), for marks whose own box clips, dims or is
+  // covered by the tag: the outline still goes on the element, the tag sits where it covers nothing it is about
+  mq.tagAt = (el, container, label, css) => {
+    el.classList.add('mkq', 'mkq-o')
+    if (getComputedStyle(container).position === 'static') container.style.position = 'relative'
+    const t = document.createElement('span'); t.className = 'mkq-tag'; t.textContent = label; t.setAttribute('data-mine', '1')
+    Object.assign(t.style, css); container.appendChild(t)
+    return t
+  }
   mq.checkTags = () => {
     const bad = []
     for (const t of document.querySelectorAll('.mkq-tag')) {
@@ -215,18 +224,25 @@ async function pic1(sz) {
       // the foot: what checking found, then Check answers and Submit — Submit lights only once every box is right
       const foot = document.createElement('div'); foot.style.display = 'flex'; foot.style.alignItems = 'center'; foot.style.gap = '8px'; foot.style.marginTop = '14px'
       const note = document.createElement('span'); note.style.fontSize = '12.5px'; note.style.marginRight = 'auto'
+      // the count matches what is drawn: three headings, nine pairs, 18 boxes, one pair still empty
       if (stage === 'checked') { note.textContent = '2 answers to fix'; note.style.color = 'var(--hard)'; note.style.fontWeight = '600' }
-      else { note.textContent = '14 of 22 boxes filled'; note.style.color = 'var(--ink-3)' }
+      else { note.textContent = '16 of 18 boxes filled'; note.style.color = 'var(--ink-3)' }
       const chk = document.createElement('button'); chk.type = 'button'; chk.className = 'abtn'; chk.textContent = 'Check answers'
       const sub = document.createElement('button'); sub.type = 'button'; sub.className = 'abtn primary'; sub.textContent = 'Submit'; sub.disabled = true
       foot.append(note, chk, sub); wrap.appendChild(foot)
-      // hand the heading count to the page: the test runs to 9 headings, as his example does; three drawn here
-      const more = document.createElement('div'); more.className = 'isec-h'; more.style.color = 'var(--ink-3)'; more.textContent = '+ 6 more headings below'
-      wrap.insertBefore(more, foot)
-      // each marked part is given a place of its own, so its tag hangs at its edge instead of over its words
-      for (const e of [h1, rows[0], chk, sub, bad1, note]) if (getComputedStyle(e).position === 'static') e.style.position = 'relative'
-      if (stage === 'fill') { mq.mark(seg, '1a', 'right'); mq.mark(h1, '1b', 'in'); mq.mark(rows[0], '1c', 'in'); mq.mark(chk, '1d', 'above'); mq.mark(sub, '1e', 'above') }
-      else { mq.mark(bad1, '1f', 'in'); mq.mark(note, '1g', 'above') }
+      // each tag sits where it covers nothing it points at: over the gap above a row (centred on its dash), above the
+      // heading's right end, above a button from the foot (a disabled button would dim a tag inside it)
+      foot.style.position = 'relative'
+      if (stage === 'fill') {
+        mq.mark(seg, '1a', 'right')
+        mq.tagAt(h1, h1, '1b', { right: '0', bottom: 'calc(100% + 2px)' })
+        mq.tagAt(rows[0], rows[0], '1c', { right: 'calc(50% - 12px)', top: '-11px' })
+        mq.tagAt(chk, foot, '1d', { right: (sub.offsetWidth + 8 + chk.offsetWidth / 2 - 12) + 'px', bottom: 'calc(100% + 3px)' })
+        mq.tagAt(sub, foot, '1e', { right: (sub.offsetWidth / 2 - 12) + 'px', bottom: 'calc(100% + 3px)' })
+      } else {
+        mq.tagAt(bad1, bad1, '1f', { right: 'calc(50% - 12px)', top: '-11px' })
+        mq.tagAt(note, foot, '1g', { left: '0', bottom: 'calc(100% + 3px)' })
+      }
       box.scrollTop = 0
       return { boxH: Math.round(box.getBoundingClientRect().height), scrollH: box.scrollHeight }
     }, { stage, WEEK })
@@ -235,10 +251,10 @@ async function pic1(sz) {
     const f = `1-test-${stage}-${sz}-proposed.png`
     await shot(page, f, clip)
     const words = {
-      fill: 'Proposed, drawn in. The CAPS test as a window, the way his squadron\'s current page lays it out: CAPS and Ops limits as two tests side by side (1a), each heading of the procedures (1b), each step written from memory as a pair of boxes (1c), then "Check answers" (1d) and "Submit" (1e), which stays grey until every box is right. Signed in, so nobody types his callsign. The words in the boxes are made up for the picture.',
-      checked: 'Proposed, drawn in. After "Check answers": a wrong box is edged red (1f), right ones green, and the foot says how many are left to fix (1g); nothing gives away the right answer. Submit lights once all are right.',
+      fill: 'Proposed, drawn in. The CAPS test as a window, laid out as his squadron\'s current page is: two tabs, CAPS and Ops limits (1a), each procedure\'s heading (1b), each step a pair of boxes typed from memory (1c), then "Check answers" (1d) and "Submit" (1e), dimmed and not pressable until every box is right. Three headings are drawn; the real test has more, further down the same window. The words in the boxes are made up for the picture.',
+      checked: 'Proposed, drawn in. After "Check answers": a wrong box is edged red (1f), right ones green, and the foot says how many are left to fix (1g); nothing gives away the right answer. Submit can be pressed once all are right.',
     }
-    rec(f, 'Q1', sz, 'proposed', words[stage] + ' (Signed in as Ranger, a member; the window is Week insights\' own, re-lettered.)')
+    rec(f, 'Q1', sz, 'proposed', words[stage] + ' (Signed in as Ranger, a member.)')
     notes.push(`pic1 ${stage} ${sz}: ${JSON.stringify(info)}`)
     await ctx.close()
   }
@@ -246,32 +262,42 @@ async function pic1(sz) {
 
 // ---------- 2 (Q6): where a man opens it — beside Insights ----------
 async function pic2(sz) {
-  for (const kind of ['today', 'proposed']) {
-    const { ctx, page } = await world(sz, 'us')
+  // the desktop is drawn twice: a member's View-only Sched, and a scheduler's Edit Schedule at 1536 wide (the crowded
+  // bar: Undo, Redo, the changes clock). Insights stays beside the bell, as the rulings place it; CAPS goes after it.
+  const who = sz === 'd' ? ['us', 'ad'] : ['us']
+  for (const w of who) for (const kind of ['today', 'proposed']) {
+    const { ctx, page } = await world(sz, w)
+    if (w === 'ad') await go(page, 'editsched', '#page-editsched.on #eWeek .day')
     let clip
     if (sz === 'd') {
       await page.evaluate(kind => {
         const mq = window.__mq, ins = document.querySelector('#insightBtn')
-        if (kind === 'proposed') { const b = mq.strip(ins.cloneNode(true)); b.textContent = 'CAPS'; b.title = 'CAPS and Ops limits'; ins.before(b); b.style.position = 'relative'; mq.mark(b, '2a', 'in') }
+        if (kind === 'proposed') {
+          const b = mq.strip(ins.cloneNode(true)); b.textContent = 'CAPS'; b.title = 'CAPS and Ops limits'; ins.after(b)
+          mq.tagAt(b, b, '6a', { left: 'calc(50% - 11px)', top: 'calc(100% + 3px)' })
+        }
       }, kind)
-      clip = await page.evaluate(() => { const t = document.querySelector('.topbar').getBoundingClientRect(); return { x: innerWidth - 700, y: 0, width: 700, height: Math.round(t.bottom) + 6 } })
+      clip = await page.evaluate(() => { const t = document.querySelector('.topbar').getBoundingClientRect(); return { x: 0, y: 0, width: innerWidth, height: Math.round(t.bottom) + 22 } })
     } else {
       await page.click('#page-viewsched .schedule-morewrap button'); await page.waitForTimeout(400)
       await page.evaluate(kind => {
         const mq = window.__mq, it = document.querySelector('#viewSchedMoreInsights')
-        if (kind === 'proposed') { const b = mq.strip(it.cloneNode(true)); b.textContent = 'CAPS and Ops limits'; it.before(b); mq.mark(b, '2b', 'in') }
+        if (kind === 'proposed') { const b = mq.strip(it.cloneNode(true)); b.textContent = 'CAPS and Ops limits'; it.after(b); mq.mark(b, '6b', 'in') }
       }, kind)
       clip = await page.evaluate(() => { const m = document.querySelector('#viewSchedMoreMenu').getBoundingClientRect(); return { x: 0, y: 0, width: innerWidth, height: Math.round(m.bottom) + 40 } })
     }
-    const f = `2-door-${sz}-${kind}.png`
+    const f = w === 'ad' ? `6-door-sched-${sz}-${kind}.png` : `6-door-${sz}-${kind}.png`
     await shot(page, f, clip)
     const words = {
-      'd-today': 'Real. A member\'s top bar on a desktop: Insights (the week\'s figures) stands beside the bell.',
-      'd-proposed': 'Proposed, drawn in. A "CAPS" button beside Insights (2a), in its look, for everyone. A member opens his own tests with it; a scheduler sees, under his own, who has done them (Q2). The page names are left as they are.',
-      'p-today': 'Real. A member\'s phone: the schedule\'s ⋯ menu holds Insights.',
-      'p-proposed': 'Proposed, drawn in. "CAPS and Ops limits" joins Insights in the same menu (2b). On a phone the bell is the main door: a line when the week\'s test opens, tapping it opens the test (not drawn: the demo has no bell lines to copy).',
+      'us-d-today': 'Real. A member\'s top bar on a desktop (View-only Sched): Insights stands beside the bell.',
+      'us-d-proposed': 'Proposed, drawn in. A "CAPS" button after Insights (6a), in its look, so Insights keeps its place beside the bell. A member opens his own tests with it; a scheduler also sees who has done them (Q2).',
+      'ad-d-today': 'Real. A scheduler\'s top bar on Edit Schedule at 1536 wide, the most crowded bar: the page names, Undo, Redo, the changes clock, the sync dot, the bell and Insights.',
+      'ad-d-proposed': 'Proposed, drawn in. The same bar with "CAPS" after Insights (6a): it still fits on one row at 1536 wide.',
+      'us-p-today': 'Real. A member\'s phone: the schedule\'s ⋯ menu holds Insights.',
+      'us-p-proposed': 'Proposed, drawn in. "CAPS and Ops limits" joins Insights in the same menu (6b). The bell line that opens the test is not drawn: the demo has no bell lines to copy.',
     }
-    rec(f, 'Q6', sz, kind, words[`${sz}-${kind}`] + ' (Signed in as Ranger, a member.)')
+    rec(f, 'Q6', sz, kind, words[`${w}-${sz}-${kind}`])
+    if (w === 'ad') notes.push(`pic2 ad ${kind}: bar rows ${await page.evaluate(() => { const t = document.querySelector('.topbar'); return Math.round(t.getBoundingClientRect().height) + 'px; ins ' + Math.round(document.querySelector('#insightBtn').getBoundingClientRect().top) })}`)
     await ctx.close()
   }
 }
@@ -280,7 +306,7 @@ async function pic2(sz) {
 async function doneWindow(page, sz, mode) {
   const all = page.locator('#insightBody button', { hasText: 'Show all' }).first()
   if (await all.count()) { await all.click(); await page.waitForTimeout(400) }
-  return page.evaluate(({ mode, WEEK }) => {
+  return page.evaluate(({ mode, WEEK, narrow }) => {
     const mq = window.__mq, box = document.querySelector('#insightModal .modal-box'), head = box.querySelector('.modal-head'), body = box.querySelector('#insightBody')
     // the week's flyers, read off the real Week insights list before it is hidden ("Flying load · sorties this week")
     // (only that section: the work-hours section below it lists everyone; "Show all" was pressed first)
@@ -297,71 +323,87 @@ async function doneWindow(page, sz, mode) {
     const wrap = document.createElement('div'); wrap.setAttribute('data-mine', '1'); body.appendChild(wrap)
     const cat = window.__qCat, all = Object.keys(cat)
     const total = all.length
-    // who has "not done" it is made up for the picture: four of the week's real flyers, spread down the list
+    // One set of people for the whole page (made up for the pictures, real flyers of this demo week): Blade (Q4's
+    // example, flies Thursday) and Relay (Q5's excused man) have not done CAPS, with two more spread down the list;
+    // one man further down the flying list has Ops limits run out (not in the nine rows drawn); every date shown sits inside its period (CAPS this week from the Saturday
+    // before, Ops limits this month).
     const fly = flyers.filter(n => cat[n])
-    const notDone = new Set([2, 6, 11, 17].map(i => fly[i]).filter(Boolean))
+    const pick = ['Blade', 'Relay', fly[2], fly[6], fly[11]].filter((n, i, a) => n && fly.includes(n) && a.indexOf(n) === i).slice(0, 4)
+    const notDone = new Set(pick)
     const doneFly = fly.filter(n => !notDone.has(n))
-    const offWeek = mode === 'person' ? doneFly[0] : null
+    const opsOut = fly.includes('Warden') && !notDone.has('Warden') ? 'Warden' : doneFly[3]
+    const offWeek = mode === 'person' ? (notDone.has('Relay') ? 'Relay' : pick[1]) : null
+    const weekOff = mode === 'week'
     const flyDone = flyingN - notDone.size
+    const open = notDone.size - (offWeek ? 1 : 0)
+    const amber = on => on && !weekOff
     // tiles: Insights' own
     const t2 = mq.strip(tiles.cloneNode(true)); t2.style.removeProperty('display')
     const tl = [...t2.querySelectorAll('.itile')]
-    // the "not done" figure in the advisory's amber, never the red of a hard warning: it stops nothing
-    const setT = (t, n, l, amber) => { t.querySelector('.n').textContent = n; t.querySelector('.l').textContent = l; t.classList.remove('hard'); t.querySelector('.n').style.color = amber ? 'var(--adv)' : '' }
+    // the "not done" figure in the advisory's amber, never the red of a hard warning: it stops nothing; grey while
+    // the whole week's check is off
+    const setT = (t, n, l, am) => { t.querySelector('.n').textContent = n; t.querySelector('.l').textContent = l; t.classList.remove('hard'); t.querySelector('.n').style.color = am ? (weekOff ? 'var(--ink-3)' : 'var(--adv)') : '' }
     setT(tl[0], `${flyDone} of ${flyingN}`, 'Flying, CAPS done'); setT(tl[1], `${total - 9} of ${total}`, 'All aircrew, CAPS done')
-    setT(tl[2], `${total - 4} of ${total}`, 'Ops limits in date'); setT(tl[3], String(notDone.size), 'Flying, not done', true)
+    setT(tl[2], `${total - 4} of ${total}`, 'Ops limits in date'); setT(tl[3], String(open), 'Flying, not done', true)
     wrap.appendChild(t2)
-    // the table: Quals' own, re-headed
-    const tbl = mq.strip(window.__qT.cloneNode(false)); tbl.style.minWidth = '0'; tbl.style.marginTop = '12px'
+    // the table: the Quals page's own; on a phone without the CAT column, so it fits the window's width
+    const cols = narrow ? [0, 4, 5, 6] : [0, 3, 4, 5, 6]
+    const C = cols.length
+    const tbl = mq.strip(window.__qT.cloneNode(false)); tbl.style.minWidth = '0'; tbl.style.width = '100%'; tbl.style.marginTop = '12px'
     const th = document.createElement('thead'); const hr = mq.strip(window.__qHead.cloneNode(true))
     const ths = [...hr.children]
-    const keep = [ths[0], ths[3], ths[4], ths[5], ths[6]]
+    const keep = cols.map(i => ths[i])
     ths.forEach(t => { if (!keep.includes(t)) t.remove() })
-    const labels = ['Callsign', 'Cat', 'CAPS', 'Ops limits', 'Check']
+    const labels = narrow ? ['Callsign', 'CAPS', 'Ops limits', 'Check'] : ['Callsign', 'Cat', 'CAPS', 'Ops limits', 'Check']
     keep.forEach((t, i) => { t.textContent = labels[i]; t.className = ''; t.style.position = 'static' })
     th.appendChild(hr); tbl.appendChild(th)
     const tb = document.createElement('tbody'); tbl.appendChild(tb)
-    const grp = t => { const g = mq.strip(window.__qGrp.cloneNode(true)); const c = g.querySelector('td, th'); c.textContent = t; c.colSpan = 5; [...g.children].slice(1).forEach(x => x.remove()); tb.appendChild(g); return g }
+    const grp = t => { const g = mq.strip(window.__qGrp.cloneNode(true)); const c = g.querySelector('td, th'); c.textContent = t; c.colSpan = C; [...g.children].slice(1).forEach(x => x.remove()); tb.appendChild(g); return g }
     const sw = on => { const m = mq.strip(window.__lgMix.cloneNode(true)); const s = m.querySelector('.lg-switch-read'); s.classList.toggle('on', on); s.style.opacity = '1'; s.setAttribute('aria-checked', String(on)); s.removeAttribute('aria-disabled'); m.lastChild.textContent = on ? 'On' : 'Off'; m.style.display = 'inline-flex'; m.style.alignItems = 'center'; m.style.gap = '6px'; return m }
     const rowsBy = {}
     const row = (name, caps, ops, on) => {
       const r = mq.strip(window.__qRow.cloneNode(true)); const tds = [...r.children]
-      const keepTd = [tds[0], tds[3], tds[4], tds[5], tds[6]]; tds.forEach(t => { if (!keepTd.includes(t)) t.remove() })
+      const keepTd = cols.map(i => tds[i]); tds.forEach(t => { if (!keepTd.includes(t)) t.remove() })
       keepTd[0].textContent = name; keepTd[0].style.position = 'static'; keepTd[0].style.textAlign = 'left'
-      keepTd[1].innerHTML = cat[name] || ''
-      const cell = (td, v) => { td.className = 'qcell'; td.innerHTML = ''; if (v === null) { td.textContent = 'Not done'; td.style.color = 'var(--adv)'; td.style.fontWeight = '600' } else if (v === 'off') { td.textContent = 'Not checked'; td.style.color = 'var(--ink-3)' } else { const s = document.createElement('span'); s.className = 'qchk'; s.textContent = '✓'; s.style.color = 'var(--ok)'; td.append(s, ' ' + v) } }
-      cell(keepTd[2], caps); cell(keepTd[3], ops)
-      keepTd[4].className = ''; keepTd[4].innerHTML = ''; keepTd[4].appendChild(sw(on))
+      if (!narrow) keepTd[1].innerHTML = cat[name] || ''
+      const k = narrow ? 1 : 2
+      const cell = (td, v) => {
+        td.className = 'qcell'; td.innerHTML = ''
+        if (v === null || v === 'out') { td.textContent = v === null ? 'Not done' : 'Out of date'; td.style.color = amber(true) ? 'var(--adv)' : 'var(--ink-3)'; td.style.fontWeight = '600' }
+        else if (v === 'off') { td.textContent = 'Not checked'; td.style.color = 'var(--ink-3)' }
+        else { const s = document.createElement('span'); s.className = 'qchk'; s.textContent = '✓'; s.style.color = 'var(--ok)'; td.append(s, ' ' + v) }
+      }
+      cell(keepTd[k], caps); cell(keepTd[k + 1], ops)
+      keepTd[k + 2].className = ''; keepTd[k + 2].innerHTML = ''; keepTd[k + 2].appendChild(sw(on))
       tb.appendChild(r); rowsBy[name] = r; return r
     }
     const gF = grp(`Flying this week · ${flyingN}`)
-    const flyNot = [...notDone]
-    const order = [...flyNot, ...doneFly].slice(0, 9)
-    const opsDates = ['2 Jul', '4 Jul', '1 Jul', '6 Jul', '3 Jul', '2 Jul', '5 Jul', '1 Jul', '7 Jul']
+    const order = [...pick, ...doneFly].slice(0, 9)
+    const capsDates = ['Mon 13', 'Sat 11', 'Sun 12', 'Mon 13', 'Sat 11']
+    const opsDates = ['2 Jul', '4 Jul', '1 Jul', '6 Jul', '3 Jul', '8 Jul', '5 Jul', '1 Jul', '7 Jul']
     order.forEach((n, i) => {
       const off = n === offWeek
-      row(n, off ? 'off' : notDone.has(n) ? null : (i % 2 ? 'Sat 11' : 'Mon 13'), off ? 'off' : opsDates[i % opsDates.length], !off)
+      row(n, off ? 'off' : notDone.has(n) ? null : capsDates[i % capsDates.length], off ? 'off' : n === opsOut ? 'out' : opsDates[i % opsDates.length], !off)
     })
-    const more = document.createElement('tr'); more.setAttribute('data-mine', '1'); const mc = document.createElement('td'); mc.colSpan = 5; mc.style.textAlign = 'left'
+    const more = document.createElement('tr'); more.setAttribute('data-mine', '1'); const mc = document.createElement('td'); mc.colSpan = C; mc.style.textAlign = 'left'
     const mb = document.createElement('button'); mb.type = 'button'; mb.className = 'abtn'; mb.textContent = `Show all ${flyingN} ↓`; mc.appendChild(mb); more.appendChild(mc); tb.appendChild(more)
     const gN = grp(`Not flying this week · ${all.filter(n => !flyers.includes(n)).length}`)
     const rest = all.filter(n => !flyers.includes(n)).slice(0, 2)
-    rest.forEach((n, i) => row(n, i ? null : 'Sun 12', '30 Jun', true))
+    rest.forEach((n, i) => row(n, i ? null : 'Sun 12', i ? '9 Jul' : '3 Jul', true))
     wrap.appendChild(tbl)
-    // mode 'week': the other way — one switch for the whole week, in the window's head
+    // mode 'week': the other way — one switch for the whole week, at the top of the window
     let weekSw = null
-    if (mode === 'week') {
-      // its own line at the top of the window (in the head it squeezed the title onto two lines on a phone)
+    if (weekOff) {
       weekSw = sw(false); weekSw.lastChild.textContent = 'Check this week: Off'; weekSw.style.fontSize = '13px'; weekSw.style.color = 'var(--ink-2)'; weekSw.style.marginBottom = '12px'
       weekSw.style.position = 'relative'; weekSw.style.paddingRight = '34px'
       wrap.insertBefore(weekSw, wrap.firstChild)
-      // with the week's check off, the per-man column goes: every row reads as it is, nothing warns
-      tbl.querySelectorAll('tr').forEach(r => { const c = r.children[4]; if (c && r.children.length === 5) mq.hide(c) })
-      gF.firstElementChild.colSpan = 4; gN.firstElementChild.colSpan = 4; mc.colSpan = 4
+      // with the week's check off, the per-man column goes and nothing is amber: every row reads as it is, nothing warns
+      tbl.querySelectorAll('tr').forEach(r => { const c = r.children[C - 1]; if (c && r.children.length === C) mq.hide(c) })
+      gF.firstElementChild.colSpan = C - 1; gN.firstElementChild.colSpan = C - 1; mc.colSpan = C - 1
     }
     box.scrollTop = 0
-    return { flyingN, total, flyersSeen: flyers.length, flyInQuals: fly.length, notDoneShown: flyNot, offWeek, rows: Object.keys(rowsBy).length, weekSw: !!weekSw, tilesN: tl.length }
-  }, { mode, WEEK })
+    return { flyingN, total, flyersSeen: flyers.length, flyInQuals: fly.length, notDoneShown: pick, opsOut, offWeek, blade: fly.includes('Blade'), relay: fly.includes('Relay'), rows: Object.keys(rowsBy).length, weekSw: !!weekSw, tilesN: tl.length }
+  }, { mode, WEEK, narrow: sz === 'p' })
 }
 
 // ---------- 3 (Q2): who must do it, and the one button's list — flyers first ----------
@@ -373,17 +415,18 @@ async function pic3(sz) {
   const info = await doneWindow(page, sz, 'plain')
   await page.evaluate(() => {
     const mq = window.__mq, box = document.querySelector('#insightModal .modal-box')
-    const tiles = box.querySelector('[data-mine] .itiles'); mq.mark(tiles, '3a', 'in')
+    const tiles = box.querySelector('[data-mine] .itiles'); mq.mark(tiles, '2a', 'in')
+    // the group rows' tags hang at their right end, clear of their words; "Not done"'s tag straddles its cell's top edge
     const rel = e => { if (getComputedStyle(e).position === 'static') e.style.position = 'relative'; return e }
-    const g = [...box.querySelectorAll('[data-mine] tbody tr')][0]; mq.mark(rel(g.firstElementChild), '3b', 'in')
-    const nd = [...box.querySelectorAll('[data-mine] td.qcell')].find(td => /Not done/.test(td.textContent)); mq.mark(rel(nd), '3c', 'in')
-    const g2 = [...box.querySelectorAll('[data-mine] tbody tr')].find(r => /Not flying/.test(r.textContent)); mq.mark(rel(g2.firstElementChild), '3d', 'in')
+    const g = [...box.querySelectorAll('[data-mine] tbody tr')][0]; mq.mark(rel(g.firstElementChild), '2b', 'in')
+    const nd = [...box.querySelectorAll('[data-mine] td.qcell')].find(td => /Not done/.test(td.textContent)); mq.tagAt(nd, rel(nd), '2c', { right: '2px', top: '-8px' })
+    const g2 = [...box.querySelectorAll('[data-mine] tbody tr')].find(r => /Not flying/.test(r.textContent)); mq.mark(rel(g2.firstElementChild), '2d', 'in')
   })
   await settle(page)
   const clip = await page.evaluate(() => { const r = document.querySelector('#insightModal .modal-box').getBoundingClientRect(); return { x: Math.max(0, r.left - 12), y: Math.max(0, r.top - 12), width: Math.min(innerWidth, r.width + 24), height: Math.min(innerHeight - Math.max(0, r.top - 12), r.height + 24) } })
-  const f = `3-who-${sz}-proposed.png`
+  const f = `2-who-${sz}-proposed.png`
   await shot(page, f, clip)
-  rec(f, 'Q2', sz, 'proposed', `Proposed, drawn in. What a scheduler sees on pressing "CAPS": the week's figures (3a); the people who fly this week first (3b), those not done at the top of them in amber, "Not done" (3c); then everyone else on the aircrew list, under "Not flying this week" (3d). Each man's tests and the check's switch (Q5) on his row. Insights' own window with the Quals page's own table, re-lettered; the flyers are the real ones of this demo week (${info.flyingN} flying, ${info.total} pilots and WSOs on the Quals page). Who is "not done" is made up for the picture.`)
+  rec(f, 'Q2', sz, 'proposed', `Proposed, drawn in. What a scheduler sees on pressing "CAPS": the week's figures (2a); the people who fly this week first (2b), those not done at the top in amber, "Not done" (2c); then everyone else on the Quals page, under "Not flying this week" (2d). Each man's two tests and the check's switch (Q5) on his row; the four whose Ops limits have run out (the third figure) sit further down, out of this picture. The flyers are the real ones of this demo week (${info.flyingN} flying, ${info.total} pilots and WSOs on the Quals page); who has not done it is made up for the picture.${sz === 'p' ? ' On a phone the CAT column is left out so the table fits.' : ''}`)
   notes.push(`pic3 ${sz}: ${JSON.stringify(info)}`)
   await ctx.close()
 }
@@ -401,8 +444,10 @@ async function pic5(sz) {
       if (mode === 'person') {
         const r = [...box.querySelectorAll('[data-mine] tbody tr')].find(r => r.children[0] && r.children[0].textContent === off)
         r.scrollIntoView({ block: 'center' })
-        for (const c of [r.children[4], r.children[2]]) if (getComputedStyle(c).position === 'static') c.style.position = 'relative'
-        mq.mark(r.children[4], '5a', 'in'); mq.mark(r.children[2], '5b', 'in')
+        const C = r.children.length, sw = r.children[C - 1], caps = r.children[C - 3]
+        for (const c of [sw, caps]) if (getComputedStyle(c).position === 'static') c.style.position = 'relative'
+        // tags straddle each cell's top edge, so neither covers "Off" nor "Not checked"
+        mq.tagAt(sw, sw, '5a', { right: '2px', top: '-8px' }); mq.tagAt(caps, caps, '5b', { right: '2px', top: '-8px' })
       } else {
         const s = box.querySelector('#insightBody > [data-mine] > [data-mine]'); mq.mark(s, '5c', 'in')
       }
@@ -412,8 +457,8 @@ async function pic5(sz) {
     const f = `5-switch-${mode}-${sz}-proposed.png`
     await shot(page, f, clip)
     const words = {
-      person: `Recommended, drawn in. The switch on one man's row (5a), here ${info.offWeek}, set off for this week: his row reads "Not checked" (5b), his name raises nothing on the schedule, and next week it is on again by itself.`,
-      week: 'The other way, drawn in. One switch for the whole week at the top of the window (5c), "Check this week: Off": nobody is checked that week (a stand-down, a holiday week), and the rows lose their own switch.',
+      person: `Recommended, drawn in. The switch on one man's row (5a), here ${info.offWeek}, who did this week's CAPS on paper, set off for this week: his row reads "Not checked" (5b), he raises nothing on the schedule, the "Flying, not done" figure drops by one, and next week his check is on again by itself.${sz === 'p' ? ' On a phone the CAT column is left out so the table fits.' : ''}`,
+      week: 'The other way, drawn in. One switch for the whole week at the top of the window (5c), "Check this week: Off": nobody is checked that week (a stand-down, a holiday week); the rows lose their own switch and nothing is amber.',
     }
     rec(f, 'Q5', sz, 'proposed', words[mode])
     notes.push(`pic5 ${mode} ${sz}: ${JSON.stringify(info)}`)
@@ -457,7 +502,7 @@ async function pic4(sz) {
         out.advClass = adv ? adv.className : null
         out.warnCls = [...new Set([...document.querySelectorAll('#eWeek .puck.warn')].map(p => p.className))].slice(0, 10)
         // the amber advisory puck's own classes, as the real ones on this week wear them ("puck … warn")
-        pk.classList.add('warn')
+        pk.classList.add('warn'); pk.classList.remove('dim')
         const real = list.querySelector('.witem.adv') || list.querySelector('.witem')
         out.realItem = real.outerHTML.slice(0, 400)
         out.items = { hard: list.querySelectorAll('.witem.hard').length, adv: list.querySelectorAll('.witem.adv').length, all: list.querySelectorAll('.witem').length }
@@ -469,12 +514,10 @@ async function pic4(sz) {
         // (his line, VL with take-off 12:45, is read off this demo day's wave 1; the week is drawn in divs, not a table)
         w.querySelector('.wtx').append(code, b, ' — CAPS not done: this week\'s test not submitted, flies VL (T/O 12:45)')
         real.after(w)
-        // the day's count, as the app counts an amber line: one more issue, one more warning
+        // the day's issues count rises by one; "warnings" counts the red lines, and an amber advisory is not one
         const tw = document.createTreeWalker(dw, NodeFilter.SHOW_TEXT), texts = []
         while (tw.nextNode()) texts.push(tw.currentNode)
-        for (const n of texts) {
-          n.textContent = n.textContent.replace(/(\d+) issues?/, (_, d) => `${+d + 1} issues`).replace(/(\d+) warnings?/, (_, d) => `${+d + 1} warnings`)
-        }
+        for (const n of texts) n.textContent = n.textContent.replace(/(\d+) issues?/, (_, d) => `${+d + 1} issues`)
         if (getComputedStyle(dw).position === 'static') dw.style.position = 'relative'
         // the puck clips its own content, so its tag hangs in the seat cell, just left of the puck
         pk.classList.add('mkq', 'mkq-o')
@@ -513,7 +556,7 @@ async function pic4(sz) {
     console.log('  wrote', f, '(stitched)')
     const words = {
       today: `Real. Thursday on Edit Schedule, its warning list open: today the app knows nothing of CAPS, so ${res.name} flies with no mark.`,
-      proposed: `Recommended, drawn in. ${res.name} has not done this week's CAPS: his puck wears the app's amber advisory ring (4a), the warning list gains an amber line, "CAPS not done" (4b), and the day's count rises by one (4c). Amber is the app's "look" colour: it never stops a publish. Scheduler only: a member sees no such line.`,
+      proposed: `Recommended, drawn in. ${res.name} has not done this week's CAPS: his puck wears the app's amber advisory ring (4a), the warning list gains an amber line, "CAPS not done" (4b), and the day's issues count goes from 6 to 7 (4c); the red warnings stay at 3. Amber is the app's "have a look" colour: it never stops a publish.`,
     }
     rec(f, 'Q4', sz, kind, words[kind])
     notes.push(`pic4 ${kind} ${sz}: ${JSON.stringify({ ...info, ...res })}`)
@@ -537,28 +580,29 @@ async function pic6(sz) {
         const setRow = mq.strip(card.querySelector('.lgset'))
         const mk = (nm, val, why) => { const r = mq.strip(tmpl.cloneNode(true)); r.querySelector('.lgnm').textContent = nm; r.querySelector('.lgv').innerHTML = '<span class="val"></span>'; r.querySelector('.val').textContent = val; r.querySelector('.lgwhy').textContent = why; return r }
         const r1 = mk('CAPS', 'Every week', 'Clears every Monday. A test done from the Saturday before counts for the coming week.')
-        const r2 = mk('Ops limits', 'Every month', 'Clears on the 1st of each month.')
+        const r2 = mk('Ops limits', 'Every month', 'Runs out on the 1st of each month.')
         setRow.querySelector('.lgnm').textContent = 'Check on the schedule'
         const s = setRow.querySelector('.lg-switch-read'); s.classList.add('on'); s.setAttribute('aria-checked', 'true'); setRow.querySelector('.lgmix').lastChild.textContent = 'On'
-        setRow.querySelector('.lgwhy').textContent = 'A man in a flying seat whose test is not done shows the amber "CAPS not done" advisory.'
+        setRow.querySelector('.lgwhy').textContent = 'A man in a flying seat shows an amber advisory: "CAPS not done", or "Ops limits out of date".'
         card.insertBefore(r1, setRow); card.insertBefore(r2, setRow)
         ins.after(card)
         // a word value, not a number: its box takes the words' width; each value box gets a place so its tag hangs left of it
         for (const r of [r1, r2]) { const v = r.querySelector('.lgv'), val = r.querySelector('.val'); for (const e of [v, val]) { e.style.width = 'auto'; e.style.minWidth = '0'; e.style.maxWidth = 'none'; e.style.whiteSpace = 'nowrap'; e.style.overflow = 'visible' } }
         for (const r of [r1, r2, setRow]) { const v = r.querySelector('.lgv'); if (getComputedStyle(v).position === 'static') v.style.position = 'relative' }
-        mq.mark(r1.querySelector('.lgv'), '6a', 'left'); mq.mark(r2.querySelector('.lgv'), '6b', 'left'); mq.mark(setRow.querySelector('.lgv'), '6c', 'left')
+        // each tag sits above the right end of its value, covering none of the row's words
+        mq.mark(r1.querySelector('.lgv'), '3a', 'above'); mq.mark(r2.querySelector('.lgv'), '3b', 'above'); mq.mark(setRow.querySelector('.lgv'), '3c', 'above')
         // The checks: an amber check of its own, Logic's own advisory row
         const advChk = pg.querySelector('#lgChecks .lgchk.adv') || [...pg.querySelectorAll('#lgChecks .lgchk')].find(c => !c.classList.contains('hard'))
         out.advChk = advChk ? advChk.className : null
-        const c = mq.strip(advChk.cloneNode(true)); c.querySelector('.lgnm').innerHTML = '<span class="lgsr">Advisory: </span>CAPS not done'
-        c.querySelector('.lgwhy').textContent = 'A man in a flying seat this week whose CAPS or Ops limits test is not done, unless his check is switched off for the week.'
+        const c = mq.strip(advChk.cloneNode(true)); c.querySelector('.lgnm').innerHTML = '<span class="lgsr">Advisory: </span>CAPS not done · Ops limits out of date'
+        c.querySelector('.lgwhy').textContent = 'A man in a flying seat whose CAPS for this week is not done, or whose Ops limits have run out, unless his check is switched off for the week. Each says which.'
         c.querySelectorAll('details').forEach(d => d.remove())
         // a group of its own at the end of The checks, named as the settings card is (it is no crew-rest check)
         const grpEl = advChk.closest('.lggrp'), lastGrp = [...pg.querySelectorAll('#lgChecks .lggrp')].pop()
         const g = mq.strip(grpEl.cloneNode(false)); const h = mq.strip(grpEl.querySelector('h3').cloneNode(true)); h.textContent = 'CAPS and Ops limits'
         g.append(h, c); lastGrp.after(g)
         out.chkGroup = 'own group after ' + lastGrp.querySelector('h3').textContent
-        mq.mark(c, '6d', 'in')
+        mq.mark(c, '4d', 'in')
       }
       const target = card || ins
       target.scrollIntoView({ block: 'center' })
@@ -576,11 +620,11 @@ async function pic6(sz) {
       const x = Math.max(0, cols.left - 8)
       return { x, y: Math.max(0, top) + scrollY, width: Math.min(innerWidth - x, cols.width + 16), height: bot - Math.max(0, top) }
     }, kind)
-    const f = `6-logic-${sz}-${kind}.png`
+    const f = `3-logic-${sz}-${kind}.png`
     await shot(page, f, clip, true)
     const words = {
       today: 'Real. The end of the Logic page\'s settings, a scheduler\'s view.',
-      proposed: 'Proposed, drawn in. A "CAPS and Ops limits" card: how often CAPS clears (6a, his ruling: every week), how often Ops limits clears (6b, the question: every month drawn), and the schedule check\'s switch (6c). Values change with Logic\'s own Edit, as every setting does.',
+      proposed: 'Proposed, drawn in. A "CAPS and Ops limits" card: how often CAPS clears (3a, every week, as you ruled), how often Ops limits runs out (3b, the question; every month drawn), and the schedule check\'s switch (3c), which turns the check off for the whole squadron. Values change with Logic\'s own Edit, as every setting does.',
     }
     rec(f, 'Q3', sz, kind, words[kind])
     if (kind === 'proposed') {
@@ -592,9 +636,9 @@ async function pic6(sz) {
         return { x, y: Math.max(0, g.top - 8) + scrollY, width: Math.min(innerWidth - x, g.width + 16), height: Math.min(r.bottom - g.top + 70, 520) }
       })
       await page.waitForTimeout(200)
-      const f2 = `6-check-${sz}-proposed.png`
+      const f2 = `4-check-${sz}-proposed.png`
       await shot(page, f2, clip2, true)
-      rec(f2, 'Q4', sz, 'proposed', 'Proposed, drawn in. The check, listed with Logic\'s other checks in amber (6d), so a scheduler can read what it does, as he can for every other check.')
+      rec(f2, 'Q4', sz, 'proposed', 'Proposed, drawn in. The check, listed in amber after Logic\'s other checks, in a group of its own (4d), naming both things it looks for in their own words, so a scheduler can read what it does, as he can for every other check.')
     }
     notes.push(`pic6 ${kind} ${sz}: ${JSON.stringify(info)}`)
     await ctx.close()
