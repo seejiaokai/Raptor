@@ -1,0 +1,56 @@
+[
+ [
+  "2 judged day own flight length",
+  "402",
+  "built Ranger: Friday T/O 12:00 landing blank; Saturday T/O 14:00 landing 15:00; Saturday crew-rest at A flight 60",
+  "no crew-rest line",
+  "{\"week\":[],\"details\":[],\"board\":[]}",
+  "PASS",
+  "2-a-week-p.png"
+ ],
+ [
+  "2 judged day own flight length",
+  "402",
+  "signed four and published Friday",
+  "ORIG",
+  "{\"pr\":true,\"hp\":{\"tag\":\"ORIG\",\"pending\":\"9 changes\"}}",
+  "PASS",
+  "2-b-published-p.png"
+ ],
+ [
+  "2 judged day own flight length",
+  "402",
+  "A flight set to 120 (box 2h); Saturday (flight 14:00/15:00, not published) crew-rest line",
+  "a line with \"landing assumed 14:00 (T/O + 2h)\" and \"→ ended 16:00\" (arithmetic note: report 11:00 vs clear 04:00 would not breach)",
+  "{\"week\":[],\"details\":[],\"board\":[]}",
+  "RECORDED",
+  "2-c-week-p.png"
+ ],
+ [
+  "2 judged day own flight length",
+  "402",
+  "Friday published face after the change: head and board lines",
+  "unchanged (no landing-assumed 14:00 / no pending from this)",
+  "{\"hp\":{\"tag\":\"ORIG\",\"pending\":\"9 changes\"},\"after\":{\"tag\":\"ORIG\",\"pending\":\"9 changes\"},\"boardBefore\":[],\"boardAfter\":[]}",
+  "RECORDED",
+  "2-c-friday-board-p.png"
+ ],
+ [
+  "2 judged day own flight length",
+  "402",
+  "(adapted) Saturday flight moved to T/O 06:30 landing 07:30, A flight still 120",
+  "a line (Tight turning: report 03:30 before clear 04:00) with \"landing assumed 14:00 (T/O + 2h)\" → \"ended 16:00\" → \"clear 04:00\"",
+  "{\"week\":[\"Tight turning Ranger — Tight turning: the usual report (T/O 06:30 − 3h = 03:30) is before clear 04:00. Friday T/O 12:00, landing assumed 14:00 (T/O + 2h) + 2h debrief (assumed) → ended 16:00 → clear 04:00. ✕\"],\"details\":[\"Advisory · Tight turning Ranger — Tight turning: the usual report (T/O 06:30 − 3h = 03:30) is before clear 04:00. Friday T/O 12:00, landing assumed 14:00 (T/O + 2h) + 2h debrief (assumed) → ended 16:00 → clear 04:00.\"],\"board\":[\"Ranger — Tight turning: the usual report (T/O 06:30 − 3h = 03:30) is before clear 04:00. Friday T/O 12:00, landing assumed 14:00 (T/O + 2h) + 2h debrief (assumed) → ended 16:00 → clear 04:00. ✕\"]}",
+  "PASS",
+  "2-d-week-p.png"
+ ],
+ [
+  "2 judged day own flight length",
+  "402",
+  "A flight put back to 60 (box 1h); Saturday crew-rest lines",
+  "the 120-based line is gone (at 60: ended 15:00, clear 03:00, report 03:30: no breach)",
+  "{\"week\":[],\"details\":[],\"board\":[]}",
+  "PASS",
+  "2-e-week-p.png"
+ ]
+]

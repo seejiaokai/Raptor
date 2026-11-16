@@ -35,7 +35,7 @@ import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
 import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
-import { esc, selectPerson } from '../state/view'
+import { esc, escMsg, selectPerson } from '../state/view'
 import { personPuckHTML, personWarnMsgs, withChipWorld } from './html'
 import { DAY_EARNS_NOTHING, oilModeOn, oilSeatHTML, toggleOilPerson, oilFigureFor, oilBlanketOn, oilItemMasked, oilFromWords, oilItemLabel, oilItemHistName, oilPersonSays, oilNoAskWhy, oilHeldClaimHint, oilEligible, inertWhy, evOf, OIL_OPEN_END } from './oilmode'
 import { draftVerLabel } from '../engine/drafts'
@@ -187,7 +187,7 @@ export function AvailWindow() {
          it WRAPS onto its own line under him, and sits beside him only when the
          window is dragged wider. It is never dropped, only moved: the flex-basis
          in the stylesheet is what decides, not a width test here. */
-      const why = w ? `<span class="rwhy">${esc(w.msg)}</span>` : ''
+      const why = w ? `<span class="rwhy">${escMsg(w.msg)}</span>` : ''
       const cls = 'rpuck' + (w ? (w.sev === 'hard' ? ' clash' : ' flagged') : '')
       return `<span class="${cls}" data-awp="${esc(id)}">${pk}${why}</span>`
     }

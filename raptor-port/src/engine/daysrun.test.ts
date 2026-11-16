@@ -36,7 +36,7 @@ describe('the break-day rule', () => {
     expect(hits.length).toBe(1)
     expect(hits[0].di).toBe(6)                 // the day that breaks it
     expect(hits[0].sev).toBe('hard')
-    expect(hits[0].msg).toContain('7 days in a row')
+    expect(hits[0].msg).toBe('Days in a row: 7 (limit 6). A break day is due.')
     expect(hits[0].msg).toContain('break day')
     /* and the puck says so */
     expect(chipOf(6, 'vegas')).toBe('RUN')
@@ -55,7 +55,7 @@ describe('the break-day rule', () => {
     const hits = runs('vegas')
     expect(hits.length).toBe(1)
     expect(hits[0].di).toBe(3)
-    expect(hits[0].msg).toContain('3 is the limit')
+    expect(hits[0].msg).toBe('Days in a row: 4 (limit 3). A break day is due.')
   })
 
   it('counts every kind of tasking, not just flying', () => {

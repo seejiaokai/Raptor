@@ -124,13 +124,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   exists when he FLIES that day — a meeting-only
   day needs no rest. **The message reasons cause-first, said once** (owner,
   22 Aug 26 — "refine the way u reason the crew rest warning. Clear and
-  concise"): `Crew rest breach — <tail>, but told to report HH:MM — only
-  XhMM rest.` — yesterday's end, when rest clears, then the commitment that
+  concise"): since [WARN-WORDS-STANDALONE] (D2069, 16 Nov 26) `Crew rest: <Day> landed HH:MM + Nh debrief (assumed)
+  → ended HH:MM → clear HH:MM. Report HH:MM: XhMM rest, needs 12h.` (his order kept, what the rest needs added; the
+  older `Crew rest breach — <tail>, but told to report HH:MM — only XhMM rest.`) — yesterday's end, when rest clears, then the commitment that
   breaks it with the shortfall in the same breath; no trailing "so he had
   to leave by" (the cross-day trace row's bold lead already prints the
   leave-by, so the message saying it too read as repetition).
   When an earlier event binds, the message names it
-  ("his day starts 08:00 (MTG) before the 10:00 report"), the warning
+  ("Day starts 08:00 (MTG), before report 10:00:" since [WARN-WORDS-STANDALONE]; once "his day starts 08:00 (MTG)
+  before the 10:00 report"), the warning
   anchors on that row, the leave-by is measured from it, and a late-show
   remark on
   the jet cannot dash the ring — a sanctioned late join to the sortie does
@@ -322,7 +324,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (a typed Brief, the wave's In-time / Rally, an SC line's typed B or shift start); a leg with none is left out of
   `legs`, and only legs with a take-off (`noms`) bear the nominal report and the tight-turning advisory. A man whose
   every line is blank still FLIES that day: an earlier commitment inside his rest (a meeting, a sim, a duty post, a
-  typed input) binds the breach, worded "his day starts HH:MM (…), and he is on a line with no take-off yet" — no
+  typed input) binds the breach, worded "Day starts HH:MM (…): … His flight has no T/O yet." since
+  [WARN-WORDS-STANDALONE] (once "his day starts HH:MM (…), and he is on a line with no take-off yet") — no
   report is invented (Astra's scenario read, S10); with nothing else to measure he is left alone, and `REST[di]`
   still carries when he is clear. The late-show tail is
   dropped when the binding leg has no take-off to name a step for. (3) the same-day turn pairs only legs with both
@@ -335,10 +338,28 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   clock time — "TBD", or any other words — used to end nothing, so a TBD sortie bore no crew rest at all. The rest
   collection (`validate.ts`, the `rawEnd` line) now reads such a landing as its take-off too: take-off plus the
   debrief, the same end, the same message, the same dotted mark on the day before as blank. With no take-off either
-  there is still nothing to borrow and no end. D1936 is unchanged: such a sortie still counts no hours and raises no
-  long-day note (NARROWED 15 Nov 26 by D2053, not built: it is to count to its assumed landing, take-off plus the Logic
-  flight length — `[WARN-WORDS-STANDALONE]`). The message's "landed" words where no landing is typed are a wording question for him, not changed
-  here. Pin: `engine/rulesfirst-3-crew-rest.test.ts` (W35, D1990).
+  there is still nothing to borrow and no end. **CHANGED 16 Nov 26 by D2046 and D2053, built (`[WARN-WORDS-STANDALONE]`
+  piece B):** a blank or "TBD" landing is no longer read as the take-off — it is the ASSUMED landing, the take-off plus
+  the Logic page's flight length (`VCONF.fltLen`, "A flight", standard 60 min; `events.ts` ldM), so the day ends there
+  plus the debrief, and the sortie counts in Insights' hours and the long-day note to that landing (D1936 narrowed).
+  The `rawEnd` borrow in `validate.ts` is left in place but now meets only a sortie with no take-off, whose end stays
+  not-a-number. Pins: `engine/rulesfirst-3-crew-rest.test.ts` (W35, changed on purpose), `engine/assumedlanding.test.ts`.
+
+- **A standby shift with its START typed and its END blank bears no crew rest until its END is typed** (owner D2055,
+  15 Nov 26; built 16 Nov 26, `[WARN-WORDS-STANDALONE]` piece C). A shift's END is never assumed — D2046 is a sortie's
+  landing. Before, a blank END read as the START (`events.ts` `f.ld||f.to`), so a Monday SC from 20:00 "ended" 20:00 and
+  cleared Tuesday 08:00 from a time nobody typed. Now its event carries `noEnd` and the rest collection (`validate.ts`)
+  skips it: no breach, no dotted mark, no tight-turning note from it. The same for a shift that flies (the agent's
+  reading). Its own warning stays — `SA_FLY_NO_TIME`, "…flies but has no END. Type it so its crew rest and OIL can be
+  worked out." Only crew rest changes: the shift's other readers (its clash window, the crew list) still read START to
+  START, as before. Pin: `engine/assumedlanding.test.ts` (D2055).
+- **A standby template's duty desk with its START typed and its END blank bears no crew rest until its END is typed**
+  (owner D2073 for an SC template's desk, D2080 for an AVALON or BB one once its wave flies — standing by, it is exempt with
+  its wave and bears none already; 16 Nov 26). `events.ts` marks its event `noEnd` (the desk's block carries `sa`); a plain
+  desk keeps START + the Logic page's assumed hour for crew rest (the agent's reading), and every other check keeps that
+  hour for the standby desk too. One commitment found twice (the same man, hours and role name on two desks) keeps the
+  plainer reading: an SC desk met first never swallows a plain desk's end (Astra's read, 16 Nov 26). The Logic page says so
+  in one sentence (D2079). Pins: `engine/assumedlanding.test.ts` (D2073, D2080), `ui/logic.test.tsx` (D2079).
 
 - **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26 — "4 yes as
   recommended"; `[BLANK-TIMES-ABSENCE]`, built the same day).** Every absence check asked whether the absence OVERLAPS
@@ -408,6 +429,44 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (`saExempt`: an SC SPARE, anything on AVALON / BB), as `slotBar` already did before asking. An empty SC formation
   still has no sibling and answers nothing (`[REST-FIRST-CREW-HINT]`). Pins: `engine/scpickerrest.test.ts`.
 
+### Every warning reads on its own ([WARN-WORDS-STANDALONE], owner D2045, D2048, D2058, D2067–D2071, 15–16 Nov 26)
+
+- **The rule:** each line says who, which items, their times and why it is a problem, so it is understood without
+  looking at the schedule; a time the app supplies because none was typed is called "assumed". The approved words are
+  the proposal's (`docs/superpowers/specs/2026-11-15-warn-words-standalone.md`), its §3a–§3g overruling its earlier
+  sections. The list still prints `<names> — <sentence>`; the sentence no longer repeats a name.
+- **The families, as built** (each pinned whole in `engine/warnwords.test.ts`, the seed week's 33 lines too):
+  `Conflict: A & B` for every clash (D2070) — a flight shown by the end that causes the clash, `VL BFM (step 11:40, T/O
+  12:40)` when the other item falls in the step, `(landing 13:00, dekit to 13:30)` in the dekit, `(T/O 12:00, landing
+  13:00)` across the flight itself (D2058; the step and dekit from the Logic settings); a ground or programme row, sim,
+  duty desk or request by its own range `OFT 1 10:00–11:30`, an all-day request `Training (all day)`, a request's own
+  reason after it (`. Reason: …`); an SC spare seat `SC AM SPARE 07:00–13:00` (§3e). `On leave + planned: …`,
+  `Overseas + planned: …`, `Downchit + planned: …` (D2009's names, the item with its times). `Misses VL BFM brief
+  17:25–19:45: <item>` and `Misses … debrief …` (each hit's own times — the sim's brief and debrief the same way).
+  `Tight turn: A → B, 60 min (needs 120). A landing 12:00, B T/O 13:00` ("Tight turning" keeps its name as the check,
+  D2068). `Crew rest: …` (above, D2069). `Long day: 13h30 (limit 12h), …` (the limit from the Logic setting). `Days in a
+  row: …`. `Crew solo: …`, `Crew not authorised: …`, `CO approval needed: …` (who and which line). `Times look wrong:
+  …` for a line whose T/O and landing (a standby shift: START and END, as its boxes are headed) are the same. The
+  double-turn line is left exactly as it was (D2050).
+- **The checks' short names** (`WCODE`, the grey label over each line) follow the new labels; "Conflict" kept (§3b).
+- **The words' own helpers** sit in `validate.ts` beside `add` (`rng`, `whatAt`, `flightAt`, `inpAt`, `flightTag`,
+  `noBriefSays`, `debriefSays`, `simBriefSays`, `simDebriefSays`, `fltNoLenMsg`, `runSays`); every rule's numbers, and what
+  raises a warning, are unchanged by this piece.
+- **Hides:** a clash between two schedule items keys on its two items (D2001, above in §the hides axis), so a hide made
+  before the change still holds. Every other warning's hide keys on its words, an input against flying included
+  (D2018): such a hide stored before the change meets new words and its warning shows again once, to be hidden again —
+  demo data only (D56). A published day's frozen warning list reads "changed" once for the same reason (D56).
+- **A time range never breaks across lines:** `state/view.ts escMsg` wraps every `HH:MM–HH:MM` in a no-wrap span; every
+  place that prints a warning's sentence goes through it (pin: `warnwords.test.ts`; on a phone `e2e/warnhide.spec.ts`'s last block,
+  which also measures that every "Conflict:" line fits two rows at 390 wide).
+- **The Logic page's note** under the changed-settings strip is one sentence after the count, "Published days keep
+  their old settings until published again." (D2067, D2071; `LogicPage.tsx`); the sentence on a day reading pending is
+  gone from it — the day shows pending itself, and its pending list says what moved for each man (D2054,
+  `ui-contracts.md` §The pending list).
+- **The parity test** (`parity.test.ts`) compares the port's warnings with the reference's with the sentence taken out
+  on both sides (`noMsg`) — the codes, people, keys and order still match; the words' positive half is
+  `warnwords.test.ts`'s seed-week block. The original's 728 read only `reference/`, untouched.
+
 ### How crew-rest, long-day and turn warnings are worded and marked
 
 - **A sortie-caused breach spells out the debrief assumption** (owner, 15 Aug
@@ -430,17 +489,25 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   plain `ended HH:MM`. The tail is a port-authored string parity compares, so
   `refwin.ts:rebrief()` tracks the same landing and prints the identical
   branch on the reference; pinned in `crewrest-ui.test.ts`.
-  **NARROWED 15 Nov 26 by D2046 (not built — `[WARN-WORDS-STANDALONE]`):** a blank or "TBD" landing is to be
-  assumed at the take-off plus a new Logic flight length (starting at 60 minutes, D2047), not at the take-off itself, and every
-  check that reads the landing is to use it, its words "assumed it landed 13:00 (take-off + 1h)"; until built, the
-  paragraph above describes the app as it is.
+  **CHANGED 16 Nov 26 by D2046, D2047, built (`[WARN-WORDS-STANDALONE]` piece B) — the paragraph above is the history:**
+  a blank or "TBD" landing is assumed at the take-off plus the Logic flight length (`VCONF.fltLen`, "A flight", starting
+  at 60 minutes), not at the take-off itself, and every check that reads the landing uses it — the clashes and the
+  busy window from step to dekit, the tight turn, the debrief, crew rest, the long day, OIL and Insights' hours, and the
+  crew list's and ALL AVAIL's busy windows (`avail.ts` personBusy, slotRules). Its words, in the approved short form
+  (the shape of D2046's "assumed it landed 13:00 (take-off + 1h)"): crew rest `Monday T/O 12:00, landing assumed 13:00 (T/O
+  + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00` (the landing re-worked with the JUDGED day's flight length,
+  D2005, as its debrief is); tight turn `VL BFM landing assumed 13:00 (T/O + 1h), RU BFM T/O
+  13:00`; debrief `Misses VL BFM debrief 13:00–15:00 (landing assumed): …`; a conflict `VL BFM (landing assumed 13:00,
+  dekit to 13:30) & …`; the long day `(VL BFM landing assumed 19:00 + 2h debrief assumed)`. Still from the
+  event's `noLd`. A shift's blank END is not assumed — D2055, below. Pins: `engine/assumedlanding.test.ts`,
+  `rulescheck-batch2.test.ts` part 2 and 2b (changed on purpose).
   **The tight-turning advisory (`CREW_TIGHT`) reuses that same tail**, so it
   states the debrief assumption for free alongside the "3h report / inside 12h"
   it already named.
 - **The long-work-day note names the debrief pad on its END the same way**
   (owner, 15 Aug 26 — "every timing warning"). When a sortie closes the day
-  its end is `land + VCONF.debrief`, so the note reads `has a long work day:
-  Nh, HH:MM → HH:MM (last landing HH:MM + Nh debrief assumed)` — the flagged
+  its end is `land + VCONF.debrief`, so the note reads `Long day: NhMM (limit Nh), HH:MM → HH:MM (last landing HH:MM +
+  Nh debrief assumed)` since [WARN-WORDS-STANDALONE] (once `has a long work day: Nh, …`) — the flagged
   hours, then the real landing and the pad flagged as an assumption. A
   non-flying finish (a duty, a ground event) is a fixed clock time with
   nothing to assume, so the end stays bare. The START is left plain: for a
@@ -624,8 +691,8 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   26 Aug 26 — the shift may launch the man):
   - **Red-list commitments — Training, CSE, Attach, Personal, Appointment,
     Duty, Event (owner D714, 9 Oct 26: "a clash like that, not the meeting softer amber"), Other — hard-flag the
-    shift** (`INPUT_FLY` "Training but tasked —
-    SC AM"). The list is the `shiftHard` flag on `INPUT_META`, read through
+    shift** (`INPUT_FLY` "Conflict: SC AM 07:00–13:00 & Training 10:00–11:00" since [WARN-WORDS-STANDALONE];
+    once "Training but tasked — SC AM"). The list is the `shiftHard` flag on `INPUT_META`, read through
     `shiftHardInput()` — one body for the validator, the ground-row upgrade
     and the crew picker. All-day and timed alike.
   - **Meeting is the amber `SHIFT_SOFT` advisory** — you can still give a
@@ -942,7 +1009,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - **Checked like a sortie (owner D1996, 11 Nov 26 — "a standby line that fly is checked like a sortie", over the report's
   recommended "keep it a shift"):** its event and its `day.fly` entry carry `flies: true` (`events.ts`, written only when
   true). Its START→END is a leg: a clash inside it is the red `DOUBLE_BOOK` — a lecture, an SC MAIN that only stands by —
-  never the shift's amber `SHIFT_SOFT`, whatever Logic's "SC MAIN clashes" settings say — they grade a shift that only
+  never the shift's amber `SHIFT_SOFT`, whatever Logic's "SC MAIN conflicts" settings say — they grade a shift that only
   stands by (`events.ts shiftEvHard`, the bug check of 12 Nov 26); a Meeting input inside it is the red `INPUT_FLY` ("Meeting but tasked — SC AM …"),
   as against a sortie; and the tight turn (END → the next take-off, needing `max(tightTurn, dekit + step)`) and the double
   turn (`DT` / `DT_SUM`) read it as a sortie (`validate.ts byP`). A sortie that starts after its END is a turn, never a
@@ -2756,6 +2823,11 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     the value (old → new) and each man (old → new) under it; the sign-offs fall with it (D103) and it clears when the
     value is put back (D98). A Logic change that would write every record on that day exactly as it stands raises
     nothing — the rule D186's printed brief lead follows. The next publication applies today's values and keeps them;
+  - **since D2046 (16 Nov 26, `[WARN-WORDS-STANDALONE]` piece B) a FOURTH kept value, the assumed flight length
+    (`fltLen`):** a sortie with its take-off and no landing earns to take-off + it, so a change to it reads pending on a
+    published day where it would move somebody's OIL, named "Logic · A flight with no landing typed" in the pending list;
+    a block kept before it carries none and reads today's, raising nothing (`oilev.ts oilKeptVals`, `oilValsSame`; pin
+    `leavewar/assumedlanding-published.test.ts`). "Three values" below reads "the kept values".
   - **signed:** each sign-off's binding keeps the three values as they stood at signing (`orv`, earning days only) and
     falls when the day as it now stands would be written differently under those values than under today's
     (`publish.ts oilRvBoundOk`) — so a day not yet published, or an amendment waiting, cannot go out as a half day on
@@ -3416,7 +3488,7 @@ stay LIVE (below), which the face draws from today and which never make the day 
   today's forces the official pass (`officialDiverges`, `keptRulesDiffer`). **Since D2005 (owner, 12 Nov 26) `rv` keeps
   EVERY Logic setting the day's checks read** — `faceattrs.ts KEPT_RULE_KEYS` (brief lead, step, dekit, tight turn, crew
   rest, debrief, report lead, long day, EP brief, sim debrief, AMT debrief, open end, sim length, days in a row, the SC
-  day window) and `shiftHard`, the SC MAIN clash table (`dayRuleVals`, written by `publish.ts freezeWarn`) — and the
+  day window, and since D2046 the assumed flight length `fltLen` — a version issued before it reads today's) and `shiftHard`, the SC MAIN clash table (`dayRuleVals`, written by `publish.ts freezeWarn`) — and the
   whole day is judged by them: its events are built (`events.ts collectEvents`, each day under `withDayRules`) and
   checked (`validate.ts`'s day loop and its phantom next-week days) with its kept values laid over the Logic settings
   for that day only (`rules.ts withRuleVals`, restored after). A changed setting reaches the day from its next
@@ -4760,11 +4832,11 @@ long-day note).
   null when none is, so `validate.ts workSpan`, the one definition both the long-day note and Insights read, falls to its
   own `to − VCONF.reportLead`: the same start as OIL's `oil.ts fltOilWin`, case for case (an unreadable clock or words with
   no clock are nothing entered; a default rally before midnight is the evening before). An entered time later than the
-  default still starts the day where it says — never a min() of the two. A sortie with no take-off or no landing typed
-  is unfinished — its event's report is NaN, so `workSpan`'s own guard counts it nowhere, as OIL counts it nothing (until
-  then a blank landing borrowed the take-off and stretched the day; D2046, 15 Nov 26, not built, assumes such a landing
-  at the take-off plus a Logic flight length — and D2053 has the long day and Insights count it to that assumed landing, D1936 narrowed — both in
-  `[WARN-WORDS-STANDALONE]`); and `workSpan` skips a sortie that measures nothing
+  default still starts the day where it says — never a min() of the two. A sortie with no take-off typed is unfinished —
+  its event's report is NaN, so `workSpan`'s own guard counts it nowhere, as OIL counts it nothing. A sortie with its
+  take-off and no landing typed counts to its ASSUMED landing, take-off plus the Logic flight length (D2046, D2053 —
+  D1936 narrowed; built 16 Nov 26, `[WARN-WORDS-STANDALONE]` piece B: the event's report is real again and its landing
+  the assumed one, `events.ts`; OIL's `fltOilWin` takes the same length, handed in by `dayOilWork`); and `workSpan` skips a sortie that measures nothing
   (both leads zero, take-off equal to landing), as OIL does (Astra's and Sol 6.1's reads, 8 Nov 26).
 - **What does not move:** `day.fly` keeps report-or-step, so the SANS checks' window (`min(report, step)`) and the
   availability window (step to dekit, D36) are as before; crew rest reads `intime` and the brief (the tight advisory

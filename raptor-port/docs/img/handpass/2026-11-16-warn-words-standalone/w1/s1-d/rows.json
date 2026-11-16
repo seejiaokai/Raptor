@@ -1,0 +1,146 @@
+[
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "built Ranger T/O 12:00, landing blank, on Saturday; read the board warnings",
+  "no \"unusable time / no end time\" wording caused by the blank landing",
+  "[\"Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕\"]",
+  "PASS",
+  ""
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "pressed OIL Earn; read the pucks",
+  "Ranger shown earning HO at 60 min",
+  "[{\"cls\":\"none\",\"txt\":\"Ranger HO\"},{\"cls\":\"none\",\"txt\":\"Fable FO\"}]",
+  "PASS",
+  "1-2-oil-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "signed four and published Saturday",
+  "day reads ORIG, published",
+  "before \"DRAFT\"; pressed {\"pressed\":true,\"which\":\"data-beak\",\"signs\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}}; after {\"notYet\":false,\"tag\":\"ORIG\",\"pending\":\"9 changes\",\"beak\":null,\"alpub\":null,\"signState\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]}",
+  "PASS",
+  "1-3-published-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "Insights before the Logic change: Ranger's week hours",
+  "RECORD",
+  "{\"h\":\"20h\",\"hd\":\"Week insights · Jul 13 – Jul 19\"}",
+  "RECORDED",
+  "1-ins0-insights-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "Leave War cell, its day sheet and OIL tracker at A flight 60",
+  "cell HO*; sheet \"half a day … worked 09:00–15:00\"; tracker one +0.5 entry, balance 0.5",
+  "{\"cell\":{\"text\":\"HO*\",\"cls\":\"duty weekend act hasc\",\"w\":26},\"sheet\":{\"days\":\"half a day, AM — worked 09:00–15:00\",\"why\":\"FLT\",\"given\":\"Weekend/PH\"},\"bal\":\"0.5\",\"entries\":[\"+0.5 18 Jul AM AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"],\"status\":[\"0.5 left\"]}",
+  "PASS",
+  "1-4before-oiltracker-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "A flight set to 90; Saturday's head on the board",
+  "reads \"1 pending\"; sign-offs down: the amber Not yet signed chip appears (it was absent after the first publish)",
+  "box 1h30; before-change head {\"notYet\":false,\"tag\":\"ORIG\",\"pending\":\"9 changes\",\"beak\":null,\"alpub\":null,\"signState\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]}; after {\"notYet\":true,\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":null,\"alpub\":{\"text\":\"Publish AL1\",\"disabled\":true},\"signState\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]}",
+  "PASS",
+  "1-6-pending-board-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "opened the pending list",
+  "RECORD whole: \"Logic · A flight with no landing typed\" and Ranger's line \"half day … → full day …\"",
+  "[\"Changes · Saturday 18/7\",\"Published · 1 change waiting to go out as AL1\",\"New to you 0\",\"All changes 9\",\"To go out · AL1 1\",\"Week\",\"Mon\",\"Tue\",\"Wed\",\"Thu\",\"Fri\",\"Sat\",\"Sun\",\"Waiting to go out as\",\"AL1\",\"· 1 change\",\"OIL on this day · Logic values changed since it was published\",\"Logic · A flight with no landing typed\",\"1h → 1h30\",\"Ranger · OIL as published, under today's values\",\"half day · 09:00–15:00 → full day · 09:00–15:30\",\"OIL changes: half day → full day. It counts until 15:30, not 15:00.\"]",
+  "RECORDED",
+  "1-7-pendinglist-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "pending list: the two named lines",
+  "contains \"Logic · A flight with no landing typed\" and a Ranger line saying half day → full day",
+  "[\"OIL on this day · Logic values changed since it was published\",\"Logic · A flight with no landing typed\",\"Ranger · OIL as published, under today's values\",\"OIL changes: half day → full day. It counts until 15:30, not 15:00.\"]",
+  "PASS",
+  "1-7-pendinglist-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "pressed Escape with the pending list open",
+  "RECORD whether it closes",
+  "list still shown: false",
+  "RECORDED",
+  "1-8-pending-closed-esc-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "Leave War cell, day sheet and tracker while pending",
+  "credit still HO*, worked 09:00–15:00, balance 0.5, one entry (credit stays until the day is published again)",
+  "{\"cell\":{\"text\":\"HO*\",\"cls\":\"duty weekend act hasc\",\"w\":26},\"sheet\":{\"days\":\"half a day, AM — worked 09:00–15:00\",\"why\":\"FLT\",\"given\":\"Weekend/PH\"},\"bal\":\"0.5\",\"entries\":[\"+0.5 18 Jul AM AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"],\"status\":[\"0.5 left\"]}",
+  "PASS",
+  "1-9pending-oiltracker-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "Insights hours while pending (A flight 90)",
+  "Ranger's hours move by 30 min from the 60 reading",
+  "{\"h\":\"20h\",\"hd\":\"Week insights · Jul 13 – Jul 19\"} -> {\"h\":\"20h30\",\"hd\":\"Week insights · Jul 13 – Jul 19\"}",
+  "PASS",
+  "1-ins1-insights-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "A flight put back to 60; Saturday's head",
+  "pending clears (no \"pending\")",
+  "box 1h; {\"notYet\":false,\"tag\":\"ORIG\",\"pending\":\"9 changes\",\"beak\":null,\"alpub\":null,\"signState\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]}",
+  "PASS",
+  "1-10-putback-board-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "after the put-back: sign-off state",
+  "RECORD",
+  "{\"signState\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]}",
+  "RECORDED",
+  "1-10-putback-board-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "Leave War after the put-back",
+  "HO*, balance 0.5",
+  "{\"cell\":{\"text\":\"HO*\",\"cls\":\"duty weekend act hasc\",\"w\":26},\"sheet\":{\"days\":\"half a day, AM — worked 09:00–15:00\",\"why\":\"FLT\",\"given\":\"Weekend/PH\"},\"bal\":\"0.5\",\"entries\":[\"+0.5 18 Jul AM AUTO Weekend/PH FLT · 09:00–15:00 0.5 left\"],\"status\":[\"0.5 left\"]}",
+  "PASS",
+  "1-11putback-oiltracker-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "A flight 90 again; signed four and published the amendment",
+  "AL1 out",
+  "before {\"notYet\":true,\"tag\":\"ORIG\",\"pending\":\"1 pending\",\"beak\":null,\"alpub\":{\"text\":\"Publish AL1\",\"disabled\":true},\"signState\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]}; {\"pressed\":true,\"which\":\"data-alpub\",\"signs\":{\"cur\":\"Ace\",\"sked\":\"Anvil\",\"plan\":\"Anvil\",\"appr\":\"Anvil\"}}; after {\"notYet\":false,\"tag\":\"AL1\",\"pending\":\"14 changes\",\"beak\":null,\"alpub\":null,\"signState\":\"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY\",\"signs\":[\"— name —\",\"— name —\",\"— name —\",\"— name —\"]}",
+  "PASS",
+  "1-12-amendment-d.png"
+ ],
+ [
+  "1 published OIL Saturday",
+  "1536",
+  "Leave War after the amendment",
+  "cell FO*, worked 09:00–15:30, ONE entry, balance 1 (no duplicate credit)",
+  "{\"cell\":{\"text\":\"FO*\",\"cls\":\"duty weekend act hasc\",\"w\":26},\"sheet\":{\"days\":\"a day — worked 09:00–15:30\",\"why\":\"FLT\",\"given\":\"Weekend/PH\"},\"bal\":\"1\",\"entries\":[\"+1 18 Jul AUTO Weekend/PH FLT · 09:00–15:30 1 left\"],\"status\":[\"1 left\"]}",
+  "PASS",
+  "1-13after-oiltracker-d.png"
+ ]
+]

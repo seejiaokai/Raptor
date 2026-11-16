@@ -1,0 +1,26 @@
+avalon wave 0 R typed: "18:00" label=AVALON kind=avalon
+desk {"label":"AVALON","sa":"avalon","role":"SXO","str":"20:00","end":"","who":"\"bane\"/null"} seat results ok
+flight2 {"to":"10:00","ld":"11:00","br":"07:00","p":"Ranger"} ok
+avalon-03-blank-end NO STRIP [] DET []
+ROW PASS | R3 avalon | desktop | wave flies (R 18:00), template desk START 20:00 END blank, Ranger; next-day flight B 07:00 | saw: R "18:00" label=AVALON kind=avalon | desk {"wi":0,"base":"2.0.0","r":{"label":"AVALON","sa":"avalon","role":"SXO","str":"20:00","end":"","who":"\"bane\"/null"},"seated":["ok"]} | strip [] | details []
+avalon-05-end-2300 ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Wednesday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h. ✕"] DET ["Warning · Crew rest (<12h) Ranger — Crew rest: Wednesday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h."]
+ROW PASS | R3 avalon | desktop | END 23:00 | saw: strip ["Crew rest (<12h) Ranger — Crew rest: Wednesday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h. ✕"] | details ["Warning · Crew rest (<12h) Ranger — Crew rest: Wednesday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h."]
+avalon-06-end-cleared NO STRIP [] DET []
+ROW PASS | R3 avalon | desktop | END cleared | saw: strip []
+avalon-07-wave-not-flying NO STRIP [] DET []
+ROW RECORDED | R3 avalon control | desktop | R cleared (wave no longer flies), END blank | saw: strip [] | details []
+errors []
+DONE 3 PASS 0 FAIL 1 OTHER of 4
+avalon wave 0 R typed: "18:00" label=AVALON kind=avalon
+desk {"label":"AVALON","sa":"avalon","role":"SXO","str":"20:00","end":"","who":"\"bane\"/null"} seat results ok
+flight2 {"to":"10:00","ld":"11:00","br":"07:00","p":"Ranger"} ok
+avalon-03-blank-end NO STRIP [] DET []
+ROW PASS | R3 avalon | desktop | wave flies (R 18:00), template desk START 20:00 END blank, Ranger; next-day flight B 07:00 | saw: R "18:00" label=AVALON kind=avalon | desk {"wi":0,"base":"2.0.0","r":{"label":"AVALON","sa":"avalon","role":"SXO","str":"20:00","end":"","who":"\"bane\"/null"},"seated":["ok"]} | strip [] | details []
+avalon-05-end-2300 ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Wednesday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h. ✕"] DET ["Warning · Crew rest (<12h) Ranger — Crew rest: Wednesday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h."]
+ROW PASS | R3 avalon | desktop | END 23:00 | saw: strip ["Crew rest (<12h) Ranger — Crew rest: Wednesday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h. ✕"] | details ["Warning · Crew rest (<12h) Ranger — Crew rest: Wednesday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h."]
+avalon-06-end-cleared NO STRIP [] DET []
+ROW PASS | R3 avalon | desktop | END cleared | saw: strip []
+avalon-07-wave-not-flying NO STRIP [] DET []
+ROW RECORDED | R3 avalon control | desktop | R cleared (wave no longer flies), END blank | saw: R after clear "" | strip [] | details [] | all lines []
+errors []
+DONE 3 PASS 0 FAIL 1 OTHER of 4

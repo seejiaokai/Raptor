@@ -149,14 +149,14 @@ describe('D605 — a whole-day absence is flagged on a seat with no times, exact
     const a = abs()
     expect(a.length).toBe(1)
     expect(a[0].code).toBe('INPUT_FLY')
-    expect(a[0].msg).toContain('Exercise in Darwin clashes with this line')
-    expect(a[0].msg).not.toMatch(/^OD clashes/)
+    expect(a[0].msg).toBe('Conflict: this line (no times yet) & Exercise in Darwin (all day)')
+    expect(a[0].msg).not.toMatch(/& OD /)
   })
 
   it('a leave, a downchit and an overseas duty each say so on a blank flying line — the red line, the ring, the C chip', () => {
-    for (const [type, code, words] of [['LL', 'LEAVE_FLY', 'On leave but planned to fly this line'],
-      ['OL', 'LEAVE_FLY', 'On leave but planned to fly this line'], ['ATT C', 'DNIF_FLY', 'Downchit but planned to fly this line'],
-      ['ATT B', 'DNIF_FLY', 'Downchit but planned to fly this line'], ['OD', 'INPUT_FLY', 'OD clashes with this line']] as any[]) {
+    for (const [type, code, words] of [['LL', 'LEAVE_FLY', 'On leave + planned: this line (no times yet)'],
+      ['OL', 'LEAVE_FLY', 'On leave + planned: this line (no times yet)'], ['ATT C', 'DNIF_FLY', 'Downchit + planned: this line (no times yet)'],
+      ['ATT B', 'DNIF_FLY', 'Downchit + planned: this line (no times yet)'], ['OD', 'INPUT_FLY', 'Conflict: this line (no times yet) & OD (all day)']] as any[]) {
       DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
       INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
       const s = flyLine(); s.seat(); file(type)
@@ -226,12 +226,12 @@ describe('the puck — on every kind of seat the man wears the red ring and the 
 })
 
 describe('the sentence — nothing printed that is not there', () => {
-  it('a line with a callsign and no times is named, and the sentence does not change when times are typed', () => {
+  it('a line with a callsign and no times is named; once times are typed the sentence names them (D2045 — was: the same sentence)', () => {
     const s = flyLine('ZB', 'BFM'); s.seat(); file('LL', { remarks: 'Wedding' })
     const before = abs()
-    expect(before.map((w: any) => w.msg)).toEqual(['On leave but planned to fly ZB BFM — reason: Wedding'])
+    expect(before.map((w: any) => w.msg)).toEqual(['On leave + planned: ZB BFM (no times yet). Reason: Wedding'])
     s.time()
-    expect(abs().map((w: any) => w.msg), 'said once, in the same words').toEqual(before.map((w: any) => w.msg))
+    expect(abs().map((w: any) => w.msg), 'said once, now with its take-off').toEqual(['On leave + planned: ZB BFM (T/O 14:00). Reason: Wedding'])
   })
 
   it('a landing typed with no take-off is still a line with nothing to compare — he is flagged', () => {
@@ -241,9 +241,9 @@ describe('the sentence — nothing printed that is not there', () => {
 
   it('a row with no name yet reads "this ground row"; with a name, its name', () => {
     const g = groundRow(false, ''); g.seat(); file('LL')
-    expect(abs().map((w: any) => w.msg)).toEqual(['On leave but tasked — this ground row'])
+    expect(abs().map((w: any) => w.msg)).toEqual(['On leave + planned: this ground row (no times yet)'])
     g.row.prog = 'RANGE SWEEP'
-    expect(abs().map((w: any) => w.msg)).toEqual(['On leave but tasked — RANGE SWEEP'])
+    expect(abs().map((w: any) => w.msg)).toEqual(['On leave + planned: RANGE SWEEP (no times yet)'])
     expect(abs()[0].key).toBe(g.key)
   })
 
@@ -253,7 +253,7 @@ describe('the sentence — nothing printed that is not there', () => {
        first one's line seem to go. Each kind names itself. */
     const d = dutyRow(); d.row.role = ''; d.seat(); const s = simSeat(); s.row.label = ''; s.seat(); const g = groundRow(false, ''); g.seat()
     file('OL')
-    expect(abs().map((w: any) => w.msg).sort()).toEqual(['On leave but tasked — this duty row', 'On leave but tasked — this ground row', 'On leave but tasked — this sim row'])
+    expect(abs().map((w: any) => w.msg).sort()).toEqual(['On leave + planned: this duty row (no times yet)', 'On leave + planned: this ground row (no times yet)', 'On leave + planned: this sim row (no times yet)'])
     expect(abs().map((w: any) => w.key).sort(), 'each line goes to its own row').toEqual([d.key, g.key, s.key.replace(/\.p$/, '')].sort())
   })
 
@@ -263,19 +263,19 @@ describe('the sentence — nothing printed that is not there', () => {
        the two into one line. Only a SIM row's bare "Sim" and a DUTY row's bare "duty" are the engine's own padding. */
     const g1 = groundRow(false, 'Sim'); g1.seat(); const g2 = groundRow(false, 'duty'); g2.seat()
     file('LL')
-    expect(abs().map((w: any) => w.msg).sort()).toEqual(['On leave but tasked — Sim', 'On leave but tasked — duty'])
+    expect(abs().map((w: any) => w.msg).sort()).toEqual(['On leave + planned: Sim (no times yet)', 'On leave + planned: duty (no times yet)'])
     expect(abs().map((w: any) => w.key).sort()).toEqual([g1.key, g2.key].sort())
     g1.row.str = '09:00'; g1.row.end = '10:00'; g2.row.str = '11:00'; g2.row.end = '12:00'
-    expect(abs().map((w: any) => w.msg).sort(), 'with hours typed').toEqual(['On leave but tasked — Sim', 'On leave but tasked — duty'])
+    expect(abs().map((w: any) => w.msg).sort(), 'with hours typed, the hours named (D2045)').toEqual(['On leave + planned: Sim 09:00–10:00', 'On leave + planned: duty 11:00–12:00'])
     expect(abs().map((w: any) => w.key).sort()).toEqual([g1.key, g2.key].sort())
   })
 
   it('…the same on the Common Programme', () => {
     const p1 = progRow(); p1.row.prog = 'Sim'; p1.seat(); const p2 = progRow(); p2.row.prog = 'duty'; p2.seat()
     file('OL')
-    expect(abs().map((w: any) => w.msg).sort()).toEqual(['On leave but tasked — Sim', 'On leave but tasked — duty'])
+    expect(abs().map((w: any) => w.msg).sort()).toEqual(['On leave + planned: Sim (no times yet)', 'On leave + planned: duty (no times yet)'])
     p1.time(); p2.row.str = '20:00'; p2.row.end = '21:00'
-    expect(abs().map((w: any) => w.msg).sort(), 'with hours typed').toEqual(['On leave but tasked — Sim', 'On leave but tasked — duty'])
+    expect(abs().map((w: any) => w.msg).sort(), 'with hours typed, the hours named (D2045)').toEqual(['On leave + planned: Sim 18:00–19:00', 'On leave + planned: duty 20:00–21:00'])
   })
 
   it('a sim row and a duty row with no name yet say which row — not "Sim " or " duty" — with and without times', () => {
@@ -283,43 +283,43 @@ describe('the sentence — nothing printed that is not there', () => {
        unnamed row's label was not empty and the hole was printed. A new row comes up with no name AND no times. */
     const d = dutyRow(); d.row.role = ''; d.seat(); const s = simSeat(); s.row.label = ''; s.seat(Y)
     file('LL'); file('ATT C', {}, Y)
-    expect(abs().map((w: any) => w.msg)).toEqual(['On leave but tasked — this duty row'])
-    expect(abs(Y).map((w: any) => w.msg)).toEqual(['Downchit but tasked — this sim row'])
+    expect(abs().map((w: any) => w.msg)).toEqual(['On leave + planned: this duty row (no times yet)'])
+    expect(abs(Y).map((w: any) => w.msg)).toEqual(['Downchit + planned: this sim row (no times yet)'])
     d.time(); s.time()
-    expect(abs().map((w: any) => w.msg), 'the same sentence once times are typed').toEqual(['On leave but tasked — this duty row'])
-    expect(abs(Y).map((w: any) => w.msg)).toEqual(['Downchit but tasked — this sim row'])
+    expect(abs().map((w: any) => w.msg), 'once times are typed the hours are named (D2045)').toEqual(['On leave + planned: this duty row 17:00–19:00'])
+    expect(abs(Y).map((w: any) => w.msg)).toEqual(['Downchit + planned: this sim row 16:00–17:30'])
   })
 
   it('an AVALON / BB desk with no role yet reads "this duty row" as well — never "on  duty"', () => {
     /* walker A, H-01: a BB desk made from a template with no role typed printed "OL but on  duty — overseas", with
        hours and without (the standby look had its own sentence, outside the fallback) */
     const d = bbDesk(); d.row.role = ''; d.seat(); file('OL')
-    expect(abs().map((w: any) => w.msg)).toEqual(['OL but on this duty row — overseas'])
+    expect(abs().map((w: any) => w.msg)).toEqual(['Overseas + planned: this duty row (no times yet)'])
     d.time()
-    expect(abs().map((w: any) => w.msg), 'the same sentence with its hours typed').toEqual(['OL but on this duty row — overseas'])
+    expect(abs().map((w: any) => w.msg), 'its hours named once typed (D2045)').toEqual(['Overseas + planned: this duty row 20:00–04:00'])
     d.row.role = 'SXO'
-    expect(abs().map((w: any) => w.msg)).toEqual(['OL but on SXO duty — overseas'])
+    expect(abs().map((w: any) => w.msg)).toEqual(['Overseas + planned: SXO duty 20:00–04:00'])
   })
 
   it('a duty desk, a sim seat and a Common Programme row use the words their timed rows use', () => {
     const d = dutyRow(); d.seat(); const s = simSeat(); s.seat(Y); const p = progRow(); p.seat()
     file('ATT C'); file('LL', {}, Y)
-    expect(abs().map((w: any) => w.msg).sort()).toEqual(['Downchit but tasked — DINING-IN', 'Downchit but tasked — SDO duty'])
-    expect(abs(Y).map((w: any) => w.msg)).toEqual(['On leave but tasked — Sim EP-9'])
+    expect(abs().map((w: any) => w.msg).sort()).toEqual(['Downchit + planned: DINING-IN (no times yet)', 'Downchit + planned: SDO duty (no times yet)'])
+    expect(abs(Y).map((w: any) => w.msg)).toEqual(['On leave + planned: Sim EP-9 (no times yet)'])
   })
 
   it('an SC MAIN with its shift times cleared: a Meeting keeps its amber voice and prints no clock', () => {
     const s = standalone('sc', 0); s.seat(); file('Meeting')
     const a = abs()
     expect(a.map((w: any) => `${w.sev}:${w.code}`)).toEqual(['adv:SHIFT_SOFT'])
-    expect(a[0].msg).toBe(`${PEOPLE[X].cs} is on SC AM and also down for Meeting`)
+    expect(a[0].msg).toBe('Overlaps standby: Meeting (all day) & SC AM')
   })
 
   it('the standby lines keep their own words: an SC SPARE, a BB seat, a BB desk', () => {
     const sp = standalone('sc', 2); sp.seat(); file('OL')
-    expect(abs().map((w: any) => w.msg)).toEqual(['OL but standing SC SPARE — overseas, SC AM'])
+    expect(abs().map((w: any) => w.msg)).toEqual(['Overseas + planned: SC AM SPARE (no times yet)'])
     const b = standalone('bb', 0); b.seat(Y); const d = bbDesk(); d.seat(Y); file('ATT C', {}, Y)
-    expect(abs(Y).map((w: any) => w.msg).sort()).toEqual(['ATT C but on BB SHIFT — medically down', 'ATT C but on SXO duty — medically down'])
+    expect(abs(Y).map((w: any) => w.msg).sort()).toEqual(['Downchit + planned: BB SHIFT (no times yet, ATT C)', 'Downchit + planned: SXO duty (no times yet, ATT C)'])
   })
 
   it('no sentence of these rules prints a clock that is not there, on any kind of seat', () => {

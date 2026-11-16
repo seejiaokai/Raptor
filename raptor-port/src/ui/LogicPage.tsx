@@ -30,8 +30,10 @@ const keptOffCount = () => KEPT_RULE_KEYS.filter(k => ruleOff(k)).length + Objec
 const lateCutOff = () => LATE_CUT_KEYS.some(k => ruleOff(k))
 /* the strip's words after its count — each sentence only where it is true of what is changed */
 const offNote = (keptOff: number, cutOff: boolean, admin: boolean) =>
-  (keptOff ? ` The schedule is checked against ${keptOff > 1 ? 'them' : 'it'} now. A published day keeps the settings it was published under, and the OIL they gave it, until it is published again.`
-    + ' If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending.' : '')
+  /* one sentence after the count (owner D2067, D2071, 16 Nov 26 — "why are there so many text explaning"): the day itself
+     shows pending, and its pending list says what moved (D2054); the late cut-off and admin sentences stay as they were
+     (the proposal's §5, left whole) */
+  (keptOff ? ' Published days keep their old settings until published again.' : '')
   + (cutOff ? ' A changed late cut-off moves the LATE marks at once, on published days too.' : '')
   + (admin ? '' : ' Only an admin can change them.')
 

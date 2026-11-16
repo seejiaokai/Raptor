@@ -133,7 +133,7 @@ describe('W88 — one principle, no allow-list: every seat can earn, its default
     expect(String(note[0].msg), 'the note no longer says the shift earns nobody').not.toMatch(/earns nobody/)
     /* the words job ([RULES-CHECK-FIXES] job 3): a shift has no debrief, so the flying line's "the day still earns from
        the report and debrief" was not exact — it says what the shift earns from, new words his to change */
-    expect(String(note[0].msg), 'its own tail').toMatch(/one of the two is wrong; the shift still earns from its R or B$/)
+    expect(String(note[0].msg), 'its own tail').toBe('Times look wrong: SC START and END are both 08:00. The shift still earns OIL from its R or B.')
   })
   it('D1999 edges: the B counts as the R does, the earlier of the two; a shift whose R is its START, or one that does not fly, still measures nothing and is named', () => {
     const w: any = makeStandalone('sc'); const f = w.formations[0]
@@ -149,7 +149,7 @@ describe('W88 — one principle, no allow-list: every seat can earn, its default
     m = validate().all.find((x: any) => x.di === SAT && x.code === 'OIL_NO_TIMES')
     expect(String(m?.msg || '')).toMatch(/SC shift has no usable times/)
     const note = validate().all.find((x: any) => x.di === SAT && x.code === 'FLT_NO_LEN')
-    expect(String(note?.msg || ''), 'and its note still says it earns nobody').toMatch(/a shift with no length earns nobody any OIL/)
+    expect(String(note?.msg || ''), 'and its note still says it earns nobody').toMatch(/^Times look wrong: SC START and END are both 08:00\. A shift with no length earns nobody any OIL until it is fixed\.$/)
   })
 })
 

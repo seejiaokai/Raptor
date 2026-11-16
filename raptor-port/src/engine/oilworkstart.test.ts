@@ -200,8 +200,13 @@ describe('OWS5 — what did NOT change', () => {
     expect(dayOilSpans(d([])).bane, 'the same boundary as before this build: both leads at zero').toBeUndefined()
   })
   it('a line with no readable take-off or landing earns nothing, whatever its lines say', () => {
-    for (const [to, ld] of [['', '13:00'], ['12:00', ''], ['', ''], ['x', 'y']])
+    for (const [to, ld] of [['', '13:00'], ['', ''], ['x', 'y']])
       expect(dayOilSpans(day([wave(['IN TIME 0830'], line('VL', to!, ld!, [jet('bane')]))])).bane, `${to}|${ld}`).toBeUndefined()
+  })
+  /* CHANGED ON PURPOSE by D2046 (15 Nov 26): '12:00' with no landing left the case above — it now earns from its in-time
+     to its ASSUMED landing (take-off + Logic's flight length) plus the debrief: 08:30 → 13:00 + 2h = 15:00 */
+  it('a line with a take-off and no landing earns to its assumed landing (D2046)', () => {
+    expect(dayOilSpans(day([wave(['IN TIME 0830'], line('VL', '12:00', '', [jet('bane')]))])).bane).toEqual([[510, 900]])
   })
   it('a cancelled line and a cancelled jet earn nothing', () => {
     expect(dayOilSpans(day([wave(['IN TIME 0830'], line('VL', '12:00', '13:00', [jet('bane')], { cx: true }))])).bane).toBeUndefined()

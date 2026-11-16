@@ -1,0 +1,42 @@
+desk {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"bane\"/null"} seat results ok
+flight2 {"to":"10:20","ld":"11:20","br":"08:00","p":"Ranger"} ok
+publish {"published":true,"version":"ORIG","signSelects":4}
+BEFORE edit (Edit Schedule) Monday strip NO STRIP []
+BEFORE Monday details (Edit) {"ok":true,"items":[]}
+BEFORE edit (View-only) Monday strip NO STRIP []
+ROW RECORDED | S3 | desktop | Sunday published (ORIG) with SC desk START 20:00 END blank; read Monday surfaces BEFORE any edit | saw: Edit Schedule Monday: NO STRIP crew=[] details crew=[]; View-only Monday: NO STRIP crew=[]
+pending panel AMENDMENTS 1 day with changes to publish Sun · 1 change Publish AL1 No amendments published yet.
+Sunday issued vs working {"working":["0800-1800","20:00-23:00"]}
+PENDING (Edit Schedule) Monday strip ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"]
+PENDING Monday details (Edit) {"ok":true,"items":["Warning · Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h."]}
+PENDING (View-only) Monday strip NO STRIP []
+ROW RECORDED | S3 | desktop | Sunday END 23:00 typed on the working copy (amendment pending); read Monday in Edit Schedule and View-only | saw: Edit Schedule Monday: ⚠ 1 issue · 1 warning ▼ crew=["Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"] details crew=["Warning · Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h."]; View-only Monday: NO STRIP crew=[]
+publish AL {"published":true,"version":"AL1","signSelects":4}
+AFTER amendment (Edit) Monday strip ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"]
+AFTER Monday details (Edit) {"ok":true,"items":["Warning · Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h."]}
+AFTER amendment (View-only) Monday strip ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h."]
+ROW PASS | S3 | desktop | amendment AL1 published (END 23:00 now issued); read Monday | saw: Edit: ⚠ 1 issue · 1 warning ▼ crew=["Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"] details=["Warning · Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h."]; View-only: ⚠ 1 issue · 1 warning ▼ crew=["Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00
+plans menu null|Live working copy ●live now — differences from AL1 go out as AL2 ;; 2026-07-26#0|Originalread-only — look, don't change ;; 2026-07-26#1|AL1read-only — look, don't change ;; null|+ Alt Plan
+versions ["2026-07-26#0","2026-07-26#1"]
+LOOK 2026-07-26#0 (week) Sunday text Sunday Jul 26 Original ▾ AL1 0 X 0 X 0 i SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch ← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy ⚠ 1 issue · 1 warning ▼ COMMON PROGRAMME WEEKEND - NO FLYING DUTY CREW ON CALL No flying — ground day. DUTIES NAME START END PEOPLE RMKS DUTY SDO 08:00 18:00 Dash C SC SHIFT SXO AM 20:00 Ranger IP OPS O AM 07:00 13:00 SXO PM 13:00 19:00 OPS O PM 13:00 19:00 UNAVAILABLE Nil
+LOOK 2026-07-26#0 day details {"ok":true,"items":["Warning · No OIL earned — a row has no usable times SXO AM has no usable times, so nobody on it earns OIL for this day"]}
+LOOK 2026-07-26#0 Sunday controls data-planmenu=6| Original ▾ ;; data-dayinfo=6|i ;; data-golive=6|← Back to live copy ;; data-restore=6 data-rver=2026-07-26#0|Load onto working copy
+LOOK 2026-07-26#1 (week) Sunday text Sunday Jul 26 AL1 ▾ AL1 0 X 0 X 0 i SIGNED AL1 CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch ← Back to live copy Viewing the issued AL1 — read-only. This is what was sent out; it never changes. Load onto working copy COMMON PROGRAMME WEEKEND - NO FLYING DUTY CREW ON CALL No flying — ground day. DUTIES NAME START END PEOPLE RMKS DUTY SDO 08:00 18:00 Dash C SC SHIFT SXO AM 20:00 23:00 R Ranger IP OPS O AM 07:00 13:00 SXO PM 13:00 19:00 OPS O PM 13:00 19:00 UNAVAILABLE Nil
+LOOK 2026-07-26#1 day details {"ok":true,"items":[]}
+LOOK 2026-07-26#1 Sunday controls data-planmenu=6| AL1 ▾ ;; data-dayinfo=6|i ;; data-golive=6|← Back to live copy ;; data-restore=6 data-rver=2026-07-26#1|Load onto working copy
+BOARD LOOK 2026-07-26#0 Calendar Sunday Jul 26 · scheduler board ‹ Mon 20 Tue 21 Wed 22 Thu 23 Fri 24 Sat 25 Sun 26 › Templates OIL Earn Sort all ↶ ↷ Insights ✓ Done CAT TYPE QUALS SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch Original ▾ AL1 OVERALL NOTES 1. 2. COMMON PROGRAMME Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like. SCHEDULER NOTES No flying waves yet. DUTIES ROLE START END PEOPLE RMKS Dash C ROLE START END PEOPLE RMKS Ranger IP SCHEDULER NOTES SIMS AMT No AMT rows. OFT No OFT rows. SCHEDULER NOTES GROUND PROGRAMME No ground items yet — “+ Item” adds one. SCHEDULER NOTES PERSONAL INPUTS No personal inputs for this day. SANS AVAIL No SANS availability filed for this day. UNAVAILABLE Nil — everybody is available today. ← Back to live copy Viewing the issued Original — read-only. This is what was sent out; it never changes. Load onto working copy
+BOARD LOOK 2026-07-26#0 warn list ["SXO AM has no usable times, so nobody on it earns OIL for this day"]
+BOARD LOOK 2026-07-26#0 controls data-golive=6|← Back to live copy ;; data-restore=6 data-rver=2026-07-26#0|Load onto working copy
+BOARD LOOK 2026-07-26#0 end box {"ro":false,"dis":true}
+BOARD LOOK 2026-07-26#1 Calendar Sunday Jul 26 · scheduler board ‹ Mon 20 Tue 21 Wed 22 Thu 23 Fri 24 Sat 25 Sun 26 › Templates OIL Earn Sort all ↶ ↷ Insights ✓ Done CAT TYPE QUALS SIGNED AL1 CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch AL1 ▾ AL1 OVERALL NOTES 1. 2. COMMON PROGRAMME Nothing squadron-wide yet — “+ Item” adds a mass brief, PT, safety stand-down and the like. SCHEDULER NOTES No flying waves yet. DUTIES ROLE START END PEOPLE RMKS Dash C ROLE START END PEOPLE RMKS R Ranger IP SCHEDULER NOTES SIMS AMT No AMT rows. OFT No OFT rows. SCHEDULER NOTES GROUND PROGRAMME No ground items yet — “+ Item” adds one. SCHEDULER NOTES PERSONAL INPUTS No personal inputs for this day. SANS AVAIL No SANS availability filed for this day. UNAVAILABLE Nil — everybody is available today. ← Back to live copy Viewing the issued AL1 — read-only. This is what was sent out; it never changes. Load onto working copy No confl
+BOARD LOOK 2026-07-26#1 warn list ["No conflicts flagged for this day ✓"]
+BOARD LOOK 2026-07-26#1 controls data-golive=6|← Back to live copy ;; data-restore=6 data-rver=2026-07-26#1|Load onto working copy
+BOARD LOOK 2026-07-26#1 end box {"ro":false,"dis":true}
+confirm text 
+after load: Sunday blocks ["Duty/undefined:0800-1800-spaceman","SC Shift/sc:20:00--bane"]
+after load: note 
+after load: Monday strip NO STRIP []
+after load: Sunday trace {"items":[]}
+after Undo: Sunday blocks ["Duty/undefined:0800-1800-spaceman","SC Shift/sc:20:00-23:00-bane"]
+errors []
+DONE 1 PASS 0 FAIL 2 OTHER of 3

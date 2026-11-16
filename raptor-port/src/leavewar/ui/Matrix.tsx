@@ -53,6 +53,7 @@ import { DayListSheet } from './DayList'
 import { PersonRow, type RowApi } from './MatrixRows'
 import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, type QualPill, type RowDragCfg, freeHalfBeside, inputsFilledDay, nameLines, ownAwardAlone, setPhWidth } from './matrixrowparts'
 import { rowInWindow } from './rowinwindow'
+import { keyCount, setGridGuard, useGuardOnClose, WINDOW_PRESS } from './gridguard'
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
 import { warInputs, type WarInput } from '../absences'
 import { ReorderIcon } from '../../ui/icons'
@@ -1550,7 +1551,9 @@ export function Matrix() {
        inside a window armed the guard at a stale place, eating a tap he meant. A close follows its press within a frame;
        1000 ms is slack for a slow phone. The time counts from the press's RELEASE (`pointerup`, below), so a ✕ held a
        second and then let go still counts. */
-    if (second && !(from?.inWin && performance.now() - from.t < 1000)) return
+    /* …AND NO KEY SINCE IT: a key that closed the window, even one a window's own listener stopped before this file's
+       listener heard it (gridguard.ts `keyCount` — Astra's F1 of 15 Nov 26) */
+    if (second && !(from?.inWin && performance.now() - from.t < 1000 && keyCount() === from.k)) return
     const swallow = (e: Event) => {
       if (!(e instanceof MouseEvent) || e.detail <= 0 || !(e.target instanceof Element) || !e.target.closest('.mx') || e.target.closest('.mstripe')) return
       if (from) {
@@ -1567,17 +1570,19 @@ export function Matrix() {
   }
   /* every press, where and by what — read by the guard above; always listening (the code read's F4: a listener added only
      once the guard was armed could miss a second press that came first) */
-  const lastPressRef = useRef<{ x: number; y: number; finger: boolean; inWin: boolean; t: number; id: number } | null>(null)
+  const lastPressRef = useRef<{ x: number; y: number; finger: boolean; inWin: boolean; t: number; k: number; id: number } | null>(null)
   useEffect(() => {
     const down = (e: PointerEvent) => {
-      /* inside a window: every Leave War window is a `.bidsheet` (Sheet.tsx); the event box alone is its own small box
-         (`.evpeek`), and its Edit is a press inside it that takes it away ([LW-DOUBLETAP-OTHER-WINDOWS]) */
-      const inWin = e.target instanceof Element && !!e.target.closest('.bidsheet, .evpeek')
-      lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen', inWin, t: performance.now(), id: e.pointerId }
+      /* inside a window: every Leave War window is a `.bidsheet` (Sheet.tsx); the event box is its own small box
+         (`.evpeek`), and its Edit is a press inside it that takes it away ([LW-DOUBLETAP-OTHER-WINDOWS]); the day panel,
+         the number pad, the under-manned list and the move banners are their own boxes too ([LW-DOUBLETAP-MORE-WINDOWS]) —
+         the list, `WINDOW_PRESS`, in gridguard.ts */
+      const inWin = e.target instanceof Element && !!e.target.closest(WINDOW_PRESS)
+      lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen', inWin, t: performance.now(), k: keyCount(), id: e.pointerId }
     }
     /* the remembered press's age counts from its release (the fix round's F4): the same record, its time moved on — the
        guard tells one press from the next by the record itself */
-    const up = (e: PointerEvent) => { const p = lastPressRef.current; if (p && p.id === e.pointerId) p.t = performance.now() }
+    const up = (e: PointerEvent) => { const p = lastPressRef.current; if (p && p.id === e.pointerId) { p.t = performance.now(); p.k = keyCount() } }
     /* a touch the browser took over for a scroll or a pinch was no press on anything: forget it, as a key is forgotten —
        but only THAT touch: a finger resting on the screen and taken over while another taps a ✕ must not forget the ✕
        press, or the second tap on it reaches the grid (the narrow read of the fix round) */
@@ -1610,18 +1615,23 @@ export function Matrix() {
      lets through: its own comment, above) — so a window closing while another stays up (the person window does not block
      the grid) is guarded too, and one window handing over to the next (Settings to the counter form) costs nothing. The
      one-day and drag windows stay ONE bit, as they were (the one handing over to the other arms nothing).
-     NOT COVERED — windows whose state lives outside `Matrix`: the Required rows' panel, rename form and number pad, the
-     day-details panel, the under-manned days list, the move banners' Confirm and Cancel, New period, and Open for bidding
-     on a desktop ([LW-DOUBLETAP-MORE-WINDOWS] in the backlog). `doubletap-windows.test.tsx`,
+     …AND SIX MORE ([LW-DOUBLETAP-MORE-WINDOWS]): the move banners are two bits here (their Confirm and Cancel end the
+     move from inside the banner); the windows whose state lives outside `Matrix` — the Required rows' panel, rename form
+     and number pad (`FlyRows`), the day-details panel (`DayPanelHost`), the under-manned days list and Open for bidding
+     (`StageBar`), New period (`Topbar`) — keep bits of their own and reach this same guard through one door
+     (`gridguard.ts`), which `Matrix` hands it to below. `doubletap-windows.test.tsx`, `doubletap-more.test.tsx`,
      `e2e/doubletap-leavewar.spec.ts`. */
   const winsUp = (open || sel ? 1 : 0) | (who ? 2 : 0) | (settings ? 4 : 0) | (eventEdit ? 8 : 0) | (eventsOpen ? 16 : 0)
     | (manningInfo ? 32 : 0) | (counterEdit !== false ? 64 : 0) | (oilTracker ? 128 : 0) | (evPeek ? 256 : 0)
-  const winUpRef = useRef(0)
+    | (moveSel ? 512 : 0) | (eventMoveSel ? 1024 : 0)
+  /* the door: the guard handed over while the grid is drawn — `guardGrid` reads only refs, so the first render's is good
+     for the grid's whole life */
   useEffect(() => {
-    if (winUpRef.current & ~winsUp) guardGrid(true)
-    winUpRef.current = winsUp
+    setGridGuard(() => guardGrid(true))
+    return () => setGridGuard(null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [winsUp])
+  }, [])
+  useGuardOnClose(winsUp)
   useEffect(() => {
     if (sheetUp) { if (!beforeRef.current) beforeRef.current = flaggedNow(); return }
     const before = beforeRef.current

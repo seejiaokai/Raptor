@@ -1,0 +1,29 @@
+[
+ [
+  "S2",
+  "desktop",
+  "Saturday: plain duty 07:00-19:00 then SC desk 20:00 END blank (Ranger); Sunday flight B 06:00",
+  "crew-rest breach from the 19:00 ending: clear 07:00, report 06:00",
+  "⚠ 2 issues · 1 warning ▼ [\"Crew rest (<12h) Ranger — Crew rest: Saturday duty ended 19:00 → clear 07:00. Report 06:00: 11h rest, needs 12h. ✕\"] | trace [\"Breaks Sunday Ranger — had to leave by 18:00. Crew rest: Saturday duty ended 19:00 → clear 07:00. Report 06:00: 11h rest, needs 12h.\"]",
+  "PASS",
+  "w1/s02/01-p1-sunday-strip.png"
+ ],
+ [
+  "S2",
+  "desktop",
+  "twin fixture A (plain first, SC second), both START 20:00 END blank; next day flights B 08:00",
+  "plain-desk man (Havoc) has a crew-rest line (assumed end 21:00, clear 09:00); SC-desk man (Ranger) none",
+  "Havoc [\"Crew rest (<12h) Havoc — Crew rest: Wednesday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕\"] | Ranger []",
+  "PASS",
+  "w1/s02/03-p2-A-strip.png"
+ ],
+ [
+  "S2",
+  "desktop",
+  "twin fixture B (SC first, plain second), both START 20:00 END blank; next day flights B 08:00",
+  "plain-desk man (Havoc) has a crew-rest line (assumed end 21:00, clear 09:00); SC-desk man (Ranger) none",
+  "Havoc [\"Crew rest (<12h) Havoc — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕\"] | Ranger []",
+  "PASS",
+  "w1/s02/04-p2-B-strip.png"
+ ]
+]

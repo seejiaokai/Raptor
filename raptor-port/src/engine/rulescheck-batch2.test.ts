@@ -44,13 +44,13 @@ describe('part 1 — D2009: the check is "On leave + planned" / "Downchit + plan
     expect(lgChkName(chk('leavefly'))).toBe('On leave + planned')
     expect(lgChkName(chk('dnif'))).toBe('Downchit + planned')
   })
-  it('the warning list labels the line with the same name, and the day\'s own words stay as they are (D2009\'s reading)', () => {
+  it('the warning list labels the line with the same name, and the day\'s own words follow it (D2009; the words since D2045)', () => {
     inp(TUE, 'bane', 'LL', { allday: true })
     ground(TUE, 'bane', '09:00', '10:00')
     const w = warns(TUE, 'LEAVE_FLY', 'bane')
     expect(w.length).toBe(1)
     expect(wlbl(WCODE[w[0].code], TUE)).toBe('On leave + planned')
-    expect(w[0].msg).toMatch(/but tasked — BRIEFING/)
+    expect(w[0].msg).toBe('On leave + planned: BRIEFING 09:00–10:00')
   })
   it('a downchit on a flight reads the twin name', () => {
     inp(TUE, 'bane', 'ATT C', { allday: true })
@@ -70,44 +70,49 @@ describe('part 2 — D2010: a crew-rest warning never says "landed" at a take-of
     expect(w.length).toBe(1)
     return String(w[0].msg)
   }
-  it('a blank landing: "Mon took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00"', () => {
+  /* CHANGED ON PURPOSE by D2046 (15 Nov 26 — "assumed it landed 13:00 (take-off + 1h)"): the day ends at the ASSUMED
+     landing, take-off plus Logic's flight length, plus the debrief — 15:00, clear 03:00 — and says so */
+  it('a blank landing: "Monday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00"', () => {
     const msg = breach('')
-    expect(msg).toContain('Monday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00')
+    expect(msg).toContain('Crew rest: Monday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. ')
     expect(msg).not.toMatch(/landed/)
   })
-  it('a "TBD" landing reads the same (D1990)', () => {
+  it('a "TBD" landing reads the same (D1990, D2046)', () => {
     const msg = breach('TBD')
-    expect(msg).toContain('Monday took off 12:00 with no landing typed, +2h debrief assumed → ended 14:00 → crew rest clear at 02:00')
+    expect(msg).toContain('Crew rest: Monday T/O 12:00, landing assumed 13:00 (T/O + 1h) + 2h debrief (assumed) → ended 15:00 → clear 03:00. ')
     expect(msg).not.toMatch(/landed/)
   })
   it('left as it is: a typed landing still says "landed" (D2010 changes only the borrowed take-off)', () => {
     const msg = breach('12:30')
-    expect(msg).toContain('Monday landed 12:30, +2h debrief assumed → ended 14:30 → crew rest clear at 02:30')
+    expect(msg).toContain('Crew rest: Monday landed 12:30 + 2h debrief (assumed) → ended 14:30 → clear 02:30. ')
   })
 })
 
 describe('part 2b — D2010\'s reading carried to the debrief and the tight turn: a take-off is never called a landing', () => {
   /* the blind code reads of 15 Nov 26 (the Opus read's F2, Astra's (2)): with no landing typed the line's debrief window
      and its turn are measured from the take-off, so they say so — the check itself is kept */
-  it('a blank landing: the debrief line says take-off, not land', () => {
+  /* CHANGED ON PURPOSE by D2046 (15 Nov 26): the debrief and the turn are measured from the ASSUMED landing, take-off
+     plus Logic's flight length (13:00 and 10:00 here), and say so; the ground row moves past the dekit, where it is a
+     debrief miss and not a conflict (D2059) */
+  it('a blank landing: the debrief line counts from the assumed landing', () => {
     add(MON, wave([form({ to: '12:00', ld: '' })]))
-    ground(MON, 'bane', '12:40', '13:00')
+    ground(MON, 'bane', '13:40', '14:00')
     const w = warns(MON, 'DEBRIEF', 'bane')
     expect(w.length).toBe(1)
-    expect(String(w[0].msg)).toContain('BRIEFING sits inside 12:00–14:00 (take-off + 2h, no landing typed)')
+    expect(String(w[0].msg)).toBe('Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:40–14:00')
     expect(String(w[0].msg)).not.toMatch(/\bland\b/)
   })
-  it('a blank landing: the tight turn says take-off, not land', () => {
+  it('a blank landing: the tight turn counts from the assumed landing', () => {
     add(MON, wave([form({ cs: 'VL', to: '09:00', ld: '' }), form({ cs: 'RU', to: '10:00', ld: '11:00' })]))
     const w = warns(MON, 'TURN', 'bane')
     expect(w.length).toBe(1)
-    expect(String(w[0].msg)).toContain('60 min take-off→next T/O, no landing typed')
+    expect(String(w[0].msg)).toMatch(/^Tight turn: VL BFM → RU BFM, 0 min \(needs \d+\)\. VL BFM landing assumed 10:00 \(T\/O \+ 1h\), RU BFM T\/O 10:00$/)
     expect(String(w[0].msg)).not.toMatch(/\bland\b/)
   })
   it('left as it is: a typed landing still says land, in both', () => {
     add(MON, wave([form({ cs: 'VL', to: '09:00', ld: '09:30' }), form({ cs: 'RU', to: '10:00', ld: '11:00' })]))
     ground(MON, 'bane', '09:40', '10:00')
-    expect(String(warns(MON, 'DEBRIEF', 'bane')[0].msg)).toContain('(land + 2h)')
-    expect(String(warns(MON, 'TURN', 'bane')[0].msg)).toContain('30 min land→next T/O')
+    expect(String(warns(MON, 'DEBRIEF', 'bane')[0].msg)).toBe('Misses VL BFM debrief 09:30–11:30: BRIEFING 09:40–10:00')
+    expect(String(warns(MON, 'TURN', 'bane')[0].msg)).toMatch(/^Tight turn: VL BFM → RU BFM, 30 min \(needs \d+\)\. VL BFM landing 09:30, RU BFM T\/O 10:00$/)
   })
 })

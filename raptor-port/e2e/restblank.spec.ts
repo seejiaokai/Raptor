@@ -110,7 +110,7 @@ const pucks = (page: Page, di: number) => page.evaluate(([i, who]) =>
 async function expectBreach(page: Page, why: string) {
   await closeBoard(page)
   const tue = await listLines(page, TUE)
-  expect(tue.filter(t => /Crew rest breach/.test(t) && /Scribe/.test(t)), `${why} — the red line in Tuesday's list`).toHaveLength(1)
+  expect(tue.filter(t => /Crew rest: /.test(t) && /Scribe/.test(t)), `${why} — the red line in Tuesday's list`).toHaveLength(1)
   const pt = await pucks(page, TUE)
   expect(pt.length, `${why} — he is on Tuesday`).toBeGreaterThan(0)
   expect(pt.every(p => p.hard && p.ring), `${why} — every Tuesday puck of his wears the painted red ring`).toBe(true)
@@ -162,7 +162,7 @@ test.describe('a blank crewed line does not hide a crew-rest breach', () => {
     const c = await addLine(page, TUE, t); await flight(page, TUE, t, c, 'ZC', '09:30', '11:00')
     await closeBoard(page)
     const tue = await listLines(page, TUE)
-    expect(tue.filter(x => /Tight turn ZA/.test(x) && /ZC/.test(x)), 'the tight turn between ZA and ZC is said').toHaveLength(1)
+    expect(tue.filter(x => /Tight turn: ZA/.test(x) && /ZC/.test(x)), 'the tight turn between ZA and ZC is said').toHaveLength(1)
   })
 
   test('…and with the LATER leg drawn first (ZC, a blank line, then ZA) the turn is still ZA → ZC', async ({ page }) => {
@@ -174,6 +174,6 @@ test.describe('a blank crewed line does not hide a crew-rest breach', () => {
     const a = await addLine(page, TUE, t); await flight(page, TUE, t, a, 'ZA', '07:30', '09:00')
     await closeBoard(page)
     const tue = await listLines(page, TUE)
-    expect(tue.filter(x => /Tight turn ZA/.test(x) && /ZC/.test(x) && /30 min/.test(x)), 'the tight turn between ZA and ZC is said').toHaveLength(1)
+    expect(tue.filter(x => /Tight turn: ZA/.test(x) && /ZC/.test(x) && /30 min/.test(x)), 'the tight turn between ZA and ZC is said').toHaveLength(1)
   })
 })

@@ -104,7 +104,7 @@ test.describe('a man away for the whole day is flagged the moment he is seated o
   test('"+ Wave", seat Cobra (overseas leave all Wednesday) on its blank line: the red line and the painted ring — before any time is typed, with times, without again, and at phone width after a reload', async ({ page }) => {
     await login(page)
     await go(page, 'editsched')
-    const said = (ls: string[]) => ls.filter(t => /On leave but planned to fly/.test(t) && t.includes(CS))
+    const said = (ls: string[]) => ls.filter(t => /On leave \+ planned: /.test(t) && t.includes(CS))
     const before = said(await listLines(page, WED)).length
 
     const gi = await addWave(page, WED, '')
@@ -112,7 +112,7 @@ test.describe('a man away for the whole day is flagged the moment he is seated o
     await seat(page, key)
     let ls = said(await listLines(page, WED))
     expect(ls.length, 'one new red line the moment he is seated').toBe(before + 1)
-    expect(ls.some(t => /planned to fly this line/.test(t)), 'a line with no callsign yet is "this line"').toBe(true)
+    expect(ls.some(t => /On leave \+ planned: this line/.test(t)), 'a line with no callsign yet is "this line"').toBe(true)
     expect(ls.some(t => /NaN|undefined/.test(t)), 'no clock that is not there').toBe(false)
     let pk = await seatPuck(page, key)
     expect(pk, 'his puck is drawn in the new seat').toBeTruthy()
@@ -120,7 +120,7 @@ test.describe('a man away for the whole day is flagged the moment he is seated o
 
     await type(page, WED, gi, 0, 'cs', 'ZL')
     ls = said(await listLines(page, WED))
-    expect(ls.filter(t => /planned to fly ZL/.test(t)), 'named once the line has a callsign').toHaveLength(1)
+    expect(ls.filter(t => /On leave \+ planned: ZL/.test(t)), 'named once the line has a callsign').toHaveLength(1)
     expect(ls.length).toBe(before + 1)
 
     await type(page, WED, gi, 0, 'to', '10:00'); await type(page, WED, gi, 0, 'ld', '11:00')
@@ -133,18 +133,19 @@ test.describe('a man away for the whole day is flagged the moment he is seated o
     await page.reload()
     await login(page)
     await go(page, 'editsched')
-    expect(said(await listLines(page, WED)).filter(t => /planned to fly ZL/.test(t)), 'after a reload, at phone width').toHaveLength(1)
+    expect(said(await listLines(page, WED)).filter(t => /On leave \+ planned: ZL/.test(t)), 'after a reload, at phone width').toHaveLength(1)
     pk = await seatPuck(page, key)
     expect(pk && pk.hard && pk.ring, 'the ring is still painted').toBe(true)
   })
 
-  test('a BB wave comes up with no shift times: Cobra in its MAIN seat is "OL but on BB SHIFT — overseas", ring painted', async ({ page }) => {
+  test('a BB wave comes up with no shift times: Cobra in its MAIN seat is "Overseas + planned: BB SHIFT (no times yet)", ring painted', async ({ page }) => {
     await login(page)
     await go(page, 'editsched')
     const gi = await addWave(page, WED, 'bb')
     const key = `${WED}.${gi}.0.0.p`
     await seat(page, key)
-    const ls = (await listLines(page, WED)).filter(t => /OL but on BB SHIFT — overseas/.test(t) && t.includes(CS))
+    /* [WARN-WORDS-STANDALONE] (D2045): once "OL but on BB SHIFT — overseas"; the line now names the shift and says it has no times yet */
+    const ls = (await listLines(page, WED)).filter(t => /Overseas \+ planned: BB SHIFT \(no times yet\)/.test(t) && t.includes(CS))
     expect(ls, 'the standby line\'s own words, with no hours typed').toHaveLength(1)
     const pk = await seatPuck(page, key)
     expect(pk, 'his puck is drawn in the BB seat').toBeTruthy()

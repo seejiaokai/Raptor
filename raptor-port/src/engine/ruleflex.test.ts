@@ -277,7 +277,7 @@ describe('one knob, every reader — an edited number reaches every rule that le
     /* 100 min land→T/O against the standard floor max(120, 30+60) = 120 */
     let t = warnsFor(0, 'waldo', 'TURN')
     expect(t.length, 'flagged at the standard threshold').toBe(1)
-    expect(t[0].msg).toContain('needs 120 min')
+    expect(t[0].msg).toContain('(needs 120)')
 
     VCONF.tightTurn = 60                       // floor is now max(60, 90) = 90
     validate()
@@ -287,8 +287,8 @@ describe('one knob, every reader — an edited number reaches every rule that le
     validate()
     t = warnsFor(0, 'waldo', 'TURN')
     expect(t.length, 'the mechanics arm outgrew the threshold').toBe(1)
-    expect(t[0].msg).toContain('needs 150 min')
-    expect(t[0].msg).toContain('dekit+step 30+120')
+    /* the approved words ([WARN-WORDS-STANDALONE]) give the floor it needs, no longer how it was worked out */
+    expect(t[0].msg).toBe('Tight turn: VL BFM → RU BFM, 100 min (needs 150). VL BFM landing 11:00, RU BFM T/O 12:40')
   })
 
   it('the crew-rest equation reads debrief, briefLead and crewRest live — yesterday\'s end, today\'s anchor, the gap', () => {
@@ -308,7 +308,7 @@ describe('one knob, every reader — an edited number reaches every rule that le
     /* ended 22:00 + 2h debrief = 00:00 → clear 12:00; brief 11:10 — breach */
     let cr = warnsFor(1, 'waldo', 'CREW_REST')
     expect(cr.length, 'breached at the standard numbers').toBe(1)
-    expect(cr[0].msg).toContain('clear at 12:00')
+    expect(cr[0].msg).toContain('→ clear 12:00. ')
 
     VCONF.debrief = 30                         // ended 22:30 → clear 10:30 ≤ 11:10
     validate()

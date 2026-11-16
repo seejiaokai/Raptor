@@ -159,7 +159,7 @@ describe('W73 — a man\'s CAT on his puck and a blank line\'s suggested brief s
     expect(has(workingWarn(), TUE, 'CREW_REST', 'bane'), 'the working copy previews the next amendment: today\'s 08:40 (the agent\'s reading of D2005)').toBe(true)
     sign(TUE); publishALDay(TUE); validate()
     expect(withFaceAttrs(snapOf(TUE), () => briefLeadShown()), 'the amendment prints the new lead').toBe(200)
-    expect(ws(officialWarn(), TUE).find((w: any) => w.code === 'CREW_REST')?.msg, 'from the next amendment the new setting applies').toContain('told to report 08:40')
+    expect(ws(officialWarn(), TUE).find((w: any) => w.code === 'CREW_REST')?.msg, 'from the next amendment the new setting applies').toContain('Report 08:40: ')
   })
   it('D1991 / D2005 (the agent\'s reading, told to him): a Logic change does not clear a published day\'s crew-rest flag either — the brief lead lowered after publishing leaves the breach measured to the printed brief', () => {
     /* Monday ends 21:00 → clear 09:00. Tuesday published with the lead at 200: B 08:40, a breach. */
@@ -169,7 +169,7 @@ describe('W73 — a man\'s CAT on his puck and a blank line\'s suggested brief s
     publish(TUE)
     expect(has(officialWarn(), TUE, 'CREW_REST', 'bane'), 'the premise: published with a breach to 08:40').toBe(true)
     VCONF.briefLead = 140; validate()                      // today's suggested brief 09:40 would clear
-    expect(ws(officialWarn(), TUE).find((w: any) => w.code === 'CREW_REST')?.msg, 'still measured to the printed 08:40').toContain('told to report 08:40')
+    expect(ws(officialWarn(), TUE).find((w: any) => w.code === 'CREW_REST')?.msg, 'still measured to the printed 08:40').toContain('Report 08:40: ')
     expect(has(workingWarn(), TUE, 'CREW_REST', 'bane'), 'the working copy reads today\'s 09:40: clear').toBe(false)
   })
   it('D1991: a typed B is the brief the day prints whatever the setting — the change of lead moves nothing on a published day whose B is typed', () => {

@@ -1,0 +1,9 @@
+www-host-probe v1
+flight d4 w0 {"to":"12:00","ld":"","msn":"VL BFM","p":"Ranger"}
+seat ground ok
+BOARD ["Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00 ✕"]
+WEEK ⚠ 1 issue · 1 warning ▼ ["Conflict Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00 ✕"]
+DAYDET ["Warning · Conflict Ranger — Conflict: VL BFM (T/O 12:00, landing assumed 13:00) & BRIEFING 12:40–13:00"] 
+wave 0
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

@@ -21,7 +21,7 @@ import { DWOPEN, WFOCUS, VWORK, PFOCUS, SELID, displayedByDay, dayDisplaysOffici
 
 const WARDEN = 'nact'
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
-const RUN = /days in a row/
+const RUN = /Days in a row: /
 function resetSched() {
   SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
   ;(SCHED as any).al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}

@@ -1,0 +1,11 @@
+seat ok
+signs {"cur":"ok","sked":"ok","plan":"ok","appr":"ok"}
+after publish {"tag":"ORIG","pending":"9 changes"}
+CAT box found 1
+head now {"tag":"ORIG","pending":"1 pending"}
+PENDING LIST [
+ "What this day shows Saber 16/11 05:15 Ranger — OCU with no IP: FRI FLT (T/O 12:00) new Ranger · CAT IP → OCU"
+]
+PASS: the warning row leads with "Ranger — "
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

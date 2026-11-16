@@ -2602,3 +2602,83 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The rule says to search each old phrase "across the app and every test folder, unit and browser". The build's own search (chat 76–78) covered `src/` and the tests; the old names still sat in the IT flow guide's captions, `raptor-port/scripts/itflow/content.mjs`, a generator of a document handed to the IT side — neither app nor test. Found only because the roll-call search here ran over `scripts/` too.
 **Suggested improvement:** §6's wording row: search the app, every test folder, the probes AND every script that writes words for a person (guides, decks, exports — `scripts/`), listing files uncapped.
 **Principle:** A rename's search covers every place that turns the words into something a person reads, not only the running app and its tests: document generators hold the same words.
+
+### Observation 951: Two chats in one checkout took the same ruling number
+
+**Status:** OPEN
+**Date:** 2026-11-15
+**Session context:** Chat 82, [WARN-WORDS-STANDALONE] — recording the owner's opening message as a ruling while chat 81 worked in the same folder
+**Skill:** record-decisions (the rule file) / DECISIONS.md's steps for taking a number
+**Type:** internal
+**Phase/Area:** taking the next free ruling number; parallel chats sharing one checkout
+
+**Issue:** Chat 82 read the highest ruling number and wrote D2056 as uncommitted edits. Chat 81, in the same checkout, switched the folder's branch (carrying those uncommitted edits with it) and took D2056 for another area at the same moment. Neither search could see the other's number: both were uncommitted. It was caught only because the folder's branch changed under chat 82. Settled by a message between the chats and a renumber to D2057.
+**Suggested improvement:** In DECISIONS.md's number step: before taking a number, look for other open chats (ListAgents) and for uncommitted rows in the working tree (`git status` on the rulings files); a chat that shares the checkout messages the other before it writes a row, and never switches the folder's branch while another chat's edits sit uncommitted in it.
+**Principle:** A "next free number" read from committed history is not safe when two writers share one working tree: the claim has to be visible to the other writer before it is used.
+
+### Observation 952: A blind read fed table fragments reported them as unclear wordings
+
+**Status:** OPEN
+**Date:** 2026-11-15
+**Session context:** Chat 82, [WARN-WORDS-STANDALONE] — the writing guide's cold read (design-practices §1a test 9) of 69 proposed warning lines
+**Skill:** design-practices §1a test 9 (the cold read) / briefs for a fresh reader
+**Type:** open-source
+**Phase/Area:** preparing the cold reader's input
+
+**Issue:** The reader's input was cut from the proposal's tables by a script. Cells that held a variant ("… / …"), a continuation ("…Day starts 07:00") or a placeholder ("landing …") went in as if they were whole lines. Most of the 11 "unclear" verdicts were about those fragments, not about a wording, and each had to be sorted by hand from the real findings.
+**Suggested improvement:** In the cold read's step: every line given to the reader is a whole line exactly as a person would see it, with a real example in each slot; the host reads the input list itself once before sending it and removes or completes any fragment.
+**Principle:** A blind reader judges what it is given: an input that is not what the end reader will see produces findings about the input, and costs a sorting pass.
+
+### Observation 953: Example rows for a reworded warning showed cases the app never raises
+
+**Status:** OPEN
+**Date:** 15 Nov 26
+**Session context:** rewording every warning, shown to the owner as before-and-after pictures on the real warning list
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** choosing the example values drawn into a mock-up row
+
+**Issue:** The "today" rows were the app's sentence templates filled with example values. Three clash rows and three absence rows paired a standby place with an item the check never compares it with, so the owner asked "why would this clash?" of a case that cannot happen. A cold read of the words passed them, because it judged clarity, not whether the case exists.
+**Suggested improvement:** In the mock-up guide, a row that stands for a rule's output is either staged in the running app and read back, or its example is checked against the condition of the check that writes it (what the two sides may be), before it is drawn; the brief to a cold reader says the examples were checked that way.
+**Principle:** An example in a design proposal is a claim about behaviour; fill a template only with values the rule can actually produce.
+
+### Observation 954: A Codex read of an exported copy refused to start — the guide's git-init step was skipped
+
+**Status:** OPEN
+**Date:** 16 Nov 26
+**Session context:** chat 87, the FULL check of [WARN-WORDS-STANDALONE]'s follow-ups — Astra's blind read of an exported copy
+**Skill:** New skill candidate: codex-read-runner (today `raptor-port/docs/codex-guide.md` §Reading a commit that is not the branch head)
+**Type:** internal
+**Phase/Area:** starting a Codex read in an exported copy
+
+**Issue:** The handoff block named the read command as `codex exec -C <repo> -s read-only -o <file>`; the copy was made with `git archive` but without the guide's `git init` and one commit, so Codex refused at once ("Not inside a trusted directory and --skip-git-repo-check was not specified"), exit 1, no report. Caught only because the run ended in seconds.
+**Suggested improvement:** Put the whole recipe as one runnable line wherever a handoff or brief names the read command — archive, `git init` + one commit (or `--skip-git-repo-check`), `codex exec` — and check the run log's last line a minute after starting, never only at the notification.
+**Principle:** A command copied into a handoff is a shortened recipe; carry the whole recipe, or point to it, never a fragment.
+
+### Observation 955: A drawing check run at a phone width that is not the owner's
+
+**Status:** OPEN
+**Date:** 2026-11-16
+**Session context:** Chat 88, the FULL check of `[WARN-WORDS-STANDALONE]`'s follow-ups — the Legend's new names
+**Skill:** brainstorming (mockups-on-the-real-app.md) / the bug-check order's drawing check
+**Type:** internal
+**Phase/Area:** the drawing check's sizes; the mock-up's shooting script
+
+**Issue:** The Legend's mock-up and its drawing check were shot at 390 x 844 (an older iPhone). His phone is an iPhone 17 Pro, 402 x 874. At 402 one more name fits on a row and its last letters run under the parked AIRCREW tab; at 390 it wraps, so the check reported 0 pixels different and missed it. The walk at 402 caught it.
+**Suggested improvement:** The mock-up recipe and the drawing-check template take their phone size from one named constant, his iPhone's 402 x 874 (WebKit, touch), never a hand-typed 390; a check at a second phone width is optional, never instead.
+**Principle:** Check a layout at the exact size its real user sees; a near size can hide a wrap change.
+
+
+### Observation 956: A style-only mock-up doubles as its own drawing check
+
+**Status:** OPEN
+**Date:** 16 Nov 26
+**Session context:** [LEGEND-TAB-STRIP] (D2081/D2082) — one CSS rule drawn on the running app, approved, then built
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** drawing a proposed change on the running app; the drawing check after the build
+
+**Issue:** The proposal was a single style rule. Drawing it by injecting that exact rule into the pre-change build meant the drawing and the build share one definition, so a separate drawing-check script could record each part's place, size and colour from the injected version BEFORE building, then compare the built app with nothing injected — red before, green after, in two minutes, with no hand-measured reference.
+**Suggested improvement:** In mockups-on-the-real-app.md, add: when the proposed change is pure style, draw it by injecting the exact rule to be built, and at the same time record the drawing's part positions (record mode) on the unchanged build; after the build, run the same script in check mode with nothing injected. Record before building — once the build replaces the served bundle, the "before" can no longer be measured.
+**Principle:** When a mock-up is made from the same rule the build will ship, record its measurements at mock time; the drawing check then becomes an exact before/after diff instead of an approximation.
+**Reference file:** raptor-port/docs/mock/2026-11-16-legend-tab-strip/drawcheck.mjs

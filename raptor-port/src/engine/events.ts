@@ -328,13 +328,18 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
           if(!saAnyFlies(w,f))return;
         }
         const toM=toMin(f.to);
-        let ldM=toMin(f.ld||f.to); if(ldM<toM)ldM+=1440;      // landed after midnight
         /* A STANDALONE line is a SHIFT, not a sortie: 0700–1300 means 0700–1300.
            It used to be padded like a jet — an hour of step in front, half an
            hour of dekit behind, a brief before that and a two-hour debrief tail —
            which made SC AM (07–13) and SC PM (13–19) overlap by 50 minutes and
            reported two clean abutting shifts as one fifteen-hour day. */
         const shiftLine=isStandalone(w);
+        /* THE ASSUMED LANDING (owner D2046, D2047, 15 Nov 26 — over D1990 and D2022's "the landing borrows the
+           take-off"): a sortie with its take-off typed and no landing that is a time (blank, "TBD", any words) lands the
+           Logic page's flight length after take-off, and every reader of this event — the step-to-dekit busy window, the
+           tight turn, the debrief, crew rest, the long day, Insights' hours — reads that landing; `noLd` below tells the
+           words to say it was assumed. A shift is as it was (its blank END: D2055, validate.ts). */
+        let ldM=!shiftLine&&isFinite(toM)&&!isFinite(toMin(f.ld||''))?toM+VCONF.fltLen:toMin(f.ld||f.to); if(ldM<toM)ldM+=1440;      // landed after midnight
         /* The brief time the scheduler INDICATED on the line (f.br) governs
            every brief-driven rule (owner, 6 Aug 26). VCONF.briefLead is only
            the default the board offers as a suggestion to accept — a blank B
@@ -406,12 +411,15 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
             /* D1996 (11 Nov 26): a standby row that FLIES is checked like a sortie — `flies` marks it, written only when
                true so every other event is as it was; validate.ts reads it for the turns and the clash grading */
             const fliesRow=shiftLine&&saFlies(w,f,a);
-            /* D2010's reading (the blind code reads of 15 Nov 26): a sortie whose landing is blank or not a time
-               ("TBD") stands its landing on the take-off — ldM above, and crew rest's own borrow in validate.ts — so
-               every sentence that would call that time a landing (the debrief window, the tight turn, the crew-rest
-               tail) says "take-off … no landing typed" instead. One source: the same test the borrow makes, written
-               only when true so every other event is as it was. */
+            /* D2010's reading (the blind code reads of 15 Nov 26), as D2046 changes it: a sortie whose landing is blank or
+               not a time ("TBD") lands at the assumed landing — ldM above — so every sentence that names that landing (the
+               debrief window, the tight turn, the crew-rest tail, the long day, a conflict line) says it was assumed. One
+               source: the same test ldM makes, written only when true so every other event is as it was. */
             const noLd=!shiftLine&&isFinite(toM)&&!isFinite(toMin(f.ld||''));
+            /* D2055 (15 Nov 26): a standby SHIFT with its START typed and its END blank is never assumed — it bears no crew
+               rest until its END is typed (validate.ts reads `noEnd`); flying or not (the agent's reading). Written only
+               when true. Its own SA_FLY_NO_TIME warning stays. */
+            const noEnd=shiftLine&&isFinite(toM)&&!isFinite(toMin(f.ld||''));
             fly.push({id,seat,brief:briefM,to:toM,ld:ldM,step:stepM,dekit:dekitM,report,intime,
               lateShow:!shiftLine&&lateShowOf(a.rmks),   // this crew shows at the brief, not at the in-time
               shift:shiftLine,...(viaRally?{viaRally:true}:{}),...(fliesRow?{flies:true}:{}),...(noLd?{noLd:true}:{}),label:lineLbl,key:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
@@ -422,10 +430,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
                nothing (null) when none is, so the work span (validate.ts workSpan: the long day and Insights' hours)
                starts that day at take-off less the default rally, VCONF.reportLead, as OIL does — never at the step.
                `fly` above keeps report-or-step for the SANS window, and crew rest reads `intime`; a shift is as before.
-               A sortie with no take-off or no landing typed (ldM above borrows its take-off) is unfinished: NaN, so workSpan's own
-               guard counts it nowhere, as OIL counts it nothing (fltOilWin) — Astra's and Sol 6.1's reads. */
-            events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report:shiftLine?report:(parseHM(f.to)==null||parseHM(f.ld)==null?NaN:intime),brief:briefM,label:lineLbl,
-              kind:shiftLine?'shift':'fly',...(fliesRow?{flies:true}:{}),...(noLd?{noLd:true}:{}),slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
+               A sortie with no take-off typed is unfinished: NaN, so workSpan's own guard counts it nowhere, as OIL counts it
+               nothing (fltOilWin) — Astra's and Sol 6.1's reads. One with its take-off typed and no landing counts to its
+               assumed landing (ldM above), in Insights' hours and the long-day note as in OIL (owner D2053, over D1936). */
+            events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report:shiftLine?report:(parseHM(f.to)==null?NaN:intime),brief:briefM,label:lineLbl,
+              kind:shiftLine?'shift':'fly',...(fliesRow?{flies:true}:{}),...(noLd?{noLd:true}:{}),...(noEnd?{noEnd:true}:{}),slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
           });
         });
         /* an SC formation carries its shift window so the SC DAY / SC NIGHT
@@ -491,7 +500,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
     /* kind matters now: a shift clashing with a duty post is a Warning, with a
        ground event or a programme item only an Advisory. */
     const reqRows=new Set<any>();
-    const push=(id:any,st:any,en:any,label:any,kind:any,key?:any,src?:any)=>{
+    const push=(id:any,st:any,en:any,label:any,kind:any,key?:any,src?:any,scDesk?:any)=>{
       if(!id||!PEOPLE[id]||isSpecial(id))return;
       const w2=win(st,en); if(!w2){blank.push({id,label,key,src,kind});return;}   // a row with no start — D605, `blank` above
       /* the same man in the row's seat AND in its more[] is one commitment, not
@@ -502,11 +511,19 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
          it the Event's clash — its kind's own grade against a standby shift included. Two rows are the same commitment
          only when they are the same row (its key); rows nobody filed keep the old test exactly, so nothing the
          scheduler typed by hand reads differently. `reqRows` is this day's own note of which events a request made. */
-      if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label&&((!src&&!reqRows.has(x))||x.key===key)))return;
+      /* D2073 (Astra's read, 16 Nov 26): one commitment found twice keeps the PLAINER reading of its end — an SC desk with no
+         END met first must not swallow a plain desk's assumed end for crew rest, so the kept event loses its `noEnd` when
+         the one folded into it would bear rest; either block order then reads alike, and still no conflict with himself. */
+      const dup=events.find((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label&&((!src&&!reqRows.has(x))||x.key===key));
+      if(dup){ if(dup.noEnd&&!(en==null&&scDesk))delete dup.noEnd; return; }
       const ev:any={id,s:w2[0],e:w2[1],label,kind:kind||'other',key};
       /* an end ASSUMED from the Logic page's "Assumed length" (no end typed): crew rest the next day re-reads it under
          THAT day's settings (D2005 — the day being judged decides; validate.ts crewRestDay), never this day's */
       if(en==null)assumedEnd(ev,'open');
+      /* D2073 (16 Nov 26): a desk from an SC shift template, its START typed and its END blank, bears no crew rest until its
+         END is typed, as an SC wave line does (D2055 — validate.ts reads `noEnd`); its assumed hour still stands for every
+         other check. Only an SC template's desk (the agent's reading): a plain desk keeps the assumed end for crew rest too. */
+      if(en==null&&scDesk)ev.noEnd=true;
       if(src)reqRows.add(ev);
       events.push(ev);
     };
@@ -526,8 +543,10 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
         return;
       }
       const st=parseHM(r.str),en=parseHM(r.end);
-      push(r.id,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`);
-      extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`)); }));
+      /* D2073, D2080: an SC template's desk, or an AVALON / BB one (reached here only once its wave flies — D1997, above) */
+      const scDesk=dw.sa==='sc'||saExemptKind(dw.sa);
+      push(r.id,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`,undefined,scDesk);
+      extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`,undefined,scDesk)); }));
     /* a row flagged ⓘ info-only (owner, 1 Sep 26) is shown but never checked:
        it must not enter the event stream — that one skip keeps it out of every
        validator rule, the palette's clash checks and the Insights hours, which

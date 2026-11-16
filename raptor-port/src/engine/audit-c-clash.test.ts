@@ -27,7 +27,7 @@ describe('double-booking: the same man twice in the air', () => {
     a.p = 'split'; a.w = 'split'
     const h = hits('DOUBLE_BOOK', 'split').filter((x: any) => x.di === 1)
     expect(h.length, JSON.stringify(h)).toBeGreaterThan(0)
-    expect(h.some((x: any) => /is in two seats on VL BFM at once/.test(x.msg))).toBe(true)
+    expect(h.some((x: any) => /^Conflict: in two seats on VL BFM \(T\/O \d\d:\d\d\) at once$/.test(x.msg))).toBe(true)
   })
 
   it('two aircraft of the SAME formation — hard, same wording (labels are shared)', () => {
@@ -35,7 +35,7 @@ describe('double-booking: the same man twice in the air', () => {
     f.aircraft[0].p = 'split'; f.aircraft[1].p = 'split'
     const h = hits('DOUBLE_BOOK', 'split').filter((x: any) => x.di === 1)
     expect(h.length).toBeGreaterThan(0)
-    expect(h.some((x: any) => /two seats on VL BFM at once/.test(x.msg))).toBe(true)
+    expect(h.some((x: any) => /^Conflict: in two seats on VL BFM \(T\/O \d\d:\d\d\) at once$/.test(x.msg))).toBe(true)
   })
 
   it('same wave, two formations airborne at once — hard clash, tight-turn advisory suppressed', () => {
@@ -45,7 +45,7 @@ describe('double-booking: the same man twice in the air', () => {
     w.formations[1].aircraft[0].p = 'split'
     const db = hits('DOUBLE_BOOK', 'split').filter((x: any) => x.di === 1)
     expect(db.length, JSON.stringify(db)).toBeGreaterThan(0)
-    expect(db.some((x: any) => /VL BFM & RU BFM clash/.test(x.msg))).toBe(true)
+    expect(db.some((x: any) => /^Conflict: VL BFM \(T\/O \d\d:\d\d, landing \d\d:\d\d\) & RU BFM \(T\/O \d\d:\d\d, landing \d\d:\d\d\)$/.test(x.msg))).toBe(true)
     // the negative-minute "tight turn" this used to print is gone
     expect(hits('TURN', 'split').filter((x: any) => x.di === 1)).toEqual([])
     /* and he is NOT counted "double turning" — both legs are the same air

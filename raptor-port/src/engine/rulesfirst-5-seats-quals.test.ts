@@ -95,7 +95,7 @@ describe('W55 — one man in both seats of one jet stays a warning (the red "two
     expect(slotVal(`${fk}.w`)).toBe('split')
     const db = warns(TUE, 'DOUBLE_BOOK', 'split')
     expect(db.map((x: any) => x.sev), 'the red "two events at once"').toEqual(['hard'])
-    expect(db[0].msg).toMatch(/two seats on VL BFM at once/)
+    expect(db[0].msg).toBe('Conflict: in two seats on VL BFM (T/O 12:00) at once')
     ground(TUE, 'split', '1500', '1600')
     expect(fillSlot(`g:${TUE}.0.+`, 'split'), 'D271: one man, once per row').toBe(false)
     expect(rowTwice('split', `g:${TUE}.0.+`)).toMatch(/not added twice/)
@@ -108,7 +108,7 @@ describe('W56 — a flying line with only its front seat filled works as fully a
     add(TUE, wave([form({ aircraft: [ac('bapster', '', 'AAR')] })]))          // an OCU pilot, alone, an AAR line
     P('bapster').quals = { ...(P('bapster').quals || {}), daar: false }
     expect(codes(TUE, 'bapster')).toEqual(['AAR_QUAL', 'OCU_NO_IP'])
-    expect(warns(TUE, 'AAR_QUAL')[0].msg).toMatch(/not DAAR current/)
+    expect(warns(TUE, 'AAR_QUAL')[0].msg).toBe('Not DAAR current: VL BFM (T/O 12:00) remarks call for it')
   })
 })
 

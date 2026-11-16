@@ -1,0 +1,110 @@
+[
+ [
+  "S7 AVALON MAIN",
+  "desktop",
+  "WSO Hex in AVALON MAIN front seat",
+  "Illegal seat: names the person, AVALON MAIN and hours",
+  "seat ok; note: Hex — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 (+1 more); warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\"]",
+  "PASS",
+  "w1/s07"
+ ],
+ [
+  "S7 AVALON MAIN",
+  "desktop",
+  "ground crew Cotter in AVALON MAIN front seat",
+  "Illegal seat: names the person, AVALON MAIN and hours",
+  "seat ok; note: Cotter — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 (+1 more); warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\"]",
+  "PASS",
+  "w1/s07"
+ ],
+ [
+  "S7 AVALON SPARE",
+  "desktop",
+  "WSO Hex in AVALON SPARE front seat",
+  "Illegal seat: Hex, AVALON SPARE, hours",
+  "seat ok; note: Hex — Not SC NIGHT current: AVALON NIGHT SPARE 19:00–07:00 (+2 more); warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕\"]",
+  "PASS",
+  "w1/s07"
+ ],
+ [
+  "S7 BB MAIN",
+  "desktop",
+  "WSO Echo in BB MAIN front seat",
+  "Illegal seat: Echo, BB MAIN, hours",
+  "seat ok; note: Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00; warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00 ✕\"]",
+  "PASS",
+  "w1/s07"
+ ],
+ [
+  "S7 BB SPARE",
+  "desktop",
+  "ground crew Ratchet in BB SPARE front seat",
+  "Illegal seat: Ratchet, BB SPARE, hours",
+  "seat ok; note: Ratchet — Not SC NIGHT current: BB SHIFT SPARE 19:00–07:00 (+1 more); warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00 ✕\",\"Ratchet — Illegal seat: ground crew in the front seat of BB SHIFT SPARE 19:00–07:00 ✕\"]",
+  "PASS",
+  "w1/s07"
+ ],
+ [
+  "S7 SC SPARE",
+  "desktop",
+  "WSO Echo in SC SPARE front seat",
+  "Illegal seat: Echo, SPARE, hours",
+  "seat ok; note: Echo — Illegal seat: a WSO in the front seat of SC AM SPARE 07:00–13:00; warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00 ✕\",\"Ratchet — Illegal seat: ground crew in the front seat of BB SHIFT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of SC AM SPARE 07:00–13:00 ✕\"]",
+  "PASS",
+  "w1/s07"
+ ],
+ [
+  "S7 SC SPARE",
+  "desktop",
+  "ground crew Cotter in SC SPARE front seat",
+  "Illegal seat: Cotter, SPARE, hours",
+  "seat FAILED spanner not offered; note: Echo — Illegal seat: a WSO in the front seat of SC AM SPARE 07:00–13:00; warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00 ✕\",\"Ratchet — Illegal seat: ground crew in the front seat of BB SHIFT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of SC AM SPARE 07:00–13:00 ✕\"]",
+  "NOT WALKED",
+  "w1/s07"
+ ],
+ [
+  "S7 flight",
+  "desktop",
+  "WSO Hex in an ordinary flight front seat, TO 09:00",
+  "Illegal seat: formation, take-off time",
+  "seat ok; note: Hex — Illegal seat: a WSO in the front seat of this line (T/O 09:00); warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00 ✕\",\"Ratchet — Illegal seat: ground crew in the front seat of BB SHIFT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of SC AM SPARE 07:00–13:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of this line (T/O 09:00) ✕\"]",
+  "PASS",
+  "w1/s07"
+ ],
+ [
+  "S7 flight",
+  "desktop",
+  "ground crew Cotter in front seat of a second aircraft",
+  "Illegal seat: Cotter",
+  "seat ok; note: Cotter — Illegal seat: ground crew in the front seat of this line (T/O 11:00); warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00 ✕\",\"Ratchet — Illegal seat: ground crew in the front seat of BB SHIFT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of SC AM SPARE 07:00–13:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of this line (T/O 09:00) ✕\",\"Cotter — Illegal seat: ground crew in the front seat of this line (T/O 11:00) ✕\"]",
+  "PASS",
+  "w1/s07"
+ ],
+ [
+  "S7 flight",
+  "desktop",
+  "negative control: pilot Ranger in the rear seat",
+  "legal: no illegal-seat warning for Ranger",
+  "seat ok; Ranger seat warnings []",
+  "PASS",
+  "w1/s07"
+ ],
+ [
+  "S7 OFT",
+  "desktop",
+  "WSO Hex in the OFT front seat, 13:00-15:00",
+  "Illegal seat: Hex, OFT, hours",
+  "seat ok; note: Hex — Illegal seat: a WSO in the front seat of OFT sim 13:00–15:00; warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00 ✕\",\"Ratchet — Illegal seat: ground crew in the front seat of BB SHIFT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of SC AM SPARE 07:00–13:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of this line (T/O 09:00) ✕\",\"Cotter — Illegal seat: ground crew in the front seat of this line (T/O 11:00) ✕\",\"Hex — Illegal seat: a WSO in the front seat of OFT sim 13:00–15:00 ✕\"]",
+  "PASS",
+  "w1/s07"
+ ],
+ [
+  "S7 AMT BOX",
+  "desktop",
+  "WSO Echo in the AMT BOX first seat, 10:00-12:00",
+  "Illegal seat or none: record what the AMT BOX says",
+  "seat ok; note: Echo planned; warnings: [\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00 ✕\",\"Ratchet — Illegal seat: ground crew in the front seat of BB SHIFT SPARE 19:00–07:00 ✕\",\"Echo — Illegal seat: a WSO in the front seat of SC AM SPARE 07:00–13:00 ✕\",\"Hex — Illegal seat: a WSO in the front seat of this line (T/O 09:00) ✕\",\"Cotter — Illegal seat: ground crew in the front seat of this line (T/O 11:00) ✕\",\"Hex — Illegal seat: a WSO in the front seat of OFT sim 13:00–15:00 ✕\"]",
+  "PASS",
+  "w1/s07"
+ ]
+]

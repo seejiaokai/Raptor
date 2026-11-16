@@ -26,7 +26,7 @@ import { setSession } from '../state/auth'
 import { setPage, DPREV, VWORK, setUnpubArm, setRestArm } from '../state/view'
 import { dayHTML, dayInfoHTML, withDaySnap } from './html'
 import { boardSignHTML } from './board'
-import { pendListHTML } from './pendlist'
+import { pendListHTML, oilShiftNote } from './pendlist'
 import { oilDayFigures, oilEligible } from './oilmode'
 
 const PEND_CHIP = '.dpend:not(.dnew):not(.dchg)'
@@ -131,6 +131,30 @@ describe('OWS7 — a Logic change that would move a published day\'s OIL is one 
     VCONF.reportLead = 180; validate()
     expect(counts(SAT)).toEqual(ALL(0))
     expect(daySigned(SAT), 'back to what was published — the four stand again').toBe(true)
+  })
+  /* OWS13 — D2054 ([WARN-WORDS-STANDALONE]): inside the man's own row, under his times, one line says whether his OIL changes and
+     what now starts or ends it — the answer first */
+  it('D2054: the man\'s row says whether his OIL changes, and from when it now counts', () => {
+    build('10:00', '11:15')
+    publishDay(SAT)
+    VCONF.reportLead = 150; validate()
+    const notes = [...el(pendListHTML(SAT)).querySelectorAll('.pl-sub .pl-note')].map(n => n.textContent)
+    expect(notes, 'one line, in his row').toEqual(['OIL changes: full day → half day. It counts from 07:30, not 07:00.'])
+    VCONF.reportLead = 180; VCONF.debrief = 150; validate()
+    expect([...el(pendListHTML(SAT)).querySelectorAll('.pl-sub .pl-note')].map(n => n.textContent), 'only the end moved')
+      .toEqual(['Still a full day of OIL. It counts until 13:45, not 13:15.'])
+  })
+  it('D2054: the line\'s words, each case', () => {
+    expect(oilShiftNote({ amt: 1, spans: [[300, 900]] }, { amt: 1, spans: [[310, 900]] })).toBe('Still a full day of OIL. It counts from 05:10, not 05:00.')
+    expect(oilShiftNote({ amt: 1, spans: [[600, 900]] }, { amt: 0.5, spans: [[810, 900]] })).toBe('OIL changes: full day → half day. It counts from 13:30, not 10:00.')
+    expect(oilShiftNote({ amt: 0.5, spans: [[600, 780]] }, { amt: 0.5, spans: [[600, 780]] })).toBe('Still a half day of OIL.')
+    expect(oilShiftNote({ amt: 0.5, spans: [[600, 780]] }, null)).toBe('OIL changes: half day → nothing.')
+  })
+  /* the walk's W1, scenario 8 (16 Nov 26): the default rally AND "A flight" changed together moved both ends — the times
+     line read 09:00–15:30 → 09:15–16:00 and the note named only the start, so the end's move was said nowhere in words */
+  it('D2054: both ends moved — the note names both', () => {
+    expect(oilShiftNote({ amt: 1, spans: [[540, 930]] }, { amt: 1, spans: [[555, 960]] })).toBe('Still a full day of OIL. It counts 09:15–16:00, not 09:00–15:30.')
+    expect(oilShiftNote({ amt: 0.5, spans: [[540, 900]] }, { amt: 1, spans: [[540, 960]] })).toBe('OIL changes: half day → full day. It counts until 16:00, not 15:00.')
   })
   it('the debrief and the full-day line are named the same way', () => {
     build('10:00', '11:00')

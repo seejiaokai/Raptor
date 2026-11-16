@@ -54,7 +54,7 @@ describe('W27 — crew rest runs off the last commitment of ANY kind the day bef
     ground(TUE, 'bane', '0700', '0800', 'MTG')
     const cr = warns(TUE, 'bane', 'CREW_REST')
     expect(cr.length, 'the first event of the day binds, though the in-time is clear').toBe(1)
-    expect(cr[0].msg).toContain('his day starts 07:00 (MTG) before the 09:00 report')
+    expect(cr[0].msg).toContain('Day starts 07:00 (MTG), before report 09:00: 11h rest, needs 12h.')
     ;(DAYS[TUE] as any).waves.splice(0)
     expect(warns(TUE, 'bane', 'CREW_REST'), '"the rule only exists when he FLIES that day"').toEqual([])
   })
@@ -107,13 +107,13 @@ describe('W31 — a sortie-caused breach spells out the debrief assumption; anyt
   it('a sortie: "landed 19:30, +2h debrief assumed"; a flying SC line: "ended 19:00", no debrief; the long-day note likewise', () => {
     add(MON, wave([], [form({ to: '18:30', ld: '19:30' })]))
     add(TUE, wave(['09:00 IN TIME']))
-    expect(warns(TUE, 'bane', 'CREW_REST')[0].msg).toContain('landed 19:30, +2h debrief assumed → ended 21:30 → crew rest clear at 09:30')
+    expect(warns(TUE, 'bane', 'CREW_REST')[0].msg).toContain('Crew rest: Monday landed 19:30 + 2h debrief (assumed) → ended 21:30 → clear 09:30. ')
     ;(DAYS[MON] as any).waves.splice(0)
     const sc: any = makeStandalone('sc'); add(MON, sc)
     const pm = sc.formations[1]; pm.rl = '12:00'; pm.aircraft[2].p = 'bane'          // SC PM 13:00–19:00 flies, SPARE seated
     ;(DAYS[TUE] as any).waves[0].intimes = ['06:30 IN TIME']
     const msg = warns(TUE, 'bane', 'CREW_REST')[0].msg
-    expect(msg, 'a flying standby line ends at END').toContain('ended 19:00 → crew rest clear at 07:00')
+    expect(msg, 'a flying standby line ends at END').toContain('Crew rest: Monday duty ended 19:00 → clear 07:00. ')
     expect(msg).not.toContain('debrief assumed')
     ground(MON, 'bane', '0500', '1100')                                // 05:00 → 19:00 = 14h, ended by the shift
     const ld = warns(MON, 'bane', 'LONGDAY')
@@ -226,24 +226,28 @@ describe('W34 — the midnight tail: a window past midnight is checked against t
   })
 })
 
-describe('W35 — a sortie with its take-off typed and its landing blank or "TBD" counts no hours and raises no long-day note (D1936)', () => {
-  it('blank and TBD landings: no hours, no note; the same sortie with its landing typed makes a 16h day', () => {
+/* W35 CHANGED ON PURPOSE by D2053 (15 Nov 26 — "a flight with its take-off typed and no landing counts in Insights' hours
+   and the long-day note up to its assumed landing, no longer nothing"), over D1936; and D2046 ("assumed it landed 13:00
+   (take-off + 1h)") over D1990's "take-off plus the debrief": a blank or "TBD" landing is the ASSUMED landing, take-off
+   plus Logic's flight length, for the hours, the long day and tomorrow's crew rest alike */
+describe('W35 — a sortie with its take-off typed and its landing blank or "TBD" counts to its assumed landing (D2053, over D1936)', () => {
+  it('blank and TBD landings: hours to the assumed landing and the long-day note; the same as a typed landing at take-off + 1h', () => {
     const vl: any = add(TUE, wave([], [form({ to: '06:00', ld: '07:00' })]))
     ground(TUE, 'bane', '1000', '1900')
     expect(warns(TUE, 'bane', 'LONGDAY').length, 'the control: 03:00 → 19:00').toBe(1)
     for (const ld of ['', 'TBD']) {
       vl.formations[0].ld = ld
-      expect(warns(TUE, 'bane', 'LONGDAY'), `landing "${ld}": no long-day note`).toEqual([])
-      expect(workSpan(dayEvents(TUE, 'bane'))!.s, `landing "${ld}": the sortie counts no hours`).toBe(h(10))
+      expect(warns(TUE, 'bane', 'LONGDAY').length, `landing "${ld}": the long-day note, as for 07:00`).toBe(1)
+      expect(workSpan(dayEvents(TUE, 'bane'))!.s, `landing "${ld}": the sortie's hours count from its report`).toBe(h(3))
     }
   })
   // D1990 (11 Nov 26, [RULES-CHECK-FIXES]) over the as-built "a TBD landing ends nothing": a "TBD" landing ends the day
-  // as a blank one does for tomorrow's crew rest — take-off plus the debrief. D1936 (hours, the long-day note) unchanged.
-  it('D1990: a blank landing and a "TBD" landing both end the day for tomorrow\'s crew rest at take-off + debrief', () => {
-    const vl: any = add(MON, wave([], [form({ to: '20:00', ld: '' })]))          // 20:00 + 2h → clear 10:00
+  // as a blank one does for tomorrow's crew rest — since D2046 at the assumed landing plus the debrief.
+  it('D1990, D2046: a blank landing and a "TBD" landing both end the day for tomorrow\'s crew rest at the assumed landing + debrief', () => {
+    const vl: any = add(MON, wave([], [form({ to: '20:00', ld: '' })]))          // 20:00 + 1h + 2h → clear 11:00
     add(TUE, wave(['09:00 IN TIME']))
     const blank = warns(TUE, 'bane', 'CREW_REST')
-    expect(blank.length, 'blank: the take-off is borrowed as the landing').toBe(1)
+    expect(blank.length, 'blank: the assumed landing ends the day').toBe(1)
     for (const ld of ['TBD', 'tbd', ' TBD ']) {
       vl.formations[0].ld = ld
       const tbd = warns(TUE, 'bane', 'CREW_REST')
@@ -252,14 +256,15 @@ describe('W35 — a sortie with its take-off typed and its landing blank or "TBD
       validate()
       expect(WARN.trace[MON]?.bane?.di, `"${ld}": the dotted mark on Monday points at Tuesday`).toBe(TUE)
     }
-    Object.assign((DAYS[TUE] as any).waves[0].formations[0], { to: '13:00', ld: '14:00' })   // brief 10:40
-    ;(DAYS[TUE] as any).waves[0].intimes = ['10:00 IN TIME']             // exactly 12h after 22:00: legal
+    Object.assign((DAYS[TUE] as any).waves[0].formations[0], { to: '14:00', ld: '15:00' })   // brief 11:40
+    ;(DAYS[TUE] as any).waves[0].intimes = ['11:00 IN TIME']             // exactly 12h after 23:00: legal
     expect(warns(TUE, 'bane', 'CREW_REST'), 'TBD: the equal-time edge is legal, as for blank').toEqual([])
-    vl.formations[0].to = ''                                           // no take-off either: nothing to borrow
+    vl.formations[0].to = ''                                           // no take-off either: nothing to assume from
     ;(DAYS[TUE] as any).waves[0].intimes = ['09:00 IN TIME']
     expect(warns(TUE, 'bane', 'CREW_REST'), 'TBD with no take-off: no end, as blank with no take-off').toEqual([])
     vl.formations[0].to = '20:00'; vl.formations[0].ld = 'TBD'
-    expect(workSpan(dayEvents(MON, 'bane')), 'D1936 unchanged: the TBD sortie still counts no hours').toBeNull()
+    validate()
+    expect(workSpan(dayEvents(MON, 'bane')), 'D2053: the TBD sortie counts 17:00 → 23:00').toEqual(expect.objectContaining({ s: h(17), e: h(23) }))
   })
 })
 
@@ -310,7 +315,7 @@ describe('W38 — every Logic line is correct for whatever the settings are; a c
   it('the crew-rest fold is true of a typed R box with no in-time: rest is measured to the rally, not to the B', () => {
     add(MON, wave([], [form({ to: '18:30', ld: '19:30' })]))           // clear 09:30
     add(TUE, wave([], [form({ rl: '09:00' })]))                        // R 09:00, no in-time, suggested B 09:40
-    expect(warns(TUE, 'bane', 'CREW_REST')[0].msg, 'the engine measures to the rally').toContain('told to report 09:00')
+    expect(warns(TUE, 'bane', 'CREW_REST')[0].msg, 'the engine measures to the rally').toContain('Report 09:00: ')
     expect(logicCheck('crewrest').how!()[0], 'the fold\'s first line').toMatch(/rally/i)
   })
 })

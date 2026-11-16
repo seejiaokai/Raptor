@@ -36,7 +36,10 @@ describe('no sentence a person reads calls OIL pay or money (D25)', () => {
     expect(all).toContain('A published day keeps its OIL until it is published again')
     /* the rules check's F9 (the words job, [RULES-CHECK-FIXES] job 3): a request answered yes earns over its own times,
        though its row on the programme carries none (D932) */
-    expect(all).toContain('A row the scheduler adds with no times, or no end time, earns nothing, but a request answered yes earns over its own times.')
+    /* CHANGED ON PURPOSE by D2046 (16 Nov 26): a flight with no landing earns to its assumed landing, so the line now
+       says "Any other row", after the flight's own sentence */
+    expect(all).toContain('With no landing typed, it lands at its assumed landing (A flight).')
+    expect(all).toContain('Any other row the scheduler adds with no times, or no end time, earns nothing, but a request answered yes earns over its own times.')
     /* [OIL-ZERO-SPAN-SORTIE] (20 Oct 26): the line says when a nought-minute sortie earns nothing too (D932); since D1999
        a standby shift with no length that flies from an R or B before its START earns from it (the words job) */
     expect(all).toContain('A flying line still earns its OIL from the report before it and the debrief after it, and none if it has neither. A standby shift with no length earns none. One that flies with its R or B before its START earns from that time.')

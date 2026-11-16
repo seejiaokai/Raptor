@@ -1,0 +1,47 @@
+[
+ [
+  "S1",
+  "phone",
+  "Sunday desk START 20:00, END blank, Ranger + Echo; Monday flight B 08:00 TO 10:20; reload; open Monday cold",
+  "no crew-rest line for Ranger or Echo (blank END contributes no ending)",
+  "strip: NO STRIP | crew lines: [] | details crew lines: [] | fixture Ranger/Echo br=08:00 to=10:20",
+  "PASS",
+  "w1/s01/03-cold-monday-strip.png"
+ ],
+ [
+  "S1",
+  "phone",
+  "visit Sunday week, return to Monday (warm)",
+  "same as cold: no crew-rest line",
+  "crew lines: []",
+  "PASS",
+  "w1/s01/05-sunday-trace-blank.png"
+ ],
+ [
+  "S1",
+  "phone",
+  "type Sunday END 23:00; tap Ranger puck on Sunday",
+  "forward mark: Breaks Monday (clear 11:00)",
+  "Ranger trace [\"Breaks Monday Ranger — had to leave by 20:00. Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h.\"] | Echo trace []",
+  "PASS",
+  "w1/s01/06-sunday-trace-2300.png"
+ ],
+ [
+  "S1",
+  "phone",
+  "load Monday after typing END 23:00",
+  "crew-rest breach for Ranger and Echo: clear 11:00, report 08:00",
+  "Ranger [\"Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕\"] Echo [] details [\"Warning · Crew rest (<12h) Ranger — Crew rest: Sunday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h.\"]",
+  "FAIL",
+  "w1/s01/07-monday-strip-2300.png"
+ ],
+ [
+  "S1",
+  "phone",
+  "clear Sunday END again; load Monday",
+  "crew-rest line gone; Sunday trace gone",
+  "Monday crew lines [] trace []",
+  "PASS",
+  "w1/s01/10-monday-strip-cleared.png"
+ ]
+]

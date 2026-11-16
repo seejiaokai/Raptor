@@ -1,0 +1,38 @@
+ROW PASS | 11 Logic A flight | 1536 | opened Logic; read the group and order of "A flight" and "A sim" | saw: {"i":13,"j":14,"grpFlight":"Rows with no end time","grpSim":"Rows with no end time","near":["Sim debrief","AMT debrief","A flight","A sim","Any other row"]}
+ROW PASS | 11 Logic A flight | 1536 | typed "A flight" in the Logic search | saw: ["A flight"]
+ROW RECORDED | 11 Logic A flight | 1536 | typed "landing" in the Logic search | saw: ["Dekit after landing","Debrief after landing","Tight turn","A flight"]
+ROW PASS | 11 Logic A flight | 1536 | Edit; typed 90 in "A flight"; left the box | saw: box: 1h30; strip: [{"cls":"","id":"","text":"1 setting changed from the squadron standard.","h":15,"w":252}]
+ROW FAIL | 11 Logic A flight | 1536 | read the strip note | saw: ["1 setting changed from the squadron standard."]
+ROW PASS | 11 Logic A flight | 1536 | typed 45 and pressed the row Reset at once (no leaving the box) | saw: box: 1h; strip: []
+ROW PASS | 11 Logic A flight | 1536 | waited 1.5s after Reset | saw: 1h
+ROW PASS | 11 Logic A flight | 1536 | typed 10 (outside 15-480 min); left the box | saw: box: 1h; toast: A flight with no landing typed must be between 15 min and 8h; row text: ["A flight","A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed."]
+ROW PASS | 11 Logic A flight | 1536 | after the refusal of 10: tapped away, tapped the box afresh, typed the figure it showed (1h) | saw: box: 1h
+ROW PASS | 11 Logic A flight | 1536 | typed 500 (outside 15-480 min); left the box | saw: box: 1h; toast: A flight with no landing typed must be between 15 min and 8h; row text: ["A flight","A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed."]
+ROW PASS | 11 Logic A flight | 1536 | after the refusal of 500: tapped away, tapped the box afresh, typed the figure it showed (1h) | saw: box: 1h
+ROW PASS | 11 Logic A flight | 1536 | set 90, Done, reloaded the page, opened Logic | saw: box: 1h30; strip: ["1 setting changed from the squadron standard."]
+ROW PASS | 11 Logic A flight | 1536 | pressed "Reset to standard" | saw: strip: []; box: 1h; page {"sw":1536,"cw":1536,"sh":4462} -> {"sw":1536,"cw":1536,"sh":4401}
+ROW PASS | 11 Logic A flight | 1536 | typed 75 after the Reset; strip shown again | saw: strip: ["1 setting changed from the squadron standard."]; page {"sw":1536,"cw":1536,"sh":4470}
+ROW RECORDED | 11 Logic A flight | 1536 | measured the row boxes "A flight" and the next row | saw: [{"k":"fltLen","h":92,"vh":24},{"k":"simLen","h":75,"vh":24}]
+ROW PASS | 11 Logic A flight | 1536 | signed in as Ranger; opened Logic; looked for Edit and boxes; A flight row | saw: Edit buttons: 0; boxes: 0; A flight reads: 1h
+ROW RECORDED | 11 Logic A flight | 1536 | Ranger: the strip | saw: []
+errors []
+DONE 13 PASS 1 FAIL 3 OTHER of 17
+ROW PASS | 11 Logic A flight | 1536 | opened Logic; read the group and order of "A flight" and "A sim" | saw: {"i":13,"j":14,"grpFlight":"Rows with no end time","grpSim":"Rows with no end time","near":["Sim debrief","AMT debrief","A flight","A sim","Any other row"]}
+ROW PASS | 11 Logic A flight | 1536 | typed "A flight" in the Logic search | saw: ["A flight"]
+ROW RECORDED | 11 Logic A flight | 1536 | typed "landing" in the Logic search | saw: ["Dekit after landing","Debrief after landing","Tight turn","A flight"]
+ROW PASS | 11 Logic A flight | 1536 | Edit; typed 90 in "A flight"; left the box | saw: box: 1h30; strip: [{"cls":"lgoff","id":"lgOff","text":"1 setting changed from the squadron standard. Published days keep their old settings until published again.","h":37,"w":1180}]
+ROW PASS | 11 Logic A flight | 1536 | read the strip note | saw: ["1 setting changed from the squadron standard. Published days keep their old settings until published again."]
+ROW PASS | 11 Logic A flight | 1536 | typed 45 and pressed the row Reset at once (no leaving the box) | saw: box: 1h; strip: []
+ROW PASS | 11 Logic A flight | 1536 | waited 1.5s after Reset | saw: 1h
+ROW PASS | 11 Logic A flight | 1536 | typed 10 (outside 15-480 min); left the box | saw: box: 1h; toast: A flight with no landing typed must be between 15 min and 8h; row text: ["A flight","A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed."]
+ROW PASS | 11 Logic A flight | 1536 | after the refusal of 10: tapped away, tapped the box afresh, typed the figure it showed (1h) | saw: box: 1h
+ROW PASS | 11 Logic A flight | 1536 | typed 500 (outside 15-480 min); left the box | saw: box: 1h; toast: A flight with no landing typed must be between 15 min and 8h; row text: ["A flight","A flight with a take-off and no landing is taken to land this long after take-off. Clashes, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed."]
+ROW PASS | 11 Logic A flight | 1536 | after the refusal of 500: tapped away, tapped the box afresh, typed the figure it showed (1h) | saw: box: 1h
+ROW PASS | 11 Logic A flight | 1536 | set 90, Done, reloaded the page, opened Logic | saw: box: 1h30; strip: ["1 setting changed from the squadron standard. Published days keep their old settings until published again."]
+ROW PASS | 11 Logic A flight | 1536 | pressed "Reset to standard" | saw: strip: []; box: 1h; page {"sw":1536,"cw":1536,"sh":4462} -> {"sw":1536,"cw":1536,"sh":4401}
+ROW PASS | 11 Logic A flight | 1536 | typed 75 after the Reset; strip shown again | saw: strip: ["1 setting changed from the squadron standard. Published days keep their old settings until published again."]; page {"sw":1536,"cw":1536,"sh":4470}
+ROW RECORDED | 11 Logic A flight | 1536 | measured the row boxes "A flight" and the next row | saw: [{"k":"fltLen","h":92,"vh":24},{"k":"simLen","h":75,"vh":24}]
+ROW PASS | 11 Logic A flight | 1536 | signed in as Ranger; opened Logic; looked for Edit and boxes; A flight row | saw: Edit buttons: 0; boxes: 0; A flight reads: 1h
+ROW RECORDED | 11 Logic A flight | 1536 | Ranger: the strip | saw: []
+errors []
+DONE 14 PASS 0 FAIL 3 OTHER of 17

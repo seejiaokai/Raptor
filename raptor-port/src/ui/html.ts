@@ -15,14 +15,14 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenSays, fltNoLenMsg, versionFaceWarn, withVersionWarn } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenMsg, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo, pendingInputIds } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, displayedBundle } from '../state/view'
+import { esc, escMsg, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, unpubArmed, notePub, stSavedOn, displayedBundle } from '../state/view'
 import { shownWarns } from '../engine/warnhide'
 import { canEditSched } from '../state/auth'
 import { isGuest, mayReadMedicalOf, isMember } from '../state/perms'
@@ -445,17 +445,17 @@ export function legendHTML(){
     <span><span class="qk" style="background:#F0555F">C</span>conflict</span>
     <span><span class="qk" style="background:#F0555F">CP</span>crew pairing — not authorised</span>
     <span><span class="qk" style="background:#F0555F">R</span>crew rest</span>
-    <span><span class="qk" style="background:#F0555F">7</span>no break day</span>
+    <span><span class="qk" style="background:#F0555F">7</span>days in a row</span>
     <span><span class="qk" style="background:#F0555F">Q</span>qual / illegal seat</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">DT</span>double turn</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">TT</span>tight turn</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">A</span>advisory — shift + ground</span>
     <span><span class="qk" style="background:#E5A83B;color:#12100a">CP</span>crew pairing — needs approval</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>no flight brief</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>no sim brief</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>no flight debrief</span>
-    <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>no sim debrief</span>
-    <span><span class="qk" style="background:#8A96A3;color:#0B0D10">L</span>long work day</span>`;
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>misses flight brief</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">B</span>misses sim brief</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>misses flight debrief</span>
+    <span><span class="qk" style="background:#E5A83B;color:#12100a">D</span>misses sim debrief</span>
+    <span><span class="qk" style="background:#8A96A3;color:#0B0D10">L</span>long day</span>`;
     /* (the "Sections:" colour key used to sit here — removed on request; each section
        still carries its own coloured left bar, which is self-explanatory in place.) */
 }
@@ -1107,7 +1107,7 @@ function dayTraceHTML(di:any,pf:any){
                          :` title="Next week's ${esc(t.dow||'Monday')} — load it to see the breach itself"`;
     return `<div class="witem hard wtr${on?' on':''}"${addr}>`
       +`<span class="wbar"></span><span><span class="wcode">Breaks ${esc(t.dow||'the next day')}</span>`
-      +`<b>${esc(cs)}</b> — had to leave by <b>${esc(t.leaveBy)}</b>. ${esc(t.msg||'')}</span></div>`;
+      +`<b>${esc(cs)}</b> — had to leave by <b>${esc(t.leaveBy)}</b>. ${escMsg(t.msg||'')}</span></div>`;
   }).join('')+`</div>`;
 }
 /* A day with no issue box of its own still shows the trace in the SAME
@@ -1199,7 +1199,7 @@ export function dayWarnHTML(di:any){
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix, hid=!!w.off;
       return `<div class="witem ${w.sev}${on?' on':''}${hid?' hid':''}" data-wdi="${di}" data-wix="${ix}" title="${hid?'Hidden — it flags no puck and is not counted. ':''}Jump to the puck that caused this">`
         +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code,di))}</span>`
-        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}${hid?'':sigNew(w)}</span>`
+        +`<b>${esc(names)}</b>${names?' — ':''}${escMsg(w.msg||'')}${hid?'':sigNew(w)}</span>`
         /* a hidden line's flag-again is the app's drawn Reset arrow, "put back" as on the Leave War's Reset order (owner D1792 (d),
            8 Nov 26); the ✕ that hides a line stays typed, the app's close-and-remove mark */
         +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${hid?'Flag this again':'Hide this warning — it flags no puck and is not counted; it comes back if the situation changes'}">${hid?glyphSvg(RESET_INNER,'wmuteico'):'✕'}</button>`:'')
@@ -2004,7 +2004,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            emits nothing for a warning to resolve into. Emitting it everywhere
            broke both — a focused live warning lit a box inside last week's
            paper, and the tap could scroll into one. */
-        const badAtt=noLen?`${PV?'':` data-warnkey="${fp}.ld"`} title="${esc((f.cs||w.label||'A flying line')+' '+fltNoLenSays(f,w))}"`:'';
+        const badAtt=noLen?`${PV?'':` data-warnkey="${fp}.ld"`} title="${esc(fltNoLenMsg(f,w))}"`:'';
         h+=`<div class="form${rowCls(f)}"${HOOKS.missionRoleEnabled()?` data-role-formation="${esc(f.rid||'')}" data-role-day="${di}"`:''}>
           <div class="fcell csmsn" style="${spans}">${cxTag(f)}${flagTag(f)}<b><span class="mdot" style="background:${sa?'var(--san)':`var(--${mColor(f.msn)})`}"></span>${ted(fp+'.cs',f.cs,ed,'ntx')}</b>${ted(fp+'.msn',f.msn,ed,'','i')}</div>
           ${sa
@@ -2604,7 +2604,7 @@ export function dayInfoHTML(di:any){
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
       return `<div class="witem ${w.sev}${on?' on':''}${w.off?' hid':''}" data-adv="${di}.${ix}" title="${w.off?'Hidden — it flags no puck and is not counted. ':''}Jump to the puck that caused this">`
         +`<span class="wbar"></span><span><span class="wcode">${SEVWORD[w.sev]} · ${esc(wlbl(WCODE[w.code]||w.code,di))}</span>`
-        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span></div>`;}).join('')+`</div>`;
+        +`<b>${esc(names)}</b>${names?' — ':''}${escMsg(w.msg||'')}</span></div>`;}).join('')+`</div>`;
   }
   return h;
 }

@@ -1,0 +1,47 @@
+[
+ [
+  "S4",
+  "desktop",
+  "Wed: real SC Shift desk (Ranger) and an Empty block typed SXO AM and titled SC Shift (Havoc), both 20:00 END blank; Thu both B 08:00",
+  "Ranger (real SC) no crew-rest line; Havoc (plain block that only looks SC) a crew-rest line from assumed 21:00",
+  "Ranger [] Havoc [\"Crew rest (<12h) Havoc — Crew rest: Wednesday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕\"]",
+  "PASS",
+  "w1/s04/02-thu-strip.png"
+ ],
+ [
+  "S4",
+  "desktop",
+  "rename the real SC block to \"Evening duty\" and the plain block to \"SC Shift SC DESK\"",
+  "behaviour unchanged by name: Ranger none, Havoc a line",
+  "Ranger [] Havoc [\"Crew rest (<12h) Havoc — Crew rest: Wednesday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕\"]",
+  "PASS",
+  "w1/s04/04-thu-strip-renamed.png"
+ ],
+ [
+  "S4",
+  "desktop",
+  "a hand-typed row (+ Row) inside the SC block: role HAND ROW, 20:00, END blank, Cinch; Thu flight B 08:00",
+  "RECORD",
+  "Cinch crew-rest lines: [] | all strip: ⚠ 1 issue · 1 warning ▼",
+  "RECORDED",
+  "w1/s04/06-thu-strip-handrow.png"
+ ],
+ [
+  "S4",
+  "desktop",
+  "template editor: \"Custom SC\" (For wave SC) and \"Custom Plain\" (For wave None), each placed Fri with START 20:00 END blank (Hunter on SC-linked, Piston on None-linked); Sat both B 08:00",
+  "SC-linked: Hunter none; None-linked: Piston a line",
+  "Hunter [] Piston [\"Crew rest (<12h) Piston — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕\"] | Fri blocks [\"Custom SC/sc:DSK 20:00- prowler\",\"Custom Plain/-:DSK 20:00- pump\"]",
+  "PASS",
+  "w1/s04/11-sat-strip.png"
+ ],
+ [
+  "S4",
+  "desktop",
+  "swap the two templates' For wave settings in the library AFTER placing copies; re-read Sat",
+  "placed copies unchanged: Hunter none, Piston a line",
+  "Hunter [] Piston [\"Crew rest (<12h) Piston — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕\"]",
+  "PASS",
+  "w1/s04/13-sat-strip-flipped.png"
+ ]
+]

@@ -59,7 +59,7 @@ describe('a duty row bears crew rest', () => {
     const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
     expect(cr, 'hard crew-rest breach raised').toBeTruthy()
     expect(cr.sev).toBe('hard')
-    expect(cr.msg).toContain('told to report 09:00')
+    expect(cr.msg).toContain('Report 09:00: ')
     /* a duty ends when it ends — no debrief assumption in the tail */
     expect(cr.msg).toContain('ended 21:30')
     expect(cr.msg).not.toContain('debrief assumed')
@@ -155,8 +155,8 @@ describe('a duty row bears crew rest', () => {
     const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
     expect(cr, 'the meeting binds the breach').toBeTruthy()
     expect(cr.sev).toBe('hard')
-    expect(cr.msg, 'names the first commitment').toContain('his day starts 08:00 (MTG W OC)')
-    expect(cr.msg, 'and the report it precedes').toContain('before the 10:00 report')
+    expect(cr.msg, 'names the first commitment').toContain('Day starts 08:00 (MTG W OC), before report 10:00: ')
+    expect(cr.msg, 'and the report it precedes').toContain('before report 10:00: ')
     expect(cr.msg).toContain('ended 21:30')
     /* leave-by follows the MEETING: 08:00 + 24h − 12h = Monday 20:00 */
     expect(cr.leaveBy).toBe('20:00')
@@ -186,12 +186,12 @@ describe('a duty row bears crew rest', () => {
       () => { seat.w = wasW; w2.intimes = wasIn })
     validate()
     const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
-    expect(cr.msg).toContain('told to report 09:00')
-    expect(cr.msg).not.toContain('his day starts')
+    expect(cr.msg).toContain('Report 09:00: ')
+    expect(cr.msg).not.toContain('Day starts')
     /* the cause-first order itself (owner, 22 Aug 26): yesterday's end →
        rest clear → the report that breaks it, one forward chain, and no
        trailing leave-by restatement — the trace row's lead carries that */
-    expect(cr.msg).toMatch(/^Crew rest breach — .*ended .*crew rest clear at .*, but told to report /)
+    expect(cr.msg).toMatch(/^Crew rest: .*ended .* → clear \d\d:\d\d\. Report \d\d:\d\d: /)
     expect(cr.msg).not.toContain('leave by')
   })
 
@@ -252,8 +252,8 @@ describe('a duty & commitment INPUT bears crew rest', () => {
     const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
     expect(cr, 'the input binds the breach').toBeTruthy()
     expect(cr.sev).toBe('hard')
-    expect(cr.msg).toContain('his day starts 08:00 (Meeting)')
-    expect(cr.msg).toContain('before the 10:00 report')
+    expect(cr.msg).toContain('Day starts 08:00 (Meeting), before report 10:00: ')
+    expect(cr.msg).toContain('before report 10:00: ')
     /* leave-by follows the input: 08:00 + 24h − 12h = Monday 20:00 */
     expect(cr.leaveBy).toBe('20:00')
     /* an unaccepted input has no board row, so the warning anchors on the
@@ -293,7 +293,7 @@ describe('a duty & commitment INPUT bears crew rest', () => {
     validate()
     const cr = stuffWarns().find((w: any) => w.code === 'CREW_REST')
     expect(cr).toBeTruthy()
-    expect(cr.msg).toContain('his day starts 08:00 (JPT PLANNING)')
+    expect(cr.msg).toContain('Day starts 08:00 (JPT PLANNING), before report 10:00: ')
   })
 
   it('a Training input ending 22:00 YESTERDAY starts the clock — both sides count', () => {

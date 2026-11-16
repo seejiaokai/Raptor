@@ -83,8 +83,10 @@ export function isNewFlag(di: any, id: any) {
    the day dropped on, the callsign in front when the message does not already
    open with it (a few clash messages name the two events, not the man). */
 export function flagLine(w: any, dropDi: any) {
-  const id = (w.who || [])[0]
-  const cs = id && PEOPLE[id] ? PEOPLE[id].cs : ''
+  /* every man the line is about, as the warning list names them — never only the first, so the man just dropped is
+     named too (Astra's blind read, 16 Nov 26: the reworded lines leave the people to the drawer) */
+  const ids = [...new Set<string>(w.who || [])]
+  const cs = ids.map((id) => (PEOPLE[id] ? PEOPLE[id].cs : id)).filter(Boolean).join(', ')
   let m = String(w.msg || '')
   if (cs && m.indexOf(cs) !== 0) m = `${cs} — ${m}`
   if (w.di != null && w.di !== dropDi && w.day) m = `${String(w.day).slice(0, 3)} · ${m}`

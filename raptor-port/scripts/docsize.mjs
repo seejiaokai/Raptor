@@ -194,7 +194,11 @@ const FILES = [
      one item it found finished ([COMPACT-BANDS-WINDOW]) and filed three open ones - [LW-LANDING-LINE-FIGURES] (his
      D883), [OVERNIGHT-RETRY-TRIAL] (his D885) and the rounds' notes under [GUIDE-NO-GLOW]; none is finished. An open
      item is never trimmed to fit (D141, D29). About 60 lines above what the file holds, as before. */
-  ['OUTSTANDING.md',                     1, 2590],
+  /* 2590 -> 2660, 16 Nov 26 (chat 88, `[LEGEND-TAB-STRIP]`'s branch, documents only before the build): 2,602 lines. This
+     chat archived the one item it found finished ([WARN-WORDS-STANDALONE], pull request 784 live) and filed two open ones -
+     [STANDBY-NO-TIMES-SEAT] and [LEGEND-TAB-STRIP] (his D2081); none is finished. The file was not scanned again for
+     finished items here; an open item is never trimmed to fit (D141, D29). About 60 lines above what it holds, as before. */
+  ['OUTSTANDING.md',                     1, 2660],
   /* THE RULINGS (owner, D136 + D137, 24 Sep 26). They are MEANT to grow, so each ceiling is its target,
      and a rulings file is NEVER trimmed to fit: at a ceiling, archive what is replaced or spent
      (DECISIONS.md, step 2) and then RAISE the ceiling here, with the reason. DECISIONS.md is now only

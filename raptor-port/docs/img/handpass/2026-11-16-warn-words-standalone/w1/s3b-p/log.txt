@@ -1,0 +1,31 @@
+chosen man Ace dj
+flight d6 w0 {"to":"23:30","ld":"","msn":"LATE FLT","p":"Ace"}
+ROW PASS | 3b Sunday to Monday | 402 | built: Sunday 19 Jul Ace T/O 23:30 landing blank; Monday 20 Jul BRIEFING 14:00–15:00 with Ace (the brief says 13:30; 14:00 used so a typed landing can clear it) | saw: seat: ok; ground rows Monday: 4
+ROW FAIL | 3b Sunday to Monday | 402 | next week opened COLD (before Sunday's week); Monday week | saw: []
+ROW FAIL | 3b Sunday to Monday | 402 | next week opened COLD (before Sunday's week); Monday details | saw: []
+ROW FAIL | 3b Sunday to Monday | 402 | next week opened COLD (before Sunday's week); Monday board | saw: []
+ROW RECORDED | 3b Sunday to Monday | 402 | Monday crew-rest line, whole (cold) | saw: []
+ROW FAIL | 3b Sunday to Monday | 402 | current week: tapped Ranger's Sunday puck; the forward "Breaks Monday" rows | saw: []
+ROW FAIL | 3b Sunday to Monday | 402 | next week reached from Sunday's week; Monday week/details/board | saw: {"wk":"20/07/2026","week":[],"details":[],"board":[]}
+ROW FAIL | 3b Sunday to Monday | 402 | landing TBD: Monday crew-rest (week) | saw: []
+ROW PASS | 3b Sunday to Monday | 402 | typed landing 23:40: Monday crew-rest lines (week/details/board) | saw: {"wk":"20/07/2026","week":[],"details":[],"board":[]}
+ROW PASS | 3b Sunday to Monday | 402 | typed landing: Sunday forward trace | saw: []
+ROW FAIL | 3b Sunday to Monday | 402 | published Sunday (typed landing 23:40); Leave War: Sunday cell, tracker; Monday cell | saw: publish true; sunday {"cell":{"text":"HO*","cls":"duty weekend act hasc","w":21},"sheet":{"days":"half a day, PM — worked 20:30–23:59","why":"FLT","given":"Weekend/PH"},"bal":"4.5","entries":["+2 carried in opening figure 2 left","+0.5 19 Jul PM AUTO Weekend/PH FLT · 20:30–23:59 0.5 left"],"status":["2 left","0.5 left"]}; monday cell {"text":"","cls":" act","w":21}
+errors []
+DONE 3 PASS 7 FAIL 1 OTHER of 11
+chosen man Ace dj
+flight d6 w0 {"to":"23:30","ld":"","msn":"LATE FLT","p":"Ace"}
+flight d0 w2 {"to":"17:00","ld":"18:00","msn":"MON FLT","p":"Ace"}
+ROW PASS | 3b Sunday to Monday | 402 | built: Sunday 19 Jul Ace T/O 23:30 landing blank; Monday 20 Jul Ace flight T/O 17:00 landing 18:00 (report 14:00; chosen so the blank landing breaks his rest and the typed 23:40 does not; a ground item starts no flying day) | saw: Monday front seat: Ace
+ROW FAIL | 3b Sunday to Monday | 402 | next week opened COLD (before Sunday's week); Monday week | saw: ["Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕"]
+ROW FAIL | 3b Sunday to Monday | 402 | next week opened COLD (before Sunday's week); Monday details | saw: ["Advisory · Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30."]
+ROW FAIL | 3b Sunday to Monday | 402 | next week opened COLD (before Sunday's week); Monday board | saw: ["Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕"]
+ROW RECORDED | 3b Sunday to Monday | 402 | Monday crew-rest line, whole (cold) | saw: ["Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕"]
+ROW FAIL | 3b Sunday to Monday | 402 | current week: tapped Ranger's Sunday puck; the forward "Breaks Monday" rows | saw: []
+ROW PASS | 3b Sunday to Monday | 402 | next week reached from Sunday's week; Monday week/details/board | saw: {"wk":"20/07/2026","week":["Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕"],"details":["Advisory · Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief 
+ROW PASS | 3b Sunday to Monday | 402 | landing TBD: Monday crew-rest (week) | saw: ["Tight turning Ace — Tight turning: the usual report (T/O 17:00 − 3h = 14:00) is before clear 14:30. Sunday landing assumed 00:30 (T/O + 1h) + 2h debrief (assumed) → ended 02:30 → clear 14:30. ✕"]
+ROW PASS | 3b Sunday to Monday | 402 | typed landing 23:40: Monday crew-rest lines (week/details/board) | saw: {"wk":"20/07/2026","week":[],"details":[],"board":[]}
+ROW PASS | 3b Sunday to Monday | 402 | typed landing: Sunday forward trace | saw: []
+ROW FAIL | 3b Sunday to Monday | 402 | published Sunday (typed landing 23:40); Leave War: Sunday cell, tracker; Monday cell | saw: publish true; sunday {"cell":{"text":"HO*","cls":"duty weekend act hasc","w":21},"sheet":{"days":"half a day, PM — worked 20:30–23:59","why":"FLT","given":"Weekend/PH"},"bal":"4.5","entries":["+2 carried in opening figure 2 left","+0.5 19 Jul PM AUTO Weekend/PH FLT · 20:30–23:59 0.5 left"],"status":["2 left","0.5 left"]}; monday cell {"text":"","cls":" act","w":21}
+errors []
+DONE 5 PASS 5 FAIL 1 OTHER of 11

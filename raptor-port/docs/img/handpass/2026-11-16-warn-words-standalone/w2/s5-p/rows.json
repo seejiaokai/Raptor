@@ -1,0 +1,146 @@
+[
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing blank: Friday's warning list (Ranger two flights + briefing; Ace early item + 18:00 flight)",
+  "lines say \"assumed\" with T/O + 1h, same for blank and TBD",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Conflict: RU (step 13:00, T/O 14:00) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Tight turn: VL BFM → RU, 60 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 14:00 ✕\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕\",\"Ranger — Misses RU brief 11:40–14:00: BRIEFING 13:10–13:20 ✕\",\"Ranger — 1 person is double turning: Ranger ✕\",\"Ace — Long day: 15h00 (limit 12h), 06:00 → 21:00 (last landing assumed 19:00 (T/O + 1h) + 2h debrief assumed) ✕\"]",
+  "RECORDED",
+  "5-blank-fri-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing blank: ALL AVAIL count on a 12:40-12:50 row",
+  "blank = TBD (Ranger busy); typed 12:05 frees him (count one higher)",
+  "chip 42",
+  "RECORDED",
+  ""
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing blank: Saturday's crew-rest line (Ranger flight T/O 04:00)",
+  "says \"landing assumed 13:00 (T/O + 1h)\"",
+  "[\"Ranger — Crew rest: Friday landing assumed 15:00 (T/O + 1h) + 2h debrief (assumed) → ended 17:00 → clear 05:00. Report 01:40: 8h40 rest, needs 12h. ✕\"]",
+  "RECORDED",
+  "5-blank-sat-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing blank: Insights lines naming Ranger / Ace",
+  "RECORD hours; typed differs from blank",
+  "[\"Ranger / 5 / Relay / 4 / Ace\",\"Ace / 3 / Echo / 3 / Hex\",\"Ace / 40h35 / Bolt / 29h25 / Ranger\",\"Ranger / 28h / Ridge / 28h / Static\"] | heading lines: [\"Week insights · Jul 13 – Jul 19\",\"✕\",\"36\",\"SORTIES\"]",
+  "RECORDED",
+  "5-blank-insights-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing TBD: Friday's warning list (Ranger two flights + briefing; Ace early item + 18:00 flight)",
+  "lines say \"assumed\" with T/O + 1h, same for blank and TBD",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Conflict: RU (step 13:00, T/O 14:00) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Tight turn: VL BFM → RU, 60 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 14:00 ✕\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕\",\"Ranger — Misses RU brief 11:40–14:00: BRIEFING 13:10–13:20 ✕\",\"Ranger — 1 person is double turning: Ranger ✕\",\"Ace — Long day: 15h00 (limit 12h), 06:00 → 21:00 (last landing assumed 19:00 (T/O + 1h) + 2h debrief assumed) ✕\"]",
+  "RECORDED",
+  "5-TBD-fri-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing TBD: ALL AVAIL count on a 12:40-12:50 row",
+  "blank = TBD (Ranger busy); typed 12:05 frees him (count one higher)",
+  "chip 42",
+  "RECORDED",
+  ""
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing TBD: Saturday's crew-rest line (Ranger flight T/O 04:00)",
+  "says \"landing assumed 13:00 (T/O + 1h)\"",
+  "[\"Ranger — Crew rest: Friday landing assumed 15:00 (T/O + 1h) + 2h debrief (assumed) → ended 17:00 → clear 05:00. Report 01:40: 8h40 rest, needs 12h. ✕\"]",
+  "RECORDED",
+  "5-TBD-sat-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing TBD: Insights lines naming Ranger / Ace",
+  "RECORD hours; typed differs from blank",
+  "[\"Ranger / 5 / Relay / 4 / Ace\",\"Ace / 3 / Echo / 3 / Hex\",\"Ace / 40h35 / Bolt / 29h25 / Ranger\",\"Ranger / 28h / Ridge / 28h / Static\"] | heading lines: [\"Week insights · Jul 13 – Jul 19\",\"✕\",\"36\",\"SORTIES\"]",
+  "RECORDED",
+  "5-TBD-insights-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing typed: Friday's warning list (Ranger two flights + briefing; Ace early item + 18:00 flight)",
+  "typed landing: no \"assumed\" in the flight-1 lines",
+  "[\"Ranger — Conflict: RU (step 13:00, T/O 14:00) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Tight turn: VL BFM → RU, 115 min (needs 120). VL BFM landing 12:05, RU T/O 14:00 ✕\",\"Ranger — Misses VL BFM debrief 12:05–14:05: BRIEFING 13:10–13:20 ✕\",\"Ranger — Misses RU brief 11:40–14:00: BRIEFING 13:10–13:20 ✕\",\"Ranger — 1 person is double turning: Ranger ✕\",\"Ace — Long day: 15h30 (limit 12h), 06:00 → 21:30 (last landing 19:30 + 2h debrief assumed) ✕\"]",
+  "RECORDED",
+  "5-typed-fri-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing typed: ALL AVAIL count on a 12:40-12:50 row",
+  "blank = TBD (Ranger busy); typed 12:05 frees him (count one higher)",
+  "chip 43",
+  "RECORDED",
+  ""
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing typed: Saturday's crew-rest line (Ranger flight T/O 04:00)",
+  "says Friday landing 14:40 (no assumed) / no \"assumed\"",
+  "[\"Ranger — Crew rest: Friday landed 14:40 + 2h debrief (assumed) → ended 16:40 → clear 04:40. Report 01:40: 9h rest, needs 12h. ✕\"]",
+  "RECORDED",
+  "5-typed-sat-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing typed: Insights lines naming Ranger / Ace",
+  "RECORD hours; typed differs from blank",
+  "[\"Ranger / 5 / Relay / 4 / Ace\",\"Ace / 3 / Echo / 3 / Hex\",\"Ace / 41h05 / Bolt / 29h25 / Ridge\",\"Ranger / 27h40 / Static / 25h55 / Vector\"] | heading lines: [\"Week insights · Jul 13 – Jul 19\",\"✕\",\"36\",\"SORTIES\"]",
+  "RECORDED",
+  "5-typed-insights-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing blank again: Friday's warning list (Ranger two flights + briefing; Ace early item + 18:00 flight)",
+  "lines say \"assumed\" with T/O + 1h, same for blank and TBD",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Conflict: RU (step 13:00, T/O 14:00) & BRIEFING 13:10–13:20 ✕\",\"Ranger — Tight turn: VL BFM → RU, 60 min (needs 120). VL BFM landing assumed 13:00 (T/O + 1h), RU T/O 14:00 ✕\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕\",\"Ranger — Misses RU brief 11:40–14:00: BRIEFING 13:10–13:20 ✕\",\"Ranger — 1 person is double turning: Ranger ✕\",\"Ace — Long day: 15h00 (limit 12h), 06:00 → 21:00 (last landing assumed 19:00 (T/O + 1h) + 2h debrief assumed) ✕\"]",
+  "RECORDED",
+  "5-blankagain-fri-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing blank again: ALL AVAIL count on a 12:40-12:50 row",
+  "blank = TBD (Ranger busy); typed 12:05 frees him (count one higher)",
+  "chip 42",
+  "RECORDED",
+  ""
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing blank again: Saturday's crew-rest line (Ranger flight T/O 04:00)",
+  "says \"landing assumed 13:00 (T/O + 1h)\"",
+  "[\"Ranger — Crew rest: Friday landing assumed 15:00 (T/O + 1h) + 2h debrief (assumed) → ended 17:00 → clear 05:00. Report 01:40: 8h40 rest, needs 12h. ✕\"]",
+  "RECORDED",
+  "5-blankagain-sat-p.png"
+ ],
+ [
+  "5 blank/TBD/typed landing readers",
+  "402",
+  "landing blank again: Insights lines naming Ranger / Ace",
+  "RECORD hours; typed differs from blank",
+  "[\"Ranger / 5 / Relay / 4 / Ace\",\"Ace / 3 / Echo / 3 / Hex\",\"Ace / 40h35 / Bolt / 29h25 / Ranger\",\"Ranger / 28h / Ridge / 28h / Static\"] | heading lines: [\"Week insights · Jul 13 – Jul 19\",\"✕\",\"36\",\"SORTIES\"]",
+  "RECORDED",
+  "5-blankagain-insights-p.png"
+ ]
+]

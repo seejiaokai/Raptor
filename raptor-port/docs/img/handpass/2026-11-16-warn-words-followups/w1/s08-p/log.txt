@@ -1,0 +1,24 @@
+seat ok
+board list ["Hex — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 ✕","Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+ROW PASS | S8 | phone | Board warning list after a WSO (Hex) is put in AVALON MAIN front seat | saw: ["Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+puck titles Hex · C · ops wingman · Illegal seat| ;; Hex · C · ops wingman · Illegal seat|
+hide control 1
+after hide ["Hex — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 ✕","Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00"]
+after show ["Hex — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 ✕","Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+after undo ["Hex — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 ✕","Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00"]
+STEP ERROR insights locator.waitFor: Timeout 8000ms exceeded.
+week strip ⚠ 2 issues · 2 warnings ▼ ["SC currency — wrong shift Hex — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 ✕","Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+ROW PASS | S8 | phone | week list for Tue 28 Jul | saw: ["Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+day details {"ok":true,"items":["Warning · SC currency — wrong shift Hex — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00","Warning · Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00"]}
+ROW PASS | S8 | phone | day details window for Tue 28 Jul | saw: ["Warning · Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00"]
+publish {"published":true,"version":"ORIG","signSelects":4}
+week strip after publish ⚠ 2 issues · 2 warnings ▲ ["SC currency — wrong shift Hex — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 ✕","Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+ROW PASS | S8 | phone | publish Tue 28 Jul with the warning standing | saw: ["Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+seat 2 ok
+publish AL {"published":true,"version":"AL1","signSelects":4}
+week strip after amendment ⚠ 4 issues · 4 warnings ▲ ["SC currency — wrong shift Hex — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00 ✕","Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕","SC currency — wrong shift Cotter — Not SC NIGHT current: AVALON NIGHT SPARE 19:00–07:00 ✕","Illegal seat Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕"]
+ROW PASS | S8 | phone | amendment adds Cotter (ground crew) in AVALON SPARE front seat, published | saw: ["Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕","Illegal seat Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT SPARE 19:00–07:00 ✕"]
+view-only strip ⚠ 4 issues · 4 warnings ▼ ["SC currency — wrong shift Hex — Not SC NIGHT current: AVALON NIGHT MAIN 19:00–07:00","Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00","SC currency — wrong shift Cotter — Not SC NIGHT current: AVALON NIGHT SPARE 19:00–07:00","Illegal seat Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT SPARE 19:00–07:00"]
+ROW PASS | S8 | phone | View-only Sched, same day | saw: ["Illegal seat Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00","Illegal seat Cotter — Illegal seat: ground crew in the front seat of AVALON NIGHT SPARE 19:00–07:00"]
+errors []
+DONE 6 PASS 0 FAIL 0 OTHER of 6

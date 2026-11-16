@@ -46,7 +46,7 @@ describe('two SC seats in the same hours are one man in two places', () => {
     const hits = warns('split', 'DOUBLE_BOOK')
     expect(hits.length, 'one clash prints once').toBe(1)
     expect(hits[0].sev).toBe('hard')
-    expect(hits[0].msg).toContain('standing SC SPARE')
+    expect(hits[0].msg).toBe('Conflict: SC AM SPARE 07:00–13:00 & SC AM MAIN 07:00–13:00')
     expect(hits[0].msg).toContain('MAIN')
     /* anchored on the SPARE seat so the exempt-line ring (html.ts) finds it */
     expect(hits[0].key).toBe(`${TUE}.${gi}.0.2.p`)
@@ -112,7 +112,7 @@ describe('the spare front seat is pilots-only', () => {
     const hits = warns('glass', 'QUAL')
     expect(hits.length).toBe(1)
     expect(hits[0].sev).toBe('hard')
-    expect(hits[0].msg).toContain('is a WSO — cannot fly FCP')
+    expect(hits[0].msg).toBe('Illegal seat: a WSO in the front seat of SC AM SPARE 07:00–13:00')
     expect(hits[0].msg).toContain('SPARE')
     expect(hits[0].key).toBe(`${TUE}.${gi}.0.2.p`)
   })
@@ -128,7 +128,7 @@ describe('the spare front seat is pilots-only', () => {
     AM().aircraft[2].p = gnd
     const hits = warns(gnd, 'QUAL')
     expect(hits.length).toBe(1)
-    expect(hits[0].msg).toContain('ground crew — cannot fly a front seat')
+    expect(hits[0].msg).toBe('Illegal seat: ground crew in the front seat of SC AM SPARE 07:00–13:00')
     /* but the rear seat is their proper place (incentive ride), no QUAL */
     AM().aircraft[2].p = ''
     AM().aircraft[3].w = gnd

@@ -1,0 +1,38 @@
+[
+ [
+  "R3 avalon",
+  "desktop",
+  "wave flies (R 18:00), template desk START 20:00 END blank, Ranger; next-day flight B 07:00",
+  "no crew-rest line for Ranger",
+  "R \"18:00\" label=AVALON kind=avalon | desk {\"wi\":0,\"base\":\"2.0.0\",\"r\":{\"label\":\"AVALON\",\"sa\":\"avalon\",\"role\":\"SXO\",\"str\":\"20:00\",\"end\":\"\",\"who\":\"\\\"bane\\\"/null\"},\"seated\":[\"ok\"]} | strip [] | details []",
+  "PASS",
+  "w2/r3-avalon/avalon-03-blank-end.png"
+ ],
+ [
+  "R3 avalon",
+  "desktop",
+  "END 23:00",
+  "one crew-rest line naming the duty ending 23:00",
+  "strip [\"Crew rest (<12h) Ranger — Crew rest: Wednesday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h. ✕\"] | details [\"Warning · Crew rest (<12h) Ranger — Crew rest: Wednesday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h.\"]",
+  "PASS",
+  "w2/r3-avalon/avalon-05-end-2300.png"
+ ],
+ [
+  "R3 avalon",
+  "desktop",
+  "END cleared",
+  "no crew-rest line",
+  "strip []",
+  "PASS",
+  "w2/r3-avalon/avalon-06-end-cleared.png"
+ ],
+ [
+  "R3 avalon control",
+  "desktop",
+  "R cleared (wave no longer flies), END blank",
+  "RECORD",
+  "R after clear \"\" | strip [] | details [] | all lines []",
+  "RECORDED",
+  "w2/r3-avalon/avalon-07-wave-not-flying.png"
+ ]
+]

@@ -78,7 +78,7 @@ describe('the Logic tab, read-only (tfin B50)', () => {
      in the page's words that is an editable setting is READ from it. Every setting the words quote is moved off its
      standard at once; not one standard value may be left anywhere in the page's text. */
   it('D932 every number in the words follows its setting — none of the standard values is left once each is changed', async () => {
-    const keys = ['crewRest', 'longDay', 'reportLead', 'briefLead', 'debrief', 'tightTurn', 'step', 'dekit', 'epBrief', 'simDebrief', 'amtDebrief', 'simLen', 'openEnd', 'oilFullMin', 'scDayFrom', 'scDayTo']
+    const keys = ['crewRest', 'longDay', 'reportLead', 'briefLead', 'debrief', 'tightTurn', 'step', 'dekit', 'epBrief', 'simDebrief', 'amtDebrief', 'simLen', 'fltLen', 'openEnd', 'oilFullMin', 'scDayFrom', 'scDayTo']   // fltLen: D2046
     const std = keys.map(k => ruleFmt(k, RULE_STD.v[k]))
     await act(async () => { for (const k of keys) VCONF[k] = RULE_STD.v[k] + 7; VCONF.maxRun = 9; validate(); notify() })
     try {
@@ -536,11 +536,13 @@ describe('W2 the words the + In-time / Rally button fills in are not a modified 
     /* the strip's old "not the published ones" was untrue (D928); since D2005 a published day keeps every setting it was
        published under, not only its printed B and its OIL — the note says so (D2015), and that an OIL setting's change
        makes a day whose OIL it would change read pending at once (D592 (4), D2044) */
-    expect($('#lgOff').textContent).toContain('A published day keeps the settings it was published under, and the OIL they gave it, until it is published again.')
+    expect($('#lgOff').textContent).toContain('Published days keep their old settings until published again.')
     /* the cold read (15 Nov 26): the day's OIL stays as published while the day reads pending — said, not left implied */
     /* the blind code reads of 15 Nov 26 (the Opus read's F4): "a changed OIL setting" named only the page's OIL group
        ("Full day of OIL"), but Default rally and Debrief after landing make an earning day's OIL pending too (D2044) */
-    expect($('#lgOff').textContent).toContain('If a change to Default rally, Debrief after landing or Full day of OIL would change that OIL, the day reads pending.')
+    /* D2067, D2071 (16 Nov 26): one sentence after the count — the sentence on a day reading pending is gone from it; the
+       day shows pending itself, and its pending list says what moved (D2054) */
+    expect($('#lgOff').textContent).not.toContain('Default rally')
     expect($('#lgOff').textContent).not.toContain('printed B')
     expect($('#lgOff').textContent, 'no cut-off changed, no cut-off sentence').not.toContain('late cut-off')
     await act(async () => { rulesReset(); notify() })
@@ -562,7 +564,7 @@ describe('W2 the words the + In-time / Rally button fills in are not a modified 
     /* with a kept setting changed as well, both are said */
     await act(async () => { VCONF.crewRest = 600; notify() })
     expect($('#lgOff').textContent).toContain('2 settings changed')
-    expect($('#lgOff').textContent).toContain('A published day keeps the settings it was published under')
+    expect($('#lgOff').textContent).toContain('Published days keep their old settings until published again.')
     expect($('#lgOff').textContent).toContain('A changed late cut-off moves the LATE marks at once')
     await act(async () => { rulesReset(); notify() })
     expect(($('#lgOff') as HTMLElement).hidden).toBe(true)
@@ -627,19 +629,48 @@ describe('the Logic lines the nine rule fixes changed say what the app now does'
   it('D1996: a standby shift that flies is checked as a sortie, every clash with it red', () => {
     /* the bug check of 12 Nov 26 (the Opus read, a): "checked as a sortie is" was untrue — a flying shift gets no brief or
        debrief window; D1996 is its clashes and turns */
-    expect(line('saflies')).toContain('A row that flies has its clashes and turns checked as a sortie\'s are,')
+    expect(line('saflies')).toContain('A row that flies has its conflicts and turns checked as a sortie\'s are,')
     /* …and the tight-turn line (F7, D1989): the amber note stays once a typed time clears the rest, so "it clears" is
        said of his rest, never read as the note going (walker W3's lead) */
     expect(line('crewtight')).toMatch(/ is later, so his rest clears\.$/)
-    expect(line('shiftsoft')).toMatch(/ Once the shift flies, every clash with it is red\.$/)
-    expect(setting('SC MAIN clashes')).toMatch(/ Once his shift flies, every clash is red\.$/)
+    expect(line('shiftsoft')).toMatch(/ Once the shift flies, every conflict with it is red\.$/)
+    expect(setting('SC MAIN conflicts')).toMatch(/ Once his shift flies, every conflict is red\.$/)
   })
-  it('D1990: a landing that is not a time ends the day at take-off plus the debrief; a shift reports at its B or R when typed earlier', () => {
-    expect(how('crewrest')[1]).toMatch(/ A flight ends at landing plus the debrief \(.+\), or at take-off plus the debrief where the landing is not a time\. Anything else ends at its written end\.$/)
+  /* D2077 (16 Nov 26): the Logic page's explanations say "conflict", never "clash", in every place they name the check —
+     one thing, one name, as the warnings say it (D2070). Every word the page's two parts can print, read whole. */
+  it('D2077: no setting or check on the Logic page says "clash"', () => {
+    const words: string[] = []
+    const walk = (v: any): void => {
+      if (typeof v === 'string') words.push(v)
+      else if (typeof v === 'function') { try { walk(v()) } catch { /* a reader that needs its argument prints nothing alone */ } }
+      else if (Array.isArray(v)) v.forEach(walk)
+      else if (v && typeof v === 'object') Object.values(v).forEach(walk)
+    }
+    walk(lgSettings()); walk(lgChecks())
+    expect(words.length).toBeGreaterThan(50)
+    expect(words.filter(w => /clash/i.test(w))).toEqual([])
+  })
+  /* CHANGED ON PURPOSE by D2046 (15 Nov 26): a landing not typed is the assumed one, take-off plus the flight length */
+  it('D1990, D2046: a landing not typed ends the day at the assumed landing plus the debrief; a shift reports at its B or R when typed earlier', () => {
+    /* CHANGED ON PURPOSE by D2079 (16 Nov 26): the line no longer ends at "its written end." — the standby sentence follows */
+    expect(how('crewrest')[1]).toMatch(/ A flight ends at landing plus the debrief \(.+\), or, where no landing is typed, at the assumed landing \(A flight, 1h after take-off\) plus the debrief\. Anything else ends at its written end\. /)
     expect(how('crewrest')).toContain('An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is earlier than the start.')
+  })
+  /* D2079 (16 Nov 26, "Q1 & 2 as recommended" — the fresh Opus read's F2, the sentence shown to him ringed): the crew-rest
+     explanation says a standby shift, or a standby template's desk, with START and no END is left out until END is typed
+     (D2055, D2073, D2080 — the desk part names SC, AVALON and BB since D2080, the agent's reading told to him) */
+  it('D2079: the crew-rest explanation says a standby shift or desk with START typed and END blank is left out until its END is typed', () => {
+    expect(how('crewrest')[1]).toMatch(/Anything else ends at its written end\. A standby shift, or a desk made from an SC, AVALON or BB template, with START typed and END blank is left out until its END is typed\.$/)
   })
   it('D1997: a desk from an AVALON or BB template earns by default once its wave flies; a flight\'s OIL starts at its in-time or rally', () => {
     expect(how('oil')).toContain('Until its wave flies, a desk made from an AVALON or BB template earns only if switched on in OIL Earn. Once the wave flies, the desk earns by default.')
-    expect(how('oil')).toContain('A flight runs from its in-time or rally, whichever is earlier (Default rally before take-off where neither is entered), to landing plus the debrief.')
+    /* CHANGED ON PURPOSE by D2046: the line now ends with the assumed landing's sentence */
+    expect(how('oil')).toContain('A flight runs from its in-time or rally, whichever is earlier (Default rally before take-off where neither is entered), to landing plus the debrief. With no landing typed, it lands at its assumed landing (A flight).')
+    expect(how('oil')).toContain('Any other row the scheduler adds with no times, or no end time, earns nothing, but a request answered yes earns over its own times. An Off day earns nothing.')
+  })
+  /* D2046, D2047 ([WARN-WORDS-STANDALONE] piece B): the new setting's row, in "Rows with no end time" before the sim */
+  it('D2046: the assumed flight length has its row, "A flight", before "A sim", with its words', () => {
+    expect(lgSettings().find(g => g.g === 'Rows with no end time')!.items.map(s => s.name)).toEqual(['A flight', 'A sim', 'Any other row'])
+    expect(setting('A flight')).toBe('A flight with a take-off and no landing is taken to land this long after take-off. Conflicts, the tight turn, the debrief, crew rest, the long day, OIL and Insights hours count to that landing, and its warnings say it was assumed.')
   })
 })

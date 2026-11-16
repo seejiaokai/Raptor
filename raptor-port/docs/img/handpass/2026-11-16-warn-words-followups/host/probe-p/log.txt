@@ -1,0 +1,11 @@
+wwf-host-probe v1 phone
+SC block made {"label":"SC Shift","sa":"sc","rows":["SXO AM 07:00-13:00","OPS O AM 07:00-13:00","SXO PM 13:00-19:00","OPS O PM 13:00-19:00"]}
+seat desk ok
+flight d6 w0 {"to":"09:00","ld":"10:00","msn":"VL BFM","p":"Ranger"}
+flight 0
+A: SC desk, END blank — crew-rest lines for Ranger []
+B: END 23:00 — crew-rest lines for Ranger ["Ranger — Crew rest: Saturday duty ended 23:00 → clear 11:00. Report 06:40: 7h40 rest, needs 12h. ✕"]
+C: END cleared — Sunday week list crew-rest lines ⚠ 1 issue ▼ []
+C: Saturday forward trace for Ranger {"items":[]}
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

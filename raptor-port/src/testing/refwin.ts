@@ -313,6 +313,14 @@ function remap(html: string): string {
     ["LEVELNAME[p.q]+(p.ip?' · IP':'')+", "LEVELNAME[p.q]+"],
     [`<span><span class="qk" style="background:var(--q-ins)">I</span>IP / instr</span>`,
      `<span><span class="qk" style="background:var(--q-ins)">IW</span>IWSO</span>\n    <span><span class="qk" style="background:var(--q-ins)">IP</span>IP</span>\n    <span><span class="qk" style="background:var(--q-ins)">IR</span>IR exmr</span>\n    <span><span class="qk" style="background:var(--q-ins)">FI</span>FWI</span>`],
+    /* D2075, D2078 — the legend names each flag as its check is now named; the reference's debrief and
+       brief, debrief and long-day rows take the port's words, colours untouched, so the item-set
+       comparison still holds (the 7 row is port-only) */
+    [">B</span>no flight brief</span>", ">B</span>misses flight brief</span>", 1],
+    [">B</span>no sim brief</span>", ">B</span>misses sim brief</span>", 1],
+    [">D</span>no flight debrief</span>", ">D</span>misses flight debrief</span>", 1],
+    [">D</span>no sim debrief</span>", ">D</span>misses sim debrief</span>", 1],
+    [">L</span>long work day</span>", ">L</span>long day</span>", 1],
     ["seat:'FCP',q:'I',ip:true", "seat:'FCP',q:'IP',ip:true", 8],
     ["seat:'FCP',q:'CI',ip:true", "seat:'FCP',q:'IP',ip:true", 6],
     ["seat:'RCP',q:'I',ip:true", "seat:'RCP',q:'IW',ip:true", 7],
@@ -390,9 +398,15 @@ function rematrix(html: string): string {
        byte-comparison in html.test.ts fails on the markup, not on the rule. */
     ["const CHIP_TEXT={DT:'DT',TT:'TT',C:'C',A:'A',Q:'Q',CR:'R',NB:'B',SB:'B',DB:'D',SD:'D',LD:'L'}",
      "const CHIP_TEXT={DT:'DT',TT:'TT',C:'C',A:'A',Q:'Q',CR:'R',NB:'B',SB:'B',DB:'D',SD:'D',LD:'L',CP:'CP',CPH:'CP'}"],
-    ["SD:'No time for the sim debrief',LD:'Long work day (>{longDay})'};",
-     "SD:'No time for the sim debrief',LD:'Long work day (>{longDay})',"
+    /* …and the one-check chips carry the warning list's short names since [WARN-WORDS-STANDALONE] (D2070, spec §3g; the
+       blind reads of 16 Nov 26) — a deliberate change of the words a chip's title shows, so the reference's table takes
+       the same names here and the comparison still reads like with like; RUN carried in with them, one table */
+    ["NB:'No time for the flight brief',DB:'No time for the flight debrief',SB:'No time for the sim brief',SD:'No time for the sim debrief',LD:'Long work day (>{longDay})'};",
+     "NB:'Misses flight brief',DB:'Misses flight debrief',SB:'Misses sim brief',SD:'Misses sim debrief',LD:'Long day (>{longDay})',"
+     + "RUN:'Days in a row',"
      + "CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};"],
+    ["CR:'Crew rest breach (<{crewRest})',Q:'Qualification — illegal seat',",
+     "CR:'Crew rest breach (<{crewRest})',Q:'Qual / illegal seat',"],
     /* The A label grew a SANS tail when SANS_AVAIL moved off CP onto A (owner,
        26 Aug 26). The reference has no SANS gate, so its A chip never fires for
        SANS and no compared day renders the label this week — the swap exists so

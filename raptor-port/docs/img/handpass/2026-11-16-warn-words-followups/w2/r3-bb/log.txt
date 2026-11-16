@@ -1,0 +1,32 @@
+For wave options ["None","SC","AVALON","BB"]
+For wave now BB
+bb wave 0 R typed: "18:00" label=BB kind=bb
+BB test template id u1
+BB desk {"label":"BB test","sa":"bb","wave":null,"str":"20:00","end":"","who":"\"bane\""} ok
+flight2 {"to":"10:00","ld":"11:00","br":"07:00","p":"Ranger"} ok
+bb-03-blank-end ⚠ 1 issue ▼ ["OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"] DET ["Advisory · OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out."]
+ROW PASS | R3 bb | desktop | wave flies (R 18:00), template desk START 20:00 END blank, Ranger; next-day flight B 07:00 | saw: R "18:00" label=BB kind=bb | desk {"wi":0,"label":"BB test","sa":"bb","wave":null,"str":"20:00","end":"","who":"\"bane\"","seat":"ok"} | strip [] | details []
+bb-05-end-2300 ⚠ 2 issues · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h. ✕","OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"] DET ["Warning · Crew rest (<12h) Ranger — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h.","Advisory · OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out."]
+ROW PASS | R3 bb | desktop | END 23:00 | saw: strip ["Crew rest (<12h) Ranger — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h. ✕"] | details ["Warning · Crew rest (<12h) Ranger — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h."]
+bb-06-end-cleared ⚠ 1 issue ▼ ["OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"] DET ["Advisory · OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out."]
+ROW PASS | R3 bb | desktop | END cleared | saw: strip []
+bb-07-wave-not-flying ⚠ 1 issue ▼ ["OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"] DET ["Advisory · OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out."]
+ROW RECORDED | R3 bb control | desktop | R cleared (wave no longer flies), END blank | saw: strip [] | details []
+errors []
+DONE 3 PASS 0 FAIL 1 OTHER of 4
+For wave options ["None","SC","AVALON","BB"]
+For wave now BB
+bb wave 0 R typed: "18:00" label=BB kind=bb
+BB test template id u1
+BB desk {"label":"BB test","sa":"bb","wave":null,"str":"20:00","end":"","who":"\"bane\""} ok
+flight2 {"to":"10:00","ld":"11:00","br":"07:00","p":"Ranger"} ok
+bb-03-blank-end ⚠ 1 issue ▼ ["OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"] DET ["Advisory · OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out."]
+ROW PASS | R3 bb | desktop | wave flies (R 18:00), template desk START 20:00 END blank, Ranger; next-day flight B 07:00 | saw: R "18:00" label=BB kind=bb | desk {"wi":0,"label":"BB test","sa":"bb","wave":null,"str":"20:00","end":"","who":"\"bane\"","seat":"ok"} | strip [] | details []
+bb-05-end-2300 ⚠ 2 issues · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h. ✕","OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"] DET ["Warning · Crew rest (<12h) Ranger — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h.","Advisory · OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out."]
+ROW PASS | R3 bb | desktop | END 23:00 | saw: strip ["Crew rest (<12h) Ranger — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h. ✕"] | details ["Warning · Crew rest (<12h) Ranger — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h."]
+bb-06-end-cleared ⚠ 1 issue ▼ ["OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"] DET ["Advisory · OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out."]
+ROW PASS | R3 bb | desktop | END cleared | saw: strip []
+bb-07-wave-not-flying ⚠ 1 issue ▼ ["OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"] DET ["Advisory · OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out."]
+ROW RECORDED | R3 bb control | desktop | R cleared (wave no longer flies), END blank | saw: R after clear "" | strip [] | details [] | all lines ["OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"]
+errors []
+DONE 3 PASS 0 FAIL 1 OTHER of 4

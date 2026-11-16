@@ -1,0 +1,12 @@
+seat ok
+0 start ["Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+1 after hide ["Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00"]
+2 after show ["Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+sbUndo enabled true
+3 after undo 1 ["Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00"]
+4 after undo 2 ["Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+5 after redo 1 ["Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00"]
+6 after redo 2 ["Hex — Illegal seat: a WSO in the front seat of AVALON NIGHT MAIN 19:00–07:00 ✕"]
+errors []
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

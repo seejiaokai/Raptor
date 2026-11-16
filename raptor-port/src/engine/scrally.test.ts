@@ -6,7 +6,7 @@
 // typed; on an SC SPARE row, an AVALON or a BB line it is shown, printed and exported only. An empty box counts nothing.
 // CHANGED 19 Oct 26 ([STANDBY-FLIES], D1044, D1045 narrow D1041): a typed rally on ANY standby line flies its whole shift,
 // SPARE rows included — so on a SPARE, AVALON or BB row it now starts the day as on SC MAIN (the tests below say so).
-// The crew-rest sentence names which box it was ("SC AM's rally is 05:00").
+// The crew-rest sentence names which box it was ('SC AM rally 05:00: ').
 // Register: docs/superpowers/specs/2026-10-02-rally-behaviour-register.md (RB8).
 
 import { afterEach, describe, expect, it } from 'vitest'
@@ -57,15 +57,15 @@ describe('RB8 — crew rest on an SC MAIN line reads its rally box', () => {
     addSC(undefined, '05:00')
     const cr = breach()
     expect(cr).toBeTruthy()
-    expect(cr.msg).toContain("SC AM's rally is 05:00")
+    expect(cr.msg).toContain('SC AM rally 05:00: ')
     expect(cr.msg).toContain('7h30 rest')
   })
   it('both typed: the earlier counts, and the sentence names that box', () => {
     addSC('06:00', '05:00')
-    expect(breach().msg).toContain("SC AM's rally is 05:00")
+    expect(breach().msg).toContain('SC AM rally 05:00: ')
     ;(DAYS[TUE] as any).waves.pop()
     addSC('05:00', '06:00')
-    expect(breach().msg).toContain("SC AM's in-time is 05:00")
+    expect(breach().msg).toContain('SC AM in-time 05:00: ')
   })
   it('a rally later than the shift start moves nothing — the watch still starts at 07:00', () => {
     addSC(undefined, '08:00')

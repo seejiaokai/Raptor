@@ -817,6 +817,11 @@ export function openWarns(sev:any){
 }
 export function esc(s:any){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
   .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+/* A WARNING'S WORDS, ESCAPED, ITS TIME RANGES KEPT WHOLE ([WARN-WORDS-STANDALONE], the proposal's §3b: at phone width
+   "BRIEFING 12:40–" / "13:00" broke after the dash). Every place that draws a warning's own sentence — the issues list,
+   the previous day's crew-rest row, the board's list, the ALL AVAIL window's reason — prints it through here, so a
+   "12:40–13:00" never splits across two lines. Escaping first, so the span is the only markup in it. */
+export function escMsg(s:any){return esc(s).replace(/\d\d:\d\d–\d\d:\d\d/g,(m:string)=>`<span class="tr-nw">${m}</span>`);}
 export let SELID:any=null;                 // clicked person (blue) — every puck of that name lights
 /* What was on screen before the current selection, so a second click on the
    same puck reverses the first rather than clearing everything. */

@@ -1,0 +1,83 @@
+[
+ [
+  "10 phone fit and gestures",
+  "402 WebKit",
+  "board issues list: every \"Conflict:\" line measured",
+  "each at most two rows; no time range split",
+  "[\"2 rows w303: Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & MASS DEBRIEF + BEER CALL 13:10–13:20 ✕\",\"2 rows w303: Ranger — Conflict: RU (step 13:00, T/O 14:00) & MASS DEBRIEF + BEER CALL 13:10–13:20 ✕\",\"2 rows w303: Ace — Conflict: ACE FLT (T/O 09:00, landing 10:00) & ACE ITEM 09:30–09:40 ✕\"] | all lines: [\"2r Ranger — Tight turn: VL BFM → RU, 60 min (needs 120). VL BFM landing assumed 13:00 (T/O + \",\"2r Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): MASS DEBRIEF + BEER CALL 13:\",\"2r Ranger — Misses RU brief 11:40–14:00: MASS DEBRIEF + BEER CALL 13:10–13:20 ✕\",\"1r Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "10-1-board-issues-p.png"
+ ],
+ [
+  "10 phone fit and gestures",
+  "402 WebKit",
+  "Edit Schedule week strip: every \"Conflict:\" line measured",
+  "each at most two rows; no time range split",
+  "[\"2 rows w285: Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & MASS DEBRIEF + BEER CALL 13:10–13:20 ✕\",\"2 rows w285: Conflict Ranger — Conflict: RU (step 13:00, T/O 14:00) & MASS DEBRIEF + BEER CALL 13:10–13:20 ✕\",\"2 rows w285: Conflict Ace — Conflict: ACE FLT (T/O 09:00, landing 10:00) & ACE ITEM 09:30–09:40 ✕\"] | all lines: [\"2r Tight turn Ranger — Tight turn: VL BFM → RU, 60 min (needs 120). VL BFM landing assumed 13\",\"2r Misses flight debrief Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): MASS D\",\"2r Misses flight brief Ranger — Misses RU brief 11:40–14:00: MASS DEBRIEF + BEER CALL 13:10–1\",\"1r Double turning Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "10-2-week-strip-p.png"
+ ],
+ [
+  "10 phone fit and gestures",
+  "402 WebKit",
+  "day details window: every \"Conflict:\" line measured",
+  "each at most two rows; no time range split",
+  "[\"3 rows w279: Warning · Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & MASS DEBRIEF + BEER CALL 13:10–13\",\"2 rows w279: Warning · Conflict Ranger — Conflict: RU (step 13:00, T/O 14:00) & MASS DEBRIEF + BEER CALL 13:10–13:20\",\"2 rows w279: Warning · Conflict Ace — Conflict: ACE FLT (T/O 09:00, landing 10:00) & ACE ITEM 09:30–09:40\"] | all lines: [\"3r Advisory · Tight turn Ranger — Tight turn: VL BFM → RU, 60 min (needs 120). VL BFM landing\",\"2r Advisory · Misses flight debrief Ranger — Misses VL BFM debrief 13:00–15:00 (landing assum\",\"2r Advisory · Misses flight brief Ranger — Misses RU brief 11:40–14:00: MASS DEBRIEF + BEER C\",\"1r Advisory · Double turning Ranger — 1 person is double turning: Ranger\"]",
+  "FAIL",
+  "10-3-day-details-p.png"
+ ],
+ [
+  "10 phone fit and gestures",
+  "402 WebKit",
+  "day details: tapped the Ranger Conflict line body",
+  "body tap opens/leads to the issues list and lights its crew; does NOT hide",
+  "{\"popOpen\":false,\"hid\":0,\"lit\":[\"puck sm warn hard boxred wfoc echo\",\"puck sm warn hard boxred dim\",\"puck sm warn dim\",\"puck sm warn hard boxred dim\"],\"sel\":0} before sel 0",
+  "RECORDED",
+  "10-4-dd-line-tapped-p.png"
+ ],
+ [
+  "10 phone fit and gestures",
+  "402 WebKit",
+  "Edit Schedule week strip: tapped the Ranger Conflict line body",
+  "lights Ranger crew in the warning colours; never selection blue; nothing hidden",
+  "[\"R Outlaw C:puck boxdot dim\",\"R Outlaw C:puck sm boxdot dim\",\"C Ranger IP:puck warn hard boxred wfoc\",\"C Ranger IP:puck warn hard boxred wfoc\",\"C Ace A:puck warn hard boxred wfoc\",\"C Ace A:puck sm warn hard boxred wfoc\"] selBlue 0",
+  "RECORDED",
+  "10-5-week-tapped-p.png"
+ ],
+ [
+  "10 phone fit and gestures",
+  "402 WebKit",
+  "Edit Schedule week strip: pressed ✕ on that line",
+  "that warning hidden (struck), others stay",
+  "[\"witem hard hid:Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, d\",\"witem hard:Conflict Ranger — Conflict: RU (step 13:00, T/O 14:00) & MAS\",\"witem hard:Conflict Ace — Conflict: ACE FLT (T/O 09:00, landing 10:00) \",\"witem adv:Tight turn Ranger — Tight turn: VL BFM → RU, 60 min (needs 1\",\"witem adv:Misses flight debrief Ranger — Misses VL BFM debrief 13:00–1\",\"witem adv:Misses flight brief Ranger — Misses RU brief 11:40–14:00: MA\",\"witem adv:Double turning Ranger — 1 person is double turning: Ranger ✕\"]",
+  "PASS",
+  "10-6-week-hidden-p.png"
+ ],
+ [
+  "10 phone fit and gestures",
+  "402 WebKit",
+  "the hidden line's arrow pressed",
+  "shown again",
+  "[\"witem hard hid\",\"witem hard\",\"witem hard\",\"witem adv\",\"witem adv\",\"witem adv\",\"witem adv\"]",
+  "FAIL",
+  ""
+ ],
+ [
+  "10 phone fit and gestures",
+  "402 WebKit",
+  "ALL window opened on the 13:10-13:20 row; its frame",
+  "window on screen, no sideways overflow; RECORD",
+  "{\"x\":0,\"y\":0,\"w\":0,\"h\":0,\"vw\":402,\"vh\":874,\"overflowX\":false} {\"ok\":true,\"wins\":[{\"id\":\"\",\"cls\":\"sb-ros eroster\",\"text\":\"AIRCREW PLACEHOLDERS ALL AVAIL ALL PILOTS · 22 FREE Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Outlaw C Piston IP Reaper IR Recon O Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal I",
+  "PASS",
+  "10-7-all-window-p.png"
+ ],
+ [
+  "10 phone fit and gestures",
+  "402 WebKit",
+  "ALL window: Ranger in its list",
+  "RECORD",
+  "Ranger is not in the window (busy)",
+  "RECORDED",
+  ""
+ ]
+]

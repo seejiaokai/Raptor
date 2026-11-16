@@ -312,6 +312,10 @@ not the other ([LW-GROUPS-STALE-AFTER-ARCHIVE], 21 Oct 26 — filed as a fault, 
 **Three of a walk's own making (the Leave War fixes' re-walk, 31 Oct 26 — `docs/handpass/2026-10-31-lw-fixes.md`):** (a) the test browser's WebKit on Windows keeps no file in the browser's own database (IndexedDB refuses a stored Blob — Chromium keeps it), so every phone walk there shows "Couldn't save that document — your browser storage may be full…" once the demo world writes its documents: a fact about the test browser, not the app — his iPhone's Safari keeps them (he checked on the live app, signed in as the member, 7 Nov 26: no note — [WEBKIT-DOCNOTE-SIGNIN] closed), so a phone walk there ignores that note at a member's sign-in; (b) the app writes a no-break space before a link's "›" (`'\u00a0›'`), so a check that compares the words with an ordinary space fails on right words — normalise it first; (c) a member's own day is a bid window only while his dates are open (D1177): closed, it opens his leave's Remarks window (D1354), so a check of the Duration row must know which window it is reading — and a step that needs his bid window first opens
 his month through the admin's own "Open for bidding" window, then switches to the member's view by the name badge
 (D292; the recipe is `walkM` in `scripts/handpass/lw-input-range-walk.mjs`).
+**A covered button pressed (16 Nov 26 — `docs/handpass/2026-11-16-warn-words-followups.md`):** with the Scheduler
+Board open, the page's own Undo (`#undoBtn`) still counts as visible though the board's bar covers it; a script that
+presses it lands its click on whatever lies on top, so desktop and phone "differed" where the app did not. On the board
+press its own pair, `#sbUndo` / `#sbRedo`, and any control under `#schedBoard`.
 
 ## 8. When nothing on screen should change
 

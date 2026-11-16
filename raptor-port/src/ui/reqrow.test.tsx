@@ -279,8 +279,8 @@ describe('a time, a remark or a name typed on a request’s row changes the requ
     const r = reqOf(iid)
     expect([r.allday, r.s, r.e]).toEqual([false, 540, 600])
     validate()
-    const his = (WARN.all as any[]).filter(w => /Training but tasked/.test(String(w.msg || '')) && (w.who || []).includes('bane'))
-    expect(his.map(w => w.msg), 'no "Training but tasked — TRAINING" for his own request').toEqual([])
+    const his = (WARN.all as any[]).filter(w => /^Conflict: .*& Training\b/.test(String(w.msg || '')) && (w.who || []).includes('bane'))
+    expect(his.map(w => w.msg), 'no "Conflict: TRAINING … & Training …" for his own request').toEqual([])
   })
 })
 

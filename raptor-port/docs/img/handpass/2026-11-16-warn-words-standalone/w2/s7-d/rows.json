@@ -1,0 +1,56 @@
+[
+ [
+  "7 hides, undo, identity",
+  "1536",
+  "two conflicts (Ranger flight+briefing; Ace flight+item)",
+  "both Conflict lines shown; puck marks",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕\",\"Ace — Conflict: ACE FLT (T/O 09:00, landing 10:00) & ACE ITEM 09:30–09:40 ✕\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕\"] head: ⚠ 3 issues · 2 warnings Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕ Ace — Conflict: ACE FLT (T/O 09:00, landing 1",
+  "PASS",
+  "7-1-before-d.png"
+ ],
+ [
+  "7 hides, undo, identity",
+  "1536",
+  "✕ pressed on Ranger's Conflict line",
+  "line stays, struck/dimmed; count and marks drop it; Ace line unchanged",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 [wln hard hid none|true]\",\"Ace — Conflict: ACE FLT (T/O 09:00, landing 10:00) & ACE ITEM 09:30–09:40 ✕ [wln hard none|false]\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕ [wln adv none|false]\"] head: ⚠ 2 issues · 1 warning Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 Ace — Conflict: ACE FLT (T/O 09:00, landing 10:0 marks [\"puck sm warn hard boxred|0\",\"puck sm warn hard boxred|0\",\"puck sm warn hard boxred|0\"] -> [\"puck sm warn|0\",\"puck sm warn|0\",\"puck sm warn|0\"]",
+  "PASS",
+  "7-2-hidden-d.png"
+ ],
+ [
+  "7 hides, undo, identity",
+  "1536",
+  "the top-bar Undo pressed after the hide",
+  "RECORD (a hide may or may not be on the Undo list)",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 ✕ [wln hard none|false]\",\"Ace — Conflict: ACE FLT (T/O 09:00, landing 10:00) & ACE ITEM 09:30–09:40 ✕ [wln hard none|false]\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕ [wln adv none|false]\"]",
+  "RECORDED",
+  "7-3-undone-d.png"
+ ],
+ [
+  "7 hides, undo, identity",
+  "1536",
+  "hide made, closed the board, reloaded the page and signed in again",
+  "still hidden after the reload",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20 [wln hard hid none|true]\",\"Ace — Conflict: ACE FLT (T/O 09:00, landing 10:00) & ACE ITEM 09:30–09:40 ✕ [wln hard none|false]\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20 ✕ [wln adv none|false]\"]",
+  "PASS",
+  "7-4-reload-d.png"
+ ],
+ [
+  "7 hides, undo, identity",
+  "1536",
+  "same two items re-timed (BRIEFING 13:15-13:25), conflict kept",
+  "stays hidden",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:15–13:25 [wln hard hid none|true]\",\"Ace — Conflict: ACE FLT (T/O 09:00, landing 10:00) & ACE ITEM 09:30–09:40 ✕ [wln hard none|false]\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:15–13:25 ✕ [wln adv none|false]\"]",
+  "PASS",
+  "7-5-retimed-d.png"
+ ],
+ [
+  "7 hides, undo, identity",
+  "1536",
+  "first BRIEFING row deleted, a different row (BRIEFING TWO, same times) holds the conflict",
+  "the new conflict is NOT hidden (a different item)",
+  "[\"Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING TWO 13:15–13:25 ✕ [wln hard none|false]\",\"Ace — Conflict: ACE FLT (T/O 09:00, landing 10:00) & ACE ITEM 09:30–09:40 ✕ [wln hard none|false]\",\"Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING TWO 13:15–13:25 ✕ [wln adv none|false]\"]",
+  "PASS",
+  "7-6-replaced-d.png"
+ ]
+]

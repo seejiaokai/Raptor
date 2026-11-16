@@ -1,0 +1,13 @@
+www-w2-s15 v1 1536
+ROW RECORDED | plain-user round | 1536 | ALL AVAIL window opened, closed by Escape | saw: open before 1, after 1; page unchanged true
+ROW RECORDED | plain-user round | 1536 | ALL AVAIL window opened, closed by a tap outside | saw: open before 1, after 1; page unchanged true
+ROW PASS | plain-user round | 1536 | ALL AVAIL window opened, closed by its ✕ | saw: open before 1, after 0; page unchanged true
+ROW PASS | plain-user round | 1536 | Insights opened, closed by its ✕ | saw: opened true, still open false
+ROW RECORDED | plain-user round | 1536 | Insights opened, closed by Escape | saw: opened true, still open false
+ROW RECORDED | plain-user round | 1536 | Insights opened, closed by a tap outside | saw: opened true, still open false
+PUBLISH {"pressed":true,"which":"data-beak","signs":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"}}
+PAGES ["editsched","viewsched","inputs","quals","logic","leavewar","tracker","help","admin"]
+ROW PASS | plain-user round | 1536 | View-only Sched (page viewsched) as the admin: Friday strip and day details | saw: {"head":"⚠ 2 issues · 1 warning ▼","items":["Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20","Misses flight debrief Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20"],"dd":["Warning · Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20","Advisory · Misses flight debrie
+ROW PASS | plain-user round | 1536 | View-only Sched as Ranger (member): Friday strip and day details | saw: {"head":"⚠ 2 issues · 1 warning ▼","items":["Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20","Misses flight debrief Ranger — Misses VL BFM debrief 13:00–15:00 (landing assumed): BRIEFING 13:10–13:20"],"dd":["Warning · Conflict Ranger — Conflict: VL BFM (landing assumed 13:00, dekit to 13:30) & BRIEFING 13:10–13:20","Advisory · Misses flight debrie
+errors []
+DONE 4 PASS 0 FAIL 4 OTHER of 8

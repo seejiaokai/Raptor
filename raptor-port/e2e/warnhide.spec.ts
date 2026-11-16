@@ -165,7 +165,112 @@ for (const [name, vp] of [['desktop', DESK], ['phone', PHONE]] as const) {
       await expect.poll(async () => { const a = await at(); await page.waitForTimeout(250); return (await at()) === a }, { message: 'the view comes to rest' }).toBe(true)
       expect(await struck.evaluate(e => { const r = e.getBoundingClientRect(); return r.top >= 0 && r.bottom <= window.innerHeight && r.left >= 0 && r.right <= window.innerWidth }),
         'and the line itself is on screen — not scrolled away to the man\'s puck').toBe(true)
-      await expect(struck).toContainText('long work day')
+      await expect(struck).toContainText('Long day: ')
     })
   })
 }
+
+/* [WARN-WORDS-STANDALONE] (owner D2045, D2058, D2071; the proposal's §3g build note) — EVERY "Conflict:" LINE STILL FITS
+   TWO ROWS ON A PHONE, AND A TIME RANGE NEVER BREAKS ACROSS LINES. The words themselves are pinned in
+   engine/warnwords.test.ts; what only a real browser can measure is how they wrap. Measured on Edit Schedule (the
+   narrowest place the list is drawn: its ✕ hide button takes width beside every line) at his iPhone's width, 390, on
+   every day of the demo week that has a list. Kept in this file, the warning list's own, so it loads the scheduler's
+   rulings page with it.
+
+   "Two rows" is the line's own words — the names and the sentence — not the small grey kind label above them, which is a
+   row of its own on every line (`.wcode{display:block}`). Counted as the distinct line boxes the browser lays the words
+   out in (a Range's client rects), cross-checked by their height in line-heights.
+
+   THE LETTERS ARE PINNED, AND A TYPED REASON IS NOT COUNTED (16 Nov 26, the FULL check). The first version measured
+   whatever font the machine had: it passed on his PC and failed on GitHub's Linux machines, whose letters are wider
+   (three demo lines ran to three rows in Verdana, the Linux stand-in). His iPhone draws Apple's own letters, of the
+   Helvetica family's width; so the letters are pinned here from the first paint to Arial (Helvetica's metrics), the
+   order's §7.2 rule for a new fit test. And a line that names a request ends with the reason the person typed
+   (". Reason: exercise, off island"), free text of any length that no wording can keep to two rows: its rows are
+   counted up to that reason. Measured at 390 with Arial the demo week's eight lines fit; the Nomad line's typed reason
+   takes a third row (scripts/handpass/www/www-host-fit.mjs, the walk's record). */
+async function wwPinLetters(page: Page) {
+  await page.addInitScript(() => {
+    const add = () => {
+      const s = document.createElement('style')
+      s.textContent = '*, *::before, *::after { font-family: Arial, "Liberation Sans", "Helvetica Neue", Helvetica, sans-serif !important }'
+      document.head.appendChild(s)
+    }
+    if (document.head) add()
+    else document.addEventListener('DOMContentLoaded', add)
+  })
+}
+async function wwShowDay(page: Page, di: number) {
+  await page.evaluate(i => {
+    const d = document.querySelector(`#eWeek .day[data-day="${i}"]`) as HTMLElement
+    const sc = (d.closest('.week') || d.parentElement) as HTMLElement
+    if (sc && sc.scrollWidth > sc.clientWidth) sc.scrollLeft = d.offsetLeft - ((sc.firstElementChild as HTMLElement)?.offsetLeft || 0)
+    window.scrollTo(0, 0)
+  }, di)
+}
+/* open the day's warning list; false where the day has none */
+async function wwOpenList(page: Page, di: number) {
+  await wwShowDay(page, di)
+  const box = page.locator(`#eWeek .day[data-day="${di}"] [data-dwbox="${di}"]`).first()
+  if (!(await box.count())) return false
+  if (!(await box.evaluate(e => e.classList.contains('open')))) {
+    const bar = page.locator(`#eWeek .day[data-day="${di}"] [data-daywarn="${di}"]`).first()
+    if (!(await bar.count())) return false
+    await bar.click()
+  }
+  await expect(box).toHaveClass(/open/)
+  return true
+}
+/* every line of the open list: its words, how many rows its words take (the kind label left out), each range's rows */
+const wwMeasure = (page: Page, di: number) => page.locator(`#eWeek .day[data-day="${di}"] [data-dwbox="${di}"] .witem[data-wix]`).evaluateAll(es => es.map(e => {
+  const tx = (e.querySelector('.wtx') || e.querySelector('.wbar + span')) as HTMLElement
+  const code = tx.querySelector('.wcode') as HTMLElement
+  const r = document.createRange()
+  r.setStartAfter(code); r.setEndAfter(tx.lastChild as Node)
+  /* end the measure before a typed reason (". Reason: …"), the person's own free text */
+  const full = (r.toString() || '').replace(/\s+/g, ' ').trim()
+  const tw = document.createTreeWalker(tx, NodeFilter.SHOW_TEXT)
+  for (let n = tw.nextNode(); n; n = tw.nextNode()) {
+    const at = (n.textContent || '').indexOf('. Reason: ')
+    if (at >= 0 && r.isPointInRange(n, at)) { r.setEnd(n, at + 1); break }
+  }
+  const tops = new Set([...r.getClientRects()].filter(c => c.width > 0.5).map(c => Math.round(c.top)))
+  const lh = parseFloat(getComputedStyle(tx).lineHeight) || 16
+  const b = r.getBoundingClientRect()
+  return {
+    text: full,
+    measured: (r.toString() || '').replace(/\s+/g, ' ').trim(),
+    rows: tops.size,
+    byHeight: Math.round(b.height / lh),
+    ranges: [...tx.querySelectorAll('.tr-nw')].map(s => ({ t: s.textContent, rows: new Set([...(s as HTMLElement).getClientRects()].map(c => Math.round(c.top))).size })),
+  }
+}))
+
+test.describe('the warning list on a phone: every "Conflict:" line fits two rows, a time range never breaks', () => {
+  test.use({ viewport: PHONE })
+
+  test('Edit Schedule at 390 wide, every day of the demo week', async ({ page }) => {
+    await wwPinLetters(page)
+    await login(page)
+    expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily), 'the letters are pinned').toMatch(/^Arial/)
+    await go(page, 'editsched')
+    const days = await page.locator('#eWeek .day[data-day]').evaluateAll(es => es.map(e => Number((e as HTMLElement).dataset.day)))
+    let conflicts = 0, ranges = 0
+    for (const di of [...new Set(days)]) {
+      if (!(await wwOpenList(page, di))) continue
+      for (const l of await wwMeasure(page, di)) {
+        for (const g of l.ranges) {
+          ranges++
+          expect(g.rows, `the time range "${g.t}" stays on one line (day ${di}: ${l.text})`).toBe(1)
+        }
+        if (!/(^|— )Conflict: /.test(l.text)) continue
+        conflicts++
+        expect(l.rows, `"${l.text}" (day ${di}) fits two rows`).toBeLessThanOrEqual(2)
+        expect(l.byHeight, `"${l.text}" (day ${di}) is at most two line-heights tall`).toBeLessThanOrEqual(2)
+      }
+    }
+    test.info().annotations.push({ type: 'measured', description: `${conflicts} conflict lines, ${ranges} time ranges` })
+    expect(conflicts, 'the demo week has conflict lines to measure').toBeGreaterThan(0)
+    expect(ranges, 'and time ranges to measure').toBeGreaterThan(0)
+  })
+})

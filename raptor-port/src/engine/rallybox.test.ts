@@ -66,7 +66,7 @@ describe('RB1 — the R box reaches every reader of the report', () => {
     DAYS[1].waves = [flight([], f('15:00', '16:00', '12:40', '12:00'))]
     let w = validate().all.find((x: any) => x.di === 1 && x.code === 'CREW_REST' && x.who.includes('bane'))
     expect(w, 'the box at 12:00 leaves 10h after the 02:00 debrief').toBeTruthy()
-    expect(w.msg).toContain('only 10h00 rest')
+    expect(w.msg).toContain('Report 12:00: 10h rest, needs 12h.')
     DAYS[1].waves[0].formations[0].rl = ''
     w = validate().all.find((x: any) => x.di === 1 && x.code === 'CREW_REST' && x.who.includes('bane'))
     expect(w, 'empty: the brief at 12:40 — 10h40, still short of 12h').toBeTruthy()

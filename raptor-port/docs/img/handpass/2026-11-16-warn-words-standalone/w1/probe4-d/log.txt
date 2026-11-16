@@ -1,0 +1,11 @@
+flight d4 w0 {"to":"12:00","ld":"","msn":"VL BFM","p":"Ranger"}
+ff:4.0.0.cs||64
+ff:4.0.0.msn|VL BFM|74
+ff:4.0.0.rl||52
+ff:4.0.0.br||52
+ff:4.0.0.to|12:00|52
+ff:4.0.0.ld||52
+|planselbtn|{"planmenu":"4"}|Live working copy
+▾
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
