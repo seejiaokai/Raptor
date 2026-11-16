@@ -1,0 +1,186 @@
+<title>CAPS and Ops Limits · Round 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* layout: one column; the open questions on top; then one card a question, the ripples, the platform flag, what is not drawn, the rulings behind it */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--warn:#a35a00;--tint:rgba(14,127,166,.07);
+--f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:26px}h2{font-size:19px;margin-top:34px;padding-top:14px;border-top:1px solid var(--line)}h3{font-size:16px}
+.sub{color:var(--mute);margin:4px 0 0}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.top ol{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:7px}
+.top li{display:grid;grid-template-columns:44px 1fr;gap:8px}
+.top b.n{font-family:var(--f-head);color:var(--acc)}
+.top h3+ol{margin-top:6px}.top ol+h3{margin-top:14px}
+.rec{color:var(--rec);font-weight:600}
+.flag{color:var(--warn);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px}
+.q p,.q li{max-width:78ch}.q p{margin:8px 0}
+.q ul{margin:6px 0;padding-left:20px}.q li{margin:4px 0}
+.ex{background:var(--tint);border-radius:8px;padding:8px 12px}
+.pics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.pics.one{grid-template-columns:minmax(0,640px)}
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
+figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
+figcaption b{color:var(--fg)}
+details{margin-top:10px}summary{cursor:pointer;color:var(--acc);font-weight:600}
+.phone{display:grid;grid-template-columns:repeat(2,minmax(0,260px));gap:10px;margin-top:8px}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--mute)}
+.tag.p{color:var(--mark);border-color:var(--mark)}
+.foot{font-size:12.5px;color:var(--mute);margin-top:28px}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#zoom img{max-width:none;width:auto;max-height:none}
+@media (max-width:640px){.pics{grid-template-columns:1fr}.top li{grid-template-columns:36px 1fr}}
+</style>
+<div class="wrap">
+<h1>CAPS and Ops limits: round 1</h1>
+<p class="sub">Night of 17 Nov 26 · what you ruled on 16 Nov: a form filled in at the start of the week and cleared by itself every week; one button showing who has done it, those flying above all; a click that switches the check off. The points left open are drawn here on the real app (demo data). <span class="tag">Today</span> is the app as it is; <span class="tag p">Proposed</span> has the new part drawn in, marked in pink with a number, each number used once on this page and matching its question (2a is in Q2). Tap a picture to see it full size.</p>
+
+<div class="top">
+<h3>Open now: answer by number, or "all as recommended"</h3>
+<ol>
+<li><b class="n">Q1</b><span><a href="#Q1">What does the form hold?</a> <span class="rec">Recommended: your squadron's two tests, CAPS and Ops limits, kept in the app with their right answers, laid out as today, with Check answers then Submit.</span></span></li>
+<li><b class="n">Q2</b><span><a href="#Q2">Who must fill it in?</a> <span class="rec">Recommended: every pilot and WSO on the squadron, students included; those flying this week listed first.</span></span></li>
+<li><b class="n">Q3</b><span><a href="#Q3">Does Ops limits clear every week too, or on a longer cycle?</a> <span class="rec">Recommended: each test its own period, set on the Logic page; CAPS every week, Ops limits every month. Please say what it is today.</span></span></li>
+<li><b class="n">Q4</b><span><a href="#Q4">Does a flyer who has not done it raise anything on the schedule, and does Ops limits count too?</a> <span class="rec">Recommended: yes, an amber advisory on his puck and in the day's warning list, for either test, each in its own words; it never stops a publish.</span></span></li>
+<li><b class="n">Q5</b><span><a href="#Q5">What does "toggle off the check" switch off?</a> <span class="rec">Recommended: one man for this week (on leave, done on paper), on again by itself next week.</span></span></li>
+<li><b class="n">Q6</b><span><a href="#Q6">Where does a person open it?</a> <span class="rec">Recommended: a "CAPS" button just after Insights on a desktop, an item in the ⋯ menu on a phone, and a bell line when the week's test opens.</span></span></li>
+<li><b class="n">Q7</b><span><a href="#Q7">On a day already published, does the amber line show?</a> <span class="rec">Recommended: yes, live, as the qualification warnings do today; it never makes the day pending and the sign-offs stay.</span></span></li>
+<li><b class="n">Q8</b><span><a href="#Q8">Can members see who has done it?</a> <span class="rec">Recommended: yes, to read only, as anyone can on your current page; only schedulers have the switches.</span></span></li>
+</ol>
+<h3>Also: answer only if you disagree</h3>
+<ol>
+<li><b class="n">R1</b><span><a href="#Q2">In the who-has-done-it list, those flying who have not done it come first, in amber.</a></span></li>
+<li><b class="n">R2</b><span><a href="#Q3">The week's test opens on the Saturday before, as your squadron's current page says.</a> A test done on Saturday or Sunday counts for the coming week.</span></li>
+<li><b class="n">R3</b><span><a href="#Q1">Nobody types his callsign: he is signed in, so the app knows who submitted.</a></span></li>
+<li><b class="n">R4</b><span><a href="#Q5">A man on leave or an overseas duty for the whole week is not checked that week, by itself.</a> My reading, not yet ruled.</span></li>
+</ol>
+</div>
+
+<h2>What your squadron uses today, in words</h2>
+<div class="q">
+<p>From the example you sent (described only; its address and the names on it are not kept here). It is a web page titled "142 e-CAPS". At its top a link to an "Ops Limit" page and the line that it can be submitted from Saturday. Each emergency procedure is a heading in capitals (fire during start, abort, bleed air caution and others), and under it pairs of empty boxes, item and action, typed from memory, sometimes with fixed words between them such as "(if app)". At the foot: Check Answers, then a callsign box and Submit, which only work once the answers are right, and a link to check who has submitted.</p>
+<p>The Ops Limit page is tables of numbers typed from memory: engine temperatures, RPM and oil pressure on the ground and in flight, landing gear and flap speeds, canopy, tyres, start times, fuel warnings, crosswind and negative g. It has the same Check Answers and Submit.</p>
+<p>The "check submission" page lists two tables, CAPS and LIMITS, each a name and the date done, with a count of each. Anyone with the link can open it. The CAPS dates all fall in this week; the LIMITS dates run back about three weeks. That is why Q3 asks whether Ops limits clears every week.</p>
+</div>
+
+<div class="q" id="Q1"><h3>Q1 · What does the form hold?</h3>
+<p>Your squadron's two tests, kept in the app, in one window laid out as your current page lays them out: two tabs, CAPS and Ops limits (1a), each procedure's heading (1b), and each step a pair of boxes typed from memory (1c). <b>Check answers</b> (1d) edges each wrong box red (1f) and right ones green, and says how many are left to fix (1g), without showing the right answer. <b>Submit</b> (1e) is dimmed and cannot be pressed until every box is right; then it records him as done this week.</p>
+<p>An admin keeps the headings, the boxes and their right answers, so a changed procedure is changed once, for everyone.</p>
+<p class="ex"><b>Example.</b> Ranger opens CAPS on Monday, fills in the boxes and presses Check answers. "Fuel master – on" and "Anti-skid – on" edge red, and the foot reads "2 answers to fix". He fixes both, Submit lights, he presses it, and the scheduler's list shows him "✓ Mon 13".</p>
+<p class="rec">Recommended: as drawn. Other choice: only a "Done" tick each person presses, with no test in the app. Simpler to build, but the answers would stay on your current page.</p>
+<p class="flag">Platform flag: see <a href="#flag">below</a>. A check made on the person's own phone means anyone who knows how can read every right answer, so the test proves less.</p>
+<div class="pics"><figure><img src="img/1-test-fill-d-proposed.png" alt="The CAPS test window being filled in"><figcaption><b>Proposed.</b> Filling it in: 1a to 1e. Three headings are drawn; the real test has more, further down. The words in the boxes are made up.</figcaption></figure>
+<figure><img src="img/1-test-checked-d-proposed.png" alt="The CAPS test after Check answers, two boxes red"><figcaption><b>Proposed.</b> After Check answers: 1f a wrong box, 1g what is left to fix.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/1-test-fill-p-proposed.png" alt=""><figcaption>Filling it in</figcaption></figure><figure><img src="img/1-test-checked-p-proposed.png" alt=""><figcaption>After Check answers</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="Q2"><h3>Q2 · Who must fill it in?</h3>
+<p>Every pilot and WSO on the squadron's Quals page, students included. Ground crew and guests are not asked. The scheduler's button opens the list you asked for: the week's figures (2a), then <b>those flying this week first</b> (2b), the ones not done at the top in amber, "Not done" (2c), then everyone else under "Not flying this week" (2d). Each row shows the date he did each test, and the check's switch (Q5).</p>
+<p class="ex"><b>Example</b> (this demo week): 38 people fly. Four of them have not done CAPS: Blade, Relay, Hex and Drifter (made up for the picture). So the first figure reads "34 of 38", the last reads "4", and those four lead the list.</p>
+<p class="rec">Recommended: as drawn. Other choice: only those flying this week must do it. Then the "Not flying" group would go.</p>
+<div class="pics"><figure><img src="img/2-who-d-proposed.png" alt="The who-has-done-it window"><figcaption><b>Proposed.</b> What a scheduler sees on pressing CAPS: Insights' window with the Quals page's table. The four whose Ops limits have run out are further down the list.</figcaption></figure>
+<figure><img src="img/2-who-p-proposed.png" alt="The same window on a phone"><figcaption><b>Proposed, on a phone.</b> The same list; the CAT column is left out so it fits.</figcaption></figure></div>
+</div>
+
+<div class="q" id="Q3"><h3>Q3 · Does Ops limits clear every week too?</h3>
+<p>You ruled that the form clears every week. Your current page suggests CAPS does, but Ops limits may run longer: its dates go back about three weeks. So each test gets its own period, set on the Logic page in a new card (3a CAPS, 3b Ops limits), beside the switch for the schedule check (3c). A period is changed with Logic's own Edit, as every setting is.</p>
+<p class="ex"><b>Example.</b> Ops limits set to every month: Basher did it on 1 Jul, so he shows "✓ 1 Jul" all of July and "Out of date" from 1 Aug.</p>
+<p class="rec">Recommended: CAPS every week (your ruling), Ops limits every month, both changeable. Please tell me how often Ops limits is done today.</p>
+<div class="pics"><figure><img src="img/3-logic-d-today.png" alt=""><figcaption><b>Today.</b> The end of the Logic page's settings.</figcaption></figure>
+<figure><img src="img/3-logic-d-proposed.png" alt=""><figcaption><b>Proposed.</b> The "CAPS and Ops limits" card: 3a, 3b, 3c.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/3-logic-p-today.png" alt=""><figcaption>Today</figcaption></figure><figure><img src="img/3-logic-p-proposed.png" alt=""><figcaption>Proposed</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="Q4"><h3>Q4 · Does a flyer who has not done it raise anything on the schedule?</h3>
+<p>Yes, in amber, the app's colour for "have a look". His puck in a flying seat wears the amber advisory ring (4a), the day's warning list gains a line that reads on its own (4b), and the day's issues count goes from 6 to 7 (4c). The red warnings stay at 3, since an amber line is not one of them. Amber never stops a publish. The check is listed on the Logic page with the other checks, in a group of its own (4d), and is switched on or off there (3c).</p>
+<p><b>Does Ops limits count too?</b> Drawn as yes: a man whose Ops limits have run out gets the same amber, with its own words, "Ops limits out of date", so each line says which test is missing.</p>
+<p class="ex"><b>Example</b> (demo Thursday). Blade flies VL at 12:45 and has not submitted CAPS. The list reads "Blade — CAPS not done: this week's test not submitted, flies VL (T/O 12:45)". Once he submits, the line and the ring go by themselves.</p>
+<p class="rec">Recommended: as drawn, both tests. Other choices: CAPS only, Ops limits showing only in the list behind the CAPS button; or nothing on the schedule at all.</p>
+<div class="pics"><figure><img src="img/4-sched-d-today.png" alt=""><figcaption><b>Today.</b> Thursday on Edit Schedule, its warning list open, then wave 1 lower down the same day.</figcaption></figure>
+<figure><img src="img/4-sched-d-proposed.png" alt=""><figcaption><b>Proposed.</b> 4a his puck, 4b the line, 4c the count.</figcaption></figure></div>
+<div class="pics"><figure><img src="img/4-check-d-proposed.png" alt=""><figcaption><b>Proposed (4d).</b> The check on the Logic page, naming both.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/4-sched-p-today.png" alt=""><figcaption>Today</figcaption></figure><figure><img src="img/4-sched-p-proposed.png" alt=""><figcaption>Proposed</figcaption></figure><figure><img src="img/4-check-p-proposed.png" alt=""><figcaption>The check on Logic</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="Q5"><h3>Q5 · What does "toggle off the check" switch off?</h3>
+<p>Your words could mean three things. <b>One man for this week:</b> the switch on his row (5a) turns off; his row reads "Not checked" (5b); he raises nothing on the schedule; next week it is on again by itself. <b>The whole week:</b> one switch at the top of the window (5c) turns the check off for everyone that week, for a stand-down or a holiday week. <b>The whole squadron, until turned back on:</b> the switch on the Logic page (3c), as every check there has.</p>
+<p class="ex"><b>Example.</b> Relay did CAPS on paper while away. The scheduler switches off Relay's row; Relay's puck carries no amber ring this week, and "Flying, not done" drops from 4 to 3.</p>
+<p class="rec">Recommended: one man for this week, with the Logic page's switch as every check has. The whole week's switch can be added later if you want it.</p>
+<div class="pics"><figure><img src="img/5-switch-person-d-proposed.png" alt=""><figcaption><b>Recommended.</b> One man's switch off: 5a, 5b.</figcaption></figure>
+<figure><img src="img/5-switch-week-d-proposed.png" alt=""><figcaption><b>The other way.</b> One switch for the whole week (5c): nothing is amber.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/5-switch-person-p-proposed.png" alt=""><figcaption>One man</figcaption></figure><figure><img src="img/5-switch-week-p-proposed.png" alt=""><figcaption>The whole week</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="Q6"><h3>Q6 · Where does a person open it?</h3>
+<p>Next to Insights, because both are about the week. On a desktop a "CAPS" button in the top bar just after Insights (6a), so Insights keeps its place beside the bell; on a phone "CAPS and Ops limits" in the schedule's ⋯ menu, after Insights (6b). The same button opens a member's own tests, and for a scheduler the list of who has done them. On the busiest bar, a scheduler's Edit Schedule at your PC's width, it still fits on one row. The bell tells each person when the week's test opens, and again before he flies if it is still not done; a tap opens the test.</p>
+<p class="rec">Recommended: as drawn. Other choice: a page of its own among the page names (Edit Schedule … Admin). Easier to find, but one more name on a bar that is already full on a laptop.</p>
+<div class="pics"><figure><img src="img/6-door-d-today.png" alt=""><figcaption><b>Today.</b> A member's top bar.</figcaption></figure>
+<figure><img src="img/6-door-d-proposed.png" alt=""><figcaption><b>Proposed (6a).</b> CAPS after Insights.</figcaption></figure></div>
+<div class="pics"><figure><img src="img/6-door-sched-d-today.png" alt=""><figcaption><b>Today.</b> A scheduler's Edit Schedule bar at 1536 wide.</figcaption></figure>
+<figure><img src="img/6-door-sched-d-proposed.png" alt=""><figcaption><b>Proposed (6a).</b> The same bar with CAPS: still one row.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/6-door-p-today.png" alt=""><figcaption><b>Today.</b> The ⋯ menu on a phone.</figcaption></figure><figure><img src="img/6-door-p-proposed.png" alt=""><figcaption><b>Proposed (6b).</b> The new item.</figcaption></figure></div>
+</div>
+
+<div class="q" id="Q7"><h3>Q7 · On a day already published, does the amber line show?</h3>
+<p>The week's test opens on the Saturday, and by then the coming days are often already published. A published day stays as it went out, except for a few warnings that are checked against today and shown live on its face: crew rest and the qualification warnings among them. Those never make the day pending and never clear the sign-offs.</p>
+<p class="ex"><b>Example.</b> Monday 13 Jul is published and signed on Friday. On Saturday the week's test opens; Blade flies Monday and has not done it. <b>Live:</b> Monday's published face shows Blade's amber ring and line at once, and both go when he submits on Sunday; Monday is not pending and its sign-offs stay. <b>Frozen:</b> Monday shows nothing; the scheduler sees it only in the list behind the CAPS button, or on Monday's next amendment.</p>
+<p>One thing to know about live: on Saturday morning most of Monday's flyers have not done it yet, so Monday's face starts with many amber lines that clear as people submit over the weekend.</p>
+<p class="rec">Recommended: live, as the qualification warnings behave today; never pending, sign-offs kept. Other choice: frozen until the next amendment.</p>
+</div>
+
+<div class="q" id="Q8"><h3>Q8 · Can members see who has done it?</h3>
+<p>On your current page anyone with the link can see who has submitted. In the app a member's CAPS button could open his own tests only, or his tests and the list as well.</p>
+<p class="ex"><b>Example.</b> Ranger, a member, presses CAPS. <b>Yes:</b> he sees his own tests and, under them, the same list a scheduler sees in Q2, without the switches. <b>No:</b> he sees only his own tests and whether he is done.</p>
+<p class="rec">Recommended: yes, to read only, as today. Other choice: schedulers only. Not drawn: it is the Q2 list without its switch column.</p>
+</div>
+
+<h2>Every place in the app this touches</h2>
+<div class="q"><ul>
+<li><b>The top bar and the ⋯ menus</b> (Edit Schedule, View-only Sched, the Scheduler Board's own bar): the new button or item (Q6).</li>
+<li><b>Warnings:</b> a new amber check, its line in the day's list, the ring on the puck, the day's issues count, and the Legend's list of flags (Q4).</li>
+<li><b>The Logic page:</b> a settings card and a check of its own (Q3, Q4).</li>
+<li><b>Quals:</b> the list of who must do it comes from its pilots and WSOs (Q2).</li>
+<li><b>Insights:</b> its neighbour on the bar; its window's look is reused.</li>
+<li><b>The bell:</b> new lines, "this week's CAPS is open" and "not done, you fly tomorrow". The bell shows only inside the app.</li>
+<li><b>Publishing:</b> an amber line never stops a publish; on a published day it shows live or not at all (Q7), never making the day pending.</li>
+<li><b>Undo:</b> a switch turned off is a change Undo takes back. A submitted test is not undone.</li>
+<li><b>The Leave War and Inputs:</b> R4 reads leave and overseas duty to excuse a man by itself.</li>
+<li><b>Admin:</b> somewhere to keep the tests' headings, boxes and answers.</li>
+<li><b>Two squadrons</b> (the multi-squadron design, already under way): each squadron keeps its own tests; a man borrowed by the other squadron is checked by his own.</li>
+<li><b>The database step:</b> two new tables, the tests with their answers and the submissions, each submission carrying its week, so "cleared every week" deletes nothing.</li>
+<li><b>Print and export:</b> nothing.</li>
+</ul></div>
+
+<h2 id="flag">Platform flag</h2>
+<div class="q">
+<p class="flag">Checking answers out of sight needs the IT side's answer.</p>
+<p><b>What it costs if the check is in the app.</b> On the Power Apps app on Dataverse, a check made in the app itself means the right answers travel to each person's phone. Anyone who knows how can read every right answer there, so passing the test proves less than it does when the answers stay hidden.</p>
+<p><b>The likely way to check out of sight.</b> An automatic flow inside the IT side's own Power Platform, using Dataverse's own connector, which is not an outside connector: the app sends his answers, the flow compares them with the right ones kept where members cannot read them, and records whether he passed. The IT side allows no add-on code on their server, so this flow is the route to ask them about: is it allowed? That question goes to them in the database round.</p>
+<p><b>Your current page.</b> How it checks answers is not known; it may check them on the phone too.</p>
+<p><b>The bell.</b> It shows only inside the app. Reaching his phone when the app is closed, as a phone notification or an email, needs the IT side.</p>
+<p>Everything else here works on the platform: clearing every week needs no deletion, since each submission carries its week.</p>
+</div>
+
+<h2>What is not drawn, and why</h2>
+<div class="q"><ul>
+<li><b>The bell's new lines.</b> The demo's bell is empty, so there is nothing real to draw them from; their wording comes in a later round.</li>
+<li><b>Ops limits' own layout</b> (its tables of numbers). Drawn once Q1 is answered.</li>
+<li><b>The admin's editor for the questions and answers.</b> Drawn once Q1 is answered.</li>
+<li><b>A member's view of who has done it.</b> Drawn once Q8 is answered.</li>
+<li><b>Your squadron's current page.</b> No picture of it is kept, because it holds real names; it is described above in words.</li>
+</ul></div>
+
+<p class="foot">Rulings behind this page: D2084 (your 16 Nov ruling), D2086 (order of work), D1551 (platform flags), D1749 (no add-on code on the IT side's server), D2045 (a warning reads on its own; Q4), D481 and D854 (Insights beside the bell; Q6), D179 with D183–D185, D45 and D103 (published days; Q7).</p>
+</div>
+<div id="zoom" hidden></div>
+<script>
+const z=document.getElementById('zoom')
+document.addEventListener('click',e=>{const i=e.target.closest('figure img');if(i){z.innerHTML='';const c=i.cloneNode();c.style.cursor='zoom-out';z.appendChild(c);z.hidden=false;return}if(!z.hidden&&z.contains(e.target))z.hidden=true})
+document.addEventListener('keydown',e=>{if(e.key==='Escape')z.hidden=true})
+</script>
