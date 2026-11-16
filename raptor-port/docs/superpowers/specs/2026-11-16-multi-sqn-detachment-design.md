@@ -140,7 +140,7 @@ buttons on a phone (8px spare with "142 DET · Exercise North") — names need a
 ## Round 1 — the foundations (written 16 Nov 26; overtaken in part by his plan above before it was put)
 
 Four questions, one decision each. The pictures: `raptor-port/docs/img/2026-11-16-multi-sqn-r1/`, drawn by
-`raptor-port/scripts/mock/2026-11-16-multi-sqn-r1.mjs` on the real app (today beside proposed).
+`raptor-port/docs/mock/2026-11-16-multi-sqn-r1/draw.mjs` on the real app (today beside proposed).
 
 **Q1 — What "detachment modes" means.** *Example:* 142 sends six crew to a three-week overseas exercise; the rest stay
 home. **Recommended (A):** an admin makes a detachment — a name, a place, its dates — under 142, and moves those six into

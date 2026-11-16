@@ -5,7 +5,7 @@
 // neighbour (marked data-mine) or hides an app node (display:none, never removed). Marks are an outline on the element
 // itself plus a small numbered tag inside it — never a box laid over the page.
 //
-// Run from raptor-port/, against a built preview already serving:  MQ_URL=http://localhost:4180/ node scripts/mock/2026-11-16-multi-sqn-r1.mjs
+// Run from raptor-port/, against a built preview already serving:  MQ_URL=http://localhost:4180/ node docs/mock/2026-11-16-multi-sqn-r1/draw.mjs
 // Pictures and manifest.json go to docs/img/2026-11-16-multi-sqn-r1/.
 // Demo data only. The squadrons are the bare numbers 142 and 149; the detachment is the invented "Exercise North".
 import { chromium } from '@playwright/test'
