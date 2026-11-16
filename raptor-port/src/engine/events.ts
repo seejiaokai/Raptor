@@ -511,7 +511,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
          it the Event's clash — its kind's own grade against a standby shift included. Two rows are the same commitment
          only when they are the same row (its key); rows nobody filed keep the old test exactly, so nothing the
          scheduler typed by hand reads differently. `reqRows` is this day's own note of which events a request made. */
-      if(events.some((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label&&((!src&&!reqRows.has(x))||x.key===key)))return;
+      /* D2073 (Astra's read, 16 Nov 26): one commitment found twice keeps the PLAINER reading of its end — an SC desk with no
+         END met first must not swallow a plain desk's assumed end for crew rest, so the kept event loses its `noEnd` when
+         the one folded into it would bear rest; either block order then reads alike, and still no conflict with himself. */
+      const dup=events.find((x:any)=>x.id===id&&x.s===w2[0]&&x.e===w2[1]&&x.label===label&&((!src&&!reqRows.has(x))||x.key===key));
+      if(dup){ if(dup.noEnd&&!(en==null&&scDesk))delete dup.noEnd; return; }
       const ev:any={id,s:w2[0],e:w2[1],label,kind:kind||'other',key};
       /* an end ASSUMED from the Logic page's "Assumed length" (no end typed): crew rest the next day re-reads it under
          THAT day's settings (D2005 — the day being judged decides; validate.ts crewRestDay), never this day's */

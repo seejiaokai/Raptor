@@ -406,7 +406,7 @@ function rematrix(html: string): string {
      + "RUN:'Days in a row',"
      + "CP:'Crew pairing — this pairing needs approval',CPH:'Crew pairing — not an authorised pairing'};"],
     ["CR:'Crew rest breach (<{crewRest})',Q:'Qualification — illegal seat',",
-     "CR:'Crew rest breach (<{crewRest})',Q:'Illegal seat',"],
+     "CR:'Crew rest breach (<{crewRest})',Q:'Qual / illegal seat',"],
     /* The A label grew a SANS tail when SANS_AVAIL moved off CP onto A (owner,
        26 Aug 26). The reference has no SANS gate, so its A chip never fires for
        SANS and no compared day renders the label this week — the swap exists so

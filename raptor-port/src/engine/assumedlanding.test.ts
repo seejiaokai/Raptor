@@ -219,4 +219,27 @@ describe('D2073 — an SC-template duty desk with START and no END bears no crew
     desk(FRI, '20:00', ''); sat()
     expect(msgs(SAT, 'CREW_REST')).toHaveLength(1)
   })
+  /* Astra's code read of the follow-ups (16 Nov 26, chat 87): the day's events take the same man at the same hours under
+     the same name as ONE commitment (the seat-and-extras rule in events.ts), so an SC desk placed BEFORE a plain desk of the
+     same role and hours swallowed the plain one — and its "no END" with it: the breach the plain desk makes vanished, by
+     block order alone. Both orders must read alike: one commitment, ending at the plain desk's assumed 21:00. */
+  it('an SC desk BEFORE a plain desk of the same role and hours: the plain desk still ends 21:00, Saturday 07:00 breaks it', () => {
+    desk(FRI, '20:00', '', 'sc'); desk(FRI, '20:00', ''); sat()
+    expect(msgs(SAT, 'CREW_REST')).toHaveLength(1)
+    expect(msgs(SAT, 'CREW_REST')[0]).toMatch(/21:00/)
+  })
+  it('the same two desks the other way round read the same, and neither order raises a conflict of the man with himself', () => {
+    desk(FRI, '20:00', ''); desk(FRI, '20:00', '', 'sc'); sat()
+    expect(msgs(SAT, 'CREW_REST')).toHaveLength(1)
+    expect(msgs(SAT, 'CREW_REST')[0]).toMatch(/21:00/)
+    expect(msgs(FRI, 'DOUBLE_BOOK')).toEqual([])
+  })
+  it('the SC-first order raises no conflict of the man with himself either', () => {
+    desk(FRI, '20:00', '', 'sc'); desk(FRI, '20:00', ''); sat()
+    expect(msgs(FRI, 'DOUBLE_BOOK')).toEqual([])
+  })
+  it('the same man in an SC desk\'s seat AND its extras is still one commitment with no END: no crew rest', () => {
+    desk(FRI, '20:00', '', 'sc'); day(FRI).dutywaves.at(-1).rows[0].more = ['bane']; sat()
+    expect(msgs(SAT, 'CREW_REST')).toEqual([])
+  })
 })
