@@ -287,7 +287,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CAL-UNDO-OTHERS] — every holiday of one war is saved in the war's one record, so in a shared database another man's holiday would block an Undo of a different one; how finely the war's records are saved is decided with the database (20 Oct 26 — not reachable today).
 
 **Features he means to add — each on his word**
-- [CAPS-OPS-LIMITS] — caps and ops limits: next in his order (D495); its questions, plan and build.
+- [CAPS-OPS-LIMITS] — caps and ops limits: a weekly form, cleared every week, who has completed it at one button, the check switched off by a click (D2084); its place in the order put to him 16 Nov 26.
 - [FEATURE-WISHLIST] — his list of features not yet designed (the Tracker's progress graph waits, D774); added 16 Nov 26: a training tracker expansion and detachment modes, the difficult parts Fable's (D2083).
 - [XFER] — moving a man between squadrons with all his data — a milestone, with the database.
 - [HIST-PER-PAGE] — a changes button on the Leave War and Quals — an idea; a mock-up first.
@@ -2183,6 +2183,7 @@ people's-days panel uses both (`raptor-port/docs/ui-contracts.md` §The page sta
 item still needs is his choice of which other windows stay up, and their own check.
 
 ### [CAPS-OPS-LIMITS] Caps and ops limits — handoff CANCELLED D568, remains unbuilt (5 Oct 26)
+**What it is — his D2084, 16 Nov 26:** a weekly form each person fills in at the start of the week, cleared by itself every week; one button shows who has completed it, those flying above all; a click switches the check off. Open, asked when its batch is planned: what the form holds, who must fill it in, whether a flyer who has not completed it raises anything on the schedule, what the switch turns off.
 **Current — D568:** "nvm i will do something else." Stop the immediate handoff; no new chat created, no replacement task chosen. Wait for the owner. The following D567 design-start draft is cancelled history, not current authority.
 
 His words: "lets handoff to a new chat and i want to do the caps and ops limits".
