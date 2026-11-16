@@ -1,0 +1,11 @@
+[
+ [
+  "R4",
+  "desktop admin",
+  "Logic page, crew-rest check, open its \"How it works\" fold",
+  "its second line reads word for word: A standby shift, or a desk made from an SC, AVALON or BB template, with START typed and END blank is left out until its END is typed.",
+  "fold open true; heading Crew rest and the working day Warning: Crew rest (<12h) For a flying member: at least 12h (Crew rest) from the end of hi; lines containing \"standby shift\": [\"The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (2h), or, where no landing is typed, at the assumed landing (A flight, 1h after take-off) plus the debrief. Anything else ends at its written end. A standby shift, or a desk made from an SC, AVALON or BB template, with START typed and END blank is left out until its END is typed.\"]; second line ends exactly with it: yes; second line: The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (2h), or, where no landing is typed, at the assumed landing (A flight, 1h after take-off) plus the debrief. Anything else ends at its written end. A standby shift, or a desk made from an SC, AVALON or BB template, with START typed and END blank is left out until its END is typed.; sentence inside fold text true",
+  "PASS",
+  "w2/r4-d-a/03-fold-open.png"
+ ]
+]

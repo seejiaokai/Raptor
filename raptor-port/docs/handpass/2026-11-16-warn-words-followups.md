@@ -41,8 +41,8 @@ filled in the walk.
 |---|---|---|---|---|
 | Edit Schedule's issues list — the seat line (desktop, phone) | YES — "Hex — Illegal seat: a WSO in the front seat of …" from every producer (AVALON, BB, SC SPARE, flight, OFT) | YES — tap, hide ✕ / Reset arrow | YES — dim when hidden, the SC-currency line beside it | w1 S7, S8 (`w1/s07/01`–`11`, `s08/06`); phone `s07-p`, `s08-p` |
 | Scheduler Board's issues list — the seat line | YES — the same words | YES — hide, show, then the board's own Undo / Redo (host: desktop and phone alike) | YES — struck through when hidden, the Reset arrow, "Undid: flagging a warning again" | w1 S8 `s08/01`–`03`; host `w1/host-s08u/03-undo1.png`, `w1/host-s08u-p/` |
-| The puck's Q chip — its hover / tap words | YES — on w1's build (before the Opus F1 fix) "Hex · C · ops wingman · Illegal seat"; now "Qual / illegal seat" | re-walk R2 | YES — the red Q chip | w1 S8 log; `ui/html.test.ts`; re-walk w2 R2 |
-| The foot-of-screen note after tapping the seat line | NOT WALKED by w1 (its S8 list) — the re-walk's R5 taps a line | re-walk R5 | — | re-walk w2 R5 |
+| The puck's Q chip — its hover / tap words | YES — on w1's build (before the Opus F1 fix) "Hex · C · ops wingman · Illegal seat"; now "Qual / illegal seat" (w2 R2, desktop and phone) | YES — hover, and a tap on the phone shows his line | YES — the red Q chip | w1 S8 log; `ui/html.test.ts`; re-walk w2 R2 |
+| The foot-of-screen note after tapping the seat line | YES — the red band at the foot carries the line's own words ("Hex — Illegal seat: a WSO in the front seat of this line (T/O 09:00)") | YES — a tap on the chip or the line | YES — the line's crew lit | w2 R2, R5 (`w2/r2-p/04-b-chip-fast.png`) |
 | The day-details window's warning rows | YES — "Warning · Illegal seat Hex — Illegal seat: …"; the SC desk's crew-rest line with END 23:00, none with END blank | YES — opened, closed by Done | YES | w1 S1, S8 `s08/07-day-details.png` |
 | A day published after the change — 👁 its version, the seat line | YES — ORIG and AL1 keep "Illegal seat" | YES — publish, amend | YES — the SC-currency line with it | w1 S8 `s08/09`, `10`; S3 the 👁 looks |
 | A member's view (View-only Sched) — the seat line | YES — both Illegal seat lines, no "Wrong seat" | YES (read) | YES | w1 S8 `s08/11-viewonly.png`; a member at phone width NOT WALKED |
@@ -50,7 +50,7 @@ filled in the walk.
 | The next day's crew-rest mark ("Breaks …" row) after an SC desk | YES — "Breaks Monday Ranger — had to leave by 20:00. Crew rest: Sunday duty ended 23:00 …" only once END is typed | YES — the puck tap | YES | w1 S1 `s01/07-monday-strip-2300.png` |
 | The crew list / ALL AVAIL on the next morning after an SC desk | YES — ALL AVAIL counts 46; its window says "no end time, an hour assumed" (D2073 changes crew rest only — RECORDED, as on `main`) | YES — opened, closed by its ✕ | YES | w1 S6 `s06/06`, `07` |
 | Sunday's SC desk → Monday (the week's edge, the peek) | YES — no line cold or warm; the line at END 23:00; gone when cleared (desktop; the phone for Ranger) | YES | YES | w1 S1 `s01/03`, `s01-p` |
-| The Logic page — Settings part ("SC MAIN conflicts") and Checks part ("Illegal seat", every "conflict") | YES — "clash" 0, "Wrong seat" 0, "conflict" 14, "Illegal seat" 2 (admin desktop, admin phone, member); a search for "clash" finds nothing; D2079's sentence: re-walk R4 | YES — six choices, a flip held over a reload, Reset to standard | YES | w1 S9 `s09-d-a/02`, `06`–`08`; re-walk w2 R4 |
+| The Logic page — Settings part ("SC MAIN conflicts") and Checks part ("Illegal seat", every "conflict") | YES — "clash" 0, "Wrong seat" 0, "conflict" 14, "Illegal seat" 2 (admin desktop, admin phone, member); a search for "clash" finds nothing; D2079's sentence word for word (w2 R4) | YES — six choices, a flip held over a reload, Reset to standard | YES | w1 S9 `s09-d-a/02`, `06`–`08`; re-walk w2 R4 |
 | Edit Schedule's Legend fold (desktop, phone; folded and open) | YES — the seven new names; open height 65px on a desktop, 255px on the phone, each time | YES — folded and opened four times | MISSING at 402 wide (his iPhone 17 Pro): the parked AIRCREW tab covers the last letters of "misses sim debrief" — the drawing and its check were made at 390, where that name wraps to its own row; put to him (the last section) | w1 S10 `s10-d-a`, `s10-p-a/editsched-2-open.png` |
 | View-only Sched's Legend fold (the same builder, its second home) | YES — the same words and heights, admin and member | YES | NO-because View-only Sched has no AIRCREW tab | w1 S10 `s10-d-a/viewsched-2-open.png`, `s10-p-u` |
 
@@ -116,8 +116,17 @@ pictures) and `docs/handpass/parts/2026-11-16-wwf-w2.md` (w2, the re-walk on the
   front seat, the OFT — PASS; the issues list, the board, the week, the day-details window, ORIG, AL1, View-only Sched
   — PASS; hide, show, Undo (the host, by the board's own Undo).
 - **D2077 (S9):** the Logic page — PASS at three doors. **D2078 (S10):** the Legend — PASS, with the phone note below.
-- **The re-walk (w2):** R1 two desks of one man in both orders, R2 the Q chip's words, R3 an AVALON and a BB desk with
-  their waves flying, R4 D2079's sentence, R5 the plain-user round — results in w2's report and the last section.
+- **The re-walk (w2), 33 PASS · 0 FAIL · 8 RECORDED · 0 NOT WALKED, 98 pictures, no errors:** R1 — two desks of one
+  man, SC first and plain first, desktop and phone: ONE crew-rest line, "Friday duty ended 21:00 → clear 09:00", END
+  23:00 → 23:00, cleared → 21:00, no conflict with himself while END is blank (host opened
+  `w2/r1-scfirst-d/04-sat-strip.png`). R2 — the Q chip's title "Qual / illegal seat" on Nomad (only "Not SC NIGHT
+  current") and on Hex ("Illegal seat: …"); a tap on the phone shows that man's own warning line. R3 — an AVALON and a
+  BB desk, their waves flying: END blank no line, END 23:00 one, cleared none. R4 — D2079's sentence word for word at
+  three doors (host opened `w2/r4-p-a/03-fold-open.png`). R5 — the plain-user round: a man seated, a line tapped, the
+  day-details window closed by Done, ✕ and Escape, the Legend, a publish, View-only Sched as admin and member — PASS.
+  RECORDED and as built: with the SC desk's END 23:00 and the plain desk's blank, the two desks overlap and Friday
+  shows "Conflict … in two seats on SXO AM duty … at once" (two real overlapping desks); with the AVALON or BB wave NOT
+  flying, its desk carries no crew rest either way (a standby desk, D1997).
 
 ## Cases carried by a test
 
@@ -185,3 +194,18 @@ GitHub's run of the pull request (the full set while the repo is public, D1086):
   the check reads a sim row's named front seat, AMT and OFT alike (`engine/events.ts`). As built, not a finding.
 - **The method:** the drawing check ran at 390 wide, not at his iPhone's 402 (D1494 says his iPhone's size); the walk
   at 402 caught it (§7.11 lesson 23, side-by-side boxes). A skill note, not a lesson of a fault he found.
+
+## Closing (chat 88)
+
+**§12, every box:** the eight answers and the tier — yes (FULL) · the rulings listed, no clash — yes (D2079 widens
+D2073's drawn words, his own ruling, said to him) · the roll-call, no blanks — yes (one MISSING, the phone Legend under
+the tab, put to him) · the production build driven at both widths — yes (frozen `7eade5b52`, then `fd8c40f40`) · the
+fixture made through the app's controls — yes · every surface seen and operated — yes · sized in writing, every order a
+result — yes, the NOT WALKED list above · the downstream result — crew rest and the warning lines as a scheduler meets
+them; OIL not touched (RECORDED as on `main`) · tests on production routes — yes · one red break test per wired surface
+— yes · the gates — GitHub's run green on `fd8c40f40`, the last code commit · the reads done and dispositioned — yes ·
+the sheet with its pictures and its NOT WALKED list — yes · his look — next.
+
+Walk: w1 205 pictures (Astra's 10 scenarios, PASS) + w2 98 (33 PASS, 0 FAIL) + the host's 16; 0 faults found by the walk; the phone Legend under the AIRCREW tab put to him
+Docs: OUTSTANDING 177 items (+1 −0) · DECISIONS D1–D2080 (new: D2078, D2079, D2080) · homes OK
+docsize: OVER by 19, deferred (D29) — docsize OK, every record accounted for

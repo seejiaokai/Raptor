@@ -1,0 +1,92 @@
+[
+ [
+  "R5 flight",
+  "desktop",
+  "put Ranger+Echo on one flight, Hex front seat of a second, from the board",
+  "the men appear on their seats",
+  "Ranger/Echo ; Hex/-",
+  "PASS",
+  "w2/r5-d/01-flights-built.png"
+ ],
+ [
+  "R5 issues list",
+  "desktop",
+  "tap the \"Illegal seat\" line on the board",
+  "the crew of that line light in warning colours (never selection blue)",
+  "changed pucks: [\"bane:puck dim\",\"freak:puck r dim\",\"rocky:puck r warn hard boxred flagnew wfoc\",\"bane:puck sm dim\",\"freak:puck r sm dim\",\"dice:puck sm dim\",\"shaft:puck sm dim\",\"slash:puck sm dim\",\"snap:puck sm dim\",\"taipan:puck sm dim\",\"beams:puck sm dim\",\"chaps:puck sm dim\",\"boosh:puck sm dim\",\"prowler:puck sm dim\",\"pump:puck sm dim\",\"stiff:puck sm dim\",\"mamba:puck sm dim\",\"harpoon:puck sm dim\",\"split:puck sm dim\",\"nact:puck sm dim\",\"dj:puck sm dim\",\"slipway:puck sm dim\",\"salsa:puck sm dim\",\"bruise:puck sm dim\",\"pike:puck sm dim\",\"casper:puck sm dim\",\"razer:puck sm dim\",\"ignite:puck sm dim\",\"fantom:puck sm dim\",\"vegas:puck sm dim\",\"prism:puck sm dim\",\"haowen:puck sm dim\",\"bapster:puck sm dim\",\"glass:puck r sm dim\",\"drill:puck r sm dim\",\"nasty:puck r sm dim\",\"dirty:puck r sm dim\",\"stuff:puck r sm dim\",\"wolf:puck r sm dim\",\"ammo:puck r sm dim\",\"pain:puck r sm dim\",\"psy:puck r sm dim\",\"spaceman:puck r sm dim\",\"plasma:puck r sm dim\",\"riddler:puck r sm dim\",\"sufa:puck r sm dim\",\"xray:puck r sm dim\",\"divot:puck r sm dim\",\"shrek:puck r sm dim\",\"dice:puck sm dim\",\"shaft:puck sm dim\",\"slash:puck sm dim\",\"snap:puck sm dim\",\"taipan:puck sm dim\",\"beams:puck sm dim\",\"chaps:puck sm dim\",\"boosh:puck sm dim\",\"prowler:puck sm dim\",\"pump:puck sm dim\",\"bane:puck sm dim\",\"stiff:puck sm dim\",\"mamba:puck sm dim\",\"harpoon:puck sm dim\",\"split:puck sm dim\",\"nact:puck sm dim\",\"dj:puck sm dim\",\"slipway:puck sm dim\",\"salsa:puck sm dim\",\"bruise:puck sm dim\",\"pike:puck sm dim\",\"casper:puck sm dim\",\"razer:puck sm dim\",\"ignite:puck sm dim\",\"fantom:puck sm dim\",\"vegas:puck sm dim\",\"prism:puck sm dim\",\"haowen:puck sm dim\",\"bapster:puck sm dim\",\"glass:puck r sm dim\",\"freak:puck r sm dim\",\"drill:puck r sm dim\",\"nasty:puck r sm dim\",\"dirty:puck r sm dim\",\"stuff:puck r sm dim\",\"wolf:puck r sm dim\",\"ammo:puck r sm dim\",\"pain:puck r sm dim\",\"psy:puck r sm dim\",\"spaceman:puck r sm dim\",\"plasma:puck r sm dim\",\"riddler:puck r sm dim\",\"sufa:puck r sm dim\",\"rocky:puck r sm wfoc echo\",\"xray:puck r sm dim\",\"divot:puck r sm dim\",\"shrek:puck r sm dim\",\"dice:puck sm dim\",\"shaft:puck sm dim\",\"slash:puck sm dim\",\"snap:puck sm dim\",\"taipan:puck sm dim\",\"beams:puck sm dim\",\"chaps:puck sm dim\",\"boosh:puck sm dim\",\"prowler:puck sm dim\",\"pump:puck sm dim\",\"bane:puck sm dim\",\"stiff:puck sm dim\",\"mamba:puck sm dim\",\"harpoon:puck sm dim\",\"split:puck sm dim\",\"nact:puck sm dim\",\"dj:puck sm dim\",\"slipway:puck sm dim\",\"salsa:puck sm dim\",\"bruise:puck sm dim\",\"pike:puck sm dim\",\"casper:puck sm dim\",\"razer:puck sm dim\",\"ignite:puck sm dim\",\"fantom:puck sm dim\",\"vegas:puck sm dim\",\"prism:puck sm dim\",\"haowen:puck sm dim\",\"bapster:puck sm dim\",\"glass:puck r sm dim\",\"freak:puck r sm dim\",\"drill:puck r sm dim\",\"nasty:puck r sm dim\",\"dirty:puck r sm dim\",\"stuff:puck r sm dim\",\"wolf:puck r sm dim\",\"ammo:puck r sm dim\",\"pain:puck r sm dim\",\"psy:puck r sm dim\",\"spaceman:puck r sm dim\",\"plasma:puck r sm dim\",\"riddler:puck r sm dim\",\"sufa:puck r sm dim\",\"rocky:puck r sm wfoc echo\",\"xray:puck r sm dim\",\"divot:puck r sm dim\",\"shrek:puck r sm dim\",\"dice:puck sm dim\",\"shaft:puck sm dim\",\"slash:puck sm dim\",\"snap:puck sm dim\",\"taipan:puck sm dim\",\"beams:puck sm dim\",\"chaps:puck sm dim\",\"boosh:puck sm dim\",\"prowler:puck sm dim\",\"pump:puck sm dim\",\"bane:puck sm dim\",\"stiff:puck sm dim\",\"mamba:puck sm dim\",\"harpoon:puck sm dim\",\"split:puck sm dim\",\"nact:puck sm dim\",\"dj:puck sm dim\",\"slipway:puck sm dim\",\"salsa:puck sm dim\",\"bruise:puck sm dim\",\"pike:puck sm dim\",\"casper:puck sm dim\",\"razer:puck sm dim\",\"ignite:puck sm dim\",\"fantom:puck sm dim\",\"vegas:puck sm dim\",\"prism:puck sm dim\",\"haowen:puck sm dim\",\"bapster:puck sm dim\",\"glass:puck r sm dim\",\"freak:puck r sm dim\",\"drill:puck r sm dim\",\"nasty:puck r sm dim\",\"dirty:puck r sm dim\",\"stuff:puck r sm dim\",\"wolf:puck r sm dim\",\"ammo:puck r sm dim\",\"pain:puck r sm dim\",\"psy:puck r sm dim\",\"spaceman:puck r sm dim\",\"plasma:puck r sm dim\",\"riddler:puck r sm dim\",\"sufa:puck r sm dim\",\"rocky:puck r sm wfoc echo\",\"xray:puck r sm dim\",\"divot:puck r sm dim\",\"shrek:puck r sm dim\",\"dice:puck sm dim\",\"shaft:puck sm dim\",\"slash:puck sm dim\",\"snap:puck sm dim\",\"taipan:puck sm dim\",\"beams:puck sm dim\",\"chaps:puck sm dim\",\"boosh:puck sm dim\",\"prowler:puck sm dim\",\"pump:puck sm dim\",\"bane:puck sm dim\",\"stiff:puck sm dim\",\"mamba:puck sm dim\",\"harpoon:puck sm dim\",\"split:puck sm dim\",\"nact:puck sm dim\",\"dj:puck sm dim\",\"slipway:puck sm dim\",\"salsa:puck sm dim\",\"bruise:puck sm dim\",\"pike:puck sm dim\",\"casper:puck sm dim\",\"razer:puck sm dim\",\"ignite:puck sm dim\",\"fantom:puck sm dim\",\"vegas:puck sm dim\",\"prism:puck sm dim\",\"haowen:puck sm dim\",\"bapster:puck sm dim\",\"glass:puck r sm dim\",\"freak:puck r sm dim\",\"drill:puck r sm dim\",\"nasty:puck r sm dim\",\"dirty:puck r sm dim\",\"stuff:puck r sm dim\",\"wolf:puck r sm dim\",\"ammo:puck r sm dim\",\"pain:puck r sm dim\",\"psy:puck r sm dim\",\"spaceman:puck r sm dim\",\"plasma:puck r sm dim\",\"riddler:puck r sm dim\",\"sufa:puck r sm dim\",\"rocky:puck r sm wfoc echo\",\"xray:puck r sm dim\",\"divot:puck r sm dim\",\"shrek:puck r sm dim\",\"dice:puck sm dim\",\"shaft:puck sm dim\",\"slash:puck sm dim\",\"snap:puck sm dim\",\"taipan:puck sm dim\",\"beams:puck sm dim\",\"chaps:puck sm dim\",\"boosh:puck sm dim\",\"prowler:puck sm dim\",\"pump:puck sm dim\",\"bane:puck sm dim\",\"stiff:puck sm dim\",\"mamba:puck sm dim\",\"harpoon:puck sm dim\",\"split:puck sm dim\",\"nact:puck sm dim\",\"dj:puck sm dim\",\"slipway:puck sm dim\",\"salsa:puck sm dim\",\"bruise:puck sm dim\",\"pike:puck sm dim\",\"casper:puck sm dim\",\"razer:puck sm dim\",\"ignite:puck sm dim\",\"fantom:puck sm dim\",\"vegas:puck sm dim\",\"prism:puck sm dim\",\"haowen:puck sm dim\",\"bapster:puck sm dim\",\"glass:puck r sm dim\",\"freak:puck r sm dim\",\"drill:puck r sm dim\",\"nasty:puck r sm dim\",\"dirty:puck r sm dim\",\"stuff:puck r sm dim\",\"wolf:puck r sm dim\",\"ammo:puck r sm dim\",\"pain:puck r sm dim\",\"psy:puck r sm dim\",\"spaceman:puck r sm dim\",\"plasma:puck r sm dim\",\"riddler:puck r sm dim\",\"sufa:puck r sm dim\",\"rocky:puck r sm wfoc echo\",\"xray:puck r sm dim\",\"divot:puck r sm dim\",\"shrek:puck r sm dim\",\"dice:puck sm dim\",\"shaft:puck sm dim\",\"slash:puck sm dim\",\"snap:puck sm dim\",\"taipan:puck sm dim\",\"beams:puck sm dim\",\"chaps:puck sm dim\",\"boosh:puck sm dim\",\"prowler:puck sm dim\",\"pump:puck sm dim\",\"bane:puck sm dim\",\"stiff:puck sm dim\",\"mamba:puck sm dim\",\"harpoon:puck sm dim\",\"split:puck sm dim\",\"nact:puck sm dim\",\"dj:puck sm dim\",\"slipway:puck sm dim\",\"salsa:puck sm dim\",\"bruise:puck sm dim\",\"pike:puck sm dim\",\"casper:puck sm dim\",\"razer:puck sm dim\",\"ignite:puck sm dim\",\"fantom:puck sm dim\",\"vegas:puck sm dim\",\"prism:puck sm dim\",\"haowen:puck sm dim\",\"bapster:puck sm dim\",\"glass:puck r sm dim\",\"freak:puck r sm dim\",\"drill:puck r sm dim\",\"nasty:puck r sm dim\",\"dirty:puck r sm dim\",\"stuff:puck r sm dim\",\"wolf:puck r sm dim\",\"ammo:puck r sm dim\",\"pain:puck r sm dim\",\"psy:puck r sm dim\",\"spaceman:puck r sm dim\",\"plasma:puck r sm dim\",\"riddler:puck r sm dim\",\"sufa:puck r sm dim\",\"rocky:puck r sm wfoc echo\",\"xray:puck r sm dim\",\"divot:puck r sm dim\",\"shrek:puck r sm dim\",\"bane:puck sm dim\",\"freak:puck r sm dim\",\"rocky:puck r sm warn hard boxred flagnew wfoc\",\"bane:puck sm dim\",\"freak:puck r sm dim\",\"dice:puck sm dim\",\"shaft:puck sm dim\",\"slash:puck sm dim\",\"snap:puck sm dim\",\"taipan:puck sm dim\",\"beams:puck sm dim\",\"chaps:puck sm dim\",\"boosh:puck sm dim\",\"prowler:puck sm dim\",\"pump:puck sm dim\",\"stiff:puck sm dim\",\"mamba:puck sm dim\",\"harpoon:puck sm dim\",\"split:puck sm dim\",\"nact:puck sm dim\",\"dj:puck sm dim\",\"slipway:puck sm dim\",\"salsa:puck sm dim\",\"bruise:puck sm dim\",\"pike:puck sm dim\",\"casper:puck sm dim\",\"razer:puck sm dim\",\"ignite:puck sm dim\",\"fantom:puck sm dim\",\"vegas:puck sm dim\",\"prism:puck sm dim\",\"haowen:puck sm dim\",\"bapster:puck sm dim\",\"glass:puck r sm dim\",\"drill:puck r sm dim\",\"nasty:puck r sm dim\",\"dirty:puck r sm dim\",\"stuff:puck r sm dim\",\"wolf:puck r sm dim\",\"ammo:puck r sm dim\",\"pain:puck r sm dim\",\"psy:puck r sm dim\",\"spaceman:puck r sm dim\",\"plasma:puck r sm dim\",\"riddler:puck r sm dim\",\"sufa:puck r sm dim\",\"xray:puck r sm dim\",\"divot:puck r sm dim\",\"shrek:puck r sm dim\"]",
+  "PASS",
+  "w2/r5-d/03-board-line-tapped.png"
+ ],
+ [
+  "R5 week list",
+  "desktop",
+  "open the day strip, tap a line",
+  "RECORD what lights",
+  "strip ⚠ 1 issue · 1 warning ▲ | lines [\"Illegal seat Hex — Illegal seat: a WSO in the front seat of this line (T/O 12:00) ✕\"] | changed pucks [\"rocky:puck r sm wfoc echo\",\"rocky:puck r sm wfoc echo\",\"rocky:puck r sm wfoc echo\",\"rocky:puck r sm wfoc echo\",\"rocky:puck r sm wfoc echo\",\"rocky:puck r sm wfoc echo\"]",
+  "RECORDED",
+  "w2/r5-d/05-week-line-tapped.png"
+ ],
+ [
+  "R5 day details",
+  "desktop",
+  "open day-details; close by Done; again by its X; again by Escape",
+  "opens and closes each time",
+  "open true, lines [\"Warning · Illegal seat Hex — Illegal seat: a WSO in the front seat of this line (T/O 12:00)\"]; Done -> closed; X -> closed (opened true); Esc -> closed (opened true)",
+  "PASS",
+  "w2/r5-d/06-day-details-open.png"
+ ],
+ [
+  "R5 legend",
+  "desktop",
+  "open and fold the Legend",
+  "opens, shows Q = \"Qual / illegal seat\", folds again",
+  "open before false, after tap true, after second tap false; mentions Qual / illegal seat: true; text LEGEND — COLOURS & FLAGS FCP (pilot) RCP (WSO) Personnel (ground crew) Level: OOCU DD CC BB AA IWIWSO IPIP IRIR exmr FIFWI ▮you ▮selected Flags: Cconflict CPcrew pairing — not authorised Rcrew rest 7days in a row Qqual / illegal seat DTdouble turn TTtight turn Aadvisory — shift + ground CPcrew pairi",
+  "PASS",
+  "w2/r5-d/08-legend-open.png"
+ ],
+ [
+  "R5 publish",
+  "desktop",
+  "sign all four off and publish Mon 27 Jul",
+  "published, version chip shown, issues still listed on the issued face",
+  "{\"published\":true,\"version\":\"ORIG\",\"signSelects\":4} | strip ⚠ 1 issue · 1 warning ▼ | [\"Illegal seat Hex — Illegal seat: a WSO in the front seat of this line (T/O 12:00) ✕\"]",
+  "PASS",
+  "w2/r5-d/10-published.png"
+ ],
+ [
+  "R5 view-only",
+  "desktop admin",
+  "View-only Sched, Mon 27 Jul after publish",
+  "RECORD (published face, issues, Q chips)",
+  "day Monday Jul 27 ORIG 1 X 1 Original — as issued Working draft — not issued i SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch ⚠ 1 issue · 1 warning ▼ WAVE 1 Traffic CS MSN R B TO LD FCP / R | strip ⚠ 1 issue · 1 warning ▼ [\"Illegal seat Hex — Illegal seat: a WSO in the front seat of this line (T/O 12:00)\"] | details [\"Warning · Illegal seat Hex — Illegal seat: a WSO in the front seat of this line (T/O 12:00)\"] | Q chips rocky:Qual / illegal seat",
+  "RECORDED",
+  "w2/r5-d/12-admin-viewonly-strip.png"
+ ],
+ [
+  "R5 view-only words",
+  "desktop admin",
+  "read the issue line and Q chip words on the published face",
+  "Hex line says \"Illegal seat: …\"; Q chip says \"Qual / illegal seat\"; no \"Wrong seat\"",
+  "[\"Illegal seat Hex — Illegal seat: a WSO in the front seat of this line (T/O 12:00)\"] | rocky:Qual / illegal seat",
+  "PASS",
+  "w2/r5-d/12-admin-viewonly-strip.png"
+ ],
+ [
+  "R5 view-only",
+  "desktop member",
+  "View-only Sched, Mon 27 Jul after publish",
+  "RECORD (published face, issues, Q chips)",
+  "day Monday Jul 27 ORIG 1 X 1 Original — as issued Working draft — not issued i SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch ⚠ 1 issue · 1 warning ▼ WAVE 1 Traffic CS MSN R B TO LD FCP / R | strip ⚠ 1 issue · 1 warning ▼ [\"Illegal seat Hex — Illegal seat: a WSO in the front seat of this line (T/O 12:00)\"] | details [\"Warning · Illegal seat Hex — Illegal seat: a WSO in the front seat of this line (T/O 12:00)\"] | Q chips rocky:Qual / illegal seat",
+  "RECORDED",
+  "w2/r5-d/14-member-viewonly-strip.png"
+ ],
+ [
+  "R5 view-only words",
+  "desktop member",
+  "same read as the member",
+  "same words as the admin",
+  "[\"Illegal seat Hex — Illegal seat: a WSO in the front seat of this line (T/O 12:00)\"] | rocky:Qual / illegal seat",
+  "PASS",
+  "w2/r5-d/14-member-viewonly-strip.png"
+ ]
+]

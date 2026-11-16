@@ -1,0 +1,29 @@
+[
+ [
+  "R1 scfirst",
+  "phone",
+  "Fri SC desk + plain desk, SXO AM, 20:00, END blank, Ranger; Sat flight B 07:00 TO 10:00",
+  "exactly ONE crew-rest line for Ranger naming duty ended 21:00; Friday no self-conflict",
+  "sat lines [\"Crew rest (<12h) Ranger — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 07:00: 10h rest, needs 12h. ✕\"] | details [\"Warning · Crew rest (<12h) Ranger — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 07:00: 10h rest, needs 12h.\"] | Fri self-conflict [] | Fri items []",
+  "PASS",
+  "w2/r1-scfirst-p/04-sat-strip.png"
+ ],
+ [
+  "R1 scfirst",
+  "phone",
+  "type SC desk END 23:00",
+  "crew-rest line now names 23:00 (later end wins), one line",
+  "sat lines [\"Crew rest (<12h) Ranger — Crew rest: Friday duty ended 23:00 → clear 11:00. Report 07:00: 8h rest, needs 12h. ✕\"] | Fri self-conflict [\"Conflict Ranger — Conflict: in two seats on SXO AM duty 20:00–23:00 at once ✕\"]",
+  "PASS",
+  "w2/r1-scfirst-p/06-sat-strip.png"
+ ],
+ [
+  "R1 scfirst",
+  "phone",
+  "clear SC desk END again",
+  "back to one line naming 21:00",
+  "sat lines [\"Crew rest (<12h) Ranger — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 07:00: 10h rest, needs 12h. ✕\"] | Fri self-conflict []",
+  "PASS",
+  "w2/r1-scfirst-p/07-sat-strip.png"
+ ]
+]
