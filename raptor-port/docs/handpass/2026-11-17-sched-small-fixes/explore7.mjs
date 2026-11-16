@@ -1,0 +1,13 @@
+import { launch, go, pic, say, state } from './wlib.mjs'
+say('explore7 v1')
+const { browser, page } = await launch('chromium', false, true)
+await go(page, 'editsched')
+say('counts day0', await page.evaluate(() => JSON.stringify([...document.querySelectorAll('#eWeek .day[data-day="0"] .oilcount')].map(c => c.closest('[data-fill]').dataset.fill + ':' + c.innerText))))
+say('day hdr', await page.evaluate(() => [...document.querySelectorAll('#eWeek .day[data-day="0"] .dt, #eWeek .day[data-day="0"] .dh *')].slice(0, 20).map(e => e.tagName + '.' + e.className + '|' + e.innerText.slice(0, 25)).join(' ;; ')))
+say('chg chips', await page.evaluate(() => [...document.querySelectorAll('#eWeek [data-chg], #eWeek .chgchip, #eWeek [class*="pend"]')].slice(0, 8).map(e => e.outerHTML.slice(0, 160)).join('\n')))
+await page.locator('#histBtn').click()
+await page.waitForTimeout(500)
+say('state', JSON.stringify(await state(page)))
+await pic(page, 'x-explore7-chg')
+say('amend banner', await page.evaluate(() => document.querySelector('#eWeek') ? '' : ''))
+await browser.close()

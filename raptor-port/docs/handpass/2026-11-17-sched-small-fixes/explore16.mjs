@@ -1,0 +1,15 @@
+import { launch, go, pic, say, press } from './wlib.mjs'
+say('explore16 v2')
+const b2 = await launch('chromium', false, true)
+const p2 = b2.page
+await go(p2, 'editsched')
+await p2.getByRole('button', { name: 'Jul 20' }).click(); await p2.waitForTimeout(800)
+await press(p2, p2.locator('#eWeek .day[data-day="3"] [data-inpedit]').first(), false); await p2.waitForTimeout(700)
+const v0 = await p2.locator('#inpEditRmk').inputValue()
+await p2.fill('#inpEditRmk', v0 + ' zz'); await p2.waitForTimeout(200)
+say('schedule: typed value', await p2.locator('#inpEditRmk').inputValue(), 'window visible', await p2.locator('#inpEditPop').isVisible())
+await pic(p2, 'x-explore16-sched-typed')
+await p2.keyboard.press('Escape'); await p2.waitForTimeout(500)
+say('schedule: ask shown after Esc =', await p2.locator('[data-testid="inped-escask"]').count(), '| window visible =', await p2.locator('#inpEditPop').isVisible().catch(() => false))
+await pic(p2, 'x-explore16-sched-esc')
+await b2.browser.close()

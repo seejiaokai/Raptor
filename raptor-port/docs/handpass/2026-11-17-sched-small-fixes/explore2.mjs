@@ -1,0 +1,10 @@
+import { launch, go, pic, say } from './wlib.mjs'
+say('explore2 v1')
+const { browser, page } = await launch('chromium', false)
+await go(page, 'editsched')
+const chip = page.locator('.pool-ph, [data-ph="allavail"], .puck:has-text("ALL AVAIL")').first()
+say('chip count', await chip.count())
+say(await page.evaluate(() => [...document.querySelectorAll('*')].filter(e => e.children.length === 0 && /^ALL AVAIL$/.test(e.textContent.trim())).map(e => e.outerHTML.slice(0, 250)).join('\n')))
+const add = page.locator('#eWeek .day[data-day="0"] .ah-row').first()
+say('ah-row', await add.evaluate(e => e.outerHTML.slice(0, 600)))
+await browser.close()
