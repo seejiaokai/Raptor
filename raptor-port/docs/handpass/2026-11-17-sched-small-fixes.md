@@ -126,7 +126,35 @@ waits). A part drawn in several copies — the count chip, part C. A removed or 
 
 ## 4. The orders walked
 
-(to fill at the walk)
+**The walk** (one Sonnet 5.5 walker, 17 Nov 26, 03:05–03:45, on the served build of a3164107a; summary
+`2026-11-17-sched-small-fixes/walk-report.md`, scripts and 142 pictures beside it in `img/`). Desktop 1536 × 864
+Chromium; his iPhone's 402 × 874 by touch in WebKit and Chromium.
+
+| Order | Result |
+|---|---|
+| W1 ALL AVAIL from each opener (a Common Programme row, a sim seat, a ground row with the keys on ✕, the board, View-only Sched, a 👁 look, OIL Earn) → Escape | PASS — closed, the keys back on the count; on the board the board stayed and a second Escape closed it |
+| W2 the changes window from the clock, a day's count, the board's strip count and History; on the phone the clock, Hide's slim bar, Hide / Show / ✕, a day's count | PASS — Escape closed it, History off, the board stayed; a tap outside left it up (D1442) |
+| W3 both windows: opened one then the other, both orders; the older one's bar pressed | PASS — newest first; the pressed one answered first |
+| W4 a time box typed, then Escape; a seat armed after the window; the bell's list over it | PASS — the old time back, the window stayed, the next Escape closed it; the seat put down first; the bell first |
+| W5 an input's window over ALL AVAIL; ALL AVAIL in front of an input's window; a question sheet over it | input's window over ALL AVAIL PASS; the other two not walkable — the input's window is a dimmed modal over the schedule, and no question sheet came up (the lead, §10) |
+| W5b the count after Escape | PASS — the 2px cyan ring by the keys, none after a mouse click |
+| W6 phone, by finger, WebKit and Chromium: the count on a Common Programme row, a sim seat, a ground row, an input's row (Sat 25 Jul), View-only Sched, the board | PASS — the window opened, nothing armed; the puck beside still arms |
+| W7 Tab through a day with an ALL AVAIL row | PASS (weak) — 120 Tabs, never on the count |
+| Plain-user round, desktop: board count → window → a man's reason; ✕ and Escape; a tap outside; ✓ Done and a page change; the changes window the same; Undo and Redo | PASS |
+| Print and export under D2005, Chromium and WebKit: a published Monday with a flag, crew rest raised 12h → 20h, then print and the CSV | PASS — the Monday kept its 17 issues and 6 warnings; an unpublished Tuesday moved 4 / 2 → 12 / 10; print and CSV byte for byte the same before and after |
+
+**The re-walk after the code reads' fixes** (one Sonnet 5.5 walker, 17 Nov 26, 04:20–04:30, on the served build of
+c96154e0d; summary `2026-11-17-sched-small-fixes/rewalk-report.md`, scripts `rw*.mjs` and 65 pictures `img/rw*`):
+
+| Order | Result |
+|---|---|
+| R1 ☰ over ALL AVAIL and over the changes window (Chromium 820 × 864) → Escape, Escape | PASS — the menu alone, then the window (the host opened `rw1-aa-after-esc1`: the menu gone, the window up) |
+| R2 Edit Schedule's ⋯, View-only Sched's ⋯ and the board's ⋯ over a window (402 × 874 by touch, WebKit and Chromium) → Escape, Escape | PASS — the menu alone, then the window; the board stayed |
+| R3 ALL AVAIL open, a seat armed, the window's bar pressed (1536) → Escape, Escape | PASS — the window closed, the seat stayed armed; the second Escape put it down |
+| R4 count A (22 Jul) then count B (25 Jul), Tab into the window → Escape; again after a real edit that redrew the week | PASS — the keys on B with the cyan ring, both times |
+| R5 the holiday OIL list, ALL AVAIL, then History → three Escapes | NOT WALKED — §8 |
+| R6 an input's window and ALL AVAIL, ALL AVAIL closed by ✕ → Escape | PASS as two variants only — §8 |
+| R7 the first walk's smoke: the week, the clock, the board (stays on the first Escape), the phone tap in WebKit and Chromium | PASS |
 
 ## 5. Cases carried by a test
 
@@ -168,11 +196,23 @@ window's ✕), run on commit 8bb07e571's code before any fix — **10 failed, 14
 
 ## 7. Errors seen
 
-(to fill at the walk)
+None. No console error, page error or failed request (4xx) in either walk.
 
 ## 8. What was not walked, and why
 
-(to fill at the walk)
+- **R5, the holiday OIL list under ALL AVAIL and History:** the demo data raised no holiday OIL-answer list
+  (`img/rw5-bell.png`). Carried by the three-window test in `src/ui/escwindows.test.tsx` (finding C, §6), through the
+  real keydown and the real History and count controls.
+- **R6 as written:** the input's window is a dimmed modal over ALL AVAIL, so ALL AVAIL's ✕ cannot be pressed under it
+  (`img/rw6-both-open.png`). Pressed only as two variants — ALL AVAIL's ✕ first, then the input's window, Escape; and
+  a script click on the ✕ — both closed the input's window. Nothing was typed, so its question was not met. Finding E
+  is carried by its two red-first tests (§6).
+- **A duty desk with ALL AVAIL:** the walk's drag did not land ALL AVAIL on a desk; the count on a desk is drawn by the
+  same one builder as on the rows walked (part C of the roll-call).
+- **A real iPhone:** the phone walks were synthetic touches in the test browser's WebKit, not Safari on iOS (lesson
+  21) — his look owes it, above all for the count's tap (`[WEEK-AA-CHIP-PHONE]`).
+- **The phone's on-screen Escape:** a phone has no Escape key of its own; the keyboard was driven by the test
+  browser, not an iPad or phone keyboard with an Escape key.
 
 ## 9. Gate counts
 
@@ -229,4 +269,14 @@ same on both: **old behaviour, not this change's.** The Inputs page's window ask
 
 ## The closing lines
 
-(to fill)
+Walk: docs/handpass/2026-11-17-sched-small-fixes.md · 211 pictures (142 the walk, 65 the re-walk, 4 the host's
+reproduction) · 25 surfaces (the roll-call's 21 rows walked, and the ☰ menu and the three ⋯ menus in the re-walk) ·
+16 orders (10 the walk, 6 the re-walk) · MISSING: a question sheet over the window and ALL AVAIL in front of an
+input's window — not reachable (the input's window is a dimmed modal); R5 — carried by a test; a duty desk, a real
+iPhone and an on-screen Escape — not walked, §8; the lead filed `[INPUT-WIN-SCHED-ASKS]`.
+
+Reads: Astra's and the fresh, blind Opus reader's final code reads, each blind to the other — both read; every
+finding fixed red-first and re-walked (A–F, §10); the tidiness note filed `[SCHED-SMALL-TIDY]`.
+
+Docs: OUTSTANDING 176 items (+2 −0) · DECISIONS D1–D2098 · homes OK
+docsize: OK

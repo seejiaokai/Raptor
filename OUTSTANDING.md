@@ -92,8 +92,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BLOCK-MENU-BB-DESK] — the "+ Block" menu calls the built-in Standard block "BB desk"; a small fix for later, the right name put to him with a picture (his D2021, 13 Nov 26).
 - [RULES-CHECK-LEFTOVERS] — what the rules check's fixes left: D2005's known limits, the published-version picker's missing "Original", the Logic page's word-for-word record and four small checks not done (two done 17 Nov 26 on `claude/sched-small-fixes`: the walk scripts' amber words, the end-to-end test); low, the schedule area's next batch.
 - [STANDBY-NO-TIMES-SEAT] — a WSO or ground crewman in an AVALON or BB front seat with no times raises no "Illegal seat" line (an ordinary flight does); found 16 Nov 26, older code, the scheduler's next batch.
-- [ALLAVAIL-ESCAPE] — Escape does not close the ALL AVAIL window (its ✕ does); found by the rules check's walk, 15 Nov 26 — BUILT 17 Nov 26 on `claude/sched-small-fixes` (the night's job 2), its walk and reads to come.
-- [WEEK-AA-CHIP-PHONE] — on a phone, a tap on the ALL AVAIL count on Edit Schedule's week opened the crew list for that row instead of the ALL AVAIL window — reproduced 17 Nov 26 (WebKit by touch) and BUILT on `claude/sched-small-fixes`; its phone walk and his iPhone look to come.
+- [ALLAVAIL-ESCAPE] — Escape does not close the ALL AVAIL window (its ✕ does); found by the rules check's walk, 15 Nov 26 — BUILT 17 Nov 26 on `claude/sched-small-fixes` (the night's job 2), walked, read by Astra and a fresh Opus reader, their findings fixed and re-walked; waits for his "merge live".
+- [INPUT-WIN-SCHED-ASKS] — the schedule's input window closes on Escape or ✕ without "Close it and lose them?" with words typed (the Inputs page's window asks); the same on `main` — his question: does D1622 cover it too (recommended: yes).
+- [SCHED-SMALL-TIDY] — a code read's tidiness note on the schedule's small fixes (D489): two lists of names kept side by side in the schedule's tap code; filed, not fixed.
+- [WEEK-AA-CHIP-PHONE] — on a phone, a tap on the ALL AVAIL count on Edit Schedule's week opened the crew list for that row instead of the ALL AVAIL window — reproduced 17 Nov 26 (WebKit by touch) and BUILT on `claude/sched-small-fixes`, walked by touch in WebKit and Chromium; his iPhone look and his "merge live" to come.
 - [INSET-DAYS-ENTER-ONLY] — the Inputs calendar settings window's "days before" box keeps a typed number only on Enter; Tab or ✕ quietly keeps the old one; seen 15 Nov 26, older code — a small fix, its behaviour put to him.
 - [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
 - [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
@@ -192,7 +194,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Look, words and the phone (the whole app)**
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock. **Checked 6 Nov 26: pull requests 558 and 556 are both live, so by its own line this item is ready to archive whole.**
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
-- [CHGWIN-ESCAPE] — Escape does not close the changes window (its ✕ and a tap outside do); older, found by chat 28's walk — his D2112, BUILT 17 Nov 26 on `claude/sched-small-fixes`, its walk and reads to come.
+- [CHGWIN-ESCAPE] — Escape does not close the changes window (its ✕ and a tap outside do); older, found by chat 28's walk — his D2112, BUILT 17 Nov 26 on `claude/sched-small-fixes`, walked, read and re-walked; waits for his "merge live".
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [BOARD-OTHER-RINGS] — most other Scheduler Board buttons and its time boxes still wear the browser's own ring under the keys, not the app's cyan one: a question for him with pictures, not built (D1625).
 - [BOARD-TAB-MENU-BUTTONS] — a walker found Tab never stops on the board's + Block, + Wave or a jet's stores, which D1646 says the keys reach: to reproduce, then fix or put to him.
@@ -360,10 +362,37 @@ Moved whole from chat 75's handoff block when it left `HANDOFF.md` (16 Nov 26, c
 ### [ALLAVAIL-ESCAPE] Escape does not close the ALL AVAIL window (found 15 Nov 26, walker W2 of the rules check's small batch)
 **What:** with the ALL AVAIL window open — from a row's count, on a desktop and a phone, the keys on the window, on the page or on nothing — Escape leaves it open; its ✕ and leaving the page close it, a tap outside rightly leaves it open (it never blocks the schedule, D38, D41). The same on `main`: the window has no key handler (`raptor-port/src/ui/AvailWindow.tsx`). Evidence: `raptor-port/docs/handpass/parts/2026-11-15-rcb2-w2.md` (scenario 2, runs s02esc-d1, s02esc-pdbg4). The design guide's keyboard rule says Escape closes what opened last. **To do:** Escape closes the window when it was the last thing opened and the keys are not in a box whose own Escape puts a value back (a time box's Escape keeps its meaning, D1011); the keys return to the count that opened it; a test; a short walk, desktop and phone. Not this batch's change — filed, not fixed in it.
 **BUILT 17 Nov 26 on `claude/sched-small-fixes` (the night's job 2, not yet walked or read):** Escape closes the window when it was the last thing opened or pressed, the keys back on the count; what was opened over it since — a question sheet, a seat armed after it, the bell's list, an input's own window, a schedule box the keys are in (D1011) — answers first; two floating windows close in the order brought forward. Test `raptor-port/src/ui/escwindows.test.tsx`; evidence sheet `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.
+**Walked, read and re-walked 17 Nov 26:** the walk found no fault in the change; Astra's and the fresh Opus reader's
+final reads found five (a newer menu's Escape also closing the window, a seat armed earlier keeping Escape, the window
+order, the keys after a reopen, ✕ leaving "in front" behind) — each fixed red-first and re-walked, no fault. Waits
+for his "merge live" (pull request 794).
 
 ### [WEEK-AA-CHIP-PHONE] On a phone the week's ALL AVAIL count may open the crew list, not its window (seen 15 Nov 26, walkers W2 and W3 of the rules check's small batch)
 **What:** at 402 × 874 by touch (WebKit), a tap at the centre of the ALL AVAIL count chip on a Ground Programme row of Edit Schedule's week opened the right-hand crew list armed for that row ("Planning Ground · ALL AVAIL TEST") instead of the ALL AVAIL window; three tries; the same chip on the phone's Scheduler Board opens the window, and on a desktop the week's chip opens it. The week's chip is routed through the one opener (`raptor-port/src/ui/interactions.ts`, the `[data-oilsent]` branch); the row's own tap that arms the crew list may take the touch first, or the chip may sit under the opened crew list at that width — not yet told apart. Evidence: `raptor-port/docs/handpass/parts/2026-11-15-rcb2-w3.md` observation 1, picture `raptor-port/docs/img/handpass/2026-11-14-rules-check-batch2/w3/r2-p2/r2-2-week-window-p.png`; W2's "FAIL?" in `…-rcb2-w2.md`. **To do:** reproduce by hand on the phone's week (and on `main`); if real, the chip's tap opens the window as D38 says, with a test and a short phone walk; if the chip was covered, a walker's note only. Not this batch's change.
 **Reproduced and BUILT 17 Nov 26 on `claude/sched-small-fixes` (not yet walked):** by touch in WebKit at 402 × 874 the tap's click went to the puck name beside the count — the one of the two the keys could land on — so the row armed; Chromium opened the window. The count is now a place the keys may land too (`tabindex="-1"`, off the Tab route), and WebKit sends it its own tap (checked in WebKit on the running app). Real by D38, so fixed. Test `raptor-port/src/ui/escwindows.test.tsx` (the markup); pictures and the reproduction in `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`. Owed: the phone walk and his iPhone look.
+**Walked 17 Nov 26:** by touch at 402 × 874 in WebKit and Chromium on a Common Programme row, a sim seat, a ground row,
+an input's row, View-only Sched and the board — the window opened, nothing armed, the puck beside still arms. Owed: his
+iPhone look (the test browser's WebKit is not Safari on iOS).
+
+### [INPUT-WIN-SCHED-ASKS] The schedule's input window closes on Escape or ✕ without asking, with words typed (found 17 Nov 26, the walk of the schedule's small fixes)
+**What:** on Edit Schedule, an input's window opened from a Personal Inputs name, with words typed in Remarks, closes
+on Escape or on its ✕ at once — the words lost, no "Close it and lose them?". The Inputs page's own window asks in the
+same case (D1622: with anything typed and not saved, ✕ asks the very question Escape asks). The same on `main`'s code
+(5632936d5), from Edit Schedule and from the Inputs page — older, not that night's change: the question is asked only
+where the window floats (`raptor-port/src/ui/InputWindow.tsx`, the Escape handler's `win && unsavedNow()`). Typing in
+Remarks counts as unsaved. Evidence: `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md` §10 (the lead).
+**His question:** does D1622 cover the schedule's input window too? **Recommended: yes** — losing typed words is the
+same harm on either page, and the schedule's window is the one he uses most. If yes: Escape and ✕ ask there as on the
+Inputs page (a tap outside it still closes it, as built), tests first, a short walk; the question's look is the
+Inputs page's, so no new drawing.
+**Place:** the schedule's next batch, once he answers (D994: put to him when he says).
+
+### [SCHED-SMALL-TIDY] The code reads' tidiness note on the schedule's small fixes (D489 — filed, not fixed; 17 Nov 26)
+**What:** the fresh Opus reader's tidiness note on `claude/sched-small-fixes`: in the schedule's tap code
+(`raptor-port/src/ui/interactions.ts`, accepting an input onto the programme) the list `seen` mirrors the list
+`strays` — two lists of the same names kept side by side. Nothing a person sees. The note's other points were fixed in
+the job (one close per window, the stand-aside's name, two stale texts). Read: `raptor-port/docs/handpass/2026-11-17-sched-small-fixes/read-opus.md`.
+**Place:** with the schedule's next batch that touches that code; low.
 
 ### [INSET-DAYS-ENTER-ONLY] The late cut-off's "days before" box keeps a typed number only on Enter (seen 15 Nov 26, walker W3)
 **What:** in the Inputs calendar settings window (opened from the Logic page's "Inputs late cut-off"), typing 10 over 14 in the days-before box and then pressing Tab or the window's ✕ kept 14, silently; Enter keeps 10 and closes the window. A box that drops a typed value without a word breaks the guide's "a changed value shows changed". Evidence: `raptor-port/docs/handpass/parts/2026-11-15-rcb2-w3.md` observation 2. **To do:** decide with him whether leaving the box (Tab, a tap away) keeps the number as the Logic page's own boxes do — recommended — and what ✕ does; a test; a short walk. Older code, not this batch's change.
