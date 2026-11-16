@@ -1,0 +1,21 @@
+desk {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"bane\"/[\"freak\"]"} seat results ok,ok
+ground row 1 0 MEETING 20:30 20:45 ok
+V1 blocks ["SC Shift/sc:SXO AM 20:00- bane+[\"freak\"]"]
+V1 board warnings ["Ranger — Conflict: SXO AM duty 20:00–21:00 & MEETING 20:30–20:45 ✕"]
+V1 strip ⚠ 1 issue · 1 warning ▼ ["Conflict Ranger — Conflict: SXO AM duty 20:00–21:00 & MEETING 20:30–20:45 ✕"]
+ROW PASS | S6 | desktop | Tue: SC desk START 20:00 END blank (Ranger + Echo); ground MEETING 20:30-20:45 with Ranger | saw: ⚠ 1 issue · 1 warning ▼ ["Conflict Ranger — Conflict: SXO AM duty 20:00–21:00 & MEETING 20:30–20:45 ✕"]
+desk {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"wrangler\"/null"} seat results ok
+ground row 2 0 TASK 08:00 08:30 ok
+V2 strip ⚠ 1 issue ▼ ["Long day Otter — Long day: 13h00 (limit 12h), 08:00 → 21:00 ✕"]
+ROW PASS | S6 | desktop | Wed: Otter alone on an SC desk START 20:00 END blank, plus an 08:00-08:30 task | saw: ⚠ 1 issue ▼ ["Long day Otter — Long day: 13h00 (limit 12h), 08:00 → 21:00 ✕"]
+desk {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"allavail\"/[\"all\"]"} seat results ok,ok
+V3 blocks ["SC Shift/sc:SXO AM 20:00- allavail+[\"all\"]"]
+window text (OIL Earn off) ⠿ SXO AM Aug 1 · 20:00–21:00 · no end time, an hour assumed ✕ Who’s available 46 PILOTS · 28 Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 18 Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now Tap a puck for why.
+window still open after its own close button? 0
+board warnings V3 ["SXO AM has no usable times, so nobody on it earns OIL for this day ✕"]
+OIL items data-oilitem=r:rmwijwinrazvm9f data-oilday=5 title=Earns OIL — tap to stop this item earning|OPS O AM ;; data-oilitem=r:rmwijwinr6uiy1q data-oilday=5 title=Earns OIL — tap to stop this item earning|SXO PM ;; data-oilitem=r:rmwijwinrs57jh5 data-oilday=5 title=Earns OIL — tap to stop this item earning|OPS O PM
+oil chips None of these 46 earn OIL today — tap to see each one (who is free as things stand now) | oilcount ;; None of these 46 earn OIL today — tap to see each one (who is free as things stand now) | oilcount
+window text in OIL Earn (first chip ALL AVAIL) ⠿ SXO AM Aug 1 · 20:00–21:00 · no end time, an hour assumed ✕ Who’s available 46 Who earns OIL 0 of 46 PILOTS · 0 EARN Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 0 EARN Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now No OIL worked out — this row has no end time.
+window text second chip (ALL) ⠿ SXO AM Aug 1 · 20:00–21:00 · no end time, an hour assumed ✕ Who’s available 46 Who earns OIL 0 of 46 PILOTS · 0 EARN Reaper IR Anvil IP Blade IP Cinch IP Cobra IP Comet IP Forge IP Havoc IP Hunter IP Piston IP Ranger IP Saber IP Sidewinder IP Trident IP Vandal IP Warden IP Ace A Drifter A Saint B Gambit C Nomad C Outlaw C Ridge C Diesel D Vapor D Recon O Talisman O Wildcard O WSOS · 0 EARN Basher IW Echo IW Ledger IW Quill IW Relay IW Scope IW Static IW Cinder B Rune B Cutter C Dash C Fable C Ghost C Grit C Hex C Ryder C Vector C Wisp C who is free as things stand now No OIL worked out — this row has no end time.
+errors []
+DONE 2 PASS 0 FAIL 0 OTHER of 2

@@ -1,0 +1,25 @@
+desk {"label":"DUTY","role":"","str":"07:00","end":"19:00","who":"\"bane\"/null"} seat results ok
+desk {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"bane\"/null"} seat results ok
+flight2 {"to":"07:20","ld":"08:20","br":"06:00","p":"Ranger"} ok
+Saturday blocks ["Duty/undefined:0800-1800-plasma","DUTY/undefined:07:00-19:00-bane","SC Shift/sc:20:00--bane"]
+P1 Sunday strip ⚠ 2 issues · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Saturday duty ended 19:00 → clear 07:00. Report 06:00: 11h rest, needs 12h. ✕","OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"]
+P1 Saturday trace {"items":["Breaks Sunday Ranger — had to leave by 18:00. Crew rest: Saturday duty ended 19:00 → clear 07:00. Report 06:00: 11h rest, needs 12h."]}
+ROW PASS | S2 | desktop | Saturday: plain duty 07:00-19:00 then SC desk 20:00 END blank (Ranger); Sunday flight B 06:00 | saw: ⚠ 2 issues · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Saturday duty ended 19:00 → clear 07:00. Report 06:00: 11h rest, needs 12h. ✕"] | trace ["Breaks Sunday Ranger — had to leave by 18:00. Crew rest: Saturday duty ended 19:00 → clear 07:00. Report 06:00: 11h rest, needs 12h."]
+desk {"label":"DUTY","role":"","str":"20:00","end":"","who":"\"boosh\"/null"} seat results ok
+desk {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"bane\"/null"} seat results ok
+desk {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"bane\"/null"} seat results ok
+desk {"label":"DUTY","role":"","str":"20:00","end":"","who":"\"boosh\"/null"} seat results ok
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Ranger"} ok
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Havoc"} ok
+second aircraft seat wave 1
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Ranger"} ok
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Havoc"} ok
+second aircraft seat wave 1
+Wed blocks ["DUTY/undefined:20:00--boosh","SC Shift/sc:20:00--bane"]
+Fri blocks ["SC Shift/sc:20:00--bane","DUTY/undefined:20:00--boosh"]
+P2 fixture A next-day strip ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Havoc — Crew rest: Wednesday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕"]
+ROW PASS | S2 | desktop | twin fixture A (plain first, SC second), both START 20:00 END blank; next day flights B 08:00 | saw: Havoc ["Crew rest (<12h) Havoc — Crew rest: Wednesday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕"] | Ranger []
+P2 fixture B next-day strip ⚠ 2 issues · 1 warning ▼ ["Crew rest (<12h) Havoc — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕","OIL waiting — this day is not published Not published yet, so nobody earns OIL for this day. Publish it before the day is out. ✕"]
+ROW PASS | S2 | desktop | twin fixture B (SC first, plain second), both START 20:00 END blank; next day flights B 08:00 | saw: Havoc ["Crew rest (<12h) Havoc — Crew rest: Friday duty ended 21:00 → clear 09:00. Report 08:00: 11h rest, needs 12h. ✕"] | Ranger []
+errors []
+DONE 3 PASS 0 FAIL 0 OTHER of 3

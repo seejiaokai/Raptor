@@ -1,0 +1,50 @@
+desk {"label":"SC Shift","sa":"sc","role":"SXO AM","str":"20:00","end":"","who":"\"bane\"/null"} seat results ok
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Ranger"} ok
+PLAN A (END blank) Wed strip NO STRIP []
+after + Alt Plan: curDraft dr2 ["SC Shift/sc:SXO AM 20:00- bane"]
+PLAN MENU after-alt data-plansel=dr1|Plan Atap to make it the live day ;; data-plangolive=1|Plan B ●live now — this is what publishes ;; data-plandup=1|+ Alt Plan
+selector now reads Plan B ▾
+plan B blocks ["SC Shift/sc:SXO AM 20:00-23:00 bane"]
+PLAN B (END 23:00) Wed strip ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Tuesday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"]
+ROW PASS | S5 | desktop | Plan A END blank; + Alt Plan creates Plan B; type END 23:00 there; read Wed (Ranger B 08:00) | saw: A: [] blank-ok=true | B: ["Crew rest (<12h) Ranger — Crew rest: Tuesday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"] | selector Plan B ▾
+menu labels (toA) ["Plan Atap to make it the live day","Plan B ●live now — this is what publishes","+ Alt Plan"]
+switched to A? true ["SC Shift/sc:SXO AM 20:00- bane"]
+after switch to A Wed strip NO STRIP []
+menu labels (toB) ["Plan A ●live now — this is what publishes","Plan Btap to make it the live day","+ Alt Plan"]
+switched to B? true ["SC Shift/sc:SXO AM 20:00-23:00 bane"]
+after switch to B Wed strip ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Tuesday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"]
+ROW SEE-LOG | S5 | desktop | switch A -> B -> A through the plans menu (selector label seen in the menu dump) | saw: A again crew lines=0 ; B again crew lines=1 ; blocks ["SC Shift/sc:SXO AM 20:00-23:00 bane"]
+END now (plan on screen) 23:00
+after 22:00 ["SC Shift/sc:SXO AM 20:00-22:00 bane"]
+after Undo ["SC Shift/sc:SXO AM 20:00-23:00 bane"]
+after Redo ["SC Shift/sc:SXO AM 20:00-22:00 bane"]
+after week away/back ["SC Shift/sc:SXO AM 20:00-22:00 bane"]
+after reload ["SC Shift/sc:SXO AM 20:00-22:00 bane"]
+after reload Wed strip ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Tuesday duty ended 22:00 → clear 10:00. Report 08:00: 10h rest, needs 12h. ✕"]
+PLAN MENU after-reload data-plansel=dr1|Plan Atap to make it the live day ;; data-plangolive=1|Plan B ●live now — this is what publishes ;; data-plandup=1|+ Alt Plan
+menu labels (undoA) ["Plan Atap to make it the live day","Plan B ●live now — this is what publishes","+ Alt Plan"]
+plan switch: before Plan B ▾ after switching to A Plan A ▾ ["SC Shift/sc:SXO AM 20:00- bane"]
+after Undo of plan switch Plan B ▾ ["SC Shift/sc:SXO AM 20:00-22:00 bane"]
+Wed strip after plan-switch Undo ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Tuesday duty ended 22:00 → clear 10:00. Report 08:00: 10h rest, needs 12h. ✕"]
+after Redo of plan switch Plan A ▾ ["SC Shift/sc:SXO AM 20:00- bane"]
+Wed strip after plan-switch Redo NO STRIP []
+ROW SEE-LOG | S5 | desktop | switch to Plan A, then Undo, then Redo | saw: selector: Plan B ▾ -> Plan A ▾ -> Undo Plan B ▾ -> Redo Plan A ▾; Wed after Undo ["Crew rest (<12h) Ranger — Crew rest: Tuesday duty ended 22:00 → clear 10:00. Report 08:00: 10h rest, needs 12h. ✕"] after Redo []
+apply menu data-daytplpick=dt1|SC desk day0 waves · 1 duty block · 0 ground rows · 0 sims ;; data-daytplsave=1|+ Save this day as a template
+Thu after apply ["SC Shift/sc:SXO AM 20:00- "]
+Thu seats nobody
+Thu desk times sc:20:00-
+seat Ranger ok
+flight2 {"to":"09:00","ld":"10:00","br":"08:00","p":"Ranger"} ok
+Fri strip after template + seated (END as copied) NO STRIP []
+Fri strip END cleared NO STRIP []
+after paste 23:00
+Fri strip after pasting 23:00 ⚠ 1 issue · 1 warning ▼ ["Crew rest (<12h) Ranger — Crew rest: Thursday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"]
+ROW PASS | S5 | desktop | day saved as a template then applied to Thu; re-seat Ranger; Fri flight B 08:00; END as copied / cleared / pasted 23:00 / cleared | saw: copied(END as saved): [] | cleared: [] | pasted: ["Crew rest (<12h) Ranger — Crew rest: Thursday duty ended 23:00 → clear 11:00. Report 08:00: 9h rest, needs 12h. ✕"] | cleared again: []
+view-only plan select 1 live:Plan A ●* | d:dr2:Plan B
+inactive option ["d:dr2"]
+view-only inactive-plan day details {"ok":true,"items":[]}
+view-only plan preview text Tuesday Jul 28 DRAFT 0 X 0 X 0 Plan A ● Plan B i Draft Viewing plan Plan B — read-only No flying — ground day. DUTIES NAME START END PEOPLE RMKS SC SHIFT SXO AM 20:00 22:00 Ranger IP OPS O AM 07:00 13:00 SXO PM 13:00 19:00 OPS O PM 13:00 19:00 UNAVAILABLE Nil
+view-only preview strip NO STRIP []
+ROW RECORDED | S5 | desktop | View-only Sched: preview an inactive saved plan of Tue 28 Jul (never published) | saw: strip: NO STRIP items [] | details []
+errors []
+DONE 2 PASS 0 FAIL 3 OTHER of 5

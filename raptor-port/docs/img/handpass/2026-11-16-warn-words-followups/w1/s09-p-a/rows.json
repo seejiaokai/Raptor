@@ -1,0 +1,11 @@
+[
+ [
+  "S9 Logic",
+  "phone admin",
+  "open Logic, open every fold, read the whole page for \"clash\" and \"Wrong seat\"",
+  "no \"clash\" and no \"Wrong seat\" anywhere; \"conflict\" used; \"Illegal seat\" where the seat check is named",
+  "clash 0; wrong seat 0; conflict 14; illegal seat 2",
+  "PASS",
+  "w1/s09-p-a/02-logic-opened.png"
+ ]
+]
