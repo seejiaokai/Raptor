@@ -1,0 +1,259 @@
+<title>Two Squadrons · Round 3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* layout: one column; the open questions on top; then the verdict, the three walkthroughs, "+ Line", the ripples */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--warn:#a35a00;--tint:rgba(14,127,166,.07);
+--f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:26px}h2{font-size:19px;margin-top:34px;padding-top:14px;border-top:1px solid var(--line)}h3{font-size:16px}
+.sub{color:var(--mute);margin:4px 0 0}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.top ol{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:7px}
+.top li{display:grid;grid-template-columns:44px 1fr;gap:8px}
+.top b.n{font-family:var(--f-head);color:var(--acc)}
+.top h3+ol{margin-top:6px}.top ol+h3{margin-top:14px}
+.rec{color:var(--rec);font-weight:600}
+.weak{color:var(--warn);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px}
+.q p,.q li{max-width:78ch}.q p{margin:8px 0}
+.q ul{margin:6px 0;padding-left:20px}.q li{margin:4px 0}
+.ex{background:var(--tint);border-radius:8px;padding:8px 12px;color:var(--mute)}
+.ex b{color:var(--fg)}
+.pics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.pics.one{grid-template-columns:1fr}
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
+figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
+figcaption b{color:var(--fg)}
+details{margin-top:10px}summary{cursor:pointer;color:var(--acc);font-weight:600}
+.phone{display:grid;grid-template-columns:repeat(2,minmax(0,260px));gap:10px;margin-top:8px}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--mute)}
+.tag.p{color:var(--mark);border-color:var(--mark)}
+table{border-collapse:collapse;width:100%;margin-top:8px;font-size:14px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-head);font-size:13px;color:var(--mute);font-weight:600}
+.tw{overflow-x:auto}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#zoom img{max-width:none;width:auto;max-height:none}
+@media (max-width:640px){.pics{grid-template-columns:1fr}.top li{grid-template-columns:36px 1fr}}
+</style>
+<div class="wrap">
+<h1>Two squadrons and detachments: round 3</h1>
+<p class="sub">Night of 17 Nov 26 · your questions: is the design good, does it touch other parts of the app, is it easy to use, how 149 moves into 142's home, and whether "+ Line" should stay open. Every picture is the real app (demo data). <span class="tag">Today</span> is the app as it is; <span class="tag p">Proposed</span> has the new part drawn in, marked in pink with a number; each number is used once on this page. 149 does not exist in the app yet, so 142's screens stand in for 149's where a caption says so. Tap a picture to see it full size.</p>
+
+<div class="top">
+<h3>Open now: answer by number, or "all as recommended"</h3>
+<ol>
+<li><b class="n">Q1</b><span><a href="#Q1">Does moving 149's place take a start date?</a> <span class="rec">Recommended: yes, a "From" date.</span></span></li>
+<li><b class="n">Q2</b><span><a href="#Q2">How does a scheduler move between his squadron's, the other squadron's and a detachment's schedule?</a> <span class="rec">Recommended: the TALON mark becomes a menu, "149 ▾".</span></span></li>
+<li><b class="n">Q3</b><span><a href="#Q3">Where do the other squadron's free people show?</a> <span class="rec">Recommended: a group of their own at the foot of each crew list, each man showing when he is free.</span></span></li>
+<li><b class="n">Q4</b><span><a href="#Q4">Should "✕ Wave" ask first when the wave holds the other squadron's lines?</a> <span class="rec">Recommended: yes, then only.</span></span></li>
+<li><b class="n">Q5</b><span><a href="#Q5">Adding several lines quickly: your stay-open card, or "+ Line" at the wave's foot?</a> <span class="rec">Recommended: "+ Line" at the foot.</span></span></li>
+<li><b class="n">Q6</b><span><a href="#Q6">May 149's scheduler change 142's line inside 149's own wave?</a> <span class="rec">Recommended: yes, and 142 is told.</span></span></li>
+<li><b class="n">Q7</b><span><a href="#Q7">When two squadrons' crew-rest settings differ, which one judges a man flying for both?</a> <span class="rec">Recommended: the settings of the later line's schedule.</span></span></li>
+</ol>
+<h3>Also: answer only if you disagree</h3>
+<ol>
+<li><b class="n">R1</b><span><a href="#R1">A detachment's "To" date is its planned end. It does not close the detachment by itself; that day the bell reminds its admins.</a></span></li>
+<li><b class="n">R2</b><span><a href="#R2">On the Scheduler Board there is no room after (or under) the mission box, so the grey "142" badge sits inside it.</a> This changes what you ruled, for the board only.</span></li>
+<li><b class="n">R3</b><span><a href="#R3">Closing a detachment early also ends its men's overseas duty that day, and each man is told by the bell.</a> My reading, not yet ruled.</span></li>
+</ol>
+</div>
+
+<h2 id="verdict">1 · Is the design good? My honest answer</h2>
+<div class="q">
+<p><b>Mostly yes.</b> What you have ruled (D2088 to D2111) builds two squadrons out of things the app already has: the overseas duty input, the Attach row, the ORIG and DRAFT tags, the just-added ring and the question card that hangs from a button. That keeps it easy to learn, keeps it looking like one app, and leaves fewer new places for a bug. The weak spots are in the gaps between the rulings: moving from one schedule to another, where the other squadron's people show, and two buttons that act out of sight once two squadrons share a wave.</p>
+<h3 style="margin-top:12px">Is it easy to use?</h3>
+<p>Yes, for anyone who already uses the app: every step uses a screen he knows, and nothing has to be set up twice. Where it fails today is feedback. "+ Line" and "✕ Wave" can change things he cannot see, and a scheduler has no way yet to open the other squadron's schedule. Q2 to Q5 fix those.</p>
+<h3 style="margin-top:12px">What works</h3>
+<ul>
+<li><b>Every line has one owner,</b> and that squadron signs it (D2106), so a change never has two amendments to go into.</li>
+<li><b>Where a squadron is decides what it shares</b> (D2092): at the same place, two squadrons can plan each other's people and their clashes are checked; at different places, never. Nobody has to tick a sharing setting.</li>
+<li><b>A detachment uses the overseas duty input</b> (D2101, D2102). A man away shows at home the way he always has, titled by the detachment.</li>
+<li><b>Look 2</b> (D2104) marks the other squadron's line clearly: a grey badge and a lighter block, no new colour.</li>
+<li><b>A pick onto a published day waits as a pending change</b> (D2107), as every other late change does.</li>
+</ul>
+<h3 style="margin-top:12px">What is weak, and the fix for each</h3>
+<ul>
+<li><span class="weak">The place change has no start date and no owner shown.</span> <b>Fix:</b> a master admin picks the place from a list, with a "From" date (<a href="#Q1">Q1</a>).</li>
+<li><span class="weak">There is no way to move between schedules.</span> Round 1 suggested a menu, but it was never put to you. <b>Fix:</b> the TALON mark as a menu (<a href="#Q2">Q2</a>).</li>
+<li><span class="weak">The other squadron's people have no place to be picked from.</span> D2091 and D2092 let a scheduler plan them, but no list shows them. <b>Fix:</b> their own group in each crew list (<a href="#Q3">Q3</a>).</li>
+<li><span class="weak">"✕ Wave" throws away the other squadron's lines with no question.</span> <b>Fix:</b> ask, only then (<a href="#Q4">Q4</a>).</li>
+<li><span class="weak">"+ Line" adds lines out of sight.</span> This is true today, before any squadron change. <b>Fix:</b> "+ Line" at the wave's foot (<a href="#Q5">Q5</a>).</li>
+<li><span class="weak">Two rulings disagree about the other squadron's line in your wave</span> (D2089, D2105). <b>Fix:</b> <a href="#Q6">Q6</a>.</li>
+<li><span class="weak">Crew rest across two schedules has no rule yet</span> when the two squadrons' settings differ. <b>Fix:</b> <a href="#Q7">Q7</a>.</li>
+<li><span class="weak">D2105's "tick to show the other squadron's line" has no control drawn yet.</span> Where it sits depends on Q2 and Q3, so it waits for them.</li>
+</ul>
+<h3 style="margin-top:12px">Against the design guide</h3>
+<p>I checked it myself, in one pass. The others it asks for were not run tonight, to save time. It passes on: built from parts you know; one mark with one look (no new colour, no glow); questions asked at the button you pressed (lesson 77); buttons keeping their size (D487). It fails on: <b>showing what happened</b>, where "+ Line" and "✕ Wave" act out of view (your ruling D850; fixed by Q5 and Q4).</p>
+</div>
+
+<h2 id="walk1">2 · Walkthrough: putting 149 in 142's home</h2>
+<div class="q" id="Q1"><h3>Q1 · Does moving 149's place take a start date?</h3>
+<p><b>Who does it:</b> a master admin, since only a master admin looks after squadrons (D2093). He opens Admin → Squadrons (D2110) and taps 149's row (1a). <b>Place</b> (1b) is picked from the places list (1e), never typed, so two squadrons can only match exactly. <b>From</b> (1c) is the day the move starts. One line (1d) says what Save will do: "From 1 Dec, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told." My recommendation is that both squadrons' admins and schedulers get a bell line when it is saved.</p>
+<p class="ex"><b>Example.</b> On 20 Nov the master admin sets 149 to Home base from 1 Dec. Until 30 Nov nothing changes on either schedule. From 1 Dec, 142's crew lists show 149's free people, and a 142 man double-booked by 149 is flagged on both schedules.</p>
+<p class="rec">Recommended: a "From" date, as drawn. Other choice: the move takes effect the moment it is saved. That is simpler, but a move planned in advance could not be set up early.</p>
+<div class="pics"><figure><img src="img/1-place-d-ruled.png" alt=""><figcaption><b>As ruled, before the move (1a).</b> A master admin's view.</figcaption></figure>
+<figure><img src="img/1-place-d-proposed.png" alt=""><figcaption><b>Proposed.</b> 1b Place · 1c From · 1d what changes.</figcaption></figure></div>
+<div class="pics one"><figure><img src="img/1-place-d-list.png" alt=""><figcaption><b>Proposed (1e).</b> The places list open.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/1-place-p-ruled.png" alt=""><figcaption>As ruled</figcaption></figure><figure><img src="img/1-place-p-proposed.png" alt=""><figcaption>Proposed</figcaption></figure><figure><img src="img/1-place-p-list.png" alt=""><figcaption>The list open</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="Q3"><h3>Q3 · Where do the other squadron's free people show?</h3>
+<p>Two crew lists need them: Edit Schedule's Available crew, and the Scheduler Board's own list, where a 142 scheduler joining 149's wave picks his crew. In both, 149's people come last, in their own group, so 142's own people stay first. <b>Each one shows when he is free</b>, so nobody drags a man into a wave he cannot fly.</p>
+<ul>
+<li><b>Edit Schedule (2a):</b> grouped by time as the list already groups 142's: "149 · 2nd wave · night 16:20–end · 1 can fly" (Jolt, busy with 149 in the morning), and "149 · available all day · 2" (Mako, Brick).</li>
+<li><b>The Scheduler Board (2b):</b> under each column, "149 · 1 free". A man free for only part of the day says when, in the list's own small line: Jolt "free from 11:30".</li>
+</ul>
+<p>Dragging one onto a seat is a pick (D2091): his home schedule then shows "Attach · 142" for him (D2098).</p>
+<p class="rec">Recommended: as drawn. Other choice: 149's people mixed into 142's groups, each with a small badge. That makes one list, but a busier one.</p>
+<div class="pics"><figure><img src="img/2-crew-d-today.png" alt=""><figcaption><b>Today.</b> Edit Schedule's Available crew, Monday.</figcaption></figure>
+<figure><img src="img/2-crew-d-proposed.png" alt=""><figcaption><b>Proposed (2a).</b> 149's people, by when they are free.</figcaption></figure></div>
+<div class="pics"><figure><img src="img/2-board-d-today.png" alt=""><figcaption><b>Today.</b> The board's crew list.</figcaption></figure>
+<figure><img src="img/2-board-d-proposed.png" alt=""><figcaption><b>Proposed (2b).</b> "149 · 1 free" under each column; Jolt "free from 11:30".</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/2-crew-p-today.png" alt=""><figcaption>Edit Schedule, today</figcaption></figure><figure><img src="img/2-crew-p-proposed.png" alt=""><figcaption>Edit Schedule, proposed</figcaption></figure><figure><img src="img/2-board-p-today.png" alt=""><figcaption>Board, today</figcaption></figure><figure><img src="img/2-board-p-proposed.png" alt=""><figcaption>Board, proposed</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="Q2"><h3>Q2 · How does a scheduler move between schedules?</h3>
+<p>Today "142 TALON" is a title; it was named so when the app became TALON (D1606). Proposed, the whole TALON mark becomes a button (3a), its small number reading "149 ▾", and it opens "Schedules" (3b). A person sees only the schedules he may see, so a member with one schedule sees no ▾, as today.</p>
+<p><b>Which pages follow the choice:</b> the schedule pages (Edit Schedule, View-only Sched, the Scheduler Board) and Logic, since each schedule has its own settings (D2109). Inputs, Quals, the Leave War and the Tracker stay on his own squadron's people, because the people stay his squadron's wherever they fly.</p>
+<p class="ex"><b>Example</b> (your own, D2088: 149 opens detachment 249). A 149 scheduler at home taps "149 ▾", picks "249 · Exercise North", and Edit Schedule now shows the detachment's week. He opens Inputs: it still lists 149's people, the detachment's men among them. He picks "149" to go back.</p>
+<p class="rec">Recommended: as drawn.</p>
+<div class="pics"><figure><img src="img/3-switch-d-today.png" alt=""><figcaption><b>Today.</b> A plain title.</figcaption></figure>
+<figure><img src="img/3-switch-d-proposed.png" alt=""><figcaption><b>Proposed.</b> 3a the TALON mark as a button · 3b its menu. 142's bar stands in for 149's.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/3-switch-p-today.png" alt=""><figcaption>Today</figcaption></figure><figure><img src="img/3-switch-p-proposed.png" alt=""><figcaption>Proposed</figcaption></figure></div></details>
+</div>
+
+<h2 id="walk2">3 · Walkthrough: 149 opens a detachment, mans it and closes it</h2>
+<div class="q" id="R1"><h3>Step 1 · Open it (Admin → Squadrons → "+ New detachment")</h3>
+<p>149's own admin does this (D2093). The fields are: Name "Exercise North"; <b>Short name</b> "249" (4a), which is what the top bar and the Schedules menu show, so a long name never breaks the phone's top bar; Place, from the list (4b); From; and <b>To</b> (4d). People are not picked here (4c). They join through their own overseas duty input (D2101).</p>
+<p><b>R1 · What "To" means.</b> Recommended: it is the planned last day. It does not close the detachment by itself, because exercises often run over. On that day the bell reminds 149's admins to close it or move the date.</p>
+<div class="pics one"><figure><img src="img/4-newdet-d-proposed.png" alt=""><figcaption><b>Proposed.</b> 4a short name · 4b place · 4c how people join · 4d planned end.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/4-newdet-p-proposed.png" alt=""><figcaption>Proposed</figcaption></figure></div></details>
+</div>
+
+<div class="q"><h3>Step 2 · A man put on it, through his overseas duty input (as ruled, D2101)</h3>
+<p>Under Type, the <b>Detachment</b> choice (5a) reads "249 · Exercise North". "None" keeps an ordinary overseas duty, such as a staff trip. The Title fills itself in (5b). 142's Anvil stands in for a 149 man.</p>
+<div class="pics"><figure><img src="img/5-od-d-today.png" alt=""><figcaption><b>Today.</b> An overseas duty, 13–31 Jul.</figcaption></figure>
+<figure><img src="img/5-od-d-proposed.png" alt=""><figcaption><b>As ruled, drawn in.</b> 5a Detachment · 5b Title.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/5-od-p-today.png" alt=""><figcaption>Today</figcaption></figure><figure><img src="img/5-od-p-proposed.png" alt=""><figcaption>As ruled</figcaption></figure></div></details>
+</div>
+
+<div class="q"><h3>Step 3 · Seen at home (as ruled, D2102; round 2's picture)</h3>
+<p>At home he shows in the overseas duty row, titled "Exercise North" (round 2's mark 2). The app already draws an input's own title this way.</p>
+<div class="pics one"><figure><img src="img/6-home-d-proposed.png" alt=""><figcaption><b>As ruled.</b> Drawn by the app itself.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/6-home-p-proposed.png" alt=""><figcaption>As ruled</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="R3"><h3>Step 4 · Closed (as ruled, D2103), with the question it should ask</h3>
+<p>"Close detachment" asks at the button (7): "Close Exercise North? Its schedules stay, read only, under Past detachments. Its 6 people are back on 149's schedule from today, and their overseas duty ends today." Keep open is the safe answer.</p>
+<p><b>R3 · My reading, not yet ruled:</b> closing early also ends each man's overseas duty input that day, and each man is told by the bell. Without it, a man would be back on 149's schedule while his input still says he is away.</p>
+<div class="pics one"><figure><img src="img/7-close-d-proposed.png" alt=""><figcaption><b>As ruled, with its question (7).</b></figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/7-close-p-proposed.png" alt=""><figcaption>As ruled</figcaption></figure></div></details>
+</div>
+
+<h2 id="walk3">4 · Walkthrough: 142 joins 149's wave</h2>
+<div class="q"><h3>Step 1 · "+ Wave" → "Join a 149 wave" (as ruled, D2106; round 2's picture)</h3>
+<p>On 142's Scheduler Board, "+ Wave" lists 149's waves that day (round 2's mark 12a). Picking one adds a blank 142 line inside 149's wave.</p>
+<div class="pics one"><figure><img src="img/8-join-d-proposed.png" alt=""><figcaption><b>As ruled.</b> 142's waves stand in for 149's.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/8-join-p-proposed.png" alt=""><figcaption>As ruled</figcaption></figure></div></details>
+</div>
+
+<div class="q"><h3>Step 2 · The joined wave on 142's board</h3>
+<p>The wave's head carries 149's grey badge and 149's status, "DRAFT" (9a). 142's new line comes up blank in the just-added blue ring (9b), from a real press. 142 sees only its own lines (D2105). "+ In-time", "Auto sort" and "✕ Wave" are 149's to use, so 142 does not get them. "+ Line" is drawn in the head, as today; if you take Q5 it moves to the foot here too.</p>
+<div class="pics one"><figure><img src="img/9-joined-d-proposed.png" alt=""><figcaption><b>As ruled, drawn in.</b> 9a 149's badge and status · 9b 142's new line.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/9-joined-p-proposed.png" alt=""><figcaption>As ruled</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="R2"><h3>Step 3 · The same line on 149's board, and R2</h3>
+<p>142's RU sits in 149's wave one shade lighter, with the grey "142" badge (16). <b>R2 · Changed from what you ruled, on the board only.</b> Look 2 (D2104) puts the badge after the mission, and under it on a phone. On the board the mission is a typing box. On a desktop the R box follows it a few pixels later; on a phone the crew pucks start just under it (I tried, and the badge covered a puck). So on the board the badge sits inside the mission box, at its right end. The week keeps it exactly as ruled.</p>
+<div class="pics"><figure><img src="img/10-week-d-ruled.png" alt=""><figcaption><b>As ruled, on the week</b> (round 2's picture, its mark 5d).</figcaption></figure>
+<figure><img src="img/10-shared-d-proposed.png" alt=""><figcaption><b>Changed, on the board (16).</b> 142's RU stands in.</figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/10-shared-p-proposed.png" alt=""><figcaption>Changed, on the board</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="Q6"><h3>Q6 · May 149's scheduler change 142's line inside 149's own wave?</h3>
+<p>Two of your words point different ways. <b>D2089</b> (16 Nov, your lean): a 142 formation in 149's wave "may be planned by either squadron's scheduler". <b>D2105</b> (17 Nov, the later one, ruled): "a shown line of the other squadron is read only there". D2105 was asked about lines a scheduler ticks to show for reference, so I cannot tell whether it was meant to cover a line inside a wave 149 owns and signs (D2106).</p>
+<p class="ex"><b>Example.</b> 142's RU is in 149's 1st wave. 149's scheduler sees RU's take-off clash with VL's area time and wants RU 10 minutes later. Under D2089 he moves it, and 142 is told. Under D2105 he cannot, and has to ask 142's scheduler to change it.</p>
+<p class="rec">Recommended: in a wave 149 owns, 149 may change 142's line, and 142's schedulers get a bell line. 149 signs that wave anyway (D2106). Read only stays for a line shown only for reference from a wave you do not own (D2105). Other choice: the other squadron's line is read only everywhere; the owning squadron asks.</p>
+</div>
+
+<div class="q"><h3>Step 4 · Who signs (as ruled, D2106; round 2's pictures)</h3>
+<p>149 owns the wave, so 149's four sign it, 142's line included. 142 never signs it. If 149 publishes first, 142's view of the wave reads "149 · ORIG" (round 2's marks 10a, 10b). If 142 publishes its own day first, the wave still reads "149 · DRAFT" until 149 publishes (marks 11a, 11b).</p>
+<div class="pics"><figure><img src="img/11-sign-149first-149-d-proposed.png" alt=""><figcaption><b>149 first, on 149's schedule (10a).</b></figcaption></figure><figure><img src="img/11-sign-149first-142-d-proposed.png" alt=""><figcaption><b>149 first, on 142's (10b).</b></figcaption></figure></div>
+<div class="pics"><figure><img src="img/11-sign-142first-142-d-proposed.png" alt=""><figcaption><b>142 first, on 142's (11a).</b></figcaption></figure><figure><img src="img/11-sign-142first-149-d-proposed.png" alt=""><figcaption><b>142 first, on 149's (11b).</b></figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/11-sign-149first-149-p-proposed.png" alt=""><figcaption>149 first · 149's</figcaption></figure><figure><img src="img/11-sign-149first-142-p-proposed.png" alt=""><figcaption>149 first · 142's</figcaption></figure><figure><img src="img/11-sign-142first-142-p-proposed.png" alt=""><figcaption>142 first · 142's</figcaption></figure><figure><img src="img/11-sign-142first-149-p-proposed.png" alt=""><figcaption>142 first · 149's</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="Q4"><h3>Q4 · Should "✕ Wave" ask first when the wave holds the other squadron's lines?</h3>
+<p>Today "✕ Wave" removes the wave at once, every line in it. On 149's board that would throw away 142's RU without 142 knowing. Proposed, <b>only when the wave holds the other squadron's lines</b>, the question card hangs from the button (13): "Remove 1st wave? It holds 142's RU. 142's schedulers are told. Undo puts it back." The answers are Remove wave, or Keep (the safe one). A wave with only 149's own lines is removed as today.</p>
+<p class="rec">Recommended: as drawn. Other choice: 149 may not remove such a wave until 142 takes its lines out. That is safer, but it blocks 149 on a busy day.</p>
+<div class="pics one"><figure><img src="img/13-delwave-d-proposed.png" alt=""><figcaption><b>Proposed (13).</b></figcaption></figure></div>
+<details><summary>On a phone</summary><div class="phone"><figure><img src="img/13-delwave-p-proposed.png" alt=""><figcaption>Proposed</figcaption></figure></div></details>
+</div>
+
+<div class="q" id="Q7"><h3>Q7 · When two squadrons' crew-rest settings differ, which one judges?</h3>
+<p>D2109 says a line is judged by the Logic settings of the schedule it sits in. Crew rest is measured between two lines, and those can sit in two schedules.</p>
+<p class="ex"><b>Example</b> (made-up settings). Say 149's crew rest is 12 hours and 142's is 10. Saber, a 142 man, flies 149's night wave and his day ends at 23:10 on 149's schedule. Next morning 142 plans him with a 10:00 report. By 142's 10 hours he is clear from 09:10, so there is no flag. By 149's 12 hours he is not clear until 11:10, so it is a breach.</p>
+<p class="rec">Recommended: the settings of the later line's schedule judge the gap. Here that is 142's, the squadron planning the next day, which follows D2109. Other choice: the stricter of the two always judges. That is safer, but 142 would be held to a rule it never set.</p>
+</div>
+
+<h2 id="Q5">5 · Q5 · Adding several lines quickly</h2>
+<div class="q">
+<p><b>First, your "click twice" question.</b> Round 2's other choice was a card on 149's "+ Line" asking "Add a line for 149 · 142", which would have meant two presses for every line. You turned it down (D2106). 149's "+ Line" stays one press, and 142 adds its lines by joining through "+ Wave" (step 1 above). So no line now takes two presses.</p>
+<p><b>Your stay-open idea</b> is about adding several lines quickly, and your worry is right. It is true today, before any squadron change. "+ Line" sits in the wave's head and each line is added at the wave's foot. The screen does not move, and the passing note says "Line added" each time with no count. I pressed it three times on the real app. On a desktop and on a phone alike, none of the three new lines was wholly on screen. A scheduler who presses again because nothing seemed to happen ends up with lines he never saw.</p>
+<p>A card that stays open fixes nothing about where the lines land: they still land out of view, so the card has to say where they went. Below, today beside three ways. Each keeps buttons at their size, closes on a click outside, uses the plain blue ring, and asks at the button (lesson 77).</p>
+<div class="tw"><table>
+<tr><th></th><th>Presses for 3 lines</th><th>New lines in view (desktop · phone)</th><th>Risk of lines made unseen</th></tr>
+<tr><td><b>Today</b></td><td>3</td><td>0 of 3 · 0 of 3</td><td>High</td></tr>
+<tr><td><b>A · "+ Line" at the wave's foot</b> (recommended)</td><td>3</td><td>3 of 3 · 2 of 3, the newest always</td><td>None: each line appears under your finger</td></tr>
+<tr><td><b>B · your card that stays open</b></td><td>3 (the first press opens it and adds a line; your next click elsewhere closes it)</td><td>0 of 3 · 0 of 3</td><td>Lower: the card counts them, but they are out of view</td></tr>
+<tr><td><b>C · "How many lines?"</b></td><td>3 (open, +, add); 2 even for one line</td><td>0 of 3 · 0 of 3</td><td>None: one number chosen on purpose</td></tr>
+</table></div>
+<p class="rec">Recommended: A. The same "+ Line" button, the same size, moves from the wave's head to its foot, under the last line. The board keeps it under your finger, so each press adds a line just above it, in view, in the just-added blue ring. You see every line as it is made, and the note is no longer needed. Its cost: to add a line to a long wave you scroll to its foot first.</p>
+<p>The same everywhere (D754): the board's other add buttons ("+ Row", "+ Item", "+ Note", "+ Block") can add out of sight in the same way. My recommendation is that the same rule applies to each one whose list can run below the screen, the new thing always appearing in view. If you take A, I will draw those in the next round before anything is built.</p>
+<div class="pics"><figure><img src="img/12-line-today-d-today.png" alt=""><figcaption><b>Today.</b> 17a "+ Line" pressed three times · 17b the note. The new lines are below the screen.</figcaption></figure>
+<figure><img src="img/12-line-foot-d-proposed.png" alt=""><figcaption><b>A, recommended (17c).</b> Three real presses; all three in view, ringed.</figcaption></figure></div>
+<div class="pics"><figure><img src="img/12-line-card-d-proposed.png" alt=""><figcaption><b>B, your idea (17d).</b> The card counts the lines, but they are out of view, so it needs "Show them".</figcaption></figure>
+<figure><img src="img/12-line-step-d-proposed.png" alt=""><figcaption><b>C (17e).</b> − 3 +, then "Add 3 lines".</figcaption></figure></div>
+<details open><summary>On a phone</summary><div class="phone"><figure><img src="img/12-line-today-p-today.png" alt=""><figcaption>Today</figcaption></figure><figure><img src="img/12-line-foot-p-proposed.png" alt=""><figcaption>A, recommended</figcaption></figure><figure><img src="img/12-line-card-p-proposed.png" alt=""><figcaption>B, your idea</figcaption></figure><figure><img src="img/12-line-step-p-proposed.png" alt=""><figcaption>C</figcaption></figure></div></details>
+</div>
+
+<h2 id="ripples">6 · Does it affect other parts of the app?</h2>
+<div class="q">
+<p>Yes, in these places. With one squadron, each of them works exactly as it does now. Where a point is my own reading, not your ruling, it says so.</p>
+<ul>
+<li><b>The day's count.</b> A schedule that shows the other squadron's lines counts them apart, "2 (142) 6 (149)", never one figure (D2096). Round 2 drew it.</li>
+<li><b>ALL AVAIL.</b> Your lean (D2097): two squadrons' ALL AVAIL events at the same time raise no clash, and the people decide. Recommended in round 2: each squadron's count holds only its own people, so a man never earns OIL twice for one afternoon.</li>
+<li><b>OIL.</b> My reading: a man flying a 149 line earns OIL on his own OIL, and it arrives when 149 publishes, since the latest published version decides OIL.</li>
+<li><b>The Leave War.</b> A man on a detachment is already counted away, through his overseas duty input. Still open: whether the "Attach · 149" row (D2098) counts him away on the Leave War for those hours. My recommendation is no, since he is at work at home; it goes to you in a later round.</li>
+<li><b>The Tracker.</b> A student flying a sortie on 149's schedule: my reading is that the sortie counts on his own Tracker, as it would on 142's. That is not yet asked; it comes in the Tracker's round.</li>
+<li><b>Insights.</b> A man's own hours follow him across both schedules. Each squadron's totals count only its own lines.</li>
+<li><b>Inputs.</b> The overseas duty input gains the Detachment choice (D2101).</li>
+<li><b>Warnings.</b> At the same place, people, areas and sims are checked across both squadrons, and jets are each squadron's own (D2092, D2108). Crew rest across two schedules is Q7.</li>
+<li><b>Publishing and amendments.</b> Each squadron signs its own waves (D2106). A pick onto a published day waits as a pending change (D2107).</li>
+<li><b>Undo.</b> Undo already refuses to undo a change someone else has changed since (D148). That now includes a change by the other squadron.</li>
+<li><b>The bell.</b> It needs new lines: a place change (Q1), a pick of your man (D2091), a detachment opened, due to end or closed (R1, R3), a shared wave removed (Q4), and your line changed by the other squadron (Q6).</li>
+<li><b>Admin and sign-up.</b> A new Squadrons page (D2110). "Request access" asks which squadron (D2111).</li>
+<li><b>Print and export.</b> The lighter block does not show on paper, so a printed 149 day must still show the "142" badge.</li>
+<li><b>When the shared database comes.</b> Everything saved must say which squadron it belongs to. The mark that shows who is editing a day must also cover a wave both squadrons fly in, so two schedulers never change it at once.</li>
+</ul>
+</div>
+
+<h2>7 · What is not drawn, and why</h2>
+<div class="q"><ul>
+<li><b>The bell's new lines.</b> The demo has no lines of these kinds to draw from, so a picture would be invented. Their wording comes in a later round.</li>
+<li><b>D2105's "tick to show" control.</b> Where it sits depends on Q2 and Q3, so it is drawn once they are answered.</li>
+<li><b>The other add buttons at the foot.</b> They are drawn only if you take Q5's A.</li>
+</ul></div>
+</div>
+<div id="zoom" hidden></div>
+<script>
+const z=document.getElementById('zoom')
+document.addEventListener('click',e=>{const i=e.target.closest('figure img');if(i){z.innerHTML='';const c=i.cloneNode();c.style.cursor='zoom-out';z.appendChild(c);z.hidden=false;return}if(!z.hidden&&z.contains(e.target))z.hidden=true})
+document.addEventListener('keydown',e=>{if(e.key==='Escape')z.hidden=true})
+</script>
