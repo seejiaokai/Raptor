@@ -540,6 +540,7 @@ the Tracker's menus the board's look but said nothing of the keys. Not caused by
 touched). Pictures: `raptor-port/docs/img/handpass/2026-11-08-chat20-tracker/walk/s4-desktop-*-keyboard-crop.png`.
 **The case to put to him:** the same keys and ring as the board's menus, with a picture. Not asked yet (D994).
 **Place:** low, with the Tracker's next batch or the consistency look.
+**Drawn 17 Nov 26 (the night's job 4):** today beside proposed, desktop and phone, on the questions page `raptor-port/docs/mock/2026-11-17-trk-small/page.html` (question 2, recommended: the board's keys and cyan ring); not yet put to him (D994).
 
 ### [TRK-COPIES-TIDY] The code reads' tidiness notes on the Tracker's copies taken back (D489 — filed, not fixed; 8 Nov 26 — chat 20)
 **What:** the fresh Opus read of [TRK-KEPT-COPIES] (`raptor-port/docs/superpowers/briefs/2026-11-08-chat20-tracker-read-opus.md`,
@@ -583,6 +584,9 @@ does "I'm removing this feature" take typed students out of + Add, or was it onl
 with a picture of the + Add box, its "Or type a callsign" line marked (D853); then record his answer and, if typed students
 go, file the build. **Place:** kept until he asks for the backlog's questions (D994). The page line:
 `.claude/rules/decisions/tracker.md` §Students and courses.
+**Drawn 17 Nov 26 (the night's job 4):** the window without a typed name, today beside proposed, desktop and phone, on the
+questions page `raptor-port/docs/mock/2026-11-17-trk-small/page.html` (question 3, recommended: no typed box and no OK, Cancel alone; "Nobody on the roster matches
+“…”." and "Nobody is on the squadron roster yet."); not yet put to him (D994).
 
 ### [TRK-DOWN-DAYS-CANCELLED] A cancelled medical input still counts toward the down days (filed 8 Nov 26 — the rules diet's step 5a, the fresh Opus read)
 **What:** the finished item [TRK-DOWN-DAYS-AUTO] (`OUTSTANDING-ARCHIVE.md`, built 18 Oct 26, pull request 534) left this
@@ -593,6 +597,23 @@ input of the man (`src/tracker/peoplewire.ts medForTracker`), with no test of a 
 input can be cancelled today; if it can, put it to him with a picture of the down-days window — should a cancelled one
 count? Not a ruling until he answers. **Place:** low, with the Tracker's next batch. The page line:
 `.claude/rules/decisions/tracker.md` §The Info panel.
+**Answered 17 Nov 26 (the night's job 4): yes, one can exist today, by one route — made through the app's own controls in
+the running app (a served build, demo data, signed in as an admin), not by changing data.** A medical
+cannot be cancelled directly: it never stands on the Ground Programme (`engine/inputs.ts goesOnProg`), and the cancel is
+set only by the board's CX on a Ground Programme row (`ui/board.ts` → `ui/reqdoor.ts rowMark`, D760). But the cancel rides
+the input, and changing an input's type keeps it: (1) on the Scheduler Board, Thursday 16 Jul, Ranger's Appointment, CX,
+reason WX, Cancel line; (2) on the Inputs calendar, its window (title still "CX WX"), Type → OML, Save, "No document" (the
+type list for a non-medical input offers the medical types; the guard refuses only medical → non-medical; the edit keeps
+the cancel). The input is then an OML with its cancel (WX), and no control takes the cancel off — only Undo, or changing
+the type back. What it does: the Inputs calendar strikes "Ranger · OML" through as cancelled; the Medical tab (as of
+16 Jul) lists Ranger as medically down; the Tracker (Ranger added with course start 1 Jul 26) reads "1 day", its window
+"OML 16 Jul — 1 day" (`peoplewire.ts medForTracker` and `core.js downDaysOf` test no cancel). The run is
+`raptor-port/docs/mock/2026-11-17-trk-small/draw.mjs` (its `q1`, which asserts each step's result); pictures
+`raptor-port/docs/img/2026-11-17-trk-small/1-*.png`. **The question for him,** drawn on `raptor-port/docs/mock/2026-11-17-trk-small/page.html` (question 1):
+should a cancelled medical count? Recommended (A): changing an input into a medical type takes its cancel off, so it is a
+plain medical everywhere and counts (as a change of type already wakes a removed input); other choice (B): keep the cancel
+and have the Medical tab and the Tracker leave it out, as the calendar does. Not a ruling until he answers; not yet put
+to him (D994).
 
 ### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
 **10 Nov 26 — his direction, D1971 (chat 55):** three levels — a few master admins (the developers, into the database directly), admins, members — and account creation with each person's rights by the two admin levels, not the IT side. The design at the database step is for these three; whether members can hold a weaker database key than admins without an IT request per change rests on the question sent to the IT side (can each database role's team be tied to a group the unit manages; can ordinary users open the tables on the Power Apps website) — `[IT-QUESTIONS]`, the 10 Nov 26 record. The agent's point for that design, not yet checked: every save a member's action causes must fit inside the member key.
