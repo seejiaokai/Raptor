@@ -2682,3 +2682,56 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Suggested improvement:** In mockups-on-the-real-app.md, add: when the proposed change is pure style, draw it by injecting the exact rule to be built, and at the same time record the drawing's part positions (record mode) on the unchanged build; after the build, run the same script in check mode with nothing injected. Record before building — once the build replaces the served bundle, the "before" can no longer be measured.
 **Principle:** When a mock-up is made from the same rule the build will ship, record its measurements at mock time; the drawing check then becomes an exact before/after diff instead of an approximation.
 **Reference file:** raptor-port/docs/mock/2026-11-16-legend-tab-strip/drawcheck.mjs
+
+### Observation 957: A handoff's model recommendation lived only in the chat, so the next chat missed the difference
+
+**Status:** OPEN
+**Date:** 2026-11-16
+**Session context:** Chat 91 continuing a design from chat 90's handoff block
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** What the handoff block carries for the next session
+
+**Issue:** The outgoing chat told the owner, in its last message only, which model the next chat should use. The handoff block did not carry it, the new chat opened on a different model, said the model "fits", and found the difference only when it read the old chat's transcript for another reason.
+**Suggested improvement:** The handoff block's last line carries the model and thinking level recommended for the next session, beside the next chat number; the incoming session compares it with the model it is running on before its first report and names any difference.
+**Principle:** A recommendation the next session must check itself against belongs in the saved handoff, not only in the message to the person.
+
+### Observation 958: A recommendation for a new mechanism was given before checking how the product already does the nearest thing
+
+**Status:** OPEN
+**Date:** 2026-11-16
+**Session context:** Design questions answered in chat during a multi-unit design
+**Skill:** brainstorming
+**Type:** open-source
+**Phase/Area:** Answering a design question with a recommendation
+
+**Issue:** Asked how people should be assigned to a temporary unit, the agent recommended a new admin-only list. The person's follow-up question led it to look, and the product already recorded the same fact through an existing input kind, self-filed or filed for several people. The recommendation was reversed one message later.
+**Suggested improvement:** Before recommending any new record, list or screen, search the product for the nearest existing way the same fact is entered today and state it in the answer ("today this is done by …"); recommend a new mechanism only with the reason the existing one cannot carry it.
+**Principle:** The first design question is how the product records this fact today; extending that is the default, and a new mechanism needs a stated reason.
+
+### Observation 959: A drawing script filed under the scripts folder made a notes-only pull request not notes-only
+
+**Status:** OPEN
+**Date:** 2026-11-16
+**Session context:** Merging a notes-only pull request left by the previous chat
+**Skill:** brainstorming
+**Type:** internal
+**Phase/Area:** mockups-on-the-real-app — where a mock-up's drawing script is saved
+
+**Issue:** The round-1 drawing script was saved under raptor-port/scripts/mock/, a folder the notes-only merge rule (D1407) does not list, while every earlier mock-up script lives under raptor-port/docs/mock/<date>-<name>/. The pull request was described as notes only and would have merged by itself; the file list was checked before the merge and the script moved.
+**Suggested improvement:** The mock-up guide names the one home for a drawing script — raptor-port/docs/mock/<date>-<name>/draw.mjs — and the notes-only check before a merge lists any file outside the rule's folders by name.
+**Principle:** A rule that keys on file locations needs the tools that create files to name the location; check the list itself, never the description.
+
+### Observation 960: A mark's tag appended inside the marked element vanishes on a text box and is cut by a clipping panel
+
+**Status:** OPEN
+**Date:** 2026-11-17
+**Session context:** The night's job 4, the Tracker's small fixes drawn on the real app (numbered past 958 and 959, held by other open branches)
+**Skill:** brainstorming (mockups-on-the-real-app.md, the mark kit)
+**Type:** open-source
+**Phase/Area:** marking a part of the real app with an outline and a numbered tag
+
+**Issue:** The kit's mark() appended its numbered tag as a child of the marked element. On a text box (an input) a child is never drawn, so the tag check failed "not drawn"; on a menu panel with overflow set, the tag beside it was clipped. A tag placed "above" also landed on the neighbouring bar. Fixed in the job's script by laying each tag on the page itself (position fixed, placed from the element's box, highest stacking) and widening the crop to take every tag in; an outline set outside the element was then cut by a clipping list, so an inside tag keeps its outline inside.
+**Suggested improvement:** In mockups-on-the-real-app.md's mark kit, lay tags on the page (fixed, from getBoundingClientRect) rather than inside the app's element, offer inside-bottom and middle positions, make the crop include every tag, and keep the outline inside whenever the tag is inside.
+**Principle:** An annotation drawn over a live page belongs to an overlay layer of its own, never inside the elements it annotates, whose own rules (text boxes, clipping, stacking) decide whether it shows.
+**Reference file:** raptor-port/docs/mock/2026-11-17-trk-small/draw.mjs
