@@ -90,7 +90,34 @@ IT side's answers of 8 and 10 Nov 26 (`[IT-QUESTIONS]`) and `raptor-port/docs/da
 - **Stale records to correct when the design is agreed (D201):** data-model §11's intro ("one business unit … no
   cross-squadron rows") and §Squadrons' first paragraph; the 10 Nov answers not yet folded into the handover documents.
 
-## The review of his plan (chat 90, 16 Nov 26 — put to him; none of it ruled until he answers)
+## His answers to the review's four questions, 16 Nov 26 (chat 91 — D2091–D2095)
+
+*"All four as recommended."* The four questions as chat 90 put them, each now a ruling:
+- **Borrowing a man (D2091):** a scheduler picks the other squadron's man freely, with no request, where both squadrons
+  are at the same place; every pick shows at once on his home squadron's schedule and rings its schedulers' bell. The
+  "ask us first" switch stays unbuilt unless a squadron wants it.
+- **One place, one man (D2092):** every squadron and detachment has a place; a man is at one place on any day; units at
+  the same place may share people and are checked against each other; units at different places never are; the app
+  refuses to plan a man at a place he is not at. Answers D2089's open question (conflicts are flagged across two
+  squadrons at home) and confirms D2088's refusal.
+- **Who makes a squadron (D2093):** a master admin only (D1971); a squadron's own admins make its detachments.
+- **Enrolment (D2094):** "Request access" asks the person's squadron and goes to that squadron's admins only; an admin
+  adding a person picks his primary squadron, his own by default; access to another squadron is never asked at sign-up —
+  an admin gives it on Admin → Users, to view or as a scheduler.
+- **Added by him (D2095):** *"the admin can also close the detachment onces its over. or archive it (to see old
+  programme)."* To check in round 2: one action or two (recommended one, "Close detachment", its schedules always kept,
+  read only, under past detachments — an issued schedule is never erased); its people go back to their squadron that day.
+- **Asked by him, the same hour, for round 2:** *"So how are we going to assign people to the detachment? Through inputs?
+  Or scheduler/admin?"* Recommended to him in chat: the squadron's admins (every scheduler is one, D785) put people on
+  the detachment's own dated list — who, from when, to when — never by each man filing an input; the list then shows him
+  by itself wherever an input would (away at home, "DET · <name>" in Unavailable; a band on the Leave War). Not ruled.
+
+**Not asked as questions of their own, so still to confirm in round 2:** the review's improvements 2 to 5 below (a
+detachment is a unit like a squadron; one line, one record; the checks follow the man; inputs and leave belong to the
+person), and the three points of his real example (the other squadron's lines carry no line number of the schedule's own
+and are left out of its jet count; which of the other squadron's lines show on a schedule; what the purple names mean).
+
+## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
 **Kept as he said it:** squadrons made in Admin; one primary squadron each; access to others given by an admin; only Post
 out moves the primary; a detachment is a unit of its own with its own name, people and schedule; no man in two places.
