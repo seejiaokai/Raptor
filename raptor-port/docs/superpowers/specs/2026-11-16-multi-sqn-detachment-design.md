@@ -90,7 +90,7 @@ IT side's answers of 8 and 10 Nov 26 (`[IT-QUESTIONS]`) and `raptor-port/docs/da
 - **Stale records to correct when the design is agreed (D201):** data-model §11's intro ("one business unit … no
   cross-squadron rows") and §Squadrons' first paragraph; the 10 Nov answers not yet folded into the handover documents.
 
-## His answers to the review's four questions, 16 Nov 26 (chat 91 — D2091–D2095)
+## His answers to the review's four questions, and what he added, 16 Nov 26 (chat 91 — D2091–D2097)
 
 *"All four as recommended."* The four questions as chat 90 put them, each now a ruling:
 - **Borrowing a man (D2091):** a scheduler picks the other squadron's man freely, with no request, where both squadrons
@@ -118,6 +118,25 @@ IT side's answers of 8 and 10 Nov 26 (`[IT-QUESTIONS]`) and `raptor-port/docs/da
   a man there (the same input, written for him). One record, both doors, nothing new to learn. To settle in round 2: it
   takes effect at once as every input does (recommended, both squadrons' schedulers seeing it) or waits for an admin's
   yes; whether "DET" shows as a kind of its own in Unavailable or as overseas duty with the detachment's name. Not ruled.
+
+- **The count at the top of a day (D2096):** *"2 (142) 6 (149). not 8"* — squadrons counted apart, never added. To draw:
+  how it reads with more than one wave (today's badge is the aircraft in each wave, "6 × 6").
+- **Two ALL AVAIL events at one time (D2097, his lean):** a 142 man flies with 149 in the morning; both squadrons put an
+  all-available ground programme at the same afternoon time — *"I think it should be left as open for interpretation by
+  the user?"* No conflict, the app decides nothing. Recommended with it, to confirm: each squadron's ALL AVAIL counts its
+  own people only (so he stands in 142's, and never earns OIL twice); its window shows his morning with 149; a squadron
+  that wants him names him — a pick (D2091).
+- **What the home schedule shows for a borrowed man — his offered option, 16 Nov 26, not ruled:** *"149 just plans this
+  person on their schedule. but on 142 schedule it just says attach 149. just like our current input. or should it show
+  the event on 142, but have a 149 label?"* **Recommended: his first — by whose line it is.** (a) A 142 man in a seat or
+  an event of 149's own: the line is 149's alone; 142's schedule shows one row for him, "Attach · 149" with the times,
+  under Unavailable as the Attach input does today (the inputs page's D1373, D1374) — made by itself from 149's plan,
+  changed only by it, a tap opening 149's schedule at that line, read only. 142's published day then changes only when
+  his time away changes, not with every detail of 149's line; nothing of 149's enters 142's count, numbers, publishing or
+  signatures. This replaces round 1's drawn "WITH 149 · ACADEMICS" row and narrows the review's improvement 3. (b) A 142
+  formation flown in 149's wave is 142's own line: it shows whole on 142's schedule (D2089) and on 149's with the 142
+  mark (D2090). (c) Another squadron's line shown only for reference (his real example: the 149 line 142's men fly
+  against) — a scheduler's choice, round 2.
 
 **Not asked as questions of their own, so still to confirm in round 2:** the review's improvements 2 to 5 below (a
 detachment is a unit like a squadron; one line, one record; the checks follow the man; inputs and leave belong to the
