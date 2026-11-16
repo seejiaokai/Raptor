@@ -63,7 +63,7 @@ the later merge keeps both (D78).
     - "+ Block"'s "BB desk" is not a fault: close it.
     - The late cut-off box is drawn two ways.
     - Parts of the damaged week are parked: print and export with D1644, the "older version" refusal, the Leave War part.
-    - About 14 pictures were not opened by the helper; it was sent back 05:20 to open them and fix in one batch.
+    - **DONE 05:35** (commit d99ec53cc): all 37 pictures opened. 16 desktop pairs were cut to their subject (D1222), and one tag moved off a heading.
     - The page is kept until he asks (D994): it is not published to him tonight, only its link given in the morning.
   - Then job 4 (the Tracker's small fixes prepared), on `claude/trk-small-prep` from `main`.
     - RE-WALKED 04:20–04:30 (Sonnet): R1–R4 and R7 PASS, no faults. R5 (the holiday OIL list) could not be raised in the demo and is carried by its test. R6 was pressed only as variants. Report: `rewalk-report.md`. The builder is closing the records (04:35): the sheet's remaining parts, a ledger row, `[INPUT-WIN-SCHED-ASKS]` filed as his question, the tidiness note filed, push, then the checkout back on this branch. After that, job 2 is DONE (pull request 794, waits for his look and "merge live"), and job 3 starts.
