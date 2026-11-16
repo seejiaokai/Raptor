@@ -379,5 +379,10 @@
 /* `.legend{display:flex}` overrides the UA rule that hides a closed <details>'s
    body, so the key must be hidden explicitly when the box is shut. */
 .legendbox:not([open]) .legend{display:none}
+/* On a phone Edit Schedule's AIRCREW drawer parks as a 30px tab at the screen's right edge (03-week.css), and on his
+   iPhone (402 wide) it covered the last letters of "misses sim debrief". The open Legend keeps a strip at its right —
+   the tab and a 14px gap — so no flag runs under it (D2081, D2082, drawn and approved 16 Nov 26). Edit Schedule's
+   Legend only: View-only Sched has no drawer, and the desktop's panel sits beside the week, not over it. */
+@media (max-width:820px){#eLegendBox .legend{padding-right:44px}}
 @media (prefers-reduced-motion:reduce){.legend-sum::before{transition:none}}
 

@@ -2667,3 +2667,18 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The Legend's mock-up and its drawing check were shot at 390 x 844 (an older iPhone). His phone is an iPhone 17 Pro, 402 x 874. At 402 one more name fits on a row and its last letters run under the parked AIRCREW tab; at 390 it wraps, so the check reported 0 pixels different and missed it. The walk at 402 caught it.
 **Suggested improvement:** The mock-up recipe and the drawing-check template take their phone size from one named constant, his iPhone's 402 x 874 (WebKit, touch), never a hand-typed 390; a check at a second phone width is optional, never instead.
 **Principle:** Check a layout at the exact size its real user sees; a near size can hide a wrap change.
+
+
+### Observation 956: A style-only mock-up doubles as its own drawing check
+
+**Status:** OPEN
+**Date:** 16 Nov 26
+**Session context:** [LEGEND-TAB-STRIP] (D2081/D2082) — one CSS rule drawn on the running app, approved, then built
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** drawing a proposed change on the running app; the drawing check after the build
+
+**Issue:** The proposal was a single style rule. Drawing it by injecting that exact rule into the pre-change build meant the drawing and the build share one definition, so a separate drawing-check script could record each part's place, size and colour from the injected version BEFORE building, then compare the built app with nothing injected — red before, green after, in two minutes, with no hand-measured reference.
+**Suggested improvement:** In mockups-on-the-real-app.md, add: when the proposed change is pure style, draw it by injecting the exact rule to be built, and at the same time record the drawing's part positions (record mode) on the unchanged build; after the build, run the same script in check mode with nothing injected. Record before building — once the build replaces the served bundle, the "before" can no longer be measured.
+**Principle:** When a mock-up is made from the same rule the build will ship, record its measurements at mock time; the drawing check then becomes an exact before/after diff instead of an approximation.
+**Reference file:** raptor-port/docs/mock/2026-11-16-legend-tab-strip/drawcheck.mjs

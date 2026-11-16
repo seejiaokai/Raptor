@@ -1,0 +1,566 @@
+{
+ "phone": [
+  {
+   "part": "the Legend",
+   "x": 0,
+   "y": 0,
+   "w": 402,
+   "h": 255,
+   "color": "rgb(138, 150, 163)",
+   "align": "start",
+   "padR": "44px"
+  },
+  {
+   "part": "0 FCP (pilot)",
+   "x": 20,
+   "y": 6,
+   "w": 67,
+   "h": 12,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "1 RCP (WSO)",
+   "x": 101,
+   "y": 6,
+   "w": 74,
+   "h": 12,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "2 Personnel (ground crew)",
+   "x": 189,
+   "y": 6,
+   "w": 134,
+   "h": 12,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "3 Level:",
+   "x": 28,
+   "y": 33,
+   "w": 29,
+   "h": 12,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "4 OOCU",
+   "x": 71,
+   "y": 32,
+   "w": 45,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "5 DD",
+   "x": 130,
+   "y": 32,
+   "w": 29,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "6 CC",
+   "x": 173,
+   "y": 32,
+   "w": 29,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "7 BB",
+   "x": 216,
+   "y": 32,
+   "w": 28,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "8 AA",
+   "x": 258,
+   "y": 32,
+   "w": 28,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "9 IWIWSO",
+   "x": 301,
+   "y": 32,
+   "w": 52,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "10 IPIP",
+   "x": 20,
+   "y": 60,
+   "w": 31,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "11 IRIR exmr",
+   "x": 65,
+   "y": 60,
+   "w": 59,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "12 FIFWI",
+   "x": 139,
+   "y": 60,
+   "w": 41,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "13 ▮you",
+   "x": 202,
+   "y": 60,
+   "w": 39,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "14 ▮selected",
+   "x": 254,
+   "y": 60,
+   "w": 61,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "15 Flags:",
+   "x": 28,
+   "y": 89,
+   "w": 30,
+   "h": 12,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "16 Cconflict",
+   "x": 72,
+   "y": 88,
+   "w": 55,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "17 CPcrew pairing — not authorised",
+   "x": 140,
+   "y": 88,
+   "w": 169,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "18 Rcrew rest",
+   "x": 20,
+   "y": 117,
+   "w": 65,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "19 7days in a row",
+   "x": 99,
+   "y": 117,
+   "w": 85,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "20 Qqual / illegal seat",
+   "x": 198,
+   "y": 117,
+   "w": 102,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "21 DTdouble turn",
+   "x": 20,
+   "y": 145,
+   "w": 79,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "22 TTtight turn",
+   "x": 113,
+   "y": 145,
+   "w": 66,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "23 Aadvisory — shift + ground",
+   "x": 193,
+   "y": 145,
+   "w": 144,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "24 CPcrew pairing — needs approval",
+   "x": 20,
+   "y": 173,
+   "w": 174,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "25 Bmisses flight brief",
+   "x": 208,
+   "y": 173,
+   "w": 105,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "26 Bmisses sim brief",
+   "x": 20,
+   "y": 201,
+   "w": 99,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "27 Dmisses flight debrief",
+   "x": 133,
+   "y": 201,
+   "w": 117,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "28 Dmisses sim debrief",
+   "x": 20,
+   "y": 229,
+   "w": 111,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "29 Llong day",
+   "x": 145,
+   "y": 229,
+   "w": 62,
+   "h": 14,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  }
+ ],
+ "desktop": [
+  {
+   "part": "the Legend",
+   "x": 0,
+   "y": 0,
+   "w": 1536,
+   "h": 65,
+   "color": "rgb(138, 150, 163)",
+   "align": "start",
+   "padR": "20px"
+  },
+  {
+   "part": "0 FCP (pilot)",
+   "x": 20,
+   "y": 7,
+   "w": 64,
+   "h": 15,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "1 RCP (WSO)",
+   "x": 98,
+   "y": 7,
+   "w": 68,
+   "h": 15,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "2 Personnel (ground crew)",
+   "x": 180,
+   "y": 7,
+   "w": 132,
+   "h": 15,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "3 Level:",
+   "x": 334,
+   "y": 7,
+   "w": 27,
+   "h": 15,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "4 OOCU",
+   "x": 375,
+   "y": 6,
+   "w": 43,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "5 DD",
+   "x": 432,
+   "y": 6,
+   "w": 29,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "6 CC",
+   "x": 475,
+   "y": 6,
+   "w": 28,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "7 BB",
+   "x": 516,
+   "y": 6,
+   "w": 27,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "8 AA",
+   "x": 558,
+   "y": 6,
+   "w": 28,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "9 IWIWSO",
+   "x": 600,
+   "y": 6,
+   "w": 51,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "10 IPIP",
+   "x": 664,
+   "y": 6,
+   "w": 30,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "11 IRIR exmr",
+   "x": 708,
+   "y": 6,
+   "w": 57,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "12 FIFWI",
+   "x": 779,
+   "y": 6,
+   "w": 39,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "13 ▮you",
+   "x": 841,
+   "y": 6,
+   "w": 39,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "14 ▮selected",
+   "x": 894,
+   "y": 6,
+   "w": 60,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "15 Flags:",
+   "x": 976,
+   "y": 7,
+   "w": 27,
+   "h": 15,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "16 Cconflict",
+   "x": 1017,
+   "y": 6,
+   "w": 56,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "17 CPcrew pairing — not authorised",
+   "x": 1087,
+   "y": 6,
+   "w": 168,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "18 Rcrew rest",
+   "x": 1269,
+   "y": 6,
+   "w": 64,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "19 7days in a row",
+   "x": 1347,
+   "y": 6,
+   "w": 84,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "20 Qqual / illegal seat",
+   "x": 20,
+   "y": 36,
+   "w": 102,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "21 DTdouble turn",
+   "x": 136,
+   "y": 36,
+   "w": 80,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "22 TTtight turn",
+   "x": 230,
+   "y": 36,
+   "w": 68,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "23 Aadvisory — shift + ground",
+   "x": 312,
+   "y": 36,
+   "w": 147,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "24 CPcrew pairing — needs approval",
+   "x": 472,
+   "y": 36,
+   "w": 171,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "25 Bmisses flight brief",
+   "x": 658,
+   "y": 36,
+   "w": 105,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "26 Bmisses sim brief",
+   "x": 777,
+   "y": 36,
+   "w": 97,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "27 Dmisses flight debrief",
+   "x": 887,
+   "y": 36,
+   "w": 117,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "28 Dmisses sim debrief",
+   "x": 1019,
+   "y": 36,
+   "w": 109,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  },
+  {
+   "part": "29 Llong day",
+   "x": 1142,
+   "y": 36,
+   "w": 63,
+   "h": 16,
+   "color": "rgb(138, 150, 163)",
+   "align": "start"
+  }
+ ]
+}

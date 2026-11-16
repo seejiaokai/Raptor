@@ -20,14 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/warn-words-followups -->
-### CHAT 88 — `[WARN-WORDS-STANDALONE]`'s follow-ups, pull request 784: the ONE FULL check CLOSED — both walks PASSED (w1 205 pictures, w2 98, 0 faults), the sheet closed; WAITING for his iPhone look, ONE question (the phone Legend), then his "merge live" — written 16 Nov 26 (chat 85% full) — verify before use
-- **Built (chats 85–87):** D2073, D2074, D2077, D2078; the reads' two faults fixed red first (`447638180`); his D2079, D2080 built red first (`fd8c40f40`, GitHub's run GREEN — the last code commit; notes after it).
-- **The check (sheet `raptor-port/docs/handpass/2026-11-16-warn-words-followups.md`, closed with its `Walk:`, `Docs:`, `docsize:` lines and §12; the walk-ledger row added):** w1 on Astra's 10 scenarios PASS, its three leads settled — (a) Undo: a script trap, not the app (`docs/walk-scripts.md` §7 now says so); (b) a BB / AVALON line with no times gives no "Illegal seat" line — older, FILED `[STANDBY-NO-TIMES-SEAT]`; (c) the phone Legend. w2's re-walk of both fixes, D2079, D2080 and the plain-user round: 33 PASS, 0 FAIL.
-- **His ONE question, at his look:** at 402 wide (his iPhone 17 Pro) the parked AIRCREW tab covers the last letters of "misses sim debrief" — picture `raptor-port/docs/mock/2026-11-16-legend-words/img/iphone402-legend-under-tab.png`; the drawing and its check were made at 390, where that name wraps (skill note 955). Recommended: a right margin on Edit Schedule's phone Legend so nothing runs under the tab — it may make the Legend one row taller at some widths, which changes D2078's "both sizes keep their height"; a mock-up first (D1625) if he says yes. Also tell him D2079's sentence names AVALON and BB beside SC.
-- **NEXT:** his answer → if yes: record the ruling, mock-up at 402, build red first, a LOOK re-check, push; then his "merge live" → the four merge steps (`shipping.md`) and the live check on Vercel.
-- **Running when written:** nothing. No lock held.
-- **Rulings:** none this chat (2 in chat 87 → scheduler, D2079–D2080) · **Walk:** w1 + w2 DONE, PASS · **Reads owed:** none · **Next chat number:** 89 (D1744)
+<!-- now:claude/legend-tab-strip -->
+### CHAT 88 — `[LEGEND-TAB-STRIP]` (his D2081, drawing approved D2082) BUILT and LOOK-checked on `claude/legend-tab-strip`, pull request 785 — waiting for his look and "merge live" — written 16 Nov 26 (compacted once, 16 Nov 26) — verify before use
+- **Done earlier this chat:** pull request 784 merged and LIVE (his one notification sent). D2081 + D2082 recorded (scheduler page + full rows). The backlog file's size marker 2590 -> 2660 with its reason.
+- **The build:** one rule in `raptor-port/src/ui/scheduler/02-shell.css` — phone widths only, Edit Schedule's Legend keeps a 44px right strip. Red-first browser test in `e2e/geometry.spec.ts` ("the collapsible legend": failed before, passed after). The drawing check (`raptor-port/docs/mock/2026-11-16-legend-tab-strip/drawcheck.mjs`, its recorded parts `drawing-parts.json`) green at 402 WebKit and 1536. Type check, code check, docsize clean. Sheet: `raptor-port/docs/handpass/2026-11-16-legend-tab-strip.md` (LOOK; after-pictures `img/*-3-built.png`, View-only `*-4-viewonly-built.png`).
+- **NEXT:** GitHub's run on the last pushed commit green → send him the Vercel preview link of this branch, ready, with the after-picture; on his "merge live": `gh pr ready 785`, then the four merge steps (`shipping.md`), confirm Production READY, one notification. When it is live, archive `[LEGEND-TAB-STRIP]` (`backlog-archive.mjs`).
+- **Running when written:** a local preview on port 4173 (this chat's; stop it by its port). No lock held.
+- **Rulings:** 2 recorded → scheduler (D2081, D2082) · **Walk:** LOOK — no walk by tier; before/after at 402 and 1536, drawing check green · **Reads owed:** none · **Next chat number:** 89 (D1744)
 <!-- /now -->
 <!-- now:claude/lw-doubletap-more -->
 ### CHAT 81 — THE NIGHT OF 15 Nov 26, job 3: `[LW-DOUBLETAP-MORE-WINDOWS]` — DONE — written 15 Nov 26 06:25 — verify before use
