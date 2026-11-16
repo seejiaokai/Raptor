@@ -108,9 +108,16 @@ IT side's answers of 8 and 10 Nov 26 (`[IT-QUESTIONS]`) and `raptor-port/docs/da
   programme)."* To check in round 2: one action or two (recommended one, "Close detachment", its schedules always kept,
   read only, under past detachments — an issued schedule is never erased); its people go back to their squadron that day.
 - **Asked by him, the same hour, for round 2:** *"So how are we going to assign people to the detachment? Through inputs?
-  Or scheduler/admin?"* Recommended to him in chat: the squadron's admins (every scheduler is one, D785) put people on
-  the detachment's own dated list — who, from when, to when — never by each man filing an input; the list then shows him
-  by itself wherever an input would (away at home, "DET · <name>" in Unavailable; a band on the Leave War). Not ruled.
+  Or scheduler/admin?"* then *"Is it also easier for people to self input DET? so that its easier on the scheduler?"*
+  **Recommended (chat 91's second answer, replacing its first — "the admins' own dated list, never an input"):** through
+  Inputs, as today. The app already enters a detachment as the "overseas duty" input (it replaced "Detachment", owner
+  10 Aug 26 — `src/engine/inputs.ts`), filed by the man himself or by a scheduler for several men in one input, and it
+  already takes him out of reach at home and shows on the Leave War. So: that input gains one choice, which detachment
+  (none, as today, for a trip with no schedule in the app); a man with one naming a detachment is on that detachment's
+  manpower for its dates; the detachment's page lists who and when, read from those inputs, and its admins add or change
+  a man there (the same input, written for him). One record, both doors, nothing new to learn. To settle in round 2: it
+  takes effect at once as every input does (recommended, both squadrons' schedulers seeing it) or waits for an admin's
+  yes; whether "DET" shows as a kind of its own in Unavailable or as overseas duty with the detachment's name. Not ruled.
 
 **Not asked as questions of their own, so still to confirm in round 2:** the review's improvements 2 to 5 below (a
 detachment is a unit like a squadron; one line, one record; the checks follow the man; inputs and leave belong to the
