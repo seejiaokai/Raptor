@@ -20,13 +20,12 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/legend-tab-strip -->
-### CHAT 88 — `[LEGEND-TAB-STRIP]` (his D2081, drawing approved D2082) BUILT and LOOK-checked on `claude/legend-tab-strip`, pull request 785 — waiting for his look and "merge live" — written 16 Nov 26 (compacted once, 16 Nov 26) — verify before use
-- **Done earlier this chat:** pull request 784 merged and LIVE (his one notification sent). D2081 + D2082 recorded (scheduler page + full rows). The backlog file's size marker 2590 -> 2660 with its reason.
-- **The build:** one rule in `raptor-port/src/ui/scheduler/02-shell.css` — phone widths only, Edit Schedule's Legend keeps a 44px right strip. Red-first browser test in `e2e/geometry.spec.ts` ("the collapsible legend": failed before, passed after). The drawing check (`raptor-port/docs/mock/2026-11-16-legend-tab-strip/drawcheck.mjs`, its recorded parts `drawing-parts.json`) green at 402 WebKit and 1536. Type check, code check, docsize clean. Sheet: `raptor-port/docs/handpass/2026-11-16-legend-tab-strip.md` (LOOK; after-pictures `img/*-3-built.png`, View-only `*-4-viewonly-built.png`).
-- **NEXT:** GitHub's run on the last pushed commit green → send him the Vercel preview link of this branch, ready, with the after-picture; on his "merge live": `gh pr ready 785`, then the four merge steps (`shipping.md`), confirm Production READY, one notification. When it is live, archive `[LEGEND-TAB-STRIP]` (`backlog-archive.mjs`).
-- **Running when written:** a local preview on port 4173 (this chat's; stop it by its port). No lock held.
-- **Rulings:** 2 recorded → scheduler (D2081, D2082) · **Walk:** LOOK — no walk by tier; before/after at 402 and 1536, drawing check green · **Reads owed:** none · **Next chat number:** 89 (D1744)
+<!-- now:claude/legend-tab-strip-close -->
+### CHAT 88 — CLOSED: pull requests 784 (`[WARN-WORDS-STANDALONE]`'s follow-ups) and 785 (`[LEGEND-TAB-STRIP]`, D2081/D2082) both merged on his "merge live" and LIVE on Vercel — written 16 Nov 26 — this notes branch only archives and closes
+- **Live:** 785 merged 16 Nov 26 (merge commit `c95fe70bd`), Vercel's Production READY. `main`'s run: one Leave War desktop test ("a month button scrolls the grid to that month") missed by 0.16px on both tries, unrelated to the change and green on the same code before the merge; one re-run of the failed group (D84) — its result is in this chat's closing report.
+- **This branch:** `[LEGEND-TAB-STRIP]` archived; the two finished items' priority lines removed. Notes only — merges itself once its run is green (D1407).
+- **Open residue:** `[STANDBY-NO-TIMES-SEAT]` (filed, low). Nothing else from this chat.
+- **Rulings:** 2 recorded → scheduler (D2081, D2082) · **Walk:** 784 FULL (w1 + w2 PASS); 785 LOOK, drawing check green · **Reads owed:** none · **Next chat number:** 89 (D1744)
 <!-- /now -->
 <!-- now:claude/lw-doubletap-more -->
 ### CHAT 81 — THE NIGHT OF 15 Nov 26, job 3: `[LW-DOUBLETAP-MORE-WINDOWS]` — DONE — written 15 Nov 26 06:25 — verify before use
