@@ -58,7 +58,10 @@ the later merge keeps both (D78).
       - E: ✕ leaves the window "in front".
       - F: stale text.
     - FIXED 04:15–04:45, commit c96154e0d: A–F all fixed red-first, 10 new cases (10 red on 8bb07e571, now 24 of 24). 86 Escape-related test files: 2,407 pass. Build, lint, docsize and rulecheck OK. The run on 8bb07e571 was red on the code check (18 notes in the walk's own scripts); the builder kept each with its reason. The sheet's §6, §9 and §10 are filled. The "seen mirrors strays" tidiness note is still to file.
-    - NEXT: the re-walk (a Sonnet walker) of:
+    - **Job 2 DONE 04:45**, branch head a9cf5d591 (records only). The run on c96154e0d was green: 22 of 22, the code check included. The run on a9cf5d591 was still going at 04:45; read it in the morning. Filed: `[INPUT-WIN-SCHED-ASKS]` (his question) and `[SCHED-SMALL-TIDY]`. `[ALLAVAIL-ESCAPE]`, `[CHGWIN-ESCAPE]` and `[WEEK-AA-CHIP-PHONE]` are marked walked, read and re-walked, waiting for his iPhone look and "merge live". The sheet is complete, with its Walk and Reads lines, and has a ledger row.
+  - Job 3 (pictures for the held small fixes) next, on `claude/held-fixes-pictures` from `main`.
+    - RE-WALKED 04:20–04:30 (Sonnet): R1–R4 and R7 PASS, no faults. R5 (the holiday OIL list) could not be raised in the demo and is carried by its test. R6 was pressed only as variants. Report: `rewalk-report.md`. The builder is closing the records (04:35): the sheet's remaining parts, a ledger row, `[INPUT-WIN-SCHED-ASKS]` filed as his question, the tidiness note filed, push, then the checkout back on this branch. After that, job 2 is DONE (pull request 794, waits for his look and "merge live"), and job 3 starts.
+    - (Kept:) the re-walk covered:
       - ☰ and each ⋯ menu over each window, at 820 wide and phone width;
       - an armed seat, then a press on the window, then Escape;
       - count A, then count B, then Escape;
@@ -69,7 +72,7 @@ the later merge keeps both (D78).
   - Round 3's page republished (version 2): its worked-example boxes take a light tint in place of a side bar, after the design check.
 - **Questions waiting for him:** round 3's page, Q1–Q7 and R1–R3, each with its recommendation. Q5 recommends moving "+ Line" to the wave's foot, which would change D2106's "stays as today". Q6 names the clash between D2089 and D2105. The caps page, Q1–Q8 and R1–R4, each with its recommendation, plus the platform flag: answers checked in the app can be read by anyone who knows how, and the way to check them out of sight is a question for the IT side.
 - **Also waiting:** chat 91's three skill notes (957–959) on `claude/skill-notes-chat91`, his "merge live". His real schedule pictures hold real names — never in the project; the caps example's public link is never written into the repo.
-- **Rulings:** D2099–D2112 recorded → the scheduler's page · **Walk:** job 2 walked, desktop and phone, all PASS, `raptor-port/docs/handpass/2026-11-17-sched-small-fixes/` (jobs 6 and 1 are drawings only) · **Reads owed:** none yet · **Next chat number:** 93 (D1744)
+- **Rulings:** D2099–D2112 recorded → the scheduler's page · **Walk:** job 2 walked twice (the first walk, then the re-walk after the reads' fixes), desktop and phone, all PASS, 211 pictures, `raptor-port/docs/handpass/2026-11-17-sched-small-fixes/` (jobs 6 and 1 are drawings only) · **Reads owed:** none yet · **Next chat number:** 93 (D1744)
 <!-- /now -->
 ## Next, in order
 
