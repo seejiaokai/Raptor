@@ -8787,3 +8787,63 @@ His answers to the rules check (the report and its tests: branch `claude/engine-
 - **Also open, his to answer:** whether people on managed phones will open the app in Edge at all once it is a Power Apps code app (asked by him 10 Nov 26; a question for the IT side, offered, not yet sent).
 - Evidence: chat 52's block history in git (`HANDOFF.md` at `2fc8fcb09`); the sheet `raptor-port/docs/handpass/2026-11-10-lw-pinned-dates-clip.md`.
 
+
+*Moved here 2026-11-17 by backlog-archive.mjs ([ONE-RULE-LEFTOVERS]). Forward facts: `raptor-port/docs/superpowers/specs/2026-10-12-one-rule-behaviour-register.md`.*
+
+### [ONE-RULE-LEFTOVERS] Three housekeeping jobs the one-rule job’s last step did not reach (filed 13 Oct 26) — OPEN until (1) merges, low
+
+**Not faults — nothing a person sees.** Named in that job’s handoff as "step 8’s leftovers" and carried, not done, by the `[OIL-ASK-NOTIFY]` chat (its check was closing: a code change after the walked build would have been a change nobody walked). (1) The behaviour register’s 55 proposed ids (`raptor-port/docs/handpass/parts/or-step8-register.md`) are not wired into the tests’ names or `raptor-port/scripts/rulecheck.mjs`, so the rule check does not yet fail when one loses its test. **DONE 14 Nov 26 on claude/check-tools-1114, awaiting merge** (the overnight run of 14 Nov 26, job 3): the register moved to `raptor-port/docs/superpowers/specs/2026-10-12-one-rule-behaviour-register.md` (its §How it was wired lists where each id is written); OR1–OR55 in `RULES`; the ids written into the titles of 23 test files outside `src/engine/` (109 places, titles only, no assertion touched; the 23 files 781 of 781 green). **54 ids named by tests that already held them** — OR4, OR9, OR13 and OR35 only in part, the register saying which half (OR4's frozen view, published copies and three lists, and OR13's last clause, held only by engine tests; OR9's gap 4; OR35's "flagged" and "info only" by no test found), OR46 and OR53 whole but for their look (gap 6); the register's gaps 1–3 had been closed meanwhile by later tests (`onerecord-write`'s D770 case, `sync.wire`, `topbits.wire`); **0 new tests**; **1 id in the baseline, OR20**, held only by the engine's own tests, which the job's brief kept out — what the next engine job does is said on the register's OR20 row (and in the rule check's baseline comment). The register's OR3 and OR8 lines were corrected to D776 (a Personal input may hold several people). **Proved:** with the ids in and no title written the rule check failed on 54; with them written it passed; with "(OR29)" taken off its one test it failed naming OR29, and passed once put back. Gaps 4–6 of the register stay as it says. **Fix round (14 Nov 26):** the two blind reads (`raptor-port/docs/superpowers/briefs/2026-11-14-check-tools-read-{brief,astra,opus}.md`) found OR26 on a test that did not hold it (moved to `inputedit.wire.test.tsx` — a mutant of the guard left the old test green and turns the new one red), OR15's earning held by no tagged test (written onto `oilclaimrow.test.tsx`; OR15 now "in part", one claim an input the engine's), the wording of OR4, OR8, OR11, OR51 and OR52 against their rulings, OR20's instruction written four times (now on its register row and the baseline comment only) and the register's table disagreeing with its column on five rows (now agreeing; one line says the table is the record) — now 24 files, 111 places (`raptor-port/docs/handpass/2026-11-14-check-tools.md` §Fix round). **Filed, not fixed (tidiness):** the register's "pinned by" column and its "written into" table still say much the same twice, by design. (2) **DONE 13 Oct 26 with the Inputs batch** (`raptor-port/docs/handpass/2026-10-13-inputs-batch.md`): `PendItem.mates` and its three readers in `raptor-port/src/ui/pendlist.ts` are removed. (3) **DONE 8 Nov 26 on `claude/rd-shell-state`** (evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md` — each re-worded to the code beside it, and the job's blind read found each true): four comments that named removed code — `raptor-port/src/ui/drag.ts` near "ONE OF A SHARED INPUT’S MEN" and the seat branch below it, `raptor-port/src/ui/inputedit.tsx` near the OIL ask’s reader and `askOilIfPending`’s callers (the handoff of 12 Oct 26 gave line numbers that have since moved: read each against the code beside it). **Place:** the agent’s — with the next Inputs / schedule batch (D490).
+
+
+*Moved here 2026-11-17 by backlog-archive.mjs ([TRK-STANDALONE-LEFTOVERS]). Forward facts: `raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.*
+
+### [TRK-STANDALONE-LEFTOVERS] The code kept only for a standalone Tracker (D1538, 31 Oct 26)
+**Built and checked 5 Nov 26** on `claude/tracker-standalone-tidy` (pull request 637): the bare `ocu:` path and the bar's own
+Undo / Redo pair with its `hosted` flag removed; the roster prompt and `role.js`/`people.js`'s shape kept with their reasons;
+FULL check — 206 PASS, 0 FAIL, a fresh Opus read 0 high. Evidence `raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
+What it kept on purpose: [TRK-KEPT-COPIES]. Archive once live.
+**What:** since D1538 the Tracker will never be exported back out as its own app, so the code that exists only for a standalone
+Tracker is no longer needed: `+ Add` falling back to the bare "Student callsign:" prompt when no roster is handed over
+(`components/Modals.jsx`, the one `people.length` branch), the bare `ocu:` localStorage path in `src/tracker/storage.js` used when no
+storage target is plugged in (also the path of tests that never boot the app — check them first), `role.js`'s and `people.js`'s
+no-import shape kept so the Tracker could leave without Raptor, and the "a standalone export must carry …" notes in
+`docs/tracker/known-gaps.md`. **To do:** list each, say whether anything still uses it (a test, the smoke suite
+`scripts/tracker/smoke.mjs`, the boot), and remove or simplify it with its tests; nothing a person sees changes. **Place:** with
+the Tracker's next batch (D490) — not inside [REACT-DOCTOR-CLEANUP].
+
+
+*Moved here 2026-11-17 by backlog-archive.mjs ([ALLAVAIL-ESCAPE]). Forward facts: `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.*
+
+### [ALLAVAIL-ESCAPE] Escape does not close the ALL AVAIL window (found 15 Nov 26, walker W2 of the rules check's small batch)
+**What:** with the ALL AVAIL window open — from a row's count, on a desktop and a phone, the keys on the window, on the page or on nothing — Escape leaves it open; its ✕ and leaving the page close it, a tap outside rightly leaves it open (it never blocks the schedule, D38, D41). The same on `main`: the window has no key handler (`raptor-port/src/ui/AvailWindow.tsx`). Evidence: `raptor-port/docs/handpass/parts/2026-11-15-rcb2-w2.md` (scenario 2, runs s02esc-d1, s02esc-pdbg4). The design guide's keyboard rule says Escape closes what opened last. **To do:** Escape closes the window when it was the last thing opened and the keys are not in a box whose own Escape puts a value back (a time box's Escape keeps its meaning, D1011); the keys return to the count that opened it; a test; a short walk, desktop and phone. Not this batch's change — filed, not fixed in it.
+**BUILT 17 Nov 26 on `claude/sched-small-fixes` (the night's job 2, not yet walked or read):** Escape closes the window when it was the last thing opened or pressed, the keys back on the count; what was opened over it since — a question sheet, a seat armed after it, the bell's list, an input's own window, a schedule box the keys are in (D1011) — answers first; two floating windows close in the order brought forward. Test `raptor-port/src/ui/escwindows.test.tsx`; evidence sheet `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.
+**Walked, read and re-walked 17 Nov 26:** the walk found no fault in the change; Astra's and the fresh Opus reader's
+final reads found five (a newer menu's Escape also closing the window, a seat armed earlier keeping Escape, the window
+order, the keys after a reopen, ✕ leaving "in front" behind) — each fixed red-first and re-walked, no fault. Waits
+for his "merge live" (pull request 794).
+
+
+*Moved here 2026-11-17 by backlog-archive.mjs ([WEEK-AA-CHIP-PHONE]). Forward facts: `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.*
+
+### [WEEK-AA-CHIP-PHONE] On a phone the week's ALL AVAIL count may open the crew list, not its window (seen 15 Nov 26, walkers W2 and W3 of the rules check's small batch)
+**What:** at 402 × 874 by touch (WebKit), a tap at the centre of the ALL AVAIL count chip on a Ground Programme row of Edit Schedule's week opened the right-hand crew list armed for that row ("Planning Ground · ALL AVAIL TEST") instead of the ALL AVAIL window; three tries; the same chip on the phone's Scheduler Board opens the window, and on a desktop the week's chip opens it. The week's chip is routed through the one opener (`raptor-port/src/ui/interactions.ts`, the `[data-oilsent]` branch); the row's own tap that arms the crew list may take the touch first, or the chip may sit under the opened crew list at that width — not yet told apart. Evidence: `raptor-port/docs/handpass/parts/2026-11-15-rcb2-w3.md` observation 1, picture `raptor-port/docs/img/handpass/2026-11-14-rules-check-batch2/w3/r2-p2/r2-2-week-window-p.png`; W2's "FAIL?" in `…-rcb2-w2.md`. **To do:** reproduce by hand on the phone's week (and on `main`); if real, the chip's tap opens the window as D38 says, with a test and a short phone walk; if the chip was covered, a walker's note only. Not this batch's change.
+**Reproduced and BUILT 17 Nov 26 on `claude/sched-small-fixes` (not yet walked):** by touch in WebKit at 402 × 874 the tap's click went to the puck name beside the count — the one of the two the keys could land on — so the row armed; Chromium opened the window. The count is now a place the keys may land too (`tabindex="-1"`, off the Tab route), and WebKit sends it its own tap (checked in WebKit on the running app). Real by D38, so fixed. Test `raptor-port/src/ui/escwindows.test.tsx` (the markup); pictures and the reproduction in `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`. Owed: the phone walk and his iPhone look.
+**Walked 17 Nov 26:** by touch at 402 × 874 in WebKit and Chromium on a Common Programme row, a sim seat, a ground row,
+an input's row, View-only Sched and the board — the window opened, nothing armed, the puck beside still arms. Owed: his
+iPhone look (the test browser's WebKit is not Safari on iOS).
+
+
+*Moved here 2026-11-17 by backlog-archive.mjs ([CHGWIN-ESCAPE]). Forward facts: `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.*
+
+### [CHGWIN-ESCAPE] Escape does not close the changes window (found 8 Nov 26 by chat 28's walk; older; low)
+**What:** with the changes window open on Edit Schedule (the clock icon), Escape leaves it open, on his PC and his
+iPhone's size, with or without a click inside it first; its ✕ and a tap outside close it. Reproduced by the host in a plain
+browser, so nothing of the "Not kept" band (`raptor-port/scripts/handpass/nk28-esc.mjs`; W2's pictures
+`raptor-port/docs/img/handpass/2026-11-08-chat28-not-kept/w2/S14-changes-*.png`). The design guide's keyboard rule says
+Escape closes what opened last; the window floats beside the schedule without blocking it (D167), and no ruling says
+whether Escape should reach it while the keyboard is on the schedule behind. **The case to put to him:** Escape closes the
+changes window when it is the last thing opened — recommended. Also seen, not filed: a moved changes window comes back at
+its first place when closed and reopened (no ruling either way). **Place:** low — with the next job on the changes window
+or the keyboard leftovers.
+**His D2112 (17 Nov 26, "yes all as recommended") — BUILT 17 Nov 26 on `claude/sched-small-fixes` (not yet walked or read):** Escape closes the changes window when it was the last thing opened or pressed — the phone's slim bar too, History going with it as by its ✕; over the board the board stays and the next Escape closes it. Test `raptor-port/src/ui/escwindows.test.tsx` (and `boardescape.test.tsx`, changed to D2112); evidence `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.
+

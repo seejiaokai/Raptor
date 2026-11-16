@@ -1,0 +1,320 @@
+{
+  "1-place-d-list.png": {
+    "question": "Q1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in: 149's Place list open (mark 1e), the app's own menu of choices re-lettered — \"Home base · 142\", \"Northern base\", \"Exercise base\", \"+ New place…\". A place is picked, never typed, so two squadrons are at one place only when they picked the same one."
+  },
+  "1-place-d-proposed.png": {
+    "question": "Q1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in, a master admin's view. 149's row opened, as a Users row opens: mark 1b \"Place\", picked from the places list (drawn open in the next picture), never typed; mark 1c \"From 1 Dec 26\", the day the move takes effect — the one decision Q1 asks; mark 1d the line saying what Save will do: \"From 1 Dec, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told.\" Save and Cancel are the Users editor's own buttons; its fields are its own boxes re-lettered."
+  },
+  "1-place-d-ruled.png": {
+    "question": "Q1",
+    "size": "desktop",
+    "kind": "ruled",
+    "caption": "As ruled (round 2's C1, D2110), drawn again as a master admin sees it — only a master admin looks after squadrons (D2093), so no row reads \"yours\": Admin → Squadrons before the move, 142 at \"Home base\", 149 at \"Northern base\" (mark 1a: 149's row, a tap opens it). Rows cloned from Admin → Users' own list, the \"Squadrons\" area on the left cloned from Users."
+  },
+  "1-place-p-list.png": {
+    "question": "Q1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in: 149's Place list open (mark 1e), the app's own menu of choices re-lettered — \"Home base · 142\", \"Northern base\", \"Exercise base\", \"+ New place…\". A place is picked, never typed, so two squadrons are at one place only when they picked the same one."
+  },
+  "1-place-p-proposed.png": {
+    "question": "Q1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in, a master admin's view. 149's row opened, as a Users row opens: mark 1b \"Place\", picked from the places list (drawn open in the next picture), never typed; mark 1c \"From 1 Dec 26\", the day the move takes effect — the one decision Q1 asks; mark 1d the line saying what Save will do: \"From 1 Dec, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told.\" Save and Cancel are the Users editor's own buttons; its fields are its own boxes re-lettered."
+  },
+  "1-place-p-ruled.png": {
+    "question": "Q1",
+    "size": "phone",
+    "kind": "ruled",
+    "caption": "As ruled (round 2's C1, D2110), drawn again as a master admin sees it — only a master admin looks after squadrons (D2093), so no row reads \"yours\": Admin → Squadrons before the move, 142 at \"Home base\", 149 at \"Northern base\" (mark 1a: 149's row, a tap opens it). Rows cloned from Admin → Users' own list."
+  },
+  "10-shared-d-proposed.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Changed from what you ruled, on the Scheduler Board only (R2). Look 2 (D2104) puts the grey \"142\" badge after the mission, and under it on a phone. On the board the mission is a typing box with its R box a few pixels after it, so there is no room: the badge (mark 16) sits inside the box, at its right end, a size smaller on a phone. Both jets and the area line are one shade lighter, as ruled. Round 2's week drawing, as ruled, is beside it. (142's RU stands in.)"
+  },
+  "10-shared-p-proposed.png": {
+    "question": "walk",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Changed from what you ruled, on the Scheduler Board only (R2). Look 2 (D2104) puts the grey \"142\" badge after the mission, and under it on a phone. On the board the mission is a typing box with the crew pucks just under it (tried there, the badge covered a puck), so there is no room: the badge (mark 16) sits inside the box, at its right end, a size smaller on a phone. Both jets and the area line are one shade lighter, as ruled. Round 2's week drawing, as ruled, is beside it. (142's RU stands in.)"
+  },
+  "10-week-d-ruled.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). Look 2 (mark 5d): the same grey \"142\" badge after the mission, and RU's whole formation — both jets and its area line — one shade lighter than 149's own lines, so the block reads as 142's at a glance. (No 149 in the app yet: this screen stands in for 149's schedule, RU for a 142 formation flown in 149's wave.)"
+  },
+  "11-sign-142first-142-d-proposed.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). 142 signed first, seen on 142's schedule. 142's Monday is published, \"ORIG\" (real) — its four signed 142's own day. 149's wave 1 still reads \"149\" and \"DRAFT\" (mark 11a, drawn in): RU is in 149's working copy and may still change. When 149 publishes, the tag turns to 149's \"ORIG\" by itself and 142's day reads nothing pending — the wave was never in 142's signature. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-sign-142first-142-p-proposed.png": {
+    "question": "walk",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). 142 signed first, seen on 142's schedule. 142's Monday is published, \"ORIG\" (real) — its four signed 142's own day. 149's wave 1 still reads \"149\" and \"DRAFT\" (mark 11a, drawn in): RU is in 149's working copy and may still change. When 149 publishes, the tag turns to 149's \"ORIG\" by itself and 142's day reads nothing pending — the wave was never in 142's signature. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-sign-142first-149-d-proposed.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). 142 signed first, seen on 149's schedule. 149's Monday is still \"DRAFT\" (mark 11b, real): RU with its grey \"142\" badge waits in 149's working copy until 149's four sign and publish it. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-sign-142first-149-p-proposed.png": {
+    "question": "walk",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). 142 signed first, seen on 149's schedule. 149's Monday is still \"DRAFT\" (mark 11b, real): RU with its grey \"142\" badge waits in 149's working copy until 149's four sign and publish it. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-sign-149first-142-d-proposed.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). 149 signed first, seen on 142's schedule at the same moment. 142's own Monday is still \"DRAFT\" (real). In 149's wave 1 it shows only its own RU; the wave's head reads \"149\" and 149's seal \"ORIG\" (mark 10b, drawn in), so 142 sees the line is issued and final. 142's four never sign this wave. VL is 149's and not shown; the wave's in-time lines stay, since they are the wave's; \"+ In-time\" is 149's to use, so it is not offered. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-sign-149first-142-p-proposed.png": {
+    "question": "walk",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). 149 signed first, seen on 142's schedule at the same moment. 142's own Monday is still \"DRAFT\" (real). In 149's wave 1 it shows only its own RU; the wave's head reads \"149\" and 149's seal \"ORIG\" (mark 10b, drawn in), so 142 sees the line is issued and final. 142's four never sign this wave. VL is 149's and not shown; the wave's in-time lines stay, since they are the wave's; \"+ In-time\" is 149's to use, so it is not offered. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-sign-149first-149-d-proposed.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). 149 signed first, seen on 149's schedule. Monday is published, its day head \"ORIG\" (mark 10a, the app's own seal): 149's four signed the whole day, 142's RU in wave 1 included — RU wears B1's look 2, the grey \"142\" badge and the lighter block. 142 signs nothing here. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "11-sign-149first-149-p-proposed.png": {
+    "question": "walk",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). 149 signed first, seen on 149's schedule. Monday is published, its day head \"ORIG\" (mark 10a, the app's own seal): 149's four signed the whole day, 142's RU in wave 1 included — RU wears B1's look 2, the grey \"142\" badge and the lighter block. 142 signs nothing here. (No 149 in the app yet: 142's Monday stands in for each schedule; the day head above, wave 1 below.)"
+  },
+  "12-line-card-d-proposed.png": {
+    "question": "Q5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Your idea, drawn in. \"+ Line\" opens a card that stays open (mark 17d): each press of its \"+ Line\" adds a line, its count rising — \"3 lines added to Go 1\" — until a click outside closes it. Counted fairly, it costs no extra press: the first press opens it and adds a line, and the next click anywhere else closes it. But the lines still land at the wave's foot, below the screen here, so the card has to say where they went and offer \"Show them\". (142's 1st wave; the full screen, so what is out of view shows.)"
+  },
+  "12-line-card-p-proposed.png": {
+    "question": "Q5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Your idea, drawn in. \"+ Line\" opens a card that stays open (mark 17d): each press of its \"+ Line\" adds a line, its count rising — \"3 lines added to Go 1\" — until a click outside closes it. Counted fairly, it costs no extra press: the first press opens it and adds a line, and the next click anywhere else closes it. But the lines still land at the wave's foot, below the screen here, so the card has to say where they went and offer \"Show them\". (142's 1st wave; the full screen, so what is out of view shows.)"
+  },
+  "12-line-foot-d-proposed.png": {
+    "question": "Q5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Recommended, drawn in. The same \"+ Line\" button, its size kept, moved from the wave's head to its foot, under the last line (mark 17c); the board keeps it under the finger, so each press adds a line right above it, in view, wearing the just-added blue ring (real: the three lines here were added by real presses). Nothing out of view, so the passing note is no longer needed. The board's other add buttons (\"+ Row\", \"+ Item\", \"+ Note\", \"+ Block\") would follow the same rule where their list runs below the screen. 3 of 3 new lines wholly in view. (142's 1st wave; the full screen, so what is out of view shows.)"
+  },
+  "12-line-foot-p-proposed.png": {
+    "question": "Q5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Recommended, drawn in. The same \"+ Line\" button, its size kept, moved from the wave's head to its foot, under the last line (mark 17c); the board keeps it under the finger, so each press adds a line right above it, in view, wearing the just-added blue ring (real: the three lines here were added by real presses). Nothing out of view, so the passing note is no longer needed. The board's other add buttons (\"+ Row\", \"+ Item\", \"+ Note\", \"+ Block\") would follow the same rule where their list runs below the screen. 2 of 3 new lines wholly in view. (142's 1st wave; the full screen, so what is out of view shows.)"
+  },
+  "12-line-step-d-proposed.png": {
+    "question": "Q5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Another way, drawn in. \"+ Line\" opens a card asking how many (mark 17e): − 3 +, then \"Add 3 lines\". One deliberate number in place of repeated presses, so no line is made by an extra press; but every add, even of one line, now takes two presses, and the lines still land at the foot. (142's 1st wave; the full screen, so what is out of view shows.)"
+  },
+  "12-line-step-p-proposed.png": {
+    "question": "Q5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Another way, drawn in. \"+ Line\" opens a card asking how many (mark 17e): − 3 +, then \"Add 3 lines\". One deliberate number in place of repeated presses, so no line is made by an extra press; but every add, even of one line, now takes two presses, and the lines still land at the foot. (142's 1st wave; the full screen, so what is out of view shows.)"
+  },
+  "12-line-today-d-today.png": {
+    "question": "Q5",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. 142's Scheduler Board, \"+ Line\" (mark 17a, in the wave's head) pressed three times where it stood. Three blank lines were added at the wave's foot — 0 of 3 wholly in view on this desktop screen; the screen does not move to them. The passing note \"Line added\" (mark 17b) says it each time, the same words, with no count. (142's 1st wave; the full screen, so what is out of view shows.)"
+  },
+  "12-line-today-p-today.png": {
+    "question": "Q5",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. 142's Scheduler Board, \"+ Line\" (mark 17a, in the wave's head) pressed three times where it stood. Three blank lines were added at the wave's foot — 0 of 3 wholly in view on this phone screen; the screen does not move to them. The passing note \"Line added\" (mark 17b) says it each time, the same words, with no count. (142's 1st wave; the full screen, so what is out of view shows.)"
+  },
+  "13-delwave-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 13). On 149's board, \"✕ Wave\" pressed on a wave that holds 142's RU: today it removes the wave at once with every line in it. Proposed, only where the wave holds the other squadron's lines, the app's own question card hangs from the button (lesson 77): \"Remove 1st wave? It holds 142's RU. 142's schedulers are told. Undo puts it back.\" — Remove wave, or Keep (the safe answer). A wave of 149's lines alone is removed as today, with no question."
+  },
+  "13-delwave-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 13). On 149's board, \"✕ Wave\" pressed on a wave that holds 142's RU: today it removes the wave at once with every line in it. Proposed, only where the wave holds the other squadron's lines, the app's own question card hangs from the button (lesson 77): \"Remove 1st wave? It holds 142's RU. 142's schedulers are told. Undo puts it back.\" — Remove wave, or Keep (the safe answer). A wave of 149's lines alone is removed as today, with no question."
+  },
+  "2-board-d-proposed.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 2b). The board's own list ends each column with 149's men, \"149 · 1 free\", in the same pucks; one free only part of the day says when, in the list's own small reason line — Jolt \"free from 11:30\" — and is drawn after the free men, as a tasked man is today, so he is not dragged into a wave he cannot fly."
+  },
+  "2-board-d-today.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. 142's Scheduler Board: its own crew list, \"Pilots · N free\" and \"WSOs · N free\" — where a scheduler picks crew while building a wave, joining 149's included."
+  },
+  "2-board-p-proposed.png": {
+    "question": "Q3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 2b). The board's own list ends each column with 149's men, \"149 · 1 free\", in the same pucks; one free only part of the day says when, in the list's own small reason line — Jolt \"free from 11:30\" — and is drawn after the free men, as a tasked man is today, so he is not dragged into a wave he cannot fly."
+  },
+  "2-board-p-today.png": {
+    "question": "Q3",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. 142's Scheduler Board, its AIRCREW tab opened: its own crew list, \"Pilots · N free\" and \"WSOs · N free\" — where a scheduler picks crew while building a wave, joining 149's included."
+  },
+  "2-crew-d-proposed.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 2a). From the day 149 shares 142's place, 142's Available crew list ends with 149's free people, grouped by when they are free as the groups above are: \"149 · 2nd wave · night 16:20–end · 1 can fly\" (Jolt, who flies with 149 in the morning) and \"149 · available all day · 2\" (Mako, Brick) — invented callsigns on 142's own pucks, re-lettered and cleared of their flags. Dragging one onto a seat is a pick (D2091): his home schedule then shows \"Attach · 142\" for him. 142's own groups above are unchanged."
+  },
+  "2-crew-d-today.png": {
+    "question": "Q1 · Q3",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. 142's Edit Schedule, Monday 13 Jul: the day's Available crew list as the app draws it."
+  },
+  "2-crew-p-proposed.png": {
+    "question": "Q3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 2a). From the day 149 shares 142's place, 142's Available crew list ends with 149's free people, grouped by when they are free as the groups above are: \"149 · 2nd wave · night 16:20–end · 1 can fly\" (Jolt, who flies with 149 in the morning) and \"149 · available all day · 2\" (Mako, Brick) — invented callsigns on 142's own pucks, re-lettered and cleared of their flags. Dragging one onto a seat is a pick (D2091): his home schedule then shows \"Attach · 142\" for him. 142's own groups above are unchanged."
+  },
+  "2-crew-p-today.png": {
+    "question": "Q1 · Q3",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. 142's Edit Schedule, Monday 13 Jul: the day's Available crew list as the app draws it."
+  },
+  "3-switch-d-proposed.png": {
+    "question": "Q2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in, as 149's scheduler at home would see it (142's top bar stands in). Mark 3a: the whole TALON mark is the button, its small squadron number now \"149 ▾\" — a change to the built \"142 TALON\" title (D1606). Mark 3b: its menu, the plans selector's own menu re-lettered \"Schedules\": \"149\" (picked, its ●), \"249 · Exercise North\" (149's detachment, his own example, D2088), \"142\". Only the schedules he may see are listed; someone who may see one sees no ▾, as today. Picking one changes the schedule pages — Edit Schedule, View-only Sched, the Scheduler Board — and Logic; Inputs, Quals, the Leave War and the Tracker stay on his own squadron's people."
+  },
+  "3-switch-d-today.png": {
+    "question": "Q2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. The top bar today: \"142 TALON\" is a plain title, not a control."
+  },
+  "3-switch-p-proposed.png": {
+    "question": "Q2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in, as 149's scheduler at home would see it (142's top bar stands in). Mark 3a: the whole TALON mark is the button, its small squadron number now \"149 ▾\" — a change to the built \"142 TALON\" title (D1606). Mark 3b: its menu, the plans selector's own menu re-lettered \"Schedules\": \"149\" (picked, its ●), \"249 · Exercise North\" (149's detachment, his own example, D2088), \"142\". Only the schedules he may see are listed; someone who may see one sees no ▾, as today. Picking one changes the schedule pages — Edit Schedule, View-only Sched, the Scheduler Board — and Logic; Inputs, Quals, the Leave War and the Tracker stay on his own squadron's people."
+  },
+  "3-switch-p-today.png": {
+    "question": "Q2",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. The top bar today: \"142 TALON\" is a plain title, not a control."
+  },
+  "4-newdet-d-proposed.png": {
+    "question": "R1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in, as 149's own admin sees it (a squadron's own admins make its detachments, D2093). \"+ New detachment\" pressed: a new row opens as a Users row opens, its fields cloned from the Users editor's own boxes — Name \"Exercise North\", mark 4a \"Short name\" \"249\", the name the top bar and the Schedules menu show (your own example: 149 opens 249, D2088), mark 4b Place, picked from the places list, mark 4c \"People: through their overseas duty input\" (D2101), From, and mark 4d \"To\", the planned last day — recommended: it does not close the detachment by itself; that day the bell reminds 149's admins to close it or move the date. 149 here already shares Home base with 142."
+  },
+  "4-newdet-p-proposed.png": {
+    "question": "R1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in, as 149's own admin sees it (a squadron's own admins make its detachments, D2093). \"+ New detachment\" pressed: a new row opens as a Users row opens, its fields cloned from the Users editor's own boxes — Name \"Exercise North\", mark 4a \"Short name\" \"249\", the name the top bar and the Schedules menu show (your own example: 149 opens 249, D2088), mark 4b Place, picked from the places list, mark 4c \"People: through their overseas duty input\" (D2101), From, and mark 4d \"To\", the planned last day — recommended: it does not close the detachment by itself; that day the bell reminds 149's admins to close it or move the date. 149 here already shares Home base with 142."
+  },
+  "5-od-d-proposed.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "As ruled (D2101), drawn in. Mark 5a: the \"Detachment\" choice under Type, cloned from the real Type choice, reading \"249 · Exercise North\" (its other choice \"None\" keeps an ordinary overseas duty, a staff trip). Mark 5b: the Title box, a clone of the real one, filled in by itself with \"Exercise North\". (142's Anvil stands in for a 149 man joining 149's detachment.)"
+  },
+  "5-od-d-today.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. An overseas duty input (Anvil, 13–31 Jul) opened from Monday's Unavailable row: Person, Type \"OD\", Title, Duration, Document, Remarks."
+  },
+  "5-od-p-proposed.png": {
+    "question": "walk",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "As ruled (D2101), drawn in. Mark 5a: the \"Detachment\" choice under Type, cloned from the real Type choice, reading \"249 · Exercise North\" (its other choice \"None\" keeps an ordinary overseas duty, a staff trip). Mark 5b: the Title box, a clone of the real one, filled in by itself with \"Exercise North\". (142's Anvil stands in for a 149 man joining 149's detachment.)"
+  },
+  "5-od-p-today.png": {
+    "question": "walk",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. An overseas duty input (Anvil, 13–31 Jul) opened from Monday's Unavailable row: Person, Type \"OD\", Title, Duration, Document, Remarks."
+  },
+  "6-home-d-proposed.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). Real, drawn by the app itself (mark 2): the same overseas duty filed with the title \"Exercise North\" — which the detachment choice would fill in by itself. The app already shows an input's own title where its kind's name stands, the kind small with it: \"Exercise North OD C Anvil IP Exercise, off islandtill 31 Jul REJECT\". Nothing here is cloned."
+  },
+  "6-home-p-proposed.png": {
+    "question": "walk",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). Real, drawn by the app itself (mark 2): the same overseas duty filed with the title \"Exercise North\" — which the detachment choice would fill in by itself. The app already shows an input's own title where its kind's name stands, the kind small with it: \"Exercise North OD C Anvil IP Exercise, off islandtill 31 Jul REJECT\". Nothing here is cloned."
+  },
+  "7-close-d-proposed.png": {
+    "question": "R3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "As ruled (one \"Close detachment\", D2103), seen by 149's admin, with what pressing it should ask, drawn in (mark 7): the app's own question card hanging from the button, as your lesson 77 asks — \"Close Exercise North? Its schedules stay, read only, under Past detachments. Its 6 people are back on 149's schedule from today, and their overseas duty ends today.\" The last clause is my reading, not yet ruled: closing early cuts their overseas duty inputs short. Keep open is the safe answer, as on the app's other cards. The button keeps \"Close detachment\" on one line (round 2's drawing broke it in two)."
+  },
+  "7-close-p-proposed.png": {
+    "question": "R3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "As ruled (one \"Close detachment\", D2103), seen by 149's admin, with what pressing it should ask, drawn in (mark 7): the app's own question card hanging from the button, as your lesson 77 asks — \"Close Exercise North? Its schedules stay, read only, under Past detachments. Its 6 people are back on 149's schedule from today, and their overseas duty ends today.\" The last clause is my reading, not yet ruled: closing early cuts their overseas duty inputs short. Keep open is the safe answer, as on the app's other cards. The button keeps \"Close detachment\" on one line (round 2's drawing broke it in two)."
+  },
+  "8-join-d-proposed.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). Recommended (mark 12a, drawn in): on 142's Scheduler Board, the real \"+ Wave\" menu gains a group \"Join a 149 wave\", listing 149's waves that day, each with the first of 149's lines in it. Picking one adds a blank 142 line inside 149's wave; that wave then shows on 142's schedule as in 10b, and its \"+ Line\" adds more 142 lines. 149's own \"+ Line\" stays as it is today. (142's waves stand in for 149's here.)"
+  },
+  "8-join-p-proposed.png": {
+    "question": "walk",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Round 2's picture, unchanged (as ruled). Recommended (mark 12a, drawn in): on 142's Scheduler Board, the real \"+ Wave\" menu gains a group \"Join a 149 wave\", listing 149's waves that day, each with the first of 149's lines in it. Picking one adds a blank 142 line inside 149's wave; that wave then shows on 142's schedule as in 10b, and its \"+ Line\" adds more 142 lines. 149's own \"+ Line\" stays as it is today. (142's waves stand in for 149's here.)"
+  },
+  "9-joined-d-proposed.png": {
+    "question": "walk",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "As ruled (D2106), drawn on 142's Scheduler Board after \"Join a 149 wave\". Mark 9a: the wave's head carries 149's grey badge and 149's own status, \"DRAFT\" (round 2's 10b). Mark 9b: 142's new line, blank, wearing the board's own just-added blue ring — made by a real press of \"+ Line\", which is how 142 adds more lines to that wave. 149's VL and RU are hidden here (142 sees only its own lines, D2105), and so are \"+ In-time\", \"Auto sort\" and \"✕ Wave\", which are 149's to use. \"+ Line\" is drawn in the wave's head, as today; if you take Q5 it moves to the wave's foot here too. (142's 1st wave stands in for 149's.)"
+  },
+  "9-joined-p-proposed.png": {
+    "question": "walk",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "As ruled (D2106), drawn on 142's Scheduler Board after \"Join a 149 wave\". Mark 9a: the wave's head carries 149's grey badge and 149's own status, \"DRAFT\" (round 2's 10b). Mark 9b: 142's new line, blank, wearing the board's own just-added blue ring — made by a real press of \"+ Line\", which is how 142 adds more lines to that wave. 149's VL and RU are hidden here (142 sees only its own lines, D2105), and so are \"+ In-time\", \"Auto sort\" and \"✕ Wave\", which are 149's to use. \"+ Line\" is drawn in the wave's head, as today; if you take Q5 it moves to the wave's foot here too. (142's 1st wave stands in for 149's.)"
+  }
+}
