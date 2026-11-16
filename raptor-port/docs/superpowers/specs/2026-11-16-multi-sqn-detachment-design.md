@@ -58,6 +58,17 @@ IT side's answers of 8 and 10 Nov 26 (`[IT-QUESTIONS]`) and `raptor-port/docs/da
 - **One production environment** for code apps: a database per aircraft type (D1101) is not possible today — not settled,
   recommended "when a second type joins". **Reading across squadrons** for the checks has no barrier; the costs are the
   2,000-row page and each person's 40,000 requests a day, so the app fetches a day's rows for a place, not for a squadron.
+- **Microsoft's own pages (learn.microsoft.com, read by a helper 16 Nov 26; page dates Aug–Nov 2026):** a code app reads
+  and writes Dataverse rows with filters and paging — no FetchXML, no alternate-key lookups, no polymorphic lookups; it is
+  not offered in Power Apps for Windows, and nothing read confirms the Power Apps phone app (community posts say it hangs
+  there) — so phones are assumed to use the browser, to confirm with the IT side. Dataverse can split units for real
+  (business units with ownership across units, or a team owning each unit's rows), but making one needs an administrator
+  each time — the IT side's, which they do not offer; a squadron column checked only by the app is a filter, not security
+  (Microsoft describes no such pattern as security). A person needs a licence, the environment's group and at least one
+  role before the app opens for him at all, so "Request access" serves only people the IT side has already let in. Each
+  row carries a version for refusing a stale save — whether a code app can send it is unproven: a trial before the build,
+  since two schedulers may now edit one line (D2089). One practitioner's post (unverified) reports paging and guest-user
+  faults in the client library — test paging on real volumes.
 - **Stale records to correct when the design is agreed (D201):** data-model §11's intro ("one business unit … no
   cross-squadron rows") and §Squadrons' first paragraph; the 10 Nov answers not yet folded into the handover documents.
 
