@@ -20,14 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/rulings-d2056 -->
-### CHAT 89 — tidy-up: pull request 782 (his D2056, D2057) brought level with `main`; the six merged blocks removed from here — written 16 Nov 26
-- **Done:** 782 had fallen behind `main` and clashed in the rulings files; `main` brought in, the clash settled (D2057 cited on the warnings line beside D2070; both added to the map); `[TOPBAR-LOOSE-APPROVALS-QUALS]` archived (D2056: not to be built). The blocks of chats 88, 81 (two), 75, 64 and 55 removed — all their pull requests merged (785/786, 781, 779, 762/778, 757, 744); chat 75's one unfiled line, carried from chat 66, filed as `[CHAT66-OPEN-ROUND]`.
-- **Notes only:** merges by itself once its run is green (D1407). Pull request 780 (the `?barprobe` trial) stays unmerged by D2056 — closing it is his word.
-- **Likely finished, still in the backlog (not checked here):** `[LW-DOUBLETAP-MORE-WINDOWS]` (781 merged), `[RULES-CHECK-FIXES]` (779 merged), `[GLOBAL-UNDO]` (live since 18 Sep 26), `[PAGE-FOOT-FLASH]` (D2056, the agent's reading).
-- **Rulings:** none this chat · **Walk:** none (notes only) · **Reads owed:** none · **Next chat number:** 90 (D1744)
+<!-- now:claude/multi-sqn-design-detachment-454e15 -->
+### CHAT 90 — backlog sort, his order of work (D2086), the multi-squadron and detachment design started — written 16 Nov 26
+- **Backlog sort:** archived `[LW-DOUBLETAP-MORE-WINDOWS]` (781 merged), `[RULES-CHECK-FIXES]` (762, 779 merged — its leftovers filed word for word as `[RULES-CHECK-LEFTOVERS]`), `[PAGE-FOOT-FLASH]` (D2056; its Edge question for the IT side carried to `[IT-QUESTIONS]`). `[GLOBAL-UNDO]` KEPT: its six multi-user leftovers are open, for the database step. Nothing in the backlog harms people now (the closest — `[TRK-DISK]`, `[UNDO-PUBLISH-ERASES-ISSUANCE]`, `[DAMAGED-WEEK-LEFTOVERS]` — touch demo data only and are placed with the database step). Chat 89's block removed (782 merged).
+- **His order (D2086):** the multi-squadron and detachment design first, design only → caps and ops limits with the schedule's small fixes → the Tracker expansion with the Tracker's → the multi-squadron build last, at the database step.
+- **The design (`[MULTI-SQN-DESIGN]`, D1695, D1100):** round 1 of questions to him, with recommendations and pictures. The caps example he named is a public link — never written into the repo.
+- **Rulings:** D2086 · **Walk:** none (notes and design only) · **Reads owed:** none · **Next chat number:** 91 (D1744)
 <!-- /now -->
 ## Next, in order
+
+**HIS ORDER OF WORK (D2086, 16 Nov 26):** the multi-squadron and detachment design, design only (`[MULTI-SQN-DESIGN]`) → caps and ops limits with the schedule's small fixes (`[CAPS-OPS-LIMITS]`) → the Tracker expansion with the Tracker's small fixes → the multi-squadron build last, at the database step.
 
 **RIGHT NOW (7 Nov 26):** the rules diet (`[RULES-DIET]`, plan `raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md` §7) — step 1 LIVE (pull request 656) → step 2 LIVE (pull request 657) → step 3, reading by section, LIVE (pull request 658; re-measured: about 7% of a job's read) → step 4, the every-chat layer → step 5a, the small areas, OIL first → re-measure and report to him → step 5b, the big three (all LIVE 9 Nov 26: Inputs, the scheduler, the Leave War — pull request 732) → step 6, the final measure, to him (done 9 Nov 26) → one follow-up (D1949, LIVE 10 Nov 26, pull request 735); each step on his "merge live" (D1737). Left: stating once what both the general page and a checklist state (D1762), later.
 
