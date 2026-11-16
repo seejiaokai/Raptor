@@ -1,0 +1,224 @@
+{
+  "1-standby-d-proposed.png": {
+    "question": "Q1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The same seat with no times now raises the line it raises once times are typed, with the hours swapped for \"(no times yet)\" as a flight's line says it (mark 1d): \"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN (no times yet)\". The seat wears the red ring and Q chip it wears with times (mark 1c, the real puck with times typed), and the bar counts one more (mark 1e). With times typed the real line reads \"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00\"."
+  },
+  "1-standby-d-today.png": {
+    "question": "Q1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Tuesday's Scheduler Board, a new BB wave (its START and END blank, as \"+ Wave\" makes them). Echo, a WSO, is in the first MAIN line's front seat (mark 1a). The seat wears no ring and no Q chip, and the day's issues (mark 1b) have no line for it: ▸⚠ 4 issues · 2 warnings."
+  },
+  "1-standby-p-proposed.png": {
+    "question": "Q1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The same seat with no times now raises the line it raises once times are typed, with the hours swapped for \"(no times yet)\" as a flight's line says it (mark 1d): \"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN (no times yet)\". The seat wears the red ring and Q chip it wears with times (mark 1c, the real puck with times typed), and the bar counts one more (mark 1e). With times typed the real line reads \"Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00\"."
+  },
+  "1-standby-p-today.png": {
+    "question": "Q1",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Tuesday's Scheduler Board, a new BB wave (its START and END blank, as \"+ Wave\" makes them). Echo, a WSO, is in the first MAIN line's front seat (mark 1a). The seat wears no ring and no Q chip, and the day's issues (mark 1b) have no line for it: ▾⚠ 4 issues · 2 warnings."
+  },
+  "2-block-d-for-wave-bb.png": {
+    "question": "Q2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. The same menu after the Standard template's \"For wave\" was set to BB in the duty templates window (its pencil): now it reads \"Standard3 roles · BB desk\" (mark 2b). \"BB desk\" says the block will be made as the BB wave's desk, which is what that setting does. Set back to its blank, the words go."
+  },
+  "2-block-d-today.png": {
+    "question": "Q2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. 142's Scheduler Board, \"+ Block\" pressed on a fresh copy of the app. The built-in Standard template reads \"Standard3 roles\" (mark 2a), with no \"BB desk\"."
+  },
+  "2-block-p-today.png": {
+    "question": "Q2",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. 142's Scheduler Board, \"+ Block\" pressed on a fresh copy of the app. The built-in Standard template reads \"Standard3 roles\" (mark 2a), with no \"BB desk\"."
+  },
+  "3-plural-insights-d-proposed.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The tile's label worded as the issues bar words it: 36 over \"issues · 13 warnings\" (mark 3d; the tile prints its labels in capitals). Words added: \"issues ·\" and the \"s\"."
+  },
+  "3-plural-insights-d-today.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. The Scheduler Board's Insights window. The red tile reads 36 over \"13 warning\" (mark 3c): 36 is the week's issues, of which 13 are warnings, but nothing says so, and \"warning\" is singular."
+  },
+  "3-plural-panel-d-proposed.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The same counts in the plural wherever the number is not 1: \"6 warnings7 advisories4 notes3b\" (mark 3b). Only the endings change; one of each still reads \"1 warning\", \"1 advisory\", \"1 note\"."
+  },
+  "3-plural-panel-d-today.png": {
+    "question": "Q3",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Edit Schedule, Monday's ⓘ (day details) panel. Its count of the day's issues reads \"6 warning7 advisory4 note\" (mark 3a), while the issues bar above Monday reads the plural (\"N warnings\", live since pull request 756)."
+  },
+  "3-plural-panel-p-proposed.png": {
+    "question": "Q3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The same counts in the plural wherever the number is not 1: \"6 warnings7 advisories4 notes3b\" (mark 3b). Only the endings change; one of each still reads \"1 warning\", \"1 advisory\", \"1 note\"."
+  },
+  "3-plural-panel-p-today.png": {
+    "question": "Q3",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Edit Schedule, Monday's ⓘ (day details) panel. Its count of the day's issues reads \"6 warning7 advisory4 note\" (mark 3a), while the issues bar above Monday reads the plural (\"N warnings\", live since pull request 756)."
+  },
+  "4-banner-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The same words and buttons, the words held together as one block beside the buttons so they read as one sentence and wrap only where the line is full (mark 4b), 106px tall. No word changes."
+  },
+  "4-banner-d-today.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Monday published, then its Original looked at from the board's plans selector. The banner (mark 4a) is 130px tall: \"← Back to live copy\", then the words \"Viewing the issued Original — read-only. This is what was sent out; it never changes.\" broken over its lines, then \"Load onto working copy\"."
+  },
+  "4-banner-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The same words and buttons, the words held together as one block beside the buttons so they read as one sentence and wrap only where the line is full (mark 4b), 106px tall. No word changes."
+  },
+  "4-banner-p-today.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Monday published, then its Original looked at from the board's plans selector. The banner (mark 4a) is 130px tall: \"← Back to live copy\", then the words \"Viewing the issued Original — read-only. This is what was sent out; it never changes.\" broken over its lines, then \"Load onto working copy\"."
+  },
+  "5-changes-d-proposed.png": {
+    "question": "Q5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. Tuesday's chip wears History's clock before its count (mark 5c, the clock of the top bar's changes button), so it reads as the day's change history (who changed what) beside Monday's \"pending\". The words and the window it opens stay."
+  },
+  "5-changes-d-today.png": {
+    "question": "Q5",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Edit Schedule's week. Monday is published with one edit waiting to go out: its chip reads \"1 pending\" (mark 5a). Tuesday is published and its two edits already went out as AL1: its chip, in the same place on the day, reads \"2 changes\" (mark 5b), what the issued versions changed. Side by side on the week, \"changes\" can read as changes not sent yet."
+  },
+  "5-changes-p-proposed.png": {
+    "question": "Q5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. Tuesday's chip wears History's clock before its count (mark 5c, the clock of the top bar's changes button), so it reads as the day's change history (who changed what) beside Monday's \"pending\". The words and the window it opens stay."
+  },
+  "5-changes-p-today.png": {
+    "question": "Q5",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real, on a phone. Tuesday, published, its two edits sent out as AL1: its chip reads \"2 changes\" (mark 5b). Monday, one swipe back, reads \"1 pending\" in the same place."
+  },
+  "6-damaged-delete-d-proposed.png": {
+    "question": "Q6",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, the app's grey \"Blocked:\" note (mark 6d), as every other refusal of one change takes it (D1667, D1668), in D1785's words: \"Blocked: the saved copy of the week of 13/07/2026 could not be read, so the delete was not made. Report it with “Report a problem” on the Help page.6d\"."
+  },
+  "6-damaged-delete-d-today.png": {
+    "question": "Q6",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real words, raised through the app's own note on the Admin page: deleting a person while the week's saved copy cannot be read is refused in the amber note (mark 6c), \"The week of 13/07/2026 can’t be changed — the delete was not made6c\"."
+  },
+  "6-damaged-delete-p-proposed.png": {
+    "question": "Q6",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed, the app's grey \"Blocked:\" note (mark 6d), as every other refusal of one change takes it (D1667, D1668), in D1785's words: \"Blocked: the saved copy of the week of 13/07/2026 could not be read, so the delete was not made. Report it with “Report a problem” on the Help page.6d\"."
+  },
+  "6-damaged-delete-p-today.png": {
+    "question": "Q6",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real words, raised through the app's own note on the Admin page: deleting a person while the week's saved copy cannot be read is refused in the amber note (mark 6c), \"The week of 13/07/2026 can’t be changed — the delete was not made6c\"."
+  },
+  "6-damaged-peek-d-proposed.png": {
+    "question": "Q6",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. Where the preview's days would be, the notice Edit Schedule shows over an unreadable week, with \"This week’s\" swapped for \"Next week’s\" (mark 6b). The day headings stay."
+  },
+  "6-damaged-peek-d-today.png": {
+    "question": "Q6",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Edit Schedule on 13 Jul, with next week's (20 Jul) saved copy made unreadable (its stored days spoiled before a reload). The next-week preview at the right (mark 6a) draws the demo days as if nothing were wrong."
+  },
+  "7-original-d-proposed.png": {
+    "question": "Q7",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The picker gains \"Original — as issued\" (mark 7b), worded as its neighbour is: \"AL1 — as issued\", \"Original — as issued\", \"Working draft — not issued\". With more amendments, each issued version would be listed the same way, newest first."
+  },
+  "7-original-d-today.png": {
+    "question": "Q7",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. View-only Sched, Monday published and then amended (AL1). Its picker (mark 7a, drawn open) offers \"AL1 — as issued\" and \"Working draft — not issued\": there is no way here to look at the Original."
+  },
+  "7-original-p-proposed.png": {
+    "question": "Q7",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed, drawn in. The picker gains \"Original — as issued\" (mark 7b), worded as its neighbour is: \"AL1 — as issued\", \"Original — as issued\", \"Working draft — not issued\". With more amendments, each issued version would be listed the same way, newest first."
+  },
+  "7-original-p-today.png": {
+    "question": "Q7",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. View-only Sched, Monday published and then amended (AL1). Its picker (mark 7a, drawn open) offers \"AL1 — as issued\" and \"Working draft — not issued\": there is no way here to look at the Original."
+  },
+  "8-cutoff-d-proposed-a.png": {
+    "question": "Q8",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed A (recommended), drawn in. The box keeps the number the moment the keys leave it, as the Logic page's own boxes do: the row behind reads 10 at once (mark 8c), and Save and Cancel go, since there is nothing left to save. Undo takes it back."
+  },
+  "8-cutoff-d-proposed-b.png": {
+    "question": "Q8",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Proposed B, drawn in. The window keeps its Save. A press of ✕ (or Escape) with a changed box asks first, in a card hanging from the ✕ worded as the input window's: \"This window has unsaved changes. Close it and lose them?\" with \"Discard and close\" and \"Keep editing\" (mark 8d)."
+  },
+  "8-cutoff-d-today-closed.png": {
+    "question": "Q8",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. The same, then the window's ✕: the window closes and the 10 is gone without a word. The row still says \"14 days before the week starts ›\" (mark 8b)."
+  },
+  "8-cutoff-d-today-typed.png": {
+    "question": "Q8",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Logic → \"Inputs late cut-off\" opens the Inputs calendar settings window. 10 typed over 14 in the days-before box, then Tab: the box shows 10 (mark 8a) while the Logic row behind still says \"Inputs late cut-off14 days before the week starts ›An input last changed after it wears LATE.\" (mark 8b), because nothing is kept until Save (or Enter)."
+  },
+  "8-cutoff-p-proposed-a.png": {
+    "question": "Q8",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Proposed A, on a phone, drawn in. The box keeps 10 the moment the keys leave it (mark 8c), so the window has no Save or Cancel; the Logic row under it reads 10 at once."
+  },
+  "8-cutoff-p-today-typed.png": {
+    "question": "Q8",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real, on a phone. The same: 10 typed over 14, then Tab. The box shows 10 (mark 8a); the Logic row, under the window here, still says 14 days, because nothing is kept until Save (or Enter)."
+  }
+}

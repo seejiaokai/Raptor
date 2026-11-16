@@ -1,0 +1,198 @@
+<title>Held Schedule Fixes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* layout: one column; the open questions on top; then one card per held fix, today beside proposed */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--warn:#a35a00;--tint:rgba(14,127,166,.07);
+--f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:26px}h2{font-size:19px;margin-top:34px;padding-top:14px;border-top:1px solid var(--line)}h3{font-size:16px}
+.sub{color:var(--mute);margin:4px 0 0}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.top ol{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:7px}
+.top li{display:grid;grid-template-columns:44px 1fr;gap:8px}
+.top b.n{font-family:var(--f-head);color:var(--acc)}
+.top h3+ol{margin-top:6px}.top ol+h3{margin-top:14px}
+.rec{color:var(--rec);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px}
+.q p,.q li{max-width:78ch}.q p{margin:8px 0}
+.q ul{margin:6px 0;padding-left:20px}.q li{margin:4px 0}
+.ex{background:var(--tint);border-radius:8px;padding:8px 12px;color:var(--mute)}
+.ex b{color:var(--fg)}
+.words{font-size:14px}
+.words s{color:var(--warn)}.words ins{text-decoration:none;color:var(--rec);font-weight:600}
+.pics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
+figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
+figcaption b{color:var(--fg)}
+.phone{display:grid;grid-template-columns:repeat(2,minmax(0,260px));gap:10px;margin-top:10px}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--mute)}
+.tag.p{color:var(--mark);border-color:var(--mark)}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#zoom img{max-width:none;width:auto;max-height:none}
+@media (max-width:640px){.pics{grid-template-columns:1fr}.top li{grid-template-columns:36px 1fr}}
+</style>
+<div class="wrap">
+<h1>The schedule's held small fixes</h1>
+<p class="sub">Night of 17 Nov 26 · eight small fixes the backlog holds for your word, each drawn on the real app (demo data). <span class="tag">Today</span> is the app as it is; <span class="tag p">Proposed</span> has the change drawn in, marked in pink with a number. Where a published day was needed, it was set up the way the app's own tests do it (the four sign-offs filled and the day published). Tap a picture to see it full size. These wait for you to ask for them; nothing in the app has changed.</p>
+
+<div class="top">
+<h3>Open now: answer by number, or "all as recommended"</h3>
+<ol>
+<li><b class="n">Q1</b><span><a href="#Q1">A WSO in a BB or AVALON front seat with no times yet raises no warning. Should it?</a> <span class="rec">Recommended: yes, the line it raises with times, ending "(no times yet)".</span></span></li>
+<li><b class="n">Q2</b><span><a href="#Q2">"+ Block" calls the Standard block "BB desk".</a> <span class="rec">Recommended: close it with no change. It says that only after the template's "For wave" was set to BB, and then it is right.</span></span></li>
+<li><b class="n">Q3</b><span><a href="#Q3">The day's details and Insights still say "6 warning".</a> <span class="rec">Recommended: plurals in the day's details; on Insights, "issues · 13 warnings" under the count.</span></span></li>
+<li><b class="n">Q4</b><span><a href="#Q4">The banner on a look at the Original breaks into three pieces.</a> <span class="rec">Recommended: one flowing sentence, same words.</span></span></li>
+<li><b class="n">Q5</b><span><a href="#Q5">"2 changes" beside "1 pending" can read as changes not yet sent.</a> <span class="rec">Recommended: History's clock before "N changes".</span></span></li>
+<li><b class="n">Q6</b><span><a href="#Q6">A week whose saved copy cannot be read: the next-week preview and the delete refusal.</a> <span class="rec">Recommended: the unreadable-week notice in the preview; the grey "Blocked:" note for the delete.</span></span></li>
+<li><b class="n">Q7</b><span><a href="#Q7">After an amendment, View-only Sched can no longer show the Original.</a> <span class="rec">Recommended: add "Original — as issued" to its picker.</span></span></li>
+<li><b class="n">Q8</b><span><a href="#Q8">The late cut-off box loses a typed number on ✕, without a word.</a> <span class="rec">Recommended: A, the box keeps the number as you leave it, as the Logic page's boxes do.</span></span></li>
+</ol>
+</div>
+
+<h2 id="Q1">Q1 · A WSO in a BB or AVALON front seat with no times</h2>
+<div class="q">
+<p><b>What you meet today.</b> On a new BB or AVALON line, START and END are blank until typed. Drop a WSO in its front seat and the crew list says "WSO — cannot fly front seat" at the moment of the drop, but nothing stays: no line in the day's issues, no ring, no Q chip. Type the times and the warning comes. A flight with no times already warns ("… (no times yet)").</p>
+<p class="ex"><b>Worked example:</b> Tuesday, a new BB wave. Echo (a WSO) goes in the first MAIN line's front seat. The issues still read "4 issues · 2 warnings". Type 19:00 and 07:00 and the list gains "Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN 19:00–07:00".</p>
+<p><b>Proposed.</b> The warning comes with no times too, and the seat wears its red ring and Q chip. The words are the line's own, with the hours swapped for the words a flight already uses:</p>
+<p class="words">Echo — Illegal seat: a WSO in the front seat of BB SHIFT MAIN <s>19:00–07:00</s> <ins>(no times yet)</ins></p>
+<div class="pics">
+<figure><img src="../../img/2026-11-17-held-fixes/1-standby-d-today.png" alt="Scheduler Board, Echo in a BB front seat with no times, no warning"><figcaption><span class="tag">Today</span> The seat (1a) has no ring, and the issues (1b) have no line for it.</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/1-standby-d-proposed.png" alt="The same with the warning line, ring and chip drawn in"><figcaption><span class="tag p">Proposed</span> The ring and Q chip (1c), the line (1d), one more in the count (1e).</figcaption></figure>
+</div>
+<div class="phone">
+<figure><img src="../../img/2026-11-17-held-fixes/1-standby-p-today.png" alt="Phone, the issues with no line for the seat"><figcaption><span class="tag">Today</span> Phone: the issues (1b).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/1-standby-p-proposed.png" alt="Phone, the issues with the new line"><figcaption><span class="tag p">Proposed</span> Phone: the line (1d), the count (1e).</figcaption></figure>
+</div>
+</div>
+
+<h2 id="Q2">Q2 · "+ Block" and "BB desk"</h2>
+<div class="q">
+<p><b>What I found.</b> On a fresh copy of the app the menu reads "Standard · 3 roles", with no desk. "BB desk" shows only when the Standard template's "For wave" is set to BB in the duty templates window (the menu's pencil). The walker had set it. "BB desk" then says what the block becomes, the BB wave's desk, the way "SC desk" and "AVALON desk" do for the other two.</p>
+<p class="ex"><b>Worked example:</b> Monday's board, "+ Block": "Standard 3 roles". Open the pencil, set Standard's "For wave" to BB, press Done, and "+ Block" reads "Standard 3 roles · BB desk".</p>
+<p><b>Recommended:</b> close the item with no change. Nothing needs new words.</p>
+<div class="pics">
+<figure><img src="../../img/2026-11-17-held-fixes/2-block-d-today.png" alt="The + Block menu, Standard with no desk"><figcaption><span class="tag">Today</span> Fresh app: Standard has no desk (2a).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/2-block-d-for-wave-bb.png" alt="The + Block menu after For wave set to BB"><figcaption><span class="tag">Today</span> After "For wave" = BB: "BB desk" (2b).</figcaption></figure>
+</div>
+<div class="phone">
+<figure><img src="../../img/2026-11-17-held-fixes/2-block-p-today.png" alt="Phone, the + Block menu"><figcaption><span class="tag">Today</span> Phone, fresh app (2a).</figcaption></figure>
+</div>
+</div>
+
+<h2 id="Q3">Q3 · The singular "warning"</h2>
+<div class="q">
+<p><b>What you meet today.</b> The issues bar now reads "17 issues · 6 warnings" (live since pull request 756), but two places still use the singular: the day's details window (the ⓘ) and Insights' red tile.</p>
+<p class="ex"><b>Worked example:</b> Monday's ⓘ reads "6 warning 7 advisory 4 note" with the bar beside it reading "6 warnings". The board's Insights shows a big <b>36</b> over "13 warning". The 36 is the week's issues and 13 of them are warnings, but nothing on the tile says so.</p>
+<p><b>Proposed.</b> Plurals wherever the number is not 1, and the tile names its number the way the issues bar does:</p>
+<p class="words">6 warning<ins>s</ins> · 7 advisor<s>y</s><ins>ies</ins> · 4 note<ins>s</ins><br>36 over <ins>issues ·</ins> 13 warning<ins>s</ins> <span style="color:var(--mute)">(the tile prints it in capitals)</span></p>
+<div class="pics">
+<figure><img src="../../img/2026-11-17-held-fixes/3-plural-panel-d-today.png" alt="Day details, singular counts"><figcaption><span class="tag">Today</span> Day details (3a).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/3-plural-panel-d-proposed.png" alt="Day details, plural counts"><figcaption><span class="tag p">Proposed</span> Plurals (3b).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/3-plural-insights-d-today.png" alt="Insights tile 36 over 13 warning"><figcaption><span class="tag">Today</span> Insights' tile (3c).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/3-plural-insights-d-proposed.png" alt="Insights tile 36 over issues 13 warnings"><figcaption><span class="tag p">Proposed</span> "issues · 13 warnings" (3d).</figcaption></figure>
+</div>
+<div class="phone">
+<figure><img src="../../img/2026-11-17-held-fixes/3-plural-panel-p-today.png" alt="Phone, day details singular"><figcaption><span class="tag">Today</span> Phone (3a).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/3-plural-panel-p-proposed.png" alt="Phone, day details plural"><figcaption><span class="tag p">Proposed</span> Phone (3b).</figcaption></figure>
+</div>
+</div>
+
+<h2 id="Q4">Q4 · The banner on a look at the Original</h2>
+<div class="q">
+<p><b>What you meet today.</b> Looking at a published day's Original from the board's plans selector, the banner breaks its one sentence into three pieces: "Viewing the issued", then "Original" on its own line, then "— read-only. This is what was sent out; it never changes." It happens on a phone and in the board's side panel on a desktop.</p>
+<p class="ex"><b>Worked example:</b> Monday published. On the board, the plans selector → Original. The banner takes five lines on a phone where three would do.</p>
+<p><b>Proposed.</b> The words held together as one sentence, wrapping only where a line is full. No word changes; the two buttons stay. The walker also saw the banner sit under the Aircrew tab on a phone; at your iPhone's width it clears the tab here, so that is not drawn.</p>
+<div class="pics">
+<figure><img src="../../img/2026-11-17-held-fixes/4-banner-d-today.png" alt="Desktop board side panel, the banner broken into pieces"><figcaption><span class="tag">Today</span> Desktop board (4a).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/4-banner-d-proposed.png" alt="Desktop board, the banner as one sentence"><figcaption><span class="tag p">Proposed</span> One sentence (4b).</figcaption></figure>
+</div>
+<div class="phone">
+<figure><img src="../../img/2026-11-17-held-fixes/4-banner-p-today.png" alt="Phone board, the banner broken into pieces"><figcaption><span class="tag">Today</span> Phone (4a).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/4-banner-p-proposed.png" alt="Phone board, the banner as one sentence"><figcaption><span class="tag p">Proposed</span> Phone (4b).</figcaption></figure>
+</div>
+</div>
+
+<h2 id="Q5">Q5 · "N changes" beside "N pending"</h2>
+<div class="q">
+<p><b>What you meet today.</b> The chip in a day's head shows "N pending" while changes wait to go out, and "N changes" once nothing waits: the day's change history, who changed what. Side by side on the week, the two look alike, and "2 changes" can read as two changes not yet sent.</p>
+<p class="ex"><b>Worked example:</b> Monday is published with one edit waiting: "1 pending". Tuesday is published and its two edits already went out as AL1: "2 changes", in the same place on its head.</p>
+<p><b>Proposed.</b> "N changes" wears History's clock before the count, the clock the top bar's changes button wears. The words and the window it opens stay. Another way, not drawn: rename it, for example "History · 2"; that changes a word you see on every day, so I recommend the clock.</p>
+<div class="pics">
+<figure><img src="../../img/2026-11-17-held-fixes/5-changes-d-today.png" alt="Week, 1 pending beside 2 changes"><figcaption><span class="tag">Today</span> "1 pending" (5a) beside "2 changes" (5b).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/5-changes-d-proposed.png" alt="Week, 2 changes with a clock"><figcaption><span class="tag p">Proposed</span> The clock (5c).</figcaption></figure>
+</div>
+<div class="phone">
+<figure><img src="../../img/2026-11-17-held-fixes/5-changes-p-today.png" alt="Phone, Tuesday's 2 changes"><figcaption><span class="tag">Today</span> Phone, Tuesday (5b).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/5-changes-p-proposed.png" alt="Phone, Tuesday's 2 changes with a clock"><figcaption><span class="tag p">Proposed</span> Phone (5c).</figcaption></figure>
+</div>
+</div>
+
+<h2 id="Q6">Q6 · A week whose saved copy cannot be read</h2>
+<div class="q">
+<p><b>What you meet today.</b> Nothing is lost in any of these, but two of them say the wrong thing. On a desktop, the next-week preview at the week's end draws the demo days when next week's saved copy cannot be read, with no notice. And deleting a person while the week cannot be read is refused in the amber note, not the grey "Blocked:" note every other refusal of one change takes (your D1667, D1668).</p>
+<p class="ex"><b>Worked example:</b> next week's (20 Jul) saved copy spoiled. Edit Schedule on 13 Jul, scrolled to Sunday: the preview shows "Monday Jul 20" with its demo programme as if nothing were wrong.</p>
+<p><b>Proposed, the preview.</b> The notice Edit Schedule shows over an unreadable week (D1785), one word swapped:</p>
+<p class="words"><s>This</s> <ins>Next</ins> week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.</p>
+<p><b>Proposed, the delete refusal.</b> The grey note, in D1785's words. It ends longer, 12 words to 29, because it now says why and what to do:</p>
+<p class="words"><ins>Blocked:</ins> <ins>the saved copy of</ins> the week of 13/07/2026 <s>can't be changed —</s> <ins>could not be read, so</ins> the delete was not made. <ins>Report it with “Report a problem” on the Help page.</ins></p>
+<p style="color:var(--mute);font-size:13.5px">"so" is known: this refusal comes only from the unreadable week. Its twin for another stored week, "The week of … can't be read — the delete was not made", would take the same words. No control reaches this refusal without hiding the week behind its notice, so it was raised through the app's own note with its real words.</p>
+<div class="pics">
+<figure><img src="../../img/2026-11-17-held-fixes/6-damaged-peek-d-today.png" alt="Edit Schedule, the next-week preview showing demo days"><figcaption><span class="tag">Today</span> The preview's demo days (6a).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/6-damaged-peek-d-proposed.png" alt="The preview with the unreadable-week notice"><figcaption><span class="tag p">Proposed</span> The notice (6b).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/6-damaged-delete-d-today.png" alt="The amber refusal note"><figcaption><span class="tag">Today</span> The amber note (6c).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/6-damaged-delete-d-proposed.png" alt="The grey Blocked note"><figcaption><span class="tag p">Proposed</span> The grey "Blocked:" note (6d).</figcaption></figure>
+</div>
+<div class="phone">
+<figure><img src="../../img/2026-11-17-held-fixes/6-damaged-delete-p-today.png" alt="Phone, the amber note"><figcaption><span class="tag">Today</span> Phone (6c).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/6-damaged-delete-p-proposed.png" alt="Phone, the grey Blocked note"><figcaption><span class="tag p">Proposed</span> Phone (6d).</figcaption></figure>
+</div>
+<p><b>Not drawn tonight:</b> print and the spreadsheet export of such a week (they wait with the PDF work you held, D1644); a week refused because its records belong to another week, which needs words of its own and is hard to stage; and the Leave War's silent bid refusals on such a week, which belong to the Leave War's own round.</p>
+</div>
+
+<h2 id="Q7">Q7 · The Original on View-only Sched</h2>
+<div class="q">
+<p><b>What you meet today.</b> On View-only Sched, a published day's picker offers the latest issued version and the working draft. Once the day has an amendment, the Original is no longer in the list, so a member cannot look at what first went out.</p>
+<p class="ex"><b>Worked example:</b> Monday published, then amended as AL1. The picker offers "AL1 — as issued" and "Working draft — not issued". Nothing reaches the Original.</p>
+<p><b>Proposed.</b> One more entry, worded as its neighbour is (the picker's own dash kept, as its family has it). With more amendments, each issued version is listed the same way, newest first.</p>
+<p class="words">AL1 — as issued<br><ins>Original — as issued</ins><br>Working draft — not issued</p>
+<div class="pics">
+<figure><img src="../../img/2026-11-17-held-fixes/7-original-d-today.png" alt="View-only picker with AL1 and working draft"><figcaption><span class="tag">Today</span> The picker, drawn open (7a).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/7-original-d-proposed.png" alt="View-only picker with Original added"><figcaption><span class="tag p">Proposed</span> "Original — as issued" (7b).</figcaption></figure>
+</div>
+<div class="phone">
+<figure><img src="../../img/2026-11-17-held-fixes/7-original-p-today.png" alt="Phone, the picker"><figcaption><span class="tag">Today</span> Phone (7a).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/7-original-p-proposed.png" alt="Phone, the picker with Original"><figcaption><span class="tag p">Proposed</span> Phone (7b).</figcaption></figure>
+</div>
+</div>
+
+<h2 id="Q8">Q8 · The late cut-off box</h2>
+<div class="q">
+<p><b>What you meet today.</b> Logic → "Inputs late cut-off" opens the Inputs calendar settings window. A number typed in the days-before box is kept only by Save or Enter. Press ✕ (or Escape) and it is gone without a word.</p>
+<p class="ex"><b>Worked example:</b> type 10 over 14, then Tab. The box shows 10, and the example under it already says inputs are due by Fri 27 Nov, but the Logic row behind still says "14 days before the week starts". Press ✕: the window closes, the row still says 14, and nothing told you the 10 was dropped.</p>
+<p><b>A (recommended).</b> The box keeps the number the moment you leave it, as the Logic page's own boxes do. The row behind reads 10 at once, and Save and Cancel go, since nothing is left to save; Undo takes it back. The members' switch in the same window would then save as it is ticked.</p>
+<p><b>B.</b> The window keeps Save. ✕ or Escape with a changed box asks first, in a card hanging from the ✕, worded as the input window's own question, one word swapped:</p>
+<p class="words">This <s>input</s> <ins>window</ins> has unsaved changes. Close it and lose them? <span style="color:var(--mute)">[Discard and close] [Keep editing]</span></p>
+<p>A is fewer steps and matches the page you opened it from. B keeps the window as built and adds a question.</p>
+<div class="pics">
+<figure><img src="../../img/2026-11-17-held-fixes/8-cutoff-d-today-typed.png" alt="The window showing 10, the Logic row 14"><figcaption><span class="tag">Today</span> The box shows 10 (8a); the row says 14 (8b).</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/8-cutoff-d-today-closed.png" alt="After the cross, the row still 14"><figcaption><span class="tag">Today</span> After ✕: still 14 (8b), no word.</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/8-cutoff-d-proposed-a.png" alt="The row reads 10, no Save or Cancel"><figcaption><span class="tag p">Proposed A</span> The row reads 10 (8c); no Save or Cancel.</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/8-cutoff-d-proposed-b.png" alt="A question card hanging from the cross"><figcaption><span class="tag p">Proposed B</span> The question at the ✕ (8d).</figcaption></figure>
+</div>
+<div class="phone">
+<figure><img src="../../img/2026-11-17-held-fixes/8-cutoff-p-today-typed.png" alt="Phone, the box shows 10"><figcaption><span class="tag">Today</span> Phone: 10 in the box (8a); the row is under the window.</figcaption></figure>
+<figure><img src="../../img/2026-11-17-held-fixes/8-cutoff-p-proposed-a.png" alt="Phone, the window without Save or Cancel"><figcaption><span class="tag p">Proposed A</span> Phone: kept (8c), no Save or Cancel.</figcaption></figure>
+</div>
+</div>
+</div>
+<div id="zoom" hidden></div>
+<script>
+const z=document.getElementById('zoom')
+document.addEventListener('click',e=>{const i=e.target.closest('figure img');if(i){z.innerHTML='';const c=i.cloneNode();c.style.cursor='zoom-out';z.appendChild(c);z.hidden=false;return}if(!z.hidden&&z.contains(e.target))z.hidden=true})
+document.addEventListener('keydown',e=>{if(e.key==='Escape')z.hidden=true})
+</script>
