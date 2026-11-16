@@ -90,7 +90,60 @@ IT side's answers of 8 and 10 Nov 26 (`[IT-QUESTIONS]`) and `raptor-port/docs/da
 - **Stale records to correct when the design is agreed (D201):** data-model §11's intro ("one business unit … no
   cross-squadron rows") and §Squadrons' first paragraph; the 10 Nov answers not yet folded into the handover documents.
 
-## The review of his plan (chat 90, 16 Nov 26 — put to him; none of it ruled until he answers)
+## His answers to the review's four questions, and what he added, 16 Nov 26 (chat 91 — D2091–D2098)
+
+*"All four as recommended."* The four questions as chat 90 put them, each now a ruling:
+- **Borrowing a man (D2091):** a scheduler picks the other squadron's man freely, with no request, where both squadrons
+  are at the same place; every pick shows at once on his home squadron's schedule and rings its schedulers' bell. The
+  "ask us first" switch stays unbuilt unless a squadron wants it.
+- **One place, one man (D2092):** every squadron and detachment has a place; a man is at one place on any day; units at
+  the same place may share people and are checked against each other; units at different places never are; the app
+  refuses to plan a man at a place he is not at. Answers D2089's open question (conflicts are flagged across two
+  squadrons at home) and confirms D2088's refusal.
+- **Who makes a squadron (D2093):** a master admin only (D1971); a squadron's own admins make its detachments.
+- **Enrolment (D2094):** "Request access" asks the person's squadron and goes to that squadron's admins only; an admin
+  adding a person picks his primary squadron, his own by default; access to another squadron is never asked at sign-up —
+  an admin gives it on Admin → Users, to view or as a scheduler.
+- **Added by him (D2095):** *"the admin can also close the detachment onces its over. or archive it (to see old
+  programme)."* To check in round 2: one action or two (recommended one, "Close detachment", its schedules always kept,
+  read only, under past detachments — an issued schedule is never erased); its people go back to their squadron that day.
+- **Asked by him, the same hour, for round 2:** *"So how are we going to assign people to the detachment? Through inputs?
+  Or scheduler/admin?"* then *"Is it also easier for people to self input DET? so that its easier on the scheduler?"*
+  **Recommended (chat 91's second answer, replacing its first — "the admins' own dated list, never an input"):** through
+  Inputs, as today. The app already enters a detachment as the "overseas duty" input (it replaced "Detachment", owner
+  10 Aug 26 — `src/engine/inputs.ts`), filed by the man himself or by a scheduler for several men in one input, and it
+  already takes him out of reach at home and shows on the Leave War. So: that input gains one choice, which detachment
+  (none, as today, for a trip with no schedule in the app); a man with one naming a detachment is on that detachment's
+  manpower for its dates; the detachment's page lists who and when, read from those inputs, and its admins add or change
+  a man there (the same input, written for him). One record, both doors, nothing new to learn. To settle in round 2: it
+  takes effect at once as every input does (recommended, both squadrons' schedulers seeing it) or waits for an admin's
+  yes; whether "DET" shows as a kind of its own in Unavailable or as overseas duty with the detachment's name. Not ruled.
+
+- **The count at the top of a day (D2096):** *"2 (142) 6 (149). not 8"* — squadrons counted apart, never added. To draw:
+  how it reads with more than one wave (today's badge is the aircraft in each wave, "6 × 6").
+- **Two ALL AVAIL events at one time (D2097, his lean):** a 142 man flies with 149 in the morning; both squadrons put an
+  all-available ground programme at the same afternoon time — *"I think it should be left as open for interpretation by
+  the user?"* No conflict, the app decides nothing. Recommended with it, to confirm: each squadron's ALL AVAIL counts its
+  own people only (so he stands in 142's, and never earns OIL twice); its window shows his morning with 149; a squadron
+  that wants him names him — a pick (D2091).
+- **What the home schedule shows for a borrowed man — his offered option, 16 Nov 26, RULED the same day, "as recommended" (D2098):** *"149 just plans this
+  person on their schedule. but on 142 schedule it just says attach 149. just like our current input. or should it show
+  the event on 142, but have a 149 label?"* **Recommended: his first — by whose line it is.** (a) A 142 man in a seat or
+  an event of 149's own: the line is 149's alone; 142's schedule shows one row for him, "Attach · 149" with the times,
+  under Unavailable as the Attach input does today (the inputs page's D1373, D1374) — made by itself from 149's plan,
+  changed only by it, a tap opening 149's schedule at that line, read only. 142's published day then changes only when
+  his time away changes, not with every detail of 149's line; nothing of 149's enters 142's count, numbers, publishing or
+  signatures. This replaces round 1's drawn "WITH 149 · ACADEMICS" row and narrows the review's improvement 3. (b) A 142
+  formation flown in 149's wave is 142's own line: it shows whole on 142's schedule (D2089) and on 149's with the 142
+  mark (D2090). (c) Another squadron's line shown only for reference (his real example: the 149 line 142's men fly
+  against) — a scheduler's choice, round 2.
+
+**Not asked as questions of their own, so still to confirm in round 2:** the review's improvements 2 to 5 below (a
+detachment is a unit like a squadron; one line, one record; the checks follow the man; inputs and leave belong to the
+person), and the three points of his real example (the other squadron's lines carry no line number of the schedule's own
+and are left out of its jet count; which of the other squadron's lines show on a schedule; what the purple names mean).
+
+## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
 **Kept as he said it:** squadrons made in Admin; one primary squadron each; access to others given by an admin; only Post
 out moves the primary; a detachment is a unit of its own with its own name, people and schedule; no man in two places.
