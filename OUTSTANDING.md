@@ -2168,6 +2168,7 @@ people's-days panel uses both (`raptor-port/docs/ui-contracts.md` §The page sta
 item still needs is his choice of which other windows stay up, and their own check.
 
 ### [CAPS-OPS-LIMITS] Caps and ops limits — handoff CANCELLED D568, remains unbuilt (5 Oct 26)
+**Design, round 1 (17 Nov 26, overnight, nothing ruled):** `raptor-port/docs/superpowers/specs/2026-11-17-caps-design.md` — the four open points of D2084 drawn on the app and put to him as Q1–Q6, with its questions page and pictures.
 **What it is — his D2084, 16 Nov 26:** a weekly form each person fills in at the start of the week, cleared by itself every week; one button shows who has completed it, those flying above all; a click switches the check off. Open, asked when its batch is planned: what the form holds, who must fill it in, whether a flyer who has not completed it raises anything on the schedule, what the switch turns off.
 **Current — D568:** "nvm i will do something else." Stop the immediate handoff; no new chat created, no replacement task chosen. Wait for the owner. The following D567 design-start draft is cancelled history, not current authority.
 
