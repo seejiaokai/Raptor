@@ -238,7 +238,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OPUS-SECOND-READ-GUIDE] — the checking guide's line on when a second, blind Opus read is run: decided (D595), not written — it waits for Astra's and Sol's reads (D70) when ChatGPT is back, then his approval; and whether it still earns its place then.
 
 **Documents and guides**
-- [FABLE-HARD-TASKS-DOCS] — the bug-check rule, the bug-check order and the Codex guide still say Fable works only each time he calls; to say Fable does the difficult tasks (D2083) — a working-guide change, read by Astra and a fresh Opus reader, on his "merge live".
 - [RULE-FILE-LESSONS] — four lessons for the rule files and the steps for recording a ruling — his word.
 - [DOC-POINTERS-CODE] — three code comments in the rules engine are out of date (two point at the project guide's old headings; one says the change history clears on reload), each with the engine's next behaviour change (D1537); the rest re-pointed 14 Nov 26 on claude/code-tidy-1114, awaiting merge.
 - [WORD-LIST] — the app's word list LIVE 10 Nov 26 (pull request 739); left open only while the general rules name it with [SKILL-FUSION].
@@ -288,7 +287,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Features he means to add — each on his word**
 - [CAPS-OPS-LIMITS] — caps and ops limits: a weekly form, cleared every week, who has completed it at one button, the check switched off by a click (D2084); its place in the order put to him 16 Nov 26.
-- [FEATURE-WISHLIST] — his list of features not yet designed (the Tracker's progress graph waits, D774); added 16 Nov 26: a training tracker expansion and detachment modes, the difficult parts Fable's (D2083).
+- [FEATURE-WISHLIST] — his list of features not yet designed (the Tracker's progress graph waits, D774); added 16 Nov 26: a training tracker expansion and detachment modes.
 - [XFER] — moving a man between squadrons with all his data — a milestone, with the database.
 - [HIST-PER-PAGE] — a changes button on the Leave War and Quals — an idea; a mock-up first.
 - [SIMILAR-APPS-LOOK] — what other apps like ours do: answered; whether any of it becomes a job is his.
@@ -354,9 +353,6 @@ other (D1761, D1770); on his word, and his "merge live". **Place:** his to place
 
 ### [CHAT66-OPEN-ROUND] What the night of 11 Nov 26 left for him — his answer to question 1 and a small round (filed 16 Nov 26, chat 89)
 Moved whole from chat 75's handoff block when it left `HANDOFF.md` (16 Nov 26, chat 89), where it was the only home: **Carried from chat 66, still open:** his answer to the night of 11 Nov's question 1 (the bell); that night's small round, not yet put to him one by one (D994 — ask first whether he wants it now): Escape and the changes window; Tab and the board's buttons; the drawings that need his look (D1625); the two other "N warning" places; a walk-scripts lesson; the last box resting under the note. The general rulings page and OIL's page are near their hard limits (D1932) — the next ruling stated on either needs a tightening or his word. Question 1 (the bell) comes from that night's Leave War double-tap job — a window's ✕ that sits over the top bar's bell, so a second tap opens the bell's list (briefs `raptor-port/docs/superpowers/briefs/2026-11-11-lw-doubletap-windows-*.md`). Escape and the changes window is also `[CHGWIN-ESCAPE]`. **Place:** put to him only when he says (D994).
-
-### [FABLE-HARD-TASKS-DOCS] Bring the guides in line with D2083 — Fable does the difficult tasks (filed 16 Nov 26, chat 89)
-**What:** his D2083 (16 Nov 26) makes Fable the model for the difficult tasks, the big features ahead among them, his standing call; three working guides still say Fable is used only each time he calls: `.claude/rules/bug-check.md` (§When to call in Fable and Codex), `raptor-port/docs/bug-check-order.md` §4 and `raptor-port/docs/codex-guide.md` (with `AGENTS.md`'s first paragraph). Until they change, D2083 is the later ruling and wins (D90). **How:** a working-guide change — read by Astra and a fresh, blind Opus reader (D1761), merged on his "merge live". **Place:** with the first Fable job, or before it.
 
 ### [STANDBY-NO-TIMES-SEAT] A WSO or ground crewman in an AVALON or BB front seat with no times raises no "Illegal seat" line (found 16 Nov 26, walker w1 of `[WARN-WORDS-STANDALONE]`'s follow-ups)
 **What:** on an AVALON or BB line whose START and END are blank, a WSO dropped in the front seat gets only the crew picker's drop note ("WSO — cannot fly front seat") and no line in the issues list, no Q chip; with START and END typed the "Illegal seat: …" line comes. An ordinary flight with no times does warn ("… of this line (no times yet)"), and a man on leave is flagged on a row with no times (D605). The same on `main`: a standby shift with no times has no window, so its seats are never collected for their checks (`engine/validate.ts`, the AVALON checks' comment). Pictures `raptor-port/docs/img/handpass/2026-11-16-warn-words-followups/w1/s07/04-bb-main-freak.png`; evidence sheet `raptor-port/docs/handpass/2026-11-16-warn-words-followups.md`.
@@ -1988,7 +1984,7 @@ keyboard/browser-bar states; no app repair is filed for that recovered behaviour
 Board's blank Desktop layout is selected. The original observations are retained.
 
 ### [FEATURE-WISHLIST] Features he means to add — his list, not yet ruled or designed (2 Oct 26)
-**Added 16 Nov 26 (chat 89, with D2083):** in his words, the work ahead is "a training tracker expansion", "detachment modes", "caps and ops limits" and "multiple squadrons" — the last two are `[CAPS-OPS-LIMITS]` and `[MULTI-SQN-DESIGN]`; detachments were first named in D1100. What the Tracker's expansion and the detachment modes mean is asked when their batches are planned, never guessed (whether the expansion is the progress graph D774 holds back is among the questions). Fable does their difficult parts (D2083).
+**Added 16 Nov 26 (chat 89, with D2083):** in his words, the work ahead is "a training tracker expansion", "detachment modes", "caps and ops limits" and "multiple squadrons" — the last two are `[CAPS-OPS-LIMITS]` and `[MULTI-SQN-DESIGN]`; detachments were first named in D1100. What the Tracker's expansion and the detachment modes mean is asked when their batches are planned, never guessed (whether the expansion is the progress graph D774 holds back is among the questions). Opus plans and builds them, Fable only on his call (D2085, which took back D2083).
 **The Tracker batch, 17 Oct 26 (his word with `/overnight`):** its open items sorted and round 1 of his questions drawn — `raptor-port/docs/superpowers/plans/2026-10-17-tracker-batch-triage.md`; the progress graph stays out (D774).
 **D774 (12 Oct 26, *"I'll not work on the tracker progress graph yet"*): item 4, the Tracker's progress graph, is not started — questions, design or build — until he says so; the order below is unchanged.**
 His words, 2 Oct 26, asking where new features fit in the order of work: *"1. Format of how the inputs are displayed to calendar
