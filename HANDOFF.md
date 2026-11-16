@@ -59,7 +59,13 @@ the later merge keeps both (D78).
       - F: stale text.
     - FIXED 04:15–04:45, commit c96154e0d: A–F all fixed red-first, 10 new cases (10 red on 8bb07e571, now 24 of 24). 86 Escape-related test files: 2,407 pass. Build, lint, docsize and rulecheck OK. The run on 8bb07e571 was red on the code check (18 notes in the walk's own scripts); the builder kept each with its reason. The sheet's §6, §9 and §10 are filled. The "seen mirrors strays" tidiness note is still to file.
     - **Job 2 DONE 04:45**, branch head a9cf5d591 (records only). The run on c96154e0d was green: 22 of 22, the code check included. The run on a9cf5d591 was still going at 04:45; read it in the morning. Filed: `[INPUT-WIN-SCHED-ASKS]` (his question) and `[SCHED-SMALL-TIDY]`. `[ALLAVAIL-ESCAPE]`, `[CHGWIN-ESCAPE]` and `[WEEK-AA-CHIP-PHONE]` are marked walked, read and re-walked, waiting for his iPhone look and "merge live". The sheet is complete, with its Walk and Reads lines, and has a ledger row.
-  - Job 3 (pictures for the held small fixes) next, on `claude/held-fixes-pictures` from `main`.
+  - Job 3 BUILT 04:35–05:20 on `claude/held-fixes-pictures` (from `main`, commit d9b5ad0cb). The page is `raptor-port/docs/mock/2026-11-17-held-fixes/page.html`, with 37 pictures in `raptor-port/docs/img/2026-11-17-held-fixes/`, and is linked from the six backlog items. Each of the eight items is drawn with a recommendation:
+    - "+ Block"'s "BB desk" is not a fault: close it.
+    - The late cut-off box is drawn two ways.
+    - Parts of the damaged week are parked: print and export with D1644, the "older version" refusal, the Leave War part.
+    - About 14 pictures were not opened by the helper; it was sent back 05:20 to open them and fix in one batch.
+    - The page is kept until he asks (D994): it is not published to him tonight, only its link given in the morning.
+  - Then job 4 (the Tracker's small fixes prepared), on `claude/trk-small-prep` from `main`.
     - RE-WALKED 04:20–04:30 (Sonnet): R1–R4 and R7 PASS, no faults. R5 (the holiday OIL list) could not be raised in the demo and is carried by its test. R6 was pressed only as variants. Report: `rewalk-report.md`. The builder is closing the records (04:35): the sheet's remaining parts, a ledger row, `[INPUT-WIN-SCHED-ASKS]` filed as his question, the tidiness note filed, push, then the checkout back on this branch. After that, job 2 is DONE (pull request 794, waits for his look and "merge live"), and job 3 starts.
     - (Kept:) the re-walk covered:
       - ☰ and each ⋯ menu over each window, at 820 wide and phone width;
