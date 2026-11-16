@@ -561,8 +561,72 @@ async function pic9(sz) {
   await ctx.close()
 }
 
+// B1 redrawn (his D2099, 17 Nov 26: "the B1 design is so ugly" — the first drawing, a "142" that took the callsign's
+// big bold letters and fell to a line of its own on a phone). Three looks, each from parts the app already draws
+// (lesson 68): the standby line's MAIN badge — its shape, letters and size, in a neutral grey since its teal means
+// MAIN — on the mission line; that badge plus the formation lifted one surface step; that badge (on the mission line:
+// beside the callsign it fell to a line of its own on a phone) plus a grey line down the formation's left edge (a solid line drawn as an inset shadow is a line, not a glow — §4).
+async function pic5b(sz) {
+  const LOOKS = [
+    ['look1', '5c', 'mission'],
+    ['look2', '5d', 'mission+surface'],
+    ['look3', '5e', 'mission+edge'],
+  ]
+  for (const [name, tag, how] of LOOKS) {
+    const { ctx, page } = await world(sz)
+    await toEdit(page)
+    const m = await page.evaluate(({ tag, how }) => {
+      const mq = window.__mq, mon = mq.monday()
+      const g = mon.querySelector('.go')
+      const f = [...g.querySelectorAll('.form')].find(x => x.querySelector('.csmsn .ntx').textContent.trim() === 'RU')
+      if (!f) return { err: 'no RU' }
+      const cs = f.querySelector('.csmsn')
+      // the chip: the MAIN badge's own recipe (12-schedule-editing.css .sarole), in neutral grey
+      const chip = document.createElement('span')
+      chip.className = 'sarole ro'; chip.textContent = '142'; chip.setAttribute('data-mine', '1')
+      chip.style.background = 'rgba(255,255,255,.08)'; chip.style.borderColor = 'rgba(255,255,255,.22)'
+      chip.style.color = 'var(--ink-2)'; chip.style.verticalAlign = 'middle'; chip.style.marginLeft = '5px'
+      chip.style.position = 'relative'; chip.style.top = '-1px'
+      const leaves = [...cs.querySelectorAll('*')].filter(e => !e.children.length && e.textContent.trim())
+      const msn = leaves.find(e => e.textContent.trim() === 'BFM')
+      if (!msn) return { err: 'no mission' }
+      // a phone's callsign column is 50px (D367): "BFM" and the badge do not fit side by side, so the badge stacks under
+      // the mission, smaller — the Flies chip's phone size (his lesson 11, D1066), lined up with the mission's left edge
+      const phone = innerWidth < 600
+      if (phone) { chip.style.display = 'block'; chip.style.width = 'fit-content'; chip.style.marginLeft = '0'; chip.style.marginTop = '2px'; chip.style.top = '0'; chip.style.fontSize = '7px'; chip.style.padding = '0 4px'; msn.after(chip) }
+      else msn.appendChild(chip)
+      if (how.includes('surface')) f.style.background = 'rgba(255,255,255,.055)'
+      if (how.includes('edge')) f.style.boxShadow = 'inset 3px 0 0 rgba(255,255,255,.30)'
+      // the pink tag only, no pink outline: an outline would cover the very edge and surface being shown
+      f.style.position = 'relative'; mq.mark(f, tag); f.classList.remove('mkq', 'mkq-o')
+      const cr = chip.getBoundingClientRect(), ccr = cs.getBoundingClientRect(), mr = msn.getBoundingClientRect()
+      const sameLine = phone ? Math.abs(cr.left - mr.left) < 2 && cr.top >= mr.bottom - 1 : Math.abs((cr.top + cr.bottom) / 2 - (mr.top + mr.bottom) / 2) < 6
+      return { phone, chipH: Math.round(cr.height), chipW: Math.round(cr.width), sameLine, insideCell: cr.right <= ccr.right + 0.5 }
+    }, { tag, how })
+    if (m.err) throw new Error('pic5b ' + name + ': ' + m.err)
+    if (!m.sameLine || !m.insideCell) throw new Error('pic5b ' + name + ' chip off its line or out of its cell: ' + JSON.stringify(m))
+    const c = await page.evaluate(() => {
+      const mq = window.__mq, g = mq.monday().querySelector('.go')
+      mq.scrollUnder(g, 8)
+      const r = g.getBoundingClientRect(), x = Math.max(0, r.left - 4), y = Math.max(mq.topH(), r.top - 4)
+      return { x, y, width: Math.min(innerWidth - x, r.width + 8), height: Math.min(innerHeight - y, r.height + 8) }
+    })
+    await page.waitForTimeout(200)
+    const file = `5-b1-${name}-${sz}-proposed.png`
+    await shot(page, file, c)
+    const words = {
+      look1: `Look 1 (mark ${tag}): a small grey "142" badge after RU's mission — the standby lines' MAIN badge, its shape, letters and size, in grey because its teal means MAIN. Nothing else on the line changes.`,
+      look2: `Look 2 (mark ${tag}): the same grey "142" badge after the mission, and RU's whole formation — both jets and its area line — one shade lighter than 149's own lines, so the block reads as 142's at a glance.`,
+      look3: `Look 3 (mark ${tag}): the same grey "142" badge after the mission, and a thin grey line down the left edge of RU's formation — both jets and its area line. (Beside the callsign was tried first: on a phone the badge falls to a line of its own there, as the first drawing did, so it stays on the mission line.)`,
+    }
+    rec(file, 'B1', sz, 'proposed', words[name] + (sz === 'p' ? ' On a phone the badge sits under the mission, a size smaller: side by side they do not fit the 50px column (your lesson 11, as the Flies chip does).' : '') + ' (No 149 in the app yet: this screen stands in for 149\'s schedule, RU for a 142 formation flown in 149\'s wave.)')
+    notes.push(`pic5b ${name} ${sz}: ${JSON.stringify(m)}`)
+    await ctx.close()
+  }
+}
+
 browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
-const ALL = { pic1, pic2, pic3, pic4, pic5, pic7, pic8, pic9 }
+const ALL = { pic1, pic2, pic3, pic4, pic5, pic5b, pic7, pic8, pic9 }
 try {
   for (const sz of ['d', 'p']) {
     console.log('== ' + SIZES[sz].name)

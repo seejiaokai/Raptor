@@ -119,6 +119,42 @@
     "kind": "today",
     "caption": "Real. Monday's heading on Edit Schedule: the day's count \"4 X 4\" (aircraft in each wave — wave 1 VL and RU, two jets each; wave 2 the same)."
   },
+  "5-b1-look1-d-proposed.png": {
+    "question": "B1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Look 1 (mark 5c): a small grey \"142\" badge after RU's mission — the standby lines' MAIN badge, its shape, letters and size, in grey because its teal means MAIN. Nothing else on the line changes. (No 149 in the app yet: this screen stands in for 149's schedule, RU for a 142 formation flown in 149's wave.)"
+  },
+  "5-b1-look1-p-proposed.png": {
+    "question": "B1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Look 1 (mark 5c): a small grey \"142\" badge after RU's mission — the standby lines' MAIN badge, its shape, letters and size, in grey because its teal means MAIN. Nothing else on the line changes. On a phone the badge sits under the mission, a size smaller: side by side they do not fit the 50px column (your lesson 11, as the Flies chip does). (No 149 in the app yet: this screen stands in for 149's schedule, RU for a 142 formation flown in 149's wave.)"
+  },
+  "5-b1-look2-d-proposed.png": {
+    "question": "B1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Look 2 (mark 5d): the same grey \"142\" badge after the mission, and RU's whole formation — both jets and its area line — one shade lighter than 149's own lines, so the block reads as 142's at a glance. (No 149 in the app yet: this screen stands in for 149's schedule, RU for a 142 formation flown in 149's wave.)"
+  },
+  "5-b1-look2-p-proposed.png": {
+    "question": "B1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Look 2 (mark 5d): the same grey \"142\" badge after the mission, and RU's whole formation — both jets and its area line — one shade lighter than 149's own lines, so the block reads as 142's at a glance. On a phone the badge sits under the mission, a size smaller: side by side they do not fit the 50px column (your lesson 11, as the Flies chip does). (No 149 in the app yet: this screen stands in for 149's schedule, RU for a 142 formation flown in 149's wave.)"
+  },
+  "5-b1-look3-d-proposed.png": {
+    "question": "B1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Look 3 (mark 5e): the same grey \"142\" badge after the mission, and a thin grey line down the left edge of RU's formation — both jets and its area line. (Beside the callsign was tried first: on a phone the badge falls to a line of its own there, as the first drawing did, so it stays on the mission line.) (No 149 in the app yet: this screen stands in for 149's schedule, RU for a 142 formation flown in 149's wave.)"
+  },
+  "5-b1-look3-p-proposed.png": {
+    "question": "B1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Look 3 (mark 5e): the same grey \"142\" badge after the mission, and a thin grey line down the left edge of RU's formation — both jets and its area line. (Beside the callsign was tried first: on a phone the badge falls to a line of its own there, as the first drawing did, so it stays on the mission line.) On a phone the badge sits under the mission, a size smaller: side by side they do not fit the 50px column (your lesson 11, as the Flies chip does). (No 149 in the app yet: this screen stands in for 149's schedule, RU for a 142 formation flown in 149's wave.)"
+  },
   "5-b1-mark-d-proposed.png": {
     "question": "B1",
     "size": "desktop",
