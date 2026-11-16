@@ -1,0 +1,230 @@
+{
+  "1-a1-input-d-proposed.png": {
+    "question": "A1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in. Mark 1a: a \"Detachment\" choice under Type, cloned from the real Type field, reading \"142 DET · Exercise North\" (its other choice \"None\", as today, for a trip with no schedule in the app). Mark 1b: the Title box (a clone of the real one) reads \"Exercise North\" — filled in by itself from the choice. Nothing else changes in the window."
+  },
+  "1-a1-input-d-today.png": {
+    "question": "A1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. An overseas duty input (Anvil, 13–31 Jul, filed through the Inputs door) opened from Monday's Unavailable row on Edit Schedule: Person, Type \"OD\", Title, Duration, Document, Remarks."
+  },
+  "1-a1-input-p-proposed.png": {
+    "question": "A1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in. Mark 1a: a \"Detachment\" choice under Type, cloned from the real Type field, reading \"142 DET · Exercise North\" (its other choice \"None\", as today, for a trip with no schedule in the app). Mark 1b: the Title box (a clone of the real one) reads \"Exercise North\" — filled in by itself from the choice. Nothing else changes in the window."
+  },
+  "1-a1-input-p-today.png": {
+    "question": "A1",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. An overseas duty input (Anvil, 13–31 Jul, filed through the Inputs door) opened from Monday's Unavailable row on Edit Schedule: Person, Type \"OD\", Title, Duration, Document, Remarks."
+  },
+  "2-a2-odrow-d-proposed.png": {
+    "question": "A2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Real, drawn by the app itself (mark 2): the same overseas duty filed with the title \"Exercise North\" — which the detachment choice would fill in by itself. The app already shows an input's own title where its kind's name stands, the kind small with it: \"Exercise North OD C Anvil IP Exercise, off islandtill 31 Jul REJECT\". Nothing here is cloned."
+  },
+  "2-a2-odrow-d-today.png": {
+    "question": "A2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Monday's Unavailable list with an overseas duty for Anvil (13–31 Jul) as the app draws it today: \"OD C Anvil IP Exercise, off islandtill 31 Jul REJECT\"."
+  },
+  "2-a2-odrow-p-proposed.png": {
+    "question": "A2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Real, drawn by the app itself (mark 2): the same overseas duty filed with the title \"Exercise North\" — which the detachment choice would fill in by itself. The app already shows an input's own title where its kind's name stands, the kind small with it: \"Exercise North OD C Anvil IP Exercise, off islandtill 31 Jul REJECT\". Nothing here is cloned."
+  },
+  "2-a2-odrow-p-today.png": {
+    "question": "A2",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Monday's Unavailable list with an overseas duty for Anvil (13–31 Jul) as the app draws it today: \"OD C Anvil IP Exercise, off islandtill 31 Jul REJECT\"."
+  },
+  "3-c1-admin-d-proposed.png": {
+    "question": "A3 · C1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in, from the Admin page's own parts. Mark 3a: a \"Squadrons\" area on the left (cloned from the Users area; Users drawn unpicked). Mark 3b: the squadrons, each with its place — \"142 · Home · 61 people · yours\", \"149 · Home · 48 people\" (only a master admin may add one, D2093). Mark 3c: the open detachment \"142 DET · Exercise North\", its place, dates and people, with one button \"Close detachment\" (cloned from the Users editor's Archive button), and \"+ New detachment\" under it. Mark 3d: past detachments, kept read only. The rows are cloned from the Users list's rows, the headings from its \"Waiting for access\" heading."
+  },
+  "3-c1-admin-d-today.png": {
+    "question": "A3 · C1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Admin → Users as the app draws it today: the areas Users, Squadron config and Data on the left."
+  },
+  "3-c1-admin-p-proposed.png": {
+    "question": "A3 · C1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in, from the Admin page's own parts. Mark 3b: the squadrons, each with its place — \"142 · Home · 61 people · yours\", \"149 · Home · 48 people\" (only a master admin may add one, D2093). Mark 3c: the open detachment \"142 DET · Exercise North\", its place, dates and people, with one button \"Close detachment\" (cloned from the Users editor's Archive button), and \"+ New detachment\" under it. Mark 3d: past detachments, kept read only. The rows are cloned from the Users list's rows, the headings from its \"Waiting for access\" heading."
+  },
+  "3-c1-admin-p-today.png": {
+    "question": "A3 · C1",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Admin → Users as the app draws it today."
+  },
+  "4-c2-signup-d-proposed.png": {
+    "question": "C2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 4): a \"Squadron\" choice first on the card, reading \"142\" (its choices 142 and 149), cloned from the real CAT choice. The request then goes to that squadron's admins only (D2094)."
+  },
+  "4-c2-signup-d-today.png": {
+    "question": "C2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. The \"Request access\" card someone signed in but on no list sees: callsign or name, initials, pilot / WSO / personnel, CAT."
+  },
+  "4-c2-signup-p-proposed.png": {
+    "question": "C2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 4): a \"Squadron\" choice first on the card, reading \"142\" (its choices 142 and 149), cloned from the real CAT choice. The request then goes to that squadron's admins only (D2094)."
+  },
+  "4-c2-signup-p-today.png": {
+    "question": "C2",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. The \"Request access\" card someone signed in but on no list sees: callsign or name, initials, pilot / WSO / personnel, CAT."
+  },
+  "5-b1-count-d-proposed.png": {
+    "question": "B1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 5a): the count, on a clone of the real one, reads \"2 X 2 (149) · 2 X 2 (142)\" — 149's own jets in each wave, then 142's, never added together (D2096). Shown on 149's schedule; 142's own count would read 142's and leave 149's out unless 149's lines show there."
+  },
+  "5-b1-count-d-today.png": {
+    "question": "B1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Monday's heading on Edit Schedule: the day's count \"4 X 4\" (aircraft in each wave — wave 1 VL and RU, two jets each; wave 2 the same)."
+  },
+  "5-b1-count-p-proposed.png": {
+    "question": "B1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 5a): the count, on a clone of the real one, reads \"2 X 2 (149) · 2 X 2 (142)\" — 149's own jets in each wave, then 142's, never added together (D2096). Shown on 149's schedule; 142's own count would read 142's and leave 149's out unless 149's lines show there."
+  },
+  "5-b1-count-p-today.png": {
+    "question": "B1",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Monday's heading on Edit Schedule: the day's count \"4 X 4\" (aircraft in each wave — wave 1 VL and RU, two jets each; wave 2 the same)."
+  },
+  "5-b1-mark-d-proposed.png": {
+    "question": "B1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 5b): a small \"142\" tag after RU's callsign — RU stands for 142's formation flown in 149's wave — cloned from the day heading's own DRAFT tag (grey, outlined). The same tag sits on RU in wave 2 (out of this picture). The line keeps every box, time and seat it has; nothing else changes."
+  },
+  "5-b1-mark-d-today.png": {
+    "question": "B1",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Monday's wave 1: two formations, VL and RU, two jets each. (There is no 149 in the app yet: in the proposed frames this screen stands in for 149's schedule, RU standing in for a 142 formation flown in 149's wave.)"
+  },
+  "5-b1-mark-p-proposed.png": {
+    "question": "B1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in (mark 5b): a small \"142\" tag after RU's callsign — RU stands for 142's formation flown in 149's wave — cloned from the day heading's own DRAFT tag (grey, outlined). The same tag sits on RU in wave 2 (out of this picture). The line keeps every box, time and seat it has; nothing else changes."
+  },
+  "5-b1-mark-p-today.png": {
+    "question": "B1",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Monday's wave 1: two formations, VL and RU, two jets each. (There is no 149 in the app yet: in the proposed frames this screen stands in for 149's schedule, RU standing in for a 142 formation flown in 149's wave.)"
+  },
+  "7-b4-signoff-d-today.png": {
+    "question": "B4",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real, marked (mark 7). Monday's four sign-offs on Edit Schedule: \"7 SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drift\". Question B4 is whose four sign a wave both squadrons fly in."
+  },
+  "7-b4-signoff-p-today.png": {
+    "question": "B4",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real, marked (mark 7). Monday's four sign-offs on Edit Schedule: \"7 SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drift\". Question B4 is whose four sign a wave both squadrons fly in."
+  },
+  "8-d1-attach-draft-d-proposed.png": {
+    "question": "D2098",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Real, drawn by the app itself (mark 8a): an Attach input for Comet \"To 149\", 08:00–12:00, filed through the Inputs door — the row the borrowed man would get at home, made by itself from 149's plan (D2098): \"Attach · 149 ATTACH 08:00 12:00 Comet IP REJECT\". Nothing here is cloned."
+  },
+  "8-d1-attach-draft-d-today.png": {
+    "question": "D2098",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Monday's Unavailable list (day heading: \"Monday Jul 13 · Today Templates Live working copy ▾ DRAFT 4 X 4 i Publish day\"): OML C Vector C Medical leave 13 Jultill 13 Jul / ATT C C Grit C Medically downtill 17 Jul."
+  },
+  "8-d1-attach-draft-p-proposed.png": {
+    "question": "D2098",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Real, drawn by the app itself (mark 8a): an Attach input for Comet \"To 149\", 08:00–12:00, filed through the Inputs door — the row the borrowed man would get at home, made by itself from 149's plan (D2098): \"Attach · 149 ATTACH 08:00 12:00 Comet IP REJECT\". Nothing here is cloned."
+  },
+  "8-d1-attach-draft-p-today.png": {
+    "question": "D2098",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Monday's Unavailable list (day heading: \"Monday Jul 13 · Today Templates Live working copy ▾ DRAFT 4 X 4 i Publish day\"): OML C Vector C Medical leave 13 Jultill 13 Jul / ATT C C Grit C Medically downtill 17 Jul."
+  },
+  "8-d1-attach-pending-d-proposed.png": {
+    "question": "B5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Real, drawn by the app itself (mark 8b): the same Attach filed after Monday was published, as a pick by 149 onto 142's published day would arrive — the app marks it waiting for the next amendment (day heading now: \"Monday Jul 13 · Today Templates Live working copy ▾ ORIG Not yet signed 4 X 4 1 pending i \"). Nothing here is cloned."
+  },
+  "8-d1-attach-pending-d-today.png": {
+    "question": "B5",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. Monday's Unavailable list, Monday signed and published (day heading: \"Monday Jul 13 · Today Templates Live working copy ▾ ORIG 4 X 4 i Unpublish\"): OML C Vector C Medical leave 13 Jultill 13 Jul / ATT C C Grit C Medically downtill 17 Jul."
+  },
+  "8-d1-attach-pending-p-proposed.png": {
+    "question": "B5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Real, drawn by the app itself (mark 8b): the same Attach filed after Monday was published, as a pick by 149 onto 142's published day would arrive — the app marks it waiting for the next amendment (day heading now: \"Monday Jul 13 · Today Templates Live working copy ▾ ORIG Not yet signed 4 X 4 1 pending i \"). Nothing here is cloned."
+  },
+  "8-d1-attach-pending-p-today.png": {
+    "question": "B5",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. Monday's Unavailable list, Monday signed and published (day heading: \"Monday Jul 13 · Today Templates Live working copy ▾ ORIG 4 X 4 i Unpublish\"): OML C Vector C Medical leave 13 Jultill 13 Jul / ATT C C Grit C Medically downtill 17 Jul."
+  },
+  "9-d3-allavail-d-proposed.png": {
+    "question": "D2097",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Drawn in. Mark 9a: under Comet's puck the line \"With 149 08:00–12:00\" — cloned from Tally's real reason line — so 142's scheduler sees his morning with 149. Mark 9b: the count's line reads \"142’s people available 32\" — the window counts 142's own people only, a borrowed 149 man never in it. Naming Comet on 149's afternoon event would be a pick, taking him out of this count."
+  },
+  "9-d3-allavail-d-today.png": {
+    "question": "D2097",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Real. The ALL AVAIL window of an \"ACADEMICS\" row, Monday 14:00–16:00 (ACADEMICS Jul 13 · 14:00–16:00), counting 32. Comet, attached 08:00–12:00 (his Attach input), is in it with nothing beside his puck; Cinch, at a meeting 14:30–15:30, carries the app's own reason line."
+  },
+  "9-d3-allavail-p-proposed.png": {
+    "question": "D2097",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Drawn in. Mark 9a: under Comet's puck the line \"With 149 08:00–12:00\" — cloned from Tally's real reason line — so 142's scheduler sees his morning with 149. Mark 9b: the count's line reads \"142’s people available 32\" — the window counts 142's own people only, a borrowed 149 man never in it. Naming Comet on 149's afternoon event would be a pick, taking him out of this count."
+  },
+  "9-d3-allavail-p-today.png": {
+    "question": "D2097",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Real. The ALL AVAIL window of an \"ACADEMICS\" row, Monday 14:00–16:00 (ACADEMICS Jul 13 · 14:00–16:00), counting 32. Comet, attached 08:00–12:00 (his Attach input), is in it with nothing beside his puck; Cinch, at a meeting 14:30–15:30, carries the app's own reason line."
+  }
+}
