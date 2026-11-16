@@ -1095,10 +1095,12 @@ export function routeClick(e: MouseEvent) {
     const strays: string[] = []
     if (adopts) {
       const row: any = DAYS.map((d: any) => standsOn(d, k, inp)).find(Boolean)
-      const held = idsOf(inp).map(String)
+      /* looked up by Set, the list kept in the row's order for the note below (React Doctor's js-set-map-lookups,
+         [RD-LEFT-1108]) */
+      const held = new Set(idsOf(inp).map(String)), seen = new Set<string>()
       for (const v of row ? [row.who, ...((row.more || []) as any[])] : []) {
         const p = String(whoId(v) || v || '')
-        if (p && !held.includes(p) && !strays.includes(p)) strays.push(p)
+        if (p && !held.has(p) && !seen.has(p)) { seen.add(p); strays.push(p) }
       }
     }
     const armWas = view.armedRowKey()

@@ -739,8 +739,14 @@ export function oilSeatDeco(di:any,id:any,key:any,itemOf?:string):{oil:any;chip:
          official world (withOfficialWarn — Fable F6: its window drew the
          working world's flags). The window replays exactly that world
          (withChipWorld below). A version preview (PV without OFW) never
-         carries it: a past version is read, not checked. */
-      chip:`<span class="oilcount${some?' some':''}${sum.nostart?' nostart':''}" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}"${(ver?OFW:WARN===officialWarn())?' data-oilofw="1"':''} title="${esc(ttl)}">${txt}</span>`};
+         carries it: a past version is read, not checked.
+         tabindex="-1" ([WEEK-AA-CHIP-PHONE], 17 Nov 26): WebKit sends a finger's
+         tap on the week's count to the puck name beside it — the one of the two
+         the keys could land on (tabindex="0") — so the row armed and the window
+         never opened, on his iPhone as in the walk. A place the keys may land
+         takes its own tap; -1 keeps it off the Tab route (schedule-tab.ts), and
+         the window gives the keys back to it on Escape (AvailWindow.tsx). */
+      chip:`<span class="oilcount${some?' some':''}${sum.nostart?' nostart':''}" tabindex="-1" data-oilsent="${esc(item)}" data-oilday="${+di}" data-oilver="${esc(ver)}"${(ver?OFW:WARN===officialWarn())?' data-oilofw="1"':''} title="${esc(ttl)}">${txt}</span>`};
   }
   return {oil:oilBarOf(di,id,item),chip:''};
 }

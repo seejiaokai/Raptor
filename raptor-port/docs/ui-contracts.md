@@ -1118,8 +1118,9 @@ history).
   not resize, D77); the schedule behind stays usable. Like the ALL AVAIL window it never opens over the board's preview
   bar — an unmoved desktop window whose corner would meet the shown bar sits below it (`[AVAILWIN-PREVIEW-BAR]`, 28 Sep 26;
   §[ALL-AVAIL-WINDOW], "Never over the board's preview bar"). It closes on ✕, a page change, a week change and a sign-in or
-  sign-out (`state/view.ts` CHGWIN, VIEW_RESET) — never on a tap outside it, a scroll or Escape (it is a window, not a
-  pop-up). The one pressed last of it and the ALL AVAIL window is in front (411 over 410); both stay under the bubble
+  sign-out (`state/view.ts` CHGWIN, VIEW_RESET) — never on a tap outside it or a scroll (it is a window, not a
+  pop-up); and since his D2112 (17 Nov 26, [CHGWIN-ESCAPE]) on Escape when it was the last thing opened or pressed, as the
+  ALL AVAIL window does (§[ALL-AVAIL-WINDOW], "Escape"). The one pressed last of it and the ALL AVAIL window is in front (411 over 410); both stay under the bubble
   (430), a drawer (440) and a modal (470).
 - **Inside** — the head ("Changes · Tuesday 14/7", or "Changes · week of 13/7"; under it "Not yet published" /
   "Published · N changes waiting to go out as AL1"); tabs **New to you N** · **All changes N** · **To go out · ALn N**
@@ -10880,6 +10881,21 @@ this covers is a public holiday the war takes back off.
 
 ## [ALL-AVAIL-WINDOW] — the counter's window, the app's THIRD transient surface (owner, D38–D41, 23 Sep 26)
 
+*(ESCAPE — [ALLAVAIL-ESCAPE], 17 Nov 26; the changes window the same by his D2112: Escape closes it when it was the last
+thing opened or pressed — opened again from another count, or pressed, it is the newest; the keys go back to the count
+that opened it, which takes them (`tabindex="-1"`, never a Tab stop) and wears the cyan keyboard ring under them. It
+joins the one Escape list (`ui/sheetfocus.ts useEscWindow`), which listens before the page, so what was opened over it
+since answers first: a question sheet (`topSheet`), a menu or window of the list opened later, a schedule box the keys
+are in (D1011 — its Escape puts the old value back), a seat armed after it opened, the bell's list, an input's own window
+or another FloatWindow in front (`ui/floatwin.ts makeEscWaits`). A seat armed BEFORE it opened, or before it was last
+pressed or opened again, waits: the window closes first. The ☰ menu and the ⋯ menus (Edit Schedule's and View-only
+Sched's on a phone, the board's) are in the same list, so one Escape over them closes the menu alone. Opened again from
+another count, the keys go back to that count. However it closes — ✕, Escape, a page or week change — it leaves the
+window order (`ui/winorder.ts gone`), so the window brought forward before it is in front again and the next Escape is
+that one's; it stands in that order from the moment it opens (`forward`), like every FloatWindow (the code reads of 17 Nov
+26). Over the Scheduler Board the board waits for it (`ui/boardescape.ts overBoard`); the next Escape closes the board.
+Pinned by `src/ui/escwindows.test.tsx`.)*
+
 *(Since 8 Oct 26 it is no longer the only one of its kind: every window of the Inputs / SANS calendar job is this
 kind too, on ONE shell — `ui/FloatWindow.tsx`, over the placement helper this window already used
 (`ui/floatwin.ts useFloatWin`): no veil, an outside press leaves it up, it drags by its bar, Escape closes the front
@@ -10912,7 +10928,7 @@ kind:
 |---|---|---|
 | A **Sheet** | a scrim, and Escape | **Yes** — everything under it is trapped |
 | An **inline popup** (the stores box, the day pop) | an **outside click**, and any page change | No, but it goes the moment you touch anything |
-| **This window** | **its own ✕ button; a PAGE change (D66); a switch between Edit and View-only; a WEEK change; logout — never a click on the schedule** | **No** |
+| **This window** | **its own ✕ button; Escape when it was the last thing opened or pressed ([ALLAVAIL-ESCAPE], 17 Nov 26); a PAGE change (D66); a switch between Edit and View-only; a WEEK change; logout — never a click on the schedule** | **No** |
 
 **Closing, as ruled (D66, 23 Sep 26):** it closes when he changes page — it is a schedule tool, and
 floating it over Leave War or the Tracker is clutter. It also closes on a switch between Edit Schedule

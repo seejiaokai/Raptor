@@ -1,0 +1,30 @@
+// rw4: R6 variants. v1
+import { rwlaunch, shot, act, blur, esc, rec, say, state, go, errors } from './rwlib.mjs'
+const { browser, page } = await rwlaunch('chromium', 1536, 864, false)
+await go(page, 'editsched')
+await page.getByRole('button', { name: 'Jul 20' }).click(); await page.waitForTimeout(900)
+const inpOpen = async () => (await page.locator('#inpEditPop').count()) > 0 && await page.locator('#inpEditPop').first().isVisible()
+const cnt = page.locator('#eWeek .day[data-day="5"] [data-fill="g:5.0.+"] .oilcount').first()
+const inp = page.locator('#eWeek .day[data-day="3"] [data-inpedit]').first()
+async function cleanup() { for (let i = 0; i < 5; i++) { const s = await state(page); const io = await inpOpen(); if (!s.ava && !io) break; await blur(page); await esc(page) } }
+// A: real controls: AA open, close by X (real click), then open input window, Escape
+await blur(page); await act(page, cnt, false); await page.waitForTimeout(500)
+await page.locator('.availwin:not([hidden]) .win-x').click(); await page.waitForTimeout(400)
+const a1 = await state(page)
+await act(page, inp, false); await page.waitForTimeout(700)
+const ioA = await inpOpen(); await shot(page, 'rw6c-input-after-aa-x')
+await blur(page); await esc(page)
+const a2 = await state(page), ioA2 = await inpOpen(); await shot(page, 'rw6c-after-esc')
+rec('R6 variant A (AA opened and closed by X, then input window, Esc)', !a1.ava && ioA && !ioA2, `AA closed by X=${!a1.ava}; input up=${ioA}; Esc -> input=${ioA2} ava=${a2.ava}`)
+await cleanup()
+// B: AA, input window over it, then the X pressed by a script click on the hidden-behind-modal button (synthetic), then Esc
+await blur(page); await act(page, cnt, false); await page.waitForTimeout(500)
+await act(page, inp, false); await page.waitForTimeout(700)
+await page.evaluate(() => document.querySelector('.availwin:not([hidden]) .win-x').click()); await page.waitForTimeout(500)
+const b1 = await state(page), ioB = await inpOpen(); await shot(page, 'rw6d-after-synthetic-x')
+await blur(page); await esc(page)
+const b2 = await state(page), ioB2 = await inpOpen(); await shot(page, 'rw6d-after-esc')
+rec('R6 variant B (synthetic X on AA under the modal, then Esc)', !b1.ava && ioB && !ioB2, `after synthetic X ava=${b1.ava} input=${ioB}; Esc -> input=${ioB2} ava=${b2.ava}`)
+await cleanup()
+say('errors', JSON.stringify(errors))
+await browser.close()

@@ -1,0 +1,12 @@
+import { launch, go, pic, say } from './wlib.mjs'
+say('explore1 v1')
+const { browser, page } = await launch('chromium', false)
+await go(page, 'editsched')
+await pic(page, 'x-explore-week')
+say('url', page.url())
+say('oilcounts', await page.locator('#eWeek .oilcount').count())
+say('days', await page.locator('#eWeek .day').count())
+say('buttons', JSON.stringify(await page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.offsetWidth).map(b => (b.id || '') + '|' + b.innerText.trim().slice(0, 20)).slice(0, 60))))
+say('ground rows day0', await page.locator('#eWeek .day[data-day="0"] .grow, #eWeek .day[data-day="0"] [data-key^="g:"]').count())
+say(await page.evaluate(() => JSON.stringify({ g: window.DAYS && window.DAYS[0] && window.DAYS[0].ground, ah: window.DAYS[0].allhands })))
+await browser.close()

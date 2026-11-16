@@ -19,6 +19,9 @@
      so the two can never disagree about which layout a box belongs to (Astra 3). */
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { putBack, refit } from './kbscroll'
+import { escToTop } from './sheetfocus'
+import { ARM } from '../state/view'
+import { BELLLIST } from './pops'
 
 /* `moved` — he dragged the window by its bar, so where it stands is his. A box without it has only a SIZE of his (resized by
    its corner, never moved): its place stays the app's (his D1523 — below the top bar and a failed save's band) */
@@ -29,8 +32,32 @@ export type FloatBox = { x: number, y: number, w: number, h: number, phone?: boo
    over the bubble (430), a drawer (440), the input calendar (420) or a modal (470). */
 let FRONT = ''
 export const frontWin = () => FRONT
-/* true when this press changed which window is in front (the caller repaints) */
-export function raiseWin(id: string): boolean { if (FRONT === id) return false; FRONT = id; return true }
+/* true when this press changed which window is in front (the caller repaints). Opened or pressed, it also answers the
+   next Escape first, as it stands in front ([ALLAVAIL-ESCAPE], D2112 — ui/sheetfocus.ts escToTop) */
+export function raiseWin(id: string): boolean { escToTop(id); if (FRONT === id) return false; FRONT = id; return true }
+
+/* WHAT WAS OPENED OVER THE ALL AVAIL OR CHANGES WINDOW SINCE IT OPENED ANSWERS ESCAPE FIRST ([ALLAVAIL-ESCAPE], his D2112,
+   17 Nov 26 — the design guide §2: Escape closes what opened last). Neither window holds the keys, so its Escape is the
+   one list's (ui/sheetfocus.ts useEscWindow), which listens before the page does; three things on the page keep their own
+   Escape and stand aside the window for it while they are the newer:
+   · a seat armed after it opened — put down by the schedule's own Escape (textedit.ts routeKeyDown); one armed before it
+     opened waits, the window being the last thing opened;
+   · the bell's list (topbits.tsx);
+   · an input's own window or another of FloatWindow.tsx's windows in front of it — they take Escape front-first by this
+     module's FRONT, and the window steps aside while one of them is.
+   Made as the window opens and again each time it comes forward (sheetfocus.ts escToTop): `arm` is the seat armed then. */
+export function makeEscWaits(): () => boolean {
+  const arm = ARM
+  return () => (!!ARM && ARM !== arm) || BELLLIST || (!!FRONT && FRONT !== 'avail' && FRONT !== 'chg')
+}
+
+/* EACH EXPLICIT OPENING OF THE ALL AVAIL OR CHANGES WINDOW IS COUNTED (the code reads of 17 Nov 26, D): opened again from
+   another count while up, the window is the same window, so nothing re-ran its Escape entry and Escape gave the keys back
+   to the FIRST count. The count is the window's open key for the one Escape list (sheetfocus.ts useEscWindow): a door
+   that opens it bumps it (availopen.ts, changesopen.ts), a redraw never does. */
+const OPENS = new Map<string, number>()
+export function countOpen(id: string): void { OPENS.set(id, (OPENS.get(id) || 0) + 1) }
+export const openKey = (id: string): string => 'open' + (OPENS.get(id) || 0)
 
 export const phoneLayout = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(max-width:620px)').matches
 

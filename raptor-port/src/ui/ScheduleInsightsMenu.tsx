@@ -6,6 +6,7 @@ import { CURPAGE, SBDAY, BOARDREV } from '../state/view'
 import { notify } from '../state/store'
 import { DRAWER, INSIGHTS, WEEKCAL, setInsights } from './pops'
 import { useBoardVersion, useVersion } from './useStore'
+import { escCloses } from './sheetfocus'
 
 type Scope = { page: string; week: string; session: unknown; board: number }
 const currentScope = (): Scope => ({page:CURPAGE,week:CURWEEK,session:SESSION,board:BOARDREV})
@@ -47,14 +48,14 @@ export function ScheduleInsightsMenu({page,id}: {page:'editsched'|'viewsched';id
   useEffect(()=>{
     if(!open)return
     const outside=(e:PointerEvent)=>{if(!wrapper.current?.contains(e.target as Node))setOpened(null)}
-    const escape=(e:KeyboardEvent)=>{
-      if(e.key!=='Escape')return
-      e.preventDefault(); e.stopPropagation(); setOpened(null)
+    /* Escape in the one list, so it closes this menu alone, never a window under it too (the code reads of 17 Nov 26, A —
+       Drawer.tsx) */
+    const off=escCloses(()=>wrapper.current?.querySelector<HTMLElement>('.schedule-moremenu') ?? null,()=>{
+      setOpened(null)
       if(focusable(opener.current))opener.current!.focus()
-    }
+    },opener.current)
     document.addEventListener('pointerdown',outside)
-    document.addEventListener('keydown',escape,true)
-    return ()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',escape,true)}
+    return ()=>{document.removeEventListener('pointerdown',outside);off()}
   },[open])
   if(!phone)return null
   const show=(keyboard:boolean)=>{if(eligible)setOpened({scope:currentScope(),keyboard})}

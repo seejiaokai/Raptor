@@ -22,7 +22,7 @@ import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { glyphSvg, EYE_INNER } from './glyphs'
 import { holdingPlace } from './dayswap'
-import { useSheetFocus, useEscClose, locate, pressedByKeys, menuItems } from './sheetfocus'
+import { useSheetFocus, useEscClose, locate, pressedByKeys, menuItems, escCloses } from './sheetfocus'
 import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
@@ -110,20 +110,19 @@ export function SchedBoard() {
   useEffect(() => {
     if (!moreOpen) return
     const down = (e: Event) => { if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false) }
-    const key = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
-      e.stopPropagation(); e.preventDefault()
+    /* Escape in the one list, so it closes this menu alone, never the ALL AVAIL or changes window under it too (the code
+       reads of 17 Nov 26, A — Drawer.tsx) */
+    const off = escCloses(() => moreRef.current?.querySelector<HTMLElement>('.sb-moremenu') ?? null, () => {
       const inMenu = !!moreRef.current?.querySelector('.sb-moremenu')?.contains(document.activeElement)
       setMoreOpen(false)
       if (inMenu) moreBack()
-    }
+    }, moreRef.current?.querySelector<HTMLElement>('#sbMore') ?? null)
     document.addEventListener('pointerdown', down, true)
-    document.addEventListener('keydown', key, true)
-    return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true) }
+    return () => { document.removeEventListener('pointerdown', down, true); off() }
   }, [moreOpen])
   /* A WINDOW WIDENED PAST A PHONE'S WIDTH TAKES THE MENU WITH ITS ⋯ (the Opus read's question 3, 8 Nov 26): above 820 the ⋯
-     is not drawn (18-oil-board.css) and its open menu went out of sight with it — still open, so its Escape listener above
-     took the next Escape, which closed nothing anyone could see, and the board's own Escape never came. */
+     is not drawn (18-oil-board.css) and its open menu went out of sight with it — still open, so its Escape (the one list's
+     entry above) took the next Escape, which closed nothing anyone could see, and the board's own Escape never came. */
   useEffect(() => {
     if (!moreOpen || typeof window.matchMedia !== 'function') return
     const mq = window.matchMedia('(min-width:821px)')
