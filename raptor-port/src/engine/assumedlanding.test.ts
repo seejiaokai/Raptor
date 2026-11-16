@@ -22,6 +22,7 @@ import { personBusy, slotRules } from './avail'
 import { KEPT_RULE_KEYS } from './faceattrs'
 import { hydrateRoles } from '../state/mission-roles'
 import { makeStandalone } from './waves'
+import { blockFromTpl } from './dutytpl'
 
 const saved = { d: JSON.stringify(DAYS), i: JSON.stringify(INPUTS), book: JSON.stringify(SCHED), v: { ...VCONF }, p: JSON.stringify(PEOPLE) }
 const h = (hh: number, mm = 0) => hh * 60 + mm
@@ -238,6 +239,22 @@ describe('D2073 — an SC-template duty desk with START and no END bears no crew
     desk(FRI, '20:00', '', 'sc'); desk(FRI, '20:00', ''); sat()
     expect(msgs(FRI, 'DOUBLE_BOOK')).toEqual([])
   })
+  /* D2080 (16 Nov 26, "Q1 & 2 as recommended" — the fresh Opus read's F3): an AVALON or BB template's desk, once its wave
+     flies (D1997: then an ordinary duty row), with START typed and END blank, is left out of crew rest as the SC desk is —
+     one rule for every standby desk. Standing by, the desk is exempt with its wave and bears no rest already. */
+  for (const k of ['avalon', 'bb']) {
+    it(`D2080: a ${k.toUpperCase()} desk, its wave flying, START 20:00 and END blank: no crew rest on Saturday; END 23:00 breaks it`, () => {
+      const sw: any = makeStandalone(k); add(FRI, sw); sw.formations[0].rl = '19:30'
+      // AVALON from its seeded template; BB has no seeded template, so its desk is made as the standby tests make it
+      const base: any = k === 'avalon' ? blockFromTpl('avalon') : { label: 'BB', sa: 'bb', noconf: true }
+      expect(base.sa).toBe(k)
+      const blk: any = { ...base, rows: [{ role: 'SXO', id: 'bane', str: '20:00', end: '', more: [] }] }
+      day(FRI).dutywaves.push(blk); sat()
+      expect(msgs(SAT, 'CREW_REST'), 'END blank: left out').toEqual([])
+      blk.rows[0].end = '23:00'
+      expect(msgs(SAT, 'CREW_REST'), 'END typed: counted (the control)').toHaveLength(1)
+    })
+  }
   it('the same man in an SC desk\'s seat AND its extras is still one commitment with no END: no crew rest', () => {
     desk(FRI, '20:00', '', 'sc'); day(FRI).dutywaves.at(-1).rows[0].more = ['bane']; sat()
     expect(msgs(SAT, 'CREW_REST')).toEqual([])

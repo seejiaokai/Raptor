@@ -652,8 +652,15 @@ describe('the Logic lines the nine rule fixes changed say what the app now does'
   })
   /* CHANGED ON PURPOSE by D2046 (15 Nov 26): a landing not typed is the assumed one, take-off plus the flight length */
   it('D1990, D2046: a landing not typed ends the day at the assumed landing plus the debrief; a shift reports at its B or R when typed earlier', () => {
-    expect(how('crewrest')[1]).toMatch(/ A flight ends at landing plus the debrief \(.+\), or, where no landing is typed, at the assumed landing \(A flight, 1h after take-off\) plus the debrief\. Anything else ends at its written end\.$/)
+    /* CHANGED ON PURPOSE by D2079 (16 Nov 26): the line no longer ends at "its written end." — the standby sentence follows */
+    expect(how('crewrest')[1]).toMatch(/ A flight ends at landing plus the debrief \(.+\), or, where no landing is typed, at the assumed landing \(A flight, 1h after take-off\) plus the debrief\. Anything else ends at its written end\. /)
     expect(how('crewrest')).toContain('An SC SPARE standing by carries no crew rest either way, but one that flies carries it as any flyer does. A shift reports at its start, or at its B or R where one is earlier than the start.')
+  })
+  /* D2079 (16 Nov 26, "Q1 & 2 as recommended" — the fresh Opus read's F2, the sentence shown to him ringed): the crew-rest
+     explanation says a standby shift, or a standby template's desk, with START and no END is left out until END is typed
+     (D2055, D2073, D2080 — the desk part names SC, AVALON and BB since D2080, the agent's reading told to him) */
+  it('D2079: the crew-rest explanation says a standby shift or desk with START typed and END blank is left out until its END is typed', () => {
+    expect(how('crewrest')[1]).toMatch(/Anything else ends at its written end\. A standby shift, or a desk made from an SC, AVALON or BB template, with START typed and END blank is left out until its END is typed\.$/)
   })
   it('D1997: a desk from an AVALON or BB template earns by default once its wave flies; a flight\'s OIL starts at its in-time or rally', () => {
     expect(how('oil')).toContain('Until its wave flies, a desk made from an AVALON or BB template earns only if switched on in OIL Earn. Once the wave flies, the desk earns by default.')

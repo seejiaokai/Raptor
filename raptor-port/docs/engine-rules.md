@@ -353,6 +353,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   reading). Its own warning stays — `SA_FLY_NO_TIME`, "…flies but has no END. Type it so its crew rest and OIL can be
   worked out." Only crew rest changes: the shift's other readers (its clash window, the crew list) still read START to
   START, as before. Pin: `engine/assumedlanding.test.ts` (D2055).
+- **A standby template's duty desk with its START typed and its END blank bears no crew rest until its END is typed**
+  (owner D2073 for an SC template's desk, D2080 for an AVALON or BB one once its wave flies — standing by, it is exempt with
+  its wave and bears none already; 16 Nov 26). `events.ts` marks its event `noEnd` (the desk's block carries `sa`); a plain
+  desk keeps START + the Logic page's assumed hour for crew rest (the agent's reading), and every other check keeps that
+  hour for the standby desk too. One commitment found twice (the same man, hours and role name on two desks) keeps the
+  plainer reading: an SC desk met first never swallows a plain desk's end (Astra's read, 16 Nov 26). The Logic page says so
+  in one sentence (D2079). Pins: `engine/assumedlanding.test.ts` (D2073, D2080), `ui/logic.test.tsx` (D2079).
 
 - **An absence that covers the whole day does not need the seat's times (owner, D605, 6 Oct 26 — "4 yes as
   recommended"; `[BLANK-TIMES-ABSENCE]`, built the same day).** Every absence check asked whether the absence OVERLAPS

@@ -103,8 +103,9 @@ export function lgChecks(): LgGroup<LgChk>[] {
              ends the day at take-off plus the debrief (D1990); a flying SPARE bears crew rest, and a shift reports at its
              B or R where one is typed earlier (F6; D606, D1041) */
           `Rest runs from the end of the day before to the first thing today: his in-time or rally, his B where neither is typed, or anything earlier, such as a meeting.`,
-          /* D2046: a landing not typed is the assumed one, take-off plus the flight length (A flight) */
-          `The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (${T('debrief')}), or, where no landing is typed, at the assumed landing (A flight, ${T('fltLen')} after take-off) plus the debrief. Anything else ends at its written end.`,
+          /* D2046: a landing not typed is the assumed one, take-off plus the flight length (A flight); D2079: a standby shift
+             (D2055) or a standby template's desk (D2073, D2080) with no END ends nothing until its END is typed */
+          `The day before ends at its last commitment of any kind. A flight ends at landing plus the debrief (${T('debrief')}), or, where no landing is typed, at the assumed landing (A flight, ${T('fltLen')} after take-off) plus the debrief. Anything else ends at its written end. A standby shift, or a desk made from an SC, AVALON or BB template, with START typed and END blank is left out until its END is typed.`,
           'An input counts only if it is a duty or commitment, other than Personal or SANS Availability, with typed times.',
           `Exactly ${T('crewRest')} is legal. A day with no flying asks for no rest.`,
           'A LATE SHOW remark keeps the warning. The ring is dashed while rest still clears by step, solid after.',

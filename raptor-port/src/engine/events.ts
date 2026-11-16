@@ -543,7 +543,8 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
         return;
       }
       const st=parseHM(r.str),en=parseHM(r.end);
-      const scDesk=dw.sa==='sc';   // D2073
+      /* D2073, D2080: an SC template's desk, or an AVALON / BB one (reached here only once its wave flies — D1997, above) */
+      const scDesk=dw.sa==='sc'||saExemptKind(dw.sa);
       push(r.id,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`,undefined,scDesk);
       extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`,undefined,scDesk)); }));
     /* a row flagged ⓘ info-only (owner, 1 Sep 26) is shown but never checked:
