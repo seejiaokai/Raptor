@@ -50,7 +50,22 @@ the later merge keeps both (D78).
     - WALKED 03:05–03:45 (one Sonnet walker, desktop 1536 and phone 402 by touch, WebKit and Chromium): W1–W7, the plain-user round, and print and export under D2005 all PASS. No console errors. Report and 142 pictures in `raptor-port/docs/handpass/2026-11-17-sched-small-fixes/` (`walk-report.md`, `img/`). I opened the phone tap and the ring pictures myself.
     - Not walked: a duty desk with ALL AVAIL (the drag did not land), the phone's keyboard Escape, a real iPhone (synthetic touches only).
     - The walk's lead, reproduced by the builder on this branch AND on `main` (old, not ours): the schedule's input window, with Remarks typed, closes on Escape or ✕ without "Close it and lose them?". On the Inputs page it asks. The code asks only on the Inputs page, and a code comment says the schedule's window was meant to close at once. To file as a question for him (does D1622 cover the schedule's input window?), with job 5's notes.
-    - NEXT for job 2: Astra's read (the codex CLI, read-only, `-m gpt-6-astra`; brief per `raptor-port/docs/codex-guide.md`) and a fresh, blind Opus read, each blind to the walk and to each other. Then fixes (the same builder), the re-walk of what they touch, and the evidence sheet's sections 4, 7–10 and the closing lines filled, with a walk-ledger row.
+    - READ 04:00–04:12. Astra (gpt-6-astra): 4 must. The fresh Opus reader: 1 must, 2 should. Saved in the sheet's folder as `read-astra.md` and `read-opus.md`. Merged into a fix list A–F, sent to the same builder 04:15:
+      - A: a newer menu (☰, the phone Insights ⋯, the phone more menu, the board's more menu) loses Escape to the window under it.
+      - B: an armed seat keeps Escape after the window is pressed.
+      - C: the window order lacks both windows (the OIL answer list jumps ahead).
+      - D: the keys go back to the first count.
+      - E: ✕ leaves the window "in front".
+      - F: stale text.
+    - FIXED 04:15–04:45, commit c96154e0d: A–F all fixed red-first, 10 new cases (10 red on 8bb07e571, now 24 of 24). 86 Escape-related test files: 2,407 pass. Build, lint, docsize and rulecheck OK. The run on 8bb07e571 was red on the code check (18 notes in the walk's own scripts); the builder kept each with its reason. The sheet's §6, §9 and §10 are filled. The "seen mirrors strays" tidiness note is still to file.
+    - NEXT: the re-walk (a Sonnet walker) of:
+      - ☰ and each ⋯ menu over each window, at 820 wide and phone width;
+      - an armed seat, then a press on the window, then Escape;
+      - count A, then count B, then Escape;
+      - the holiday OIL list, then ALL AVAIL, then History, then three Escapes;
+      - an input's window, then ALL AVAIL closed by ✕, then Escape.
+      Then the sheet's §4, §7, §8 and closing lines, a walk-ledger row, and the run on c96154e0d read green. Then job 3.
+    - (Earlier plan, kept for its brief:) Astra's read (the codex CLI, read-only, `-m gpt-6-astra`; brief per `raptor-port/docs/codex-guide.md`) and a fresh, blind Opus read, each blind to the walk and to each other. Then fixes (the same builder), the re-walk of what they touch, and the evidence sheet's sections 4, 7–10 and the closing lines filled, with a walk-ledger row.
   - Round 3's page republished (version 2): its worked-example boxes take a light tint in place of a side bar, after the design check.
 - **Questions waiting for him:** round 3's page, Q1–Q7 and R1–R3, each with its recommendation. Q5 recommends moving "+ Line" to the wave's foot, which would change D2106's "stays as today". Q6 names the clash between D2089 and D2105. The caps page, Q1–Q8 and R1–R4, each with its recommendation, plus the platform flag: answers checked in the app can be read by anyone who knows how, and the way to check them out of sight is a question for the IT side.
 - **Also waiting:** chat 91's three skill notes (957–959) on `claude/skill-notes-chat91`, his "merge live". His real schedule pictures hold real names — never in the project; the caps example's public link is never written into the repo.
