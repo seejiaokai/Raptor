@@ -5085,6 +5085,33 @@ test.describe('the collapsible legend', () => {
     const open = await page.evaluate(() => (document.querySelector('#eLegend') as HTMLElement).offsetHeight)
     expect(open, 'clicking the summary reveals the key').toBeGreaterThan(0)
   })
+
+  /* D2081, D2082 (16 Nov 26): on his iPhone (402 wide) the parked AIRCREW tab, 30px at the screen's right edge, covered
+     the last letters of "misses sim debrief". On a phone the open Legend keeps a 44px strip at its right — the tab and a
+     14px gap — so no flag runs under it; the desktop's Legend and View-only Sched's are left as they were. */
+  test('phone: the open Legend leaves a strip for the parked AIRCREW tab; desktop and View-only unchanged', async ({ page }) => {
+    await page.setViewportSize({ width: 402, height: 874 })
+    await login(page)
+    await go(page, 'editsched')
+    await page.click('#eLegendBox summary.legend-sum')
+    await page.waitForTimeout(150)
+    const m = await page.evaluate(() => {
+      const lg = document.querySelector('#eLegend') as HTMLElement
+      const tab = (document.querySelector('.edit-board .eroster') as HTMLElement).getBoundingClientRect()
+      const rights = [...lg.querySelectorAll(':scope > span')].map(s => s.getBoundingClientRect().right)
+      return { pad: getComputedStyle(lg).paddingRight, maxRight: Math.max(...rights), tabLeft: Math.max(tab.left, innerWidth - 30), w: innerWidth }
+    })
+    expect(m.pad, 'the strip').toBe('44px')
+    expect(m.maxRight, 'no flag runs under the parked tab').toBeLessThanOrEqual(m.tabLeft - 14 + 0.5)
+    await go(page, 'viewsched')
+    await page.click('#vLegendBox summary.legend-sum')
+    expect(await page.evaluate(() => getComputedStyle(document.querySelector('#vLegend') as HTMLElement).paddingRight),
+      'View-only Sched has no AIRCREW tab: its Legend keeps its own padding').toBe('20px')
+    await page.setViewportSize({ width: 1536, height: 864 })
+    await go(page, 'editsched')
+    expect(await page.evaluate(() => getComputedStyle(document.querySelector('#eLegend') as HTMLElement).paddingRight),
+      'the desktop Legend keeps its own padding').toBe('20px')
+  })
 })
 
 /* THE FLYING LINE'S BOXES SIT ON ONE BASELINE ON A PHONE (owner, 16 Aug 26 —
