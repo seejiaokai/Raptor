@@ -127,9 +127,9 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - Detachments and squadrons sharing people come at the end, after the F-15 app's faults are fixed; work before then avoids what would have to be redone [D1100, D1101].
 - Deployed separately for each aircraft type, each with its own database; the squadrons of one type, detachments included, share that type's database [D1101, D1100].
 - Not settled: his 5 Nov 26 direction (below) names one database for many squadrons, not aircraft types, so by its words does not end the split by type; IT's 8 Nov 26 answer (one production environment for code apps, so no database per type today) was put to him, recommended: no change now, settled when a second type joins; `[AIRCRAFT-TYPE-SETTING]`, `[MULTI-SQN-DESIGN]` (the agent's reading) [D1101, D1695].
-- His direction (5 Nov 26): one app and one database for many squadrons — each person's squadron set when his account is made, rights to view other squadrons read only, a permanent transfer when he posts out, a day planned half in each of two squadrons [D1695].
-- The transfer: on the posting-out date he belongs to the other squadron; not built now [D281, D282, D1100, D1101].
-- Neighbouring squadrons plan each other's people as a matter of course, not only during a posting [D282, D281, D1100, D1101].
+- His direction: one app and one database for many squadrons, each made in Admin — a person's one primary squadron set when his account is made; an admin may give him others, which he views, filing inputs and leave only in his primary; a day planned half in each of two squadrons [D1695, D2087].
+- The transfer: only the Leave War's Post out moves his primary squadron, on its date; not built now [D281, D2087, D282, D1100, D1101].
+- Neighbouring squadrons plan each other's people as a matter of course, not only during a posting [D282, D281, D2087, D1100, D1101].
 - A community is the squadrons flying one aircraft type (F-15, F-16): callsigns unique within a community, not across the app; a guest flyer from another community is always marked — an orange corner on his puck (option A) — future, nothing built now [D288, D289, D296].
 
 ## Settled — leave as they are
