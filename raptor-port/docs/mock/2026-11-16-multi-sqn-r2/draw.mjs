@@ -80,6 +80,8 @@ function kit() {
   }
   mq.topH = () => { const t = document.querySelector('.topbar'); return t && mq.vis(t) ? t.getBoundingClientRect().bottom : 0 }
   mq.scrollUnder = (el, gap) => { window.scrollTo(window.scrollX, window.scrollY + el.getBoundingClientRect().top - mq.topH() - gap) }
+  // a row's number tag at its bottom-right corner, where a schedule row has no words (its top-left holds its name)
+  mq.markRow = (r, label) => { r.style.position = 'relative'; mq.mark(r, label); const t = r.querySelector(':scope > .mkq-tag'); t.style.top = 'auto'; t.style.bottom = '2px'; t.style.right = '2px' }
   mq.monday = () => [...document.querySelectorAll('#eWeek > .day')].find(d => mq.vis(d) && !d.classList.contains('peek'))
   // the element whose own words are exactly txt (case-insensitive), visible, inside root
   mq.byText = (root, txt) => [...root.querySelectorAll('*')].find(e => mq.vis(e) && e.children.length === 0 && e.textContent.trim().toLowerCase() === txt.toLowerCase())
@@ -190,14 +192,14 @@ async function pic1(sz) {
   await page.evaluate(() => window.__mq.unclone())
   const hToday = await page.evaluate(() => window.__mqClipEl.getBoundingClientRect().height)
   // the window grows by the added field: clip to the taller of the two, from the window's top
-  const clip = await clipOf(page, null, 8, Math.max(0, hProp - hToday))
+  // the window floats over the top bar: its own top, never the bar's foot, starts the clip
+  const clip = await page.evaluate(({ extra }) => { const r = window.__mqClipEl.getBoundingClientRect(); const x = Math.max(0, r.left - 8), y = Math.max(0, r.top - 8); return { x, y, width: Math.min(innerWidth - x, r.width + 16), height: Math.min(innerHeight - y, r.height + 16 + extra) } }, { extra: Math.max(0, hProp - hToday) })
   const f0 = `1-a1-input-${sz}-today.png`, f1 = `1-a1-input-${sz}-proposed.png`
   await shot(page, f0, clip)
   rec(f0, 'A1', sz, 'today', `Real. An overseas duty input (Anvil, 13–31 Jul, filed through the Inputs door) opened from Monday's Unavailable row on Edit Schedule: Person, Type "OD", Title, Duration, Document, Remarks.`)
   const hadTitle = await inject()
   if (!(await page.locator('[data-mine] select').count())) throw new Error('pic1 premise lost')
-  const clip2 = await clipOf(page, null, 8)
-  await shot(page, f1, { ...clip, height: Math.max(clip.height, clip2.height) })
+  await shot(page, f1, clip)
   rec(f1, 'A1', sz, 'proposed', `Drawn in. Mark 1a: a "Detachment" choice under Type, cloned from the real Type field, reading "142 DET · ${DET}" (its other choice "None", as today, for a trip with no schedule in the app). ${hadTitle ? `Mark 1b: the Title box (a clone of the real one) reads "${DET}" — filled in by itself from the choice.` : ''} Nothing else changes in the window.`)
   notes.push(`pic1 ${sz}: window grew ${Math.round(hProp - hToday)}px`)
   await ctx.close()
@@ -214,7 +216,7 @@ async function pic2(sz) {
     const mine = rows.find(r => /Anvil/.test(r))
     if (!mine) throw new Error('pic2 premise: no Anvil row — ' + rows.join(' | '))
     await page.waitForTimeout(300)
-    if (kind === 'proposed') await page.evaluate(() => { const r = [...window.__mq.monday().querySelectorAll('.sec-unav .pl-row')].find(x => /Anvil/.test(x.innerText)); window.__mq.mark(r, '2') })
+    if (kind === 'proposed') await page.evaluate(() => { const r = [...window.__mq.monday().querySelectorAll('.sec-unav .pl-row')].find(x => /Anvil/.test(x.innerText)); window.__mq.markRow(r, '2') })
     const clip = await clipOf(page, null, 6)
     const f = `2-a2-odrow-${sz}-${kind}.png`
     await shot(page, f, clip)
@@ -280,6 +282,9 @@ async function pic3(sz) {
     // the list's own wrapper (the section that holds Users' list), cloned empty, to keep its padding
     const listSec = row.closest('.acc-list').parentElement
     const sec = mq.strip(listSec.cloneNode(false)); panel.appendChild(sec)
+    // the panel's own sections carry their side padding from where they sit; the clone keeps the Users list's inset
+    const inset = Math.round(row.getBoundingClientRect().left - panel.getBoundingClientRect().left)
+    sec.style.padding = `0 ${inset}px 14px`; h3c.style.paddingLeft = inset + 'px'
     const H = t => { const h = mq.strip(sub.cloneNode(true)); h.textContent = t; sec.appendChild(h); return h }
     const list = () => { const l = mq.strip(row.closest('.acc-list').cloneNode(false)); sec.appendChild(l); return l }
     const R = (l, name, subTx, btn) => {
@@ -395,11 +400,17 @@ async function pic5(sz) {
     for (const g of mon.querySelectorAll('.go')) {
       const f = [...g.querySelectorAll('.form')].find(x => x.querySelector('.csmsn .ntx').textContent.trim() === 'RU')
       const bb = f.querySelector('.csmsn b')
-      const t = mq.strip(tagSrc.cloneNode(true)); t.textContent = '142'; t.style.marginLeft = '5px'; t.style.verticalAlign = 'middle'
+      const t = mq.strip(tagSrc.cloneNode(true)); t.textContent = '142'
+      // the DRAFT tag's look is set where it sits (the day heading): its measured look copied onto the clone, verbatim
+      const cs = getComputedStyle(tagSrc)
+      for (const p of ['border-top-width', 'border-top-style', 'border-top-color', 'border-radius', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'font-size', 'font-weight', 'letter-spacing', 'color', 'background-color', 'line-height', 'font-family'])
+        t.style.setProperty(p, cs.getPropertyValue(p))
+      t.style.borderWidth = cs.borderTopWidth; t.style.borderStyle = cs.borderTopStyle; t.style.borderColor = cs.borderTopColor
+      t.style.display = 'inline-block'; t.style.marginLeft = '5px'; t.style.verticalAlign = 'middle'
       bb.appendChild(t)
       out.push(t)
     }
-    mq.mark(out[0].closest('.form'), '5b')
+    const fm = out[0].closest('.form'); fm.style.position = 'relative'; mq.mark(fm, '5b')
     const r = out[0].getBoundingClientRect(), cell = out[0].closest('.csmsn').getBoundingClientRect()
     const head = mon.querySelector('.day-head'), hr = head.getBoundingClientRect(), br = b2.getBoundingClientRect()
     return { tagSrc: tagSrc.className, tagRight: Math.round(r.right), cellRight: Math.round(cell.right), badgeRight: Math.round(br.right), headRight: Math.round(hr.right), badgeTop: Math.round(br.top), badgeH: Math.round(br.height) }
@@ -480,12 +491,13 @@ async function pic8(sz) {
     const pend = await page.evaluate((PUB) => {
       const mq = window.__mq, mon = mq.monday()
       const r = [...mon.querySelectorAll('.sec-unav .pl-row')].find(x => /Comet/.test(x.innerText))
-      mq.mark(r, PUB ? '8b' : '8a')
+      mq.markRow(r, PUB ? '8b' : '8a')
       return { head: mon.querySelector('.day-head').innerText.replace(/\s+/g, ' ').slice(0, 90), dotted: getComputedStyle(r.querySelector('.nm .ntx, .nm')).textDecorationStyle }
     }, pub)
     await page.waitForTimeout(300)
+    // the added row lets the page scroll further, so the list sits higher than in the first frame: its own clip
     const clip1 = await clipOf(page, null, 6)
-    await shot(page, f1, { ...clip0, height: Math.max(clip0.height, clip1.height) })
+    await shot(page, f1, clip1)
     rec(f1, pub ? 'B5' : 'D2098', sz, 'proposed', pub
       ? `Real, drawn by the app itself (mark 8b): the same Attach filed after Monday was published, as a pick by 149 onto 142's published day would arrive — the app marks it waiting for the next amendment (day heading now: "${pend.head}"). Nothing here is cloned.`
       : `Real, drawn by the app itself (mark 8a): an Attach input for Comet "To 149", 08:00–12:00, filed through the Inputs door — the row the borrowed man would get at home, made by itself from 149's plan (D2098): "${row}". Nothing here is cloned.`)
