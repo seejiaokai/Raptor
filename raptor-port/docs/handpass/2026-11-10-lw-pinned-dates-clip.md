@@ -58,3 +58,6 @@ Astra (Codex, read only, the same brief, blind to the Opus read): no confirmed f
 None: no fault he found was one a walk missed — the fault shows on no PC browser, which the walk ledger's row records.
 
 Walk: docs/handpass/2026-11-10-lw-pinned-dates-clip.md · 11 pictures · 11 surfaces · 1 order · MISSING: none (the cure itself can only be seen on his iPhone — his look)
+
+## 9. Afterwards
+`[PAGE-FOOT-FLASH]` was archived on 16 Nov 26 (chat 90): its last cure, every page scrolling inside a box of its own, was declined by him on 15 Nov 26 (D2056) and the few frames are accepted (`.claude/rules/decisions/design.md`, the top bar). The full backlog entry is in `OUTSTANDING-ARCHIVE.md`; its open question for the IT side moved to `[IT-QUESTIONS]`.
