@@ -2654,3 +2654,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The handoff block named the read command as `codex exec -C <repo> -s read-only -o <file>`; the copy was made with `git archive` but without the guide's `git init` and one commit, so Codex refused at once ("Not inside a trusted directory and --skip-git-repo-check was not specified"), exit 1, no report. Caught only because the run ended in seconds.
 **Suggested improvement:** Put the whole recipe as one runnable line wherever a handoff or brief names the read command — archive, `git init` + one commit (or `--skip-git-repo-check`), `codex exec` — and check the run log's last line a minute after starting, never only at the notification.
 **Principle:** A command copied into a handoff is a shortened recipe; carry the whole recipe, or point to it, never a fragment.
+
+### Observation 955: A drawing check run at a phone width that is not the owner's
+
+**Status:** OPEN
+**Date:** 2026-11-16
+**Session context:** Chat 88, the FULL check of `[WARN-WORDS-STANDALONE]`'s follow-ups — the Legend's new names
+**Skill:** brainstorming (mockups-on-the-real-app.md) / the bug-check order's drawing check
+**Type:** internal
+**Phase/Area:** the drawing check's sizes; the mock-up's shooting script
+
+**Issue:** The Legend's mock-up and its drawing check were shot at 390 x 844 (an older iPhone). His phone is an iPhone 17 Pro, 402 x 874. At 402 one more name fits on a row and its last letters run under the parked AIRCREW tab; at 390 it wraps, so the check reported 0 pixels different and missed it. The walk at 402 caught it.
+**Suggested improvement:** The mock-up recipe and the drawing-check template take their phone size from one named constant, his iPhone's 402 x 874 (WebKit, touch), never a hand-typed 390; a check at a second phone width is optional, never instead.
+**Principle:** Check a layout at the exact size its real user sees; a near size can hide a wrap change.
