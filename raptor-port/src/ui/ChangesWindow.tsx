@@ -20,7 +20,9 @@
    — one group per item, the latest-changed on top, every line item-first; every group open until folded. On a phone
    "Hide ▾" beside ✕ sends the panel to the slim bar ("History on · N changes" · "Show ▴"), and where History draws its
    dots the panel says so in his words: "History on: Tap a gold dot on the schedule". */
-import { useFloatWin, phoneLayout, frontWin, raiseWin, BOARD_BAR } from './floatwin'
+import { useFloatWin, phoneLayout, frontWin, raiseWin, escWaits, BOARD_BAR } from './floatwin'
+import { useEscWindow } from './sheetfocus'
+import { gone } from './winorder'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { notify } from '../state/store'
@@ -123,6 +125,10 @@ export function ChangesWindow() {
     closeSel: '.win-x, .win-hide',            // a press on Hide never starts a drag of the panel
     ...BOARD_BAR,                             // never over the board's preview bar ([AVAILWIN-PREVIEW-BAR])
   })
+  /* ESCAPE CLOSES IT WHEN IT WAS THE LAST THING OPENED OR PRESSED (his D2112, 17 Nov 26, [CHGWIN-ESCAPE]): as the ALL AVAIL
+     window does (AvailWindow.tsx) — the phone's slim bar too, which is the same window hidden; History goes with it, as by
+     its ✕. Over the board the board waits for it (boardescape.ts overBoard). */
+  useEscWindow(el, !!w && isMember(), () => { setChgWin(null); gone('chg'); notify() }, { id: 'chg', waits: escWaits })
   if (!w || !isMember()) return <div className="chgwin" hidden />
 
   const days = weekDates(CURWEEK)

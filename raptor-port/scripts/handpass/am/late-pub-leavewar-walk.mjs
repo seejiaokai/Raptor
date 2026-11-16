@@ -153,7 +153,7 @@ async function strip(page, root, di, shot) {
   if (!open) { const s2 = page.locator(`${root} [data-daywarn="${di}"]:visible`).first(); if (await s2.count()) { await s2.click(); await page.waitForTimeout(300) } }
   return { head: headTxt, items }
 }
-const ADVISE = /started earning OIL after it was published/i
+const ADVISE = /Publish this day again so OIL is earned/i   // D2003's words
 
 /* ------------------------------------------------------------------ the Leave War's own controls */
 async function click(page, loc) {
@@ -288,7 +288,7 @@ async function worldLW1() {
 }
 
 /* ================= LW1b — the other order: a holiday that went out, REVOKED on the war after publishing (D2, F3) ======= */
-const REVOKE = /stopped being a holiday after it was published/i
+const REVOKE = /Publish this day again to withdraw the OIL/i   // D2004's words
 async function worldLW1b() {
   const { browser, page, errors, CS } = await world()
   try {

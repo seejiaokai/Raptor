@@ -177,14 +177,17 @@ describe('something over the board answers first', () => {
     expect(boardOpen()).toBe(true)
   })
 
-  it('the changes window (History) over the board: the board stays', async () => {
+  /* Escape now closes the changes window itself, the last thing opened (his D2112, 17 Nov 26 — escwindows.test.tsx); the
+     board still waits for it, and the next Escape closes the board */
+  it('the changes window (History) over the board: Escape closes the window, the board stays', async () => {
     await openBoard(2)
     await click($('#sbHist'))
     expect(view.CHGWIN, 'the changes window is open').toBeTruthy()
     await key('Escape')
+    expect(view.CHGWIN, 'the window closed').toBe(null)
     expect(boardOpen()).toBe(true)
-    await click($('#sbHist'))
-    expect(view.CHGWIN).toBe(null)
+    await key('Escape')
+    expect(boardOpen(), 'the next Escape closes the board').toBe(false)
   })
 
   it('nothing is decided for a closed board, or off Edit Schedule', () => {

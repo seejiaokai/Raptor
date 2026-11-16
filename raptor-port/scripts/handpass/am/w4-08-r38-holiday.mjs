@@ -70,7 +70,7 @@ const s1 = await strip('#eWeek', TUE)
 note('Tuesday on the edit week after the PH', { head: h1, panel: p1, warnings: s1 })
 await frame(page, `#eWeek .day[data-day="${TUE}"]`)
 await shot(page, pic('4-edit-after-ph'))
-const says = ls => ls !== 'NO STRIP' && ls.some(l => /started earning OIL after it was published/i.test(l))
+const says = ls => ls !== 'NO STRIP' && ls.some(l => /Publish this day again so OIL is earned/i.test(l))
 if (says(s1)) ck('AM47: the day says it started earning and must be published again', true, 'the advisory', s1)
 else {
   /* THE LAG TEST: look again after a moment, then after a reload */
@@ -82,7 +82,7 @@ else {
   await shot(page, pic('4b-edit-after-reload'))
   note('the warning list re-read', { after1500ms: s1b, afterReload: s1c })
   ck('AM47: the day says it started earning and must be published again (without a reload)', false,
-    '"This day started earning OIL after it was published — publish it again so the OIL lands", as soon as the PH is declared',
+    '"Publish this day again so OIL is earned. The PH was set after the day was published." (D2003), as soon as the PH is declared',
     says(s1c) ? 'absent until the page is RELOADED, then shown — LAGGED UNTIL A RELOAD' : 'absent even after a reload')
 }
 ck('the day reads pending (what it earns changed)', /pending/.test(h1.pending || ''), 'N pending', h1.pending)
@@ -107,7 +107,7 @@ note('Tuesday boxes after AL1 (the crew)', Object.fromEntries(crew.map(id => [id
 ck('AM46: the republished holiday credits the men who worked it', landed.length > 0, 'FO*/HO* for the crew', `${landed.length} of ${crew.length}`)
 await editWeek(page)
 const s2 = await strip('#eWeek', TUE)
-ck('the republish advisory is gone after AL1', !s2.some?.(l => /started earning OIL after it was published/i.test(l)), 'gone', s2)
+ck('the republish advisory is gone after AL1', !s2.some?.(l => /Publish this day again so OIL is earned/i.test(l)), 'gone', s2)
 
 note('book', await book(page))
 ck('no console errors', errors.length === 0, 'none', errors)

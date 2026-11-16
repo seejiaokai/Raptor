@@ -24,7 +24,9 @@
    narrow precisely because the app's job here is to SURFACE the clash, not to
    remove him from the list. Do not let this drift into filtering him out. */
 import { useEffect } from 'react'
-import { useFloatWin, frontWin, raiseWin, BOARD_BAR } from './floatwin'
+import { useFloatWin, frontWin, raiseWin, escWaits, BOARD_BAR } from './floatwin'
+import { useEscWindow } from './sheetfocus'
+import { gone } from './winorder'
 import { placeToast } from './toast'
 import { notify } from '../state/store'
 import { PEOPLE } from '../engine/people'
@@ -74,6 +76,12 @@ export function AvailWindow() {
      look-and-keys walk, 21 Oct 26); a note raised while it is up is placed by toast() itself */
   const isOpen = !!open
   useEffect(() => { if (isOpen) placeToast() }, [isOpen])   // as it opens — never as it closes, mid-read
+  /* ESCAPE CLOSES IT WHEN IT WAS THE LAST THING OPENED OR PRESSED ([ALLAVAIL-ESCAPE], 17 Nov 26 — the design guide §2): it
+     floats beside the schedule without holding the keys (D38, D41), so Escape did nothing with it up. It joins the one
+     Escape list as it opens, and the keys go back to the count that opened it; what was opened over it since answers
+     first (floatwin.ts escWaits). Closed this way it hands "in front" back to a window of FloatWindow.tsx's still up, so
+     the next Escape reaches that one (winorder.ts gone). */
+  useEscWindow(el, isOpen, () => { setAvailWin(null); gone('avail'); notify() }, { id: 'avail', waits: escWaits })
 
   if (!open) return <div className="availwin" hidden />
 

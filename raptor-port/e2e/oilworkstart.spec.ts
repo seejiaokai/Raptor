@@ -72,15 +72,17 @@ async function oilCell(page: Page) {
    box (traced 6 Oct 26 with a watcher on the page's body: once in two full runs on a busy machine, every time with a
    pause put between the typing and the Tab; filed `[LOGIC-REDRAW-DROPS-TYPING]`). A person cannot type that fast; a
    test can. Nothing here waits a fixed time. */
-async function logicLead(page: Page, value: string, minutes: number) {
+async function logicLead(page: Page, value: string, minutes: number) { await logicSet(page, 'reportLead', value, minutes) }
+/* any one of the Logic page's minute settings, the same way ("Full day of OIL" — D2044 — below) */
+async function logicSet(page: Page, key: string, value: string, minutes: number) {
   await go(page, 'logic')
-  const f = page.locator('input[data-lgset="reportLead"]').first()
+  const f = page.locator(`input[data-lgset="${key}"]`).first()
   if (!(await f.isVisible().catch(() => false))) await page.locator('#lgEdit').click()
   await expect(f).toBeVisible()
   /* typed once: the page no longer redraws its rules under a box being typed in ([LOGIC-REDRAW-DROPS-TYPING], fixed
      21 Oct 26 — the retry that stood here until then is gone) */
   await f.scrollIntoViewIfNeeded(); await f.fill(value); await f.press('Tab')
-  await expect.poll(() => page.evaluate(() => (window as any).VCONF.reportLead)).toBe(minutes)
+  await expect.poll(() => page.evaluate(k => (window as any).VCONF[k], key)).toBe(minutes)
   await go(page, 'editsched')
 }
 const pendChip = (page: Page) => page.locator(`${day} .dpend:not(.dnew):not(.dchg)`).first()
@@ -155,6 +157,49 @@ test.describe('a published day keeps the OIL it went out with (D592)', () => {
     expect(await oilCell(page)).toBe('HO')
     await showDay(page, SAT)
     await expect(pendChip(page)).toContainText('1 pending')
+  })
+
+  /* D2044 (his ruling — a published day keeps its OIL's three values, "Full day of OIL" among them) IN A REAL BROWSER
+     ([RULES-CHECK-LEFTOVERS]: a published OIL-earning day across a Logic change had no end-to-end test; the engine half is
+     leavewar/oilworkstart-published.test.ts). The same Saturday sortie, 07:00–13:15 — six hours fifteen, a full day under
+     the standard six hours and one minute. "Full day of OIL" raised to 7h on the Logic page: the Leave War still holds
+     the full day, the day reads 1 pending and its four sign-offs fall; the amendment makes it a half day. */
+  test('D2044 — publish a Saturday sortie, raise "Full day of OIL" to 7h: the Leave War holds the full day, the day reads 1 pending; the amendment makes it a half day', async ({ page }) => {
+    await login(page)
+    await go(page, 'editsched')
+    await board(page, SAT)
+    const gi = await page.evaluate(i => (window as any).DAYS[i].waves.length, SAT)
+    const add = page.locator(`#schedBoard [data-wvadd="${SAT}"]`).first()
+    await add.scrollIntoViewIfNeeded(); await add.click()
+    await page.locator('.wavemenu [data-wmkind=""]').first().click()
+    await expect.poll(() => page.evaluate(i => (window as any).DAYS[i].waves.length, SAT)).toBe(gi + 1)
+    await type(page, SAT, gi, 'cs', 'VIPER'); await type(page, SAT, gi, 'to', '10:00'); await type(page, SAT, gi, 'ld', '11:15')
+    const seat = page.locator(`#schedBoard [data-slot="${SAT}.${gi}.0.0.p"]`).first()
+    await seat.scrollIntoViewIfNeeded(); await seat.click()
+    const puck = page.locator(`#sbRoster .rpuck[data-person="${WHO}"]:visible`).first()
+    await puck.scrollIntoViewIfNeeded(); await puck.click()
+    await expect.poll(() => page.evaluate(([i, g]) => (window as any).DAYS[i].waves[g].formations[0].aircraft[0].p, [SAT, gi] as const)).toBe(WHO)
+    await page.keyboard.press('Escape')
+
+    await signFour(page)
+    const pub = page.locator(`${day} [data-beak="${SAT}"]`).first()
+    await pub.evaluate(e => e.scrollIntoView({ block: 'center' })); await pub.click()
+    await expect(page.locator(`${day} .verchip`).first()).toContainText('ORIG')
+    expect(await oilCell(page), '07:00 to 13:15 under the standard 6h01: a full day').toBe('FO')
+    await signFour(page)
+    expect(await signed(page), 'four current sign-offs before the Logic edit').toBe(4)
+
+    await logicSet(page, 'oilFullMin', '7h', 420)
+    expect(await oilCell(page), 'the published day keeps the OIL it went out with').toBe('FO')
+    await showDay(page, SAT)
+    await expect(pendChip(page), 'and the day says a change is waiting').toContainText('1 pending')
+    expect(await signed(page), 'the four sign-offs fell (D103)').toBe(0)
+
+    await signFour(page)
+    const al = page.locator(`${day} [data-alpub="${SAT}"]`).first()
+    await al.evaluate(e => e.scrollIntoView({ block: 'center' })); await al.click()
+    await expect(page.locator(`${day} .verchip`).first()).toContainText('AL1')
+    expect(await oilCell(page), 'published again: six hours fifteen is short of 7h, a half day').toBe('HO')
   })
 
   /* D606 (owner, 7 Oct 26): "SC B if filled u can count it as work hours as well and OIL earned." Through the board's
