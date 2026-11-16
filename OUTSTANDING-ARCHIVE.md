@@ -8811,3 +8811,39 @@ no-import shape kept so the Tracker could leave without Raptor, and the "a stand
 `scripts/tracker/smoke.mjs`, the boot), and remove or simplify it with its tests; nothing a person sees changes. **Place:** with
 the Tracker's next batch (D490) — not inside [REACT-DOCTOR-CLEANUP].
 
+
+*Moved here 2026-11-17 by backlog-archive.mjs ([ALLAVAIL-ESCAPE]). Forward facts: `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.*
+
+### [ALLAVAIL-ESCAPE] Escape does not close the ALL AVAIL window (found 15 Nov 26, walker W2 of the rules check's small batch)
+**What:** with the ALL AVAIL window open — from a row's count, on a desktop and a phone, the keys on the window, on the page or on nothing — Escape leaves it open; its ✕ and leaving the page close it, a tap outside rightly leaves it open (it never blocks the schedule, D38, D41). The same on `main`: the window has no key handler (`raptor-port/src/ui/AvailWindow.tsx`). Evidence: `raptor-port/docs/handpass/parts/2026-11-15-rcb2-w2.md` (scenario 2, runs s02esc-d1, s02esc-pdbg4). The design guide's keyboard rule says Escape closes what opened last. **To do:** Escape closes the window when it was the last thing opened and the keys are not in a box whose own Escape puts a value back (a time box's Escape keeps its meaning, D1011); the keys return to the count that opened it; a test; a short walk, desktop and phone. Not this batch's change — filed, not fixed in it.
+**BUILT 17 Nov 26 on `claude/sched-small-fixes` (the night's job 2, not yet walked or read):** Escape closes the window when it was the last thing opened or pressed, the keys back on the count; what was opened over it since — a question sheet, a seat armed after it, the bell's list, an input's own window, a schedule box the keys are in (D1011) — answers first; two floating windows close in the order brought forward. Test `raptor-port/src/ui/escwindows.test.tsx`; evidence sheet `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.
+**Walked, read and re-walked 17 Nov 26:** the walk found no fault in the change; Astra's and the fresh Opus reader's
+final reads found five (a newer menu's Escape also closing the window, a seat armed earlier keeping Escape, the window
+order, the keys after a reopen, ✕ leaving "in front" behind) — each fixed red-first and re-walked, no fault. Waits
+for his "merge live" (pull request 794).
+
+
+*Moved here 2026-11-17 by backlog-archive.mjs ([WEEK-AA-CHIP-PHONE]). Forward facts: `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.*
+
+### [WEEK-AA-CHIP-PHONE] On a phone the week's ALL AVAIL count may open the crew list, not its window (seen 15 Nov 26, walkers W2 and W3 of the rules check's small batch)
+**What:** at 402 × 874 by touch (WebKit), a tap at the centre of the ALL AVAIL count chip on a Ground Programme row of Edit Schedule's week opened the right-hand crew list armed for that row ("Planning Ground · ALL AVAIL TEST") instead of the ALL AVAIL window; three tries; the same chip on the phone's Scheduler Board opens the window, and on a desktop the week's chip opens it. The week's chip is routed through the one opener (`raptor-port/src/ui/interactions.ts`, the `[data-oilsent]` branch); the row's own tap that arms the crew list may take the touch first, or the chip may sit under the opened crew list at that width — not yet told apart. Evidence: `raptor-port/docs/handpass/parts/2026-11-15-rcb2-w3.md` observation 1, picture `raptor-port/docs/img/handpass/2026-11-14-rules-check-batch2/w3/r2-p2/r2-2-week-window-p.png`; W2's "FAIL?" in `…-rcb2-w2.md`. **To do:** reproduce by hand on the phone's week (and on `main`); if real, the chip's tap opens the window as D38 says, with a test and a short phone walk; if the chip was covered, a walker's note only. Not this batch's change.
+**Reproduced and BUILT 17 Nov 26 on `claude/sched-small-fixes` (not yet walked):** by touch in WebKit at 402 × 874 the tap's click went to the puck name beside the count — the one of the two the keys could land on — so the row armed; Chromium opened the window. The count is now a place the keys may land too (`tabindex="-1"`, off the Tab route), and WebKit sends it its own tap (checked in WebKit on the running app). Real by D38, so fixed. Test `raptor-port/src/ui/escwindows.test.tsx` (the markup); pictures and the reproduction in `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`. Owed: the phone walk and his iPhone look.
+**Walked 17 Nov 26:** by touch at 402 × 874 in WebKit and Chromium on a Common Programme row, a sim seat, a ground row,
+an input's row, View-only Sched and the board — the window opened, nothing armed, the puck beside still arms. Owed: his
+iPhone look (the test browser's WebKit is not Safari on iOS).
+
+
+*Moved here 2026-11-17 by backlog-archive.mjs ([CHGWIN-ESCAPE]). Forward facts: `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.*
+
+### [CHGWIN-ESCAPE] Escape does not close the changes window (found 8 Nov 26 by chat 28's walk; older; low)
+**What:** with the changes window open on Edit Schedule (the clock icon), Escape leaves it open, on his PC and his
+iPhone's size, with or without a click inside it first; its ✕ and a tap outside close it. Reproduced by the host in a plain
+browser, so nothing of the "Not kept" band (`raptor-port/scripts/handpass/nk28-esc.mjs`; W2's pictures
+`raptor-port/docs/img/handpass/2026-11-08-chat28-not-kept/w2/S14-changes-*.png`). The design guide's keyboard rule says
+Escape closes what opened last; the window floats beside the schedule without blocking it (D167), and no ruling says
+whether Escape should reach it while the keyboard is on the schedule behind. **The case to put to him:** Escape closes the
+changes window when it is the last thing opened — recommended. Also seen, not filed: a moved changes window comes back at
+its first place when closed and reopened (no ruling either way). **Place:** low — with the next job on the changes window
+or the keyboard leftovers.
+**His D2112 (17 Nov 26, "yes all as recommended") — BUILT 17 Nov 26 on `claude/sched-small-fixes` (not yet walked or read):** Escape closes the changes window when it was the last thing opened or pressed — the phone's slim bar too, History going with it as by its ✕; over the board the board stays and the next Escape closes it. Test `raptor-port/src/ui/escwindows.test.tsx` (and `boardescape.test.tsx`, changed to D2112); evidence `raptor-port/docs/handpass/2026-11-17-sched-small-fixes.md`.
+
