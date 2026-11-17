@@ -55,7 +55,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - On a desktop the one day under the mouse wears a cyan ring round its edge, hollow, no fill — not its row and column — in the tapped day's thinner ring, never the drag selection's strong one; a phone's tap keeps its own mark; approved as drawn, today's faint row tint kept; built on pull request 801 — [LW-GRID-HOVER-RING] [D2151, D2152, D2157].
 - The faint row tint under the mouse also covers the row's name and balance cells, so whose line it is shows at a glance; those pinned cells stay solid, a phone unchanged; a picture first, then built on pull request 801 [D2171, D2157].
 - His look at the four items is done apart from that tint: the five departures from the drawings stay as built [D2172].
-- A click or tap outside the OIL award editor closes it as Cancel does; what happens to an unsaved change is put to him, recommended: the editor stays open [D2173, D2155].
+- A click or tap outside the OIL award editor closes it as Cancel does when nothing in it was changed; with an unsaved change it stays open, nothing lost or saved by a stray click [D2173, D2174, D2155].
 - SANS men are off the Leave War unless the admin puts them on — by "+ SANS" among the groups in Settings, taken off by that group's ✕ — the squadron's main way of working; they never fall into "Everyone else", and leaving SANS out stays the default and one tap away [D1215, D1221].
 
 ## The bid windows and the day's list
