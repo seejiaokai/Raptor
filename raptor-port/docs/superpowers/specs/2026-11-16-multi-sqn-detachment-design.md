@@ -515,7 +515,7 @@ day amber or red and raise the manning warning on someone's bid; a weekend he wo
   on one sim are warned, from one squadron or two (inside one squadron filed as [SIM-OVERLAP-WARN]). **D2182 — "yes to
   all three":** a man on DET still counts on count rows such as Available (only the standby rows leave him out — Q15
   settled, no per-row switch); a SANS man's DET window offers "Available for all these days"; Post out opens from
-  Admin → Users for everyone, as well as from the Leave War (Q23 settled, widened).
+  Admin → Users for everyone, as well as from the Leave War (Q23 settled, widened). **D2183 — Q9 "A"** (chat 104, asked again in plain words): a day worked for both squadrons keeps the one full-day value his published days carry until his own squadron publishes that day again, its publish card showing "Saber, Sat 28 Nov: full day → half day" before Publish; the other squadron publishing again never moves his OIL. The page's "first fixes the value" wording was unclear and is corrected to this.
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
