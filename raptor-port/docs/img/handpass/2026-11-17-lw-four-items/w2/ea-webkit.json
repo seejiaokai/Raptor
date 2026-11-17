@@ -1,0 +1,110 @@
+[
+ {
+  "id": "E-a",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "tap l7 (box [232,419,106,67]), picture at once and settled; no script scrolling",
+  "saw": "list slide 0/368; Save/Cancel/Delete: {\"edit-save\":{\"l\":238,\"r\":290,\"whole\":true,\"onTop\":true,\"topIs\":\"oil-edit-save\"},\"edit-cancel\":{\"l\":293,\"r\":343,\"whole\":true,\"onTop\":true,\"topIs\":\"oil-edit-cancel\"},\"del-l7\":{\"l\":346,\"r\":429,\"whole\":false,\"onTop\":true,\"topIs\":\"SPAN\"}}; cut at screen edge: del-l7 l346..r429 (screen 402); covered by something else at its middle: none",
+  "verdict": "RECORDED",
+  "pics": "w2-Ea-webkit-l7-1-opened-fast.png, w2-Ea-webkit-l7-2-opened-settled.png"
+ },
+ {
+  "id": "E-a",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "finger slide",
+  "saw": "NOT WALKED in WebKit: touches made in the page drive no browser scroll in this test browser (walk-scripts §4); done in Chromium over CDP instead",
+  "verdict": "RECORDED",
+  "pics": ""
+ },
+ {
+  "id": "S2",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "tap reason and given-by, typed \" ok\" and \"Test\"",
+  "saw": "editor geometry relative to its box unchanged: true; reason value Weekend ok recovery; given Test",
+  "verdict": "PASS",
+  "pics": "w2-Ea-webkit-l7-4-typed.png"
+ },
+ {
+  "id": "S2",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "real tap on Delete (visible part)",
+  "saw": "Delete reads \"Really delete?\"; editor geometry unchanged: true; list slide now {\"sl\":35,\"st\":0,\"sw\":774,\"cw\":406}",
+  "verdict": "PASS",
+  "pics": "w2-Ea-webkit-l7-5-delete-armed.png"
+ },
+ {
+  "id": "E-a",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "real tap on Cancel (ok)",
+  "saw": "editor closed: true; entries still 1",
+  "verdict": "PASS",
+  "pics": "w2-Ea-webkit-l7-6-after-cancel.png"
+ },
+ {
+  "id": "E-a",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "tap dol-1 (box [302,419,106,67]), picture at once and settled; no script scrolling",
+  "saw": "list slide 35/368; Save/Cancel/Delete: {\"edit-save\":{\"l\":309,\"r\":360,\"whole\":true,\"onTop\":true,\"topIs\":\"oil-edit-save\"},\"edit-cancel\":{\"l\":363,\"r\":413,\"whole\":false,\"onTop\":true,\"topIs\":\"oil-edit-cancel\"},\"del-dol-1\":{\"l\":417,\"r\":500,\"whole\":false,\"onTop\":false,\"topIs\":\"oil-edit-cancel\"}}; cut at screen edge: edit-cancel l363..r413 (screen 402); del-dol-1 l417..r500 (screen 402); covered by something else at its middle: none",
+  "verdict": "RECORDED",
+  "pics": "w2-Ea-webkit-dol-1-1-opened-fast.png, w2-Ea-webkit-dol-1-2-opened-settled.png"
+ },
+ {
+  "id": "E-a",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "finger slide",
+  "saw": "NOT WALKED in WebKit: touches made in the page drive no browser scroll in this test browser (walk-scripts §4); done in Chromium over CDP instead",
+  "verdict": "RECORDED",
+  "pics": ""
+ },
+ {
+  "id": "S2",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "tap reason and given-by, typed \" ok\" and \"Test\"",
+  "saw": "editor geometry relative to its box unchanged: true; reason value Exercise  okrecovery; given OC Ops",
+  "verdict": "PASS",
+  "pics": "w2-Ea-webkit-dol-1-4-typed.png"
+ },
+ {
+  "id": "S2",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "real tap on Delete (visible part)",
+  "saw": "Delete reads \"Really delete?\"; editor geometry unchanged: true; list slide now {\"sl\":140,\"st\":0,\"sw\":774,\"cw\":406}",
+  "verdict": "PASS",
+  "pics": "w2-Ea-webkit-dol-1-5-delete-armed.png"
+ },
+ {
+  "id": "E-a",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "real tap on Cancel (ok)",
+  "saw": "editor closed: true; entries still 1",
+  "verdict": "PASS",
+  "pics": "w2-Ea-webkit-dol-1-6-after-cancel.png"
+ },
+ {
+  "id": "E-a",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "amount set to 3, real tap on Save (ok)",
+  "saw": "editor closed: true; the award box reads \"+314 MarOC OpsExercise recovery3 left\"",
+  "verdict": "PASS",
+  "pics": "w2-Ea-webkit-dol1-7-after-save.png"
+ },
+ {
+  "id": "E-a",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "real taps on Delete twice",
+  "saw": "first tap: true reads \"Really delete?\"; second: true; award gone: true",
+  "verdict": "PASS",
+  "pics": "w2-Ea-webkit-dol1-8-after-delete.png"
+ }
+]

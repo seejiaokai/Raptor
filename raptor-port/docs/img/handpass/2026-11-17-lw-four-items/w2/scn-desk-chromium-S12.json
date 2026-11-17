@@ -1,0 +1,56 @@
+[
+ {
+  "id": "S12",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "amount 0 (zero), Save",
+  "saw": "editor still open: true; message \"An OIL award stays an award — delete it and enter a correction instead\"; award box unchanged: true; parts keep their boxes: true",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S12-zero.png"
+ },
+ {
+  "id": "S12",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "amount -1 (negative), Save",
+  "saw": "editor still open: true; message \"An OIL award stays an award — delete it and enter a correction instead\"; award box unchanged: true; parts keep their boxes: true",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S12-negative.png"
+ },
+ {
+  "id": "S12",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "amount 0.25 (a quarter day), Save",
+  "saw": "editor still open: true; message \"Days come in halves — 1, 1.5, 2 …\"; award box unchanged: true; parts keep their boxes: true",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S12-a_quarter_day.png"
+ },
+ {
+  "id": "S12",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "amount 366 (more than 365), Save",
+  "saw": "editor still open: true; message \"That is more than 365 days\"; award box unchanged: true; parts keep their boxes: true",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S12-more_than_365.png"
+ },
+ {
+  "id": "S12",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "cleared the reason, Save",
+  "saw": "editor still open: true; message \"Give a reason\"; reason box still empty: true",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S12-empty-reason.png"
+ },
+ {
+  "id": "S12",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "valid amount 1.5 and a reason, Save",
+  "saw": "editor closed: true; the award box reads \"+1.517 NovGS12 retried1.5 left\"",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S12-valid-retry.png"
+ }
+]
