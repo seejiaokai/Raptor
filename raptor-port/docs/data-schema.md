@@ -74,6 +74,35 @@ blank (`src/state/seeds.ts`), before storage is read.
 "moving RAPTOR to a database" is now giving these already-per-browser shapes
 a permanent, **shared** home, rather than saving them for the first time.
 
+## Whose is each record — a squadron's or everyone's (the key inventory, 17 Nov 26)
+
+The multi-squadron build's first step (batch 1, step 0 — plan
+`docs/superpowers/plans/2026-11-17-multi-sqn-build-batches.md` §3.4; D1695, D2087). From batch 1 two squadrons share
+one app, so every stored record is placed once: **a unit's** — one squadron's (a detachment's from batch 2), each unit
+keeping its own copy, its id carrying the unit from step 2 (`<unit>@<its id today>`) — or **the community's** — one
+record for everyone, whatever schedule is in view. Nothing a person's own squadron owns is ever worked out from the
+schedule in view. The list in code is `src/storage/keyowner.ts`; `storage/keyowner.test.ts` fails on a stored key or a
+settings key the source names that is on neither list, so a new kind of record cannot be saved before someone decides
+whose it is.
+
+| Owner | Stored records |
+|---|---|
+| **A unit's** | `weeks/*` (weeks, days, issued versions, retractions) · `plan/*` (the planning calendar's `pp:` and `dm:`) · `leavewar/*` — the Leave War's whole world · `tracker/*` — the Tracker's whole key space (courses, charts, ball details, flex, layouts, marks, dates, pace, plans) · settings `rules`, `daytpl`, `dutytpl`, `wavetpl`, `wavehide`, `wavedefault`, `cxreasons`, `stores`, `lookahead`, `secdefault`, `qualcols`, `insights`, `sanscalendar`, `guestview`, `memberfile` · settings rows `flyday:`, `flyrule:`, `flyrun:`, `missionrole:`, `elog:` |
+| **The community's** | `people/*` · `inputs/*` (one record an input; from step 3 every reader asks `inputsFor(unit, iso…)` — an input belongs to its person's home unit on its date) · `notices/*` · `changes/*` (the store's change log) · settings `schema` · settings rows `account:`, `accessreq:`, `reqseen:`, `seen:`, `noticeseen:`, `apprseen:`, `lwseen:` · from step 1, the units, places, homes and rights |
+| **Neither — this browser's** | `raptorLocal:*` and `ocuLocal:*` (view preferences, outside the store) · the documents drawer `raptor-docs` (a person's attachment, the community's when it reaches the database) |
+
+**The module singletons**, the live halves of those records: a **unit's** holds the one unit in view, as it holds one
+week today, and the "142 ▾" pick reloads it by a week load's path (step 2) — `DAYS`, `SCHED`, `DATES`, `CURWEEK`,
+`PLANPUCKS`, `DAYRMK`, `VCONF`, `SHIFT_HARD`, `CXR_CFG`, `DAYTPL_CFG`, `DUTYTPL_CFG`, `WAVETPL_CFG`, `WAVEHIDE`,
+`STORE_CFG`, `LOOK_CFG`, `ELOG`, `GUESTVIEW`, the check's results (`WARN`, `REST`, `EVD`, …), and the module-private
+week stash (`engine/weekstash.ts`, keyed by unit and week from step 2 — it holds every unit's weeks touched, never only
+the one in view), flying-plan cache (`state/flyplan.ts`), Quals' column list (`engine/qualcols.ts`), mission-role
+answers (`state/mission-roles.ts`) and members' switch (`state/memberfile.ts`); the Leave War's and the Tracker's whole
+stores are each a unit's world, held for the signed-in person's home unit and started fresh by the reload at sign-out.
+A **community** singleton holds everyone's and is never swapped — `PEOPLE`, `ID_BY_CS`, `INPUTS`, `ACCOUNTS_LIST`,
+`ACCESS_REQS`, `NOTICES`, the seen caches (`state/changes.ts`, `state/noticeseen.ts`); from step 3 every enumeration of
+`PEOPLE` goes through `rosterOf(unit, iso)`.
+
 ---
 
 ## World 1 — the scheduler
