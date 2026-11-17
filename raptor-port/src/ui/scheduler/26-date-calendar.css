@@ -159,6 +159,8 @@ button.datebox:disabled{opacity:.55;cursor:default}
 .dcal-band{position:absolute;left:4px;right:4px;top:50%;height:44px;transform:translateY(-50%);border-radius:12px;background:var(--panel-2);border:1px solid var(--edge);pointer-events:none}
 .dcal-col{position:relative;box-sizing:border-box;height:284px;padding:120px 0;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;overscroll-behavior:contain;
   touch-action:pan-y;scrollbar-width:none;outline:none;overflow-anchor:none;
+  /* a mouse pressed and dragged moves the list (D2170 — ui/DateCal.tsx Wheel), so the drag never selects its words */
+  -webkit-user-select:none;user-select:none;
   -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 40%,#000 60%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 40%,#000 60%,transparent 100%)}
 .dcal-col::-webkit-scrollbar{display:none}
 .dcal-opt{height:44px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-size:19px;font-weight:600;color:var(--ink);
