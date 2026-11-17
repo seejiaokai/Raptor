@@ -277,7 +277,10 @@ Two of his asks, drawn on the real app: `raptor-port/docs/mock/2026-11-17-multi-
 - **J — "Join a 149 wave" as approved (D2126):** each row "Wave N", then "T/O 12:40 · VL, RU" in the menu's quiet ink; a
   joined row in the menu's own disabled look with "joined" at its right; the no-wave line is round 4's 4a, unchanged.
 
-The rest of round 5 (D2124's grey line, D2125's "3 new ↓") waits for his remaining round-4 answers.
+His answer, "all as recommended" (17 Nov 26): D2127 (T, the same on both devices — narrows D2104), D2128 (round 4's 1),
+D2129 (2), D2130 (4a), D2131 (6), and, by the agent's reading told to him, round 3's still-open Q2 (D2132, narrows
+D1606), Q3 (D2133), R1 (D2134) and R3 (D2135). Still to draw for his look: D2124's one-sentence grey line and D2125's
+"3 new ↓".
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
