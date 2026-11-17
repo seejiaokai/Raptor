@@ -1,0 +1,445 @@
+{
+ "state": "bal-phone-slid",
+ "drawing": {
+  "script": "docs/mock/2026-11-17-lw-balances-align/bal.mjs",
+  "shot": "phone-b-slid"
+ },
+ "recorded": "2026-11-17T05:42:02.227Z",
+ "drawnOn": "main at 3a51c06a3",
+ "checkout": "00ffaea76",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "cols": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": -318,
+    "y": 193.3,
+    "w": 720,
+    "h": 30
+   },
+   "ink": {
+    "x": -181,
+    "y": 194.3,
+    "w": 527.7,
+    "h": 23
+   },
+   "text": "NAME · GRADE APP BAL CARRIED PENDING APPROVAL WAR BAL OIL CCL FCL PL EL CL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "right",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "div.bp-cols"
+  },
+  "h-pl": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 218,
+    "y": 206.3,
+    "w": 10.4,
+    "h": 11
+   },
+   "ink": {
+    "x": 218,
+    "y": 205.3,
+    "w": 10.4,
+    "h": 12
+   },
+   "text": "PL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span.ok"
+  },
+  "h-el": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 277,
+    "y": 206.3,
+    "w": 9.8,
+    "h": 11
+   },
+   "ink": {
+    "x": 277,
+    "y": 205.3,
+    "w": 9.8,
+    "h": 12
+   },
+   "text": "EL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span.ok"
+  },
+  "h-cl": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 336,
+    "y": 206.3,
+    "w": 10.7,
+    "h": 11
+   },
+   "ink": {
+    "x": 336,
+    "y": 205.3,
+    "w": 10.7,
+    "h": 12
+   },
+   "text": "CL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span.ok"
+  },
+  "row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": -318,
+    "y": 453.3,
+    "w": 720,
+    "h": 50
+   },
+   "ink": {
+    "x": -66,
+    "y": 455.8,
+    "w": 463,
+    "h": 38.5
+   },
+   "text": "Ranger IP Senior pilot · +36 2.5 12.5 0 › 1 0.5 1",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "1px solid rgb(26, 32, 39)",
+     "0px none rgb(201, 209, 217)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "right",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bp-row"
+  },
+  "pl-box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 218,
+    "y": 462.8,
+    "w": 54,
+    "h": 30
+   },
+   "ink": {
+    "x": 255.9,
+    "y": 469.4,
+    "w": 8.1,
+    "h": 16.8
+   },
+   "text": "2 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx.sm"
+  },
+  "el-box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 277,
+    "y": 462.8,
+    "w": 54,
+    "h": 30
+   },
+   "ink": {
+    "x": 314.9,
+    "y": 469.4,
+    "w": 8.1,
+    "h": 16.8
+   },
+   "text": "4 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx.sm"
+  },
+  "cl-box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 336,
+    "y": 462.8,
+    "w": 54,
+    "h": 30
+   },
+   "ink": {
+    "x": 373.9,
+    "y": 469.4,
+    "w": 8.1,
+    "h": 16.8
+   },
+   "text": "1 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx.sm"
+  },
+  "pl-tag": {
+   "found": true,
+   "count": 3,
+   "box": {
+    "x": 258.5,
+    "y": 454.8,
+    "w": 25.5,
+    "h": 17
+   },
+   "ink": {
+    "x": 263.5,
+    "y": 455.8,
+    "w": 15.5,
+    "h": 15
+   },
+   "text": "0.5",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "",
+    "edge": [
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 200, 121)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.mk-badge"
+  },
+  "cl-tag": {
+   "found": true,
+   "count": 3,
+   "box": {
+    "x": 385.7,
+    "y": 454.8,
+    "w": 16.3,
+    "h": 17
+   },
+   "ink": {
+    "x": 390.7,
+    "y": 455.8,
+    "w": 6.3,
+    "h": 15
+   },
+   "text": "1",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "",
+    "edge": [
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 200, 121)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.mk-badge"
+  }
+ },
+ "approved": {
+  "picture": "phone-b-slid.png",
+  "identical": true
+ }
+}

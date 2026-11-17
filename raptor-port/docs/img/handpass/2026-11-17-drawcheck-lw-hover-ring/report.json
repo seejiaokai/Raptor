@@ -1,0 +1,724 @@
+{
+ "spec": "Leave War grid hover ring",
+ "dist": "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\37df10f156419f1e\\412624af-f93d-4b92-b143-0d2f8a03fb43\\scratchpad\\walk-dist-01f1030c4",
+ "all": false,
+ "report": [
+  {
+   "state": "ring-desk",
+   "title": "The day under the mouse, desktop, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-grid-hover/ring.mjs",
+    "shot": "r-ring-full"
+   },
+   "approved": {
+    "picture": "r-ring-full.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "day",
+     "label": "the day under the mouse",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 355.5,
+        "y": 750,
+        "w": 24,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.05)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.act"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 355.5,
+        "y": 750,
+        "w": 24,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.05)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.act"
+      }
+     }
+    },
+    {
+     "part": "left",
+     "label": "the day before it",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 331.5,
+        "y": 750,
+        "w": 24,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.05)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.act"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 331.5,
+        "y": 750,
+        "w": 24,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.05)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.act"
+      }
+     }
+    },
+    {
+     "part": "right",
+     "label": "the day after it",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 379.5,
+        "y": 750,
+        "w": 24,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.05)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.weekend.act"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 379.5,
+        "y": 750,
+        "w": 24,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.05)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.weekend.act"
+      }
+     }
+    },
+    {
+     "part": "along",
+     "label": "a day three along the same row (the row tint)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 427.5,
+        "y": 750,
+        "w": 27,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.05)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.act"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 427.5,
+        "y": 750,
+        "w": 27,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.05)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.act"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "the row's name (the row tint)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 750,
+        "w": 118,
+        "h": 22
+       },
+       "ink": {
+        "x": 38,
+        "y": 753.8,
+        "w": 64,
+        "h": 12.3
+       },
+       "text": "Drifter A",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.who"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 750,
+        "w": 118,
+        "h": 22
+       },
+       "ink": {
+        "x": 38,
+        "y": 753.8,
+        "w": 64,
+        "h": 12.3
+       },
+       "text": "Drifter A",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.who"
+      }
+     }
+    },
+    {
+     "part": "below",
+     "label": "the next row's name (no tint)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 772,
+        "w": 118,
+        "h": 22
+       },
+       "ink": {
+        "x": 38,
+        "y": 775.8,
+        "w": 63.5,
+        "h": 12.3
+       },
+       "text": "Ridge C",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.who"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 772,
+        "w": 118,
+        "h": 22
+       },
+       "ink": {
+        "x": 38,
+        "y": 775.8,
+        "w": 63.5,
+        "h": 12.3
+       },
+       "text": "Ridge C",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.who"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "ring-desk-tapped",
+   "title": "The day under the mouse beside a tapped day, desktop, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-grid-hover/ring.mjs",
+    "shot": "r-ring-beside-tapped"
+   },
+   "approved": {
+    "picture": "r-ring-beside-tapped.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "day",
+     "label": "the day under the mouse",
+     "diffs": [
+      {
+       "check": "fill",
+       "what": "its fill colour",
+       "drawing": "rgba(0, 0, 0, 0)",
+       "build": "rgba(59, 198, 232, 0.12)",
+       "by": "",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "ring-desk-tapped--day.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 355.5,
+        "y": 750,
+        "w": 24,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.act.mk-hov"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 355.5,
+        "y": 750,
+        "w": 24,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.12)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.act"
+      }
+     }
+    },
+    {
+     "part": "tapped",
+     "label": "the tapped day",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 282.4,
+        "y": 750,
+        "w": 24,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.22)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.act.selcell"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 282.4,
+        "y": 750,
+        "w": 24,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.22)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "1px solid rgba(70, 81, 94, 0.8)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.act.selcell"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

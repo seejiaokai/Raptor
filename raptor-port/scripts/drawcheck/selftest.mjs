@@ -48,6 +48,15 @@ const cases = [
     D: part({}, { look: { shadow: 'rgb(255, 45, 149) 0px 0px 0px 2px', edge: Array(4).fill('2px solid rgb(250, 50, 150)') } }), B: part({}) },
   { name: 'a pink ring the BUILD wears is a difference (only the drawing\'s marker is excused)', want: ['shadow', 'edge'], p: { check: ['shadow', 'edge'] },
     D: part({}), B: part({}, { look: { shadow: 'rgb(255, 45, 149) 0px 0px 0px 2px', edge: ['2px solid rgb(255, 45, 149)', '0px none rgb(0, 0, 0)', '0px none rgb(0, 0, 0)', '0px none rgb(0, 0, 0)'] } }) },
+  // 'ring' (17 Nov 26, the Leave War grid's hover ring, D2157): every shadow layer compared, not only whether there is one
+  { name: 'the hover ring at the drag selection\'s strength (.95) where the tapped day\'s (.6) is drawn', want: ['ring'], p: { check: ['ring', 'shadow'] },
+    D: part({}, { look: { shadow: 'rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset' } }), B: part({}, { look: { shadow: 'rgba(59, 198, 232, 0.95) 0px 0px 0px 1px inset' } }) },
+  { name: 'the hover ring 2px wide where 1px is drawn', want: ['ring'], p: { check: ['ring'] },
+    D: part({}, { look: { shadow: 'rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset' } }), B: part({}, { look: { shadow: 'rgba(59, 198, 232, 0.6) 0px 0px 0px 2px inset' } }) },
+  { name: 'a ring drawn, none built', want: ['ring', 'shadow'], p: { check: ['ring', 'shadow'] },
+    D: part({}, { look: { shadow: 'rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset' } }), B: part({}) },
+  { name: 'the same ring, and a see-through layer beside none', want: [], p: { check: ['ring'] },
+    D: part({}, { look: { shadow: 'rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset, rgba(0, 0, 0, 0) 0px 0px 0px 3px' } }), B: part({}, { look: { shadow: 'rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset' } }) },
 ]
 let bad = 0
 for (const c of cases) {
