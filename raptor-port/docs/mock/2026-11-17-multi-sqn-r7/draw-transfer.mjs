@@ -83,6 +83,26 @@ async function itT(sz, variant) {
       return r
     }
     const to = chipRow('To', ['149'], '149'); row.after(to)
+    if (variant === 'F') {
+      // Fable's design (chat 100, round 6 page T): no choice rows; three fixed rules, said in the lines. D2147: the
+      // lines are today's figures, worked out again on the date.
+      const note = [...s.querySelectorAll('.note')].find(x => /^On /.test(x.textContent.trim()))
+      const d = note.textContent.trim().match(/^On ([^:]+):/)[1]
+      note.textContent = `On ${d}: moves to 149 as a member, with his sign-in, leave, OIL and inputs. His access to 142 ends.`
+      for (const b of s.querySelectorAll('button')) if (b.textContent.trim() === 'Post out') { b.disabled = false; b.removeAttribute('aria-disabled') }
+      const L = [`Today, worked out again on ${d}:`,
+         `2 of 142's lines after ${d} keep him, as a borrowed 149 man`,
+         '3 of his inputs move to 149\'s schedule',
+         '1 leave 142 approved goes to 149\'s Approvals; 149 may still refuse it',
+         'Published days go pending: 4 of 142\'s, 2 of 149\'s',
+         `142's manning from ${d}: OPS P turns amber on 4 days`,
+         '149\'s admins are told now and on the date']
+      const n2 = note.cloneNode(false); n2.setAttribute('data-mine', '1'); n2.textContent = L.join('\n'); n2.style.whiteSpace = 'pre-line'
+      note.after(n2)
+      for (const x of [note, n2]) { x.style.flex = '1 1 100%'; x.style.maxWidth = '100%' }
+      mark(t, 'X2'); mark(to, 'X3'); mark(note, 'X4'); mark(n2, 'X5')
+      return { d, L }
+    }
     // in his own (new) squadron a scheduler is always an admin (D785): two chips, never a separate "Scheduler"
     const in149 = chipRow('In 149', ['Member', 'Admin'], 'Member'); to.after(in149)
     const acc = chipRow('142 access', ['None', 'View', 'Scheduler'], variant === 'A' ? 'None' : 'View'); in149.after(acc)
@@ -114,7 +134,9 @@ async function itT(sz, variant) {
     return { d, L }
   }, variant)
   await sleep(200)
-  const cap = variant === 'A'
+  const cap = variant === 'F'
+    ? `Fable's design: no choice rows. X3 "To" 149 only. X4: on ${words.d} he moves to 149 as a member and his access to 142 ends. X5: today's figures, worked out again on the date (D2147); his 142 lines keep him as a borrowed 149 man; 149's admins are told. A rare different case is done afterwards in its usual place. Figures made up.`
+    : variant === 'A'
     ? `Variant A, the recommended defaults. X2 "Transfer to Sqn" lit; X3 "To" 149. T3 "In 149" — Member / Scheduler / Admin, shown only to an admin of both squadrons or a master admin (else 149's admins are told and give it). T1 "142 access" — None (lit) / View / Scheduler. T2 "142 lines" — Keep him (lit) / Take him off, shown only when 142's lines after ${words.d} hold him. X4 the date's line; X5 what it affects, changing with the choices. Figures made up.`
     : `Variant B, the choices changed: T1 "View" and T2 "Take him off" picked. X5's lines change with them: "${words.L[0]}", the pending count moves to 142's days, and a last line "${words.L[5]}". Figures made up.`
   await shot(page, `T${variant}-${sz}-proposed.png`, sz, 'proposed', cap)
@@ -122,7 +144,8 @@ async function itT(sz, variant) {
 }
 
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
-try { for (const v of ['A', 'B']) for (const sz of ['d', 'p']) { try { await itT(sz, v) } catch (e) { errs.push(`[${v}${sz}] itT FAILED: ${e.message}`) } } }
+const VARIANTS = process.env.MQ_VARIANTS ? process.env.MQ_VARIANTS.split(',') : ['A', 'B', 'F']
+try { for (const v of VARIANTS) for (const sz of ['d', 'p']) { try { await itT(sz, v) } catch (e) { errs.push(`[${v}${sz}] itT FAILED: ${e.message}`) } } }
 finally { await browser.close() }
 writeFileSync(MF, JSON.stringify(manifest, null, 2) + '\n')
 for (const f of readdirSync(OUT)) if (f.endsWith('.png')) copyFileSync(`${OUT}/${f}`, `${PAGEIMG}/${f}`)
