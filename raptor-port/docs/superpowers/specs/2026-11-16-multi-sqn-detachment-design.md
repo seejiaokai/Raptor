@@ -505,7 +505,9 @@ day amber or red and raise the manning warning on someone's bid; a weekend he wo
   each keep their own Tracker, a detachment using its parent squadron's (242 uses 142's), so no chart is shared across
   squadrons and Q12's case does not arise; D474 stands inside each Tracker. **D2168 — Q15, the standby rows:** a man
   on DET is taken off the SC DAY and SC NIGHT counts, and SC, AVALON and BB cannot be planned for him; whether every
-  other count row gets the recommended switch is put back to him.
+  other count row gets the recommended switch is put back to him. **D2169 — Q22:** a SANS man may be put on DET like
+  anyone, and must also mark himself available for those days to be planned there; open, suggested: one tick in the DET
+  window, "Available for all these days".
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
