@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/cal-wheel-drag-e4107b -->
+### CHAT 98 — the calendar wheels' mouse drag (his fault of 17 Nov 26, D2170), written 17 Nov 26 mid-job — verify before use
+- **What:** on a desktop the month-and-year chooser's wheels moved only with the mouse wheel, never a press and drag. Fixed once in the shared wheel (`raptor-port/src/ui/DateCal.tsx` `Wheel`), so every calendar has it; red-first tests in `raptor-port/e2e/datecal.spec.ts` (failed on `main`: three rows dragged, the year stayed 2026).
+- **Branch / PR:** `claude/cal-wheel-drag-e4107b`, pull request 797 into `main` (opened, its run going); waits for his "merge live".
+- **Checks so far (his PC):** the calendar's browser file 21 of 21, the calendar unit tests 240 of 240, tsc, code check, docsize.
+- **Bug check:** WALK tier (a shared part and a new gesture; no OIL, record, saved data, roles or warnings). Running when written: a Sonnet walker of every calendar (desktop at 125% and phone; results `raptor-port/docs/handpass/2026-11-17-cal-wheel-drag/results.md`), Astra's blind read and a fresh blind Opus read (brief `raptor-port/docs/superpowers/briefs/2026-11-17-cal-wheel-drag-coderead-brief.md`, copy `C:/Users/User/cwd-read`).
+- **Pick up here:** read the walk's results and both reads; reproduce each finding red-first; fix; re-walk what the fixes touched; the evidence sheet `raptor-port/docs/handpass/2026-11-17-cal-wheel-drag.md`; the walk ledger's row; push once no run is in progress; his look with the Vercel link and pictures.
+- **Rulings:** D2170 recorded → the scheduler's page.
+<!-- /now -->
 <!-- now:claude/multi-sqn-design-r3 -->
 ### CHAT 92 — multi-squadron round 2, then the night of 17 Nov 26 (six jobs, all done), rewritten 17 Nov 26 after his "merge live" — verify before use
 - **Where it started:** round 2 of the multi-squadron design (answered, D2099–D2111), then `/overnight 12` on Low with his "yes all as recommended … run jobs 1-5 tonight", plus a job of his own (6). Nothing merged at night; nothing on `main`. The chat compacted at 00:37 and about 06:00; each time the block, the guide and the step were re-read.
