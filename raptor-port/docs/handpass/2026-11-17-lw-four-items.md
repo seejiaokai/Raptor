@@ -290,7 +290,9 @@ applies, the two hover rules repeating one long selector.
 **The fix round's narrow read (§5 "A fix is new code"), chat 103, 17 Nov 26.** Round 1: a fresh Opus reader, handed only the
 three fix commits of finds 8–10 and 13–15 and the faults they answer (`docs/superpowers/briefs/2026-11-17-lw-four-items-fixread-brief.md`),
 no sheet, no walk — finds 16–19. Each fix judged right for its own fault. Round 2: the same kind of reader on the fix of find 17
-alone (`843247955`) — its result below. Finds 17 and 18 are the last fixes; nothing after them.
+alone (`843247955`): right for its fault, the move before the first paint sound (nothing takes focus, a re-render with the
+same award open does not re-slide, zoom read off the screen), two gaps — finds 20–21, each a one-line change with its own
+red-first test. Under §5's threshold ("more than a one-line guard") they take no third read: round 2 is the last.
 
 ## Gate counts
 
@@ -317,6 +319,8 @@ alone (`843247955`) — its result below. Finds 17 and 18 are the last fixes; no
 | 17 | The fix round's narrow read (chat 103), reproduced by the host | **The last award, its row at the list's foot, opened with Save, Cancel and Delete all below the list's edge** (phone: buttons 864–892, the list ending at 833) — the slide of find 13 was sideways only, and the editor is taller than the award | Fixed red-first (`leavewar.spec.ts` "the OIL award editor at the list's foot opens…", red 894.7 ≤ 833.4 phone, 926.5 ≤ 850.4 desktop): the list slides up as far as the editor needs, never under the heading rows held at the top |
 | 18 | The fix round's narrow read | The editor was drawn cut for a frame before it slid (the slide waited a frame; nothing here needs that wait — no box takes focus) | Fixed with 17: the slide runs before the first paint. Below what a picture 100ms after the tap can show; carried by reading the code, said so |
 | 19 | The fix round's narrow read | Three test weaknesses: the in-sight test's tap could land off-screen if the award moved past the edge; the full-width names test read rows cut at the list's foot; the in-sight test accepts a wrapped button with this PC's letters too | The first two taken (an assert the award is tappable on screen; only rows inside the list). The third declined: on GitHub's own, wider letters the plain case may wrap by design (find 15), so the check would fail there with no fault; Delete's width is pinned by the D2155 test |
+| 20 | The fix round's second narrow read (chat 103), reproduced by the host | **An award tapped half under the held headings opened its first line (the amount, the date) behind the group heading strip** ("SXO · 12" is held under the two heading rows too; the top limit counted only those) | Fixed red-first (`leavewar.spec.ts` "…tapped half under the held headings opens with its first line in sight", red: the amount box not on top at its middle, phone and desktop): the limit leaves room for one group strip |
+| 21 | The fix round's second narrow read, reproduced by the host | **A refused save's warning, at the list's foot, stood below the list's edge** (phone 843.7 > 833.4, desktop 864.2 > 850.4) — the slide ran only when an award opened, and the warning is drawn after | Fixed red-first ("…a refused save's warning comes into sight"): the warning appearing slides the list the same way |
 
 Why the build's own checks missed 5 and 6: no browser test of either existed — chat 99 listed them as to be written (its
 "Pick up here"); the ring was compared with its drawing only as injected CSS on `main`'s build, where the nesting did not
