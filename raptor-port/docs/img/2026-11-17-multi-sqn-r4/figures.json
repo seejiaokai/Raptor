@@ -1,0 +1,74 @@
+{
+  "1-d": {
+    "lineBefore": [
+      51,
+      51
+    ],
+    "lineAfter": [
+      51,
+      51
+    ],
+    "badge": {
+      "w": 31,
+      "h": 14,
+      "top": 8,
+      "csBox": [
+        64,
+        24
+      ],
+      "textW": 12,
+      "gapToText": 11,
+      "roomPx": 23,
+      "capGap": 0.5,
+      "longW": 42
+    }
+  },
+  "3-today-d": {
+    "inView": 0,
+    "newestInView": false
+  },
+  "1-p": {
+    "lineBefore": [
+      140.5,
+      140.5
+    ],
+    "lineAfter": [
+      140.5,
+      140.5
+    ],
+    "badge": {
+      "w": 26,
+      "h": 12,
+      "top": 31,
+      "csBox": [
+        56,
+        24
+      ],
+      "textW": 12,
+      "gapToText": 8,
+      "roomPx": 20,
+      "capGap": 1.5,
+      "longW": 42
+    }
+  },
+  "3-today-p": {
+    "inView": 0,
+    "newestInView": false
+  },
+  "3-A-d": {
+    "inView": 3,
+    "newestInView": true
+  },
+  "3-B-d": {
+    "inView": 0,
+    "newestInView": false
+  },
+  "3-A-p": {
+    "inView": 1,
+    "newestInView": true
+  },
+  "3-B-p": {
+    "inView": 0,
+    "newestInView": false
+  }
+}
