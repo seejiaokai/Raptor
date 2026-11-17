@@ -60,7 +60,7 @@ function kit() {
     const b = el.getBoundingClientRect()
     el.classList.add('mkq'); if (col === 'b') el.classList.add('mkb')
     if (!['in', 'br'].includes(where)) el.classList.add('mkq-o')
-    const t = document.createElement('span'); t.className = 'mkq-tag' + (col === 'b' ? ' b' : ''); t.textContent = label; t.setAttribute('data-mine', '1')
+    const t = document.createElement('span'); t.className = 'mkq-tag' + (col === 'b' ? ' b' : ''); t.textContent = 'New'; if (col === 'b') t.style.display = 'none'; t.setAttribute('data-mine', '1')
     if (where === 'below') { t.style.top = 'calc(100% + 4px)'; t.style.right = '0' }
     else if (where === 'above') { t.style.bottom = 'calc(100% + 4px)'; t.style.right = '0' }
     else if (where === 'right') { t.style.top = '50%'; t.style.transform = 'translateY(-50%)'; t.style.left = 'calc(100% + 5px)' }
@@ -77,6 +77,7 @@ function kit() {
     const bad = []
     for (const t of document.querySelectorAll('.mkq-tag')) {
       if (t.closest('[data-mqhid]')) continue
+      if (t.style.display === 'none') continue
       const r = t.getBoundingClientRect()
       if (!(r.width > 0)) { bad.push(t.textContent + ': not drawn'); continue }
       for (let a = t.parentElement; a && a !== document.documentElement; a = a.parentElement) {

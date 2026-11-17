@@ -89,7 +89,7 @@ function kit() {
     if (where === 'below' || where === 'right' || where === 'left' || where === 'above') el.classList.add('mkq-o')
     if (where === 'pad') el.classList.add('mkq-p')
     const t = document.createElement('span')
-    t.className = 'mkq-tag' + (col === 'b' ? ' mkq-tb' : ''); t.textContent = label; t.setAttribute('data-mine', '1')
+    t.className = 'mkq-tag' + (col === 'b' ? ' mkq-tb' : ''); t.textContent = 'New'; if (col === 'b') t.style.display = 'none'; t.setAttribute('data-mine', '1')
     if (where === 'pad') { if (getComputedStyle(el).position === 'static') el.style.position = 'relative'; t.style.top = '-12px'; t.style.right = '-10px'; el.appendChild(t) }
     else if (where === 'below') { t.style.top = 'calc(100% + 4px)'; t.style.right = '0'; el.appendChild(t) }
     else if (where === 'above') { t.style.bottom = 'calc(100% + 4px)'; t.style.right = '0'; el.appendChild(t) }
@@ -105,10 +105,10 @@ function kit() {
   }
   // the rows of text of an element (its tags left out), merged by their top: [{top, bottom, right}] top to bottom
   mq.rowsOf = el => {
-    const tags = [...el.querySelectorAll('.mkq-tag')]; tags.forEach(t => { t.style.display = 'none' })
+    const tags = [...el.querySelectorAll('.mkq-tag')]; const prevD = tags.map(t => t.style.display); tags.forEach(t => { t.style.display = 'none' })
     const rg = document.createRange(); rg.selectNodeContents(el)
     const rows = [...rg.getClientRects()].filter(r => r.width > 0)
-    tags.forEach(t => { t.style.display = '' })
+    tags.forEach((t, i) => { t.style.display = prevD[i] })
     const byTop = []
     for (const r of rows) { const k = byTop.find(x => Math.abs(x.top - r.top) < 4); if (k) { k.right = Math.max(k.right, r.right); k.bottom = Math.max(k.bottom, r.bottom) } else byTop.push({ top: r.top, bottom: r.bottom, right: r.right }) }
     return byTop.sort((a, b) => a.top - b.top)
@@ -134,6 +134,7 @@ function kit() {
   mq.checkTags = () => {
     const bad = []
     for (const t of document.querySelectorAll('.mkq-tag')) {
+      if (t.style.display === 'none') continue
       const r = t.getBoundingClientRect()
       if (!(r.width > 0)) { bad.push(t.textContent + ': not drawn'); continue }
       for (let a = t.parentElement; a && a !== document.documentElement; a = a.parentElement) {

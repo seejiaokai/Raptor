@@ -69,7 +69,7 @@ function kit() {
     el.classList.add('mkq'); if (blue) el.classList.add('mkb'); if (where === 'below' || where === 'right' || where === 'left' || where === 'out') el.classList.add('mkq-o')
     if (label) {
       const t = document.createElement('span')
-      t.className = 'mkq-tag' + (blue ? ' mkb' : ''); t.textContent = label; t.setAttribute('data-mine', '1')
+      t.className = 'mkq-tag' + (blue ? ' mkb' : ''); t.textContent = 'New'; if (blue) t.style.display = 'none'; t.setAttribute('data-mine', '1')
       if (where === 'below') { t.style.top = 'calc(100% + 4px)'; t.style.right = '0' }
       else if (where === 'right') { t.style.top = '50%'; t.style.transform = 'translateY(-50%)'; t.style.left = 'calc(100% + 5px)' }
       else if (where === 'left') { t.style.top = '50%'; t.style.transform = 'translateY(-50%)'; t.style.right = 'calc(100% + 5px)' }
@@ -86,6 +86,7 @@ function kit() {
   mq.checkTags = () => {
     const bad = []
     for (const t of document.querySelectorAll('.mkq-tag')) {
+      if (t.style.display === 'none') continue
       const r = t.getBoundingClientRect()
       if (!(r.width > 0)) { bad.push(t.textContent + ': not drawn'); continue }
       for (let a = t.parentElement; a && a !== document.documentElement; a = a.parentElement) {

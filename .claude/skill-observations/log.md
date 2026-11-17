@@ -2814,3 +2814,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The brief gave exact words for every new line, but told a helper to keep an earlier variant's lines "as variant F draws them". Those lines predated two later rulings, so the picture said leave "goes to 149's Approvals" and only "149's admins are told" — both now wrong. The helper checked the brief's words, not the inherited ones; only the host's look against the rulings caught them.
 **Suggested improvement:** In the reference's "Reusing an older drawing" rule, add: every line of words the reused script draws is listed in the brief and checked against the rulings made since that drawing, the same as new words; "as the old script draws it" is never a spec for wording.
 **Principle:** Inherited content is unreviewed content: when a spec says "keep what the old one says", the old words skip the check the new ones get.
+
+### Observation 973: A questions page for a non-technical owner was written in the reviews' shorthand
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 103, round 7's page of the multi-squadron design (numbered past 972, which a parallel branch holds)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** writing the page and the marks on its pictures
+
+**Issue:** The page put to the owner was written in the working notes' shorthand: review finding codes (H2, F16, M2), ruling numbers inside sentences, "narrows your F12", "card line 4", "Close greyed", and the same codes printed as tags on every picture. He could not follow it ("whats card line 4, narrows, close greyed … explain things simply for the whole mock up"). The plain-language check had been run on chat messages, not on the page, and the drawing brief told helpers to tag each mark with its finding code.
+**Suggested improvement:** In the reference, add a step before publishing any page for the owner: scan its text and its picture tags for codes (letters plus digits), ruling numbers and record words, and replace each with what a person sees and what happens; picture marks carry only "New" (pink) or no label (blue). Traceability lives in the design note, not on the page.
+**Principle:** Codes that make a review traceable for the builder make it unreadable for the decider; keep them in the working notes and give the reader examples and plain outcomes.

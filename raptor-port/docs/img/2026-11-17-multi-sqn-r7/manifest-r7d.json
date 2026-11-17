@@ -39,7 +39,7 @@
     "item": "D7",
     "size": "desktop",
     "kind": "today",
-    "caption": "Today, real: Edit Schedule, Monday's first line; its area field, typed text (\"NORTH  ·  SOUTHQ11\"), ringed pink Q11."
+    "caption": "Today, real: Edit Schedule, Monday's first line; its area field, typed text (\"NORTH  ·  SOUTHNew\"), ringed pink Q11."
   },
   "R7D7c-d-today.png": {
     "item": "D7",
@@ -69,7 +69,7 @@
     "item": "D7",
     "size": "desktop",
     "kind": "today",
-    "caption": "Today, real: Logic, the OIL setting \"Full day of OIL 6h01 Weekend or holiday work this long or longer earns a full day; less earns a half. Q9\" — the value a published day keeps — ringed pink Q9."
+    "caption": "Today, real: Logic, the OIL setting \"Full day of OIL 6h01 Weekend or holiday work this long or longer earns a full day; less earns a half. New\" — the value a published day keeps — ringed pink Q9."
   },
   "R7D1-p-proposed.png": {
     "item": "D1",
@@ -105,13 +105,13 @@
     "item": "D7",
     "size": "phone",
     "kind": "today",
-    "caption": "Today, real: Logic, the OIL setting \"Full day of OIL 6h01 Weekend or holiday work this long or longer earns a full day; less earns a half. Q9\" — the value a published day keeps — ringed pink Q9."
+    "caption": "Today, real: Logic, the OIL setting \"Full day of OIL 6h01 Weekend or holiday work this long or longer earns a full day; less earns a half. New\" — the value a published day keeps — ringed pink Q9."
   },
   "R7D7b-p-today.png": {
     "item": "D7",
     "size": "phone",
     "kind": "today",
-    "caption": "Today, real: Edit Schedule, Monday's first line; its area field, typed text (\"NORTH  ·  SOUTHQ11\"), ringed pink Q11."
+    "caption": "Today, real: Edit Schedule, Monday's first line; its area field, typed text (\"NORTH  ·  SOUTHNew\"), ringed pink Q11."
   },
   "R7D7c-p-today.png": {
     "item": "D7",

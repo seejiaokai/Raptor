@@ -66,7 +66,7 @@ function kit() {
     // 'inO': the ring 2px outside the element (clear of its letters), the tag inside its top-right corner
     if (where === 'inO') { el.classList.add('mkq-o'); if (getComputedStyle(el).position === 'static') el.style.position = 'relative' }
     const t = document.createElement('span')
-    t.className = 'mkq-tag' + (colour === 'blue' ? ' mkb' : ''); t.textContent = label; t.setAttribute('data-mine', '1')
+    t.className = 'mkq-tag' + (colour === 'blue' ? ' mkb' : ''); t.textContent = 'New'; if (colour === 'blue') t.style.display = 'none'; t.setAttribute('data-mine', '1')
     if (where === 'pad') { if (getComputedStyle(el).position === 'static') el.style.position = 'relative'; t.style.top = '-12px'; t.style.right = '-10px'; el.appendChild(t) }
     else if (where === 'below') { t.style.top = 'calc(100% + 4px)'; t.style.right = '0'; el.appendChild(t) }
     else if (where === 'above') { t.style.bottom = 'calc(100% + 4px)'; t.style.right = '0'; el.appendChild(t) }
@@ -84,6 +84,7 @@ function kit() {
   mq.checkTags = () => {
     const bad = []
     for (const t of document.querySelectorAll('.mkq-tag')) {
+      if (t.style.display === 'none') continue
       const r = t.getBoundingClientRect()
       if (!(r.width > 0)) { bad.push(t.textContent + ': not drawn'); continue }
       for (let a = t.parentElement; a && a !== document.documentElement; a = a.parentElement) {
