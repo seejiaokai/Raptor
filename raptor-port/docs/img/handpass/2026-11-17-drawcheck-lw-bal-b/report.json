@@ -1,0 +1,5999 @@
+{
+ "spec": "Leave War Balances, option B",
+ "dist": "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\37df10f156419f1e\\412624af-f93d-4b92-b143-0d2f8a03fb43\\scratchpad\\walk-dist-01f1030c4",
+ "all": false,
+ "report": [
+  {
+   "state": "bal-desk",
+   "title": "The Balances page, desktop, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-balances-align/bal.mjs",
+    "shot": "desk-b"
+   },
+   "approved": {
+    "picture": "desk-b.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "head",
+     "label": "the table's headings",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 193,
+        "w": 1494,
+        "h": 66
+       },
+       "ink": {
+        "x": 31,
+        "y": 201,
+        "w": 991.6,
+        "h": 52
+       },
+       "text": "LVE OTHER LEAVE NAME GRADE · AUTO + LVE ON 1 JAN APP BAL INCL. CARRIED FWD PENDING APPROVAL WAR BAL OIL CCL FCL PL EL CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "thead"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 193,
+        "w": 1494,
+        "h": 66
+       },
+       "ink": {
+        "x": 31,
+        "y": 201,
+        "w": 991.6,
+        "h": 52
+       },
+       "text": "LVE OTHER LEAVE NAME GRADE · AUTO + LVE ON 1 JAN APP BAL INCL. CARRIED FWD PENDING APPROVAL WAR BAL OIL CCL FCL PL EL CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "thead"
+      }
+     }
+    },
+    {
+     "part": "lve-label",
+     "label": "the LVE label and its rule",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 2,
+       "box": {
+        "x": 383.8,
+        "y": 193,
+        "w": 302.2,
+        "h": 23
+       },
+       "ink": {
+        "x": 394.8,
+        "y": 201,
+        "w": 20.1,
+        "h": 14
+       },
+       "text": "LVE",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(107, 119, 133)",
+         "0px none rgb(107, 119, 133)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(107, 119, 133)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.4px"
+       },
+       "tag": "th.span.sep"
+      },
+      "build": {
+       "found": true,
+       "count": 2,
+       "box": {
+        "x": 383.8,
+        "y": 193,
+        "w": 302.2,
+        "h": 23
+       },
+       "ink": {
+        "x": 394.8,
+        "y": 201,
+        "w": 20.1,
+        "h": 14
+       },
+       "text": "LVE",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(107, 119, 133)",
+         "0px none rgb(107, 119, 133)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(107, 119, 133)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.4px"
+       },
+       "tag": "th.span.sep"
+      }
+     }
+    },
+    {
+     "part": "other-label",
+     "label": "the OTHER LEAVE label and its rule",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 2,
+       "box": {
+        "x": 735.1,
+        "y": 193,
+        "w": 330,
+        "h": 23
+       },
+       "ink": {
+        "x": 746.1,
+        "y": 201,
+        "w": 77.5,
+        "h": 14
+       },
+       "text": "OTHER LEAVE",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(107, 119, 133)",
+         "0px none rgb(107, 119, 133)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(107, 119, 133)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.4px"
+       },
+       "tag": "th.span.sep"
+      },
+      "build": {
+       "found": true,
+       "count": 2,
+       "box": {
+        "x": 735.1,
+        "y": 193,
+        "w": 330,
+        "h": 23
+       },
+       "ink": {
+        "x": 746.1,
+        "y": 201,
+        "w": 77.5,
+        "h": 14
+       },
+       "text": "OTHER LEAVE",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(107, 119, 133)",
+         "0px none rgb(107, 119, 133)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(107, 119, 133)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.4px"
+       },
+       "tag": "th.span.sep"
+      }
+     }
+    },
+    {
+     "part": "h-app",
+     "label": "the \"APP BAL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 383.8,
+        "y": 216,
+        "w": 75,
+        "h": 43
+       },
+       "ink": {
+        "x": 394.8,
+        "y": 239,
+        "w": 47.2,
+        "h": 14
+       },
+       "text": "APP BAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.sep.w-app"
+      },
+      "build": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 383.8,
+        "y": 216,
+        "w": 75,
+        "h": 43
+       },
+       "ink": {
+        "x": 394.8,
+        "y": 239,
+        "w": 47.2,
+        "h": 14
+       },
+       "text": "APP BAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.sep.w-app"
+      }
+     }
+    },
+    {
+     "part": "h-cf",
+     "label": "the \"INCL. CARRIED FWD\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 458.8,
+        "y": 216,
+        "w": 88,
+        "h": 43
+       },
+       "ink": {
+        "x": 468.8,
+        "y": 215,
+        "w": 49,
+        "h": 38
+       },
+       "text": "INCL. CARRIED FWD",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-cf"
+      },
+      "build": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 458.8,
+        "y": 216,
+        "w": 88,
+        "h": 43
+       },
+       "ink": {
+        "x": 468.8,
+        "y": 215,
+        "w": 49,
+        "h": 38
+       },
+       "text": "INCL. CARRIED FWD",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-cf"
+      }
+     }
+    },
+    {
+     "part": "h-pd",
+     "label": "the \"PENDING APPROVAL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 546.8,
+        "y": 216,
+        "w": 79.2,
+        "h": 43
+       },
+       "ink": {
+        "x": 556.8,
+        "y": 227,
+        "w": 59.2,
+        "h": 26
+       },
+       "text": "PENDING APPROVAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-pd"
+      },
+      "build": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 546.8,
+        "y": 216,
+        "w": 79.2,
+        "h": 43
+       },
+       "ink": {
+        "x": 556.8,
+        "y": 227,
+        "w": 59.2,
+        "h": 26
+       },
+       "text": "PENDING APPROVAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-pd"
+      }
+     }
+    },
+    {
+     "part": "h-war",
+     "label": "the \"WAR BAL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 626,
+        "y": 216,
+        "w": 60,
+        "h": 43
+       },
+       "ink": {
+        "x": 636,
+        "y": 227,
+        "w": 25.8,
+        "h": 26
+       },
+       "text": "WAR BAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-war"
+      },
+      "build": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 626,
+        "y": 216,
+        "w": 60,
+        "h": 43
+       },
+       "ink": {
+        "x": 636,
+        "y": 227,
+        "w": 25.8,
+        "h": 26
+       },
+       "text": "WAR BAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-war"
+      }
+     }
+    },
+    {
+     "part": "h-oil",
+     "label": "the \"OIL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 686,
+        "y": 216,
+        "w": 49.1,
+        "h": 43
+       },
+       "ink": {
+        "x": 697,
+        "y": 239,
+        "w": 19,
+        "h": 14
+       },
+       "text": "OIL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.sep.w-oil"
+      },
+      "build": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 686,
+        "y": 216,
+        "w": 49.1,
+        "h": 43
+       },
+       "ink": {
+        "x": 697,
+        "y": 239,
+        "w": 19,
+        "h": 14
+       },
+       "text": "OIL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.sep.w-oil"
+      }
+     }
+    },
+    {
+     "part": "h-ccl",
+     "label": "the \"CCL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 735.1,
+        "y": 216,
+        "w": 66,
+        "h": 43
+       },
+       "ink": {
+        "x": 746.1,
+        "y": 239,
+        "w": 20.6,
+        "h": 14
+       },
+       "text": "CCL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.ok.sep.w-k"
+      },
+      "build": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 735.1,
+        "y": 216,
+        "w": 66,
+        "h": 43
+       },
+       "ink": {
+        "x": 746.1,
+        "y": 239,
+        "w": 20.6,
+        "h": 14
+       },
+       "text": "CCL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-k.sep"
+      }
+     }
+    },
+    {
+     "part": "h-fcl",
+     "label": "the \"FCL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 801.1,
+        "y": 216,
+        "w": 66,
+        "h": 43
+       },
+       "ink": {
+        "x": 811.1,
+        "y": 239,
+        "w": 19.7,
+        "h": 14
+       },
+       "text": "FCL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.ok.w-k"
+      },
+      "build": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 801.1,
+        "y": 216,
+        "w": 66,
+        "h": 43
+       },
+       "ink": {
+        "x": 811.1,
+        "y": 239,
+        "w": 19.7,
+        "h": 14
+       },
+       "text": "FCL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-k"
+      }
+     }
+    },
+    {
+     "part": "h-pl",
+     "label": "the \"PL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 867.1,
+        "y": 216,
+        "w": 66,
+        "h": 43
+       },
+       "ink": {
+        "x": 877.1,
+        "y": 239,
+        "w": 13.1,
+        "h": 14
+       },
+       "text": "PL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.ok.w-k"
+      },
+      "build": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 867.1,
+        "y": 216,
+        "w": 66,
+        "h": 43
+       },
+       "ink": {
+        "x": 877.1,
+        "y": 239,
+        "w": 13.1,
+        "h": 14
+       },
+       "text": "PL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-k"
+      }
+     }
+    },
+    {
+     "part": "h-el",
+     "label": "the \"EL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 933.1,
+        "y": 216,
+        "w": 66,
+        "h": 43
+       },
+       "ink": {
+        "x": 943.1,
+        "y": 239,
+        "w": 12.5,
+        "h": 14
+       },
+       "text": "EL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.ok.w-k"
+      },
+      "build": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 933.1,
+        "y": 216,
+        "w": 66,
+        "h": 43
+       },
+       "ink": {
+        "x": 943.1,
+        "y": 239,
+        "w": 12.5,
+        "h": 14
+       },
+       "text": "EL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-k"
+      }
+     }
+    },
+    {
+     "part": "h-cl",
+     "label": "the \"CL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 999.1,
+        "y": 216,
+        "w": 66,
+        "h": 43
+       },
+       "ink": {
+        "x": 1009.1,
+        "y": 239,
+        "w": 13.5,
+        "h": 14
+       },
+       "text": "CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.ok.w-k"
+      },
+      "build": {
+       "found": true,
+       "count": 13,
+       "box": {
+        "x": 999.1,
+        "y": 216,
+        "w": 66,
+        "h": 43
+       },
+       "ink": {
+        "x": 1009.1,
+        "y": 239,
+        "w": 13.5,
+        "h": 14
+       },
+       "text": "CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.2px"
+       },
+       "tag": "th.w-k"
+      }
+     }
+    },
+    {
+     "part": "row",
+     "label": "Ranger's row",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 453,
+        "w": 1494,
+        "h": 40
+       },
+       "ink": {
+        "x": 36,
+        "y": 451.5,
+        "w": 1024.1,
+        "h": 30
+       },
+       "text": "Ranger IP Senior pilot +36 2.5 12.5 0 › 1 0.5 1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "tr"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 453,
+        "w": 1494,
+        "h": 40
+       },
+       "ink": {
+        "x": 36,
+        "y": 451.5,
+        "w": 1024.1,
+        "h": 30
+       },
+       "text": "Ranger IP Senior pilot +36 2.5 12.5 0 › 1 0.5 1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "tr"
+      }
+     }
+    },
+    {
+     "part": "app-box",
+     "label": "Ranger's APP BAL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 394.8,
+        "y": 458.5,
+        "w": 54,
+        "h": 28
+       },
+       "ink": {
+        "x": 423.3,
+        "y": 464.4,
+        "w": 15.5,
+        "h": 16.2
+       },
+       "text": "15 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 394.8,
+        "y": 458.5,
+        "w": 54,
+        "h": 28
+       },
+       "ink": {
+        "x": 423.3,
+        "y": 464.4,
+        "w": 15.5,
+        "h": 16.2
+       },
+       "text": "15 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx"
+      }
+     }
+    },
+    {
+     "part": "cf-box",
+     "label": "Ranger's carried box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 468.8,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 495,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "2 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 468.8,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 495,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "2 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "pend-tag",
+     "label": "Ranger's dashed amber pending tag (2.5)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 556.8,
+        "y": 461.8,
+        "w": 32.7,
+        "h": 22
+       },
+       "ink": {
+        "x": 564.8,
+        "y": 464.8,
+        "w": 16.7,
+        "h": 16
+       },
+       "text": "2.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)"
+        ],
+        "corners": [
+         "6px",
+         "6px",
+         "6px",
+         "6px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.mk-pd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 556.8,
+        "y": 461.8,
+        "w": 32.7,
+        "h": 22
+       },
+       "ink": {
+        "x": 564.8,
+        "y": 464.8,
+        "w": 16.7,
+        "h": 16
+       },
+       "text": "2.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)"
+        ],
+        "corners": [
+         "6px",
+         "6px",
+         "6px",
+         "6px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-pdt"
+      }
+     }
+    },
+    {
+     "part": "war",
+     "label": "Ranger's WAR BAL figure",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 626,
+        "y": 453,
+        "w": 60,
+        "h": 40
+       },
+       "ink": {
+        "x": 636,
+        "y": 463.5,
+        "w": 26.8,
+        "h": 18
+       },
+       "text": "12.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "1px solid rgb(29, 36, 44)",
+         "0px none rgb(230, 237, 243)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "left",
+        "justify": "normal",
+        "font": "800 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.bp-war"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 626,
+        "y": 453,
+        "w": 60,
+        "h": 40
+       },
+       "ink": {
+        "x": 636,
+        "y": 463.5,
+        "w": 26.8,
+        "h": 18
+       },
+       "text": "12.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "1px solid rgb(29, 36, 44)",
+         "0px none rgb(230, 237, 243)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "left",
+        "justify": "normal",
+        "font": "800 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.bp-war"
+      }
+     }
+    },
+    {
+     "part": "oil",
+     "label": "Ranger's OIL figure",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 697,
+        "y": 463.5,
+        "w": 18.2,
+        "h": 18
+       },
+       "ink": {
+        "x": 697,
+        "y": 463.5,
+        "w": 18.2,
+        "h": 18
+       },
+       "text": "0 ›",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "button.bp-oil"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 697,
+        "y": 463.5,
+        "w": 18.2,
+        "h": 18
+       },
+       "ink": {
+        "x": 697,
+        "y": 463.5,
+        "w": 18.2,
+        "h": 18
+       },
+       "text": "0 ›",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "button.bp-oil"
+      }
+     }
+    },
+    {
+     "part": "ccl-box",
+     "label": "Ranger's CCL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 746.1,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 772.3,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "3 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 746.1,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 772.3,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "3 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "fcl-box",
+     "label": "Ranger's FCL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 811.1,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 837.3,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "5 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 811.1,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 837.3,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "5 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "pl-box",
+     "label": "Ranger's PL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 877.1,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 903.3,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "2 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 877.1,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 903.3,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "2 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "el-box",
+     "label": "Ranger's EL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 943.1,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 969.3,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "4 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 943.1,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 969.3,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "4 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "cl-box",
+     "label": "Ranger's CL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1009.1,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 1035.3,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1009.1,
+        "y": 458.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 1035.3,
+        "y": 464.4,
+        "w": 7.8,
+        "h": 16.2
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "ccl-tag",
+     "label": "Ranger's CCL corner tag",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 3,
+       "box": {
+        "x": 785.8,
+        "y": 450.5,
+        "w": 16.3,
+        "h": 17
+       },
+       "ink": {
+        "x": 790.8,
+        "y": 451.5,
+        "w": 6.3,
+        "h": 15
+       },
+       "text": "1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.mk-badge"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 785.8,
+        "y": 450.5,
+        "w": 16.3,
+        "h": 17
+       },
+       "ink": {
+        "x": 790.8,
+        "y": 451.5,
+        "w": 6.3,
+        "h": 15
+       },
+       "text": "1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-opd"
+      }
+     }
+    },
+    {
+     "part": "pl-tag",
+     "label": "Ranger's PL corner tag",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 3,
+       "box": {
+        "x": 907.6,
+        "y": 450.5,
+        "w": 25.5,
+        "h": 17
+       },
+       "ink": {
+        "x": 912.6,
+        "y": 451.5,
+        "w": 15.5,
+        "h": 15
+       },
+       "text": "0.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.mk-badge"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 907.6,
+        "y": 450.5,
+        "w": 25.5,
+        "h": 17
+       },
+       "ink": {
+        "x": 912.6,
+        "y": 451.5,
+        "w": 15.5,
+        "h": 15
+       },
+       "text": "0.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-opd"
+      }
+     }
+    },
+    {
+     "part": "cl-tag",
+     "label": "Ranger's CL corner tag",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 3,
+       "box": {
+        "x": 1048.8,
+        "y": 450.5,
+        "w": 16.3,
+        "h": 17
+       },
+       "ink": {
+        "x": 1053.8,
+        "y": 451.5,
+        "w": 6.3,
+        "h": 15
+       },
+       "text": "1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.mk-badge"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1048.8,
+        "y": 450.5,
+        "w": 16.3,
+        "h": 17
+       },
+       "ink": {
+        "x": 1053.8,
+        "y": 451.5,
+        "w": 6.3,
+        "h": 15
+       },
+       "text": "1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-opd"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "bal-phone",
+   "title": "The Balances page, iPhone, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-balances-align/bal.mjs",
+    "shot": "phone-b"
+   },
+   "approved": {
+    "picture": "phone-b.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "cols",
+     "label": "the headings strip",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "720",
+       "build": "726",
+       "by": "6px more",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "bal-phone--cols.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 193.3,
+        "w": 720,
+        "h": 30
+       },
+       "ink": {
+        "x": 12,
+        "y": 194.3,
+        "w": 652.7,
+        "h": 23
+       },
+       "text": "NAME · GRADE APP BAL CARRIED PENDING APPROVAL WAR BAL OIL CCL FCL PL EL CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "right",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "div.bp-cols"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 193.3,
+        "w": 726,
+        "h": 30
+       },
+       "ink": {
+        "x": 12,
+        "y": 194.3,
+        "w": 652.7,
+        "h": 23
+       },
+       "text": "NAME · GRADE APP BAL CARRIED PENDING APPROVAL WAR BAL OIL CCL FCL PL EL CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "right",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "div.bp-cols"
+      }
+     }
+    },
+    {
+     "part": "h-name",
+     "label": "the \"NAME · GRADE\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 0,
+        "y": 193.3,
+        "w": 78.4,
+        "h": 24
+       },
+       "ink": {
+        "x": 12,
+        "y": 205.3,
+        "w": 66.4,
+        "h": 12
+       },
+       "text": "NAME · GRADE",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "flex-start",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 0,
+        "y": 193.3,
+        "w": 78.4,
+        "h": 24
+       },
+       "ink": {
+        "x": 12,
+        "y": 205.3,
+        "w": 66.4,
+        "h": 12
+       },
+       "text": "NAME · GRADE",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "flex-start",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "h-app",
+     "label": "the \"APP BAL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 137,
+        "y": 206.3,
+        "w": 37.4,
+        "h": 11
+       },
+       "ink": {
+        "x": 137,
+        "y": 205.3,
+        "w": 37.4,
+        "h": 12
+       },
+       "text": "APP BAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 137,
+        "y": 206.3,
+        "w": 37.4,
+        "h": 11
+       },
+       "ink": {
+        "x": 137,
+        "y": 205.3,
+        "w": 37.4,
+        "h": 12
+       },
+       "text": "APP BAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "h-cf",
+     "label": "the \"CARRIED\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 196,
+        "y": 206.3,
+        "w": 39.1,
+        "h": 11
+       },
+       "ink": {
+        "x": 196,
+        "y": 205.3,
+        "w": 39.1,
+        "h": 12
+       },
+       "text": "CARRIED",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 196,
+        "y": 206.3,
+        "w": 39.1,
+        "h": 11
+       },
+       "ink": {
+        "x": 196,
+        "y": 205.3,
+        "w": 39.1,
+        "h": 12
+       },
+       "text": "CARRIED",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "h-pd",
+     "label": "the \"PENDING APPROVAL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 245,
+        "y": 195.3,
+        "w": 47.5,
+        "h": 22
+       },
+       "ink": {
+        "x": 245,
+        "y": 194.3,
+        "w": 47.5,
+        "h": 23
+       },
+       "text": "PENDING APPROVAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 245,
+        "y": 195.3,
+        "w": 47.5,
+        "h": 22
+       },
+       "ink": {
+        "x": 245,
+        "y": 194.3,
+        "w": 47.5,
+        "h": 23
+       },
+       "text": "PENDING APPROVAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "h-war",
+     "label": "the \"WAR BAL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 314,
+        "y": 206.3,
+        "w": 40.9,
+        "h": 11
+       },
+       "ink": {
+        "x": 314,
+        "y": 205.3,
+        "w": 40.9,
+        "h": 12
+       },
+       "text": "WAR BAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 314,
+        "y": 206.3,
+        "w": 40.9,
+        "h": 11
+       },
+       "ink": {
+        "x": 314,
+        "y": 205.3,
+        "w": 40.9,
+        "h": 12
+       },
+       "text": "WAR BAL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "h-oil",
+     "label": "the \"OIL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 369,
+        "y": 206.3,
+        "w": 21.9,
+        "h": 11
+       },
+       "ink": {
+        "x": 376,
+        "y": 205.3,
+        "w": 14.9,
+        "h": 12
+       },
+       "text": "OIL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.sep"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 369,
+        "y": 206.3,
+        "w": 21.9,
+        "h": 11
+       },
+       "ink": {
+        "x": 376,
+        "y": 205.3,
+        "w": 14.9,
+        "h": 12
+       },
+       "text": "OIL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.sep"
+      }
+     }
+    },
+    {
+     "part": "h-ccl",
+     "label": "the \"CCL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 418,
+        "y": 206.3,
+        "w": 23.4,
+        "h": 11
+       },
+       "ink": {
+        "x": 425,
+        "y": 205.3,
+        "w": 16.4,
+        "h": 12
+       },
+       "text": "CCL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.ok.sep"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 418,
+        "y": 206.3,
+        "w": 23.4,
+        "h": 11
+       },
+       "ink": {
+        "x": 425,
+        "y": 205.3,
+        "w": 16.4,
+        "h": 12
+       },
+       "text": "CCL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.sep"
+      }
+     }
+    },
+    {
+     "part": "h-fcl",
+     "label": "the \"FCL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 477,
+        "y": 206.3,
+        "w": 15.6,
+        "h": 11
+       },
+       "ink": {
+        "x": 477,
+        "y": 205.3,
+        "w": 15.6,
+        "h": 12
+       },
+       "text": "FCL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.ok"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 477,
+        "y": 206.3,
+        "w": 15.6,
+        "h": 11
+       },
+       "ink": {
+        "x": 477,
+        "y": 205.3,
+        "w": 15.6,
+        "h": 12
+       },
+       "text": "FCL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "h-pl",
+     "label": "the \"PL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 536,
+        "y": 206.3,
+        "w": 10.4,
+        "h": 11
+       },
+       "ink": {
+        "x": 536,
+        "y": 205.3,
+        "w": 10.4,
+        "h": 12
+       },
+       "text": "PL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.ok"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 536,
+        "y": 206.3,
+        "w": 10.4,
+        "h": 11
+       },
+       "ink": {
+        "x": 536,
+        "y": 205.3,
+        "w": 10.4,
+        "h": 12
+       },
+       "text": "PL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "h-el",
+     "label": "the \"EL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 595,
+        "y": 206.3,
+        "w": 9.8,
+        "h": 11
+       },
+       "ink": {
+        "x": 595,
+        "y": 205.3,
+        "w": 9.8,
+        "h": 12
+       },
+       "text": "EL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.ok"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 595,
+        "y": 206.3,
+        "w": 9.8,
+        "h": 11
+       },
+       "ink": {
+        "x": 595,
+        "y": 205.3,
+        "w": 9.8,
+        "h": 12
+       },
+       "text": "EL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "h-cl",
+     "label": "the \"CL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 654,
+        "y": 206.3,
+        "w": 10.7,
+        "h": 11
+       },
+       "ink": {
+        "x": 654,
+        "y": 205.3,
+        "w": 10.7,
+        "h": 12
+       },
+       "text": "CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.ok"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 654,
+        "y": 206.3,
+        "w": 10.7,
+        "h": 11
+       },
+       "ink": {
+        "x": 654,
+        "y": 205.3,
+        "w": 10.7,
+        "h": 12
+       },
+       "text": "CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "row",
+     "label": "Ranger's row",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "720",
+       "build": "726",
+       "by": "6px more",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "bal-phone--row.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 453.3,
+        "w": 720,
+        "h": 50
+       },
+       "ink": {
+        "x": 12,
+        "y": 455.8,
+        "w": 703,
+        "h": 38.5
+       },
+       "text": "Ranger IP Senior pilot · +36 2.5 12.5 0 › 1 0.5 1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "1px solid rgb(26, 32, 39)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bp-row"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 453.3,
+        "w": 726,
+        "h": 50
+       },
+       "ink": {
+        "x": 12,
+        "y": 455.8,
+        "w": 703,
+        "h": 38.5
+       },
+       "text": "Ranger IP Senior pilot · +36 2.5 12.5 0 › 1 0.5 1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "1px solid rgb(26, 32, 39)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bp-row"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "Ranger's name",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 461.3,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 17,
+        "y": 462,
+        "w": 65.3,
+        "h": 12.3
+       },
+       "text": "Ranger IP",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.bp-name"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 461.3,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 17,
+        "y": 462,
+        "w": 65.3,
+        "h": 12.3
+       },
+       "text": "Ranger IP",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.bp-name"
+      }
+     }
+    },
+    {
+     "part": "app-box",
+     "label": "Ranger's APP BAL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 137,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 166.9,
+        "y": 469.4,
+        "w": 16.1,
+        "h": 16.8
+       },
+       "text": "15 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 137,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 166.9,
+        "y": 469.4,
+        "w": 16.1,
+        "h": 16.8
+       },
+       "text": "15 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx"
+      }
+     }
+    },
+    {
+     "part": "cf-box",
+     "label": "Ranger's carried box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 196,
+        "y": 462.8,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 223.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "2 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 196,
+        "y": 462.8,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 223.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "2 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "pend-tag",
+     "label": "Ranger's dashed amber pending tag (2.5)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 245,
+        "y": 467,
+        "w": 30,
+        "h": 22
+       },
+       "ink": {
+        "x": 252,
+        "y": 470,
+        "w": 16,
+        "h": 16
+       },
+       "text": "2.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)"
+        ],
+        "corners": [
+         "6px",
+         "6px",
+         "6px",
+         "6px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.mk-pd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 245,
+        "y": 467,
+        "w": 30,
+        "h": 22
+       },
+       "ink": {
+        "x": 252,
+        "y": 470,
+        "w": 16,
+        "h": 16
+       },
+       "text": "2.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)",
+         "1px dashed rgba(242, 200, 121, 0.8)"
+        ],
+        "corners": [
+         "6px",
+         "6px",
+         "6px",
+         "6px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-pdt"
+      }
+     }
+    },
+    {
+     "part": "war",
+     "label": "Ranger's WAR BAL figure",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 314,
+        "y": 467.8,
+        "w": 29.8,
+        "h": 20
+       },
+       "ink": {
+        "x": 314,
+        "y": 467.8,
+        "w": 29.8,
+        "h": 20
+       },
+       "text": "12.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "left",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-war"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 314,
+        "y": 467.8,
+        "w": 29.8,
+        "h": 20
+       },
+       "ink": {
+        "x": 314,
+        "y": 467.8,
+        "w": 29.8,
+        "h": 20
+       },
+       "text": "12.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "left",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-war"
+      }
+     }
+    },
+    {
+     "part": "oil",
+     "label": "Ranger's OIL figure",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 376,
+        "y": 468.3,
+        "w": 17.6,
+        "h": 19
+       },
+       "ink": {
+        "x": 376,
+        "y": 468.3,
+        "w": 17.6,
+        "h": 19
+       },
+       "text": "0 ›",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 14px",
+        "spacing": "normal"
+       },
+       "tag": "button.bp-oil"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 376,
+        "y": 468.3,
+        "w": 17.6,
+        "h": 19
+       },
+       "ink": {
+        "x": 376,
+        "y": 468.3,
+        "w": 17.6,
+        "h": 19
+       },
+       "text": "0 ›",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 14px",
+        "spacing": "normal"
+       },
+       "tag": "button.bp-oil"
+      }
+     }
+    },
+    {
+     "part": "ccl-box",
+     "label": "Ranger's CCL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 425,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 462.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "3 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 425,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 462.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "3 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "fcl-box",
+     "label": "Ranger's FCL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 477,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 514.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "5 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 477,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 514.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "5 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "pl-box",
+     "label": "Ranger's PL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 536,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 573.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "2 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 536,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 573.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "2 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "el-box",
+     "label": "Ranger's EL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 595,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 632.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "4 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 595,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 632.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "4 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "cl-box",
+     "label": "Ranger's CL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 654,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 691.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 654,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 691.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "ccl-tag",
+     "label": "Ranger's CCL corner tag",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 3,
+       "box": {
+        "x": 474.7,
+        "y": 454.8,
+        "w": 16.3,
+        "h": 17
+       },
+       "ink": {
+        "x": 479.7,
+        "y": 455.8,
+        "w": 6.3,
+        "h": 15
+       },
+       "text": "1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.mk-badge"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 474.7,
+        "y": 454.8,
+        "w": 16.3,
+        "h": 17
+       },
+       "ink": {
+        "x": 479.7,
+        "y": 455.8,
+        "w": 6.3,
+        "h": 15
+       },
+       "text": "1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-opd"
+      }
+     }
+    },
+    {
+     "part": "pl-tag",
+     "label": "Ranger's PL corner tag",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 3,
+       "box": {
+        "x": 576.5,
+        "y": 454.8,
+        "w": 25.5,
+        "h": 17
+       },
+       "ink": {
+        "x": 581.5,
+        "y": 455.8,
+        "w": 15.5,
+        "h": 15
+       },
+       "text": "0.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.mk-badge"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 576.5,
+        "y": 454.8,
+        "w": 25.5,
+        "h": 17
+       },
+       "ink": {
+        "x": 581.5,
+        "y": 455.8,
+        "w": 15.5,
+        "h": 15
+       },
+       "text": "0.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-opd"
+      }
+     }
+    },
+    {
+     "part": "cl-tag",
+     "label": "Ranger's CL corner tag",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 3,
+       "box": {
+        "x": 703.7,
+        "y": 454.8,
+        "w": 16.3,
+        "h": 17
+       },
+       "ink": {
+        "x": 708.7,
+        "y": 455.8,
+        "w": 6.3,
+        "h": 15
+       },
+       "text": "1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.mk-badge"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 703.7,
+        "y": 454.8,
+        "w": 16.3,
+        "h": 17
+       },
+       "ink": {
+        "x": 708.7,
+        "y": 455.8,
+        "w": 6.3,
+        "h": 15
+       },
+       "text": "1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-opd"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "bal-phone-slid",
+   "title": "The Balances page slid to its end, iPhone, admin",
+   "drawing": {
+    "script": "docs/mock/2026-11-17-lw-balances-align/bal.mjs",
+    "shot": "phone-b-slid"
+   },
+   "approved": {
+    "picture": "phone-b-slid.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "cols",
+     "label": "the headings strip",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left)",
+       "drawing": "-318",
+       "build": "-324",
+       "by": "6px further left",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "720",
+       "build": "726",
+       "by": "6px more",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "bal-phone-slid--cols.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": -318,
+        "y": 193.3,
+        "w": 720,
+        "h": 30
+       },
+       "ink": {
+        "x": -181,
+        "y": 194.3,
+        "w": 527.7,
+        "h": 23
+       },
+       "text": "NAME · GRADE APP BAL CARRIED PENDING APPROVAL WAR BAL OIL CCL FCL PL EL CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "right",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "div.bp-cols"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": -324,
+        "y": 193.3,
+        "w": 726,
+        "h": 30
+       },
+       "ink": {
+        "x": -187,
+        "y": 194.3,
+        "w": 527.7,
+        "h": 23
+       },
+       "text": "NAME · GRADE APP BAL CARRIED PENDING APPROVAL WAR BAL OIL CCL FCL PL EL CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "right",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "div.bp-cols"
+      }
+     }
+    },
+    {
+     "part": "h-pl",
+     "label": "the \"PL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 218,
+        "y": 206.3,
+        "w": 10.4,
+        "h": 11
+       },
+       "ink": {
+        "x": 218,
+        "y": 205.3,
+        "w": 10.4,
+        "h": 12
+       },
+       "text": "PL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.ok"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 212,
+        "y": 206.3,
+        "w": 10.4,
+        "h": 11
+       },
+       "ink": {
+        "x": 212,
+        "y": 205.3,
+        "w": 10.4,
+        "h": 12
+       },
+       "text": "PL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "h-el",
+     "label": "the \"EL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 277,
+        "y": 206.3,
+        "w": 9.8,
+        "h": 11
+       },
+       "ink": {
+        "x": 277,
+        "y": 205.3,
+        "w": 9.8,
+        "h": 12
+       },
+       "text": "EL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.ok"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 271,
+        "y": 206.3,
+        "w": 9.8,
+        "h": 11
+       },
+       "ink": {
+        "x": 271,
+        "y": 205.3,
+        "w": 9.8,
+        "h": 12
+       },
+       "text": "EL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "h-cl",
+     "label": "the \"CL\" heading",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 336,
+        "y": 206.3,
+        "w": 10.7,
+        "h": 11
+       },
+       "ink": {
+        "x": 336,
+        "y": 205.3,
+        "w": 10.7,
+        "h": 12
+       },
+       "text": "CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span.ok"
+      },
+      "build": {
+       "found": true,
+       "count": 11,
+       "box": {
+        "x": 330,
+        "y": 206.3,
+        "w": 10.7,
+        "h": 11
+       },
+       "ink": {
+        "x": 330,
+        "y": 205.3,
+        "w": 10.7,
+        "h": 12
+       },
+       "text": "CL",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "0.36px"
+       },
+       "tag": "span"
+      }
+     }
+    },
+    {
+     "part": "row",
+     "label": "Ranger's row",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left)",
+       "drawing": "-318",
+       "build": "-324",
+       "by": "6px further left",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "720",
+       "build": "726",
+       "by": "6px more",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "bal-phone-slid--row.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": -318,
+        "y": 453.3,
+        "w": 720,
+        "h": 50
+       },
+       "ink": {
+        "x": -66,
+        "y": 455.8,
+        "w": 463,
+        "h": 38.5
+       },
+       "text": "Ranger IP Senior pilot · +36 2.5 12.5 0 › 1 0.5 1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "1px solid rgb(26, 32, 39)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bp-row"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": -324,
+        "y": 453.3,
+        "w": 726,
+        "h": 50
+       },
+       "ink": {
+        "x": -72,
+        "y": 455.8,
+        "w": 463,
+        "h": 38.5
+       },
+       "text": "Ranger IP Senior pilot · +36 2.5 12.5 0 › 1 0.5 1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "1px solid rgb(26, 32, 39)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bp-row"
+      }
+     }
+    },
+    {
+     "part": "pl-box",
+     "label": "Ranger's PL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 218,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 255.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "2 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 212,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 249.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "2 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "el-box",
+     "label": "Ranger's EL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 277,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 314.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "4 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 271,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 308.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "4 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "cl-box",
+     "label": "Ranger's CL box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 336,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 373.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 330,
+        "y": 462.8,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 367.9,
+        "y": 469.4,
+        "w": 8.1,
+        "h": 16.8
+       },
+       "text": "1 ",
+       "typed": true,
+       "marked": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx.sm"
+      }
+     }
+    },
+    {
+     "part": "pl-tag",
+     "label": "Ranger's PL corner tag",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 3,
+       "box": {
+        "x": 258.5,
+        "y": 454.8,
+        "w": 25.5,
+        "h": 17
+       },
+       "ink": {
+        "x": 263.5,
+        "y": 455.8,
+        "w": 15.5,
+        "h": 15
+       },
+       "text": "0.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.mk-badge"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 252.5,
+        "y": 454.8,
+        "w": 25.5,
+        "h": 17
+       },
+       "ink": {
+        "x": 257.5,
+        "y": 455.8,
+        "w": 15.5,
+        "h": 15
+       },
+       "text": "0.5",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-opd"
+      }
+     }
+    },
+    {
+     "part": "cl-tag",
+     "label": "Ranger's CL corner tag",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 3,
+       "box": {
+        "x": 385.7,
+        "y": 454.8,
+        "w": 16.3,
+        "h": 17
+       },
+       "ink": {
+        "x": 390.7,
+        "y": 455.8,
+        "w": 6.3,
+        "h": 15
+       },
+       "text": "1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.mk-badge"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 379.7,
+        "y": 454.8,
+        "w": 16.3,
+        "h": 17
+       },
+       "ink": {
+        "x": 384.7,
+        "y": 455.8,
+        "w": 6.3,
+        "h": 15
+       },
+       "text": "1",
+       "typed": false,
+       "marked": false,
+       "look": {
+        "fill": "rgb(11, 13, 16)",
+        "image": "",
+        "edge": [
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)",
+         "1px dashed rgba(242, 200, 121, 0.85)"
+        ],
+        "corners": [
+         "5px",
+         "5px",
+         "5px",
+         "5px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-opd"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

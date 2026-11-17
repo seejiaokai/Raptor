@@ -1,0 +1,16 @@
+# W2 report (ea-webkit.md)
+
+| scenario | size | role | what I did | what the screen showed | verdict | pictures |
+|---|---|---|---|---|---|---|
+| E-a | 402 webkit | admin | tap l7 (box [232,419,106,67]), picture at once and settled; no script scrolling | list slide 0/368; Save/Cancel/Delete: {"edit-save":{"l":238,"r":290,"whole":true,"onTop":true,"topIs":"oil-edit-save"},"edit-cancel":{"l":293,"r":343,"whole":true,"onTop":true,"topIs":"oil-edit-cancel"},"del-l7":{"l":346,"r":429,"whole":false,"onTop":true,"topIs":"SPAN"}}; cut at screen edge: del-l7 l346..r429 (screen 402); covered by something else at its middle: none | RECORDED | w2-Ea-webkit-l7-1-opened-fast.png, w2-Ea-webkit-l7-2-opened-settled.png |
+| E-a | 402 webkit | admin | finger slide | NOT WALKED in WebKit: touches made in the page drive no browser scroll in this test browser (walk-scripts §4); done in Chromium over CDP instead | RECORDED |  |
+| S2 | 402 webkit | admin | tap reason and given-by, typed " ok" and "Test" | editor geometry relative to its box unchanged: true; reason value Weekend ok recovery; given Test | PASS | w2-Ea-webkit-l7-4-typed.png |
+| S2 | 402 webkit | admin | real tap on Delete (visible part) | Delete reads "Really delete?"; editor geometry unchanged: true; list slide now {"sl":35,"st":0,"sw":774,"cw":406} | PASS | w2-Ea-webkit-l7-5-delete-armed.png |
+| E-a | 402 webkit | admin | real tap on Cancel (ok) | editor closed: true; entries still 1 | PASS | w2-Ea-webkit-l7-6-after-cancel.png |
+| E-a | 402 webkit | admin | tap dol-1 (box [302,419,106,67]), picture at once and settled; no script scrolling | list slide 35/368; Save/Cancel/Delete: {"edit-save":{"l":309,"r":360,"whole":true,"onTop":true,"topIs":"oil-edit-save"},"edit-cancel":{"l":363,"r":413,"whole":false,"onTop":true,"topIs":"oil-edit-cancel"},"del-dol-1":{"l":417,"r":500,"whole":false,"onTop":false,"topIs":"oil-edit-cancel"}}; cut at screen edge: edit-cancel l363..r413 (screen 402); del-dol-1 l417..r500 (screen 402); covered by something else at its middle: none | RECORDED | w2-Ea-webkit-dol-1-1-opened-fast.png, w2-Ea-webkit-dol-1-2-opened-settled.png |
+| E-a | 402 webkit | admin | finger slide | NOT WALKED in WebKit: touches made in the page drive no browser scroll in this test browser (walk-scripts §4); done in Chromium over CDP instead | RECORDED |  |
+| S2 | 402 webkit | admin | tap reason and given-by, typed " ok" and "Test" | editor geometry relative to its box unchanged: true; reason value Exercise  okrecovery; given OC Ops | PASS | w2-Ea-webkit-dol-1-4-typed.png |
+| S2 | 402 webkit | admin | real tap on Delete (visible part) | Delete reads "Really delete?"; editor geometry unchanged: true; list slide now {"sl":140,"st":0,"sw":774,"cw":406} | PASS | w2-Ea-webkit-dol-1-5-delete-armed.png |
+| E-a | 402 webkit | admin | real tap on Cancel (ok) | editor closed: true; entries still 1 | PASS | w2-Ea-webkit-dol-1-6-after-cancel.png |
+| E-a | 402 webkit | admin | amount set to 3, real tap on Save (ok) | editor closed: true; the award box reads "+314 MarOC OpsExercise recovery3 left" | PASS | w2-Ea-webkit-dol1-7-after-save.png |
+| E-a | 402 webkit | admin | real taps on Delete twice | first tap: true reads "Really delete?"; second: true; award gone: true | PASS | w2-Ea-webkit-dol1-8-after-delete.png |

@@ -1,0 +1,1159 @@
+{
+ "state": "bal-phone",
+ "drawing": {
+  "script": "docs/mock/2026-11-17-lw-balances-align/bal.mjs",
+  "shot": "phone-b"
+ },
+ "recorded": "2026-11-17T05:42:01.288Z",
+ "drawnOn": "main at 3a51c06a3",
+ "checkout": "00ffaea76",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "cols": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 193.3,
+    "w": 720,
+    "h": 30
+   },
+   "ink": {
+    "x": 12,
+    "y": 194.3,
+    "w": 652.7,
+    "h": 23
+   },
+   "text": "NAME · GRADE APP BAL CARRIED PENDING APPROVAL WAR BAL OIL CCL FCL PL EL CL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "right",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "div.bp-cols"
+  },
+  "h-name": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 0,
+    "y": 193.3,
+    "w": 78.4,
+    "h": 24
+   },
+   "ink": {
+    "x": 12,
+    "y": 205.3,
+    "w": 66.4,
+    "h": 12
+   },
+   "text": "NAME · GRADE",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "flex-start",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span"
+  },
+  "h-app": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 137,
+    "y": 206.3,
+    "w": 37.4,
+    "h": 11
+   },
+   "ink": {
+    "x": 137,
+    "y": 205.3,
+    "w": 37.4,
+    "h": 12
+   },
+   "text": "APP BAL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span"
+  },
+  "h-cf": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 196,
+    "y": 206.3,
+    "w": 39.1,
+    "h": 11
+   },
+   "ink": {
+    "x": 196,
+    "y": 205.3,
+    "w": 39.1,
+    "h": 12
+   },
+   "text": "CARRIED",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span"
+  },
+  "h-pd": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 245,
+    "y": 195.3,
+    "w": 47.5,
+    "h": 22
+   },
+   "ink": {
+    "x": 245,
+    "y": 194.3,
+    "w": 47.5,
+    "h": 23
+   },
+   "text": "PENDING APPROVAL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span"
+  },
+  "h-war": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 314,
+    "y": 206.3,
+    "w": 40.9,
+    "h": 11
+   },
+   "ink": {
+    "x": 314,
+    "y": 205.3,
+    "w": 40.9,
+    "h": 12
+   },
+   "text": "WAR BAL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span"
+  },
+  "h-oil": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 369,
+    "y": 206.3,
+    "w": 21.9,
+    "h": 11
+   },
+   "ink": {
+    "x": 376,
+    "y": 205.3,
+    "w": 14.9,
+    "h": 12
+   },
+   "text": "OIL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "1px solid rgb(34, 42, 51)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span.sep"
+  },
+  "h-ccl": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 418,
+    "y": 206.3,
+    "w": 23.4,
+    "h": 11
+   },
+   "ink": {
+    "x": 425,
+    "y": 205.3,
+    "w": 16.4,
+    "h": 12
+   },
+   "text": "CCL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "1px solid rgb(34, 42, 51)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span.ok.sep"
+  },
+  "h-fcl": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 477,
+    "y": 206.3,
+    "w": 15.6,
+    "h": 11
+   },
+   "ink": {
+    "x": 477,
+    "y": 205.3,
+    "w": 15.6,
+    "h": 12
+   },
+   "text": "FCL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span.ok"
+  },
+  "h-pl": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 536,
+    "y": 206.3,
+    "w": 10.4,
+    "h": 11
+   },
+   "ink": {
+    "x": 536,
+    "y": 205.3,
+    "w": 10.4,
+    "h": 12
+   },
+   "text": "PL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span.ok"
+  },
+  "h-el": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 595,
+    "y": 206.3,
+    "w": 9.8,
+    "h": 11
+   },
+   "ink": {
+    "x": 595,
+    "y": 205.3,
+    "w": 9.8,
+    "h": 12
+   },
+   "text": "EL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span.ok"
+  },
+  "h-cl": {
+   "found": true,
+   "count": 11,
+   "box": {
+    "x": 654,
+    "y": 206.3,
+    "w": 10.7,
+    "h": 11
+   },
+   "ink": {
+    "x": 654,
+    "y": 205.3,
+    "w": 10.7,
+    "h": 12
+   },
+   "text": "CL",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "0.36px"
+   },
+   "tag": "span.ok"
+  },
+  "row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 453.3,
+    "w": 720,
+    "h": 50
+   },
+   "ink": {
+    "x": 12,
+    "y": 455.8,
+    "w": 703,
+    "h": 38.5
+   },
+   "text": "Ranger IP Senior pilot · +36 2.5 12.5 0 › 1 0.5 1",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "1px solid rgb(26, 32, 39)",
+     "0px none rgb(201, 209, 217)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "right",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bp-row"
+  },
+  "name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 461.3,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 17,
+    "y": 462,
+    "w": 65.3,
+    "h": 12.3
+   },
+   "text": "Ranger IP",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.bp-name"
+  },
+  "app-box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 137,
+    "y": 462.8,
+    "w": 54,
+    "h": 30
+   },
+   "ink": {
+    "x": 166.9,
+    "y": 469.4,
+    "w": 16.1,
+    "h": 16.8
+   },
+   "text": "15 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx"
+  },
+  "cf-box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 196,
+    "y": 462.8,
+    "w": 44,
+    "h": 30
+   },
+   "ink": {
+    "x": 223.9,
+    "y": 469.4,
+    "w": 8.1,
+    "h": 16.8
+   },
+   "text": "2 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx.sm"
+  },
+  "pend-tag": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 245,
+    "y": 467,
+    "w": 30,
+    "h": 22
+   },
+   "ink": {
+    "x": 252,
+    "y": 470,
+    "w": 16,
+    "h": 16
+   },
+   "text": "2.5",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px dashed rgba(242, 200, 121, 0.8)",
+     "1px dashed rgba(242, 200, 121, 0.8)",
+     "1px dashed rgba(242, 200, 121, 0.8)",
+     "1px dashed rgba(242, 200, 121, 0.8)"
+    ],
+    "corners": [
+     "6px",
+     "6px",
+     "6px",
+     "6px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 200, 121)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.mk-pd"
+  },
+  "war": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 314,
+    "y": 467.8,
+    "w": 29.8,
+    "h": 20
+   },
+   "ink": {
+    "x": 314,
+    "y": 467.8,
+    "w": 29.8,
+    "h": 20
+   },
+   "text": "12.5",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "left",
+    "justify": "normal",
+    "font": "800 15px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.bp-war"
+  },
+  "oil": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 376,
+    "y": 468.3,
+    "w": 17.6,
+    "h": 19
+   },
+   "ink": {
+    "x": 376,
+    "y": 468.3,
+    "w": 17.6,
+    "h": 19
+   },
+   "text": "0 ›",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(230, 237, 243)",
+     "0px none rgb(230, 237, 243)",
+     "0px none rgb(230, 237, 243)",
+     "0px none rgb(230, 237, 243)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(230, 237, 243)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 14px",
+    "spacing": "normal"
+   },
+   "tag": "button.bp-oil"
+  },
+  "ccl-box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 425,
+    "y": 462.8,
+    "w": 54,
+    "h": 30
+   },
+   "ink": {
+    "x": 462.9,
+    "y": 469.4,
+    "w": 8.1,
+    "h": 16.8
+   },
+   "text": "3 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx.sm"
+  },
+  "fcl-box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 477,
+    "y": 462.8,
+    "w": 54,
+    "h": 30
+   },
+   "ink": {
+    "x": 514.9,
+    "y": 469.4,
+    "w": 8.1,
+    "h": 16.8
+   },
+   "text": "5 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx.sm"
+  },
+  "pl-box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 536,
+    "y": 462.8,
+    "w": 54,
+    "h": 30
+   },
+   "ink": {
+    "x": 573.9,
+    "y": 469.4,
+    "w": 8.1,
+    "h": 16.8
+   },
+   "text": "2 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx.sm"
+  },
+  "el-box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 595,
+    "y": 462.8,
+    "w": 54,
+    "h": 30
+   },
+   "ink": {
+    "x": 632.9,
+    "y": 469.4,
+    "w": 8.1,
+    "h": 16.8
+   },
+   "text": "4 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx.sm"
+  },
+  "cl-box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 654,
+    "y": 462.8,
+    "w": 54,
+    "h": 30
+   },
+   "ink": {
+    "x": 691.9,
+    "y": 469.4,
+    "w": 8.1,
+    "h": 16.8
+   },
+   "text": "1 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 14px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx.sm"
+  },
+  "ccl-tag": {
+   "found": true,
+   "count": 3,
+   "box": {
+    "x": 474.7,
+    "y": 454.8,
+    "w": 16.3,
+    "h": 17
+   },
+   "ink": {
+    "x": 479.7,
+    "y": 455.8,
+    "w": 6.3,
+    "h": 15
+   },
+   "text": "1",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "",
+    "edge": [
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 200, 121)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.mk-badge"
+  },
+  "pl-tag": {
+   "found": true,
+   "count": 3,
+   "box": {
+    "x": 576.5,
+    "y": 454.8,
+    "w": 25.5,
+    "h": 17
+   },
+   "ink": {
+    "x": 581.5,
+    "y": 455.8,
+    "w": 15.5,
+    "h": 15
+   },
+   "text": "0.5",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "",
+    "edge": [
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 200, 121)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.mk-badge"
+  },
+  "cl-tag": {
+   "found": true,
+   "count": 3,
+   "box": {
+    "x": 703.7,
+    "y": 454.8,
+    "w": 16.3,
+    "h": 17
+   },
+   "ink": {
+    "x": 708.7,
+    "y": 455.8,
+    "w": 6.3,
+    "h": 15
+   },
+   "text": "1",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "",
+    "edge": [
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)",
+     "1px dashed rgba(242, 200, 121, 0.85)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 200, 121)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.mk-badge"
+  }
+ },
+ "approved": {
+  "picture": "phone-b.png",
+  "identical": true
+ }
+}

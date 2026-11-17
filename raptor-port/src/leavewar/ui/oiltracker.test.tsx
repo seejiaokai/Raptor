@@ -269,6 +269,10 @@ describe('the credit boxes', () => {
     expect(box.textContent).toContain('CNY workplan')
     expect(box.className).toContain('grant')
     fireEvent.click(box)
+    /* GitHub's code check on the D2155 build, 17 Nov 26: a code note written bare inside the editor was drawn on screen as
+       words. The editor shows its fields and buttons and nothing else — no line of a code note in sight. */
+    const edText = screen.getByTestId('oil-entry-l4').textContent ?? ''
+    expect(edText, 'no code note drawn in the award editor').not.toMatch(/FIXED LAYOUT|D2155|\/\*/)
     fireEvent.change(screen.getByTestId('oil-edit-amt'), { target: { value: '3' } })
     fireEvent.change(screen.getByTestId('oil-edit-reason'), { target: { value: 'CNY workplan (three days)' } })
     fireEvent.change(screen.getByTestId('oil-edit-given'), { target: { value: 'OC Ops' } })

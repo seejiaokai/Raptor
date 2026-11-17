@@ -2736,6 +2736,85 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Principle:** An annotation drawn over a live page belongs to an overlay layer of its own, never inside the elements it annotates, whose own rules (text boxes, clipping, stacking) decide whether it shows.
 **Reference file:** raptor-port/docs/mock/2026-11-17-trk-small/draw.mjs
 
+### Observation 964: A moving value read in one browser-test step and acted on in the next is a race on a slow runner
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 98, the calendar wheels' mouse drag (D2170); numbered past 963, the highest on another branch
+**Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** writing a browser test of motion (a glide, a fling, an animation)
+
+**Issue:** a test read a gliding list's scroll position, then pressed the mouse in the next step, and asserted the two were within 12px; it passed twice on the fast PC and failed on the slower CI runner, where the glide moved further between the two steps. A second check (a finger held for 350 ms) failed the same way.
+**Suggested improvement:** for any assertion about motion around an input event, record the values inside the page with listeners (a capture listener on the window before the event, a bubbling one after, a scroll listener's time stamps), and assert on those; never on two separate round trips from the test runner.
+**Principle:** a round trip from the test runner takes unknown time; anything that moves on its own must be measured inside the page, at the event itself.
+
+
+### Observation 965: A bubbling listener on the window can miss a press; and the test's mouse stays where its last move left it
+
+**Status:** OPEN
+**Date:** 2026-11-17
+**Session context:** chat 99 — fixing the calendar wheels' slow-machine test, then writing tests for a reader's findings
+**Skill:** walk-scripts (raptor-port/docs/walk-scripts.md) / test-driven-development
+**Type:** open-source
+**Phase/Area:** measuring an event inside the page (Observation 964's method); relative mouse moves in a browser test
+
+**Issue:** applying 964's "a bubbling listener after" to read a list's place after a press read nothing: the page stopped the press from bubbling to the window (an outside-click guard), so the reading stayed empty and the check failed on correct code. Separately, a new test "dragged up one row" with a move to the list's middle minus 44px, but an earlier flick had left the mouse 132px up, so the move went DOWN two rows; the first failure looked like an app fault until every scroll and press was logged in the page.
+**Suggested improvement:** in 964's method, read "after" from a capture listener that schedules the read (two animation frames later, so one frame is drawn), never a bubbling listener on the window; in the walk-scripts guide, a line: a relative mouse move starts from where the last one left the mouse — write moves from the press point, and log presses and scrolls in the page before believing a wrong landing.
+**Principle:** a listener that depends on the page letting an event bubble is not a measurement; and a test's own pointer state is part of its setup.
+
+### Observation 966: A FULL bug check of a four-item batch does not fit the chat that builds it
+
+**Status:** OPEN
+**Date:** 2026-11-17
+**Session context:** chat 99, building four Leave War items on one branch with one FULL bug check (number taken past 965, the highest on any branch; the calendar chat holds unpushed notes too)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** planning the handoff point at the start of a batch
+
+**Issue:** reading the rules, the drawings and four areas of code to build a four-item batch filled the chat to 85% before the bug check began, so the FULL check (walkers, two reads, re-walk) had to move to a fresh chat mid-job.
+**Suggested improvement:** when a batch of three or more items is sized FULL, plan the handoff at the start: one chat builds, pushes and opens the pull request; the next runs the whole check from the evidence sheet onward. Say so in the opening tier block.
+**Principle:** size the context a job needs before starting it, and put the planned handoff at a natural seam (build done, pushed) instead of where the context runs out.
+
+### Observation 967: A drawing made by injecting CSS into the live page does not prove the built rule matches
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 100, the four Leave War items' bug check (claude/lw-four-items)
+**Skill:** impeccable
+**Type:** open-source
+**Phase/Area:** mock-ups drawn on the running app by injected CSS; moving the drawing's rules into the source
+
+**Issue:** The grid's hover ring was drawn for approval by injecting a rule into the running build, where it worked. Moved over "whole" into a stylesheet that is wrapped in a page-scoping nesting block, its selector began with `body`, which the nesting turned into "a body inside the page" — it matched nothing, and the ring never drew. Unit tests (no CSS) and a code read passed; only a browser test asserting the computed style on the hovered element caught it.
+**Suggested improvement:** In the build step after a drawing approved as injected CSS: for every moved rule, a browser assertion of the computed style on the element it must paint, in the built app, before the job is called built; and a note that rules moved into a nested / scoped stylesheet must not start at `html`, `body` or `:root`.
+**Principle:** CSS proven by injection proves the look, not the selector's reach once it is placed in its real file; assert the computed style where it must paint.
+
+### Observation 969: A walker's brief should name each role's test records, or a role's different data reads as a missing one
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 103, closing the four Leave War items' FULL bug check (claude/lw-four-items); number taken past 968, held on another branch
+**Skill:** New skill candidate: bug-check walker briefs (the bug-check order's §4 "before a brief leaves")
+**Type:** open-source
+**Phase/Area:** writing a walker's brief that switches between an admin and a member
+
+**Issue:** A walker signed in as a member looked for the same award records it had seen as the admin and reported one "missing". The member's own page holds different people and awards by design; the host spent a reproduction to find the lead false.
+**Suggested improvement:** When a brief walks one surface under two roles, name for each role the records it should expect to find (or say plainly they differ and why), so a walker compares like with like.
+**Principle:** a walker given one role's expectations will read another role's legitimately different data as a fault; the brief carries the expected data per role.
+
+### Observation 972: A test's "if the thing is found" guard silently ran nothing
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 105, the Leave War row tint and the OIL editor's click-away (number past 971, the highest on another open branch)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the assertions of a browser test
+
+**Issue:** Two browser tests checked "the signed-in person's own row keeps its highlight" inside `if (row found) { … }`. The suite runs with no row marked as anyone's own, so the check never ran in any run, on any machine, and both tests stayed green. A blind code reader spotted the pattern; the host confirmed it by turning the guard into an assertion, which failed at once.
+**Suggested improvement:** In the section on writing a test, add a rule: a check that only runs when its subject is found must assert the subject was found (or set the state up so it is), never skip quietly; a reader's brief asks for every conditional around an assertion.
+**Principle:** An assertion behind a condition is not a check unless the condition is itself asserted — a skipped check reads as a passed one.
+
 ### Observation 961: A picture of a screen that does not name its owner leaves "whose view is this?" to the caption
 
 **Status:** OPEN

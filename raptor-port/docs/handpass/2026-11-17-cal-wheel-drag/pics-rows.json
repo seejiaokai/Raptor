@@ -1,0 +1,1304 @@
+{
+ "rows": [
+  {
+   "n": 1,
+   "surf": "admin-postin",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value 2026-11-17 -> 2026-11-17",
+   "pic": "01-admin-postin-A-year-drag-desk.png"
+  },
+  {
+   "n": 1,
+   "surf": "admin-postin",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month November -> September (want September); scrollTop 2552 (whole true); open true; hosts unchanged; value 2026-11-17",
+   "pic": "01-admin-postin-B-month-drag-desk.png"
+  },
+  {
+   "n": 1,
+   "surf": "admin-postin",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2062 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "01-admin-postin-C-flick-desk.png"
+  },
+  {
+   "n": 1,
+   "surf": "admin-postin",
+   "step": "D drag up 44px, release sideways off the card at x=1280",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2062 -> 2063 (want 2063); released over \"dcal-scrim\"; open true; scrollTop 2684 (whole true); hosts unchanged; value 2026-11-17",
+   "pic": "01-admin-postin-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 1,
+   "surf": "admin-postin",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2063 -> 2064 (want 2064); open true; hosts unchanged",
+   "pic": "01-admin-postin-E-click-row-desk.png"
+  },
+  {
+   "n": 1,
+   "surf": "admin-postin",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2064 -> 2067; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 1,
+   "surf": "admin-postin",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "picked 2067-09-16, box shows 2067-09-16 (was 2026-11-17)",
+   "pic": "01-admin-postin-G-result-desk.png"
+  },
+  {
+   "n": 2,
+   "surf": "admin-admWipe-box",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value  -> ",
+   "pic": "02-admin-admWipe-box-A-year-drag-desk.png"
+  },
+  {
+   "n": 2,
+   "surf": "admin-admWipe-box",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month November -> September (want September); scrollTop 2552 (whole true); open true; hosts unchanged; value ",
+   "pic": "02-admin-admWipe-box-B-month-drag-desk.png"
+  },
+  {
+   "n": 2,
+   "surf": "admin-admWipe-box",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2059 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "02-admin-admWipe-box-C-flick-desk.png"
+  },
+  {
+   "n": 2,
+   "surf": "admin-admWipe-box",
+   "step": "D drag up 44px, release sideways off the card at x=1231",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2059 -> 2060 (want 2060); released over \"dcal-scrim\"; open true; scrollTop 2684 (whole true); hosts unchanged; value ",
+   "pic": "02-admin-admWipe-box-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 2,
+   "surf": "admin-admWipe-box",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2060 -> 2061 (want 2061); open true; hosts unchanged",
+   "pic": "02-admin-admWipe-box-E-click-row-desk.png"
+  },
+  {
+   "n": 2,
+   "surf": "admin-admWipe-box",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2061 -> 2064; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 2,
+   "surf": "admin-admWipe-box",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "picked 2064-09-16, box shows 2064-09-16; Clear button enabled=true",
+   "pic": "02-admin-admWipe-box-G-result-desk.png"
+  },
+  {
+   "n": 2.1,
+   "surf": "admin-admWipe-run",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value | -> |",
+   "pic": "02a-admin-admWipe-run-A-year-drag-desk.png"
+  },
+  {
+   "n": 2.1,
+   "surf": "admin-admWipe-run",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month November -> September (want September); scrollTop 2552 (whole true); open true; hosts unchanged; value |",
+   "pic": "02a-admin-admWipe-run-B-month-drag-desk.png"
+  },
+  {
+   "n": 2.1,
+   "surf": "admin-admWipe-run",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2062 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "02a-admin-admWipe-run-C-flick-desk.png"
+  },
+  {
+   "n": 2.1,
+   "surf": "admin-admWipe-run",
+   "step": "D drag up 44px, release sideways off the card at x=1231",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2062 -> 2063 (want 2063); released over \"page on\"; open true; scrollTop 2684 (whole true); hosts unchanged; value |",
+   "pic": "02a-admin-admWipe-run-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 2.1,
+   "surf": "admin-admWipe-run",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2063 -> 2064 (want 2064); open true; hosts unchanged",
+   "pic": "02a-admin-admWipe-run-E-click-row-desk.png"
+  },
+  {
+   "n": 2.1,
+   "surf": "admin-admWipe-run",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2064 -> 2067; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 2.1,
+   "surf": "admin-admWipe-run",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "run 2067-09-09 to 2067-09-12 (pressed 2067-09-09, 2067-09-12)",
+   "pic": "02a-admin-admWipe-run-G-result-desk.png"
+  },
+  {
+   "n": 2.2,
+   "surf": "admin-admLog-run",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value | -> |",
+   "pic": "02b-admin-admLog-run-A-year-drag-desk.png"
+  },
+  {
+   "n": 2.2,
+   "surf": "admin-admLog-run",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month November -> September (want September); scrollTop 2552 (whole true); open true; hosts unchanged; value |",
+   "pic": "02b-admin-admLog-run-B-month-drag-desk.png"
+  },
+  {
+   "n": 2.2,
+   "surf": "admin-admLog-run",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2064 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "02b-admin-admLog-run-C-flick-desk.png"
+  },
+  {
+   "n": 2.2,
+   "surf": "admin-admLog-run",
+   "step": "D drag up 44px, release sideways off the card at x=1231",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2064 -> 2065 (want 2065); released over \"page on\"; open true; scrollTop 2684 (whole true); hosts unchanged; value |",
+   "pic": "02b-admin-admLog-run-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 2.2,
+   "surf": "admin-admLog-run",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2065 -> 2066 (want 2066); open true; hosts unchanged",
+   "pic": "02b-admin-admLog-run-E-click-row-desk.png"
+  },
+  {
+   "n": 2.2,
+   "surf": "admin-admLog-run",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2066 -> 2069; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 2.2,
+   "surf": "admin-admLog-run",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "run 2069-09-09 to 2069-09-12 (pressed 2069-09-09, 2069-09-12)",
+   "pic": "02b-admin-admLog-run-G-result-desk.png"
+  },
+  {
+   "n": 3,
+   "surf": "inputs-cal",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value  -> ",
+   "pic": "03-inputs-cal-A-year-drag-desk.png"
+  },
+  {
+   "n": 3,
+   "surf": "inputs-cal",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month November -> September (want September); scrollTop 2552 (whole true); open true; hosts unchanged; value ",
+   "pic": "03-inputs-cal-B-month-drag-desk.png"
+  },
+  {
+   "n": 3,
+   "surf": "inputs-cal",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2066 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "03-inputs-cal-C-flick-desk.png"
+  },
+  {
+   "n": 3,
+   "surf": "inputs-cal",
+   "step": "D drag up 44px, release sideways off the card at x=771",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2066 -> 2067 (want 2067); released over \"dcal-scrim\"; open true; scrollTop 2684 (whole true); hosts unchanged; value ",
+   "pic": "03-inputs-cal-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 3,
+   "surf": "inputs-cal",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2067 -> 2068 (want 2068); open true; hosts unchanged",
+   "pic": "03-inputs-cal-E-click-row-desk.png"
+  },
+  {
+   "n": 3,
+   "surf": "inputs-cal",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2068 -> 2071; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 3,
+   "surf": "inputs-cal",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "chooser closed, page shows \"SEPTEMBER 2071\" (wheel left it on year 2071, month September)",
+   "pic": "03-inputs-cal-G-result-desk.png"
+  },
+  {
+   "n": 4,
+   "surf": "sans-cal",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value  -> ",
+   "pic": "04-sans-cal-A-year-drag-desk.png"
+  },
+  {
+   "n": 4,
+   "surf": "sans-cal",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month November -> September (want September); scrollTop 2552 (whole true); open true; hosts unchanged; value ",
+   "pic": "04-sans-cal-B-month-drag-desk.png"
+  },
+  {
+   "n": 4,
+   "surf": "sans-cal",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2066 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "04-sans-cal-C-flick-desk.png"
+  },
+  {
+   "n": 4,
+   "surf": "sans-cal",
+   "step": "D drag up 44px, release sideways off the card at x=771",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2066 -> 2067 (want 2067); released over \"dcal-scrim\"; open true; scrollTop 2684 (whole true); hosts unchanged; value ",
+   "pic": "04-sans-cal-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 4,
+   "surf": "sans-cal",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2067 -> 2068 (want 2068); open true; hosts unchanged",
+   "pic": "04-sans-cal-E-click-row-desk.png"
+  },
+  {
+   "n": 4,
+   "surf": "sans-cal",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2068 -> 2071; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 4,
+   "surf": "sans-cal",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "chooser closed, page shows \"SEPTEMBER 2071\" (wheel left year 2071, month September)",
+   "pic": "04-sans-cal-G-result-desk.png"
+  },
+  {
+   "n": 5,
+   "surf": "input-window",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value 0|1 -> 0|1",
+   "pic": "05-input-window-A-year-drag-desk.png"
+  },
+  {
+   "n": 5,
+   "surf": "input-window",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month July -> May (want May); scrollTop 2552 (whole true); open true; hosts unchanged; value 0|1",
+   "pic": "05-input-window-B-month-drag-desk.png"
+  },
+  {
+   "n": 5,
+   "surf": "input-window",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2062 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "05-input-window-C-flick-desk.png"
+  },
+  {
+   "n": 5,
+   "surf": "input-window",
+   "step": "D drag up 44px, release sideways off the card at x=1050",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2062 -> 2063 (want 2063); released over \"HTML\"; open true; scrollTop 2684 (whole true); hosts unchanged; value 0|1",
+   "pic": "05-input-window-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 5,
+   "surf": "input-window",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2063 -> 2064 (want 2064); open true; hosts unchanged",
+   "pic": "05-input-window-E-click-row-desk.png"
+  },
+  {
+   "n": 5,
+   "surf": "input-window",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2064 -> 2067; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 5,
+   "surf": "input-window",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "pressed 2067-05-13; the calendar's foot says \"(no foot)\"",
+   "pic": "05-input-window-G-result-desk.png"
+  },
+  {
+   "n": 6,
+   "surf": "list-filter",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value 17 Nov → 1 Dec -> 17 Nov → 1 Dec",
+   "pic": "06-list-filter-A-year-drag-desk.png"
+  },
+  {
+   "n": 6,
+   "surf": "list-filter",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month November -> September (want September); scrollTop 2552 (whole true); open true; hosts unchanged; value 17 Nov → 1 Dec",
+   "pic": "06-list-filter-B-month-drag-desk.png"
+  },
+  {
+   "n": 6,
+   "surf": "list-filter",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2063 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "06-list-filter-C-flick-desk.png"
+  },
+  {
+   "n": 6,
+   "surf": "list-filter",
+   "step": "D drag up 44px, release sideways off the card at x=383",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2063 -> 2064 (want 2064); released over \"BODY\"; open true; scrollTop 2684 (whole true); hosts unchanged; value 17 Nov → 1 Dec",
+   "pic": "06-list-filter-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 6,
+   "surf": "list-filter",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2064 -> 2065 (want 2065); open true; hosts unchanged",
+   "pic": "06-list-filter-E-click-row-desk.png"
+  },
+  {
+   "n": 6,
+   "surf": "list-filter",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2065 -> 2068; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 6,
+   "surf": "list-filter",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "range pressed 2068-09-09 to 2068-09-12; the filter button reads \"9 Sep 68 → 12 Sep 68\"",
+   "pic": "06-list-filter-G-result-desk.png"
+  },
+  {
+   "n": 7,
+   "surf": "oil-someday",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value 1|2026-07 -> 1|2029-07",
+   "pic": "07-oil-someday-A-year-drag-desk.png"
+  },
+  {
+   "n": 7,
+   "surf": "oil-someday",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month July -> May (want May); scrollTop 2552 (whole true); open true; hosts unchanged; value 1|2029-05",
+   "pic": "07-oil-someday-B-month-drag-desk.png"
+  },
+  {
+   "n": 7,
+   "surf": "oil-someday",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2063 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "07-oil-someday-C-flick-desk.png"
+  },
+  {
+   "n": 7,
+   "surf": "oil-someday",
+   "step": "D drag up 44px, release sideways off the card at x=1028",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2063 -> 2064 (want 2064); released over \"oilconf\"; open true; scrollTop 2684 (whole true); hosts unchanged; value 1|2064-05",
+   "pic": "07-oil-someday-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 7,
+   "surf": "oil-someday",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2064 -> 2065 (want 2065); open true; hosts unchanged",
+   "pic": "07-oil-someday-E-click-row-desk.png"
+  },
+  {
+   "n": 7,
+   "surf": "oil-someday",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2065 -> 2068; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 7,
+   "surf": "oil-someday",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "closed the wheels; the calendar's month is 2026-07; 2 pressable day(s) on show (the wheels moved the month away from the question's July 2026 days; going back to July is by Today or by the wheels)",
+   "pic": "07-oil-someday-G-result-desk.png"
+  },
+  {
+   "n": 8,
+   "surf": "jump-date",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value 13/07/2026 -> 13/07/2026",
+   "pic": "08-jump-date-A-year-drag-desk.png"
+  },
+  {
+   "n": 8,
+   "surf": "jump-date",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month July -> May (want May); scrollTop 2552 (whole true); open true; hosts unchanged; value 13/07/2026",
+   "pic": "08-jump-date-B-month-drag-desk.png"
+  },
+  {
+   "n": 8,
+   "surf": "jump-date",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2057 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "08-jump-date-C-flick-desk.png"
+  },
+  {
+   "n": 8,
+   "surf": "jump-date",
+   "step": "D drag up 44px, release sideways off the card at x=4",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2057 -> 2058 (want 2058); released over \"airpop air-below\"; open true; scrollTop 2684 (whole true); hosts unchanged; value 13/07/2026",
+   "pic": "08-jump-date-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 8,
+   "surf": "jump-date",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2058 -> 2059 (want 2059); open true; hosts unchanged",
+   "pic": "08-jump-date-E-click-row-desk.png"
+  },
+  {
+   "n": 8,
+   "surf": "jump-date",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2059 -> 2062; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 8,
+   "surf": "jump-date",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "pressed 2062-05-19; the week went from 13/07/2026 to 15/05/2062",
+   "pic": "08-jump-date-G-result-desk.png"
+  },
+  {
+   "n": 9,
+   "surf": "every-from",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value 2026-11-19|1 -> 2026-11-19|1",
+   "pic": "09-every-from-A-year-drag-desk.png"
+  },
+  {
+   "n": 9,
+   "surf": "every-from",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month November -> September (want September); scrollTop 2552 (whole true); open true; hosts unchanged; value 2026-11-19|1",
+   "pic": "09-every-from-B-month-drag-desk.png"
+  },
+  {
+   "n": 9,
+   "surf": "every-from",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2059 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "09-every-from-C-flick-desk.png"
+  },
+  {
+   "n": 9,
+   "surf": "every-from",
+   "step": "D drag up 44px, release sideways off the card at x=1148",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2059 -> 2060 (want 2060); released over \"dcal-scrim\"; open true; scrollTop 2684 (whole true); hosts unchanged; value 2026-11-19|1",
+   "pic": "09-every-from-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 9,
+   "surf": "every-from",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2060 -> 2061 (want 2061); open true; hosts unchanged",
+   "pic": "09-every-from-E-click-row-desk.png"
+  },
+  {
+   "n": 9,
+   "surf": "every-from",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2061 -> 2064; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 9,
+   "surf": "every-from",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "picked 2064-09-16, From box shows 2064-09-16 (was 2026-11-19); Every window still up=1",
+   "pic": "09-every-from-G-result-desk.png"
+  },
+  {
+   "n": 10,
+   "surf": "holidays",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value Pick a start date|1 -> Pick a start date|1",
+   "pic": "10-holidays-A-year-drag-desk.png"
+  },
+  {
+   "n": 10,
+   "surf": "holidays",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month November -> September (want September); scrollTop 2552 (whole true); open true; hosts unchanged; value Pick a start date|1",
+   "pic": "10-holidays-B-month-drag-desk.png"
+  },
+  {
+   "n": 10,
+   "surf": "holidays",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2067 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "10-holidays-C-flick-desk.png"
+  },
+  {
+   "n": 10,
+   "surf": "holidays",
+   "step": "D drag up 44px, release sideways off the card at x=1148",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2067 -> 2068 (want 2068); released over \"ib-day is-we\"; open true; scrollTop 2684 (whole true); hosts unchanged; value Pick a start date|1",
+   "pic": "10-holidays-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 10,
+   "surf": "holidays",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2068 -> 2069 (want 2069); open true; hosts unchanged",
+   "pic": "10-holidays-E-click-row-desk.png"
+  },
+  {
+   "n": 10,
+   "surf": "holidays",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2069 -> 2072; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 10,
+   "surf": "holidays",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "pressed 2072-09-10; selection line reads \"10 Sep 72\"",
+   "pic": "10-holidays-G-result-desk.png"
+  },
+  {
+   "n": 11,
+   "surf": "lw-opendates",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value Open for bidding 12 Jan – 16 Jan|1 -> Open for bidding 12 Jan – 16 Jan|1",
+   "pic": "11-lw-opendates-A-year-drag-desk.png"
+  },
+  {
+   "n": 11,
+   "surf": "lw-opendates",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month January -> November (want November); scrollTop 2552 (whole true); open true; hosts unchanged; value Open for bidding 12 Jan – 16 Jan|1",
+   "pic": "11-lw-opendates-B-month-drag-desk.png"
+  },
+  {
+   "n": 11,
+   "surf": "lw-opendates",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2046 (want > 2031); scrollTop 3520 (whole true); open true; hosts unchanged",
+   "pic": "11-lw-opendates-C-flick-desk.png"
+  },
+  {
+   "n": 11,
+   "surf": "lw-opendates",
+   "step": "D drag up 44px, release sideways off the card at x=1088",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2046 -> 2047 (want 2047); released over \"sheet-scrim\"; open true; scrollTop 3564 (whole true); hosts unchanged; value Open for bidding 12 Jan – 16 Jan|1",
+   "pic": "11-lw-opendates-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 11,
+   "surf": "lw-opendates",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2047 -> 2048 (want 2048); open true; hosts unchanged",
+   "pic": "11-lw-opendates-E-click-row-desk.png"
+  },
+  {
+   "n": 11,
+   "surf": "lw-opendates",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2048 -> 2051; scrollTop 3740 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 11,
+   "surf": "lw-opendates",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "pressed 2026-01-10 on the open-dates calendar; the sheet still open=1",
+   "pic": "11-lw-opendates-G-result-desk.png"
+  },
+  {
+   "n": 11.1,
+   "surf": "lw-pi-date",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value 2026-07-14|1 -> 2026-07-14|1",
+   "pic": "11a-lw-pi-date-A-year-drag-desk.png"
+  },
+  {
+   "n": 11.1,
+   "surf": "lw-pi-date",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month July -> May (want May); scrollTop 2552 (whole true); open true; hosts unchanged; value 2026-07-14|1",
+   "pic": "11a-lw-pi-date-B-month-drag-desk.png"
+  },
+  {
+   "n": 11.1,
+   "surf": "lw-pi-date",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2047 (want > 2031); scrollTop 3564 (whole true); open true; hosts unchanged",
+   "pic": "11a-lw-pi-date-C-flick-desk.png"
+  },
+  {
+   "n": 11.1,
+   "surf": "lw-pi-date",
+   "step": "D drag up 44px, release sideways off the card at x=1088",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2047 -> 2048 (want 2048); released over \"dcal-scrim\"; open true; scrollTop 3608 (whole true); hosts unchanged; value 2026-07-14|1",
+   "pic": "11a-lw-pi-date-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 11.1,
+   "surf": "lw-pi-date",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2048 -> 2049 (want 2049); open true; hosts unchanged",
+   "pic": "11a-lw-pi-date-E-click-row-desk.png"
+  },
+  {
+   "n": 11.1,
+   "surf": "lw-pi-date",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2049 -> 2052; scrollTop 3784 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 11.1,
+   "surf": "lw-pi-date",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "picked 2052-05-16, box shows 2052-05-16 (was 2026-07-14); sheet still open=1",
+   "pic": "11a-lw-pi-date-G-result-desk.png"
+  },
+  {
+   "n": 11.2,
+   "surf": "lw-po-date",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value 2026-07-14|1 -> 2026-07-14|1",
+   "pic": "11b-lw-po-date-A-year-drag-desk.png"
+  },
+  {
+   "n": 11.2,
+   "surf": "lw-po-date",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month July -> May (want May); scrollTop 2552 (whole true); open true; hosts unchanged; value 2026-07-14|1",
+   "pic": "11b-lw-po-date-B-month-drag-desk.png"
+  },
+  {
+   "n": 11.2,
+   "surf": "lw-po-date",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2045 (want > 2031); scrollTop 3476 (whole true); open true; hosts unchanged",
+   "pic": "11b-lw-po-date-C-flick-desk.png"
+  },
+  {
+   "n": 11.2,
+   "surf": "lw-po-date",
+   "step": "D drag up 44px, release sideways off the card at x=1088",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2045 -> 2046 (want 2046); released over \"dcal-scrim\"; open true; scrollTop 3520 (whole true); hosts unchanged; value 2026-07-14|1",
+   "pic": "11b-lw-po-date-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 11.2,
+   "surf": "lw-po-date",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2046 -> 2047 (want 2047); open true; hosts unchanged",
+   "pic": "11b-lw-po-date-E-click-row-desk.png"
+  },
+  {
+   "n": 11.2,
+   "surf": "lw-po-date",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2047 -> 2050; scrollTop 3696 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 11.2,
+   "surf": "lw-po-date",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "picked 2050-05-16, box shows 2050-05-16 (was 2026-07-14); sheet still open=1",
+   "pic": "11b-lw-po-date-G-result-desk.png"
+  },
+  {
+   "n": 12,
+   "surf": "upchit",
+   "step": "A years drag up 132px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2026 -> 2029 (want 2029); scrollTop 2772 (whole row true); open true; hosts unchanged; value 2026-07-13|1 -> 2026-07-13|1",
+   "pic": "12-upchit-A-year-drag-desk.png"
+  },
+  {
+   "n": 12,
+   "surf": "upchit",
+   "step": "B months drag down 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "month July -> May (want May); scrollTop 2552 (whole true); open true; hosts unchanged; value 2026-07-13|1",
+   "pic": "12-upchit-B-month-drag-desk.png"
+  },
+  {
+   "n": 12,
+   "surf": "upchit",
+   "step": "C quick flick up 88px",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2029 -> 2062 (want > 2031); scrollTop 2640 (whole true); open true; hosts unchanged",
+   "pic": "12-upchit-C-flick-desk.png"
+  },
+  {
+   "n": 12,
+   "surf": "upchit",
+   "step": "D drag up 44px, release sideways off the card at x=1050",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2062 -> 2063 (want 2063); released over \"dcal-scrim\"; open true; scrollTop 2684 (whole true); hosts unchanged; value 2026-07-13|1",
+   "pic": "12-upchit-D-drag-off-card-desk.png"
+  },
+  {
+   "n": 12,
+   "surf": "upchit",
+   "step": "E plain click on the row below the band",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2063 -> 2064 (want 2064); open true; hosts unchanged",
+   "pic": "12-upchit-E-click-row-desk.png"
+  },
+  {
+   "n": 12,
+   "surf": "upchit",
+   "step": "F mouse scroll wheel 132",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "year 2064 -> 2067; scrollTop 2860 (whole true)",
+   "pic": ""
+  },
+  {
+   "n": 12,
+   "surf": "upchit",
+   "step": "G close wheels and finish as a person would",
+   "wd": "desk",
+   "status": "PASS",
+   "detail": "picked 2067-05-16, upchit box shows 2067-05-16 (was 2026-07-13); input window still up=1",
+   "pic": "12-upchit-G-result-desk.png"
+  },
+  {
+   "n": 1,
+   "surf": "admin-postin",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value 2026-11-17 -> 2026-11-17",
+   "pic": "01-admin-postin-H-finger-100ms-phone.png / 01-admin-postin-H-finger-settled-phone.png"
+  },
+  {
+   "n": 1,
+   "surf": "admin-postin",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "picked 2028-11-16, box shows 2028-11-16 (was 2026-11-17)",
+   "pic": "01-admin-postin-G-result-phone.png"
+  },
+  {
+   "n": 2,
+   "surf": "admin-admWipe-box",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value  -> ",
+   "pic": "02-admin-admWipe-box-H-finger-100ms-phone.png / 02-admin-admWipe-box-H-finger-settled-phone.png"
+  },
+  {
+   "n": 2,
+   "surf": "admin-admWipe-box",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "picked 2028-11-16, box shows 2028-11-16; Clear button enabled=true",
+   "pic": "02-admin-admWipe-box-G-result-phone.png"
+  },
+  {
+   "n": 2.1,
+   "surf": "admin-admWipe-run",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value | -> |",
+   "pic": "02a-admin-admWipe-run-H-finger-100ms-phone.png / 02a-admin-admWipe-run-H-finger-settled-phone.png"
+  },
+  {
+   "n": 2.1,
+   "surf": "admin-admWipe-run",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "run 2028-11-09 to 2028-11-12 (pressed 2028-11-09, 2028-11-12)",
+   "pic": "02a-admin-admWipe-run-G-result-phone.png"
+  },
+  {
+   "n": 2.2,
+   "surf": "admin-admLog-run",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value | -> |",
+   "pic": "02b-admin-admLog-run-H-finger-100ms-phone.png / 02b-admin-admLog-run-H-finger-settled-phone.png"
+  },
+  {
+   "n": 2.2,
+   "surf": "admin-admLog-run",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "run 2028-11-09 to 2028-11-12 (pressed 2028-11-09, 2028-11-12)",
+   "pic": "02b-admin-admLog-run-G-result-phone.png"
+  },
+  {
+   "n": 3,
+   "surf": "inputs-cal",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value  -> ",
+   "pic": "03-inputs-cal-H-finger-100ms-phone.png / 03-inputs-cal-H-finger-settled-phone.png"
+  },
+  {
+   "n": 3,
+   "surf": "inputs-cal",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "chooser closed, page shows \"NOV 2028\" (wheel left it on year 2028, month nov)",
+   "pic": "03-inputs-cal-G-result-phone.png"
+  },
+  {
+   "n": 4,
+   "surf": "sans-cal",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value  -> ",
+   "pic": "04-sans-cal-H-finger-100ms-phone.png / 04-sans-cal-H-finger-settled-phone.png"
+  },
+  {
+   "n": 4,
+   "surf": "sans-cal",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "chooser closed, page shows \"NOV 2028\" (wheel left year 2028, month nov)",
+   "pic": "04-sans-cal-G-result-phone.png"
+  },
+  {
+   "n": 5,
+   "surf": "input-window",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value 0|1 -> 0|1",
+   "pic": "05-input-window-H-finger-100ms-phone.png / 05-input-window-H-finger-settled-phone.png"
+  },
+  {
+   "n": 5,
+   "surf": "input-window",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "pressed 2028-07-13; the calendar's foot says \"(no foot)\"",
+   "pic": "05-input-window-G-result-phone.png"
+  },
+  {
+   "n": 6,
+   "surf": "list-filter",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value 17 Nov → 1 Dec -> 17 Nov → 1 Dec",
+   "pic": "06-list-filter-H-finger-100ms-phone.png / 06-list-filter-H-finger-settled-phone.png"
+  },
+  {
+   "n": 6,
+   "surf": "list-filter",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "range pressed 2028-11-09 to 2028-11-12; the filter button reads \"9–12 Nov 28\"",
+   "pic": "06-list-filter-G-result-phone.png"
+  },
+  {
+   "n": 7,
+   "surf": "oil-someday",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value 1|2026-07 -> 1|2028-07",
+   "pic": "07-oil-someday-H-finger-100ms-phone.png / 07-oil-someday-H-finger-settled-phone.png"
+  },
+  {
+   "n": 7,
+   "surf": "oil-someday",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "closed the wheels; the calendar's month is 2026-07; 2 pressable day(s) on show (the wheels moved the month away from the question's July 2026 days; going back to July is by Today or by the wheels)",
+   "pic": "07-oil-someday-G-result-phone.png"
+  },
+  {
+   "n": 8,
+   "surf": "jump-date",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value 13/07/2026 -> 13/07/2026",
+   "pic": "08-jump-date-H-finger-100ms-phone.png / 08-jump-date-H-finger-settled-phone.png"
+  },
+  {
+   "n": 8,
+   "surf": "jump-date",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "pressed 2028-07-19; the week went from 13/07/2026 to 17/07/2028",
+   "pic": "08-jump-date-G-result-phone.png"
+  },
+  {
+   "n": 9,
+   "surf": "every-from",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value 2026-11-19|1 -> 2026-11-19|1",
+   "pic": "09-every-from-H-finger-100ms-phone.png / 09-every-from-H-finger-settled-phone.png"
+  },
+  {
+   "n": 9,
+   "surf": "every-from",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "picked 2028-11-16, From box shows 2028-11-16 (was 2026-11-19); Every window still up=1",
+   "pic": "09-every-from-G-result-phone.png"
+  },
+  {
+   "n": 10,
+   "surf": "holidays",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value Pick a start date|1 -> Pick a start date|1",
+   "pic": "10-holidays-H-finger-100ms-phone.png / 10-holidays-H-finger-settled-phone.png"
+  },
+  {
+   "n": 10,
+   "surf": "holidays",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "pressed 2028-11-10; selection line reads \"10 Nov 28\"",
+   "pic": "10-holidays-G-result-phone.png"
+  },
+  {
+   "n": 11,
+   "surf": "lw-opendates",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value Open\n12 Jan – 16 Jan|1 -> Open\n12 Jan – 16 Jan|1",
+   "pic": "11-lw-opendates-H-finger-100ms-phone.png / 11-lw-opendates-H-finger-settled-phone.png"
+  },
+  {
+   "n": 11,
+   "surf": "lw-opendates",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "pressed 2026-01-10 on the open-dates calendar; the sheet still open=1",
+   "pic": "11-lw-opendates-G-result-phone.png"
+  },
+  {
+   "n": 11.1,
+   "surf": "lw-pi-date",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value 2026-07-14|1 -> 2026-07-14|1",
+   "pic": "11a-lw-pi-date-H-finger-100ms-phone.png / 11a-lw-pi-date-H-finger-settled-phone.png"
+  },
+  {
+   "n": 11.1,
+   "surf": "lw-pi-date",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "picked 2028-07-16, box shows 2028-07-16 (was 2026-07-14); sheet still open=1",
+   "pic": "11a-lw-pi-date-G-result-phone.png"
+  },
+  {
+   "n": 11.2,
+   "surf": "lw-po-date",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value 2026-07-14|1 -> 2026-07-14|1",
+   "pic": "11b-lw-po-date-H-finger-100ms-phone.png / 11b-lw-po-date-H-finger-settled-phone.png"
+  },
+  {
+   "n": 11.2,
+   "surf": "lw-po-date",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "picked 2028-07-16, box shows 2028-07-16 (was 2026-07-14); sheet still open=1",
+   "pic": "11b-lw-po-date-G-result-phone.png"
+  },
+  {
+   "n": 12,
+   "surf": "upchit",
+   "step": "H finger up 100px (CDP touch)",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "year 2026 -> 2028; scrollTop 2728 (whole true, settled true); open true; hosts unchanged; value 2026-07-13|1 -> 2026-07-13|1",
+   "pic": "12-upchit-H-finger-100ms-phone.png / 12-upchit-H-finger-settled-phone.png"
+  },
+  {
+   "n": 12,
+   "surf": "upchit",
+   "step": "G close wheels and finish",
+   "wd": "phone",
+   "status": "PASS",
+   "detail": "picked 2028-07-16, upchit box shows 2028-07-16 (was 2026-07-13); input window still up=1",
+   "pic": "12-upchit-G-result-phone.png"
+  }
+ ],
+ "counts": {
+  "PASS": 144
+ },
+ "secs": 307
+}

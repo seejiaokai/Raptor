@@ -1,0 +1,170 @@
+[
+  {
+    "kind": "desktop",
+    "id": "T1",
+    "pass": true,
+    "note": "name and balance before: bare,bare; under the mouse: tinted, solid, in front,tinted, solid, in front; the row below bare"
+  },
+  {
+    "kind": "desktop",
+    "id": "T2",
+    "pass": true,
+    "note": "the mouse gone: bare,bare"
+  },
+  {
+    "kind": "desktop",
+    "id": "T3",
+    "pass": true,
+    "note": "scrolled sideways, under the mouse: tinted, solid, in front,tinted, solid, in front"
+  },
+  {
+    "kind": "desktop",
+    "id": "C1a",
+    "pass": true,
+    "note": "the editor opened on: oil-entry-l4"
+  },
+  {
+    "kind": "desktop",
+    "id": "C1b",
+    "pass": true,
+    "note": "after the press on the title: editor closed, the award reads +2"
+  },
+  {
+    "kind": "desktop",
+    "id": "C2",
+    "pass": true,
+    "note": "after the press outside: editor closed, reason line \"CNY workplan\""
+  },
+  {
+    "kind": "desktop",
+    "id": "C3",
+    "pass": true,
+    "note": "after a tap on another award: editor on oil-entry-l7 (oil-entry-l7 tapped), the first award's reason \"CNY workplan\""
+  },
+  {
+    "kind": "desktop",
+    "id": "C4",
+    "pass": true,
+    "note": "after Cancel: editor closed, reason line \"CNY workplan\""
+  },
+  {
+    "kind": "desktop",
+    "id": "C5",
+    "pass": true,
+    "note": "the list from 0,724 to 0,844; editor on oil-entry-l4"
+  },
+  {
+    "kind": "desktop",
+    "id": "C6",
+    "pass": true,
+    "note": "after Save: editor closed, the award reads +3"
+  },
+  {
+    "kind": "desktop",
+    "id": "C7",
+    "pass": true,
+    "note": "after a day in its calendar: editor on oil-entry-dol-3; after a press outside with that change: closed"
+  },
+  {
+    "kind": "desktop",
+    "id": "C8a",
+    "pass": true,
+    "note": "after a tap on a name: editor closed, credit bar open"
+  },
+  {
+    "kind": "desktop",
+    "id": "C8b",
+    "pass": true,
+    "note": "after a press outside the bar: credit bar folded"
+  },
+  {
+    "kind": "desktop",
+    "id": "C9",
+    "pass": true,
+    "note": "✕ closed the tracker (true); reopened with editor closed"
+  },
+  {
+    "kind": "desktop",
+    "id": "ERR",
+    "pass": true,
+    "note": "page errors: none"
+  },
+  {
+    "kind": "phone",
+    "id": "T1",
+    "pass": true,
+    "note": "the phone has no mouse — the tint is not in force, a phone unchanged"
+  },
+  {
+    "kind": "phone",
+    "id": "C1a",
+    "pass": true,
+    "note": "the editor opened on: oil-entry-l4"
+  },
+  {
+    "kind": "phone",
+    "id": "C1b",
+    "pass": true,
+    "note": "after the press on the title: editor closed, the award reads +2"
+  },
+  {
+    "kind": "phone",
+    "id": "C2",
+    "pass": true,
+    "note": "after the press outside: editor closed, reason line \"CNY workplan\""
+  },
+  {
+    "kind": "phone",
+    "id": "C3",
+    "pass": true,
+    "note": "after a tap on another award: editor on oil-entry-l7 (oil-entry-l7 tapped), the first award's reason \"CNY workplan\""
+  },
+  {
+    "kind": "phone",
+    "id": "C4",
+    "pass": true,
+    "note": "after Cancel: editor closed, reason line \"CNY workplan\""
+  },
+  {
+    "kind": "phone",
+    "id": "C5",
+    "pass": true,
+    "note": "the list from 40,495 to 107,495; editor on oil-entry-l4"
+  },
+  {
+    "kind": "phone",
+    "id": "C6",
+    "pass": true,
+    "note": "after Save: editor closed, the award reads +3"
+  },
+  {
+    "kind": "phone",
+    "id": "C7",
+    "pass": true,
+    "note": "after a day in its calendar: editor on oil-entry-dol-3; after a press outside with that change: closed"
+  },
+  {
+    "kind": "phone",
+    "id": "C8a",
+    "pass": true,
+    "note": "after a tap on a name: editor closed, credit bar open"
+  },
+  {
+    "kind": "phone",
+    "id": "C8b",
+    "pass": true,
+    "note": "after a press outside the bar: credit bar folded"
+  },
+  {
+    "kind": "phone",
+    "id": "C9",
+    "pass": true,
+    "note": "✕ closed the tracker (true); reopened with editor closed"
+  },
+  {
+    "kind": "phone",
+    "id": "ERR",
+    "pass": true,
+    "note": "page errors: none"
+  }
+]

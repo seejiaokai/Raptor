@@ -355,6 +355,38 @@ export function OilTracker({ person, onClose, onGranted }: {
     })
   }, [view])
 
+  /* AN EDITOR OPENS IN SIGHT (chat 101's walk, W2's E-a, 17 Nov 26): the editing box is wider than the credit it opens on,
+     and on a 402 phone a credit near the list's right edge opened with Cancel cut and Delete wholly past the screen.
+     Once it has drawn, the list slides only as far as the editor needs — its right edge inside the list, its left edge
+     never under the name columns held at the left (the slide's limit, as Balances' tapped box does).
+     …AND UP AND DOWN (the fix round's narrow read, chat 103, 17 Nov 26): the editor stands taller than the award, so the last
+     award at the list's foot opened with its buttons below the list's edge; the list slides up as far as the editor's foot
+     needs, never putting its top under the heading rows held at the top. Done before the first paint (nothing takes focus
+     here, so no browser scroll comes after it): the editor is never drawn cut, even for a frame. The second narrow read
+     (chat 103): the person's group heading ("SXO · 12") is held under the heading rows too, so the top limit leaves room for
+     one; and a refused save's warning, drawn under the buttons after the editor opened, slides into sight the same way. */
+  useLayoutEffect(() => {
+    if (!editId) return
+    const wrap = wrapRef.current
+    const ed = wrap?.querySelector<HTMLElement>('.oil-e.editing')
+    if (!wrap || !ed) return
+    const c = ed.getBoundingClientRect(), a = wrap.getBoundingClientRect()
+    const held = [...(ed.closest('tr')?.querySelectorAll<HTMLElement>('.f') ?? [])].map(f => f.getBoundingClientRect().right)
+    const L = Math.max(a.left, ...held) + 4, Rt = a.left + wrap.clientWidth - 4
+    let dx = 0
+    if (c.right > Rt) dx = c.right - Rt
+    if (c.left - dx < L) dx = c.left - L
+    if (dx) wrap.scrollLeft += dx
+    /* the heading cells are what stick to the list's top, not the heading block itself */
+    const heads = [...wrap.querySelectorAll<HTMLElement>(':scope > table.oil-grid > thead th')].map(h => h.getBoundingClientRect().bottom)
+    const grp = wrap.querySelector<HTMLElement>(':scope > table.oil-grid > tbody tr.oil-grp td')?.getBoundingClientRect().height ?? 0
+    const T = Math.max(a.top, ...heads) + grp + 4, Bt = a.top + wrap.clientHeight - 4
+    let dy = 0
+    if (c.bottom > Bt) dy = c.bottom - Bt
+    if (c.top - dy < T) dy = c.top - T
+    if (dy) wrap.scrollTop += dy
+  }, [editId, eErr])
+
   // Opened on someone: bring their row into view once.
   useEffect(() => {
     if (!person) return
@@ -409,9 +441,44 @@ export function OilTracker({ person, onClose, onGranted }: {
   const done = () => { onGranted?.() }
 
   /* ---- editing an award or a correction ---------------------------------- */
+  /* A CLICK OUTSIDE THE EDITOR (his D2173, D2176 — 17 Nov 26): it closes the editor as Cancel does, an unsaved change
+     dropped ("its known that the change is discarded"); a tap on another award opens that one, as before. */
   const startEdit = (c: OilCredit) => {
     setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null); eIsCorr.current = false; setEHalf(c.half ?? null)
   }
+  /* A CLICK, never the press that starts it: a slide of the list (on a phone, how Delete is reached zoomed in — his D2175)
+     starts with a press outside the editor and ends in no click, so it never closes it. A press in the editor, or in the
+     calendar a correction's date opens (it floats on the page, outside the editor — `.dcal-layer`, as the credit bar
+     spares it above), is the editor's own — and so is a press that BEGAN there: a drag that selects the reason's words
+     and is let go outside sends its click to a box around both, outside the editor (the click-away's code reads, chat
+     104). Listened for on the way down, before the pressed thing acts: a click on another award then closes this one
+     and opens that one, as before. Its mirror is the editor's own too: a press begun outside and LET GO inside it (the
+     click again goes to a box around both). Each press is read once and forgotten: a press made by the keys (Enter or
+     Space on a button outside — a click with no press of its own, `detail` 0) is judged only by where it lands, never by
+     the last mouse press, which may have been in the reason box (chat 105's fix read, 2 and 4). Let go inside counts only
+     after a real drag (more than 4px): a still press outside, the list moving under it (a picker closing above), is a
+     click outside (the fix read, round 3). */
+  useEffect(() => {
+    if (editId === null) return
+    const mine = (t: EventTarget | null) => !!(t as HTMLElement | null)?.closest?.('.oil-e.editing, .dcal-layer')
+    let downInside = false, upInside = false, x0 = 0, y0 = 0
+    const onDown = (e: PointerEvent) => { downInside = mine(e.target); upInside = false; x0 = e.clientX; y0 = e.clientY }
+    const onUp = (e: PointerEvent) => { upInside = mine(e.target) && Math.hypot(e.clientX - x0, e.clientY - y0) > 4 }
+    const onClick = (e: MouseEvent) => {
+      const pressed = e.detail > 0 && (downInside || upInside)
+      downInside = false; upInside = false
+      if (pressed || mine(e.target)) return
+      setEditId(null); setArmDel(null)
+    }
+    document.addEventListener('pointerdown', onDown, true)
+    document.addEventListener('pointerup', onUp, true)
+    document.addEventListener('click', onClick, true)
+    return () => {
+      document.removeEventListener('pointerdown', onDown, true)
+      document.removeEventListener('pointerup', onUp, true)
+      document.removeEventListener('click', onClick, true)
+    }
+  }, [editId])
   /* A CORRECTION's editor has no "given by" box, so the save leaves the one it has alone — it used to send the blank and
      wipe it (Astra's final read, OA-002) */
   const eIsCorr = useRef(false)   // a ref: never drawn, read only by the save
@@ -529,12 +596,24 @@ export function OilTracker({ person, onClose, onGranted }: {
       if (editing) {
         return (
           <div key={c.id} className={cls} data-testid={`oil-entry-${tid(c.id, c.ledgerId)}`}>
-            <div className="oil-edit">
+            {/* ONE FIXED LAYOUT (his D2150, D2155 — option 2, drawn docs/mock/2026-11-17-lw-oil-editor/, img/*-o2-*.png): amount,
+               AM, PM and the date on line 1; reason and given-by side by side on line 2; Save, Cancel and Delete on line 3.
+               Changing the amount, between a half day and any other, moves nothing: AM / PM keep their place, left empty
+               (not greyed) when the amount is not a half day, and Delete is always as wide as "Really delete?". */}
+            <div className="oil-edit aw" data-testid="oil-edit-award">
               <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
               {/* half a day takes a half (D1164): the award's own, else the default of the day the edit saves to (`eDate`,
                   the date the store reads the same default on — M4); an award's day never changes (D260), so it is its own */}
-              {Number(eAmt) === 0.5 && (
+              {Number(eAmt) === 0.5 ? (
                 <HalfPick testid="oil-edit-half" value={eHalf ?? defaultAwardHalf(p.id, eDate, c.ledgerId)} onPick={setEHalf} />
+              ) : (
+                /* the pair's place, kept at the pair's own size and empty — the pair's own buttons, hidden and out of reach,
+                   so it measures exactly as the pair does (drawn as plain words it stood about half a pixel shorter, and
+                   every line below slid by that much — chat 100's browser test, 17 Nov 26) */
+                <span className="oil-halfgap" aria-hidden="true">
+                  <button type="button" className="tchip half" tabIndex={-1}>AM</button>
+                  <button type="button" className="tchip half" tabIndex={-1}>PM</button>
+                </span>
               )}
               {/* AN AWARD'S DATE IS SHOWN, NEVER CHANGED (D260's reading — delete it and give it again on the right
                   day); the store refuses a changed date on an award too */}
@@ -545,11 +624,11 @@ export function OilTracker({ person, onClose, onGranted }: {
                 <button className="dchip approve" data-testid="oil-edit-save" onClick={saveEdit}>Save</button>
                 <button className="tchip clear" data-testid="oil-edit-cancel" onClick={() => setEditId(null)}>Cancel</button>
                 <button
-                  className={`tchip${armDel === c.ledgerId ? ' arm' : ' clear'}`}
+                  className={`tchip oil-delb${armDel === c.ledgerId ? ' arm' : ' clear'}`}
                   data-testid={`oil-del-${c.ledgerId}`}
                   onClick={() => { if (armDel === c.ledgerId) { removeLedgerEntry(c.ledgerId!); setArmDel(null); setEditId(null); done() } else setArmDel(c.ledgerId!) }}
                 >
-                  {armDel === c.ledgerId ? 'Really delete?' : 'Delete'}
+                  <span>{armDel === c.ledgerId ? 'Really delete?' : 'Delete'}</span>
                 </button>
               </span>
               {eErr && <span className="note warn" data-testid="oil-edit-err">{eErr}</span>}
@@ -628,7 +707,8 @@ export function OilTracker({ person, onClose, onGranted }: {
       )
     }
     const canEdit = admin && d.source === 'correction'
-    const startCorrEdit = () => { setEditId(d.ledgerId!); setEAmt(String(-d.amount)); setEDate(d.date); setEReason(d.reason); setEGiven(''); setEErr(''); setArmDel(null); eIsCorr.current = true }
+    const startCorrEdit = () => {
+      setEditId(d.ledgerId!); setEAmt(String(-d.amount)); setEDate(d.date); setEReason(d.reason); setEGiven(''); setEErr(''); setArmDel(null); eIsCorr.current = true }
     return (
       <div
         key={d.id}

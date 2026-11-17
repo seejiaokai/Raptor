@@ -57,8 +57,24 @@
   .bp-table tr.h2 th { border-bottom: 1px solid #2a313a; top: 30px; }
   .bp-table th.fill { width: 100%; }
   .bp-table th.tk { min-width: 46px; }
-  /* a kind's pending figure stands after its box in a slot every row keeps; its heading stands over the box (D1437's rule) */
-  .bp-table th.ok { padding-right: 49px; }
+  /* OPTION B (his D2153, D2156 — 17 Nov 26; drawn docs/mock/2026-11-17-lw-balances-align/options.mjs id b, its LAYOUT and B
+     rules moved over whole, img/desk-b-crop.png): every column of the Balances view set from the left, its heading starting
+     where its box or figure starts; a long heading wraps in its column's set width ("INCL. CARRIED FWD") rather than widening
+     it; the group labels LVE and OTHER LEAVE at their group's first column, their rules over exactly their columns. A kind's
+     pending figure is no longer a slot after its box but a tag on its corner (.bp-opd below), so every kind's column is one
+     box wide. The Days taken view keeps its own right-set columns, headings already over their figures (the agent's
+     reading: the drawing is of the Balances view only). */
+  .bp-table.bal th, .bp-table.bal td { text-align: left; }
+  .bp-table.bal tr.h1 th.span { text-align: left; padding-left: 10px; }
+  .bp-table.bal tr.h2 th { height: 30px; line-height: 12px; vertical-align: bottom; padding-bottom: 6px; white-space: normal; }
+  .bp-table.bal tr.h2 th.l { white-space: nowrap; }
+  /* min-width: the table's last (filler) column takes width 100%, so a plain width would be squeezed to the words */
+  .bp-table.bal .w-app { min-width: 62px; }
+  .bp-table.bal .w-cf { min-width: 88px; max-width: 88px; }
+  .bp-table.bal .w-pd { min-width: 70px; }
+  .bp-table.bal .w-war { min-width: 60px; white-space: nowrap; }
+  .bp-table.bal .w-oil { min-width: 46px; }
+  .bp-table.bal .w-k { min-width: 66px; }
   .bp-table td { height: 40px; padding: 0 10px; text-align: right; border-bottom: 1px solid #1d242c; white-space: nowrap; color: #e6edf3; font-size: 13.5px; }
   .bp-table td.sep, .bp-table th.sep { border-left: 1px solid #222a33; }
   .bp-table tr.bp-grp td { height: 34px; background: #0e1318; border-bottom: 1px solid #222a33; text-align: left; font: 800 12.5px system-ui; letter-spacing: .06em; color: #f1f4f7; }
@@ -111,11 +127,14 @@
   .bp .neg { color: #FF7A84; }
   .bp-pend { color: #c9d1d9; }
   .bp-pend.pd { color: #F2C879; }
-  .bp-opd { display: inline-block; min-width: 34px; margin-left: 5px; text-align: left; font: 500 13.5px system-ui; color: #F2C879; font-variant-numeric: tabular-nums; vertical-align: middle; }
-  /* beside a figure read only (a member's row, or anyone's while locked) the amber pending figure stands on that figure's
-     line, its baseline — set middle it stood 2.6px low there (D1493 — walker A against m5c-c2-desk-locked-cut); beside a box
-     it keeps the middle of the box */
-  .bp-ro + .bp-opd { vertical-align: baseline; }
+  /* A PENDING FIGURE, option B (D2154, D2156): no minus; the grid's pending look, hollow and dashed, in amber. LVE's in its
+     own column under "PENDING APPROVAL" (.bp-pdt); another kind's a small tag on its box's top right corner (.bp-opd), on a
+     desktop and a phone alike — and on a figure read only (a member's row, or anyone's while locked) on that figure's corner
+     the same, its figure keeping a box's width (the agent's reading: the drawing shows an admin's boxes only). The tag stands
+     under the pinned headings and names (z-index 1 under their 2) and lets a press through to the box it sits on. */
+  .bp-pdt { display: inline-flex; align-items: center; box-sizing: border-box; height: 22px; padding: 0 7px; border: 1px dashed rgba(242, 200, 121, .8); border-radius: 6px; background: transparent; color: #F2C879; font: 600 12.5px system-ui; white-space: nowrap; font-variant-numeric: tabular-nums; vertical-align: middle; }
+  .bp-kb { position: relative; display: inline-flex; vertical-align: middle; }
+  .bp-opd { position: absolute; top: -8px; right: -12px; z-index: 1; box-sizing: border-box; height: 17px; padding: 0 4px; border: 1px dashed rgba(242, 200, 121, .85); border-radius: 5px; background: #11161c; color: #F2C879; font: 700 11px/15px system-ui; font-variant-numeric: tabular-nums; white-space: nowrap; pointer-events: none; }
   .bp-oil { display: inline-flex; align-items: center; padding: 0; border: 0; background: none; color: #e6edf3; font: inherit; cursor: pointer; }
   .bp-oil .ch { color: #5fd0e6; margin-left: 6px; font-weight: 700; }
 
@@ -155,7 +174,6 @@
   .bp-hs::-webkit-scrollbar { display: none; }
   .bp-zoom { width: max-content; min-width: 100%; }
   .bp-cols, .bp-row { display: grid; column-gap: 5px; align-items: center; width: max-content; padding: 0 12px 0 0; }
-  .bp-zoom.bal .bp-cols, .bp-zoom.bal .bp-row { grid-template-columns: 132px 54px 44px 46px 50px 50px 76px 76px 76px 76px 76px; }
   .bp-zoom.taken .bp-cols, .bp-zoom.taken .bp-row { grid-template-columns: 132px repeat(11, 40px); }
   .bp-cols { position: sticky; top: 0; z-index: 4; height: 28px; border-bottom: 1px solid #2a313a; font: 600 9px system-ui; letter-spacing: .04em; color: #8a96a3; text-align: right; background: #0b0d10; white-space: nowrap; }
   /* the strip's dark fill reaches up past its own top (his picture, 29 Oct 26 — D1505): the scroller cuts it off at its
@@ -164,7 +182,31 @@
   .bp-cols::before { content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: 64px; background: #0b0d10; pointer-events: none; }
   .bp-cols > span:first-child { position: sticky; left: 0; z-index: 2; padding-left: 12px; align-self: stretch; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; background: #0b0d10; text-align: left; }
   .bp-cols .sep, .bp-row .sep { border-left: 1px solid #222a33; padding-left: 6px; }
-  .bp-cols .ok { padding-right: 39px; }
+  /* option B on a phone (D2156; img/phone-b-*.png): every heading over the left edge of its box, the heading strip two lines
+     tall for "PENDING / APPROVAL", each kind's column one box wide with its pending tag on the box's corner. CCL's column is
+     61px, not 54: its cell carries OTHER LEAVE's rule (1px and 6px, .sep), and in 54px its box ran 2px into FCL's (the two
+     blind reads of chat 101, 17 Nov 26; the drawing had the same touch). */
+  .bp-zoom.bal .bp-cols, .bp-zoom.bal .bp-row { grid-template-columns: 132px 54px 44px 64px 50px 44px 61px repeat(4, 54px); }
+  .bp-zoom.bal .bp-cols > span, .bp-zoom.bal .bp-row > * { text-align: left; justify-self: start; }
+  /* …but the names held at the left fill their whole column, heading and every row: set to their words' width they let the
+     slid boxes show beside each name, by a different amount on each row (D1518 — nothing pinned leaks; chat 101's reads) */
+  .bp-zoom.bal .bp-row > .bp-who, .bp-zoom.bal .bp-cols > span:first-child { justify-self: stretch; }
+  .bp-zoom.bal .bp-cols { height: 30px; box-sizing: border-box; align-items: end; padding-bottom: 5px; line-height: 11px; }
+  .bp-zoom.bal .bp-cols > span:first-child { align-items: end; }
+  .bp-zoom.bal .bp-row .bp-fb { width: auto; }
+  .bp-zoom.bal .bp-row .bp-fb .bp-bx { width: 54px; }
+  .bp-zoom.bal .bp-row > .bp-fb:nth-child(3) .bp-bx { width: 44px; }
+  /* (built) a figure read only keeps a box's width, so its words end where a box's would (D1493, D1497) now that a column no
+     longer stretches what it holds */
+  .bp-zoom.bal .bp-row > .bp-ro { width: 54px; }
+  .bp-zoom.bal .bp-row > .bp-ro:nth-child(3) { width: 44px; }
+  .bp-zoom.bal .bp-oc { justify-content: flex-start; padding-right: 0; }
+  .bp-zoom.bal .bp-oc .bp-ro { width: 54px; min-width: 54px; }
+  /* (built) the last kind's tag stands 12px past its box: the row's end keeps room for it, so slid to the end it is never cut
+     at the screen's edge, as the drawing's slid picture cut CL's (img/phone-b-slid.png) */
+  .bp-zoom.bal .bp-cols, .bp-zoom.bal .bp-row { padding-right: 18px; }
+  .bp-row .bp-pdt { font-size: 12px; padding: 0 6px; }
+  .bp-row .bp-opd { background: #0b0d10; }
   .bp-row { min-height: 50px; border-bottom: 1px solid #1a2027; text-align: right; font-variant-numeric: tabular-nums; }
   .bp-row.me { background: rgba(155, 89, 255, .07); }
   .bp-who { position: sticky; left: 0; z-index: 2; padding-left: 12px; align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 3px; min-width: 0; text-align: left; background: #0b0d10; }
@@ -184,10 +226,6 @@
   .bp-oc { display: inline-flex; align-items: center; justify-content: flex-end; gap: 3px; padding-right: 6px; }
   .bp-oc .bp-fb { flex: none; }
   .bp-oc .bp-bx { width: 40px; flex: none; }
-  .bp-oc .bp-opd { margin-left: 0; min-width: 30px; font-size: 11.5px; }
-  /* read only, the phone's figure and its smaller amber pending figure share a baseline, not a middle (D1493 — the middle set
-     the amber 1px above the figure's line) */
-  .bp-oc > .bp-ro, .bp-oc > .bp-ro + .bp-opd { align-self: baseline; }
   /* read only, round 19b. Its words keep the drawing's 10px at their right, so a figure read only ends where a box's figure
      ends (a box's edge and padding) — set flush they stood 10px right of `m5c-c2-phone-locked` ([LW-BAL-PHONE-LOCKED-FIT],
      D1497, found by the drawing check). A kind's figure is at least a box wide and grows to its left for a longer one. */

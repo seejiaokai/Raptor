@@ -38,7 +38,7 @@
 
    Its look: ui/scheduler/26-date-calendar.css. Its class names are prefixed (`dcal-`, `is-`): the scheduler's sheet is
    one global sheet, and its week already owns `.day` (23-days.css says how that was found). */
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent, type ReactNode } from 'react'
 import { addDays, monthDates, validIso, weekdayOf } from '../state/flyplan-model'
 import { MONTHS, isoToday, sayDateY } from './daysfmt'
 import { initSideSwipe, slideIn } from './sideswipe'
@@ -56,7 +56,8 @@ const mod12 = (i: number) => ((i % 12) + 12) % 12
    own number; a month's number goes round (… 10 = November, 11 = December, 12 = January …) — so "the years have no end"
    (a posting may be years back or ahead — owner, 19 Aug 26) and December is followed by January, as on his phone.
    Only a window of them is drawn (`SPAN` either side of `base`), re-centred as it is walked.
-   THE CHOSEN ROW is the one in the band across the middle: a finger or a mouse wheel scrolls the list and the row that
+   THE CHOSEN ROW is the one in the band across the middle: a finger, a mouse wheel or a mouse pressed and dragged
+   (D2170 — below) scrolls the list and the row that
    comes to rest there is chosen (the browser's own scroll snapping lands it; `settle` reads it once the scrolling has
    stopped); a tap on a row, or an arrow key, chooses it and the list scrolls it into the band. */
 function Wheel({ value, label, onChange, onEnter, name, tid }: {
@@ -98,23 +99,160 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
     if (!still && typeof n.scrollTo === 'function') n.scrollTo({ top, behavior: 'smooth' })
     else n.scrollTop = top
   }, [value, base, first])
-  useLayoutEffect(() => () => { if (timer.current) clearTimeout(timer.current) }, [])
+  /* A MOUSE PRESSED AND DRAGGED MOVES THE LIST, AS A FINGER DOES (owner D2170, 17 Nov 26 — "when i drag and scroll the
+     months and years, i tried it on a desktop it doesnt work. only mouse scrolling works"). A desktop browser scrolls a
+     box under a finger and the wheel, never under a mouse press and drag, so the list does it itself — for a MOUSE only:
+     a finger and a pen keep the browser's own handling, untouched (`touch-action` in the stylesheet; a pen not tried).
+       · Nothing happens until the mouse has moved a few pixels: a plain click on a row still chooses it (the press is
+         not held, so the click lands on the row it was made on).
+       · While it is dragged the list follows the mouse one to one, the browser's snapping off — a snapping box would
+         jump back to a whole row at every move — and nothing is chosen (`settle` waits, as it waits for a finger).
+       · Let go, it comes to rest on the nearest whole row; let go while still moving fast, it glides on first, slowing
+         as a finger's fling does, and lands on a whole row — the snapping back on only once it is there, so it never
+         jumps. Less motion asked for: it lands at once, no glide.
+       · The click that follows a drag is the drag's, not a row's: it chooses nothing, and the press held by the list
+         means it never reaches the veil, which would close the calendar.
+     A press, a wheel or a key while it glides stops the glide where it is (a key then acts on the row in the band). */
+  const drag = useRef<{ id: number; y: number; top: number; moved: boolean; caught: boolean; pts: { t: number; y: number }[] } | null>(null)
+  const glide = useRef(0)
+  const swallow = useRef(false)
+  const stopGlide = () => {
+    if (!glide.current) return
+    cancelAnimationFrame(glide.current); glide.current = 0
+    const n = ref.current
+    if (n) n.style.scrollSnapType = ''
+  }
+  useLayoutEffect(() => () => { if (timer.current) clearTimeout(timer.current); if (glide.current) cancelAnimationFrame(glide.current) }, [])
 
+  /* the chosen row and the window AS THEY STAND NOW, not as they stood in the render a settle timer was set in: a drag
+     lands by itself (below) and its last scroll may still set a timer after it — a settle reading the old row would
+     choose the same row twice (React keeps the value, so the "chosen by scrolling" mark is never used up, and the next
+     arrow key's row would not be scrolled into the band) or, after the window re-centred, a row of the old window */
+  const live = useRef({ value, first })
+  useLayoutEffect(() => { live.current = { value, first } })
+  /* nothing is chosen while a mouse is held on the list, moved or not (the fix round's read, 17 Nov 26): a glide caught
+     by a press and held still left the glide's last wait running, which chose the row under the press — and a choice
+     far enough on re-centred the list's window, so the drag that followed started from the old window's place and
+     jumped some 30 years. The press's own end settles instead (onPointerUp, and the lost press in onPointerMove). */
   const settle = () => {
     const n = ref.current
-    if (!n) return
-    const at = first + Math.round(n.scrollTop / ROW)
-    if (at !== value) { byScroll.current = true; onChange(at) }
+    if (!n || drag.current || glide.current) return
+    const at = live.current.first + Math.round(n.scrollTop / ROW)
+    if (at !== live.current.value) { live.current.value = at; byScroll.current = true; onChange(at) }
   }
   const onScroll = () => {
     if (timer.current) clearTimeout(timer.current)
     timer.current = setTimeout(settle, 110)
   }
+  /* A GLIDE STOPPED PART-WAY BY A KEY: the row in the band now is what the key acts on — never the row chosen before
+     the flick, which is still the chosen one until the glide lands (Astra's read, 17 Nov 26: ArrowDown during a glide
+     through 2036 from 2026 chose 2027; Enter closed the lists on 2026) */
+  const stopGlideAt = () => {
+    const was = !!glide.current
+    stopGlide()
+    const n = ref.current
+    return was && n ? live.current.first + Math.round(n.scrollTop / ROW) : live.current.value
+  }
+  /* the list comes to rest on a row: the snapping back on only now, once it is exactly there, so nothing jumps */
+  const land = (n: HTMLDivElement, to: number) => { n.scrollTop = to; n.style.scrollSnapType = ''; settle() }
+  const onPointerDown = (e: PointerEvent) => {
+    swallow.current = false
+    /* any press stops a glide — a finger's or a pen's too, which then scroll the list as the browser does (Astra) */
+    if (e.pointerType !== 'mouse' || e.button !== 0 || !ref.current) { stopGlide(); return }
+    /* A MOUSE PRESS CATCHES A GLIDE WHERE IT IS, as a finger catches a fling (the fresh read, 17 Nov 26): the glide's
+       frames stop but the snapping stays off — turned back on now, it threw the list up to half a row at the press —
+       until the press ends: a drag lands as any drag does, a press let go where it is lands on the nearest row, and
+       picks nothing, as a tap that stops a fling on his phone picks nothing (the agent's reading) */
+    const caught = !!glide.current
+    if (caught) { cancelAnimationFrame(glide.current); glide.current = 0 }
+    drag.current = { id: e.pointerId, y: e.clientY, top: ref.current.scrollTop, moved: false, caught, pts: [{ t: e.timeStamp, y: e.clientY }] }
+    /* A PRESS LET GO OFF THIS LIST BEFORE IT TOOK HOLD (the fix round's read, 17 Nov 26): the list does not hold the
+       mouse until it has moved, so it never heard the release — pressed on the months and let go on the years, the
+       months kept the press, and a later press carried back over them moved them from the old press's place. The
+       window hears every release: the press ends there (a drag that took hold ends on the list, which holds the mouse,
+       and its own release finds nothing left to end). */
+    const id = e.pointerId
+    window.addEventListener('pointerup', u => {
+      const d = drag.current
+      if (d && d.id === id && u.pointerId === id && !d.moved) onPointerUp(u)
+    }, { capture: true, once: true })
+  }
+  const onPointerMove = (e: PointerEvent) => {
+    const d = drag.current, n = ref.current
+    if (!d || !n || e.pointerId !== d.id) return
+    /* THE BUTTON IS NO LONGER HELD: a press carried sideways off the list and let go there was never heard (the list is
+       not holding the mouse until the drag takes hold), so it ends here — a mouse coming back over the list with no
+       button down moves nothing (Astra's read, 17 Nov 26) */
+    if (!(e.buttons & 1)) { if (d.moved || d.caught) onPointerUp(e); else { drag.current = null; settle() } return }
+    const dy = e.clientY - d.y
+    if (!d.moved) {
+      if (Math.abs(dy) < 4) return
+      d.moved = true
+      n.setPointerCapture?.(e.pointerId)
+      n.style.scrollSnapType = 'none'
+    }
+    n.scrollTop = d.top - dy
+    d.pts.push({ t: e.timeStamp, y: e.clientY })
+    while (d.pts.length > 2 && e.timeStamp - d.pts[0].t > 100) d.pts.shift()
+  }
+  /* only what it reads: the window's own release (onPointerDown) comes here too, not only the list's */
+  const onPointerUp = (e: Pick<PointerEvent, 'pointerId' | 'type' | 'timeStamp'>) => {
+    const d = drag.current, n = ref.current
+    if (!d || e.pointerId !== d.id) return
+    drag.current = null
+    if (!n) return
+    if (!d.moved) { if (d.caught) { swallow.current = true; land(n, Math.round(n.scrollTop / ROW) * ROW) } else settle(); return }
+    swallow.current = true
+    if (n.hasPointerCapture?.(e.pointerId)) n.releasePointerCapture(e.pointerId)
+    /* how fast the list was moving as it was let go: the mouse over its last tenth of a second, and nothing if it had
+       been held still since (a slow drag that stops, then lets go, lands where it is) */
+    const last = d.pts[d.pts.length - 1], firstPt = d.pts[0]
+    const dt = last.t - firstPt.t
+    const still = e.type === 'pointercancel' || e.timeStamp - last.t > 60 || dt <= 0
+    /* the list's speed, px a ms, down the rows — never past 3: a mouse flicked hard read up to 30 and more, and the
+       walk saw one flick of two rows carry the years on by 13 to 39; at 3 the longest glide is about a dozen rows */
+    const v = still ? 0 : Math.max(-3, Math.min(3, -(last.y - firstPt.y) / dt))
+    const max = (n.scrollHeight - n.clientHeight)
+    const from = n.scrollTop
+    /* a fling slows as a picker's does on his phone (a "fast" slowing, about 0.995 a ms): it runs on v × 200 more */
+    const calm = !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    /* less motion: no glide at all — it lands on the row nearest where it was let go */
+    const reach = calm || Math.abs(v) < 0.2 ? 0 : v * 200
+    const to = Math.max(0, Math.min(max, Math.round((from + reach) / ROW) * ROW))
+    if (calm || Math.abs(to - from) < 0.5) { land(n, to); return }
+    /* an ease out of the speed it was let go at: a cubic's start is 3 × distance / time, so the time is set by that,
+       never shorter than a short settle nor longer than a long fling */
+    const dist = to - from
+    const ms = Math.max(160, Math.min(900, Math.abs(v) > 0.05 ? (3 * Math.abs(dist)) / Math.abs(v) : 200))
+    const t0 = performance.now()
+    const step = (now: number) => {
+      const k = Math.min(1, (now - t0) / ms)
+      n.scrollTop = from + dist * (1 - Math.pow(1 - k, 3))
+      if (k < 1) { glide.current = requestAnimationFrame(step); return }
+      glide.current = 0
+      land(n, to)
+    }
+    glide.current = requestAnimationFrame(step)
+  }
+  /* the click a drag ends with is the drag's: it chooses no row (the next real click does) */
+  const onClickCapture = (e: MouseEvent) => {
+    if (!swallow.current) return
+    swallow.current = false
+    e.stopPropagation(); e.preventDefault()
+  }
   const onKey = (e: KeyboardEvent) => {
+    /* WHILE A MOUSE DRAGS THE LIST, ENTER AND THE ARROWS WAIT (the fix round's read, 17 Nov 26): the row chosen is still
+       the one before the drag, so Enter closed the lists on it while the band showed another, and an arrow scrolled the
+       list against the hand. Let go, the list lands, and the keys act on that row. Any held press, moved or not (round
+       2 of that read): a glide caught and held chooses nothing until it is let go, so the keys would act on the row
+       before the flick. */
+    if (drag.current && (e.key === 'Enter' || e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); return }
+    const at = stopGlideAt()
     /* ENTER IS THE WAY BACK TO THE DATES (the design look of 13 Oct 26 — K4; owner D830). It did nothing here, and the
        only way back was to go up to the title and press it again. A row is chosen as it comes into the band, so Enter
-       has nothing left to choose: it closes the lists onto that month. */
-    if (e.key === 'Enter') { e.preventDefault(); onEnter(); return }
+       has nothing left to choose: it closes the lists onto that month — the row in the band, a glide stopped part-way
+       included. */
+    if (e.key === 'Enter') { e.preventDefault(); if (at !== live.current.value) { live.current.value = at; onChange(at) } onEnter(); return }
     /* …AND THE KEYS THAT ARE NOT A LIST'S DO NOTHING HERE (the check's walk of 14 Oct 26). The list is a scrolling box
        that holds the keyboard, so the browser scrolled it for Home, End, Page Up, Page Down and Space by itself — and
        a row left in the band when the scrolling stops IS the choice (settle, above): End ran the years to the foot of
@@ -123,7 +261,9 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
     if (e.key === 'Home' || e.key === 'End' || e.key === 'PageUp' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); return }
     if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return
     e.preventDefault()
-    onChange(value + (e.key === 'ArrowDown' ? 1 : -1))
+    const to = at + (e.key === 'ArrowDown' ? 1 : -1)
+    live.current.value = to
+    onChange(to)
   }
 
   const rows: ReactNode[] = []
@@ -134,7 +274,8 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
   }
   return (
     <div className="dcal-col" ref={ref} role="listbox" tabIndex={0} aria-label={name} aria-activedescendant={`${tid}-o${value}`}
-      data-testid={tid} onScroll={onScroll} onKeyDown={onKey}>{rows}</div>
+      data-testid={tid} onScroll={onScroll} onKeyDown={onKey} onWheel={stopGlide} onPointerDown={onPointerDown} onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp} onPointerCancel={onPointerUp} onLostPointerCapture={onPointerUp} onClickCapture={onClickCapture}>{rows}</div>
   )
 }
 

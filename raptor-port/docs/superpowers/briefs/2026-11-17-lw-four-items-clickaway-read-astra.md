@@ -1,0 +1,19 @@
+# Astra's read of the click-away (chat 104, 17 Nov 26)
+
+*(Saved word for word — `codex exec -m gpt-6-astra -c model_reasoning_effort=high -s read-only`, brief `2026-11-17-lw-four-items-clickaway-read-brief.md`, on `30e4e1162`. Blind to the fresh Opus reader. His D2176 (an outside click always closes, the change dropped) came in during the reads and made 1, 2 and 5 moot; 3 (a drag from inside) fixed red-first; 4 taken into the rewritten tests.)*
+
+1. **High — a background click still loses an unsaved change.** On desktop, change an award’s reason, then click the narrow background outside the tracker’s edge. The whole tracker closes; reopening shows the old reason. The new dirty check protects only the editor’s click listener. The enclosing sheet still calls its unguarded close handler. **Fix:** apply the dirty check to background dismissal of the sheet too, keeping explicit Close separate from an accidental outside click.
+
+2. **Medium — filtering can hide the draft and block further editing.** Open an archived award, change its reason, then fold Archive; alternatively, choose a range excluding the edited entry. The editor disappears, but its dirty state remains. Other awards now refuse to open, and Save/Cancel are inaccessible until the original entry is revealed. The filtering code removes the editor while the new switching guard continues protecting it. **Fix:** keep the actively edited entry visible despite range/archive filtering until Save or Cancel finishes it.
+
+3. **Medium — desktop drags can close an unchanged editor.** Open an award, then drag down the names to select people. The drag’s trailing click reaches the new document listener before the selection code’s later-installed click suppressor, closing the editor. A mouse selection beginning inside an input and ending outside can likewise produce a click whose target is outside. The listener checks only the final click target, not where the gesture began or whether it moved. **Fix:** track pointer origin, movement, cancellation and multiple pointers; dismiss only after a genuine outside tap/click. Exclude gestures beginning inside the editor or its calendar.
+
+4. **Medium — the tests do not prove two claims they make.** The unchanged-editor test checks ordinary dismissal adequately. However, the dirty-editor test reads the draft, restores the original reason, and only then checks “nothing saved.” Code that wrongly saves on each outside click could save the changed reason and later restore it, passing that check. **Fix:** inspect the saved entry immediately after each outside/other-award press, before restoring the draft.
+
+   The slide test never proves that the list moved sideways, never zooms in, and substitutes a wheel event on desktop. It can pass without exercising the required gesture and misses finding 3. **Fix:** zoom in, verify the starting point is outside the editor, perform a horizontal touch slide, assert horizontal displacement, and separately test mouse drags. Replace fixed settling sleeps with observable completion checks; raw-coordinate presses should verify what actually receives the press. These are coverage weaknesses, not demonstrated timing failures—I ran no tests.
+
+5. **Low — a hidden half-day choice creates a false unsaved change.** Open a two-day award, type `0.5`, press AM—even if already shown as the default—then restore `2`. Everything visible matches the original, but outside clicks and other awards remain blocked. The dirty comparison still compares the remembered AM/PM value against the original empty value, although Save ignores that choice for a whole-day amount. **Fix:** compare the effective AM/PM choice only when the final amount is `0.5`; otherwise exclude it. Compare displayed/default halves consistently with stored halves.
+
+Read-only source review; no files changed, builds or browser tests run.
+
+Rulings: none this session.

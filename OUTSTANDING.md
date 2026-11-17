@@ -128,6 +128,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Leave War**
 - [SANS-CHIP-ON-SANS] — the Post out sheet offers the "SANS" chip to a man already SANS; D2163: not offered for him (small fix, no answer needed; the next Leave War batch).
+- [LW-FOUR-ITEMS-LEFTOVERS] — what the four Leave War items (pull request 801, live 17 Nov 26) left for him: five like-for-like suggestions and three departures from the drawings — questions kept until he says (D994), pictures first.
+- [LW-BAL-TAB-NEXT] — on Balances, Tab after typing a figure goes to the Balances tab button, not the next box (the figure is kept); seen on the four items' re-walk, its code unchanged from `main` — to reproduce on `main`, then fix or put to him.
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
@@ -2617,3 +2619,26 @@ inside a ternary — a named `inner` would read straighter; the switch's keys pu
 and `.mbtn.oilbtn.on` in `18-oil-board.css` have no user. **Place:** low — with the next OIL Earn change or the tidiness audit
 before the database step (D486).
 
+### [LW-BAL-TAB-NEXT] On Balances, Tab after a typed figure goes to the tab button, not the next box (found 17 Nov 26, the re-walk of the four Leave War items)
+**What:** an admin types a figure into a Balances box (Piston's CCL, 7) and presses Tab: the figure is kept, but the focus
+lands on the Balances tab button at the top rather than on the next box — seen on a desktop and a phone in Chromium
+(`docs/img/handpass/2026-11-17-lw-four-items/r1/REPORT.md`, a lead outside its scenarios). The four items' branch only
+wrapped each box with its pending tag (`KindBox`, not focusable); the box itself — typing, saving on leaving, its keys —
+is word for word as on `main`, so it is most likely older. **Next:** reproduce on `main`; if it is there too, a small fix
+(the next box keeps the focus after the save re-draws the row) or a question to him if the save's re-draw is meant to end
+the typing. **Place:** with the next Balances change.
+
+### [LW-FOUR-ITEMS-LEFTOVERS] What the four Leave War items left for him (pull request 801, merged 17 Nov 26, chat 106)
+**What:** the job's evidence sheet (`raptor-port/docs/handpass/2026-11-17-lw-four-items.md`, "Candidates to put to him"
+and "Departures from the drawings") named these, none changed unasked (D852, D1426). **Suggestions — the same
+improvement elsewhere:** (1) the person window's tiles still show a pending figure with a minus ("Pending −1"), the
+reading D2154 says confuses; (2) the OIL tracker's correction editor (a taken day's) is not given the steady layout;
+(3) two periods in one month take the same name ("JAN 29") — the picker tells them apart only by place; (4) the grid's day
+sheet has an award editor of its own that still moves its Save; (5) on a PC, under the mouse, a Manning pair row's DAYS
+(Required / Available P and W) lose their olive / green to the plain row tint, while its name keeps it (as before the
+branch) — the layering of find 22 would keep it; recommended. Put to him in chat 106 with pictures
+(`docs/img/handpass/2026-11-17-lw-four-items/candidate-pair-days/`); his "all looks good, merge live" did not answer it,
+so it stays open. **Departures to name:** (a) the phone row keeps 18px at its end so CL's tag is whole when slid to the
+end; (b) "INCL. CARRIED FWD" wraps to three lines, as the drawing has it; (c) read-only figures (a member, or locked) get
+the tag on their corner too. **Next:** each with a picture when he next looks at the Leave War. **Place:** the Leave War's
+next batch.
