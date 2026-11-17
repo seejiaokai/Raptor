@@ -3,73 +3,85 @@
     "item": "1",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Drawn in, on 149's board. 142's RU, both jets and its area line, one shade lighter (look 2, as ruled). The grey \"142\" badge (mark 1a on the first) sits on each RU line's callsign box, at its top-right corner: its middle on the box's top edge, its right edge 3px inside the box. Each line is 51px tall before and after: the badge adds no height. It clears \"RU\", the mission box and every button (measured); a callsign long enough to run under it passes 0.5px below it."
+    "caption": "149's Scheduler Board, proposed (142's board stands in). Drawn in: 142's RU, both jets and its area line, one shade lighter (look 2, as ruled). The grey \"142\" badge (mark 1a on the first) sits on each RU line's callsign box, at its top-right corner: its middle on the box's top edge, its right edge 3px inside the box. Each line is 51px tall before and after: the badge adds no height. It clears \"RU\", the mission box and every button (measured); a callsign long enough to run under it passes 0.5px below it."
   },
   "1-badge-d-today.png": {
     "item": "1",
     "size": "desktop",
     "kind": "today",
-    "caption": "Real. 149's Scheduler Board (142's own board stands in): its 1st wave, with RU standing for 142's formation in 149's wave. Today nothing marks RU as the other squadron's."
+    "caption": "149's Scheduler Board, today (142's own board stands in; its bar names no squadron). Real: its 1st wave, with RU standing for 142's formation in 149's wave. Today nothing marks RU as the other squadron's."
   },
   "1-badge-p-proposed.png": {
     "item": "1",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Drawn in, on 149's board. 142's RU, both jets and its area line, one shade lighter (look 2, as ruled). The grey \"142\" badge (mark 1a on the first) sits on each RU line's callsign box, at its top-right corner: its middle on the box's top edge, its right edge 3px inside the box. Each line is 141px tall before and after: the badge adds no height. It clears \"RU\", the mission box and every button (measured); a callsign long enough to run under it passes 1.5px below it."
+    "caption": "149's Scheduler Board, proposed (142's board stands in). Drawn in: 142's RU, both jets and its area line, one shade lighter (look 2, as ruled). The grey \"142\" badge (mark 1a on the first) sits on each RU line's callsign box, at its top-right corner: its middle on the box's top edge, its right edge 3px inside the box. Each line is 141px tall before and after: the badge adds no height. It clears \"RU\", the mission box and every button (measured); a callsign long enough to run under it passes 1.5px below it."
   },
   "1-badge-p-today.png": {
     "item": "1",
     "size": "phone",
     "kind": "today",
-    "caption": "Real. 149's Scheduler Board (142's own board stands in): its 1st wave, with RU standing for 142's formation in 149's wave. Today nothing marks RU as the other squadron's."
+    "caption": "149's Scheduler Board, today (142's own board stands in; its bar names no squadron). Real: its 1st wave, with RU standing for 142's formation in 149's wave. Today nothing marks RU as the other squadron's."
   },
   "2-A-142-d-proposed.png": {
     "item": "2",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Moment 1 · 149 has published, 142 has not. 142's schedule. Its day head reads \"DRAFT\" (mark 2b, real): 142's day is not published. The 1st wave is 149's: its head wears 149's grey badge, and under it one quiet grey line (mark 2c): \"149's wave · 149 publishes it · published by 149\". No status chip on the wave, so nothing on 142's day reads as published. Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules.)"
+    "caption": "142's schedule, Edit Schedule. Moment 1 · 149 has published, 142 has not. Its day head reads \"DRAFT\" (mark 2b, real): 142's day is not published. The 1st wave is 149's: its head wears 149's grey badge, and under it one quiet grey line (mark 2c): \"149's wave · published by 149\". No status chip on the wave, so nothing on 142's day reads as published. Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules.)"
   },
   "2-A-142-p-proposed.png": {
     "item": "2",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Moment 1 · 149 has published, 142 has not. 142's schedule. Its day head reads \"DRAFT\" (mark 2b, real): 142's day is not published. The 1st wave is 149's: its head wears 149's grey badge, and under it one quiet grey line (mark 2c): \"149's wave · 149 publishes it · published by 149\". No status chip on the wave, so nothing on 142's day reads as published. Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules.)"
+    "caption": "142's schedule, Edit Schedule. Moment 1 · 149 has published, 142 has not. Its day head reads \"DRAFT\" (mark 2b, real): 142's day is not published. The 1st wave is 149's: its head wears 149's grey badge, and under it one quiet grey line (mark 2c): \"149's wave · published by 149\". No status chip on the wave, so nothing on 142's day reads as published. Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules.)"
   },
   "2-A-149-d-proposed.png": {
     "item": "2",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Moment 1 · 149 has published, 142 has not. 149's schedule. Its day head reads \"ORIG\" (mark 2a, real: 149's four have signed), so the whole day is published, the wave and 142's RU in it included. RU wears only its grey \"142\" badge and the lighter block: its state is 149's day's. Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules; the top bar's \"142\" re-lettered \"149\".)"
+    "caption": "149's schedule, Edit Schedule. Moment 1 · 149 has published, 142 has not. Its day head reads \"ORIG\" (mark 2a, real: 149's four have signed), so the whole day is published, the wave and 142's RU in it included. RU wears only its grey \"142\" badge and the lighter block: its state is 149's day's. Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules; the top bar's \"142\" re-lettered \"149\".)"
   },
   "2-A-149-p-proposed.png": {
     "item": "2",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Moment 1 · 149 has published, 142 has not. 149's schedule. Its day head reads \"ORIG\" (mark 2a, real: 149's four have signed), so the whole day is published, the wave and 142's RU in it included. RU wears only its grey \"142\" badge and the lighter block: its state is 149's day's. Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules; the top bar's \"142\" re-lettered \"149\".)"
+    "caption": "149's schedule, Edit Schedule. Moment 1 · 149 has published, 142 has not. Its day head reads \"ORIG\" (mark 2a, real: 149's four have signed), so the whole day is published, the wave and 142's RU in it included. RU wears only its grey \"142\" badge and the lighter block: its state is 149's day's. Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules; the top bar's \"142\" re-lettered \"149\".)"
   },
   "2-B-142-d-proposed.png": {
     "item": "2",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Moment 2 · 142 has published, 149 has not. 142's schedule. Its day head reads \"ORIG\" (mark 2d, real: 142's four signed 142's own day). The quiet line under 149's wave (mark 2e): \"149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes.\" So 142's own RU, though it sits on a published day, is plainly still waiting. Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules.)"
+    "caption": "142's schedule, Edit Schedule. Moment 2 · 142 has published, 149 has not. Its day head reads \"ORIG\" (mark 2d, real: 142's four signed 142's own day). The quiet line under 149's wave (mark 2e): \"149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes.\" So 142's own RU, though it sits on a published day, is plainly still waiting. Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules.)"
   },
   "2-B-142-p-proposed.png": {
     "item": "2",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Moment 2 · 142 has published, 149 has not. 142's schedule. Its day head reads \"ORIG\" (mark 2d, real: 142's four signed 142's own day). The quiet line under 149's wave (mark 2e): \"149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes.\" So 142's own RU, though it sits on a published day, is plainly still waiting. Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules.)"
+    "caption": "142's schedule, Edit Schedule. Moment 2 · 142 has published, 149 has not. Its day head reads \"ORIG\" (mark 2d, real: 142's four signed 142's own day). The quiet line under 149's wave (mark 2e): \"149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes.\" So 142's own RU, though it sits on a published day, is plainly still waiting. Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules.)"
+  },
+  "2-B-142vo-d-proposed.png": {
+    "item": "2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, View-only Sched, as a member sees it (signed in as the demo's member). Moment 2 · 142 has published, 149 has not. The day head reads \"ORIG\" (real: 142's own day is out). 149's wave carries 149's badge and the same quiet line as Edit Schedule (mark 2g, drawn in): \"149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes.\" 149's VL and its in-time line are hidden. Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · COMMON PROGRAMME EP: ENGINE FI."
+  },
+  "2-B-142vo-p-proposed.png": {
+    "item": "2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, View-only Sched, as a member sees it (signed in as the demo's member). Moment 2 · 142 has published, 149 has not. The day head reads \"ORIG\" (real: 142's own day is out). 149's wave carries 149's badge and the same quiet line as Edit Schedule (mark 2g, drawn in): \"149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes.\" 149's VL and its in-time line are hidden. Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · COMMON PROGRAMME EP: ENGINE FI."
   },
   "2-B-149-d-proposed.png": {
     "item": "2",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "Moment 2 · 142 has published, 149 has not. 149's schedule. Its day head reads \"DRAFT\" (mark 2f, real): 149's day, and 142's RU in its wave, are not published yet. RU wears only its badge. Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules; the top bar's \"142\" re-lettered \"149\".)"
+    "caption": "149's schedule, Edit Schedule. Moment 2 · 142 has published, 149 has not. Its day head reads \"DRAFT\" (mark 2f, real): 149's day, and 142's RU in its wave, are not published yet. RU wears only its badge. Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules; the top bar's \"142\" re-lettered \"149\".)"
   },
   "2-B-149-p-proposed.png": {
     "item": "2",
     "size": "phone",
     "kind": "proposed",
-    "caption": "Moment 2 · 142 has published, 149 has not. 149's schedule. Its day head reads \"DRAFT\" (mark 2f, real): 149's day, and 142's RU in its wave, are not published yet. RU wears only its badge. Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules; the top bar's \"142\" re-lettered \"149\".)"
+    "caption": "149's schedule, Edit Schedule. Moment 2 · 142 has published, 149 has not. Its day head reads \"DRAFT\" (mark 2f, real): 149's day, and 142's RU in its wave, are not published yet. RU wears only its badge. Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in for both schedules; the top bar's \"142\" re-lettered \"149\".)"
   },
   "3-line-A-d-proposed.png": {
     "item": "3",
@@ -111,37 +123,37 @@
     "item": "4",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "142's schedule. Drawn in (mark 4a): 142's \"+ Wave\" menu (real) on a day 149 has no wave. The \"Join a 149 wave\" group still shows, its one row greyed in the menu's own \"can't press\" look: \"149 has no wave on Mon 13 Jul\". 142 then picks a wave of its own above, and 149 may join it."
+    "caption": "142's schedule, its Scheduler Board. My reading of D2106 and D2114, not a ruling. Drawn in (mark 4a): 142's \"+ Wave\" menu (real) on a day 149 has no wave. The \"Join a 149 wave\" group still shows, its one row greyed in the menu's own \"can't press\" look: \"149 has no wave on Mon 13 Jul\". 142 then picks a wave of its own above, and 149 may join it."
   },
   "4a-nowave-p-proposed.png": {
     "item": "4",
     "size": "phone",
     "kind": "proposed",
-    "caption": "142's schedule. Drawn in (mark 4a): 142's \"+ Wave\" menu (real) on a day 149 has no wave. The \"Join a 149 wave\" group still shows, its one row greyed in the menu's own \"can't press\" look: \"149 has no wave on Mon 13 Jul\". 142 then picks a wave of its own above, and 149 may join it."
+    "caption": "142's schedule, its Scheduler Board. My reading of D2106 and D2114, not a ruling. Drawn in (mark 4a): 142's \"+ Wave\" menu (real) on a day 149 has no wave. The \"Join a 149 wave\" group still shows, its one row greyed in the menu's own \"can't press\" look: \"149 has no wave on Mon 13 Jul\". 142 then picks a wave of its own above, and 149 may join it."
   },
   "4b-joined-d-proposed.png": {
     "item": "4",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "142's schedule, its Scheduler Board right after \"Join a 149 wave\" (round 3's picture 9, redrawn). The wave is 149's: its head wears 149's grey badge, and under it the quiet line of item 2 (mark 4b), \"149's wave · 149 publishes it · not published yet\", in place of round 3's \"149 DRAFT\" chips. Mark 4c: 142's blank line inside 149's wave, in the board's own just-added ring, made by a real press of \"+ Line\". 149's lines and in-time lines are hidden (142 sees only its own, D2105), and so are \"+ In-time\", \"Auto sort\" and \"✕ Wave\", which are 149's. (142's 1st wave stands in for 149's.)"
+    "caption": "142's schedule, its Scheduler Board right after \"Join a 149 wave\" (round 3's picture 9, redrawn), the board's own bar at the top. Today that bar names no squadron, so it cannot say whose board this is; mark 4f, drawn in and offered as part of round 3's Q2, is a small grey \"142\" beside its day title, the same badge recipe (nothing in the bar moves, measured). The wave is 149's: its head wears 149's grey badge, and under it the quiet line of item 2 (mark 4b), \"149's wave · 149 publishes it · not published yet\", in place of round 3's \"149 DRAFT\" chips. Mark 4c: 142's blank line inside 149's wave, in the board's own just-added ring, made by a real press of \"+ Line\". 149's lines and in-time lines are hidden (142 sees only its own, D2105), and so are \"+ In-time\", \"Auto sort\" and \"✕ Wave\", which are 149's. (142's 1st wave stands in for 149's.)"
   },
   "4b-joined-p-proposed.png": {
     "item": "4",
     "size": "phone",
     "kind": "proposed",
-    "caption": "142's schedule, its Scheduler Board right after \"Join a 149 wave\" (round 3's picture 9, redrawn). The wave is 149's: its head wears 149's grey badge, and under it the quiet line of item 2 (mark 4b), \"149's wave · 149 publishes it · not published yet\", in place of round 3's \"149 DRAFT\" chips. Mark 4c: 142's blank line inside 149's wave, in the board's own just-added ring, made by a real press of \"+ Line\". 149's lines and in-time lines are hidden (142 sees only its own, D2105), and so are \"+ In-time\", \"Auto sort\" and \"✕ Wave\", which are 149's. (142's 1st wave stands in for 149's.)"
+    "caption": "142's schedule, its Scheduler Board right after \"Join a 149 wave\" (round 3's picture 9, redrawn), the board's own bar at the top. Today that bar names no squadron, so it cannot say whose board this is; mark 4f, drawn in and offered as part of round 3's Q2, is a small grey \"142\" beside its day title, the same badge recipe (nothing in the bar moves, measured). The wave is 149's: its head wears 149's grey badge, and under it the quiet line of item 2 (mark 4b), \"149's wave · 149 publishes it · not published yet\", in place of round 3's \"149 DRAFT\" chips. Mark 4c: 142's blank line inside 149's wave, in the board's own just-added ring, made by a real press of \"+ Line\". 149's lines and in-time lines are hidden (142 sees only its own, D2105), and so are \"+ In-time\", \"Auto sort\" and \"✕ Wave\", which are 149's. (142's 1st wave stands in for 149's.)"
   },
   "4c-who-d-proposed.png": {
     "item": "4",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "149's schedule, its Scheduler Board (142's board stands in). Mark 4d: VL, 149's own line, is changed by 149's scheduler only. Mark 4e: RU, 142's line in 149's wave, concerns both squadrons, so either scheduler may change it, from either schedule (D2114); RU wears item 1's badge and the lighter block."
+    "caption": "149's schedule, its Scheduler Board (142's board stands in; its bar at the top names no squadron). Mark 4d: VL, 149's own line, is changed by 149's scheduler only. Mark 4e: RU, 142's line in 149's wave, concerns both squadrons, so either scheduler may change it, from either schedule (D2114); RU wears item 1's badge and the lighter block."
   },
   "4c-who-p-proposed.png": {
     "item": "4",
     "size": "phone",
     "kind": "proposed",
-    "caption": "149's schedule, its Scheduler Board (142's board stands in). Mark 4d: VL, 149's own line, is changed by 149's scheduler only. Mark 4e: RU, 142's line in 149's wave, concerns both squadrons, so either scheduler may change it, from either schedule (D2114); RU wears item 1's badge and the lighter block. On a phone RU is further down the board."
+    "caption": "149's schedule, its Scheduler Board (142's board stands in; its bar at the top names no squadron). Mark 4d: VL, 149's own line, is changed by 149's scheduler only. Mark 4e: RU, 142's line in 149's wave, concerns both squadrons, so either scheduler may change it, from either schedule (D2114); RU wears item 1's badge and the lighter block. On a phone RU is further down the board."
   },
   "5-number-d-proposed.png": {
     "item": "5",
@@ -159,85 +171,85 @@
     "item": "6",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "The same window, further down: Type \"OD\" (real), and the Detachment choice under it (mark 6d, drawn in, as ruled in round 2: D2101) reading \"249 · Exercise North\", and the title \"Exercise North\" (drawn in). \"all day\" ticked (real). Opened from the door, its dates would come set to the detachment's, 13 to 31 Jul; here the calendar still shows the one day the window opened on. Add files ONE overseas duty input for all six. Each man's own overseas duty input stays the backup way on (D2120)."
+    "caption": "149's admin, the same window, further down: Type \"OD\" (real), and the Detachment choice under it (mark 6d, drawn in, as ruled in round 2: D2101) reading \"249 · Exercise North\", and the title \"Exercise North\" (drawn in). \"all day\" ticked (real). Opened from the door, its dates would come set to the detachment's, 13 to 31 Jul; here the calendar still shows the one day the window opened on. Add files ONE overseas duty input for all six. Each man's own overseas duty input stays the backup way on (D2120)."
   },
   "6-od-p-proposed.png": {
     "item": "6",
     "size": "phone",
     "kind": "proposed",
-    "caption": "The same window, further down: Type \"OD\" (real), and the Detachment choice under it (mark 6d, drawn in, as ruled in round 2: D2101) reading \"249 · Exercise North\", and the title \"Exercise North\" (drawn in). \"all day\" ticked (real). Opened from the door, its dates would come set to the detachment's, 13 to 31 Jul; here the calendar still shows the one day the window opened on. Add files ONE overseas duty input for all six. Each man's own overseas duty input stays the backup way on (D2120)."
+    "caption": "149's admin, the same window, further down: Type \"OD\" (real), and the Detachment choice under it (mark 6d, drawn in, as ruled in round 2: D2101) reading \"249 · Exercise North\", and the title \"Exercise North\" (drawn in). \"all day\" ticked (real). Opened from the door, its dates would come set to the detachment's, 13 to 31 Jul; here the calendar still shows the one day the window opened on. Add files ONE overseas duty input for all six. Each man's own overseas duty input stays the backup way on (D2120)."
   },
   "6-pick-d-proposed.png": {
     "item": "6",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "What \"+ Put people on it\" opens: the Inputs page's own \"New input\" window with its several-people picker (real: \"+ Input\", the \"Several people\" switch and six pucks pressed). Mark 6c: six picked, Mako, Jolt, Brick, Tusk, Flint, Rook (142's pucks re-lettered as 149's men; the rest of the list is 142's demo roster standing in for 149's). It opens already set to overseas duty, Detachment 249, the detachment's dates (next picture)."
+    "caption": "149's admin, what \"+ Put people on it\" opens: the Inputs page's own \"New input\" window with its several-people picker (real: \"+ Input\", the \"Several people\" switch and six pucks pressed). Mark 6c: six picked, Hawk, Spur, Talc, Vane, Crisp, Moss (142's pucks re-lettered as 149's men; the rest of the list is 142's demo roster standing in for 149's). It opens already set to overseas duty, Detachment 249, the detachment's dates (next picture)."
   },
   "6-pick-p-proposed.png": {
     "item": "6",
     "size": "phone",
     "kind": "proposed",
-    "caption": "What \"+ Put people on it\" opens: the Inputs page's own \"New input\" window with its several-people picker (real: \"+ Input\", the \"Several people\" switch and six pucks pressed). Mark 6c: six picked, Mako, Jolt, Brick, Tusk, Flint, Rook (142's pucks re-lettered as 149's men; the rest of the list is 142's demo roster standing in for 149's). It opens already set to overseas duty, Detachment 249, the detachment's dates (next picture)."
+    "caption": "149's admin, what \"+ Put people on it\" opens: the Inputs page's own \"New input\" window with its several-people picker (real: \"+ Input\", the \"Several people\" switch and six pucks pressed). Mark 6c: six picked, Hawk, Spur, Talc, Vane, Crisp, Moss (142's pucks re-lettered as 149's men; the rest of the list is 142's demo roster standing in for 149's). It opens already set to overseas duty, Detachment 249, the detachment's dates (next picture)."
   },
   "6-row-d-proposed.png": {
     "item": "6",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "149's admin, Admin → Squadrons. Drawn in. The open detachment's row says who is on it (mark 6a): \"People · 6 · Mako, Jolt, Brick, Tusk, Flint, Rook\", read from their overseas duty inputs. Under it the door (mark 6b), \"+ Put people on it\", the Users editor's own button re-lettered."
+    "caption": "149's admin, Admin → Squadrons. Drawn in. The open detachment's row says who is on it (mark 6a): \"People · 6 · Hawk, Spur, Talc, Vane, Crisp, Moss\", read from their overseas duty inputs. Under it the door (mark 6b), \"+ Put people on it\", the Users editor's own button re-lettered."
   },
   "6-row-p-proposed.png": {
     "item": "6",
     "size": "phone",
     "kind": "proposed",
-    "caption": "149's admin, Admin → Squadrons. Drawn in. The open detachment's row says who is on it (mark 6a): \"People · 6 · Mako, Jolt, Brick, Tusk, Flint, Rook\", read from their overseas duty inputs. Under it the door (mark 6b), \"+ Put people on it\", the Users editor's own button re-lettered."
+    "caption": "149's admin, Admin → Squadrons. Drawn in. The open detachment's row says who is on it (mark 6a): \"People · 6 · Hawk, Spur, Talc, Vane, Crisp, Moss\", read from their overseas duty inputs. Under it the door (mark 6b), \"+ Put people on it\", the Users editor's own button re-lettered."
   },
   "7a-warning-d-proposed.png": {
     "item": "7",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "142's schedule, Tuesday, its issues list opened. The crew-rest warning (mark 7a) is the app's own, raised by the real rules: Saber flies Monday's night wave, then Tuesday's 2nd wave, in at 10:00. Only \"Monday\" is re-lettered \"Monday, 149's night wave,\"; every other word is the app's. The later line is 142's, so 142's 12h judges (\"needs 12h\": 10h50 rest); by 149's made-up 10h he would be clear at 09:10. Who fixes: 142 changes its own Tuesday line, or either scheduler changes the night line, which holds a 142 man."
+    "caption": "142's schedule, Edit Schedule, Tuesday, its issues list opened. The crew-rest warning (mark 7a) is the app's own, raised by the real rules: Saber flies on 149's VL in Monday's night wave, then 142's Tuesday 2nd wave, in at 10:00. Only \"Monday\" is re-lettered \"Monday, 149's night wave,\"; every other word is the app's. The later line is 142's, so 142's 12h judges (\"needs 12h\": 10h50 rest); by 149's made-up 10h he would be clear at 09:10. Who fixes: 142 changes its own Tuesday line, or either scheduler changes 149's VL, since it holds a 142 man (my reading)."
   },
   "7a-warning-p-proposed.png": {
     "item": "7",
     "size": "phone",
     "kind": "proposed",
-    "caption": "142's schedule, Tuesday, its issues list opened. The crew-rest warning (mark 7a) is the app's own, raised by the real rules: Saber flies Monday's night wave, then Tuesday's 2nd wave, in at 10:00. Only \"Monday\" is re-lettered \"Monday, 149's night wave,\"; every other word is the app's. The later line is 142's, so 142's 12h judges (\"needs 12h\": 10h50 rest); by 149's made-up 10h he would be clear at 09:10. Who fixes: 142 changes its own Tuesday line, or either scheduler changes the night line, which holds a 142 man."
+    "caption": "142's schedule, Edit Schedule, Tuesday, its issues list opened. The crew-rest warning (mark 7a) is the app's own, raised by the real rules: Saber flies on 149's VL in Monday's night wave, then 142's Tuesday 2nd wave, in at 10:00. Only \"Monday\" is re-lettered \"Monday, 149's night wave,\"; every other word is the app's. The later line is 142's, so 142's 12h judges (\"needs 12h\": 10h50 rest); by 149's made-up 10h he would be clear at 09:10. Who fixes: 142 changes its own Tuesday line, or either scheduler changes 149's VL, since it holds a 142 man (my reading)."
   },
   "7b-night-d-proposed.png": {
     "item": "7",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "142's schedule, Monday. The night wave, re-lettered as 149's (its grey badge and item 2's quiet line), holding 142's VL. Saber (mark 7b) wears the app's own dotted \"breaks tomorrow's crew rest\" ring, raised by the real rules because of his Tuesday line. 149's RU in that wave is hidden (142 sees its own lines)."
+    "caption": "142's schedule, Edit Schedule, Monday. The night wave is 149's (its grey badge and item 2's quiet line), and so is its VL: Saber, a 142 man, is lent onto 149's VL. VL shows here, in look 2 with 149's badge, because it holds a 142 man (my reading of D2105 and D2114). Saber (mark 7b) wears the app's own dotted \"breaks tomorrow's crew rest\" ring, raised by the real rules because of his Tuesday line. 149's RU in that wave is hidden (142 sees its own lines). Saber's \"Attach · 149\" row on 142's Unavailable list (D2098) is not drawn here."
   },
   "7b-night-p-proposed.png": {
     "item": "7",
     "size": "phone",
     "kind": "proposed",
-    "caption": "142's schedule, Monday. The night wave, re-lettered as 149's (its grey badge and item 2's quiet line), holding 142's VL. Saber (mark 7b) wears the app's own dotted \"breaks tomorrow's crew rest\" ring, raised by the real rules because of his Tuesday line. 149's RU in that wave is hidden (142 sees its own lines)."
+    "caption": "142's schedule, Edit Schedule, Monday. The night wave is 149's (its grey badge and item 2's quiet line), and so is its VL: Saber, a 142 man, is lent onto 149's VL. VL shows here, in look 2 with 149's badge, because it holds a 142 man (my reading of D2105 and D2114). Saber (mark 7b) wears the app's own dotted \"breaks tomorrow's crew rest\" ring, raised by the real rules because of his Tuesday line. 149's RU in that wave is hidden (142 sees its own lines). Saber's \"Attach · 149\" row on 142's Unavailable list (D2098) is not drawn here."
   },
   "7c-night-d-proposed.png": {
     "item": "7",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "149's schedule, Monday (142's app stands in; the top bar re-lettered \"149\"). The same night wave is 149's own; 142's VL in it wears look 2, the badge and the lighter block. Saber (mark 7c) wears the same dotted ring, so 149's scheduler sees it too. (Outlaw's dotted ring in RU is the demo's own, another man.)"
+    "caption": "149's schedule, Edit Schedule, Monday (142's Monday stands in). The night wave and its VL are 149's own, drawn as the app draws them: Saber, a 142 man, flies on 149's VL. Saber (mark 7c) wears the same dotted ring, so 149's scheduler sees it too. (Outlaw's dotted ring in RU is the demo's own, another man.)"
   },
   "7c-night-p-proposed.png": {
     "item": "7",
     "size": "phone",
     "kind": "proposed",
-    "caption": "149's schedule, Monday (142's app stands in; the top bar re-lettered \"149\"). The same night wave is 149's own; 142's VL in it wears look 2, the badge and the lighter block. Saber (mark 7c) wears the same dotted ring, so 149's scheduler sees it too. (Outlaw's dotted ring in RU is the demo's own, another man.)"
+    "caption": "149's schedule, Edit Schedule, Monday (142's Monday stands in). The night wave and its VL are 149's own, drawn as the app draws them: Saber, a 142 man, flies on 149's VL. Saber (mark 7c) wears the same dotted ring, so 149's scheduler sees it too. (Outlaw's dotted ring in RU is the demo's own, another man.)"
   },
   "8-place-d-proposed.png": {
     "item": "8",
     "size": "desktop",
     "kind": "proposed",
-    "caption": "A master admin's view, Admin → Squadrons, 149's row opened. Drawn in. Mark 8a: Place, picked from the places list (as round 3 drew it), and no \"From\" box: the move takes effect when Save is pressed, as a new account does. Mark 8b, the line saying what Save does: \"Once saved, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told.\""
+    "caption": "149's row, Admin → Squadrons, opened as a master admin sees it. Drawn in. Mark 8a: Place, picked from the places list (as round 3 drew it), and no \"From\" box: the move takes effect when Save is pressed, as a new account does. Mark 8b, the line saying what Save does: \"Once saved, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told.\""
   },
   "8-place-p-proposed.png": {
     "item": "8",
     "size": "phone",
     "kind": "proposed",
-    "caption": "A master admin's view, Admin → Squadrons, 149's row opened. Drawn in. Mark 8a: Place, picked from the places list (as round 3 drew it), and no \"From\" box: the move takes effect when Save is pressed, as a new account does. Mark 8b, the line saying what Save does: \"Once saved, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told.\""
+    "caption": "149's row, Admin → Squadrons, opened as a master admin sees it. Drawn in. Mark 8a: Place, picked from the places list (as round 3 drew it), and no \"From\" box: the move takes effect when Save is pressed, as a new account does. Mark 8b, the line saying what Save does: \"Once saved, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told.\""
   },
   "r3-1-board-d.png": {
     "item": "round 3",
@@ -310,5 +322,53 @@
     "size": "phone",
     "kind": "round 3",
     "caption": "Round 3's picture, unchanged. Drawn in, a master admin's view. 149's row opened, as a Users row opens: mark 1b \"Place\", picked from the places list (drawn open in the next picture), never typed; mark 1c \"From 1 Dec 26\", the day the move takes effect — the one decision Q1 asks; mark 1d the line saying what Save will do: \"From 1 Dec, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told.\" Save and Cancel are the Users editor's own buttons; its fields are its own boxes re-lettered."
+  },
+  "r3-q2-switch-d.png": {
+    "item": "round 3",
+    "size": "desktop",
+    "kind": "round 3",
+    "caption": "Round 3's picture, unchanged. Drawn in, as 149's scheduler at home would see it (142's top bar stands in). Mark 3a: the whole TALON mark is the button, its small squadron number now \"149 ▾\" — a change to the built \"142 TALON\" title (D1606). Mark 3b: its menu, the plans selector's own menu re-lettered \"Schedules\": \"149\" (picked, its ●), \"249 · Exercise North\" (149's detachment, his own example, D2088), \"142\". Only the schedules he may see are listed; someone who may see one sees no ▾, as today. Picking one changes the schedule pages — Edit Schedule, View-only Sched, the Scheduler Board — and Logic; Inputs, Quals, the Leave War and the Tracker stay on his own squadron's people."
+  },
+  "r3-q2-switch-p.png": {
+    "item": "round 3",
+    "size": "phone",
+    "kind": "round 3",
+    "caption": "Round 3's picture, unchanged. Drawn in, as 149's scheduler at home would see it (142's top bar stands in). Mark 3a: the whole TALON mark is the button, its small squadron number now \"149 ▾\" — a change to the built \"142 TALON\" title (D1606). Mark 3b: its menu, the plans selector's own menu re-lettered \"Schedules\": \"149\" (picked, its ●), \"249 · Exercise North\" (149's detachment, his own example, D2088), \"142\". Only the schedules he may see are listed; someone who may see one sees no ▾, as today. Picking one changes the schedule pages — Edit Schedule, View-only Sched, the Scheduler Board — and Logic; Inputs, Quals, the Leave War and the Tracker stay on his own squadron's people."
+  },
+  "r3-q3-board-d.png": {
+    "item": "round 3",
+    "size": "desktop",
+    "kind": "round 3",
+    "caption": "Round 3's picture, unchanged. Drawn in (mark 2b). The board's own list ends each column with 149's men, \"149 · 1 free\", in the same pucks; one free only part of the day says when, in the list's own small reason line — Jolt \"free from 11:30\" — and is drawn after the free men, as a tasked man is today, so he is not dragged into a wave he cannot fly."
+  },
+  "r3-q3-board-p.png": {
+    "item": "round 3",
+    "size": "phone",
+    "kind": "round 3",
+    "caption": "Round 3's picture, unchanged. Drawn in (mark 2b). The board's own list ends each column with 149's men, \"149 · 1 free\", in the same pucks; one free only part of the day says when, in the list's own small reason line — Jolt \"free from 11:30\" — and is drawn after the free men, as a tasked man is today, so he is not dragged into a wave he cannot fly."
+  },
+  "r3-q3-crew-d.png": {
+    "item": "round 3",
+    "size": "desktop",
+    "kind": "round 3",
+    "caption": "Round 3's picture, unchanged. Drawn in (mark 2a). From the day 149 shares 142's place, 142's Available crew list ends with 149's free people, grouped by when they are free as the groups above are: \"149 · 2nd wave · night 16:20–end · 1 can fly\" (Jolt, who flies with 149 in the morning) and \"149 · available all day · 2\" (Mako, Brick) — invented callsigns on 142's own pucks, re-lettered and cleared of their flags. Dragging one onto a seat is a pick (D2091): his home schedule then shows \"Attach · 142\" for him. 142's own groups above are unchanged."
+  },
+  "r3-q3-crew-p.png": {
+    "item": "round 3",
+    "size": "phone",
+    "kind": "round 3",
+    "caption": "Round 3's picture, unchanged. Drawn in (mark 2a). From the day 149 shares 142's place, 142's Available crew list ends with 149's free people, grouped by when they are free as the groups above are: \"149 · 2nd wave · night 16:20–end · 1 can fly\" (Jolt, who flies with 149 in the morning) and \"149 · available all day · 2\" (Mako, Brick) — invented callsigns on 142's own pucks, re-lettered and cleared of their flags. Dragging one onto a seat is a pick (D2091): his home schedule then shows \"Attach · 142\" for him. 142's own groups above are unchanged."
+  },
+  "r3-r3-close-d.png": {
+    "item": "round 3",
+    "size": "desktop",
+    "kind": "round 3",
+    "caption": "Round 3's picture, unchanged. As ruled (one \"Close detachment\", D2103), seen by 149's admin, with what pressing it should ask, drawn in (mark 7): the app's own question card hanging from the button, as your lesson 77 asks — \"Close Exercise North? Its schedules stay, read only, under Past detachments. Its 6 people are back on 149's schedule from today, and their overseas duty ends today.\" The last clause is my reading, not yet ruled: closing early cuts their overseas duty inputs short. Keep open is the safe answer, as on the app's other cards. The button keeps \"Close detachment\" on one line (round 2's drawing broke it in two)."
+  },
+  "r3-r3-close-p.png": {
+    "item": "round 3",
+    "size": "phone",
+    "kind": "round 3",
+    "caption": "Round 3's picture, unchanged. As ruled (one \"Close detachment\", D2103), seen by 149's admin, with what pressing it should ask, drawn in (mark 7): the app's own question card hanging from the button, as your lesson 77 asks — \"Close Exercise North? Its schedules stay, read only, under Past detachments. Its 6 people are back on 149's schedule from today, and their overseas duty ends today.\" The last clause is my reading, not yet ruled: closing early cuts their overseas duty inputs short. Keep open is the safe answer, as on the app's other cards. The button keeps \"Close detachment\" on one line (round 2's drawing broke it in two)."
   }
 }

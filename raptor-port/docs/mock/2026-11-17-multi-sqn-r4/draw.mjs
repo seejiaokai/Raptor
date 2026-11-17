@@ -33,6 +33,9 @@ const SIZES = {
 }
 const DET = 'Exercise North', SHORT = '249'
 const MEN149 = ['Mako', 'Jolt', 'Brick', 'Tusk', 'Flint', 'Rook']
+// the detachment's six (item 6): six other invented callsigns, used nowhere else on the page, so nobody signs 149's home
+// day while away on the detachment (the reader's check of 17 Nov 26)
+const DET6 = ['Hawk', 'Spur', 'Talc', 'Vane', 'Crisp', 'Moss']
 
 const MARK_CSS = `
 .mkq { outline: 2px solid #ff2d95 !important; outline-offset: -2px !important; }
@@ -119,7 +122,7 @@ function kit() {
   // item 2's quiet grey line: the look of the day head's own date line ("Jul 13 · Today"), measured on the real element
   // and copied whole — no new colour, size or weight
   mq.quiet = (lines) => {
-    const src = document.querySelector('#eWeek .day-head .dt')
+    const src = [...document.querySelectorAll('#eWeek .day-head .dt, #vWeek .day-head .dt')].find(mq.vis) || document.querySelector('#eWeek .day-head .dt')
     const cs = getComputedStyle(src)
     const d = document.createElement('div'); d.setAttribute('data-mine', '1'); d.className = 'mq-quiet'
     for (const p of ['font-family', 'font-size', 'font-weight', 'letter-spacing', 'line-height', 'color']) d.style.setProperty(p, cs.getPropertyValue(p))
@@ -143,7 +146,7 @@ const errs = []
 const figures = {}
 let browser
 
-async function world(sz, { toasts = false } = {}) {
+async function world(sz, { toasts = false, user = 'ad', pass = 'a' } = {}) {
   const ctx = await browser.newContext(SIZES[sz].opts)
   await ctx.addInitScript(kit)
   const page = await ctx.newPage()
@@ -151,12 +154,12 @@ async function world(sz, { toasts = false } = {}) {
   page.on('console', m => { if (m.type() === 'error') errs.push(`[${sz}] CONSOLE ${m.text()}`) })
   await page.goto(URL_)
   await page.waitForSelector('#luser')
-  await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a')
+  await page.fill('#luser', user); await page.fill('#lpass', pass)
   await page.click('#loginForm button[type=submit]')
   await page.waitForSelector('#vWeek .day', { state: 'attached' }); await page.waitForTimeout(700)
   await page.addStyleTag({ content: MARK_CSS + (toasts ? '' : TOAST_CSS) })
-  // the invented callsigns must not be on the demo roster
-  const clash = await page.evaluate(names => Object.values(window.PEOPLE).map(p => p.cs).filter(c => names.includes(c)), MEN149)
+  // the invented callsigns must not be on the demo roster, nor inside a roster callsign
+  const clash = await page.evaluate(names => Object.values(window.PEOPLE).map(p => p.cs).filter(c => names.some(n => c.toLowerCase().includes(n.toLowerCase()))), [...MEN149, ...DET6])
   if (clash.length) throw new Error('invented callsigns on the roster: ' + clash.join(','))
   return { ctx, page }
 }
@@ -207,7 +210,7 @@ async function toAdmin(page) {
 // opts.p149: 149's place line; opts.edit149: 149's row open on Place (item 8: no From); opts.newdet: a New detachment
 // row open (item 5: the number box); opts.det: the open detachment shown; opts.detPeople: its People line and door (item 6)
 async function squadrons(page, opts) {
-  return page.evaluate(({ opts, DET, SHORT, MEN149 }) => {
+  return page.evaluate(({ opts, DET, SHORT, DET6 }) => {
     const mq = window.__mq, pg = document.querySelector('#page-admin')
     let panel = pg.querySelector('button.acc-main').parentElement
     while (panel && !panel.querySelector('h3')) panel = panel.parentElement
@@ -289,7 +292,7 @@ async function squadrons(page, opts) {
     if (rd && opts.detPeople) {
       // item 6: the row's own grey line says who, and the door under it, the Users editor's own button re-lettered
       const subEl = rd.querySelector('.acc-sub'); subEl.textContent = 'Exercise base · 13 Jul – 31 Jul'
-      const ppl = mq.strip(subEl.cloneNode(true)); ppl.textContent = 'People · 6 · ' + MEN149.join(', '); ppl.style.whiteSpace = 'normal'; ppl.style.position = 'relative'; ppl.style.paddingRight = '30px'
+      const ppl = mq.strip(subEl.cloneNode(true)); ppl.textContent = 'People · 6 · ' + DET6.join(', '); ppl.style.whiteSpace = 'normal'; ppl.style.position = 'relative'; ppl.style.paddingRight = '30px'
       subEl.after(ppl)
       const door = mq.strip(window.__mqBtn.cloneNode(true)); door.textContent = '+ Put people on it'; door.style.whiteSpace = 'nowrap'
       const wrap = document.createElement('div'); wrap.setAttribute('data-mine', '1'); wrap.style.cssText = 'margin:8px 0 2px'; wrap.appendChild(door)
@@ -315,7 +318,7 @@ async function squadrons(page, opts) {
     window.__mqSq = out
     window.__mqClipEl = panel
     return { inset: out.inset }
-  }, { opts, DET, SHORT, MEN149 })
+  }, { opts, DET, SHORT, DET6 })
 }
 async function adminClip(page, sz, extra = 0) {
   return page.evaluate(({ sz, extra }) => {
@@ -339,6 +342,11 @@ function copyR3() {
       [`9-joined-${sz}-proposed.png`]: `r3-4b-joined-${sz}.png`,
       [`4-newdet-${sz}-proposed.png`]: `r3-5-newdet-${sz}.png`,
       [`1-place-${sz}-proposed.png`]: `r3-8-place-${sz}.png`,
+      // round 3's still-open questions, shown at the page's foot (Q2, Q3, R3; R1 reads r3-5-newdet)
+      [`3-switch-${sz}-proposed.png`]: `r3-q2-switch-${sz}.png`,
+      [`2-crew-${sz}-proposed.png`]: `r3-q3-crew-${sz}.png`,
+      [`2-board-${sz}-proposed.png`]: `r3-q3-board-${sz}.png`,
+      [`7-close-${sz}-proposed.png`]: `r3-r3-close-${sz}.png`,
     }
     for (const [a, b] of Object.entries(map)) {
       copyFileSync(`${R3}/${a}`, `${OUT}/${b}`)
@@ -419,10 +427,12 @@ async function boardTop(page) {
 async function ruClip(page, sz) {
   return page.evaluate(sz => {
     const g = window.__mqClipEl, gr = g.getBoundingClientRect()
-    if (sz === 'd') { const x = Math.max(0, gr.left - 6), y = Math.max(0, gr.top - 6); return { x, y, width: Math.min(innerWidth - x, gr.width + 12), height: Math.min(innerHeight - y, gr.height + 12) } }
-    // phone: VL's second jet's foot to RU's area — the RU formation whole, with the line above it for context
-    const ru = window.__mqRu, top = ru[0].getBoundingClientRect().top - 40, bot = window.__mqArea.getBoundingClientRect().bottom + 6
-    return { x: 0, y: Math.max(0, top), width: innerWidth, height: Math.min(innerHeight - Math.max(0, top), bot - top) }
+    // from the top of the screen: the board's own bar is in every picture, so whose board it is can be read off it
+    // (the reader's check of 17 Nov 26)
+    if (sz === 'd') { const x = Math.max(0, gr.left - 6); return { x, y: 0, width: Math.min(innerWidth - x, gr.width + 12), height: Math.min(innerHeight, gr.bottom + 6) } }
+    // phone: the bar, then down to RU's area — the RU formation whole, with the lines above it for context
+    const bot = window.__mqArea.getBoundingClientRect().bottom + 6
+    return { x: 0, y: 0, width: innerWidth, height: Math.min(innerHeight, bot) }
   }, sz)
 }
 async function it1(sz) {
@@ -439,7 +449,7 @@ async function it1(sz) {
   const clip = await ruClip(page, sz)
   const f0 = `1-badge-${sz}-today.png`
   await shot(page, f0, clip)
-  rec(f0, '1', sz, 'today', `Real. 149's Scheduler Board (142's own board stands in): its 1st wave, with RU standing for 142's formation in 149's wave. Today nothing marks RU as the other squadron's.`)
+  rec(f0, '1', sz, 'today', `149's Scheduler Board, today (142's own board stands in; its bar names no squadron). Real: its 1st wave, with RU standing for 142's formation in 149's wave. Today nothing marks RU as the other squadron's.`)
   const m = await look2Lines(page)
   if (m.err) throw new Error('it1: ' + m.err)
   if (m.overlaps.length) throw new Error('it1 badge overlaps: ' + m.overlaps.join(', '))
@@ -448,7 +458,7 @@ async function it1(sz) {
   const f1 = `1-badge-${sz}-proposed.png`
   await shot(page, f1, clip)
   figures['1-' + sz] = { lineBefore: m0, lineAfter: m.h1, badge: m.badge }
-  rec(f1, '1', sz, 'proposed', `Drawn in, on 149's board. 142's RU, both jets and its area line, one shade lighter (look 2, as ruled). The grey "142" badge (mark 1a on the first) sits on each RU line's callsign box, at its top-right corner: its middle on the box's top edge, its right edge 3px inside the box. Each line is ${Math.round(m.h1[0])}px tall before and after: the badge adds no height. It clears "RU", the mission box and every button (measured); a callsign long enough to run under it passes ${m.badge.capGap}px below it.`)
+  rec(f1, '1', sz, 'proposed', `149's Scheduler Board, proposed (142's board stands in). Drawn in: 142's RU, both jets and its area line, one shade lighter (look 2, as ruled). The grey "142" badge (mark 1a on the first) sits on each RU line's callsign box, at its top-right corner: its middle on the box's top edge, its right edge 3px inside the box. Each line is ${Math.round(m.h1[0])}px tall before and after: the badge adds no height. It clears "RU", the mission box and every button (measured); a callsign long enough to run under it passes ${m.badge.capGap}px below it.`)
   notes.push(`it1 ${sz}: ${JSON.stringify(m)}`)
   await ctx.close()
 }
@@ -539,13 +549,13 @@ async function weekView(sz, { pub, view, quiet, tags, signNames }) {
 async function it2(sz) {
   const cases = [
     { file: '2-A-149', pub: true, view: '149', tags: ['2a'], signNames: ['Mako', 'Jolt', 'Brick', 'Tusk'],
-      cap: m => `Moment 1 · 149 has published, 142 has not. 149's schedule. Its day head reads "${m.dayChip}" (mark 2a, real: 149's four have signed), so the whole day is published, the wave and 142's RU in it included. RU wears only its grey "142" badge and the lighter block: its state is 149's day's.` },
-    { file: '2-A-142', pub: false, view: '142', tags: ['2b', '2c'], quiet: ['149\'s wave · 149 publishes it · published by 149'],
-      cap: m => `Moment 1 · 149 has published, 142 has not. 142's schedule. Its day head reads "${m.dayChip}" (mark 2b, real): 142's day is not published. The 1st wave is 149's: its head wears 149's grey badge, and under it one quiet grey line (mark 2c): "149's wave · 149 publishes it · published by 149". No status chip on the wave, so nothing on 142's day reads as published.` },
+      cap: m => `149's schedule, Edit Schedule. Moment 1 · 149 has published, 142 has not. Its day head reads "${m.dayChip}" (mark 2a, real: 149's four have signed), so the whole day is published, the wave and 142's RU in it included. RU wears only its grey "142" badge and the lighter block: its state is 149's day's.` },
+    { file: '2-A-142', pub: false, view: '142', tags: ['2b', '2c'], quiet: ['149\'s wave · published by 149'],
+      cap: m => `142's schedule, Edit Schedule. Moment 1 · 149 has published, 142 has not. Its day head reads "${m.dayChip}" (mark 2b, real): 142's day is not published. The 1st wave is 149's: its head wears 149's grey badge, and under it one quiet grey line (mark 2c): "149's wave · published by 149". No status chip on the wave, so nothing on 142's day reads as published.` },
     { file: '2-B-142', pub: true, view: '142', tags: ['2d', '2e'], quiet: ['149\'s wave · 149 publishes it · not published yet', 'RU goes out when 149 publishes.'],
-      cap: m => `Moment 2 · 142 has published, 149 has not. 142's schedule. Its day head reads "${m.dayChip}" (mark 2d, real: 142's four signed 142's own day). The quiet line under 149's wave (mark 2e): "149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes." So 142's own RU, though it sits on a published day, is plainly still waiting.` },
+      cap: m => `142's schedule, Edit Schedule. Moment 2 · 142 has published, 149 has not. Its day head reads "${m.dayChip}" (mark 2d, real: 142's four signed 142's own day). The quiet line under 149's wave (mark 2e): "149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes." So 142's own RU, though it sits on a published day, is plainly still waiting.` },
     { file: '2-B-149', pub: false, view: '149', tags: ['2f'],
-      cap: m => `Moment 2 · 142 has published, 149 has not. 149's schedule. Its day head reads "${m.dayChip}" (mark 2f, real): 149's day, and 142's RU in its wave, are not published yet. RU wears only its badge.` },
+      cap: m => `149's schedule, Edit Schedule. Moment 2 · 142 has published, 149 has not. Its day head reads "${m.dayChip}" (mark 2f, real): 149's day, and 142's RU in its wave, are not published yet. RU wears only its badge.` },
   ]
   for (const c of cases) {
     const { ctx, page, m, clip } = await weekView(sz, c)
@@ -555,6 +565,55 @@ async function it2(sz) {
     notes.push(`it2 ${c.file} ${sz}: ${JSON.stringify(m)}`)
     await ctx.close()
   }
+}
+
+// item 2, moment 2, as a member sees it: View-only Sched, signed in as the seeded member, Monday published by the real
+// call (142's own day, ORIG); RU sits in 149's wave, which 149 has not published. VL and its in-time line are 149's,
+// hidden (142 sees its own lines); the wave head wears 149's badge and the same quiet line, drawn in (mark 2g)
+async function it2vo(sz) {
+  const { ctx, page } = await world(sz, { user: 'us', pass: 'us' })
+  await page.evaluate(PUBLISH)
+  await page.evaluate(() => window.go('viewsched'))
+  await page.waitForSelector('#page-viewsched.on #vWeek .day'); await page.waitForTimeout(900)
+  await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200)
+  const m = await page.evaluate(() => {
+    const mq = window.__mq
+    const mon = [...document.querySelectorAll('#vWeek > .day')].filter(d => mq.vis(d) && !d.classList.contains('peek'))[0]
+    const head = mon.querySelector('.day-head'), body = mon.querySelector('.day-body')
+    const g = body.querySelector('.go'); if (!g) return { err: 'no wave' }
+    const forms = [...g.querySelectorAll('.form')]
+    const vl = forms.find(x => x.querySelector('.csmsn .ntx').textContent.trim() === 'VL')
+    if (!vl) return { err: 'no VL' }
+    // the sections before the 1st wave and every section after it: hidden, the ones before named
+    const hidden = []; let seen = false
+    for (const s of [...body.children]) { if (s === g) { seen = true; continue } if (!seen) hidden.push(s.innerText.replace(/\s+/g, ' ').trim().slice(0, 30)); mq.hide(s) }
+    mq.hide(vl); const itHidden = mq.hideItLine(g, 'VL')
+    const tab = g.querySelector('.go-tab')
+    const b = mq.badge('149'); b.style.marginLeft = '8px'; tab.querySelector('.asd').after(b)
+    const q = mq.quiet(['149\'s wave · 149 publishes it · not published yet', 'RU goes out when 149 publishes.'])
+    const name = tab.querySelector('.ntx') || tab.querySelector('.asd')
+    q.style.padding = `0 10px 6px ${Math.round(name.getBoundingClientRect().left - tab.getBoundingClientRect().left)}px`
+    q.style.background = getComputedStyle(tab).backgroundColor
+    tab.after(q)
+    mq.mark(q, '2g', 'right')
+    window.__mqMon = mon; window.__mqG = g
+    return { hidden, itHidden, dayChip: head.querySelector('.dhver').innerText.trim(), who: document.querySelector('.topbar').innerText.replace(/\s+/g, ' ').slice(0, 120) }
+  })
+  if (m.err) throw new Error('it2vo ' + m.err)
+  if (!/ORIG/.test(m.dayChip)) throw new Error('it2vo: day not published ' + m.dayChip)
+  await page.waitForTimeout(250)
+  const clip = await page.evaluate(() => {
+    const g = window.__mqG, mon = window.__mqMon
+    let r = g.getBoundingClientRect()
+    if (r.bottom > innerHeight - 4) { window.scrollBy(0, r.bottom - innerHeight + 8); r = g.getBoundingClientRect() }
+    const right = innerWidth < 600 ? innerWidth : Math.min(innerWidth, mon.getBoundingClientRect().right + 8)
+    return { x: 0, y: 0, width: right, height: Math.min(innerHeight, Math.round(r.bottom + 8)) }
+  })
+  const f = `2-B-142vo-${sz}-proposed.png`
+  await shot(page, f, clip)
+  rec(f, '2', sz, 'proposed', `142's schedule, View-only Sched, as a member sees it (signed in as the demo's member). Moment 2 · 142 has published, 149 has not. The day head reads "${m.dayChip}" (real: 142's own day is out). 149's wave carries 149's badge and the same quiet line as Edit Schedule (mark 2g, drawn in): "149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes." 149's VL and its in-time line are hidden. Hidden between the day head and the wave: ${m.hidden.join(' · ')}.`)
+  notes.push(`it2vo ${sz}: ${JSON.stringify(m)}`)
+  await ctx.close()
 }
 
 // ---------- item 3: feedback for "+ Line" (D2115, lesson 94) — three real presses, today, A and B ----------
@@ -613,9 +672,9 @@ async function it3(sz) {
     await shot(page, f)
     figures[`3-${which}-${sz}`] = { inView: info.inView, newestInView: info.newestInView }
     const words = {
-      today: `Real. 142's Scheduler Board, "+ Line" (mark 3a) pressed three times where it stood. The three blank lines went to the wave's foot: ${info.inView} of 3 wholly on this ${SIZES[sz].name} screen. The screen does not move, and the passing note "Line added" says the same words each time.`,
-      A: `A, recommended, drawn in. The same three real presses; "+ Line" has not moved. Each new line goes in at the top of the wave, straight under the column headings, newest on top (mark 3b on the newest), each in the board's own just-added blue ring. ${info.inView} of 3 new lines wholly in view; the newest always is. The three lines the app made were moved there; nothing was copied. No passing note is needed.`,
-      B: `B, drawn in. The same three real presses; the lines stay at the wave's foot, as today. Beside "+ Line" a small count, "3 new ↓" (mark 3c, the head's own button look re-lettered): a tap brings the new lines into view.${sz === 'p' ? ' On a phone the head\'s second row is full, so the count stands on its first row, after Traffic.' : ''} ${info.inView} of 3 new lines in view until it is tapped. "+ Line" has not moved.`,
+      today: `142's Scheduler Board, today. Real: "+ Line" (mark 3a) pressed three times where it stood. The three blank lines went to the wave's foot: ${info.inView} of 3 wholly on this ${SIZES[sz].name} screen. The screen does not move, and the passing note "Line added" says the same words each time.`,
+      A: `142's Scheduler Board, A, recommended, drawn in. The same three real presses; "+ Line" has not moved. Each new line goes in at the top of the wave, straight under the column headings, newest on top (mark 3b on the newest), each in the board's own just-added blue ring. ${info.inView} of 3 new lines wholly in view; the newest always is. The three lines the app made were moved there; nothing was copied. No passing note is needed.`,
+      B: `142's Scheduler Board, B, drawn in. The same three real presses; the lines stay at the wave's foot, as today. Beside "+ Line" a small count, "3 new ↓" (mark 3c, the head's own button look re-lettered): a tap brings the new lines into view.${sz === 'p' ? ' On a phone the head\'s second row is full, so the count stands on its first row, after Traffic.' : ''} ${info.inView} of 3 new lines in view until it is tapped. "+ Line" has not moved.`,
     }
     rec(f, '3', sz, which === 'today' ? 'today' : 'proposed', words[which] + ` (142's 1st wave; the full screen, so what is out of view shows.)`)
     notes.push(`it3 ${which} ${sz}: ${JSON.stringify(info)}`)
@@ -650,7 +709,7 @@ async function it4a(sz) {
   const clip = await page.evaluate(() => { const r = window.__mqClipEl.getBoundingClientRect(); const x = Math.max(0, r.left - 10), y = Math.max(0, r.top - 10); return { x, y, width: Math.min(innerWidth - x, r.width + 20), height: Math.min(innerHeight - y, r.height + 20) } })
   const f = `4a-nowave-${sz}-proposed.png`
   await shot(page, f, clip)
-  rec(f, '4', sz, 'proposed', `142's schedule. Drawn in (mark 4a): 142's "+ Wave" menu (real) on a day 149 has no wave. The "Join a 149 wave" group still shows, its one row greyed in the menu's own "can't press" look: "149 has no wave on Mon 13 Jul". 142 then picks a wave of its own above, and 149 may join it.`)
+  rec(f, '4', sz, 'proposed', `142's schedule, its Scheduler Board. My reading of D2106 and D2114, not a ruling. Drawn in (mark 4a): 142's "+ Wave" menu (real) on a day 149 has no wave. The "Join a 149 wave" group still shows, its one row greyed in the menu's own "can't press" look: "149 has no wave on Mon 13 Jul". 142 then picks a wave of its own above, and 149 may join it.`)
   notes.push(`it4a ${sz}: ${JSON.stringify(info)}`)
   await ctx.close()
 }
@@ -681,14 +740,34 @@ async function it4b(sz) {
     h.after(q)
     mq.mark(q, '4b', 'right')
     const f = fresh[0]; f.style.position = 'relative'; mq.tag(f, '4c', innerWidth < 600 ? 'br' : 'in')
+    // offered under round 3's Q2: the board's own bar names no squadron today; a small grey "142" beside its day title
+    // (the same badge recipe), placed absolutely so nothing in the bar moves — measured
+    const top = document.querySelector('.sb-top')
+    const spans = [...top.querySelectorAll('span')].filter(mq.vis)
+    const title = innerWidth < 600 ? spans.find(e => e.classList.contains('mono') && /^Jul \d+$/.test(e.textContent.trim())) : spans.find(e => e.textContent.trim() === '· scheduler board')
+    if (!title) return { err: 'no board day title' }
+    const before = [...top.querySelectorAll('button, .sbday')].filter(mq.vis).map(e => { const r = e.getBoundingClientRect(); return [r.left, r.top] })
+    if (getComputedStyle(top).position === 'static') top.style.position = 'relative'
+    const tb = mq.badge('142', innerWidth < 600); tb.style.position = 'absolute'; tb.style.lineHeight = 'normal'; tb.style.zIndex = '3'
+    top.appendChild(tb)
+    const T = top.getBoundingClientRect(), r0 = title.getBoundingClientRect(), br = tb.getBoundingClientRect()
+    // on a phone the date is followed by the board's small green dot (drawn by the date's own style, not a node): clear it
+    tb.style.left = Math.round(r0.right - T.left + (innerWidth < 600 ? 16 : 6)) + 'px'; tb.style.top = Math.round(r0.top + r0.height / 2 - br.height / 2 - T.top) + 'px'
+    const after = [...top.querySelectorAll('button, .sbday')].filter(mq.vis).map(e => { const r = e.getBoundingClientRect(); return [r.left, r.top] })
+    const moved = before.some((p, i) => Math.abs(p[0] - after[i][0]) + Math.abs(p[1] - after[i][1]) > 0.5)
+    const B = tb.getBoundingClientRect()
+    const hits = [...top.querySelectorAll('button, .sbday, span')].filter(e => mq.vis(e) && e !== title && !e.contains(title) && !title.contains(e) && e !== tb && !tb.contains(e)).filter(e => { const r = e.getBoundingClientRect(); return !(B.right <= r.left || B.left >= r.right || B.bottom <= r.top || B.top >= r.bottom) && r.width < 400 }).map(e => e.textContent.trim().slice(0, 12))
+    mq.mark(tb, '4f', 'pad')
     window.__mqClipEl = g
-    return { ok: 1 }
+    return { ok: 1, moved, hits }
   })
   if (m.err) throw new Error('it4b: ' + m.err)
-  const clip = await page.evaluate(() => { const g = window.__mqClipEl, r = g.getBoundingClientRect(); const x = Math.max(0, r.left - 6), y = Math.max(0, r.top - 6); return { x, y, width: Math.min(innerWidth - x, r.width + 12), height: Math.min(innerHeight - y, r.height + 12) } })
+  if (m.moved || m.hits.length) throw new Error('it4b bar badge: ' + JSON.stringify(m))
+  // from the top of the screen: the board's own bar, then the wave
+  const clip = await page.evaluate(() => { const g = window.__mqClipEl, r = g.getBoundingClientRect(); const x = innerWidth < 600 ? 0 : Math.max(0, Math.min(r.left - 6, 20)); return { x, y: 0, width: Math.min(innerWidth - x, Math.max(r.right + 6, 560) - x), height: Math.min(innerHeight, r.bottom + 6) } })
   const f = `4b-joined-${sz}-proposed.png`
   await shot(page, f, clip)
-  rec(f, '4', sz, 'proposed', `142's schedule, its Scheduler Board right after "Join a 149 wave" (round 3's picture 9, redrawn). The wave is 149's: its head wears 149's grey badge, and under it the quiet line of item 2 (mark 4b), "149's wave · 149 publishes it · not published yet", in place of round 3's "149 DRAFT" chips. Mark 4c: 142's blank line inside 149's wave, in the board's own just-added ring, made by a real press of "+ Line". 149's lines and in-time lines are hidden (142 sees only its own, D2105), and so are "+ In-time", "Auto sort" and "✕ Wave", which are 149's. (142's 1st wave stands in for 149's.)`)
+  rec(f, '4', sz, 'proposed', `142's schedule, its Scheduler Board right after "Join a 149 wave" (round 3's picture 9, redrawn), the board's own bar at the top. Today that bar names no squadron, so it cannot say whose board this is; mark 4f, drawn in and offered as part of round 3's Q2, is a small grey "142" beside its day title, the same badge recipe (nothing in the bar moves, measured). The wave is 149's: its head wears 149's grey badge, and under it the quiet line of item 2 (mark 4b), "149's wave · 149 publishes it · not published yet", in place of round 3's "149 DRAFT" chips. Mark 4c: 142's blank line inside 149's wave, in the board's own just-added ring, made by a real press of "+ Line". 149's lines and in-time lines are hidden (142 sees only its own, D2105), and so are "+ In-time", "Auto sort" and "✕ Wave", which are 149's. (142's 1st wave stands in for 149's.)`)
   await ctx.close()
 }
 // (c) who may change what (D2114): on 149's board, RU (142's line in 149's wave) "142 or 149 may change it", VL "149 only"
@@ -709,10 +788,10 @@ async function it4c(sz) {
   })
   let clip
   if (sz === 'd') clip = await ruClip(page, 'd')
-  else clip = await page.evaluate(() => { const bar = document.querySelector('.sb-top').getBoundingClientRect().bottom; return { x: 0, y: bar, width: innerWidth, height: innerHeight - bar } })
+  else clip = { x: 0, y: 0, width: 390, height: 844 }
   const f = `4c-who-${sz}-proposed.png`
   await shot(page, f, clip)
-  rec(f, '4', sz, 'proposed', `149's schedule, its Scheduler Board (142's board stands in). Mark 4d: VL, 149's own line, is changed by 149's scheduler only. Mark 4e: RU, 142's line in 149's wave, concerns both squadrons, so either scheduler may change it, from either schedule (D2114); RU wears item 1's badge and the lighter block.${sz === 'p' ? ' On a phone RU is further down the board.' : ''}`)
+  rec(f, '4', sz, 'proposed', `149's schedule, its Scheduler Board (142's board stands in; its bar at the top names no squadron). Mark 4d: VL, 149's own line, is changed by 149's scheduler only. Mark 4e: RU, 142's line in 149's wave, concerns both squadrons, so either scheduler may change it, from either schedule (D2114); RU wears item 1's badge and the lighter block.${sz === 'p' ? ' On a phone RU is further down the board.' : ''}`)
   await ctx.close()
 }
 
@@ -750,7 +829,7 @@ async function it6(sz) {
     const clip = await adminClip(page, sz)
     const f = `6-row-${sz}-proposed.png`
     await shot(page, f, clip)
-    rec(f, '6', sz, 'proposed', `149's admin, Admin → Squadrons. Drawn in. The open detachment's row says who is on it (mark 6a): "People · 6 · ${MEN149.join(', ')}", read from their overseas duty inputs. Under it the door (mark 6b), "+ Put people on it", the Users editor's own button re-lettered.`)
+    rec(f, '6', sz, 'proposed', `149's admin, Admin → Squadrons. Drawn in. The open detachment's row says who is on it (mark 6a): "People · 6 · ${DET6.join(', ')}", read from their overseas duty inputs. Under it the door (mark 6b), "+ Put people on it", the Users editor's own button re-lettered.`)
     await ctx.close()
   }
   {
@@ -784,12 +863,12 @@ async function it6(sz) {
     // redraws on it)
     await page.locator('.floatwin.inpedwin').getByText('all day', { exact: true }).first().click()
     await page.waitForTimeout(300)
-    const st = await page.evaluate(({ ids, MEN149, DET, SHORT }) => {
+    const st = await page.evaluate(({ ids, DET6, DET, SHORT }) => {
       const mq = window.__mq
       const on = [...document.querySelectorAll('.pp-puck.on')]
       const out = { picked: on.map(b => b.getAttribute('data-pp')), type: document.querySelector('#inpEditType').value, count: (document.querySelector('[data-testid=pp-count]') || {}).textContent }
       // the six picked pucks re-lettered as 149's men
-      ids.forEach((id, i) => { const b = document.querySelector(`[data-ppgroup] .pp-puck[data-pp="${id}"]`); const leaf = [...b.querySelectorAll('*')].find(e => !e.children.length && e.textContent.trim() === window.PEOPLE[id].cs); if (leaf) leaf.textContent = MEN149[i]; else out.noLeaf = (out.noLeaf || 0) + 1 })
+      ids.forEach((id, i) => { const b = document.querySelector(`[data-ppgroup] .pp-puck[data-pp="${id}"]`); const leaf = [...b.querySelectorAll('*')].find(e => !e.children.length && e.textContent.trim() === window.PEOPLE[id].cs); if (leaf) leaf.textContent = DET6[i]; else out.noLeaf = (out.noLeaf || 0) + 1 })
       const pp = document.querySelector('[data-testid=pp]')
       mq.mark(pp.querySelector('.pp-top'), '6c', 'pad')
       // the Detachment choice under Type (round 3's 5a, ruled D2101), the Type box cloned
@@ -811,7 +890,7 @@ async function it6(sz) {
       window.__mqWin = win || pp.closest('[role=dialog]'); window.__mqSc = sc
       out.win = window.__mqWin && window.__mqWin.className
       return out
-    }, { ids: [...picks.pil, ...picks.wso], MEN149, DET, SHORT })
+    }, { ids: [...picks.pil, ...picks.wso], DET6, DET, SHORT })
     if (st.picked.length !== 6 || st.type !== 'OD') throw new Error('it6 picker ' + JSON.stringify({ st, picks }))
     // a neutral tap on the window's title to clear the last press's ring
     await page.evaluate(() => document.activeElement && document.activeElement.blur && document.activeElement.blur())
@@ -819,7 +898,7 @@ async function it6(sz) {
     await page.evaluate(() => { if (window.__mqSc) window.__mqSc.scrollTop = 0 }); await page.waitForTimeout(200)
     const f1 = `6-pick-${sz}-proposed.png`
     await shot(page, f1, await winClip())
-    rec(f1, '6', sz, 'proposed', `What "+ Put people on it" opens: the Inputs page's own "New input" window with its several-people picker (real: "+ Input", the "Several people" switch and six pucks pressed). Mark 6c: six picked, ${MEN149.join(', ')} (142's pucks re-lettered as 149's men; the rest of the list is 142's demo roster standing in for 149's). It opens already set to overseas duty, Detachment 249, the detachment's dates (next picture).`)
+    rec(f1, '6', sz, 'proposed', `149's admin, what "+ Put people on it" opens: the Inputs page's own "New input" window with its several-people picker (real: "+ Input", the "Several people" switch and six pucks pressed). Mark 6c: six picked, ${DET6.join(', ')} (142's pucks re-lettered as 149's men; the rest of the list is 142's demo roster standing in for 149's). It opens already set to overseas duty, Detachment 249, the detachment's dates (next picture).`)
     // the same window scrolled to its Type, Detachment and dates
     await page.evaluate(() => { const sc = window.__mqSc, t = document.querySelector('#inpEditType').closest('.inped-f'); if (sc) sc.scrollTop += t.getBoundingClientRect().top - sc.getBoundingClientRect().top - 12 })
     await page.evaluate(() => {
@@ -830,7 +909,7 @@ async function it6(sz) {
     await page.waitForTimeout(250)
     const f2 = `6-od-${sz}-proposed.png`
     await shot(page, f2, await winClip())
-    rec(f2, '6', sz, 'proposed', `The same window, further down: Type "OD" (real), and the Detachment choice under it (mark 6d, drawn in, as ruled in round 2: D2101) reading "${SHORT} · ${DET}", and the title "${DET}" (drawn in). "all day" ticked (real). Opened from the door, its dates would come set to the detachment's, 13 to 31 Jul; here the calendar still shows the one day the window opened on. Add files ONE overseas duty input for all six. Each man's own overseas duty input stays the backup way on (D2120).`)
+    rec(f2, '6', sz, 'proposed', `149's admin, the same window, further down: Type "OD" (real), and the Detachment choice under it (mark 6d, drawn in, as ruled in round 2: D2101) reading "${SHORT} · ${DET}", and the title "${DET}" (drawn in). "all day" ticked (real). Opened from the door, its dates would come set to the detachment's, 13 to 31 Jul; here the calendar still shows the one day the window opened on. Add files ONE overseas duty input for all six. Each man's own overseas duty input stays the backup way on (D2120).`)
     notes.push(`it6 ${sz}: ${JSON.stringify(st)}`)
     await ctx.close()
   }
@@ -908,7 +987,7 @@ async function it7(sz) {
     const clip = await page.evaluate(() => { const mq = window.__mq, t = window.__mqTue, b = t.querySelector('.dwbox').getBoundingClientRect(), tr = t.getBoundingClientRect(); const x = Math.max(0, tr.left - 4), y = Math.max(mq.topH(), t.querySelector('.day-head').getBoundingClientRect().top - 4); return { x, y, width: Math.min(innerWidth - x, tr.width + 8), height: Math.min(innerHeight - y, b.bottom + 8 - y) } })
     const f = `7a-warning-${sz}-proposed.png`
     await shot(page, f, clip)
-    rec(f, '7', sz, 'proposed', `142's schedule, Tuesday, its issues list opened. The crew-rest warning (mark 7a) is the app's own, raised by the real rules: Saber flies Monday's night wave, then Tuesday's 2nd wave, in at 10:00. Only "Monday" is re-lettered "Monday, 149's night wave,"; every other word is the app's. The later line is 142's, so 142's 12h judges ("needs 12h": 10h50 rest); by 149's made-up 10h he would be clear at 09:10. Who fixes: 142 changes its own Tuesday line, or either scheduler changes the night line, which holds a 142 man.`)
+    rec(f, '7', sz, 'proposed', `142's schedule, Edit Schedule, Tuesday, its issues list opened. The crew-rest warning (mark 7a) is the app's own, raised by the real rules: Saber flies on 149's VL in Monday's night wave, then 142's Tuesday 2nd wave, in at 10:00. Only "Monday" is re-lettered "Monday, 149's night wave,"; every other word is the app's. The later line is 142's, so 142's 12h judges ("needs 12h": 10h50 rest); by 149's made-up 10h he would be clear at 09:10. Who fixes: 142 changes its own Tuesday line, or either scheduler changes 149's VL, since it holds a 142 man (my reading).`)
     notes.push(`it7a ${sz}: ${JSON.stringify({ s, w, r, tue, opened })}`)
     await ctx.close()
   }
@@ -935,15 +1014,16 @@ async function it7(sz) {
         q.style.padding = `0 10px 6px ${Math.round(name.getBoundingClientRect().left - tab.getBoundingClientRect().left)}px`
         q.style.background = getComputedStyle(tab).backgroundColor
         tab.after(q)
-      } else {
-        const k = document.querySelector('.topbar .mark .k'); const k2 = mq.strip(k.cloneNode(true)); k2.textContent = '149'; mq.hide(k); k.after(k2)
+        // VL is 149's own line with Saber, a 142 man, lent onto it: on 142's schedule it wears look 2 with 149's badge,
+        // shown because it holds a 142 man (it concerns both — the agent's reading of D2105, D2114)
         const leaves = [...vl.querySelector('.csmsn').querySelectorAll('*')].filter(e => !e.children.length && e.textContent.trim())
         const msn = leaves.find(e => e.textContent.trim() === 'BFM')
-        const phone = innerWidth < 600, c = mq.badge('142', phone)
+        const phone = innerWidth < 600, c = mq.badge('149', phone)
         if (phone) { c.style.display = 'block'; c.style.width = 'fit-content'; c.style.marginTop = '2px'; msn.after(c) }
         else { c.style.marginLeft = '5px'; c.style.position = 'relative'; c.style.top = '-1px'; msn.appendChild(c) }
         vl.style.background = 'rgba(255,255,255,.055)'
       }
+      // 149's view: VL is 149's own line, drawn as the app draws it (no badge); Saber, a 142 man, is lent onto it
       // the puck clips what it holds: the tag hangs in its formation, at the puck's top-right corner
       if (saber) {
         const f = saber.closest('.form'); if (getComputedStyle(f).position === 'static') f.style.position = 'relative'
@@ -961,8 +1041,8 @@ async function it7(sz) {
     const f = `7${view === '142' ? 'b' : 'c'}-night-${sz}-proposed.png`
     await shot(page, f, clip)
     rec(f, '7', sz, 'proposed', view === '142'
-      ? `142's schedule, Monday. The night wave, re-lettered as 149's (its grey badge and item 2's quiet line), holding 142's VL. Saber (mark 7b) wears the app's own dotted "breaks tomorrow's crew rest" ring, raised by the real rules because of his Tuesday line. 149's RU in that wave is hidden (142 sees its own lines).`
-      : `149's schedule, Monday (142's app stands in; the top bar re-lettered "149"). The same night wave is 149's own; 142's VL in it wears look 2, the badge and the lighter block. Saber (mark 7c) wears the same dotted ring, so 149's scheduler sees it too. (Outlaw's dotted ring in RU is the demo's own, another man.)`)
+      ? `142's schedule, Edit Schedule, Monday. The night wave is 149's (its grey badge and item 2's quiet line), and so is its VL: Saber, a 142 man, is lent onto 149's VL. VL shows here, in look 2 with 149's badge, because it holds a 142 man (my reading of D2105 and D2114). Saber (mark 7b) wears the app's own dotted "breaks tomorrow's crew rest" ring, raised by the real rules because of his Tuesday line. 149's RU in that wave is hidden (142 sees its own lines). Saber's "Attach · 149" row on 142's Unavailable list (D2098) is not drawn here.`
+      : `149's schedule, Edit Schedule, Monday (142's Monday stands in). The night wave and its VL are 149's own, drawn as the app draws them: Saber, a 142 man, flies on 149's VL. Saber (mark 7c) wears the same dotted ring, so 149's scheduler sees it too. (Outlaw's dotted ring in RU is the demo's own, another man.)`)
     notes.push(`it7 ${view} ${sz}: ${JSON.stringify(m)}`)
     await ctx.close()
   }
@@ -977,12 +1057,12 @@ async function it8(sz) {
   const clip = await adminClip(page, sz)
   const f = `8-place-${sz}-proposed.png`
   await shot(page, f, clip)
-  rec(f, '8', sz, 'proposed', `A master admin's view, Admin → Squadrons, 149's row opened. Drawn in. Mark 8a: Place, picked from the places list (as round 3 drew it), and no "From" box: the move takes effect when Save is pressed, as a new account does. Mark 8b, the line saying what Save does: "Once saved, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told."`)
+  rec(f, '8', sz, 'proposed', `149's row, Admin → Squadrons, opened as a master admin sees it. Drawn in. Mark 8a: Place, picked from the places list (as round 3 drew it), and no "From" box: the move takes effect when Save is pressed, as a new account does. Mark 8b, the line saying what Save does: "Once saved, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told."`)
   await ctx.close()
 }
 
 browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
-const ALL = { it1, it2, it3, it4a, it4b, it4c, it5, it6, it7, it8 }
+const ALL = { it1, it2, it2vo, it3, it4a, it4b, it4c, it5, it6, it7, it8 }
 try {
   if (!ONLY || ONLY.includes('copy')) copyR3()
   for (const sz of (process.env.MQ_SZ ? process.env.MQ_SZ.split(',') : ['d', 'p'])) {
