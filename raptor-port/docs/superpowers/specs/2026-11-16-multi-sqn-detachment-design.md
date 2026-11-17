@@ -350,6 +350,51 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   "25–26 Jul cleared · publish AL1", a tap opening that day. Recommended; the
   other choice put to him: Close publishes AL1 itself, the admin who pressed it standing as its signer.
 
+### Chat 98's wording, put to him before his round 6 answers (D2140, D2143 — knock-on effects worked through)
+
+The example throughout: 149's detachment "249 · Exercise North", 13–31 Jul, 6 people, closed on Thu 23 Jul; Sat 25 and
+Sun 26 Jul already published. Facts checked this chat: an amendment's label runs per day (a day already on AL1 gets AL2);
+a weekend published ahead has already credited its OIL (the OIL tracker limits only expiry by today, `oiltracker.ts`);
+an admin picks all four sign-off names (D212), each box offering only the people its Quals ticks allow; the
+notifications register's P15 reads "transferred to 149 Sqn", the number paired with the squadron abbreviation (D58) —
+to be corrected to the posting line's own form, "Posted out · now with 149" (B12, D1690).
+
+**The Close card (option A, D2142).** Title "Close Exercise North?"; lines, each only when it applies: "6 people back on
+149's schedule today. Their overseas duty ends today." (D2103, D2135) · "Sat 25 and Sun 26 Jul: everyone taken off,
+and the next amendment published on each (AL1)." (D2142 — the label each day's own) · "Their OIL for those days goes:
+6 people, 1 day each. Viper has already booked his: his OIL goes to −1." · "149's published Fri 24 and Sat 25 Jul go
+pending: the 6 are free there now." · "Kept under Past detachments." ("read only" waits on Q2's second half) — buttons
+"Close detachment" · "Keep open". Knock-on effects named: the cleared days' OIL credits come off at once; a man who has
+booked OIL against them goes below zero; the overseas duty shortened on 149's published home days puts each pending, its
+sign-offs down, for 149's scheduler to plan and publish (the press does not publish home days); the Leave War counts
+them back in from the next day, the Available rows rising, the SANS calendar's need falling; the bell (D2135) tells each
+of the 6, and — proposed — 149's admins one line; Undo of Close, a later-round question, must now also withdraw the
+amendments it published. Put to him: (1) whose four names stand on those amendments — recommended the names on each
+day's last issue (always names the box offers; the change history records who pressed Close), the other choice the
+pressing admin in all four, who may not be offered in every box; (2) 149's home days left pending for the scheduler —
+recommended; (3) the closing day itself: not cleared (D2142 "after today"), the 6 counted back home from today
+(D2103) and the one-man-one-place check (R4) not raised for that day.
+
+**Q3 (D2107), corrected.** "Dotted" already means pending under D2107, so the draft's row is drawn faint grey with the
+words "not yet published by 149", never dotted; the rest as rewritten in chat 97. Knock-on effects named: on a home day
+not yet published, 142 can publish with the faint row standing — its issue never holds it, and 149's later publish
+turns that day pending; each later 149 amendment that changes Viper's time away does the same (only his time away,
+D2098); OIL never reads a draft (as Q1); the people check across both squadrons (D2108) reads 149's latest working plan,
+so 142 sees a clash as it forms — a warning, never a bar to publishing; the bell rings at the pick (D2091) and,
+proposed, once more when 149 publishes and the day goes pending.
+
+**The transfer sheet (Q7).** X4: "On 3 Apr: moves to 149, with his account, leave, OIL, quals, inputs and Tracker
+course." X5, lines only when they apply: "After 3 Apr: 2 of 142's lines keep him, as a borrowed 149 man" · "3 of his
+inputs move to 149's schedule" · "1 leave 142 approved goes to 149's Approvals; 149 may still refuse it" (D1541) ·
+"Published days go pending: 4 of 142's, 2 of 149's" · "142's manning from 3 Apr: OPS P turns amber on 4 days" · "His
+access to 142 ends" — the bell "Ranger · Fri 3 Apr / Posted out · now with 149" to every admin of both squadrons (P15,
+B12; round 6 wrote "Mon 3 Aug", against the sheet's Fri 3 Apr). Knock-on effects named: 142's lines that keep him show
+on 149's schedule as "Attach · 142" rows (D2098), pending on 149's published days; his inputs leave 142's published
+days and reach 149's, pending on both; 142's Leave War manning drops and 149's rises from the date, which can turn a
+day amber or red and raise the manning warning on someone's bid; a weekend he works for 142 after the date is judged by
+149's OIL settings (Q1's "his own squadron"). Put to him: his access to 142 ends on the date (recommended — an admin of
+142 may give it back), or stays as it was given.
+
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
 **Kept as he said it:** squadrons made in Admin; one primary squadron each; access to others given by an admin; only Post
