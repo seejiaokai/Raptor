@@ -20,14 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/lw-balances-hover-275293 -->
-### CHAT 97 — Leave War drawings: the Balances page and the hover ring (mock-ups only, no app code), written 17 Nov 26 — verify before use
-- **Branch:** `claude/lw-balances-hover-275293`, cut from chat 96's `claude/lw-grid-hover-design-200c6e` (all its commits here; that branch needs no merge of its own). One notes-only pull request for both chats' design work.
-- **Done:** one question page, https://claude.ai/artifact/4cp7LyTwx7ssuNiNShDQ3P, two questions: (1) the Balances page — options A, B, C drawn on the real page at 1536 and 402 (`raptor-port/docs/mock/2026-11-17-lw-balances-align/`, scripts `bal.mjs` + `options.mjs`, `probe.mjs` measures the heading edges); all set every column from the left under its heading, group labels at their group's start; A (recommended) a dashed amber "2.5 pending" tag with no minus, B the figure alone (LVE column "PENDING APPROVAL", a small dashed tag on the other kinds' box corner), C every pending figure in its own "PENDING APPROVAL" group at the end; (2) the hover ring (D2151, D2152) at 1536 today beside proposed and beside a tapped day (`raptor-port/docs/mock/2026-11-17-lw-grid-hover/ring.mjs`, `img/r-*`), recommended yes with today's faint row tint kept.
-- **From chat 96:** the OIL award editor is option 2 (D2155), filed to build as [LW-OIL-EDIT-STEADY].
-- **His answers (17 Nov 26):** Balances **option B** (D2156 — he chose B over the recommended A; D1482 narrowed), hover ring **yes** (D2157). Filed to build: [LW-BAL-NEATER], [LW-GRID-HOVER-RING], beside chat 96's [LW-OIL-EDIT-STEADY] — three small Leave War builds, one branch and one check fits them (D490). The pictures are drawn by injected CSS over a `vite preview` of this branch; the scripts load Playwright from the main checkout's `raptor-port/node_modules`.
-- **Pick up here:** the pull request (notes only) waits for his "merge live"; then build the three Leave War items from `main`.
-- **Rulings:** D2156, D2157 → the Leave War page (D2150–D2155 chat 96's). **Reads owed:** none (no code). **Walk:** none (pictures only). **Next chat number:** 98 (D1744).
+<!-- now:claude/lw-war-autoname -->
+### CHAT 97 — Leave War drawings (Balances, the hover ring), merged; then his ask for the new period's name, filed — written 17 Nov 26 (compacted once, mid-merge) — verify before use
+- **Branch:** `claude/lw-war-autoname`, cut from `main` after pull request 799 merged — notes only (the ruling and the backlog item below). The design work (`claude/lw-balances-hover-275293`, with chat 96's) merged on his "merge live", 17 Nov 26, pull request 799.
+- **Done:** the question page https://claude.ai/artifact/4cp7LyTwx7ssuNiNShDQ3P answered — Balances **option B** (D2156, D1482 narrowed), the hover ring **yes** (D2157); drawings and scripts in `raptor-port/docs/mock/2026-11-17-lw-balances-align/` and `…-lw-grid-hover/`. Filed to build: [LW-BAL-NEATER], [LW-GRID-HOVER-RING], beside chat 96's [LW-OIL-EDIT-STEADY].
+- **His new ask (D2158):** the "New leave war" window's Name fills itself from the dates picked, in the periods' own form ("JAN - MAR 27"), following the dates whenever they change — filed as [LW-WAR-AUTONAME], the fourth item of the same Leave War batch (D490). The agent's readings, told to him: a typed name is kept; an emptied box follows the dates again.
+- **Pick up here:** a fresh chat builds all four Leave War items on one branch from `main`, one bug check for the lot (sized by the Balances page, the largest).
+- **Rulings:** D2156, D2157, D2158 → the Leave War page. **Reads owed:** none (no code). **Walk:** none (pictures only). **Next chat number:** 99 (98 is the calendar wheels' chat, D2170) (D1744).
 <!-- /now -->
 <!-- now:claude/multi-sqn-design-r3 -->
 ### CHAT 92 — multi-squadron round 2, then the night of 17 Nov 26 (six jobs, all done), rewritten 17 Nov 26 after his "merge live" — verify before use
