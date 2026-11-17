@@ -96,7 +96,6 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 
 ## Posting out
 - Four outcomes, the admin picks one and the app does it on the posting date: Overseas Sqn — archived, account suspended, back later; Delete — leaving flying for good, deleted, person and account; SANS — another workplace but still flying with us, he becomes SANS; Transfer to Sqn — to the squadron named, designed now (below) [D2136, D229, D1709, D287, D283, D290, D299, D297, D1102, D981, D300, D1105, D1692, D1697, D1698].
-- A transfer may be set months ahead, so the sheet's lines on what the date affects are today's figures, worked out again when it opens; the date applies the sheet's choices to what stands then and the bell says what it did [D2147, D2136].
 - Four short chips — "Overseas Sqn", "Delete", "SANS", "Transfer to Sqn" — taking little room; the "he's back" line on Quals lines up with the page's left edge [D294, D298, D1709].
 - A ground-crew man cannot be posted out as SANS: no SANS chip for him — the one-day sheet, the posting sheet, the drag window — and the posting writer refuses it; SANS stays an aircrew status, the other outcomes stay his [D1709].
 - No chip chosen — the chosen one tapped again — stays "off the manpower, nothing else": posted out on the Leave War from the date, still on Quals with his account open, nothing archived, deleted or made SANS — how a man leaving for another squadron is recorded until Transfer is built; the sheet still opens on Overseas Sqn [D303].

@@ -185,6 +185,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - Where a person may see several schedules, the TALON mark is a "149 ▾" button opening "Schedules"; the schedule pages and Logic follow the pick, Inputs, Quals, the Leave War and the Tracker stay on his own squadron; the board's bar shows the squadron's number beside its day title [D2132].
 - The other squadron's free people stand in a group of their own at the foot of Edit Schedule's and the board's crew lists, each showing when he is free [D2133].
 - A detachment's "To" is its planned end, never a close by itself, the bell reminding its admins that day; closing it early ends its people's DET that day, the bell telling each [D2134, D2135, D2146].
+- A transfer may be set months ahead, so the sheet's lines on what the date affects are today's figures, worked out again when it opens; the date applies the sheet's choices to what stands then and the bell says what it did [D2147, D2136].
 - Admin gains a "Squadrons" page as drawn, and "Request access" asks the squadron first, as drawn [D2110, D2111].
 - Escape closes the changes window when it was the last thing opened, as it does the other windows [D2112].
 - His lean: where two squadrons each put an ALL AVAIL event at the same time, the app flags no conflict and does not decide which one a man attends — left to the people; design only [D2097].
