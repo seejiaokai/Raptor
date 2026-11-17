@@ -1,0 +1,133 @@
+<title>Squadrons, batch 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap">
+<style>
+/* Layout: one reading column; questions first, then each picture pair (desktop, then phone). */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--muted:#5a6b78;--line:#d9e0e6;--accent:#0b7fa3;--new:#d81b7a;--rec:#0f7a4a;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--head:"Space Grotesk","Inter",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e141a;--card:#16202a;--fg:#e6edf2;--muted:#9aabb8;--line:#273642;--accent:#3cc0e6;--new:#ff5fae;--rec:#4fd08f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e141a;--card:#16202a;--fg:#e6edf2;--muted:#9aabb8;--line:#273642;--accent:#3cc0e6;--new:#ff5fae;--rec:#4fd08f;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+h1{font-family:var(--head);font-size:28px;margin:0 0 4px;text-wrap:balance}
+h2{font-family:var(--head);font-size:20px;margin:36px 0 12px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 20px}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:6px;margin-bottom:10px}
+.q b.n{color:var(--accent);margin-right:6px}
+.rec{color:var(--rec);font-weight:600}
+.q a{color:var(--accent)}
+ul{padding-left:20px;margin:6px 0}
+li{margin:4px 0}
+.pic{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0;display:grid;gap:10px;scroll-margin-top:16px}
+.pic h3{font-family:var(--head);font-size:17px;margin:0}
+.pic p{margin:0;color:var(--muted)}
+.pair{display:grid;grid-template-columns:2fr 1fr;gap:10px;align-items:start}
+@media (max-width:620px){.pair{grid-template-columns:1fr}}
+.pair figure{margin:0;min-width:0}
+.pair img{width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;display:block}
+figcaption{font-size:13px;color:var(--muted);margin-top:4px}
+.new{color:var(--new);font-weight:700}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:flex-start;justify-content:center;overflow:auto;z-index:20;
+  padding:max(12px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))}
+.zoom img{max-width:none;width:min(1600px,200%);cursor:zoom-out}
+@media (max-width:620px){.zoom img{width:200%}}
+.later li{color:var(--muted)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+<div class="wrap">
+<h1>Squadrons, batch 1</h1>
+<p class="sub">The first of five batches: 142 and 149 side by side in one app. Nothing is built yet. This page shows what was agreed for batch 1, drawn on the real app. <span class="new">Pink "New"</span> marks the pieces drawn for the first time; everything else is drawn as you approved it.</p>
+
+<h2>Look at now</h2>
+<div class="q"><div><b class="n">1</b><b>The order of the five batches.</b> You listed Transfer to Sqn third and borrowing fourth.</div>
+<div class="rec">Recommended: swap them, so borrowing comes before Transfer to Sqn.</div>
+<div>Why: on the transfer date, his old squadron's flights that already hold him stay on its schedule, and he becomes a borrowed man there. A borrowed man only shows at home (his "ATTACH" row) and is only checked for clashes across both schedules once borrowing is built. Built first, a transferred man could be planned on both schedules at the same time with no warning. Both reviewers agreed. It changes nothing in batch 1.</div></div>
+<div class="q"><div><b class="n">2</b><b>The new pieces in the pictures</b>: "+ New squadron" (<a href="#p3">picture 3</a>), "Home squadron" on a person's Users row and on Add a person (<a href="#p6">6</a>, <a href="#p7">7</a>), and "Off days stay each squadron's own" on the holiday window (<a href="#p8">8</a>).</div>
+<div class="rec">Recommended: as drawn.</div>
+<div>Home squadron is shown as a plain line on his row, not a choice: it only ever changes by Transfer to Sqn.</div></div>
+<div class="q"><div><b class="n">3</b><b>Where 149 sits in the demo:</b> at Home base, with 142, as your two schedules of one day are.</div>
+<div class="rec">Recommended: yes.</div>
+<div>At two different bases the shared holiday list, and later the borrowing, would never show in the demo.</div></div>
+<div class="q"><div><b class="n">4</b><b>The master admin.</b> In the demo, Saber is one. A master admin makes squadrons, names each new squadron's first admin (so no squadron starts with no admin), and acts as an admin of every squadron. Only another master admin can make someone a master admin. A second 142 admin and a 149 admin are added to the demo, so a normal admin's view can be seen too.</div>
+<div class="rec">Recommended: yes.</div></div>
+<div class="q"><div><b class="n">5</b><b>Whose people an admin sees on Admin → Users.</b> His own squadron's. To give a 142 man View of 149, a 149 admin finds him by searching on 149's list. His row there shows "142", and the View right is the only thing that can be changed from there.</div>
+<div class="rec">Recommended: yes.</div></div>
+<div class="q"><div><b class="n">6</b><b>What a man with View of the other squadron sees there:</b> its schedule pages and its Logic page, read only, as a member sees View-only Sched. Its bell does not reach him: his bell stays his own squadron's.</div>
+<div class="rec">Recommended: yes.</div></div>
+
+<h2>Two things you will notice</h2>
+<ul>
+<li><b>The demo starts fresh once.</b> On the day batch 1 goes live, every browser's demo data is cleared and both squadrons are set up again. Changes you made in the demo are lost.</li>
+<li><b>Sign out restarts the app.</b> You see the start-up claw for a moment after "Sign out". Without it, a 149 man signing in on the same PC after a 142 man would be shown 142's Leave War and Tracker.</li>
+</ul>
+
+<h2>What batch 1 gives you</h2>
+<ul>
+<li>142 and 149, each with its own schedule, Logic (crew rest included), Leave War, Tracker, Quals and Inputs.</li>
+<li>Each person has one home squadron. He files inputs and leave only there. Inputs, Quals, the Leave War and the Tracker always show his own squadron.</li>
+<li>An admin of a squadron can give a man of the other squadron View only, never as a scheduler. Only a squadron's own admins, or a master admin, can make someone its admin.</li>
+<li>Anyone who may see more than one schedule gets the "142 ▾" button. The schedule pages and Logic follow his pick.</li>
+<li>Admin → Squadrons: each squadron and its place, and each place's time zone, picked by name and shown as GMT+X.</li>
+<li>Squadrons at one place share one public-holiday list, and each keeps its own Off days.</li>
+<li>Prints and exports carry the number of the schedule printed, never a fixed "142".</li>
+</ul>
+
+<section class="pic" id="p1"><h3>1 · The "142 ▾" button and its Schedules menu</h3>
+<p>Saber can see both schedules, so the TALON mark becomes a button. The menu lists 142 and 149 only (detachments come in batch 2). On a phone it opens as a sheet from the top, the page dimmed under it.</p>
+<div class="pair"><figure><img src="img/b1-1-d.png" alt="Desktop: the top bar's 142 ▾ button with its Schedules menu open"><figcaption>Desktop</figcaption></figure>
+<figure><img src="img/b1-1-p.png" alt="Phone: the Schedules sheet hanging from the top bar"><figcaption>iPhone</figcaption></figure></div></section>
+
+<section class="pic" id="p2"><h3>2 · The board names its squadron</h3>
+<p>A small grey "142" beside the day title on the Scheduler Board's bar, so a picture of the board says whose it is. Nothing else in the bar moves.</p>
+<div class="pair"><figure><img src="img/b1-2-d.png" alt="Desktop: the board's bar with a small grey 142 beside the day title"><figcaption>Desktop</figcaption></figure>
+<figure><img src="img/b1-2-p.png" alt="Phone: the board's bar with 142 beside the day title"><figcaption>iPhone</figcaption></figure></div></section>
+
+<section class="pic" id="p3"><h3>3 · Admin → Squadrons</h3>
+<p>Each squadron with its place and time zone. <span class="new">New:</span> "+ New squadron", which only a master admin sees. The detachment lists you approved come with batch 2.</p>
+<div class="pair"><figure><img src="img/b1-3-d.png" alt="Desktop: Admin, Squadrons, listing 142 and 149 at Home base, with a + New squadron button"><figcaption>Desktop</figcaption></figure>
+<figure><img src="img/b1-3-p.png" alt="Phone: the Squadrons list"><figcaption>iPhone</figcaption></figure></div></section>
+
+<section class="pic" id="p4"><h3>4 · A squadron's place, and its time zone</h3>
+<p>149's row opened: its place and the time zone chosen by name, "Perth · GMT+8". A change is saved at once and counts from the next day. The line about the squadrons planning each other's people waits for borrowing (batch 3), so it is not shown yet.</p>
+<div class="pair"><figure><img src="img/b1-4-d.png" alt="Desktop: 149's row opened with Place and Time zone"><figcaption>Desktop</figcaption></figure>
+<figure><img src="img/b1-4-p.png" alt="Phone: 149's place and time zone"><figcaption>iPhone</figcaption></figure></div></section>
+
+<section class="pic" id="p5"><h3>5 · Request access asks the squadron first</h3>
+<p>A person not yet on a list picks his squadron first. Only that squadron's admins get the request, and their bell tells them.</p>
+<div class="pair"><figure><img src="img/b1-5-d.png" alt="Desktop: Request access with Squadron as the first choice"><figcaption>Desktop</figcaption></figure>
+<figure><img src="img/b1-5-p.png" alt="Phone: Request access with Squadron first"><figcaption>iPhone</figcaption></figure></div></section>
+
+<section class="pic" id="p6"><h3>6 · A person's row on Admin → Users</h3>
+<p>Saber's row: "Other squadrons · 149 · View", as approved. <span class="new">New:</span> the line "Home squadron · 142" above it.</p>
+<div class="pair"><figure><img src="img/b1-6-d.png" alt="Desktop: Saber's Users row with Home squadron and Other squadrons"><figcaption>Desktop</figcaption></figure>
+<figure><img src="img/b1-6-p.png" alt="Phone: Saber's Users row"><figcaption>iPhone</figcaption></figure></div></section>
+
+<section class="pic" id="p7"><h3>7 · Adding a person</h3>
+<p><span class="new">New:</span> a "Home squadron" choice at the top of Add a person, set to the admin's own squadron to start.</p>
+<div class="pair"><figure><img src="img/b1-7-d.png" alt="Desktop: Add a person with a Home squadron choice"><figcaption>Desktop</figcaption></figure>
+<figure><img src="img/b1-7-p.png" alt="Phone: Add a person with Home squadron"><figcaption>iPhone</figcaption></figure></div></section>
+
+<section class="pic" id="p8"><h3>8 · One holiday list at one place</h3>
+<p>149's admin adds a public holiday. The amber warning, as approved, names each squadron's published days the holiday puts out of date, and both squadrons' admins are told. <span class="new">New:</span> the grey line "Off days stay each squadron's own".</p>
+<div class="pair"><figure><img src="img/b1-8-d.png" alt="Desktop: the Leave War's add-holiday window with the amber warning"><figcaption>Desktop</figcaption></figure>
+<figure><img src="img/b1-8-p.png" alt="Phone: the add-holiday window"><figcaption>iPhone</figcaption></figure></div></section>
+
+<h2>Waits for later batches</h2>
+<ul class="later">
+<li><b>2 · Detachments:</b> making one, DET and "+ Put people on it" (one DET for each man), its schedule, one man in one place, a man's rest, hours and OIL followed across places, Close detachment.</li>
+<li><b>3 · Borrowing and shared waves:</b> the other squadron's free men, the automatic "ATTACH" row at home, clash checks across both squadrons, "Join a 149 wave", the grey "142" badge, signing a shared wave, OIL for a day worked for both.</li>
+<li><b>4 · Transfer to Sqn, and Post out from Admin → Users.</b></li>
+<li><b>5 · The whole-app check</b> across both squadrons, a detachment and a transfer together.</li>
+</ul>
+</div>
+<script>
+document.addEventListener('click', e => {
+  const z = document.querySelector('.zoom')
+  if (z) { z.remove(); return }
+  const img = e.target.closest('.pair img'); if (!img) return
+  const d = document.createElement('div'); d.className = 'zoom'
+  const big = document.createElement('img'); big.src = img.src; big.alt = img.alt
+  d.appendChild(big); document.body.appendChild(d)
+})
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelector('.zoom')?.remove() })
+</script>
