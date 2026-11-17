@@ -2748,3 +2748,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** reading the rules, the drawings and four areas of code to build a four-item batch filled the chat to 85% before the bug check began, so the FULL check (walkers, two reads, re-walk) had to move to a fresh chat mid-job.
 **Suggested improvement:** when a batch of three or more items is sized FULL, plan the handoff at the start: one chat builds, pushes and opens the pull request; the next runs the whole check from the evidence sheet onward. Say so in the opening tier block.
 **Principle:** size the context a job needs before starting it, and put the planned handoff at a natural seam (build done, pushed) instead of where the context runs out.
+
+### Observation 967: A drawing made by injecting CSS into the live page does not prove the built rule matches
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 100, the four Leave War items' bug check (claude/lw-four-items)
+**Skill:** impeccable
+**Type:** open-source
+**Phase/Area:** mock-ups drawn on the running app by injected CSS; moving the drawing's rules into the source
+
+**Issue:** The grid's hover ring was drawn for approval by injecting a rule into the running build, where it worked. Moved over "whole" into a stylesheet that is wrapped in a page-scoping nesting block, its selector began with `body`, which the nesting turned into "a body inside the page" — it matched nothing, and the ring never drew. Unit tests (no CSS) and a code read passed; only a browser test asserting the computed style on the hovered element caught it.
+**Suggested improvement:** In the build step after a drawing approved as injected CSS: for every moved rule, a browser assertion of the computed style on the element it must paint, in the built app, before the job is called built; and a note that rules moved into a nested / scoped stylesheet must not start at `html`, `body` or `:root`.
+**Principle:** CSS proven by injection proves the look, not the selector's reach once it is placed in its real file; assert the computed style where it must paint.
