@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/lw-grid-hover-design-200c6e -->
+### CHAT 96 — two Leave War design jobs (mock-ups only, no app code), written 17 Nov 26 — verify before use
+- **Branch:** `claude/lw-grid-hover-design-200c6e`, cut from `main` at 3a51c06a; pushed; no pull request yet (it is notes and mock-ups only — open one as a notes-only pull request once the options pages are done).
+- **Job 1, the grid's hover mark (D2151):** his question page, https://claude.ai/artifact/G83PmGZE9Wntv9VjA7gawp, source `raptor-port/docs/mock/2026-11-17-lw-grid-hover/` (pictures of today and the shooting script `today.mjs`, run against a local `vite preview` on port 4191). He answered: on a desktop the one day under the mouse wears a cyan ring, hollow — not row and column — and asked which strength, the tapped day's thin ring (left) or the drag selection's strong ring (right). Recommended: the left. **Next:** once he picks, draw it on the real app, today beside proposed, at his PC's 1536 size (a phone adds nothing — its tap keeps D1289's mark), and put it to him; today's faint row tint (`matrix.css`, the hovered row's 5% cyan) stays unless he says.
+- **Job 2, the OIL tracker's award editor (D2150):** at 0.5 the AM / PM pick appears and at 1 it goes, so the date, reason and given-by jump (the editor's parts wrap freely: `raptor-port/src/leavewar/ui/OilTracker.tsx` the editing branch, `oiltracker.css` `.oil-edit`); "Really delete?" also widens its button. **Next:** draw 2–3 steady layouts on the real app at his iPhone's size and a desktop's, today beside proposed — the lead option: a fixed grid, the amount, AM, PM and date on one line with AM / PM always there and greyed when the amount is not a half day (as a greyed Approve stays, D1544), reason and given-by the second line, Save · Cancel · Delete the third, Delete keeping its size when armed (as D1387's "Delete — sure?"). The impeccable skill (shape) first.
+- **Rulings:** D2150, D2151 → the Leave War page. Numbers D2150 up are this chat's range (another chat holds the D2130s).
+- **Reads owed:** none (no code). **Walk:** none (pictures only).
+<!-- /now -->
 <!-- now:claude/multi-sqn-design-r3 -->
 ### CHAT 92 — multi-squadron round 2, then the night of 17 Nov 26 (six jobs, all done), rewritten 17 Nov 26 after his "merge live" — verify before use
 - **Where it started:** round 2 of the multi-squadron design (answered, D2099–D2111), then `/overnight 12` on Low with his "yes all as recommended … run jobs 1-5 tonight", plus a job of his own (6). Nothing merged at night; nothing on `main`. The chat compacted at 00:37 and about 06:00; each time the block, the guide and the step were re-read.
