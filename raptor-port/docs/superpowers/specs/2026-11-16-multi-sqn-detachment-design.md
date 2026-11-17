@@ -383,6 +383,7 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   taken off, the days pending) and never publishes it by itself, the four sign-offs staying people's; the bell reads
   "25–26 Jul cleared · publish AL1", a tap opening that day. Recommended; the
   other choice put to him: Close publishes AL1 itself, the admin who pressed it standing as its signer.
+- **His answer to Q4, D2149 (17 Nov 26, chat 100), "yes to q4":** a line concerns both only when it is one squadron's own line in the other's wave; 149's VL holding Saber stays 149's, and 142 only takes him off it — by deleting his row at home as any input (his idea): the row named "ACADEMICS · 149" over "ATTACH" (his "2 attach words"), one per stretch of time; its window "Set by 149's plan", fields not changeable, no Save, Delete reading "Take him off ACADEMICS" with "His seat is left empty; 149 is told."; Undo takes it back. Narrows D2114, D2098, D2144. Pictures `Q4N*` (`docs/mock/2026-11-17-multi-sqn-r7/draw-q4.mjs`).
 - **His correction, D2147 (17 Nov 26, chat 100), of the transfer sheet's X5:** *"this statement is only true at present
   correct. The admin could put the post out like 3 months ahead"*. The sheet's lines are today's figures, worked out
   again each time it opens, reading "Today:"; the date applies the sheet's choices (T1–T3) to what stands then, and the
