@@ -358,23 +358,30 @@ export function OilTracker({ person, onClose, onGranted }: {
   /* AN EDITOR OPENS IN SIGHT (chat 101's walk, W2's E-a, 17 Nov 26): the editing box is wider than the credit it opens on,
      and on a 402 phone a credit near the list's right edge opened with Cancel cut and Delete wholly past the screen.
      Once it has drawn, the list slides only as far as the editor needs — its right edge inside the list, its left edge
-     never under the name columns held at the left (the slide's limit, as Balances' tapped box does). */
-  useEffect(() => {
+     never under the name columns held at the left (the slide's limit, as Balances' tapped box does).
+     …AND UP AND DOWN (the fix round's narrow read, chat 103, 17 Nov 26): the editor stands taller than the award, so the last
+     award at the list's foot opened with its buttons below the list's edge; the list slides up as far as the editor's foot
+     needs, never putting its top under the heading rows held at the top. Done before the first paint (nothing takes focus
+     here, so no browser scroll comes after it): the editor is never drawn cut, even for a frame. */
+  useLayoutEffect(() => {
     if (!editId) return
     const wrap = wrapRef.current
-    if (!wrap) return
-    const later = typeof requestAnimationFrame === 'function' ? requestAnimationFrame : (f: () => void) => setTimeout(f, 16)
-    later(() => {
-      const ed = wrap.querySelector<HTMLElement>('.oil-e.editing')
-      if (!ed) return
-      const c = ed.getBoundingClientRect(), a = wrap.getBoundingClientRect()
-      const held = [...(ed.closest('tr')?.querySelectorAll<HTMLElement>('.f') ?? [])].map(f => f.getBoundingClientRect().right)
-      const L = Math.max(a.left, ...held) + 4, Rt = a.left + wrap.clientWidth - 4
-      let dx = 0
-      if (c.right > Rt) dx = c.right - Rt
-      if (c.left - dx < L) dx = c.left - L
-      if (dx) wrap.scrollLeft += dx
-    })
+    const ed = wrap?.querySelector<HTMLElement>('.oil-e.editing')
+    if (!wrap || !ed) return
+    const c = ed.getBoundingClientRect(), a = wrap.getBoundingClientRect()
+    const held = [...(ed.closest('tr')?.querySelectorAll<HTMLElement>('.f') ?? [])].map(f => f.getBoundingClientRect().right)
+    const L = Math.max(a.left, ...held) + 4, Rt = a.left + wrap.clientWidth - 4
+    let dx = 0
+    if (c.right > Rt) dx = c.right - Rt
+    if (c.left - dx < L) dx = c.left - L
+    if (dx) wrap.scrollLeft += dx
+    /* the heading cells are what stick to the list's top, not the heading block itself */
+    const heads = [...wrap.querySelectorAll<HTMLElement>(':scope > table.oil-grid > thead th')].map(h => h.getBoundingClientRect().bottom)
+    const T = Math.max(a.top, ...heads) + 4, Bt = a.top + wrap.clientHeight - 4
+    let dy = 0
+    if (c.bottom > Bt) dy = c.bottom - Bt
+    if (c.top - dy < T) dy = c.top - T
+    if (dy) wrap.scrollTop += dy
   }, [editId])
 
   // Opened on someone: bring their row into view once.

@@ -9337,6 +9337,7 @@ for (const wide of [false, true]) test(`the OIL award editor opens with Save, Ca
   await page.waitForTimeout(100)
   const vw = page.viewportSize()!.width
   const ab = (await award.boundingBox())!
+  expect(ab.x, 'the award stands inside the screen, where a finger can tap it').toBeLessThan(vw - 20)
   /* pressed on its part in sight — where a finger lands */
   const x = Math.min(ab.x + ab.width / 2, (ab.x + vw) / 2)
   if (isPhone()) await page.touchscreen.tap(x, ab.y + ab.height / 2)
@@ -9378,6 +9379,56 @@ for (const wide of [false, true]) test(`the OIL award editor opens with Save, Ca
   await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
 })
 
+/* …AND AT THE LIST'S FOOT (the fix round's narrow read, chat 103, 17 Nov 26): the slide above was sideways only, and the editor
+   stands taller than the award it opens on — the last award, its row at the list's bottom edge, opened with Save, Cancel and
+   Delete all below the list's edge (the phone: buttons 864–892, the list ending at 833). The list now slides up just as far as
+   the editor needs, never putting it under the heading rows held at the top. */
+test('the OIL award editor at the list\'s foot opens with Save, Cancel and Delete in sight', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const first = page.locator('[data-testid="oil-range-first"]')
+  if (await first.count()) await first.click()
+  const award = page.locator('.oil-e.grant').last()
+  /* its row brought to the list's bottom edge, its top half in sight, the list slid so the award stands inside the screen */
+  await award.evaluate(e => {
+    const w = e.closest('.oil-wrap') as HTMLElement
+    const a = w.getBoundingClientRect()
+    w.scrollLeft += e.getBoundingClientRect().right - (a.left + w.clientWidth - 8)
+    const r = e.getBoundingClientRect()
+    w.scrollTop += (r.top + r.height / 2) - (a.top + w.clientHeight - 2)
+  })
+  await page.waitForTimeout(150)
+  const ab = (await award.boundingBox())!
+  const vw = page.viewportSize()!.width
+  expect(ab.x, 'the award stands inside the screen, where a finger can tap it').toBeLessThan(vw - 20)
+  const foot = await page.evaluate(() => { const w = document.querySelector<HTMLElement>('.oil-wrap')!; return w.getBoundingClientRect().top + w.clientHeight })
+  expect(ab.y + ab.height, 'the award runs past the list\'s foot before the tap').toBeGreaterThan(foot)
+  const x = Math.min(ab.x + ab.width / 2, (ab.x + vw) / 2), y = Math.min(ab.y + ab.height / 2, foot - 8)
+  if (isPhone()) await page.touchscreen.tap(x, y)
+  else await page.mouse.click(x, y)
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toBeVisible()
+  await page.waitForTimeout(250)
+  const g = await page.evaluate(() => {
+    const ed = document.querySelector<HTMLElement>('[data-testid="oil-edit-award"]')!
+    const w = ed.closest<HTMLElement>('.oil-wrap')!, a = w.getBoundingClientRect()
+    /* the heading cells are what stick to the list's top, not the heading block itself */
+    const head = Math.max(a.top, ...[...w.querySelectorAll<HTMLElement>('table.oil-grid > thead th')].map(h => h.getBoundingClientRect().bottom))
+    const b = ed.closest<HTMLElement>('.oil-e')!.getBoundingClientRect()
+    return { foot: a.top + w.clientHeight, head, top: b.top, bottom: b.bottom }
+  })
+  expect(g.bottom, 'the editor\'s foot inside the list').toBeLessThanOrEqual(g.foot + 0.5)
+  expect(g.top, 'the editor\'s top clear of the heading rows').toBeGreaterThanOrEqual(g.head - 0.5)
+  for (const sel of ['[data-testid="oil-edit-save"]', '[data-testid="oil-edit-cancel"]', '[data-testid^="oil-del-"]']) {
+    const b = (await page.locator(sel).boundingBox())!
+    const hit = await page.evaluate(([x, y, sel]) => document.elementFromPoint(x as number, y as number)?.closest(sel as string) != null, [b.x + b.width / 2, b.y + b.height / 2, sel] as const)
+    expect(hit, `${sel} is on top at its middle`).toBe(true)
+  }
+  await page.locator('[data-testid="oil-edit-cancel"]').click()
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
+})
+
 /* THE PHONE BALANCES AFTER OPTION B (D2156) — three faults the two blind reads of chat 101 found (Astra and a fresh Opus
    reader, 17 Nov 26), each red on 01f1030c4 first: the pinned names stopped filling their column (D1518, nothing pinned
    leaks), CCL's box ran 2px into FCL's, and a tapped box near the right edge left its corner tag cut (B-F4's fix undone). */
@@ -9405,7 +9456,9 @@ test('Balances on a phone: the pinned name panel fills its whole 132px column on
     for (const row of document.querySelectorAll<HTMLElement>('.bp-row')) {
       const who = row.querySelector<HTMLElement>('.bp-who')!, r = row.getBoundingClientRect()
       const x = hs.getBoundingClientRect().left + (132 - 4) * z, y = r.top + r.height / 2
-      if (y < 0 || y > innerHeight) continue
+      /* only rows whose middle stands inside the list itself (the fix round's narrow read: one cut at its foot reads what is below) */
+      const hb = hs.getBoundingClientRect()
+      if (y < hb.top || y > hb.top + hs.clientHeight) continue
       const hit = document.elementFromPoint(x, y)
       if (hit && !who.contains(hit)) leaks.push(`${row.dataset.testid}: ${hit.className}`)
     }
