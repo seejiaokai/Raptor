@@ -23,15 +23,15 @@ B: the walk, the reads, the fixes) told by chat 100 (the checklist's step 3).
 
 | Ruling | In the app's words | Checked against the build |
 |---|---|---|
-| D2156 (answers D2153, D2154) | Balances: every column from the left, heading over its box; PENDING APPROVAL; a pending figure a dashed amber tag, no minus; another kind's on its box's corner | |
-| D2157 (answers D2151, D2152) | On a PC the grid's one day under the mouse wears a thin cyan ring, no fill; the row's faint tint stays; a phone unchanged | |
-| D2155 (narrows D2150) | The OIL award editor: one fixed layout; AM / PM's place kept empty; Delete as wide as "Really delete?"; nothing moves | |
-| D2158 | The New-period window's Name fills from the dates, follows them; a typed name kept; an emptied box follows again | |
-| D1253, D1482 | Balances' amber pending figures — changed in look by D2156 on the Balances page only | |
-| D1483, D1236 | Balances on a phone pinches out until every column fits | |
-| D1493, D1497 | A figure read only ends where a box's would | |
-| D1164, D260 | Half an OIL day takes AM or PM; an award's day never changes | |
-| D641 | The grid behind a window keeps working | |
+| D2156 (answers D2153, D2154) | Balances: every column from the left, heading over its box; PENDING APPROVAL; a pending figure a dashed amber tag, no minus; another kind's on its box's corner | PASS — W1 B-a (0 headings over 2px off at 1536, 2560, 402 both engines), S8; phone faults 8–10 fixed; drawing check: desktop matches, phone departures named |
+| D2157 (answers D2151, D2152) | On a PC the grid's one day under the mouse wears a thin cyan ring, no fill; the row's faint tint stays; a phone unchanged | PASS — W1 S9, S10, S18, S19, S20; the row tint is `main`'s, kept |
+| D2155 (narrows D2150) | The OIL award editor: one fixed layout; AM / PM's place kept empty; Delete as wide as "Really delete?"; nothing moves | PASS — W2 S2, S11, S13 and the D2155 test; finds 13 (opens past the edge) and 14 (Delete's words) fixed |
+| D2158 | The New-period window's Name fills from the dates, follows them; a typed name kept; an emptied box follows again | PASS — W3 S5, S21, S22, S24; reload keeps it |
+| D1253, D1482 | Balances' amber pending figures — changed in look by D2156 on the Balances page only | PASS — the person window keeps "−N" (W1 B-d) |
+| D1483, D1236 | Balances on a phone pinches out until every column fits | PASS — W1 S16 |
+| D1493, D1497 | A figure read only ends where a box's would | PASS — W1 S8 (a read-only figure and its tag) |
+| D1164, D260 | Half an OIL day takes AM or PM; an award's day never changes | PASS — W2 S11 (half day round trip), the date shown never changed |
+| D641 | The grid behind a window keeps working | PASS — W1 S19, W3 plain-user round |
 
 Clashes: none found (D2156 sets aside D1253's minus on the Balances page only — the person window's tiles keep theirs, the
 agent's reading, see the candidates below).
@@ -45,66 +45,68 @@ pixels). Each cell YES / NO-because / MISSING; walked cells get their picture's 
 
 | Place | SHOW | USABLE | PAINTED | Proved by |
 |---|---|---|---|---|
-| Balances, desktop, admin, unlocked — LVE column | | | | |
-| Balances, desktop, admin — another kind's box corner (CCL…CL) | | | | |
-| Balances, desktop, member (figures read only) | | | | |
-| Balances, desktop, locked period | | | | |
-| Balances, phone 402, admin | | | | |
-| Balances, phone, member / locked | | | | |
-| Balances, phone, slid to the end (CL's tag whole) | | | | |
-| Balances, phone, pinched out (D1483) | | | | |
-| Balances, desktop and phone, his own row (`.me`) | | | | |
-| Balances, Days taken view | must NOT change — the drawing is of the Balances view | | | |
-| The person window's tiles ("Pending −1") | must NOT change — D2156 names the Balances page only (agent's reading) | | | |
-| The grid's counter column, Approvals | must NOT change — not the Balances page | | | |
+| Balances, desktop, admin, unlocked — LVE column | YES — PENDING APPROVAL heading, dashed amber tag, no minus | YES — boxes typed (W1 S7) | YES — nothing over it (W1 S16) | W1 B-a, S8; drawing check desk: matches |
+| Balances, desktop, admin — another kind's box corner (CCL…CL) | YES — tags on the corner (W1 S8) | YES — a press passes through to the box | YES — no neighbour under the tag | W1 S8 desktop; drawing check desk: matches |
+| Balances, desktop, member (figures read only) | YES — tags on read-only figures | YES — his own non-OIL boxes only, the rest read only (W1 S7) | YES | W1 S7, S8 |
+| Balances, desktop, locked period | YES | YES — a member 0 boxes and the "locked" note; the admin editable (W1 S7) | YES | W1 S7 (bidding closed and balances locked, both) |
+| Balances, phone 402, admin | YES | YES | NO-because the pinned names shrank (find 8) and CCL ran into FCL (find 9) → fixed | W1 B-a, B-b; `leavewar.spec.ts` find 8 and 9 tests; re-walk R-Bb, R-S8, R-Ba |
+| Balances, phone, member / locked | YES | YES — as on the desktop (W1 S7 at 402) | YES after find 8 | W1 B-b, S7; re-walk R-Bb |
+| Balances, phone, slid to the end (CL's tag whole) | YES — CL's tag whole (the 18px end room) | NO-because a tapped box near the edge left its tag cut (find 10) → fixed | YES | W1 B-c; find 10 test; re-walk R-Bc; drawing check slid: the end room, named |
+| Balances, phone, pinched out (D1483) | YES — tags stay on their boxes | YES | YES — tags pass under the pinned names (W1 S16) | W1 S16 |
+| Balances, desktop and phone, his own row (`.me`) | YES | YES — a member types into his own row (W1 S7) | YES | W1 S7 |
+| Balances, Days taken view | must NOT change — unchanged (NAME, GRADE, LL … OD) | — | — | W1 B-d |
+| The person window's tiles ("Pending −1") | must NOT change — unchanged ("LVE −2.5, CCL −1, PL −0.5, CL −1") | — | — | W1 B-d; candidate 1 for him |
+| The grid's counter column, Approvals | must NOT change — NO-because option B's rules sit on the Balances page's own parts only; Approvals and the grid opened in the plain round, unchanged | — | — | W3 plain-user round; W2 S14 (Approvals behind the tracker) |
 
 ### 2. The hover ring (D2157)
 
 | Place | SHOW | USABLE | PAINTED | Proved by |
 |---|---|---|---|---|
-| Grid, desktop, an empty day of a man | | n/a — a mark, no press | | |
-| Grid, desktop, a day under a leave block / a bid / a pile / a warning mark (the block is drawn above the cell) | | | | |
-| Grid, desktop, his own row (two cyan lines kept) | | | | |
-| Grid, desktop, a selected / picked day | must NOT — the stronger mark stays | | | |
-| Grid, desktop, the move's landing day, the just-added ring | must NOT | | | |
-| Grid, desktop, Rearrange — a row being landed on | must NOT | | | |
-| Grid, desktop, during a drag (`tdrag`) | must NOT | | | |
-| Grid, desktop, Manning / Event / heading rows, the counts row's amber or red ring | must NOT — not a man's day cell | | | |
-| Grid, desktop, behind an open window (D641) | | | | |
-| Grid, phone — a tap | must NOT — no ring stuck after a tap (`hover: hover` only) | | | |
+| Grid, desktop, an empty day of a man | YES — thin cyan ring, no fill; gone on leaving | n/a — a mark, no press | YES — neighbours not ringed | W1 S9; `leavewar.spec.ts` "the grid's day under the mouse…" |
+| Grid, desktop, a day under a leave block / a bid / a pile / a warning mark (the block is drawn above the cell) | YES — on every kind of painted day; on a joined block three sides show, the run-on side under the block (find 11, a look for him) | n/a | YES | W1 S9 (`w1-S9-admin-joined-first-c.png`) |
+| Grid, desktop, his own row (two cyan lines kept) | YES — the ring, his row's lines kept | n/a | YES | W1 S18 |
+| Grid, desktop, a selected / picked day | must NOT — the selection's 2px ring stays | — | — | W1 S10; `leavewar.spec.ts` "a picked day keeps its own stronger ring…" |
+| Grid, desktop, the move's landing day, the just-added ring | must NOT — the move's target amber; no thin ring over it | — | — | W1 S10 |
+| Grid, desktop, Rearrange — a row being landed on | must NOT — the ring back only after leaving Rearrange | — | — | W1 S10 |
+| Grid, desktop, during a drag (`tdrag`) | must NOT — the strong marks only | — | — | W1 S10 |
+| Grid, desktop, Manning / Event / heading rows, the counts row's amber or red ring | must NOT — names, headings, Events and manning rows no ring | — | — | W1 S9 |
+| Grid, desktop, behind an open window (D641) | YES — behind the picked-days panel; none under New leave war, whose press does nothing | YES — a press on a day swaps to the one-day window | YES | W1 S19 |
+| Grid, phone — a tap | must NOT — `(hover: hover)` false; the tap frame only while its window is open, nothing left after, both engines | — | — | W1 S20; the media rule test |
 
 ### 3. The award editor's fixed layout (D2155)
 
 | Place | SHOW | USABLE | PAINTED | Proved by |
 |---|---|---|---|---|
-| OIL tracker, from the tab, desktop, admin — an award opened | | | | |
-| OIL tracker, phone 402, admin | | | | |
-| OIL tracker opened from Balances (the OIL figure) | | | | |
-| OIL tracker opened from Approvals | | | | |
-| Amount 0.5 ↔ 1 ↔ 2.5: date, reason, given-by, buttons unmoved | | | | |
-| Delete armed ("Really delete?") ↔ not: nothing moves | | | | |
-| A refusal under the buttons (a bad amount) | | | | |
-| The correction editor (a taken day's) | must NOT — D2155 names the award's editor (candidate, below) | | | |
-| A member — no editor | must NOT — admin only | | | |
+| OIL tracker, from the tab, desktop, admin — an award opened | YES — the fixed layout on every lane (CNY, partly used, 2027, AM half) | YES — Save, Cancel, Delete pressed | YES | W2 S1, S2, S12, S13 |
+| OIL tracker, phone 402, admin | YES | NO-because Delete / Cancel opened past the screen's edge (find 13) → fixed | YES after the fix | W2 E-a; find 13 test; re-walk R-Ea |
+| OIL tracker opened from Balances (the OIL figure) | YES | YES — closed back to Balances | YES | W2 S14 (Balances name → person window → OIL tile) |
+| OIL tracker opened from Approvals | YES | YES — Escape back to Approvals | YES | W2 S14 |
+| Amount 0.5 ↔ 1 ↔ 2.5: date, reason, given-by, buttons unmoved | YES — nothing moved, phone and desktop | YES | YES | W2 S2, S11; `leavewar.spec.ts` D2155 test (to a tenth of a pixel) |
+| Delete armed ("Really delete?") ↔ not: nothing moves | YES — Delete no wider armed; its words now on Cancel's line (find 14) | YES — two taps delete | YES | W2 S2, S13; find 14 test |
+| A refusal under the buttons (a bad amount) | YES — under the buttons, the parts keep their boxes | YES — a valid retry saves | YES | W2 S12 |
+| The correction editor (a taken day's) | must NOT — a different editor opens, unchanged | — | — | W2 S1 (dol-3); candidate 2 for him |
+| A member — no editor | must NOT — no editor, no gear, no credit panel | — | — | W2 E-b, desktop and both phones |
 | The editor's words — no code note drawn on screen | | | | oiltracker.test.tsx "a grant box shows who gave it…" (red on the build, 17 Nov 26) |
 
 ### 4. The period's name from its dates (D2158)
 
 | Place | SHOW | USABLE | PAINTED | Proved by |
 |---|---|---|---|---|
-| "+ New period" from the war picker, desktop | | | | |
-| the same, phone | | | | |
-| The Holidays ask (a holiday on dates no period covers) — the window over Days | | | | warask.test.tsx; leavewar.spec.ts "a holiday on dates no leave period covers waits" |
-| Dates changed after a typed name — kept | | | | wars.test.tsx |
-| Box emptied, then dates changed — follows again | | | | wars.test.tsx |
-| Across a year's end; one month; days mid-month | | | | warname.test.ts |
-| The made period's name in the picker, Balances' title, the Holidays tag | | | | |
-| Saved and read back after a reload | | | | |
+| "+ New period" from the war picker, desktop | YES — the name follows the dates | YES — Create | YES | W3 S21, S22 |
+| the same, phone | YES — both engines | YES | YES | W3 S21, S22 (phoneC, phoneW) |
+| The Holidays ask (a holiday on dates no period covers) — the window over Days | YES — "MAR - DEC 28" | YES — Create, the holiday saved | YES — whole above the Days window | W3 S5 (both doors, all sizes) |
+| Dates changed after a typed name — kept | YES | YES | YES | W3 S21 |
+| Box emptied, then dates changed — follows again | YES — spaces-only too | YES — Create greyed while empty | YES | W3 S21e |
+| Across a year's end; one month; days mid-month | YES — "DEC 29 - FEB 30", "JAN 29" | YES | YES | W3 S21, S24 |
+| The made period's name in the picker, Balances' title, the Holidays tag | YES — the picker, Open for bidding, Events, Days taken print it; Balances' main view and Approvals print no name | YES — the "+3 pending in …" link opens it | YES | W3 S23 |
+| Saved and read back after a reload | YES — kept after a reload | YES | YES | W3 S24 (`w3-desk-s24-12-after-reload.png`) |
 
 ## Candidates to put to him (D852 — the same improvement elsewhere, never changed unasked)
 
 1. The person window's tiles still show a pending figure with a minus ("Pending −1") — the reading D2154 says confuses.
 2. The OIL tracker's correction editor (a taken day's) is not given the steady layout.
+3. Two periods in one month take the same name ("JAN 29"); the picker tells them apart only by place (W3, scenario 24).
+4. The grid's day sheet has an award editor of its own that still moves its Save (both reads).
 
 ## Departures from the drawings to name to him (not yet shown)
 
@@ -144,6 +146,43 @@ Written by the host (Opus), chat 101, 17 Nov 26, before any walker started.
 
 ## The lessons of §7.11, each against a scenario or a test
 
+Gone through by the host, chat 102 (the walk's briefs carried them: chat 101's W1–W3, chat 102's re-walk).
+
+| # | Lesson | Covered by, or why it cannot apply |
+|---|---|---|
+| 1 | State × reading table | Balances: admin / member unlocked / member locked × bidding open / closed (W1 S7); the editor: amount 0.5 / 1 / 2.5 / 3 × Delete armed or not (D2155 test, W2 S2) |
+| 2 | Drags and swipes at ordinary speed | The phone's finger slide of Balances and the tracker (W1 B-b, W2 E-a over CDP touch); the grid's drag (W1 S10); no new gesture |
+| 3 | After every press, what tells him and what is out of sight | E-a: the editor's buttons out of sight on opening — find 13; Balances' tapped box — find 10 |
+| 4 | A window that leaves the page working | W1 S19 (the ring behind the picked-days panel; none under New leave war) |
+| 5 | A box moved into sight, checked where it rests | Find 10's reveal and find 13's: re-walk R-Bc, R-Ea, against the pinned names |
+| 6 | Handed to the phone (scrolling, bounce) | The two reveals slide the list by script, not the phone's own motion; the real iPhone's slide and bounce — his look |
+| 7 | Steered frame by frame against the phone's motion | Cannot apply — nothing steers a motion frame by frame |
+| 8 | A screen with an approved drawing | The drawing check on all three drawings, run again after the fixes (`2026-11-17-drawcheck-*-rerun`); departures named |
+| 9 | Every list measured, heading against figures | W1 B-a at 1536, 2560, 402 both engines; S17 at 125% |
+| 10 | A page hidden and shown again | Cannot apply — no change reads the page's visibility; W3's reload and period switch read the name back |
+| 11 | A reading that depends on how much fits | W1 B-a and S17 at 1536 and 2560 |
+| 12 | Every page each window opens from | W2 S14: the tracker from the tab, Balances, the grid's person window, My leave, over Approvals |
+| 13 | A pinch part-way down a list | W1 S16 (tags under the pinned names, pinched); re-walk R-Ea pinched in Chromium |
+| 14 | A keyboard walk's boxes found by searching the code | Cannot apply — no keyboard walk changed; the editor's boxes typed (W2 S2) |
+| 15 | Every bar over a scrolling area | Balances' pinned name panel — find 8, re-walk R-Bb |
+| 16 | After a refusal at a box | W2 S12: refused amounts, then a valid retry saved |
+| 17 | A control that shows or hides part of a page | The editor's AM / PM place (D2155 test, both ways and back); the archive mark (W2 S1) |
+| 18 | Prints or downloads | Cannot apply — nothing prints or downloads |
+| 19 | Every window closed by each of its ways | W2 S14, W3 plain-user round (✕, Escape, outside, Cancel), phone WebKit and desktop |
+| 20 | A gesture the ways a hand makes it | Cannot apply — no new gesture; the hover is a mouse resting (W1 S9 at three points) |
+| 21 | A test browser's touch is not his phone's | The sheet names for his look: the two reveals' slide and the iPhone's letters in the editor's buttons |
+| 22 | Checked by what is drawn | The ring by computed style and picture (W1 S9); the tag's place by its box (find 10's test) |
+| 23 | What a tap opens, by the rulings | W2 S1: an award opens the award editor, a correction the correction editor, a carried-in figure nothing |
+| 23 (second) | Side-by-side boxes one height and one line | The editor's three buttons — find 14, its test; W1 B-a's heading pairs |
+| 24 | Placed against the top bar, or measured on a scroll | The reveals measure on open, not on a scroll; nothing set against the top bar |
+| 25 | Made through the app's own controls in every place | W3 S5 (both holiday doors) and S21; W1 B-c's pending made by the request controls |
+| 26 | What was under the fingers stays | W2 S2: typing and arming Delete moved nothing; the reveal runs once, on opening (re-walk R-Ea) |
+| 27 | Neighbouring controls before and after a press | D2155 test (every part to a tenth of a pixel); find 9 (CCL beside FCL) |
+| 28 | On a phone, what a press opens proved on screen first | W2 E-a pictured the editor at once with no script slide — how find 13 was found |
+| 29 | Anything that reads today | Cannot apply — the name reads the dates picked, not today |
+| 30 | Every phone tap pictured within ~100ms | W2 E-a, W1 B-c, re-walk R-Bc and R-Ea |
+| 31 | A page fitted to the screen that scrolls inside itself, at 125% | W1 S17 at 1536 with 125%; no fitted page changed |
+
 ## Astra's scenarios
 
 Astra (`gpt-6-astra`, high, read-only, the branch at `01f1030c4`), chat 101, brief
@@ -154,6 +193,33 @@ own non-OIL boxes. All 24 handed to the walkers (`…/2026-11-17-lw-four-items-w
 11–14; W3 5, 6, 21–24 and the plain-user round), none set aside.
 
 ## Orders walked — what the screen said
+
+The first walk, on the frozen `01f1030c4` (before finds 8–10), three Sonnet walkers in their own worlds, each signing in
+through the real screen (admin, member): **W1** Balances and the hover ring — 9 PASS, 4 FAIL, 1 RECORDED; **W2** the award
+editor — 132 PASS, 0 FAIL, 35 RECORDED; **W3** the period's name and the plain-user round — 148 PASS, 0 FAIL, 47 RECORDED,
+6 NOT WALKED. Reports and pictures `docs/img/handpass/2026-11-17-lw-four-items/w1|w2|w3/`.
+
+**Judged by the host, chat 102 (17 Nov 26), every FAIL's picture and every OIL / saved-data PASS's opened, cropped:**
+- W1 **B-c** and **S8** — finds 10 and 9, fixed red-first after this build; re-walked below.
+- W1 **S9 / S18** (a hovered day's own tint reads cyan .05) — not this change: the grid's row tint, `.mx tbody tr:hover td`,
+  is word for word on `main` and D2157 keeps it ("the row's faint tint stays"). `w1-S9-admin-duty-weekend-c.png`: the thin
+  ring on the day, the row's faint tint beside it. **PASS** for D2157.
+- W1 **S9, a joined block** (`w1-S9-admin-joined-first-c.png`): the ring shows on three sides of the block's first day,
+  the block covering only the side where it runs on — find 11 stays a look for him, softer than the read put it.
+- W1 **B-d** RECORDED — Days taken and the person window's "Pending −N" unchanged, as the roll-call says they must be.
+- W2 **E-a** — find 13, fixed. W2 **S2**'s Save (amount 3) and Delete twice, opened (`w2-Ea-chromium-dol1-7-after-save.png`):
+  the award reads +3 and Drifter's balance 4 → 5 (+6.5 → +7.5) — OIL right.
+- W2 **E-b**'s oddity (the member's tracker "lacked" `l7`): `w2-Eb-desk-chromium-1-tracker.png` shows Drifter's "+1 3 Jan
+  Weekend recovery" drawn — the walker searched by the admin's box name, which a member's box does not carry. Not a fault.
+- W2 the correction editor, a carried-in figure, the archive (RECORDED) — boundaries as the roll-call has them.
+- W3 every RECORDED is the app as ruled: a spaces-only name keeps Create greyed and follows the dates again (D2158's
+  "emptied"); Escape with the month chooser open closes the chooser only (one layer a press); a reload lands on the sign-in
+  screen with the world kept; the person window and the tracker leave the grid working (D641) and so do not close on an
+  outside tap; a new period opens closed for bidding. `w3-desk-s24-12-after-reload.png`: the new period's name kept after a
+  reload. **Two periods in one month are both named "JAN 29"**, told apart in the picker only by their place — as D2158
+  rules; a candidate for him (below).
+- W3 **scenario 6** (the first period ever) NOT WALKED: the demo always seeds two periods and no control deletes them all;
+  carried by `src/leavewar/emptywar.test.tsx`.
 
 ## Cases carried by a test
 
@@ -172,9 +238,26 @@ the Holidays ask, the corner tag); its changed browser tests — 9 red (option B
 
 ## Break tests
 
+One a wired surface, each seen red on a build without its part (§8):
+- Balances, the left-set columns and the tag: `leavewar.spec.ts` option B ×4, B-F4, the three find 8–10 tests (red on
+  `01f1030c4`); `balances.test.tsx` the corner tag (red on `main`).
+- The hover ring: `leavewar.spec.ts` "the grid's day under the mouse…" (red: "none", find 5) and "a picked day keeps its own
+  stronger ring…".
+- The award editor: the D2155 test (red at 0.5 → 1, find 6) and "…opens with Save, Cancel and Delete in sight…" (red
+  443.97 > 402.5 and 1.8 > 0.5, finds 13–14); `oiltracker.test.tsx` the code note (find 1).
+- The period's name: `warname.test.ts`, `wars.test.tsx`, `warask.test.tsx` (red on `main`, chat 100).
+
 ## Errors seen
 
 ## What was NOT walked, and why
+
+- Astra's scenario 6, the first period ever: the demo always seeds two periods and no control deletes them all —
+  `src/leavewar/emptywar.test.tsx` carries it.
+- A touch drag across days or names on the phone (W2 S3's two Grant OIL routes): not drivable in the test browser; the
+  one-day route stands for the phone, and the routes are unchanged by this batch.
+- WebKit's finger slide: not drivable here; a script slide stood in, said so in each row.
+- Only his iPhone can show: the real slide and bounce after the two reveals, and Apple's letters in the editor's buttons
+  and Balances' headings — on his look card.
 
 ## The reads
 
@@ -206,6 +289,8 @@ applies, the two hover rules repeating one long selector.
 | 10 | Both reads | **Phone Balances: a tapped box near the right edge left its corner tag cut** (408 vs the list's 402) — the reveal measured the cell, which no longer holds the out-of-flow tag; B-F4's fix undone | Fixed red-first ("…a box focused near the right edge keeps its pending tag inside the list", red 408 ≤ 402): the reveal measures the tag too |
 | 12 | The drawing check (an Opus helper, chat 101, on `01f1030c4` — before finds 8–10; every record replays its approved picture exactly) | Desktop: no difference on any of the three. Phone Balances: rows 6px wider (the known end room; CL's tag whole at 396 where the drawing cut it). Phone award editor: Delete 79.2 wide at rest, drawn 63.4 — the drawing's own Delete grew to 79.2 when armed, against D2155; the build keeps 79.2 always. Under 2px but seen: "Delete" sits 1.8px higher than "Cancel" on the phone (1px desktop). The hover beside a tapped day: a stand-in's 0.12 fill no person reaches | Departures for him with the recommendation to keep the build: the end room, Delete's width. The 1.8px word offset: to reproduce and fix if real. Re-run the Balances check after finds 8–9 (CCL's column now 7px wider than drawn — a named departure). Runs `docs/img/handpass/2026-11-17-drawcheck-lw-*`; a "ring" check added to the comparing (selftest 22 of 22) |
 | 11 | Fresh Opus read | On a day inside a joined leave block the hover ring is mostly hidden (the block is drawn over the day's sides); on his own row it changes nothing he can see | A look for him, not an outright fault: the drawing hovered an empty day only. Ringing filled days adds a mark he will see — a drawing first (D1625), with the walk's pictures (W1 scenario 9) |
+| 13 | The walk, W2's E-a (chat 101), judged and reproduced by the host (chat 102) | **On a 402 phone an award near the list's right edge opened its editor with Cancel cut and Delete wholly past the screen** (the 14 Mar award: Cancel to 444, Delete 449–528; the 3 Jan award: Delete to 423). `main` opened the same 300px editing box without sliding the list either, but D2155's Delete, as wide as "Really delete?", made it 16px worse | Fixed red-first (`leavewar.spec.ts` "the OIL award editor opens with Save, Cancel and Delete in sight…", red 443.97 ≤ 402.5 on the phone, green on the desktop): the list slides only as far as the open editor needs, never under the pinned names (the way a tapped Balances box comes into sight) |
+| 14 | The drawing check (find 12's 1.8px), reproduced by the host (chat 102) | **"Delete" sat 1.8px off "Cancel"'s line on a phone, 1px on a desktop** — its words stacked in a grid beside its hidden "Really delete?" | Fixed red-first (the same test: the three buttons one height, their words on one line, red 1.8 / 1.0 > 0.5): the hidden twin is a line of no height, so Delete's words sit as Cancel's do; Delete still no wider when armed (the D2155 test green) |
 
 Why the build's own checks missed 5 and 6: no browser test of either existed — chat 99 listed them as to be written (its
 "Pick up here"); the ring was compared with its drawing only as injected CSS on `main`'s build, where the nesting did not
