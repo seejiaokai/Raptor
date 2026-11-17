@@ -9316,6 +9316,61 @@ test('the OIL award editor: the amount 0.5 ↔ 1 ↔ 2.5 and Delete armed move n
   await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
 })
 
+/* THE AWARD EDITOR OPENS IN SIGHT (chat 101's walk, W2's E-a, 17 Nov 26): on a 402 phone an award near the list's right edge
+   opened its editor with Cancel cut and Delete wholly past the screen's edge — the editing box is wider than the award, and
+   nothing slid the list to it; D2155's Delete, as wide as "Really delete?", made it worse. Tapped where a finger finds it,
+   the list not slid first: Save, Cancel and Delete each whole on screen and on top, clear of the pinned name columns. */
+test('the OIL award editor opens with Save, Cancel and Delete in sight, never cut at the screen\'s edge', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const first = page.locator('[data-testid="oil-range-first"]')
+  if (await first.count()) await first.click()
+  const award = page.locator('[data-testid="oil-entry-dol-1"]')   // the demo's 14 Mar award, its lane the furthest right
+  /* the row brought up the screen; the list left unslid, as it opens */
+  await award.evaluate(e => { e.scrollIntoView({ block: 'center', inline: 'nearest' }); (e.closest('.oil-wrap') as HTMLElement).scrollLeft = 0 })
+  await page.waitForTimeout(100)
+  const vw = page.viewportSize()!.width
+  const ab = (await award.boundingBox())!
+  /* pressed on its part in sight — where a finger lands */
+  const x = Math.min(ab.x + ab.width / 2, (ab.x + vw) / 2)
+  if (isPhone()) await page.touchscreen.tap(x, ab.y + ab.height / 2)
+  else await page.mouse.click(x, ab.y + ab.height / 2)
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toBeVisible()
+  await page.waitForTimeout(250)
+  const pinRight = await page.evaluate(() => {
+    const ed = document.querySelector<HTMLElement>('[data-testid="oil-edit-award"]')!
+    const row = ed.closest('tr')!
+    return Math.max(0, ...[...row.querySelectorAll<HTMLElement>('td.f, th.f')].map(c => c.getBoundingClientRect().right))
+  })
+  for (const id of ['oil-edit-save', 'oil-edit-cancel', 'oil-del-dol-1']) {
+    const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
+    expect(b.x + b.width, `${id} whole inside the screen`).toBeLessThanOrEqual(vw + 0.5)
+    expect(b.x, `${id} clear of the pinned columns`).toBeGreaterThanOrEqual(pinRight - 0.5)
+    const hit = await page.evaluate(([x, y, id]) => document.elementFromPoint(x as number, y as number)?.closest(`[data-testid="${id}"]`) != null, [b.x + b.width / 2, b.y + b.height / 2, id] as const)
+    expect(hit, `${id} is on top at its middle`).toBe(true)
+  }
+  /* the three buttons one height, their words on one line (the drawing check of chat 101: "Delete" stood 1.8px above
+     "Cancel" on a phone — its words sit in a grid of their own, beside its hidden "Really delete?") */
+  const words = await page.evaluate(() => ['oil-edit-save', 'oil-edit-cancel', 'oil-del-dol-1'].map(id => {
+    const b = document.querySelector<HTMLElement>(`[data-testid="${id}"]`)!
+    const r = document.createRange(); r.selectNodeContents(b.querySelector('span') ?? b)
+    const t = r.getBoundingClientRect(), o = b.getBoundingClientRect()
+    return { id, mid: (t.top + t.bottom) / 2, top: o.top, h: o.height }
+  }))
+  for (const w of words.slice(1)) {
+    expect(Math.abs(w.mid - words[0].mid), `${w.id}'s words on Save's line`).toBeLessThanOrEqual(0.5)
+    expect(Math.abs(w.top - words[0].top), `${w.id} level with Save`).toBeLessThanOrEqual(0.5)
+    expect(Math.abs(w.h - words[0].h), `${w.id} as tall as Save`).toBeLessThanOrEqual(0.5)
+  }
+  /* a finger's tap on Cancel closes it, the list where the editor left it */
+  const c = (await page.locator('[data-testid="oil-edit-cancel"]').boundingBox())!
+  if (isPhone()) await page.touchscreen.tap(c.x + c.width / 2, c.y + c.height / 2)
+  else await page.mouse.click(c.x + c.width / 2, c.y + c.height / 2)
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
+})
+
 /* THE PHONE BALANCES AFTER OPTION B (D2156) — three faults the two blind reads of chat 101 found (Astra and a fresh Opus
    reader, 17 Nov 26), each red on 01f1030c4 first: the pinned names stopped filling their column (D1518, nothing pinned
    leaks), CCL's box ran 2px into FCL's, and a tapped box near the right edge left its corner tag cut (B-F4's fix undone). */

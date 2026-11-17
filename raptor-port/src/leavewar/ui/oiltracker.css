@@ -393,9 +393,10 @@
   .oil-edit.aw > .oil-text.given { grid-column: 3 / 5; grid-row: 2; width: auto; min-width: 0; }
   .oil-edit.aw > .acts { grid-column: 1 / 5; grid-row: 3; width: auto; flex-wrap: nowrap; }
   .oil-edit.aw > .note { grid-column: 1 / 5; grid-row: 4; }
-  .oil-edit.aw .oil-delb { display: inline-grid; justify-items: center; }
-  .oil-edit.aw .oil-delb > span, .oil-edit.aw .oil-delb::after { grid-area: 1 / 1; }
-  .oil-edit.aw .oil-delb::after { content: 'Really delete?'; visibility: hidden; }
+  /* the hidden twin is a line of no height under the words: it sets the button's width and nothing else, so the words sit
+     exactly as Save's and Cancel's do (stacked in a grid of their own they stood 1.8px above Cancel's on a phone — the
+     drawing check of chat 101, 17 Nov 26) */
+  .oil-edit.aw .oil-delb::after { content: 'Really delete?'; display: block; height: 0; overflow: hidden; visibility: hidden; }
 
   /* ---- the credit bar under the grid ------------------------------------ */
   .oil-bar {
