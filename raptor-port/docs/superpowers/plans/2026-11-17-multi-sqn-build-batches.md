@@ -39,6 +39,8 @@ Admin → Users → 5 what is left across batches, and the whole-app check.** Hi
 
 **The only order choice for him:** 3 ↔ 4 (recommended swap, reason above). It does not touch batch 1.
 
+**His answer, 17 Nov 26 — "All as recommended" (batch 1's page):** the order above, borrowing before Transfer to Sqn, and 149 at Home base with batch 1's new pieces as drawn (D2190); O2–O4 as written in §3.3 — the master admin, Admin → Users by squadron, what View shows (D2191).
+
 ## 2. How each batch runs (the same for all five)
 
 1. Its page for him (D2188): what was agreed, in plain words (D2164, D2185), each open point with a recommendation,
