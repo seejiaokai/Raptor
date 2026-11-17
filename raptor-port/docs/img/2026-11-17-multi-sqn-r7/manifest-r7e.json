@@ -1,0 +1,38 @@
+{
+  "R7E1-d-proposed.png": {
+    "item": "E1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149's Edit Schedule, signed in as 149's admin Ace (the top bar's \"142\" and \"SABER\" re-lettered \"149\" and \"ACE\"). The crew panel stepped to Tuesday by its own ›; its \"SANS Avail\" list, real (the demo's SANS men, standing as 149's own: Zulu F/O/A, Rebel F (tasked), Bolt (crossed), Jester (crossed), Kraken (crossed), Marlin (crossed), Otter (crossed), Pixel (crossed), Scribe (crossed), Tally (crossed), Zenith (crossed)). Drawn in, blue D2145: one more row, a free man's own row cloned (Zulu F/O/A) and re-lettered Ranger, a SANS man of 142, with the grey squadron badge \"142\" (round 4's and round 5's recipe) beside his name; placed in the panel's own order (free men first, callsign order) and the heading's count raised by one (\"SANS Avail · 2 free\"). The demo's own pilot Ranger is re-lettered Gale throughout, so the only Ranger on screen is 142's."
+  },
+  "R7E2-d-today.png": {
+    "item": "E2",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today, real, no proposal: Leave War, ⚙ settings → \"+ SANS\" pressed (the SANS group's row added; Tally, one of the demo's SANS men, now has a row). His day 2026-11-27 tapped → the day's sheet → \"More\" → \"Post out\": the Post out sheet opens for him as for anyone. Its Posting chips: ✓ Overseas Sqn · Delete · SANS · Transfer to Sqn (greyed). Its line: \"On 27 Nov: archived.\". Post out button: live."
+  },
+  "R7E3-d-proposed.png": {
+    "item": "E3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Admin → Users, Tally's row opened (real: a SANS man of 142, \"Tally no sign-in · WSO · CAT OCU\"; SANS men are off the Leave War, so he has no row there — checked on screen first). Drawn in, pink Q23: one button \"Post out…\", the editor's own Archive button cloned, after Archive (buttons: Give sign-in · Archive · Post out…Q23 · Delete · Cancel). Under the buttons, in the editor's own quiet note line: \"Opens the Leave War's Post out sheet. Shown only for someone with no row on the Leave War.\""
+  },
+  "R7E2-p-today.png": {
+    "item": "E2",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today, real, no proposal: Leave War, ⚙ settings → \"+ SANS\" pressed (the SANS group's row added; Tally, one of the demo's SANS men, now has a row). His day 2026-11-27 tapped → the day's sheet → \"More\" → \"Post out\": the Post out sheet opens for him as for anyone. Its Posting chips: ✓ Overseas Sqn · Delete · SANS · Transfer to Sqn (greyed). Its line: \"On 27 Nov: archived.\". Post out button: live."
+  },
+  "R7E3-p-proposed.png": {
+    "item": "E3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Admin → Users, Tally's row opened (real: a SANS man of 142, \"Tally no sign-in · WSO · CAT OCU\"; SANS men are off the Leave War, so he has no row there — checked on screen first). Drawn in, pink Q23: one button \"Post out…\", the editor's own Archive button cloned, after Archive (buttons: Give sign-in · Archive · Post out…Q23 · Delete · Cancel). Under the buttons, in the editor's own quiet note line: \"Opens the Leave War's Post out sheet. Shown only for someone with no row on the Leave War.\""
+  },
+  "R7E1-p-proposed.png": {
+    "item": "E1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "149's Edit Schedule, signed in as 149's admin Ace (the top bar's \"142\" and \"SABER\" re-lettered \"149\" and \"ACE\"). The crew panel stepped to Tuesday by its own ›; its \"SANS Avail\" list, real (the demo's SANS men, standing as 149's own: Zulu F/O/A, Rebel F (tasked), Bolt (crossed), Jester (crossed), Kraken (crossed), Marlin (crossed), Otter (crossed), Pixel (crossed), Scribe (crossed), Tally (crossed), Zenith (crossed)). Drawn in, blue D2145: one more row, a free man's own row cloned (Zulu F/O/A) and re-lettered Ranger, a SANS man of 142, with the grey squadron badge \"142\" (round 4's and round 5's recipe) beside his name; placed in the panel's own order (free men first, callsign order) and the heading's count raised by one (\"SANS Avail · 2 free\"). The demo's own pilot Ranger is re-lettered Gale throughout, so the only Ranger on screen is 142's. Phone: the crew panel is the pull-out drawer, opened by its own tab."
+  }
+}

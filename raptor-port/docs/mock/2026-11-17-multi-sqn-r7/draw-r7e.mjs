@@ -168,6 +168,12 @@ async function probe(sz) {
     return mq.days().map(d => ({ head: (d.querySelector('.day-head') || d).innerText.replace(/\s+/g, ' ').slice(0, 50), sans: d.querySelector('.sec-sans') ? d.querySelector('.sec-sans').outerHTML.slice(0, 1500) : null }))
   })
   for (const x of b) console.log('DAY', JSON.stringify(x.head), !!x.sans)
+  const r = await page.evaluate(() => [...document.querySelectorAll('.rsans')].map(s => {
+    const er = s.closest('.edit-roster, #eRoster, [class*=roster]'); const rr = s.getBoundingClientRect()
+    const head = s.parentElement.closest('*') ; const h = document.querySelector('.er-h')
+    return { vis: rr.width > 0, rect: [rr.x, rr.y, rr.width, rr.height].map(Math.round), wrap: er ? er.className + '#' + er.id : '', head: h ? h.innerText.replace(/\s+/g, ' ') : '', html: s.outerHTML.slice(0, 1800) }
+  }))
+  console.log('RSANS', JSON.stringify(r))
   // Admin → Users: Tally's row
   await page.evaluate(() => window.go('admin'))
   await page.waitForSelector('#page-admin.on button.acc-main', { state: 'attached' }); await page.waitForTimeout(500)
@@ -187,8 +193,190 @@ async function probe(sz) {
   await ctx.close()
 }
 
+// ---------- E1 · 149's SANS availability on Edit Schedule, Tue 14 Jul: Ranger of 142 among 149's own (D2145) ----------
+// Real: the crew panel (Aircrew) stepped to Tuesday by its own ›, its "SANS Avail · n free" list (the demo's SANS men,
+// standing as 149's own); the top bar re-lettered "149" and the signed-in name "ACE". Drawn in: one more row, a free man's
+// own row cloned and re-lettered Ranger, with round 5's grey squadron badge "142" beside his name, in the list's own order.
+async function e1(sz) {
+  const { ctx, page } = await world(sz)
+  await page.evaluate(() => window.go('editsched'))
+  await page.waitForSelector('#page-editsched.on #eWeek .day'); await page.waitForTimeout(900)
+  // the phone's crew panel is a pull-out drawer: its own tab opens it
+  if (sz === 'p') { await page.locator('#eRoster .ros-tab').filter({ visible: true }).first().click(); await page.waitForTimeout(600) }
+  // the crew panel's own › steps it from Monday to Tuesday
+  const head = () => page.evaluate(() => { const h = [...document.querySelectorAll('#eRoster .er-h')].find(window.__mq.vis); return h ? h.innerText.replace(/\s+/g, ' ') : '' })
+  for (let i = 0; i < 3 && !/TUESDAY/i.test(await head()); i++) {
+    await page.locator('#eRoster .er-daynav[data-crewstep="1"]').filter({ visible: true }).first().click(); await page.waitForTimeout(500)
+  }
+  if (!/TUESDAY/i.test(await head())) throw new Error('e1: crew panel not on Tuesday: ' + await head())
+  // on the phone the panel stands beside the week in one sideways scroll: bring it into view first, then draw
+  await page.evaluate(() => { const s = document.querySelector('#eRoster .rsans'); s.scrollIntoView({ block: 'nearest', inline: 'end' }) })
+  await page.waitForTimeout(400)
+  const st = await page.evaluate((sz) => {
+    const mq = window.__mq
+    // the demo has a pilot of its own called Ranger (on 149's lines here): re-lettered Gale (one of 149's names in the
+    // brief, not in the demo), so the only Ranger on screen is 142's SANS man
+    const gale = mq.reletter(document.querySelector('#page-editsched'), 'Ranger', 'Gale')
+    if (document.querySelector('#page-editsched').innerText.includes('Ranger')) return { err: 'a Ranger left after re-lettering' }
+    const sec = [...document.querySelectorAll('#eRoster .rsans')].find(mq.vis)
+    if (!sec) return { err: 'no SANS section in the crew panel' }
+    const rows = [...sec.querySelectorAll(':scope > .rsans-row')]
+    const free = rows.filter(r => { const p = r.querySelector('.rpuck'); return p && !p.classList.contains('no') && !p.classList.contains('busy') })
+    const nm = r => r.querySelector('.nm').textContent
+    const before = { rows: rows.map(r => nm(r) + (r.querySelector('.rsans-b') ? ' ' + r.querySelector('.rsans-b').textContent : '') + (r.querySelector('.rpuck.no') ? ' (crossed)' : r.querySelector('.rpuck.busy') ? ' (tasked)' : '')), head: sec.querySelector('.rh2').textContent }
+    // his row: a free man's own row cloned (Rebel's, filed "F" all day), re-lettered Ranger
+    const proto = free.find(r => nm(r) === 'Rebel') || free[0]
+    if (!proto) return { err: 'no free row to clone', before }
+    const c = mq.strip(proto.cloneNode(true))
+    for (const p of c.querySelectorAll('.rpuck, .puck')) { p.removeAttribute('data-person'); if (p.title) p.title = p.title.replace(/^\S+/, 'Ranger') }
+    c.querySelector('.nm').textContent = 'Ranger'
+    // the grey squadron badge beside his name: after his puck, before his filed letters
+    const b = mq.badge('142', sz === 'p'); b.style.marginLeft = '4px'; b.style.flex = '0 0 auto'
+    c.querySelector('.rpuck').after(b)
+    // the panel's own order: free men first, callsign order — Ranger before the first free man after him
+    const after = free.find(r => nm(r).localeCompare('Ranger') > 0)
+    if (after) after.before(c); else (free[free.length - 1] || rows[0]).after(c)
+    // the heading counts the free men: one more
+    const h = sec.querySelector('.rh2'); h.textContent = h.textContent.replace(/(\d+) free/, (m, n) => (+n + 1) + ' free')
+    // 149's admin Ace: the top bar's number and signed-in name re-lettered
+    mq.as149()
+    const tb = document.querySelector('.topbar'); const n = mq.reletter(tb, 'SABER', 'ACE') + mq.reletter(tb, 'Saber', 'Ace')
+    if (getComputedStyle(c).position === 'static') c.style.position = 'relative'
+    // the ring inside the row's own box: the phone's drawer clips anything outside the row's sides
+    const tg = mq.mark(c, 'D2145', 'in', 'blue'); tg.style.top = '50%'; tg.style.transform = 'translateY(-50%)'; tg.style.right = '3px'
+    window.__mqSec = sec; window.__mqRow = c
+    const br = b.getBoundingClientRect(), cr = c.getBoundingClientRect(), pr = proto.getBoundingClientRect(), tr = tg.getBoundingClientRect()
+    const kids = [...c.children].filter(x => x !== tg).map(x => x.getBoundingClientRect())
+    return { before, gale, proto: nm(proto) + ' ' + (proto.querySelector('.rsans-b') ? proto.querySelector('.rsans-b').textContent : ''),
+      after: [...sec.querySelectorAll(':scope > .rsans-row')].map(nm), head: h.textContent, topRelettered: n,
+      badge: [Math.round(br.width), Math.round(br.height)], rowH: [Math.round(pr.height), Math.round(cr.height)],
+      tagOverlaps: kids.some(k => k.right > tr.left && k.left < tr.right && k.bottom > tr.top && k.top < tr.bottom) }
+  }, sz)
+  if (st.err) throw new Error('e1 ' + st.err + ' ' + JSON.stringify(st.before || ''))
+  // framing: from the top bar (149, ACE) down to the foot of the panel's SANS list
+  const clip = await page.evaluate((sz) => {
+    const mq = window.__mq, s = window.__mqSec, ros = document.querySelector('#eRoster')
+    if (s.getBoundingClientRect().bottom > innerHeight - 8) mq.scrollUnder(s, 220)
+    const sr = s.getBoundingClientRect()
+    return { x: 0, y: 0, width: innerWidth, height: Math.min(innerHeight, Math.round(sr.bottom + 16)) }
+  }, sz)
+  await page.waitForTimeout(250)
+  const f = `R7E1-${sz}-proposed.png`
+  await shot(page, f, process.env.MQ_FULL ? undefined : clip)
+  rec(f, 'E1', sz, 'proposed', `149's Edit Schedule, signed in as 149's admin Ace (the top bar's "142" and "SABER" re-lettered "149" and "ACE"). The crew panel stepped to Tuesday by its own ›; its "SANS Avail" list, real (the demo's SANS men, standing as 149's own: ${st.before.rows.join(', ')}). Drawn in, blue D2145: one more row, a free man's own row cloned (${st.proto}) and re-lettered Ranger, a SANS man of 142, with the grey squadron badge "142" (round 4's and round 5's recipe) beside his name; placed in the panel's own order (free men first, callsign order) and the heading's count raised by one ("${st.head}"). The demo's own pilot Ranger is re-lettered Gale throughout, so the only Ranger on screen is 142's.${sz === 'p' ? ' Phone: the crew panel is the pull-out drawer, opened by its own tab.' : ''}`)
+  notes.push(`e1 ${sz}: ${JSON.stringify(st)}`)
+  await ctx.close()
+}
+
+// ---------- E2 · today: "+ SANS" on the Leave War, then Post out on a SANS man's row (no proposal) ----------
+const E2_PID = 'nick', E2_ISO = '2026-11-27'   // Tally, one of the demo's SANS men; a Friday the war's grid draws
+async function e2(sz) {
+  const { ctx, page } = await world(sz)
+  await page.evaluate(() => window.go('leavewar'))
+  await page.waitForSelector('[data-testid^="row-"]', { timeout: 20000 }); await page.waitForTimeout(800)
+  const before = await page.locator(`[data-testid="row-${E2_PID}"]`).count()
+  await page.locator('[data-testid="settings-open"]').filter({ visible: true }).first().click(); await page.waitForTimeout(500)
+  await page.locator('[data-testid="gadd-SANS"]').filter({ visible: true }).first().click(); await page.waitForTimeout(500)
+  await page.keyboard.press('Escape'); await page.waitForTimeout(500)
+  // the settings sheet closed by its own Escape; if it is still up, by its own close control
+  if (await page.locator('[data-testid="gadd-SANS"], [data-testid="group-offer"]').filter({ visible: true }).count()) {
+    const x = page.locator('[role="dialog"] button[aria-label*="Close"], [role="dialog"] .x, [data-testid="settings-close"]').filter({ visible: true })
+    if (await x.count()) { await x.first().click(); await page.waitForTimeout(500) }
+  }
+  const after = await page.locator(`[data-testid="row-${E2_PID}"]`).count()
+  if (!after) throw new Error(`e2: no row for ${E2_PID} after + SANS (before ${before})`)
+  const c = page.locator(`[data-testid="cell-${E2_PID}-${E2_ISO}"]`).first()
+  await c.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' })); await page.waitForTimeout(300)
+  if (sz === 'p') await c.tap(); else await c.click()
+  await page.waitForTimeout(700)
+  const sheet1 = await page.evaluate(() => { const s = window.__mq.sheet(); return s ? s.innerText.replace(/\s+/g, ' ').slice(0, 200) : null })
+  let more = 0, po = 0
+  if (sheet1) {
+    more = await page.locator('.bidsheet[role="dialog"] [data-testid="bid-more"]').filter({ visible: true }).count()
+    if (more) { await page.locator('.bidsheet[role="dialog"] [data-testid="bid-more"]').filter({ visible: true }).last().click(); await page.waitForTimeout(400) }
+    po = await page.locator('[data-testid="bid-postout"]').filter({ visible: true }).count()
+    if (po) { await page.locator('[data-testid="bid-postout"]').filter({ visible: true }).last().click(); await page.waitForTimeout(700) }
+  }
+  const st = await page.evaluate(() => {
+    const mq = window.__mq, s = mq.sheet()
+    if (!s) return { sheet: false }
+    const row = s.querySelector('.po-outcomes')
+    const ttl = s.querySelector('.ttl') ? s.querySelector('.ttl').innerText : ''
+    // a neutral press target, so no chip is left focused
+    const h = s.querySelector('.who') || s; h.click && h.tagName !== 'BUTTON' && h.click()
+    return { sheet: true, who: s.querySelector('.who') ? s.querySelector('.who').textContent : '', when: s.querySelector('.when') ? s.querySelector('.when').textContent : '', ttl,
+      chips: row ? [...row.querySelectorAll('button')].map(b => b.textContent.trim() + (b.disabled ? ' (greyed)' : '')) : null,
+      line: s.querySelector('[data-testid="po-line"]') ? s.querySelector('[data-testid="po-line"]').textContent : '',
+      postBtn: [...s.querySelectorAll('button')].filter(b => b.textContent.trim() === 'Post out').map(b => b.disabled ? 'greyed' : 'live').join(','),
+      text: s.innerText.replace(/\s+/g, ' ').slice(0, 400) }
+  })
+  await page.waitForTimeout(200)
+  const f = `R7E2-${sz}-today.png`
+  if (st.sheet) {
+    const b = await page.evaluate(() => { const r = window.__mq.sheet().getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height } })
+    const pad = 16, vw = page.viewportSize()
+    await shot(page, f, { x: Math.max(0, b.x - pad), y: Math.max(0, b.y - 40), width: Math.min(vw.width, b.w + 2 * pad), height: Math.min(vw.height - Math.max(0, b.y - 40), b.h + 40 + pad) })
+  } else await shot(page, f)
+  rec(f, 'E2', sz, 'today', st.sheet
+    ? `Today, real, no proposal: Leave War, ⚙ settings → "+ SANS" pressed (the SANS group's row added; Tally, one of the demo's SANS men, now has a row). His day ${E2_ISO} tapped → the day's sheet → "More" → "Post out": the Post out sheet opens for him as for anyone. Its Posting chips: ${(st.chips || []).join(' · ')}. Its line: "${st.line}". Post out button: ${st.postBtn || 'none'}.`
+    : `Today, real, no proposal: Leave War, ⚙ settings → "+ SANS" pressed; Tally's day tapped: no sheet opened (more: ${more}, Post out item: ${po}).`)
+  notes.push(`e2 ${sz}: rows before ${before} after ${after}; sheet1 ${JSON.stringify(sheet1)}; more ${more}; postout ${po}; ${JSON.stringify(st)}`)
+  await ctx.close()
+}
+
+// ---------- E3 · Admin → Users, a SANS man of 142 with no row on the Leave War: "Post out…" (Q23) ----------
+const E3_NAME = 'Tally', E3_PID = 'nick'
+const E3_LINE = 'Opens the Leave War\'s Post out sheet. Shown only for someone with no row on the Leave War.'
+async function e3(sz) {
+  const { ctx, page } = await world(sz)
+  // the premise, on screen: SANS men are off the war (the demo's default), so Tally has no row there
+  await page.evaluate(() => window.go('leavewar'))
+  await page.waitForSelector('[data-testid^="row-"]', { timeout: 20000 }); await page.waitForTimeout(800)
+  const lwRows = await page.locator(`[data-testid="row-${E3_PID}"]`).count()
+  if (lwRows) throw new Error('e3: Tally has a row on the Leave War')
+  await page.evaluate(() => window.go('admin'))
+  await page.waitForSelector('#page-admin.on button.acc-main', { state: 'attached' }); await page.waitForTimeout(500)
+  if (!(await page.locator('#page-admin button.acc-main').first().isVisible())) {
+    await page.locator('#page-admin button.adm-cat', { hasText: 'Users' }).first().click()
+    await page.waitForSelector('#page-admin.on button.acc-main'); await page.waitForTimeout(500)
+  }
+  const btn = page.locator('#page-admin button.acc-main', { hasText: new RegExp('^' + E3_NAME) }).first()
+  await btn.evaluate(e => e.scrollIntoView({ block: 'center' })); await page.waitForTimeout(200)
+  await btn.click(); await page.waitForTimeout(500)
+  const st = await page.evaluate(({ E3_LINE }) => {
+    const mq = window.__mq
+    const ed = [...document.querySelectorAll('#page-admin .acc-edit')].find(mq.vis)
+    if (!ed) return { err: 'no editor' }
+    const acts = ed.querySelector('.acc-acts')
+    const arch = acts.querySelector('#accEdArchive') || [...acts.querySelectorAll('button')].find(b => b.textContent.trim() === 'Archive')
+    const b = mq.strip(arch.cloneNode(true)); b.textContent = 'Post out…'
+    arch.after(b)
+    // the line in the editor's own quiet note type (its "adm-note acc-note" line, as under Delete's second tap)
+    const p = document.createElement('p'); p.className = 'adm-note acc-note'; p.setAttribute('data-mine', '1'); p.textContent = E3_LINE
+    acts.after(p)
+    if (getComputedStyle(b).position === 'static') b.style.position = 'relative'
+    // the ring 2px outside the button (a wider one crosses the line under it); its tag on the ring's top-right corner
+    const tg = mq.mark(b, 'Q23', 'inO', 'pink'); tg.style.top = '-12px'; tg.style.right = '-10px'
+    const row = ed.closest('.acc-row') || ed.parentElement
+    window.__mqClipEl = row
+    row.scrollIntoView({ block: 'center' })
+    document.activeElement && document.activeElement.blur && document.activeElement.blur()
+    const cs = getComputedStyle(arch), cb = getComputedStyle(b)
+    return { row: row.querySelector('.acc-main').innerText.replace(/\s+/g, ' '), buttons: [...acts.querySelectorAll('button')].map(x => x.textContent.trim()),
+      same: ['font-size', 'height', 'background-color', 'color', 'border-top-color'].every(k => cs.getPropertyValue(k) === cb.getPropertyValue(k)),
+      line: p.textContent, lineFont: getComputedStyle(p).fontSize + ' ' + getComputedStyle(p).color }
+  }, { E3_LINE })
+  if (st.err) throw new Error('e3 ' + st.err)
+  await page.waitForTimeout(250)
+  const f = `R7E3-${sz}-proposed.png`
+  await shot(page, f, await clipOf(page, { pad: 14, top: 40, extraH: 6 }))
+  rec(f, 'E3', sz, 'proposed', `Admin → Users, Tally's row opened (real: a SANS man of 142, "${st.row}"; SANS men are off the Leave War, so he has no row there — checked on screen first). Drawn in, pink Q23: one button "Post out…", the editor's own Archive button cloned, after Archive (buttons: ${st.buttons.join(' · ')}). Under the buttons, in the editor's own quiet note line: "${E3_LINE}"`)
+  notes.push(`e3 ${sz}: ${JSON.stringify(st)}`)
+  await ctx.close()
+}
+
 browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
-const ALL = { }
+const ALL = { e1, e2, e3 }
 try {
   for (const sz of (process.env.MQ_SZ ? process.env.MQ_SZ.split(',') : ['d', 'p'])) {
     if (process.env.MQ_PROBE) { await probe(sz); continue }
