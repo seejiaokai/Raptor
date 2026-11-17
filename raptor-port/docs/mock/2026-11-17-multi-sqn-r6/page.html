@@ -95,17 +95,46 @@ th{font-family:var(--f-head);font-size:13px;color:var(--mute);font-weight:600}
 <p><span class="rec">Recommended:</span> before it closes, the question card lists the detachment's published days after today ("25 and 26 Jul are published. Closing takes everyone off them."). Closing makes an amendment for each, waiting for its signatures like any amendment. "Read only" then means <b>no new planning</b>: a past detachment day can still take a correcting amendment from its squadron's admins. This narrows D2103.</p>
 <p>Other choice: "Close detachment" waits until those days have been withdrawn by hand.</p>
 <p><b>Your answer, "A" (D2142):</b> one press clears the published days after today and publishes the next amendment on each, so nothing is left to do afterwards. Days up to and including today stay as published: they are the record of what was flown. <b>Still open:</b> whether a past detachment day can still take a correcting amendment (recommended yes).</p>
-<p class="lbl">The new card's words (drawn in round 7) — each line shows only when it applies</p>
-<div class="ex" style="color:var(--fg)">
-<b>Close Exercise North?</b><br>
-6 people back on 149's schedule today. Their overseas duty ends today.<br>
-Sat 25 and Sun 26 Jul: everyone taken off, and an amendment published on each.<br>
-Their OIL for those days goes: 6 people, 1 day each. Viper has already booked his: his OIL goes to −1.<br>
-149's published Fri 24 and Sat 25 Jul go pending: the 6 are free there now.<br>
-Kept under Past detachments.<br>
-<b>[ Close detachment ]&nbsp; [ Keep open ]</b>
+<p class="lbl">The new card — a sketch of the words, not yet drawn on the real app (that is round 7)</p>
+<style>
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+@media (max-width:760px){.cards{grid-template-columns:1fr}}
+.cardcap{font-size:13px;font-weight:700;color:var(--fg);margin-bottom:6px}
+.mk{background:#23282f;color:#c9d2da;border:2px solid #ff4fa3;border-radius:12px;padding:14px 16px;font:15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif}
+.mk h4{margin:0 0 8px;color:#fff;font-size:17px}
+.mk p{margin:0 0 8px;display:grid;grid-template-columns:22px 1fr;gap:6px;max-width:none}
+.mk .n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#ff4fa3;color:#fff;font-size:12px;font-weight:700;margin-top:1px}
+.mk .btns{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
+.mk .b1{background:#161a1f;color:#fff;border:1px solid #3a424c;border-radius:10px;padding:9px 14px;font-weight:700}
+.mk .b2{background:#3cc4ea;color:#0b1b24;border-radius:10px;padding:9px 14px;font-weight:700}
+.notes{margin-top:12px;display:grid;gap:8px}
+.notes div{display:grid;grid-template-columns:26px 1fr;gap:8px;max-width:78ch}
+.notes .n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--mark);color:#fff;font-size:12px;font-weight:700}
+</style>
+<div class="cards">
+<div><div class="cardcap">A · Nothing published after today, at the detachment or at home</div>
+<div class="mk"><h4>Close Exercise North?</h4>
+<p><span class="n">1</span><span>6 people back on 149's schedule today. Their overseas duty ends today.</span></p>
+<p><span class="n">5</span><span>Kept under Past detachments.</span></p>
+<div class="btns"><span class="b1">Close detachment</span><span class="b2">Keep open</span></div></div></div>
+<div><div class="cardcap">B · Days after today already published</div>
+<div class="mk"><h4>Close Exercise North?</h4>
+<p><span class="n">1</span><span>6 people back on 149's schedule today. Their overseas duty ends today.</span></p>
+<p><span class="n">2</span><span>Sat 25 and Sun 26 Jul: everyone taken off, and an amendment published on each.</span></p>
+<p><span class="n">3</span><span>Their OIL for those days goes: 6 people, 1 day each. Viper has already used his: his OIL goes to −1.</span></p>
+<p><span class="n">4</span><span>On 149's home schedule, published Fri 24 and Sat 25 Jul go pending: the 6 are free there now.</span></p>
+<p><span class="n">5</span><span>Kept under Past detachments.</span></p>
+<div class="btns"><span class="b1">Close detachment</span><span class="b2">Keep open</span></div></div></div>
 </div>
-<p class="asked">Viper and the dates 24–25 Jul are made up for the example. "Read only" waits for your answer on correcting a past day.</p>
+<p class="lbl">What each line means</p>
+<div class="notes">
+<div><span class="n">1</span><span><b>Always shown.</b> The 6 are free on 149's home schedule from today, and their overseas duty stops today. Each of them gets a line on the bell.</span></div>
+<div><span class="n">2</span><span><b>Only when the detachment has days after today already published.</b> Pressing Close empties those days and publishes the change on each, there and then. You do nothing afterwards. Each day gets its own next number (AL1, AL2…); the card does not list them (C8). Today and earlier days stay as published.</span></div>
+<div><span class="n">3</span><span><b>Only when those days had already given OIL.</b> It is taken back. If someone has already used it, he is named with his new balance.</span></div>
+<div><span class="n">4</span><span><b>Only when 149's own home days after today are already published.</b> Those days showed the 6 as away; now they are free there, so the days need 149's scheduler to plan them and publish (C2, C4).</span></div>
+<div><span class="n">5</span><span><b>Always shown.</b> The detachment's schedules are kept, to look back on. Whether a past day there can still be corrected is Q2's open question; until you answer, the card does not say "read only".</span></div>
+</div>
+<p class="asked">Viper, his −1 and the dates 24–25 Jul are made up for the example.</p>
 <p class="lbl">What else it changes</p>
 <ul>
 <li>A weekend published ahead has already given its OIL, so clearing it takes that OIL off at once; a man who already booked it goes below zero.</li>
