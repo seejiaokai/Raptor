@@ -58,5 +58,17 @@
     "size": "phone",
     "kind": "proposed",
     "caption": "142's schedule, Monday's Unavailable list, his question: Saber picked by 149 for its ground programme (ACADEMICS 14:00–16:00) and for VL at night. Two \"Attach · 149\" rows, one for each stretch of time, each the app's own row from an Attach To 149; each with its own \"Take him off …\" button and quiet line. The ground item itself does not show on 142's schedule."
+  },
+  "Q4B-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, Monday's Unavailable panel: Saber's two \"Attach · 149\" rows (ACADEMICS 14:00–16:00, VL 19:00–22:00), the app's own rows from an Attach To 149, the name re-lettered. Drawn in (mark Q4): the times and remarks shown but not typed in (they follow 149's plan), and under each row its one action, the panel's own \"+ Add\" button cloned as \"Take him off …\", with a quiet line saying where he is."
+  },
+  "Q4B-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, Monday's Unavailable panel: Saber's two \"Attach · 149\" rows (ACADEMICS 14:00–16:00, VL 19:00–22:00), the app's own rows from an Attach To 149, the name re-lettered. Drawn in (mark Q4): the times and remarks shown but not typed in (they follow 149's plan), and under each row its one action, the panel's own \"+ Add\" button cloned as \"Take him off …\", with a quiet line saying where he is."
   }
 }

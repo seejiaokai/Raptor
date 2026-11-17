@@ -203,13 +203,72 @@ async function picQ4(sz, ground) {
   await ctx.close()
 }
 
+// his question (chat 100): the same two rows on 142's Scheduler Board, its Unavailable panel. The board draws an input
+// row in the ground programme's shape (type box opening the dialog with delete; Start, End, Rmks typed in place). On the
+// automatic row none of that is his to change: the times follow 149's plan, so its fields are drawn read-only (the
+// board's own read-only look for a field), and its one action, the panel's own "+ Add" button cloned, is "Take him off …".
+async function picQ4board(sz) {
+  const { ctx, page } = await world(sz)
+  await toEdit(page)
+  await file(page, { iid: 'mq-att', person: COMET, type: 'Attach', to: '149', date: 'Jul 13', yr: 2026, allday: false, s: 1140, e: 1320, remarks: '' })
+  await file(page, { iid: 'mq-att2', person: COMET, type: 'Attach', to: '149', date: 'Jul 13', yr: 2026, allday: false, s: 840, e: 960, remarks: '' })
+  await page.evaluate(() => document.querySelector('#eWeek .day:not(.peek) [data-sbday="0"]').click())
+  await page.waitForSelector('.sb-panel.unav', { state: 'attached' })
+  await page.waitForTimeout(1200)
+  const st = await page.evaluate(() => {
+    const mq = window.__mq
+    const panel = document.querySelector('.sb-panel.unav')
+    const pb = panel.querySelector('.sb-pb')
+    const rows = [...pb.children].filter(x => /Comet/.test(x.textContent) || x.querySelector('[data-person="beams"]'))
+    if (!rows.length) return { err: 'no rows: ' + [...pb.children].map(x => x.className + ':' + x.textContent.replace(/\s+/g, ' ').slice(0, 60)).join(' | ') }
+    const add = panel.querySelector('.sb-addinp')
+    const out = []
+    for (const r of rows) {
+      const item = /14:00|1400/.test(r.innerText + [...r.querySelectorAll('input')].map(i => i.value).join(' ')) ? { name: 'ACADEMICS', when: "149's ground programme, Mon 14:00–16:00" } : { name: 'VL', when: "149's VL, Mon night wave" }
+      const w = document.createTreeWalker(r, NodeFilter.SHOW_TEXT); let n
+      while ((n = w.nextNode())) if (/\bComet\b/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/\bComet\b/, 'Saber')
+      for (const p of r.querySelectorAll('[title*="Comet"]')) p.setAttribute('title', p.getAttribute('title').replace(/Comet/g, 'Saber'))
+      // the times and remarks follow 149's plan: shown, not typed in (the fields' own disabled look)
+      for (const i of r.querySelectorAll('input, textarea, [contenteditable="true"]')) { if (i.tagName === 'INPUT' || i.tagName === 'TEXTAREA') i.disabled = true; else i.setAttribute('contenteditable', 'false'); i.style.opacity = '.6' }
+      const line = document.createElement('div'); line.setAttribute('data-mine', '1')
+      line.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:2px 8px 8px;font-size:12px;opacity:.85'
+      // the row's own REJECT button re-lettered, as on Edit Schedule: the one action
+      const rej = [...r.querySelectorAll('button')].find(b => /^reject$/i.test(b.textContent.trim()))
+      if (!rej) return { err: 'no reject button on the board row' }
+      // the board's last column is only REJECT's width: the button moves into the line under the row, the same button cloned
+      const nameBox = r.querySelector('.inpedit, button') || r
+      line.style.paddingLeft = Math.max(8, Math.round(nameBox.getBoundingClientRect().left - r.getBoundingClientRect().left)) + 'px'
+      const btn = mq.strip(rej.cloneNode(true)); btn.textContent = 'Take him off ' + item.name; btn.style.width = 'auto'; btn.style.whiteSpace = 'nowrap'
+      mq.hide(rej)
+      const txt = document.createElement('span'); txt.textContent = `On ${item.when} · 149 is told if he is taken off`; txt.style.opacity = '.7'
+      line.appendChild(btn); line.appendChild(txt)
+      const wrap = document.createElement('div'); wrap.setAttribute('data-mine', '1'); wrap.style.position = 'relative'
+      r.before(wrap); wrap.appendChild(r); wrap.appendChild(line)
+      mq.mark(wrap, 'Q4')
+      out.push(r.className + ' · ' + r.innerText.replace(/\s+/g, ' ').slice(0, 80))
+    }
+    window.__mqClipEl = panel
+    // the board scrolls inside its own frame, not the window
+    panel.scrollIntoView({ block: 'center', inline: 'nearest' })
+    return { out }
+  })
+  if (st.err) throw new Error('picQ4board: ' + st.err)
+  await page.waitForTimeout(300)
+  const clip = await clipOf(page, null, 6)
+  const f = `Q4B-${sz}-proposed.png`
+  await shot(page, f, clip)
+  rec(f, 'Q4', sz, 'proposed', `142's Scheduler Board, Monday's Unavailable panel: Saber's two "Attach · 149" rows (ACADEMICS 14:00–16:00, VL 19:00–22:00), the app's own rows from an Attach To 149, the name re-lettered. Drawn in (mark Q4): the times and remarks shown but not typed in (they follow 149's plan), and under each row its one action, the panel's own "+ Add" button cloned as "Take him off …", with a quiet line saying where he is.`)
+  notes.push(`picQ4board ${sz}: ${JSON.stringify(st)}`)
+  await ctx.close()
+}
+
 browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 const GROUND = process.env.MQ_Q4 === 'ground'
-try { for (const sz of ['d', 'p']) { try { await picQ4(sz, GROUND) } catch (e) { errs.push(`[${sz}] picQ4 FAILED: ${e.message}`) } } }
+try { for (const sz of ['d', 'p']) { try { if (process.env.MQ_Q4 === 'board') await picQ4board(sz); else await picQ4(sz, GROUND) } catch (e) { errs.push(`[${sz}] picQ4 FAILED: ${e.message}`) } } }
 finally { await browser.close() }
 let old = {}
 try { old = JSON.parse(readFileSync(`${OUT}/manifest.json`, 'utf8')) } catch {}
 writeFileSync(`${OUT}/manifest.json`, JSON.stringify({ ...old, ...manifest }, null, 2) + '\n')
-for (const f of readdirSync(OUT)) if (/^Q4[FG]-.*\.png$/.test(f)) copyFileSync(`${OUT}/${f}`, `${PAGEIMG}/${f}`)
+for (const f of readdirSync(OUT)) if (/^Q4[FGB]-.*\.png$/.test(f)) copyFileSync(`${OUT}/${f}`, `${PAGEIMG}/${f}`)
 console.log('NOTES\n' + notes.join('\n'))
 console.log('ERRORS ' + (errs.length ? '\n' + errs.join('\n') : 'none'))
