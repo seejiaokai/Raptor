@@ -15,6 +15,7 @@ import { INPUTS, inpId } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
+import { inView } from '../engine/unitview'
 import { storeBackend } from '../engine/hooks'
 import { stashClear, isPreservedWeek } from '../engine/weekstash'
 import { SCHED, signOf, dayCurVer, dayApproved, protectedWeek } from '../engine/publish'
@@ -38,6 +39,8 @@ import { _resetDisclosure } from './disclosure'
 import * as view from './view'
 import { mkNote } from '../engine/note'
 import { commitNewInput } from '../ui/inputedit'
+/* a week's STORED id carries its unit (multi-squadron batch 1, step 2 — `u142@13-07-2026`); the boot unit is in view */
+const sid = (w: string) => weekId(inView(w))
 
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -93,7 +96,7 @@ afterEach(() => { unsub?.(); unsub = null; _resetTimeline(); vi.useRealTimers();
 describe('one change, the rows it touched — and no others', () => {
   it('a Monday edit on a saved week beside a published day and a landed request writes Monday\'s row alone', async () => {
     const wb = await boot(new MemoryBackend())
-    const wid = weekId(W1)
+    const wid = sid(W1)
     expect(INPUTS.some((r: any) => r.acc === 'g'), 'the demo week has a landed request').toBe(true)
     sign(2); commitSetDayApproved(2, true)                      // the first save: the week row, Wednesday, its issuance (H3)
     expect(wb.keys('weeks').filter(k => k.startsWith(wid)).sort()).toEqual([wid, `${wid}#2`, `${wid}:is:${SCHED.orig[2].id}~0`].sort())
@@ -104,7 +107,7 @@ describe('one change, the rows it touched — and no others', () => {
 
   it('a move from Monday to Tuesday writes exactly the two days', async () => {
     await boot(new MemoryBackend())
-    const wid = weekId(W1)
+    const wid = sid(W1)
     writeText('dn:6.0', 'FIRST SAVE')
     const key = (di: number) => { const dw = DAYS[di].dutywaves.findIndex((w: any) => (w.rows || []).length); return `d:${di}.${dw}.0` }
     const who = slotVal(key(0)) || 'dj'
@@ -117,7 +120,7 @@ describe('one change, the rows it touched — and no others', () => {
 describe('the issued versions: written once, never touched, withdrawn beside', () => {
   it('publish, amend, Unpublish, reissue — one row each; Undo removes exactly the row it added', async () => {
     const wb = await boot(new MemoryBackend())
-    const wid = weekId(W1)
+    const wid = sid(W1)
     sign(0); commitSetDayApproved(0, true)
     const o = SCHED.orig[0].id
     expect(wb.has('weeks', `${wid}:is:${o}~0`)).toBe(true)
@@ -203,7 +206,7 @@ describe('week navigation is read-only (R3-01, F3-01)', () => {
     expect(envs.filter(e => e.type === 'sched.load'), 'no command for the landing').toEqual([])
     expect(weekWrites(), 'a landing onto a SAVED day writes nothing').toEqual([])
     expect(groups.flat().filter(c => c.collection === 'inputs'), 'nor the request it landed').toEqual([])
-    expect(wb.get('weeks', `${weekId(W3)}#2`)).not.toContain('LANDS ON WED')
+    expect(wb.get('weeks', `${sid(W3)}#2`)).not.toContain('LANDS ON WED')
     expect(JSON.stringify(DAYS[2]), 'the request shows on its day').toContain('LANDS ON WED')
     /* Thursday has never been saved: the request lands on it on screen, and nothing is written */
     loadWeek(W1)
@@ -211,22 +214,22 @@ describe('week navigation is read-only (R3-01, F3-01)', () => {
     clear()
     loadWeek(W3)
     expect(weekWrites(), 'a landing on a day no one has saved writes nothing').toEqual([])
-    expect(wb.has('weeks', `${weekId(W3)}#3`)).toBe(false)
+    expect(wb.has('weeks', `${sid(W3)}#3`)).toBe(false)
     expect(JSON.stringify(DAYS[3])).toContain('LANDS ON THU')
   })
 
   it('a read-only (preserved) saved week is never rewritten — visited, edited around, left', async () => {
     const be = new MemoryBackend()
     const legacy = JSON.stringify({ d: JSON.parse(DSNAP), ok: { 0: 1 }, o: { 0: { d: JSON.parse(DSNAP)[0], c: {} } }, cv: { 0: 'orig' }, a: [{ n: 1, keys: [] }] })
-    be.seed({ weeks: { [weekId(W3)]: legacy } })
+    be.seed({ weeks: { [sid(W3)]: legacy } })
     const wb = await boot(be)
     expect(isPreservedWeek(W3)).toBe(true)
     loadWeek(W3)
     expect(protectedWeek()).toBe(true)
     writeText('dn:0.0', 'REFUSED?')
     loadWeek(W1); writeText('dn:0.0', 'ELSEWHERE')
-    expect(wb.keys('weeks').filter(k => k.startsWith(weekId(W3)))).toEqual([weekId(W3)])
-    expect(wb.get('weeks', weekId(W3))).toBe(legacy)
+    expect(wb.keys('weeks').filter(k => k.startsWith(sid(W3)))).toEqual([sid(W3)])
+    expect(wb.get('weeks', sid(W3))).toBe(legacy)
   })
 })
 
@@ -276,7 +279,7 @@ describe('a request taken off stays off — worked out from its own mark (F3-02,
 describe('the other-day writers touch only the days a command changed (plan §3 phase 1.3, R2-07)', () => {
   it('the stale-mark sweep: an edit on Monday leaves a published Tuesday\'s mark (and row) alone', async () => {
     await boot(new MemoryBackend())
-    const wid = weekId(W1)
+    const wid = sid(W1)
     sign(0); commitSetDayApproved(0, true); sign(1); commitSetDayApproved(1, true)
     const issuedTue = txtGet('dn:1.0')
     SCHED.pending['dn:1.0'] = 1                                   // a mark on Tuesday whose value is back at the issued one
@@ -294,7 +297,7 @@ describe('the other-day writers touch only the days a command changed (plan §3 
 
   it('the row-id fixer: a copy on Monday of Thursday\'s row mints Monday\'s — Thursday keeps its id, and its row is not written', async () => {
     await boot(new MemoryBackend())
-    const wid = weekId(W1)
+    const wid = sid(W1)
     writeText('dn:6.0', 'FIRST SAVE')
     const thu = DAYS[3].notes[0]
     expect(thu && thu.rid).toBeTruthy()

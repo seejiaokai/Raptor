@@ -32,6 +32,8 @@ import { voidedOil } from '../engine/oil'
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore } from './accounts'
 import { unitRowsBefore, levelBefore, homeBefore, todayIso } from './units'
+import { UNIT } from '../engine/unitview'
+import { unitOf } from '../storage/unitid'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES, validUnit, validPlace, validUnitPlace, validGrant,
   validHome, unitIn, placeIn, placeIdOn, type UnitRows,
@@ -1184,6 +1186,35 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
      and one master always left. */
 const isUnitRow = (id: string) => UNIT_ROW_PREFIXES.some(p => id.startsWith(p))
 const ACCOUNT_ROW = 'account:'
+
+/* 7. A UNIT'S OWN RECORDS ARE CHANGED ONLY BY ONE WHO HOLDS RIGHTS IN THAT UNIT (multi-squadron batch 1, step 2).
+   Every record a unit owns names it in its id — a schedule day `days/u149@13/07/2026#2`, a setting `settings/u149@rules`,
+   a planning row `plan/u149@pp:…` (storage/unitid.ts) — so the gate reads the unit off each change, whatever door wrote
+   it (a typed command, a raw settings write, an Undo or a Redo). The command TYPE still decides "may an admin do this"
+   (COMMAND_OPS, cmdAuthorize); this asks the second half, "in THAT unit": an admin in force must be an admin there (his
+   home unit's admin role, an admin grant, or the master mark — units-model.ts levelFrom, the one answer, read over the
+   rows as they stood before the command); a member must be at home there — a View right writes nothing (D2094). So 142's
+   admin cannot change 149's Logic, schedule or calendar, though `settings.rules` is an admin's command. An actor with no
+   account behind him (a test's or a probe's session — never a sign-in, which always has one) is read as the role in
+   force in the unit in view only. The app itself (a system command) is not asked, as nowhere else. */
+function unitRecordViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system') return null
+  const units = new Set<string>()
+  for (const c of env.changes) { const u = unitOf(String(c.id)); if (u) units.add(u) }
+  if (!units.size) return null
+  const row: any = ACCOUNTS_LIST.find(x => x.id === a.id)
+  const today = todayIso()
+  const rows = unitRowsBefore(env.changes)
+  for (const u of units) {
+    const lv = row
+      ? levelBefore({ id: row.id, pid: String(row.pid), role: String(row.role), master: row.master === true }, u, today, rows)
+      : (u === UNIT ? (a.role === 'admin' ? 'admin' : 'member') : null)
+    const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
+    if (!ok) return `a change to another unit's records (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+  }
+  return null
+}
 /* the stored accounts after the command, as the loader would read them — none stored is the seeded list */
 function accountImagesNow(): any[] {
   const out: any[] = []
@@ -1269,6 +1300,8 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   const unitBad = unitRowViolation(env)
   if (unitBad) return unitBad
+  const unitRec = unitRecordViolation(env)
+  if (unitRec) return unitRec
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
      for an ADMIN too — an admin who changed a man's leave could otherwise set that man's moment to now and wipe the dots
      that tell him (§11: "C R U own" for every role) */

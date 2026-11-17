@@ -46,6 +46,8 @@ import { restoreAbsencesOf, warNoticesReversed } from '../leavewar/sync'
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 import { UNIT_ROW_PREFIXES } from './units-model'
+import { UNIT } from '../engine/unitview'
+import { split, localOf, qualify } from '../storage/unitid'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
@@ -115,7 +117,12 @@ let BOARD_WAS: number | null = null
 function loadContext(ctx: RecordCtx, entry: UndoEntry): void {
   if (ctx.kind === 'week') {
     if (weekIsStashOnly(entry, ctx.weekId)) return   // off-week apply via the stash — do NOT load (C7)
-    if (ctx.weekId !== CURWEEK) { if (SBDAY != null) BOARD_WAS = SBDAY; loadWeek(ctx.weekId) }
+    /* the week names its unit (`u149@13/07/2026` — storage/unitid.ts, step 2). Undo never changes the unit in view: a
+       week of another unit is put back through the stash, as an off-week one is, and only the unit in view's own weeks
+       are loaded — by their date part, which is what loadWeek takes */
+    const wk = split(ctx.weekId)
+    if (wk.unit != null && wk.unit !== UNIT) return
+    if (wk.local !== CURWEEK) { if (SBDAY != null) BOARD_WAS = SBDAY; loadWeek(wk.local) }
   } else if (ctx.kind === 'war') {
     selectWar(ctx.warId)
   }
@@ -144,10 +151,11 @@ function inputDayOf(entry: UndoEntry): number | null {
 }
 /* the date a flying-plan step is about: its first day row, the start of its run, or the start of its rule */
 function flyDateOf(entry: UndoEntry): string | null {
-  const ids = entry.forward.filter(c => c.collection === 'settings').map(c => c.id)
+  /* a unit's row is named with its unit (`u149@flyday:<iso>` — step 2): read by its plain name */
+  const ids = entry.forward.filter(c => c.collection === 'settings').map(c => localOf(c.id))
   const day = ids.filter(k => k.startsWith('flyday:') || k.startsWith('flyrun:')).map(k => k.slice(7)).sort()[0]
   if (day) return day
-  const rule: any = entry.forward.find(c => c.collection === 'settings' && c.id.startsWith('flyrule:'))
+  const rule: any = entry.forward.find(c => c.collection === 'settings' && localOf(c.id).startsWith('flyrule:'))
   const r = rule && (rule.after || rule.before)
   return r && typeof r.from === 'string' ? r.from : null
 }
@@ -169,7 +177,8 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
          in its id (`dm:<iso>`). Setting the month it already shows moves nothing. */
       const pl = fwd.find(c => c.collection === 'plan') as Change
       const img: any = (dir === 'undo' ? pl.before : pl.after) || pl.after || pl.before
-      const raw = pl.id.startsWith('dm:') ? pl.id.slice(3) : img && typeof img === 'object' && typeof img.date === 'string' ? img.date : pl.id
+      const plId = localOf(pl.id)   // `u149@dm:<iso>` — the unit split off (step 2)
+      const raw = plId.startsWith('dm:') ? plId.slice(3) : img && typeof img === 'object' && typeof img.date === 'string' ? img.date : pl.id
       const iso = /^\d{4}-\d{2}-\d{2}$/.test(raw) ? raw : ''
       /* …and the DAY is handed to the calendar: a day window open on ANOTHER day goes to it (Sol S3), as it does for
          an input (requestInpReveal) */
@@ -198,7 +207,8 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
     const person = fwd.find(c => c.collection === 'people')
     if (person) then = () => focusQualsRow(person.id)
   } else if (m === 'settings') {
-    const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)
+    /* each setting by its plain name: a unit's is named with its unit (`u149@rules` — step 2) */
+    const ids = fwd.filter(c => c.collection === 'settings').map(c => localOf(c.id))
     /* …and the squadrons' rows (multi-squadron batch 1, step 1 — units, places, homes, rights: Admin's, where step 3
        draws them; until then Admin → Users, where every account change already lands) */
     if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || k === 'guestview' || UNIT_ROW_PREFIXES.some(p => k.startsWith(p)))) { primary = 'admin'; then = () => requestAdminUsers(false) }
@@ -207,7 +217,7 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
       /* A LATE CUT-OFF IS SET BEHIND A CALENDAR'S OWN GEAR TOO (D639 — one setting, two ways in), so the Inputs page
          shows it as the Logic page does: an Undo of a cut-off pressed there leaves him there (D672), and from
          anywhere else it lands on Logic, as every rule's does. */
-      const row = fwd.find(c => c.collection === 'settings' && c.id === 'rules')
+      const row = fwd.find(c => c.collection === 'settings' && localOf(c.id) === 'rules')
       const vals = (x: any) => (x && x.v) || {}
       const a = vals(row && row.before), b = vals(row && row.after)
       const moved = [...new Set([...Object.keys(a), ...Object.keys(b)])].filter(k => a[k] !== b[k])
@@ -226,7 +236,7 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
       const rows = fwd.filter(c => c.collection === 'settings')
       const fig = (v: any, s: string) => (v && v[s] != null ? v[s] : null)
       const figures = ids.some(k => k.startsWith('flyrun:')) ||
-        rows.some(c => c.id.startsWith('flyday:') && (fig(c.before, 'p') !== fig(c.after, 'p') || fig(c.before, 'w') !== fig(c.after, 'w')))
+        rows.some(c => localOf(c.id).startsWith('flyday:') && (fig(c.before, 'p') !== fig(c.after, 'p') || fig(c.before, 'w') !== fig(c.after, 'w')))
       if (figures) primary = 'leavewar'
       else {
         primary = 'inputs'; also.push('leavewar')
@@ -304,7 +314,8 @@ function reinstallLocks(): () => void {
    week, so match the id's ISO date against CURWEEK's seven days (best-effort). */
 function resolvePublishDay(id: string): { weekId: string; di: number } | null {
   const iso = parseVerId(id).iso
-  for (let di = 0; di < 7; di++) if (dayIso(CURWEEK, di) === iso) return { weekId: CURWEEK, di }
+  /* the day key names its unit, as every other day key does (multi-squadron step 2), so the timeline compares like with like */
+  for (let di = 0; di < 7; di++) if (dayIso(CURWEEK, di) === iso) return { weekId: qualify(UNIT, CURWEEK), di }
   return null
 }
 

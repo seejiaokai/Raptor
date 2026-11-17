@@ -104,6 +104,32 @@ A **community** singleton holds everyone's and is never swapped — `PEOPLE`, `I
 `ACCESS_REQS`, `NOTICES`, the seen caches (`state/changes.ts`, `state/noticeseen.ts`); from step 3 every enumeration of
 `PEOPLE` goes through `rosterOf(unit, iso)`.
 
+### The unit-qualified id — `<unit>@<its id today>` (batch 1, step 2, 18 Nov 26)
+
+One codec, `src/storage/unitid.ts` (`qualify`, `split`, `unitOf`, `localOf`), carried through every layer — the engine,
+the state layer, the change stream, Undo and storage — never added only at the storage edge. A unit id is opaque and
+plain, `u` and base-36 letters (`u142`, `u149`): no hyphen, slash, tilde, colon, hash or `@`, so nothing that reads an
+id by its separators can take the unit for part of the date. **The date part is read only after the unit is split off**
+(`localOf` — `engine/verid.ts dayIso`, `engine/weeks-data.ts weekBundle`, `undo/derive.ts isoOfDay`,
+`state/persist.ts weekKey`). An `@` after anything that is not a unit id (`wren@mail`) is not a unit.
+
+| Where | A unit's record, as named now |
+|---|---|
+| the change stream (`collection/id`) | `days/u142@13/07/2026#0`, `sched.book/…#0`, `sched.mutes/…#4`, `sched.week/u142@13/07/2026`, `sched.issuance/u142@13/07/2026:<verId>~n`, `sched.retraction/…`, `weekstash/u142@13/07/2026<sfx>`, `plan/u142@pp:<id>`, `plan/u142@dm:<iso>`, `settings/u142@rules`, `settings/u142@flyday:<iso>`; a schedule command's scope `{ module:'sched', weekId:'u142@13/07/2026' }` |
+| stored rows | `weeks/u142@13-07-2026` (the week row), `…#<di>`, `…:is:<verId>~n`, `…:rx:<verId>~n` · `plan/u142@pp:<id>`, `plan/u142@dm:<iso>` · `settings/u142@<name>` (`sqn142_u142@<name>` behind the settings door, `engine/hooks.ts storedKey`) |
+| memory | the week stash (`engine/weekstash.ts`) is keyed by unit and week: a bare week key means the unit in view's, a qualified one that unit's; `stashKeys()` lists the unit in view's weeks, `stashEntries()` every unit's, qualified |
+
+**Settings:** a setting's logical name (`rules`, `stores`, `flyday:<iso>` …) means the unit in view's; it is stored as
+`<unit>@<name>` and written only by its named settings command (`settings.stores`, `fly.day.set` …), whose change names
+the stored id. The settings records the command layer keeps cover every unit's stored settings, so Undo puts back
+another unit's setting by its own name. **Not yet qualified, on purpose:** `missionrole:` (its id carries a week key
+whose own codec has no unit yet — step 3) and `elog:` (the change history across the apps — step 4); both stay as they
+were, readable by the unit in view only.
+
+**Stored data from before step 2 (D22):** an unqualified week, day or planning row is simply not read — the store is
+cleared and both units seeded fresh, never converted; no converter is written for it. The schema stamp bump that clears
+it on the next boot is step 6's. Until then a browser that saved weeks before step 2 shows them as never saved.
+
 ---
 
 ## World 1 — the scheduler

@@ -46,6 +46,8 @@ import { reconcileIssuedMarks, setTouchedDaysResolver } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { CURWEEK } from '../engine/waves'
 import { isPreservedWeek } from '../engine/weekstash'
+import { UNIT, inView } from '../engine/unitview'
+import { split } from '../storage/unitid'
 import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
@@ -97,16 +99,22 @@ export function schedBaselineClean(): boolean { return baseline() === histSnap()
    (`sched.retraction/<wk>:<verId>~<n>`). So an Undo step names days, and a change on another day — another person's,
    or the app's own — never blocks it (D148). The derived record set is memoised on the snapshot string: records() runs
    at every enlist and again at the change derivation, both on the same baseline. */
+/* THE UNIT IN EVERY ID (multi-squadron batch 1, step 2 — plan §3.4 "Identity, end to end"): every record of the loaded
+   week, and every planning calendar record, names the unit in view (engine/unitview.ts), `days/u142@13/07/2026#3`,
+   `sched.issuance/u142@13/07/2026:2026-07-15#2~1`, `plan/u142@pp:<id>` (storage/unitid.ts). So a 149 week and a 142 week
+   of the same dates are different records in the change stream, its revisions, its permission check, Undo's choice of
+   step and the rows they are saved in — never told apart only where they are stored. `wk` below is the QUALIFIED week;
+   CURWEEK is its date part. */
 let DECOMPOSED: { snap: string; wk: string; m: Map<string, RecordEntry> } | null = null
 let SPLIT_WARNED = false
 function decompose(snapStr: string): Map<string, RecordEntry> {
-  const wk = CURWEEK
+  const wk = inView(CURWEEK)
   if (DECOMPOSED && DECOMPOSED.wk === wk && DECOMPOSED.snap === snapStr) return DECOMPOSED.m
   const s = JSON.parse(snapStr)
   const m = new Map<string, RecordEntry>()
   const { i: _i, pp: _pp, dm: _dm, nt: _nt, ...week } = s
   let parts: WeekParts | null = null
-  try { parts = splitParts(week, wk) } catch (e) {
+  try { parts = splitParts(week, CURWEEK) } catch (e) {
     /* a week the split cannot place (a book from an older build, loaded read-only — protectedWeek) is one opaque record:
        nothing may change it, and its stored rows are never rewritten (state/rowmap.ts skips a preserved week). A live
        week that fails here is a new field with no home in state/weekrows.ts — said once, loudly; its save fails too */
@@ -142,10 +150,11 @@ function decompose(snapStr: string): Map<string, RecordEntry> {
      `PlanningPuck` and `DayRemark` (phase 2); a note's order is its own `ord` too */
   for (const p of ((s.pp as any[]) || [])) {
     if (!p || p.id == null) continue
-    m.set(`plan/pp:${p.id}`, { collection: 'plan', id: `pp:${p.id}`, value: p })
+    const id = inView(`pp:${p.id}`)
+    m.set(`plan/${id}`, { collection: 'plan', id, value: p })
   }
   const dm = s.dm && typeof s.dm === 'object' ? s.dm : {}
-  for (const iso of Object.keys(dm)) m.set(`plan/dm:${iso}`, { collection: 'plan', id: `dm:${iso}`, value: dm[iso] })
+  for (const iso of Object.keys(dm)) { const id = inView(`dm:${iso}`); m.set(`plan/${id}`, { collection: 'plan', id, value: dm[iso] }) }
   /* the bell's notices, one record each (`notices/<id>` — state/notices.ts): written by the command that changed the
      input, never rewritten, removed only by that command's own Undo */
   for (const n of ((s.nt as any[]) || [])) {
@@ -214,13 +223,15 @@ function dayOfId(id: string, wk: string): number {
    {allowIssued:true} (C7). Called only from a reducer that already enlisted
    schedStore. */
 function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolean; restore?: boolean }): void {
-  const wk = CURWEEK
+  /* the QUALIFIED loaded week: a record of another unit's week of the same dates is a foreign week, refused like any other
+     (multi-squadron step 2) — it is saved through the week stash's own seam, never written over the schedule in view */
+  const wk = inView(CURWEEK)
   let inputsTouched = false, pucksTouched = false
   /* the issuances and retractions this write touches, applied together after the loop (state/weekrows.ts issuedBook) */
   const issued: { now: { is: Map<string, any>; rx: Map<string, any> } | null } = { now: null }
   const issuedNow = () => {
     if (issued.now) return issued.now
-    const p = splitParts({ d: DAYS.slice(0, 7), o: SCHED.orig, a: SCHED.als, rt: SCHED.retired }, wk)
+    const p = splitParts({ d: DAYS.slice(0, 7), o: SCHED.orig, a: SCHED.als, rt: SCHED.retired }, CURWEEK)
     return (issued.now = { is: new Map(p.is), rx: new Map(p.rx) })
   }
   /* [GLOBAL-UNDO] §11/C3 — on a RESTORE, the derived per-week input landing (acc)
@@ -302,11 +313,15 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
       case 'plan': {
         /* a note or pucks row (`pp:<id>`) or a day title (`dm:<iso>`) — one record each since phase 2 */
         const v = cw(e.value) as any   // [GLOBAL-UNDO] GU2-009 — clone-on-write
-        if (e.id.startsWith('dm:')) {
-          const iso = e.id.slice(3)
+        /* the planning calendar is the unit in view's (PLANPUCKS, DAYRMK): another unit's record is refused, never put on
+           this one's calendar (multi-squadron step 2) */
+        const pl = split(e.id)
+        if (pl.unit !== UNIT) throw new CmdRefused(`scheduler write: another unit's planning record ${e.id}`)
+        if (pl.local.startsWith('dm:')) {
+          const iso = pl.local.slice(3)
           if (e.op === 'delete' || v == null) delete DAYRMK[iso]; else DAYRMK[iso] = v
-        } else if (e.id.startsWith('pp:')) {
-          const id = e.id.slice(3), ix = PLANPUCKS.findIndex((x: any) => x && String(x.id) === id)
+        } else if (pl.local.startsWith('pp:')) {
+          const id = pl.local.slice(3), ix = PLANPUCKS.findIndex((x: any) => x && String(x.id) === id)
           pucksTouched = true
           if (e.op === 'delete') { if (ix >= 0) PLANPUCKS.splice(ix, 1) }
           else if (ix >= 0) PLANPUCKS[ix] = v; else PLANPUCKS.push(v)
@@ -331,7 +346,7 @@ function schedWriteRecords(entries: RecordEntry[], opts?: { allowIssued?: boolea
     /* the book's Originals, live amendments and retired log, rebuilt from the issuances and retractions as they now
        stand — the same join the saved week's reader runs, so the two cannot disagree (amendments in day / sequence
        order, the order every reader sorts them in) */
-    const { o, a, rt } = issuedBook([...issued.now.is], issued.now.rx, wk)
+    const { o, a, rt } = issuedBook([...issued.now.is], issued.now.rx, CURWEEK)
     SCHED.orig = o; SCHED.als = a; SCHED.retired = rt
   }
   /* [GLOBAL-UNDO] §11/C3 — reland BEFORE applyEnd so the re-derived landings are in
@@ -382,7 +397,10 @@ export function schedPostRestore(entry: any, dir: 'undo' | 'redo', pulledBack: A
      only for a day whose sign-off record this restore wrote — the sign-offs are one record per day now ([DB-READINESS]
      group A, phase 1), so a restore that never wrote that day's cannot have handed its spent sign-offs back. */
   const wroteBook = new Set<string>((entry?.forward || []).filter((ch: any) => ch.collection === 'sched.book').map((ch: any) => String(ch.id)))
-  for (const d of pulledBack) if (d.weekId === CURWEEK && wroteBook.has(`${CURWEEK}#${d.di}`)) clear.add(d.di)
+  /* the day keys name the unit (`u142@13/07/2026#2` — storage/unitid.ts, multi-squadron step 2): only the unit in view's
+     loaded week is cleared here; another unit's day is never the one on screen */
+  const wk = inView(CURWEEK)
+  for (const d of pulledBack) if (d.weekId === wk && wroteBook.has(`${wk}#${d.di}`)) clear.add(d.di)
   if (!clear.size) return
   // every plan of the day re-signs, the parked ones too — the same as the Unpublish button (AM34, AM32)
   for (const di of clear) { signClear(di); signClearPlans(di) }
@@ -523,7 +541,7 @@ function keepIdsOnTheirDays(): void {
     if (days.size < 2) continue
     before ??= schedRecords()
     // eslint-disable-next-line react-doctor/js-set-map-lookups -- each day's own list of row ids, made fresh and searched once for one id (only for an id found on two days): a Set built for it would be read once too
-    const keeper = [...days].find(di => idsOf(before!.get(`days/${CURWEEK}#${di}`)?.value).includes(id))
+    const keeper = [...days].find(di => idsOf(before!.get(`days/${inView(CURWEEK)}#${di}`)?.value).includes(id))
     if (keeper == null) continue                                  // no day held it before: the first-seen rule stands
     for (const di of days) {
       if (di === keeper) continue
@@ -540,7 +558,7 @@ function touchedDays(): number[] | null {
   const before = schedRecords()
   const out: number[] = []
   for (let di = 0; di < DAYS.length; di++) {
-    const was = before.get(`days/${CURWEEK}#${di}`)?.value
+    const was = before.get(`days/${inView(CURWEEK)}#${di}`)?.value
     if (was === undefined || JSON.stringify(was) !== JSON.stringify(DAYS[di])) out.push(di)
   }
   return out
@@ -587,7 +605,8 @@ export const SCHED_TYPES = {
   load: 'sched.load',
 } as const
 
-const schedScope = (): Scope => ({ module: 'sched', weekId: CURWEEK })
+/* the scope names the week with its unit, as the records do (multi-squadron step 2) */
+const schedScope = (): Scope => ({ module: 'sched', weekId: inView(CURWEEK) })
 const inputsScope = (): Scope => ({ module: 'inputs' })
 
 /* run a scheduler mutation `fn` inside a command: enlist the scheduler store
@@ -823,16 +842,17 @@ export function registerSchedCommandLayer(): void {
   })
   // the derived registry entries for the scheduler's logical records (§3.1)
   // [DB-READINESS] group A, phase 1 — the records follow the stored rows (state/weekrows.ts)
-  registerRecord({ key: 'weeks:<wk>#<di>', cls: 'record', collection: 'days', module: 'scheduler' })
-  registerRecord({ key: 'weeks:sched.book/<wk>#<di>', cls: 'record', collection: 'sched.book', module: 'scheduler' })
-  registerRecord({ key: 'weeks:sched.mutes/<wk>#<di>', cls: 'record', collection: 'sched.mutes', module: 'scheduler' })
-  registerRecord({ key: 'weeks:sched.week/<wk>', cls: 'record', collection: 'sched.week', module: 'scheduler' })
-  registerRecord({ key: 'weeks:sched.issuance/<wk>:<verId>~<n>', cls: 'record', collection: 'sched.issuance', module: 'scheduler' })
-  registerRecord({ key: 'weeks:sched.retraction/<wk>:<verId>~<n>', cls: 'record', collection: 'sched.retraction', module: 'scheduler' })
+  // multi-squadron step 2 — each a unit's: its id leads with the unit (storage/unitid.ts)
+  registerRecord({ key: 'weeks:<unit>@<wk>#<di>', cls: 'record', collection: 'days', module: 'scheduler' })
+  registerRecord({ key: 'weeks:sched.book/<unit>@<wk>#<di>', cls: 'record', collection: 'sched.book', module: 'scheduler' })
+  registerRecord({ key: 'weeks:sched.mutes/<unit>@<wk>#<di>', cls: 'record', collection: 'sched.mutes', module: 'scheduler' })
+  registerRecord({ key: 'weeks:sched.week/<unit>@<wk>', cls: 'record', collection: 'sched.week', module: 'scheduler' })
+  registerRecord({ key: 'weeks:sched.issuance/<unit>@<wk>:<verId>~<n>', cls: 'record', collection: 'sched.issuance', module: 'scheduler' })
+  registerRecord({ key: 'weeks:sched.retraction/<unit>@<wk>:<verId>~<n>', cls: 'record', collection: 'sched.retraction', module: 'scheduler' })
   registerRecord({ key: 'inputs:<iid>', cls: 'record', collection: 'inputs', module: 'inputs' })
   // [DB-READINESS] group A, phase 2 — the planning calendar one record per note / pucks row and per day title
-  registerRecord({ key: 'plan:pp:<id>', cls: 'record', collection: 'plan', module: 'plan' })
-  registerRecord({ key: 'plan:dm:<iso>', cls: 'record', collection: 'plan', module: 'plan' })
+  registerRecord({ key: 'plan:<unit>@pp:<id>', cls: 'record', collection: 'plan', module: 'plan' })
+  registerRecord({ key: 'plan:<unit>@dm:<iso>', cls: 'record', collection: 'plan', module: 'plan' })
   // the bell's notices, one record a person told (state/notices.ts) — made inside the input command that owes them
   registerRecord({ key: 'notices:<id>', cls: 'record', collection: 'notices', module: 'inputs' })
 }

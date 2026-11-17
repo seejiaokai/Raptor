@@ -26,6 +26,7 @@ import { REPORTING_LABEL } from '../engine/reporting'
 import { DAYS } from '../engine/data'
 import { posKey } from '../engine/rowids'
 import { isStandalone } from '../engine/waves'
+import { localOf } from '../storage/unitid'
 
 /* a person's callsign by id, for the Leave War's records (its ids carry the person, not his name) — installed by the
    app (state/undo-wire.ts), read LIVE when the entry is recorded; null when none is installed (tests). `defaultOf` —
@@ -425,7 +426,8 @@ function flySpan(isos: string[]): string {
   return a.slice(0, 7) === b.slice(0, 7) ? `${+a.slice(8, 10)}–${flyDM(b)}` : `${flyDM(a)} – ${flyDM(b)}`
 }
 function describeFly(entry: UndoEntry): string | null {
-  const rows = (entry.forward || []).filter(c => c.collection === 'settings')
+  /* each row by its plain name: a unit's is named with its unit (`u149@flyday:<iso>` — step 2) */
+  const rows = (entry.forward || []).filter(c => c.collection === 'settings').map(c => ({ ...c, id: localOf(c.id) }))
   if (entry.type === 'fly.day.set') {
     const days = rows.filter(c => c.id.startsWith('flyday:'))
     const isos = days.map(c => c.id.slice(7)).sort()
@@ -473,7 +475,7 @@ export function describeEntry(entry: UndoEntry): string {
      on the calendar (the walk, R2: a day title read "a personal input") */
   const plans = entry.forward.filter((c: Change) => c.collection === 'plan')
   if (plans.length && inputsCount(entry) === 0) {
-    const dm = plans.some(c => c.id.startsWith('dm:')), pp = plans.some(c => c.id.startsWith('pp:'))
+    const dm = plans.some(c => localOf(c.id).startsWith('dm:')), pp = plans.some(c => localOf(c.id).startsWith('pp:'))   // `u149@dm:<iso>` (step 2)
     return dm && !pp ? 'a day title on the calendar' : pp && !dm ? 'a note on the calendar' : 'a change to the calendar'
   }
   /* …and ONE input changed in a way a person names ([OIL-NOTIFY-SEEN] (1), the OIL-ask walk, 13 Oct 26): a swap on an
@@ -501,7 +503,7 @@ export function describeEntry(entry: UndoEntry): string {
     const k = entry.type.slice('settings.'.length)
     /* the members' switch says which way it went (the plan §3.13): stored only when OFF, so no record = on */
     if (k === 'memberfile') {
-      const ch = entry.forward.find(c => c.collection === 'settings' && c.id === 'memberfile')
+      const ch = entry.forward.find(c => c.collection === 'settings' && localOf(c.id) === 'memberfile')
       return `members filing for other people — ${ch && ch.op !== 'delete' && ch.after === false ? 'off' : 'on'}`
     }
     return SETTING_PHRASE[k] || 'a settings change'

@@ -19,7 +19,9 @@ import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
 import { flyplanLoad } from './flyplan'
-import { unitsLoad, setUnitSeeds } from './units'
+import { unitsLoad, setUnitSeeds, homeOn, todayIso } from './units'
+import { UNIT, BOOT_UNIT, setUnitInView, inView } from '../engine/unitview'
+import { isUnitId } from '../storage/unitid'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
 import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
@@ -49,7 +51,7 @@ import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce } from './perms
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
-import { isHydrated } from './persist'
+import { isHydrated, hydratePlan, persistWb } from './persist'
 import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone } from '../command'
 /* internal wiring may raise a command as a named person (command/index.ts — commitAs stays off the public surface) */
 import { commitAs } from '../command/commit'
@@ -59,10 +61,10 @@ import { cmdAuthorize, ownershipViolation } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
-import { resyncPeopleBaseline, mintPeopleOrd } from './people-settings-commit'
+import { resyncPeopleBaseline, mintPeopleOrd, reloadUnitSettings } from './people-settings-commit'
 import { registerPeopleSettingsCommandLayer } from './people-settings-wire'
 import { mintOrd } from '../command/ord'
-import { PLANPUCKS } from './plan'
+import { PLANPUCKS, DAYRMK } from './plan'
 import { accountsLoad, setAccountSeeds } from './accounts'
 
 let VERSION = 0
@@ -319,6 +321,7 @@ const weekstashStore: EnlistableStore = {
   key: 'weekstash',
   capture: () => snapshotStash(),
   restore: (snap) => restoreStash(snap as any),
+  /* every unit's saved weeks — stashEntries keys each by its unit (`u149@13/07/2026`), so the records do too */
   records: () => {
     const m = new Map<string, RecordEntry>()
     for (const [wk] of stashEntries()) {
@@ -341,8 +344,10 @@ const weekstashStore: EnlistableStore = {
   write: (entries) => {
     const byWeek = new Map<string, Array<{ id: string; value?: any; op?: string }>>()
     for (const e of entries) {
+      /* every record names its week with its unit (`u149@13/07/2026#3` — storage/unitid.ts, step 2), so another unit's
+         week of the same dates is another week, written through the stash like any week off screen */
       const wk = e.id.split(/[:#]/)[0]
-      if (wk === CURWEEK) throw new CmdRefused(`weekstash write to the loaded week ${wk} — undo it from another week`)
+      if (wk === inView(CURWEEK)) throw new CmdRefused(`weekstash write to the loaded week ${wk} — undo it from another week`)
       if (isPreservedWeek(wk)) throw new CmdRefused(`weekstash write to a read-only week ${wk}`)
       let l = byWeek.get(wk)
       if (!l) byWeek.set(wk, l = [])
@@ -447,6 +452,10 @@ export function resetSession(s: any) {
      production. A logout, or a headless call with no `pid` (the unit tests' bare
      { user, role }), puts back the headless default. */
   setMe(s && Object.prototype.hasOwnProperty.call(s, 'pid') ? s.pid : DEFAULT_ME)
+  /* THE UNIT IN VIEW STARTS AS HIS HOME (multi-squadron batch 1, step 2): the signed-in person's home unit today
+     (state/units.ts homeOn), the boot unit for a logout, a headless call or someone with no home. Already there — every
+     sign-in on the demo today — it moves nothing. */
+  switchUnit(sessionUnit(s && s.pid))
   /* the undo list is per sign-in (13 Sep 26; D148 — "the list clears when they sign
      out"): the global undo never cleared it, so an admin signing in after a member
      could reverse the member's change (Fable R1-7, Astra R1-10) */
@@ -711,10 +720,18 @@ function workOutLoadedWeek(): void {
    stash (if this week has been visited and edited before) or falls back to
    the same pure-bundle path as always. */
 export function loadWeek(v: any) {
+  leaveWeek()
+  enterWeek(v)
+}
+/* the week on screen, kept in the stash under the unit in view as it is left (by a week load or a change of unit) */
+function leaveWeek(): void {
   const leaveSnap = weekStashSnap()
   /* a preserved (byte-frozen) week keeps its ORIGINAL blob in the stash, never a
      re-serialization of the un-migrated live model (P2-IMPL-02). */
   if (stashHas(CURWEEK) || leaveSnap !== weekBaseline) stashPut(CURWEEK, isPreservedWeek(CURWEEK) ? (preservedBlob(CURWEEK) ?? leaveSnap) : leaveSnap)
+}
+/* the week `v` of the unit in view, installed and worked out — loadWeek's second half, and switchUnit's */
+function enterWeek(v: any): void {
   /* WEEK NAVIGATION IS READ-ONLY ([DB-READINESS] group A, phase 1 — R3-01, F3-01). The week being left has nothing to
      save: every change to it went out, as its rows, with the command that made it; its saved copy above is memory.
      The arriving week is installed with no store enlisted across the change of week, and its landing pass runs as ONE
@@ -786,6 +803,51 @@ export function loadWeek(v: any) {
   histInit()                  // new baseline for this week — Undo starts here
   notify()
 }
+
+/* ---- THE UNIT IN VIEW (multi-squadron batch 1, step 2) ----
+   The scheduler's singletons — the loaded week (DAYS, SCHED, DATES, CURWEEK), the planning calendar (PLANPUCKS, DAYRMK)
+   and every setting held in memory (VCONF / SHIFT_HARD, the templates, the flying plan) — hold ONE unit, the unit in
+   view (engine/unitview.ts; storage/keyowner.ts UNIT_SINGLETONS), as they hold one week. Changing it is a load, by the
+   path a week load takes: the week on screen is kept in the stash under the unit being left, the unit's settings and
+   planning calendar are read again, and the same dates are entered for the new unit — its saved copy if it has one, else
+   its untouched week (engine/weeks-data.ts weekBundle: the demo's authored weeks are the demo squadron's only). Like a
+   week load it is navigation: no command, nothing saved, every record of each unit already saved by the command that
+   made it. Undo is NOT cleared by it: there is one change stream, and a person's Undo on a schedule steps back his own
+   changes in the unit in view (undo/timeline.ts, D148).
+   The planning calendar of a unit left is kept in memory (PLAN_MEM) as the stash keeps its weeks, so coming back shows
+   it as it was; a unit never shown this session reads its rows from the whiteboard (state/persist.ts hydratePlan), and
+   headless — no whiteboard — starts empty. Who may look at a unit is the "▾" menu's question (step 5), not this one's:
+   this function only changes what is held in memory. */
+const PLAN_MEM = new Map<string, { pucks: any[]; titles: Record<string, string> }>()
+export function switchUnit(unit: string): void {
+  if (!isUnitId(unit)) throw new Error(`switchUnit: not a unit id: ${unit}`)
+  if (unit === UNIT) return
+  leaveWeek()
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the unit left keeps its planning calendar as saving stores it (keys set to undefined dropped), the same image a reload of that unit reads; structuredClone would keep them
+  const keptPucks = JSON.parse(JSON.stringify(PLANPUCKS))
+  PLAN_MEM.set(UNIT, { pucks: keptPucks, titles: { ...DAYRMK } })
+  setUnitInView(unit)
+  reloadUnitSettings()
+  const kept = PLAN_MEM.get(unit)
+  if (kept) {
+    PLANPUCKS.length = 0; kept.pucks.forEach(p => PLANPUCKS.push(p))
+    for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
+    Object.assign(DAYRMK, kept.titles)
+  } else {
+    const wb = persistWb()
+    if (wb) hydratePlan(wb, unit, true)
+    else { PLANPUCKS.length = 0; for (const k of Object.keys(DAYRMK)) delete DAYRMK[k] }
+  }
+  enterWeek(CURWEEK)
+}
+/* the unit a session starts in: the signed-in person's home today (state/units.ts homeOn — D2094), else the boot unit
+   (headless, nobody signed in, a person with no home) */
+function sessionUnit(pid: string | null | undefined): string {
+  const h = pid ? homeOn(String(pid), todayIso()) : null
+  return h && isUnitId(h) ? h : BOOT_UNIT
+}
+/** the planning calendars kept for units left this session — cleared with the session (tests and sign-out) */
+export function forgetUnitPlans(): void { PLAN_MEM.clear() }
 
 /* ---- wiring ---- */
 let ELOG_ADOPT_WIRED = false

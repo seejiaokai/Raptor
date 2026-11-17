@@ -28,6 +28,8 @@ import type { RecordCtx, RecordOwner, UndoEntry } from './types'
 import {
   deriveContexts, deriveOwners, invertClosure, recordKey, sharesKeys, weekOf, dayKeyOf } from './derive'
 import { describeEntry, bubbleText } from './describe'
+import { UNIT } from '../engine/unitview'
+import { unitOf } from '../storage/unitid'
 
 /* ---- pluggable app hooks (snap, bubble, locks, publish-day resolve) ------- */
 export interface UndoHooks {
@@ -486,6 +488,20 @@ function reverseRefusal(entry: UndoEntry, dir: 'undo' | 'redo'): string {
 function isOwn(entry: UndoEntry, cur: Actor): boolean {
   return (entry.actor.personId ?? null) === (cur.personId ?? null)
 }
+/* UNDO BY UNIT, FROM THE ONE STREAM (multi-squadron batch 1, step 2 — plan §3.4). There is one change stream and one list
+   of steps — never a list per unit. A step names the units it touched in its record ids (`days/u149@13/07/2026#2`,
+   `settings/u149@rules`, `plan/u149@pp:…` — storage/unitid.ts); a person's Undo or Redo looks only at his steps that
+   touched the unit IN VIEW (engine/unitview.ts) or no unit at all (a request, a person, an account: everyone's, whatever
+   schedule is on screen). So an Undo in 142 never takes back a change he made in 149 — that step waits for him in 149 —
+   and a step that touched two units is ONE step, eligible in either, undone whole. Read once per step and kept on it:
+   a step's records never change. */
+const UNITS_OF = new WeakMap<UndoEntry, Set<string>>()
+function unitsOf(e: UndoEntry): Set<string> {
+  let s = UNITS_OF.get(e)
+  if (!s) { s = new Set(); for (const ch of e.forward) { const u = unitOf(String(ch.id)); if (u) s.add(u) } UNITS_OF.set(e, s) }
+  return s
+}
+function inUnitView(e: UndoEntry): boolean { const us = unitsOf(e); return us.size === 0 || us.has(UNIT) }
 /* AN INPUT HE FILED FOR ANOTHER MAN (the group input — owner D654, D655; the build plan §3.13, both readers' finding
    G3). A member's step may hold records whose person is not him: a Meeting he filed for another man, an entry he
    filed for six. "Every record his own person's" would stop him undoing his own filing — so for each input in the
@@ -860,6 +876,7 @@ function newestUndoable(): UndoEntry | null {
     if (e.undone) continue
     /* D148 — only his own; another person's step is passed over silently, never refused on */
     if (!isOwn(e, cur)) continue
+    if (!inUnitView(e)) continue   // his step in another unit: it waits for him there (step 2)
     if (!isEligible(e)) { if (!LAST_INELIG && touchesDeferred(e) && allCutOver(e)) LAST_INELIG = e; continue }
     const dead = deadFor(e, 'undo')
     if (dead) { if (!LAST_DEAD) LAST_DEAD = dead; continue }
@@ -878,7 +895,7 @@ function mostRecentlyUndone(): UndoEntry | null {
   LAST_DEAD = null; LAST_BLOCKED = null
   const cur = currentActor()
   for (const e of entries) {
-    if (e.undone && !e.abandoned && isEligible(e) && isOwn(e, cur) && (best == null || (e.undoneAt ?? 0) > (best.undoneAt ?? 0))) {
+    if (e.undone && !e.abandoned && isEligible(e) && isOwn(e, cur) && inUnitView(e) && (best == null || (e.undoneAt ?? 0) > (best.undoneAt ?? 0))) {
       const dead = deadFor(e, 'redo')
       if (dead) { if (!LAST_DEAD) LAST_DEAD = dead; continue }
       if ((e as any)[BLOCKED_R]) { if (!LAST_BLOCKED) LAST_BLOCKED = (e as any)[BLOCKED_R]; continue }

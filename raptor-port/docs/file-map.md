@@ -1216,6 +1216,18 @@ the one answer for an account's level in a unit). `src/state/units.ts` - the rea
 `src/state/units.test.ts` - the GMT label, the seeds (nothing written at load), every level, the home inside the commands
 that make a person, the master-only commands, a grant only by an admin of its unit, a move from tomorrow, a raw write
 refused, Undo of a grant.
+The multi-squadron build, batch 1, step 2 (18 Nov 26 - the unit-qualified id through every layer):
+`src/storage/unitid.ts` - THE ONE CODEC of a record id `<unit>@<its id today>` (`qualify`, `split`, `unitOf`, `localOf`,
+`ensureUnit`, `isUnitId`; a unit is `u` + base 36): every reader of a record id splits the unit off first and parses the
+date only from what is left. Test: `src/storage/unitid.test.ts` - the round trip of every id kind for several units, an
+id with no unit, a bad unit refused, never two units, the week, week-key, day and version parsers on qualified ids.
+`src/engine/unitview.ts` - THE UNIT IN VIEW (`UNIT`, `BOOT_UNIT` = u142, `setUnitInView`, `inView(id)`): the schedule
+singletons hold one unit at a time; it starts at the signed-in person's home unit for today (`homeOn`), u142 headless or on
+the demo. `state/store.ts switchUnit` swaps it by the `loadWeek` path (the week stashed, the unit's settings and plans
+reloaded, the week entered). `src/state/units-switch.test.ts` - two units' weeks of the same dates kept apart through
+saves, reloads, the stash and many swaps; Undo in 142 never undoes a 149 change; a unit's setting written by its named
+command; a 142 admin refused a 149 write. `src/ui/logout.test.ts` - sign-out flushes the saves, then reloads the page
+through its test seam (`ui/logout.ts setReloadSeam`), never while a save still waits.
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

@@ -372,7 +372,8 @@ of one week never write the same row.
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
-| `weekStart` | date | yes | the Monday, ISO. Unique |
+| `unit` | ref Unit | yes | (new, multi-squadron step 2, 18 Nov 26 — D2184 R35) whose schedule this week is; today the `u…@` before the week's id |
+| `weekStart` | date | yes | the Monday, ISO. Unique with `unit` — two squadrons each have their own week of the same dates |
 | `formatStamps` | JSON | yes | the week-wide format versions the persisted record carries today (`v` — `SCHED.ridV`, `am` — `SCHED.amV`): written when the week is created and by a format upgrade, **never by an edit to a day** |
 | `ownedBy` | ref User | yes | (new) who created the week — needed before incoming sync (section 7) |
 
@@ -899,7 +900,8 @@ configuration key. The whole `sqn142_*` / Leave War preferences family.
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
-| `key` | string | yes | e.g. `daytpl`, `rules`, `groupcolors`. Unique |
+| `unit` | ref Unit | no | (new, multi-squadron step 2, 18 Nov 26 — D2184 R35) the unit whose setting it is (a unit's setting — `data-schema.md` §Whose is each record); empty for the community's (`account:`, `accessreq:`, the seen rows, `schema`). Today the `u…@` before the key |
+| `key` | string | yes | e.g. `daytpl`, `rules`, `groupcolors`. Unique with `unit` |
 | `scope` | choice `scheduler\|leavewar\|tracker` | yes | (new) — the three worlds share one table |
 | `value` | JSON | yes | the record as the app already serialises it |
 
@@ -1023,6 +1025,16 @@ batch 1 built the five tables below — `Unit`, `Place`, `UnitPlace`, `UnitGrant
 the squadron column on every unit's record comes with step 2. **One answer for a level, no fact stored twice:** an
 account's level in a unit is its `User.role` in its HOME unit, its `UnitGrant` level in another, admin everywhere for a
 master, otherwise none.
+**Which unit owns what (step 2, 18 Nov 26 — D2184 R35, first half; D1695's column on every record):** every schedule
+week and day (`ScheduleWeek.unit`, its days by their week), every issued version and its retraction (`Amendment`, by its
+day's week), the planning calendar (`PlanningPuck`, `DayRemark`) and every unit setting (`Setting.unit` — `rules`, the
+templates, the stores and cancel-reason lists, the flying plan's rows, Quals' columns, the guest and members' switches)
+names its unit. Two units keep the SAME week of dates apart: the week is unique by (`unit`, `weekStart`), a setting by
+(`unit`, `key`). The community's records — `Person`, `Input`, `Notice`, `User`, `AccessRequest`, the change log, the
+schema stamp and the unit tables themselves — carry none. Today the unit rides in the record's id
+(`u149@13/07/2026#2`, `u149@rules` — `data-schema.md` §The unit-qualified id); at the database step it becomes the
+column. The commit gate already refuses a change to a unit's records by anyone without rights there (`state/perms.ts`
+unitRecordViolation: an admin's command needs admin there; a member's needs to be at home there) — §11.
 
 ### Unit
 
@@ -1689,6 +1701,14 @@ as written. The day lock follows: a simple mark (his D1751, 8 Nov 26); D1653 is 
 | `UnitPlace` | C R U D | R | — | — | a unit's place from a date: a move adds a row from the next day (D2119), the history kept; written only by an admin OF that unit (the commit gate reads the row's unit, before and after) |
 | `UnitGrant` | C R U D | R **own** | — | — | a right in a unit that is NOT the account's home — `admin` or `view` (no member of another squadron, D2094); the home level is the account's own role, never a grant; one per account and unit; given or taken only by an admin OF that unit — an `admin` grant by its own admins or a master, View by its admins (D2160, D2184, D2191); read by every admin and by the member it names |
 | `PersonHome` | C R U D | R | — | — | a person's home unit from a date: written in the same step that makes the person (the adder's own unit by default, D2094), a change counting from the next day; written only by an admin OF the unit named, before and after; on the demo a person with no row is at 142 |
+
+**Every unit's record is judged in its own unit (multi-squadron batch 1, step 2, 18 Nov 26).** The letters above are
+the role's in the unit the record belongs to: a change to a unit's records — a schedule week, day or version, the
+planning calendar, a unit setting (the unit named in the record's id, `data-schema.md` §The unit-qualified id) — is
+refused at the commit gate unless the actor holds the right there (`src/state/perms.ts` unitRecordViolation): an admin's
+command needs admin in that unit (his home unit's role, an admin grant, or the master mark), a member's needs to be at
+home there. A View grant writes nothing. An actor with no account (a test's session) is judged against the unit in view
+alone.
 
 **The day lock (29 Sep 26, D355, D450 — section 9):** *(8 Nov 26, his D1751: a simple mark the app holds — none of the Dataverse privileges, team or server check in this paragraph is built.)* the lock is columns of `ScheduleDay` (section 3), so it follows
 the ScheduleWeek family's row — an admin takes, releases and takes over a day (every scheduler is an admin; in

@@ -16,6 +16,7 @@
       the batches written since its mark, re-reads EACH named row ONCE, and ends with the first client's view — an
       input, a day, a war record and a history line — without reading anything else. */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { inView } from '../engine/unitview'
 import { INPUTS, inpId } from '../engine/inputs'
 import { storeBackend, store } from '../engine/hooks'
 import { txtSet } from '../engine/slots'
@@ -313,7 +314,7 @@ describe('the stand-in reader (phase 4.2): a second client catches up from the c
     /* its view of every row the first client wrote is the first client's */
     const iid = inpId(INPUTS.find((r: any) => r.remarks === 'READER'))
     expect(reader.view.inputs[iid]).toBe(wb.get('inputs', iid))
-    const dayRow = Object.keys(reader.view.weeks).find(k => k.endsWith('#2') && k.startsWith('13-07-2026'))!
+    const dayRow = Object.keys(reader.view.weeks).find(k => k.endsWith('#2') && k.startsWith(inView('13-07-2026')))!   // the stored week id carries its unit (step 2)
     expect(reader.view.weeks[dayRow]).toContain('READER NOTE 2')
     expect(reader.view.weeks[dayRow]).toBe(wb.get('weeks', dayRow))
     const rec = recordsAt(lwPid, day)[0]!

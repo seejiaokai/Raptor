@@ -4,8 +4,13 @@
    band already tells him why. The postman is handed over once, at the app's start (main.tsx), beside the unload guard. */
 import type { Postman } from './postman'
 
-let postman: Pick<Postman, 'status'> | null = null
-export function watchSaves(p: Pick<Postman, 'status'> | null): void { postman = p }
+let postman: (Pick<Postman, 'status'> & Partial<Pick<Postman, 'flush'>>) | null = null
+export function watchSaves(p: (Pick<Postman, 'status'> & Partial<Pick<Postman, 'flush'>>) | null): void { postman = p }
+/** send every save still queued now — sign-out's last step before it reloads the page (ui/logout.ts, multi-squadron
+    step 2); a refused save stays waiting, which saveWaiting then says */
+export async function flushSaves(): Promise<void> {
+  try { await postman?.flush?.() } catch { /* a refused save stays waiting: saveWaiting reads it */ }
+}
 /** A save failed, or written and not yet sent. A save in flight ('saving') is on its way, as the unload guard reads it. */
 export function saveWaiting(): boolean {
   const s = postman?.status

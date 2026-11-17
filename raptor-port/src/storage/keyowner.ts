@@ -16,6 +16,7 @@
    answers null and `keyowner.test.ts` fails — so a new kind of record cannot reach storage without someone deciding
    whose it is. The same split is written out for people in docs/data-schema.md §Whose is each record. */
 import type { Collection } from './backend'
+import { split } from './unitid'
 
 export type KeyOwner = 'unit' | 'community'
 
@@ -71,6 +72,10 @@ export function ownerOf(collection: Collection, id: string): KeyOwner | null {
   if (UNIT_COLLECTIONS.includes(collection)) return 'unit'
   if (COMMUNITY_COLLECTIONS.includes(collection)) return 'community'
   if (collection !== 'settings') return null
+  /* since step 2 a unit's setting is stored under its unit (`u149@rules` — storage/unitid.ts): its name, the unit split
+     off, must be a unit's setting; a community name never carries a unit */
+  const q = split(id)
+  if (q.unit != null) return UNIT_SETTINGS.includes(q.local) || UNIT_SETTING_PREFIXES.some(p => q.local.startsWith(p)) ? 'unit' : null
   if (UNIT_SETTINGS.includes(id) || UNIT_SETTING_PREFIXES.some(p => id.startsWith(p))) return 'unit'
   if (COMMUNITY_SETTINGS.includes(id) || COMMUNITY_SETTING_PREFIXES.some(p => id.startsWith(p))) return 'community'
   return null

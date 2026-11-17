@@ -42,7 +42,8 @@ import {
   cmdDeferEffect,
 } from '../command'
 import { PEOPLE, indexCallsigns } from '../engine/people'
-import { store, setSettingsWriteHook, setSettingsGroupHook, HOOKS } from '../engine/hooks'
+import { store, setSettingsWriteHook, setSettingsGroupHook, HOOKS, storedKey } from '../engine/hooks'
+import { split, localOf } from '../storage/unitid'
 import { rulesLoad, rulesResetMem } from '../engine/rules'
 import { lookaheadLoad } from '../engine/lookahead'
 import { qualColsLoad } from '../engine/qualcols'
@@ -96,12 +97,21 @@ export const SETTINGS_KEYS = [
 export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', ...FLY_ROW_PREFIXES,
   /* the units, places, homes and rights (state/units.ts — multi-squadron batch 1, step 1), one row each */
   ...UNIT_ROW_PREFIXES] as const
-const isRowKey = (k: string) => SETTINGS_ROW_PREFIXES.some(p => k.startsWith(p))
+/* EVERY UNIT'S SETTINGS, NAMED WITH ITS UNIT (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): a unit's own
+   setting or row is the record `settings/<unit>@<name>` (`settings/u149@rules`, `settings/u149@flyday:2026-07-13`), a
+   community one keeps its plain name. The records hold EVERY unit's stored settings — not only the unit in view's — so a
+   change to 149's rules is 149's record whichever unit is on screen, and an Undo of it writes 149's back by that name.
+   A record's kind is read from its name with the unit split off (localOf). */
+const isRowKey = (k: string) => { const l = localOf(k); return SETTINGS_ROW_PREFIXES.some(p => l.startsWith(p)) }
+const isFixedKey = (k: string) => (SETTINGS_KEYS as readonly string[]).includes(localOf(k))
 /* every row stored now — ONE pass over the settings keys (the guard reads this on every command, so never one per kind) */
 const settingsRowKeys = (): string[] => store.keys('').filter(isRowKey)
-/* every settings record's key: the fixed ones, then each row stored now */
+/* every settings record's key: the fixed ones — the unit in view's always (absent reads as null), and every other unit's
+   that is stored — then each row stored now */
 function settingsRecordKeys(): string[] {
-  return [...SETTINGS_KEYS, ...settingsRowKeys()]
+  const out = new Set<string>(SETTINGS_KEYS.map(k => storedKey(k)))
+  for (const k of store.keys('')) if (isFixedKey(k) && split(k).unit != null) out.add(k)
+  return [...out, ...settingsRowKeys()]
 }
 /* the loaders of the four files that save through this layer and keep a copy in memory — the accounts, the change
    history's and the bell's seen marks, the flying plan — handed in at registration (see the imports' note). Until then
@@ -122,11 +132,9 @@ const settingsLoaders = (): Array<() => void> => [
 ]
 function settingsRecords(): Map<string, RecordEntry> {
   const m = new Map<string, RecordEntry>()
-  for (const k of SETTINGS_KEYS) {
-    m.set(`settings/${k}`, { collection: 'settings', id: k, value: store.get(k, null) })
-  }
-  /* a row is a record while it is stored; absent, it is no record (so adding one is a put, removing it a delete) */
-  for (const k of settingsRowKeys()) m.set(`settings/${k}`, { collection: 'settings', id: k, value: store.get(k, null) })
+  /* the fixed keys, each by its stored name (`u142@rules`); a row is a record while it is stored; absent, it is no
+     record (so adding one is a put, removing it a delete) */
+  for (const k of settingsRecordKeys()) m.set(`settings/${k}`, { collection: 'settings', id: k, value: store.get(k, null) })
   return m
 }
 function captureSettings(): string {
@@ -146,15 +154,19 @@ function rehydrateSettings(): void {
   rulesResetMem()
   for (const load of settingsLoaders()) load()
 }
+/* THE UNIT IN VIEW CHANGED (state/store.ts switchUnit — multi-squadron step 2): every setting held in memory (VCONF, the
+   templates, the flying plan …) is the unit in view's, so the same reset-then-overlay re-derive reads the new unit's
+   records; nothing is written */
+export const reloadUnitSettings = (): void => rehydrateSettings()
 /* rollback: restore each key's persisted value, then the reset-then-overlay
    re-derive. Writes go through the raw setter (the hook is inert while
    committing) so nothing nests. */
 function restoreSettings(snap: string): void {
   const o = JSON.parse(snap)
-  for (const k of SETTINGS_KEYS) store.set(k, k in o ? o[k] : null)
-  /* the rows: every one the snapshot held, back as it was; every one written since, removed */
-  for (const k of settingsRowKeys()) if (!(k in o)) store.set(k, null)
-  for (const k of Object.keys(o)) if (isRowKey(k)) store.set(k, o[k])
+  /* every record the snapshot held, back as it was (each by its stored name, so another unit's is put back as that unit's);
+     every one written since, removed */
+  for (const k of settingsRecordKeys()) if (!(k in o)) store.set(k, null)
+  for (const k of Object.keys(o)) store.set(k, o[k])
   rehydrateSettings()
 }
 export const settingsStore: EnlistableStore = {
@@ -356,14 +368,18 @@ export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: 
   // route every durable settings write (store.set) through a named command.
   // Inside a running command (a rollback, or a save nested in another command)
   // or for an unknown key, write raw so nothing nests or is refused-and-lost.
-  setSettingsWriteHook((k, v, raw) => {
+  /* every check reads the setting's plain name (`rules`, never `u149@rules` — engine/hooks.ts storedKey): a unit's setting
+     is written by its own named command, `settings.rules`, whichever unit it is (the gate then asks whether the actor is
+     an admin OF that unit — perms.ts unitAdminViolation, from the record's name) */
+  setSettingsWriteHook((key, v, raw) => {
+    const k = localOf(String(key))
     if (k.startsWith('missionrole:')) throw new Error('Mission-role rows require the typed annotation command')
     if (!isCommitting() && k === 'sanscalendar') throw new Error('SANS calendar settings require the typed settings command')
     if (!isCommitting() && FLY_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('The flying plan is written only by its typed commands')
     if (!isCommitting() && UNIT_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('Units, places, homes and rights are written only by their typed commands')
     if (!isCommitting() && k === 'memberfile') throw new Error('The switch for members filing for other people is written only by its typed command')
-    if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(k, v); return }
-    commitSettings(settingsType(k), () => raw(k, v))
+    if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(key, v); return }
+    commitSettings(settingsType(k), () => raw(key, v))
   })
   // a save that writes several keys (store.group) is ONE command, named for its first key; inside a running command the
   // body just runs (every store.set in it then writes raw)

@@ -11,6 +11,7 @@
    `v3:master:chart:<id>`, a ball's typed details `v3:master:info:<chart>:<ball>` — read first, since a ball's code may
    spell any word the older checks look for. */
 import type { Collection } from './backend'
+import { localOf } from './unitid'
 
 const TRACKER = (id: string): string => {
   if (id.startsWith('v3:master:course:')) return 'Course'
@@ -42,7 +43,7 @@ export function tableOf(collection: Collection, id: string): string {
       return id.includes('#') ? 'ScheduleDay' : 'ScheduleWeek'
     case 'inputs': return 'Input'
     case 'people': return 'Person'
-    case 'plan': return id.startsWith('dm:') ? 'DayRemark' : 'PlanningPuck'
+    case 'plan': return localOf(id).startsWith('dm:') ? 'DayRemark' : 'PlanningPuck'   // `u149@dm:<iso>`: the unit split off first (step 2)
     case 'leavewar':
       if (id.startsWith('war:')) return 'LeaveWar'
       if (id.startsWith('rec:')) return 'LeaveBid'

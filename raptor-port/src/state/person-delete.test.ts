@@ -6,6 +6,7 @@
    at 15 Jul 26, inside the demo week (13–19 Jul), so the 13th and 14th are days he flew and the 15th on are days to come.
    Tests loop over the roll-call of slot KINDS (bug-check order §8.1). Register lines PO4, PO5, PO6, PO7. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { inView } from '../engine/unitview'
 import { storeBackend } from '../engine/hooks'
 import { PEOPLE, nameToId, indexCallsigns, archivedHolders } from '../engine/people'
 import { DAYS } from '../engine/data'
@@ -224,7 +225,7 @@ describe('PO6 — the delete is saved: the week on screen reads without him, and
       for (const di of [TO_COME, PAST]) (DAYS as any)[di].notes.push({ t: 'PO6 SAVED ' + di })
     })
     /* the week is saved as one row per day ([DB-READINESS] group A, phase 1 — state/weekrows.ts) */
-    const day = (di: number) => JSON.parse(wb.get('weeks', `13-07-2026#${di}`)!).d
+    const day = (di: number) => JSON.parse(wb.get('weeks', `${inView('13-07-2026')}#${di}`)!).d
     expect(JSON.stringify(day(TO_COME)), 'the fixture is saved').toContain(`"${HIM}"`)
     expect(deletePerson(HIM)).toBe(null)
     expect(personKeysOnDay(TO_COME, HIM), 'the week on screen: a day to come, at once').toEqual([])

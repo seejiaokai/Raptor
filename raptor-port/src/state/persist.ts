@@ -22,6 +22,8 @@
 import { INPUTS, mintInpIds } from '../engine/inputs'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
+import { UNIT, inView } from '../engine/unitview'
+import { split, qualify, localOf } from '../storage/unitid'
 import { stashPut, stashHas, isPreservedWeek, setPreservedBlob } from '../engine/weekstash'
 import { amFormatOf } from '../engine/publish'
 import { PLANPUCKS, DAYRMK } from './plan'
@@ -42,9 +44,16 @@ import {
   joinWeek, parseRowId, rowSuffix, dayRowJSON, weekRowJSON, stashRows, weeksConverter, type WeekRows,
 } from './weekrows'
 
-/* the stash key is dd/mm/yyyy; '/' is the collection/id separator */
-export const weekId = (key: string) => String(key).replace(/\//g, '-')
-export const weekKey = (id: string) => id.replace(/-/g, '/')
+/* the stash key is dd/mm/yyyy; '/' is the collection/id separator. A unit's week is stored under its unit
+   (`u149@13-07-2026` — multi-squadron step 2, storage/unitid.ts): the unit is split off FIRST and only the date part is
+   turned between slashes and hyphens, so nothing in a unit id is ever read as part of a date (plan §3.4, the red team's
+   A4: a unit id holds no hyphen, and is never handed to the hyphen rule anyway). */
+const mapDate = (key: string, f: (local: string) => string): string => {
+  const p = split(String(key))
+  return p.unit != null ? qualify(p.unit, f(p.local)) : f(p.local)
+}
+export const weekId = (key: string) => mapDate(key, l => l.replace(/\//g, '-'))
+export const weekKey = (id: string) => mapDate(id, l => l.replace(/-/g, '/'))
 
 /* the one-time conversion of an old store's whole-week records into rows (storage/fold.ts) — registered now; the fold
    runs only once every group-A converter is registered (the manifest), so until then no store is touched */
@@ -143,14 +152,41 @@ function readStoredWeek(rows: WeekRows, wk: string): { json: string; preserved: 
   const head = rows[''] != null ? parse(rows['']) : null
   if (head && typeof head === 'object' && Array.isArray(head.d)) return { json: rows[''], preserved: true }
   try {
-    const b = joinWeek(rows, wk)
+    const date = localOf(wk)   // a unit's week: its date part (storage/unitid.ts)
+    const b = joinWeek(rows, date)
     const json = JSON.stringify(b)
-    return { json, preserved: amFormatOf({ amV: b.am, als: b.a, orig: b.o, cur: b.cv }, wk) === 'unsupported' }
+    return { json, preserved: amFormatOf({ amV: b.am, als: b.a, orig: b.o, cur: b.cv }, date) === 'unsupported' }
   } catch (e) {
     console.warn(`persist: saved week ${wk} will not read — kept as it is, shown read-only`, e)
     return { json: UNREADABLE, preserved: true }
   }
 }
+
+/* ONE UNIT'S PLANNING CALENDAR, read into PLANPUCKS / DAYRMK — one row per note or pucks row (`<unit>@pp:<id>`) and per day
+   title (`<unit>@dm:<iso>`). At boot for the unit in view, and again by state/store.ts switchUnit for the unit switched to
+   (the whiteboard holds every unit's rows, each written by its own command as it was made). `force` replaces the calendar
+   even when the unit holds no rows (a switch, or a started store); otherwise a store holding none keeps the seed's. A row
+   of no unit (a store from before units, cleared under D22 — never converted) is read by nobody. */
+export function hydratePlan(wb: Whiteboard, unit: string, force: boolean): void {
+  const pucks: any[] = [], titles: Record<string, string> = {}
+  for (const raw of wb.keys('plan')) {
+    const r = split(raw)
+    if (r.unit !== unit) continue
+    const id = r.local
+    if (id.startsWith('pp:')) { const p = parse(wb.get('plan', raw)); if (isRecord(p)) { if (p.id == null) p.id = id.slice(3); pucks.push(p) } }
+    else if (id.startsWith('dm:')) { const t = parse(wb.get('plan', raw)); if (typeof t === 'string') titles[id.slice(3)] = t }
+  }
+  if (pucks.length || Object.keys(titles).length || force) {
+    sortByOrd(pucks, puckIdOf)
+    PLANPUCKS.length = 0
+    pucks.forEach(p => PLANPUCKS.push(p))
+    for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
+    Object.assign(DAYRMK, titles)
+  }
+}
+const isRecord = (r: any) => !!r && typeof r === 'object' && !Array.isArray(r)
+/** the whiteboard this app saves to — for state/store.ts switchUnit, which re-reads a unit's planning calendar from it */
+export const persistWb = (): Whiteboard | null => wbRef ?? wiredTo
 
 /** whiteboard → module singletons; call BEFORE initStore() */
 export function hydrate(wb: Whiteboard): void {
@@ -164,7 +200,6 @@ export function hydrate(wb: Whiteboard): void {
   /* a row that is not a record (a null, or bytes that will not read) is left in storage as it is and not read —
      never pushed: `r.iid` on it would throw out of here and main.tsx's boot guard would show the whole app the "could
      not load" screen for ever; never deleted: nothing but an explicit delete removes a row (plan §2.2) */
-  const isRecord = (r: any) => !!r && typeof r === 'object' && !Array.isArray(r)
   /* the requests — one row each, in their saved order (ord, iid). `all` is an old whole-list record the fold replaces:
      never read as a request. iid is opaque (engine/newid.ts); a row missing one takes its row id. */
   const inputs: any[] = []
@@ -205,19 +240,8 @@ export function hydrate(wb: Whiteboard): void {
     /* the ONE index body — the roster and the placeholders only ([POST-OUT-OUTCOMES], D286) */
     indexCallsigns()
   }
-  /* the planning calendar — one row per note or pucks row (`pp:<id>`), per day title (`dm:<iso>`) */
-  const pucks: any[] = [], titles: Record<string, string> = {}
-  for (const id of wb.keys('plan')) {
-    if (id.startsWith('pp:')) { const p = parse(wb.get('plan', id)); if (isRecord(p)) { if (p.id == null) p.id = id.slice(3); pucks.push(p) } }
-    else if (id.startsWith('dm:')) { const t = parse(wb.get('plan', id)); if (typeof t === 'string') titles[id.slice(3)] = t }
-  }
-  if (pucks.length || Object.keys(titles).length || startedNow) {
-    sortByOrd(pucks, puckIdOf)
-    PLANPUCKS.length = 0
-    pucks.forEach(p => PLANPUCKS.push(p))
-    for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
-    Object.assign(DAYRMK, titles)
-  }
+  /* the planning calendar — the unit in view's (multi-squadron step 2: each unit its own, `plan/<unit>@pp:<id>`) */
+  hydratePlan(wb, UNIT, startedNow)
   /* the bell's notices — one row each (`notices/<id>`; state/notices.ts). Read whole: a row that is not a notice is
      left out, never repaired */
   {
@@ -238,6 +262,10 @@ export function hydrate(wb: Whiteboard): void {
     const r = parseRowId(id)
     const raw = wb.get('weeks', id)
     if (!r || raw == null) { if (!r) console.warn(`persist: a saved week row this build cannot place is kept, not read: ${id}`); continue }
+    /* multi-squadron step 2: every week row names its unit (`u149@13-07-2026#3` — storage/unitid.ts). A row of no unit
+       is a store from before units: the batch clears the store and seeds both units fresh (D22), so it is never read and
+       never converted — kept byte-for-byte, as every row this build cannot place is */
+    if (split(r.week).unit == null) continue
     let rows = byWeek.get(r.week)
     if (!rows) byWeek.set(r.week, rows = {})
     rows[rowSuffix(r)] = raw
@@ -270,8 +298,9 @@ export function writeSeedRows(wb: Whiteboard): void {
   resyncSchedBaseline()
   for (const r of INPUTS) if (r && r.iid != null) wb.set('inputs', String(r.iid), JSON.stringify(r))
   for (const id of Object.keys(PEOPLE)) if (!isPlaceholder(id, PEOPLE[id])) wb.set('people', id, JSON.stringify(PEOPLE[id]))
-  for (const p of PLANPUCKS) if (p && p.id != null) wb.set('plan', `pp:${p.id}`, JSON.stringify(p))
-  for (const iso of Object.keys(DAYRMK)) wb.set('plan', `dm:${iso}`, JSON.stringify(DAYRMK[iso]))
+  /* the planning calendar is the unit in view's (at boot, the demo's u142) — its rows carry the unit */
+  for (const p of PLANPUCKS) if (p && p.id != null) wb.set('plan', inView(`pp:${p.id}`), JSON.stringify(p))
+  for (const iso of Object.keys(DAYRMK)) wb.set('plan', inView(`dm:${iso}`), JSON.stringify(DAYRMK[iso]))
 }
 
 /* ---- the week's rows, written from the command stream ---------------------------------------------------------- */
@@ -331,7 +360,8 @@ function scheduleRows(wb: Whiteboard, changes: readonly Change[], env?: CommitEn
   }
   for (const [wk, t] of loaded) {
     /* a loaded-week record names the week on screen; one that does not (never expected) is not guessed at */
-    if (wk !== CURWEEK) { console.warn(`persist: a change to week ${wk} arrived while ${CURWEEK} is loaded — not saved`); continue }
+    /* the records name the week with its unit (`u149@13/07/2026`): the week on screen is the unit in view's */
+    if (wk !== inView(CURWEEK)) { console.warn(`persist: a change to week ${wk} arrived while ${inView(CURWEEK)} is loaded — not saved`); continue }
     if (isPreservedWeek(wk) || landing) continue
     const rows = loadedRows(wk)
     if (!rows) continue

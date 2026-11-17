@@ -788,6 +788,17 @@ ON these, don't route around them):
 split — these are where this app's recurring bugs come from; touch one side and
 check the other):
 
+#### Which unit is this record? (the multi-squadron build, batch 1, step 2, 18 Nov 26)
+Every unit's record id is `<unit>@<its id today>` — a week `u142@13-07-2026`, a day `u142@13/07/2026#0`, a plan
+`u142@pp:…`, a setting `u142@rules` — and the schedule singletons hold ONE unit, the unit in view
+(`engine/unitview.ts`). Two seams: (1) a reader that parses an id must split the unit off first, through the one codec
+`storage/unitid.ts` (`split` / `localOf`) — a reader that parses the date straight from the id reads `u142` as part of the
+date; (2) a comparison of a stored or stream id with `CURWEEK` (or any bare week, day or setting name) must qualify the
+bare side with `inView(…)` — a bare compare is silently false for every week (boardland's loaded-week check and the
+publish-restore's book keys were two such, fixed in step 2). A new setting a unit owns is registered by its logical name
+and stored under the unit in view (`engine/hooks.ts storedKey`); one everyone shares is listed in `storage/keyowner.ts`
+as the community's. Pinned by `storage/unitid.test.ts` and `state/units-switch.test.ts`.
+
 #### Does this standby row fly? ([STANDBY-FLIES], D1042–D1046, D1061, D1062, 19 Oct 26)
 One body answers it — `engine/waves.ts saFlies` (a shift with its B or R typed, or the row's hand tick; never a cancelled
 one) — and every reader asks it: the checks (`saExempt`, `events.ts` — a flying AVALON / BB row leaves `sacrew`), the crew

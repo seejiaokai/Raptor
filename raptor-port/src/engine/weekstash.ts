@@ -27,21 +27,34 @@ import { dayIso } from './verid'
 import { INPUTS, inputCoversDate } from './inputs'
 import { viewOfWeek, standingRow } from './overlay'
 import { dayCurVerIn, daySnapIn } from './publish'   // functions only both ways, so the import loop is safe
+import { UNIT } from './unitview'
+import { split, qualify } from '../storage/unitid'
+
+/* KEYED BY UNIT AND WEEK (multi-squadron batch 1, step 2 — plan §3.4 "The week stash"; the red team's A2/F-H1: one map by
+   bare week let a look at 149's week overwrite 142's in memory, and the OIL pass read it). Every map below is keyed by the
+   unit-qualified week, `u142@13/07/2026` (storage/unitid.ts), and holds EVERY unit's weeks, never only the one in view.
+   A caller may name a week either way: qualified, it is that unit's; bare (`13/07/2026` — what every engine reader holds,
+   CURWEEK's form), it is the UNIT IN VIEW's (engine/unitview.ts). So the engine's readers keep reading "the schedule in
+   view" unchanged, and a reader that must name another unit passes the qualified key. stashKeys() lists the unit in view's
+   weeks, bare; stashUnitKeys(unit) another unit's; stashEntries() every unit's, qualified (the record source). */
+const qk=(v:any):string=>{ const s=String(v); return split(s).unit!=null?s:qualify(UNIT,s); };
+/* the week as a date key (dd/mm/yyyy) — the date part, read only after the unit is split off */
+const wkOf=(v:any):string=>split(String(v)).local;
 
 const WEEKSTASH:Record<string,string>={};
 
 /* v is a dd/mm/yyyy week-start key (the same one CURWEEK carries); json is a
    whole snapshot string state code built (see state/store.ts's
    weekStashSnap / state/history.ts's schedFields — the two must not drift). */
-export function stashPut(v:any,json:any){ WEEKSTASH[String(v)]=json; GEN[String(v)]=(GEN[String(v)]||0)+1; }
+export function stashPut(v:any,json:any){ const k=qk(v); WEEKSTASH[k]=json; GEN[k]=(GEN[k]||0)+1; }
 /* HOW MANY TIMES v's stash has been (re)written this session — a cheap
    change signal for renderers that CACHE something derived from a stashed
    week (ui/peek.ts keys its next-week preview on this). Per-key, so an
    edit to the LOADED week never invalidates a preview derived from a
    different week. */
 const GEN:Record<string,number>={};
-export function stashGenOf(v:any){ return GEN[String(v)]||0; }
-export function stashHas(v:any){ return Object.prototype.hasOwnProperty.call(WEEKSTASH,String(v)); }
+export function stashGenOf(v:any){ return GEN[qk(v)]||0; }
+export function stashHas(v:any){ return Object.prototype.hasOwnProperty.call(WEEKSTASH,qk(v)); }
 /* WIPE ALL SESSION MEMORY — a real reload does this by discarding the module,
    which tests can't; call it to return the stash to first-boot (no week
    remembered). Not wired to any product path: the app only ever grows this
@@ -52,8 +65,10 @@ export function stashClear(){ for(const k in WEEKSTASH)delete WEEKSTASH[k]; for(
    (week, gen), so resetting to 0 and then stashing again could re-serve a
    stale preview under a collided key. A bump reads as "this week changed",
    which is exactly what a drop is. */
-export function stashKeys(){ return Object.keys(WEEKSTASH); }
-export function stashDrop(v:any){ const k=String(v);
+export function stashKeys(){ return stashUnitKeys(UNIT); }
+/* one unit's stashed weeks, bare (dd/mm/yyyy) */
+export function stashUnitKeys(unit:string){ const out:string[]=[]; for(const k of Object.keys(WEEKSTASH)){ const p=split(k); if(p.unit===unit)out.push(p.local); } return out; }
+export function stashDrop(v:any){ const k=qk(v);
   if(!Object.prototype.hasOwnProperty.call(WEEKSTASH,k))return false;
   delete WEEKSTASH[k];
   /* also drop any preserved (byte-frozen) blob for this week (P2-QREV/Fable-12):
@@ -67,7 +82,7 @@ export function stashDrop(v:any){ const k=String(v);
    protectedDates()/applyWeekModel/the OIL pass all read it as a genuinely ABSENT
    week and seeded over it, instead of quarantining a damaged record. An empty
    string is now returned as-is (present); only a truly missing key is null. */
-export function stashGet(v:any){ return stashHas(v)?WEEKSTASH[String(v)]:null; }
+export function stashGet(v:any){ return stashHas(v)?WEEKSTASH[qk(v)]:null; }
 /* PRESERVED (byte-frozen) BOOKS — a week loaded from a PRE-Phase-2 (unsupported)
    snapshot is READ-ONLY and its engine cannot safely re-key it, so it must round-
    trip byte-for-byte: state/store.ts skips every id migration/normalization for
@@ -75,10 +90,10 @@ export function stashGet(v:any){ return stashHas(v)?WEEKSTASH[String(v)]:null; }
    back verbatim instead of a re-serialization that would overwrite the recovery
    evidence (P2-IMPL-02). Keyed by the dd/mm/yyyy week key, like the stash. */
 const PRESERVED:Record<string,string>={};
-export function setPreservedBlob(v:any,json:any){ PRESERVED[String(v)]=String(json); }
-export function preservedBlob(v:any){ return Object.prototype.hasOwnProperty.call(PRESERVED,String(v))?PRESERVED[String(v)]:null; }
-export function isPreservedWeek(v:any){ return Object.prototype.hasOwnProperty.call(PRESERVED,String(v)); }
-export function clearPreservedBlob(v:any){ delete PRESERVED[String(v)]; }
+export function setPreservedBlob(v:any,json:any){ PRESERVED[qk(v)]=String(json); }
+export function preservedBlob(v:any){ const k=qk(v); return Object.prototype.hasOwnProperty.call(PRESERVED,k)?PRESERVED[k]:null; }
+export function isPreservedWeek(v:any){ return Object.prototype.hasOwnProperty.call(PRESERVED,qk(v)); }
+export function clearPreservedBlob(v:any){ delete PRESERVED[qk(v)]; }
 /* [CMDL-FINISH] §6 — snapshot/restore BOTH maps for the enlisted weekstashStore
    (an off-week clear that drops a stash must roll back atomically with its input
    batch). restore bumps GEN for every affected key so ui/peek.ts's (week,gen)
@@ -103,9 +118,10 @@ export function stashEntries():Array<[string,string]>{ return Object.entries(WEE
    stale preview. Strings are immutable, so no clone-on-write is needed here. */
 export function writeStashRecords(entries:Array<{id:string;value?:any;op?:string}>):void{
   for(const e of entries){
-    if(e.op==='delete')delete WEEKSTASH[e.id];
-    else WEEKSTASH[e.id]=e.value as string;
-    GEN[e.id]=(GEN[e.id]||0)+1;
+    const k=qk(e.id);
+    if(e.op==='delete')delete WEEKSTASH[k];
+    else WEEKSTASH[k]=e.value as string;
+    GEN[k]=(GEN[k]||0)+1;
   }
 }
 /* A FRESH deep copy, in weekBundle's {days,dates} shape, for engine readers
@@ -155,7 +171,7 @@ export function stashDays(v:any){
        same as an unparseable blob — never a {days:undefined} shape that crashes
        bundle()'s cross-week readers (nextMondayWorked/prevSunday). */
     if(!Array.isArray(parsed.d))return null;
-    const days=parsed.d, dates=weekBundle(v).dates;
+    const days=parsed.d, dates=weekBundle(wkOf(v)).dates;
     /* RE-LABEL every day for the year convention NOW in force (24 Aug 26).
        The stash was written while ITS week was loaded, so its labels leave
        that week's own year implicit — read later under a different loaded
@@ -174,10 +190,11 @@ export function stashDays(v:any){
        week holds him on a day to come — person-delete.ts stashPreflight) */
     if(!isPreservedWeek(v)){
       const sc={dayOK:parsed.ok||{},cur:parsed.cv||{},als:parsed.a||[],orig:parsed.o||{},drafts:parsed.dr||{},amV:parsed.am};
-      viewOfWeek(String(v),days,{loaded:false,issued:(di:number)=>{
+      const w=wkOf(v);
+      viewOfWeek(w,days,{loaded:false,issued:(di:number)=>{
         if(!sc.dayOK[di])return null;
-        const ver=dayCurVerIn(sc,di,v);
-        return (ver!=null?daySnapIn(sc,di,ver,v):null)||{};
+        const ver=dayCurVerIn(sc,di,w);
+        return (ver!=null?daySnapIn(sc,di,ver,w):null)||{};
       }});
     }
     return {days,dates};
@@ -207,13 +224,15 @@ const SRC_MEMO=new Map<string,SrcCands|null>()
 function stashRowsBySrc(v:any):SrcCands|null{
   const blob=stashGet(v);
   if(blob==null)return new Map();
-  const key=String(blob);
+  /* memoised on the unit-qualified week AND the blob: two units' weeks of the same dates may hold the same bytes, and the
+     dates read from them must be their own week's */
+  const key=qk(v)+'|'+String(blob);
   if(SRC_MEMO.has(key))return SRC_MEMO.get(key)!;
   let rows:SrcCands|null=null;
   try{
-    const p=JSON.parse(key);
+    const p=JSON.parse(String(blob));
     if(p&&typeof p==='object'&&Array.isArray(p.d)){
-      const dates=weekBundle(v).dates;
+      const dates=weekBundle(wkOf(v)).dates;
       rows=new Map();
       p.d.forEach((d:any,di:number)=>{ for(const r of ((d||{}).ground||[])){ const s=r&&String(r.src||''); if(!s)continue;
         let l=rows!.get(s); if(!l)rows!.set(s,l=[]); l.push({row:r,di,dt:dates[di]}); } });

@@ -10,6 +10,7 @@ import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
 import { SCHED } from '../engine/publish'
 import { CURWEEK } from '../engine/waves'
+import { inView } from '../engine/unitview'
 import { VCONF, RULE_STD, rulesReset } from '../engine/rules'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { storeBackend, store } from '../engine/hooks'
@@ -71,7 +72,8 @@ describe('settings write() — RESET-then-overlay (R3-001)', () => {
     expect(isOk(restore(settingsStore,[{collection:'settings',id:'rules',value,op:'put'}]))).toBe(true);
     expect(VCONF.reportText).toBe('<b>RALLY</b>');expect(VCONF.reportLead).toBe(120);
     const snapshot=JSON.parse(settingsStore.capture() as string);
-    expect(snapshot.rules).toEqual(value);
+    // multi-squadron step 2: a settings record is named by its unit — the unit in view's 'rules' is u142@rules
+    expect(snapshot[inView('rules')]).toEqual(value);
     restore(settingsStore,[{collection:'settings',id:'rules',value:{v:{reportLead:150}},op:'put'}]);
     expect(VCONF.reportText).toBe('IN TIME + WX/NOTAMS');expect(VCONF.reportLead).toBe(150);
     restore(settingsStore,[{collection:'settings',id:'rules',value,op:'put'}]);
@@ -116,9 +118,9 @@ describe('people write() — put/delete + ID_BY_CS rebuild (CMDLF-009)', () => {
 
 describe('scheduler write() — foreign-week refusal (R2-011) + issued gate (C7)', () => {
   it('applies a days record to the live world', () => {
-    const rec = schedStore.records().get(`days/${CURWEEK}#0`)!
+    const rec = schedStore.records().get(`days/${inView(CURWEEK)}#0`)!
     const modified = JSON.parse(JSON.stringify(rec.value)); modified.__seamTest = 1
-    const r = restore(schedStore, [{ collection: 'days', id: `${CURWEEK}#0`, value: modified, op: 'put' }])
+    const r = restore(schedStore, [{ collection: 'days', id: `${inView(CURWEEK)}#0`, value: modified, op: 'put' }])
     expect(isOk(r)).toBe(true)
     expect((DAYS[0] as any).__seamTest).toBe(1)
   })
@@ -133,7 +135,7 @@ describe('scheduler write() — foreign-week refusal (R2-011) + issued gate (C7)
 
   it('refuses an issued record without allowIssued, accepts it with', () => {
     const v = '2026-07-13#0'                             // Monday's Original of the loaded week
-    const orig = [{ collection: 'sched.issuance' as const, id: `${CURWEEK}:${v}~0`, value: { id: v, frozen: true }, op: 'put' as const }]
+    const orig = [{ collection: 'sched.issuance' as const, id: `${inView(CURWEEK)}:${v}~0`, value: { id: v, frozen: true }, op: 'put' as const }]
     expect((restore(schedStore, orig) as any).reason).toBe('refused')
     const r = restore(schedStore, orig, { allowIssued: true })
     expect(isOk(r)).toBe(true)
@@ -154,9 +156,9 @@ describe('two-store restore (scheduler + LW in one reducer) runs NO reconciler b
       apply: (txn) => {
         inReducer = true
         txn.enlist(schedStore)
-        const drec = schedStore.records().get(`days/${CURWEEK}#0`)!
+        const drec = schedStore.records().get(`days/${inView(CURWEEK)}#0`)!
         const mod = JSON.parse(JSON.stringify(drec.value)); mod.__twoStore = 1
-        schedStore.write!([{ collection: 'days', id: `${CURWEEK}#0`, value: mod, op: 'put' }])
+        schedStore.write!([{ collection: 'days', id: `${inView(CURWEEK)}#0`, value: mod, op: 'put' }])
         txn.enlist(lwStore)
         // [ARCH-STACK] step 4: an lw.cell value is the date's list of war records
         lwStore.write!([{ collection: 'lw.cell', id: `${warId}:${pid}:2026-01-20`, value: [{ id: 'r-2s', kind: 'request', code: 'LL', state: 'pending' }] as any, op: 'put' }])

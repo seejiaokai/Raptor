@@ -73,6 +73,8 @@ beforeEach(async () => {
    so this is the one and only key a stray markEdit from it could ever write */
 const AC_KEY = 'st:0.0.0.0'
 
+/* a unit's setting is stored under its unit (multi-squadron batch 1, step 2 — engine/hooks.ts storedKey): the boot unit's
+   `stores` is the stored key `sqn142_u142@stores` */
 describe('the pen edits the LIST, not the schedule', () => {
   /* AC_KEY above is a hidden assumption — that the FIRST .stcfg on the edit
      week is jet 0.0.0.0 — that every "...is not a schedule edit" test below
@@ -142,7 +144,7 @@ describe('the pen edits the LIST, not the schedule', () => {
     await act(async () => { box.dispatchEvent(new Event('change', { bubbles: true })) })
     await click(document.querySelector('.stmenu .st-add') as HTMLElement)
     expect(STORE_CFG[STORE_CFG.length - 1]).toEqual(['lgb', 'LGB'])
-    expect(JSON.parse(mem['sqn142_stores']!).pop()).toEqual(['lgb', 'LGB'])
+    expect(JSON.parse(mem['sqn142_u142@stores']!).pop()).toEqual(['lgb', 'LGB'])
     expect(SCHED.pending[AC_KEY], 'adding to the list is not a schedule edit').toBeUndefined()
   })
 
@@ -150,7 +152,7 @@ describe('the pen edits the LIST, not the schedule', () => {
     await openPen()
     await click(document.querySelector('.stmenu .st-erow[data-k="tk2"] .st-up') as HTMLElement)
     expect(STORE_CFG.map(([k]) => k)).toEqual(['tk2', 'tpod', 'nav', 'nc', 'tks3', 'cl'])
-    expect(JSON.parse(mem['sqn142_stores']!).map((r: any) => r[0]))
+    expect(JSON.parse(mem['sqn142_u142@stores']!).map((r: any) => r[0]))
       .toEqual(['tk2', 'tpod', 'nav', 'nc', 'tks3', 'cl'])
     expect(SCHED.pending[AC_KEY], 'reordering the list is not a schedule edit').toBeUndefined()
   })

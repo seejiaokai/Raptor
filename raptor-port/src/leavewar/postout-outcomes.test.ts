@@ -243,7 +243,8 @@ describe('PO5 / PO6 / PO7 — delete: his account and his person; days he flew k
     /* planted the way the app writes — inside a schedule command, whose rows are the save; the week is one row per day
        ([DB-READINESS] group A, phase 1 — state/weekrows.ts) */
     schedWrite(SCHED_TYPES.mutate, () => { plantGround(4, 'rocky') })
-    const day4 = () => JSON.stringify(JSON.parse(wb.get('weeks', '13-07-2026#4')!).d)
+    /* the stored day row names its unit (multi-squadron step 2) */
+    const day4 = () => JSON.stringify(JSON.parse(wb.get('weeks', 'u142@13-07-2026#4')!).d)
     expect(day4()).toContain('"rocky"')
     expect(postOut('rocky', TODAY, 'delete')).toBe(true)
     expect(JSON.stringify((DAYS as any)[4]), 'the week on screen, at once').not.toContain('"rocky"')

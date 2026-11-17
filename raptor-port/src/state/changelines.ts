@@ -45,6 +45,7 @@ import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
 import { rowDocIds } from './docs'
+import { localOf } from '../storage/unitid'
 
 /* ---- the reason a door hands in (inside its command) ---- */
 const REASONS = new Map<string, string>()
@@ -628,7 +629,7 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
     else if (c.collection === 'sched.issuance' || c.collection === 'sched.retraction') { const m = /:(\d{4}-\d{2}-\d{2})#/.exec(id); if (m) days.add(m[1]) }
     /* a note on the planning calendar writes its own line since D710, so its Undo / Redo lands on its day too (old and
        new, for a note moved) — the fresh read of the night, 2 */
-    else if (c.collection === 'plan' && id.startsWith('pp:')) for (const e of [c.before, c.after]) { const d = e && (e as any).date; if (typeof d === 'string') days.add(d) }
+    else if (c.collection === 'plan' && localOf(id).startsWith('pp:')) for (const e of [c.before, c.after]) { const d = e && (e as any).date; if (typeof d === 'string') days.add(d) }
   }
   const sorted = [...days].filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort()
   const what = `${dir === 'undo' ? 'Undo' : 'Redo'}${entry.label ? ' — ' + entry.label : ''}`
@@ -686,7 +687,8 @@ export function changeLinesFor(env: CommitEnvelope): void {
       else if (c.collection === 'lw.balance') balanceLines(c, env)
       else if (c.collection === 'lw.grade') gradeLines(c, env)
       else if (c.collection === 'people') personLines(c, env)
-      else if (c.collection === 'plan' && String(c.id).startsWith('pp:')) noteLines(c)
+      /* a note's id names its unit (`u149@pp:<id>` — step 2): its kind read with the unit split off */
+      else if (c.collection === 'plan' && localOf(String(c.id)).startsWith('pp:')) noteLines(c)
     }
     /* A WARNING HIDDEN, OR FLAGGED AGAIN ([WARN-HIDE-KEPT], owner D469, 1 Oct 26). A hide is kept with its day for
        everyone "until another person unhides it" — so who hid it, and when, has to be answerable from the change

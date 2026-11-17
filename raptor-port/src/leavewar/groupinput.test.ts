@@ -55,7 +55,8 @@ const switchOff = () => { saber(); expect(setMembersFile(false).ok).toBe(true) }
 const switchOn = () => { saber(); expect(setMembersFile(true).ok).toBe(true) }
 /* the switch flipped by an admin ELSEWHERE - the signed-in person stays signed in, so his Undo steps are kept (they
    clear at a sign-out, D148): the stored setting itself, which every question reads live */
-const flipElsewhere = (on: boolean) => { if (on) delete mem['sqn142_memberfile']; else mem['sqn142_memberfile'] = 'false' }
+/* the members' switch is the boot unit's setting, stored under its unit (multi-squadron step 2): sqn142_u142@memberfile */
+const flipElsewhere = (on: boolean) => { if (on) delete mem['sqn142_u142@memberfile']; else mem['sqn142_u142@memberfile'] = 'false' }
 
 const SAT = '2026-02-14', SUN = '2026-02-15', TUE = '2026-02-10'
 const mine = (p: string, type = 'Meeting', mon = 'Feb') => INPUTS.filter((r: any) => holds(r, p) && r.type === type && String(r.date).startsWith(mon))

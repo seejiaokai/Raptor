@@ -9,6 +9,7 @@ import type { Change, LogicalCollection } from '../command'
 import type { RecordCtx, RecordOwner, Module } from './types'
 import { decodeRoleId } from '../engine/mission-role'
 import { onlyNamed, idsOf } from '../engine/inputs'
+import { localOf } from '../storage/unitid'
 
 export function recordKey(c: { collection: string; id: string }): string {
   return `${c.collection}/${c.id}`
@@ -34,7 +35,10 @@ export function weekOf(collection: string, id: string): string | null {
    a version id carries a `#` too ([DB-READINESS] group A, phase 1 — F3-09). */
 const DAY_MS = 86_400_000
 function isoOfDay(wk: string, di: number): string {
-  const [d, m, y] = wk.split('/').map(n => parseInt(n, 10))
+  /* the week a record names is unit-qualified (`u149@13/07/2026` — storage/unitid.ts, multi-squadron step 2): so two units'
+     records of the same dates have different week and day keys, and never block each other; its DATE is read after the
+     unit is split off */
+  const [d, m, y] = localOf(wk).split('/').map(n => parseInt(n, 10))
   const dt = new Date(Date.UTC(y, m - 1, d) + di * DAY_MS)
   const p = (n: number) => String(n).padStart(2, '0')
   return `${dt.getUTCFullYear()}-${p(dt.getUTCMonth() + 1)}-${p(dt.getUTCDate())}`

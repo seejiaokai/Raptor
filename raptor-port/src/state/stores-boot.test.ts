@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { storeBackend } from '../engine/hooks'
+import { inView } from '../engine/unitview'
 import { STORE_CFG, storesReset } from '../engine/stores'
 import { initStore } from './store'
 import { signIn, ACCESS_REQS, GUESTVIEW } from './accounts'
@@ -19,7 +20,7 @@ beforeEach(() => {
 
 describe('boot', () => {
   it('initStore picks up a stored stores list', () => {
-    mem['sqn142_stores'] = JSON.stringify([['tpod', 'TPOD'], ['nav', 'NAV']])
+    mem['sqn142_' + inView('stores')] = JSON.stringify([['tpod', 'TPOD'], ['nav', 'NAV']])
     initStore()
     expect(STORE_CFG).toEqual([['tpod', 'TPOD'], ['nav', 'NAV']])
   })
@@ -40,7 +41,7 @@ describe('boot — the accounts come back after a reload', () => {
     mem['sqn142_account:acad'] = JSON.stringify({ id: 'acad', name: 'ad', role: 'admin', pid: 'stiff', on: true })
     mem['sqn142_account:acw'] = JSON.stringify({ id: 'acw', name: 'wren@mail', role: 'main', pid: 'dj', on: true })
     mem['sqn142_accessreq:rq1'] = JSON.stringify({ id: 'rq1', name: 'kite@mail', cs: 'Kite', full: 'K', at: 1 })
-    mem['sqn142_guestview'] = JSON.stringify(true)
+    mem['sqn142_' + inView('guestview')] = JSON.stringify(true)
     initStore()
     expect(signIn('wren@mail', 'x')).toMatchObject({ kind: 'ok', account: { id: 'acw', pid: 'dj' } })
     expect(ACCESS_REQS.map(r => r.name)).toEqual(['kite@mail'])
