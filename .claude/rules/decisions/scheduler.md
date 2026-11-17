@@ -174,7 +174,8 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - A line is judged by the Logic settings of the schedule it sits in, whoever flies it [D2109]; crew rest stays each squadron's admin's to edit, and where a man's two lines sit in two schedules whose crew rest differs, the later line's schedule judges [D2122, D2123].
 - A line that concerns both squadrons may be changed by either squadron's scheduler, from either schedule; the rest of a schedule only by its own squadron's [D2114].
 - "✕ Wave" asks at the button only when the wave holds the other squadron's lines, Remove wave or Keep; a wave of its own lines goes at once [D2113].
-- "+ Line" stays in the wave's head and never moves as lines are added; each new line goes at the wave's foot, in the order made, and a "3 new ↓" count beside the button brings new lines out of view into view on a tap [D2115, D2125].
+- "+ Line" stays in the wave's head and never moves as lines are added; each new line goes at the wave's foot, in the order made, and a "3 new ↓" count beside the button brings new lines out of view into view on a tap, showing only while one is out of view and going once all have been seen [D2115, D2125].
+- In the "+ Wave" menu each wave under "Join a 149 wave" shows its take-off and formations, a joined one reads "joined" in grey, and a day with no 149 wave reads one grey line saying so [D2126].
 - The new detachment's short-name box asks for the squadron number, a faded "249" inside it as the example [D2116].
 - His idea, to be drawn: on the board the other squadron's "142" badge at the top right of the callsign, adding no height [D2117].
 - His lean: a squadron's new place takes effect the moment it is saved, as a new account does, with no "From" date [D2119].
