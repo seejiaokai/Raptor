@@ -2735,3 +2735,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Suggested improvement:** In mockups-on-the-real-app.md's mark kit, lay tags on the page (fixed, from getBoundingClientRect) rather than inside the app's element, offer inside-bottom and middle positions, make the crop include every tag, and keep the outline inside whenever the tag is inside.
 **Principle:** An annotation drawn over a live page belongs to an overlay layer of its own, never inside the elements it annotates, whose own rules (text boxes, clipping, stacking) decide whether it shows.
 **Reference file:** raptor-port/docs/mock/2026-11-17-trk-small/draw.mjs
+
+### Observation 961: A picture of a screen that does not name its owner leaves "whose view is this?" to the caption
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** round 4 of the two-squadron design pictures (chat 93)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** Judging the Proposal / Showing It
+
+**Issue:** The owner could not tell whether a drawn board belonged to one party or the other: the screen itself (a full-screen board covering the app's top bar) names no owner, and only the caption said whose it was. The first round-4 drawing repeated it; a fresh reader caught it.
+**Suggested improvement:** Add to "Showing It": when a design involves several parties' views of one thing, every picture includes the part of the screen that names whose view it is; where the screen names nobody, say so on the page and offer a mark as part of the design.
+**Principle:** A picture must answer "whose view is this?" on its own; a caption is read after the picture has already been misread.
