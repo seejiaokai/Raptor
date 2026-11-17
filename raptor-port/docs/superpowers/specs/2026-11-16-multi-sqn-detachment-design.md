@@ -339,10 +339,13 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
 - **L** nine questions for later rounds, listed on the page.
 - **His correction, D2139 (17 Nov 26), of Q2's picture (round 3's card "Close Exercise North?"):** *"this text is not
   clear on what will happen"*. The card's words are redrawn in round 7, put to him before anything is built. Proposed
-  (the agent's, not yet drawn): title "Close Exercise North today?"; one line each — "Its 6 people come home: back on
-  149's schedule from today, their overseas duty ended." · "Nothing more can be planned on it. Its schedules stay
-  under Past detachments to look at." · (with Q2) "25 and 26 Jul are published: closing takes everyone off them, ready
-  for 249's signatures." — buttons "Close detachment" and "Keep open".
+  after his follow-ups ("u gonna write the whole paragraph?", "what is amendment to sign mean", "reword it on what u
+  expect the user to do"), not yet drawn: title "Close Exercise North?"; three short lines — "6 people back on 149's
+  schedule today" · "No more planning. Kept under Past detachments" · (only with published days ahead, Q2) "Then
+  publish AL1 on 25 and 26 Jul to take everyone off those days" — buttons "Close detachment" and "Keep open". Closing
+  prepares AL1 on those days (the men taken off, the days pending) and never publishes it by itself, the four
+  sign-offs staying people's; the bell reminds "25–26 Jul: publish AL1", a tap opening that day. Recommended; the
+  other choice put to him: Close publishes AL1 itself, the admin who pressed it standing as its signer.
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
