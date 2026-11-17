@@ -21,14 +21,16 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/multi-sqn-design-r4 -->
-### CHAT 94 — multi-squadron design: round 5's first pictures put to him; written 17 Nov 26 — verify before use
-- **Where it started:** chat 93 published round 4 (https://claude.ai/artifact/7sUAggaq93HbMztGFK5NwR) and recorded his first answers, D2124–D2126.
-- **Shipped (this branch, pushed, no pull request yet):** round 5's first pictures — `raptor-port/docs/mock/2026-11-17-multi-sqn-r5/` (page, `draw.mjs`, `img/`; also `raptor-port/docs/img/2026-11-17-multi-sqn-r5/`), the design note's §Round 5; **published: https://claude.ai/artifact/NJnxpgWos5q6JtadXTnsJ4**. T: the week's "142" tag lined up under the mission (round 4's was centred, 9.7px in), desktop and phone, recommended the same on both; cost a one-jet formation +12px on a desktop. J: "Join a 149 wave" as D2126 approved. Not yet read by a fresh reader (a design page; the answers are his).
-- **His answer, "all as recommended", recorded:** D2127–D2135 (T; round 4's 1, 2, 4a, 6; by the agent's reading, told to him, round 3's Q2, Q3, R1, R3). D2104 and D1606 narrowed; D2117, D2120, D2121 answered. **Still open:** the caps page's Q1–Q8, R1–R4 (https://claude.ai/artifact/9VQ2YL9CceeCZL6XgQRS4p); `[INPUT-WIN-SCHED-ASKS]`.
-- **Pick up here:** draw the rest of round 5 for his look (D2124's one-sentence grey line in its three states, D2125's "3 new ↓"), `draw.mjs` of r5 as the start, round 4's `it2` and `it3` for the code; add them to round 5's page (https://claude.ai/artifact/NJnxpgWos5q6JtadXTnsJ4 — from another chat, publish with its url after a read); then this branch's notes-only pull request (it merges by itself once green, `shipping.md`).
+### CHAT 95 — multi-squadron design: round 5's rest drawn and put to him; written 17 Nov 26 — verify before use
+- **Where it started:** chat 94 published round 5's first pictures (T, J) and recorded his "all as recommended", D2127–D2135.
+- **Shipped (this branch, pushed):** round 5's rest on the same page — **https://claude.ai/artifact/NJnxpgWos5q6JtadXTnsJ4** — `raptor-port/docs/mock/2026-11-17-multi-sqn-r5/` (`draw.mjs` gains `itG`, `itN` and `MQ_ONLY=`; pictures `G*`, `N*`), the design note's §Round 5 "Round 5's rest". G: D2124's three sentences under 149's wave (Edit Schedule both devices, View-only for a member in state 2). N: D2125's count, real "+ Line" presses, count, tap, gone; a line landing in view gets none. Found: on a phone the count scrolls off with the wave's head before a new line is in view, so the countdown is a desktop thing.
+- **Put to him, unanswered:** N2 — the count counts down as lines are seen by hand (recommended); N3 — the ring plays again when a late tap brings the lines in (recommended). G and N1 are drawings of what he approved. **Still open elsewhere:** the caps page's Q1–Q8, R1–R4 (https://claude.ai/artifact/9VQ2YL9CceeCZL6XgQRS4p); `[INPUT-WIN-SCHED-ASKS]`.
+- **Side chat:** chat 96, "Leave War: grid hover / tap highlight design" (his ask mid-chat 95), its own worktree off `main`, rulings from D2150.
+- **His question, 17 Nov 26:** was the squadrons plan red-teamed by Astra? **No** — only fresh Opus readers read rounds 3–4; the plan's red team (Astra first, then a fresh, blind Opus reader, D1760, D1770) is owed, its brief in the design note's §Round 5 "Owed before the next round": loopholes, design faults, what is overlooked, how the rules engine, OIL, amendments, Insights, the Leave War and the Tracker read across two schedules. Route: the claudex-loop / codex-review skill (host Claude, reviewer Codex).
+- **Pick up here:** 1. run that red team (Astra, then the fresh Opus reader, blind to each other), on the design note and rulings D2087–D2136; put its findings to him as round 6 with pictures. 2. Round 6 also draws D2136 (Post out's "Transfer to Sqn" naming a squadron; what he carries across) and records his answers to N2, N3 (the scheduler page's D2125 line). 3. This branch's notes-only pull request (merges by itself once green, `shipping.md`) — it now carries a rulings-page change, still notes only.
 - **Gates:** docsize run before the push. No app code.
 - **Running when written:** none.
-- **Rulings:** 9 recorded (D2127–D2135) · **Walk:** none — design only · **Reads owed:** none · **Next chat number:** 95 (D1744)
+- **Rulings:** 1 recorded (D2136 → `people-accounts.md`) · **Walk:** none — design only · **Reads owed:** none · **Next chat number:** 97 (D1744)
 <!-- /now -->
 ## Next, in order
 

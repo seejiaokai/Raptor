@@ -2761,3 +2761,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** Round 4's badge recipe carried align-self:center, so on the phone the tag drawn "under the mission" sat about 10px in from the mission's first letter. Nobody checked the alignment; he noticed it on the page and asked whether it would be nicer lined up. The redraw found the cause only by measuring the tag's left edge against the mission's letters.
 **Suggested improvement:** In mockups-on-the-real-app.md, add a step: every drawn-in part that shares an edge with a neighbour (stacked under it, beside it) has that edge measured in the script — the gap to the neighbour's first letter (a text range, not its box) — and the script fails above about 0.5px unless the offset is on purpose and said in the caption.
 **Principle:** A reused style recipe brings its alignment with it; alignment in a mock-up is measured against the real neighbour, never assumed from where the element was inserted.
+
+### Observation 963: A scroll-dependent state may not exist on one device — assert it, then say so
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** Drawing a "3 new ↓" count beside a list's add button on the real app (round 5 of a design), including its countdown as the new rows are scrolled into view by hand.
+**Skill:** mockups-on-the-real-app (brainstorming)
+**Type:** open-source
+**Phase/Area:** The Method, step 1 (pictures at each size) and "Choose the state by what it shows"
+
+**Issue:** The countdown state was planned for both sizes. On the phone the group was taller than the screen, so the count (in the group's header) scrolled away before any new row came into view: the state could not occur there at all. The script's assertion ("1 of 3 in view") caught it; a looser script would have drawn a desktop-only behaviour onto a phone, or placed the header by hand where scrolling never puts it.
+**Suggested improvement:** In "Choose the state by what it shows", add: a state reached by scrolling (a counter that changes as content comes into view, a sticky header's moment) is asserted on each device by measuring both the control and the content in view at the same scroll; where no scroll shows both, the state is not drawn for that device, and the page says why — itself a finding about the design (the control works differently there).
+**Principle:** A behaviour defined by what is on screen together can be impossible on a smaller screen; measure co-visibility per device before drawing it, and report the impossibility as a design finding rather than forcing the picture.

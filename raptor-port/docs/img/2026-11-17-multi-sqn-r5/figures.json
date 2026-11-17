@@ -80,5 +80,157 @@
       "Wave 2 T/O 19:20 · VL, RU joined"
     ],
     "menuW": 340
+  },
+  "G1-none-d": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "DRAFT",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G2-mine-d": {
+    "hidden": [
+      "the empty sign-off boxes, waiting for the next amendment",
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "ORIG",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G3-theirs-d": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "DRAFT",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G2-member-d": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "COMMON PROGRAMME EP: ENGINE FI"
+    ],
+    "itHidden": 1,
+    "dayChip": "ORIG",
+    "waveTab": "WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "N1-d": {
+    "inView": 0,
+    "ringed": 3,
+    "which": "N1"
+  },
+  "N2-d": {
+    "inView": 1,
+    "ringed": 3,
+    "which": "N2"
+  },
+  "N3-d": {
+    "inView": 3,
+    "ringed": 3,
+    "which": "N3"
+  },
+  "N4-d": {
+    "fresh": 1,
+    "inView": 1,
+    "wave": "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wa"
+  },
+  "G1-none-p": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "DRAFT",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G2-mine-p": {
+    "hidden": [
+      "the empty sign-off boxes, waiting for the next amendment",
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "ORIG",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G3-theirs-p": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "DRAFT",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G2-member-p": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "COMMON PROGRAMME EP: ENGINE FI"
+    ],
+    "itHidden": 1,
+    "dayChip": "ORIG",
+    "waveTab": "WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "N1-p": {
+    "inView": 0,
+    "ringed": 3,
+    "which": "N1"
+  },
+  "N3-p": {
+    "inView": 3,
+    "ringed": 3,
+    "which": "N3"
   }
 }

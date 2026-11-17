@@ -46,5 +46,89 @@
     "size": "phone",
     "kind": "proposed",
     "caption": "142's Scheduler Board, \"+ Wave\" pressed (the menu is real). Drawn in (mark J): \"Join a 149 wave\", one row a wave: \"Wave 1 T/O 12:40 · VL, RU\" and \"Wave 2 T/O 19:20 · VL, RU joined\". Each row says when it takes off and which formations are in it, so 149's waves are told apart by time. The second is one 142 has already joined: greyed in the menu's own \"can't press\" look, \"joined\" at its right. (142's own 1st and 2nd waves stand in for 149's.)"
+  },
+  "G1-none-d.png": {
+    "item": "G",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule. Neither squadron has published Monday. 142's day head reads \"DRAFT\" (real). Under 149's wave, whose title wears 149's grey badge, one quiet sentence (mark G1): \"Not yet published by 149.\" 149's VL and its in-time line are hidden (142's view). Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in; its 1st wave stands in for 149's.)"
+  },
+  "G2-mine-d.png": {
+    "item": "G",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule. 142 has published Monday, 149 has not. 142's day head reads \"ORIG\" (real: 142's four signed 142's own day). The sentence under 149's wave (mark G2): \"RU goes out when 149 publishes.\" So 142's RU, on a published day, is plainly still waiting. With two 142 lines in the wave it reads \"RU and VL go out when 149 publishes.\" 149's VL and its in-time line are hidden (142's view). Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in; its 1st wave stands in for 149's.)"
+  },
+  "G3-theirs-d.png": {
+    "item": "G",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule. 149 has published, 142 has not. 142's day head reads \"DRAFT\" (real): 142's own day is not out. The sentence under 149's wave (mark G3): \"Published by 149.\" The wave wears no status chip of its own, so nothing on 142's day reads as published by 142. 149's VL and its in-time line are hidden (142's view). Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in; its 1st wave stands in for 149's.)"
+  },
+  "G2-member-d.png": {
+    "item": "G",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, View-only Sched, as a member sees it (signed in as the demo's member). 142 has published, 149 has not. The day head reads \"ORIG\" (real). The same sentence as Edit Schedule (mark G2): \"RU goes out when 149 publishes.\" 149's VL and its in-time line are hidden (142's view). Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · COMMON PROGRAMME EP: ENGINE FI. (142's Monday stands in; its 1st wave stands in for 149's.)"
+  },
+  "N1-d.png": {
+    "item": "N",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board. \"+ Line\" pressed three times, for real: the app put the three blank lines at the wave's foot, in the order made, out of view (0 of 3 on this desktop screen). Beside \"+ Line\" the count \"3 new ↓\" (mark N1, drawn in: the head's own \"+ In-time\" button re-lettered). It counted 1, 2, 3 with the presses; \"+ Line\" never moved. (142's 1st wave; the full screen, so what is out of view shows. The passing note \"Line added\" is hidden: the count does its job.)"
+  },
+  "N2-d.png": {
+    "item": "N",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board. The same three presses, then the board scrolled by hand until the first new line came into view (real scroll). The count now reads \"2 new ↓\" (mark N2): the lines not yet seen. Proposed by the agent: the count counts down as you see the lines, so its number always says how many are still below. (142's 1st wave; the full screen, so what is out of view shows. The passing note \"Line added\" is hidden: the count does its job.)"
+  },
+  "N3-d.png": {
+    "item": "N",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board. The same three presses, then the count tapped: the board scrolls to the new lines (a real scroll), all three in view (3 of 3), each in the board's own just-added ring (3 ringed); the count is gone and does not come back for them. Mark N3 on the first new line. (142's 1st wave; the full screen, so what is out of view shows. The passing note \"Line added\" is hidden: the count does its job.)"
+  },
+  "N4-d.png": {
+    "item": "N",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, the 1st wave brought up so its foot is already on screen. \"+ Line\" pressed once, for real: the new line lands in view at the foot, in the board's own just-added ring (mark N4). No count: you can already see it. Nothing is drawn in."
+  },
+  "G1-none-p.png": {
+    "item": "G",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule. Neither squadron has published Monday. 142's day head reads \"DRAFT\" (real). Under 149's wave, whose title wears 149's grey badge, one quiet sentence (mark G1): \"Not yet published by 149.\" 149's VL and its in-time line are hidden (142's view). Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in; its 1st wave stands in for 149's.)"
+  },
+  "G2-mine-p.png": {
+    "item": "G",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule. 142 has published Monday, 149 has not. 142's day head reads \"ORIG\" (real: 142's four signed 142's own day). The sentence under 149's wave (mark G2): \"RU goes out when 149 publishes.\" So 142's RU, on a published day, is plainly still waiting. With two 142 lines in the wave it reads \"RU and VL go out when 149 publishes.\" 149's VL and its in-time line are hidden (142's view). Hidden between the day head and the wave: the empty sign-off boxes, waiting for the next amendment · ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in; its 1st wave stands in for 149's.)"
+  },
+  "G3-theirs-p.png": {
+    "item": "G",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule. 149 has published, 142 has not. 142's day head reads \"DRAFT\" (real): 142's own day is not out. The sentence under 149's wave (mark G3): \"Published by 149.\" The wave wears no status chip of its own, so nothing on 142's day reads as published by 142. 149's VL and its in-time line are hidden (142's view). Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · ⠿ COMMON PROGRAMME EP: ENGINE . (142's Monday stands in; its 1st wave stands in for 149's.)"
+  },
+  "G2-member-p.png": {
+    "item": "G",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, View-only Sched, as a member sees it (signed in as the demo's member). 142 has published, 149 has not. The day head reads \"ORIG\" (real). The same sentence as Edit Schedule (mark G2): \"RU goes out when 149 publishes.\" 149's VL and its in-time line are hidden (142's view). Hidden between the day head and the wave: ⚠ 17 issues · 6 warnings ▼ · COMMON PROGRAMME EP: ENGINE FI. (142's Monday stands in; its 1st wave stands in for 149's.)"
+  },
+  "N1-p.png": {
+    "item": "N",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board. \"+ Line\" pressed three times, for real: the app put the three blank lines at the wave's foot, in the order made, out of view (0 of 3 on this phone screen). Beside \"+ Line\" the count \"3 new ↓\" (mark N1, drawn in: the head's own \"+ In-time\" button re-lettered); on a phone the head's second row is full, so it stands after Traffic on its first row, where there is room. It counted 1, 2, 3 with the presses; \"+ Line\" never moved. (142's 1st wave; the full screen, so what is out of view shows. The passing note \"Line added\" is hidden: the count does its job.)"
+  },
+  "N3-p.png": {
+    "item": "N",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board. The same three presses, then the count tapped: the board scrolls to the new lines (a real scroll), all three in view (3 of 3), each in the board's own just-added ring (3 ringed); the count is gone and does not come back for them. Mark N3 on the first new line. (142's 1st wave; the full screen, so what is out of view shows. The passing note \"Line added\" is hidden: the count does its job.)"
   }
 }

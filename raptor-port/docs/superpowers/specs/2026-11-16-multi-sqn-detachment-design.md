@@ -282,6 +282,31 @@ D2129 (2), D2130 (4a), D2131 (6), and, by the agent's reading told to him, round
 D1606), Q3 (D2133), R1 (D2134) and R3 (D2135). Still to draw for his look: D2124's one-sentence grey line and D2125's
 "3 new ↓".
 
+**Round 5's rest (chat 95, 17 Nov 26 — added to the same page; put to him):**
+- **G — D2124's grey line, three states, on 142's Edit Schedule (and View-only Sched for a member, state 2):** the wave's
+  title wears 149's grey badge; under it one sentence in the day head's date-line look (12px, weight 400, the same grey),
+  one line on a phone: "Not yet published by 149." (142 DRAFT), "RU goes out when 149 publishes." (142 ORIG),
+  "Published by 149." (142 DRAFT). The day's DRAFT / ORIG is real (the publish call). Pictures `G1-*`, `G2-*`, `G3-*`.
+- **N — D2125's count:** real presses of "+ Line" put the new lines at the wave's foot in the board's own ring; the count
+  is the head's "+ In-time" button re-lettered, beside "+ Line" on a desktop, after Traffic on a phone's first row.
+  Tapped, the board scrolls the new lines into view and the count goes; a line landing in view gets no count. Keys,
+  the agent's design: Tab reaches the count after "+ Line", Enter as a tap, the keys then on the first new line's
+  callsign box. Pictures `N1-*`, `N3-*`, `N4-d`.
+- **Found while drawing (a requirement nobody had written):** on a phone the 1st wave is taller than the screen, so the
+  count scrolls off with the wave's head before any new line comes into view — the count is for a tap straight after
+  the presses; only a desktop shows it count down. Likewise on a phone no demo wave shows its foot with its head, so
+  "lands in view, no count" is a desktop case there.
+- **His direction the same evening (D2136):** the Leave War's Post out "Transfer to Sqn" is designed now — it names one
+  of the app's squadrons and on the date moves his primary squadron there; drawn in the next round, with what he
+  carries across.
+- **Owed before the next round (his question, 17 Nov 26):** the plan's red team — Astra first, then a fresh, blind Opus
+  reader (D1760, D1770) — was never run on this design; only fresh Opus readers read rounds 3–4. Brief: loopholes,
+  design faults, what is overlooked, and how every rule of the rules engine, OIL, amendments, Insights, the Leave War
+  and the Tracker reads across two schedules.
+- **Put to him, two small questions:** N2 — the count counts down as lines are seen by hand ("2 new ↓"), recommended;
+  N3 — the ring plays again when a late tap brings the lines into view (the ring lasts about six seconds),
+  recommended.
+
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
 **Kept as he said it:** squadrons made in Admin; one primary squadron each; access to others given by an admin; only Post
