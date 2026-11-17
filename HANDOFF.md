@@ -32,6 +32,14 @@ the later merge keeps both (D78).
 - **Pick up here:** once the walker ends: run the new tests on the commit before the fixes (must fail) and on the head (must pass) — `E2E_PORT=4191 node scripts/gatelock.mjs exec "<branch> — …" -- npx playwright test e2e/datecal.spec.ts`; read the walk's results, reproduce any finding red-first; re-walk only what the fixes touched (the drag on the floating calendar and the Inputs title, desktop); a fix-round narrow read by a fresh Opus reader (the fix commit and the findings only, bug-check order §5 "A fix is new code"); the evidence sheet `raptor-port/docs/handpass/2026-11-17-cal-wheel-drag.md` and the walk ledger's row; push once no run is in progress (none was pushed since 9ddd97738); his look with the Vercel link and pictures.
 - **Rulings:** D2170 recorded → the scheduler's page.
 <!-- /now -->
+<!-- now:claude/lw-war-autoname -->
+### CHAT 97 — Leave War drawings (Balances, the hover ring), merged; then his ask for the new period's name, filed — written 17 Nov 26 (compacted once, mid-merge) — verify before use
+- **Branch:** `claude/lw-war-autoname`, cut from `main` after pull request 799 merged — notes only (the ruling and the backlog item below). The design work (`claude/lw-balances-hover-275293`, with chat 96's) merged on his "merge live", 17 Nov 26, pull request 799.
+- **Done:** the question page https://claude.ai/artifact/4cp7LyTwx7ssuNiNShDQ3P answered — Balances **option B** (D2156, D1482 narrowed), the hover ring **yes** (D2157); drawings and scripts in `raptor-port/docs/mock/2026-11-17-lw-balances-align/` and `…-lw-grid-hover/`. Filed to build: [LW-BAL-NEATER], [LW-GRID-HOVER-RING], beside chat 96's [LW-OIL-EDIT-STEADY].
+- **His new ask (D2158):** the "New leave war" window's Name fills itself from the dates picked, in the periods' own form ("JAN - MAR 27"), following the dates whenever they change — filed as [LW-WAR-AUTONAME], the fourth item of the same Leave War batch (D490). The agent's readings, told to him: a typed name is kept; an emptied box follows the dates again.
+- **Pick up here:** a fresh chat builds all four Leave War items on one branch from `main`, one bug check for the lot (sized by the Balances page, the largest).
+- **Rulings:** D2156, D2157, D2158 → the Leave War page. **Reads owed:** none (no code). **Walk:** none (pictures only). **Next chat number:** 99 (98 is the calendar wheels' chat, D2170) (D1744).
+<!-- /now -->
 <!-- now:claude/multi-sqn-design-r3 -->
 ### CHAT 92 — multi-squadron round 2, then the night of 17 Nov 26 (six jobs, all done), rewritten 17 Nov 26 after his "merge live" — verify before use
 - **Where it started:** round 2 of the multi-squadron design (answered, D2099–D2111), then `/overnight 12` on Low with his "yes all as recommended … run jobs 1-5 tonight", plus a job of his own (6). Nothing merged at night; nothing on `main`. The chat compacted at 00:37 and about 06:00; each time the block, the guide and the step were re-read.

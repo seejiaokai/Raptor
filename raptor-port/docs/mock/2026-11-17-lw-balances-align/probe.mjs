@@ -1,0 +1,11 @@
+import { createRequire } from 'module'
+const require = createRequire('C:/Users/User/projects/Raptor/raptor-port/package.json')
+const { chromium } = require('@playwright/test')
+const { OPTS } = await import('./options.mjs')
+const b = await chromium.launch(); const ctx = await b.newContext({ viewport: { width: 1536, height: 864 } }); const page = await ctx.newPage()
+await page.goto('http://localhost:4197/'); await page.fill('#luser','ad'); await page.fill('#lpass','a'); await page.click('#loginForm button[type=submit]')
+await page.waitForSelector('#vWeek .day',{state:'attached'}); await page.evaluate(()=>window.go('leavewar')); await page.waitForTimeout(1200)
+await page.locator('#page-leavewar .intab',{hasText:'Balances'}).first().click(); await page.waitForTimeout(800)
+const o = OPTS.find(x=>x.id===process.argv[2]); await page.addStyleTag({content:o.css}); await page.evaluate(o.js); await page.waitForTimeout(300)
+console.log(await page.evaluate(()=>{const t=document.querySelector('.bp-table');const r=[...t.querySelectorAll('tr.h2 th')].map(th=>{const b=th.getBoundingClientRect();return th.textContent.slice(0,8)+':'+Math.round(b.left)+'-'+Math.round(b.right)+' y'+Math.round(b.top)+'/'+Math.round(b.bottom)});return r.join(' | ')+'  TABLE '+Math.round(t.getBoundingClientRect().width)+' card '+Math.round(document.querySelector('.bp-scroll').clientWidth)}))
+await b.close()
