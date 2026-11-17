@@ -2748,3 +2748,17 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** a test read a gliding list's scroll position, then pressed the mouse in the next step, and asserted the two were within 12px; it passed twice on the fast PC and failed on the slower CI runner, where the glide moved further between the two steps. A second check (a finger held for 350 ms) failed the same way.
 **Suggested improvement:** for any assertion about motion around an input event, record the values inside the page with listeners (a capture listener on the window before the event, a bubbling one after, a scroll listener's time stamps), and assert on those; never on two separate round trips from the test runner.
 **Principle:** a round trip from the test runner takes unknown time; anything that moves on its own must be measured inside the page, at the event itself.
+
+
+### Observation 965: A bubbling listener on the window can miss a press; and the test's mouse stays where its last move left it
+
+**Status:** OPEN
+**Date:** 2026-11-17
+**Session context:** chat 99 — fixing the calendar wheels' slow-machine test, then writing tests for a reader's findings
+**Skill:** walk-scripts (raptor-port/docs/walk-scripts.md) / test-driven-development
+**Type:** open-source
+**Phase/Area:** measuring an event inside the page (Observation 964's method); relative mouse moves in a browser test
+
+**Issue:** applying 964's "a bubbling listener after" to read a list's place after a press read nothing: the page stopped the press from bubbling to the window (an outside-click guard), so the reading stayed empty and the check failed on correct code. Separately, a new test "dragged up one row" with a move to the list's middle minus 44px, but an earlier flick had left the mouse 132px up, so the move went DOWN two rows; the first failure looked like an app fault until every scroll and press was logged in the page.
+**Suggested improvement:** in 964's method, read "after" from a capture listener that schedules the read (two animation frames later, so one frame is drawn), never a bubbling listener on the window; in the walk-scripts guide, a line: a relative mouse move starts from where the last one left the mouse — write moves from the press point, and log presses and scrolls in the page before believing a wrong landing.
+**Principle:** a listener that depends on the page letting an event bubble is not a measurement; and a test's own pointer state is part of its setup.

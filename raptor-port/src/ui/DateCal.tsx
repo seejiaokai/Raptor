@@ -243,8 +243,10 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
   const onKey = (e: KeyboardEvent) => {
     /* WHILE A MOUSE DRAGS THE LIST, ENTER AND THE ARROWS WAIT (the fix round's read, 17 Nov 26): the row chosen is still
        the one before the drag, so Enter closed the lists on it while the band showed another, and an arrow scrolled the
-       list against the hand. Let go, the list lands, and the keys act on that row. */
-    if (drag.current?.moved && (e.key === 'Enter' || e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); return }
+       list against the hand. Let go, the list lands, and the keys act on that row. Any held press, moved or not (round
+       2 of that read): a glide caught and held chooses nothing until it is let go, so the keys would act on the row
+       before the flick. */
+    if (drag.current && (e.key === 'Enter' || e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); return }
     const at = stopGlideAt()
     /* ENTER IS THE WAY BACK TO THE DATES (the design look of 13 Oct 26 — K4; owner D830). It did nothing here, and the
        only way back was to go up to the title and press it again. A row is chosen as it comes into the band, so Enter

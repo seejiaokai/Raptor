@@ -64,10 +64,25 @@ under 1); a finger not stopping the glide let it run on 431px (must be under 23,
 On `9ddd97738` whole, the test still fails, at part 1 (fault 1). Green on the head: the file 23 of 23, twice. (On
 `492ce1d91` GitHub passed the old form first time: the failure comes and goes, so it was fixed, not waited out.)
 
+**Chat 99 — the fix round's read, round 1** (a fresh Opus reader; brief and findings
+`superpowers/briefs/2026-11-17-cal-wheel-drag-fixread-brief.md`): one medium and two low faults in the fixes, one point
+on the test change — each reproduced red first by the host (a held catch then a drag jumped 34–36 years; Enter during a
+drag closed the lists on the year before it; the months moved under a press made on the years), fixed in the shared
+wheel and green: the calendar file 26 of 26, twice; the calendar unit tests 167 of 167. Re-walk 2 of what the fixes
+touched (mouse only — a finger and a pen take no part in the changed paths): every calendar, desktop at 125%, the same
+script, 112 PASS, pictures `2026-11-17-cal-wheel-drag/rewalk2/` (Sonnet walker; the host opened
+`09-every-from-A-year-drag-desk.png` — November 2029 in the band after a three-row drag from 2026 — and
+`01-admin-postin-E-click-row-desk.png` — a click on the next year chose it). Round 2's read (a second fresh Opus
+reader, the same brief file): one gap — Enter or an arrow with a caught glide held acted on the year before the flick —
+reproduced red first, fixed by a one-line guard (the keys wait for any held press; no round 3 read, §5), and one test
+made unable to pass on the fault. The calendar file 28 of 28, three runs in a row; unit tests 167 of 167; code check
+clean. Not re-walked for round 2: the walk presses no key while the mouse is held, and only that path changed — the
+two new tests are its check. Last round: 2.
+
 ## 7. Gates
 His PC: `e2e/datecal.spec.ts` 23 tests × 2 runs, 46 pass; calendar unit tests 240 pass; tsc; code check no new finding;
 docsize OK. GitHub's run of the pull request: green on `9ddd97738`; on `492ce1d91` every browser and unit check green, the
 code check red on 14 notes in this walk's own scripts (none in the app) — kept, each with its reason on the line above,
 as the house rule asks (chat 99); on the last pushed commit — see the closing report.
 
-Walk: WALK — 12 surfaces × desktop (125%) and phone, 144 PASS, re-walk 144 PASS after the reads' fixes, 288 pictures.
+Walk: WALK — 12 surfaces × desktop (125%) and phone, 144 PASS, re-walk 144 PASS after the reads' fixes, 288 pictures; re-walk 2 after the fix round's fixes, desktop, 112 PASS, 96 pictures.

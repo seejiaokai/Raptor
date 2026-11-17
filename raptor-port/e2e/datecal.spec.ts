@@ -581,6 +581,28 @@ test('a desktop: the drag ends with the press, and a key or a finger during a gl
   expect(errs, 'errors on the page').toEqual([])
   await context.close()
 })
+/** a flick of three rows up the list that is still gliding when this returns, the mouse left 132px up. A mouse let go
+    more than 60ms after its last move glides nothing (a slow machine, or a busy moment): the next press would then be
+    a plain click on a row, not a catch — so the flick is made again until the page shows the list moving by itself */
+/** the year in the band: the row nearest the list's middle (robust to the list re-centring its window) */
+const bandYear = (page: Page, sel: string) => page.locator(sel).first().evaluate(el => {
+  const c = el.getBoundingClientRect(), mid = c.top + c.height / 2
+  let best = NaN, d = Infinity
+  el.querySelectorAll('.dcal-opt').forEach(o => { const q = o.getBoundingClientRect(), k = Math.abs(q.top + q.height / 2 - mid); if (k < d) { d = k; best = +(o.textContent || 'NaN') } })
+  return best
+})
+async function flickGliding(page: Page, sel: string, x: number, y: number) {
+  for (let i = 0; i < 6; i++) {
+    await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x, y - 132, { steps: 3 }); await page.mouse.up()
+    const moving = await page.locator(sel).first().evaluate(el => new Promise<boolean>(res => {
+      const a = el.scrollTop
+      requestAnimationFrame(() => requestAnimationFrame(() => res(el.scrollTop !== a)))
+    }))
+    if (moving) return
+    await atRest(page, sel)
+  }
+  throw new Error(`${sel}: six flicks and none glided`)
+}
 /* THE FIX ROUND'S READ (a fresh reader, 17 Nov 26): three paths the reads' fixes left open */
 async function openLists(browser: Browser, baseURL: string | undefined) {
   const context = await browser.newContext({ baseURL, viewport: DESK })
@@ -606,18 +628,15 @@ test('a desktop: a glide caught, held still, then dragged, moves on from the yea
   await atRest(page, Y)
   expect(await yearOf(page)).toBe(y0 + 28)
   const r = await rect(page, Y), x = r.l + r.w / 2, y = r.t + r.h / 2
-  await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x, y - 132, { steps: 3 }); await page.mouse.up()
-  await page.waitForTimeout(100)
+  await flickGliding(page, Y, x, y)
+  await page.waitForTimeout(60)
   /* caught, and held still well past the list's wait for scrolling to stop */
   await page.mouse.down()
   await page.waitForTimeout(400)
-  const caught = await page.locator(Y).first().evaluate(el => {
-    const c = el.getBoundingClientRect(), mid = c.top + c.height / 2
-    let best = NaN, d = Infinity
-    el.querySelectorAll('.dcal-opt').forEach(o => { const q = o.getBoundingClientRect(), k = Math.abs(q.top + q.height / 2 - mid); if (k < d) { d = k; best = +(o.textContent || 'NaN') } })
-    return best
-  })
-  expect(caught, 'the glide never carried the years on').toBeGreaterThan(y0 + 28)
+  const caught = await bandYear(page, Y)
+  /* past the three rows the drag alone gives: a glide was caught (round 2's read — a late release on a slow machine
+     glides nothing, and the test would pass on the fault) */
+  expect(caught, 'the glide never carried the years on').toBeGreaterThan(y0 + 31)
   /* then dragged up one row from where it was pressed (the flick left the mouse 132px up), slowly, and let go */
   await page.mouse.move(x, y - 132 - 44, { steps: 8 })
   await page.waitForTimeout(150)
@@ -643,6 +662,35 @@ test('a desktop: Enter pressed while a mouse drags the years does nothing until 
   expect(errs, 'errors on the page').toEqual([])
   await context.close()
 })
+/* ROUND 2 OF THE FIX ROUND'S READ (17 Nov 26): with a glide caught by a press and held, the keys acted on the year
+   before the flick — Enter closed the lists on it, an arrow scrolled back to it under the held mouse */
+for (const key of ['Enter', 'ArrowDown'] as const) {
+  test(`a desktop: ${key} pressed while a caught glide is held waits for the release`, async ({ browser, baseURL }) => {
+    const { context, page, errs } = await openLists(browser, baseURL)
+    const Y = '[data-testid="dcal-years"]'
+    const y0 = await yearOf(page)
+    await page.locator(Y).first().focus()
+    const r = await rect(page, Y), x = r.l + r.w / 2, y = r.t + r.h / 2
+    await flickGliding(page, Y, x, y)
+    await page.waitForTimeout(40)
+    await page.mouse.down()
+    await page.waitForTimeout(200)
+    const top = await listTop(page, Y), held = await bandYear(page, Y)
+    await page.keyboard.press(key)
+    await page.waitForTimeout(300)
+    await expect(page.locator('[data-testid="dcal-lists"]'), `${key} during a held catch closed the lists`).toBeVisible()
+    expect(await listTop(page, Y), `${key} during a held catch moved the list under the mouse`).toBe(top)
+    await page.mouse.up()
+    await atRest(page, Y)
+    /* let go, the year in the band as it was held is the one chosen — or its neighbour, where it was held about half a
+       row between two (the fault chose the year before the flick, several years back) */
+    expect(Math.abs((await yearOf(page)) - held), 'the year in the band while held was not the one chosen on the release').toBeLessThanOrEqual(1)
+    expect(await yearOf(page), 'the glide was not caught past the flick').toBeGreaterThan(y0 + 3)
+    await expect(page.locator('[data-testid="dcal-lists"]')).toBeVisible()
+    expect(errs, 'errors on the page').toEqual([])
+    await context.close()
+  })
+}
 test('a desktop: a press let go on the other list leaves nothing behind for a later press to pick up', async ({ browser, baseURL }) => {
   const { context, page, errs } = await openLists(browser, baseURL)
   const Y = '[data-testid="dcal-years"]', M = '[data-testid="dcal-months"]'
