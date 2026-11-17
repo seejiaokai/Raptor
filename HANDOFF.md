@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/cal-wheel-drag-e4107b -->
+### CHAT 99 — the calendar wheels' mouse drag (his fault of 17 Nov 26, D2170), rewritten 17 Nov 26 at its end — verify before use
+- **What:** on a desktop the month-and-year chooser's wheels moved only with the mouse wheel, never a press and drag. Fixed once in the shared wheel (`raptor-port/src/ui/DateCal.tsx` `Wheel`), so every calendar has it; tests in `raptor-port/e2e/datecal.spec.ts`.
+- **Branch / PR:** `claude/cal-wheel-drag-e4107b`, pull request 797 into `main`; `main` brought in by chat 99 (records settled); waits for his look and his "merge live".
+- **Bug check — done:** WALK tier. Walk 144 PASS; re-walk 144 PASS after the two blind reads' four fixes (Astra and a fresh Opus reader). Chat 99: GitHub's slow-machine failure of the catch-a-glide test fixed (it measures inside the page); the fix round's narrow read by fresh Opus readers, two rounds, last round 2 (brief and findings `raptor-port/docs/superpowers/briefs/2026-11-17-cal-wheel-drag-fixread-brief.md`): round 1 found a held catch then a drag jumping ~30 years, Enter during a drag closing on the old year, a press let go on the other list moving it later; round 2 found the keys acting on the old year during a held catch — each red first, fixed, green. Re-walk 2 (desktop, the fixed mouse paths) 112 PASS. The calendar file 28 of 28 three runs in a row; calendar unit tests 167 of 167; code check clean (the walk scripts' 14 notes kept with reasons); docsize and rulecheck OK. Evidence sheet `raptor-port/docs/handpass/2026-11-17-cal-wheel-drag.md`.
+- **Pick up here:** GitHub's run on the last pushed commit must be green (it ran no checks while the branch clashed with `main`); then his look — the Vercel link, a few pictures from `rewalk2/`, and the flick's feel to judge on his PC.
+- **Reads owed:** none — the first code read had Astra and a fresh Opus reader; the fix rounds fresh Opus readers, as the order's §5 says.
+- **Rulings:** D2170 recorded → the scheduler's page. None in chat 99.
+<!-- /now -->
 <!-- now:claude/lw-war-autoname -->
 ### CHAT 97 — Leave War drawings (Balances, the hover ring), merged; then his ask for the new period's name, filed — written 17 Nov 26 (compacted once, mid-merge) — verify before use
 - **Branch:** `claude/lw-war-autoname`, cut from `main` after pull request 799 merged — notes only (the ruling and the backlog item below). The design work (`claude/lw-balances-hover-275293`, with chat 96's) merged on his "merge live", 17 Nov 26, pull request 799.
