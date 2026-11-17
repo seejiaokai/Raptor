@@ -70,5 +70,41 @@
     "size": "phone",
     "kind": "proposed",
     "caption": "142's Scheduler Board, Monday's Unavailable panel: Saber's two \"Attach · 149\" rows (ACADEMICS 14:00–16:00, VL 19:00–22:00), the app's own rows from an Attach To 149, the name re-lettered. Drawn in (mark Q4): the times and remarks shown but not typed in (they follow 149's plan), and under each row its one action, the panel's own \"+ Add\" button cloned as \"Take him off …\", with a quiet line saying where he is."
+  },
+  "Q4PE-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Edit Schedule, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "Q4PE-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Edit Schedule, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "Q4PW-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The input window opened by pressing \"Attach · 149\" (the ACADEMICS row), the app's own window. Drawn in: \"Set by 149's plan\" above the fields (Q4a), the fields shown but not changeable; the Delete button re-lettered \"Take him off ACADEMICS\", with \"His seat is left empty; 149 is told.\" under it (Q4b). No Save: nothing here is his to change."
+  },
+  "Q4PB-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "Q4PW-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The input window opened by pressing \"Attach · 149\" (the ACADEMICS row), the app's own window. Drawn in: \"Set by 149's plan\" above the fields (Q4a), the fields shown but not changeable; the Delete button re-lettered \"Take him off ACADEMICS\", with \"His seat is left empty; 149 is told.\" under it (Q4b). No Save: nothing here is his to change."
+  },
+  "Q4PB-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
   }
 }

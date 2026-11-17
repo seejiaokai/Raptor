@@ -262,13 +262,126 @@ async function picQ4board(sz) {
   await ctx.close()
 }
 
+// his idea (chat 100, "we can click on the attach.149 to remove him just like all other inputs") with the agent's
+// recommendation: the row like every input row — no REJECT, no extra line, the remarks showing where he is
+// ("ACADEMICS · 149"); pressing its name opens the input window as for any input, its fields shown not changed ("Set by
+// 149's plan"), its Delete re-lettered "Take him off ACADEMICS" with "His seat is left empty; 149 is told." under it.
+// Drawn on Edit Schedule (rows + the window) and on the Scheduler Board (rows).
+const PLAIN = (r, item) => {
+  const mq = window.__mq
+  const w = document.createTreeWalker(r, NodeFilter.SHOW_TEXT); let n
+  while ((n = w.nextNode())) if (/\bComet\b/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/\bComet\b/, 'Saber')
+  const rej = [...r.querySelectorAll('button')].find(b => /^reject$/i.test(b.textContent.trim()))
+  if (rej) mq.hide(rej)
+  // the remarks field fills itself: the placeholder's place holds the words, in the field's own typed look
+  const rmIn = r.querySelector('input[placeholder="remarks"], textarea[placeholder="remarks"]')
+  if (rmIn) { rmIn.value = item.name + ' · 149'; rmIn.setAttribute('value', rmIn.value); rmIn.disabled = true }
+  else {
+    // Edit Schedule: an empty contenteditable whose "remarks" is its data-ph placeholder, drawn by CSS
+    const rm = r.querySelector('[data-ph="remarks"]') || r.querySelector('[data-inp$=".rmk"], [data-inp$=".remarks"], [data-inp$=".note"]') || [...r.querySelectorAll('*')].find(e => !e.children.length && e.textContent.trim() === 'remarks')
+    if (rm) { rm.textContent = item.name + ' · 149'; rm.removeAttribute('data-ph'); rm.style.color = getComputedStyle(r).color; rm.style.opacity = '1' }
+  }
+  for (const i of r.querySelectorAll('[contenteditable="true"]')) i.setAttribute('contenteditable', 'false')
+  for (const i of r.querySelectorAll('input')) i.disabled = true
+  return { rej: !!rej, rm: !!rmIn }
+}
+async function picQ4plain(sz, where) {
+  const { ctx, page } = await world(sz)
+  await toEdit(page)
+  await file(page, { iid: 'mq-att', person: COMET, type: 'Attach', to: '149', date: 'Jul 13', yr: 2026, allday: false, s: 1140, e: 1320, remarks: '' })
+  await file(page, { iid: 'mq-att2', person: COMET, type: 'Attach', to: '149', date: 'Jul 13', yr: 2026, allday: false, s: 840, e: 960, remarks: '' })
+  if (where === 'board') {
+    await page.evaluate(() => document.querySelector('#eWeek .day:not(.peek) [data-sbday="0"]').click())
+    await page.waitForSelector('.sb-panel.unav', { state: 'attached' }); await page.waitForTimeout(1200)
+  } else await unavMonday(page)
+  const st = await page.evaluate(({ where, PLAIN }) => {
+    const plain = eval('(' + PLAIN + ')')
+    const mq = window.__mq
+    const host = where === 'board' ? document.querySelector('.sb-panel.unav') : mq.monday().querySelector('.sec-unav')
+    const rows = [...host.querySelectorAll(where === 'board' ? '.sb-pb > *' : '.pl-row')].filter(x => /Comet/.test(x.textContent))
+    const out = []
+    for (const r of rows) {
+      const item = /14:00/.test(r.innerText + [...r.querySelectorAll('input')].map(i => i.value).join(' ')) ? { name: 'ACADEMICS' } : { name: 'VL' }
+      out.push(plain(r, item))
+      if (getComputedStyle(r).position === 'static') r.style.position = 'relative'
+      mq.mark(r, 'Q4')
+      if (where !== 'board') { const t = r.querySelector(':scope > .mkq-tag'); if (t) { t.style.top = 'auto'; t.style.bottom = '2px'; t.style.right = '2px' } }
+    }
+    window.__mqClipEl = host
+    if (where === 'board') host.scrollIntoView({ block: 'center' }); else mq.scrollUnder(host, 16)
+    return out
+  }, { where, PLAIN: PLAIN.toString() })
+  if (st.length !== 2) throw new Error('picQ4plain: rows ' + JSON.stringify(st))
+  await page.waitForTimeout(300)
+  const f = `Q4P${where === 'board' ? 'B' : 'E'}-${sz}-proposed.png`
+  await shot(page, f, await clipOf(page, null, 6))
+  rec(f, 'Q4', sz, 'proposed', `142's ${where === 'board' ? 'Scheduler Board' : 'Edit Schedule'}, Monday's Unavailable list: Saber's two "Attach · 149" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is ("ACADEMICS · 149", "VL · 149"); times and remarks shown, not typed in. Pressing "Attach · 149" opens the input window.`)
+  if (where !== 'board') {
+    // the window: pressed open by its own name button, as any input
+    await page.evaluate(() => { const r = [...window.__mq.monday().querySelectorAll('.sec-unav .pl-row')].find(x => /14:00/.test(x.innerText)); r.querySelector('.inpedit').click() })
+    try { await page.waitForSelector('#inpEditDel', { state: 'attached', timeout: 8000 }) }
+    catch (e) { throw new Error('window: ' + await page.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputedit"], .inpedwin, .floatwin')].map(w => w.className + ' [' + [...w.querySelectorAll('button')].map(b => b.textContent.trim()).join('|') + ']').join(' ;; ') || 'none open')) }
+    await page.waitForTimeout(600)
+    const ws = await page.evaluate(() => {
+      const mq = window.__mq
+      const d0 = document.querySelector('#inpEditDel')
+      // round 4's way: up from the window's body to its frame
+      let win = d0; while (win && !/floatwin|fwin|inpedwin/.test(win.className + '')) win = win.parentElement
+      if (!win) win = d0.closest('#inpEditPop')
+      if (!win) return { err: 'no frame: ' + (() => { const a = []; for (let e = d0; e; e = e.parentElement) a.push(e.tagName + '.' + e.className); return a.join(' < ') })() }
+      for (const e of win.querySelectorAll('*')) for (const tn of e.childNodes) if (tn.nodeType === 3 && /\bComet\b/.test(tn.nodeValue)) tn.nodeValue = tn.nodeValue.replace(/\bComet\b/g, 'Saber')
+      // fields shown, not changed
+      for (const i of win.querySelectorAll('.inped-f input, .inped-f select, .inped-f textarea')) i.disabled = true
+      // by each field's own label: Remarks filled; Document, the "till" tick and the dates note hidden — nothing here
+      // is his to change, so nothing invites a change
+      const fieldBy = lab => [...win.querySelectorAll('.inped-f')].find(f => { const k = f.querySelector('.inped-k'); return k && k.textContent.trim().toLowerCase() === lab })
+      const rmF = fieldBy('remarks')
+      if (rmF) {
+        const t = rmF.querySelector('textarea, input[type="text"], input:not([type])')
+        if (t) { t.value = 'ACADEMICS · 149'; t.setAttribute('value', t.value); t.textContent = t.value }
+        for (const c of rmF.querySelectorAll('input[type="checkbox"]')) { const l = c.closest('label') || c.parentElement; mq.hide(l) }
+      }
+      const docF = fieldBy('document'); if (docF) mq.hide(docF)
+      for (const e of win.querySelectorAll('*')) if (!e.children.length && /^The dates are changed/.test(e.textContent.trim())) mq.hide(e)
+      for (const e of win.querySelectorAll('.inped-f svg, .inped-f [class*="pencil"], .inped-f [class*="edit-ic"]')) mq.hide(e.closest('button') || e)
+      const firstF = win.querySelector('.inped-f')
+      const note = document.createElement('div'); note.setAttribute('data-mine', '1')
+      note.textContent = "Set by 149's plan"
+      note.style.cssText = 'font-size:12px;opacity:.7;padding:2px 0 8px'
+      firstF.parentElement.insertBefore(note, firstF)
+      mq.mark(note, 'Q4a', 'right')
+      const del = win.querySelector('#inpEditDel')
+      del.textContent = 'Take him off ACADEMICS'
+      const foot = del.parentElement
+      const why = document.createElement('div'); why.setAttribute('data-mine', '1')
+      why.textContent = 'His seat is left empty; 149 is told.'
+      why.style.cssText = 'flex:1 1 100%;font-size:12px;opacity:.7;margin-top:4px'
+      foot.style.flexWrap = 'wrap'
+      foot.appendChild(why)
+      why.style.position = 'relative'; mq.mark(why, 'Q4b')
+      const save = [...foot.querySelectorAll('button')].find(b => /^save$/i.test(b.textContent.trim()))
+      if (save) mq.hide(save)
+      const sc = win.querySelector('.inped-win') || win
+      window.__mqClipEl = win
+      return { save: !!save, foot: [...foot.querySelectorAll('button')].map(b => b.textContent.trim()) }
+    })
+    notes.push(`window ${sz}: ${JSON.stringify(ws)}`)
+    await page.waitForTimeout(300)
+    const f2 = `Q4PW-${sz}-proposed.png`
+    await shot(page, f2, await clipOf(page, null, 6))
+    rec(f2, 'Q4', sz, 'proposed', `The input window opened by pressing "Attach · 149" (the ACADEMICS row), the app's own window. Drawn in: "Set by 149's plan" above the fields (Q4a), the fields shown but not changeable; the Delete button re-lettered "Take him off ACADEMICS", with "His seat is left empty; 149 is told." under it (Q4b). No Save: nothing here is his to change.`)
+  }
+  notes.push(`picQ4plain ${where} ${sz}: ${JSON.stringify(st)}`)
+  await ctx.close()
+}
+
 browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 const GROUND = process.env.MQ_Q4 === 'ground'
-try { for (const sz of ['d', 'p']) { try { if (process.env.MQ_Q4 === 'board') await picQ4board(sz); else await picQ4(sz, GROUND) } catch (e) { errs.push(`[${sz}] picQ4 FAILED: ${e.message}`) } } }
+try { for (const sz of ['d', 'p']) { try { if (process.env.MQ_Q4 === 'plain') { await picQ4plain(sz, 'edit'); await picQ4plain(sz, 'board') } else if (process.env.MQ_Q4 === 'board') await picQ4board(sz); else await picQ4(sz, GROUND) } catch (e) { errs.push(`[${sz}] picQ4 FAILED: ${e.message}`) } } }
 finally { await browser.close() }
 let old = {}
 try { old = JSON.parse(readFileSync(`${OUT}/manifest.json`, 'utf8')) } catch {}
 writeFileSync(`${OUT}/manifest.json`, JSON.stringify({ ...old, ...manifest }, null, 2) + '\n')
-for (const f of readdirSync(OUT)) if (/^Q4[FGB]-.*\.png$/.test(f)) copyFileSync(`${OUT}/${f}`, `${PAGEIMG}/${f}`)
+for (const f of readdirSync(OUT)) if (/^Q4(F|G|B|PE|PB|PW)-.*\.png$/.test(f)) copyFileSync(`${OUT}/${f}`, `${PAGEIMG}/${f}`)
 console.log('NOTES\n' + notes.join('\n'))
 console.log('ERRORS ' + (errs.length ? '\n' + errs.join('\n') : 'none'))
