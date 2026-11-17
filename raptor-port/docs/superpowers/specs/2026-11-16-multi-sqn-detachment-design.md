@@ -337,6 +337,12 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   Tracker course, and a correction of round 3's Tracker reading (no sortie reaches the Tracker by itself today); SANS
   only for people outside the app's squadrons.
 - **L** nine questions for later rounds, listed on the page.
+- **His correction, D2139 (17 Nov 26), of Q2's picture (round 3's card "Close Exercise North?"):** *"this text is not
+  clear on what will happen"*. The card's words are redrawn in round 7, put to him before anything is built. Proposed
+  (the agent's, not yet drawn): title "Close Exercise North today?"; one line each — "Its 6 people come home: back on
+  149's schedule from today, their overseas duty ended." · "Nothing more can be planned on it. Its schedules stay
+  under Past detachments to look at." · (with Q2) "25 and 26 Jul are published: closing takes everyone off them, ready
+  for 249's signatures." — buttons "Close detachment" and "Keep open".
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
