@@ -215,6 +215,54 @@ Insights, Inputs, warnings, publishing, Undo, the bell, Admin, print, the databa
 readings told to him there: OIL earned on the other squadron's schedule counts on the man's own OIL when that squadron
 publishes; a sortie flown on the other squadron's schedule counts on the student's own Tracker.
 
+## Round 4 — what is drawn, and the agent's design for each (17 Nov 26, chat 93 — to put to him; nothing ruled)
+
+His answers to round 3 are D2113–D2123. Round 4's page: `raptor-port/docs/mock/2026-11-17-multi-sqn-r4/`
+(pictures `raptor-port/docs/img/2026-11-17-multi-sqn-r4/`), drawn on the real app as round 3 was (its `draw.mjs` the
+start; the method `.claude/skills/brainstorming/mockups-on-the-real-app.md`). Desktop 1536×864 and phone 390×844, both
+at 2x. **Every picture says whose schedule it is** (his question on round 3's picture 9): in its caption's first words
+("142's schedule —", "149's schedule —") and, on Edit Schedule, in the top bar's own number ("142 TALON", re-lettered
+"149 TALON" where 142's app stands in for 149's). Q2's "149 ▾" is not used, Q2 being still open.
+
+1. **The board's badge (D2117).** The grey "142" badge (look 2's recipe) sits on the callsign box's top-right corner,
+   its middle on the box's top edge, its right edge a few px inside the box's right: it never covers a callsign, and
+   the line keeps its height (measured before and after, both devices). The line one shade lighter, as ruled. Today
+   beside proposed. R2 (inside the mission box) dropped. The week keeps look 2 (D2104).
+2. **Signing (D2121, lesson 95).** One rule: the day head's status (DRAFT, ✓ ORIG, ALn) is the only "published" mark
+   on a schedule, and speaks for that squadron's own day only. The other squadron's wave never wears a status chip:
+   under its head one quiet grey line in words — "149's wave · 149 publishes it · not published yet" or "… · published
+   by 149" — and, on 142's published day while 149's wave is not, "RU goes out when 149 publishes." On 149's own
+   schedule 142's line wears only its badge; its state is 149's day's. Two moments, each seen on both schedules (four
+   pictures a device): 149 published and 142 not; 142 published and 149 not. Each picture one continuous frame — top
+   bar, day head, the wave — the sections between hidden and named on the page, never two clips stitched. The page
+   says, case by case, why it reads right.
+3. **Feedback for "+ Line" (D2115, lesson 94).** The button stays in the head. **A, recommended:** each new line goes
+   in at the top of the wave, straight under the column headings, just below the button, in the just-added ring — the
+   newest always on top, so every press shows its line where the finger is. **B:** the lines land at the foot as
+   today, and a small count beside "+ Line" — "3 new ↓" — brings them into view on a tap. Today, A and B from three
+   real presses, with the count of new lines wholly in view per device. A's cost: a new line sits at the wave's top
+   until it is dragged or Auto sort runs.
+4. **His questions, answered with pictures.** (a) 149 has no wave that day: "+ Wave"'s "Join a 149 wave" group reads
+   "149 has no wave on Mon 13 Jul", greyed — 142 plans in its own wave, and 149 may join it (D2106, D2114). (b)
+   Picture 9 is 142's board just after "Join a 149 wave", redrawn with item 2's line in place of round 3's "149 DRAFT"
+   chips. (c) Who may change what (D2114): on 149's board RU (142's line in 149's wave) marked "142 or 149 may change
+   it", VL marked "149 only"; a short table in words beside it.
+5. **The number box (D2116):** "+ New detachment"'s second box labelled "Squadron number", empty, a faded "249" in it.
+6. **Several men at once (D2120)** — recommended yes: the open detachment's row shows "People · 6" with their names
+   and a "+ Put people on it" button opening the Inputs page's own several-people picker; it files one overseas duty
+   input for all of them, Detachment "249", the detachment's dates; each man's own input stays the backup.
+7. **Crew rest across two schedules (D2122, D2123):** made-up settings, 149's crew rest 10h, 142's 12h. Saber (142)
+   flies 149's night wave Monday; 142 plans him early Tuesday. The later line is 142's, so 142's 12h judges: the
+   crew-rest warning on 142's Tuesday, and the dotted "breaks tomorrow's crew rest" ring on Saber in 149's Monday wave.
+   Raised by the real app on 142's own two days, then re-lettered. Who fixes: 142 changes its own Tuesday line; 142 or
+   149 may change the night line, which holds a 142 man (D2114, the agent's reading).
+8. **The place saved at once (D2119):** round 3's picture 1 redrawn with no "From": "Once saved, 142 and 149 can plan
+   each other's people, and clashes between the two are checked. Both squadrons' schedulers are told."
+
+The page's top: this round's open questions — the badge's place (1), the signing look (2), A or B (3), the door (6) —
+then round 3's still open Q2, Q3, R1, R3. Then the plain answers. Then one fresh Opus reader against his words; a new
+Artifact.
+
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
 **Kept as he said it:** squadrons made in Admin; one primary squadron each; access to others given by an admin; only Post
