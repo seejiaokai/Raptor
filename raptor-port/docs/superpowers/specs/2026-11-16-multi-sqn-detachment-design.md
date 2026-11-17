@@ -254,6 +254,7 @@ at 2x. **Every picture says whose schedule it is** (his question on round 3's pi
 7. **Crew rest across two schedules (D2122, D2123):** made-up settings, 149's crew rest 10h, 142's 12h. Saber (142)
    flies 149's night wave Monday; 142 plans him early Tuesday. The later line is 142's, so 142's 12h judges: the
    crew-rest warning on 142's Tuesday, and the dotted "breaks tomorrow's crew rest" ring on Saber in 149's Monday wave.
+   (Since D2161 the stricter judges whichever line is later; here 142's 12h is the stricter, so the picture holds.)
    Raised by the real app on 142's own two days, then re-lettered. Who fixes: 142 changes its own Tuesday line; 142 or
    149 may change the night line, which holds a 142 man (D2114, the agent's reading).
 8. **The place saved at once (D2119):** round 3's picture 1 redrawn with no "From": "Once saved, 142 and 149 can plan
@@ -456,7 +457,8 @@ day amber or red and raise the manning warning on someone's bid; a weekend he wo
   (the automatic row is no input, D2144). The page's "Later rounds" list was not a question and is not ruled.
 - **Held back, put to him again (D90, D201):** R8 said a man flying both squadrons' lines in one day is judged by
   "the stricter" crew rest — the opposite of his own pick of 17 Nov, D2123 ("Later line's", chosen over the
-  stricter), and the page never said so. D2123 stands until he answers.
+  stricter), and the page never said so. **His answer, D2161: "stricter"** — the stricter of the two crew rests
+  judges, whichever line comes first; replaces D2123.
 - **The DET check** (his call — Fable and Astra, blind to each other): brief
   `raptor-port/docs/superpowers/briefs/2026-11-17-multi-sqn-det-check.md`, reports `…-det-check-fable.md`,
   `…-det-check-astra.md`, checked claim by claim in `…-det-check-checked.md`.
