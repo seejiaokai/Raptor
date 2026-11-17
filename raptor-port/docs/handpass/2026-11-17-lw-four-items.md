@@ -146,6 +146,13 @@ Written by the host (Opus), chat 101, 17 Nov 26, before any walker started.
 
 ## Astra's scenarios
 
+Astra (`gpt-6-astra`, high, read-only, the branch at `01f1030c4`), chat 101, brief
+`docs/superpowers/briefs/2026-11-17-lw-four-items-scenarios-brief.md`, report
+`…/2026-11-17-lw-four-items-scenarios-astra.md`: 24 ranked scenarios and the roll-call's gaps. Its corrections taken:
+"locked" split into **bidding closed** and **balances locked for members**; a member with balances unlocked edits his
+own non-OIL boxes. All 24 handed to the walkers (`…/2026-11-17-lw-four-items-walk-brief.md`: W1 7–10, 15–20; W2 1–4,
+11–14; W3 5, 6, 21–24 and the plain-user round), none set aside.
+
 ## Orders walked — what the screen said
 
 ## Cases carried by a test
@@ -171,6 +178,16 @@ the Holidays ask, the corner tag); its changed browser tests — 9 red (option B
 
 ## The reads
 
+Two blind reads, chat 101, 17 Nov 26, same brief (`docs/superpowers/briefs/2026-11-17-lw-four-items-read-brief.md`),
+each on an exported copy of `01f1030c4` without the evidence sheet, the handoff or the pictures, neither seeing the walk
+or the other: **Astra** (`gpt-6-astra`, high, read-only; report `…/2026-11-17-lw-four-items-read-astra.md`) — 2 findings
+(the pinned names, the tag after a tap); **a fresh Opus reader** (report `…/2026-11-17-lw-four-items-read-opus.md`, condensed by the host) — 4 findings
+(the same two, CCL into FCL, the ring hidden on a day inside a leave block). Both: no fault in the OIL save or the saved
+period name; the person window's "−1" and the grid's day sheet award editor (it still moves) noted as outside the
+rulings — candidates for him (D852). Tidiness (filed, not fixed): the old phone column list (removed with the fix),
+`.bp-oc`'s overridden widths and their stale comment, the desktop OIL cell's stale comment, `.w-war`'s `nowrap` that never
+applies, the two hover rules repeating one long selector.
+
 ## Gate counts
 
 ## What the check found, and each disposition
@@ -183,6 +200,11 @@ the Holidays ask, the corner tag); its changed browser tests — 9 red (option B
 | 4 | GitHub's run (phone) | "a finger behind an open sheet scrolls the grid" failed once, passed on its retry and locally | Watch on the next run; not touched by the four items |
 | 5 | Chat 100's new browser test | **The hover ring never drew on a desktop.** The grid's style file is nested under the Leave War page, so a rule starting at the page's `body` read as "a body inside the page" and matched nothing; its drag guard also named the scheduler's puck drag, not the grid's own | Fixed red-first (`leavewar.spec.ts` "the grid's day under the mouse…", red: "none"): the rule hangs off the grid's own wrapper, off while the grid selects |
 | 6 | Chat 100's new browser test | **The award editor slid by about half a pixel** when the amount went 0.5 ↔ 1, phone and desktop: the empty AM / PM place, drawn as plain words, stood 0.4–0.5px shorter than the AM / PM buttons | Fixed red-first (`leavewar.spec.ts` "the OIL award editor…", red at 0.5 → 1 on the phone): the empty place is the pair's own buttons, hidden and out of reach; the test now measures to a tenth of a pixel |
+| 7 | GitHub's run of `01f1030c4` (phone) | The award editor test: "Delete armed" read every part 14px left — with GitHub's wider letters Delete hung ~12px past a 402 phone's edge and the test's own press slid the list | The test's set-up: it now brings Delete into view before measuring (a finger's tap slides nothing). How the editor opens on a phone, cut or not, is the walk's E-a |
+| 8 | Both reads (Astra, fresh Opus) | **Phone Balances: the pinned names shrank to their words** (86px of 132), so slid boxes showed beside each name, ragged row by row — D1518 | Fixed red-first (`leavewar.spec.ts` "Balances on a phone: the pinned name panel fills…", red 86 ≥ 131.5): the name cells stretch again. The drawing's slid picture had the same shrink — a departure from it, named |
+| 9 | Fresh Opus read | **Phone Balances: CCL's box ran 2px into FCL's** — its cell carries OTHER LEAVE's rule (7px) in a 54px column | Fixed red-first ("…CCL's box never touches FCL's box", red −2): CCL's column 61px. A 7px departure from the drawing (it had the touch), named |
+| 10 | Both reads | **Phone Balances: a tapped box near the right edge left its corner tag cut** (408 vs the list's 402) — the reveal measured the cell, which no longer holds the out-of-flow tag; B-F4's fix undone | Fixed red-first ("…a box focused near the right edge keeps its pending tag inside the list", red 408 ≤ 402): the reveal measures the tag too |
+| 11 | Fresh Opus read | On a day inside a joined leave block the hover ring is mostly hidden (the block is drawn over the day's sides); on his own row it changes nothing he can see | A look for him, not an outright fault: the drawing hovered an empty day only. Ringing filled days adds a mark he will see — a drawing first (D1625), with the walk's pictures (W1 scenario 9) |
 
 Why the build's own checks missed 5 and 6: no browser test of either existed — chat 99 listed them as to be written (its
 "Pick up here"); the ring was compared with its drawing only as injected CSS on `main`'s build, where the nesting did not
