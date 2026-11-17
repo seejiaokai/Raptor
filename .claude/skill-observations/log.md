@@ -2788,3 +2788,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The grid's hover ring was drawn for approval by injecting a rule into the running build, where it worked. Moved over "whole" into a stylesheet that is wrapped in a page-scoping nesting block, its selector began with `body`, which the nesting turned into "a body inside the page" — it matched nothing, and the ring never drew. Unit tests (no CSS) and a code read passed; only a browser test asserting the computed style on the hovered element caught it.
 **Suggested improvement:** In the build step after a drawing approved as injected CSS: for every moved rule, a browser assertion of the computed style on the element it must paint, in the built app, before the job is called built; and a note that rules moved into a nested / scoped stylesheet must not start at `html`, `body` or `:root`.
 **Principle:** CSS proven by injection proves the look, not the selector's reach once it is placed in its real file; assert the computed style where it must paint.
+
+### Observation 969: A walker's brief should name each role's test records, or a role's different data reads as a missing one
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 103, closing the four Leave War items' FULL bug check (claude/lw-four-items); number taken past 968, held on another branch
+**Skill:** New skill candidate: bug-check walker briefs (the bug-check order's §4 "before a brief leaves")
+**Type:** open-source
+**Phase/Area:** writing a walker's brief that switches between an admin and a member
+
+**Issue:** A walker signed in as a member looked for the same award records it had seen as the admin and reported one "missing". The member's own page holds different people and awards by design; the host spent a reproduction to find the lead false.
+**Suggested improvement:** When a brief walks one surface under two roles, name for each role the records it should expect to find (or say plainly they differ and why), so a walker compares like with like.
+**Principle:** a walker given one role's expectations will read another role's legitimately different data as a fault; the brief carries the expected data per role.
