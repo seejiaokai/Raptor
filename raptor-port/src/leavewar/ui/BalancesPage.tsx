@@ -20,7 +20,7 @@
 
    SPEED (docs/performance.md Part 1, §E): a row is memoised on its own figures (a signature string), so typing in one box
    repaints one box, and a save repaints the rows whose figures moved. The grid stays mounted and untouched behind it. */
-import { memo, useCallback, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { memo, useCallback, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import { HOOKS } from '../../engine/hooks'
 import { assignGroup, FIGURES, groupLabel, OTHER_ID, OTHER_LABEL, type Person } from '../engine'
@@ -293,7 +293,18 @@ interface RowApi {
 function Ro({ v, sm }: { v: number; sm?: boolean }) {
   return <span className={`bp-ro${sm ? ' sm' : ''}${v === 0 ? ' z' : ''}`}>{figWords(v)}</span>
 }
-const pendWords = (n: number) => (n ? `−${figWords(n)}` : '')
+/* A PENDING FIGURE (his D2154, D2156 — option B, 17 Nov 26): never a minus, which some read as days taken this year; the
+   grid's own look for a pending bid — hollow and dashed — in the amber every pending figure wears (D1251). LVE's stands in
+   its own column, "PENDING APPROVAL"; another kind's is a small tag on its box's top right corner, so every column stays one
+   box wide. Drawn: docs/mock/2026-11-17-lw-balances-align/ (options.mjs id b, img/desk-b-crop.png, img/phone-b-*.png). */
+function KindBox({ k, pid, pend, children }: { k: BalKind; pid: string; pend: number; children: ReactNode }) {
+  return (
+    <span className="bp-kb">
+      {children}
+      {pend ? <span className="bp-opd" data-testid={`bal-opd-${k}-${pid}`} aria-label={`${figWords(pend)} pending approval`}>{figWords(pend)}</span> : null}
+    </span>
+  )
+}
 
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function -- a grade box's four looks as drawn (a member's words or an admin's button, on a phone or a desktop) side by side; split, they could drift apart
 function GradeBox({ pid, g, phone, admin, api }: { pid: string; g: RowData['grade']; phone: boolean; admin: boolean; api: RowApi }) {
@@ -335,7 +346,7 @@ const Row = memo(function Row({ p, puck, me, boxes, admin, phone, view, d, api }
     </button>
   )
   const taken = (k: DaysTakenCol) => { const n = d.taken?.[k] ?? 0; return n ? figWords(n) : <span className="z">–</span> }
-  const pend = <>{d.pend ? `−${figWords(d.pend)}` : <span className="z">–</span>}</>
+  const pend = d.pend ? <span className="bp-pdt">{figWords(d.pend)}</span> : <span className="z">–</span>
   if (phone) {
     return (
       <div className={`bp-row${me ? ' me' : ''}`} data-testid={`bal-row-${pid}`}>
@@ -348,7 +359,7 @@ const Row = memo(function Row({ p, puck, me, boxes, admin, phone, view, d, api }
             <span className={`bp-war${d.war < 0 ? ' neg' : ''}`} data-testid={`bal-war-${pid}`}>{figWords(d.war)}</span>
             <span className="bp-oilc sep">{oil}</span>
             {OTHER.map((k, i) => (
-              <span key={k} className={`bp-oc${i ? '' : ' sep'}`}>{box(k, d.other[k]!.app, true)}<span className="bp-opd" data-testid={`bal-opd-${k}-${pid}`}>{pendWords(d.other[k]!.pend)}</span></span>
+              <span key={k} className={`bp-oc${i ? '' : ' sep'}`}><KindBox k={k} pid={pid} pend={d.other[k]!.pend}>{box(k, d.other[k]!.app, true)}</KindBox></span>
             ))}
           </>
         ) : DAYS_TAKEN_COLS.map((k, i) => <span key={k} className={i ? '' : 'sep'} data-testid={`bal-taken-${k}-${pid}`}>{taken(k)}</span>)}
@@ -369,7 +380,7 @@ const Row = memo(function Row({ p, puck, me, boxes, admin, phone, view, d, api }
               flex class on this cell took it out of the table, its figures left of the heading by 10–23px) */}
           <td className="sep">{oil}</td>
           {OTHER.map((k, i) => (
-            <td key={k} className={i ? undefined : 'sep'}>{box(k, d.other[k]!.app, true)}<span className="bp-opd" data-testid={`bal-opd-${k}-${pid}`}>{pendWords(d.other[k]!.pend)}</span></td>
+            <td key={k} className={i ? undefined : 'sep'}><KindBox k={k} pid={pid} pend={d.other[k]!.pend}>{box(k, d.other[k]!.app, true)}</KindBox></td>
           ))}
         </>
       ) : DAYS_TAKEN_COLS.map((k, i) => <td key={k} className={i ? undefined : 'sep'} data-testid={`bal-taken-${k}-${pid}`}>{taken(k)}</td>)}
@@ -716,7 +727,7 @@ export function BalancesPage() {
         <div className="bp-cols" role="presentation">
           <span>NAME · GRADE</span>
           {view === 'bal'
-            ? <><span>APP BAL</span><span>CARRIED</span><span>PENDING</span><span>WAR BAL</span><span className="sep">OIL</span>{OTHER.map((k, i) => <span key={k} className={`ok${i ? '' : ' sep'}`}>{k}</span>)}</>
+            ? <><span>APP BAL</span><span>CARRIED</span><span>PENDING<br />APPROVAL</span><span>WAR BAL</span><span className="sep">OIL</span>{OTHER.map((k, i) => <span key={k} className={i ? undefined : 'sep'}>{k}</span>)}</>
             : DAYS_TAKEN_COLS.map((k, i) => <span key={k} className={i ? undefined : 'sep'}>{k}</span>)}
         </div>
         {groups.map(G => (
@@ -729,15 +740,15 @@ export function BalancesPage() {
     </div>
   ) : (
     <div className="bp-scroll" data-testid="bal-scroll">
-      <table className="bp-table" ref={tableRef}>
+      <table className={`bp-table ${view}`} ref={tableRef}>
         <thead>
           {view === 'bal' ? (
             <>
               <tr className="h1"><th className="l" colSpan={2} /><th className="span sep" colSpan={4}>LVE</th><th className="sep" /><th className="span sep" colSpan={5}>OTHER LEAVE</th><th /></tr>
               <tr className="h2">
                 <th className="l">NAME</th><th className="l">GRADE · AUTO + LVE ON 1 JAN</th>
-                <th className="sep">APP BAL</th><th>INCL. CARRIED FWD</th><th>PENDING</th><th>WAR BAL</th><th className="sep">OIL</th>
-                {OTHER.map((k, i) => <th key={k} className={`ok${i ? '' : ' sep'}`}>{k}</th>)}
+                <th className="sep w-app">APP BAL</th><th className="w-cf">INCL. CARRIED FWD</th><th className="w-pd">PENDING APPROVAL</th><th className="w-war">WAR BAL</th><th className="sep w-oil">OIL</th>
+                {OTHER.map((k, i) => <th key={k} className={`w-k${i ? '' : ' sep'}`}>{k}</th>)}
                 <th className="fill" />
               </tr>
             </>

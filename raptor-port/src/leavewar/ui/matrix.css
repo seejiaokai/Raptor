@@ -1771,6 +1771,24 @@ touch-action: pan-x pan-y;
   box-shadow: inset 0 0 0 2px rgba(59, 198, 232, .95);
 }
 
+/* THE DAY UNDER THE MOUSE (his D2151, D2152, D2157 — 17 Nov 26; drawn docs/mock/2026-11-17-lw-grid-hover/ring.mjs,
+   img/r-ring-*.png): on a PC the one day under the mouse wears the tapped day's own ring — inset 1px, no fill — round its
+   edge; not its row or column, never the drag selection's strong one. The faint row tint above (`tr:hover td`) stays. Only
+   where a mouse is (`hover: hover`): a phone's tap keeps its own mark and leaves no ring stuck after it. Only a man's day
+   cells (`cell-…`), never a Manning, Event or heading row. It never covers a stronger mark already on the day — a picked or
+   selected day, the move's landing amber, the just-added ring, a row's landing line in Rearrange — and on his own row it
+   keeps the row's two cyan lines with it. A box-shadow on the one hovered cell: one cell repaints in its own row's layer
+   (docs/performance.md §C), no node is added and nothing is written from script; switched off during a drag, as every hover
+   is (§D). */
+@media (hover: hover) {
+  body:not(.tdrag) .mx tbody tr:not(.dragover) td[data-testid^="cell-"]:not(.selcell):not(.mvland):not(.lw-ring):hover {
+    box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .6);
+  }
+  body:not(.tdrag) .mx tbody tr.me:not(.dragover) td[data-testid^="cell-"]:not(.selcell):not(.mvland):not(.lw-ring):hover {
+    box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .6), inset 0 1px 0 rgba(59, 198, 232, .55), inset 0 -1px 0 rgba(59, 198, 232, .55);
+  }
+}
+
 .mx tbody tr.me .who {
   color: var(--accent);
 }

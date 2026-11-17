@@ -529,12 +529,19 @@ export function OilTracker({ person, onClose, onGranted }: {
       if (editing) {
         return (
           <div key={c.id} className={cls} data-testid={`oil-entry-${tid(c.id, c.ledgerId)}`}>
-            <div className="oil-edit">
+            /* ONE FIXED LAYOUT (his D2150, D2155 — option 2, drawn docs/mock/2026-11-17-lw-oil-editor/, img/*-o2-*.png): amount,
+               AM, PM and the date on line 1; reason and given-by side by side on line 2; Save, Cancel and Delete on line 3.
+               Changing the amount, between a half day and any other, moves nothing: AM / PM keep their place, left empty
+               (not greyed) when the amount is not a half day, and Delete is always as wide as "Really delete?". */
+            <div className="oil-edit aw" data-testid="oil-edit-award">
               <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
               {/* half a day takes a half (D1164): the award's own, else the default of the day the edit saves to (`eDate`,
                   the date the store reads the same default on — M4); an award's day never changes (D260), so it is its own */}
-              {Number(eAmt) === 0.5 && (
+              {Number(eAmt) === 0.5 ? (
                 <HalfPick testid="oil-edit-half" value={eHalf ?? defaultAwardHalf(p.id, eDate, c.ledgerId)} onPick={setEHalf} />
+              ) : (
+                /* the pair's place, kept at the pair's own size and empty — words in it only so it measures as the pair does */
+                <span className="oil-halfgap" aria-hidden="true"><span className="tchip half">AM</span><span className="tchip half">PM</span></span>
               )}
               {/* AN AWARD'S DATE IS SHOWN, NEVER CHANGED (D260's reading — delete it and give it again on the right
                   day); the store refuses a changed date on an award too */}
@@ -545,11 +552,11 @@ export function OilTracker({ person, onClose, onGranted }: {
                 <button className="dchip approve" data-testid="oil-edit-save" onClick={saveEdit}>Save</button>
                 <button className="tchip clear" data-testid="oil-edit-cancel" onClick={() => setEditId(null)}>Cancel</button>
                 <button
-                  className={`tchip${armDel === c.ledgerId ? ' arm' : ' clear'}`}
+                  className={`tchip oil-delb${armDel === c.ledgerId ? ' arm' : ' clear'}`}
                   data-testid={`oil-del-${c.ledgerId}`}
                   onClick={() => { if (armDel === c.ledgerId) { removeLedgerEntry(c.ledgerId!); setArmDel(null); setEditId(null); done() } else setArmDel(c.ledgerId!) }}
                 >
-                  {armDel === c.ledgerId ? 'Really delete?' : 'Delete'}
+                  <span>{armDel === c.ledgerId ? 'Really delete?' : 'Delete'}</span>
                 </button>
               </span>
               {eErr && <span className="note warn" data-testid="oil-edit-err">{eErr}</span>}

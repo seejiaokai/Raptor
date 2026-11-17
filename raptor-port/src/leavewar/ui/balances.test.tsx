@@ -727,9 +727,14 @@ describe('the M5a drawing differences (D1493)', () => {
   it('D: a name\'s callsign is set left in its puck, as on the grid (the page\'s button would centre it)', () => {
     expect(rule('.bp-name')).toMatch(/text-align:\s*left/)
   })
-  it('E: a read-only figure and the amber pending figure after it share one baseline, on a desktop and a phone', () => {
-    expect(rule('.bp-ro + .bp-opd'), 'the desktop\'s cell').toMatch(/vertical-align:\s*baseline/)
-    expect(rule('.bp-oc > .bp-ro, .bp-oc > .bp-ro + .bp-opd'), 'the phone\'s pair').toMatch(/align-self:\s*baseline/)
+  /* E (D1493) said the amber pending figure after a read-only figure stands on its line; option B (D2156, 17 Nov 26) moved
+     every kind's pending figure off the line, into a dashed tag on its figure's corner — the rule changed, so the test did */
+  it('E (D2156): a kind\'s pending figure is a dashed amber tag on its box\'s or figure\'s corner, never in line after it', () => {
+    const tag = rule('.bp-opd')
+    expect(tag).toMatch(/position:\s*absolute/)
+    expect(tag).toMatch(/border:\s*1px dashed/)
+    expect(tag).toMatch(/pointer-events:\s*none/)
+    expect(rule('.bp-kb')).toMatch(/position:\s*relative/)
   })
   /* [LW-BAL-PHONE-LOCKED-FIT] (D1497): on a phone a read-only figure keeps the drawing's 10px at its right, so it ends where a
      box's figure ends; the browser test "M5a drawing F" measures it */

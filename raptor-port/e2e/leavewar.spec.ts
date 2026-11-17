@@ -8691,21 +8691,48 @@ test('M5a walk A-F4: the two pinned heading lines meet, with no strip of rows be
   expect(Math.abs(g.h2Top - g.h1Bottom), `the second line (${g.h2Top}) meets the first one's foot (${g.h1Bottom})`).toBeLessThanOrEqual(0.5)
 })
 
-/* A-F2: the OIL figures ("0 ›") were set left, 10–23px short of the heading's right edge; every column sets its figures
-   right, under its heading's right edge (the drawing m5b-b1-desk). */
-test('M5a walk A-F2: every OIL figure ends under the OIL heading’s right edge', async ({ page }) => {
-  test.skip(isPhone(), 'the desktop table')
+/* [LW-BAL-NEATER] (his D2153, D2156 — option B, 17 Nov 26; this replaces M5a's A-F2, whose OIL figures were set right
+   under their heading's right edge): every column of the Balances view is set from the left, its heading's words starting
+   where each row's box or figure starts; LVE's pending column reads "PENDING APPROVAL", its figure a dashed tag with no
+   minus; another kind's pending figure a tag on its box's top right corner. Measured on every row, admin and member. */
+const balColumnsOff = (page: Page) => page.evaluate(() => {
+  const left = (n: Node) => { const rg = document.createRange(); rg.selectNodeContents(n); return rg.getBoundingClientRect().left }
+  const heads = [...document.querySelectorAll<HTMLElement>('.bp-table tr.h2 th')].filter(t => !t.classList.contains('fill'))
+  const off: string[] = []
+  let rows = 0
+  for (const tr of document.querySelectorAll<HTMLElement>('.bp-table tr[data-testid^="bal-row-"]')) {
+    rows++
+    heads.forEach((th, i) => {
+      const td = tr.children[i] as HTMLElement
+      const d = Math.round((left(td) - left(th)) * 10) / 10
+      if (Math.abs(d) > 1) off.push(`${tr.dataset.testid} ${th.textContent}: ${d}px`)
+    })
+  }
+  return { rows, heads: heads.map(t => t.textContent), off }
+})
+for (const role of ['admin', 'member'] as const) {
+  test(`Balances option B (D2156): every heading starts where its column's boxes and figures start — ${role}`, async ({ page }) => {
+    test.skip(isPhone(), 'the desktop table')
+    await lwRole(page, role)
+    await openBalancesPage(page)
+    const g = await balColumnsOff(page)
+    expect(g.heads).toEqual(['NAME', 'GRADE · AUTO + LVE ON 1 JAN', 'APP BAL', 'INCL. CARRIED FWD', 'PENDING APPROVAL', 'WAR BAL', 'OIL', 'CCL', 'FCL', 'PL', 'EL', 'CL'])
+    expect(g.rows).toBeGreaterThan(20)
+    expect(g.off).toEqual([])
+  })
+}
+test('Balances option B (D2156): a pending figure has no minus — LVE\'s a dashed tag in its column, another kind\'s a tag on its box\'s corner', async ({ page }) => {
   await lwRole(page, 'admin')
   await openBalancesPage(page)
-  const g = await page.evaluate(() => {
-    const th = [...document.querySelectorAll<HTMLElement>('.bp-table tr.h2 th')].find(t => t.textContent === 'OIL')!
-    const rg = document.createRange(); rg.selectNodeContents(th)
-    const head = rg.getBoundingClientRect().right
-    const figs = [...document.querySelectorAll<HTMLElement>('[data-testid^="bal-oil-"]')].map(b => b.getBoundingClientRect().right)
-    return { head, n: figs.length, off: figs.map(r => Math.round((r - head) * 10) / 10).filter(d => Math.abs(d) > 1) }
-  })
-  expect(g.n).toBeGreaterThan(20)
-  expect(g.off, `every OIL figure's right edge on the heading's (${g.head})`).toEqual([])
+  await expect(page.getByTestId('bal-pend-bane')).toHaveText(/^\d+(\.5)?$/)
+  await expect(page.locator('[data-testid="bal-pend-bane"] .bp-pdt')).toHaveCSS('border-top-style', 'dashed')
+  const g = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('[data-testid^="bal-opd-"][data-testid$="-bane"]')].map(t => {
+    const box = t.parentElement!.querySelector<HTMLElement>('.bp-bx, .bp-ro')!.getBoundingClientRect(), r = t.getBoundingClientRect()
+    return { text: t.textContent, overTop: r.top < box.top, pastRight: r.right > box.right, onCorner: r.left < box.right && r.bottom > box.top }
+  }))
+  expect(g.length, 'Bane has another kind pending').toBeGreaterThan(0)
+  for (const t of g) expect(t, `the tag ${t.text}`).toEqual({ text: t.text, overTop: true, pastRight: true, onCorner: true })
+  for (const t of g) expect(t.text).not.toMatch(/[−-]/)
 })
 
 /* B-F2/F3: on a phone a refusal under App bal ("Type a whole number or a half, like 17 or 17.5") ran from x −49 to 191 —
@@ -8749,7 +8776,7 @@ test('M5a walk B-F4: a tapped box comes into sight with its pending figure', asy
   await lwRole(page, 'admin')
   await page.setViewportSize({ width: 402, height: 874 })
   await openBalancesPage(page)
-  await expect(page.getByTestId('bal-opd-PL-bane')).toHaveText('−0.5')
+  await expect(page.getByTestId('bal-opd-PL-bane')).toHaveText('0.5')
   await page.getByTestId('bal-PL-bane').focus()
   await page.waitForTimeout(300)
   const g = await page.evaluate(() => {
@@ -8917,12 +8944,16 @@ test('M5a drawing E (D1493): a member’s locked row has its amber pending figur
     const app = base(row.querySelector<HTMLElement>('.bp-ro')!)
     return { app, kinds: ['CCL', 'PL', 'CL'].map(k => {
       const pd = document.querySelector<HTMLElement>(`[data-testid="bal-opd-${k}-bane"]`)!
-      return { k, text: pd.textContent, fig: base(pd.parentElement!.querySelector<HTMLElement>('.bp-ro')!), pd: base(pd) }
+      const ro = pd.parentElement!.querySelector<HTMLElement>('.bp-ro')!
+      const r = pd.getBoundingClientRect(), f = ro.getBoundingClientRect()
+      return { k, text: pd.textContent, fig: base(ro), corner: r.top < f.top && r.right > f.right && r.left < f.right }
     }) }
   })
+  /* option B (D2156, 17 Nov 26) moved each kind's pending figure off the figure's line onto its corner, with no minus; the
+     read-only figures themselves still stand on App bal's line (D1493) */
   for (const k of g.kinds) {
-    expect(k.text, `${k.k} has a pending figure`).toMatch(/^−/)
-    expect(Math.abs(k.pd - k.fig), `${k.k}: the amber ${k.text} on its figure's line (${k.pd} against ${k.fig})`).toBeLessThanOrEqual(0.5)
+    expect(k.text, `${k.k} has a pending figure, no minus`).toMatch(/^\d/)
+    expect(k.corner, `${k.k}: the tag ${k.text} on its figure's top right corner`).toBe(true)
     expect(Math.abs(k.fig - g.app), `${k.k}: its figure on App bal's line`).toBeLessThanOrEqual(0.5)
   }
 })
