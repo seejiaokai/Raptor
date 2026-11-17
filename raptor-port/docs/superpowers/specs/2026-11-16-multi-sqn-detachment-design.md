@@ -388,6 +388,15 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   again each time it opens, reading "Today:"; the date applies the sheet's choices (T1–T3) to what stands then, and the
   bell on the date says what it did. Open for round 7: is a scheduler who plans him after the date, once the transfer is
   set, told he moves to 149; and the refusals checked again on the date, the transfer waiting as D306 does.
+- **Fable's read, checked and put to him (chat 100):** three fresh Opus readers checked every claim of
+  `…/briefs/2026-11-17-multi-sqn-red-team-fable.report.md` against the rulings and code, the host reproducing the
+  deciding ones (publish refused without four sign-offs; an input covers its last day; every posting outcome takes a
+  past date today). Its page: `raptor-port/docs/mock/2026-11-17-multi-sqn-fable/`, published
+  https://claude.ai/artifact/G5RCKPp6XyzWVTkEoZR1fy — 16 calls (F15–F24, F8, F9, F12, F13, F1's holidays, F4's Reject
+  of a DET), 11 matching round 6, 4 claims dropped (F22's war-freeze, F13's badge and count, F21's per-squadron qual
+  columns "today", F9's held Publish — a lock against D1751). Corrections told to him: C1's "always names the boxes
+  offer" false (a signer who lost his Scheduler tick stops counting, an archived one is not offered); C3 contradicts
+  itself (an input covers its last day); Viper used for both a 149 man and a 142 man. Nothing ruled.
 - **His question (chat 100), "can SANS be picked from each other's sqn?"** — yes, his own D2145 (round 6's R11). Open
   for round 7 (Fable's L9): whose SANS cut-off judges a borrowed SANS man's availability — recommended his own squadron's.
 
