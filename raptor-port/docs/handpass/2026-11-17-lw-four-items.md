@@ -1,4 +1,4 @@
-# Evidence sheet — the four Leave War items, chats 99–100 (17 Nov 26)
+# Evidence sheet — the four Leave War items, chats 99–105 (17 Nov 26)
 
 Branch `claude/lw-four-items`, pull request 801. One batch, one check (D485, D490): [LW-BAL-NEATER] (D2156), [LW-GRID-HOVER-RING]
 (D2157), [LW-OIL-EDIT-STEADY] (D2155), [LW-WAR-AUTONAME] (D2158). Pictures: `docs/img/handpass/2026-11-17-lw-four-items/`.
@@ -338,3 +338,92 @@ sheet with its pictures and what was not walked ✓ · his look — asked, chat 
 Why the build's own checks missed 5 and 6: no browser test of either existed — chat 99 listed them as to be written (its
 "Pick up here"); the ring was compared with its drawing only as injected CSS on `main`'s build, where the nesting did not
 apply. The lesson is already §7.11's 22 ("checked by what is drawn") — the new test asserts the computed style on the day.
+
+## Chats 104–105 — the click-away (D2173, D2176) and the row tint (D2171, D2177)
+
+His look (D2172) brought two changes: a click or tap outside the OIL award editor closes it (D2173 — first built to D2174,
+an unsaved change kept it open; then his D2176: it always closes, the change dropped), and the grid's row tint over the
+name and balance cells (D2171, the mock-up approved "tint OK", D2177).
+
+**The tier: FULL, unchanged.** The click-away: the award editor saves OIL (question 1, YES) and it is a new way to close
+it (question 5, YES). The tint alone: a shared drawer, every row of the grid (question 4, YES — WALK); it rides the FULL
+check. Questions 2, 3, 6, 7, 8: NO for both — no record written by either beyond the editor's own Save (unchanged), no new
+surface, no role, no warning.
+
+**The rulings that apply, checked on the build:** D2176 (an outside click always closes, the change dropped; a slide closes
+nothing) ✓ walk C1–C7, doors 1–2; D2175 (the slide kept) ✓ C5; D2155 (the editor holds still) ✓ its test green; D2171 /
+D2177 (the tint over the name and balance, solid, his own row unchanged, a phone unchanged) ✓ T1–T3, the row-kinds probe;
+D2157 (the ring, the row tint kept) ✓ its tests green; D1194 (the Manning pairs' faint colours) — broken by the first tint
+build, fixed (find 22); "nothing pinned leaks" (design rulings) ✓ T1, T3 (solid, in front). No clash.
+
+### The roll-call — the click-away
+
+| Place | SHOW | USABLE | PAINTED | Proved by |
+|---|---|---|---|---|
+| OIL tracker from the tab, desktop and phone — a press on the title with nothing changed | YES — the editor closes, nothing saved | YES | YES | walk C1 |
+| …with a change typed, a press outside | YES — closes, the change dropped (D2176) | YES | YES | walk C2; `leavewar.spec.ts` click-away tests |
+| …with a change, a tap on another award | YES — that award opens, the change dropped | YES | YES | walk C3 |
+| …Cancel, Save | YES — Cancel drops, Save keeps | YES | YES | walk C4, C6 |
+| …the list slid (finger on a phone, wheel on a PC) | must NOT close — a slide is not a click (D2175) | YES — the list moved | YES | walk C5 |
+| …a drag begun inside (selecting the reason's words) let go outside | must NOT close — the press began inside | — | — | `leavewar.spec.ts` "a drag begun inside it…" (fixed red-first, chat 104) |
+| A correction's date calendar (floats outside the editor) | must NOT close the editor — its calendar is its own; a press outside after it closes | YES | YES | walk C7; "its calendar is its own" (red with the exception taken out, chat 105) |
+| A tap on a person's name (the credit bar) | YES — the editor closes, the credit bar opens; a press outside folds the bar | YES | YES | walk C8a–b |
+| The tracker's ✕ with an editor open; reopened | YES — closes; reopens with no editor | YES | YES | walk C9 |
+| The tracker over Approvals, desktop and phone | YES — closes on the title, a change dropped; Escape back to Approvals | YES | YES | doors walk |
+| The tracker over Balances, desktop and phone | YES — the same; Escape back to Balances | YES | YES | doors walk |
+| Enter or Space on a tracker button outside, after a click into the reason box (PC) | YES — closes, the change dropped | YES | YES | "Enter on a button outside it closes it…" (find 23) |
+| A press begun outside and let go inside, after a real drag (PC) | must NOT close — the editor's own | — | — | "a press begun outside it and let go inside…" (find 24) |
+| A still press outside, the list moving under the mouse (PC) | YES — closes, a click outside | YES | YES | "a still press outside, the list moved under it…" (find 27) |
+| A member | must NOT — opens no editor (unchanged) | — | — | chat 102's W2 E-b |
+
+### The roll-call — the row tint
+
+| Place | SHOW | USABLE | PAINTED | Proved by |
+|---|---|---|---|---|
+| Grid, PC, a man's row under the mouse | YES — name and balance tinted, solid, in front; the row below bare; gone when the mouse leaves | n/a — a mark | YES | walk T1–T2 (`t1-row-tint.png`); `leavewar.spec.ts` D2171 test |
+| Grid, PC, the year scrolled sideways | YES — the same, the pinned cells still in front and solid | n/a | YES | walk T3 |
+| Grid, PC, his own row | must NOT — keeps its own highlight | — | — | probe `own-row`; D2171 test |
+| Grid, PC, the Manning pairs (Required / Available P and W) | YES — the tint over the pair's colour | n/a | YES after find 22 | probe `manning-pair-*`; D2171 test |
+| Grid, PC, the other Manning rows, the event rows | YES — tinted as a man's row (the row under the mouse, whatever its kind) | n/a | YES | probe |
+| Grid, PC, group headings, the month strip | n/a — no name or balance cell | — | — | probe |
+| Phone (a tap leaves a row "hovered") | must NOT — the rule is a mouse's only | — | — | walk T1 (phone); the D2171 test's phone half |
+| The phone's second copy of the pinned columns | must NOT — drawn on a phone only, where the rule is not in force | — | — | `Matrix.tsx` (`bandActive = phone && …`) |
+
+### The walk, the break checks, the reads
+
+**Walk:** the click-away walk rewritten to D2176 with three tint steps (`scripts/handpass/lw-clickaway-walk.mjs`, pictures
+`docs/img/handpass/2026-11-17-lw-four-items/clickaway/`) — **28 PASS / 0 FAIL**, phone 402 and PC 1536, on the production
+build served locally (`c78106577`), no page errors, and re-walked on each fix's build (`0eee82d0d`, then find 27's): 28 / 0 each; the doors walk (`lw-clickaway-doors.mjs`, `clickaway-doors/`) — **14
+PASS / 0 FAIL**; the row-kinds probe (`lw-tint-rowkinds.mjs`, `tint-rows/`) on `901ee405f`'s build. Every deciding picture
+opened by the host. Chat 104's walk on `30e4e1162` (24 / 0) asserted D2174 and is replaced by this one.
+
+**Break checks:** the tint rule taken out → the D2171 test red, phone and desktop; the editor's calendar exception taken
+out → "its calendar is its own" red, phone and desktop (a timeout: the editor had closed under the test). Both put back,
+green. The pair check of find 22: red on `c78106577`'s build, green after.
+
+**The reads:** chat 104's two blind reads of `30e4e1162` — Astra (`…/2026-11-17-lw-four-items-clickaway-read-astra.md`)
+and a fresh Opus reader (`…-clickaway-read-opus.md`). Dispositions: Astra 1, 2, 5 and Opus F1, F2, F4 moot under D2176 (no
+change is kept, so nothing guards it); Astra 3's drag from inside / Opus F3 fixed red-first; Astra 3's other half (a drag
+down the names closes an unchanged editor) is as ruled — a tap on a name closes the editor too (walk C8a); Astra 4 taken
+(the tests read the saved award at once); Opus's calendar test added. The fix round's narrow read (§5 "a fix is new code",
+round 2): a fresh Opus reader on `59ebfdfcf` and `c78106577` (brief `…/2026-11-17-lw-four-items-fixread2-brief.md`, report `…-fixread2-opus.md`) — five findings: the pair colour (already find 22), finds 23–26. Round 3, the last (§5's cap): a fresh Opus reader on `0eee82d0d` alone (brief `…-fixread3-brief.md`) — the fix judged right and complete for every finding (touch, pen, a cancelled press, a double click, a script click, labels, Enter on an award or the editor's buttons, the listeners removed); one low finding — find 27, fixed red-first with a guard of one line, so no fourth read (§5's threshold); its report kept in the chat, condensed here.
+
+### What chats 104–105 found, and each disposition
+
+| # | Found by | What | Disposition |
+|---|---|---|---|
+| 22 | Chat 105's probe of every row kind | **The tint replaced the Manning pairs' own olive and green (D1194) on their name and balance cells** while the mouse was on the row — the new rule outweighed the pairs' own | Fixed red-first (the D2171 test's pair check, red on `c78106577`): on those two rows the tint is laid over the pair's colour |
+| 23 | The fix round's narrow read, round 2 | **Enter or Space on a tracker button outside the editor closed nothing** when the last mouse press had been inside it (the reason box): the remembered press was never cleared, and a click made by the keys has no press of its own | Fixed red-first (`leavewar.spec.ts` "Enter on a button outside it closes it…", red on `901ee405f`): each press read once and forgotten; a click by the keys judged by where it lands |
+| 24 | The same read (put as "his call"; the host's call, told to him) | **A press begun outside and let go inside the editor closed it** — the click goes to a box around both; the mirror of the drag fixed in chat 104 | Fixed red-first ("a press begun outside it and let go inside closes nothing", red on `901ee405f`): a press let go inside is the editor's own |
+| 25 | The same read, confirmed by the host | **The own-row checks of the tint test and the hover-ring test had silently run nothing:** the tests run with no row marked as the signed-in person's, and both checks sat under "if a row is found" | The tests now mark a row as his own first and require it found; both green. Behaviour unchanged — the probe and walk T1 had seen his row right |
+| 27 | The fix read, round 3 | **A still press outside, the list moving under the mouse before the release** (a picker closing above the editor), counted as let go inside after find 24's fix, so the editor stayed open | Fixed red-first ("a still press outside, the list moved under it, closes it", red on `0eee82d0d`): let go inside counts only after a drag of more than 4px |
+| 26 | The same read | Test weaknesses: "another award" brought only to the nearest edge (could land under the pinned names); the calendar test never checked the date unchanged | Taken: to the middle, checked drawn on top; the date's stored value checked unchanged |
+
+**Candidate for him (D852, not changed):** under the mouse, a Manning pair row's DAYS lose their pair colour (the older
+day tint replaces it — as before this branch); the same layering as find 22 would keep it.
+
+**§12, ticked (chat 105):** the eight answers and the tier ✓ · the rulings listed and checked, no clash ✓ · the roll-call,
+no blanks ✓ · the production build driven at both widths ✓ · every surface seen and operated ✓ · the walk sized, every order
+a result ✓ · the real result observed — the award read back after each press ✓ · tests through the app's own routes ✓ · a red
+break test per wired surface ✓ · the gates — NOT YET: GitHub's run of `c78106577` passed every check but one date-calendar wheel test ("a glide caught, held still, then dragged…"), which fails on `main`'s own run too since the wheel-drag merge and which pull request 802 (another chat's) fixes; once 802 is merged, `main` is brought in here and the run read again. On this PC: every OIL, tint and ring browser test 45 passed (7 skipped by width), phone and desktop; the OIL tracker's unit file 30; the build clean · the reads done and every finding disposed of ✓ · the sheet with
+its pictures ✓ · his look — asked, chat 105.

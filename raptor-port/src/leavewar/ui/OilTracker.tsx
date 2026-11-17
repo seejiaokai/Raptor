@@ -455,13 +455,15 @@ export function OilTracker({ person, onClose, onGranted }: {
      and opens that one, as before. Its mirror is the editor's own too: a press begun outside and LET GO inside it (the
      click again goes to a box around both). Each press is read once and forgotten: a press made by the keys (Enter or
      Space on a button outside — a click with no press of its own, `detail` 0) is judged only by where it lands, never by
-     the last mouse press, which may have been in the reason box (chat 105's fix read, 2 and 4). */
+     the last mouse press, which may have been in the reason box (chat 105's fix read, 2 and 4). Let go inside counts only
+     after a real drag (more than 4px): a still press outside, the list moving under it (a picker closing above), is a
+     click outside (the fix read, round 3). */
   useEffect(() => {
     if (editId === null) return
     const mine = (t: EventTarget | null) => !!(t as HTMLElement | null)?.closest?.('.oil-e.editing, .dcal-layer')
-    let downInside = false, upInside = false
-    const onDown = (e: PointerEvent) => { downInside = mine(e.target); upInside = false }
-    const onUp = (e: PointerEvent) => { upInside = mine(e.target) }
+    let downInside = false, upInside = false, x0 = 0, y0 = 0
+    const onDown = (e: PointerEvent) => { downInside = mine(e.target); upInside = false; x0 = e.clientX; y0 = e.clientY }
+    const onUp = (e: PointerEvent) => { upInside = mine(e.target) && Math.hypot(e.clientX - x0, e.clientY - y0) > 4 }
     const onClick = (e: MouseEvent) => {
       const pressed = e.detail > 0 && (downInside || upInside)
       downInside = false; upInside = false

@@ -9723,6 +9723,27 @@ test('the OIL award editor: a press begun outside it and let go inside closes no
   await page.waitForTimeout(200)
   await expect(page.locator('[data-testid="oil-edit-award"]'), 'let go inside the editor: still open').toBeVisible()
 })
+/* …ROUND 3 OF THE FIX READ (chat 105): a press outside with the mouse held STILL, the list moving under it so the editor
+   arrives under the mouse (a picker closing above it), is a click outside — only a real drag let go inside is the
+   editor's own. Red on 0eee82d0d first. */
+test('the OIL award editor: a still press outside, the list moved under it, closes it (the fix read, round 3)', async ({ page }) => {
+  test.skip(isPhone(), 'a mouse held still')
+  await openAwardL4(page)
+  const r = (await page.locator('[data-testid="oil-edit-reason"]').boundingBox())!
+  const w = (await page.locator('.oil-wrap').boundingBox())!
+  /* a point d below the reason box; the list then slides DOWN by d (scrolled back), bringing the box under the still mouse */
+  const top = await page.locator('.oil-wrap').evaluate(el => el.scrollTop)
+  const d = Math.min(160, top, w.y + w.height - 20 - (r.y + r.height / 2))
+  expect(d, 'room for the list to slide under the mouse').toBeGreaterThan(r.height * 2)
+  const x = r.x + r.width / 2, y = r.y + r.height / 2 + d
+  await page.mouse.move(x, y)
+  await page.mouse.down()
+  await page.locator('.oil-wrap').evaluate((el, d) => { el.scrollTop -= d }, d)
+  await page.evaluate(() => new Promise(res => requestAnimationFrame(() => requestAnimationFrame(res))))
+  expect(await page.evaluate(([x, y]) => !!document.elementFromPoint(x, y)?.closest('.oil-e.editing'), [x, y]), 'the editor now under the still mouse').toBe(true)
+  await page.mouse.up()
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'a still press outside: closed').toHaveCount(0)
+})
 
 test('the OIL correction editor: its calendar is its own — months turned and the calendar closed leave it open', async ({ page }) => {
   await lwRole(page, 'admin')

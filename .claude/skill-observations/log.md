@@ -2801,3 +2801,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** A walker signed in as a member looked for the same award records it had seen as the admin and reported one "missing". The member's own page holds different people and awards by design; the host spent a reproduction to find the lead false.
 **Suggested improvement:** When a brief walks one surface under two roles, name for each role the records it should expect to find (or say plainly they differ and why), so a walker compares like with like.
 **Principle:** a walker given one role's expectations will read another role's legitimately different data as a fault; the brief carries the expected data per role.
+
+### Observation 972: A test's "if the thing is found" guard silently ran nothing
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 105, the Leave War row tint and the OIL editor's click-away (number past 971, the highest on another open branch)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the assertions of a browser test
+
+**Issue:** Two browser tests checked "the signed-in person's own row keeps its highlight" inside `if (row found) { … }`. The suite runs with no row marked as anyone's own, so the check never ran in any run, on any machine, and both tests stayed green. A blind code reader spotted the pattern; the host confirmed it by turning the guard into an assertion, which failed at once.
+**Suggested improvement:** In the section on writing a test, add a rule: a check that only runs when its subject is found must assert the subject was found (or set the state up so it is), never skip quietly; a reader's brief asks for every conditional around an assertion.
+**Principle:** An assertion behind a condition is not a check unless the condition is itself asserted — a skipped check reads as a passed one.
