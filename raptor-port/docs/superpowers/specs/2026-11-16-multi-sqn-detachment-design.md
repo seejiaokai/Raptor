@@ -338,6 +338,21 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   only for people outside the app's squadrons.
 - **L** nine questions for later rounds, listed on the page.
 - **His answers (17 Nov 26): "raise the limit" (D2141, How we work's page limit 38,000 -> 38,500); "A" (D2142): closing clears the published days after today and publishes AL1 on each in the one press — whose names stand on its four sign-offs is open for round 7. And for the next chat: first show him the wording for everything discussed here, before anything else.**
+- **His answer to R1 (17 Nov 26, chat 99): D2144** — the Attach input stays as today, filed by hand for a man attached
+  elsewhere such as staff work (still in his squadron, not available); the "Attach · 149" row made by itself from the
+  other squadron's plan stays beside it, never an input. R1 never removed the hand input; told to him. Knock-on effects:
+  a man may carry both on one day, each its own row under Unavailable; Q6 unchanged (the automatic row never counts him
+  out on the Leave War, a hand Attach still does). Open for round 7, the agent's reading: a hand Attach whose "To" box
+  names one of the app's squadrons doubles the automatic row — warn and point to borrowing, put to him.
+- **His idea (17 Nov 26, chat 99) for Q7:** when "Transfer to Sqn" is picked, the sheet offers a few decisions — "does
+  he still have access for 142 etc." Drawn for him (`raptor-port/docs/mock/2026-11-17-multi-sqn-r7/draw-transfer.mjs`):
+  T1 "142 access" None / View / Scheduler (replaces C6), T2 "142 lines" Keep him / Take him off, T3 "In 149" Member /
+  Scheduler / Admin for an admin of both squadrons only. Not ruled; put to him with the agent's recommendation.
+- **His question (17 Nov 26, chat 99), not ruled:** *"if people going on detachment should still be manpower available
+  for the sqn. but only those who are on OD like staff trip overseas are not part of the man power for that day. so
+  should we create a new input called DET? Cus the leave war uses OD for both purposes"*. Answered with the agent's
+  recommendation (a DET input of its own, OD left for staff trips); would replace D2101's "Detachment" choice on the
+  overseas duty and D2102's OD row, and settle R2 and R3 by itself — waits for his answer; drawn in round 7 if yes.
 - **WITHDRAWN by D2140 — the card's words below are not to be drawn as they stand: they gave a false reason (D212: an admin picks all four names), contradicted themselves (no more planning, then publish AL1 there) and dropped the overseas duty ending. Redo from scratch in round 7; his question — who publishes AL1, before or after closing — put to him as A (one press clears and publishes) or B (Close greyed until he has).**
 - **His correction, D2139 (17 Nov 26), of Q2's picture (round 3's card "Close Exercise North?"):** *"this text is not
   clear on what will happen"*. The card's words are redrawn in round 7, put to him before anything is built. Proposed
