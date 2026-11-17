@@ -126,6 +126,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-EARN-BOARD-TIDY] — the three code reads' tidiness notes on the OIL Earn board change (D489), filed not fixed.
 
 **Leave War**
+- [LW-OIL-EDIT-STEADY] — build the OIL award editor's steady layout, option 2 as drawn (his D2155): nothing moves as the amount changes; a small fix, no answer needed.
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
@@ -287,6 +288,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+
+### [LW-OIL-EDIT-STEADY] The OIL tracker's award editor keeps every part in place (his D2150, D2155; filed 17 Nov 26, chat 96) — OPEN, ready to build
+**What it is:** the editor of an award in the OIL tracker (`raptor-port/src/leavewar/ui/OilTracker.tsx`, the editing branch; `oiltracker.css` `.oil-edit`) wraps its parts freely and draws AM / PM only at 0.5, so the date, reason and given-by jump when the amount changes, and "Really delete?" widens its button. **Build as drawn, option 2** (https://claude.ai/artifact/L45vtW9hopGHDtwp9yaN9H; pictures and the injected CSS in `raptor-port/docs/mock/2026-11-17-lw-oil-editor/`, `oil.mjs`): one fixed grid — amount, AM, PM, date on line 1; reason and given-by side by side on line 2; Save, Cancel, Delete on line 3 — the AM / PM place kept empty (not greyed) when the amount is not a half day, Delete always as wide as "Really delete?". Check the same at his iPhone's size and a desktop's; the credit form (`CreditForm.tsx`) is not part of it unless he says.
 
 ### [READERS-RECHECK-APP] Compare the two readers again on app-code jobs (his D2042, 14 Nov 26) — OPEN, waits for 30 more app-code jobs
 **What it is:** the 7–14 Nov 26 comparison (`raptor-port/docs/superpowers/briefs/2026-11-14-readers-compared.md`) found both readers worth keeping, but only 8 of its 42 jobs were app code — too few to say whether one reader is enough for a small app change. **When:** once 30 more app-code jobs since 14 Nov 26 have both Astra's and the fresh Opus reader's reports saved in that folder. **How:** the same count — per job, what both found, what only one found, what was confirmed (red-first) and fixed — split by the size of the change; then put to him with a recommendation. Nothing about the readers changes before his answer.
