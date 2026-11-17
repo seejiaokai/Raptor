@@ -130,9 +130,13 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
      arrow key's row would not be scrolled into the band) or, after the window re-centred, a row of the old window */
   const live = useRef({ value, first })
   useLayoutEffect(() => { live.current = { value, first } })
+  /* nothing is chosen while a mouse is held on the list, moved or not (the fix round's read, 17 Nov 26): a glide caught
+     by a press and held still left the glide's last wait running, which chose the row under the press — and a choice
+     far enough on re-centred the list's window, so the drag that followed started from the old window's place and
+     jumped some 30 years. The press's own end settles instead (onPointerUp, and the lost press in onPointerMove). */
   const settle = () => {
     const n = ref.current
-    if (!n || drag.current?.moved || glide.current) return
+    if (!n || drag.current || glide.current) return
     const at = live.current.first + Math.round(n.scrollTop / ROW)
     if (at !== live.current.value) { live.current.value = at; byScroll.current = true; onChange(at) }
   }
@@ -162,6 +166,16 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
     const caught = !!glide.current
     if (caught) { cancelAnimationFrame(glide.current); glide.current = 0 }
     drag.current = { id: e.pointerId, y: e.clientY, top: ref.current.scrollTop, moved: false, caught, pts: [{ t: e.timeStamp, y: e.clientY }] }
+    /* A PRESS LET GO OFF THIS LIST BEFORE IT TOOK HOLD (the fix round's read, 17 Nov 26): the list does not hold the
+       mouse until it has moved, so it never heard the release — pressed on the months and let go on the years, the
+       months kept the press, and a later press carried back over them moved them from the old press's place. The
+       window hears every release: the press ends there (a drag that took hold ends on the list, which holds the mouse,
+       and its own release finds nothing left to end). */
+    const id = e.pointerId
+    window.addEventListener('pointerup', u => {
+      const d = drag.current
+      if (d && d.id === id && u.pointerId === id && !d.moved) onPointerUp(u)
+    }, { capture: true, once: true })
   }
   const onPointerMove = (e: PointerEvent) => {
     const d = drag.current, n = ref.current
@@ -169,7 +183,7 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
     /* THE BUTTON IS NO LONGER HELD: a press carried sideways off the list and let go there was never heard (the list is
        not holding the mouse until the drag takes hold), so it ends here — a mouse coming back over the list with no
        button down moves nothing (Astra's read, 17 Nov 26) */
-    if (!(e.buttons & 1)) { if (d.moved || d.caught) onPointerUp(e); else drag.current = null; return }
+    if (!(e.buttons & 1)) { if (d.moved || d.caught) onPointerUp(e); else { drag.current = null; settle() } return }
     const dy = e.clientY - d.y
     if (!d.moved) {
       if (Math.abs(dy) < 4) return
@@ -181,12 +195,13 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
     d.pts.push({ t: e.timeStamp, y: e.clientY })
     while (d.pts.length > 2 && e.timeStamp - d.pts[0].t > 100) d.pts.shift()
   }
-  const onPointerUp = (e: PointerEvent) => {
+  /* only what it reads: the window's own release (onPointerDown) comes here too, not only the list's */
+  const onPointerUp = (e: Pick<PointerEvent, 'pointerId' | 'type' | 'timeStamp'>) => {
     const d = drag.current, n = ref.current
     if (!d || e.pointerId !== d.id) return
     drag.current = null
     if (!n) return
-    if (!d.moved) { if (d.caught) { swallow.current = true; land(n, Math.round(n.scrollTop / ROW) * ROW) } return }
+    if (!d.moved) { if (d.caught) { swallow.current = true; land(n, Math.round(n.scrollTop / ROW) * ROW) } else settle(); return }
     swallow.current = true
     if (n.hasPointerCapture?.(e.pointerId)) n.releasePointerCapture(e.pointerId)
     /* how fast the list was moving as it was let go: the mouse over its last tenth of a second, and nothing if it had
@@ -226,6 +241,10 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
     e.stopPropagation(); e.preventDefault()
   }
   const onKey = (e: KeyboardEvent) => {
+    /* WHILE A MOUSE DRAGS THE LIST, ENTER AND THE ARROWS WAIT (the fix round's read, 17 Nov 26): the row chosen is still
+       the one before the drag, so Enter closed the lists on it while the band showed another, and an arrow scrolled the
+       list against the hand. Let go, the list lands, and the keys act on that row. */
+    if (drag.current?.moved && (e.key === 'Enter' || e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); return }
     const at = stopGlideAt()
     /* ENTER IS THE WAY BACK TO THE DATES (the design look of 13 Oct 26 — K4; owner D830). It did nothing here, and the
        only way back was to go up to the title and press it again. A row is chosen as it comes into the band, so Enter

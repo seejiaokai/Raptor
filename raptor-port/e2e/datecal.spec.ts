@@ -527,20 +527,30 @@ test('a desktop: the drag ends with the press, and a key or a finger during a gl
      list's place itself, at the press and on the list's every scroll, so only what happened after the press counts. */
   await page.locator(Y).first().evaluate(el => {
     const w = window as unknown as { __wd: Record<string, number> }
-    w.__wd = { pre: NaN, post: NaN, touchAt: NaN, touchTop: NaN, lastScroll: NaN, lastTop: NaN }
-    /* the mouse press: its place before the list hears it (capture, first of all) and once the press has been handled
-       (the next task — the calendar's card keeps the press from bubbling up to the window, so a bubbling listener there
-       never hears it) */
+    w.__wd = { pre: NaN, post: NaN, touchAt: NaN, touchRow: NaN }
+    /* the year in the band — not the list's raw place, which jumps by a whole window of rows, the year staying put,
+       when the list re-centres on a year chosen far from where it opened (the fix round's read, 17 Nov 26) */
+    const band = () => {
+      const c = el.getBoundingClientRect(), mid = c.top + c.height / 2
+      let best = NaN, d = Infinity
+      el.querySelectorAll('.dcal-opt').forEach(o => { const r = o.getBoundingClientRect(), k = Math.abs(r.top + r.height / 2 - mid); if (k < d) { d = k; best = +(o.textContent || 'NaN') } })
+      return best
+    }
+    ;(window as unknown as { __band: () => number }).__band = band
+    /* the mouse press: its place before the list hears it (capture, first of all) and once a frame has been drawn after
+       it (the calendar's card keeps the press from bubbling up to the window, so a bubbling listener there never hears
+       it; and a snap back to a row would land at the next frame, not inside the press) */
     window.addEventListener('pointerdown', e => {
-      if (e.pointerType !== 'mouse') { w.__wd.touchAt = e.timeStamp; w.__wd.touchTop = el.scrollTop; return }
+      if (e.pointerType !== 'mouse') { w.__wd.touchAt = e.timeStamp; w.__wd.touchRow = band(); return }
       w.__wd.pre = el.scrollTop; w.__wd.post = NaN
-      setTimeout(() => { w.__wd.post = el.scrollTop })
+      requestAnimationFrame(() => requestAnimationFrame(() => { w.__wd.post = el.scrollTop }))
     }, true)
-    el.addEventListener('scroll', e => { w.__wd.lastScroll = e.timeStamp; w.__wd.lastTop = el.scrollTop })
   })
   const wd = () => page.evaluate(() => (window as unknown as { __wd: Record<string, number> }).__wd)
   await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x, y - 132, { steps: 3 }); await page.mouse.up()
   await page.waitForTimeout(80)
+  /* the flick's own press left its reading: cleared, so only the catching press's counts */
+  await page.evaluate(() => { (window as unknown as { __wd: Record<string, number> }).__wd.post = NaN })
   await page.mouse.down()
   await expect.poll(async () => Number.isFinite((await wd()).post), { message: 'the page never heard the press' }).toBe(true)
   const press = await wd()
@@ -561,13 +571,93 @@ test('a desktop: the drag ends with the press, and a key or a finger during a gl
   await expect.poll(async () => Number.isFinite((await wd()).touchAt), { message: 'the page never heard the finger' }).toBe(true)
   await page.waitForTimeout(350)
   const touch = await wd()
-  /* after the finger: at most the snapping back to the nearest whole row (under half a row, one frame's scroll), never
-     the glide's frames running on */
-  expect(Math.abs((await listTop(page, Y)) - touch.touchTop), 'the glide went on under a finger held on the list').toBeLessThan(23)
-  expect(!(touch.lastScroll > touch.touchAt + 200), 'the list kept scrolling under a finger held on it').toBe(true)
+  /* after the finger: at most the snapping back to the nearest whole row (the next year at most), never the glide's
+     frames running on */
+  const nowRow = await page.evaluate(() => (window as unknown as { __band: () => number }).__band())
+  expect(Math.abs(nowRow - touch.touchRow), 'the glide went on under a finger held on the list').toBeLessThanOrEqual(1)
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
   await atRest(page, Y)
   expect(await yearOf(page)).toBeGreaterThan(y1)
+  expect(errs, 'errors on the page').toEqual([])
+  await context.close()
+})
+/* THE FIX ROUND'S READ (a fresh reader, 17 Nov 26): three paths the reads' fixes left open */
+async function openLists(browser: Browser, baseURL: string | undefined) {
+  const context = await browser.newContext({ baseURL, viewport: DESK })
+  const page = await context.newPage()
+  const errs: string[] = []
+  page.on('pageerror', e => errs.push(String(e)))
+  await login(page)
+  await adminPanel(page, 'Users')
+  await page.locator('#accAddPostIn').click()
+  await calendarOnTop(page, 'Post in')
+  await page.locator('[data-testid="dcal-title"]').click()
+  await expect(page.locator('[data-testid="dcal-years"]')).toBeVisible()
+  return { context, page, errs }
+}
+test('a desktop: a glide caught, held still, then dragged, moves on from the year it was caught at', async ({ browser, baseURL }) => {
+  const { context, page, errs } = await openLists(browser, baseURL)
+  const Y = '[data-testid="dcal-years"]'
+  /* 28 years on by the keys: near the edge of the window of years the list holds, so the glide below carries the
+     choice past it and the list would re-centre on a new window */
+  const y0 = await yearOf(page)
+  await page.locator(Y).first().focus()
+  for (let i = 0; i < 28; i++) await page.keyboard.press('ArrowDown')
+  await atRest(page, Y)
+  expect(await yearOf(page)).toBe(y0 + 28)
+  const r = await rect(page, Y), x = r.l + r.w / 2, y = r.t + r.h / 2
+  await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x, y - 132, { steps: 3 }); await page.mouse.up()
+  await page.waitForTimeout(100)
+  /* caught, and held still well past the list's wait for scrolling to stop */
+  await page.mouse.down()
+  await page.waitForTimeout(400)
+  const caught = await page.locator(Y).first().evaluate(el => {
+    const c = el.getBoundingClientRect(), mid = c.top + c.height / 2
+    let best = NaN, d = Infinity
+    el.querySelectorAll('.dcal-opt').forEach(o => { const q = o.getBoundingClientRect(), k = Math.abs(q.top + q.height / 2 - mid); if (k < d) { d = k; best = +(o.textContent || 'NaN') } })
+    return best
+  })
+  expect(caught, 'the glide never carried the years on').toBeGreaterThan(y0 + 28)
+  /* then dragged up one row from where it was pressed (the flick left the mouse 132px up), slowly, and let go */
+  await page.mouse.move(x, y - 132 - 44, { steps: 8 })
+  await page.waitForTimeout(150)
+  await page.mouse.up()
+  await atRest(page, Y)
+  expect(Math.abs((await yearOf(page)) - (caught + 1)), 'a drag after a held catch jumped the years').toBeLessThanOrEqual(1)
+  expect(errs, 'errors on the page').toEqual([])
+  await context.close()
+})
+test('a desktop: Enter pressed while a mouse drags the years does nothing until it is let go', async ({ browser, baseURL }) => {
+  const { context, page, errs } = await openLists(browser, baseURL)
+  const Y = '[data-testid="dcal-years"]'
+  const y0 = await yearOf(page)
+  await page.locator(Y).first().focus()
+  const r = await rect(page, Y), x = r.l + r.w / 2, y = r.t + r.h / 2
+  await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x, y - 88, { steps: 8 })
+  await page.keyboard.press('Enter')
+  await expect(page.locator('[data-testid="dcal-lists"]'), 'Enter during a drag closed the lists on the year before it').toBeVisible()
+  await page.waitForTimeout(150)
+  await page.mouse.up()
+  await atRest(page, Y)
+  expect(await yearOf(page), 'the drag of two rows did not land two years on').toBe(y0 + 2)
+  expect(errs, 'errors on the page').toEqual([])
+  await context.close()
+})
+test('a desktop: a press let go on the other list leaves nothing behind for a later press to pick up', async ({ browser, baseURL }) => {
+  const { context, page, errs } = await openLists(browser, baseURL)
+  const Y = '[data-testid="dcal-years"]', M = '[data-testid="dcal-months"]'
+  const m = await rect(page, M), yr = await rect(page, Y)
+  const mx = m.l + m.w / 2, yx = yr.l + yr.w / 2, h = m.t + m.h / 2
+  const m0 = await monthOf(page), y0 = await yearOf(page), top0 = await listTop(page, M)
+  /* pressed on the months, slid sideways onto the years with no move up or down, let go there */
+  await page.mouse.move(mx, h); await page.mouse.down(); await page.mouse.move(yx, h, { steps: 6 }); await page.mouse.up()
+  /* later: pressed on the years, carried sideways back over the months with the button held, then up the months */
+  await page.mouse.down(); await page.mouse.move(mx, h, { steps: 6 }); await page.mouse.move(mx, h - 88, { steps: 8 })
+  await page.mouse.up()
+  await page.waitForTimeout(400)
+  expect(await listTop(page, M), 'the months moved under a press made on the years').toBe(top0)
+  expect(await monthOf(page)).toBe(m0)
+  expect(await yearOf(page)).toBe(y0)
   expect(errs, 'errors on the page').toEqual([])
   await context.close()
 })
