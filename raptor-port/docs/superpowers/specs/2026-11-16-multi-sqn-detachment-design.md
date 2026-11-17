@@ -512,7 +512,10 @@ day amber or red and raise the manning warning on someone's bid; a weekend he wo
   Post out be there for everyone? Recommended there: yes, the same sheet from both places for everyone — one rule, an
   admin finds anyone from Admin → Users — the Leave War's door kept. **D2181 — sims, "yes both parts":** the other
   squadron's sim sessions at the same place show on yours by themselves, with its grey badge; two sessions overlapping
-  on one sim are warned, from one squadron or two (inside one squadron filed as [SIM-OVERLAP-WARN]).
+  on one sim are warned, from one squadron or two (inside one squadron filed as [SIM-OVERLAP-WARN]). **D2182 — "yes to
+  all three":** a man on DET still counts on count rows such as Available (only the standby rows leave him out — Q15
+  settled, no per-row switch); a SANS man's DET window offers "Available for all these days"; Post out opens from
+  Admin → Users for everyone, as well as from the Leave War (Q23 settled, widened).
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
