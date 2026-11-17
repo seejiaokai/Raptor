@@ -9490,10 +9490,9 @@ test('the OIL award editor at the list\'s foot: a refused save\'s warning comes 
   expect(await drawnAtMiddle(page, '[data-testid="oil-edit-err"]'), 'the warning drawn on top').toBe(true)
 })
 
-/* A CLICK OUTSIDE THE AWARD EDITOR (his D2173, D2174 — 17 Nov 26, "2A"): with nothing changed, a click or tap outside it closes
-   it as Cancel does; with an unsaved change it stays open — nothing lost, nothing saved by a stray click — and a tap on another
-   award does not swap it either (the agent's reading of "nothing lost"). Save and Cancel still finish it. A slide of the list
-   is not a tap: on a phone the list is slid to reach Delete (his D2175), and that must never close the editor. */
+/* A CLICK OUTSIDE THE AWARD EDITOR (his D2173, D2176 — 17 Nov 26): a click or tap outside it closes it as Cancel does, an
+   unsaved change dropped and nothing saved; a tap on another award opens that one. Save and Cancel still finish it. A slide
+   of the list is not a tap: on a phone the list is slid to reach Delete (his D2175), and that must never close the editor. */
 async function openAwardL4(page: Page) {
   await lwRole(page, 'admin')
   if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
@@ -9525,29 +9524,25 @@ test('the OIL award editor: a click outside with nothing changed closes it, as C
   await expect(award.locator('.amt')).toHaveText('+2')
 })
 
-test('the OIL award editor: a click outside with an unsaved change leaves it open, the change kept, nothing saved (D2174)', async ({ page }) => {
+test('the OIL award editor: a click outside with an unsaved change closes it, the change dropped, nothing saved (D2176)', async ({ page }) => {
   const award = await openAwardL4(page)
   await page.locator('[data-testid="oil-edit-reason"]').fill('CNY workplan — moved')
   await pressAt(page, OUTSIDE)
-  await expect(page.locator('[data-testid="oil-edit-award"]'), 'still open after the click outside').toBeVisible()
-  await expect(page.locator('[data-testid="oil-edit-reason"]'), 'the change kept').toHaveValue('CNY workplan — moved')
-  /* a tap on another award does not swap the editor and drop the change */
-  const other = page.locator('[data-testid="oil-list"] .oil-e.grant:not(.editing)').first()
-  await other.scrollIntoViewIfNeeded()
-  await pressAt(page, '[data-testid="oil-list"] .oil-e.grant:not(.editing)')
-  await expect(page.locator('[data-testid="oil-edit-award"]'), 'one editor still').toHaveCount(1)
-  await expect(page.locator('[data-testid="oil-entry-l4"] [data-testid="oil-edit-reason"]'), 'still the same award, the change kept').toHaveValue('CNY workplan — moved')
-  /* changed back by hand: nothing is unsaved, and a click outside closes it */
-  await page.locator('[data-testid="oil-edit-reason"]').fill('CNY workplan')
-  await pressAt(page, OUTSIDE)
-  await expect(page.locator('[data-testid="oil-edit-award"]'), 'nothing unsaved: closed').toHaveCount(0)
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'closed by the click outside').toHaveCount(0)
+  /* read at once, nothing put back first: a click that saved would show here (Astra's read, 4) */
   await expect(award.locator('.l2'), 'nothing saved').toContainText('CNY workplan')
-  /* Cancel and Save still finish it */
+  await expect(award.locator('.l2'), 'nothing saved').not.toContainText('moved')
+  /* changed again, a tap on another award: that one opens, this change dropped */
   await award.click()
   await page.locator('[data-testid="oil-edit-amt"]').fill('3')
+  const other = page.locator('[data-testid="oil-list"] .oil-e.grant:not(.editing)').first()
+  await other.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' }))
+  const otherId = await other.getAttribute('data-testid')
+  await pressAt(page, '[data-testid="oil-list"] .oil-e.grant:not(.editing)')
+  await expect(page.locator(`[data-testid="${otherId}"] [data-testid="oil-edit-award"]`), 'the other award opens').toBeVisible()
+  await expect(award.locator('.amt'), 'the dropped change saved nothing').toHaveText('+2')
+  /* Cancel and Save still finish it */
   await page.locator('[data-testid="oil-edit-cancel"]').click()
-  await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
-  await expect(award.locator('.amt'), 'Cancel dropped the change').toHaveText('+2')
   await award.click()
   await page.locator('[data-testid="oil-edit-amt"]').fill('3')
   await page.locator('[data-testid="oil-edit-save"]').click()
@@ -9573,6 +9568,51 @@ test('the OIL award editor: sliding the list is not a click outside — the edit
   }
   await page.waitForTimeout(300)
   await expect(page.locator('[data-testid="oil-edit-award"]'), 'still open after the slide').toBeVisible()
+})
+/* …THE CLICK-AWAY'S CODE READS (Astra and a fresh Opus reader, chat 104, 17 Nov 26), each red on 30e4e1162 first: a drag
+   begun inside the editor and let go outside it closed it; a press alone (before its release) must close nothing; the
+   correction's calendar is the editor's own. */
+test('the OIL award editor: a drag begun inside it and let go outside closes nothing; a press alone closes nothing (the read, F3)', async ({ page }) => {
+  test.skip(isPhone(), 'a mouse’s drag and held press; the phone’s slide is the slide test')
+  await openAwardL4(page)
+  const r = (await page.locator('[data-testid="oil-edit-reason"]').boundingBox())!
+  const o = (await page.locator(OUTSIDE).boundingBox())!
+  /* the reason's words selected by a drag that ends on the title, outside the editor */
+  await page.mouse.move(r.x + r.width - 6, r.y + r.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(o.x + o.width / 2, o.y + o.height / 2, { steps: 8 })
+  await page.mouse.up()
+  await page.waitForTimeout(200)
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'a drag out of the editor: still open').toBeVisible()
+  /* a press outside, held: nothing closes until it is let go there */
+  await page.mouse.move(o.x + o.width / 2, o.y + o.height / 2)
+  await page.mouse.down()
+  await page.waitForTimeout(200)
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'a press held outside: still open').toBeVisible()
+  await page.mouse.up()
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'let go there — a click outside: closed').toHaveCount(0)
+})
+
+test('the OIL correction editor: its calendar is its own — months turned and the calendar closed leave it open', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const corr = page.locator('[data-testid="oil-list"] [data-testid="oil-entry-dol-3"]')
+  await corr.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' }))
+  await corr.click()
+  const box = page.locator('[data-testid="oil-edit-date"]')
+  await box.click()
+  await calendarOnTop(page, 'the correction\'s date')
+  await page.locator('[data-testid="dcal-prev"]').click()
+  await page.locator('[data-testid="dcal-next"]').click()
+  await expect(page.locator('[data-testid="oil-edit-date"]'), 'months turned: the editor still open').toBeVisible()
+  /* closed by a press beside the calendar, nothing picked: the editor stays, nothing changed */
+  const card = (await page.locator('[data-testid="dcal-card"]').boundingBox())!
+  const vp = page.viewportSize()!
+  const x = card.x > 30 ? card.x / 2 : Math.min(vp.width - 10, card.x + card.width + 15)
+  await page.mouse.click(x, Math.min(vp.height - 10, card.y + card.height + 15))
+  await expect(page.locator('[data-testid="dcal-card"]'), 'the calendar closed').toHaveCount(0)
+  await expect(page.locator('[data-testid="oil-edit-date"]'), 'the calendar closed: the editor still open').toBeVisible()
 })
 
 /* THE PHONE BALANCES AFTER OPTION B (D2156) — three faults the two blind reads of chat 101 found (Astra and a fresh Opus

@@ -441,36 +441,31 @@ export function OilTracker({ person, onClose, onGranted }: {
   const done = () => { onGranted?.() }
 
   /* ---- editing an award or a correction ---------------------------------- */
-  /* A CLICK OUTSIDE THE EDITOR (his D2173, D2174 — 17 Nov 26, "2A"): with nothing changed it closes, as Cancel does; with an
-     unsaved change it stays open — nothing lost, nothing saved by a stray click — and a tap on another award does not swap
-     it and drop the change either (the agent's reading of "nothing lost"). Save and Cancel still finish it. "Changed" is
-     the draft against what the editor opened with; an amount typed as the same number is no change. */
-  const [o, setEOrig] = useState<{ amt: string; date: string; reason: string; given: string; half: Half | null; corr: boolean } | null>(null)
-  /* a correction's editor has no given-by or half: only what it draws is compared */
-  const eDirty = editId !== null && o !== null && (
-    (eAmt !== o.amt && !(eAmt.trim() !== '' && Number(eAmt) === Number(o.amt)))
-    || eDate !== o.date || eReason !== o.reason
-    || (!o.corr && (eGiven !== o.given || eHalf !== o.half)))
+  /* A CLICK OUTSIDE THE EDITOR (his D2173, D2176 — 17 Nov 26): it closes the editor as Cancel does, an unsaved change
+     dropped ("its known that the change is discarded"); a tap on another award opens that one, as before. */
   const startEdit = (c: OilCredit) => {
-    if (eDirty && c.ledgerId !== editId) return
-    setEOrig({ amt: String(c.amount), date: c.date, reason: c.reason, given: c.givenBy ?? '', half: c.half ?? null, corr: false })
     setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null); eIsCorr.current = false; setEHalf(c.half ?? null)
   }
   /* A CLICK, never the press that starts it: a slide of the list (on a phone, how Delete is reached zoomed in — his D2175)
      starts with a press outside the editor and ends in no click, so it never closes it. A press in the editor, or in the
      calendar a correction's date opens (it floats on the page, outside the editor — `.dcal-layer`, as the credit bar
-     spares it above), is the editor's own. Listened for on the way down, before the pressed thing acts: a click on
-     another award then closes this one and opens that one, as before. */
+     spares it above), is the editor's own — and so is a press that BEGAN there: a drag that selects the reason's words
+     and is let go outside sends its click to a box around both, outside the editor (the click-away's code reads, chat
+     104). Listened for on the way down, before the pressed thing acts: a click on another award then closes this one
+     and opens that one, as before. */
   useEffect(() => {
-    if (editId === null || eDirty) return
+    if (editId === null) return
+    const mine = (t: EventTarget | null) => !!(t as HTMLElement | null)?.closest?.('.oil-e.editing, .dcal-layer')
+    let downInside = false
+    const onDown = (e: PointerEvent) => { downInside = mine(e.target) }
     const onClick = (e: MouseEvent) => {
-      const t = e.target as HTMLElement | null
-      if (t?.closest('.oil-e.editing') || t?.closest('.dcal-layer')) return
+      if (downInside || mine(e.target)) return
       setEditId(null); setArmDel(null)
     }
+    document.addEventListener('pointerdown', onDown, true)
     document.addEventListener('click', onClick, true)
-    return () => document.removeEventListener('click', onClick, true)
-  }, [editId, eDirty])
+    return () => { document.removeEventListener('pointerdown', onDown, true); document.removeEventListener('click', onClick, true) }
+  }, [editId])
   /* A CORRECTION's editor has no "given by" box, so the save leaves the one it has alone — it used to send the blank and
      wipe it (Astra's final read, OA-002) */
   const eIsCorr = useRef(false)   // a ref: never drawn, read only by the save
@@ -700,8 +695,6 @@ export function OilTracker({ person, onClose, onGranted }: {
     }
     const canEdit = admin && d.source === 'correction'
     const startCorrEdit = () => {
-      if (eDirty && d.ledgerId !== editId) return
-      setEOrig({ amt: String(-d.amount), date: d.date, reason: d.reason, given: '', half: null, corr: true })
       setEditId(d.ledgerId!); setEAmt(String(-d.amount)); setEDate(d.date); setEReason(d.reason); setEGiven(''); setEErr(''); setArmDel(null); eIsCorr.current = true }
     return (
       <div

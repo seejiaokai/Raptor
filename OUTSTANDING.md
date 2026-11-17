@@ -126,7 +126,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-EARN-BOARD-TIDY] — the three code reads' tidiness notes on the OIL Earn board change (D489), filed not fixed.
 
 **Leave War**
-- [LW-OIL-EDIT-STEADY] — the steady layout built on pull request 801 (his D2155); left: a click outside the editor closes it, but stays open with an unsaved change (his D2173, D2174) — ready to build.
+- [LW-OIL-EDIT-STEADY] — the steady layout built on pull request 801 (his D2155); the click outside built (his D2173; D2176 replaced D2174 — an unsaved change is dropped too), red-first, walked 24/0 before D2176, both reads done; left: re-walk after D2176, GitHub's run, his look.
 - [LW-BAL-NEATER] — build the Balances page's neater layout and pending look, option B as drawn (his D2156); no answer needed.
 - [LW-WAR-AUTONAME] — the new leave war's name fills itself from the dates picked and follows them (his D2158); a small fix, no answer needed.
 - [LW-GRID-HOVER-RING] — the ring built on pull request 801 (his D2157); left: the faint row tint over the name and balance cells too (his D2171) — a picture for him first, then built on the same pull request.
@@ -294,7 +294,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 
 ### [LW-OIL-EDIT-STEADY] The OIL tracker's award editor keeps every part in place (his D2150, D2155; filed 17 Nov 26, chat 96) — OPEN: the layout built on pull request 801; a click outside to close left (his D2173)
-**Left (his D2173, 17 Nov 26, chat 103):** a click or tap outside the open award editor closes it as Cancel does; with an unsaved change it stays open (his answer, D2174). Built red-first on pull request 801: a mouse click and a finger tap outside, on the list, the names, the sheet's bar and the page behind; a press inside never closes it; the correction editor and the grid's day sheet editor named as candidates, not changed (D852).
+**Left (his D2173, 17 Nov 26, chat 103):** a click or tap outside the open award editor closes it as Cancel does, an unsaved change dropped too (his D2176, replacing his D2174 "stays open"); a slide of the list closes nothing (D2175), nor a drag begun inside it. Built red-first on pull request 801: a mouse click and a finger tap outside, on the list, the names, the sheet's bar and the page behind; a press inside never closes it; the correction editor and the grid's day sheet editor named as candidates, not changed (D852).
 **What it is:** the editor of an award in the OIL tracker (`raptor-port/src/leavewar/ui/OilTracker.tsx`, the editing branch; `oiltracker.css` `.oil-edit`) wraps its parts freely and draws AM / PM only at 0.5, so the date, reason and given-by jump when the amount changes, and "Really delete?" widens its button. **Build as drawn, option 2** (https://claude.ai/artifact/L45vtW9hopGHDtwp9yaN9H; pictures and the injected CSS in `raptor-port/docs/mock/2026-11-17-lw-oil-editor/`, `oil.mjs`): one fixed grid — amount, AM, PM, date on line 1; reason and given-by side by side on line 2; Save, Cancel, Delete on line 3 — the AM / PM place kept empty (not greyed) when the amount is not a half day, Delete always as wide as "Really delete?". Check the same at his iPhone's size and a desktop's; the credit form (`CreditForm.tsx`) is not part of it unless he says.
 
 ### [LW-BAL-NEATER] The Balances page's neater layout and pending look (his D2153, D2154, D2156; filed 17 Nov 26, chat 97) — OPEN, ready to build
