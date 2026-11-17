@@ -46,5 +46,17 @@
     "size": "phone",
     "kind": "proposed",
     "caption": "142's schedule, Edit Schedule, Monday's Unavailable list. Saber's \"Attach · 149\" row, the app's own (an Attach To 149, filed through the Inputs door), the name re-lettered. Drawn in (mark Q4): the line under it, \"On 149's VL · Mon night wave · 149's line\", and the row's own REJECT button re-lettered \"Take him off VL\". VL itself does not show on 142's schedule; 142 changes nothing else of it."
+  },
+  "Q4G-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, Monday's Unavailable list, his question: Saber picked by 149 for its ground programme (ACADEMICS 14:00–16:00) and for VL at night. Two \"Attach · 149\" rows, one for each stretch of time, each the app's own row from an Attach To 149; each with its own \"Take him off …\" button and quiet line. The ground item itself does not show on 142's schedule."
+  },
+  "Q4G-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, Monday's Unavailable list, his question: Saber picked by 149 for its ground programme (ACADEMICS 14:00–16:00) and for VL at night. Two \"Attach · 149\" rows, one for each stretch of time, each the app's own row from an Attach To 149; each with its own \"Take him off …\" button and quiet line. The ground item itself does not show on 142's schedule."
   }
 }

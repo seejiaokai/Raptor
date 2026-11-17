@@ -155,17 +155,20 @@ async function unavMonday(page) {
 import { copyFileSync, readdirSync, readFileSync } from 'node:fs'
 mkdirSync(PAGEIMG, { recursive: true })
 
-async function picQ4(sz) {
+async function picQ4(sz, ground) {
   const { ctx, page } = await world(sz)
   await toEdit(page)
   // Saber on 149's VL in Monday's night wave, 19:00-22:00: the automatic Attach the pick would make at home (D2098)
   await file(page, { iid: 'mq-att', person: COMET, type: 'Attach', to: '149', date: 'Jul 13', yr: 2026, allday: false, s: 1140, e: 1320, remarks: '' })
+  // his question (chat 100): the same man also named on 149's ground programme, ACADEMICS 14:00-16:00 — a second row
+  if (ground) await file(page, { iid: 'mq-att2', person: COMET, type: 'Attach', to: '149', date: 'Jul 13', yr: 2026, allday: false, s: 840, e: 960, remarks: '' })
   const rows = await unavMonday(page)
   const st = await page.evaluate(() => {
     const mq = window.__mq, mon = mq.monday()
-    const r = [...mon.querySelectorAll('.sec-unav .pl-row')].find(x => /Comet/.test(x.innerText))
-    if (!r) return { err: 'no row' }
-    const before = r.outerHTML.slice(0, 600)
+    const out = []
+    for (const r of [...mon.querySelectorAll('.sec-unav .pl-row')].filter(x => /Comet/.test(x.innerText))) {
+    const item = /14:00/.test(r.innerText) ? { name: 'ACADEMICS', when: "149's ground programme, Mon 14:00–16:00" } : { name: 'VL', when: "149's VL, Mon night wave" }
+    const before = r.outerHTML.slice(0, 200)
     // the name re-lettered: Saber, as the page's example
     let renamed = 0
     const w = document.createTreeWalker(r, NodeFilter.SHOW_TEXT); let n
@@ -173,35 +176,40 @@ async function picQ4(sz) {
     // the row's own action button (the app's REJECT on an input row) re-lettered: the one thing 142 may do to VL
     const rej = [...r.querySelectorAll('button')].find(b => /^reject$/i.test(b.textContent.trim()))
     if (!rej) return { err: 'no reject button' }
-    rej.textContent = 'Take him off VL'
+    rej.textContent = 'Take him off ' + item.name
     // a quiet line under the row saying where he is: the app's own remarks placeholder look, cloned
     const line = document.createElement('div'); line.setAttribute('data-mine', '1')
     const rm = [...r.querySelectorAll('*')].find(e => !e.children.length && e.textContent.trim() === 'remarks')
     const rcs = getComputedStyle(rm || r)
     line.style.cssText = `padding:0 8px 8px;font-size:${rcs.fontSize};color:${rcs.color};font-family:${rcs.fontFamily};opacity:.55`
-    line.textContent = "On 149's VL, Mon night wave · 149 is told if he is taken off"
+    line.textContent = `On ${item.when} · 149 is told if he is taken off`
     r.after(line)
     const wrap = document.createElement('div'); wrap.setAttribute('data-mine', '1'); wrap.style.position = 'relative'
     r.before(wrap); wrap.appendChild(r); wrap.appendChild(line)
     mq.mark(wrap, 'Q4')
-    return { renamed, row: r.innerText.replace(/\s+/g, ' '), before }
+    out.push({ renamed, row: r.innerText.replace(/\s+/g, ' '), before })
+    }
+    return out.length ? out : { err: 'no row' }
   })
   if (st.err) throw new Error('picQ4: ' + st.err + ' ' + rows.join(' | '))
+  if (ground && st.length !== 2) throw new Error('picQ4 ground: expected 2 rows, got ' + st.length)
   await page.waitForTimeout(300)
   const clip = await clipOf(page, null, 6)
-  const f = `Q4F-${sz}-proposed.png`
+  const f = `Q4${ground ? 'G' : 'F'}-${sz}-proposed.png`
   await shot(page, f, clip)
-  rec(f, 'Q4', sz, 'proposed', `142's schedule, Edit Schedule, Monday's Unavailable list. Saber's "Attach · 149" row, the app's own (an Attach To 149, filed through the Inputs door), the name re-lettered. Drawn in (mark Q4): the line under it, "On 149's VL · Mon night wave · 149's line", and the row's own REJECT button re-lettered "Take him off VL". VL itself does not show on 142's schedule; 142 changes nothing else of it.`)
+  if (ground) rec(f, 'Q4', sz, 'proposed', `142's schedule, Monday's Unavailable list, his question: Saber picked by 149 for its ground programme (ACADEMICS 14:00–16:00) and for VL at night. Two "Attach · 149" rows, one for each stretch of time, each the app's own row from an Attach To 149; each with its own "Take him off …" button and quiet line. The ground item itself does not show on 142's schedule.`)
+  else rec(f, 'Q4', sz, 'proposed', `142's schedule, Edit Schedule, Monday's Unavailable list. Saber's "Attach · 149" row, the app's own (an Attach To 149, filed through the Inputs door), the name re-lettered. Drawn in (mark Q4): the line under it, "On 149's VL · Mon night wave · 149's line", and the row's own REJECT button re-lettered "Take him off VL". VL itself does not show on 142's schedule; 142 changes nothing else of it.`)
   notes.push(`picQ4 ${sz}: ${JSON.stringify(st)}`)
   await ctx.close()
 }
 
 browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
-try { for (const sz of ['d', 'p']) { try { await picQ4(sz) } catch (e) { errs.push(`[${sz}] picQ4 FAILED: ${e.message}`) } } }
+const GROUND = process.env.MQ_Q4 === 'ground'
+try { for (const sz of ['d', 'p']) { try { await picQ4(sz, GROUND) } catch (e) { errs.push(`[${sz}] picQ4 FAILED: ${e.message}`) } } }
 finally { await browser.close() }
 let old = {}
 try { old = JSON.parse(readFileSync(`${OUT}/manifest.json`, 'utf8')) } catch {}
 writeFileSync(`${OUT}/manifest.json`, JSON.stringify({ ...old, ...manifest }, null, 2) + '\n')
-for (const f of readdirSync(OUT)) if (/^Q4F-.*\.png$/.test(f)) copyFileSync(`${OUT}/${f}`, `${PAGEIMG}/${f}`)
+for (const f of readdirSync(OUT)) if (/^Q4[FG]-.*\.png$/.test(f)) copyFileSync(`${OUT}/${f}`, `${PAGEIMG}/${f}`)
 console.log('NOTES\n' + notes.join('\n'))
 console.log('ERRORS ' + (errs.length ? '\n' + errs.join('\n') : 'none'))
