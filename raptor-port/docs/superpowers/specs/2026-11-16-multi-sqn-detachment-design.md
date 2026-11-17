@@ -446,6 +446,24 @@ day amber or red and raise the manning warning on someone's bid; a weekend he wo
 149's OIL settings (Q1's "his own squadron"). Put to him: his access to 142 ends on the date (recommended — an admin of
 142 may give it back), or stays as it was given.
 
+## Round 7 — his round 6 answers, the DET check and the second red team (17 Nov 26, chat 101)
+
+- **His answer, D2160: "all recommendations yes"** — every recommendation on round 6's page (version 21) is now his
+  ruling: Close F15–F18, C2, C8, Q2, F24; planning each other's people F19, F20, Q6, F8, R9 (no lock); access Q5
+  (View only); the transfer T (fixed rules, no choices on the sheet), Q7's table, F13, F21, F22; OIL Q1, F23, F1;
+  detachments F12, F4; R4–R7, R10. Replaces D2107; narrows D2103, D2142, D2094, D2124, D2147, D2136, D2092, D2119
+  (R7: a new place counts from the next day's start). Q6 leaves the hand-filed Attach's Leave War count as it is
+  (the automatic row is no input, D2144). The page's "Later rounds" list was not a question and is not ruled.
+- **Held back, put to him again (D90, D201):** R8 said a man flying both squadrons' lines in one day is judged by
+  "the stricter" crew rest — the opposite of his own pick of 17 Nov, D2123 ("Later line's", chosen over the
+  stricter), and the page never said so. D2123 stands until he answers.
+- **The DET check** (his call — Fable and Astra, blind to each other): brief
+  `raptor-port/docs/superpowers/briefs/2026-11-17-multi-sqn-det-check.md`, reports `…-det-check-fable.md`,
+  `…-det-check-astra.md`, checked claim by claim in `…-det-check-checked.md`.
+- **The red team of the whole design** (Astra, a fresh blind Opus reader second): brief
+  `…/briefs/2026-11-17-multi-sqn-r7-red-team.md`, reports `…-r7-red-team-astra.md`, `…-r7-red-team-opus.md`, checked
+  in `…-r7-red-team-checked.md`. Both read before his D2160, treating the page's recommendations as the design.
+
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
 **Kept as he said it:** squadrons made in Admin; one primary squadron each; access to others given by an admin; only Post
