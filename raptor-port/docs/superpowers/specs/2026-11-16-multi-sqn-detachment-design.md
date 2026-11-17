@@ -307,6 +307,37 @@ D1606), Q3 (D2133), R1 (D2134) and R3 (D2135). Still to draw for his look: D2124
   N3 — the ring plays again when a late tap brings the lines into view (the ring lasts about six seconds),
   recommended.
 
+## Round 6 — the plan's red team, and "Transfer to Sqn" (17 Nov 26, chat 97 — put to him; nothing ruled)
+
+The red team owed above, run: Astra first, then a fresh, blind Opus reader, each blind to the other, on one brief
+(`raptor-port/docs/superpowers/briefs/2026-11-17-multi-sqn-red-team.md`); their reports, whole, beside it (`…-astra.md`,
+7 findings, 4 HIGH; `…-opus.md`, 16 findings, 8 HIGH; five overlap). The host checked the claims it acts on against the
+rulings and the code: an Attach input asks the OIL question today (`oilAsks` = `restsInput`); D1374 counts an Attach out
+on the Leave War; the agent's own reading of D2114 ("holds men of both") clashes with D2098. Round 6's page:
+`raptor-port/docs/mock/2026-11-17-multi-sqn-r6/` (pictures `raptor-port/docs/img/2026-11-17-multi-sqn-r6/`; `draw.mjs`
+draws X, the rest are earlier rounds' pictures shown again), published https://claude.ai/artifact/VcdxV4u3iACCZKiW4ce9JL.
+- **Q1** OIL on a day worked for both squadrons: one pooled span from both latest published days, one credit, whether
+  it earns and the full-day line by his own squadron's settings (both readers HIGH).
+- **Q2** "Close detachment" with published days after today: the card lists them, closing withdraws each by amendment;
+  "read only" means no new planning, a past day still takes a correcting amendment — narrows D2103 (both HIGH).
+- **Q3** A pick from the other squadron's draft onto a published home day: the Attach row follows that squadron's
+  published version, dotted "not yet published by 149" meanwhile, pending only once it publishes; each issue keeps what
+  the other had published then — narrows D2107 (Opus HIGH, Astra HIGH on the issued record).
+- **Q4** "Concerns both" (D2114) means only one squadron's own line in the other's wave; a line holding a borrowed man
+  stays its owner's alone (D2098); round 4's picture 7 (VL whole on 142's schedule) to be redrawn (Opus HIGH).
+- **Q5** Two grants for the other squadron: "Scheduler of 149" (its schedule pages only) and "Admin of 149"; §11 gains
+  the squadron — narrows D785 for the other squadron; a security read when built (D1411) (Opus HIGH).
+- **Q6** The worked-out Attach row never counts a man out on the Leave War — narrows D1374 for that row (Opus MEDIUM).
+- **Q7** D2136 drawn: "Transfer to Sqn" pressable, a "To" row (every squadron but his own), the date's line, one line
+  listing what the date affects; the carry / stays / listed / refused / Undo table (both readers).
+- **R1–R11**, only if he disagrees: the Attach row worked out, never an input; a detachment's overseas duty asks no OIL;
+  that duty is presence at the detachment, absence at home, tied to its dates; one man one place checked after the
+  fact; crew rest, days in a row and the long day follow the man across places (narrows D2092); a detachment's ALL
+  AVAIL; a place's history kept; whose settings judge a man's day; two schedulers on one shared line; a squadron per
+  Tracker course, and a correction of round 3's Tracker reading (no sortie reaches the Tracker by itself today); SANS
+  only for people outside the app's squadrons.
+- **L** nine questions for later rounds, listed on the page.
+
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
 **Kept as he said it:** squadrons made in Admin; one primary squadron each; access to others given by an admin; only Post
