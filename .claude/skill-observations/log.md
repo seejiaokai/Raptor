@@ -2787,3 +2787,17 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** Over chats 97–100 each new input was added as one more "Newest" block at the top of the page, while answered and replaced questions stayed below. After four rounds the page held three top blocks, and several recommendations were superseded but still showed. He asked "make the mockup easy to read and be clear after all these inputs". The project's own rule (answered and replaced items leave the page) was in force the whole time.
 **Suggested improvement:** Whenever answers or a new reader's findings arrive, rebuild the page instead of prepending: corrections first, then every open call grouped by topic with its recommendation, then a short "settled since" list; keep the old version in the repo.
 **Principle:** A decision page is a view of what is open now, not a log; appending is cheap for the writer and expensive for the reader.
+
+
+### Observation 970: A recommendations page reversed an earlier ruling without naming it, and a blanket "all yes" carried it
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 101, recording his "all recommendations yes" to the multi-squadron round 6 page (number past 969, held on another branch)
+**Skill:** New skill candidate: decision-page writing (round pages put to the owner)
+**Type:** open-source
+**Phase/Area:** building a page of recommendations for the owner to accept
+
+**Issue:** An item in the page's "only if you disagree" list (R8, a reviewer's recommendation adopted wholesale) said "the stricter" crew rest for a man flying both units in a day — the exact option the owner had explicitly rejected days earlier (D2123). The page never named the reversal. He answered "all recommendations yes", so the clash surfaced only when the answer was recorded and a later checker ran; it had to be held back and asked again. Two more recommendations quietly narrowed earlier rulings (D2119, D2109) without naming them.
+**Suggested improvement:** Before a recommendations page goes out, run a clash pass: for each recommendation, search the rulings it touches and write on the item "changes D<n> (your <date> pick: …)" whenever it narrows or reverses one; never put a reversal of an explicit earlier choice in an "only if you disagree" list.
+**Principle:** A blanket acceptance is only as good as the page's disclosure; any recommendation that overturns a person's earlier explicit choice must say so on its face, or the acceptance does not cover it.
