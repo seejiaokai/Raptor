@@ -9175,6 +9175,15 @@ const emptyDay = (page: Page, me: boolean) => page.evaluate((me) => {
   }
   return null
 }, me)
+/** the war scoped to one man, as a signed-in member's is (these tests run unscoped, so no row is "his own" until then),
+ *  his row brought into sight: before this the own-row checks found no row and silently ran nothing (chat 105's fix read, 5) */
+const markOwnRow = async (page: Page) => {
+  await page.evaluate(() => (window as any).lwSetViewer('slipway'))
+  const me = page.locator('.mx tbody tr.me').first()
+  await expect(me, 'a row marked as his own').toHaveCount(1)
+  await me.evaluate(r => r.scrollIntoView({ block: 'center' }))
+  await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))
+}
 const centreOf = async (page: Page, id: string) => {
   const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
   return { x: b.x + b.width / 2, y: b.y + b.height / 2 }
@@ -9197,13 +9206,13 @@ test('the grid’s day under the mouse wears a thin ring, gone when the mouse le
   await page.mouse.move(5, 5)
   await expect.poll(() => cellShadow(page, id), { message: 'gone when the mouse leaves' }).not.toContain('59, 198, 232')
   /* his own row: the ring and the row's two lines together */
+  await markOwnRow(page)
   const mine = await emptyDay(page, true)
-  if (mine) {
-    const m = await centreOf(page, mine)
-    await page.mouse.move(m.x, m.y)
-    await expect.poll(() => cellShadow(page, mine), { message: 'his own row: ring and both lines' })
-      .toBe(`${HOVER_RING}, rgba(59, 198, 232, 0.55) 0px 1px 0px 0px inset, rgba(59, 198, 232, 0.55) 0px -1px 0px 0px inset`)
-  }
+  expect(mine, 'an empty day of his own row in sight').toBeTruthy()
+  const m = await centreOf(page, mine!)
+  await page.mouse.move(m.x, m.y)
+  await expect.poll(() => cellShadow(page, mine!), { message: 'his own row: ring and both lines' })
+    .toBe(`${HOVER_RING}, rgba(59, 198, 232, 0.55) 0px 1px 0px 0px inset, rgba(59, 198, 232, 0.55) 0px -1px 0px 0px inset`)
 })
 test('a picked day keeps its own stronger ring under the mouse; a phone’s tap leaves no ring (D2157)', async ({ page }) => {
   await lwRole(page, 'admin')
@@ -9307,13 +9316,15 @@ test('the row under the mouse tints its name and balance cells too, still solid;
   expect(nextImg, 'the row below, not under the mouse, has no tint').toBe('none')
   await page.mouse.move(5, 5)
   await expect.poll(() => pinnedPaint(page, id).then(ps => ps.map(p => p.image)), { message: 'gone when the mouse leaves' }).toEqual(['none', 'none'])
-  /* his own row keeps its own highlight: no tint over it */
+  /* his own row keeps its own highlight: no tint over it — brought into sight first, and found, never skipped (the fix read, 5) */
+  await markOwnRow(page)
   const mine = await emptyDay(page, true)
-  if (mine) {
-    const m = await centreOf(page, mine)
+  expect(mine, 'an empty day of his own row in sight').toBeTruthy()
+  {
+    const m = await centreOf(page, mine!)
     await page.mouse.move(m.x, m.y)
     await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))
-    for (const p of await pinnedPaint(page, mine)) {
+    for (const p of await pinnedPaint(page, mine!)) {
       expect(p.image, 'his own row: no tint over its highlight').toBe('none')
       expect(p.color, 'his own row: its own highlight').toBe('rgb(23, 60, 74)')
     }
@@ -9322,7 +9333,7 @@ test('the row under the mouse tints its name and balance cells too, still solid;
      on the name and balance cells, never in its place (chat 105's probe of every row kind: it replaced it) */
   for (const [pair, hue] of [['pair-p', 'rgba(150, 140, 50, 0.15)'], ['pair-w', 'rgba(40, 160, 110, 0.15)']] as const) {
     const row = page.locator(`.mx .counts tr.flyrow.${pair}`).first()
-    if (!(await row.count())) continue
+    await expect(row, `the Manning ${pair} row is on the grid`).toHaveCount(1)
     await row.evaluate(r => r.scrollIntoView({ block: 'center' }))
     const at = await row.evaluate(tr => {
       const vw = innerWidth
@@ -9627,7 +9638,9 @@ test('the OIL award editor: a click outside with an unsaved change closes it, th
   await award.click()
   await page.locator('[data-testid="oil-edit-amt"]').fill('3')
   const other = page.locator('[data-testid="oil-list"] .oil-e.grant:not(.editing)').first()
-  await other.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' }))
+  /* to the middle, never only "nearest": at the list's left edge it would sit under the pinned names (the fix read, 3) */
+  await other.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' }))
+  expect(await drawnAtMiddle(page, `[data-testid="${await other.getAttribute('data-testid')}"]`), 'the other award drawn on top where it is pressed').toBe(true)
   const otherId = await other.getAttribute('data-testid')
   await pressAt(page, '[data-testid="oil-list"] .oil-e.grant:not(.editing)')
   await expect(page.locator(`[data-testid="${otherId}"] [data-testid="oil-edit-award"]`), 'the other award opens').toBeVisible()
@@ -9683,6 +9696,33 @@ test('the OIL award editor: a drag begun inside it and let go outside closes not
   await page.mouse.up()
   await expect(page.locator('[data-testid="oil-edit-award"]'), 'let go there — a click outside: closed').toHaveCount(0)
 })
+/* …THE FIX ROUND'S NARROW READ (chat 105, 17 Nov 26), each red on 901ee405f first: a press made by the keys on a button
+   outside the editor is a click outside — it closed nothing when the last mouse press had been inside (the reason box);
+   and a press begun outside and let go inside the editor is the editor's own, the mirror of the drag above. */
+test('the OIL award editor: Enter on a button outside it closes it, after a click into its reason box (the fix read, 2)', async ({ page }) => {
+  test.skip(isPhone(), 'the keys and a mouse')
+  const award = await openAwardL4(page)
+  await page.locator('[data-testid="oil-edit-reason"]').click()
+  await page.locator('[data-testid="oil-edit-reason"]').fill('CNY workplan — moved')
+  const outBtn = page.locator('[data-testid="oil-range-first"]')
+  await expect(outBtn, 'a button of the tracker outside the editor').toHaveCount(1)
+  await outBtn.focus()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'Enter on a button outside: closed').toHaveCount(0)
+  await expect(award.locator('.l2'), 'the change dropped').not.toContainText('moved')
+})
+test('the OIL award editor: a press begun outside it and let go inside closes nothing (the fix read, 4)', async ({ page }) => {
+  test.skip(isPhone(), 'a mouse’s drag; the phone’s slide is the slide test')
+  await openAwardL4(page)
+  const r = (await page.locator('[data-testid="oil-edit-reason"]').boundingBox())!
+  const o = (await page.locator(OUTSIDE).boundingBox())!
+  await page.mouse.move(o.x + o.width / 2, o.y + o.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(r.x + r.width / 2, r.y + r.height / 2, { steps: 8 })
+  await page.mouse.up()
+  await page.waitForTimeout(200)
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'let go inside the editor: still open').toBeVisible()
+})
 
 test('the OIL correction editor: its calendar is its own — months turned and the calendar closed leave it open', async ({ page }) => {
   await lwRole(page, 'admin')
@@ -9692,6 +9732,7 @@ test('the OIL correction editor: its calendar is its own — months turned and t
   await corr.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' }))
   await corr.click()
   const box = page.locator('[data-testid="oil-edit-date"]')
+  const was = (await box.getAttribute('data-value'))!
   await box.click()
   await calendarOnTop(page, 'the correction\'s date')
   await page.locator('[data-testid="dcal-prev"]').click()
@@ -9704,6 +9745,7 @@ test('the OIL correction editor: its calendar is its own — months turned and t
   await page.mouse.click(x, Math.min(vp.height - 10, card.y + card.height + 15))
   await expect(page.locator('[data-testid="dcal-card"]'), 'the calendar closed').toHaveCount(0)
   await expect(page.locator('[data-testid="oil-edit-date"]'), 'the calendar closed: the editor still open').toBeVisible()
+  await expect(page.locator('[data-testid="oil-edit-date"]'), 'nothing picked: the date as it was (the fix read, 5)').toHaveAttribute('data-value', was)
 })
 
 /* THE PHONE BALANCES AFTER OPTION B (D2156) — three faults the two blind reads of chat 101 found (Astra and a fresh Opus

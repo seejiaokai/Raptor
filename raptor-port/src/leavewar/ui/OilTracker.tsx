@@ -452,19 +452,30 @@ export function OilTracker({ person, onClose, onGranted }: {
      spares it above), is the editor's own — and so is a press that BEGAN there: a drag that selects the reason's words
      and is let go outside sends its click to a box around both, outside the editor (the click-away's code reads, chat
      104). Listened for on the way down, before the pressed thing acts: a click on another award then closes this one
-     and opens that one, as before. */
+     and opens that one, as before. Its mirror is the editor's own too: a press begun outside and LET GO inside it (the
+     click again goes to a box around both). Each press is read once and forgotten: a press made by the keys (Enter or
+     Space on a button outside — a click with no press of its own, `detail` 0) is judged only by where it lands, never by
+     the last mouse press, which may have been in the reason box (chat 105's fix read, 2 and 4). */
   useEffect(() => {
     if (editId === null) return
     const mine = (t: EventTarget | null) => !!(t as HTMLElement | null)?.closest?.('.oil-e.editing, .dcal-layer')
-    let downInside = false
-    const onDown = (e: PointerEvent) => { downInside = mine(e.target) }
+    let downInside = false, upInside = false
+    const onDown = (e: PointerEvent) => { downInside = mine(e.target); upInside = false }
+    const onUp = (e: PointerEvent) => { upInside = mine(e.target) }
     const onClick = (e: MouseEvent) => {
-      if (downInside || mine(e.target)) return
+      const pressed = e.detail > 0 && (downInside || upInside)
+      downInside = false; upInside = false
+      if (pressed || mine(e.target)) return
       setEditId(null); setArmDel(null)
     }
     document.addEventListener('pointerdown', onDown, true)
+    document.addEventListener('pointerup', onUp, true)
     document.addEventListener('click', onClick, true)
-    return () => { document.removeEventListener('pointerdown', onDown, true); document.removeEventListener('click', onClick, true) }
+    return () => {
+      document.removeEventListener('pointerdown', onDown, true)
+      document.removeEventListener('pointerup', onUp, true)
+      document.removeEventListener('click', onClick, true)
+    }
   }, [editId])
   /* A CORRECTION's editor has no "given by" box, so the save leaves the one it has alone — it used to send the blank and
      wipe it (Astra's final read, OA-002) */
