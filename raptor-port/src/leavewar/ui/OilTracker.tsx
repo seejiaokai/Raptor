@@ -529,10 +529,10 @@ export function OilTracker({ person, onClose, onGranted }: {
       if (editing) {
         return (
           <div key={c.id} className={cls} data-testid={`oil-entry-${tid(c.id, c.ledgerId)}`}>
-            /* ONE FIXED LAYOUT (his D2150, D2155 — option 2, drawn docs/mock/2026-11-17-lw-oil-editor/, img/*-o2-*.png): amount,
+            {/* ONE FIXED LAYOUT (his D2150, D2155 — option 2, drawn docs/mock/2026-11-17-lw-oil-editor/, img/*-o2-*.png): amount,
                AM, PM and the date on line 1; reason and given-by side by side on line 2; Save, Cancel and Delete on line 3.
                Changing the amount, between a half day and any other, moves nothing: AM / PM keep their place, left empty
-               (not greyed) when the amount is not a half day, and Delete is always as wide as "Really delete?". */
+               (not greyed) when the amount is not a half day, and Delete is always as wide as "Really delete?". */}
             <div className="oil-edit aw" data-testid="oil-edit-award">
               <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
               {/* half a day takes a half (D1164): the award's own, else the default of the day the edit saves to (`eDate`,

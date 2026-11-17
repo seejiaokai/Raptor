@@ -4601,7 +4601,9 @@ test('a holiday on dates no leave period covers waits: the Leave War’s New-per
   await expect(tid('war-title')).toHaveText(/April 2031/i)
   await expect(tid('war-selection')).toContainText('1 Apr 31')
   await expect(tid('war-selection')).toContainText('31 Dec 31')
-  await expect(tid('war-create')).toBeDisabled()
+  /* the name has filled itself from the dates (his D2158) and Create is ready; a typed name is kept below */
+  await expect(tid('war-name')).toHaveValue('APR - DEC 31')
+  await expect(tid('war-create')).toBeEnabled()
   /* behind it the form still holds the holiday */
   await expect(tid('hol-name')).toHaveValue('National Day')
 
@@ -8627,7 +8629,10 @@ test('M5a walk A-F3: a box shows its whole figure and keeps its width, nothing b
   const geo = () => page.evaluate(() => {
     const r = (id: string) => document.querySelector<HTMLElement>(`[data-testid="${id}"]`)!.getBoundingClientRect()
     const slid = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!.scrollLeft
-    return { app: r('bal-LVE-bane').width, pl: r('bal-PL-bane').width, ccl: r('bal-CCL-bane').width, war: r('bal-war-bane').right + slid, el: r('bal-EL-bane').left + slid }
+    /* War bal is read at its LEFT edge: since option B (his D2156, 17 Nov 26) every column is set from the left, so a figure
+       stands where its column starts and only its own end moves when the figure itself changes (typing App bal changes War
+       bal) — the right edge was the anchor while the columns were set from the right */
+    return { app: r('bal-LVE-bane').width, pl: r('bal-PL-bane').width, ccl: r('bal-CCL-bane').width, war: r('bal-war-bane').left + slid, el: r('bal-EL-bane').left + slid }
   })
   const whole = (id: string) => page.getByTestId(id).evaluate((e: HTMLInputElement) => e.scrollWidth <= e.clientWidth + 0.5)
   const g0 = await geo()
