@@ -465,6 +465,33 @@ day amber or red and raise the manning warning on someone's bid; a weekend he wo
 - **The red team of the whole design** (Astra, a fresh blind Opus reader second): brief
   `…/briefs/2026-11-17-multi-sqn-r7-red-team.md`, reports `…-r7-red-team-astra.md`, `…-r7-red-team-opus.md`, checked
   in `…-r7-red-team-checked.md`. Both read before his D2160, treating the page's recommendations as the design.
+- **Round 7's page (chat 102, put to him; nothing ruled):** `raptor-port/docs/mock/2026-11-17-multi-sqn-r7/page.html`
+  (built from `page-src.html` by `make-page.mjs`), pictures drawn on the real app by `draw-r7a.mjs` … `draw-r7d.mjs` to
+  the word-for-word brief `raptor-port/docs/superpowers/briefs/2026-11-17-multi-sqn-r7-drawing.md`. Blue marks what he
+  ruled (D2160, D2161), pink what the reviews added (D2159). **Corrections told to him (X4–X7):** F12 breaks for a
+  detachment ahead of home (→ Q8); F16's "rows from inputs" would park the input itself (→ R13); F17's "242 told" loses
+  242's flying and OIL (→ R12); F15's "DET ends that day" lengthens a DET closed after its end (→ R14). **Questions
+  Q8–Q22**, each with a recommendation: Q8 a place's hours from home (H1, M6; narrows F12); Q9 one full-day OIL value per
+  man per date, A first issue fixes it (H5); Q10 a transfer leaving 142 with no admin refused at the sheet (M1, K4;
+  narrows Q7); Q11 area and sim clashes a build of their own (red M3; or narrow D2108); Q12 a shared syllabus chart's
+  ball removed only by someone with rights over every course on it (H7; narrows D121); Q13 a detachment's signers its
+  squadron's qualified people wherever they are (DET M9, L8); Q14 CSE · OD · DET on the Leave War (DET M5); Q15 count
+  rows' "Count people on DET", off for team rows (DET M3); Q16 Insights' "249" mark and a whole-person week (DET M10);
+  Q17 posting out across a DET runs as today, listed first (DET M14); Q18 drop the transfer's DET refusal (K7); Q19 a DET
+  column in days taken (DET M16); Q20 a man may not shorten his own DET over a planned day (DET M8); Q21 a man added is
+  no change on the detachment's day (DET M1); Q22 a SANS man files availability there too (DET M15). **R12–R35, designed
+  as written unless he says no:** R12 H2, R13 H3, R14 M2 (+ DET M7), R15 M7, R16 DET M6, R17 DET M2, R18 H4 (narrows
+  D2146's "one DET input"), R19 DET M16 words, R20 DET M3 day panel, R21 DET M4, R22 DET M8 bell, R23 DET M1 (+ DET M13),
+  R24 H6, R25 L3, R26 L5, R27 L2, R28 L7, R29 M12 (+ L6), R30 L1, R31 red M5, R32 red M4 (narrows D781), R33 L4, R34 the
+  DET view's span, R35 DET M17. Found while drawing (requirements nobody had written): the app has no editing mark and
+  no Publish card (R9, drawn new); Unpublish is a day-head button, its greyed look drawn quieter than the app's dim blue;
+  four names stand on the "Signed" line, not the boxes; no editor exists for a detachment's dates (round 4's "+ New
+  detachment" fields used); the print title lives only in the file name and print header. **The notifications
+  register's P15** now reads "Posted out · now with 149".
+- **His answers during chat 102:** D2162 — the transfer sheet's lines are headed "As of today:" (his suggestion; the
+  two pictures redrawn). D2163 — a SANS man may be transferred by "Transfer to Sqn", arriving still SANS with his SANS
+  availability records, no SANS chip for him. **Open, Q23:** SANS people are on the Leave War only when added there
+  ("+ SANS"), so how an admin reaches the sheet for one not on the war — put to him with a recommendation.
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 

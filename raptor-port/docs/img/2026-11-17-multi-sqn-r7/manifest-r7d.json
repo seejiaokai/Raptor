@@ -1,0 +1,146 @@
+{
+  "R7D2-d-proposed.png": {
+    "item": "D2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The Post out sheet, variant F (Fable's design, ruled T), Ranger to 149, Fri 3 Apr. Blue T on the sheet: \"To 149\" only, no rows of choices. The top line: \"On Fri 3 Apr: moves to 149 as a member, with his sign-in, leave, OIL and inputs. His admin rights and his Scheduler, Management and SXO ticks in 142 end.\" — pink New · L1 on \"Management and SXO\". Blue D2147 on the lines under it, today's figures worked out again on the date (variant F's lines). The date is re-lettered: the war's grid draws only the months round today, so Ranger's Fri 20 Nov stands in. Figures made up."
+  },
+  "R7D3-d-proposed.png": {
+    "item": "D3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The same sheet, Ranger 142's last admin: Post out greyed (the sheet's own disabled look, opacity 0.45) and, above it in the sheet's refusal look, \"Ranger is 142's last admin. Make another admin of 142 first.\" — pink Q10, drawn as recommended. The sheet has no Save: its Post out button is its Save."
+  },
+  "R7D4-d-proposed.png": {
+    "item": "D4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The Post out sheet for Viper (the demo's Comet re-lettered), Delete picked for real; the sheet's own line reads \"On 1 Dec the app deletes him automatically. Days he flew keep his puck.\". Drawn in under it, the sheet's own line look cloned: \"149 has him on 3 lines, 1–5 Dec: those seats are left empty and 149's schedulers are told.\" — pink New · M5."
+  },
+  "R7D5a-d-proposed.png": {
+    "item": "D5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Admin → Squadrons (round 4's page), Exercise North's row opened. Drawn in beside its Place (\"Exercise base\"): \"Hours from home\" reading \"+7\" — pink Q8, a question drawn as recommended. Both fields are the Users editor's own, re-lettered."
+  },
+  "R7D5b-d-proposed.png": {
+    "item": "D5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Admin → Squadrons, 149's row opened on Place (round 4's 8-place). Its line now reads \"From tomorrow, 142 and 149 can plan each other's people.\" — pink New · K2 (round 4's card said \"Once saved, …\")."
+  },
+  "R7D6-d-proposed.png": {
+    "item": "D6",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Leave War → settings → Days → Holidays → \"+ Add\" (where the app keeps the public holidays today), the top bar's \"142\" re-lettered \"149\": 149's admin picks Fri 7 Aug (picked for real on the window's own calendar). Drawn in before Save, in the Holidays list's own amber warning box: \"142's published Fri 7 Aug and 149's published Fri 7 Aug become holidays after publishing: each needs republishing for its OIL. Both squadrons' admins are told.\" — pink New · M4."
+  },
+  "R7D7b-d-today.png": {
+    "item": "D7",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today, real: Edit Schedule, Monday's first line; its area field, typed text (\"NORTH  ·  SOUTHQ11\"), ringed pink Q11."
+  },
+  "R7D7c-d-today.png": {
+    "item": "D7",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today, real: the Tracker's syllabus chart in Edit chart layout (the Syllabus pencil's menu); the tool that deletes a ball, \"Delete\" (\"Delete whatever is selected — events or a line. With nothing selected, click an event, a drawn line, or a prerequisite arrow to delete it.\"), ringed pink Q12."
+  },
+  "R7D7d-d-today.png": {
+    "item": "D7",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today, real: Edit Schedule, Monday published (its head reads \"ORIG\"); the day's four sign-off boxes (CUR CK, SKED CK, PLANNED BY, APPROVED BY), waiting empty for the next amendment, ringed pink Q13."
+  },
+  "R7D7e-d-today.png": {
+    "item": "D7",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today, real: Ranger's Post out sheet on the Leave War; its outcome chips (✓ Overseas Sqn · Delete · SANS · Transfer to Sqn) ringed pink Q17."
+  },
+  "R7D1-d-proposed.png": {
+    "item": "D1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Admin → Users, Saber's row opened (the app's own editor; Hex's row re-lettered with Saber's own list line, since the demo signs in as Saber and the app does not open one's own account). Drawn in, blue Q5 (his D2160): a third field, the editor's own Role choice cloned, \"Other squadrons\", its one choice \"149 · View\" — no \"as a scheduler\". Fields: Sign-in (defence mail) · Role · Other squadrons."
+  },
+  "R7D7a-d-today.png": {
+    "item": "D7",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today, real: Logic, the OIL setting \"Full day of OIL 6h01 Weekend or holiday work this long or longer earns a full day; less earns a half. Q9\" — the value a published day keeps — ringed pink Q9."
+  },
+  "R7D1-p-proposed.png": {
+    "item": "D1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Admin → Users, Saber's row opened (the app's own editor; Hex's row re-lettered with Saber's own list line, since the demo signs in as Saber and the app does not open one's own account). Drawn in, blue Q5 (his D2160): a third field, the editor's own Role choice cloned, \"Other squadrons\", its one choice \"149 · View\" — no \"as a scheduler\". Fields: Sign-in (defence mail) · Role · Other squadrons."
+  },
+  "R7D4-p-proposed.png": {
+    "item": "D4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The Post out sheet for Viper (the demo's Comet re-lettered), Delete picked for real; the sheet's own line reads \"On 1 Dec the app deletes him automatically. Days he flew keep his puck.\". Drawn in under it, the sheet's own line look cloned: \"149 has him on 3 lines, 1–5 Dec: those seats are left empty and 149's schedulers are told.\" — pink New · M5."
+  },
+  "R7D5a-p-proposed.png": {
+    "item": "D5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Admin → Squadrons (round 4's page), Exercise North's row opened. Drawn in beside its Place (\"Exercise base\"): \"Hours from home\" reading \"+7\" — pink Q8, a question drawn as recommended. Both fields are the Users editor's own, re-lettered."
+  },
+  "R7D5b-p-proposed.png": {
+    "item": "D5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Admin → Squadrons, 149's row opened on Place (round 4's 8-place). Its line now reads \"From tomorrow, 142 and 149 can plan each other's people.\" — pink New · K2 (round 4's card said \"Once saved, …\")."
+  },
+  "R7D6-p-proposed.png": {
+    "item": "D6",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Leave War → settings → Days → Holidays → \"+ Add\" (where the app keeps the public holidays today), the top bar's \"142\" re-lettered \"149\": 149's admin picks Fri 7 Aug (picked for real on the window's own calendar). Drawn in before Save, in the Holidays list's own amber warning box: \"142's published Fri 7 Aug and 149's published Fri 7 Aug become holidays after publishing: each needs republishing for its OIL. Both squadrons' admins are told.\" — pink New · M4."
+  },
+  "R7D7a-p-today.png": {
+    "item": "D7",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today, real: Logic, the OIL setting \"Full day of OIL 6h01 Weekend or holiday work this long or longer earns a full day; less earns a half. Q9\" — the value a published day keeps — ringed pink Q9."
+  },
+  "R7D7b-p-today.png": {
+    "item": "D7",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today, real: Edit Schedule, Monday's first line; its area field, typed text (\"NORTH  ·  SOUTHQ11\"), ringed pink Q11."
+  },
+  "R7D7c-p-today.png": {
+    "item": "D7",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today, real: the Tracker's syllabus chart in Edit chart layout (the Syllabus pencil's menu); the tool that deletes a ball, \"Delete\" (\"Delete whatever is selected — events or a line. With nothing selected, click an event, a drawn line, or a prerequisite arrow to delete it.\"), ringed pink Q12."
+  },
+  "R7D7d-p-today.png": {
+    "item": "D7",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today, real: Edit Schedule, Monday published (its head reads \"ORIG\"); the day's four sign-off boxes (CUR CK, SKED CK, PLANNED BY, APPROVED BY), waiting empty for the next amendment, ringed pink Q13."
+  },
+  "R7D2-p-proposed.png": {
+    "item": "D2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The Post out sheet, variant F (Fable's design, ruled T), Ranger to 149, Fri 3 Apr. Blue T on the sheet: \"To 149\" only, no rows of choices. The top line: \"On Fri 3 Apr: moves to 149 as a member, with his sign-in, leave, OIL and inputs. His admin rights and his Scheduler, Management and SXO ticks in 142 end.\" — pink New · L1 on \"Management and SXO\". Blue D2147 on the lines under it, today's figures worked out again on the date (variant F's lines). The date is re-lettered: the war's grid draws only the months round today, so Ranger's Fri 20 Nov stands in. Figures made up."
+  },
+  "R7D3-p-proposed.png": {
+    "item": "D3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The same sheet, Ranger 142's last admin: Post out greyed (the sheet's own disabled look, opacity 0.45) and, above it in the sheet's refusal look, \"Ranger is 142's last admin. Make another admin of 142 first.\" — pink Q10, drawn as recommended. The sheet has no Save: its Post out button is its Save."
+  },
+  "R7D7e-p-today.png": {
+    "item": "D7",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today, real: Ranger's Post out sheet on the Leave War; its outcome chips (✓ Overseas Sqn · Delete · SANS · Transfer to Sqn) ringed pink Q17."
+  }
+}
