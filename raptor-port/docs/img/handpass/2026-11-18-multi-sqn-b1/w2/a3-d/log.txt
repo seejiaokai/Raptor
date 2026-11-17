@@ -1,0 +1,19 @@
+msq-w2-a v1 desktop
+Fri17 ground before []
+ground add W2 UNDO Kestrel ok ["W2 UNDO"]
+after add ["W2 UNDO"] undo {"disabled":false,"aria":null}
+ROW PASS | T1 | desktop | ad9 adds ground row "W2 UNDO" with Kestrel on Fri 17, presses top bar Undo one at a time | saw: presses: 2; ground after each: ["W2 UNDO"] -> [""]; gone: true; start: ["W2 UNDO"]
+ROW RECORD | T1 | desktop | ad9 presses Redo once | saw: ground: ["W2 UNDO"]; W2 UNDO back: true
+ground now ["W2 UNDO"]
+ROW PASS | T1 | desktop | ad signs in; reads Undo button | saw: {"disabled":true,"aria":null}; 142 Fri17 ground: ["GROUND SCHOOL - EW","AIRCREW ADMIN"]
+ROW PASS | T1 | desktop | ad9 signs in again | saw: ground: ["W2 UNDO"]; undo: {"disabled":true,"aria":null}
+149 logic before ["Crew rest=12h","Days in a row=6 days","Long work day=12h","Default rally before take-off=3h","Brief before take-off=2h20","Step before take-off=1h","Dekit after landing=30 min","Debrief after landing=2h"]
+typed; question? 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Kestrel · Admin Logic Filter Done Reset to standard 1 setting changed from the squadron stan
+149 logic after ["Crew rest=12h","Days in a row=6 days","Long work day=13h","Default rally before take-off=3h","Brief before take-off=2h20","Step before take-off=1h","Dekit after landing=30 min","Debrief after landing=2h"]
+ROW PASS | T2 | desktop | ad9 Logic: Long work day 12h -> 13h, Done | saw: before: ["Crew rest=12h","Days in a row=6 days","Long work day=12h","Default rally before take-off=3h","Brief before take-off=2h20","Step before take-off=1h","Dekit after landing=30 min","Debrief after landing=2h"]; after: ["Crew rest=12h","Days in a row=6 days","Long work day=13h","Default rally before take-off=3h","Brief before take-off=2h20","Step before take-off=1h","Dekit after landing=30 min
+ROW PASS | T2 | desktop | ad (142) opens Logic | saw: ["Crew rest=12h","Days in a row=6 days","Long work day=12h","Default rally before take-off=3h","Brief before take-off=2h20","Step before take-off=1h","Dekit after landing=30 min","Debrief after landing=2h"]
+ROW PASS | T2 | desktop | ad9 opens Logic again | saw: ["Crew rest=12h","Days in a row=6 days","Long work day=13h","Default rally before take-off=3h","Brief before take-off=2h20","Step before take-off=1h","Dekit after landing=30 min","Debrief after landing=2h"]
+149 restored ["Crew rest=12h","Days in a row=6 days","Long work day=12h","Default rally before take-off=3h","Brief before take-off=2h20","Step before take-off=1h","Dekit after landing=30 min","Debrief after landing=2h"]
+ROW RECORD | T2 | desktop | ad9 puts Long work day back to 12h | saw: ["Crew rest=12h","Days in a row=6 days","Long work day=12h","Default rally before take-off=3h","Brief before take-off=2h20","Step before take-off=1h","Dekit after landing=30 min","Debrief after landing=2h"]
+errors []
+DONE 6 PASS 0 FAIL 2 OTHER of 8

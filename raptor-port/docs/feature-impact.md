@@ -831,8 +831,13 @@ squadron's; a new reader of "is this day a holiday" must ask through them, or 14
 (3) a new holiday names, before it is saved, each squadron's published days it puts out of date
 (`sync.ts holidayOutOfDate` → `ui/oilday.ts outOfDateSaid`, shown by `ui/HolidaysPanel.tsx`, D2184 R32), and the OIL bell line reaches each
 squadron's schedulers for its own inputs only; (4) a Leave War bell line about a posting goes to the war's own squadron's
-admins (`ownSchedulerIds`). Still open: signing out does not reload the app (O8), so a second person of the other
-squadron on the same tab keeps the first one's Tracker. Pinned by `leavewar/holidays-by-place.test.ts`,
+admins (`ownSchedulerIds`). Signing out reloads the app (`ui/logout.ts`); while a save waits it does not, and the
+reload is owed, made the moment the save lands if nobody has signed in since (the full check, 18 Nov 26). Still open:
+someone of the other squadron signing in on that tab BEFORE the save lands keeps the first one's Tracker (a question
+for him — the evidence sheet's §Questions). (5) The change history is the unit in view's: each line carries its unit
+(`engine/editlog.ts`, `u`), only the unit in view's lines are in `ELOG.rows`, re-read at `state/store.ts switchUnit` —
+a new reader of the history reads `ELOG.rows` and so gets one squadron's; whatever must see every squadron's lines reads
+the stored rows. Pinned by `engine/editlog-unit.test.ts`, `ui/logout.test.ts`, `leavewar/holidays-by-place.test.ts`,
 `tracker/trk-per-unit.test.ts`, `state/multi-sqn-step4.test.ts`, `leavewar/postout-notice.test.ts`.
 
 #### Does this standby row fly? ([STANDBY-FLIES], D1042–D1046, D1061, D1062, 19 Oct 26)

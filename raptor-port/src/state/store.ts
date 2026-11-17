@@ -835,7 +835,11 @@ export function switchUnit(unit: string): void {
   // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the unit left keeps its planning calendar as saving stores it (keys set to undefined dropped), the same image a reload of that unit reads; structuredClone would keep them
   const keptPucks = JSON.parse(JSON.stringify(PLANPUCKS))
   PLAN_MEM.set(UNIT, { pucks: keptPucks, titles: { ...DAYRMK } })
+  /* the change history in memory is the unit in view's (engine/editlog.ts elogLoad): the lines held for the unit left
+     are kept first, then the list is read again for the unit entered (the full check, 18 Nov 26) */
+  elogFlush()
   setUnitInView(unit)
+  elogLoad()
   reloadUnitSettings()
   /* the blue/red answers held in memory are the unit in view's (state/persist.ts hydrateRolesFor) */
   { const wb = persistWb(); if (wb) hydrateRolesFor(wb, unit) }

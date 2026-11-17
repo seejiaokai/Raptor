@@ -39,4 +39,36 @@ describe('sign-out', () => {
     expect(calls).toEqual(['flush'])
     expect(auth.SESSION).toBeNull()
   })
+
+  /* the full check of multi-squadron batch 1 (18 Nov 26): the reload is owed, not dropped — the blind reads found the
+     next person, of the other squadron, getting the first squadron's Tracker on the same page */
+  function failingSaver() {
+    let status: 'failed' | 'saved' = 'failed'
+    const subs = new Set<() => void>()
+    const saver = {
+      get status() { return status },
+      flush: async () => { calls.push('flush'); throw new Error('refused') },
+      onStatus: (f: () => void) => { subs.add(f); return () => { subs.delete(f) } },
+    }
+    const land = () => { status = 'saved'; [...subs].forEach(f => f()) }
+    return { saver, land }
+  }
+  it('reloads the moment the waiting save lands, while nobody has signed in since', async () => {
+    const { saver, land } = failingSaver()
+    watchSaves(saver as any)
+    expect(await logOut()).toBe(true)
+    expect(calls).toEqual(['flush'])
+    land()
+    expect(calls).toEqual(['flush', 'reload (signed in: no)'])
+    land()
+    expect(calls.length, 'once').toBe(2)
+  })
+  it('…but never signs out someone who signed in before it landed', async () => {
+    const { saver, land } = failingSaver()
+    watchSaves(saver as any)
+    expect(await logOut()).toBe(true)
+    resetSession({ user: 'ad9', role: 'admin' })
+    land()
+    expect(calls).toEqual(['flush'])
+  })
 })

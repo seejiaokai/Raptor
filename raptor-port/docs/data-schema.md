@@ -137,7 +137,12 @@ another unit's setting by its own name. **Not yet qualified, on purpose:** `elog
 stays as it was, readable by the unit in view only. *(Step 4, 18 Nov 26: `missionrole:` is qualified now — each blue/red
 answer row is stored as `<unit>@missionrole:<its id>`, under the unit whose schedule it was given on, and only the unit in
 view's rows are read into memory, read again when the unit in view changes (`state/persist.ts hydrateRolesFor`, from
-`state/store.ts switchUnit`). `elog:` is the open item still: its reader did not move in step 4.)*
+`state/store.ts switchUnit`). `elog:` is the open item still: its reader did not move in step 4.)* *(The full check of
+batch 1, 18 Nov 26: each `elog:` line now carries `u`, the unit it was made in — the unit in view when the change was
+made; a line saved before carries none and reads as the boot unit's. Only the unit in view's lines are read into
+memory (`engine/editlog.ts elogLoad`), read again when the unit in view changes (`state/store.ts switchUnit`), so a
+squadron's changes window, its "new to you" count and Admin → Data's "Clear edit history…" reach its own lines only. The
+row id stays bare: the line's id is minted once, never shared, so it needs no qualifying.)*
 
 **The Leave War and the Tracker — a whole world per unit (step 4, 18 Nov 26).** Neither store knows a squadron
 exists: each reads and writes its keys as it always has (`war:2026`, `v3:master:syls` …), and the door it is handed

@@ -1258,6 +1258,21 @@ unchanged across reopening), `src/leavewar/holidays-by-place.test.ts` (149's pub
 by date; an Off day is not; R32's days and words), `src/state/multi-sqn-step4.test.ts` (the 149 seed, the three
 sign-ins, the blue/red answers per unit); `src/leavewar/postout-notice.test.ts` (a posting's line to its own squadron's
 admins only).
+The full check of batch 1, steps 0–4 (18 Nov 26, job 5; evidence `docs/handpass/2026-11-18-multi-sqn-b1.md` §The full
+check). **New:** `src/state/units-sqn-guard.test.ts` (another squadron's accounts, people and homes refused at the write
+path and the commit gate; a squadron's last admin; approving a request), `src/engine/weekctx-unit.test.ts` (the
+neighbour-week cache per unit), `src/engine/editlog-unit.test.ts` (the change history per squadron, and its sweep);
+`scripts/handpass/msq/` (the walk: `msq-lib.mjs`, each run its own world with the frozen build served from inside the
+test browser; `msq-host-probe.mjs`, `msq-host-s46.mjs` and `msq-host-rewalk.mjs` (the re-walk after the fixes), the
+host's own runs; the walkers' `msq-w1-*` and `msq-w2-*`,
+their explore scripts kept as scaffolding); the briefs and reports `docs/superpowers/briefs/2026-11-18-multi-sqn-b1-*`.
+**Changed:** `src/state/perms.ts` (`homeUnitViolation`, the gate's section 8; `mayEditQualsOf` asks the man's
+squadron; the master mark judged on the whole account list), `src/state/accounts.ts` (`lockProblem` — no squadron left
+with no admin; `otherSquadronProblem`; `approveRequest` writes no home, `approveRequestNew` the approver's),
+`src/state/units.ts` (`setHome` from tomorrow, today's squadron written first), `src/engine/weekctx.ts` (the seed cache
+keyed by unit), `src/engine/editlog.ts` (a line's `u`; `elogLoad` reads the unit in view's), `src/state/store.ts`
+(`switchUnit` keeps and re-reads the history), `src/storage/savewait.ts` (`onSavesLanded`), `src/ui/logout.ts` (the
+reload owed while a save waits, made once it lands), `src/ui/logout.test.ts`.
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

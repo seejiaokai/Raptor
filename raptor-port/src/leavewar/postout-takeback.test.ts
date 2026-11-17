@@ -70,10 +70,11 @@ beforeEach(() => {
   /* the demo carries two more admins since multi-squadron step 4 — 149's (Kestrel) and a second 142 admin (Prowler):
      these tests are written for a squadron of two admins, so those two step down first */
   expect(updateAccount('acad2', { role: 'main' })).toBeNull()
-  expect(updateAccount('acad9', { role: 'main' })).toBeNull()
+  /* (Kestrel stays: he is 149's only admin, and a squadron is never left with none — D2184 Q10, the full check of
+     18 Nov 26; these postings are 142's, and 149's admin is never told of them) */
   /* a second admin, so "every admin" is two people (Hex — rocky's sign-in — made an admin on Admin → Users) */
   expect(updateAccount('achex', { role: 'admin' })).toBeNull()
-  expect(admins()).toEqual(['rocky', 'stiff'])
+  expect(admins()).toEqual(['kes9', 'rocky', 'stiff'])   // 142's two, and 149's Kestrel, never told of a 142 posting
   _resetTimeline(); lwHistInit(); installGlobalUndo()
 })
 

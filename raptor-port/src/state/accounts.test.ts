@@ -189,12 +189,13 @@ describe('AC4 — the guards (each refusal says why)', () => {
     /* an admin session whose own account is not in the list (so "not your own" does
        not stand in the way) cannot demote the last admin */
     setSession({ user: 'someone', role: 'admin', pid: 'nact', name: 'someone' })
-    /* the demo carries three admins since multi-squadron step 4 (149's, and a second 142 admin): the other two step down
-       first, so `acad` is the last one */
-    expect(updateAccount('acad9', { role: 'main' })).toBe(null)
+    /* the demo carries three admins since multi-squadron step 4 (149's, and a second 142 admin). Since the full check of
+       18 Nov 26 a squadron is never left with no admin of its own (D2184 Q10): 149's one admin cannot step down, and once
+       142's second does, `acad` is 142's last */
+    expect(updateAccount('acad9', { role: 'main' })).toBe("Kestrel is 149's last admin. Make another admin of 149 first.")
     expect(updateAccount('acad2', { role: 'main' })).toBe(null)
-    expect(updateAccount('acad', { role: 'main' })).toMatch(/At least one admin/)
-    expect(updateAccount('acad', { on: false })).toMatch(/At least one admin/)
+    expect(updateAccount('acad', { role: 'main' })).toMatch(/142's last admin/)
+    expect(updateAccount('acad', { on: false })).toMatch(/142's last admin/)
   })
   it('one person one account; one sign-in name one account', () => {
     signInAs('ad', 'a')
@@ -464,7 +465,10 @@ describe('NP5 — approving with New person, filled from what he gave (D214, D20
     expect(got).toContain(`people/${pid}`)
     expect(got).toContain(`settings/account:${accountByName('viper@mail')!.id}`)
     expect(envs[0].changes.find(c => c.id === `accessreq:${rq.id}`)?.op).toBe('delete')
-    expect(got.every(k => k === `people/${pid}` || k.startsWith('settings/account:') || k === `settings/accessreq:${rq.id}`)).toBe(true)
+    /* …and his home row: a new man approved is the approving admin's squadron's, in the same step (D2094 — the full check
+       of 18 Nov 26 moved it from approveRequest, where it moved a man already on the roster, to here) */
+    expect(got.some(k => k.startsWith('settings/home:'))).toBe(true)
+    expect(got.every(k => k === `people/${pid}` || k.startsWith('settings/account:') || k.startsWith('settings/home:') || k === `settings/accessreq:${rq.id}`)).toBe(true)
   })
   it("a typed callsign that is someone's is refused as New person; the request stays", () => {
     signInAs('viper@mail'); ask('Ranger')

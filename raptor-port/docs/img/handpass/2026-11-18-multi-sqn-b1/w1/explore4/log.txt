@@ -1,0 +1,11 @@
+msq-w1-explore4 v1
+GSLOTS []
+IDS ["kes9=Kestrel","fal9=Falcon"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
+msq-w1-explore4 v1
+GSLOTS []
+ROWHTML <div class="sb-pb"><div class="sb-acols c6r"><span></span><span>Item</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span><span></span></div><div class="sb-arow c6r sb-fresh" data-move="mv:g.2.0"><span class="sb-grip" title="Drag to move this row">⠿</span><textarea rows="1" class="ain" data-bfld="gr:2.0.prog" placeholder="OCU PROGRESS REVIEW"></textarea><input class="atm" data-bfld="gr:2.0.str" value=""><input class="atm" data-bfld="gr:2.0.end" value=""><div class="ppl" data-fill="g:2.0.+"><span class="addz" aria-hidden="true">+ add</span></div><textarea rows="1" class="ain rmkin" data-bfld="gr:2.0.rmks" placeholder="Remarks"></textarea><span class="lctl"><button class="mbtn" data-grcx="2.0" title="Cancel this item (CX)">CX</button><button class="mbtn nfo" data-grinfo="2.0" title="Info only — show this item on the programme, never check it against the rules, and never earn OIL from it">ⓘ</button><button class="mbtn red" data-grflag="2.0" title="Red box — flag for the next scheduler">■</button><button class="mbtn del" data-grdel="2.0" title="Remove this item">✕</button></span></div><div class="sb-note"><div class="sb-nh">Scheduler notes<button class="notepub" data-notepub="gn:2" title="Show this note on the view-only schedule">Make public</button></div><textarea class="sb-nbox" data-bfld="gn:2"></textarea></div></div>
+IDS ["kes9=Kestrel","fal9=Falcon"]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

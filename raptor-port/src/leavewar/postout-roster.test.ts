@@ -376,7 +376,9 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     const e = realPass('rocky', 'sans')
     expect(e.changes.some(c => c.collection === 'settings'), 'a SANS pass writes no account row').toBe(false)
     e.changes.push({ op: 'put', collection: 'settings', id: 'account:zz8', before: null, after: { id: 'zz8', name: 'evil', role: 'admin', pid: 'rocky', on: true } } as any)
-    expect(ownershipViolation(e)).toMatch(/settings\/account:zz8/)
+    /* refused either way: with no account stored yet, a list holding only the new row drops the seeded master too, so the
+       master check (the gate's section 6, the full check of 18 Nov 26) may be the one that names it */
+    expect(ownershipViolation(e)).toMatch(/settings\/account:zz8|master mark/)
   })
   it('on the accounts’ first write, the posted man’s own new row with another role is refused', () => {
     const e = realPass('bane', 'overseas')

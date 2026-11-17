@@ -4,8 +4,22 @@
    band already tells him why. The postman is handed over once, at the app's start (main.tsx), beside the unload guard. */
 import type { Postman } from './postman'
 
-let postman: (Pick<Postman, 'status'> & Partial<Pick<Postman, 'flush'>>) | null = null
-export function watchSaves(p: (Pick<Postman, 'status'> & Partial<Pick<Postman, 'flush'>>) | null): void { postman = p }
+type Watched = Pick<Postman, 'status'> & Partial<Pick<Postman, 'flush' | 'onStatus'>>
+let postman: Watched | null = null
+export function watchSaves(p: Watched | null): void { postman = p }
+/** call `fn` once, the first time nothing waits any more (a Retry landed, or the saver got through by itself) — the
+    sign-out's owed reload (ui/logout.ts). Returns the way to stop listening; with no saver to listen to, never fires. */
+export function onSavesLanded(fn: () => void): () => void {
+  const p = postman
+  if (!p?.onStatus) return () => {}
+  let off: (() => void) | null = null
+  off = p.onStatus(() => {
+    if (saveWaiting() || p.status === 'saving') return
+    off?.(); off = null
+    fn()
+  })
+  return () => { off?.(); off = null }
+}
 /** send every save still queued now — sign-out's last step before it reloads the page (ui/logout.ts, multi-squadron
     step 2); a refused save stays waiting, which saveWaiting then says */
 export async function flushSaves(): Promise<void> {

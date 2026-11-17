@@ -71,7 +71,7 @@ import {
   postInProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, levelOfAccount, todayIso } from './units'
+import { putNewHome, levelOfAccount, todayIso, homeOn, units, unitById } from './units'
 import type { UnitLevel } from './units-model'
 
 export type AccountRole = 'admin' | 'main'
@@ -278,6 +278,38 @@ export const isMasterAccount = (id: any): boolean => !!accountById(id)?.master
 export const levelIn = (accountId: any, unit: string, iso: string = todayIso()): UnitLevel | null => levelOfAccount(accountById(accountId), unit, iso)
 const canSignInAsAdmin = (a: Account) => isAdminAccount(a) && a.on && personOk(a.pid)
 
+/* NEVER A SQUADRON LEFT WITH NO ADMIN OF ITS OWN (D2184 Q10 — "and so is any later step that would cause it, such as
+   removing another admin"; the full check's reads, 18 Nov 26: the lock counted every squadron's admins as one, so 142's
+   admin could switch 149's only admin off). `list` — the accounts a step would leave; a squadron that has an admin at
+   home there who can sign in now must still have one after. An admin of it by a grant or the master mark is not
+   counted — he is not ITS admin (the agent's reading, put to him). The whole app's lock first, as before. `ok` — whether
+   a man is on the roster, for a restore asking over the roster it would leave. */
+function lockProblem(list: readonly any[], ok: (pid: string) => boolean = personOk): string | null {
+  const able = (x: any) => isAdminAccount(x) && x.on !== false && ok(x.pid)
+  if (!list.some(able)) return ADMIN_LOCK
+  for (const u of units()) {
+    const has = (l: readonly any[]) => l.some(x => able(x) && homeOn(x.pid) === u.id)
+    if (!has(ACCOUNTS_LIST) || has(list)) continue
+    const gone = ACCOUNTS_LIST.find(x => able(x) && homeOn(x.pid) === u.id && !list.some(y => y.id === x.id && able(y)))
+    const cs = gone ? accountCallsign(gone) : ''
+    return cs ? `${cs} is ${u.num}'s last admin. Make another admin of ${u.num} first.` : `At least one admin of ${u.num} must keep access`
+  }
+  return null
+}
+/* A MAN OF ANOTHER SQUADRON'S ACCOUNT (D2191 — a man of the other squadron is given View on Admin → Users, "nothing else of
+   his row changeable"; the full check's reads, 18 Nov 26): the signed-in admin changes an account only as an admin of
+   the man's own squadron — his home's admin role, an admin grant there, or the master mark. The commit gate holds the
+   same (perms.ts homeUnitViolation), whatever door wrote the row; this says it in words first. */
+function otherSquadronProblem(pid: string): string | null {
+  const mine = SESSION ? accountById(SESSION.user) : undefined
+  const u = homeOn(pid)
+  if (!mine || !u) return null
+  if (levelOfAccount({ id: mine.id, pid: mine.pid, role: 'admin', master: !!mine.master }, u) === 'admin') return null
+  const num = unitById(u)?.num ?? u
+  /* two sentences, as the last-admin lock's words beside it: a dash does not join two thoughts (the guide's §1b) */
+  return `He is ${num}'s. Only an admin of ${num} can change his account.`
+}
+
 /* ---- SIGNING IN: what the sign-in card turns into (D204) ---- */
 export type SignIn =
   | { kind: 'bad' }
@@ -375,7 +407,7 @@ const ownAccount = (a: Account) => (SESSION && SESSION.user === a.id) || (me() !
 export function addAccount(nameIn: any, pid: string, role: AccountRole): string | null {
   if (!mayManageAccounts()) return 'Only an admin can add an account'
   const name = normName(nameIn)
-  const bad = nameProblem(name) || pidProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
+  const bad = nameProblem(name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
   if (bad) return bad
   return commitIntent('account.add', null, () => {
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true, ...newAccountStamp() }])
@@ -389,6 +421,8 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   const a = accountById(id)
   if (!a) return 'That account is gone'
   if (ownAccount(a)) return "You can't change your own account — ask another admin"
+  const other = otherSquadronProblem(a.pid) || (patch.pid !== undefined ? otherSquadronProblem(patch.pid) : null)
+  if (other) return other
   const next: Account = { ...a }
   if (patch.name !== undefined) { const n = normName(patch.name); const bad = nameProblem(n, a.id); if (bad) return bad; next.name = n }
   if (patch.pid !== undefined) { const bad = pidProblem(patch.pid, a.id); if (bad) return bad; next.pid = patch.pid }
@@ -401,7 +435,8 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   }
   if (patch.on !== undefined) { next.on = !!patch.on; delete next.offBy }   // a hand Suspend / Enable is the admin's own
   const list = ACCOUNTS_LIST.map(x => x.id === a.id ? next : x)
-  if (!list.some(canSignInAsAdmin)) return ADMIN_LOCK
+  const locked = lockProblem(list)
+  if (locked) return locked
   /* a sign-in name taken by a rename answers a request waiting under it, as adding an
      account does (Fable's scenario read, 26 Sep 26: the request stayed listed, could never
      be approved — "already has an account" — and kept the Admin tab's count up) */
@@ -434,12 +469,14 @@ export function approveRequest(reqId: string, pid: string, role: AccountRole): s
   if (!mayManageAccounts()) return 'Only an admin can approve a request'
   const rq = ACCESS_REQS.find(r => r.id === reqId)
   if (!rq) return 'That request is gone'
-  const bad = nameProblem(rq.name) || pidProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
+  const bad = nameProblem(rq.name) || pidProblem(pid) || otherSquadronProblem(pid) || (isAccountRole(role) ? null : 'Pick member or admin')
   if (bad) return bad
+  /* linked to a man already on the roster, he keeps the squadron he has — no home is written here: a new home row moved
+     the man linked into the approving admin's squadron from today (the full check, 18 Nov 26). A NEW man's home is
+     written by approveRequestNew below, where it belongs. */
   return commitIntent('access.approve', null, () => {
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true, ...newAccountStamp() }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
-    putNewHome(pid, me())   // his home unit, in the same command — the approving admin's own by default (D2094)
   })
 }
 export function declineRequest(reqId: string): string | null {
@@ -485,9 +522,9 @@ export function deleteAccountProblem(pid: string): string | null {
   const a = accountOfPid(pid)
   if (a && ownAccount(a)) return "You can't delete your own account — ask another admin"
   if (me() != null && pid === me()) return "You can't delete yourself — ask another admin"
-  const left = ACCOUNTS_LIST.filter(x => x.pid !== pid)
-  if (!left.some(canSignInAsAdmin)) return ADMIN_LOCK
-  return null
+  const other = otherSquadronProblem(pid)
+  if (other) return other
+  return lockProblem(ACCOUNTS_LIST.filter(x => x.pid !== pid))
 }
 /* THE POSTING'S SUSPENSION ([POST-OUT-OUTCOMES], D280): the overseas outcome suspends his account on the date — never
    the last admin who can sign in ('lock': the pass skips it and says so); 'none' when there is no account or it is
@@ -496,7 +533,7 @@ export function suspendForPosting(pid: string): 'done' | 'none' | 'lock' {
   const a = accountOfPid(pid)
   if (!a || !a.on) return 'none'
   const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { ...x, on: false, offBy: 'po' as const } : x))
-  if (!list.some(canSignInAsAdmin)) return 'lock'
+  if (lockProblem(list)) return 'lock'
   writeAccounts(list)
   return 'done'
 }
@@ -516,7 +553,7 @@ export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
   const a = accountOfPid(pid)
   if (!a || !a.on) return 'none'
   const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: false, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}), ...(x.master ? { master: true as const } : {}) } : x))
-  if (!list.some(canSignInAsAdmin)) return 'lock'
+  if (lockProblem(list)) return 'lock'
   writeAccounts(list)
   return 'done'
 }
@@ -563,8 +600,7 @@ export const accountSuspendedByPosting = (pid: string): boolean => { const a = a
 /* would removing or suspending this person's account leave no admin who can sign in? (the posting pass's own check —
    it is not a person acting, so "yourself" never applies there) */
 export function lastAdminIfGone(pid: string): string | null {
-  const left = ACCOUNTS_LIST.filter(x => x.pid !== pid)
-  return left.some(canSignInAsAdmin) ? null : ADMIN_LOCK
+  return lockProblem(ACCOUNTS_LIST.filter(x => x.pid !== pid))
 }
 export function dropAccountOfPid(pid: string): void {
   const a = accountOfPid(pid)
@@ -626,7 +662,8 @@ export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, p
       if (a.on !== false && p.archived && !p.deleted && !(live && live.on)) return `${p.cs} is archived — restore him on Admin → Users first`
     }
     /* at least one admin who can sign in (ADMIN_LOCK — the write path's own guard) */
-    if (!list.some(a => isAdminAccount(a) && a.on !== false && ok(a.pid))) return ADMIN_LOCK
+    const locked = lockProblem(list, ok)
+    if (locked) return locked
     /* never the signed-in person's own account (the D166 guard — every field he would sign in with: Astra's red team 2) */
     const mine = ACCOUNTS_LIST.find(ownAccount)
     if (mine) {
@@ -696,6 +733,7 @@ export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRol
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true, ...newAccountStamp() }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
+    putNewHome(pid, me())   // his home unit, in the same command — the approving admin's own by default (D2094)
   }))
 }
 

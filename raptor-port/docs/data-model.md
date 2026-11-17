@@ -1041,8 +1041,9 @@ week and day (`ScheduleWeek.unit`, its days by their week), every issued version
 day's week), the planning calendar (`PlanningPuck`, `DayRemark`) and every unit setting (`Setting.unit` — `rules`, the
 templates, the stores and cancel-reason lists, the flying plan's rows, Quals' columns, the guest and members' switches)
 names its unit. Two units keep the SAME week of dates apart: the week is unique by (`unit`, `weekStart`), a setting by
-(`unit`, `key`). The community's records — `Person`, `Input`, `Notice`, `User`, `AccessRequest`, the change log, the
-schema stamp and the unit tables themselves — carry none. Today the unit rides in the record's id
+(`unit`, `key`). The community's records — `Person`, `Input`, `Notice`, `User`, `AccessRequest`, the
+schema stamp and the unit tables themselves — carry none. The change log carries its unit too (the full check of batch 1,
+18 Nov 26: a line is its squadron's, `u` on the row today — `data-schema.md` §The unit-qualified id). Today the unit rides in the record's id
 (`u149@13/07/2026#2`, `u149@rules` — `data-schema.md` §The unit-qualified id); at the database step it becomes the
 column. The commit gate already refuses a change to a unit's records by anyone without rights there (`state/perms.ts`
 unitRecordViolation: an admin's command needs admin there; a member's needs to be at home there) — §11.
@@ -1723,6 +1724,21 @@ it — the account's stored role is what the session starts from, so the two agr
 18 Nov 26: reading the stored role refused every write of a session raised in place by the developer's test bridge).
 A View grant writes nothing. An actor with no account (a test's session) is judged against the unit in view
 alone.
+
+**A man, his account and his home are his own squadron's admins' (the full check of batch 1, 18 Nov 26 — D2191, D2184
+Q10, D2119; `src/state/perms.ts` homeUnitViolation, the gate's section 8, and the write paths in `state/accounts.ts`,
+`state/units.ts`).** For an admin's command: a change to a `Person` row (his name, CAT, quals, a delete) needs admin in
+the man's home squadron today — Quals' row of a man of the other squadron reads only (`mayEditQualsOf`); a change to a
+`User` row other than one's own needs admin in the home squadron of the person it names, before and after (a plain
+admin of 142 can neither raise, switch off nor add an account for a 149 man); a `PersonHome` row needs admin in the
+squadron he leaves, and never takes effect before tomorrow — a row from today only restates the squadron he is at. A
+man new in the same command is judged by the squadron he joins. Whatever the actor, a step that leaves a squadron with
+no admin of its own able to sign in is refused, naming him ("Kestrel is 149's last admin. Make another admin of 149
+first."); a master or an admin granted there does not count for a squadron other than his own home (the agent's
+reading, put to him). Whether the master mark moved is judged on the whole account list, before and after the
+command, so dropping a master's stored account — the first account write stores every seeded row — is refused like
+any other change to it. Approving an access request linked to a man already on the roster leaves his squadron as it
+is; a new man approved is the approving admin's squadron's.
 
 **The day lock (29 Sep 26, D355, D450 — section 9):** *(8 Nov 26, his D1751: a simple mark the app holds — none of the Dataverse privileges, team or server check in this paragraph is built.)* the lock is columns of `ScheduleDay` (section 3), so it follows
 the ScheduleWeek family's row — an admin takes, releases and takes over a day (every scheduler is an admin; in

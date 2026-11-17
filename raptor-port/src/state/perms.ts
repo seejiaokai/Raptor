@@ -36,7 +36,7 @@ import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId } from '../storage/unitid'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES, validUnit, validPlace, validUnitPlace, validGrant,
-  validHome, unitIn, placeIn, placeIdOn, type UnitRows,
+  validHome, unitIn, placeIn, placeIdOn, moveFrom, type UnitRows,
 } from './units-model'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
@@ -387,7 +387,17 @@ export function mayReadMedicalOf(_pid?: any): boolean {
 
 /* the Quals page (D149): his OWN row, every column. No session → true (the headless
    page tests, as before). */
-export const mayEditQualsOf = (pid: any): boolean => may(T.person, 'U', pid, true)
+export const mayEditQualsOf = (pid: any): boolean => may(T.person, 'U', pid, true) && ofMySquadron(pid)
+/* an admin changes a man's row only as an admin of the man's own squadron (D2191; the commit gate's section 8,
+   homeUnitViolation, holds the same for every door): his home's admin role, an admin grant there, or the master mark.
+   A member is held to his own row by the table above; no session, or a man with no squadron at all → true */
+function ofMySquadron(pid: any): boolean {
+  if (!isAdmin() || pid == null) return true
+  const u = homeOn(String(pid))
+  const row: any = SESSION ? ACCOUNTS_LIST.find(x => x.id === SESSION!.user) : null
+  if (!u || !row) return true
+  return levelBefore({ id: row.id, pid: String(row.pid), role: 'admin', master: row.master === true }, u, todayIso(), unitRowsBefore([])) === 'admin'
+}
 /* the callsign on his row is the admin's to change (D218, narrowing D149); no session → true */
 export const mayRenameCallsign = (): boolean => roleOf() === null || isAdmin()
 /* the Management tick on his row is the admin's too (D1510, narrowing D149 as D218 did): the Leave War draws its Management
@@ -1235,6 +1245,29 @@ function accountImagesNow(): any[] {
   for (const k of store.keys(ACCOUNT_ROW)) { const v = store.get(k, null); if (v) out.push(v) }
   return out.length ? out : seedAccounts()
 }
+/* the stored accounts BEFORE and AFTER the command, as the loader would read each — none stored is the seeded list. Both
+   are made from the command's own changes (each row it changed put back, then each laid on again), never the store's
+   state alone: a change judged before or without its write reaches the store (a forged envelope, a test) is still
+   compared like for like, so a master mark nobody touched never reads as moved */
+function accountImagesAround(changes: readonly Change[]): { before: any[]; after: any[] } {
+  const m = new Map<string, any>()
+  for (const k of store.keys(ACCOUNT_ROW)) { const v = store.get(k, null); if (v) m.set(k, v) }
+  const mine = changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_ROW))
+  for (const c of mine) { if (c.before == null) m.delete(String(c.id)); else m.set(String(c.id), c.before) }
+  const before = m.size ? [...m.values()] : seedAccounts()
+  for (const c of mine) { if (c.after == null) m.delete(String(c.id)); else m.set(String(c.id), c.after) }
+  return { before, after: m.size ? [...m.values()] : seedAccounts() }
+}
+/* an account row's image AFTER a command, read as the loader reads it. A row the command removed is the account GONE —
+   unless no account row is left at all, when the loader reads the seeded list again (the Undo of the very first account
+   write). Reading every removed row as its seed (accountBefore's rule for a row never written) let a plain admin's
+   Delete take the master's account away unseen by the master check: the full check's security read, 18 Nov 26, F6. */
+function accountAfter(id: string, c: Change): any {
+  if (c.after != null) return c.after
+  /* (a seeded account never stored, removed by the list's very first write, is gone too: before and after both empty) */
+  const anyLeft = store.keys(ACCOUNT_ROW).some(k => store.get(k, null) != null)
+  return anyLeft ? null : accountBefore(id, null)
+}
 function unitRowViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   const unitCh = env.changes.filter(c => c.collection === 'settings' && isUnitRow(String(c.id)))
@@ -1243,10 +1276,21 @@ function unitRowViolation(env: CommitEnvelope): string | null {
     /* both sides read as the loader reads them: an Undo of the very first account write takes every stored row away,
        and a seeded account with no row is its seed again — Saber's mark is not changed by that, so it is no change */
     const id = String(c.id).slice(ACCOUNT_ROW.length)
-    const was = accountBefore(id, c.before), is = accountBefore(id, c.after)
+    const was = accountBefore(id, c.before), is = accountAfter(id, c)
     return !!(was && was.master) !== !!(is && is.master)
   })
-  if (!unitCh.length && !masterCh.length) return null
+  /* …and read whole: the masters before the command against the masters after it, as the loader reads each. The very
+     first write of the account list stores every seeded account it keeps and simply leaves out one it drops — no change
+     of that row is recorded at all — so a plain admin's Delete of the one master went past the row-by-row check above
+     (the full check's security read, 18 Nov 26, F6) */
+  const anyAcct = env.changes.some(c => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_ROW))
+  let masterMoved = masterCh.length > 0
+  if (anyAcct && !masterMoved) {
+    const ids = (l: any[]) => l.filter(x => x && x.master === true).map(x => String(x.id)).sort().join(',')
+    const img = accountImagesAround(env.changes)
+    masterMoved = ids(img.before) !== ids(img.after)
+  }
+  if (!unitCh.length && !masterMoved) return null
   const sys = !a || a.role === 'system'
   const today = todayIso()
   const before = unitRowsBefore(env.changes)
@@ -1298,7 +1342,7 @@ function unitRowViolation(env: CommitEnvelope): string | null {
     }
   }
 
-  if (masterCh.length) {
+  if (masterMoved) {
     if (env.type !== 'account.master' && !(env.type === 'undo.restore' && env.origin === 'restore')) return 'the master mark changes only by its own command'
     if (!master) return 'only a master admin sets the master mark'
     for (const c of masterCh) {
@@ -1310,12 +1354,85 @@ function unitRowViolation(env: CommitEnvelope): string | null {
   return null
 }
 
+/* 8. A PERSON, HIS ACCOUNT AND HIS HOME ARE AN ADMIN'S OF HIS OWN SQUADRON (the full check of batch 1, 18 Nov 26 — the
+   blind reads' cross-squadron finding: 142's plain admin could rename, re-category or delete a 149 man, change any 149
+   account — make a 149 man an admin there, switch 149's only admin off — and pull a man of 149 into 142, since a home
+   row was judged only by the unit it names). D2191: Admin → Users lists an admin's own squadron's people; a man of the
+   other squadron is given View, "nothing else of his row changeable". The person's row, his account's row and his home
+   carry no unit in their ids (they are the community's, D288 — one callsign list), so section 7 cannot see them; this
+   reads the unit off the PERSON: his home today, over the rows as they stood before the command (a man made by this
+   very command, by the home it gives him). An admin in force must be an admin there — his home squadron's role, an
+   admin grant or the master mark (levelBefore, the one answer). A home row is held twice: its unit (section 6) and the
+   squadron he LEAVES (here); and only from tomorrow on for a man who already has one (D2119 — never rewriting today).
+   A row this command writes unchanged (an account list's first write stores every seeded row) asks nothing. The
+   member rules below still hold a member to his own row; the app itself is not asked. */
+function homeUnitViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role !== 'admin') return null
+  const people = env.changes.filter(c => c.collection === 'people')
+  const accts = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_ROW))
+  const homes = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(HOME_PFX))
+  if (!people.length && !accts.length && !homes.length) return null
+  const today = todayIso()
+  const before = unitRowsBefore(env.changes)
+  const after = unitRowsBefore([])
+  const row: any = ACCOUNTS_LIST.find(x => x.id === a.id)
+  const acct = row
+    ? { id: row.id, pid: String(row.pid), role: String(a.role), master: row.master === true }
+    : { id: a.id, pid: String(a.personId ?? ''), role: 'admin' }
+  /* a man this command makes: his people row is new here */
+  const made = new Set(people.filter(c => c.before == null).map(c => String(c.id)))
+  const unitOfMan = (pid: string) => homeBefore(pid, today, made.has(pid) ? after : before)
+  const adminThere = (pid: string): string | null => {
+    const u = unitOfMan(pid)
+    /* no home at all (a shared store before its rows exist) — nothing to judge, as section 6 */
+    if (!u) return null
+    return levelBefore(acct, u, today, before) === 'admin' ? null : u
+  }
+  for (const c of people) {
+    if (JSON.stringify(c.before ?? null) === JSON.stringify(c.op === 'delete' ? null : c.after ?? null)) continue
+    const u = adminThere(String(c.id))
+    if (u) return `a person of another squadron (${u}) changed by one who is not its admin (people/${c.id})`
+  }
+  for (const c of accts) {
+    const id = String(c.id).slice(ACCOUNT_ROW.length)
+    /* his own account too: the own-account guards (accounts.ts ownAccount) stand only on the write path, so a forged write
+       moving his own account onto a 149 man made a 142 admin 149's admin (the fix's blind read, 18 Nov 26, F1); his
+       ordinary writes to his own row pass, his own squadron being his */
+    const was = accountBefore(id, c.before), is = accountAfter(id, c)
+    if (JSON.stringify(was ?? null) === JSON.stringify(is ?? null)) continue
+    for (const img of [was, is]) {
+      if (!img || img.pid == null) continue
+      const u = adminThere(String(img.pid))
+      if (u) return `an account of another squadron (${u}) changed by one who is not its admin (${c.id})`
+    }
+  }
+  for (const c of homes) {
+    const img: any = c.after ?? c.before
+    if (!img || img.pid == null) continue
+    const pid = String(img.pid)
+    if (made.has(pid)) continue   // a new man's first home — its unit is section 6's
+    const u = adminThere(pid)
+    if (u) return `a man moved out of a squadron (${u}) by one who is not its admin (${c.id})`
+    /* never a day already begun — save a row that only writes down the squadron he is in today (a man of the demo's 142
+       with no row of his own gets one before his move, units.ts setHome) */
+    const tomorrow = moveFrom(today)
+    const nowU = homeBefore(pid, today, before)
+    for (const h of [c.before as any, c.after as any]) {
+      if (h && typeof h.from === 'string' && h.from < tomorrow && h.unit !== nowU) return `a home changed for a day already begun (${c.id})`
+    }
+  }
+  return null
+}
+
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   const unitBad = unitRowViolation(env)
   if (unitBad) return unitBad
   const unitRec = unitRecordViolation(env)
   if (unitRec) return unitRec
+  const homeBad = homeUnitViolation(env)
+  if (homeBad) return homeBad
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
      for an ADMIN too — an admin who changed a man's leave could otherwise set that man's moment to now and wipe the dots
      that tell him (§11: "C R U own" for every role) */

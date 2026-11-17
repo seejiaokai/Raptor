@@ -5,6 +5,8 @@ import { ridKey, posKey } from './rowids'
 import { CURWEEK } from './waves'
 import { dayIso } from './verid'
 import { REPORTING_LABEL } from './reporting'
+import { UNIT, BOOT_UNIT } from './unitview'
+import { homeUnitOf } from './roster'
 
 /* THE EDIT LOG (owner, 11 Aug 26) — who changed which detail, when, and what
    it was before. The board's History toggle reads it two ways: a bubble on
@@ -74,6 +76,11 @@ export type ELogRow = {
                       //   handed to another man, who is in `sub` (state/changelines.ts — 13 Oct 26, so History tells it on his puck))
   sect?: string       // what a line with no key is about — 'abs' (an absence, the Leave War), 'quals', 'day' — which the
                       //   changes window reads to file it under its item (ui/changesmodel.ts itemOf; Group by Where went, D345)
+  u?: string          // the unit (squadron) whose history it is — the unit in view when it was kept (the full check of
+                      //   multi-squadron batch 1, 18 Nov 26: one history for both squadrons showed 149's lines, private
+                      //   reasons included, in 142's changes window, and either squadron's sweep cleared both). The list in
+                      //   memory holds the unit in view's lines only (elogLoad, read again at a unit switch); a saved line
+                      //   with none is the boot unit's (only the demo's stored data has none — D56)
   key: string         // the slot key, '' for a structural note
   lbl: string         // WHAT it was, in words — frozen at log time, see below
   from: string
@@ -168,10 +175,13 @@ export function elogLoad(): void {
   for (const k of store.keys(ROW_PFX)) {
     const x = store.get(k, null)
     if (!x || typeof x !== 'object' || Array.isArray(x) || !Number.isFinite(x.t)) continue
+    /* the unit in view's lines only — another squadron's history is never in the list a reader walks */
+    const u = typeof x.u === 'string' && x.u ? x.u : BOOT_UNIT
+    if (u !== UNIT) continue
     const r: ELogRow = {
       seq: 0, lineId: k.slice(ROW_PFX.length), t: +x.t, who: str(x.who), pid: typeof x.pid === 'string' ? x.pid : null,
       di: Number.isFinite(x.di) ? +x.di : null, date: isoOk(x.date) ? x.date : null,
-      key: str(x.key), lbl: str(x.lbl), from: str(x.from), to: str(x.to),
+      key: str(x.key), lbl: str(x.lbl), from: str(x.from), to: str(x.to), u,
     }
     if (isoOk(x.end)) r.end = x.end
     if (isoOk(x.wdate)) { r.wdate = x.wdate; if (isoOk(x.wend)) r.wend = x.wend }
@@ -427,9 +437,15 @@ export function keyLabel(key: any, days: any[] = DAYS): string {
    refused command burns none and the order is the order kept; kept with no command running, it goes through the door
    (a saved group of its own, with its batch). */
 function push(row: Omit<ELogRow, 'seq' | 'lineId'>) {
+  /* whose history it is, read now, not when a held line is kept: a line about one man with no schedule place (his Quals,
+     his absence, his posting — `sub` with no key) is his own squadron's, wherever it was made from (the master changing a
+     149 man from 142's view filed it in 142's history, which 142's members read — the fix's blind read, F2); any other
+     line, the unit in view's */
+  const u = row.sub && !row.key ? (homeUnitOf(row.sub, isoOk(row.date) ? row.date! : undefined) ?? UNIT) : UNIT
   const keep = () => {
-    const r = { ...row, lineId: mintLineId(), seq: ELOG.next++ } as ELogRow
-    ELOG.rows.push(r)
+    const r = { ...row, u, lineId: mintLineId(), seq: ELOG.next++ } as ELogRow
+    /* the list in memory is the unit in view's only (elogLoad); another squadron's line is saved, and read with it */
+    if (u === UNIT) ELOG.rows.push(r)
     writeRow(r)
     while (ELOG.rows.length > ELOG.cap) dropRow(ELOG.rows.shift()!)
   }

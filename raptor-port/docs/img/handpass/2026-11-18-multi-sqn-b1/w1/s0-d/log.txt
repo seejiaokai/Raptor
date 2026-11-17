@@ -1,0 +1,74 @@
+msq-w1-s0 v1 desktop
+ROW PASS | S0 editsched | desktop | ad () on editsched: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 inputs | desktop | ad () on inputs: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 quals | desktop | ad () on quals: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 leavewar | desktop | ad () on leavewar: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker | desktop | ad () on tracker: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker + Add | desktop | ad opens + Add | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 | desktop | Logout before ad2 | saw: {"reloaded":true}
+ROW PASS | S0 editsched | desktop | ad2 () on editsched: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 inputs | desktop | ad2 () on inputs: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 quals | desktop | ad2 () on quals: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 leavewar | desktop | ad2 () on leavewar: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker | desktop | ad2 () on tracker: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker + Add | desktop | ad2 opens + Add | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 | desktop | Logout before us | saw: {"reloaded":true}
+ROW PASS | S0 viewsched | desktop | us () on viewsched: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 inputs | desktop | us () on inputs: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 quals | desktop | us () on quals: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 leavewar | desktop | us () on leavewar: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker | desktop | us () on tracker: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker + Add | desktop | us opens + Add | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 | desktop | Logout before ad9 | saw: {"reloaded":true}
+ROW PASS | S0 editsched | desktop | ad9 () on editsched: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 inputs | desktop | ad9 () on inputs: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 quals | desktop | ad9 () on quals: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 leavewar | desktop | ad9 () on leavewar: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 tracker | desktop | ad9 () on tracker: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 tracker + Add | desktop | ad9 opens + Add | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 | desktop | Logout before us9 | saw: {"reloaded":true}
+ROW PASS | S0 viewsched | desktop | us9 () on viewsched: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 inputs | desktop | us9 () on inputs: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 quals | desktop | us9 () on quals: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 leavewar | desktop | us9 () on leavewar: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 tracker | desktop | us9 () on tracker: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 tracker + Add | desktop | us9 opens + Add | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+errors []
+DONE 34 PASS 0 FAIL 0 OTHER of 34
+msq-w1-s0 v1 desktop
+ROW PASS | S0 editsched | desktop | ad () on editsched: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 inputs | desktop | ad () on inputs: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 quals | desktop | ad () on quals: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 leavewar | desktop | ad () on leavewar: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker | desktop | ad () on tracker: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker + Add | desktop | ad opens + Add | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 | desktop | Logout before ad2 | saw: {"reloaded":true}
+ROW PASS | S0 editsched | desktop | ad2 () on editsched: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 inputs | desktop | ad2 () on inputs: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 quals | desktop | ad2 () on quals: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 leavewar | desktop | ad2 () on leavewar: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker | desktop | ad2 () on tracker: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker + Add | desktop | ad2 opens + Add | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 | desktop | Logout before us | saw: {"reloaded":true}
+ROW PASS | S0 viewsched | desktop | us () on viewsched: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 inputs | desktop | us () on inputs: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 quals | desktop | us () on quals: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 leavewar | desktop | us () on leavewar: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker | desktop | us () on tracker: own-squadron names seen / other-squadron names seen | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 tracker + Add | desktop | us opens + Add | saw: own: Saber,Ranger,Echo,Static; other: -
+ROW PASS | S0 | desktop | Logout before ad9 | saw: {"reloaded":true}
+ROW PASS | S0 editsched | desktop | ad9 () on editsched: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 inputs | desktop | ad9 () on inputs: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 quals | desktop | ad9 () on quals: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 leavewar | desktop | ad9 () on leavewar: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 tracker | desktop | ad9 () on tracker: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 tracker + Add | desktop | ad9 opens + Add | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 | desktop | Logout before us9 | saw: {"reloaded":true}
+ROW PASS | S0 viewsched | desktop | us9 () on viewsched: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 inputs | desktop | us9 () on inputs: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 quals | desktop | us9 () on quals: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 leavewar | desktop | us9 () on leavewar: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 tracker | desktop | us9 () on tracker: own-squadron names seen / other-squadron names seen | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+ROW PASS | S0 tracker + Add | desktop | us9 opens + Add | saw: own: Kestrel,Falcon,Osprey,Heron,Merlin,Raven,Harrier,Shrike,Gannet,Condor; other: -
+errors []
+DONE 34 PASS 0 FAIL 0 OTHER of 34

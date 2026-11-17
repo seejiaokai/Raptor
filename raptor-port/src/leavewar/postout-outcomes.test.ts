@@ -73,7 +73,8 @@ beforeEach(() => {
   /* the demo carries two more admins since multi-squadron step 4 — 149's (Kestrel) and a second 142 admin (Prowler):
      these tests are written for Saber as the one admin, so those two step down first */
   expect(updateAccount('acad2', { role: 'main' })).toBeNull()
-  expect(updateAccount('acad9', { role: 'main' })).toBeNull()
+  /* (Kestrel stays: he is 149's only admin, and a squadron is never left with none — D2184 Q10, the full check of
+     18 Nov 26; these postings are 142's, and 149's admin is never told of them) */
 })
 afterEach(() => { resetSession(null); vi.restoreAllMocks() })
 

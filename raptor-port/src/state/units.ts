@@ -196,10 +196,17 @@ export function removeGrant(account: string, unit: string): UnitSave {
 export function setHome(pid: string, unit: string): UnitSave {
   if (!unitById(unit)) return no('That squadron is gone')
   const mine = unitRows().homes.filter(h => h.pid === pid)
-  const from = mine.length ? moveFrom(todayIso()) : todayIso()
-  if (mine.length && homeUnitOn(unitRows(), pid, from, null) === unit) return no('That is already his squadron')
+  /* a man who has a squadron today — by a row, or the demo's 142 for a man with none — moves from tomorrow (D2119);
+     only a man with no squadron at all is placed from today. Reading the rows alone placed the demo's 142 men (no row)
+     from today, rewriting a day already begun (the full check's Opus read, 18 Nov 26) — the commit gate refuses that */
+  const now = homeOn(pid)
+  const from = now ? moveFrom(todayIso()) : todayIso()
+  if (now && homeOn(pid, from) === unit) return no('That is already his squadron')
   const same = mine.find(h => h.from === from)
   return save('home.set', null, () => {
+    /* a man with no row of his own (the demo's 142) gets his squadron of today written first: a person's FIRST row covers
+       every day before it (units-model.ts atOn), so the move alone would have moved his today and his past too */
+    if (now && !mine.length) { const h0 = newId('h'); put(HOME_PFX + h0, { id: h0, pid, unit: now, from: todayIso() }) }
     const id = same ? same.id : newId('h')
     put(HOME_PFX + id, { id, pid, unit, from })
     return id

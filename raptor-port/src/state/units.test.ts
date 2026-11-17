@@ -133,8 +133,9 @@ describe('a new person gets his home inside the command that makes him (D2094)',
     expect(levelIn(accountByName('blaze@mail')!.id, 'u142')).toBe('member')
   })
   it('an adder whose home is 149 puts the new man in 149', () => {
-    signInAs('ad', 'a')
-    expect(setHome('stiff', 'u149').ok).toBe(true)
+    /* Kestrel, 149's admin (a move of Saber's own home counts from tomorrow since the full check of 18 Nov 26 — D2119 —
+       so it no longer makes him 149's today) */
+    signInAs('ad9', 'a9')
     expect(addRosterPerson({ cs: 'Gecko', ini: '', seat: 'FCP', cat: 'OCU' })).toBe(null)
     expect(homeOn(csOf('Gecko')!)).toBe('u149')
   })
@@ -197,20 +198,19 @@ describe('the master-only commands', () => {
 
 describe('a right in a unit is given only by an admin OF that unit (read from the row)', () => {
   it('an admin of 142 is refused a grant on 149, and allowed one on 142', () => {
-    signInAs('ad', 'a')
-    expect(setHome('casper', 'u149').ok).toBe(true)   // Outlaw's home is 149
+    /* the 149 man is Osprey, seeded at 149 (a move made here would count from tomorrow — D2119, the full check) */
     plainAdmin()
     const no = setGrant('acus', 'u149', 'view', 'bane')
     expect(no.ok).toBe(false)
     expect(grantsOf('acus')).toEqual([])
     const self = setGrant(accountByName('pike@mail')!.id, 'u149', 'admin', 'pike')
     expect(self.ok).toBe(false)                         // never by the right the command itself gives
-    expect(setGrant('acoutlaw', 'u142', 'view', 'casper').ok).toBe(true)
-    expect(levelIn('acoutlaw', 'u142')).toBe('view')
-    expect(setGrant('acoutlaw', 'u142', 'admin', 'casper').ok).toBe(true)
-    expect(levelIn('acoutlaw', 'u142')).toBe('admin')
-    expect(removeGrant('acoutlaw', 'u142').ok).toBe(true)
-    expect(levelIn('acoutlaw', 'u142')).toBe(null)
+    expect(setGrant('acus9', 'u142', 'view', 'osp9').ok).toBe(true)
+    expect(levelIn('acus9', 'u142')).toBe('view')
+    expect(setGrant('acus9', 'u142', 'admin', 'osp9').ok).toBe(true)
+    expect(levelIn('acus9', 'u142')).toBe('admin')
+    expect(removeGrant('acus9', 'u142').ok).toBe(true)
+    expect(levelIn('acus9', 'u142')).toBe(null)
   })
   it('a member gives no right and moves no unit', () => {
     signInAs('us', 'us')

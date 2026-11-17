@@ -133,7 +133,9 @@ function bundle(v:any){
      v generated under one loaded year reads wrong under another — real at a
      New Year boundary, where the week of Dec 28 is read both as "next week"
      (loaded year 2026) and as "last week" (loaded year 2027). */
-  const ck=v+'@'+baseYear();
+  /* …and by the unit in view (the full check of multi-squadron batch 1, 18 Nov 26): a bare week read while 142 was in
+     view was served again to 149 on the same page — 142's next Monday read as 149's for the crew-rest edge */
+  const ck=UNIT+'|'+v+'@'+baseYear();
   if(!(ck in bundleCache))bundleCache[ck]=weekBundle(v);
   /* a man deleted, and a request's row landed, worked out on read on a copy — the cache holds the pure seed ([DB-READINESS]
      group A, phase 6 (d) and (c) — engine/overlay.ts viewOfWeek; Fable's round-2 F2: a week nobody has saved lands its

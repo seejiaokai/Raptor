@@ -1,0 +1,10 @@
+msq-w2-a v1 desktop
+Fri17 ground before []
+ground add W2 UNDO Kestrel ok ["W2 UNDO"]
+after add ["W2 UNDO"] undo {"disabled":false,"aria":null}
+ROW PASS | T1 | desktop | ad9 adds ground row "W2 UNDO" with Kestrel on Fri 17, presses top bar Undo one at a time | saw: presses: 2; ground after each: ["W2 UNDO"] -> [""]; gone: true; start: ["W2 UNDO"]
+ROW RECORD | T1 | desktop | ad9 presses Redo once | saw: ground: ["W2 UNDO"]; W2 UNDO back: true
+ground now ["W2 UNDO"]
+ROW PASS | T1 | desktop | ad signs in; reads Undo button | saw: {"disabled":true,"aria":null}; 142 Fri17 ground: ["GROUND SCHOOL - EW","AIRCREW ADMIN"]
+ROW PASS | T1 | desktop | ad9 signs in again | saw: ground: ["W2 UNDO"]; undo: {"disabled":true,"aria":null}
+149 logic before []

@@ -16,7 +16,8 @@
    with no page to reload, can see that it is called and in what order. */
 import { resetSession, notify, setPage } from '../state/store'
 import { trackerMayLogOut } from '../tracker/role.js'
-import { flushSaves, saveWaiting } from '../storage/savewait'
+import { flushSaves, saveWaiting, onSavesLanded } from '../storage/savewait'
+import { SESSION } from '../state/auth'
 
 let reloadPage: () => void = () => { window.location.reload() }
 /** replace the page reload (tests); returns the one it replaced */
@@ -27,6 +28,13 @@ export async function logOut(): Promise<boolean> {
   if (!go) return false
   resetSession(null); notify()
   await flushSaves()
-  if (!saveWaiting()) reloadPage()
+  if (!saveWaiting()) { reloadPage(); return true }
+  /* …and the reload is OWED, not dropped (the full check of multi-squadron batch 1, 18 Nov 26 — the blind reads found
+     the next person, of the other squadron, signing in on this same page and getting the first squadron's Tracker, which
+     keeps the squadron it first loaded for the life of the page, tracker/storage.js). The moment the waiting save lands
+     — his Retry, or the saver getting through by itself — and nobody has signed in since, the page reloads: the sign-in
+     screen comes back as it was, now with nothing of the last person's squadron in memory. Someone signed in before it
+     landed keeps his session (a reload would sign him out unasked). */
+  onSavesLanded(() => { if (!SESSION) reloadPage() })
   return true
 }
