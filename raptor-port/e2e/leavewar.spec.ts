@@ -9320,9 +9320,13 @@ test('the OIL award editor: the amount 0.5 ↔ 1 ↔ 2.5 and Delete armed move n
    opened its editor with Cancel cut and Delete wholly past the screen's edge — the editing box is wider than the award, and
    nothing slid the list to it; D2155's Delete, as wide as "Really delete?", made it worse. Tapped where a finger finds it,
    the list not slid first: Save, Cancel and Delete each whole on screen and on top, clear of the pinned name columns. */
-test('the OIL award editor opens with Save, Cancel and Delete in sight, never cut at the screen\'s edge', async ({ page }) => {
+/* …and with wider letters than this PC's: GitHub's run of 356e2fc6a (its own fonts) found Delete still 8.8px past the edge —
+   the button row, held on one line, forced the editing box wider than the room beside the pinned names. Wide letters are
+   stood in for by spacing, so the case is red on any machine. */
+for (const wide of [false, true]) test(`the OIL award editor opens with Save, Cancel and Delete in sight, never cut at the screen's edge${wide ? ' — wide letters' : ''}`, async ({ page }) => {
   await lwRole(page, 'admin')
   if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  if (wide) await page.addStyleTag({ content: '.oil-edit .tchip, .oil-edit .dchip { letter-spacing: 3px }' })
   await page.locator('[data-testid="oil-tracker"]').click()
   await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
   const first = page.locator('[data-testid="oil-range-first"]')
@@ -9360,9 +9364,12 @@ test('the OIL award editor opens with Save, Cancel and Delete in sight, never cu
     return { id, mid: (t.top + t.bottom) / 2, top: o.top, h: o.height }
   }))
   for (const w of words.slice(1)) {
+    /* a button the row wrapped (wide letters — GitHub's run of 356e2fc6a) stands a line lower, whole, at its own height;
+       one on Save's line is as tall as Save and its words sit on Save's words' line (§7.11's second 23: side by side) */
+    if (Math.abs(w.top - words[0].top) > w.h / 2) { expect(w.top, `${w.id} wrapped below, not over`).toBeGreaterThan(words[0].top + w.h - 0.5); continue }
+    expect(Math.abs(w.h - words[0].h), `${w.id} as tall as Save`).toBeLessThanOrEqual(0.5)
     expect(Math.abs(w.mid - words[0].mid), `${w.id}'s words on Save's line`).toBeLessThanOrEqual(0.5)
     expect(Math.abs(w.top - words[0].top), `${w.id} level with Save`).toBeLessThanOrEqual(0.5)
-    expect(Math.abs(w.h - words[0].h), `${w.id} as tall as Save`).toBeLessThanOrEqual(0.5)
   }
   /* a finger's tap on Cancel closes it, the list where the editor left it */
   const c = (await page.locator('[data-testid="oil-edit-cancel"]').boundingBox())!
