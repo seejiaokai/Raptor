@@ -9429,6 +9429,67 @@ test('the OIL award editor at the list\'s foot opens with Save, Cancel and Delet
   await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
 })
 
+/* …AT THE LIST'S TOP, AND WHEN A SAVE IS REFUSED (the fix round's second narrow read, chat 103, 17 Nov 26): the slide's top
+   limit counted only the two heading rows, but the person's group heading ("SXO · 12") is held under them too, so an award
+   tapped half under the headings opened its first line behind that strip; and a refused save's warning, drawn under the
+   buttons after the editor opened, could stand below the list's foot. Each part asserted by what is drawn at its middle. */
+async function openOilAt(page: Page, pick: (p: Page) => Locator, place: 'top' | 'foot') {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const first = page.locator('[data-testid="oil-range-first"]')
+  if (await first.count()) await first.click()
+  const award = pick(page)
+  await award.evaluate((e, place) => {
+    const w = e.closest('.oil-wrap') as HTMLElement
+    const a = w.getBoundingClientRect()
+    w.scrollLeft += e.getBoundingClientRect().right - (a.left + w.clientWidth - 8)
+    const r = e.getBoundingClientRect()
+    if (place === 'foot') w.scrollTop += (r.top + r.height / 2) - (a.top + w.clientHeight - 2)
+    else {
+      /* the award's top third under the held heading rows and group strip, the rest below them */
+      const held = Math.max(a.top, ...[...w.querySelectorAll<HTMLElement>('table.oil-grid > thead th')].map(h => h.getBoundingClientRect().bottom))
+      w.scrollTop += r.top - (held - r.height / 3)
+    }
+  }, place)
+  await page.waitForTimeout(150)
+  const ab = (await award.boundingBox())!
+  const vw = page.viewportSize()!.width
+  const wr = await page.evaluate(() => { const w = document.querySelector<HTMLElement>('.oil-wrap')!; const a = w.getBoundingClientRect(); return { top: a.top, foot: a.top + w.clientHeight } })
+  /* pressed on its part in sight: low on it at the top, high on it at the foot */
+  const x = Math.min(ab.x + ab.width / 2, (ab.x + vw) / 2)
+  const y = place === 'top' ? ab.y + ab.height - 8 : Math.min(ab.y + ab.height / 2, wr.foot - 8)
+  if (isPhone()) await page.touchscreen.tap(x, y)
+  else await page.mouse.click(x, y)
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toBeVisible()
+  await page.waitForTimeout(250)
+}
+const drawnAtMiddle = (page: Page, sel: string) => page.evaluate(sel => {
+  const e = document.querySelector<HTMLElement>(sel)!, b = e.getBoundingClientRect()
+  return document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2)?.closest(sel) != null
+}, sel)
+
+test('the OIL award editor tapped half under the held headings opens with its first line in sight', async ({ page }) => {
+  await openOilAt(page, p => p.locator('[data-testid="oil-entry-dol-1"]'), 'top')
+  for (const sel of ['[data-testid="oil-edit-amt"]', '[data-testid="oil-edit-date"]', '[data-testid="oil-edit-reason"]', '[data-testid="oil-edit-save"]'])
+    expect(await drawnAtMiddle(page, sel), `${sel} drawn on top at its middle, not under the headings`).toBe(true)
+})
+
+test('the OIL award editor at the list\'s foot: a refused save\'s warning comes into sight', async ({ page }) => {
+  await openOilAt(page, p => p.locator('.oil-e.grant').last(), 'foot')
+  await page.locator('[data-testid="oil-edit-amt"]').fill('365.5')
+  await page.locator('[data-testid="oil-edit-save"]').click()
+  await expect(page.locator('[data-testid="oil-edit-err"]')).toBeVisible()
+  await page.waitForTimeout(250)
+  const g = await page.evaluate(() => {
+    const w = document.querySelector<HTMLElement>('.oil-wrap')!
+    return { foot: w.getBoundingClientRect().top + w.clientHeight, err: document.querySelector<HTMLElement>('[data-testid="oil-edit-err"]')!.getBoundingClientRect().bottom }
+  })
+  expect(g.err, 'the warning\'s foot inside the list').toBeLessThanOrEqual(g.foot + 0.5)
+  expect(await drawnAtMiddle(page, '[data-testid="oil-edit-err"]'), 'the warning drawn on top').toBe(true)
+})
+
 /* THE PHONE BALANCES AFTER OPTION B (D2156) — three faults the two blind reads of chat 101 found (Astra and a fresh Opus
    reader, 17 Nov 26), each red on 01f1030c4 first: the pinned names stopped filling their column (D1518, nothing pinned
    leaks), CCL's box ran 2px into FCL's, and a tapped box near the right edge left its corner tag cut (B-F4's fix undone). */

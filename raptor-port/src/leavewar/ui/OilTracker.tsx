@@ -362,7 +362,9 @@ export function OilTracker({ person, onClose, onGranted }: {
      …AND UP AND DOWN (the fix round's narrow read, chat 103, 17 Nov 26): the editor stands taller than the award, so the last
      award at the list's foot opened with its buttons below the list's edge; the list slides up as far as the editor's foot
      needs, never putting its top under the heading rows held at the top. Done before the first paint (nothing takes focus
-     here, so no browser scroll comes after it): the editor is never drawn cut, even for a frame. */
+     here, so no browser scroll comes after it): the editor is never drawn cut, even for a frame. The second narrow read
+     (chat 103): the person's group heading ("SXO · 12") is held under the heading rows too, so the top limit leaves room for
+     one; and a refused save's warning, drawn under the buttons after the editor opened, slides into sight the same way. */
   useLayoutEffect(() => {
     if (!editId) return
     const wrap = wrapRef.current
@@ -377,12 +379,13 @@ export function OilTracker({ person, onClose, onGranted }: {
     if (dx) wrap.scrollLeft += dx
     /* the heading cells are what stick to the list's top, not the heading block itself */
     const heads = [...wrap.querySelectorAll<HTMLElement>(':scope > table.oil-grid > thead th')].map(h => h.getBoundingClientRect().bottom)
-    const T = Math.max(a.top, ...heads) + 4, Bt = a.top + wrap.clientHeight - 4
+    const grp = wrap.querySelector<HTMLElement>(':scope > table.oil-grid > tbody tr.oil-grp td')?.getBoundingClientRect().height ?? 0
+    const T = Math.max(a.top, ...heads) + grp + 4, Bt = a.top + wrap.clientHeight - 4
     let dy = 0
     if (c.bottom > Bt) dy = c.bottom - Bt
     if (c.top - dy < T) dy = c.top - T
     if (dy) wrap.scrollTop += dy
-  }, [editId])
+  }, [editId, eErr])
 
   // Opened on someone: bring their row into view once.
   useEffect(() => {
