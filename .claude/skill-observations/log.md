@@ -2801,3 +2801,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** An item in the page's "only if you disagree" list (R8, a reviewer's recommendation adopted wholesale) said "the stricter" crew rest for a man flying both units in a day — the exact option the owner had explicitly rejected days earlier (D2123). The page never named the reversal. He answered "all recommendations yes", so the clash surfaced only when the answer was recorded and a later checker ran; it had to be held back and asked again. Two more recommendations quietly narrowed earlier rulings (D2119, D2109) without naming them.
 **Suggested improvement:** Before a recommendations page goes out, run a clash pass: for each recommendation, search the rulings it touches and write on the item "changes D<n> (your <date> pick: …)" whenever it narrows or reverses one; never put a reversal of an explicit earlier choice in an "only if you disagree" list.
 **Principle:** A blanket acceptance is only as good as the page's disclosure; any recommendation that overturns a person's earlier explicit choice must say so on its face, or the acceptance does not cover it.
+
+### Observation 971: A reused drawing script carries words written before later rulings
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 102, round 7 of the multi-squadron mock-up, pictures drawn by four helpers to a word-for-word brief
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** "Reusing an older drawing or its script reuses its shortcuts"
+
+**Issue:** The brief gave exact words for every new line, but told a helper to keep an earlier variant's lines "as variant F draws them". Those lines predated two later rulings, so the picture said leave "goes to 149's Approvals" and only "149's admins are told" — both now wrong. The helper checked the brief's words, not the inherited ones; only the host's look against the rulings caught them.
+**Suggested improvement:** In the reference's "Reusing an older drawing" rule, add: every line of words the reused script draws is listed in the brief and checked against the rulings made since that drawing, the same as new words; "as the old script draws it" is never a spec for wording.
+**Principle:** Inherited content is unreviewed content: when a spec says "keep what the old one says", the old words skip the check the new ones get.
