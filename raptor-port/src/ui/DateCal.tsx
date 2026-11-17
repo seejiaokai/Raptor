@@ -194,13 +194,15 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
     const last = d.pts[d.pts.length - 1], firstPt = d.pts[0]
     const dt = last.t - firstPt.t
     const still = e.type === 'pointercancel' || e.timeStamp - last.t > 60 || dt <= 0
-    const v = still ? 0 : -(last.y - firstPt.y) / dt                     // the list's speed, px a ms, down the rows
+    /* the list's speed, px a ms, down the rows — never past 3: a mouse flicked hard read up to 30 and more, and the
+       walk saw one flick of two rows carry the years on by 13 to 39; at 3 the longest glide is about a dozen rows */
+    const v = still ? 0 : Math.max(-3, Math.min(3, -(last.y - firstPt.y) / dt))
     const max = (n.scrollHeight - n.clientHeight)
     const from = n.scrollTop
-    /* a fling slows as a finger's does (iOS's "normal" rate, 0.998 a ms): it would run on v / (1 − 0.998) more */
+    /* a fling slows as a picker's does on his phone (a "fast" slowing, about 0.995 a ms): it runs on v × 200 more */
     const calm = !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches
     /* less motion: no glide at all — it lands on the row nearest where it was let go */
-    const reach = calm || Math.abs(v) < 0.2 ? 0 : v * 500
+    const reach = calm || Math.abs(v) < 0.2 ? 0 : v * 200
     const to = Math.max(0, Math.min(max, Math.round((from + reach) / ROW) * ROW))
     if (calm || Math.abs(to - from) < 0.5) { land(n, to); return }
     /* an ease out of the speed it was let go at: a cubic's start is 3 × distance / time, so the time is set by that,
