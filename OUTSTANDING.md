@@ -87,6 +87,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
+- [SIM-OVERLAP-WARN] — two sessions overlapping on one sim raise no warning; D2181: warned. Drawn for him first, then built with the schedule's next batch.
 - [ENGINE-RULES-REVIEW] — the whole rules engine reviewed rules-first, ruling by ruling with a test each, a report for him (his D1983) — the night of 11 Nov 26, on Fable 5.2.
 - [DAMAGED-WEEK-LEFTOVERS] — a week whose saved copy cannot be read still prints and exports the demo days, shows them in the next-week preview, and refuses a person's delete in the amber note, not the grey "Blocked:" one (older; found 8 Nov 26, chat 13's walk).
 - [SCHED-MARKS-WALK-ODDS] — four small older things chat 13's walk saw: the changes window's foot says "Tap a change to go to it." over a line that cannot be tapped; the look banner on two lines on the phone board; "2 warning" beside the board's "2 warnings"; a day's "N changes" chip beside "N pending". Parts (1) and (3) go live with the batch of four (pull request 756); (2) and (4) are left, drawn for him first.
@@ -364,6 +365,14 @@ same harm on either page, and the schedule's window is the one he uses most. If 
 Inputs page (a tap outside it still closes it, as built), tests first, a short walk; the question's look is the
 Inputs page's, so no new drawing.
 **Place:** the schedule's next batch, once he answers (D994: put to him when he says).
+
+### [SIM-OVERLAP-WARN] Two sessions overlapping on one sim raise no warning (his D2181, 17 Nov 26, chat 103)
+**What:** on a day's schedule, two sessions on the same sim (AMT or OFT) at overlapping times — e.g. OFT 09:00–10:30
+and 10:00–11:00 — raise nothing: the checks compare people, never the device (host-checked in
+`raptor-port/src/engine/validate.ts`, 17 Nov 26). His D2181: overlapping sessions on one sim are warned, from one
+squadron or two. **Steps:** tests first; the warning's words and look drawn and shown to him before the build (D1625,
+something new he will see); a short walk. The cross-squadron half waits for the multi-squadron build ([MULTI-SQN-DESIGN]).
+**Place:** the schedule's next batch.
 
 ### [SANS-CHIP-ON-SANS] The Post out sheet offers "SANS" to a man already SANS (found 17 Nov 26, chat 102's SANS drawing helper, E2)
 **What:** the posting's four chips (Overseas Sqn, Delete, SANS, Transfer to Sqn) hide "SANS" only for ground crew

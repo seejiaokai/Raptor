@@ -510,7 +510,9 @@ day amber or red and raise the manning warning on someone's bid; a weekend he wo
   window, "Available for all these days". **D2180:** a man on DET sees both his home schedule and the detachment's, the
   whole time (adds to R34). **His question, open:** with "Post out…" on Admin → Users for a SANS man (Q23), should
   Post out be there for everyone? Recommended there: yes, the same sheet from both places for everyone — one rule, an
-  admin finds anyone from Admin → Users — the Leave War's door kept.
+  admin finds anyone from Admin → Users — the Leave War's door kept. **D2181 — sims, "yes both parts":** the other
+  squadron's sim sessions at the same place show on yours by themselves, with its grey badge; two sessions overlapping
+  on one sim are warned, from one squadron or two (inside one squadron filed as [SIM-OVERLAP-WARN]).
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
