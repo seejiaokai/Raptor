@@ -155,7 +155,7 @@ scheduler's page.
   of his real example above.*
 - **D2101** — A1: a man is put on a detachment through his overseas duty input, which gains a "Detachment" choice; "None"
   stays, for an overseas duty with no schedule in the app (a staff trip). *Settles how people join a detachment.*
-- **D2102** — A2: at home he shows as today's overseas duty row, titled by the detachment. *Settles how he shows at home.*
+- **D2102** — A2: at home he shows as today's overseas duty row, titled by the detachment. *Settles how he shows at home.* **Replaced by D2146 (17 Nov 26): a DET row, the DET input of its own.**
 - **D2103** — A3: one button, "Close detachment"; its schedules kept, read only, under "Past detachments"; its people
   back with their squadron. *Settles closing.*
 - **D2104** — B1: look 2 — a grey "142" badge after the mission (under it, a size smaller, on a phone) and the whole
@@ -214,6 +214,308 @@ Its ripple list (the day's count D2096, ALL AVAIL D2097, OIL, the Leave War and 
 Insights, Inputs, warnings, publishing, Undo, the bell, Admin, print, the database step) is on the page, §6. The agent's
 readings told to him there: OIL earned on the other squadron's schedule counts on the man's own OIL when that squadron
 publishes; a sortie flown on the other squadron's schedule counts on the student's own Tracker.
+
+## Round 4 — what is drawn, and the agent's design for each (17 Nov 26, chat 93 — to put to him; nothing ruled)
+
+His answers to round 3 are D2113–D2123. Round 4's page: `raptor-port/docs/mock/2026-11-17-multi-sqn-r4/`
+(pictures `raptor-port/docs/img/2026-11-17-multi-sqn-r4/`), drawn on the real app as round 3 was (its `draw.mjs` the
+start; the method `.claude/skills/brainstorming/mockups-on-the-real-app.md`). Desktop 1536×864 and phone 390×844, both
+at 2x. **Every picture says whose schedule it is** (his question on round 3's picture 9): in its caption's first words
+("142's schedule —", "149's schedule —") and, on Edit Schedule, in the top bar's own number ("142 TALON", re-lettered
+"149 TALON" where 142's app stands in for 149's). Q2's "149 ▾" is not used, Q2 being still open.
+
+1. **The board's badge (D2117).** The grey "142" badge (look 2's recipe) sits on the callsign box's top-right corner,
+   its middle on the box's top edge, its right edge a few px inside the box's right: it never covers a callsign, and
+   the line keeps its height (measured before and after, both devices). The line one shade lighter, as ruled. Today
+   beside proposed. R2 (inside the mission box) dropped. The week keeps look 2 (D2104).
+2. **Signing (D2121, lesson 95).** One rule: the day head's status (DRAFT, ✓ ORIG, ALn) is the only "published" mark
+   on a schedule, and speaks for that squadron's own day only. The other squadron's wave never wears a status chip:
+   under its head one quiet grey line in words — "149's wave · 149 publishes it · not published yet" or "… · published
+   by 149" — and, on 142's published day while 149's wave is not, "RU goes out when 149 publishes." On 149's own
+   schedule 142's line wears only its badge; its state is 149's day's. Two moments, each seen on both schedules (four
+   pictures a device): 149 published and 142 not; 142 published and 149 not. Each picture one continuous frame — top
+   bar, day head, the wave — the sections between hidden and named on the page, never two clips stitched. The page
+   says, case by case, why it reads right.
+3. **Feedback for "+ Line" (D2115, lesson 94).** The button stays in the head. **A, recommended:** each new line goes
+   in at the top of the wave, straight under the column headings, just below the button, in the just-added ring — the
+   newest always on top, so every press shows its line where the finger is. **B:** the lines land at the foot as
+   today, and a small count beside "+ Line" — "3 new ↓" — brings them into view on a tap. Today, A and B from three
+   real presses, with the count of new lines wholly in view per device. A's cost: a new line sits at the wave's top
+   until it is dragged or Auto sort runs.
+4. **His questions, answered with pictures.** (a) 149 has no wave that day: "+ Wave"'s "Join a 149 wave" group reads
+   "149 has no wave on Mon 13 Jul", greyed — 142 plans in its own wave, and 149 may join it (D2106, D2114). (b)
+   Picture 9 is 142's board just after "Join a 149 wave", redrawn with item 2's line in place of round 3's "149 DRAFT"
+   chips. (c) Who may change what (D2114): on 149's board RU (142's line in 149's wave) marked "142 or 149 may change
+   it", VL marked "149 only"; a short table in words beside it.
+5. **The number box (D2116):** "+ New detachment"'s second box labelled "Squadron number", empty, a faded "249" in it.
+6. **Several men at once (D2120)** — recommended yes: the open detachment's row shows "People · 6" with their names
+   and a "+ Put people on it" button opening the Inputs page's own several-people picker; it files one overseas duty
+   input for all of them, Detachment "249", the detachment's dates; each man's own input stays the backup.
+7. **Crew rest across two schedules (D2122, D2123):** made-up settings, 149's crew rest 10h, 142's 12h. Saber (142)
+   flies 149's night wave Monday; 142 plans him early Tuesday. The later line is 142's, so 142's 12h judges: the
+   crew-rest warning on 142's Tuesday, and the dotted "breaks tomorrow's crew rest" ring on Saber in 149's Monday wave.
+   (Since D2161 the stricter judges whichever line is later; here 142's 12h is the stricter, so the picture holds.)
+   Raised by the real app on 142's own two days, then re-lettered. Who fixes: 142 changes its own Tuesday line; 142 or
+   149 may change the night line, which holds a 142 man (D2114, the agent's reading).
+8. **The place saved at once (D2119):** round 3's picture 1 redrawn with no "From": "Once saved, 142 and 149 can plan
+   each other's people, and clashes between the two are checked. Both squadrons' schedulers are told."
+
+The page's top: this round's open questions — the badge's place (1), the signing look (2), A or B (3), the door (6) —
+then round 3's still open Q2, Q3, R1, R3. Then the plain answers. Then one fresh Opus reader against his words; a new
+Artifact.
+
+## Round 5 — first pictures (17 Nov 26, chat 94 — put to him; nothing ruled)
+
+Two of his asks, drawn on the real app: `raptor-port/docs/mock/2026-11-17-multi-sqn-r5/` (its `draw.mjs`, pictures also in
+`raptor-port/docs/img/2026-11-17-multi-sqn-r5/`), published: https://claude.ai/artifact/NJnxpgWos5q6JtadXTnsJ4
+
+- **T — the week's grey "142" tag lined up on the left (his "would it be nicer if the 142 tag is also aligned to the left",
+  then "should it show the same on desktop and phone").** Round 4's phone tag sat 9.7px in from "BFM": its recipe centred
+  it in the cell's column. Lined up, its left edge is on the mission's first letter (measured 0px). Recommended: the same
+  on both devices, under the mission, lined up — one place everywhere (lesson 17). Its one cost, measured: a one-jet
+  formation of the other squadron grows on a desktop from 61px to 73px; two jets or more, and every phone line, cost
+  nothing. The other choice keeps D2104's desktop look ("BFM 142", after the mission). The board's tag is round 4's item 1.
+- **J — "Join a 149 wave" as approved (D2126):** each row "Wave N", then "T/O 12:40 · VL, RU" in the menu's quiet ink; a
+  joined row in the menu's own disabled look with "joined" at its right; the no-wave line is round 4's 4a, unchanged.
+
+His answer, "all as recommended" (17 Nov 26): D2127 (T, the same on both devices — narrows D2104), D2128 (round 4's 1),
+D2129 (2), D2130 (4a), D2131 (6), and, by the agent's reading told to him, round 3's still-open Q2 (D2132, narrows
+D1606), Q3 (D2133), R1 (D2134) and R3 (D2135). Still to draw for his look: D2124's one-sentence grey line and D2125's
+"3 new ↓".
+
+**Round 5's rest (chat 95, 17 Nov 26 — added to the same page; put to him):**
+- **G — D2124's grey line, three states, on 142's Edit Schedule (and View-only Sched for a member, state 2):** the wave's
+  title wears 149's grey badge; under it one sentence in the day head's date-line look (12px, weight 400, the same grey),
+  one line on a phone: "Not yet published by 149." (142 DRAFT), "RU goes out when 149 publishes." (142 ORIG),
+  "Published by 149." (142 DRAFT). The day's DRAFT / ORIG is real (the publish call). Pictures `G1-*`, `G2-*`, `G3-*`.
+- **N — D2125's count:** real presses of "+ Line" put the new lines at the wave's foot in the board's own ring; the count
+  is the head's "+ In-time" button re-lettered, beside "+ Line" on a desktop, after Traffic on a phone's first row.
+  Tapped, the board scrolls the new lines into view and the count goes; a line landing in view gets no count. Keys,
+  the agent's design: Tab reaches the count after "+ Line", Enter as a tap, the keys then on the first new line's
+  callsign box. Pictures `N1-*`, `N3-*`, `N4-d`.
+- **Found while drawing (a requirement nobody had written):** on a phone the 1st wave is taller than the screen, so the
+  count scrolls off with the wave's head before any new line comes into view — the count is for a tap straight after
+  the presses; only a desktop shows it count down. Likewise on a phone no demo wave shows its foot with its head, so
+  "lands in view, no count" is a desktop case there.
+- **His direction the same evening (D2136):** the Leave War's Post out "Transfer to Sqn" is designed now — it names one
+  of the app's squadrons and on the date moves his primary squadron there; drawn in the next round, with what he
+  carries across.
+- **Owed before the next round (his question, 17 Nov 26):** the plan's red team — Astra first, then a fresh, blind Opus
+  reader (D1760, D1770) — was never run on this design; only fresh Opus readers read rounds 3–4. Brief: loopholes,
+  design faults, what is overlooked, and how every rule of the rules engine, OIL, amendments, Insights, the Leave War
+  and the Tracker reads across two schedules.
+- **His answer, "yes as recommended" (17 Nov 26): D2137 (N2), D2138 (N3).** Asked: N2 — the count counts down as lines are seen by hand ("2 new ↓"), recommended;
+  N3 — the ring plays again when a late tap brings the lines into view (the ring lasts about six seconds),
+  recommended.
+
+## Round 6 — the plan's red team, and "Transfer to Sqn" (17 Nov 26, chat 97 — put to him; nothing ruled)
+
+The red team owed above, run: Astra first, then a fresh, blind Opus reader, each blind to the other, on one brief
+(`raptor-port/docs/superpowers/briefs/2026-11-17-multi-sqn-red-team.md`); their reports, whole, beside it (`…-astra.md`,
+7 findings, 4 HIGH; `…-opus.md`, 16 findings, 8 HIGH; five overlap). The host checked the claims it acts on against the
+rulings and the code: an Attach input asks the OIL question today (`oilAsks` = `restsInput`); D1374 counts an Attach out
+on the Leave War; the agent's own reading of D2114 ("holds men of both") clashes with D2098. Round 6's page:
+`raptor-port/docs/mock/2026-11-17-multi-sqn-r6/` (pictures `raptor-port/docs/img/2026-11-17-multi-sqn-r6/`; `draw.mjs`
+draws X, the rest are earlier rounds' pictures shown again), published https://claude.ai/artifact/VcdxV4u3iACCZKiW4ce9JL.
+- **Q1** OIL on a day worked for both squadrons: one pooled span from both latest published days, one credit, whether
+  it earns and the full-day line by his own squadron's settings (both readers HIGH).
+- **Q2** "Close detachment" with published days after today: the card lists them, closing withdraws each by amendment;
+  "read only" means no new planning, a past day still takes a correcting amendment — narrows D2103 (both HIGH).
+- **Q3** A pick from the other squadron's draft onto a published home day: the Attach row follows that squadron's
+  published version, dotted "not yet published by 149" meanwhile, pending only once it publishes; each issue keeps what
+  the other had published then — narrows D2107 (Opus HIGH, Astra HIGH on the issued record).
+- **Q4** "Concerns both" (D2114) means only one squadron's own line in the other's wave; a line holding a borrowed man
+  stays its owner's alone (D2098); round 4's picture 7 (VL whole on 142's schedule) to be redrawn (Opus HIGH).
+- **Q5** Two grants for the other squadron: "Scheduler of 149" (its schedule pages only) and "Admin of 149"; §11 gains
+  the squadron — narrows D785 for the other squadron; a security read when built (D1411) (Opus HIGH).
+- **Q6** The worked-out Attach row never counts a man out on the Leave War — narrows D1374 for that row (Opus MEDIUM).
+- **Q7** D2136 drawn: "Transfer to Sqn" pressable, a "To" row (every squadron but his own), the date's line, one line
+  listing what the date affects; the carry / stays / listed / refused / Undo table (both readers).
+- **R1–R11**, only if he disagrees: the Attach row worked out, never an input; a detachment's overseas duty asks no OIL;
+  that duty is presence at the detachment, absence at home, tied to its dates; one man one place checked after the
+  fact; crew rest, days in a row and the long day follow the man across places (narrows D2092); a detachment's ALL
+  AVAIL; a place's history kept; whose settings judge a man's day; two schedulers on one shared line; a squadron per
+  Tracker course, and a correction of round 3's Tracker reading (no sortie reaches the Tracker by itself today); SANS
+  only for people outside the app's squadrons.
+- **L** nine questions for later rounds, listed on the page.
+- **His answers (17 Nov 26): "raise the limit" (D2141, How we work's page limit 38,000 -> 38,500); "A" (D2142): closing clears the published days after today and publishes AL1 on each in the one press — whose names stand on its four sign-offs is open for round 7. And for the next chat: first show him the wording for everything discussed here, before anything else.**
+- **His answer to R1 (17 Nov 26, chat 99): D2144** — the Attach input stays as today, filed by hand for a man attached
+  elsewhere such as staff work (still in his squadron, not available); the "Attach · 149" row made by itself from the
+  other squadron's plan stays beside it, never an input. R1 never removed the hand input; told to him. Knock-on effects:
+  a man may carry both on one day, each its own row under Unavailable; Q6 unchanged (the automatic row never counts him
+  out on the Leave War, a hand Attach still does). Open for round 7, the agent's reading: a hand Attach whose "To" box
+  names one of the app's squadrons doubles the automatic row — warn and point to borrowing, put to him.
+- **His idea (17 Nov 26, chat 99) for Q7:** when "Transfer to Sqn" is picked, the sheet offers a few decisions — "does
+  he still have access for 142 etc." Drawn for him (`raptor-port/docs/mock/2026-11-17-multi-sqn-r7/draw-transfer.mjs`):
+  T1 "142 access" None / View / Scheduler (replaces C6), T2 "142 lines" Keep him / Take him off, T3 "In 149" Member /
+  Scheduler / Admin for an admin of both squadrons only. Not ruled; put to him with the agent's recommendation.
+- **His question (17 Nov 26, chat 99), not ruled:** *"if people going on detachment should still be manpower available
+  for the sqn. but only those who are on OD like staff trip overseas are not part of the man power for that day. so
+  should we create a new input called DET? Cus the leave war uses OD for both purposes"*. Answered with the agent's
+  recommendation (a DET input of its own, OD left for staff trips); would replace D2101's "Detachment" choice on the
+  overseas duty and D2102's OD row, and settle R2 and R3 by itself — waits for his answer; drawn in round 7 if yes.
+  **His answer, "yes to DET": D2146** — a DET input names the detachment; on the Leave War he still counts as his
+  squadron's manpower; OD stays for staff trips and counts him out. Replaces D2102; narrows D2101, D2120, D2131, D2135.
+  Round 7 draws: the DET input (round 3's picture 5 redrawn), its row at home ("DET" under the detachment's title), its
+  mark on the Leave War, the Close card's lines with "DET" (its Leave War line goes). Put to him with it: DET counted in
+  the Available rows means the SANS calendar's need no longer rises while men are away on a detachment, and leave at
+  home may be approved while they are away — an admin could leave DET out of a count row; and whether a DET filed late
+  reads LATE. Every "overseas duty" in this note's detachment passages, round 6's R2 and R3, chat 98's Close card and
+  the transfer sheet's refusals now means DET.
+- **His answer to R11 (17 Nov 26, chat 99): D2145** — each squadron's SANS people may be borrowed by the other to fly,
+  as any of its men; R11 otherwise stands. For round 7, the agent's readings: the other squadron's SANS availability
+  panel lists them with their squadron's badge; once picked, the "Attach" row on the home schedule (D2098); SANS
+  availability never earns OIL (D804); each squadron's SANS need unchanged by a borrowing.
+- **His check on R9 (17 Nov 26, chat 99):** *"just to confirm R9 there wont be a lock correct for concurrent editing?"*
+  Answered: correct, no lock (D1751 — a simple "who is editing" mark, the database refusing nobody). R9 as written went
+  further than D1751 in two places — a change "waits" while the other squadron edits the day, and of two saves at the
+  same moment one is refused, "Your change was not saved" — both withdrawn by the agent as against D1751. Proposed in
+  their place, put to him: the mark shows across both squadrons ("Viper (149) – editing Tue"), nothing waits or is
+  refused, the later save stands, the person whose change it replaced is told by the bell, the change history keeps
+  both. Not ruled.
+- **WITHDRAWN by D2140 — the card's words below are not to be drawn as they stand: they gave a false reason (D212: an admin picks all four names), contradicted themselves (no more planning, then publish AL1 there) and dropped the overseas duty ending. Redo from scratch in round 7; his question — who publishes AL1, before or after closing — put to him as A (one press clears and publishes) or B (Close greyed until he has).**
+- **His correction, D2139 (17 Nov 26), of Q2's picture (round 3's card "Close Exercise North?"):** *"this text is not
+  clear on what will happen"*. The card's words are redrawn in round 7, put to him before anything is built. Proposed
+  after his follow-ups ("u gonna write the whole paragraph?", "what is amendment to sign mean", "reword it on what u
+  expect the user to do"), not yet drawn: title "Close Exercise North?"; three short lines — "6 people back on 149's
+  schedule today" · "No more planning. Kept under Past detachments" · (only with published days ahead, Q2) "25 and
+  26 Jul will be cleared. Then publish AL1 on each." (his "Should u say that u cleared those days": what the app does
+  first, then what he does) — buttons "Close detachment" and "Keep open". Closing prepares AL1 on those days (the men
+  taken off, the days pending) and never publishes it by itself, the four sign-offs staying people's; the bell reads
+  "25–26 Jul cleared · publish AL1", a tap opening that day. Recommended; the
+  other choice put to him: Close publishes AL1 itself, the admin who pressed it standing as its signer.
+- **His answer to Q4, D2149 (17 Nov 26, chat 100), "yes to q4":** a line concerns both only when it is one squadron's own line in the other's wave; 149's VL holding Saber stays 149's, and 142 only takes him off it — by deleting his row at home as any input (his idea): the row named "ACADEMICS · 149" over "ATTACH" (his "2 attach words"), one per stretch of time; its window "Set by 149's plan", fields not changeable, no Save, Delete reading "Take him off ACADEMICS" with "His seat is left empty; 149 is told."; Undo takes it back. Narrows D2114, D2098, D2144. Pictures `Q4N*` (`docs/mock/2026-11-17-multi-sqn-r7/draw-q4.mjs`).
+- **His correction, D2147 (17 Nov 26, chat 100), of the transfer sheet's X5:** *"this statement is only true at present
+  correct. The admin could put the post out like 3 months ahead"*. The sheet's lines are today's figures, worked out
+  again each time it opens, reading "Today:"; the date applies the sheet's choices (T1–T3) to what stands then, and the
+  bell on the date says what it did. Open for round 7: is a scheduler who plans him after the date, once the transfer is
+  set, told he moves to 149; and the refusals checked again on the date, the transfer waiting as D306 does. (Settled by D2184, round 7's Q10 and Q18: the last-admin case is refused at once, never waiting; the DET case is dropped.)
+- **Fable's read, checked and put to him (chat 100):** three fresh Opus readers checked every claim of
+  `…/briefs/2026-11-17-multi-sqn-red-team-fable.report.md` against the rulings and code, the host reproducing the
+  deciding ones (publish refused without four sign-offs; an input covers its last day; every posting outcome takes a
+  past date today). Its page: `raptor-port/docs/mock/2026-11-17-multi-sqn-fable/`, published
+  https://claude.ai/artifact/G5RCKPp6XyzWVTkEoZR1fy — 16 calls (F15–F24, F8, F9, F12, F13, F1's holidays, F4's Reject
+  of a DET), 11 matching round 6, 4 claims dropped (F22's war-freeze, F13's badge and count, F21's per-squadron qual
+  columns "today", F9's held Publish — a lock against D1751). Corrections told to him: C1's "always names the boxes
+  offer" false (a signer who lost his Scheduler tick stops counting, an archived one is not offered); C3 contradicts
+  itself (an input covers its last day); Viper used for both a 149 man and a 142 man. Nothing ruled.
+- **His question (chat 100), "can SANS be picked from each other's sqn?"** — yes, his own D2145 (round 6's R11). Open
+  for round 7 (Fable's L9): whose SANS cut-off judges a borrowed SANS man's availability — recommended his own squadron's.
+
+### Chat 98's wording, put to him before his round 6 answers (D2140, D2143 — knock-on effects worked through)
+
+The example throughout: 149's detachment "249 · Exercise North", 13–31 Jul, 6 people, closed on Thu 23 Jul; Sat 25 and
+Sun 26 Jul already published. Facts checked this chat: an amendment's label runs per day (a day already on AL1 gets AL2);
+a weekend published ahead has already credited its OIL (the OIL tracker limits only expiry by today, `oiltracker.ts`);
+an admin picks all four sign-off names (D212), each box offering only the people its Quals ticks allow; the
+notifications register's P15 reads "transferred to 149 Sqn", the number paired with the squadron abbreviation (D58) —
+to be corrected to the posting line's own form, "Posted out · now with 149" (B12, D1690).
+
+**The Close card (option A, D2142).** Title "Close Exercise North?"; lines, each only when it applies: "6 people back on
+149's schedule today. Their overseas duty ends today." (D2103, D2135) · "Sat 25 and Sun 26 Jul: everyone taken off,
+and the next amendment published on each (AL1)." (D2142 — the label each day's own) · "Their OIL for those days goes:
+6 people, 1 day each. Viper has already booked his: his OIL goes to −1." · "149's published Fri 24 and Sat 25 Jul go
+pending: the 6 are free there now." · "Kept under Past detachments." ("read only" waits on Q2's second half) — buttons
+"Close detachment" · "Keep open". Knock-on effects named: the cleared days' OIL credits come off at once; a man who has
+booked OIL against them goes below zero; the overseas duty shortened on 149's published home days puts each pending, its
+sign-offs down, for 149's scheduler to plan and publish (the press does not publish home days); the Leave War counts
+them back in from the next day, the Available rows rising, the SANS calendar's need falling; the bell (D2135) tells each
+of the 6, and — proposed — 149's admins one line; Undo of Close, a later-round question, must now also withdraw the
+amendments it published. Put to him: (1) whose four names stand on those amendments — recommended the names on each
+day's last issue (always names the box offers; the change history records who pressed Close), the other choice the
+pressing admin in all four, who may not be offered in every box; (2) 149's home days left pending for the scheduler —
+recommended; (3) the closing day itself: not cleared (D2142 "after today"), the 6 counted back home from today
+(D2103) and the one-man-one-place check (R4) not raised for that day.
+
+**Q3 (D2107), corrected.** "Dotted" already means pending under D2107, so the draft's row is drawn faint grey with the
+words "not yet published by 149", never dotted; the rest as rewritten in chat 97. Knock-on effects named: on a home day
+not yet published, 142 can publish with the faint row standing — its issue never holds it, and 149's later publish
+turns that day pending; each later 149 amendment that changes Viper's time away does the same (only his time away,
+D2098); OIL never reads a draft (as Q1); the people check across both squadrons (D2108) reads 149's latest working plan,
+so 142 sees a clash as it forms — a warning, never a bar to publishing; the bell rings at the pick (D2091) and,
+proposed, once more when 149 publishes and the day goes pending.
+
+**The transfer sheet (Q7).** X4: "On 3 Apr: moves to 149, with his account, leave, OIL, quals, inputs and Tracker
+course." X5, lines only when they apply: "After 3 Apr: 2 of 142's lines keep him, as a borrowed 149 man" · "3 of his
+inputs move to 149's schedule" · "1 leave 142 approved goes to 149's Approvals; 149 may still refuse it" (D1541) ·
+"Published days go pending: 4 of 142's, 2 of 149's" · "142's manning from 3 Apr: OPS P turns amber on 4 days" · "His
+access to 142 ends" — the bell "Ranger · Fri 3 Apr / Posted out · now with 149" to every admin of both squadrons (P15,
+B12; round 6 wrote "Mon 3 Aug", against the sheet's Fri 3 Apr). Knock-on effects named: 142's lines that keep him show
+on 149's schedule as "Attach · 142" rows (D2098), pending on 149's published days; his inputs leave 142's published
+days and reach 149's, pending on both; 142's Leave War manning drops and 149's rises from the date, which can turn a
+day amber or red and raise the manning warning on someone's bid; a weekend he works for 142 after the date is judged by
+149's OIL settings (Q1's "his own squadron"). Put to him: his access to 142 ends on the date (recommended — an admin of
+142 may give it back), or stays as it was given.
+
+## Round 7 — his round 6 answers, the DET check and the second red team (17 Nov 26, chat 101)
+
+- **His answer, D2160: "all recommendations yes"** — every recommendation on round 6's page (version 21) is now his
+  ruling: Close F15–F18, C2, C8, Q2, F24; planning each other's people F19, F20, Q6, F8, R9 (no lock); access Q5
+  (View only); the transfer T (fixed rules, no choices on the sheet), Q7's table, F13, F21, F22; OIL Q1, F23, F1;
+  detachments F12, F4; R4–R7, R10. Replaces D2107; narrows D2103, D2142, D2094, D2124, D2147, D2136, D2092, D2119
+  (R7: a new place counts from the next day's start). Q6 leaves the hand-filed Attach's Leave War count as it is
+  (the automatic row is no input, D2144). The page's "Later rounds" list was not a question and is not ruled.
+- **Held back, put to him again (D90, D201):** R8 said a man flying both squadrons' lines in one day is judged by
+  "the stricter" crew rest — the opposite of his own pick of 17 Nov, D2123 ("Later line's", chosen over the
+  stricter), and the page never said so. **His answer, D2161: "stricter"** — the stricter of the two crew rests
+  judges, whichever line comes first; replaces D2123.
+- **The DET check** (his call — Fable and Astra, blind to each other): brief
+  `raptor-port/docs/superpowers/briefs/2026-11-17-multi-sqn-det-check.md`, reports `…-det-check-fable.md`,
+  `…-det-check-astra.md`, checked claim by claim in `…-det-check-checked.md`.
+- **The red team of the whole design** (Astra, a fresh blind Opus reader second): brief
+  `…/briefs/2026-11-17-multi-sqn-r7-red-team.md`, reports `…-r7-red-team-astra.md`, `…-r7-red-team-opus.md`, checked
+  in `…-r7-red-team-checked.md`. Both read before his D2160, treating the page's recommendations as the design.
+- **Round 7's page (chat 102, put to him; nothing ruled):** `raptor-port/docs/mock/2026-11-17-multi-sqn-r7/page.html`
+  (built from `page-src.html` by `make-page.mjs`), pictures drawn on the real app by `draw-r7a.mjs` … `draw-r7d.mjs` to
+  the word-for-word brief `raptor-port/docs/superpowers/briefs/2026-11-17-multi-sqn-r7-drawing.md`. Blue marks what he
+  ruled (D2160, D2161), pink what the reviews added (D2159). **Corrections told to him (X4–X7):** F12 breaks for a
+  detachment ahead of home (→ Q8); F16's "rows from inputs" would park the input itself (→ R13); F17's "242 told" loses
+  242's flying and OIL (→ R12); F15's "DET ends that day" lengthens a DET closed after its end (→ R14). **Questions
+  Q8–Q22**, each with a recommendation: Q8 a place's hours from home (H1, M6; narrows F12); Q9 one full-day OIL value per
+  man per date, A first issue fixes it (H5); Q10 a transfer leaving 142 with no admin refused at the sheet (M1, K4;
+  narrows Q7); Q11 area and sim clashes a build of their own (red M3; or narrow D2108); Q12 a shared syllabus chart's
+  ball removed only by someone with rights over every course on it (H7; narrows D121); Q13 a detachment's signers its
+  squadron's qualified people wherever they are (DET M9, L8); Q14 CSE · OD · DET on the Leave War (DET M5); Q15 count
+  rows' "Count people on DET", off for team rows (DET M3); Q16 Insights' "249" mark and a whole-person week (DET M10);
+  Q17 posting out across a DET runs as today, listed first (DET M14); Q18 drop the transfer's DET refusal (K7); Q19 a DET
+  column in days taken (DET M16); Q20 a man may not shorten his own DET over a planned day (DET M8); Q21 a man added is
+  no change on the detachment's day (DET M1); Q22 a SANS man files availability there too (DET M15). **R12–R35, designed
+  as written unless he says no:** R12 H2, R13 H3, R14 M2 (+ DET M7), R15 M7, R16 DET M6, R17 DET M2, R18 H4 (narrows
+  D2146's "one DET input"), R19 DET M16 words, R20 DET M3 day panel, R21 DET M4, R22 DET M8 bell, R23 DET M1 (+ DET M13),
+  R24 H6, R25 L3, R26 L5, R27 L2, R28 L7, R29 M12 (+ L6), R30 L1, R31 red M5, R32 red M4 (narrows D781), R33 L4, R34 the
+  DET view's span, R35 DET M17. Found while drawing (requirements nobody had written): the app has no editing mark and
+  no Publish card (R9, drawn new); Unpublish is a day-head button, its greyed look drawn quieter than the app's dim blue;
+  four names stand on the "Signed" line, not the boxes; no editor exists for a detachment's dates (round 4's "+ New
+  detachment" fields used); the print title lives only in the file name and print header. **The notifications
+  register's P15** now reads "Posted out · now with 149".
+- **His answers during chat 102:** D2162 — the transfer sheet's lines are headed "As of today:" (his suggestion; the
+  two pictures redrawn). D2163 — a SANS man may be transferred by "Transfer to Sqn", arriving still SANS with his SANS
+  availability records, no SANS chip for him (today's chip, offered to a man already SANS, filed as a small fix:
+  [SANS-CHIP-ON-SANS], chat 103). **Open, Q23:** SANS people are on the Leave War only when added there
+  ("+ SANS"), so how an admin reaches the sheet for one not on the war — put to him with a recommendation.
+- **His answers during chat 103:** D2164 (How we work) — every page put to him in plain words; round 7's page
+  rewritten so and its pictures redrawn without code tags (version 2, same link). **D2165 — Q8 yes, by time zone:**
+  his own idea, "reference zulu timing instead of hours from home"; each place, home included, is set by its time zone,
+  picked by name and shown as GMT+X (a named zone, so a clock change mid-exercise and half-hour zones are right); Close
+  keeps a detachment day already begun there; crew rest between two places adds the difference; postings and the late
+  mark stay on home's date. Narrows D2160's F12. **Owed:** round 7's Admin → Squadrons picture (R7D5a, drawn with an
+  "hours from home" box by `draw-r7d.mjs`) redrawn with a time-zone picker, "GMT+X" beside each place. **D2166 — Q11
+  no:** airspace may be shared, never a clash, so no airspace check is built (narrows D2108); **sims not ruled — put
+  back to him** (a sim double booking is not checked today, even inside one squadron). **D2167 — Q12:** 142 and 149
+  each keep their own Tracker, a detachment using its parent squadron's (242 uses 142's), so no chart is shared across
+  squadrons and Q12's case does not arise; D474 stands inside each Tracker. **D2168 — Q15, the standby rows:** a man
+  on DET is taken off the SC DAY and SC NIGHT counts, and SC, AVALON and BB cannot be planned for him; whether every
+  other count row gets the recommended switch is put back to him. **D2169 — Q22:** a SANS man may be put on DET like
+  anyone, and must also mark himself available for those days to be planned there; open, suggested: one tick in the DET
+  window, "Available for all these days". **D2180:** a man on DET sees both his home schedule and the detachment's, the
+  whole time (adds to R34). **His question, open:** with "Post out…" on Admin → Users for a SANS man (Q23), should
+  Post out be there for everyone? Recommended there: yes, the same sheet from both places for everyone — one rule, an
+  admin finds anyone from Admin → Users — the Leave War's door kept. **D2181 — sims, "yes both parts":** the other
+  squadron's sim sessions at the same place show on yours by themselves, with its grey badge; two sessions overlapping
+  on one sim are warned, from one squadron or two (inside one squadron filed as [SIM-OVERLAP-WARN]). **D2182 — "yes to
+  all three":** a man on DET still counts on count rows such as Available (only the standby rows leave him out — Q15
+  settled, no per-row switch); a SANS man's DET window offers "Available for all these days"; Post out opens from
+  Admin → Users for everyone, as well as from the Leave War (Q23 settled, widened). **D2183 — Q9 "A"** (chat 104, asked again in plain words): a day worked for both squadrons keeps the one full-day value his published days carry until his own squadron publishes that day again, its publish card showing "Saber, Sat 28 Nov: full day → half day" before Publish; the other squadron publishing again never moves his OIL. The page's "first fixes the value" wording was unclear and is corrected to this. **D2184 — "all as recommended"** (chat 104, the remaining questions put again as short stories): Q10 a transfer that would leave his squadron with no admin is refused at once, and any later step that would cause it; Q13 a detachment's sign-offs from anyone of its own squadron qualified for each box, wherever he is, those there listed first; Q14 CSE · OD · DET on the Leave War while a detachment is open; Q16 Insights shows "249", never "not flying", plus his weekly hours across every schedule; Q17 posting out on DET as today, the sheet listing what it ends; Q18 the transfer's DET refusal dropped; Q19 a DET column in days taken; Q20 a man may file and lengthen his own DET, not shorten or delete it over a planned day there; Q21 a late joiner leaves the detachment's published day as it is, his home days changed; **Q24** (new, from his question how a 142 man joins 149's detachment) a DET onto the other squadron's detachment is filed by him or his own squadron's schedulers, never by the other squadron alone; and R12–R35 designed as written. Answered from the rulings, no new ruling: a 142 man joins 149's detachment by DET alone and stays 142's (L1, D2146); a move for good to a 149 detachment is a transfer to 149 plus a DET from that date, both set ahead. **Every round 7 question is now answered.**
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 

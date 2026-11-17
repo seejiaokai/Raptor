@@ -87,6 +87,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
+- [SIM-OVERLAP-WARN] — two sessions overlapping on one sim raise no warning; D2181: warned. Drawn for him first, then built with the schedule's next batch.
 - [ENGINE-RULES-REVIEW] — the whole rules engine reviewed rules-first, ruling by ruling with a test each, a report for him (his D1983) — the night of 11 Nov 26, on Fable 5.2.
 - [DAMAGED-WEEK-LEFTOVERS] — a week whose saved copy cannot be read still prints and exports the demo days, shows them in the next-week preview, and refuses a person's delete in the amber note, not the grey "Blocked:" one (older; found 8 Nov 26, chat 13's walk).
 - [SCHED-MARKS-WALK-ODDS] — four small older things chat 13's walk saw: the changes window's foot says "Tap a change to go to it." over a line that cannot be tapped; the look banner on two lines on the phone board; "2 warning" beside the board's "2 warnings"; a day's "N changes" chip beside "N pending". Parts (1) and (3) go live with the batch of four (pull request 756); (2) and (4) are left, drawn for him first.
@@ -126,6 +127,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-EARN-BOARD-TIDY] — the three code reads' tidiness notes on the OIL Earn board change (D489), filed not fixed.
 
 **Leave War**
+- [SANS-CHIP-ON-SANS] — the Post out sheet offers the "SANS" chip to a man already SANS; D2163: not offered for him (small fix, no answer needed; the next Leave War batch).
 - [LW-FOUR-ITEMS-LEFTOVERS] — what the four Leave War items (pull request 801, live 17 Nov 26) left for him: five like-for-like suggestions and three departures from the drawings — questions kept until he says (D994), pictures first.
 - [LW-BAL-TAB-NEXT] — on Balances, Tab after typing a figure goes to the Balances tab button, not the next box (the figure is kept); seen on the four items' re-walk, its code unchanged from `main` — to reproduce on `main`, then fix or put to him.
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
@@ -365,6 +367,26 @@ same harm on either page, and the schedule's window is the one he uses most. If 
 Inputs page (a tap outside it still closes it, as built), tests first, a short walk; the question's look is the
 Inputs page's, so no new drawing.
 **Place:** the schedule's next batch, once he answers (D994: put to him when he says).
+
+### [SIM-OVERLAP-WARN] Two sessions overlapping on one sim raise no warning (his D2181, 17 Nov 26, chat 103)
+**What:** on a day's schedule, two sessions on the same sim (AMT or OFT) at overlapping times — e.g. OFT 09:00–10:30
+and 10:00–11:00 — raise nothing: the checks compare people, never the device (host-checked in
+`raptor-port/src/engine/validate.ts`, 17 Nov 26). His D2181: overlapping sessions on one sim are warned, from one
+squadron or two. **Steps:** tests first; the warning's words and look drawn and shown to him before the build (D1625,
+something new he will see); a short walk. The cross-squadron half waits for the multi-squadron build ([MULTI-SQN-DESIGN]).
+**Place:** the schedule's next batch.
+
+### [SANS-CHIP-ON-SANS] The Post out sheet offers "SANS" to a man already SANS (found 17 Nov 26, chat 102's SANS drawing helper, E2)
+**What:** the posting's four chips (Overseas Sqn, Delete, SANS, Transfer to Sqn) hide "SANS" only for ground crew
+(D1709 — `raptor-port/src/leavewar/ui/OutcomeChips.tsx`, its `noSans`, set from the man's ground-crew mark at its three
+doors: `BidPicker.tsx` twice, `Matrix.tsx`, `SelectSheet.tsx`); a man already SANS is offered "SANS" too, which posts
+him out to what he already is. His D2163 (17 Nov 26): the SANS chip is not offered for a SANS man. Host-checked in the
+code 17 Nov 26 (chat 103): `noSans` reads only the ground-crew mark. Not yet checked: whether today's Post out sheet
+opens on a SANS man's row at all (D2163's reading) — the fix's first step, on the app.
+**Steps:** tests first — a SANS man's Post out sheet (each of the three doors) shows Overseas Sqn, Delete and Transfer
+to Sqn, no SANS; then `noSans` set for a SANS man as for ground crew; a short walk. Nothing new to see, so no drawing
+(D1625). Independent of the multi-squadron build (D2086, D473).
+**Place:** the next Leave War batch (D490).
 
 ### [SCHED-SMALL-TIDY] The code reads' tidiness note on the schedule's small fixes (D489 — filed, not fixed; 17 Nov 26)
 **What:** the fresh Opus reader's tidiness note on `claude/sched-small-fixes`: in the schedule's tap code
@@ -675,7 +697,7 @@ red flags, its Vercel rule and its private-project rule are set aside (D1530).
 
 
 ### [MULTI-SQN-DESIGN] One app, one database, many squadrons (his D1695, 5 Nov 26)
-**16 Nov 26 — his order (D2086):** this design comes first, design only, detachment modes with it (D1100); then caps and ops limits, then the Tracker expansion; the build last, at the database step. Started by chat 90: questions to him in small rounds, each with a recommendation and pictures — the design and its rounds: `raptor-port/docs/superpowers/specs/2026-11-16-multi-sqn-detachment-design.md`.
+**16 Nov 26 — his order (D2086):** this design comes first, design only, detachment modes with it (D1100); then caps and ops limits, then the Tracker expansion; the build last, at the database step. Started by chat 90: questions to him in small rounds, each with a recommendation and pictures — the design and its rounds: `raptor-port/docs/superpowers/specs/2026-11-16-multi-sqn-detachment-design.md`. **17 Nov 26 — round 3 answered in part (D2113–D2123):** round 4 draws the board's badge at the callsign's top right (D2117), the signing look redrawn (D2121), feedback for "+ Line" without moving it (D2115), the detachment's number box with "249" (D2116), a door for several men's overseas duty (D2120), the crew-rest clash across two schedules, drawn (crew rest each squadron's own, D2122; the later line's schedule judges, D2123), what "+ Wave" offers when 149 has no wave that day, and who may change what, drawn (D2114). Still open from round 3: Q2 (the "149 ▾" schedules menu), Q3 (the other squadron's free people), R1 (what "To" means), R3 (closing early ends the overseas duty); the caps page's questions; [INPUT-WIN-SCHED-ASKS].
 **8 Nov 26 — the IT side's answer 8 (`[IT-QUESTIONS]`):** manage it by app role — a column naming the squadron and the app's own rules stopping one squadron editing another's; database-level rights are the PP CoE's. The design uses the app's roles, not business units (`data-model.md` §Squadrons).
 **What:** his direction, the design open ("I'm not sure how should we design it"): each person's home squadron set when his account is made (Admin → Users); rights to view other squadrons read only; a permanent transfer on posting out (the Post out sheet's greyed "Transfer to Sqn" — D281); a day planned half in one squadron, half in another (D282, D1100 — a man lent). **Steps:** (1) the agent drafts the design — the person and his one day shared, each schedule a squadron's; crew rest and warnings read across both; who sees what — with pictures on the real app, put to him in rounds; (2) the table format for the IT side gains the squadron on each record and the security split (business units, roles — the IT side's to set up); (3) built at or after the database step (D473). Platform: doable on Dataverse (D1551). **Place:** a fresh chat of its own, before the database step.
 

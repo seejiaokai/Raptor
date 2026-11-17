@@ -1,0 +1,236 @@
+{
+  "T-after-d": {
+    "h0": 99.7,
+    "h1": 99.7,
+    "grew": 0,
+    "badgeLeft": 24.1,
+    "badge": [
+      31,
+      13
+    ],
+    "cellW": 76
+  },
+  "T-left-d": {
+    "h0": 99.7,
+    "h1": 99.7,
+    "grew": 0,
+    "badgeLeft": 0,
+    "badge": [
+      31,
+      13
+    ],
+    "cellW": 76
+  },
+  "T-left1-d": {
+    "h0": 60.9,
+    "h1": 73,
+    "grew": 12.1,
+    "badgeLeft": 0,
+    "badge": [
+      31,
+      13
+    ],
+    "cellW": 76
+  },
+  "T-after1-d": {
+    "h0": 60.9,
+    "h1": 60.9,
+    "grew": 0,
+    "badgeLeft": 24.1,
+    "badge": [
+      31,
+      13
+    ],
+    "cellW": 76
+  },
+  "J-d": {
+    "op": "0.45",
+    "rows": [
+      "Wave 1 T/O 12:40 · VL, RU",
+      "Wave 2 T/O 19:20 · VL, RU joined"
+    ],
+    "menuW": 340
+  },
+  "T-r4-p": {
+    "h0": 123.5,
+    "h1": 123.5,
+    "grew": 0,
+    "badgeLeft": 9.7,
+    "badge": [
+      26,
+      11
+    ],
+    "cellW": 50
+  },
+  "T-left-p": {
+    "h0": 123.5,
+    "h1": 123.5,
+    "grew": 0,
+    "badgeLeft": 0,
+    "badge": [
+      26,
+      11
+    ],
+    "cellW": 50
+  },
+  "J-p": {
+    "op": "0.45",
+    "rows": [
+      "Wave 1 T/O 12:40 · VL, RU",
+      "Wave 2 T/O 19:20 · VL, RU joined"
+    ],
+    "menuW": 340
+  },
+  "G1-none-d": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "DRAFT",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G2-mine-d": {
+    "hidden": [
+      "the empty sign-off boxes, waiting for the next amendment",
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "ORIG",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G3-theirs-d": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "DRAFT",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G2-member-d": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "COMMON PROGRAMME EP: ENGINE FI"
+    ],
+    "itHidden": 1,
+    "dayChip": "ORIG",
+    "waveTab": "WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "N1-d": {
+    "inView": 0,
+    "ringed": 3,
+    "which": "N1"
+  },
+  "N2-d": {
+    "inView": 1,
+    "ringed": 3,
+    "which": "N2"
+  },
+  "N3-d": {
+    "inView": 3,
+    "ringed": 3,
+    "which": "N3"
+  },
+  "N4-d": {
+    "fresh": 1,
+    "inView": 1,
+    "wave": "⠿ Go 1 1st wave 2nd wave 3rd wave 4th wa"
+  },
+  "G1-none-p": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "DRAFT",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G2-mine-p": {
+    "hidden": [
+      "the empty sign-off boxes, waiting for the next amendment",
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "ORIG",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G3-theirs-p": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "⠿ COMMON PROGRAMME EP: ENGINE "
+    ],
+    "itHidden": 1,
+    "dayChip": "DRAFT",
+    "waveTab": "⠿ WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "G2-member-p": {
+    "hidden": [
+      "⚠ 17 issues · 6 warnings ▼",
+      "COMMON PROGRAMME EP: ENGINE FI"
+    ],
+    "itHidden": 1,
+    "dayChip": "ORIG",
+    "waveTab": "WAVE 1 149 Traffic",
+    "quiet": {
+      "size": "12px",
+      "weight": "400",
+      "color": "rgb(138, 150, 163)"
+    },
+    "lineRows": 1
+  },
+  "N1-p": {
+    "inView": 0,
+    "ringed": 3,
+    "which": "N1"
+  },
+  "N3-p": {
+    "inView": 3,
+    "ringed": 3,
+    "which": "N3"
+  }
+}

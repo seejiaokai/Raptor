@@ -1,0 +1,224 @@
+<title>Two Squadrons · Round 4</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* round 3's page, same tokens and look: one column; what is open first; then a section per point of his */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--warn:#a35a00;--tint:rgba(14,127,166,.07);
+--f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--warn:#f0a640;--tint:rgba(60,196,234,.08);color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:26px}h2{font-size:19px;margin-top:34px;padding-top:14px;border-top:1px solid var(--line)}h3{font-size:16px}
+.sub{color:var(--mute);margin:4px 0 0}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.top ol{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:7px}
+.top li{display:grid;grid-template-columns:44px 1fr;gap:8px}
+.top b.n{font-family:var(--f-head);color:var(--acc)}
+.top h3+ol{margin-top:6px}.top ol+h3{margin-top:14px}
+a{color:var(--acc)}
+.rec{color:var(--rec);font-weight:600}
+.weak{color:var(--warn);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:14px}
+.q p,.q li{max-width:78ch}.q p{margin:8px 0}
+.q ul{margin:6px 0;padding-left:20px}.q li{margin:4px 0}
+.asked{color:var(--mute);font-style:italic}
+.ex{background:var(--tint);border-radius:8px;padding:8px 12px;color:var(--mute)}
+.ex b{color:var(--fg)}
+.pics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.pics.one{grid-template-columns:1fr}
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
+figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
+figcaption b{color:var(--fg)}
+.phone{display:grid;grid-template-columns:repeat(2,minmax(0,260px));gap:10px;margin-top:10px}
+.lbl{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mute);margin-top:14px}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--mute)}
+.tag.p{color:var(--mark);border-color:var(--mark)}
+table{border-collapse:collapse;width:100%;margin-top:8px;font-size:14px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-head);font-size:13px;color:var(--mute);font-weight:600}
+.tw{overflow-x:auto}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#zoom[hidden]{display:none}
+#zoom img{max-width:none;width:auto;max-height:none}
+@media (max-width:640px){.pics{grid-template-columns:1fr}.top li{grid-template-columns:36px 1fr}}
+</style>
+<div class="wrap">
+<h1>Two squadrons and detachments: round 4</h1>
+<p class="sub">Every picture is the real app with demo data. <span class="tag">Today</span> is the app as it is; <span class="tag p">Proposed</span> has the new part drawn in, marked in pink with a number, each number used once on this page. Each caption starts with <b>whose schedule</b> it is. 149 does not exist in the app yet, so 142's screens stand in for 149's where a caption says so. Tap a picture to see it full size.</p>
+
+<div class="top">
+<h3>Open now: answer by number, or "all as recommended"</h3>
+<ol>
+<li><b class="n">1</b><span><a href="#p1">The board's "142" badge on the callsign box's top-right corner.</a> <span class="rec">Recommended: as drawn. It adds no height.</span></span></li>
+<li><b class="n">2</b><span><a href="#p2">The signing look: each schedule's own day head is its only "published" mark, and a shared wave says in a grey line whose it is and its state.</a> <span class="rec">Recommended: as drawn.</span></span></li>
+<li><b class="n">3</b><span><a href="#p3">"+ Line": A, the new line goes in at the top of the wave; or B, a "3 new ↓" count beside the button.</a> <span class="rec">Recommended: A.</span></span></li>
+<li><b class="n">4a</b><span><a href="#p4a">If 149 has no wave that day, can 142 add a line to 149's schedule? This is my reading, not yet your ruling.</a> <span class="rec">Recommended: No. "+ Wave" says 149 has no wave that day; 142 plans in its own wave and 149 may join it.</span></span></li>
+<li><b class="n">6</b><span><a href="#p6">A door on the detachment's row to put several men on its overseas duty at once.</a> <span class="rec">Recommended: yes.</span></span></li>
+</ol>
+<h3>Still open from round 3 (round 3's pictures, at the foot of this page)</h3>
+<ol>
+<li><b class="n">Q2</b><span><a href="#r3q2">Moving between schedules: the TALON mark becomes a menu, "149 ▾".</a> Item 4's picture adds a small "142" beside the board's day title, as part of it (mark 4f). <span class="rec">Recommended: yes, both.</span></span></li>
+<li><b class="n">Q3</b><span><a href="#r3q3">The other squadron's free people show in a group of their own at the foot of each crew list.</a> <span class="rec">Recommended: yes.</span></span></li>
+<li><b class="n">R1</b><span><a href="#r3r1">A detachment's "To" is its planned end. It never closes the detachment by itself; that day the bell reminds its admins.</a> <span class="rec">Recommended: yes.</span></span></li>
+<li><b class="n">R3</b><span><a href="#r3r3">Closing a detachment early ends its men's overseas duty that day, and each man is told by the bell.</a> <span class="rec">Recommended: yes.</span></span></li>
+</ol>
+</div>
+
+<h2 id="p1">1 · The board's badge</h2>
+<div class="q">
+<p class="asked">You asked: put the other squadron's "142" at the top right of the callsign, adding no height.</p>
+<p><b>Answer:</b> it fits. On 149's Scheduler Board each of 142's lines wears a small grey "142" sitting on the callsign box's top-right corner, half above its edge. The line stays exactly as tall as before, and 142's lines are one shade lighter, as on the week. Round 3's badge inside the mission box is dropped. Each picture starts at the board's own bar: today it names no squadron, so it cannot tell you whose board it is (see Q2 and mark 4f).</p>
+<div class="tw"><table>
+<tr><th></th><th>Line height today</th><th>With the badge</th><th>Badge size</th><th>Room before "RU"</th></tr>
+<tr><td>Desktop</td><td>51px</td><td>51px</td><td>31 × 14px</td><td>11px clear</td></tr>
+<tr><td>Phone</td><td>140.5px</td><td>140.5px</td><td>26 × 12px</td><td>8px clear</td></tr>
+</table></div>
+<p class="weak">One limit: a callsign longer than about three letters runs under the badge. It still never touches: the tops of the capital letters pass half a pixel below the badge on a desktop and 1.5px below on a phone. It fits, but only just.</p>
+<div class="pics"><figure><img src="img/1-badge-d-today.png" alt=""><figcaption><b>149's Scheduler Board, today</b> (142's board stands in). Nothing marks RU as 142's.</figcaption></figure>
+<figure><img src="img/1-badge-d-proposed.png" alt=""><figcaption><b>149's Scheduler Board, proposed</b> (142's board stands in). 1a: the "142" badge on each RU callsign box; RU one shade lighter.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/1-badge-p-today.png" alt=""><figcaption><b>149's board, today</b>, phone (142's board stands in).</figcaption></figure><figure><img src="img/1-badge-p-proposed.png" alt=""><figcaption><b>149's board, proposed</b>, phone (142's board stands in).</figcaption></figure></div>
+<p class="lbl">Round 3's drawing, for comparison</p>
+<div class="pics"><figure><img src="img/r3-1-board-d.png" alt=""><figcaption><b>149's board, round 3.</b> The badge inside the mission box, now dropped.</figcaption></figure></div>
+</div>
+
+<h2 id="p2">2 · The signing look</h2>
+<div class="q">
+<p class="asked">You asked: round 3's picture 10b read as published while 142 had not signed. Each schedule must show plainly its own day's state.</p>
+<p><b>Answer:</b> one rule. A schedule's day head (DRAFT, or the ORIG seal once its four have signed) is the only "published" mark on it, and it is always that squadron's own day. A wave that belongs to the other squadron wears no status chip at all: only its grey badge, and under its name one quiet grey line in words, whose wave it is and whether it is out. Each picture is one screen as it is, top bar to the wave; between the day head and the wave the app shows the issues bar and the Common Programme, hidden here to keep the picture short.</p>
+<h3 style="margin-top:12px">Why this reads right</h3>
+<ul>
+<li><b>Only one place says "published",</b> and it is always this schedule's own squadron. 142's day reads DRAFT until 142's four sign it, whatever 149 has done.</li>
+<li><b>The shared wave speaks in words, not a chip.</b> Round 3 gave the wave its own ORIG or DRAFT chip, which looked like the day's state. The grey line uses the look of the date beside "Monday", so it reads as a note, never a status. It reads "149's wave · published by 149" once 149 is out, and "149's wave · 149 publishes it · not published yet" before.</li>
+<li><b>142's own line is never lost.</b> In moment 2, 142 has published but its RU sits in 149's wave: the line says "RU goes out when 149 publishes." A member reading View-only Sched sees the same line.</li>
+<li><b>On 149's schedule nothing new is needed:</b> 142's RU wears only its badge, and 149's day head says it all.</li>
+</ul>
+<p class="lbl">Moment 1 · 149 has published, 142 has not</p>
+<div class="pics"><figure><img src="img/2-A-142-d-proposed.png" alt=""><figcaption><b>142's schedule, Edit Schedule.</b> 2b: DRAFT (real). 2c: "149's wave · published by 149". 149's VL is hidden: 142 sees its own lines.</figcaption></figure>
+<figure><img src="img/2-A-149-d-proposed.png" alt=""><figcaption><b>149's schedule, Edit Schedule</b> (142's Monday stands in, its top bar re-lettered "149"). 2a: ORIG (real, its four signed). RU wears only its badge.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/2-A-142-p-proposed.png" alt=""><figcaption><b>142's schedule</b>, phone.</figcaption></figure><figure><img src="img/2-A-149-p-proposed.png" alt=""><figcaption><b>149's schedule</b>, phone.</figcaption></figure></div>
+<p class="lbl">Moment 2 · 142 has published, 149 has not</p>
+<div class="pics"><figure><img src="img/2-B-142-d-proposed.png" alt=""><figcaption><b>142's schedule, Edit Schedule.</b> 2d: ORIG (real). 2e: "149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes."</figcaption></figure>
+<figure><img src="img/2-B-149-d-proposed.png" alt=""><figcaption><b>149's schedule, Edit Schedule</b> (top bar re-lettered "149"). 2f: DRAFT (real). RU wears only its badge.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/2-B-142-p-proposed.png" alt=""><figcaption><b>142's schedule</b>, phone.</figcaption></figure><figure><img src="img/2-B-149-p-proposed.png" alt=""><figcaption><b>149's schedule</b>, phone.</figcaption></figure></div>
+<div class="pics"><figure><img src="img/2-B-142vo-d-proposed.png" alt=""><figcaption><b>142's schedule, View-only Sched, as a member sees it</b> (signed in as the demo's member). 142's day is out (ORIG, real). 2g: the same quiet line, drawn in: "149's wave · 149 publishes it · not published yet. RU goes out when 149 publishes."</figcaption></figure>
+<figure><img src="img/2-B-142vo-p-proposed.png" alt="" style="max-width:260px"><figcaption><b>142's schedule, View-only Sched, as a member sees it</b>, phone.</figcaption></figure></div>
+<p>On a published day in Edit Schedule the empty sign-off boxes, which wait for the next amendment and read "4 to sign", are hidden too; the "SIGNED ORIG" line above them stays.</p>
+<p class="lbl">Round 3's picture that confused, for comparison</p>
+<div class="pics"><figure><img src="img/r3-2-sign-d.png" alt=""><figcaption><b>142's schedule, round 3.</b> The wave's own chip read as if 142's day were out.</figcaption></figure></div>
+</div>
+
+<h2 id="p3">3 · Feedback for "+ Line"</h2>
+<div class="q">
+<p class="asked">You asked: "+ Line" stays in the wave's head and never moves; each press shows the line it added.</p>
+<p><b>Answer:</b> pressed three times today, the new blank lines go to the wave's foot, out of sight, and a passing note says "Line added" each time. Two ways to fix it, drawn on the same three real presses. In both, "+ Line" stays exactly where it was (measured: 0px moved).</p>
+<ul>
+<li><b>A, recommended.</b> Each new line goes in at the top of the wave, straight under the column headings, newest on top, in the board's own blue just-added ring. The newest line is always in view, so no note is needed. In the picture the three lines the app made were moved there; nothing was copied.</li>
+<li><b>B.</b> The lines stay at the foot; a small "3 new ↓" count beside "+ Line" brings them into view when tapped. It is one more tap, and the count is a new thing to explain.</li>
+</ul>
+<div class="tw"><table>
+<tr><th>New lines wholly in view after three presses</th><th>Today</th><th>A</th><th>B</th></tr>
+<tr><td>Desktop</td><td>0 of 3</td><td>3 of 3</td><td>0 of 3 until tapped</td></tr>
+<tr><td>Phone</td><td>0 of 3</td><td>1 of 3, the newest</td><td>0 of 3 until tapped</td></tr>
+</table></div>
+<div class="pics"><figure><img src="img/3-line-today-d-today.png" alt=""><figcaption><b>142's Scheduler Board, today.</b> 3a: "+ Line". The new lines are below the screen.</figcaption></figure>
+<figure><img src="img/3-line-A-d-proposed.png" alt=""><figcaption><b>142's Scheduler Board, A.</b> 3b: the newest line, at the top of the wave.</figcaption></figure></div>
+<div class="pics"><figure><img src="img/3-line-B-d-proposed.png" alt=""><figcaption><b>142's Scheduler Board, B.</b> 3c: "3 new ↓".</figcaption></figure></div>
+<div class="phone"><figure><img src="img/3-line-today-p-today.png" alt=""><figcaption><b>142's board, today</b>, phone.</figcaption></figure><figure><img src="img/3-line-A-p-proposed.png" alt=""><figcaption><b>142's board, A</b>, phone.</figcaption></figure><figure><img src="img/3-line-B-p-proposed.png" alt=""><figcaption><b>142's board, B</b>, phone. The head's second row is full, so the count stands after Traffic.</figcaption></figure></div>
+</div>
+
+<h2 id="p4">4 · Your three questions</h2>
+<div class="q">
+<p class="asked" id="p4a">(a) If 149 has no wave that day, can 142 add a line to 149's schedule?</p>
+<p><b>No (my reading of your rulings on shared waves, not yet your ruling; it is in the list at the top).</b> "+ Wave" on 142's board says 149 has no wave that day. 142 plans in a wave of its own, and 149 may join it.</p>
+<div class="pics"><figure><img src="img/r3-4a-join-d.png" alt=""><figcaption><b>142's Scheduler Board, round 3.</b> "+ Wave" on a day 149 has a wave.</figcaption></figure>
+<figure><img src="img/4a-nowave-d-proposed.png" alt=""><figcaption><b>142's Scheduler Board, proposed.</b> 4a: on a day 149 has no wave, the group stays, greyed in the menu's own "can't press" look.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/r3-4a-join-p.png" alt=""><figcaption><b>142's board, round 3</b>, phone.</figcaption></figure><figure><img src="img/4a-nowave-p-proposed.png" alt=""><figcaption><b>142's board, proposed</b>, phone.</figcaption></figure></div>
+
+<p class="asked" style="margin-top:18px">(b) Is round 3's picture 9 142's board right after "Join a 149 wave"?</p>
+<p><b>Yes.</b> It is 142's Scheduler Board: 142's blank line inside 149's wave. Redrawn with item 2's grey line in place of the chips, and this time with the board's own bar at the top. <b>That bar names no squadron today</b>, which is why the picture could not tell you whose board it was. Mark 4f offers a small grey "142" beside the board's day title, the same badge recipe; nothing in the bar moves (measured). It goes with round 3's Q2.</p>
+<div class="pics"><figure><img src="img/r3-4b-joined-d.png" alt=""><figcaption><b>142's Scheduler Board, round 3.</b></figcaption></figure>
+<figure><img src="img/4b-joined-d-proposed.png" alt=""><figcaption><b>142's Scheduler Board, proposed.</b> 4f: "142" beside the day title. 4b: the grey line. 4c: 142's new line, made by a real press of "+ Line". 149's lines and buttons are hidden.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/r3-4b-joined-p.png" alt=""><figcaption><b>142's board, round 3</b>, phone.</figcaption></figure><figure><img src="img/4b-joined-p-proposed.png" alt=""><figcaption><b>142's board, proposed</b>, phone. 4f beside "Jul 13".</figcaption></figure></div>
+
+<p class="asked" style="margin-top:18px">(c) Can both sides edit? Does a 142 scheduler have rights on 149's schedule?</p>
+<p><b>Only on what concerns both.</b> A line that concerns both squadrons may be changed by either scheduler, from either schedule. Everything else only its own squadron's scheduler changes.</p>
+<div class="tw"><table>
+<tr><th>On 149's schedule</th><th>149's scheduler</th><th>142's scheduler</th></tr>
+<tr><td>149's own line (VL)</td><td>Yes</td><td>No</td></tr>
+<tr><td>142's line inside 149's wave (RU)</td><td>Yes</td><td>Yes, from either schedule</td></tr>
+<tr><td>The wave itself: its time, its name, "✕ Wave" (my reading)</td><td>Yes</td><td>No</td></tr>
+<tr><td>Anything else on 149's day</td><td>Yes</td><td>No</td></tr>
+</table></div>
+<div class="pics"><figure><img src="img/4c-who-d-proposed.png" alt=""><figcaption><b>149's Scheduler Board</b> (142's board stands in). 4d: "149 only". 4e: "142 or 149 may change it".</figcaption></figure></div>
+<div class="phone"><figure><img src="img/4c-who-p-proposed.png" alt=""><figcaption><b>149's board</b>, phone (142's board stands in).</figcaption></figure></div>
+</div>
+
+<h2 id="p5">5 · The detachment's number box</h2>
+<div class="q">
+<p class="asked">You asked: the box asks for the squadron number, a faded "249" inside it.</p>
+<p><b>Drawn so.</b> The box is labelled "Squadron number" and starts empty, with a faded "249" as the example. The rest is as round 3 drew it.</p>
+<div class="pics"><figure><img src="img/r3-5-newdet-d.png" alt=""><figcaption><b>149's admin, round 3.</b> Admin → Squadrons.</figcaption></figure>
+<figure><img src="img/5-number-d-proposed.png" alt=""><figcaption><b>149's admin, proposed.</b> 5a: "Squadron number", empty, a faded "249".</figcaption></figure></div>
+<div class="phone"><figure><img src="img/r3-5-newdet-p.png" alt=""><figcaption><b>149's admin, round 3</b>, phone.</figcaption></figure><figure><img src="img/5-number-p-proposed.png" alt=""><figcaption><b>149's admin, proposed</b>, phone.</figcaption></figure></div>
+</div>
+
+<h2 id="p6">6 · Several men at once</h2>
+<div class="q">
+<p class="asked">You asked for a door in the detachment's People part to put several men on its overseas duty at once.</p>
+<p><b>Recommended: yes.</b> The app already keeps one input for several people, and the Inputs page already picks several people. The detachment's row says who is on it, and "+ Put people on it" opens the Inputs page's own "New input" window, set to overseas duty with the detachment chosen. Add files one overseas duty input for all of them. Each man's own overseas duty input stays the backup way on, so he can put himself on if the scheduler misses him.</p>
+<div class="pics"><figure><img src="img/6-row-d-proposed.png" alt=""><figcaption><b>149's admin</b>, Admin → Squadrons. 6a: "People · 6 · Hawk, Spur, Talc, Vane, Crisp, Moss". 6b: the door.</figcaption></figure></div>
+<div class="pics"><figure><img src="img/6-pick-d-proposed.png" alt=""><figcaption><b>149's admin, what the door opens.</b> The real window, "Several people" on, six picked by real taps (6c). 142's men stand in for 149's, six re-lettered.</figcaption></figure>
+<figure><img src="img/6-od-d-proposed.png" alt=""><figcaption><b>149's admin, the same window further down.</b> Type OD and "all day" (real); 6d: the Detachment choice, "249 · Exercise North". From the door its dates would come set to the detachment's, 13 to 31 Jul.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/6-row-p-proposed.png" alt=""><figcaption><b>149's admin, the row</b>, phone.</figcaption></figure><figure><img src="img/6-pick-p-proposed.png" alt=""><figcaption><b>149's admin, the picker</b>, phone.</figcaption></figure><figure><img src="img/6-od-p-proposed.png" alt=""><figcaption><b>149's admin, type and detachment</b>, phone.</figcaption></figure></div>
+</div>
+
+<h2 id="p7">7 · Crew rest across two schedules</h2>
+<div class="q">
+<p class="asked">You ruled: each squadron's admin keeps its own crew rest, and the later line's schedule judges.</p>
+<p><b>The worked case.</b> Saber, a 142 man, is lent to 149 and flies on 149's VL in its night wave on Monday: he lands at 21:10, so with the debrief his day ends at 23:10. On Tuesday 142 plans him on its 2nd wave, in at 10:00. 142's crew rest is 12 hours, so he is clear only at 11:10: a breach. 149's (made up for this case) is 10 hours, which he would meet. The Tuesday line is the later one and it is 142's, so <b>142's 12 hours judge</b>.</p>
+<ul>
+<li><b>142's schedule:</b> the warning on Tuesday (7a), and the dotted "breaks tomorrow's crew rest" ring on Saber in 149's VL (7b). VL shows on 142's schedule, with 149's badge, because it holds a 142 man (my reading).</li>
+<li><b>149's schedule:</b> the same dotted ring on its own VL (7c), so 149's scheduler sees it too.</li>
+<li><b>Who may fix it:</b> 142 moves its own Tuesday line, or either scheduler changes 149's VL, since it holds a 142 man (my reading).</li>
+</ul>
+<p class="ex"><b>How it was drawn.</b> The warning and the rings are the app's own, raised by its real rules. To make the case, Saber was put on Tuesday's line and that wave's RU in-time changed from 11:40 to 10:00 in the demo data. In the warning only "Monday" is re-lettered "Monday, 149's night wave,"; every other word is the app's. Saber's "Attach · 149" row, which 142's Unavailable list would also carry, is not drawn.</p>
+<div class="pics"><figure><img src="img/7a-warning-d-proposed.png" alt=""><figcaption><b>142's schedule, Edit Schedule</b>, Tuesday, issues list open. 7a: Saber's crew-rest warning, "needs 12h".</figcaption></figure>
+<figure><img src="img/7b-night-d-proposed.png" alt=""><figcaption><b>142's schedule, Edit Schedule</b>, Monday. 149's night wave and its VL, both with 149's badge. 7b: Saber's dotted ring.</figcaption></figure></div>
+<div class="pics"><figure><img src="img/7c-night-d-proposed.png" alt=""><figcaption><b>149's schedule, Edit Schedule</b> (142's Monday stands in), the same wave, VL as 149's own line with Saber lent onto it. 7c: the same ring. Outlaw's ring is the demo's own, another man.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/7a-warning-p-proposed.png" alt=""><figcaption><b>142's schedule</b>, the warning, phone.</figcaption></figure><figure><img src="img/7b-night-p-proposed.png" alt=""><figcaption><b>142's schedule</b>, the night line, phone.</figcaption></figure><figure><img src="img/7c-night-p-proposed.png" alt=""><figcaption><b>149's schedule</b>, the night line, phone.</figcaption></figure></div>
+</div>
+
+<h2 id="p8">8 · A new place takes effect at once</h2>
+<div class="q">
+<p class="asked">You leaned: a squadron's new place takes effect the moment it is saved, with no "From" date.</p>
+<p><b>Drawn so.</b> The "From" box is gone. The line under Place says what Save does: "Once saved, 142 and 149 can plan each other's people, and clashes between the two are checked. Both squadrons' schedulers are told."</p>
+<div class="pics"><figure><img src="img/r3-8-place-d.png" alt=""><figcaption><b>149's row, round 3</b>, as a master admin sees it, with "From".</figcaption></figure>
+<figure><img src="img/8-place-d-proposed.png" alt=""><figcaption><b>149's row, proposed</b>, as a master admin sees it. 8a: Place, no "From". 8b: what Save does.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/r3-8-place-p.png" alt=""><figcaption><b>149's row, round 3</b>, phone.</figcaption></figure><figure><img src="img/8-place-p-proposed.png" alt=""><figcaption><b>149's row, proposed</b>, phone.</figcaption></figure></div>
+</div>
+
+<h2 id="r3">Round 3's open questions, as round 3 drew them</h2>
+<div class="q">
+<p>Nothing here is new: these are round 3's own pictures, so you can answer the four still open without opening round 3's page. Their marks are round 3's numbers.</p>
+<p class="lbl" id="r3q2">Q2 · Moving between schedules</p>
+<div class="pics"><figure><img src="img/r3-q2-switch-d.png" alt=""><figcaption><b>149's schedule, round 3</b> (142's top bar stands in). The TALON mark reads "149 ▾" and opens a "Schedules" menu: 149, 249 · Exercise North, 142.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/r3-q2-switch-p.png" alt=""><figcaption><b>149's schedule, round 3</b>, phone.</figcaption></figure></div>
+<p class="lbl" id="r3q3">Q3 · The other squadron's free people</p>
+<div class="pics"><figure><img src="img/r3-q3-crew-d.png" alt=""><figcaption><b>142's Edit Schedule, round 3.</b> The Available crew list ends with 149's free people, grouped by when they are free.</figcaption></figure>
+<figure><img src="img/r3-q3-board-d.png" alt=""><figcaption><b>142's Scheduler Board, round 3.</b> The board's crew list ends each column with 149's men, "149 · 1 free".</figcaption></figure></div>
+<div class="phone"><figure><img src="img/r3-q3-crew-p.png" alt=""><figcaption><b>142's Edit Schedule, round 3</b>, phone.</figcaption></figure><figure><img src="img/r3-q3-board-p.png" alt=""><figcaption><b>142's board, round 3</b>, phone.</figcaption></figure></div>
+<p class="lbl" id="r3r1">R1 · A detachment's "To"</p>
+<div class="pics"><figure><img src="img/r3-5-newdet-d.png" alt=""><figcaption><b>149's admin, round 3.</b> "To", the planned last day (round 3's mark 4d). It does not close the detachment by itself; that day the bell reminds 149's admins.</figcaption></figure></div>
+<p class="lbl" id="r3r3">R3 · Closing a detachment early</p>
+<div class="pics"><figure><img src="img/r3-r3-close-d.png" alt=""><figcaption><b>149's admin, round 3.</b> "Close detachment" asks at the button: its 6 people are back on 149's schedule from today, and their overseas duty ends today.</figcaption></figure></div>
+<div class="phone"><figure><img src="img/r3-r3-close-p.png" alt=""><figcaption><b>149's admin, round 3</b>, phone.</figcaption></figure></div>
+</div>
+</div>
+<div id="zoom" hidden></div>
+<script>
+const z=document.getElementById('zoom')
+document.addEventListener('click',e=>{const i=e.target.closest('figure img');if(i){z.innerHTML='';const c=i.cloneNode();c.style.cursor='zoom-out';z.appendChild(c);z.hidden=false;return}if(!z.hidden&&z.contains(e.target))z.hidden=true})
+document.addEventListener('keydown',e=>{if(e.key==='Escape')z.hidden=true})
+</script>

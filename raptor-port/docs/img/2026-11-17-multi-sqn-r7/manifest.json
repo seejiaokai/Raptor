@@ -1,0 +1,362 @@
+{
+  "TA-d-proposed.png": {
+    "item": "T",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Variant A, the recommended defaults. X2 \"Transfer to Sqn\" lit; X3 \"To\" 149. T3 \"In 149\" — Member / Scheduler / Admin, shown only to an admin of both squadrons or a master admin (else 149's admins are told and give it). T1 \"142 access\" — None (lit) / View / Scheduler. T2 \"142 lines\" — Keep him (lit) / Take him off, shown only when 142's lines after 3 May hold him. X4 the date's line; X5 what it affects, changing with the choices. Figures made up."
+  },
+  "TA-p-proposed.png": {
+    "item": "T",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Variant A, the recommended defaults. X2 \"Transfer to Sqn\" lit; X3 \"To\" 149. T3 \"In 149\" — Member / Scheduler / Admin, shown only to an admin of both squadrons or a master admin (else 149's admins are told and give it). T1 \"142 access\" — None (lit) / View / Scheduler. T2 \"142 lines\" — Keep him (lit) / Take him off, shown only when 142's lines after 3 Aug hold him. X4 the date's line; X5 what it affects, changing with the choices. Figures made up."
+  },
+  "TB-d-proposed.png": {
+    "item": "T",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Variant B, the choices changed: T1 \"View\" and T2 \"Take him off\" picked. X5's lines change with them: \"After 3 Jun: he is taken off 2 of 142's lines; their seats are left empty\", the pending count moves to 142's days, and a last line \"He keeps view of 142: he sees its schedules and changes nothing\". Figures made up."
+  },
+  "TB-p-proposed.png": {
+    "item": "T",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Variant B, the choices changed: T1 \"View\" and T2 \"Take him off\" picked. X5's lines change with them: \"After 3 Aug: he is taken off 2 of 142's lines; their seats are left empty\", the pending count moves to 142's days, and a last line \"He keeps view of 142: he sees its schedules and changes nothing\". Figures made up."
+  },
+  "TF-d-proposed.png": {
+    "item": "T",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Fable's design: no choice rows. X3 \"To\" 149 only. X4: on 3 Apr he moves to 149 as a member and his access to 142 ends. X5: today's figures, worked out again on the date (D2147); his 142 lines keep him as a borrowed 149 man; 149's admins are told. A rare different case is done afterwards in its usual place. Figures made up."
+  },
+  "TF-p-proposed.png": {
+    "item": "T",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Fable's design: no choice rows. X3 \"To\" 149 only. X4: on 3 Aug he moves to 149 as a member and his access to 142 ends. X5: today's figures, worked out again on the date (D2147); his 142 lines keep him as a borrowed 149 man; 149's admins are told. A rare different case is done afterwards in its usual place. Figures made up."
+  },
+  "Q4F-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule, Monday's Unavailable list. Saber's \"Attach · 149\" row, the app's own (an Attach To 149, filed through the Inputs door), the name re-lettered. Drawn in (mark Q4): the line under it, \"On 149's VL · Mon night wave · 149's line\", and the row's own REJECT button re-lettered \"Take him off VL\". VL itself does not show on 142's schedule; 142 changes nothing else of it."
+  },
+  "Q4F-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule, Monday's Unavailable list. Saber's \"Attach · 149\" row, the app's own (an Attach To 149, filed through the Inputs door), the name re-lettered. Drawn in (mark Q4): the line under it, \"On 149's VL · Mon night wave · 149's line\", and the row's own REJECT button re-lettered \"Take him off VL\". VL itself does not show on 142's schedule; 142 changes nothing else of it."
+  },
+  "Q4G-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, Monday's Unavailable list, his question: Saber picked by 149 for its ground programme (ACADEMICS 14:00–16:00) and for VL at night. Two \"Attach · 149\" rows, one for each stretch of time, each the app's own row from an Attach To 149; each with its own \"Take him off …\" button and quiet line. The ground item itself does not show on 142's schedule."
+  },
+  "Q4G-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, Monday's Unavailable list, his question: Saber picked by 149 for its ground programme (ACADEMICS 14:00–16:00) and for VL at night. Two \"Attach · 149\" rows, one for each stretch of time, each the app's own row from an Attach To 149; each with its own \"Take him off …\" button and quiet line. The ground item itself does not show on 142's schedule."
+  },
+  "Q4B-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, Monday's Unavailable panel: Saber's two \"Attach · 149\" rows (ACADEMICS 14:00–16:00, VL 19:00–22:00), the app's own rows from an Attach To 149, the name re-lettered. Drawn in (mark Q4): the times and remarks shown but not typed in (they follow 149's plan), and under each row its one action, the panel's own \"+ Add\" button cloned as \"Take him off …\", with a quiet line saying where he is."
+  },
+  "Q4B-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, Monday's Unavailable panel: Saber's two \"Attach · 149\" rows (ACADEMICS 14:00–16:00, VL 19:00–22:00), the app's own rows from an Attach To 149, the name re-lettered. Drawn in (mark Q4): the times and remarks shown but not typed in (they follow 149's plan), and under each row its one action, the panel's own \"+ Add\" button cloned as \"Take him off …\", with a quiet line saying where he is."
+  },
+  "Q4PE-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Edit Schedule, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "Q4PE-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Edit Schedule, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "Q4PW-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The input window opened by pressing \"Attach · 149\" (the ACADEMICS row), the app's own window. Drawn in: \"Set by 149's plan\" above the fields (Q4a), the fields shown but not changeable; the Delete button re-lettered \"Take him off ACADEMICS\", with \"His seat is left empty; 149 is told.\" under it (Q4b). No Save: nothing here is his to change."
+  },
+  "Q4PB-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "Q4PW-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The input window opened by pressing \"Attach · 149\" (the ACADEMICS row), the app's own window. Drawn in: \"Set by 149's plan\" above the fields (Q4a), the fields shown but not changeable; the Delete button re-lettered \"Take him off ACADEMICS\", with \"His seat is left empty; 149 is told.\" under it (Q4b). No Save: nothing here is his to change."
+  },
+  "Q4PB-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "Q4NE-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Edit Schedule, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "Q4NW-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The input window opened by pressing \"Attach · 149\" (the ACADEMICS row), the app's own window. Drawn in: \"Set by 149's plan\" above the fields (Q4a), the fields shown but not changeable; the Delete button re-lettered \"Take him off ACADEMICS\", with \"His seat is left empty; 149 is told.\" under it (Q4b). No Save: nothing here is his to change."
+  },
+  "Q4NB-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "Q4NE-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Edit Schedule, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "Q4NW-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The input window opened by pressing \"Attach · 149\" (the ACADEMICS row), the app's own window. Drawn in: \"Set by 149's plan\" above the fields (Q4a), the fields shown but not changeable; the Delete button re-lettered \"Take him off ACADEMICS\", with \"His seat is left empty; 149 is told.\" under it (Q4b). No Save: nothing here is his to change."
+  },
+  "Q4NB-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, Monday's Unavailable list: Saber's two \"Attach · 149\" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is (\"ACADEMICS · 149\", \"VL · 149\"); times and remarks shown, not typed in. Pressing \"Attach · 149\" opens the input window."
+  },
+  "R7A4-d-proposed.png": {
+    "item": "A4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149's admin, Admin → Squadrons, Exercise North's row open on its dates, \"To\" changed from 31 Jul to 28 Jul. The app's own question card hangs from the To box (pink New · M2): \"Shorten the 6 people's DET to 28 Jul?\" / \"Hawk, Spur, Talc, Vane, Crisp and Moss are on DET to 31 Jul.\", buttons Keep to 31 Jul · Shorten (Shorten the default). The mirror of round 6's R4 \"Extend …\"."
+  },
+  "R7A4-p-proposed.png": {
+    "item": "A4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "149's admin, Admin → Squadrons, Exercise North's row open on its dates, \"To\" changed from 31 Jul to 28 Jul. The app's own question card hangs from the To box (pink New · M2): \"Shorten the 6 people's DET to 28 Jul?\" / \"Hawk, Spur, Talc, Vane, Crisp and Moss are on DET to 31 Jul.\", buttons Keep to 31 Jul · Shorten (Shorten the default). The mirror of round 6's R4 \"Extend …\"."
+  },
+  "R7A2-d-proposed.png": {
+    "item": "A2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The same card, pressed at 23:00 home on Thu 23 Jul (Fri 24 06:00 at Exercise North). Lines 1, 2 and 5 change: Fri 24 is kept. Pink: New · H1 on line 1. Lines 2 and 5 keep A1's blue F16 and C2. The card alone."
+  },
+  "R7A3-d-proposed.png": {
+    "item": "A3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "249's (Exercise North's) schedule, Edit Schedule, Sat 25 Jul after Close. Real: a published day, really cleared and published again as AL1 (the demo's Saturday Jul 18, re-lettered Jul 25; the top bar re-lettered 249). Nothing on it but Hawk's input row on Unavailable (pink New · H3 — inputs are never cleared; the demo's medical kind OML re-lettered MED DOWNCHIT). Blue F18: one line in place of the four sign-off names, \"Cleared when Exercise North was closed · Ace · Thu 23 Jul\". Pink New · M7: Unpublish greyed (its own quiet face at the plans menu's greyed-item strength; the app has no day menu with Unpublish in it — the button sits on the day head) with its reason under the day head, \"Published when Exercise North was closed. Correct it with a new amendment.\". Available crew folded by its own control, its count re-lettered 0. Drawn on a screen of the size's width made taller, so the whole day shows."
+  },
+  "R7A2-p-proposed.png": {
+    "item": "A2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The same card, pressed at 23:00 home on Thu 23 Jul (Fri 24 06:00 at Exercise North). Lines 1, 2 and 5 change: Fri 24 is kept. Pink: New · H1 on line 1. Lines 2 and 5 keep A1's blue F16 and C2. The card alone."
+  },
+  "R7A1-d-proposed.png": {
+    "item": "A1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149's admin (Ace), Admin → Squadrons, Exercise North's row: \"Close detachment\" pressed on Thu 23 Jul at 14:00 home (21:00 at Exercise North). The app's own question card hangs from the button, \"Close Exercise North?\", its lines numbered in the brief's order. Blue: F15, F16, F17 (three lines), C2 — already ruled. Pink: New · M2 on \"(was 31 Jul)\", New · H2 on 242's RU. No amendment label on the card (C8). Keep open is the safe answer."
+  },
+  "R7A1-p-proposed.png": {
+    "item": "A1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "149's admin (Ace), Admin → Squadrons, Exercise North's row: \"Close detachment\" pressed on Thu 23 Jul at 14:00 home (21:00 at Exercise North). The app's own question card hangs from the button, \"Close Exercise North?\", its lines numbered in the brief's order. Blue: F15, F16, F17 (three lines), C2 — already ruled. Pink: New · M2 on \"(was 31 Jul)\", New · H2 on 242's RU. No amendment label on the card (C8). Keep open is the safe answer."
+  },
+  "R7A3-p-proposed.png": {
+    "item": "A3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "249's (Exercise North's) schedule, Edit Schedule, Sat 25 Jul after Close. Real: a published day, really cleared and published again as AL1 (the demo's Saturday Jul 18, re-lettered Jul 25; the top bar re-lettered 249). Nothing on it but Hawk's input row on Unavailable (pink New · H3 — inputs are never cleared; the demo's medical kind OML re-lettered MED DOWNCHIT). Blue F18: one line in place of the four sign-off names, \"Cleared when Exercise North was closed · Ace · Thu 23 Jul\". Pink New · M7: Unpublish greyed (its own quiet face at the plans menu's greyed-item strength; the app has no day menu with Unpublish in it — the button sits on the day head) with its reason under the day head, \"Published when Exercise North was closed. Correct it with a new amendment.\". Available crew folded by its own control, its count re-lettered 0. Drawn on a screen of the size's width made taller, so the whole day shows."
+  },
+  "R7B1-d-proposed.png": {
+    "question": "B1",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Inputs page → \"+ Input\", the app's own New input window with the kind OD picked and re-lettered DET (round 3's picture 5 redrawn). Drawn in: \"Detachment\", a clone of the window's own Type field, picked \"Exercise North · 249 · 13–31 Jul\" (blue D2146); the person Hawk; \"From\" 13 Jul and \"To\" 31 Jul as whole days in the app's own date boxes, where the Dates calendar stood, with no \"all day\" box and no times (pink New · M6); no OIL question; under the dates, before Save, the window's own list look: \"On 149's schedule in these dates:\" / \"Sat 18 Jul · SDO desk (published)\" with the chips \"Take him off\" (picked) · \"Keep\" (pink New · M2). The window's \"Add\" re-lettered \"Save\"."
+  },
+  "R7B1-p-proposed.png": {
+    "question": "B1",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Inputs page → \"+ Input\", the app's own New input window with the kind OD picked and re-lettered DET (round 3's picture 5 redrawn). Drawn in: \"Detachment\", a clone of the window's own Type field, picked \"Exercise North · 249 · 13–31 Jul\" (blue D2146); the person Hawk; \"From\" 13 Jul and \"To\" 31 Jul as whole days in the app's own date boxes, where the Dates calendar stood, with no \"all day\" box and no times (pink New · M6); no OIL question; under the dates, before Save, the window's own list look: \"On 149's schedule in these dates:\" / \"Sat 18 Jul · SDO desk (published)\" with the chips \"Take him off\" (picked) · \"Keep\" (pink New · M2). The window's \"Add\" re-lettered \"Save\"."
+  },
+  "R7B2-d-proposed.png": {
+    "question": "B2",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Hawk's DET opened again after saving, from its row on the schedule (the scheduler's door): the app's own input window. Drawn: the kind DET shown fixed, its control greyed (pink New · M6); the Detachment choice as filed; no \"all day\" box; no OIL question. Measured on the running window: it has no \"→ Ground\", no CX, no information-only mark and no Accept / Reject today (the Reject sits on the schedule's row), so the blue F4 ring is on the window's button row, which keeps Delete · Cancel · Save."
+  },
+  "R7B2-p-proposed.png": {
+    "question": "B2",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Hawk's DET opened again after saving, from its row on the schedule (the scheduler's door): the app's own input window. Drawn: the kind DET shown fixed, its control greyed (pink New · M6); the Detachment choice as filed; no \"all day\" box; no OIL question. Measured on the running window: it has no \"→ Ground\", no CX, no information-only mark and no Accept / Reject today (the Reject sits on the schedule's row), so the blue F4 ring is on the window's button row, which keeps Delete · Cancel · Save."
+  },
+  "R7B3-d-proposed.png": {
+    "question": "B3",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149's home schedule, Edit Schedule, Wed 15 Jul, its Unavailable list. The six DET inputs are real overseas-duty inputs titled \"Exercise North\"; the app draws them as six rows. Drawn: one row titled \"Exercise North\" with \"DET\" small under it (the kind re-lettered), the six men's own pucks moved onto it, the other five rows hidden, no Reject (F4) — blue D2146. They are absent from the day's Available crew list, the app's own \"away\" (measured: none of the six there)."
+  },
+  "R7B3-p-proposed.png": {
+    "question": "B3",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "149's home schedule, Edit Schedule, Wed 15 Jul, its Unavailable list. The six DET inputs are real overseas-duty inputs titled \"Exercise North\"; the app draws them as six rows. Drawn: one row titled \"Exercise North\" with \"DET\" small under it (the kind re-lettered), the six men's own pucks moved onto it, the other five rows hidden, no Reject (F4) — blue D2146. They are absent from the day's Available crew list, the app's own \"away\" (measured: none of the six there)."
+  },
+  "R7B4-d-proposed.png": {
+    "question": "B4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "Inputs page, the List (all dates): six real overseas-duty inputs titled \"Exercise North\", one per man, re-lettered DET and the men Hawk…Moss. Drawn: a group heading in the list's own day-heading look (.icard-day, shown in its capitals) reading \"Exercise North · 6 people · 13–31 Jul\", the six rows moved under it in the brief's order; Spur's ends 20 Jul, the others 31 Jul — pink New · H4 on Spur's end. Their \"OIL?\" asks hidden (no OIL question on a DET, D2146 (2))."
+  },
+  "R7B4-p-proposed.png": {
+    "question": "B4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "Inputs page, the List on a phone: six real overseas-duty inputs titled \"Exercise North\", one per man, re-lettered DET and the men Hawk…Moss. Drawn: a group heading in the list's own day-heading look (.icard-day, shown in its capitals) reading \"Exercise North · 6 people · 13–31 Jul\", the six rows moved under it in the brief's order; Spur's ends 20 Jul, the others 31 Jul — pink New · H4 on Spur's end. Their \"OIL?\" asks hidden (no OIL question on a DET, D2146 (2)). The day group they came from, Mon 13 Jul, re-counted (11 inputs → six fewer)."
+  },
+  "R7B5a-d-proposed.png": {
+    "question": "B5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The Leave War, 149, July (the top bar's squadron re-lettered 149). Six real overseas-duty inputs, 13–31 Jul (Spur's to 20 Jul). Drawn: each of the six's boxes wears a DET mark of its own — the OD box's own look, lettered DET, in the app's \"flight\" colour (59,198,232; no Leave War kind uses it) — blue D2146 on the six 15 Jul cells. The manning rows count the six as PRESENT (D2146: a man on DET still counts as manpower): every July figure and its colour re-lettered from the same page measured with no input for the six (57 cells changed)."
+  },
+  "R7B5a-p-proposed.png": {
+    "question": "B5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The Leave War, 149, July (the top bar's squadron re-lettered 149). Six real overseas-duty inputs, 13–31 Jul (Spur's to 20 Jul). Drawn: each of the six's boxes wears a DET mark of its own — the OD box's own look, lettered DET, in the app's \"flight\" colour (59,198,232; no Leave War kind uses it) — blue D2146 on the six 15 Jul cells. The manning rows count the six as PRESENT (D2146: a man on DET still counts as manpower): every July figure and its colour re-lettered from the same page measured with no input for the six (0 cells changed)."
+  },
+  "R7B5b-p-proposed.png": {
+    "question": "B5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The Leave War's Legend, opened. Drawn: a line cloned from its own \"Overseas duty\" line, its box DET in the DET colour, its words \"On a detachment; still counts as manpower\" (the box already says DET) — pink New · M16."
+  },
+  "R7B5c-d-proposed.png": {
+    "question": "B5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The Leave War's day window for Wed 15 Jul, the app's own. Drawn: a line \"On DET · 6\" in the window's own heading look (shown in its capitals), the six's own lines moved under it from \"Away\", their boxes DET — pink New · M3; \"Away\" re-counted (Away · 10 → Away · 4), not counting them. The figures at the top count the six as PRESENT (D2146), re-lettered from the same window measured with no input for the six."
+  },
+  "R7B5c-p-proposed.png": {
+    "question": "B5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The Leave War's day window for Wed 15 Jul, the app's own. Drawn: a line \"On DET · 6\" in the window's own heading look (shown in its capitals), the six's own lines moved under it from \"Away\", their boxes DET — pink New · M3; \"Away\" re-counted (Away · 10 → Away · 4), not counting them. The figures at the top count the six as PRESENT (D2146), re-lettered from the same window measured with no input for the six."
+  },
+  "R7B5b-d-proposed.png": {
+    "question": "B5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The Leave War's Legend, opened. Drawn: a line cloned from its own \"Overseas duty\" line, its box DET in the DET colour, its words \"On a detachment; still counts as manpower\" (the box already says DET) — pink New · M16."
+  },
+  "R7B5d-d-proposed.png": {
+    "question": "B5",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "A member's own sheet on the Leave War (signed in as a member, re-lettered Gale; bidding closed in July, so the sheet is the app's \"Bidding is closed\" one with its row of buttons). Drawn as recommended: the row reads CSE · OD · DET, the DET button a clone of OD's in the DET colour — pink Q14 (a question)."
+  },
+  "R7B5d-p-proposed.png": {
+    "question": "B5",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "A member's own sheet on the Leave War (signed in as a member, re-lettered Gale; bidding closed in July, so the sheet is the app's \"Bidding is closed\" one with its row of buttons). Drawn as recommended: the row reads CSE · OD · DET, the DET button a clone of OD's in the DET colour — pink Q14 (a question)."
+  },
+  "R7B6-d-proposed.png": {
+    "question": "B6",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The Leave War's bid window for Hawk, Wed 22 Jul (opened by an admin on his cell; the app's own window). Drawn: under its day line (\"No manning row turns amber or red\"), a line in the same look, \"On DET · 249: 6 there, 5 with this.\" — pink New · M4. The approver's line is not in this picture (it is on the Approvals tab, another screen)."
+  },
+  "R7B6-p-proposed.png": {
+    "question": "B6",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The Leave War's bid window for Hawk, Wed 22 Jul (opened by an admin on his cell; the app's own window). Drawn: under its day line (\"No manning row turns amber or red\"), a line in the same look, \"On DET · 249: 6 there, 5 with this.\" — pink New · M4. The approver's line is not in this picture (it is on the Approvals tab, another screen)."
+  },
+  "R7B7a-d-proposed.png": {
+    "question": "B7",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The bell of 249's schedulers (the top bar's number re-lettered 249), opened. Drawn: one unread line in the bell's own markup — \"Spur\" in its name place, under it \"DET Exercise North · 13–31 Jul · joining 249\" — pink New · M8. The bell's own look breaks the line after the name, where the brief has its first \" · \". The bell lit, \"Mark all read\" under it, as for any unread line."
+  },
+  "R7B7a-p-proposed.png": {
+    "question": "B7",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The bell of 249's schedulers (the top bar's number re-lettered 249), opened. Drawn: one unread line in the bell's own markup — \"Spur\" in its name place, under it \"DET Exercise North · 13–31 Jul · joining 249\" — pink New · M8. The bell's own look breaks the line after the name, where the brief has its first \" · \". The bell lit, \"Mark all read\" under it, as for any unread line."
+  },
+  "R7B7b-d-proposed.png": {
+    "question": "B7",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "The bell of 149's schedulers, opened. Drawn: one unread line in the bell's own markup — \"Spur\", under it \"DET Exercise North · ends 20 Jul (was 31 Jul) · back home 21 Jul\" — pink New · M8. The bell's own look breaks the line after the name, where the brief has its first \" · \"."
+  },
+  "R7B7b-p-proposed.png": {
+    "question": "B7",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "The bell of 149's schedulers, opened. Drawn: one unread line in the bell's own markup — \"Spur\", under it \"DET Exercise North · ends 20 Jul (was 31 Jul) · back home 21 Jul\" — pink New · M8. The bell's own look breaks the line after the name, where the brief has its first \" · \"."
+  },
+  "R7B8a-d-today.png": {
+    "question": "Q16",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today, real: the week's Insights window, its \"not flying\" list — \"Not on the flying programme · 20 available\", 21 names — ringed pink Q16."
+  },
+  "R7B8a-p-today.png": {
+    "question": "Q16",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today, real: the week's Insights window, its \"not flying\" list — \"Not on the flying programme · 20 available\", 21 names — ringed pink Q16."
+  },
+  "R7B8b-d-today.png": {
+    "question": "Q15",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today, real: a count row's settings — the Leave War's IP row, \"What does IP count?\" → \"Edit counter…\" (the count rows live on the Leave War, not on Edit Schedule). Its row filter — Crew, CAT, Holding, Without (seats, CATs, quals) — ringed pink Q15."
+  },
+  "R7B8c-d-today.png": {
+    "question": "Q19",
+    "size": "desktop",
+    "kind": "today",
+    "caption": "Today, real: the Leave War → Balances → Days taken table; its OD column (header and cells) ringed pink Q19."
+  },
+  "R7B8b-p-today.png": {
+    "question": "Q15",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today, real: a count row's settings — the Leave War's IP row, \"What does IP count?\" → \"Edit counter…\" (the count rows live on the Leave War, not on Edit Schedule). Its row filter — Crew, CAT, Holding, Without (seats, CATs, quals) — ringed pink Q15."
+  },
+  "R7B8c-p-today.png": {
+    "question": "Q19",
+    "size": "phone",
+    "kind": "today",
+    "caption": "Today, real: the Leave War → Balances → Days taken table; its OD column (header and cells) ringed pink Q19."
+  }
+}

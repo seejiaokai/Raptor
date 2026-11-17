@@ -90,7 +90,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - The amber edge down the left of each cut line on the upchit sheet stays — the app's own warning-row mark, not a stripe to remove — and the design checker keeps skipping it there [D1025].
 - "Delete" in an input's own window deletes at once and asks nothing, as built, Undo bringing it back — except an upchit whose delete gives a downchit its days back, which asks first on the upchit sheet [D792, D1022].
 - No calendar is folded to a dates line: an input's window, and SANS "+ Commitment", keep their calendar showing; nothing else is folded, and the design guide carries no such rule [D916].
-- An Attach keeps what D1374 built: under the schedule's Unavailable list by itself, counting him out on the Leave War (1, or 0.5 for half a day), with its "To" box — more than a new name for "Fly with", which never counted on the war [D1377, D1374].
+- An Attach keeps what D1374 built: under the schedule's Unavailable list by itself, counting him out on the Leave War (1, or 0.5 for half a day), with its "To" box — more than a new name for "Fly with", which never counted on the war [D1377, D1374]; the row made by itself from another squadron's plan never counts him out [D2160, D2165, D2184].
 
 ## Built, stated here: their tests hold only part
 
