@@ -303,7 +303,7 @@ D1606), Q3 (D2133), R1 (D2134) and R3 (D2135). Still to draw for his look: D2124
   reader (D1760, D1770) — was never run on this design; only fresh Opus readers read rounds 3–4. Brief: loopholes,
   design faults, what is overlooked, and how every rule of the rules engine, OIL, amendments, Insights, the Leave War
   and the Tracker reads across two schedules.
-- **Put to him, two small questions:** N2 — the count counts down as lines are seen by hand ("2 new ↓"), recommended;
+- **His answer, "yes as recommended" (17 Nov 26): D2137 (N2), D2138 (N3).** Asked: N2 — the count counts down as lines are seen by hand ("2 new ↓"), recommended;
   N3 — the ring plays again when a late tap brings the lines into view (the ring lasts about six seconds),
   recommended.
 
