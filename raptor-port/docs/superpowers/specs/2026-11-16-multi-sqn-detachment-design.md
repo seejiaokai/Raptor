@@ -507,7 +507,10 @@ day amber or red and raise the manning warning on someone's bid; a weekend he wo
   on DET is taken off the SC DAY and SC NIGHT counts, and SC, AVALON and BB cannot be planned for him; whether every
   other count row gets the recommended switch is put back to him. **D2169 — Q22:** a SANS man may be put on DET like
   anyone, and must also mark himself available for those days to be planned there; open, suggested: one tick in the DET
-  window, "Available for all these days".
+  window, "Available for all these days". **D2180:** a man on DET sees both his home schedule and the detachment's, the
+  whole time (adds to R34). **His question, open:** with "Post out…" on Admin → Users for a SANS man (Q23), should
+  Post out be there for everyone? Recommended there: yes, the same sheet from both places for everyone — one rule, an
+  admin finds anyone from Admin → Users — the Leave War's door kept.
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
