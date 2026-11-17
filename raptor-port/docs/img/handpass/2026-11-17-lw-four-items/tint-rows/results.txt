@@ -1,0 +1,9 @@
+person: before [who: image none · fill rgb(20, 24, 29) | bal: image none · fill rgb(20, 24, 29)] · under the mouse (on row "(row)") [who: image rgba(59, 198, 232, 0.05) · fill rgb(20, 24, 29) | bal: image rgba(59, 198, 232, 0.05) · fill rgb(20, 24, 29)]
+own-row: before [who: image none · fill rgb(23, 60, 74) | bal: image none · fill rgb(23, 60, 74)] · under the mouse (on row "me") [who: image none · fill rgb(23, 60, 74) | bal: image none · fill rgb(23, 60, 74)]
+manning-pair-P: before [who: image rgba(150, 140, 50, 0.15) · fill rgb(20, 24, 29) | bal: image rgba(150, 140, 50, 0.15) · fill rgb(20, 24, 29)] · under the mouse (on row "flyrow req pair-p") [who: image rgba(59, 198, 232, 0.05), rgba(150, 140, 50, 0.15) · fill rgb(20, 24, 29) | bal: image rgba(59, 198, 232, 0.05), rgba(150, 140, 50, 0.15) · fill rgb(20, 24, 29)]
+manning-pair-W: before [who: image rgba(40, 160, 110, 0.15) · fill rgb(20, 24, 29) | bal: image rgba(40, 160, 110, 0.15) · fill rgb(20, 24, 29)] · under the mouse (on row "flyrow req pair-w") [who: image rgba(59, 198, 232, 0.05), rgba(40, 160, 110, 0.15) · fill rgb(20, 24, 29) | bal: image rgba(59, 198, 232, 0.05), rgba(40, 160, 110, 0.15) · fill rgb(20, 24, 29)]
+manning-other: before [who: image none · fill rgb(20, 24, 29) | bal: image none · fill rgb(20, 24, 29)] · under the mouse (on row "(row)") [who: image rgba(59, 198, 232, 0.05) · fill rgb(20, 24, 29) | bal: image rgba(59, 198, 232, 0.05) · fill rgb(20, 24, 29)]
+event: before [who: image none · fill rgb(20, 24, 29) | bal: image none · fill rgb(20, 24, 29)] · under the mouse (on row "(row)") [who: image rgba(59, 198, 232, 0.05) · fill rgb(20, 24, 29) | bal: image rgba(59, 198, 232, 0.05) · fill rgb(20, 24, 29)]
+group-heading: before [no pinned cell] · under the mouse (on row "grp g-sxo") [no pinned cell]
+month-strip: before [no pinned cell] · under the mouse (on row "(row)") [no pinned cell]
+page errors: none

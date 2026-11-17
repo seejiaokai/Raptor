@@ -980,11 +980,19 @@ touch-action: pan-x pan-y;
    docs/mock/2026-11-17-lw-grid-hover/tint.mjs): on a PC the same faint tint covers the row's name and balance cells too,
    so whose line is under the mouse shows at a glance. Laid as a background IMAGE over the cells' own solid fill, never in
    its place — the pinned cells stay opaque, which the rule above spares them for. His own row (`.me`) keeps its own
-   highlight. Mouse only (`hover: hover`): a phone's tap leaves its row "hovered", and a phone is unchanged. It sits ahead
-   of the Manning pairs' own image tint (`.counts tr.flyrow`, same weight, later), so those rows keep their pair colour. */
+   highlight. Mouse only (`hover: hover`): a phone's tap leaves its row "hovered", and a phone is unchanged. The Manning
+   pairs' own faint colour (D1194, `.counts tr.flyrow.pair-*` below) is an image too, and this rule outweighs it: on those
+   two rows the tint is laid OVER the pair's colour, both images, so the pair still reads under the mouse (chat 105's probe
+   of every row kind found it replaced). */
 @media (hover: hover) {
   .mx tbody:where(:not(.mstripe)) tr:not(.me):hover > td:is(.who, .bal) {
     background-image: linear-gradient(rgba(59, 198, 232, .05), rgba(59, 198, 232, .05));
+  }
+  .mx .counts tr.flyrow.pair-p:hover > td:is(.who, .bal) {
+    background-image: linear-gradient(rgba(59, 198, 232, .05), rgba(59, 198, 232, .05)), linear-gradient(rgba(150, 140, 50, .15), rgba(150, 140, 50, .15));
+  }
+  .mx .counts tr.flyrow.pair-w:hover > td:is(.who, .bal) {
+    background-image: linear-gradient(rgba(59, 198, 232, .05), rgba(59, 198, 232, .05)), linear-gradient(rgba(40, 160, 110, .15), rgba(40, 160, 110, .15));
   }
 }
 

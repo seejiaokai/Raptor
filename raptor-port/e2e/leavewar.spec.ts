@@ -9318,6 +9318,28 @@ test('the row under the mouse tints its name and balance cells too, still solid;
       expect(p.color, 'his own row: its own highlight').toBe('rgb(23, 60, 74)')
     }
   }
+  /* the Manning pairs keep their own colour (D1194) under the tint: the row's tint is laid over the pair's olive or green
+     on the name and balance cells, never in its place (chat 105's probe of every row kind: it replaced it) */
+  for (const [pair, hue] of [['pair-p', 'rgba(150, 140, 50, 0.15)'], ['pair-w', 'rgba(40, 160, 110, 0.15)']] as const) {
+    const row = page.locator(`.mx .counts tr.flyrow.${pair}`).first()
+    if (!(await row.count())) continue
+    await row.evaluate(r => r.scrollIntoView({ block: 'center' }))
+    const at = await row.evaluate(tr => {
+      const vw = innerWidth
+      for (const td of tr.querySelectorAll<HTMLElement>(':scope > td:not(.who):not(.bal)')) {
+        const r = td.getBoundingClientRect()
+        if (r.left > vw * 0.45 && r.right < vw - 20 && document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest('tr') === tr)
+          return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+      }
+      return null
+    })
+    expect(at, `a day of the Manning ${pair} row in sight`).toBeTruthy()
+    await page.mouse.move(at!.x, at!.y)
+    await expect.poll(() => row.evaluate(tr => [...tr.querySelectorAll<HTMLElement>(':scope > td.who, :scope > td.bal')].map(c => getComputedStyle(c).backgroundImage)),
+      { message: `the Manning ${pair} row's name and balance: the tint over the pair's own colour` })
+      .toEqual([`${ROW_TINT}, linear-gradient(${hue}, ${hue})`, `${ROW_TINT}, linear-gradient(${hue}, ${hue})`])
+    await page.mouse.move(5, 5)
+  }
 })
 
 /* THE AWARD EDITOR HOLDS STILL (his D2150, D2155 — option 2, 17 Nov 26; drawn docs/mock/2026-11-17-lw-oil-editor/): with an
