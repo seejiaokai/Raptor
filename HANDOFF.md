@@ -29,6 +29,9 @@ the later merge keeps both (D78).
   - 23:20 GitHub's run on step 0 (b1e8aabd0) was RED: one guard test (`engine/inputs-readers.test.ts`), fixed inside step 1.
   - 00:10 **Job 1 done** — step 1 built and pushed (071cc9da2): full unit suite 14604 passed, build, tfin 728/0, rulecheck, lint, docsize all green. Open for the security read: a plain admin can still change a master's account role or switch it off.
   - 00:15 **Job 2 started** — step 2, a fresh builder.
+  - 00:41 GitHub's run on step 1 (071cc9da2): all three green (full checks, docs guard, secrets scan).
+  - 01:00 **Job 2 done** — step 2 built and pushed (43f220013): full unit suite 14621 passed, build, tfin 728/0, rulecheck, lint, docsize, 6 browser files green. Owed before merge: his preview shows none of his old saved data until the store is cleared (old rows are not read). Open for steps 3–4: 142's inputs on 149's week; Quals and the member file follow the unit in view; OIL sync, person delete and roster restore read one unit's stash.
+  - 01:06 This chat compacted (about 01:00); re-read the block, the guide and the evidence sheet. **Job 3 started** — step 3, a fresh builder.
 
 ### CHATS 107–108 — multi-squadron batch 1, step 0 built; step 1 designed (chat 108, no code); written 17 Nov 26 — verify before use
 - **Branch / PR:** `claude/multi-sqn-b1-107`, cut from `main` at the merge of pull request 805; upstream unset on purpose (it was set to `origin/main` — the push trap). Pull request: see below once opened; it is the batch's FIRST pull request (steps 0–4, plan §3.6), so it does not merge until steps 1–4 are in and FULL-checked.
