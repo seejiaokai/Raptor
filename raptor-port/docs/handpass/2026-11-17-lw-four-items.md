@@ -221,6 +221,19 @@ editor — 132 PASS, 0 FAIL, 35 RECORDED; **W3** the period's name and the plain
 - W3 **scenario 6** (the first period ever) NOT WALKED: the demo always seeds two periods and no control deletes them all;
   carried by `src/leavewar/emptywar.test.tsx`.
 
+**The re-walk, chat 102, on the frozen `356e2fc6a` (finds 8–10, 13, 14), one Sonnet walker** — brief
+`docs/superpowers/briefs/2026-11-17-lw-four-items-rewalk-brief.md`, report and 116 pictures `…/2026-11-17-lw-four-items/r1/`:
+**72 PASS, 0 FAIL, 16 RECORDED.** R-Bb (the pinned names full width, admin / member, unlocked / locked, slides 0–220, after a
+pinch), R-Bc (the tapped PL box and its tag end at 398 inside 402), R-S8 (each press focuses its own box; CCL to FCL 5px
+on the phone), R-Ba (no heading over 2px off; CCL 61px phone, 66px desktop), R-Ea (both awards open with all three buttons
+whole, clear of the names; typing slides nothing; nothing moves), R-Ed (one height, one line, spread 0), R-plain (a typed
+CCL kept; the 14 Mar award 2 → 3, BAL 4 → 5; deleted, BAL 5 → 2) — all PASS. Opened by the host:
+`r1-Ea-webkit-dol-1-2-settled.png` (the editor whole in WebKit), `r1-Bb-chromium-admin-unlocked-slide220.png` (the walker's
+"red mark" is the last letter of WAR BAL half under the pinned name heading — ordinary sliding, the panel solid). Its lead,
+Tab after a typed Balances figure going to the tab button, is in the box's own code, unchanged from `main` — filed
+`[LW-BAL-TAB-NEXT]`. Find 15 (GitHub's wide letters) came after this re-walk; its test carries it, the walked layout
+unchanged on this PC's letters.
+
 ## Cases carried by a test
 
 | Case | Test | What it proves |
@@ -248,6 +261,9 @@ One a wired surface, each seen red on a build without its part (§8):
 - The period's name: `warname.test.ts`, `wars.test.tsx`, `warask.test.tsx` (red on `main`, chat 100).
 
 ## Errors seen
+
+The re-walk watched page and console errors on every page for its whole run: none. The first walk's three reports name
+none; whether they watched is not stated.
 
 ## What was NOT walked, and why
 
@@ -291,6 +307,7 @@ applies, the two hover rules repeating one long selector.
 | 11 | Fresh Opus read | On a day inside a joined leave block the hover ring is mostly hidden (the block is drawn over the day's sides); on his own row it changes nothing he can see | A look for him, not an outright fault: the drawing hovered an empty day only. Ringing filled days adds a mark he will see — a drawing first (D1625), with the walk's pictures (W1 scenario 9) |
 | 13 | The walk, W2's E-a (chat 101), judged and reproduced by the host (chat 102) | **On a 402 phone an award near the list's right edge opened its editor with Cancel cut and Delete wholly past the screen** (the 14 Mar award: Cancel to 444, Delete 449–528; the 3 Jan award: Delete to 423). `main` opened the same 300px editing box without sliding the list either, but D2155's Delete, as wide as "Really delete?", made it 16px worse | Fixed red-first (`leavewar.spec.ts` "the OIL award editor opens with Save, Cancel and Delete in sight…", red 443.97 ≤ 402.5 on the phone, green on the desktop): the list slides only as far as the open editor needs, never under the pinned names (the way a tapped Balances box comes into sight) |
 | 14 | The drawing check (find 12's 1.8px), reproduced by the host (chat 102) | **"Delete" sat 1.8px off "Cancel"'s line on a phone, 1px on a desktop** — its words stacked in a grid beside its hidden "Really delete?" | Fixed red-first (the same test: the three buttons one height, their words on one line, red 1.8 / 1.0 > 0.5): the hidden twin is a line of no height, so Delete's words sit as Cancel's do; Delete still no wider when armed (the D2155 test green) |
+| 15 | GitHub's run of `356e2fc6a` (phone), reproduced by the host with wide letters stood in by spacing | **With wider letters than this PC's, Delete still opened 8.8px past a 402 phone's edge** — the button row, held on one line, forced the editing box wider than the room beside the pinned names | Fixed red-first (the in-sight test's "— wide letters" twin, red 429.39 ≤ 402.5): the buttons wrap only when the letters are too wide; Delete keeps its one width, so nothing moves (D2155 test green). A wrapped Delete stands at its own height on its own line |
 
 Why the build's own checks missed 5 and 6: no browser test of either existed — chat 99 listed them as to be written (its
 "Pick up here"); the ring was compared with its drawing only as injected CSS on `main`'s build, where the nesting did not
