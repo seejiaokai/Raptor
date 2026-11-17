@@ -156,6 +156,10 @@ its history, a move counting from the next day, D2119), `Grant` (**one row per r
 `member` / `view` — not an array inside the account, so each grant is guarded and kept as its own row, the database's
 shape too), and a `master` mark on the account. A person's home is `Home` rows (person, unit, `from`) — one each until
 batch 4's transfer adds one; `homeOn(pid, iso)` is the one function every reader asks.
+*Refined as built, step 1 (17 Nov 26 — HANDOFF's step-1 design):* the account's own `role` stays its level in its HOME
+unit, so a `Grant` row (table `UnitGrant`) holds only a right in ANOTHER unit, level `admin` or `view` — no "member" of
+another squadron (D2094); `levelIn(account, unit, iso)` is the one answer (master → admin; home → the role; else the
+grant). Settings rows need no mapper in `persist.ts` — they are saved as every settings row is.
 
 **The schedule in view is swapped; everything else asks by unit.**
 - The scheduler's singletons (`DAYS`, `SCHED`, `DATES`, `CURWEEK`, `PLANPUCKS`, `DAYRMK`, `VCONF`/`SHIFT_HARD`, the

@@ -55,11 +55,12 @@ describe('boot — the accounts come back after a reload', () => {
     expect(list, 'the rollback loader list').toBeTruthy()
     const own = list![1].split(',').map(x => x.trim()).filter(x => x && !x.startsWith('MODULE_LOADERS.'))
     const wire = readFileSync(join(__dirname, 'people-settings-wire.ts'), 'utf8')
-    const handed = wire.match(/\{ accounts: (\w+), changes: (\w+), noticeSeen: (\w+), flyplan: (\w+) \}/)
+    /* …the units' loader handed in too since multi-squadron batch 1, step 1 (state/units.ts unitsLoad) */
+    const handed = wire.match(/\{ accounts: (\w+), changes: (\w+), noticeSeen: (\w+), flyplan: (\w+), units: (\w+) \}/)
     expect(handed, 'the loaders the wire file hands in').toBeTruthy()
-    expect(list![1].match(/MODULE_LOADERS\./g)?.length, 'each handed-in loader is in the list').toBe(4)
+    expect(list![1].match(/MODULE_LOADERS\./g)?.length, 'each handed-in loader is in the list').toBe(5)
     const loaders = [...own, ...handed!.slice(1)]
-    expect(loaders.length).toBe(15)
+    expect(loaders.length).toBe(16)
     const src = readFileSync(join(__dirname, 'store.ts'), 'utf8')
     const boot = src.slice(src.indexOf('export function initStore'))
     for (const l of loaders) expect(boot, `${l}() at boot`).toMatch(new RegExp('\\b' + l + '\\(\\)'))

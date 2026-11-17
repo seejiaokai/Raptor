@@ -315,6 +315,27 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     ;(acc as any).after = { ...(acc.after as any), role: 'admin' }
     expect(ownershipViolation(e), 'his role changed with it').toMatch(/settings\/account:/)
   })
+  /* multi-squadron batch 1, step 1: the master mark rides on the accounts' first write as the seed has it (Saber's), and
+     the pass never sets it on the man it posts out */
+  it('the master mark: the accounts\' first write carries the seed\'s as seeded, never dropped', () => {
+    const first = realPass('bane', 'overseas')
+    expect(first.changes.some(c => c.id === 'account:acad' && (c.after as any)?.master === true), 'Saber\'s seeded mark').toBe(true)
+    expect(ownershipViolation(first)).toBeNull()
+    const forged = structuredClone(first)
+    ;(forged.changes.find(c => c.id === 'account:acad')!.after as any).master = undefined
+    /* refused twice over: the master check (a mark changed outside its own command) answers first, the posting pass's
+       first-write rule (the seed's own row) would too */
+    expect(ownershipViolation(forged), 'the seed\'s mark dropped on the way').toMatch(/master mark|settings\/account:acad/)
+  })
+  it('the master mark: once the accounts are stored, the pass may not set it on the man it posts out', () => {
+    const e = realPass('bane', 'overseas')
+    const acc = e.changes.find(c => c.collection === 'settings' && (c.after as any)?.pid === 'bane')!
+    ;(acc as any).before = { ...(acc.after as any), on: true }
+    delete (acc as any).before.offBy
+    e.changes = e.changes.filter(c => c.collection !== 'settings' || c === acc)
+    ;(acc as any).after = { ...(acc.after as any), master: true }
+    expect(ownershipViolation(e), 'the posted man made a master').toMatch(/master|settings\/account:/)
+  })
   /* each condition of the tightened rule with a test only it satisfies (the break list, walk-scripts §9) */
   const storedAccountsPass = (): CommitEnvelope => {
     const e = realPass('bane', 'overseas')

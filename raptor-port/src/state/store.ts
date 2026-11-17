@@ -19,6 +19,7 @@ import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
 import { flyplanLoad } from './flyplan'
+import { unitsLoad, setUnitSeeds } from './units'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
 import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
@@ -906,6 +907,7 @@ export function setToast(fn: (...a: any[]) => any) { HOOKS.toast = fn }
 export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
   wireStore()
   setAccountSeeds(policy.seedDemo)
+  setUnitSeeds(policy.seedDemo)   // the units' seeds follow the accounts' (state/units.ts; it also drops the read rows)
   /* every person's place in the roster's order, before the people baseline is taken ([DB-READINESS] group A, phase 2) */
   mintPeopleOrd()
   /* [ARCH-STACK] Fable-5: the people command layer captured its baseline from the
@@ -917,6 +919,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
   rulesLoad()
   insightsLoad()
   flyplanLoad()      // the flying plan is re-read from the rows this store holds (state/flyplan.ts)
+  unitsLoad()        // the units, places, homes and rights the same (state/units.ts)
   storesLoad()
   lookaheadLoad()
   cxReasonsLoad()

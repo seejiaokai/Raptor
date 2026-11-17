@@ -960,6 +960,7 @@ to it — every account IS one callsign (owner, D166, 25 Sep 26).
 | `seenFrom` | position | no | where the change history stood when the account was made — `(at, lineId)` in the stand-in, the `EditLog.seq` once assigned: every line after it is news to him, none before (`[DRAFT-PENDING]`, Fable F6; a position since 30 Sep 26, F2-02) |
 | `createdAt` | datetime | no | when it was made (the platform's `createdon`) — at stage 1, two accounts stored for one person (two admins at once): the older is kept, the other dropped with a logged line, until your unique `personId` refuses the second (30 Sep 26) |
 | `lastSignInAt` | datetime | no | (new) |
+| `master` | bool | no | the master mark (multi-squadron batch 1, step 1 — D2191): an admin of every unit, the only one who makes a `Unit` or another master; changed only by its own command (`account.master`), by a master, never on his own account, one master always left — the server keeps these too. `role` stays the account's level in its HOME unit (`PersonHome`); rights in other units are `UnitGrant` rows |
 
 The displayed name is the person's callsign, read live — a rename moves nothing (the one-identity rule).
 Relationships: 1 `Person`; referenced by every `createdBy`/`updatedBy`.
@@ -1017,6 +1018,80 @@ security (business units and security roles on Dataverse) — designed with him,
 **The IT side's advice, 8 Nov 26:** manage it by app role — a column naming the squadron and the app's own rules stopping
 one squadron editing another's; database-level rights are theirs and beyond our control. So the "database's own security"
 above becomes the app's roles in the design ([MULTI-SQN-DESIGN]), and the column stays on every record.
+**Designed and building since 17 Nov 26** (plan `docs/superpowers/plans/2026-11-17-multi-sqn-build-batches.md`). Step 1 of
+batch 1 built the five tables below — `Unit`, `Place`, `UnitPlace`, `UnitGrant`, `PersonHome` — and `User.master`;
+the squadron column on every unit's record comes with step 2. **One answer for a level, no fact stored twice:** an
+account's level in a unit is its `User.role` in its HOME unit, its `UnitGrant` level in another, admin everywhere for a
+master, otherwise none.
+
+### Unit
+
+Owner: **Shell**. New 17 Nov 26 (multi-squadron batch 1, step 1). A squadron (a detachment from batch 2). From today:
+`settings/unit:<id>`, `state/units.ts`; the demo seeds 142 and 149 in memory.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `id` | text | yes | `u` + base 36 (`u142`) — never a hyphen, a tilde or a dot, so it can sit inside a key that splits on them |
+| `num` | text | yes | the number a person reads ("142"); letters and digits, at most 12; unique |
+| `kind` | choice `sqn` | yes | a squadron (a detachment's kind comes with batch 2) |
+| `parent` | ref Unit | no | a detachment's squadron (batch 2) |
+
+Made only by a master (`unit.add`, with its place and its first admin — D2184); never removed while a place, a home or a
+right names it.
+
+### Place
+
+Owner: **Shell**. New 17 Nov 26 (step 1). Where a unit is. From today: `settings/place:<id>`.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `id` | text | yes | `p` + base 36 |
+| `name` | text | yes | "Home base"; at most 60 characters |
+| `tz` | text | yes | an IANA time zone ("Australia/Perth"). The GMT label is worked out for each date, never stored — it moves with summer time |
+
+### UnitPlace
+
+Owner: **Shell**. New 17 Nov 26 (step 1). A unit at a place from a date — its place's history. From today:
+`settings/unitplace:<id>`.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `id` | text | yes | `up` + base 36 |
+| `unitId` | ref Unit | yes | the unit |
+| `placeId` | ref Place | yes | where it is |
+| `from` | date | yes | from this date on, until its next row; a move counts from the NEXT day (D2119); before a unit's first row, that row holds |
+
+Written only by an admin OF that unit (or a master).
+
+### UnitGrant
+
+Owner: **Shell**. New 17 Nov 26 (step 1). A right in a unit that is NOT the account's home (D2094, D2160, D2184, D2191).
+From today: `settings/grant:<id>`.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `id` | text | yes | `g` + base 36 |
+| `userId` | ref User | yes | the account |
+| `unitId` | ref Unit | yes | the other unit; never his home unit |
+| `level` | choice `admin|view` | yes | never "member" of another squadron |
+
+One per account and unit. Given or taken only by an admin OF that unit — an admin grant by its own admins or a master,
+View by its admins.
+
+### PersonHome
+
+Owner: **Shell**. New 17 Nov 26 (step 1). A person's home unit from a date. From today: `settings/home:<id>`.
+
+| Field | Type | Req | Meaning |
+|---|---|---|---|
+| `id` | text | yes | `h` + base 36 |
+| `personId` | ref Person | yes | the person |
+| `unitId` | ref Unit | yes | his home unit |
+| `from` | date | yes | from this date on; a change counts from the next day; before his first row, that row holds |
+
+Written in the same step that makes the person (`person.add`, `account.addNew`, `access.approveNew` — the adder's own
+unit by default, D2094), and by `home.set`; only by an admin OF the unit named, before and after. The transfer (Post out
+→ Transfer to Sqn) moves it on its date (batch 4).
 
 ### Notice
 
@@ -1587,7 +1662,7 @@ as written. The day lock follows: a simple mark (his D1751, 8 Nov 26); D1653 is 
 | `QualMark` | C R U D | R, C U D **own** | — | — | `personId` = my person — a member ticks his own quals, every one (D149) except Management (the column whose `key` is `mgmt`), which is the admin's (D1510, 29 Oct 26), and Scheduler (`key` `sched`), the admin's too (D1651, 5 Nov 26): no member creates, changes or deletes a `QualMark` of either column, his own row included |
 | `Setting`, `SchemaVersion` | C R U D | R (`Setting` only) | — | — | the guest switch is a `Setting` (D204); so are the members-file-for-others switch (`memberfile`, D654), the SANS calendar's three colours (`sanscalendar`, D618), the two late cut-offs (values of `rules`, D628, D639) and the flying plan — a date's class and required figures, a weekday's rule, a running figure (`fly.day.set`, `fly.rule.set`, `fly.rule.remove`, `fly.run.set`) and the Tracker's flex settings — its six "From" days and its on / off switch, one record (`trk.flex`, kept in the Tracker's own store as `v3:master:flex` until the database step — D1006, D1014, D1018); and the Leave War's Manning block settings — an Available row's Save, its name, who it counts and its amber and red points against the day's Required (`lw.availrow`, kept in `manningdefs` — D1190, D1191, D1202), and a Required row's name (`lw.reqname`, kept in `reqnames` — D1193): all the admin's |
 | `MissionRoleAnswer` | C R U D | R | R | — | separate Insights annotation, one formation/date/week/exact versioned mission context; scheduler answers and corrections only (D518, D525, D530). Updates latest-published Insights immediately; no programme, issued snapshot, holder, pending item, sign-off or OIL write. Guest reads the resulting Insights figures. |
-| `User` | C R U D | R **own** | — | — | one account per person, tied to it (D166); created with a new `Person` in one step, or linked to one already on the roster (D214, D217); the sign-in name (the defence mail address) unique; **suspended** (`enabled` false — D280, D285) while he is away, and **deleted with his `Person` when he leaves flying for good** (D287 — at the database step the tombstone, D290); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes or deletes his own account |
+| `User` | C R U D | R **own** | — | — | one account per person, tied to it (D166); created with a new `Person` in one step, or linked to one already on the roster (D214, D217); the sign-in name (the defence mail address) unique; **suspended** (`enabled` false — D280, D285) while he is away, and **deleted with his `Person` when he leaves flying for good** (D287 — at the database step the tombstone, D290); **no password is ever stored** — the organisation's sign-in checks it; at least one enabled admin always remains; an admin never changes or deletes his own account; **the master mark** (`master` — multi-squadron batch 1, step 1, D2191): a master is an admin of every unit and the only one who makes a unit or another master; the mark changes only by its own command (`account.master`), only by a master, never on his own account, and one master is always left — the commit gate refuses a change of it in any other command |
 | `AccessRequest` | R D | — | — | C **own** | a person signed in but on no list asks once, giving what the admin's New person form asks — callsign/name, initials, seat, CAT — as typed text (D204, D214); an admin approves — creating the `User`, linked to a person he picks (a typed callsign never claims one) or to a new `Person` made from the request with his corrections — or declines, each one step; a `User` added or renamed onto a waiting sign-in name deletes its request; which admins have had it on screen is no longer on the request — each admin's own `AccessRequestSeen` row (`[DB-READINESS]` group A, phase 4.4 — R3-04) |
 | `AccessRequestSeen` | C R U **own** | — | — | — | `userId` = my account — which waiting requests this admin has had on screen, the list of their ids: his bell lights until he has (D216, D227 — each admin's bell is his own); one row per admin, removed with his `User` (`[DB-READINESS]` group A, phase 4.4, 30 Sep 26 — R3-04) |
 | ScheduleWeek family, `DayDraft`, `RowPerson` | C R U D | R | R | — | a member reads the programme; only a scheduler writes it; a guest reads what a member reads on View-only Sched — a published day as issued, another as it stands (D204, D215). **No exception since 1 Oct 26 (phase 6 (c) — built):** a member's own request, filed or changed, writes his `Input` alone; its landing on its day is worked out on read and saved only by the day's holder — the exception said for IT on 30 Sep 26 (a member's changeset carrying the `ScheduleDay` row his request landed on) is gone, and a member's command carrying any schedule record is refused (`state/perms.ts ownershipViolation`). A week load never writes a day (Fable F2, the same read) |
@@ -1609,6 +1684,11 @@ as written. The day lock follows: a simple mark (his D1751, 8 Nov 26); D1653 is 
 | `LeaveGrade` | C R U D | R | — | — | a person's leave grade over time — `{ id \| null, from }`, a change counting from the next 1 Jan (D1229, D1490); written by an admin only. The grades list itself (its names, order, days and deleted grades) and "Lock for members" are `Setting` rows — `lw.config`'s `grades` and `balLock` (D1234, D1220) |
 | `LeaveSeen` | C R U **own** | C R U **own** | — | — | `personId` = my person — when I last opened my own person window on the Leave War: a line of my leave someone else changed since then wears the cyan dot (M5a — D1231, D1481); written when he opens it, by its one command `lw.seen`, never an Undo step (`state/lwseen.ts`) |
 | `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — | — | **everyone edits** the Tracker — owner, 7 Sep 26; since D121, 23 Sep 26, Import / Export too: admin and member have the same access — except the flex settings, a `Setting` (above), the admin's alone (D1014, 18 Oct 26) |
+| `Unit` | C R U D (a master's alone — D2191) | R | R | R | a squadron (multi-squadron batch 1, step 1): its number and kind; every signed-in person reads the units, so a guest's and a pending person's screen can name theirs; only a master makes or changes one (`unit.add`, with its place and its first admin — D2184), and a unit is never removed while a place, a home or a right names it |
+| `Place` | C R U D | R | — | — | where a unit is: a name and a time zone (the GMT label is worked out from the zone for each date, never stored); any admin makes one; an existing one is changed only by a master or an admin of a unit at it today (the commit gate) |
+| `UnitPlace` | C R U D | R | — | — | a unit's place from a date: a move adds a row from the next day (D2119), the history kept; written only by an admin OF that unit (the commit gate reads the row's unit, before and after) |
+| `UnitGrant` | C R U D | R **own** | — | — | a right in a unit that is NOT the account's home — `admin` or `view` (no member of another squadron, D2094); the home level is the account's own role, never a grant; one per account and unit; given or taken only by an admin OF that unit — an `admin` grant by its own admins or a master, View by its admins (D2160, D2184, D2191); read by every admin and by the member it names |
+| `PersonHome` | C R U D | R | — | — | a person's home unit from a date: written in the same step that makes the person (the adder's own unit by default, D2094), a change counting from the next day; written only by an admin OF the unit named, before and after; on the demo a person with no row is at 142 |
 
 **The day lock (29 Sep 26, D355, D450 — section 9):** *(8 Nov 26, his D1751: a simple mark the app holds — none of the Dataverse privileges, team or server check in this paragraph is built.)* the lock is columns of `ScheduleDay` (section 3), so it follows
 the ScheduleWeek family's row — an admin takes, releases and takes over a day (every scheduler is an admin; in

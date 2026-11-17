@@ -74,8 +74,9 @@ describe('AC1 — the sign-in stands for the defence-mail sign-in (D166 (2))', (
     for (const r of rows) expect(r).not.toMatch(/pass/i)
     /* every field a stored account may carry, and nothing else — `seenFrom` since [DRAFT-PENDING] (Fable F6: where the
        change history stood when the account was made — a position since phase 4.3), `createdAt` since phase 4.4 (the
-       older of two accounts for one person wins), never a password */
-    const OK = ['id', 'name', 'on', 'pid', 'role', 'offBy', 'seenFrom', 'createdAt']
+       older of two accounts for one person wins), `master` since multi-squadron batch 1, step 1 (the master mark — the
+       database's User.master), never a password */
+    const OK = ['id', 'name', 'on', 'pid', 'role', 'offBy', 'seenFrom', 'createdAt', 'master']
     expect(rows.every(r => Object.keys(JSON.parse(r)).every(k => OK.includes(k)))).toBe(true)
   })
 })
@@ -364,7 +365,9 @@ describe('NP3 — a new person with his account is ONE step (D214, D217)', () =>
     const got = envs[0].changes.map(c => `${c.collection}/${c.id}`)
     expect(got).toContain(`people/${pid}`)
     expect(got).toContain(`settings/account:${accountByName('blaze@mail')!.id}`)
-    expect(got.every(k => k === `people/${pid}` || k.startsWith('settings/account:'))).toBe(true)
+    /* …and his home unit, in the same command since multi-squadron batch 1, step 1 (D2094 — the adder's own) */
+    expect(got.filter(k => k.startsWith('settings/home:')).length).toBe(1)
+    expect(got.every(k => k === `people/${pid}` || k.startsWith('settings/account:') || k.startsWith('settings/home:'))).toBe(true)
     expect(signInAs('blaze@mail')).toMatchObject({ kind: 'ok' })
     expect(ME).toBe(pid)
   })

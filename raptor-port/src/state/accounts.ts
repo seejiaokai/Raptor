@@ -71,6 +71,8 @@ import {
   postInProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
+import { putNewHome, levelOfAccount, todayIso } from './units'
+import type { UnitLevel } from './units-model'
 
 export type AccountRole = 'admin' | 'main'
 /* `offBy: 'po'` — the account was SUSPENDED BY A POSTING OUT ([POST-OUT-OUTCOMES], D280 — the overseas outcome suspends
@@ -80,7 +82,7 @@ export type AccountRole = 'admin' | 'main'
    POSITION in its order, (at, lineId), since [DB-READINESS] group A, phase 4.3 (Fable F2-02) — someone given access
    later starts with nothing new; the lines before it are the squadron's past, not news to him (state/changes.ts).
    Absent on the seeded accounts (the demo history starts empty). `createdAt` — see the header. */
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number }
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true }
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
 export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[] }
@@ -96,14 +98,16 @@ export const ACCOUNT_TYPES = ['access.request', 'access.decline', 'access.approv
      (sync.ts runPoOutcomes — a reconciler) */
   'person.delete', 'person.restore', 'lw.postout', 'lw.postoutRun',
   /* [ONE-DOOR]: Archive on Admin → Users (leavewar/sync.ts archivePerson); the man's own "welcome back" seen (D305) */
-  'person.archive', 'person.backSeen'] as const
+  'person.archive', 'person.backSeen',
+  /* multi-squadron batch 1, step 1: the master mark set or cleared (setMaster below) — a master's alone */
+  'account.master'] as const
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    `us` stays Ranger (bane), as "View as" left every member test before; `ad` is Saber
    (stiff) because one person holds one account; `outlaw` and `hex` are members NOT
    posted out in the demo world. */
 const SEED: readonly Account[] = Object.freeze([
-  { id: 'acad', name: 'ad', role: 'admin', pid: 'stiff', on: true },
+  { id: 'acad', name: 'ad', role: 'admin', pid: 'stiff', on: true, master: true },   // the demo's master (step 1)
   { id: 'acus', name: 'us', role: 'main', pid: 'bane', on: true },
   { id: 'acoutlaw', name: 'outlaw', role: 'main', pid: 'casper', on: true },
   { id: 'achex', name: 'hex', role: 'main', pid: 'rocky', on: true },
@@ -147,7 +151,7 @@ function rowsOf(pfx: string): Map<string, any> {
 /* whether the accounts are stored as rows yet — none means the seeded list, held in memory (see the header) */
 let ACCOUNTS_STORED = false
 /* an account as its row stores it */
-const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid: a.pid, on: a.on, ...(a.offBy ? { offBy: a.offBy } : {}), ...(a.seenFrom ? { seenFrom: a.seenFrom } : {}), ...(a.createdAt != null ? { createdAt: a.createdAt } : {}) })
+const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid: a.pid, on: a.on, ...(a.offBy ? { offBy: a.offBy } : {}), ...(a.seenFrom ? { seenFrom: a.seenFrom } : {}), ...(a.createdAt != null ? { createdAt: a.createdAt } : {}), ...(a.master ? { master: true as const } : {}) })
 /* a request as its row stores it — who has seen it is not on it (reqseen rows) */
 const reqRow = (r: AccessRequest) => ({ id: r.id, name: r.name, cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat, at: r.at })
 
@@ -172,6 +176,7 @@ export function readAccounts(images: any[], why?: (text: string) => void): Accou
       ...(x.on === false && x.offBy === 'po' ? { offBy: 'po' as const } : {}),
       ...(isPos(x.seenFrom) ? { seenFrom: { at: +x.seenFrom.at, lineId: x.seenFrom.lineId } } : {}),
       ...(Number.isFinite(x.createdAt) ? { createdAt: +x.createdAt } : {}),
+      ...(x.master === true ? { master: true as const } : {}),
     })
   }
   return out
@@ -259,6 +264,13 @@ export function linkablePeople(keep?: string): string[] {
   }).sort((a, b) => String((PEOPLE as any)[a].cs).localeCompare(String((PEOPLE as any)[b].cs)))
 }
 export const isAdminAccount = (a: Account | undefined) => !!a && a.role === 'admin'
+/* THE MASTER MARK (multi-squadron batch 1, step 1 — D2191): a master is an admin of every unit and the only one who
+   makes a unit or another master. The mark lives on the account row (the database's User.master) and changes only by
+   its own command, setMaster below — the commit gate (perms.ts unitRowViolation) refuses a change of it in any other. */
+export const isMasterAccount = (id: any): boolean => !!accountById(id)?.master
+/* an account's level in a unit on a date — its own role in its home unit, its grant elsewhere, admin everywhere for a
+   master, otherwise null (state/units-model.ts levelFrom — the one answer) */
+export const levelIn = (accountId: any, unit: string, iso: string = todayIso()): UnitLevel | null => levelOfAccount(accountById(accountId), unit, iso)
 const canSignInAsAdmin = (a: Account) => isAdminAccount(a) && a.on && personOk(a.pid)
 
 /* ---- SIGNING IN: what the sign-in card turns into (D204) ---- */
@@ -395,6 +407,23 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   })
 }
 
+/* THE MASTER MARK SET OR CLEARED (multi-squadron batch 1, step 1 — D2191, "only a master admin makes another"): by a
+   master only, never on his own account, and never leaving no master. The same three are held at the commit gate
+   (perms.ts unitRowViolation), so no other door — a forged command, an Undo — can do what this one refuses. */
+export function setMaster(id: string, on: boolean): { ok: boolean; message?: string } {
+  const a = accountById(id)
+  if (!SESSION || !mayManageAccounts() || !isMasterAccount(SESSION.user)) return { ok: false, message: 'Only a master admin can do that' }
+  if (!a) return { ok: false, message: 'That account is gone' }
+  if (ownAccount(a)) return { ok: false, message: "You can't change your own account — ask another master admin" }
+  if (!!a.master === on) return { ok: false, message: on ? 'He is a master admin already' : 'He is not a master admin' }
+  const next: Account = { ...a }
+  if (on) next.master = true; else delete next.master
+  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? next : x))
+  if (!list.some(x => x.master)) return { ok: false, message: 'At least one master admin must be left' }
+  const bad = commitIntent('account.master', null, () => writeAccounts(list))
+  return bad ? { ok: false, message: bad } : { ok: true }
+}
+
 /* the admin approves a request: the account AND the request cleared, one command */
 export function approveRequest(reqId: string, pid: string, role: AccountRole): string | null {
   if (!mayManageAccounts()) return 'Only an admin can approve a request'
@@ -405,6 +434,7 @@ export function approveRequest(reqId: string, pid: string, role: AccountRole): s
   return commitIntent('access.approve', null, () => {
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true, ...newAccountStamp() }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
+    putNewHome(pid, me())   // his home unit, in the same command — the approving admin's own by default (D2094)
   })
 }
 export function declineRequest(reqId: string): string | null {
@@ -470,7 +500,7 @@ export function suspendForPosting(pid: string): 'done' | 'none' | 'lock' {
 export function enableAfterPosting(pid: string): boolean {
   const a = accountOfPid(pid)
   if (!a || a.on || a.offBy !== 'po') return false
-  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}) } : x)))
+  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}), ...(x.master ? { master: true as const } : {}) } : x)))
   return true
 }
 /* [ONE-DOOR] (owner D310, D322, 27 Sep 26): ARCHIVE suspends his sign-in — as a hand suspension (no mark: Restore
@@ -480,7 +510,7 @@ export function enableAfterPosting(pid: string): boolean {
 export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
   const a = accountOfPid(pid)
   if (!a || !a.on) return 'none'
-  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: false, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}) } : x))
+  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: false, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}), ...(x.master ? { master: true as const } : {}) } : x))
   if (!list.some(canSignInAsAdmin)) return 'lock'
   writeAccounts(list)
   return 'done'
@@ -488,7 +518,7 @@ export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
 export function enableForRestore(pid: string): boolean {
   const a = accountOfPid(pid)
   if (!a || a.on) return false
-  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}) } : x)))
+  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}), ...(x.master ? { master: true as const } : {}) } : x)))
   return true
 }
 /* HIS WELCOME NOTE SEEN ([ONE-DOOR], D305): the signed-in man clears his OWN `back` — the `person.backSeen` command,
@@ -597,6 +627,7 @@ export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, p
     if (mine) {
       const there = list.find(a => a.id === mine.id) || list.find(a => a.pid === mine.pid)
       const same = there && normName(there.name) === mine.name && there.role === mine.role && there.pid === mine.pid && (there.on !== false) === mine.on
+        && !!there.master === !!mine.master   // the master mark too (step 1): never his own, by any door
       if (!same) return "You can't change your own account — ask another admin"
     }
   }
@@ -613,8 +644,8 @@ export function accountsRestoreProblem(next: any[] | null, reqs: any[] | null, p
    The account row src/boot.ts writes at a shared store's first boot, beside his person and the "started" stamp, in the
    boot's one saved group: an admin, on, tied to his person, the history's start as its `seenFrom` (nothing before him
    is news to him) and its `createdAt`. The key and the stored image, exactly as every other account row. */
-export function firstAdminRow(nameIn: any, pid: string): [string, any] {
-  const a: Account = { id: newAccountId(), name: normName(nameIn), role: 'admin', pid, on: true, ...newAccountStamp() }
+export function firstAdminRow(nameIn: any, pid: string, master = false): [string, any] {
+  const a: Account = { id: newAccountId(), name: normName(nameIn), role: 'admin', pid, on: true, ...newAccountStamp(), ...(master ? { master: true as const } : {}) }
   return [ACCOUNT_PFX + a.id, accountRow(a)]
 }
 /* the stored account rows that hold a sign-in name — read straight from the store (the boot asks before the accounts
@@ -643,6 +674,7 @@ export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRol
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true, ...newAccountStamp() }])
     if (requestByName(name)) writeReqs(ACCESS_REQS.filter(r => r.name !== name))
+    putNewHome(pid, me())   // his home unit, in the same command — the adder's own by default (D2094)
   }))
 }
 /* approving with New person: the person from what he gave, with the admin's corrections,

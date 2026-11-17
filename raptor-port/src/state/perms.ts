@@ -30,7 +30,12 @@ import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, lea
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts, ACCOUNTS_LIST, isAdminAccount } from './accounts'
+import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore } from './accounts'
+import { unitRowsBefore, levelBefore, homeBefore, todayIso } from './units'
+import {
+  UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES, validUnit, validPlace, validUnitPlace, validGrant,
+  validHome, unitIn, placeIn, placeIdOn, type UnitRows,
+} from './units-model'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 
@@ -84,6 +89,13 @@ export const T = {
   lwseen: 'LeaveSeen',
   profile: 'LeavePersonProfile',
   tracker: 'Course, Syllabus, TrainingEvent, EventPrerequisite, Layout, CoursePlan, Enrolment, Attempt',
+  /* multi-squadron batch 1, step 1 (state/units.ts): the units, the places they are at (and when), a right in a unit
+     that is not the account's home, and each person's home unit (and from when) */
+  unit: 'Unit',
+  place: 'Place',
+  unitplace: 'UnitPlace',
+  grant: 'UnitGrant',
+  home: 'PersonHome',
 } as const
 
 /* 1. THE MATRIX — data-model.md §11, row for row. */
@@ -129,6 +141,14 @@ export const PERMS: Record<string, PermRow> = {
   [T.lwseen]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.profile]: row(cell('C R U D'), cell('R')),
   [T.tracker]: row(cell('C R U D'), cell('C R U D')),
+  /* the units (step 1): every signed-in person reads the units — a guest's and a pending person's view names theirs; only
+     a MASTER makes one (MASTER_ONLY_COMMANDS below — §11 notes it in the cell); the place, a unit's place and a home are
+     an admin's OF that unit (the commit gate reads the row's unit — unitRowViolation); a member reads his own rights */
+  [T.unit]: row(cell('C R U D'), cell('R'), cell('R'), cell('R')),
+  [T.place]: row(cell('C R U D'), cell('R')),
+  [T.unitplace]: row(cell('C R U D'), cell('R')),
+  [T.grant]: row(cell('C R U D'), cell('', 'R')),
+  [T.home]: row(cell('C R U D'), cell('R')),
 }
 
 /* 4. WHO READS A MEDICAL INPUT IN FULL (D211, 26 Sep 26 — "Keep as today": every member;
@@ -543,9 +563,10 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
      "seen" (D216, D227) */
   /* [ONE-DOOR] (D308): each also writes his post-in date on the war — the LeavePersonProfile, named (round 1, Fable F11 /
      Astra 6) */
-  'person.add': op(T.person, 'C', 'never', [[T.profile, 'U']]),
-  'account.addNew': op(T.user, 'C', 'never', [[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U']]),
-  'access.approveNew': op(T.accessreq, 'D', 'never', [[T.user, 'C'], [T.person, 'C'], [T.profile, 'U']]),
+  /* …each of the three writes the new man's home unit in the same command since multi-squadron batch 1, step 1 (D2094) */
+  'person.add': op(T.person, 'C', 'never', [[T.profile, 'U'], [T.home, 'C']]),
+  'account.addNew': op(T.user, 'C', 'never', [[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U'], [T.home, 'C']]),
+  'access.approveNew': op(T.accessreq, 'D', 'never', [[T.user, 'C'], [T.person, 'C'], [T.profile, 'U'], [T.home, 'C']]),
   /* his OWN row of the requests he has seen (AccessRequestSeen — [DB-READINESS] group A, phase 4.4) */
   'access.seen': op(T.reqseen, 'U', 'required'),
   /* [DRAFT-PENDING] (D170): "Mark all as seen" in the changes window — the signed-in person's OWN entry only */
@@ -579,12 +600,27 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
      run inside `lw.postout` above) */
   'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D'], [T.notice, 'C']]),
 }
+/* THE UNITS (multi-squadron batch 1, step 1 — state/units.ts; the master mark, state/accounts.ts setMaster). The type
+   says only that an admin may run it; which unit's admin is the commit gate's, read from each row (unitRowViolation) */
+Object.assign(COMMAND_OPS, {
+  'unit.add': op(T.unit, 'C', 'never', [[T.unitplace, 'C'], [T.grant, 'C']]),
+  'unit.place': op(T.unitplace, 'C'),
+  'place.set': op(T.place, 'U', 'never', [[T.place, 'C']]),
+  'grant.set': op(T.grant, 'U', 'never', [[T.grant, 'C']]),
+  'grant.remove': op(T.grant, 'D'),
+  'home.set': op(T.home, 'U', 'never', [[T.home, 'C']]),
+  'account.master': op(T.user, 'U'),
+} satisfies Record<string, CommandOp>)
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 /* COMMANDS ONLY AN ADMIN RUNS, though the table they write grants a member the same letter for his own change: the war's
    follow-up notice (`lw.notice` — "… taken back" / "… again" after an admin's Undo or Redo of a war decision, M4 9.3,
    D1216). A member's Notice C is a line riding his own input change (the commit's notices case); this command rides none,
    and a member never runs it (the security read's finding 4, 27 Oct 26) */
 const ADMIN_ONLY_COMMANDS = new Set(['lw.notice'])
+/* COMMANDS ONLY A MASTER RUNS (D2191 — 'only a master admin makes another'; he makes the squadrons): an admin whose
+   account carries the mark (state/accounts.ts isMasterAccount, read from the live list by the actor's account id — the
+   session carries nothing of it). §11 notes it in the cell's parentheses. */
+const MASTER_ONLY_COMMANDS = new Set(['unit.add', 'account.master'])
 
 function owners(meta: any): string[] | null {
   if (!meta) return null
@@ -600,6 +636,7 @@ export function cmdAuthorize(type: string, actor: Actor, meta?: any): boolean {
   if (who === null) return true                          // the system actor (authorize short-circuits it first anyway)
   if (who === 'off') return false
   if (ADMIN_ONLY_COMMANDS.has(type) && who !== 'admin') return false
+  if (MASTER_ONLY_COMMANDS.has(type) && (who !== 'admin' || !isMasterAccount(actor.id))) return false
   /* the base op with its own-row rule, then every `more` op held outright — ALL must allow
      (no early success before the last is asked) */
   if (!opAllows(who, o.table, o.act, o.own, actor, meta)) return false
@@ -1079,15 +1116,16 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
       if (!b) {
         const seed: any = f && c.op === 'put' ? seeds.find(a => String(a.id) === rowId) : null
         if (!seed) return refuse(c)
-        const keys = ['id', 'name', 'role', 'pid', 'on', 'offBy']
+        /* the master mark (multi-squadron batch 1, step 1) rides on the seeded row as the seed has it, never set or cleared */
+        const keys = ['id', 'name', 'role', 'pid', 'on', 'offBy', 'master']
         if (Object.keys(f).some(k => !keys.includes(k))) return refuse(c)
-        if (!['id', 'name', 'role', 'pid'].every(k => JSON.stringify(f[k]) === JSON.stringify(seed[k]))) return refuse(c)
+        if (!['id', 'name', 'role', 'pid', 'master'].every(k => JSON.stringify(f[k]) === JSON.stringify(seed[k]))) return refuse(c)
         const ok = posted.has(String(seed.pid)) ? f.on === false && f.offBy === 'po' : f.on === seed.on && f.offBy == null
         if (!ok) return refuse(c)
         continue
       }
       if (!posted.has(String(b.pid ?? ''))) return refuse(c)
-      if (f && (String(f.pid) !== String(b.pid) || f.role !== b.role || f.name !== b.name)) return refuse(c)
+      if (f && (String(f.pid) !== String(b.pid) || f.role !== b.role || f.name !== b.name || !!f.master !== !!b.master)) return refuse(c)
       accounts.set(rowId, b)
     }
   }
@@ -1129,8 +1167,108 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
   }
   return null
 }
+
+/* 6. THE UNITS' ROWS AND THE MASTER MARK AT THE COMMIT GATE (multi-squadron batch 1, step 1 — state/units.ts).
+   The command gate above reads a command's TYPE ("an admin may"); this reads its ROWS ("an admin OF the unit each names"),
+   for every actor and every door — a typed command, a forged one, an Undo or a Redo. Run first in ownershipViolation, so
+   an admin is held too (the member rules below stop at an admin).
+   - WHO: judged over the rows and the actor's account as they stood BEFORE the command (unitRowsBefore), so a command
+     never lends its author the right it is giving — a grant of admin in 149 to himself is refused like any other.
+     A unit row is a master's alone; a place's row is new by any admin, changed only by a master or an admin of a unit
+     at it today; a unit's place, a right and a home need an admin of the unit named, in the image before AND after.
+     An actor with no account behind him (a probe's or a test's session) is read as the role in force at ME's home.
+   - WHAT: every row written passes its own check and names a unit and a place that exist; a grant names an account,
+     is never in that account's own home unit, and is the one grant for that account and unit; a unit or a place is
+     removed only when nothing names it.
+   - THE MASTER MARK: changed only by `account.master` (or the Undo of one), only by a master, never on his own account,
+     and one master always left. */
+const isUnitRow = (id: string) => UNIT_ROW_PREFIXES.some(p => id.startsWith(p))
+const ACCOUNT_ROW = 'account:'
+/* the stored accounts after the command, as the loader would read them — none stored is the seeded list */
+function accountImagesNow(): any[] {
+  const out: any[] = []
+  for (const k of store.keys(ACCOUNT_ROW)) { const v = store.get(k, null); if (v) out.push(v) }
+  return out.length ? out : seedAccounts()
+}
+function unitRowViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  const unitCh = env.changes.filter(c => c.collection === 'settings' && isUnitRow(String(c.id)))
+  const masterCh = env.changes.filter(c => {
+    if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW)) return false
+    /* both sides read as the loader reads them: an Undo of the very first account write takes every stored row away,
+       and a seeded account with no row is its seed again — Saber's mark is not changed by that, so it is no change */
+    const id = String(c.id).slice(ACCOUNT_ROW.length)
+    const was = accountBefore(id, c.before), is = accountBefore(id, c.after)
+    return !!(was && was.master) !== !!(is && is.master)
+  })
+  if (!unitCh.length && !masterCh.length) return null
+  const sys = !a || a.role === 'system'
+  const today = todayIso()
+  const before = unitRowsBefore(env.changes)
+  const after = unitRowsBefore([])
+  /* the actor's account before the command — the row this command changed, put back; else the live list */
+  let acct: { id: string; pid: string; role: string; master?: boolean } | null = null
+  if (!sys) {
+    const mine = env.changes.find(c => c.collection === 'settings' && c.id === ACCOUNT_ROW + a.id)
+    const was: any = mine ? accountBefore(a.id, mine.before) : ACCOUNTS_LIST.find(x => x.id === a.id)
+    acct = was ? { id: was.id, pid: String(was.pid), role: String(was.role), master: was.master === true }
+      : { id: a.id, pid: String(a.personId ?? ''), role: a.role === 'admin' ? 'admin' : 'main' }
+  }
+  /* an admin of a unit: the role IN FORCE is an admin's (an admin viewing as a member holds nothing), and his level
+     there before the command is admin */
+  const adminOf = (unit: string) => !sys && a.role === 'admin' && levelBefore(acct, unit, today, before) === 'admin'
+  const master = !sys && a.role === 'admin' && !!acct?.master
+  const exists = (r: UnitRows, unit: unknown, place?: unknown) =>
+    !!unitIn(r, String(unit)) && (place === undefined || !!placeIn(r, String(place)))
+
+  for (const c of unitCh) {
+    const id = String(c.id), b: any = c.before, n: any = c.after
+    const key = id.slice(id.indexOf(':') + 1)
+    /* WHAT */
+    if (n != null) {
+      const ok = id.startsWith(UNITPLACE_PFX) ? validUnitPlace(n, key) : id.startsWith(UNIT_PFX) ? validUnit(n, key)
+        : id.startsWith(PLACE_PFX) ? validPlace(n, key) : id.startsWith(GRANT_PFX) ? validGrant(n, key) : validHome(n, key)
+      if (!ok) return `a unit row that is not one (${id})`
+      if (id.startsWith(UNITPLACE_PFX) && !exists(after, n.unit, n.place)) return `a unit's place naming what is not there (${id})`
+      if (id.startsWith(HOME_PFX) && !exists(after, n.unit)) return `a home in a unit that is not there (${id})`
+      if (id.startsWith(GRANT_PFX)) {
+        const who = accountImagesNow().find(x => x && x.id === n.account)
+        if (!who || !exists(after, n.unit)) return `a right naming what is not there (${id})`
+        if (homeBefore(String(who.pid), today, after) === n.unit) return `a right in his own home unit (${id})`
+        if (after.grants.filter(g => g.account === n.account && g.unit === n.unit).length > 1) return `two rights for one account in one unit (${id})`
+      }
+    } else if (id.startsWith(UNIT_PFX) && !id.startsWith(UNITPLACE_PFX)) {
+      if (after.unitplaces.some(x => x.unit === key) || after.homes.some(x => x.unit === key) || after.grants.some(x => x.unit === key)) return `a unit removed while still named (${id})`
+    } else if (id.startsWith(PLACE_PFX)) {
+      if (after.unitplaces.some(x => x.place === key)) return `a place removed while a unit is there (${id})`
+    }
+    /* WHO */
+    if (sys) continue
+    if (id.startsWith(UNITPLACE_PFX) || id.startsWith(GRANT_PFX) || id.startsWith(HOME_PFX)) {
+      for (const img of [b, n]) if (img && !adminOf(String(img.unit))) return `not an admin of ${img.unit} (${id})`
+    } else if (id.startsWith(UNIT_PFX)) {
+      if (!master) return `only a master admin makes or changes a unit (${id})`
+    } else if (id.startsWith(PLACE_PFX) && b != null && !master) {
+      if (!before.units.some(u => placeIdOn(before, u.id, today) === key && adminOf(u.id))) return `not an admin of a unit at that place (${id})`
+    }
+  }
+
+  if (masterCh.length) {
+    if (env.type !== 'account.master' && !(env.type === 'undo.restore' && env.origin === 'restore')) return 'the master mark changes only by its own command'
+    if (!master) return 'only a master admin sets the master mark'
+    for (const c of masterCh) {
+      const img: any = c.after ?? c.before
+      if (String(c.id) === ACCOUNT_ROW + a.id || (img && a.personId != null && String(img.pid) === String(a.personId))) return 'never his own master mark'
+    }
+    if (!accountImagesNow().some(x => x && x.master === true)) return 'one master admin must be left'
+  }
+  return null
+}
+
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
+  const unitBad = unitRowViolation(env)
+  if (unitBad) return unitBad
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
      for an ADMIN too — an admin who changed a man's leave could otherwise set that man's moment to now and wipe the dots
      that tell him (§11: "C R U own" for every role) */

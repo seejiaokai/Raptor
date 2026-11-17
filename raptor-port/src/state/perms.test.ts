@@ -311,8 +311,10 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
   })
   it("NP8 — a command is authorised only if EVERY table it writes allows it (Astra's plan read 1)", () => {
     /* [ONE-DOOR] (D308; round 1 — Fable F11 / Astra 6): each also writes his post-in date on the war */
-    expect(COMMAND_OPS['account.addNew'].more).toEqual([[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U']])
-    expect(COMMAND_OPS['access.approveNew'].more).toEqual([[T.user, 'C'], [T.person, 'C'], [T.profile, 'U']])
+    /* …and his home unit, in the same command (multi-squadron batch 1, step 1 — D2094) */
+    expect(COMMAND_OPS['account.addNew'].more).toEqual([[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U'], [T.home, 'C']])
+    expect(COMMAND_OPS['access.approveNew'].more).toEqual([[T.user, 'C'], [T.person, 'C'], [T.profile, 'U'], [T.home, 'C']])
+    expect(COMMAND_OPS['person.add'].more).toEqual([[T.profile, 'U'], [T.home, 'C']])
     expect(COMMAND_OPS['account.update'].more, 'a rename onto a waiting name answers its request').toEqual([[T.accessreq, 'D']])
     /* withhold ONE of the tables from the admin: the whole command is refused, not just that half */
     const cell = PERMS[T.person].admin, was = cell.all.slice()

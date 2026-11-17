@@ -131,7 +131,16 @@ function files(dir: string, out: string[] = []): string[] {
 }
 const rel = (p: string) => relative(SRC, p).replace(/\\/g, '/')
 const read = (f: string) => readFileSync(join(SRC, f), 'utf8')
-const universe = files(SRC).map(rel).filter(f => NAMES.test(read(f))).sort()
+/* FILES THAT ONLY SPELL A NAME, inside quotes — never a reader, never a writer (multi-squadron batch 1, step 0's red run,
+   17 Nov 26). The key inventory (storage/keyowner.ts) lists the module singletons by name, as strings, so its own test
+   can check each module still exports it: `{ name: 'INPUTS', module: 'engine/inputs' }`. That reaches no input. A file
+   here is out of the universe only while it really reaches nothing — the test below strips its comments AND its quoted
+   strings and fails the moment a name is left, so a real read added to it later turns the guard red again. */
+const MENTIONS_ONLY: Record<string, string> = {
+  'storage/keyowner.ts': 'the key inventory names the INPUTS singleton as a string for its own export check; it imports and reads nothing of the inputs',
+}
+const unquoted = (s: string) => code(s).replace(/'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`/g, "''")
+const universe = files(SRC).map(rel).filter(f => NAMES.test(read(f)) && !(f in MENTIONS_ONLY)).sort()
 const listed = [LINES, RECORDS, WRITERS]
 
 describe('every file that reaches the inputs is on one list — lines, records or writers (D756; Fable F1, F15)', () => {
@@ -140,6 +149,15 @@ describe('every file that reaches the inputs is on one list — lines, records o
     const twice = universe.filter(f => listed.filter(l => f in l).length > 1)
     expect(none, 'reaches the inputs and is on no list — decide which it is: does it ask about one man\'s day (LINES), about the input (RECORDS), or does it write (WRITERS)?').toEqual([])
     expect(twice, 'on two lists').toEqual([])
+  })
+  it('a file left out as only spelling a name reaches nothing once its quoted strings are taken out — and still spells it', () => {
+    for (const f of Object.keys(MENTIONS_ONLY)) {
+      expect(NAMES.test(read(f)), `${f} no longer names the inputs — take it off MENTIONS_ONLY`).toBe(true)
+      expect(NAMES.test(unquoted(read(f))), `${f} reaches the inputs outside a quoted string — put it on LINES, RECORDS or WRITERS`).toBe(false)
+    }
+    /* the stripper itself: a name in quotes goes, a real read stays */
+    expect(NAMES.test(unquoted("const a = { name: 'INPUTS' }"))).toBe(false)
+    expect(NAMES.test(unquoted("const n = INPUTS.length // 'x'"))).toBe(true)
   })
   it('the lists name no file that no longer reaches the inputs', () => {
     const gone = listed.flatMap(l => Object.keys(l)).filter(f => !universe.includes(f))

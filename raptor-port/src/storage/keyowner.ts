@@ -61,6 +61,9 @@ export const COMMUNITY_SETTING_PREFIXES: readonly string[] = [
   'noticeseen:',  // each person's own read marks of his bell
   'apprseen:',    // when an admin last opened the Leave War's Approvals — his own row
   'lwseen:',      // when a person last opened his own Leave War window — his own row
+  /* the units themselves, where they are, each person's home and each right in another unit (state/units.ts — step 1):
+     they say which unit a record belongs to, so they are no one unit's */
+  'unit:', 'place:', 'unitplace:', 'grant:', 'home:',
 ]
 
 /* Whose a stored record is, from its collection and id alone; null = on neither list (a gap the test catches). */

@@ -20,7 +20,8 @@ import { CURWEEK } from './engine/waves'
 import { weekBundle } from './engine/weeks-data'
 import { PLANPUCKS } from './state/plan'
 import { loadWeek } from './state/store'
-import { ACCOUNTS_LIST, signIn } from './state/accounts'
+import { ACCOUNTS_LIST, signIn, isMasterAccount, levelIn } from './state/accounts'
+import { units, homeOn, placeOfOn, todayIso } from './state/units'
 import { rawState } from './leavewar/state/store'
 import { MemoryBackend } from './storage/memory'
 import { SCHEMA_VERSION } from './storage/reset'
@@ -74,27 +75,38 @@ describe('the boot policy comes from the build settings (src/bootpolicy.ts)', ()
     expect(readBootstrap('{not json')).toBe('invalid')
     expect(readBootstrap('{"person":{"cs":"X"}}')).toBe('invalid')                                   // no principal
     expect(readBootstrap('{"principal":"a","personId":"p1","person":{"cs":"X"}}')).toBe('invalid')   // both forms at once
+    /* the first unit (step 1): read when given, an object of strings or the whole setting is invalid */
+    expect(readBootstrap('{"principal":"it@x","personId":"p123","unit":{"num":"149","tz":"Asia/Singapore"}}')).toEqual({ principal: 'it@x', personId: 'p123', unit: { num: '149', tz: 'Asia/Singapore' } })
+    expect(readBootstrap('{"principal":"it@x","personId":"p123","unit":"149"}')).toBe('invalid')
+    expect(readBootstrap('{"principal":"it@x","personId":"p123","unit":{"num":149}}')).toBe('invalid')
     expect(readBootstrap('{"principal":"a"}')).toBe('invalid')                                        // neither form
     expect(bootPolicyFrom({ VITE_SEED_DEMO: 'false', VITE_BOOTSTRAP_ADMIN: JSON.stringify(ADMIN) }).bootstrap).toEqual(ADMIN)
   })
 })
 
 describe("a shared store's first boot: nothing demo, and the first admin", () => {
-  it('stores only the stamp, the first admin\'s person and account, and the one change-log batch naming them', async () => {
+  it('stores only the stamp, the first admin\'s person and account, his unit, its place and his home, and the one change-log batch naming them', async () => {
     const be = new MemoryBackend()
     await boot(be, blank())
     const k = await keys(be)
     const [pid] = realPeople()
     const [acct] = ACCOUNTS_LIST
+    /* …since multi-squadron batch 1, step 1: his unit (142 by default), its place, the unit's place and his home, in the
+       same boot group — the first admin is the store's master */
+    const unitRows = k.settings.filter(x => /^(unit|place|unitplace|home):/.test(x))
     expect(k).toEqual({
       people: [pid],
-      settings: [`account:${acct.id}`, 'schema'].sort(),
+      settings: [`account:${acct.id}`, 'schema', ...unitRows].sort(),
       changes: expect.any(Array),
     })
+    expect(unitRows.map(x => x.slice(0, x.indexOf(':'))).sort()).toEqual(['home', 'place', 'unit', 'unitplace'])
+    expect(unitRows).toContain('unit:u142')
     expect(k.changes).toHaveLength(1)
     const batch = JSON.parse(be.peek('changes', k.changes[0])!)
     expect(batch.type).toBe('boot')
-    expect(batch.items.map((i: any) => `${i.table}:${i.key}`).sort()).toEqual([`Person:people/${pid}`, 'SchemaVersion:settings/schema', `User:settings/account:${acct.id}`].sort())
+    const TABLE: Record<string, string> = { unit: 'Unit', place: 'Place', unitplace: 'UnitPlace', home: 'PersonHome' }
+    expect(batch.items.map((i: any) => `${i.table}:${i.key}`).sort()).toEqual([`Person:people/${pid}`, 'SchemaVersion:settings/schema', `User:settings/account:${acct.id}`,
+      ...unitRows.map(x => `${TABLE[x.slice(0, x.indexOf(':'))]}:settings/${x}`)].sort())
     expect(readSchema(be.peek('settings', 'schema'))!.initialized).toBe(true)
   })
 
@@ -107,6 +119,12 @@ describe("a shared store's first boot: nothing demo, and the first admin", () =>
     expect(ACCOUNTS_LIST).toEqual([expect.objectContaining({ name: 'boss@unit.example', role: 'admin', pid: people[0], on: true })])
     /* his password is Microsoft's check at the database step — today any non-empty one, as for any account an admin adds */
     expect(signIn('boss@unit.example', 'anything')).toMatchObject({ kind: 'ok', account: { role: 'admin', pid: people[0] } })
+    /* the store's master, admin of his unit, at home there, the unit at its place (step 1) — and no demo unit */
+    expect(isMasterAccount(ACCOUNTS_LIST[0].id)).toBe(true)
+    expect(units().map(u => u.id)).toEqual(['u142'])
+    expect(homeOn(people[0])).toBe('u142')
+    expect(levelIn(ACCOUNTS_LIST[0].id, 'u142')).toBe('admin')
+    expect(placeOfOn('u142', todayIso())).toMatchObject({ name: 'Home base', tz: 'Australia/Perth' })
     /* no demo account signs in */
     expect(signIn('ad', 'a')).toMatchObject({ kind: 'new' })
     expect(signIn('us', 'us')).toMatchObject({ kind: 'new' })
@@ -156,6 +174,9 @@ describe("a shared store's first boot: nothing demo, and the first admin", () =>
     ['a person the app cannot make (a callsign over 14 letters)', { principal: 'x@y', person: { cs: 'ABCDEFGHIJKLMNOP', ini: '', seat: 'FCP', cat: 'A' } }],
     ['a sign-in name over 80 letters', { principal: 'x'.repeat(81), person: { cs: 'X', ini: '', seat: 'FCP', cat: 'A' } }],
     ['a pre-made person not in the store', { principal: 'x@y', personId: 'nobody' }],
+    /* the first unit (multi-squadron batch 1, step 1) */
+    ['a first squadron number that is not one', { principal: 'x@y', person: { cs: 'X', ini: '', seat: 'FCP', cat: 'A' }, unit: { num: '1-4-2' } }],
+    ['a time zone the browser does not know', { principal: 'x@y', person: { cs: 'X', ini: '', seat: 'FCP', cat: 'A' }, unit: { tz: 'Mars/Base' } }],
   ]
   for (const [what, bootstrap] of FAILS) {
     it(`fails closed — ${what}: it refuses to start, and nothing is written but the unstarted stamp`, async () => {

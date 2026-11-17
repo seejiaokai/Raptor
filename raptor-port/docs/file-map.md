@@ -1203,6 +1203,19 @@ commands (`setFlyDays` - one date or a picked block, one Undo step; `setFlyRule`
 one step, Undo / Redo and its words, a reload, and the earlier build's leftover rows. Its guards: `people-settings-commit.ts`
 (row kinds, the write hook, the loader), `perms.ts` `COMMAND_OPS`; Undo's words `undo/describe.ts describeFly`,
 its landing `undo-wire.ts`.
+The multi-squadron build, batch 1, step 1 (17 Nov 26; plan `docs/superpowers/plans/2026-11-17-multi-sqn-build-batches.md`
+§3.4): `src/state/units-model.ts` - the units' pure half: the five row kinds (`unit:`, `place:`, `unitplace:`, `grant:`,
+`home:`) and their checks, the ids (a letter and base 36), `gmtLabel(tz, iso)` worked out by `Intl` for the date,
+`validTz`, the seeds-under-rows reading `rowsFrom`, and the resolvers (`placeIdOn`, `homeUnitOn`, `grantIn`, `levelFrom` -
+the one answer for an account's level in a unit). `src/state/units.ts` - the reads (`units`, `unitById`, `placeOfOn`,
+`homeOn`, `grantsOf`, `unitRowsBefore` for the commit gate) and the typed commands (`addUnit` master only, `moveUnit`,
+`setPlace`, `setGrant` / `removeGrant`, `setHome`; `putNewHome` inside the three commands that make a person), on
+`state/flyplan.ts`'s pattern; the demo seeds 142 and 149 at Home base. The master mark and `levelIn` / `isMasterAccount` /
+`setMaster` are in `state/accounts.ts`; the rows' rules at the commit gate are `state/perms.ts` (unitRowViolation,
+`MASTER_ONLY_COMMANDS`); a shared store's first unit, place, home and master are made by `src/boot.ts`. Test:
+`src/state/units.test.ts` - the GMT label, the seeds (nothing written at load), every level, the home inside the commands
+that make a person, the master-only commands, a grant only by an admin of its unit, a move from tomorrow, a raw write
+refused, Undo of a grant.
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

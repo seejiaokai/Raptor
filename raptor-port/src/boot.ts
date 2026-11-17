@@ -32,6 +32,8 @@ import { PEOPLE, indexCallsigns } from './engine/people'
 import { newId } from './engine/newid'
 import { newPersonProblem, personRecord } from './state/roster-add'
 import { firstAdminRow, storedAccountNamed, normName, MAX_SIGNIN } from './state/accounts'
+import { UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, HOME_PFX, validUnitNum, validTz, MAX_PLACE_NAME } from './state/units-model'
+import { todayIso } from './state/units'
 import { installGlobalUndo } from './state/undo-wire'
 import type { Backend } from './storage/backend'
 import type { Whiteboard } from './storage/whiteboard'
@@ -170,6 +172,11 @@ function bootstrapFirstAdmin(wb: Whiteboard, policy: BootPolicy): void {
   const name = normName(b.principal)
   if (!name || name.length > MAX_SIGNIN) throw new BootConfigError(`the first admin's sign-in name must be 1 to ${MAX_SIGNIN} characters.`)
   if (storedAccountNamed(name)) return
+  /* THE FIRST UNIT (multi-squadron batch 1, step 1): checked before anything is made, so a wrong value writes nothing */
+  const u = { num: '142', place: 'Home base', tz: 'Australia/Perth', ...(b.unit ?? {}) }
+  if (!validUnitNum(u.num)) throw new BootConfigError("the first squadron's number (unit.num) must be 1 to 12 letters or digits.")
+  if (!u.place || u.place.length > MAX_PLACE_NAME) throw new BootConfigError(`the first squadron's place (unit.place) must be 1 to ${MAX_PLACE_NAME} characters.`)
+  if (!validTz(u.tz)) throw new BootConfigError("the first squadron's time zone (unit.tz) is not one this browser knows — for example Australia/Perth.")
   let pid: string
   if ('personId' in b) {
     const p = (PEOPLE as any)[b.personId]
@@ -182,8 +189,18 @@ function bootstrapFirstAdmin(wb: Whiteboard, policy: BootPolicy): void {
     ;(PEOPLE as any)[pid] = personRecord(b.person)
     indexCallsigns()
   }
-  const [key, row] = firstAdminRow(name, pid)
+  /* the first admin is the store's first MASTER (D2191 — a master makes the squadrons and the other masters); his unit,
+     its place, the unit's place from today and his home there, in the same boot group — or, with it, nothing at all.
+     The unit's id is its number's (u142), the same id the demo seeds: the storage keys already carry the number, and
+     step 2 qualifies every record by this id. (Written raw: the boot runs before the command layer, as the account's
+     row always has.) */
+  const [key, row] = firstAdminRow(name, pid, true)
   wb.set('settings', key, JSON.stringify(row))
+  const unit = 'u' + u.num.toLowerCase(), place = newId('p'), up = newId('up'), home = newId('h'), from = todayIso()
+  wb.set('settings', UNIT_PFX + unit, JSON.stringify({ id: unit, num: u.num, kind: 'sqn' }))
+  wb.set('settings', PLACE_PFX + place, JSON.stringify({ id: place, name: u.place, tz: u.tz }))
+  wb.set('settings', UNITPLACE_PFX + up, JSON.stringify({ id: up, unit, place, from }))
+  wb.set('settings', HOME_PFX + home, JSON.stringify({ id: home, pid, unit, from }))
 }
 
 /* A shared store's first boot cannot start: its first admin is not configured, or not as one of the two forms, or not

@@ -45,6 +45,7 @@ import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker
 import { restoreAbsencesOf, warNoticesReversed } from '../leavewar/sync'
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
+import { UNIT_ROW_PREFIXES } from './units-model'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
    `weekstash` — that is the separate weekstashStore's one collection, registered
@@ -198,7 +199,9 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
     if (person) then = () => focusQualsRow(person.id)
   } else if (m === 'settings') {
     const ids = fwd.filter(c => c.collection === 'settings').map(c => c.id)
-    if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || k === 'guestview')) { primary = 'admin'; then = () => requestAdminUsers(false) }
+    /* …and the squadrons' rows (multi-squadron batch 1, step 1 — units, places, homes, rights: Admin's, where step 3
+       draws them; until then Admin → Users, where every account change already lands) */
+    if (ids.some(k => k.startsWith('account:') || k.startsWith('accessreq:') || k === 'guestview' || UNIT_ROW_PREFIXES.some(p => k.startsWith(p)))) { primary = 'admin'; then = () => requestAdminUsers(false) }
     else if (ids.includes('rules') || ids.includes('insights')) {
       primary = 'logic'
       /* A LATE CUT-OFF IS SET BEHIND A CALENDAR'S OWN GEAR TOO (D639 — one setting, two ways in), so the Inputs page

@@ -64,6 +64,14 @@ export function tableOf(collection: Collection, id: string): string {
       /* when an admin last opened the Leave War's Approvals (M4 8.4): its own table, as the permissions table names it */
       if (id.startsWith('apprseen:')) return 'LeaveApprovalsSeen'
       if (id.startsWith('lwseen:')) return 'LeaveSeen'
+      /* the units, their places, each person's home and each right in another unit (multi-squadron batch 1, step 1 —
+         state/units.ts): each its own table, as the permissions table names it. 'unitplace:' before 'unit:' is not needed
+         (neither starts the other) but is kept first so a later prefix cannot misfile it */
+      if (id.startsWith('unitplace:')) return 'UnitPlace'
+      if (id.startsWith('unit:')) return 'Unit'
+      if (id.startsWith('place:')) return 'Place'
+      if (id.startsWith('grant:')) return 'UnitGrant'
+      if (id.startsWith('home:')) return 'PersonHome'
       return 'Setting'
     case 'tracker': return TRACKER(id)
     case 'changes': return 'ChangeBatch'

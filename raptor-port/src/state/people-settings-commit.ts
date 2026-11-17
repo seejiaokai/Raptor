@@ -53,6 +53,7 @@ import {
 import { mintOrd, byOrd } from '../command/ord'
 import { insightsLoad } from '../engine/insights-config'
 import { FLY_TYPES, FLY_ROW_PREFIXES } from './flyplan-model'
+import { UNIT_TYPES, UNIT_ROW_PREFIXES } from './units-model'
 /* This file imports NONE of the files that save through it (accounts, changes, noticeseen, apprseen, lwseen, flyplan,
    roster-add, memberfile): each imports its commit helpers from here, so importing them back made 13 import cycles
    (React Doctor, [RD-LEFT-1108], 8 Nov 26). What it needs of them — their loaders and their command-type lists — is
@@ -92,7 +93,9 @@ export const SETTINGS_KEYS = [
 /* - `noticeseen:<pid>` — what each person has read of his bell's notices, `NoticeSeen`; written ONLY by
      state/noticeseen.ts, through its one command `notices.seen` (own row only — the one-rule build's step 7). */
 /* (…'apprseen:' — each admin's own moment of opening the Leave War's Approvals, M4 8.4: state/apprseen.ts) */
-export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', ...FLY_ROW_PREFIXES] as const
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', 'lwseen:', ...FLY_ROW_PREFIXES,
+  /* the units, places, homes and rights (state/units.ts — multi-squadron batch 1, step 1), one row each */
+  ...UNIT_ROW_PREFIXES] as const
 const isRowKey = (k: string) => SETTINGS_ROW_PREFIXES.some(p => k.startsWith(p))
 /* every row stored now — ONE pass over the settings keys (the guard reads this on every command, so never one per kind) */
 const settingsRowKeys = (): string[] => store.keys('').filter(isRowKey)
@@ -106,15 +109,16 @@ function settingsRecordKeys(): string[] {
    unregistered type); the app's own headless actor is not checked by type, but every way into the app loads
    state/store.ts, whose wireStore() registers before anything runs — so no rollback in the app meets these empty ones
    (chat 32's reads, 8 Nov 26). */
-export interface ModuleLoaders { accounts: () => void; changes: () => void; noticeSeen: () => void; flyplan: () => void }
+export interface ModuleLoaders { accounts: () => void; changes: () => void; noticeSeen: () => void; flyplan: () => void; units: () => void }
 const noLoad = () => {}
-let MODULE_LOADERS: ModuleLoaders = { accounts: noLoad, changes: noLoad, noticeSeen: noLoad, flyplan: noLoad }
+let MODULE_LOADERS: ModuleLoaders = { accounts: noLoad, changes: noLoad, noticeSeen: noLoad, flyplan: noLoad, units: noLoad }
 /* every xLoad(), run to rebuild the module CFGs from the (restored) store on a
    rollback — deduped (waveTplLoad rebuilds both wavetpl + wavehide). In the order the list has always run. */
 const settingsLoaders = (): Array<() => void> => [
   rulesLoad, storesLoad, cxReasonsLoad, dayTplLoad, dutyTplLoad, waveTplLoad,
   qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad,
   MODULE_LOADERS.accounts, MODULE_LOADERS.changes, MODULE_LOADERS.noticeSeen, insightsLoad, MODULE_LOADERS.flyplan,
+  MODULE_LOADERS.units,
 ]
 function settingsRecords(): Map<string, RecordEntry> {
   const m = new Map<string, RecordEntry>()
@@ -346,6 +350,7 @@ export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: 
      resolver store.ts wireStore installs */
   for (const t of moduleTypes) definePermission(t, anyone)
   for (const t of FLY_TYPES) definePermission(t, anyone)   // the same: perms.ts COMMAND_OPS decides
+  for (const t of UNIT_TYPES) definePermission(t, anyone)  // the same; and the commit gate reads each row's unit
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)
   // route every durable settings write (store.set) through a named command.
@@ -355,6 +360,7 @@ export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: 
     if (k.startsWith('missionrole:')) throw new Error('Mission-role rows require the typed annotation command')
     if (!isCommitting() && k === 'sanscalendar') throw new Error('SANS calendar settings require the typed settings command')
     if (!isCommitting() && FLY_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('The flying plan is written only by its typed commands')
+    if (!isCommitting() && UNIT_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('Units, places, homes and rights are written only by their typed commands')
     if (!isCommitting() && k === 'memberfile') throw new Error('The switch for members filing for other people is written only by its typed command')
     if (isCommitting() || !(SETTINGS_KEYS as readonly string[]).includes(k)) { raw(k, v); return }
     commitSettings(settingsType(k), () => raw(k, v))

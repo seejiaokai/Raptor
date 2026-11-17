@@ -71,6 +71,14 @@ const TYPE_PHRASE: Record<string, string> = {
   'access.approve': 'giving access',
   'access.decline': 'refusing a request for access',
   'guestview.set': 'the guest switch',
+  /* the squadrons (multi-squadron batch 1, step 1 — state/units.ts; the master mark, accounts.ts setMaster) */
+  'unit.add': 'adding a squadron',
+  'unit.place': 'moving a squadron',
+  'place.set': 'a change to a place',
+  'grant.set': 'giving a right in another squadron',
+  'grant.remove': 'taking away a right in another squadron',
+  'home.set': 'a change of home squadron',
+  'account.master': 'the master admin mark',
   /* the five D350 keeps out of Undo — named when the greyed button or a bubble speaks of them */
   'person.add': 'adding a person',
   'account.addNew': 'adding a person',
