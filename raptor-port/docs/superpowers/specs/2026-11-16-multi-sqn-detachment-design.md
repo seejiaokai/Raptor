@@ -5,6 +5,10 @@ D2086 (16 Nov 26): this design first, design only; caps and ops limits next; the
 at the database step (D473). Started by chat 90. Questions go to him in small rounds, each with a recommendation and
 pictures of the real app (D541, D853, D1237); his answers are recorded as rulings the moment he gives them.
 
+**Changed 17 Nov 26 (chat 105) — D2187, D2188:** the build comes NOW, in batches, before the database step (no longer
+last, at it); before each batch he is shown again what was agreed for it, with a mock-up of just that batch. Until the
+database it saves in the browser, as the whole app does. Caps and ops limits is paused (D2186).
+
 ## What is already settled (his rulings — not asked again)
 
 - **One deployment per aircraft type** (D1101), each with its own database; one code base for all (D1100); the type set
