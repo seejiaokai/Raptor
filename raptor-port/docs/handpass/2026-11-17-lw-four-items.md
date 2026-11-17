@@ -296,6 +296,19 @@ red-first test. Under §5's threshold ("more than a one-line guard") they take n
 
 ## Gate counts
 
+GitHub's run of the pull request (the full set while the repo is public, D1086): green on `2edd9f5c4` (finds 13–15) and
+on `b145e487c`, the last code (finds 17–21) — build, the original's 728, unit, browser (phone and desktop), the Tracker's,
+the rule and document checks; the notes commits after it re-run it, and the closing report names the last one read. On
+this PC, between rounds: every OIL browser test 28 passed (2 skipped by width), the OIL tracker's unit file 30, the type
+check clean, the phone Balances tests 3.
+
+**§12, ticked (chat 103):** the eight answers and the tier ✓ · the rulings listed, no clash ✓ · the roll-call, no blanks ✓ ·
+the production build driven at both widths ✓ · the fixture through the app's own controls ✓ (Leave War's everything-case,
+§2a) · every surface seen and operated ✓ · the walk sized before it began, every order a result ✓ · the real result
+observed — the saved award and the saved period name read back after a reload ✓ · tests through the app's own routes ✓ ·
+one red break test per wired surface ✓ · the gates ✓ · the reads done and every finding disposed of ✓ (16 to him) · the
+sheet with its pictures and what was not walked ✓ · his look — asked, chat 103.
+
 ## What the check found, and each disposition
 
 | # | Found by | What | Disposition |
