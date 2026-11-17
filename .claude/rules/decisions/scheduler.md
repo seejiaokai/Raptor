@@ -171,7 +171,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - A shared wave is published and signed by its own squadron, the other's lines included; elsewhere it carries that squadron's badge and status, outside that schedule's signature; each squadron adds its own lines, 142 joining through "+ Wave", "Join a 149 wave" [D2106].
 - A pick onto a day the home squadron has published arrives pending: the "Attach · 149" row dotted, "1 pending", the four sign-offs down [D2107].
 - At home people, areas and sims are checked across both squadrons; jets stay each squadron's own [D2108].
-- A line is judged by the Logic settings of the schedule it sits in, whoever flies it; crew rest is the same for every squadron, and the design makes it impossible to differ [D2109, D2118].
+- A line is judged by the Logic settings of the schedule it sits in, whoever flies it [D2109]; crew rest stays each squadron's admin's to edit, and which one judges a man flying for both when they differ is put to him again [D2122].
 - A line that concerns both squadrons may be changed by either squadron's scheduler, from either schedule; the rest of a schedule only by its own squadron's [D2114].
 - "✕ Wave" asks at the button only when the wave holds the other squadron's lines, Remove wave or Keep; a wave of its own lines goes at once [D2113].
 - "+ Line" stays in the wave's head and never moves as lines are added; each press shows plainly the line it added, drawn in round 4 [D2115].
