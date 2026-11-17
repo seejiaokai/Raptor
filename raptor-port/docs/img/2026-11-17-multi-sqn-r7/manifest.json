@@ -34,5 +34,17 @@
     "size": "phone",
     "kind": "proposed",
     "caption": "Fable's design: no choice rows. X3 \"To\" 149 only. X4: on 3 Aug he moves to 149 as a member and his access to 142 ends. X5: today's figures, worked out again on the date (D2147); his 142 lines keep him as a borrowed 149 man; 149's admins are told. A rare different case is done afterwards in its usual place. Figures made up."
+  },
+  "Q4F-d-proposed.png": {
+    "question": "Q4",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule, Monday's Unavailable list. Saber's \"Attach · 149\" row, the app's own (an Attach To 149, filed through the Inputs door), the name re-lettered. Drawn in (mark Q4): the line under it, \"On 149's VL · Mon night wave · 149's line\", and the row's own REJECT button re-lettered \"Take him off VL\". VL itself does not show on 142's schedule; 142 changes nothing else of it."
+  },
+  "Q4F-p-proposed.png": {
+    "question": "Q4",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's schedule, Edit Schedule, Monday's Unavailable list. Saber's \"Attach · 149\" row, the app's own (an Attach To 149, filed through the Inputs door), the name re-lettered. Drawn in (mark Q4): the line under it, \"On 149's VL · Mon night wave · 149's line\", and the row's own REJECT button re-lettered \"Take him off VL\". VL itself does not show on 142's schedule; 142 changes nothing else of it."
   }
 }
