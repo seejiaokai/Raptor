@@ -1,0 +1,440 @@
+{
+ "state": "oil-phone-half",
+ "drawing": {
+  "script": "docs/mock/2026-11-17-lw-oil-editor/oil.mjs",
+  "shot": "phone-o2-half"
+ },
+ "recorded": "2026-11-17T05:44:16.401Z",
+ "drawnOn": "main at 3a51c06a3",
+ "checkout": "00ffaea76",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "editor": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 184.2,
+    "y": 424.7,
+    "w": 194.2,
+    "h": 80.8
+   },
+   "ink": {
+    "x": 198,
+    "y": 430.5,
+    "w": 170.6,
+    "h": 68.4
+   },
+   "text": "AM PM 18 Apr 26 Save Cancel Delete",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.oil-edit.mock"
+  },
+  "amount": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 184.2,
+    "y": 426.3,
+    "w": 44.8,
+    "h": 20.4
+   },
+   "ink": {
+    "x": 193.4,
+    "y": 429.3,
+    "w": 15.5,
+    "h": 14.4
+   },
+   "text": "0.5 ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "normal"
+   },
+   "tag": "input.oil-num"
+  },
+  "am": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 233.8,
+    "y": 424.7,
+    "w": 41.6,
+    "h": 23.6
+   },
+   "ink": {
+    "x": 246.9,
+    "y": 430.5,
+    "w": 15.3,
+    "h": 12
+   },
+   "text": "AM",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.14)",
+    "image": "",
+    "edge": [
+     "1.25px solid rgba(59, 198, 232, 0.55)",
+     "1.25px solid rgba(59, 198, 232, 0.55)",
+     "1.25px solid rgba(59, 198, 232, 0.55)",
+     "1.25px solid rgba(59, 198, 232, 0.55)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.tchip.half.on"
+  },
+  "pm": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 280.1,
+    "y": 424.7,
+    "w": 41.6,
+    "h": 23.6
+   },
+   "ink": {
+    "x": 293.7,
+    "y": 430.5,
+    "w": 14.5,
+    "h": 12
+   },
+   "text": "PM",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.tchip.half"
+  },
+  "date": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 326.5,
+    "y": 430.8,
+    "w": 51.8,
+    "h": 11.4
+   },
+   "ink": {
+    "x": 331.3,
+    "y": 430.8,
+    "w": 37.3,
+    "h": 11
+   },
+   "text": "18 Apr 26",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.oil-dateread"
+  },
+  "reason": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 184.2,
+    "y": 453.1,
+    "w": 91.2,
+    "h": 20.4
+   },
+   "ink": {
+    "x": 193.4,
+    "y": 456.1,
+    "w": 20.3,
+    "h": 14.4
+   },
+   "text": "SIM ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "normal"
+   },
+   "tag": "input.oil-text"
+  },
+  "given-by": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 280.1,
+    "y": 453.1,
+    "w": 98.2,
+    "h": 20.4
+   },
+   "ink": null,
+   "text": " ",
+   "typed": true,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)",
+     "1.25px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "normal"
+   },
+   "tag": "input.oil-text.given"
+  },
+  "save": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 184.2,
+    "y": 478.3,
+    "w": 50.9,
+    "h": 27.2
+   },
+   "ink": {
+    "x": 198,
+    "y": 484.9,
+    "w": 23.3,
+    "h": 14
+   },
+   "text": "Save",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(87, 201, 122, 0.16)",
+    "image": "",
+    "edge": [
+     "1.25px solid rgba(87, 201, 122, 0.5)",
+     "1.25px solid rgba(87, 201, 122, 0.5)",
+     "1.25px solid rgba(87, 201, 122, 0.5)",
+     "1.25px solid rgba(87, 201, 122, 0.5)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(143, 224, 168)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "0.5px"
+   },
+   "tag": "button.dchip.approve"
+  },
+  "cancel": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 238.3,
+    "y": 478.3,
+    "w": 48.3,
+    "h": 27.2
+   },
+   "ink": {
+    "x": 248.1,
+    "y": 485.9,
+    "w": 28.7,
+    "h": 12
+   },
+   "text": "Cancel",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1.25px dashed rgb(42, 49, 58)",
+     "1.25px dashed rgb(42, 49, 58)",
+     "1.25px dashed rgb(42, 49, 58)",
+     "1.25px dashed rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.tchip.clear"
+  },
+  "delete": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 289.8,
+    "y": 478.3,
+    "w": 63.4,
+    "h": 27.2
+   },
+   "ink": {
+    "x": 307.4,
+    "y": 485.9,
+    "w": 28.1,
+    "h": 12
+   },
+   "text": "Delete",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1.25px dashed rgb(42, 49, 58)",
+     "1.25px dashed rgb(42, 49, 58)",
+     "1.25px dashed rgb(42, 49, 58)",
+     "1.25px dashed rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.tchip.clear"
+  }
+ },
+ "approved": {
+  "picture": "phone-o2-half.png",
+  "identical": true
+ }
+}

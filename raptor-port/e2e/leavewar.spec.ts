@@ -4601,7 +4601,9 @@ test('a holiday on dates no leave period covers waits: the Leave War’s New-per
   await expect(tid('war-title')).toHaveText(/April 2031/i)
   await expect(tid('war-selection')).toContainText('1 Apr 31')
   await expect(tid('war-selection')).toContainText('31 Dec 31')
-  await expect(tid('war-create')).toBeDisabled()
+  /* the name has filled itself from the dates (his D2158) and Create is ready; a typed name is kept below */
+  await expect(tid('war-name')).toHaveValue('APR - DEC 31')
+  await expect(tid('war-create')).toBeEnabled()
   /* behind it the form still holds the holiday */
   await expect(tid('hol-name')).toHaveValue('National Day')
 
@@ -8627,7 +8629,10 @@ test('M5a walk A-F3: a box shows its whole figure and keeps its width, nothing b
   const geo = () => page.evaluate(() => {
     const r = (id: string) => document.querySelector<HTMLElement>(`[data-testid="${id}"]`)!.getBoundingClientRect()
     const slid = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!.scrollLeft
-    return { app: r('bal-LVE-bane').width, pl: r('bal-PL-bane').width, ccl: r('bal-CCL-bane').width, war: r('bal-war-bane').right + slid, el: r('bal-EL-bane').left + slid }
+    /* War bal is read at its LEFT edge: since option B (his D2156, 17 Nov 26) every column is set from the left, so a figure
+       stands where its column starts and only its own end moves when the figure itself changes (typing App bal changes War
+       bal) — the right edge was the anchor while the columns were set from the right */
+    return { app: r('bal-LVE-bane').width, pl: r('bal-PL-bane').width, ccl: r('bal-CCL-bane').width, war: r('bal-war-bane').left + slid, el: r('bal-EL-bane').left + slid }
   })
   const whole = (id: string) => page.getByTestId(id).evaluate((e: HTMLInputElement) => e.scrollWidth <= e.clientWidth + 0.5)
   const g0 = await geo()
@@ -8691,21 +8696,48 @@ test('M5a walk A-F4: the two pinned heading lines meet, with no strip of rows be
   expect(Math.abs(g.h2Top - g.h1Bottom), `the second line (${g.h2Top}) meets the first one's foot (${g.h1Bottom})`).toBeLessThanOrEqual(0.5)
 })
 
-/* A-F2: the OIL figures ("0 ›") were set left, 10–23px short of the heading's right edge; every column sets its figures
-   right, under its heading's right edge (the drawing m5b-b1-desk). */
-test('M5a walk A-F2: every OIL figure ends under the OIL heading’s right edge', async ({ page }) => {
-  test.skip(isPhone(), 'the desktop table')
+/* [LW-BAL-NEATER] (his D2153, D2156 — option B, 17 Nov 26; this replaces M5a's A-F2, whose OIL figures were set right
+   under their heading's right edge): every column of the Balances view is set from the left, its heading's words starting
+   where each row's box or figure starts; LVE's pending column reads "PENDING APPROVAL", its figure a dashed tag with no
+   minus; another kind's pending figure a tag on its box's top right corner. Measured on every row, admin and member. */
+const balColumnsOff = (page: Page) => page.evaluate(() => {
+  const left = (n: Node) => { const rg = document.createRange(); rg.selectNodeContents(n); return rg.getBoundingClientRect().left }
+  const heads = [...document.querySelectorAll<HTMLElement>('.bp-table tr.h2 th')].filter(t => !t.classList.contains('fill'))
+  const off: string[] = []
+  let rows = 0
+  for (const tr of document.querySelectorAll<HTMLElement>('.bp-table tr[data-testid^="bal-row-"]')) {
+    rows++
+    heads.forEach((th, i) => {
+      const td = tr.children[i] as HTMLElement
+      const d = Math.round((left(td) - left(th)) * 10) / 10
+      if (Math.abs(d) > 1) off.push(`${tr.dataset.testid} ${th.textContent}: ${d}px`)
+    })
+  }
+  return { rows, heads: heads.map(t => t.textContent), off }
+})
+for (const role of ['admin', 'member'] as const) {
+  test(`Balances option B (D2156): every heading starts where its column's boxes and figures start — ${role}`, async ({ page }) => {
+    test.skip(isPhone(), 'the desktop table')
+    await lwRole(page, role)
+    await openBalancesPage(page)
+    const g = await balColumnsOff(page)
+    expect(g.heads).toEqual(['NAME', 'GRADE · AUTO + LVE ON 1 JAN', 'APP BAL', 'INCL. CARRIED FWD', 'PENDING APPROVAL', 'WAR BAL', 'OIL', 'CCL', 'FCL', 'PL', 'EL', 'CL'])
+    expect(g.rows).toBeGreaterThan(20)
+    expect(g.off).toEqual([])
+  })
+}
+test('Balances option B (D2156): a pending figure has no minus — LVE\'s a dashed tag in its column, another kind\'s a tag on its box\'s corner', async ({ page }) => {
   await lwRole(page, 'admin')
   await openBalancesPage(page)
-  const g = await page.evaluate(() => {
-    const th = [...document.querySelectorAll<HTMLElement>('.bp-table tr.h2 th')].find(t => t.textContent === 'OIL')!
-    const rg = document.createRange(); rg.selectNodeContents(th)
-    const head = rg.getBoundingClientRect().right
-    const figs = [...document.querySelectorAll<HTMLElement>('[data-testid^="bal-oil-"]')].map(b => b.getBoundingClientRect().right)
-    return { head, n: figs.length, off: figs.map(r => Math.round((r - head) * 10) / 10).filter(d => Math.abs(d) > 1) }
-  })
-  expect(g.n).toBeGreaterThan(20)
-  expect(g.off, `every OIL figure's right edge on the heading's (${g.head})`).toEqual([])
+  await expect(page.getByTestId('bal-pend-bane')).toHaveText(/^\d+(\.5)?$/)
+  await expect(page.locator('[data-testid="bal-pend-bane"] .bp-pdt')).toHaveCSS('border-top-style', 'dashed')
+  const g = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('[data-testid^="bal-opd-"][data-testid$="-bane"]')].map(t => {
+    const box = t.parentElement!.querySelector<HTMLElement>('.bp-bx, .bp-ro')!.getBoundingClientRect(), r = t.getBoundingClientRect()
+    return { text: t.textContent, overTop: r.top < box.top, pastRight: r.right > box.right, onCorner: r.left < box.right && r.bottom > box.top }
+  }))
+  expect(g.length, 'Bane has another kind pending').toBeGreaterThan(0)
+  for (const t of g) expect(t, `the tag ${t.text}`).toEqual({ text: t.text, overTop: true, pastRight: true, onCorner: true })
+  for (const t of g) expect(t.text).not.toMatch(/[−-]/)
 })
 
 /* B-F2/F3: on a phone a refusal under App bal ("Type a whole number or a half, like 17 or 17.5") ran from x −49 to 191 —
@@ -8749,7 +8781,7 @@ test('M5a walk B-F4: a tapped box comes into sight with its pending figure', asy
   await lwRole(page, 'admin')
   await page.setViewportSize({ width: 402, height: 874 })
   await openBalancesPage(page)
-  await expect(page.getByTestId('bal-opd-PL-bane')).toHaveText('−0.5')
+  await expect(page.getByTestId('bal-opd-PL-bane')).toHaveText('0.5')
   await page.getByTestId('bal-PL-bane').focus()
   await page.waitForTimeout(300)
   const g = await page.evaluate(() => {
@@ -8917,12 +8949,16 @@ test('M5a drawing E (D1493): a member’s locked row has its amber pending figur
     const app = base(row.querySelector<HTMLElement>('.bp-ro')!)
     return { app, kinds: ['CCL', 'PL', 'CL'].map(k => {
       const pd = document.querySelector<HTMLElement>(`[data-testid="bal-opd-${k}-bane"]`)!
-      return { k, text: pd.textContent, fig: base(pd.parentElement!.querySelector<HTMLElement>('.bp-ro')!), pd: base(pd) }
+      const ro = pd.parentElement!.querySelector<HTMLElement>('.bp-ro')!
+      const r = pd.getBoundingClientRect(), f = ro.getBoundingClientRect()
+      return { k, text: pd.textContent, fig: base(ro), corner: r.top < f.top && r.right > f.right && r.left < f.right }
     }) }
   })
+  /* option B (D2156, 17 Nov 26) moved each kind's pending figure off the figure's line onto its corner, with no minus; the
+     read-only figures themselves still stand on App bal's line (D1493) */
   for (const k of g.kinds) {
-    expect(k.text, `${k.k} has a pending figure`).toMatch(/^−/)
-    expect(Math.abs(k.pd - k.fig), `${k.k}: the amber ${k.text} on its figure's line (${k.pd} against ${k.fig})`).toBeLessThanOrEqual(0.5)
+    expect(k.text, `${k.k} has a pending figure, no minus`).toMatch(/^\d/)
+    expect(k.corner, `${k.k}: the tag ${k.text} on its figure's top right corner`).toBe(true)
     expect(Math.abs(k.fig - g.app), `${k.k}: its figure on App bal's line`).toBeLessThanOrEqual(0.5)
   }
 })
@@ -9118,4 +9154,694 @@ test('on a narrow PC no line shows past the pinned headings\' end as the list sc
     expect(leak, `the list at ${y}, sideways ${x}: nothing shows past the headings`).toEqual([])
   }
   expect((await apprGeo(page)).room, 'the window still has nothing to scroll').toBeLessThanOrEqual(0)
+})
+
+/* THE DAY UNDER THE MOUSE (his D2157, 17 Nov 26 — [LW-GRID-HOVER-RING]; drawn docs/mock/2026-11-17-lw-grid-hover/): on a PC
+   the one day of a man under the mouse wears a thin cyan ring, no fill; it leaves when the mouse does; on his own row the
+   row's two lines stay with it; a picked day keeps its own stronger ring; a phone's tap leaves no ring. Asserted as painted,
+   by the computed style of the day itself (the order's §10, anti-pattern 21). */
+const HOVER_RING = 'rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset'
+const cellShadow = (page: Page, id: string) => page.locator(`[data-testid="${id}"]`).evaluate(e => getComputedStyle(e).boxShadow)
+/** an empty day of a man in sight — none of his own row's, unless `me` — clear of the pinned names and the edges */
+const emptyDay = (page: Page, me: boolean) => page.evaluate((me) => {
+  const vw = innerWidth, vh = innerHeight
+  for (const td of document.querySelectorAll<HTMLElement>('.mx tbody tr td[data-testid^="cell-"]')) {
+    if (td.closest('tr')!.classList.contains('me') !== me) continue
+    if (td.children.length || td.classList.contains('selcell')) continue
+    const r = td.getBoundingClientRect()
+    if (r.left < vw * 0.35 || r.right > vw - 20 || r.top < vh * 0.3 || r.bottom > vh - 20) continue
+    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+    if (hit === td) return td.dataset.testid!
+  }
+  return null
+}, me)
+/** the war scoped to one man, as a signed-in member's is (these tests run unscoped, so no row is "his own" until then),
+ *  his row brought into sight: before this the own-row checks found no row and silently ran nothing (chat 105's fix read, 5) */
+const markOwnRow = async (page: Page) => {
+  await page.evaluate(() => (window as any).lwSetViewer('slipway'))
+  const me = page.locator('.mx tbody tr.me').first()
+  await expect(me, 'a row marked as his own').toHaveCount(1)
+  await me.evaluate(r => r.scrollIntoView({ block: 'center' }))
+  await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))
+}
+const centreOf = async (page: Page, id: string) => {
+  const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
+  return { x: b.x + b.width / 2, y: b.y + b.height / 2 }
+}
+test('the grid’s day under the mouse wears a thin ring, gone when the mouse leaves; his own row keeps its lines (D2157)', async ({ page }) => {
+  test.skip(isPhone(), 'a mouse’s ring — the phone is the next test')
+  await lwRole(page, 'admin')
+  await settleGrid(page)
+  const id = (await emptyDay(page, false))!
+  expect(id, 'an empty day of a man in sight').toBeTruthy()
+  expect(await cellShadow(page, id), 'no ring before the mouse comes').not.toContain('59, 198, 232')
+  const c = await centreOf(page, id)
+  await page.mouse.move(c.x, c.y)
+  await expect.poll(() => cellShadow(page, id), { message: 'the hovered day wears the thin ring' }).toBe(HOVER_RING)
+  /* one day only: its neighbours in the row stay bare */
+  const others = await page.locator(`[data-testid="${id}"]`).evaluate(td => [td.previousElementSibling, td.nextElementSibling]
+    .filter((e): e is HTMLElement => !!e && (e as HTMLElement).dataset.testid?.startsWith('cell-') === true)
+    .map(e => getComputedStyle(e).boxShadow))
+  for (const s of others) expect(s, 'a neighbour of the hovered day has no ring').not.toContain('0.6) 0px 0px 0px 1px')
+  await page.mouse.move(5, 5)
+  await expect.poll(() => cellShadow(page, id), { message: 'gone when the mouse leaves' }).not.toContain('59, 198, 232')
+  /* his own row: the ring and the row's two lines together */
+  await markOwnRow(page)
+  const mine = await emptyDay(page, true)
+  expect(mine, 'an empty day of his own row in sight').toBeTruthy()
+  const m = await centreOf(page, mine!)
+  await page.mouse.move(m.x, m.y)
+  await expect.poll(() => cellShadow(page, mine!), { message: 'his own row: ring and both lines' })
+    .toBe(`${HOVER_RING}, rgba(59, 198, 232, 0.55) 0px 1px 0px 0px inset, rgba(59, 198, 232, 0.55) 0px -1px 0px 0px inset`)
+})
+test('a picked day keeps its own stronger ring under the mouse; a phone’s tap leaves no ring (D2157)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await settleGrid(page)
+  if (isPhone()) {
+    /* a phone has no mouse, and the ring's rule lives only where one is: every rule that paints it sits inside
+       `(hover: hover)`, so a tap — which leaves the row "hovered" on a phone — can never leave it stuck (a tapped day's
+       own mark is the tap's, unchanged: D2157 "a phone is unchanged") */
+    expect(await page.evaluate(() => matchMedia('(hover: hover)').matches), 'the phone has no mouse').toBe(false)
+    const homes = await page.evaluate(() => {
+      const out: string[] = []
+      const walk = (rules: CSSRuleList, media: string) => {
+        for (const r of rules) {
+          if (r instanceof CSSMediaRule) walk(r.cssRules, r.conditionText)
+          else if (r instanceof CSSGroupingRule) walk(r.cssRules, media)
+          else if (r instanceof CSSStyleRule && r.selectorText.includes('cell-') && r.selectorText.includes(':hover')
+            && r.cssText.includes('0.6) 0px 0px 0px 1px inset')) out.push(media)
+          if (r instanceof CSSStyleRule && r.cssRules?.length) walk(r.cssRules, media)
+        }
+      }
+      for (const s of document.styleSheets) { try { walk(s.cssRules, '') } catch { /* another origin's sheet */ } }
+      return out
+    })
+    expect(homes.length, 'the ring\'s rules are in the page').toBeGreaterThan(0)
+    for (const m of homes) expect(m, 'every ring rule is a mouse\'s only').toBe('(hover: hover)')
+    return
+  }
+  const a = (await emptyDay(page, false))!
+  const row = a.replace(/-\d{4}-\d{2}-\d{2}$/, ''), date = a.slice(row.length + 1)
+  const next = new Date(date + 'T12:00:00Z'); next.setUTCDate(next.getUTCDate() + 1)
+  const b = `${row}-${next.toISOString().slice(0, 10)}`
+  /* a day is "picked" (`selcell`) while the drag holds it: pressed on a, carried to b and back over a, the mouse still down —
+     the day under the mouse then wears the selection's strong ring, never the thin one */
+  const pa = await centreOf(page, a), pb = await centreOf(page, b)
+  await page.mouse.move(pa.x, pa.y)
+  await page.mouse.down()
+  await page.mouse.move(pa.x + 8, pa.y)
+  await page.mouse.move(pb.x, pb.y, { steps: 6 })
+  await expect(page.locator(`[data-testid="${a}"]`)).toHaveClass(/selcell/)
+  await page.mouse.move(pa.x + 2, pa.y, { steps: 4 })
+  await page.waitForTimeout(100)
+  const held = await cellShadow(page, a)
+  expect(held, 'the picked day under the mouse wears the selection\'s ring').toContain('2px')
+  expect(held, 'never the thin hover one').not.toBe(HOVER_RING)
+  await page.mouse.up()
+})
+
+/* THE ROW'S TINT REACHES THE NAME (his D2171, 17 Nov 26 — "extend to the left so that its easier to see which person's line
+   im selecting"): on a PC the faint tint of the row under the mouse covers its name and balance cells too, the same tint
+   as its days; those cells stay solid (the tint is laid over their own fill, never in its place — nothing pinned leaks);
+   his own row keeps its own highlight; a phone is unchanged. Asserted as painted, on each cell it must cover. */
+const ROW_TINT = 'linear-gradient(rgba(59, 198, 232, 0.05), rgba(59, 198, 232, 0.05))'
+const pinnedPaint = (page: Page, id: string) => page.locator(`[data-testid="${id}"]`).evaluate(td => {
+  const tr = td.closest('tr')!
+  return (['td.who', 'td.bal'] as const).map(sel => {
+    const s = getComputedStyle(tr.querySelector<HTMLElement>(sel)!)
+    return { image: s.backgroundImage, color: s.backgroundColor }
+  })
+})
+test('the row under the mouse tints its name and balance cells too, still solid; his own row keeps its own (D2171)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await settleGrid(page)
+  if (isPhone()) {
+    /* no mouse on a phone, and the rule lives only where one is: a tap leaves the row "hovered" on a phone */
+    expect(await page.evaluate(() => matchMedia('(hover: hover)').matches), 'the phone has no mouse').toBe(false)
+    const homes = await page.evaluate(() => {
+      const out: string[] = []
+      const walk = (rules: CSSRuleList, media: string) => {
+        for (const r of rules) {
+          if (r instanceof CSSMediaRule) walk(r.cssRules, r.conditionText)
+          else if (r instanceof CSSStyleRule && r.selectorText.includes('.who') && r.selectorText.includes(':hover')
+            && r.cssText.includes('linear-gradient(rgba(59, 198, 232, 0.05)')) out.push(media)
+          if (r instanceof CSSStyleRule && r.cssRules?.length) walk(r.cssRules, media)
+        }
+      }
+      for (const s of document.styleSheets) { try { walk(s.cssRules, '') } catch { /* another origin's sheet */ } }
+      return out
+    })
+    expect(homes.length, 'the tint\'s rule is in the page').toBeGreaterThan(0)
+    for (const m of homes) expect(m, 'the tint\'s rule is a mouse\'s only').toBe('(hover: hover)')
+    return
+  }
+  const id = (await emptyDay(page, false))!
+  expect(id, 'an empty day of a man in sight').toBeTruthy()
+  const before = await pinnedPaint(page, id)
+  for (const p of before) expect(p.image, 'no tint before the mouse comes').toBe('none')
+  const c = await centreOf(page, id)
+  await page.mouse.move(c.x, c.y)
+  await expect.poll(() => pinnedPaint(page, id).then(ps => ps.map(p => p.image)), { message: 'the name and balance cells wear the row\'s tint' })
+    .toEqual([ROW_TINT, ROW_TINT])
+  for (const [i, p] of (await pinnedPaint(page, id)).entries()) {
+    expect(p.color, `${i ? 'balance' : 'name'} cell keeps its own fill under the tint`).toBe(before[i]!.color)
+    expect(p.color, `${i ? 'balance' : 'name'} cell is solid`).not.toMatch(/rgba\(.*, 0(\.\d+)?\)$/)
+  }
+  /* the next row's name, not under the mouse, stays bare */
+  const nextImg = await page.locator(`[data-testid="${id}"]`).evaluate(td => {
+    let tr = td.closest('tr')!.nextElementSibling as HTMLElement | null
+    while (tr && !tr.querySelector('td.who')) tr = tr.nextElementSibling as HTMLElement | null
+    return tr ? getComputedStyle(tr.querySelector<HTMLElement>('td.who')!).backgroundImage : 'no row'
+  })
+  expect(nextImg, 'the row below, not under the mouse, has no tint').toBe('none')
+  await page.mouse.move(5, 5)
+  await expect.poll(() => pinnedPaint(page, id).then(ps => ps.map(p => p.image)), { message: 'gone when the mouse leaves' }).toEqual(['none', 'none'])
+  /* his own row keeps its own highlight: no tint over it — brought into sight first, and found, never skipped (the fix read, 5) */
+  await markOwnRow(page)
+  const mine = await emptyDay(page, true)
+  expect(mine, 'an empty day of his own row in sight').toBeTruthy()
+  {
+    const m = await centreOf(page, mine!)
+    await page.mouse.move(m.x, m.y)
+    await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))
+    for (const p of await pinnedPaint(page, mine!)) {
+      expect(p.image, 'his own row: no tint over its highlight').toBe('none')
+      expect(p.color, 'his own row: its own highlight').toBe('rgb(23, 60, 74)')
+    }
+  }
+  /* the Manning pairs keep their own colour (D1194) under the tint: the row's tint is laid over the pair's olive or green
+     on the name and balance cells, never in its place (chat 105's probe of every row kind: it replaced it) */
+  for (const [pair, hue] of [['pair-p', 'rgba(150, 140, 50, 0.15)'], ['pair-w', 'rgba(40, 160, 110, 0.15)']] as const) {
+    const row = page.locator(`.mx .counts tr.flyrow.${pair}`).first()
+    await expect(row, `the Manning ${pair} row is on the grid`).toHaveCount(1)
+    await row.evaluate(r => r.scrollIntoView({ block: 'center' }))
+    const at = await row.evaluate(tr => {
+      const vw = innerWidth
+      for (const td of tr.querySelectorAll<HTMLElement>(':scope > td:not(.who):not(.bal)')) {
+        const r = td.getBoundingClientRect()
+        if (r.left > vw * 0.45 && r.right < vw - 20 && document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)?.closest('tr') === tr)
+          return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+      }
+      return null
+    })
+    expect(at, `a day of the Manning ${pair} row in sight`).toBeTruthy()
+    await page.mouse.move(at!.x, at!.y)
+    await expect.poll(() => row.evaluate(tr => [...tr.querySelectorAll<HTMLElement>(':scope > td.who, :scope > td.bal')].map(c => getComputedStyle(c).backgroundImage)),
+      { message: `the Manning ${pair} row's name and balance: the tint over the pair's own colour` })
+      .toEqual([`${ROW_TINT}, linear-gradient(${hue}, ${hue})`, `${ROW_TINT}, linear-gradient(${hue}, ${hue})`])
+    await page.mouse.move(5, 5)
+  }
+})
+
+/* THE AWARD EDITOR HOLDS STILL (his D2150, D2155 — option 2, 17 Nov 26; drawn docs/mock/2026-11-17-lw-oil-editor/): with an
+   award open, changing the amount between a half day and any other, and arming Delete, moves nothing — the amount, the AM /
+   PM place, the date, reason, given-by, Save, Cancel and Delete each keep their box. On a phone at his iPhone's 402 too. */
+test('the OIL award editor: the amount 0.5 ↔ 1 ↔ 2.5 and Delete armed move nothing (D2155)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const first = page.locator('[data-testid="oil-range-first"]')
+  if (await first.count()) await first.click()
+  const award = page.locator('[data-testid="oil-entry-l4"]')   // the demo's CNY grant
+  await award.scrollIntoViewIfNeeded()
+  await award.click()
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toBeVisible()
+  /* the tracker slides sideways on a phone: the editor is brought wholly into sight first, as a finger would slide it —
+     else the test's own press on a half-hidden Delete slides the list and reads as the editor moving */
+  await award.evaluate(e => e.scrollIntoView({ block: 'nearest', inline: 'nearest' }))
+  /* …and its Delete too: on a 402 phone the editing column (260px) is wider than the slide's window beside the pinned
+     columns, so with GitHub's wider letters Delete still hung ~12px past the screen's edge and the test's own press slid
+     the list 14px to reach it (GitHub's run of 01f1030c4, 17 Nov 26) — a finger's tap slides nothing */
+  await page.locator('[data-testid="oil-del-l4"]').evaluate(e => e.scrollIntoView({ block: 'nearest', inline: 'nearest' }))
+  await page.waitForTimeout(100)
+  const ids = ['oil-edit-amt', 'oil-edit-date', 'oil-edit-reason', 'oil-edit-given', 'oil-edit-save', 'oil-edit-cancel', 'oil-del-l4']
+  const geo = () => page.evaluate((ids) => {
+    const out: Record<string, number[]> = {}
+    for (const id of ids) {
+      const r = document.querySelector<HTMLElement>(`[data-testid="${id}"]`)!.getBoundingClientRect()
+      /* to a tenth of a pixel: the first build's empty AM / PM place stood 0.4–0.5px shorter than the pair, and every line
+         below slid by that much — a half-pixel rounding hid it on a desktop (chat 100, 17 Nov 26) */
+      out[id] = [r.left, r.top, r.width, r.height].map(v => Math.round(v * 10) / 10)
+    }
+    const ed = document.querySelector<HTMLElement>('[data-testid="oil-edit-award"]')!
+    const pair = ed.querySelector<HTMLElement>('[data-testid="oil-edit-half-am"]') ?? ed.querySelector<HTMLElement>('.oil-halfgap')!
+    const pr = pair.getBoundingClientRect()
+    out['AM place'] = [pr.left, pr.top, pr.height].map(v => Math.round(v * 10) / 10)
+    return out
+  }, ids)
+  const amt = page.locator('[data-testid="oil-edit-amt"]')
+  await amt.fill('0.5')
+  await expect(page.locator('[data-testid="oil-edit-half-am"]'), 'a half day shows AM / PM').toBeVisible()
+  const g0 = await geo()
+  for (const v of ['1', '2.5', '0.5', '3']) {
+    await amt.fill(v)
+    expect(await geo(), `amount ${v}: nothing moved`).toEqual(g0)
+  }
+  await expect(page.locator('[data-testid="oil-edit-half-am"]'), 'AM / PM gone at a whole amount').toHaveCount(0)
+  const del = page.locator('[data-testid="oil-del-l4"]')
+  await del.click()
+  await expect(del).toHaveText('Really delete?')
+  expect(await geo(), 'Delete armed: nothing moved, Delete no wider').toEqual(g0)
+  /* every part inside the editor's own box and the screen, and on top at its middle */
+  const vw = page.viewportSize()!.width
+  const box = (await award.boundingBox())!
+  for (const id of ids) {
+    const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
+    expect(b.x + b.width, `${id} inside the editor's box`).toBeLessThanOrEqual(box.x + box.width + 0.5)
+    expect(b.x, `${id} inside the screen`).toBeGreaterThanOrEqual(0)
+    expect(b.x + b.width, `${id} inside the screen`).toBeLessThanOrEqual(vw + 0.5)
+    const hit = await page.evaluate(([x, y, id]) => document.elementFromPoint(x as number, y as number)?.closest(`[data-testid="${id}"]`) != null, [b.x + b.width / 2, b.y + b.height / 2, id] as const)
+    expect(hit, `${id} is on top at its middle`).toBe(true)
+  }
+  await page.locator('[data-testid="oil-edit-cancel"]').click()
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
+})
+
+/* THE AWARD EDITOR OPENS IN SIGHT (chat 101's walk, W2's E-a, 17 Nov 26): on a 402 phone an award near the list's right edge
+   opened its editor with Cancel cut and Delete wholly past the screen's edge — the editing box is wider than the award, and
+   nothing slid the list to it; D2155's Delete, as wide as "Really delete?", made it worse. Tapped where a finger finds it,
+   the list not slid first: Save, Cancel and Delete each whole on screen and on top, clear of the pinned name columns. */
+/* …and with wider letters than this PC's: GitHub's run of 356e2fc6a (its own fonts) found Delete still 8.8px past the edge —
+   the button row, held on one line, forced the editing box wider than the room beside the pinned names. Wide letters are
+   stood in for by spacing, so the case is red on any machine. */
+for (const wide of [false, true]) test(`the OIL award editor opens with Save, Cancel and Delete in sight, never cut at the screen's edge${wide ? ' — wide letters' : ''}`, async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  if (wide) await page.addStyleTag({ content: '.oil-edit .tchip, .oil-edit .dchip { letter-spacing: 3px }' })
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const first = page.locator('[data-testid="oil-range-first"]')
+  if (await first.count()) await first.click()
+  const award = page.locator('[data-testid="oil-entry-dol-1"]')   // the demo's 14 Mar award, its lane the furthest right
+  /* the row brought up the screen; the list left unslid, as it opens */
+  await award.evaluate(e => { e.scrollIntoView({ block: 'center', inline: 'nearest' }); (e.closest('.oil-wrap') as HTMLElement).scrollLeft = 0 })
+  await page.waitForTimeout(100)
+  const vw = page.viewportSize()!.width
+  const ab = (await award.boundingBox())!
+  expect(ab.x, 'the award stands inside the screen, where a finger can tap it').toBeLessThan(vw - 20)
+  /* pressed on its part in sight — where a finger lands */
+  const x = Math.min(ab.x + ab.width / 2, (ab.x + vw) / 2)
+  if (isPhone()) await page.touchscreen.tap(x, ab.y + ab.height / 2)
+  else await page.mouse.click(x, ab.y + ab.height / 2)
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toBeVisible()
+  await page.waitForTimeout(250)
+  const pinRight = await page.evaluate(() => {
+    const ed = document.querySelector<HTMLElement>('[data-testid="oil-edit-award"]')!
+    const row = ed.closest('tr')!
+    return Math.max(0, ...[...row.querySelectorAll<HTMLElement>('td.f, th.f')].map(c => c.getBoundingClientRect().right))
+  })
+  for (const id of ['oil-edit-save', 'oil-edit-cancel', 'oil-del-dol-1']) {
+    const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
+    expect(b.x + b.width, `${id} whole inside the screen`).toBeLessThanOrEqual(vw + 0.5)
+    expect(b.x, `${id} clear of the pinned columns`).toBeGreaterThanOrEqual(pinRight - 0.5)
+    const hit = await page.evaluate(([x, y, id]) => document.elementFromPoint(x as number, y as number)?.closest(`[data-testid="${id}"]`) != null, [b.x + b.width / 2, b.y + b.height / 2, id] as const)
+    expect(hit, `${id} is on top at its middle`).toBe(true)
+  }
+  /* the three buttons one height, their words on one line (the drawing check of chat 101: "Delete" stood 1.8px above
+     "Cancel" on a phone — its words sit in a grid of their own, beside its hidden "Really delete?") */
+  const words = await page.evaluate(() => ['oil-edit-save', 'oil-edit-cancel', 'oil-del-dol-1'].map(id => {
+    const b = document.querySelector<HTMLElement>(`[data-testid="${id}"]`)!
+    const r = document.createRange(); r.selectNodeContents(b.querySelector('span') ?? b)
+    const t = r.getBoundingClientRect(), o = b.getBoundingClientRect()
+    return { id, mid: (t.top + t.bottom) / 2, top: o.top, h: o.height }
+  }))
+  for (const w of words.slice(1)) {
+    /* a button the row wrapped (wide letters — GitHub's run of 356e2fc6a) stands a line lower, whole, at its own height;
+       one on Save's line is as tall as Save and its words sit on Save's words' line (§7.11's second 23: side by side) */
+    if (Math.abs(w.top - words[0].top) > w.h / 2) { expect(w.top, `${w.id} wrapped below, not over`).toBeGreaterThan(words[0].top + w.h - 0.5); continue }
+    expect(Math.abs(w.h - words[0].h), `${w.id} as tall as Save`).toBeLessThanOrEqual(0.5)
+    expect(Math.abs(w.mid - words[0].mid), `${w.id}'s words on Save's line`).toBeLessThanOrEqual(0.5)
+    expect(Math.abs(w.top - words[0].top), `${w.id} level with Save`).toBeLessThanOrEqual(0.5)
+  }
+  /* a finger's tap on Cancel closes it, the list where the editor left it */
+  const c = (await page.locator('[data-testid="oil-edit-cancel"]').boundingBox())!
+  if (isPhone()) await page.touchscreen.tap(c.x + c.width / 2, c.y + c.height / 2)
+  else await page.mouse.click(c.x + c.width / 2, c.y + c.height / 2)
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
+})
+
+/* …AND AT THE LIST'S FOOT (the fix round's narrow read, chat 103, 17 Nov 26): the slide above was sideways only, and the editor
+   stands taller than the award it opens on — the last award, its row at the list's bottom edge, opened with Save, Cancel and
+   Delete all below the list's edge (the phone: buttons 864–892, the list ending at 833). The list now slides up just as far as
+   the editor needs, never putting it under the heading rows held at the top. */
+test('the OIL award editor at the list\'s foot opens with Save, Cancel and Delete in sight', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const first = page.locator('[data-testid="oil-range-first"]')
+  if (await first.count()) await first.click()
+  const award = page.locator('.oil-e.grant').last()
+  /* its row brought to the list's bottom edge, its top half in sight, the list slid so the award stands inside the screen */
+  await award.evaluate(e => {
+    const w = e.closest('.oil-wrap') as HTMLElement
+    const a = w.getBoundingClientRect()
+    w.scrollLeft += e.getBoundingClientRect().right - (a.left + w.clientWidth - 8)
+    const r = e.getBoundingClientRect()
+    w.scrollTop += (r.top + r.height / 2) - (a.top + w.clientHeight - 2)
+  })
+  await page.waitForTimeout(150)
+  const ab = (await award.boundingBox())!
+  const vw = page.viewportSize()!.width
+  expect(ab.x, 'the award stands inside the screen, where a finger can tap it').toBeLessThan(vw - 20)
+  const foot = await page.evaluate(() => { const w = document.querySelector<HTMLElement>('.oil-wrap')!; return w.getBoundingClientRect().top + w.clientHeight })
+  expect(ab.y + ab.height, 'the award runs past the list\'s foot before the tap').toBeGreaterThan(foot)
+  const x = Math.min(ab.x + ab.width / 2, (ab.x + vw) / 2), y = Math.min(ab.y + ab.height / 2, foot - 8)
+  if (isPhone()) await page.touchscreen.tap(x, y)
+  else await page.mouse.click(x, y)
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toBeVisible()
+  await page.waitForTimeout(250)
+  const g = await page.evaluate(() => {
+    const ed = document.querySelector<HTMLElement>('[data-testid="oil-edit-award"]')!
+    const w = ed.closest<HTMLElement>('.oil-wrap')!, a = w.getBoundingClientRect()
+    /* the heading cells are what stick to the list's top, not the heading block itself */
+    const head = Math.max(a.top, ...[...w.querySelectorAll<HTMLElement>('table.oil-grid > thead th')].map(h => h.getBoundingClientRect().bottom))
+    const b = ed.closest<HTMLElement>('.oil-e')!.getBoundingClientRect()
+    return { foot: a.top + w.clientHeight, head, top: b.top, bottom: b.bottom }
+  })
+  expect(g.bottom, 'the editor\'s foot inside the list').toBeLessThanOrEqual(g.foot + 0.5)
+  expect(g.top, 'the editor\'s top clear of the heading rows').toBeGreaterThanOrEqual(g.head - 0.5)
+  for (const sel of ['[data-testid="oil-edit-save"]', '[data-testid="oil-edit-cancel"]', '[data-testid^="oil-del-"]']) {
+    const b = (await page.locator(sel).boundingBox())!
+    const hit = await page.evaluate(([x, y, sel]) => document.elementFromPoint(x as number, y as number)?.closest(sel as string) != null, [b.x + b.width / 2, b.y + b.height / 2, sel] as const)
+    expect(hit, `${sel} is on top at its middle`).toBe(true)
+  }
+  await page.locator('[data-testid="oil-edit-cancel"]').click()
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
+})
+
+/* …AT THE LIST'S TOP, AND WHEN A SAVE IS REFUSED (the fix round's second narrow read, chat 103, 17 Nov 26): the slide's top
+   limit counted only the two heading rows, but the person's group heading ("SXO · 12") is held under them too, so an award
+   tapped half under the headings opened its first line behind that strip; and a refused save's warning, drawn under the
+   buttons after the editor opened, could stand below the list's foot. Each part asserted by what is drawn at its middle. */
+async function openOilAt(page: Page, pick: (p: Page) => Locator, place: 'top' | 'foot') {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const first = page.locator('[data-testid="oil-range-first"]')
+  if (await first.count()) await first.click()
+  const award = pick(page)
+  await award.evaluate((e, place) => {
+    const w = e.closest('.oil-wrap') as HTMLElement
+    const a = w.getBoundingClientRect()
+    w.scrollLeft += e.getBoundingClientRect().right - (a.left + w.clientWidth - 8)
+    const r = e.getBoundingClientRect()
+    if (place === 'foot') w.scrollTop += (r.top + r.height / 2) - (a.top + w.clientHeight - 2)
+    else {
+      /* the award's top third under the held heading rows and group strip, the rest below them */
+      const held = Math.max(a.top, ...[...w.querySelectorAll<HTMLElement>('table.oil-grid > thead th')].map(h => h.getBoundingClientRect().bottom))
+      w.scrollTop += r.top - (held - r.height / 3)
+    }
+  }, place)
+  await page.waitForTimeout(150)
+  const ab = (await award.boundingBox())!
+  const vw = page.viewportSize()!.width
+  const wr = await page.evaluate(() => { const w = document.querySelector<HTMLElement>('.oil-wrap')!; const a = w.getBoundingClientRect(); return { top: a.top, foot: a.top + w.clientHeight } })
+  /* pressed on its part in sight: low on it at the top, high on it at the foot */
+  const x = Math.min(ab.x + ab.width / 2, (ab.x + vw) / 2)
+  const y = place === 'top' ? ab.y + ab.height - 8 : Math.min(ab.y + ab.height / 2, wr.foot - 8)
+  if (isPhone()) await page.touchscreen.tap(x, y)
+  else await page.mouse.click(x, y)
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toBeVisible()
+  await page.waitForTimeout(250)
+}
+const drawnAtMiddle = (page: Page, sel: string) => page.evaluate(sel => {
+  const e = document.querySelector<HTMLElement>(sel)!, b = e.getBoundingClientRect()
+  return document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2)?.closest(sel) != null
+}, sel)
+
+test('the OIL award editor tapped half under the held headings opens with its first line in sight', async ({ page }) => {
+  await openOilAt(page, p => p.locator('[data-testid="oil-entry-dol-1"]'), 'top')
+  for (const sel of ['[data-testid="oil-edit-amt"]', '[data-testid="oil-edit-date"]', '[data-testid="oil-edit-reason"]', '[data-testid="oil-edit-save"]'])
+    expect(await drawnAtMiddle(page, sel), `${sel} drawn on top at its middle, not under the headings`).toBe(true)
+})
+
+test('the OIL award editor at the list\'s foot: a refused save\'s warning comes into sight', async ({ page }) => {
+  await openOilAt(page, p => p.locator('.oil-e.grant').last(), 'foot')
+  await page.locator('[data-testid="oil-edit-amt"]').fill('365.5')
+  await page.locator('[data-testid="oil-edit-save"]').click()
+  await expect(page.locator('[data-testid="oil-edit-err"]')).toBeVisible()
+  await page.waitForTimeout(250)
+  const g = await page.evaluate(() => {
+    const w = document.querySelector<HTMLElement>('.oil-wrap')!
+    return { foot: w.getBoundingClientRect().top + w.clientHeight, err: document.querySelector<HTMLElement>('[data-testid="oil-edit-err"]')!.getBoundingClientRect().bottom }
+  })
+  expect(g.err, 'the warning\'s foot inside the list').toBeLessThanOrEqual(g.foot + 0.5)
+  expect(await drawnAtMiddle(page, '[data-testid="oil-edit-err"]'), 'the warning drawn on top').toBe(true)
+})
+
+/* A CLICK OUTSIDE THE AWARD EDITOR (his D2173, D2176 — 17 Nov 26): a click or tap outside it closes it as Cancel does, an
+   unsaved change dropped and nothing saved; a tap on another award opens that one. Save and Cancel still finish it. A slide
+   of the list is not a tap: on a phone the list is slid to reach Delete (his D2175), and that must never close the editor. */
+async function openAwardL4(page: Page) {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const first = page.locator('[data-testid="oil-range-first"]')
+  if (await first.count()) await first.click()
+  const award = page.locator('[data-testid="oil-entry-l4"]')   // the demo's CNY grant, 2 days, "CNY workplan"
+  await award.scrollIntoViewIfNeeded()
+  await award.click()
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toBeVisible()
+  await page.waitForTimeout(250)
+  return award
+}
+/* a press where a person presses: a tap on a phone, a click on a PC */
+async function pressAt(page: Page, sel: string) {
+  const b = (await page.locator(sel).first().boundingBox())!
+  const x = b.x + b.width / 2, y = b.y + b.height / 2
+  if (isPhone()) await page.touchscreen.tap(x, y)
+  else await page.mouse.click(x, y)
+}
+const OUTSIDE = '[data-testid="oil-sheet"] .bidsheet-hd .who'   // the sheet's own title, "OIL TRACKER": nothing to press there (its line under it is a PC's only)
+
+test('the OIL award editor: a click outside with nothing changed closes it, as Cancel does (D2173)', async ({ page }) => {
+  const award = await openAwardL4(page)
+  await pressAt(page, OUTSIDE)
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'closed by the click outside').toHaveCount(0)
+  await expect(award.locator('.l2'), 'nothing saved').toContainText('CNY workplan')
+  await expect(award.locator('.amt')).toHaveText('+2')
+})
+
+test('the OIL award editor: a click outside with an unsaved change closes it, the change dropped, nothing saved (D2176)', async ({ page }) => {
+  const award = await openAwardL4(page)
+  await page.locator('[data-testid="oil-edit-reason"]').fill('CNY workplan — moved')
+  await pressAt(page, OUTSIDE)
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'closed by the click outside').toHaveCount(0)
+  /* read at once, nothing put back first: a click that saved would show here (Astra's read, 4) */
+  await expect(award.locator('.l2'), 'nothing saved').toContainText('CNY workplan')
+  await expect(award.locator('.l2'), 'nothing saved').not.toContainText('moved')
+  /* changed again, a tap on another award: that one opens, this change dropped */
+  await award.click()
+  await page.locator('[data-testid="oil-edit-amt"]').fill('3')
+  const other = page.locator('[data-testid="oil-list"] .oil-e.grant:not(.editing)').first()
+  /* to the middle, never only "nearest": at the list's left edge it would sit under the pinned names (the fix read, 3) */
+  await other.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'center' }))
+  expect(await drawnAtMiddle(page, `[data-testid="${await other.getAttribute('data-testid')}"]`), 'the other award drawn on top where it is pressed').toBe(true)
+  const otherId = await other.getAttribute('data-testid')
+  await pressAt(page, '[data-testid="oil-list"] .oil-e.grant:not(.editing)')
+  await expect(page.locator(`[data-testid="${otherId}"] [data-testid="oil-edit-award"]`), 'the other award opens').toBeVisible()
+  await expect(award.locator('.amt'), 'the dropped change saved nothing').toHaveText('+2')
+  /* Cancel and Save still finish it */
+  await page.locator('[data-testid="oil-edit-cancel"]').click()
+  await award.click()
+  await page.locator('[data-testid="oil-edit-amt"]').fill('3')
+  await page.locator('[data-testid="oil-edit-save"]').click()
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
+  await expect(award.locator('.amt'), 'Save kept it').toHaveText('+3')
+})
+
+test('the OIL award editor: sliding the list is not a click outside — the editor stays open (D2175)', async ({ page }) => {
+  await openAwardL4(page)
+  const w = (await page.locator('.oil-wrap').boundingBox())!
+  const ed = (await page.locator('[data-testid="oil-entry-l4"]').boundingBox())!
+  /* a point in the list away from the editor, below it where the list has rows */
+  const x = Math.min(w.x + w.width - 30, Math.max(w.x + 200, ed.x + ed.width / 2))
+  const y = Math.min(w.y + w.height - 20, ed.y + ed.height + 40)
+  if (isPhone()) {
+    const cdp = await page.context().newCDPSession(page)
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
+    for (let i = 1; i <= 8; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x - i * 10, y: y - i * 6 }] }); await page.waitForTimeout(16) }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  } else {
+    await page.mouse.move(x, y)
+    await page.mouse.wheel(0, 120)
+  }
+  await page.waitForTimeout(300)
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'still open after the slide').toBeVisible()
+})
+/* …THE CLICK-AWAY'S CODE READS (Astra and a fresh Opus reader, chat 104, 17 Nov 26), each red on 30e4e1162 first: a drag
+   begun inside the editor and let go outside it closed it; a press alone (before its release) must close nothing; the
+   correction's calendar is the editor's own. */
+test('the OIL award editor: a drag begun inside it and let go outside closes nothing; a press alone closes nothing (the read, F3)', async ({ page }) => {
+  test.skip(isPhone(), 'a mouse’s drag and held press; the phone’s slide is the slide test')
+  await openAwardL4(page)
+  const r = (await page.locator('[data-testid="oil-edit-reason"]').boundingBox())!
+  const o = (await page.locator(OUTSIDE).boundingBox())!
+  /* the reason's words selected by a drag that ends on the title, outside the editor */
+  await page.mouse.move(r.x + r.width - 6, r.y + r.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(o.x + o.width / 2, o.y + o.height / 2, { steps: 8 })
+  await page.mouse.up()
+  await page.waitForTimeout(200)
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'a drag out of the editor: still open').toBeVisible()
+  /* a press outside, held: nothing closes until it is let go there */
+  await page.mouse.move(o.x + o.width / 2, o.y + o.height / 2)
+  await page.mouse.down()
+  await page.waitForTimeout(200)
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'a press held outside: still open').toBeVisible()
+  await page.mouse.up()
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'let go there — a click outside: closed').toHaveCount(0)
+})
+/* …THE FIX ROUND'S NARROW READ (chat 105, 17 Nov 26), each red on 901ee405f first: a press made by the keys on a button
+   outside the editor is a click outside — it closed nothing when the last mouse press had been inside (the reason box);
+   and a press begun outside and let go inside the editor is the editor's own, the mirror of the drag above. */
+test('the OIL award editor: Enter on a button outside it closes it, after a click into its reason box (the fix read, 2)', async ({ page }) => {
+  test.skip(isPhone(), 'the keys and a mouse')
+  const award = await openAwardL4(page)
+  await page.locator('[data-testid="oil-edit-reason"]').click()
+  await page.locator('[data-testid="oil-edit-reason"]').fill('CNY workplan — moved')
+  const outBtn = page.locator('[data-testid="oil-range-first"]')
+  await expect(outBtn, 'a button of the tracker outside the editor').toHaveCount(1)
+  await outBtn.focus()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'Enter on a button outside: closed').toHaveCount(0)
+  await expect(award.locator('.l2'), 'the change dropped').not.toContainText('moved')
+})
+test('the OIL award editor: a press begun outside it and let go inside closes nothing (the fix read, 4)', async ({ page }) => {
+  test.skip(isPhone(), 'a mouse’s drag; the phone’s slide is the slide test')
+  await openAwardL4(page)
+  const r = (await page.locator('[data-testid="oil-edit-reason"]').boundingBox())!
+  const o = (await page.locator(OUTSIDE).boundingBox())!
+  await page.mouse.move(o.x + o.width / 2, o.y + o.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(r.x + r.width / 2, r.y + r.height / 2, { steps: 8 })
+  await page.mouse.up()
+  await page.waitForTimeout(200)
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'let go inside the editor: still open').toBeVisible()
+})
+/* …ROUND 3 OF THE FIX READ (chat 105): a press outside with the mouse held STILL, the list moving under it so the editor
+   arrives under the mouse (a picker closing above it), is a click outside — only a real drag let go inside is the
+   editor's own. Red on 0eee82d0d first. */
+test('the OIL award editor: a still press outside, the list moved under it, closes it (the fix read, round 3)', async ({ page }) => {
+  test.skip(isPhone(), 'a mouse held still')
+  await openAwardL4(page)
+  const r = (await page.locator('[data-testid="oil-edit-reason"]').boundingBox())!
+  const w = (await page.locator('.oil-wrap').boundingBox())!
+  /* a point d below the reason box; the list then slides DOWN by d (scrolled back), bringing the box under the still mouse */
+  const top = await page.locator('.oil-wrap').evaluate(el => el.scrollTop)
+  const d = Math.min(160, top, w.y + w.height - 20 - (r.y + r.height / 2))
+  expect(d, 'room for the list to slide under the mouse').toBeGreaterThan(r.height * 2)
+  const x = r.x + r.width / 2, y = r.y + r.height / 2 + d
+  await page.mouse.move(x, y)
+  await page.mouse.down()
+  await page.locator('.oil-wrap').evaluate((el, d) => { el.scrollTop -= d }, d)
+  await page.evaluate(() => new Promise(res => requestAnimationFrame(() => requestAnimationFrame(res))))
+  expect(await page.evaluate(([x, y]) => !!document.elementFromPoint(x, y)?.closest('.oil-e.editing'), [x, y]), 'the editor now under the still mouse').toBe(true)
+  await page.mouse.up()
+  await expect(page.locator('[data-testid="oil-edit-award"]'), 'a still press outside: closed').toHaveCount(0)
+})
+
+test('the OIL correction editor: its calendar is its own — months turned and the calendar closed leave it open', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const corr = page.locator('[data-testid="oil-list"] [data-testid="oil-entry-dol-3"]')
+  await corr.evaluate(e => e.scrollIntoView({ block: 'center', inline: 'nearest' }))
+  await corr.click()
+  const box = page.locator('[data-testid="oil-edit-date"]')
+  const was = (await box.getAttribute('data-value'))!
+  await box.click()
+  await calendarOnTop(page, 'the correction\'s date')
+  await page.locator('[data-testid="dcal-prev"]').click()
+  await page.locator('[data-testid="dcal-next"]').click()
+  await expect(page.locator('[data-testid="oil-edit-date"]'), 'months turned: the editor still open').toBeVisible()
+  /* closed by a press beside the calendar, nothing picked: the editor stays, nothing changed */
+  const card = (await page.locator('[data-testid="dcal-card"]').boundingBox())!
+  const vp = page.viewportSize()!
+  const x = card.x > 30 ? card.x / 2 : Math.min(vp.width - 10, card.x + card.width + 15)
+  await page.mouse.click(x, Math.min(vp.height - 10, card.y + card.height + 15))
+  await expect(page.locator('[data-testid="dcal-card"]'), 'the calendar closed').toHaveCount(0)
+  await expect(page.locator('[data-testid="oil-edit-date"]'), 'the calendar closed: the editor still open').toBeVisible()
+  await expect(page.locator('[data-testid="oil-edit-date"]'), 'nothing picked: the date as it was (the fix read, 5)').toHaveAttribute('data-value', was)
+})
+
+/* THE PHONE BALANCES AFTER OPTION B (D2156) — three faults the two blind reads of chat 101 found (Astra and a fresh Opus
+   reader, 17 Nov 26), each red on 01f1030c4 first: the pinned names stopped filling their column (D1518, nothing pinned
+   leaks), CCL's box ran 2px into FCL's, and a tapped box near the right edge left its corner tag cut (B-F4's fix undone). */
+async function openBalancesPhone(page: Page) {
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-balances').click()
+  await expect(page.getByTestId('balances-page')).toBeVisible()
+  await page.waitForTimeout(300)
+}
+
+/* R1 — the pinned names no longer fill their column (justify-self:start on `.bp-row > *` reaches `.bp-who` and the
+   heading strip's first cell), so slid sideways the boxes show beside the names, by a different amount on each row. */
+test('Balances on a phone: the pinned name panel fills its whole 132px column on every row and on the heading strip', async ({ page }) => {
+  test.skip(!isPhone(), 'phone list')
+  await openBalancesPhone(page)
+  const g = await page.evaluate(() => {
+    const hs = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!
+    hs.scrollLeft = 260
+    const z = parseFloat(getComputedStyle(document.querySelector<HTMLElement>('.bp-zoom')!).zoom || '1') || 1
+    const whos = [...document.querySelectorAll<HTMLElement>('.bp-row > .bp-who')].map(e => e.getBoundingClientRect().width / z)
+    const head = document.querySelector<HTMLElement>('.bp-cols > span:first-child')!.getBoundingClientRect().width / z
+    /* what is drawn 4px inside the column's right end, on each row: must be the name panel, never a box or figure */
+    const leaks: string[] = []
+    for (const row of document.querySelectorAll<HTMLElement>('.bp-row')) {
+      const who = row.querySelector<HTMLElement>('.bp-who')!, r = row.getBoundingClientRect()
+      const x = hs.getBoundingClientRect().left + (132 - 4) * z, y = r.top + r.height / 2
+      /* only rows whose middle stands inside the list itself (the fix round's narrow read: one cut at its foot reads what is below) */
+      const hb = hs.getBoundingClientRect()
+      if (y < hb.top || y > hb.top + hs.clientHeight) continue
+      const hit = document.elementFromPoint(x, y)
+      if (hit && !who.contains(hit)) leaks.push(`${row.dataset.testid}: ${hit.className}`)
+    }
+    return { min: Math.min(...whos), max: Math.max(...whos), head, leaks }
+  })
+  expect(g.min, 'narrowest name panel').toBeGreaterThanOrEqual(131.5)
+  expect(g.max - g.min, 'every row\'s panel the same width').toBeLessThanOrEqual(0.5)
+  expect(g.head, 'the heading strip\'s NAME · GRADE cell').toBeGreaterThanOrEqual(131.5)
+  expect(g.leaks, 'nothing scrolled shows beside a pinned name').toEqual([])
+})
+
+/* R2 — the first kind's column (CCL) is 54px but its cell carries the separator's 1px rule and 6px padding, so its 54px
+   box runs 7px past the column: past the 5px gap and 2px into FCL's box. */
+test('Balances on a phone: CCL\'s box never touches FCL\'s box — the same gap as between every other pair of kinds', async ({ page }) => {
+  test.skip(!isPhone(), 'phone list')
+  await openBalancesPhone(page)
+  const gaps = await page.evaluate(() => {
+    const row = document.querySelector<HTMLElement>('[data-testid="bal-row-bane"]')!
+    const boxes = [...row.querySelectorAll<HTMLElement>('.bp-oc')].map(c => c.querySelector<HTMLElement>('.bp-bx, .bp-ro')!.getBoundingClientRect())
+    return boxes.slice(1).map((b, i) => Math.round((b.left - boxes[i]!.right) * 10) / 10)
+  })
+  /* expected on a fix: [5, 5, 5, 5]; on 01f1030c4: about [-2, 5, 5, 5] */
+  for (const [i, g] of gaps.entries()) expect(g, `gap after kind ${i}`).toBeGreaterThanOrEqual(4.5)
+})
+
+/* R3 — a tapped box is brought into sight with its pending tag (B-F4): showCell measures `.bp-oc`, which no longer holds the
+   tag (now absolute, 12px past the box), so a box already in sight near the right edge leaves its tag cut. A real tap
+   on an iPhone does not centre the box as Chrome's focus() does, so focus is given here without the browser's own slide. */
+test('Balances on a phone: a box focused near the right edge keeps its pending tag inside the list', async ({ page }) => {
+  test.skip(!isPhone(), 'phone list')
+  await openBalancesPhone(page)
+  await expect(page.getByTestId('bal-opd-PL-bane')).toHaveText('0.5')
+  await page.evaluate(() => {
+    const hs = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!
+    const box = document.querySelector<HTMLInputElement>('[data-testid="bal-PL-bane"]')!
+    /* slide so the box's right edge stands 6px inside the list: the box is wholly in sight, its tag (12px past it) is not */
+    hs.scrollLeft += box.getBoundingClientRect().right - (hs.getBoundingClientRect().right - 6)
+    box.focus({ preventScroll: true })
+  })
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => ({
+    tagR: document.querySelector<HTMLElement>('[data-testid="bal-opd-PL-bane"]')!.getBoundingClientRect().right,
+    scR: document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!.getBoundingClientRect().right,
+  }))
+  expect(g.tagR, 'the pending tag inside the list').toBeLessThanOrEqual(g.scR)
 })

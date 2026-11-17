@@ -1,0 +1,99 @@
+{
+ "state": "ring-desk-tapped",
+ "drawing": {
+  "script": "docs/mock/2026-11-17-lw-grid-hover/ring.mjs",
+  "shot": "r-ring-beside-tapped"
+ },
+ "recorded": "2026-11-17T05:48:46.268Z",
+ "drawnOn": "main at 3a51c06a3",
+ "checkout": "00ffaea76",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "day": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 355.5,
+    "y": 750,
+    "w": 24,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.act.mk-hov"
+  },
+  "tapped": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 282.4,
+    "y": 750,
+    "w": 24,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.22)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.act.selcell"
+  }
+ },
+ "approved": {
+  "picture": "r-ring-beside-tapped.png",
+  "identical": true
+ }
+}

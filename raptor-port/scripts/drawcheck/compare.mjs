@@ -27,6 +27,16 @@ const isMarker = c => { const A = rgba(c); return !!A && A[3] > 0.04 && sameColo
 const layers = s => { const out = []; let d = 0, cur = ''; for (const ch of String(s)) { if (ch === '(') d++; if (ch === ')') d--; if (ch === ',' && !d) { out.push(cur.trim()); cur = '' } else cur += ch } if (cur.trim()) out.push(cur.trim()); return out }
 const unmarkShadow = s => { if (!s || s === 'none') return 'none'; const keep = layers(s).filter(l => !isMarker(l)); return keep.length ? keep.join(', ') : 'none' }
 const unmarkEdge = e => { const x = edgeOf(e); return seen(x) && isMarker(x.c) ? '0px none rgb(0, 0, 0)' : e }
+// A ring drawn as a shadow (the Leave War grid's hover ring, D2157 — 17 Nov 26): 'shadow' asks only whether there is one,
+// so a ring of the wrong strength (the drag selection's .95 for the tapped day's .6) or width passed. 'ring' compares every
+// layer: its colour (sameColour), its lengths (within half a pixel) and inset or not. A layer nobody sees — see-through, or
+// every length zero — is no layer.
+const shadowLayers = s => (!s || s === 'none') ? [] : layers(s).map(l => {
+  const c = (l.match(/rgba?\([^)]*\)/) || [''])[0], rest = l.replace(c, '')
+  return { c, n: (rest.match(/-?[\d.]+px/g) || []).map(parseFloat), inset: /\binset\b/.test(rest) }
+}).filter(x => (rgba(x.c)?.[3] ?? 1) > 0.04 && x.n.some(v => v !== 0))
+const sameRing = (a, b) => { const A = shadowLayers(a), B = shadowLayers(b)
+  return A.length === B.length && A.every((x, i) => x.inset === B[i].inset && sameColour(x.c, B[i].c) && x.n.length === B[i].n.length && x.n.every((v, j) => Math.abs(v - B[i].n[j]) <= 0.5)) }
 
 // Each check returns [] or the differences it found, each { what, drawing, build, by }. Positions are of the page,
 // or — with `rel` — measured from another part's box, so a part is judged inside what holds it.
@@ -85,6 +95,9 @@ export function compare(part, D, B, Drel, Brel, TOL = 2) {
     } else if (c === 'shadow') {
       const ds = marked ? unmarkShadow(D.look.shadow) : D.look.shadow
       if ((ds === 'none') !== (B.look.shadow === 'none')) out.push({ check: c, what: 'its shadow', drawing: ds, build: B.look.shadow, by: '' })
+    } else if (c === 'ring') {
+      const ds = marked ? unmarkShadow(D.look.shadow) : D.look.shadow
+      if (!sameRing(ds, B.look.shadow)) out.push({ check: c, what: 'its ring (every shadow layer: colour, width, inset)', drawing: ds, build: B.look.shadow, by: '' })
     } else if (c === 'colour') {
       if (!sameColour(D.look.color, B.look.color)) out.push({ check: c, what: "its words' colour", drawing: D.look.color, build: B.look.color, by: '' })
     } else if (c === 'letters') {

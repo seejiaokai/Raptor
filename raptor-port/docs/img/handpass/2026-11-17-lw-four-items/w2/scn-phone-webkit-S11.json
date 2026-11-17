@@ -1,0 +1,56 @@
+[
+ {
+  "id": "S11",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "opened a 0.5 PM award",
+  "saw": "AM/PM shown: {\"am\":\"tchip half\",\"pm\":\"tchip half on\",\"gap\":0}",
+  "verdict": "PASS",
+  "pics": "w2-phone-webkit-S11-open.png"
+ },
+ {
+  "id": "S11",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "amount 1",
+  "saw": "chips {\"am\":null,\"pm\":null,\"gap\":1}; the other parts keep their boxes: true; ",
+  "verdict": "PASS",
+  "pics": "w2-phone-webkit-S11-amt-1.png"
+ },
+ {
+  "id": "S11",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "amount 2.5",
+  "saw": "chips {\"am\":null,\"pm\":null,\"gap\":1}; the other parts keep their boxes: true; ",
+  "verdict": "PASS",
+  "pics": "w2-phone-webkit-S11-amt-2_5.png"
+ },
+ {
+  "id": "S11",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "amount 0.5",
+  "saw": "chips {\"am\":\"tchip half\",\"pm\":\"tchip half on\",\"gap\":0}; the other parts keep their boxes: true; ",
+  "verdict": "PASS",
+  "pics": "w2-phone-webkit-S11-amt-0_5.png"
+ },
+ {
+  "id": "S11",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "saved with PM, opened another (AM) award, SIM 18 Apr",
+  "saw": "chips {\"am\":\"tchip half on\",\"pm\":\"tchip half\",\"gap\":0}",
+  "verdict": "PASS",
+  "pics": "w2-phone-webkit-S11-other-AM-award.png"
+ },
+ {
+  "id": "S11",
+  "size": "402 webkit",
+  "role": "admin",
+  "did": "reopened the first award",
+  "saw": "chips {\"am\":\"tchip half\",\"pm\":\"tchip half on\",\"gap\":0}",
+  "verdict": "PASS",
+  "pics": "w2-phone-webkit-S11-back-to-first.png"
+ }
+]

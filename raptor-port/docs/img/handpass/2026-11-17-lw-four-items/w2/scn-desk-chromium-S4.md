@@ -1,0 +1,8 @@
+# W2 report (scn-desk-chromium-S4.md)
+
+| scenario | size | role | what I did | what the screen showed | verdict | pictures |
+|---|---|---|---|---|---|---|
+| S4 | 1536x864 chromium | admin | gave Ranger two awards on 17 Nov (1 day "S4 first", 2 days "S4 second"), edited the first to 0.5 PM, reason "S4 first edited", given by Y9, Save | first box: "+117 NovX1S4 first1 left" -> "+0.517 Nov PMY9S4 first edited0.5 left"; neighbour: "+217 NovX2S4 second2 left" -> "+217 NovX2S4 second2 left"; tracker BAL 3 -> 2.5; grid cell 17 Nov "FOFO" -> "FOHO"; Balances OIL 3› -> 2.5›; person window OIL tile OIL3› -> OIL2.5›; reopened editor: {"amt":"0.5","reason":"S4 first edited","given":"Y9","pmOn":"tchip half on","date":"17 Nov 26"} | PASS | w2-desk-chromium-S4-two-awards.png, w2-desk-chromium-S4-after-save.png, w2-desk-chromium-S4-person-window.png |
+| S4 | 1536x864 chromium | admin | pressed Undo | first box "+117 NovX1S4 first1 left" (before the edit it read "+117 NovX1S4 first1 left"); neighbour "+217 NovX2S4 second2 left" (was "+217 NovX2S4 second2 left") | PASS | w2-desk-chromium-S4-after-undo.png |
+| S4 | 1536x864 chromium | admin | pressed Redo | first box "+0.517 Nov PMY9S4 first edited0.5 left" (after the edit it read "+0.517 Nov PMY9S4 first edited0.5 left") | PASS | w2-desk-chromium-S4-after-redo.png |
+| S4 | 1536x864 chromium | admin | reloaded the page (signed in again if asked), opened the tracker | first box "+0.517 Nov PMY9S4 first edited0.5 left", neighbour "+217 NovX2S4 second2 left" (expected the edited "+0.517 Nov PMY9S4 first edited0.5 left" and "+217 NovX2S4 second2 left") | PASS | w2-desk-chromium-S4-after-reload.png |

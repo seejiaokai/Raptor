@@ -1,0 +1,110 @@
+[
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the award made by: tracker credit (one person)",
+  "saw": "editor same layout as the CNY award; in the row of stiff: 1; amount 1, date 17 Nov 26, reason \"S3 tracker route\" (expected a reason)",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkaqr7d1.png"
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "cleared the reason of tracker credit (one person), Save",
+  "saw": "refused: \"Give a reason\"",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkaqr7d1.png"
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the award made by: one-day Grant OIL on the grid, no reason",
+  "saw": "editor same layout as the CNY award; in the row of nact: 1; amount 1, date 3 Dec 26, reason \"\" (expected none)",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkaqtuw2.png"
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "no reason on one-day Grant OIL on the grid, no reason: amount 1.5, Save",
+  "saw": "saved without a reason",
+  "verdict": "PASS",
+  "pics": ""
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the award made by: dragged-days Grant OIL (Mon 7 and Tue 8 Dec)",
+  "saw": "editor same layout as the CNY award; in the row of razer: 1; amount 1, date 7 Dec 26, reason \"S3 dragged days\" (expected a reason)",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkaqy0q3.png"
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "cleared the reason of dragged-days Grant OIL (Mon 7 and Tue 8 Dec), Save",
+  "saw": "refused: \"Give a reason\"",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkaqy0q3.png"
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the award made by: dragged-days Grant OIL, the second day",
+  "saw": "editor same layout as the CNY award; in the row of razer: 1; amount 1, date 8 Dec 26, reason \"S3 dragged days\" (expected a reason)",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkaqy0q4.png"
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "cleared the reason of dragged-days Grant OIL, the second day, Save",
+  "saw": "refused: \"Give a reason\"",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkaqy0q4.png"
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the award made by: several names at once (OIL credits · Basher, Echo) #1",
+  "saw": "editor same layout as the CNY award; in the row of null: -1; amount 1, date 17 Nov 26, reason \"S3 several\" (expected a reason)",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkar11y5.png"
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "cleared the reason of several names at once (OIL credits · Basher, Echo) #1, Save",
+  "saw": "refused: \"Give a reason\"",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkar11y5.png"
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "opened the award made by: several names at once (OIL credits · Basher, Echo) #2",
+  "saw": "editor same layout as the CNY award; in the row of null: -1; amount 1, date 17 Nov 26, reason \"S3 several\" (expected a reason)",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkar11y6.png"
+ },
+ {
+  "id": "S3",
+  "size": "1536x864 chromium",
+  "role": "admin",
+  "did": "cleared the reason of several names at once (OIL credits · Basher, Echo) #2, Save",
+  "saw": "refused: \"Give a reason\"",
+  "verdict": "PASS",
+  "pics": "w2-desk-chromium-S3-ol-mwkar11y6.png"
+ }
+]

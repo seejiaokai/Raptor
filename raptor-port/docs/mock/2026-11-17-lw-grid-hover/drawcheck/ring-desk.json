@@ -1,0 +1,257 @@
+{
+ "state": "ring-desk",
+ "drawing": {
+  "script": "docs/mock/2026-11-17-lw-grid-hover/ring.mjs",
+  "shot": "r-ring-full"
+ },
+ "recorded": "2026-11-17T05:48:44.447Z",
+ "drawnOn": "main at 3a51c06a3",
+ "checkout": "00ffaea76",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "day": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 355.5,
+    "y": 750,
+    "w": 24,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.05)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.act"
+  },
+  "left": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 331.5,
+    "y": 750,
+    "w": 24,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.05)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.act"
+  },
+  "right": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 379.5,
+    "y": 750,
+    "w": 24,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.05)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.weekend.act"
+  },
+  "along": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 427.5,
+    "y": 750,
+    "w": 27,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.05)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.act"
+  },
+  "name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 21,
+    "y": 750,
+    "w": 118,
+    "h": 22
+   },
+   "ink": {
+    "x": 38,
+    "y": 753.8,
+    "w": 64,
+    "h": 12.3
+   },
+   "text": "Drifter A",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.who"
+  },
+  "below": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 21,
+    "y": 772,
+    "w": 118,
+    "h": 22
+   },
+   "ink": {
+    "x": 38,
+    "y": 775.8,
+    "w": 63.5,
+    "h": 12.3
+   },
+   "text": "Ridge C",
+   "typed": false,
+   "marked": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "1px solid rgba(70, 81, 94, 0.8)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.who"
+  }
+ },
+ "approved": {
+  "picture": "r-ring-full.png",
+  "identical": true
+ }
+}
