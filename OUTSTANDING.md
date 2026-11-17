@@ -126,6 +126,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-EARN-BOARD-TIDY] — the three code reads' tidiness notes on the OIL Earn board change (D489), filed not fixed.
 
 **Leave War**
+- [SANS-CHIP-ON-SANS] — the Post out sheet offers the "SANS" chip to a man already SANS; D2163: not offered for him (small fix, no answer needed; the next Leave War batch).
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
@@ -363,6 +364,18 @@ same harm on either page, and the schedule's window is the one he uses most. If 
 Inputs page (a tap outside it still closes it, as built), tests first, a short walk; the question's look is the
 Inputs page's, so no new drawing.
 **Place:** the schedule's next batch, once he answers (D994: put to him when he says).
+
+### [SANS-CHIP-ON-SANS] The Post out sheet offers "SANS" to a man already SANS (found 17 Nov 26, chat 102's SANS drawing helper, E2)
+**What:** the posting's four chips (Overseas Sqn, Delete, SANS, Transfer to Sqn) hide "SANS" only for ground crew
+(D1709 — `raptor-port/src/leavewar/ui/OutcomeChips.tsx`, its `noSans`, set from the man's ground-crew mark at its three
+doors: `BidPicker.tsx` twice, `Matrix.tsx`, `SelectSheet.tsx`); a man already SANS is offered "SANS" too, which posts
+him out to what he already is. His D2163 (17 Nov 26): the SANS chip is not offered for a SANS man. Host-checked in the
+code 17 Nov 26 (chat 103): `noSans` reads only the ground-crew mark. Not yet checked: whether today's Post out sheet
+opens on a SANS man's row at all (D2163's reading) — the fix's first step, on the app.
+**Steps:** tests first — a SANS man's Post out sheet (each of the three doors) shows Overseas Sqn, Delete and Transfer
+to Sqn, no SANS; then `noSans` set for a SANS man as for ground crew; a short walk. Nothing new to see, so no drawing
+(D1625). Independent of the multi-squadron build (D2086, D473).
+**Place:** the next Leave War batch (D490).
 
 ### [SCHED-SMALL-TIDY] The code reads' tidiness note on the schedule's small fixes (D489 — filed, not fixed; 17 Nov 26)
 **What:** the fresh Opus reader's tidiness note on `claude/sched-small-fixes`: in the schedule's tap code

@@ -490,7 +490,8 @@ day amber or red and raise the manning warning on someone's bid; a weekend he wo
   register's P15** now reads "Posted out · now with 149".
 - **His answers during chat 102:** D2162 — the transfer sheet's lines are headed "As of today:" (his suggestion; the
   two pictures redrawn). D2163 — a SANS man may be transferred by "Transfer to Sqn", arriving still SANS with his SANS
-  availability records, no SANS chip for him. **Open, Q23:** SANS people are on the Leave War only when added there
+  availability records, no SANS chip for him (today's chip, offered to a man already SANS, filed as a small fix:
+  [SANS-CHIP-ON-SANS], chat 103). **Open, Q23:** SANS people are on the Leave War only when added there
   ("+ SANS"), so how an admin reaches the sheet for one not on the war — put to him with a recommendation.
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
