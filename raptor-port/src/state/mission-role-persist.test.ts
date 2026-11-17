@@ -43,29 +43,29 @@ async function setup(){
 it('one accepted annotation is a sealed save group, reloads intact, and does not write programme rows',async()=>{
   const {be,wb,t}=await setup(),groups:any[]=[];const off=wb.subscribe(g=>groups.push(g))
   setMissionRole(t,'red');expect(groups).toHaveLength(1)
-  expect(groups[0].filter((e:any)=>e.collection==='settings').map((e:any)=>e.id)).toContain('missionrole:'+t.id)
+  expect(groups[0].filter((e:any)=>e.collection==='settings').map((e:any)=>e.id)).toContain('u142@missionrole:'+t.id)
   expect(groups[0].some((e:any)=>e.collection==='weeks'||e.collection==='inputs'||e.collection==='leavewar')).toBe(false)
-  await postman.flush();expect(be.peek('settings','missionrole:'+t.id)).toContain('"side":"red"')
+  await postman.flush();expect(be.peek('settings','u142@missionrole:'+t.id)).toContain('"side":"red"')
   off();postman.detach();await boot(be);expect(readRole(t.id)?.side).toBe('red')
 })
 it('a backend failure retains accepted state and the exact whole group until retry succeeds',async()=>{
   const {be,wb,t}=await setup();be.failNext(1);setMissionRole(t,'blue');await postman.flush()
-  expect(postman.status).toBe('failed');expect(readRole(t.id)?.side).toBe('blue');expect(wb.get('settings','missionrole:'+t.id)).toContain('"blue"');expect(be.peek('settings','missionrole:'+t.id)).toBeNull()
-  await postman.flush();expect(postman.status).toBe('saved');expect(be.peek('settings','missionrole:'+t.id)).toBe(wb.get('settings','missionrole:'+t.id))
+  expect(postman.status).toBe('failed');expect(readRole(t.id)?.side).toBe('blue');expect(wb.get('settings','u142@missionrole:'+t.id)).toContain('"blue"');expect(be.peek('settings','u142@missionrole:'+t.id)).toBeNull()
+  await postman.flush();expect(postman.status).toBe('saved');expect(be.peek('settings','u142@missionrole:'+t.id)).toBe(wb.get('settings','u142@missionrole:'+t.id))
 })
 it('Undo during a slow accepted save wins over the older in-flight answer',async()=>{
   const {be,t}=await setup();be.latency=500;setMissionRole(t,'red');const sending=postman.flush()
   expect(globalUndo()).toMatchObject({ok:true});expect(readRole(t.id)).toBeUndefined()
   await vi.advanceTimersByTimeAsync(500);await sending;const final=postman.flush();await vi.advanceTimersByTimeAsync(500);await final
-  expect(be.peek('settings','missionrole:'+t.id)).toBeNull();be.latency=0
+  expect(be.peek('settings','u142@missionrole:'+t.id)).toBeNull();be.latency=0
 })
 it('an interrupted template group recovers day and annotation together, even when first boot replay fails',async()=>{
   const {be,t}=await setup();setMissionRole(t,'red');await postman.flush();const tpl=addDayTpl(0)!;be.crashNextAfter(1)
   expect(pickDayTpl(1,tpl.id)).toBe('applied');const dest=roleTarget(1,DAYS[1].waves[0]!.formations[0]!.rid!)!
-  await postman.flush();expect(postman.status).toBe('failed');expect(be.peekJournal()?.some(e=>e.id==='missionrole:'+dest.id)).toBe(true)
+  await postman.flush();expect(postman.status).toBe('failed');expect(be.peekJournal()?.some(e=>e.id==='u142@missionrole:'+dest.id)).toBe(true)
   postman.detach();be.failReplay(1);await boot(be)
   expect(postman.status).toBe('failed');expect(readRole(dest.id)?.side).toBe('red');expect(DAYS[1].waves[0]!.formations[0]!.rid).toBe(dest.formationRid)
-  await postman.flush();expect(postman.status).toBe('saved');expect(be.peekJournal()).toBeNull();expect(be.peek('settings','missionrole:'+dest.id)).not.toBeNull()
+  await postman.flush();expect(postman.status).toBe('saved');expect(be.peekJournal()).toBeNull();expect(be.peek('settings','u142@missionrole:'+dest.id)).not.toBeNull()
 })
 it('late reducer failure emits no save group and restores the entire destination',async()=>{
   const {wb,t}=await setup();setMissionRole(t,'blue');await postman.flush();const tpl=addDayTpl(0)!,day=JSON.stringify(DAYS[1]),roles=roleStore.signature!(),groups:any[]=[]
@@ -82,8 +82,8 @@ it('empty rehydrate clears old answers and malformed role rows remain byte-for-b
 })
 it('MIX12 two independently answered contexts survive the actual backend flush and boot',async()=>{
   const {be,t}=await setup();setMissionRole(t,'red');writeText('fr:0.0.0.0','DS FOR VL');const second=roleTarget(0,'role-persist')!;setMissionRole(second,'blue');await postman.flush()
-  expect(second.id).not.toBe(t.id);const firstBytes=be.peek('settings','missionrole:'+t.id),secondBytes=be.peek('settings','missionrole:'+second.id)
-  postman.detach();await boot(be);expect(readRole(t.id)?.side).toBe('red');expect(readRole(second.id)?.side).toBe('blue');expect(be.peek('settings','missionrole:'+t.id)).toBe(firstBytes);expect(be.peek('settings','missionrole:'+second.id)).toBe(secondBytes)
+  expect(second.id).not.toBe(t.id);const firstBytes=be.peek('settings','u142@missionrole:'+t.id),secondBytes=be.peek('settings','u142@missionrole:'+second.id)
+  postman.detach();await boot(be);expect(readRole(t.id)?.side).toBe('red');expect(readRole(second.id)?.side).toBe('blue');expect(be.peek('settings','u142@missionrole:'+t.id)).toBe(firstBytes);expect(be.peek('settings','u142@missionrole:'+second.id)).toBe(secondBytes)
 })
 it('MIX12 existing pre-schema wipe filters annotation rows and unfinished journal while preserving other settings',async()=>{
   const {t}=await setup();postman.detach();const be=new MemoryBackend();be.seed({settings:{schema:'4',['missionrole:'+t.id]:'old annotation',insights:'{"trackBlueRedSorties":true}'},weeks:{old:'{}'}})

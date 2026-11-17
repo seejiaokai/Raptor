@@ -111,9 +111,14 @@ const SEED: readonly Account[] = Object.freeze([
   { id: 'acus', name: 'us', role: 'main', pid: 'bane', on: true },
   { id: 'acoutlaw', name: 'outlaw', role: 'main', pid: 'casper', on: true },
   { id: 'achex', name: 'hex', role: 'main', pid: 'rocky', on: true },
+  /* multi-squadron batch 1, step 4: the second demo squadron's admin (Kestrel) and member (Osprey), and a second 142
+     admin (Hunter) — so a walk can sign in on each side and see both squadrons' admins told of one change */
+  { id: 'acad9', name: 'ad9', role: 'admin', pid: 'kes9', on: true },
+  { id: 'acus9', name: 'us9', role: 'main', pid: 'osp9', on: true },
+  { id: 'acad2', name: 'ad2', role: 'admin', pid: 'prowler', on: true },
 ].map(a => Object.freeze(a as Account)))
 /* code only — never written to a stored record (see the header) */
-const SEED_PASS: Record<string, string> = { acad: 'a', acus: 'us' }
+const SEED_PASS: Record<string, string> = { acad: 'a', acus: 'us', acad9: 'a9', acus9: 'us9', acad2: 'a2' }
 
 /* THE SEEDS ARE THE DEMO'S ([DB-READINESS] group A, phase 5.3 — plan §3 phase 5.3). On a SHARED store (the boot
    policy's `seedDemo` false — src/bootpolicy.ts, set at every boot by state/seeds.ts) there are none: no account rows

@@ -60,7 +60,7 @@ export function SansDay({ iso, hi, onClose }: {
   useWarFacts()
   /* which late commitment's note is showing (its input id) */
   const [lateOpen, setLateOpen] = useState<string | null>(null)
-  const a = flyAnswer(iso), facts = dayFacts(iso), com = sansCommittedOn(iso), g = sansDayGroups(iso, inputsFor(myUnit(), iso), unitPeople(myUnit(), iso))
+  const a = flyAnswer(iso), facts = dayFacts(iso), com = sansCommittedOn(iso, undefined, unitPeople(myUnit(), iso)), g = sansDayGroups(iso, inputsFor(myUnit(), iso), unitPeople(myUnit(), iso))
   const canAdd = maySansAdd()
   const avail = { p: facts.availP, w: facts.availW }
 

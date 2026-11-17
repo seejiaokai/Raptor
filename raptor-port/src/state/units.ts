@@ -15,6 +15,7 @@ import { newId } from '../engine/newid'
 import { isCommitting, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
 import { setHomeResolver } from '../engine/roster'
+import { DEMO_149_PEOPLE } from './demoseed'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
   rowsFrom, placeIdOn, homeUnitOn, grantIn, unitIn, placeIn, levelFrom, moveFrom,
@@ -26,14 +27,16 @@ export interface UnitSave { ok: boolean; message?: string; id?: string; pending?
 
 /* ---- the seeds (demo data, D56 — wiped with everything else before the database) ----
    Two squadrons at one place, both there from a far-past date; on the demo only, a person with no home row is at 142
-   (on a shared store, nowhere — his home is written when he is made, and the first admin's at the store's first boot). */
+   (on a shared store, nowhere — his home is written when he is made, and the first admin's at the store's first boot).
+   Since step 4 the demo's 149 has people of its own (state/demoseed.ts DEMO_149_PEOPLE): each one's home row is a seed
+   too, from the same far-past date — read from memory like every seed here, never written at load. */
 export const DEMO_HOME = 'u142'
 const SEED: UnitRows = {
   units: [{ id: 'u142', num: '142', kind: 'sqn' }, { id: 'u149', num: '149', kind: 'sqn' }],
   places: [{ id: 'p1', name: 'Home base', tz: 'Australia/Perth' }],
   unitplaces: [{ id: 'up142', unit: 'u142', place: 'p1', from: '2000-01-01' }, { id: 'up149', unit: 'u149', place: 'p1', from: '2000-01-01' }],
   grants: [],
-  homes: [],
+  homes: DEMO_149_PEOPLE.map(([pid]) => ({ id: 'h' + pid, pid, unit: 'u149', from: '2000-01-01' })),
 }
 let SEEDS_ON = true
 export function setUnitSeeds(on: boolean): void { SEEDS_ON = on; ROWS = null }

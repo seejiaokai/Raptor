@@ -30,19 +30,18 @@ const ALLOWED: Record<string, { n: number; why: string }> = {
   'ui/inputscal-model.ts': { n: 7, why: 'the Inputs calendar\'s filters and names: the people record is read by id for the men IN an input, never walked' },
   'ui/placedline.ts': { n: 3, why: '"By Saber": the filer\'s name, read by id, never walked' },
   'ui/sanscal-model.ts': { n: 2, why: 'the SANS calendar\'s Highlight list (sansRoster) and day (sansDayGroups) walk the record they are HANDED — their screens hand them the signed-in person\'s own squadron (unitPeople(myUnit()) in ui/SansCal.tsx, ui/SansDay.tsx); the default is for their tests' },
-  'state/flyplan.ts': { n: 1, why: 'the SANS men committed on a date (sansCommittedOn), counted into the Leave War\'s and the SANS calendar\'s needs: the SANS day hands it its own squadron\'s people; the need figures go per squadron with the Leave War in batch 1\'s step 4' },
+  'state/flyplan.ts': { n: 1, why: 'the SANS men committed on a date (sansCommittedOn): its default people list only — every reader in the app hands it one squadron\'s people on the date since step 4 (the SANS day and month, the Leave War\'s need figures through leavewar/sync.ts flyAnswer, engine/roster.ts unitPeople)' },
   'engine/overlay.ts': { n: 1, why: 'the deleted men and the day each is gone from (deletedCutoffs) — a deleted man is stripped from EVERY squadron\'s weeks, so it must see every squadron\'s deleted men' },
   'state/person-delete.ts': { n: 2, why: 'the deleted men again — stripped from an incoming day, and checked against an Undo or Redo — whatever squadron they were in' },
   'state/roster-restore.ts': { n: 1, why: 'the image of the WHOLE roster a restore is checked against (every record, copied)' },
   'state/people-settings-commit.ts': { n: 12, why: 'storage and the one write funnel: the baseline and its rollback are the whole record, laid back whole; a resync and the seed\'s new bodies walk every record by definition' },
   'state/persist.ts': { n: 3, why: 'storage: the whole roster loaded and saved, one row a person' },
   'state/seeds.ts': { n: 1, why: 'the seed: the whole roster emptied before the seed is laid' },
-  'state/demoseed.ts': { n: 5, why: 'the demo seed: picks its seeded men out of the demo\'s one squadron by callsign and seat, before any second squadron exists' },
+  'state/demoseed.ts': { n: 6, why: 'the demo seed: picks its seeded men out of the demo\'s one squadron by callsign and seat, before the second squadron\'s people are seeded — and, seeding 149 (step 4, seedDemo149), puts the placeholders back last in the people\'s key order' },
   'ui/peoplepick-model.ts': { n: 1, why: 'the two placeholders (ALL AVAIL, ALL) — on every squadron\'s schedule, nobody\'s own' },
   'probe-bridge.ts': { n: 1, why: 'the developer\'s test bridge hands the browser tests the whole record' },
   'state/accounts.ts': { n: 1, why: 'who an account can be linked to (linkablePeople): Admin → Users\' squadron of its own — whose people an admin links and sees — is batch 1\'s step 5 (the plan §3.6; O3), not this step' },
   'ui/UsersPanel.tsx': { n: 1, why: 'Admin → Users\' list of everyone: his own squadron\'s people only, the other\'s found by search, is batch 1\'s step 5 (the plan §3.6; O3)' },
-  'tracker/peoplewire.ts': { n: 2, why: 'the Tracker\'s people bridge: the Tracker becomes a whole world per squadron in batch 1\'s step 4 (the plan §3.4 "The Leave War and the Tracker"), which narrows this projection' },
 }
 
 const counts = countAll(SRC, WALK)

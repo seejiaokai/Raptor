@@ -208,10 +208,11 @@ function rawStoreSet(k: any, v: any) {
    records that never meet. A name that already carries a unit is that unit's, read and written as it is — the command
    layer's records name every unit's rows that way (state/people-settings-commit.ts), and an Undo of one unit's setting
    writes it back by that name whichever unit is in view. A community setting (an account, a seen mark, the stamp) keeps
-   its plain name. Two of keyowner's unit prefixes are NOT qualified yet, each with its reason: `missionrole:` rows are
-   keyed by a week and formation the blue/red answers' own codec does not yet carry a unit in (engine/mission-role.ts —
-   filed for step 3), and `elog:`, the change history, is read by every person across the app (the changes window, the
-   bell's "new to you" marks) and goes per unit with the history's own step (step 4). */
+   its plain name. Two of keyowner's unit prefixes are NOT qualified HERE, each with its reason: `missionrole:` rows are
+   never written through store.set (the typed annotation command alone writes them, and its row mapper files each under
+   the unit in view since step 4 — state/persist.ts hydrateRolesFor), and `elog:`, the change history, is read by every
+   person across the app (the changes window, the bell's "new to you" marks) and goes per unit with the history's own
+   step, after batch 1. */
 const QUALIFIED_PREFIXES = UNIT_SETTING_PREFIXES.filter(p => p !== 'missionrole:' && p !== 'elog:')
 export const isUnitSetting = (name: string): boolean =>
   UNIT_SETTINGS.includes(name) || QUALIFIED_PREFIXES.some(p => name.startsWith(p))

@@ -284,8 +284,9 @@ export function noticeHoliday(to: readonly string[], by: string | null, name: st
 /* how many inputs on a run of dates still need an OIL answer — the Leave War's to say (leavewar/sync.ts oilOpenOn),
    handed over by the sync's wiring so state/ never imports the war (the inputgate-hook way). No reader installed (a
    scheduler-only test): nothing is left. */
-let HOL_LEFT: ((a: string, b: string) => number) | null = null
-export function setHolidayLeft(fn: ((a: string, b: string) => number) | null): void { HOL_LEFT = fn }
+/* (`pid` — whose line it is: each admin counts his own squadron's inputs, multi-squadron step 4, D2184 R32) */
+let HOL_LEFT: ((a: string, b: string, pid?: string | null) => number) | null = null
+export function setHolidayLeft(fn: ((a: string, b: string, pid?: string | null) => number) | null): void { HOL_LEFT = fn }
 const holOf = (n: Notice): { a: string; b: string } | null => { const p: any = (n.what || [])[0]; return p && p.k === 'oilhol' ? { a: String(p.a), b: String(p.b || p.a) } : null }
 /* THE DAYS OF A NOTICE'S RUN THAT ARE STILL A HOLIDAY — read from the war as it stands, the same way as the count (the
    two code reads of the finished code, 13 Oct 26 — Fable F1, the Opus read F3). A notice keeps the dates as they were
@@ -299,7 +300,7 @@ export function setHolidaySpan(fn: ((a: string, b: string) => HolidaySpan | null
 /** a holiday notice's dates — and its name — as the holiday stands now; null for any other notice, and where no day of it is a holiday any more */
 export function noticeSpan(n: Notice): HolidaySpan | null { const h = holOf(n); return !h ? null : HOL_SPAN ? HOL_SPAN(h.a, h.b) : h }
 /** how many inputs a holiday's notice still counts (0 for any other notice) */
-export function noticeLeft(n: Notice): number { const s = noticeSpan(n); return s && HOL_LEFT ? HOL_LEFT(s.a, s.b) : 0 }
+export function noticeLeft(n: Notice): number { const s = noticeSpan(n); return s && HOL_LEFT ? HOL_LEFT(s.a, s.b, n.to) : 0 }
 /** IS THIS NOTICE ONE TO SHOW? Every notice about an input is. A holiday's is only while an input on its dates still
  *  needs an answer — and, where the same dates were made a holiday more than once (made, taken away, made again), only
  *  the NEWEST of them: one line a holiday (D783 (6); Fable's read of the plan, A7). ONE BODY, read by the bell's list,

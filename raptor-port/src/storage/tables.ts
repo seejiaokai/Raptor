@@ -45,6 +45,8 @@ export function tableOf(collection: Collection, id: string): string {
     case 'people': return 'Person'
     case 'plan': return localOf(id).startsWith('dm:') ? 'DayRemark' : 'PlanningPuck'   // `u149@dm:<iso>`: the unit split off first (step 2)
     case 'leavewar':
+      /* a squadron's world since step 4: `u149@war:<id>` — the unit split off first (storage/adapters.ts) */
+      id = localOf(id)
       if (id.startsWith('war:')) return 'LeaveWar'
       if (id.startsWith('rec:')) return 'LeaveBid'
       if (id.startsWith('ledger:')) return 'LeaveLedger'
@@ -74,7 +76,7 @@ export function tableOf(collection: Collection, id: string): string {
       if (id.startsWith('grant:')) return 'UnitGrant'
       if (id.startsWith('home:')) return 'PersonHome'
       return 'Setting'
-    case 'tracker': return TRACKER(id)
+    case 'tracker': return TRACKER(localOf(id))   // `u149@v3:…` — the unit split off first (step 4)
     case 'changes': return 'ChangeBatch'
     case 'notices': return 'Notice'
   }

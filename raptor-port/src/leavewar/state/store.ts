@@ -65,6 +65,7 @@ import {
   GROUP_ORDER,
   orderedPeople,
   readEventDefs,
+  holidayAt,
   DEFAULT_OIL_POLICY,
   readOilPolicy,
   type OilPolicy,
@@ -1120,10 +1121,32 @@ let INIT_HOOK: (() => void) | null = null
 /** Test-only: run after every initStore (the Leave War suite's seed absences). */
 export function _setInitHook(fn: (() => void) | null): void { INIT_HOOK = fn }
 
-export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDemo?: boolean } = {}): void {
+/* WHOSE WORLD THIS IS (multi-squadron batch 1, step 4 — the plan §3.4 "The Leave War and the Tracker — each a whole world
+   per unit"). The store holds ONE squadron's Leave War — its wars, records, ledger, openings, figures, grades, profiles
+   and settings — read through that squadron's own door (storage/adapters.ts leavewarAdapter(wb, unit)); its roster is
+   that squadron's people (state/raptorRoster.ts projectPeople). The boot loads the boot unit's; signing in loads the
+   person's own squadron's in its place (sync.ts swapWarWorld). The store never filters: the other squadron's records
+   are simply not in it. 'u142' — the demo's squadron — until a boot or a swap names one. */
+let WORLD_UNIT = 'u142'
+export const worldUnit = (): string => WORLD_UNIT
+
+export function initStore(b?: StorageBackend, opts: {
+  started?: boolean; seedDemo?: boolean
+  /** the squadron whose world this is (the door `b` is its own) — the store's own tests leave it at the demo's */
+  unit?: string
+  /** a store that has not started takes the seed's wars WITH their demo records (the seed people's bids, openings and
+   *  ledger, which the demo world dresses onto 142's men) — false for a second squadron's first world: the same leave
+   *  periods and holidays, nobody's records (its people are not the seed's) */
+  demoRecords?: boolean
+  /** a SWAP of worlds after the boot (sync.ts swapWarWorld): the page's and the sync's subscribers stay — the boot's
+   *  first load clears them, as it always has */
+  keepListeners?: boolean
+} = {}): void {
   backend = b ?? localBackend()
   state = blank()
   BOOT_KEYS = null
+  WORLD_UNIT = opts.unit ?? 'u142'
+  const demoRecords = opts.demoRecords ?? true
 
   /* [DB-READINESS] group A, phase 3 — THE WAR IS READ FROM ITS ROWS (state/rows.ts). Whether the store has STARTED is
      the boot's answer (main.tsx: the stamp's `initialized` — storage/schema.ts), or, standalone and in the tests,
@@ -1137,7 +1160,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
   const started = opts.started ?? backend.keys().some(k => k.startsWith(WAR))
   const seedDemo = opts.seedDemo ?? true
   const stored = started ? readWorldRows() : null
-  const wars = stored ? stored.wars : seedDemo ? seedWars() : []
+  const wars = stored ? stored.wars : seedDemo ? (demoRecords ? seedWars() : seedWars().map(w => ({ ...w, recs: {} }))) : []
   /* THE TAB ALWAYS OPENS ON THE WAR BEING WORKED (owner, 7 Sep 26, restated
      and reaffirmed 17 Sep 26) — since the stages went (D1177, 21 Oct 26), on the
      period holding the first open date from today, else on the one holding
@@ -1154,8 +1177,8 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
      database may yet want it per user; it is simply not honoured at boot. */
   const currentId = landingOf(wars.map(w => w.period), memberToday())?.periodId ?? (wars[0] ? wars[0].period.id : '')
 
-  const openings = stored ? stored.openings : seedDemo ? seedOpenings() : {}
-  const ledger = stored ? stored.ledger : seedDemo ? seedLedger() : []
+  const openings = stored ? stored.openings : seedDemo && demoRecords ? seedOpenings() : {}
+  const ledger = stored ? stored.ledger : seedDemo && demoRecords ? seedLedger() : []
   const eventDefs = readStored('eventdefs', readEventDefs) ?? seedEventDefs()
   const oilPolicy = readStored('oilpolicy', readOilPolicy) ?? { ...DEFAULT_OIL_POLICY }
   const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
@@ -1213,7 +1236,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
   LW_BASELINE = state
 
   version = 0
-  listeners.clear()
+  if (!opts.keepListeners) listeners.clear()
   MERGED = null
   // [ARCH-STACK] step 4 — the Leave War suite's setup files the seed's
   // approved leave as Inputs here (test-only; production files it through
@@ -1267,21 +1290,76 @@ function syncAwardIndex(ledger: Ledger): void {
   LAST_AWD_VER = awardVersion()
 }
 
+/* ---- PUBLIC HOLIDAYS BELONG TO A PLACE (multi-squadron batch 1, step 4 — D2160, D2165, D2184: "squadrons at one place
+   share one public-holiday list, each its own Off day") -----------------------------------------------------------------
+   A public holiday is still written into the war of the squadron whose admin typed it (the Holidays list, D638) — but a
+   squadron at the same PLACE on that date keeps it too. So the war a person opens is read with every public holiday the
+   other squadrons at its place hold on their dates laid onto its days: the day reads as a public holiday everywhere a
+   day is read — the grid's Event row, leave charging (engine/charge.ts), the OIL earning day, the calendars' tag and the
+   Holidays list. Laid on at READ only, never stored: a write reads the raw state (rawState), so nothing of another
+   squadron's is ever saved into this one's war. Which holidays to lay on is the sync's to say (leavewar/sync.ts
+   placeHolidaysFor — it reads the other squadrons' stored wars and the places by date); by date, so a later move of a
+   squadron never rewrites a past day's leave charge. An Off day is never laid on: it stays its own squadron's.
+   A day that already reads as a public holiday here is left as it is; otherwise the holiday takes the first Event row
+   free on that day, worded as the squadron that holds it wrote it. */
+export type PlaceHoliday = { name: string; short: string }
+let PLACE_PH: (() => ReadonlyMap<string, PlaceHoliday> | null) | null = null
+let PLACE_VER = 0
+const OVERLAID = new WeakMap<LeaveWar, { ver: number; defs: EventDef[]; war: LeaveWar }>()
+/** the sync hands over where the other squadrons' public holidays at this squadron's place come from (null: none) */
+export function setPlaceHolidays(fn: (() => ReadonlyMap<string, PlaceHoliday> | null) | null): void { PLACE_PH = fn; placeHolidaysMoved() }
+/** what they read from has moved (another squadron's world loaded, a place changed) — every war is laid again */
+export function placeHolidaysMoved(): void { PLACE_VER++; MERGED = null; notify() }
+function withPlaceHolidays(w: LeaveWar, map: ReadonlyMap<string, PlaceHoliday> | null): LeaveWar {
+  if (!map || !map.size) return w
+  const hit = OVERLAID.get(w)
+  if (hit && hit.ver === PLACE_VER && hit.defs === state.eventDefs) return hit.war
+  let changed = false
+  const days = w.period.days.map(d => {
+    const h = map.get(d.date)
+    if (!h || d.ph || holidayAt(state.eventDefs, d, w.period.bands)?.kind === 'off') return d
+    let line = 0
+    while (line < Math.max(state.eventRows, 1) && (d.events[line] || w.period.bands.some(b => b.line === line && b.from <= d.date && d.date <= b.to))) line++
+    changed = true
+    return { ...writeDayEvent(d, line, h.name, 'off', h.short || null), ph: true }
+  })
+  const out = changed ? { ...w, period: { ...w.period, days } } : w
+  OVERLAID.set(w, { ver: PLACE_VER, defs: state.eventDefs, war: out })
+  return out
+}
+
+/** the wars another squadron keeps behind its own door, read as the boot reads them (readWar) — its periods (days,
+ *  bands, events) and its event types — for the sync's place-holiday and OIL-day reads (leavewar/sync.ts). Records are
+ *  not read: nothing outside a squadron's own war reads another's leave. */
+export function readStoredPeriods(b: StorageBackend): { periods: Period[]; eventDefs: EventDef[] | null } {
+  const periods: Period[] = []
+  const parse = (k: string): unknown => { try { return JSON.parse(b.read(k) ?? 'null') } catch { return undefined } }
+  for (const k of b.keys()) {
+    if (!k.startsWith(WAR)) continue
+    const w = readWar({ period: parse(k), recs: {} })
+    if (w && w.period.id === k.slice(WAR.length)) periods.push(w.period)
+  }
+  const defs = parse('eventdefs')
+  return { periods, eventDefs: defs == null ? null : readEventDefs(defs) }
+}
+
 /* the merged read, cached on the raw state ref, the absence index version and
    the award index version, so a view-only render pays nothing (design §4.2/§4.3) */
-let MERGED: { raw: State; ver: number; awd: number; out: MergedState } | null = null
+let MERGED: { raw: State; ver: number; awd: number; ph: number; out: MergedState } | null = null
 export function getState(): MergedState {
   syncAwardIndex(state.ledger)
   const ver = absenceVersion()
   const awd = awardVersion()
-  if (MERGED && MERGED.raw === state && MERGED.ver === ver && MERGED.awd === awd) return MERGED.out
-  const wars = state.wars.map(mergeWar)
+  if (MERGED && MERGED.raw === state && MERGED.ver === ver && MERGED.awd === awd && MERGED.ph === PLACE_VER) return MERGED.out
+  const phMap = PLACE_PH ? PLACE_PH() : null
+  const wars = state.wars.map(w => mergeWar(withPlaceHolidays(w, phMap)))
   const cur = wars.find(w => w.period.id === state.currentId) ?? wars[0]
   /* no war at all (phase 5 — withCurrent): nothing on any person's any day */
   const out: MergedState = cur
-    ? { ...state, wars, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
+    /* the top-level period is the current war's as read — with its place's public holidays laid on (above) */
+    ? { ...state, wars, period: cur.period, grid: cur.grid, states: cur.states, views: cur.views, spans: cur.spans }
     : { ...state, wars, grid: {}, states: {}, views: {}, spans: new Map() }
-  MERGED = { raw: state, ver, awd, out }
+  MERGED = { raw: state, ver, awd, ph: PLACE_VER, out }
   return out
 }
 

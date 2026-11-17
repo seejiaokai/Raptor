@@ -70,7 +70,7 @@ describe('AC1 — the sign-in stands for the defence-mail sign-in (D166 (2))', (
     expect(addAccount('pike@mail', 'pike', 'main')).toBe(null)
     /* one stored row per account ([DB-READINESS] group A, phase 4.4) — the seeded ones stored with the first write */
     const rows = Object.keys(mem).filter(k => k.startsWith('sqn142_account:')).map(k => mem[k]!)
-    expect(rows.length).toBe(5)
+    expect(rows.length).toBe(8)   // the four seeded, three more since multi-squadron step 4 (149's admin and member, a second 142 admin), and pike
     for (const r of rows) expect(r).not.toMatch(/pass/i)
     /* every field a stored account may carry, and nothing else — `seenFrom` since [DRAFT-PENDING] (Fable F6: where the
        change history stood when the account was made — a position since phase 4.3), `createdAt` since phase 4.4 (the
@@ -189,6 +189,10 @@ describe('AC4 — the guards (each refusal says why)', () => {
     /* an admin session whose own account is not in the list (so "not your own" does
        not stand in the way) cannot demote the last admin */
     setSession({ user: 'someone', role: 'admin', pid: 'nact', name: 'someone' })
+    /* the demo carries three admins since multi-squadron step 4 (149's, and a second 142 admin): the other two step down
+       first, so `acad` is the last one */
+    expect(updateAccount('acad9', { role: 'main' })).toBe(null)
+    expect(updateAccount('acad2', { role: 'main' })).toBe(null)
     expect(updateAccount('acad', { role: 'main' })).toMatch(/At least one admin/)
     expect(updateAccount('acad', { on: false })).toMatch(/At least one admin/)
   })

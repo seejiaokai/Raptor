@@ -16,16 +16,19 @@
 import { HOOKS } from '../engine/hooks'
 import { INPUTS } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
+import { myUnit } from '../state/perms'
 import { stampChanged } from '../state/inputstamp'
 import { oilOpenOn } from '../leavewar/sync'
+import { units } from '../state/units'
 import { saveBatchX } from './inputedit'
+import { sayDate } from './daysfmt'
 
 export type OilPick = 'y' | 'n'
 
 /** Save the picked answers. Answers how many inputs were answered; -1 where the save was refused (it said why). */
 export function saveOilDay(from: string, to: string, picks: Readonly<Record<string, OilPick | undefined>>): number {
   if (!canEditSched()) { HOOKS.toast('Only a scheduler answers from this list', 'warn'); return -1 }
-  const todo = oilOpenOn(from, to).filter(o => picks[o.iid] === 'y' || picks[o.iid] === 'n')
+  const todo = oilOpenOn(from, to, myUnit()).filter(o => picks[o.iid] === 'y' || picks[o.iid] === 'n')
   if (!todo.length) return 0
   let n = 0
   const out = saveBatchX(() => {
@@ -43,4 +46,21 @@ export function saveOilDay(from: string, to: string, picks: Readonly<Record<stri
   if (!out.ok) return -1
   HOOKS.toast(n === 1 ? 'OIL answered for 1 input' : `OIL answered for ${n} inputs`, 'ok')
   return n
+}
+
+/** WHAT A NEW PUBLIC HOLIDAY PUTS OUT OF DATE, said before it is saved (multi-squadron batch 1, step 4 — D2184 R32): every
+ *  squadron at the place keeps the holiday, so each one's published days on its dates were published as working days
+ *  and must be published again before their OIL is earned (the day's own amber line says so after, D2003). Every fact
+ *  first — whose days and which — then what to do (here, not in HolidaysPanel.tsx, so that file exports its window
+ *  only — the code check's one-component-file rule): "This puts a published day out of date: 142's Mon 20 Jul. Publish
+ *  it again so OIL is earned." '' where nothing is. */
+export function outOfDateSaid(list: { unit: string; days: string[] }[]): string {
+  const n = list.reduce((s, x) => s + x.days.length, 0)
+  if (!n) return ''
+  const num = (u: string) => units().find(x => x.id === u)?.num ?? u
+  const and = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`)
+  const parts = list.map(x => `${num(x.unit)}'s ${and(x.days.map(sayDate))}`).join('; ')
+  return n === 1
+    ? `This puts a published day out of date: ${parts}. Publish it again so OIL is earned.`
+    : `This puts published days out of date: ${parts}. Publish them again so OIL is earned.`
 }

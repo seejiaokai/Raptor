@@ -30,7 +30,7 @@ import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs, seedRids } from '../engine/weeks-data'
-import { seedDemoSans, seedDemoMedical, seedDemoStamps, seedDemoGroup, seedDemoPlaceholders } from './demoseed'
+import { seedDemoSans, seedDemoMedical, seedDemoStamps, seedDemoGroup, seedDemoPlaceholders, seedDemo149 } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
@@ -51,7 +51,7 @@ import { me, roleOf, isAdmin, mayViewAsMember, switchRoleInForce } from './perms
 import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
-import { isHydrated, hydratePlan, persistWb } from './persist'
+import { isHydrated, hydratePlan, hydrateRolesFor, persistWb } from './persist'
 import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone } from '../command'
 /* internal wiring may raise a command as a named person (command/index.ts — commitAs stays off the public surface) */
 import { commitAs } from '../command/commit'
@@ -457,6 +457,12 @@ export function resetSession(s: any) {
      (state/units.ts homeOn), the boot unit for a logout, a headless call or someone with no home. Already there — every
      sign-in on the demo today — it moves nothing. */
   switchUnit(sessionUnit(s && s.pid))
+  /* …AND HIS OWN SQUADRON'S LEAVE WAR (multi-squadron batch 1, step 4 — D2132: the Leave War stays on his own squadron
+     whatever schedule is in view). The war is a world per squadron and the boot loaded the boot unit's before anyone
+     signed in; the sync loads his own in its place (leavewar/sync.ts swapWarWorld — installed by its wiring, so this
+     file never imports the war's sync). Before the Undo list is cleared below, so the swap's own passes are no step
+     of his. Nothing when it is already loaded — every 142 sign-in on the demo. */
+  SESSION_WORLD?.(sessionUnit(s && s.pid))
   /* the undo list is per sign-in (13 Sep 26; D148 — "the list clears when they sign
      out"): the global undo never cleared it, so an admin signing in after a member
      could reverse the member's change (Fable R1-7, Astra R1-10) */
@@ -831,6 +837,8 @@ export function switchUnit(unit: string): void {
   PLAN_MEM.set(UNIT, { pucks: keptPucks, titles: { ...DAYRMK } })
   setUnitInView(unit)
   reloadUnitSettings()
+  /* the blue/red answers held in memory are the unit in view's (state/persist.ts hydrateRolesFor) */
+  { const wb = persistWb(); if (wb) hydrateRolesFor(wb, unit) }
   const kept = PLAN_MEM.get(unit)
   if (kept) {
     PLANPUCKS.length = 0; kept.pucks.forEach(p => PLANPUCKS.push(p))
@@ -845,6 +853,10 @@ export function switchUnit(unit: string): void {
 }
 /* the unit a session starts in: the signed-in person's home today (state/units.ts homeOn — D2094), else the boot unit
    (headless, nobody signed in, a person with no home) */
+/* the hook the Leave War's sync installs to load a squadron's world at sign-in (resetSession, above) — null until it is
+   wired (a test that never boots the war) */
+let SESSION_WORLD: ((unit: string) => void) | null = null
+export function setSessionWorldHook(fn: ((unit: string) => void) | null): void { SESSION_WORLD = fn }
 function sessionUnit(pid: string | null | undefined): string {
   const h = pid ? homeOn(String(pid), todayIso()) : null
   return h && isUnitId(h) ? h : BOOT_UNIT
@@ -1042,6 +1054,12 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
     seedDemoGroup()
     /* an input filed for ALL AVAIL and an Event filed for ALL, so both are on every list from the first look */
     seedDemoPlaceholders()
+    /* the second demo squadron's people and their two inputs (multi-squadron batch 1, step 4 — state/demoseed.ts) */
+    seedDemo149()
+    /* …people the roster did not hold when its order and the people baseline were taken above: each gets his place in
+       the order, and the baseline is taken again — so the first people command writes only what it changed, never the
+       ten seeded people (they are stored with the seed's rows, state/persist.ts writeSeedRows) */
+    mintPeopleOrd(); resyncPeopleBaseline()
     /* who placed each demo input, and when — made up, as they are (D629; state/demoseed.ts says why and what it never
        does). After the seeds above, so every one of their rows is there to stamp. */
     seedDemoStamps()

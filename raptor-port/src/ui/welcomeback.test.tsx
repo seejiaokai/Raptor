@@ -37,8 +37,10 @@ let root: Root
 let PEOPLE0 = ''
 beforeAll(async () => {
   storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } }
-  PEOPLE0 = JSON.stringify(PEOPLE)
   initStore(); accountsLoad()
+  /* the world as the boot leaves it — taken AFTER initStore, which seeds 149's demo people since multi-squadron step 4:
+     a copy taken before it put them back out at every reset, and his own-row write then read as removing kes9's row */
+  PEOPLE0 = JSON.stringify(PEOPLE)
   host = document.createElement('div')
   document.body.appendChild(host)
   root = createRoot(host)

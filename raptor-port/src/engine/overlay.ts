@@ -227,7 +227,7 @@ export function asIssuedOrder(f: any, issuedRow: any): any {
      out as ALn" tag where only the new man's is a change (D93, D736). Someone who LEFT closes the gap as before — the
      next man takes his place (state/inputcount.test.ts "the first person leaves"). */
   const order = [...was.filter(p => have.has(p)), ...now.filter(p => !went.has(p))]
-  if (order.join(' ') === now.join(' ')) return f
+  if (order.join('\u0000') === now.join('\u0000')) return f   // the separator as an escape, never a raw NUL byte: React Doctor reads a file holding one as binary and cannot compare it
   f.who = order[0]
   if (order.length > 1) f.more = order.slice(1); else delete f.more
   return f

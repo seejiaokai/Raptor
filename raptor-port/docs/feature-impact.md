@@ -817,6 +817,24 @@ stashEntries()` — a person's delete (`state/person-delete.ts stashPreflight`) 
 (`state/roster-restore.ts stillNamed`) — never `stashKeys()`, the unit in view's alone. Pinned by
 `state/units-roster.test.ts`.
 
+#### Whose Leave War, whose Tracker, whose holiday? (the multi-squadron build, batch 1, step 4, 18 Nov 26)
+Each squadron's Leave War and Tracker is a whole world of its own behind its own door (`storage/adapters.ts
+leavewarAdapter(wb, unit)`, `trackerTarget(wb, unit)`); neither store knows a squadron exists. The Leave War loaded is
+the signed-in person's home unit's — `leavewar/sync.ts swapWarWorld` at every sign-in (the store's `resetSession` hook),
+re-projecting its roster, absences and OIL for that unit; the Tracker binds his unit at its first load
+(`tracker/storage.js markStorageLoaded`) and its + Add offers that unit's people only (`tracker/peoplewire.ts`). The
+seams: (1) a reader that needs ANOTHER squadron's war reads it from that unit's door (`sync.ts storedWorld`), never from
+the store, which holds one world; (2) a public holiday is laid onto every squadron at the same place on that date at
+READ (`placeHolidaysFor` → `leavewar/state/store.ts setPlaceHolidays`), never copied into another squadron's war —
+`dayFacts`, the grid, `HOOKS.oilEarningDay` and `nonWorkingFor(unit, iso)` all see it, an Off day stays its own
+squadron's; a new reader of "is this day a holiday" must ask through them, or 149's holiday is a working day for 142;
+(3) a new holiday names, before it is saved, each squadron's published days it puts out of date
+(`sync.ts holidayOutOfDate` → `ui/oilday.ts outOfDateSaid`, shown by `ui/HolidaysPanel.tsx`, D2184 R32), and the OIL bell line reaches each
+squadron's schedulers for its own inputs only; (4) a Leave War bell line about a posting goes to the war's own squadron's
+admins (`ownSchedulerIds`). Still open: signing out does not reload the app (O8), so a second person of the other
+squadron on the same tab keeps the first one's Tracker. Pinned by `leavewar/holidays-by-place.test.ts`,
+`tracker/trk-per-unit.test.ts`, `state/multi-sqn-step4.test.ts`, `leavewar/postout-notice.test.ts`.
+
 #### Does this standby row fly? ([STANDBY-FLIES], D1042–D1046, D1061, D1062, 19 Oct 26)
 One body answers it — `engine/waves.ts saFlies` (a shift with its B or R typed, or the row's hand tick; never a cancelled
 one) — and every reader asks it: the checks (`saExempt`, `events.ts` — a flying AVALON / BB row leaves `sacrew`), the crew

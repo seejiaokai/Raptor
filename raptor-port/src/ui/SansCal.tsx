@@ -328,7 +328,7 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
             {week.map((iso, ci) => {
               if (!iso) return <div key={'x' + ci} className="sc-x" />
               const a = answers[iso], facts = dayFacts(iso)
-              const com = sansCommittedOn(iso)
+              const com = sansCommittedOn(iso, undefined, unitPeople(myUnit(), iso))   // his own squadron's SANS men (step 4)
               const c = sansCell(a, facts.short, com)
               const mine = sansMine(com, hi)
               const picked = !!run && iso >= run.a && iso <= run.b

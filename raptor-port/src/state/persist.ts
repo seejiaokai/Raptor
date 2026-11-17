@@ -131,7 +131,8 @@ export const isHydrated = () => hydrated
    the old sniff: the war's old whole record, or — since the war is one row per record (phase 3) — any
    war row. A started store must never get the demo world back. */
 export function leaveWarStarted(wb: Whiteboard): boolean {
-  return storeInitialized(wb) ?? (wb.has('leavewar', 'wars') || wb.keys('leavewar').some(k => k.startsWith('war:')))
+  /* a war row of ANY squadron's world (its key `<unit>@war:<id>` since step 4 — storage/adapters.ts), or one from before */
+  return storeInitialized(wb) ?? (wb.has('leavewar', 'wars') || wb.keys('leavewar').some(k => localOf(k).startsWith('war:')))
 }
 
 function parse(json: string | null): any {
@@ -188,9 +189,19 @@ const isRecord = (r: any) => !!r && typeof r === 'object' && !Array.isArray(r)
 /** the whiteboard this app saves to — for state/store.ts switchUnit, which re-reads a unit's planning calendar from it */
 export const persistWb = (): Whiteboard | null => wbRef ?? wiredTo
 
+/* A SQUADRON'S BLUE/RED ANSWERS ARE ITS OWN (multi-squadron batch 1, step 4 — closing step 3's open item): each answer
+   row is stored under the unit whose schedule it was given on (`u142@missionrole:<id>`), so 142's and 149's answers on
+   the same Monday never meet, however their formations are named; the answers held in memory are the unit IN VIEW's,
+   read again whenever the unit in view changes (state/store.ts switchUnit). */
+const ROLE_PFX = 'missionrole:'
+export function hydrateRolesFor(wb: Whiteboard, unit: string = UNIT): void {
+  const pfx = qualify(unit, ROLE_PFX)
+  hydrateRoles(wb.keys('settings').filter(k => k.startsWith(pfx)).map(k => [k.slice(pfx.length), parse(wb.get('settings', k))] as [string, unknown]))
+}
+
 /** whiteboard → module singletons; call BEFORE initStore() */
 export function hydrate(wb: Whiteboard): void {
-  hydrateRoles(wb.keys('settings').filter(k=>k.startsWith('missionrole:')).map(k=>[k.slice('missionrole:'.length),parse(wb.get('settings',k))] as [string,unknown]))
+  hydrateRolesFor(wb)
   /* [DB-READINESS] group A, phase 0 (plan §2.8) — "already started" is the stamp's `initialized`,
      which seeds skip on (state/store.ts initStore). A STARTED store holding no inputs record has no
      inputs — the seed module's rows are cleared, never shown. Only a store stamped the old way (a
@@ -414,7 +425,9 @@ export function wireRows(wb: Whiteboard): void {
   registerMapper('plan', rowOf('plan'))
   /* the bell's notices: one row each, written by the command that made them and removed by its Undo (state/notices.ts) */
   registerMapper('notices', rowOf('notices'))
-  registerMapper('insights.role', c=>[{collection:'settings',id:'missionrole:'+c.id,value:c.op==='delete'?null:JSON.stringify(c.after)}])
+  /* (the unit in view's: an answer is only ever given, or taken back, on the schedule in view — the schedules menu that
+     could change the unit between an answer and its Undo is step 5's) */
+  registerMapper('insights.role', c=>[{collection:'settings',id:qualify(UNIT, ROLE_PFX+c.id),value:c.op==='delete'?null:JSON.stringify(c.after)}])
   unwireRows?.()
   unwireRows = wireRowConsumer(wb)
 }

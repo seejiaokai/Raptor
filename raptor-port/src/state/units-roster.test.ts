@@ -77,7 +77,7 @@ async function reload(be: MemoryBackend) {
 /* a 149 man, seeded here only: a pilot like bane, at home in 149 from before the demo week (setHome runs "from today",
    so the clock is set to 1 Jul 26 first) */
 function seed149(id: string, cs: string) {
-  ;(PEOPLE as any)[id] = { ...JSON.parse(JSON.stringify((PEOPLE as any).bane)), cs }
+  ;(PEOPLE as any)[id] = { ...structuredClone((PEOPLE as any).bane), cs }
   indexCallsigns()
   expect(setHome(id, 'u149').ok, `${cs} at home in 149`).toBe(true)
 }

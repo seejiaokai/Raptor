@@ -70,6 +70,10 @@ beforeEach(() => {
   setPeople(projectPeople())
   wireLeaveWarSync()
   signInAs('ad', 'a')
+  /* the demo carries two more admins since multi-squadron step 4 — 149's (Kestrel) and a second 142 admin (Prowler):
+     these tests are written for Saber as the one admin, so those two step down first */
+  expect(updateAccount('acad2', { role: 'main' })).toBeNull()
+  expect(updateAccount('acad9', { role: 'main' })).toBeNull()
 })
 afterEach(() => { resetSession(null); vi.restoreAllMocks() })
 

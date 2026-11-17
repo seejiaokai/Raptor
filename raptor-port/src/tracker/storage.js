@@ -33,7 +33,44 @@ function memoryTarget() {
   return { get: k => (m.has(k) ? m.get(k) : null), set: (k, v) => { m.set(k, v) }, remove: k => { m.delete(k) }, keys: () => [...m.keys()] }
 }
 let target = memoryTarget()   // { get(k), set(k, v), remove(k), keys() } — sync, unprefixed
-export function setStorageImpl(t) { target = t || memoryTarget() }
+export function setStorageImpl(t) { target = t || memoryTarget(); boundUnit = null }
+
+/* ONE SQUADRON'S TRACKER (multi-squadron batch 1, step 4 — the plan §3.4 "The Leave War and the Tracker — each a whole
+   world per unit"). Each squadron keeps a Tracker of its own — its courses, its chart catalogue, each chart's
+   definition, layout and ball details, its flex settings, its marks — never one Tracker filtered. Raptor's boot hands
+   this doorway a MAKER of each unit's door (storage/adapters.ts trackerTarget(wb, unit): every key stored under its unit,
+   `u149@v3:master:syls`) and a way to ask whose squadron is signed in, and the doorway binds the signed-in person's own
+   squadron (D2132 — the Tracker stays on his own squadron whatever schedule is in view) at the moment the Tracker first
+   loads (core.js init → markStorageLoaded) — never as the page's code downloads, which a desktop does in the
+   background before anyone signs in. Nothing above
+   this line knows a squadron exists: it reads and writes `v3:master:syls` as it always has, so a deleted ball, an
+   imported chart, a flex setting or a course sweep of 142's can never reach 149's records.
+   ONCE LOADED, THE TRACKER KEEPS ITS SQUADRON for the life of the page: the next person's world starts fresh because
+   signing out reloads the app (ui/logout.ts, the plan §3.4 "Signing out reloads the app") — so a bind to another unit
+   once the Tracker has loaded is refused, never a silent switch under a loaded Tracker (its records in memory are the
+   first unit's; writing them through the second's door would copy one squadron's Tracker into the other's). */
+let maker = null      // unit => target — Raptor's boot
+let unitNow = null    // () => the signed-in person's own unit — Raptor's boot
+let boundUnit = null  // the unit whose door `target` is, once bound
+let loaded = false    // core.init has begun reading through the door
+export function setStorageMaker(m, whose) { maker = typeof m === 'function' ? m : null; unitNow = typeof whose === 'function' ? whose : null }
+/** bind the doorway to `unit`'s Tracker — true when it now is; false (nothing changed) where the Tracker already
+ *  loaded another unit's, or no maker was handed over (a unit test that plugs one target in itself) */
+export function bindStorageUnit(unit) {
+  if (!maker || !unit) return false
+  if (boundUnit === unit) return true
+  if (loaded && boundUnit != null) return false
+  target = maker(unit); boundUnit = unit
+  return true
+}
+/** the unit whose Tracker the doorway reads (null — none bound: the target handed in whole) */
+export const storageUnit = () => boundUnit
+/** core.init calls this before its first read: the signed-in person's own squadron is bound now (unless one already
+ *  is), and from then on it is the one this page's Tracker reads and writes */
+export function markStorageLoaded() {
+  if (!loaded && boundUnit == null && unitNow) { try { bindStorageUnit(unitNow()) } catch (_) { /* no session reader: the target as handed in */ } }
+  loaded = true
+}
 
 export const storage = {
   async get(k) { const v = target.get(k); return v == null ? null : { key: k, value: v } },

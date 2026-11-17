@@ -20,6 +20,7 @@
 import { useEffect, useState } from 'react'
 import { INPUTS } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
+import { myUnit } from '../state/perms'
 import { noticeRun, holidayLineAny } from '../state/notices'
 import { notify, setPage } from '../state/store'
 import { oilOpenOn, useWarFacts } from '../leavewar/sync'
@@ -44,7 +45,8 @@ export function OilDayList() {
 function Body({ from, to, name, fresh, plain }: { from: string; to: string; name: string; fresh: boolean; plain: boolean }) {
   useWarFacts()                                        // a holiday taken away, a period changed: the list is read again
   const [picks, setPicks] = useState<Record<string, OilPick | undefined>>({})
-  const open = oilOpenOn(from, to)
+  /* his own squadron's inputs only (multi-squadron step 4 — D2184 R32): the other squadron's schedulers answer theirs */
+  const open = oilOpenOn(from, to, myUnit())
   /* IN THE DAY'S OWN ORDER — the order the opened day lists the same inputs in (ui/inputscal-model.ts monthItems:
      absences first, all-day before timed, then by start), so the list and the day behind it read alike, as drawn */
   const found = open.map(o => ({ o, r: INPUTS.find((x: any) => String(x.iid) === o.iid) as any })).filter(x => x.r)

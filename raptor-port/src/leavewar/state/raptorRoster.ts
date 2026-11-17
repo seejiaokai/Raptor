@@ -6,6 +6,8 @@
 // drop in without a migration.
 
 import { PEOPLE, isInstr } from '../../engine/people'
+import { onRosterOf } from '../../engine/roster'
+import { worldUnit } from './store'
 import { qualCols } from '../../engine/qualcols'
 import type { Person, QualDef } from '../engine'
 import type { Person as RaptorPerson } from '../../engine/schema'
@@ -43,10 +45,15 @@ const raptorPeople = (): Record<string, RaptorPerson> => PEOPLE
  *   state/demoworld.ts is the one thing that sets them, and only on the
  *   demo crew.
  */
-export function projectPeople(includeSans = false): Person[] {
+/* ONE SQUADRON'S PEOPLE (multi-squadron batch 1, step 4): the war is a whole world per squadron (store.ts worldUnit), so
+   its roster is that squadron's men only — a man at home in 149 today is never a row of 142's war, nor 142's of 149's
+   (engine/roster.ts onRosterOf, the one answer to "is he this unit's"; the placeholders are skipped below as before).
+   `unit` defaults to the world loaded; a caller asking about one man by id (sync.ts) asks the same world. */
+export function projectPeople(includeSans = false, unit: string = worldUnit()): Person[] {
   const out: Person[] = []
   for (const [id, p] of Object.entries(raptorPeople())) {
     if (p.special || p.archived) continue
+    if (!onRosterOf(id, unit)) continue
     if (p.san && !includeSans) continue
     // Ground crew ride the roster since 18 Aug 26 (owner: "when I add
     // personnel through quals, the new personnel will appear on leave war

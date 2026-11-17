@@ -5,14 +5,15 @@
    that by reading the sources). It projects PEOPLE into the few fields the
    Tracker's + Add dialog shows and files, and re-projects on every Raptor
    notify; the bridge's own signature guard makes an unrelated notify free. */
-import { PEOPLE } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
-import { INPUTS, isDownchit, isUpchit, inpType, leadOf } from '../engine/inputs'
+import { inputsFor, isDownchit, isUpchit, inpType, leadOf } from '../engine/inputs'
+import { unitPeople } from '../engine/roster'
+import { storageUnit } from './storage.js'
 import { medStartOrd, medEndOrd, firstEndOrd, firstEndIso, ordShift } from '../engine/medical'
 import { subscribe } from '../state/store'
 import { setPeople, setWhoami, setWhoamiId, setGonePeople, setMedInputs } from './people.js'
 import { setTrackerAdmin } from './role.js'
-import { roleOf } from '../state/perms'
+import { roleOf, myUnit } from '../state/perms'
 
 export type TrackerPerson = { id: string; cs: string; seat: string; q: string; sxo: boolean }
 
@@ -112,7 +113,15 @@ export function wireTrackerPeople(): void {
   setWhoamiId(whoamiIdForTracker)
   /* the medical days ride the same push: an input filed, moved or cut on the Inputs page reaches the Tracker's number
      at the next notify, and the bridge's guard makes an unrelated notify free (D1002) */
-  const push = () => { setPeople(projectForTracker(PEOPLE)); setGonePeople(deletedForTracker(PEOPLE)); setMedInputs(medForTracker(INPUTS)) }
+  const push = () => {
+    /* ONE SQUADRON'S PEOPLE (multi-squadron batch 1, step 4): the Tracker is a world per squadron — the one its doorway
+       is bound to (tracker/storage.js), else the signed-in person's own (it binds that one at its first load) — so its
+       + Add offers that squadron's roster alone, and its down days and gone men are that squadron's (engine/roster.ts
+       unitPeople, engine/inputs.ts inputsFor). A 149 man is never offered on 142's course. */
+    const unit = storageUnit() || myUnit()
+    const people = unitPeople(unit)
+    setPeople(projectForTracker(people)); setGonePeople(deletedForTracker(people)); setMedInputs(medForTracker(inputsFor(unit)))
+  }
   subscribe(push)
   push()
 }

@@ -175,6 +175,11 @@ night mark outrunning its day one is demoted) run unchanged on the derived side.
 ### Course
 
 Owner: **Tracker**. A training course, e.g. an OCU intake.
+**One unit's** (multi-squadron batch 1, step 4, 18 Nov 26 — D2167): every Tracker table — courses, the chart catalogue
+(`Syllabus`), each chart's events, layout and ball details, enrolments, attempts, plans and the flex settings — is a
+unit's world, each row stored under its unit (`raptor:tracker/u149@v3:…`, `storage/adapters.ts trackerTarget(wb, unit)`),
+so for the IT side each needs a `unit` (ref Unit) column; no chart is shared across squadrons (a detachment uses its
+parent's, batch 2).
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
@@ -753,6 +758,12 @@ Owner: **Leave War**. One leave period — a "war".
 | `sortIndex` | decimal | yes | its place among the wars — the order they were created, which the period picker lists them by (`ord`, `[DB-READINESS]` group A, phase 3; added 30 Sep 26) |
 
 Relationships: 1–n `LeaveBid`.
+**One unit's** (multi-squadron batch 1, step 4, 18 Nov 26): every Leave War table — this one, `LeaveBid`, the ledger,
+counters, openings, balances, grades, seen marks and profiles — is a unit's world, each row stored under its unit
+(`raptor:leavewar/u149@war:<warId>`, `storage/adapters.ts leavewarAdapter(wb, unit)`), so for the IT side each needs a
+`unit` (ref Unit) column; one squadron's war never holds another squadron's rows. A public holiday is a row of the war
+it was entered in alone: every other squadron at the same place on that date reads it from there (`data-schema.md`
+§The Leave War and the Tracker — a whole world per unit), never a copy; an Off day stays its own squadron's.
 From today: one stored row per war since 30 Sep 26 (`raptor:leavewar/war:<warId>` — its period, with `ord`; `[DB-READINESS]` group A, phase 3).
 Until then `raptor:leavewar/wars` — an array of `{ period, recs }`, one record for every war (`recs` = the war's own
 record lists, [ARCH-STACK] step 4), the largest whole-record clobber surface in the app (section 7).
@@ -900,7 +911,7 @@ configuration key. The whole `sqn142_*` / Leave War preferences family.
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
-| `unit` | ref Unit | no | (new, multi-squadron step 2, 18 Nov 26 — D2184 R35) the unit whose setting it is (a unit's setting — `data-schema.md` §Whose is each record); empty for the community's (`account:`, `accessreq:`, the seen rows, `schema`). Today the `u…@` before the key |
+| `unit` | ref Unit | no | (new, multi-squadron step 2, 18 Nov 26 — D2184 R35) the unit whose setting it is (a unit's setting — `data-schema.md` §Whose is each record); empty for the community's (`account:`, `accessreq:`, the seen rows, `schema`). Today the `u…@` before the key — a blue/red answer (`missionrole:`) too since step 4 |
 | `key` | string | yes | e.g. `daytpl`, `rules`, `groupcolors`. Unique with `unit` |
 | `scope` | choice `scheduler\|leavewar\|tracker` | yes | (new) — the three worlds share one table |
 | `value` | JSON | yes | the record as the app already serialises it |

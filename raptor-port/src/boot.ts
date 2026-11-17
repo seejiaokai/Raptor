@@ -14,27 +14,29 @@ import { resyncSchedBaseline } from './state/sched-commit'
 import { storeBackend, HOOKS } from './engine/hooks'
 import { initStore as lwInitStore, lwHistInit } from './leavewar/state/store'
 import { installDemoWorld } from './leavewar/state/demoworld'
-import { wireLeaveWarSync, installPostingClock } from './leavewar/sync'
+import { wireLeaveWarSync, installPostingClock, setWarWorldDoor } from './leavewar/sync'
 import { validate } from './engine/validate'
 import { bootStorage } from './storage/boot'
 import { BrowserBackend } from './storage/browser'
 import { idbDocStore } from './storage/docstore'
 import { docBoot } from './state/docs'
 import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapters'
-import { setStorageImpl } from './tracker/storage.js'
+import { setStorageImpl, setStorageMaker } from './tracker/storage.js'
 /* the Tracker's one-time conversion — the fold's last converter ([DB-READINESS] group A, phase 5b): registered by the
    boot, since the Tracker's own code is a lazy chunk the fold cannot wait for */
 import './tracker/fold'
 import { hydrate, wirePersist, wireRows, leaveWarStarted } from './state/persist'
 import { openBootGroup, storeInitialized } from './storage/schema'
+import { BOOT_UNIT } from './engine/unitview'
 import { resetSeedWorld } from './state/seeds'
 import { PEOPLE, indexCallsigns } from './engine/people'
 import { newId } from './engine/newid'
 import { newPersonProblem, personRecord } from './state/roster-add'
 import { firstAdminRow, storedAccountNamed, normName, MAX_SIGNIN } from './state/accounts'
 import { UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, HOME_PFX, validUnitNum, validTz, MAX_PLACE_NAME } from './state/units-model'
-import { todayIso } from './state/units'
+import { todayIso, units } from './state/units'
 import { installGlobalUndo } from './state/undo-wire'
+import { myUnit } from './state/perms'
 import type { Backend } from './storage/backend'
 import type { Whiteboard } from './storage/whiteboard'
 import type { Postman } from './storage/postman'
@@ -81,7 +83,11 @@ export async function bootApp(backend: Backend, policy: BootPolicy = DEMO_POLICY
 function bootBody(wb: Whiteboard, policy: BootPolicy): void {
   /* the three doors (storage/adapters.ts): settings, Leave War, Tracker */
   storeBackend.impl = settingsAdapter(wb)
-  setStorageImpl(trackerTarget(wb))
+  /* THE TRACKER IS ONE WORLD PER SQUADRON (multi-squadron batch 1, step 4): the doorway is handed a maker of each unit's
+     door and a way to ask whose squadron is signed in, and binds the signed-in person's own (his home — D2132) at the
+     moment the Tracker first loads (tracker/storage.js markStorageLoaded); the boot unit's until then */
+  setStorageImpl(trackerTarget(wb, BOOT_UNIT))
+  setStorageMaker((u: string) => trackerTarget(wb, u), () => myUnit())
 
   /* inputs / roster / plan layer / stashed weeks: whiteboard → singletons,
      BEFORE initStore so its seeds know to stand down (state/persist.ts) */
@@ -97,10 +103,27 @@ function bootBody(wb: Whiteboard, policy: BootPolicy): void {
      REAL: a world that came back from storage keeps its wars, its OIL story
      and its inputs; only a first-ever boot gets the demo overlay. */
   const hadStoredWars = leaveWarStarted(wb)
+  /* THE LEAVE WAR IS ONE WORLD PER SQUADRON (multi-squadron batch 1, step 4 — the plan §3.4): each squadron's wars,
+     records and settings behind its own door (storage/adapters.ts leavewarAdapter(wb, unit)). The demo's first boot
+     stores every squadron's first world inside the boot's one group — each other squadron's first (the seed's leave
+     periods and holidays, nobody's records), then the boot unit's, which stays loaded until someone signs in and the
+     sync loads his own squadron's in its place (leavewar/sync.ts swapWarWorld). A started store — or a shared one's
+     first boot — writes no other squadron's: its world is read, or starts empty, when it is first loaded. */
+  if (!hadStoredWars && policy.seedDemo) {
+    for (const u of units()) {
+      if (u.id === BOOT_UNIT) continue
+      lwInitStore(leavewarAdapter(wb, u.id), { started: false, seedDemo: true, unit: u.id, demoRecords: false })
+      installDemoWorld(false, true, u.id)
+    }
+  }
   /* the war reads its rows on a started store, and stores the seed as rows on one that has not ([DB-READINESS] group A,
      phase 3 — leavewar/state/store.ts initStore) */
-  lwInitStore(leavewarAdapter(wb), { started: hadStoredWars, seedDemo: policy.seedDemo })
-  installDemoWorld(hadStoredWars, policy.seedDemo)
+  lwInitStore(leavewarAdapter(wb, BOOT_UNIT), { started: hadStoredWars, seedDemo: policy.seedDemo, unit: BOOT_UNIT })
+  installDemoWorld(hadStoredWars, policy.seedDemo, BOOT_UNIT)
+  /* the door a sign-in loads his own squadron's world through — started where that squadron's door holds a war (the
+     war's own test, leavewar/state/store.ts initStore), so a demo store begun before step 4 still gives 149 the seed's
+     leave periods on its first open, and a shared store's squadron with no war yet starts empty */
+  setWarWorldDoor(u => ({ backend: leavewarAdapter(wb, u), seedDemo: policy.seedDemo }))
   /* [ARCH-STACK] step 4 — the demo world files its approved leave as INPUTS
      (raw, before any command). The scheduler's warnings were computed by
      initStore before those rows existed, so re-derive them now — else a day

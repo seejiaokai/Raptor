@@ -67,6 +67,10 @@ beforeEach(() => {
   wireLeaveWarSync()
   HOOKS.toast = () => {}
   signInAs('ad', 'a')
+  /* the demo carries two more admins since multi-squadron step 4 — 149's (Kestrel) and a second 142 admin (Prowler):
+     these tests are written for a squadron of two admins, so those two step down first */
+  expect(updateAccount('acad2', { role: 'main' })).toBeNull()
+  expect(updateAccount('acad9', { role: 'main' })).toBeNull()
   /* a second admin, so "every admin" is two people (Hex — rocky's sign-in — made an admin on Admin → Users) */
   expect(updateAccount('achex', { role: 'admin' })).toBeNull()
   expect(admins()).toEqual(['rocky', 'stiff'])

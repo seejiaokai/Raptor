@@ -205,6 +205,21 @@ Tracker's whole key space under the unit — courses, the chart catalogue, each 
 details, the flex settings, its destructive sweeps (a deleted ball, a deleted chart), Import and Export, its command
 permissions and Undo identities. Test: in 142 delete a ball, import a chart, change a flex setting — 149's Tracker is
 unchanged, before and after signing out and in.
+*Refined as built, step 4 (18 Nov 26):* neither store knows a squadron exists — each is handed a door that stores every
+key under one unit (`storage/adapters.ts unitDoor`; `u149@war:2026`, `u142@v3:master:syls`), so no key of the store was
+renamed and two worlds cannot meet. The Leave War loaded is the signed-in person's home unit's, swapped in at every
+sign-in (`leavewar/sync.ts swapWarWorld`, its roster that unit's people); the boot seeds every squadron's first world in
+its one group. The Tracker binds his unit at its first load and refuses another after that, so until the sign-out reload
+(below, not built in step 4) a second person of the other squadron on the same tab keeps the first one's Tracker. Public
+holidays: stored only in the war they were entered in and laid onto every squadron at the same place on that date at read
+(`placeHolidaysFor`); `HOOKS.oilEarningDay` and `nonWorkingFor(unit, iso)` read through it. R32: `holidayOutOfDate`
+names each squadron's published days, shown under the Holidays form before it is saved; the OIL bell line reaches each
+squadron's schedulers for its own inputs only. Step 3's open items: `missionrole:` is stored per unit
+(`persist.ts hydrateRolesFor`); `sansCommittedOn` and the need figures take one squadron's people; `elog:` stays
+unqualified (its reader did not move). A posting's bell lines go to its own squadron's admins. The demo: 149's people
+(`demoseed.ts DEMO_149_PEOPLE`), its two inputs, its week (`engine/week149.ts`), its war and one Tracker course; the
+accounts `ad9`, `us9`, `ad2`. Admin → Users still lists everyone until step 5. Tests: `tracker/trk-per-unit.test.ts`,
+`leavewar/holidays-by-place.test.ts`, `state/multi-sqn-step4.test.ts`.
 
 **Signing out reloads the app.** Today signing out keeps the page, and the Leave War and the Tracker load once: a 149
 man signing in after a 142 man on the same PC would get 142's. A reload at sign-out starts every world fresh for the

@@ -1240,6 +1240,24 @@ every walk of `PEOPLE` outside `rosterOf`, counted per file against an allow-lis
 `src/state/units-roster.test.ts` - a 149 man's inputs never on 142's days (filed, switched, published, reloaded), 142's
 OIL credits unmoved by many swaps of the schedule in view, a delete and a restore reading the other squadron's stored
 weeks.
+
+The multi-squadron build, batch 1, step 4 (18 Nov 26 - the Leave War and the Tracker a world per unit, holidays by place,
+149 seeded): `src/engine/week149.ts` - **new**, the demo's 149 week (13 Jul 26, the same dates as 142's), its own rows,
+ids and callsigns, handed out by `engine/weeks-data.ts` for unit `u149`. `src/storage/adapters.ts` - `unitDoor`: one
+unit's door onto the `leavewar` and `tracker` collections (`leavewarAdapter(wb, unit)`, `trackerTarget(wb, unit)`), every
+key stored under its unit. `src/tracker/storage.js` - `setStorageMaker`, `bindStorageUnit`, `markStorageLoaded`,
+`storageUnit`: the doorway binds the signed-in person's squadron at the Tracker's first load. `src/leavewar/sync.ts` -
+`setWarWorldDoor`, `swapWarWorld` (each sign-in loads his own squadron's war), `placeHolidaysFor`, `nonWorkingFor`,
+`holidayOutOfDate` (R32, D2184), posting lines to the war's own squadron's admins; `src/leavewar/state/store.ts` -
+`worldUnit`, `setPlaceHolidays` (another squadron's public holidays laid on at read). `src/state/demoseed.ts` -
+`DEMO_149_PEOPLE`, `seedDemo149`; `src/state/accounts.ts` - the seeded `ad9`, `us9`, `ad2`. `src/state/persist.ts` -
+`hydrateRolesFor` (a unit's blue/red answers). `src/ui/oilday.ts` - `outOfDateSaid`, the R32 line, shown by `src/ui/HolidaysPanel.tsx` (kept out of that file so it
+exports its window only, React Doctor's one-component-file rule). Tests:
+`src/tracker/trk-per-unit.test.ts` (142 deletes a ball, imports a chart and changes a flex setting; 149's Tracker
+unchanged across reopening), `src/leavewar/holidays-by-place.test.ts` (149's public holiday is 142's at their one place,
+by date; an Off day is not; R32's days and words), `src/state/multi-sqn-step4.test.ts` (the 149 seed, the three
+sign-ins, the blue/red answers per unit); `src/leavewar/postout-notice.test.ts` (a posting's line to its own squadron's
+admins only).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

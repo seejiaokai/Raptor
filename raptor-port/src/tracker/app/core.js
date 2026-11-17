@@ -11,7 +11,7 @@ import { DEFAULT_LAYOUTS } from '../data/layouts.js';
 import { EVENT_INFO, EVENT_INFO_BY_SYL } from '../data/eventInfo.js';
 import { shippedDetails, diffDetails, scrubBlock, mergeBlock, realFlatEdits, blockFromFlat, isDetailsTable } from './eventDetails.js';
 import { SEED_STATE, SEED_STAMP } from '../data/seedState.js';
-import { storage, flushNow, loadLatest, saveHealth, onSaveHealth, storageKept } from '../storage.js';
+import { storage, flushNow, loadLatest, saveHealth, onSaveHealth, storageKept, markStorageLoaded, storageUnit } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
@@ -7333,6 +7333,9 @@ export async function rehydrateForTests() {
 }
 export async function init() {
   if (initStarted) return; initStarted = true;
+  /* WHOSE TRACKER (multi-squadron batch 1, step 4): the doorway binds the signed-in person's own squadron now, before
+     the first read — every record below is that squadron's (storage.js) */
+  markStorageLoaded();
   /* every stored record into the mirror FIRST ([DB-READINESS] group A, phase 5b): the row door compares each write with
      the rows this copy of the Tracker has read, and the boot's own upgrades write through it too */
   await trkHydrateMem();
@@ -7453,7 +7456,9 @@ export async function init() {
       coursesNow: () => COURSES.slice(),
       /* a record as the browser has DURABLY stored it — read from localStorage itself, as the smoke suite's storage
          checks always did — rebuilt from its rows where it is kept one row per thing ([DB-READINESS] group A, phase 5b) */
-      lsRecord: (k, pre = 'raptor:tracker/') => {
+      /* a record's browser key carries its squadron since step 4 (`raptor:tracker/u142@<key>` — storage/adapters.ts) */
+      storeKey: k => 'raptor:tracker/' + (storageUnit() ? storageUnit() + '@' : '') + k,
+      lsRecord: (k, pre = 'raptor:tracker/' + (storageUnit() ? storageUnit() + '@' : '')) => {
         const whole = localStorage.getItem(pre + k);
         const L = TRKROWS.logicalOf(k);
         if (!L || (whole != null && whole !== '')) return whole;

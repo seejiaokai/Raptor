@@ -26,6 +26,9 @@ import SidePanel from './components/SidePanel.jsx'
 import { DlgModal } from './components/Modals.jsx'
 import { initStore, notify as raptorNotify, resetSession } from '../state/store'
 import { PEOPLE } from '../engine/people'
+import { homeUnitOf, unitPeople } from '../engine/roster'
+import { storageUnit } from './storage.js'
+import { myUnit } from '../state/perms'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { useSyncExternalStore } from 'react'
@@ -1383,7 +1386,12 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
   it('TrackerPage wires the bridge once; an unrelated Raptor notify is a no-op; the chunk never imports the engine', () => {
     wireTrackerPeople()
     const first = getPeople()
-    expect(first).toEqual(projectForTracker(PEOPLE))
+    /* one squadron's people since multi-squadron step 4 — the squadron the Tracker's doorway is bound to (else the
+       signed-in person's): its + Add never offers another squadron's man */
+    const unit = storageUnit() || myUnit()
+    expect(first).toEqual(projectForTracker(unitPeople(unit)))
+    expect(Object.keys(PEOPLE).some(id => homeUnitOf(id) !== unit), 'the roster holds another squadron\'s men').toBe(true)
+    expect(first.every((p: any) => homeUnitOf(p.id) === unit), 'none of them offered here').toBe(true)
     let n = 0
     const off = C.subscribe(() => { n++ })
     raptorNotify()

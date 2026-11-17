@@ -133,9 +133,31 @@ id by its separators can take the unit for part of the date. **The date part is 
 **Settings:** a setting's logical name (`rules`, `stores`, `flyday:<iso>` …) means the unit in view's; it is stored as
 `<unit>@<name>` and written only by its named settings command (`settings.stores`, `fly.day.set` …), whose change names
 the stored id. The settings records the command layer keeps cover every unit's stored settings, so Undo puts back
-another unit's setting by its own name. **Not yet qualified, on purpose:** `missionrole:` (its id carries a week key
-whose own codec has no unit yet — named for step 3, left open there for step 4, when 149's own week is first seeded) and `elog:` (the change history across the apps — step 4); both stay as they
-were, readable by the unit in view only.
+another unit's setting by its own name. **Not yet qualified, on purpose:** `elog:` (the change history across the apps)
+stays as it was, readable by the unit in view only. *(Step 4, 18 Nov 26: `missionrole:` is qualified now — each blue/red
+answer row is stored as `<unit>@missionrole:<its id>`, under the unit whose schedule it was given on, and only the unit in
+view's rows are read into memory, read again when the unit in view changes (`state/persist.ts hydrateRolesFor`, from
+`state/store.ts switchUnit`). `elog:` is the open item still: its reader did not move in step 4.)*
+
+**The Leave War and the Tracker — a whole world per unit (step 4, 18 Nov 26).** Neither store knows a squadron
+exists: each reads and writes its keys as it always has (`war:2026`, `v3:master:syls` …), and the door it is handed
+stores every key under one unit — `leavewar/u149@war:2026`, `tracker/u142@v3:master:syls` (`storage/adapters.ts
+leavewarAdapter(wb, unit)`, `trackerTarget(wb, unit)`, the same codec as the weeks). A door lists, reads, writes and
+removes only its own unit's keys, so two squadrons' worlds never meet; a key with no unit (a browser's records from
+before step 4) is no unit's and is never read (D22 — cleared at step 6). The Leave War loaded is the signed-in
+person's home unit's (`leavewar/sync.ts swapWarWorld`, at every sign-in), its roster that unit's people alone; the
+other squadrons' worlds are read from their own doors where a reader needs them (their public holidays, below). The
+Tracker binds the signed-in person's home unit when it first loads (`tracker/storage.js markStorageLoaded`) and refuses a
+bind to another unit after that — so, until signing out reloads the app (plan §3.4, O8 — not built in step 4), a second
+person of the other squadron signing in on the same tab is still shown the first one's Tracker. Nothing changes in the
+records' shape. **Public holidays by place and date:** a public holiday is still stored in the one squadron's war it was
+entered in; every other squadron at the same place on that date reads it laid onto its own war, never stored there
+(`leavewar/sync.ts placeHolidaysFor`), so a later move of either squadron changes nothing already charged before it. An
+Off day stays its own squadron's. **The demo (step 4):** 149's people (`state/demoseed.ts DEMO_149_PEOPLE` — their own
+ids and callsigns, each with a seeded home row in 149), their own two inputs, their own week on the same dates as 142's
+(`engine/week149.ts`), their own Leave War world (the seed's periods and holidays, nobody's records) and one Tracker
+course; seeded accounts `ad9` (149's admin), `us9` (149's member) and `ad2` (a second 142 admin), never printed on the
+sign-in card.
 
 **Stored data from before step 2 (D22):** an unqualified week, day or planning row is simply not read — the store is
 cleared and both units seeded fresh, never converted; no converter is written for it. The schema stamp bump that clears

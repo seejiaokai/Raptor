@@ -37,10 +37,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { FloatWin } from './FloatWindow'
 import {
-  createOilPeriodFor, holidayAdd, holidayChange, holidayCheck, holidayRemove, holidayShortHint, holidaySheetRows, holidayWord, holidaysImport,
+  createOilPeriodFor, holidayOutOfDate, holidayAdd, holidayChange, holidayCheck, holidayRemove, holidayShortHint, holidaySheetRows, holidayWord, holidaysImport,
   holidaysIn, openNewPeriod, readHolidaySheet, uncoveredIn, MAX_HOLIDAY_NAME, type HolidayDraft, type HolidayLine, type HolidayResult, type SheetRow,
 } from '../leavewar/sync'
 import { exportCSV } from './export'
+import { outOfDateSaid } from './oilday'
 import { DownloadIcon, UploadIcon } from './icons'
 import { RangePicker, type Range } from '../leavewar/ui/RangePicker'
 import { addDays, validIso, weekdayOf } from '../state/flyplan-model'
@@ -336,6 +337,8 @@ export function HolidayForm({ line, year, onClose }: {
      the war's signal); the moment there is none — a period now holds that day — the same Save is pressed for him.
      Refused again for another reason (the period ends before its last day), it says so and stops waiting. */
   const gap = waiting ? gapOf(from) : null
+  /* only a public holiday moves OIL — an Off day earns nothing (D21) */
+  const outdate = kind === 'ph' && range ? outOfDateSaid(holidayOutOfDate(range.from, range.to)) : ''
   const coveredNow = waiting && validIso(from) && !gap
   useEffect(() => {
     if (coveredNow) save(false)
@@ -387,6 +390,8 @@ export function HolidayForm({ line, year, onClose }: {
         <RangePicker key={calKey} testid="holcal" anchor={anchor} value={range} onChange={r => { edit(); setRange(r) }} />
       </div>
 
+      {/* R32: named before the save, in the form's own status line (no new kind of mark — D1625) */}
+      {outdate && <p className="hol-saved" data-testid="hol-outdate" role="status">{outdate}</p>}
       {saved && <p className="hol-saved" data-testid="hol-saved" role="status">{saved}</p>}
       {err && <p className="every-err" data-testid="hol-err" role="alert">{err}</p>}
       {waiting && gap && (
