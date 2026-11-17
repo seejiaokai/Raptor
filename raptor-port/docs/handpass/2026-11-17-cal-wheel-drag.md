@@ -56,8 +56,18 @@ during a glide jumped up to half a row. Red first: (1) and (2) failed on `9ddd97
 reproduced by the readers' own tests (the Opus reader's in jsdom and a bare Chromium page) and are pinned by the new
 test's parts 2b and 3. Fix round: the fix commit's narrow read (§5 "A fix is new code") — OWED, see `HANDOFF.md`.
 
+**Chat 99 — parts 2b and 3 measured inside the page.** GitHub's run on `ec8d2a7bf` failed both (its slower machine: the
+test read the list, pressed, read again, and a glide still running between those steps moved the list itself). Now the
+page notes the list's place at the press and on every scroll, so only what happens after the press or the finger
+counts. Red first with each old fault put back alone on today's wheel: the press re-snapping jumped 11px (now must be
+under 1); a finger not stopping the glide let it run on 431px (must be under 23, and no scroll 200ms past the finger).
+On `9ddd97738` whole, the test still fails, at part 1 (fault 1). Green on the head: the file 23 of 23, twice. (On
+`492ce1d91` GitHub passed the old form first time: the failure comes and goes, so it was fixed, not waited out.)
+
 ## 7. Gates
 His PC: `e2e/datecal.spec.ts` 23 tests × 2 runs, 46 pass; calendar unit tests 240 pass; tsc; code check no new finding;
-docsize OK. GitHub's run of the pull request: green on `9ddd97738`; on the last pushed commit — see the closing report.
+docsize OK. GitHub's run of the pull request: green on `9ddd97738`; on `492ce1d91` every browser and unit check green, the
+code check red on 14 notes in this walk's own scripts (none in the app) — kept, each with its reason on the line above,
+as the house rule asks (chat 99); on the last pushed commit — see the closing report.
 
 Walk: WALK — 12 surfaces × desktop (125%) and phone, 144 PASS, re-walk 144 PASS after the reads' fixes, 288 pictures.

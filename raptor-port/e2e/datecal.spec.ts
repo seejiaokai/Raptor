@@ -521,14 +521,32 @@ test('a desktop: the drag ends with the press, and a key or a finger during a gl
          lands on a whole row and the press picks nothing (the fresh read, 17 Nov 26) */
   await atRest(page, Y)
   const v0 = await boxValue(page, '#accAddPostIn')
+  /* MEASURED INSIDE THE PAGE (GitHub's run on 17 Nov 26 failed both catches on its slower machine, passing twice on his
+     PC): read from the test, the list was read, then pressed, then read again — and a glide still running between
+     those three steps moved the list by itself, so the "jump" counted the glide's own frames. Here the page notes the
+     list's place itself, at the press and on the list's every scroll, so only what happened after the press counts. */
+  await page.locator(Y).first().evaluate(el => {
+    const w = window as unknown as { __wd: Record<string, number> }
+    w.__wd = { pre: NaN, post: NaN, touchAt: NaN, touchTop: NaN, lastScroll: NaN, lastTop: NaN }
+    /* the mouse press: its place before the list hears it (capture, first of all) and once the press has been handled
+       (the next task — the calendar's card keeps the press from bubbling up to the window, so a bubbling listener there
+       never hears it) */
+    window.addEventListener('pointerdown', e => {
+      if (e.pointerType !== 'mouse') { w.__wd.touchAt = e.timeStamp; w.__wd.touchTop = el.scrollTop; return }
+      w.__wd.pre = el.scrollTop; w.__wd.post = NaN
+      setTimeout(() => { w.__wd.post = el.scrollTop })
+    }, true)
+    el.addEventListener('scroll', e => { w.__wd.lastScroll = e.timeStamp; w.__wd.lastTop = el.scrollTop })
+  })
+  const wd = () => page.evaluate(() => (window as unknown as { __wd: Record<string, number> }).__wd)
   await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x, y - 132, { steps: 3 }); await page.mouse.up()
   await page.waitForTimeout(80)
-  const before = await listTop(page, Y)
   await page.mouse.down()
-  const caught = await listTop(page, Y)
-  expect(Math.abs(caught - before), 'a press caught the glide with a jump').toBeLessThan(12)
+  await expect.poll(async () => Number.isFinite((await wd()).post), { message: 'the page never heard the press' }).toBe(true)
+  const press = await wd()
+  expect(Math.abs(press.post - press.pre), 'a press caught the glide with a jump').toBeLessThan(1)
   await page.waitForTimeout(200)
-  expect(Math.abs((await listTop(page, Y)) - caught), 'the glide went on under a held press').toBeLessThan(1)
+  expect(Math.abs((await listTop(page, Y)) - press.post), 'the glide went on under a held press').toBeLessThan(1)
   await page.mouse.up()
   await atRest(page, Y)
   await expect(page.locator('[data-testid="dcal-lists"]')).toBeVisible()
@@ -539,10 +557,14 @@ test('a desktop: the drag ends with the press, and a key or a finger during a gl
   await page.mouse.move(x, y); await page.mouse.down(); await page.mouse.move(x, y - 132, { steps: 3 }); await page.mouse.up()
   await page.waitForTimeout(40)
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
-  await page.waitForTimeout(80)
-  const held = await listTop(page, Y)
+  /* the finger's own moment, as the page heard it — not when the test sent it, which a busy page may hear later */
+  await expect.poll(async () => Number.isFinite((await wd()).touchAt), { message: 'the page never heard the finger' }).toBe(true)
   await page.waitForTimeout(350)
-  expect(Math.abs((await listTop(page, Y)) - held), 'the glide went on under a finger held on the list').toBeLessThan(23)
+  const touch = await wd()
+  /* after the finger: at most the snapping back to the nearest whole row (under half a row, one frame's scroll), never
+     the glide's frames running on */
+  expect(Math.abs((await listTop(page, Y)) - touch.touchTop), 'the glide went on under a finger held on the list').toBeLessThan(23)
+  expect(!(touch.lastScroll > touch.touchAt + 200), 'the list kept scrolling under a finger held on it').toBe(true)
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
   await atRest(page, Y)
   expect(await yearOf(page)).toBeGreaterThan(y1)

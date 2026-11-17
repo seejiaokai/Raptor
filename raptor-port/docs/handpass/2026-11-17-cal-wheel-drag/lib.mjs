@@ -66,6 +66,7 @@ export async function atRest(page, sel) {
 }
 export async function fingerSwipe(cdp, x, y, dyTotal, moves = 8, wait = 150) {
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- a finger slid one move after another: each move must reach the page before the next
   for (let i = 1; i <= moves; i++) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y + dyTotal * i / moves }] })
   await sleep(wait)
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })

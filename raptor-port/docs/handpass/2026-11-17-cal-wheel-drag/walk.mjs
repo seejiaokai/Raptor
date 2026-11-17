@@ -350,6 +350,7 @@ async function shot(w, s, step, wd, selOverride) {
   try { await loc.scrollIntoViewIfNeeded().catch(() => {}); await loc.screenshot({ path: path.join(OUT, file) }) } catch (e) { return file + ' (picture failed: ' + String(e).slice(0, 80) + ')' }
   return file
 }
+// eslint-disable-next-line react-doctor/async-await-in-loop -- one step after another in one browser: each waits for the page to answer the last
 const hostRects = async (w, s) => { const o = []; for (const h of s.hosts) o.push(await rect(w.page, h).catch(() => null)); return o }
 const hostsSame = (a, b) => a.every((x, i) => x && b[i] && near(x, b[i]))
 const hostStr = a => a.map(x => x ? `[${x.l},${x.t},${x.w}x${x.h}]` : 'gone').join(' ')
@@ -364,6 +365,7 @@ const isOpen = async (w, s) => (await w.page.locator(sels(s).open).count()) > 0 
 async function restoreMonth(w, s, st0) {
   const { page } = w; const { Y, M } = sels(s)
   let st = await stateOf(w, s)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const yr = await rect(page, Y); await page.mouse.move(yr.l + yr.w / 2, yr.t + yr.h / 2)
   await page.mouse.wheel(0, (st0.year - st.year) * 44); await sleep(300); await atRest(page, Y)
   st = await stateOf(w, s)
@@ -377,16 +379,20 @@ async function deskSuite(w, s) {
   const { Y, M } = sels(s)
   await tagScope(w, s)
   const st0 = await stateOf(w, s)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   let hosts0 = await hostRects(w, s)
   const val0 = await s.read(w)
   const vw = page.viewportSize().width
   console.log(`  opened: ${st0.text}; hosts ${hostStr(hosts0)}; value0 ${val0}`)
   const stepRec = async (step, cond, detail, pic) => rec(s.n, s.name, step, wd, cond ? 'PASS' : 'FAIL', detail, pic)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const tail = async () => { const rr = await hostRects(w, s); const v = await s.read(w); return { same: hostsSame(hosts0, rr), rr, v } }
   // A
   let y0 = st0.year
   await mouseDrag(page, Y, -132, 12, 250)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   let rs = await atRest(page, Y); let st = await stateOf(w, s); let t = await tail()
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   let pic = await shot(w, s, 'A-year-drag', wd)
   await stepRec('A years drag up 132px', st.year === y0 + 3 && rs.whole && rs.settled && await isOpen(w, s) && t.same && (s.noReadCompare || t.v === val0),
     `year ${y0} -> ${st.year} (want ${y0 + 3}); scrollTop ${rs.top} (whole row ${rs.whole}); open ${await isOpen(w, s)}; hosts ${t.same ? 'unchanged' : 'MOVED ' + hostStr(t.rr) + ' was ' + hostStr(hosts0)}; value ${val0} -> ${t.v}`, pic)
@@ -443,6 +449,7 @@ async function phoneSuite(w, s) {
   const cdp = await w.context.newCDPSession(page)
   await tagScope(w, s)
   const st0 = await stateOf(w, s)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const hosts0 = await hostRects(w, s)
   const val0 = await s.read(w)
   console.log(`  opened: ${st0.text}; hosts ${hostStr(hosts0)}`)
@@ -450,8 +457,11 @@ async function phoneSuite(w, s) {
   const x = r.l + r.w / 2, y = r.t + r.h / 2 + 40
   await fingerSwipe(cdp, x, y, -100, 8, 150)
   const picQuick = await shot(w, s, 'H-finger-100ms', wd)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const rs = await atRest(page, Y)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const st = await stateOf(w, s); const rr = await hostRects(w, s); const v = await s.read(w)
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- one browser driven step by step: each press waits for the page to answer the one before
   const picSettled = await shot(w, s, 'H-finger-settled', wd)
   rec(s.n, s.name, 'H finger up 100px (CDP touch)', wd, st.year > st0.year && rs.whole && await isOpen(w, s) && hostsSame(hosts0, rr) && (s.noReadCompare || v === val0) ? 'PASS' : 'FAIL',
     `year ${st0.year} -> ${st.year}; scrollTop ${rs.top} (whole ${rs.whole}, settled ${rs.settled}); open ${await isOpen(w, s)}; hosts ${hostsSame(hosts0, rr) ? 'unchanged' : 'MOVED ' + hostStr(rr) + ' was ' + hostStr(hosts0)}; value ${val0} -> ${v}`, picQuick + ' / ' + picSettled)
@@ -465,6 +475,7 @@ const t0 = Date.now()
 const browser = await launch()
 for (const wd of worlds) {
   for (const s of S) {
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- a handful of step numbers typed on the command line; a set would buy nothing
     if (only && !only.includes(Math.floor(s.n)) && !only.includes(s.n)) continue
     console.log(`\n== ${s.n} ${s.label} [${wd}]`)
     const w = await world(browser, wd)

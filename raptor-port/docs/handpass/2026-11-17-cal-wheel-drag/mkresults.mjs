@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { HERE } from './lib.mjs'
 import path from 'node:path'
+// eslint-disable-next-line react-doctor/no-unsafe-json-parse -- reads the walk's own results file, written by this walk; a broken file should stop the script
 const { rows, counts, secs } = JSON.parse(readFileSync(path.join(HERE, 'pics-rows.json'), 'utf8'))
 const esc = s => String(s).replace(/\|/g, '/').replace(/\n/g, ' ')
 let md = `# Walk: calendar wheels moved by a mouse drag (D2170), 17 Nov 26\n\n`

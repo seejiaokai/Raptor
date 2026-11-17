@@ -22,6 +22,7 @@ the later merge keeps both (D78).
 ## Now
 <!-- now:claude/cal-wheel-drag-e4107b -->
 ### CHAT 98 — the calendar wheels' mouse drag (his fault of 17 Nov 26, D2170), written 17 Nov 26 mid-job — verify before use
+- **CHAT 99 (17 Nov 26), on top of the lines below:** GitHub's red test fixed — parts 2b and 3 measure inside the page now; red first with each old fault put back alone (11px jump; 431px run-on), green 23 of 23 twice on his PC. GitHub's run on `492ce1d91`: every browser and unit check green, the code check red on 14 notes in the walk's own scripts — each kept with its reason on the line above (house rule), the check clean on his PC. The fix round's narrow read by a fresh Opus reader: brief and report `raptor-port/docs/superpowers/briefs/2026-11-17-cal-wheel-drag-fixread-brief.md`. Then: push, GitHub's run green, his look.
 - **What:** on a desktop the month-and-year chooser's wheels moved only with the mouse wheel, never a press and drag. Fixed once in the shared wheel (`raptor-port/src/ui/DateCal.tsx` `Wheel`), so every calendar has it; red-first tests in `raptor-port/e2e/datecal.spec.ts` (failed on `main`: three rows dragged, the year stayed 2026).
 - **Branch / PR:** `claude/cal-wheel-drag-e4107b`, pull request 797 into `main` (opened, its run going); waits for his "merge live".
 - **Checks so far (his PC):** the calendar's browser file 21 of 21, the calendar unit tests 240 of 240, tsc, code check, docsize.
