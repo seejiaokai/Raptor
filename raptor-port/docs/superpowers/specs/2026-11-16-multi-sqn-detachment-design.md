@@ -383,6 +383,13 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   taken off, the days pending) and never publishes it by itself, the four sign-offs staying people's; the bell reads
   "25–26 Jul cleared · publish AL1", a tap opening that day. Recommended; the
   other choice put to him: Close publishes AL1 itself, the admin who pressed it standing as its signer.
+- **His correction, D2147 (17 Nov 26, chat 100), of the transfer sheet's X5:** *"this statement is only true at present
+  correct. The admin could put the post out like 3 months ahead"*. The sheet's lines are today's figures, worked out
+  again each time it opens, reading "Today:"; the date applies the sheet's choices (T1–T3) to what stands then, and the
+  bell on the date says what it did. Open for round 7: is a scheduler who plans him after the date, once the transfer is
+  set, told he moves to 149; and the refusals checked again on the date, the transfer waiting as D306 does.
+- **His question (chat 100), "can SANS be picked from each other's sqn?"** — yes, his own D2145 (round 6's R11). Open
+  for round 7 (Fable's L9): whose SANS cut-off judges a borrowed SANS man's availability — recommended his own squadron's.
 
 ### Chat 98's wording, put to him before his round 6 answers (D2140, D2143 — knock-on effects worked through)
 
