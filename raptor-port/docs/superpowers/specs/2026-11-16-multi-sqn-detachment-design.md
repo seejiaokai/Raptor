@@ -341,10 +341,11 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   clear on what will happen"*. The card's words are redrawn in round 7, put to him before anything is built. Proposed
   after his follow-ups ("u gonna write the whole paragraph?", "what is amendment to sign mean", "reword it on what u
   expect the user to do"), not yet drawn: title "Close Exercise North?"; three short lines — "6 people back on 149's
-  schedule today" · "No more planning. Kept under Past detachments" · (only with published days ahead, Q2) "Then
-  publish AL1 on 25 and 26 Jul to take everyone off those days" — buttons "Close detachment" and "Keep open". Closing
-  prepares AL1 on those days (the men taken off, the days pending) and never publishes it by itself, the four
-  sign-offs staying people's; the bell reminds "25–26 Jul: publish AL1", a tap opening that day. Recommended; the
+  schedule today" · "No more planning. Kept under Past detachments" · (only with published days ahead, Q2) "25 and
+  26 Jul will be cleared. Then publish AL1 on each." (his "Should u say that u cleared those days": what the app does
+  first, then what he does) — buttons "Close detachment" and "Keep open". Closing prepares AL1 on those days (the men
+  taken off, the days pending) and never publishes it by itself, the four sign-offs staying people's; the bell reads
+  "25–26 Jul cleared · publish AL1", a tap opening that day. Recommended; the
   other choice put to him: Close publishes AL1 itself, the admin who pressed it standing as its signer.
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
