@@ -353,6 +353,13 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   should we create a new input called DET? Cus the leave war uses OD for both purposes"*. Answered with the agent's
   recommendation (a DET input of its own, OD left for staff trips); would replace D2101's "Detachment" choice on the
   overseas duty and D2102's OD row, and settle R2 and R3 by itself — waits for his answer; drawn in round 7 if yes.
+- **His check on R9 (17 Nov 26, chat 99):** *"just to confirm R9 there wont be a lock correct for concurrent editing?"*
+  Answered: correct, no lock (D1751 — a simple "who is editing" mark, the database refusing nobody). R9 as written went
+  further than D1751 in two places — a change "waits" while the other squadron edits the day, and of two saves at the
+  same moment one is refused, "Your change was not saved" — both withdrawn by the agent as against D1751. Proposed in
+  their place, put to him: the mark shows across both squadrons ("Viper (149) – editing Tue"), nothing waits or is
+  refused, the later save stands, the person whose change it replaced is told by the bell, the change history keeps
+  both. Not ruled.
 - **WITHDRAWN by D2140 — the card's words below are not to be drawn as they stand: they gave a false reason (D212: an admin picks all four names), contradicted themselves (no more planning, then publish AL1 there) and dropped the overseas duty ending. Redo from scratch in round 7; his question — who publishes AL1, before or after closing — put to him as A (one press clears and publishes) or B (Close greyed until he has).**
 - **His correction, D2139 (17 Nov 26), of Q2's picture (round 3's card "Close Exercise North?"):** *"this text is not
   clear on what will happen"*. The card's words are redrawn in round 7, put to him before anything is built. Proposed
