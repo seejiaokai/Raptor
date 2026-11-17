@@ -2748,3 +2748,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The owner could not tell whether a drawn board belonged to one party or the other: the screen itself (a full-screen board covering the app's top bar) names no owner, and only the caption said whose it was. The first round-4 drawing repeated it; a fresh reader caught it.
 **Suggested improvement:** Add to "Showing It": when a design involves several parties' views of one thing, every picture includes the part of the screen that names whose view it is; where the screen names nobody, say so on the page and offer a mark as part of the design.
 **Principle:** A picture must answer "whose view is this?" on its own; a caption is read after the picture has already been misread.
+
+### Observation 962: A mock-up part placed "under" a neighbour must be measured against it, not centred by a recipe
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 94, round 5 of the two-squadron design — redrawing the week's grey "142" tag under the mission
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** drawing a new part beside an existing one
+
+**Issue:** Round 4's badge recipe carried align-self:center, so on the phone the tag drawn "under the mission" sat about 10px in from the mission's first letter. Nobody checked the alignment; he noticed it on the page and asked whether it would be nicer lined up. The redraw found the cause only by measuring the tag's left edge against the mission's letters.
+**Suggested improvement:** In mockups-on-the-real-app.md, add a step: every drawn-in part that shares an edge with a neighbour (stacked under it, beside it) has that edge measured in the script — the gap to the neighbour's first letter (a text range, not its box) — and the script fails above about 0.5px unless the offset is on purpose and said in the caption.
+**Principle:** A reused style recipe brings its alignment with it; alignment in a mock-up is measured against the real neighbour, never assumed from where the element was inserted.

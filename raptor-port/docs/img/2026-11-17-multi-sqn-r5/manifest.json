@@ -1,0 +1,50 @@
+{
+  "T-after-d.png": {
+    "item": "T",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149's schedule, Edit Schedule, desktop. As ruled in round 2 (look 2): the tag after the mission, \"BFM 142\", on the mission's own line. It adds no height."
+  },
+  "T-left-d.png": {
+    "item": "T",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149's schedule, Edit Schedule, desktop. The phone's look on a desktop: the tag under \"BFM\", lined up on the left (0px). RU has two jets, so its block is 99.7px tall either way (99.7px before): no height added here."
+  },
+  "T-left1-d.png": {
+    "item": "T",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149's schedule, Edit Schedule, desktop. The cost of the phone's look on a desktop: RU flown as a one-jet formation. With the tag under \"BFM\" its line grows from 60.9px to 73px (+12.1px), because the tag needs a third line where the line has room for two."
+  },
+  "T-after1-d.png": {
+    "item": "T",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "149's schedule, Edit Schedule, desktop. The same one-jet RU with the tag after the mission, as ruled: 60.9px tall, as without the tag (60.9px)."
+  },
+  "J-join-d.png": {
+    "item": "J",
+    "size": "desktop",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, \"+ Wave\" pressed (the menu is real). Drawn in (mark J): \"Join a 149 wave\", one row a wave: \"Wave 1 T/O 12:40 · VL, RU\" and \"Wave 2 T/O 19:20 · VL, RU joined\". Each row says when it takes off and which formations are in it, so 149's waves are told apart by time. The second is one 142 has already joined: greyed in the menu's own \"can't press\" look, \"joined\" at its right. (142's own 1st and 2nd waves stand in for 149's.)"
+  },
+  "T-r4-p.png": {
+    "item": "T",
+    "size": "phone",
+    "kind": "round 4",
+    "caption": "149's schedule, Edit Schedule, phone. Round 4 as drawn: 142's RU wears the grey \"142\" tag under \"BFM\", but it starts 9.7px further in than \"BFM\" does."
+  },
+  "T-left-p.png": {
+    "item": "T",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "149's schedule, Edit Schedule, phone. Proposed: the tag lined up on the left, its edge exactly on the \"B\" of \"BFM\" (measured: 0px). \"RU\", \"BFM\" and \"142\" now read as one stack with one left edge. The blue dot before RU only marks a changed line, so it hangs out on its own as it does today. The line is 123.5px tall with the tag, the same as without it (123.5px)."
+  },
+  "J-join-p.png": {
+    "item": "J",
+    "size": "phone",
+    "kind": "proposed",
+    "caption": "142's Scheduler Board, \"+ Wave\" pressed (the menu is real). Drawn in (mark J): \"Join a 149 wave\", one row a wave: \"Wave 1 T/O 12:40 · VL, RU\" and \"Wave 2 T/O 19:20 · VL, RU joined\". Each row says when it takes off and which formations are in it, so 149's waves are told apart by time. The second is one 142 has already joined: greyed in the menu's own \"can't press\" look, \"joined\" at its right. (142's own 1st and 2nd waves stand in for 149's.)"
+  }
+}

@@ -263,6 +263,22 @@ The page's top: this round's open questions — the badge's place (1), the signi
 then round 3's still open Q2, Q3, R1, R3. Then the plain answers. Then one fresh Opus reader against his words; a new
 Artifact.
 
+## Round 5 — first pictures (17 Nov 26, chat 94 — put to him; nothing ruled)
+
+Two of his asks, drawn on the real app: `raptor-port/docs/mock/2026-11-17-multi-sqn-r5/` (its `draw.mjs`, pictures also in
+`raptor-port/docs/img/2026-11-17-multi-sqn-r5/`), published: https://claude.ai/artifact/NJnxpgWos5q6JtadXTnsJ4
+
+- **T — the week's grey "142" tag lined up on the left (his "would it be nicer if the 142 tag is also aligned to the left",
+  then "should it show the same on desktop and phone").** Round 4's phone tag sat 9.7px in from "BFM": its recipe centred
+  it in the cell's column. Lined up, its left edge is on the mission's first letter (measured 0px). Recommended: the same
+  on both devices, under the mission, lined up — one place everywhere (lesson 17). Its one cost, measured: a one-jet
+  formation of the other squadron grows on a desktop from 61px to 73px; two jets or more, and every phone line, cost
+  nothing. The other choice keeps D2104's desktop look ("BFM 142", after the mission). The board's tag is round 4's item 1.
+- **J — "Join a 149 wave" as approved (D2126):** each row "Wave N", then "T/O 12:40 · VL, RU" in the menu's quiet ink; a
+  joined row in the menu's own disabled look with "joined" at its right; the no-wave line is round 4's 4a, unchanged.
+
+The rest of round 5 (D2124's grey line, D2125's "3 new ↓") waits for his remaining round-4 answers.
+
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
 **Kept as he said it:** squadrons made in Admin; one primary squadron each; access to others given by an admin; only Post

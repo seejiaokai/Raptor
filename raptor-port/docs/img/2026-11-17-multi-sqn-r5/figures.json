@@ -1,0 +1,84 @@
+{
+  "T-after-d": {
+    "h0": 99.7,
+    "h1": 99.7,
+    "grew": 0,
+    "badgeLeft": 24.1,
+    "badge": [
+      31,
+      13
+    ],
+    "cellW": 76
+  },
+  "T-left-d": {
+    "h0": 99.7,
+    "h1": 99.7,
+    "grew": 0,
+    "badgeLeft": 0,
+    "badge": [
+      31,
+      13
+    ],
+    "cellW": 76
+  },
+  "T-left1-d": {
+    "h0": 60.9,
+    "h1": 73,
+    "grew": 12.1,
+    "badgeLeft": 0,
+    "badge": [
+      31,
+      13
+    ],
+    "cellW": 76
+  },
+  "T-after1-d": {
+    "h0": 60.9,
+    "h1": 60.9,
+    "grew": 0,
+    "badgeLeft": 24.1,
+    "badge": [
+      31,
+      13
+    ],
+    "cellW": 76
+  },
+  "J-d": {
+    "op": "0.45",
+    "rows": [
+      "Wave 1 T/O 12:40 · VL, RU",
+      "Wave 2 T/O 19:20 · VL, RU joined"
+    ],
+    "menuW": 340
+  },
+  "T-r4-p": {
+    "h0": 123.5,
+    "h1": 123.5,
+    "grew": 0,
+    "badgeLeft": 9.7,
+    "badge": [
+      26,
+      11
+    ],
+    "cellW": 50
+  },
+  "T-left-p": {
+    "h0": 123.5,
+    "h1": 123.5,
+    "grew": 0,
+    "badgeLeft": 0,
+    "badge": [
+      26,
+      11
+    ],
+    "cellW": 50
+  },
+  "J-p": {
+    "op": "0.45",
+    "rows": [
+      "Wave 1 T/O 12:40 · VL, RU",
+      "Wave 2 T/O 19:20 · VL, RU joined"
+    ],
+    "menuW": 340
+  }
+}
