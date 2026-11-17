@@ -20,14 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/lw-grid-hover-design-200c6e -->
-### CHAT 96 — two Leave War design jobs (mock-ups only, no app code), written 17 Nov 26 — verify before use
-- **Branch:** `claude/lw-grid-hover-design-200c6e`, cut from `main` at 3a51c06a; pushed; no pull request yet (it is notes and mock-ups only — open one as a notes-only pull request once the options pages are done).
-- **Job 1, the grid's hover mark (D2151, D2152):** question page https://claude.ai/artifact/G83PmGZE9Wntv9VjA7gawp, source `raptor-port/docs/mock/2026-11-17-lw-grid-hover/` (script `today.mjs`, against a local `vite preview` on port 4191). Ruled: on a desktop the one day under the mouse wears a hollow cyan ring in the tapped day's strength (`matrix.css` `.mx td.selcell`: inset 1px rgba(59,198,232,.6), with no fill). **Next:** draw it on the real app at 1536 (inject `.mx tbody td:hover{box-shadow:inset 0 0 0 1px rgba(59,198,232,.6)}`), today beside proposed, and put it to him; today's faint row tint stays unless he says.
-- **Job 2, the OIL award editor (D2150):** options page published, https://claude.ai/artifact/L45vtW9hopGHDtwp9yaN9H, source `raptor-port/docs/mock/2026-11-17-lw-oil-editor/` (script `oil.mjs`). He chose **option 2** (D2155: the AM / PM place left empty, not greyed). Filed to build as [LW-OIL-EDIT-STEADY].
-- **Job 3, the Balances page's alignment (D2153):** his desktop picture shows headings not over their figures. **Next:** picture today on the real app (Balances tab) at 1536 and 402, draw 2–3 neater layouts by injected CSS, today beside proposed, publish, put to him. With it (D2154): the amber pending figures (Pending column's "−2.5", the "−1" after CCL / CL) are read by some as days taken this year — redraw so they read as days waiting for approval (e.g. a labelled "2.5 pending" tag, or a pending chip inside the cell), D1253 standing until he approves.
-- **Rulings:** D2150–D2155 → the Leave War page. Numbers D2150 up are this chat's range (another chat holds the D2130s).
-- **Reads owed:** none (no code). **Walk:** none (pictures only).
+<!-- now:claude/lw-balances-hover-275293 -->
+### CHAT 97 — Leave War drawings: the Balances page and the hover ring (mock-ups only, no app code), written 17 Nov 26 — verify before use
+- **Branch:** `claude/lw-balances-hover-275293`, cut from chat 96's `claude/lw-grid-hover-design-200c6e` (all its commits here; that branch needs no merge of its own). One notes-only pull request for both chats' design work.
+- **Done:** one question page, https://claude.ai/artifact/4cp7LyTwx7ssuNiNShDQ3P, two questions: (1) the Balances page — options A, B, C drawn on the real page at 1536 and 402 (`raptor-port/docs/mock/2026-11-17-lw-balances-align/`, scripts `bal.mjs` + `options.mjs`, `probe.mjs` measures the heading edges); all set every column from the left under its heading, group labels at their group's start; A (recommended) a dashed amber "2.5 pending" tag with no minus, B the figure alone (LVE column "PENDING APPROVAL", a small dashed tag on the other kinds' box corner), C every pending figure in its own "PENDING APPROVAL" group at the end; (2) the hover ring (D2151, D2152) at 1536 today beside proposed and beside a tapped day (`raptor-port/docs/mock/2026-11-17-lw-grid-hover/ring.mjs`, `img/r-*`), recommended yes with today's faint row tint kept.
+- **From chat 96:** the OIL award editor is option 2 (D2155), filed to build as [LW-OIL-EDIT-STEADY].
+- **Pick up here:** record his answers the moment he gives them (from D2156; another chat holds the D2130s), then file the builds: the Balances layout and pending look (changes how D1253 / D1482's amber figures show), and the hover ring. The pictures are drawn by injected CSS over a `vite preview` of this branch (port 4197 used); the scripts load Playwright from the main checkout's `raptor-port/node_modules`.
+- **Rulings:** none new in chat 97; D2150–D2155 (chat 96) → the Leave War page. **Reads owed:** none (no code). **Walk:** none (pictures only). **Next chat number:** 98 (D1744).
 <!-- /now -->
 <!-- now:claude/multi-sqn-design-r3 -->
 ### CHAT 92 — multi-squadron round 2, then the night of 17 Nov 26 (six jobs, all done), rewritten 17 Nov 26 after his "merge live" — verify before use
