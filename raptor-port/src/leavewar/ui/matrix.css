@@ -1778,13 +1778,15 @@ touch-action: pan-x pan-y;
    cells (`cell-…`), never a Manning, Event or heading row. It never covers a stronger mark already on the day — a picked or
    selected day, the move's landing amber, the just-added ring, a row's landing line in Rearrange — and on his own row it
    keeps the row's two cyan lines with it. A box-shadow on the one hovered cell: one cell repaints in its own row's layer
-   (docs/performance.md §C), no node is added and nothing is written from script; switched off during a drag, as every hover
-   is (§D). */
+   (docs/performance.md §C), no node is added and nothing is written from script; switched off while a drag selects (the
+   grid's own `.mx-wrap.selecting`). Hung off `.mx-wrap`, never `body`: this file is nested under #page-leavewar, so a rule
+   starting at `body` became "a body inside the page" and matched nothing — the first build's ring never drew (chat 100's
+   browser test, 17 Nov 26); `body.tdrag` is besides the scheduler's puck drag, not this grid's. */
 @media (hover: hover) {
-  body:not(.tdrag) .mx tbody tr:not(.dragover) td[data-testid^="cell-"]:not(.selcell):not(.mvland):not(.lw-ring):hover {
+  .mx-wrap:not(.selecting) .mx tbody tr:not(.dragover) td[data-testid^="cell-"]:not(.selcell):not(.mvland):not(.lw-ring):hover {
     box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .6);
   }
-  body:not(.tdrag) .mx tbody tr.me:not(.dragover) td[data-testid^="cell-"]:not(.selcell):not(.mvland):not(.lw-ring):hover {
+  .mx-wrap:not(.selecting) .mx tbody tr.me:not(.dragover) td[data-testid^="cell-"]:not(.selcell):not(.mvland):not(.lw-ring):hover {
     box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .6), inset 0 1px 0 rgba(59, 198, 232, .55), inset 0 -1px 0 rgba(59, 198, 232, .55);
   }
 }

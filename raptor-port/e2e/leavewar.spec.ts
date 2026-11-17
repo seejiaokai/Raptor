@@ -9155,3 +9155,159 @@ test('on a narrow PC no line shows past the pinned headings\' end as the list sc
   }
   expect((await apprGeo(page)).room, 'the window still has nothing to scroll').toBeLessThanOrEqual(0)
 })
+
+/* THE DAY UNDER THE MOUSE (his D2157, 17 Nov 26 — [LW-GRID-HOVER-RING]; drawn docs/mock/2026-11-17-lw-grid-hover/): on a PC
+   the one day of a man under the mouse wears a thin cyan ring, no fill; it leaves when the mouse does; on his own row the
+   row's two lines stay with it; a picked day keeps its own stronger ring; a phone's tap leaves no ring. Asserted as painted,
+   by the computed style of the day itself (the order's §10, anti-pattern 21). */
+const HOVER_RING = 'rgba(59, 198, 232, 0.6) 0px 0px 0px 1px inset'
+const cellShadow = (page: Page, id: string) => page.locator(`[data-testid="${id}"]`).evaluate(e => getComputedStyle(e).boxShadow)
+/** an empty day of a man in sight — none of his own row's, unless `me` — clear of the pinned names and the edges */
+const emptyDay = (page: Page, me: boolean) => page.evaluate((me) => {
+  const vw = innerWidth, vh = innerHeight
+  for (const td of document.querySelectorAll<HTMLElement>('.mx tbody tr td[data-testid^="cell-"]')) {
+    if (td.closest('tr')!.classList.contains('me') !== me) continue
+    if (td.children.length || td.classList.contains('selcell')) continue
+    const r = td.getBoundingClientRect()
+    if (r.left < vw * 0.35 || r.right > vw - 20 || r.top < vh * 0.3 || r.bottom > vh - 20) continue
+    const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+    if (hit === td) return td.dataset.testid!
+  }
+  return null
+}, me)
+const centreOf = async (page: Page, id: string) => {
+  const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
+  return { x: b.x + b.width / 2, y: b.y + b.height / 2 }
+}
+test('the grid’s day under the mouse wears a thin ring, gone when the mouse leaves; his own row keeps its lines (D2157)', async ({ page }) => {
+  test.skip(isPhone(), 'a mouse’s ring — the phone is the next test')
+  await lwRole(page, 'admin')
+  await settleGrid(page)
+  const id = (await emptyDay(page, false))!
+  expect(id, 'an empty day of a man in sight').toBeTruthy()
+  expect(await cellShadow(page, id), 'no ring before the mouse comes').not.toContain('59, 198, 232')
+  const c = await centreOf(page, id)
+  await page.mouse.move(c.x, c.y)
+  await expect.poll(() => cellShadow(page, id), { message: 'the hovered day wears the thin ring' }).toBe(HOVER_RING)
+  /* one day only: its neighbours in the row stay bare */
+  const others = await page.locator(`[data-testid="${id}"]`).evaluate(td => [td.previousElementSibling, td.nextElementSibling]
+    .filter((e): e is HTMLElement => !!e && (e as HTMLElement).dataset.testid?.startsWith('cell-') === true)
+    .map(e => getComputedStyle(e).boxShadow))
+  for (const s of others) expect(s, 'a neighbour of the hovered day has no ring').not.toContain('0.6) 0px 0px 0px 1px')
+  await page.mouse.move(5, 5)
+  await expect.poll(() => cellShadow(page, id), { message: 'gone when the mouse leaves' }).not.toContain('59, 198, 232')
+  /* his own row: the ring and the row's two lines together */
+  const mine = await emptyDay(page, true)
+  if (mine) {
+    const m = await centreOf(page, mine)
+    await page.mouse.move(m.x, m.y)
+    await expect.poll(() => cellShadow(page, mine), { message: 'his own row: ring and both lines' })
+      .toBe(`${HOVER_RING}, rgba(59, 198, 232, 0.55) 0px 1px 0px 0px inset, rgba(59, 198, 232, 0.55) 0px -1px 0px 0px inset`)
+  }
+})
+test('a picked day keeps its own stronger ring under the mouse; a phone’s tap leaves no ring (D2157)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await settleGrid(page)
+  if (isPhone()) {
+    /* a phone has no mouse, and the ring's rule lives only where one is: every rule that paints it sits inside
+       `(hover: hover)`, so a tap — which leaves the row "hovered" on a phone — can never leave it stuck (a tapped day's
+       own mark is the tap's, unchanged: D2157 "a phone is unchanged") */
+    expect(await page.evaluate(() => matchMedia('(hover: hover)').matches), 'the phone has no mouse').toBe(false)
+    const homes = await page.evaluate(() => {
+      const out: string[] = []
+      const walk = (rules: CSSRuleList, media: string) => {
+        for (const r of rules) {
+          if (r instanceof CSSMediaRule) walk(r.cssRules, r.conditionText)
+          else if (r instanceof CSSGroupingRule) walk(r.cssRules, media)
+          else if (r instanceof CSSStyleRule && r.selectorText.includes('cell-') && r.selectorText.includes(':hover')
+            && r.cssText.includes('0.6) 0px 0px 0px 1px inset')) out.push(media)
+          if (r instanceof CSSStyleRule && r.cssRules?.length) walk(r.cssRules, media)
+        }
+      }
+      for (const s of document.styleSheets) { try { walk(s.cssRules, '') } catch { /* another origin's sheet */ } }
+      return out
+    })
+    expect(homes.length, 'the ring\'s rules are in the page').toBeGreaterThan(0)
+    for (const m of homes) expect(m, 'every ring rule is a mouse\'s only').toBe('(hover: hover)')
+    return
+  }
+  const a = (await emptyDay(page, false))!
+  const row = a.replace(/-\d{4}-\d{2}-\d{2}$/, ''), date = a.slice(row.length + 1)
+  const next = new Date(date + 'T12:00:00Z'); next.setUTCDate(next.getUTCDate() + 1)
+  const b = `${row}-${next.toISOString().slice(0, 10)}`
+  /* a day is "picked" (`selcell`) while the drag holds it: pressed on a, carried to b and back over a, the mouse still down —
+     the day under the mouse then wears the selection's strong ring, never the thin one */
+  const pa = await centreOf(page, a), pb = await centreOf(page, b)
+  await page.mouse.move(pa.x, pa.y)
+  await page.mouse.down()
+  await page.mouse.move(pa.x + 8, pa.y)
+  await page.mouse.move(pb.x, pb.y, { steps: 6 })
+  await expect(page.locator(`[data-testid="${a}"]`)).toHaveClass(/selcell/)
+  await page.mouse.move(pa.x + 2, pa.y, { steps: 4 })
+  await page.waitForTimeout(100)
+  const held = await cellShadow(page, a)
+  expect(held, 'the picked day under the mouse wears the selection\'s ring').toContain('2px')
+  expect(held, 'never the thin hover one').not.toBe(HOVER_RING)
+  await page.mouse.up()
+})
+
+/* THE AWARD EDITOR HOLDS STILL (his D2150, D2155 — option 2, 17 Nov 26; drawn docs/mock/2026-11-17-lw-oil-editor/): with an
+   award open, changing the amount between a half day and any other, and arming Delete, moves nothing — the amount, the AM /
+   PM place, the date, reason, given-by, Save, Cancel and Delete each keep their box. On a phone at his iPhone's 402 too. */
+test('the OIL award editor: the amount 0.5 ↔ 1 ↔ 2.5 and Delete armed move nothing (D2155)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const first = page.locator('[data-testid="oil-range-first"]')
+  if (await first.count()) await first.click()
+  const award = page.locator('[data-testid="oil-entry-l4"]')   // the demo's CNY grant
+  await award.scrollIntoViewIfNeeded()
+  await award.click()
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toBeVisible()
+  /* the tracker slides sideways on a phone: the editor is brought wholly into sight first, as a finger would slide it —
+     else the test's own press on a half-hidden Delete slides the list and reads as the editor moving */
+  await award.evaluate(e => e.scrollIntoView({ block: 'nearest', inline: 'nearest' }))
+  await page.waitForTimeout(100)
+  const ids = ['oil-edit-amt', 'oil-edit-date', 'oil-edit-reason', 'oil-edit-given', 'oil-edit-save', 'oil-edit-cancel', 'oil-del-l4']
+  const geo = () => page.evaluate((ids) => {
+    const out: Record<string, number[]> = {}
+    for (const id of ids) {
+      const r = document.querySelector<HTMLElement>(`[data-testid="${id}"]`)!.getBoundingClientRect()
+      /* to a tenth of a pixel: the first build's empty AM / PM place stood 0.4–0.5px shorter than the pair, and every line
+         below slid by that much — a half-pixel rounding hid it on a desktop (chat 100, 17 Nov 26) */
+      out[id] = [r.left, r.top, r.width, r.height].map(v => Math.round(v * 10) / 10)
+    }
+    const ed = document.querySelector<HTMLElement>('[data-testid="oil-edit-award"]')!
+    const pair = ed.querySelector<HTMLElement>('[data-testid="oil-edit-half-am"]') ?? ed.querySelector<HTMLElement>('.oil-halfgap')!
+    const pr = pair.getBoundingClientRect()
+    out['AM place'] = [pr.left, pr.top, pr.height].map(v => Math.round(v * 10) / 10)
+    return out
+  }, ids)
+  const amt = page.locator('[data-testid="oil-edit-amt"]')
+  await amt.fill('0.5')
+  await expect(page.locator('[data-testid="oil-edit-half-am"]'), 'a half day shows AM / PM').toBeVisible()
+  const g0 = await geo()
+  for (const v of ['1', '2.5', '0.5', '3']) {
+    await amt.fill(v)
+    expect(await geo(), `amount ${v}: nothing moved`).toEqual(g0)
+  }
+  await expect(page.locator('[data-testid="oil-edit-half-am"]'), 'AM / PM gone at a whole amount').toHaveCount(0)
+  const del = page.locator('[data-testid="oil-del-l4"]')
+  await del.click()
+  await expect(del).toHaveText('Really delete?')
+  expect(await geo(), 'Delete armed: nothing moved, Delete no wider').toEqual(g0)
+  /* every part inside the editor's own box and the screen, and on top at its middle */
+  const vw = page.viewportSize()!.width
+  const box = (await award.boundingBox())!
+  for (const id of ids) {
+    const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
+    expect(b.x + b.width, `${id} inside the editor's box`).toBeLessThanOrEqual(box.x + box.width + 0.5)
+    expect(b.x, `${id} inside the screen`).toBeGreaterThanOrEqual(0)
+    expect(b.x + b.width, `${id} inside the screen`).toBeLessThanOrEqual(vw + 0.5)
+    const hit = await page.evaluate(([x, y, id]) => document.elementFromPoint(x as number, y as number)?.closest(`[data-testid="${id}"]`) != null, [b.x + b.width / 2, b.y + b.height / 2, id] as const)
+    expect(hit, `${id} is on top at its middle`).toBe(true)
+  }
+  await page.locator('[data-testid="oil-edit-cancel"]').click()
+  await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
+})

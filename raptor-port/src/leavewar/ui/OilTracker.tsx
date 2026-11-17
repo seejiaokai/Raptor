@@ -540,8 +540,13 @@ export function OilTracker({ person, onClose, onGranted }: {
               {Number(eAmt) === 0.5 ? (
                 <HalfPick testid="oil-edit-half" value={eHalf ?? defaultAwardHalf(p.id, eDate, c.ledgerId)} onPick={setEHalf} />
               ) : (
-                /* the pair's place, kept at the pair's own size and empty — words in it only so it measures as the pair does */
-                <span className="oil-halfgap" aria-hidden="true"><span className="tchip half">AM</span><span className="tchip half">PM</span></span>
+                /* the pair's place, kept at the pair's own size and empty — the pair's own buttons, hidden and out of reach,
+                   so it measures exactly as the pair does (drawn as plain words it stood about half a pixel shorter, and
+                   every line below slid by that much — chat 100's browser test, 17 Nov 26) */
+                <span className="oil-halfgap" aria-hidden="true">
+                  <button type="button" className="tchip half" tabIndex={-1}>AM</button>
+                  <button type="button" className="tchip half" tabIndex={-1}>PM</button>
+                </span>
               )}
               {/* AN AWARD'S DATE IS SHOWN, NEVER CHANGED (D260's reading — delete it and give it again on the right
                   day); the store refuses a changed date on an award too */}
