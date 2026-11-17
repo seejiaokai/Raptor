@@ -9268,6 +9268,10 @@ test('the OIL award editor: the amount 0.5 ↔ 1 ↔ 2.5 and Delete armed move n
   /* the tracker slides sideways on a phone: the editor is brought wholly into sight first, as a finger would slide it —
      else the test's own press on a half-hidden Delete slides the list and reads as the editor moving */
   await award.evaluate(e => e.scrollIntoView({ block: 'nearest', inline: 'nearest' }))
+  /* …and its Delete too: on a 402 phone the editing column (260px) is wider than the slide's window beside the pinned
+     columns, so with GitHub's wider letters Delete still hung ~12px past the screen's edge and the test's own press slid
+     the list 14px to reach it (GitHub's run of 01f1030c4, 17 Nov 26) — a finger's tap slides nothing */
+  await page.locator('[data-testid="oil-del-l4"]').evaluate(e => e.scrollIntoView({ block: 'nearest', inline: 'nearest' }))
   await page.waitForTimeout(100)
   const ids = ['oil-edit-amt', 'oil-edit-date', 'oil-edit-reason', 'oil-edit-given', 'oil-edit-save', 'oil-edit-cancel', 'oil-del-l4']
   const geo = () => page.evaluate((ids) => {

@@ -114,6 +114,34 @@ pixels). Each cell YES / NO-because / MISSING; walked cells get their picture's 
 
 ## The five sizing lines (§7.0)
 
+Written by the host (Opus), chat 101, 17 Nov 26, before any walker started.
+
+1. **Type of change:** E (the layout of Balances and of the award editor), C (the hover ring — a new response to the
+   mouse), D (the pending tag drawn on the phone's and the desktop's rows, admin and read-only, by one part but in
+   several homes), G (the period's name is saved data — the made period read back after a reload, and Undo).
+2. **What only a walk could find here:** a column whose heading does not stand over its boxes at an iPhone's or a
+   desktop's width, or a tag cut or covered (slid to the end, pinched out, his own row); a ring that does not draw over
+   a filled day (a leave block is drawn above the cell), or that sticks after a phone tap, or that fights a picked
+   day; the award editor sliding on a press or hanging past a phone's edge as it opens; the name box not following the
+   dates as a person picks them in the real calendar, and the name read back in the picker, Balances' title, the
+   Holidays tag and after a reload. Carried already: the name's arithmetic (`warname.test.ts`), the typed / emptied
+   rule (`wars.test.tsx`), the ring's computed style and the editor's geometry to a tenth of a pixel
+   (`leavewar.spec.ts`, phone and desktop) — those work through the real controls but on the demo's convenient rows.
+3. **What the ledger says:** Leave War walks of type E / D / C on one Sonnet walker took 13–51 min and 190k–280k
+   tokens; they found their faults on the phone (the pinned rows, a window's height) and the reads found what a walk
+   could not (a press eaten after Escape). Walks of type E with a drawing found their differences by the drawing check,
+   not by eye.
+4. **The walk chosen:** two Sonnet walkers at once on the frozen build of `01f1030c4`, each in its own browser world:
+   **W1** Balances and the hover ring (desktop 1536 Chromium; phone 402 Chromium by touch and 402 WebKit), admin,
+   member, a locked period; **W2** the award editor and the new period's name (the same sizes), admin and member, and
+   the plain-user round of the Leave War (§7.0a). Astra's scenarios set the list (below). Sizes beyond the required:
+   WebKit at 402 (his iPhone's engine) for every layout scenario; 2560 for Balances (lesson 11). The drawing check run
+   beside it by an Opus helper on the same frozen build (three part lists written first — the drawings had none).
+   Repeated cases left to tests: the name's date pairs (`warname.test.ts` — calls the calculation directly; the walk
+   drives five through the real calendar); the editor's amounts beyond 0.5 / 1 / 2.5 (`leavewar.spec.ts` — the real
+   controls).
+5. **After the walk:** its row in `docs/walk-ledger.md` — added at the close.
+
 ## The lessons of §7.11, each against a scenario or a test
 
 ## Astra's scenarios
