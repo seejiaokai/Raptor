@@ -179,7 +179,7 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - His idea, to be drawn: on the board the other squadron's "142" badge at the top right of the callsign, adding no height [D2117].
 - His lean: a squadron's new place takes effect the moment it is saved, as a new account does, with no "From" date [D2119].
 - A man's own overseas duty input stays the way onto a detachment, so he can put himself on it if the scheduler misses it; a door for several men at once is to be drawn [D2120].
-- The look of a shared wave at each step of signing is redrawn: a schedule never reads as published while its own squadron has not signed it [D2121].
+- The look of a shared wave at each step of signing is redrawn: a schedule never reads as published while its own squadron has not signed it; the other squadron's badge stays in the wave's title, and the grey line under it no longer says whose wave it is but is one sentence by state, "Not yet published by 149.", "RU goes out when 149 publishes." once 142 has published, "Published by 149." [D2121, D2124].
 - Admin gains a "Squadrons" page as drawn, and "Request access" asks the squadron first, as drawn [D2110, D2111].
 - Escape closes the changes window when it was the last thing opened, as it does the other windows [D2112].
 - His lean: where two squadrons each put an ALL AVAIL event at the same time, the app flags no conflict and does not decide which one a man attends — left to the people; design only [D2097].
