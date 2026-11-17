@@ -31,7 +31,7 @@
    has only ever been part of the Inputs page. Its overlay half went with this re-make — the page's scroll lock, its
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
-import { INPUTS, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput, typeMatches } from '../engine/inputs'
+import { INPUTS, inputsFor, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput, typeMatches } from '../engine/inputs'
 import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -41,7 +41,8 @@ import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREVEAL, clearPlanReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips-model'
 import { canEditSched } from '../state/auth'
-import { isMe, mayDeleteInput, viewerId } from '../state/perms'
+import { isMe, mayDeleteInput, viewerId, myUnit } from '../state/perms'
+import { rosterOf } from '../engine/roster'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
@@ -96,7 +97,8 @@ const isoToday = () => {
 // eslint-disable-next-line react-doctor/only-export-components -- one day's inputs as the month and the List both filter them, read with the page's own window helpers (ui/inputedit.tsx); a model file importing those would draw the input window's whole module graph into the pure models, and the tests that drive a day directly import it from here
 export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSearch: string }, mode?: 'member') {
   const label = fmt(iso)
-  let inputs = inputsInMode(INPUTS, mode).filter((r: any) => inputCoversDate(r, label))
+  /* (the signed-in person's own squadron's — the Inputs calendar stays on his own, D2132; multi-squadron step 3) */
+  let inputs = inputsInMode(inputsFor(myUnit(), iso), mode).filter((r: any) => inputCoversDate(r, label))
   /* one body with the List and the month (ui/inputscal-model.ts): an input passes when ANY of its people does, or its
      placeholder — it is one record with the list of its people (owner D756; the one-rule plan §4.5) */
   inputs = inputs.filter((r: any) => inputPassesPerson(f.fPerson, r))
@@ -648,7 +650,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   const todayIso = isoToday()
 
   /* ---- the bars: every input the filters let through, as entries; each week lays out its own ---------------------- */
-  const items = monthItems(INPUTS, { fPerson, fType, fSearch })
+  const items = monthItems(inputsFor(myUnit()), { fPerson, fType, fSearch })
   const answers = flyMonth(cur.y, cur.m)
 
   /* ---- ON A PHONE THE MONTH TAKES THE FULL SCREEN (D653, D664): the week rows share the height from the month's top
@@ -930,7 +932,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
        (owner D756), so the saved record is the whole of it. */
     if (revealed) list.unshift(...monthItems([saved], { fPerson: 'all', fType: 'all', fSearch: '' }))
     /* nothing listed, yet the day HAS inputs when no filter is asked: the filters hide them all (D731 (2), below) */
-    const hidden = !list.length && (fPerson !== 'all' || fType !== 'all' || !!fSearch) && itemsOn(iso, monthItems(INPUTS, { fPerson: 'all', fType: 'all', fSearch: '' })).length > 0
+    const hidden = !list.length && (fPerson !== 'all' || fType !== 'all' || !!fSearch) && itemsOn(iso, monthItems(inputsFor(myUnit()), { fPerson: 'all', fType: 'all', fSearch: '' })).length > 0
     const kind = dayTag(answers[iso] || flyAnswer(iso), dayFacts(iso).short)
     const name = dayFacts(iso).name
     const kindWord = !kind ? undefined
@@ -1205,7 +1207,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
      highlight chips use), toggling the whole group. People already on the
      target row are shown ticked-and-locked so a re-pick can't double them. */
   const renderPicker = () => {
-    const roster = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
+    /* the signed-in person's own squadron's people (multi-squadron step 3 — the Inputs page stays on his own, D2132) */
+    const roster = rosterOf(myUnit()).filter(id => !PEOPLE[id].archived && !PEOPLE[id].special)
     const seated = new Set<string>(pickFor ? (((PLANPUCKS.find((p: any) => p.id === pickFor)?.ids) || []).filter(Boolean)) : [])
     const toggle = (id: string) => setPickSel(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
     /* HIGHLIGHT = a visual fade, never a selection (owner, 24 Aug 26). Toggling

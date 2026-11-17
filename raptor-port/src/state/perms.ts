@@ -31,9 +31,9 @@ import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore } from './accounts'
-import { unitRowsBefore, levelBefore, homeBefore, todayIso } from './units'
-import { UNIT } from '../engine/unitview'
-import { unitOf } from '../storage/unitid'
+import { unitRowsBefore, levelBefore, homeBefore, todayIso, homeOn } from './units'
+import { UNIT, BOOT_UNIT } from '../engine/unitview'
+import { unitOf, isUnitId } from '../storage/unitid'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES, validUnit, validPlace, validUnitPlace, validGrant,
   validHome, unitIn, placeIn, placeIdOn, type UnitRows,
@@ -239,6 +239,15 @@ export function me(): string | null {
 }
 /* "is this the signed-in person?" — the own-row test and the "this is you" display */
 export function isMe(pid: any): boolean { const m = me(); return m != null && pid != null && String(pid) === m }
+/* HIS OWN SQUADRON (multi-squadron step 3 — plan §3.4, D2132): the signed-in person's home unit on `iso` (today unless
+   named). The pages that stay on his own squadron whatever schedule is in view — the Inputs page and its calendars,
+   Quals — list its people (engine/roster.ts rosterOf) and its inputs (engine/inputs.ts inputsFor). Nobody signed in, a
+   guest, or a person with no home: the boot unit, as the unit in view starts (state/store.ts sessionUnit). */
+export function myUnit(iso: string = todayIso()): string {
+  const m = me()
+  const h = m ? homeOn(m, iso) : null
+  return h && isUnitId(h) ? h : BOOT_UNIT
+}
 
 /* the schedule: edit mode, the board, the week's writes. No session → false, as
    canEditSched always answered (its callers are render and edit-mode gates). */

@@ -4,6 +4,8 @@ import { CURWEEK } from './waves'
 import { newId } from './newid'
 import { mintOrd } from '../command/ord'
 import { PEOPLE, isSpecial } from './people'
+import { UNIT } from './unitview'
+import { homeUnitOf } from './roster'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
    and remarks in place, on the week and on the board).
    Every other editable row in this app is addressed by its position in the
@@ -72,7 +74,31 @@ export function withFrozenInputs<T>(byDate:any,fn:()=>T):T{
 export function inputsFrozenOn(dt:any){if(!FZ)return false;const k=dateOrd(dt);return k!=null&&FZ.has(k);}
 export function inputsOn(dt:any):any[]{
   if(FZ){const k=dateOrd(dt); const f=k!=null?FZ.get(k):undefined; if(f)return f;}
-  return INPUTS.filter((inp:any)=>inputCoversDate(inp,dt));}
+  /* the schedule in view's own (multi-squadron step 3): a frozen face above is already its unit's issued copy */
+  const at=inputAtIso(dt);
+  return INPUTS.filter((inp:any)=>inputCoversDate(inp,dt)&&inputBelongs(inp,UNIT,at));}
+/* WHOSE AN INPUT IS — ONE UNIT'S, ON A DATE (multi-squadron batch 1, step 3; plan §3.4 "Inputs stay one list"). The list
+   stays ONE (one authoritative record each, the community's — storage/keyowner.ts); what changes is the reader: every
+   reader that chooses a set of inputs asks inputsFor(unit, date) — the schedule in view's (UNIT) for a schedule surface,
+   the signed-in person's own squadron (state/perms.ts myUnit) for the Inputs page — so a 149 member's leave never lands
+   on 142's day. An input is a unit's when one of its NAMED people is that unit's on the date (engine/roster.ts
+   homeUnitOf — his Home rows); an input of placeholders only (ALL AVAIL / ALL) is its FILER's unit's — the placeholder
+   entry's `by`, else the record's — and one with no filer recorded (a seed) is the demo's home unit's, as a person with
+   no home row is. `at` is the date judged on (yyyy-mm-dd, or a day label); omitted, the input's own first day — the same
+   answer for every day it covers until a transfer (batch 4) moves a man mid-input. A look-up by id (inpById) stays as it
+   is; every enumeration outside inputsFor is on engine/roster-readers.test.ts's allow-list with its reason. */
+const isoOfOrd=(o:number):string=>`${Math.floor(o/10000)}-${pad2(Math.floor(o/100)%100)}-${pad2(o%100)}`;
+export function inputAtIso(at:any,yr?:any):string|undefined{if(at==null||at==='')return undefined; const s=String(at); if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s; const o=dateOrd(s,yr); return o==null?undefined:isoOfOrd(o);}
+export function inputBelongs(r:any,unit:any,at?:any):boolean{if(!r)return false;
+  const iso=inputAtIso(at)||inputAtIso(r.date,r.yr); const named=namedOf(r);
+  if(named.length)return named.some((e:any)=>homeUnitOf(e.p,iso)===unit);
+  const ph=placeholderOf(r); const by=ph&&ph.by!=null&&ph.by!==''?ph.by:r.by;
+  return homeUnitOf(by==null?'':by,iso)===unit;}
+export function inputsFor(unit:any,at?:any,list?:any):any[]{return (list===undefined?INPUTS:list).filter((r:any)=>!!r&&inputBelongs(r,unit,at));}
+/* the one unit a saved input is read as (its first named man's, else its filer's) — whose people its window offers */
+export function inputUnitOf(r:any):string|null{if(!r)return null; const iso=inputAtIso(r.date,r.yr); const named=namedOf(r);
+  if(named.length)return homeUnitOf(named[0].p,iso);
+  const ph=placeholderOf(r); const by=ph&&ph.by!=null&&ph.by!==''?ph.by:r.by; return homeUnitOf(by==null?'':by,iso);}
 /* one input by id, as the document for date `dt` holds it — the frozen copy on a frozen date (null when that version
    never held it), else the live record */
 export function inputOn(iid:any,dt:any):any{
@@ -237,7 +263,7 @@ export function frozenInputMatch(frozen:any,dt:any):{diffs:Array<{id:string,was:
   if(!frozen||dt==null)return {diffs:[],same:[]};
   const W:any[]=[], N:any[]=[];
   Object.keys(frozen).forEach((id:any)=>{const w=frozen[id]; if(w&&!isUpchit(w.type))W.push({id,r:w,k:inpDetailKey(w)});});
-  INPUTS.forEach((x:any)=>{ if(inputCoversDate(x,dt)&&!isUpchit(x.type))N.push({id:inpId(x),r:x,k:inpDetailKey(x)}); });
+  inputsFor(UNIT,dt).forEach((x:any)=>{ if(inputCoversDate(x,dt)&&!isUpchit(x.type))N.push({id:inpId(x),r:x,k:inpDetailKey(x)}); });   // the unit in view's day's own (multi-squadron step 3)
   const out:any[]=[], same:any[]=[];
   /* 1 — the same record, unchanged */
   for(let i=W.length-1;i>=0;i--){const j=N.findIndex((n:any)=>n.id===W[i].id);

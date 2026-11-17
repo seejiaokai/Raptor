@@ -24,7 +24,7 @@ import { UNIT, BOOT_UNIT, setUnitInView, inView } from '../engine/unitview'
 import { isUnitId } from '../storage/unitid'
 import { insightsLoad } from '../engine/insights-config'
 import { registerMissionRoles } from './mission-roles'
-import { mintInpIds, INPUTS, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
+import { mintInpIds, INPUTS, inputsFor, DATES, baseYear, dateIx, inputCoversDate, inpId, shapeProblem, tillSettle } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
@@ -167,7 +167,8 @@ function protectedTouched(before: any, prot: string[]): boolean {
     for (const r of rows || []) if (r && prot.some(dt => inputCoversDate(r, dt))) sig.push(JSON.stringify(r))
     return sig.sort()
   }
-  const a = cover(before.i), b = cover(INPUTS)
+  /* the protected days are the loaded week's: only the schedule in view's requests can change them (multi-squadron step 3) */
+  const a = cover(inputsFor(UNIT, undefined, before.i || [])), b = cover(inputsFor(UNIT))
   if (a.length !== b.length) return true
   for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return true
   return false
@@ -674,7 +675,9 @@ function applyWeekModel(v: any, opts?: { landLater?: boolean }): any {
      autoAcceptInput both skip a truthy acc, so a kept 'u' is never re-landed. */
   /* Ground rows belong to the loaded week; acc belongs to the global input.
      A protected-spanning row keeps its filing even when this week has no landing. */
-  INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
+  /* (the week loaded is the schedule in view's: only ITS requests' landings are re-derived — another squadron's 'g'
+     belongs to that squadron's rows; multi-squadron step 3) */
+  inputsFor(UNIT).forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
   mintInpIds()
   /* [ARCH-STACK] f/u#1 (F-01): the command-layer baseline advanced to the freshly-swapped week at once, so nothing that
      runs before the caller's own re-baseline diffs the OLD week against the new one */
@@ -1079,7 +1082,7 @@ export function initStore(policy: { seedDemo: boolean } = { seedDemo: true }) {
        commitments). applyWeekModel already does this clear for a stashed week
        (its INPUTS acc-clear above reconcileLandedAcc); mirror it here so the
        no-stash boot re-lands too. 'r'/'u' are deliberate decisions, kept. */
-    INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
+    inputsFor(UNIT).forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
   }
   /* stable row ids (engine/rowids.ts) BEFORE the baseline: the walk mutates
      DAYS, and a mint after the yardstick would make the pristine seed week

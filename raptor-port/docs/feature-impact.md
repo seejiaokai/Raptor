@@ -799,6 +799,24 @@ publish-restore's book keys were two such, fixed in step 2). A new setting a uni
 and stored under the unit in view (`engine/hooks.ts storedKey`); one everyone shares is listed in `storage/keyowner.ts`
 as the community's. Pinned by `storage/unitid.test.ts` and `state/units-switch.test.ts`.
 
+#### Which unit is this input, this person? (the multi-squadron build, batch 1, step 3, 18 Nov 26)
+`PEOPLE` and `INPUTS` stay ONE list each for every squadron; whose a person or an input is, is asked, never stored
+twice: a person's is his home on the date (`state/units.ts homeOn`, reached from the engine through
+`engine/roster.ts homeUnitOf`), an input's its person's home on its date (`engine/inputs.ts inputBelongs`). Every
+surface that lists ONE squadron's people asks `engine/roster.ts rosterOf(unit, iso)` (or `unitPeople`, its record form);
+every reader of ONE squadron's inputs asks `engine/inputs.ts inputsFor(unit, at?)`. Which unit: the schedule's surfaces
+(a day's landing, a published day's frozen copies and filing, the OIL evidence, the crew lists) the unit in view,
+`UNIT`; the Inputs pages, the Medical tab, the SANS calendar and day, and the Leave War's OIL pass the signed-in
+person's own, `state/perms.ts myUnit()` (D2132) — so the OIL pass never reads the schedule in view, and its reverse
+sweep clears only credits of men whose home that day is its unit. The seam: a NEW whole-list walk of either list would
+take the other squadron's men or requests (149's leave on 142's Unavailable list). Two guard tests count every such
+walk, file by file, against an allow-list with its reasons — `engine/roster-readers.test.ts` and
+`engine/inputsfor-readers.test.ts` (the counter: `testing/enumguard.ts`); a new walk, or a second one in an allowed
+file, turns them red. Whatever must see EVERY squadron reads every unit's stored weeks by `engine/weekstash.ts
+stashEntries()` — a person's delete (`state/person-delete.ts stashPreflight`) and a restore's "is he still named"
+(`state/roster-restore.ts stillNamed`) — never `stashKeys()`, the unit in view's alone. Pinned by
+`state/units-roster.test.ts`.
+
 #### Does this standby row fly? ([STANDBY-FLIES], D1042–D1046, D1061, D1062, 19 Oct 26)
 One body answers it — `engine/waves.ts saFlies` (a shift with its B or R typed, or the row's hand tick; never a cancelled
 one) — and every reader asks it: the checks (`saExempt`, `events.ts` — a flying AVALON / BB row leaves `sacrew`), the crew

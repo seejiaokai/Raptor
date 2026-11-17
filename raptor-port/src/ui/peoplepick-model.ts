@@ -13,8 +13,10 @@ const az = (ids: string[]) => [...ids].sort((a, b) => cs(a).localeCompare(cs(b),
 
 /** the people this picker offers: today's list (no archived man, no placeholder puck), SANS people only on the SANS
  *  calendar — a SANS availability is refused for anyone else at the save */
-export const pickRoster = (sansOnly?: boolean): string[] =>
-  az(rosterOptions().filter(id => !PEOPLE[id].special && (!sansOnly || PEOPLE[id].san)))
+/*  (of one squadron — the window passes whose: the signed-in person's own on the Inputs page, the schedule in view's on
+    the schedule; multi-squadron step 3) */
+export const pickRoster = (sansOnly?: boolean, unit?: string): string[] =>
+  az(rosterOptions(unit).filter(id => !PEOPLE[id].special && (!sansOnly || PEOPLE[id].san)))
 
 /* ---- "ALL AVAIL" AND "ALL" AS A CHOICE ([INPUT-ALL-AVAIL]; owner D700, D702, D711, D712, D713 — 9 Oct 26) ------------
    His words: "Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments."

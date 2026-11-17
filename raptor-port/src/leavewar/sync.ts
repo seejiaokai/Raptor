@@ -23,7 +23,10 @@ import { goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, myUnit } from '../state/perms'
+import { rosterOf, homeUnitOf } from '../engine/roster'
+import { UNIT } from '../engine/unitview'
+import { qualify } from '../storage/unitid'
 import { balancesLocked, setHiddenIdentityLookup, snapshotNow } from './state/store'
 import { isBalKind, readTypedBalShape, sameSnapshot, type SnapEntry } from './engine/leaveyear'
 import { SESSION, canEditSched } from '../state/auth'
@@ -36,7 +39,7 @@ import type { Day, Sched } from '../engine/schema'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf, unpublishBackTo } from '../engine/publish'
 import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, oilWorkWhy, type OilWork } from '../engine/oil'
 import { oilEarnedWork, oilAmount, oilWorkSpans as workSpans, type OilEvidence } from '../engine/oilev'
-import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
+import { stashUnitKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
@@ -1574,7 +1577,9 @@ export function availableFor(iso: string, win: [number, number], day?: Day): str
     if (!away && !commit) return false
     return covers(inp) && hits(inp)
   })).map(l => l.person))
-  for (const id of Object.keys(PEOPLE)) {
+  /* the people of the schedule this day belongs to — the one in view (multi-squadron step 3, engine/roster.ts): another
+     squadron's men are never in this squadron's ALL AVAIL crowd (borrowing, batch 3, brings them in by name) */
+  for (const id of rosterOf(UNIT, iso)) {
     const p = rosterBody(id)
     if (!p || p.special || p.pers) continue
     /* a DELETED man is read by DATE ([POST-OUT-OUTCOMES], D297 — Fable F1): on a day before his cutoff he is
@@ -1721,8 +1726,22 @@ function creditFrom(day: Day, iso: string, add: (p: string, iso: string, sp: Oil
 /* `back` reads one loaded-week day from ANOTHER version — the one an Unpublish would leave as the issued schedule, or a
    draft (`ver` null), which earns nothing — so the warning before an Unpublish asks this same body what the war would
    be owed afterwards ([UNPUB-WARN-AL-RESTORES], 20 Oct 26). Read only: nothing here writes. */
-function desiredOilCells(back?: { di: number; ver: string | null }): { desired: Map<string, DesiredOil>; protectedDates: Set<string> } {
+/* WHOSE OIL THE LEAVE WAR WORKS OUT (multi-squadron batch 1, step 3): the signed-in person's own squadron — the war he
+   opens is his squadron's (step 4 gives each squadron a war of its own) — never the schedule in view, which a viewer of
+   the other squadron's schedule moves without touching anyone's OIL. Signed out (a headless test, the boot) it is the
+   boot unit, every demo person's. */
+export const warUnit = (): string => myUnit()
+
+/* WHOSE PUBLISHED DAYS, AND WHOSE CREDITS (multi-squadron batch 1, step 3). A squadron's OIL comes from ITS OWN
+   published days and lands only on ITS OWN people (homeUnitOf on the date) — never from the schedule in view: switching
+   from 142's week to 149's same week must move nobody's credit, and 149's pass must never sweep away a credit 142's
+   published Saturday owes a 142 man. `unit` is the squadron whose calculation this is (the Leave War's — warUnit). When
+   it is the schedule in view its loaded week is read live (DAYS / SCHED) and its other weeks from the stash; any other
+   squadron's weeks are ALL in the stash (the swap stashed the week it left — state/store.ts switchUnit), read by their
+   unit-qualified keys. (A man borrowed onto the other squadron's line — batch 3, D2183 — is not this step's.) */
+function desiredOilCells(back?: { di: number; ver: string | null }, unit: string = warUnit()): { desired: Map<string, DesiredOil>; protectedDates: Set<string> } {
   const protectedDates = new Set<string>()
+  const live = unit === UNIT
   /* HIDING A MAN MUST NOT DESTROY HIS MONEY (owner, 21 Sep 26 — "There's no way
      to credit OIL to SANs even when they are hidden?"), and neither must
      ARCHIVING him (Astra, 21 Sep 26, confirmed by the owner as R-2).
@@ -1744,7 +1763,7 @@ function desiredOilCells(back?: { di: number; ver: string | null }): { desired: 
     /* [POST-OUT-OUTCOMES] (D299 — "his OIL balance" goes; the plan's Round 1): a DELETED man earns nothing on or after
        his cutoff — not even from a published day to come that still carries him until it is re-issued. Before it, his
        credits stand (the past keeps its record). */
-    return !!(p && !p.special && !(p.deleted && iso >= String(p.deletedFrom || '')))
+    return !!(p && !p.special && !(p.deleted && iso >= String(p.deletedFrom || ''))) && homeUnitOf(id, iso) === unit
   }
   /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
   const pool = new Map<string, OilWork[]>()
@@ -1777,7 +1796,7 @@ function desiredOilCells(back?: { di: number; ver: string | null }): { desired: 
      amFormatOf(SCHED) would read 'current' — isPreservedWeek catches it so its
      credit-bearing dates are protected, never derived from the seed. */
   const liveUnsupported = amFormatOf(SCHED, CURWEEK) === 'unsupported' || isPreservedWeek(CURWEEK)
-  for (let di = 0; di < DAYS.length; di++) {
+  for (let di = 0; live && di < DAYS.length; di++) {
     const iso = labelToISO(DATES[di])
     /* ONLY THE ISSUED SCHEDULE PAYS, BOTH DIRECTIONS (owner, 21 Sep 26 — R-1).
        This gate used to read the war's calendar LIVE, before the issued block
@@ -1806,10 +1825,12 @@ function desiredOilCells(back?: { di: number; ver: string | null }): { desired: 
      blob that fails to parse reads as never stashed, the stashDays rule.
      The ISO comes from the week key + day index directly (v is the Monday,
      dd/mm/yyyy) — no label parsing, no year-convention trap. */
-  for (const v of stashKeys()) {
-    if (String(v) === String(CURWEEK)) continue
-    if (stashGet(String(v)) == null) continue
-    const wk = stashOilWeek(String(v))
+  for (const v of stashUnitKeys(unit)) {
+    if (live && String(v) === String(CURWEEK)) continue
+    /* (the stash's key is the unit's: the same Monday of 142's and 149's are two weeks) */
+    const qv = qualify(unit, String(v))
+    if (stashGet(qv) == null) continue
+    const wk = stashOilWeek(qv)
     /* CLASSIFY the stashed book (P2-REREVIEW-05): an UNREADABLE stash (wk null)
        or one whose book is unsupported / wrong-week / future-version must have
        ALL its credit-bearing dates PROTECTED — never derived from, never deleted
@@ -1997,8 +2018,9 @@ export function publishFlagsBids(di: number): void {
 export function oilCreditBidAgainst(di: number): boolean {
   const iso = labelToISO(DATES[di])
   if (!iso) return false
-  const { desired } = desiredOilCells()
-  const after = desiredOilCells({ di, ver: unpublishBackTo(di) })
+  /* the loaded week's day is the schedule in view's, so its squadron's calculation is asked (multi-squadron step 3) */
+  const { desired } = desiredOilCells(undefined, UNIT)
+  const after = desiredOilCells({ di, ver: unpublishBackTo(di) }, UNIT)
   /* a date the pass would PROTECT afterwards keeps its landed credit as it is (desiredOilCells' P2-IMPL-01) — nothing
      of today's balance moves, so nothing can be stranded */
   if (after.protectedDates.has(iso)) return false
@@ -2044,7 +2066,8 @@ export function runOilPass(): void {
   if (SYNCING) return
   SYNCING = true
   try {
-    const { desired, protectedDates } = desiredOilCells()
+    const unit = warUnit()
+    const { desired, protectedDates } = desiredOilCells(undefined, unit)
 
     /* Forward: land what the published schedule earns, with its work times.
        An unchanged credit writes nothing (ingestDutyCredit answers
@@ -2066,7 +2089,10 @@ export function runOilPass(): void {
       for (const [person, row] of Object.entries(war.recs)) {
         for (const [date, list] of Object.entries(row)) {
           if (!list.some(r => r.kind === 'credit' && r.oil === 'auto')) continue
-          if (protectedDates.has(date)) continue          // issued evidence unavailable → the landed credit stands (P2-IMPL-01)
+          /* only what THIS squadron's calculation owns: a man whose home that day is another squadron is that
+             squadron's pass's to keep or collect (multi-squadron step 3) */
+          if (homeUnitOf(person, date) !== unit) continue
+          if (protectedDates.has(date)) continue         // issued evidence unavailable → the landed credit stands (P2-IMPL-01)
           if (desired.has(`${person}|${date}`)) continue
           clearRaptorCell(person, date)
         }

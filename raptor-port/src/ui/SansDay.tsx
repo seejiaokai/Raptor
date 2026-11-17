@@ -21,9 +21,10 @@
    it stands on is the button. */
 import { placedShort } from './placedline'
 import { useState } from 'react'
-import { idsOf } from '../engine/inputs'
+import { idsOf, inputsFor } from '../engine/inputs'
+import { unitPeople } from '../engine/roster'
 import { PEOPLE } from '../engine/people'
-import { isAdmin } from '../state/perms'
+import { isAdmin, myUnit } from '../state/perms'
 import { notify } from '../state/store'
 import { sansCommittedOn } from '../state/flyplan'
 import { dayFacts, flyAnswer, useWarFacts } from '../leavewar/sync'
@@ -59,7 +60,7 @@ export function SansDay({ iso, hi, onClose }: {
   useWarFacts()
   /* which late commitment's note is showing (its input id) */
   const [lateOpen, setLateOpen] = useState<string | null>(null)
-  const a = flyAnswer(iso), facts = dayFacts(iso), com = sansCommittedOn(iso), g = sansDayGroups(iso)
+  const a = flyAnswer(iso), facts = dayFacts(iso), com = sansCommittedOn(iso), g = sansDayGroups(iso, inputsFor(myUnit(), iso), unitPeople(myUnit(), iso))
   const canAdd = maySansAdd()
   const avail = { p: facts.availP, w: facts.availW }
 

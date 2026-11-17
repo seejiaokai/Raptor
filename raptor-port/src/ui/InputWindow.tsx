@@ -11,7 +11,7 @@ import { placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup } from './PeoplePick'
 import { pickProblem } from './peoplepick-model'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpType, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, idsOf, leadOf, holds, isPlaceholderInput, isOther, isFly } from '../engine/inputs'
+import { inputUnitOf, INPUTS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpType, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, idsOf, leadOf, holds, isPlaceholderInput, isOther, isFly } from '../engine/inputs'
 import { upchitEffects, medClashes } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -24,7 +24,8 @@ import { HOOKS } from '../engine/hooks'
 import { stampChanged } from '../state/inputstamp'
 import { notify } from '../state/store'
 import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayMovePlace } from '../state/perms'
+import { me, isMe, mayEditInput, mayMovePlace, myUnit } from '../state/perms'
+import { UNIT } from '../engine/unitview'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setDocView } from './pops'
 import { CURPAGE, INPVIEW, revealInput, revealMedInput } from '../state/view'
 import { toastHeld } from './toast'
@@ -791,7 +792,11 @@ export function InputEditor() {
      so with the form gone no door could file an input for a man who has posted out. Found by the door inventory made
      before the form was removed (docs/superpowers/plans/2026-10-10-inputs-vet-plan.md §2). Not on the SANS calendar's
      "+ Commitment", nor on a pending upchit's own window: neither ever offered it. */
-  const archivedHere = win && (!isNew || ctx === 'i') && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions() : []
+  /* WHOSE PEOPLE THE PICKERS OFFER (multi-squadron step 3): a new input on the Inputs page or its calendars (`_calendar`)
+     is filed among the signed-in person's own squadron (D2132 — those pages stay on his own); one added from a schedule's
+     panel among the schedule in view's; a saved input among its own unit's (engine/inputs.ts inputUnitOf) */
+  const pickUnit = isNew ? ((r._calendar || ctx === 'i' || ctx === 'up') ? myUnit() : UNIT) : (inputUnitOf(r) ?? UNIT)
+  const archivedHere = win && (!isNew || ctx === 'i') && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions(pickUnit) : []
   /* the first day whose OIL question nobody has answered, for the line that says so (below); '' where there is none */
   /* …asked of the input's ONE record, which carries everyone in it (the one-rule build, D756). Before it, of EVERY record
      of the entry, not of the one the window happened to be opened on (walker C's find, 10 Oct 26 — Astra's scenario 69:
@@ -820,7 +825,7 @@ export function InputEditor() {
   const span = draft ? spanOf(draft.allday, draft.half) : 'all'
   /* the roster a context-bound add offers — SANS Availability is refused for
      anyone else at commit (sansRefusal), so the list should not offer them */
-  const peopleFor = () => ctx === 's' ? rosterOptions().filter(id => PEOPLE[id].san) : rosterOptions()
+  const peopleFor = () => ctx === 's' ? rosterOptions(pickUnit).filter(id => PEOPLE[id].san) : rosterOptions(pickUnit)
 
   /* the form itself — the same fields, checks and buttons whichever chrome it stands in */
   const inner = (<>
@@ -841,7 +846,7 @@ export function InputEditor() {
             </div>
             : picker
             /* ON THE INPUTS PAGE: the people picker — one person from the list, or several as pucks (D656) */
-            ? <PeoplePick people={ppl} several={several} type={draft.type} sansOnly={ctx === 's' || isSansAvail(draft.type)}
+            ? <PeoplePick people={ppl} several={several} type={draft.type} sansOnly={ctx === 's' || isSansAvail(draft.type)} unit={pickUnit}
               lockOne={!isNew && !canEditSched()} readOnly={readOnly}
               /* THE POSTED-OUT / ARCHIVED PEOPLE, for an admin changing a SAVED input ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 —
                  Astra's scenario 57). The List's pencil offered them in its own Person list (clearing leave is filed

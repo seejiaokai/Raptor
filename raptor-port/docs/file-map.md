@@ -1228,6 +1228,18 @@ reloaded, the week entered). `src/state/units-switch.test.ts` - two units' weeks
 saves, reloads, the stash and many swaps; Undo in 142 never undoes a 149 change; a unit's setting written by its named
 command; a 142 admin refused a 149 write. `src/ui/logout.test.ts` - sign-out flushes the saves, then reloads the page
 through its test seam (`ui/logout.ts setReloadSeam`), never while a save still waits.
+The multi-squadron build, batch 1, step 3 (18 Nov 26 - whose people, whose inputs, whose OIL):
+`src/engine/roster.ts` - WHOSE PEOPLE: `homeUnitOf(pid, iso)` (the engine's door to `state/units.ts homeOn`, set by
+`setHomeResolver`; the boot unit until it is set), `onRosterOf`, `rosterOf(unit, iso)` - THE one walk of `PEOPLE` for one
+squadron (the two placeholders on every squadron's) - `unitPeople` (its record form, for a model handed a people record)
+and `rosterToday`. Inputs: `engine/inputs.ts inputsFor(unit, at?, list?)`, `inputBelongs`, `inputUnitOf` (an input is its
+person's home unit's on its date). `src/testing/enumguard.ts` - the guard tests' counter: every source file's code with
+comments, quoted text and import lines emptied, a pattern counted per line. Tests: `src/engine/roster-readers.test.ts` -
+every walk of `PEOPLE` outside `rosterOf`, counted per file against an allow-list with its reasons;
+`src/engine/inputsfor-readers.test.ts` - every whole-list read of the inputs outside `inputsFor`, the same way;
+`src/state/units-roster.test.ts` - a 149 man's inputs never on 142's days (filed, switched, published, reloaded), 142's
+OIL credits unmoved by many swaps of the schedule in view, a delete and a restore reading the other squadron's stored
+weeks.
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

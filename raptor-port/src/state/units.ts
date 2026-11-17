@@ -14,6 +14,7 @@ import { store } from '../engine/hooks'
 import { newId } from '../engine/newid'
 import { isCommitting, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
+import { setHomeResolver } from '../engine/roster'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
   rowsFrom, placeIdOn, homeUnitOn, grantIn, unitIn, placeIn, levelFrom, moveFrom,
@@ -76,6 +77,9 @@ export const placeById = (id: string): Place | undefined => placeIn(unitRows(), 
 export const placeOfOn = (unit: string, iso: string): Place | null => { const id = placeIdOn(unitRows(), unit, iso); return id ? placeIn(unitRows(), id) ?? null : null }
 /* a person's home unit on a date (the demo's 142 when he has no row; null on a shared store) */
 export const homeOn = (pid: string, iso: string = todayIso()): string | null => homeUnitOn(unitRows(), pid, iso, fallbackHome())
+/* …and the engine's rosters ask the same (engine/roster.ts rosterOf, engine/inputs.ts inputsFor — multi-squadron step 3):
+   the engine does not import state/, so the answer is handed to it here, once, as this module loads */
+setHomeResolver((pid, iso) => homeOn(pid, iso))
 /* the rights an account holds in OTHER units */
 export const grantsOf = (accountId: string): Grant[] => unitRows().grants.filter(g => g.account === accountId)
 /* an account's level in a unit on a date — the one answer (units-model.ts levelFrom); the caller hands in the account */

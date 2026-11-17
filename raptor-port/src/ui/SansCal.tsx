@@ -34,7 +34,8 @@ import { addDays } from '../state/flyplan-model'
 import { notify } from '../state/store'
 import { CALMONTH, INPREVEAL, SANSHL, clearInpReveal, setCalMonth, setSansHl } from '../state/view'
 import { dayFacts, flyMonth, useWarFacts } from '../leavewar/sync'
-import { isAdmin } from '../state/perms'
+import { isAdmin, myUnit } from '../state/perms'
+import { unitPeople } from '../engine/roster'
 import { setSansSet } from './pops'
 import { initCalPick } from './calpick'
 import { MONTHS, WD, isoToday } from './daysfmt'
@@ -257,7 +258,8 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
   }, [])
 
   /* the man picked in Highlight — only while he is still SANS and on the roster; one who has left it is let go */
-  const roster = sansRoster()
+  /* (his own squadron's SANS men — the SANS calendar stays on his own, D2132; multi-squadron step 3) */
+  const roster = sansRoster(unitPeople(myUnit()))
   const hi = SANSHL && roster.includes(SANSHL) ? SANSHL : null
   const stale = !!SANSHL && !hi
   useEffect(() => { if (stale) { setSansHl(null); notify() } }, [stale])

@@ -180,6 +180,21 @@ grant). Settings rows need no mapper in `persist.ts` — they are saved as every
 - **People:** `PEOPLE` stays one list; every *enumeration* of it (45 in 22 files today — a loop, `filter`, `map`,
   `find` over the whole list) goes through `rosterOf(unit, iso)`; a look-up by id stays. The guard test counts
   enumerations, not files: an enumeration outside `rosterOf` and an explicit allow-list (with its reason) fails it.
+*Refined as built, step 3 (18 Nov 26):* `engine/roster.ts` holds `rosterOf` (and `unitPeople`, its record form), the
+engine reaching `homeOn` through a resolver `state/units.ts` installs; `engine/inputs.ts inputsFor(unit, at?)` — an input
+is a unit's when a man named in it is at home there on the date, a placeholder-only one its filer's. Which unit: the
+schedule's readers (a day's landing, a published day's frozen copies and filing, the OIL evidence, the crew lists) ask the
+unit in view; the Inputs pages, Medical, the SANS calendar and day and the OIL pass ask the signed-in person's own
+(`myUnit()`, D2132). The inventory, both guard tests (`engine/roster-readers.test.ts`, `engine/inputsfor-readers.test.ts`,
+counter `testing/enumguard.ts`, each red-proven): 56 walks of `PEOPLE` left in 19 files and 58 whole-list reads of the
+inputs in 22, each allowed by name with its reason — storage and the seed, the deleted men stripped from every unit's weeks,
+a man's own records, look-ups by id handed a record, Admin → Users and account linking (step 5, O3), and the Leave War's and
+the Tracker's projections, which step 4 makes a world per unit. The OIL pass reads its unit's loaded week live only when that
+unit is in view, every other week of its from the stash by qualified key, and its reverse sweep skips a man whose home that
+day is another unit. A person's delete and a restore's check read every unit's stored weeks (`stashEntries`); the
+restore's check had never matched a stored week at all (it read the stored text as text a second time) — fixed. Behaviour
+tests, red on step 2's code: `state/units-roster.test.ts`. Left for step 4: `sansCommittedOn` and the need figures per unit,
+the `missionrole:` key, other units' planning rows loaded beside the one in view.
 - **Undo:** one command stream, as today; "Undo" on a schedule steps back through that person's own changes in the unit
   in view, picked from the one stream — never a separate snapshot stack per unit (D148). A change touching two units is
   one step in both.

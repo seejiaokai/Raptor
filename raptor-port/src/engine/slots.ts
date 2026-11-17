@@ -2,7 +2,8 @@ import { DAYS } from './data'
 import { PEOPLE, whoId, isSpecial, callsignTakenBy, indexCallsigns } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
-import { isOD, goesOnProg, INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
+import { UNIT } from './unitview'
+import { isOD, goesOnProg, INPUTS, inputsFor, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
 import { shiftKeys, seatRow, iuParts } from './keys'
 import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
@@ -656,7 +657,7 @@ export function acceptedDay(inp:any){
    recovery that keeps the row), and a multi-day 'g' still landed on another day. */
 export function reconcileDayFiling(di:any){
   const dt=(DAYS[+di]||{}).dt; if(dt==null)return;
-  INPUTS.forEach((inp:any)=>{
+  inputsFor(UNIT,dt).forEach((inp:any)=>{   // the schedule in view's own (multi-squadron step 3)
     if(!inputCoversDate(inp,dt)||inputProtected(inp))return;
     /* 'u' (a global filing DECISION with no ground row) and 'r' (dormant) are not
        per-week ground landings — untouched. */

@@ -53,7 +53,9 @@ import { logEdit } from '../engine/editlog'
 import { INPUTS, dateOrd, remarksTyped, tillSettle, nowStamp, holds as inInput, idsOf } from '../engine/inputs'
 import { ownInputOf, takePerson } from '../engine/inputown'
 import { ordShift, ordLabel } from '../engine/medical'
-import { stashKeys, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
+import { stashEntries, stashGet, stashWeekState, isPreservedWeek } from '../engine/weekstash'
+import { UNIT } from '../engine/unitview'
+import { qualify, localOf } from '../storage/unitid'
 import { stripPersonFromDay, trimTail, hisLanded } from '../engine/overlay'
 import { validate } from '../engine/validate'
 import { localToday } from '../leavewar/engine/period'
@@ -160,18 +162,23 @@ export function stashPreflight(id: string, cutoff: string): string | null {
     for (let di = 0; di < DAYS.length; di++) if (dayIso(CURWEEK, di) >= cutoff && JSON.stringify((DAYS as any)[di] || {}).includes(`"${id}"`))
       return `The week of ${CURWEEK} can't be changed — the delete was not made`
   }
-  for (const v of stashKeys()) {
-    if (v === CURWEEK) continue
+  /* EVERY SQUADRON'S STASHED WEEKS, not the schedule in view's alone (multi-squadron step 3): a man's days are worked out
+     of whatever week holds them, 149's as 142's, so a read-only or unreadable week of the squadron NOT on screen refuses
+     the delete just as one of the squadron on screen does. The keys are unit-qualified (`u149@13/07/2026`); only the
+     loaded week's own entry is skipped — the stale copy written on the way out. The message names the week by its date. */
+  const loaded = qualify(UNIT, String(CURWEEK))
+  for (const [v] of stashEntries()) {
+    if (v === loaded) continue
     if (dayIso(v, 6) < cutoff) continue                         // the whole week is before the cutoff — untouched
     const st = stashWeekState(v)
     if (st === 'ok') continue
-    if (st === 'unreadable') return `The week of ${v} can't be read — the delete was not made`
+    if (st === 'unreadable') return `The week of ${localOf(v)} can't be read — the delete was not made`
     /* preserved: refused only if he is on it on or after the cutoff */
     try {
       const p = JSON.parse(stashGet(v) || '{}'); const days = Array.isArray(p.d) ? p.d : []
       for (let di = 0; di < days.length; di++) if (dayIso(v, di) >= cutoff && JSON.stringify(days[di] || {}).includes(`"${id}"`))
-        return `The week of ${v} can't be changed — the delete was not made`
-    } catch (_e) { return `The week of ${v} can't be read — the delete was not made` }
+        return `The week of ${localOf(v)} can't be changed — the delete was not made`
+    } catch (_e) { return `The week of ${localOf(v)} can't be read — the delete was not made` }
   }
   return null
 }

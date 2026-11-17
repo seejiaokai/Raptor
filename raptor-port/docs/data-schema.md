@@ -104,6 +104,17 @@ A **community** singleton holds everyone's and is never swapped — `PEOPLE`, `I
 `ACCESS_REQS`, `NOTICES`, the seen caches (`state/changes.ts`, `state/noticeseen.ts`); from step 3 every enumeration of
 `PEOPLE` goes through `rosterOf(unit, iso)`.
 
+**Whose a community record is — asked, never stored (step 3, 18 Nov 26).** Nothing new is saved: no person row and no
+input row carries a unit. A person is the unit of his home row on the date (`home:` rows, `state/units.ts homeOn`; on the
+demo a person with no home row is `u142`'s); an input is its person's home unit's on its date (`engine/inputs.ts
+inputsFor` / `inputBelongs` — a unit's when any man named in it is at home there on the date, its window offering its
+first named man's unit's people, `inputUnitOf`; an input naming only ALL / ALL AVAIL is its filer's unit's).
+So a transfer (batch 4) moves a man's inputs from its date by adding one home row, rewriting none. Every walk of either
+whole list that is not for one squadron is allowed by name in the two guard tests, each with its reason
+(`engine/roster-readers.test.ts`, `engine/inputsfor-readers.test.ts`). The Leave War's OIL credits are derived from the
+signed-in person's home unit's own published days (its loaded week live when it is in view, its other weeks from the
+stash by their qualified keys), never from the schedule in view — the stored war records are unchanged in shape.
+
 ### The unit-qualified id — `<unit>@<its id today>` (batch 1, step 2, 18 Nov 26)
 
 One codec, `src/storage/unitid.ts` (`qualify`, `split`, `unitOf`, `localOf`), carried through every layer — the engine,
@@ -123,7 +134,7 @@ id by its separators can take the unit for part of the date. **The date part is 
 `<unit>@<name>` and written only by its named settings command (`settings.stores`, `fly.day.set` …), whose change names
 the stored id. The settings records the command layer keeps cover every unit's stored settings, so Undo puts back
 another unit's setting by its own name. **Not yet qualified, on purpose:** `missionrole:` (its id carries a week key
-whose own codec has no unit yet — step 3) and `elog:` (the change history across the apps — step 4); both stay as they
+whose own codec has no unit yet — named for step 3, left open there for step 4, when 149's own week is first seeded) and `elog:` (the change history across the apps — step 4); both stay as they
 were, readable by the unit in view only.
 
 **Stored data from before step 2 (D22):** an unqualified week, day or planning row is simply not read — the store is

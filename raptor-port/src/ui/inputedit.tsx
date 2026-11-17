@@ -35,6 +35,8 @@ import { voidedOil, repricedOil } from '../engine/oil'
 import { CmdRefused } from '../command'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { CURWEEK } from '../engine/waves'
+import { rosterOf } from '../engine/roster'
+import { UNIT } from '../engine/unitview'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving, mayMovePlace } from '../state/perms'
@@ -50,7 +52,9 @@ import { RangeCal } from './RangeCal'
    editor and this dialog's new Person field must never disagree on who is
    offered or in what order, so all three call this rather than each sorting
    PEOPLE their own way. */
-export const rosterOptions = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
+/* …of ONE squadron (multi-squadron step 3 — engine/roster.ts): the schedule in view's by default (the board, the palette,
+   reassign); the Inputs page and its calendars pass the signed-in person's own (state/perms.ts myUnit — D2132) */
+export const rosterOptions = (unit: string = UNIT) => rosterOf(unit).filter(id => !PEOPLE[id].archived)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 /* [ARCH-STACK] step 4 (clash check H5, owner answer C, 20 Sep 26): an admin
    can still FILE leave for someone who has posted out (clearing leave) or has
@@ -58,7 +62,7 @@ export const rosterOptions = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].
    archived bodies too, in their own group below the roster. Every OTHER roster
    surface (the board, the palette, reassign) keeps rosterOptions(). */
 /* never a DELETED man — he is on no list ([POST-OUT-OUTCOMES], D287, D299) */
-export const archivedOptions = () => Object.keys(PEOPLE).filter(id => PEOPLE[id].archived && !PEOPLE[id].special && !PEOPLE[id].deleted)
+export const archivedOptions = (unit: string = UNIT) => rosterOf(unit).filter(id => PEOPLE[id].archived && !PEOPLE[id].special && !PEOPLE[id].deleted)
   .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
 
 const MON = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']

@@ -18,7 +18,9 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenMsg, versionFaceWarn, withVersionWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo, pendingInputIds } from '../engine/publish'
-import { verSeq } from '../engine/verid'
+import { verSeq, dayIso } from '../engine/verid'
+import { rosterOf } from '../engine/roster'
+import { UNIT } from '../engine/unitview'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
@@ -921,7 +923,8 @@ export function availHTML(d:any,di:any,ed:any){
      filed records in the card grid below the input blocks (sansCardsHTML),
      so this panel keeps a single count — how many SANS are offering
      ANYTHING today — as a pointer to that grid, not a second listing of it. */
-  const sansOffering=Object.keys(PEOPLE).filter((id:any)=>PEOPLE[id].san&&!PEOPLE[id].archived&&sansAvailOn(id,d.dt)).length;
+  /* (the schedule in view's own SANS men, on this day — multi-squadron step 3, engine/roster.ts) */
+  const sansOffering=rosterOf(UNIT,dayIso(String(CURWEEK),+di||0)).filter((id:any)=>PEOPLE[id].san&&!PEOPLE[id].archived&&sansAvailOn(id,d.dt)).length;
   const allA=active(A.anyWave);
   if(AVSHUT.has(di)){
     const parts=[`${allA.length} all day`];

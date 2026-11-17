@@ -12,14 +12,15 @@
 import { MONTHS } from './daysfmt'
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
-import { INPUTS, inputLines, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown, typeMatches, typeFilterLabel, typeGroup } from '../engine/inputs'
+import { INPUTS, inputLines, inputsFor, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown, typeMatches, typeFilterLabel, typeGroup } from '../engine/inputs'
 import { OilConfirm } from './OilConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { LOOK_CFG, LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, setLookahead } from '../engine/lookahead'
 import { canEditSched } from '../state/auth'
-import { me, isAdmin, mayEditInput } from '../state/perms'
+import { me, isAdmin, mayEditInput, myUnit } from '../state/perms'
+import { rosterOf, onRosterOf } from '../engine/roster'
 import { notify } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal } from '../state/view'
 import { inputsInMode } from './sans-calendar-model'
@@ -61,7 +62,8 @@ const plusMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(
 /* The archived / posted-out bodies as their own group in an admin's person
    picker ([ARCH-STACK] step 4, H5 — clearing leave is filed for them). */
 function ArchivedGroup() {
-  const ids = archivedOptions()
+  /* (the signed-in person's own squadron's — the Inputs page stays on his own, D2132; multi-squadron step 3) */
+  const ids = archivedOptions(myUnit())
   if (!ids.length) return null
   return <optgroup label="Posted out / archived">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs}</option>)}</optgroup>
 }
@@ -70,8 +72,9 @@ function ArchivedGroup() {
    picker — D287). (The row's own editor, which kept his name as the row's value, went with the List's pencil — D718,
    10 Oct 26; the input's window keeps it the same way.) */
 function DeletedGroup() {
-  const lines = inputLines()   // one line a named person of each input (engine/inputs.ts) — read once, not once a man
-  const ids = Object.keys(PEOPLE).filter(id => PEOPLE[id].deleted && lines.some((r: any) => r && r.person === id))
+  /* one line a named person of each of his own squadron's inputs (engine/inputs.ts) — read once, not once a man */
+  const lines = inputLines(inputsFor(myUnit()))
+  const ids = rosterOf(myUnit()).filter(id => PEOPLE[id].deleted && lines.some((r: any) => r && r.person === id))
   if (!ids.length) return null
   return <optgroup label="Deleted">{ids.map(id => <option key={id} value={id}>{PEOPLE[id].cs} (deleted)</option>)}</optgroup>
 }
@@ -428,7 +431,8 @@ export function InputsPage() {
   }
 
   let pinCount = 0
-  let rows = inputsInMode(INPUTS, INPMODE)
+  /* (the signed-in person's own squadron's — the Inputs page stays on his own, D2132; multi-squadron step 3) */
+  let rows = inputsInMode(inputsFor(myUnit()), INPMODE)
   /* A SHARED INPUT IS ONE LINE (owner D655 — "shown and edited as one thing"; the plan §3.13) — and since the one-rule
      build it IS one record with the list of its people (owner D756, 11 Oct 26; the plan
      docs/superpowers/plans/2026-10-11-one-rule-plan.md §4.5): a row a record, the Name naming EVERYONE in it, A to Z,
@@ -541,8 +545,8 @@ export function InputsPage() {
      can never lag the table. */
   const medIso = keyToIso(TODAY)
   const medOrd = +medIso.slice(0, 4) * 10000 + +medIso.slice(5, 7) * 100 + +medIso.slice(8, 10)
-  const medDownN = medDownAsOf(medOrd).length
-  const medPendN = pendingUpchits(medOrd).length
+  const medDownN = medDownAsOf(medOrd).filter((e: any) => onRosterOf(e.person, myUnit())).length
+  const medPendN = pendingUpchits(medOrd).filter((e: any) => onRosterOf(e.person, myUnit())).length
   /* THE SANS TAB IS THE SANS CALENDAR AND NOTHING ELSE (owner D620, 7 Oct 26: SANS availability "leaves the List and is
      filed on the SANS calendar only, which has no list of its own"; the plan §3.5: "the SANS tab has no filters" — the
      Highlight does that job, and the counts ignore filters by ruling, D581). So in that mode the Calendar | List pair,
