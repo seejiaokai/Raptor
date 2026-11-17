@@ -493,6 +493,19 @@ day amber or red and raise the manning warning on someone's bid; a weekend he wo
   availability records, no SANS chip for him (today's chip, offered to a man already SANS, filed as a small fix:
   [SANS-CHIP-ON-SANS], chat 103). **Open, Q23:** SANS people are on the Leave War only when added there
   ("+ SANS"), so how an admin reaches the sheet for one not on the war — put to him with a recommendation.
+- **His answers during chat 103:** D2164 (How we work) — every page put to him in plain words; round 7's page
+  rewritten so and its pictures redrawn without code tags (version 2, same link). **D2165 — Q8 yes, by time zone:**
+  his own idea, "reference zulu timing instead of hours from home"; each place, home included, is set by its time zone,
+  picked by name and shown as GMT+X (a named zone, so a clock change mid-exercise and half-hour zones are right); Close
+  keeps a detachment day already begun there; crew rest between two places adds the difference; postings and the late
+  mark stay on home's date. Narrows D2160's F12. **Owed:** round 7's Admin → Squadrons picture (R7D5a, drawn with an
+  "hours from home" box by `draw-r7d.mjs`) redrawn with a time-zone picker, "GMT+X" beside each place. **D2166 — Q11
+  no:** airspace may be shared, never a clash, so no airspace check is built (narrows D2108); **sims not ruled — put
+  back to him** (a sim double booking is not checked today, even inside one squadron). **D2167 — Q12:** 142 and 149
+  each keep their own Tracker, a detachment using its parent squadron's (242 uses 142's), so no chart is shared across
+  squadrons and Q12's case does not arise; D474 stands inside each Tracker. **D2168 — Q15, the standby rows:** a man
+  on DET is taken off the SC DAY and SC NIGHT counts, and SC, AVALON and BB cannot be planned for him; whether every
+  other count row gets the recommended switch is put back to him.
 
 ## The review of his plan (chat 90, 16 Nov 26 — put to him; answered in part, the section above)
 
