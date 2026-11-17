@@ -2774,3 +2774,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The countdown state was planned for both sizes. On the phone the group was taller than the screen, so the count (in the group's header) scrolled away before any new row came into view: the state could not occur there at all. The script's assertion ("1 of 3 in view") caught it; a looser script would have drawn a desktop-only behaviour onto a phone, or placed the header by hand where scrolling never puts it.
 **Suggested improvement:** In "Choose the state by what it shows", add: a state reached by scrolling (a counter that changes as content comes into view, a sticky header's moment) is asserted on each device by measuring both the control and the content in view at the same scroll; where no scroll shows both, the state is not drawn for that device, and the page says why — itself a finding about the design (the control works differently there).
 **Principle:** A behaviour defined by what is on screen together can be impossible on a smaller screen; measure co-visibility per device before drawing it, and report the impossibility as a design finding rather than forcing the picture.
+
+### Observation 968: A questions page grows by stacked "newest" blocks until he asks for it to be made readable
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 100, the squadrons design's round 6 page (numbered past 967, held on another branch)
+**Skill:** New skill candidate: questions-page
+**Type:** open-source
+**Phase/Area:** updating a decision page after each round of answers
+
+**Issue:** Over chats 97–100 each new input was added as one more "Newest" block at the top of the page, while answered and replaced questions stayed below. After four rounds the page held three top blocks, and several recommendations were superseded but still showed. He asked "make the mockup easy to read and be clear after all these inputs". The project's own rule (answered and replaced items leave the page) was in force the whole time.
+**Suggested improvement:** Whenever answers or a new reader's findings arrive, rebuild the page instead of prepending: corrections first, then every open call grouped by topic with its recommendation, then a short "settled since" list; keep the old version in the repo.
+**Principle:** A decision page is a view of what is open now, not a log; appending is cheap for the writer and expensive for the reader.
