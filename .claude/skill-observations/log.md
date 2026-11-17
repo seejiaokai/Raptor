@@ -2735,3 +2735,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Suggested improvement:** In mockups-on-the-real-app.md's mark kit, lay tags on the page (fixed, from getBoundingClientRect) rather than inside the app's element, offer inside-bottom and middle positions, make the crop include every tag, and keep the outline inside whenever the tag is inside.
 **Principle:** An annotation drawn over a live page belongs to an overlay layer of its own, never inside the elements it annotates, whose own rules (text boxes, clipping, stacking) decide whether it shows.
 **Reference file:** raptor-port/docs/mock/2026-11-17-trk-small/draw.mjs
+
+### Observation 966: A FULL bug check of a four-item batch does not fit the chat that builds it
+
+**Status:** OPEN
+**Date:** 2026-11-17
+**Session context:** chat 99, building four Leave War items on one branch with one FULL bug check (number taken past 965, the highest on any branch; the calendar chat holds unpushed notes too)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** planning the handoff point at the start of a batch
+
+**Issue:** reading the rules, the drawings and four areas of code to build a four-item batch filled the chat to 85% before the bug check began, so the FULL check (walkers, two reads, re-walk) had to move to a fresh chat mid-job.
+**Suggested improvement:** when a batch of three or more items is sized FULL, plan the handoff at the start: one chat builds, pushes and opens the pull request; the next runs the whole check from the evidence sheet onward. Say so in the opening tier block.
+**Principle:** size the context a job needs before starting it, and put the planned handoff at a natural seam (build done, pushed) instead of where the context runs out.
