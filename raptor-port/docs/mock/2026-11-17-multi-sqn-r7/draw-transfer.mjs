@@ -83,7 +83,8 @@ async function itT(sz, variant) {
       return r
     }
     const to = chipRow('To', ['149'], '149'); row.after(to)
-    const in149 = chipRow('In 149', ['Member', 'Scheduler', 'Admin'], 'Member'); to.after(in149)
+    // in his own (new) squadron a scheduler is always an admin (D785): two chips, never a separate "Scheduler"
+    const in149 = chipRow('In 149', ['Member', 'Admin'], 'Member'); to.after(in149)
     const acc = chipRow('142 access', ['None', 'View', 'Scheduler'], variant === 'A' ? 'None' : 'View'); in149.after(acc)
     const lines = chipRow('142 lines', ['Keep him', 'Take him off'], variant === 'A' ? 'Keep him' : 'Take him off'); acc.after(lines)
     mark(to, 'X3'); mark(in149, 'T3'); mark(acc, 'T1'); mark(lines, 'T2')
