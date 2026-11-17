@@ -353,6 +353,10 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   should we create a new input called DET? Cus the leave war uses OD for both purposes"*. Answered with the agent's
   recommendation (a DET input of its own, OD left for staff trips); would replace D2101's "Detachment" choice on the
   overseas duty and D2102's OD row, and settle R2 and R3 by itself — waits for his answer; drawn in round 7 if yes.
+- **His answer to R11 (17 Nov 26, chat 99): D2145** — each squadron's SANS people may be borrowed by the other to fly,
+  as any of its men; R11 otherwise stands. For round 7, the agent's readings: the other squadron's SANS availability
+  panel lists them with their squadron's badge; once picked, the "Attach" row on the home schedule (D2098); SANS
+  availability never earns OIL (D804); each squadron's SANS need unchanged by a borrowing.
 - **His check on R9 (17 Nov 26, chat 99):** *"just to confirm R9 there wont be a lock correct for concurrent editing?"*
   Answered: correct, no lock (D1751 — a simple "who is editing" mark, the database refusing nobody). R9 as written went
   further than D1751 in two places — a change "waits" while the other squadron edits the day, and of two saves at the
