@@ -1207,8 +1207,13 @@ function unitRecordViolation(env: CommitEnvelope): string | null {
   const today = todayIso()
   const rows = unitRowsBefore(env.changes)
   for (const u of units) {
+    /* the level in his HOME unit is the role IN FORCE (the session's), as every other check of this gate reads it — not
+       the stored account's: the two agree on a sign-in, and where they part (the developer bridge's raptorRole, the
+       browser tests' "the role only, not the world") the stored row refused every write of a member raised to admin in
+       his own squadron (found by GitHub's browser run on step 2: the changes window's and the Leave War's Required-row
+       tests). Another unit's level still comes only from a grant or the master mark. */
     const lv = row
-      ? levelBefore({ id: row.id, pid: String(row.pid), role: String(row.role), master: row.master === true }, u, today, rows)
+      ? levelBefore({ id: row.id, pid: String(row.pid), role: String(a.role), master: row.master === true }, u, today, rows)
       : (u === UNIT ? (a.role === 'admin' ? 'admin' : 'member') : null)
     const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
     if (!ok) return `a change to another unit's records (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`

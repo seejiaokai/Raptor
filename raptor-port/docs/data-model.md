@@ -1707,7 +1707,10 @@ the role's in the unit the record belongs to: a change to a unit's records — a
 planning calendar, a unit setting (the unit named in the record's id, `data-schema.md` §The unit-qualified id) — is
 refused at the commit gate unless the actor holds the right there (`src/state/perms.ts` unitRecordViolation): an admin's
 command needs admin in that unit (his home unit's role, an admin grant, or the master mark), a member's needs to be at
-home there. A View grant writes nothing. An actor with no account (a test's session) is judged against the unit in view
+home there. In his home unit the role read is the one in force for the session, as every other check of the gate reads
+it — the account's stored role is what the session starts from, so the two agree on every sign-in (step 3's fix of
+18 Nov 26: reading the stored role refused every write of a session raised in place by the developer's test bridge).
+A View grant writes nothing. An actor with no account (a test's session) is judged against the unit in view
 alone.
 
 **The day lock (29 Sep 26, D355, D450 — section 9):** *(8 Nov 26, his D1751: a simple mark the app holds — none of the Dataverse privileges, team or server check in this paragraph is built.)* the lock is columns of `ScheduleDay` (section 3), so it follows

@@ -22,7 +22,7 @@ import { schedWrite, SCHED_TYPES } from './sched-commit'
 import { afterSchedMutate } from './view'
 import { PLANPUCKS, DAYRMK, addPlanPuck } from './plan'
 import { initStore, writeInputs, weekStashSnap, weekDirty, loadWeek, resetSession, switchUnit, forgetUnitPlans, notify } from './store'
-import { setSession } from './auth'
+import { setSession, setEffectiveRole } from './auth'
 import { signIn, sessionFor, addAccount } from './accounts'
 import { hydrate, wirePersist } from './persist'
 import { globalUndo, undoState } from '../undo'
@@ -218,5 +218,21 @@ describe('the commit gate: a change to a unit\'s records needs rights in that un
     await vi.advanceTimersByTimeAsync(300)
     expect(wb.has('weeks', 'u149@13-07-2026#0')).toBe(false)
     expect(wb.get('weeks', 'u142@13-07-2026#0')).toContain('PIKE IN 142')
+  })
+  /* the role in force decides his own squadron, as every other check reads it — GitHub's browser run on step 2 went red
+     where a member is raised to admin in place (the developer bridge's raptorRole): the gate read the stored account's
+     role and refused every write the raised session made in its own squadron */
+  it('a session raised to admin writes its own squadron\'s week; the same session is still refused 149\'s', async () => {
+    const { wb } = await boot(new MemoryBackend())
+    signInAs('us', 'us')                                 // Ranger: a member account, at home in 142
+    setEffectiveRole('admin')
+    addNote('RAISED IN 142')
+    expect(notesOf(), 'his own squadron: kept').toContain('RAISED IN 142')
+    switchUnit('u149')
+    addNote('RAISED IN 149')
+    expect(notesOf(), 'another squadron: refused and rolled back').not.toContain('RAISED IN 149')
+    await vi.advanceTimersByTimeAsync(300)
+    expect(wb.get('weeks', 'u142@13-07-2026#0')).toContain('RAISED IN 142')
+    expect(wb.has('weeks', 'u149@13-07-2026#0')).toBe(false)
   })
 })
