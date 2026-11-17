@@ -586,10 +586,14 @@ export function BalancesPage() {
       if (!t.isConnected || document.activeElement !== t) return
       const cell = (t.closest('.bp-oc') as HTMLElement | null) ?? t
       const c = cell.getBoundingClientRect(), a = hs.getBoundingClientRect()
+      /* option B's pending tag (D2156) stands on the box's corner, 12px past it and out of the cell's flow, so the cell's
+         own box no longer holds it: its right edge is measured on its own (the two blind reads of chat 101, 17 Nov 26) */
+      const tag = cell.querySelector<HTMLElement>('.bp-opd')?.getBoundingClientRect()
+      const right = tag ? Math.max(c.right, tag.right) : c.right
       const names = t.closest('.bp-row')?.querySelector('.bp-who')?.getBoundingClientRect()
       const L = Math.max(a.left, names ? names.right : a.left) + 4, Rt = a.right - 4
       let dx = 0
-      if (c.right > Rt) dx = c.right - Rt
+      if (right > Rt) dx = right - Rt
       if (c.left - dx < L) dx = c.left - L
       if (dx) hs.scrollLeft += dx
     })

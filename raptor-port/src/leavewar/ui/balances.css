@@ -174,7 +174,6 @@
   .bp-hs::-webkit-scrollbar { display: none; }
   .bp-zoom { width: max-content; min-width: 100%; }
   .bp-cols, .bp-row { display: grid; column-gap: 5px; align-items: center; width: max-content; padding: 0 12px 0 0; }
-  .bp-zoom.bal .bp-cols, .bp-zoom.bal .bp-row { grid-template-columns: 132px 54px 44px 46px 50px 50px 76px 76px 76px 76px 76px; }
   .bp-zoom.taken .bp-cols, .bp-zoom.taken .bp-row { grid-template-columns: 132px repeat(11, 40px); }
   .bp-cols { position: sticky; top: 0; z-index: 4; height: 28px; border-bottom: 1px solid #2a313a; font: 600 9px system-ui; letter-spacing: .04em; color: #8a96a3; text-align: right; background: #0b0d10; white-space: nowrap; }
   /* the strip's dark fill reaches up past its own top (his picture, 29 Oct 26 — D1505): the scroller cuts it off at its
@@ -184,9 +183,14 @@
   .bp-cols > span:first-child { position: sticky; left: 0; z-index: 2; padding-left: 12px; align-self: stretch; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; background: #0b0d10; text-align: left; }
   .bp-cols .sep, .bp-row .sep { border-left: 1px solid #222a33; padding-left: 6px; }
   /* option B on a phone (D2156; img/phone-b-*.png): every heading over the left edge of its box, the heading strip two lines
-     tall for "PENDING / APPROVAL", each kind's column one box wide with its pending tag on the box's corner */
-  .bp-zoom.bal .bp-cols, .bp-zoom.bal .bp-row { grid-template-columns: 132px 54px 44px 64px 50px 44px repeat(5, 54px); }
+     tall for "PENDING / APPROVAL", each kind's column one box wide with its pending tag on the box's corner. CCL's column is
+     61px, not 54: its cell carries OTHER LEAVE's rule (1px and 6px, .sep), and in 54px its box ran 2px into FCL's (the two
+     blind reads of chat 101, 17 Nov 26; the drawing had the same touch). */
+  .bp-zoom.bal .bp-cols, .bp-zoom.bal .bp-row { grid-template-columns: 132px 54px 44px 64px 50px 44px 61px repeat(4, 54px); }
   .bp-zoom.bal .bp-cols > span, .bp-zoom.bal .bp-row > * { text-align: left; justify-self: start; }
+  /* …but the names held at the left fill their whole column, heading and every row: set to their words' width they let the
+     slid boxes show beside each name, by a different amount on each row (D1518 — nothing pinned leaks; chat 101's reads) */
+  .bp-zoom.bal .bp-row > .bp-who, .bp-zoom.bal .bp-cols > span:first-child { justify-self: stretch; }
   .bp-zoom.bal .bp-cols { height: 30px; box-sizing: border-box; align-items: end; padding-bottom: 5px; line-height: 11px; }
   .bp-zoom.bal .bp-cols > span:first-child { align-items: end; }
   .bp-zoom.bal .bp-row .bp-fb { width: auto; }

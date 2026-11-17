@@ -9315,3 +9315,78 @@ test('the OIL award editor: the amount 0.5 ↔ 1 ↔ 2.5 and Delete armed move n
   await page.locator('[data-testid="oil-edit-cancel"]').click()
   await expect(page.locator('[data-testid="oil-edit-award"]')).toHaveCount(0)
 })
+
+/* THE PHONE BALANCES AFTER OPTION B (D2156) — three faults the two blind reads of chat 101 found (Astra and a fresh Opus
+   reader, 17 Nov 26), each red on 01f1030c4 first: the pinned names stopped filling their column (D1518, nothing pinned
+   leaks), CCL's box ran 2px into FCL's, and a tapped box near the right edge left its corner tag cut (B-F4's fix undone). */
+async function openBalancesPhone(page: Page) {
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-balances').click()
+  await expect(page.getByTestId('balances-page')).toBeVisible()
+  await page.waitForTimeout(300)
+}
+
+/* R1 — the pinned names no longer fill their column (justify-self:start on `.bp-row > *` reaches `.bp-who` and the
+   heading strip's first cell), so slid sideways the boxes show beside the names, by a different amount on each row. */
+test('Balances on a phone: the pinned name panel fills its whole 132px column on every row and on the heading strip', async ({ page }) => {
+  test.skip(!isPhone(), 'phone list')
+  await openBalancesPhone(page)
+  const g = await page.evaluate(() => {
+    const hs = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!
+    hs.scrollLeft = 260
+    const z = parseFloat(getComputedStyle(document.querySelector<HTMLElement>('.bp-zoom')!).zoom || '1') || 1
+    const whos = [...document.querySelectorAll<HTMLElement>('.bp-row > .bp-who')].map(e => e.getBoundingClientRect().width / z)
+    const head = document.querySelector<HTMLElement>('.bp-cols > span:first-child')!.getBoundingClientRect().width / z
+    /* what is drawn 4px inside the column's right end, on each row: must be the name panel, never a box or figure */
+    const leaks: string[] = []
+    for (const row of document.querySelectorAll<HTMLElement>('.bp-row')) {
+      const who = row.querySelector<HTMLElement>('.bp-who')!, r = row.getBoundingClientRect()
+      const x = hs.getBoundingClientRect().left + (132 - 4) * z, y = r.top + r.height / 2
+      if (y < 0 || y > innerHeight) continue
+      const hit = document.elementFromPoint(x, y)
+      if (hit && !who.contains(hit)) leaks.push(`${row.dataset.testid}: ${hit.className}`)
+    }
+    return { min: Math.min(...whos), max: Math.max(...whos), head, leaks }
+  })
+  expect(g.min, 'narrowest name panel').toBeGreaterThanOrEqual(131.5)
+  expect(g.max - g.min, 'every row\'s panel the same width').toBeLessThanOrEqual(0.5)
+  expect(g.head, 'the heading strip\'s NAME · GRADE cell').toBeGreaterThanOrEqual(131.5)
+  expect(g.leaks, 'nothing scrolled shows beside a pinned name').toEqual([])
+})
+
+/* R2 — the first kind's column (CCL) is 54px but its cell carries the separator's 1px rule and 6px padding, so its 54px
+   box runs 7px past the column: past the 5px gap and 2px into FCL's box. */
+test('Balances on a phone: CCL\'s box never touches FCL\'s box — the same gap as between every other pair of kinds', async ({ page }) => {
+  test.skip(!isPhone(), 'phone list')
+  await openBalancesPhone(page)
+  const gaps = await page.evaluate(() => {
+    const row = document.querySelector<HTMLElement>('[data-testid="bal-row-bane"]')!
+    const boxes = [...row.querySelectorAll<HTMLElement>('.bp-oc')].map(c => c.querySelector<HTMLElement>('.bp-bx, .bp-ro')!.getBoundingClientRect())
+    return boxes.slice(1).map((b, i) => Math.round((b.left - boxes[i]!.right) * 10) / 10)
+  })
+  /* expected on a fix: [5, 5, 5, 5]; on 01f1030c4: about [-2, 5, 5, 5] */
+  for (const [i, g] of gaps.entries()) expect(g, `gap after kind ${i}`).toBeGreaterThanOrEqual(4.5)
+})
+
+/* R3 — a tapped box is brought into sight with its pending tag (B-F4): showCell measures `.bp-oc`, which no longer holds the
+   tag (now absolute, 12px past the box), so a box already in sight near the right edge leaves its tag cut. A real tap
+   on an iPhone does not centre the box as Chrome's focus() does, so focus is given here without the browser's own slide. */
+test('Balances on a phone: a box focused near the right edge keeps its pending tag inside the list', async ({ page }) => {
+  test.skip(!isPhone(), 'phone list')
+  await openBalancesPhone(page)
+  await expect(page.getByTestId('bal-opd-PL-bane')).toHaveText('0.5')
+  await page.evaluate(() => {
+    const hs = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!
+    const box = document.querySelector<HTMLInputElement>('[data-testid="bal-PL-bane"]')!
+    /* slide so the box's right edge stands 6px inside the list: the box is wholly in sight, its tag (12px past it) is not */
+    hs.scrollLeft += box.getBoundingClientRect().right - (hs.getBoundingClientRect().right - 6)
+    box.focus({ preventScroll: true })
+  })
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => ({
+    tagR: document.querySelector<HTMLElement>('[data-testid="bal-opd-PL-bane"]')!.getBoundingClientRect().right,
+    scR: document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!.getBoundingClientRect().right,
+  }))
+  expect(g.tagR, 'the pending tag inside the list').toBeLessThanOrEqual(g.scR)
+})
