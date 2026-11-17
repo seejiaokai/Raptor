@@ -273,6 +273,16 @@ const PLAIN = (r, item) => {
   while ((n = w.nextNode())) if (/\bComet\b/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/\bComet\b/, 'Saber')
   const rej = [...r.querySelectorAll('button')].find(b => /^reject$/i.test(b.textContent.trim()))
   if (rej) mq.hide(rej)
+  // his "2 attach words" (chat 100): "Attach · 149" over "ATTACH" says it twice. The row named instead by what he is
+  // on, "ACADEMICS · 149", the small kind line "ATTACH" kept as the app draws it for any titled input (D717); remarks
+  // left empty for the scheduler
+  if (item.named) {
+    for (const e of r.querySelectorAll('*')) for (const tn of e.childNodes) if (tn.nodeType === 3 && /Attach · 149/.test(tn.nodeValue)) tn.nodeValue = tn.nodeValue.replace('Attach · 149', item.name + ' · 149')
+    for (const i of r.querySelectorAll('input')) if (i.value === 'Attach · 149') { i.value = item.name + ' · 149'; i.setAttribute('value', i.value) }
+    for (const i of r.querySelectorAll('[contenteditable="true"]')) i.setAttribute('contenteditable', 'false')
+    for (const i of r.querySelectorAll('input')) i.disabled = true
+    return { rej: !!rej, named: true }
+  }
   // the remarks field fills itself: the placeholder's place holds the words, in the field's own typed look
   const rmIn = r.querySelector('input[placeholder="remarks"], textarea[placeholder="remarks"]')
   if (rmIn) { rmIn.value = item.name + ' · 149'; rmIn.setAttribute('value', rmIn.value); rmIn.disabled = true }
@@ -285,8 +295,10 @@ const PLAIN = (r, item) => {
   for (const i of r.querySelectorAll('input')) i.disabled = true
   return { rej: !!rej, rm: !!rmIn }
 }
+const NAMED = process.env.MQ_NAMED === '1'
 async function picQ4plain(sz, where) {
   const { ctx, page } = await world(sz)
+  if (NAMED) await page.evaluate(() => { window.__mqNamed = true })
   await toEdit(page)
   await file(page, { iid: 'mq-att', person: COMET, type: 'Attach', to: '149', date: 'Jul 13', yr: 2026, allday: false, s: 1140, e: 1320, remarks: '' })
   await file(page, { iid: 'mq-att2', person: COMET, type: 'Attach', to: '149', date: 'Jul 13', yr: 2026, allday: false, s: 840, e: 960, remarks: '' })
@@ -294,7 +306,7 @@ async function picQ4plain(sz, where) {
     await page.evaluate(() => document.querySelector('#eWeek .day:not(.peek) [data-sbday="0"]').click())
     await page.waitForSelector('.sb-panel.unav', { state: 'attached' }); await page.waitForTimeout(1200)
   } else await unavMonday(page)
-  const st = await page.evaluate(({ where, PLAIN }) => {
+  const st = await page.evaluate(({ where, PLAIN, NAMED }) => {
     const plain = eval('(' + PLAIN + ')')
     const mq = window.__mq
     const host = where === 'board' ? document.querySelector('.sb-panel.unav') : mq.monday().querySelector('.sec-unav')
@@ -302,6 +314,7 @@ async function picQ4plain(sz, where) {
     const out = []
     for (const r of rows) {
       const item = /14:00/.test(r.innerText + [...r.querySelectorAll('input')].map(i => i.value).join(' ')) ? { name: 'ACADEMICS' } : { name: 'VL' }
+      item.named = NAMED
       out.push(plain(r, item))
       if (getComputedStyle(r).position === 'static') r.style.position = 'relative'
       mq.mark(r, 'Q4')
@@ -310,10 +323,10 @@ async function picQ4plain(sz, where) {
     window.__mqClipEl = host
     if (where === 'board') host.scrollIntoView({ block: 'center' }); else mq.scrollUnder(host, 16)
     return out
-  }, { where, PLAIN: PLAIN.toString() })
+  }, { where, PLAIN: PLAIN.toString(), NAMED })
   if (st.length !== 2) throw new Error('picQ4plain: rows ' + JSON.stringify(st))
   await page.waitForTimeout(300)
-  const f = `Q4P${where === 'board' ? 'B' : 'E'}-${sz}-proposed.png`
+  const f = `Q4${NAMED ? 'N' : 'P'}${where === 'board' ? 'B' : 'E'}-${sz}-proposed.png`
   await shot(page, f, await clipOf(page, null, 6))
   rec(f, 'Q4', sz, 'proposed', `142's ${where === 'board' ? 'Scheduler Board' : 'Edit Schedule'}, Monday's Unavailable list: Saber's two "Attach · 149" rows as plain input rows (his idea). No REJECT, no extra line; the remarks show where he is ("ACADEMICS · 149", "VL · 149"); times and remarks shown, not typed in. Pressing "Attach · 149" opens the input window.`)
   if (where !== 'board') {
@@ -338,7 +351,8 @@ async function picQ4plain(sz, where) {
       const rmF = fieldBy('remarks')
       if (rmF) {
         const t = rmF.querySelector('textarea, input[type="text"], input:not([type])')
-        if (t) { t.value = 'ACADEMICS · 149'; t.setAttribute('value', t.value); t.textContent = t.value }
+        if (t && !window.__mqNamed) { t.value = 'ACADEMICS · 149'; t.setAttribute('value', t.value); t.textContent = t.value }
+        if (window.__mqNamed) { const tf = fieldBy('title'); const ti = tf && tf.querySelector('input'); if (ti) { ti.value = 'ACADEMICS · 149'; ti.setAttribute('value', ti.value) } }
         for (const c of rmF.querySelectorAll('input[type="checkbox"]')) { const l = c.closest('label') || c.parentElement; mq.hide(l) }
       }
       const docF = fieldBy('document'); if (docF) mq.hide(docF)
@@ -367,7 +381,7 @@ async function picQ4plain(sz, where) {
     })
     notes.push(`window ${sz}: ${JSON.stringify(ws)}`)
     await page.waitForTimeout(300)
-    const f2 = `Q4PW-${sz}-proposed.png`
+    const f2 = `Q4${NAMED ? 'N' : 'P'}W-${sz}-proposed.png`
     await shot(page, f2, await clipOf(page, null, 6))
     rec(f2, 'Q4', sz, 'proposed', `The input window opened by pressing "Attach · 149" (the ACADEMICS row), the app's own window. Drawn in: "Set by 149's plan" above the fields (Q4a), the fields shown but not changeable; the Delete button re-lettered "Take him off ACADEMICS", with "His seat is left empty; 149 is told." under it (Q4b). No Save: nothing here is his to change.`)
   }
