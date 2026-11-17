@@ -2735,3 +2735,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Suggested improvement:** In mockups-on-the-real-app.md's mark kit, lay tags on the page (fixed, from getBoundingClientRect) rather than inside the app's element, offer inside-bottom and middle positions, make the crop include every tag, and keep the outline inside whenever the tag is inside.
 **Principle:** An annotation drawn over a live page belongs to an overlay layer of its own, never inside the elements it annotates, whose own rules (text boxes, clipping, stacking) decide whether it shows.
 **Reference file:** raptor-port/docs/mock/2026-11-17-trk-small/draw.mjs
+
+### Observation 964: A moving value read in one browser-test step and acted on in the next is a race on a slow runner
+
+**Status:** OPEN
+**Date:** 17 Nov 26
+**Session context:** chat 98, the calendar wheels' mouse drag (D2170); numbered past 963, the highest on another branch
+**Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** writing a browser test of motion (a glide, a fling, an animation)
+
+**Issue:** a test read a gliding list's scroll position, then pressed the mouse in the next step, and asserted the two were within 12px; it passed twice on the fast PC and failed on the slower CI runner, where the glide moved further between the two steps. A second check (a finger held for 350 ms) failed the same way.
+**Suggested improvement:** for any assertion about motion around an input event, record the values inside the page with listeners (a capture listener on the window before the event, a bubbling one after, a scroll listener's time stamps), and assert on those; never on two separate round trips from the test runner.
+**Principle:** a round trip from the test runner takes unknown time; anything that moves on its own must be measured inside the page, at the event itself.
