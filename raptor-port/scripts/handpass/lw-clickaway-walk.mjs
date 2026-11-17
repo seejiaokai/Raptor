@@ -1,6 +1,7 @@
-// The OIL award editor's click outside (his D2173, D2174; the slide kept, D2175) walked on the built app, a phone and a PC,
-// with the plain-user round of the OIL tracker's controls that open or close. Each step asserts the right behaviour, so a
-// re-run on a fixed build is the re-walk. node lw-clickaway-walk.mjs [port] [outdir]
+// The OIL award editor's click outside (his D2173, D2176 — which replaced D2174: an outside click always closes, an unsaved
+// change dropped; the slide kept, D2175) walked on the built app, a phone and a PC, with the plain-user round of the OIL
+// tracker's controls that open or close; and first the grid's row tint over the name and balance cells (D2171, D2177).
+// Each step asserts the right behaviour, so a re-run on a fixed build is the re-walk. node lw-clickaway-walk.mjs [port] [outdir]
 import { createRequire } from 'module'
 import fs from 'fs'
 import path from 'path'
@@ -51,6 +52,67 @@ async function run(kind) {
   await page.evaluate(() => window.go('leavewar'))
   await page.waitForFunction(() => window.CURPAGE === 'leavewar')
   await page.waitForSelector('[data-testid="oil-tracker"]', { timeout: 15000 })
+
+  // T — the row tint (D2171, D2177): on a PC the row under the mouse tints its name and balance cells too, laid over their
+  // solid fill; the next row bare; gone when the mouse leaves; the same with the year scrolled sideways (the pinned cells
+  // still in front and solid). A phone has no mouse: the rule is not in force there.
+  await page.waitForSelector('.mx tbody tr td.who')
+  await page.waitForTimeout(800)
+  const TINT = 'linear-gradient(rgba(59, 198, 232, 0.05), rgba(59, 198, 232, 0.05))'
+  const dayOfMan = () => page.evaluate(() => {
+    const vw = innerWidth, vh = innerHeight
+    for (const td of document.querySelectorAll('.mx tbody tr:not(.me) td[data-testid^="cell-"]')) {
+      if (td.children.length) continue
+      const r = td.getBoundingClientRect()
+      if (r.left < vw * 0.4 || r.right > vw - 20 || r.top < vh * 0.35 || r.bottom > vh - 40) continue
+      if (document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2) === td) return td.dataset.testid
+    }
+    return null
+  })
+  const paintOf = id => page.locator(`[data-testid="${id}"]`).evaluate(td => {
+    const tr = td.closest('tr')
+    const cells = ['td.who', 'td.bal'].map(q => { const c = tr.querySelector(q), cs = getComputedStyle(c), r = c.getBoundingClientRect()
+      return { image: cs.backgroundImage, color: cs.backgroundColor, front: document.elementFromPoint(r.left + 4, r.top + r.height / 2)?.closest('td') === c } })
+    let nx = tr.nextElementSibling; while (nx && !nx.querySelector('td.who')) nx = nx.nextElementSibling
+    return { cells, next: nx ? getComputedStyle(nx.querySelector('td.who')).backgroundImage : 'none', top: tr.getBoundingClientRect().top }
+  })
+  const rowPic = async (name, top) => { n++; await page.screenshot({ path: path.join(dir, `${String(n).padStart(2, '0')}-${name}.png`), clip: { x: 0, y: Math.max(0, top - 60), width: 900, height: 140 } }) }
+  if (kind === 'desktop') {
+    const id = await dayOfMan()
+    if (!id) ok('T1', false, 'NOT WALKED — no empty day of a man in sight')
+    else {
+      const before = await paintOf(id)
+      const b = await page.locator(`[data-testid="${id}"]`).boundingBox()
+      await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2); await page.waitForTimeout(250)
+      const on = await paintOf(id)
+      await rowPic('t1-row-tint', on.top)
+      const solid = c => !/rgba\(.*, 0(\.\d+)?\)$/.test(c.color)
+      ok('T1', before.cells.every(c => c.image === 'none') && on.cells.every(c => c.image === TINT && solid(c) && c.front) && on.next === 'none'
+        && on.cells.every((c, i) => c.color === before.cells[i].color),
+        `name and balance before: ${before.cells.map(c => c.image === 'none' ? 'bare' : 'tinted')}; under the mouse: ${on.cells.map(c => (c.image === TINT ? 'tinted' : c.image) + (solid(c) ? ', solid' : ', SEE-THROUGH') + (c.front ? ', in front' : ', BEHIND'))}; the row below ${on.next === 'none' ? 'bare' : 'tinted'}`)
+      await page.mouse.move(5, 5); await page.waitForTimeout(250)
+      const off = await paintOf(id)
+      ok('T2', off.cells.every(c => c.image === 'none'), `the mouse gone: ${off.cells.map(c => c.image === 'none' ? 'bare' : 'tinted')}`)
+      // the year scrolled sideways: the pinned cells stay in front and solid, tinted under the mouse
+      await page.locator('.mx-wrap').evaluate(w => { w.scrollLeft += 900 })
+      await page.waitForTimeout(400)
+      const id3 = await dayOfMan()
+      if (!id3) ok('T3', false, 'NOT WALKED — no empty day of a man in sight once scrolled')
+      else {
+        const b3 = await page.locator(`[data-testid="${id3}"]`).boundingBox()
+        await page.mouse.move(b3.x + b3.width / 2, b3.y + b3.height / 2); await page.waitForTimeout(250)
+        const s3 = await paintOf(id3)
+        await rowPic('t3-scrolled-tint', s3.top)
+        ok('T3', s3.cells.every(c => c.image === TINT && solid(c) && c.front), `scrolled sideways, under the mouse: ${s3.cells.map(c => (c.image === TINT ? 'tinted' : c.image) + (solid(c) ? ', solid' : ', SEE-THROUGH') + (c.front ? ', in front' : ', BEHIND'))}`)
+      }
+      await page.locator('.mx-wrap').evaluate(w => { w.scrollLeft = 0 })
+      await page.mouse.move(5, 5); await page.waitForTimeout(300)
+    }
+  } else {
+    const mouse = await page.evaluate(() => matchMedia('(hover: hover)').matches)
+    ok('T1', mouse === false, `the phone has ${mouse ? 'A MOUSE — the tint would be in force' : 'no mouse — the tint is not in force, a phone unchanged'}`)
+  }
+
   await page.locator('[data-testid="oil-tracker"]').click()
   await page.waitForSelector('[data-testid="oil-sheet"]')
   const first = page.locator('[data-testid="oil-range-first"]')
@@ -67,21 +129,26 @@ async function run(kind) {
   ok('C1b', c1 === null && amt1 === '+2', `after the press on the title: editor ${c1 ?? 'closed'}, the award reads ${amt1}`)
   await pic('c1-closed')
 
-  // C2 — a change typed, a press outside: it stays open, the words kept
+  // C2 — a change typed, a press outside: it closes as Cancel does, the change dropped (D2176)
   await press(EDIT)
   await page.locator('[data-testid="oil-edit-reason"]').fill('CNY workplan — moved')
   await press(TITLE)
-  const v2 = await page.locator('[data-testid="oil-edit-reason"]').inputValue().catch(() => '(no box)')
-  ok('C2', (await editorOpenOn()) === 'oil-entry-l4' && v2 === 'CNY workplan — moved', `after the press outside: editor on ${await editorOpenOn()}, reason "${v2}"`)
-  await pic('c2-kept-open')
+  const r2 = await page.locator(`${EDIT} .l2`).innerText()
+  ok('C2', (await editorOpenOn()) === null && r2.includes('CNY workplan') && !r2.includes('moved'), `after the press outside: editor ${await editorOpenOn() ?? 'closed'}, reason line "${r2.trim()}"`)
+  await pic('c2-closed-dropped')
 
-  // C3 — with the change, a tap on another award: still the same editor, the words kept
+  // C3 — a change typed, a tap on another award: that award opens, the change dropped (D2176)
+  await press(EDIT)
+  await page.locator('[data-testid="oil-edit-reason"]').fill('CNY workplan — moved')
+  const otherId = await page.locator('[data-testid="oil-list"] .oil-e.grant:not(.editing)').first().getAttribute('data-testid')
   await press('[data-testid="oil-list"] .oil-e.grant:not(.editing)', 0)
-  const v3 = await page.locator(`${EDIT} [data-testid="oil-edit-reason"]`).inputValue().catch(() => '(no box)')
-  ok('C3', (await editorOpenOn()) === 'oil-entry-l4' && v3 === 'CNY workplan — moved' && await page.locator('[data-testid="oil-edit-award"]').count() === 1, `after a tap on another award: editor on ${await editorOpenOn()}, reason "${v3}"`)
-  await pic('c3-not-swapped')
+  const r3 = await page.locator(`${EDIT} .l2`).innerText()
+  ok('C3', (await editorOpenOn()) === otherId && await page.locator('[data-testid="oil-edit-award"]').count() === 1 && !r3.includes('moved'), `after a tap on another award: editor on ${await editorOpenOn()} (${otherId} tapped), the first award's reason "${r3.trim()}"`)
+  await pic('c3-other-opened')
 
-  // C4 — Cancel drops the change
+  // C4 — Cancel drops a change
+  await press(EDIT)
+  await page.locator('[data-testid="oil-edit-reason"]').fill('CNY workplan — moved')
   await press('[data-testid="oil-edit-cancel"]')
   const r4 = await page.locator(`${EDIT} .l2`).innerText()
   ok('C4', (await editorOpenOn()) === null && r4.includes('CNY workplan') && !r4.includes('moved'), `after Cancel: editor ${await editorOpenOn() ?? 'closed'}, reason line "${r4.trim()}"`)
@@ -113,8 +180,8 @@ async function run(kind) {
   ok('C6', (await editorOpenOn()) === null && a6 === '+3', `after Save: editor ${await editorOpenOn() ?? 'closed'}, the award reads ${a6}`)
   await pic('c6-saved')
 
-  // C7 — a correction: its date calendar is the editor's own; a day picked there keeps it open; a press outside then leaves
-  // it open (a change), Cancel closes it
+  // C7 — a correction: its date calendar is the editor's own; a day picked there keeps it open; a press outside then closes
+  // it, the change dropped (D2176)
   const CORR = '[data-testid="oil-entry-dol-3"]'
   await press(CORR)
   await press('[data-testid="oil-edit-date"]')
@@ -128,10 +195,10 @@ async function run(kind) {
   else {
     await press(TITLE)
     const open7b = await editorOpenOn()
-    ok('C7', open7a === 'oil-entry-dol-3' && open7b === 'oil-entry-dol-3', `after a day in its calendar: editor on ${open7a}; after a press outside with that change: ${open7b}`)
+    ok('C7', open7a === 'oil-entry-dol-3' && open7b === null, `after a day in its calendar: editor on ${open7a}; after a press outside with that change: ${open7b ?? 'closed'}`)
   }
   await pic('c7-after')
-  await press('[data-testid="oil-edit-cancel"]')
+  if (await editorOpenOn()) await press('[data-testid="oil-edit-cancel"]')
 
   // C8 — plain-user round: an editor open with nothing changed, a tap on a name: the editor closes and the credit bar opens;
   // a press outside the bar folds it away

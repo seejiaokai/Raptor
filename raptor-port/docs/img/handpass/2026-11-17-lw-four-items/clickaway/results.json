@@ -1,6 +1,24 @@
 [
   {
     "kind": "desktop",
+    "id": "T1",
+    "pass": true,
+    "note": "name and balance before: bare,bare; under the mouse: tinted, solid, in front,tinted, solid, in front; the row below bare"
+  },
+  {
+    "kind": "desktop",
+    "id": "T2",
+    "pass": true,
+    "note": "the mouse gone: bare,bare"
+  },
+  {
+    "kind": "desktop",
+    "id": "T3",
+    "pass": true,
+    "note": "scrolled sideways, under the mouse: tinted, solid, in front,tinted, solid, in front"
+  },
+  {
+    "kind": "desktop",
     "id": "C1a",
     "pass": true,
     "note": "the editor opened on: oil-entry-l4"
@@ -15,13 +33,13 @@
     "kind": "desktop",
     "id": "C2",
     "pass": true,
-    "note": "after the press outside: editor on oil-entry-l4, reason \"CNY workplan — moved\""
+    "note": "after the press outside: editor closed, reason line \"CNY workplan\""
   },
   {
     "kind": "desktop",
     "id": "C3",
     "pass": true,
-    "note": "after a tap on another award: editor on oil-entry-l4, reason \"CNY workplan — moved\""
+    "note": "after a tap on another award: editor on oil-entry-l7 (oil-entry-l7 tapped), the first award's reason \"CNY workplan\""
   },
   {
     "kind": "desktop",
@@ -45,7 +63,7 @@
     "kind": "desktop",
     "id": "C7",
     "pass": true,
-    "note": "after a day in its calendar: editor on oil-entry-dol-3; after a press outside with that change: oil-entry-dol-3"
+    "note": "after a day in its calendar: editor on oil-entry-dol-3; after a press outside with that change: closed"
   },
   {
     "kind": "desktop",
@@ -73,6 +91,12 @@
   },
   {
     "kind": "phone",
+    "id": "T1",
+    "pass": true,
+    "note": "the phone has no mouse — the tint is not in force, a phone unchanged"
+  },
+  {
+    "kind": "phone",
     "id": "C1a",
     "pass": true,
     "note": "the editor opened on: oil-entry-l4"
@@ -87,13 +111,13 @@
     "kind": "phone",
     "id": "C2",
     "pass": true,
-    "note": "after the press outside: editor on oil-entry-l4, reason \"CNY workplan — moved\""
+    "note": "after the press outside: editor closed, reason line \"CNY workplan\""
   },
   {
     "kind": "phone",
     "id": "C3",
     "pass": true,
-    "note": "after a tap on another award: editor on oil-entry-l4, reason \"CNY workplan — moved\""
+    "note": "after a tap on another award: editor on oil-entry-l7 (oil-entry-l7 tapped), the first award's reason \"CNY workplan\""
   },
   {
     "kind": "phone",
@@ -117,7 +141,7 @@
     "kind": "phone",
     "id": "C7",
     "pass": true,
-    "note": "after a day in its calendar: editor on oil-entry-dol-3; after a press outside with that change: oil-entry-dol-3"
+    "note": "after a day in its calendar: editor on oil-entry-dol-3; after a press outside with that change: closed"
   },
   {
     "kind": "phone",

@@ -976,6 +976,17 @@ touch-action: pan-x pan-y;
 .mx tbody:where(:not(.mstripe)) tr:hover td:not(.who):not(.bal):not(.lwph):where(:not(.grphd, .catsub-in)) {
   background: rgba(59, 198, 232, .05);
 }
+/* THE ROW'S TINT REACHES THE NAME (his D2171, approved as drawn D2177 — 17 Nov 26; drawn
+   docs/mock/2026-11-17-lw-grid-hover/tint.mjs): on a PC the same faint tint covers the row's name and balance cells too,
+   so whose line is under the mouse shows at a glance. Laid as a background IMAGE over the cells' own solid fill, never in
+   its place — the pinned cells stay opaque, which the rule above spares them for. His own row (`.me`) keeps its own
+   highlight. Mouse only (`hover: hover`): a phone's tap leaves its row "hovered", and a phone is unchanged. It sits ahead
+   of the Manning pairs' own image tint (`.counts tr.flyrow`, same weight, later), so those rows keep their pair colour. */
+@media (hover: hover) {
+  .mx tbody:where(:not(.mstripe)) tr:not(.me):hover > td:is(.who, .bal) {
+    background-image: linear-gradient(rgba(59, 198, 232, .05), rgba(59, 198, 232, .05));
+  }
+}
 
 /* EVERY BODY ROW IS ITS OWN PAINT LAYER (6 Sep 26, traced). Without this the
    whole grid — one paint layer of ~21,000 cells — is re-walked whenever ANY
