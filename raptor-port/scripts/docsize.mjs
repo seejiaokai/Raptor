@@ -305,7 +305,7 @@ const RULING_BYTES = [
   /* how-we-work 36000 -> 38000 (8 Nov 26, claude/merge-one-at-a-time): 36,091 bytes once main was brought in with D1746 and
      D1747 stated on the page (the pictures round's night, the step-4 line pointing at the merge lock's steps); live
      rulings every chat reads, none spent or replaced - a rulings file is never trimmed (D136). */
-  ['.claude/rules/decisions/how-we-work.md', 0, 38000],   // reset 7 Nov 26 from 61000, raised to 36000 (above): the file became a page (D1735), its dropped parts restored (D138); 36000 -> 38000 (8 Nov 26): D1746, D1747 (above); 8 Nov 26, chat 37: D1934 and D1937 fitted under 38000 by tighter wording, no raise (D1932; his "Tighten, no raise", D1940). A HARD LIMIT since 8 Nov 26 (D1932, PAGE_LIMITS below): the page stays as it is, under its old list (59,493)
+  ['.claude/rules/decisions/how-we-work.md', 0, 38500],   // 38000 -> 38500 (17 Nov 26): his "raise the limit" (D2141), for D2140 stated whole; reset 7 Nov 26 from 61000, raised to 36000 (above): the file became a page (D1735), its dropped parts restored (D138); 36000 -> 38000 (8 Nov 26): D1746, D1747 (above); 8 Nov 26, chat 37: D1934 and D1937 fitted under 38000 by tighter wording, no raise (D1932; his "Tighten, no raise", D1940). A HARD LIMIT since 8 Nov 26 (D1932, PAGE_LIMITS below): the page stays as it is, under its old list (59,493)
   ['.claude/rules/decisions/people-accounts.md', 2, 21160],   // 8 Nov 26, D1932: set to the one-line list's size the page replaced (97eaa5251) — a HARD LIMIT (PAGE_LIMITS below). Before that, raised 8 Nov 26 from 22000: the rules diet's step 5a made it a page (D1735); the account by requirement put back 35 gaps of rulings the short lines had cut and merged 10 doubled ones, and the two blind reads 15 more, the Inputs pages' and the scheduler's later rulings among them (50,466 bytes); a ruling is never cut to fit (D141), a tenth above again
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -461,7 +461,7 @@ const RULING_BYTES = [
    that allows it — cite its number here when he gives the word, never before. A new page gets a row here first. */
 const PAGE_LIMITS = [
   // file,                                         set (D1932),  limit, by
-  ['.claude/rules/decisions/how-we-work.md',     38000, 38000, 'D1932'],   // its tripwire as it stood; the page shrank (59,493 -> 37,952), left as it is
+  ['.claude/rules/decisions/how-we-work.md',     38500, 38500, 'D2141'],   // raised from 38000 on his word, D2141 (17 Nov 26);   // its tripwire as it stood; the page shrank (59,493 -> 37,952), left as it is
   ['.claude/rules/decisions/oil.md',             15407, 15407, 'D1932'],   // the one-line list at a6265cae0; 9 Nov 26, D1945: the scheduler's page made it owe 32 numbers of later rulings — room made by tighter wording, never a raise; D1946 the same for D1041's two
   ['.claude/rules/decisions/it-flow-guide.md',    4028,  4028, 'D1932'],   // the one-line list at cd8a5dd67
   ['.claude/rules/decisions/tracker.md',         20061, 20061, 'D1932'],   // the one-line list at aee0de3f2

@@ -337,6 +337,7 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   Tracker course, and a correction of round 3's Tracker reading (no sortie reaches the Tracker by itself today); SANS
   only for people outside the app's squadrons.
 - **L** nine questions for later rounds, listed on the page.
+- **His answers (17 Nov 26): "raise the limit" (D2141, How we work's page limit 38,000 -> 38,500); "A" (D2142): closing clears the published days after today and publishes AL1 on each in the one press — whose names stand on its four sign-offs is open for round 7. And for the next chat: first show him the wording for everything discussed here, before anything else.**
 - **WITHDRAWN by D2140 — the card's words below are not to be drawn as they stand: they gave a false reason (D212: an admin picks all four names), contradicted themselves (no more planning, then publish AL1 there) and dropped the overseas duty ending. Redo from scratch in round 7; his question — who publishes AL1, before or after closing — put to him as A (one press clears and publishes) or B (Close greyed until he has).**
 - **His correction, D2139 (17 Nov 26), of Q2's picture (round 3's card "Close Exercise North?"):** *"this text is not
   clear on what will happen"*. The card's words are redrawn in round 7, put to him before anything is built. Proposed

@@ -32,7 +32,8 @@ the later merge keeps both (D78).
 - **Still open elsewhere:** the caps page's Q1–Q8, R1–R4 (https://claude.ai/artifact/9VQ2YL9CceeCZL6XgQRS4p); `[INPUT-WIN-SCHED-ASKS]`. Side chat 96 (Leave War grid hover / tap highlight) in its own worktree, rulings from D2150.
 - **Gates:** docsize before the push. No app code.
 - **Running when written:** none.
-- **Rulings:** 2 recorded (D2139 → `scheduler.md`; D2140 → `how-we-work.md`) · **Walk:** none — design only · **Reads owed:** none (Astra and the fresh Opus reader both read the plan) · **Next chat number:** 98 (D1744) · **Next free ruling:** D2141 (chat 96 holds D2150 up)
+- **His answers at the end:** "raise the limit" (D2141, done); "A" (D2142, closing clears and publishes AL1 in one press). **His order for chat 98: FIRST show him your wording for everything discussed in chat 97** (the Close card; Q3 as rewritten; the transfer sheet lines), every line checked against his rulings before he sees it (D2140) — then his round 6 answers.
+- **Rulings:** 4 recorded (D2139 → `scheduler.md`; D2140, D2141 → `how-we-work.md`, the document check; D2142 → the design note) · **Walk:** none — design only · **Reads owed:** none (Astra and the fresh Opus reader both read the plan) · **Next chat number:** 98 (D1744) · **Next free ruling:** D2143 (chat 96 holds D2150 up)
 <!-- /now -->
 ## Next, in order
 
