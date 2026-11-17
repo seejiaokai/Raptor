@@ -155,7 +155,7 @@ scheduler's page.
   of his real example above.*
 - **D2101** — A1: a man is put on a detachment through his overseas duty input, which gains a "Detachment" choice; "None"
   stays, for an overseas duty with no schedule in the app (a staff trip). *Settles how people join a detachment.*
-- **D2102** — A2: at home he shows as today's overseas duty row, titled by the detachment. *Settles how he shows at home.*
+- **D2102** — A2: at home he shows as today's overseas duty row, titled by the detachment. *Settles how he shows at home.* **Replaced by D2146 (17 Nov 26): a DET row, the DET input of its own.**
 - **D2103** — A3: one button, "Close detachment"; its schedules kept, read only, under "Past detachments"; its people
   back with their squadron. *Settles closing.*
 - **D2104** — B1: look 2 — a grey "142" badge after the mission (under it, a size smaller, on a phone) and the whole
@@ -353,6 +353,14 @@ draws X, the rest are earlier rounds' pictures shown again), published https://c
   should we create a new input called DET? Cus the leave war uses OD for both purposes"*. Answered with the agent's
   recommendation (a DET input of its own, OD left for staff trips); would replace D2101's "Detachment" choice on the
   overseas duty and D2102's OD row, and settle R2 and R3 by itself — waits for his answer; drawn in round 7 if yes.
+  **His answer, "yes to DET": D2146** — a DET input names the detachment; on the Leave War he still counts as his
+  squadron's manpower; OD stays for staff trips and counts him out. Replaces D2102; narrows D2101, D2120, D2131, D2135.
+  Round 7 draws: the DET input (round 3's picture 5 redrawn), its row at home ("DET" under the detachment's title), its
+  mark on the Leave War, the Close card's lines with "DET" (its Leave War line goes). Put to him with it: DET counted in
+  the Available rows means the SANS calendar's need no longer rises while men are away on a detachment, and leave at
+  home may be approved while they are away — an admin could leave DET out of a count row; and whether a DET filed late
+  reads LATE. Every "overseas duty" in this note's detachment passages, round 6's R2 and R3, chat 98's Close card and
+  the transfer sheet's refusals now means DET.
 - **His answer to R11 (17 Nov 26, chat 99): D2145** — each squadron's SANS people may be borrowed by the other to fly,
   as any of its men; R11 otherwise stands. For round 7, the agent's readings: the other squadron's SANS availability
   panel lists them with their squadron's badge; once picked, the "Attach" row on the home schedule (D2098); SANS
