@@ -1775,9 +1775,11 @@ squadron are judged by whose they are:
   storage, never as a record of a command, so the gate never sees one. Two doors hold it instead: a line about one man or
   an Undo's line names another squadron only where the person giving it may file there (else it is the unit in view's),
   and a line kept, rewritten or deleted inside a person's command needs, in the line's squadron, admin from an admin and
-  home or rights there from anyone else. At the database step the `EditLog` table takes a unit column and the same rule.
+  home or rights there from anyone else; the squadron in view is asked as well, and a line its giver may file in neither is
+  not kept — a View right writes nothing there (job 2, 19 Nov 26: Astra 5). At the database step the `EditLog` table takes a unit column and the same rule.
 - *An admin's bell lines and read records* (his D2194): a `Notice` addressed to another person, and another person's
-  `EditLogSeen` / `NoticeSeen` row, need an admin of that person's squadron; the holiday line, which reaches every
+  `EditLogSeen` / `NoticeSeen` / `LeaveApprovalsSeen` / `AccessRequestSeen` row (the last judged by its account's person;
+  job 2, 19 Nov 26: SEC-1), need an admin of that person's squadron; the holiday line, which reaches every
   squadron at the place (D2184 R32), crosses until his D2195 (holidays per own squadron) is built — a line of holiday parts
   only; so does the telling of an input the same changeset changed, but only to someone that change tells — a person named
   in the input before or after, or its filer — the input itself judged by its people's squadrons; a member's notice the

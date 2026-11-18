@@ -6,7 +6,9 @@
    (SEC-2 first case). The proofs are the security reader's and Astra's
    (docs/superpowers/briefs/2026-11-19-multi-sqn-b1-job2-{security,astra}.md), set up as units-sqn-fixread2.test.ts. */
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { storeBackend } from '../engine/hooks'
+import { storeBackend, store } from '../engine/hooks'
+import { commitSettingsIntent } from './people-settings-commit'
+import { apprSeenAt } from './apprseen'
 import { initStore, resetSession, notify, writeInputsBatch } from './store'
 import { INPUTS, leadOf } from '../engine/inputs'
 import { signIn, sessionFor, accountsLoad } from './accounts'
@@ -103,5 +105,25 @@ describe("SEC-3 — a member's bell line to another squadron's man", () => {
       NOTICES.push({ id: 'n9', to: 'kes9', by: 'bane', at: Date.now(), iid: mine.iid, name: '149: all flying cancelled tomorrow', day: '2026-07-16', what: [{ k: 'del' }] } as any)
     })
     expect(NOTICES.some(n => n.id === 'n9' && n.to === 'kes9'), 'no line reached 149').toBe(false)
+  })
+})
+
+/* SEC-1 (the security read): an admin's Approvals moment and his record of which access requests he has seen are read
+   records, judged as `seen:` and `noticeseen:` are (section 7e) */
+describe("SEC-1 — another squadron's admin's Approvals moment and access-request seen record", () => {
+  it("Hunter (142's plain admin) cannot set Kestrel's (149's admin) Approvals moment", () => {
+    signInAs('ad2', 'a2')
+    const r = commitSettingsIntent('lw.apprseen', { owner: 'prowler' }, () => { store.set('apprseen:kes9', { at: Date.now() + 365 * 86400000 }) }) as any
+    expect(r.ok).toBe(false)
+    expect(apprSeenAt('kes9')).toBe(0)
+  })
+  it("…nor Kestrel's record of which access requests he has seen", () => {
+    signInAs('ad2', 'a2')
+    const r = commitSettingsIntent('access.seen', { owner: 'prowler' }, () => { store.set('reqseen:acad9', { userId: 'acad9', seenRequestIds: ['x'] }) }) as any
+    expect(r.ok).toBe(false)
+  })
+  it('…while his own still goes through', () => {
+    signInAs('ad2', 'a2')
+    expect((commitSettingsIntent('lw.apprseen', { owner: 'prowler' }, () => { store.set('apprseen:prowler', { at: Date.now() }) }) as any).ok).toBe(true)
   })
 })

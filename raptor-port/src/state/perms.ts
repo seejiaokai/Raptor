@@ -1834,9 +1834,12 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
     }
     if (c.collection !== 'settings') continue
     const id = String(c.id)
-    const pfx = id.startsWith('seen:') ? 'seen:' : id.startsWith('noticeseen:') ? 'noticeseen:' : null
+    /* (job 2, 19 Nov 26 — the security read's SEC-1: an admin's Approvals moment, `apprseen:<pid>`, and his record of
+       the access requests he has seen, `reqseen:<account>`, are read records too — 142's plain admin set 149's admin's) */
+    const pfx = id.startsWith('seen:') ? 'seen:' : id.startsWith('noticeseen:') ? 'noticeseen:' : id.startsWith('apprseen:') ? 'apprseen:' : id.startsWith('reqseen:') ? 'reqseen:' : null
     if (!pfx) continue
-    const pid = id.slice(pfx.length)
+    const pid = pfx === 'reqseen:' ? String(ACCOUNTS_LIST.find(x => x.id === id.slice(pfx.length))?.pid ?? '') : id.slice(pfx.length)
+    if (!pid) continue                                  // (an account with no person names no squadron to judge by)
     if (pid !== self && !ownsHim(pid)) return `another squadron's man's read record (${where})`
   }
   return null
