@@ -1711,6 +1711,53 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
   return null
 }
 
+/* 7e. AN ADMIN'S BELL LINES AND READ RECORDS ARE HIS OWN SQUADRON'S PEOPLE'S (the second fix read, 18 Nov 26 — Fable's
+   plan, still open 2; his D2194: no bell line about one squadron's own business reaches the other's people). A notice's
+   id and a `seen:<pid>` / `noticeseen:<pid>` row name no squadron, and the admin branch below returns early, so 142's
+   plain admin could write a bell line to a 149 man, take one of his away, or mark his history or his bell read. Now an
+   admin's change to a notice (before or after) addressed to anyone but himself, or to another person's read record,
+   needs him an admin of that person's squadron (his home today, as the rows stood before) — a master, or one given Plan
+   of it, is. Kept crossing, as ruled: the holiday line (`oilhol`), which reaches every squadron at the place (D2184 R32 —
+   until his D2195, holidays per own squadron, is built). `accessreq:` rows carry no squadron yet (Request access asking
+   the squadron, D2111, is not built), so there is nothing to judge them by — filed.
+   ONE LINE IS NOT JUDGED BY ITS READER'S SQUADRON: the telling of an input this very command changed (state/sched-commit.ts
+   tellPass — whoever is in it and whoever filed it is told). That input is judged by its own people's squadrons
+   (7c above), and its filer may be of another squadron (a master who filed for a 149 man, who is then told when 149's
+   own admin changes it) — refusing the change for its telling would refuse a change the gate allows. A line naming an
+   input the command did not change is judged as any other. */
+function adminOwnerViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role !== 'admin') return null
+  const self = a.personId == null ? null : String(a.personId)
+  let today: string | null = null, rows: UnitRows | null = null
+  const ownsHim = (pid: string): boolean => {
+    if (today == null) { today = todayIso(); rows = unitRowsBefore(env.changes) }
+    const u = homeBefore(pid, today, rows!) ?? BOOT_UNIT
+    return levelInForce(a, u, today, rows!) === 'admin'
+  }
+  const changedInputs = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
+  for (const c of env.changes) {
+    const where = `${c.collection}/${c.id}`
+    if (c.collection === 'notices') {
+      for (const n of [c.before as any, c.op === 'delete' ? null : (c.after as any)]) {
+        if (!n || typeof n !== 'object' || n.to == null) continue
+        if (Array.isArray(n.what) && n.what.some((p: any) => p && p.k === 'oilhol')) continue
+        const to = String(n.to)
+        if (n.iid && changedInputs.has(String(n.iid))) continue
+        if (to !== self && !ownsHim(to)) return `a bell line of another squadron's man (${where})`
+      }
+      continue
+    }
+    if (c.collection !== 'settings') continue
+    const id = String(c.id)
+    const pfx = id.startsWith('seen:') ? 'seen:' : id.startsWith('noticeseen:') ? 'noticeseen:' : null
+    if (!pfx) continue
+    const pid = id.slice(pfx.length)
+    if (pid !== self && !ownsHim(pid)) return `another squadron's man's read record (${where})`
+  }
+  return null
+}
+
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   const unitBad = unitRowViolation(env)
@@ -1736,6 +1783,9 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       if (env.type !== 'lw.seen' || a.personId == null || c.id !== `lwseen:${a.personId}`) return `another person's last visit (${c.collection}/${c.id})`
     }
   }
+  /* 7e. an admin's bell lines and read records only for his own squadron's people (below) */
+  const ownerBad = adminOwnerViolation(env)
+  if (ownerBad) return ownerBad
   /* 7b. a squadron's Leave War by its own people only, and a master's posting by a master (above) */
   const warBad = warUnitViolation(env)
   if (warBad) return warBad

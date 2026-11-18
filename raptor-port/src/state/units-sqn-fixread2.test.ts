@@ -24,6 +24,8 @@ import { updatePersonField } from './quals-write'
 import { setUnitSeeds, setHome, setGrant, homeOn, todayIso, unitsLoad, unitRows } from './units'
 import { moveFrom } from './units-model'
 import { addDays } from './flyplan-model'
+import { ownershipViolation } from './perms'
+import { deriveActor } from '../command'
 import { commitSettingsIntent, commitPeopleIntent, commitPeopleEdit } from './people-settings-commit'
 
 const mem: Record<string, string> = {}
@@ -279,6 +281,37 @@ describe('security H5 — a history line is its own squadron’s', () => {
     elogFlush()
     const [k] = saved().find(([, v]) => v.lbl === '149 own line')!
     expect((commitSettingsIntent('elog.sweep', null, () => { store.set(k, null) }) as any).ok).toBe(true)
+  })
+})
+
+/* Fable's plan, still open 2 (his D2194): the admin branch of the gate returned early, so 142's plain admin could write a
+   bell line to a 149 man or mark his history or bell read. Asked of the gate directly, with the command a forged write
+   would make. */
+describe("still open 2, his D2194 — an admin's bell lines and read records are his own squadron's people's", () => {
+  const env = (changes: any[]): any => ({ seq: 1, at: '', origin: 'local', scope: { module: 'settings' }, type: 'inputs.write', actor: deriveActor(), changes })
+  const line = (to: string, what: any[] = [{ k: 'del' }]) => ({ id: 'n1', to, by: 'zz', at: 1, iid: 'i1', name: 'x', day: '2026-07-13', what })
+  const put = (collection: string, id: string, after: any) => ({ op: 'put', collection, id, before: null, after })
+  it("Hunter (142's plain admin) may not write a bell line to 149's Osprey, nor mark his history or bell read", () => {
+    signInAs('ad2', 'a2')
+    expect(ownershipViolation(env([put('notices', 'n1', line('osp9'))]))).toMatch(/bell line of another squadron's man/)
+    expect(ownershipViolation(env([{ op: 'delete', collection: 'notices', id: 'n1', before: line('osp9'), after: null }]))).toMatch(/bell line of another squadron's man/)
+    expect(ownershipViolation(env([put('settings', 'seen:osp9', { pid: 'osp9', ids: [] })]))).toMatch(/another squadron's man's read record/)
+    expect(ownershipViolation(env([put('settings', 'noticeseen:osp9', { pid: 'osp9', ids: [] })]))).toMatch(/another squadron's man's read record/)
+  })
+  it('…while his own squadron’s man, the holiday line (which reaches every squadron at the place) and the master pass', () => {
+    signInAs('ad2', 'a2')
+    expect(ownershipViolation(env([put('notices', 'n1', line('bane'))]))).toBeNull()
+    expect(ownershipViolation(env([put('notices', 'n1', line('osp9', [{ k: 'oilhol', a: '2026-07-13', b: '2026-07-13' }]))]))).toBeNull()
+    expect(ownershipViolation(env([put('settings', 'seen:bane', { pid: 'bane', ids: [] })]))).toBeNull()
+    signInAs('ad', 'a')
+    expect(ownershipViolation(env([put('notices', 'n1', line('osp9'))]))).toBeNull()
+  })
+  it("…and the telling of an input the same command changed, judged by 7c: Hunter changes a 142 man's input that 149's Osprey filed, Osprey told", () => {
+    signInAs('ad2', 'a2')
+    const inp = { iid: 'i1', type: 'Training', person: 'bane', people: [{ p: 'bane' }], by: 'osp9', date: 'Jul 13', allday: true }
+    const edited = { ...inp, remarks: 'moved' }
+    const ch = { op: 'put', collection: 'inputs', id: 'i1', before: inp, after: edited }
+    expect(ownershipViolation(env([ch, put('notices', 'n1', line('osp9', [{ k: 'rmk' }]))]))).toBeNull()
   })
 })
 

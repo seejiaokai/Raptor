@@ -17,6 +17,7 @@ import { stashPut, stashHas, stashClear } from '../engine/weekstash'
 import { ELOG, elogClear } from '../engine/editlog'
 import { undo } from '../state/history'
 import { clearHistoryBefore, clearHistoryData, clearEditHistory } from './inputedit'
+import { settleWorld } from '../test-support/world'
 
 /* CLUTTER-ONLY (owner, 13 Sep 26 — [SYNC-INTEG] P4). "Clear old data" removes
    only past calendar pucks and day titles. It NEVER deletes a leave/medical/duty
@@ -51,6 +52,9 @@ beforeEach(() => {
   initStore()
   setSession({ user: 'a', role: 'admin' })
   seed()
+  /* the seed above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
   notify()
 })
 

@@ -23,6 +23,7 @@ import { setMemberTodayForTests, stateOf, type RequestRec } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
 import { Matrix } from './Matrix'
+import { settleWorld } from '../../test-support/world'
 
 const ISNAP = JSON.stringify(INPUTS)
 const P = 'slipway'
@@ -50,6 +51,9 @@ beforeEach(() => {
   wireLeaveWarSync()
   _resetTimeline(); lwHistInit(); installGlobalUndo()
   setRole('admin')
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 afterEach(() => { _resetTimeline(); setSession(null); setMemberTodayForTests(null); INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
 
@@ -169,6 +173,7 @@ describe('what Approve, Refuse, Move and Delete act on', () => {
   })
   it('a leave the war approved: "Approved" lit; tapped again on All, the whole leave goes back to pending', () => {
     INPUTS.length = 0
+    settleWorld()   // (the emptying above is outside every command: the world settled first — test-support/world.ts)
     fileAbsence(P, 'LL', DAYS[0]!, DAYS[3]!, { lw: true })
     tap(DAYS[2]!)
     expect(title()).toBe('9–12 Feb')
@@ -180,6 +185,7 @@ describe('what Approve, Refuse, Move and Delete act on', () => {
   })
   it('Delete on All takes a war-approved leave of four days', () => {
     INPUTS.length = 0
+    settleWorld()   // (the emptying above is outside every command: the world settled first — test-support/world.ts)
     fileAbsence(P, 'LL', DAYS[0]!, DAYS[3]!, { lw: true })
     tap(DAYS[0]!)
     fireEvent.click(within(sheet()).getByTestId('bid-clear'))

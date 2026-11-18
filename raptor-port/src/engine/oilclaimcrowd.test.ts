@@ -52,6 +52,7 @@ import { commitInput, draftOf } from '../ui/inputedit'
 import { rowPut, rowTake } from '../ui/reqdoor'
 import { toggleOilPerson } from '../ui/oilmode'
 import { setOilAsk, setInpEdit } from '../ui/pops'
+import { settleWorld } from '../test-support/world'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -76,6 +77,9 @@ beforeEach(() => {
   HOOKS.oilEarningDay = (di: number) => di === SAT
   HOOKS.oilDayISO = (di: number) => (di === SAT ? SAT_ISO : '2026-07-15')
   HOOKS.oilSentinel = () => CROWD.slice()
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read) */
+  settleWorld()
 })
 afterEach(() => { HOOKS.oilEarningDay = earningDay; HOOKS.oilDayISO = dayISO; HOOKS.oilSentinel = sentinel })
 
