@@ -824,7 +824,8 @@ the signed-in person's home unit's — `leavewar/sync.ts swapWarWorld` at every 
 re-projecting its roster, absences and OIL for that unit; the Tracker binds his unit at its first load
 (`tracker/storage.js markStorageLoaded`) and its + Add offers that unit's people only (`tracker/peoplewire.ts`). The
 seams: (1) a reader that needs ANOTHER squadron's war reads it from that unit's door (`sync.ts storedWorld`), never from
-the store, which holds one world; (2) a public holiday is laid onto every squadron at the same place on that date at
+the store, which holds one world; (2) *[to change — his D2195, 18 Nov 26: each squadron owns its own holiday list,
+never laid onto another; seams (2) and (3) as built, filed for chat 109]* a public holiday is laid onto every squadron at the same place on that date at
 READ (`placeHolidaysFor` → `leavewar/state/store.ts setPlaceHolidays`), never copied into another squadron's war —
 `dayFacts`, the grid, `HOOKS.oilEarningDay` and `nonWorkingFor(unit, iso)` all see it, an Off day stays its own
 squadron's; a new reader of "is this day a holiday" must ask through them, or 149's holiday is a working day for 142;

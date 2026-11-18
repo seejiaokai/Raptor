@@ -88,7 +88,9 @@ bar for anyone who may see more than one schedule; Admin → Squadrons; each pla
   who may see one schedule sees no ▾ [D2132].
 - Each squadron its own schedule and its own Logic settings, crew rest included, edited by its own admin [D2109,
   D2122]. Each squadron its own Tracker [D2167].
-- Squadrons at one place share one public-holiday list, each keeping its own Off day [D2160 F1, D2184]; adding a
+- *[SET ASIDE 18 Nov 26 by his D2195: no holiday list is shared — each squadron owns its own; the form names only its
+  own published days and tells no other squadron. This line and §Public holidays below stand as first planned.]*
+  Squadrons at one place share one public-holiday list, each keeping its own Off day [D2160 F1, D2184]; adding a
   holiday names, before saving, each squadron's published days it puts out of date, both squadrons' admins told; the
   admin answers the OIL question for his own squadron only, the other's schedulers for theirs [D2184 R32, narrowing
   D781].
@@ -225,7 +227,7 @@ accounts `ad9`, `us9`, `ad2`. Admin → Users still lists everyone until step 5.
 man signing in after a 142 man on the same PC would get 142's. A reload at sign-out starts every world fresh for the
 next person — the simplest guarantee (he sees the start-up claw a moment after "Sign out").
 
-**Public holidays and Off days.** The holiday list belongs to a place; each Leave War reads the list of the place its
+**Public holidays and Off days.** *[Set aside by his D2195, 18 Nov 26: each squadron owns its own list.]* The holiday list belongs to a place; each Leave War reads the list of the place its
 unit is at **on that date** (a later move never rewrites past leave charges). An Off day is a dated entry, as today, kept
 per unit. The OIL earning day (`HOOKS.oilEarningDay`, `sync.ts isNonWorkingISO`) reads both through one function naming
 the unit. R32's warning names each squadron's published days a new holiday puts out of date.

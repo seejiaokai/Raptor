@@ -155,7 +155,9 @@ other squadrons' worlds are read from their own doors where a reader needs them 
 Tracker binds the signed-in person's home unit when it first loads (`tracker/storage.js markStorageLoaded`) and refuses a
 bind to another unit after that — so, until signing out reloads the app (plan §3.4, O8 — not built in step 4), a second
 person of the other squadron signing in on the same tab is still shown the first one's Tracker. Nothing changes in the
-records' shape. **Public holidays by place and date:** a public holiday is still stored in the one squadron's war it was
+records' shape. *[To change — his D2195, 18 Nov 26: no holiday list is shared; each squadron owns its own, and a
+holiday never reaches another squadron's war. The by-place reading below is as built on the night of 17–18 Nov 26, filed
+for chat 109.]* **Public holidays by place and date:** a public holiday is still stored in the one squadron's war it was
 entered in; every other squadron at the same place on that date reads it laid onto its own war, never stored there
 (`leavewar/sync.ts placeHolidaysFor`), so a later move of either squadron changes nothing already charged before it. An
 Off day stays its own squadron's. **The demo (step 4):** 149's people (`state/demoseed.ts DEMO_149_PEOPLE` — their own
