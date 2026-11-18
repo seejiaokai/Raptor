@@ -188,8 +188,15 @@ describe('the master-only commands', () => {
     expect(own).toMatchObject({ ok: false })
     expect(isMasterAccount('acus')).toBe(false)
   })
+  /* since his D2205 (18 Nov 26 — "only a master admin changes a master's account") the editor here is a second master:
+     a plain admin's rename of Saber is now refused (state/units-sqn-fixread2.test.ts, security H4); the point is unchanged
+     — a change of something else keeps the mark */
   it('the account editor keeps the mark when it changes something else', () => {
     plainAdmin()
+    const pike = accountByName('pike@mail')!.id
+    signInAs('ad', 'a')
+    expect(setMaster(pike, true).ok).toBe(true)
+    signInAs('pike@mail')
     expect(updateAccount('acad', { name: 'saber2' })).toBe(null)
     expect(accountById('acad')).toMatchObject({ name: 'saber2', master: true })
     expect(JSON.parse(mem['sqn142_account:acad']!)).toMatchObject({ master: true })

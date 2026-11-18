@@ -30,7 +30,7 @@ import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, lea
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore } from './accounts'
+import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore, readAccounts, type Account } from './accounts'
 import { unitRowsBefore, levelBefore, homeBefore, todayIso, homeOn } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
@@ -1249,19 +1249,6 @@ function accountImagesNow(): any[] {
   for (const k of store.keys(ACCOUNT_ROW)) { const v = store.get(k, null); if (v) out.push(v) }
   return out.length ? out : seedAccounts()
 }
-/* the stored accounts BEFORE and AFTER the command, as the loader would read each — none stored is the seeded list. Both
-   are made from the command's own changes (each row it changed put back, then each laid on again), never the store's
-   state alone: a change judged before or without its write reaches the store (a forged envelope, a test) is still
-   compared like for like, so a master mark nobody touched never reads as moved */
-function accountImagesAround(changes: readonly Change[]): { before: any[]; after: any[] } {
-  const m = new Map<string, any>()
-  for (const k of store.keys(ACCOUNT_ROW)) { const v = store.get(k, null); if (v) m.set(k, v) }
-  const mine = changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_ROW))
-  for (const c of mine) { if (c.before == null) m.delete(String(c.id)); else m.set(String(c.id), c.before) }
-  const before = m.size ? [...m.values()] : seedAccounts()
-  for (const c of mine) { if (c.after == null) m.delete(String(c.id)); else m.set(String(c.id), c.after) }
-  return { before, after: m.size ? [...m.values()] : seedAccounts() }
-}
 /* an account row's image AFTER a command, read as the loader reads it. A row the command removed is the account GONE —
    unless no account row is left at all, when the loader reads the seeded list again (the Undo of the very first account
    write). Reading every removed row as its seed (accountBefore's rule for a row never written) let a plain admin's
@@ -1272,6 +1259,131 @@ function accountAfter(id: string, c: Change): any {
   const anyLeft = store.keys(ACCOUNT_ROW).some(k => store.get(k, null) != null)
   return anyLeft ? null : accountBefore(id, null)
 }
+/* THE TWO WORLDS OF A COMMAND — the people, the accounts and the unit rows BEFORE it against AFTER it, the accounts read
+   by the loader's own reading (accounts.ts readAccounts: oldest first, one account an id, a sign-in name and a person, a
+   deleted man's never) over the people of the same side (the second fix read, 18 Nov 26 — Fable's plan §1, C1/C2: the
+   gate judged the rows a command wrote, raw, keyed by store key, while the loader kept other rows than it compared — a
+   re-keyed row or a clashing sign-in name made a plain admin's write change Osprey, Kestrel or Saber unseen; and the
+   last-admin lock and the master guard ran only when an account row was written, so a person-only delete or a home move
+   went past both). Built once a command, whenever it changes a person, an account or a home. */
+type Worlds = {
+  personB: (pid: string) => any; personA: (pid: string) => any
+  acctB: Account[]; acctA: Account[]
+  rawB: Map<string, any>; rawA: Map<string, any>
+  rowsB: UnitRows; rowsA: UnitRows
+}
+const WORLDS = new WeakMap<CommitEnvelope, Worlds | null>()
+function worldsOf(env: CommitEnvelope): Worlds | null {
+  if (WORLDS.has(env)) return WORLDS.get(env)!
+  const people = env.changes.filter(c => c.collection === 'people')
+  const touches = people.length > 0 || env.changes.some(c => c.collection === 'settings'
+    && (String(c.id).startsWith(ACCOUNT_ROW) || String(c.id).startsWith(HOME_PFX)))
+  if (!touches) { WORLDS.set(env, null); return null }
+  const was = new Map<string, any>(), is = new Map<string, any>()
+  for (const c of people) {
+    if (!was.has(String(c.id))) was.set(String(c.id), c.before ?? null)
+    is.set(String(c.id), c.op === 'delete' ? null : c.after ?? null)
+  }
+  const personB = (pid: string) => (was.has(pid) ? was.get(pid) : (PEOPLE as any)[pid])
+  const personA = (pid: string) => (is.has(pid) ? is.get(pid) : (PEOPLE as any)[pid])
+  /* the stored rows on each side, by store key — none stored is the seeded list, keyed as the loader would write it */
+  const m = new Map<string, any>()
+  for (const k of store.keys(ACCOUNT_ROW)) { const v = store.get(k, null); if (v) m.set(k, v) }
+  const mine = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_ROW))
+  for (const c of mine) { if (c.before == null) m.delete(String(c.id)); else m.set(String(c.id), c.before) }
+  const seeded = () => new Map<string, any>(seedAccounts().map(x => [ACCOUNT_ROW + x.id, x]))
+  const rawB = m.size ? new Map(m) : seeded()
+  for (const c of mine) { if (c.after == null) m.delete(String(c.id)); else m.set(String(c.id), c.after) }
+  const rawA = m.size ? m : seeded()
+  const w: Worlds = {
+    personB, personA,
+    acctB: readAccounts([...rawB.values()], undefined, personB),
+    acctA: readAccounts([...rawA.values()], undefined, personA),
+    rawB, rawA,
+    rowsB: unitRowsBefore(env.changes), rowsA: unitRowsBefore([]),
+  }
+  WORLDS.set(env, w)
+  return w
+}
+/* the store keys of a side's rows the loader would NOT keep (a row it drops, or one whose id is not its key) — a deleted
+   man's account aside, which every reading drops on purpose */
+function droppedKeys(raw: Map<string, any>, kept: Account[], person: (pid: string) => any): Set<string> {
+  const out = new Set<string>()
+  for (const [k, x] of raw) {
+    if (x && typeof x.pid === 'string' && person(x.pid) && person(x.pid).deleted) continue
+    const a = x && kept.find(y => y.id === x.id)
+    if (!a || a.pid !== x.pid || a.name !== String(x.name ?? '').trim().toLowerCase() || k !== ACCOUNT_ROW + String(x.id)) out.add(k)
+  }
+  return out
+}
+const sameJson = (x: unknown, y: unknown) => JSON.stringify(x ?? null) === JSON.stringify(y ?? null)
+/* the fields of a man's PERSON that make his account what it is — his callsign (his name on every sign-in line), and
+   whether he is on the roster at all. D2205 rules a master's ACCOUNT a master's alone; his qualifications, CAT and the
+   rest of his Quals row stay any admin of his squadron's, as every man's are (D218) — the builder's reading, said in the
+   evidence sheet: Fable's plan read every field of his person as the master's alone */
+const ACCOUNT_LIKE = (p: any) => JSON.stringify(p == null ? null : [p.cs, !!p.archived, !!p.deleted, !!p.special])
+
+/* G0 — THE ROWS' SHAPE: an account row's id is its key, and every row the command leaves is one the loader keeps (the second
+   fix read — security H1, Astra 2: a row put under Ranger's key carrying Osprey's id made Osprey 149's admin; a sign-in
+   name renamed onto Kestrel's dropped Kestrel's account on the next load). G1 — A MASTER'S ACCOUNT IS A MASTER'S ALONE
+   (his D2205, 18 Nov 26; security H4): a master's account as the loader reads it — changed, gone, or his person renamed,
+   archived, deleted or made a placeholder — only by a master; his person deleted by nobody. The mark itself keeps its
+   own rules in section 6. Every actor but the app itself. */
+function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system') return null
+  const w = worldsOf(env)
+  if (!w) return null
+  for (const c of env.changes) {
+    if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW) || c.after == null) continue
+    if (ACCOUNT_ROW + String((c.after as any).id) !== String(c.id)) return `an account row whose id is not its key (${c.id})`
+  }
+  const droppedB = droppedKeys(w.rawB, w.acctB, w.personB)
+  for (const k of droppedKeys(w.rawA, w.acctA, w.personA)) if (!droppedB.has(k)) return `an account row the app would not load (${k})`
+  const actorMaster = a.role === 'admin' && w.acctB.some(x => x.id === a.id && x.master === true)
+  for (const m of w.acctB.filter(x => x.master === true)) {
+    const now = w.acctA.find(x => x.id === m.id)
+    const pb = w.personB(m.pid), pa = w.personA(m.pid)
+    if (pb && !pb.deleted && pa && pa.deleted) return `a master admin's person deleted (people/${m.pid})`
+    if (sameJson(m, now) && ACCOUNT_LIKE(pb) === ACCOUNT_LIKE(pa)) continue
+    if (!actorMaster) return `a master admin's account changed by one who is not a master (${ACCOUNT_ROW}${m.id})`
+  }
+  return null
+}
+
+/* G3 — NEVER A SQUADRON LEFT WITH NO ADMIN OF ITS OWN WHO CAN SIGN IN (D2184 Q10; the lock's words are accounts.ts
+   lockProblem's), judged before against after on every date the command can change it: today, and every home row's
+   `from` (either side) of a man whose home rows it changes (the second fix read — Astra 1, Opus F1, security H3: the lock
+   ran only when an account row was written, and on today only, so Saber deleting or making a placeholder of Kestrel by
+   a people-only command, or moving him to 142 from tomorrow, left 149 with no admin). Every actor but the app itself —
+   the posting pass holds a posting that would do it (leavewar/sync.ts poHeldReason). */
+function lastAdminViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system') return null
+  const w = worldsOf(env)
+  if (!w) return null
+  const today = todayIso()
+  const dates = new Set<string>([today])
+  const movedPids = new Set<string>()
+  for (const c of env.changes) {
+    if (c.collection !== 'settings' || !String(c.id).startsWith(HOME_PFX)) continue
+    for (const h of [c.before as any, c.after as any]) if (h && h.pid != null) movedPids.add(String(h.pid))
+  }
+  for (const h of [...w.rowsB.homes, ...w.rowsA.homes]) if (movedPids.has(String(h.pid)) && typeof h.from === 'string' && h.from >= today) dates.add(h.from)
+  const onRoster = (p: any) => !!p && !p.special && !p.deleted
+  const able = (l: Account[], person: (pid: string) => any) => l.filter(x => x.role === 'admin' && x.on !== false && onRoster(person(x.pid)))
+  const ableB = able(w.acctB, w.personB), ableA = able(w.acctA, w.personA)
+  if (ableB.length && !ableA.length) return 'the last admin who can sign in switched off or removed'
+  for (const d of [...dates].sort()) {
+    const homesA = new Set(ableA.map(x => homeBefore(x.pid, d, w.rowsA)).filter(Boolean))
+    for (const x of ableB) {
+      const u = homeBefore(x.pid, d, w.rowsB)
+      if (u && !homesA.has(u)) return `a squadron (${u}) left with no admin of its own who can sign in (on ${d})`
+    }
+  }
+  return null
+}
+
 function unitRowViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   const unitCh = env.changes.filter(c => c.collection === 'settings' && isUnitRow(String(c.id)))
@@ -1287,12 +1399,13 @@ function unitRowViolation(env: CommitEnvelope): string | null {
      first write of the account list stores every seeded account it keeps and simply leaves out one it drops — no change
      of that row is recorded at all — so a plain admin's Delete of the one master went past the row-by-row check above
      (the full check's security read, 18 Nov 26, F6) */
-  const anyAcct = env.changes.some(c => c.collection === 'settings' && String(c.id).startsWith(ACCOUNT_ROW))
+  /* (both lists as the loader reads them, over the people of each side — the second fix read, Fable's plan G1: a raw list
+     kept a row the loader drops, so a clashing name could strip the mark unseen) */
   let masterMoved = masterCh.length > 0
-  if (anyAcct && !masterMoved) {
-    const ids = (l: any[]) => l.filter(x => x && x.master === true).map(x => String(x.id)).sort().join(',')
-    const img = accountImagesAround(env.changes)
-    masterMoved = ids(img.before) !== ids(img.after)
+  const w = worldsOf(env)
+  if (w && !masterMoved) {
+    const ids = (l: Account[]) => l.filter(x => x.master === true).map(x => x.id).sort().join(',')
+    masterMoved = ids(w.acctB) !== ids(w.acctA)
   }
   if (!unitCh.length && !masterMoved) return null
   const sys = !a || a.role === 'system'
@@ -1353,7 +1466,7 @@ function unitRowViolation(env: CommitEnvelope): string | null {
       const img: any = c.after ?? c.before
       if (String(c.id) === ACCOUNT_ROW + a.id || (img && a.personId != null && String(img.pid) === String(a.personId))) return 'never his own master mark'
     }
-    if (!accountImagesNow().some(x => x && x.master === true)) return 'one master admin must be left'
+    if (!(w ? w.acctA : readAccounts(accountImagesNow())).some(x => x.master === true)) return 'one master admin must be left'
   }
   return null
 }
@@ -1406,10 +1519,12 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
      only what really moved is judged. His own account too: the own-account guards (accounts.ts ownAccount) stand only on
      the write path, so a forged write moving his own account onto a 149 man made a 142 admin 149's admin (the fix's blind
      read, 18 Nov 26, F1); his ordinary writes to his own row pass, his own squadron being his */
-  const img = accts.length ? accountImagesAround(env.changes) : null
-  if (img) {
-    const was = new Map<string, any>(img.before.filter(Boolean).map((x: any) => [String(x.id), x]))
-    const is = new Map<string, any>(img.after.filter(Boolean).map((x: any) => [String(x.id), x]))
+  /* (since the second fix read — Fable's plan G2 — both lists are the loader's own reading, worldsOf: a raw row the loader
+     would drop is G0's to refuse, and a row it keeps under another key is judged by the account it loads as) */
+  const w = accts.length ? worldsOf(env) : null
+  if (w) {
+    const was = new Map<string, any>(w.acctB.map(x => [x.id, x]))
+    const is = new Map<string, any>(w.acctA.map(x => [x.id, x]))
     for (const id of new Set([...was.keys(), ...is.keys()])) {
       const b = was.get(id) ?? null, n = is.get(id) ?? null
       if (JSON.stringify(b) === JSON.stringify(n)) continue
@@ -1419,12 +1534,8 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
         if (u) return `an account of another squadron (${u}) changed by one who is not its admin (${ACCOUNT_ROW}${id})`
       }
     }
-    /* NEVER A SQUADRON LEFT WITH NO ADMIN OF ITS OWN, at the gate too (D2184 Q10; the fix read, 18 Nov 26 — Astra 2): the
-       lock (accounts.ts lockProblem) stood only in the screens' own checks, so a forged update switching Kestrel off —
-       149's only admin — went through, even a master's. The same rule over the two lists: a squadron with an admin at
-       home who can sign in before the command keeps one after it, and the app keeps one at all. */
-    const lock = adminLockBroken(img.before, img.after, env.changes, today, before, after)
-    if (lock) return lock
+    /* NEVER A SQUADRON LEFT WITH NO ADMIN OF ITS OWN — lastAdminViolation (G3), run for every command that changes a
+       person, an account or a home, on every date it can change (D2184 Q10) */
   }
   /* A HOME IS JUDGED BY WHAT IT DOES, DAY BY DAY (the fix read, 18 Nov 26 — Astra 5, Opus 2 and 6): his squadron before
      the command against after it, on every date it could differ — today and every row's `from` in either image (a man's
@@ -1455,28 +1566,16 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
   return null
 }
 
-/* the last-admin lock (accounts.ts lockProblem — the one rule; its words are there) over a command's two account lists:
-   an admin who can sign in is an admin, not switched off, whose person is on the roster — read before the command from
-   the person's row as it stood (the command's own change put back), after it as it now is — and his squadron is his home
-   on the day, over the unit rows before and after. A squadron with none before is not asked, as there. */
-function adminLockBroken(beforeL: any[], afterL: any[], changes: readonly Change[], today: string, before: UnitRows, after: UnitRows): string | null {
-  const wasPerson = new Map<string, any>()
-  for (const c of changes) if (c.collection === 'people') wasPerson.set(String(c.id), c.before ?? null)
-  const onRoster = (p: any) => !!p && !p.special && !p.deleted
-  const able = (x: any, old: boolean) => !!x && x.role === 'admin' && x.on !== false && x.pid != null
-    && onRoster(old && wasPerson.has(String(x.pid)) ? wasPerson.get(String(x.pid)) : (PEOPLE as any)[String(x.pid)])
-  const ableB = beforeL.filter(x => able(x, true)), ableA = afterL.filter(x => able(x, false))
-  if (ableB.length && !ableA.length) return 'the last admin who can sign in switched off or removed'
-  const homesB = new Set(ableB.map(x => homeBefore(String(x.pid), today, before)).filter(Boolean))
-  const homesA = new Set(ableA.map(x => homeBefore(String(x.pid), today, after)).filter(Boolean))
-  for (const u of homesB) if (!homesA.has(u)) return `a squadron (${u}) left with no admin of its own who can sign in`
-  return null
-}
-
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   const unitBad = unitRowViolation(env)
   if (unitBad) return unitBad
+  /* the one guardrail over people, accounts and homes, before against after (the second fix read — Fable's plan G0–G3:
+     G0 and G1 here, G2 in homeUnitViolation, G3 the lock) */
+  const shapeBad = accountShapeAndMasterViolation(env)
+  if (shapeBad) return shapeBad
+  const lockBad = lastAdminViolation(env)
+  if (lockBad) return lockBad
   const unitRec = unitRecordViolation(env)
   if (unitRec) return unitRec
   const homeBad = homeUnitViolation(env)

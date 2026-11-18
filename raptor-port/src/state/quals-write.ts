@@ -26,7 +26,7 @@ import { HOOKS } from '../engine/hooks'
 import { mayEditQualsOf, mayRenameCallsign, mayTickManagement, mayTickScheduler } from './perms'
 import { MGMT_KEY, SCHED_KEY } from '../engine/qualcols'
 import { commitPeopleEdit } from './people-settings-commit'
-import { otherSquadronPersonProblem } from './accounts'
+import { otherSquadronPersonProblem, masterChangeProblem } from './accounts'
 
 export type QualsOp =
   | { tick: string }
@@ -55,6 +55,8 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
   if (other) { HOOKS.toast(other, 'warn'); return other }
   if (!mayEditQualsOf(pid)) { HOOKS.toast(OWN_ROW_ONLY, 'warn'); return OWN_ROW_ONLY }
   if ('callsign' in op && !mayRenameCallsign()) { HOOKS.toast(RENAME_ADMIN_ONLY, 'warn'); return RENAME_ADMIN_ONLY }   // D218
+  /* a master's callsign is his account's name on every line: a master's alone (D2205, Fable's plan H4) */
+  if ('callsign' in op) { const m = masterChangeProblem(pid); if (m) { HOOKS.toast(m, 'warn'); return m } }
   if ('tick' in op && op.tick === MGMT_KEY && !mayTickManagement()) { HOOKS.toast(MGMT_ADMIN_ONLY, 'warn'); return MGMT_ADMIN_ONLY }   // D1510
   if ('tick' in op && op.tick === SCHED_KEY && !mayTickScheduler()) { HOOKS.toast(SCHED_ADMIN_ONLY, 'warn'); return SCHED_ADMIN_ONLY }   // D1651
   let refused: string | null = null

@@ -18,7 +18,7 @@ import { initStore as raptorInitStore, notify as raptorNotify, resetSession, wee
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from '../state/persist'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
-import { accountsLoad, accountByName, signIn, sessionFor, updateAccount } from '../state/accounts'
+import { accountsLoad, accountByName, signIn, sessionFor, updateAccount, addAccount, setMaster } from '../state/accounts'
 import { BACKPROMPT } from '../state/view'
 import { commit, commandStream } from '../command'
 import { getState, initStore as lwInitStore, lwStore, postingBlocked, setPeople, setPostIn, setPostOut, setRole, setShowSans } from './state/store'
@@ -162,7 +162,12 @@ describe('PO2 / PO4 — the last admin who can sign in is never suspended or del
     /* Hunter (ad2) is 142's one admin who can sign in once Saber's account is suspended by hand (Kestrel is 149's): worded per
        squadron (the fix read, 18 Nov 26 — Opus 5) */
     expect(updateAccount('acad2', { role: 'admin' })).toBeNull()
-    signInAs('ad2', 'a2')
+    /* since his D2205 (18 Nov 26) only a master suspends Saber, a master: Saber gives Heron (149's) an admin account and
+       the master mark, and Heron suspends him — Hunter is still 142's one admin who can sign in */
+    signInAs('ad', 'a')
+    expect(addAccount('heron@mail', 'her9', 'admin')).toBeNull()
+    expect(setMaster(accountByName('heron@mail')!.id, true).ok).toBe(true)
+    signInAs('heron@mail')
     expect(updateAccount('acad', { on: false } as any)).toBeNull()
     resetSession(null); setRole('admin')
     const toast = vi.spyOn(HOOKS, 'toast')

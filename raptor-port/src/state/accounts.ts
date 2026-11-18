@@ -445,6 +445,9 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   const a = accountById(id)
   if (!a) return 'That account is gone'
   if (ownAccount(a)) return "You can't change your own account — ask another admin"
+  /* a master's account is a master's alone (D2205) — said before the other squadron's words, as a master's delete is */
+  const masterOnly = masterChangeProblem(a.pid) || (patch.pid !== undefined ? masterChangeProblem(patch.pid) : null)
+  if (masterOnly) return masterOnly
   const other = otherSquadronProblem(a.pid) || (patch.pid !== undefined ? otherSquadronProblem(patch.pid) : null)
   if (other) return other
   const next: Account = { ...a }
@@ -642,6 +645,17 @@ export function lastAdminLock(pid: string): { num: string } | 'app' | null {
   const u = homeOn(pid)
   return { num: String((u && unitById(u)?.num) ?? u ?? '') }
 }
+/* THE LOCK FOR A MOVE OF SQUADRON (the second fix read — Astra 1, security H3: the master moving Kestrel, 149's only
+   admin, to 142 from tomorrow left 149 with none): his squadron's last admin who can sign in on the day the move counts
+   from is told so in the lock's own words (lockProblem's per-squadron sentence); the commit gate holds every date
+   (perms.ts lastAdminViolation, G3). null when the move leaves his squadron an admin. */
+export function homeMoveLockWords(pid: string, unit: string, iso: string): string | null {
+  const a = accountOfPid(pid)
+  if (!a || !isAdminAccount(a) || !a.on || !personOk(pid)) return null
+  if (ACCOUNTS_LIST.some(x => x.pid !== pid && isAdminAccount(x) && x.on && personOk(x.pid) && homeOn(x.pid, iso) === unit)) return null
+  const num = String(unitById(unit)?.num ?? unit)
+  return `${(PEOPLE as any)[pid].cs} is ${num}'s last admin. Make another admin of ${num} first.`
+}
 /* A MASTER IS NEVER DELETED (the fix read, 18 Nov 26 — Opus 1): the master mark changes only by its own command (D2191;
    perms.ts unitRowViolation), so a delete that takes a master's account away is refused at the commit gate whatever
    door made it. Said first, in words, by every delete door — Admin → Users and a posting's Delete — so a posting's Delete
@@ -650,6 +664,18 @@ export function masterDeleteProblem(pid: string): string | null {
   const a = accountOfPid(pid)
   return a && a.master ? `${accountCallsign(a)} is a master admin, so he can't be deleted` : null
 }
+/* ONLY A MASTER ADMIN CHANGES A MASTER ADMIN'S ACCOUNT (his D2205, 18 Nov 26 — the second fix read's security H4: a plain
+   admin could suspend, demote, rename or archive Saber). Said first by the doors that change his account or what makes
+   it — Suspend / Enable, role and sign-in name, his callsign, Archive, Restore — in the words the master mark's own door
+   already says; the commit gate holds the same for every door (perms.ts accountShapeAndMasterViolation, G1). The rest of
+   his Quals row stays any admin of his squadron's (D218). No session or a master signed in: nothing to say. */
+export function masterChangeProblem(pid: string): string | null {
+  const a = accountOfPid(pid)
+  if (!a || !a.master) return null
+  const mine = SESSION ? accountById(SESSION.user) : undefined
+  return mine && mine.master ? null : MASTER_ONLY_WORDS
+}
+export const MASTER_ONLY_WORDS = 'Only a master admin can do that'
 export function dropAccountOfPid(pid: string): void {
   const a = accountOfPid(pid)
   if (!a) return

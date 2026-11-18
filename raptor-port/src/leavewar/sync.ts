@@ -153,7 +153,7 @@ import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
 import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
@@ -2736,6 +2736,9 @@ export function restoreArchivedPerson(id: string, postIn?: string): boolean {
    or a post-in on or before the day his stint closed (the store's one sentence). null when it would go ahead. */
 export function restoreProblem(id: string, postIn: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can restore someone'
+  /* a master's person is a master's alone (D2205, Fable's plan H4) — said first */
+  const masterOnly = masterChangeProblem(id)
+  if (masterOnly) return masterOnly
   const other = otherSquadronPersonProblem(id)
   if (other) return other
   const body = rosterBody(id)
@@ -2804,6 +2807,9 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
    callsign rule's reason (blank, 14 letters, taken). null = done. */
 export function restoreArchivedAs(id: string, cs: string, postIn?: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can restore someone'
+  /* a master's person is a master's alone (D2205, Fable's plan H4) — said first */
+  const masterOnly = masterChangeProblem(id)
+  if (masterOnly) return masterOnly
   const other = otherSquadronPersonProblem(id)
   if (other) return other
   const body = rosterBody(id)
@@ -2839,6 +2845,9 @@ export function archivedLine(id: string): string | null {
 }
 export function archiveProblem(id: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can archive someone'
+  /* a master's person is a master's alone (D2205, Fable's plan H4) — said first */
+  const masterOnly = masterChangeProblem(id)
+  if (masterOnly) return masterOnly
   const other = otherSquadronPersonProblem(id)
   if (other) return other
   const body = rosterBody(id)

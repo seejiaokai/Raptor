@@ -194,8 +194,10 @@ describe('AC4 — the guards (each refusal says why)', () => {
        142's second does, `acad` is 142's last */
     expect(updateAccount('acad9', { role: 'main' })).toBe("Kestrel is 149's last admin. Make another admin of 149 first.")
     expect(updateAccount('acad2', { role: 'main' })).toBe(null)
-    expect(updateAccount('acad', { role: 'main' })).toMatch(/142's last admin/)
-    expect(updateAccount('acad', { on: false })).toMatch(/142's last admin/)
+    /* `acad` is Saber, the master: since his D2205 (18 Nov 26) only a master changes his account, said first — the lock
+       for 142 is still held at the commit gate (state/units-sqn-fixread2.test.ts, G3) */
+    expect(updateAccount('acad', { role: 'main' })).toBe('Only a master admin can do that')
+    expect(updateAccount('acad', { on: false })).toBe('Only a master admin can do that')
   })
   it('one person one account; one sign-in name one account', () => {
     signInAs('ad', 'a')

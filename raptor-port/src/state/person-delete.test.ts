@@ -310,8 +310,10 @@ describe('B4 — undo and redo never put a deleted man, or his account, back', (
 })
 
 describe('PO4 — the refusals: never oneself, never a placeholder, never twice, only an admin; a refusal changes nothing', () => {
+  /* Saber is the master: since the second fix read (18 Nov 26 — Astra 6) the master sentence is said before any other,
+     his own Delete included; the own-account refusal still holds an admin who is not a master (accounts.test.ts) */
   it('his own person / account', () => {
-    expect(deletePerson('stiff')).toMatch(/can't delete your own account|can't delete yourself/)
+    expect(deletePerson('stiff')).toBe("Saber is a master admin, so he can't be deleted")
     expect((PEOPLE as any).stiff.deleted).toBeFalsy()
   })
   it('a placeholder, and a man already deleted', () => {

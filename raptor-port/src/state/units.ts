@@ -16,6 +16,8 @@ import { isCommitting, type CommitResult } from '../command'
 import { commitSettingsIntent } from './people-settings-commit'
 import { setHomeResolver } from '../engine/roster'
 import { DEMO_149_PEOPLE } from './demoseed'
+/* the lock's words for a move of squadron (accounts.ts imports this file; the call is at run time, never at load) */
+import { homeMoveLockWords } from './accounts'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
   rowsFrom, placeIdOn, homeUnitOn, grantIn, unitIn, placeIn, levelFrom, moveFrom,
@@ -202,6 +204,10 @@ export function setHome(pid: string, unit: string): UnitSave {
   const now = homeOn(pid)
   const from = now ? moveFrom(todayIso()) : todayIso()
   if (now && homeOn(pid, from) === unit) return no('That is already his squadron')
+  /* never his squadron's last admin moved out (Astra 1, security H3) — said in the lock's words, held at the gate too */
+  const prev = homeOn(pid, from)
+  const lock = prev && prev !== unit ? homeMoveLockWords(pid, prev, from) : null
+  if (lock) return no(lock)
   const same = mine.find(h => h.from === from)
   return save('home.set', null, () => {
     /* a man with no row of his own (the demo's 142) gets his squadron of today written first: a person's FIRST row covers
