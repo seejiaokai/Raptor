@@ -1829,6 +1829,7 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
     return levelInForce(a, u, today, rows!) === 'admin'
   }
   const changedInputs = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
+  let replayed: ((c: Change) => boolean) | null | undefined
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (c.collection === 'notices') {
@@ -1837,6 +1838,15 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
         if (holidayLine(n)) continue
         const to = String(n.to)
         if (n.iid && changedInputs.has(String(n.iid)) && toldBy(env, n.iid)?.has(to)) continue
+        /* HIS OWN STEP, PUT BACK (fix read 3, O2 — D148: an Undo is refused only where the change itself would be). The
+           war's lines carry no input (`iid: ''`), so a man told by the admin's Open for bidding, closing or decision who
+           has since moved squadron made the top bar's Undo of that step a write to another squadron's bell, refused
+           whole. Passed over ONLY for the restore the timeline is applying of this same admin's own step, the line image
+           for image what that step recorded (undo/timeline.ts verifiedReplay), and a line he himself made (`by`). */
+        if (to !== self && env.origin === 'restore' && self != null && String(n.by ?? '') === self) {
+          if (replayed === undefined) replayed = REPLAY ? REPLAY(env) : null
+          if (replayed && replayed(c)) continue
+        }
         if (to !== self && !ownsHim(to)) return `a bell line of another squadron's man (${where})`
       }
       continue

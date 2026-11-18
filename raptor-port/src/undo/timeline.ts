@@ -548,7 +548,9 @@ export function verifiedReplay(env: { origin: string; type: string; causedBy?: n
      is written back only by the restore this module is applying, never by a change that merely calls itself one */
   const want = new Map<string, Change>()
   /* (M5a: and a member's own typed figure — his Undo or Redo puts back the earlier row with its older day and snapshot) */
-  const replays = (coll: string) => coll === 'inputs' || coll === 'lw.cell' || coll === 'lw.balance'
+  /* (fix read 3, O2: and a bell line — the admin's Undo of a war step that told a man since moved squadron puts back what
+     the step found; the commit gate's bell check asks it only for a line the actor himself made) */
+  const replays = (coll: string) => coll === 'inputs' || coll === 'lw.cell' || coll === 'lw.balance' || coll === 'notices'
   for (const ch of a.changes) if (replays(ch.collection)) want.set(`${ch.collection}/${ch.id}`, ch)
   return (c: Change): boolean => {
     const w = replays(c.collection) ? want.get(`${c.collection}/${c.id}`) : undefined
