@@ -136,6 +136,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - A master admin may give a named admin "Plan" of another squadron — on his row in Admin → Users, off by default, a master's alone: full access to it, as its own admins have [D2199, D2201, D2192, D2191, D2198, D785].
 - While he holds Plan his bell carries that squadron's admin lines, on by default, his to switch off; a line from a squadron other than his primary shows which [D2202, D2198].
 - A person who moves to another squadron loses every View and Plan he held of others [D2203, D2087].
+- Only a master admin changes a master's account; a sign-in waits for the last person's pending save, drawn first [D2205].
 - The transfer: only the Leave War's Post out moves his primary squadron, on its date. Neighbouring squadrons plan each other's people as a matter of course, not only during a posting [D281, D2087, D282, D1100, D1101].
 - A community is the squadrons flying one aircraft type (F-15, F-16): callsigns unique within a community, not across the app; a guest flyer from another community is always marked — an orange corner on his puck (option A) [D288, D289, D296].
 

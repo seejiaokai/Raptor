@@ -54,6 +54,7 @@ carries his primary squadron's lines by default, every other squadron's switched
 | # | Who is told | When | What the line says | A tap | Ruled |
 |---|---|---|---|---|---|
 | — | — | none since 27 Oct 26: the Leave War's ruled lines (R1, P2, P4, P7, P8, P9) were built with its M4 and moved up whole | — | — | — |
+| — | The borrowing squadron's schedulers | A borrowed man made unavailable at home (leave, medical), posted out, archived, deleted or taken back while they plan him; two people overwriting one shared thing (the overwritten told) | To be drawn, with the squadron mark (D2202) | — | D2206, 18 Nov 26 |
 | — | Everyone | Always | Each person chooses which kinds of line reach his bell; a few that need him to act stay always on (an access request waiting for an admin among them) — which ones, put to him with the drawing; built after the multi-squadron batches, drawn first | — | D2200, 18 Nov 26 |
 
 ## Proposed — the agent's, his to strike
