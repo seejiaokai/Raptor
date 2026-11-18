@@ -59,7 +59,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - A reviewer's open findings outrank the planned job list [D23]; a reviewer's claim is a finding only with a concrete failure, its cause and its fix; the final code read carries a tidiness note — three questions of the changed lines, no size number, never the rules engine, filed not fixed [D489].
 - Correctness beats context economy: never skip or shrink a read to save context — the bug-check order, the design guide and the ripple map are read by section from the checklists that name when, every section that applies a required read [D68, D1735].
 - A review of a day's merged work starts with a handful of checks; Fable reads wider only on his word [D1934].
-- His call for the night of 18–19 Nov 26: Fable plans the multi-squadron security fixes and reads them, beside Astra and the fresh Opus read [D2208].
+- His call for the night of 18–19 Nov 26: Fable plans the hard multi-squadron security fixes and reads them, the agent judging which, beside Astra and the fresh Opus read [D2208].
 
 ## Checking the running app (detail: `raptor-port/docs/bug-check-order.md`)
 - Walks stay on his PC, one at a time: cloud walks, tried on 8 Nov 26, were dropped — a helper sent there ran on his PC, and only he can open a cloud chat, so each would need him [D1797].
