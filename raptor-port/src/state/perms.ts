@@ -26,7 +26,7 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store } from '../engine/hooks'
-import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf } from '../engine/inputs'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputAtIso } from '../engine/inputs'
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
@@ -1259,6 +1259,52 @@ function levelInForce(a: NonNullable<CommitEnvelope['actor']>, u: string, today:
     : (u === UNIT ? (a.role === 'admin' ? 'admin' : 'member') : null)
 }
 
+/* 7c. A MAN'S INPUTS ARE HIS OWN SQUADRON'S (the fix read's Opus 7, put back by the second fix read, 18 Nov 26 — Fable's
+   plan §3). An input's id names no unit, so section 7 never saw one, and section 8 holds a man's person, account and
+   home, never his inputs: 142's plain admin could rewrite a 149 man's leave or its remarks by a forged write (no screen
+   offers it — Inputs stay on his own squadron, D2132). Each input is judged by the squadrons of the people it names —
+   each one's home on the input's own date, as the rows stood before the command — before and after: an admin in force
+   must be an admin of every one of them, a member at home in every one (a member may name only people of his own
+   squadron — the plan's still-open 1). An input naming nobody (ALL / ALL AVAIL) is its filer's squadron's. Strict for
+   every actor but the app itself: the test worlds that emptied INPUTS outside a command were put right instead
+   (test-support/world.ts settleWorld), with no flag here.
+   One case kept open for a member (his D755 — "the member may always take himself out"): a change that only takes him
+   out of an input, adding no one, is not judged by the others' squadrons. */
+function inputUnitViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system') return null
+  const ins = env.changes.filter(c => c.collection === 'inputs')
+  if (!ins.length) return null
+  const today = todayIso()
+  const before = unitRowsBefore(env.changes)
+  const named = (r: any): string[] => (r && typeof r === 'object' ? namedOf(r).map((e: any) => String(e.p)) : [])
+  const unitsOf = (r: any): string[] => {
+    if (!r || typeof r !== 'object') return []
+    const iso = inputAtIso(r.date, r.yr) || today
+    const ids = named(r)
+    if (ids.length) return ids.map(p => homeBefore(p, iso, before)).filter(Boolean) as string[]
+    const ph = placeholderOf(r)
+    const by = ph && ph.by != null && ph.by !== '' ? ph.by : r.by
+    const u = by == null || by === '' ? null : homeBefore(String(by), iso, before)
+    return u ? [u] : []
+  }
+  for (const c of ins) {
+    const was = c.before ?? null, is = c.op === 'delete' ? null : c.after ?? null
+    if (JSON.stringify(was) === JSON.stringify(is)) continue
+    if (a.role !== 'admin' && was && is && a.personId != null) {
+      const b = new Set(named(was)), f = new Set(named(is))
+      const added = [...f].filter(p => !b.has(p)), gone = [...b].filter(p => !f.has(p))
+      if (!added.length && gone.length === 1 && gone[0] === String(a.personId)) continue
+    }
+    for (const u of new Set([...unitsOf(was), ...unitsOf(is)])) {
+      const lv = levelInForce(a, u, today, before)
+      const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
+      if (!ok) return `an input of another squadron (${u}) changed by one with ${lv ? `${lv} rights` : 'no rights'} there (inputs/${c.id})`
+    }
+  }
+  return null
+}
+
 /* 7b. A SQUADRON'S LEAVE WAR IS CHANGED ONLY BY ONE WHO HOLDS RIGHTS IN THAT SQUADRON (the second fix read, 18 Nov 26 —
    the security read's H2; Fable's plan C3). Each squadron has a Leave War world of its own (leavewar/sync.ts
    swapWarWorld), but a war record's id carries no unit — the storage door adds it — so section 7 never saw one, and the
@@ -1640,6 +1686,8 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
   if (unitRec) return unitRec
   const homeBad = homeUnitViolation(env)
   if (homeBad) return homeBad
+  const inputBad = inputUnitViolation(env)
+  if (inputBad) return inputBad
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
      for an ADMIN too — an admin who changed a man's leave could otherwise set that man's moment to now and wipe the dots
      that tell him (§11: "C R U own" for every role) */

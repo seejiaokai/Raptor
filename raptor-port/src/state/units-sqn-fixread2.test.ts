@@ -12,7 +12,8 @@
    - Astra 5: an Undo's history line filed with the change it takes back, across a midnight move. */
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend, store } from '../engine/hooks'
-import { initStore, resetSession, notify } from './store'
+import { initStore, resetSession, notify, writeInputsBatch } from './store'
+import { INPUTS, leadOf } from '../engine/inputs'
 import { signIn, sessionFor, updateAccount, accountById, accountsLoad, seedAccounts, deleteAccountProblem, otherSquadronPersonProblem } from './accounts'
 import { setSession, setEffectiveRole } from './auth'
 import { installGlobalUndo } from './undo-wire'
@@ -218,6 +219,39 @@ describe('Opus F3 — a man with no squadron is given one from today, never from
     unitsLoad()
     expect(r.ok).toBe(false)
     expect(homeOn('rocky')).toBe(null)
+  })
+})
+
+/* the fix read's Opus 7 (open since the night of 17–18 Nov 26 — docs/superpowers/briefs/2026-11-18-multi-sqn-b1-fixread-opus7-open.md),
+   its proof put back as written there, with the plan's still-open 1: a member names only his own squadron's people */
+describe("Opus 7 — a man's inputs are his own squadron's", () => {
+  const her9 = () => INPUTS.find((x: any) => String(leadOf(x)) === 'her9') as any
+  it("142's plain admin cannot rewrite a 149 man's leave remarks, by any write of the inputs", () => {
+    signInAs('ad2', 'a2')
+    const r = her9()
+    expect(r, 'the 149 seed input').toBeTruthy()
+    const was = r.remarks
+    expect(writeInputsBatch(() => { r.remarks = 'rewritten by 142' }), 'refused').toBeFalsy()
+    expect(her9().remarks).toBe(was)
+  })
+  it("…while 149's admin and the master may, and 142's admin keeps his own men's", () => {
+    signInAs('ad9', 'a9')
+    expect(writeInputsBatch(() => { her9().remarks = 'by 149' })).toBeTruthy()
+    expect(her9().remarks).toBe('by 149')
+    signInAs('ad', 'a')
+    expect(writeInputsBatch(() => { her9().remarks = 'by the master' })).toBeTruthy()
+    signInAs('ad2', 'a2')
+    const own = INPUTS.find((x: any) => homeOn(String(leadOf(x))) === 'u142') as any
+    expect(own, 'a 142 input').toBeTruthy()
+    expect(writeInputsBatch(() => { own.remarks = 'by 142' })).toBeTruthy()
+  })
+  it('a 142 member cannot put a 149 man into an input (the plan’s still-open 1)', () => {
+    signInAs('us', 'us')
+    const mine = INPUTS.find((x: any) => String(leadOf(x)) === 'bane') as any
+    expect(mine, "Ranger's own input").toBeTruthy()
+    const was = JSON.stringify(mine)
+    writeInputsBatch(() => { mine.people = [...(Array.isArray(mine.people) ? mine.people : [{ p: mine.person, by: mine.by }]), { p: 'her9', by: 'bane' }] })
+    expect(JSON.stringify(INPUTS.find((x: any) => x.iid === mine.iid))).toBe(was)
   })
 })
 

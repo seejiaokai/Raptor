@@ -27,6 +27,7 @@ import { applyDrop, setDrag } from './drag'
 import { elogClear, elogRows } from '../engine/editlog'
 import { validate } from '../engine/validate'
 import { HIST } from '../state/history'
+import { settleWorld } from '../test-support/world'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -66,6 +67,9 @@ beforeEach(async () => {
   elogClear()
   toasts = []
   view.DPREV.clear()          // a day in the preview registry is read-only and would refuse every arm for its own reason
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read, Opus 7) */
+  settleWorld()
   await act(async () => { view.disarmSlot(); notify() })
 })
 afterEach(async () => { await act(async () => { view.disarmSlot() }) })

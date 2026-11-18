@@ -28,6 +28,7 @@ import {
 import { memoryBackend as lwMemoryBackend } from '../leavewar/state/storage'
 import { commit, definePermission, anyone, isOk, setPermissionResolver } from '../command'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
+import { settleWorld } from '../test-support/world'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -63,6 +64,9 @@ beforeEach(() => {
      mechanics test, not a permissions one; the [ACCOUNTS] resolver (perms.ts COMMAND_OPS)
      rightly refuses a command type it does not know, so switch it off here */
   setPermissionResolver(null)
+  /* the reset above changed memory outside every command: settle the saved baselines, as the app's boot does, so the
+     next command saves only its own change (test-support/world.ts — the second fix read, Opus 7) */
+  settleWorld()
 })
 afterEach(() => { storeBackend.impl = null })
 
@@ -181,6 +185,7 @@ describe('scheduler write() — the INPUTS order round-trips on each request (CM
     expect(schedStore.records().has('inputs/__order')).toBe(false)
     INPUTS.length = 0
     INPUTS.push({ iid: 'iA', ord: 1 } as any, { iid: 'iC', ord: 3 } as any)
+    settleWorld()   // the two lines above changed memory outside every command (test-support/world.ts)
     restore(schedStore, [{ collection: 'inputs', id: 'iB', value: { iid: 'iB', ord: 2 }, op: 'put' } as any])
     expect(INPUTS.map((x: any) => x.iid)).toEqual(['iA', 'iB', 'iC'])
   })
