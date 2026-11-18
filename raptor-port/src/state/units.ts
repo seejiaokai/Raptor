@@ -17,7 +17,7 @@ import { commitSettingsIntent } from './people-settings-commit'
 import { setHomeResolver } from '../engine/roster'
 import { DEMO_149_PEOPLE } from './demoseed'
 /* the lock's words for a move of squadron (accounts.ts imports this file; the call is at run time, never at load) */
-import { homeMoveLockWords } from './accounts'
+import { homeMoveLockWords, accountOfPid } from './accounts'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES,
   rowsFrom, placeIdOn, homeUnitOn, grantIn, unitIn, placeIn, levelFrom, moveFrom,
@@ -209,7 +209,15 @@ export function setHome(pid: string, unit: string): UnitSave {
   const lock = prev && prev !== unit ? homeMoveLockWords(pid, prev, from) : null
   if (lock) return no(lock)
   const same = mine.find(h => h.from === from)
+  /* his D2203 (18 Nov 26): a man who moves to another squadron loses every View and Plan he held of others — dropped
+     here, inside the move's own command, so its Undo puts them back with it. From the moment the move is made, not its
+     date (a right has no date of its own). A man placed for the first time is no move. The gate judges each dropped
+     right as any other (an admin of its squadron), so a right in a squadron the mover holds nothing of refuses the move —
+     never a move half made */
+  const acct = now ? accountOfPid(pid) : undefined
+  const drop = acct ? unitRows().grants.filter(g => g.account === acct.id) : []
   return save('home.set', null, () => {
+    for (const g of drop) put(GRANT_PFX + g.id, null)
     /* a man with no row of his own (the demo's 142) gets his squadron of today written first: a person's FIRST row covers
        every day before it (units-model.ts atOn), so the move alone would have moved his today and his past too */
     if (now && !mine.length) { const h0 = newId('h'); put(HOME_PFX + h0, { id: h0, pid, unit: now, from: todayIso() }) }

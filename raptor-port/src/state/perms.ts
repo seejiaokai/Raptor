@@ -630,7 +630,8 @@ Object.assign(COMMAND_OPS, {
   'place.set': op(T.place, 'U', 'never', [[T.place, 'C']]),
   'grant.set': op(T.grant, 'U', 'never', [[T.grant, 'C']]),
   'grant.remove': op(T.grant, 'D'),
-  'home.set': op(T.home, 'U', 'never', [[T.home, 'C']]),
+  /* (a move drops every right the man held in another squadron — his D2203 — inside the same command) */
+  'home.set': op(T.home, 'U', 'never', [[T.home, 'C'], [T.grant, 'D']]),
   'account.master': op(T.user, 'U'),
 } satisfies Record<string, CommandOp>)
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
@@ -1388,6 +1389,28 @@ function warUnitViolation(env: CommitEnvelope): string | null {
   }
   return null
 }
+/* 7f. A SQUADRON'S TRACKER IS CHANGED ONLY BY ITS OWN PEOPLE (the second fix read, 18 Nov 26 — Fable's plan, still open 3).
+   Each squadron keeps a Tracker of its own (D2167), but its record ids name none (`v3:<course>:<syllabus>:…` — the unit is
+   added by its storage door, tracker/storage.js, bound once to the signed-in person's own squadron), so the gate never knew
+   whose Tracker a change was to. A doorway bound to another squadron's — the console's bindStorageUnit before the Tracker
+   loads, as the Leave War's swap was for H2 — let 142's people change 149's. The Tracker tells the gate which squadron's
+   is open (setTrkUnitProbe, installed by boot.ts from the doorway's own bound unit; none bound, nothing asked); every
+   Tracker change then needs, there, admin from an admin in force and home or rights from a member — the same reading of
+   the role in force as section 7. Everyone does everything inside his own Tracker (D121); the flex settings stay an
+   admin's (below). Not asked of the app itself, nor of a guest or a pending person (refused everything below). */
+let TRK_UNIT: LwUnit | null = null
+export function setTrkUnitProbe(fn: LwUnit | null): void { TRK_UNIT = fn }
+export const trkUnitNow = (): string | null => (TRK_UNIT ? TRK_UNIT() : null)
+function trkUnitViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || (a.role !== 'admin' && a.role !== 'member')) return null
+  if (!env.changes.some(c => String(c.collection).startsWith('trk.'))) return null
+  const u = trkUnitNow()
+  if (!u) return null
+  const lv = levelInForce(a, u, todayIso(), unitRowsBefore(env.changes))
+  const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
+  return ok ? null : `a change to another squadron's Tracker (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+}
 /* the stored accounts after the command, as the loader would read them — none stored is the seeded list */
 function accountImagesNow(): any[] {
   const out: any[] = []
@@ -1789,6 +1812,9 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
   /* 7b. a squadron's Leave War by its own people only, and a master's posting by a master (above) */
   const warBad = warUnitViolation(env)
   if (warBad) return warBad
+  /* 7f. a squadron's Tracker by its own people only (above) */
+  const trkBad = trkUnitViolation(env)
+  if (trkBad) return trkBad
   /* THE POSTING PASS CHANGES ONLY THE MEN IT POSTS OUT ([SYSTEM-PASS-SAVES-ROSTER], D1510's security read, 29 Oct 26 —
      built 31 Oct 26). The pass runs as the app itself, which nothing below asks, so its own command is held here: a change
      to a person rides in it only beside that man's posting record (every outcome — Overseas Sqn, SANS, Delete — writes his

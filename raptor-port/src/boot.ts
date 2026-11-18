@@ -21,7 +21,7 @@ import { BrowserBackend } from './storage/browser'
 import { idbDocStore } from './storage/docstore'
 import { docBoot } from './state/docs'
 import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapters'
-import { setStorageImpl, setStorageMaker } from './tracker/storage.js'
+import { setStorageImpl, setStorageMaker, storageUnit } from './tracker/storage.js'
 /* the Tracker's one-time conversion — the fold's last converter ([DB-READINESS] group A, phase 5b): registered by the
    boot, since the Tracker's own code is a lazy chunk the fold cannot wait for */
 import './tracker/fold'
@@ -36,7 +36,7 @@ import { firstAdminRow, storedAccountNamed, normName, MAX_SIGNIN } from './state
 import { UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, HOME_PFX, validUnitNum, validTz, MAX_PLACE_NAME } from './state/units-model'
 import { todayIso, units } from './state/units'
 import { installGlobalUndo } from './state/undo-wire'
-import { myUnit } from './state/perms'
+import { myUnit, setTrkUnitProbe } from './state/perms'
 import type { Backend } from './storage/backend'
 import type { Whiteboard } from './storage/whiteboard'
 import type { Postman } from './storage/postman'
@@ -88,6 +88,9 @@ function bootBody(wb: Whiteboard, policy: BootPolicy): void {
      moment the Tracker first loads (tracker/storage.js markStorageLoaded); the boot unit's until then */
   setStorageImpl(trackerTarget(wb, BOOT_UNIT))
   setStorageMaker((u: string) => trackerTarget(wb, u), () => myUnit())
+  /* …and the commit gate is told which squadron's Tracker the doorway is bound to, so a change to it is judged by that
+     squadron (state/perms.ts 7f — the second fix read, Fable's plan still open 3); none bound yet, nothing is asked */
+  setTrkUnitProbe(() => storageUnit())
 
   /* inputs / roster / plan layer / stashed weeks: whiteboard → singletons,
      BEFORE initStore so its seeds know to stand down (state/persist.ts) */

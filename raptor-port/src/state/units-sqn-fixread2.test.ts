@@ -27,6 +27,8 @@ import { addDays } from './flyplan-model'
 import { ownershipViolation } from './perms'
 import { deriveActor } from '../command'
 import { commitSettingsIntent, commitPeopleIntent, commitPeopleEdit } from './people-settings-commit'
+import { ownershipViolation, setTrkUnitProbe } from './perms'
+import { deriveActor } from '../command'
 
 const mem: Record<string, string> = {}
 const fake = {
@@ -332,5 +334,74 @@ describe("Astra 5 — an Undo's line is filed with the change it takes back, acr
     elogFlush()
     const lines = saved().filter(l => /^(Undo|Redo)/.test(String(l.lbl)))
     expect(lines.map(l => l.u)).toEqual(['u149', 'u149'])
+  })
+})
+
+/* Fable's plan, still open 5 (his D2203, 18 Nov 26): a person who moves to another squadron loses every View and Plan
+   he held of others — dropped inside the move command, so an Undo of the move puts them back with it. */
+describe('still open 5, his D2203 — a man who moves squadron loses every right he held in another', () => {
+  const grantsOf = (account: string) => unitRows().grants.filter(g => g.account === account)
+  it("Ranger, 142's, with View of 149, moved to 149: no right of his is left, and Undo puts the View back", () => {
+    signInAs('ad', 'a')
+    expect(setGrant('acus', 'u149', 'view', 'bane').ok).toBe(true)
+    expect(grantsOf('acus').length).toBe(1)
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    unitsLoad()
+    expect(grantsOf('acus')).toEqual([])
+    expect(globalUndo()).toMatchObject({ ok: true })
+    unitsLoad()
+    expect(grantsOf('acus').map(g => g.unit)).toEqual(['u149'])
+  })
+  it("a man with no right elsewhere moves as before; another man's right is left alone", () => {
+    signInAs('ad', 'a')
+    expect(setGrant('achex', 'u149', 'view', 'rocky').ok).toBe(true)
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    unitsLoad()
+    expect(grantsOf('achex').length).toBe(1)
+  })
+})
+
+/* Fable's plan, still open 7: a plain admin's forged delete of another squadron's man's home row is refused. Already held
+   by the gate's WHO rule (an admin of the row's unit, before and after) — pinned here, not red first. */
+describe("still open 7 — 142's plain admin cannot delete a 149 home row", () => {
+  it("Hunter's forged delete of Ranger's move to 149 (a stored 149 home row) is refused, the row kept", () => {
+    signInAs('ad', 'a')
+    expect(setHome('bane', 'u149').ok).toBe(true)
+    const key = store.keys('home:').find(k => { const v: any = store.get(k, null); return v && v.pid === 'bane' && v.unit === 'u149' })!
+    expect(key).toBeTruthy()
+    signInAs('ad2', 'a2')
+    const r = commitSettingsIntent('home.set', null, () => { store.set(key, null) }) as any
+    unitsLoad()
+    expect(r.ok).toBe(false)
+    expect(store.get(key, null)).toMatchObject({ pid: 'bane', unit: 'u149' })
+  })
+})
+
+/* Fable's plan, still open 3: the Tracker's record ids carry no squadron (v3:<course>:<syllabus>:… — the unit is added by
+   its storage door, tracker/storage.js, bound once to the signed-in person's own squadron), so the gate never knew whose
+   Tracker a change was to, and the admin branch returned early. A doorway bound to 149's (the console's
+   bindStorageUnit before the Tracker loads, as the Leave War's swap was for H2) let 142's people change 149's Tracker.
+   The Tracker now tells the gate which squadron's is open (setTrkUnitProbe — boot.ts, from the doorway's own bound unit). */
+describe("still open 3 — a squadron's Tracker is changed only by its own people", () => {
+  const env = (): any => ({ seq: 1, at: '', origin: 'local', scope: { module: 'trk' }, type: 'trk.marks', actor: deriveActor(),
+    changes: [{ op: 'put', collection: 'trk.marks', id: 'v3:c1:sb2024:m:e1', before: null, after: '{"ST-01":{"g":2}}' }] })
+  afterEach(() => setTrkUnitProbe(null))
+  it("with 149's Tracker open, Hunter (142's admin) and Ranger (142's member) are refused", () => {
+    setTrkUnitProbe(() => 'u149')
+    signInAs('ad2', 'a2')
+    expect(ownershipViolation(env())).toMatch(/another squadron's Tracker/)
+    signInAs('us', 'us')
+    expect(ownershipViolation(env())).toMatch(/another squadron's Tracker/)
+  })
+  it("…while 149's own admin and member, the master, and 142's people on 142's Tracker pass", () => {
+    setTrkUnitProbe(() => 'u149')
+    signInAs('ad9', 'a9'); expect(ownershipViolation(env())).toBeNull()
+    signInAs('us9', 'us9'); expect(ownershipViolation(env())).toBeNull()
+    signInAs('ad', 'a'); expect(ownershipViolation(env())).toBeNull()
+    setTrkUnitProbe(() => 'u142')
+    signInAs('ad2', 'a2'); expect(ownershipViolation(env())).toBeNull()
+    signInAs('us', 'us'); expect(ownershipViolation(env())).toBeNull()
+    setTrkUnitProbe(() => null)
+    signInAs('ad2', 'a2'); expect(ownershipViolation(env())).toBeNull()
   })
 })
