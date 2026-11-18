@@ -1761,6 +1761,29 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
    (7c above), and its filer may be of another squadron (a master who filed for a 149 man, who is then told when 149's
    own admin changes it) — refusing the change for its telling would refuse a change the gate allows. A line naming an
    input the command did not change is judged as any other. */
+/* WHO A CHANGED INPUT'S TELLING MAY REACH (job 2, 19 Nov 26 — Astra 6, the security read's SEC-2 and SEC-3): the notice
+   pass (state/notices.ts noticePass) tells the people named in the input before and after the change and its filer
+   before and after, and no one else — a man split out of a shared input is told under his new one, where he is named.
+   A bell line riding that change to anyone outside this set is not its telling, and is judged as any other line. Null:
+   the command does not change that input. */
+function toldBy(env: CommitEnvelope, iid: unknown): Set<string> | null {
+  const id = String(iid ?? '')
+  if (!id) return null
+  let out: Set<string> | null = null
+  for (const c of env.changes) {
+    if (c.collection !== 'inputs' || String(c.id) !== id) continue
+    out ??= new Set<string>()
+    for (const r of [c.before as any, c.after as any]) {
+      if (!r || typeof r !== 'object') continue
+      for (const e of namedOf(r)) out.add(String((e as any).p))
+      if (r.by != null) out.add(String(r.by))
+    }
+  }
+  return out
+}
+/* a line made wholly of holiday parts — the only kind kept crossing (one holiday part beside another part is no holiday
+   line: SEC-2) */
+const holidayLine = (n: any): boolean => Array.isArray(n?.what) && n.what.length > 0 && n.what.every((p: any) => p && p.k === 'oilhol')
 function adminOwnerViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role !== 'admin') return null
@@ -1777,9 +1800,9 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
     if (c.collection === 'notices') {
       for (const n of [c.before as any, c.op === 'delete' ? null : (c.after as any)]) {
         if (!n || typeof n !== 'object' || n.to == null) continue
-        if (Array.isArray(n.what) && n.what.some((p: any) => p && p.k === 'oilhol')) continue
+        if (holidayLine(n)) continue
         const to = String(n.to)
-        if (n.iid && changedInputs.has(String(n.iid))) continue
+        if (n.iid && changedInputs.has(String(n.iid)) && toldBy(env, n.iid)?.has(to)) continue
         if (to !== self && !ownsHim(to)) return `a bell line of another squadron's man (${where})`
       }
       continue
@@ -1891,8 +1914,9 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
            `lw.notice` follow-up) — a member's notice riding his own input may carry none of them */
         const warLine = (x: any) => Array.isArray(x?.what) && x.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
         if (c.op === 'put' && warLine(n)) return `a notice that is not his own change's (${where})`
-        if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid)) break
-        if (c.op === 'delete' && env.origin === 'restore' && b && String(b.by) === pid && rides(b.iid)) break
+        /* …and only to someone that change tells — named in the input, before or after, or its filer (toldBy, SEC-3) */
+        if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid) && toldBy(env, n.iid)?.has(String(n.to))) break
+        if (c.op === 'delete' && env.origin === 'restore' && b && String(b.by) === pid && rides(b.iid) && toldBy(env, b.iid)?.has(String(b.to))) break
         return `a notice that is not his own change's (${where})`
       }
       case 'people': {
