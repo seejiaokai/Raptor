@@ -111,7 +111,7 @@ is not shown until then.
 ### 3.3 Open points for his batch-1 page (each with the agent's recommendation)
 
 - **O1 — where the demo 149 sits:** at Home base with 142, as round 7's pictures have it (both "Perth · GMT+8") —
-  his own example is two squadrons on one base (D2090), and the shared holiday list only shows itself there.
+  his own example is two squadrons on one base (D2090), and the shared holiday list only shows itself there. *[Set aside by his D2195, 18 Nov 26: no holiday list is shared.]*
 - **O2 — what a master admin is in the app:** a mark on an account ("Master admin"), set only by another master admin,
   acting as an admin in every squadron (D2093) and alone seeing "+ New squadron" on Admin → Squadrons, where he names
   the new squadron's first admin so it never starts with none; the demo's admin sign-in (Saber) is one, and a second
@@ -123,7 +123,7 @@ is not shown until then.
   things) — until borrowing, when a pick of him rings his own bell (batch 3).
 - **O5 — the "149 ▾" on a phone:** the same button in the same place, the menu opening as a sheet from the top.
 - **O6 — undrawn pieces drawn for the first time on the page (D1625):** the home-squadron field on New person; each
-  squadron's own Off day under a shared holiday list; "+ New squadron" for a master admin; the Schedules menu with no
+  squadron's own Off day under a shared holiday list *[set aside by his D2195: each squadron's own list]*; "+ New squadron" for a master admin; the Schedules menu with no
   detachment in it.
 - **O7 — his browser's demo changes:** the store starts fresh once, both squadrons seeded (D22).
 - **O8 — signing out reloads the app** (§3.4): he sees the start-up claw a moment after "Sign out" — told, not asked.
