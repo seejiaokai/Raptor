@@ -81,7 +81,8 @@ bar for anyone who may see more than one schedule; Admin → Squadrons; each pla
   a master admin [D2160, D2184].
 - Admin gains "Squadrons", as drawn [D2110]: each squadron with its place; each place, home included, set by a time
   zone picked by name and shown as GMT+X [D2165]; a place change saved at once, no "From", counting from the next day's
-  start; a place keeps its history [D2119, D2160 R7, D2184]. *(Its detachment rows are batch 2.)*
+  start; a place keeps its history [D2119, D2160 R7, D2184]. *(Its detachment rows are batch 2.)* *[Added 18 Nov 26 by
+  his D2196: only a master admin sets the time zone of a place more than one squadron sits on.]*
 - Where a person may see several schedules the TALON mark is a "149 ▾" button opening "Schedules"; Edit Schedule,
   View-only Sched, the Scheduler Board and Logic follow the pick; Inputs, Quals, the Leave War and the Tracker stay on
   his own squadron; the board's bar shows the squadron number beside its day title, small and grey [D2132]. Someone
