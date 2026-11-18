@@ -1544,15 +1544,14 @@ function lastAdminViolation(env: CommitEnvelope): string | null {
   if (!a || a.role === 'system') return null
   const w = worldsOf(env)
   if (!w) return null
+  /* every date from today on that any home row, either side, starts — not only the rows this command changes: a move
+     already saved for tomorrow (another admin's) is the date a demotion, a Suspend or an Archive today first harms (job
+     2's reads: Astra 1, Opus F2, Fable F1) */
   const today = todayIso()
   const dates = new Set<string>([today])
-  const movedPids = new Set<string>()
-  for (const c of env.changes) {
-    if (c.collection !== 'settings' || !String(c.id).startsWith(HOME_PFX)) continue
-    for (const h of [c.before as any, c.after as any]) if (h && h.pid != null) movedPids.add(String(h.pid))
-  }
-  for (const h of [...w.rowsB.homes, ...w.rowsA.homes]) if (movedPids.has(String(h.pid)) && typeof h.from === 'string' && h.from >= today) dates.add(h.from)
-  const onRoster = (p: any) => !!p && !p.special && !p.deleted
+  for (const h of [...w.rowsB.homes, ...w.rowsA.homes]) if (typeof h.from === 'string' && h.from >= today) dates.add(h.from)
+  /* an archived man cannot sign in (accounts.ts refuses his session), so he is no admin who can (job 2, Astra 2) */
+  const onRoster = (p: any) => !!p && !p.special && !p.deleted && !p.archived
   const able = (l: Account[], person: (pid: string) => any) => l.filter(x => x.role === 'admin' && x.on !== false && onRoster(person(x.pid)))
   const ableB = able(w.acctB, w.personB), ableA = able(w.acctA, w.personA)
   if (ableB.length && !ableA.length) return 'the last admin who can sign in switched off or removed'
