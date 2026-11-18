@@ -3092,7 +3092,10 @@ function postingLinesOf(id: string): Notice[] {
      moment (runPoOutcomes → noticePosting), and a man's posting runs once in a pass — so the newest moment is this run's.
      Never "the newest line per admin": an admin at the first run and not the second would lose the first's record. */
   const last = mine.reduce((m, n) => Math.max(m, n.at), -Infinity)
-  const stored = mine.filter(n => n.at === last)
+  /* …and only the lines of a man still at home in this war's squadron: an admin who got the line and has since moved to
+     another squadron keeps it as his record, and this squadron's command may not touch another's bell (job 2's fix read, 2:
+     142's "Undo post out" was refused once Hunter had moved to 149) */
+  const stored = mine.filter(n => n.at === last && atWarHome(n.to))
   const derived = ownSchedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id })
   return [...stored, ...derived]
 }
@@ -3107,6 +3110,8 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
   const admins = new Set(ACCOUNTS_LIST.filter(a => isAdminAccount(a) && !!a.pid).map(a => String(a.pid)))
   const forget: string[] = []
   for (const n of lines) {
+    /* a line held by a man since moved to another squadron is left as his record, neither removed nor told (above) */
+    if (!atWarHome(n.to)) continue
     const ix = NOTICES.findIndex(x => x.id === n.id)
     if (ix >= 0) NOTICES.splice(ix, 1)
     if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }
