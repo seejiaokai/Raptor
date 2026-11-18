@@ -139,6 +139,10 @@ export const HOOKS = {
      about one man, or one an Undo files with the change it takes back, names a squadron; the state layer answers from
      his rights there (state/perms.ts elogUnitAllowed). Headless: yes. */
   elogUnitOk: (_unit: string): boolean => true,
+  /* the squadron of the person giving a history line — an admin's or a member's own home today (the state layer answers,
+     state/store.ts): a line naming no man and no squadron (an Undo's or a Redo's own line) that its giver may not file in
+     the squadron in view goes to his own squadron, never lost (job 2's fix read, 1). Headless and for nobody: null. */
+  elogOwnUnit: (): string | null => null,
   /* THE OG TAG ([DRAFT-PENDING], the owner's D172): does the puck at this (positional) key, on a day NOT yet published,
      hold a change NEW TO the person looking? Per PLACE, never per person (Astra DP-11). The answer is the viewer's
      (the change history and his seen record live in state/ui), so it arrives as a hook — ui/changesmodel.ts installs

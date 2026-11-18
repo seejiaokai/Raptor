@@ -449,7 +449,11 @@ function push(row: Omit<ELogRow, 'seq' | 'lineId'>, unit?: string) {
   const u0 = unit || (row.sub && !row.key && (PEOPLE as any)[row.sub] ? (homeUnitOf(row.sub, isoOk(row.date) ? row.date! : undefined) ?? UNIT) : UNIT)
   /* (job 2 — Astra's 5: the unit in view is asked as well; a line its giver may file in neither is not kept — a View
      right writes nothing there, and none of his commands there goes through) */
-  const u = HOOKS.elogUnitOk(u0) ? u0 : u0 !== UNIT && HOOKS.elogUnitOk(UNIT) ? UNIT : null
+  /* (job 2's fix read, 1: a line naming nobody — an Undo's or a Redo's own line — that its giver may not file in the
+     squadron in view goes to his own squadron: a 142 member with View of 149, 149 in view, undoing his own input's
+     change, kept no line at all) */
+  const own = HOOKS.elogOwnUnit()
+  const u = HOOKS.elogUnitOk(u0) ? u0 : u0 !== UNIT && HOOKS.elogUnitOk(UNIT) ? UNIT : own && HOOKS.elogUnitOk(own) ? own : null
   if (u == null) return
   const keep = () => {
     const r = { ...row, u, lineId: mintLineId(), seq: ELOG.next++ } as ELogRow
