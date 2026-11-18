@@ -447,7 +447,10 @@ function push(row: Omit<ELogRow, 'seq' | 'lineId'>, unit?: string) {
   /* (the second fix read, security H5: a squadron other than the unit in view only where the person giving the line may
      file there — HOOKS.elogUnitOk; else the unit in view's, as every other line) */
   const u0 = unit || (row.sub && !row.key && (PEOPLE as any)[row.sub] ? (homeUnitOf(row.sub, isoOk(row.date) ? row.date! : undefined) ?? UNIT) : UNIT)
-  const u = u0 !== UNIT && !HOOKS.elogUnitOk(u0) ? UNIT : u0
+  /* (job 2 — Astra's 5: the unit in view is asked as well; a line its giver may file in neither is not kept — a View
+     right writes nothing there, and none of his commands there goes through) */
+  const u = HOOKS.elogUnitOk(u0) ? u0 : u0 !== UNIT && HOOKS.elogUnitOk(UNIT) ? UNIT : null
+  if (u == null) return
   const keep = () => {
     const r = { ...row, u, lineId: mintLineId(), seq: ELOG.next++ } as ELogRow
     /* the list in memory is the unit in view's only (elogLoad); another squadron's line is saved, and read with it */
