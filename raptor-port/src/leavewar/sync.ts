@@ -131,6 +131,11 @@ import {
   openStint,
   closeStintOnArchive,
   postingProblem,
+  stintClosed,
+  stintOpened,
+  personCut,
+  restoreDateProblem,
+  keepsWindow,
   windowFor,
   setAccountLookup,
   setPostingBlockLookup,
@@ -148,7 +153,8 @@ import {
   placeHolidaysMoved,
   type PlaceHoliday,
 } from './state/store'
-import { units as unitList, placeOfOn, unitRows } from '../state/units'
+import { units as unitList, placeOfOn, unitRows, homeOn } from '../state/units'
+import { foreignWar, setForeignDoor, readForeign, type ForeignWar } from './state/foreign'
 import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
@@ -1905,7 +1911,12 @@ export type WarWorldDoor = (unit: string) => { backend: StorageBackend; started?
 let WORLD_DOOR: WarWorldDoor | null = null
 /* the cached answer of placeHolidaysFor is dropped with the stored worlds: it is keyed by the loaded war's raw state,
    and a squadron's answer read while it is loaded (raw null) would otherwise outlive a holiday the other one added */
-export function setWarWorldDoor(d: WarWorldDoor | null): void { WORLD_DOOR = d; STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved() }
+export function setWarWorldDoor(d: WarWorldDoor | null): void {
+  WORLD_DOOR = d; STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved()
+  /* the same doors write another squadron's stored war for Admin → Users' four doors (A3 — state/foreign.ts); a write
+     there drops the stored worlds read here, so the next read sees it */
+  setForeignDoor(d ? (u => d(u).backend) : null, () => { STORED.clear(); PLACE_CACHE = null; placeHolidaysMoved() })
+}
 /** load `unit`'s Leave War in place of the one loaded — false where it already is, or no door was handed over */
 export function swapWarWorld(unit: string): boolean {
   if (!WORLD_DOOR || !unit || unit === worldUnit()) return false
@@ -2666,8 +2677,57 @@ export function runPoOutcomes(only?: string): void {
    store enlisted in that command, his records from the cutoff gone, his window closed the day before, `gone` set. The
    ONE place a Raptor command reaches the war's store — here, at the seam. */
 export function deletePersonOnWar(txn: Txn, id: string, cutoff: string, frozen: Person | null = null): void {
+  const fw = foreignOf(id)
+  if (fw) { deleteOnForeign(txn, fw, id, cutoff, frozen); return }
   txn.enlist(lwStore)
   forgetPersonFrom(id, cutoff, frozen && pastOnWar(id, cutoff) ? frozen : null)
+}
+
+/* A3 — WHOSE WAR A MAN'S ADMIN → USERS DOOR WRITES (the second fix read's A3; Fable's design A, 19 Nov 26): the war loaded
+   where he is its squadron's, as ever; otherwise — the master acting on another squadron's man (D2197) — HIS OWN
+   squadron's stored war, through the second store (state/foreign.ts), never by swapping the war in view inside the
+   command. null on a page with one war (no world door) or for a man with no squadron known: the war loaded, as before. */
+function foreignHome(id: string): string | null {
+  if (!WORLD_DOOR) return null
+  const u = homeOn(id)
+  return u && u !== worldUnit() ? u : null
+}
+/* …loaded fresh for him, just before the command (or, for the delete, inside it before it is enlisted) */
+function foreignOf(id: string): ForeignWar | null {
+  const u = foreignHome(id)
+  if (!u) return null
+  const fw = foreignWar(u)
+  fw.load(id)
+  return fw
+}
+/* his person on his own squadron's war, as the war loaded reads one (store.ts `dated` / `withStored`): the projection of
+   him there with his saved window laid on, or the saved window alone where the projection does not hold him (archived) */
+function foreignPerson(post: Person | null, unit: string, id: string, identity?: Person | null): Person | null {
+  const me = identity !== undefined ? identity : projectPeople(true, unit).find(p => p.id === id) ?? null
+  if (me) return post ? { ...me, ...windowFor(post, false) } : me
+  return post
+}
+/* whether that war SHOWS him (a SANS man with its Show SANS off is not shown — the war loaded's hidden rule) */
+const foreignShows = (fw: ForeignWar, id: string, person: Person | null): boolean =>
+  !!person && (!!fw.post(id) || !(rosterBody(id)?.san && !fw.showSans()))
+/* a past on that war before `cutoff` — the same three tests as `pastOnWar` below: a war record, an input, an OIL award */
+function pastOnForeign(fw: ForeignWar, id: string, cutoff: string): boolean {
+  const cut = +cutoff.replace(/-/g, '')
+  return Object.values(fw.recs(id)).some(r => r.date < cutoff)
+    || warLines().some(r => r && r.person === id && (dateOrd(r.date, r.yr) ?? Infinity) < cut)
+    || Object.values(fw.ledger(id)).some(e => isOilAward(e) && e.date < cutoff)
+}
+/* the delete's war half on his own squadron's stored war (`forgetPersonFrom`'s rules, its pure cut — store.ts personCut):
+   his records and OIL awards from the cutoff go, his window closes the day before and is marked gone; a man who never
+   arrived loses his window; a man that war does not show, with no past there, keeps it as it stands */
+function deleteOnForeign(txn: Txn, fw: ForeignWar, id: string, cutoff: string, frozen: Person | null): void {
+  txn.enlist(fw)
+  for (const [k, r] of Object.entries(fw.recs(id))) if (r.date >= cutoff) fw.dropRec(id, k)
+  for (const [k, e] of Object.entries(fw.ledger(id))) if (isOilAward(e) && e.date >= cutoff) fw.dropEntry(id, k)
+  const person = foreignPerson(fw.post(id), fw.unit, id, frozen)
+  if (!person || (!foreignShows(fw, id, person) && !pastOnForeign(fw, id, cutoff))) return
+  const next = personCut(person, cutoff)
+  fw.setPost(id, next && keepsWindow(next) ? next : null)
 }
 /* a hidden man's row is kept only when he has a past there: a war record before the cutoff, or an input (leave,
    medical, course…) that starts before it — the war derives his leave from those. One body for the delete and
@@ -2683,6 +2743,10 @@ function pastOnWar(id: string, cutoff: string): boolean {
 /* the war's picture of a man it does NOT show right now (a SANS man with Show SANS off), taken before a delete's mark
    takes him off every projection — null when the war already has his row (the kept rule then carries him) */
 function hiddenIdentity(id: string): Person | null {
+  /* A3: a man of another squadron than the war loaded — his own squadron's projection of him, taken before the delete's
+     mark takes him off it (the delete's war half writes his squadron's stored war) */
+  const fu = foreignHome(id)
+  if (fu) return projectPeople(true, fu).find(p => p.id === id) || null
   if (getState().people.some(p => p.id === id)) return null
   return projectPeople(true).find(p => p.id === id) || null
 }
@@ -2747,6 +2811,12 @@ export function restoreProblem(id: string, postIn: string): string | null {
   const body = rosterBody(id)
   if (!body || !body.archived || body.special || body.deleted) return 'That person cannot be restored'
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(postIn ?? ''))) return 'Pick the post-in date'
+  /* a man of another squadron than the war loaded: judged on his own squadron's stored window (A3), read, never loaded */
+  const fu = foreignHome(id)
+  if (fu) {
+    const post = readForeign(WORLD_DOOR!(fu).backend, id).post
+    return post ? restoreDateProblem(post, postIn) : null
+  }
   const st = getState()
   const cur = st.people.find(p => p.id === id) || st.postOuts[id]
   return cur ? postingProblem(id, 'restore', postIn, cur) : null
@@ -2767,6 +2837,10 @@ export function restoreProblem(id: string, postIn: string): string | null {
      Fable F12 / Astra 5). */
 function restoreBody(id: string, rename: string | null, postIn?: string): boolean {
   const body = rosterBody(id)!   // (both callers have found his body, archived)
+  /* A3: a man of another squadron than the war loaded comes back on HIS squadron's stored war. The posting sheet's Undo
+     post out (no post-in date) is that war's own door, drawn only where it is loaded: never run on the wrong war */
+  const fw = foreignOf(id)
+  if (fw && postIn === undefined) return false
   let ok = true
   let forget: string[] = []
   const r = cmdCommit({
@@ -2778,7 +2852,7 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
          notes); Restore on Admin → Users is "he's back", not the posting undone: its lines stay */
       const lines = postIn === undefined ? postingLinesOf(id) : []
       if (lines.length) { resyncSchedBaseline(); txn.enlist(schedStore) }
-      txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
+      txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(fw ?? lwStore)
       if (rename != null && !renameCallsign(id, rename)) { ok = false; return }
       if (postIn === undefined) setPostOut(id, null)
       body.archived = false
@@ -2788,8 +2862,16 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
       else {
         /* the war's picture of him when it holds no row (archived with no stint closed — his post-in was still to come),
            taken now that the archive is lifted */
+        if (fw) {
+          /* his own squadron's stored war (A3): his saved window, or his projection there now the archive is lifted */
+          const person = foreignPerson(fw.post(id), fw.unit, id)
+          const next = person ? stintOpened(person, postIn) : null
+          if (!next) throw new CmdRefused((person && restoreDateProblem(person, postIn)) || 'That did not save')
+          fw.setPost(id, next)
+        } else {
         const identity = getState().people.some(p => p.id === id) ? undefined : projectPeople(true).find(p => p.id === id)
         if (!openStint(id, postIn, identity)) throw new CmdRefused(restoreProblem(id, postIn) || 'That did not save')
+        }
         enableForRestore(id)
         body.back = true
       }
@@ -2875,15 +2957,19 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
   const body = rosterBody(id)!   // (archiveProblem has just found his body)
   const today = effectiveToday()
   const st = getState()
-  const hidden = hiddenIdentity(id)
+  /* A3: a man of another squadron than the war loaded is archived on HIS squadron's stored war */
+  const fw = foreignOf(id)
+  const fperson = fw ? foreignPerson(fw.post(id), fw.unit, id) : null
+  const fkeep = !!fw && foreignShows(fw, id, fperson) || (!!fw && !!fperson && pastOnForeign(fw, id, today))
+  const hidden = fw ? null : hiddenIdentity(id)
   const keepHidden = hidden && pastOnWar(id, today) ? hidden : undefined
-  const w0 = st.people.find(p => p.id === id) || st.postOuts[id] || null
+  const w0 = fw ? (fw.post(id) ?? null) : st.people.find(p => p.id === id) || st.postOuts[id] || null
   const pendingDate = w0 && w0.to && w0.poDone !== addDays(w0.to, 1) ? addDays(w0.to, 1) : null   // not yet RUN (Fable F5)
   let replaced: string | null = null
   const r = cmdCommit({
     type: 'person.archive', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
-      txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
+      txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(fw ?? lwStore)
       if (suspendForArchive(id) === 'lock') throw new CmdRefused(archiveLockWords(id, body.cs) ?? `${body.cs} is the last admin who can sign in — he can't be archived until another admin can`)
       body.archived = true
       body.archivedBy = 'admin'
@@ -2891,7 +2977,14 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
       if (me() != null) body.archivedWho = me() as string; else delete body.archivedWho
       delete body.back
       if (body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
-      replaced = closeStintOnArchive(id, today, keepHidden).replaced
+      if (fw) {
+        /* store.ts closeStintOnArchive's rules, its pure half, on his own squadron's stored window */
+        if (fperson && !fperson.gone && fkeep) {
+          const done = stintClosed(fperson, today)
+          fw.setPost(id, keepsWindow(done.next) ? done.next : null)
+          replaced = done.replaced
+        }
+      } else replaced = closeStintOnArchive(id, today, keepHidden).replaced
       validate()
       finishPeopleWrite()
     },

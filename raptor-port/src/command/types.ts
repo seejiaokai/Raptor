@@ -43,6 +43,10 @@ export type LogicalCollection =
   // posting window and one personnel label per person ([DB-READINESS] group A, phase 3 — leavewar/state/rows.ts)
   | 'lw.cell' | 'lw.war'
   | 'lw.ledger' | 'lw.opening' | 'lw.balance' | 'lw.grade' | 'lw.oilpolicy' | 'lw.postouts' | 'lw.label' | 'lw.current' | 'lw.config'
+  // ANOTHER squadron's stored war, written only by Admin → Users' Archive, Restore, Restore as and Delete of its man while
+  // another war is loaded (multi-squadron batch 1, A3 — leavewar/state/foreign.ts): his posting window, his war records,
+  // his ledger entries; each id `<unit>@<local>`, so the gate's section 7 asks about THAT squadron
+  | 'lwx.profile' | 'lwx.rec' | 'lwx.ledger'
   // tracker (the v3: keys)
   | 'trk.marks' | 'trk.dates' | 'trk.roster' | 'trk.layout' | 'trk.syls'
   | 'trk.plan' | 'trk.pace' | 'trk.lulls' | 'trk.eventinfo' | 'trk.catalogue' | 'trk.courses'

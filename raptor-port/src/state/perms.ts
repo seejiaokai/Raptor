@@ -1958,6 +1958,9 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       /* (a person's grade is an admin's record too — without its case the `default` below would let a member write it:
          finding 7) */
       case 'lw.war': case 'lw.ledger': case 'lw.opening': case 'lw.grade': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.label': case 'lw.config':
+      /* another squadron's stored war, written only by Admin → Users' four doors (A3 — leavewar/state/foreign.ts): an
+         admin's, as the war's own posting window and ledger are (the `default` below would let a member write it) */
+      case 'lwx.profile': case 'lwx.rec': case 'lwx.ledger':
       case 'plan':
       /* the Tracker's flex settings (D1014): the one Tracker record a member never writes, whichever command carries it */
       case 'trk.flex':

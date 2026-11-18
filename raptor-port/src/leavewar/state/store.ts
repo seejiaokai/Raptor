@@ -1160,6 +1160,11 @@ export function initStore(b?: StorageBackend, opts: {
   const started = opts.started ?? backend.keys().some(k => k.startsWith(WAR))
   const seedDemo = opts.seedDemo ?? true
   const stored = started ? readWorldRows() : null
+  /* A WORLD NOT YET STARTED MAY ALREADY HOLD A MAN'S PROFILE (A3, Fable's design A): the master's Archive, Restore or Delete
+     of another squadron's man writes that squadron's stored profile row (leavewar/state/foreign.ts) whether or not anyone
+     has opened its war. Its first open takes the seed's periods as ever, and keeps the windows and labels already stored
+     — never the seed's empty ones over them. */
+  const early = !stored && backend.keys().some(k => k.startsWith(PROFILE)) ? readWorldRows() : null
   const wars = stored ? stored.wars : seedDemo ? (demoRecords ? seedWars() : seedWars().map(w => ({ ...w, recs: {} }))) : []
   /* THE TAB ALWAYS OPENS ON THE WAR BEING WORKED (owner, 7 Sep 26, restated
      and reaffirmed 17 Sep 26) — since the stages went (D1177, 21 Oct 26), on the
@@ -1184,7 +1189,7 @@ export function initStore(b?: StorageBackend, opts: {
   const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
   const rosterOrder = readStored('rosterorder', readIdList) ?? []
   /* the personnel labels ride each man's profile row with his posting window (LeavePersonProfile) */
-  const persLabels = stored ? stored.persLabels : {}
+  const persLabels = stored ? stored.persLabels : early ? early.persLabels : {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
   const figureHidden = readStored('fighidden', readIdList) ?? []
@@ -1209,7 +1214,7 @@ export function initStore(b?: StorageBackend, opts: {
   ) ?? DEFAULT_EVENT_ROWS
   const showSans = readStored('showsans', x => (typeof x === 'boolean' ? x : null)) ?? false
   const reqNames = readStored('reqnames', readReqNames) ?? {}
-  const postOuts = stored ? stored.postOuts : {}
+  const postOuts = stored ? stored.postOuts : early ? early.postOuts : {}
   const balances = stored ? stored.balances : {}
   const gradeHist = stored ? stored.gradeHist : {}
   const grades = readStored('grades', readGrades)
@@ -2156,7 +2161,6 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
     if (!n) return w
     return { ...w, recs: { ...w.recs, [id]: kept } }
   })
-  const last = addDays(iso, -1)
   const had = state.people.some(p => p.id === id)
   /* a man the war did not show (a SANS man with Show SANS off) with a past to keep: his row comes back as the war drew
      him (`frozen` — the seam passes it only when he has a record from the months he was here: a war record, or an
@@ -2168,15 +2172,7 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
      (round 1, Fable F4 / Astra 3) */
   /* …and a man who never arrived (his only stint still to come, no earlier one) has no months to keep: his row and his
      record go — never a stint closing before it opens (the walk's design, Fable 4.5, 27 Sep 26) */
-  const cut = (p: Person): Person | null => {
-    const past = (p.past || []).filter(s => s.from === null || s.from < iso).map(s => ({ from: s.from, to: s.to < last ? s.to : last }))
-    if (p.from !== null && p.from > last) {
-      if (!past.length) return null
-      const prev = past.pop()!
-      return { ...p, from: prev.from, to: prev.to, past: past.length ? past : undefined, gone: true }
-    }
-    return { ...p, to: p.to !== null && p.to < last ? p.to : last, past: past.length ? past : undefined, gone: true }
-  }
+  const cut = (p: Person): Person | null => personCut(p, iso)
   const back = hadPast ? cut(withStored(frozen as Person)) : null
   const people = had
     ? state.people.flatMap(p => (p.id === id ? (cut(dated(p)) ?? []) : [p]))
@@ -2192,6 +2188,21 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
     : state.ledger
   state = withCurrent({ ...state, wars, people, postOuts, ledger })
   persistNotify()
+}
+
+/** THE DELETE'S CUT OF ONE MAN, PURE (A3 — the master's Delete of another squadron's man writes that squadron's stored
+ *  war through the same body, leavewar/state/foreign.ts): his stints from `iso` cut, the current one closed the day
+ *  before and `gone`; null for a man who never arrived (no months to keep). `forgetPersonFrom` above is its caller for
+ *  the war loaded. */
+export function personCut(p: Person, iso: string): Person | null {
+  const last = addDays(iso, -1)
+  const past = (p.past || []).filter(s => s.from === null || s.from < iso).map(s => ({ from: s.from, to: s.to < last ? s.to : last }))
+  if (p.from !== null && p.from > last) {
+    if (!past.length) return null
+    const prev = past.pop()!
+    return { ...p, from: prev.from, to: prev.to, past: past.length ? past : undefined, gone: true }
+  }
+  return { ...p, to: p.to !== null && p.to < last ? p.to : last, past: past.length ? past : undefined, gone: true }
 }
 
 /**
@@ -2274,10 +2285,18 @@ export function postingProblem(id: string, kind: 'in' | 'out' | 'restore', date:
   if (kind === 'in' && person.to !== null && date > person.to)
     return `Posted out from ${said(addDays(person.to, 1))} — the post-in has to be before that day.`
   /* Restore's post-in date (D308, D320): after the day his stint closed (the day after reopens it — Fable F5) */
-  if (kind === 'restore') {
-    const closed = person.to !== null ? person.to : lastPast ? lastPast.to : null
-    if (closed !== null && date <= closed) return `Posted out from ${said(addDays(closed, 1))} — the post-in has to be on or after that day.`
-  }
+  if (kind === 'restore') return restoreDateProblem(person, date)
+  return null
+}
+/** Restore's post-in date judged on a man's own saved person, PURE (A3 — the same sentence for the war loaded and for
+ *  another squadron's stored war): a whole date, after the day his stint closed (the day after reopens it). */
+export function restoreDateProblem(person: Person, date: string): string | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return 'Pick a whole date first.'
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const said = (iso: string) => `${Number(iso.slice(8, 10))} ${MON[Number(iso.slice(5, 7)) - 1]} ${iso.slice(2, 4)}`
+  const lastPast = person.past && person.past.length ? person.past[person.past.length - 1] : null
+  const closed = person.to !== null ? person.to : lastPast ? lastPast.to : null
+  if (closed !== null && date <= closed) return `Posted out from ${said(addDays(closed, 1))} — the post-in has to be on or after that day.`
   return null
 }
 
@@ -2293,18 +2312,27 @@ export function openStint(id: string, date: string, identity?: Person): boolean 
   const person = state.people.find(p => p.id === id) || (identity && withStored(identity))
   if (!person || person.gone) return false
   if (postingProblem(id, 'restore', date, person)) return false
-  const clear = { poArchive: undefined, poOutcome: undefined, poDone: undefined }
-  let next: Person
-  if (person.to !== null) {
-    next = date === addDays(person.to, 1)
-      ? { ...person, to: null, ...clear }
-      : { ...person, past: [...(person.past || []), { from: person.from, to: person.to }], from: date, to: null, ...clear }
-  } else next = { ...person, from: date, ...clear }
+  const next = stintOpened(person, date)
+  if (!next) return false
   const had = state.people.some(p => p.id === id)
   const people = had ? state.people.map(p => (p.id === id ? next : p)) : [...state.people, next]
   state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
   persistNotify()
   return true
+}
+
+/** RESTORE'S NEXT PERSON, PURE (A3 — `openStint` above for the war loaded, leavewar/state/foreign.ts's caller for
+ *  another squadron's stored war): his new stint from `date`, or null where Restore refuses (a deleted man, a date on or
+ *  before the day his stint closed — `restoreDateProblem` says why). No role check: the command's gate decides. */
+export function stintOpened(person: Person, date: string): Person | null {
+  if (person.gone || restoreDateProblem(person, date)) return null
+  const clear = { poArchive: undefined, poOutcome: undefined, poDone: undefined }
+  if (person.to !== null) {
+    return date === addDays(person.to, 1)
+      ? { ...person, to: null, ...clear }
+      : { ...person, past: [...(person.past || []), { from: person.from, to: person.to }], from: date, to: null, ...clear }
+  }
+  return { ...person, from: date, ...clear }
 }
 
 /** ARCHIVE'S WAR HALF ([ONE-DOOR], owner D323, 27 Sep 26 — "posted out from today", his past kept): the current stint
@@ -2318,6 +2346,16 @@ export function closeStintOnArchive(id: string, today: string, identity?: Person
   const shown = state.people.find(p => p.id === id)
   const person = shown ? dated(shown) : (identity && withStored(identity))
   if (!person || person.gone) return { replaced: null }
+  const { next, replaced } = stintClosed(person, today)
+  const had = state.people.some(p => p.id === id)
+  const people = had ? state.people.map(p => (p.id === id ? next : p)) : [...state.people, next]
+  state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
+  persistNotify()
+  return { replaced }
+}
+/** ARCHIVE'S NEXT PERSON, PURE (A3 — `closeStintOnArchive` above for the war loaded, leavewar/state/foreign.ts's caller
+ *  for another squadron's stored war): the rules above, on one man's saved person. */
+export function stintClosed(person: Person, today: string): { next: Person; replaced: PostOutcome | null } {
   const yesterday = addDays(today, -1)
   /* a posting that has not RUN yet (its date to come — or come, with nothing repainted since midnight, or held) is
      replaced; one that has run keeps its date (the final code read, Fable F5: the date alone called a due-today posting run) */
@@ -2333,12 +2371,10 @@ export function closeStintOnArchive(id: string, today: string, identity?: Person
   next = next.to !== null
     ? { ...next, poArchive: true, poOutcome: 'overseas', poDone: addDays(next.to, 1) }
     : { ...next, poArchive: undefined, poOutcome: undefined, poDone: undefined }
-  const had = state.people.some(p => p.id === id)
-  const people = had ? state.people.map(p => (p.id === id ? next : p)) : [...state.people, next]
-  state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
-  persistNotify()
-  return { replaced: pending && pending !== 'none' ? pending : null }
+  return { next, replaced: pending && pending !== 'none' ? pending : null }
 }
+/** whether a man's saved person is a posting window worth a record (`windowRecord` below — the same test) */
+export const keepsWindow = (p: Person): boolean => p.from !== null || p.to !== null || !!(p.past && p.past.length)
 
 /* The persisted squadron window (State.postOuts): the person as they stand
    now, kept while EITHER end is set — or he has a closed earlier stint (D320) —
@@ -2347,7 +2383,7 @@ export function closeStintOnArchive(id: string, today: string, identity?: Person
 function windowRecord(people: Person[], id: string): Record<string, Person> {
   const next = { ...state.postOuts }
   const p = people.find(x => x.id === id)!
-  if (p.from !== null || p.to !== null || (p.past && p.past.length)) next[id] = p
+  if (keepsWindow(p)) next[id] = p
   else delete next[id]
   return next
 }
