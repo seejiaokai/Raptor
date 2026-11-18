@@ -1776,7 +1776,8 @@ squadron are judged by whose they are:
   an Undo's line names another squadron only where the person giving it may file there (else it is the unit in view's),
   and a line kept, rewritten or deleted inside a person's command needs, in the line's squadron, admin from an admin and
   home or rights there from anyone else; the squadron in view is asked as well, and a line its giver may file in neither is
-  not kept — a View right writes nothing there (job 2, 19 Nov 26: Astra 5). At the database step the `EditLog` table takes a unit column and the same rule.
+  not kept — a View right writes nothing there (job 2, 19 Nov 26: Astra 5); a line naming nobody (an Undo's own line) its
+  giver may not file in view goes to an admin's or a member's own squadron (the fix read, 1). At the database step the `EditLog` table takes a unit column and the same rule.
 - *An admin's bell lines and read records* (his D2194): a `Notice` addressed to another person, and another person's
   `EditLogSeen` / `NoticeSeen` / `LeaveApprovalsSeen` / `AccessRequestSeen` row (the last judged by its account's person;
   job 2, 19 Nov 26: SEC-1), need an admin of that person's squadron; the holiday line, which reaches every

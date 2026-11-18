@@ -1359,6 +1359,12 @@ export function elogUnitAllowed(a: Actor | null | undefined, u: string): boolean
   if (!a || a.role === 'system' || !u) return true
   return lineOk(a, u)
 }
+/* the squadron a line naming nobody goes to when its giver may not file it in the squadron in view: an admin's or a
+   member's own home today; nobody else has one (job 2's fix read, 1 — editlog.ts push, HOOKS.elogOwnUnit) */
+export function elogOwnUnit(a: Actor | null | undefined): string | null {
+  if (!a || (a.role !== 'admin' && a.role !== 'member') || a.personId == null) return null
+  return homeOn(String(a.personId))
+}
 export function elogWriteProblem(a: Actor | null | undefined, key: string, v: unknown): string | null {
   if (!a || a.role === 'system') return null
   const unitOfLine = (x: any): string => (x && typeof x === 'object' && typeof x.u === 'string' && x.u ? x.u : BOOT_UNIT)

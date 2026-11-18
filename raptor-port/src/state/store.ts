@@ -57,7 +57,7 @@ import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPip
 import { commitAs } from '../command/commit'
 import { defineInvariant } from '../command/harness'
 import type { CommitEnvelope } from '../command/types'
-import { cmdAuthorize, ownershipViolation, elogUnitAllowed, elogWriteProblem } from './perms'
+import { cmdAuthorize, ownershipViolation, elogUnitAllowed, elogWriteProblem, elogOwnUnit } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
@@ -955,11 +955,7 @@ export function wireStore() {
   HOOKS.elogUnitOk = (u: string) => elogUnitAllowed(activeEnvelope()?.actor ?? deriveActor(), u)
   /* …and the giver's own squadron, where a line naming nobody (an Undo's own line) cannot be filed in the squadron in view:
      a 142 member with View of 149, 149 in view, undoing his own input's change kept no line at all (job 2's fix read, 1) */
-  HOOKS.elogOwnUnit = () => {
-    const a = activeEnvelope()?.actor ?? deriveActor()
-    if (!a || (a.role !== 'admin' && a.role !== 'member') || a.personId == null) return null
-    return homeOn(String(a.personId))
-  }
+  HOOKS.elogOwnUnit = () => elogOwnUnit(activeEnvelope()?.actor ?? deriveActor())
   setElogWriteGuard((key, v) => elogWriteProblem(activeEnvelope()?.actor ?? deriveActor(), key, v))
   /* a line written while a command runs is kept only if the command commits ([DRAFT-PENDING] — the history is
      durable now, so a refused command's lines would otherwise stand for good) */
