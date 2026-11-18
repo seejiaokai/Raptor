@@ -615,6 +615,24 @@ function roleFormationName(role: RoleIdentity): string {
   }
   return ''
 }
+/* the squadron a change to men of the roster is filed with: each man's own, read on the day it is asked — one squadron
+   only, and only a change made of the roster alone; '' otherwise (the squadron in view) */
+function peopleLineUnit(forward: readonly Change[]): string {
+  const homes = new Set<string>()
+  for (const c of forward) if (c.collection === 'people' && (PEOPLE as any)[String(c.id)]) homes.add(homeUnitOf(String(c.id)) ?? UNIT)
+  return homes.size === 1 && forward.length > 0 && forward.every(c => c.collection === 'people') ? [...homes][0]! : ''
+}
+/* a user's change to men of the roster: the squadron its line was filed with as it was made, by the command's sequence
+   number — what its Undo and Redo are filed with (logReversed). Bounded: the oldest forgotten past the Undo's reach. */
+const LINE_UNIT = new Map<number, string>()
+const LINE_UNIT_CAP = 500
+function keepLineUnit(env: CommitEnvelope): void {
+  if (typeof env.seq !== 'number') return
+  const u = peopleLineUnit(env.changes)
+  if (!u) return
+  LINE_UNIT.set(env.seq, u)
+  if (LINE_UNIT.size > LINE_UNIT_CAP) LINE_UNIT.delete(LINE_UNIT.keys().next().value as number)
+}
 export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 'undo' | 'redo'): void {
   const days = new Set<string>()
   const addSpan = (s: Span | null) => { if (!s) return; for (let d = s.date; d <= s.end; d = nextIso(d)) days.add(d) }
@@ -639,9 +657,11 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
      is filed with each man's own squadron (engine/editlog.ts push), so its Undo and Redo go there too — filed under the
      squadron in view, the master's Undo of Osprey's CAT made from 142 showed in 142's history and not in 149's. Men of
      one squadron only; any other step stays with the squadron in view. */
-  const homes = new Set<string>()
-  for (const c of entry.forward || []) if (c.collection === 'people' && (PEOPLE as any)[String(c.id)]) homes.add(homeUnitOf(String(c.id)) ?? UNIT)
-  const unit = homes.size === 1 && entry.forward!.every(c => c.collection === 'people') ? [...homes][0] : undefined
+  /* …and the squadron is the one the change was filed with WHEN IT WAS MADE, kept by its sequence number — read again at
+     the Undo, a man moved to another squadron at midnight in between took his Undo there (the second fix read, 18 Nov
+     26 — Astra 5). A step made before this page life kept it (none now) reads the squadron now, as before. */
+  const seq = (entry as any).seq
+  const unit = (typeof seq === 'number' && LINE_UNIT.has(seq) ? LINE_UNIT.get(seq) : peopleLineUnit(entry.forward || [])) || undefined
   const say = (text: string, at: LineAt) => logAction(null, text, unit ? { ...at, unit } : at)
   if (!sorted.length) {
     /* an Undo line only where its change wrote a line of its own (the change-recording plan §11.9, walker A2-F5): the
@@ -671,6 +691,7 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
 export function changeLinesFor(env: CommitEnvelope): void {
   try {
     if (env.origin !== 'user') return
+    keepLineUnit(env)
     const war = !!(env.scope && (env.scope as any).module === 'lw')
     /* in a Leave War decision the approvals are read by the DAYS they cover (warInputLines) — which is also what tells
        the war's own side which request left because it was approved, and which came back because an approval was taken

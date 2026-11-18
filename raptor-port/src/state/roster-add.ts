@@ -154,7 +154,7 @@ export function addRosterPerson(np: NewPerson, postIn?: string): string | null {
      (the adder's own by default, D2094 — state/units.ts putNewHome), so a person is never made without one */
   return saidOf(commitPeopleSettingsIntent('person.add', null, txn => {
     const id = putNewPerson(np)
+    putNewHome(id, me())   // before the war's post-in, which finds him in its own squadron's projection (Astra 4)
     if (postIn !== undefined) HOOKS.warPostIn(txn, id, postIn)
-    putNewHome(id, me())
   }))
 }

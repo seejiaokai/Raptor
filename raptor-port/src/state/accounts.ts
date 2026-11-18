@@ -161,8 +161,11 @@ const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid:
 const reqRow = (r: AccessRequest) => ({ id: r.id, name: r.name, cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat, at: r.at })
 
 /* the accounts a list of stored images would load as — the loader's own reading (dedupe, the older of two for one
-   person, a deleted man's never), without the lock-out repair. `why` hears each image dropped. Pure. */
-export function readAccounts(images: any[], why?: (text: string) => void): Account[] {
+   person, a deleted man's never), without the lock-out repair. `why` hears each image dropped. Pure. `person` — the
+   roster a man's deleted mark is read from (the live one by default): the commit gate reads the list before a command
+   over the people as they stood, and after it over the people it leaves — ONE reading for the loader and the gate (the
+   second fix read, 18 Nov 26 — Astra 2, security H1: the gate compared raw rows the loader would not keep) */
+export function readAccounts(images: any[], why?: (text: string) => void, person: (pid: string) => any = pid => (PEOPLE as any)[pid]): Account[] {
   const ok = images.filter(x => x && typeof x.id === 'string' && x.id && typeof x.pid === 'string' && x.pid && isAccountRole(x.role))
   /* the OLDER wins a clash (two admins adding at once — plan §3 phase 4.4): a seeded account (no createdAt) is oldest */
   ok.sort((a, b) => (Number(a.createdAt) || 0) - (Number(b.createdAt) || 0) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
@@ -171,7 +174,7 @@ export function readAccounts(images: any[], why?: (text: string) => void): Accou
   for (const x of ok) {
     /* an account whose person is DELETED is never loaded — the delete removes it in the same command
        ([POST-OUT-OUTCOMES], Fable F13: the invariant, stated where it is read) */
-    if ((PEOPLE as any)[x.pid] && (PEOPLE as any)[x.pid].deleted) continue
+    if (person(x.pid) && person(x.pid).deleted) continue
     const name = normName(x.name)
     if (!name || name.length > MAX_SIGNIN || seenId.has(x.id)) continue
     if (seenName.has(name) || seenPid.has(x.pid)) { if (why) why(`accounts: ${x.id} (${name}) is dropped — an older account already has ${seenPid.has(x.pid) ? 'its person' : 'its sign-in name'}`); continue }
@@ -315,7 +318,10 @@ function otherSquadronProblem(pid: string): string | null {
    4). An admin's question only: a member stays "your own row only", which is his rule. */
 export function otherSquadronPersonProblem(pid: string): string | null {
   const mine = SESSION ? accountById(SESSION.user) : undefined
-  if (!mine || mine.role !== 'admin') return null
+  /* an admin is the role IN FORCE, as the commit gate reads it — the developer bridge's raised role included (the second
+     fix read, 18 Nov 26 — Astra 7: a member raised to admin heard "You can only edit your own row"); the account's own
+     identity, home and master mark still decide where he is an admin */
+  if (!mine || roleOf() !== 'admin') return null
   const u = homeOn(pid)
   if (!u) return null
   if (levelOfAccount({ id: mine.id, pid: mine.pid, role: 'admin', master: !!mine.master }, u) === 'admin') return null
@@ -537,13 +543,16 @@ export function requestAccess(npIn: NewPerson): string | null {
    reads). `dropAccountOfPid` — the mutation alone, INSIDE the delete's command (it enlists the settings store): his
    account removed, and a request waiting under his sign-in name answered with it. */
 export function deleteAccountProblem(pid: string): string | null {
+  /* a master's sentence FIRST, whoever asks — another squadron's admin, his own squadron's, the master himself: it is the
+     reason that holds whatever else changes (the second fix read, 18 Nov 26 — Astra 6: Kestrel heard "He is 142's…",
+     Saber "your own account", before it) */
+  const master = masterDeleteProblem(pid)
+  if (master) return master
   const a = accountOfPid(pid)
   if (a && ownAccount(a)) return "You can't delete your own account — ask another admin"
   if (me() != null && pid === me()) return "You can't delete yourself — ask another admin"
   const other = otherSquadronProblem(pid)
   if (other) return other
-  const master = masterDeleteProblem(pid)
-  if (master) return master
   return lockProblem(ACCOUNTS_LIST.filter(x => x.pid !== pid))
 }
 /* THE POSTING'S SUSPENSION ([POST-OUT-OUTCOMES], D280): the overseas outcome suspends his account on the date — never
@@ -752,10 +761,12 @@ export function addPersonAndAccount(nameIn: any, np: NewPerson, role: AccountRol
   if (bad) return bad
   return saidOf(commitPeopleSettingsIntent('account.addNew', null, txn => {
     const pid = putNewPerson(np)
+    /* his home unit, in the same command — the adder's own by default (D2094); written BEFORE the war's post-in, which
+       finds him in the projection of the war's own squadron (the second fix read, 18 Nov 26 — Astra 4) */
+    putNewHome(pid, me())
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name, role, pid, on: true, ...newAccountStamp() }])
     if (requestByName(name)) writeReqs(ACCESS_REQS.filter(r => r.name !== name))
-    putNewHome(pid, me())   // his home unit, in the same command — the adder's own by default (D2094)
   }))
 }
 /* approving with New person: the person from what he gave, with the admin's corrections,
@@ -769,10 +780,10 @@ export function approveRequestNew(reqId: string, np: NewPerson, role: AccountRol
   if (bad) return bad
   return saidOf(commitPeopleSettingsIntent('access.approveNew', null, txn => {
     const pid = putNewPerson(np)
+    putNewHome(pid, me())   // his home unit, before the war's post-in (Astra 4) — the approving admin's own by default (D2094)
     if (postIn !== undefined) HOOKS.warPostIn(txn, pid, postIn)
     writeAccounts([...ACCOUNTS_LIST, { id: newAccountId(), name: rq.name, role, pid, on: true, ...newAccountStamp() }])
     writeReqs(ACCESS_REQS.filter(r => r.id !== reqId))
-    putNewHome(pid, me())   // his home unit, in the same command — the approving admin's own by default (D2094)
   }))
 }
 

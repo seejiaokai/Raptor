@@ -1444,7 +1444,10 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
     for (const h of [...before.homes, ...after.homes]) if (String(h.pid) === pid && typeof h.from === 'string') dates.add(h.from)
     for (const d of [...dates].sort()) {
       const was = homeBefore(pid, d, before), now = homeBefore(pid, d, after)
-      if (was === now || was == null) continue
+      if (was === now) continue
+      /* a man with no squadron is given one from TODAY, never from a day already gone (the second fix read, 18 Nov 26 —
+         Opus F3: a forged first row dated last week passed on a shared store, where no man falls back to the demo's 142) */
+      if (was == null) { if (d < today) return `a first home dated before today (home of ${pid} from ${d})`; continue }
       if (d < tomorrow) return `a home changed for a day already begun (home of ${pid} on ${d})`
       if (levelBefore(acct, was, today, before) !== 'admin') return `a man moved out of a squadron (${was}) by one who is not its admin (home of ${pid} from ${d})`
     }

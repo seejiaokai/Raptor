@@ -2899,7 +2899,10 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
 function postInNewPerson(txn: Txn, id: string, date: string): void {
   txn.enlist(lwStore)
   const identity = projectPeople(true).find(p => p.id === id)
-  if (!identity) return
+  /* no identity with a war loaded means the add would lose his date in silence (the second fix read, 18 Nov 26 —
+     Astra 4: the writers once called this before his home was written, so 149's projection did not have him): refuse
+     the whole add; a store with no war yet has nothing to count him in */
+  if (!identity) { if (getState().wars.length) throw new CmdRefused('That did not save'); return }
   if (!openStint(id, date, identity)) throw new CmdRefused('Pick the post-in date')
 }
 /* a man archived on Admin → Users: the war's posting doors refuse him — Restore there is the one way back (Fable F1) */

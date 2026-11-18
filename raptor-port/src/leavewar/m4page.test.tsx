@@ -415,8 +415,9 @@ describe('the day’s list (a day with two entries) says who placed each (the sc
       const id = reqs('bane', TUE)[0]!.id
       render(<DayListSheet personId="bane" callsign="Ranger" date={TUE} view={st.views['bane']![TUE]!} role="admin" viewer="stiff" period={st.period} onClose={() => {}} />)
       fireEvent.click(screen.getByTestId(`dl-approve-${id}`))
-      /* the tense follows the app's clock, as R2-4's drag window says it: the posting has run (the fix read, 18 Nov 26) */
-      expect(screen.getByText(/^He post(s|ed) out on 9 Feb: refuse or delete it$/)).toBeTruthy()
+      /* the tense follows the app's clock, fixed by T() at 15 Jul 26 08:00: the 9 Feb posting has run, so the past tense,
+         exactly (the second fix read, 18 Nov 26 — a pattern taking either tense checked neither) */
+      expect(screen.getByText('He posted out on 9 Feb: refuse or delete it')).toBeTruthy()
       expect(screen.queryByText(/something else is on that time/)).toBeNull()
       expect(reqs('bane', TUE)[0]!.state).toBe('pending')
     } finally { setMemberTodayForTests(null) }
@@ -487,7 +488,7 @@ describe('the day’s list (a day with two entries) says who placed each (the sc
       fireEvent.click(screen.getByTestId('sel-approve'))
       /* the tense follows the app's clock (July here): the Delete posting has run since the pass stores the accounts on its
          first try — before, it was refused on a store that never wrote them and never ran (the fix read, 18 Nov 26) */
-      expect(screen.getByTestId('sel-note').textContent).toMatch(/^1 decided\. 1 not approved: He post(s|ed) out on 11 Feb: refuse or delete it\. 1 skipped \(no bid, or filed on the Inputs page\)\.$/)
+      expect(screen.getByTestId('sel-note').textContent).toBe('1 decided. 1 not approved: He posted out on 11 Feb: refuse or delete it. 1 skipped (no bid, or filed on the Inputs page).')
     })
   })
 
