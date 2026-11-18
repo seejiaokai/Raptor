@@ -1097,6 +1097,17 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
     if (date && date <= today && outcome) { posted.set(String(c.id), outcome); postedOn.set(String(c.id), date) }
   }
   const refuse = (c: Change) => `the posting pass may change only the men it posts out, and only as their posting does (${c.collection}/${c.id})`
+  /* …and only the men of the squadron whose Leave War it runs on (the second fix read — the security read's H2): a posting
+     for another squadron's man in this war was never set by one of its admins (section 7b), so the pass does not carry it
+     out. Judged by his home before the pass, where one is known (a shared store before its rows are made knows none). */
+  const warU = lwUnitNow()
+  if (warU && posted.size) {
+    const rows = unitRowsBefore(env.changes)
+    for (const pid of posted.keys()) {
+      const h = homeBefore(pid, today, rows)
+      if (h && h !== warU) return `the posting pass ran on ${warU}'s Leave War for another squadron's man (lw.postouts/${pid})`
+    }
+  }
   const accounts = new Map<string, any>()   // account id → its row before, for each posted man's account the pass changes
   /* THE FIRST WRITE OF THE ACCOUNTS STORES THE WHOLE LIST (state/accounts.ts writeAccounts — a store that has never written
      them holds the seeded list in memory, and the loader reads "no rows" as the seeded list, so the first write puts every
@@ -1226,20 +1237,69 @@ function unitRecordViolation(env: CommitEnvelope): string | null {
   const units = new Set<string>()
   for (const c of env.changes) { const u = unitOf(String(c.id)); if (u) units.add(u) }
   if (!units.size) return null
-  const row: any = ACCOUNTS_LIST.find(x => x.id === a.id)
   const today = todayIso()
   const rows = unitRowsBefore(env.changes)
   for (const u of units) {
-    /* the level in his HOME unit is the role IN FORCE (the session's), as every other check of this gate reads it — not
-       the stored account's: the two agree on a sign-in, and where they part (the developer bridge's raptorRole, the
-       browser tests' "the role only, not the world") the stored row refused every write of a member raised to admin in
-       his own squadron (found by GitHub's browser run on step 2: the changes window's and the Leave War's Required-row
-       tests). Another unit's level still comes only from a grant or the master mark. */
-    const lv = row
-      ? levelBefore({ id: row.id, pid: String(row.pid), role: String(a.role), master: row.master === true }, u, today, rows)
-      : (u === UNIT ? (a.role === 'admin' ? 'admin' : 'member') : null)
+    const lv = levelInForce(a, u, today, rows)
     const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
     if (!ok) return `a change to another unit's records (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+  }
+  return null
+}
+/* an actor's level in a unit, as section 7 reads it. The level in his HOME unit is the role IN FORCE (the session's), as
+   every other check of this gate reads it — not the stored account's: the two agree on a sign-in, and where they part
+   (the developer bridge's raptorRole, the browser tests' "the role only, not the world") the stored row refused every
+   write of a member raised to admin in his own squadron (found by GitHub's browser run on step 2: the changes window's
+   and the Leave War's Required-row tests). Another unit's level still comes only from a grant or the master mark. An
+   actor with no account is read as the role in force in the unit in view only. */
+function levelInForce(a: NonNullable<CommitEnvelope['actor']>, u: string, today: string, rows: UnitRows): string | null {
+  const row: any = ACCOUNTS_LIST.find(x => x.id === a.id)
+  return row
+    ? levelBefore({ id: row.id, pid: String(row.pid), role: String(a.role), master: row.master === true }, u, today, rows)
+    : (u === UNIT ? (a.role === 'admin' ? 'admin' : 'member') : null)
+}
+
+/* 7b. A SQUADRON'S LEAVE WAR IS CHANGED ONLY BY ONE WHO HOLDS RIGHTS IN THAT SQUADRON (the second fix read, 18 Nov 26 —
+   the security read's H2; Fable's plan C3). Each squadron has a Leave War world of its own (leavewar/sync.ts
+   swapWarWorld), but a war record's id carries no unit — the storage door adds it — so section 7 never saw one, and the
+   admin branch below returns early: 142's plain admin who loaded 149's world (the app's own swap, reachable from the
+   console) set a posting for 149's Osprey, and the posting pass archived or deleted him the next day. The Leave War tells
+   the gate which squadron's world is loaded (setLwUnitProbe, installed by leavewar/sync.ts with the open-days probe,
+   answering only while each squadron has a world of its own — with no world door there is one war, shared, as before);
+   every war change but the period on screen (`lw.current`) then needs an admin of that squadron from an admin in force,
+   a member at home there from a member — the same reading of the role in force as section 7. The app itself is not
+   asked, as nowhere else.
+   ALSO: a posting that would suspend or delete a master admin. Only a master changes a master's account (his D2205), and
+   the posting pass, which runs as the app, carries out what the posting says — so the posting itself is held: a Delete
+   posting for a master by no one (a master is never deleted — accounts.ts masterDeleteProblem), an Overseas Sqn
+   posting (archive and suspend) only by a master. Taking such a posting away is allowed. */
+type LwUnit = () => string | null
+let LW_UNIT: LwUnit | null = null
+export function setLwUnitProbe(fn: LwUnit | null): void { LW_UNIT = fn }
+export const lwUnitNow = (): string | null => (LW_UNIT ? LW_UNIT() : null)
+function warUnitViolation(env: CommitEnvelope): string | null {
+  const a = env.actor
+  if (!a || a.role === 'system') return null
+  const lw = env.changes.filter(c => String(c.collection).startsWith('lw.') && c.collection !== 'lw.current')
+  if (!lw.length) return null
+  const u = lwUnitNow()
+  if (u) {
+    const lv = levelInForce(a, u, todayIso(), unitRowsBefore(env.changes))
+    const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
+    if (!ok) return `a change to another squadron's Leave War (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
+  }
+  const w = worldsOf(env)
+  const before = w ? w.acctB : ACCOUNTS_LIST
+  const masters = new Set(before.filter(x => x.master === true).map(x => String(x.pid)))
+  if (!masters.size) return null
+  const actorMaster = a.role === 'admin' && before.some(x => x.id === a.id && x.master === true)
+  for (const c of lw) {
+    if (c.collection !== 'lw.postouts' || !masters.has(String(c.id))) continue
+    const f: any = c.op === 'delete' ? null : c.after
+    if (!f || JSON.stringify(c.before) === JSON.stringify(f)) continue
+    const out = passOutcomeOf(f)
+    if (out === 'delete') return `a Delete posting for a master admin (${c.collection}/${c.id})`
+    if (out === 'overseas' && !actorMaster) return `an Overseas Sqn posting for a master admin by one who is not a master (${c.collection}/${c.id})`
   }
   return null
 }
@@ -1589,6 +1649,9 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       if (env.type !== 'lw.seen' || a.personId == null || c.id !== `lwseen:${a.personId}`) return `another person's last visit (${c.collection}/${c.id})`
     }
   }
+  /* 7b. a squadron's Leave War by its own people only, and a master's posting by a master (above) */
+  const warBad = warUnitViolation(env)
+  if (warBad) return warBad
   /* THE POSTING PASS CHANGES ONLY THE MEN IT POSTS OUT ([SYSTEM-PASS-SAVES-ROSTER], D1510's security read, 29 Oct 26 —
      built 31 Oct 26). The pass runs as the app itself, which nothing below asks, so its own command is held here: a change
      to a person rides in it only beside that man's posting record (every outcome — Overseas Sqn, SANS, Delete — writes his

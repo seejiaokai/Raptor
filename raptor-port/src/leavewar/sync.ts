@@ -23,7 +23,7 @@ import { inputBelongs, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, 
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, myUnit } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, myUnit } from '../state/perms'
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
@@ -286,6 +286,9 @@ export function installAbsenceDoor(): void {
   /* THE OPEN DAYS JOIN THE WAR'S PERMISSION (the red team's B8): the permissions module asks, of a member's war record
      (`war:person:date`), whether that day is open for HIM — the one rule (`canEditCell`), asked of the period holding
      the date, with a member's today (D1211). Read from the right: a war id may carry a colon. */
+  /* WHICH SQUADRON'S WAR IS LOADED (perms.ts setLwUnitProbe — the second fix read, H2): a war record's id names no unit, so
+     the gate asks here; only while each squadron has a world of its own (the world door, set at boot) */
+  setLwUnitProbe(() => (WORLD_DOOR ? worldUnit() : null))
   setLwDayOpenProbe((cellId: string) => {
     const iDate = cellId.lastIndexOf(':')
     if (iDate < 0) return true
@@ -3063,6 +3066,12 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
 export function postOutProblem(id: string, outcome: PostOutcome): string | null {
   const here = adminArchived(id)
   if (here) return here
+  /* the second fix read (18 Nov 26 — the security read's H2, Fable's plan): an Overseas Sqn posting suspends a master's
+     account on its date, which only a master does (D2205), and a posting for another squadron's man is that squadron's
+     admins' to set — said here, as Archive and Restore say it, before the commit gate refuses it */
+  if (outcome === 'overseas') { const m = masterChangeProblem(id); if (m) return m }
+  const other = otherSquadronPersonProblem(id)
+  if (other) return other
   /* NO SANS FOR GROUND CREW (his D1709, 5 Nov 26): SANS is an aircrew status — the chips offer him none (OutcomeChips), and
      the writer refuses it whatever door asks */
   if (outcome === 'sans' && isGroundCrew(id)) return "Ground crew can't be made SANS"
