@@ -21,6 +21,11 @@ a flow runs by itself, owned by the unit's role-based account; auditing is on an
 code early, what basic access allows on the app's tables, SharePoint from the app and who may read it,
 how long the audit is kept, how the unit gets a role-based account, and the first admin (item 8).
 
+**READ ALSO (19 Nov 26) — how code apps work, from every page of Microsoft's guide and the wider web, set against our
+plan:** `docs/superpowers/specs/2026-11-19-power-apps-code-apps-research.md` (`OUTSTANDING.md` `[CODE-APPS-RESEARCH]`).
+It shows why "what basic access allows on the app's tables" matters most: each call carries the person's own account,
+and Microsoft's basic role grants nothing on a new table.
+
 ## What we agreed
 
 - **You design the tables.** Our documents are a proposal and an inventory,
