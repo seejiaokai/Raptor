@@ -1274,7 +1274,7 @@ function levelInForce(a: NonNullable<CommitEnvelope['actor']>, u: string, today:
    ON EVERY DAY IT COVERS (job 2, 19 Nov 26 — the security read's SEC-4): a man's home is read on the input's first day
    and on every saved move inside its span (each home row's `from` there), so 142's admin cannot put a leave on a man
    that runs on into the days he is 149's. The actor's rights are still read today — rights held in a squadron once
-   are not kept after he has left it (D2203). And a member's input naming only himself, before and after, with no
+   are not kept after he has left it (D2203). And a man's input naming only himself (an admin's too — fix read 3, O1), before and after, with no
    placeholder, is his whatever its squadron (§11, "C R U D own" — Fable's F2: across a saved move he was refused his
    own input on either side of it). An input that spans a man's move is then changed only by a master or by the man
    himself — no screen can save a move yet; who else may, filed for the Transfer batch. */
@@ -1317,9 +1317,12 @@ function inputUnitViolation(env: CommitEnvelope): string | null {
       if (holds(was, me) && !holds(is, me)) continue
       if (!holds(was, me) && holds(is, me) && env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
     }
-    /* a member's own input — naming only him, before and after, no placeholder — is his whatever its squadron (F2) */
+    /* a man's own input — naming only him, before and after, no placeholder — is his whatever its squadron (F2). An
+       admin's too (fix read 3, O1): the role test held it to members, so a 142 admin moved to 149 from tomorrow could not
+       file his own leave for next week, nor change his own leave of a 142 day after the move, while a member in his
+       place could — §11's "C R U D own" is everyone's. The role test stays only on the take-out branch above, a member's. */
     const onlyMe = (r: any) => r == null || (!placeholderOf(r) && named(r).length === 1 && named(r)[0] === String(a.personId))
-    if (a.role !== 'admin' && a.personId != null && onlyMe(was) && onlyMe(is)) continue
+    if (a.personId != null && onlyMe(was) && onlyMe(is)) continue
     for (const u of new Set([...unitsOf(was), ...unitsOf(is)])) {
       const lv = levelInForce(a, u, today, before)
       const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
