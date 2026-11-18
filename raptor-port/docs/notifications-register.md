@@ -23,7 +23,7 @@ reaches another squadron's people; a line crosses only where the matter concerns
 between them, a detachment the other's men join, a place both share — and each squadron is told only what touches its
 own people and days. No holiday list is shared (his D2195), so a holiday never crosses squadrons. A master admin's bell
 carries his primary squadron's lines by default, every other squadron's switched off until he switches it on (his D2198,
-18 Nov 26 — the switch to be drawn first; not built).
+18 Nov 26 — the switch to be drawn first; not built). An admin a master gives "Plan" of another squadron gets that squadron's admin lines while he holds it, on by default, his to switch off; on any bell, a line from a squadron other than the person's primary shows which squadron it is from, 142 or 149 (his D2202, 18 Nov 26 — drawn first; not built).
 
 ## Built — the bell's notices today
 
