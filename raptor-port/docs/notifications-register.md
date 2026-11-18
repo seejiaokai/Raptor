@@ -18,6 +18,11 @@ they are built.
 
 **Undo retracts every line (his D1693, 5 Nov 26 — to build, [NOTICE-UNDO-RETRACT]):** the undo of what made a line takes it back — unread, it simply goes; read, it is replaced by its own words struck through, then "taken back · <who>" — "~~Posted out · now SANS~~ · taken back · Saber", unread (D1699, his idea; the Leave War's taken-back lines the same look, "~~LL approved~~ · taken back · Saber"; the drawing `docs/mock/2026-11-05-taken-back-sans/` picture 8) (the Leave War's way since D1216, now every line's: the posting line by its sheet's Undo post out, the input lines, the holiday's OIL line). **And a posting changed after it ran (his D1710, 5 Nov 26 — BUILT 5 Nov 26, [PO-CHANGE-RETRACT], `leavewar/sync.ts postOut`):** a ran posting given another date or another outcome on its Post out sheet takes back its lines the same way, inside the posting's own command, the admin who changed it told nothing; the changed posting tells again when it runs. A date moved earlier counts too (the agent's reading — the old line would name a day the posting no longer ran on, beside the new one); saved unchanged, or a posting not yet run, touches no bell.
 
+**Across squadrons (his D2194, 18 Nov 26 — the rule for every future line):** no line about one squadron's own business
+reaches another squadron's people; a line crosses only where the matter concerns both — a borrowed man, a man moving
+between them, a detachment the other's men join, a place or holiday list both share — and each squadron is told only what
+touches its own people and days.
+
 ## Built — the bell's notices today
 
 | # | Who is told | When | What the line says | A tap | Ruled |
