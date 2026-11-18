@@ -151,9 +151,9 @@ import {
 import { units as unitList, placeOfOn, unitRows } from '../state/units'
 import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
-import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, activeEnvelope, isQueued, type CommitResult, type Txn } from '../command'
+import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
-import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
+import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
 import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
@@ -165,7 +165,7 @@ import { ringCell } from './ui/cellring'
 import { hasRead, forgetRead } from '../state/noticeseen'
 import { renameCallsign } from '../engine/slots'
 import { ELOG } from '../engine/editlog'
-import { callsignProblem } from '../state/roster-add'
+import { callsignProblem, saidOf } from '../state/roster-add'
 import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
 import { stampPlaced, stampChanged, stampWho } from '../state/inputstamp'
 import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
@@ -2454,6 +2454,13 @@ const tellOnce = (key: string, t: string): void => { const k = `${key}|${t}`; if
    Until it runs, the world still reads "due", and re-queueing it on every notify was an endless loop (found by the
    post-out tests, 27 Sep 26). Keyed by posting and date; cleared when the queued command runs or is refused. */
 const PO_INFLIGHT = new Set<string>()
+/* A PASS THE GATE REFUSED (the fix read, 18 Nov 26 — Opus 1): its own notify ran it again at once, refused again, until
+   the page ran out of stack. A posting whose pass was refused is not tried again this session (it runs on the next
+   load, once what refused it is put right); a refused pass of several is tried again one posting at a time, so one bad
+   posting never holds the others back. Keyed as PO_INFLIGHT. */
+const PO_REFUSED = new Set<string>()
+/* the postings already given their one retry (refused, below) */
+const PO_RETRIED = new Set<string>()
 type PoDue = { id: string; poDate: string; outcome: PostOutcome; key: string }
 /* is this man's posting due to run TODAY — the one test, read by the scan and again by the command when it runs (a
    queued command may run after the posting was changed or taken back) */
@@ -2481,7 +2488,11 @@ export function poHeldReason(id: string, outcome: PostOutcome, poDate: string = 
   if (!body) return null
   if (outcome === 'overseas') {
     const a = accountOfPid(id)
-    return a && a.on && lastAdminIfGone(id) ? `${body.cs} is the last admin who can sign in — the posting waits until another admin can` : null
+    if (!a || !a.on) return null
+    const lock = lastAdminLock(id)
+    /* the lock worded per squadron where it is his squadron's (the fix read, 18 Nov 26 — Opus 5) */
+    return !lock ? null : lock === 'app' ? `${body.cs} is the last admin who can sign in — the posting waits until another admin can`
+      : `${body.cs} is ${lock.num}'s last admin. The posting waits until ${lock.num} has another admin.`
   }
   if (outcome === 'delete') return deleteBlocked(id) || stashPreflight(id, deleteCutoff(poDate))
   return null
@@ -2519,13 +2530,13 @@ export function postingHeldNote(id: string): string | null {
 /* would a posting dated `poDate` run NOW — on the pass's own clock (poDueNow: today on or after the date)? The Post out
    sheet asks before it saves a Delete's date that answers yes (D1102 — [PO-MOVE-DATE-DELETE-ASK]) */
 export function postingRunsBy(poDate: string): boolean { return poDate <= effectiveToday() }
-export function runPoOutcomes(): void {
+export function runPoOutcomes(only?: string): void {
   if (SYNCING) return
   const today = effectiveToday()
   const due: PoDue[] = []
   for (const id of Object.keys(getState().postOuts)) {
     const d = poDueNow(id, today)
-    if (!d || PO_INFLIGHT.has(d.key)) continue
+    if (!d || PO_INFLIGHT.has(d.key) || PO_REFUSED.has(d.key) || (typeof only === 'string' && d.key !== only)) continue
     const held = poHeldReason(id, d.outcome, d.poDate)
     if (held) { tellOnce(d.key, held); continue }
     due.push(d)
@@ -2543,7 +2554,7 @@ export function runPoOutcomes(): void {
      unsaved change: nothing is put back then. A command the app itself runs (a projection) is the one parent the gate
      would not judge, so under one the pass waits and runs as its own command straight after it. */
   const parent = isInReducer() ? activeEnvelope() : null
-  if (parent && parent.origin === 'projection' && cmdDeferEffect(runPoOutcomes)) return
+  if (parent && parent.origin === 'projection' && cmdDeferEffect(() => runPoOutcomes(only))) return
   const own = !parent
   const needsDays = due.some(d => d.outcome === 'delete')
   for (const d of due) PO_INFLIGHT.add(d.key)
@@ -2632,9 +2643,21 @@ export function runPoOutcomes(): void {
   } finally {
     SYNCING = false
   }
-  if (res && isQueued(res)) { res.done.then(settle, settle); return }
+  if (res && isQueued(res)) { res.done.then(r => { if (!isOk(r)) refused(); settle() }, settle); return }
   settle()
+  if (res && !isOk(res)) { refused(); return }
   raptorNotify()
+  /* refused: tried ONCE more as it was — the refused command's rollback has put the roster and the requests back to what
+     is saved, so a change made in memory outside every command (the console case) no longer rides it; refused again,
+     never re-run by its own notify; several, then one at a time */
+  function refused(): void {
+    const fresh = due.some(d => !PO_RETRIED.has(d.key))
+    for (const d of due) PO_RETRIED.add(d.key)
+    if (fresh) { runPoOutcomes(only); return }
+    for (const d of due) PO_REFUSED.add(d.key)
+    if (due.length < 2) return
+    for (const d of due) { PO_REFUSED.delete(d.key); runPoOutcomes(d.key) }
+  }
 }
 /* a DELETE's war half, for the admin's own delete (state/person-delete.ts deletePerson — Admin → Users): the war's
    store enlisted in that command, his records from the cutoff gone, his window closed the day before, `gone` set. The
@@ -2669,8 +2692,15 @@ export const runPoArchive = runPoOutcomes
    deleteAccountProblem — minus "yourself": the pass is not the signed-in person acting) */
 function deleteBlocked(id: string): string | null {
   const body = rosterBody(id)!   // (its one caller, poHeldReason, has found his body)
-  const lastAdmin = lastAdminIfGone(id)
-  return lastAdmin ? `${body.cs} is the last admin who can sign in — he is not deleted until another admin can` : null
+  /* A MASTER'S DELETE WAITS (the fix read, 18 Nov 26 — Opus 1): the commit gate refuses any command that takes a master's
+     account away (the master mark changes only by its own command), so run inside the pass's one command it refused the
+     whole pass — every other posting due that day held back, unsaid — and the pass's own notify ran it again until the
+     page ran out of stack. Held here, it is skipped and said once, and the others run. */
+  const master = masterDeleteProblem(id)
+  if (master) return master
+  const lock = lastAdminLock(id)
+  return !lock ? null : lock === 'app' ? `${body.cs} is the last admin who can sign in — he is not deleted until another admin can`
+    : `${body.cs} is ${lock.num}'s last admin. He is not deleted until ${lock.num} has another admin.`
 }
 
 /**
@@ -2706,6 +2736,8 @@ export function restoreArchivedPerson(id: string, postIn?: string): boolean {
    or a post-in on or before the day his stint closed (the store's one sentence). null when it would go ahead. */
 export function restoreProblem(id: string, postIn: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can restore someone'
+  const other = otherSquadronPersonProblem(id)
+  if (other) return other
   const body = rosterBody(id)
   if (!body || !body.archived || body.special || body.deleted) return 'That person cannot be restored'
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(postIn ?? ''))) return 'Pick the post-in date'
@@ -2772,6 +2804,8 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
    callsign rule's reason (blank, 14 letters, taken). null = done. */
 export function restoreArchivedAs(id: string, cs: string, postIn?: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can restore someone'
+  const other = otherSquadronPersonProblem(id)
+  if (other) return other
   const body = rosterBody(id)
   if (!body || !body.archived || body.special || body.deleted) return 'That person cannot be restored'
   const want = String(cs ?? '').trim()
@@ -2805,14 +2839,23 @@ export function archivedLine(id: string): string | null {
 }
 export function archiveProblem(id: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can archive someone'
+  const other = otherSquadronPersonProblem(id)
+  if (other) return other
   const body = rosterBody(id)
   if (!body || body.special) return 'That person cannot be archived'
   if (body.deleted) return 'That person has been deleted'
   if (body.archived) return `${body.cs} is already archived`
   if (me() != null && id === me()) return "You can't archive yourself — ask another admin"
   const a = accountOfPid(id)
-  if (a && a.on && lastAdminIfGone(id)) return `${body.cs} is the last admin who can sign in — he can't be archived until another admin can`
+  if (a && a.on) { const lock = archiveLockWords(id, body.cs); if (lock) return lock }
   return null
+}
+/* the last-admin lock in Archive's words: per squadron where it is his squadron's — the lock's own sentence (accounts.ts
+   lockProblem; the fix read, 18 Nov 26 — Opus 5) — the whole app's otherwise, as before */
+function archiveLockWords(id: string, cs: string): string | null {
+  const lock = lastAdminLock(id)
+  return !lock ? null : lock === 'app' ? `${cs} is the last admin who can sign in — he can't be archived until another admin can`
+    : `${cs} is ${lock.num}'s last admin. Make another admin of ${lock.num} first.`
 }
 export function archivePerson(id: string): { bad: string | null; said: string } {
   const bad = archiveProblem(id)
@@ -2829,7 +2872,7 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
     type: 'person.archive', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
-      if (suspendForArchive(id) === 'lock') throw new CmdRefused(`${body.cs} is the last admin who can sign in — he can't be archived until another admin can`)
+      if (suspendForArchive(id) === 'lock') throw new CmdRefused(archiveLockWords(id, body.cs) ?? `${body.cs} is the last admin who can sign in — he can't be archived until another admin can`)
       body.archived = true
       body.archivedBy = 'admin'
       body.archivedOn = today                                           // D329: how and when — who, by his person id
@@ -2841,7 +2884,8 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
       finishPeopleWrite()
     },
   })
-  if (r && 'ok' in r && r.ok === false) return { bad: r.message || 'You are not allowed to do that', said: '' }
+  /* the refusal in the app's words, never the commit gate's own (the fix read, 18 Nov 26 — Opus 4) */
+  if (r && 'ok' in r && r.ok === false) return { bad: saidOf(r) || 'That did not save', said: '' }
   clearBack(id)
   raptorNotify()
   /* his sign-in named only when he has one (the walk's design, Fable 4.7 — the posting sheets already word it so) */
@@ -3010,7 +3054,10 @@ export function postOutProblem(id: string, outcome: PostOutcome): string | null 
   /* NO SANS FOR GROUND CREW (his D1709, 5 Nov 26): SANS is an aircrew status — the chips offer him none (OutcomeChips), and
      the writer refuses it whatever door asks */
   if (outcome === 'sans' && isGroundCrew(id)) return "Ground crew can't be made SANS"
-  return outcome === 'delete' && me() != null && id === me() ? "You can't delete yourself — ask another admin" : null
+  if (outcome === 'delete' && me() != null && id === me()) return "You can't delete yourself — ask another admin"
+  /* a master is never deleted (accounts.ts masterDeleteProblem — the fix read, 18 Nov 26, Opus 1): refused as the
+     posting is set, as Admin → Users' Delete refuses it */
+  return outcome === 'delete' ? masterDeleteProblem(id) : null
 }
 /** a ground-crew man (the war's `pers`, Raptor's GND seat) — offered no SANS posting (his D1709) */
 export function isGroundCrew(id: string): boolean {
@@ -3114,6 +3161,8 @@ export function installPostingClock(): () => void {
 }
 
 export function wireLeaveWarSync(): void {
+  /* a fresh wiring (a boot) tries every refused posting again (the fix read, 18 Nov 26 — Opus 1) */
+  PO_REFUSED.clear(); PO_RETRIED.clear()
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))

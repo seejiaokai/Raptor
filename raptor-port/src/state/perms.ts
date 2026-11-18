@@ -32,6 +32,7 @@ import { voidedOil } from '../engine/oil'
    made only when a command is judged, never as the module loads) */
 import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBefore } from './accounts'
 import { unitRowsBefore, levelBefore, homeBefore, todayIso, homeOn } from './units'
+import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
 import { unitOf, isUnitId } from '../storage/unitid'
 import {
@@ -1141,7 +1142,10 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
         const keys = ['id', 'name', 'role', 'pid', 'on', 'offBy', 'master']
         if (Object.keys(f).some(k => !keys.includes(k))) return refuse(c)
         if (!['id', 'name', 'role', 'pid', 'master'].every(k => JSON.stringify(f[k]) === JSON.stringify(seed[k]))) return refuse(c)
-        const ok = posted.has(String(seed.pid)) ? f.on === false && f.offBy === 'po' : f.on === seed.on && f.offBy == null
+        /* only an Overseas Sqn posting suspends his account; a SANS man keeps his as seeded (the fix read of multi-squadron
+           batch 1's full check, 18 Nov 26: a SANS posting due beside an Overseas Sqn one on a first write was refused,
+           and ran only on the pass's own retry, which Opus 1's loop break ended) */
+        const ok = posted.get(String(seed.pid)) === 'overseas' ? f.on === false && f.offBy === 'po' : f.on === seed.on && f.offBy == null
         if (!ok) return refuse(c)
         continue
       }
@@ -1394,34 +1398,75 @@ function homeUnitViolation(env: CommitEnvelope): string | null {
     const u = adminThere(String(c.id))
     if (u) return `a person of another squadron (${u}) changed by one who is not its admin (people/${c.id})`
   }
-  for (const c of accts) {
-    const id = String(c.id).slice(ACCOUNT_ROW.length)
-    /* his own account too: the own-account guards (accounts.ts ownAccount) stand only on the write path, so a forged write
-       moving his own account onto a 149 man made a 142 admin 149's admin (the fix's blind read, 18 Nov 26, F1); his
-       ordinary writes to his own row pass, his own squadron being his */
-    const was = accountBefore(id, c.before), is = accountAfter(id, c)
-    if (JSON.stringify(was ?? null) === JSON.stringify(is ?? null)) continue
-    for (const img of [was, is]) {
-      if (!img || img.pid == null) continue
-      const u = adminThere(String(img.pid))
-      if (u) return `an account of another squadron (${u}) changed by one who is not its admin (${c.id})`
+  /* EVERY ACCOUNT THE COMMAND CHANGES, READ WHOLE: the list before against the list after, each as the loader reads it
+     (none stored is the seeded list), every account in either — not only the rows the command wrote. The very first write
+     of the list stores each seeded account it keeps and simply leaves out one it drops, so no change of that row is
+     recorded at all: a forged first write without Osprey's account took 149's account away unseen (the fix read, 18 Nov
+     26 — Astra 1). The Undo of that first write takes every stored row away, and the list read is the seeded one again:
+     only what really moved is judged. His own account too: the own-account guards (accounts.ts ownAccount) stand only on
+     the write path, so a forged write moving his own account onto a 149 man made a 142 admin 149's admin (the fix's blind
+     read, 18 Nov 26, F1); his ordinary writes to his own row pass, his own squadron being his */
+  const img = accts.length ? accountImagesAround(env.changes) : null
+  if (img) {
+    const was = new Map<string, any>(img.before.filter(Boolean).map((x: any) => [String(x.id), x]))
+    const is = new Map<string, any>(img.after.filter(Boolean).map((x: any) => [String(x.id), x]))
+    for (const id of new Set([...was.keys(), ...is.keys()])) {
+      const b = was.get(id) ?? null, n = is.get(id) ?? null
+      if (JSON.stringify(b) === JSON.stringify(n)) continue
+      for (const x of [b, n]) {
+        if (!x || x.pid == null) continue
+        const u = adminThere(String(x.pid))
+        if (u) return `an account of another squadron (${u}) changed by one who is not its admin (${ACCOUNT_ROW}${id})`
+      }
     }
+    /* NEVER A SQUADRON LEFT WITH NO ADMIN OF ITS OWN, at the gate too (D2184 Q10; the fix read, 18 Nov 26 — Astra 2): the
+       lock (accounts.ts lockProblem) stood only in the screens' own checks, so a forged update switching Kestrel off —
+       149's only admin — went through, even a master's. The same rule over the two lists: a squadron with an admin at
+       home who can sign in before the command keeps one after it, and the app keeps one at all. */
+    const lock = adminLockBroken(img.before, img.after, env.changes, today, before, after)
+    if (lock) return lock
   }
-  for (const c of homes) {
-    const img: any = c.after ?? c.before
-    if (!img || img.pid == null) continue
-    const pid = String(img.pid)
+  /* A HOME IS JUDGED BY WHAT IT DOES, DAY BY DAY (the fix read, 18 Nov 26 — Astra 5, Opus 2 and 6): his squadron before
+     the command against after it, on every date it could differ — today and every row's `from` in either image (a man's
+     squadron changes only on those; his first row reaches back over every day before it, units-model.ts homeUnitOn).
+     Judging a row only against TODAY let a forged row dated in the past take back days 149 had already lived, one dated
+     the day after a move hand him back before 149's admin was asked, one of the same date win the tie, and a first row
+     dated tomorrow move him today. Where his squadron differs on a date: never on a day already begun (D2119 — a man with
+     no squadron yet may be placed from today: nothing of his is rewritten), and only by an admin of the squadron he
+     leaves; the squadron he joins is section 6's. A row that only writes down the squadron he is in (units.ts setHome's
+     baseline) changes no date and asks nothing. */
+  const tomorrow = moveFrom(today)
+  const moved = new Set<string>()
+  for (const c of homes) for (const h of [c.before as any, c.after as any]) if (h && h.pid != null) moved.add(String(h.pid))
+  for (const pid of moved) {
     if (made.has(pid)) continue   // a new man's first home — its unit is section 6's
-    const u = adminThere(pid)
-    if (u) return `a man moved out of a squadron (${u}) by one who is not its admin (${c.id})`
-    /* never a day already begun — save a row that only writes down the squadron he is in today (a man of the demo's 142
-       with no row of his own gets one before his move, units.ts setHome) */
-    const tomorrow = moveFrom(today)
-    const nowU = homeBefore(pid, today, before)
-    for (const h of [c.before as any, c.after as any]) {
-      if (h && typeof h.from === 'string' && h.from < tomorrow && h.unit !== nowU) return `a home changed for a day already begun (${c.id})`
+    const dates = new Set<string>([today])
+    for (const h of [...before.homes, ...after.homes]) if (String(h.pid) === pid && typeof h.from === 'string') dates.add(h.from)
+    for (const d of [...dates].sort()) {
+      const was = homeBefore(pid, d, before), now = homeBefore(pid, d, after)
+      if (was === now || was == null) continue
+      if (d < tomorrow) return `a home changed for a day already begun (home of ${pid} on ${d})`
+      if (levelBefore(acct, was, today, before) !== 'admin') return `a man moved out of a squadron (${was}) by one who is not its admin (home of ${pid} from ${d})`
     }
   }
+  return null
+}
+
+/* the last-admin lock (accounts.ts lockProblem — the one rule; its words are there) over a command's two account lists:
+   an admin who can sign in is an admin, not switched off, whose person is on the roster — read before the command from
+   the person's row as it stood (the command's own change put back), after it as it now is — and his squadron is his home
+   on the day, over the unit rows before and after. A squadron with none before is not asked, as there. */
+function adminLockBroken(beforeL: any[], afterL: any[], changes: readonly Change[], today: string, before: UnitRows, after: UnitRows): string | null {
+  const wasPerson = new Map<string, any>()
+  for (const c of changes) if (c.collection === 'people') wasPerson.set(String(c.id), c.before ?? null)
+  const onRoster = (p: any) => !!p && !p.special && !p.deleted
+  const able = (x: any, old: boolean) => !!x && x.role === 'admin' && x.on !== false && x.pid != null
+    && onRoster(old && wasPerson.has(String(x.pid)) ? wasPerson.get(String(x.pid)) : (PEOPLE as any)[String(x.pid)])
+  const ableB = beforeL.filter(x => able(x, true)), ableA = afterL.filter(x => able(x, false))
+  if (ableB.length && !ableA.length) return 'the last admin who can sign in switched off or removed'
+  const homesB = new Set(ableB.map(x => homeBefore(String(x.pid), today, before)).filter(Boolean))
+  const homesA = new Set(ableA.map(x => homeBefore(String(x.pid), today, after)).filter(Boolean))
+  for (const u of homesB) if (!homesA.has(u)) return `a squadron (${u}) left with no admin of its own who can sign in`
   return null
 }
 

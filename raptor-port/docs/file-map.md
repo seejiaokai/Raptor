@@ -1262,9 +1262,11 @@ The full check of batch 1, steps 0–4 (18 Nov 26, job 5; evidence `docs/handpas
 check). **New:** `src/state/units-sqn-guard.test.ts` (another squadron's accounts, people and homes refused at the write
 path and the commit gate; a squadron's last admin; approving a request), `src/engine/weekctx-unit.test.ts` (the
 neighbour-week cache per unit), `src/engine/editlog-unit.test.ts` (the change history per squadron, and its sweep);
-`scripts/handpass/msq/` (the walk: `msq-lib.mjs`, each run its own world with the frozen build served from inside the
-test browser; `msq-host-probe.mjs`, `msq-host-s46.mjs` and `msq-host-rewalk.mjs` (the re-walk after the fixes), the
-host's own runs; the walkers' `msq-w1-*` and `msq-w2-*`,
+`src/state/units-sqn-fixread.test.ts` (the fix read of that check, each claim red first: the master never deleted, the
+whole account list, the lock at the gate, home rows day by day, a line's squadron, the seen cursor per squadron); `scripts/handpass/msq/` (the walk: `msq-lib.mjs`, each run its own world with the frozen build served from inside the
+test browser; `msq-host-probe.mjs`, `msq-host-s46.mjs`, `msq-host-rewalk.mjs` (the re-walk after the fixes) and `msq-host-f3probe.mjs`
+(a Delete posting run, after the fix read), the host's own runs; the walkers' `msq-w1-*`, `msq-w2-*` and
+`msq-w3-fixread.mjs` (the re-walk of the fix read's fixes),
 their explore scripts kept as scaffolding); the briefs and reports `docs/superpowers/briefs/2026-11-18-multi-sqn-b1-*`.
 **Changed:** `src/state/perms.ts` (`homeUnitViolation`, the gate's section 8; `mayEditQualsOf` asks the man's
 squadron; the master mark judged on the whole account list), `src/state/accounts.ts` (`lockProblem` — no squadron left

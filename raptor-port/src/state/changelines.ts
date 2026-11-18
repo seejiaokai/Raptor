@@ -33,13 +33,15 @@
    The subscriber is registered once, at boot (initStore). */
 import { onCommit } from '../command'
 import type { CommitEnvelope, Change } from '../command/types'
-import { logAction, keyLabel } from '../engine/editlog'
+import { logAction, keyLabel, type LineAt } from '../engine/editlog'
 import { parseHideDetail } from '../engine/hidedetail'
 import { decodeRoleId, roleAnswerName, roleSideWord } from '../engine/mission-role'
 import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
+import { homeUnitOf } from '../engine/roster'
+import { UNIT } from '../engine/unitview'
 import { isOD, dateOrd, INPUTS, inpLabel, inpKindTag, isFly, isLeave, titleOf, toOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
@@ -633,6 +635,14 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
   }
   const sorted = [...days].filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort()
   const what = `${dir === 'undo' ? 'Undo' : 'Redo'}${entry.label ? ' — ' + entry.label : ''}`
+  /* WHOSE HISTORY (the fix read, 18 Nov 26 — Astra 4, Opus 3b): a change to men of the roster (their Quals, their name)
+     is filed with each man's own squadron (engine/editlog.ts push), so its Undo and Redo go there too — filed under the
+     squadron in view, the master's Undo of Osprey's CAT made from 142 showed in 142's history and not in 149's. Men of
+     one squadron only; any other step stays with the squadron in view. */
+  const homes = new Set<string>()
+  for (const c of entry.forward || []) if (c.collection === 'people' && (PEOPLE as any)[String(c.id)]) homes.add(homeUnitOf(String(c.id)) ?? UNIT)
+  const unit = homes.size === 1 && entry.forward!.every(c => c.collection === 'people') ? [...homes][0] : undefined
+  const say = (text: string, at: LineAt) => logAction(null, text, unit ? { ...at, unit } : at)
   if (!sorted.length) {
     /* an Undo line only where its change wrote a line of its own (the change-recording plan §11.9, walker A2-F5): the
        roster, the war's ledger and its postings write theirs dated today (changeLinesFor below), so their Undo does too;
@@ -648,11 +658,11 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
       return !same(b.grades, a.grades) || !!b.balLock !== !!a.balLock
     }
     const wrote = (entry.forward || []).some(c => c.collection === 'people' || c.collection === 'lw.ledger' || c.collection === 'lw.postouts' || lwOwn(c))
-    if (wrote) logAction(null, what, { date: localToday(), sect: 'day' })
+    if (wrote) say(what, { date: localToday(), sect: 'day' })
     return
   }
   let a = sorted[0]!, b = a
-  const flush = () => logAction(null, what, { date: a, end: b, sect: 'day' })
+  const flush = () => say(what, { date: a, end: b, sect: 'day' })
   for (const d of sorted.slice(1)) { if (d === nextIso(b)) b = d; else { flush(); a = b = d } }
   flush()
 }

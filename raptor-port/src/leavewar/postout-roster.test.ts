@@ -20,7 +20,7 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
-import { accountsLoad, signIn, sessionFor } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, accountOfPid } from '../state/accounts'
 import { commandStream, commitProjection } from '../command'
 import type { CommitEnvelope } from '../command'
 import { peopleStore, revertUnsavedPeople } from '../state/people-settings-commit'
@@ -426,5 +426,43 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     const e = realPass('rocky', 'sans')
     e.changes.push({ op: 'put', collection: 'settings', id: 'account:zz9', before: { id: 'zz9', name: 'us', role: 'member', pid: 'bane', on: true }, after: { id: 'zz9', name: 'us', role: 'admin', pid: 'bane', on: true } } as any)
     expect(ownershipViolation(e)).toMatch(/settings\/account:zz9/)
+  })
+})
+
+/* THE PASS STORES THE ACCOUNTS ON ITS FIRST TRY (the fix read of multi-squadron batch 1's full check, 18 Nov 26). On a store
+   that had never written its accounts, a Delete's pass wrote "nothing" over Ranger's account row (never stored — a change
+   the gate refuses), and a SANS man due beside an Overseas Sqn one had his seeded account judged as if suspended: both
+   passes were refused, and ran only on the pass's own retry — whose command then carried no account row at all, so the
+   suspension of an Overseas Sqn posting lived in memory only and was gone on the next load. Found when Opus 1's loop
+   break ended that retry. Each test reads the ONE pass command that landed. */
+describe('the pass stores the accounts on its first try, on a store that never wrote them', () => {
+  const acctIds = (e: CommitEnvelope) => e.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith('account:')).map(c => String(c.id))
+  it('Delete: the list it stores leaves his account out, every other seeded account stored', () => {
+    postAhead('bane', 'delete')
+    const n = commandStream().length
+    runPoOutcomes()
+    const envs = passEnvs(n)
+    expect(envs).toHaveLength(1)
+    const ids = acctIds(envs[0]!)
+    expect(ids, 'the seeded list stored with it').toContain('account:acad')
+    expect(ids, 'his account simply left out').not.toContain('account:acus')
+    accountsLoad()
+    expect(accountOfPid('bane'), 'gone after a reload').toBeUndefined()
+    expect(accountOfPid('stiff'), 'Saber’s kept').toBeTruthy()
+  })
+  it('Overseas Sqn and SANS at once: his account stored suspended, the SANS man’s as it was, and so after a reload', () => {
+    expect(postOut('bane', POSTDATE, 'overseas')).toBe(true)
+    expect(postOut('rocky', POSTDATE, 'sans')).toBe(true)
+    vi.setSystemTime(new Date(2026, 6, 21, 9, 0, 0))
+    const n = commandStream().length
+    runPoOutcomes()
+    const envs = passEnvs(n)
+    expect(envs).toHaveLength(1)
+    const ch = (id: string): any => envs[0]!.changes.find(c => c.id === id)
+    expect(ch('account:acus')?.after?.on, 'Ranger’s account stored suspended').toBe(false)
+    expect(ch('account:achex')?.after?.on, 'the SANS man’s stored as seeded').toBe(true)
+    accountsLoad()
+    expect(accountOfPid('bane')?.on, 'still suspended after a reload').toBe(false)
+    expect(accountOfPid('rocky')?.on).toBe(true)
   })
 })

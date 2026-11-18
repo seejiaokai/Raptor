@@ -436,12 +436,15 @@ export function keyLabel(key: any, days: any[] = DAYS): string {
    row deleted in the same write. Held while a command runs (DEFER) — the identity is given when the line is KEPT, so a
    refused command burns none and the order is the order kept; kept with no command running, it goes through the door
    (a saved group of its own, with its batch). */
-function push(row: Omit<ELogRow, 'seq' | 'lineId'>) {
+function push(row: Omit<ELogRow, 'seq' | 'lineId'>, unit?: string) {
   /* whose history it is, read now, not when a held line is kept: a line about one man with no schedule place (his Quals,
      his absence, his posting — `sub` with no key) is his own squadron's, wherever it was made from (the master changing a
      149 man from 142's view filed it in 142's history, which 142's members read — the fix's blind read, F2); any other
      line, the unit in view's */
-  const u = row.sub && !row.key ? (homeUnitOf(row.sub, isoOk(row.date) ? row.date! : undefined) ?? UNIT) : UNIT
+  /* (the fix read, 18 Nov 26 — Astra 3, Opus 3: `sub` is a PERSON only where the roster has him — a mission-role answer's
+     `sub` is its formation's row id, read as a man with no home and filed under the demo's 142; and a writer that knows
+     whose line it is says so — an Undo or Redo of one man's change, filed with the change it takes back) */
+  const u = unit || (row.sub && !row.key && (PEOPLE as any)[row.sub] ? (homeUnitOf(row.sub, isoOk(row.date) ? row.date! : undefined) ?? UNIT) : UNIT)
   const keep = () => {
     const r = { ...row, u, lineId: mintLineId(), seq: ELOG.next++ } as ELogRow
     /* the list in memory is the unit in view's only (elogLoad); another squadron's line is saved, and read with it */
@@ -488,6 +491,7 @@ export type LineAt = {
   iid?: string | null; itype?: string; iname?: string; grp?: string; key?: string; sect?: string; from?: string; to?: string; sub?: string; fld?: string
   iids?: string[]; days?: string[]; wdays?: string[]
   one?: 1 | boolean
+  unit?: string       // whose history the line is, where its writer knows it (an Undo / Redo of one man's change) — never stored as such: it becomes the row's `u`
 }
 export function logAction(di: any, text: string, at?: LineAt) {
   const d = di == null ? null : +di
@@ -514,7 +518,7 @@ export function logAction(di: any, text: string, at?: LineAt) {
   if (at && at.iids && at.iids.length > 1) row.iids = at.iids.slice()
   if (at && at.days && at.days.length) row.days = at.days.slice()
   if (at && at.wdays && at.wdays.length) row.wdays = at.wdays.slice()
-  push(row)
+  push(row, (at && at.unit) || undefined)
 }
 
 /* newest first, optionally narrowed to one day — the listed view's whole

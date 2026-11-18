@@ -672,10 +672,13 @@ changeset and its `ChangeBatch`; in the database it is durable and shared.
 the same on every client. `seq` below is **yours**: the store's own rising number (its `changeSeq`), store-assigned; the
 app keeps no number of its own (its in-memory place in the loaded list is never stored).
 
-**`EditLogSeen`** (new, `[DRAFT-PENDING]`): one row per person — `personId`, `upTo` (every line at or before this
+**`EditLogSeen`** (new, `[DRAFT-PENDING]`): one row per person AND squadron (`unit`, ref Unit — each squadron's history
+is read alone, so what he has seen is kept for each: the fix read of multi-squadron batch 1's full check, 18 Nov 26 —
+Astra 6) — `personId`, `unit`, `upTo` (every line at or before this
 POSITION in the log's order — `(at, lineId)` in the stand-in, the store's `seq` once assigned — is seen), `extra` (lines
 after it marked seen one by one, by `lineId`). Written only by that person ("Mark all as seen", own row — §11).
-Today the rows `settings/seen:<pid>` (they were one shared record, `changeseen`, until 30 Sep 26).
+Today the rows `settings/seen:<pid>`, holding each squadron's cursor under `units` (they were one shared record,
+`changeseen`, until 30 Sep 26, then one cursor for every squadron until 18 Nov 26).
 
 | Field | Type | Req | Meaning |
 |---|---|---|---|
@@ -1739,6 +1742,17 @@ reading, put to him). Whether the master mark moved is judged on the whole accou
 command, so dropping a master's stored account — the first account write stores every seeded row — is refused like
 any other change to it. Approving an access request linked to a man already on the roster leaves his squadron as it
 is; a new man approved is the approving admin's squadron's.
+
+**Tightened by the fix read of that check (18 Nov 26 — Astra 1, 2 and 5, Opus 2 and 6; `src/state/perms.ts`
+homeUnitViolation, adminLockBroken).** The accounts a command changes are read as the whole list,
+before against after, each as the loader reads it (none stored is the seeded list), so an account a first write simply
+leaves out is judged as removed. The last-admin lock stands at the gate too, for every actor, the master included: a
+squadron with an admin at home who can sign in before the command keeps one after it, and the app keeps one at all. A
+`PersonHome` change is judged day by day — today and every date a row starts on, before or after — comparing his
+squadron on each: a change on a day already begun is refused, and a later one needs admin in the squadron he leaves on
+that day; a man with no squadron may be given one from today. Not yet held at the gate (Opus 7, open — the evidence
+sheet of 18 Nov 26): an admin's change to an `Input` of another squadron's man; the screens offer none, since Inputs stay
+on his own squadron (D2132).
 
 **The day lock (29 Sep 26, D355, D450 — section 9):** *(8 Nov 26, his D1751: a simple mark the app holds — none of the Dataverse privileges, team or server check in this paragraph is built.)* the lock is columns of `ScheduleDay` (section 3), so it follows
 the ScheduleWeek family's row — an admin takes, releases and takes over a day (every scheduler is an admin; in

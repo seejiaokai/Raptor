@@ -26,6 +26,7 @@ import { HOOKS } from '../engine/hooks'
 import { mayEditQualsOf, mayRenameCallsign, mayTickManagement, mayTickScheduler } from './perms'
 import { MGMT_KEY, SCHED_KEY } from '../engine/qualcols'
 import { commitPeopleEdit } from './people-settings-commit'
+import { otherSquadronPersonProblem } from './accounts'
 
 export type QualsOp =
   | { tick: string }
@@ -49,6 +50,9 @@ export const SCHED_ADMIN_ONLY = 'Only an admin can appoint a scheduler'
 export function updatePersonField(pid: string, op: QualsOp): string | null {
   const p = (PEOPLE as any)[pid]
   if (!p) return 'That person is not on the roster'
+  /* an admin on another squadron's man is told whose he is, never "your own row" (the fix read, 18 Nov 26 — Opus 4) */
+  const other = otherSquadronPersonProblem(pid)
+  if (other) { HOOKS.toast(other, 'warn'); return other }
   if (!mayEditQualsOf(pid)) { HOOKS.toast(OWN_ROW_ONLY, 'warn'); return OWN_ROW_ONLY }
   if ('callsign' in op && !mayRenameCallsign()) { HOOKS.toast(RENAME_ADMIN_ONLY, 'warn'); return RENAME_ADMIN_ONLY }   // D218
   if ('tick' in op && op.tick === MGMT_KEY && !mayTickManagement()) { HOOKS.toast(MGMT_ADMIN_ONLY, 'warn'); return MGMT_ADMIN_ONLY }   // D1510

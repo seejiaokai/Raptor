@@ -309,6 +309,19 @@ function otherSquadronProblem(pid: string): string | null {
   /* two sentences, as the last-admin lock's words beside it: a dash does not join two thoughts (the guide's §1b) */
   return `He is ${num}'s. Only an admin of ${num} can change his account.`
 }
+/* the same door for the PERSON — Archive, Restore and a Quals edit on Admin → Users: an admin of one squadron acting on
+   another squadron's man is told whose he is, as Suspend and Delete tell him, never the commit gate's own words, "You can
+   only edit your own row" or "That did not save" (the fix read of multi-squadron batch 1's full check, 18 Nov 26 — Opus
+   4). An admin's question only: a member stays "your own row only", which is his rule. */
+export function otherSquadronPersonProblem(pid: string): string | null {
+  const mine = SESSION ? accountById(SESSION.user) : undefined
+  if (!mine || mine.role !== 'admin') return null
+  const u = homeOn(pid)
+  if (!u) return null
+  if (levelOfAccount({ id: mine.id, pid: mine.pid, role: 'admin', master: !!mine.master }, u) === 'admin') return null
+  const num = unitById(u)?.num ?? u
+  return `He is ${num}'s. Only an admin of ${num} can change him.`
+}
 
 /* ---- SIGNING IN: what the sign-in card turns into (D204) ---- */
 export type SignIn =
@@ -367,8 +380,13 @@ function writeAccounts(next: Account[]) {
     const row = accountRow(a)
     if (!ACCOUNTS_STORED || before.get(a.id) !== JSON.stringify(row)) store.set(ACCOUNT_PFX + a.id, row)
   }
+  /* a dropped account's row is removed — but on the very first write none is stored, and the list stored simply leaves
+     it out (the loader reads the stored rows alone once there are any). Writing "nothing" over a row never stored made a
+     change with no before, which the commit gate refuses from the posting pass (perms.ts postingPassViolation): a Delete
+     posting due on a store that had never written its accounts was refused, and only passed on the pass's own retry
+     (the fix read of multi-squadron batch 1's full check, 18 Nov 26 — found when Opus 1's loop break ended that retry) */
   const kept = new Set(next.map(a => a.id))
-  for (const id of before.keys()) if (!kept.has(id)) store.set(ACCOUNT_PFX + id, null)
+  if (ACCOUNTS_STORED) for (const id of before.keys()) if (!kept.has(id)) store.set(ACCOUNT_PFX + id, null)
   ACCOUNTS_STORED = true
   ACCOUNTS_LIST = next
 }
@@ -524,6 +542,8 @@ export function deleteAccountProblem(pid: string): string | null {
   if (me() != null && pid === me()) return "You can't delete yourself — ask another admin"
   const other = otherSquadronProblem(pid)
   if (other) return other
+  const master = masterDeleteProblem(pid)
+  if (master) return master
   return lockProblem(ACCOUNTS_LIST.filter(x => x.pid !== pid))
 }
 /* THE POSTING'S SUSPENSION ([POST-OUT-OUTCOMES], D280): the overseas outcome suspends his account on the date — never
@@ -601,6 +621,25 @@ export const accountSuspendedByPosting = (pid: string): boolean => { const a = a
    it is not a person acting, so "yourself" never applies there) */
 export function lastAdminIfGone(pid: string): string | null {
   return lockProblem(ACCOUNTS_LIST.filter(x => x.pid !== pid))
+}
+/* WHICH LOCK HOLDS HIM — for the doors that word the lock their own way (a posting that waits, Archive): the squadron
+   whose last admin he is, or 'app' for the whole app's last admin who can sign in, or null. Removing one man's account
+   can leave only HIS squadron without an admin of its own, so the squadron named is his (the fix read, 18 Nov 26 —
+   Opus 5: those doors still said "the last admin who can sign in" while 142 had three) */
+export function lastAdminLock(pid: string): { num: string } | 'app' | null {
+  const p = lastAdminIfGone(pid)
+  if (!p) return null
+  if (p === ADMIN_LOCK) return 'app'
+  const u = homeOn(pid)
+  return { num: String((u && unitById(u)?.num) ?? u ?? '') }
+}
+/* A MASTER IS NEVER DELETED (the fix read, 18 Nov 26 — Opus 1): the master mark changes only by its own command (D2191;
+   perms.ts unitRowViolation), so a delete that takes a master's account away is refused at the commit gate whatever
+   door made it. Said first, in words, by every delete door — Admin → Users and a posting's Delete — so a posting's Delete
+   for him waits on its date (it used to be refused whole there, holding every other posting of that day back). */
+export function masterDeleteProblem(pid: string): string | null {
+  const a = accountOfPid(pid)
+  return a && a.master ? `${accountCallsign(a)} is a master admin, so he can't be deleted` : null
 }
 export function dropAccountOfPid(pid: string): void {
   const a = accountOfPid(pid)

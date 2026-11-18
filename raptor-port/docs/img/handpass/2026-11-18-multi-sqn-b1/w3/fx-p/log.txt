@@ -1,0 +1,18 @@
+msq-w3-fixread v1 phone only F1,F4
+msq-w3-fixread v1 phone only F1
+phone admin visible buttons Menu | Undo | Redo | Sync · slow | Notifications | Jump to a date | Export to Excel (CSV) | Export as PDF (print) | Highlight filters | More schedule options | UsersSign-in and roster› | Squadron configDuty, day  | DataStorage & cleanup›
+F1 controls [{"tag":"BUTTON","id":"","label":"Ospreyus9 · Member · Pilot · CAT A","cls":"acc-main acc-tap"},{"tag":"INPUT","id":"accEdName","label":"us9","cls":""},{"tag":"SELECT","id":"accEdRole","label":"Member or admin","cls":""},{"tag":"BUTTON","id":"accEdSave","label":"Save","cls":"abtn primary"},{"tag":"BUTTON","id":"accEdOnOff","label":"Suspend","cls":"abtn"},{"tag":"BUTTON","id":"accEdArchive","label":"Archive","cls":"abtn"},{"tag":"BUTTON","id":"accEdDel","label":"Delete","cls":"abtn danger"},{"tag":"BUTTON","id":"accEdCancel","label":"Cancel","cls":"abtn"}]
+F1 opened true pid osp9
+F1 body after open: 142 TALON ↶ ↷ ‹ Users Waiting for access Nobody is waiting for access. People · 71 Sign-in Roster Osprey us9 · Member · Pilot · CAT A Sign-in (defence mail) Role Save Suspend Archive Delete Cancel Add a person Callsign/Name Initials Pilot, WSO or personnel CAT Sign-in (defence mail) Post in Wed 18 Nov 26 ▾ Add person Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date. Guest view Let people waiting for access view the schedule (read only) Couldn't save that document: your browser storage may be full, so it may not be here after a reload. Member — own inputs, quals and bids Admin — schedules and manages Pick… Pilot WSO Personnel (ground crew) Pick… Osprey us9 on
+ROW RECORD | F1 | phone | ad2 searches Osprey and opens his row | saw: opened: true; controls: Ospreyus9 · Member · Pilot · CAT A | us9 | Member or admin | Save | Suspend | Archive | Delete | Cancel
+ROW RECORD | F1 | phone | ad2 on Osprey's row: INPUT "us9" | saw: no exact refusal; bad words: none ; tail: me Initials Pilot, WSO or personnel CAT Sign-in (defence mail) Post in Wed 18 Nov 26 ▾ Add person Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date. Guest view Let people waiting for access view the schedule (read only) Couldn't save that document: your browser storage may be full, so it may not be here af
+F1 select accEdRole main,admin
+ROW RECORD | F1 | phone | ad2 on Osprey's row: SELECT "Member or admin" | saw: no exact refusal; bad words: none ; tail: Pilot, WSO or personnel CAT Sign-in (defence mail) Post in Wed 18 Nov 26 ▾ Add person Makes his Quals row, and his sign-in if you give one. The Leave War counts him from the post-in date. Guest view Let people waiting for access view the schedule (read only) Nothing new Couldn't save that document: your browser storage may be full, so it may not be here af
+ROW PASS | F1 | phone | ad2 on Osprey's row: BUTTON "Save" | saw: He is 149's. Only an admin of 149 can change his account.
+ROW PASS | F1 | phone | ad2 on Osprey's row: BUTTON "Suspend" | saw: He is 149's. Only an admin of 149 can change his account.
+ROW PASS | F1 | phone | ad2 on Osprey's row: BUTTON "Archive" | saw: He is 149's. Only an admin of 149 can change him.
+ROW PASS | F1 | phone | ad2 on Osprey's row: BUTTON "Delete" | saw: He is 149's. Only an admin of 149 can change him.
+ROW PASS | F1 | phone | ad2 on Osprey's row: BUTTON "Cancel" | saw: He is 149's. Only an admin of 149 can change him.
+ROW RECORD | F1 | phone | Osprey checked afterwards | saw: Osprey us9 · Member · Pilot · CAT A
+errors []
+DONE 5 PASS 0 FAIL 4 OTHER of 9
