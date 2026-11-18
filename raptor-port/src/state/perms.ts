@@ -1353,8 +1353,10 @@ const lineOk = (a: Actor, u: string): boolean => {
   const lv = levelInForce(a, u, todayIso(), unitRowsBefore([]))
   return a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
 }
+/* (job 2, 19 Nov 26 — Astra's 5: the squadron in view is asked too; a 142 member with View of 149 and 149 in view filed
+   a line in 149's history, a View right writing nothing — D2094) */
 export function elogUnitAllowed(a: Actor | null | undefined, u: string): boolean {
-  if (!a || a.role === 'system' || !u || u === UNIT) return true
+  if (!a || a.role === 'system' || !u) return true
   return lineOk(a, u)
 }
 export function elogWriteProblem(a: Actor | null | undefined, key: string, v: unknown): string | null {
