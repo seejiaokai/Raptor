@@ -1446,6 +1446,11 @@ const schedulerIds = (): string[] => ACCOUNTS_LIST.filter(a => isAdminAccount(a)
    its bell lines go to that squadron's admins only, never the other squadron's (each admin's Admin → Users lists his own
    squadron, D2191); the posted man's squadron is the war's, since each squadron's Leave War holds only its own people */
 const ownSchedulerIds = (): string[] => { const u = worldUnit(); return schedulerIds().filter(pid => homeUnitOf(pid) === u) }
+/* …and a man the war tells of its bidding or of a decision is one at home in the war's own squadron today (job 2, 19 Nov
+   26 — the Opus read's F1; D2194): a man posted out of it stays a row of its war while his posting window runs (state/
+   store.ts setPeople), and once moved to another squadron he is that squadron's — the gate refuses an admin's line to him
+   (state/perms.ts 7e), which refused the whole command that wrote it, Open for bidding among them */
+const atWarHome = (pid: string): boolean => homeUnitOf(pid) === worldUnit()
 /* A WORKING DAY WAS MADE A HOLIDAY — called by the war's store INSIDE the command that did it (state/store.ts
    tellHolidays), with the runs of dates. For each run with an input that now needs an OIL answer:
      · ONE notice a scheduler (state/notices.ts noticeHoliday — "never silent", D780), the one who made the holiday
@@ -1517,6 +1522,7 @@ function tellWar(tells: WarTell[]): void {
   const who = by != null ? String(by) : null
   commitInputs(SCHED_TYPES.inputsWrite, () => {
     for (const t of tells) {
+      if (!atWarHome(String(t.personId))) continue
       const part: NoticePart = { k: 'lw', c: t.code, a: t.from, b: t.to, d: t.d, ...(t.destFrom ? { to: t.destFrom, tb: t.destTo } : {}), ...(t.was ? { w: t.was } : {}) }
       noticeWar([t.personId], who, part)
     }
@@ -1526,7 +1532,7 @@ function tellWar(tells: WarTell[]): void {
    special left out (noticeWar), and the admin who did it (D1214) */
 function warAudience(): string[] {
   const onWar = new Set(getState().people.map(p => p.id))
-  return [...new Set(ACCOUNTS_LIST.filter(a => a && a.pid != null && onWar.has(String(a.pid))).map(a => String(a.pid)))]
+  return [...new Set(ACCOUNTS_LIST.filter(a => a && a.pid != null && onWar.has(String(a.pid)) && atWarHome(String(a.pid))).map(a => String(a.pid)))]
 }
 function tellBidding(tells: OpenTell[]): void {
   const by = me()
@@ -1632,6 +1638,8 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
     if (c.collection !== 'notices' || c.op !== 'put' || !c.after) continue
     const n = c.after as Notice
     if (!isWarNotice(n)) continue
+    /* (one since moved to another squadron is no longer told here — atWarHome) */
+    if (!atWarHome(String(n.to))) continue
     /* (a war notice's first part is one of the war's own three kinds — isWarNotice, just above) */
     const p = (n.what || [])[0] as Extract<NoticePart, { k: 'lw' | 'lwopen' | 'lwback' }> | undefined
     if (!p || p.k === 'lwback') continue
