@@ -18,8 +18,13 @@ our own test tables, in his test account (his D1749), are for our testing only; 
 group with basic access, and who may do what is the app's own roles, controlled inside the app — database-level rights are
 yours; no outside connectors, only M365 services such as Power Automate and Teams; large files in SharePoint with a link;
 a flow runs by itself, owned by the unit's role-based account; auditing is on and managed by you. Still to ask: your short
-code early, what basic access allows on the app's tables, SharePoint from the app and who may read it,
+code early, ~~what basic access allows on the app's tables~~ (answered 19 Nov 26: almost everything — `OUTSTANDING.md` `[CODE-APPS-RESEARCH]` (3)), SharePoint from the app and who may read it,
 how long the audit is kept, how the unit gets a role-based account, and the first admin (item 8).
+
+**READ ALSO (19 Nov 26) — how code apps work, from every page of Microsoft's guide and the wider web, set against our
+plan:** `docs/superpowers/specs/2026-11-19-power-apps-code-apps-research.md` (`OUTSTANDING.md` `[CODE-APPS-RESEARCH]`).
+Each call carries the person's own account, so the database's role decides what a person can do directly; your answer
+(19 Nov 26): your basic user role allows almost everything, and the app's own roles decide who may do what.
 
 ## What we agreed
 
