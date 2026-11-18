@@ -54,6 +54,7 @@ carries his primary squadron's lines by default, every other squadron's switched
 | # | Who is told | When | What the line says | A tap | Ruled |
 |---|---|---|---|---|---|
 | — | — | none since 27 Oct 26: the Leave War's ruled lines (R1, P2, P4, P7, P8, P9) were built with its M4 and moved up whole | — | — | — |
+| — | Everyone | Always | Each person chooses which kinds of line reach his bell; a few that need him to act stay always on (an access request waiting for an admin among them) — which ones, put to him with the drawing; built after the multi-squadron batches, drawn first | — | D2200, 18 Nov 26 |
 
 ## Proposed — the agent's, his to strike
 

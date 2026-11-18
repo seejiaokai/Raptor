@@ -132,6 +132,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - A squadron's admins make admins of their own squadron only, never of another; another squadron is View only, unless a master switches on his edit (below) [D2192, D2191, D2198, D2199].
 - A master admin edits every page of every squadron: a squadron picked in the "Schedules" menu moves every page to it, Admin → Users too; his own inputs and leave stay filed in his primary [D2197, D2132, D2191, D2198, D1695, D2199].
 - A master admin's bell carries his primary squadron's lines by default, every other squadron's off, his to switch on (the agent's reading) [D2198, D2191, D227, D2199].
+- Each person chooses which notifications reach his bell, a few that need him to act always on; built after the multi-squadron batches, drawn first [D2200, D2198].
 - A master admin may let a named admin edit another squadron's schedules — a switch on his row in Admin → Users, off by default, a master's alone; that squadron's other pages stay View (the agent's reading) [D2199, D2192, D2191, D2198, D785].
 - The transfer: only the Leave War's Post out moves his primary squadron, on its date. Neighbouring squadrons plan each other's people as a matter of course, not only during a posting [D281, D2087, D282, D1100, D1101].
 - A community is the squadrons flying one aircraft type (F-15, F-16): callsigns unique within a community, not across the app; a guest flyer from another community is always marked — an orange corner on his puck (option A) [D288, D289, D296].
