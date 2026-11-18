@@ -444,7 +444,10 @@ function push(row: Omit<ELogRow, 'seq' | 'lineId'>, unit?: string) {
   /* (the fix read, 18 Nov 26 — Astra 3, Opus 3: `sub` is a PERSON only where the roster has him — a mission-role answer's
      `sub` is its formation's row id, read as a man with no home and filed under the demo's 142; and a writer that knows
      whose line it is says so — an Undo or Redo of one man's change, filed with the change it takes back) */
-  const u = unit || (row.sub && !row.key && (PEOPLE as any)[row.sub] ? (homeUnitOf(row.sub, isoOk(row.date) ? row.date! : undefined) ?? UNIT) : UNIT)
+  /* (the second fix read, security H5: a squadron other than the unit in view only where the person giving the line may
+     file there — HOOKS.elogUnitOk; else the unit in view's, as every other line) */
+  const u0 = unit || (row.sub && !row.key && (PEOPLE as any)[row.sub] ? (homeUnitOf(row.sub, isoOk(row.date) ? row.date! : undefined) ?? UNIT) : UNIT)
+  const u = u0 !== UNIT && !HOOKS.elogUnitOk(u0) ? UNIT : u0
   const keep = () => {
     const r = { ...row, u, lineId: mintLineId(), seq: ELOG.next++ } as ELogRow
     /* the list in memory is the unit in view's only (elogLoad); another squadron's line is saved, and read with it */

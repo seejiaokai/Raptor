@@ -135,6 +135,10 @@ export const HOOKS = {
      nothing, a reused callsign inherits nothing (the one-identity rule). Headless and
      for someone without access: null. */
   whoamiId: (): string | null => null,
+  /* may the person signed in file a change-history line under this squadron (the second fix read, security H5): a line
+     about one man, or one an Undo files with the change it takes back, names a squadron; the state layer answers from
+     his rights there (state/perms.ts elogUnitAllowed). Headless: yes. */
+  elogUnitOk: (_unit: string): boolean => true,
   /* THE OG TAG ([DRAFT-PENDING], the owner's D172): does the puck at this (positional) key, on a day NOT yet published,
      hold a change NEW TO the person looking? Per PLACE, never per person (Astra DP-11). The answer is the viewer's
      (the change history and his seen record live in state/ui), so it arrives as a hook — ui/changesmodel.ts installs

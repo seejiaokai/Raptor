@@ -52,16 +52,16 @@ import { endUndoSession } from '../undo/timeline'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { endTrackerSession } from '../tracker/role.js'
 import { isHydrated, hydratePlan, hydrateRolesFor, persistWb } from './persist'
-import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone } from '../command'
+import { deferEffect, CmdRefused, setPermissionResolver, commitProjection, onPipelineBegin, deriveActor, definePermission, anyone, activeEnvelope } from '../command'
 /* internal wiring may raise a command as a named person (command/index.ts — commitAs stays off the public surface) */
 import { commitAs } from '../command/commit'
 import { defineInvariant } from '../command/harness'
 import type { CommitEnvelope } from '../command/types'
-import { cmdAuthorize, ownershipViolation } from './perms'
+import { cmdAuthorize, ownershipViolation, elogUnitAllowed, elogWriteProblem } from './perms'
 import type { EnlistableStore, RecordEntry, CommitResult } from '../command'
 import { snapshotStash, restoreStash, stashEntries, writeStashRecords } from '../engine/weekstash'
 import { registerSchedCommandLayer, commitSchedVoid, commitSchedValue, commitInputs, commitInputsProjection, commitInputsWith, SCHED_TYPES, resyncSchedBaseline } from './sched-commit'
-import { resyncPeopleBaseline, mintPeopleOrd, reloadUnitSettings } from './people-settings-commit'
+import { resyncPeopleBaseline, mintPeopleOrd, reloadUnitSettings, setElogWriteGuard } from './people-settings-commit'
 import { registerPeopleSettingsCommandLayer } from './people-settings-wire'
 import { mintOrd } from '../command/ord'
 import { PLANPUCKS, DAYRMK } from './plan'
@@ -950,6 +950,10 @@ export function wireStore() {
      "who", so a callsign rename moves nothing and a reused callsign inherits nothing
      (the one-identity rule; Astra R1-9) */
   HOOKS.whoamiId = () => me()
+  /* a history line names another squadron only where the person giving it may file there, and a line kept, rewritten or
+     deleted inside a person's command is judged by its squadron (the second fix read, security H5 — state/perms.ts 7d) */
+  HOOKS.elogUnitOk = (u: string) => elogUnitAllowed(activeEnvelope()?.actor ?? deriveActor(), u)
+  setElogWriteGuard((key, v) => elogWriteProblem(activeEnvelope()?.actor ?? deriveActor(), key, v))
   /* a line written while a command runs is kept only if the command commits ([DRAFT-PENDING] — the history is
      durable now, so a refused command's lines would otherwise stand for good) */
   setElogDefer(deferEffect)

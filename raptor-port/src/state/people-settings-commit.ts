@@ -350,6 +350,11 @@ let registered = false
 /* `loaders` — the four files' loaders (ModuleLoaders above); `moduleTypes` — the command types those files declare, in
    the order the wire file lists them (the accounts', the change history's, the bell's, the Leave War's seen marks', the
    Approvals' seen marks'), each declared here as it always was */
+/* the change history's write guard (state/perms.ts elogWriteProblem, with the running command's actor), handed in by
+   state/store.ts so this file imports no permission module (the import-cycle note above) */
+let ELOG_WRITE_GUARD: ((key: string, v: unknown) => string | null) | null = null
+export function setElogWriteGuard(fn: ((key: string, v: unknown) => string | null) | null): void { ELOG_WRITE_GUARD = fn }
+
 export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: readonly string[]): void {
   if (registered) return
   registered = true
@@ -374,6 +379,12 @@ export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: 
   setSettingsWriteHook((key, v, raw) => {
     const k = localOf(String(key))
     if (k.startsWith('missionrole:')) throw new Error('Mission-role rows require the typed annotation command')
+    /* a history line kept, rewritten or deleted inside a person's command is judged by its squadron (the second fix read,
+       security H5 — state/perms.ts 7d, installed by state/store.ts; a line is a raw write, never seen by the gate) */
+    if (k.startsWith('elog:') && isCommitting() && ELOG_WRITE_GUARD) {
+      const p = ELOG_WRITE_GUARD(String(key), v)
+      if (p) throw new Error(`Refused: ${p}`)
+    }
     if (!isCommitting() && k === 'sanscalendar') throw new Error('SANS calendar settings require the typed settings command')
     if (!isCommitting() && FLY_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('The flying plan is written only by its typed commands')
     if (!isCommitting() && UNIT_ROW_PREFIXES.some(p => k.startsWith(p))) throw new Error('Units, places, homes and rights are written only by their typed commands')

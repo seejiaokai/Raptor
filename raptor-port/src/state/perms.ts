@@ -1305,6 +1305,45 @@ function inputUnitViolation(env: CommitEnvelope): string | null {
   return null
 }
 
+/* 7d. A SQUADRON'S CHANGE HISTORY IS WRITTEN AND SWEPT ONLY BY ITS OWN PEOPLE (the second fix read, 18 Nov 26 — the
+   security read's H5). A history line's squadron is a field of its value (`u`, engine/editlog.ts push), its id
+   `elog:<line>` names none, and the permission row (member C R, admin C R D) never read it: a 142 member filed a line
+   in 149's history (`logAction(…, {unit:'u149'})`), and 142's plain admin deleted a 149 line by a forged `elog.sweep`.
+   NOT AT THE GATE (Fable's plan and the security read both said "judge the elog: row at the gate"): a history line is a
+   RAW settings write, never a record of the settings store (state/people-settings-commit.ts), so a command's changes
+   never carry it and the gate never sees one — the forged sweep commits with no change at all. Two doors instead:
+   - elogUnitAllowed — asked by engine/editlog.ts push (HOOKS.elogUnitOk, installed by state/store.ts) before a line
+     takes a squadron other than the unit in view, by its `unit` or by its man's home: a line the actor may not file
+     there is filed in the unit in view, as every other line is. Kept lines are written later by the app (the
+     projection door), so the actor is read here, at the moment the line is given.
+   - elogWriteProblem — asked by the settings write hook for every `elog:` write made inside a command by a person: the
+     line kept, rewritten (the key-space remap) or deleted (the sweep, the cap's trim) is judged by its `u` (a saved
+     line with none is the boot squadron's — only the demo's stored data, D56): an admin in force must be an admin
+     there, anyone else at home or holding rights there (a member's own command trims his squadron's oldest line); a
+     rewrite keeps its squadron. (Who a line names as its author is not judged: a line is named by the person signed in on
+     the device that keeps it, which a remote change's actor is not — state/sched-dayrecords.test.ts's remote envelope.)
+   The app itself is not asked. A raw write outside every command is the raw store's, as for every raw key; the
+   database's own row rights take that over. */
+const lineOk = (a: Actor, u: string): boolean => {
+  if (a.role !== 'admin' && a.role !== 'member') return u === UNIT
+  const lv = levelInForce(a, u, todayIso(), unitRowsBefore([]))
+  return a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
+}
+export function elogUnitAllowed(a: Actor | null | undefined, u: string): boolean {
+  if (!a || a.role === 'system' || !u || u === UNIT) return true
+  return lineOk(a, u)
+}
+export function elogWriteProblem(a: Actor | null | undefined, key: string, v: unknown): string | null {
+  if (!a || a.role === 'system') return null
+  const unitOfLine = (x: any): string => (x && typeof x === 'object' && typeof x.u === 'string' && x.u ? x.u : BOOT_UNIT)
+  const was: any = store.get(key, null), is: any = v ?? null
+  if (!was && !is) return null
+  if (was && is && unitOfLine(was) !== unitOfLine(is)) return `a history line moved to another squadron (${key})`
+  const u = unitOfLine(is || was)
+  if (!lineOk(a, u)) return `a history line of another squadron (${u}) ${is ? 'written' : 'deleted'} by one without rights there (${key})`
+  return null
+}
+
 /* 7b. A SQUADRON'S LEAVE WAR IS CHANGED ONLY BY ONE WHO HOLDS RIGHTS IN THAT SQUADRON (the second fix read, 18 Nov 26 —
    the security read's H2; Fable's plan C3). Each squadron has a Leave War world of its own (leavewar/sync.ts
    swapWarWorld), but a war record's id carries no unit — the storage door adds it — so section 7 never saw one, and the
