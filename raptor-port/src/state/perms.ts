@@ -1818,6 +1818,39 @@ function toldBy(env: CommitEnvelope, iid: unknown): Set<string> | null {
 /* a line made wholly of holiday parts — the only kind kept crossing (one holiday part beside another part is no holiday
    line: SEC-2) */
 const holidayLine = (n: any): boolean => Array.isArray(n?.what) && n.what.length > 0 && n.what.every((p: any) => p && p.k === 'oilhol')
+/* A POSTING TAKEN BACK REACHES EVERY LINE IT MADE (fix read 3, Astra's 2 — D1693, D1699, D1710): "Undo post out", or a
+   change of a posting that has run (its date moved, another outcome), takes back the lines its run put in each admin's
+   bell — an unread one goes, a read one is replaced by one "taken back" line — whatever squadron that admin is in now.
+   The one crossing into another squadron's bell this allows (D2194), each part checked against the posting record the
+   same command changes: the line is about the man whose posting this is; the posting had RUN (`poDone` its date, the day
+   after `to`) and is no longer as it ran (gone, another date or another outcome); the line is of that date and outcome;
+   - a posting line (`po`) only DELETED, a line the app wrote (`by` none), and every posting line this command deletes of
+     him of one moment — one run's lines (sync.ts postingLinesOf takes the newest run's);
+   - a "taken back" line (`poback`) only ADDED, by the actor, of the same man, date and outcome, to a man whose own
+     posting line of that run this same command deletes.
+   Anything else on another squadron's bell is judged as before. */
+function postingTakeBack(env: CommitEnvelope, c: Change, n: any, self: string | null): boolean {
+  if (env.type !== 'lw.postout') return false
+  const p: any = Array.isArray(n?.what) && n.what.length === 1 ? n.what[0] : null
+  if (!p || (p.k !== 'po' && p.k !== 'poback') || p.who == null) return false
+  const who = String(p.who)
+  const pc = env.changes.find(x => x.collection === 'lw.postouts' && String(x.id) === who)
+  const b: any = pc?.before
+  if (!pc || !b || typeof b.to !== 'string' || !ISO_DAY.test(b.to)) return false
+  const ran = isoAddDay(b.to)
+  if (b.poDone !== ran) return false
+  const f: any = pc.op === 'delete' ? null : pc.after
+  if (f && f.to === b.to && f.poDone === b.poDone && passOutcomeOf(f) === passOutcomeOf(b)) return false
+  const sameRun = (x: any): boolean => { const q = x?.what?.[0]; return !!q && String(q.who) === who && x.day === ran && q.o === passOutcomeOf(b) }
+  if (!sameRun(n)) return false
+  const poDeletes = env.changes.filter(x => x.collection === 'notices' && x.op === 'delete' && (x.before as any)?.what?.[0]?.k === 'po' && String((x.before as any).what[0].who) === who)
+  if (p.k === 'po') {
+    if (c.op !== 'delete' || c.before !== n || (n.by != null && n.by !== '')) return false
+    return poDeletes.every(x => (x.before as any).at === n.at)
+  }
+  if (c.before != null || c.op === 'delete' || c.after !== n || self == null || String(n.by ?? '') !== self) return false
+  return poDeletes.some(x => String((x.before as any).to) === String(n.to) && sameRun(x.before) && (x.before as any).by == null)
+}
 function adminOwnerViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role !== 'admin') return null
@@ -1847,6 +1880,7 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
           if (replayed === undefined) replayed = REPLAY ? REPLAY(env) : null
           if (replayed && replayed(c)) continue
         }
+        if (to !== self && postingTakeBack(env, c, n, self)) continue
         if (to !== self && !ownsHim(to)) return `a bell line of another squadron's man (${where})`
       }
       continue
