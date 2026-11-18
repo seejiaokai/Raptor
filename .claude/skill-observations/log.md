@@ -2919,3 +2919,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The drawing brief asked for a line "Off day · 142: Sat · 149: Sun", copied from the plan's guess that an Off day is a weekday. The helper looked at the running app, found an Off day is a dated entry kept beside the public holidays, and drew a different line; one of the red-team readers found the same fault in the plan independently. Drawn as briefed, the picture would have put a wrong model in front of the owner for approval.
 **Suggested improvement:** In mockups-on-the-real-app.md, add: a brief names each new piece's purpose and leaves its exact words and values to be read from the running app; the helper reports any place where the app's real shape differs from the brief, and the host fixes the plan before the page goes out.
 **Principle:** A mock-up drawn on the real app is also a check of the plan's assumptions; brief the drawer to report where the app disagrees, rather than to paint the assumption.
+
+### Observation 975: Regex backslashes lost inside a template literal in an edit script
+
+**Status:** OPEN
+**Date:** 19 Nov 26
+**Session context:** chat 109's overnight run, multi-squadron batch 1, the A3 build (a store per unloaded squadron)
+**Skill:** New skill candidate: edit-script safety (or the project's editing traps in raptor-port/CLAUDE.md)
+**Type:** open-source
+**Phase/Area:** editing source files by a generated script
+
+**Issue:** The builder wrote a source change through a Node edit script whose new text sat inside a template literal; the regex in it lost its backslashes on the way, which silently broke the post-in date check and every post-in. Only the unit tests caught it.
+**Suggested improvement:** Add to the editing traps: never put regex backslashes inside a template literal in an edit script; write such lines with the Edit tool, or read the new text from a file written by the Write tool.
+**Principle:** A generated edit passes text through one more layer of escaping; any line holding backslashes is safest written by a tool that keeps every character as typed, and checked by a test before it is trusted.
