@@ -1270,7 +1270,14 @@ function levelInForce(a: NonNullable<CommitEnvelope['actor']>, u: string, today:
    every actor but the app itself: the test worlds that emptied INPUTS outside a command were put right instead
    (test-support/world.ts settleWorld), with no flag here.
    One case kept open for a member (his D755 — "the member may always take himself out"): a change that only takes him
-   out of an input, adding no one, is not judged by the others' squadrons. */
+   out of an input, adding no one, is not judged by the others' squadrons.
+   ON EVERY DAY IT COVERS (job 2, 19 Nov 26 — the security read's SEC-4): a man's home is read on the input's first day
+   and on every saved move inside its span (each home row's `from` there), so 142's admin cannot put a leave on a man
+   that runs on into the days he is 149's. The actor's rights are still read today — rights held in a squadron once
+   are not kept after he has left it (D2203). And a member's input naming only himself, before and after, with no
+   placeholder, is his whatever its squadron (§11, "C R U D own" — Fable's F2: across a saved move he was refused his
+   own input on either side of it). An input that spans a man's move is then changed only by a master or by the man
+   himself — no screen can save a move yet; who else may, filed for the Transfer batch. */
 function inputUnitViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system') return null
@@ -1279,11 +1286,20 @@ function inputUnitViolation(env: CommitEnvelope): string | null {
   const today = todayIso()
   const before = unitRowsBefore(env.changes)
   const named = (r: any): string[] => (r && typeof r === 'object' ? namedOf(r).map((e: any) => String(e.p)) : [])
+  /* the days a man's home is read on: the input's first day and every saved move inside its span */
+  const daysOf = (r: any): string[] => {
+    const a = inputAtIso(r.date, r.yr) || today
+    let b = r.endDate ? inputAtIso(r.endDate, r.yr) : undefined
+    if (b && b < a && r.yr != null) b = inputAtIso(r.endDate, Number(r.yr) + 1)
+    const out = new Set<string>([a])
+    if (b && b > a) for (const h of before.homes) if (h.from > a && h.from <= b) out.add(h.from)
+    return [...out]
+  }
   const unitsOf = (r: any): string[] => {
     if (!r || typeof r !== 'object') return []
     const iso = inputAtIso(r.date, r.yr) || today
     const ids = named(r)
-    if (ids.length) return ids.map(p => homeBefore(p, iso, before)).filter(Boolean) as string[]
+    if (ids.length) return daysOf(r).flatMap(d => ids.map(p => homeBefore(p, d, before))).filter(Boolean) as string[]
     const ph = placeholderOf(r)
     const by = ph && ph.by != null && ph.by !== '' ? ph.by : r.by
     const u = by == null || by === '' ? null : homeBefore(String(by), iso, before)
@@ -1297,6 +1313,9 @@ function inputUnitViolation(env: CommitEnvelope): string | null {
       const added = [...f].filter(p => !b.has(p)), gone = [...b].filter(p => !f.has(p))
       if (!added.length && gone.length === 1 && gone[0] === String(a.personId)) continue
     }
+    /* a member's own input — naming only him, before and after, no placeholder — is his whatever its squadron (F2) */
+    const onlyMe = (r: any) => r == null || (!placeholderOf(r) && named(r).length === 1 && named(r)[0] === String(a.personId))
+    if (a.role !== 'admin' && a.personId != null && onlyMe(was) && onlyMe(is)) continue
     for (const u of new Set([...unitsOf(was), ...unitsOf(is)])) {
       const lv = levelInForce(a, u, today, before)
       const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'

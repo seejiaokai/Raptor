@@ -1766,9 +1766,11 @@ squadron are judged by whose they are:
   admin in force, a member at home there from a member. The posting pass (the app itself) carries out a posting only for
   a man of the squadron whose war it runs on.
 - *A man's inputs* (Opus 7): an `Input` is judged by the squadrons of the people it names — each one's home on the
-  input's date — before and after: an admin in force must be an admin of each, a member at home in each (a member names
-  only people of his own squadron); an input naming nobody is its filer's squadron's. A member's change that only takes
-  himself out of an input is not judged by the others' squadrons (D755).
+  input's first day and on every saved move inside its span (SEC-4) — before and after: an admin in force must be an
+  admin of each, a member at home in each (a member names only people of his own squadron), his rights read today; an
+  input naming nobody is its filer's squadron's. A member's change that only takes himself out of an input is not judged
+  by the others' squadrons (D755), nor his own input naming only himself (§11 "own" — Fable F2). An input spanning a
+  man's move is changed only by a master or the man himself until the Transfer batch rules who else (filed).
 - *The change history* (H5): an `EditLog` line's squadron is a field of the line, and a line is written straight to
   storage, never as a record of a command, so the gate never sees one. Two doors hold it instead: a line about one man or
   an Undo's line names another squadron only where the person giving it may file there (else it is the unit in view's),
