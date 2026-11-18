@@ -47,7 +47,7 @@ import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
 import { rowDocIds } from './docs'
-import { localOf } from '../storage/unitid'
+import { localOf, split } from '../storage/unitid'
 
 /* ---- the reason a door hands in (inside its command) ---- */
 const REASONS = new Map<string, string>()
@@ -320,6 +320,18 @@ function crossLines(env: CommitEnvelope): void {
       if (what) logAction(null, `Leave War · ${cs(pid)} · ${r.code || ''} ${dayWord(date)}: ${what}`.replace('  ', ' '), { date, sect: 'abs', sub: pid, ...mark })
     }
   }
+  /* …and a bid taken out of ANOTHER squadron's stored war, through the second store (leavewar/state/foreign.ts — A3: the
+     master's Archive or Delete of a 149 man with 142's war loaded): one record a row, carrying its man and day, told in
+     that squadron's history, the same words (job 2, 19 Nov 26 — Astra's 4; D337) */
+  for (const c of env.changes) {
+    if (c.collection !== 'lwx.rec') continue
+    const r: any = c.before
+    if (!r || typeof r !== 'object' || c.after != null || r.kind !== 'request') continue
+    const pid = String(r.pid ?? ''), date = String(r.date ?? '')
+    if (!pid || !date) continue
+    const what = covered.has(`${pid}|${date}`) ? 'bid taken away — an input covers it' : 'bid removed'
+    logAction(null, `Leave War · ${cs(pid)} · ${r.code || ''} ${dayWord(date)}: ${what}`.replace('  ', ' '), { date, sect: 'abs', sub: pid, unit: split(String(c.id)).unit || undefined, fld: 'deleted', itype: String(r.code || '') })
+  }
 }
 /* THE WAR'S OWN DOORS ON AN APPROVED LEAVE (Fable's final read, F2; Astra's read of the fixes, 01). The war files its
    approvals as Inputs and takes them back inside its own command — cutting, SPLITTING (a middle day out of three leaves
@@ -453,7 +465,7 @@ function postoutLines(c: Change, env: CommitEnvelope): void {
     }
   }
 }
-function ledgerLines(c: Change): void {
+function ledgerLines(c: Change, unit?: string): void {
   /* ONE ENTRY PER CHANGE since the ledger went into small pieces ([OIL-AWARD-IS-A-GRANT], 29 Sep 26); an array is still
      read, entry by entry, so a change from before that shape says the same */
   const bl: any[] = Array.isArray(c.before) ? c.before : c.before ? [c.before] : []
@@ -461,7 +473,8 @@ function ledgerLines(c: Change): void {
   const bm = new Map(bl.map(r => [r.id, r])), am = new Map(al.map(r => [r.id, r]))
   const award = (e: any) => e && e.counter === 'oil' && +e.amount > 0
   const iso = (d: any) => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)
-  const at = (e: any) => ({ date: iso(e.date) ? e.date : localToday(), sect: 'abs', sub: String(e.personId || '') })
+  /* (another squadron's stored war, through the second store, names its squadron — `unit`, job 2's Astra 4) */
+  const at = (e: any) => ({ date: iso(e.date) ? e.date : localToday(), sect: 'abs', sub: String(e.personId || ''), ...(unit ? { unit } : {}) })
   /* AN OIL AWARD reads as it always did in the changes window — "Leave War · <him> · FO 9 Feb: OIL award given by …" —
      whichever door gave it, now with what it is worth (the amount, never worked back from its FO / HO label); any other
      entry by its counter as the app names it — OIL, ANNUAL, CCL … (D25: OIL) */
@@ -714,6 +727,7 @@ export function changeLinesFor(env: CommitEnvelope): void {
       }
       if (c.collection === 'inputs' && c.id !== '__order') { if (!wi.said.has(c)) inputLines(c, env, war) }
       else if (c.collection === 'lw.ledger') ledgerLines(c)
+      else if (c.collection === 'lwx.ledger') ledgerLines(c, split(String(c.id)).unit || undefined)
       else if (c.collection === 'lw.postouts') postoutLines(c, env)
       else if (c.collection === 'lw.balance') balanceLines(c, env)
       else if (c.collection === 'lw.grade') gradeLines(c, env)
