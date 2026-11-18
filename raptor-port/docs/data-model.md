@@ -1782,6 +1782,12 @@ squadron are judged by whose they are:
 - *The Tracker*: each squadron's Tracker is its own world, its record ids naming none; the Tracker tells the gate which
   squadron's is open, and a change there needs admin of it from an admin, home or rights there from a member.
 - *A man who moves squadron* (his D2203) loses every right he held in another squadron, in the command that moves him.
+- *Another squadron's war, written from Admin → Users* (A3, 19 Nov 26 — Fable's design A): the master's Archive, Restore,
+  Restore as and Delete of a man whose squadron's war is not the one loaded write HIS squadron's `LeavePersonProfile`,
+  `LeaveBid` and `LeaveLedger` rows, never the war loaded — each a record whose id names that squadron
+  (`lwx.profile` / `lwx.rec` / `lwx.ledger`, `<unit>@<local>`), so the unit rule above asks for an admin of it; a member
+  writes none of them (`src/state/perms.ts`, the member's admin-only records; `src/leavewar/state/foreign.ts`). Those four
+  doors are the only writers of a war that is not loaded; the war's passes for it run when it is next opened.
 
 **The day lock (29 Sep 26, D355, D450 — section 9):** *(8 Nov 26, his D1751: a simple mark the app holds — none of the Dataverse privileges, team or server check in this paragraph is built.)* the lock is columns of `ScheduleDay` (section 3), so it follows
 the ScheduleWeek family's row — an admin takes, releases and takes over a day (every scheduler is an admin; in

@@ -1289,6 +1289,16 @@ two probes; the history line's squadron, `elogUnitAllowed` / `elogWriteProblem`)
 history-line write guard), `src/state/store.ts` (both installed), `src/boot.ts` (the Tracker's probe),
 `src/state/units.ts` (`setHome` drops the man's rights elsewhere, D2203), and the test worlds that change memory outside
 a command (each calls `settleWorld`).
+A3 of that read (19 Nov 26, Fable's design A — `docs/superpowers/briefs/2026-11-18-multi-sqn-b1-fixplan-fable-a3.md`).
+**New:** `src/leavewar/state/foreign.ts` (ANOTHER SQUADRON'S STORED WAR — the second store the master's Archive, Restore,
+Restore as and Delete on Admin → Users write when the man's squadron's war is not the one loaded: his profile, war records
+and ledger entries as `lwx.*` records with unit-qualified ids, written to that squadron's rows through its own door on
+commit), `src/leavewar/multi-sqn-a3-foreign.test.ts` (each door red first, the rollback, the gate, Undo, the home path).
+**Changed:** `src/leavewar/state/store.ts` (the pure halves `stintClosed`, `stintOpened`, `personCut`,
+`restoreDateProblem`, `keepsWindow`, called by the three writers; `initStore` keeps stored profiles in a world not yet
+started), `src/leavewar/sync.ts` (the four doors routed by `foreignOf`; the world door hands the foreign store its doors),
+`src/state/perms.ts` (the three `lwx.*` records an admin's), `src/command/types.ts` and `src/command/registry.ts` (the
+three collections).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

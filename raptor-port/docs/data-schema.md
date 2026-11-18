@@ -653,6 +653,12 @@ FROM THE COMMAND that changed it — the war's store subscribes to the command s
 door (`state/storage.ts`), exactly the rows each command's changes land in, inside that command's one saved group; a
 row is removed only for a record that command removed. The first boot stores the seed's world as rows (and the demo
 world replaces it, inside the boot's group); the one-time fold (`store.ts leavewarConverter`) converts an old store.
+**One more writer, for another squadron's war (A3, 19 Nov 26 — `src/leavewar/state/foreign.ts`):** the master's Archive,
+Restore, Restore as and Delete on Admin → Users of a man whose squadron's war is not the one loaded write that
+squadron's own rows through its own door — his `profile:<pid>` (the window; the label kept as stored), his `rec:` rows
+and his `ledger:` rows (a delete's records and OIL awards from the cutoff) — from the command's `lwx.profile` /
+`lwx.rec` / `lwx.ledger` changes. The same keys and values; nothing new is stored. A squadron whose war has never been
+opened keeps such a profile row: its first open takes the seed's periods and keeps the stored windows and labels.
 
 | stored key | the design's table | holds |
 |---|---|---|

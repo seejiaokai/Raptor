@@ -840,6 +840,15 @@ for him — the evidence sheet's §Questions). (5) The change history is the uni
 a new reader of the history reads `ELOG.rows` and so gets one squadron's; whatever must see every squadron's lines reads
 the stored rows. Pinned by `engine/editlog-unit.test.ts`, `ui/logout.test.ts`, `leavewar/holidays-by-place.test.ts`,
 `tracker/trk-per-unit.test.ts`, `state/multi-sqn-step4.test.ts`, `leavewar/postout-notice.test.ts`.
+(6) *(A3, 19 Nov 26 — Fable's design A)* **the war is written for a squadron whose war is NOT loaded only by Admin →
+Users' four doors** — the master's Archive, Restore, Restore as and Delete of that squadron's man (`sync.ts archivePerson`,
+`restoreBody`, `deletePersonOnWar`, routed by `foreignOf`): they write his profile, records and OIL awards to his own
+squadron's stored war through the second store (`leavewar/state/foreign.ts`, `lwx.*` records, unit-qualified ids),
+on the same pure stint rules as the war loaded (`store.ts stintClosed`, `stintOpened`, `personCut`,
+`restoreDateProblem`) — two writers of one man's window that must agree; a new door that changes a man's window must
+route the same way, or the master's change lands on the wrong squadron's war. No war pass runs for that squadron then:
+they run at its next load (`store.ts initStore` keeps stored profiles even in a world never opened). Pinned by
+`leavewar/multi-sqn-a3-foreign.test.ts`.
 
 #### Does this standby row fly? ([STANDBY-FLIES], D1042–D1046, D1061, D1062, 19 Oct 26)
 One body answers it — `engine/waves.ts saFlies` (a shift with its B or R typed, or the row's hand tick; never a cancelled
