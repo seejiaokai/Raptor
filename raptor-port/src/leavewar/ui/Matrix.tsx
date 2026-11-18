@@ -1065,6 +1065,20 @@ export function Matrix() {
     return who + (wrap.querySelector<HTMLElement>('.bal')?.getBoundingClientRect().width ?? 0)
   }
 
+  // LAND A DAY ON THE FROZEN EDGE — AT it, never under it ([LW-MONTHJUMP-SUBPIXEL], 19 Nov 26). The day columns sit at
+  // fractional offsets (a month's measured width carries a fraction), but the browser keeps `scrollLeft` in whole pixels
+  // on a desktop and ROUNDS a fractional write: `scrollLeft += 6380.53` landed 1 September 0.47px under the counter
+  // column. Each later redraw to the left (the desktop's whole-year fill draws a month a beat) moved it again, the anchor
+  // below skipped every shift of a pixel or less, and re-captured the drifted place as its new anchor — so the halves
+  // added up: 0.47, then 0.86, then 1.13px under, a sliver of the day hidden and the browser test red on GitHub's slower
+  // machine, which measured mid-fill. Rounding the scroll DOWN instead puts the day 0–1px clear of the edge, every time;
+  // and an anchor that was such a landing is put back the same way (`edge` in anchorNow), so nothing accumulates.
+  // A no-op when already there (no write, so no scroll event and no loop). The 0.01 absorbs float noise in the sum.
+  const landOnEdge = (wrap: HTMLElement, cell: HTMLElement) => {
+    const want = Math.floor(wrap.scrollLeft + cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap) + 0.01)
+    if (want !== wrap.scrollLeft) wrap.scrollLeft = want
+  }
+
   const hiddenJumpRef = useRef<string | null>(null)
   const jumpTo = (date: string) => {
     /* any jump spends a month pressed in the strip (D1477) — the strip's own press sets it again after this call, and a
@@ -1104,9 +1118,9 @@ export function Matrix() {
     // hiding rows and shrinking columns enough to leave the target far off the
     // frozen edge if the re-centre is skipped.
     jumpAtRef.current = Date.now()
-    // Scrolling BY a delta rather than TO an absolute keeps this correct
-    // wherever the grid happens to be scrolled already.
-    wrap.scrollLeft += cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap)
+    // Measured from where the grid is now (a delta, not an absolute), so this is
+    // correct wherever the grid happens to be scrolled already.
+    landOnEdge(wrap, cell)
   }
   /* the on-screen listener is wired once; it reaches this render's jumpTo through the ref */
   const jumpToRef = useRef(jumpTo)
@@ -1197,7 +1211,7 @@ export function Matrix() {
   // them UPSTREAM of the view — which otherwise yanks the grid sideways under
   // the reader and lands a month jump short (measured 165px off at SEP, from
   // the demo's one posted-out man leaving the roster).
-  const anchorRef = useRef<{ date: string; left: number } | null>(null)
+  const anchorRef = useRef<{ date: string; left: number; edge: boolean } | null>(null)
   // When the last scrollLeft move was a programmatic month/day JUMP, not a
   // finger flick. The anchor correction below is skipped on touch to protect a
   // fling's momentum, but a jump has no fling to protect and MUST re-centre or
@@ -2773,7 +2787,7 @@ export function Matrix() {
   // left) puts back in the same place. Binary search — column lefts are
   // monotonic — so ~9 rect reads. Shared by the row window and the column
   // window so the two corrections cannot disagree.
-  const anchorNow = (wrap: HTMLElement): { date: string; left: number } | null => {
+  const anchorNow = (wrap: HTMLElement): { date: string; left: number; edge: boolean } | null => {
     const { drawnDates } = liveRef.current
     if (drawnDates.length === 0) return null
     const viewL = wrap.getBoundingClientRect().left + frozenWidth(wrap)
@@ -2783,7 +2797,10 @@ export function Matrix() {
       const mid = (lo + hi) >> 1
       if (at(mid) >= viewL - 1) { best = mid; hi = mid - 1 } else lo = mid + 1
     }
-    return { date: drawnDates[best]!, left: at(best) }
+    // `edge`: the day sits ON the frozen edge (within a pixel either way) — a landed jump, put back there exactly
+    // (landOnEdge, [LW-MONTHJUMP-SUBPIXEL]); any other first day is held where it was, as before.
+    const left = at(best)
+    return { date: drawnDates[best]!, left, edge: Math.abs(left - viewL) < 1 }
   }
 
   const measureWindow = () => {
@@ -3203,7 +3220,7 @@ export function Matrix() {
       const wrap = wrapRef.current, cell = headCell(pj)
       if (wrap && cell) {
         jumpAtRef.current = Date.now()
-        wrap.scrollLeft += cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap)
+        landOnEdge(wrap, cell)
       }
       return
     }
@@ -3221,6 +3238,9 @@ export function Matrix() {
     // still far shorter than the gap before a deliberate follow-up flick.
     const fromJump = Date.now() - jumpAtRef.current < 1200
     if (coarse && !fromJump && !colShift) return
+    // A day that sat ON the frozen edge (a landed jump) goes back on it exactly — the sub-pixel rule of landOnEdge —
+    // so the redraws after a jump never walk it under the edge half a pixel at a time ([LW-MONTHJUMP-SUBPIXEL]).
+    if (a.edge) { landOnEdge(wrap, cell); return }
     const shift = cell.getBoundingClientRect().left - a.left
     if (Math.abs(shift) > 1) wrap.scrollLeft += shift
   }, [visWindow, colWin?.lo, colWin?.hi])
