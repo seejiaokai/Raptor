@@ -1750,9 +1750,38 @@ leaves out is judged as removed. The last-admin lock stands at the gate too, for
 squadron with an admin at home who can sign in before the command keeps one after it, and the app keeps one at all. A
 `PersonHome` change is judged day by day — today and every date a row starts on, before or after — comparing his
 squadron on each: a change on a day already begun is refused, and a later one needs admin in the squadron he leaves on
-that day; a man with no squadron may be given one from today. Not yet held at the gate (Opus 7, open — the evidence
-sheet of 18 Nov 26): an admin's change to an `Input` of another squadron's man; the screens offer none, since Inputs stay
-on his own squadron (D2132).
+that day; a man with no squadron may be given one from today, never from a day already gone.
+
+**Tightened again by the second fix read (18 Nov 26 — Astra, a fresh Opus reader and the security read; Fable's fix plan
+`docs/superpowers/briefs/2026-11-18-multi-sqn-b1-fixplan-fable.md`; `src/state/perms.ts`).** Records whose ids name no
+squadron are judged by whose they are:
+- *One guardrail over people, accounts and homes, before against after* (G0–G3): the account list on both sides is read
+  as the loader reads it, so a re-keyed or name-colliding account row is judged by what it makes; the last-admin lock
+  and the master guard are asked of every command that changes a person, an account or a home, not only an account row.
+- *A master admin's account* (his D2205): only a master changes it — its role, sign-in, callsign, archive, restore,
+  suspend — and a master is never deleted; a posting that would suspend a master (Overseas Sqn) is set only by a master,
+  a Delete posting for one by no one.
+- *A squadron's Leave War* (H2): each squadron's war is its own world, and a war record's id names none, so the war tells
+  the gate which squadron's is loaded; every war change but the period on screen needs an admin of that squadron from an
+  admin in force, a member at home there from a member. The posting pass (the app itself) carries out a posting only for
+  a man of the squadron whose war it runs on.
+- *A man's inputs* (Opus 7): an `Input` is judged by the squadrons of the people it names — each one's home on the
+  input's date — before and after: an admin in force must be an admin of each, a member at home in each (a member names
+  only people of his own squadron); an input naming nobody is its filer's squadron's. A member's change that only takes
+  himself out of an input is not judged by the others' squadrons (D755).
+- *The change history* (H5): an `EditLog` line's squadron is a field of the line, and a line is written straight to
+  storage, never as a record of a command, so the gate never sees one. Two doors hold it instead: a line about one man or
+  an Undo's line names another squadron only where the person giving it may file there (else it is the unit in view's),
+  and a line kept, rewritten or deleted inside a person's command needs, in the line's squadron, admin from an admin and
+  home or rights there from anyone else. At the database step the `EditLog` table takes a unit column and the same rule.
+- *An admin's bell lines and read records* (his D2194): a `Notice` addressed to another person, and another person's
+  `EditLogSeen` / `NoticeSeen` row, need an admin of that person's squadron; the holiday line, which reaches every
+  squadron at the place (D2184 R32), crosses until his D2195 (holidays per own squadron) is built; so does the telling of
+  an input the same changeset changed (its people and its filer told), the input itself judged by its people's squadrons. An `AccessRequest`
+  names no squadron yet (Request access asking the squadron, D2111, is not built), so it is not judged by one.
+- *The Tracker*: each squadron's Tracker is its own world, its record ids naming none; the Tracker tells the gate which
+  squadron's is open, and a change there needs admin of it from an admin, home or rights there from a member.
+- *A man who moves squadron* (his D2203) loses every right he held in another squadron, in the command that moves him.
 
 **The day lock (29 Sep 26, D355, D450 — section 9):** *(8 Nov 26, his D1751: a simple mark the app holds — none of the Dataverse privileges, team or server check in this paragraph is built.)* the lock is columns of `ScheduleDay` (section 3), so it follows
 the ScheduleWeek family's row — an admin takes, releases and takes over a day (every scheduler is an admin; in

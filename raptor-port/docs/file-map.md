@@ -1275,6 +1275,20 @@ with no admin; `otherSquadronProblem`; `approveRequest` writes no home, `approve
 keyed by unit), `src/engine/editlog.ts` (a line's `u`; `elogLoad` reads the unit in view's), `src/state/store.ts`
 (`switchUnit` keeps and re-reads the history), `src/storage/savewait.ts` (`onSavesLanded`), `src/ui/logout.ts` (the
 reload owed while a save waits, made once it lands), `src/ui/logout.test.ts`.
+The second fix read of batch 1 (18–19 Nov 26, chat 109's night, job 1; evidence `docs/handpass/2026-11-18-multi-sqn-b1.md`
+§Chat 109; Fable's plan `docs/superpowers/briefs/2026-11-18-multi-sqn-b1-fixplan-fable.md`). **New:**
+`src/test-support/world.ts` (`settleWorld` — TEST WORLDS ONLY: re-reads the schedule's and the people's saved baselines
+after a test changed memory outside every command), `src/test-support/no-app-import.test.ts` (no app file imports
+test-support), `src/state/units-sqn-fixread2.test.ts` (each claim of the second fix read red first: the lock and the
+master guard on people and homes, the account list read as the loader reads it, a master's account, inputs, history
+lines, bell lines and read records, the Tracker and a move's rights — per squadron), `src/leavewar/multi-sqn-fixread2-war.test.ts`
+(a squadron's Leave War by its own people, a master's posting by a master). **Changed:** `src/state/perms.ts` (the
+before-vs-after guardrail G0–G3; 7b the Leave War, 7c inputs, 7e bell lines and read records, 7f the Tracker, with the
+two probes; the history line's squadron, `elogUnitAllowed` / `elogWriteProblem`), `src/engine/hooks.ts` and
+`src/engine/editlog.ts` (`HOOKS.elogUnitOk` — a line's squadron at push), `src/state/people-settings-commit.ts` (the
+history-line write guard), `src/state/store.ts` (both installed), `src/boot.ts` (the Tracker's probe),
+`src/state/units.ts` (`setHome` drops the man's rights elsewhere, D2203), and the test worlds that change memory outside
+a command (each calls `settleWorld`).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and
