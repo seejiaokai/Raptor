@@ -1,0 +1,9 @@
+msq-j2-w1-x7 v1
+msq-j2-w1-x7 v1
+undo Undo — Falcon’s callsign
+histBtn Changes | 
+allBtns BUTTON.win-tab# role=tab :All changes 0
+win ⠿Changes · week of 13/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet.
+top buttons ↶ Undo/Undo | ↷ Redo/Redo | /Changes | Sync · slow/ | /Notifications | Insights/ | Logout/ | Kestrel · Admin/ | /Jump to a date | Jul 06/ | Jul 13/ | Jul 20/ | Jul 27/ | /Export to Excel (CSV) | /Export as PDF (print) | CAT/ | Type/ | Quals/
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

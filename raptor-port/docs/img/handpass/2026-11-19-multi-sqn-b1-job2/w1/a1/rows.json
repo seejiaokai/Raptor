@@ -1,0 +1,56 @@
+[
+ [
+  "W1-A",
+  "desktop",
+  "ad archives Osprey (Admin → Users → his row → Archive)",
+  "Osprey in the Archived fold",
+  "Archived · 1 ; Osprey archived — his sign-in is suspended — name — Ace Anvil Basher Blade  ; Archived 19 Nov 26 by Saber Member Add a pers",
+  "PASS",
+  "a-02-users-after-archive.png"
+ ],
+ [
+  "W1-A",
+  "desktop",
+  "ad9 opens 149's Leave War for the first time, Osprey's row around T=Thu 19 Nov",
+  "months before T kept, from T shown gone like an archived man",
+  "row: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc ; person window: Osprey ✕ BALANCES LVE 0 taken App bal Pending War bal – 0 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead No leave in 2026 and ahead.",
+  "RECORD",
+  "a-03-ad9-first-row.png / a-03-ad9-first-win.png"
+ ],
+ [
+  "W1-A",
+  "desktop",
+  "reload, sign in as ad9 again, same look",
+  "the same as before",
+  "identical row to the first look",
+  "PASS",
+  "a-04-ad9-reload-row.png"
+ ],
+ [
+  "W1-A",
+  "desktop",
+  "ad opens 142's Leave War",
+  "opens normally",
+  "Kestrel on screen: false ; Saber/Ranger on screen: true ; first words: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admi",
+  "RECORD",
+  "a-05-ad-142-leavewar.png"
+ ],
+ [
+  "W1-A",
+  "desktop",
+  "sign in as us9 (Osprey, archived)",
+  "RECORD what the sign-in says",
+  "TALON Your access is suspended Signed in as us9 Ask an admin to enable it when you’re back. Sign out",
+  "RECORD",
+  "a-06-us9-signin.png"
+ ],
+ [
+  "W1-A",
+  "desktop",
+  "twin: ad9 archives Merlin (after opening 149 war first); his row on the war",
+  "looks like Osprey's did (the same shape at T)",
+  "Merlin: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc ; Osprey was: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc ; person window Merlin: Merlin ✕ BALANCES LVE 0 taken App bal Pending War bal – 0 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead No leave in 2026 and ahead. ; Osprey: Osprey ✕ BALANCES LVE 0 taken App bal Pending War bal – 0 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead No leave in 2026 and ahead.",
+  "PASS",
+  "b-04-merlin-row.png vs a-03-ad9-first-row.png"
+ ]
+]

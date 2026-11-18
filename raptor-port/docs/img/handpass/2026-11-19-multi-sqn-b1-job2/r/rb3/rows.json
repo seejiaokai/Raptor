@@ -1,0 +1,47 @@
+[
+ [
+  "R-B",
+  "desktop",
+  "us9: Inputs -> + Input -> Training for himself, Mon 23 Nov -> Add",
+  "it shows on the list",
+  "list: Inputs Inputs SANS Medical Calendar List Everyone ALL AVAIL ALL Condor Falcon Gannet Harrier Heron Kestrel Merlin Osprey Raven Shrike All types All leave LL OL OIL CCL PL FCL EL CL All medical HL OML ATT C ATT B Upchit All duty & commitments Training CSE Meeting Attach Personal Appointment Duty Event OD Other Osprey Clear filters 19 Nov → 3 Dec + I",
+  "PASS",
+  "b02-after-add.png"
+ ],
+ [
+  "R-B",
+  "desktop",
+  "us9: open the Training, change its remark to \"r walk remark\", Save",
+  "saved; remark on the list",
+  "list: Inputs Inputs SANS Medical Calendar List Everyone ALL AVAIL ALL Condor Falcon Gannet Harrier Heron Kestrel Merlin Osprey Raven Shrike All types All leave LL OL OIL CCL PL FCL EL CL All medical HL OML ATT C ATT B Upchit All duty & commitments Training CSE Meeting Attach Personal Appointment Duty Event OD Other Osprey Clear filters 19 Nov → 3 Dec + I",
+  "PASS",
+  "b05-remark-saved.png"
+ ],
+ [
+  "R-B",
+  "desktop",
+  "ad9: open Osprey's Training, add Merlin (people picker), Save",
+  "saved; Merlin on it",
+  "list: Inputs Inputs SANS Medical Calendar List Everyone ALL AVAIL ALL Condor Falcon Gannet Harrier Heron Kestrel Merlin Osprey Raven Shrike All types All leave LL OL OIL CCL PL FCL EL CL All medical HL OML ATT C ATT B Upchit All duty & commitments Training CSE Meeting Attach Personal Appointment Duty Event OD Other 19 Nov → 3 Dec + Input NAME START▲ END TYPE REMARKS CHANGED Merlin, Osprey 23 Nov 06:00–1",
+  "PASS",
+  "b10-ad9-saved.png"
+ ],
+ [
+  "R-B",
+  "desktop",
+  "us9: bell after Merlin was added",
+  "RECORD a line about Merlin being added",
+  "cls \"bellbtn on\" lines [\"TrainingMon 23 Nov\",\"Merlin added · Kestrel\",\"now\",\"Mark all read\"]",
+  "RECORD",
+  "b12-us9-bell.png"
+ ],
+ [
+  "RB-undo",
+  "desktop",
+  "script step",
+  "completes",
+  "script error locator.click: Timeout 30000ms exceeded.",
+  "OWED",
+  "err-RB-undo.png"
+ ]
+]

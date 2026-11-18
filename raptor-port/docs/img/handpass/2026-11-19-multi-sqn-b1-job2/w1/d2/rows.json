@@ -1,0 +1,47 @@
+[
+ [
+  "W1-D",
+  "desktop",
+  "Leave War: Ranger's cell on 2026-11-21 → day window → ⋯ → Post out → sheet; dismiss by Close",
+  "sheet gone, page under it as it was",
+  "sheet open before: true; after: false; day window words: (no day window); Post out controls still visible: 0",
+  "PASS",
+  "d4-1a / d4-1b"
+ ],
+ [
+  "W1-D",
+  "desktop",
+  "Leave War: Ranger's cell on 2026-11-21 → day window → ⋯ → Post out → sheet; dismiss by Escape",
+  "sheet gone, page under it as it was",
+  "sheet open before: true; after: false; day window words: (no day window); Post out controls still visible: 0",
+  "PASS",
+  "d4-2a / d4-2b"
+ ],
+ [
+  "W1-D",
+  "desktop",
+  "Leave War: Ranger's cell on 2026-11-21 → day window → ⋯ → Post out → sheet; dismiss by outside press",
+  "sheet gone, page under it as it was",
+  "sheet open before: true; after: false; day window words: (no day window); Post out controls still visible: 0",
+  "PASS",
+  "d4-3a / d4-3b"
+ ],
+ [
+  "W1-D",
+  "desktop",
+  "Leave War: open a man's person window from his name, close by ✕",
+  "closes",
+  "open: true after ✕: true",
+  "FAIL",
+  "d5-01, d5-02"
+ ],
+ [
+  "W1-D",
+  "desktop",
+  "reopen the person window, close by Escape",
+  "closes",
+  "open: true after Escape: true",
+  "FAIL",
+  "d5-03"
+ ]
+]

@@ -1,0 +1,8 @@
+msq-j2-r-p1 v1
+buttons inMemberMode[Inputs] inSansMode[SANS] inMedBtn[Medical] icPrev[‹] [November 2026] icNext[›] icToday[Today] inCalBtn[Calendar] inListBtn[List] [How this works] [] inFiltersClear[Clear filters]
+person 
+type LL=LL | OL=OL | OIL=OIL | CCL=CCL | PL=PL | FCL=FCL | EL=EL | CL=CL | HL=HL | OML=OML | ATT C=ATT C | ATT B=ATT B | Upchit=Upchit | Training=Training | CSE=CSE | Meeting=Meeting | Attach=Attach | Personal=Personal | Appointment=Appointment | Duty=Duty | Event=Event | OD=OD | Other=Other
+win 142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout Osprey · Member Inputs Inputs SANS Medical Calendar List Osprey Clear filters 19 Nov → 3 Dec + Input Name Start ▲ End Type Remarks Changed No inputs 19 Nov – 3 Dec. Try All dates. Grid Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › ▾ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE NOV SUN 01 MON 02 TUE 03 WED 04 THU 05 FRI 06 SAT 07 SUN 08 MON 09 TUE 10 WED 11 THU 12 FRI 13 SAT 14 SUN 15 MON 16 TUE 17 WED 18 THU 19 FRI 20 SAT 21 SUN 22 MON 23 TUE 24 WED 25 THU 26 FRI 27 SAT 28 SUN 29 MON 30 DEC TUE 01 WED 02 THU 03 FRI 04 SAT 05 SUN 06 MON 07 TUE 08 WED 09 THU 10 FRI 11 SAT 12 SUN 13 MON 14 TUE 15 WED 16 THU 17 FRI 18 SAT 19 SUN 20 MON 21 TUE 22 WED 23 THU 24 FRI 25 SAT 26 SUN 27 MON 28 TUE 29 WED 30 THU 31 Required P – – – – – – – – – – – – – – 
+ids inpEditPersonFixed,inTypeHelp,inpEditType,inpEditSpan,inpEditStart,inpEditEnd,inpEditRmk,inpEdCal,inpEditCancel,inpEditSave
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

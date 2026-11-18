@@ -1,0 +1,7 @@
+msq-j2-r-p4 v1
+approvals count 1 <button type="button" role="tab" class="intab" data-testid="lw-tab-approvals" aria-selected="false" tabindex="-1" title="Leave waiting for a decision"><svg class="btnglyph" viewBox="0 0 24 24" fill="n
+words 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Kestrel · Admin Grid Approvals Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › Approvals 0 pending New 0 Dates All Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec Pick dates… Approve all 0 Nothing waiting for a decision. — name — Condor Falcon Gannet Harrier Heron Kestrel Merlin Osprey Raven Shrike — name — Kestrel — name — Kestrel — name — Kestrel — name — Condor Falcon Gannet Harrier Heron Kestrel Merlin Osprey Raven Shrike — name — Kestrel — name — Kestrel — name — Kestrel — na
+card TALON Request access Signed in as newperson You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… Request access Sign out
+btns accSend[Request access] accOut[Sign out]
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0

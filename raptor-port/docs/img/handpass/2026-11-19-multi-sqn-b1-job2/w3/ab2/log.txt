@@ -1,0 +1,104 @@
+msq-j2-w3-ab v1
+ad9 person select {"disabled":false,"val":"Kestrel","opts":["Condor","Falcon","Gannet","Harrier","Heron","Kestrel","Merlin","Osprey","Raven","Shrike"]}
+ad9 picker box inside win OUTSIDE 13,70,389,1194
+ad9 window scrolled to end: nobody
+ad9 pucks ["ALL AVAIL","ALL","CondorO","HarrierC","KestrelIP*","MerlinB","OspreyA","FalconIW","GannetO","HeronA","RavenB","ShrikeC"] textboxes in picker: 0
+ROW PASS | W3-A | iPhone | ad9 Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end | saw: select: [Condor, Falcon, Gannet, Harrier, Heron, Kestrel, Merlin, Osprey, Raven, Shrike] selected: Kestrel; pucks: [ALL AVAIL, ALL, CondorO, HarrierC, KestrelIP*, MerlinB, OspreyA, FalconIW, GannetO, HeronA, RavenB, ShrikeC]; not-149 names: []; 149 names: [Condor, Falcon, Gannet, Harrier, Heron, Kestrel, Merlin, Osprey, Raven, Shrike]
+signed in as ad2
+ad2 person select {"disabled":false,"val":"Hunter","opts":["Ace","Anvil","Basher","Blade","Bolt","Cinch","Cinder","Cobra","Comet","Cotter","Cutter","Dash","Diesel","Drifter","Echo","Fable","Forge","Gambit","Ghost","Grit","Havoc","Hex","Hunter","Jester","Kraken","Ledger","Marlin","Nomad","Otter","Outlaw","Piston","Pixel","Quill","Ranger","Ratchet","Reaper","Rebel","Recon","Relay","Ridge","Rune","Ryder","Saber","Saint","Scope","Scribe","Sidewinder","Static","Talisman","Tally","Torch","Trident","Vandal","Vapor","Vector","Warden","Widget","Wildcard","Wisp","Zenith","Zulu"]}
+ad2 picker box OUTSIDE 28,82,374,1044 win OUTSIDE 13,70,389,1768
+ad2 window scrolled to end: nobody
+ad2 pucks ["ALL AVAIL","ALL","AceA","AnvilIP","BladeIP","CinchIP","CobraIP","CometIP","DieselD","DrifterA","ForgeIP","GambitC","HavocIP","HunterIP*","NomadC","OutlawC","PistonIP","RangerIP","ReaperIR","ReconO","RidgeC","SaberIP","SaintB","SidewinderIP","TalismanO","TorchC","TridentIP","VandalIP","VaporD","WardenIP","WildcardO","BasherIW","CinderB","CutterC","DashC","EchoIW","FableC","GhostC","GritC","HexC","LedgerIW","QuillIW","RelayIW","RuneB","RyderC","ScopeIW","StaticIW","VectorC","WispC","BoltC","JesterB","KrakenD","MarlinA","OtterD","PixelD","RebelB","ScribeD","TallyO","ZenithC","ZuluO","Cotter","Ratchet","Widget"] textboxes in picker: 0
+ROW PASS | W3-A | iPhone | ad2 Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end | saw: select: [Ace, Anvil, Basher, Blade, Bolt, Cinch, Cinder, Cobra, Comet, Cotter, Cutter, Dash, Diesel, Drifter, Echo, Fable, Forge, Gambit, Ghost, Grit, Havoc, Hex, Hunter, Jester, Kraken, Ledger, Marlin, Nomad, Otter, Outlaw, Piston, Pixel, Quill, Ranger, Ratchet, Reaper, Rebel, Recon, Relay, Ridge, Rune, Ryder, Saber, Saint, Scope, Scribe, Sidewinder, Static, Talisman, Tally, Torch, Trident, Vanda
+signed in as ad
+ad person select {"disabled":false,"val":"Saber","opts":["Ace","Anvil","Basher","Blade","Bolt","Cinch","Cinder","Cobra","Comet","Cotter","Cutter","Dash","Diesel","Drifter","Echo","Fable","Forge","Gambit","Ghost","Grit","Havoc","Hex","Hunter","Jester","Kraken","Ledger","Marlin","Nomad","Otter","Outlaw","Piston","Pixel","Quill","Ranger","Ratchet","Reaper","Rebel","Recon","Relay","Ridge","Rune","Ryder","Saber","Saint","Scope","Scribe","Sidewinder","Static","Talisman","Tally","Torch","Trident","Vandal","Vapor","Vector","Warden","Widget","Wildcard","Wisp","Zenith","Zulu"]}
+ad picker box OUTSIDE 28,82,374,1044 win OUTSIDE 13,70,389,1768
+ad window scrolled to end: nobody
+ad pucks ["ALL AVAIL","ALL","AceA","AnvilIP","BladeIP","CinchIP","CobraIP","CometIP","DieselD","DrifterA","ForgeIP","GambitC","HavocIP","HunterIP","NomadC","OutlawC","PistonIP","RangerIP","ReaperIR","ReconO","RidgeC","SaberIP*","SaintB","SidewinderIP","TalismanO","TorchC","TridentIP","VandalIP","VaporD","WardenIP","WildcardO","BasherIW","CinderB","CutterC","DashC","EchoIW","FableC","GhostC","GritC","HexC","LedgerIW","QuillIW","RelayIW","RuneB","RyderC","ScopeIW","StaticIW","VectorC","WispC","BoltC","JesterB","KrakenD","MarlinA","OtterD","PixelD","RebelB","ScribeD","TallyO","ZenithC","ZuluO","Cotter","Ratchet","Widget"] textboxes in picker: 0
+ROW PASS | W3-A | iPhone | ad Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end | saw: select: [Ace, Anvil, Basher, Blade, Bolt, Cinch, Cinder, Cobra, Comet, Cotter, Cutter, Dash, Diesel, Drifter, Echo, Fable, Forge, Gambit, Ghost, Grit, Havoc, Hex, Hunter, Jester, Kraken, Ledger, Marlin, Nomad, Otter, Outlaw, Piston, Pixel, Quill, Ranger, Ratchet, Reaper, Rebel, Recon, Relay, Ridge, Rune, Ryder, Saber, Saint, Scope, Scribe, Sidewinder, Static, Talisman, Tally, Torch, Trident, Vanda
+signed in as us
+us person select null
+ROW RECORD | W3-A | iPhone | us Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end | saw: select: [none] selected: null; pucks: []; not-149 names: []; 149 names: []
+signed in as us9
+us9 person select null
+ROW RECORD | W3-A | iPhone | us9 Inputs -> List -> + Input -> window's Person select and the Several-people picker, scrolled to the end | saw: select: [none] selected: null; pucks: []; not-149 names: []; 149 names: []
+signed in as ad9
+ROW RECORD | W3-A | iPhone | ad9: look for a box to type "Os" in the people picker | saw: inputs inside the picker: 0; picker words: PEOPLE 1 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other PILOTS All Condor O Harrier C Kestrel IP Merlin B Osprey A WSOS All Falcon IW Gannet O Heron A Raven B Shrike C
+ROW PASS | W3-A | iPhone | ad9 picks Osprey, picks Merlin, takes Merlin off again | saw: after Merlin: 3 picked; after taking off: 2 picked; pucks lit: [KestrelIP*, OspreyA*]
+lit now OspreyA* 1 picked
+type options LL=LL | OL=OL | OIL=OIL | CCL=CCL | PL=PL | FCL=FCL | EL=EL | CL=CL | HL=HL | OML=OML | ATT C=ATT C | ATT B=ATT B | Upchit=Upchit | Training=Training | CSE=CSE | Meeting=Meeting | Attach=Attach | Personal=Personal | Appointment=Appointment | Duty=Duty | Event=Event | OD=OD | Other=Other
+type now LL
+calendar on: November 2026›
+day button Mon 23 Nov 2026 inside
+window words PEOPLE 1 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other PILOTS All Condor O Harrier C Kestrel IP Merlin B Osprey A WSOS All Falcon IW Gannet O Heron A Raven B Shrike C TYPE ? DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 23 Nov DATES November 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 Nov 23 Cancel Add
+Add button inside
+QUESTION ⠿ New input · Nov 23 ✕ PEOPLE 1 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other PILOTS All Condor O Harrier C Kestrel IP Merlin B Osprey A WSOS All Falcon IW Gannet O Heron A Raven B Shrike C TYPE ? DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 23 Nov DATES November 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 Nov 23 Cancel Add
+ROW RECORD | W3-A | iPhone | ad9 presses Add on the LL input | saw: ⠿ New input · Nov 23 ✕ PEOPLE 1 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other PILOTS All Condor O Harrier C Kestrel IP Merlin B Osprey A WSOS All Falcon IW Gannet O Heron A Raven B Shrike C TYPE ? DURATIO
+ROW RECORD | W3-A | iPhone | ad9 files LL for Osprey on Mon 23 Nov and presses Add | saw: window gone: true; Add button inside; page words: 142 TALON ↶ ↷ Inputs Inputs SANS Medical + Input 19 Nov → 3 Dec Calendar List Filters MON 23 NOV 1 input LATE No document All day OspreyLL By Kestrel Input added
+ROW PASS | W3-A | iPhone | the Inputs list after saving shows Osprey's LL on 23 Nov | saw: 9 Nov → 3 Dec Calendar List Filters MON 23 NOV 1 input LATE No document All day OspreyLL By Kestrel Input added
+window box 13,70,389,870
+ROW PASS | W3-A | iPhone | second new input (window box 13,70,389,870): closed by its X | saw: window still open: 0; Inputs page (+ Input) shown: true
+window box 13,70,389,870
+ROW RECORD | W3-A | iPhone | second new input (window box 13,70,389,870): closed by a tap outside it (left edge, 4,450) | saw: window still open: 1; Inputs page (+ Input) shown: true
+signed in as us9
+us9 person select null
+calendar on: November 2026›
+day button Tue 24 Nov 2026 inside
+us9 buttons after Add: [] window open: 0
+ROW PASS | W3-B | iPhone | us9 files a Course (CSE) for himself on Tue 24 Nov and presses Add | saw: window gone: true; extra buttons: []; page words: 142 TALON ↶ ↷ Inputs Inputs SANS Medical + Input 19 Nov → 3 Dec Calendar List Filters1 Osprey Clear filters MON 23 NOV 1 input LATE No document All day OspreyLL By Kestrel TUE 24 NOV 1 input LATE 06:00–18:00 OspreyCSE Input added
+ROW RECORD | W3-B | iPhone | us9 (member) opens his own bell after filing | saw: bell class: bellbtn on; lines: ["LLMon 23 Nov","You were added · Kestrel","now","Mark all read"]
+signed in as us
+us person select null
+calendar on: November 2026›
+day button Tue 24 Nov 2026 inside
+us buttons after Add: [] window open: 0
+ROW PASS | W3-B | iPhone | us files a Course (CSE) for himself on Tue 24 Nov and presses Add | saw: window gone: true; extra buttons: []; page words: 142 TALON ↶ ↷ Inputs Inputs SANS Medical 2 1 + Input 19 Nov → 3 Dec Calendar List Filters1 Ranger Clear filters TUE 24 NOV 1 input LATE 06:00–18:00 RangerCSE Input added
+ROW RECORD | W3-B | iPhone | us (member) opens his own bell after filing | saw: bell class: bellbtn; lines: ["Nothing new"]
+signed in as ad9
+ad9 badge before opening: text="" aria="Notifications" cls="bellbtn" kids=[]
+ad9 BELL LINES ["Nothing new"]
+ROW FAIL | W3-B | iPhone | ad9 opens the bell | saw: badge before: text="" aria="Notifications" cls="bellbtn" kids=[]; lines: ["Nothing new"]
+ad9 badge with bell open: text="" aria="Notifications" cls="bellbtn" kids=[]
+ROW RECORD | W3-B | iPhone | ad9 opens the bell on the Edit Schedule page too | saw: lines: ["Nothing new"]
+signed in as ad2
+ad2 badge before opening: text="" aria="Notifications" cls="bellbtn" kids=[]
+ad2 BELL LINES ["Nothing new"]
+ROW FAIL | W3-B | iPhone | ad2 opens the bell | saw: badge before: text="" aria="Notifications" cls="bellbtn" kids=[]; lines: ["Nothing new"]
+ad2 badge with bell open: text="" aria="Notifications" cls="bellbtn" kids=[]
+ROW RECORD | W3-B | iPhone | ad2 opens the bell on the Edit Schedule page too | saw: lines: ["Nothing new"]
+signed in as ad
+ad badge before opening: text="" aria="Notifications" cls="bellbtn" kids=[]
+ad BELL LINES ["Nothing new"]
+ROW RECORD | W3-B | iPhone | ad opens the bell | saw: badge before: text="" aria="Notifications" cls="bellbtn" kids=[]; lines: ["Nothing new"]
+ad badge with bell open: text="" aria="Notifications" cls="bellbtn" kids=[]
+ROW RECORD | W3-B | iPhone | ad opens the bell on the Edit Schedule page too | saw: lines: ["Nothing new"]
+signed in as ad9
+bell controls:
+
+ROW OWED | W3-B | iPhone | ad9 taps the bell line about Osprey | saw: no line with Osprey found
+mark control: (none)
+ROW OWED | W3-B | iPhone | ad9 presses the bell's mark-read control "(none)" | saw: badge before: text="" aria="Notifications" cls="bellbtn" kids=[]; after: text="" aria="Notifications" cls="bellbtn" kids=[]; bell lines after: ["Nothing new"]
+signed in as ad2
+ROW PASS | W3-B | iPhone | ad2 signs in after Kestrel read his bell: his badge and lines | saw: badge before: text="" aria="Notifications" cls="bellbtn" kids=[]; now: text="" aria="Notifications" cls="bellbtn" kids=[]; lines now: ["Nothing new"]
+ROW PASS | W3-B | iPhone | reload, sign in as ad9: his bell | saw: badge: text="" aria="Notifications" cls="bellbtn" kids=[]; lines: ["Nothing new"]
+signed in as ad9
+ad9 tracker lists {"course":["26ABSG"],"student":["STUDENT A","STUDENT B"],"syl":["2024","2026","Tx 2026","A/G - A/A 2026"]}
+ad9 popup buttons Not done | DCO | DPCO | Marginal | N.A. | Close | Thu 19 Nov 26▾ | − | + | Thu 19 Nov 26▾ | Edit details
+ad9 popup text (no popup text)
+mark keys before/after [] ["raptor:tracker/u149@v3:cmwmitl14ojfzov:sb2026:m:smwmitl1dq4jm7z"]
+ROW PASS | W3-C | iPhone | ad9 opens the Tracker, taps event ACG-01 and grades it DCO | saw: lists: {"course":["26ABSG"],"student":["STUDENT A","STUDENT B"],"syl":["2024","2026","Tx 2026","A/G - A/A 2026"]}; popup after: (no popup text); mark records before 0, after 1
+signed in as ad2
+ROW PASS | W3-C | iPhone | ad2 opens the Tracker: is it 142's own, with no 149 mark on ACG-01 | saw: lists: {"course":["26ABSG"],"student":["STUDENT A","STUDENT B"],"syl":["2024","2026","Tx 2026","A/G - A/A 2026"]}; ACG-01 popup words: ACG-01 · STUDENT A Not done DCO DPCO Marginal N.A. Close Done on (when marked) Thu 19 Nov 26 ▾ Fails: − 0 + Failed on Thu 19 Nov 26 ▾ Course
+ad2 tracker lists {"course":["26ABSG"],"student":["STUDENT A","STUDENT B"],"syl":["2024","2026","Tx 2026","A/G - A/A 2026"]}
+ad2 popup buttons Not done | DCO | DPCO | Marginal | N.A. | Close | Thu 19 Nov 26▾ | − | + | Thu 19 Nov 26▾ | Edit details
+ad2 popup text (no popup text)
+ad2 mark keys ["raptor:tracker/u149@v3:cmwmitl14ojfzov:sb2026:m:smwmitl1dq4jm7z"] ["raptor:tracker/u142@v3:cmwmits2f73ekvy:sb2026:m:smwmits2ly2ioou","raptor:tracker/u149@v3:cmwmitl14ojfzov:sb2026:m:smwmitl1dq4jm7z"]
+ROW PASS | W3-C | iPhone | ad2 grades ACG-02 DCO on a 142 student | saw: popup after: (no popup text); mark records before 1, after 2
+signed in as us9
+ROW PASS | W3-C | iPhone | us9 (149 member) opens the Tracker and looks at ACG-01 (Kestrel's DCO) and ACG-02 (Hunter's, 142) | saw: lists: {"course":["26ABSG"],"student":["STUDENT A","STUDENT B"],"syl":["2024","2026","Tx 2026","A/G - A/A 2026"]}; ACG-01 popup: ACG-01 · STUDENT A Not done DCO DPCO Marginal N.A. Close Done on Thu 19 Nov 26 ▾ Fails: − 0 + Failed on Thu 19 Nov 26 ▾ Course Introduction ; ACG-02 popup: ACG-02 · STUDENT A Not done DCO DPCO Marginal N.A. Close Done on (when marked) Thu 19 Nov 26 ▾ Fails: − 0 + Failed 
+ROW RECORD | W3-C | iPhone | us9 (member) grades ACG-03 DCO | saw: DCO button present: 1
+ROW PASS | W3-C | iPhone | reload as us9: ACG-01 again | saw: popup: ACG-01 · STUDENT A Not done DCO DPCO Marginal N.A. Close Done on Thu 19 Nov 26 ▾ Fails: − 0 + Failed on Thu 19 Nov 26 ▾ Course Introduction 
+signed in as ad9
+ROW RECORD | W3-A | iPhone | second new input: closed by the browser's back | saw: history length before 2; url after: about:blank; window open: 0
+errors []
+DONE 15 PASS 2 FAIL 16 OTHER of 33

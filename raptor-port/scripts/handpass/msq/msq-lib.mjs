@@ -20,7 +20,9 @@ export const BUNDLE = process.env.MSQ_BUNDLE || 'index-CCJh0p8n.js'
 export const BASE = 'http://localhost:4293'
 export const WHO = process.env.MSQ_WHO || 'host'
 export const RUN = process.env.MSQ_RUN || 'run'
-export const SHOTS = resolve(ROOT, 'docs/img/handpass/2026-11-18-multi-sqn-b1', WHO, RUN)
+// MSQ_IMGDIR (19 Nov 26, job 2 of chat 109): the job's own picture folder under docs/img/handpass, so a later job's
+// walk never writes into the 18 Nov folder its pictures are compared with
+export const SHOTS = resolve(ROOT, 'docs/img/handpass', process.env.MSQ_IMGDIR || '2026-11-18-multi-sqn-b1', WHO, RUN)
 // the shared drivers read these before they load
 process.env.HP_URL = BASE
 process.env.HP_SHOTS = SHOTS

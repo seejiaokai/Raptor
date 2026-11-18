@@ -1,0 +1,47 @@
+[
+ [
+  "R-A",
+  "desktop",
+  "ad9: Leave War, chip \"Bidding closed\" -> open December (one month tap) -> done",
+  "the chip shows the open dates; green outline on December",
+  "lines in window [\"1 Jan – 31 Mar past\",\"1 Dec – 31 Dec 31 days\"]; chip now \"Open for bidding 1 Dec – 31 Dec\"",
+  "PASS",
+  "a03-december-tapped.png, a04-chip-after.png"
+ ],
+ [
+  "R-A",
+  "desktop",
+  "us9: open the bell after bidding opened",
+  "a line that bidding opened, naming the dates and Kestrel",
+  "bell cls \"bellbtn on\" aria \"Notifications\" text \"\" lines [\"Leave War1 Dec – 31 Dec\",\"Bidding open · Kestrel\",\"now\",\"Mark all read\"]",
+  "PASS",
+  "a05-us9-bell-opened.png"
+ ],
+ [
+  "R-A",
+  "desktop",
+  "us9: taps the bidding line",
+  "RECORD what opens",
+  "page leavewar; words 142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout Osprey · Member Grid Balances OIL View My leave LVE 0 · OIL 0 · 0 pending › ▾ Manning Open for bidding 1 Dec – 31 Dec Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC 2026 CS/Name +LVE FEB SUN 01 MON 02 TUE",
+  "RECORD",
+  "a06-us9-after-line-tap.png"
+ ],
+ [
+  "R-A",
+  "desktop",
+  "ad9: close December again",
+  "chip back to Bidding closed",
+  "lines [\"1 Jan – 31 Mar past\"]; chip \"Bidding closed\"",
+  "PASS",
+  "a08-chip-closed.png"
+ ],
+ [
+  "R-A",
+  "desktop",
+  "us9: bell after bidding closed",
+  "a \"bidding closed\" line",
+  "lines [\"Leave War1 Dec – 31 Dec\",\"Bidding closed · Kestrel\",\"now\",\"Mark all read\"]",
+  "PASS",
+  "a09-us9-bell-after-close.png"
+ ]
+]

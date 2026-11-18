@@ -1,0 +1,7 @@
+msq-j2-w1-b v1 C
+pids {"Harrier":"har9","Heron":"her9","Raven":"rav9","Shrike":"shr9","Gannet":"gan9","Condor":"con9","Falcon":"fal9"}
+C undo/redo disabled=false aria-disabled=null title="Undo — Falcon’s callsign" aria-label="Undo" class=abtn hbtn Undo pressed Undid: Falcon’s callsign — name — Ace Anvil Basher Blade Bolt Cin Redo pressed Redid: Falcon’s callsign — name — Ace Anvil Basher Blade Bolt Cin
+ROW PASS | W1-C | desktop | ad: archive Falcon, Save name FalconQ, Undo, Redo, then Edit Schedule → clock → All changes | saw: undo: disabled=false aria-disabled=null title="Undo — Falcon’s callsign" aria-label="Undo" class=abtn hbtn ; Undo pressed ; Undid: Falcon’s callsign — name — Ace Anvil Basher Blade Bolt Cin ; Redo pressed ; Redid: Falcon’s callsign — name — Ace Anvil Basher Blade Bolt Cin ; 142 history window words: [Jul 13] ⠿Changes · week of 13/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSat
+ROW FAIL | W1-C | desktop | ad9: Edit Schedule → clock → All changes | saw: 149 history window words: [Jul 13] ⠿Changes · week of 13/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet. [Jul 06] ⠿Changes · week of 6/70 changes this week✕New to you 0All changes 0WeekMonTueWedThuFriSatSunGroup byItemWhoNo changes this week yet. [Jul 20] ⠿Changes · week of 20/70 changes this week✕New to you 0All changes 0WeekMonTueWe
+errors []
+DONE 1 PASS 1 FAIL 0 OTHER of 2

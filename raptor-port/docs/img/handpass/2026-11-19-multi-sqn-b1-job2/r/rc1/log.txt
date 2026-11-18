@@ -1,0 +1,14 @@
+msq-j2-r-c v1
+elog before []
+elog after ad9 [{"u":"u149","lbl":"HK · #1 remarks","date":"2026-07-13","to":"R149 remark"}]
+ROW PASS | R-C | desktop | ad9: Edit Schedule (week Jul 06 is the first offered), change a flying remark to "R149 remark", open the changes clock -> All changes | saw: window words: ⠿ Changes · week of 13/7 1 change this week ✕ New to you 0 All changes 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Mon · Flying · HK BFM Kestrel · 19/11 05:49 #1 remarks1B: BFM-2 → R149 remark Tap a change to go to it — the window stays open.
+ROW RECORD | R-C | desktop | stored history lines after ad9 edit (new ones) | saw: [["u149",null,"HK · #1 remarks","R149 remark"]]
+signed in as ad2
+elog after ad2 [{"u":"u142","lbl":"VL · #1 remarks","date":"2026-07-13","to":"R142 remark"}]
+all elogs [{"u":"u149","lbl":"HK · #1 remarks","date":"2026-07-13","to":"R149 remark"},{"u":"u142","lbl":"VL · #1 remarks","date":"2026-07-13","to":"R142 remark"}]
+ROW PASS | R-C | desktop | ad2: Edit Schedule, change a flying remark to "R142 remark", open the changes clock -> All changes | saw: window words: ⠿ Changes · week of 13/7 1 change this week ✕ New to you 0 All changes 1 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Mon · Flying · VL BFM Hunter · 19/11 05:49 #1 remarks1B: BFM-6 → R142 remark Tap a change to go to it — the window stays open.
+ROW RECORD | R-C | desktop | does Kestrel's change show in Hunter's window | saw: contains R149: false
+ROW RECORD | R-C | desktop | stored history lines after ad2 edit (new ones) | saw: [["u142",null,"VL · #1 remarks","R142 remark"]]
+ROW RECORD | R-C | desktop | all stored lines at the end by squadron | saw: [["u149",null,"HK · #1 remarks","R149 remark"],["u142",null,"VL · #1 remarks","R142 remark"]]
+errors []
+DONE 2 PASS 0 FAIL 4 OTHER of 6

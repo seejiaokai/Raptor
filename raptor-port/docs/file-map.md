@@ -1299,6 +1299,20 @@ commit), `src/leavewar/multi-sqn-a3-foreign.test.ts` (each door red first, the r
 started), `src/leavewar/sync.ts` (the four doors routed by `foreignOf`; the world door hands the foreign store its doors),
 `src/state/perms.ts` (the three `lwx.*` records an admin's), `src/command/types.ts` and `src/command/registry.ts` (the
 three collections).
+The full check of that read (job 2, 19 Nov 26; evidence §"Chat 109 — the full check of job 1 (job 2)"). **New**, each a
+reader's finding red first: `src/leavewar/multi-sqn-job2-sec5.test.ts` (the second store's rows only from Admin → Users'
+doors), `src/state/multi-sqn-job2-lock.test.ts` (the last admin on every saved home date; an archived admin cannot sign in), `…-bell.test.ts`
+(a bell line across squadrons only to someone the changed input tells, a holiday line of holiday parts only; another
+squadron's admin's read records), `…-inputs.test.ts` (an input judged on every day it covers; a member's own input across a
+move), `…-takeout.test.ts` (a member's take-out his own part only, its Undo), `…-elogview.test.ts` (no history line
+where its giver may not file), `src/leavewar/multi-sqn-job2-warbell.test.ts` (the war tells only its own squadron's people),
+`src/leavewar/multi-sqn-job2-xhist.test.ts` (the master's Delete of another squadron's man lists his bids and awards),
+`src/state/multi-sqn-job2-elogundo.test.ts` (an Undo's own line kept in the giver's squadron when the one in view is View
+only), `src/leavewar/multi-sqn-job2-retract.test.ts` ("Undo post out" after an admin who got its line has moved).
+**Changed:** `src/state/perms.ts`, `src/engine/editlog.ts` (a line filed nowhere is dropped; one naming nobody goes to its
+giver's own squadron), `src/engine/hooks.ts` and `src/state/store.ts` (`elogOwnUnit`), `src/leavewar/sync.ts`
+(`atWarHome`; a posting's take-back skips a moved admin's line), `src/state/changelines.ts` (the second store's bids and
+awards told in the man's squadron's history).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

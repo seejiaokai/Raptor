@@ -1,0 +1,11 @@
+msq-j2-host-e v2
+C before [{"u":"u142","lbl":"Ace · archived"},{"u":"u149","lbl":"Gannet · archived"}]
+today cell 1
+C after [{"u":"u142","lbl":"Edit history cleared — 1 entry between 2026-11-19 "},{"u":"u149","lbl":"Gannet · archived"}]
+ROW FAIL | W2-C host | desktop | Hunter: Admin → Data → Clear edit history, today's run; button read "Tap again to clear 1 entry" | saw: u149 before 1 after 1; other lines after 1; words: Cleared 1 entry Cleared 1 entry
+role opts Member — own inputs, quals and bids|Admin — schedules and manages
+E osprey row Osprey us9 · Pilot · CAT A ADMIN ▸ Archived · 2 ADD A PERSON CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Pe
+ROW RECORD | W2-E host | desktop | Kestrel makes Osprey (149, us9) an admin | saw: Osprey us9 · Pilot · CAT A ADMIN ▸ Archived · 2 ADD A PERSON CALLSIGN/NAME INITIALS PI
+ROW PASS | W2-E host | desktop | with Osprey a second 149 admin, the master archives Kestrel | saw: Archived · 3
+errors []
+DONE 1 PASS 1 FAIL 1 OTHER of 3

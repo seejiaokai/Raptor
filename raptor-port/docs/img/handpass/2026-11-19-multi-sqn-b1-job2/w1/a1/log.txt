@@ -1,0 +1,18 @@
+msq-j2-w1-a v1
+ROW PASS | W1-A | desktop | ad archives Osprey (Admin → Users → his row → Archive) | saw: Archived · 1 ; Osprey archived — his sign-in is suspended — name — Ace Anvil Basher Blade  ; Archived 19 Nov 26 by Saber Member Add a pers
+a-03-ad9-first SIG 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc
+a-03-ad9-first WIN Osprey ✕ BALANCES LVE 0 taken App bal Pending War bal – 0 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead No leave in 2026 and ahead.
+ROW RECORD | W1-A | desktop | ad9 opens 149's Leave War for the first time, Osprey's row around T=Thu 19 Nov | saw: row: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc ; person window: Osprey ✕ BALANCES LVE 0 taken App bal Pe
+a-04-ad9-reload SIG 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc
+a-04-ad9-reload WIN Osprey ✕ BALANCES LVE 0 taken App bal Pending War bal – 0 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead No leave in 2026 and ahead.
+ROW PASS | W1-A | desktop | reload, sign in as ad9 again, same look | saw: identical row to the first look
+ROW RECORD | W1-A | desktop | ad opens 142's Leave War | saw: Kestrel on screen: false ; Saber/Ranger on screen: true ; first words: 142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admi
+ROW RECORD | W1-A | desktop | sign in as us9 (Osprey, archived) | saw: TALON Your access is suspended Signed in as us9 Ask an admin to enable it when you’re back. Sign out
+errors []
+DONE 2 PASS 0 FAIL 3 OTHER of 5
+b merlin users Archived 19 Nov 26 by Kestrel Add a person Ca
+b-04-merlin SIG 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc
+b-04-merlin WIN Merlin ✕ BALANCES LVE 0 taken App bal Pending War bal – 0 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead No leave in 2026 and ahead.
+ROW PASS | W1-A | desktop | twin: ad9 archives Merlin (after opening 149 war first); his row on the war | saw: Merlin: 11-15=|weekend.act  11-16=|.act  11-17=|.act  11-18=PO|.act.pofin.bx-last  11-19=PO|gone.act.hasc  11-20=PO|gone.act.hasc  11-21=PO|gone.weekend.act.hasc  11-22=PO|gone.weekend.act.hasc  11-23=PO|gone.act.hasc  11-24=PO|gone.act.hasc  11-25=PO|gone.act.hasc  11-26=PO|gone.act.hasc  11-27=PO|gone.act.hasc  11-28=PO|gone.weekend.act.hasc ; Osprey was: 11-15=|weekend.act  11-16=|.act  11-17=|
+errors []
+DONE 3 PASS 0 FAIL 3 OTHER of 6

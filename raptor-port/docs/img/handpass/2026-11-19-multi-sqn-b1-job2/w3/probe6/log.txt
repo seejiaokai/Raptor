@@ -1,0 +1,43 @@
+msq-j2-w3-probe6 v1
+ACG-01 candidates [{"tag":"g","cls":"core","x":226,"y":240},{"tag":"text","cls":"lbl","x":226,"y":240}]
+POPUP:
+BUTTON#trUndoBtn.abtn hbtn[Undo]@249,9,30x30
+BUTTON#trRedoBtn.abtn hbtn[Redo]@285,9,30x30
+BUTTON#fastSync.fastsync[Sync · slow]@322,14,25x21
+BUTTON#notifyBell.bellbtn[Notifications]@354,8,34x32
+BUTTON#.wknav-mbtn filt-cal[Jump to a date]@12,58,34x26
+BUTTON#exportSched.abtn[Export to Excel (CSV)]@51,56,42x30
+BUTTON#exportPdf.abtn[Export as PDF (print)]@98,56,42x30
+BUTTON#.hl-tog[Highlight filters]@145,58,30x26
+BUTTON#editSchedMore.abtn schedule-more[More schedule options]@180,58,30x26
+INPUT#searchE.[Search by name or callsign]@285,63,96x16
+SELECT#activeSel.[STUDENT ASTUDENT B]@8,54,107x26
+SELECT#courseSel.[26ABSG]@121,54,85x26
+BUTTON#courseMenuBtn.sm icon[]@212,54,29x26
+SELECT#sylSel.[20242026Tx 2026A/G - A/A 2026]@247,54,88x26
+BUTTON#sylMenuBtn.sm icon[]@341,54,29x26
+BUTTON#detailsBtn.sm icon[]@8,86,29x26
+BUTTON#legendBtn.sm[Legend]@43,86,51x26
+BUTTON#fileMenuBtn.sm[File ▾]@100,86,63x26
+BUTTON#hSearchBtn.sm[Find an event]@169,86,29x26
+BUTTON#flexBtn.sm icon[Flex settings]@204,86,26x26
+BUTTON#barHideBtn.sm icon barhide[]@236,86,29x26
+BUTTON#.active[Flow chart]@12,127,125x29
+BUTTON#.[Info]@139,127,125x29
+BUTTON#showAllTab.[Show All]@265,127,125x29
+BUTTON#fzOut.[−]@7,846,26x23
+BUTTON#fzIn.[+]@79,846,26x23
+BUTTON#fzReset.sm[reset]@109,848,42x19
+BUTTON#.[Not done]@194,289,93x28
+BUTTON#.[DCO]@292,289,93x28
+BUTTON#.[DPCO]@194,322,93x28
+BUTTON#.[Marginal]@292,322,93x28
+BUTTON#.[N.A.]@194,355,93x28
+BUTTON#.[Close]@292,355,93x28
+BUTTON#popDoneDate.datebox trpopdate is-notyet[Done on: Thu 19 Nov 2026]@194,420,190x36
+BUTTON#popFailMinus.sm[−]@269,463,21x28
+BUTTON#popFailPlus.sm[+]@316,463,21x28
+BUTTON#popFailDate.datebox trpopdate is-notyet[Failed on: Thu 19 Nov 2026]@194,515,190x36
+BUTTON#popEditInfo.sm[Edit details]@194,647,190x29
+errors []
+DONE 0 PASS 0 FAIL 0 OTHER of 0
