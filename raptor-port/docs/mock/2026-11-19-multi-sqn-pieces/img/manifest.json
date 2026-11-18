@@ -9,7 +9,7 @@
   "piece": "p1",
   "size": "desktop 1536",
   "kind": "drawn",
-  "caption": "Kestrel, 149's admin, has opened Ranger's row (a member of 142). New: the ladder with View 149 picked; Plan 149 and Master admin greyed, the line under them saying why. The rest of Ranger's row stays 142's: Save is refused in the words already built (\"He is 142's. Only an admin of 142 can change his account.\"). Measured: 1 row(s)."
+  "caption": "Kestrel, 149's admin, has opened Ranger's row (a member of 142, found by search; his row marked with the grey \"142\"). New: the ladder with View 149 picked; Plan 149 and Master admin greyed, the line under them saying why; everything else on Ranger's row greyed, since it stays 142's; Save saves the ladder only. Measured: 1 row(s), 5 controls greyed."
  },
  "p1c-d.png": {
   "piece": "p1",
@@ -27,7 +27,7 @@
   "piece": "p1",
   "size": "iPhone 402 (WebKit)",
   "kind": "drawn",
-  "caption": "Kestrel, 149's admin, has opened Ranger's row (a member of 142). New: the ladder with View 149 picked; Plan 149 and Master admin greyed, the line under them saying why. The rest of Ranger's row stays 142's: Save is refused in the words already built (\"He is 142's. Only an admin of 142 can change his account.\"). Measured: 2 row(s)."
+  "caption": "Kestrel, 149's admin, has opened Ranger's row (a member of 142, found by search; his row marked with the grey \"142\"). New: the ladder with View 149 picked; Plan 149 and Master admin greyed, the line under them saying why; everything else on Ranger's row greyed, since it stays 142's; Save saves the ladder only. Measured: 2 row(s), 5 controls greyed."
  },
  "p2a-d.png": {
   "piece": "p2",
@@ -69,31 +69,31 @@
   "piece": "p5",
   "size": "desktop 1536",
   "kind": "drawn",
-  "caption": "The sign-in screen on a shared tab: Saber signed out a moment ago and his last change is still saving. Kestrel has pressed Sign in. New: the button reads \"Signing in…\" and waits, greyed, with one line under it; once the save lands he is signed in by himself. If that save fails, the \"Not saved\" band already built shows on this screen, with its Retry."
+  "caption": "The sign-in screen on a shared tab: Saber signed out a moment ago and his last change is still saving. Kestrel has pressed Sign in. New: the button reads \"Signing in…\" and waits, greyed, with one line under it; once the save lands he is signed in by himself. If that save fails, the \"Not saved\" band already built shows on this screen, with its Retry, and Kestrel stays on this screen until Retry saves it."
  },
  "p5-p.png": {
   "piece": "p5",
   "size": "iPhone 402 (WebKit)",
   "kind": "drawn",
-  "caption": "The sign-in screen on a shared tab: Saber signed out a moment ago and his last change is still saving. Kestrel has pressed Sign in. New: the button reads \"Signing in…\" and waits, greyed, with one line under it; once the save lands he is signed in by himself. If that save fails, the \"Not saved\" band already built shows on this screen, with its Retry."
+  "caption": "The sign-in screen on a shared tab: Saber signed out a moment ago and his last change is still saving. Kestrel has pressed Sign in. New: the button reads \"Signing in…\" and waits, greyed, with one line under it; once the save lands he is signed in by himself. If that save fails, the \"Not saved\" band already built shows on this screen, with its Retry, and Kestrel stays on this screen until Retry saves it."
  },
  "p6-p.png": {
   "piece": "p6",
   "size": "iPhone 402 (WebKit)",
   "kind": "drawn",
-  "caption": "Kestrel's bell (149's admin and scheduler), Ranger of 142 borrowed onto 149's RU and VL. New: the four lines that cross squadrons, top to bottom — Ranger unavailable at home on a day 149 plans him; Ranger posted out of 142 while 149 still plans him, naming the days; 142 taking Ranger back out of 149's plan, naming the day; and Kestrel's change to RU replaced by Hunter's later save. Each carries the grey \"142\" mark: it comes from 142."
+  "caption": "Kestrel's bell (149's admin and scheduler), Ranger of 142 borrowed onto 149's RU and VL. New: the four lines that cross squadrons, top to bottom — Ranger unavailable at home on a day 149 plans him; Ranger posted out of 142 while 149 still plans him, naming the days; 142 taking Ranger back out of 149's plan, naming the day; and Kestrel's change to RU replaced by Hunter's later save. The grey \"142\" marks 142's people: Ranger on the first three lines, Hunter on the fourth (RU is 149's own line). Kestrel's top bar still reads \"142 TALON\": the number there is not yet per squadron in the build."
  },
  "p7-d.png": {
   "piece": "p7",
   "size": "desktop 1536",
   "kind": "drawn",
-  "caption": "Admin → Squadrons as Hunter, 142's admin — the Squadrons page drawn in round 4, not built yet, made here from Admin → Users' own parts. Home base is shared by 142 and 149. New: its Time zone greyed for him, one line under it saying why. A place only 142 sits on stays his to set; Saber, the master, sees it ordinary."
+  "caption": "Admin → Squadrons as Hunter, 142's admin — the Squadrons page drawn in round 4, not built yet, made here from Admin → Users' own parts. Home base is shared by 142 and 149. New: its Time zone greyed for him, one line under it saying why. A place only 142 sits on stays his to set; Saber, the master, sees it ordinary. The Squadrons tile's map pin is drawn here too, so it does not share Users' icon."
  },
  "p7-p.png": {
   "piece": "p7",
   "size": "iPhone 402 (WebKit)",
   "kind": "drawn",
-  "caption": "Admin → Squadrons as Hunter, 142's admin — the Squadrons page drawn in round 4, not built yet, made here from Admin → Users' own parts. Home base is shared by 142 and 149. New: its Time zone greyed for him, one line under it saying why. A place only 142 sits on stays his to set; Saber, the master, sees it ordinary."
+  "caption": "Admin → Squadrons as Hunter, 142's admin — the Squadrons page drawn in round 4, not built yet, made here from Admin → Users' own parts. Home base is shared by 142 and 149. New: its Time zone greyed for him, one line under it saying why. A place only 142 sits on stays his to set; Saber, the master, sees it ordinary. The Squadrons tile's map pin is drawn here too, so it does not share Users' icon."
  },
  "p8-d.png": {
   "piece": "p8",
@@ -159,6 +159,6 @@
   "piece": "p6",
   "size": "desktop 1536",
   "kind": "drawn",
-  "caption": "Kestrel's bell (149's admin and scheduler), Ranger of 142 borrowed onto 149's RU and VL. New: the four lines that cross squadrons, top to bottom — Ranger unavailable at home on a day 149 plans him; Ranger posted out of 142 while 149 still plans him, naming the days; 142 taking Ranger back out of 149's plan, naming the day; and Kestrel's change to RU replaced by Hunter's later save. Each carries the grey \"142\" mark: it comes from 142."
+  "caption": "Kestrel's bell (149's admin and scheduler), Ranger of 142 borrowed onto 149's RU and VL. New: the four lines that cross squadrons, top to bottom — Ranger unavailable at home on a day 149 plans him; Ranger posted out of 142 while 149 still plans him, naming the days; 142 taking Ranger back out of 149's plan, naming the day; and Kestrel's change to RU replaced by Hunter's later save. The grey \"142\" marks 142's people: Ranger on the first three lines, Hunter on the fourth (RU is 149's own line). Kestrel's top bar still reads \"142 TALON\": the number there is not yet per squadron in the build."
  }
 }

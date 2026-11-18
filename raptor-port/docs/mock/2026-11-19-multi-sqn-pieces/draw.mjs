@@ -174,8 +174,22 @@ async function p1(sz) {
     const { ctx, page } = await session(sz, 'ad9', 'a9')
     await toUsers(page); await openRow(page, 'Ranger')
     const m = await ladder(page, { picked: 1, off: [2, 3], note: 'Only a master admin gives Plan or makes a master admin.' })
+    // reader's finding 1: "nothing else of his row changeable" (D2191) — every other field and button of the row greyed
+    // with the app's own disabled look; Save (it saves the ladder only) and Cancel stay live. His row's "142" badge (D2191:
+    // "his row there showing 142"), the look-2 grey badge, outline only
+    const g = await page.evaluate(() => {
+      const mq = window.__mq, row = document.querySelector('#page-admin .acc-row.od-row-on'), ed = row.querySelector('.acc-edit')
+      let n = 0
+      for (const c of ed.querySelectorAll('input, select, textarea, button')) {
+        if (c.closest('.mq-ladder') || c.id === 'accEdSave' || c.id === 'accEdCancel') continue
+        c.disabled = true; c.style.opacity = '.42'; n++
+      }
+      const nm = row.querySelector('.acc-name'), b = mq.badge('142'); nm.appendChild(b); mq.mark(b, false, true)
+      return n
+    })
+    if (g < 4) throw new Error('premise: fewer than 4 of Ranger\'s controls found to grey: ' + g)
     const f = `p1b-${sz}.png`; await shot(page, f, sz === 'd' ? ['#page-admin .acc-row.od-row-on'] : null, 40)
-    rec(f, 'p1', sz, 'drawn', `Kestrel, 149's admin, has opened Ranger's row (a member of 142). New: the ladder with View 149 picked; Plan 149 and Master admin greyed, the line under them saying why. The rest of Ranger's row stays 142's: Save is refused in the words already built ("He is 142's. Only an admin of 142 can change his account."). Measured: ${m.rows} row(s).`)
+    rec(f, 'p1', sz, 'drawn', `Kestrel, 149's admin, has opened Ranger's row (a member of 142, found by search; his row marked with the grey "142"). New: the ladder with View 149 picked; Plan 149 and Master admin greyed, the line under them saying why; everything else on Ranger's row greyed, since it stays 142's; Save saves the ladder only. Measured: ${m.rows} row(s), ${g} controls greyed.`)
     await ctx.close()
   }
   // 1c — Hunter (142's admin) opens Ranger's row: access to 149 is not his to give
@@ -190,8 +204,8 @@ async function p1(sz) {
 }
 
 // ---------- p2: "PLANS 149" beside the role pill ----------
-async function plansPill(page) {
-  return page.evaluate(() => {
+async function plansPill(page, onOther = false) {
+  return page.evaluate((onOther) => {
     const mq = window.__mq
     const row = [...document.querySelectorAll('#page-admin .acc-row.od-row')].find(r => /^Hunter/.test(r.querySelector('.acc-name')?.textContent || ''))
     // a pill beside ADMIN wrapped to two lines and pushed the dot columns (first drawing): the words go at the end of
@@ -200,10 +214,13 @@ async function plansPill(page) {
     const sub = row.querySelector('.acc-sub'), h0 = row.getBoundingClientRect().height
     const p = mq.el('span', '', ' · also plans 149'); sub.appendChild(p)
     mq.mark(p, false, true)
-    const t = document.createElement('span'); t.className = 'mkq-tag'; t.textContent = 'New'; t.style.top = '-12px'; t.style.right = '-14px'; p.appendChild(t)
+    // the tag hangs below the words (above them it covered "Pilot" on the phone — reader's finding 12)
+    const t = document.createElement('span'); t.className = 'mkq-tag'; t.textContent = 'New'; t.style.bottom = '-15px'; t.style.right = '-4px'; p.appendChild(t)
+    // on 149's list (Kestrel's) Hunter is another squadron's man: his row shows the grey "142" (D2191)
+    if (onOther) { const b = mq.badge('142'); row.querySelector('.acc-name').appendChild(b) }
     row.scrollIntoView({ block: 'center' })
     return { grew: Math.round(row.getBoundingClientRect().height - h0) }
-  })
+  }, onOther)
 }
 async function p2(sz) {
   for (const [u, pw, who, k] of [['ad', 'a', 'Saber, the master admin (his list is 142\'s)', 'a'], ['ad9', 'a9', 'Kestrel, 149\'s admin (149\'s list)', 'b']]) {
@@ -212,7 +229,7 @@ async function p2(sz) {
     await toUsers(page)
     await page.evaluate(() => { const r = [...document.querySelectorAll('#page-admin .acc-row.od-row')].find(r => /^Hunter/.test(r.querySelector('.acc-name')?.textContent || '')); r.scrollIntoView({ block: 'center' }) })
     await page.waitForTimeout(300)
-    await plansPill(page)
+    await plansPill(page, k === 'b')
     await page.waitForTimeout(200)
     const f = `p2${k}-${sz}.png`
     if (sz === 'd') {
@@ -245,7 +262,10 @@ async function bellLines(page, lines, chips, markIdx = []) {
       t.appendChild(mq.el('b', 'bl-name', l.name))
       if (l.sq) t.appendChild(mq.badge(l.sq))
       t.appendChild(mq.el('i', 'bl-day', l.day))
-      main.appendChild(t); main.appendChild(mq.el('span', 'bl-what', l.what + (l.who ? ' · ' + l.who : '')))
+      main.appendChild(t)
+      const w = mq.el('span', 'bl-what', l.what + (l.who ? ' · ' + l.who : ''))
+      if (l.whoSq) w.appendChild(mq.badge(l.whoSq))   // the badge after the person, where the line's subject is our own
+      main.appendChild(w)
       b.appendChild(main); b.appendChild(mq.el('span', 'bl-ago', l.ago || '2m'))
       sc.appendChild(b); made.push(b)
     }
@@ -310,16 +330,19 @@ const B4 = [
   { name: 'Ranger', sq: '142', day: 'Wed 25 Nov', what: 'Leave approved at 142. He is on your RU', who: 'Hunter', unread: true, ago: '3m' },
   { name: 'Ranger', sq: '142', day: 'Wed 25, Thu 26 Nov', what: 'Posted out of 142. Off your RU on these days', who: 'Hunter', unread: true, ago: '12m' },
   { name: 'Ranger', sq: '142', day: 'Thu 26 Nov', what: 'Taken back by 142. Off your VL', who: 'Hunter', unread: true, ago: '40m' },
-  { name: 'RU', sq: '142', day: 'Wed 25 Nov', what: 'Your change was replaced by a later save', who: 'Hunter', unread: true, ago: '1h' },
+  // RU is 149's own line: no badge on it (reader's finding 3 — one mark, one meaning); Hunter, who saved over it, is 142's
+  { name: 'RU', day: 'Wed 25 Nov', what: 'Your change was replaced by a later save', who: 'Hunter', whoSq: '142', unread: true, ago: '1h' },
 ]
 async function p6(sz) {
   const { ctx, page } = await session(sz, 'ad9', 'a9')
   await openBell(page)
   await bellLines(page, B4, null, [0, 1, 2, 3])
   // the whole lines marked too (each line is new), the squadron badge marked inside
-  await page.evaluate(() => { const t = window.__mq.mark(document.querySelector('[data-testid="bell-list"]'), true); t.style.top = '3px'; t.style.right = '50%' })
+  // the tag at the list's bottom right, clear of every line's words (at the top inside it covered "Nov" on the phone,
+  // and on the top edge the list cut it)
+  await page.evaluate(() => { const t = window.__mq.mark(document.querySelector('[data-testid="bell-list"]'), true); t.style.top = 'auto'; t.style.bottom = '6px'; t.style.right = '8px' })
   const f = `p6-${sz}.png`; await shot(page, f, sz === 'd' ? ['[data-testid="bell-list"]', '.bellbtn'] : null, 16)
-  rec(f, 'p6', sz, 'drawn', 'Kestrel\'s bell (149\'s admin and scheduler), Ranger of 142 borrowed onto 149\'s RU and VL. New: the four lines that cross squadrons, top to bottom — Ranger unavailable at home on a day 149 plans him; Ranger posted out of 142 while 149 still plans him, naming the days; 142 taking Ranger back out of 149\'s plan, naming the day; and Kestrel\'s change to RU replaced by Hunter\'s later save. Each carries the grey "142" mark: it comes from 142.')
+  rec(f, 'p6', sz, 'drawn', 'Kestrel\'s bell (149\'s admin and scheduler), Ranger of 142 borrowed onto 149\'s RU and VL. New: the four lines that cross squadrons, top to bottom — Ranger unavailable at home on a day 149 plans him; Ranger posted out of 142 while 149 still plans him, naming the days; 142 taking Ranger back out of 149\'s plan, naming the day; and Kestrel\'s change to RU replaced by Hunter\'s later save. The grey "142" marks 142\'s people: Ranger on the first three lines, Hunter on the fourth (RU is 149\'s own line). Kestrel\'s top bar still reads "142 TALON": the number there is not yet per squadron in the build.')
   await ctx.close()
 }
 
@@ -367,14 +390,19 @@ async function p5(sz) {
     const mq = window.__mq, f = document.querySelector('#loginForm'), btn = f.querySelector('button[type=submit]')
     const p = document.querySelector('#lpass'); p.value = 'a9'; p.dispatchEvent(new Event('input', { bubbles: true }))
     document.activeElement && document.activeElement.blur && document.activeElement.blur()
-    btn.textContent = 'Signing in…'; btn.disabled = true
-    const n = mq.el('p', 'adm-note', 'Waiting for the last change on this page to save.'); n.style.textAlign = 'center'; n.style.margin = '10px 0 0'
+    // greyed in the app's disabled look (.abtn[disabled] opacity .42 — the sign-in's .go has no disabled rule of its own);
+    // the line in the card's own quiet small print (.login .hint's size and grey), not the admin pages' note
+    btn.textContent = 'Signing in…'; btn.disabled = true; btn.style.opacity = '.42'; btn.style.cursor = 'default'
+    const n = mq.el('p', '', 'Waiting for the last change on this page to save.')
+    n.style.cssText = 'text-align:center;margin:10px 0 0;font-size:10.5px;line-height:1.6;color:var(--ink-3)'
     btn.after(n)
-    mq.mark(n); mq.mark(btn, false, true)
+    // the tag at the line's top left: at its right it covered "save." on the phone (reader's finding 6)
+    const t = mq.mark(n); t.style.right = 'auto'; t.style.left = '-6px'
+    mq.mark(btn, false, true)
     f.setAttribute('data-mqshot', '1')
   })
   const f = `p5-${sz}.png`; await shot(page, f, sz === 'd' ? ['[data-mqshot]'] : null, 60)
-  rec(f, 'p5', sz, 'drawn', 'The sign-in screen on a shared tab: Saber signed out a moment ago and his last change is still saving. Kestrel has pressed Sign in. New: the button reads "Signing in…" and waits, greyed, with one line under it; once the save lands he is signed in by himself. If that save fails, the "Not saved" band already built shows on this screen, with its Retry.')
+  rec(f, 'p5', sz, 'drawn', 'The sign-in screen on a shared tab: Saber signed out a moment ago and his last change is still saving. Kestrel has pressed Sign in. New: the button reads "Signing in…" and waits, greyed, with one line under it; once the save lands he is signed in by himself. If that save fails, the "Not saved" band already built shows on this screen, with its Retry, and Kestrel stays on this screen until Retry saves it.')
   await ctx.close()
 }
 
@@ -391,6 +419,10 @@ async function p7(sz) {
       sq.querySelector('.adm-cat-l').textContent = 'Squadrons'; sq.querySelector('.adm-cat-s').textContent = 'Places and detachments'
       // the picked look moves to Squadrons: the app's own .on class swapped
       sq.className = users.className; users.className = users.className.replace(/\bon\b/, '')
+      // one thing, one icon (D1134): Users' people icon is not reused — a line map pin, drawn in the same svg's own
+      // stroke and size (its paths swapped, the svg element kept)
+      const sv = sq.querySelector('svg')
+      if (sv) sv.innerHTML = '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>'
       users.after(sq)
     }
     // the panel: Users' own h3 / sub / row markup, its children hidden, the Squadrons content built from the same classes
@@ -402,7 +434,8 @@ async function p7(sz) {
     kids.forEach(k => mq.hide(k))
     const host = h3.parentElement === panel ? null : mq.strip(h3.parentElement.cloneNode(false))
     if (host) { host.removeAttribute('data-mqhid'); host.style.removeProperty('display'); host.appendChild(h3c); panel.appendChild(host) } else panel.appendChild(h3c)
-    const sec = mq.strip(real.closest('.acc-list').parentElement.cloneNode(false)); panel.appendChild(sec); sec.style.paddingBottom = '16px'
+    // the panel's own side padding, as its heading has it (the bare clone sat flush on the card's left edge)
+    const sec = mq.strip(real.closest('.acc-list').parentElement.cloneNode(false)); panel.appendChild(sec); sec.style.padding = '0 32px 16px'
     const H = t => { const h = mq.strip(sub.cloneNode(true)); h.textContent = t; sec.appendChild(h) }
     H('Places')
     const list = mq.strip(real.closest('.acc-list').cloneNode(false)); sec.appendChild(list)
@@ -414,17 +447,18 @@ async function p7(sz) {
     const f1 = mq.el('div', 'mfield'); f1.appendChild(mq.el('label', '', 'Name')); const i1 = mq.el('input'); i1.value = 'Home base'; f1.appendChild(i1)
     const f2 = mq.el('div', 'mfield'); f2.appendChild(mq.el('label', '', 'Time zone')); const s2 = mq.el('select'); const o = mq.el('option', '', 'Singapore · GMT+8'); s2.appendChild(o); s2.disabled = true; f2.appendChild(s2)
     two.appendChild(f1); two.appendChild(f2); ed.appendChild(two)
-    const n = mq.el('p', 'adm-note', 'Only a master admin can change it: 142 and 149 are both here.'); n.style.margin = '6px 0 0'; ed.appendChild(n)
+    const n = mq.el('p', 'adm-note', 'Only a master admin can change the time zone: 142 and 149 are both here.'); n.style.margin = '6px 0 0'; ed.appendChild(n)
     const acts = mq.el('div', 'acc-acts'); const sv = mq.el('button', 'abtn primary', 'Save'); const cc = mq.el('button', 'abtn', 'Cancel'); acts.appendChild(sv); acts.appendChild(cc); ed.appendChild(acts)
     row.appendChild(ed); list.appendChild(row)
     s2.style.opacity = '.55'; n.style.margin = '6px 0 12px'
+    // outside outlines again, now that the section has the card's side padding (flush, they were cut off at its edge)
     mq.mark(f2, false, true); mq.mark(n)
     window.scrollTo(0, 0)
     panel.setAttribute('data-mqshot', '1')
   })
   await page.waitForTimeout(300)
   const f = `p7-${sz}.png`; await shot(page, f, sz === 'd' ? ['[data-mqshot]', '#page-admin button.adm-cat'] : null, 20)
-  rec(f, 'p7', sz, 'drawn', 'Admin → Squadrons as Hunter, 142\'s admin — the Squadrons page drawn in round 4, not built yet, made here from Admin → Users\' own parts. Home base is shared by 142 and 149. New: its Time zone greyed for him, one line under it saying why. A place only 142 sits on stays his to set; Saber, the master, sees it ordinary.')
+  rec(f, 'p7', sz, 'drawn', 'Admin → Squadrons as Hunter, 142\'s admin — the Squadrons page drawn in round 4, not built yet, made here from Admin → Users\' own parts. Home base is shared by 142 and 149. New: its Time zone greyed for him, one line under it saying why. A place only 142 sits on stays his to set; Saber, the master, sees it ordinary. The Squadrons tile\'s map pin is drawn here too, so it does not share Users\' icon.')
   await ctx.close()
 }
 
@@ -437,9 +471,11 @@ async function p8(sz) {
     const row = [...document.querySelectorAll('#page-admin .acc-row.od-row')].find(r => /^Outlaw/.test(r.querySelector('.acc-name')?.textContent || ''))
     const sub = row.querySelector('.acc-sub')
     const po = mq.el('span', 'od-po', ' · posted out from Fri 20 Nov'); sub.appendChild(po)
-    const held = mq.el('span', 'acc-held', 'This posting could not run. It will try again when the app is next opened.')
+    // its remedy added (an error says how to put it right), in the words the app already uses for an unreadable week
+    const held = mq.el('span', 'acc-held', 'This posting could not run. It will try again when the app is next opened. If this stays, report it with “Report a problem” on the Help page.')
     row.appendChild(held)
-    mq.mark(held, true)
+    // outside outline: inside, it cut the first letter
+    mq.mark(held, false)
     row.scrollIntoView({ block: 'center' })
     row.setAttribute('data-mqshot', '1')
     const p = row.previousElementSibling, n = row.nextElementSibling; p && p.setAttribute('data-mqshot', '1'); n && n.setAttribute('data-mqshot', '1')
@@ -468,6 +504,14 @@ async function p9(sz) {
     const t = document.querySelector('#toastEl')
     t.textContent = 'Kestrel is 149\'s last admin from Fri 27 Nov, when Osprey moves to 142. Make another admin of 149 first.'
     window.__mq.mark(t)
+    // the example's premise: Osprey is 149's second admin (in the demo he is a member) — his row's role pill re-lettered
+    const o = [...document.querySelectorAll('#page-admin .acc-row.od-row')].find(r => /^Osprey/.test(r.querySelector('.acc-name')?.textContent || ''))
+    if (o) {
+      const u = o.querySelector('.od-rc .ub'); if (u) { u.className = u.className.replace(/\bmain\b/, 'admin'); u.textContent = 'ADMIN' }
+      // on a phone the role is the word in his line under the name, not the pill
+      const tw = document.createTreeWalker(o.querySelector('.acc-sub'), NodeFilter.SHOW_TEXT); let tn
+      while ((tn = tw.nextNode())) if (/Member/.test(tn.nodeValue)) tn.nodeValue = tn.nodeValue.replace('Member', 'Admin')
+    }
   })
   const f1 = `p9-${sz}.png`; await shot(page, f1, sz === 'd' ? ['[data-mqshot]'] : null, 24)
   rec(f1, 'p9', sz, 'drawn', 'Proposed: Osprey, 149\'s second admin, is already set to move to 142 from Fri 27 Nov; Saber demotes Kestrel today. Today the app refuses with "You are not allowed to do that" (read from the code: no screen saves a home move yet). New: the same note in the built sentence\'s shape, naming the date and the reason.')
