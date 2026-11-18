@@ -21,7 +21,9 @@ they are built.
 **Across squadrons (his D2194, 18 Nov 26 — the rule for every future line):** no line about one squadron's own business
 reaches another squadron's people; a line crosses only where the matter concerns both — a borrowed man, a man moving
 between them, a detachment the other's men join, a place both share — and each squadron is told only what touches its
-own people and days. No holiday list is shared (his D2195), so a holiday never crosses squadrons.
+own people and days. No holiday list is shared (his D2195), so a holiday never crosses squadrons. A master admin's bell
+carries his primary squadron's lines by default, every other squadron's switched off until he switches it on (his D2198,
+18 Nov 26 — the switch to be drawn first; not built).
 
 ## Built — the bell's notices today
 

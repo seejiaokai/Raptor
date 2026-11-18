@@ -86,7 +86,9 @@ bar for anyone who may see more than one schedule; Admin → Squadrons; each pla
 - Where a person may see several schedules the TALON mark is a "149 ▾" button opening "Schedules"; Edit Schedule,
   View-only Sched, the Scheduler Board and Logic follow the pick; Inputs, Quals, the Leave War and the Tracker stay on
   his own squadron; the board's bar shows the squadron number beside its day title, small and grey [D2132]. Someone
-  who may see one schedule sees no ▾ [D2132].
+  who may see one schedule sees no ▾ [D2132]. *[Narrowed 18 Nov 26 by his D2197: for a master admin every page
+  follows the pick — Inputs, Quals, the Leave War, the Tracker and Admin → Users too — each his to edit; and by his
+  D2198: his bell carries his primary squadron's lines by default, the others' off until he switches them on.]*
 - Each squadron its own schedule and its own Logic settings, crew rest included, edited by its own admin [D2109,
   D2122]. Each squadron its own Tracker [D2167].
 - *[SET ASIDE 18 Nov 26 by his D2195: no holiday list is shared — each squadron owns its own; the form names only its
