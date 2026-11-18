@@ -1308,10 +1308,14 @@ function inputUnitViolation(env: CommitEnvelope): string | null {
   for (const c of ins) {
     const was = c.before ?? null, is = c.op === 'delete' ? null : c.after ?? null
     if (JSON.stringify(was) === JSON.stringify(is)) continue
-    if (a.role !== 'admin' && was && is && a.personId != null) {
-      const b = new Set(named(was)), f = new Set(named(is))
-      const added = [...f].filter(p => !b.has(p)), gone = [...b].filter(p => !f.has(p))
-      if (!added.length && gone.length === 1 && gone[0] === String(a.personId)) continue
+    /* (his own part only — the gate's `ownPart`: nothing but his entry differs, and the filer's handover with him (Astra
+       3: the old test let him rewrite what was left for the other squadron's man in the same command). Forward, only as
+       a take-out; back in, only as his own verified replay — his Undo of the take-out, which the squadron test refused
+       before the replay check further down was reached.) */
+    if (a.role !== 'admin' && was && is && a.personId != null && ownPart(String(a.personId), was, is)) {
+      const me = String(a.personId)
+      if (holds(was, me) && !holds(is, me)) continue
+      if (!holds(was, me) && holds(is, me) && env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
     }
     /* a member's own input — naming only him, before and after, no placeholder — is his whatever its squadron (F2) */
     const onlyMe = (r: any) => r == null || (!placeholderOf(r) && named(r).length === 1 && named(r)[0] === String(a.personId))
