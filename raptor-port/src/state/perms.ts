@@ -34,7 +34,7 @@ import { seedAccounts, ACCOUNTS_LIST, isAdminAccount, isMasterAccount, accountBe
 import { unitRowsBefore, levelBefore, homeBefore, todayIso, homeOn } from './units'
 import { PEOPLE } from '../engine/people'
 import { UNIT, BOOT_UNIT } from '../engine/unitview'
-import { unitOf, isUnitId } from '../storage/unitid'
+import { unitOf, isUnitId, split } from '../storage/unitid'
 import {
   UNIT_PFX, PLACE_PFX, UNITPLACE_PFX, GRANT_PFX, HOME_PFX, UNIT_ROW_PREFIXES, validUnit, validPlace, validUnitPlace, validGrant,
   validHome, unitIn, placeIn, placeIdOn, moveFrom, type UnitRows,
@@ -1363,13 +1363,26 @@ type LwUnit = () => string | null
 let LW_UNIT: LwUnit | null = null
 export function setLwUnitProbe(fn: LwUnit | null): void { LW_UNIT = fn }
 export const lwUnitNow = (): string | null => (LW_UNIT ? LW_UNIT() : null)
+/* Admin → Users' doors, the only commands that write the second store (leavewar/sync.ts foreignOf's callers: Archive,
+   Restore and Restore as — one type — and Delete) */
+const LWX_DOORS = new Set(['person.archive', 'person.restore', 'person.delete'])
 function warUnitViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system') return null
-  const lw = env.changes.filter(c => String(c.collection).startsWith('lw.') && c.collection !== 'lw.current')
-  if (!lw.length) return null
+  /* the second store's rows (`lwx.*`, A3 — leavewar/state/foreign.ts): another squadron's stored war, written by Admin →
+     Users' three doors alone and never for the war loaded (job 2's security read, SEC-5: 142's plain admin wrote an
+     Overseas Sqn posting for the master into 142's stored war through it, a posting 7b refuses on `lw.postouts`). Its
+     posting window is judged below exactly as the war's own. */
+  const fx = env.changes.filter(c => String(c.collection).startsWith('lwx.'))
   const u = lwUnitNow()
-  if (u) {
+  /* (a member is refused every `lwx` row by section 7 — an admin's record — and is told so there) */
+  for (const c of a.role === 'admin' ? fx : []) {
+    if (!LWX_DOORS.has(env.type)) return `another squadron's stored war written outside Admin → Users' doors, through the second store (${c.collection}/${c.id})`
+    if (u && unitOf(String(c.id)) === u) return `the war loaded written through the second store (${c.collection}/${c.id})`
+  }
+  const lw = env.changes.filter(c => String(c.collection).startsWith('lw.') && c.collection !== 'lw.current')
+  if (!lw.length && !fx.length) return null
+  if (u && lw.length) {
     const lv = levelInForce(a, u, todayIso(), unitRowsBefore(env.changes))
     const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
     if (!ok) return `a change to another squadron's Leave War (${u}) by one with ${lv ? `${lv} rights` : 'no rights'} there`
@@ -1379,8 +1392,9 @@ function warUnitViolation(env: CommitEnvelope): string | null {
   const masters = new Set(before.filter(x => x.master === true).map(x => String(x.pid)))
   if (!masters.size) return null
   const actorMaster = a.role === 'admin' && before.some(x => x.id === a.id && x.master === true)
-  for (const c of lw) {
-    if (c.collection !== 'lw.postouts' || !masters.has(String(c.id))) continue
+  for (const c of [...lw, ...fx]) {
+    const pid = c.collection === 'lwx.profile' ? split(String(c.id)).local : String(c.id)
+    if ((c.collection !== 'lw.postouts' && c.collection !== 'lwx.profile') || !masters.has(pid)) continue
     const f: any = c.op === 'delete' ? null : c.after
     if (!f || JSON.stringify(c.before) === JSON.stringify(f)) continue
     const out = passOutcomeOf(f)

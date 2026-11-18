@@ -1787,7 +1787,10 @@ squadron are judged by whose they are:
   `LeaveBid` and `LeaveLedger` rows, never the war loaded — each a record whose id names that squadron
   (`lwx.profile` / `lwx.rec` / `lwx.ledger`, `<unit>@<local>`), so the unit rule above asks for an admin of it; a member
   writes none of them (`src/state/perms.ts`, the member's admin-only records; `src/leavewar/state/foreign.ts`). Those four
-  doors are the only writers of a war that is not loaded; the war's passes for it run when it is next opened.
+  doors are the only writers of a war that is not loaded; the war's passes for it run when it is next opened. The gate
+  holds them to that (job 2's security read, SEC-5, 19 Nov 26): an admin's `lwx` row is refused in any other command,
+  refused for the war loaded, and its posting window obeys the master's posting rule as the war's own `lw.postouts`
+  does — a Delete posting for a master never, an Overseas Sqn posting for one only by a master.
 
 **The day lock (29 Sep 26, D355, D450 — section 9):** *(8 Nov 26, his D1751: a simple mark the app holds — none of the Dataverse privileges, team or server check in this paragraph is built.)* the lock is columns of `ScheduleDay` (section 3), so it follows
 the ScheduleWeek family's row — an admin takes, releases and takes over a day (every scheduler is an admin; in
