@@ -367,7 +367,7 @@ const RULING_BYTES = [
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
      none is trimmed (D136). Room for the next rulings, not a target. */
-  ['.claude/rules/decisions/oil.md',     2, 15407],   // 8 Nov 26, D1932: set to the one-line list's size the page replaced (a6265cae0) — a HARD LIMIT (PAGE_LIMITS below). Before that, raised 8 Nov 26 from 15500: the rules diet's step 5a made it a page (D1735); the account by requirement put back 30 parts of rulings the sample had cut, and the two blind reads 18 more (20,560 bytes); a ruling is never cut to fit (D141), a tenth above again
+  ['.claude/rules/decisions/oil.md',     2, 15700],   // 15407 -> 15700 (18 Nov 26, chat 108): his standing word (D2148), for D2193, the holiday sentence's words. 8 Nov 26, D1932: set to the one-line list's size the page replaced (a6265cae0) — a HARD LIMIT (PAGE_LIMITS below). Before that, raised 8 Nov 26 from 15500: the rules diet's step 5a made it a page (D1735); the account by requirement put back 30 parts of rulings the sample had cut, and the two blind reads 18 more (20,560 bytes); a ruling is never cut to fit (D141), a tenth above again
   /* leave-war 37000 -> 39000 (15 Oct 26, night): 37,040 bytes with D890-D892 (one landing line a gap, the other lists,
      a drag held at the edge scrolls - his finds on his iPhone) - live; none is trimmed (D136). Room, not a target. */
   /* leave-war 39000 -> 44000 (21 Oct 26): 39,630 bytes with D1140-D1143 (the Leave War overhaul, D1140, and his answers
@@ -462,7 +462,7 @@ const RULING_BYTES = [
 const PAGE_LIMITS = [
   // file,                                         set (D1932),  limit, by
   ['.claude/rules/decisions/how-we-work.md',     39000, 39000, 'D2148'],   // raised from 38500 on his standing word, D2148 (17 Nov 26); from 38000 on his word, D2141;   // its tripwire as it stood; the page shrank (59,493 -> 37,952), left as it is
-  ['.claude/rules/decisions/oil.md',             15407, 15407, 'D1932'],   // the one-line list at a6265cae0; 9 Nov 26, D1945: the scheduler's page made it owe 32 numbers of later rulings — room made by tighter wording, never a raise; D1946 the same for D1041's two
+  ['.claude/rules/decisions/oil.md',             15700, 15700, 'D2148'],   // the one-line list at a6265cae0; 15407 -> 15700 (18 Nov 26, chat 108): his standing word (D2148), for D2193; 9 Nov 26, D1945: the scheduler's page made it owe 32 numbers of later rulings — room made by tighter wording, never a raise; D1946 the same for D1041's two
   ['.claude/rules/decisions/it-flow-guide.md',    4028,  4028, 'D1932'],   // the one-line list at cd8a5dd67
   ['.claude/rules/decisions/tracker.md',         20061, 20061, 'D1932'],   // the one-line list at aee0de3f2
   ['.claude/rules/decisions/design.md',          22050, 22050, 'D1932'],   // the one-line list at 0abda89d5
