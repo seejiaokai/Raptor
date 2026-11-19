@@ -47,7 +47,14 @@ unread line removed, a read one answered "taken back"), D148 (Undo: one's own ch
   one body) counts the filer where, on any of the input's days, a named man's home that day is the filer's squadron,
   or the filer is its admin, master or Plan.
 
-@@DEPARTURES@@
+**The builder's departures and choices — judge each:** (1) M does not ask "does this command change that input";
+it trusts a registry the pass fills as it writes (`notePassMade` / `passMade`, filled in `sched-commit.ts`), because
+the pass's before-image predates the resync and it can tell of a bare write — can that registry be filled, kept or
+read by anything but the pass, across commands, or after a failed command? (2) T's 5-minute window applies only to new
+lines; an existing line keeps its time under M. (3) Four older test files' fixtures were re-dated to now (one also given
+`iid: ''` and `fu`) because T refuses old dates — did any lose what it proved? (4) P: a right with no `from` counts from
+always (D56); `Account.masterFrom` and `Grant.from` written by `setMaster` / `setGrant`. (5) Q: an input whose date
+cannot be read falls back to today; the filer's own home is still read today (D2223).
 
 ## The ask
 1. Is each fix complete — every door the same harm comes through (assume the missing call site)? Every place that
