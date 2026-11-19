@@ -549,6 +549,10 @@ export function commitPhase(): 'idle' | 'reducer' | 'post' { return phase }
    the command wrote ([DB-READINESS] group A, phase 6 (c): the holder base moves only for the days a command's rows name).
    null outside a command. */
 export function activeEnvelope(): CommitEnvelope | null { return active ? active.env : null }
+/* has the command now running enlisted this store yet? (its before-side is then set: what the store's records change
+   from here on rides the command's changes). False outside a command. Read by the scheduler's input command, which
+   decides from it whether the bell's before-image follows its resync (state/sched-commit.ts — fix read 8, fault W). */
+export function isEnlisted(key: string): boolean { return !!active && active.enlisted.has(key) }
 
 /* ---- stream + subscriptions ---------------------------------------------- */
 export function onCommit(fn: (env: CommitEnvelope) => void): () => void {

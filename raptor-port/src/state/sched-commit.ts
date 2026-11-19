@@ -55,7 +55,7 @@ import { PLANPUCKS, DAYRMK } from './plan'
 import { NOTICES, noticePass, replacedBidsOf, APP_ACTS, notePassMade } from './notices'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
-import { deriveActor, isCommitting, isInReducer, activeEnvelope } from '../command'
+import { deriveActor, isCommitting, isEnlisted, activeEnvelope } from '../command'
 import { rederive, daysNamed } from './holderbase'
 import { commitAs } from '../command/commit'
 import { systemActor } from '../command/actor'
@@ -649,9 +649,6 @@ export function commitInputsProjection<T>(type: string, fn: () => T): T {
    set atomically. Returns the CommitResult so the wrapper can map a refusal (a
    CmdRefused → ok:false) to false, rather than reading a value the throw skipped. */
 export function commitInputsWith(stores: EnlistableStore[], type: string, fn: () => void): CommitResult {
-  /* raised inside a running command's reducer, this joins it as a child: the outer command's image, taken when it
-     began, already holds every change it has made — a child never takes it again */
-  const joins = isInReducer()
   const cmd: Command = {
     type, scope: inputsScope(),
     apply: (txn) => {
@@ -667,9 +664,13 @@ export function commitInputsWith(stores: EnlistableStore[], type: string, fn: ()
          set that write against the list and told it as THIS command's change, to the people in it and its filer, in
          the actor's name, though no change of it rides this command's envelope. The resync takes that write up as the
          starting point, so the pass tells only what this command itself does, a further change to the same input
-         included. A child joining a running command keeps the outer command's image (`joins`). */
+         included. The image follows the resync only while the scheduler store is not yet enlisted — the store's
+         before-side is then the resynced baseline too, so what the resync took up is no change of the command; once
+         enlisted (a child joining an outer command that already enlisted it), what the resync takes up still rides the
+         command's changes, and the outer image, holding the outer command's own changes, stands. */
+      const before = !isEnlisted(schedStore.key)
       resyncSchedBaseline()
-      tellBegin(!joins)
+      tellBegin(before)
       txn.enlist(schedStore); for (const s of stores) txn.enlist(s); fn(); applyEnd()
     },
   }
