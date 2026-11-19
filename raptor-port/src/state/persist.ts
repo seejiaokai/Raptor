@@ -39,7 +39,7 @@ import { hydrateRoles } from './mission-roles'
 import './settingsrows'
 import { wireRowConsumer, registerComposer, registerMapper, type RowWrite } from './rowmap'
 import { schedRecordsNow, resyncSchedBaseline, SCHED_TYPES } from './sched-commit'
-import { setStoredRowProbe } from './perms'
+import { setStoredRowProbe, setStoredRowsWhole } from './perms'
 import { mintOrd, sortByOrd, byOrd } from '../command/ord'
 import {
   joinWeek, parseRowId, rowSuffix, dayRowJSON, weekRowJSON, stashRows, weeksConverter, type WeekRows,
@@ -313,6 +313,9 @@ export function writeSeedRows(wb: Whiteboard): void {
   /* the planning calendar is the unit in view's (at boot, the demo's u142) — its rows carry the unit */
   for (const p of PLANPUCKS) if (p && p.id != null) wb.set('plan', inView(`pp:${p.id}`), JSON.stringify(p))
   for (const iso of Object.keys(DAYRMK)) wb.set('plan', inView(`dm:${iso}`), JSON.stringify(DAYRMK[iso]))
+  /* the saved copy now holds every record memory holds: the gate may judge a record with no row as never saved (fix read
+     12, fault D — perms.ts storedRowViolation) */
+  if (wiredTo === wb) setStoredRowsWhole(true)
 }
 
 /* ---- the week's rows, written from the command stream ---------------------------------------------------------- */
@@ -411,6 +414,8 @@ function scheduleRows(wb: Whiteboard, changes: readonly Change[], env?: CommitEn
 export function wireRows(wb: Whiteboard): void {
   if (wiredTo === wb) return
   wiredTo = wb
+  /* a whiteboard merely wired may not hold the seed yet (a store not started): whole only once seeded or hydrated */
+  setStoredRowsWhole(false)
   /* [ARCH-STACK-4] phase 0 (§20.1) — every command's durable writes become ONE
      all-or-nothing group: the command layer opens a whiteboard transaction per
      outermost command. [DB-READINESS] group A, phase 4.1 — and every such group carries ONE change-log batch naming
@@ -444,4 +449,5 @@ export function wirePersist(wb: Whiteboard, _s?: Snapshots): void {
   wireRows(wb)
   /* a store that had not started: the seed's rows, once, in the boot's group */
   if (!hydrated) writeSeedRows(wb)
+  else setStoredRowsWhole(true)
 }

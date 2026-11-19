@@ -2470,28 +2470,56 @@ function writtenAsNewViolation(env: CommitEnvelope): string | null {
    purpose and are never saved (persist.ts wireRows), and the checks already read a landing as none. Not the inputs'
    order row (it names no one), not a remote or seed change (not a person's), and not where no probe is installed (a test
    without saved rows). The no-before-image rule above stands. */
+/* …AND A RECORD NEVER SAVED IS JUDGED AS NEW (fix read 12, fault D — the security read's SEC12-2, the missing half of fix
+   read 11's A): a before-image made up in memory for a record no saved row holds — Ranger's own leave "filed by Kestrel"
+   a month ago, a line on Hunter's own man's bell dated 2099 — was judged as an edit of that made-up record, so the rules
+   for a NEW one (a member's request filed by himself, now; a line dated now; a war or holiday line its writer minted)
+   were never asked. So a put of a request or a bell line whose id has NO saved row, though the change carries a
+   before-image, is judged a second time with no before-image. Honest paths, each checked (fix read 12's tests):
+   - the seeded records of a saved copy not yet started: a store that has not started holds the seed in memory until
+     persist.ts writeSeedRows writes it (wirePersist, at boot) — so this is asked only once the saved copy is WHOLE
+     (`setStoredRowsWhole`: seeded or hydrated), never on a whiteboard merely wired;
+   - a record that came by a remote change, never written locally (rowmap.ts: a remote change applies silently): its ids
+     are noted as they land and not asked;
+   - an Undo or Redo (origin `restore`, raised only by the app's own timeline — the command layer derives a person's
+     command as `user`, never a caller) puts back images its step recorded, and that step was judged here when it was
+     made, so a restore is not asked;
+   - a tried save (store.ts tryInputsBatch) is thrown away inside its body and never reaches this gate. */
+let STORED_WHOLE = false
+export function setStoredRowsWhole(on: boolean): void { STORED_WHOLE = on }
+const REMOTE_ONLY = new Set<string>()
 let SECOND_PASS = false
 function storedRowViolation(env: CommitEnvelope): string | null {
-  if (!STORED || SECOND_PASS || env.origin === 'remote' || env.origin === 'seed') return null
+  if (env.origin === 'remote') {
+    for (const c of env.changes) if (c.collection === 'inputs' || c.collection === 'notices') REMOTE_ONLY.add(`${c.collection}/${c.id}`)
+    return null
+  }
+  if (!STORED || SECOND_PASS || env.origin === 'seed') return null
   let moved: string | null = null
+  let unsaved: string | null = null
   const changes = env.changes.map(c => {
     if ((c.collection !== 'inputs' && c.collection !== 'notices') || (c.collection === 'inputs' && c.id === INPUT_ORDER)) return c
     const raw = storedRow(c.collection, String(c.id))
-    if (raw == null) return c
+    if (raw == null) {
+      if (!STORED_WHOLE || env.origin === 'restore' || c.op !== 'put' || c.before == null || REMOTE_ONLY.has(`${c.collection}/${c.id}`)) return c
+      unsaved ??= `${c.collection}/${c.id}`
+      return { ...c, before: null }
+    }
     let saved: unknown
     try { saved = JSON.parse(raw) } catch { return c }
     if (sameJson(saved, c.before)) return c
     moved ??= `${c.collection}/${c.id}`
     return { ...c, before: saved }
   })
-  if (!moved) return null
+  if (!moved && !unsaved) return null
   SECOND_PASS = true
   try {
     /* the copy vouches for exactly the lines this command minted (notices.ts shareMade) */
     const copy: CommitEnvelope = { ...env, changes }
     shareMade(env, copy)
     const why = ownershipViolation(copy)
-    return why ? `a saved record changed outside the app's doors (${moved}): ${why}` : null
+    if (!why) return null
+    return moved ? `a saved record changed outside the app's doors (${moved}): ${why}` : `a record never saved, changed as if it were (${unsaved}): ${why}`
   } finally { SECOND_PASS = false }
 }
 

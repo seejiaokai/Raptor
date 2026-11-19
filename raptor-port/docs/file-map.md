@@ -1447,7 +1447,10 @@ a Delete's rights go with his sign-in; G5 as `rightOutlivesAccount`, for the pas
 `personDeletedHere`, `accountPidBefore`: a posting's Delete run at once), `src/state/accounts.ts` (`rowsOf`: a removed row
 is no row, so a rollback re-reads the seeded list). Fault B — `src/state/perms.ts` (the WHO skip asks
 `personDeletedHere` alone, never the label `person.delete`). Fault C — `src/state/perms.ts` (`accountGoesHere` reads
-the two lists where the command records no change of that row).
+the two lists where the command records no change of that row). Fault D — `src/state/perms.ts` (`storedRowViolation`:
+an input or notice never saved, changed with a before-image, is judged again as new; `setStoredRowsWhole`; a remote
+change's records remembered, a seed and a restore not asked), `src/state/persist.ts` (`writeSeedRows`, `wirePersist`
+say when the saved copy holds every record: `setStoredRowsWhole`).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

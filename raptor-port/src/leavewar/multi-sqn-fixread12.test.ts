@@ -281,3 +281,79 @@ describe('fault C — fault H on the accounts\' very first write (F12-3)', () =>
     expect(!!(PEOPLE as any).osp9.deleted).toBe(false)
   })
 })
+
+import { writeInputsBatch, tryInputsBatch } from '../state/store'
+import { Whiteboard } from '../storage/whiteboard'
+import { wireRows, writeSeedRows } from '../state/persist'
+import { setStoredRowProbe } from '../state/perms'
+import { globalUndo, globalRedo } from '../undo/timeline'
+import { systemActor } from '../command'
+
+describe('fault D — a record made up in memory, then changed, is judged as new (SEC12-2)', () => {
+  let WB: Whiteboard
+  const stored = (coll: 'inputs' | 'notices', id: string): any => { const v = WB.get(coll, id); return v ? JSON.parse(v) : null }
+  /* the saved copy as on a built site: the whiteboard with its row writer wired, the seed written (persist.ts wirePersist) */
+  beforeEach(() => { WB = new Whiteboard(); wireRows(WB); writeSeedRows(WB) })
+  afterEach(() => { setStoredRowProbe(null) })
+  const IID = 'ipd-fr12'
+  const fileFor = (who: string, filer: string) => expect(writeInputsBatch(() => { INPUTS.push({ person: who, date: 'Jul 25', yr: 2026, allday: true, type: 'LL', remarks: 'for him', by: filer, at: Date.now(), iid: IID, ord: 99961 } as any) })).toBe(true)
+  const rmk = (words: string) => expect(writeInputsBatch(() => { (INPUTS.find((x: any) => x.iid === IID) as any).remarks = words })).toBe(true)
+  it('(member) Ranger saves his own leave "filed by Kestrel" a month ago, made up in memory: refused, nothing saved', () => {
+    signInAs('us', 'us')
+    INPUTS.push({ person: 'bane', date: 'Jul 27', yr: 2026, allday: true, type: 'LL', remarks: 'made up', by: 'kes9', at: Date.now() - 30 * 86400000, iid: 'ipd-fab12', ord: 99971 } as any)   // outside every command
+    const x: any = INPUTS.find((r: any) => r.iid === 'ipd-fab12')
+    const ok = writeInputsBatch(() => { x.remarks = 'now saved' })
+    expect({ ok, stored: stored('inputs', 'ipd-fab12') }).toEqual({ ok: false, stored: null })
+  })
+  it('(control) the same request filed honestly as new in another man\'s name: refused', () => {
+    signInAs('us', 'us')
+    expect(writeInputsBatch(() => { INPUTS.push({ person: 'bane', date: 'Jul 27', yr: 2026, allday: true, type: 'LL', remarks: 'x', by: 'kes9', at: Date.now(), iid: 'ipd-fab12b', ord: 99970 } as any) })).toBe(false)
+  })
+  it('(admin, a bell line) Hunter puts a line made up in memory on his own man\'s bell, dated 2099: refused', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
+    signInAs('ad', 'a'); rmk('Saber changed it')
+    const real = NOTICES.find(n => n.to === 'bane' && n.iid === IID)!
+    expect(real, 'a real line to Ranger').toBeDefined()
+    signInAs('ad2', 'a2')
+    const fake: any = { ...JSON.parse(JSON.stringify(real)), id: 'nfab12', at: new Date(2099, 0, 1).getTime(), by: 'prowler' }
+    NOTICES.push(fake)                                                                             // outside every command
+    const ok = writeInputsBatch(() => { (INPUTS.find((r: any) => r.iid === IID) as any).remarks = 'Hunter again'; fake.name = String(fake.name) + ' ' })
+    expect({ ok, stored: stored('notices', 'nfab12') }).toEqual({ ok: false, stored: null })
+  })
+  /* the honest paths, each checked */
+  it('(honest) a member edits his own seeded request on a built site: allowed', () => {
+    signInAs('us', 'us')
+    const x: any = INPUTS.find((r: any) => r.person === 'bane' && r.type === 'Appointment')
+    expect(x && stored('inputs', String(x.iid)), 'the seed is saved').toBeTruthy()
+    expect(writeInputsBatch(() => { x.remarks = 'Medical / PHA (moved)' })).toBe(true)
+  })
+  it('(honest, writeSeedRows) a saved copy wired but not yet seeded (a store not started): a seeded request edited is not judged as new', () => {
+    WB = new Whiteboard(); wireRows(WB)                                                            // no seed rows written
+    signInAs('us', 'us')
+    const x: any = INPUTS.find((r: any) => r.person === 'bane' && r.type === 'Appointment')
+    expect(stored('inputs', String(x.iid)), 'no row yet').toBeNull()
+    expect(writeInputsBatch(() => { x.remarks = 'Medical / PHA (moved)' })).toBe(true)
+  })
+  it('(honest, a remote change) a request that came by a remote change, never written locally, then edited: not judged as new', () => {
+    const rec = { person: 'bane', date: 'Jul 28', yr: 2026, allday: true, type: 'LL', remarks: 'from the server', by: 'kes9', at: Date.now() - 86400000, iid: 'ipd-remote12', ord: 99962 }
+    expect(ownershipViolation({ type: 'inputs.batch', origin: 'remote', actor: systemActor(), changes: [{ collection: 'inputs', id: rec.iid, op: 'put', before: null, after: rec }] } as any)).toBeNull()
+    signInAs('ad', 'a')
+    const env: any = { type: 'inputs.batch', origin: 'user', actor: { id: 'acad', role: 'admin', personId: 'stiff', session: null }, changes: [{ collection: 'inputs', id: rec.iid, op: 'put', before: rec, after: { ...rec, remarks: 'Saber' } }] }
+    expect(String(ownershipViolation(env) ?? 'allowed')).not.toMatch(/never saved/)
+  })
+  it('(honest, a restore) an Undo puts back images its step recorded, of a record with no saved row: not judged as new', () => {
+    const rec = { person: 'bane', date: 'Jul 29', yr: 2026, allday: true, type: 'LL', remarks: 'before', by: 'kes9', at: Date.now(), iid: 'ipd-restore12', ord: 99963 }
+    expect(stored('inputs', rec.iid), 'no row').toBeNull()
+    const env = (origin: string): any => ({ type: 'undo', origin, actor: { id: 'acus', role: 'member', personId: 'bane', session: null }, changes: [{ collection: 'inputs', id: rec.iid, op: 'put', before: rec, after: { ...rec, remarks: 'after' } }] })
+    expect(String(ownershipViolation(env('restore')) ?? 'allowed')).not.toMatch(/never saved/)
+    expect(String(ownershipViolation(env('user')) ?? 'allowed'), 'the same change as a person\'s own command').toMatch(/never saved/)
+  })
+  it('(honest) a tried save, an Undo and a Redo of an edit: allowed', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
+    expect(tryInputsBatch(() => { (INPUTS.find((r: any) => r.iid === IID) as any).remarks = 'tried' }), 'the tried save would pass').toBe(true)
+    rmk('edited')
+    expect(globalUndo().ok, 'Undo').toBe(true)
+    expect(globalRedo().ok, 'Redo').toBe(true)
+    expect(stored('inputs', IID)?.remarks).toBe('edited')
+  })
+})
