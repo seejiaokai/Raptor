@@ -9,7 +9,8 @@ import { storeBackend, HOOKS, store as settingsStore } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
 import { accountsLoad, signIn, sessionFor, setMaster, updateAccount, ACCOUNTS_LIST } from '../state/accounts'
-import { initStore as lwInitStore, setPeople, setCell, setBidState } from './state/store'
+import { initStore as lwInitStore, setPeople, setCell, setBidState, holidayAdd } from './state/store'
+import { commitInput, draftOf } from '../ui/inputedit'
 import { ownershipViolation } from '../state/perms'
 import { deriveActor } from '../command/actor'
 import { memoryBackend } from './state/storage'
@@ -293,15 +294,25 @@ describe('fault E — another squadron’s holiday line is not deleted or rewrit
     expect(ownershipViolation(asOutlaw([put(n)])) ?? 'allowed').toMatch(/another squadron/)
     expect(ownershipViolation(asOutlaw([put({ ...n, id: 'nfr9-holok2', to: 'prowler' })])) ?? 'allowed').toMatch(/a war line no war command wrote/)
   })
+  /* (through the Holidays list's own door since fix read 11, fault C: a bare noticeHoliday in an input command no longer
+     passes as the holiday's own — only the command that makes the holiday owes its line) */
   it('(control) the app\'s own holiday line to both squadrons, written by Outlaw\'s real command: his Undo takes both away, his Redo puts them back', () => {
-    outlawReal(); signInAs('outlaw', 'x')
-    expect(writeInputsBatch(() => { noticeHoliday(['kes9', 'prowler'], 'casper', 'National Day', '2026-08-09', '2026-08-09') })).toBe(true)
+    outlawReal()
+    const fileOn = (pid: string, filer: [string, string], title: string) => {
+      signInAs(filer[0], filer[1])
+      expect(commitInput(null, draftOf({ person: pid, type: 'Training', title, date: 'Jul 17', yr: 2026, allday: false, s: 540, e: 720, remarks: '' } as any), [pid]), 'filed: ' + title).toBe(true)
+    }
+    fileOn('osp9', ['ad9', 'a9'], 'Range 149')
+    fileOn('bane', ['ad2', 'a2'], 'Range 142')
+    signInAs('outlaw', 'x')
+    expect(holidayAdd({ kind: 'ph', name: 'National Day', from: '2026-07-17', to: '2026-07-17' }).ok).toBe(true)
     const mine = () => NOTICES.filter(x => x.name === 'National Day' && x.by === 'casper').map(x => x.to).sort()
-    expect(mine()).toEqual(['kes9', 'prowler'])
+    const told = mine()
+    expect(told).toEqual(expect.arrayContaining(['kes9', 'prowler']))
     const u = globalUndo(); expect(u.ok, 'Undo: ' + JSON.stringify(u)).toBe(true)
     expect(mine()).toEqual([])
     const r = globalRedo(); expect(r.ok, 'Redo: ' + JSON.stringify(r)).toBe(true)
-    expect(mine()).toEqual(['kes9', 'prowler'])
+    expect(mine()).toEqual(told)
   })
 })
 

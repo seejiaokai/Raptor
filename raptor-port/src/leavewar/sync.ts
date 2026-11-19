@@ -23,7 +23,7 @@ import { inputBelongs, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, 
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setFollowUpsProbe, setWarLinesOwed, myUnit } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed, myUnit } from '../state/perms'
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
@@ -107,6 +107,7 @@ import {
   getVersion,
   setRefusalHook,
   setHolidayTell,
+  holidayRunsOfChanges,
   setDecisionTell,
   openingTells,
   type HolidayRun,
@@ -301,6 +302,8 @@ export function installAbsenceDoor(): void {
   setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, hasRead))
   /* WHICH WAR LINES A COMMAND OWES (perms.ts setWarLinesOwed — fix read 10, fault A): worked out from its own changes */
   setWarLinesOwed((changes, n) => warLineCovered(warLinesOwed(changes), n))
+  /* WHICH HOLIDAY LINES A COMMAND OWES (perms.ts setHolidayLinesOwed — fix read 11, fault C): from its own war changes */
+  setHolidayLinesOwed((changes, n) => holidayLineCovered(holidayLinesOwed(changes), n))
   setLwDayOpenProbe((cellId: string) => {
     const iDate = cellId.lastIndexOf(':')
     if (iDate < 0) return true
@@ -1466,6 +1469,19 @@ const atWarHome = (pid: string): boolean => homeUnitOf(pid) === worldUnit()
        has gone through, never for one that was refused.
    A run with nothing to answer tells nobody and opens nothing. The count is never stored (D783 (6)). */
 function tellHoliday(runs: HolidayRun[]): void {
+  const todo = holidayTodo(runs)
+  if (!todo.length) return
+  const by = me()
+  commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(h.told, by != null ? String(by) : null, h.name, h.from, h.to) })
+  /* the list opens by itself on the first run with something HIS squadron answers — never on the other's alone */
+  const mine = myUnit()
+  const first = todo.find(h => oilOpenOn(h.from, h.to, mine).length > 0)
+  if (!first) return
+  cmdDeferEffect(() => { setOilList({ from: first.from, to: first.to, name: first.name, fresh: true }); raptorNotify() })
+}
+/* (each holiday the runs make, as its line names it, and whom it tells — tellHoliday's own working, shared with the gate's
+   question of which lines a command owes, holidayLinesOwed below, so the two can never disagree) */
+function holidayTodo(runs: readonly HolidayRun[]): (HolidayRun & { name: string; told: string[] })[] {
   const own = holidayOwnName
   /* ONE NOTICE A HOLIDAY — FOR THE WHOLE OF IT AS IT NOW STANDS, not only the dates that have just become non-working
      (the two code reads of the finished code, 13 Oct 26 — Fable F1, the Opus read F3). A holiday lengthened by a day
@@ -1483,19 +1499,31 @@ function tellHoliday(runs: HolidayRun[]): void {
     seen.add(`${from}|${to}`)
     if (oilOpenOn(from, to).length > 0) todo.push({ from, to, name: own(r.from) })
   }
-  if (!todo.length) return
   /* EVERY SQUADRON AT THE PLACE IS TOLD, EACH FOR ITS OWN (multi-squadron batch 1, step 4 — D2184 R32, narrowing D781):
      the holiday reaches every squadron at this place on its dates (placeHolidaysFor, above), so each one's schedulers
      get the line — but only a scheduler whose own squadron has an input to answer on it, and his line counts and opens
      only those (holidayLeft, OilDayList). The one who made it is told as before when his own squadron has any. */
-  const by = me(), all = schedulerIds()
+  const all = schedulerIds()
   const toFor = (h: { from: string; to: string }) => all.filter(pid => { const u = homeUnitOf(pid, h.from); return !!u && oilOpenOn(h.from, h.to, u).length > 0 })
-  commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(toFor(h), by != null ? String(by) : null, h.name, h.from, h.to) })
-  /* the list opens by itself on the first run with something HIS squadron answers — never on the other's alone */
-  const mine = myUnit()
-  const first = todo.find(h => oilOpenOn(h.from, h.to, mine).length > 0)
-  if (!first) return
-  cmdDeferEffect(() => { setOilList({ from: first.from, to: first.to, name: first.name, fresh: true }); raptorNotify() })
+  return todo.map(h => ({ ...h, told: toFor(h) }))
+}
+/** THE HOLIDAY LINES A COMMAND OWES, FROM ITS OWN CHANGES (fix read 11, fault C — Fable's F11-1, the security read's
+ *  SEC11-4): the gate (state/perms.ts, through setHolidayLinesOwed) let a new holiday line through wherever noticeHoliday
+ *  minted it in the running command, signed by the actor (notices.ts holMade) — but noticeHoliday is a plain function, so
+ *  142's admin called it inside his own input command and put "149: all leave cancelled, report 0600 Sat", signed by
+ *  himself, on 149's admin's and a 149 member's bells, with no holiday made at all. A holiday line is owed only by this
+ *  command's own change of the war that makes a working day a holiday (state/store.ts holidayRunsOfChanges — the same
+ *  test tellHolidays runs), for exactly the holiday it makes, under its own name, to the schedulers tellHoliday tells. */
+export type OwedHolidayLine = { a: string; b: string; name: string; to: ReadonlySet<string> }
+export function holidayLinesOwed(changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown; after?: unknown }>): OwedHolidayLine[] {
+  const runs = holidayRunsOfChanges(changes)
+  return runs.length ? holidayTodo(runs).map(h => ({ a: h.from, b: h.to, name: h.name, to: new Set(h.told) })) : []
+}
+/** does this owed line cover that line? — its run, its name, its day and its reader, as noticeHoliday writes them */
+export function holidayLineCovered(owed: readonly OwedHolidayLine[], n: { to?: unknown; name?: unknown; day?: unknown; what?: unknown }): boolean {
+  const w = Array.isArray(n.what) && n.what.length === 1 ? looseRec(n.what[0]) : null
+  if (!w || w.k !== 'oilhol') return false
+  return owed.some(o => String(w.a) === o.a && String(w.b ?? w.a) === o.b && n.name === o.name && n.day === o.a && o.to.has(String(n.to)))
 }
 
 /* ---- THE BELL'S LEAVE WAR LINES (the overhaul's M4, batch 9 — D1142, D1214, D1422) ----------------------------

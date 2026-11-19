@@ -9,7 +9,8 @@ import { storeBackend, HOOKS, store as settingsStore } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
 import { accountsLoad, signIn, sessionFor, setMaster, updateAccount, ACCOUNTS_LIST, accountOfPid } from '../state/accounts'
-import { initStore as lwInitStore, setPeople, setCell, setBidState, getState, openDates, worldUnit } from './state/store'
+import { initStore as lwInitStore, setPeople, setCell, setBidState, getState, openDates, worldUnit, holidayAdd } from './state/store'
+import { commitInput, draftOf } from '../ui/inputedit'
 import { ownershipViolation } from '../state/perms'
 import { deriveActor } from '../command/actor'
 import { memoryBackend } from './state/storage'
@@ -81,6 +82,18 @@ const asOutlaw = (changes: any[], type = 'inputs.batch'): any => ({ type, origin
 /* …and made one on his account too, where the gate's unit-row check reads the account list */
 const outlawReal = () => { signInAs('ad2', 'a2'); expect(updateAccount('acoutlaw', { role: 'admin' })).toBeNull() }
 const put = (n: any) => ({ collection: 'notices', id: n.id, op: 'put', before: null, after: n })
+/* A REAL HOLIDAY (fix read 11, fault C — the same as that file's): an input needing an OIL answer in each squadron on the
+   working Friday 17 Jul, then that day made a holiday by the Holidays list's own door, whose line tells the schedulers */
+const realHoliday = (by: [string, string], name = 'National Day') => {
+  const fileOn = (pid: string, filer: [string, string], title: string) => {
+    signInAs(filer[0], filer[1])
+    expect(commitInput(null, draftOf({ person: pid, type: 'Training', title, date: 'Jul 17', yr: 2026, allday: false, s: 540, e: 720, remarks: '' } as any), [pid]), 'filed: ' + title).toBe(true)
+  }
+  fileOn('osp9', ['ad9', 'a9'], 'Range 149')
+  fileOn('bane', ['ad2', 'a2'], 'Range 142')
+  signInAs(by[0], by[1])
+  expect(holidayAdd({ kind: 'ph', name, from: '2026-07-17', to: '2026-07-17' }).ok).toBe(true)
+}
 /* Hunter files for Ranger; Saber's change on 15 Jul tells him (filer only, marked 142) */
 const hunterLine = (): Notice => {
   signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
@@ -204,15 +217,17 @@ describe('fault B — a new holiday line passes as the holiday\'s own only where
     const n: any = { id: 'nsec10-h', to: 'us9', by: 'kes9', at: Date.now(), iid: '', name: '149 stand-down', day: '2026-08-09', what: [{ k: 'oilhol', a: '2026-08-09', b: '2026-08-09' }] }
     expect(ownershipViolation(asOutlaw([put(n)])) ?? 'allowed').not.toBe('allowed')
   })
+  /* (made by the Holidays list's own door since fix read 11, fault C: a bare noticeHoliday in an input command no longer
+     passes as the holiday's own — only the command that makes the holiday owes its line) */
   it('(control) a real holiday made by Saber tells the schedulers, and its Undo and Redo go through', () => {
-    signInAs('ad', 'a')
-    expect(writeInputsBatch(() => { noticeHoliday(['kes9', 'prowler'], 'stiff', 'National Day', '2026-08-09', '2026-08-09') })).toBe(true)
+    realHoliday(['ad', 'a'])
     const told = () => NOTICES.filter(x => x.name === 'National Day').map(x => x.to).sort()
-    expect(told()).toEqual(['kes9', 'prowler'])
+    const was = told()
+    expect(was).toEqual(expect.arrayContaining(['kes9', 'prowler']))
     expect(globalUndo().ok).toBe(true)
     expect(told()).toEqual([])
     const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
-    expect(told()).toEqual(['kes9', 'prowler'])
+    expect(told()).toEqual(was)
   })
 })
 
@@ -247,9 +262,10 @@ describe('fault C — a record dropped from memory, then "new" under the same id
     expect({ ok, stored: storedLine(real.id)?.by }).toEqual({ ok: false, stored: 'stiff' })
   })
   it('(SEC10-2, SEC10-2b) another squadron\'s holiday line dropped, then re-added rewritten or re-addressed: refused', () => {
-    signInAs('ad', 'a')
-    expect(writeInputsBatch(() => { noticeHoliday(['kes9'], 'stiff', 'National Day', '2026-08-09', '2026-08-09') })).toBe(true)
+    /* (the line made by the holiday's own door — fix read 11, fault C) */
+    realHoliday(['ad', 'a'])
     const real = NOTICES.find(x => x.to === 'kes9' && x.name === 'National Day')!
+    expect(real, 'Kestrel told of the holiday').toBeDefined()
     outlawReal(); signInAs('outlaw', 'x')
     let ix = NOTICES.findIndex(x => x.id === real.id); NOTICES.splice(ix, 1)
     expect(writeInputsBatch(() => { NOTICES.push({ ...real, name: '149: OIL cancelled, ignore', by: 'kes9' } as any) })).toBe(false)

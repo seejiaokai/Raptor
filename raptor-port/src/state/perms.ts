@@ -2099,6 +2099,22 @@ export function setFollowUpsProbe(fn: FollowUpsProbe | null): void { FOLLOWUPS =
 type WarLinesOwedProbe = (changes: ReadonlyArray<Change>, line: any) => boolean
 let WAR_OWED: WarLinesOwedProbe | null = null
 export function setWarLinesOwed(fn: WarLinesOwedProbe | null): void { WAR_OWED = fn }
+/* WHICH HOLIDAY LINES A COMMAND OWES (fix read 11, fault C — Fable's F11-1, the security read's SEC11-4): noticeHoliday is
+   a plain function too, so "minted by it in this command, signed by the actor" (holMade) let 142's admin call it in his
+   own input command and put a made-up "holiday" line of his own words on 149's bells with no holiday made. A new holiday
+   line is now also owed by the command's own change of the war that makes a working day a holiday — exactly that
+   holiday, its own name, to the schedulers its maker's door tells (leavewar/sync.ts holidayLinesOwed, handed in here).
+   No probe installed: nothing is owed, so no new holiday line passes as the holiday's own. */
+let HOL_OWED: WarLinesOwedProbe | null = null
+export function setHolidayLinesOwed(fn: WarLinesOwedProbe | null): void { HOL_OWED = fn }
+/* (the holiday's maker is an admin where it is made: of the squadron whose war is loaded, as section 7b reads it; with no
+   world door, one war shared, an admin in force) */
+function holidayMakerAdmin(env: CommitEnvelope): boolean {
+  const a = env.actor
+  if (!a || a.role !== 'admin') return false
+  const u = lwUnitNow()
+  return !u || levelInForce(a, u, todayIso(), unitRowsBefore(env.changes)) === 'admin'
+}
 /* (a line with a war part — the kinds only the war's own writers write) */
 const warPart = (n: any): boolean => Array.isArray(n?.what) && n.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
 /* A LINE THAT READS AS ONE (fix read 10, fault A (d) — Fable F10-1): every line the app writes carries at least one part,
@@ -2189,7 +2205,10 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
         if (holidayLine(n) && !n.iid && n.fu === undefined) {
           /* (signed by the admin himself, as tellHoliday writes it — noticeHoliday is a plain function, so its registry alone
              would vouch for a line it was called to sign as 149's admin) */
-          if (n === c.after && c.op === 'put' && c.before == null && holMade(env)?.has(String(n.id)) && self != null && String(n.by ?? '') === self) continue
+          /* (…and owed by this command's own holiday — fix read 11, fault C: HOL_OWED — by one who is an admin of the
+             war's squadron, where the war tells which is loaded) */
+          if (n === c.after && c.op === 'put' && c.before == null && holMade(env)?.has(String(n.id)) && self != null && String(n.by ?? '') === self
+            && !!HOL_OWED && HOL_OWED(env.changes, n) && holidayMakerAdmin(env)) continue
           if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
           if (replayed && replayed(c)) continue
         }

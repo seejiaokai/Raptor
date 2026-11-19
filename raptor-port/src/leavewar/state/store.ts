@@ -3036,6 +3036,27 @@ export function newHolidayRuns(before: State, after: State): HolidayRun[] {
   }
   return runs
 }
+/** THE HOLIDAY RUNS A COMMAND'S OWN WAR CHANGES MADE (fix read 11, fault C — leavewar/sync.ts holidayLinesOwed): the same
+ *  test as tellHolidays, between the state as it stands now — inside the command, after its changes — and that state
+ *  with this command's war periods and event types put back to their before-images. Only the command's own changes
+ *  count: a holiday already standing owes nothing. */
+export function holidayRunsOfChanges(changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown; after?: unknown }>): HolidayRun[] {
+  const wc = changes.filter(c => c.collection === 'lw.war')
+  const cfg = changes.find(c => c.collection === 'lw.config')
+  if (!wc.length && !cfg) return []
+  const byId = new Map(wc.map(c => [String(c.id), c]))
+  const wars: LeaveWar[] = []
+  for (const w of state.wars) {
+    const c = byId.get(w.period.id)
+    if (!c) { wars.push(w); continue }
+    byId.delete(w.period.id)
+    if (c.before) wars.push({ ...w, period: c.before as Period })      // a war this command made had none before
+  }
+  for (const c of byId.values()) if (c.before) wars.push({ period: c.before as Period } as LeaveWar)   // one it took away
+  const cb = cfg && cfg.before && typeof cfg.before === 'object' ? (cfg.before as Partial<LwConfigRecord>) : null
+  const eventDefs = cb && Array.isArray(cb.eventDefs) ? cb.eventDefs : state.eventDefs
+  return newHolidayRuns({ ...state, wars, eventDefs }, state)
+}
 function tellHolidays(before: State): void {
   if (!HOLIDAY_TELL) return
   const runs = newHolidayRuns(before, state)

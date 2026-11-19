@@ -301,3 +301,47 @@ describe('fault B — no command is passed over for its label (F11-3, SEC11-3)',
     expect(stored('inputs', 'ipd-sec10')?.person).toBe('osp9')
   })
 })
+
+describe('fault C — a holiday line only as the command\'s own holiday owes it (F11-1, SEC11-4)', () => {
+  it('(SEC11-4) Outlaw (142) calls noticeHoliday inside his own input command for 149\'s admin and a 149 member: refused', () => {
+    outlawReal(); signInAs('outlaw', 'x')
+    const n0 = NOTICES.length
+    const ok = writeInputsBatch(() => { noticeHoliday(['kes9', 'osp9'], 'casper', '149: all leave cancelled, report 0600 Sat', '2026-08-09', '2026-08-09') })
+    const made = NOTICES.slice(n0).map(n => n.to).sort()
+    expect({ ok, made }).toEqual({ ok: false, made: [] })
+  })
+  it('(Fable F11-1) a holiday line with no holiday, signed by the caller himself: not on Kestrel\'s bell nor on Osprey\'s', () => {
+    outlawReal(); signInAs('outlaw', 'x')
+    const words = '149: all leave cancelled, report 0600 Sat'
+    const ok = writeInputsBatch(() => { noticeHoliday(['kes9', 'osp9'], 'casper', words, '2026-07-25', '2026-07-25') })
+    const got = NOTICES.filter(x => x.name === words).map(x => x.to).sort()
+    expect({ saved: ok && got.length > 0, onBells: ok ? got : [], shownToKestrel: ok && noticesFor('kes9').some(x => x.name === words), shownToOsprey: ok && noticesFor('osp9').some(x => x.name === words) })
+      .toEqual({ saved: false, onBells: [], shownToKestrel: false, shownToOsprey: false })
+  })
+  it('(a holiday already made) Saber makes National Day on 17 Jul; Outlaw then writes its line again for Kestrel in an input command: refused — only the command that made the holiday owes it', () => {
+    realHoliday(['ad', 'a'])
+    outlawReal(); signInAs('outlaw', 'x')
+    const ok = writeInputsBatch(() => { noticeHoliday(['kes9'], 'casper', 'National Day', FRI, FRI) })
+    expect({ ok, byOutlaw: NOTICES.filter(n => n.name === 'National Day' && n.by === 'casper').length }).toEqual({ ok: false, byOutlaw: 0 })
+  })
+  it('(control) Saber makes the holiday: each squadron\'s schedulers with an input to answer are told, and its Undo and Redo go through', () => {
+    realHoliday(['ad', 'a'])
+    const told = holTo()
+    expect(told).toEqual(expect.arrayContaining(['kes9', 'prowler']))
+    expect(globalUndo().ok).toBe(true)
+    expect(holTo()).toEqual([])
+    const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
+    expect(holTo()).toEqual(told)
+  })
+  it('(control) Outlaw, a plain 142 admin, makes it: his lines reach both squadrons\' schedulers, and his Undo and Redo go through', () => {
+    outlawReal()
+    realHoliday(['outlaw', 'x'])
+    const mine = () => NOTICES.filter(x => x.name === 'National Day' && x.by === 'casper').map(x => x.to).sort()
+    const told = mine()
+    expect(told).toEqual(expect.arrayContaining(['kes9', 'prowler']))
+    const u = globalUndo(); expect(u.ok, 'Undo: ' + JSON.stringify(u)).toBe(true)
+    expect(mine()).toEqual([])
+    const r = globalRedo(); expect(r.ok, 'Redo: ' + JSON.stringify(r)).toBe(true)
+    expect(mine()).toEqual(told)
+  })
+})
