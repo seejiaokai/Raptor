@@ -178,6 +178,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
+- [SEED-UNDO-DROPS-ACCOUNT] — with the demo's seeded people, an Undo of a seeded account's first saved change can take the account's own row with it (seen by fix read 9's builder, outside its brief; to reproduce first, 20 Nov 26).
 - [LW-PINCH-FROZEN-WEBKIT-OFF] — Leave War, Safari's engine only: mid-pinch in with the dates frozen, the frozen date row read about 360 px off its columns (older — origin/main the same; found 31 Oct 26; maybe a reading, not a fault — a look first).
 - [QUALS-PINNED-X-DEAD] — in Edit quals, scrolled down, the ✕ inside a pinned heading does nothing; the table's own ✕ removes the column (older; found by the walk of 11 Nov 26; small, with the next Quals job).
 - [QUALS-DRAG-LEFTOVERS] — what the 11 Nov 26 Quals job found and left: two fingers on the pinned row do not zoom the table, no Escape cancels a column drag, the outline after "Check his quals" never ends while the page is open, and five smaller points (low, with the next Quals job; his iPhone look first).
@@ -295,6 +296,14 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [SEED-UNDO-DROPS-ACCOUNT] An Undo of a seeded account's first saved change may take the account's row (20 Nov 26, chat 118) — OPEN
+**What it is:** fix read 9's builder (night of 19–20 Nov 26), writing its tests, saw that in the demo's seeded state an
+Undo of the first change saved for a seeded account removed that account's stored row with it — outside its brief, not
+reproduced by a host. It may be the seed's own shape (a seeded account has no stored row until its first change), and so
+D56's demo-data case, or a real fault for any account whose first change is undone. **The job:** reproduce it with a
+failing test; if new data would be hurt, fix it red first; if it lives only in seeded data, say so and close it.
+**Where:** `raptor-port/src/state/` (the accounts' store and the Undo timeline, `undo/timeline.ts`).
 
 
 ### [MSQ-FIXREAD4-OPEN] Fix read 4's claims on the multi-squadron fixes, to reproduce and fix red first (19 Nov 26, chat 109) — OPEN: all five fixed, a fresh read owed
