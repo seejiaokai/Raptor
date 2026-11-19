@@ -58,7 +58,6 @@ const RECORDS: Record<string, string> = {
   'leavewar/ui/Matrix.tsx': 'the input a war cell derives from, by its id (warInputs — the Leave War\'s doorway)',
   'state/changelines.ts': 'the change history\'s line for an input',
   'state/docs.ts': 'a medical input\'s documents',
-  'state/notices.ts': 'a bell line\'s input, found again by its id, for whether its reader is named in it or is still told of it as its filer (noticeAboutHim, his D2223); it reads the record, never one man\'s day, and writes nothing',
   'state/perms.ts': 'who may change an input',
   'state/plan.ts': 'a comment only',
   'state/view.ts': 'UI state that names a request',

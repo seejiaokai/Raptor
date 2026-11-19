@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, changeFiler, inputUnit, APP_ACTS } from './notices'
+import { noticeAboutHim, filerTold, filerUnits, changeFiler, inputUnit, APP_ACTS } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -1864,6 +1864,34 @@ function toldBy(env: CommitEnvelope, iid: unknown): Set<string> | null {
   }
   return out
 }
+/* A FILER-ONLY LINE CARRIES ITS MARK (fix read 6, fault C — the fresh Opus read's F2 and F3, Astra's 2): the line a
+   change writes to someone it tells only as the input's filer — named in it neither before nor after — says so
+   (state/notices.ts Notice.fu: the squadrons his telling was judged by), and his move retires it by that mark alone
+   (noticeLeftBell). A forger who left the mark off would make such a line permanent, one with the wrong squadrons would
+   keep it on a man since moved away. So a line riding the telling door must carry exactly what the pass writes: no mark
+   to a man named in the input, the mark with the squadrons filerUnits reads to anyone else. Only a line the command
+   puts; a restore's verified replay puts back the image it took away, judged when it was first written. */
+function filerMarkOk(env: CommitEnvelope, c: Change, n: any): boolean {
+  if (c.op !== 'put' || n !== c.after) return true
+  const id = String(n.iid ?? '')
+  const imgs: any[] = []
+  const named = new Set<string>()
+  for (const x of env.changes) {
+    if (x.collection !== 'inputs' || String(x.id) !== id) continue
+    for (const r of [x.before as any, x.after as any]) {
+      if (!r || typeof r !== 'object') continue
+      imgs.push(r)
+      for (const e of namedOf(r)) named.add(String((e as any).p))
+    }
+  }
+  const fu = n.fu
+  if (named.has(String(n.to))) return fu === undefined
+  if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) return true
+  if (!Array.isArray(fu) || !fu.every((u: unknown) => typeof u === 'string')) return false
+  const want = filerUnits(imgs)
+  const have = new Set<string>(fu)
+  return fu.length === want.length && have.size === want.length && want.every(u => have.has(u))
+}
 /* a line made wholly of holiday parts — the only kind kept crossing (one holiday part beside another part is no holiday
    line: SEC-2) */
 const holidayLine = (n: any): boolean => Array.isArray(n?.what) && n.what.length > 0 && n.what.every((p: any) => p && p.k === 'oilhol')
@@ -1925,7 +1953,7 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
            A: the security read's SEC6-A (3), a line riding the change signed `kes9`, posing as 149's admin. The member
            section's door below has always asked it.) */
         const signed = (self != null && String(n.by ?? '') === self) || (n.by == null && APP_ACTS.has(env.type))
-        if (signed && n.iid && changedInputs.has(String(n.iid)) && toldBy(env, n.iid)?.has(to)) continue
+        if (signed && n.iid && changedInputs.has(String(n.iid)) && toldBy(env, n.iid)?.has(to) && filerMarkOk(env, c, n)) continue
         /* HIS OWN STEP, PUT BACK (fix read 3, O2 — D148: an Undo is refused only where the change itself would be). The
            war's lines carry no input (`iid: ''`), so a man told by the admin's Open for bidding, closing or decision who
            has since moved squadron made the top bar's Undo of that step a write to another squadron's bell, refused
@@ -2058,7 +2086,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         const warLine = (x: any) => Array.isArray(x?.what) && x.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
         if (c.op === 'put' && warLine(n)) return `a notice that is not his own change's (${where})`
         /* …and only to someone that change tells — named in the input, before or after, or its filer (toldBy, SEC-3) */
-        if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid) && toldBy(env, n.iid)?.has(String(n.to))) break
+        if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid) && toldBy(env, n.iid)?.has(String(n.to)) && filerMarkOk(env, c, n)) break
         if (c.op === 'delete' && env.origin === 'restore' && b && String(b.by) === pid && rides(b.iid) && toldBy(env, b.iid)?.has(String(b.to))) break
         return `a notice that is not his own change's (${where})`
       }

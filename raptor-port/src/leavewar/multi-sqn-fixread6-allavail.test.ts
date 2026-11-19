@@ -108,8 +108,9 @@ describe('fault A — the security read’s three proofs (a plain 142 admin, a f
     /* (the forged-filer line of proof 2, signed kes9, likewise) */
     const ch2 = { ...ch, after: { ...r, by: 'osp9', remarks: 'by Outlaw' } }
     expect(ownershipViolation(env([ch2, { collection: 'notices', id: 'nf6a4', op: 'put', before: null, after: line('nf6a4', 'osp9', 'kes9') }])) ?? 'allowed').toMatch(/bell line of another squadron/)
-    /* control: the same line to Saber signed by Outlaw himself rides as the pass writes it */
-    expect(ownershipViolation(env([ch, { collection: 'notices', id: 'nf6a5', op: 'put', before: null, after: line('nf6a5', 'stiff', 'casper') }]))).toBeNull()
+    /* control: the same line to Saber signed by Outlaw himself rides as the pass writes it — told only as its filer, so
+       marked with the input's squadron, 142 (fault C, Notice.fu) */
+    expect(ownershipViolation(env([ch, { collection: 'notices', id: 'nf6a5', op: 'put', before: null, after: { ...line('nf6a5', 'stiff', 'casper'), fu: ['u142'] } }]))).toBeNull()
   })
   it('control: the same forged input naming a 142 man (Ranger) is refused, as today', () => {
     asOutlawAdmin()

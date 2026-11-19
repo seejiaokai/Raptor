@@ -1361,7 +1361,12 @@ line be signed by the actor), `src/state/sched-commit.ts` (reads `APP_ACTS`). Fa
 Undo or Redo carried any "taken back" / "again" line): **New:** `src/leavewar/multi-sqn-fixread6-followups.test.ts`;
 **Changed:** `src/leavewar/sync.ts` (`followUpsFor`, the one body that says what a follow-up line says;
 `warNoticesReversed` writes from it; installs the gate's probe), `src/state/perms.ts` (`setFollowUpsProbe`;
-`followUpOf` compares field for field, one follow-up a named line), `src/state/notices.ts` (`warLineName`).
+`followUpOf` compares field for field, one follow-up a named line), `src/state/notices.ts` (`warLineName`). Fault C
+(Opus F2+F3, Astra 2 — a filer line his move retired came back): **New:** `src/leavewar/multi-sqn-fixread6-retired.test.ts`;
+**Changed:** `src/state/notices.ts` (`Notice.fu`, the filer-only mark written by the pass; `noticeAboutHim` reads the
+mark, no longer the stored input; `noticeLeftBell` judges a marked line on his move day by `toldIn`), `src/state/perms.ts`
+(`filerMarkOk`: the telling door asks the mark, exact), `src/engine/inputs-readers.test.ts` (notices.ts off the readers
+list), `src/leavewar/multi-sqn-fixread6-allavail.test.ts` (its control line carries the mark).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

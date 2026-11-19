@@ -1136,6 +1136,7 @@ same transaction as the `Input` row it names — never updated; removed only whe
 | `name` | text | yes | what the input was called when it changed — its title, else its kind |
 | `day` | date | yes | its first day then |
 | `what` | JSON | yes | what happened, as a list of parts — never a sentence (the app writes the words, so they can change and a renamed person reads by today's callsign): the kinds are listed in `data-schema.md` §The bell's notices |
+| `filerUnits` | JSON (text list of `Unit` ids) | no | `fu` today — present only on an input's line to someone told ONLY as its filer (named in the input neither before nor after the change): the squadrons his telling was judged by (each named man's home, or the input's own where it names nobody). His move retires the line by this alone, never by the input as it stands later; the commit gate requires it, exact, on such a line and refuses it on a named man's (fix read 6, fault C, 19 Nov 26 — his D2223, D2218) |
 
 **A posting out that ran (5 Nov 26, `[POSTOUT-RUN-NOTICE]` — D1546, D1547, D1690, D1691):** one row an admin who can sign in, `what` = `[{ k: 'po', who, o, acct? }]`, `name` his callsign then, `day` the posting's date — written by the posting pass in its own changeset, never by a person, and kept as the record. A posting with no outcome writes no row: its line is worked out from `LeavePersonProfile` for fourteen days after its date (at the database step a scheduled flow beside the pass may write it instead). **Taken back (5 Nov 26, `[NOTICE-UNDO-RETRACT]` step 1 — D1693, D1699):** the posting sheet's "Undo post out" (the `lw.postout` command) deletes each admin's row about that posting and, for an admin who had read his (`NoticeSeen`), creates one `[{ k: 'poback', who, o, acct? }]` row by the admin who pressed it, never to him.
 Read by `to` only (§11). No retention rule yet — every notice is kept; the organisation's rule decides at the database
@@ -1792,7 +1793,10 @@ squadron are judged by whose they are:
   only the actor himself, `state/notices.ts changeFiler`); an input naming nobody tells him only while its squadron is
   his home or he is an admin of it; and such a line is signed by the actor (or the app's own act, with no maker) — fix
   read 6, fault A, 19 Nov 26: SEC6-A, a forged after-image filer, an ALL AVAIL input and a line signed by another man each
-  carried a 142 command's line to a 149 man. An `AccessRequest`
+  carried a 142 command's line to a 149 man. Such a line to someone told only as the filer carries the mark
+  `filerUnits`, exactly as the pass writes it, and a named man's carries none — a line without its mark would never
+  leave a moved filer's bell (fix read 6, fault C, 19 Nov 26; a restore's verified replay puts back the image it took).
+  An `AccessRequest`
   names no squadron yet (Request access asking the squadron, D2111, is not built), so it is not judged by one.
   Nothing else crosses (his D2218, 19 Nov 26 — fix read 3's A2 exception for a posting taken back is gone): a line
   held by a man since moved squadron left his bell on his move day, so no take-back of the old squadron's deletes it or

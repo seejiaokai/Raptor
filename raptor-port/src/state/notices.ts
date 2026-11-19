@@ -31,7 +31,7 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { INPUTS, odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputAtIso } from '../engine/inputs'
+import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputAtIso } from '../engine/inputs'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
 import { todayIso, homeOn, unitRows, levelOfAccount } from './units'
@@ -103,6 +103,12 @@ export interface Notice {
   name: string
   day: string
   what: NoticePart[]
+  /** TOLD ONLY AS THE INPUT'S FILER (fix read 6, fault C — the fresh Opus read's F2 and F3, Astra's 2): present on an
+   *  input's line whose reader was named in the input neither before nor after the change, and told only as its filer
+   *  (filerTold); its value the squadrons that judgement read (filerUnits — each named man's home, or the input's own
+   *  squadron where it names nobody). Absent: he was named in it. Written once, by the pass, so the line's leaving his
+   *  bell after a move (noticeLeftBell) never has to ask the input as it stands today. */
+  fu?: string[]
 }
 
 /* the live list — restored IN PLACE by the snapshot (state/history.ts), like the inputs and the planning notes */
@@ -287,12 +293,13 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
     return null
   }
   let made = 0
-  const tell = (to: string, r: any, what: NoticePart[]) => {
+  /* (`fu` — told only as its filer: the squadrons that judgement read, written on the line — fault C, Notice.fu) */
+  const tell = (to: string, r: any, what: NoticePart[], fu?: string[]) => {
     if (!what.length || to === o.actor || !here(to)) return
     /* (the bids of his this input replaced on the Leave War — said on this one line, M4 9.3a) */
     const rb = o.replaced?.get(String(r.iid))?.get(to)
     if (rb && rb.length) what = [...what, ...rb.map(c => ({ k: 'rbid' as const, c }))]
-    NOTICES.push({ id: mint(at), to, by, at, iid: String(r.iid), name: String(inpLabel(r)), day: firstDay(r), what })
+    NOTICES.push({ id: mint(at), to, by, at, iid: String(r.iid), name: String(inpLabel(r)), day: firstDay(r), what, ...(fu ? { fu } : {}) })
     made++
   }
   const split = new Map<string, string>()             // old input id → the man split out of it, told under his new one
@@ -323,7 +330,9 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
       /* (its filer only while he is still told of it — D2223, filerTold above) */
       const f0 = changeFiler(b, null, by)
       const fb = f0 && filerTold(f0, [b]) ? f0 : ''
-      for (const p of new Set([...was, fb])) if (p) tell(p, b, [{ k: 'del' }])
+      /* (…told only as its filer: the line carries the mark — fault C, Notice.fu) */
+      const fbOnly = !!fb && !was.includes(fb)
+      for (const p of new Set([...was, fb])) if (p) tell(p, b, [{ k: 'del' }], fbOnly && p === fb ? filerUnits([b]) : undefined)
       continue
     }
     const is = ids(a)
@@ -340,7 +349,8 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
       if (!wasIn.has(p) && isIn.has(p)) { tell(p, a, [{ k: 'in' }]); continue }
       /* in it before and after, or its filer: what changed about the input — the same words for each of them (nobody
          who reaches here was put in or taken out, so nobody is in the lists of who was) */
-      tell(p, a, shared || (shared = common(b, a, p)))
+      const onlyFiler = p === filer && !wasIn.has(p) && !isIn.has(p)
+      tell(p, a, shared || (shared = common(b, a, p)), onlyFiler ? filerUnits([b, a]) : undefined)
     }
   }
   return made
@@ -391,16 +401,18 @@ const dayOfAt = (at: number): string => {
  *  is in or filed: the pass tells nobody else, noticePass), a decision on his own leave and its taking back ("Your leave"),
  *  his own posting. Not: bidding opened or closed on a war, a holiday's OIL question, another man's posting — his
  *  squadron's business, which he was told as one of its people. */
-export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what'>): boolean {
+export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what' | 'fu'>): boolean {
   if (n.iid) {
     /* AN INPUT'S LINE (his D2223: "a bell line about an input stays with a man only where he is named in that input"):
        his being put in or taken out, or his own bid it replaced, is about him whatever the input says now; otherwise the
-       input as it stands answers — he is named in it, or he is still told of it as its filer (filerTold). An input no
-       longer stored (deleted since) cannot be asked, so its line stays, as every input line did before. */
+       line says itself which it is (Notice.fu, written by the pass): one he was told as named in the input is about him,
+       one he was told ONLY as its filer never is by itself — whether it stays is noticeLeftBell's, judged on his move
+       day. FIX READ 6, FAULT C (the fresh Opus read's F2 and F3, Astra's 2): this asked the input and the homes as they
+       stand TODAY, so a filer line his move had retired came back — the input deleted since (no input: "about him"), he
+       moved back, or the named man moved into his squadron — an unread one lighting his bell again. */
     const ws: any[] = n.what || []
     if (!ws.length || ws.some(x => x && (x.k === 'in' || x.k === 'out' || x.k === 'rbid'))) return true
-    const r = INPUTS.find((x: any) => x && String(x.iid) === String(n.iid))
-    return !r || filerTold(String(n.to), [r])
+    return !Array.isArray(n.fu)
   }
   const p: any = (n.what || [])[0]
   if (!p) return true
@@ -417,12 +429,29 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what'>): boolean 
  *  unread, even should he move back: one rule READ by every place that shows a bell (noticeLive, the one body), never a
  *  write — no command touches another squadron's bell for it, and the change history keeps everything. A move is saved
  *  from tomorrow (state/units.ts setHome), so a line already written is never re-dated into the new squadron. */
-export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what'>, today: string = todayIso()): boolean {
+export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'fu'>, today: string = todayIso()): boolean {
   if (!Number.isFinite(n.at)) return false
   const wrote = dayOfAt(n.at)
   if (!(wrote < today)) return false
   const to = String(n.to)
   const was = homeOn(to, wrote)
+  /* A LINE HE WAS TOLD ONLY AS THE INPUT'S FILER (his D2223 — fix read 6, fault C): judged on the day his home changed,
+     against the squadrons the line was written under (Notice.fu) — not told on that day (no longer at home in one, nor an
+     admin of one: filerTold's own test, toldIn), it is off his bell for good, read or unread, whatever happens after: the
+     input deleted, his moving back, the named man moving. The input is never read for it. Asked on each move day in
+     turn, so a filer still told on one (a master, an admin everywhere) is judged again on the next. */
+  if (n.iid && Array.isArray(n.fu)) {
+    const fu = n.fu
+    const days = [...new Set(unitRows().homes.filter(h => h.pid === to && h.from > wrote && h.from <= today).map(h => h.from))].sort()
+    let prev = was
+    for (const d of days) {
+      const h = homeOn(to, d)
+      if (h === prev) continue
+      prev = h
+      if (!toldIn(to, fu, d)) return true
+    }
+    return false
+  }
   let moved = false
   for (const h of unitRows().homes) if (h.pid === to && h.from > wrote && h.from <= today && homeOn(to, h.from) !== was) { moved = true; break }
   /* (the move first: it is the cheap question, and asks no input — read for every line each time a bell is drawn) */
