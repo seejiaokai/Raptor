@@ -305,6 +305,15 @@ function noteHolMade(id: string): void {
   s.add(id)
 }
 export function holMade(env: object): ReadonlySet<string> | undefined { return HOL_MADE.get(env) }
+/* (the commit gate's second look at a command, judged against the saved rows — perms.ts storedRowViolation, fix read 11,
+   fault A — runs on a COPY of the command's envelope: the copy vouches for exactly the lines the command itself minted,
+   no more, so these three registries go to it unchanged) */
+export function shareMade(from: object, to: object): void {
+  const p = PASS_MADE.get(from), w = WAR_MADE.get(from), h = HOL_MADE.get(from)
+  if (p) PASS_MADE.set(to, p)
+  if (w) WAR_MADE.set(to, w)
+  if (h) HOL_MADE.set(to, h)
+}
 const phOf = (r: any): string | null => { const p = placeholderOf(r); return p && p.p != null ? String(p.p) : null }
 /* yyyy-mm-dd of one of an input's own date labels ("Jul 15", with its year) */
 const isoOf = (lbl: any, yr: any): string => {

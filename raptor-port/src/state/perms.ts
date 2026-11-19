@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerVia, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, warMade, holMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, filerTold, filerVia, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -2293,20 +2293,59 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
    stored row (the saved copy — the whiteboard, through its probe, never memory) is refused. A week load writes no
    request row (persist.ts wireRows), and a remote or seed change is not a person's; neither is asked. No probe (a test
    without saved rows): nothing is asked. */
-type StoredRowProbe = (collection: 'inputs' | 'notices', id: string) => boolean
+/* (the probe answers the stored row itself, as saved — or null where none is: fix read 11, fault A) */
+type StoredRowProbe = (collection: 'inputs' | 'notices', id: string) => string | null
 let STORED: StoredRowProbe | null = null
 export function setStoredRowProbe(fn: StoredRowProbe | null): void { STORED = fn }
+const storedRow = (collection: 'inputs' | 'notices', id: string): string | null => (STORED ? STORED(collection, id) ?? null : null)
 function writtenAsNewViolation(env: CommitEnvelope): string | null {
   if (!STORED || env.origin === 'remote' || env.origin === 'seed' || env.type === 'sched.load') return null
   for (const c of env.changes) {
     if (c.op !== 'put' || c.before != null || (c.collection !== 'inputs' && c.collection !== 'notices')) continue
     if (c.collection === 'inputs' && c.id === INPUT_ORDER) continue
-    if (STORED(c.collection, String(c.id))) return `a record already written (${c.collection}/${c.id})`
+    if (storedRow(c.collection, String(c.id)) != null) return `a record already written (${c.collection}/${c.id})`
   }
   return null
 }
+/* A SAVED RECORD IS JUDGED AS SAVED, NOT AS MEMORY HOLDS IT (fix read 11, fault A — the fresh Opus read's O11-1, the
+   security read's SEC11-1, SEC11-2): the scheduler store takes a change's before-image from memory, and memory can be
+   REWRITTEN outside every command as well as blanked (fault C of fix read 10, above) — 142's Outlaw renamed 149's man's
+   saved request to his own man in memory, then edited or deleted "his" request; or re-addressed a line on 149's admin's
+   bell to himself, then cleared it: each command was judged against the rewritten image, so the gate let it through and
+   the STORED 149 record was overwritten or deleted. So every change of a request or a bell line — put or delete — whose
+   id has a stored row is judged a second time, by the same checks, on a copy of the command whose before-image is that
+   stored row; either failing refuses it. Never the rows compared whole: a week load's landing marks change memory on
+   purpose and are never saved (persist.ts wireRows), and the checks already read a landing as none. Not the inputs'
+   order row (it names no one), not a remote or seed change (not a person's), and not where no probe is installed (a test
+   without saved rows). The no-before-image rule above stands. */
+let SECOND_PASS = false
+function storedRowViolation(env: CommitEnvelope): string | null {
+  if (!STORED || SECOND_PASS || env.origin === 'remote' || env.origin === 'seed') return null
+  let moved: string | null = null
+  const changes = env.changes.map(c => {
+    if ((c.collection !== 'inputs' && c.collection !== 'notices') || (c.collection === 'inputs' && c.id === INPUT_ORDER)) return c
+    const raw = storedRow(c.collection, String(c.id))
+    if (raw == null) return c
+    let saved: unknown
+    try { saved = JSON.parse(raw) } catch { return c }
+    if (sameJson(saved, c.before)) return c
+    moved ??= `${c.collection}/${c.id}`
+    return { ...c, before: saved }
+  })
+  if (!moved) return null
+  SECOND_PASS = true
+  try {
+    /* the copy vouches for exactly the lines this command minted (notices.ts shareMade) */
+    const copy: CommitEnvelope = { ...env, changes }
+    shareMade(env, copy)
+    const why = ownershipViolation(copy)
+    return why ? `a saved record changed outside the app's doors (${moved}): ${why}` : null
+  } finally { SECOND_PASS = false }
+}
 
 export function ownershipViolation(env: CommitEnvelope): string | null {
+  const stored = storedRowViolation(env)
+  if (stored) return stored
   const a = env.actor
   const asNew = writtenAsNewViolation(env)
   if (asNew) return asNew

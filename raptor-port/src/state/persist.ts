@@ -432,8 +432,10 @@ export function wireRows(wb: Whiteboard): void {
   unwireRows?.()
   unwireRows = wireRowConsumer(wb)
   /* the commit gate asks the SAVED copy whether a "new" request or bell line is one already written (fix read 10, fault C
-     — state/perms.ts writtenAsNewViolation): memory can be blanked outside every command, the stored row cannot */
-  setStoredRowProbe((collection, id) => wb.has(collection, id))
+     — state/perms.ts writtenAsNewViolation): memory can be blanked outside every command, the stored row cannot. It hands
+     the stored row itself (fix read 11, fault A): memory can be REWRITTEN outside every command too, so the gate judges a
+     change of a saved row against that row as well (perms.ts storedRowViolation) */
+  setStoredRowProbe((collection, id) => wb.get(collection, id))
 }
 
 /** call AFTER initStore() (wireStore sets HOOKS.histPush there) */
