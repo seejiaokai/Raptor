@@ -130,6 +130,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Leave War**
 - [SANS-CHIP-ON-SANS] — the Post out sheet offers the "SANS" chip to a man already SANS; D2163: not offered for him (small fix, no answer needed; the next Leave War batch).
 - [LW-FOUR-ITEMS-LEFTOVERS] — what the four Leave War items (pull request 801, live 17 Nov 26) left for him: five like-for-like suggestions and three departures from the drawings — questions kept until he says (D994), pictures first.
+- [LW-APPROVALS-PHONE-FLAKE] — a Leave War phone browser test ("the grid shown again after Approvals…") fails about 2 runs in 6 under load, alone 4/4, the same before and after the month-jump fix — a test to steady (19 Nov 26, chat 109).
 - [LW-BAL-TAB-NEXT] — on Balances, Tab after typing a figure goes to the Balances tab button, not the next box (the figure is kept); seen on the four items' re-walk, its code unchanged from `main` — to reproduce on `main`, then fix or put to him.
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
@@ -294,6 +295,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+
+### [LW-APPROVALS-PHONE-FLAKE] A Leave War phone test unstable under load (19 Nov 26, chat 109) — OPEN
+**What it is:** `e2e/leavewar.spec.ts` (phone), "the grid shown again after Approvals draws the month in view by itself" — "drawn days in view: 0". Seen by the night's fixer of fix read 3: alone 4/4; run six times alongside the month-jump tests, 2 of 6 failed, and the same 2 of 6 on the grid as it was before the fix (`ea68a8f48`'s O3) — not caused by it. **The job:** find what the test waits on too early (D87: wait on what the test needs, never a fixed time) and steady it, red first under the same load. **Where:** the Leave War's browser tests; the grid's redraw after Approvals (`leavewar/ui/Matrix.tsx`).
 
 ### [READERS-RECHECK-APP] Compare the two readers again on app-code jobs (his D2042, 14 Nov 26) — OPEN, waits for 30 more app-code jobs
 **What it is:** the 7–14 Nov 26 comparison (`raptor-port/docs/superpowers/briefs/2026-11-14-readers-compared.md`) found both readers worth keeping, but only 8 of its 42 jobs were app code — too few to say whether one reader is enough for a small app change. **When:** once 30 more app-code jobs since 14 Nov 26 have both Astra's and the fresh Opus reader's reports saved in that folder. **How:** the same count — per job, what both found, what only one found, what was confirmed (red-first) and fixed — split by the size of the change; then put to him with a recommendation. Nothing about the readers changes before his answer.
