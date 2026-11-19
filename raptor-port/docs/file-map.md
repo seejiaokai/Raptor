@@ -1407,6 +1407,13 @@ scheduler store is enlisted takes the bell's before-image again), `src/state/per
 `src/state/perms.ts` (a war line only from them). Fault E — `src/state/perms.ts` (the holiday skip only for a new line or
 its maker's verified Undo / Redo). Fault F — `src/state/notices.ts` (`noticeLeftBell`: a line dated ahead by less than a
 day is read as written today). `docs/data-model.md` §11 (User, UnitGrant and Notice rows).
+Fix read 10's faults A–F (20 Nov 26; each red first, its own commit; one test file for all, a describe a fault):
+**New:** `src/leavewar/multi-sqn-fixread10.test.ts`. **Changed:** fault A — `src/leavewar/sync.ts` (`warLinesOwed`,
+`warLineCovered`: the war lines a command's own change of the war owes; installed into the gate), `src/state/perms.ts`
+(`setWarLinesOwed`, `lineMalformed`, `restoreFollowUpOwed`: a war line only as owed, never riding an input's telling; a
+line naming no input only from the war's or the holiday's writers; every line has parts), `src/state/notices.ts`
+(`noticeAboutHim`: a line with no part is not about him), `src/leavewar/multi-sqn-fixread8.test.ts` and
+`src/state/units-sqn-fixread2.test.ts` (their hand-made lines naming no input are now refused).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

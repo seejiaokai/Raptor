@@ -518,7 +518,9 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what' | 'fu'>): b
     return !Array.isArray(n.fu)
   }
   const p: any = (n.what || [])[0]
-  if (!p) return true
+  /* (a line with no part says nothing about him — fix read 10, fault A (e), Fable F10-1: read as his, a made-up line with
+     no parts followed a moved man to his new squadron) */
+  if (!p) return false
   if (p.k === 'lw') return true
   if (p.k === 'lwback') return p.d !== 'open' && p.d !== 'close'
   if (p.k === 'po' || p.k === 'poback') return String(p.who) === String(n.to)

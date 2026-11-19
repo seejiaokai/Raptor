@@ -23,7 +23,7 @@ import { inputBelongs, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, 
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setFollowUpsProbe, myUnit } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setFollowUpsProbe, setWarLinesOwed, myUnit } from '../state/perms'
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
@@ -108,6 +108,7 @@ import {
   setRefusalHook,
   setHolidayTell,
   setDecisionTell,
+  openingTells,
   type HolidayRun,
   type WarTell,
   type OpenTell,
@@ -184,7 +185,7 @@ import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
 import {
   labelToISO, warVisible, warCounts, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate, warInputs, warLines, rosterBody,
-  type AbsenceIndex, type WarInput,
+  type AbsenceIndex, type WarInput, type InputRead,
 } from './absences'
 
 /* Re-entrancy: ingest persists-and-notifies per cell, and writeInputsBatch's
@@ -298,6 +299,8 @@ export function installAbsenceDoor(): void {
   /* WHAT A RESTORE'S FOLLOW-UP LINES MAY SAY (perms.ts setFollowUpsProbe — fix read 6, fault B): the one body that writes
      them, so the gate compares a "taken back" or "again" line with what this restore owes, field for field */
   setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, hasRead))
+  /* WHICH WAR LINES A COMMAND OWES (perms.ts setWarLinesOwed — fix read 10, fault A): worked out from its own changes */
+  setWarLinesOwed((changes, n) => warLineCovered(warLinesOwed(changes), n))
   setLwDayOpenProbe((cellId: string) => {
     const iDate = cellId.lastIndexOf(':')
     if (iDate < 0) return true
@@ -1713,6 +1716,97 @@ export function followUpsOwed(moved: ReadonlyArray<{ collection: string; op: str
     out.push(f)
   }
   return out
+}
+/** THE WAR LINES A COMMAND OWES, FROM ITS OWN CHANGES (fix read 10, fault A — the security read's SEC10-1, Fable F10-1,
+ *  F10-2, Astra): the gate (state/perms.ts, through setWarLinesOwed) let a war line through wherever one of the war's
+ *  writers minted it in the running command (notices.ts warMade) — but those writers are plain functions, so an admin's
+ *  ordinary input command could call noticeWar or noticePosting itself and put a made-up "your leave refused" on his own
+ *  man's bell, which, being about him, followed him to his new squadron (D2218, D2222). A war line is owed only by a
+ *  change the war itself made in this command:
+ *  · a decision on a man's leave ("Your leave", `lw`) — a change of his war row (`lw.cell`) on a day of the line's run, or
+ *    of a war-approved leave of his (an input carrying `lw`) covering one, holding the line's kind (or the kind a re-type
+ *    came from) before or after;
+ *  · bidding opened or closed ("Leave War", `lwopen`) — a change of a war's period that opens or closes exactly that
+ *    stretch (store.ts openingTells, the writer's own body);
+ *  · a posting's line (`po`) or its "taken back" (`poback`) — a change of that man's posting record, the line's day its
+ *    posting date and its outcome the record's, before or after.
+ *  What the line says beyond that (approved or refused) the change does not fix, so the gate keeps asking warMade too.
+ *  A restore's "taken back" and "again" lines are owed by the restore (followUpsOwed above), not here. Pure: it reads the
+ *  changes, never the stores. */
+export type OwedWarLine =
+  | { k: 'lw'; to: string; days: ReadonlySet<string>; kinds: ReadonlySet<string> }
+  | { k: 'lwopen'; a: string; b: string; open: boolean }
+  | { k: 'po' | 'poback'; who: string; day: string; o: string }
+type LooseRec = Record<string, unknown>
+const looseRec = (x: unknown): LooseRec | null => (x && typeof x === 'object' && !Array.isArray(x) ? (x as LooseRec) : null)
+export function warLinesOwed(changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown; after?: unknown }>): OwedWarLine[] {
+  const out: OwedWarLine[] = []
+  const kindOf = (code: unknown) => String(code ?? '').replace(/\*/g, '')
+  const leave = new Map<string, { days: Set<string>; kinds: Set<string> }>()
+  const leaveOf = (pid: string) => { let m = leave.get(pid); if (!m) leave.set(pid, m = { days: new Set(), kinds: new Set() }); return m }
+  for (const c of changes) {
+    const imgs = [c.before, c.op === 'delete' ? null : c.after]
+    if (c.collection === 'lw.cell') {
+      /* `<war>:<person>:<date>` — read from the right: a war id may carry a colon */
+      const parts = String(c.id).split(':')
+      if (parts.length < 3) continue
+      const m = leaveOf(parts[parts.length - 2]!)
+      m.days.add(parts[parts.length - 1]!)
+      for (const img of imgs) if (Array.isArray(img)) for (const x of img) { const r = looseRec(x); if (r && r.code != null) m.kinds.add(kindOf(r.code)) }
+    } else if (c.collection === 'inputs') {
+      for (const img of imgs) {
+        const row = looseRec(img)
+        if (!row || !row.lw) continue
+        const pid = onlyNamed(row)
+        if (pid == null) continue
+        const m = leaveOf(String(pid))
+        for (const d of inputDates(row as unknown as InputRead)) m.days.add(d)
+        m.kinds.add(kindOf(row.type))
+      }
+    } else if (c.collection === 'lw.war') {
+      const a = looseRec(c.op === 'delete' ? null : c.after)
+      if (!a) continue
+      const b = looseRec(c.before)
+      const open = (p: LooseRec | null) => ({ ...(p ?? {}), open: p && Array.isArray(p.open) ? p.open : [] }) as unknown as Period
+      for (const t of openingTells(open(b), open(a))) out.push({ k: 'lwopen', a: t.from, b: t.to, open: t.open })
+    } else if (c.collection === 'lw.postouts') {
+      for (const img of imgs) {
+        const r = looseRec(img)
+        if (!r || typeof r.to !== 'string' || !r.to) continue
+        const o = outcomeOf(r as { poOutcome?: unknown; poArchive?: boolean })
+        if (!o) continue
+        const day = addDays(r.to, 1)
+        out.push({ k: 'po', who: String(c.id), day, o }, { k: 'poback', who: String(c.id), day, o })
+      }
+    }
+  }
+  for (const [to, m] of leave) out.push({ k: 'lw', to, days: m.days, kinds: m.kinds })
+  return out
+}
+/** does this owed line cover that line? — what the gate asks, line by line (state/perms.ts setWarLinesOwed) */
+export function warLineCovered(owed: readonly OwedWarLine[], n: { to?: unknown; iid?: unknown; name?: unknown; day?: unknown; what?: unknown }): boolean {
+  const w = Array.isArray(n.what) && n.what.length === 1 ? looseRec(n.what[0]) : null
+  if (!w || n.iid !== '' || typeof w.k !== 'string') return false
+  /* (its name and day as its writer gives them — noticeWar: warLineName and the part's first day) */
+  if ((w.k === 'lw' || w.k === 'lwopen') && (n.name !== warLineName(w as unknown as NoticePart) || n.day !== String(w.a))) return false
+  const run = (a: unknown, b: unknown): string[] => {
+    const out: string[] = []
+    if (typeof a !== 'string' || !/^\d{4}-\d\d-\d\d$/.test(a)) return out
+    const end = typeof b === 'string' && b >= a ? b : a
+    for (let d = a, i = 0; d <= end && i < 400; d = addDays(d, 1), i++) out.push(d)
+    return out
+  }
+  const kindOf = (code: unknown) => String(code ?? '').replace(/\*/g, '')
+  return owed.some(o => {
+    if (o.k !== w.k) return false
+    if (o.k === 'lw') {
+      if (String(n.to) !== o.to || w.again || w.ref != null) return false
+      if (!o.kinds.has(kindOf(w.c)) && !(w.w != null && o.kinds.has(kindOf(w.w)))) return false
+      return [...run(w.a, w.b), ...run(w.to, w.tb)].some(d => o.days.has(d))
+    }
+    if (o.k === 'lwopen') return w.a === o.a && w.b === o.b && w.open === o.open
+    return String(w.who) === o.who && String(w.o) === o.o && n.day === o.day
+  })
 }
 export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; op: string; after?: unknown }>, dir: 'undo' | 'redo'): number {
   /* (the step's own lines: what it put — a line it deleted owes no follow-up, as before — that this restore has taken

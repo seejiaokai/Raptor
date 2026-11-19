@@ -302,12 +302,14 @@ describe("still open 2, his D2194 — an admin's bell lines and read records are
     signInAs('ad2', 'a2')
     /* (a line with no input: since fix read 7's fault M a line naming an input — `line`'s `i1` — rides only the command
        that changes it, with the pass's mark; this pins the squadron test alone) */
-    expect(ownershipViolation(env([put('notices', 'n1', { ...line('bane'), iid: '' })]))).toBeNull()
+    /* (…and since fix read 10's fault A no line naming no input passes unless the war or the holiday owes it: the squadron
+       test still lets it past — refused on that other count, not as another squadron's) */
+    expect(ownershipViolation(env([put('notices', 'n1', { ...line('bane'), iid: '' })]))).toMatch(/about nothing the command changed/)
     /* (the holiday line as noticeHoliday writes it, naming no input — fix read 8, fault H) */
     expect(ownershipViolation(env([put('notices', 'n1', { ...line('osp9', [{ k: 'oilhol', a: '2026-07-13', b: '2026-07-13' }]), iid: '' })]))).toBeNull()
     expect(ownershipViolation(env([put('settings', 'seen:bane', { pid: 'bane', ids: [] })]))).toBeNull()
     signInAs('ad', 'a')
-    expect(ownershipViolation(env([put('notices', 'n1', { ...line('osp9'), iid: '' })]))).toBeNull()
+    expect(ownershipViolation(env([put('notices', 'n1', { ...line('osp9'), iid: '' })]))).toMatch(/about nothing the command changed/)
   })
   /* NARROWED by his D2223 (19 Nov 26): "the filer is told only while he is still that man's admin or in the input" — so a
      149 member who filed a 142 man's input is no longer told of a change to it (state/notices.ts filerTold, the pass's

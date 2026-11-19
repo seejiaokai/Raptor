@@ -2036,6 +2036,44 @@ const holidayLine = (n: any): boolean => Array.isArray(n?.what) && n.what.length
 type FollowUpsProbe = (changes: ReadonlyArray<Change>, dir: 'undo' | 'redo', notices: readonly any[]) => ReadonlyArray<{ of: any; to: string; name: string; day: string; iid: string; what: readonly any[] }>
 let FOLLOWUPS: FollowUpsProbe | null = null
 export function setFollowUpsProbe(fn: FollowUpsProbe | null): void { FOLLOWUPS = fn }
+/* WHICH WAR LINES A COMMAND OWES (fix read 10, fault A — the security read's SEC10-1, Fable F10-1, F10-2, Astra): the war's
+   writers (notices.ts noticeWar, noticePosting, noticePostingBack) are plain functions, so "minted by one of them in this
+   command" (warMade) vouched for whoever called them — an admin's ordinary input command called noticeWar and put a
+   made-up "your leave refused" on his own man's bell, which followed him to his new squadron (D2218, D2222). Now a war
+   line is also owed by the command's own change of the war — a leave cell or war-approved leave of that man, a period
+   opened or closed, a posting record (leavewar/sync.ts warLinesOwed, handed in here). No probe installed: nothing is owed,
+   so no war line is let through but a verified replay. */
+type WarLinesOwedProbe = (changes: ReadonlyArray<Change>, line: any) => boolean
+let WAR_OWED: WarLinesOwedProbe | null = null
+export function setWarLinesOwed(fn: WarLinesOwedProbe | null): void { WAR_OWED = fn }
+/* (a line with a war part — the kinds only the war's own writers write) */
+const warPart = (n: any): boolean => Array.isArray(n?.what) && n.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
+/* A LINE THAT READS AS ONE (fix read 10, fault A (d) — Fable F10-1): every line the app writes carries at least one part,
+   each an object naming its kind. A line with no parts read as "about him" (noticeAboutHim) and followed a moved man;
+   one whose part was null broke the bell's words. */
+const lineMalformed = (n: any): boolean => !n || typeof n !== 'object' || !Array.isArray(n.what) || !n.what.length
+  || n.what.some((p: any) => !p || typeof p !== 'object' || Array.isArray(p) || typeof p.k !== 'string')
+/* A RESTORE'S FOLLOW-UP TO HIS OWN MAN (fix read 10, fault A (b)): followUpOf below judges the one about a man of another
+   squadron; a follow-up on his own man's bell — a "taken back" of bidding opened, an "again" — passed by warMade alone.
+   Now it too must be one the restore owes (the probe, field for field), each owed line once (`used`). */
+function restoreFollowUpOwed(env: CommitEnvelope, n: any, replayed: ((c: Change) => boolean) | null, used: Set<string>): boolean {
+  if (!replayed || !FOLLOWUPS) return false
+  const before = noticesBefore(env)
+  for (const dir of ['undo', 'redo'] as const) {
+    const src = env.changes.filter(x => x.collection === 'notices' && x.op === (dir === 'undo' ? 'delete' : 'put') && replayed(x))
+    if (!src.length) continue
+    const owed = FOLLOWUPS(src, dir, before)
+    for (let i = 0; i < owed.length; i++) {
+      const f = owed[i]!, key = `${dir}:${String(f.of?.id)}:${i}`
+      if (used.has(key)) continue
+      if (String(f.to) === String(n.to) && deepEqual(f.what, n.what) && deepEqual(f.name, n.name) && deepEqual(f.day, n.day) && deepEqual(f.iid, n.iid)) {
+        used.add(key)
+        return true
+      }
+    }
+  }
+  return false
+}
 /* the bell as it stood before this command: today's lines with every line the command touched put back as it was */
 function noticesBefore(env: CommitEnvelope): any[] {
   const touched = new Map<string, Change>()
@@ -2072,6 +2110,7 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   const changedInputs = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   let replayed: ((c: Change) => boolean) | null | undefined
   const followed = new Set<string>()
+  const ownFollowed = new Set<string>()
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (c.collection === 'notices') {
@@ -2079,6 +2118,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
       if (c.op === 'put') {
         if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
         if (lineRewritten(c, replayed)) return `a bell line not as the pass writes it (${where})`
+        /* (fix read 10, fault A (d): a line that reads as one — before every door) */
+        if (lineMalformed(c.after) && !(replayed && replayed(c))) return `a bell line that will not read (${where})`
       }
       for (const n of [c.before as any, c.op === 'delete' ? null : (c.after as any)]) {
         if (!n || typeof n !== 'object' || n.to == null) continue
@@ -2102,7 +2143,9 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
            a command's type is only a label, so the app's own act is known by the lines its pass minted — notices.ts
            passMade, written only by sched-commit.ts tellPass) */
         const signed = (self != null && String(n.by ?? '') === self) || (n.by == null && APP_ACTS.has(env.type) && !!passMade(env)?.has(String(n.id)))
-        if (signed && n.iid && changedInputs.has(String(n.iid)) && toldBy(env, n.iid)?.has(to) && filerMarkOk(env, c, n)) continue
+        /* (…and never a war part riding it, as the member section's door below has always refused — fix read 10, fault A
+           (c), Fable F10-2: an `lw` part on a line naming the input the command changes passed here, before the war check) */
+        if (signed && n.iid && changedInputs.has(String(n.iid)) && toldBy(env, n.iid)?.has(to) && filerMarkOk(env, c, n) && !warPart(n)) continue
         /* HIS OWN STEP, PUT BACK (fix read 3, O2 — D148: an Undo is refused only where the change itself would be). The
            war's lines carry no input (`iid: ''`), so a man told by the admin's Open for bidding, closing or decision who
            has since moved squadron made the top bar's Undo of that step a write to another squadron's bell, refused
@@ -2144,10 +2187,25 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
            M's, so a line they refuse keeps their words: a put of such a line passes only as one of those writers minted it
            here, or as the verified replay of a step (undo/timeline.ts verifiedReplay) — a restore's follow-up passed above
            already. noticeHoliday's own new line was skipped before this loop's checks. */
-        if (n === c.after && Array.isArray(n.what) && n.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
-          && !warMade(env)?.has(String(n.id))) {
+        /* …AND ONLY ONE THE COMMAND'S OWN CHANGE OF THE WAR OWES (fix read 10, fault A (a), (b) — the security read's
+           SEC10-1, Astra): warMade vouched for whoever called the writer, and they are plain functions, so an ordinary
+           input command called noticeWar or noticePosting itself. Now such a line passes only as a verified replay, or
+           minted here AND owed — by this command's own change of that man's leave, of the period's open stretches or of
+           that posting (WAR_OWED: leavewar/sync.ts warLinesOwed), or, in a restore, as the "taken back" or "again" line
+           it owes (restoreFollowUpOwed). */
+        if (n === c.after && warPart(n)) {
           if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
-          if (!(replayed && replayed(c))) return `a war line no war command wrote (${where})`
+          if (!(replayed && replayed(c))) {
+            if (!warMade(env)?.has(String(n.id))) return `a war line no war command wrote (${where})`
+            if (!(WAR_OWED && WAR_OWED(env.changes, n)) && !restoreFollowUpOwed(env, n, replayed, ownFollowed)) return `a war line no change of the war owes (${where})`
+          }
+        }
+        /* A LINE NAMING NO INPUT (fix read 10, fault A (d) — Fable F10-1): only the war's lines (above), the holiday's
+           (skipped before this loop's checks — fault B) and a verified replay name no input. Any other was a line in the
+           admin's own words, about nothing, that followed a moved man (noticeAboutHim read a line with no part as his). */
+        if (n === c.after && c.op === 'put' && !n.iid && !warPart(n)) {
+          if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+          if (!(replayed && replayed(c))) return `a bell line about nothing the command changed (${where})`
         }
       }
       /* (fault T: a new line is dated now — asked last, so a line refused on another count keeps its own words) */
@@ -2249,8 +2307,12 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         /* A LEAVE WAR LINE IS NEVER A MEMBER'S (M4; the security read's finding 4): "Your leave · LL refused", bidding
            opened or closed, "… taken back" are written only by an admin's war command (state/notices.ts noticeWar, the
            `lw.notice` follow-up) — a member's notice riding his own input may carry none of them */
-        const warLine = (x: any) => Array.isArray(x?.what) && x.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
-        if (c.op === 'put' && warLine(n)) return `a notice that is not his own change's (${where})`
+        if (c.op === 'put' && warPart(n)) return `a notice that is not his own change's (${where})`
+        /* (fix read 10, fault A (d): a line that reads as one, in this section too) */
+        if (c.op === 'put' && lineMalformed(n)) {
+          if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+          if (!(replayed && replayed(c))) return `a bell line that will not read (${where})`
+        }
         /* (fix read 7, fault M — the admin section's lineRewritten and inputLineUnlike: this section already holds both,
            since the one door below that puts a line takes only a new one (`b == null`), riding his change of the input
            it names (`rides`), with the pass's mark (`filerMarkOk`); every other put is refused under it) */

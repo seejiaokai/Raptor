@@ -203,10 +203,12 @@ describe('fault N — a line dated past midnight, written in the last minutes be
     hunterLine(); hunterMovesOn16(); on(15, 23, 57)
     const plain = { id: 'nfr8-p', to: 'prowler', by: 'casper', iid: '', name: '142 words', day: '2026-07-25', what: [{ k: 'rmk' }] }
     const marked = { id: 'nfr8-m', to: 'prowler', by: 'casper', iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'] }
-    expect(ownershipViolation(asOutlaw([put({ ...plain, at: at(16, 0, 1) })])) ?? 'allowed').toMatch(/not dated now/)
+    /* (the plain line, naming no input, is refused since fix read 10's fault A whatever its date — no change of the war owes
+       it; the marked line still pins the date) */
+    expect(ownershipViolation(asOutlaw([put({ ...plain, at: at(16, 0, 1) })])) ?? 'allowed').toMatch(/about nothing the command changed/)
     expect(ownershipViolation(asOutlaw([remarkChange(), put({ ...marked, at: at(16, 0, 1) })])) ?? 'allowed').toMatch(/not dated now/)
-    /* (control) the same lines dated 23:57 pass */
-    expect(ownershipViolation(asOutlaw([put({ ...plain, at: at(15, 23, 57) })]))).toBeNull()
+    /* (control) the marked line dated 23:57 passes */
+    expect(ownershipViolation(asOutlaw([put({ ...plain, at: at(15, 23, 57) })])) ?? 'allowed').toMatch(/about nothing the command changed/)
     expect(ownershipViolation(asOutlaw([remarkChange(), put({ ...marked, at: at(15, 23, 57) })]))).toBeNull()
   })
   it('(SEC8-1, a member) Ranger at 23:57: his lines to Hunter (marked) and to Ace (named) dated 00:01 are refused', () => {
