@@ -1793,7 +1793,8 @@ squadron are judged by whose they are:
   `state/notices.ts filerTold`, the pass's own test — the input itself judged by its people's squadrons; a member's notice the
   same (job 2, 19 Nov 26: Astra 6, SEC-2, SEC-3). The filer is the one the input had BEFORE the change (on a new input
   only the actor himself, `state/notices.ts changeFiler`); an input naming nobody tells him only while its squadron is
-  his home or he is an admin of it; and such a line is signed by the actor (or the app's own act, with no maker) — fix
+  his home or he is an admin of it; and such a line is signed by the actor (or the app's own act, with no maker — known
+  by the lines its pass wrote in that command, never by the command's type: fix read 7, fault S, SEC7-3) — fix
   read 6, fault A, 19 Nov 26: SEC6-A, a forged after-image filer, an ALL AVAIL input and a line signed by another man each
   carried a 142 command's line to a 149 man. Such a line to someone told only as the filer carries the mark
   `filerUnits`, exactly as the pass writes it, and a named man's carries none — a line without its mark would never

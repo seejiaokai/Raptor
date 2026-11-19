@@ -2007,7 +2007,11 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
         /* (…written as the pass writes it: by the actor himself, or with no maker in the app's own acts — fix read 6, fault
            A: the security read's SEC6-A (3), a line riding the change signed `kes9`, posing as 149's admin. The member
            section's door below has always asked it.) */
-        const signed = (self != null && String(n.by ?? '') === self) || (n.by == null && APP_ACTS.has(env.type))
+        /* (…and with no maker only where the pass itself wrote it in this command — fix read 7, fault S: the security
+           read's SEC7-3, an admin labelling his own command `lw.postout` rode an unsigned line to another squadron's man;
+           a command's type is only a label, so the app's own act is known by the lines its pass minted — notices.ts
+           passMade, written only by sched-commit.ts tellPass) */
+        const signed = (self != null && String(n.by ?? '') === self) || (n.by == null && APP_ACTS.has(env.type) && !!passMade(env)?.has(String(n.id)))
         if (signed && n.iid && changedInputs.has(String(n.iid)) && toldBy(env, n.iid)?.has(to) && filerMarkOk(env, c, n)) continue
         /* HIS OWN STEP, PUT BACK (fix read 3, O2 — D148: an Undo is refused only where the change itself would be). The
            war's lines carry no input (`iid: ''`), so a man told by the admin's Open for bidding, closing or decision who

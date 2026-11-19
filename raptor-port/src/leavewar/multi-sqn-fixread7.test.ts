@@ -300,3 +300,20 @@ describe('fault F — a genuine Undo / Redo carries only a follow-up line that i
     try { expect(ownershipViolation(g.env)).toBeNull() } finally { setInputReplayCheck(verifiedReplay) }
   })
 })
+
+describe('fault S — an unsigned line rides only the pass’s own telling, never a command’s label', () => {
+  /* Saber (master) files for Ranger, then is 149's (from 16 Jul); on 16 Jul Outlaw, a plain 142 admin, changes it */
+  const saberMoved = () => {
+    signInAs('ad', 'a'); fileFor('bane', 'stiff')
+    homes('stiff', 'hs7', [['u142', '2026-07-15'], ['u149', '2026-07-16']]); on(16)
+  }
+  const noMaker = (over: any = {}) => ({ id: 'nsec7s', to: 'stiff', at: Date.now(), iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'out' }], fu: ['u142'], ...over })
+  const asType = (type: string, n: any): any => ({ type, origin: 'user', actor: outlaw, changes: [remarkChange(), { collection: 'notices', id: n.id, op: 'put', before: null, after: n }] })
+  it('(SEC7-3 P3) a no-maker line to Saber in a command labelled lw.postout is refused', () => {
+    saberMoved()
+    expect(ownershipViolation(asType('lw.postout', noMaker())) ?? 'allowed').toMatch(/another squadron/)
+    /* (as it was already under inputs.batch, and signed by another man) */
+    expect(ownershipViolation(asType('inputs.batch', noMaker())) ?? 'allowed').toMatch(/another squadron/)
+    expect(ownershipViolation(asType('lw.postout', noMaker({ by: 'kes9' }))) ?? 'allowed').toMatch(/another squadron/)
+  })
+})
