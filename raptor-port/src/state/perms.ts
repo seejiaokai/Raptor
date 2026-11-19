@@ -2085,7 +2085,14 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
         /* (only as noticeHoliday writes it: naming no input and carrying no filer's mark — fix read 8, fault H, the security
            read's SEC8-2: a line of only holiday parts naming an input, or marked, skipped fault M's checks below, and with an
            input it outlived the man's move (D2218); any other goes through the ordinary checks) */
-        if (holidayLine(n) && !n.iid && n.fu === undefined) continue
+        /* (…and only a NEW line in that shape, or the verified replay of the actor's own step — fix read 9, fault E, the
+           security read's SEC9-3: the skip let a 142 admin delete or rewrite the holiday line on 149's admin's bell, its
+           words, its parts or its maker; every other delete or rewrite of a holiday line goes through the owner check below) */
+        if (holidayLine(n) && !n.iid && n.fu === undefined) {
+          if (n === c.after && c.op === 'put' && c.before == null) continue
+          if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+          if (replayed && replayed(c)) continue
+        }
         const to = String(n.to)
         /* (…written as the pass writes it: by the actor himself, or with no maker in the app's own acts — fix read 6, fault
            A: the security read's SEC6-A (3), a line riding the change signed `kes9`, posing as 149's admin. The member

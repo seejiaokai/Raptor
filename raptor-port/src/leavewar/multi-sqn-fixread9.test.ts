@@ -18,7 +18,7 @@ import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut } from './sync'
 import { unitsLoad, setGrant, removeGrant, addUnit, unitRows } from '../state/units'
 import { HOME_PFX, GRANT_PFX } from '../state/units-model'
 import { INPUTS } from '../engine/inputs'
-import { NOTICES, noticesFor, noticeLeftBell, type Notice } from '../state/notices'
+import { NOTICES, noticesFor, noticeLeftBell, noticeHoliday, type Notice } from '../state/notices'
 import { setConflictChecker, onCommit } from '../command'
 import { noticeSeenLoad } from '../state/noticeseen'
 import { installGlobalUndo } from '../state/undo-wire'
@@ -271,5 +271,34 @@ describe('fault D — a war line only from the war’s own writers (SEC9-2; data
     expect(NOTICES.some(n => (n.what[0] as any)?.k === 'po' && (n.what[0] as any).who === 'casper'), 'the posting’s lines').toBe(true)
     raptorNotify()
     expect(undoPostOut('casper')).toBe(true)
+  })
+})
+
+describe('fault E — another squadron’s holiday line is not deleted or rewritten (SEC9-3)', () => {
+  const hol: any = { id: 'nfr9-hol', to: 'kes9', by: 'kes9', at: new Date(2026, 6, 15, 9).getTime(), iid: '', name: 'National Day', day: '2026-08-09', what: [{ k: 'oilhol', a: '2026-08-09', b: '2026-08-09' }] }
+  it('(SEC9-3) Outlaw (142) deletes the holiday line on Kestrel’s (149) bell: refused', () => {
+    outlawReal()
+    expect(ownershipViolation(asOutlaw([{ collection: 'notices', id: hol.id, op: 'delete', before: hol }])) ?? 'allowed').toMatch(/another squadron/)
+  })
+  for (const [field, val] of [['what', [{ k: 'oilhol', a: '2026-08-10', b: '2026-08-10' }]], ['name', '142 words'], ['by', 'casper']] as const) {
+    it(`(SEC9-3) …nor rewrites its ${field}`, () => {
+      outlawReal()
+      expect(ownershipViolation(asOutlaw([{ collection: 'notices', id: hol.id, op: 'put', before: hol, after: { ...hol, [field]: val } }])) ?? 'allowed').toMatch(/another squadron/)
+    })
+  }
+  it('(control) the app’s own new holiday line, as noticeHoliday writes it, still passes to both squadrons', () => {
+    const n: any = { ...hol, id: 'nfr9-holok', by: 'casper', at: Date.now() }
+    expect(ownershipViolation(asOutlaw([put(n)]))).toBeNull()
+    expect(ownershipViolation(asOutlaw([put({ ...n, id: 'nfr9-holok2', to: 'prowler' })]))).toBeNull()
+  })
+  it('(control) the app\'s own holiday line to both squadrons, written by Outlaw\'s real command: his Undo takes both away, his Redo puts them back', () => {
+    outlawReal(); signInAs('outlaw', 'x')
+    expect(writeInputsBatch(() => { noticeHoliday(['kes9', 'prowler'], 'casper', 'National Day', '2026-08-09', '2026-08-09') })).toBe(true)
+    const mine = () => NOTICES.filter(x => x.name === 'National Day' && x.by === 'casper').map(x => x.to).sort()
+    expect(mine()).toEqual(['kes9', 'prowler'])
+    const u = globalUndo(); expect(u.ok, 'Undo: ' + JSON.stringify(u)).toBe(true)
+    expect(mine()).toEqual([])
+    const r = globalRedo(); expect(r.ok, 'Redo: ' + JSON.stringify(r)).toBe(true)
+    expect(mine()).toEqual(['kes9', 'prowler'])
   })
 })
