@@ -2034,7 +2034,10 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
       }
       for (const n of [c.before as any, c.op === 'delete' ? null : (c.after as any)]) {
         if (!n || typeof n !== 'object' || n.to == null) continue
-        if (holidayLine(n)) continue
+        /* (only as noticeHoliday writes it: naming no input and carrying no filer's mark — fix read 8, fault H, the security
+           read's SEC8-2: a line of only holiday parts naming an input, or marked, skipped fault M's checks below, and with an
+           input it outlived the man's move (D2218); any other goes through the ordinary checks) */
+        if (holidayLine(n) && !n.iid && n.fu === undefined) continue
         const to = String(n.to)
         /* (…written as the pass writes it: by the actor himself, or with no maker in the app's own acts — fix read 6, fault
            A: the security read's SEC6-A (3), a line riding the change signed `kes9`, posing as 149's admin. The member

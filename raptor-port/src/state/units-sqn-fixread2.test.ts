@@ -303,7 +303,8 @@ describe("still open 2, his D2194 — an admin's bell lines and read records are
     /* (a line with no input: since fix read 7's fault M a line naming an input — `line`'s `i1` — rides only the command
        that changes it, with the pass's mark; this pins the squadron test alone) */
     expect(ownershipViolation(env([put('notices', 'n1', { ...line('bane'), iid: '' })]))).toBeNull()
-    expect(ownershipViolation(env([put('notices', 'n1', line('osp9', [{ k: 'oilhol', a: '2026-07-13', b: '2026-07-13' }]))]))).toBeNull()
+    /* (the holiday line as noticeHoliday writes it, naming no input — fix read 8, fault H) */
+    expect(ownershipViolation(env([put('notices', 'n1', { ...line('osp9', [{ k: 'oilhol', a: '2026-07-13', b: '2026-07-13' }]), iid: '' })]))).toBeNull()
     expect(ownershipViolation(env([put('settings', 'seen:bane', { pid: 'bane', ids: [] })]))).toBeNull()
     signInAs('ad', 'a')
     expect(ownershipViolation(env([put('notices', 'n1', { ...line('osp9'), iid: '' })]))).toBeNull()

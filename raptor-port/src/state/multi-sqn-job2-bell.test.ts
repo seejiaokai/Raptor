@@ -56,7 +56,9 @@ describe("SEC-2 — an admin's bell line to another squadron's man", () => {
   })
   it('…while a line of holiday parts only still crosses (D2184 R32)', () => {
     signInAs('ad2', 'a2')
-    expect(ownershipViolation(env([put('notices', 'n1', line('osp9', [{ k: 'oilhol', a: '2026-07-17', b: '2026-07-17' }]))]))).toBeNull()
+    /* (as noticeHoliday writes it: no input — since fix read 8's fault H one naming an input goes through the ordinary
+       checks) */
+    expect(ownershipViolation(env([put('notices', 'n1', line('osp9', [{ k: 'oilhol', a: '2026-07-17', b: '2026-07-17' }], ''))]))).toBeNull()
   })
   it("Hunter's line to Osprey riding a 142 input he changes, Osprey neither in it nor its filer, is refused — put and delete", () => {
     signInAs('ad2', 'a2')

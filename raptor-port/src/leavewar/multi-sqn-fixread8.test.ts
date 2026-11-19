@@ -226,3 +226,16 @@ describe('fault N — a line dated past midnight, written in the last minutes be
   })
 })
 
+describe('fault H — a holiday-shaped line naming an input goes through fault M’s checks', () => {
+  it('(SEC8-2) Outlaw’s oilhol line to Hunter naming an input that does not exist is refused; to a 149 man too', () => {
+    const n: any = { id: 'nfr8-hol', to: 'prowler', by: 'casper', at: Date.now(), iid: 'ipd-nowhere', name: '142 words', day: '2026-07-25', what: [{ k: 'oilhol', a: '2026-07-25', b: '2026-07-25' }] }
+    expect(ownershipViolation(asOutlaw([put(n)])) ?? 'allowed').toMatch(/not as the pass writes it/)
+    expect(ownershipViolation(asOutlaw([put({ ...n, id: 'nfr8-hol9', to: 'osp9' })])) ?? 'allowed').toMatch(/another squadron/)
+  })
+  it('(control) the app’s own holiday line, as noticeHoliday writes it, still passes to every squadron', () => {
+    const n: any = { id: 'nfr8-holok', to: 'osp9', by: 'casper', at: Date.now(), iid: '', name: 'National Day', day: '2026-08-09', what: [{ k: 'oilhol', a: '2026-08-09', b: '2026-08-09' }] }
+    expect(ownershipViolation(asOutlaw([put(n)]))).toBeNull()
+    expect(ownershipViolation(asOutlaw([put({ ...n, id: 'nfr8-holok2', to: 'prowler' })]))).toBeNull()
+  })
+})
+
