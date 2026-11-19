@@ -13,7 +13,8 @@ import { initStore as lwInitStore, setPeople, getState } from '../leavewar/state
 import { memoryBackend } from '../leavewar/state/storage'
 import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, runPoOutcomes, undoPostOut } from '../leavewar/sync'
-import { unitsLoad, setGrant, unitRows } from '../state/units'
+import { unitsLoad, setGrant, setHome, unitRows } from '../state/units'
+import { HOME_PFX } from '../state/units-model'
 import { INPUTS } from '../engine/inputs'
 import { NOTICES, noticesFor, filerVia } from '../state/notices'
 import { onCommit } from '../command'
@@ -264,5 +265,80 @@ describe('item B — a posting made up in memory is never carried out by the pos
     signInAs('ad2', 'a2')
     expect(undoPostOut('casper'), 'Undo post out').toBe(true)
     expect(!!(PEOPLE as any).casper.archived, 'Casper back').toBe(false)
+  })
+})
+
+/* ITEM C — his D2228: a filer who moved and is again an admin of the man's squadron is told (fix read 9's Q1 — Opus
+   O9-2, Fable 3 and 3b, copied). Hunter files Ranger's LL 23–27 Jul on 15 Jul. A man's home rows are written as
+   state/units.ts setHome saves them: [unit, from] in order, the first covering every day before it. */
+describe("item C — D2228: a moved filer who is again an admin of the named man's squadron is told", () => {
+  const IID = 'ipd-fr13c'
+  const fileFor = (who: string, filer: string, date: string, endDate?: string) => expect(writeInputsBatch(() => { INPUTS.push({ person: who, date, ...(endDate ? { endDate } : {}), yr: 2026, allday: true, type: 'LL', remarks: 'for him', by: filer, at: Date.now(), iid: IID, ord: 99983 } as any) })).toBe(true)
+  const rmk = (words: string) => expect(writeInputsBatch(() => { (INPUTS.find((x: any) => x.iid === IID) as any).remarks = words })).toBe(true)
+  const homes = (pid: string, key: string, rows: [string, string][]) => {
+    rows.forEach(([unit, from], i) => { mem['sqn142_' + HOME_PFX + key + i] = JSON.stringify({ id: key + i, pid, unit, from }) })
+    unitsLoad()
+  }
+  const linesTo = (pid: string) => NOTICES.filter(n => n.to === pid && n.iid === IID)
+  const shown = (pid: string, id: string) => noticesFor(pid).some(n => n.id === id)
+
+  it("(F3) Hunter and Ranger both move to 149 on 16 Jul, Hunter an admin there: Kestrel's change on 17 Jul tells him; his 15 Jul line stays gone", () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
+    signInAs('ad', 'a'); rmk('Saber on the 15th')
+    const before = linesTo('prowler')
+    expect(before.map(n => n.fu), 'told on the 15th as its filer, through his home 142').toEqual([['u142']])
+    homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16']])
+    homes('bane', 'hr',[['u142', '2026-07-15'], ['u149', '2026-07-16']])
+    on(17)
+    expect(shown('prowler', before[0]!.id), 'the line from before his move left his bell on the move day (D2218)').toBe(false)
+    signInAs('ad9', 'a9'); rmk('Kestrel on the 17th')
+    const now = linesTo('prowler').filter(n => n.id !== before[0]!.id)
+    expect(now.map(n => n.fu), "Hunter, an admin of Ranger's squadron again, told — through 149").toEqual([['u149']])
+    expect(shown('prowler', now[0]!.id), 'on his bell').toBe(true)
+    expect(shown('prowler', before[0]!.id), 'nothing from before the move comes back').toBe(false)
+  })
+  it("(F3b) Hunter moves to 149 on 16 Jul and back to 142 on 18 Jul: Saber's change on 19 Jul tells him", () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
+    homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16'], ['u142', '2026-07-18']])
+    on(19)
+    signInAs('ad', 'a'); rmk('Saber on the 19th')
+    const l = linesTo('prowler')
+    expect(l.map(n => n.fu), "Hunter, Ranger's admin again, told through 142").toEqual([['u142']])
+    expect(shown('prowler', l[0]!.id)).toBe(true)
+  })
+  it('(O9-2) a Plan holder of 149 who moves into 149, its admin there: still told of the LL he filed for Osprey', () => {
+    const inp = { person: 'osp9', date: 'Jul 25', yr: 2026, allday: true, type: 'LL', by: 'prowler', at: new Date(2026, 6, 15, 9).getTime(), iid: 'ipd-o92' }
+    signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    expect(filerVia('prowler', [inp]), 'told through Plan of 149 before his move').toEqual(['u149'])
+    signInAs('ad', 'a'); const mv = setHome('prowler', 'u149'); expect(mv.ok, JSON.stringify(mv)).toBe(true)
+    on(17)
+    expect(grantsOf('acad2'), 'his Plan went with his move (D2203)').toEqual([])
+    expect(filerVia('prowler', [inp]), "now 149's own admin — still Osprey's admin").toEqual(['u149'])
+  })
+  it("(control, D2223) Hunter moves to 149 alone, Ranger stays 142's: no admin of Ranger's squadron, not told", () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
+    homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16']])
+    on(17)
+    signInAs('ad', 'a'); rmk('Saber on the 17th')
+    expect(linesTo('prowler'), 'a moved admin of another squadron is not told').toEqual([])
+  })
+  it('(control, D2223) Hunter moves to 149 with Ranger but is a member there: not told', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
+    homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16']])
+    homes('bane', 'hr',[['u142', '2026-07-15'], ['u149', '2026-07-16']])
+    on(17)
+    const acct = ACCOUNTS_LIST.find(a => a.pid === 'prowler') as any
+    const was = acct.role
+    acct.role = 'member'
+    try {
+      expect(filerVia('prowler', [INPUTS.find((x: any) => x.iid === IID)]), 'a moved member is told only through a right').toBeNull()
+    } finally { acct.role = was }
+  })
+  it("(control, D2225) Hunter never moves; Ranger is 149's from 16 Jul, every day of the leave 149's: not told", () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
+    homes('bane', 'hr',[['u142', '2026-07-15'], ['u149', '2026-07-16']])
+    on(17)
+    signInAs('ad9', 'a9'); rmk('Kestrel on the 17th')
+    expect(linesTo('prowler'), "no day of the input still his squadron's").toEqual([])
   })
 })

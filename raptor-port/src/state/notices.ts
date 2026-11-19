@@ -146,8 +146,18 @@ export function filerTold(f: string, rs: readonly any[], iso?: string): boolean 
  *  the mark, the whole union, put Hunter's new home 149 on a line he got before his move, so his move never retired it
  *  (D2218). Now: his home counts only while he has not moved since the input was filed (movedSince — a filer who never
  *  moved: D2225's home branch, unchanged); a filer who has moved is told only through a right he holds in one of them
- *  (adminThen — the master mark or a Plan grant, never the home admin role of his new squadron); and the mark records
- *  only the squadrons he was told through, so his next move judges the line by them alone. */
+ *  (adminThen — the master mark or a Plan grant); and the mark records only the squadrons he was told through, so his
+ *  next move judges the line by them alone.
+ *  …OR AS AN ADMIN OF THE MAN'S SQUADRON AGAIN (fix read 13, item C — his D2228, 20 Nov 26: "a filer who moved together
+ *  with the man he filed for, and is now an admin of the man's new squadron, is told when that input changes"; fix read
+ *  9's Q1 — Opus O9-2, Fable 3). Fault R counted a moved filer only through the mark or a grant, never his home's admin
+ *  role, so Hunter, who filed Ranger's leave on 15 Jul and moved with him to 149 on 16 Jul as 149's admin, was told
+ *  nothing of Kestrel's change on 17 Jul; nor was he once he moved away and back to 142. Now his home today counts too
+ *  where he is its admin (his role as it stands when the input changes — the agent's reading in D2228's row) and it is
+ *  the named man's home on one of the input's days (filerUnits). A moved member is still told only through a right, and
+ *  a moved admin of a squadron that is no named man's on those days is still not told (D2223). The lines he had before
+ *  his move still leave his bell on the move day (D2218, noticeLeftBell — unchanged): a line written now is marked with
+ *  his home today, so a later move retires it as any other. */
 export function filerVia(f: string, rs: readonly any[], iso?: string): string[] | null {
   const us = filerUnits(rs, iso)
   /* (named men with no squadron to ask: nobody to be told through; nobody named and no squadron: told, no squadron) */
@@ -156,7 +166,10 @@ export function filerVia(f: string, rs: readonly any[], iso?: string): string[] 
   const home = homeOn(f, day)
   const atHome = !!home && !movedSince(f, filedDay(rs), day)
   const acct = accountOfPid(f)
-  const via = us.filter(u => (atHome && u === home) || (!!acct && adminThen(acct, u, day, true)))
+  /* (a moved filer who is an admin of his home today, where that home is the named man's on one of the input's days —
+     his D2228: "that man's admin" again, through his home's admin role as it stands now) */
+  const homeAdmin = !!home && !atHome && !!acct && acct.role === 'admin'
+  const via = us.filter(u => (u === home && (atHome || homeAdmin)) || (!!acct && adminThen(acct, u, day, true)))
   return via.length ? via : null
 }
 /* the day an input was filed — its `at`, written once when it is placed (state/inputstamp.ts stampPlaced) and never by a
@@ -225,7 +238,8 @@ function homesOver(pid: string, a: string, b: string): string[] {
    the day it was given (units-model.ts Grant.from), the mark from the day it was set (accounts.ts Account.masterFrom);
    one stored before either was kept counts from always (D56). Here only — the gate's levelFrom asks today. No day: as
    today. (His home's admin role is no right here: a filer at home is told through his home while he has not moved since
-   the input was filed — filerVia; one who has moved only through the mark or a grant — fix read 8, fault R.)
+   the input was filed — filerVia; one who has moved through the mark or a grant — fix read 8, fault R — or, in
+   filerVia alone and on today alone, as an admin of his home again where it is the named man's — D2228.)
    HELD BEFORE THAT DAY BEGAN (fix read 8, fault D — Fable's 2, the fresh Opus read's 2): a move takes effect at the
    start of its day (state/units.ts setHome), so a right counted on its own day (`<=`) brought the retired line back when
    Plan or the mark was given ON the move day, read or unread. A move day now asks a right held before that day began

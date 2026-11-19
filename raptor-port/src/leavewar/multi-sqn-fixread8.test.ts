@@ -92,11 +92,14 @@ const hunterMovesOn16 = () => homes('prowler', 'hc', [['u142', '2026-07-15'], ['
 describe('fault R — a filer who has moved is not told again, and his old line leaves (his D2218, D2223, D2225)', () => {
   /* Ranger's LL 23–27 Jul; Ranger's move to 149 saved from 25 Jul */
   const rangerMovesOn25 = () => homes('bane', 'hrq', [['u142', '2026-07-15'], ['u149', '2026-07-25']])
-  it('(Opus Q-1) Hunter, 149’s from 16 Jul, is not told on 17 Jul of Saber’s change to the LL he filed for Ranger', () => {
+  /* CHANGED BY HIS D2228 (fix read 13, item C, 20 Nov 26): Ranger is 149's on 25–27 Jul, and Hunter, moved to 149, is its
+     admin — "that man's admin" again on the input's own days — so he is told, through 149 only (D2223 narrowed). This
+     test said "not told" before; the line from before his move still leaves (Q-2, below). */
+  it('(Opus Q-1, D2228) Hunter, 149’s admin from 16 Jul, is told on 17 Jul of Saber’s change — through 149, Ranger’s on 25–27 Jul', () => {
     signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
     rangerMovesOn25(); hunterMovesOn16(); on(17)
     signInAs('ad', 'a'); rmk('Saber words')
-    expect(lineTo('prowler'), 'Hunter, moved, not told').toBeUndefined()
+    expect(lineTo('prowler')?.fu, 'Hunter, an admin of Ranger’s squadron on 25–27 Jul, told through it alone').toEqual(['u149'])
   })
   it('(Opus Q-2) the line Hunter got on 15 Jul, before his move, leaves his bell on his move', () => {
     signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
