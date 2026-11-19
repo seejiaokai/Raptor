@@ -2115,6 +2115,13 @@ function holidayMakerAdmin(env: CommitEnvelope): boolean {
   const u = lwUnitNow()
   return !u || levelInForce(a, u, todayIso(), unitRowsBefore(env.changes)) === 'admin'
 }
+/* (signed as its writer signs it: a posting's own line by no one, every other war line by the actor's own person — none
+   where the actor has no person, as me() then gives the writer — fix read 11, fault D) */
+const warSignedBy = (n: any, self: string | null): boolean => (Array.isArray(n?.what) ? n.what : []).every((p: any) => {
+  const k = String(p?.k)
+  if (!WAR_LINE_KINDS.has(k) || k === 'oilhol') return true
+  return k === 'po' ? n.by == null : (n.by == null ? null : String(n.by)) === self
+})
 /* (a line with a war part — the kinds only the war's own writers write) */
 const warPart = (n: any): boolean => Array.isArray(n?.what) && n.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
 /* A LINE THAT READS AS ONE (fix read 10, fault A (d) — Fable F10-1): every line the app writes carries at least one part,
@@ -2275,6 +2282,12 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
           if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
           if (!(replayed && replayed(c))) {
             if (!warMade(env)?.has(String(n.id))) return `a war line no war command wrote (${where})`
+            /* (…in its writer's own hand — fix read 11, fault D, Fable's F11-2: noticeWar signs with whatever it is given, so
+               142's admin's line on his man's bell read "refused · Saber". The war's writers sign as the war's doors do: a
+               decision, bidding opened or closed, a "taken back" or "again" and a posting's "taken back" by the admin who
+               made the change (leavewar/sync.ts tellWar, tellBidding, the restore's follow-ups, retractPostingLines — each
+               me()); a posting's own line by no one, the posting acting (noticePosting)) */
+            if (!warSignedBy(n, self)) return `a war line not signed as its writer signs it (${where})`
             if (!(WAR_OWED && WAR_OWED(env.changes, n)) && !restoreFollowUpOwed(env, n, replayed, ownFollowed)) return `a war line no change of the war owes (${where})`
           }
         }

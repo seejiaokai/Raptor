@@ -17,7 +17,7 @@ import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut } from '../leavewar/sync'
 import { unitsLoad, setGrant, removeGrant, addUnit, homeOn, unitRows } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, onlyNamed } from '../engine/inputs'
 import { NOTICES, noticesFor, noticeLeftBell, noticeHoliday, noticeWar, noticePosting, noticeAboutHim, type Notice } from '../state/notices'
 import { onCommit } from '../command'
 import { noticeSeenLoad, markNoticeRead } from '../state/noticeseen'
@@ -343,5 +343,75 @@ describe('fault C — a holiday line only as the command\'s own holiday owes it 
     expect(mine()).toEqual([])
     const r = globalRedo(); expect(r.ok, 'Redo: ' + JSON.stringify(r)).toBe(true)
     expect(mine()).toEqual(told)
+  })
+})
+
+describe('fault D — a war line only in its writer\'s own hand, owed only where the leave itself changed (F11-2)', () => {
+  it('(Fable F11-2) Outlaw changes only the remarks of Ranger\'s war-approved LL and calls noticeWar signed as Saber, saying refused: not saved, not on his bell after his move', () => {
+    signInAs('ad2', 'a2')
+    placeApproved([{ personId: 'bane', date: '2026-07-27' }], 'LL')
+    expect(NOTICES.some(x => x.to === 'bane' && kind(x) === 'lw'), '(control) a plain admin placing approved leave tells him').toBe(true)
+    /* (his own: the seeded world carries other men's war-approved leave — Fable's proof took the first of them) */
+    const leave: any = INPUTS.find((x: any) => x.lw && onlyNamed(x) === 'bane')
+    expect(leave, 'the war wrote his approved leave as an input').toBeDefined()
+    outlawReal(); signInAs('outlaw', 'x')
+    const ok = writeInputsBatch(() => {
+      leave.remarks = 'touched'
+      noticeWar(['bane'], 'stiff', { k: 'lw', c: 'LL', d: 'refused', a: '2026-07-27', b: '2026-07-27' } as any)
+    })
+    const n = NOTICES.find(x => x.to === 'bane' && kind(x) === 'lw' && (x.what[0] as any).d === 'refused')
+    homes('bane', 'hb', [['u142', '2026-07-15'], ['u149', '2026-07-16']]); on(17)
+    expect({ saved: ok && !!n, signedAs: n?.by, onHisBellAfterHisMove: !!n && shown('bane', n.id) }).toEqual({ saved: false, signedAs: undefined, onHisBellAfterHisMove: false })
+  })
+  it('(the owed lines) a change of a war-approved leave\'s remarks alone owes no line; its coming, going, person, dates, type or mark does', () => {
+    const b = { person: 'bane', date: 'Jul 27', yr: 2026, allday: true, type: 'LL', lw: 'y2026', iid: 'ipd-x', remarks: '' }
+    const ch = (before: any, after: any, op = 'put') => [{ collection: 'inputs', id: 'ipd-x', op, before, after }]
+    const lw = (cs: any[]) => warLinesOwed(cs).filter(o => o.k === 'lw').length
+    expect({
+      remarks: lw(ch(b, { ...b, remarks: 'touched' })), came: lw(ch(null, b)), went: lw(ch(b, null, 'delete')),
+      person: lw(ch(b, { ...b, person: 'nick' })), dates: lw(ch(b, { ...b, date: 'Jul 28' })), type: lw(ch(b, { ...b, type: 'OL' })),
+      mark: lw(ch({ ...b, lw: undefined }, b)),
+    }).toEqual({ remarks: 0, came: 1, went: 1, person: 2, dates: 1, type: 1, mark: 1 })
+  })
+  it('(held) the same, his own remarks line signed as himself: refused', () => {
+    signInAs('ad2', 'a2')
+    placeApproved([{ personId: 'bane', date: '2026-07-27' }], 'LL')
+    const leave: any = INPUTS.find((x: any) => x.lw && onlyNamed(x) === 'bane')
+    outlawReal(); signInAs('outlaw', 'x')
+    const ok = writeInputsBatch(() => {
+      leave.remarks = 'touched'
+      noticeWar(['bane'], 'casper', { k: 'lw', c: 'LL', d: 'refused', a: '2026-07-27', b: '2026-07-27' } as any)
+    })
+    expect({ ok, saved: NOTICES.some(x => x.to === 'bane' && kind(x) === 'lw' && (x.what[0] as any).d === 'refused') }).toEqual({ ok: false, saved: false })
+  })
+  it('(held) Outlaw moves Ranger\'s war-approved leave a day in his own input command and tells him in Saber\'s name: refused', () => {
+    signInAs('ad2', 'a2')
+    placeApproved([{ personId: 'bane', date: '2026-07-27' }], 'LL')
+    const leave: any = INPUTS.find((x: any) => x.lw && onlyNamed(x) === 'bane')
+    outlawReal(); signInAs('outlaw', 'x')
+    const ok = writeInputsBatch(() => {
+      leave.date = 'Jul 28'
+      noticeWar(['bane'], 'stiff', { k: 'lw', c: 'LL', d: 'refused', a: '2026-07-28', b: '2026-07-28' } as any)
+    })
+    expect({ ok, saved: NOTICES.some(x => x.to === 'bane' && kind(x) === 'lw' && x.by === 'stiff' && (x.what[0] as any).d === 'refused') }).toEqual({ ok: false, saved: false })
+  })
+  it('(Fable F11-A1, held) a made-up refusal beside a new input marked lw for Hunter: not saved, not on his bell after his move', () => {
+    hunterMovesOn16(); outlawReal(); on(15, 10)
+    signInAs('outlaw', 'x')
+    const ok = writeInputsBatch(() => {
+      INPUTS.push({ person: 'prowler', date: 'Jul 25', yr: 2026, allday: true, type: 'LL', remarks: '', by: 'casper', at: Date.now(), iid: 'ipd-f11a', ord: 99977, lw: true } as any)
+      noticeWar(['prowler'], 'casper', { k: 'lw', c: 'LL', d: 'refused', a: '2026-07-25', b: '2026-07-25' } as any)
+    })
+    const n = NOTICES.find(x => x.to === 'prowler' && kind(x) === 'lw')
+    on(17)
+    expect({ saved: ok && !!n, shownOn17: !!n && shown('prowler', n.id) }).toEqual({ saved: false, shownOn17: false })
+  })
+  it('(control) Hunter places approved leave for Ranger: Ranger told, and its Undo and Redo go through', () => {
+    signInAs('ad2', 'a2')
+    placeApproved([{ personId: 'bane', date: '2026-07-27' }], 'LL')
+    expect(NOTICES.filter(x => x.to === 'bane' && kind(x) === 'lw').length).toBe(1)
+    const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
+    const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
+    expect(NOTICES.some(x => x.to === 'bane' && kind(x) === 'lw')).toBe(true)
   })
 })

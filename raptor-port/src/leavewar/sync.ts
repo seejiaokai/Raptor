@@ -1767,6 +1767,13 @@ export type OwedWarLine =
   | { k: 'po' | 'poback'; who: string; day: string; o: string }
 type LooseRec = Record<string, unknown>
 const looseRec = (x: unknown): LooseRec | null => (x && typeof x === 'object' && !Array.isArray(x) ? (x as LooseRec) : null)
+/* (the same war-approved leave on both sides: its one man, its days, its halves — whole day or its times — its kind and
+   its war; what else changed, its remarks above all, is no change of the leave — fix read 11, fault D) */
+const sameWarLeave = (b: LooseRec, a: LooseRec): boolean =>
+  String(onlyNamed(b) ?? '') === String(onlyNamed(a) ?? '') && onlyNamed(a) != null
+  && inputDates(b as unknown as InputRead).join() === inputDates(a as unknown as InputRead).join()
+  && !!b.allday === !!a.allday && String(b.s ?? '') === String(a.s ?? '') && String(b.e ?? '') === String(a.e ?? '')
+  && String(b.type ?? '') === String(a.type ?? '') && String(b.lw) === String(a.lw)
 export function warLinesOwed(changes: ReadonlyArray<{ collection: string; id: string; op: string; before?: unknown; after?: unknown }>): OwedWarLine[] {
   const out: OwedWarLine[] = []
   const kindOf = (code: unknown) => String(code ?? '').replace(/\*/g, '')
@@ -1782,6 +1789,13 @@ export function warLinesOwed(changes: ReadonlyArray<{ collection: string; id: st
       m.days.add(parts[parts.length - 1]!)
       for (const img of imgs) if (Array.isArray(img)) for (const x of img) { const r = looseRec(x); if (r && r.code != null) m.kinds.add(kindOf(r.code)) }
     } else if (c.collection === 'inputs') {
+      /* (…only where the leave itself changed — fix read 11, fault D, Fable's F11-2: a 142 admin changed only the remarks of
+         his man's war-approved leave in his own input command, and that "change of his leave" owed a war line on its days,
+         so he put a made-up "your leave refused" signed as Saber on the man's bell. A war-approved leave that stays one, for
+         the same man, on the same days and halves, of the same kind and the same war, owes nothing: its coming, its going,
+         and a change of any of those owe as before) */
+      const b0 = looseRec(c.before), a0 = looseRec(c.op === 'delete' ? null : c.after)
+      if (b0 && a0 && b0.lw && a0.lw && sameWarLeave(b0, a0)) continue
       for (const img of imgs) {
         const row = looseRec(img)
         if (!row || !row.lw) continue
