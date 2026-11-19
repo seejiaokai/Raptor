@@ -220,5 +220,29 @@
   "size": "iPhone 402 (WebKit)",
   "kind": "drawn",
   "caption": "Proposed: 149's admins get it in their own words, \"Posted in · from 142\", in place of the same \"Posted out · now with 149\"."
+ },
+ "p12a-d.png": {
+  "piece": "p12",
+  "size": "desktop 1536",
+  "kind": "as built",
+  "caption": "Question 1 — Ranger's bell (142 member, never moved). He filed a Training for Ace; Saber changed its remark. As built and recommended: Ranger is told, as here. Nothing new is drawn."
+ },
+ "p12b-d.png": {
+  "piece": "p12",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Question 2 — Hunter's bell (142 admin, never moved). He filed Ranger's leave, 23–27 Nov; Ranger moved to 149 from 25 Nov; Saber changed its remark. As built Hunter's bell shows nothing. Recommended (marked New): he is told, as he would be had Ranger not moved, because 23 and 24 Nov are still 142's days."
+ },
+ "p12a-p.png": {
+  "piece": "p12",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "as built",
+  "caption": "Question 1 — Ranger's bell (142 member, never moved). He filed a Training for Ace; Saber changed its remark. As built and recommended: Ranger is told, as here. Nothing new is drawn."
+ },
+ "p12b-p.png": {
+  "piece": "p12",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Question 2 — Hunter's bell (142 admin, never moved). He filed Ranger's leave, 23–27 Nov; Ranger moved to 149 from 25 Nov; Saber changed its remark. As built Hunter's bell shows nothing. Recommended (marked New): he is told, as he would be had Ranger not moved, because 23 and 24 Nov are still 142's days."
  }
 }
