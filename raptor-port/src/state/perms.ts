@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerUnits, changeFiler, inputUnit, APP_ACTS } from './notices'
+import { noticeAboutHim, filerTold, filerUnits, changeFiler, inputUnit, APP_ACTS, passMade } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -1892,6 +1892,32 @@ function filerMarkOk(env: CommitEnvelope, c: Change, n: any): boolean {
   const have = new Set<string>(fu)
   return fu.length === want.length && have.size === want.length && want.every(u => have.has(u))
 }
+/* AN INPUT LINE IS PUT ONLY AS THE PASS WRITES IT (fix read 7, fault M — the security read's SEC7-1, Astra's A1, the Opus
+   read's residual 3). `filerMarkOk` was asked only at the telling door; a line that failed it fell through to the
+   own-man fallback, so on the day before a man's move an admin could put any line to him — unmarked, or naming an input
+   the command never touched — or rewrite the honest line's mark, and since fault C an unmarked line stays on his bell for
+   good (noticeAboutHim), the old squadron deciding what follows him (his D2218, D2223). The pass (state/notices.ts
+   noticePass) is the one writer of a line with an input, so: a line a command puts naming an input must be one the pass
+   wrote in this command (`passMade` - its before-image is the inputs as last committed, so it may also tell of a bare
+   write the command's resync took up), or name an input this command changes and carry the mark the pass would; and nobody
+   rewrites a line already written — its reader, input, time and mark stay as they were. A restore's verified replay
+   (`replayed`) puts back the image it took away, judged when it was first written. Both sections of the gate ask it:
+   `lineRewritten` before every door, `inputLineUnlike` where a line would otherwise pass as one to the admin's own man
+   (a line to another squadron's man keeps that refusal's words). */
+function lineRewritten(c: Change, replayed: ((c: Change) => boolean) | null): boolean {
+  const b: any = c.before, n: any = c.after
+  if (c.op !== 'put' || !b || typeof b !== 'object' || !n || typeof n !== 'object') return false
+  if (replayed && replayed(c)) return false
+  return String(b.to) !== String(n.to) || String(b.iid ?? '') !== String(n.iid ?? '') || b.at !== n.at || !deepEqual(b.fu, n.fu)
+}
+function inputLineUnlike(env: CommitEnvelope, c: Change, changed: ReadonlySet<string>, replayed: ((c: Change) => boolean) | null): boolean {
+  const n: any = c.after
+  if (c.op !== 'put' || !n || typeof n !== 'object') return false
+  if (replayed && replayed(c)) return false
+  if (passMade(env)?.has(String(n.id))) return false
+  const iid = String(n.iid ?? '')
+  return !!iid && !(changed.has(iid) && filerMarkOk(env, c, n))
+}
 /* a line made wholly of holiday parts — the only kind kept crossing (one holiday part beside another part is no holiday
    line: SEC-2) */
 const holidayLine = (n: any): boolean => Array.isArray(n?.what) && n.what.length > 0 && n.what.every((p: any) => p && p.k === 'oilhol')
@@ -1945,6 +1971,11 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (c.collection === 'notices') {
+      /* (fault M: no line already written is rewritten — before every door below) */
+      if (c.op === 'put') {
+        if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+        if (lineRewritten(c, replayed)) return `a bell line not as the pass writes it (${where})`
+      }
       for (const n of [c.before as any, c.op === 'delete' ? null : (c.after as any)]) {
         if (!n || typeof n !== 'object' || n.to == null) continue
         if (holidayLine(n)) continue
@@ -1985,6 +2016,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
           }
         }
         if (to !== self && !ownsHim(to)) return `a bell line of another squadron's man (${where})`
+        /* (fault M: the own-man fallback no longer lets through an input line the pass would not write) */
+        if (n === c.after && inputLineUnlike(env, c, changedInputs, replayed ?? null)) return `a bell line not as the pass writes it (${where})`
       }
       continue
     }
@@ -2085,6 +2118,9 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
            `lw.notice` follow-up) — a member's notice riding his own input may carry none of them */
         const warLine = (x: any) => Array.isArray(x?.what) && x.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
         if (c.op === 'put' && warLine(n)) return `a notice that is not his own change's (${where})`
+        /* (fix read 7, fault M — the admin section's lineRewritten and inputLineUnlike: this section already holds both,
+           since the one door below that puts a line takes only a new one (`b == null`), riding his change of the input
+           it names (`rides`), with the pass's mark (`filerMarkOk`); every other put is refused under it) */
         /* …and only to someone that change tells — named in the input, before or after, or its filer (toldBy, SEC-3) */
         if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid) && toldBy(env, n.iid)?.has(String(n.to)) && filerMarkOk(env, c, n)) break
         /* FIX READ 7, FAULT U: his Undo of his own step takes his own line with it. Judged afresh, the restore's images

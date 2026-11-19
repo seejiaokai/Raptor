@@ -52,7 +52,7 @@ import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
-import { NOTICES, noticePass, replacedBidsOf, APP_ACTS } from './notices'
+import { NOTICES, noticePass, replacedBidsOf, APP_ACTS, notePassMade } from './notices'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
 import { deriveActor, isCommitting, activeEnvelope } from '../command'
@@ -492,6 +492,7 @@ function tellPass(): void {
   const from = NOTICES.length
   noticePass(t.before, INPUTS, { actor: pid, app: APP_ACTS.has(env.type), skipLw: warDoor(env.type), replaced: replacedBidsOf(env) })
   for (let i = from; i < NOTICES.length; i++) t.made.add(NOTICES[i]!.id)
+  notePassMade(env, t.made)                            // the gate's word for "the pass wrote it" (notices.ts passMade — fault M)
 }
 
 /* THE WEEK ON SCREEN, WORKED OUT AFTER EVERY COMMAND THAT ENLISTED THE SCHEDULER ([DB-READINESS] group A, phase 6 (c) v3 —

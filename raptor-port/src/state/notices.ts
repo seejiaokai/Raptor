@@ -185,6 +185,16 @@ export function changeFiler(b: any, a: any, actor: string | null): string {
 /* the commands the app itself tells in, with no name (a posting on its date, a man deleted — R12): their lines carry no
    maker (state/sched-commit.ts, which tells; state/perms.ts, which lets such a line ride with no `by`) */
 export const APP_ACTS: ReadonlySet<string> = new Set(['person.delete', 'lw.postoutRun', 'lw.postout'])
+/* THE LINES THE PASS ITSELF WROTE IN THE RUNNING COMMAND (fix read 7, fault M). The pass takes its before-image of the
+   inputs as last committed — before an input command's resync takes up a bare write made since (state/sched-commit.ts
+   commitInputsWith) — so it may tell, inside this command, of an input this command's own change list does not carry.
+   The commit gate refuses an input line the command could not have had from the pass; a line the pass wrote here is the
+   pass's by definition, so the gate asks this registry first. Kept by the command's envelope (the one object the pass
+   and the gate both see — command/commit.ts activeEnvelope, the hard invariants' `env`), written only by the pass
+   (sched-commit.ts tellPass); nothing in an envelope can put an id in it. */
+const PASS_MADE = new WeakMap<object, ReadonlySet<string>>()
+export function notePassMade(env: object, made: ReadonlySet<string>): void { PASS_MADE.set(env, made) }
+export function passMade(env: object): ReadonlySet<string> | undefined { return PASS_MADE.get(env) }
 const phOf = (r: any): string | null => { const p = placeholderOf(r); return p && p.p != null ? String(p.p) : null }
 /* yyyy-mm-dd of one of an input's own date labels ("Jul 15", with its year) */
 const isoOf = (lbl: any, yr: any): string => {

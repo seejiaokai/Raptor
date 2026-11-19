@@ -300,11 +300,13 @@ describe("still open 2, his D2194 — an admin's bell lines and read records are
   })
   it('…while his own squadron’s man, the holiday line (which reaches every squadron at the place) and the master pass', () => {
     signInAs('ad2', 'a2')
-    expect(ownershipViolation(env([put('notices', 'n1', line('bane'))]))).toBeNull()
+    /* (a line with no input: since fix read 7's fault M a line naming an input — `line`'s `i1` — rides only the command
+       that changes it, with the pass's mark; this pins the squadron test alone) */
+    expect(ownershipViolation(env([put('notices', 'n1', { ...line('bane'), iid: '' })]))).toBeNull()
     expect(ownershipViolation(env([put('notices', 'n1', line('osp9', [{ k: 'oilhol', a: '2026-07-13', b: '2026-07-13' }]))]))).toBeNull()
     expect(ownershipViolation(env([put('settings', 'seen:bane', { pid: 'bane', ids: [] })]))).toBeNull()
     signInAs('ad', 'a')
-    expect(ownershipViolation(env([put('notices', 'n1', line('osp9'))]))).toBeNull()
+    expect(ownershipViolation(env([put('notices', 'n1', { ...line('osp9'), iid: '' })]))).toBeNull()
   })
   /* NARROWED by his D2223 (19 Nov 26): "the filer is told only while he is still that man's admin or in the input" — so a
      149 member who filed a 142 man's input is no longer told of a change to it (state/notices.ts filerTold, the pass's
@@ -320,7 +322,8 @@ describe("still open 2, his D2194 — an admin's bell lines and read records are
        leavewar/multi-sqn-fixread4-bells.test.ts, D2223) */
     const byMaster = { ...inp, by: 'stiff' }
     const ch2 = { op: 'put', collection: 'inputs', id: 'i1', before: byMaster, after: { ...byMaster, remarks: 'moved' } }
-    expect(ownershipViolation(env([ch2, put('notices', 'n1', line('stiff', [{ k: 'rmk' }]))]))).toBeNull()
+    /* (marked as the pass marks a filer-only line — fix read 7, fault M: the squadrons its telling read, Ranger's 142) */
+    expect(ownershipViolation(env([ch2, put('notices', 'n1', { ...line('stiff', [{ k: 'rmk' }]), fu: ['u142'] })]))).toBeNull()
   })
 })
 

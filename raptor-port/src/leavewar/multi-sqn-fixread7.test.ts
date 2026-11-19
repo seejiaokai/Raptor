@@ -113,3 +113,69 @@ describe('fault U — a member’s Undo of his own step on an input someone else
     expect(ownershipViolation(env([forged.changes[0], { collection: 'notices', id: other.id, op: 'delete', before: other, after: null }], 'restore', 'undo.restore')) ?? 'allowed').toMatch(/not his own change/)
   })
 })
+
+/* Outlaw (`casper`) made a plain 142 admin — as the gate reads an actor (the security read's SEC7-1; the same actor
+   multi-sqn-fixread3-retract-moved.test.ts uses) */
+const outlaw = { id: 'acoutlaw', role: 'admin', personId: 'casper', session: null }
+const asOutlaw = (changes: any[]): any => ({ type: 'inputs.batch', origin: 'user', actor: outlaw, changes })
+/* his remark change of the LL, as a change of the input */
+const remarkChange = (words = 'Outlaw words') => { const now = { ...theInput() }; return { collection: 'inputs', id: IID, op: 'put', before: now, after: { ...now, remarks: words } } }
+
+describe('fault M — an input line not as the pass writes it', () => {
+  /* Hunter files LL for Ranger; Saber's change of its remark tells Hunter (its filer), the line marked ['u142'] */
+  const honest = (): Notice => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
+    signInAs('ad', 'a'); rmk('Saber words')
+    const l = lineTo('prowler')!
+    expect(l.fu).toEqual(['u142'])
+    return l
+  }
+  it('(SEC7-1 nsec7a) an unmarked line to the filer riding the change is refused', () => {
+    honest()
+    const n = { id: 'nsec7a', to: 'prowler', by: 'casper', at: Date.now(), iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }] }
+    expect(ownershipViolation(asOutlaw([remarkChange(), { collection: 'notices', id: n.id, op: 'put', before: null, after: n }])) ?? 'allowed').toMatch(/not as the pass writes it/)
+  })
+  it('(SEC7-1 nsec7b) a line naming an input the command does not change is refused', () => {
+    honest()
+    const n = { id: 'nsec7b', to: 'prowler', by: 'casper', at: Date.now(), iid: 'ipd-nowhere', name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'] }
+    expect(ownershipViolation(asOutlaw([remarkChange(), { collection: 'notices', id: n.id, op: 'put', before: null, after: n }])) ?? 'allowed').toMatch(/not as the pass writes it/)
+  })
+  it('(Astra A1) the honest line’s mark deleted, widened or emptied is refused, with or without a change of the input', () => {
+    const l = honest()
+    const { fu: _fu, ...bare } = l
+    for (const after of [bare, { ...l, fu: ['u142', 'u149'] }, { ...l, fu: [] }]) {
+      const w = { collection: 'notices', id: l.id, op: 'put', before: { ...l }, after }
+      expect(ownershipViolation(asOutlaw([w])) ?? 'allowed', JSON.stringify(after.fu)).toMatch(/not as the pass writes it/)
+      expect(ownershipViolation(asOutlaw([remarkChange(), w])) ?? 'allowed', JSON.stringify(after.fu)).toMatch(/not as the pass writes it/)
+    }
+    /* …and its reader, input or time moved */
+    for (const after of [{ ...l, to: 'casper' }, { ...l, iid: 'ipd-nowhere' }, { ...l, at: l.at - 1000 }]) {
+      expect(ownershipViolation(asOutlaw([remarkChange(), { collection: 'notices', id: l.id, op: 'put', before: { ...l }, after }])) ?? 'allowed').toMatch(/not as the pass writes it/)
+    }
+  })
+  it('(control) the pass’s own line to his own man is accepted, and its exact copy at the gate passes too', () => {
+    const l = honest()
+    /* Outlaw writing the very line the pass writes, beside his change */
+    const n = { ...l, id: 'nfr7-ok', by: 'casper', at: Date.now() }
+    expect(ownershipViolation(asOutlaw([remarkChange(), { collection: 'notices', id: n.id, op: 'put', before: null, after: n }]))).toBeNull()
+    /* Saber's real second change tells Hunter again */
+    signInAs('ad', 'a'); rmk('Saber again')
+    expect(linesTo('prowler').length).toBe(2)
+  })
+})
+
+const readIt = (pid: string, l: Notice) => { mem[`sqn142_noticeseen:${pid}`] = JSON.stringify({ upto: 0, ids: [l.id] }); noticeSeenLoad() }
+const shown = (pid: string, id: string) => noticesFor(pid).some(n => n.id === id)
+/* Hunter files for Ranger; Saber's change on 15 Jul tells him (filer only, marked 142) — as fixread6-retired's */
+const hunterLine = (): Notice => {
+  signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
+  signInAs('ad', 'a'); rmk('changed by Saber on the 15th')
+  const l = lineTo('prowler')!
+  expect(l?.fu, 'Hunter told as its filer').toEqual(['u142'])
+  return l
+}
+/* Hunter moves to 149 from 16 Jul; on the 17th the line his move retired is off his bell */
+const hunterMoves = (l: Notice) => {
+  homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16']]); on(17)
+  expect(shown('prowler', l.id), 'retired by his move').toBe(false)
+}
