@@ -106,3 +106,35 @@ The input it names does not exist.
 - **Every place a bell shows** (the list, the unread count, "mark all read", a tap) still reads `noticeLive`, and so `noticeLeftBell`.
 
 Ranking: SEC8-1 (an admin or a member can do it, against D2218) above SEC8-2 above SEC8-3.
+
+---
+
+## Follow-up (the host asked it to try to break the pass-made registry, after Astra's unfinished note) — SEC8-5
+
+Saved whole in substance, the reader's own words condensed only in layout.
+
+**SEC8-5 (low to medium; fault M's registry, aaf52940c): a line about an input change that no command carried.**
+Input: Ranger (142 member) files a Training for Ace; Hunter (plain 142 admin), outside any command, changes it in
+memory to name Ranger instead of Ace; Hunter then saves an unrelated leave of his own with `writeInputsBatch`. Result
+(every saved command captured with `onCommit`): the command commits with Hunter's own input plus "taken out" (`out`) to
+Ace and "put in" (`in`) to Ranger, both naming Ace's input; no saved command ever carries a change to Ace's input (never
+judged by 7c, never saved). `AssertionError: a line about an input change no envelope carries: expected true to be
+false`. A "put in" line counts as about Ranger, so it stays on his bell after he moves, telling him of an input that as
+saved does not name him.
+Cause: `commitInputsWith` takes the pass's before-image (`tellBegin`), then `resyncSchedBaseline()` silently takes up
+the bare write, so it is never a change; the pass still tells of it; `inputLineUnlike` returns fine for any id in
+`passMade` without asking whether the command changes that input. Limits: a line to another squadron's man is still
+refused (the telling door needs the input among the changes); a member is refused (`rides`); admin only, his own men,
+the pass's honest words, needs the console. Before M an admin could put such a line in any words (SEC7-1).
+Fix: (1) `inputLineUnlike`: `if (passMade(env)?.has(id) && changed.has(iid)) return false`; (2) so honest commands are
+not refused, stop the pass telling of an input the command will not carry — (a) `commitInputsWith` carries a bare write
+the resync finds as a change of this command, so 7c judges it, or (b) `tellPass` drops any line whose input is among the
+records the resync took up; the reader prefers (a). Test: SEC8-5.
+
+**Negatives tried:** rewriting the pass's line after minting inside a settings command's closure (SEC8-4: the saved
+changes still carry the pass's exact line — the baseline is snapshotted right after `tellPass` in `applyEnd`; the
+alteration stays in the forger's memory only); the same id as a minted line (ids from time, counter and 3 random
+characters; a planted line is taken up as baseline); re-addressing or changing content (the gate judges the baseline cut
+taken right after the pass; `lineRewritten` guards later commands); forging or reusing the registry (private WeakMap on
+the live envelope, only `tellPass` writes it, refilled each pass; restores never run the pass). Ranking: beside SEC8-2,
+below SEC8-1.
