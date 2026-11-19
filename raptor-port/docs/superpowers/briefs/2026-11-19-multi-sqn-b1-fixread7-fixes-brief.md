@@ -50,6 +50,14 @@ injected "taken back"; an injected "again" on a Redo with nothing to answer).
 APP_ACTS.has(env.type)` trusts the label. Fix: the pass records the ids it mints in the running command
 (`sched-commit.ts`, beside `noticePass`); a no-maker line passes only if its id is among them. Test: P3.
 
+**Q. A filer who never moved is not told once the named man moves (his D2225, 19 Nov 26 — Q17, drawn as picture 12b).**
+Hunter (142 admin, never moved) files Ranger's leave 23–27 Nov; Ranger moves to 149 from 25 Nov; Saber changes its
+remark — Hunter must be told (23 and 24 Nov are still 142's); as built he is told nothing, because `filerTold` reads
+the named man's home today. Fix: `filerTold` counts the filer where, on any of the input's days, a named man's home
+that day is the filer's squadron (or the filer is its admin, master or Plan); the gate's `toldBy` the same, one body.
+Tests: Q17 red first; controls: Q16 (a member filer, nobody moved) still told; a moved filer still not told (D2223);
+Hunter not told where none of the input's days is still 142's.
+
 ## Noted, not built
 - Fable's "frozen at writing" reading (a line's named-or-filer judgement is fixed when written): consistent and never
   brings a line back — the closing report names it to him as the agent's reading of D2223.
