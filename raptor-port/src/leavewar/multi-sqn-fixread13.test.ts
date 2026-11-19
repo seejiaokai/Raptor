@@ -13,8 +13,17 @@ import { initStore as lwInitStore, setPeople, getState } from '../leavewar/state
 import { memoryBackend } from '../leavewar/state/storage'
 import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, runPoOutcomes, undoPostOut } from '../leavewar/sync'
-import { unitsLoad, setGrant, setHome, unitRows } from '../state/units'
+import { unitsLoad, setGrant, setHome, unitRows, homeOn } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
+import { accountOfPid } from '../state/accounts'
+import { commit } from '../command'
+import { peopleStore, finishPeopleWrite } from '../state/people-settings-commit'
+import { resyncBeforeEnlist } from '../state/sched-commit'
+import { deletePerson } from '../state/person-delete'
+import { updatePersonField } from '../state/quals-write'
+import { placeApproved, inOneWarCommand, setRemarksOn } from '../leavewar/state/store'
+import { leaveInputsAt } from '../leavewar/sync'
+import { setLeaveRemarks } from '../ui/inputedit'
 import { INPUTS } from '../engine/inputs'
 import { NOTICES, noticesFor, filerVia } from '../state/notices'
 import { onCommit } from '../command'
@@ -340,5 +349,89 @@ describe("item C — D2228: a moved filer who is again an admin of the named man
     on(17)
     signInAs('ad9', 'a9'); rmk('Kestrel on the 17th')
     expect(linesTo('prowler'), "no day of the input still his squadron's").toEqual([])
+  })
+})
+
+/* ITEM D (1) — Astra's lead: "a command can revive a deleted person" (D350: a delete is never undone; D290, D297: his
+   row stays, marked deleted, never erased). Astra's own set-up copied: a person command that clears the mark. */
+describe('item D (1) — a deleted person is never brought back by a command', () => {
+  const forgeRestore = (pid: string, was: any) => commit({
+    type: 'person.restore', scope: { module: 'people' },
+    apply: (txn: any) => {
+      resyncBeforeEnlist(); txn.enlist(peopleStore)
+      Object.assign((PEOPLE as any)[pid], was)
+      for (const k of ['deleted', 'deletedFrom', 'archived', 'archivedBy']) delete (PEOPLE as any)[pid][k]
+      finishPeopleWrite()
+    },
+  } as any)
+  it("(Astra) Kestrel deletes a 149 man, then a person command clears his delete mark: refused, he stays deleted", () => {
+    signInAs('ad9', 'a9')
+    const pid = Object.keys(PEOPLE).find(p => homeOn(p) === 'u149' && !accountOfPid(p) && !(PEOPLE as any)[p].special && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].deleted)!
+    const was = JSON.parse(JSON.stringify((PEOPLE as any)[pid]))
+    expect(deletePerson(pid), 'Kestrel deletes him').toBeNull()
+    expect((PEOPLE as any)[pid].deleted).toBe(true)
+    const r: any = forgeRestore(pid, was)
+    expect({ ok: r.ok, deleted: !!(PEOPLE as any)[pid].deleted }, 'a deletion stays final').toEqual({ ok: false, deleted: true })
+  })
+  it('(the master too) Saber deletes a 142 man and clears the mark by a command: refused', () => {
+    signInAs('ad', 'a')
+    const was = JSON.parse(JSON.stringify((PEOPLE as any).casper))
+    expect(deletePerson('casper')).toBeNull()
+    const r: any = forgeRestore('casper', was)
+    expect({ ok: r.ok, deleted: !!(PEOPLE as any).casper.deleted }).toEqual({ ok: false, deleted: true })
+  })
+  it('(Undo, the app\'s own button) a Quals change, then his delete, then Undo: he stays deleted', () => {
+    signInAs('ad', 'a')
+    expect(updatePersonField('casper', { flight: 'B' })).toBeNull()
+    expect(deletePerson('casper')).toBeNull()
+    globalUndo(); globalUndo()
+    expect(!!(PEOPLE as any).casper.deleted, 'no Undo takes a delete back (D350)').toBe(true)
+  })
+  it('(control) a person command on a man never deleted still saves', () => {
+    signInAs('ad', 'a')
+    expect(updatePersonField('casper', { flight: 'B' })).toBeNull()
+    expect((PEOPLE as any).casper.flight).toBe('B')
+  })
+})
+
+/* ITEM D (2) — Astra's lead: "the Leave War's dragged-selection remark editor omits an eligible filer's notification".
+   Hunter places Ranger's LL approved on the war (he is its filer); Saber drags over its day and types new words — the
+   drag window's own calls (leavewar/ui/SelectSheet.tsx keepWords), inside the one war command. */
+describe("item D (2) — the drag window's remark tells the leave's filer, as its own window does", () => {
+  const placeForRanger = () => {
+    signInAs('ad2', 'a2')
+    const old = new Set(INPUTS.map((r: any) => r.iid))
+    expect(placeApproved([{ personId: 'bane', date: '2026-07-27' }], 'LL', { remarks: 'before' }).approved).toBe(1)
+    const row: any = INPUTS.find((r: any) => !old.has(r.iid) && r.lw)
+    expect(row.by, 'Hunter its filer').toBe('prowler')
+    return row
+  }
+  const newLines = (ids: Set<string>, iid: string) => NOTICES.filter(n => !ids.has(n.id) && n.iid === iid)
+  it("(drag window) Saber's words over Ranger's war-approved leave: Ranger and Hunter, its filer, both told", () => {
+    const row = placeForRanger()
+    signInAs('ad', 'a')
+    const ids = new Set(NOTICES.map(n => n.id))
+    let ok = false
+    inOneWarCommand('lw.reqmeta', () => {
+      setRemarksOn([{ personId: 'bane', date: '2026-07-27' }], { remarks: 'changed' })
+      for (const r of leaveInputsAt('bane', '2026-07-27')) if ((r as any).lw) ok = setLeaveRemarks(r, 'changed', 'bane')
+    })
+    expect(ok).toBe(true)
+    expect(row.remarks).toBe('changed')
+    const sent = newLines(ids, String(row.iid))
+    expect(sent.map(n => [n.to, n.fu ?? null]).sort(), 'the man, and its filer marked with his squadron').toEqual([['bane', null], ['prowler', ['u142']]])
+  })
+  it('(control) the same words from the leave\'s own window, outside a war command: both told', () => {
+    const row = placeForRanger()
+    signInAs('ad', 'a')
+    const ids = new Set(NOTICES.map(n => n.id))
+    expect(setLeaveRemarks(row, 'changed', 'bane')).toBe(true)
+    expect(newLines(ids, String(row.iid)).map(n => n.to).sort()).toEqual(['bane', 'prowler'])
+  })
+  it('(control) Hunter changes the words himself in the drag window: Ranger told, Hunter never told of his own act', () => {
+    const row = placeForRanger()
+    const ids = new Set(NOTICES.map(n => n.id))
+    inOneWarCommand('lw.reqmeta', () => { for (const r of leaveInputsAt('bane', '2026-07-27')) if ((r as any).lw) setLeaveRemarks(r, 'his words', 'bane') })
+    expect(newLines(ids, String(row.iid)).map(n => n.to)).toEqual(['bane'])
   })
 })

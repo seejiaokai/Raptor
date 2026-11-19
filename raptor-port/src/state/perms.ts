@@ -1746,6 +1746,22 @@ const rightNamesNew = (w: Worlds, c: Change, was: any): boolean => {
   const id = String(c.id).slice(ACCOUNT_ROW.length)
   return w.rowsB.grants.some(g => g.account === id)
 }
+/* A DELETE IS FINAL (fix read 13, item D (1) — Astra's lead: "a command can revive a deleted person"; his D350: no Undo
+   takes a delete back; D290, D297: his row stays, marked deleted, never erased). No screen brings a deleted man back
+   (Restore refuses him, the Undo button skips his delete), but nothing in the gate held it: 149's admin who deleted a
+   149 man, or any admin of his squadron, a master too, raised a person command that cleared the mark, and the man was
+   back on the roster, free to be given a new sign-in. So a person row deleted before the command keeps its mark and its
+   date after it, and is never removed — for every actor, the app's own pass included. */
+function deletedPersonViolation(env: CommitEnvelope): string | null {
+  for (const c of env.changes) {
+    if (c.collection !== 'people') continue
+    const b: any = c.before
+    if (!b || typeof b !== 'object' || b.deleted !== true) continue
+    const f: any = c.op === 'delete' ? null : c.after
+    if (!f || typeof f !== 'object' || f.deleted !== true || JSON.stringify(f.deletedFrom ?? null) !== JSON.stringify(b.deletedFrom ?? null)) return `a deleted person brought back (people/${c.id})`
+  }
+  return null
+}
 function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system') return null
@@ -2605,6 +2621,9 @@ function ownershipChecks(env: CommitEnvelope): string | null {
      G0 and G1 here, G2 in homeUnitViolation, G3 the lock) */
   const shapeBad = accountShapeAndMasterViolation(env)
   if (shapeBad) return shapeBad
+  /* (a delete is final — item D (1), above) */
+  const revived = deletedPersonViolation(env)
+  if (revived) return revived
   const lockBad = lastAdminViolation(env)
   if (lockBad) return lockBad
   const unitRec = unitRecordViolation(env)
