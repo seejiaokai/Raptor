@@ -160,5 +160,65 @@
   "size": "desktop 1536",
   "kind": "drawn",
   "caption": "Kestrel's bell (149's admin and scheduler), Ranger of 142 borrowed onto 149's RU and VL. New: the four lines that cross squadrons, top to bottom — Ranger unavailable at home on a day 149 plans him; Ranger posted out of 142 while 149 still plans him, naming the days; 142 taking Ranger back out of 149's plan, naming the day; and Kestrel's change to RU replaced by Hunter's later save. The grey \"142\" marks 142's people: Ranger on the first three lines, Hunter on the fourth (RU is 149's own line). Kestrel's top bar still reads \"142 TALON\": the number there is not yet per squadron in the build."
+ },
+ "p10-d.png": {
+  "piece": "p10",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Saber's bell (a 142 admin). Outlaw's posting out was due Fri 20 Nov and the app could not run it. New: the top line — \"Outlaw · Fri 20 Nov / Posting out could not run. See his row on Admin → Users.\" — rung once, the first time it fails, to 142's admins only (Outlaw is 142's, so no squadron mark); a tap opens his row, where the amber line of picture 8 says what to do. The two lines under it are today's kind, for scale."
+ },
+ "p10-p.png": {
+  "piece": "p10",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Saber's bell (a 142 admin). Outlaw's posting out was due Fri 20 Nov and the app could not run it. New: the top line — \"Outlaw · Fri 20 Nov / Posting out could not run. See his row on Admin → Users.\" — rung once, the first time it fails, to 142's admins only (Outlaw is 142's, so no squadron mark); a tap opens his row, where the amber line of picture 8 says what to do. The two lines under it are today's kind, for scale."
+ },
+ "p11a-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Today, as the branch does it: Hunter, a 142 admin who read \"Jester · Posted out · archived\", has since moved to 149. 142 undoes Jester's posting out of the app. Hunter's bell, now 149's, gets the struck line with \"taken back · Saber\"."
+ },
+ "p11b-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Proposed: the day Hunter moved to 149, 142's lines left his bell, so the undo tells him nothing. 142's own admins get the taken-back line as today."
+ },
+ "p11c-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Kestrel's bell (149). Today's ruled line covers leave and medical; proposed: the same line for any input at home that takes Ranger away, with that input's word: DET, a course, a duty, an overseas duty, OIL."
+ },
+ "p11d-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Ranger's own bell. 142 takes him off 149's VL formation; 149's schedulers are already told (ruled). Proposed: Ranger is told too, the \"149\" badge saying whose formation."
+ },
+ "p11e-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "142's admins on the date of a transfer to 149: the line already ruled, unchanged."
+ },
+ "p11f-d.png": {
+  "piece": "p11",
+  "size": "desktop 1536",
+  "kind": "drawn",
+  "caption": "Proposed: 149's admins get it in their own words, \"Posted in · from 142\", in place of the same \"Posted out · now with 149\"."
+ },
+ "p11c-p.png": {
+  "piece": "p11",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Kestrel's bell (149). Today's ruled line covers leave and medical; proposed: the same line for any input at home that takes Ranger away, with that input's word: DET, a course, a duty, an overseas duty, OIL."
+ },
+ "p11f-p.png": {
+  "piece": "p11",
+  "size": "iPhone 402 (WebKit)",
+  "kind": "drawn",
+  "caption": "Proposed: 149's admins get it in their own words, \"Posted in · from 142\", in place of the same \"Posted out · now with 149\"."
  }
 }

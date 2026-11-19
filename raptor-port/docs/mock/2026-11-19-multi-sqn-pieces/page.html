@@ -33,6 +33,9 @@ figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
 figcaption b{color:var(--fg)}
 .words{font-family:var(--f-head);background:var(--tint);border:1px dashed var(--mark);padding:6px 10px;margin:8px 0;border-radius:6px}
 .tag{display:inline-block;font:700 11px/16px system-ui,'Segoe UI',sans-serif;padding:0 6px;border-radius:8px;color:#fff;background:#ff2d95;vertical-align:1px}
+.fresh{border-left:4px solid var(--mark);padding-left:10px}
+.fresh-t{display:inline-block;font:700 11px/16px system-ui,'Segoe UI',sans-serif;padding:0 6px;border-radius:8px;color:var(--mark);border:1px solid var(--mark);vertical-align:1px;margin-right:6px}
+.done{color:var(--mute)}
 #zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:flex-start;justify-content:center;padding:16px;z-index:20;overflow:auto}
 #zoom[hidden]{display:none}
 #zoom img{max-width:none;width:auto;cursor:zoom-out}
@@ -45,24 +48,33 @@ figcaption b{color:var(--fg)}
 <p class="sub">Things you have already decided, drawn so you can see them before they are built. Each picture is the real app with the new part drawn in, outlined in pink and tagged <span class="tag">New</span>. Tap a picture to see it full size. Big picture: a desktop. Small picture: your iPhone.</p>
 
 <div class="top">
-<h3 style="margin-top:0">Look at these now: 15 questions</h3>
+<h3 style="margin-top:0">New: 4 questions on bell lines that reach both squadrons</h3>
 <ol>
-<li><b class="n">Q1</b><span>Who sees other squadrons, and how much, is one row of buttons on the person's Admin → Users row: None · View 149 · Plan 149 · Master admin. <span class="rec">Recommended: as drawn.</span> <a href="#p1">Pictures 1</a></span></li>
-<li><b class="n">Q2</b><span>On your iPhone the four buttons take two rows. <span class="rec">Recommended: leave it, as the Save row under it already does.</span> <a href="#p1">Pictures 1</a></span></li>
-<li><b class="n">Q3</b><span>A man who plans 149 shows "· also plans 149" under his name, on both squadrons' lists. <span class="rec">Recommended: as drawn.</span> <a href="#p2">Pictures 2</a></span></li>
-<li><b class="n">Q4</b><span>The master admin picks which squadrons reach his bell with two buttons at the foot of the bell list, "Show 142 149". <span class="rec">Recommended: as drawn.</span> <a href="#p3">Pictures 3</a></span></li>
-<li><b class="n">Q5</b><span>A bell line from another squadron carries the grey squadron badge already used on the schedule, after its name. <span class="rec">Recommended: as drawn.</span> <a href="#p3">Pictures 3</a></span></li>
-<li><b class="n">Q6</b><span>A detachment's empty holiday list offers "Copy 149's 2026 list", for the year on screen. <span class="rec">Recommended: here, not as a step when the detachment is made.</span> <a href="#p4">Pictures 4</a></span></li>
-<li><b class="n">Q7</b><span>A sign-in waits while the last person's change still saves: "Signing in…" and one line under it. <span class="rec">Recommended: as drawn.</span> <a href="#p5">Pictures 5</a></span></li>
-<li><b class="n">Q8</b><span>Bell line for a borrowed man made unavailable at home: "On leave, but still on 149's RU formation. Replace him.". <span class="rec">Recommended: as drawn.</span> <a href="#p6">Pictures 6</a></span></li>
-<li><b class="n">Q9</b><span>Bell line for a borrowed man posted out: "Posted out of 142. Taken off 149's RU formation. Fill his place.". <span class="rec">Recommended: as drawn.</span> <a href="#p6">Pictures 6</a></span></li>
-<li><b class="n">Q10</b><span>Bell line for a man taken back by his squadron: "142 took him off 149's VL formation. Fill his place.". <span class="rec">Recommended: as drawn.</span> <a href="#p6">Pictures 6</a></span></li>
-<li><b class="n">Q11</b><span>Bell line for a change saved over: "Your change is gone: 142 saved over it. Check and redo it.", with the badge after the person who saved. <span class="rec">Recommended: as drawn.</span> <a href="#p6">Pictures 6</a></span></li>
-<li><b class="n">Q12</b><span>A shared place's time zone, greyed for anyone but a master: "Only a master admin can change the time zone: 142 and 149 are both here." <span class="rec">Recommended: as drawn.</span> <a href="#p7">Pictures 7</a></span></li>
-<li><b class="n">Q13</b><span>A posting the app could not run: an amber line on the man's Admin → Users row, saying it will try again and what to do if it stays. <span class="rec">Recommended: as drawn.</span> <a href="#p8">Pictures 8</a></span></li>
-<li><b class="n">Q14</b><span>That held posting also rings the bell of the admin who set it. <span class="rec">Recommended: no bell line.</span> <a href="#p8">Pictures 8</a></span></li>
-<li><b class="n">Q15</b><span>The refusal when demoting an admin would leave 149 with none on a later date: "Kestrel is 149's last admin from Fri 27 Nov, when Osprey moves to 142. Make another admin of 149 first." <span class="rec">Recommended: as drawn.</span> <a href="#p9">Pictures 9</a></span></li>
+<li class="fresh"><b class="n">B1</b><span>When someone moves squadron, the old squadron's lines leave his bell that day; lines about himself stay with him. So Hunter, now in 149, is told nothing when 142 undoes Jester's posting out. <span class="rec">Recommended: yes.</span> <a href="#p11">Pictures 11a, 11b</a></span></li>
+<li class="fresh"><b class="n">B2</b><span>A man borrowed by 149 who is taken away at home by any input, not only leave or medical (DET, a course, a duty), tells 149's schedulers the same way: "On DET, but still on 149's RU formation. Replace him." <span class="rec">Recommended: yes.</span> <a href="#p11">Picture 11c</a></span></li>
+<li class="fresh"><b class="n">B3</b><span>When 142 takes Ranger off 149's formation, Ranger himself is told too: "VL formation 149 · 142 took you off it." <span class="rec">Recommended: yes.</span> <a href="#p11">Picture 11d</a></span></li>
+<li class="fresh"><b class="n">B4</b><span>On a transfer's date 149's admins read it from their side, "Posted in · from 142", while 142's keep "Posted out · now with 149". <span class="rec">Recommended: yes.</span> <a href="#p11">Pictures 11e, 11f</a></span></li>
 </ol>
+<h3>New since your last look: 3 pictures to check</h3>
+<ol>
+<li class="fresh"><b class="n">10</b><span>The bell line you asked for when a posting cannot run: "Outlaw · Fri 20 Nov / Posting out could not run. See his row on Admin → Users." Rung once, to his own squadron's admins. Say if anything should change before it is built. <a href="#p10">Pictures 10</a></span></li>
+<li class="fresh"><b class="n">6</b><span>The four bell lines redrawn in the shorter words you approved. <a href="#p6">Pictures 6</a></span></li>
+<li class="fresh"><b class="n">1a</b><span>The line under "Plan 149" redrawn in the words you chose: "Full access to 149, every page: its schedule and publishing, its settings, its people and their sign-ins." <a href="#p1">Pictures 1</a></span></li>
+</ol>
+<h3>Still open: 10 questions</h3>
+<ol>
+<li><b class="n">Q15</b><span>The refusal when demoting an admin would leave 149 with none on a later date: "Kestrel is 149's last admin from Fri 27 Nov, when Osprey moves to 142. Make another admin of 149 first." <span class="rec">Recommended: as drawn.</span> <a href="#p9">Pictures 9</a></span></li>
+<li><b class="n">Q13</b><span>A posting the app could not run: an amber line on the man's Admin → Users row, saying it will try again and what to do if it stays. <span class="rec">Recommended: as drawn.</span> <a href="#p8">Pictures 8</a></span></li>
+<li><b class="n">Q12</b><span>A shared place's time zone, greyed for anyone but a master: "Only a master admin can change the time zone: 142 and 149 are both here." <span class="rec">Recommended: as drawn.</span> <a href="#p7">Pictures 7</a></span></li>
+<li><b class="n">Q7</b><span>A sign-in waits while the last person's change still saves: "Signing in…" and one line under it. <span class="rec">Recommended: as drawn.</span> <a href="#p5">Pictures 5</a></span></li>
+<li><b class="n">Q6</b><span>A detachment's empty holiday list offers "Copy 149's 2026 list", for the year on screen. <span class="rec">Recommended: here, not as a step when the detachment is made.</span> <a href="#p4">Pictures 4</a></span></li>
+<li><b class="n">Q5</b><span>A bell line from another squadron carries the grey squadron badge already used on the schedule, after its name. <span class="rec">Recommended: as drawn.</span> <a href="#p3">Pictures 3</a></span></li>
+<li><b class="n">Q4</b><span>The master admin picks which squadrons reach his bell with two buttons at the foot of the bell list, "Show 142 149". <span class="rec">Recommended: as drawn.</span> <a href="#p3">Pictures 3</a></span></li>
+<li><b class="n">Q3</b><span>A man who plans 149 shows "· also plans 149" under his name, on both squadrons' lists. <span class="rec">Recommended: as drawn.</span> <a href="#p2">Pictures 2</a></span></li>
+<li><b class="n">Q2</b><span>On your iPhone the four buttons take two rows. <span class="rec">Recommended: leave it, as the Save row under it already does.</span> <a href="#p1">Pictures 1</a></span></li>
+<li><b class="n">Q1</b><span>Who sees other squadrons, and how much, is one row of buttons on the person's Admin → Users row: None · View 149 · Plan 149 · Master admin. <span class="rec">Recommended: as drawn.</span> <a href="#p1">Pictures 1</a></span></li>
+</ol>
+<p class="sub">Answered and taken off this list: Q8 to Q11 (the four bell lines, in the shorter words) and Q14 (yes, ring the admins' bell, drawn in 10).</p>
 </div>
 
 <h2 id="p1">1 · Who sees other squadrons (Q1, Q2)</h2>
@@ -80,8 +92,8 @@ figcaption b{color:var(--fg)}
 <p><b>Q1</b> <span class="rec">Recommended: as drawn.</span> It is the same row of buttons as on "New person", and one line under it carries the meaning or the reason.</p>
 <p><b>Q2</b> On your iPhone "Master admin" drops to a second row. <span class="rec">Recommended: leave it.</span> Buttons keep their size, and the Save, Suspend, Archive row under it already takes two rows on a phone. The other way: Master admin as its own switch below, which fits on one row but splits one ladder into two controls.</p>
 </div>
-<div class="pair"><figure><img src="img/p1a-d.png" alt="Hunter's row opened by Saber, Plan 149 picked"><figcaption><b>1a.</b> Saber opens Hunter's row (an admin of 142). Plan 149 lit; every button his to set.</figcaption></figure>
-<figure><img src="img/p1a-p.png" alt="the same on the iPhone"><figcaption><b>1a, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/p1a-d.png" alt="Hunter's row opened by Saber, Plan 149 picked"><figcaption><span class="fresh-t">New</span><b>1a.</b> Saber opens Hunter's row (an admin of 142). Plan 149 lit; every button his to set. Redrawn with your words under Plan 149.</figcaption></figure>
+<figure><img src="img/p1a-p.png" alt="the same on the iPhone"><figcaption><span class="fresh-t">New</span><b>1a, iPhone.</b></figcaption></figure></div>
 <div class="pair"><figure><img src="img/p1b-d.png" alt="Ranger's row opened by Kestrel, View 149 picked"><figcaption><b>1b.</b> Kestrel (149's admin) opens Ranger's row, marked "142". View 149 lit; Plan and Master admin greyed, the line says why. The rest of Ranger's row is greyed: it stays 142's.</figcaption></figure>
 <figure><img src="img/p1b-p.png" alt="the same on the iPhone"><figcaption><b>1b, iPhone.</b> The four buttons take two rows (Q2).</figcaption></figure></div>
 <div class="pair one"><figure><img src="img/p1c-d.png" alt="Ranger's row opened by Hunter, the line greyed"><figcaption><b>1c.</b> Hunter, 142's own admin, opens Ranger's row: "Only 149's admins or a master admin give access to 149."</figcaption></figure></div>
@@ -133,19 +145,19 @@ figcaption b{color:var(--fg)}
 <div class="pair"><figure><img src="img/p5-d.png" alt="the sign-in screen, Signing in"><figcaption><b>5.</b> The sign-in card while it waits.</figcaption></figure>
 <figure><img src="img/p5-p.png" alt="the same on the iPhone"><figcaption><b>5, iPhone.</b></figcaption></figure></div>
 
-<h2 id="p6">6 · Four bell lines that cross squadrons (Q8 to Q11)</h2>
+<h2 id="p6">6 · Four bell lines that cross squadrons (answered)</h2>
 <div class="q">
 <p>The first three go to 149's schedulers. The fourth goes only to the person whose change was replaced, in either squadron. Here Ranger of 142 is borrowed onto 149's RU and VL, and Kestrel is 149's scheduler. The grey "142" badge marks 142's people: Ranger on the first three lines, Hunter on the fourth. RU is 149's own line, so it carries none.</p>
 <ul>
-<li><b>Unavailable at home</b> (D2213): <span class="words">Ranger 142 · Wed 25 Nov · On leave, but still on 149's RU formation. Replace him. · Hunter</span> A tap opens 149's Wed 25 Nov on the Scheduler Board with Ranger's line ringed.</li>
-<li><b>Posted out, archived or deleted</b>: <span class="words">Ranger 142 · Wed 25, Thu 26 Nov · Posted out of 142. Taken off 149's RU formation. Fill his place. · Hunter</span> ("Archived by 142." or "Deleted by 142." in its place). A tap opens the first of those days. "Off your RU" because archiving or deleting a man already takes him off every day from that date, and a published day he was on reads "1 pending".</li>
+<li><b>Unavailable at home</b>: <span class="words">Ranger 142 · Wed 25 Nov · On leave, but still on 149's RU formation. Replace him. · Hunter</span> A tap opens 149's Wed 25 Nov on the Scheduler Board with Ranger's line ringed.</li>
+<li><b>Posted out, archived or deleted</b>: <span class="words">Ranger 142 · Wed 25, Thu 26 Nov · Posted out of 142. Taken off 149's RU formation. Fill his place. · Hunter</span> ("Archived by 142." or "Deleted by 142." in its place). A tap opens the first of those days. The app takes him off 149's formation by itself, since archiving or deleting a man already takes him off every day from that date; a published day he was on reads "1 pending".</li>
 <li><b>Taken back by his squadron</b>: <span class="words">Ranger 142 · Thu 26 Nov · 142 took him off 149's VL formation. Fill his place. · Hunter</span> A tap opens that day.</li>
 <li><b>Two saves at once</b>: <span class="words">RU · Wed 25 Nov · Your change is gone: 142 saved over it. Check and redo it. · Hunter 142</span> Only the person whose change was replaced is told. A tap opens the changes window on RU's line, where both changes show.</li>
 </ul>
-<p><b>Q8 to Q11</b>, one for each line above, top to bottom. <span class="rec">Recommended: each as drawn.</span> Each line says what happened at 142 first, then what it does to 149's plan.</p>
+<p class="done">You chose these shorter words for all four. A formation is always named "149's RU formation", never "your RU".</p>
 </div>
-<div class="pair"><figure><img src="img/p6-d.png" alt="Kestrel's bell with the four lines"><figcaption><b>6.</b> Kestrel's bell, top to bottom: unavailable at home, posted out, taken back, a replaced save.</figcaption></figure>
-<figure><img src="img/p6-p.png" alt="the same on the iPhone"><figcaption><b>6, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/p6-d.png" alt="Kestrel's bell with the four lines"><figcaption><span class="fresh-t">New</span><b>6.</b> Redrawn in your words. Kestrel's bell, top to bottom: unavailable at home, posted out, taken back, a replaced save.</figcaption></figure>
+<figure><img src="img/p6-p.png" alt="the same on the iPhone"><figcaption><span class="fresh-t">New</span><b>6, iPhone.</b></figcaption></figure></div>
 
 <h2 id="p7">7 · A shared place's time zone (Q12)</h2>
 <div class="q">
@@ -157,16 +169,45 @@ figcaption b{color:var(--fg)}
 <div class="pair"><figure><img src="img/p7-d.png" alt="Admin Squadrons, the time zone greyed"><figcaption><b>7.</b> Hunter's view of Home base.</figcaption></figure>
 <figure><img src="img/p7-p.png" alt="the same on the iPhone"><figcaption><b>7, iPhone.</b></figcaption></figure></div>
 
-<h2 id="p8">8 · A posting that could not run (Q13, Q14)</h2>
+<h2 id="p8">8 · A posting that could not run (Q13)</h2>
 <div class="q">
 <p>Rarely, a posting out comes due and the app cannot run it for a reason nobody foresaw. Today it simply waits and says nothing. Drawn: one amber line on the man's Admin → Users row, where a posting held for the last-admin reason already says why it waits.</p>
 <p class="words">This posting could not run. It will try again when the app is next opened. If this stays, report it with “Report a problem” on the Help page.</p>
 <p class="ex"><b>Example.</b> Outlaw's posting out was due Fri 20 Nov. Saber opens Admin → Users and sees the amber line under Outlaw's row.</p>
 <p><b>Q13</b> <span class="rec">Recommended: as drawn.</span> The last sentence is how the app already tells a person what to do when it cannot read a saved week.</p>
-<p><b>Q14</b> <span class="rec">Recommended: no bell line,</span> since the app tries again by itself and it is very rare. If you want the admin who set the posting told by his bell as well, that line is drawn for you first.</p>
+<p class="done">Q14, answered: his squadron's admins are told by their bell as well, once. The line is drawn in 10.</p>
 </div>
 <div class="pair"><figure><img src="img/p8-d.png" alt="Outlaw's row with the amber line"><figcaption><b>8.</b> Outlaw's row on Admin → Users.</figcaption></figure>
 <figure><img src="img/p8-p.png" alt="the same on the iPhone"><figcaption><b>8, iPhone.</b></figcaption></figure></div>
+
+<h2 id="p10" class="fresh">10 · The bell line when a posting cannot run</h2>
+<div class="q fresh">
+<p>When the app cannot run a posting out, his squadron's admins get one bell line, the first time it fails, never again on each retry:</p>
+<p class="words">Outlaw · Fri 20 Nov · Posting out could not run. See his row on Admin → Users.</p>
+<p class="ex"><b>Example.</b> Outlaw is 142's. His posting out was due Fri 20 Nov and could not run. Saber and Hunter, 142's admins, each get the line; 149's admins get nothing. A tap opens Outlaw's row on Admin → Users, where the amber line of picture 8 says it will try again. Outlaw is their own squadron's man, so the line carries no squadron badge.</p>
+</div>
+<div class="pair"><figure><img src="img/p10-d.png" alt="Saber's bell with the new line on top"><figcaption><span class="fresh-t">New</span><b>10.</b> Saber's bell: the new line on top, two of today's lines under it for scale.</figcaption></figure>
+<figure><img src="img/p10-p.png" alt="the same on the iPhone"><figcaption><span class="fresh-t">New</span><b>10, iPhone.</b></figcaption></figure></div>
+
+<h2 id="p11" class="fresh">11 · Bell lines that reach both squadrons: Fable's look, first round (B1 to B4)</h2>
+<div class="q fresh">
+<p>You asked Fable to look at every bell line that concerns both squadrons. Fable found 31 cases. Most are already ruled or need nothing. These four are the first round; five more follow once these are answered. Each picture is a real bell with the line drawn in.</p>
+<p><b>B1. Someone who moves squadron.</b> Today he keeps every line in his bell, and the app needs special exceptions each time the old squadron undoes or redoes something it told him. That is where three of the five faults the last reviewers found come from.</p>
+<p class="ex"><b>Example.</b> Hunter, a 142 admin, read "Jester · Posted out · archived". Hunter then moves to 149. Later 142 undoes Jester's posting. Today Hunter's bell, now 149's, gets the struck line with "taken back · Saber" (11a). Proposed: on the day Hunter moved, 142's lines left his bell, so he gets nothing (11b). 142's own admins still get the taken-back line. His own leave and inputs stay in his bell, since they move with him. The change history keeps everything.</p>
+<p><span class="rec">Recommended: yes.</span> It answers last night's question about Hunter the same way it was recommended, and it fixes three faults at their root instead of adding more exceptions. Your transfer ruling still stands: a transfer of Ranger to 149 that is taken back tells both squadrons, because it concerns both today.</p>
+<p><b>B2. A borrowed man taken away at home.</b> You ruled the line for leave and medical. Proposed: the same line for any input at home that takes him away that day, with that input's word in it. <span class="rec">Recommended: yes.</span> No line while a leave bid only waits, and none when the input is later removed, since 149 has nothing to do then.</p>
+<p><b>B3. The man himself.</b> When 142 takes Ranger off 149's formation, 149's schedulers are told (ruled). Proposed: Ranger is told too, with the "149" badge saying whose formation it was. <span class="rec">Recommended: yes.</span></p>
+<p><b>B4. A transfer, from each side.</b> You ruled one line to both squadrons' admins on the date. Proposed: each side reads it in its own words. <span class="rec">Recommended: yes.</span></p>
+<p class="sub">Told, not asked: when 149 picks Ranger, 142's schedulers are told when 149 publishes, not at each change to a draft. That is how I read your later ruling that his row shows at home once 149 publishes.</p>
+</div>
+<div class="pair"><figure><img src="img/p11a-d.png" alt="Hunter's bell today, the struck line"><figcaption><b>11a, today.</b> Hunter, now 149's, still gets 142's "taken back" line.</figcaption></figure>
+<figure><img src="img/p11b-d.png" alt="Hunter's bell proposed, no line"><figcaption><span class="fresh-t">New</span><b>11b, proposed.</b> Nothing: 142's lines left his bell when he moved.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/p11c-d.png" alt="Kestrel's bell with DET and course lines"><figcaption><span class="fresh-t">New</span><b>11c.</b> Kestrel's bell (149): Ranger on DET, and on a course, at home.</figcaption></figure>
+<figure><img src="img/p11c-p.png" alt="the same on the iPhone"><figcaption><span class="fresh-t">New</span><b>11c, iPhone.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/p11d-d.png" alt="Ranger's bell"><figcaption><span class="fresh-t">New</span><b>11d.</b> Ranger's own bell.</figcaption></figure>
+<figure><img src="img/p11e-d.png" alt="142's admins on the transfer date"><figcaption><b>11e.</b> 142's admins on the date: as ruled.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/p11f-d.png" alt="149's admins on the transfer date"><figcaption><span class="fresh-t">New</span><b>11f.</b> 149's admins on the date, in their own words.</figcaption></figure>
+<figure><img src="img/p11f-p.png" alt="the same on the iPhone"><figcaption><span class="fresh-t">New</span><b>11f, iPhone.</b></figcaption></figure></div>
 
 <h2 id="p9">9 · The last admin, on a later date (Q15)</h2>
 <div class="q">

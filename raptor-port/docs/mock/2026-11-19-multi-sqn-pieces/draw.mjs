@@ -265,6 +265,8 @@ async function bellLines(page, lines, chips, markIdx = []) {
       t.appendChild(mq.el('i', 'bl-day', l.day))
       main.appendChild(t)
       const w = mq.el('span', 'bl-what', l.what + (l.who ? ' · ' + l.who : ''))
+      // a taken-back line, as the bell draws it (ui/topbits.tsx): what it said struck through, then "taken back · who"
+      if (l.struck) { w.insertBefore(document.createTextNode(' · '), w.firstChild); w.insertBefore(mq.el('s', 'bl-struck', l.struck), w.firstChild) }
       if (l.whoSq) w.appendChild(mq.badge(l.whoSq))   // the badge after the person, where the line's subject is our own
       main.appendChild(w)
       b.appendChild(main); b.appendChild(mq.el('span', 'bl-ago', l.ago || '2m'))
@@ -487,6 +489,65 @@ async function p8(sz) {
   await ctx.close()
 }
 
+// ---------- p10: the bell line when a posting could not run (his D2214, 19 Nov 26) ----------
+// Outlaw is 142's, so the line goes to 142's admins only (D2194) and carries no squadron mark; it rings once, the first
+// time the posting fails, never on each retry; a tap opens his row on Admin → Users.
+async function p10(sz) {
+  const { ctx, page } = await session(sz, 'ad', 'a')
+  await openBell(page)
+  const line = { name: 'Outlaw', day: 'Fri 20 Nov', what: 'Posting out could not run. See his row on Admin → Users.', unread: true, ago: '1m' }
+  await bellLines(page, [line, L142[0], L142[1]], null)
+  // the line marked with its tag inside at the bottom right, clear of its words
+  await page.evaluate(() => { const t = window.__mq.mark(document.querySelector('[data-testid="bell-list"] .bl-line[data-mine]'), true); t.style.top = 'auto'; t.style.bottom = '6px'; t.style.right = '8px' })
+  const f = `p10-${sz}.png`; await shot(page, f, sz === 'd' ? ['[data-testid="bell-list"]', '.bellbtn'] : null, 16)
+  rec(f, 'p10', sz, 'drawn', 'Saber\'s bell (a 142 admin). Outlaw\'s posting out was due Fri 20 Nov and the app could not run it. New: the top line — "Outlaw · Fri 20 Nov / Posting out could not run. See his row on Admin → Users." — rung once, the first time it fails, to 142\'s admins only (Outlaw is 142\'s, so no squadron mark); a tap opens his row, where the amber line of picture 8 says what to do. The two lines under it are today\'s kind, for scale.')
+  await ctx.close()
+}
+
+// ---------- p11: Fable's look at the bells that concern both squadrons (his D2216), round 1 ----------
+// 11a/11b Hunter's bell after he moved 142 → 149, when 142 undoes Jester's posting out of the app: today, and proposed
+// 11c Kestrel's bell (149): a borrowed man taken away at home by an input other than leave or medical
+// 11d Ranger's bell: his own squadron took him off the other squadron's formation
+// 11e/11f a transfer 142 → 149 on its date: 142's admins' line, and 149's in its own words
+const B11_149 = [
+  { name: 'Osprey\'s training', day: 'Wed 25 Nov', what: 'Needs an OIL answer', who: 'Osprey', ago: '2h' },
+]
+async function p11(sz) {
+  const pics = [
+    { f: 'p11a', user: ['ad2', 'a2'], lines: [{ name: 'Jester', day: 'Fri 20 Nov', struck: 'Posted out · archived', what: 'taken back', who: 'Saber', unread: true, ago: '1m' }, ...B11_149], mark: [0],
+      cap: 'Today, as the branch does it: Hunter, a 142 admin who read "Jester · Posted out · archived", has since moved to 149. 142 undoes Jester\'s posting out of the app. Hunter\'s bell, now 149\'s, gets the struck line with "taken back · Saber".' },
+    { f: 'p11b', user: ['ad2', 'a2'], lines: [...B11_149], mark: [], listMark: true,
+      cap: 'Proposed: the day Hunter moved to 149, 142\'s lines left his bell, so the undo tells him nothing. 142\'s own admins get the taken-back line as today.' },
+    { f: 'p11c', user: ['ad9', 'a9'], lines: [
+      { name: 'Ranger', sq: '142', day: 'Wed 25 Nov', what: 'On DET, but still on 149\'s RU formation. Replace him.', who: 'Hunter', unread: true, ago: '2m' },
+      { name: 'Ranger', sq: '142', day: 'Thu 26 Nov', what: 'On a course, but still on 149\'s VL formation. Replace him.', who: 'Hunter', unread: true, ago: '30m' },
+    ], mark: [0, 1], cap: 'Kestrel\'s bell (149). Today\'s ruled line covers leave and medical; proposed: the same line for any input at home that takes Ranger away, with that input\'s word: DET, a course, a duty, an overseas duty, OIL.' },
+    { f: 'p11d', user: ['us', 'us'], lines: [
+      { name: 'VL formation', sq: '149', day: 'Thu 26 Nov', what: '142 took you off it.', who: 'Saber', unread: true, ago: '5m' },
+    ], mark: [0], cap: 'Ranger\'s own bell. 142 takes him off 149\'s VL formation; 149\'s schedulers are already told (ruled). Proposed: Ranger is told too, the "149" badge saying whose formation.' },
+    { f: 'p11e', user: ['ad', 'a'], lines: [
+      { name: 'Ranger', day: 'Fri 3 Apr', what: 'Posted out · now with 149', who: '', unread: true, ago: '1m' },
+    ], mark: [], cap: '142\'s admins on the date of a transfer to 149: the line already ruled, unchanged.' },
+    { f: 'p11f', user: ['ad9', 'a9'], lines: [
+      { name: 'Ranger', sq: '142', day: 'Fri 3 Apr', what: 'Posted in · from 142', who: '', unread: true, ago: '1m' },
+    ], mark: [0], cap: 'Proposed: 149\'s admins get it in their own words, "Posted in · from 142", in place of the same "Posted out · now with 149".' },
+  ]
+  for (const p of pics) {
+    if (sz === 'p' && !['p11c', 'p11f'].includes(p.f)) continue
+    const { ctx, page } = await session(sz, p.user[0], p.user[1])
+    await openBell(page)
+    await bellLines(page, p.lines, null)
+    await page.evaluate(({ mark, listMark, today }) => {
+      const mq = window.__mq, made = [...document.querySelectorAll('[data-testid="bell-list"] .bl-line[data-mine]')]
+      for (const i of mark) { const t = mq.mark(made[i], true); t.style.top = 'auto'; t.style.bottom = '6px'; t.style.right = '8px'; if (today) t.textContent = 'Today' }
+      if (listMark) { const t = mq.mark(document.querySelector('[data-testid="bell-list"]'), true); t.textContent = 'Proposed'; t.style.top = 'auto'; t.style.bottom = '6px'; t.style.right = '8px' }
+    }, { mark: p.mark, listMark: !!p.listMark, today: p.f === 'p11a' })
+    const f = `${p.f}-${sz}.png`; await shot(page, f, sz === 'd' ? ['[data-testid="bell-list"]', '.bellbtn'] : null, 16)
+    rec(f, 'p11', sz, 'drawn', p.cap)
+    await ctx.close()
+  }
+}
+
 // ---------- p9: the last-admin refusal for a home move dated ahead ----------
 async function p9(sz) {
   const { ctx, page } = await session(sz, 'ad', 'a', { toasts: true })
@@ -519,7 +580,7 @@ async function p9(sz) {
   await ctx.close()
 }
 
-const PIECES = { p1, p2, p3, p4, p5, p6, p7, p8, p9 }
+const PIECES = { p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11 }
 for (const [k, fn] of Object.entries(PIECES)) {
   if (ONLY && !ONLY.includes(k)) continue
   for (const sz of ['d', 'p']) {
