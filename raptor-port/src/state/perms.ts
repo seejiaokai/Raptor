@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerUnits, changeFiler, inputUnit, APP_ACTS, passMade } from './notices'
+import { noticeAboutHim, filerTold, filerUnits, changeFiler, inputUnit, APP_ACTS, passMade, AT_SLACK_MS } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -1910,6 +1910,19 @@ function lineRewritten(c: Change, replayed: ((c: Change) => boolean) | null): bo
   if (replayed && replayed(c)) return false
   return String(b.to) !== String(n.to) || String(b.iid ?? '') !== String(n.iid ?? '') || b.at !== n.at || !deepEqual(b.fu, n.fu)
 }
+/* A NEW LINE IS DATED NOW (fix read 7, fault T — the security read's SEC7-2). A line leaves a moved man's bell from the
+   first move day after the day it was written (state/notices.ts noticeLeftBell), so a line dated in 2099 was never
+   "written yet" and stayed on his bell for good, the old squadron deciding what follows him (his D2218); dated long ago it
+   would read as written before a move it came after. The app writes every line at the moment of its change, so a new line
+   (no before-image: a line already written keeps its time — lineRewritten) must carry a time within a few minutes of now —
+   but for a restore's verified replay, which puts back the image it took away, its own time with it. Both sections ask
+   it. */
+function lineNotNow(c: Change, replayed: ((c: Change) => boolean) | null): boolean {
+  const n: any = c.after
+  if (c.op !== 'put' || c.before != null || !n || typeof n !== 'object') return false
+  if (replayed && replayed(c)) return false
+  return !(typeof n.at === 'number' && Number.isFinite(n.at) && Math.abs(n.at - Date.now()) <= AT_SLACK_MS)
+}
 function inputLineUnlike(env: CommitEnvelope, c: Change, changed: ReadonlySet<string>, replayed: ((c: Change) => boolean) | null): boolean {
   const n: any = c.after
   if (c.op !== 'put' || !n || typeof n !== 'object') return false
@@ -2019,6 +2032,8 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
         /* (fault M: the own-man fallback no longer lets through an input line the pass would not write) */
         if (n === c.after && inputLineUnlike(env, c, changedInputs, replayed ?? null)) return `a bell line not as the pass writes it (${where})`
       }
+      /* (fault T: a new line is dated now — asked last, so a line refused on another count keeps its own words) */
+      if (lineNotNow(c, replayed ?? null)) return `a bell line not dated now (${where})`
       continue
     }
     if (c.collection !== 'settings') continue
@@ -2122,7 +2137,12 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
            since the one door below that puts a line takes only a new one (`b == null`), riding his change of the input
            it names (`rides`), with the pass's mark (`filerMarkOk`); every other put is refused under it) */
         /* …and only to someone that change tells — named in the input, before or after, or its filer (toldBy, SEC-3) */
-        if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid) && toldBy(env, n.iid)?.has(String(n.to)) && filerMarkOk(env, c, n)) break
+        if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid) && toldBy(env, n.iid)?.has(String(n.to)) && filerMarkOk(env, c, n)) {
+          /* (fix read 7, fault T: dated now — lineNotNow above; his Redo's verified replay puts back its own time) */
+          if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+          if (lineNotNow(c, replayed)) return `a bell line not dated now (${where})`
+          break
+        }
         /* FIX READ 7, FAULT U: his Undo of his own step takes his own line with it. Judged afresh, the restore's images
            are not the step's — undoing a delete re-creates the input, so `toldBy` read HIM as its filer and his line to
            Hunter (the real filer) looked untold; and once Hunter has moved squadron he is no longer told at all — so the

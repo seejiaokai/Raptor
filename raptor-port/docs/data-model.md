@@ -1803,6 +1803,10 @@ squadron are judged by whose they are:
   wrote in that command (`state/notices.ts passMade` — the pass's before-image is the inputs as last committed, so it may
   tell of a bare write the command took up); and a line already written is never rewritten — its reader, input, time and
   mark stay (`state/perms.ts lineRewritten`, `inputLineUnlike`; a restore's verified replay puts back its own image).
+  A new line, from any role, carries the time of its change, within five minutes of the clock, but for a restore's
+  verified replay (fix read 7, fault T: SEC7-2 — a line dated ahead never left a moved man's bell); one held dated
+  further ahead counts as gone from his bell on his move (`state/perms.ts lineNotNow`, `state/notices.ts noticeLeftBell`).
+  At the database step the server sets the time.
   An `AccessRequest`
   names no squadron yet (Request access asking the squadron, D2111, is not built), so it is not judged by one.
   Nothing else crosses (his D2218, 19 Nov 26 — fix read 3's A2 exception for a posting taken back is gone): a line

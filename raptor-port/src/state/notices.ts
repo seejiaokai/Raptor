@@ -204,6 +204,9 @@ export const APP_ACTS: ReadonlySet<string> = new Set(['person.delete', 'lw.posto
    pass's by definition, so the gate asks this registry first. Kept by the command's envelope (the one object the pass
    and the gate both see — command/commit.ts activeEnvelope, the hard invariants' `env`), written only by the pass
    (sched-commit.ts tellPass); nothing in an envelope can put an id in it. */
+/* how far from the clock a new line's time may be (fix read 7, fault T): written by the app at the moment of the change,
+   so a few minutes covers any drift between the command and its check; at the database step the server sets the time */
+export const AT_SLACK_MS = 5 * 60 * 1000
 const PASS_MADE = new WeakMap<object, ReadonlySet<string>>()
 export function notePassMade(env: object, made: ReadonlySet<string>): void { PASS_MADE.set(env, made) }
 export function passMade(env: object): ReadonlySet<string> | undefined { return PASS_MADE.get(env) }
@@ -453,6 +456,10 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what' | 'fu'>): b
  *  from tomorrow (state/units.ts setHome), so a line already written is never re-dated into the new squadron. */
 export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'fu'>, today: string = todayIso()): boolean {
   if (!Number.isFinite(n.at)) return false
+  /* (fix read 7, fault T — the security read's SEC7-2: a line dated ahead was "not yet past" for ever and so never left a
+     moved man's bell. The gate now refuses a new line not dated now (state/perms.ts lineNotNow); one held before that, or
+     put by any other road, counts as left, so the old squadron cannot keep a line on his bell by its date — his D2218) */
+  if (n.at > Date.now() + AT_SLACK_MS) return true
   const wrote = dayOfAt(n.at)
   if (!(wrote < today)) return false
   const to = String(n.to)

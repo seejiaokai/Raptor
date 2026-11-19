@@ -289,7 +289,7 @@ describe('security H5 — a history line is its own squadron’s', () => {
    would make. */
 describe("still open 2, his D2194 — an admin's bell lines and read records are his own squadron's people's", () => {
   const env = (changes: any[]): any => ({ seq: 1, at: '', origin: 'local', scope: { module: 'settings' }, type: 'inputs.write', actor: deriveActor(), changes })
-  const line = (to: string, what: any[] = [{ k: 'del' }]) => ({ id: 'n1', to, by: 'zz', at: 1, iid: 'i1', name: 'x', day: '2026-07-13', what })
+  const line = (to: string, what: any[] = [{ k: 'del' }]) => ({ id: 'n1', to, by: 'zz', at: Date.now(), iid: 'i1', name: 'x', day: '2026-07-13', what })
   const put = (collection: string, id: string, after: any) => ({ op: 'put', collection, id, before: null, after })
   it("Hunter (142's plain admin) may not write a bell line to 149's Osprey, nor mark his history or bell read", () => {
     signInAs('ad2', 'a2')

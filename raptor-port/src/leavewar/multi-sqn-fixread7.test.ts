@@ -216,3 +216,31 @@ describe('fault P — a right given after the move never brings a retired line b
     expect(JSON.parse(mem['sqn142_' + GRANT_PFX + 'gfr7']!).from).toBe('2026-07-18')
   })
 })
+
+describe('fault T — a line dated in the future never leaves the bell', () => {
+  const AHEAD = new Date(2099, 0, 1).getTime()
+  it('(SEC7-2 P2a) an admin’s line to Hunter dated 2099, riding a change of the input, is refused', () => {
+    hunterLine()
+    const n = { id: 'nsec7t', to: 'prowler', by: 'casper', at: AHEAD, iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'] }
+    expect(ownershipViolation(asOutlaw([remarkChange(), { collection: 'notices', id: n.id, op: 'put', before: null, after: n }])) ?? 'allowed').toMatch(/not dated now/)
+    /* …nor dated long ago */
+    const old = { ...n, id: 'nsec7t0', at: Date.now() - 24 * 3600 * 1000 }
+    expect(ownershipViolation(asOutlaw([remarkChange(), { collection: 'notices', id: old.id, op: 'put', before: null, after: old }])) ?? 'allowed').toMatch(/not dated now/)
+  })
+  it('(SEC7-2 P2b) Ranger’s own change carrying his line to Hunter dated 2099 is refused', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
+    signInAs('us', 'us')
+    const n = { id: 'nsec7tm', to: 'prowler', by: 'bane', at: AHEAD, iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }], fu: ['u142'] }
+    const now = { ...theInput() }
+    const ch = { collection: 'inputs', id: IID, op: 'put', before: now, after: { ...now, remarks: 'Ranger words' } }
+    expect(ownershipViolation(env([ch, { collection: 'notices', id: n.id, op: 'put', before: null, after: n }])) ?? 'allowed').toMatch(/not dated now/)
+    /* (control) the same line dated now rides his change */
+    expect(ownershipViolation(env([ch, { collection: 'notices', id: n.id, op: 'put', before: null, after: { ...n, at: Date.now() } }]))).toBeNull()
+  })
+  it('(backstop) a line already held dated 2099 leaves Hunter’s bell on his move like any other', () => {
+    const l = hunterLine()
+    NOTICES.push({ ...l, id: 'nsec7tb', at: AHEAD })
+    hunterMoves(l)
+    expect(shown('prowler', 'nsec7tb'), 'the line dated ahead left too').toBe(false)
+  })
+})

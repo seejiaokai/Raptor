@@ -48,7 +48,7 @@ const put = (collection: string, id: string, after: any, before: any = null) => 
 const ranger = () => INPUTS.find((x: any) => String(leadOf(x)) === 'bane') as any
 
 describe("SEC-2 — an admin's bell line to another squadron's man", () => {
-  const line = (to: string, what: any[], iid = 'i1') => ({ id: 'n1', to, by: 'prowler', at: 1, iid, name: 'Leave', day: '2026-07-17', what })
+  const line = (to: string, what: any[], iid = 'i1') => ({ id: 'n1', to, by: 'prowler', at: Date.now(), iid, name: 'Leave', day: '2026-07-17', what })
   it("Hunter's line to 149's Osprey with a holiday part beside a 'leave refused' part is refused", () => {
     signInAs('ad2', 'a2')
     const what = [{ k: 'oilhol', a: '2026-07-17', b: '2026-07-17' }, { k: 'lw', code: 'LL', d: 'refused' }]
@@ -94,7 +94,7 @@ describe("SEC-3 — a member's bell line to another squadron's man", () => {
     signInAs('us', 'us')
     const mine = ranger()
     const ch = put('inputs', mine.iid, { ...mine, remarks: 'x' }, mine)
-    const n = { id: 'n9', to: 'kes9', by: 'bane', at: 1, iid: mine.iid, name: '149: all flying cancelled tomorrow', day: '2026-07-16', what: [{ k: 'del' }] }
+    const n = { id: 'n9', to: 'kes9', by: 'bane', at: Date.now(), iid: mine.iid, name: '149: all flying cancelled tomorrow', day: '2026-07-16', what: [{ k: 'del' }] }
     expect(ownershipViolation(env([ch, put('notices', 'n9', n)]))).not.toBeNull()
   })
   it('…and through the real input door', () => {
