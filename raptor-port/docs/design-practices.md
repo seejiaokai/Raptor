@@ -635,6 +635,8 @@ first, as a chat does for ruling numbers, and names it in its handoff block; whe
 the merge renumbers only the branch's own side, by script, and the closing report tells him the old and new numbers
 (D1417).*
 
+**Lesson 96 (19 Nov 26, D2211 — "Instead of saying as for 149's own admin. Perhaps make it clearer").** The line under an access level says plainly what the person gets, never by comparison with another role. *(The agent's reading: the same holds for any line that explains a role or a setting.)*
+
 **Lesson 95 (17 Nov 26, D2121 — "10b if 142 hasnt approve the schedule, to the user, it looks like the schedule for the day is published").** A status shown inside a day never makes that day read as published while its own squadron has not signed it.
 
 **Lesson 94 (17 Nov 26, D2115 — "if we put the line at the bottom, the button will keep jumping down after every add, and the scheduler has to chase that button").** A button pressed again and again stays where it is, and each press shows plainly what it added. *(The agent's reading: this is the standing rule that a control tapped repeatedly must not move, which round 3's recommendation broke. Corrected 17 Nov 26 after its fresh read (D941): the first wording, "shown where it lands", went past his words.)*
