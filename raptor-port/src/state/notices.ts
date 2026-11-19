@@ -155,7 +155,7 @@ export function filerVia(f: string, rs: readonly any[], iso?: string): string[] 
   const home = homeOn(f, day)
   const atHome = !!home && !movedSince(f, filedDay(rs), day)
   const acct = accountOfPid(f)
-  const via = us.filter(u => (atHome && u === home) || (!!acct && adminThen(acct, u, day)))
+  const via = us.filter(u => (atHome && u === home) || (!!acct && adminThen(acct, u, day, true)))
   return via.length ? via : null
 }
 /* the day an input was filed — its `at`, written once when it is placed (state/inputstamp.ts stampPlaced) and never by a
@@ -224,12 +224,17 @@ function homesOver(pid: string, a: string, b: string): string[] {
    the day it was given (units-model.ts Grant.from), the mark from the day it was set (accounts.ts Account.masterFrom);
    one stored before either was kept counts from always (D56). Here only — the gate's levelFrom asks today. No day: as
    today. (His home's admin role is no right here: a filer at home is told through his home while he has not moved since
-   the input was filed — filerVia; one who has moved only through the mark or a grant — fix read 8, fault R.) */
-function adminThen(acct: { id: string; pid: string; role: string; master?: true; masterFrom?: string }, u: string, iso?: string): boolean {
+   the input was filed — filerVia; one who has moved only through the mark or a grant — fix read 8, fault R.)
+   HELD BEFORE THAT DAY BEGAN (fix read 8, fault D — Fable's 2, the fresh Opus read's 2): a move takes effect at the
+   start of its day (state/units.ts setHome), so a right counted on its own day (`<=`) brought the retired line back when
+   Plan or the mark was given ON the move day, read or unread. A move day now asks a right held before that day began
+   (`from < iso`). `now` — the pass asking about this moment (filerVia, on today): a right already given today counts. */
+function adminThen(acct: { id: string; pid: string; role: string; master?: true; masterFrom?: string }, u: string, iso?: string, now = false): boolean {
   if (iso == null) return levelOfAccount(acct, u) === 'admin'
-  if (acct.master && (!acct.masterFrom || acct.masterFrom <= iso)) return true
+  const held = (from: string | undefined): boolean => !from || from < iso || (now && from === iso)
+  if (acct.master && held(acct.masterFrom)) return true
   const g = unitRows().grants.find(x => x.account === acct.id && x.unit === u)
-  return !!g && g.level === 'admin' && (!g.from || g.from <= iso)
+  return !!g && g.level === 'admin' && held(g.from)
 }
 /** THE SQUADRON OF AN INPUT THAT NAMES NOBODY (an ALL AVAIL or ALL one — fix read 6, fault A): its placeholder's filer
  *  first, else the input's own filer, his home on the input's own date (today where it has none). ONE body, asked by the

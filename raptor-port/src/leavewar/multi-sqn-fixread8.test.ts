@@ -115,3 +115,34 @@ describe('fault R — a filer who has moved is not told again, and his old line 
     expect(lineTo('stiff')?.fu, 'Saber told as master').toEqual(['u142'])
   })
 })
+
+describe('fault D — a right given ON the move day never brings the retired line back', () => {
+  for (const read of [false, true]) {
+    it(`(Fable 2, Opus 2) Plan of 142 given on 16 Jul, his move day: the ${read ? 'read' : 'unread'} line stays off`, () => {
+      const l = hunterLine(); if (read) readIt('prowler', l)
+      hunterMovesOn16(); on(16)
+      expect(shown('prowler', l.id), 'retired by his move').toBe(false)
+      signInAs('ad', 'a')
+      expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
+      expect(shown('prowler', l.id), 'still off after Plan given on his move day').toBe(false)
+    })
+    it(`(Fable 2, Opus 2) master mark set on 16 Jul, his move day: the ${read ? 'read' : 'unread'} line stays off`, () => {
+      const l = hunterLine(); if (read) readIt('prowler', l)
+      hunterMovesOn16(); on(16)
+      expect(shown('prowler', l.id)).toBe(false)
+      signInAs('ad', 'a')
+      expect(setMaster('acad2', true).ok).toBe(true)
+      expect(shown('prowler', l.id), 'still off after the master mark set on his move day').toBe(false)
+    })
+  }
+  it('(control) the master mark set the day before his move keeps the line, and so does Plan held from then', () => {
+    const l = hunterLine()
+    signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
+    hunterMovesOn16(); on(17)
+    expect(shown('prowler', l.id), 'a master on his move day: still told').toBe(true)
+    signInAs('ad', 'a'); on(17); expect(setMaster('acad2', false).ok).toBe(true)
+    mem['sqn142_' + GRANT_PFX + 'gfr8d'] = JSON.stringify({ id: 'gfr8d', account: 'acad2', unit: 'u142', level: 'admin', from: '2026-07-15' }); unitsLoad()
+    expect(shown('prowler', l.id), 'Plan of 142 from the day before: still told').toBe(true)
+  })
+})
+

@@ -28,7 +28,8 @@ export interface Place { id: string; name: string; tz: string }
 export interface UnitPlace { id: string; unit: string; place: string; from: string }
 /* `from` (fix read 7, fault P — Astra's A2, Fable's 2): the day the grant was given, written by units.ts setGrant. Only a
    bell line his move retired reads it (state/notices.ts adminThen, on the move's own day): Plan given after the move must
-   not bring that line back. The gate's levelFrom never reads it — a grant counts from the moment it is saved. Absent on
+   not bring that line back — on the move's own day too: a move day counts only a grant held before that day began
+   (fix read 8, fault D). The gate's levelFrom never reads it — a grant counts from the moment it is saved. Absent on
    a grant saved before it was kept (D56): counts from always. */
 export interface Grant { id: string; account: string; unit: string; level: GrantLevel; from?: string }
 export interface Home { id: string; pid: string; unit: string; from: string }
