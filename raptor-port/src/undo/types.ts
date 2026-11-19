@@ -47,6 +47,12 @@ export interface UndoEntry {
   /* the seq of the restore that undid it — Redo's out-of-band barrier counts from here (D148; the change-recording plan
      B6.4: a change someone else made while the step stood undone refuses its redo, naming who) */
   undoneSeq?: number
+  /* WHEN, by the clock (fix read 10, fault E — O10-1, Fable F10-5): `madeAt` the moment the step was made, `undoneOn` the
+     moment its Undo went through. A right an Undo puts back went off on the step's own day; one a Redo puts back went off
+     on the day of the Undo that took it off — the redate hook keeps the right's recorded day only when its man has not
+     moved squadron since then (state/perms.ts restoreRedated) */
+  madeAt?: number
+  undoneOn?: number
   /* the text box a `sched.text` wrote (the envelope's `detail`) — Undo's words read it (describe.ts; B8) */
   detail?: string
   /* an undone entry a later NEW change forked away from (§4.3: "any newer entry committed after

@@ -1422,7 +1422,10 @@ holiday-shaped line merely put is judged as any line). Fault C — `src/state/pe
 (`wireRows` installs the probe on the whiteboard). Fault D — `src/state/accounts.ts` (`Account.pidFrom`, written by
 `updateAccount` on a re-link; `relinkRightsProblem`: only a master re-links a sign-in holding a right where he is not an
 admin), `src/state/notices.ts` (`adminThen` counts a right from the later of its day and `pidFrom`), `src/state/perms.ts`
-(G2b: the link dated today; G4: the re-link refused; `restoreRedated` dates a restored re-link).
+(G2b: the link dated today; G4: the re-link refused; `restoreRedated` dates a restored re-link). Fault E —
+`src/undo/types.ts` (`madeAt`, `undoneOn` on a step), `src/undo/timeline.ts` (`restoreOffAt`: the day the right went off,
+handed to the redate hook), `src/state/undo-wire.ts` (wires it to the gate), `src/state/perms.ts` (`restoredDayHolds`,
+`markBackHolds`: a restored right keeps its day only where its man has not moved since it went off).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

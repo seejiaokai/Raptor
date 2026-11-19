@@ -108,7 +108,10 @@ export interface UndoHooks {
      D2218, D2223): a grant or the master mark put back with the day its step recorded, after the man moved squadron,
      brought back a line his move had retired. The image is re-dated BEFORE the restore is named for verifiedReplay, so
      the image vouched for is the one written (state/perms.ts restoreRedated). None installed: written as recorded. */
-  redate?(change: Change, dir: 'undo' | 'redo'): Change
+  /* (fix read 10, fault E — O10-1, Fable F10-5): `offAt`, the moment the right went off — an Undo's: the step's own
+     moment (`madeAt`); a Redo's: its Undo's (`undoneOn`) — so a right put back with no move of its man since keeps its
+     recorded day, as the world it puts back had it. */
+  redate?(change: Change, dir: 'undo' | 'redo', offAt?: number): Change
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -340,6 +343,7 @@ function recordEntry(env: CommitEnvelope): void {
     ...closedAtOf(forward, env.actor),
     eligible: false,      // recomputed lazily (modules may cut over after record)
     undone: false,
+    madeAt: Date.now(),   // (fault E of fix read 10: the day a right an Undo puts back went off)
   }
   entry.label = describeEntry(entry)
   entries.push(entry)
@@ -544,6 +548,15 @@ export function mayReverse(entry: UndoEntry, cur: Actor): boolean {
    for image, what the step recorded — its before-image on an Undo, its after-image on a Redo. A command that merely
    calls itself `undo.restore` is not being applied here, so it gains nothing. */
 let APPLYING: { entry: UndoEntry; changes: Change[]; dir: 'undo' | 'redo' } | null = null
+/* THE MOMENT A RIGHT THIS RESTORE PUTS BACK WENT OFF (fix read 10, fault E): an Undo's — the step's own; a Redo's — the
+   Undo that took it off. The redate hook is handed it, and the commit gate asks it of the restore being applied
+   (restoreOffAt), so both judge one day. */
+const offAtOf = (entry: UndoEntry, dir: 'undo' | 'redo'): number | undefined => (dir === 'undo' ? entry.madeAt : entry.undoneOn)
+export function restoreOffAt(env: { origin: string; type: string; causedBy?: number }): number | undefined {
+  const a = APPLYING
+  if (!a || env.origin !== 'restore' || env.type !== 'undo.restore' || env.causedBy !== a.entry.seq) return undefined
+  return offAtOf(a.entry, a.dir)
+}
 const landed = (x: unknown): unknown => {
   const o: any = inputOf(x)
   if (!o || o.acc !== 'g') return x
@@ -765,7 +778,8 @@ function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo
   const kept = leave ? changesIn.filter(c => !leave(c, dir)) : changesIn
   /* (and a right it turns on, dated today — the redate hook above; fix read 9, fault A) */
   const redate = hooks.redate
-  const changes = redate ? kept.map(c => redate(c, dir)) : kept
+  const offAt = offAtOf(entry, dir)
+  const changes = redate ? kept.map(c => redate(c, dir, offAt)) : kept
   // group the write entries by their owning store
   const byStore = new Map<EnlistableStore, RecordEntry[]>()
   const missing: string[] = []
@@ -969,6 +983,7 @@ export function globalUndo(): UndoResult {
   entry.undone = true
   entry.undoneAt = ++stamp
   entry.undoneSeq = r.seq
+  entry.undoneOn = Date.now()   // (fault E of fix read 10: the day a right a Redo puts back went off)
   bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'undo') + (passedInelig ? ` — the later ${notUndoneWhat(passedInelig)} stays; it isn’t undone here.` : ''))
   return { ok: true, entry }
@@ -991,6 +1006,7 @@ export function globalRedo(): UndoResult {
   if (!r.ok) return { ok: false, reason: refusedFor(entry, 'redo', r.reason) }
   entry.undone = false
   entry.undoneAt = undefined
+  entry.undoneOn = undefined
   bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'redo'))
   return { ok: true, entry }

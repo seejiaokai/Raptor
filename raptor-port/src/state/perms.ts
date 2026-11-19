@@ -1595,12 +1595,29 @@ export const masterKept = (was: any, is: any): boolean => !!was && !!is && was.m
 /* …and the restore writes it so: an Undo or Redo whose image turns a right on dates it today (installed in
    undo-wire.ts as the timeline's `redate` hook, before the restore is named for verifiedReplay, so the image the
    timeline vouches for IS the one written); one that leaves a right standing keeps the day it has now. */
-export function restoreRedated(c: Change): Change {
+/* …save a right put back where none stands whose man has not moved squadron since it went off (fix read 10, fault E —
+   the fresh Opus read's O10-1, Fable's F10-5): a mark or Plan taken off by mistake after a move and undone at once is
+   the world as it was, so it keeps its recorded day and the line it kept on the move day; a move between the day it
+   went off and today makes it a right given today (fix read 9's F1, F1b, O9-2). `offAt`: an Undo's step moment, a Redo's
+   Undo moment (undo/timeline.ts restoreOffAt); none — today. The gate asks the same of the restore it judges. */
+type OffAtProbe = (env: CommitEnvelope) => number | undefined
+let OFFAT: OffAtProbe | null = null
+export function setRestoreOffAt(fn: OffAtProbe | null): void { OFFAT = fn }
+function restoredDayHolds(pid: unknown, offAt: number | undefined, homes = unitRowsBefore([]).homes): boolean {
+  if (offAt == null || pid == null || pid === '') return false
+  const off = dayOfAt(offAt), today = todayIso()
+  return !homes.some(h => h.pid === String(pid) && h.from > off && h.from <= today)
+}
+const pidOfAccount = (id: unknown): string | undefined => ACCOUNTS_LIST.find(x => x.id === String(id))?.pid
+/* the master mark put back on the same person's account, off since `offAt`, with no move of his since */
+const markBackHolds = (was: any, is: any, offAt: number | undefined, homes?: Parameters<typeof restoredDayHolds>[2]): boolean =>
+  !!was && was.master !== true && !!is && is.master === true && String(was.pid) === String(is.pid) && restoredDayHolds(is.pid, offAt, homes)
+export function restoreRedated(c: Change, offAt?: number): Change {
   if (c.collection !== 'settings' || c.op !== 'put' || c.after == null) return c
   const id = String(c.id), n: any = c.after, today = todayIso()
   if (id.startsWith(GRANT_PFX)) {
     const b: any = store.get(id, null)
-    const from = grantKept(b, n) ? b.from : today
+    const from = grantKept(b, n) ? b.from : b == null && restoredDayHolds(pidOfAccount(n.account), offAt) ? n.from : today
     return n.from === from ? c : { ...c, after: { ...n, from } }
   }
   if (id.startsWith(ACCOUNT_ROW)) {
@@ -1609,7 +1626,7 @@ export function restoreRedated(c: Change): Change {
     /* (fix read 10, fault D): a row put back linked to another person than the stored row names is linked today */
     if (was && String(was.pid) !== String(n.pid) && n.pidFrom !== today) out = { ...out, pidFrom: today }
     if (n.master === true) {
-      const masterFrom = masterKept(was, n) ? was.masterFrom : today
+      const masterFrom = masterKept(was, n) ? was.masterFrom : markBackHolds(was, n, offAt) ? n.masterFrom : today
       if (out.masterFrom !== masterFrom) out = { ...out, masterFrom }
     }
     return out === n ? c : { ...c, after: out }
@@ -1651,7 +1668,9 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
       const wantLink = !was ? (is.pidFrom === undefined ? undefined : today) : relinked ? today : was.pidFrom
       if (is.pidFrom !== wantLink) return `an account's link to its person not dated today (${c.id})`
     }
-    if (replayed && (is.master !== true || kept)) continue
+    /* (fix read 10, fault E): a mark put back on the same person, off since a moment with no move of his since, keeps its
+       recorded day — the restore writes it so (restoreRedated); the gate asks the same of the same moment */
+    if (replayed && (is.master !== true || kept || markBackHolds(was, is, OFFAT?.(env), w.rowsB.homes))) continue
     const want = is.master !== true ? undefined : kept ? was.masterFrom : today
     if (is.masterFrom !== want) return `the master mark not dated today (${c.id})`
   }
@@ -1789,7 +1808,10 @@ function unitRowViolation(env: CommitEnvelope): string | null {
            exemption holds only for a right unchanged; the restore itself writes today's day (restoreRedated), so an Undo
            or Redo is never refused for it. */
         const kept = grantKept(b, n)
-        if (!(kept && env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
+        /* (fix read 10, fault E): …and for a right put back where none stands whose man has not moved since it went off
+           — the restore keeps its recorded day then (restoreRedated), and the gate asks the same of the same moment */
+        const back = b == null && restoredDayHolds(pidOfAccount(n.account), OFFAT?.(env), before.homes)
+        if (!((kept || back) && env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
           const want = kept ? b.from : today
           if (n.from !== want) return `a right not dated today (${id})`
         }

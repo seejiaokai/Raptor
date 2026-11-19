@@ -187,13 +187,15 @@ describe('fault G — the gate checks a grant’s day and the master mark’s da
     expect(globalUndo().ok, 'Undo of the grant').toBe(true)
     expect(unitRows().grants.some(g => g.account === 'acad2')).toBe(false)
     const r = globalRedo(); expect(r.ok, 'Redo of the grant: ' + JSON.stringify(r)).toBe(true)
-    /* fix read 9, fault A: a Redo that turns a right back on dates it the day it is pressed (was: its recorded day) */
-    expect(unitRows().grants.find(g => g.account === 'acad2')?.from, 'given back today: dated today').toBe('2026-07-19')
+    /* fix read 9, fault A: a Redo that turns a right back on dates it the day it is pressed (was: its recorded day) —
+       NARROWED by fix read 10, fault E: only where its man has moved since its Undo; Hunter's move (16 Jul) came before
+       the grant (18 Jul) and its Undo (19 Jul), so the Redo puts back the day it recorded */
+    expect(unitRows().grants.find(g => g.account === 'acad2')?.from, 'given back with no move since its Undo: its own day').toBe('2026-07-18')
     expect(setMaster('acad2', true).ok).toBe(true)
     on(20)
     expect(globalUndo().ok, 'Undo of the mark').toBe(true)
     const r2 = globalRedo(); expect(r2.ok, 'Redo of the mark: ' + JSON.stringify(r2)).toBe(true)
-    expect(ACCOUNTS_LIST.find(a => a.id === 'acad2')?.masterFrom, 'given back today: dated today (fault A)').toBe('2026-07-20')
+    expect(ACCOUNTS_LIST.find(a => a.id === 'acad2')?.masterFrom, 'given back with no move since its Undo: its own day (fix read 10, fault E)').toBe('2026-07-19')
   })
 })
 

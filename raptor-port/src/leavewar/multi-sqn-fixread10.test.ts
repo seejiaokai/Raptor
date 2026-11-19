@@ -15,7 +15,7 @@ import { deriveActor } from '../command/actor'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut } from './sync'
-import { unitsLoad, setGrant, removeGrant, addUnit, homeOn } from '../state/units'
+import { unitsLoad, setGrant, removeGrant, addUnit, homeOn, unitRows } from '../state/units'
 import { HOME_PFX } from '../state/units-model'
 import { INPUTS } from '../engine/inputs'
 import { NOTICES, noticesFor, noticeLeftBell, noticeHoliday, noticeWar, noticePosting, noticeAboutHim, type Notice } from '../state/notices'
@@ -340,5 +340,65 @@ describe('fault D — a right that changes hands through the account row is a ri
     expect(ownershipViolation(e({ ...b, pid: 'dj' }) as any)).toMatch(/link to its person not dated today/)
     expect(ownershipViolation(e({ ...b, pid: 'dj', pidFrom: '2026-07-18' }) as any)).toMatch(/master mark not dated today/)
     expect(ownershipViolation(e({ ...b, pid: 'dj', pidFrom: '2026-07-18', masterFrom: '2026-07-18' }) as any) ?? 'allowed').toBe('allowed')
+  })
+})
+
+describe('fault E — a right taken off after a move and put back by its Undo or Redo, with no move since, keeps its day (O10-1, F10-5)', () => {
+  it('(O10-1) master since 10 Jul, moved 12 Jul, the mark taken off by mistake 15 Jul and undone at once: its day and his line come back', () => {
+    on(10)
+    signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
+    expect(hunterAcct().masterFrom).toBe('2026-07-10')
+    const l = hunterLine()
+    homes('prowler', 'hc', [['u142', '2026-07-10'], ['u149', '2026-07-12']])
+    on(15)
+    expect(shown('prowler', l.id), 'kept through his 12 Jul move: he was the master that day').toBe(true)
+    signInAs('ad', 'a'); expect(setMaster('acad2', false).ok).toBe(true)
+    const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
+    expect(hunterAcct().master).toBe(true)
+    expect({ from: hunterAcct().masterFrom, shown: shown('prowler', l.id) }).toEqual({ from: '2026-07-10', shown: true })
+  })
+  it('(F10-5) Plan of 149 from 13 Jul, told as filer 15 Jul, moved to 150 on 16 Jul; on 17 Jul the Plan taken off and undone: the line comes back', () => {
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    on(15)
+    signInAs('ad2', 'a2'); fileFor('osp9', 'prowler')
+    signInAs('ad', 'a'); rmk('changed by Saber on the 15th')
+    const l = lineTo('prowler')!
+    expect(l?.fu).toEqual(['u149'])
+    homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
+    expect(shown('prowler', l.id), 'kept through his move by Plan of 149').toBe(true)
+    signInAs('ad', 'a')
+    expect(removeGrant('acad2', 'u149').ok).toBe(true)
+    expect(shown('prowler', l.id), 'gone with the Plan').toBe(false)
+    const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
+    expect(shown('prowler', l.id), 'the Undo put the Plan back as it was').toBe(true)
+  })
+  it('(Redo, no move since its Undo) Plan of 149 given 13 Jul, he moves 16 Jul; on 17 Jul its Undo and Redo: the Redo puts back 13 Jul', () => {
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
+    const g = () => unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149')
+    const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
+    expect(g(), 'undone: off').toBeFalsy()
+    const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
+    expect(g()?.from, 'off only since this morning\'s Undo, no move since').toBe('2026-07-13')
+  })
+  it('(Redo, a move since its Undo) Plan of 149 given 13 Jul and undone 15 Jul; he moves 16 Jul; the Redo on 17 Jul: a right given today', () => {
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    on(15)
+    const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
+    homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
+    const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
+    expect(unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149')?.from).toBe('2026-07-17')
+  })
+  it('(control — a move between) the Plan taken off 15 Jul, he moves 16 Jul, the Undo on 17 Jul: a right given today', () => {
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    on(15); signInAs('ad', 'a')
+    expect(removeGrant('acad2', 'u149').ok).toBe(true)
+    homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
+    const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
+    expect(unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149')?.from).toBe('2026-07-17')
   })
 })
