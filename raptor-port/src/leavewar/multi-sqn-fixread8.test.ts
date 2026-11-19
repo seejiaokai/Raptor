@@ -187,12 +187,13 @@ describe('fault G — the gate checks a grant’s day and the master mark’s da
     expect(globalUndo().ok, 'Undo of the grant').toBe(true)
     expect(unitRows().grants.some(g => g.account === 'acad2')).toBe(false)
     const r = globalRedo(); expect(r.ok, 'Redo of the grant: ' + JSON.stringify(r)).toBe(true)
-    expect(unitRows().grants.find(g => g.account === 'acad2')?.from, 'its own day with it').toBe('2026-07-18')
+    /* fix read 9, fault A: a Redo that turns a right back on dates it the day it is pressed (was: its recorded day) */
+    expect(unitRows().grants.find(g => g.account === 'acad2')?.from, 'given back today: dated today').toBe('2026-07-19')
     expect(setMaster('acad2', true).ok).toBe(true)
     on(20)
     expect(globalUndo().ok, 'Undo of the mark').toBe(true)
     const r2 = globalRedo(); expect(r2.ok, 'Redo of the mark: ' + JSON.stringify(r2)).toBe(true)
-    expect(ACCOUNTS_LIST.find(a => a.id === 'acad2')?.masterFrom).toBe('2026-07-19')
+    expect(ACCOUNTS_LIST.find(a => a.id === 'acad2')?.masterFrom, 'given back today: dated today (fault A)').toBe('2026-07-20')
   })
 })
 

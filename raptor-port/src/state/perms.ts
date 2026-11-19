@@ -1579,6 +1579,34 @@ const ACCOUNT_LIKE = (p: any) => JSON.stringify(p == null ? null : [p.cs, !!p.ar
    (his D2205, 18 Nov 26; security H4): a master's account as the loader reads it — changed, gone, or his person renamed,
    archived, deleted or made a placeholder — only by a master; his person deleted by nobody. The mark itself keeps its
    own rules in section 6. Every actor but the app itself. */
+/* A RIGHT'S DAY — ONE RULE FOR A COMMAND AND FOR AN UNDO OR REDO (fix read 9, fault A — Fable 1, the fresh Opus read's
+   O9-2; his D2218, D2223). The bell's move-day test counts a grant from its `from` and the master mark from its
+   `masterFrom` (notices.ts adminThen): a man moved squadron loses the lines of a squadron he held no right in on his move
+   day. A right turned ON is a right given today, whoever turns it on — a command, or an Undo or Redo pressed after the
+   move putting back a right taken off before it (the recorded day brought the retired line back). A right that stands
+   unchanged keeps its day. These two say "unchanged"; the gate (unitRowViolation, accountShapeAndMasterViolation) and the
+   restore's own writing (restoreRedated) both ask them, so the restore never writes what the gate refuses. */
+export const grantKept = (b: any, n: any): boolean => b != null && n != null && b.level === n.level
+export const masterKept = (was: any, is: any): boolean => !!was && !!is && was.master === true && is.master === true
+/* …and the restore writes it so: an Undo or Redo whose image turns a right on dates it today (installed in
+   undo-wire.ts as the timeline's `redate` hook, before the restore is named for verifiedReplay, so the image the
+   timeline vouches for IS the one written); one that leaves a right standing keeps the day it has now. */
+export function restoreRedated(c: Change): Change {
+  if (c.collection !== 'settings' || c.op !== 'put' || c.after == null) return c
+  const id = String(c.id), n: any = c.after, today = todayIso()
+  if (id.startsWith(GRANT_PFX)) {
+    const b: any = store.get(id, null)
+    const from = grantKept(b, n) ? b.from : today
+    return n.from === from ? c : { ...c, after: { ...n, from } }
+  }
+  if (id.startsWith(ACCOUNT_ROW)) {
+    if (n.master !== true) return c
+    const was: any = accountBefore(id.slice(ACCOUNT_ROW.length), store.get(id, null))
+    const masterFrom = masterKept(was, n) ? was.masterFrom : today
+    return n.masterFrom === masterFrom ? c : { ...c, after: { ...n, masterFrom } }
+  }
+  return c
+}
 function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system') return null
@@ -1596,10 +1624,16 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
   const today = todayIso()
   for (const c of env.changes) {
     if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW) || c.after == null) continue
-    if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
     const was: any = c.before != null ? c.before : accountBefore(String(c.id).slice(ACCOUNT_ROW.length), null)
     const is: any = c.after
-    const want = is.master !== true ? undefined : was && was.master === true ? was.masterFrom : today
+    /* (fix read 9, fault A — Fable 1, Opus O9-2): the day is kept only where the mark stood before and after
+       (masterKept). A mark turned on, by a command or by an Undo or Redo, is dated today: an Undo or Redo pressed after a
+       move putting back the recorded day brought back a line the move had retired (D2218, D2223). So the replay
+       exemption holds only where the mark stands unchanged; the restore itself writes today's day (restoreRedated), so
+       it is never refused. */
+    const kept = masterKept(was, is)
+    if (env.origin === 'restore' && (is.master !== true || kept) && REPLAY && REPLAY(env)?.(c)) continue
+    const want = is.master !== true ? undefined : kept ? was.masterFrom : today
     if (is.masterFrom !== want) return `the master mark not dated today (${c.id})`
   }
   const droppedB = droppedKeys(w.rawB, w.acctB, w.personB)
@@ -1714,8 +1748,14 @@ function unitRowViolation(env: CommitEnvelope): string | null {
            new grant, or one whose level changes, is dated today (as setGrant writes it); one of the same level keeps its
            day. A restore's verified replay puts back the very image its step recorded (undo/timeline.ts verifiedReplay).
            units-model.ts validGrant's leniency stays the loader's (a row from before the day was kept, D56). */
-        if (!(env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
-          const want = b != null && b.level === n.level ? b.from : today
+        /* (fix read 9, fault A — Fable 1, Opus O9-2): the day is kept only for a right that stands unchanged
+           (grantKept). A grant put back by an Undo or Redo where none stands, or at another level, is a right given
+           today: keeping its recorded day brought back a line his move had retired (D2218, D2223). So the replay
+           exemption holds only for a right unchanged; the restore itself writes today's day (restoreRedated), so an Undo
+           or Redo is never refused for it. */
+        const kept = grantKept(b, n)
+        if (!(kept && env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
+          const want = kept ? b.from : today
           if (n.from !== want) return `a right not dated today (${id})`
         }
       }

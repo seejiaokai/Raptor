@@ -104,6 +104,11 @@ export interface UndoHooks {
      would write to another squadron's bell what no one there may write, and show nobody anything. Such a record is left
      out of the restore, the rest of the step going through without it. None installed: nothing left out. */
   leaveOut?(change: Change, dir: 'undo' | 'redo'): boolean
+  /* A RIGHT AN UNDO OR REDO TURNS ON IS DATED TODAY (fix read 9, fault A — Fable 1, the fresh Opus read's O9-2; his
+     D2218, D2223): a grant or the master mark put back with the day its step recorded, after the man moved squadron,
+     brought back a line his move had retired. The image is re-dated BEFORE the restore is named for verifiedReplay, so
+     the image vouched for is the one written (state/perms.ts restoreRedated). None installed: written as recorded. */
+  redate?(change: Change, dir: 'undo' | 'redo'): Change
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -757,7 +762,10 @@ function toRecordEntry(ch: Change): RecordEntry {
 function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo'): { ok: boolean; reason?: string; seq?: number } {
   /* (what the restore leaves out — the leaveOut hook above: a bell line put back on a man it has left, D2218) */
   const leave = hooks.leaveOut
-  const changes = leave ? changesIn.filter(c => !leave(c, dir)) : changesIn
+  const kept = leave ? changesIn.filter(c => !leave(c, dir)) : changesIn
+  /* (and a right it turns on, dated today — the redate hook above; fix read 9, fault A) */
+  const redate = hooks.redate
+  const changes = redate ? kept.map(c => redate(c, dir)) : kept
   // group the write entries by their owning store
   const byStore = new Map<EnlistableStore, RecordEntry[]>()
   const missing: string[] = []

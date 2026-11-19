@@ -25,7 +25,7 @@ import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
 import { verifiedReplay, verifiedWarRestore } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck } from './perms'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { weekOf, dayKeyOf } from '../undo/derive'
@@ -428,6 +428,10 @@ export function installGlobalUndo(): void {
        left — a line of his old squadron's, once he has moved (state/notices.ts noticeLeftBell). The Redo of Kestrel's
        Open for bidding goes through without Osprey's line, now 142's; taking a line AWAY still rides the restore */
     leaveOut: (c) => c.collection === 'notices' && c.op === 'put' && !!c.after && noticeLeftBell(c.after as Notice),
+    /* fix read 9, fault A (Fable 1, the fresh Opus read's O9-2; his D2218, D2223): a grant or the master mark an Undo or
+       Redo turns on is dated today, as a command dates it — the recorded day, pressed after a move, brought a retired
+       line back. The gate asks the same rule (state/perms.ts restoreRedated, grantKept, masterKept) */
+    redate: (c) => restoreRedated(c),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
   /* …and the commit gate trusts a restore only where the timeline vouches for it, record by record (perms.ts) */
