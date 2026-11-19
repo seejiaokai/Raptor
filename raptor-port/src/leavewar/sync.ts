@@ -1664,7 +1664,8 @@ export function followUpsFor(changes: ReadonlyArray<{ collection: string; op: st
       /* (where a move took it, too: the taken-back line says the line it replaces word for word, struck — D1699) */
       part = { k: 'lwback', ...(p.k === 'lw' && p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}), ...(p.k === 'lw' && p.to ? { to: p.to, ...(p.tb ? { tb: p.tb } : {}) } : {}) } as NoticePart
     } else part = p.k === 'lw' ? { ...p, again: true, ref: n.id } : { ...p }
-    out.push({ of: n, to: String(n.to), name: warLineName(part), day: String((part as any).a), iid: '', what: [part] })
+    /* (its day is the line's own first day — both the "taken back" and the "again" part carry it as `a`) */
+    out.push({ of: n, to: String(n.to), name: warLineName(part), day: String(p.a), iid: '', what: [part] })
   }
   return out
 }
