@@ -23,7 +23,7 @@ import { inputBelongs, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, 
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, myUnit } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setFollowUpsProbe, myUnit } from '../state/perms'
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
@@ -165,7 +165,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
+import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead, forgetRead } from '../state/noticeseen'
@@ -295,6 +295,9 @@ export function installAbsenceDoor(): void {
   /* WHICH SQUADRON'S WAR IS LOADED (perms.ts setLwUnitProbe — the second fix read, H2): a war record's id names no unit, so
      the gate asks here; only while each squadron has a world of its own (the world door, set at boot) */
   setLwUnitProbe(() => (WORLD_DOOR ? worldUnit() : null))
+  /* WHAT A RESTORE'S FOLLOW-UP LINES MAY SAY (perms.ts setFollowUpsProbe — fix read 6, fault B): the one body that writes
+     them, so the gate compares a "taken back" or "again" line with what this restore owes, field for field */
+  setFollowUpsProbe(followUpsFor)
   setLwDayOpenProbe((cellId: string) => {
     const iDate = cellId.lastIndexOf(':')
     if (iDate < 0) return true
@@ -1625,19 +1628,26 @@ export function openWarAt(iso: string, personId?: string | null): void {
   raptorNotify()
 }
 
-/* "TAKEN BACK" (M4 9.3 — owner D1216, D148). An Undo restores an exact image, so it cannot itself leave a line or write
-   one: the decision's line goes with the Undo, as every notice does. Then, once the Undo has LANDED (the undo's own
-   `reversed` hook — state/undo-wire.ts), this follow-up — a command of its own, never an Undo step (undo/timeline.ts
-   NOT_STEPS) — writes "Approval of LL taken back · Saber" for each line that went which its member had already READ (his
-   read record, which an admin may read — state/perms.ts NoticeSeen): one he had not read simply went. A Redo puts the old
-   line back with its old id — already in his read marks — so where a "taken back" stands for it, Redo's follow-up writes
-   a FRESH line on top, new id and the time now ("LL approved again · Saber"), unread (the fresh read, finding 3). */
-export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; op: string; after?: unknown }>, dir: 'undo' | 'redo'): number {
-  const made: Notice[] = []
+/** ONE FOLLOW-UP LINE A RESTORE OWES (fix read 6, fault B — the security read's SEC6-B, Astra's 1): what the line says
+ *  (`what`), its name, day and input, and whom it reaches — ids, times and who wrote it aside. `of` — the line it follows
+ *  up (its `ref`). */
+export interface FollowUp { of: Notice; to: string; name: string; day: string; iid: ''; what: [NoticePart] }
+/** THE FOLLOW-UP LINES A RESTORE'S NOTICES OWE, AND NOTHING ELSE (fix read 6, fault B — the security read's SEC6-B,
+ *  Astra's 1). The gate let a genuine Undo or Redo carry any "taken back" or "again" line naming one of its lines: it
+ *  checked the part's kind, its `ref` and its reader, never what the line said, its name, day or input, nor how many named
+ *  one line — so a line "OL 1–31 Dec 2027 approved" rode 149's Undo onto a moved man's bell. This is the ONE body that
+ *  says what a follow-up line says: warNoticesReversed (below) writes only from it, and the commit gate
+ *  (state/perms.ts followUpOf, through its probe) lets a follow-up reach another squadron's man only where it is one of
+ *  these, field for field. `changes` — each notice change's line image (a put's after, a delete's before): the step's
+ *  own lines, or the restore's verified replay of them. Pure: it reads, never writes. Who is told is asked here too —
+ *  a man since moved is no longer told of the war's own business, but a line about his own leave follows him (his D2222);
+ *  one whose line left his bell on his move day (D2218) is told nothing more. */
+export function followUpsFor(changes: ReadonlyArray<{ collection: string; op: string; before?: unknown; after?: unknown }>, dir: 'undo' | 'redo'): FollowUp[] {
+  const out: FollowUp[] = []
   for (const c of changes) {
-    if (c.collection !== 'notices' || c.op !== 'put' || !c.after) continue
-    const n = c.after as Notice
-    if (!isWarNotice(n)) continue
+    if (c.collection !== 'notices') continue
+    const n = (c.op === 'delete' ? c.before : c.after) as Notice | undefined
+    if (!n || typeof n !== 'object' || !isWarNotice(n)) continue
     /* (one since moved to another squadron is no longer told here of the war's own business — bidding opened or closed,
        atWarHome — but a line about his OWN leave follows him: its Undo strikes it "taken back" where he read it, its Redo
        says "again" — his D2222, 19 Nov 26; the gate lets exactly that follow-up through, state/perms.ts followUpOf) */
@@ -1648,6 +1658,30 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
     /* (a war notice's first part is one of the war's own three kinds — isWarNotice, just above) */
     const p = (n.what || [])[0] as Extract<NoticePart, { k: 'lw' | 'lwopen' | 'lwback' }> | undefined
     if (!p || p.k === 'lwback') continue
+    let part: NoticePart
+    if (dir === 'undo') {
+      const d = p.k === 'lwopen' ? (p.open ? 'open' : 'close') : p.d
+      /* (where a move took it, too: the taken-back line says the line it replaces word for word, struck — D1699) */
+      part = { k: 'lwback', ...(p.k === 'lw' && p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}), ...(p.k === 'lw' && p.to ? { to: p.to, ...(p.tb ? { tb: p.tb } : {}) } : {}) } as NoticePart
+    } else part = p.k === 'lw' ? { ...p, again: true, ref: n.id } : { ...p }
+    out.push({ of: n, to: String(n.to), name: warLineName(part), day: String((part as any).a), iid: '', what: [part] })
+  }
+  return out
+}
+
+/* "TAKEN BACK" (M4 9.3 — owner D1216, D148). An Undo restores an exact image, so it cannot itself leave a line or write
+   one: the decision's line goes with the Undo, as every notice does. Then, once the Undo has LANDED (the undo's own
+   `reversed` hook — state/undo-wire.ts), this follow-up — a command of its own, never an Undo step (undo/timeline.ts
+   NOT_STEPS) — writes "Approval of LL taken back · Saber" for each line that went which its member had already READ (his
+   read record, which an admin may read — state/perms.ts NoticeSeen): one he had not read simply went. A Redo puts the old
+   line back with its old id — already in his read marks — so where a "taken back" stands for it, Redo's follow-up writes
+   a FRESH line on top, new id and the time now ("LL approved again · Saber"), unread (the fresh read, finding 3).
+   What each line says is followUpsFor's (above — fix read 6, fault B); here only whether it is owed now. */
+export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; op: string; after?: unknown }>, dir: 'undo' | 'redo'): number {
+  const made: FollowUp[] = []
+  /* (the step's own lines: what it put — a line it deleted owes no follow-up, as before) */
+  for (const f of followUpsFor(changes.filter(c => c.op === 'put'), dir)) {
+    const n = f.of
     /* the "again" lines an earlier Redo wrote for this line, newest last (the fixes' M9 — the Opus read's 5) */
     const again = NOTICES.filter(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lw' && q.again && q.ref === n.id })
     if (dir === 'undo') {
@@ -1657,21 +1691,18 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
          "taken back" he already holds still stands as what he knows (D1216); read, he is told "taken back" once more. */
       const last = again[again.length - 1]
       if (last && !hasRead(n.to, last)) continue
-      const d = p.k === 'lwopen' ? (p.open ? 'open' : 'close') : p.d
-      /* (where a move took it, too: the taken-back line says the line it replaces word for word, struck — D1699) */
-      made.push({ ...n, what: [{ k: 'lwback', ...(p.k === 'lw' && p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}), ...(p.k === 'lw' && p.to ? { to: p.to, ...(p.tb ? { tb: p.tb } : {}) } : {}) }] })
     } else {
       if (!NOTICES.some(x => x.id === n.id) || !NOTICES.some(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lwback' && q.ref === n.id })) continue
       /* an "again" line he has not read is shown again with its line (M9): no second one beside it */
       const last = again[again.length - 1]
       if (last && !hasRead(n.to, last)) continue
-      made.push({ ...n, what: [p.k === 'lw' ? { ...p, again: true, ref: n.id } : { ...p }] })
     }
+    made.push(f)
   }
   if (!made.length) return 0
   const by = me()
   let wrote = 0
-  commitInputs('lw.notice', () => { for (const n of made) wrote += noticeWar([n.to], by != null ? String(by) : null, n.what[0]!) })
+  commitInputs('lw.notice', () => { for (const f of made) wrote += noticeWar([f.to], by != null ? String(by) : null, f.what[0]) })
   return wrote
 }
 

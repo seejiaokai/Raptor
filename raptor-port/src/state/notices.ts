@@ -503,11 +503,18 @@ export function holidayLineAny(iso: string): boolean {
 }
 
 /* ---- the Leave War's lines (M4 batch 9) ---------------------------------------------------------------------- */
+/** the name a war line is written under — the war's own business (bidding opened or closed, and its take-back) "Leave
+ *  War", a man's leave "Your leave". ONE body: the line's writer (noticeWar) and the follow-up a restore owes
+ *  (leavewar/sync.ts followUpsFor, which the commit gate compares a restore's follow-up with — fix read 6, fault B). */
+export function warLineName(part: NoticePart): string {
+  const p: any = part
+  return p.k === 'lwopen' || (p.k === 'lwback' && (p.d === 'open' || p.d === 'close')) ? 'Leave War' : 'Your leave'
+}
 /** a war line, written inside the war command that made the change (leavewar/sync.ts) — never to whoever did it, never
  *  to a man who has left. Answers how many were made. */
 export function noticeWar(to: readonly string[], by: string | null, part: NoticePart, at: number = Date.now()): number {
   const p: any = part
-  const name = p.k === 'lwopen' || (p.k === 'lwback' && (p.d === 'open' || p.d === 'close')) ? 'Leave War' : 'Your leave'
+  const name = warLineName(part)
   let made = 0
   for (const who of new Set(to.map(String))) {
     if (!here(who) || (by != null && who === by)) continue

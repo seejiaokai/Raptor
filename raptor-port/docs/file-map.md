@@ -1357,7 +1357,11 @@ ALL AVAIL input carried a line to another squadron's man): **New:** `src/leavewa
 **Changed:** `src/state/notices.ts` (`filerTold` judges an input naming nobody by its squadron; `inputUnit`, that
 squadron, shared with the gate's 7c; `changeFiler`, the filer as the input stood before; `APP_ACTS` moved here from
 `sched-commit.ts`), `src/state/perms.ts` (7c reads `inputUnit`; `toldBy` the before-image filer; the admin door asks the
-line be signed by the actor), `src/state/sched-commit.ts` (reads `APP_ACTS`).
+line be signed by the actor), `src/state/sched-commit.ts` (reads `APP_ACTS`). Fault B (SEC6-B, Astra 1 — a genuine
+Undo or Redo carried any "taken back" / "again" line): **New:** `src/leavewar/multi-sqn-fixread6-followups.test.ts`;
+**Changed:** `src/leavewar/sync.ts` (`followUpsFor`, the one body that says what a follow-up line says;
+`warNoticesReversed` writes from it; installs the gate's probe), `src/state/perms.ts` (`setFollowUpsProbe`;
+`followUpOf` compares field for field, one follow-up a named line), `src/state/notices.ts` (`warLineName`).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and
