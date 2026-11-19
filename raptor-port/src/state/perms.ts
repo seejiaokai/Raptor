@@ -41,6 +41,8 @@ import {
 } from './units-model'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
+/* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
+import { noticeAboutHim } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -1860,6 +1862,22 @@ const holidayLine = (n: any): boolean => Array.isArray(n?.what) && n.what.length
    undoes a posting." The line left his bell on the day he moved (state/notices.ts noticeLeftBell), the take-back tells
    only who would be told today (leavewar/sync.ts postingLinesOf), and a 142 command touching a 149 man's bell is refused
    like any other — Astra's fix read 4 §1, a forged delete of an older run's line from his bell, with it.) */
+/* A RESTORE'S "TAKEN BACK" / "AGAIN" LINE (his D2222): one part — `lwback` (an Undo: the line it names went) or an `lw`
+   marked `again` (a Redo: the line it names came back) — naming by `ref` a line about the same man, of the same kind of
+   change, that this restore's own verified replay (`replayed`) removed or put back. */
+function followUpOf(env: CommitEnvelope, n: any, replayed: (c: Change) => boolean): boolean {
+  const p: any = Array.isArray(n?.what) && n.what.length === 1 ? n.what[0] : null
+  if (!p || typeof p.ref !== 'string' || !p.ref) return false
+  const back = p.k === 'lwback' && p.d !== 'open' && p.d !== 'close'
+  const again = p.k === 'lw' && p.again === true
+  if (!back && !again) return false
+  return env.changes.some(x => {
+    if (x.collection !== 'notices' || String(x.id) !== p.ref || !replayed(x)) return false
+    const was: any = back ? (x.op === 'delete' ? x.before : null) : (x.op === 'put' ? x.after : null)
+    const q: any = was && Array.isArray(was.what) ? was.what[0] : null
+    return !!q && q.k === 'lw' && String(was.to) === String(n.to) && noticeAboutHim(was)
+  })
+}
 function adminOwnerViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role !== 'admin') return null
@@ -1889,9 +1907,21 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
            149's "Bidding open" back on Osprey, 142's since his move — a line the action itself would not write that day.
            A line put back on a man whose bell it has left is left out of the restore before it reaches here (state/
            undo-wire.ts leaveOut); one put on another squadron's man for any other reason is judged as any write. */
-        if (to !== self && c.op === 'delete' && env.origin === 'restore' && self != null && String(n.by ?? '') === self) {
+        /* …OR PUTTING BACK A LINE ABOUT ITS ADDRESSEE HIMSELF (fix read 5 — the Opus read's 1 and 2, Astra's 2; his D2222,
+           19 Nov 26: "A bell line about a moved man's own leave follows him … and its Redo puts the line back"). A decision
+           on Osprey's own leave stays on his bell after his move (state/notices.ts noticeAboutHim, so undo-wire's leaveOut
+           keeps it in the restore), and the delete-only pass above refused Kestrel's Redo whole. Only a line about its
+           addressee, only as the verified replay of this admin's own step, image for image — a squadron-business line
+           (bidding open or closed) is still left out of the restore before it reaches here, and judged as any write. */
+        if (to !== self && env.origin === 'restore' && self != null && String(n.by ?? '') === self
+          && (c.op === 'delete' || (c.before == null && noticeAboutHim(n)))) {
           if (replayed === undefined) replayed = REPLAY ? REPLAY(env) : null
           if (replayed && replayed(c)) continue
+          /* …AND ITS "TAKEN BACK" OR "AGAIN" FOLLOW-UP (D2222 with D1693, D1699): written inside that same restore (the
+             undo's `reversed` hook — leavewar/sync.ts warNoticesReversed — joins the restore's envelope), a fresh line by
+             this admin naming (`ref`) a line about the same man that this very restore verifiably took away (an Undo) or
+             put back (a Redo). Nothing else in the envelope vouches for it: a forged restore gets no replay at all. */
+          if (replayed && c.op === 'put' && followUpOf(env, n, replayed)) continue
         }
         if (to !== self && !ownsHim(to)) return `a bell line of another squadron's man (${where})`
       }

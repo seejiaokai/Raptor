@@ -165,7 +165,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
+import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead, forgetRead } from '../state/noticeseen'
@@ -1638,8 +1638,10 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
     if (c.collection !== 'notices' || c.op !== 'put' || !c.after) continue
     const n = c.after as Notice
     if (!isWarNotice(n)) continue
-    /* (one since moved to another squadron is no longer told here — atWarHome) */
-    if (!atWarHome(String(n.to))) continue
+    /* (one since moved to another squadron is no longer told here of the war's own business — bidding opened or closed,
+       atWarHome — but a line about his OWN leave follows him: its Undo strikes it "taken back" where he read it, its Redo
+       says "again" — his D2222, 19 Nov 26; the gate lets exactly that follow-up through, state/perms.ts followUpOf) */
+    if (!atWarHome(String(n.to)) && !noticeAboutHim(n)) continue
     /* (a war notice's first part is one of the war's own three kinds — isWarNotice, just above) */
     const p = (n.what || [])[0] as Extract<NoticePart, { k: 'lw' | 'lwopen' | 'lwback' }> | undefined
     if (!p || p.k === 'lwback') continue

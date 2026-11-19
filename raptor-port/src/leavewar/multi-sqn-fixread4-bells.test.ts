@@ -15,7 +15,9 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
-import { getState, initStore as lwInitStore, setPeople, worldUnit, openDates } from './state/store'
+import { getState, initStore as lwInitStore, setPeople, worldUnit, openDates, placeApproved, setCell, setBidState } from './state/store'
+import { ownershipViolation } from '../state/perms'
+import { deriveActor } from '../command/actor'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor } from './sync'
@@ -146,5 +148,76 @@ describe("D2218 — a moved man's old squadron's war lines", () => {
     vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); unitsLoad()
     expect(homeOn('osp9')).toBe('u149')
     expect(noticesFor('osp9').some(openLine)).toBe(false)
+  })
+})
+
+/* Fix read 5 (the Opus read's 1 and 2 = Astra's 2), by his D2222 (19 Nov 26): "A bell line about a moved man's own leave
+   follows him: when his old squadron undoes the decision after his move, he is told as anyone is — an unread line goes,
+   a read one is struck 'taken back' — and its Redo puts the line back." Kestrel (149) decides Osprey's LL on 15 Jul;
+   Osprey's move to 142 from 16 Jul is saved; on 16 Jul Kestrel's Undo, Redo and Undo again. The Redo was refused whole
+   (the gate's restore pass was delete-only), and a read line went silently (the reversal writer skipped anyone not at
+   home). Refused: a request with no input change beside it, so nothing else in the step can carry it through. */
+describe("D2222 — a line about a moved man's own leave follows him", () => {
+  const D = '2026-07-15'
+  const ownLine = (n: Notice) => n.to === 'osp9' && (n.what || [])[0]?.k === 'lw' && !(n.what[0] as any).again
+  const againLine = (ref: string) => (n: Notice) => n.to === 'osp9' && (n.what || [])[0]?.k === 'lw' && (n.what[0] as any).again === true && (n.what[0] as any).ref === ref
+  const decide = (d: 'approved' | 'refused'): Notice => {
+    signInAs('ad9', 'a9')
+    expect(worldUnit()).toBe('u149')
+    if (d === 'approved') expect(placeApproved([{ personId: 'osp9', date: D }], 'LL').approved).toBe(1)
+    else {
+      expect(setCell('osp9', D, 'LL')).toBe(true)
+      expect(NOTICES.some(ownLine), 'a pending bid tells nothing').toBe(false)
+      setBidState('osp9', D, 'refused')
+    }
+    const l = NOTICES.find(ownLine)
+    expect(l, `Osprey told: LL ${d}`).toBeDefined()
+    expect((l!.what[0] as any).d).toBe(d === 'approved' ? 'added' : 'refused')   // (placed approved: "LL added and approved")
+    return l!
+  }
+  for (const d of ['approved', 'refused'] as const) {
+    it(`control, no move (${d}): Undo → Redo → Undo`, () => {
+      const l = decide(d)
+      nextDay()
+      expect(globalUndo().ok).toBe(true)
+      expect(NOTICES.some(n => n.id === l.id)).toBe(false)
+      const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
+      expect(NOTICES.some(n => n.id === l.id)).toBe(true)
+      expect(globalUndo().ok).toBe(true)
+    })
+    for (const read of [false, true]) {
+      it(`${d}, ${read ? 'read' : 'unread'}, then moved: Undo ${read ? 'strikes it "taken back"' : 'takes it'}, Redo puts it back, Undo again`, () => {
+        const l = decide(d)
+        if (read) { mem['sqn142_noticeseen:osp9'] = JSON.stringify({ upto: 0, ids: [l.id] }); noticeSeenLoad() }
+        moveOsprey(); nextDay()
+        expect(homeOn('osp9')).toBe('u142')
+        expect(noticesFor('osp9').some(n => n.id === l.id), 'about himself: still on his bell').toBe(true)
+        const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
+        expect(NOTICES.some(n => n.id === l.id)).toBe(false)
+        const backs = NOTICES.filter(n => backLine(n) && (n.what[0] as any).ref === l.id)
+        expect(backs.length, read ? 'one "taken back" line' : 'an unread line simply goes').toBe(read ? 1 : 0)
+        if (read) { expect(backs[0]!.by).toBe('kes9'); expect((backs[0]!.what[0] as any).d).toBe((l.what[0] as any).d) }
+        const r = globalRedo(); expect(r.ok, 'Redo: ' + JSON.stringify(r)).toBe(true)
+        expect(NOTICES.some(n => n.id === l.id), 'his line is back').toBe(true)
+        expect(NOTICES.filter(againLine(l.id)).length, read ? '"again" over the "taken back"' : 'no "again" with no "taken back"').toBe(read ? 1 : 0)
+        const u2 = globalUndo(); expect(u2.ok, 'Undo again: ' + JSON.stringify(u2)).toBe(true)
+        expect(NOTICES.some(n => n.id === l.id)).toBe(false)
+        signInAs('us9', 'us9')
+        expect(noticesFor('osp9').some(n => n.id === l.id)).toBe(false)
+      })
+    }
+  }
+  it('no wider: Kestrel cannot write a "taken back" line to Osprey (now 142’s) outside the Undo that removed his line', () => {
+    const l = decide('approved')
+    moveOsprey(); nextDay()
+    const env: any = { type: 'lw.notice', origin: 'user', actor: deriveActor(), changes: [{ collection: 'notices', id: 'nforge', op: 'put', before: null,
+      after: { id: 'nforge', to: 'osp9', by: 'kes9', at: Date.now(), iid: '', name: 'Your leave', day: D, what: [{ k: 'lwback', c: 'LL', a: D, b: D, d: 'approved', ref: l.id }] } }] }
+    expect(ownershipViolation(env)).toMatch(/bell line of another squadron/)
+    /* …nor put his own line back, calling itself a restore */
+    const env2: any = { type: 'undo.restore', origin: 'restore', actor: deriveActor(), changes: [{ collection: 'notices', id: l.id, op: 'put', before: null, after: { ...l } }] }
+    expect(ownershipViolation(env2)).toMatch(/bell line of another squadron/)
+    /* …nor a "taken back" line beside a forged delete of his line */
+    const env3: any = { ...env2, changes: [{ collection: 'notices', id: l.id, op: 'delete', before: { ...l }, after: null }, env.changes[0]] }
+    expect(ownershipViolation(env3)).toMatch(/bell line of another squadron/)
   })
 })

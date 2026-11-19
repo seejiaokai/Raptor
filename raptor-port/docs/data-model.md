@@ -1789,7 +1789,11 @@ squadron are judged by whose they are:
   Nothing else crosses (his D2218, 19 Nov 26 — fix read 3's A2 exception for a posting taken back is gone): a line
   held by a man since moved squadron left his bell on his move day, so no take-back of the old squadron's deletes it or
   tells him; an admin's Undo or Redo of his own step may take such a line of his away, never put one back (the restore
-  leaves it out — `state/undo-wire.ts leaveOut`; `state/perms.ts adminOwnerViolation`).
+  leaves it out — `state/undo-wire.ts leaveOut`; `state/perms.ts adminOwnerViolation`). A line about the moved man
+  himself — a decision on his own leave — follows him (his D2222, 19 Nov 26): the admin's verified Undo or Redo of his own
+  step takes it away or puts it back, image for image, and inside that same restore writes his "taken back" or "again"
+  line, naming a line about him the restore itself took away or put back (`state/perms.ts followUpOf`,
+  `leavewar/sync.ts warNoticesReversed`); nothing else writes to his bell from the old squadron.
 - *The Tracker*: each squadron's Tracker is its own world, its record ids naming none; the Tracker tells the gate which
   squadron's is open, and a change there needs admin of it from an admin, home or rights there from a member.
 - *A man who moves squadron* (his D2203) loses every right he held in another squadron, in the command that moves him.
