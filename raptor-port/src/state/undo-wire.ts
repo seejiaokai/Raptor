@@ -24,8 +24,8 @@ import { deletedRestoreProblem, postingRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
-import { verifiedReplay, verifiedWarRestore, restoreOffAt } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, setRestoreOffAt } from './perms'
+import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir } from '../undo/timeline'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, setRestoreOffAt, setRestoreDir } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { weekOf, dayKeyOf } from '../undo/derive'
@@ -433,13 +433,14 @@ export function installGlobalUndo(): void {
        line back. The gate asks the same rule (state/perms.ts restoreRedated, grantKept, masterKept) */
     /* (fix read 10, fault E — O10-1, Fable F10-5): with the moment the right went off, so one his man has not moved
        squadron since keeps the day it had (a mistaken removal undone gives back what it took) */
-    redate: (c, _dir, offAt) => restoreRedated(c, offAt),
+    redate: (c, dir, offAt) => restoreRedated(c, offAt, dir),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
   /* …and the commit gate trusts a restore only where the timeline vouches for it, record by record (perms.ts) */
   setInputReplayCheck(verifiedReplay)
   /* …and asks the same moment of the restore it judges (fault E) */
   setRestoreOffAt(restoreOffAt)
+  setRestoreDir(restoreDir)
   /* …and a member's restore onto a Leave War day closed for him only where it is his Undo of a closed-day step (D1263) */
   setLwRestoreCheck(verifiedWarRestore)
 }

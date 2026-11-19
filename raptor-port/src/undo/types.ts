@@ -53,6 +53,9 @@ export interface UndoEntry {
      moved squadron since then (state/perms.ts restoreRedated) */
   madeAt?: number
   undoneOn?: number
+  /* (fix read 11, fault G — F11-5a): the moment its latest Redo went through — the step made again, so a right that
+     Redo took off went off THEN, and an Undo after it reads this before `madeAt` */
+  redoneOn?: number
   /* the text box a `sched.text` wrote (the envelope's `detail`) — Undo's words read it (describe.ts; B8) */
   detail?: string
   /* an undone entry a later NEW change forked away from (§4.3: "any newer entry committed after

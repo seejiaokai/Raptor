@@ -1426,6 +1426,19 @@ admin), `src/state/notices.ts` (`adminThen` counts a right from the later of its
 `src/undo/types.ts` (`madeAt`, `undoneOn` on a step), `src/undo/timeline.ts` (`restoreOffAt`: the day the right went off,
 handed to the redate hook), `src/state/undo-wire.ts` (wires it to the gate), `src/state/perms.ts` (`restoredDayHolds`,
 `markBackHolds`: a restored right keeps its day only where its man has not moved since it went off).
+Fix read 11's faults A–G (20 Nov 26; each red first, its own commit; one test file for all, a describe a fault):
+**New:** `src/leavewar/multi-sqn-fixread11.test.ts`. **Changed:** fault A — `src/state/perms.ts` (`storedRowViolation`:
+a change of a saved request or bell line judged again against the row as saved), `src/state/persist.ts` (the probe
+answers the stored row), `src/state/notices.ts` (`shareMade`). Fault B — `src/state/perms.ts` (`RETIRED_TYPES`: a
+person's command labelled `sched.load` refused). Fault C — `src/leavewar/sync.ts` (`holidayLinesOwed`, `holidayTodo`),
+`src/leavewar/state/store.ts` (`holidayRunsOfChanges`), `src/state/perms.ts` (`setHolidayLinesOwed`: a holiday line only
+as the command's own holiday owes it), `src/leavewar/multi-sqn-fixread9.test.ts` and `multi-sqn-fixread10.test.ts` (their
+holiday controls through the real holiday door). Fault D — `src/state/perms.ts` (`warSignedBy`), `src/leavewar/sync.ts`
+(`sameWarLeave`). Fault E — `src/state/units.ts` (`dropGrantsOfAccount`), `src/state/accounts.ts` (`dropAccountOfPid`
+calls it), `src/state/perms.ts` (`rightNamesNew`, G5). Fault F — `src/state/perms.ts` (`restoreRedated` keeps the link's
+day as it stands; G2b asks a restore too). Fault G — `src/undo/types.ts` (`redoneOn`), `src/undo/timeline.ts`
+(`offAtOf`, `restoreDir`), `src/state/undo-wire.ts` (passes the direction), `src/state/perms.ts` (`grantBackHolds`,
+`relinkBackHolds`, `setRestoreDir`). `docs/data-model.md` §11 (User, UnitGrant, Notice and Input rows).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

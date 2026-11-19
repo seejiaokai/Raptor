@@ -551,11 +551,20 @@ let APPLYING: { entry: UndoEntry; changes: Change[]; dir: 'undo' | 'redo' } | nu
 /* THE MOMENT A RIGHT THIS RESTORE PUTS BACK WENT OFF (fix read 10, fault E): an Undo's — the step's own; a Redo's — the
    Undo that took it off. The redate hook is handed it, and the commit gate asks it of the restore being applied
    (restoreOffAt), so both judge one day. */
-const offAtOf = (entry: UndoEntry, dir: 'undo' | 'redo'): number | undefined => (dir === 'undo' ? entry.madeAt : entry.undoneOn)
+/* (fix read 11, fault G — F11-5a): an Undo after a Redo reads the Redo's moment — the step was made again then, so a
+   right it took off went off then, not on the day the step was first made */
+const offAtOf = (entry: UndoEntry, dir: 'undo' | 'redo'): number | undefined => (dir === 'undo' ? entry.redoneOn ?? entry.madeAt : entry.undoneOn)
 export function restoreOffAt(env: { origin: string; type: string; causedBy?: number }): number | undefined {
   const a = APPLYING
   if (!a || env.origin !== 'restore' || env.type !== 'undo.restore' || env.causedBy !== a.entry.seq) return undefined
   return offAtOf(a.entry, a.dir)
+}
+/* (fix read 11, fault G — F11-6): which way the restore being applied runs — the gate keeps a re-link's recorded days
+   only on an Undo that puts the account back on its own man (a Redo of a re-link makes it again, dated today) */
+export function restoreDir(env: { origin: string; type: string; causedBy?: number }): 'undo' | 'redo' | undefined {
+  const a = APPLYING
+  if (!a || env.origin !== 'restore' || env.type !== 'undo.restore' || env.causedBy !== a.entry.seq) return undefined
+  return a.dir
 }
 const landed = (x: unknown): unknown => {
   const o: any = inputOf(x)
@@ -1007,6 +1016,7 @@ export function globalRedo(): UndoResult {
   entry.undone = false
   entry.undoneAt = undefined
   entry.undoneOn = undefined
+  entry.redoneOn = Date.now()   // (fault G of fix read 11: the moment a right this Redo takes off went off)
   bumpUndo()
   if (hooks.showBubble) hooks.showBubble(bubbleText(entry, 'redo'))
   return { ok: true, entry }
