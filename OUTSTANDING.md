@@ -307,7 +307,10 @@ server's clock sets every line's time — then drop the minutes-ahead exception.
 checked by the gate (the builder's note). (3) GitHub's browser tests failed once each on screens nothing changed:
 `e2e/datecal.spec.ts` "a glide caught, held still, then dragged…" and `e2e/leavewar.spec.ts` (phone) "the pinned dates
 row follows…" (D1870) — both twice in one run (with its retry), passing on the other run and 3/3 on his PC: steady them
-(D87). **Where:** `state/notices.ts noticeLeftBell`, `state/perms.ts`, the two browser test files.
+(D87). (4) His D2228 (20 Nov 26, the night's Q1 answered "as recommended"): a filer who moved and is again an admin of
+the man's squadron is told — not built; the next builder's brief on this branch, fix read 9's three proofs (Opus O9-3,
+Fable 3) going green, `state/notices.ts filerVia`, `state/perms.ts`, `data-model.md` (`filerUnits`, §11) and
+`data-schema.md` rewritten with it. **Where:** `state/notices.ts noticeLeftBell`, `state/perms.ts`, the two browser test files.
 
 ### [SEED-UNDO-DROPS-ACCOUNT] An Undo of a seeded account's first saved change may take the account's row (20 Nov 26, chat 118) — OPEN
 **What it is:** fix read 9's builder (night of 19–20 Nov 26), writing its tests, saw that in the demo's seeded state an
