@@ -547,8 +547,9 @@ sentence): `{k:'in'}` he was put in · `{k:'out'}` he was taken out · `{k:'del'
 day(s) and hours as they are now · `{k:'add', who}` / `{k:'rem', who}` others (ids, a placeholder among them) put in or
 taken out · `{k:'title', was}` renamed · `{k:'rmk'}` its remark changed.
 *(19 Nov 26, fix read 6, fault C — his D2223, D2218: an input's line to someone told ONLY as its filer — named in it
-neither before nor after — also carries `fu`, the squadrons that judgement read (each named man's home, or the input's
-own squadron where it names nobody — `state/notices.ts filerUnits`); absent on a named man's line. His move retires such
+neither before nor after — also carries `fu`, the squadrons that judgement read (each named man's home on each of the
+input's days — since fix read 7, fault Q, his D2225 — or the input's own squadron where it names nobody —
+`state/notices.ts filerUnits`); absent on a named man's line. His move retires such
 a line by `fu` alone, on his move day (`noticeLeftBell`), never by the input as it stands later. Lines stored before
 carry none: demo data, D56.)*
 *(13 Oct 26, `[OIL-ASK-NOTIFY]`: a second kind rides the same record — a day made a holiday, `iid` empty and `what` =

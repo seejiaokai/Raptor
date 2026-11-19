@@ -1852,7 +1852,9 @@ function toldBy(env: CommitEnvelope, iid: unknown): Set<string> | null {
     }
   }
   /* its filer only while he is still told of it (his D2223 — state/notices.ts filerTold, the pass's own test): a filer
-     since moved away from the men it names is no longer told, so a line to him is no telling of this change */
+     since moved away from the men it names is no longer told, so a line to him is no telling of this change; one who
+     never moved is, for the input's days still his squadron's (his D2225 — fix read 7, fault Q: the named men's homes
+     read on the input's own days, in that one body) */
   /* …AND ONLY THE FILER THE INPUT HAD BEFORE (fix read 6, fault A — the security read's SEC6-A (2)): the after-image's
      `by` is the command's to write, so 142's plain admin set it to 149's Osprey and rode a line to him on it; on a new
      input, only the actor himself (state/notices.ts changeFiler — the pass's own list) */

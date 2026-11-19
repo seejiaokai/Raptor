@@ -317,3 +317,34 @@ describe('fault S — an unsigned line rides only the pass’s own telling, neve
     expect(ownershipViolation(asType('lw.postout', noMaker({ by: 'kes9' }))) ?? 'allowed').toMatch(/another squadron/)
   })
 })
+
+describe('fault Q — a filer who never moved stays told for the input’s days still his squadron’s (his D2225)', () => {
+  /* Ranger (142) moves to 149 from 25 Jul; on 26 Jul Saber (master) changes the remark of the leave filed for him */
+  const rangerMoved = () => homes('bane', 'hrq',[['u142', '2026-07-15'], ['u149', '2026-07-25']])
+  it('(Q17) Hunter files Ranger’s LL 23–27 Jul; Ranger moves to 149 from 25 Jul; Saber’s remark tells Hunter', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
+    rangerMoved(); on(26)
+    signInAs('ad', 'a'); rmk('Saber words')
+    const l = lineTo('prowler')
+    expect(l, 'Hunter told: 23 and 24 Jul are still 142’s').toBeDefined()
+    /* told only as its filer, the mark naming the squadrons his telling was judged by — and the gate let it ride */
+    expect([...l!.fu!].sort()).toEqual(['u142', 'u149'])
+  })
+  it('(Q16, control) Ranger, a 142 member, files a Training for Ace; nobody moved; Saber’s remark tells Ranger', () => {
+    signInAs('us', 'us'); expect(writeInputsBatch(() => { INPUTS.push({ person: 'dj', date: 'Jul 25', yr: 2026, s: '09:00', e: '10:00', type: 'Training', remarks: 'for Ace', by: 'bane', at: Date.now(), iid: IID, ord: 99981 } as any) })).toBe(true)
+    signInAs('ad', 'a'); rmk('Saber words')
+    expect(lineTo('bane'), 'Ranger told as its filer').toBeDefined()
+  })
+  it('(control, D2223) a filer who moved is still not told: Hunter 149’s from 16 Jul', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 23', 'Jul 27')
+    homes('prowler', 'hq', [['u142', '2026-07-15'], ['u149', '2026-07-16']]); on(16)
+    signInAs('ad', 'a'); rmk('Saber words')
+    expect(lineTo('prowler'), 'Hunter not told').toBeUndefined()
+  })
+  it('(control) Hunter is not told where none of the input’s days is still 142’s (LL 25–27, Ranger 149’s from 25 Jul)', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler', 'Jul 25', 'Jul 27')
+    rangerMoved(); on(26)
+    signInAs('ad', 'a'); rmk('Saber words')
+    expect(lineTo('prowler'), 'Hunter not told').toBeUndefined()
+  })
+})

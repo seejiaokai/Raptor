@@ -105,7 +105,7 @@ export interface Notice {
   what: NoticePart[]
   /** TOLD ONLY AS THE INPUT'S FILER (fix read 6, fault C — the fresh Opus read's F2 and F3, Astra's 2): present on an
    *  input's line whose reader was named in the input neither before nor after the change, and told only as its filer
-   *  (filerTold); its value the squadrons that judgement read (filerUnits — each named man's home, or the input's own
+   *  (filerTold); its value the squadrons that judgement read (filerUnits — each named man's home on the input's days, or the input's own
    *  squadron where it names nobody). Absent: he was named in it. Written once, by the pass, so the line's leaving his
    *  bell after a move (noticeLeftBell) never has to ask the input as it stands today. */
   fu?: string[]
@@ -129,9 +129,9 @@ const ids = (r: any): string[] => namedOf(r).map((e: any) => String(e.p))
  *  fresh Opus read's F1, Astra's 3): it answered "told" whenever nobody was named, so Hunter, 149's since his move, was
  *  still told of every change 142 made to an ALL AVAIL meeting he had filed on a 142 day — and the gate let a forged line
  *  ride to any 149 man through such an input. Its squadron is the one the gate's 7c judges it by (inputUnit, below); he is
- *  told only while it has none, or it is his home, or he is an admin of it. `iso` — the day the homes and his level are
- *  read on (today where not given). A named man's home is read as before, on that day — whether a filer who never moved
- *  is told once the named man has moved is his question q2, still open (the fresh Opus read's F4). */
+ *  told only while it has none, or it is his home, or he is an admin of it. `iso` — the day the filer's own home and level
+ *  are read on (today where not given). A named man's home is read on each of the input's own days (filerUnits — his
+ *  D2225, fault Q of fix read 7: a filer who never moved stays told for the days still his squadron's). */
 export function filerTold(f: string, rs: readonly any[], iso?: string): boolean {
   const named = namedIn(rs)
   if (named.has(f)) return true
@@ -145,13 +145,44 @@ const namedIn = (rs: readonly any[]): Set<string> => {
   for (const r of rs) if (r) for (const p of ids(r)) named.add(p)
   return named
 }
-/** THE SQUADRONS A FILER'S TELLING IS JUDGED BY (filerTold, above): each named man's home on `iso` (today), or, where the
- *  input names nobody, the input's own squadron (inputUnit) — before and after a change. Empty: nobody's squadron to ask. */
+/** THE SQUADRONS A FILER'S TELLING IS JUDGED BY (filerTold, above): each named man's home on each of the input's own days,
+ *  or, where the input names nobody, the input's own squadron (inputUnit) — before and after a change. Empty: nobody's
+ *  squadron to ask.
+ *  ON THE INPUT'S DAYS, NOT TODAY (fix read 7, fault Q — his D2225, 19 Nov 26, Q17: "a filer who has not moved stays told …
+ *  for the input's days that are still the filer's squadron's"). It read each named man's home today, so Hunter (142's,
+ *  never moved), who filed Ranger's leave 23–27 Jul, was told nothing of Saber's change once Ranger was 149's from 25 Jul,
+ *  though 23 and 24 Jul are still 142's. The agent's reading, in the ruling's row: a day is the filer's squadron's where
+ *  the named man's home that day is it. A moved filer is still not told (D2223): his own home and level are read on `iso`
+ *  (today), in toldIn. The pass, the gate (state/perms.ts toldBy, filerMarkOk) and the line's mark (Notice.fu) read this
+ *  one body, so the gate lets ride exactly the line the pass writes, marked with the same squadrons. An input whose dates
+ *  cannot be read is judged on today, as before. */
 export function filerUnits(rs: readonly any[], iso?: string): string[] {
   const named = namedIn(rs)
   const out = new Set<string>()
-  if (named.size) { for (const m of named) { const u = homeOn(m, iso); if (u) out.add(u) } }
-  else for (const r of rs) { const u = r ? inputUnit(r) : null; if (u) out.add(u) }
+  if (named.size) {
+    for (const r of rs) {
+      if (!r) continue
+      const span = inputSpan(r) ?? (() => { const t = iso ?? todayIso(); return [t, t] as const })()
+      for (const m of named) for (const u of homesOver(m, span[0], span[1])) out.add(u)
+    }
+  } else for (const r of rs) { const u = r ? inputUnit(r) : null; if (u) out.add(u) }
+  return [...out]
+}
+/* an input's first and last day (ISO), from its own date and end date; null where its date cannot be read. An end before
+   its start (never written by the app) counts as the start alone, as inputCoversDate covers no day past it. */
+function inputSpan(r: any): readonly [string, string] | null {
+  const a = inputAtIso(r.date, r.yr)
+  if (!a) return null
+  const b = r.endDate != null && r.endDate !== '' ? inputAtIso(r.endDate, r.yr) : a
+  return [a, b && b >= a ? b : a]
+}
+/* every squadron a man's home is on some day from `a` to `b`: his home on `a`, and each home he has from a later day in
+   that span (his home rows — state/units.ts setHome — change only on their `from` day) */
+function homesOver(pid: string, a: string, b: string): string[] {
+  const out = new Set<string>()
+  const first = homeOn(pid, a)
+  if (first) out.add(first)
+  for (const h of unitRows().homes) if (h.pid === pid && h.from > a && h.from <= b) { const u = homeOn(pid, h.from); if (u) out.add(u) }
   return [...out]
 }
 /** is `f` told through these squadrons on `iso` (today)? — at home in one, or an admin of one (a master everywhere, a Plan
