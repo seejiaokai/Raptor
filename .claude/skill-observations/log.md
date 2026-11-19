@@ -2986,3 +2986,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Suggested improvement:** In the RED step, add: before trusting a red, assert the setup took effect (read back the state the fixture was meant to create, e.g. the man's squadron on the day), and treat a failing control as a sign the fixture, not the fix, is wrong.
 **Principle:** a red test proves the fault only if its own setup is known to have happened; fixtures that validate and silently discard bad input make a wrong red look right.
 
+
+### Observation 980: A security-scoped paragraph in a shared brief gets the Codex reader stopped; cutting it afterwards is refused
+
+**Status:** OPEN
+**Date:** 19 Nov 26
+**Session context:** chat 117, fix read 8 of multi-squadron batch 1 (four blind readers sharing one brief)
+**Skill:** claudex-loop (the reviewer's brief); also the codex-guide recipe for blind reader copies
+**Type:** open-source
+**Phase/Area:** writing one brief for several readers, one of them a Codex model
+
+**Issue:** The shared brief ended with a paragraph scoping the security reader ("looks only for holes … what one person can take from another"). The Codex reader worked for ~250k tokens and was then stopped twice by its provider as a "cybersecurity risk", returning no report (the same happened in fix read 5). Re-running it on a copy with that paragraph cut was refused by the host's own permission check as rewording to get past a provider's filter, so the standing reviewer's read was lost for the round. Its progress notes still held one finding no other reader made; a second reader sent to chase that one claim proved it.
+**Suggested improvement:** give the security reader its scope in its own prompt (or its own short brief), never in the brief the Codex reader receives — decided when the brief is written, not after a refusal; and when a reader's run dies, read its progress notes for claims and send another reader to chase any claim no one else made.
+**Principle:** keep each reader's brief to its own job from the start — wording meant for one reader can stop another, and changing it after a refusal reads as evasion; a stopped reader's partial notes are evidence worth chasing.
