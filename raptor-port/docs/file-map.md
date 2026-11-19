@@ -1349,7 +1349,9 @@ command refused), `src/state/perms.ts` (7c an admin's own input outside his squa
 verified-restore exception only for taking a line away), `src/state/notices.ts` (`noticeLeftBell`, `noticeAboutHim` —
 the one read rule, asked first by `noticeLive`), `src/undo/timeline.ts` (the `leaveOut` hook: what a restore leaves out),
 `src/state/undo-wire.ts` (installs `leaveOut`), `src/leavewar/sync.ts` (`postingLinesOf`, `retractPostingLines` tell only
-who is at home in the war's squadron today).
+who is at home in the war's squadron today). Fix read 5's security finding FR5-SEC-1 (chat 111, red first):
+`src/state/perms.ts` `warPlacerForged` — the member's "who placed a leave on the war" test, now run for an admin's own
+input outside his squadrons too; **New:** `src/state/multi-sqn-fixread5-admin-placer.test.ts`.
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

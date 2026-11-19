@@ -946,6 +946,21 @@ function narrowed(was: any, now: any): boolean {
 const same = (a: any, b: any): boolean => (a ?? null) === (b ?? null)
 const filed = (x: any, y: any): boolean => same(x.by, y.by) && same(x.at, y.at) && same(x.grp, y.grp) && same(x.grpBy, y.grpBy)
 const isInputChange = (c: Change): boolean => c.collection === 'inputs' && c.id !== INPUT_ORDER
+/* WHO PLACED A LEAVE THE WAR APPROVED (the overhaul's M4, 8.6 — the security read's question, the spec §3): the request's
+   placer rides on its Input as `lwBy` / `lwAt`, written only by an admin's approval of his own squadron's war; a person's
+   own command keeps them as they were or drops them, never writes them. The caller skips it for the restore the timeline
+   is applying (record for record — a change that merely calls itself a restore is judged as any other: the security
+   read's finding 1). One test for both callers — the member section and an admin's own input outside his squadrons
+   (fix read 5's FR5-SEC-1) — so a member rule added later is not missed again. */
+function warPlacerForged(env: CommitEnvelope, c: Change): boolean {
+  if (c.op !== 'put' || !c.after) return false
+  const f: any = c.after
+  if (f.lwBy === undefined && f.lwAt === undefined) return false
+  /* (a piece cut from a leave — a medical splitting it — is a new record carrying its parent's stamp: any before-image
+     of this command's own vouches for it) */
+  const stamp = `${f.lwBy ?? ''}|${f.lwAt ?? ''}`
+  return !env.changes.some(x => x.collection === 'inputs' && x.before && `${(x.before as any).lwBy ?? ''}|${(x.before as any).lwAt ?? ''}` === stamp)
+}
 function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: boolean): string | null {
   const b: any = c.before ?? null, f: any = c.op === 'delete' ? null : (c.after ?? null)
   /* his own part — asked FIRST, before the filer's rule, in the forward and the replayed path alike (F5) */
@@ -1336,6 +1351,9 @@ function inputUnitViolation(env: CommitEnvelope): string | null {
       const replayed = env.origin === 'restore' && !!REPLAY && !!REPLAY(env)?.(c)
       const bad = inputBreach(env, c, String(a.personId), replayed)
       if (bad) return `${bad} (inputs/${c.id})`
+      /* (and the member's second own-input rule, who placed a leave on the war — fix read 5's security read, FR5-SEC-1:
+         without it he stamped himself as the placer of his own leave in 149's war, or rewrote 149's stamp) */
+      if (!replayed && warPlacerForged(env, c)) return `who placed a leave on the war (inputs/${c.id})`
       continue
     }
     for (const u of new Set([...unitsOf(was), ...unitsOf(is)])) {
@@ -1961,20 +1979,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
         const bad = inputBreach(env, c, pid, !!replayed && replayed(c))
         if (bad) return `${bad} (${where})`
-        /* WHO PLACED A LEAVE THE WAR APPROVED (the overhaul's M4, 8.6 — the security read's question, the spec §3): the
-           request's placer rides on its Input as `lwBy` / `lwAt`, written only by an admin's approval; a member's own
-           command keeps them as they were or drops them, never writes them (his Undo or Redo puts back the image it took) */
-        /* (his Undo or Redo puts back the image it took — ONLY the one the timeline is applying, record for record; a
-           change that merely calls itself a restore is judged as any other: the security read's finding 1) */
-        if (!(replayed && replayed(c)) && c.op === 'put' && c.after) {
-          const f: any = c.after
-          /* (a piece cut from a leave — a medical splitting it — is a new record carrying its parent's stamp: any before-image
-             of this command's own vouches for it) */
-          const stamp = `${f.lwBy ?? ''}|${f.lwAt ?? ''}`
-          if ((f.lwBy !== undefined || f.lwAt !== undefined)
-            && !env.changes.some(x => x.collection === 'inputs' && x.before && `${(x.before as any).lwBy ?? ''}|${(x.before as any).lwAt ?? ''}` === stamp))
-            return `who placed a leave on the war (${where})`
-        }
+        if (!(replayed && replayed(c)) && warPlacerForged(env, c)) return `who placed a leave on the war (${where})`
         break
       }
       /* A BELL'S NOTICE (state/notices.ts; the plan §4.10): a member's command may make one only as part of his OWN
