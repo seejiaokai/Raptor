@@ -580,7 +580,30 @@ async function p9(sz) {
   await ctx.close()
 }
 
-const PIECES = { p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11 }
+// p12 — chat 115's two questions (fix read 6): who is told when an input someone filed for another man is changed.
+//   q1 · Ranger (142 member, never moved) filed a Training for Ace; Saber changes its remark → Ranger's bell (as built: told)
+//   q2 · Hunter (142 admin, never moved) filed LL 23–27 Nov for Ranger; Ranger moves to 149 from 25 Nov; Saber changes
+//        the remark → Hunter's bell: as built nothing; recommended: told, for the days that are 142's (the line marked New)
+async function p12(sz) {
+  {
+    const { ctx, page } = await session(sz, 'us', 'us')
+    await openBell(page)
+    await bellLines(page, [{ name: 'Training', day: 'Tue 24 Nov', what: 'Remark changed', who: 'Saber', unread: true, ago: '2m' }], null)
+    const f = `p12a-${sz}.png`; await shot(page, f, sz === 'd' ? ['[data-testid="bell-list"]', '.bellbtn'] : null, 16)
+    rec(f, 'p12', sz, 'as built', 'Question 1 — Ranger\'s bell (142 member, never moved). He filed a Training for Ace; Saber changed its remark. As built and recommended: Ranger is told, as here. Nothing new is drawn.')
+    await ctx.close()
+  }
+  {
+    const { ctx, page } = await session(sz, 'ad2', 'a2')
+    await openBell(page)
+    await bellLines(page, [{ name: 'LL', day: 'Mon 23 Nov', what: 'Remark changed', who: 'Saber', unread: true, ago: '2m' }], null, [0])
+    const f = `p12b-${sz}.png`; await shot(page, f, sz === 'd' ? ['[data-testid="bell-list"]', '.bellbtn'] : null, 16)
+    rec(f, 'p12', sz, 'drawn', 'Question 2 — Hunter\'s bell (142 admin, never moved). He filed Ranger\'s leave, 23–27 Nov; Ranger moved to 149 from 25 Nov; Saber changed its remark. As built Hunter\'s bell shows nothing. Recommended (marked New): he is told, as he would be had Ranger not moved, because 23 and 24 Nov are still 142\'s days.')
+    await ctx.close()
+  }
+}
+
+const PIECES = { p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12 }
 for (const [k, fn] of Object.entries(PIECES)) {
   if (ONLY && !ONLY.includes(k)) continue
   for (const sz of ['d', 'p']) {
