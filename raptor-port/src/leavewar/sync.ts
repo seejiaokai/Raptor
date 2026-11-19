@@ -3092,12 +3092,13 @@ function postingLinesOf(id: string): Notice[] {
      moment (runPoOutcomes → noticePosting), and a man's posting runs once in a pass — so the newest moment is this run's.
      Never "the newest line per admin": an admin at the first run and not the second would lose the first's record. */
   const last = mine.reduce((m, n) => Math.max(m, n.at), -Infinity)
-  /* …WHATEVER the holder's home now (fix read 3, A2 — D1693, D1699, D1710): an admin who got the line and has since moved
-     to another squadron is owed the take-back like any other — an unread line goes, a read one turns "taken back". Job 2's
-     fix had left his line standing (the bell check refused this squadron's command touching another's bell); the commit
-     gate now lets the posting command through for exactly this run's lines and the "taken back" lines owed for them
-     (state/perms.ts postingTakeBack), nothing wider */
-  const stored = mine.filter(n => n.at === last)
+  /* …and only the lines of a man at home in this war's squadron TODAY — whoever would be told of the take-back today (his
+     D2218, 19 Nov 26: "after a move, who is told of a take-back is whoever would be told of it today. So a moved admin gets
+     nothing when his old squadron undoes a posting"). An admin who got the line and has since moved squadron is neither
+     taken back nor told: the line left his bell on the day he moved (state/notices.ts noticeLeftBell), and this squadron's
+     command never writes to another's bell. Fix read 3's A2, which took his line back across the squadrons, is undone by
+     D2218. */
+  const stored = mine.filter(n => n.at === last && atWarHome(n.to))
   const derived = ownSchedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id })
   return [...stored, ...derived]
 }
@@ -3112,7 +3113,8 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
   const admins = new Set(ACCOUNTS_LIST.filter(a => isAdminAccount(a) && !!a.pid).map(a => String(a.pid)))
   const forget: string[] = []
   for (const n of lines) {
-    /* (a line held by a man since moved to another squadron is taken back as any other — above, fix read 3, A2) */
+    /* (a line held by a man since moved to another squadron is neither removed nor told — above, D2218) */
+    if (!atWarHome(n.to)) continue
     const ix = NOTICES.findIndex(x => x.id === n.id)
     if (ix >= 0) NOTICES.splice(ix, 1)
     if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }

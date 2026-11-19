@@ -99,6 +99,11 @@ export interface UndoHooks {
      him: state/perms.ts lwClosedKeys). Asked once, as the step is recorded, and kept on the entry: only an Undo of such a
      step may put a bid back on a closed day (verifiedWarRestore). None installed: none. */
   closedAtStep?(changes: Change[], actor: Actor): string[]
+  /* A RECORD A RESTORE PUTS BACK ONLY TO NO ONE (fix read 4, claim 2 — the Opus read's §2; his D2218): a bell line its
+     step wrote for a man who has since moved squadron has left his bell for good, so an Undo or Redo putting it back
+     would write to another squadron's bell what no one there may write, and show nobody anything. Such a record is left
+     out of the restore, the rest of the step going through without it. None installed: nothing left out. */
+  leaveOut?(change: Change, dir: 'undo' | 'redo'): boolean
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -744,7 +749,10 @@ function toRecordEntry(ch: Change): RecordEntry {
     ? { collection: ch.collection, id: ch.id, op: 'delete' }
     : { collection: ch.collection, id: ch.id, value: ch.after, op: 'put' }
 }
-function applyRestore(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo'): { ok: boolean; reason?: string; seq?: number } {
+function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo'): { ok: boolean; reason?: string; seq?: number } {
+  /* (what the restore leaves out — the leaveOut hook above: a bell line put back on a man it has left, D2218) */
+  const leave = hooks.leaveOut
+  const changes = leave ? changesIn.filter(c => !leave(c, dir)) : changesIn
   // group the write entries by their owning store
   const byStore = new Map<EnlistableStore, RecordEntry[]>()
   const missing: string[] = []

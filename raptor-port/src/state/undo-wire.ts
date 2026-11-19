@@ -46,6 +46,7 @@ import { restoreAbsencesOf, warNoticesReversed } from '../leavewar/sync'
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 import { UNIT_ROW_PREFIXES } from './units-model'
+import { noticeLeftBell, type Notice } from './notices'
 import { UNIT } from '../engine/unitview'
 import { split, localOf, qualify } from '../storage/unitid'
 
@@ -423,6 +424,10 @@ export function installGlobalUndo(): void {
     ownPart: (cur, before, after) => cur.personId != null && ownPart(String(cur.personId), before, after),
     /* D1263 — the war records a member's step changed on a day already closed for him, kept with the step as it lands */
     closedAtStep: (changes, actor) => lwClosedKeys(changes, actor),
+    /* fix read 4, claim 2 (the Opus read's §2; his D2218): an Undo or Redo never puts a bell line back on a man it has
+       left — a line of his old squadron's, once he has moved (state/notices.ts noticeLeftBell). The Redo of Kestrel's
+       Open for bidding goes through without Osprey's line, now 142's; taking a line AWAY still rides the restore */
+    leaveOut: (c) => c.collection === 'notices' && c.op === 'put' && !!c.after && noticeLeftBell(c.after as Notice),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
   /* …and the commit gate trusts a restore only where the timeline vouches for it, record by record (perms.ts) */

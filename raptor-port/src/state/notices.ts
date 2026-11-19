@@ -34,6 +34,7 @@ import { PEOPLE } from '../engine/people'
 import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned } from '../engine/inputs'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
+import { todayIso, homeOn, unitRows } from './units'
 
 export type NoticePart =
   | { k: 'del' }                                   // the input was deleted
@@ -301,12 +302,52 @@ export function setHolidaySpan(fn: ((a: string, b: string) => HolidaySpan | null
 export function noticeSpan(n: Notice): HolidaySpan | null { const h = holOf(n); return !h ? null : HOL_SPAN ? HOL_SPAN(h.a, h.b) : h }
 /** how many inputs a holiday's notice still counts (0 for any other notice) */
 export function noticeLeft(n: Notice): number { const s = noticeSpan(n); return s && HOL_LEFT ? HOL_LEFT(s.a, s.b, n.to) : 0 }
+
+/* ---- a man who moves squadron leaves his old squadron's lines behind (his D2218) ----------------------------------- */
+/* the date a moment falls on, as the app's today is read (state/units.ts todayIso — the viewer's own calendar) */
+const dayOfAt = (at: number): string => {
+  const d = new Date(at)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+/** IS THIS LINE ABOUT ITS READER HIMSELF? (his D2218: "lines about himself stay with him") — a line about an input (one he
+ *  is in or filed: the pass tells nobody else, noticePass), a decision on his own leave and its taking back ("Your leave"),
+ *  his own posting. Not: bidding opened or closed on a war, a holiday's OIL question, another man's posting — his
+ *  squadron's business, which he was told as one of its people. */
+export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what'>): boolean {
+  if (n.iid) return true
+  const p: any = (n.what || [])[0]
+  if (!p) return true
+  if (p.k === 'lw') return true
+  if (p.k === 'lwback') return p.d !== 'open' && p.d !== 'close'
+  if (p.k === 'po' || p.k === 'poback') return String(p.who) === String(n.to)
+  return false
+}
+/** HAS THIS LINE LEFT ITS READER'S BELL? (his D2218, 19 Nov 26: "On the day a person moves squadron the old squadron's
+ *  bell lines leave his bell, read or unread, never later struck 'taken back'; lines about himself stay with him".) A line
+ *  carries no squadron of its own, and needs none: what a man is told as one of a squadron's people he is told while at
+ *  home in it, so the squadron a line is his old squadron's business of is his home on the day it was written. From the
+ *  first day after that — today or before — on which his home is another squadron, it is off his bell for good, read or
+ *  unread, even should he move back: one rule READ by every place that shows a bell (noticeLive, the one body), never a
+ *  write — no command touches another squadron's bell for it, and the change history keeps everything. A move is saved
+ *  from tomorrow (state/units.ts setHome), so a line already written is never re-dated into the new squadron. */
+export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what'>, today: string = todayIso()): boolean {
+  if (noticeAboutHim(n) || !Number.isFinite(n.at)) return false
+  const wrote = dayOfAt(n.at)
+  if (!(wrote < today)) return false
+  const to = String(n.to)
+  const was = homeOn(to, wrote)
+  for (const h of unitRows().homes) if (h.pid === to && h.from > wrote && h.from <= today && homeOn(to, h.from) !== was) return true
+  return false
+}
+
 /** IS THIS NOTICE ONE TO SHOW? Every notice about an input is. A holiday's is only while an input on its dates still
  *  needs an answer — and, where the same dates were made a holiday more than once (made, taken away, made again), only
  *  the NEWEST of them: one line a holiday (D783 (6); Fable's read of the plan, A7). ONE BODY, read by the bell's list,
  *  by what counts as unread (state/noticeseen.ts) and so by whether the bell is lit: a line the list leaves out can
  *  never light it. */
 export function noticeLive(n: Notice): boolean {
+  /* a line of his old squadron's, once he has moved (D2218 — noticeLeftBell, above) */
+  if (noticeLeftBell(n)) return false
   /* ONE BIDDING LINE A STRETCH (M4 9.4): each month tapped in "Open for bidding" is its own command — a newer line of his
      about bidding on dates this one shares takes its place, as the holiday's lines do */
   const o = openOf(n)
