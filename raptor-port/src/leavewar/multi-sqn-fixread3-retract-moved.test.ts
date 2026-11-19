@@ -192,3 +192,62 @@ describe('fix read 5, walk F4 — the read made in another tab', () => {
   it('not reloaded on Saber’s tab: no "taken back" line — the walk’s "Nothing new"', () => { expect(run(false)).toBe(0) })
   it('reloaded: Hunter gets his "taken back" line', () => { expect(run(true)).toBe(1) })
 })
+
+/* Fix read 5, Astra's 3 (19 Nov 26): a man who RETURNS to a squadron was told "taken back" of a posting line D2218 had
+   already retired. Saber posts Ranger out today (15 Jul); Hunter, 142's admin, reads the line or not; the master moves him
+   to 149 (from 16 Jul) and back to 142 (from 17 Jul) — or twice; on the last day Outlaw (142's) presses "Undo post out".
+   By D2218 the line left Hunter's bell on his first move day "for good … even should he move back" (state/notices.ts
+   noticeLeftBell), so the take-back neither deletes it nor tells him: his home TODAY being 142 again is not enough. */
+describe('fix read 5, Astra 3 — a posting taken back after its admin moved away and came back', () => {
+  /* `trips` — how many times he goes to 149 and comes back, a day each way, from 16 Jul */
+  function setupBack(read: boolean, trips: number, o: 'sans' | 'none' = 'sans'): Notice {
+    signInAs('ad', 'a')
+    expect(updateAccount('acoutlaw', { role: 'admin' })).toBeNull()
+    expect(postOut('bane', '2026-07-15', o)).toBe(true)
+    const old = allNoticesFor('prowler').find(n => isPo(n))!
+    expect(old, 'Hunter told of the posting').toBeDefined()
+    if (read) { signInAs('ad2', 'a2'); expect(markNoticeRead(old.id)).toBe(true); signInAs('ad', 'a') }
+    let d = 15
+    for (let t = 0; t < trips; t++) {
+      expect(setHome('prowler', 'u149').ok).toBe(true)
+      vi.setSystemTime(new Date(2026, 6, ++d, 9, 0, 0)); unitsLoad()
+      expect(homeOn('prowler')).toBe('u149')
+      expect(setHome('prowler', 'u142').ok).toBe(true)
+      vi.setSystemTime(new Date(2026, 6, ++d, 9, 0, 0)); unitsLoad()
+      expect(homeOn('prowler')).toBe('u142')
+    }
+    signInAs('outlaw')
+    expect(worldUnit()).toBe('u142')
+    return old
+  }
+  for (const trips of [1, 2]) for (const read of [false, true]) {
+    it(`${trips === 1 ? 'away and back' : 'two moves away and back'}, ${read ? 'read' : 'unread'}: Undo post out leaves his retired line and tells him nothing`, () => {
+      const old = setupBack(read, trips)
+      signInAs('ad2', 'a2')
+      expect(noticesFor('prowler').some(n => n.id === old.id), 'off his bell since his first move day').toBe(false)
+      const unread0 = unreadFor('prowler')
+      signInAs('outlaw')
+      expect(undoPostOut('bane')).toBe(true)
+      expect(getState().postOuts.bane?.to ?? null).toBeNull()
+      expect(NOTICES.some(n => n.id === old.id), 'the retired line is not deleted').toBe(true)
+      expect(NOTICES.some(n => isPo(n, 'poback')), 'no "taken back" line to him').toBe(false)
+      signInAs('ad2', 'a2')
+      expect(unreadFor('prowler'), 'nothing new lights his bell').toBe(unread0)
+    })
+  }
+  it('the "off the manpower" line (worked out, never stored), read, away and back: no "taken back" line', () => {
+    setupBack(true, 1, 'none')
+    expect(undoPostOut('bane')).toBe(true)
+    expect(NOTICES.some(n => isPo(n, 'poback'))).toBe(false)
+  })
+  it('control, never moved: Saber, who read his own line of the same run, is told "taken back" as ever', () => {
+    setupBack(false, 1)
+    const sab = NOTICES.find(n => n.to === 'stiff' && (n.what || [])[0]?.k === 'po' && (n.what[0] as any).who === 'bane')!
+    expect(sab).toBeDefined()
+    signInAs('ad', 'a'); expect(markNoticeRead(sab.id)).toBe(true)
+    signInAs('outlaw')
+    expect(undoPostOut('bane')).toBe(true)
+    expect(NOTICES.some(n => n.id === sab.id), 'Saber’s line goes').toBe(false)
+    expect(NOTICES.filter(n => n.to === 'stiff' && (n.what || [])[0]?.k === 'poback').length).toBe(1)
+  })
+})

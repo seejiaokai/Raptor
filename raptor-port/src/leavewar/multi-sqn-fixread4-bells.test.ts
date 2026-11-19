@@ -222,6 +222,42 @@ describe("D2222 — a line about a moved man's own leave follows him", () => {
   })
 })
 
+/* Fix read 5, Astra's 3 — the war's half (19 Nov 26): Kestrel opens bidding on 15 Jul and Osprey (149) reads his "Bidding
+   open" line; Osprey moves to 142 from 16 Jul and back to 149 from 17 Jul; on 17 Jul Kestrel's Undo. The line left his
+   bell on his first move day for good (D2218, state/notices.ts noticeLeftBell) — so the Undo's follow-up
+   (sync.ts warNoticesReversed) must not strike it "taken back" for him though he is 149's again today. */
+describe("fix read 5, Astra 3 — the war's squadron lines of a man who moved away and came back", () => {
+  const back149 = () => { mem['sqn142_' + HOME_PFX + 'hfr5b'] = JSON.stringify({ id: 'hfr5b', pid: 'osp9', unit: 'u149', from: '2026-07-17' }); unitsLoad() }
+  const day17 = () => { vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); unitsLoad() }
+  const readIt = (l: Notice) => { mem['sqn142_noticeseen:osp9'] = JSON.stringify({ upto: 0, ids: [l.id] }); noticeSeenLoad() }
+  it('control, no move: he read it, the Undo strikes it "taken back"', () => {
+    const line = open(); readIt(line)
+    day17()
+    expect(globalUndo().ok).toBe(true)
+    expect(NOTICES.filter(backLine).length).toBe(1)
+  })
+  for (const read of [false, true]) {
+    it(`${read ? 'read' : 'unread'}, away to 142 and back: the Undo tells him nothing`, () => {
+      const line = open(); if (read) readIt(line)
+      moveOsprey(); back149(); day17()
+      expect(homeOn('osp9')).toBe('u149')
+      expect(noticesFor('osp9').some(n => n.id === line.id), 'off his bell since his move day, even back home').toBe(false)
+      const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
+      expect(isOpen()).toBe(false)
+      expect(NOTICES.some(backLine), 'no "taken back" line').toBe(false)
+    })
+  }
+  it('control, a line about himself: his own leave decided by 149, read, away and back — the Undo strikes it "taken back"', () => {
+    signInAs('ad9', 'a9')
+    expect(placeApproved([{ personId: 'osp9', date: '2026-07-15' }], 'LL').approved).toBe(1)
+    const own = NOTICES.find(n => n.to === 'osp9' && (n.what || [])[0]?.k === 'lw')!
+    expect(own).toBeDefined(); readIt(own)
+    moveOsprey(); back149(); day17()
+    expect(globalUndo().ok).toBe(true)
+    expect(NOTICES.filter(n => backLine(n) && (n.what[0] as any).ref === own.id).length).toBe(1)
+  })
+})
+
 /* Fix read 5 (the Opus read's 3), by his D2223 (19 Nov 26): "After a move, a bell line about an input stays with a man only
    where he is named in that input (or it is his own request's line); a moved admin is no longer told about inputs he filed
    for his old squadron's men — the filer is told only while he is still that man's admin or in the input." The agent's

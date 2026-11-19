@@ -165,7 +165,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
+import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead, forgetRead } from '../state/noticeseen'
@@ -1641,7 +1641,10 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
     /* (one since moved to another squadron is no longer told here of the war's own business — bidding opened or closed,
        atWarHome — but a line about his OWN leave follows him: its Undo strikes it "taken back" where he read it, its Redo
        says "again" — his D2222, 19 Nov 26; the gate lets exactly that follow-up through, state/perms.ts followUpOf) */
-    if (!atWarHome(String(n.to)) && !noticeAboutHim(n)) continue
+    if (!noticeAboutHim(n) && (!atWarHome(String(n.to)) || noticeLeftBell(n))) continue
+    /* (…nor one who moved away and has come BACK: the line left his bell on his first move day for good, D2218 — his home
+       today being this squadron again does not bring it back, so no "taken back" or "again" is written for it — fix read
+       5, Astra's 3; state/notices.ts noticeLeftBell reads every move since the line was written) */
     /* (a war notice's first part is one of the war's own three kinds — isWarNotice, just above) */
     const p = (n.what || [])[0] as Extract<NoticePart, { k: 'lw' | 'lwopen' | 'lwback' }> | undefined
     if (!p || p.k === 'lwback') continue
@@ -3100,8 +3103,12 @@ function postingLinesOf(id: string): Notice[] {
      taken back nor told: the line left his bell on the day he moved (state/notices.ts noticeLeftBell), and this squadron's
      command never writes to another's bell. Fix read 3's A2, which took his line back across the squadrons, is undone by
      D2218. */
-  const stored = mine.filter(n => n.at === last && atWarHome(n.to))
-  const derived = ownSchedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id })
+  /* …nor the line of an admin who moved away and has come BACK (fix read 5, Astra's 3): at home here today, but his line
+     left his bell on his first move day for good (D2218, noticeLeftBell). The newest run is still found from EVERY stored
+     line of this posting (`last`, above) — only then is each retired line left out: neither deleted nor told. The worked-out
+     "off the manpower" line the same, by its posting date. */
+  const stored = mine.filter(n => n.at === last && atWarHome(n.to) && !noticeLeftBell(n))
+  const derived = ownSchedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id && !noticeLeftBell(n) })
   return [...stored, ...derived]
 }
 /* Returns the ids of the presser's OWN lines he had read: they leave his read record after the command (forgetRead — the
@@ -3116,7 +3123,7 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
   const forget: string[] = []
   for (const n of lines) {
     /* (a line held by a man since moved to another squadron is neither removed nor told — above, D2218) */
-    if (!atWarHome(n.to)) continue
+    if (!atWarHome(n.to) || noticeLeftBell(n)) continue
     const ix = NOTICES.findIndex(x => x.id === n.id)
     if (ix >= 0) NOTICES.splice(ix, 1)
     if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }
