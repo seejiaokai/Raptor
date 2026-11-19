@@ -2972,3 +2972,17 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** Twice running (fix reads 6 and 7) the Codex reader said its read was not fully blind: the repo's agent instructions tell it to read the handoff file first, and the exported copy carried the branch's handoff block with the builder's own summary of the fixes, which it read before reaching the brief's "do not read" line. The brief's exclusion came too late to help.
 **Suggested improvement:** when exporting a reader's copy, replace the branch's handoff block (and any builder brief or evidence sheet for the round) in the copy with a one-line pointer, so the start-up reads find nothing to anchor on; say so in the brief's first line.
 **Principle:** a reader is only blind if the material it must not see is absent from its copy — an instruction not to look loses to an instruction to read it first.
+
+### Observation 979: a red test was red because its own setup was silently dropped
+
+**Status:** OPEN
+**Date:** 2026-11-19
+**Session context:** Fix read 7, fault Q (chat 117's builder): writing the red-first test for a filer told after a named man's move
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED — verify the test fails for the right reason
+
+**Issue:** The new test seeded a man's move through a helper that writes stored rows; the row id it was given did not match the store's id rule, so the loader dropped the row without a word. The test still went red, and on first read the failure looked like the fault itself; only a printout of the stored state showed the move had never happened (the input's line carried the old squadron alone). A control that should have passed also failed, which was the clue.
+**Suggested improvement:** In the RED step, add: before trusting a red, assert the setup took effect (read back the state the fixture was meant to create, e.g. the man's squadron on the day), and treat a failing control as a sign the fixture, not the fix, is wrong.
+**Principle:** a red test proves the fault only if its own setup is known to have happened; fixtures that validate and silently discard bad input make a wrong red look right.
+
