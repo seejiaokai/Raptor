@@ -2958,3 +2958,17 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** `git archive <commit> | tar -x` of the whole repo ran past 5 minutes for one copy (thousands of walk pictures) and was stopped; the package link made with `cmd //c mklink /J` from Git Bash failed ("Invalid switch") because Git Bash rewrites the `/J`.
 **Suggested improvement:** in the recipe: export with pathspec excludes (`git archive <c> -- . ':(exclude,glob)**/*.png' ':(exclude,glob)**/*.jpg' ':(exclude,glob)**/*.mp4' ':(exclude,glob)**/*.gif' ':(exclude,glob)**/*.webm'`) — three copies then take seconds; make the node_modules junction with PowerShell's `New-Item -ItemType Junction`.
 **Principle:** a reviewer's copy needs the code and documents, not the evidence pictures — export only what the reader reads; make Windows links with the Windows shell.
+- met again 19 Nov 26 (chat 116, fix read 7's four copies): the excludes worked (four copies in seconds), but the copy's own `git add -A` failed silently inside a loop — "Filename too long" on a browser-test leftover under `docs/handpass/` — so every copy had no commit; fixed with `git -c core.longpaths=true add -A` and `-c core.hooksPath=/dev/null` on the commit. Guard: put both in the recipe, and check `git log --oneline -1` in each copy before starting a reader.
+
+### Observation 978: A Codex reader's start-up reads defeat the blind read
+
+**Status:** OPEN
+**Date:** 19 Nov 26
+**Session context:** chat 116, fix read 7 of multi-squadron batch 1 (four blind readers on exported copies)
+**Skill:** claudex-loop (the reviewer's copy and brief); also the codex-guide recipe for exported copies
+**Type:** open-source
+**Phase/Area:** making a blind reviewer's copy
+
+**Issue:** Twice running (fix reads 6 and 7) the Codex reader said its read was not fully blind: the repo's agent instructions tell it to read the handoff file first, and the exported copy carried the branch's handoff block with the builder's own summary of the fixes, which it read before reaching the brief's "do not read" line. The brief's exclusion came too late to help.
+**Suggested improvement:** when exporting a reader's copy, replace the branch's handoff block (and any builder brief or evidence sheet for the round) in the copy with a one-line pointer, so the start-up reads find nothing to anchor on; say so in the brief's first line.
+**Principle:** a reader is only blind if the material it must not see is absent from its copy — an instruction not to look loses to an instruction to read it first.
