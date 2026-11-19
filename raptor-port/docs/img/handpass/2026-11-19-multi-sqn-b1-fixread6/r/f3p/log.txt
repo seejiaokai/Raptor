@@ -1,0 +1,11 @@
+msq-fr6-f3 v1
+ROW PASS | F3 | iPhone | Kestrel (tab 1): open December | saw: chip "Open 1 Dec – 31 Dec"; undoBtn disabled=false; redoBtn disabled=true
+ROW PASS | F3 | iPhone | Osprey (tab 2): bell after bidding opened | saw: dot "block"; ["bl-line unread | Leave War1 Dec – 31 Dec Bidding open · Kestrel now"]
+state before undo undoBtn disabled=false; redoBtn disabled=true
+ROW PASS | F3 | iPhone | Kestrel (tab 1): top bar Undo | saw: chip "Bidding closed"; undoBtn disabled=true; redoBtn disabled=false
+ROW PASS | F3 | iPhone | Osprey (tab 2, reopened): bell after Undo | saw: dot "none"; []
+state before redo undoBtn disabled=true; redoBtn disabled=false
+ROW PASS | F3 | iPhone | Kestrel (tab 1): top bar Redo | saw: chip "Open 1 Dec – 31 Dec"; undoBtn disabled=false; redoBtn disabled=true
+ROW PASS | F3 | iPhone | Osprey (tab 2, reopened): bell after Redo | saw: dot "block"; ["bl-line unread | Leave War1 Dec – 31 Dec Bidding open · Kestrel now"]
+errors []
+DONE 6 PASS 0 FAIL 0 OTHER of 6

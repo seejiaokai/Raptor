@@ -1,0 +1,21 @@
+msq-fr6-f4s v1
+ROW RECORD | F4 | iPhone | Saber (tab 1): Ranger posted out today via the sheet | saw: page words: 142 TALON ↶ ↷ Grid Approvals 13 Balances OIL View My leave LVE 17.5 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legen
+signed in as ad2
+now Hunter, same tab
+tapped the line; page now admin
+ROW PASS | F4 | iPhone | Hunter (same tab, signed in fresh): bell after the posting, line tapped to read it | saw: dot "block"; ["unread | RangerThu 19 Nov Posted out · off the manpower 16 h"]
+signed in as ad
+now Saber, same tab
+undo post out count 1
+ROW RECORD | F4 | iPhone | Saber (same tab): Undo post out on the sheet | saw: page words: 142 TALON ↶ ↷ Grid Approvals 13 Balances OIL View My leave LVE 17.5 · OIL 0 · 0 pending › ▸ Manning Bidding closed Legen
+ROW PASS | F4 | iPhone | Saber (same tab): his own bell after his Undo | saw: dot "none"; []
+signed in as ad2
+now Hunter, same tab
+ROW PASS | F4 | iPhone | Hunter (same tab, fresh): bell after the take-back (he had read the line first) | saw: dot "block"; ["unread | RangerThu 19 Nov Posted out · off the manpower · taken back · Saber now"]
+signed in as ad
+now Saber, same tab
+ROW RECORD | F5 | iPhone | Leave War: Ranger's cell for today after the take-back | saw: cell ""
+ERR F5 locator.tap: Timeout 30000ms exceeded.
+ROW OWED | F5 | iPhone | script step | saw: script error locator.tap: Timeout 30000ms exceeded.
+errors []
+DONE 3 PASS 0 FAIL 4 OTHER of 7
