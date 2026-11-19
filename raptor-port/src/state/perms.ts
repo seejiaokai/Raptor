@@ -1586,8 +1586,12 @@ const ACCOUNT_LIKE = (p: any) => JSON.stringify(p == null ? null : [p.cs, !!p.ar
    move putting back a right taken off before it (the recorded day brought the retired line back). A right that stands
    unchanged keeps its day. These two say "unchanged"; the gate (unitRowViolation, accountShapeAndMasterViolation) and the
    restore's own writing (restoreRedated) both ask them, so the restore never writes what the gate refuses. */
-export const grantKept = (b: any, n: any): boolean => b != null && n != null && b.level === n.level
-export const masterKept = (was: any, is: any): boolean => !!was && !!is && was.master === true && is.master === true
+/* (fix read 9, fault C — the security read's SEC9-1): "unchanged" is the SAME right in the same hands — a grant's account,
+   unit and level all as before, the mark's row still naming the same person. A 142 admin re-pointing Kestrel's Plan of
+   142 (dated 15 Jul) to a moved Hunter on 18 Jul, same level, had kept the 15 Jul day and brought his retired line back;
+   a right that changes hands is a right given today. */
+export const grantKept = (b: any, n: any): boolean => b != null && n != null && b.account === n.account && b.unit === n.unit && b.level === n.level
+export const masterKept = (was: any, is: any): boolean => !!was && !!is && was.master === true && is.master === true && String(was.pid) === String(is.pid)
 /* …and the restore writes it so: an Undo or Redo whose image turns a right on dates it today (installed in
    undo-wire.ts as the timeline's `redate` hook, before the restore is named for verifiedReplay, so the image the
    timeline vouches for IS the one written); one that leaves a right standing keeps the day it has now. */

@@ -204,3 +204,38 @@ describe('fault B — every command that brings the scheduler up to memory befor
     expect(deletePerson('casper')).toBeNull()
   })
 })
+
+describe('fault C — a right that changes hands keeps no old day (SEC9-1)', () => {
+  const kestrelPlan = () => {
+    signInAs('ad', 'a'); expect(setGrant('acad9', 'u142', 'admin', 'kes9').ok).toBe(true)
+    const g: any = { ...unitRows().grants.find(x => x.account === 'acad9' && x.unit === 'u142')! }
+    expect(g.from).toBe('2026-07-15')
+    return g
+  }
+  it('(SEC9-1, the gate) Kestrel’s Plan of 142 re-pointed to Hunter, its 15 Jul day kept: refused', () => {
+    const l = hunterLine(); const g = kestrelPlan()
+    outlawReal(); hunterMovesOn16(); on(18)
+    expect(shown('prowler', l.id), 'retired by his move').toBe(false)
+    const after = { ...g, account: 'acad2' }
+    const v = ownershipViolation(asOutlaw([{ collection: 'settings', id: GRANT_PFX + g.id, op: 'put', before: g, after }], 'grant.set')) ?? 'allowed'
+    expect(v, 'a right re-pointed must be dated today').toMatch(/not dated today/)
+    /* (control) …dated today, it passes */
+    expect(ownershipViolation(asOutlaw([{ collection: 'settings', id: GRANT_PFX + g.id, op: 'put', before: g, after: { ...after, from: '2026-07-18' } }], 'grant.set'))).toBeNull()
+  })
+  it('(SEC9-1, end to end) Outlaw, signed in, re-points it through a real command: refused, the line stays off', () => {
+    const l = hunterLine(); const g = kestrelPlan()
+    outlawReal(); hunterMovesOn16(); on(18)
+    signInAs('outlaw', 'x')
+    const r: any = commitSettingsIntent('grant.set', null, () => { settingsStore.set(GRANT_PFX + g.id, { ...g, account: 'acad2' }) })
+    unitsLoad()
+    expect({ ok: r.ok, from: unitRows().grants.find(x => x.account === 'acad2')?.from, back: shown('prowler', l.id) })
+      .toEqual({ ok: false, from: undefined, back: false })
+  })
+  it('(the master mark) a mark moved to another man by changing the row’s person keeps no old day', () => {
+    signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
+    on(18)
+    const b = { ...hunterAcct() }
+    const e = { type: 'account.update', origin: 'user', actor: deriveActor(), changes: [{ collection: 'settings', id: 'account:acad2', op: 'put', before: b, after: { ...b, pid: 'dj' } }] }
+    expect(ownershipViolation(e as any) ?? 'allowed').toMatch(/not dated today/)
+  })
+})
