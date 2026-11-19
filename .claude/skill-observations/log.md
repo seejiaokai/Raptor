@@ -2945,3 +2945,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The walker kept person A signed in in tab 1 and read person B's bell in tab 2 of the same browser. B's "read" mark was saved by tab 2, but tab 1 loads read records only at start-up, so A's undo in tab 1 thought B had never read the line and wrote no "taken back" line. The walk reported a FAIL; one world in a unit test was green. An hour of builder time went on proving it an artifact.
 **Suggested improvement:** walk-scripts.md: when two people act in turn, either one tab with sign-out / sign-in between them, or reload the acting tab after the other person's step; a two-live-tab FAIL is reproduced in one world before it is filed.
 **Principle:** In an app that keeps per-tab in-memory state over shared browser storage, two live tabs are two devices that never sync; a walk must not use them as one shared backend.
+
+### Observation 977: Reader copies are exported without pictures; the package link is made in PowerShell
+
+**Status:** OPEN
+**Date:** 19 Nov 26
+**Session context:** chat 114, fix read 6 of multi-squadron batch 1 (three blind readers, each on its own exported copy)
+**Skill:** New skill candidate: blind-reader-copies (the codex-guide recipe for exported copies)
+**Type:** open-source
+**Phase/Area:** making the readers' copies
+
+**Issue:** `git archive <commit> | tar -x` of the whole repo ran past 5 minutes for one copy (thousands of walk pictures) and was stopped; the package link made with `cmd //c mklink /J` from Git Bash failed ("Invalid switch") because Git Bash rewrites the `/J`.
+**Suggested improvement:** in the recipe: export with pathspec excludes (`git archive <c> -- . ':(exclude,glob)**/*.png' ':(exclude,glob)**/*.jpg' ':(exclude,glob)**/*.mp4' ':(exclude,glob)**/*.gif' ':(exclude,glob)**/*.webm'`) — three copies then take seconds; make the node_modules junction with PowerShell's `New-Item -ItemType Junction`.
+**Principle:** a reviewer's copy needs the code and documents, not the evidence pictures — export only what the reader reads; make Windows links with the Windows shell.
