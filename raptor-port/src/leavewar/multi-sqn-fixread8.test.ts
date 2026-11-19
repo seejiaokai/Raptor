@@ -239,3 +239,19 @@ describe('fault H — a holiday-shaped line naming an input goes through fault M
   })
 })
 
+describe('fault B — a line dated ahead stays on the bell of a man who never moved', () => {
+  it('(Opus probe T) Ranger’s own line dated 10 minutes ahead (a clock set back) has not left his bell', () => {
+    const n: any = { id: 'nx', to: 'bane', by: 'prowler', at: Date.now() + 10 * 60 * 1000, iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'in' }] }
+    expect(noticeLeftBell(n)).toBe(false)
+    /* …nor his squadron's business, bidding opened, dated ahead */
+    const open: any = { id: 'ny', to: 'bane', by: 'prowler', at: Date.now() + 10 * 60 * 1000, iid: '', name: 'JAN – DEC 26', day: '2026-07-25', what: [{ k: 'lwopen', a: '2026-08-01', b: '2026-08-31' }] }
+    expect(noticeLeftBell(open)).toBe(false)
+  })
+  it('(Opus 4) a moved man’s line about his own leave dated ahead is not "left" either; a marked one is', () => {
+    hunterMovesOn16(); on(17)
+    const own: any = { id: 'nz', to: 'prowler', by: 'stiff', at: Date.now() + 10 * 60 * 1000, iid: 'ipd-x', name: 'LL', day: '2026-07-25', what: [{ k: 'in' }] }
+    expect(noticeLeftBell(own)).toBe(false)
+    expect(noticeLeftBell({ ...own, what: [{ k: 'rmk' }], fu: ['u142'] })).toBe(true)
+  })
+})
+

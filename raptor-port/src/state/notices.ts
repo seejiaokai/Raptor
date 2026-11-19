@@ -517,13 +517,21 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what' | 'fu'>): b
  *  unread, even should he move back: one rule READ by every place that shows a bell (noticeLive, the one body), never a
  *  write — no command touches another squadron's bell for it, and the change history keeps everything. A move is saved
  *  from tomorrow (state/units.ts setHome), so a line already written is never re-dated into the new squadron. */
+/* a day before every home row the app writes (the demo's seeds start 2000-01-01, a move from tomorrow) */
+const BEFORE_ALL = '0001-01-01'
 export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'fu'>, today: string = todayIso()): boolean {
   if (!Number.isFinite(n.at)) return false
   /* (fix read 7, fault T — the security read's SEC7-2: a line dated ahead was "not yet past" for ever and so never left a
      moved man's bell. The gate now refuses a new line not dated now (state/perms.ts lineNotNow); one held before that, or
-     put by any other road, counts as left, so the old squadron cannot keep a line on his bell by its date — his D2218) */
-  if (n.at > Date.now() + AT_SLACK_MS) return true
-  const wrote = dayOfAt(n.at)
+     put by any other road, counts as left, so the old squadron cannot keep a line on his bell by its date — his D2218)
+     ONLY FOR A MAN WHO HAS MOVED, AND ONLY A LINE A MOVE RETIRES (fix read 8, fault B — Opus probe T and Opus 4): this
+     took every line dated ahead off every bell — a man who never moved lost his own lines to a clock set back a few
+     minutes, and a moved man his lines about himself, which D2218 keeps with him. A line dated ahead has no day to judge
+     a move against, so it is read as written before every move he has made up to today, and judged by the one rule
+     below (a first home row covers the days before it, units-model.ts atOn, so that day reads his first squadron): a
+     man who never moved keeps it; a moved man keeps a line about himself, and a filer's line only while a right still
+     tells him (adminThen) */
+  const wrote = n.at > Date.now() + AT_SLACK_MS ? BEFORE_ALL : dayOfAt(n.at)
   if (!(wrote < today)) return false
   const to = String(n.to)
   const was = homeOn(to, wrote)
