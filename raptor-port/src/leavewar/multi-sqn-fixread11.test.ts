@@ -491,3 +491,31 @@ describe('fault E — a right goes with its account, and a new account row under
     expect(accountOfPid(p1!)?.pid).toBe(p1)
   })
 })
+
+/* a new 142 man with no sign-in, added on 10 Jul (Fable's harness) */
+const newby = () => {
+  expect(addRosterPerson({ cs: 'Newby', ini: '', seat: 'FCP', cat: 'C' } as any, '2026-07-10')).toBeNull()
+  raptorNotify()
+  return Object.keys(PEOPLE).find(k => (PEOPLE as any)[k].cs === 'Newby' && !(PEOPLE as any)[k].deleted)!
+}
+describe('fault F — an older Undo of the same account row keeps the link\'s day as it stands (F11-4)', () => {
+  it('(Fable F11-4) Hunter holds Plan of 149 (13 Jul) and is told as filer; 15 Jul Saber renames his sign-in, then links it to Newby; Hunter moves 16 Jul without it; 17 Jul Saber undoes the link, then the rename: the line his move retired stays off', () => {
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    const nb = newby()
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    on(15)
+    signInAs('ad2', 'a2'); fileFor('osp9', 'prowler')
+    signInAs('ad', 'a'); rmk('changed by Saber on the 15th')
+    const l = lineTo('prowler')!
+    expect(l?.fu).toEqual(['u149'])
+    expect(updateAccount('acad2', { name: 'hunter.one' }), '(a first stored write of the seeded row, so an Undo below does not remove the row)').toBeNull()
+    expect(updateAccount('acad2', { name: 'hunter.two' }), 'the rename').toBeNull()
+    expect(updateAccount('acad2', { pid: nb }), 'the link to Newby').toBeNull()
+    homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
+    expect(shown('prowler', l.id), 'retired by his move: the sign-in holding Plan of 149 was Newby that day').toBe(false)
+    const u1 = globalUndo(); expect(u1.ok, JSON.stringify(u1)).toBe(true)
+    expect({ pid: hunterAcct().pid, link: hunterAcct().pidFrom, shown: shown('prowler', l.id) }, 'the link undone: his again from 17 Jul').toEqual({ pid: 'prowler', link: '2026-07-17', shown: false })
+    const u2 = globalUndo(); expect(u2.ok, JSON.stringify(u2)).toBe(true)
+    expect({ name: hunterAcct().name === 'hunter.two', link: hunterAcct().pidFrom, shown: shown('prowler', l.id) }, 'the rename undone').toEqual({ name: false, link: '2026-07-17', shown: false })
+  })
+})

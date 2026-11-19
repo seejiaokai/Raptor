@@ -1625,6 +1625,13 @@ export function restoreRedated(c: Change, offAt?: number): Change {
     let out: any = n
     /* (fix read 10, fault D): a row put back linked to another person than the stored row names is linked today */
     if (was && String(was.pid) !== String(n.pid) && n.pidFrom !== today) out = { ...out, pidFrom: today }
+    /* (fix read 11, fault F — F11-4): …and one put back on the same person keeps the link's day as it STANDS — an older
+       step's image (a rename made before a re-link and its Undo) put back its own older day, or none, and a line the
+       man's move had retired came back */
+    else if (was && String(was.pid) === String(n.pid) && n.pidFrom !== was.pidFrom) {
+      const { pidFrom: _drop, ...rest } = out
+      out = was.pidFrom === undefined ? rest : { ...rest, pidFrom: was.pidFrom }
+    }
     if (n.master === true) {
       const masterFrom = masterKept(was, n) ? was.masterFrom : markBackHolds(was, n, offAt) ? n.masterFrom : today
       if (out.masterFrom !== masterFrom) out = { ...out, masterFrom }
@@ -1673,7 +1680,9 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
        the right would pass to the person it names now — so it is dated today, never "from always" */
     const relinked = (!!was && String(was.pid) !== String(is.pid)) || rightNamesNew(w, c, was)
     const replayed = env.origin === 'restore' && REPLAY != null && !!REPLAY(env)?.(c)
-    if (!(replayed && !relinked)) {
+    /* (fix read 11, fault F — F11-4): a restore's replay is held to this too — the restore writes the day as it stands
+       (restoreRedated), so an older step's image never puts back an older day */
+    {
       const wantLink = relinked ? today : !was ? (is.pidFrom === undefined ? undefined : today) : was.pidFrom
       if (is.pidFrom !== wantLink) return `an account's link to its person not dated today (${c.id})`
     }
