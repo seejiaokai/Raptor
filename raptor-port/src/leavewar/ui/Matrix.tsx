@@ -1129,6 +1129,11 @@ export function Matrix() {
     // correct wherever the grid happens to be scrolled already.
     landOnEdge(wrap, cell)
     landedRef.current = true
+    /* AN ANCHOR TAKEN BEFORE THE JUMP NEVER UNDOES IT (chat 112, 19 Nov 26 — one month-button run in 140 left the grid on
+       September after MAR was pressed): the row window notes the first day in view at rest (measureWindow) and its redraw
+       commits a task later; a press in between landed March, then that redraw put the noted September day back on the edge.
+       The note waiting for that redraw is now the jumped day, taken where the jump left it. */
+    if (anchorRef.current) anchorRef.current = anchorNow(wrap)
   }
   /* the on-screen listener is wired once; it reaches this render's jumpTo through the ref */
   const jumpToRef = useRef(jumpTo)
