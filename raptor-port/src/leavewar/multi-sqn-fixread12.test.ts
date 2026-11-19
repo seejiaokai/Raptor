@@ -357,3 +357,74 @@ describe('fault D — a record made up in memory, then changed, is judged as new
     expect(stored('inputs', IID)?.remarks).toBe('edited')
   })
 })
+
+import { setMaster } from '../state/accounts'
+import { addUnit } from '../state/units'
+import { HOME_PFX } from '../state/units-model'
+import { addRosterPerson } from '../state/roster-add'
+
+describe('fault E — a repeated Undo / Redo keeps the date an earlier restore set (Astra 2)', () => {
+  const homes = (pid: string, key: string, rows: [string, string][]) => {
+    rows.forEach(([unit, from], i) => { mem['sqn142_' + HOME_PFX + key + i] = JSON.stringify({ id: key + i, pid, unit, from }) })
+    unitsLoad()
+  }
+  const hunter = (): any => { accountsLoad(); return ACCOUNTS_LIST.find(a => a.id === 'acad2') ?? {} }
+  const plan = () => { unitsLoad(); return unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149') }
+  const ok = (r: { ok: boolean }) => expect(r.ok, JSON.stringify(r)).toBe(true)
+  const newby = () => {
+    expect(addRosterPerson({ cs: 'Newby', ini: '', seat: 'FCP', cat: 'C' } as any, '2026-07-10')).toBeNull()
+    raptorNotify()
+    return Object.keys(PEOPLE).find(k => (PEOPLE as any)[k].cs === 'Newby' && !(PEOPLE as any)[k].deleted)!
+  }
+  it('(master) made 10 Jul, off 11 Jul, he moves 12 Jul, Undo 13 Jul (13 Jul); 14 Jul Redo then Undo: still 13 Jul, never 10 Jul', () => {
+    on(10); signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
+    on(11); signInAs('ad', 'a'); expect(setMaster('acad2', false).ok).toBe(true)
+    homes('prowler', 'hc', [['u142', '2026-07-10'], ['u149', '2026-07-12']])
+    on(13); ok(globalUndo())
+    expect(hunter().masterFrom, 'a move while it was off: dated the Undo\'s day').toBe('2026-07-13')
+    on(14); ok(globalRedo()); expect(hunter().master).toBeFalsy()
+    ok(globalUndo())
+    expect(hunter().masterFrom).toBe('2026-07-13')
+  })
+  it('(master, a move since the Redo) the same, but he moves again 15 Jul and the Undo is on 16 Jul: today', () => {
+    on(10); signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
+    on(11); signInAs('ad', 'a'); expect(setMaster('acad2', false).ok).toBe(true)
+    homes('prowler', 'hc', [['u142', '2026-07-10'], ['u149', '2026-07-12'], ['u142', '2026-07-15']])
+    on(13); ok(globalUndo())
+    on(14); ok(globalRedo())
+    on(16); ok(globalUndo())
+    expect(hunter().masterFrom).toBe('2026-07-16')
+  })
+  it('(master, two different steps) made 10 Jul (A), off 11 Jul (B), he moves 12 Jul; 13 Jul Undo B (13 Jul) and Undo A; 14 Jul Redo A: 13 Jul, never 10 Jul', () => {
+    on(10); signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
+    on(11); expect(setMaster('acad2', false).ok).toBe(true)                           // one sign-in: both steps on his Undo list
+    homes('prowler', 'hc', [['u142', '2026-07-10'], ['u149', '2026-07-12']])
+    on(13); ok(globalUndo()); expect(hunter().masterFrom).toBe('2026-07-13')
+    ok(globalUndo()); expect(hunter().master, 'step A undone').toBeFalsy()
+    on(14); ok(globalRedo())
+    expect({ master: hunter().master, from: hunter().masterFrom }).toEqual({ master: true, from: '2026-07-13' })
+  })
+  it('(Plan / View) Plan of 149 13 Jul, View 15 Jul, he moves 16 Jul, Undo 17 Jul (17 Jul); 18 Jul Redo then Undo: still 17 Jul, never 13 Jul', () => {
+    on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
+    expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
+    on(15); signInAs('ad', 'a'); expect(setGrant('acad2', 'u149', 'view', 'prowler').ok).toBe(true)
+    homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']])
+    on(17); ok(globalUndo())
+    expect({ level: plan()?.level, from: plan()?.from }).toEqual({ level: 'admin', from: '2026-07-17' })
+    on(18); ok(globalRedo()); expect(plan()?.level).toBe('view')
+    ok(globalUndo())
+    expect({ level: plan()?.level, from: plan()?.from }).toEqual({ level: 'admin', from: '2026-07-17' })
+  })
+  it('(re-link) master since 10 Jul; 15 Jul linked to Newby, he moves 16 Jul, Undo 17 Jul (17 Jul); 18 Jul Redo (today) then Undo: 17 Jul, never his old days', () => {
+    on(10); signInAs('ad', 'a'); expect(setMaster('acad2', true).ok).toBe(true)
+    on(15); signInAs('ad', 'a'); const nb = newby()
+    expect(updateAccount('acad2', { pid: nb })).toBeNull()
+    homes('prowler', 'hc', [['u142', '2026-07-10'], ['u149', '2026-07-16']])
+    on(17); ok(globalUndo())
+    expect({ pid: hunter().pid, link: hunter().pidFrom, from: hunter().masterFrom }).toEqual({ pid: 'prowler', link: '2026-07-17', from: '2026-07-17' })
+    on(18); ok(globalRedo())
+    expect({ pid: hunter().pid, link: hunter().pidFrom }, 'a Redo of a re-link stays today').toEqual({ pid: nb, link: '2026-07-18' })
+    ok(globalUndo())
+    expect({ pid: hunter().pid, link: hunter().pidFrom, from: hunter().masterFrom }).toEqual({ pid: 'prowler', link: '2026-07-17', from: '2026-07-17' })
+  })
+})

@@ -56,6 +56,10 @@ export interface UndoEntry {
   /* (fix read 11, fault G — F11-5a): the moment its latest Redo went through — the step made again, so a right that
      Redo took off went off THEN, and an Undo after it reads this before `madeAt` */
   redoneOn?: number
+  /* (fix read 12, fault E — Astra 2): each record as it STOOD just before the latest restore in that direction wrote it
+     (key `collection/id`) — a right or a link that restore took away kept the day an earlier restore had given it, and
+     the restore that reverses it puts that day back, never its step's older recorded one (state/perms.ts restoreRedated) */
+  stoodBefore?: { undo?: Record<string, unknown>; redo?: Record<string, unknown> }
   /* the text box a `sched.text` wrote (the envelope's `detail`) — Undo's words read it (describe.ts; B8) */
   detail?: string
   /* an undone entry a later NEW change forked away from (§4.3: "any newer entry committed after

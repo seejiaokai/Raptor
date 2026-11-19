@@ -111,7 +111,12 @@ export interface UndoHooks {
   /* (fix read 10, fault E — O10-1, Fable F10-5): `offAt`, the moment the right went off — an Undo's: the step's own
      moment (`madeAt`); a Redo's: its Undo's (`undoneOn`) — so a right put back with no move of its man since keeps its
      recorded day, as the world it puts back had it. */
-  redate?(change: Change, dir: 'undo' | 'redo', offAt?: number): Change
+  /* (fix read 12, fault E — Astra 2): `stood`, the record as it stood just before the latest restore the OTHER way wrote
+     it — the right or link that restore took away, with the day an earlier restore had given it (`stoodNow` reads it). */
+  redate?(change: Change, dir: 'undo' | 'redo', offAt?: number, stood?: unknown): Change
+  /* the record a restore is about to write, as it stands now (only the rights and links the redate hook dates); none
+     installed: nothing kept */
+  stoodNow?(change: Change): unknown
 }
 let hooks: UndoHooks = {}
 export function setUndoHooks(h: UndoHooks): void { hooks = h }
@@ -788,7 +793,14 @@ function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo
   /* (and a right it turns on, dated today — the redate hook above; fix read 9, fault A) */
   const redate = hooks.redate
   const offAt = offAtOf(entry, dir)
-  const changes = redate ? kept.map(c => redate(c, dir, offAt)) : kept
+  /* (fix read 12, fault E — Astra 2): what the restore the other way last took away, as it stood — a repeated Undo / Redo
+     puts back the day an earlier restore gave it, never the step's older recorded day; and what this one is about to
+     write, as it stands now, kept for the restore that reverses it */
+  const other = entry.stoodBefore?.[dir === 'undo' ? 'redo' : 'undo']
+  const stoodNow = hooks.stoodNow
+  const stood: Record<string, unknown> = {}
+  if (stoodNow) for (const c of kept) { const v = stoodNow(c); if (v !== undefined) stood[recordKey(c)] = v }
+  const changes = redate ? kept.map(c => redate(c, dir, offAt, other?.[recordKey(c)])) : kept
   // group the write entries by their owning store
   const byStore = new Map<EnlistableStore, RecordEntry[]>()
   const missing: string[] = []
@@ -814,6 +826,7 @@ function applyRestore(entry: UndoEntry, changesIn: Change[], dir: 'undo' | 'redo
   try { r = restoreCommit(entry, changes, dir, byStore, expectedRevs, cur, pulledBack) } finally { APPLYING = null }
   /* a DELIBERATE refusal raised inside (CmdRefused — a restore rule's second check, B5 §11.3) keeps its own sentence */
   if ((r as any).ok === false) return { ok: false, reason: (r as any).reason === 'refused' && (r as any).message ? `REFUSE: ${(r as any).message}` : ((r as any).message || 'conflict') }
+  entry.stoodBefore = { ...entry.stoodBefore, [dir]: stood }
   return { ok: true, seq: (r as any).seq }
 }
 function restoreCommit(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo', byStore: Map<EnlistableStore, RecordEntry[]>,

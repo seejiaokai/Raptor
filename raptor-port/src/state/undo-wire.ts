@@ -25,7 +25,7 @@ import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
 import { verifiedReplay, verifiedWarRestore, restoreOffAt, restoreDir } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, setRestoreOffAt, setRestoreDir } from './perms'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck, restoreRedated, restoreStood, setRestoreOffAt, setRestoreDir } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { weekOf, dayKeyOf } from '../undo/derive'
@@ -433,7 +433,10 @@ export function installGlobalUndo(): void {
        line back. The gate asks the same rule (state/perms.ts restoreRedated, grantKept, masterKept) */
     /* (fix read 10, fault E — O10-1, Fable F10-5): with the moment the right went off, so one his man has not moved
        squadron since keeps the day it had (a mistaken removal undone gives back what it took) */
-    redate: (c, dir, offAt) => restoreRedated(c, offAt, dir),
+    /* (fix read 12, fault E — Astra 2): and with the right as it stood before the restore the other way took it, so a
+       repeated Undo / Redo puts back the day an earlier restore gave it, never the step's older one */
+    redate: (c, dir, offAt, stood) => restoreRedated(c, offAt, dir, stood),
+    stoodNow: (c) => restoreStood(c),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
   /* …and the commit gate trusts a restore only where the timeline vouches for it, record by record (perms.ts) */

@@ -1450,7 +1450,10 @@ is no row, so a rollback re-reads the seeded list). Fault B — `src/state/perms
 the two lists where the command records no change of that row). Fault D — `src/state/perms.ts` (`storedRowViolation`:
 an input or notice never saved, changed with a before-image, is judged again as new; `setStoredRowsWhole`; a remote
 change's records remembered, a seed and a restore not asked), `src/state/persist.ts` (`writeSeedRows`, `wirePersist`
-say when the saved copy holds every record: `setStoredRowsWhole`).
+say when the saved copy holds every record: `setStoredRowsWhole`). Fault E — `src/undo/types.ts` (`stoodBefore`),
+`src/undo/timeline.ts` (`applyRestore` keeps each right as it stood before a restore and hands the reversing restore
+the other way's; the `stoodNow` hook), `src/state/perms.ts` (`restoreStood`; `restoreRedated` puts that day back where
+the day is kept), `src/state/undo-wire.ts` (wires both).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

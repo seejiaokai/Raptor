@@ -1672,18 +1672,41 @@ const grantBackHolds = (b: any, n: any, offAt: number | undefined, homes?: Param
    a Redo of a re-link makes the re-link again, dated today (fix read 10's F10-4) */
 const relinkBackHolds = (was: any, is: any, offAt: number | undefined, dir: 'undo' | 'redo' | undefined, homes?: Parameters<typeof restoredDayHolds>[2]): boolean =>
   dir === 'undo' && !!was && !!is && String(was.pid) !== String(is.pid) && restoredDayHolds(is.pid, offAt, homes)
-export function restoreRedated(c: Change, offAt?: number, dir?: 'undo' | 'redo'): Change {
+/* (fix read 12, fault E — Astra 2): A REPEATED UNDO / REDO. The day kept above is the image's, recorded when the step was
+   made; but an earlier restore may have given the right a LATER day (a move fell while it was off: dated that restore's
+   today), and a Redo then took it away again. The restore reversing that Redo — or that Undo — is handed the right as it
+   stood just before (`stood`, undo/timeline.ts stoodBefore), and where the day is kept it puts back THAT day, for the
+   same right only: a grant of the same account, squadron and level; the mark or the link on the same person. A move
+   while it was off still dates it today (restoredDayHolds), and a Redo of a re-link stays today (relinkBackHolds). */
+const stoodGrant = (s: any, n: any): any => (s && s.account === n.account && s.unit === n.unit && s.level === n.level ? s : null)
+const stoodOnSame = (s: any, n: any): any => (s && String(s.pid) === String(n.pid) ? s : null)
+/* what a restore of `c` would take away or change, as it stands now: a right's or a sign-in's row (the timeline keeps it
+   for the restore that reverses this one) */
+export function restoreStood(c: Change): unknown {
+  if (c.collection !== 'settings') return undefined
+  const id = String(c.id)
+  if (!id.startsWith(GRANT_PFX) && !id.startsWith(ACCOUNT_ROW)) return undefined
+  const v: any = store.get(id, null)
+  return id.startsWith(ACCOUNT_ROW) ? accountBefore(id.slice(ACCOUNT_ROW.length), v) ?? null : v ?? null
+}
+export function restoreRedated(c: Change, offAt?: number, dir?: 'undo' | 'redo', stood?: unknown): Change {
   if (c.collection !== 'settings' || c.op !== 'put' || c.after == null) return c
   const id = String(c.id), n: any = c.after, today = todayIso()
   if (id.startsWith(GRANT_PFX)) {
     const b: any = store.get(id, null)
-    const from = grantKept(b, n) ? b.from : grantBackHolds(b, n, offAt) ? n.from : today
+    const from = grantKept(b, n) ? b.from : grantBackHolds(b, n, offAt) ? (stoodGrant(stood, n)?.from ?? n.from) : today
     return n.from === from ? c : { ...c, after: { ...n, from } }
   }
   if (id.startsWith(ACCOUNT_ROW)) {
     const was: any = accountBefore(id.slice(ACCOUNT_ROW.length), store.get(id, null))
     let out: any = n
     const back = relinkBackHolds(was, n, offAt, dir)
+    const prior = stoodOnSame(stood, n)
+    /* (fix read 12, fault E): the re-link undone again after a Redo — the link's day as the earlier Undo gave it */
+    if (back && prior && out.pidFrom !== prior.pidFrom) {
+      const { pidFrom: _drop, ...rest } = out
+      out = prior.pidFrom === undefined ? rest : { ...rest, pidFrom: prior.pidFrom }
+    }
     /* (fix read 10, fault D): a row put back linked to another person than the stored row names is linked today —
        save one put back on its recorded man with no move of his since (fix read 11, fault G), which keeps its image */
     if (!back && was && String(was.pid) !== String(n.pid) && n.pidFrom !== today) out = { ...out, pidFrom: today }
@@ -1695,7 +1718,8 @@ export function restoreRedated(c: Change, offAt?: number, dir?: 'undo' | 'redo')
       out = was.pidFrom === undefined ? rest : { ...rest, pidFrom: was.pidFrom }
     }
     if (n.master === true) {
-      const masterFrom = masterKept(was, n) ? was.masterFrom : markBackHolds(was, n, offAt) || back ? n.masterFrom : today
+      const masterFrom = masterKept(was, n) ? was.masterFrom
+        : markBackHolds(was, n, offAt) || back ? (prior?.master === true ? prior.masterFrom : n.masterFrom) : today
       if (out.masterFrom !== masterFrom) out = { ...out, masterFrom }
     }
     return out === n ? c : { ...c, after: out }
