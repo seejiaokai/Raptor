@@ -1107,15 +1107,21 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
      a Delete of a man who never arrived, his record removed (store.ts forgetPersonFrom) on a date already come */
   const posted = new Map<string, string>()
   const postedOn = new Map<string, string>()   // each posted man's posting date (the bell lines' check, below)
+  const refuse = (c: Change) => `the posting pass may change only the men it posts out, and only as their posting does (${c.collection}/${c.id})`
+  /* A POSTING THE PASS CARRIES OUT IS ONE THAT WAS SAVED (fix read 13, item B — SEC13-1): its record's change starts from a
+     before-image — never from none — and that image is the war's SAVED posting row (the probe), its date (`to`) and
+     outcome the same after; a Delete of a man who never arrived removes a record that is the saved one. A posting made up
+     or rewritten in memory outside every command, by whoever's browser runs the pass, is refused here, whatever its date */
   for (const c of env.changes) {
     if (c.collection !== 'lw.postouts') continue
     const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
+    if (!b || typeof b !== 'object' || (LW_POSTING && STORED && !LW_POSTING(String(c.id), b))) return refuse(c)
+    if (f ? f.to !== b.to || passOutcomeOf(f) !== passOutcomeOf(b) : passOutcomeOf(b) !== 'delete') return refuse(c)
     let date: string | null = null, outcome: string | undefined
-    if (f && typeof f.to === 'string' && ISO_DAY.test(f.to) && f.poDone === isoAddDay(f.to) && (!b || b.poDone !== f.poDone)) { date = f.poDone; outcome = passOutcomeOf(f) }
-    else if (!f && b && typeof b.to === 'string' && ISO_DAY.test(b.to) && passOutcomeOf(b) === 'delete') { date = isoAddDay(b.to); outcome = 'delete' }
+    if (f && typeof f.to === 'string' && ISO_DAY.test(f.to) && f.poDone === isoAddDay(f.to) && b.poDone !== f.poDone) { date = f.poDone; outcome = passOutcomeOf(f) }
+    else if (!f && typeof b.to === 'string' && ISO_DAY.test(b.to)) { date = isoAddDay(b.to); outcome = 'delete' }
     if (date && date <= today && outcome) { posted.set(String(c.id), outcome); postedOn.set(String(c.id), date) }
   }
-  const refuse = (c: Change) => `the posting pass may change only the men it posts out, and only as their posting does (${c.collection}/${c.id})`
   /* …and only the men of the squadron whose Leave War it runs on (the second fix read — the security read's H2): a posting
      for another squadron's man in this war was never set by one of its admins (section 7b), so the pass does not carry it
      out. Judged by his home before the pass, where one is known (a shared store before its rows are made knows none). */
@@ -1444,6 +1450,13 @@ type LwUnit = () => string | null
 let LW_UNIT: LwUnit | null = null
 export function setLwUnitProbe(fn: LwUnit | null): void { LW_UNIT = fn }
 export const lwUnitNow = (): string | null => (LW_UNIT ? LW_UNIT() : null)
+/* WHAT A MAN'S POSTING IS AS SAVED (fix read 13, item B — SEC13-1): is this posting record (null: none) his posting exactly
+   as the war's stored profile row holds it? Installed by leavewar/sync.ts beside the unit probe; asked only while the
+   saved copy is wired too (the stored-row probe below, as on every built site) — a test without saved rows, which judges
+   an envelope by hand or after its pass has landed, asks nothing, as setStoredRowProbe */
+type LwPostingSaved = (pid: string, p: unknown) => boolean
+let LW_POSTING: LwPostingSaved | null = null
+export function setLwPostingProbe(fn: LwPostingSaved | null): void { LW_POSTING = fn }
 /* Admin → Users' doors, the only commands that write the second store (leavewar/sync.ts foreignOf's callers: Archive,
    Restore and Restore as — one type — and Delete) */
 const LWX_DOORS = new Set(['person.archive', 'person.restore', 'person.delete'])

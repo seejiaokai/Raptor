@@ -23,7 +23,7 @@ import { inputBelongs, goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, 
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed, myUnit } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe, setLwUnitProbe, setLwPostingProbe, setFollowUpsProbe, setWarLinesOwed, setHolidayLinesOwed, myUnit } from '../state/perms'
 import { rosterOf, homeUnitOf, unitPeople } from '../engine/roster'
 import { UNIT } from '../engine/unitview'
 import { qualify } from '../storage/unitid'
@@ -153,13 +153,15 @@ import {
   readStoredPeriods,
   setPlaceHolidays,
   placeHolidaysMoved,
+  postOutIsSaved,
+  revertUnsavedPostOuts,
   type PlaceHoliday,
 } from './state/store'
 import { units as unitList, placeOfOn, unitRows, homeOn } from '../state/units'
 import { foreignWar, setForeignDoor, readForeign, type ForeignWar } from './state/foreign'
 import type { StorageBackend } from './state/storage'
 import { HOOKS } from '../engine/hooks'
-import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
+import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, isCommitting as cmdIsCommitting, activeEnvelope, isQueued, isOk, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
 import { suspendForPosting, enableAfterPosting, lastAdminIfGone, lastAdminLock, masterDeleteProblem, masterChangeProblem, otherSquadronPersonProblem, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
 import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
@@ -297,6 +299,9 @@ export function installAbsenceDoor(): void {
   /* WHICH SQUADRON'S WAR IS LOADED (perms.ts setLwUnitProbe — the second fix read, H2): a war record's id names no unit, so
      the gate asks here; only while each squadron has a world of its own (the world door, set at boot) */
   setLwUnitProbe(() => (WORLD_DOOR ? worldUnit() : null))
+  /* WHAT A POSTING IS AS SAVED (perms.ts setLwPostingProbe — fix read 13, item B): the posting pass is judged against the
+     war's stored profile row, never memory's copy, which a change outside every command rewrites in place */
+  setLwPostingProbe(postOutIsSaved)
   /* WHAT A RESTORE'S FOLLOW-UP LINES MAY SAY (perms.ts setFollowUpsProbe — fix read 6, fault B): the one body that writes
      them, so the gate compares a "taken back" or "again" line with what this restore owes, field for field */
   setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, hasRead))
@@ -2750,6 +2755,12 @@ export function postingHeldNote(id: string): string | null {
 export function postingRunsBy(poDate: string): boolean { return poDate <= effectiveToday() }
 export function runPoOutcomes(only?: string): void {
   if (SYNCING) return
+  /* THE POSTINGS AS SAVED (fix read 13, item B — SEC13-1): a posting made up or rewritten in memory outside every command
+     (a browser's console, a member's too) is put back to the saved one before the pass reads which are due — as the
+     roster is (revertUnsavedPeople, below) — and again inside the pass's own command, before it reads them a second time.
+     Never while another command is under way: a posting made today runs inside its own Post out command, and a pass woken
+     as a command lands (its phase 8) would find that command's posting not yet written to its row */
+  if (!cmdIsCommitting()) revertUnsavedPostOuts()
   const today = effectiveToday()
   const due: PoDue[] = []
   for (const id of Object.keys(getState().postOuts)) {
@@ -2789,6 +2800,9 @@ export function runPoOutcomes(only?: string): void {
         SYNCING = true
         try {
           if (own) revertUnsavedPeople()   // before the enlist: the roster as saved, so nothing else rides in (above)
+          /* …and the postings as saved (fix read 13, item B): the pass may have been queued behind the command that woke it,
+             and is asked below which postings are due as it runs */
+          if (own) revertUnsavedPostOuts()
           /* the scheduler store's starting point brought up to what is in memory BEFORE it is enlisted — every time now that
              every pass enlists it ([POSTOUT-RUN-NOTICE]'s two reads, 5 Nov 26): the store's changes are worked out against
              that point, so a schedule or request change sitting in memory outside every command (a browser's console) would

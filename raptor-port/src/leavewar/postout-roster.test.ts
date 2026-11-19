@@ -303,7 +303,8 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     const e = realPass('bane', 'overseas')
     const p = ch(e, 'lw.postouts', 'bane')
     p.after.to = '2026-08-01'; p.after.poDone = '2026-08-02'
-    expect(ownershipViolation(e)).toMatch(/people\/bane/)
+    /* refused at the posting record itself since fix read 13's item B: the pass never changes a posting's date */
+    expect(ownershipViolation(e)).toMatch(/posting pass may change only.*\(lw\.postouts\/bane\)/)
   })
   it('once the accounts are stored, the posted man’s own account row alone (suspended) passes', () => {
     const e = realPass('bane', 'overseas')

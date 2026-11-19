@@ -1459,7 +1459,11 @@ item): **New:** `src/leavewar/multi-sqn-fixread13.test.ts`. **Changed:** item A 
 (`storedRowViolation`: a removal of an input or notice never saved is refused; a removal judged against the saved row
 carries that row as its before-image, so its Undo puts back the record as saved; `ownershipViolation` hands those images
 on once every check has passed), `src/state/person-delete.test.ts` and `src/leavewar/postout-outcomes.test.ts` (the saved
-copy a test wires is cleared after it).
+copy a test wires is cleared after it). Item B — `src/leavewar/state/store.ts` (`savedPostOut`, `postOutIsSaved`: a man's
+posting as his stored profile row holds it; `revertUnsavedPostOuts`: the postings in memory put back to the saved ones),
+`src/leavewar/sync.ts` (`runPoOutcomes` puts them back before it reads which are due and again inside its own command;
+the probe installed), `src/state/perms.ts` (`setLwPostingProbe`; `postingPassViolation`: each posting change starts from
+the saved posting, its date and outcome kept), `src/leavewar/postout-roster.test.ts` (one refusal now named at the posting).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

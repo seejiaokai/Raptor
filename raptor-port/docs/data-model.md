@@ -1863,7 +1863,10 @@ phase 4.1, 30 Sep 26); so has `AccessRequestSeen` (phase 4.4).
 31 Oct 26; tightened the same night by the security read of the fix).** A posting out runs by itself on its date (D229) as
 the app, not as a person. In one changeset it may change only: each posted man's posting record (`LeavePersonProfile`) —
 its done mark set to that posting's own date (the day after his last day in), a date already come, or, for a Delete of a man
-who never arrived, the record removed; that man's `Person` row in that outcome's own fields alone, its mark set —
+who never arrived, the record removed — and only a posting that was SAVED (fix read 13, item B, 20 Nov 26 — SEC13-1): each
+change of a posting record starts from a before-image, never none, that image the stored `LeavePersonProfile` posting as it
+stands, its date and outcome the same after; a posting made up or rewritten in a browser's memory, outside every changeset,
+is never carried out (the pass also puts the postings in memory back to the saved ones before it reads which are due); that man's `Person` row in that outcome's own fields alone, its mark set —
 Overseas Sqn `archived`, `archivedBy` = posting, `archivedOn`; SANS `san`, the SANS qualification, `sanQ`, `sanBy` =
 posting; Delete `deleted`, `deletedFrom`, `archived`, `archivedBy` = delete; his `User` (suspended, or deleted with an
 `AccessRequest` under its sign-in name, his `AccessRequestSeen` and every `UnitGrant` naming that `User`, a right he held in
@@ -1879,8 +1882,9 @@ the rows its inputs owe the others in them (the delete's own `Input` and schedul
 schedule's starting point up to what is in memory, so nothing outside its own change rides in (the build's security read). The
 admins it may tell are read from the `User` table AFTER the changeset (a posted admin suspended or deleted by it is no longer
 one). The app's commit gate holds it (`src/state/perms.ts`
-`postingPassViolation`; the pass itself first puts the roster in memory back to what is saved — `src/leavewar/sync.ts`
-`runPoOutcomes`), pinned by `src/leavewar/postout-roster.test.ts`. **At the database step the pass runs on the server**, never
+`postingPassViolation`; the pass itself first puts the roster and the postings in memory back to what is saved —
+`src/leavewar/sync.ts` `runPoOutcomes`, `src/leavewar/state/store.ts` `revertUnsavedPostOuts`), pinned by
+`src/leavewar/postout-roster.test.ts` and `src/leavewar/multi-sqn-fixread13.test.ts` (item B). **At the database step the pass runs on the server**, never
 under a credential a browser holds (`[SERVER-SIDE-PASSES]`, with the war's and the inputs' own passes).
 
 **Who owns each table's rows — fixed when a table is created, and not changeable afterwards (29 Sep 26, round 2,

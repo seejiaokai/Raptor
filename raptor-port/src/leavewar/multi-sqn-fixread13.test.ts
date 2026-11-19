@@ -12,7 +12,7 @@ import { accountsLoad, signIn, sessionFor, ACCOUNTS_LIST } from '../state/accoun
 import { initStore as lwInitStore, setPeople, getState } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { projectPeople } from '../leavewar/state/raptorRoster'
-import { wireLeaveWarSync, setWarWorldDoor, postOut, runPoOutcomes } from '../leavewar/sync'
+import { wireLeaveWarSync, setWarWorldDoor, postOut, runPoOutcomes, undoPostOut } from '../leavewar/sync'
 import { unitsLoad, setGrant, unitRows } from '../state/units'
 import { INPUTS } from '../engine/inputs'
 import { NOTICES, noticesFor, filerVia } from '../state/notices'
@@ -23,7 +23,7 @@ import { _resetTimeline, globalUndo } from '../undo/timeline'
 import { commitInputsWith } from '../state/sched-commit'
 import { Whiteboard } from '../storage/whiteboard'
 import { wireRows, writeSeedRows } from '../state/persist'
-import { setStoredRowProbe } from '../state/perms'
+import { setStoredRowProbe, setStoredRowsWhole, ownershipViolation } from '../state/perms'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -73,7 +73,7 @@ describe('item A — a record made up in memory, removed as if saved, never reac
   let WB: Whiteboard
   const stored = (coll: 'inputs' | 'notices', id: string): any => { const v = WB.get(coll, id); return v ? JSON.parse(v) : null }
   beforeEach(() => { WB = new Whiteboard(); wireRows(WB); writeSeedRows(WB) })
-  afterEach(() => { setStoredRowProbe(null) })
+  afterEach(() => { setStoredRowProbe(null); setStoredRowsWhole(false) })
 
   /* Opus O13-1 (o13-d-undo.test.ts :77): his leave "filed by" Kestrel or himself a month ago, pushed into memory, deleted,
      then Undo — the Undo used to save the made-up record */
@@ -182,5 +182,87 @@ describe('item A — a record made up in memory, removed as if saved, never reac
     const rec = forge('bane', 'ipd-s13d', 'kes9')
     const res = run(() => { INPUTS.splice(INPUTS.indexOf(rec), 1); NOTICES.push(line('n-s13d', 'kes9', 'bane', rec)) })
     expect({ refused: res !== 'saved', line: WB.get('notices', 'n-s13d') }).toEqual({ refused: true, line: null })
+  })
+})
+
+
+/* ITEM B — a Delete posting made up in memory was carried out by the posting pass in a member's browser (SEC13-1). The
+   security read's set-ups (sec13-forged-posting.test.ts :111, :121, :135), copied. */
+describe('item B — a posting made up in memory is never carried out by the posting pass (SEC13-1)', () => {
+  const forgePosting = (pid: string, to: string) => {
+    const st: any = getState()
+    const body = st.people.find((p: any) => p.id === pid) ?? (st.postOuts && st.postOuts[pid])
+    st.postOuts[pid] = { ...JSON.parse(JSON.stringify(body)), to, poOutcome: 'delete' }   // outside every command
+  }
+  const state = (pid: string, aid: string) => {
+    accountsLoad(); unitsLoad()
+    return { deleted: !!(PEOPLE as any)[pid].deleted, account: !!ACCOUNTS_LIST.find(a => a.id === aid), grants: grantsOf(aid).length }
+  }
+  afterEach(() => { setStoredRowProbe(null); setStoredRowsWhole(false) })
+  it('(:111) Ranger (142 member) makes up a Delete posting for Hunter (142 admin, View of 149); the pass in his browser does nothing', () => {
+    signInAs('ad9', 'a9')
+    expect(setGrant('acad2', 'u149', 'view', 'prowler').ok, 'Kestrel gives Hunter View of 149').toBe(true)
+    on(16)
+    signInAs('us', 'us')
+    forgePosting('prowler', '2026-07-14')
+    const types = passTypes()
+    expect({ pass: types.includes('lw.postoutRun'), ...state('prowler', 'acad2') })
+      .toEqual({ pass: false, deleted: false, account: true, grants: 1 })
+    expect(getState().postOuts.prowler ?? null, 'the made-up posting is gone from memory').toBeNull()
+  })
+  it('(:121, the saved copy wired and seeded as at start-up) the same: Hunter never saved as deleted', () => {
+    const WB = new Whiteboard(); wireRows(WB); writeSeedRows(WB)
+    signInAs('ad9', 'a9')
+    expect(setGrant('acad2', 'u149', 'view', 'prowler').ok).toBe(true)
+    on(16)
+    signInAs('us', 'us')
+    expect(getState().postOuts.prowler?.to ?? null, 'no posting set for Hunter by anyone').toBeNull()
+    forgePosting('prowler', '2026-07-14')
+    passTypes()
+    const row = WB.get('people', 'prowler')
+    expect({ savedDeleted: !!(row && JSON.parse(row).deleted), grants: state('prowler', 'acad2').grants }).toEqual({ savedDeleted: false, grants: 1 })
+  })
+  it('(:135, the older half) Ranger makes up a Delete posting for Casper, a 142 man holding nothing elsewhere: nothing happens', () => {
+    on(16)
+    signInAs('us', 'us')
+    forgePosting('casper', '2026-07-14')
+    const types = passTypes()
+    expect({ pass: types.includes('lw.postoutRun'), deleted: !!(PEOPLE as any).casper.deleted }).toEqual({ pass: false, deleted: false })
+  })
+  it('(control) no posting at all: the pass does nothing', () => {
+    on(16)
+    signInAs('us', 'us')
+    expect(passTypes()).not.toContain('lw.postoutRun')
+    expect(state('prowler', 'acad2').deleted).toBe(false)
+  })
+  /* (b) the gate: the pass's own change of a posting must start from the war's SAVED posting row, its date and outcome
+     kept — a pass envelope carrying a posting with no saved row, or one rewritten, is refused once the saved copy is wired */
+  const passEnv = (changes: any[]): any => ({ seq: 1, at: '', actor: { id: 'system', role: 'system', session: null }, origin: 'projection', scope: { module: 'people' }, type: 'lw.postoutRun', changes, emit: true })
+  const delPerson = (id: string) => ({ op: 'put', collection: 'people', id, before: { cs: id }, after: { cs: id, deleted: true, deletedFrom: '2026-07-15', archived: true, archivedBy: 'del' } })
+  it('(gate, saved copy wired) a Delete posting with no saved row, or no before-image, rides no pass', () => {
+    const WB = new Whiteboard(); wireRows(WB); writeSeedRows(WB)
+    const body: any = { id: 'casper', callsign: 'CASPER', from: '2026-01-01', to: '2026-07-14', poOutcome: 'delete' }
+    expect(ownershipViolation(passEnv([delPerson('casper'), { op: 'put', collection: 'lw.postouts', id: 'casper', before: null, after: { ...body, poDone: '2026-07-15' } }])))
+      .toMatch(/posting pass may change only/)
+    expect(ownershipViolation(passEnv([delPerson('casper'), { op: 'put', collection: 'lw.postouts', id: 'casper', before: body, after: { ...body, poDone: '2026-07-15' } }])))
+      .toMatch(/posting pass may change only/)
+    expect(ownershipViolation(passEnv([delPerson('casper'), { op: 'delete', collection: 'lw.postouts', id: 'casper', before: body, after: null }])))
+      .toMatch(/posting pass may change only/)
+  })
+  it('(control) a real posting set by an admin runs on its date, and its Undo post out works', () => {
+    const WB = new Whiteboard(); wireRows(WB); writeSeedRows(WB)
+    signInAs('ad2', 'a2')
+    expect(postOut('casper', '2026-07-20', 'overseas'), 'Hunter posts Casper out to an Overseas Sqn from 20 Jul').toBe(true)
+    expect(!!(PEOPLE as any).casper.archived, 'not before its date').toBe(false)
+    on(20)
+    const seen: string[] = []
+    const off = onCommit((e: any) => { seen.push(e.type) })
+    try { signInAs('us', 'us'); runPoOutcomes() } finally { off() }   // the sign-in's own notify wakes the pass
+    expect(seen, 'the pass runs in a member\'s browser on its date').toContain('lw.postoutRun')
+    expect(!!(PEOPLE as any).casper.archived, 'Casper archived by his posting').toBe(true)
+    expect(JSON.parse(WB.get('people', 'casper')!).archived, 'saved archived').toBe(true)
+    signInAs('ad2', 'a2')
+    expect(undoPostOut('casper'), 'Undo post out').toBe(true)
+    expect(!!(PEOPLE as any).casper.archived, 'Casper back').toBe(false)
   })
 })

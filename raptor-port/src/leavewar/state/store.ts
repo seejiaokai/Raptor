@@ -182,7 +182,7 @@ import { creditWorth } from '../engine/credit'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 /* [DB-READINESS] group A, phase 3 — the war saved one row per record (state/rows.ts), each list's order on its records
    (command/ord.ts), and the one-time fold of an old store's whole-list records (storage/fold.ts) */
-import { lwRows, allRows, WAR, REC, LEDGER, OPENING, PROFILE, BALANCE, GRADE, parseRecKey, parseOpeningKey, parseBalanceKey, type LwNow } from './rows'
+import { lwRows, allRows, WAR, REC, LEDGER, OPENING, PROFILE, BALANCE, GRADE, profileKey, parseRecKey, parseOpeningKey, parseBalanceKey, type LwNow } from './rows'
 import { mintOrd, byOrd } from '../../command/ord'
 import { registerConverter, type Converter } from '../../storage/fold'
 import type { Entry } from '../../storage/backend'
@@ -1372,6 +1372,60 @@ export function getState(): MergedState {
  *  command layer and tests of the stored shape; screens read getState(). */
 export function rawState(): State {
   return state
+}
+
+/* A MAN'S POSTING AS SAVED — the war's own stored profile row, read as a reload reads it (readWorldRows), or null where
+   none is saved. The posting pass is judged against it (fix read 13, item B — SEC13-1: perms.ts postingPassViolation,
+   through the probe sync.ts installs), never against memory: a posting changed in place outside every command changes the
+   committed world's object too, since the two share it, so only the stored row tells a real posting from a made-up one. */
+export function savedPostOut(pid: string): Person | null {
+  let x: unknown
+  try { x = JSON.parse(backend.read(profileKey(pid)) ?? 'null') } catch { return null }
+  if (!isPlainObject(x) || x.post === undefined) return null
+  return readPostOuts({ [pid]: x.post })?.[pid] ?? null
+}
+/* a posting as a reload would read it — the one shape both sides of the comparisons below are put in; one a reload would
+   not read at all is still a posting, never read as none */
+const postNorm = (pid: string, p: unknown): string => {
+  if (p == null) return 'null'
+  const s = JSON.stringify(p)
+  return JSON.stringify(readPostOuts({ [pid]: JSON.parse(s) })?.[pid] ?? { unreadable: s })
+}
+/** is `p` (a posting record, or null for none) the man's posting exactly as saved? */
+export function postOutIsSaved(pid: string, p: unknown): boolean {
+  return postNorm(pid, p) === postNorm(pid, savedPostOut(pid))
+}
+/* THE POSTINGS IN MEMORY PUT BACK TO THE SAVED ONES (fix read 13, item B — SEC13-1), as the roster is put back
+   (people-settings-commit.ts revertUnsavedPeople) before the posting pass runs: every in-app posting write is saved by its
+   own command, its row written as it lands, so only a posting changed in memory outside every command (a browser's
+   console) differs — and the pass, run as the app itself in whoever's browser is signed in, must never carry it out.
+   Called by sync.ts runPoOutcomes before it reads which postings are due, never inside another command (that command's
+   own unsaved posting is its own). The committed world takes the same postings, so nothing of this reads as a change.
+   Before the war has started (boot) nothing is put back. The men whose postings were put back. */
+export function revertUnsavedPostOuts(): string[] {
+  if (!LW_READY) return []
+  /* each posting memory holds, against its saved row — one read a man, on every pass (a posting memory lost cannot be
+     carried out, so the saved rows memory does not hold are not read) */
+  const mem = state.postOuts
+  const saved: Record<string, Person> = {}
+  const out = Object.keys(mem).filter(pid => {
+    const s = savedPostOut(pid)
+    if (s) saved[pid] = s
+    return postNorm(pid, mem[pid]) !== postNorm(pid, s)
+  })
+  if (!out.length) return out
+  const asSaved = (from: Record<string, Person>): Record<string, Person> => {
+    const o = { ...from }
+    for (const pid of out) { if (saved[pid]) o[pid] = saved[pid]; else delete o[pid] }
+    return o
+  }
+  const postOuts = asSaved(mem)
+  state = { ...state, postOuts }
+  /* the committed world's postings as saved too: the pass's change is worked out against it */
+  LW_BASELINE = LW_BASELINE.postOuts === mem ? { ...LW_BASELINE, postOuts } : { ...LW_BASELINE, postOuts: asSaved(LW_BASELINE.postOuts) }
+  /* (inside the pass's own command the command's own repaint follows) */
+  if (!cmdIsInReducer()) notify()
+  return out
 }
 
 /** A repaint after the absence index changed (sync.ts) — no persist, no
