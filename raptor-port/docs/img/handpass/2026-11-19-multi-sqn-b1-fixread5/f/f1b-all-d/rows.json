@@ -1,0 +1,20 @@
+[
+ [
+  "F1",
+  "desktop",
+  "Osprey: bell after bidding opened then closed",
+  "two lines, both new; dot lit",
+  "dot before open \"block\"; [\"NEW Leave War1 Dec – 31 Dec Bidding open · Kestrel now\"]",
+  "RECORD",
+  "f1b-03-osprey-bell.png"
+ ],
+ [
+  "F1",
+  "desktop",
+  "Osprey: Mark all read",
+  "no line new; dot gone",
+  "dot \"none\"; [\"read Leave War1 Dec – 31 Dec Bidding open · Kestrel now\"]",
+  "PASS",
+  "f1b-06-markall.png"
+ ]
+]

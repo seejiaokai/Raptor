@@ -1,0 +1,23 @@
+msq-fr5-f3 v1
+chip before Bidding closed
+ROW PASS | F3 | desktop | Kestrel: chip "Bidding closed" -> open December -> done | saw: chip now "Open for bidding 1 Dec – 31 Dec"
+undo state after open undoBtn disabled=false w=34; redoBtn disabled=true w=34
+signed in as us9
+bell html f3-05-us9-bell <div class="bl-scroll"><button type="button" role="menuitem" class="bl-line unread" data-testid="bell-line-nmwn690wn1hlv"><span class="bl-dot" aria-hidden="true"></span><span class="bl-main"><span class="bl-t"><b class="bl-name">Leave War</b><i class="bl-day">1 Dec – 31 Dec</i></span><span class="bl-what">Bidding open · Kestrel</span></span><span class="bl-ago">now</span></button></div><div class="bl-foot"><button type="button" class="abtn sm ghost" data-testid="bell-markall">Mark all read</button></div>
+ROW PASS | F3 | desktop | Osprey: bell after bidding opened | saw: dot display "block"; lines ["Leave War1 Dec – 31 Dec","Bidding open · Kestrel","now","Mark all read"]
+signed in as ad9
+undo state after sign-in undoBtn:none; redoBtn:none
+undo visible count 0
+chip after undo (war page?) not on war page
+ROW RECORD | F3 | desktop | Kestrel: top bar Undo | saw: chip "Open for bidding 1 Dec – 31 Dec"; undoBtn disabled=true w=34; redoBtn disabled=true w=34
+signed in as us9
+bell html f3-09-us9-bell-after-undo <div class="bl-scroll"><button type="button" role="menuitem" class="bl-line unread" data-testid="bell-line-nmwn690wn1hlv"><span class="bl-dot" aria-hidden="true"></span><span class="bl-main"><span class="bl-t"><b class="bl-name">Leave War</b><i class="bl-day">1 Dec – 31 Dec</i></span><span class="bl-what">Bidding open · Kestrel</span></span><span class="bl-ago">now</span></button></div><div class="bl-foot"><button type="button" class="abtn sm ghost" data-testid="bell-markall">Mark all read</button></div>
+ROW RECORD | F3 | desktop | Osprey: bell after Kestrel undid | saw: dot "block"; lines ["Leave War1 Dec – 31 Dec","Bidding open · Kestrel","now","Mark all read"]
+signed in as ad9
+redo state undoBtn:none; redoBtn:none
+ROW PASS | F3 | desktop | Kestrel: top bar Redo | saw: chip "Open for bidding 1 Dec – 31 Dec"; undoBtn disabled=true w=34; redoBtn disabled=true w=34
+signed in as us9
+bell html f3-12-us9-bell-after-redo <div class="bl-scroll"><button type="button" role="menuitem" class="bl-line unread" data-testid="bell-line-nmwn690wn1hlv"><span class="bl-dot" aria-hidden="true"></span><span class="bl-main"><span class="bl-t"><b class="bl-name">Leave War</b><i class="bl-day">1 Dec – 31 Dec</i></span><span class="bl-what">Bidding open · Kestrel</span></span><span class="bl-ago">now</span></button></div><div class="bl-foot"><button type="button" class="abtn sm ghost" data-testid="bell-markall">Mark all read</button></div>
+ROW RECORD | F3 | desktop | Osprey: bell after Redo | saw: dot "block"; lines ["Leave War1 Dec – 31 Dec","Bidding open · Kestrel","now","Mark all read"]
+errors []
+DONE 3 PASS 0 FAIL 3 OTHER of 6
