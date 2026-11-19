@@ -1525,7 +1525,12 @@ function accountAfter(id: string, c: Change): any {
 /* does this command take the account row of `aid` away — there before it, gone after it (fix read 11, fault H) */
 function accountGoesHere(env: CommitEnvelope, aid: string): boolean {
   const c = env.changes.find(x => x.collection === 'settings' && String(x.id) === ACCOUNT_ROW + aid)
-  return !!c && accountBefore(aid, c.before) != null && accountAfter(aid, c) == null
+  if (c) return accountBefore(aid, c.before) != null && accountAfter(aid, c) == null
+  /* no change of that row (fix read 12, fault C — Fable F12-3): the accounts' very first write stores every seeded row it
+     keeps and simply leaves out the one it drops, so the two lists are read as the loader reads them, as section 8 does —
+     in the list before, not in the list after */
+  const w = worldsOf(env)
+  return !!w && w.acctB.some(x => x.id === aid) && !w.acctA.some(x => x.id === aid)
 }
 /* the person a sign-in belonged to before this command: its row's before-image, else the list as the loader read it */
 function accountPidBefore(env: CommitEnvelope, aid: string): string | null {

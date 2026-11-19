@@ -253,3 +253,31 @@ describe('fault B — a command labelled "person.delete" that deletes nobody (O1
   })
 })
 
+
+describe('fault C — fault H on the accounts\' very first write (F12-3)', () => {
+  beforeEach(() => { deletesNull = true })
+  afterEach(() => { deletesNull = false })
+  const stored = () => Object.keys(mem).filter(k => k.includes('account:')).length
+  it('(control) Osprey holds nothing elsewhere: Kestrel deletes him on the first write', () => {
+    expect(stored(), 'no account row stored yet').toBe(0)
+    signInAs('ad9', 'a9')
+    expect(deletePerson('osp9')).toBeNull()
+    expect(!!(PEOPLE as any).osp9.deleted).toBe(true)
+  })
+  it('Saber gave Osprey (seeded sign-in) View of 142; Kestrel deletes Osprey on the first write: allowed, the right gone with him', () => {
+    signInAs('ad', 'a')
+    const id = accountOfPid('osp9')!.id
+    expect(setGrant(id, 'u142', 'view', 'osp9').ok).toBe(true)
+    expect(stored(), 'no account row stored yet').toBe(0)
+    signInAs('ad9', 'a9')
+    const r = deletePerson('osp9')
+    accountsLoad(); unitsLoad()
+    expect({ refused: r, deleted: !!(PEOPLE as any).osp9.deleted, grants: grantsOf(id).length, acct: !!ACCOUNTS_LIST.find(a => a.id === id) })
+      .toEqual({ refused: null, deleted: true, grants: 0, acct: false })
+  })
+  it('(still refused) Hunter, no admin of 149, cannot delete Osprey on the first write', () => {
+    signInAs('ad2', 'a2')
+    expect(deletePerson('osp9')).not.toBeNull()
+    expect(!!(PEOPLE as any).osp9.deleted).toBe(false)
+  })
+})
