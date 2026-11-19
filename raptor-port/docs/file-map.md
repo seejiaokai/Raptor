@@ -1419,7 +1419,10 @@ line naming no input only from the war's or the holiday's writers; every line ha
 `src/state/units-sqn-fixread2.test.ts`, `src/leavewar/multi-sqn-fixread8.test.ts` and `multi-sqn-fixread9.test.ts` (a
 holiday-shaped line merely put is judged as any line). Fault C — `src/state/perms.ts` (`writtenAsNewViolation`,
 `setStoredRowProbe`: a request or bell line "new" under an id the saved copy holds is refused), `src/state/persist.ts`
-(`wireRows` installs the probe on the whiteboard).
+(`wireRows` installs the probe on the whiteboard). Fault D — `src/state/accounts.ts` (`Account.pidFrom`, written by
+`updateAccount` on a re-link; `relinkRightsProblem`: only a master re-links a sign-in holding a right where he is not an
+admin), `src/state/notices.ts` (`adminThen` counts a right from the later of its day and `pidFrom`), `src/state/perms.ts`
+(G2b: the link dated today; G4: the re-link refused; `restoreRedated` dates a restored re-link).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

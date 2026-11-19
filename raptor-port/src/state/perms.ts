@@ -1604,10 +1604,15 @@ export function restoreRedated(c: Change): Change {
     return n.from === from ? c : { ...c, after: { ...n, from } }
   }
   if (id.startsWith(ACCOUNT_ROW)) {
-    if (n.master !== true) return c
     const was: any = accountBefore(id.slice(ACCOUNT_ROW.length), store.get(id, null))
-    const masterFrom = masterKept(was, n) ? was.masterFrom : today
-    return n.masterFrom === masterFrom ? c : { ...c, after: { ...n, masterFrom } }
+    let out: any = n
+    /* (fix read 10, fault D): a row put back linked to another person than the stored row names is linked today */
+    if (was && String(was.pid) !== String(n.pid) && n.pidFrom !== today) out = { ...out, pidFrom: today }
+    if (n.master === true) {
+      const masterFrom = masterKept(was, n) ? was.masterFrom : today
+      if (out.masterFrom !== masterFrom) out = { ...out, masterFrom }
+    }
+    return out === n ? c : { ...c, after: out }
   }
   return c
 }
@@ -1636,7 +1641,17 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
        exemption holds only where the mark stands unchanged; the restore itself writes today's day (restoreRedated), so
        it is never refused. */
     const kept = masterKept(was, is)
-    if (env.origin === 'restore' && (is.master !== true || kept) && REPLAY && REPLAY(env)?.(c)) continue
+    /* G2b — THE LINK'S DAY IS THE DAY IT WAS MADE (fix read 10, fault D — O10-4, F10-4): a right held through the account
+       counts from the day the account was linked to its person (notices.ts adminThen), so a re-link is dated today and a
+       link unchanged keeps its day; a new account, linked to nobody before, may carry today's day or none (D56: a row
+       with no day counts from always). A restore's verified replay that keeps the link puts back its recorded image. */
+    const relinked = !!was && String(was.pid) !== String(is.pid)
+    const replayed = env.origin === 'restore' && REPLAY != null && !!REPLAY(env)?.(c)
+    if (!(replayed && !relinked)) {
+      const wantLink = !was ? (is.pidFrom === undefined ? undefined : today) : relinked ? today : was.pidFrom
+      if (is.pidFrom !== wantLink) return `an account's link to its person not dated today (${c.id})`
+    }
+    if (replayed && (is.master !== true || kept)) continue
     const want = is.master !== true ? undefined : kept ? was.masterFrom : today
     if (is.masterFrom !== want) return `the master mark not dated today (${c.id})`
   }
@@ -1649,6 +1664,22 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
     if (pb && !pb.deleted && pa && pa.deleted) return `a master admin's person deleted (people/${m.pid})`
     if (sameJson(m, now) && ACCOUNT_LIKE(pb) === ACCOUNT_LIKE(pa)) continue
     if (!actorMaster) return `a master admin's account changed by one who is not a master (${ACCOUNT_ROW}${m.id})`
+  }
+  /* G4 — A RIGHT IN ANOTHER SQUADRON CHANGES HANDS ONLY BY A MASTER (fix read 10, fault D — the agent's reading of D2094 /
+     D2199, "an admin of a squadron is made only by its own admins or a master admin"): re-linking an account that holds a
+     grant in a squadron the actor is no admin of hands that right to another person, so only a master does it (Kestrel,
+     149's admin, re-linking Osprey's account holding Plan of 142 to Hunter made Hunter 142's admin). accounts.ts
+     relinkRightsProblem says the same at the door. */
+  if (!actorMaster) {
+    for (const c of env.changes) {
+      if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW) || c.after == null) continue
+      const id = String(c.id).slice(ACCOUNT_ROW.length)
+      const was: any = c.before != null ? c.before : accountBefore(id, null)
+      if (!was || String(was.pid) === String((c.after as any).pid)) continue
+      for (const g of w.rowsB.grants) {
+        if (g.account === id && levelInForce(a, g.unit, today, w.rowsB) !== 'admin') return `a sign-in holding a right in another squadron re-linked by one who is not a master (${c.id})`
+      }
+    }
   }
   return null
 }

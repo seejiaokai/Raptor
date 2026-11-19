@@ -88,9 +88,14 @@ export type AccountRole = 'admin' | 'main'
    it must not bring the line back — given on the move's own day neither: a move day counts only a mark held before that
    day began (fix read 8, fault D). Absent on a mark set before it was kept (the demo's seeded master — D56): counts from
    always. It rides with `master` and goes with it. */
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string }
-/* the master mark as a row keeps it — the mark, and its day where it has one */
-const masterOf = (x: { master?: true; masterFrom?: string }) => (x.master ? { master: true as const, ...(x.masterFrom ? { masterFrom: x.masterFrom } : {}) } : {})
+/* `pidFrom` (fix read 10, fault D — the fresh Opus read's O10-4, Fable's F10-4, Astra): the day the account was linked to
+   the person it names now, written by updateAccount whenever it re-links one. A right held through the account — a grant
+   (units-model.ts Grant.from) or the master mark — is his only from then (state/notices.ts adminThen), so a right moved to
+   a moved man by re-linking the account that holds it never brings back a line his move retired. Absent on a row linked
+   before it was kept (D56): counts from always. */
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string; pidFrom?: string }
+/* the master mark as a row keeps it — the mark, and its day where it has one; and the day of the link, where it has one */
+const masterOf = (x: { master?: true; masterFrom?: string; pidFrom?: string }) => ({ ...(x.master ? { master: true as const, ...(x.masterFrom ? { masterFrom: x.masterFrom } : {}) } : {}), ...(x.pidFrom ? { pidFrom: x.pidFrom } : {}) })
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
 export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[] }
@@ -193,6 +198,7 @@ export function readAccounts(images: any[], why?: (text: string) => void, person
       ...(isPos(x.seenFrom) ? { seenFrom: { at: +x.seenFrom.at, lineId: x.seenFrom.lineId } } : {}),
       ...(Number.isFinite(x.createdAt) ? { createdAt: +x.createdAt } : {}),
       ...(x.master === true ? masterOf({ master: true, ...(validIso(x.masterFrom) ? { masterFrom: String(x.masterFrom) } : {}) }) : {}),
+      ...(validIso(x.pidFrom) ? { pidFrom: String(x.pidFrom) } : {}),
     })
   }
   return out
@@ -319,6 +325,20 @@ function otherSquadronProblem(pid: string): string | null {
   const num = unitById(u)?.num ?? u
   /* two sentences, as the last-admin lock's words beside it: a dash does not join two thoughts (the guide's §1b) */
   return `He is ${num}'s. Only an admin of ${num} can change his account.`
+}
+/* a sign-in that holds a right — a grant — in a squadron the signed-in admin is no admin of is linked to another person
+   only by a master (fix read 10, fault D; the gate holds the same — perms.ts accountShapeAndMasterViolation). A master's
+   own account is a master's alone already (masterChangeProblem). */
+function relinkRightsProblem(a: Account): string | null {
+  const mine = SESSION ? accountById(SESSION.user) : undefined
+  if (mine?.master) return null
+  for (const g of unitRows().grants) {
+    if (g.account !== a.id) continue
+    if (mine && levelOfAccount({ id: mine.id, pid: mine.pid, role: 'admin', master: false }, g.unit) === 'admin') continue
+    const num = unitById(g.unit)?.num ?? g.unit
+    return `This sign-in holds a right in ${num}. Only a master admin can link it to another person.`
+  }
+  return null
 }
 /* the same door for the PERSON — Archive, Restore and a Quals edit on Admin → Users: an admin of one squadron acting on
    another squadron's man is told whose he is, as Suspend and Delete tell him, never the commit gate's own words, "You can
@@ -461,6 +481,17 @@ export function updateAccount(id: string, patch: { name?: any; role?: AccountRol
   const next: Account = { ...a }
   if (patch.name !== undefined) { const n = normName(patch.name); const bad = nameProblem(n, a.id); if (bad) return bad; next.name = n }
   if (patch.pid !== undefined) { const bad = pidProblem(patch.pid, a.id); if (bad) return bad; next.pid = patch.pid }
+  /* RE-LINKED: A RIGHT THE ACCOUNT HOLDS CHANGES HANDS TODAY (fix read 10, fault D — O10-4, F10-3, F10-4). The link is
+     dated today, and the master mark with it (a right that changes hands is a right given today — perms.ts masterKept);
+     the master mark is otherwise held as before (re-linking a master's account was refused for its old day — Fable F10-3).
+     And a sign-in holding a right in a squadron he is no admin of is re-linked only by a master (the agent's reading of
+     D2094 / D2199: an admin of a squadron is made only by its own admins or a master admin). */
+  if (next.pid !== a.pid) {
+    const held = relinkRightsProblem(a)
+    if (held) return held
+    next.pidFrom = todayIso()
+    if (next.master) next.masterFrom = todayIso()
+  }
   if (patch.role !== undefined) { if (!isAccountRole(patch.role)) return 'Pick member or admin'; next.role = patch.role }
   /* [ONE-DOOR] (D322 — "no Enable on an archived row"): an archived man is never let sign in while archived — Restore
      brings his sign-in back with him (the write path refuses what the screen no longer offers) */

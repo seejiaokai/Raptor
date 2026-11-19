@@ -230,9 +230,13 @@ function homesOver(pid: string, a: string, b: string): string[] {
    start of its day (state/units.ts setHome), so a right counted on its own day (`<=`) brought the retired line back when
    Plan or the mark was given ON the move day, read or unread. A move day now asks a right held before that day began
    (`from < iso`). `now` — the pass asking about this moment (filerVia, on today): a right already given today counts. */
-function adminThen(acct: { id: string; pid: string; role: string; master?: true; masterFrom?: string }, u: string, iso?: string, now = false): boolean {
+/* HIS FROM THE DAY THE ACCOUNT BECAME HIS (fix read 10, fault D — O10-4, F10-4): a right held through an account is the
+   person's only from the later of its own day and the day the account was linked to him (accounts.ts Account.pidFrom),
+   so a grant or the mark moved to a moved man by re-linking the account that holds it is a right given that day. */
+function adminThen(acct: { id: string; pid: string; role: string; master?: true; masterFrom?: string; pidFrom?: string }, u: string, iso?: string, now = false): boolean {
   if (iso == null) return levelOfAccount(acct, u) === 'admin'
-  const held = (from: string | undefined): boolean => !from || from < iso || (now && from === iso)
+  const later = (from: string | undefined): string | undefined => (!from ? acct.pidFrom : !acct.pidFrom || from > acct.pidFrom ? from : acct.pidFrom)
+  const held = (own: string | undefined): boolean => { const from = later(own); return !from || from < iso || (now && from === iso) }
   if (acct.master && held(acct.masterFrom)) return true
   const g = unitRows().grants.find(x => x.account === acct.id && x.unit === u)
   return !!g && g.level === 'admin' && held(g.from)
