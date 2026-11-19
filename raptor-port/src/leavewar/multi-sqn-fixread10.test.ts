@@ -26,6 +26,10 @@ import { _resetTimeline, globalRedo } from '../undo/timeline'
 import { globalUndo } from '../undo'
 import { addRosterPerson } from '../state/roster-add'
 import { commitSettingsIntent } from '../state/people-settings-commit'
+import { afterEach } from 'vitest'
+import { Whiteboard } from '../storage/whiteboard'
+import { wireRows } from '../state/persist'
+import { setStoredRowProbe } from '../state/perms'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -209,5 +213,55 @@ describe('fault B — a new holiday line passes as the holiday\'s own only where
     expect(told()).toEqual([])
     const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
     expect(told()).toEqual(['kes9', 'prowler'])
+  })
+})
+
+/* the saved copy: the app's whiteboard with its row writer wired (persist.ts wireRows), as on a built site — the harness
+   above saves only settings, so without it nothing is "already written" */
+let WB: Whiteboard
+const storedLine = (id: string): any => { const v = WB.get('notices', id); return v ? JSON.parse(v) : null }
+describe('fault C — a record dropped from memory, then "new" under the same id, never overwrites the stored one (SEC10-2)', () => {
+  beforeEach(() => { WB = new Whiteboard(); wireRows(WB) })
+  afterEach(() => { setStoredRowProbe(null) })
+  it('(SEC10-2d) Kestrel files LL for Osprey (149); Outlaw (142) drops it from memory and files an input of the same id for his own man: refused', () => {
+    signInAs('ad9', 'a9')
+    expect(writeInputsBatch(() => { INPUTS.push({ person: 'osp9', date: 'Jul 25', yr: 2026, allday: true, type: 'LL', remarks: 'Osprey leave', by: 'kes9', at: Date.now(), iid: 'ipd-sec10', ord: 99982 } as any) })).toBe(true)
+    outlawReal(); signInAs('outlaw', 'x')
+    const seen: any[] = []
+    const off = onCommit((e: any) => { for (const c of e.changes) if (c.collection === 'inputs' && String(c.id).includes('ipd-sec10')) seen.push({ op: c.op, before: c.before ?? null, person: c.after?.person }) })
+    const ix = INPUTS.findIndex((x: any) => x.iid === 'ipd-sec10'); INPUTS.splice(ix, 1)
+    const ok = writeInputsBatch(() => { INPUTS.push({ person: 'bane', date: 'Jul 26', yr: 2026, allday: true, type: 'Training', remarks: 'x', by: 'casper', at: Date.now(), iid: 'ipd-sec10', ord: 99982 } as any) })
+    off()
+    expect({ ok, seen }).toEqual({ ok: false, seen: [] })
+  })
+  it('(SEC10-2, his own squadron) Outlaw drops Saber\'s line to Ranger from memory, then tells Ranger under its id in his own words: refused, the stored line stands', () => {
+    hunterLine()
+    const real = NOTICES.find(n => n.to === 'bane' && n.iid === IID && n.by === 'stiff')!
+    expect(real?.by, 'Saber told Ranger').toBe('stiff')
+    outlawReal(); signInAs('outlaw', 'x')
+    const ix = NOTICES.findIndex(x => x.id === real.id); NOTICES.splice(ix, 1)
+    const ok = writeInputsBatch(() => {
+      (INPUTS.find((x: any) => x.iid === IID) as any).remarks = 'Outlaw words'
+      NOTICES.push({ ...real, by: 'casper', at: Date.now(), what: [{ k: 'rmk' }] } as any)
+    })
+    expect({ ok, stored: storedLine(real.id)?.by }).toEqual({ ok: false, stored: 'stiff' })
+  })
+  it('(SEC10-2, SEC10-2b) another squadron\'s holiday line dropped, then re-added rewritten or re-addressed: refused', () => {
+    signInAs('ad', 'a')
+    expect(writeInputsBatch(() => { noticeHoliday(['kes9'], 'stiff', 'National Day', '2026-08-09', '2026-08-09') })).toBe(true)
+    const real = NOTICES.find(x => x.to === 'kes9' && x.name === 'National Day')!
+    outlawReal(); signInAs('outlaw', 'x')
+    let ix = NOTICES.findIndex(x => x.id === real.id); NOTICES.splice(ix, 1)
+    expect(writeInputsBatch(() => { NOTICES.push({ ...real, name: '149: OIL cancelled, ignore', by: 'kes9' } as any) })).toBe(false)
+    ix = NOTICES.findIndex(x => x.id === real.id); if (ix >= 0) NOTICES.splice(ix, 1)
+    expect(writeInputsBatch(() => { NOTICES.push({ id: real.id, to: 'casper', by: 'casper', at: Date.now(), iid: '', name: 'x', day: '2026-08-09', what: [{ k: 'del' }] } as any) })).toBe(false)
+    expect(storedLine(real.id)?.to).toBe('kes9')
+  })
+  it('(control) an honest new input and its new bell line still save', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
+    const l = NOTICES.find(n => n.to === 'bane' && n.iid === IID)
+    expect(l, 'Ranger told').toBeDefined()
+    expect(storedLine(l!.id)?.to).toBe('bane')
+    expect(WB.has('inputs', IID)).toBe(true)
   })
 })

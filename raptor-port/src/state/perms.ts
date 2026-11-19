@@ -2231,8 +2231,32 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
   return null
 }
 
+/* A RECORD ALREADY WRITTEN IS NEVER WRITTEN AGAIN AS NEW (fix read 10, fault C — the security read's SEC10-2): every
+   check of a change reads its before-image, and the scheduler store takes its before-image from memory, which a write
+   outside every command can blank — drop a line or an input from memory, and the next command's resync takes the drop
+   up, never saved. A "new" record under the same id then went out as a put with no before-image: a 142 admin rewrote
+   149's holiday line, put any line of another bell on his own, or replaced 149's man's leave request with his own input,
+   each overwriting the STORED row. So a put with no before-image of a request or a bell line whose id already has a
+   stored row (the saved copy — the whiteboard, through its probe, never memory) is refused. A week load writes no
+   request row (persist.ts wireRows), and a remote or seed change is not a person's; neither is asked. No probe (a test
+   without saved rows): nothing is asked. */
+type StoredRowProbe = (collection: 'inputs' | 'notices', id: string) => boolean
+let STORED: StoredRowProbe | null = null
+export function setStoredRowProbe(fn: StoredRowProbe | null): void { STORED = fn }
+function writtenAsNewViolation(env: CommitEnvelope): string | null {
+  if (!STORED || env.origin === 'remote' || env.origin === 'seed' || env.type === 'sched.load') return null
+  for (const c of env.changes) {
+    if (c.op !== 'put' || c.before != null || (c.collection !== 'inputs' && c.collection !== 'notices')) continue
+    if (c.collection === 'inputs' && c.id === INPUT_ORDER) continue
+    if (STORED(c.collection, String(c.id))) return `a record already written (${c.collection}/${c.id})`
+  }
+  return null
+}
+
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
+  const asNew = writtenAsNewViolation(env)
+  if (asNew) return asNew
   const unitBad = unitRowViolation(env)
   if (unitBad) return unitBad
   /* the one guardrail over people, accounts and homes, before against after (the second fix read — Fable's plan G0–G3:

@@ -39,6 +39,7 @@ import { hydrateRoles } from './mission-roles'
 import './settingsrows'
 import { wireRowConsumer, registerComposer, registerMapper, type RowWrite } from './rowmap'
 import { schedRecordsNow, resyncSchedBaseline, SCHED_TYPES } from './sched-commit'
+import { setStoredRowProbe } from './perms'
 import { mintOrd, sortByOrd, byOrd } from '../command/ord'
 import {
   joinWeek, parseRowId, rowSuffix, dayRowJSON, weekRowJSON, stashRows, weeksConverter, type WeekRows,
@@ -430,6 +431,9 @@ export function wireRows(wb: Whiteboard): void {
   registerMapper('insights.role', c=>[{collection:'settings',id:qualify(UNIT, ROLE_PFX+c.id),value:c.op==='delete'?null:JSON.stringify(c.after)}])
   unwireRows?.()
   unwireRows = wireRowConsumer(wb)
+  /* the commit gate asks the SAVED copy whether a "new" request or bell line is one already written (fix read 10, fault C
+     — state/perms.ts writtenAsNewViolation): memory can be blanked outside every command, the stored row cannot */
+  setStoredRowProbe((collection, id) => wb.has(collection, id))
 }
 
 /** call AFTER initStore() (wireStore sets HOOKS.histPush there) */

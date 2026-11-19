@@ -1417,7 +1417,9 @@ line naming no input only from the war's or the holiday's writers; every line ha
 `src/state/notices.ts` (`noteHolMade` / `holMade`: the ids `noticeHoliday` mints in the running command),
 `src/state/perms.ts` (the holiday skip only for such a line, signed by the admin), `src/state/multi-sqn-job2-bell.test.ts`,
 `src/state/units-sqn-fixread2.test.ts`, `src/leavewar/multi-sqn-fixread8.test.ts` and `multi-sqn-fixread9.test.ts` (a
-holiday-shaped line merely put is judged as any line).
+holiday-shaped line merely put is judged as any line). Fault C — `src/state/perms.ts` (`writtenAsNewViolation`,
+`setStoredRowProbe`: a request or bell line "new" under an id the saved copy holds is refused), `src/state/persist.ts`
+(`wireRows` installs the probe on the whiteboard).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and
