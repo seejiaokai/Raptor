@@ -17,7 +17,7 @@ not at home in the war's squadron today; case 2 green, the bells test's Undo →
 If finding 2 goes "his own lines follow him": instead a narrow gate pass for a verified replay, by the line's maker, of a
 line about its addressee.
 
-## 2. Medium, a QUESTION FOR HIM — a read line about his own leave vanishes silently when his old squadron undoes it
+## 2. Medium, answered by him as recommended — D2222 (19 Nov 26) — was a QUESTION FOR HIM — a read line about his own leave vanishes silently when his old squadron undoes it
 As 1, but Osprey read the "approved" line first. After the move it stays on his bell (D2218: lines about himself stay);
 Kestrel's Undo deletes it and `warNoticesReversed` writes no "taken back" line (it skips anyone not at home) — his leave
 is no longer approved and nobody tells him (the harm D1693 / D1699 exist to stop). D2218's "whoever would be told of it
@@ -25,7 +25,7 @@ today" argues silence; its "lines about himself stay with him" argues the take-b
 recommendation:** a line about himself follows him — its take-back told, its Redo puts it back (the gate allowing the
 "taken back" / "again" follow-up only for the addressee of a line the verified restore just removed or put back).
 
-## 3. Low–medium, a QUESTION FOR HIM — lines about another man's input he filed keep reaching a moved admin
+## 3. Low–medium, answered by him as recommended — D2223 (19 Nov 26) — was a QUESTION FOR HIM — lines about another man's input he filed keep reaching a moved admin
 15 Jul Hunter (142's admin) files LL for Ranger on 25 Jul; moved to 149 from 16 Jul; 17 Jul Saber changes the remark →
 the input pass tells the filer, so Hunter (now 149's) gets a 142 line about a 142 man; the gate's `toldBy` exception lets
 it through and `noticeAboutHim` counts every input line as about him, so it never leaves. **Recommendation:** an input
