@@ -19,8 +19,8 @@ import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor, postOut, undoPostOut, restoreArchivedPerson } from './sync'
 import { setHome, homeOn, unitsLoad } from '../state/units'
 import { INPUTS } from '../engine/inputs'
-import { NOTICES, noticesFor, type Notice } from '../state/notices'
-import { markNoticeRead, unreadFor } from '../state/noticeseen'
+import { NOTICES, noticesFor, allNoticesFor, type Notice } from '../state/notices'
+import { markNoticeRead, unreadFor, noticeSeenLoad } from '../state/noticeseen'
 import { ownershipViolation } from '../state/perms'
 
 const mem: Record<string, string> = {}
@@ -150,4 +150,45 @@ describe("D2218 — a posting taken back, and an admin since moved squadron", ()
     const env3: any = { ...env, changes: [{ collection: 'lw.postouts', id: 'bane', op: 'put', before: { ...rec }, after: { ...rec } }, ...env.changes] }
     expect(ownershipViolation(env3)).toMatch(/bell line of another squadron/)
   })
+})
+
+/* Fix read 5's walk, F4 (19 Nov 26): Saber posts Ranger out today; Hunter (142, never moved) reads the posting line;
+   Saber presses "Undo post out" — Hunter's bell showed "Nothing new", no "taken back" line (D1699 owes him one). The walk
+   read the line in a SECOND tab of the same browser. The same order in ONE world: the read reaches the device that
+   decides who read the line, and Hunter is told. */
+describe('fix read 5, walk F4 — a never-moved admin who read the posting line, one world', () => {
+  for (const o of ['none', 'overseas', 'sans'] as const) {
+    it(`outcome ${o}: Hunter read the line; Undo post out leaves him one "taken back" line`, () => {
+      signInAs('ad', 'a')
+      expect(postOut('bane', '2026-07-15', o)).toBe(true)
+      signInAs('ad2', 'a2')
+      const line = noticesFor('prowler').find(n => isPo(n))
+      expect(line, 'Hunter told of the posting').toBeDefined()
+      expect(markNoticeRead(line!.id)).toBe(true)
+      signInAs('ad', 'a')
+      expect(undoPostOut('bane')).toBe(true)
+      signInAs('ad2', 'a2')
+      const back = noticesFor('prowler').filter(n => isPo(n, 'poback'))
+      expect(back.length, 'one "taken back" line').toBe(1)
+      expect(unreadFor('prowler')).toBe(1)
+    })
+  }
+})
+/* …and the walk's own miss, reproduced: Hunter's read lands in the shared store from another tab, which Saber's open tab
+   never reads again (state/noticeseen.ts loads the read records at start-up and on its own failed write; nothing reloads
+   them on another tab's write). Saber's tab then sees the line unread, and "unread simply goes" (D1693). The same read
+   loaded — as a reload, or the database step's sync, would — and Hunter is told. Cross-tab sync is the database step's. */
+describe('fix read 5, walk F4 — the read made in another tab', () => {
+  const run = (reload: boolean) => {
+    signInAs('ad', 'a')
+    expect(postOut('bane', '2026-07-15', 'none')).toBe(true)
+    const line = allNoticesFor('prowler').find(n => isPo(n))!   // (the "off the manpower" line is worked out, never stored)
+    expect(line).toBeDefined()
+    mem['sqn142_noticeseen:prowler'] = JSON.stringify({ upto: 0, ids: [line.id] })
+    if (reload) noticeSeenLoad()
+    expect(undoPostOut('bane')).toBe(true)
+    return NOTICES.filter(n => isPo(n, 'poback')).length
+  }
+  it('not reloaded on Saber’s tab: no "taken back" line — the walk’s "Nothing new"', () => { expect(run(false)).toBe(0) })
+  it('reloaded: Hunter gets his "taken back" line', () => { expect(run(true)).toBe(1) })
 })
