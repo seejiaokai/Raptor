@@ -62,4 +62,32 @@ describe("FR5-SEC-1: an admin's own input on another squadron's days — who pla
     expect(writeInputsBatch(() => { const r = row('z-a2'); r.lwBy = 'bane'; r.lwAt = 222 }), 'the placer of a 149-day war leave rewritten').toBe(false)
     expect(row('z-a2').lwBy).toBe('prowler')
   })
+  /* (chat 113's extension: the proof above covered only a leave wholly after the move. A leave ACROSS the move — one
+     day still 142's, where Hunter is an admin, the rest 149's — must be judged as a member's on the whole input, so
+     his 142 day cannot carry a rewritten or forged stamp onto 149's days) */
+  it("Hunter rewrites the placer of a leave ACROSS his move that 149's admin placed on 149's war", () => {
+    at('2026-07-15'); boot()
+    moveHunter()
+    expect(homeOn('prowler', '2026-07-15')).toBe('u142')
+    /* the master files it, placed on 149's war by Kestrel (149's admin) */
+    signInAs('ad', 'a')
+    expect(writeInputsBatch(() => { INPUTS.push(own('prowler', 'z-x1', 'Jul 15', 'Jul 22', { lw: 'w2026', lwBy: 'kes9', lwAt: 333 }) as any) })).toBe(true)
+    signInAs('ad2', 'a2')
+    expect(writeInputsBatch(() => { const r = row('z-x1'); r.lwBy = 'prowler'; r.lwAt = 444 }), 'the placer of an across-the-move war leave rewritten').toBe(false)
+    expect(row('z-x1').lwBy).toBe('kes9')
+    expect(row('z-x1').lwAt).toBe(333)
+  })
+  it("Hunter may not file a new leave across his move stamped as placed by 149's admin", () => {
+    at('2026-07-15'); boot()
+    moveHunter()
+    signInAs('ad2', 'a2')
+    expect(writeInputsBatch(() => { INPUTS.push(own('prowler', 'z-x2', 'Jul 15', 'Jul 22', { lw: 'w2026', lwBy: 'kes9', lwAt: 1 }) as any) }), 'a forged placer across the move').toBe(false)
+    expect(row('z-x2')).toBeUndefined()
+  })
+  it("control: Hunter files his own plain leave across the move (no war stamp) and it goes through", () => {
+    at('2026-07-15'); boot()
+    moveHunter()
+    signInAs('ad2', 'a2')
+    expect(writeInputsBatch(() => { INPUTS.push(own('prowler', 'z-x3', 'Jul 15', 'Jul 22') as any) })).toBe(true)
+  })
 })
