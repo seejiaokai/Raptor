@@ -2290,16 +2290,17 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
    up, never saved. A "new" record under the same id then went out as a put with no before-image: a 142 admin rewrote
    149's holiday line, put any line of another bell on his own, or replaced 149's man's leave request with his own input,
    each overwriting the STORED row. So a put with no before-image of a request or a bell line whose id already has a
-   stored row (the saved copy — the whiteboard, through its probe, never memory) is refused. A week load writes no
-   request row (persist.ts wireRows), and a remote or seed change is not a person's; neither is asked. No probe (a test
-   without saved rows): nothing is asked. */
+   stored row (the saved copy — the whiteboard, through its probe, never memory) is refused. A remote or seed change is
+   not a person's; it is not asked. No probe (a test without saved rows): nothing is asked. (A week load's landing raises
+   no command since 1 Oct 26 — sched-commit.ts SCHED_TYPES.load, retired; it was passed over here by its label, and any
+   command could carry that label — fix read 11, fault B, below: no longer.) */
 /* (the probe answers the stored row itself, as saved — or null where none is: fix read 11, fault A) */
 type StoredRowProbe = (collection: 'inputs' | 'notices', id: string) => string | null
 let STORED: StoredRowProbe | null = null
 export function setStoredRowProbe(fn: StoredRowProbe | null): void { STORED = fn }
 const storedRow = (collection: 'inputs' | 'notices', id: string): string | null => (STORED ? STORED(collection, id) ?? null : null)
 function writtenAsNewViolation(env: CommitEnvelope): string | null {
-  if (!STORED || env.origin === 'remote' || env.origin === 'seed' || env.type === 'sched.load') return null
+  if (!STORED || env.origin === 'remote' || env.origin === 'seed') return null
   for (const c of env.changes) {
     if (c.op !== 'put' || c.before != null || (c.collection !== 'inputs' && c.collection !== 'notices')) continue
     if (c.collection === 'inputs' && c.id === INPUT_ORDER) continue
@@ -2343,7 +2344,15 @@ function storedRowViolation(env: CommitEnvelope): string | null {
   } finally { SECOND_PASS = false }
 }
 
+/* A LABEL NO DOOR WEARS IS REFUSED (fix read 11, fault B — Fable's F11-3, the security read's SEC11-3): the week load's
+   own command, `sched.load`, is retired (sched-commit.ts SCHED_TYPES.load: nothing raises it), yet the gate still passed
+   a command so labelled over its "already written" check — and a command's label is whatever its caller passes
+   (commitInputs, commitSchedValue take any type). So 142's Outlaw replayed fix read 10's SEC10-2 under that label, and
+   149's stored line was overwritten. A person's command of that type is refused outright. */
+const RETIRED_TYPES = new Set(['sched.load'])
+
 export function ownershipViolation(env: CommitEnvelope): string | null {
+  if (env.origin === 'user' && RETIRED_TYPES.has(env.type)) return `a retired command type (${env.type}) — no door raises it`
   const stored = storedRowViolation(env)
   if (stored) return stored
   const a = env.actor

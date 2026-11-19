@@ -248,3 +248,56 @@ describe('fault A, controls — Fable\'s honest paths with the saved copy wired,
     step('undo2', globalUndo()); step('redo2', globalRedo())
   })
 })
+
+describe('fault B — no command is passed over for its label (F11-3, SEC11-3)', () => {
+  wired()
+  it('(Fable F11-3) SEC10-2 again, the command merely typed sched.load: the stored line is not overwritten', () => {
+    hunterLine()
+    const real = NOTICES.find(n => n.to === 'bane' && n.iid === IID && n.by === 'stiff')!
+    expect(real?.by, 'Saber told Ranger').toBe('stiff')
+    outlawReal(); signInAs('outlaw', 'x')
+    const ix = NOTICES.findIndex(x => x.id === real.id); NOTICES.splice(ix, 1)
+    let threw = ''
+    try {
+      commitInputs('sched.load', () => {
+        (INPUTS.find((x: any) => x.iid === IID) as any).remarks = 'Outlaw words'
+        NOTICES.push({ ...real, by: 'casper', at: Date.now(), what: [{ k: 'rmk' }] } as any)
+      })
+    } catch (e: any) { threw = String(e?.message ?? e) }
+    expect({ threw, stored: stored('notices', real.id)?.by }).toEqual({ threw: expect.any(String), stored: 'stiff' })
+  })
+  it('(SEC11-3) a command labelled "sched.load" is asked as any other: the same "new" line under a saved id is refused', () => {
+    signInAs('ad2', 'a2')
+    expect(writeInputsBatch(() => { INPUTS.push({ person: 'bane', date: 'Jul 25', yr: 2026, allday: true, type: 'LL', remarks: 'for him', by: 'prowler', at: Date.now(), iid: 'ipd-sec11b', ord: 99984 } as any) })).toBe(true)
+    signInAs('ad', 'a')
+    expect(writeInputsBatch(() => { (INPUTS.find((r: any) => r.iid === 'ipd-sec11b') as any).remarks = 'Saber changed it' })).toBe(true)
+    const real = NOTICES.find(n => n.to === 'bane' && n.iid === 'ipd-sec11b' && n.by === 'stiff')!
+    expect(real, 'Saber told Ranger').toBeDefined()
+    outlawReal(); signInAs('outlaw', 'x')
+    const b = JSON.parse(JSON.stringify(INPUTS.find((r: any) => r.iid === 'ipd-sec11b')))
+    const forged = { ...real, by: 'casper', at: Date.now(), what: [{ k: 'rmk' }] }
+    const env = (type: string): any => ({ type, origin: 'user', actor: deriveActor(), changes: [
+      { collection: 'inputs', id: 'ipd-sec11b', op: 'put', before: b, after: { ...b, remarks: 'Outlaw words' } },
+      { collection: 'notices', id: real.id, op: 'put', before: null, after: forged }] })
+    const asInput = ownershipViolation(env('inputs.batch')) ?? 'allowed'
+    const asLoad = ownershipViolation(env('sched.load')) ?? 'allowed'
+    NOTICES.splice(NOTICES.findIndex(n => n.id === real.id), 1)                           // a bare drop
+    expect(writeInputsBatch(() => {})).toBe(true)                                          // any command takes the drop up
+    let ok: any
+    try { ok = commitSchedValue('sched.load', () => { (INPUTS.find((r: any) => r.iid === 'ipd-sec11b') as any).remarks = 'Outlaw words'; NOTICES.push(forged as any); return true }) } catch (e) { ok = String(e) }
+    expect({ asInput, asLoad, ok, storedBy: stored('notices', real.id)?.by }).toEqual({ asInput: expect.stringMatching(/already written/), asLoad: expect.stringMatching(/./), ok: expect.anything(), storedBy: 'stiff' })
+  })
+  it('(the gate) a person\'s command labelled sched.load is refused whatever it holds — nothing in the app raises one', () => {
+    signInAs('ad2', 'a2')
+    expect(ownershipViolation({ type: 'sched.load', origin: 'user', actor: deriveActor(), changes: [] } as any) ?? 'allowed').toMatch(/sched\.load/)
+  })
+  it('(Fable, control) the input case under the same label: the stored request is still Osprey\'s', () => {
+    signInAs('ad9', 'a9')
+    expect(writeInputsBatch(() => { INPUTS.push({ person: 'osp9', date: 'Jul 25', yr: 2026, allday: true, type: 'LL', remarks: 'Osprey leave', by: 'kes9', at: Date.now(), iid: 'ipd-sec10', ord: 99982 } as any) })).toBe(true)
+    outlawReal(); signInAs('outlaw', 'x')
+    const ix = INPUTS.findIndex((x: any) => x.iid === 'ipd-sec10'); INPUTS.splice(ix, 1)
+    try { commitInputs('sched.load', () => { INPUTS.push({ person: 'bane', date: 'Jul 26', yr: 2026, allday: true, type: 'Training', remarks: 'x', by: 'casper', at: Date.now(), iid: 'ipd-sec10', ord: 99982 } as any) }) } catch { /* refused */ }
+    writeInputsBatch(() => { const r: any = INPUTS.find((x: any) => x.iid === 'ipd-sec10'); if (r) r.remarks = 'y' })
+    expect(stored('inputs', 'ipd-sec10')?.person).toBe('osp9')
+  })
+})
