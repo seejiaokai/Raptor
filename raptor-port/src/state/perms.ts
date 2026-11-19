@@ -2087,7 +2087,17 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         if (c.op === 'put' && warLine(n)) return `a notice that is not his own change's (${where})`
         /* …and only to someone that change tells — named in the input, before or after, or its filer (toldBy, SEC-3) */
         if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid) && toldBy(env, n.iid)?.has(String(n.to)) && filerMarkOk(env, c, n)) break
-        if (c.op === 'delete' && env.origin === 'restore' && b && String(b.by) === pid && rides(b.iid) && toldBy(env, b.iid)?.has(String(b.to))) break
+        /* FIX READ 7, FAULT U: his Undo of his own step takes his own line with it. Judged afresh, the restore's images
+           are not the step's — undoing a delete re-creates the input, so `toldBy` read HIM as its filer and his line to
+           Hunter (the real filer) looked untold; and once Hunter has moved squadron he is no longer told at all — so the
+           Undo was refused, his Redo with it. A line the timeline itself vouches for (the verified replay, the same check
+           the input above passes on) is his own step's line coming back out, whoever is told today (D2225's "his own
+           Undo of that change takes away the notices it made"); a restore the timeline does not vouch for keeps the old
+           test, so a forged restore still cannot take a line away. */
+        if (c.op === 'delete' && env.origin === 'restore' && b && String(b.by) === pid && rides(b.iid)) {
+          if (replayed === undefined) replayed = REPLAY ? REPLAY(env) : null
+          if (toldBy(env, b.iid)?.has(String(b.to)) || (replayed && replayed(c))) break
+        }
         return `a notice that is not his own change's (${where})`
       }
       case 'people': {
