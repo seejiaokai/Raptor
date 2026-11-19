@@ -2932,3 +2932,16 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The builder wrote a source change through a Node edit script whose new text sat inside a template literal; the regex in it lost its backslashes on the way, which silently broke the post-in date check and every post-in. Only the unit tests caught it.
 **Suggested improvement:** Add to the editing traps: never put regex backslashes inside a template literal in an edit script; write such lines with the Edit tool, or read the new text from a file written by the Write tool.
 **Principle:** A generated edit passes text through one more layer of escaping; any line holding backslashes is safest written by a tool that keeps every character as typed, and checked by a test before it is trusted.
+
+### Observation 976: A walk that reads a second person's screen in a second live tab tests stale state, not the app
+
+**Status:** OPEN
+**Date:** 19 Nov 26
+**Session context:** chat 113, fix read 5's walk F4 (a posting taken back after another admin read its bell line)
+**Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** writing a walk script where two people act in turn
+
+**Issue:** The walker kept person A signed in in tab 1 and read person B's bell in tab 2 of the same browser. B's "read" mark was saved by tab 2, but tab 1 loads read records only at start-up, so A's undo in tab 1 thought B had never read the line and wrote no "taken back" line. The walk reported a FAIL; one world in a unit test was green. An hour of builder time went on proving it an artifact.
+**Suggested improvement:** walk-scripts.md: when two people act in turn, either one tab with sign-out / sign-in between them, or reload the acting tab after the other person's step; a two-live-tab FAIL is reproduced in one world before it is filed.
+**Principle:** In an app that keeps per-tab in-memory state over shared browser storage, two live tabs are two devices that never sync; a walk must not use them as one shared backend.
