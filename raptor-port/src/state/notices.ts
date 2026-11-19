@@ -37,6 +37,7 @@ import { mayEditSched } from './perms'
 import { todayIso, homeOn, unitRows, levelOfAccount } from './units'
 /* (accounts.ts reaches this module through perms.ts; each side calls the other only at run time, never at load) */
 import { accountOfPid } from './accounts'
+import { activeEnvelope } from '../command'
 
 export type NoticePart =
   | { k: 'del' }                                   // the input was deleted
@@ -272,6 +273,20 @@ export const AT_SLACK_MS = 5 * 60 * 1000
 const PASS_MADE = new WeakMap<object, ReadonlySet<string>>()
 export function notePassMade(env: object, made: ReadonlySet<string>): void { PASS_MADE.set(env, made) }
 export function passMade(env: object): ReadonlySet<string> | undefined { return PASS_MADE.get(env) }
+/* THE WAR'S LINES THIS COMMAND MINTED (fix read 9, fault D — the security read's SEC9-2): only noticeWar, noticePosting and
+   noticePostingBack write a war line (docs/data-model.md §11), yet an admin's ordinary input command put a line of his own
+   words in a war line's shape on his own man's bell, and, being "about him", it followed the man to his new squadron for
+   good (D2218, D2222). Kept, as passMade is, by the running command's envelope and written only by those three, so the
+   commit gate (perms.ts adminOwnerViolation) knows a war line the app wrote from one an envelope merely carries. */
+const WAR_MADE = new WeakMap<object, Set<string>>()
+function noteWarMade(id: string): void {
+  const env = activeEnvelope()
+  if (!env) return                                    // outside every command the line is not saved, so not vouched for
+  let s = WAR_MADE.get(env)
+  if (!s) WAR_MADE.set(env, (s = new Set()))
+  s.add(id)
+}
+export function warMade(env: object): ReadonlySet<string> | undefined { return WAR_MADE.get(env) }
 const phOf = (r: any): string | null => { const p = placeholderOf(r); return p && p.p != null ? String(p.p) : null }
 /* yyyy-mm-dd of one of an input's own date labels ("Jul 15", with its year) */
 const isoOf = (lbl: any, yr: any): string => {
@@ -651,7 +666,9 @@ export function noticeWar(to: readonly string[], by: string | null, part: Notice
   let made = 0
   for (const who of new Set(to.map(String))) {
     if (!here(who) || (by != null && who === by)) continue
-    NOTICES.push({ id: mint(at), to: who, by, at, iid: '', name, day: String(p.a), what: [part] })
+    const id = mint(at)
+    NOTICES.push({ id, to: who, by, at, iid: '', name, day: String(p.a), what: [part] })
+    noteWarMade(id)
     made++
   }
   return made
@@ -667,7 +684,9 @@ export function noticePosting(to: readonly string[], who: string, o: PoOutcome, 
   let made = 0
   for (const t of new Set(to.map(String))) {
     if (!here(t)) continue
-    NOTICES.push({ id: mint(at), to: t, by: null, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part] })
+    const id = mint(at)
+    NOTICES.push({ id, to: t, by: null, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part] })
+    noteWarMade(id)
     made++
   }
   return made
@@ -679,7 +698,9 @@ export function noticePostingBack(to: string, by: string | null, who: string, o:
   if (!here(to) || (by != null && to === by)) return false
   const p: any = PEOPLE[who]
   const part: NoticePart = acct && o === 'overseas' ? { k: 'poback', who, o, acct: true } : { k: 'poback', who, o }
-  NOTICES.push({ id: mint(at), to, by, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part] })
+  const id = mint(at)
+  NOTICES.push({ id, to, by, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part] })
+  noteWarMade(id)
   return true
 }
 /** the posting a line is about, or null — the bell's tap asks it (ui/topstate.ts openNotice) */

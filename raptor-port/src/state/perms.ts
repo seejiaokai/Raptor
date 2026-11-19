@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerVia, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, filerTold, filerVia, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, warMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -2129,6 +2129,19 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
         if (to !== self && !ownsHim(to)) return `a bell line of another squadron's man (${where})`
         /* (fault M: the own-man fallback no longer lets through an input line the pass would not write) */
         if (n === c.after && inputLineUnlike(env, c, changedInputs, replayed ?? null)) return `a bell line not as the pass writes it (${where})`
+        /* A WAR LINE ONLY FROM THE WAR'S OWN WRITERS (fix read 9, fault D — the security read's SEC9-2; docs/data-model.md
+           §11): noticeWar, noticePosting and noticePostingBack alone write a line with a war part (WAR_LINE_KINDS), each
+           recording the ids it mints in the running command (notices.ts warMade). A 142 admin's ordinary input command put
+           `{to:'prowler', iid:'', what:[{k:'lw', …}]}` in his own words on his own man's bell; the own-man door above let it
+           through, and being about him it followed Hunter to 149 for good (D2218, D2222). Asked after that door and fault
+           M's, so a line they refuse keeps their words: a put of such a line passes only as one of those writers minted it
+           here, or as the verified replay of a step (undo/timeline.ts verifiedReplay) — a restore's follow-up passed above
+           already. noticeHoliday's own new line was skipped before this loop's checks. */
+        if (n === c.after && Array.isArray(n.what) && n.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
+          && !warMade(env)?.has(String(n.id))) {
+          if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+          if (!(replayed && replayed(c))) return `a war line no war command wrote (${where})`
+        }
       }
       /* (fault T: a new line is dated now — asked last, so a line refused on another count keeps its own words) */
       if (lineNotNow(c, replayed ?? null)) return `a bell line not dated now (${where})`
