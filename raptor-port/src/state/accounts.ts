@@ -84,7 +84,7 @@ export type AccountRole = 'admin' | 'main'
    later starts with nothing new; the lines before it are the squadron's past, not news to him (state/changes.ts).
    Absent on the seeded accounts (the demo history starts empty). `createdAt` — see the header. */
 /* `masterFrom` (fix read 7, fault P — Astra's A2, Fable's 2): the day the master mark was set, written by setMaster only.
-   A bell line his move retired asks whether he was still told on that day (state/notices.ts toldIn); a mark given after
+   A bell line his move retired asks whether he was still told on that day (state/notices.ts adminThen); a mark given after
    it must not bring the line back. Absent on a mark set before it was kept (the demo's seeded master — D56): counts from
    always. It rides with `master` and goes with it. */
 export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string }

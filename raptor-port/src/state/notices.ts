@@ -105,8 +105,8 @@ export interface Notice {
   what: NoticePart[]
   /** TOLD ONLY AS THE INPUT'S FILER (fix read 6, fault C — the fresh Opus read's F2 and F3, Astra's 2): present on an
    *  input's line whose reader was named in the input neither before nor after the change, and told only as its filer
-   *  (filerTold); its value the squadrons that judgement read (filerUnits — each named man's home on the input's days, or the input's own
-   *  squadron where it names nobody). Absent: he was named in it. Written once, by the pass, so the line's leaving his
+   *  (filerTold); its value the squadrons he was told THROUGH (filerVia — fix read 8, fault R: of those filerUnits reads,
+   *  his home while he has not moved since the input was filed, and any he holds a right in). Absent: he was named in it. Written once, by the pass, so the line's leaving his
    *  bell after a move (noticeLeftBell) never has to ask the input as it stands today. */
   fu?: string[]
 }
@@ -133,12 +133,45 @@ const ids = (r: any): string[] => namedOf(r).map((e: any) => String(e.p))
  *  are read on (today where not given). A named man's home is read on each of the input's own days (filerUnits — his
  *  D2225, fault Q of fix read 7: a filer who never moved stays told for the days still his squadron's). */
 export function filerTold(f: string, rs: readonly any[], iso?: string): boolean {
-  const named = namedIn(rs)
-  if (named.has(f)) return true
+  if (namedIn(rs).has(f)) return true
+  return filerVia(f, rs, iso) != null
+}
+/** THE SQUADRONS A FILER NOT NAMED IN THE INPUT IS TOLD THROUGH — null: he is not told (filerTold). The line the pass
+ *  writes him carries exactly these (Notice.fu), and the gate (state/perms.ts filerMarkOk) asks this one body for it.
+ *  FIX READ 8, FAULT R (the fresh Opus read's 1 — his D2223, D2225: "a moved admin is no longer told about inputs he filed
+ *  for his old squadron's men"; "a filer who never moved stays told"). Fault Q read the named men's homes over the input's
+ *  days and toldIn counted the filer's home TODAY against them, so Hunter, 149's since 16 Jul, was told on 17 Jul of a
+ *  change to the leave he had filed on 15 Jul for Ranger — Ranger 149's from 25 Jul put 149 among those squadrons — and
+ *  the mark, the whole union, put Hunter's new home 149 on a line he got before his move, so his move never retired it
+ *  (D2218). Now: his home counts only while he has not moved since the input was filed (movedSince — a filer who never
+ *  moved: D2225's home branch, unchanged); a filer who has moved is told only through a right he holds in one of them
+ *  (adminThen — the master mark or a Plan grant, never the home admin role of his new squadron); and the mark records
+ *  only the squadrons he was told through, so his next move judges the line by them alone. */
+export function filerVia(f: string, rs: readonly any[], iso?: string): string[] | null {
   const us = filerUnits(rs, iso)
-  /* (named men with no squadron to ask: nobody to be told through) */
-  if (named.size && !us.length) return false
-  return toldIn(f, us, iso)
+  /* (named men with no squadron to ask: nobody to be told through; nobody named and no squadron: told, no squadron) */
+  if (!us.length) return namedIn(rs).size ? null : []
+  const day = iso ?? todayIso()
+  const home = homeOn(f, day)
+  const atHome = !!home && !movedSince(f, filedDay(rs), day)
+  const acct = accountOfPid(f)
+  const via = us.filter(u => (atHome && u === home) || (!!acct && adminThen(acct, u, day)))
+  return via.length ? via : null
+}
+/* the day an input was filed — its `at`, written once when it is placed (state/inputstamp.ts stampPlaced) and never by a
+   change; the earliest among the images (a command writes the after-image, so a later `at` there never shortens the span).
+   None (a record from before the stamp — D56): null. */
+function filedDay(rs: readonly any[]): string | null {
+  let at: number | null = null
+  for (const r of rs) if (r && typeof r.at === 'number' && Number.isFinite(r.at) && (at == null || r.at < at)) at = r.at
+  return at == null ? null : dayOfAt(at)
+}
+/* has his home changed on some day after `from` up to `to`? (his home rows change only on their `from` day) No day to
+   count from: no (as before fault R) */
+function movedSince(pid: string, from: string | null, to: string): boolean {
+  if (from == null) return false
+  const was = homeOn(pid, from)
+  return unitRows().homes.some(h => h.pid === pid && h.from > from && h.from <= to && homeOn(pid, h.from) !== was)
 }
 const namedIn = (rs: readonly any[]): Set<string> => {
   const named = new Set<string>()
@@ -152,8 +185,8 @@ const namedIn = (rs: readonly any[]): Set<string> => {
  *  for the input's days that are still the filer's squadron's"). It read each named man's home today, so Hunter (142's,
  *  never moved), who filed Ranger's leave 23–27 Jul, was told nothing of Saber's change once Ranger was 149's from 25 Jul,
  *  though 23 and 24 Jul are still 142's. The agent's reading, in the ruling's row: a day is the filer's squadron's where
- *  the named man's home that day is it. A moved filer is still not told (D2223): his own home and level are read on `iso`
- *  (today), in toldIn. The pass, the gate (state/perms.ts toldBy, filerMarkOk) and the line's mark (Notice.fu) read this
+ *  the named man's home that day is it. A moved filer is still not told (D2223): his own home and rights are read on `iso`
+ *  (today), in filerVia. The pass, the gate (state/perms.ts toldBy, filerMarkOk) and the line's mark (Notice.fu) read this
  *  one body, so the gate lets ride exactly the line the pass writes, marked with the same squadrons. An input whose dates
  *  cannot be read is judged on today, as before. */
 export function filerUnits(rs: readonly any[], iso?: string): string[] {
@@ -185,20 +218,13 @@ function homesOver(pid: string, a: string, b: string): string[] {
   for (const h of unitRows().homes) if (h.pid === pid && h.from > a && h.from <= b) { const u = homeOn(pid, h.from); if (u) out.add(u) }
   return [...out]
 }
-/** is `f` told through these squadrons on `iso` (today)? — at home in one, or an admin of one (a master everywhere, a Plan
- *  grant counting); none to ask: told */
-export function toldIn(f: string, us: readonly string[], iso?: string): boolean {
-  if (!us.length) return true
-  const mine = homeOn(f, iso)
-  const acct = accountOfPid(f)
-  return us.some(u => u === mine || (!!acct && adminThen(acct, u, iso)))
-}
 /* AN ADMIN OF IT ON THAT DAY (fix read 7, fault P — Astra's A2, Fable's 2): asked of a past day (noticeLeftBell, a move
    day), the master mark and an admin grant held TODAY answered it, so Plan of 142 (or the master mark) given to Hunter
    after his move to 149 brought back, read or unread, the line his move had retired (D2218, D2223). A grant counts from
    the day it was given (units-model.ts Grant.from), the mark from the day it was set (accounts.ts Account.masterFrom);
    one stored before either was kept counts from always (D56). Here only — the gate's levelFrom asks today. No day: as
-   today. (His home's admin role needs no date: a man at home in it is told by `mine` above.) */
+   today. (His home's admin role is no right here: a filer at home is told through his home while he has not moved since
+   the input was filed — filerVia; one who has moved only through the mark or a grant — fix read 8, fault R.) */
 function adminThen(acct: { id: string; pid: string; role: string; master?: true; masterFrom?: string }, u: string, iso?: string): boolean {
   if (iso == null) return levelOfAccount(acct, u) === 'admin'
   if (acct.master && (!acct.masterFrom || acct.masterFrom <= iso)) return true
@@ -388,7 +414,7 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
       const fb = f0 && filerTold(f0, [b]) ? f0 : ''
       /* (…told only as its filer: the line carries the mark — fault C, Notice.fu) */
       const fbOnly = !!fb && !was.includes(fb)
-      for (const p of new Set([...was, fb])) if (p) tell(p, b, [{ k: 'del' }], fbOnly && p === fb ? filerUnits([b]) : undefined)
+      for (const p of new Set([...was, fb])) if (p) tell(p, b, [{ k: 'del' }], fbOnly && p === fb ? filerVia(fb, [b]) ?? undefined : undefined)
       continue
     }
     const is = ids(a)
@@ -406,7 +432,7 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
       /* in it before and after, or its filer: what changed about the input — the same words for each of them (nobody
          who reaches here was put in or taken out, so nobody is in the lists of who was) */
       const onlyFiler = p === filer && !wasIn.has(p) && !isIn.has(p)
-      tell(p, a, shared || (shared = common(b, a, p)), onlyFiler ? filerUnits([b, a]) : undefined)
+      tell(p, a, shared || (shared = common(b, a, p)), onlyFiler ? filerVia(p, [b, a]) ?? undefined : undefined)
     }
   }
   return made
@@ -497,18 +523,22 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
   const was = homeOn(to, wrote)
   /* A LINE HE WAS TOLD ONLY AS THE INPUT'S FILER (his D2223 — fix read 6, fault C): judged on the day his home changed,
      against the squadrons the line was written under (Notice.fu) — not told on that day (no longer at home in one, nor an
-     admin of one: filerTold's own test, toldIn), it is off his bell for good, read or unread, whatever happens after: the
+     admin of one: filerTold's own test, filerVia), it is off his bell for good, read or unread, whatever happens after: the
      input deleted, his moving back, the named man moving. The input is never read for it. Asked on each move day in
-     turn, so a filer still told on one (a master, an admin everywhere) is judged again on the next. */
+     turn, so a filer still told on one (a master, an admin everywhere) is judged again on the next.
+     BY HIS RIGHTS ONLY (fix read 8, fault R — his D2223): a filer who has moved is told only through a right he holds,
+     so each move day asks the master mark or a Plan grant in the line's squadrons (adminThen), never his home that day —
+     his home was what the line was told through before the move, and a move ends that (filerVia). */
   if (n.iid && Array.isArray(n.fu)) {
     const fu = n.fu
+    const acct = accountOfPid(to)
     const days = [...new Set(unitRows().homes.filter(h => h.pid === to && h.from > wrote && h.from <= today).map(h => h.from))].sort()
     let prev = was
     for (const d of days) {
       const h = homeOn(to, d)
       if (h === prev) continue
       prev = h
-      if (!toldIn(to, fu, d)) return true
+      if (fu.length && !(acct && fu.some(u => adminThen(acct, u, d)))) return true
     }
     return false
   }

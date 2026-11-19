@@ -27,7 +27,7 @@ export interface Unit { id: string; num: string; kind: 'sqn'; parent?: string }
 export interface Place { id: string; name: string; tz: string }
 export interface UnitPlace { id: string; unit: string; place: string; from: string }
 /* `from` (fix read 7, fault P — Astra's A2, Fable's 2): the day the grant was given, written by units.ts setGrant. Only a
-   bell line his move retired reads it (state/notices.ts toldIn, on the move's own day): Plan given after the move must
+   bell line his move retired reads it (state/notices.ts adminThen, on the move's own day): Plan given after the move must
    not bring that line back. The gate's levelFrom never reads it — a grant counts from the moment it is saved. Absent on
    a grant saved before it was kept (D56): counts from always. */
 export interface Grant { id: string; account: string; unit: string; level: GrantLevel; from?: string }

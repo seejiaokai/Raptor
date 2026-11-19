@@ -327,8 +327,9 @@ describe('fault Q — a filer who never moved stays told for the input’s days 
     signInAs('ad', 'a'); rmk('Saber words')
     const l = lineTo('prowler')
     expect(l, 'Hunter told: 23 and 24 Jul are still 142’s').toBeDefined()
-    /* told only as its filer, the mark naming the squadrons his telling was judged by — and the gate let it ride */
-    expect([...l!.fu!].sort()).toEqual(['u142', 'u149'])
+    /* told only as its filer, the mark naming the squadrons he was told THROUGH — his home 142 alone since fix read 8,
+       fault R (notices.ts filerVia): 149 was never his — and the gate let it ride */
+    expect([...l!.fu!].sort()).toEqual(['u142'])
   })
   it('(Q16, control) Ranger, a 142 member, files a Training for Ace; nobody moved; Saber’s remark tells Ranger', () => {
     signInAs('us', 'us'); expect(writeInputsBatch(() => { INPUTS.push({ person: 'dj', date: 'Jul 25', yr: 2026, s: '09:00', e: '10:00', type: 'Training', remarks: 'for Ace', by: 'bane', at: Date.now(), iid: IID, ord: 99981 } as any) })).toBe(true)

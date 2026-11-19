@@ -1378,6 +1378,12 @@ a no-maker line signed only by the pass's own lines), `src/leavewar/sync.ts` (`f
 follow-up lines are owed), `src/state/accounts.ts` (`masterFrom`), `src/state/units-model.ts` / `src/state/units.ts`
 (`Grant.from`); fixtures dated now in `src/state/units-sqn-fixread2.test.ts`, `src/state/multi-sqn-job2-bell.test.ts`,
 `src/ui/bellnotices.test.tsx`, `src/leavewar/m4sec.test.ts`.
+Fix read 8's faults (19 Nov 26, chat 117; each red first, its own commit; one test file for all, a describe a fault):
+**New:** `src/leavewar/multi-sqn-fixread8.test.ts`. **Changed:** fault R — `src/state/notices.ts` (`filerVia`, the
+squadrons a filer is told through: his home only while he has not moved since the input was filed, else a right he holds;
+the mark `Notice.fu` written from it; `noticeLeftBell` judges a marked line's move days by his rights only; `toldIn`
+gone), `src/state/perms.ts` (`filerMarkOk` asks `filerVia`), `src/leavewar/multi-sqn-fixread7.test.ts` (Q17's mark is
+his home alone).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

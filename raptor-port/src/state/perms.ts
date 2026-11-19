@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerUnits, changeFiler, inputUnit, APP_ACTS, passMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, filerTold, filerVia, changeFiler, inputUnit, APP_ACTS, passMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -1871,7 +1871,7 @@ function toldBy(env: CommitEnvelope, iid: unknown): Set<string> | null {
    (state/notices.ts Notice.fu: the squadrons his telling was judged by), and his move retires it by that mark alone
    (noticeLeftBell). A forger who left the mark off would make such a line permanent, one with the wrong squadrons would
    keep it on a man since moved away. So a line riding the telling door must carry exactly what the pass writes: no mark
-   to a man named in the input, the mark with the squadrons filerUnits reads to anyone else. Only a line the command
+   to a man named in the input, the mark with the squadrons filerVia gives to anyone else. Only a line the command
    puts; a restore's verified replay puts back the image it took away, judged when it was first written. */
 function filerMarkOk(env: CommitEnvelope, c: Change, n: any): boolean {
   if (c.op !== 'put' || n !== c.after) return true
@@ -1890,7 +1890,9 @@ function filerMarkOk(env: CommitEnvelope, c: Change, n: any): boolean {
   if (named.has(String(n.to))) return fu === undefined
   if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) return true
   if (!Array.isArray(fu) || !fu.every((u: unknown) => typeof u === 'string')) return false
-  const want = filerUnits(imgs)
+  /* (the squadrons the pass marks it with: those he was told THROUGH — fix read 8, fault R, notices.ts filerVia) */
+  const want = filerVia(String(n.to), imgs)
+  if (!want) return false
   const have = new Set<string>(fu)
   return fu.length === want.length && have.size === want.length && want.every(u => have.has(u))
 }
