@@ -164,7 +164,8 @@ async function p1(sz) {
   {
     const { ctx, page } = await session(sz, 'ad', 'a')
     await toUsers(page); await openRow(page, 'Hunter')
-    const m = await ladder(page, { picked: 2, note: 'Every 149 page is his to edit, as for 149\'s own admins.' })
+    // his D2211 (19 Nov 26): what he gets, said plainly, never "as for 149's own admins" (picture 1a to redraw)
+    const m = await ladder(page, { picked: 2, note: 'Full access to 149, every page: its schedule and publishing, its settings, its people and their sign-ins.' })
     const f = `p1a-${sz}.png`; await shot(page, f, sz === 'd' ? ['#page-admin .acc-row.od-row-on'] : null, 40)
     rec(f, 'p1', sz, 'drawn', `Saber, the master admin, has opened Hunter's row (an admin of 142) on Admin → Users. New: the "Other squadrons" ladder under Sign-in and Role, Plan 149 picked, its one line saying what Plan means. Every rung is Saber's to set. Measured: ladder ${m.boxW}px wide in a ${m.edW}px editor, ${m.rows} row(s).`)
     await ctx.close()
