@@ -1467,7 +1467,8 @@ the saved posting, its date and outcome kept), `src/leavewar/postout-roster.test
 Item C (D2228) — `src/state/notices.ts` (`filerVia`: a moved filer is told through his home today where he is its admin and
 it is a named man's home on one of the input's days), `src/leavewar/multi-sqn-fixread8.test.ts` (Opus Q-1 now told).
 Item D (1) — `src/state/perms.ts` (`deletedPersonViolation`: a person row deleted before a command keeps its mark and its
-date and is never removed, for every actor).
+date and is never removed, for every actor). Item D (2) — `src/state/notices.ts` (`noticePass`: a remark changed on a
+war-approved leave inside a Leave War command, the drag window's, tells its filer too, as its own window does).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and
