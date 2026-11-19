@@ -2999,3 +2999,17 @@ Applied 10 Nov 26 (chat 60, [SKILLS-TIGHTEN] step 3, the overnight skill): each 
 **Issue:** The shared brief ended with a paragraph scoping the security reader ("looks only for holes … what one person can take from another"). The Codex reader worked for ~250k tokens and was then stopped twice by its provider as a "cybersecurity risk", returning no report (the same happened in fix read 5). Re-running it on a copy with that paragraph cut was refused by the host's own permission check as rewording to get past a provider's filter, so the standing reviewer's read was lost for the round. Its progress notes still held one finding no other reader made; a second reader sent to chase that one claim proved it.
 **Suggested improvement:** give the security reader its scope in its own prompt (or its own short brief), never in the brief the Codex reader receives — decided when the brief is written, not after a refusal; and when a reader's run dies, read its progress notes for claims and send another reader to chase any claim no one else made.
 **Principle:** keep each reader's brief to its own job from the start — wording meant for one reader can stop another, and changing it after a refusal reads as evasion; a stopped reader's partial notes are evidence worth chasing.
+- Met again 19 Nov 26 (chat 118, fix read 9): the new brief again carried the security paragraph (chat 117's handoff said "never cut its security paragraph" — read as keeping it, against this note's improvement); Sol 6.1 was stopped the same way after ~232k tokens with no report. Guard proposed: the brief-writing step of the bug-check order §4 ("Before a brief leaves") asks "does any paragraph here belong to one reader only?" and moves it into that reader's own prompt.
+
+### Observation 981: A backgrounded `codex exec` waits for keyboard input and never starts
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** fix read 9, two Codex readers started from background shell commands
+**Skill:** New skill candidate: running a Codex reader from Claude Code (now in `raptor-port/docs/codex-guide.md` §Reading a commit that is not the branch head)
+**Type:** open-source
+**Phase/Area:** starting the reader
+
+**Issue:** One of two `codex exec … "<prompt>" > log 2> err` commands run in the background printed only "Reading additional input from stdin..." and sat idle for 80 minutes until noticed; the other, started two seconds later, ran. With stdin left open, `codex exec` may wait to read more prompt from it.
+**Suggested improvement:** every backgrounded `codex exec` gets `< /dev/null`; the guide's recipe line shows it; and a short check 90 seconds after the start (the log has grown past one line) before the host waits on it.
+**Principle:** a command meant to run unattended has its input closed explicitly, and its start is confirmed before a long wait begins.
