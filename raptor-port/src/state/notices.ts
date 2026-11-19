@@ -479,8 +479,9 @@ export function noticeSpan(n: Notice): HolidaySpan | null { const h = holOf(n); 
 export function noticeLeft(n: Notice): number { const s = noticeSpan(n); return s && HOL_LEFT ? HOL_LEFT(s.a, s.b, n.to) : 0 }
 
 /* ---- a man who moves squadron leaves his old squadron's lines behind (his D2218) ----------------------------------- */
-/* the date a moment falls on, as the app's today is read (state/units.ts todayIso — the viewer's own calendar) */
-const dayOfAt = (at: number): string => {
+/* the date a moment falls on, as the app's today is read (state/units.ts todayIso — the viewer's own calendar); the commit
+   gate reads it too (state/perms.ts lineNotNow — fix read 8, fault N) */
+export const dayOfAt = (at: number): string => {
   const d = new Date(at)
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }

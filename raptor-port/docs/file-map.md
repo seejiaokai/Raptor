@@ -1386,7 +1386,8 @@ gone), `src/state/perms.ts` (`filerMarkOk` asks `filerVia`), `src/leavewar/multi
 his home alone). Fault D — `src/state/notices.ts` (`adminThen`: a move day counts only a right held before that day
 began). Fault G — `src/state/perms.ts` (a grant's day and the master mark's day checked at the gate:
 `unitRowViolation`, `accountShapeAndMasterViolation`), `src/undo/timeline.ts` (`verifiedReplay` vouches for a grant or
-account row its step recorded), `src/state/units.ts` (`addUnit` dates its first admin's grant).
+account row its step recorded), `src/state/units.ts` (`addUnit` dates its first admin's grant). Fault N — `src/state/perms.ts`
+(`lineNotNow`: a new line's day is never later than today), `src/state/notices.ts` (`dayOfAt` exported).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

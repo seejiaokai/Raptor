@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerVia, changeFiler, inputUnit, APP_ACTS, passMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, filerTold, filerVia, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -1944,12 +1944,16 @@ function lineRewritten(c: Change, replayed: ((c: Change) => boolean) | null): bo
    would read as written before a move it came after. The app writes every line at the moment of its change, so a new line
    (no before-image: a line already written keeps its time — lineRewritten) must carry a time within a few minutes of now —
    but for a restore's verified replay, which puts back the image it took away, its own time with it. Both sections ask
-   it. */
+   it.
+   NOR ON A LATER DAY (fix read 8, fault N — the security read's SEC8-1): at 23:57 on the day before a man's move, a line
+   dated 00:01 on the move day itself was within the few minutes, but its day was the move day, so no move ever came
+   after it and it never left his bell (D2218). A new line's day (notices.ts dayOfAt, the day noticeLeftBell reads) is
+   never later than today; a few minutes in the past stays allowed. */
 function lineNotNow(c: Change, replayed: ((c: Change) => boolean) | null): boolean {
   const n: any = c.after
   if (c.op !== 'put' || c.before != null || !n || typeof n !== 'object') return false
   if (replayed && replayed(c)) return false
-  return !(typeof n.at === 'number' && Number.isFinite(n.at) && Math.abs(n.at - Date.now()) <= AT_SLACK_MS)
+  return !(typeof n.at === 'number' && Number.isFinite(n.at) && Math.abs(n.at - Date.now()) <= AT_SLACK_MS && dayOfAt(n.at) <= todayIso())
 }
 function inputLineUnlike(env: CommitEnvelope, c: Change, changed: ReadonlySet<string>, replayed: ((c: Change) => boolean) | null): boolean {
   const n: any = c.after
