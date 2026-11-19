@@ -49,9 +49,18 @@ carries his primary squadron's lines by default, every other squadron's switched
 | P9 | the admins | a member withdraws a waiting bid, or files leave on the Inputs page that lands on the war (the red team, 22 Oct 26 — today neither tells an admin) | shown in Approvals' "Also since you last looked" group, not as a bell line — the agent's reading (D1199 option A) | the grid, at that day | the design note §10.1, D1199 — **BUILT 27 Oct 26 with the Leave War overhaul's M4** (PR 581; `leavewar/state/store.ts decisionTells` / `openingTells`, `leavewar/sync.ts tellWar` / `tellBidding` / `warNoticesReversed` / `endedLines` / `alsoSince`, `state/notices.ts`) |
 | P11 | a member — **built 27 Oct 26 with M4, as D1142 names it** ("a bid replaced by a clashing input") | a leave or a medical filed on the Inputs page by someone else replaces his pending bid | the Inputs door's own line, naming the bid: ***LL*** *Tue 10 Feb · You were added · replaces your LL bid · Saber* — one line, never a second from the war; his own filing over his own bid tells him nothing (the spec's reading 5) | the input | D1142; the M4 spec §2 9.3a |
 
+- **A mover's old squadron's lines leave his bell (D2218) — BUILT 19 Nov 26, fix read 4's claims 2–4 (chat 111):** from
+  the first day his home squadron changes after a line was written (up to today), that line is off his bell — not listed,
+  not counted as unread, read or unread — and is never later struck "taken back"; a line about himself stays (an input
+  line, a decision on his own leave, his own posting). After a move, a take-back tells only whoever would be told of it
+  today: 142's "Undo post out" tells 142's admins and nothing reaches Hunter, moved to 149; an Undo or Redo never puts
+  such a line back on him. One rule for every bell reader: `state/notices.ts noticeLeftBell`, asked first by
+  `noticeLive`; the take-back writers `leavewar/sync.ts postingLinesOf` / `retractPostingLines` / `warNoticesReversed`;
+  the restore's `leaveOut` hook (`state/undo-wire.ts`).
+
 ## Ruled, not built yet
 
-- **Across squadrons, 19 Nov 26 (D2218, D2219, D2220):** a mover's old-squadron lines leave his bell on the day he moves (D2218); a borrowed man's home inputs, his own planning lines, the home squadron told on publish (D2219); a transfer's "Posted in · from 142", a failed transfer, Plan given or removed, a shared wave removed, a detachment closed early, a shared place changed (D2220). Words: `raptor-port/docs/superpowers/briefs/2026-11-19-multi-sqn-bells-fable.md`, drawn before built.
+- **Across squadrons, 19 Nov 26 (D2219, D2220; D2218 built, above):** a borrowed man's home inputs, his own planning lines, the home squadron told on publish (D2219); a transfer's "Posted in · from 142", a failed transfer, Plan given or removed, a shared wave removed, a detachment closed early, a shared place changed (D2220). Words: `raptor-port/docs/superpowers/briefs/2026-11-19-multi-sqn-bells-fable.md`, drawn before built.
 ## Ruled, not built yet
 
 | # | Who is told | When | What the line says | A tap | Ruled |

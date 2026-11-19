@@ -1328,7 +1328,19 @@ admin's own input; 7e a verified restore of the actor's own bell lines, `posting
 posting pass), `src/undo/timeline.ts` (`verifiedReplay` covers bell lines), `src/leavewar/sync.ts` (`postingLinesOf`,
 `retractPostingLines` no longer skip a moved admin's line), `src/state/accounts.ts` (`postingLock`, shared by
 `suspendForPosting`, `lastAdminIfGone` and `lastAdminLock`: every saved home date), `src/leavewar/ui/Matrix.tsx` (the
-landed flag, cleared by the person's own wheel, pointer, touch or key).
+landed flag, cleared by the person's own wheel, pointer, touch or key). *[A2's take-back across squadrons, `postingTakeBack`
+and its test's first cases were undone by his D2218 — the next paragraph.]*
+Fix read 4's claims 1–4 (19 Nov 26, chat 111; each claim red first; claim 5, the month landing, its own session).
+**New:** `src/state/multi-sqn-fixread4-admin-own-input.test.ts` (claim 1: an admin's own input on the days of a squadron
+he is not admin of keeps a member's own-input rules — before and after a saved move), `src/leavewar/multi-sqn-fixread4-bells.test.ts`
+(claims 2 and 3, and the read rule: a Redo leaves a line off a man it has left; a read line is off his bell from his move
+day, the Undo telling him nothing; a line about himself stays). **Changed:** `src/leavewar/multi-sqn-fixread3-retract-moved.test.ts`
+(now pins D2218: a moved admin's posting line off his bell, the take-back telling only 142's admins; Astra's §1 forged
+command refused), `src/state/perms.ts` (7c an admin's own input outside his squadrons; 7e `postingTakeBack` gone, the
+verified-restore exception only for taking a line away), `src/state/notices.ts` (`noticeLeftBell`, `noticeAboutHim` —
+the one read rule, asked first by `noticeLive`), `src/undo/timeline.ts` (the `leaveOut` hook: what a restore leaves out),
+`src/state/undo-wire.ts` (installs `leaveOut`), `src/leavewar/sync.ts` (`postingLinesOf`, `retractPostingLines` tell only
+who is at home in the war's squadron today).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

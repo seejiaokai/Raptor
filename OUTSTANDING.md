@@ -130,7 +130,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Leave War**
 - [SANS-CHIP-ON-SANS] — the Post out sheet offers the "SANS" chip to a man already SANS; D2163: not offered for him (small fix, no answer needed; the next Leave War batch).
 - [LW-FOUR-ITEMS-LEFTOVERS] — what the four Leave War items (pull request 801, live 17 Nov 26) left for him: five like-for-like suggestions and three departures from the drawings — questions kept until he says (D994), pictures first.
-- [MSQ-FIXREAD4-OPEN] — fix read 4's five claims on the multi-squadron fixes (the worst: an admin's own leave on another squadron's days escapes its rules) and one question for him — the next chat's first job, before pull request 806 merges (19 Nov 26).
+- [MSQ-FIXREAD4-OPEN] — fix read 4's claims 1–4 done (19 Nov 26, chat 111: `ebbd4aea6`, `5b8357f92`; his question answered by D2218); claim 5, the month landing on a desktop, left — its own session, branch `claude/lw-monthjump-click`; a fresh read of the fixes still owed, before pull request 806 merges.
 - [LW-APPROVALS-PHONE-FLAKE] — a Leave War phone browser test ("the grid shown again after Approvals…") fails about 2 runs in 6 under load, alone 4/4, the same before and after the month-jump fix — a test to steady (19 Nov 26, chat 109).
 - [LW-BAL-TAB-NEXT] — on Balances, Tab after typing a figure goes to the Balances tab button, not the next box (the figure is kept); seen on the four items' re-walk, its code unchanged from `main` — to reproduce on `main`, then fix or put to him.
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
@@ -297,7 +297,13 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ## Items
 
 
-### [MSQ-FIXREAD4-OPEN] Fix read 4's claims on the multi-squadron fixes, to reproduce and fix red first (19 Nov 26, chat 109) — OPEN, the next chat's first job
+### [MSQ-FIXREAD4-OPEN] Fix read 4's claims on the multi-squadron fixes, to reproduce and fix red first (19 Nov 26, chat 109) — OPEN: claims 1–4 done, claim 5 left
+**Done 19 Nov 26 (chat 111), each red first:** claim 1 (`ebbd4aea6`) — an admin's own input on the days of a squadron
+he is not admin of now keeps a member's own-input rules there; claims 2–4 (`5b8357f92`), by his answer to the question,
+D2218 — a moved man's old squadron's lines leave his bell on his move day (one read rule, `state/notices.ts
+noticeLeftBell`), a take-back tells only who would be told today, a Redo never puts such a line back, fix read 3's A2
+undone and Astra's forged posting command refused. **Left:** claim 5 (the desktop click during the whole-year fill) — its
+own session, branch `claude/lw-monthjump-click`; and a fresh read of the four fixes.
 **What it is:** the night's last read (Astra and a fresh, blind Opus reader of fix read 3's five fixes, `ea68a8f48`; reports `raptor-port/docs/superpowers/briefs/2026-11-19-multi-sqn-b1-fixread4-{astra,opus}.md`), none yet reproduced by a host: (1) O1 lets an admin's own input skip every own-input rule on another squadron's days — clear the other squadron's cancel mark or the war's approval on his own leave (Opus 1, proof fails; the worst); (2) O2: a Redo puts 149's "Bidding open" back on a man since moved to 142, and an Undo may put back a line its step took away (Opus 2, proof fails); (3) Undo after a moved man READ the war's line removes it silently, no "taken back" (Astra 2); (4) the posting take-back exception may delete an OLDER run's line from another squadron's bell (Astra 1); (5) O3 on a desktop: a click during the whole-year fill ends the exact landing, so the old drift can return (Opus 3). Plus a question for him (Opus 4): a moved admin's "taken back" line about a posting of his old squadron — owed by D1693, D1699, or not crossing by D2194 (the later). **The job:** each reproduced red first, fixed at its cause by the readers' fix steps, the multi-squadron unit files, the build, the Leave War browser file; then a fresh read of those fixes. **Where:** `raptor-port/src/state/perms.ts`, `timeline.ts`, `leavewar/sync.ts`, `undo-wire.ts`, `leavewar/ui/reanchor.ts`, `Matrix.tsx`. Nothing of it can be reached from a screen yet (a move of squadron is saved by no screen); pull request 806 does not merge before it.
 
 ### [LW-APPROVALS-PHONE-FLAKE] A Leave War phone test unstable under load (19 Nov 26, chat 109) — OPEN
