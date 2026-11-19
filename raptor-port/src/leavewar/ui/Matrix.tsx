@@ -57,6 +57,7 @@ import { keyCount, setGridGuard, useGuardOnClose, WINDOW_PRESS } from './gridgua
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
 import { warInputs, type WarInput } from '../absences'
 import { ReorderIcon } from '../../ui/icons'
+import { reanchorMode } from './reanchor'
 import './matrix.css'
 
 /** the year of a 'yyyy-mm-dd' date, as the grid's corner writes it (D1561) */
@@ -1121,6 +1122,7 @@ export function Matrix() {
     // Measured from where the grid is now (a delta, not an absolute), so this is
     // correct wherever the grid happens to be scrolled already.
     landOnEdge(wrap, cell)
+    landedRef.current = true
   }
   /* the on-screen listener is wired once; it reaches this render's jumpTo through the ref */
   const jumpToRef = useRef(jumpTo)
@@ -1220,6 +1222,17 @@ export function Matrix() {
   // reflows within a fraction of a second, and a later flick can never be
   // mistaken for the jump once the window has passed.
   const jumpAtRef = useRef(0)
+  // WHERE THE FIRST DAY STANDS IS A JUMP'S LANDING (fix read 3 — both readers): set by a jump's landOnEdge, cleared by
+  // the person's own scroll — a wheel, a pointer or a touch going down, a key — so the re-anchor's edge rule
+  // (reanchor.ts) puts back on the frozen edge only a day a jump put there, never one his own scroll left near it.
+  const landedRef = useRef(false)
+  useEffect(() => {
+    const mine = () => { landedRef.current = false }
+    const opts = { capture: true, passive: true } as const
+    const kinds = ['wheel', 'pointerdown', 'touchstart', 'keydown'] as const
+    kinds.forEach(k => document.addEventListener(k, mine, opts))
+    return () => kinds.forEach(k => document.removeEventListener(k, mine, opts))
+  }, [])
 
   // The grid ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
   // war"). `zoom` (not transform) so layout, scroll width and the sticky offsets
@@ -3221,6 +3234,7 @@ export function Matrix() {
       if (wrap && cell) {
         jumpAtRef.current = Date.now()
         landOnEdge(wrap, cell)
+        landedRef.current = true
       }
       return
     }
@@ -3237,10 +3251,13 @@ export function Matrix() {
     // and the grid's repaint; 1200ms is comfortably clear of all three and
     // still far shorter than the gap before a deliberate follow-up flick.
     const fromJump = Date.now() - jumpAtRef.current < 1200
-    if (coarse && !fromJump && !colShift) return
-    // A day that sat ON the frozen edge (a landed jump) goes back on it exactly — the sub-pixel rule of landOnEdge —
-    // so the redraws after a jump never walk it under the edge half a pixel at a time ([LW-MONTHJUMP-SUBPIXEL]).
-    if (a.edge) { landOnEdge(wrap, cell); return }
+    // A day a JUMP landed ON the frozen edge goes back on it exactly — the sub-pixel rule of landOnEdge — so the redraws
+    // after a jump never walk it under the edge half a pixel at a time ([LW-MONTHJUMP-SUBPIXEL]); a day the person's own
+    // scroll left near the edge keeps the old rule, and on a touch screen only inside the jump's window (reanchor.ts —
+    // fix read 3: a sub-pixel write in a coast's lull stops a phone's fling).
+    const mode = reanchorMode({ coarse, fromJump, colShift, edge: a.edge, landed: landedRef.current })
+    if (mode === 'skip') return
+    if (mode === 'edge') { landOnEdge(wrap, cell); return }
     const shift = cell.getBoundingClientRect().left - a.left
     if (Math.abs(shift) > 1) wrap.scrollLeft += shift
   }, [visWindow, colWin?.lo, colWin?.hi])

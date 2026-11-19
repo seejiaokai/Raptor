@@ -1317,6 +1317,18 @@ only), `src/leavewar/multi-sqn-job2-retract.test.ts` ("Undo post out" after an a
 giver's own squadron), `src/engine/hooks.ts` and `src/state/store.ts` (`elogOwnUnit`), `src/leavewar/sync.ts`
 (`atWarHome`; a posting's take-back skips a moved admin's line), `src/state/changelines.ts` (the second store's bids and
 awards told in the man's squadron's history).
+The third fix read of batch 1 (19 Nov 26, the night's job; each claim red first). **New:** `src/leavewar/ui/reanchor.ts`
+(the grid's re-anchor decision alone — skip, back on the frozen edge, or the old shift — the edge only for a day a jump
+landed, O3) and `src/leavewar/ui/reanchor.test.ts`; `src/state/multi-sqn-fixread3-admin-own-input.test.ts` (O1: an
+admin's own input across a saved move is his), `src/leavewar/multi-sqn-fixread3-undo-moved.test.ts` (O2: the top bar's
+Undo of Open for bidding after a man it told has moved), `src/leavewar/multi-sqn-fixread3-retract-moved.test.ts` (A2: a
+posting taken back reaches a moved admin's line), `src/leavewar/multi-sqn-fixread3-postlock.test.ts` (A1: the posting pass
+holds a posting that would leave a squadron with no admin on a later date). **Changed:** `src/state/perms.ts` (7c an
+admin's own input; 7e a verified restore of the actor's own bell lines, `postingTakeBack`; the last-admin guard checks the
+posting pass), `src/undo/timeline.ts` (`verifiedReplay` covers bell lines), `src/leavewar/sync.ts` (`postingLinesOf`,
+`retractPostingLines` no longer skip a moved admin's line), `src/state/accounts.ts` (`postingLock`, shared by
+`suspendForPosting`, `lastAdminIfGone` and `lastAdminLock`: every saved home date), `src/leavewar/ui/Matrix.tsx` (the
+landed flag, cleared by the person's own wheel, pointer, touch or key).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and
