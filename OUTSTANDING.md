@@ -178,6 +178,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
+- [MSQ-FIXREAD10-LEFT] — what fix read 10 left: F (a bell line dated minutes ahead hidden for those minutes once a right is removed — for the database step, the server's clock), a war line's content field not checked, the GitHub browser-test flakes (the date calendar's glide; the Leave War phone's pinned dates row) (20 Nov 26).
 - [SEED-UNDO-DROPS-ACCOUNT] — with the demo's seeded people, an Undo of a seeded account's first saved change can take the account's own row with it (seen by fix read 9's builder, outside its brief; to reproduce first, 20 Nov 26).
 - [LW-PINCH-FROZEN-WEBKIT-OFF] — Leave War, Safari's engine only: mid-pinch in with the dates frozen, the frozen date row read about 360 px off its columns (older — origin/main the same; found 31 Oct 26; maybe a reading, not a fault — a look first).
 - [QUALS-PINNED-X-DEAD] — in Edit quals, scrolled down, the ✕ inside a pinned heading does nothing; the table's own ✕ removes the column (older; found by the walk of 11 Nov 26; small, with the next Quals job).
@@ -296,6 +297,17 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [MSQ-FIXREAD10-LEFT] What fix read 10 left on the multi-squadron fixes (20 Nov 26, chat 118) — OPEN
+**What it is:** (1) fault F of `…/briefs/2026-11-20-multi-sqn-b1-fixread10-fixes-brief.md` (Opus O10-3): a filer line
+dated minutes ahead (a clock set back) leaves his bell for those minutes once the right it came through is removed; an
+Undo or Redo putting it back inside them drops it for good. Held by the host: the brief's rule would keep a line he
+should lose (fix read 8's Opus 4 test); the held patch was in chat 118's scratch. **The job:** at the database step, the
+server's clock sets every line's time — then drop the minutes-ahead exception. (2) A war line's content field is not
+checked by the gate (the builder's note). (3) GitHub's browser tests failed once each on screens nothing changed:
+`e2e/datecal.spec.ts` "a glide caught, held still, then dragged…" and `e2e/leavewar.spec.ts` (phone) "the pinned dates
+row follows…" (D1870) — both twice in one run (with its retry), passing on the other run and 3/3 on his PC: steady them
+(D87). **Where:** `state/notices.ts noticeLeftBell`, `state/perms.ts`, the two browser test files.
 
 ### [SEED-UNDO-DROPS-ACCOUNT] An Undo of a seeded account's first saved change may take the account's row (20 Nov 26, chat 118) — OPEN
 **What it is:** fix read 9's builder (night of 19–20 Nov 26), writing its tests, saw that in the demo's seeded state an
@@ -2398,6 +2410,7 @@ that merged with PR #481 (`[STACK-MERGED-TIDY]`).
 
 | The job | Who did read it | What it went without |
 |---|---|---|
+| Fix read 10 of multi-squadron batch 1 (chat 118, 20 Nov 26) on `claude/multi-sqn-b1-107` (pull request 806): fix read 9's six fixes (`ae1af3806..0613720a7`) | the fresh, blind Opus reader, Fable (D2224) and the security reader (D1411) — all whole; Astra (GPT-6 Astra) ran on the unchanged brief and was stopped twice by its service as a "cybersecurity risk", its progress claims kept (`…/briefs/2026-11-20-multi-sqn-b1-fixread10-astra.md`) | Astra's full read — owed to fix read 11 |
 | Fix read 9 of multi-squadron batch 1 (chat 118, 19–20 Nov 26) on `claude/multi-sqn-b1-107` (pull request 806): both rounds of fixes, fix read 7's U, M, P, T, F, S, Q and fix read 8's R, D, G, N, H, B, W (`69a5bdb1d..ae1af3806`; who is told on a bell, the commit gate, grants' dates, Undo / Redo) | the fresh, blind Opus reader, Fable (D2224) and the security reader (D1411) — all whole; Astra (GPT-6 Astra) and Sol 6.1 (D2227) each ran blind and were each stopped by their service as a "cybersecurity risk" after ~210k / ~232k tokens, progress notes kept (`…/briefs/2026-11-19-multi-sqn-b1-fixread9-{astra,sol}.md`) | Astra's and Sol 6.1's full reads — the brief's security paragraph is the likely trigger (skill note 980); his to call: a run with the security scope moved to the security reader's own prompt |
 | Fix read 8 of multi-squadron batch 1 (chat 117, 19 Nov 26) on `claude/multi-sqn-b1-107` (pull request 806): fix read 7's seven fixes U, M, P, T, F, S, Q (`69a5bdb1d..f15bc3fa4`; who is told on a bell, the commit gate, grants' dates) | the fresh, blind Opus reader, Fable (D2224) and the security reader (D1411) — all whole; Astra (GPT-6 Astra) ran and was stopped twice by its service as a "cybersecurity risk", its three progress claims kept (`…/briefs/2026-11-19-multi-sqn-b1-fixread8-astra.md`); his one-off GPT-6.2 Astra (D2226) not offered on his account | Astra's full read — owed to fix read 9, which reads both rounds (`69a5bdb1d..ae1af3806`) with Sol 6.1 beside Astra on his call (D2227) |
 | The night of 18–19 Nov 26 (chat 109), multi-squadron batch 1 on `claude/multi-sqn-b1-107` (pull request 806): job 2's twelve fixes of the full check (permissions, saved data, the Leave War's rows, bell lines, the change history; 2b792ebc5..3dbe5a21c) | the fresh, blind Opus read of the first ten (at 80ccf1fa0); then all thirteen, with the Leave War month-jump fix b322cad23, by Astra and a fresh, blind Opus reader, blind to each other (fix read 3, 07:13–07:40 19 Nov 26, `raptor-port/docs/superpowers/briefs/2026-11-19-multi-sqn-b1-fixread3-{astra,opus}.md`) | Sol 6.1 (his call only); the reads of fix read 3's own fixes |
