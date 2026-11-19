@@ -1322,7 +1322,22 @@ function inputUnitViolation(env: CommitEnvelope): string | null {
        file his own leave for next week, nor change his own leave of a 142 day after the move, while a member in his
        place could — §11's "C R U D own" is everyone's. The role test stays only on the take-out branch above, a member's. */
     const onlyMe = (r: any) => r == null || (!placeholderOf(r) && named(r).length === 1 && named(r)[0] === String(a.personId))
-    if (a.personId != null && onlyMe(was) && onlyMe(is)) continue
+    if (a.personId != null && onlyMe(was) && onlyMe(is)) {
+      /* …BUT AS A MEMBER WHERE HE IS NOT ITS ADMIN (fix read 4, claim 1 — the Opus read's §1). For a member the own-input
+         rules still ran after this (the member section's inputBreach); for an admin nothing did, since that section
+         returns early for an admin — so Hunter, 142's admin moved to 149 from tomorrow, saved his own leave on 149's days
+         with the war's approved mark or a scheduler's cancel mark, and cleared the cancel 149's admin had put on it (and
+         the same after his move on 142's days). His own input passes as an admin's only where he is an admin of every
+         squadron it touches, before and after; anywhere else the member's own-input rules hold him, and any breach
+         refuses it. */
+      if (a.role !== 'admin') continue
+      const mine = new Set([...unitsOf(was), ...unitsOf(is)])
+      if ([...mine].every(u => levelInForce(a, u, today, before) === 'admin')) continue
+      const replayed = env.origin === 'restore' && !!REPLAY && !!REPLAY(env)?.(c)
+      const bad = inputBreach(env, c, String(a.personId), replayed)
+      if (bad) return `${bad} (inputs/${c.id})`
+      continue
+    }
     for (const u of new Set([...unitsOf(was), ...unitsOf(is)])) {
       const lv = levelInForce(a, u, today, before)
       const ok = a.role === 'admin' ? lv === 'admin' : lv === 'member' || lv === 'admin'
