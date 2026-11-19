@@ -195,6 +195,14 @@ export function removeGrant(account: string, unit: string): UnitSave {
   if (!had) return no('He has no right there to take away')
   return save('grant.remove', null, () => { put(GRANT_PFX + had.id, null) })
 }
+/* EVERY RIGHT OF AN ACCOUNT THAT IS GOING (fix read 11, fault E — SEC11-5): written INSIDE the person delete's own
+   command (accounts.ts dropAccountOfPid), as a move drops a man's rights inside its own (setHome above). A right left
+   naming a sign-in that is gone was handed to whoever got a new account under that id next. The gate judges each dropped
+   right as any other (an admin of its squadron), so a delete by one who holds nothing in that squadron is refused whole. */
+export function dropGrantsOfAccount(accountId: string): void {
+  if (!isCommitting()) throw new Error('dropGrantsOfAccount runs only inside a command')
+  for (const g of unitRows().grants.filter(x => x.account === accountId)) put(GRANT_PFX + g.id, null)
+}
 
 /* home.set — a person's home unit: his first row from today, a change from tomorrow (D2119); the same date replaces */
 export function setHome(pid: string, unit: string): UnitSave {

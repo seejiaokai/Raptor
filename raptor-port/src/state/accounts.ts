@@ -71,7 +71,7 @@ import {
   postInProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, levelOfAccount, todayIso, homeOn, units, unitById, unitRows } from './units'
+import { putNewHome, dropGrantsOfAccount, levelOfAccount, todayIso, homeOn, units, unitById, unitRows } from './units'
 import type { UnitLevel } from './units-model'
 import { validIso } from './flyplan-model'
 
@@ -750,6 +750,8 @@ export const MASTER_ONLY_WORDS = 'Only a master admin can do that'
 export function dropAccountOfPid(pid: string): void {
   const a = accountOfPid(pid)
   if (!a) return
+  /* his rights in other squadrons go with his sign-in, in this same command (fix read 11, fault E) */
+  dropGrantsOfAccount(a.id)
   writeAccounts(ACCOUNTS_LIST.filter(x => x.id !== a.id))
   if (requestByName(a.name)) writeReqs(ACCESS_REQS.filter(r => r.name !== a.name))
   /* his own bell's row goes with his account (AccessRequestSeen, removed with its User — R3-04) */

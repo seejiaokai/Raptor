@@ -415,3 +415,79 @@ describe('fault D — a war line only in its writer\'s own hand, owed only where
     expect(NOTICES.some(x => x.to === 'bane' && kind(x) === 'lw')).toBe(true)
   })
 })
+
+describe('fault E — a right goes with its account, and a new account row under its id is a re-link (SEC11-5)', () => {
+  const spares = () => Object.keys(PEOPLE).filter(p => homeOn(p) === 'u149' && p !== 'osp9' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)
+  /* a spare 149 man given a sign-in by Kestrel on 15 Jul, and Plan of 142 on it by Saber */
+  const planned = () => {
+    const [p1, p2] = spares()
+    expect(p2, 'two 149 men with no sign-in').toBeDefined()
+    signInAs('ad9', 'a9')
+    expect(addAccount('spare1@mail', p1!, 'main')).toBeNull()
+    const id = accountOfPid(p1!)!.id
+    signInAs('ad', 'a'); expect(setGrant(id, 'u142', 'admin', p1!).ok).toBe(true)
+    return { p1: p1!, p2: p2!, id }
+  }
+  const plan = (id: string) => unitRows().grants.find(g => g.account === id && g.unit === 'u142')
+  it('(SEC11-5) Kestrel (149) deletes his man whose account holds Plan of 142, then writes a NEW account under that id for another 149 man: Plan of 142 never reaches the new man', () => {
+    const { p1, p2, id } = planned()
+    on(18)
+    signInAs('ad9', 'a9')
+    expect(updateAccount(id, { pid: p2 }), 'the door refuses the re-link (fix read 10, fault D)').toMatch(/Only a master admin/)
+    deletePerson(p1)
+    accountsLoad(); unitsLoad()
+    const row = { id, name: 'spare2@mail', role: 'main', pid: p2, on: true }
+    commitSettingsIntent('account.add', null, () => { settingsStore.set('account:' + id, row) })
+    accountsLoad(); unitsLoad()
+    const acct = ACCOUNTS_LIST.find(a => a.id === id)
+    expect({ newManHolds142: !!acct && acct.pid === p2 && levelOfAccount(acct as any, 'u142') === 'admin' }).toEqual({ newManHolds142: false })
+  })
+  it('(the delete) Kestrel\'s delete of that man is refused while his sign-in holds Plan of 142 — the right would go with it, and Kestrel holds nothing in 142', () => {
+    const { p1, id } = planned()
+    signInAs('ad9', 'a9')
+    expect(deletePerson(p1) ?? 'deleted').not.toBe('deleted')
+    expect({ person: !!(PEOPLE as any)[p1].deleted, plan: plan(id)?.level }).toEqual({ person: false, plan: 'admin' })
+  })
+  /* (a delete is no step of the Undo button — his D350 — so "its Undo puts them back" has nothing to put back: the right goes
+     in the delete's own command, all or nothing, as his sign-in does) */
+  it('(Admin → Users\' delete) Saber deletes that man: his sign-in and Plan of 142 go in the one command — no right left naming a sign-in that is gone', () => {
+    const { p1, id } = planned()
+    on(18); signInAs('ad', 'a')
+    const seen: string[] = []
+    const off = onCommit((e: any) => { if (e.type === 'person.delete') for (const c of e.changes) if (c.collection === 'settings' && (String(c.id) === 'account:' + id || String(c.id).startsWith('grant:'))) seen.push(String(c.id).split(':')[0]!) })
+    try { expect(deletePerson(p1)).toBeNull() } finally { off() }
+    accountsLoad(); unitsLoad()
+    expect({ acct: !!ACCOUNTS_LIST.find(a => a.id === id), plan: !!plan(id), inOneCommand: [...new Set(seen)].sort() }).toEqual({ acct: false, plan: false, inOneCommand: ['account', 'grant'] })
+  })
+  it('(control) Kestrel deletes his own man who holds nothing elsewhere', () => {
+    const [p1] = spares()
+    signInAs('ad9', 'a9')
+    expect(addAccount('spare1@mail', p1!, 'main')).toBeNull()
+    expect(deletePerson(p1!)).toBeNull()
+    expect(!!(PEOPLE as any)[p1!].deleted).toBe(true)
+  })
+  it('(the gate) a new account row whose id a standing right names is a re-link: Kestrel refused; Saber only dated today', () => {
+    const { p2, id } = planned()
+    on(18)
+    const row = { id, name: 'spare2@mail', role: 'main', pid: p2, on: true }
+    const e = (after: any): any => ({ type: 'account.add', origin: 'user', actor: deriveActor(), changes: [{ collection: 'settings', id: 'account:' + id, op: 'put', before: null, after }] })
+    signInAs('ad9', 'a9')
+    expect(ownershipViolation(e({ ...row, pidFrom: '2026-07-18' })) ?? 'allowed', 'Kestrel, even dated today').toMatch(/re-linked by one who is not a master/)
+    signInAs('ad', 'a')
+    expect(ownershipViolation(e(row)) ?? 'allowed', 'Saber, undated').toMatch(/link to its person not dated today/)
+    expect(ownershipViolation(e({ ...row, pidFrom: '2026-07-18' })) ?? 'allowed', 'Saber, dated today').toBe('allowed')
+  })
+  it('(the gate) an account row taken away while a right still names it: refused, even for a master', () => {
+    const { id } = planned()
+    signInAs('ad', 'a')
+    const b = { ...(settingsStore.get('account:' + id, null) as any) }
+    const e: any = { type: 'account.update', origin: 'user', actor: deriveActor(), changes: [{ collection: 'settings', id: 'account:' + id, op: 'put', before: b, after: null }] }
+    expect(ownershipViolation(e) ?? 'allowed').toMatch(/right still names/)
+  })
+  it('(control — Add account) Kestrel gives a 149 man a sign-in: saved, its link dated as built', () => {
+    const [p1] = spares()
+    signInAs('ad9', 'a9')
+    expect(addAccount('spare1@mail', p1!, 'main')).toBeNull()
+    expect(accountOfPid(p1!)?.pid).toBe(p1)
+  })
+})

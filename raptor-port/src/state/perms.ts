@@ -1633,6 +1633,13 @@ export function restoreRedated(c: Change, offAt?: number): Change {
   }
   return c
 }
+/* a NEW account row (none stood under its id) whose id a right standing before the command still names (fix read 11,
+   fault E — SEC11-5) */
+const rightNamesNew = (w: Worlds, c: Change, was: any): boolean => {
+  if (was || c.after == null) return false
+  const id = String(c.id).slice(ACCOUNT_ROW.length)
+  return w.rowsB.grants.some(g => g.account === id)
+}
 function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system') return null
@@ -1662,10 +1669,12 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
        counts from the day the account was linked to its person (notices.ts adminThen), so a re-link is dated today and a
        link unchanged keeps its day; a new account, linked to nobody before, may carry today's day or none (D56: a row
        with no day counts from always). A restore's verified replay that keeps the link puts back its recorded image. */
-    const relinked = !!was && String(was.pid) !== String(is.pid)
+    /* (fix read 11, fault E — SEC11-5): a NEW account row under an id a standing right still names is a re-link too —
+       the right would pass to the person it names now — so it is dated today, never "from always" */
+    const relinked = (!!was && String(was.pid) !== String(is.pid)) || rightNamesNew(w, c, was)
     const replayed = env.origin === 'restore' && REPLAY != null && !!REPLAY(env)?.(c)
     if (!(replayed && !relinked)) {
-      const wantLink = !was ? (is.pidFrom === undefined ? undefined : today) : relinked ? today : was.pidFrom
+      const wantLink = relinked ? today : !was ? (is.pidFrom === undefined ? undefined : today) : was.pidFrom
       if (is.pidFrom !== wantLink) return `an account's link to its person not dated today (${c.id})`
     }
     /* (fix read 10, fault E): a mark put back on the same person, off since a moment with no move of his since, keeps its
@@ -1694,11 +1703,22 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
       if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW) || c.after == null) continue
       const id = String(c.id).slice(ACCOUNT_ROW.length)
       const was: any = c.before != null ? c.before : accountBefore(id, null)
-      if (!was || String(was.pid) === String((c.after as any).pid)) continue
+      /* (fix read 11, fault E): only the same person kept is no re-link — a new row under an id a right still names is
+         one (Kestrel deleting his man who held Plan of 142, then a new account under that id for another 149 man) */
+      if (was ? String(was.pid) === String((c.after as any).pid) : !rightNamesNew(w, c, was)) continue
       for (const g of w.rowsB.grants) {
         if (g.account === id && levelInForce(a, g.unit, today, w.rowsB) !== 'admin') return `a sign-in holding a right in another squadron re-linked by one who is not a master (${c.id})`
       }
     }
+  }
+  /* G5 — NO RIGHT LEFT NAMING A SIGN-IN THAT IS GONE (fix read 11, fault E — SEC11-5): a right outliving its account
+     passed to whoever got a new account under that id next. An account row is taken away only with every right naming
+     it, in the same command (the person delete does so — units.ts dropGrantsOfAccount), whoever takes it, a master too. */
+  for (const c of env.changes) {
+    if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW)) continue
+    const id = String(c.id).slice(ACCOUNT_ROW.length)
+    if (accountBefore(id, c.before) == null || accountAfter(id, c) != null) continue
+    if (w.rowsA.grants.some(g => g.account === id)) return `an account row taken away while a right still names it (${c.id})`
   }
   return null
 }
