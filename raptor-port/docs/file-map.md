@@ -1396,6 +1396,17 @@ before-image again after the resync while the scheduler store is not yet enliste
 command is told by nobody; `tellBegin(rebase)`), `src/command/commit.ts` and `index.ts` (`isEnlisted`, read only),
 `src/state/perms.ts` (`inputLineUnlike`: the pass's own word vouches only for a line about an input the command
 changes), `docs/data-model.md` §11 (the Notice row: W, and N's and B's lines with it).
+Fix read 9's faults A–F (20 Nov 26; each red first, its own commit; one test file for all, a describe a fault):
+**New:** `src/leavewar/multi-sqn-fixread9.test.ts`. **Changed:** fault A — `src/state/perms.ts` (`grantKept`,
+`masterKept`, `restoreRedated`: an Undo or Redo that turns a right on dates it today), `src/undo/timeline.ts`
+(`UndoHooks.redate`), `src/state/undo-wire.ts` (installs it), `src/leavewar/multi-sqn-fixread8.test.ts` (fault G's Redo
+dated the day it is pressed). Fault B — `src/state/sched-commit.ts` (`resyncBeforeEnlist`: every resync before the
+scheduler store is enlisted takes the bell's before-image again), `src/state/person-delete.ts`, `src/leavewar/sync.ts`
+(use it). Fault C — `src/state/perms.ts` (a right or master mark that changes hands keeps no old day). Fault D —
+`src/state/notices.ts` (`noteWarMade` / `warMade`: the ids the war's three writers mint in the running command),
+`src/state/perms.ts` (a war line only from them). Fault E — `src/state/perms.ts` (the holiday skip only for a new line or
+its maker's verified Undo / Redo). Fault F — `src/state/notices.ts` (`noticeLeftBell`: a line dated ahead by less than a
+day is read as written today). `docs/data-model.md` §11 (User, UnitGrant and Notice rows).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

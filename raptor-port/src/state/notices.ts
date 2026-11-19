@@ -534,6 +534,8 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what' | 'fu'>): b
  *  from tomorrow (state/units.ts setHome), so a line already written is never re-dated into the new squadron. */
 /* a day before every home row the app writes (the demo's seeds start 2000-01-01, a move from tomorrow) */
 const BEFORE_ALL = '0001-01-01'
+/* (fix read 9, fault F: how far ahead a line may be dated and still read as written today — a clock set back by minutes) */
+const DAY_AHEAD_MS = 24 * 60 * 60 * 1000
 export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'fu'>, today: string = todayIso()): boolean {
   if (!Number.isFinite(n.at)) return false
   /* (fix read 7, fault T — the security read's SEC7-2: a line dated ahead was "not yet past" for ever and so never left a
@@ -545,10 +547,23 @@ export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what' | 'f
      a move against, so it is read as written before every move he has made up to today, and judged by the one rule
      below (a first home row covers the days before it, units-model.ts atOn, so that day reads his first squadron): a
      man who never moved keeps it; a moved man keeps a line about himself, and a filer's line only while a right still
-     tells him (adminThen) */
-  const wrote = n.at > Date.now() + AT_SLACK_MS ? BEFORE_ALL : dayOfAt(n.at)
-  if (!(wrote < today)) return false
+     tells him (adminThen)
+     A FEW MINUTES AHEAD IS WRITTEN TODAY (fix read 9, fault F — Opus O9-4, Fable 4): read as written before every move,
+     a line his NEW squadron wrote after the move — bidding opened on 149's war, its clock a few minutes ahead of his —
+     left his bell as his old squadron's business, against D2218. A clock set back by minutes is not a line from before
+     every move: one dated ahead by less than a day is read as written today, and only one more than a day ahead keeps
+     "before every move" (fix read 7's backstop). One exception keeps fix read 8's fault B: a filer's line (his D2223)
+     whose squadrons name neither his home today nor one where he holds a right today could not have been written to him
+     today (filerVia), so it is read as written before every move, as before. */
   const to = String(n.to)
+  const now = Date.now()
+  let wrote = n.at > now + DAY_AHEAD_MS ? BEFORE_ALL : dayOfAt(Math.min(n.at, now))
+  if (wrote !== BEFORE_ALL && n.at > now + AT_SLACK_MS && n.iid && Array.isArray(n.fu) && n.fu.length) {
+    const acct = accountOfPid(to)
+    const home = homeOn(to, today)
+    if (!n.fu.some(u => u === home || (!!acct && adminThen(acct, u, today, true)))) wrote = BEFORE_ALL
+  }
+  if (!(wrote < today)) return false
   const was = homeOn(to, wrote)
   /* A LINE HE WAS TOLD ONLY AS THE INPUT'S FILER (his D2223 — fix read 6, fault C): judged on the day his home changed,
      against the squadrons the line was written under (Notice.fu) — not told on that day (no longer at home in one, nor an

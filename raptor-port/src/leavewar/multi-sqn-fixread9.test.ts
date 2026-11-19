@@ -302,3 +302,22 @@ describe('fault E — another squadron’s holiday line is not deleted or rewrit
     expect(mine()).toEqual(['kes9', 'prowler'])
   })
 })
+
+describe('fault F — a line dated a few minutes ahead is read as written today (Opus O9-4, Fable 4)', () => {
+  it('(Fable F4) a 149 bidding line to moved Hunter, 10 minutes ahead on 20 Jul, stays on his bell', () => {
+    hunterMovesOn16(); on(20)
+    const open: any = { id: 'ny', to: 'prowler', by: 'kes9', at: Date.now() + 10 * 60 * 1000, iid: '', name: 'JAN - DEC 26', day: '2026-07-25', what: [{ k: 'lwopen', a: '2026-08-01', b: '2026-08-31' }] }
+    expect(noticeLeftBell(open), 'a 149 bidding line, written after his move').toBe(false)
+  })
+  it('(Opus O9-4) a 149 line written on 18 Jul, the clock 10 minutes behind it, stays; 4 minutes too', () => {
+    hunterMovesOn16(); on(18)
+    const mk = (min: number): any => ({ id: 'n-o94-' + min, to: 'prowler', by: 'kes9', at: new Date(2026, 6, 18, 9, min).getTime(), iid: '', name: '', day: '2026-08-01', what: [{ k: 'lwopen', a: '2026-08-01', b: '2026-08-31', open: true }] })
+    expect(noticeLeftBell(mk(4)), 'control: 4 minutes ahead stays').toBe(false)
+    expect(noticeLeftBell(mk(10)), 'written after his move, in his new squadron — no move retires it (D2218)').toBe(false)
+  })
+  it('(control) a line of his old squadron’s dated more than a day ahead still leaves on his move', () => {
+    hunterMovesOn16(); on(18)
+    const n: any = { id: 'nz2', to: 'prowler', by: 'stiff', at: Date.now() + 2 * 24 * 3600 * 1000, iid: '', name: '', day: '2026-08-01', what: [{ k: 'lwopen', a: '2026-08-01', b: '2026-08-31', open: true }] }
+    expect(noticeLeftBell(n)).toBe(true)
+  })
+})

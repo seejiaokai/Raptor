@@ -1810,9 +1810,11 @@ squadron are judged by whose they are:
   `inputLineUnlike`; a restore's verified replay puts back its own image).
   A new line, from any role, carries the time of its change, within five minutes of the clock and never on a later day
   than today (fix read 8, fault N: SEC8-1), but for a restore's verified replay (fix read 7, fault T: SEC7-2 — a line
-  dated ahead never left a moved man's bell); one held dated further ahead is read as written before every move, so it
-  leaves a moved man's bell as his old squadron's lines do, and stays on the bell of a man who never moved (fix read 8,
-  fault B) (`state/perms.ts lineNotNow`, `state/notices.ts noticeLeftBell`).
+  dated ahead never left a moved man's bell); one held dated more than a day ahead is read as written before every move,
+  so it leaves a moved man's bell as his old squadron's lines do, and stays on the bell of a man who never moved (fix read
+  8, fault B); one dated ahead by less than a day — a clock set back — is read as written today, so his new squadron's
+  line stays with a moved man, save a filer's line whose squadrons name neither his home nor a right of his today, read
+  as before every move (fix read 9, fault F) (`state/perms.ts lineNotNow`, `state/notices.ts noticeLeftBell`).
   At the database step the server sets the time.
   An `AccessRequest`
   names no squadron yet (Request access asking the squadron, D2111, is not built), so it is not judged by one.
