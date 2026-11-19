@@ -1329,7 +1329,16 @@ posting pass), `src/undo/timeline.ts` (`verifiedReplay` covers bell lines), `src
 `retractPostingLines` no longer skip a moved admin's line), `src/state/accounts.ts` (`postingLock`, shared by
 `suspendForPosting`, `lastAdminIfGone` and `lastAdminLock`: every saved home date), `src/leavewar/ui/Matrix.tsx` (the
 landed flag, cleared by the person's own wheel, pointer, touch or key). *[A2's take-back across squadrons, `postingTakeBack`
-and its test's first cases were undone by his D2218 — the next paragraph.]*
+and its test's first cases were undone by his D2218 — the paragraph after next.]*
+Fix read 4's claim 5 (19 Nov 26, chat 112, red first). **Changed:** `src/leavewar/ui/reanchor.ts` (`landingScroll`: the
+landing rounds down on the screen's own dots, so at 125% it never lands 0.275px under the frozen column;
+`leftTheLanding`: a scroll that leaves the grid's own last write ends a jump's landing; `reanchorPlan`: a scroll between
+a redraw's note and the redraw is the person's and kept — the readers' fixes), `src/leavewar/ui/Matrix.tsx` (the
+landed flag no longer cleared by any click or key on the page — only by the person's scroll: a scroll event away from
+`ownLeftRef`, a sideways wheel over the grid, a press or drag on its scroll bars; a phone's touch as before; and
+`jumpTo` re-takes a waiting row-window anchor at the jumped day, so a redraw noted before the jump never undoes it),
+`src/leavewar/ui/reanchor.test.ts`, `e2e/leavewar.spec.ts` (Sep → Mar → Dec → Sep with a day cell clicked during the
+fill, at 1536 wide and at a real 125% scaling; a phone's flick 100, 400 and 1,000ms after a jump keeps its scroll).
 Fix read 4's claims 1–4 (19 Nov 26, chat 111; each claim red first; claim 5, the month landing, its own session).
 **New:** `src/state/multi-sqn-fixread4-admin-own-input.test.ts` (claim 1: an admin's own input on the days of a squadron
 he is not admin of keeps a member's own-input rules — before and after a saved move), `src/leavewar/multi-sqn-fixread4-bells.test.ts`
