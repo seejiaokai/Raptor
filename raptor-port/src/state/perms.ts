@@ -1571,11 +1571,14 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
    lockProblem's), judged before against after on every date the command can change it: today, and every home row's
    `from` (either side) of a man whose home rows it changes (the second fix read — Astra 1, Opus F1, security H3: the lock
    ran only when an account row was written, and on today only, so Saber deleting or making a placeholder of Kestrel by
-   a people-only command, or moving him to 142 from tomorrow, left 149 with no admin). Every actor but the app itself —
-   the posting pass holds a posting that would do it (leavewar/sync.ts poHeldReason). */
+   a people-only command, or moving him to 142 from tomorrow, left 149 with no admin). Every actor — the app's own posting
+   pass too (fix read 3, Astra's 1: it was passed over here, and its preflight read today only and counted an archived
+   admin, so an Overseas Sqn or Delete posting ran the day before another admin's saved move and left his squadron none).
+   The pass holds such a posting whole first (leavewar/sync.ts poHeldReason, the same calculation — accounts.ts
+   postingLock); this is the backstop. The app's other commands (none writes an account or a home) stay outside it. */
 function lastAdminViolation(env: CommitEnvelope): string | null {
   const a = env.actor
-  if (!a || a.role === 'system') return null
+  if (!a || (a.role === 'system' && env.type !== 'lw.postoutRun')) return null
   const w = worldsOf(env)
   if (!w) return null
   /* every date from today on that any home row, either side, starts — not only the rows this command changes: a move

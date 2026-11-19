@@ -71,7 +71,7 @@ import {
   postInProblem, type NewPerson,
 } from './roster-add'
 import { HOOKS } from '../engine/hooks'
-import { putNewHome, levelOfAccount, todayIso, homeOn, units, unitById } from './units'
+import { putNewHome, levelOfAccount, todayIso, homeOn, units, unitById, unitRows } from './units'
 import type { UnitLevel } from './units-model'
 
 export type AccountRole = 'admin' | 'main'
@@ -565,9 +565,33 @@ export function suspendForPosting(pid: string): 'done' | 'none' | 'lock' {
   const a = accountOfPid(pid)
   if (!a || !a.on) return 'none'
   const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { ...x, on: false, offBy: 'po' as const } : x))
-  if (lockProblem(list)) return 'lock'
+  if (postingLock(list)) return 'lock'
   writeAccounts(list)
   return 'done'
+}
+/* THE POSTING'S LAST-ADMIN LOCK, ON EVERY DATE (fix read 3, Astra's 1 — D2184 Q10, D306): the posting pass is the app
+   acting, which the commit gate's own check (perms.ts lastAdminViolation, G3) used to pass over, and its preflight read
+   today alone and counted an ARCHIVED admin as one who can sign in — so an Overseas Sqn posting of 149's admin ran the
+   day before another 149 admin's saved move to 142, leaving 149 with none from the move on; and an archived admin (who
+   cannot sign in) was counted as the one left. The same calculation as the gate's now: `list` — the accounts the step
+   would leave; a squadron that has an admin at home on a date who can sign in (an account on, a man on the roster —
+   never deleted, a placeholder or ARCHIVED) must still have one after, on today and on every saved home row's date from
+   today on. The archived man's account itself stays as it is, loadable for his Restore — only "can sign in" leaves him
+   out. 'app' for the whole app's last admin; else the squadron (and its date) left without one; null when none is. */
+const canSignIn = (pid: string): boolean => personOk(pid) && !(PEOPLE as any)[pid].archived
+function postingLock(list: readonly any[]): 'app' | { unit: string; date: string } | null {
+  const able = (x: any) => isAdminAccount(x) && x.on !== false && canSignIn(x.pid)
+  if (!list.some(able)) return 'app'
+  const today = todayIso()
+  const dates = new Set<string>([today])
+  for (const h of unitRows().homes) if (typeof h.from === 'string' && h.from > today) dates.add(h.from)
+  for (const d of [...dates].sort()) {
+    for (const u of units()) {
+      const has = (l: readonly any[]) => l.some(x => able(x) && homeOn(x.pid, d) === u.id)
+      if (has(ACCOUNTS_LIST) && !has(list)) return { unit: u.id, date: d }
+    }
+  }
+  return null
 }
 /* he is back (Restore, Undo post out) or the posting no longer suspends him today: enable the account the POSTING
    suspended — never one suspended by hand. True when it was enabled. */
@@ -632,18 +656,25 @@ export const accountSuspendedByPosting = (pid: string): boolean => { const a = a
 /* would removing or suspending this person's account leave no admin who can sign in? (the posting pass's own check —
    it is not a person acting, so "yourself" never applies there) */
 export function lastAdminIfGone(pid: string): string | null {
-  return lockProblem(ACCOUNTS_LIST.filter(x => x.pid !== pid))
+  const lock = postingLock(ACCOUNTS_LIST.filter(x => x.pid !== pid))
+  if (!lock) return null
+  if (lock === 'app') return ADMIN_LOCK
+  const num = String(unitById(lock.unit)?.num ?? lock.unit)
+  const gone = accountOfPid(pid)
+  const cs = gone ? accountCallsign(gone) : ''
+  return cs ? `${cs} is ${num}'s last admin. Make another admin of ${num} first.` : `At least one admin of ${num} must keep access`
 }
 /* WHICH LOCK HOLDS HIM — for the doors that word the lock their own way (a posting that waits, Archive): the squadron
    whose last admin he is, or 'app' for the whole app's last admin who can sign in, or null. Removing one man's account
    can leave only HIS squadron without an admin of its own, so the squadron named is his (the fix read, 18 Nov 26 —
    Opus 5: those doors still said "the last admin who can sign in" while 142 had three) */
 export function lastAdminLock(pid: string): { num: string } | 'app' | null {
-  const p = lastAdminIfGone(pid)
-  if (!p) return null
-  if (p === ADMIN_LOCK) return 'app'
-  const u = homeOn(pid)
-  return { num: String((u && unitById(u)?.num) ?? u ?? '') }
+  /* (the squadron named is the one the lock found — on a later date it can be the squadron he is at home in then: fix
+     read 3, Astra's 1) */
+  const lock = postingLock(ACCOUNTS_LIST.filter(x => x.pid !== pid))
+  if (!lock) return null
+  if (lock === 'app') return 'app'
+  return { num: String(unitById(lock.unit)?.num ?? lock.unit) }
 }
 /* THE LOCK FOR A MOVE OF SQUADRON (the second fix read — Astra 1, security H3: the master moving Kestrel, 149's only
    admin, to 142 from tomorrow left 149 with none): his squadron's last admin who can sign in on the day the move counts
