@@ -328,11 +328,11 @@ async function p3(sz) {
 
 // the four lines that cross squadrons — to 149's schedulers, about 142's Ranger, borrowed onto 149's RU
 const B4 = [
-  { name: 'Ranger', sq: '142', day: 'Wed 25 Nov', what: 'Leave approved at 142. He is on your RU', who: 'Hunter', unread: true, ago: '3m' },
-  { name: 'Ranger', sq: '142', day: 'Wed 25, Thu 26 Nov', what: 'Posted out of 142. Off your RU on these days', who: 'Hunter', unread: true, ago: '12m' },
-  { name: 'Ranger', sq: '142', day: 'Thu 26 Nov', what: 'Taken back by 142. Off your VL', who: 'Hunter', unread: true, ago: '40m' },
+  { name: 'Ranger', sq: '142', day: 'Wed 25 Nov', what: 'On leave, but still on 149\'s RU formation. Replace him.', who: 'Hunter', unread: true, ago: '3m' },
+  { name: 'Ranger', sq: '142', day: 'Wed 25, Thu 26 Nov', what: 'Posted out of 142. Taken off 149\'s RU formation. Fill his place.', who: 'Hunter', unread: true, ago: '12m' },
+  { name: 'Ranger', sq: '142', day: 'Thu 26 Nov', what: '142 took him off 149\'s VL formation. Fill his place.', who: 'Hunter', unread: true, ago: '40m' },
   // RU is 149's own line: no badge on it (reader's finding 3 — one mark, one meaning); Hunter, who saved over it, is 142's
-  { name: 'RU', day: 'Wed 25 Nov', what: 'Your change was replaced by a later save', who: 'Hunter', whoSq: '142', unread: true, ago: '1h' },
+  { name: 'RU formation', day: 'Wed 25 Nov', what: 'Your change is gone: 142 saved over it. Check and redo it.', who: 'Hunter', whoSq: '142', unread: true, ago: '1h' },
 ]
 async function p6(sz) {
   const { ctx, page } = await session(sz, 'ad9', 'a9')
