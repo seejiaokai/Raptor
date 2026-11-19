@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerUnits, changeFiler, inputUnit, APP_ACTS, passMade, AT_SLACK_MS } from './notices'
+import { noticeAboutHim, filerTold, filerUnits, changeFiler, inputUnit, APP_ACTS, passMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -1950,9 +1950,20 @@ const holidayLine = (n: any): boolean => Array.isArray(n?.what) && n.what.length
    name, day, input and reader), one the follow-up writer itself would write for the line it names
    (leavewar/sync.ts followUpsFor, handed in by its probe — no probe, no follow-up), and the caller lets one through a
    named line (`refs`). Answers the `ref` it follows up, or null. */
-type FollowUpsProbe = (changes: ReadonlyArray<Change>, dir: 'undo' | 'redo') => ReadonlyArray<{ of: any; to: string; name: string; day: string; iid: string; what: readonly any[] }>
+/* …AND ONLY ONE IT OWES (fix read 7, fault F — Astra's A3): the probe is leavewar/sync.ts followUpsOwed — what the line
+   says AND whether the restore owes it (his read of the line, a "taken back" a Redo answers), judged on the bell as it
+   stood before this command (noticesBefore) and his read record as saved — the one body the writer asks too. */
+type FollowUpsProbe = (changes: ReadonlyArray<Change>, dir: 'undo' | 'redo', notices: readonly any[]) => ReadonlyArray<{ of: any; to: string; name: string; day: string; iid: string; what: readonly any[] }>
 let FOLLOWUPS: FollowUpsProbe | null = null
 export function setFollowUpsProbe(fn: FollowUpsProbe | null): void { FOLLOWUPS = fn }
+/* the bell as it stood before this command: today's lines with every line the command touched put back as it was */
+function noticesBefore(env: CommitEnvelope): any[] {
+  const touched = new Map<string, Change>()
+  for (const c of env.changes) if (c.collection === 'notices') touched.set(String(c.id), c)
+  const out: any[] = NOTICES.filter(n => !touched.has(String(n.id)))
+  for (const c of touched.values()) if (c.before && typeof c.before === 'object') out.push(c.before)
+  return out
+}
 function followUpOf(env: CommitEnvelope, n: any, replayed: (c: Change) => boolean): string | null {
   const p: any = Array.isArray(n?.what) && n.what.length === 1 ? n.what[0] : null
   if (!p || typeof p.ref !== 'string' || !p.ref) return null
@@ -1961,7 +1972,7 @@ function followUpOf(env: CommitEnvelope, n: any, replayed: (c: Change) => boolea
   if ((!back && !again) || !FOLLOWUPS) return null
   /* the line it names, as this restore verifiably took it away (an Undo) or put it back (a Redo) */
   const src = env.changes.filter(x => x.collection === 'notices' && String(x.id) === p.ref && replayed(x) && x.op === (back ? 'delete' : 'put'))
-  const owed = FOLLOWUPS(src, back ? 'undo' : 'redo').some(f => {
+  const owed = FOLLOWUPS(src, back ? 'undo' : 'redo', noticesBefore(env)).some(f => {
     const was = f.of, q: any = was && Array.isArray(was.what) ? was.what[0] : null
     return !!q && q.k === 'lw' && noticeAboutHim(was) && String(f.to) === String(n.to)
       && deepEqual(f.what, n.what) && deepEqual(f.name, n.name) && deepEqual(f.day, n.day) && deepEqual(f.iid, n.iid)

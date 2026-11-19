@@ -1818,7 +1818,10 @@ squadron are judged by whose they are:
   line, naming a line about him the restore itself took away or put back (`state/perms.ts followUpOf`,
   `leavewar/sync.ts warNoticesReversed`) — only that line, field for field as the follow-up writer makes it (what it
   says, its name, day, input and reader — `leavewar/sync.ts followUpsFor`, the one body both ask), and one a line it
-  names (fix read 6, fault B, 19 Nov 26: SEC6-B, any "taken back" or "again" line rode a genuine restore); nothing else
+  names (fix read 6, fault B, 19 Nov 26: SEC6-B, any "taken back" or "again" line rode a genuine restore), and only where
+  the restore owes it — he had read the line (an Undo), or a "taken back" stands for it (a Redo), judged on the bell and
+  his read record as they stood before the command (`leavewar/sync.ts followUpsOwed`, the one body the writer and the gate
+  ask — fix read 7, fault F, 19 Nov 26: Astra's A3, a follow-up worded right but never owed rode a genuine restore); nothing else
   writes to his bell from the old squadron.
 - *The Tracker*: each squadron's Tracker is its own world, its record ids naming none; the Tracker tells the gate which
   squadron's is open, and a change there needs admin of it from an admin, home or rights there from a member.

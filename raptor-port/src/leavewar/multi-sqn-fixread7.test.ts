@@ -8,12 +8,12 @@ import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
-import { initStore as lwInitStore, setPeople } from './state/store'
-import { ownershipViolation } from '../state/perms'
+import { initStore as lwInitStore, setPeople, setCell, setBidState, worldUnit } from './state/store'
+import { ownershipViolation, setInputReplayCheck } from '../state/perms'
 import { deriveActor } from '../command/actor'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { wireLeaveWarSync, setWarWorldDoor } from './sync'
+import { wireLeaveWarSync, setWarWorldDoor, followUpsFor } from './sync'
 import { unitsLoad, setGrant } from '../state/units'
 import { HOME_PFX, GRANT_PFX } from '../state/units-model'
 import { setMaster } from '../state/accounts'
@@ -21,7 +21,7 @@ import { INPUTS } from '../engine/inputs'
 import { NOTICES, noticesFor, type Notice } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
 import { installGlobalUndo } from '../state/undo-wire'
-import { _resetTimeline, globalRedo } from '../undo/timeline'
+import { _resetTimeline, globalRedo, verifiedReplay } from '../undo/timeline'
 import { globalUndo } from '../undo'
 
 const mem: Record<string, string> = {}
@@ -242,5 +242,61 @@ describe('fault T — a line dated in the future never leaves the bell', () => {
     NOTICES.push({ ...l, id: 'nsec7tb', at: AHEAD })
     hunterMoves(l)
     expect(shown('prowler', 'nsec7tb'), 'the line dated ahead left too').toBe(false)
+  })
+})
+
+describe('fault F — a genuine Undo / Redo carries only a follow-up line that is owed', () => {
+  const D = '2026-07-15'
+  /* Kestrel (149) refuses Osprey's LL of 15 Jul; Osprey does NOT read it; Osprey moves to 142 from 16 Jul; it is 16 Jul
+     (as leavewar/multi-sqn-fixread6-followups.test.ts) */
+  const refusedUnread = (): Notice => {
+    signInAs('ad9', 'a9')
+    expect(worldUnit()).toBe('u149')
+    expect(setCell('osp9', D, 'LL')).toBe(true); setBidState('osp9', D, 'refused')
+    const l = NOTICES.find(n => n.to === 'osp9' && (n.what || [])[0]?.k === 'lw')!
+    expect(l, 'Osprey told').toBeDefined()
+    homes('osp9', 'hf7', [['u149', '2026-07-15'], ['u142', '2026-07-16']]); on(16)
+    return l
+  }
+  /* the genuine restore's envelope and the timeline's own word on it, as the commit gate was handed them (m4sec 1b) */
+  const caught = (run: () => any): { env: any; fn: (c: any) => boolean } => {
+    let got: { env: any; fn: (c: any) => boolean } | null = null
+    setInputReplayCheck(e => { const fn = verifiedReplay(e); if (fn && !got) got = { env: e, fn }; return fn })
+    try { const r = run(); expect(r.ok, JSON.stringify(r)).toBe(true) } finally { setInputReplayCheck(verifiedReplay) }
+    expect(got, 'the gate asked the timeline').not.toBeNull()
+    return got!
+  }
+  /* the same envelope with one more line, the follow-up line exactly as the writer would make it — judged with the
+     timeline's word as it was */
+  const withLine = (g: { env: any; fn: (c: any) => boolean }, dir: 'undo' | 'redo', l: Notice): string | null => {
+    const f = followUpsFor([dir === 'undo' ? { collection: 'notices', op: 'delete', before: l } : { collection: 'notices', op: 'put', after: l }], dir)[0]!
+    expect(f, 'the writer would word one').toBeDefined()
+    const n = { id: 'nf7f-' + dir, to: f.to, by: 'kes9', at: Date.now(), iid: f.iid, name: f.name, day: f.day, what: f.what }
+    setInputReplayCheck(() => g.fn)
+    try { return ownershipViolation({ ...g.env, changes: [...g.env.changes, { collection: 'notices', id: n.id, op: 'put', before: null, after: n }] }) } finally { setInputReplayCheck(verifiedReplay) }
+  }
+  it('(Astra A3) Kestrel’s Undo of a refusal Osprey never read, with a "taken back" line injected: refused', () => {
+    const l = refusedUnread()
+    const g = caught(() => globalUndo())
+    expect(NOTICES.some(n => (n.what || [])[0]?.k === 'lwback'), 'the writer owed none').toBe(false)
+    expect(withLine(g, 'undo', l) ?? 'allowed').toMatch(/another squadron/)
+  })
+  it('(Astra A3) Kestrel’s Redo with no "taken back" to answer, with an "again" line injected: refused', () => {
+    const l = refusedUnread()
+    expect(globalUndo().ok).toBe(true)
+    const g = caught(() => globalRedo())
+    expect(NOTICES.some(n => (n.what || [])[0]?.k === 'lw' && (n.what[0] as any).again), 'the writer owed none').toBe(false)
+    expect(withLine(g, 'redo', l) ?? 'allowed').toMatch(/another squadron/)
+  })
+  it('(control) read before the Undo: the "taken back" line is written and its exact twin is owed at the gate', () => {
+    const l = refusedUnread()
+    readIt('osp9', l)
+    const g = caught(() => globalUndo())
+    expect(NOTICES.filter(n => (n.what || [])[0]?.k === 'lwback').length, 'the writer owed one').toBe(1)
+    /* (the real one already rides the envelope; a second naming the same line is one too many — fault B (2)) */
+    const real = g.env.changes.filter((c: any) => c.collection === 'notices' && c.op === 'put' && c.after?.what?.[0]?.k === 'lwback')
+    expect(real.length).toBe(1)
+    setInputReplayCheck(() => g.fn)
+    try { expect(ownershipViolation(g.env)).toBeNull() } finally { setInputReplayCheck(verifiedReplay) }
   })
 })

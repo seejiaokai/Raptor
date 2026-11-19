@@ -297,7 +297,7 @@ export function installAbsenceDoor(): void {
   setLwUnitProbe(() => (WORLD_DOOR ? worldUnit() : null))
   /* WHAT A RESTORE'S FOLLOW-UP LINES MAY SAY (perms.ts setFollowUpsProbe — fix read 6, fault B): the one body that writes
      them, so the gate compares a "taken back" or "again" line with what this restore owes, field for field */
-  setFollowUpsProbe(followUpsFor)
+  setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved as any, dir, notices as Notice[], hasRead))
   setLwDayOpenProbe((cellId: string) => {
     const iDate = cellId.lastIndexOf(':')
     if (iDate < 0) return true
@@ -1678,28 +1678,51 @@ export function followUpsFor(changes: ReadonlyArray<{ collection: string; op: st
    line back with its old id — already in his read marks — so where a "taken back" stands for it, Redo's follow-up writes
    a FRESH line on top, new id and the time now ("LL approved again · Saber"), unread (the fresh read, finding 3).
    What each line says is followUpsFor's (above — fix read 6, fault B); here only whether it is owed now. */
-export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; op: string; after?: unknown }>, dir: 'undo' | 'redo'): number {
-  const made: FollowUp[] = []
-  /* (the step's own lines: what it put — a line it deleted owes no follow-up, as before) */
-  for (const f of followUpsFor(changes.filter(c => c.op === 'put'), dir)) {
+/** THE FOLLOW-UP LINES A RESTORE OWES, WORDED AND WHETHER OWED — ONE BODY (fix read 7, fault F — Astra's A3). The gate
+ *  asked followUpsFor for what a line says, but whether it is owed lived only in the writer below, so a genuine Undo of a
+ *  decision its member never read, or a Redo with no "taken back" to answer, could carry the very line the writer would
+ *  have worded, though it would never write it. Now the writer and the gate (state/perms.ts followUpOf, through its probe)
+ *  both ask this. `moved` — the lines the restore took away (an Undo) or put back (a Redo), as images; `notices` — the bell
+ *  as it stood before the command (only its follow-up lines are read: an Undo step never holds one, `lw.notice` being no
+ *  step); `read` — his read record, as saved before the command. Owed on an Undo: he had read the line, and any "again" an
+ *  earlier Redo wrote for it, the last; on a Redo: a "taken back" stands for it, and the last "again", if any, was read.
+ *  Pure: it reads, never writes. */
+export function followUpsOwed(moved: ReadonlyArray<{ collection: string; op: string; before?: unknown; after?: unknown }>, dir: 'undo' | 'redo',
+  notices: readonly Notice[], read: (pid: string, n: Notice) => boolean): FollowUp[] {
+  const out: FollowUp[] = []
+  for (const f of followUpsFor(moved, dir)) {
     const n = f.of
-    /* the "again" lines an earlier Redo wrote for this line, newest last (the fixes' M9 — the Opus read's 5) */
-    const again = NOTICES.filter(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lw' && q.again && q.ref === n.id })
+    /* the "again" lines an earlier Redo wrote for this line, the newest last (the fixes' M9 — the Opus read's 5): by its
+       time, the list's order where two share one */
+    let last: Notice | null = null
+    for (const x of notices) {
+      const q = (x.what || [])[0]
+      if (x.to === n.to && q?.k === 'lw' && q.again && q.ref === n.id && (!last || !(x.at < last.at))) last = x
+    }
     if (dir === 'undo') {
-      if (NOTICES.some(x => x.id === n.id) || !hasRead(n.to, n)) continue
+      if (!read(n.to, n)) continue
       /* …a Redo after a "taken back" told him "again": that line is now the one he last had. Unread, it simply goes — it
          names the line it repeats, and with that line gone it is no longer shown (state/notices.ts noticeLive) — so the
          "taken back" he already holds still stands as what he knows (D1216); read, he is told "taken back" once more. */
-      const last = again[again.length - 1]
-      if (last && !hasRead(n.to, last)) continue
+      if (last && !read(n.to, last)) continue
     } else {
-      if (!NOTICES.some(x => x.id === n.id) || !NOTICES.some(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lwback' && q.ref === n.id })) continue
+      if (!notices.some(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lwback' && q.ref === n.id })) continue
       /* an "again" line he has not read is shown again with its line (M9): no second one beside it */
-      const last = again[again.length - 1]
-      if (last && !hasRead(n.to, last)) continue
+      if (last && !read(n.to, last)) continue
     }
-    made.push(f)
+    out.push(f)
   }
+  return out
+}
+export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; op: string; after?: unknown }>, dir: 'undo' | 'redo'): number {
+  /* (the step's own lines: what it put — a line it deleted owes no follow-up, as before — that this restore has taken
+     away (an Undo: no longer on the bell) or put back (a Redo: on it again). Run inside the restore, before any follow-up
+     is written, so the bell's follow-up lines are as they stood before the command.) */
+  const moved = changes.filter(c => c.op === 'put' && (c.collection !== 'notices' || (() => {
+    const id = (c.after as any)?.id
+    return NOTICES.some(x => x.id === id) === (dir === 'redo')
+  })()))
+  const made = followUpsOwed(moved, dir, NOTICES, hasRead)
   if (!made.length) return 0
   const by = me()
   let wrote = 0
