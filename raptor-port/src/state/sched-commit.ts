@@ -52,7 +52,7 @@ import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
-import { NOTICES, noticePass, replacedBidsOf } from './notices'
+import { NOTICES, noticePass, replacedBidsOf, APP_ACTS } from './notices'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
 import { deriveActor, isCommitting, activeEnvelope } from '../command'
@@ -455,8 +455,8 @@ function applyEnd(): void {
    run takes back what an earlier run of the same command told and works the whole command out again from that first
    image — a person gets one notice for what the command did to an input, never one a run. */
 /* (a posting whose date is today runs inside the admin's own `lw.postout`; one whose date arrives later runs as the
-   reconciler's `lw.postoutRun`, a projection — both are the posting acting, and both tell with no name) */
-const APP_ACTS = new Set(['person.delete', 'lw.postoutRun', 'lw.postout'])
+   reconciler's `lw.postoutRun`, a projection — both are the posting acting, and both tell with no name; the list is
+   state/notices.ts APP_ACTS, which the commit gate reads too: a line with no maker rides only in one of these) */
 /* THE WAR'S OWN DOORS, which tell a man about his leave in ONE line of their own (M4 9.2, B1 — notices.ts skipLw): every
    Leave War command but a posting (which keeps telling, with no name) and a filing (a course, an overseas duty — no war
    leave of its own) */

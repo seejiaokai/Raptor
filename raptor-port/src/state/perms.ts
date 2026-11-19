@@ -42,7 +42,7 @@ import {
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold } from './notices'
+import { noticeAboutHim, filerTold, changeFiler, inputUnit, APP_ACTS } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -1314,12 +1314,10 @@ function inputUnitViolation(env: CommitEnvelope): string | null {
   }
   const unitsOf = (r: any): string[] => {
     if (!r || typeof r !== 'object') return []
-    const iso = inputAtIso(r.date, r.yr) || today
     const ids = named(r)
     if (ids.length) return daysOf(r).flatMap(d => ids.map(p => homeBefore(p, d, before))).filter(Boolean) as string[]
-    const ph = placeholderOf(r)
-    const by = ph && ph.by != null && ph.by !== '' ? ph.by : r.by
-    const u = by == null || by === '' ? null : homeBefore(String(by), iso, before)
+    /* (naming nobody: the input's own squadron — one body with the filer's test, state/notices.ts inputUnit, fix read 6) */
+    const u = inputUnit(r, (p, d) => homeBefore(p, d, before))
     return u ? [u] : []
   }
   for (const c of ins) {
@@ -1854,7 +1852,15 @@ function toldBy(env: CommitEnvelope, iid: unknown): Set<string> | null {
   }
   /* its filer only while he is still told of it (his D2223 — state/notices.ts filerTold, the pass's own test): a filer
      since moved away from the men it names is no longer told, so a line to him is no telling of this change */
-  for (const r of imgs) if (r.by != null && filerTold(String(r.by), ...imgs)) out!.add(String(r.by))
+  /* …AND ONLY THE FILER THE INPUT HAD BEFORE (fix read 6, fault A — the security read's SEC6-A (2)): the after-image's
+     `by` is the command's to write, so 142's plain admin set it to 149's Osprey and rode a line to him on it; on a new
+     input, only the actor himself (state/notices.ts changeFiler — the pass's own list) */
+  const self = env.actor && env.actor.personId != null ? String(env.actor.personId) : null
+  for (const c of env.changes) {
+    if (c.collection !== 'inputs' || String(c.id) !== id) continue
+    const f = changeFiler(c.before ?? null, c.op === 'delete' ? null : c.after ?? null, self)
+    if (f && filerTold(f, imgs)) out!.add(f)
+  }
   return out
 }
 /* a line made wholly of holiday parts — the only kind kept crossing (one holiday part beside another part is no holiday
@@ -1901,7 +1907,11 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
         if (!n || typeof n !== 'object' || n.to == null) continue
         if (holidayLine(n)) continue
         const to = String(n.to)
-        if (n.iid && changedInputs.has(String(n.iid)) && toldBy(env, n.iid)?.has(to)) continue
+        /* (…written as the pass writes it: by the actor himself, or with no maker in the app's own acts — fix read 6, fault
+           A: the security read's SEC6-A (3), a line riding the change signed `kes9`, posing as 149's admin. The member
+           section's door below has always asked it.) */
+        const signed = (self != null && String(n.by ?? '') === self) || (n.by == null && APP_ACTS.has(env.type))
+        if (signed && n.iid && changedInputs.has(String(n.iid)) && toldBy(env, n.iid)?.has(to)) continue
         /* HIS OWN STEP, PUT BACK (fix read 3, O2 — D148: an Undo is refused only where the change itself would be). The
            war's lines carry no input (`iid: ''`), so a man told by the admin's Open for bidding, closing or decision who
            has since moved squadron made the top bar's Undo of that step a write to another squadron's bell, refused

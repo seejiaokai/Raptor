@@ -1768,7 +1768,9 @@ squadron are judged by whose they are:
 - *A man's inputs* (Opus 7): an `Input` is judged by the squadrons of the people it names — each one's home on the
   input's first day and on every saved move inside its span (SEC-4) — before and after: an admin in force must be an
   admin of each, a member at home in each (a member names only people of his own squadron), his rights read today; an
-  input naming nobody is its filer's squadron's. A member's change that only takes himself out of an input is not judged
+  input naming nobody is its filer's squadron's — its placeholder's filer first, else the input's, his home on the
+  input's own date, the one reading the filer's telling asks too (`state/notices.ts inputUnit`; fix read 6, fault A, 19
+  Nov 26). A member's change that only takes himself out of an input is not judged
   by the others' squadrons (D755), nor his own input naming only himself (§11 "own" — Fable F2) — though an admin's own input on the days of a squadron he is not admin of keeps a member's own-input rules there, as anyone's would (fix read 4, claim 1, 19 Nov 26). An input spanning a
   man's move is changed only by a master or the man himself until the Transfer batch rules who else (filed).
 - *The change history* (H5): an `EditLog` line's squadron is a field of the line, and a line is written straight to
@@ -1786,7 +1788,11 @@ squadron are judged by whose they are:
   in the input before or after, or its filer while he is still told of it — in it, or still in the squadron of a man named
   in it or an admin of it (a master everywhere), his D2223, 19 Nov 26: a filer since moved away is no longer told,
   `state/notices.ts filerTold`, the pass's own test — the input itself judged by its people's squadrons; a member's notice the
-  same (job 2, 19 Nov 26: Astra 6, SEC-2, SEC-3). An `AccessRequest`
+  same (job 2, 19 Nov 26: Astra 6, SEC-2, SEC-3). The filer is the one the input had BEFORE the change (on a new input
+  only the actor himself, `state/notices.ts changeFiler`); an input naming nobody tells him only while its squadron is
+  his home or he is an admin of it; and such a line is signed by the actor (or the app's own act, with no maker) — fix
+  read 6, fault A, 19 Nov 26: SEC6-A, a forged after-image filer, an ALL AVAIL input and a line signed by another man each
+  carried a 142 command's line to a 149 man. An `AccessRequest`
   names no squadron yet (Request access asking the squadron, D2111, is not built), so it is not judged by one.
   Nothing else crosses (his D2218, 19 Nov 26 — fix read 3's A2 exception for a posting taken back is gone): a line
   held by a man since moved squadron left his bell on his move day, so no take-back of the old squadron's deletes it or

@@ -1352,6 +1352,12 @@ the one read rule, asked first by `noticeLive`), `src/undo/timeline.ts` (the `le
 who is at home in the war's squadron today). Fix read 5's security finding FR5-SEC-1 (chat 111, red first):
 `src/state/perms.ts` `warPlacerForged` — the member's "who placed a leave on the war" test, now run for an admin's own
 input outside his squadrons too; **New:** `src/state/multi-sqn-fixread5-admin-placer.test.ts`.
+Fix read 6's faults A–C (19 Nov 26, chat 115; each red first, its own commit). Fault A (SEC6-A, Opus F1, Astra 3 — an
+ALL AVAIL input carried a line to another squadron's man): **New:** `src/leavewar/multi-sqn-fixread6-allavail.test.ts`;
+**Changed:** `src/state/notices.ts` (`filerTold` judges an input naming nobody by its squadron; `inputUnit`, that
+squadron, shared with the gate's 7c; `changeFiler`, the filer as the input stood before; `APP_ACTS` moved here from
+`sched-commit.ts`), `src/state/perms.ts` (7c reads `inputUnit`; `toldBy` the before-image filer; the admin door asks the
+line be signed by the actor), `src/state/sched-commit.ts` (reads `APP_ACTS`).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

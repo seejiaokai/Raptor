@@ -31,7 +31,7 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { INPUTS, odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned } from '../engine/inputs'
+import { INPUTS, odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned, inputAtIso } from '../engine/inputs'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
 import { todayIso, homeOn, unitRows, levelOfAccount } from './units'
@@ -118,21 +118,67 @@ const ids = (r: any): string[] => namedOf(r).map((e: any) => String(e.p))
  *  it names nobody (an ALL AVAIL input — no man whose squadron to ask); and while, for some man named in it, he is still
  *  in that man's squadron or an admin of it (a master is an admin everywhere, a Plan grant counts). The agent's reading,
  *  told in the closing report: a member who filed for a squadron-mate and never moved is still told — the ruling speaks of
- *  "after a move". The pass, the commit gate (state/perms.ts toldBy) and the read rule (noticeAboutHim) ask this one body. */
-export function filerTold(f: string, ...rs: any[]): boolean {
+ *  "after a move". The pass, the commit gate (state/perms.ts toldBy) and the read rule (noticeAboutHim) ask this one body.
+ *  AN INPUT NAMING NOBODY (an ALL AVAIL one) HAS A SQUADRON TOO (fix read 6, fault A — the security read's SEC6-A, the
+ *  fresh Opus read's F1, Astra's 3): it answered "told" whenever nobody was named, so Hunter, 149's since his move, was
+ *  still told of every change 142 made to an ALL AVAIL meeting he had filed on a 142 day — and the gate let a forged line
+ *  ride to any 149 man through such an input. Its squadron is the one the gate's 7c judges it by (inputUnit, below); he is
+ *  told only while it has none, or it is his home, or he is an admin of it. `iso` — the day the homes and his level are
+ *  read on (today where not given). A named man's home is read as before, on that day — whether a filer who never moved
+ *  is told once the named man has moved is his question q2, still open (the fresh Opus read's F4). */
+export function filerTold(f: string, rs: readonly any[], iso?: string): boolean {
+  const named = namedIn(rs)
+  if (named.has(f)) return true
+  const us = filerUnits(rs, iso)
+  /* (named men with no squadron to ask: nobody to be told through) */
+  if (named.size && !us.length) return false
+  return toldIn(f, us, iso)
+}
+const namedIn = (rs: readonly any[]): Set<string> => {
   const named = new Set<string>()
   for (const r of rs) if (r) for (const p of ids(r)) named.add(p)
-  if (named.has(f) || !named.size) return true
-  const mine = homeOn(f)
-  const acct = accountOfPid(f)
-  for (const m of named) {
-    const u = homeOn(m)
-    if (!u) continue
-    if (u === mine) return true
-    if (acct && levelOfAccount(acct, u) === 'admin') return true
-  }
-  return false
+  return named
 }
+/** THE SQUADRONS A FILER'S TELLING IS JUDGED BY (filerTold, above): each named man's home on `iso` (today), or, where the
+ *  input names nobody, the input's own squadron (inputUnit) — before and after a change. Empty: nobody's squadron to ask. */
+export function filerUnits(rs: readonly any[], iso?: string): string[] {
+  const named = namedIn(rs)
+  const out = new Set<string>()
+  if (named.size) { for (const m of named) { const u = homeOn(m, iso); if (u) out.add(u) } }
+  else for (const r of rs) { const u = r ? inputUnit(r) : null; if (u) out.add(u) }
+  return [...out]
+}
+/** is `f` told through these squadrons on `iso` (today)? — at home in one, or an admin of one (a master everywhere, a Plan
+ *  grant counting); none to ask: told */
+export function toldIn(f: string, us: readonly string[], iso?: string): boolean {
+  if (!us.length) return true
+  const mine = homeOn(f, iso)
+  const acct = accountOfPid(f)
+  return us.some(u => u === mine || (!!acct && levelOfAccount(acct, u, iso) === 'admin'))
+}
+/** THE SQUADRON OF AN INPUT THAT NAMES NOBODY (an ALL AVAIL or ALL one — fix read 6, fault A): its placeholder's filer
+ *  first, else the input's own filer, his home on the input's own date (today where it has none). ONE body, asked by the
+ *  filer's test above and by the commit gate's 7c (state/perms.ts inputUnitViolation), which reads the homes as the rows
+ *  stood before the command — so the home reader is handed in. Null: no filer, or no home to read. */
+export function inputUnit(r: any, home: (pid: string, iso: string) => string | null = (p, d) => homeOn(p, d)): string | null {
+  if (!r || typeof r !== 'object') return null
+  const ph = placeholderOf(r)
+  const by = ph && ph.by != null && ph.by !== '' ? ph.by : r.by
+  if (by == null || by === '') return null
+  return home(String(by), inputAtIso(r.date, r.yr) || todayIso())
+}
+/** WHO IS TOLD OF A CHANGE AS ITS INPUT'S FILER (fix read 6, fault A — the security read's SEC6-A (2)): the filer as the
+ *  input stood BEFORE the change — the after-image's `by` is whatever the command writes, so a forger who sets it to a
+ *  149 man would have him told; on a new input only one filed by the actor himself, who is never told of his own act. The
+ *  pass (noticePass) and the commit gate (state/perms.ts toldBy) ask this one body. Empty: nobody. */
+export function changeFiler(b: any, a: any, actor: string | null): string {
+  if (b && typeof b === 'object') return b.by != null && b.by !== '' ? String(b.by) : ''
+  if (a && typeof a === 'object' && actor != null && a.by != null && String(a.by) === actor) return actor
+  return ''
+}
+/* the commands the app itself tells in, with no name (a posting on its date, a man deleted — R12): their lines carry no
+   maker (state/sched-commit.ts, which tells; state/perms.ts, which lets such a line ride with no `by`) */
+export const APP_ACTS: ReadonlySet<string> = new Set(['person.delete', 'lw.postoutRun', 'lw.postout'])
 const phOf = (r: any): string | null => { const p = placeholderOf(r); return p && p.p != null ? String(p.p) : null }
 /* yyyy-mm-dd of one of an input's own date labels ("Jul 15", with its year) */
 const isoOf = (lbl: any, yr: any): string => {
@@ -275,13 +321,17 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
     const was = ids(b)
     if (!a) {
       /* (its filer only while he is still told of it — D2223, filerTold above) */
-      const fb = b.by != null && filerTold(String(b.by), b) ? String(b.by) : ''
+      const f0 = changeFiler(b, null, by)
+      const fb = f0 && filerTold(f0, [b]) ? f0 : ''
       for (const p of new Set([...was, fb])) if (p) tell(p, b, [{ k: 'del' }])
       continue
     }
     const is = ids(a)
-    const filer = (r: any): string => (r.by != null && filerTold(String(r.by), b, a) ? String(r.by) : '')
-    const everyone = new Set<string>([...was, ...is, filer(b), filer(a)])
+    /* (its filer as it stood before the change — fix read 6, fault A: changeFiler, the gate's own list — and only while
+       he is still told of it) */
+    const f1 = changeFiler(b, a, by)
+    const filer = f1 && filerTold(f1, [b, a]) ? f1 : ''
+    const everyone = new Set<string>([...was, ...is, filer])
     const wasIn = new Set(was), isIn = new Set(is)
     let shared: NoticePart[] | null = null
     for (const p of everyone) {
@@ -350,7 +400,7 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what'>): boolean 
     const ws: any[] = n.what || []
     if (!ws.length || ws.some(x => x && (x.k === 'in' || x.k === 'out' || x.k === 'rbid'))) return true
     const r = INPUTS.find((x: any) => x && String(x.iid) === String(n.iid))
-    return !r || filerTold(String(n.to), r)
+    return !r || filerTold(String(n.to), [r])
   }
   const p: any = (n.what || [])[0]
   if (!p) return true
