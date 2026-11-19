@@ -51,6 +51,9 @@ carries his primary squadron's lines by default, every other squadron's switched
 
 ## Ruled, not built yet
 
+- **Across squadrons, 19 Nov 26 (D2218, D2219, D2220):** a mover's old-squadron lines leave his bell on the day he moves (D2218); a borrowed man's home inputs, his own planning lines, the home squadron told on publish (D2219); a transfer's "Posted in · from 142", a failed transfer, Plan given or removed, a shared wave removed, a detachment closed early, a shared place changed (D2220). Words: `raptor-port/docs/superpowers/briefs/2026-11-19-multi-sqn-bells-fable.md`, drawn before built.
+## Ruled, not built yet
+
 | # | Who is told | When | What the line says | A tap | Ruled |
 |---|---|---|---|---|---|
 | — | — | none since 27 Oct 26: the Leave War's ruled lines (R1, P2, P4, P7, P8, P9) were built with its M4 and moved up whole | — | — | — |
