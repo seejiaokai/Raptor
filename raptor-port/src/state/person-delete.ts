@@ -62,7 +62,7 @@ import { localToday } from '../leavewar/engine/period'
 import { PLANPUCKS } from './plan'
 import { commit, CmdRefused, isCommitting } from '../command'
 import { peopleStore, settingsStore, finishPeopleWrite } from './people-settings-commit'
-import { schedStore, schedApplyEnd, resyncSchedBaseline } from './sched-commit'
+import { schedStore, schedApplyEnd, resyncBeforeEnlist } from './sched-commit'
 import { mayDeletePerson, byAfterLeaving } from './perms'
 import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './accounts'
 import { saidOf } from './roster-add'
@@ -475,8 +475,9 @@ export function deletePerson(id: string, dateIso?: string | null): string | null
   return saidOf(commit({
     type: 'person.delete', scope: { module: 'people' }, meta: null,
     apply: (txn: any) => {
-      /* the baseline to LIVE before enlisting (the input batch's own rule, sched-commit.ts commitInputsWith) */
-      resyncSchedBaseline()
+      /* the baseline to LIVE before enlisting, and the bell's image with it (sched-commit.ts resyncBeforeEnlist — fix
+         read 9, fault B: a bare resync refused the Delete after a write outside every command) */
+      resyncBeforeEnlist()
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(schedStore)   // no saved week is written (phase 6 (d))
       /* a man the war does not show (a SANS man with Show SANS off) is caught as the war would draw him BEFORE the mark
          takes him off every projection — so the months he was here keep his row (D299; Astra 3, Fable 3) */

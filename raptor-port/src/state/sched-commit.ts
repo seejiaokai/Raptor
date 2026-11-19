@@ -78,6 +78,20 @@ function baseline(): string { return SCHED_BASELINE ?? histSnap() }
    registered as the history.ts callback (undo/redo/quarantine/loadWeek/boot BY
    construction) and called explicitly from resetSession + the demo overlay. */
 export function resyncSchedBaseline(): void { SCHED_BASELINE = histSnap() }
+/* THE BASELINE BROUGHT UP TO MEMORY BEFORE A COMMAND ENLISTS THE SCHEDULER STORE — AND THE BELL'S IMAGE WITH IT (fix read
+   8, fault W; fix read 9, fault B — the fresh Opus read's O9-1, Fable 2). Every command that resyncs before enlisting
+   calls this, never the bare resync: an input command (commitInputsWith), an admin's Delete (person-delete.ts), the
+   posting pass and the posting sheet's Undo post out and Restore (leavewar/sync.ts). After a write outside every command,
+   a bare resync left the bell's before-image (taken when the whole-world guard captured the store) lacking that write, so
+   the pass told it as this command's change and the gate refused the whole command ("a bell line not as the pass writes
+   it") — an unrelated Delete or Undo post out refused. The image is taken again after the resync only while the
+   scheduler store is not yet enlisted: the store's before-side is then the resynced baseline too, so what the resync took
+   up is no change of the command; once enlisted (a child joining an outer command), the outer image stands. */
+export function resyncBeforeEnlist(): void {
+  const fresh = !isEnlisted(schedStore.key)
+  resyncSchedBaseline()
+  tellBegin(fresh)
+}
 /* dev/test guardrail (R2-06): between commands the baseline must equal live. An
    escape site (a durable write that opened no command) leaves it dirty, so a test
    asserting this after each gesture catches a missed route loudly. The whole-world
@@ -668,9 +682,7 @@ export function commitInputsWith(stores: EnlistableStore[], type: string, fn: ()
          before-side is then the resynced baseline too, so what the resync took up is no change of the command; once
          enlisted (a child joining an outer command that already enlisted it), what the resync takes up still rides the
          command's changes, and the outer image, holding the outer command's own changes, stands. */
-      const before = !isEnlisted(schedStore.key)
-      resyncSchedBaseline()
-      tellBegin(before)
+      resyncBeforeEnlist()
       txn.enlist(schedStore); for (const s of stores) txn.enlist(s); fn(); applyEnd()
     },
   }

@@ -164,7 +164,7 @@ import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
-import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
+import { schedStore, schedApplyEnd, resyncBeforeEnlist, commitInputs, SCHED_TYPES } from '../state/sched-commit'
 import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, noticeAboutHim, noticeLeftBell, warLineName, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
@@ -2657,8 +2657,9 @@ export function runPoOutcomes(only?: string): void {
              every pass enlists it ([POSTOUT-RUN-NOTICE]'s two reads, 5 Nov 26): the store's changes are worked out against
              that point, so a schedule or request change sitting in memory outside every command (a browser's console) would
              otherwise be saved inside this pass as the app's own act. Taken in, it is never saved by anyone (the next command
-             starts from the same point), as commitInputsWith does for the same reason; it was always so for a delete */
-          resyncSchedBaseline()
+             starts from the same point), as commitInputsWith does for the same reason; it was always so for a delete. The bell's
+             image follows it (resyncBeforeEnlist — fix read 9, fault B) */
+          resyncBeforeEnlist()
           txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
           /* the scheduler store too, every time: the admins' bell lines are its records ([POSTOUT-RUN-NOTICE], below) — and a
              delete's days (no saved week is written for a delete — [DB-READINESS] group A, phase 6 (d)) */
@@ -2919,7 +2920,7 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
       /* the posting sheet's Undo takes back the posting's bell lines with it ([NOTICE-UNDO-RETRACT], D1693 — takeBack's
          notes); Restore on Admin → Users is "he's back", not the posting undone: its lines stay */
       const lines = postIn === undefined ? postingLinesOf(id) : []
-      if (lines.length) { resyncSchedBaseline(); txn.enlist(schedStore) }
+      if (lines.length) { resyncBeforeEnlist(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(fw ?? lwStore)
       if (rename != null && !renameCallsign(id, rename)) { ok = false; return }
       if (postIn === undefined) setPostOut(id, null)
@@ -3204,7 +3205,7 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
       const lines = retract ? postingLinesOf(id) : []
       /* the scheduler store's starting point brought up to memory BEFORE it is enlisted, as the posting pass does (its
          notes there): only this command's own lines are its change */
-      if (lines.length) { resyncSchedBaseline(); txn.enlist(schedStore) }
+      if (lines.length) { resyncBeforeEnlist(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       ok = write()
       if (!ok || !body) return

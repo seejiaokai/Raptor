@@ -159,3 +159,48 @@ describe('fault A — an Undo or Redo that turns a right on dates it today (his 
     expect(hunterAcct().masterFrom).toBe('2026-07-18')
   })
 })
+
+describe('fault B — every command that brings the scheduler up to memory before enlisting takes the bell’s image again (Opus O9-1, Fable 2)', () => {
+  const newby = () => {
+    expect(addRosterPerson({ cs: 'Newby', ini: '', seat: 'FCP', cat: 'C' } as any, '2026-07-20')).toBeNull()
+    raptorNotify()
+    return Object.keys(PEOPLE).find(k => (PEOPLE as any)[k].cs === 'Newby' && !(PEOPLE as any)[k].deleted)!
+  }
+  it('(Fable F2) after a bare write, Saber’s Delete of Outlaw (unrelated) saves and tells nobody of the bare write', () => {
+    aceTraining(); signInAs('ad', 'a')
+    ;(theInput() as any).remarks = 'bare words'                 // outside every command
+    expect(deletePerson('casper'), 'the delete saves').toBeNull()
+    expect(NOTICES.filter(n => n.iid === IID && n.what.some((p: any) => p.k === 'rmk')).length, 'nobody told of the bare write').toBe(0)
+  })
+  it('(Opus O9-1) after a bare write, the delete of Newby saves, and no line about the bare-written input rides it', () => {
+    aceTraining(); signInAs('ad', 'a')
+    const id = newby()
+    const seen: any[] = []; const off = onCommit((e: any) => { seen.push(e) })
+    ;(theInput() as any).remarks = 'bare words'                  // outside every command
+    let r: string | null = 'not run'
+    try { r = deletePerson(id) } finally { off() }
+    expect(r, 'the delete of Newby').toBeNull()
+    const lines = seen.flatMap(e => e.changes).filter((c: any) => c.collection === 'notices' && c.after?.iid === IID)
+    expect(lines.length, 'no line about the bare write').toBe(0)
+  })
+  it('(Opus O9-1) after a bare write, the posting sheet’s Undo post out goes through, no line about the bare write in it', () => {
+    aceTraining(); signInAs('ad', 'a')
+    expect(postOut('casper', '2026-07-15', 'overseas')).toBe(true)
+    raptorNotify()
+    ;(theInput() as any).remarks = 'bare words'                  // outside every command
+    let captured: any[] = []
+    setConflictChecker((ch) => { if (ch.some((c: any) => c.collection === 'notices')) captured = ch; return null })
+    let ok: boolean | string = 'not run'
+    try { ok = undoPostOut('casper') } finally { setConflictChecker(null) }
+    expect(ok, 'Undo post out goes through').toBe(true)
+    expect(captured.find((c: any) => c.collection === 'notices' && c.after?.iid === IID) ?? null, 'a line about the bare write').toBeNull()
+  })
+  it('(control) with no bare write: the delete of Outlaw, the delete of Newby and Undo post out save', () => {
+    aceTraining(); signInAs('ad', 'a')
+    expect(deletePerson(newby())).toBeNull()
+    expect(postOut('casper', '2026-07-15', 'overseas')).toBe(true)
+    raptorNotify()
+    expect(undoPostOut('casper')).toBe(true)
+    expect(deletePerson('casper')).toBeNull()
+  })
+})
