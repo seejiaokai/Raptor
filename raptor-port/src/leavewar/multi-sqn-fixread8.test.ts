@@ -235,10 +235,12 @@ describe('fault H — a holiday-shaped line naming an input goes through fault M
     expect(ownershipViolation(asOutlaw([put(n)])) ?? 'allowed').toMatch(/not as the pass writes it/)
     expect(ownershipViolation(asOutlaw([put({ ...n, id: 'nfr8-hol9', to: 'osp9' })])) ?? 'allowed').toMatch(/another squadron/)
   })
-  it('(control) the app’s own holiday line, as noticeHoliday writes it, still passes to every squadron', () => {
+  it('(control) a line in the holiday’s shape crosses only as noticeHoliday mints it in the command (fix read 10, fault B)', () => {
+    /* (merely put, it is judged as any line; the app's own, through a real command, is pinned by fix read 9's control and
+       fix read 10's fault B control) */
     const n: any = { id: 'nfr8-holok', to: 'osp9', by: 'casper', at: Date.now(), iid: '', name: 'National Day', day: '2026-08-09', what: [{ k: 'oilhol', a: '2026-08-09', b: '2026-08-09' }] }
-    expect(ownershipViolation(asOutlaw([put(n)]))).toBeNull()
-    expect(ownershipViolation(asOutlaw([put({ ...n, id: 'nfr8-holok2', to: 'prowler' })]))).toBeNull()
+    expect(ownershipViolation(asOutlaw([put(n)])) ?? 'allowed').toMatch(/another squadron/)
+    expect(ownershipViolation(asOutlaw([put({ ...n, id: 'nfr8-holok2', to: 'prowler' })])) ?? 'allowed').toMatch(/a war line no war command wrote/)
   })
 })
 

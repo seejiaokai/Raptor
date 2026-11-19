@@ -305,8 +305,9 @@ describe("still open 2, his D2194 — an admin's bell lines and read records are
     /* (…and since fix read 10's fault A no line naming no input passes unless the war or the holiday owes it: the squadron
        test still lets it past — refused on that other count, not as another squadron's) */
     expect(ownershipViolation(env([put('notices', 'n1', { ...line('bane'), iid: '' })]))).toMatch(/about nothing the command changed/)
-    /* (the holiday line as noticeHoliday writes it, naming no input — fix read 8, fault H) */
-    expect(ownershipViolation(env([put('notices', 'n1', { ...line('osp9', [{ k: 'oilhol', a: '2026-07-13', b: '2026-07-13' }]), iid: '' })]))).toBeNull()
+    /* (the holiday line in noticeHoliday's shape, naming no input — fix read 8, fault H — crosses only as noticeHoliday
+       itself mints it inside the command since fix read 10's fault B; merely put, it is judged as any line) */
+    expect(ownershipViolation(env([put('notices', 'n1', { ...line('osp9', [{ k: 'oilhol', a: '2026-07-13', b: '2026-07-13' }]), iid: '' })]))).toMatch(/another squadron's man/)
     expect(ownershipViolation(env([put('settings', 'seen:bane', { pid: 'bane', ids: [] })]))).toBeNull()
     signInAs('ad', 'a')
     expect(ownershipViolation(env([put('notices', 'n1', { ...line('osp9'), iid: '' })]))).toMatch(/about nothing the command changed/)

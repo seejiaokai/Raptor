@@ -58,7 +58,10 @@ describe("SEC-2 — an admin's bell line to another squadron's man", () => {
     signInAs('ad2', 'a2')
     /* (as noticeHoliday writes it: no input — since fix read 8's fault H one naming an input goes through the ordinary
        checks) */
-    expect(ownershipViolation(env([put('notices', 'n1', line('osp9', [{ k: 'oilhol', a: '2026-07-17', b: '2026-07-17' }], ''))]))).toBeNull()
+    /* (…and only as noticeHoliday itself mints it inside the command — fix read 10, fault B: a line merely put in that shape
+       takes the ordinary checks; the real crossing is pinned by leavewar/multi-sqn-fixread9.test.ts's control through
+       Outlaw's real command and fix read 10's fault B control) */
+    expect(ownershipViolation(env([put('notices', 'n1', line('osp9', [{ k: 'oilhol', a: '2026-07-17', b: '2026-07-17' }], ''))]))).toMatch(/bell line of another squadron's man/)
   })
   it("Hunter's line to Osprey riding a 142 input he changes, Osprey neither in it nor its filer, is refused — put and delete", () => {
     signInAs('ad2', 'a2')

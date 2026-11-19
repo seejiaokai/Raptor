@@ -1413,7 +1413,11 @@ Fix read 10's faults A–F (20 Nov 26; each red first, its own commit; one test 
 (`setWarLinesOwed`, `lineMalformed`, `restoreFollowUpOwed`: a war line only as owed, never riding an input's telling; a
 line naming no input only from the war's or the holiday's writers; every line has parts), `src/state/notices.ts`
 (`noticeAboutHim`: a line with no part is not about him), `src/leavewar/multi-sqn-fixread8.test.ts` and
-`src/state/units-sqn-fixread2.test.ts` (their hand-made lines naming no input are now refused).
+`src/state/units-sqn-fixread2.test.ts` (their hand-made lines naming no input are now refused). Fault B —
+`src/state/notices.ts` (`noteHolMade` / `holMade`: the ids `noticeHoliday` mints in the running command),
+`src/state/perms.ts` (the holiday skip only for such a line, signed by the admin), `src/state/multi-sqn-job2-bell.test.ts`,
+`src/state/units-sqn-fixread2.test.ts`, `src/leavewar/multi-sqn-fixread8.test.ts` and `multi-sqn-fixread9.test.ts` (a
+holiday-shaped line merely put is judged as any line).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

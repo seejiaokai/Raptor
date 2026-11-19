@@ -286,10 +286,12 @@ describe('fault E — another squadron’s holiday line is not deleted or rewrit
       expect(ownershipViolation(asOutlaw([{ collection: 'notices', id: hol.id, op: 'put', before: hol, after: { ...hol, [field]: val } }])) ?? 'allowed').toMatch(/another squadron/)
     })
   }
-  it('(control) the app’s own new holiday line, as noticeHoliday writes it, still passes to both squadrons', () => {
+  it('(control) a new line in the holiday’s shape that noticeHoliday did not mint in the command takes the ordinary checks (fix read 10, fault B)', () => {
+    /* (the app's own line, minted by noticeHoliday, still passes to both squadrons: the control below, through Outlaw's
+       real command) */
     const n: any = { ...hol, id: 'nfr9-holok', by: 'casper', at: Date.now() }
-    expect(ownershipViolation(asOutlaw([put(n)]))).toBeNull()
-    expect(ownershipViolation(asOutlaw([put({ ...n, id: 'nfr9-holok2', to: 'prowler' })]))).toBeNull()
+    expect(ownershipViolation(asOutlaw([put(n)])) ?? 'allowed').toMatch(/another squadron/)
+    expect(ownershipViolation(asOutlaw([put({ ...n, id: 'nfr9-holok2', to: 'prowler' })])) ?? 'allowed').toMatch(/a war line no war command wrote/)
   })
   it('(control) the app\'s own holiday line to both squadrons, written by Outlaw\'s real command: his Undo takes both away, his Redo puts them back', () => {
     outlawReal(); signInAs('outlaw', 'x')

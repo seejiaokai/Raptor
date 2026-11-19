@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerVia, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, warMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, filerTold, filerVia, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, warMade, holMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -2129,8 +2129,14 @@ function adminOwnerViolation(env: CommitEnvelope): string | null {
         /* (…and only a NEW line in that shape, or the verified replay of the actor's own step — fix read 9, fault E, the
            security read's SEC9-3: the skip let a 142 admin delete or rewrite the holiday line on 149's admin's bell, its
            words, its parts or its maker; every other delete or rewrite of a holiday line goes through the owner check below) */
+        /* (…and a new line only where noticeHoliday itself minted it in this command — fix read 10, fault B, the fresh Opus
+           read's O10-2, the security read's SEC10-3: any new line of holiday parts skipped every check, so a 142 admin put
+           a made-up "holiday" line on 149's admin's bell signed as him; notices.ts holMade, written only by noticeHoliday.
+           Any other new holiday line takes the ordinary checks below.) */
         if (holidayLine(n) && !n.iid && n.fu === undefined) {
-          if (n === c.after && c.op === 'put' && c.before == null) continue
+          /* (signed by the admin himself, as tellHoliday writes it — noticeHoliday is a plain function, so its registry alone
+             would vouch for a line it was called to sign as 149's admin) */
+          if (n === c.after && c.op === 'put' && c.before == null && holMade(env)?.has(String(n.id)) && self != null && String(n.by ?? '') === self) continue
           if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
           if (replayed && replayed(c)) continue
         }

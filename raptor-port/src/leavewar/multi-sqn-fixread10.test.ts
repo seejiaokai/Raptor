@@ -181,3 +181,33 @@ describe('fault A — a war line only as the war\'s own change owes it (SEC10-1,
     expect(NOTICES.filter(n => n.to === 'prowler' && kind(n) === 'poback').length, 'Hunter told "taken back"').toBe(1)
   })
 })
+
+describe('fault B — a new holiday line passes as the holiday\'s own only where noticeHoliday made it (O10-2, SEC10-3)', () => {
+  it('(Opus O10-2) Outlaw puts a made-up holiday line on Kestrel\'s (149) bell, signed as Kestrel: refused, not saved', () => {
+    outlawReal(); signInAs('outlaw', 'x')
+    const n: any = { id: 'nforge-hol', to: 'kes9', by: 'kes9', at: Date.now(), iid: '', name: '149: all leave cancelled, report 0600', day: '2026-07-25', what: [{ k: 'oilhol', a: '2026-07-25', b: '2026-07-25' }] }
+    const v = ownershipViolation(asOutlaw([put(n)]))
+    const ok = writeInputsBatch(() => { NOTICES.push(n) })
+    expect({ gate: v ?? 'allowed', saved: ok && NOTICES.some(x => x.id === n.id) }).toEqual({ gate: expect.stringMatching(/./), saved: false })
+  })
+  it('(Opus O10-2) …and on a 142 member who is no scheduler, signed as Saber: refused', () => {
+    outlawReal(); signInAs('outlaw', 'x')
+    const n: any = { id: 'nforge-hol2', to: 'bane', by: 'ad', at: Date.now(), iid: '', name: 'made-up words', day: '2026-07-25', what: [{ k: 'oilhol', a: '2026-07-25', b: '2026-07-25' }] }
+    expect(ownershipViolation(asOutlaw([put(n)])) ?? 'allowed').not.toBe('allowed')
+  })
+  it('(SEC10-3) Outlaw puts a holiday line on Osprey (a 149 member) signed as Kestrel: refused', () => {
+    outlawReal()
+    const n: any = { id: 'nsec10-h', to: 'us9', by: 'kes9', at: Date.now(), iid: '', name: '149 stand-down', day: '2026-08-09', what: [{ k: 'oilhol', a: '2026-08-09', b: '2026-08-09' }] }
+    expect(ownershipViolation(asOutlaw([put(n)])) ?? 'allowed').not.toBe('allowed')
+  })
+  it('(control) a real holiday made by Saber tells the schedulers, and its Undo and Redo go through', () => {
+    signInAs('ad', 'a')
+    expect(writeInputsBatch(() => { noticeHoliday(['kes9', 'prowler'], 'stiff', 'National Day', '2026-08-09', '2026-08-09') })).toBe(true)
+    const told = () => NOTICES.filter(x => x.name === 'National Day').map(x => x.to).sort()
+    expect(told()).toEqual(['kes9', 'prowler'])
+    expect(globalUndo().ok).toBe(true)
+    expect(told()).toEqual([])
+    const r = globalRedo(); expect(r.ok, JSON.stringify(r)).toBe(true)
+    expect(told()).toEqual(['kes9', 'prowler'])
+  })
+})

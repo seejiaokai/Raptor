@@ -287,6 +287,20 @@ function noteWarMade(id: string): void {
   s.add(id)
 }
 export function warMade(env: object): ReadonlySet<string> | undefined { return WAR_MADE.get(env) }
+/* THE HOLIDAY'S LINES THIS COMMAND MINTED (fix read 10, fault B — the fresh Opus read's O10-2, the security read's
+   SEC10-3): the commit gate let any NEW line made only of holiday parts skip every check, as the holiday's own — so a 142
+   admin put a made-up "holiday" line on 149's admin's bell signed as him, or on a member's signed as the master. Kept as
+   warMade is, by the running command's envelope, and written only by noticeHoliday: only a line it minted here passes as
+   the holiday's own (perms.ts adminOwnerViolation); any other takes the ordinary checks. */
+const HOL_MADE = new WeakMap<object, Set<string>>()
+function noteHolMade(id: string): void {
+  const env = activeEnvelope()
+  if (!env) return                                    // outside every command the line is not saved, so not vouched for
+  let s = HOL_MADE.get(env)
+  if (!s) HOL_MADE.set(env, (s = new Set()))
+  s.add(id)
+}
+export function holMade(env: object): ReadonlySet<string> | undefined { return HOL_MADE.get(env) }
 const phOf = (r: any): string | null => { const p = placeholderOf(r); return p && p.p != null ? String(p.p) : null }
 /* yyyy-mm-dd of one of an input's own date labels ("Jul 15", with its year) */
 const isoOf = (lbl: any, yr: any): string => {
@@ -467,7 +481,9 @@ export function noticeHoliday(to: readonly string[], by: string | null, name: st
   let made = 0
   for (const p of new Set(to.map(String))) {
     if (!here(p)) continue
-    NOTICES.push({ id: mint(at), to: p, by, at, iid: '', name, day: a, what: [{ k: 'oilhol', a, b }] })
+    const id = mint(at)
+    NOTICES.push({ id, to: p, by, at, iid: '', name, day: a, what: [{ k: 'oilhol', a, b }] })
+    noteHolMade(id)
     made++
   }
   return made
