@@ -2513,7 +2513,17 @@ let STORED_WHOLE = false
 export function setStoredRowsWhole(on: boolean): void { STORED_WHOLE = on }
 const REMOTE_ONLY = new Set<string>()
 let SECOND_PASS = false
-function storedRowViolation(env: CommitEnvelope): string | null {
+/* …AND A COMMAND THAT STANDS CARRIES THE SAVED IMAGES (fix read 13, item A — the fresh Opus read's O13-1, Fable's F13-1,
+   the security read's SEC13-2). Two doors were left: (a) a REMOVAL of a record no saved row holds (a delete, or a put
+   that leaves nothing) was never asked — judged as the removal of the made-up record, so Ranger's own leave "filed by"
+   Hunter, made up in memory and deleted, put a saved line on Hunter's bell about a request that never existed; it is
+   refused now, under the same exemptions as the put above (not whole, a restore, a remote record). (b) The Undo step of
+   a command records the change's before-image and puts it back as a restore, which none of these checks asks — so a
+   saved request rewritten in memory, then deleted (judged, rightly, as the delete of the SAVED row), came back on Undo as
+   the rewrite. A command judged against the saved rows therefore leaves this gate carrying them: each such removal's
+   before-image becomes the saved row, the image it was judged by, and the step records that. Handed back as the changes to carry once every check has passed (ownershipViolation, below); a restore keeps the
+   images its step recorded. */
+function storedRowViolation(env: CommitEnvelope): string | Change[] | null {
   if (env.origin === 'remote') {
     for (const c of env.changes) if (c.collection === 'inputs' || c.collection === 'notices') REMOTE_ONLY.add(`${c.collection}/${c.id}`)
     return null
@@ -2521,11 +2531,14 @@ function storedRowViolation(env: CommitEnvelope): string | null {
   if (!STORED || SECOND_PASS || env.origin === 'seed') return null
   let moved: string | null = null
   let unsaved: string | null = null
+  let gone: string | null = null
   const changes = env.changes.map(c => {
     if ((c.collection !== 'inputs' && c.collection !== 'notices') || (c.collection === 'inputs' && c.id === INPUT_ORDER)) return c
     const raw = storedRow(c.collection, String(c.id))
     if (raw == null) {
-      if (!STORED_WHOLE || env.origin === 'restore' || c.op !== 'put' || c.before == null || REMOTE_ONLY.has(`${c.collection}/${c.id}`)) return c
+      if (!STORED_WHOLE || env.origin === 'restore' || c.before == null || REMOTE_ONLY.has(`${c.collection}/${c.id}`)) return c
+      /* (fix read 13, item A (a): a removal of it — a delete, or a put that leaves nothing — has no record to remove) */
+      if (c.op === 'delete' || c.after == null) { gone ??= `${c.collection}/${c.id}`; return c }
       unsaved ??= `${c.collection}/${c.id}`
       return { ...c, before: null }
     }
@@ -2535,6 +2548,7 @@ function storedRowViolation(env: CommitEnvelope): string | null {
     moved ??= `${c.collection}/${c.id}`
     return { ...c, before: saved }
   })
+  if (gone) return `a record never saved, taken away as if it were (${gone})`
   if (!moved && !unsaved) return null
   SECOND_PASS = true
   try {
@@ -2542,9 +2556,14 @@ function storedRowViolation(env: CommitEnvelope): string | null {
     const copy: CommitEnvelope = { ...env, changes }
     shareMade(env, copy)
     const why = ownershipViolation(copy)
-    if (!why) return null
-    return moved ? `a saved record changed outside the app's doors (${moved}): ${why}` : `a record never saved, changed as if it were (${unsaved}): ${why}`
+    if (why) return moved ? `a saved record changed outside the app's doors (${moved}): ${why}` : `a record never saved, changed as if it were (${unsaved}): ${why}`
   } finally { SECOND_PASS = false }
+  /* (b) only a removal's image is carried: a put records its after-image too, and the timeline's line for it reads the two
+     images, so a field memory holds and the saved row does not (a week load's landing mark) would read as a change of its
+     own; a removal's after is nothing, so its Undo puts back exactly what is carried here */
+  if (env.origin === 'restore') return null
+  const carry = env.changes.map((c, i) => (c.op === 'delete' || c.after == null ? changes[i]! : c))
+  return carry.some((c, i) => c !== env.changes[i]) ? carry : null
 }
 
 /* A LABEL NO DOOR WEARS IS REFUSED (fix read 11, fault B — Fable's F11-3, the security read's SEC11-3): the week load's
@@ -2557,7 +2576,13 @@ const RETIRED_TYPES = new Set(['sched.load'])
 export function ownershipViolation(env: CommitEnvelope): string | null {
   if (env.origin === 'user' && RETIRED_TYPES.has(env.type)) return `a retired command type (${env.type}) — no door raises it`
   const stored = storedRowViolation(env)
-  if (stored) return stored
+  if (typeof stored === 'string') return stored
+  const why = ownershipChecks(env)
+  /* (item A (b), above: a command that stands carries the images it was judged by) */
+  if (!why && stored) env.changes = stored
+  return why
+}
+function ownershipChecks(env: CommitEnvelope): string | null {
   const a = env.actor
   const asNew = writtenAsNewViolation(env)
   if (asNew) return asNew

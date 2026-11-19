@@ -1454,6 +1454,12 @@ say when the saved copy holds every record: `setStoredRowsWhole`). Fault E — `
 `src/undo/timeline.ts` (`applyRestore` keeps each right as it stood before a restore and hands the reversing restore
 the other way's; the `stoodNow` hook), `src/state/perms.ts` (`restoreStood`; `restoreRedated` puts that day back where
 the day is kept), `src/state/undo-wire.ts` (wires both).
+Fix read 13's items A–D and his D2228 (20 Nov 26; each red first, its own commit; one test file for all, a describe an
+item): **New:** `src/leavewar/multi-sqn-fixread13.test.ts`. **Changed:** item A — `src/state/perms.ts`
+(`storedRowViolation`: a removal of an input or notice never saved is refused; a removal judged against the saved row
+carries that row as its before-image, so its Undo puts back the record as saved; `ownershipViolation` hands those images
+on once every check has passed), `src/state/person-delete.test.ts` and `src/leavewar/postout-outcomes.test.ts` (the saved
+copy a test wires is cleared after it).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

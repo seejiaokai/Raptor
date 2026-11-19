@@ -17,6 +17,7 @@ import { slotVal, setSlotVal, renameCallsign } from '../engine/slots'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, weekStashSnap, weekDirty, writeText } from '../state/store'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from '../state/persist'
+import { setStoredRowProbe, setStoredRowsWhole } from '../state/perms'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { accountsLoad, accountByName, signIn, sessionFor, updateAccount, addAccount, setMaster } from '../state/accounts'
 import { BACKPROMPT } from '../state/view'
@@ -78,7 +79,9 @@ beforeEach(() => {
   /* (Kestrel stays: he is 149's only admin, and a squadron is never left with none — D2184 Q10, the full check of
      18 Nov 26; these postings are 142's, and 149's admin is never told of them) */
 })
-afterEach(() => { resetSession(null); vi.restoreAllMocks() })
+/* the saved copy a test wires is that test's own (fix read 13, item A): left wired, the next test's records — pushed into
+   memory as its set-up — read as never saved, and their removal is refused */
+afterEach(() => { resetSession(null); vi.restoreAllMocks(); setStoredRowProbe(null); setStoredRowsWhole(false) })
 
 describe('PO2 — overseas: archived on Quals and his account suspended, on the date, once', () => {
   /* [ONE-DOOR] (D322, 27 Sep 26 — "no Enable on an archived row"): while he is archived his sign-in is NOT enabled by

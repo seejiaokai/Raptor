@@ -19,6 +19,7 @@ import { initStore, resetSession, notify, weekStashSnap, weekDirty, writeInputs,
 import { ELOG } from '../engine/editlog'
 import { Whiteboard } from '../storage/whiteboard'
 import { wirePersist } from './persist'
+import { setStoredRowProbe, setStoredRowsWhole } from './perms'
 import { schedWrite, SCHED_TYPES } from './sched-commit'
 import { HOOKS } from '../engine/hooks'
 import { accountsLoad, accountByName, signIn, sessionFor, ACCOUNTS_LIST } from './accounts'
@@ -76,7 +77,9 @@ beforeEach(() => {
   initStore(); accountsLoad()
   signInAs('ad', 'a')
 })
-afterEach(() => { resetSession(null) })
+/* the saved copy a test wires is that test's own (fix read 13, item A): left wired, the next test's records — pushed into
+   memory as its set-up — read as never saved, and their removal is refused */
+afterEach(() => { resetSession(null); setStoredRowProbe(null); setStoredRowsWhole(false) })
 
 describe('PO6 — the cutoff: the later of its date and today, on ONE clock (the plan, Round 2)', () => {
   it('today is the calendar date; a date to come stands; a date already past becomes today', () => {
