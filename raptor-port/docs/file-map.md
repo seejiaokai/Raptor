@@ -1367,6 +1367,17 @@ Undo or Redo carried any "taken back" / "again" line): **New:** `src/leavewar/mu
 mark, no longer the stored input; `noticeLeftBell` judges a marked line on his move day by `toldIn`), `src/state/perms.ts`
 (`filerMarkOk`: the telling door asks the mark, exact), `src/engine/inputs-readers.test.ts` (notices.ts off the readers
 list), `src/leavewar/multi-sqn-fixread6-allavail.test.ts` (its control line carries the mark).
+Fix read 7's faults U, M, P, T, F, S and Q (19 Nov 26, chat 117; each red first, its own commit; one test file for all,
+a describe a fault): **New:** `src/leavewar/multi-sqn-fixread7.test.ts`. **Changed:** `src/state/notices.ts`
+(`notePassMade` / `passMade`, the lines the pass wrote in the running command; `AT_SLACK_MS` and `noticeLeftBell`'s
+backstop for a line dated ahead; `adminThen`, a right counted from the day it was given; `filerUnits`, the named men's
+homes read on the input's own days — his D2225), `src/state/sched-commit.ts` (the pass registers what it wrote),
+`src/state/perms.ts` (a member's own Undo of a step on an input filed for him; `lineRewritten` / `inputLineUnlike`, an
+input line put only as the pass writes it; `lineNotNow`, a new line dated now; `noticesBefore` for the follow-up probe;
+a no-maker line signed only by the pass's own lines), `src/leavewar/sync.ts` (`followUpsOwed`, the one body for which
+follow-up lines are owed), `src/state/accounts.ts` (`masterFrom`), `src/state/units-model.ts` / `src/state/units.ts`
+(`Grant.from`); fixtures dated now in `src/state/units-sqn-fixread2.test.ts`, `src/state/multi-sqn-job2-bell.test.ts`,
+`src/ui/bellnotices.test.tsx`, `src/leavewar/m4sec.test.ts`.
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and
