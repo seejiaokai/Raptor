@@ -59,3 +59,6 @@ the host line by line — each session re-checks its own piece's files before it
 - **After them, one at a time:** **D** P3 (after B and C); **E** P4 + P8 + P9 in one bell session (after C, and P9
   drawn and approved first).
 - **Waiting on later batches:** D2219, most of D2220, D2204's copy step, D2221.
+- **Readers of each session's bug check (D2224):** Astra first, the fresh, blind Opus reader and Fable, each blind to
+  the others, on every code read of this build — its FULL read and each fix read after it; the security read too where
+  sign-in or permissions change (D1411).
