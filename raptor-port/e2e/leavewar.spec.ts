@@ -19,7 +19,8 @@
    reset→harpoon. The category-label assertions (OPSP(S), IP→IP(S)) hold
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
-import { expect, test, type Locator, type Page } from '@playwright/test'
+import { existsSync } from 'node:fs'
+import { chromium, expect, test, type Locator, type Page } from '@playwright/test'
 import { elevenCounters, login, openManning, pressMore, rearrangeOn, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths, expectPinned } from './app'
 
 /** Open the figure picker. The whole column header is the control — the two
@@ -1286,6 +1287,117 @@ test('a month button works from wherever the grid already is', async ({ page }) 
   // runner's speed, not the grid's behaviour — this line was the one flaky
   // assertion in the suite (5 Sep 26, ~1 in 2 locally, red on CI too).
   if (isPhone()) await expect(page.locator('[data-testid="head-2026-09-01"]')).toHaveCount(0)
+})
+
+/* A CLICK DURING THE FILL NEVER LETS A JUMPED DAY DRIFT UNDER THE FROZEN COLUMNS (fix read 4's claim 5, 19 Nov 26).
+   The grid's sideways scroll is whole pixels and the day columns sit at fractional offsets, so a month button lands its
+   first day rounded DOWN, 0–1px clear of the counter column, and while the desktop's whole-year fill draws a month a beat
+   to the left, the day is put back on the edge the same way — only while it is where the jump put it (the "landed" mark,
+   [LW-MONTHJUMP-SUBPIXEL], b322cad23 and fix read 3's O3). The mark was cleared by ANY pointer press anywhere on the page,
+   so a click on a day cell before the fill ended handed the later redraws back to the old rule (moves of a pixel or less
+   skipped, the drifted place taken as the next anchor) and the day could slide under the columns half a pixel a beat.
+   Sep → Mar → Dec → Sep, a day cell clicked after each landing while the fill still runs; every frame the first day's
+   gap to the edge (its left minus the counter column's right) is read and must stay 0–1px, as the landing put it. */
+async function edgeGaps(page: Page, iso: string, ms: number) {
+  return page.evaluate(async ([d, span]) => {
+    const head = () => document.querySelector(`.mx-wrap [data-testid="head-${d}"]`)
+    const bal = () => document.querySelector('.mx-wrap .mxhead th.bal')
+    let lo = Infinity, hi = -Infinity, n = 0
+    const t0 = performance.now()
+    while (performance.now() - t0 < span) {
+      await new Promise(r => requestAnimationFrame(() => r(null)))
+      const h = head(), b = bal()
+      if (!h || !b) continue
+      const g = h.getBoundingClientRect().left - b.getBoundingClientRect().right
+      lo = Math.min(lo, g); hi = Math.max(hi, g); n++
+    }
+    const w = document.querySelector('.mx-wrap') as HTMLElement
+    /* December's first day cannot reach the edge: the grid has no room left to its right, and the scroll stops at its end */
+    const atEnd = w.scrollLeft >= w.scrollWidth - w.clientWidth - 1
+    return { lo, hi, n, atEnd, months: document.querySelectorAll('.mx-wrap [data-testid^="head-"][data-testid$="-01"]').length }
+  }, [iso, ms] as const)
+}
+type Gaps = Awaited<ReturnType<typeof edgeGaps>>
+async function monthTourWithClicks(page: Page) {
+  const seen: Array<{ mon: string; landed: Gaps; after: Gaps }> = []
+  const tour: Array<[string, string, number]> = [['SEP', '2026-09-01', 700], ['MAR', '2026-03-01', 700], ['DEC', '2026-12-01', 700], ['SEP', '2026-09-01', 4000]]
+  for (const [mon, iso, span] of tour) {
+    await page.locator(`[data-testid="month-${mon}"]`).click()
+    await page.locator(`.mx-wrap [data-testid="head-${iso}"]`).waitFor({ state: 'attached' })
+    const landed = await edgeGaps(page, iso, 120)
+    /* the unrelated click: a day cell well inside the view, pressed where it stands (no scroll into view first) */
+    const cell = (await page.locator(`[data-testid="cell-slipway-${iso.slice(0, 8)}05"]`).boundingBox())!
+    await page.mouse.click(cell.x + cell.width / 2, cell.y + cell.height / 2)
+    const after = await edgeGaps(page, iso, span)
+    seen.push({ mon, landed, after })
+    /* the window the click opened is closed by a click on its backdrop, as a person would — another click that is not
+       a scroll */
+    const scrim = page.locator('[data-testid="sheet-scrim"]')
+    if (await scrim.count()) {
+      const s = (await scrim.boundingBox())!
+      await page.mouse.click(s.x + 8, s.y + s.height - 8)
+      await expect(scrim).toHaveCount(0)
+    }
+  }
+  return seen
+}
+function expectOnEdge(seen: Array<{ mon: string; landed: Gaps; after: Gaps }>) {
+  const f = (g: Gaps) => `${g.lo.toFixed(3)}..${g.hi.toFixed(3)} (${g.n} frames, ${g.months} months drawn${g.atEnd ? ', at the scroll\'s end' : ''})`
+  const all = seen.map(s => `${s.mon}: landed ${f(s.landed)}, after the click ${f(s.after)}`).join(' | ')
+  for (const { landed, after } of seen) {
+    for (const g of [landed, after]) {
+      expect(g.n, `frames measured — ${all}`).toBeGreaterThan(0)
+      if (g.atEnd) { expect(g.hi - g.lo, `held still at the scroll's end — ${all}`).toBeLessThanOrEqual(0.02); continue }
+      expect(g.lo, `never under the frozen columns — ${all}`).toBeGreaterThanOrEqual(-0.02)
+      expect(g.hi, `never more than a pixel clear — ${all}`).toBeLessThanOrEqual(1.02)
+    }
+  }
+}
+test('a click on a day cell during the fill never lets a jumped day drift under the frozen columns (1536 wide)', async ({ page }) => {
+  test.skip(isPhone(), 'the whole-year fill and the landed day held through it are the desktop\'s; a phone\'s flick is pinned in reanchor.test.ts')
+  await page.setViewportSize({ width: 1536, height: 864 })
+  expectOnEdge(await monthTourWithClicks(page))
+})
+/* …and the phone left as it was: there any touch ends a jump's landing, so a flick soon after a month button keeps the
+   person's scroll — the redraws that follow never pull the jumped day back onto the edge under his finger. A real finger
+   (the browser's own touch input, so the grid really scrolls), 100, 400 and 1,000ms after the jump. It pins what he
+   feels, not which listener ends the landing: the touch ends it, and the flick's own scroll would too (leftTheLanding)
+   — taking the touch's away still passes here; reanchor.test.ts holds the rule itself. */
+test('a phone flick soon after a month button keeps its scroll — the jumped day is not pulled back to the edge', async ({ page }) => {
+  test.skip(!isPhone(), 'a touch screen\'s flick')
+  const cdp = await page.context().newCDPSession(page)
+  for (const wait of [100, 400, 1000]) {
+    await page.locator('[data-testid="month-MAR"]').click()
+    await gridAtRest(page, '2026-03-01')
+    await page.locator('[data-testid="month-SEP"]').click()
+    await page.locator('.mx-wrap [data-testid="head-2026-09-01"]').waitFor({ state: 'attached' })
+    await page.waitForTimeout(wait)
+    const cell = (await page.locator('[data-testid="cell-slipway-2026-09-05"]').boundingBox())!
+    const y = Math.round(cell.y + cell.height / 2), x0 = Math.round(cell.x + cell.width / 2) + 120
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x0, y, id: 1 }] })
+    for (let i = 1; i <= 8; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x0 - 20 * i, y, id: 1 }] }); await page.waitForTimeout(16) }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    await gridAtRest(page, '2026-09-01')
+    const gap = await page.evaluate(() => {
+      const h = document.querySelector('.mx-wrap [data-testid="head-2026-09-01"]')!.getBoundingClientRect().left
+      return h - document.querySelector('.mx-wrap .mxhead th.bal')!.getBoundingClientRect().right
+    })
+    /* the finger carried the year 160px on: 1 September went under the frozen columns with it, and stays there */
+    expect(gap, `1 Sep after a flick ${wait}ms after the jump`).toBeLessThan(-60)
+  }
+})
+test('…and on a screen scaled to 125%, as his PC is (fractional pixels)', async ({ baseURL }) => {
+  test.skip(isPhone(), 'a desktop screen\'s scaling')
+  /* a REAL scaling — what Windows hands the browser — not deviceScaleFactor, which scales only the finished picture
+     (puck-dot.spec.ts); so its own browser, no viewport emulation */
+  const exe = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
+  const browser = await chromium.launch({ headless: true, ...(existsSync(exe) ? { executablePath: exe } : {}), args: ['--force-device-scale-factor=1.25', '--window-size=1536,864'] })
+  try {
+    const page = await (await browser.newContext({ viewport: null, deviceScaleFactor: undefined, baseURL })).newPage()
+    await openLeaveWar(page)
+    expect(await page.evaluate(() => devicePixelRatio)).toBe(1.25)
+    expectOnEdge(await monthTourWithClicks(page))
+  } finally { await browser.close() }
 })
 
 // The strip has to be reachable on a phone without itself becoming a

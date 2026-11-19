@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/lw-monthjump-click -->
+### CHAT 112 — fix read 4's claim 5, the Leave War month landing (19 Nov 26, started by chat 111) — verify before use
+- **Branch** `claude/lw-monthjump-click`, cut from `claude/multi-sqn-b1-107` at `8b6054569`; no pull request into `main` (chat 111 brings it into pull request 806); never merged here.
+- **What changed:** a click or key anywhere on the page no longer ends a month jump's landing — only the person's own sideways scroll does (a scroll away from where the grid's own last write left it, a sideways wheel over the grid, its scroll bars; a phone's touch as before); and the landing rounds down on the screen's own dots, so at a 125% screen it no longer sits 0.275px under the frozen column. Files: `leavewar/ui/reanchor.ts`, `Matrix.tsx`, `reanchor.test.ts`, `e2e/leavewar.spec.ts`, `docs/file-map.md`.
+- **Red first:** the two new desktop browser tests (1536 wide; a real 125% scaling) failed 6 of 6 on the old grid (the first day 0.6px under, or 1.3px clear, after the click) and pass on the fix. A phone flick test pins the phone's side (it passes with the touch clearing removed too — the flick's own scroll ends the landing; the unit tests hold the rule).
+- **State:** reads and walk in progress — see the lines below as they are written.
+<!-- /now -->
+
 <!-- now:claude/multi-sqn-b1-107 -->
 ### THE NIGHT OF 18–19 NOV 26 (chat 109, /overnight 12 low) — the open security faults, their FULL check, the drawings
 - After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time, read from the clock (`date`).

@@ -57,7 +57,7 @@ import { keyCount, setGridGuard, useGuardOnClose, WINDOW_PRESS } from './gridgua
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
 import { warInputs, type WarInput } from '../absences'
 import { ReorderIcon } from '../../ui/icons'
-import { reanchorMode } from './reanchor'
+import { landingScroll, leftTheLanding, reanchorMode } from './reanchor'
 import './matrix.css'
 
 /** the year of a 'yyyy-mm-dd' date, as the grid's corner writes it (D1561) */
@@ -1075,9 +1075,15 @@ export function Matrix() {
   // machine, which measured mid-fill. Rounding the scroll DOWN instead puts the day 0–1px clear of the edge, every time;
   // and an anchor that was such a landing is put back the same way (`edge` in anchorNow), so nothing accumulates.
   // A no-op when already there (no write, so no scroll event and no loop). The 0.01 absorbs float noise in the sum.
+  //   ON THE SCREEN'S OWN DOTS (fix read 4's claim 5, 19 Nov 26): "whole pixels" is 100%'s case — at his PC's 125% the
+  // scroll moves in 0.8px dots and rounds a write to the nearest one, so the whole-pixel floor still left the day 0.275px
+  // under; landingScroll floors in dots (reanchor.ts). Where the write came back is kept (ownLeftRef), so the scroll it
+  // raises is known for the grid's own, never the person's (onWrapScroll — the "landed" mark).
   const landOnEdge = (wrap: HTMLElement, cell: HTMLElement) => {
-    const want = Math.floor(wrap.scrollLeft + cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap) + 0.01)
-    if (want !== wrap.scrollLeft) wrap.scrollLeft = want
+    const dpr = window.devicePixelRatio || 1
+    const want = landingScroll(wrap.scrollLeft + cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap), dpr)
+    if (Math.round(want * dpr) !== Math.round(wrap.scrollLeft * dpr)) wrap.scrollLeft = want
+    ownLeftRef.current = wrap.scrollLeft
   }
 
   const hiddenJumpRef = useRef<string | null>(null)
@@ -1223,15 +1229,33 @@ export function Matrix() {
   // mistaken for the jump once the window has passed.
   const jumpAtRef = useRef(0)
   // WHERE THE FIRST DAY STANDS IS A JUMP'S LANDING (fix read 3 — both readers): set by a jump's landOnEdge, cleared by
-  // the person's own scroll — a wheel, a pointer or a touch going down, a key — so the re-anchor's edge rule
-  // (reanchor.ts) puts back on the frozen edge only a day a jump put there, never one his own scroll left near it.
+  // the person's own scroll, so the re-anchor's edge rule (reanchor.ts) puts back on the frozen edge only a day a jump
+  // put there, never one his own scroll left near it.
+  //   ONLY HIS SCROLL, NEVER ANY PRESS (fix read 4's claim 5, 19 Nov 26): every pointer press and key on the page cleared
+  // it, so a click on a day cell — or Escape closing the window it opened — while the desktop's fill still ran handed the
+  // later redraws back to the old rule, and the jumped day slid under the frozen columns half a pixel a beat
+  // ([LW-MONTHJUMP-SUBPIXEL]). Now: a scroll event that leaves where the grid's own last write put it (`ownLeftRef`,
+  // onWrapScroll — wheels, the scroll bars, arrow keys, Tab bringing a cell into view, a drag at the edge all arrive
+  // there); and, before that event can come, a sideways wheel over the grid and a press on its own scroll bar, so a
+  // redraw in between never puts the day back over his scroll. A phone keeps clearing it at any touch, as it did.
   const landedRef = useRef(false)
+  const ownLeftRef = useRef<number | null>(null)
   useEffect(() => {
-    const mine = () => { landedRef.current = false }
     const opts = { capture: true, passive: true } as const
-    const kinds = ['wheel', 'pointerdown', 'touchstart', 'keydown'] as const
-    kinds.forEach(k => document.addEventListener(k, mine, opts))
-    return () => kinds.forEach(k => document.removeEventListener(k, mine, opts))
+    const touch = () => { landedRef.current = false }
+    const wheel = (e: WheelEvent) => {
+      const wrap = wrapRef.current
+      if (wrap && e.target instanceof Node && wrap.contains(e.target) && (e.deltaX !== 0 || e.shiftKey)) landedRef.current = false
+    }
+    const press = (e: PointerEvent) => { if (e.target === wrapRef.current) landedRef.current = false }
+    document.addEventListener('touchstart', touch, opts)
+    document.addEventListener('wheel', wheel, opts)
+    document.addEventListener('pointerdown', press, opts)
+    return () => {
+      document.removeEventListener('touchstart', touch, opts)
+      document.removeEventListener('wheel', wheel, opts)
+      document.removeEventListener('pointerdown', press, opts)
+    }
   }, [])
 
   // The grid ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
@@ -2405,6 +2429,7 @@ export function Matrix() {
     if (hbarWantRef.current != null && Math.abs(h.scrollLeft - hbarWantRef.current) <= 1) { hbarWantRef.current = null; return }
     hbarWantRef.current = null
     hbarUserTsRef.current = Date.now()
+    landedRef.current = false   // his drag of the grid's own scroll bar leaves a jump's landing (fix read 4's claim 5)
     const hMax = h.scrollWidth - h.clientWidth
     const wMax = wrap.scrollWidth - wrap.clientWidth
     wrap.scrollLeft = hMax > 0 ? Math.round((h.scrollLeft / hMax) * wMax) : 0
@@ -2868,6 +2893,9 @@ export function Matrix() {
   const scrollSpeedRef = useRef({ v: 0, t: 0, sl: 0 })
   const onWrapScroll = () => {
     const now = Date.now()
+    /* the person's scroll leaves a jump's landing (the "landed" mark above — fix read 4's claim 5): a scroll the grid's
+       own write raised stands where that write left it */
+    if (landedRef.current && wrapRef.current && leftTheLanding(wrapRef.current.scrollLeft, ownLeftRef.current)) landedRef.current = false
     /* THE PINCH'S OWN SCROLL IS NOT A FLING ([LW-PHONE-PINCH-ZOOM], the walk of 23 Oct 26): at the lift the pinch scrolls
        the year — often thousands of pixels, the zoom having moved every column — to put the day under the fingers back
        under them. Counted as a scroll in motion, it let the fill draw the month left of the view "mid-fling" over a
@@ -3259,7 +3287,7 @@ export function Matrix() {
     if (mode === 'skip') return
     if (mode === 'edge') { landOnEdge(wrap, cell); return }
     const shift = cell.getBoundingClientRect().left - a.left
-    if (Math.abs(shift) > 1) wrap.scrollLeft += shift
+    if (Math.abs(shift) > 1) { wrap.scrollLeft += shift; ownLeftRef.current = wrap.scrollLeft }
   }, [visWindow, colWin?.lo, colWin?.hi])
   /* the row set this render drew, for the measure to compare with (visSeqRef above) — the same test the rows are drawn by */
   useLayoutEffect(() => {
