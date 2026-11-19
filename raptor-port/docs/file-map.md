@@ -1391,7 +1391,10 @@ account row its step recorded), `src/state/units.ts` (`addUnit` dates its first 
 `src/state/perms.ts` (the holiday-line skip only for a line as `noticeHoliday` writes it: no input, no mark),
 `src/state/multi-sqn-job2-bell.test.ts` and `src/state/units-sqn-fixread2.test.ts` (their holiday lines now carry no input).
 Fault B — `src/state/notices.ts` (`noticeLeftBell`: a line dated ahead is read as written before every move, so only a
-move retires it, by the one rule).
+move retires it, by the one rule). Fault W — `src/state/sched-commit.ts` (`commitInputsWith` takes the bell's
+before-image again after the resync, so an input written outside every command is told by nobody; `tellBegin(rebase)`),
+`src/state/perms.ts` (`inputLineUnlike`: the pass's own word vouches only for a line about an input the command
+changes), `docs/data-model.md` §11 (the Notice row: W, and N's and B's lines with it).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

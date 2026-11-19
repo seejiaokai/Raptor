@@ -55,7 +55,7 @@ import { PLANPUCKS, DAYRMK } from './plan'
 import { NOTICES, noticePass, replacedBidsOf, APP_ACTS, notePassMade } from './notices'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
-import { deriveActor, isCommitting, activeEnvelope } from '../command'
+import { deriveActor, isCommitting, isInReducer, activeEnvelope } from '../command'
 import { rederive, daysNamed } from './holderbase'
 import { commitAs } from '../command/commit'
 import { systemActor } from '../command/actor'
@@ -472,12 +472,16 @@ const tells = (env: { origin: string; type: string }): boolean =>
    he is given an input of his own, then it is saved) had moved the baseline before any end ran, so the first end saw
    the cut already made and the two people left in the shared leave were told nothing — found by the older tests
    re-expressed, 12 Oct 26. */
-function tellBegin(): void {
+function tellBegin(rebase = false): void {
   const env = activeEnvelope()
-  if (!env || !tells(env) || TOLD.has(env)) return
+  if (!env || !tells(env)) return
+  const had = TOLD.get(env)
+  /* (rebase: an input command that starts a command of its own takes the image again once the resync has taken up what
+     was written outside every command — fix read 8, fault W, commitInputsWith below; never once a pass has told) */
+  if (had && !(rebase && !had.made.size)) return
   const before = new Map<string, any>()
   for (const r of schedRecords().values()) if (r.collection === 'inputs') before.set(r.id, r.value)
-  TOLD.set(env, { before, made: new Set() })
+  TOLD.set(env, { before, made: had ? had.made : new Set() })
 }
 function tellPass(): void {
   const env = activeEnvelope()
@@ -645,6 +649,9 @@ export function commitInputsProjection<T>(type: string, fn: () => T): T {
    set atomically. Returns the CommitResult so the wrapper can map a refusal (a
    CmdRefused → ok:false) to false, rather than reading a value the throw skipped. */
 export function commitInputsWith(stores: EnlistableStore[], type: string, fn: () => void): CommitResult {
+  /* raised inside a running command's reducer, this joins it as a child: the outer command's image, taken when it
+     began, already holds every change it has made — a child never takes it again */
+  const joins = isInReducer()
   const cmd: Command = {
     type, scope: inputsScope(),
     apply: (txn) => {
@@ -654,8 +661,15 @@ export function commitInputsWith(stores: EnlistableStore[], type: string, fn: ()
       // reason to exist). A no-op in the normal case (baseline === live between
       // commands); it makes a protected-week refusal's phase-6 rollback restore the
       // true pre-batch state instead of a stale baseline that drops the bare row.
-      tellBegin()                                    // the inputs as last committed — before the resync takes up anything since
+      /* the bell's before-image is taken again AFTER the resync (fix read 8, fault W — the security read's SEC8-5): the
+         whole-world guard captures the scheduler store before this reducer runs (command/commit.ts), and its image,
+         the lagging baseline, still lacked an input written outside every command since the last one — so the pass
+         set that write against the list and told it as THIS command's change, to the people in it and its filer, in
+         the actor's name, though no change of it rides this command's envelope. The resync takes that write up as the
+         starting point, so the pass tells only what this command itself does, a further change to the same input
+         included. A child joining a running command keeps the outer command's image (`joins`). */
       resyncSchedBaseline()
+      tellBegin(!joins)
       txn.enlist(schedStore); for (const s of stores) txn.enlist(s); fn(); applyEnd()
     },
   }

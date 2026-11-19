@@ -1803,12 +1803,16 @@ squadron are judged by whose they are:
   leave a moved filer's bell (fix read 6, fault C, 19 Nov 26; a restore's verified replay puts back the image it took).
   The same holds for a line to an admin's own man (fix read 7, fault M, 19 Nov 26: SEC7-1, Astra's A1): a line naming an
   input is put only by a command that changes that input, carrying the mark the pass would, or is one the pass itself
-  wrote in that command (`state/notices.ts passMade` — the pass's before-image is the inputs as last committed, so it may
-  tell of a bare write the command took up); and a line already written is never rewritten — its reader, input, time and
-  mark stay (`state/perms.ts lineRewritten`, `inputLineUnlike`; a restore's verified replay puts back its own image).
-  A new line, from any role, carries the time of its change, within five minutes of the clock, but for a restore's
-  verified replay (fix read 7, fault T: SEC7-2 — a line dated ahead never left a moved man's bell); one held dated
-  further ahead counts as gone from his bell on his move (`state/perms.ts lineNotNow`, `state/notices.ts noticeLeftBell`).
+  wrote in that command (`state/notices.ts passMade`) — and then only where the command changes that input: an input
+  written outside every command is taken up as the command's starting point and told by nobody (fix read 8, fault W,
+  19 Nov 26: SEC8-5 — `state/sched-commit.ts commitInputsWith` takes the pass's before-image after the resync); and a
+  line already written is never rewritten — its reader, input, time and mark stay (`state/perms.ts lineRewritten`,
+  `inputLineUnlike`; a restore's verified replay puts back its own image).
+  A new line, from any role, carries the time of its change, within five minutes of the clock and never on a later day
+  than today (fix read 8, fault N: SEC8-1), but for a restore's verified replay (fix read 7, fault T: SEC7-2 — a line
+  dated ahead never left a moved man's bell); one held dated further ahead is read as written before every move, so it
+  leaves a moved man's bell as his old squadron's lines do, and stays on the bell of a man who never moved (fix read 8,
+  fault B) (`state/perms.ts lineNotNow`, `state/notices.ts noticeLeftBell`).
   At the database step the server sets the time.
   An `AccessRequest`
   names no squadron yet (Request access asking the squadron, D2111, is not built), so it is not judged by one.

@@ -255,3 +255,38 @@ describe('fault B — a line dated ahead stays on the bell of a man who never mo
   })
 })
 
+describe('fault W — a bare input write the resync takes up is told by nobody, and the registry vouches only for a changed input', () => {
+  /* Ranger (142 member) files a Training for Ace; Hunter, outside every command, puts Ranger in it in Ace's place; then
+     Hunter saves an unrelated leave of his own */
+  const aceTraining = () => { signInAs('us', 'us'); expect(writeInputsBatch(() => { INPUTS.push({ person: 'dj', date: 'Jul 25', yr: 2026, s: '09:00', e: '10:00', type: 'Training', remarks: 'for Ace', by: 'bane', at: Date.now(), iid: IID, ord: 99981 } as any) })).toBe(true) }
+  const ownLeave = () => expect(writeInputsBatch(() => { INPUTS.push({ person: 'prowler', date: 'Jul 28', yr: 2026, allday: true, type: 'LL', remarks: 'own', by: 'prowler', at: Date.now(), iid: 'ipd-own', ord: 99982 } as any) })).toBe(true)
+  it('(SEC8-5) the unrelated save commits no line about Ace’s input', () => {
+    aceTraining(); signInAs('ad2', 'a2')
+    const seen: any[] = []; const off = onCommit((e: any) => { seen.push(e) })
+    try {
+      ;(theInput() as any).person = 'bane'                                     // the bare write, outside every command
+      ownLeave()
+    } finally { off() }
+    const all = seen.flatMap(e => e.changes)
+    const line = all.find((c: any) => c.collection === 'notices' && c.after?.iid === IID)
+    const inputCh = all.some((c: any) => c.collection === 'inputs' && c.id === IID)
+    expect(!!line && !inputCh, 'a line about an input change no envelope carries').toBe(false)
+    /* (Ace's line from Ranger's own filing stands — it is Hunter's name that must not be on one) */
+    expect(NOTICES.some(n => n.iid === IID && n.by === 'prowler' && (n.to === 'bane' || n.to === 'dj')), 'Ranger and Ace told nothing in Hunter’s name').toBe(false)
+  })
+  it('(SEC8-5, the gate) a line the pass made naming an input the command does not change is refused', () => {
+    hunterLine()
+    const n = { id: 'nfr8-w', to: 'prowler', by: 'casper', at: Date.now(), iid: 'ipd-nowhere', name: 'LL', day: '2026-07-25', what: [{ k: 'in' }] }
+    const e = asOutlaw([put(n)])
+    notePassMade(e, new Set([n.id]))
+    expect(ownershipViolation(e) ?? 'allowed').toMatch(/not as the pass writes it/)
+  })
+  it('(control) an honest change tells as before; one changing the input a bare write touched tells of its own change', () => {
+    aceTraining(); signInAs('ad2', 'a2')
+    ;(theInput() as any).remarks = 'bare words'
+    rmk('Hunter words')
+    const l = NOTICES.find(n => n.iid === IID && n.to === 'dj' && n.by === 'prowler')
+    expect(l, 'Ace told of the remark the command changed').toBeDefined()
+    expect(l!.what).toEqual([{ k: 'rmk' }])
+  })
+})

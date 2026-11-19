@@ -1959,8 +1959,12 @@ function inputLineUnlike(env: CommitEnvelope, c: Change, changed: ReadonlySet<st
   const n: any = c.after
   if (c.op !== 'put' || !n || typeof n !== 'object') return false
   if (replayed && replayed(c)) return false
-  if (passMade(env)?.has(String(n.id))) return false
   const iid = String(n.iid ?? '')
+  /* the pass's own word vouches only for a line about an input this command changes (fix read 8, fault W — the security
+     read's SEC8-5): the pass compares the inputs before the command with the list as it stands, so an input written
+     outside every command was told by the next one to run, as that command's change, with no change of it in the
+     envelope. A line about an input the command does not change is no line the pass owes, whoever says it wrote it. */
+  if (passMade(env)?.has(String(n.id)) && (!iid || changed.has(iid))) return false
   return !!iid && !(changed.has(iid) && filerMarkOk(env, c, n))
 }
 /* a line made wholly of holiday parts — the only kind kept crossing (one holiday part beside another part is no holiday
