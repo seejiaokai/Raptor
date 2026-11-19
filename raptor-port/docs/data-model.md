@@ -1783,7 +1783,9 @@ squadron are judged by whose they are:
   job 2, 19 Nov 26: SEC-1), need an admin of that person's squadron; the holiday line, which reaches every
   squadron at the place (D2184 R32), crosses until his D2195 (holidays per own squadron) is built — a line of holiday parts
   only; so does the telling of an input the same changeset changed, but only to someone that change tells — a person named
-  in the input before or after, or its filer — the input itself judged by its people's squadrons; a member's notice the
+  in the input before or after, or its filer while he is still told of it — in it, or still in the squadron of a man named
+  in it or an admin of it (a master everywhere), his D2223, 19 Nov 26: a filer since moved away is no longer told,
+  `state/notices.ts filerTold`, the pass's own test — the input itself judged by its people's squadrons; a member's notice the
   same (job 2, 19 Nov 26: Astra 6, SEC-2, SEC-3). An `AccessRequest`
   names no squadron yet (Request access asking the squadron, D2111, is not built), so it is not judged by one.
   Nothing else crosses (his D2218, 19 Nov 26 — fix read 3's A2 exception for a posting taken back is gone): a line

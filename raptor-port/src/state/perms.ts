@@ -42,7 +42,7 @@ import {
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim } from './notices'
+import { noticeAboutHim, filerTold } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -1842,15 +1842,19 @@ function toldBy(env: CommitEnvelope, iid: unknown): Set<string> | null {
   const id = String(iid ?? '')
   if (!id) return null
   let out: Set<string> | null = null
+  const imgs: any[] = []
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || String(c.id) !== id) continue
     out ??= new Set<string>()
     for (const r of [c.before as any, c.after as any]) {
       if (!r || typeof r !== 'object') continue
+      imgs.push(r)
       for (const e of namedOf(r)) out.add(String((e as any).p))
-      if (r.by != null) out.add(String(r.by))
     }
   }
+  /* its filer only while he is still told of it (his D2223 — state/notices.ts filerTold, the pass's own test): a filer
+     since moved away from the men it names is no longer told, so a line to him is no telling of this change */
+  for (const r of imgs) if (r.by != null && filerTold(String(r.by), ...imgs)) out!.add(String(r.by))
   return out
 }
 /* a line made wholly of holiday parts — the only kind kept crossing (one holiday part beside another part is no holiday

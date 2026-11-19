@@ -13,8 +13,8 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
-import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
-import { accountsLoad, signIn, sessionFor } from '../state/accounts'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
+import { accountsLoad, signIn, sessionFor, updateAccount } from '../state/accounts'
 import { getState, initStore as lwInitStore, setPeople, worldUnit, openDates, placeApproved, setCell, setBidState } from './state/store'
 import { ownershipViolation } from '../state/perms'
 import { deriveActor } from '../command/actor'
@@ -219,5 +219,79 @@ describe("D2222 — a line about a moved man's own leave follows him", () => {
     /* …nor a "taken back" line beside a forged delete of his line */
     const env3: any = { ...env2, changes: [{ collection: 'notices', id: l.id, op: 'delete', before: { ...l }, after: null }, env.changes[0]] }
     expect(ownershipViolation(env3)).toMatch(/bell line of another squadron/)
+  })
+})
+
+/* Fix read 5 (the Opus read's 3), by his D2223 (19 Nov 26): "After a move, a bell line about an input stays with a man only
+   where he is named in that input (or it is his own request's line); a moved admin is no longer told about inputs he filed
+   for his old squadron's men — the filer is told only while he is still that man's admin or in the input." The agent's
+   reading: the master stays an admin everywhere, so a master filer is still told. Hunter (142's admin) files LL for Ranger
+   (142) on 15 Jul; Hunter's move to 149 from 16 Jul; 17 Jul Saber changes the leave's remark. */
+describe('D2223 — input lines after a move', () => {
+  const IID = 'ipd-fr5-filer'
+  const fileFor = (who: string, filer: string) => expect(writeInputsBatch(() => { INPUTS.push({ person: who, date: 'Jul 25', yr: 2026, allday: true, type: 'LL', remarks: 'for him', by: filer, at: Date.now(), iid: IID, ord: 99901 } as any) })).toBe(true)
+  const rmk = (words: string) => expect(writeInputsBatch(() => { (INPUTS.find((x: any) => x.iid === IID) as any).remarks = words })).toBe(true)
+  /* a move as state/units.ts setHome saves one for a man with no row of his own: his squadron of today first (a person's
+     first row covers every day before it), then the new one from tomorrow */
+  const move = (pid: string, key: string) => {
+    mem['sqn142_' + HOME_PFX + key + 'a'] = JSON.stringify({ id: key + 'a', pid, unit: 'u142', from: '2026-07-15' })
+    mem['sqn142_' + HOME_PFX + key] = JSON.stringify({ id: key, pid, unit: 'u149', from: '2026-07-16' })
+    unitsLoad()
+  }
+  const moveHunter = () => move('prowler', 'hfr5')
+  const toHunter = () => NOTICES.filter(n => n.to === 'prowler' && n.iid === IID)
+  it('control, no move: Hunter, its filer, is told of Saber’s change', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
+    vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); unitsLoad()
+    signInAs('ad', 'a'); rmk('changed by Saber')
+    expect(toHunter().length).toBe(1)
+  })
+  it('the writer: moved to 149, Hunter is no longer told of a change to the leave he filed for Ranger (142)', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
+    moveHunter()
+    vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); unitsLoad()
+    expect(homeOn('prowler')).toBe('u149')
+    signInAs('ad', 'a'); rmk('changed by Saber')
+    expect(toHunter().length, 'no 142 line about a 142 man to the moved admin').toBe(0)
+    expect(NOTICES.filter(n => n.to === 'bane' && n.iid === IID && n.what[0]?.k === 'rmk').length, 'Ranger, named in it, is told as ever').toBe(1)
+  })
+  it('the gate: a 142 admin’s change may not carry its telling to the filer since moved to 149', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
+    moveHunter()
+    vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); unitsLoad()
+    signInAs('ad', 'a'); expect(updateAccount('acoutlaw', { role: 'admin' })).toBeNull()
+    signInAs('outlaw')
+    const r = INPUTS.find((x: any) => x.iid === IID) as any
+    const env: any = { type: 'inputs.batch', origin: 'user', actor: deriveActor(), changes: [
+      { collection: 'inputs', id: IID, op: 'put', before: { ...r }, after: { ...r, remarks: 'by Outlaw' } },
+      { collection: 'notices', id: 'nfr5g', op: 'put', before: null, after: { id: 'nfr5g', to: 'prowler', by: 'casper', at: Date.now(), iid: IID, name: 'LL', day: '2026-07-25', what: [{ k: 'rmk' }] } }] }
+    expect(ownershipViolation(env) ?? 'allowed').toMatch(/bell line of another squadron/)
+    /* …while the same line to Ranger, named in it, rides as ever */
+    const env2: any = { ...env, changes: [env.changes[0], { ...env.changes[1], after: { ...env.changes[1].after, to: 'bane' } }] }
+    expect(ownershipViolation(env2)).toBeNull()
+  })
+  it('a master filer is still told: Saber files for Ranger, moves to 149, Hunter changes it', () => {
+    signInAs('ad', 'a'); fileFor('bane', 'stiff')
+    move('stiff', 'hfr5s')
+    vi.setSystemTime(new Date(2026, 6, 17, 9, 0, 0)); unitsLoad()
+    expect(homeOn('stiff')).toBe('u149')
+    signInAs('ad2', 'a2'); rmk('changed by Hunter')
+    expect(NOTICES.filter(n => n.to === 'stiff' && n.iid === IID).length).toBe(1)
+  })
+  it('the read rule: Hunter’s old line about Ranger’s input leaves his bell on his move day; one on an input naming him stays', () => {
+    signInAs('ad2', 'a2'); fileFor('bane', 'prowler')
+    signInAs('ad', 'a'); rmk('changed by Saber on the 15th')
+    expect(toHunter().length, 'told before the move').toBe(1)
+    const own = 'ipd-fr5-own'
+    signInAs('ad2', 'a2')
+    expect(writeInputsBatch(() => { INPUTS.push({ person: 'prowler', date: 'Jul 26', yr: 2026, allday: true, type: 'LL', remarks: 'mine', by: 'prowler', at: Date.now(), iid: own, ord: 99902 } as any) })).toBe(true)
+    signInAs('ad', 'a'); expect(writeInputsBatch(() => { (INPUTS.find((x: any) => x.iid === own) as any).remarks = 'Saber' })).toBe(true)
+    expect(NOTICES.filter(n => n.to === 'prowler' && n.iid === own).length).toBe(1)
+    moveHunter()
+    signInAs('ad2', 'a2')
+    expect(noticesFor('prowler').some(n => n.iid === IID), 'still his on the save day').toBe(true)
+    vi.setSystemTime(new Date(2026, 6, 16, 9, 0, 0)); unitsLoad()
+    expect(noticesFor('prowler').some(n => n.iid === IID), 'off his bell from the move day').toBe(false)
+    expect(noticesFor('prowler').some(n => n.iid === own), 'his own leave’s line stays').toBe(true)
   })
 })

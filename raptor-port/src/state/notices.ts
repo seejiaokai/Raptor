@@ -31,10 +31,12 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned } from '../engine/inputs'
+import { INPUTS, odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned } from '../engine/inputs'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
-import { todayIso, homeOn, unitRows } from './units'
+import { todayIso, homeOn, unitRows, levelOfAccount } from './units'
+/* (accounts.ts reaches this module through perms.ts; each side calls the other only at run time, never at load) */
+import { accountOfPid } from './accounts'
 
 export type NoticePart =
   | { k: 'del' }                                   // the input was deleted
@@ -108,6 +110,29 @@ export const NOTICES: Notice[] = []
 
 /* ---- working one out ------------------------------------------------------------------------------------------ */
 const ids = (r: any): string[] => namedOf(r).map((e: any) => String(e.p))
+/** IS AN INPUT'S FILER STILL TOLD OF IT? (his D2223, 19 Nov 26: "after a move, a bell line about an input stays with a man
+ *  only where he is named in that input …; a moved admin is no longer told about inputs he filed for his old squadron's
+ *  men — the filer is told only while he is still that man's admin or in the input.") The pass told a filer of every
+ *  change to what he filed, wherever he had moved — so Hunter, 149's since his move, was still told of each change to a
+ *  leave he had filed for Ranger, 142's. Told when he is named in it (`rs` — the input before and after a change); when
+ *  it names nobody (an ALL AVAIL input — no man whose squadron to ask); and while, for some man named in it, he is still
+ *  in that man's squadron or an admin of it (a master is an admin everywhere, a Plan grant counts). The agent's reading,
+ *  told in the closing report: a member who filed for a squadron-mate and never moved is still told — the ruling speaks of
+ *  "after a move". The pass, the commit gate (state/perms.ts toldBy) and the read rule (noticeAboutHim) ask this one body. */
+export function filerTold(f: string, ...rs: any[]): boolean {
+  const named = new Set<string>()
+  for (const r of rs) if (r) for (const p of ids(r)) named.add(p)
+  if (named.has(f) || !named.size) return true
+  const mine = homeOn(f)
+  const acct = accountOfPid(f)
+  for (const m of named) {
+    const u = homeOn(m)
+    if (!u) continue
+    if (u === mine) return true
+    if (acct && levelOfAccount(acct, u) === 'admin') return true
+  }
+  return false
+}
 const phOf = (r: any): string | null => { const p = placeholderOf(r); return p && p.p != null ? String(p.p) : null }
 /* yyyy-mm-dd of one of an input's own date labels ("Jul 15", with its year) */
 const isoOf = (lbl: any, yr: any): string => {
@@ -249,11 +274,14 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
     }
     const was = ids(b)
     if (!a) {
-      for (const p of new Set([...was, b.by != null ? String(b.by) : ''])) if (p) tell(p, b, [{ k: 'del' }])
+      /* (its filer only while he is still told of it — D2223, filerTold above) */
+      const fb = b.by != null && filerTold(String(b.by), b) ? String(b.by) : ''
+      for (const p of new Set([...was, fb])) if (p) tell(p, b, [{ k: 'del' }])
       continue
     }
     const is = ids(a)
-    const everyone = new Set<string>([...was, ...is, b.by != null ? String(b.by) : '', a.by != null ? String(a.by) : ''])
+    const filer = (r: any): string => (r.by != null && filerTold(String(r.by), b, a) ? String(r.by) : '')
+    const everyone = new Set<string>([...was, ...is, filer(b), filer(a)])
     const wasIn = new Set(was), isIn = new Set(is)
     let shared: NoticePart[] | null = null
     for (const p of everyone) {
@@ -314,7 +342,16 @@ const dayOfAt = (at: number): string => {
  *  his own posting. Not: bidding opened or closed on a war, a holiday's OIL question, another man's posting — his
  *  squadron's business, which he was told as one of its people. */
 export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what'>): boolean {
-  if (n.iid) return true
+  if (n.iid) {
+    /* AN INPUT'S LINE (his D2223: "a bell line about an input stays with a man only where he is named in that input"):
+       his being put in or taken out, or his own bid it replaced, is about him whatever the input says now; otherwise the
+       input as it stands answers — he is named in it, or he is still told of it as its filer (filerTold). An input no
+       longer stored (deleted since) cannot be asked, so its line stays, as every input line did before. */
+    const ws: any[] = n.what || []
+    if (!ws.length || ws.some(x => x && (x.k === 'in' || x.k === 'out' || x.k === 'rbid'))) return true
+    const r = INPUTS.find((x: any) => x && String(x.iid) === String(n.iid))
+    return !r || filerTold(String(n.to), r)
+  }
   const p: any = (n.what || [])[0]
   if (!p) return true
   if (p.k === 'lw') return true
@@ -331,13 +368,15 @@ export function noticeAboutHim(n: Pick<Notice, 'to' | 'iid' | 'what'>): boolean 
  *  write — no command touches another squadron's bell for it, and the change history keeps everything. A move is saved
  *  from tomorrow (state/units.ts setHome), so a line already written is never re-dated into the new squadron. */
 export function noticeLeftBell(n: Pick<Notice, 'to' | 'at' | 'iid' | 'what'>, today: string = todayIso()): boolean {
-  if (noticeAboutHim(n) || !Number.isFinite(n.at)) return false
+  if (!Number.isFinite(n.at)) return false
   const wrote = dayOfAt(n.at)
   if (!(wrote < today)) return false
   const to = String(n.to)
   const was = homeOn(to, wrote)
-  for (const h of unitRows().homes) if (h.pid === to && h.from > wrote && h.from <= today && homeOn(to, h.from) !== was) return true
-  return false
+  let moved = false
+  for (const h of unitRows().homes) if (h.pid === to && h.from > wrote && h.from <= today && homeOn(to, h.from) !== was) { moved = true; break }
+  /* (the move first: it is the cheap question, and asks no input — read for every line each time a bell is drawn) */
+  return moved && !noticeAboutHim(n)
 }
 
 /** IS THIS NOTICE ONE TO SHOW? Every notice about an input is. A holiday's is only while an input on its dates still

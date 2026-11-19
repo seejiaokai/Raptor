@@ -306,12 +306,21 @@ describe("still open 2, his D2194 — an admin's bell lines and read records are
     signInAs('ad', 'a')
     expect(ownershipViolation(env([put('notices', 'n1', line('osp9'))]))).toBeNull()
   })
-  it("…and the telling of an input the same command changed, judged by 7c: Hunter changes a 142 man's input that 149's Osprey filed, Osprey told", () => {
+  /* NARROWED by his D2223 (19 Nov 26): "the filer is told only while he is still that man's admin or in the input" — so a
+     149 member who filed a 142 man's input is no longer told of a change to it (state/notices.ts filerTold, the pass's
+     own test), and a line to him riding that change is judged as any other line: refused. Before D2223 this case pinned
+     that he was told. A master filer is still told — an admin everywhere. */
+  it("…and the telling of an input the same command changed, judged by 7c: only to a filer still told of it (D2223)", () => {
     signInAs('ad2', 'a2')
     const inp = { iid: 'i1', type: 'Training', person: 'bane', people: [{ p: 'bane' }], by: 'osp9', date: 'Jul 13', allday: true }
     const edited = { ...inp, remarks: 'moved' }
     const ch = { op: 'put', collection: 'inputs', id: 'i1', before: inp, after: edited }
-    expect(ownershipViolation(env([ch, put('notices', 'n1', line('osp9', [{ k: 'rmk' }]))]))).toBeNull()
+    expect(ownershipViolation(env([ch, put('notices', 'n1', line('osp9', [{ k: 'rmk' }]))]))).toMatch(/bell line of another squadron's man/)
+    /* the master filed it: still told, wherever his home (he is an admin of every squadron — the move itself is pinned in
+       leavewar/multi-sqn-fixread4-bells.test.ts, D2223) */
+    const byMaster = { ...inp, by: 'stiff' }
+    const ch2 = { op: 'put', collection: 'inputs', id: 'i1', before: byMaster, after: { ...byMaster, remarks: 'moved' } }
+    expect(ownershipViolation(env([ch2, put('notices', 'n1', line('stiff', [{ k: 'rmk' }]))]))).toBeNull()
   })
 })
 
