@@ -25,7 +25,8 @@ describe('the Inputs page date helpers', () => {
   })
   it('fmtDMY is day-month-two-digit-year, reads a today stamp as "now", passes legacy "now" and blanks through', () => {
     expect(fmtDMY('2026-07-06')).toBe('6 Jul 26')
-    expect(fmtDMY('2026-11-20')).toBe('20 Nov 26')
+    /* a fixed past date, never today: '2026-11-20' read as "now" on 20 Nov 26 */
+    expect(fmtDMY('2026-11-18')).toBe('18 Nov 26')
     /* a this-session edit is now stored as today's ISO, not the literal 'now'
        (ARCH-STACK 1b), and the Last-modified column still reads "now" for it */
     expect(fmtDMY(nowStamp())).toBe('now')
@@ -48,7 +49,7 @@ describe('a rendered input row is compact and uniform', () => {
     await act(async () => {
       writeInputs(() => {
         INPUTS.unshift({ person: 'zzt', date: 'Jul 14', allday: false, s: 600, e: 660, type: 'Appointment', remarks: 'timed one-day', mod: '2026-07-06' })
-        INPUTS.unshift({ person: 'zza', date: 'Jul 14', allday: true, type: 'LL', remarks: 'allday one-day', mod: '2026-11-20' })
+        INPUTS.unshift({ person: 'zza', date: 'Jul 14', allday: true, type: 'LL', remarks: 'allday one-day', mod: '2026-11-18' })
         INPUTS.unshift({ person: 'zzs', date: 'Jul 14', endDate: 'Jul 16', allday: true, type: 'OL', remarks: 'span', mod: 'now' })
       })
     })
@@ -82,7 +83,7 @@ describe('a rendered input row is compact and uniform', () => {
     expect(cell(tr, 'Start').textContent).toBe('14 Jul')
     expect(cell(tr, 'End').textContent).toBe('')
     expect(cell(tr, 'End').hasAttribute('data-same')).toBe(true)
-    expect(cell(tr, 'Modified').textContent).toBe('20 Nov 26')
+    expect(cell(tr, 'Modified').textContent).toBe('18 Nov 26')
   })
   it('a span keeps both cells and the "now" stamp passes through', () => {
     const tr = rowOf('span')
