@@ -977,6 +977,7 @@ to it — every account IS one callsign (owner, D166, 25 Sep 26).
 | `createdAt` | datetime | no | when it was made (the platform's `createdon`) — at stage 1, two accounts stored for one person (two admins at once): the older is kept, the other dropped with a logged line, until your unique `personId` refuses the second (30 Sep 26) |
 | `lastSignInAt` | datetime | no | (new) |
 | `master` | bool | no | the master mark (multi-squadron batch 1, step 1 — D2191): an admin of every unit, the only one who makes a `Unit` or another master; changed only by its own command (`account.master`), by a master, never on his own account, one master always left — the server keeps these too. `role` stays the account's level in its HOME unit (`PersonHome`); rights in other units are `UnitGrant` rows |
+| `masterFrom` | date | no | the day the master mark was set (fix read 7, fault P, 19 Nov 26), cleared with it — read only by the bell's move-day test, so a mark set after a man's move never brings back a bell line his move retired (D2218, D2223); never by the permissions; empty on a mark set before it: counts from always |
 
 The displayed name is the person's callsign, read live — a rename moves nothing (the one-identity rule).
 Relationships: 1 `Person`; referenced by every `createdBy`/`updatedBy`.
@@ -1101,6 +1102,7 @@ From today: `settings/grant:<id>`.
 | `userId` | ref User | yes | the account |
 | `unitId` | ref Unit | yes | the other unit; never his home unit |
 | `level` | choice `admin|view` | yes | never "member" of another squadron |
+| `from` | date | no | the day it was given (fix read 7, fault P, 19 Nov 26) — read only by the bell's move-day test, so a right given after a man's move never brings back a bell line his move retired (D2218, D2223); never by the permissions, which count a grant from the moment it is saved; empty on one saved before it: counts from always |
 
 One per account and unit. Given or taken only by an admin OF that unit — an admin grant by its own admins or a master,
 View by its admins.

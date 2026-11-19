@@ -184,7 +184,8 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
   if (had && had.level === level) return no('He already has that')
   return save('grant.set', null, () => {
     const id = had ? had.id : newId('g')
-    put(GRANT_PFX + id, { id, account, unit, level })
+    /* (its day — fault P: notices.ts toldIn counts it only from then, so a line his move retired stays retired) */
+    put(GRANT_PFX + id, { id, account, unit, level, from: todayIso() })
     return id
   })
 }

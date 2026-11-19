@@ -26,7 +26,11 @@ export type UnitLevel = 'admin' | 'member' | 'view'
 export interface Unit { id: string; num: string; kind: 'sqn'; parent?: string }
 export interface Place { id: string; name: string; tz: string }
 export interface UnitPlace { id: string; unit: string; place: string; from: string }
-export interface Grant { id: string; account: string; unit: string; level: GrantLevel }
+/* `from` (fix read 7, fault P — Astra's A2, Fable's 2): the day the grant was given, written by units.ts setGrant. Only a
+   bell line his move retired reads it (state/notices.ts toldIn, on the move's own day): Plan given after the move must
+   not bring that line back. The gate's levelFrom never reads it — a grant counts from the moment it is saved. Absent on
+   a grant saved before it was kept (D56): counts from always. */
+export interface Grant { id: string; account: string; unit: string; level: GrantLevel; from?: string }
 export interface Home { id: string; pid: string; unit: string; from: string }
 export interface UnitRows { units: Unit[]; places: Place[]; unitplaces: UnitPlace[]; grants: Grant[]; homes: Home[] }
 
@@ -87,7 +91,7 @@ export function validUnitPlace(v: any, key?: string): UnitPlace | null {
 export function validGrant(v: any, key?: string): Grant | null {
   if (!v || typeof v !== 'object' || typeof v.id !== 'string' || !GRANT_ID.test(v.id) || (key != null && v.id !== key)) return null
   if (!isStr(v.account) || !isUnitId(v.unit) || (v.level !== 'admin' && v.level !== 'view')) return null
-  return { id: v.id, account: v.account, unit: v.unit, level: v.level }
+  return { id: v.id, account: v.account, unit: v.unit, level: v.level, ...(validIso(v.from) ? { from: String(v.from) } : {}) }
 }
 export function validHome(v: any, key?: string): Home | null {
   if (!v || typeof v !== 'object' || typeof v.id !== 'string' || !HOME_ID.test(v.id) || (key != null && v.id !== key)) return null

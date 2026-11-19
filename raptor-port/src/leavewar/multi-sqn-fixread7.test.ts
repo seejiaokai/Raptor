@@ -14,8 +14,9 @@ import { deriveActor } from '../command/actor'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync, setWarWorldDoor } from './sync'
-import { unitsLoad } from '../state/units'
-import { HOME_PFX } from '../state/units-model'
+import { unitsLoad, setGrant } from '../state/units'
+import { HOME_PFX, GRANT_PFX } from '../state/units-model'
+import { setMaster } from '../state/accounts'
 import { INPUTS } from '../engine/inputs'
 import { NOTICES, noticesFor, type Notice } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
@@ -179,3 +180,39 @@ const hunterMoves = (l: Notice) => {
   homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16']]); on(17)
   expect(shown('prowler', l.id), 'retired by his move').toBe(false)
 }
+
+describe('fault P — a right given after the move never brings a retired line back', () => {
+  for (const read of [false, true]) {
+    it(`(Fable 2, Astra A2) Plan of 142 given on the 18th: the ${read ? 'read' : 'unread'} line stays off`, () => {
+      const l = hunterLine(); if (read) readIt('prowler', l)
+      hunterMoves(l)
+      on(18); signInAs('ad', 'a')
+      expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
+      signInAs('ad2', 'a2')
+      expect(shown('prowler', l.id), 'still off after the Plan grant').toBe(false)
+    })
+    it(`(Fable 2, step 3) made master on the 18th: the ${read ? 'read' : 'unread'} line stays off`, () => {
+      const l = hunterLine(); if (read) readIt('prowler', l)
+      hunterMoves(l)
+      on(18); signInAs('ad', 'a')
+      expect(setMaster('acad2', true).ok).toBe(true)
+      signInAs('ad2', 'a2')
+      expect(shown('prowler', l.id), 'still off after the master mark').toBe(false)
+    })
+  }
+  it('(control) Plan of 142 held before the move keeps the line; so does one stored with no day (D56)', () => {
+    const l = hunterLine()
+    /* a grant row as setGrant writes it, given on the 15th (Hunter's move set after it) */
+    mem['sqn142_' + GRANT_PFX + 'gfr7'] = JSON.stringify({ id: 'gfr7', account: 'acad2', unit: 'u142', level: 'admin', from: '2026-07-15' })
+    homes('prowler', 'hc', [['u142', '2026-07-15'], ['u149', '2026-07-16']]); on(17)
+    expect(shown('prowler', l.id), 'an admin of 142 on his move day: still told').toBe(true)
+    mem['sqn142_' + GRANT_PFX + 'gfr7'] = JSON.stringify({ id: 'gfr7', account: 'acad2', unit: 'u142', level: 'admin' })
+    unitsLoad()
+    expect(shown('prowler', l.id), 'a grant stored before its day was kept counts from always').toBe(true)
+    /* …and the grant setGrant writes carries its day */
+    on(18); signInAs('ad', 'a')
+    mem['sqn142_' + GRANT_PFX + 'gfr7'] = JSON.stringify({ id: 'gfr7', account: 'acad2', unit: 'u142', level: 'view', from: '2026-07-15' }); unitsLoad()
+    expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
+    expect(JSON.parse(mem['sqn142_' + GRANT_PFX + 'gfr7']!).from).toBe('2026-07-18')
+  })
+})

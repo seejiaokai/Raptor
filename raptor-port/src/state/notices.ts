@@ -160,7 +160,19 @@ export function toldIn(f: string, us: readonly string[], iso?: string): boolean 
   if (!us.length) return true
   const mine = homeOn(f, iso)
   const acct = accountOfPid(f)
-  return us.some(u => u === mine || (!!acct && levelOfAccount(acct, u, iso) === 'admin'))
+  return us.some(u => u === mine || (!!acct && adminThen(acct, u, iso)))
+}
+/* AN ADMIN OF IT ON THAT DAY (fix read 7, fault P — Astra's A2, Fable's 2): asked of a past day (noticeLeftBell, a move
+   day), the master mark and an admin grant held TODAY answered it, so Plan of 142 (or the master mark) given to Hunter
+   after his move to 149 brought back, read or unread, the line his move had retired (D2218, D2223). A grant counts from
+   the day it was given (units-model.ts Grant.from), the mark from the day it was set (accounts.ts Account.masterFrom);
+   one stored before either was kept counts from always (D56). Here only — the gate's levelFrom asks today. No day: as
+   today. (His home's admin role needs no date: a man at home in it is told by `mine` above.) */
+function adminThen(acct: { id: string; pid: string; role: string; master?: true; masterFrom?: string }, u: string, iso?: string): boolean {
+  if (iso == null) return levelOfAccount(acct, u) === 'admin'
+  if (acct.master && (!acct.masterFrom || acct.masterFrom <= iso)) return true
+  const g = unitRows().grants.find(x => x.account === acct.id && x.unit === u)
+  return !!g && g.level === 'admin' && (!g.from || g.from <= iso)
 }
 /** THE SQUADRON OF AN INPUT THAT NAMES NOBODY (an ALL AVAIL or ALL one — fix read 6, fault A): its placeholder's filer
  *  first, else the input's own filer, his home on the input's own date (today where it has none). ONE body, asked by the

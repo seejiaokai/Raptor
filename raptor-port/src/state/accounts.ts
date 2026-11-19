@@ -73,6 +73,7 @@ import {
 import { HOOKS } from '../engine/hooks'
 import { putNewHome, levelOfAccount, todayIso, homeOn, units, unitById, unitRows } from './units'
 import type { UnitLevel } from './units-model'
+import { validIso } from './flyplan-model'
 
 export type AccountRole = 'admin' | 'main'
 /* `offBy: 'po'` — the account was SUSPENDED BY A POSTING OUT ([POST-OUT-OUTCOMES], D280 — the overseas outcome suspends
@@ -82,7 +83,13 @@ export type AccountRole = 'admin' | 'main'
    POSITION in its order, (at, lineId), since [DB-READINESS] group A, phase 4.3 (Fable F2-02) — someone given access
    later starts with nothing new; the lines before it are the squadron's past, not news to him (state/changes.ts).
    Absent on the seeded accounts (the demo history starts empty). `createdAt` — see the header. */
-export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true }
+/* `masterFrom` (fix read 7, fault P — Astra's A2, Fable's 2): the day the master mark was set, written by setMaster only.
+   A bell line his move retired asks whether he was still told on that day (state/notices.ts toldIn); a mark given after
+   it must not bring the line back. Absent on a mark set before it was kept (the demo's seeded master — D56): counts from
+   always. It rides with `master` and goes with it. */
+export interface Account { id: string; name: string; role: AccountRole; pid: string; on: boolean; offBy?: 'po'; seenFrom?: LinePos; createdAt?: number; master?: true; masterFrom?: string }
+/* the master mark as a row keeps it — the mark, and its day where it has one */
+const masterOf = (x: { master?: true; masterFrom?: string }) => (x.master ? { master: true as const, ...(x.masterFrom ? { masterFrom: x.masterFrom } : {}) } : {})
 /* `seat` 'FCP' | 'RCP' | 'GND' (never '' on a request made now — the card refuses it; an
    old stored one reads '' and the admin picks at approval); `cat` '' for personnel */
 export interface AccessRequest { id: string; name: string; cs: string; ini: string; seat: string; cat: string; at: number; seenBy: string[] }
@@ -156,7 +163,7 @@ function rowsOf(pfx: string): Map<string, any> {
 /* whether the accounts are stored as rows yet — none means the seeded list, held in memory (see the header) */
 let ACCOUNTS_STORED = false
 /* an account as its row stores it */
-const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid: a.pid, on: a.on, ...(a.offBy ? { offBy: a.offBy } : {}), ...(a.seenFrom ? { seenFrom: a.seenFrom } : {}), ...(a.createdAt != null ? { createdAt: a.createdAt } : {}), ...(a.master ? { master: true as const } : {}) })
+const accountRow = (a: Account) => ({ id: a.id, name: a.name, role: a.role, pid: a.pid, on: a.on, ...(a.offBy ? { offBy: a.offBy } : {}), ...(a.seenFrom ? { seenFrom: a.seenFrom } : {}), ...(a.createdAt != null ? { createdAt: a.createdAt } : {}), ...masterOf(a) })
 /* a request as its row stores it — who has seen it is not on it (reqseen rows) */
 const reqRow = (r: AccessRequest) => ({ id: r.id, name: r.name, cs: r.cs, ini: r.ini, seat: r.seat, cat: r.cat, at: r.at })
 
@@ -184,7 +191,7 @@ export function readAccounts(images: any[], why?: (text: string) => void, person
       ...(x.on === false && x.offBy === 'po' ? { offBy: 'po' as const } : {}),
       ...(isPos(x.seenFrom) ? { seenFrom: { at: +x.seenFrom.at, lineId: x.seenFrom.lineId } } : {}),
       ...(Number.isFinite(x.createdAt) ? { createdAt: +x.createdAt } : {}),
-      ...(x.master === true ? { master: true as const } : {}),
+      ...(x.master === true ? masterOf({ master: true, ...(validIso(x.masterFrom) ? { masterFrom: String(x.masterFrom) } : {}) }) : {}),
     })
   }
   return out
@@ -484,7 +491,8 @@ export function setMaster(id: string, on: boolean): { ok: boolean; message?: str
   if (ownAccount(a)) return { ok: false, message: "You can't change your own account — ask another master admin" }
   if (!!a.master === on) return { ok: false, message: on ? 'He is a master admin already' : 'He is not a master admin' }
   const next: Account = { ...a }
-  if (on) next.master = true; else delete next.master
+  /* (its day with it — fault P: a line his move retired stays retired however the mark comes later) */
+  if (on) { next.master = true; next.masterFrom = todayIso() } else { delete next.master; delete next.masterFrom }
   const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? next : x))
   if (!list.some(x => x.master)) return { ok: false, message: 'At least one master admin must be left' }
   const bad = commitIntent('account.master', null, () => writeAccounts(list))
@@ -598,7 +606,7 @@ function postingLock(list: readonly any[]): 'app' | { unit: string; date: string
 export function enableAfterPosting(pid: string): boolean {
   const a = accountOfPid(pid)
   if (!a || a.on || a.offBy !== 'po') return false
-  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}), ...(x.master ? { master: true as const } : {}) } : x)))
+  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}), ...masterOf(x) } : x)))
   return true
 }
 /* [ONE-DOOR] (owner D310, D322, 27 Sep 26): ARCHIVE suspends his sign-in — as a hand suspension (no mark: Restore
@@ -608,7 +616,7 @@ export function enableAfterPosting(pid: string): boolean {
 export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
   const a = accountOfPid(pid)
   if (!a || !a.on) return 'none'
-  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: false, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}), ...(x.master ? { master: true as const } : {}) } : x))
+  const list = ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: false, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}), ...masterOf(x) } : x))
   if (lockProblem(list)) return 'lock'
   writeAccounts(list)
   return 'done'
@@ -616,7 +624,7 @@ export function suspendForArchive(pid: string): 'done' | 'none' | 'lock' {
 export function enableForRestore(pid: string): boolean {
   const a = accountOfPid(pid)
   if (!a || a.on) return false
-  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}), ...(x.master ? { master: true as const } : {}) } : x)))
+  writeAccounts(ACCOUNTS_LIST.map(x => (x.id === a.id ? { id: x.id, name: x.name, role: x.role, pid: x.pid, on: true, ...(x.seenFrom ? { seenFrom: x.seenFrom } : {}), ...(x.createdAt != null ? { createdAt: x.createdAt } : {}), ...masterOf(x) } : x)))
   return true
 }
 /* HIS WELCOME NOTE SEEN ([ONE-DOOR], D305): the signed-in man clears his OWN `back` — the `person.backSeen` command,
