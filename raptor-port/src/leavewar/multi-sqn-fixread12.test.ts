@@ -21,7 +21,7 @@ import { commit, onCommit } from '../command'
 import { noticeSeenLoad } from '../state/noticeseen'
 import { installGlobalUndo } from '../state/undo-wire'
 import { _resetTimeline } from '../undo/timeline'
-import { commitSettingsIntent, peopleStore, finishPeopleWrite } from '../state/people-settings-commit'
+import { commitSettingsIntent, peopleStore, finishPeopleWrite, settingsStore as settingsCmdStore } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncBeforeEnlist } from '../state/sched-commit'
 import { applyDelete, deletePerson } from '../state/person-delete'
 
@@ -185,6 +185,71 @@ describe('fault A — the posting pass\'s Delete of a man whose sign-in holds a 
     expect(r.ok, 'refused').toBe(false)
     expect({ n: ACCOUNTS_LIST.length, osprey: !!ACCOUNTS_LIST.find(a => a.pid === 'osp9'), kestrel: !!ACCOUNTS_LIST.find(a => a.pid === 'kes9') })
       .toEqual({ n: n0, osprey: true, kestrel: true })
+  })
+})
+
+describe('fault B — a command labelled "person.delete" that deletes nobody (O12-1, F12-2, SEC12-1)', () => {
+  /* a 149 man with a sign-in Kestrel made, given Plan of 142 by Saber */
+  const planned = () => {
+    const p1 = free('u149', ['osp9'])[0]!
+    signInAs('ad9', 'a9')
+    expect(addAccount('spare1@mail', p1, 'main')).toBeNull()
+    const id = accountOfPid(p1)!.id
+    signInAs('ad', 'a'); expect(setGrant(id, 'u142', 'admin', p1).ok).toBe(true)
+    on(18); signInAs('ad9', 'a9')
+    return { p1, id }
+  }
+  const stands = (p1: string, id: string) => { accountsLoad(); unitsLoad(); return { manStays: !(PEOPLE as any)[p1].deleted, signIn: accountOfPid(p1)?.id ?? null, planOf142: grantsOf(id).length } }
+  it('the label alone, no person deleted: refused, the right stands', () => {
+    const { p1, id } = planned()
+    expect(removeGrant(id, 'u142').ok, '(control) the bare removal is refused').toBe(false)
+    const g = grantsOf(id)[0]!
+    const r: any = commitSettingsIntent('person.delete', null, () => { settingsStore.set('grant:' + g.id, null); settingsStore.set('account:' + id, null) })
+    expect(r.ok).toBe(false)
+    expect(stands(p1, id)).toEqual({ manStays: true, signIn: id, planOf142: 1 })
+  })
+  it('the label alone over the account door (dropAccountOfPid): refused', () => {
+    const { p1, id } = planned()
+    const r: any = commitSettingsIntent('person.delete', null, () => { dropAccountOfPid(p1) })
+    expect(r.ok).toBe(false)
+    expect(stands(p1, id)).toEqual({ manStays: true, signIn: id, planOf142: 1 })
+  })
+  it('the label, his sign-in taken away and a new one for him under a new id in the one command: refused', () => {
+    const { p1, id } = planned()
+    const g = grantsOf(id)[0]!
+    const nid = id + 'x'
+    const r: any = commitSettingsIntent('person.delete', null, () => {
+      settingsStore.set('grant:' + g.id, null); settingsStore.set('account:' + id, null)
+      settingsStore.set('account:' + nid, { id: nid, name: 'spare1@mail', role: 'main', pid: p1, on: true })
+    })
+    expect(r.ok).toBe(false)
+    expect(stands(p1, id)).toEqual({ manStays: true, signIn: id, planOf142: 1 })
+  })
+  const realCommand = (body: () => void): any => commit({
+    type: 'person.delete', scope: { module: 'people' }, meta: null,
+    apply: (txn: any) => { resyncBeforeEnlist(); txn.enlist(peopleStore); txn.enlist(settingsCmdStore); txn.enlist(schedStore); body(); finishPeopleWrite(); schedApplyEnd() },
+  } as any)
+  it('ANOTHER man\'s real delete beside this man\'s sign-in and right taken away: refused', () => {
+    const { p1, id } = planned()
+    const p2 = free('u149', ['osp9', p1])[0]!
+    const r = realCommand(() => { applyDelete(p2, '2026-07-18'); dropAccountOfPid(p1) })
+    expect(r.ok).toBe(false)
+    expect(stands(p1, id)).toEqual({ manStays: true, signIn: id, planOf142: 1 })
+    expect(!!(PEOPLE as any)[p2].deleted, 'the whole command refused').toBe(false)
+  })
+  it('his real delete, with a new sign-in for him under a new id in the one command: refused', () => {
+    const { p1, id } = planned()
+    const nid = id + 'x'
+    const r = realCommand(() => { applyDelete(p1, '2026-07-18'); settingsStore.set('account:' + nid, { id: nid, name: 'spare1b@mail', role: 'main', pid: p1, on: true }) })
+    expect(r.ok).toBe(false)
+    expect(stands(p1, id)).toEqual({ manStays: true, signIn: id, planOf142: 1 })
+  })
+  it('(control) the real Delete on Admin → Users: allowed, the right gone with him', () => {
+    const { p1, id } = planned()
+    expect(deletePerson(p1)).toBeNull()
+    accountsLoad(); unitsLoad()
+    expect({ deleted: !!(PEOPLE as any)[p1].deleted, signIn: !!ACCOUNTS_LIST.find(a => a.id === id), planOf142: grantsOf(id).length })
+      .toEqual({ deleted: true, signIn: false, planOf142: 0 })
   })
 })
 

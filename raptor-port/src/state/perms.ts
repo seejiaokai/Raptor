@@ -1934,9 +1934,10 @@ function unitRowViolation(env: CommitEnvelope): string | null {
          away (section 8 judges the delete itself: an admin of the man's own squadron); a bare removal, or one beside an
          account row kept, is still an admin's of that squadron. */
       /* (fix read 12, fault A — Astra 1): a posting's Delete run at once (lw.postout, the pass joining that command) is the
-         same delete — so the command's own records decide, personDeletedHere */
+         same delete — so the command's own records decide, personDeletedHere; (fault B — O12-1, F12-2, SEC12-1) and only
+         they: the label "person.delete" on a command that deleted nobody stripped 142's Plan from a 149 man who stays */
       if (id.startsWith(GRANT_PFX) && b && n == null && accountGoesHere(env, String(b.account))
-        && (env.type === 'person.delete' || personDeletedHere(env, accountPidBefore(env, String(b.account)), adminOf, before))) continue
+        && personDeletedHere(env, accountPidBefore(env, String(b.account)), adminOf, before)) continue
       for (const img of [b, n]) if (img && !adminOf(String(img.unit))) return `not an admin of ${img.unit} (${id})`
     } else if (id.startsWith(UNIT_PFX)) {
       if (!master) return `only a master admin makes or changes a unit (${id})`
