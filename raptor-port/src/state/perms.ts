@@ -1210,17 +1210,30 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
       told.add(`${n.to}|${who}`)
     } else if (!deletes || parts.some(p => WAR_LINE_KINDS.has(String(p && p.k))) || !inputsChanged.has(String(n.iid))) return refuse(c)
   }
-  /* the rest of the pass's settings rows: for a Delete, the request waiting under his account's sign-in name and his bell's
-     row, both removed; nothing else */
+  /* THE SIGN-INS THIS PASS TAKES AWAY (fix read 12, fault A — Opus O12-2, Fable F12-1): a posted man's account whose
+     outcome is Delete and whose row this pass removes — or, on the accounts' very first write, his seeded row the stored
+     list simply leaves out (no change of that row at all) */
+  const gone = new Set<string>()
+  for (const [rowId, b] of accounts) {
+    if (posted.get(String(b.pid ?? '')) !== 'delete') continue
+    const ch = acctRows.find(c => String(c.id) === 'account:' + rowId)
+    if (ch ? ch.op === 'delete' || ch.after == null : firstStore) gone.add(rowId)
+  }
+  /* the rest of the pass's settings rows: for a Delete, the request waiting under his account's sign-in name, his bell's
+     row and every right his sign-in holds in another squadron (the delete's own body drops them — units.ts
+     dropGrantsOfAccount, fix read 11's E — and a right left naming a sign-in gone is G5's), all removed; nothing else */
   for (const c of env.changes) {
     if (c.collection !== 'settings' || String(c.id).startsWith('account:')) continue
     const b: any = c.before, id = String(c.id)
-    const ok = c.op === 'delete' && (
+    const ok = (c.op === 'delete' && (
       (id.startsWith('accessreq:') && !!b && [...accounts.values()].some(a => a.name === b.name))
-      || (id.startsWith('reqseen:') && accounts.has(id.slice('reqseen:'.length))))
+      || (id.startsWith('reqseen:') && accounts.has(id.slice('reqseen:'.length)))))
+      || (id.startsWith(GRANT_PFX) && !!b && (c.op === 'delete' || c.after == null) && gone.has(String(b.account)))
     if (!ok) return refuse(c)
   }
-  return null
+  /* G5 holds for the pass too (fix read 12, fault A (2)): no account row goes while a right still names it */
+  const w = worldsOf(env)
+  return w ? rightOutlivesAccount(env, w) : null
 }
 
 /* 6. THE UNITS' ROWS AND THE MASTER MARK AT THE COMMIT GATE (multi-squadron batch 1, step 1 — state/units.ts).
@@ -1514,6 +1527,29 @@ function accountGoesHere(env: CommitEnvelope, aid: string): boolean {
   const c = env.changes.find(x => x.collection === 'settings' && String(x.id) === ACCOUNT_ROW + aid)
   return !!c && accountBefore(aid, c.before) != null && accountAfter(aid, c) == null
 }
+/* the person a sign-in belonged to before this command: its row's before-image, else the list as the loader read it */
+function accountPidBefore(env: CommitEnvelope, aid: string): string | null {
+  const c = env.changes.find(x => x.collection === 'settings' && String(x.id) === ACCOUNT_ROW + aid)
+  const was: any = c ? accountBefore(aid, c.before) : worldsOf(env)?.acctB.find(x => x.id === aid)
+  return was && was.pid != null ? String(was.pid) : null
+}
+/* DOES THIS COMMAND ITSELF DELETE THAT PERSON (fix read 12, fault A's immediate route — Astra 1 — and fault B): its own
+   people change of him, there before and deleted after as the delete marks a man (person-delete.ts applyDelete: deleted,
+   archived by 'del'); no sign-in left naming him after it; and the one who does it an admin of his squadron, as section 8
+   reads it (his home today over the rows before; no home known — a shared store before its rows — nothing to judge). Read
+   from the command's own records, never from its label: the Admin → Users Delete and a posting's Delete, run at once or
+   by the pass, are the same act. */
+function personDeletedHere(env: CommitEnvelope, pid: string | null, adminOfHome: (unit: string) => boolean, rows: UnitRows): boolean {
+  if (!pid) return false
+  const c = env.changes.find(x => x.collection === 'people' && String(x.id) === pid)
+  if (!c) return false
+  const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
+  if (!b || b.deleted === true || !f || f.deleted !== true || f.archived !== true || f.archivedBy !== 'del') return false
+  const w = worldsOf(env)
+  if (!w || [...w.rawA.values()].some(x => x && String(x.pid) === pid)) return false
+  const u = homeBefore(pid, todayIso(), rows)
+  return !u || adminOfHome(u)
+}
 /* THE TWO WORLDS OF A COMMAND — the people, the accounts and the unit rows BEFORE it against AFTER it, the accounts read
    by the loader's own reading (accounts.ts readAccounts: oldest first, one account an id, a sign-in name and a person, a
    deleted man's never) over the people of the same side (the second fix read, 18 Nov 26 — Fable's plan §1, C1/C2: the
@@ -1747,11 +1783,22 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
   /* G5 — NO RIGHT LEFT NAMING A SIGN-IN THAT IS GONE (fix read 11, fault E — SEC11-5): a right outliving its account
      passed to whoever got a new account under that id next. An account row is taken away only with every right naming
      it, in the same command (the person delete does so — units.ts dropGrantsOfAccount), whoever takes it, a master too. */
+  return rightOutlivesAccount(env, w)
+}
+/* G5's check, for every actor that writes accounts — the app's posting pass too (fix read 12, fault A (2)): an account row
+   the command takes away, and — read whole, as the loader reads the two lists — a seeded row the accounts' very first
+   write simply leaves out (no change of that row is recorded at all: accounts.ts writeAccounts) */
+function rightOutlivesAccount(env: CommitEnvelope, w: Worlds): string | null {
   for (const c of env.changes) {
     if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW)) continue
     const id = String(c.id).slice(ACCOUNT_ROW.length)
     if (accountBefore(id, c.before) == null || accountAfter(id, c) != null) continue
     if (w.rowsA.grants.some(g => g.account === id)) return `an account row taken away while a right still names it (${c.id})`
+  }
+  for (const k of w.rawB.keys()) {
+    if (w.rawA.has(k)) continue
+    const id = k.slice(ACCOUNT_ROW.length)
+    if (w.rowsA.grants.some(g => g.account === id)) return `an account row taken away while a right still names it (${k})`
   }
   return null
 }
@@ -1886,7 +1933,10 @@ function unitRowViolation(env: CommitEnvelope): string | null {
          save". A right's removal passes here only inside a person delete whose same command takes that sign-in's row
          away (section 8 judges the delete itself: an admin of the man's own squadron); a bare removal, or one beside an
          account row kept, is still an admin's of that squadron. */
-      if (id.startsWith(GRANT_PFX) && b && n == null && env.type === 'person.delete' && accountGoesHere(env, String(b.account))) continue
+      /* (fix read 12, fault A — Astra 1): a posting's Delete run at once (lw.postout, the pass joining that command) is the
+         same delete — so the command's own records decide, personDeletedHere */
+      if (id.startsWith(GRANT_PFX) && b && n == null && accountGoesHere(env, String(b.account))
+        && (env.type === 'person.delete' || personDeletedHere(env, accountPidBefore(env, String(b.account)), adminOf, before))) continue
       for (const img of [b, n]) if (img && !adminOf(String(img.unit))) return `not an admin of ${img.unit} (${id})`
     } else if (id.startsWith(UNIT_PFX)) {
       if (!master) return `only a master admin makes or changes a unit (${id})`

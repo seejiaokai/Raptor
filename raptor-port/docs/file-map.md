@@ -1441,6 +1441,11 @@ day as it stands; G2b asks a restore too). Fault G — `src/undo/types.ts` (`red
 `relinkBackHolds`, `setRestoreDir`). Fault H — `src/state/perms.ts` (`accountGoesHere`: a person delete drops his
 sign-in's rights in any squadron), `src/state/units.ts` (its note). `docs/data-model.md` §11 (User, UnitGrant, Notice and
 Input rows).
+Fix read 12's faults A–E (20 Nov 26; each red first, its own commit; one test file for all, a describe a fault):
+**New:** `src/leavewar/multi-sqn-fixread12.test.ts`. **Changed:** fault A — `src/state/perms.ts` (`postingPassViolation`:
+a Delete's rights go with his sign-in; G5 as `rightOutlivesAccount`, for the pass too and on the accounts' first write;
+`personDeletedHere`, `accountPidBefore`: a posting's Delete run at once), `src/state/accounts.ts` (`rowsOf`: a removed row
+is no row, so a rollback re-reads the seeded list).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

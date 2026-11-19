@@ -163,7 +163,11 @@ const isPos = (v: any): v is LinePos => !!v && typeof v === 'object' && Number.i
 /* every stored row under a prefix, by its id (the key after the prefix) — read, never written */
 function rowsOf(pfx: string): Map<string, any> {
   const m = new Map<string, any>()
-  for (const k of store.keys(pfx)) m.set(k.slice(pfx.length), store.get(k, null))
+  /* a removed row is no row: a settings rollback writes "nothing" over every row its command added, and a saved copy that
+     keeps that as an empty row (not every one deletes the key) made the re-read count the accounts as stored — an empty
+     list, the seed admin alone put back — so a retry after a refused first write ran on that list (fix read 12, fault A
+     (3) — Opus O12-2 :136) */
+  for (const k of store.keys(pfx)) { const v = store.get(k, null); if (v != null) m.set(k.slice(pfx.length), v) }
   return m
 }
 /* whether the accounts are stored as rows yet — none means the seeded list, held in memory (see the header) */
