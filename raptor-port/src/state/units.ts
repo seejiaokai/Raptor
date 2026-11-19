@@ -141,7 +141,8 @@ export function addUnit(numIn: string, placeId: string, firstAdmin?: string): Un
     put(UNIT_PFX + id, { id, num, kind: 'sqn' })
     const up = newId('up')
     put(UNITPLACE_PFX + up, { id: up, unit: id, place: placeId, from: todayIso() })
-    if (firstAdmin) { const g = newId('g'); put(GRANT_PFX + g, { id: g, account: firstAdmin, unit: id, level: 'admin' }) }
+    /* (dated the day it is given, as setGrant's: the commit gate refuses a new right not dated today — fix read 8, fault G) */
+    if (firstAdmin) { const g = newId('g'); put(GRANT_PFX + g, { id: g, account: firstAdmin, unit: id, level: 'admin', from: todayIso() }) }
     return id
   })
 }

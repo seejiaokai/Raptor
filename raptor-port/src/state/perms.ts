@@ -1588,6 +1588,20 @@ function accountShapeAndMasterViolation(env: CommitEnvelope): string | null {
     if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW) || c.after == null) continue
     if (ACCOUNT_ROW + String((c.after as any).id) !== String(c.id)) return `an account row whose id is not its key (${c.id})`
   }
+  /* G2 — THE MASTER MARK'S DAY IS THE DAY IT WAS SET (fix read 8, fault G — Fable's 1 step 2, the security read's SEC8-3,
+     the fresh Opus read's 3): the bell's move-day test counts the mark from its day (notices.ts adminThen, his D2218,
+     D2223), and nothing checked the day a command wrote, so a mark back-dated brought back a line a man's move had
+     retired. Set now: dated today; off: no day; otherwise the day it had. A restore's verified replay puts back the
+     very image its step recorded. */
+  const today = todayIso()
+  for (const c of env.changes) {
+    if (c.collection !== 'settings' || !String(c.id).startsWith(ACCOUNT_ROW) || c.after == null) continue
+    if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) continue
+    const was: any = c.before != null ? c.before : accountBefore(String(c.id).slice(ACCOUNT_ROW.length), null)
+    const is: any = c.after
+    const want = is.master !== true ? undefined : was && was.master === true ? was.masterFrom : today
+    if (is.masterFrom !== want) return `the master mark not dated today (${c.id})`
+  }
   const droppedB = droppedKeys(w.rawB, w.acctB, w.personB)
   for (const k of droppedKeys(w.rawA, w.acctA, w.personA)) if (!droppedB.has(k)) return `an account row the app would not load (${k})`
   const actorMaster = a.role === 'admin' && w.acctB.some(x => x.id === a.id && x.master === true)
@@ -1694,6 +1708,16 @@ function unitRowViolation(env: CommitEnvelope): string | null {
         if (!who || !exists(after, n.unit)) return `a right naming what is not there (${id})`
         if (homeBefore(String(who.pid), today, after) === n.unit) return `a right in his own home unit (${id})`
         if (after.grants.filter(g => g.account === n.account && g.unit === n.unit).length > 1) return `two rights for one account in one unit (${id})`
+        /* ITS DAY IS THE DAY IT WAS GIVEN (fix read 8, fault G — Fable's 1, the security read's SEC8-3, the fresh Opus
+           read's 3): the bell's move-day test counts a grant from its `from` (notices.ts adminThen, his D2218, D2223),
+           and a grant with no day, or back-dated, put by a plain admin brought back a line a man's move had retired. A
+           new grant, or one whose level changes, is dated today (as setGrant writes it); one of the same level keeps its
+           day. A restore's verified replay puts back the very image its step recorded (undo/timeline.ts verifiedReplay).
+           units-model.ts validGrant's leniency stays the loader's (a row from before the day was kept, D56). */
+        if (!(env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
+          const want = b != null && b.level === n.level ? b.from : today
+          if (n.from !== want) return `a right not dated today (${id})`
+        }
       }
     } else if (id.startsWith(UNIT_PFX) && !id.startsWith(UNITPLACE_PFX)) {
       if (after.unitplaces.some(x => x.unit === key) || after.homes.some(x => x.unit === key) || after.grants.some(x => x.unit === key)) return `a unit removed while still named (${id})`

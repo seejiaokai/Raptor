@@ -555,10 +555,15 @@ export function verifiedReplay(env: { origin: string; type: string; causedBy?: n
   /* (M5a: and a member's own typed figure — his Undo or Redo puts back the earlier row with its older day and snapshot) */
   /* (fix read 3, O2: and a bell line — the admin's Undo of a war step that told a man since moved squadron puts back what
      the step found; the commit gate's bell check asks it only for a line the actor himself made) */
-  const replays = (coll: string) => coll === 'inputs' || coll === 'lw.cell' || coll === 'lw.balance' || coll === 'notices'
-  for (const ch of a.changes) if (replays(ch.collection)) want.set(`${ch.collection}/${ch.id}`, ch)
+  /* (fix read 8, fault G: and a right in a unit or an account — the gate holds a grant's day and the master mark's day to
+     today on a forward command, so an Undo or Redo putting back the day its step recorded must be vouched for here; the
+     row prefixes are state/units-model.ts GRANT_PFX and state/accounts.ts ACCOUNT_PFX, spelled here as this module
+     imports nothing of state/) */
+  const settingsRow = (coll: string, id: string) => coll === 'settings' && (id.startsWith('grant:') || id.startsWith('account:'))
+  const replays = (coll: string, id: string) => coll === 'inputs' || coll === 'lw.cell' || coll === 'lw.balance' || coll === 'notices' || settingsRow(coll, id)
+  for (const ch of a.changes) if (replays(ch.collection, String(ch.id))) want.set(`${ch.collection}/${ch.id}`, ch)
   return (c: Change): boolean => {
-    const w = replays(c.collection) ? want.get(`${c.collection}/${c.id}`) : undefined
+    const w = replays(c.collection, String(c.id)) ? want.get(`${c.collection}/${c.id}`) : undefined
     if (!w) return false
     if (w.op === 'delete') return c.op === 'delete'
     if (c.op !== 'put') return false

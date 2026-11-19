@@ -146,3 +146,53 @@ describe('fault D — a right given ON the move day never brings the retired lin
   })
 })
 
+describe('fault G — the gate checks a grant’s day and the master mark’s day', () => {
+  /* Hunter's line retired by his move to 149; on the 18th a plain 142 admin gives him Plan of 142 */
+  const grantPut = (g: any, before: any = null) => asOutlaw([{ collection: 'settings', id: GRANT_PFX + g.id, op: 'put', before, after: g }], 'grant.set')
+  for (const from of [undefined, '2026-01-01']) {
+    it(`(Fable 1, SEC8-3, Opus 3) a new grant ${from ? 'back-dated to ' + from : 'with no day'} is refused`, () => {
+      const l = hunterLine(); outlawReal()
+      hunterMovesOn16(); on(18)
+      expect(shown('prowler', l.id)).toBe(false)
+      const g: any = { id: 'gfr8g', account: 'acad2', unit: 'u142', level: 'admin', ...(from ? { from } : {}) }
+      expect(ownershipViolation(grantPut(g)) ?? 'allowed').toMatch(/not dated today/)
+    })
+  }
+  it('(Fable 1 step 1) a grant of the same level re-dated is refused; its level changed must be dated today', () => {
+    outlawReal(); hunterMovesOn16(); on(18)
+    const was = { id: 'gfr8h', account: 'acad2', unit: 'u142', level: 'view', from: '2026-07-17' }
+    mem['sqn142_' + GRANT_PFX + 'gfr8h'] = JSON.stringify(was); unitsLoad()
+    expect(ownershipViolation(grantPut({ ...was, from: '2026-01-01' }, was)) ?? 'allowed').toMatch(/not dated today/)
+    expect(ownershipViolation(grantPut({ ...was, level: 'admin' }, was)) ?? 'allowed').toMatch(/not dated today/)
+    expect(ownershipViolation(grantPut({ ...was, level: 'admin', from: '2026-07-18' }, was))).toBeNull()
+  })
+  it('(Fable 1 step 2) a master’s master mark back-dated is refused', () => {
+    hunterMovesOn16(); on(18)
+    signInAs('ad', 'a')
+    /* the account list stored first, so the one row below is all the command changes */
+    expect(setMaster('acad2', true).ok).toBe(true); expect(setMaster('acad2', false).ok).toBe(true)
+    const b = { ...ACCOUNTS_LIST.find(a => a.id === 'acad2')! }
+    const e = env([{ collection: 'settings', id: 'account:acad2', op: 'put', before: b, after: { ...b, master: true, masterFrom: '2000-01-01' } }], 'user', 'account.master')
+    expect(ownershipViolation(e) ?? 'allowed').toMatch(/not dated today/)
+    /* …nor a day written with the mark off */
+    const e2 = env([{ collection: 'settings', id: 'account:acad2', op: 'put', before: b, after: { ...b, masterFrom: '2026-07-18' } }], 'user', 'account.update')
+    expect(ownershipViolation(e2) ?? 'allowed').toMatch(/not dated today/)
+  })
+  it('(control) the real setGrant and setMaster pass, and the Undo and Redo of each, a day later', () => {
+    hunterMovesOn16(); on(18)
+    signInAs('ad', 'a')
+    expect(setGrant('acad2', 'u142', 'admin', 'prowler').ok).toBe(true)
+    expect(unitRows().grants.find(g => g.account === 'acad2')?.from).toBe('2026-07-18')
+    on(19)
+    expect(globalUndo().ok, 'Undo of the grant').toBe(true)
+    expect(unitRows().grants.some(g => g.account === 'acad2')).toBe(false)
+    const r = globalRedo(); expect(r.ok, 'Redo of the grant: ' + JSON.stringify(r)).toBe(true)
+    expect(unitRows().grants.find(g => g.account === 'acad2')?.from, 'its own day with it').toBe('2026-07-18')
+    expect(setMaster('acad2', true).ok).toBe(true)
+    on(20)
+    expect(globalUndo().ok, 'Undo of the mark').toBe(true)
+    const r2 = globalRedo(); expect(r2.ok, 'Redo of the mark: ' + JSON.stringify(r2)).toBe(true)
+    expect(ACCOUNTS_LIST.find(a => a.id === 'acad2')?.masterFrom).toBe('2026-07-19')
+  })
+})
+
