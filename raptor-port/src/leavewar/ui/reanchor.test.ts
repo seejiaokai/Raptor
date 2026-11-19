@@ -2,7 +2,29 @@
    not only one a jump landed — a person's own scroll left there was moved too, and on a phone a sub-pixel write in a
    coast's lull stops the fling. The edge rule is for a jump's landing only (reanchor.ts). */
 import { describe, expect, it } from 'vitest'
-import { landingScroll, leftTheLanding, reanchorMode } from './reanchor'
+import { landingScroll, leftTheLanding, reanchorMode, reanchorPlan } from './reanchor'
+
+/* Astra's read of chat 112's fix (19 Nov 26): a scroll between the note and the redraw that applies it is the person's,
+   and is kept — the landed 1 Sep noted at scroll 6380, 0.53px clear; ArrowRight moves the grid 1px; the redraw commits
+   before the scroll event. */
+describe('a scroll between the note and its redraw is kept', () => {
+  const desk = { coarse: false, fromJump: false, colShift: true, edge: true, landed: true }
+  it('a 1px key scroll: not put back on the edge, the landing ended, nothing written', () => {
+    const p = reanchorPlan({ ...desk, cellLeft: 210.53, anchorLeft: 211.53, anchorSl: 6380, nowSl: 6381 })
+    expect(p.mode).toBe('shift')
+    expect(p.landed).toBe(false)
+    expect(Math.abs(p.shift)).toBeLessThanOrEqual(1)   // no write: the redraw itself moved nothing
+  })
+  it('an 18.4px scroll at 125% and a redraw that moved the day 25px: only the 25px is corrected', () => {
+    const p = reanchorPlan({ ...desk, landed: false, edge: false, cellLeft: 211.53 - 18.4 + 25, anchorLeft: 211.53, anchorSl: 6380, nowSl: 6398.4 })
+    expect(p.mode).toBe('shift')
+    expect(p.shift).toBeCloseTo(25, 6)
+  })
+  it('no scroll since the note: the plan is the rule as it was', () => {
+    const p = reanchorPlan({ ...desk, cellLeft: 211.9, anchorLeft: 211.53, anchorSl: 6380, nowSl: 6380 })
+    expect(p).toEqual({ mode: 'edge', shift: 211.9 - 211.53, landed: true })
+  })
+})
 
 const base = { coarse: false, fromJump: false, colShift: false, edge: true, landed: false }
 

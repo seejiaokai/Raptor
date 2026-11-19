@@ -1331,9 +1331,11 @@ posting pass), `src/undo/timeline.ts` (`verifiedReplay` covers bell lines), `src
 landed flag, cleared by the person's own wheel, pointer, touch or key).
 Fix read 4's claim 5 (19 Nov 26, chat 112, red first). **Changed:** `src/leavewar/ui/reanchor.ts` (`landingScroll`: the
 landing rounds down on the screen's own dots, so at 125% it never lands 0.275px under the frozen column;
-`leftTheLanding`: a scroll that leaves the grid's own last write ends a jump's landing), `src/leavewar/ui/Matrix.tsx` (the
+`leftTheLanding`: a scroll that leaves the grid's own last write ends a jump's landing; `reanchorPlan`: a scroll between
+a redraw's note and the redraw is the person's and kept — the readers' fixes), `src/leavewar/ui/Matrix.tsx` (the
 landed flag no longer cleared by any click or key on the page — only by the person's scroll: a scroll event away from
-`ownLeftRef`, a sideways wheel over the grid, a press or drag on its scroll bars; a phone's touch as before),
+`ownLeftRef`, a sideways wheel over the grid, a press or drag on its scroll bars; a phone's touch as before; and
+`jumpTo` re-takes a waiting row-window anchor at the jumped day, so a redraw noted before the jump never undoes it),
 `src/leavewar/ui/reanchor.test.ts`, `e2e/leavewar.spec.ts` (Sep → Mar → Dec → Sep with a day cell clicked during the
 fill, at 1536 wide and at a real 125% scaling; a phone's flick 100, 400 and 1,000ms after a jump keeps its scroll).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between

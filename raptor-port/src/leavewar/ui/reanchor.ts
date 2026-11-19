@@ -32,6 +32,24 @@ export function leftTheLanding(scrollLeft: number, own: number | null): boolean 
 }
 
 export type Reanchor = 'skip' | 'edge' | 'shift'
+
+/* THE PLAN FOR ONE REDRAW, given where the grid stood when the first day was noted (Astra's read of chat 112's fix, 19 Nov
+   26). The note (Matrix.tsx anchorNow) is taken at rest and applied a task later; a scroll in between — an arrow key, a
+   drag at the edge, a wheel the early listeners missed — moved the day too, and the old correction read that move as the
+   redraw's and undid it: the edge rule put a landed day back over a 1px key scroll (the mark then left on, since the
+   grid's own write matched), and the shift rule reversed any larger one. Now a scroll since the note ends the landing,
+   is never the edge rule's, and is kept: the shift corrects only what the redraw moved (`anchorLeft - moved` is where
+   the day would stand after that scroll alone). */
+export function reanchorPlan(o: {
+  coarse: boolean; fromJump: boolean; colShift: boolean; edge: boolean; landed: boolean
+  cellLeft: number; anchorLeft: number; anchorSl: number; nowSl: number
+}): { mode: Reanchor; shift: number; landed: boolean } {
+  const moved = o.nowSl - o.anchorSl
+  const scrolled = Math.abs(moved) > 0.01
+  const landed = o.landed && !scrolled
+  const mode = reanchorMode({ coarse: o.coarse, fromJump: o.fromJump, colShift: o.colShift, edge: o.edge && !scrolled, landed })
+  return { mode, shift: o.cellLeft - (o.anchorLeft - moved), landed }
+}
 export function reanchorMode(o: { coarse: boolean; fromJump: boolean; colShift: boolean; edge: boolean; landed: boolean }): Reanchor {
   if (o.coarse && !o.fromJump && !o.colShift) return 'skip'
   if (o.edge && o.landed && (o.fromJump || !o.coarse)) return 'edge'

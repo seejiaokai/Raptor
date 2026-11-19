@@ -23,6 +23,10 @@ grid's own last write left it (`ownLeftRef`, `leftTheLanding`), by a sideways wh
 grid's own scroll box, by a drag of the grid's proxy scroll bar (`onHbarScroll`), and on a phone by any touch, as
 before. (2) `landOnEdge` now rounds down on the screen's own dot grid (`landingScroll`): at a 125% screen the scroll
 moves in 0.8px steps and rounds a write to the nearest step, so a whole-pixel floor still landed the day 0.275px under.
+(3) A second commit: `jumpTo` re-takes a waiting row-window anchor (`anchorRef`, noted by `measureWindow` at rest and
+applied by the layout effect a task later) at the jumped day, so a month pressed between the note and the redraw is not
+undone (one browser run in 280 left the grid on September after MAR was pressed; cause inferred, not reproduced on
+demand). `FIX-DIFF.patch` holds both commits (`git diff 8b6054569 ae4c632a3 -- raptor-port/src raptor-port/e2e`).
 
 ## The ask
 1. Is the fix complete — every way the person scrolls the grid sideways still ends the landing (a mouse wheel with

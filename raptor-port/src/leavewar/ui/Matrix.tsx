@@ -57,7 +57,7 @@ import { keyCount, setGridGuard, useGuardOnClose, WINDOW_PRESS } from './gridgua
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
 import { warInputs, type WarInput } from '../absences'
 import { ReorderIcon } from '../../ui/icons'
-import { landingScroll, leftTheLanding, reanchorMode } from './reanchor'
+import { landingScroll, leftTheLanding, reanchorPlan } from './reanchor'
 import './matrix.css'
 
 /** the year of a 'yyyy-mm-dd' date, as the grid's corner writes it (D1561) */
@@ -1224,7 +1224,7 @@ export function Matrix() {
   // them UPSTREAM of the view — which otherwise yanks the grid sideways under
   // the reader and lands a month jump short (measured 165px off at SEP, from
   // the demo's one posted-out man leaving the roster).
-  const anchorRef = useRef<{ date: string; left: number; edge: boolean } | null>(null)
+  const anchorRef = useRef<{ date: string; left: number; edge: boolean; sl: number } | null>(null)
   // When the last scrollLeft move was a programmatic month/day JUMP, not a
   // finger flick. The anchor correction below is skipped on touch to protect a
   // fling's momentum, but a jump has no fling to protect and MUST re-centre or
@@ -1250,7 +1250,10 @@ export function Matrix() {
     const touch = () => { landedRef.current = false }
     const wheel = (e: WheelEvent) => {
       const wrap = wrapRef.current
-      if (wrap && e.target instanceof Node && wrap.contains(e.target) && (e.deltaX !== 0 || e.shiftKey)) landedRef.current = false
+      /* a SIDEWAYS wheel only: a trackpad's downward swipe carries a little sideways noise, scrolls the page and not the
+         grid, and must not end the landing (the fresh Opus read's F1) — any real move of the grid still ends it in
+         onWrapScroll */
+      if (wrap && e.target instanceof Node && wrap.contains(e.target) && (Math.abs(e.deltaX) > Math.abs(e.deltaY) || (e.shiftKey && e.deltaY !== 0))) landedRef.current = false
     }
     const press = (e: PointerEvent) => { if (e.target === wrapRef.current) landedRef.current = false }
     document.addEventListener('touchstart', touch, opts)
@@ -2830,7 +2833,7 @@ export function Matrix() {
   // left) puts back in the same place. Binary search — column lefts are
   // monotonic — so ~9 rect reads. Shared by the row window and the column
   // window so the two corrections cannot disagree.
-  const anchorNow = (wrap: HTMLElement): { date: string; left: number; edge: boolean } | null => {
+  const anchorNow = (wrap: HTMLElement): { date: string; left: number; edge: boolean; sl: number } | null => {
     const { drawnDates } = liveRef.current
     if (drawnDates.length === 0) return null
     const viewL = wrap.getBoundingClientRect().left + frozenWidth(wrap)
@@ -2842,8 +2845,11 @@ export function Matrix() {
     }
     // `edge`: the day sits ON the frozen edge (within a pixel either way) — a landed jump, put back there exactly
     // (landOnEdge, [LW-MONTHJUMP-SUBPIXEL]); any other first day is held where it was, as before.
+    // `sl`: where the grid stood when the note was taken, so a scroll before its redraw is known for his (reanchorPlan).
+    // `edge` within one screen dot, never under a pixel: zoomed out below 100% a dot is wider than a pixel, and a landing
+    // up to a dot clear is still a landing (the fresh Opus read's F2, chat 112).
     const left = at(best)
-    return { date: drawnDates[best]!, left, edge: Math.abs(left - viewL) < 1 }
+    return { date: drawnDates[best]!, left, edge: Math.abs(left - viewL) < Math.max(1, 1 / (window.devicePixelRatio || 1)) + 0.01, sl: wrap.scrollLeft }
   }
 
   const measureWindow = () => {
@@ -3288,11 +3294,15 @@ export function Matrix() {
     // after a jump never walk it under the edge half a pixel at a time ([LW-MONTHJUMP-SUBPIXEL]); a day the person's own
     // scroll left near the edge keeps the old rule, and on a touch screen only inside the jump's window (reanchor.ts —
     // fix read 3: a sub-pixel write in a coast's lull stops a phone's fling).
-    const mode = reanchorMode({ coarse, fromJump, colShift, edge: a.edge, landed: landedRef.current })
-    if (mode === 'skip') return
-    if (mode === 'edge') { landOnEdge(wrap, cell); return }
-    const shift = cell.getBoundingClientRect().left - a.left
-    if (Math.abs(shift) > 1) { wrap.scrollLeft += shift; ownLeftRef.current = wrap.scrollLeft }
+    //   A SCROLL SINCE THE NOTE IS HIS, AND KEPT (Astra's read of chat 112's fix): the note is taken at rest and applied a
+    // task later; an arrow key, an edge step or a wheel in between moved the day too — that move ends the landing, is
+    // never the edge rule's, and only what the redraw itself moved is corrected (reanchorPlan).
+    const plan = reanchorPlan({ coarse, fromJump, colShift, edge: a.edge, landed: landedRef.current,
+      cellLeft: cell.getBoundingClientRect().left, anchorLeft: a.left, anchorSl: a.sl, nowSl: wrap.scrollLeft })
+    landedRef.current = plan.landed
+    if (plan.mode === 'skip') return
+    if (plan.mode === 'edge') { landOnEdge(wrap, cell); return }
+    if (Math.abs(plan.shift) > 1) { wrap.scrollLeft += plan.shift; ownLeftRef.current = wrap.scrollLeft }
   }, [visWindow, colWin?.lo, colWin?.hi])
   /* the row set this render drew, for the measure to compare with (visSeqRef above) — the same test the rows are drawn by */
   useLayoutEffect(() => {
