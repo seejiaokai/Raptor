@@ -297,7 +297,7 @@ export function installAbsenceDoor(): void {
   setLwUnitProbe(() => (WORLD_DOOR ? worldUnit() : null))
   /* WHAT A RESTORE'S FOLLOW-UP LINES MAY SAY (perms.ts setFollowUpsProbe — fix read 6, fault B): the one body that writes
      them, so the gate compares a "taken back" or "again" line with what this restore owes, field for field */
-  setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved as any, dir, notices as Notice[], hasRead))
+  setFollowUpsProbe((moved, dir, notices) => followUpsOwed(moved, dir, notices, hasRead))
   setLwDayOpenProbe((cellId: string) => {
     const iDate = cellId.lastIndexOf(':')
     if (iDate < 0) return true
@@ -1719,7 +1719,7 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
      away (an Undo: no longer on the bell) or put back (a Redo: on it again). Run inside the restore, before any follow-up
      is written, so the bell's follow-up lines are as they stood before the command.) */
   const moved = changes.filter(c => c.op === 'put' && (c.collection !== 'notices' || (() => {
-    const id = (c.after as any)?.id
+    const id = (c.after as { id?: unknown } | null | undefined)?.id
     return NOTICES.some(x => x.id === id) === (dir === 'redo')
   })()))
   const made = followUpsOwed(moved, dir, NOTICES, hasRead)

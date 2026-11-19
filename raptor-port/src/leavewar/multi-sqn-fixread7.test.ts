@@ -144,7 +144,7 @@ describe('fault M — an input line not as the pass writes it', () => {
   it('(Astra A1) the honest line’s mark deleted, widened or emptied is refused, with or without a change of the input', () => {
     const l = honest()
     const { fu: _fu, ...bare } = l
-    for (const after of [bare, { ...l, fu: ['u142', 'u149'] }, { ...l, fu: [] }]) {
+    for (const after of [bare, { ...l, fu: ['u142', 'u149'] }, { ...l, fu: [] }] as Notice[]) {
       const w = { collection: 'notices', id: l.id, op: 'put', before: { ...l }, after }
       expect(ownershipViolation(asOutlaw([w])) ?? 'allowed', JSON.stringify(after.fu)).toMatch(/not as the pass writes it/)
       expect(ownershipViolation(asOutlaw([remarkChange(), w])) ?? 'allowed', JSON.stringify(after.fu)).toMatch(/not as the pass writes it/)
