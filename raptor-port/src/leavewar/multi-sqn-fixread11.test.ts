@@ -442,12 +442,8 @@ describe('fault E — a right goes with its account, and a new account row under
     const acct = ACCOUNTS_LIST.find(a => a.id === id)
     expect({ newManHolds142: !!acct && acct.pid === p2 && levelOfAccount(acct as any, 'u142') === 'admin' }).toEqual({ newManHolds142: false })
   })
-  it('(the delete) Kestrel\'s delete of that man is refused while his sign-in holds Plan of 142 — the right would go with it, and Kestrel holds nothing in 142', () => {
-    const { p1, id } = planned()
-    signInAs('ad9', 'a9')
-    expect(deletePerson(p1) ?? 'deleted').not.toBe('deleted')
-    expect({ person: !!(PEOPLE as any)[p1].deleted, plan: plan(id)?.level }).toEqual({ person: false, plan: 'admin' })
-  })
+  /* (the delete's refusal once pinned here — "Kestrel's delete of that man is refused while his sign-in holds Plan of
+     142" — is turned round by fault H below: the host's decision, his D2203 read for a delete) */
   /* (a delete is no step of the Undo button — his D350 — so "its Undo puts them back" has nothing to put back: the right goes
      in the delete's own command, all or nothing, as his sign-in does) */
   it('(Admin → Users\' delete) Saber deletes that man: his sign-in and Plan of 142 go in the one command — no right left naming a sign-in that is gone', () => {
@@ -490,6 +486,72 @@ describe('fault E — a right goes with its account, and a new account row under
     expect(addAccount('spare1@mail', p1!, 'main')).toBeNull()
     expect(accountOfPid(p1!)?.pid).toBe(p1)
   })
+})
+
+describe('fault H — a person delete is never refused for a right he holds in another squadron (the host, D2203 read for a delete)', () => {
+  const spares = () => Object.keys(PEOPLE).filter(p => homeOn(p) === 'u149' && p !== 'osp9' && !accountOfPid(p) && !(PEOPLE as any)[p].deleted && !(PEOPLE as any)[p].archived && !(PEOPLE as any)[p].special)
+  const planned = () => {
+    const [p1, p2] = spares()
+    expect(p2, 'two 149 men with no sign-in').toBeDefined()
+    signInAs('ad9', 'a9')
+    expect(addAccount('spare1@mail', p1!, 'main')).toBeNull()
+    const id = accountOfPid(p1!)!.id
+    signInAs('ad', 'a'); expect(setGrant(id, 'u142', 'admin', p1!).ok).toBe(true)
+    return { p1: p1!, p2: p2!, id }
+  }
+  const grantsOf = (id: string) => unitRows().grants.filter(g => g.account === id)
+  it('(the host) Kestrel (149 admin) deletes his man whose sign-in holds Plan of 142: allowed, and no right names the sign-in after it — 142\'s grant rows gone in the delete\'s own command', () => {
+    const { p1, id } = planned()
+    on(18); signInAs('ad9', 'a9')
+    const seen: string[] = []
+    const off = onCommit((e: any) => { if (e.type === 'person.delete') for (const c of e.changes) if (c.collection === 'settings' && String(c.id).startsWith('grant:') && c.after == null) seen.push(String(c.id)) })
+    let r: unknown
+    try { r = deletePerson(p1) } finally { off() }
+    accountsLoad(); unitsLoad()
+    expect({ refused: r ?? null, deleted: !!(PEOPLE as any)[p1].deleted, grants: grantsOf(id).length, grantRowsRemovedInTheDelete: seen.length })
+      .toEqual({ refused: null, deleted: true, grants: 0, grantRowsRemovedInTheDelete: 1 })
+  })
+  it('(SEC11-5 continued) after it Kestrel writes a NEW account under that id for another 149 man: harmless — saved as a plain new sign-in, and he holds no 142 right', () => {
+    const { p1, p2, id } = planned()
+    on(18); signInAs('ad9', 'a9')
+    expect(deletePerson(p1)).toBeNull()
+    accountsLoad(); unitsLoad()
+    const row = { id, name: 'spare2@mail', role: 'main', pid: p2, on: true, pidFrom: '2026-07-18' }
+    commitSettingsIntent('account.add', null, () => { settingsStore.set('account:' + id, row) })
+    accountsLoad(); unitsLoad()
+    const acct = ACCOUNTS_LIST.find(a => a.id === id)
+    expect({ saved: acct?.pid === p2, holds142: !!acct && levelOfAccount(acct as any, 'u142') === 'admin', grants: grantsOf(id).length })
+      .toEqual({ saved: true, holds142: false, grants: 0 })
+  })
+  it('(control) Kestrel removing that 142 grant by itself — no delete — stays refused', () => {
+    const { id } = planned()
+    on(18); signInAs('ad9', 'a9')
+    expect(removeGrant(id, 'u142').ok).toBe(false)
+    unitsLoad()
+    expect(grantsOf(id).map(x => x.level)).toEqual(['admin'])
+  })
+  it('(the gate) a grant removed beside its account row, in a command that is not a person delete: refused for one who is no admin of 142', () => {
+    const { id } = planned()
+    on(18); signInAs('ad9', 'a9')
+    const g = grantsOf(id)[0]!
+    const a = { ...(settingsStore.get('account:' + id, null) as any) }
+    const gb = { ...(settingsStore.get('grant:' + g.id, null) as any) }
+    const e = (type: string): any => ({ type, origin: 'user', actor: deriveActor(), changes: [
+      { collection: 'settings', id: 'grant:' + g.id, op: 'put', before: gb, after: null },
+      { collection: 'settings', id: 'account:' + id, op: 'put', before: a, after: null }] })
+    expect(ownershipViolation(e('account.update')) ?? 'allowed').toMatch(/not an admin of u142/)
+    /* and a person delete whose command removes the grant but keeps the account row: refused the same */
+    const kept: any = { type: 'person.delete', origin: 'user', actor: deriveActor(), changes: [{ collection: 'settings', id: 'grant:' + g.id, op: 'put', before: gb, after: null }] }
+    expect(ownershipViolation(kept) ?? 'allowed').toMatch(/not an admin of u142/)
+  })
+  it('(control) Saber (master, 142 admin) deletes a 149 man holding Plan of 142: still works, the grant gone with him', () => {
+    const { p1, id } = planned()
+    on(18); signInAs('ad', 'a')
+    expect(deletePerson(p1)).toBeNull()
+    accountsLoad(); unitsLoad()
+    expect({ deleted: !!(PEOPLE as any)[p1].deleted, grants: grantsOf(id).length }).toEqual({ deleted: true, grants: 0 })
+  })
+  /* (the delete's Undo: none exists — his D350, a delete is no step of the Undo button — so nothing to test) */
 })
 
 /* a new 142 man with no sign-in, added on 10 Jul (Fable's harness) */

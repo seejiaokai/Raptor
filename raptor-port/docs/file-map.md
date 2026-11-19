@@ -1426,7 +1426,7 @@ admin), `src/state/notices.ts` (`adminThen` counts a right from the later of its
 `src/undo/types.ts` (`madeAt`, `undoneOn` on a step), `src/undo/timeline.ts` (`restoreOffAt`: the day the right went off,
 handed to the redate hook), `src/state/undo-wire.ts` (wires it to the gate), `src/state/perms.ts` (`restoredDayHolds`,
 `markBackHolds`: a restored right keeps its day only where its man has not moved since it went off).
-Fix read 11's faults A–G (20 Nov 26; each red first, its own commit; one test file for all, a describe a fault):
+Fix read 11's faults A–H (20 Nov 26; each red first, its own commit; one test file for all, a describe a fault):
 **New:** `src/leavewar/multi-sqn-fixread11.test.ts`. **Changed:** fault A — `src/state/perms.ts` (`storedRowViolation`:
 a change of a saved request or bell line judged again against the row as saved), `src/state/persist.ts` (the probe
 answers the stored row), `src/state/notices.ts` (`shareMade`). Fault B — `src/state/perms.ts` (`RETIRED_TYPES`: a
@@ -1438,7 +1438,9 @@ holiday controls through the real holiday door). Fault D — `src/state/perms.ts
 calls it), `src/state/perms.ts` (`rightNamesNew`, G5). Fault F — `src/state/perms.ts` (`restoreRedated` keeps the link's
 day as it stands; G2b asks a restore too). Fault G — `src/undo/types.ts` (`redoneOn`), `src/undo/timeline.ts`
 (`offAtOf`, `restoreDir`), `src/state/undo-wire.ts` (passes the direction), `src/state/perms.ts` (`grantBackHolds`,
-`relinkBackHolds`, `setRestoreDir`). `docs/data-model.md` §11 (User, UnitGrant, Notice and Input rows).
+`relinkBackHolds`, `setRestoreDir`). Fault H — `src/state/perms.ts` (`accountGoesHere`: a person delete drops his
+sign-in's rights in any squadron), `src/state/units.ts` (its note). `docs/data-model.md` §11 (User, UnitGrant, Notice and
+Input rows).
 `src/leavewar/engine/fixedrows.ts` - THE MANNING BLOCK'S ONE ORDER (D674, 8 Oct 26 - a counter row may stand above, between
 or below the four fixed rows): the four rows' tokens (`FIXED_ROWS`), what a saved order means (`blockOrder` - the four keep
 their own order; a list without them reads "its counters, then the four"; a new counter appears just above Required P) and

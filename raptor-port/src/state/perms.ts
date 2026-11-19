@@ -1509,6 +1509,11 @@ function accountAfter(id: string, c: Change): any {
   const anyLeft = store.keys(ACCOUNT_ROW).some(k => store.get(k, null) != null)
   return anyLeft ? null : accountBefore(id, null)
 }
+/* does this command take the account row of `aid` away — there before it, gone after it (fix read 11, fault H) */
+function accountGoesHere(env: CommitEnvelope, aid: string): boolean {
+  const c = env.changes.find(x => x.collection === 'settings' && String(x.id) === ACCOUNT_ROW + aid)
+  return !!c && accountBefore(aid, c.before) != null && accountAfter(aid, c) == null
+}
 /* THE TWO WORLDS OF A COMMAND — the people, the accounts and the unit rows BEFORE it against AFTER it, the accounts read
    by the loader's own reading (accounts.ts readAccounts: oldest first, one account an id, a sign-in name and a person, a
    deleted man's never) over the people of the same side (the second fix read, 18 Nov 26 — Fable's plan §1, C1/C2: the
@@ -1873,6 +1878,15 @@ function unitRowViolation(env: CommitEnvelope): string | null {
     /* WHO */
     if (sys) continue
     if (id.startsWith(UNITPLACE_PFX) || id.startsWith(GRANT_PFX) || id.startsWith(HOME_PFX)) {
+      /* A PERSON DELETE TAKES EVERY RIGHT HIS SIGN-IN HOLDS, WHATEVER THE SQUADRON (fix read 11, fault H — the host's
+         decision, his D2203 read for a delete: a move clears every View and Plan a man holds of other squadrons,
+         whoever moves him; a delete is a fuller leaving, and taking a right away is the safe direction). Fault E made
+         the delete drop his rights in its own command (units.ts dropGrantsOfAccount) but judged each dropped right by
+         its squadron, so 149's admin could not delete his own man once 142 had given him Plan of 142 — "That did not
+         save". A right's removal passes here only inside a person delete whose same command takes that sign-in's row
+         away (section 8 judges the delete itself: an admin of the man's own squadron); a bare removal, or one beside an
+         account row kept, is still an admin's of that squadron. */
+      if (id.startsWith(GRANT_PFX) && b && n == null && env.type === 'person.delete' && accountGoesHere(env, String(b.account))) continue
       for (const img of [b, n]) if (img && !adminOf(String(img.unit))) return `not an admin of ${img.unit} (${id})`
     } else if (id.startsWith(UNIT_PFX)) {
       if (!master) return `only a master admin makes or changes a unit (${id})`

@@ -197,8 +197,10 @@ export function removeGrant(account: string, unit: string): UnitSave {
 }
 /* EVERY RIGHT OF AN ACCOUNT THAT IS GOING (fix read 11, fault E — SEC11-5): written INSIDE the person delete's own
    command (accounts.ts dropAccountOfPid), as a move drops a man's rights inside its own (setHome above). A right left
-   naming a sign-in that is gone was handed to whoever got a new account under that id next. The gate judges each dropped
-   right as any other (an admin of its squadron), so a delete by one who holds nothing in that squadron is refused whole. */
+   naming a sign-in that is gone was handed to whoever got a new account under that id next. (fix read 11, fault H — the
+   host, D2203 read for a delete:) the gate lets the admin making an allowed person delete drop these rights in any
+   squadron, since the same command takes the account row away (perms.ts unitRowViolation); a bare removal by one who is
+   no admin of that squadron stays refused. */
 export function dropGrantsOfAccount(accountId: string): void {
   if (!isCommitting()) throw new Error('dropGrantsOfAccount runs only inside a command')
   for (const g of unitRows().grants.filter(x => x.account === accountId)) put(GRANT_PFX + g.id, null)
