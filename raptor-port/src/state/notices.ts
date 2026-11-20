@@ -230,6 +230,24 @@ function inputSpan(r: any): readonly [string, string] | null {
   const b = r.endDate != null && r.endDate !== '' ? inputAtIso(r.endDate, r.yr) : a
   return [a, b && b >= a ? b : a]
 }
+/** THE LEAVES A COMMAND FOLDED INTO ANOTHER (fix read 15 — Astra 1): a Leave War approval that bridges two war-approved
+ *  leaves keeps the one before and removes the one after (leavewar/sync.ts, "approving next to leave already approved …
+ *  EXTENDS that Input"), so the words typed over the leave after were told to nobody — its record has no image after.
+ *  Folded: among the records this command removed (`removed`, their before-images), each war-approved leave of the same
+ *  war, kind and people as `a` (the surviving record's after-image) whose days lie within `a`'s. The pass (noticePass)
+ *  and the commit gate (state/perms.ts toldBy, filerMarkOk) read the survivor's telling over its own images and these. */
+export function foldedInto(a: any, removed: readonly any[]): any[] {
+  if (!a || typeof a !== 'object' || !a.lw) return []
+  const span = inputSpan(a)
+  if (!span) return []
+  const who = ids(a).slice().sort().join('|')
+  return removed.filter(x => {
+    if (!x || typeof x !== 'object' || x.lw !== a.lw || x.type !== a.type || x.iid === a.iid) return false
+    if (ids(x).slice().sort().join('|') !== who) return false
+    const s = inputSpan(x)
+    return !!s && s[0] >= span[0] && s[1] <= span[1]
+  })
+}
 /* every squadron a man's home is on some day from `a` to `b`: his home on `a`, and each home he has from a later day in
    that span (his home rows — state/units.ts setHome — change only on their `from` day) */
 function homesOver(pid: string, a: string, b: string): string[] {
@@ -463,8 +481,14 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
     if (from) { const him = ids(a)[0]!; split.set(String(from.iid), him); tell(him, a, common(from, a, him).filter(x => x.k !== 'add' && x.k !== 'rem')); continue }
     for (const p of ids(a)) tell(p, a, [{ k: 'in' }])
   }
+  /* (the records this command removed, for the leaves it folded into another — foldedInto, fix read 15, Astra 1) */
+  const removed: any[] = []
+  for (const [iid, b] of before) if (!now.has(iid)) removed.push(b)
   for (const [iid, b] of before) {
     const a = now.get(iid)
+    /* (its telling judged over its own images and those of the leaves folded into it — the gate's toldBy and filerMarkOk
+       read the same) */
+    const imgs = a ? [b, a, ...foldedInto(a, removed)] : [b]
     if (o.skipLw && (b.lw || (a && a.lw))) {
       /* …but its REMARK is no line of the war's: the war tells decisions, moves and deletes, never words — so a remark
          changed on a war-approved leave from a war window (the drag window's Remarks, D1341) is told here, once, as it was
@@ -476,14 +500,20 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
          decide) — told nobody of the words wherever the decision also changed the leave: approving Ranger's pending bid
          on 28 Jul beside the war-approved LL Hunter filed for him on 27 Jul joins it to that leave (27–28 Jul), so the
          change was a remark AND a date, and Hunter heard nothing of the words. Now the words are told, once, whatever
-         else changed with them; the rest stays the war's own line. */
+         else changed with them; the rest stays the war's own line.
+         …AND OF EACH LEAVE FOLDED INTO IT (fix read 15 — Astra 1): approving the day between Saber's LL on 27 Jul and the
+         LL Hunter filed on 29 Jul, words typed over all three, folds the 29th into the 27th and removes its record — and
+         the words on Hunter's leave were told to nobody. Now each folded leave whose words changed tells its filer too,
+         on the leave that stands; nobody is told twice, the one who typed them never. */
       if (a && b.lw && a.lw) {
-        const rmk = common(b, a, '').filter(x => x.k === 'rmk')
-        if (rmk.length) {
-          const named = ids(a)
-          for (const p of named) tell(p, a, rmk)
-          const f = changeFiler(b, a, by)
-          if (f && !named.includes(f) && filerTold(f, [b, a])) tell(f, a, rmk, filerVia(f, [b, a]) ?? undefined)
+        const named = ids(a)
+        const sent = new Set<string>()
+        for (const src of imgs.filter(x => x !== a)) {
+          const rmk = common(src, a, '').filter(x => x.k === 'rmk')
+          if (!rmk.length) continue
+          for (const p of named) if (!sent.has(p)) { sent.add(p); tell(p, a, rmk) }
+          const f = changeFiler(src, src === b ? a : null, by)
+          if (f && !named.includes(f) && !sent.has(f) && filerTold(f, imgs)) { sent.add(f); tell(f, a, rmk, filerVia(f, imgs) ?? undefined) }
         }
       }
       continue
@@ -502,7 +532,7 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
     /* (its filer as it stood before the change — fix read 6, fault A: changeFiler, the gate's own list — and only while
        he is still told of it) */
     const f1 = changeFiler(b, a, by)
-    const filer = f1 && filerTold(f1, [b, a]) ? f1 : ''
+    const filer = f1 && filerTold(f1, imgs) ? f1 : ''
     const everyone = new Set<string>([...was, ...is, filer])
     const wasIn = new Set(was), isIn = new Set(is)
     let shared: NoticePart[] | null = null
@@ -513,7 +543,7 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
       /* in it before and after, or its filer: what changed about the input — the same words for each of them (nobody
          who reaches here was put in or taken out, so nobody is in the lists of who was) */
       const onlyFiler = p === filer && !wasIn.has(p) && !isIn.has(p)
-      tell(p, a, shared || (shared = common(b, a, p)), onlyFiler ? filerVia(p, [b, a]) ?? undefined : undefined)
+      tell(p, a, shared || (shared = common(b, a, p)), onlyFiler ? filerVia(p, imgs) ?? undefined : undefined)
     }
   }
   return made

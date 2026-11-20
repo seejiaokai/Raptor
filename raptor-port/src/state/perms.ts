@@ -43,7 +43,7 @@ import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 import { deepEqual } from '../command/util'
 /* (notices.ts reads this module too — mayEditSched; each side calls the other only at run time, never at load) */
-import { noticeAboutHim, filerTold, filerVia, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
+import { noticeAboutHim, filerTold, filerVia, foldedInto, dayOfAt, changeFiler, inputUnit, APP_ACTS, passMade, warMade, holMade, shareMade, AT_SLACK_MS, NOTICES } from './notices'
 
 export type Act = 'C' | 'R' | 'U' | 'D'
 export type Role = 'admin' | 'member' | 'guest' | 'pending'
@@ -2162,12 +2162,30 @@ function toldBy(env: CommitEnvelope, iid: unknown): Set<string> | null {
      `by` is the command's to write, so 142's plain admin set it to 149's Osprey and rode a line to him on it; on a new
      input, only the actor himself (state/notices.ts changeFiler — the pass's own list) */
   const self = env.actor && env.actor.personId != null ? String(env.actor.personId) : null
+  /* …AND THE FILER OF EACH LEAVE THIS COMMAND FOLDED INTO IT (fix read 15 — Astra 1; state/notices.ts foldedInto, the
+     pass's own body): its words are told on the leave that stands, judged over the same images as the pass */
+  const folded = out ? foldedFor(env, id) : []
+  for (const x of folded) { imgs.push(x); for (const e of namedOf(x)) out!.add(String((e as any).p)) }
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || String(c.id) !== id) continue
     const f = changeFiler(c.before ?? null, c.op === 'delete' ? null : c.after ?? null, self)
     if (f && filerTold(f, imgs)) out!.add(f)
   }
+  for (const x of folded) { const f = changeFiler(x, null, self); if (f && filerTold(f, imgs)) out!.add(f) }
   return out
+}
+/* the before-images of the leaves this command removed that it folded into input `id` as it stands after the command
+   (state/notices.ts foldedInto — fix read 15, Astra 1) */
+function foldedFor(env: CommitEnvelope, id: string): any[] {
+  let after: any = null
+  for (const c of env.changes) if (c.collection === 'inputs' && String(c.id) === id) after = c.op === 'delete' ? null : c.after ?? null
+  if (!after) return []
+  const removed: any[] = []
+  for (const c of env.changes) {
+    if (c.collection !== 'inputs' || String(c.id) === id || c.before == null || (c.op !== 'delete' && c.after != null)) continue
+    removed.push(c.before)
+  }
+  return foldedInto(after, removed)
 }
 /* A FILER-ONLY LINE CARRIES ITS MARK (fix read 6, fault C — the fresh Opus read's F2 and F3, Astra's 2): the line a
    change writes to someone it tells only as the input's filer — named in it neither before nor after — says so
@@ -2189,6 +2207,8 @@ function filerMarkOk(env: CommitEnvelope, c: Change, n: any): boolean {
       for (const e of namedOf(r)) named.add(String((e as any).p))
     }
   }
+  /* (and the leaves folded into it — fix read 15, Astra 1: the pass's images, toldBy's) */
+  for (const x of foldedFor(env, id)) { imgs.push(x); for (const e of namedOf(x)) named.add(String((e as any).p)) }
   const fu = n.fu
   if (named.has(String(n.to))) return fu === undefined
   if (env.origin === 'restore' && REPLAY && REPLAY(env)?.(c)) return true
@@ -2604,10 +2624,14 @@ function storedRowViolation(env: CommitEnvelope): string | Change[] | null {
      "approved on the war". A put now carries the saved row too, keeping from memory only what a week load's landing
      writes there and never saves (withLanding, below — the filing mark 'g' alone), so the timeline's line reads no
      landing as a change of its own; a put of a record never saved carries no before-image, so its Undo takes the record
-     away rather than putting back the made-up one. A bell line's put carries the saved row whole. */
+     away rather than putting back the made-up one. A bell line's put carries the saved row whole.
+     …AS A CREATE, ITS BEFORE-IMAGE ABSENT (fix read 15 — Astra 2): it was carried as `before: null`, but Undo reads a
+     create only where the before-image is absent (undo/derive.ts invertChange: `before === undefined`), so it built a
+     put of null and the Undo failed whole. The second pass above judges it with `null`, as every check reads either. */
   if (env.origin === 'restore') return null
   const carry = env.changes.map((c, i) => {
     const j = changes[i]!
+    if (j !== c && c.op !== 'delete' && c.after != null && j.before === null && c.before != null) { const { before: _gone, ...create } = j; return create }
     if (j === c || c.op === 'delete' || c.after == null || j.before == null || c.collection !== 'inputs') return j
     return { ...j, before: withLanding(j.before, c.before) }
   })

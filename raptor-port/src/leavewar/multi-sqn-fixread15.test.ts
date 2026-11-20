@@ -129,3 +129,77 @@ describe("SEC15-1 — a member's edit then Undo never clears or changes a schedu
     expect({ remarks: y.remarks, acc: y.acc, saved: stored(x.iid)?.remarks, savedAcc: stored(x.iid)?.acc }).toEqual({ remarks: 'mine', acc: 'r', saved: 'mine', savedAcc: 'r' })
   })
 })
+
+/* Astra 2: fix read 14's item A carried a never-saved record's put with `before: null`; Undo reads a create only where
+   the before-image is absent (undo/derive.ts invertChange: `before === undefined`), so it built a put of null and the
+   Undo failed whole */
+describe('Astra 2 — an accepted edit of a request never saved is undone and redone', () => {
+  let WB: Whiteboard
+  const stored = (id: string): any => { const v = WB.get('inputs', id); return v ? JSON.parse(v) : null }
+  beforeEach(() => { WB = new Whiteboard(); wireRows(WB); writeSeedRows(WB); setStoredRowsWhole(true) })
+  afterEach(() => { setStoredRowProbe(null); setStoredRowsWhole(false) })
+  it("Ranger's own leave made up in memory with lw, an edit that drops it accepted: Undo takes it away from memory and the saved copy; Redo puts it back without lw", () => {
+    signInAs('us', 'us')
+    const IID = 'ipd-a15-new'
+    INPUTS.push({ person: 'bane', date: 'Jul 27', yr: 2026, allday: true, type: 'LL', remarks: 'mine', by: 'bane', at: Date.now(), iid: IID, ord: 99956, lw: 'y2026' } as any)   // outside every command
+    const x: any = INPUTS.find((r: any) => r.iid === IID)
+    expect(writeInputsBatch(() => { delete x.lw; x.remarks = 'changed' }), 'accepted, judged as new').toBe(true)
+    expect(stored(IID)?.remarks).toBe('changed')
+    expect(globalUndo().ok, 'Undo').toBe(true)
+    expect({ mem: !!INPUTS.find((r: any) => r.iid === IID), saved: stored(IID) }).toEqual({ mem: false, saved: null })
+    expect(globalRedo().ok, 'Redo').toBe(true)
+    const y: any = INPUTS.find((r: any) => r.iid === IID)
+    expect({ remarks: y?.remarks, lw: y?.lw, saved: stored(IID)?.remarks, savedLw: stored(IID)?.lw }).toEqual({ remarks: 'changed', lw: undefined, saved: 'changed', savedLw: undefined })
+  })
+})
+import { globalRedo } from '../undo/timeline'
+
+/* Astra 1: the drag window's Approve with words over a day that BRIDGES two war-approved leaves — the leave after is
+   folded into the leave before and its record removed, so the words on the leave Hunter filed were told to nobody */
+describe("Astra 1 — words typed over a bridge of two war-approved leaves reach the folded leave's filer", () => {
+  const bridge = (words: string) => {
+    signInAs('ad2', 'a2')
+    const old = new Set(INPUTS.map((r: any) => r.iid))
+    expect(placeApproved([{ personId: 'bane', date: '2026-07-29' }], 'LL', { remarks: 'right' }).approved).toBe(1)
+    const hunters: any = INPUTS.find((r: any) => !old.has(r.iid) && r.lw)
+    signInAs('ad', 'a')
+    const old2 = new Set(INPUTS.map((r: any) => r.iid))
+    expect(placeApproved([{ personId: 'bane', date: '2026-07-27' }], 'LL', { remarks: 'left' }).approved).toBe(1)
+    const sabers: any = INPUTS.find((r: any) => !old2.has(r.iid) && r.lw)
+    expect(setCell('bane', '2026-07-28', 'LL'), 'a pending bid between them').toBe(true)
+    const ids = new Set(NOTICES.map(n => n.id))
+    const cells = [27, 28, 29].map(d => ({ personId: 'bane', date: `2026-07-${d}` }))
+    inOneWarCommand('lw.decide', () => {
+      inOneWarCommand('lw.reqmeta', () => {
+        setRemarksOn(cells, { remarks: words })
+        for (const d of ['2026-07-27', '2026-07-29']) for (const r of leaveInputsAt('bane', d)) if ((r as any).lw) setLeaveRemarks(r, words, 'bane')
+      })
+      setBidStates(cells, 'approved')
+    })
+    const left = INPUTS.filter((r: any) => r.lw && (r.iid === hunters.iid || r.iid === sabers.iid)).map((r: any) => ({ iid: r.iid, date: r.date, end: r.endDate, remarks: r.remarks }))
+    return { hunters, sabers, left, fresh: NOTICES.filter(n => !ids.has(n.id)) }
+  }
+  it("Hunter's approved LL on 29 Jul ('right'), Saber's on 27 Jul ('left'), a bid on 28 Jul; Saber types 'joined' over 27–29 and presses Approve: Hunter told once, of the words", () => {
+    const { sabers, left, fresh } = bridge('joined')
+    expect(left, 'one leave left, 27–29 Jul, the new words').toEqual([{ iid: sabers.iid, date: 'Jul 27', end: 'Jul 29', remarks: 'joined' }])
+    const toHunter = fresh.filter(n => n.to === 'prowler')
+    expect(toHunter.map(n => n.what.map((x: any) => x.k)), 'Hunter, the folded leave\'s filer: one line of the words').toEqual([['rmk']])
+    expect(toHunter[0]!.iid, 'the line opens the leave that stands').toBe(sabers.iid)
+    expect(fresh.filter(n => n.to === 'bane' && n.what.some((x: any) => x.k === 'rmk')).length, 'Ranger told of the words once').toBe(1)
+  })
+  it("(control) the same bridge with the words each leave already reads ('same' over both, then Approve): no line of words to anyone", () => {
+    signInAs('ad2', 'a2')
+    expect(placeApproved([{ personId: 'bane', date: '2026-07-29' }], 'LL', { remarks: 'same' }).approved).toBe(1)
+    signInAs('ad', 'a')
+    expect(placeApproved([{ personId: 'bane', date: '2026-07-27' }], 'LL', { remarks: 'same' }).approved).toBe(1)
+    expect(setCell('bane', '2026-07-28', 'LL')).toBe(true)
+    const ids = new Set(NOTICES.map(n => n.id))
+    const cells = [27, 28, 29].map(d => ({ personId: 'bane', date: `2026-07-${d}` }))
+    inOneWarCommand('lw.decide', () => {
+      inOneWarCommand('lw.reqmeta', () => { setRemarksOn(cells, { remarks: 'same' }) })
+      setBidStates(cells, 'approved')
+    })
+    expect(INPUTS.filter((r: any) => r.lw && r.date === 'Jul 27' && r.endDate === 'Jul 29').length, 'joined').toBe(1)
+    expect(NOTICES.filter(n => !ids.has(n.id) && n.what.some((x: any) => x.k === 'rmk')).length).toBe(0)
+  })
+})
