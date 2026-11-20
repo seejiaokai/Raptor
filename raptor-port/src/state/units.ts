@@ -181,6 +181,10 @@ export function setGrant(account: string, unit: string, level: GrantLevel, accou
   if (level !== 'admin' && level !== 'view') return no('Pick admin or view')
   if (!unitById(unit)) return no('That squadron is gone')
   if (homeOn(accountPid) === unit) return no('That is his own squadron — his role there is set on his account')
+  /* NOT BETWEEN A MOVE SAVED AND ITS DAY (Fable's sample review, 1 — his D2203): his move drops every right when it is
+     saved, though it counts from tomorrow, so a right given in the rest of that day outlived the move. Held at the gate
+     too (perms.ts unitRowViolation) */
+  if (homeOn(accountPid, moveFrom(todayIso())) !== homeOn(accountPid)) return no('He moves squadron tomorrow — give this after the move')
   const had = grantIn(unitRows(), account, unit)
   if (had && had.level === level) return no('He already has that')
   return save('grant.set', null, () => {

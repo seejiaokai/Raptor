@@ -1986,6 +1986,10 @@ function unitRowViolation(env: CommitEnvelope): string | null {
            — the restore keeps its recorded day then (restoreRedated), and the gate asks the same of the same moment */
         /* (fix read 11, fault G — F11-5b): or put back from below admin to admin, the same account in the same squadron */
         const back = grantBackHolds(b, n, OFFAT?.(env), before.homes)
+        /* NOT BETWEEN A MOVE SAVED AND ITS DAY (Fable's sample review, 1 — his D2203): the move drops every right of his
+           when it is saved, though it counts from tomorrow; a right given, raised or put back by an Undo in the rest of
+           that day outlived the move. A right standing unchanged is no giving (units.ts setGrant says the same) */
+        if (!kept && homeBefore(String(who.pid), moveFrom(today), after) !== homeBefore(String(who.pid), today, after)) return `a right given the day before his move (${id})`
         if (!((kept || back) && env.origin === 'restore' && REPLAY && REPLAY(env)?.(c))) {
           const want = kept ? b.from : today
           if (n.from !== want) return `a right not dated today (${id})`
@@ -2012,6 +2016,17 @@ function unitRowViolation(env: CommitEnvelope): string | null {
          they: the label "person.delete" on a command that deleted nobody stripped 142's Plan from a 149 man who stays */
       if (id.startsWith(GRANT_PFX) && b && n == null && accountGoesHere(env, String(b.account))
         && personDeletedHere(env, accountPidBefore(env, String(b.account)), adminOf, before)) continue
+      /* …AND A MOVE TAKES THEM THE SAME WAY (Fable's sample review, 2 — his D2203, "whoever moves him", as fault H read it
+         for a delete): the move drops every right of his inside its own command (units.ts setHome), and each dropped right
+         was judged by its own squadron, so 142's admin could not move his man to 149 once a third squadron had given him
+         View — the move refused whole, in the gate's own words. A right's removal passes here only where the same command
+         changes that man's squadron from tomorrow; the home rows that make the move are judged as any (an admin of each
+         squadron they name). A bare removal stays an admin's of that squadron. */
+      if (id.startsWith(GRANT_PFX) && b && n == null) {
+        const mp = accountPidBefore(env, String(b.account))
+        const tm = moveFrom(today)
+        if (mp && homeBefore(mp, tm, after) !== homeBefore(mp, tm, before) && homeBefore(mp, tm, after) !== homeBefore(mp, today, after)) continue
+      }
       for (const img of [b, n]) if (img && !adminOf(String(img.unit))) return `not an admin of ${img.unit} (${id})`
     } else if (id.startsWith(UNIT_PFX)) {
       if (!master) return `only a master admin makes or changes a unit (${id})`
