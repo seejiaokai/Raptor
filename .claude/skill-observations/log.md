@@ -959,3 +959,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** The previous chat committed a scripted browser walk that had never completed a run, marked "unverified" in the handoff. On its first full run it failed at three separate points (a wrong box for the second half's words that silently changed the first half's words, wrong button names, no sign-in after a reload); each needed a picture opened and a fix before the walk proved anything — four runs instead of one.
 **Suggested improvement:** In the handoff skill's "what is left" step: a script or test committed without a completed run is named with the exact step it last reached and the pictures of that step, and the next chat's pick-up runs it once on one size and opens the first failing step's picture before the full matrix.
 **Principle:** Unverified automation handed over is a draft, not a tool — hand over where it stopped and what it saw, and have the receiver prove it on the smallest run before trusting a full one.
+
+### Observation 988: Blind readers get a copy with the other readers' reports left out, not an instruction not to open them
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** chat 125 — round 2 of a three-reader blind red team of a plan (Astra, a fresh Opus reader, Fable)
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** starting blind reviewers on a second round, when the first round's reports sit in the same repository
+
+**Issue:** Round 1's brief kept the readers blind by asking them not to open files named like the other reports, which sat in the same folder they were reading. In round 2 each reader was given its own exported copy of the branch with every earlier reader's report (and the reviser's brief that summarised them) excluded at export time, so blindness no longer rested on each model obeying a file-name rule while it searched the same folder.
+**Suggested improvement:** In the review round's set-up step: export one copy per reader (`git archive <commit> -- . ':(exclude,glob)**/<report-pattern>*'`, pictures excluded to keep it small), point each reader only at its copy, and say in the brief "this copy holds no reader's report". Keep the "do not open" line only as a second guard.
+**Principle:** Enforce a reviewer's blindness by what it can reach, not by what it is asked not to read.
