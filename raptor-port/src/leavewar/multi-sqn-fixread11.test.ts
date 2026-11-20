@@ -8,7 +8,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 import { storeBackend, HOOKS, store as settingsStore } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputsBatch } from '../state/store'
-import { accountsLoad, signIn, sessionFor, setMaster, updateAccount, ACCOUNTS_LIST, accountOfPid } from '../state/accounts'
+import { accountsLoad, signIn, sessionFor, setMaster, updateAccount, ACCOUNTS_LIST, accountOfPid, levelIn } from '../state/accounts'
 import { initStore as lwInitStore, setPeople, setCell, setBidState, getState, openDates, worldUnit } from '../leavewar/state/store'
 import { ownershipViolation } from '../state/perms'
 import { deriveActor } from '../command/actor'
@@ -641,15 +641,17 @@ describe('fault G — three Undo cases keep the line the man kept (F11-5a, F11-5
     const g = unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149')
     expect({ level: g?.level, from: g?.from, shown: shown('prowler', l.id) }).toEqual({ level: 'admin', from: '2026-07-13', shown: true })
   })
-  it('(Fable F11-5b, a move between) Plan set to View on 15 Jul, he moves 16 Jul, the Undo on 17 Jul: a right given today', () => {
+  /* (§4.5 of the reshape plan, rewrite 12 — guardrail 2: no restore puts back a right whose man has moved since its start;
+     the Undo puts nothing back, and nothing of 149 holds for him again — Fable 7. Until helper "undo & roles" wires the
+     leave-out, the press writes the recorded row, which holds nothing; the step's blocked words are that helper's test) */
+  it('(Fable F11-5b, a move between) Plan set to View on 15 Jul, he moves 16 Jul, the Undo on 17 Jul: nothing of 149 holds again', () => {
     on(13); signInAs('ad', 'a'); const u150 = addUnit('150', 'p1'); expect(u150.ok).toBe(true)
     expect(setGrant('acad2', 'u149', 'admin', 'prowler').ok).toBe(true)
     on(15); signInAs('ad', 'a')
     expect(setGrant('acad2', 'u149', 'view', 'prowler').ok).toBe(true)
     homes('prowler', 'hc', [['u142', '2026-07-12'], [String((u150 as any).id), '2026-07-16']]); on(17)
-    const u = globalUndo(); expect(u.ok, JSON.stringify(u)).toBe(true)
-    const g = unitRows().grants.find(x => x.account === 'acad2' && x.unit === 'u149')
-    expect({ level: g?.level, from: g?.from }).toEqual({ level: 'admin', from: '2026-07-17' })
+    globalUndo(); unitsLoad()
+    expect(levelIn('acad2', 'u149'), '17 Jul, after the Undo').toBeNull()
   })
   it('(Fable F11-6) Hunter master since 10 Jul, moved 12 Jul; on 15 Jul Saber links his sign-in to Newby by mistake and presses Undo: his mark day and his line come back', () => {
     on(10)
