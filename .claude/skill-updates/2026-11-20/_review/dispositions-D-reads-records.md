@@ -1,9 +1,9 @@
 | 922 | APPLY | `raptor-port/docs/doc-budget.md` §2, new bullet "Before a rewrite goes to its readers": qualifying words and pointers into leaving passages shown carried; one change with 924 and 925 |
 | 924 | APPLY | `raptor-port/docs/doc-budget.md` §2, the same bullet: a saving quoted to him is measured by a script and called a ceiling, the rewording share a guess (fixed in chat 60's measure; now general) |
 | 925 | APPLY | `raptor-port/docs/doc-budget.md` §2, the same bullet: a corrected rule brings the lines that rely on it (steps, checklist, brief); the cross-file D201 sweep stays [RULE-FILE-LESSONS] (a) |
-| 926 | FILED | [CHECK-TOOLS-HARDEN] (s), added: a check-then-commit script and a guard refusing a commit joined after a check by a semicolon or pipe; memory note pipe-hides-check-failure extended (third meeting) |
-| 928 | APPLY | GD §Now, the code check: new trap bullet (`lint:changed -- --include-untracked`, its count matched to git status); the whole-output test half to the TDD skill (C's file); the default flag filed as [CHECK-TOOLS-HARDEN] (u) |
-| 936 | APPLY | GD, the "There is no GitHub Pages site" bullet's "Done" loop: a wait waits for success, never for quiet; the committed wait script filed as [CHECK-TOOLS-HARDEN] (t) |
+| 926 | FILED | [CHECK-TOOLS-HARDEN] (x), added: a check-then-commit script and a guard refusing a commit joined after a check by a semicolon or pipe; memory note pipe-hides-check-failure extended (third meeting) |
+| 928 | APPLY | GD §Now, the code check: new trap bullet (`lint:changed -- --include-untracked`, its count matched to git status); the whole-output test half to the TDD skill (C's file); the default flag filed as [CHECK-TOOLS-HARDEN] (z) |
+| 936 | APPLY | GD, the "There is no GitHub Pages site" bullet's "Done" loop: a wait waits for success, never for quiet; the committed wait script filed as [CHECK-TOOLS-HARDEN] (y) |
 | 938 | FILED | [RULE-FILE-LESSONS] (e), added: page room and the answers/changes trigger read before a batch of rows; its home is DECISIONS.md's steps, which a review may not draft |
 | 948 | APPLY | GD, the settle step's mid-merge trap: one "did not arrive" can be real; a line only the branch has is carried into main's archived block |
 | 951 | FILED | [RULE-FILE-LESSONS] (f), added: a ruling number counts as taken only once another open chat can see it; the root (two chats, one folder) is already the memory note one-checkout-per-session |

@@ -240,7 +240,7 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   success, never for quiet:** "nothing queued or running" is true of a FAILED run too — wait until every run of the merge
   commit concluded `success` or `skipped`, and read a failure's step before calling it the code's (11 Nov 26: nine
   browser jobs failed downloading the test browser, and a wait script printed "ready"; the committed script:
-  `[CHECK-TOOLS-HARDEN]` (t)).
+  `[CHECK-TOOLS-HARDEN]` (y)).
 - **VERCEL CAN MISS A MERGE — check that a Production deployment actually STARTED** (met 6 Oct 26, PR #482, the crew-rest
   fix). The merge to `main` was green everywhere and Vercel started NO Production deployment for it, while every branch
   push that day had made its preview within a minute and the previous merge had gone live in about two.

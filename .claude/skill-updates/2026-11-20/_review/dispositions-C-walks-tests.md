@@ -2,7 +2,7 @@
 
 | # | Code | Where it lands / why |
 |---|---|---|
-| 919 | FILED | `[CHECK-TOOLS-HARDEN]` new point (s), the document check counts §7.11's lesson numbers against the checklist (`_docs/OUTSTANDING-items-C-walks-tests.md`); the doubled 23 still stood ([BUGCHECK-LESSON-ORDER] only moved it), so BCO §7.11 and the checklist drafts rename the second one 23b |
+| 919 | FILED | `[CHECK-TOOLS-HARDEN]` new point (w), the document check counts §7.11's lesson numbers against the checklist (`_docs/OUTSTANDING-items-C-walks-tests.md`); the doubled 23 still stood ([BUGCHECK-LESSON-ORDER] only moved it), so BCO §7.11 and the checklist drafts rename the second one 23b |
 | 929 | APPLY | WS §4, the `elementFromPoint` line: "nothing stands over it" also compares the box with every showing note, banner or overlay, the settled picture taken while it shows |
 | 939 | APPLY | BCO §7.0 "What can be chosen": a page fitted to the screen is walked at the narrowest desktop width above the phone split and a mid width beside the wide one, its sideways scroll at the narrow one |
 | 940 | APPLY | BCO §6 the "where an input is filed / who counts as away" row widened to every READER of a changed input or setting (a day's kept settings, D2005), live warnings and counts included; checklist step 8's list of rows matched |

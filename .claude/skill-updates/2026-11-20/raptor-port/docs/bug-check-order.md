@@ -293,7 +293,7 @@ compaction is not read, and is named in its report — the start hook pastes the
 compacts (`[READER-COMPACT-HANDOFF]`); the host sizes a read to finish before the reader would compact. Blindness is
 what a reader can reach, not what its brief tells it not to open: when the version under review is not the branch head,
 or the branch already holds another reader's report or a revision built from it, the reader runs in an exported copy of
-that commit (the recipe: `docs/codex-guide.md`, "Reading a commit that is not the branch head"), and the saved report's
+that commit, from which the round's handoff block, builder briefs and reports are taken out (the recipe's step 2; the recipe: `docs/codex-guide.md`, "Reading a commit that is not the branch head"), and the saved report's
 head says so (7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (g)).
 
 **Before a brief leaves** — a brief is the one place a wrong sentence is multiplied by every reader of it:
@@ -311,6 +311,13 @@ head says so (7 Nov 26; the ready script is `[CHECK-TOOLS-HARDEN]` (g)).
   award cost a reproduction). (13 Oct 26: four of one walk's five FAILs, and about twelve on the job before, were
   the host's own expected line contradicting an older ruling; 2 and 8 Nov 26: three more, each an expectation with no
   source.)
+- Each reader's brief holds only its own job, decided when the brief is written: a paragraph meant for one reader (a
+  security reader's scope above all) goes in that reader's own prompt, never in a brief another reader receives —
+  wording meant for one reader can stop another's run. Astra's brief asks for the code checked against the rulings and
+  contracts it names, each finding written to its report as it is confirmed, so a stopped run keeps what it found. A
+  stopped run is never re-run on a brief reworded after the stop: its progress notes are read for claims, another
+  reader is sent to chase any claim no other reader made, and the lost read goes on the reads-owed list (19 and 20 Nov
+  26: readers stopped by their provider in fix reads 5, 8, 9, 10, 11 and 13; a re-run on a cut brief was refused).
 - A code reader's brief says where its proof tests go — its own scratch folder, never a test name under the app's
   source (staging while helpers work: the dispatching guide's "Stage by explicit path") (8 Nov 26: a reader's
   deliberately failing test was swept into the builder's commit).

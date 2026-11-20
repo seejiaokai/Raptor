@@ -1,4 +1,23 @@
-# Memory additions — group D-reads-records (skill-notes review of 20 Nov 26)
+# Memory additions — the skill-notes review of 20 Nov 26, groups A and D merged (chat 121)
+
+Applied by hand at install, in `C:\Users\User\.claude\projects\C--Users-User-projects-Raptor\memory\`; no new note,
+three extended.
+
+<!-- ===== group A-handoff ===== -->
+
+## Extend `measure-context-before-reporting.md` (no new note) — skill note 934
+
+Index line in `MEMORY.md` unchanged. Append at the end of the note:
+
+```
+**Met again 11 Nov 26** (chat 64): at 91% with the state saved and a compaction about to run, a notification and the
+next-step box told him the chat was full and his two points would wait for a fresh chat; the compaction then left the
+chat at 42%, and both points were answered there ten minutes later. When a compaction is about to run, defer nothing in
+words — let it run, measure after it, then choose between answering here and handing off; a notification cannot be
+taken back.
+```
+
+<!-- ===== group D-reads-records ===== -->
 
 Two extensions of existing notes in `C:\Users\User\.claude\projects\C--Users-User-projects-Raptor\memory\`; no new note.
 
@@ -28,4 +47,4 @@ read the file whatever happened; never a pipe, never a semicolon.
 
 Met again 10 Nov 26 (the guides' tightening, step 3), through a semicolon: `docsize > f; echo $?; git commit` committed
 after the check failed (a rules file one line over its tripwire). Three meetings: the guard is a tool, filed as
-`[CHECK-TOOLS-HARDEN]` (s) — a check-then-commit script and a refusal in the script guard.
+`[CHECK-TOOLS-HARDEN]` (x) — a check-then-commit script and a refusal in the script guard.
