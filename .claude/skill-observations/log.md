@@ -972,3 +972,16 @@ untouched high-risk code, or the fault count's fall says nothing about what was 
 **Issue:** Round 1's brief kept the readers blind by asking them not to open files named like the other reports, which sat in the same folder they were reading. In round 2 each reader was given its own exported copy of the branch with every earlier reader's report (and the reviser's brief that summarised them) excluded at export time, so blindness no longer rested on each model obeying a file-name rule while it searched the same folder.
 **Suggested improvement:** In the review round's set-up step: export one copy per reader (`git archive <commit> -- . ':(exclude,glob)**/<report-pattern>*'`, pictures excluded to keep it small), point each reader only at its copy, and say in the brief "this copy holds no reader's report". Keep the "do not open" line only as a second guard.
 **Principle:** Enforce a reviewer's blindness by what it can reach, not by what it is asked not to read.
+
+### Observation 989: A find-and-replace edit script re-run by mistake doubles its text
+
+**Status:** OPEN
+**Date:** 20 Nov 26
+**Session context:** chat 126, the Plan audit — editing the backlog with a small node script of exact-anchor replacements
+**Skill:** New skill candidate: safe-doc-edits (or the CLAUDE.md editing guidance for scripted edits)
+**Type:** open-source
+**Phase/Area:** scripted edits of tracked documents
+
+**Issue:** an edit script that replaced an anchor with "anchor + new text" checked only that the anchor occurred once. Re-run later by mistake (its path reused in a command meant only to search), it matched the same anchor again and appended the new text a second time, doubling two backlog lines. Caught by `git diff --stat` and undone with a checkout of the file; nothing was committed.
+**Suggested improvement:** every replacement in an edit script refuses when its NEW text is already present (an idempotence guard), not only when its anchor is missing or doubled; and a script's run and an unrelated search never share one command line.
+**Principle:** an edit that keeps its anchor in its output must check for its own output before writing, or a second run silently duplicates it.
