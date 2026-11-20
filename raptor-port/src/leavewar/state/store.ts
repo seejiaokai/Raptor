@@ -6071,12 +6071,15 @@ function viewAt(personId: string, date: string) {
 /* WHO MAY MOVE — ONE RULE, EVERY DOOR (D333 narrowed by D1177: "a member moves his own bid while it waits and its days are
    open"). A request: on a row this role may write, on a day it may write (a member: his own row, an open day from today
    — `dayWritable`; the admin: any row, any day). A REFUSED request is a record
-   that can move too — it lands undecided, a move being a proposal (D262 (b); the mock-up's reading, uncorrected) — but
-   NOT while a live bid holds its half: it is history beside that bid, and moving the two together would land two live
-   bids on one half (Fable's S32). */
+   only the ADMIN may move — it lands undecided, a move being a proposal (D262 (b)) — never the member: his bid moves
+   "while it waits" (D1177), and a refused one does not wait; his move of it landed it pending with the refusal gone, which
+   the gate refuses (S16-2), so the door offered a Move that silently did nothing (fix read 17, R1: Fable 1, Opus 1, Astra
+   2) — and NOT while a live bid holds its half: it is history beside that bid, and moving the two together would land
+   two live bids on one half (Fable's S32). */
 function requestMovable(personId: string, date: string, r: RequestRec, list: readonly WarRec[]): boolean {
   if (!canEditRow(state.role, state.viewer, personId)) return false
   if (!isBiddable(r.code) || !dayWritable(date)) return false
+  if (r.state === 'refused' && !canDecide(state.role)) return false
   if (r.state === 'refused' && liveRequestsOn(list, portionOfCode(r.code)).length) return false
   /* …AND BENEATH AN ABSENCE ON ITS HALF (Fable's final read, finding 2, 27 Sep 26): a refused morning stays as history
      when a second morning bid is approved (the approval drops only its own record), so a day holds approved leave AND
@@ -6259,7 +6262,16 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
     }
     })
   } catch (e) { if (!(e instanceof MoveRefusedAtCommit)) throw e }
-  return refused ?? 'moved'
+  if (refused) return refused
+  /* WHAT THE STORE HOLDS AFTER THE COMMAND (fix read 17, R1's second half — all three readers): a command the commit gate
+     refused rolls back, and the gesture says nothing; "moved" is said only when every moved request stands on its landing
+     day — as `setRequestWords` reads the store after its own command. */
+  for (const m of recs) {
+    if (m.kind !== 'request') continue
+    const to = addDays(m.date, dayDelta)
+    if (!listAt(m.personId, to).some(r => r.kind === 'request' && r.id === m.id)) return { reason: 'nothing', at: m.date }
+  }
+  return 'moved'
 }
 
 /** The throw that rolls a move back when the absence door refuses at the commit (inside a command the command catches it
