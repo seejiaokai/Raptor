@@ -60,7 +60,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 ## How a person joins
 - Either way: the admin adds him first — defence mail, the puck (callsign) it belongs to, member or admin — and his first sign-in has that access; or he signs in on no list and asks with "Request access", and an admin approves, sets member or admin and links him to a puck; until then he sees only the waiting screen [D204, D2239].
 - Request access and Admin → Users' New person — a brand-new person and his account in one step — ask the same [D214, D224, D204, D322, D2239].
-- Waiting, he sees the waiting screen only, until an admin of his squadron approves him: there is no guest view — no admin switch lets people waiting see the programme, no button into it (to be removed from the app) [D2239, D204].
+- Waiting, he sees only the waiting screen until his squadron's admin approves him; no guest view, switch or button into it (to be removed) [D2239, D204].
 - Every member sees a medical input's type, remarks and documents, as today — the database brief's "the person and admins only" set aside [D211, D1536, D1537].
 - A new request notifies the admins beyond the Admin tab's count [D216, D204, D2239]. Each admin's bell is his own [D227, D216].
 - Initials are asked, never required — sign-up and New person alike [D225, D214]. The callsign/name stays at 14 letters — never quietly cut [D226].
@@ -71,7 +71,7 @@ Loads by itself with any accounts, sign-in, Admin → Users, Quals, one-door or 
 - One place in the app answers "may this person do this?", mirroring the data model's permissions table (§11), which matches every ruling, a test failing when the two disagree; built with `[ACCOUNTS]`, a test per column [D200, D149, D218, D1510, D1651, D1589].
 - The database's security roles are the agent's to design at the database step, not before — each table's permissions per role, row ownership set by the app, the protected columns, what stands in for a rule a role cannot hold; IT enters them, a member-only account tests them; IT's 8 Nov 26 answers (database rights theirs, who may do what the app's roles) are put to him, `[DB-SECURITY-ROLES]` [D1653].
 - Three levels: a few master admins (developers, into the database directly), admins, members; both admin levels create accounts and set rights, not IT [D1971].
-- Always "master admin", on screen and to him, never "master" alone [D2240].
+- Always "master admin", on screen and to him, never "master" alone; where a master admin may act for a squadron, so may an admin with Plan of it, both named [D2240, D2241, D2201].
 
 ## Admin → Users — the one door
 - His direction, built as proposed: one door — Admin → Users shows each person's whole state, sign-in and roster, and carries every action on him but the dated posting, whose sheets stay on the Leave War [D309, D310].
