@@ -1,0 +1,91 @@
+<title>Plan Holder Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* layout: one reading column; each question a card, its pictures desktop beside iPhone (copied from the 20 Nov page) */
+:root{--bg:#f4f6f8;--card:#ffffff;--fg:#14202b;--mute:#5b6b78;--line:#d6dee5;--acc:#0e7fa6;--rec:#0b7a4b;--mark:#d4157a;--tint:rgba(14,127,166,.07);
+--f-body:Inter,system-ui,'Segoe UI',sans-serif;--f-head:'Space Grotesk',Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d141a;--card:#151f27;--fg:#e6edf2;--mute:#97a8b5;--line:#26343f;--acc:#3cc4ea;--rec:#43c98a;--mark:#ff4fa3;--tint:rgba(60,196,234,.08);color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-head);text-wrap:balance;margin:0}
+h1{font-size:26px}h2{font-size:21px;margin-top:38px;padding-top:14px;border-top:2px solid var(--line)}h3{font-size:16px;margin-top:18px}
+.sub{color:var(--mute);margin:4px 0 0;max-width:80ch}
+.top{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px}
+.top ol{margin:6px 0 0;padding-left:0;list-style:none;display:grid;gap:8px}
+.top li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px}
+.top b.n{font-family:var(--f-head);color:var(--acc)}
+a{color:var(--acc)}
+.rec{color:var(--rec);font-weight:600}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:12px}
+.q p,.q li{max-width:80ch}.q p{margin:8px 0}
+.q ul{margin:6px 0;padding-left:20px}.q li{margin:4px 0}
+.ex{background:var(--tint);border-radius:8px;padding:8px 12px;color:var(--mute)}
+.ex b{color:var(--fg)}
+.pair{display:grid;grid-template-columns:minmax(0,2.3fr) minmax(0,1fr);gap:10px;margin-top:10px;align-items:start}
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;border-radius:6px;border:1px solid var(--line);cursor:zoom-in;background:#000}
+figcaption{font-size:12.5px;color:var(--mute);margin-top:4px}
+figcaption b{color:var(--fg)}
+.words{font-family:var(--f-head);background:var(--tint);border:1px dashed var(--mark);padding:6px 10px;margin:8px 0;border-radius:6px}
+.tag{display:inline-block;font:700 11px/16px system-ui,'Segoe UI',sans-serif;padding:0 6px;border-radius:8px;color:#fff;background:#ff2d95;vertical-align:1px}
+.note{border-left:4px solid var(--line);padding-left:10px;color:var(--mute)}
+.fix{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px;padding:10px 14px;margin-top:12px;max-width:none}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:flex-start;justify-content:center;padding:16px;z-index:20;overflow:auto}
+#zoom[hidden]{display:none}
+#zoom img{max-width:none;width:auto;cursor:zoom-out}
+@media (max-width:640px){.pair{grid-template-columns:minmax(0,1fr)}.top li{grid-template-columns:34px minmax(0,1fr)}}
+</style>
+
+<div class="wrap">
+<h1>Two squadrons: two more questions</h1>
+<p class="sub">Two readers, checking the fix plan, found two things for you to decide: one where two of your rulings pull against each other, and one change to words you approved. Each picture is the real app; anything drawn in is outlined in pink and tagged <span class="tag">New</span>. Tap a picture to see it full size. Big picture: a desktop. Small picture: your iPhone. Nothing here is built yet.</p>
+
+<div class="top">
+<h3 style="margin-top:0">2 questions, each with my recommendation</h3>
+<ol>
+<li><b class="n">1</b><span>An admin holding Plan of a squadron, and the master admin, are offered in that squadron's sign-off boxes, after its own people, when they have the Scheduler tick. <span class="rec">Recommended: yes.</span> <a href="#q1">Pictures 1</a></span></li>
+<li><b class="n">2</b><span>When the person pressing cannot make a new admin of that squadron, the last-admin note says who can, instead of telling him to do it. <span class="rec">Recommended: yes, these words.</span> <a href="#q2">Pictures 2</a></span></li>
+</ol>
+<p class="sub">Answer by number. "Both as recommended" is fine. Until you answer, each part is built as its section says.</p>
+</div>
+
+<p class="fix"><b>A correction to last round's page.</b> It said a sign-in with access to another squadron can be moved to another person by a master admin or by an admin of each squadron it has access to. For a sign-in that holds Plan, only a master admin can now do it, because only a master admin gives or takes Plan.</p>
+
+<h2 id="q1">1 · Sign-off boxes and an admin holding Plan</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Hunter is 142's admin and holds Plan of 149, so he can plan and publish 149's days. He has the Scheduler tick. He plans and publishes 149's Mon 13 Jul. Today the SKED CK list on that day offers only 149's own schedulers (in the demo, Kestrel alone), so Hunter cannot sign the day he planned. Saber, the master admin, is not offered either (1a).</p>
+<p><span class="rec">Recommended: after 149's own people, the list also offers Hunter and Saber (1b).</span> Plan gives Hunter 149's schedule and publishing, and signing is part of publishing. Each is offered only while he has the Scheduler tick, the same rule 149's own people meet. The same goes for PLANNED BY and APPROVED BY. CUR CK, which offers all of the day's own people, stays 149's people only.</p>
+<p class="note">Until you answer: the lists offer that day's 149 people only, as you have ruled.</p>
+</div>
+<div class="pair"><figure><img src="img/r8a-d.png" alt="149's Mon 13 Jul, the SKED CK list offering Kestrel only"><figcaption><b>1a, real, today.</b> Kestrel signed in, 149's Edit Schedule, Mon 13 Jul. The SKED CK list (1) offers Kestrel only. Set up for the picture: Hunter's Plan of 149 written in, as no screen gives Plan yet, and Hunter's Scheduler tick switched on in Quals by Saber. The browser's own drop-down cannot be pictured, so the list is the box's own names shown open under it.</figcaption></figure>
+<figure><img src="img/r8a-p.png" alt="the same on the iPhone"><figcaption><b>1a, iPhone, real.</b> The same set-up.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/r8b-d.png" alt="the same list with Hunter and Saber added"><figcaption><span class="tag">New</span> <b>1b, drawn, recommended.</b> The same list with Hunter and Saber after 149's own people.</figcaption></figure>
+<figure><img src="img/r8b-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>1b, iPhone, drawn.</b></figcaption></figure></div>
+
+<h2 id="q2">2 · The last-admin note, for someone who cannot fix it</h2>
+<div class="q">
+<p class="ex"><b>Example.</b> Squadron 150 has no admin of its own. Hunter, 142's admin, runs it through Plan of 150. On Wed 15 Jul Outlaw, another 142 admin who is not a master admin, presses Suspend on Hunter's row on Admin → Users. Today the app lets it through ("Hunter suspended") and 150 is left with nobody who can sign in as its admin (2a). Once the lock you approved is built, the app refuses. But the approved words, "Make another admin of 150 first.", send Outlaw to something he cannot do: only a master admin or an admin of 150 can make an admin of 150.</p>
+<p><span class="rec">Recommended: for someone who cannot make an admin of that squadron, the note says who can (2b).</span></p>
+<p class="words">Hunter is 150's last admin. Only a master admin or an admin of 150 can make another.</p>
+<p>And when it starts on a later date, for example if 150's other admin, Osprey, were moving to 142 from Fri 27 Nov:</p>
+<p class="words">Hunter is 150's last admin from Fri 27 Nov, when Osprey moves to 142. Only a master admin or an admin of 150 can make another.</p>
+<p>For a master admin, or an admin of 150, who can make another admin, the words you approved stay: "Hunter is 150's last admin. Make another admin of 150 first." (2c shows them in your approved picture.)</p>
+<p class="note">Until you answer: built with the words you approved.</p>
+</div>
+<div class="pair"><figure><img src="img/r12a-d.png" alt="Hunter suspended, his sign-in dot red"><figcaption><b>2a, real, today.</b> Outlaw signed in. He pressed Suspend on Hunter's row: not refused, the note says "Hunter suspended" (2) and Hunter's sign-in dot turns red. Set up for the picture: squadron 150 and Hunter's Plan of 150 written in, as no screen makes a squadron or gives Plan yet; and Saber made Outlaw an admin on Admin → Users, as the demo has no 142 admin who is not a master admin.</figcaption></figure>
+<figure><img src="img/r12a-p.png" alt="the same on the iPhone"><figcaption><b>2a, iPhone, real.</b> The same set-up.</figcaption></figure></div>
+<div class="pair"><figure><img src="img/r12b-d.png" alt="the refusal note with the proposed words"><figcaption><span class="tag">New</span> <b>2b, drawn, recommended.</b> The same press, refused. Undo took the Suspend back and Hunter's row was opened again, so the screen stands as it did before the press. Only the note is drawn in, in the look of your approved picture 2c.</figcaption></figure>
+<figure><img src="img/r12b-p.png" alt="the same on the iPhone"><figcaption><span class="tag">New</span> <b>2b, iPhone, drawn.</b></figcaption></figure></div>
+<div class="pair"><figure><img src="img/p9-d.png" alt="the approved last-admin note"><figcaption><b>2c, your approved picture, for comparison</b> (round of 19 Nov): the note a master admin sees, with the words that stay for him.</figcaption></figure>
+<figure><img src="img/p9-p.png" alt="the same on the iPhone"><figcaption><b>2c, iPhone.</b></figcaption></figure></div>
+</div>
+
+<div id="zoom" hidden><img alt=""></div>
+<script>
+(function(){var z=document.getElementById('zoom'),zi=z.querySelector('img');
+document.addEventListener('click',function(e){var t=e.target;
+if(t.matches&&t.matches('figure img')){zi.src=t.src;zi.alt=t.alt;z.hidden=false;return}
+if(!z.hidden&&(t===z||t===zi)){z.hidden=true}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')z.hidden=true});})();
+</script>
