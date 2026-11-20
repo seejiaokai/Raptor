@@ -1,0 +1,10 @@
+     × (a) Kestrel, 149's admin, gives Hunter Plan of 149 at the door: refused 65ms
+     × (b) the same as a forged command, past the door: refused at the gate 22ms
+     × (c) Saber gives Hunter Plan of 149; Kestrel takes it away: refused 25ms
+     × (d) Saber gives Hunter Plan of 149; Kestrel lowers it to View: refused 22ms
+     × (e) Hunter, holding Plan of 149, passes Plan of 149 to Ranger: refused 11ms
+     × (a) Saber gives Hunter Plan of 149 and Kestrel Plan of 142; Kestrel re-links Hunter's sign-in to another 142 man: refused 28ms
+     × (a) Saber gives Ranger, 142's member, Plan of 149: refused 11ms
+     × (b) Saber gives Hunter Plan of 149, then makes Hunter a member: he is no admin of 149 13ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  8 failed | 1 passed (9)

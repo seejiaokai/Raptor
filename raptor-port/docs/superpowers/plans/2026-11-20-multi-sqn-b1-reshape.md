@@ -4,8 +4,8 @@
   reshaping where their families come from — one which-squadron-on-a-day answer, the day always given; homes, places and
   rights as dated rows under one check; one last-admin rule; passes over every squadron — then the rest one by one.
   Astra, a fresh Opus reader and Fable read this plan, blind, before anything of it is built.
-- **Status:** a plan only, **revised after round 3 (chat 125); the plan's red team is closed — next, his answers and the
-  build.** Nothing here is built. Written on `claude/multi-sqn-b1-107`; round 1's text is `cbdccbd71`'s, round 2's
+- **Status:** a plan only, **revised after round 3 (chat 125); the plan's red team is closed; his eight answers marked
+  (§12) and the Plan audit's findings folded in (§19, chat 126) — next, the build.** Nothing here is built. Written on `claude/multi-sqn-b1-107`; round 1's text is `cbdccbd71`'s, round 2's
   `f70594194`'s, round 3's `de5de891d`'s. Every round-1 finding and what was done with it: §16; round 2's: §17; round 3's,
   with the host's two guardrails: §18.
 - **Inputs read:** the fault table, evidence sheet `docs/handpass/2026-11-18-multi-sqn-b1.md` §Fix read 17; the 40 proofs
@@ -498,6 +498,10 @@ right on its `from`, not its link day, and refuses every save of a man whose mov
   this cut the rights stand until midnight, so Saber lowering a Plan he gave in error, or undoing and redoing a giving,
   the day Ranger's move is saved, is honest — whatever it leaves ends at midnight by the rule.
 - `removeGrant`: the row holding today.
+- **Plan is a master admin's, and an admin's (the Plan audit, §19 PA1, PA2 — D2199, D2211, D2201):** `setGrant` and
+  `removeGrant`, door and gate, refuse a non-master any `admin`-level row — new, raised, lowered or removed — and refuse an
+  `admin` grant on an account whose role is not admin; making a Plan holder a member drops his Plan rows in that
+  command; `levelFrom` reads an `admin` grant on a non-admin account as no right.
 - **A re-link** (`accounts.ts updateAccount` linking an account to another person). **Guardrail 1 — the host's decision
   after round 3, in place of a fourth patch: a sign-in linked to another person carries no access to other squadrons.**
   It replaces "the rights that still hold follow the account from the link day" — a build choice of fix read 10, fault D,
@@ -508,6 +512,9 @@ right on its `from`, not its link day, and refuses every save of a man whose mov
     re-links. The man now on the sign-in is given what he needs anew, by whoever may give it — an admin of that squadron,
     at home there or by Plan of it, or a master admin (Plan itself, a master admin's alone to give — D2199, D2211). Dropping an ended row takes no bell line a move has not already taken
     today: today's move deletes the row on save.
+  - **Refined by the Plan audit (§19 PA3, D2199):** a sign-in holding a **Plan** that holds today is re-linked only by a
+    master admin — the drop takes the Plan, and taking Plan is a master admin's alone. The line below then governs a
+    sign-in holding only View.
   - **Who may re-link — kept as it stands, for a new reason** (the host's question, decided): an admin of the man's own
     squadron, where the account holds no right **today** in a squadron he is no admin of — at home there or by Plan of it
     (D2201, D2241) — else only a master admin. Nothing is
@@ -1169,6 +1176,11 @@ in phase 2 and for Q8's words in phase 3.
 | 3 | helper "schedule" | Q8's sentence, once he has answered | `ui/InputWindow.tsx`, `ui/inputedit.tsx` |
 | 4 | host | Whole gate run; the combined four-reader fix read, blind; fixes red first; re-walk what the fixes touched; evidence sheet; his look | — |
 
+- **The Plan audit's items (§19), each by its file's owner:** phase 1, core — PC1 (§7e passes a line to a reader in
+  `adminsOf`), PD1 (`putNewHome` by the page's squadron), PE1's core half (`mayEditSched` and the page's admin
+  question); phase 2, core with Piece B — PA1, PA2, PA3, PH1; phase 2, helper "war" — PB1, PB2 (on phase 1's `adminsOf`
+  and PC1); phase 3, core with A4 — PB3, PB4, PB5. Each proof copied from `…/briefs/2026-11-20-msq-plan-audit-repro/`
+  red first (§9.1). PF1, PG1, PK1 are not this build's (filed with step 5, P2 and P1).
 - **No two jobs built at once share a file.** Phase 2's helpers start only once phase 1 is committed, because they call
   its bodies and gate halves. The core builder's phase 2 runs beside them.
 - **Ordered inside phase 2:** "own pages" wires the Inputs calendar only after "session" commits the routed planning
@@ -1215,7 +1227,7 @@ in phase 2 and for Q8's words in phase 3.
 | A2 | A page left open across midnight of his own move shows his new squadron's schedule, war and Tracker. If a step he can still undo shares a record with one left in his old squadron's war (Osprey's leave filed at 23:30, then moved in 142's Leave War at 23:50), his Undo says once today's "A later change touches the same thing and can’t be undone." and the next press takes the step before it — never "undo that first" again and again | No new element; today's words (Fable 4 of round 3). Named so he knows |
 | B3 | Suspend, Demote, Archive or Delete of a last admin with a move saved: the approved sentence where "That did not save" stood | Built to picture 9b (D2217 Q15); drawing check (D1494) |
 | A4 | 149 stops showing 142's holidays (the fault going away); the warning names only its own days, in the words he gave | The words are his, verbatim (D2207). The agent's reading: no drawing, as nothing new is drawn — the readers may disagree |
-| C1, C2, C4, C6, C11, B1, A5, A6 | Lists and counts correct themselves; a 149 posting runs on its day, and a held one runs by itself once 149 has another admin; a held note shows for a 149 man on the master admin's Admin → Users (the existing look). No passing note about another squadron's held posting reaches anyone — a 142 member never reads that 149's admin is its last (Fable 2, Opus 3 of round 3) | Faults going away |
+| C1, C2, C4, C6, C11, B1, A5, A6 | Lists and counts correct themselves; a 149 posting runs on its day, and a held one runs by itself once 149 has another admin; a held note shows for a 149 man on the Admin → Users of a master admin or an admin with Plan of 149 (the existing look). No passing note about another squadron's held posting reaches anyone — a 142 member never reads that 149's admin is its last (Fable 2, Opus 3 of round 3) | Faults going away |
 | R2–R5, K1, B6, B4, K4/B5, C8, C9, R6, A-v, the Inputs calendar's squadron, the re-link's who | Nothing today — no screen saves a move, a place, a right or a squadron yet, and no screen picks another squadron. A step left in a squadron he can no longer enter is passed over by Undo, as a step in another squadron is today | — |
 | The two guardrails (§4.3) | Nothing today: no screen gives or takes View or Plan, and outside the tests nobody holds one, so a re-link on Admin → Users has nothing to drop. Once one can: a re-link takes the sign-in's View and Plan away, and its Undo gives the sign-in back without them; an Undo of a right's removal or lowering after its man's move puts nothing back and says "Something else changed this after your action — it can’t be undone now."; an Undo of a re-link while a right given since stands says "‹callsign› changed this after your action — it can’t be undone now." | Today's words, no new element. Whether Admin → Users' re-link should say first what it takes away is a new thing on screen — drawn when a screen first gives a right, not here (§14) |
 | A5's audience (§6.2 step 6) | Nothing today: nobody holds Plan. Once one can, a Plan holder's bell carries that squadron's posting lines, as D2202 rules | D2202's mark of which squadron a line is from is drawn and built before any screen gives Plan (its row, [MULTI-SQN-DESIGN]) |
@@ -1481,3 +1493,37 @@ findings in every round, so in place of a fourth patch the host made two technic
 | Found while checking (§4.5) | `multi-sqn-fixread10.test.ts` l.392 holds Plan across a move and expects its Redo to put back 13 Jul — already red under round 2's rule, missed by round 2's list | **Taken** — §4.5 test 9, rewritten as tests 5–6 are; with tests 8, 10–14 (the guardrails), §4.5 now names fourteen |
 | Found while checking (step 6) | `ownSchedulerIds` has two other readers, both posting lines (`sync.ts` l.1624, l.3317) | **Taken** — §6.2 step 6: they read the same set |
 | Found while checking (§14) | The master admin mark rides a re-link today (fix read 10's F10-3) | **Not changed** — the agent's reading, §14 item 8: no right (D2203's reading), a master admin's alone (D2205); told to him |
+
+## 19. The Plan audit's findings and what the plan did ([MSQ-PLAN-AUDIT], his D2242 — chat 126, 20 Nov 26)
+
+The roll-call of every place that decides who may act for, see, or be told about a squadron — 171 places, the code's by
+three Opus helpers (`…/briefs/2026-11-20-msq-plan-audit-rollcall-{gate,doors,bell-war}.md`, brief beside them), the
+plan's, documents' and drawings' by the host; every left-out, wrongly-let-in and wording row checked by the host in the
+code. The evidence sheet: `docs/handpass/2026-11-20-msq-plan-audit.md`. The proofs PA1–PA3, run red by the host:
+`…/briefs/2026-11-20-msq-plan-audit-repro/` (8 red, the control green). **Kept out on purpose, named and not changed:**
+giving and taking Plan, making a squadron or a master admin, a master admin's account, the last-admin count where a
+squadron has admins at home (§5.2).
+
+| Id | Found | Where it goes |
+|---|---|---|
+| PA1 | **Plan given, taken, lowered or passed on by a non-master admin** — Kestrel (149's admin) gives Hunter Plan of 149; Hunter passes it to Ranger; Kestrel takes or lowers a Plan Saber gave. Door (`units.ts setGrant`, `removeGrant`) and gate (`perms.ts` §6's grant branch, l.1953, l.2030) alike. Breaks D2199, D2211. Known as P1's gap; pinned by `state/units.test.ts` l.217–219, written a day before D2199 | **Piece B, core, phase 2.** A grant row whose level is `admin` on either side — new, raised, lowered or removed — needs a master admin, at the door and the gate; excepted only a person delete's drop (`personDeletedHere`), PA2's drop and a verified replay. The door's words are the approved drawing's, "Only a master admin gives Plan or makes a master admin." (picture 1b of 19 Nov, D2217). View stays its squadron's admins' — at home or by Plan — or a master admin's. `units.test.ts` l.217–219 rewritten to the ruling (§9.3), named in the report |
+| PA2 | **Plan held by a member** — Saber gives Ranger (a member) Plan of 149; an admin given Plan and then made a member is still a full admin of 149 (`units-model.ts levelFrom` reads a grant whatever the account's role) | **Piece B, core, phase 2.** Plan is an admin's (D2201: "an admin a master admin gives Plan"; D785): the door and the gate refuse an `admin` grant on an account whose role is not admin; making a Plan holder a member drops his Plan rows **in the same command** — a drop allowed to whoever may make him a member, as a delete's drop is, and put back with the role by a verified Undo of that step; `levelFrom` reads an `admin` grant on a non-admin account as no right (the backstop). The agent's decision, technical — nobody holds Plan today; told to him |
+| PA3 | **A sign-in holding Plan, re-linked by a non-master admin, carries the Plan to another man** — Kestrel, with Plan of 142, re-links Hunter's sign-in (Plan of 149) to another 142 man: allowed today, the Plan moves (`accounts.ts relinkRightsProblem` counts Kestrel an admin of 149) | **Piece B's guardrail 1 (§4.3), its who-rule refined:** the drop takes Plan, which is a master admin's alone (D2199) — so **a sign-in holding a Plan that holds today is re-linked only by a master admin**; one holding only View that holds today, by an admin of the man's own squadron who is an admin — at home or by Plan — of every squadron the View is in, or a master admin; ended rows decide nothing. Door, G4 and the drop judge alike |
+| PB1 | **The posting take-back skips a Plan holder's line** — `sync.ts postingLinesOf` l.3316 (`atWarHome(n.to)`) and `retractPostingLines` l.3332: once §6.2 step 6 tells Hunter of Osprey's posting, Kestrel's "Undo post out" leaves Hunter's line standing, not struck | **Helper "war", phase 2, with §6.2 step 6:** both read `adminsOf(the war's squadron, today)` or a line about the man himself, never the reader's home alone |
+| PB2 | **The "off the manpower" line is never worked out for a Plan holder** — `sync.ts postedLines` (l.1623–1645) derives it from the loaded war's postings for its home admins only; Hunter's page holds 142's war | **Helper "war", phase 2:** a reader is given the line of every squadron he is in `adminsOf` for — the loaded war's from its postings, another squadron's from its stored postings through `readForeign` (as the foreign pass reads them, §6.2) |
+| PB3 | **A holiday's OIL question never reaches a Plan holder** — `sync.ts holidayTodo`'s `toFor` (l.1511–1512) tells a scheduler by his home only (D2202: that squadron's admin lines) | **With A4 (§7), core, phase 3:** the audience is `adminsOf(the squadron whose input asks, today)` |
+| PB4 | **…and once told, the line counts and opens the wrong squadron** — `holidayLeft` (l.1434–1442) counts the reader's home, so a 149 line reads 0 for Hunter and `noticeLive` hides it; `ui/OilDayList.tsx` l.48 opens on `myUnit()` | **With A4, core, phase 3:** a holiday line carries the squadron it was written for (stored on the line, as `fu` is on an input's); `holidayLeft` counts that squadron; `OilDayList` opens on it for any admin of it — at home, by Plan, or a master admin |
+| PB5 | **The OIL list's foot promises a line from another squadron** — `notices.ts holidayLineAny` (l.785–788) counts any squadron's scheduler line (not a Plan fault; found by the roll-call) | **With A4:** it asks only lines whose reader is an admin of the list's squadron |
+| PC1 | **The gate refuses an admin line to a Plan holder** — §7e's `ownsHim(reader)` (`perms.ts` l.2415–2419, l.2498) passes a line only where the actor is an admin of the reader's home; every `adminsOf` audience above would refuse its whole command | **Core, phase 1, with `adminsOf`:** §7e also passes a line to a reader in `adminsOf(u, today)` for a squadron `u` the actor is an admin of (`levelInForce`) |
+| PD1 | **A new person is made the adder's home's** — `units.ts putNewHome` (l.120–130), called by New person, Give access and approving a request: once step 5's menu moves Hunter's (Plan of 149) or Saber's Admin → Users to 149, the man he adds lands in 142 | **Core, phase 1 (A-ii), dormant until step 5:** the home is `pageUnit('own', today)` where the adder is an admin of it, else his own; today the same answer |
+| PE1 | **A View holder is offered the schedule pages' edit controls** — `perms.ts isAdmin()` (l.231) and `mayEditSched()` (l.258) read the role alone; behind them Edit Schedule, Logic, the templates, the changes window and Admin's squadron settings (doors roll-call row 34). Unreachable until step 5's menu; each save already refused by §7 | **Core half in phase 1 (A-ii):** `mayEditSched` and a new "admin of the page's squadron" question read `levelIn(account, pageUnit(kind, today), today) === 'admin'`; today the same answer. The call sites move with P3 (step 5's menu), filed there |
+| PF1 | **Admin → Users shows and offers every squadron's men** — its list and count (`ui/UsersPanel.tsx` l.520–533), the Give access picker (`accounts.ts linkablePeople`), and every row's buttons whatever his squadron (D2191) | **Not this build:** O3, step 5 (the list by `pageUnit('own')`); the picker and the row's buttons added to O3 in `OUTSTANDING.md` [MULTI-SQN-DESIGN] |
+| PG1 | **A shared place's time zone changed by one squadron's admin** — `units.ts setPlace`, gate l.2033–2035 (D2196: a master admin alone) | **Not this build:** P2's (the rest-pieces map). The agent's reading of D2241 there: a master admin, or an admin — at home or by Plan — of every squadron at the place; told to him with P2 |
+| PH1 | **Words naming only the master admin** — the re-link refusal (`accounts.ts` l.343, pinned by `leavewar/multi-sqn-fixread10.test.ts` l.318), 7c's and G4's code notes (l.1320–1323, l.1839–1856) | **Piece B (core):** the refusal reads "…Only a master admin or an admin of 150 can link it to another person." for a View (§4.3), and stays the master admin's alone for a Plan (PA3); the notes rewritten |
+| PI1 | **The plan's own sentences** naming only the master admin (§3.2, §3.3, §4.3, §6.2, §11, §12, §14), the midnight pick that kept a Plan holder on a squadron his move took from him (A-iv), the stale guest line (A-ii) | **Done** in this pass |
+| PJ1 | **Documents:** `data-model.md` §11's UnitGrant (Plan "by its own admins or a master") and the leave across a move ("only a master or the man"); the scheduler page's "an admin of a squadron is made only by its own admins or a master admin"; the register's bare "master" | **Done** in this pass (D2241) |
+| PK1 | **A drawing:** picture 1c of 19 Nov (approved, D2217) says "Only 149's admins or a master admin give access to 149." — it leaves out an admin with Plan of 149 | **Not this build:** P1's; at P1's build the departure is named to him with its picture (D1478, D1426): "Only 149's admins, an admin with Plan of 149, or a master admin give access to 149." |
+
+**Questions found, not ruled — for him with P4 and P1, not before:** whether a squadron's bell lines leave a Plan holder's
+bell when his Plan is taken away without a move (D2218 rules it for a move); whether a man archived, posted Overseas or
+suspended keeps his View and Plan for his return (D2203 ends them on a move only — kept as built).
