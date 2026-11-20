@@ -36,7 +36,7 @@ import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
 import { todayIso, homeOn, unitRows, levelOfAccount } from './units'
 /* (accounts.ts reaches this module through perms.ts; each side calls the other only at run time, never at load) */
-import { accountOfPid } from './accounts'
+import { accountOfPid, isAdminAccount } from './accounts'
 import { activeEnvelope } from '../command'
 
 export type NoticePart =
@@ -168,7 +168,7 @@ export function filerVia(f: string, rs: readonly any[], iso?: string): string[] 
   const acct = accountOfPid(f)
   /* (a moved filer who is an admin of his home today, where that home is the named man's on one of the input's days —
      his D2228: "that man's admin" again, through his home's admin role as it stands now) */
-  const homeAdmin = !!home && !atHome && !!acct && acct.role === 'admin'
+  const homeAdmin = !!home && !atHome && isAdminAccount(acct)
   const via = us.filter(u => (u === home && (atHome || homeAdmin)) || (!!acct && adminThen(acct, u, day, true)))
   return via.length ? via : null
 }
