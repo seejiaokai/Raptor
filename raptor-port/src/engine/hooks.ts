@@ -229,6 +229,10 @@ export function storedKey(k: any): string {
   if (split(s).unit != null) return s
   return isUnitSetting(s) ? qualify(UNIT, s) : s
 }
+/* A UNIT'S OWN SETTING, read for the unit named — never the pick's (the reshape plan §3.2 A-ii, B4): an own page (Inputs,
+   Quals, the Leave War…) reads, and writes, the key of its own squadron (state/perms.ts pageUnit('own')) */
+export const unitSettingKey = (unit: string, name: string): string => qualify(unit, name)
+export function unitSetting(unit: string, name: string, fallback: any): any { return store.get(unitSettingKey(unit, name), fallback) }
 /* [ARCH-STACK] follow-up #1: the SCHEDULER backstop seam. state/view.ts's
    afterSchedMutate() is the durable-write epilogue for the ~40 board sites that
    mutate the model in place and then repaint. The command layer installs a hook

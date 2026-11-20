@@ -25,7 +25,7 @@
    parity harness — never a user: every question below answers it the way the gate it
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
-import { store } from '../engine/hooks'
+import { store, unitSetting } from '../engine/hooks'
 import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf, namedOf, placeholderOf, inputSpanIso, inputSquadrons } from '../engine/inputs'
 import { deriveActor } from '../command/actor'
 import { voidedOil } from '../engine/oil'
@@ -414,7 +414,9 @@ export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-o
    to admins only"). One squadron setting, `memberfile`: absent = ON, `false` = OFF — anything else stored reads as ON.
    Written only by its admin command (`settings.memberfile`, state/memberfile.ts). Read live, never cached: a rollback
    or an Undo of the switch is in force at the very next question. */
-export const membersFileOn = (): boolean => store.get('memberfile', null) !== false
+/* (B4 — the reshape plan §3.2 A-ii: his own squadron's switch, read on the page's squadron, never the pick's — a member
+   with View of 149 who picks 149 still files as 142's rule says; state/memberfile.ts writes the same key) */
+export const membersFileOn = (): boolean => unitSetting(pageUnit('own'), 'memberfile', null) !== false
 /* a medical input's type, remarks and documents (D211; a guest too, D213 — he has no door to a document) */
 export function mayReadMedicalOf(_pid?: any): boolean {
   const who = roleOf()
