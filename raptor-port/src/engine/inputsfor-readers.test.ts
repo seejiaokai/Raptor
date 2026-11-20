@@ -44,7 +44,7 @@ const ALLOWED: Record<string, { n: number; why: string }> = {
   'ui/sanscal-model.ts': { n: 1, why: 'the SANS day\'s model walks the records it is HANDED — ui/SansDay.tsx hands it the signed-in person\'s own squadron\'s (inputsFor(myUnit(), iso)); the default is for its tests' },
   'leavewar/schedrecs.ts': { n: 1, why: 'the Leave War\'s one typed doorway to the list (warInputs)' },
   'leavewar/state/demoworld.ts': { n: 1, why: 'the Leave War demo world\'s inputs' },
-  'leavewar/inputgate.ts': { n: 2, why: 'the clash rules at the inputs door: one man\'s leave against his own records (sick cuts leave, no overlap) — a man\'s, whatever squadron' },
+  'leavewar/inputgate.ts': { n: 4, why: 'the clash rules at the inputs door: one man\'s leave against his own records (sick cuts leave, no overlap) — a man\'s, whatever squadron; and the gate\'s before-and-after snapshot of every war input\'s claim (snapshot, apply), which must see every input a command could have changed — those two were always there, missed by the old counter until C9 (a template\'s backtick swallowed them)' },
   'leavewar/sync.ts': { n: 10, why: 'the Leave War\'s reads: the absence index and its restore (per person), its writes (approve-extend, cuts, moves), one man\'s OIL question and the bell\'s lines (per person), the ALL AVAIL crowd\'s kept-out men (its people are rosterOf\'s) — since batch 1\'s step 4 each squadron\'s Leave War is a whole world of its own (swapWarWorld), whose people are its own squadron\'s alone (projectPeople), so a read keyed by one of its men never reaches another squadron\'s' },
   'leavewar/ui/DayList.tsx': { n: 1, why: 'the Leave War doorway, for one record by its id' },
   'leavewar/ui/Matrix.tsx': { n: 1, why: 'the Leave War doorway, for the input a war cell derives from, by its id' },
@@ -72,5 +72,8 @@ describe('every read of the whole inputs list goes through inputsFor, or is allo
     expect(n("const k = { name: 'INPUTS' } // INPUTS.filter(f)")).toBe(0)
     expect(n("import { INPUTS, inputsFor } from './inputs'")).toBe(0)
     expect(n('inputsFor(UNIT, dt).forEach(f)')).toBe(0)
+    /* C9: a read inside a template string's ${…} hole is counted; the template's literal text is not code */
+    expect(n('const h = `<ul>${INPUTS.filter(f).map(li).join("")}</ul>`')).toBe(1)
+    expect(n('const t = `INPUTS.filter(f) is only words here`')).toBe(0)
   })
 })

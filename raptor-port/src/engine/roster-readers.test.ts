@@ -65,5 +65,10 @@ describe('every walk of the people goes through rosterOf, or is allowed with its
     expect(n("const k = { name: 'PEOPLE' } // Object.keys(PEOPLE)")).toBe(0)
     expect(n('/* Object.keys(PEOPLE) */ const b = PEOPLE_BASELINE')).toBe(0)
     expect(n("import { PEOPLE, whoId } from '../engine/people'")).toBe(0)
+    /* C9: a walk written inside a template string's ${…} hole (the html builders' style) is a walk all the same; the
+       template's literal text is not code */
+    expect(n('const h = `<ul>${Object.keys(PEOPLE).map(li).join("")}</ul>`')).toBe(1)
+    expect(n('const h = `a ${x ? `<b>${Object.values(PEOPLE).length}</b>` : ""} c`')).toBe(1)
+    expect(n('const t = `Object.keys(PEOPLE) is only words here`')).toBe(0)
   })
 })
